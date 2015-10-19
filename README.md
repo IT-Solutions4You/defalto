@@ -1,1 +1,0 @@
-Vtiger CRM Open Source.
