@@ -334,7 +334,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$user = Users_Record_Model::getCurrentUserModel();
 		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
         $params = array($start,$end,$start);
-        $params = array_merge($params, $userAndGroupIds);
+        $params = array_merge($userAndGroupIds, $params);
         
 		$query = "SELECT projectname, startdate, targetenddate, crmid FROM vtiger_project";
 		$query.= " INNER JOIN vtiger_crmentity ON vtiger_project.projectid = vtiger_crmentity.crmid";
