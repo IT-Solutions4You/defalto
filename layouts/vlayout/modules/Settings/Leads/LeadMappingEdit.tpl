@@ -18,7 +18,7 @@
 				<span class="span4">
 					<span class="pull-right">
 						<button type="submit" class="btn btn-success"><strong>{vtranslate('LBL_SAVE', $QUALIFIED_MODULE)}</strong></button>
-						<a class="cancelLink" type="reset" onclick="javascript:window.history.back();">Cancel</a>
+						<a class="cancelLink" type="reset" onclick="javascript:window.history.back();">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
 					</span>
 				</span>
 			</div><hr>
@@ -173,7 +173,7 @@
 				<span class="span8">
 					<span class="pull-right">
 						<button type="submit" class="btn btn-success"><strong>{vtranslate('LBL_SAVE', $QUALIFIED_MODULE)}</strong></button>
-						<a class="cancelLink" type="reset" onclick="javascript:window.history.back();">Cancel</a>
+						<a class="cancelLink" type="reset" onclick="javascript:window.history.back();">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
 					</span>
 				</span>
 			</div>

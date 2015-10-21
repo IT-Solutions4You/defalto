@@ -86,7 +86,7 @@
 
 			<div class="textAlignCenter">
 				<button class="btn btn-success" type="submit">{vtranslate('LBL_SAVE',$MODULE)}</button>
-				<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">Cancel</a>
+				<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">{vtranslate('LBL_CANCEL',$MODULE)}</a>
 			</div>
 			<br>
 		</form>
