@@ -818,7 +818,7 @@ do {
 		$labelInfo = getEntityName($row['setype'], array(intval($row['crmid'])), true);
 
 		if ($labelInfo) {
-			$label = $labelInfo[$row['crmid']];
+			$label = decode_html($labelInfo[$row['crmid']]);
 			Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET label=? WHERE crmid=? AND setype=?',
 						array($label, $row['crmid'], $row['setype']));
 		}
