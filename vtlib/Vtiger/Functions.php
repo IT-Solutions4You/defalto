@@ -938,7 +938,24 @@ class Vtiger_Functions {
         $noof_group_rows = $adb->num_rows($result);
         return $result;
     }
-    
+
+	/**
+	* Function to determine mime type of file. 
+	* Compatible with mime_magic or fileinfo php extension.
+	*/
+	static function mime_content_type($filename) {
+		$type = null;
+		if (function_exists('mime_content_type')) {
+			$type = mime_content_type($filename);
+		} else if (function_exists('finfo_open')) {
+			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			$type = finfo_file($finfo, $filename);
+			finfo_close($finfo);
+		} else {
+			throw new Exception('mime_magic or fileinfo extension required.');
+		}
+		return $type;
+	}
    
      /**
 	 * Check the file MIME Type
@@ -946,7 +963,7 @@ class Vtiger_Functions {
 	 * @param  $claimedMime Array of bad file extenstions
 	 */
     static function verifyClaimedMIME($targetFile,$claimedMime) {
-    $fileMimeContentType= mime_content_type($targetFile);
+    $fileMimeContentType= self::mime_content_type($targetFile);
     if (in_array(strtolower($fileMimeContentType), $claimedMime)) {
      return false; 
     }

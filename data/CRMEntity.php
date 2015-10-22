@@ -139,7 +139,7 @@ class CRMEntity {
                 
                 $save_file = 'true'; 
                 //only images are allowed for Image Attachmenttype 
-                $mimeType = mime_content_type($file_details['tmp_name']); 
+                $mimeType = vtlib_mime_content_type($file_details['tmp_name']); 
                 $mimeTypeContents = explode('/', $mimeType); 
                 // For contacts and products we are sending attachmentType as value 
                 if ($attachmentType == 'Image' || ($file_details['size'] && $mimeTypeContents[0] == 'image')) { 
