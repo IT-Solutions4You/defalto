@@ -103,6 +103,12 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		// common utils api called, depend on this variable right now
 		$currentUser = $this->getLogin();
 		vglobal('current_user', $currentUser);
+                //check we are being connected to on the right host and protocol
+                global $site_URL;
+                if ((stripos($site_URL,$_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']) !== 0)){
+                    header("Location: $site_URL",TRUE,301);
+                    die();
+                }
 
 		global $default_language;
 		vglobal('default_language', $default_language);
