@@ -234,7 +234,7 @@
         <br>
 		<div class="pull-right">
 			<button class="btn btn-success" type="submit"><strong>{vtranslate('LBL_SAVE',$MODULE)}</strong></button>
-			<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">Cancel</a>
+			<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">{vtranslate('LBL_CANCEL',$MODULE)}</a>
 			<br><br>
 		</div>
 	</form>
