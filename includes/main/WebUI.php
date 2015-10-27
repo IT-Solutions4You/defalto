@@ -105,8 +105,9 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		vglobal('current_user', $currentUser);
 		
 		// Check we are being connected to on the right host and protocol
-        global $site_URL;
-        if ($site_URL && (stripos($site_URL,$_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']) !== 0)){
+		global $site_URL;
+		$request_URL = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on')? 'https': 'http')."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        if ($site_URL && stripos($request_URL, $site_URL) !== 0){
             header("Location: $site_URL",TRUE,301);
             exit;
         }
