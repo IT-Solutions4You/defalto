@@ -8,7 +8,12 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	// Basic Strings
+//Added test to check test committs
+	'Assistant' => 'Assistant test',
+	'Assistant Phone' => 'Assistant Phone',
+	'Birthdate' => 'Date of Birth',
+	'Contact Id' => 'Contact Id',
+	'Contact Image' => 'Contact Image',
 	'Contacts' => 'Contacts',
 	'SINGLE_Contacts' => 'Contact',
 	'LBL_ADD_RECORD' => 'Add Contact',
