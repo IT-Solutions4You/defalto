@@ -49,6 +49,12 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 					$saveLogo = false;
 				}
 
+                //mime type check 
+                $mimeType = vtlib_mime_content_type($logoDetails['tmp_name']); 
+                $mimeTypeContents = explode('/', $mimeType); 
+                if (!$logoDetails['size'] || $mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) { 
+                    $saveLogo = false; 
+                } 
 				// Check for php code injection
 				$imageContents = file_get_contents($logoDetails["tmp_name"]);
 				if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
