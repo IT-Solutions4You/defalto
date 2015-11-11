@@ -28,7 +28,7 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
                 } 
 
                 //mime type check 
-                $mimeType = mime_content_type($logoDetails['tmp_name']); 
+                $mimeType = vtlib_mime_content_type($logoDetails['tmp_name']); 
                 $mimeTypeContents = explode('/', $mimeType); 
                 if (!$logoDetails['size'] || $mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) { 
                     $saveLogo = false; 
