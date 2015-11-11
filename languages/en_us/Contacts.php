@@ -8,8 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-//Added test to check test committs
-	'Assistant' => 'Assistant test',
+	'Assistant' => 'Assistant',
 	'Assistant Phone' => 'Assistant Phone',
 	'Birthdate' => 'Date of Birth',
 	'Contact Id' => 'Contact Id',
