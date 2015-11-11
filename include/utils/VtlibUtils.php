@@ -704,4 +704,8 @@ function vtlib_module_icon($modulename){
 	return "modules/Vtiger/Vtiger.png";
 }
 
+function vtlib_mime_content_type($filename) {
+	return Vtiger_Functions::mime_content_type($filename);
+}
+
 ?>
