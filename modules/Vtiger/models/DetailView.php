@@ -121,6 +121,13 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			$linkModelList[$relatedLink->getType()][] = $relatedLink;
 		}
 
+                $detailViewBasicTablinks = $linkModelListDetails['DETAILVIEWTAB'];
+                if(!empty($detailViewBasicTablinks)) {
+                    foreach($detailViewBasicTablinks as $linkModel) {
+                        $linkModelList['DETAILVIEWTAB'][] = $linkModel;
+                    }
+                }
+                
 		$widgets = $this->getWidgets();
 		foreach($widgets as $widgetLinkModel) {
 			$linkModelList['DETAILVIEWWIDGET'][] = $widgetLinkModel;
