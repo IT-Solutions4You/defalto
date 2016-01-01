@@ -14,7 +14,8 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 	$wsId = $entityData->getId();
 	$parts = explode('x', $wsId);
 	$entityId = $parts[1];
-
+	$entityDelta = new VTEntityDelta();
+	$portalChanged = $entityDelta->hasChanged($moduleName, $entityId, 'portal');
 	$email = $entityData->get('email');
 
 	if ($entityData->get('portal') == 'on' || $entityData->get('portal') == '1') {
@@ -29,9 +30,8 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 			if($email == $dbusername && $isactive == 1 && !$entityData->isNew()){
 				$update = false;
 			} else if($entityData->get('portal') == 'on' ||  $entityData->get('portal') == '1'){
-				$sql = "UPDATE vtiger_portalinfo SET user_name=?, isactive=1 WHERE id=?";
-				$adb->pquery($sql, array($email, $entityId));
-				$password = $adb->query_result($result,0,'user_password');
+				$sql = "UPDATE vtiger_portalinfo SET user_name=?, isactive=? WHERE id=?";
+				$adb->pquery($sql, array($email, 1, $entityId));
 				$update = true;
 			} else {
 				$sql = "UPDATE vtiger_portalinfo SET user_name=?, isactive=? WHERE id=?";
@@ -39,19 +39,38 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 				$update = false;
 			}
 		}
-		if($insert == true){
-			$password = makeRandomPassword();
+		$password = makeRandomPassword();
+		$md5_password = md5($password);
+		if ($insert == true) {
 			$sql = "INSERT INTO vtiger_portalinfo(id,user_name,user_password,type,isactive) VALUES(?,?,?,?,?)";
-			$params = array($entityId, $email, $password, 'C', 1);
+			$params = array($entityId, $email, $md5_password, 'C', 1);
 			$adb->pquery($sql, $params);
 		}
-
-		if($insert == true || $update == true) {
+		if ($update == true && $portalChanged == true) {
+			$sql = "UPDATE vtiger_portalinfo SET user_password=? WHERE id=?";
+			$params = array($md5_password, $entityId);
+			$adb->pquery($sql, $params);
+		}
+		if (($insert == true || ($update = true && $portalChanged == true)) && $entityData->get('emailoptout') == 0) {
 			global $current_user,$HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
 			require_once("modules/Emails/mail.php");
 			$emailData = Contacts::getPortalEmailContents($entityData,$password,'LoginDetails');
 			$subject = $emailData['subject'];
+            if(empty($subject)) {
+                $subject = 'Customer Portal Login Details';
+            }
 			$contents = $emailData['body'];
+            $contents= decode_html(getMergedDescription($contents, $entityId, 'Contacts'));
+            if(empty($contents)) {
+				require_once 'config.inc.php';
+				global $PORTAL_URL;
+                $contents = 'LoginDetails';
+                $contents .= "<br><br> User ID : ".$entityData->get('email');
+                $contents .= "<br> Password: ".$password;
+				$portalURL = vtranslate('Please ',$moduleName).'<a href="'.$PORTAL_URL.'" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">'.  vtranslate('click here', $moduleName).'</a>';
+				$contents .= "<br>".$portalURL;
+            }
+            $subject=  decode_html(getMergedDescription($subject, $entityId,'Contacts'));
 			send_mail('Contacts', $entityData->get('email'), $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents,'','','','','',true);
 		}
 	} else {
