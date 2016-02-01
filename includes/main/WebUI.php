@@ -40,7 +40,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	 */
 	function getLogin() {
 		$user = parent::getLogin();
-		if (!$user) {
+		if (!$user && isset($_SESSION['authenticated_user_id'])) {
 			$userid = Vtiger_Session::get('AUTHUSERID', $_SESSION['authenticated_user_id']);
 			if ($userid) {
 				$user = CRMEntity::getInstance('Users');
