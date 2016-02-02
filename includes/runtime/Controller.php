@@ -119,6 +119,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('APPTITLE', getTranslatedString('APPTITLE'));
 			$viewer->assign('VTIGER_VERSION', $vtiger_current_version);
+			$viewer->assign('MODULE_NAME', $request->getModule());
 			$this->viewer = $viewer;
 		}
 		return $this->viewer;
