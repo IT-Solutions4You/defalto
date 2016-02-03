@@ -109,7 +109,7 @@ class Install_Utils_Model {
 	 * Returns the recommended php settings for vtigerCRM
 	 * @return type
 	 */
-	function getRecommendedDirectives(){
+	public static function getRecommendedDirectives(){
             if(version_compare(PHP_VERSION, '5.5.0') >= 0){
                 self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
             }
@@ -123,7 +123,7 @@ class Install_Utils_Model {
 	 * Function checks for vtigerCRM installation prerequisites
 	 * @return <Array>
 	 */
-	function getSystemPreInstallParameters() {
+	public static function getSystemPreInstallParameters() {
 		$preInstallConfig = array();
 		// Name => array( System Value, Recommended value, supported or not(true/false) );
 		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0', (version_compare(phpversion(), '5.4.0', '>=')));
@@ -152,7 +152,7 @@ class Install_Utils_Model {
 	 * Function that provides default configuration based on installer setup
 	 * @return <Array>
 	 */
-	function getDefaultPreInstallParameters() {
+	public static function getDefaultPreInstallParameters() {
 		include 'config.db.php';
 		
 		$parameters = array(
