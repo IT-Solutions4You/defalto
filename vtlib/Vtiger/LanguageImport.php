@@ -31,7 +31,7 @@ class Vtiger_LanguageImport extends Vtiger_LanguageExport {
 	 * Initialize Import
 	 * @access private
 	 */
-	function initImport($zipfile, $overwrite) {
+	function initImport($zipfile, $overwrite = true) {
 		$this->__initSchema();
 
 		$name = $this->getModuleNameFromZip($zipfile);

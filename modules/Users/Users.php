@@ -695,9 +695,9 @@ class Users extends CRMEntity {
 
     /** Function to save the user information into the database
      * @param $module -- module name:: Type varchar
-     *
+     * @param $fileid
      */
-    function saveentity($module) {
+    function saveentity($module, $fileid = '') {
         global $current_user;//$adb added by raju for mass mailing
         $insertion_mode = $this->mode;
         if(empty($this->column_fields['time_zone'])) {
@@ -787,11 +787,13 @@ class Users extends CRMEntity {
 
     }
 
-    /** Function to insert values in the specifed table for the specified module
+    /** 
+		 * Function to insert values in the specifed table for the specified module
      * @param $table_name -- table name:: Type varchar
      * @param $module -- module:: Type varchar
+		 * @param $fileid
      */
-    function insertIntoEntityTable($table_name, $module) {
+    function insertIntoEntityTable($table_name, $module, $fileid = '') {
         global $log;
         $log->info("function insertIntoEntityTable ".$module.' vtiger_table name ' .$table_name);
         global $adb, $current_user;
@@ -1148,9 +1150,9 @@ class Users extends CRMEntity {
 
     /** Function to save the user information into the database
      * @param $module -- module name:: Type varchar
-     *
+     * @param $fileid
      */
-    function save($module_name) {
+    function save($module_name, $fileid = '') {
         global $log, $adb;
         //Save entity being called with the modulename as parameter
         $this->saveentity($module_name);
@@ -1407,11 +1409,14 @@ class Users extends CRMEntity {
 
     /**
      * Function to get the column value of a field
-     * @param $column_name -- Column name
-     * @param $input_value -- Input value for the column taken from the User
+     * @param $columname -- Column name
+     * @param $fldvalue -- Input value for the column taken from the User
+		 * @param $fieldname
+		 * @param $uitype
+		 * @param $datatype
      * @return Column value of the field.
      */
-    function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype) {
+    function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype = '') {
         if (is_uitype($uitype, "_date_") && $fldvalue == '') {
             return null;
         }
