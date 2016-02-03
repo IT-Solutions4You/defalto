@@ -17,8 +17,8 @@ require_once 'include/logging.php';
 include_once 'libraries/adodb/adodb.inc.php';
 require_once 'libraries/adodb/adodb-xmlschema.inc.php';
 
-$log =& LoggerManager::getLogger('VT');
-$logsqltm =& LoggerManager::getLogger('SQLTIME');
+$log = LoggerManager::getLogger('VT');
+$logsqltm = LoggerManager::getLogger('SQLTIME');
 
 // Callback class useful to convert PreparedStatement Question Marks to SQL value
 // See function convertPS2Sql in PearDatabase below
