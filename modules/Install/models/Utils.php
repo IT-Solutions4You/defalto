@@ -321,7 +321,7 @@ class Install_Utils_Model {
 
 		//Checking for database connection parameters
 		if($db_type) {
-			$conn = &NewADOConnection($db_type);
+			$conn = NewADOConnection($db_type);
 			$db_type_status = true;
 			if(@$conn->Connect($db_hostname,$db_username,$db_password)) {
 				$db_server_status = true;
@@ -331,7 +331,7 @@ class Install_Utils_Model {
 				}
 				if($create_db) {
 					// drop the current database if it exists
-					$dropdb_conn = &NewADOConnection($db_type);
+					$dropdb_conn = NewADOConnection($db_type);
 					if(@$dropdb_conn->Connect($db_hostname, $root_user, $root_password, $db_name)) {
 						$query = "DROP DATABASE ".$db_name;
 						$dropdb_conn->Execute($query);
@@ -340,7 +340,7 @@ class Install_Utils_Model {
 
 					// create the new database
 					$db_creation_failed = true;
-					$createdb_conn = &NewADOConnection($db_type);
+					$createdb_conn = NewADOConnection($db_type);
 					if(@$createdb_conn->Connect($db_hostname, $root_user, $root_password)) {
 						$query = "CREATE DATABASE ".$db_name;
 						if($create_utf8_db == 'true') {
