@@ -90,7 +90,7 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
 	protected function preProcessDisplay(Vtiger_Request $request) {
 	}
 
-	protected function preProcessTplName() {
+	protected function preProcessTplName(Vtiger_Request $request) {
 		return false;
 	}
 
