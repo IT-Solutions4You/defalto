@@ -100,7 +100,7 @@
 					</div>
 					</td>
 				{elseif $LISTVIEW_HEADER->getName() neq 'last_name' and $LISTVIEW_HEADER->getName() neq 'email1'}
-					<td class="{$WIDTHTYPE}" nowrap>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
+					<td class="{$WIDTHTYPE}" nowrap>{vtranslate($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $MODULE)}
 						{if !$LISTVIEW_HEADER@last}</td>{/if}
 				{/if}
 				{if $LISTVIEW_HEADER@last}
