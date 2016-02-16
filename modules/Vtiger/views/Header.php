@@ -29,7 +29,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 	 * which are registered for 5.x modules (and now provided for 6.x as well).
 	 */
 	protected function checkFileUriInRelocatedMouldesFolder($fileuri) {
-		list ($filename, $query) = explode('?', $fileuri);
+		list ($filename, $query) = array_pad(explode('?', $fileuri, 2), 2, null);
 
 		// prefix the base lookup folder (relocated file).
 		if (strpos($filename, 'modules') === 0) {

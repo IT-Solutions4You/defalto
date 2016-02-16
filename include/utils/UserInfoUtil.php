@@ -268,7 +268,8 @@ function isPermitted($module,$actionname,$record_id='')
 	require('user_privileges/user_privileges_'.$current_user->id.'.php');
 	require('user_privileges/sharing_privileges_'.$current_user->id.'.php');
 	$permission = "no";
-	if(($module == 'Users' || $module == 'Home' || $module == 'uploads') && $_REQUEST['parenttab'] != 'Settings')
+	$parenttab = isset($_REQUEST['parenttab']) ? $_REQUEST['parenttab'] : null;
+	if(($module == 'Users' || $module == 'Home' || $module == 'uploads') && $parenttab != 'Settings')
 	{
 		//These modules dont have security right now
 		$permission = "yes";
@@ -278,7 +279,7 @@ function isPermitted($module,$actionname,$record_id='')
 	}
 
 	//Checking the Access for the Settings Module
-	if($module == 'Settings' || $module == 'Administration' || $module == 'System' || $_REQUEST['parenttab'] == 'Settings')
+	if($module == 'Settings' || $module == 'Administration' || $module == 'System' || $parenttab == 'Settings')
 	{
 		if(! $is_admin)
 		{

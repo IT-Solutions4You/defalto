@@ -121,12 +121,16 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 
 		if ($currentUser && $qualifiedModuleName) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$qualifiedModuleName);
-			vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		if ($currentUser) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage);
-			vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		$view = $request->get('view');

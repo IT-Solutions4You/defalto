@@ -319,7 +319,7 @@ class PBXManager extends CRMEntity {
         $log->fatal('MakeOutgoingCalls ActionName Removed');
     }
     
-    function checkLinkPermission($linkData){
+    static function checkLinkPermission($linkData){
         $module = new Vtiger_Module();
         $moduleInstance = $module->getInstance('PBXManager');
         

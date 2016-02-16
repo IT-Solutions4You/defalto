@@ -1370,7 +1370,7 @@ class Users extends CRMEntity {
 		 {
 			 for($i = 0;$i < count($this->homeorder_array);$i++)
 			 {
-				 if($_REQUEST[$this->homeorder_array[$i]] != '')
+				 if(isset($_REQUEST[$this->homeorder_array[$i]]) && $_REQUEST[$this->homeorder_array[$i]] != '')
 				 {
                     $save_array[] = $this->homeorder_array[$i];
                     $qry=" update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=".$id." and vtiger_homedefault.hometype='".$this->homeorder_array[$i]."'";//To show the default Homestuff on the the Home Page

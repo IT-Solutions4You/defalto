@@ -109,6 +109,8 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
  */
 abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
+    protected $viewer;
+    
 	function __construct() {
 		parent::__construct();
 	}
