@@ -59,7 +59,7 @@
 	{foreach from=$ALLFILTERS item=FILTERS key=FILTERGROUP}
 		<optgroup label="{vtranslate($FILTERGROUP)}">
 			{foreach from=$FILTERS item=FILTER key=FILTERNAME}
-				<option value="{$FILTER->getId()}">{vtranslate($FILTER->get('viewname'))}</option>
+				<option value="{$FILTER->getId()}">{$FILTER->get('viewname')}</option>
 			{/foreach}
 		</optgroup>
 	{/foreach}
