@@ -64,7 +64,8 @@
 							<li>
 								<div class="row-fluid">
 									{assign var=RELATION value=$RECENT_ACTIVITY->getRelationInstance()}
-									<span>{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span> <span>
+									<span><strong>{$RECENT_ACTIVITY->getModifiedBy()->getName()} </strong></span>
+									<span>
 											{if $RECENT_ACTIVITY->isRelationLink()}
 												{vtranslate('LBL_ADDED', $MODULE_NAME)}
 											{else}
