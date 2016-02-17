@@ -18,5 +18,10 @@ class SalesOrder_Record_Model extends Inventory_Record_Model {
 
 		return "index.php?module=".$invoiceModuleModel->getName()."&view=".$invoiceModuleModel->getEditViewName()."&salesorder_id=".$this->getId();
 	}
+        
+        function getCreatePurchaseOrderUrl() {
+	    $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
+	    return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&salesorder_id=".$this->getId();
+	}
 
 }

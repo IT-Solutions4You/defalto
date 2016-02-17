@@ -176,6 +176,10 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 		echo $header;
 
 		foreach($entries as $row) {
+			// Escape double quotes in the value.
+			foreach ($row as $key => $value) {
+				$row[$key] = str_replace('"', '""', $value);
+			}
 			$line = implode("\",\"",$row);
 			$line = "\"" .$line;
 			$line .= "\"\r\n";

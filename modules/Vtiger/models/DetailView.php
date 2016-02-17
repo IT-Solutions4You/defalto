@@ -56,7 +56,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 	 *                   array('linktype'=>list of link models);
 	 */
 	public function getDetailViewLinks($linkParams) {
-		$linkTypes = array('DETAILVIEWBASIC','DETAILVIEW');
+		$linkTypes = array('DETAILVIEWBASIC','DETAILVIEW','DETAILVIEWTAB');
 		$moduleModel = $this->getModule();
 		$recordModel = $this->getRecord();
 
@@ -121,6 +121,13 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			$linkModelList[$relatedLink->getType()][] = $relatedLink;
 		}
 
+                $detailViewBasicTablinks = $linkModelListDetails['DETAILVIEWTAB'];
+                if(!empty($detailViewBasicTablinks)) {
+                    foreach($detailViewBasicTablinks as $linkModel) {
+                        $linkModelList['DETAILVIEWTAB'][] = $linkModel;
+                    }
+                }
+                
 		$widgets = $this->getWidgets();
 		foreach($widgets as $widgetLinkModel) {
 			$linkModelList['DETAILVIEWWIDGET'][] = $widgetLinkModel;
