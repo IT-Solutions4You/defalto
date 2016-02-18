@@ -209,9 +209,6 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
 			var dateStartElement = container.find('[name="date_start"]');
             var endDateElement = container.find('[name="due_date"]');
 			
-            if(endDateElement.data('userChangedTime') == true) {
-                return;
-            }
             if(jQuery('[name="userChangedEndDateTime"]').val() == '1') {
                 return;
             }
