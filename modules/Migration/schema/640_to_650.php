@@ -19,5 +19,8 @@ Vtiger_Utils::AddColumn('vtiger_portalinfo', 'cryptmode', 'varchar(20)');
 $updateQuery = "UPDATE vtiger_portalinfo SET user_password=MD5(user_password),cryptmode='MD5' WHERE cryptmode is null";
 $adb->pquery($updateQuery, array());
 
+//Change column type of inventory line-item comment.
+$adb->pquery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN comment TEXT", array());
+
 }
 
