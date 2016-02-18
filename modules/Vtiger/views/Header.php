@@ -144,10 +144,15 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 			}
 			$headerLinkInstances[$index++] = $headerLinkInstance;
 		}
+
+		// Fix for http://code.vtiger.com/vtiger/vtigercrm/issues/49
+		// Push HEADERLINKS to drop-down menu shown with username (last-one) as structured above.
+		$lastindex = count($headerLinkInstances)-1;
 		$headerLinks = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, array('HEADERLINK'));
+		if ($headerLinks) $headerLinkInstances[$lastindex]->addChildLink(Vtiger_Link_Model::getInstanceFromValues(array())); // Separator
 		foreach($headerLinks as $headerType => $headerLinks) {
 			foreach($headerLinks as $headerLink) {
-				$headerLinkInstances[$index++] = Vtiger_Link_Model::getInstanceFromLinkObject($headerLink);
+				$headerLinkInstances[$lastindex]->addChildLink(Vtiger_Link_Model::getInstanceFromLinkObject($headerLink));
 			}
 		}
 		return $headerLinkInstances;
