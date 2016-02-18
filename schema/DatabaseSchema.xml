@@ -587,6 +587,7 @@
 		<field name="user_name" type="C" size="50" />
 		<field name="user_password" type="C" size="30" />
 		<field name="type" type="C" size="5" />
+		<field name="cryptmode" type="C" size="20" />
 		<field name="last_login_time" type="T" />
 		<field name="login_time" type="T" />
 		<field name="logout_time" type="T" />
