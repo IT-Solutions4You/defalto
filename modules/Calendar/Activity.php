@@ -204,19 +204,26 @@ class Activity extends CRMEntity {
 				$reminderid = $adb->query_result($reminderidres, 0, "reminderid");
 			}
 
-			if(isset($reminderid)) {
-                $current_date = new DateTime();
-                $record_date = new DateTime($cbdate.' '.$cbtime);
+            $current_date = new DateTime();
+            $record_date = new DateTime($cbdate.' '.$cbtime);
 
-                $current = $current_date->format('Y-m-d H:i:s');
-                $record = $record_date->format('Y-m-d H:i:s');
-                if(strtotime($record) > strtotime($current)){
-                    $callback_query = "UPDATE vtiger_activity_reminder_popup set status = 0, date_start = ?, time_start = ? WHERE reminderid = ?";
-                    $callback_params = array($cbdate, $cbtime, $reminderid);
-                }
+            $current = $current_date->format('Y-m-d H:i:s');
+			$record = $record_date->format('Y-m-d H:i:s');
+
+			$reminder = false;
+			if(strtotime($record) > strtotime($current)){
+				$status = 0;
+				$reminder = true;
 			} else {
-				$callback_query = "INSERT INTO vtiger_activity_reminder_popup (recordid, semodule, date_start, time_start) VALUES (?,?,?,?)";
-				$callback_params = array($cbrecord, $cbmodule, $cbdate, $cbtime);
+				$status = 1;
+			}
+
+            if(isset($reminderid)){
+                $callback_query = "UPDATE vtiger_activity_reminder_popup set status = 0, date_start = ?, time_start = ? WHERE reminderid = ?";
+                $callback_params = array($cbdate, $cbtime, $reminderid);
+			} else if ($reminder) {
+				$callback_query = "INSERT INTO vtiger_activity_reminder_popup (recordid, semodule, date_start, time_start, status) VALUES (?,?,?,?,?)";
+				$callback_params = array($cbrecord, $cbmodule, $cbdate, $cbtime, $status);
 			}
 
             if($callback_query)

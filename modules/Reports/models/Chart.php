@@ -218,6 +218,14 @@ abstract class Base_Chart extends Vtiger_Base_Model{
 
 		$columnSQL = $reportRunObject->getColumnSQL($selectedfields);
 
+		// Fix for http://code.vtiger.com/vtiger/vtigercrm/issues/4
+		switch ($selectedfields[count($selectedfields)-1]) {
+			case 'MY':
+				$columnSQL = str_replace('%M', '%m', $columnSQL); // %M (yields Jan), %m - 01
+				break;
+		}
+		// End
+
 		$reportRunObject->append_currency_symbol_to_value = $append_currency_symbol_to_value;
 		return $columnSQL;
 	}
