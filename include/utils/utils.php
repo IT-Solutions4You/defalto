@@ -345,6 +345,12 @@ $toHtml = array(
        */
 function to_html($string, $encode=true)
 {
+        global $htmlcache;
+        if($htmlcache[$string]){
+                return($htmlcache[$string]);
+        }
+        $startstring=$string;
+
 	global $log,$default_charset;
 	//$log->debug("Entering to_html(".$string.",".$encode.") method ...");
 	global $toHtml;
@@ -385,6 +391,7 @@ function to_html($string, $encode=true)
 	}
 
 	//$log->debug("Exiting to_html method ...");
+        $htmlcache[$startstring]=$string;
 	return $string;
 }
 
