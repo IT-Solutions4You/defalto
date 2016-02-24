@@ -189,6 +189,10 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
 			$orderBy = 'modifiedtime';
 			$sortOrder = 'DESC';
+			if (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
+                                $orderBy = $moduleFocus->default_order_by;
+                                $sortOrder = $moduleFocus->default_sort_order;
+                        }
 		}
 
         if(!empty($orderBy)){
