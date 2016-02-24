@@ -21,7 +21,7 @@ class Users_Login_Action extends Vtiger_Action_Controller {
 
 	function process(Vtiger_Request $request) {
 		$username = $request->get('username');
-		$password = $request->get('password');
+		$password = $request->getRaw('password');
 
 		$user = CRMEntity::getInstance('Users');
 		$user->column_fields['user_name'] = $username;
