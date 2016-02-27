@@ -42,7 +42,7 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 		$password = makeRandomPassword();
 		$md5_password = md5($password);
 		if ($insert == true) {
-			$sql = "INSERT INTO vtiger_portalinfo(id,user_name,user_password,cryptmode,type,isactive) VALUES(?,?,?,?,?)";
+			$sql = "INSERT INTO vtiger_portalinfo(id,user_name,user_password,cryptmode,type,isactive) VALUES(?,?,?,?,?,?)";
 			$params = array($entityId, $email, $md5_password, 'MD5', 'C', 1);
 			$adb->pquery($sql, $params);
 		}
