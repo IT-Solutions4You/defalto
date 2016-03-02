@@ -76,7 +76,6 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 					Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_REENTER_PASSWORDS'));
 					e.preventDefault();
 				}
-
 				if(!(userName in thisInstance.duplicateCheckCache)) {
 					thisInstance.checkDuplicateUser(userName).then(
 						function(data){
