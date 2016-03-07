@@ -16,7 +16,19 @@ class Import_Utils_Helper {
 	static $AUTO_MERGE_OVERWRITE = 2;
 	static $AUTO_MERGE_MERGEFIELDS = 3;
 
-	static $supportedFileEncoding = array('UTF-8'=>'UTF-8', 'ISO-8859-1'=>'ISO-8859-1');
+	static $supportedFileEncoding = array(
+		'UTF-8'=>'UTF-8',
+		'ISO-8859-1'=>'ISO-8859-1',
+		'Windows-1250'=>'Windows-1250',
+		'Windows-1251'=>'Windows-1251',
+		'Windows-1252'=>'Windows-1252',
+		'Windows-1253'=>'Windows-1253',
+		'Windows-1254'=>'Windows-1254',
+		'Windows-1255'=>'Windows-1255',
+		'Windows-1256'=>'Windows-1256',
+		'Windows-1257'=>'Windows-1257',
+		'Windows-1258'=>'Windows-1258',
+		);
 	static $supportedDelimiters = array(','=>'comma', ';'=>'semicolon');
 	static $supportedFileExtensions = array('csv','vcf');
 
