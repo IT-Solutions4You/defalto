@@ -41,8 +41,12 @@ class Install_Index_view extends Vtiger_View_Controller {
 		parent::preProcess($request);
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
-		$defaultLanguage = ($request->get('lang'))?$request->get('lang'):'en_us';
-		vglobal('default_language', $defaultLanguage);
+		if ($chosenLanguage = $request->get('lang')) {
+			$_SESSION['config_file_info']['default_language'] = $chosenLanguage;
+		} elseif (empty($_SESSION['config_file_info']['default_language'])) {
+			$_SESSION['config_file_info']['default_language'] = 'en_us';
+		}
+		vglobal('default_language', $_SESSION['config_file_info']['default_language']);
 
 		define('INSTALLATION_MODE', true);
 		define('INSTALLATION_MODE_DEBUG', $this->debug);
@@ -67,6 +71,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 	public function Step1(Vtiger_Request $request) {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
+		$viewer->assign('CURRENT_LANGUAGE', vglobal('default_language'));
+		$viewer->assign('LANGUAGES', Install_Utils_model::getLanguageList());
 		$viewer->view('Step1.tpl', $moduleName);
 	}
 

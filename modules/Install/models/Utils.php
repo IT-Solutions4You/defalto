@@ -273,6 +273,33 @@ class Install_Utils_Model {
 		return $currencies;
 	}
 
+
+	/**
+	 * Returns an array with the list of languages which are available in source
+	 * Note: the DB has not been initialized at this point, so we have to look at
+	 * the contents of the `languages/` directory.
+	 * @return <Array>
+	 */
+	public static function getLanguageList() {
+		$languageFolder = 'languages/';
+		$handle = opendir($languageFolder);
+		$language_list = array();
+		while ($prefix = readdir($handle)) {
+			if (substr($prefix, 0, 1) === '.' || $prefix === 'Settings') {
+				continue;
+			}
+			if (is_dir('languages/' . $prefix) && is_file('languages/' . $prefix . '/Install.php')) {
+				$language_list[$prefix] = $prefix;
+			}
+		}
+
+		ksort($language_list);
+
+		return $language_list;
+	}
+
+
+
 	/**
 	 * Function checks if its mysql type
 	 * @param type $dbType
