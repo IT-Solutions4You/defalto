@@ -1897,11 +1897,7 @@ class CustomView extends CRMEntity {
 
 				if ($status == CV_STATUS_DEFAULT) {
 					$log->debug("Entering when status=0");
-					if ($action == 'ListView' || $action == $module . "Ajax" || $action == 'index' || $action == 'DetailView') {
-						$permission = "yes";
-					}
-					else
-						$permission = "no";
+					$permission = "yes";
 				}
 				elseif ($is_admin) {
 					$permission = 'yes';
@@ -1911,11 +1907,7 @@ class CustomView extends CRMEntity {
 						$permission = "yes";
 					} elseif ($status == CV_STATUS_PUBLIC) {
 						$log->debug("Entering when status=3");
-						if ($action == 'ListView' || $action == $module . "Ajax" || $action == 'index' || $action == 'DetailView') {
-							$permission = "yes";
-						}
-						else
-							$permission = "no";
+						$permission = "yes";
 					}
 					elseif ($status == CV_STATUS_PRIVATE || $status == CV_STATUS_PENDING) {
 						$log->debug("Entering when status=1 or 2");
