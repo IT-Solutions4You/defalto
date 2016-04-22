@@ -236,7 +236,7 @@ class Vtiger_Field extends Vtiger_FieldBasic {
 		global $adb;
 		$instances = false;
 
-		$query = "SELECT * FROM vtiger_field WHERE tabid=? ORDER BY sequence";
+		$query = "SELECT * FROM vtiger_field left join vtiger_blocks on vtiger_field.block=vtiger_blocks.blockid WHERE vtiger_field.tabid=? ORDER BY vtiger_blocks.sequence,vtiger_field.sequence";
 		$queryParams = Array($moduleInstance->id);
 
 		$result = $adb->pquery($query, $queryParams);
