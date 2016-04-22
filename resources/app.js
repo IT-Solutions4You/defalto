@@ -406,24 +406,13 @@ var app = {
 
 	formAlignmentAfterValidation : function(form){
 		// to avoid hiding of error message under the fixed nav bar
-		var destination = form.find(".formError:not('.greenPopup'):first").offset().top;
-		var resizedDestnation = destination-105;
-		jQuery('html').animate({
-			scrollTop:resizedDestnation
-		}, 'slow');
-	},
-
-	/**
-	 * Function to push down the error message size when validation is invoked
-	 * @params : form Element
-	 */
-	formAlignmentAfterValidation : function(form){
-		// to avoid hiding of error message under the fixed nav bar
-		var destination = form.find(".formError:not('.greenPopup'):first").offset().top;
-		var resizedDestnation = destination-105;
-		jQuery('html').animate({
-			scrollTop:resizedDestnation
-		}, 'slow');
+        var formOffset = form.find(".formError:not('.greenPopup'):first").offset();
+        if(formOffset !== null && typeof(formOffset) === 'object' && formOffset.hasOwnProperty('top')) {
+            var resizedDestnation = formOffset.top - 105;
+            $('html, body').animate({
+                scrollTop:resizedDestnation
+            }, 'slow');
+        }
 	},
 
 	convertToDatePickerFormat: function(dateFormat){
