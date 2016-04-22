@@ -22,6 +22,12 @@ $adb->pquery($updateQuery, array());
 //Change column type of inventory line-item comment.
 $adb->pquery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN comment TEXT", array());
 
+
+// Initlize mailer_queue tables.
+include_once 'vtlib/Vtiger/Mailer.php';
+$mailer = new Vtiger_Mailer();
+$mailer->__initializeQueue();
+
 //set settings links, fixes translation issue on migrations from 5.x
 $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Users&parent=Settings&view=List' where name='LBL_USERS'", array());
 $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Roles&parent=Settings&view=Index' where name='LBL_ROLES'", array());
