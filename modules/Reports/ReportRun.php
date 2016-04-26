@@ -4281,7 +4281,7 @@ class ReportRun extends CRMEntity
         $arr_val = $reportData['data'];
 
 		$fp = fopen($fileName, 'w+');
-
+		fputs($fp,chr(239) . chr(187) . chr(191));//UTF-8 byte order mark
 		if(isset($arr_val)) {
 			$csv_values = array();
 			// Header
