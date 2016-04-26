@@ -176,7 +176,7 @@ class VTSimpleTemplate{
 											$parts = explode('x', $wsId);
 											$recordId = $parts[1];
 											$moduleName = $this->parent->getModuleName();
-											return "$site_URL/index.php?module=$moduleName&view=Detail&record=$recordId";
+											return "<a href='$site_URL/index.php?module=$moduleName&view=Detail&record=$recordId'>$moduleName</a>";
 			case 'portaldetailviewurl'	: 	$wsId = $this->parent->getId();
 											$parts = explode('x', $wsId);
 											$recordId = $parts[1];
@@ -185,15 +185,15 @@ class VTSimpleTemplate{
 											if($moduleName == 'HelpDesk') $recorIdName = 'ticketid';
 											if($moduleName == 'Faq') $recorIdName = 'faqid';
 											if($moduleName == 'Products') $recorIdName = 'productid';
-											return $PORTAL_URL.'/index.php?module='.$moduleName.'&action=index&'.$recorIdName.'='.$recordId.'&status=true';
+											return "<a href='" . $PORTAL_URL.'/index.php?module='.$moduleName.'&action=index&'.$recorIdName.'='.$recordId.'&status=true'."'>Portal</a>";
             case 'portalpdfurl'         :   $wsId = $this->parent->getId();
 											$parts = explode('x', $wsId);
 											$recordId = $parts[1];
 											$moduleName = $this->parent->getModuleName();
 											$recorIdName='id';
-											return $PORTAL_URL.'/index.php?module='.$moduleName.'&action=index&'.$recorIdName.'='.$recordId.'&downloadfile=true';
-			case 'siteurl'				:	return $site_URL;
-			case 'portalurl'			:	return $PORTAL_URL;
+											return "<a href='" . $PORTAL_URL.'/index.php?module='.$moduleName.'&action=index&'.$recorIdName.'='.$recordId.'&downloadfile=true'."'>Download</a>";
+			case 'siteurl'				:	return "<a href='$site_URL'>$site_URL</a>";
+			case 'portalurl'			:	return "<a href='$PORTAL_URL'>$PORTAL_URL</a>";
 			case 'logo'					:	return '<img src="cid:logo" />';
 
 			case 'recordId'				: list($moduleId, $recordId) = vtws_getIdComponents($this->parent->getId());
