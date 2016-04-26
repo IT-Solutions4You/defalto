@@ -55,5 +55,8 @@ $adb->pquery("Update vtiger_settings_field set linkto='index.php?parent=Settings
 $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Workflows&parent=Settings&view=List' where name='LBL_LIST_WORKFLOWS'", array());
 $adb->pquery("Update vtiger_settings_field set linkto='index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail' where name='LBL_CONFIG_EDITOR'", array());
 
+//allow large emails to be stored.
+$adb->pquery("ALTER TABLE vtiger_crmentity MODIFY COLUMN description MEDIUMTEXT", array());
+
 }
 
