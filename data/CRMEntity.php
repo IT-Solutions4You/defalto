@@ -2368,6 +2368,9 @@ class CRMEntity {
 				}
 			}
 		}
+		if($this->table_name == 'vtiger_leaddetails') {
+			$query .= " AND $this->table_name.converted = 0 ";
+		}
 		return $query;
 	}
 

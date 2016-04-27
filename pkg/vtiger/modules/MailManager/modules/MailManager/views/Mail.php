@@ -39,6 +39,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 
 			$metainfo  = array(
 					'from' => $mail->from(), 'subject' => $mail->subject(),
+					'sendto'=>$mail->to(),
 					'msgno' => $mail->msgNo(), 'msguid' => $mail->uniqueid(),
 					'folder' => $foldername );
 
