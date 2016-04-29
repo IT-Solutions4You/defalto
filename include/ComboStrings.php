@@ -342,8 +342,8 @@ $combo_strings = Array(
 										" " => " ",
 										"$" => "$"
 							),
-'currency_grouping_separator_dom' => Array("." => ".",
-										"," => ",",
+'currency_grouping_separator_dom' => Array("," => ",",
+										"." => ".",
 										"'" => "'",
 										" " => " ",
 										"$" => "$"
