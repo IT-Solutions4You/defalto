@@ -217,7 +217,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
                 if (!$orderBy & PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
                         $entityModule=CRMEntity::getInstance($relationModule->name);
                         $orderBy=$entityModule->default_order_by;
-                        $sortorder=$entityModule->default_sort_order;
+                        $sortOrder=$entityModule->default_sort_order;
                 }
 
 		if($orderBy) {
