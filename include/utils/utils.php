@@ -2302,4 +2302,9 @@ function getCompanyDetails() {
 function lower_array(&$string){
 		$string = strtolower(trim($string));
 }
+
+/* PHP 7 support */
+if (!function_exists('split')) {
+	function split($delim, $str) { return explode($delim, $str); }
+}
 ?>
