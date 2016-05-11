@@ -2307,4 +2307,12 @@ function lower_array(&$string){
 if (!function_exists('split')) {
 	function split($delim, $str) { return explode($delim, $str); }
 }
+if (!function_exists('spliti')) {
+	function spliti($delim, $str) {
+		// TODO - Review backward compatibilty on use-cases.
+		$str = str_replace($delim, strtolower($delim), $str);
+		return explode(strtolower($delim), $str);
+	}
+}
+
 ?>
