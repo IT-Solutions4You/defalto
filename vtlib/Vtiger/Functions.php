@@ -765,7 +765,8 @@ class Vtiger_Functions {
 			$tag_cloud_status = 1;
 		} else {
 			$query = "select visible from vtiger_homestuff where userid=? and stufftype='Tag Cloud'";
-			$tag_cloud_status = $adb->query_result($adb->pquery($query, array($id)), 0, 'visible');
+			$res = $adb->pquery($query, array($id));
+			$tag_cloud_status = $adb->query_result($res, 0, 'visible');
 		}
 
 		if ($tag_cloud_status == 0) {

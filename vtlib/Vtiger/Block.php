@@ -71,12 +71,13 @@ class Vtiger_Block {
 	 * @access private
 	 */
 	function initialize($valuemap, $moduleInstance=false) {
-		$this->id = $valuemap[blockid];
-		$this->label= $valuemap[blocklabel];
-        $this->display_status = $valuemap[display_status];
-		$this->sequence = $valuemap[sequence];
-        $this->iscustom = $valuemap[iscustom];
-		$this->module=$moduleInstance? $moduleInstance: Vtiger_Module::getInstance($valuemap[tabid]);
+		$this->id = isset($valuemap['blockid']) ? $valuemap['blockid'] : null;
+		$this->label= isset($valuemap['blocklabel']) ? $valuemap['blocklabel'] : null;
+        $this->display_status = isset($valuemap['display_status']) ? $valuemap['display_status'] : null;
+		$this->sequence = isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
+        $this->iscustom = isset($valuemap['iscustom']) ? $valuemap['iscustom'] : null;
+        $tabid = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
+		$this->module= $moduleInstance ? $moduleInstance : Vtiger_Module::getInstance($tabid);
 	}
 
 	/**

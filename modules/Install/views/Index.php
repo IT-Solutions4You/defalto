@@ -11,6 +11,7 @@
 class Install_Index_view extends Vtiger_View_Controller {
 
 	protected $debug = false;
+	protected $viewer = null;
 
 	function loginRequired() {
 		return false;
@@ -26,7 +27,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$this->exposeMethod('Step7');
 	}
 
-	public function preProcess(Vtiger_Request $request) {
+	public function preProcess(Vtiger_Request $request, $display = true) {
 		date_default_timezone_set('Europe/London'); // to overcome the pre configuration settings
 		// Added to redirect to default module if already installed
 		$configFileName = 'config.inc.php';

@@ -40,7 +40,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	 */
 	function getLogin() {
 		$user = parent::getLogin();
-		if (!$user) {
+		if (!$user && isset($_SESSION['authenticated_user_id'])) {
 			$userid = Vtiger_Session::get('AUTHUSERID', $_SESSION['authenticated_user_id']);
 			if ($userid && vglobal('application_unique_key')==$_SESSION['app_unique_key']) {
 				$user = CRMEntity::getInstance('Users');
@@ -121,12 +121,16 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 
 		if ($currentUser && $qualifiedModuleName) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$qualifiedModuleName);
-			vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		if ($currentUser) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage);
-			vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		$view = $request->get('view');
