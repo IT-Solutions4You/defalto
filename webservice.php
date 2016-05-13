@@ -23,7 +23,7 @@
 	include_once 'vtlib/Vtiger/Module.php';
 	include_once 'includes/main/WebUI.php';
 
-	require_once("libraries/HTTP_Session/Session.php");
+	require_once("libraries/HTTP_Session2/HTTP/Session2.php");
 	require_once 'include/Webservices/Utils.php';
 	require_once("include/Webservices/State.php");
 	require_once("include/Webservices/OperationManager.php");
