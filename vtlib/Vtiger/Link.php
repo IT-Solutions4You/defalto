@@ -112,7 +112,7 @@ class Vtiger_Link {
 			$uniqueid = self::__getUniqueId();
 			$sql = 'INSERT INTO vtiger_links (linkid,tabid,linktype,linklabel,linkurl,linkicon,'.
 			'sequence';
-			$params = Array($uniqueid, $tabid, $type, $label, $url, $iconpath, $sequence);
+			$params = Array($uniqueid, $tabid, $type, $label, $url, $iconpath, intval($sequence));
 			if(!empty($handlerInfo)) {
 				$sql .= (', handler_path, handler_class, handler');
 				$params[] = $handlerInfo['path'];
