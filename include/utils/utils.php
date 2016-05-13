@@ -345,9 +345,14 @@ $toHtml = array(
        */
 function to_html($string, $encode=true)
 {
+        $startstring=$string;
+	$cachedresult=Vtiger_Cache::get('to_html',$startstring);
+	if($cachedresult){
+		return $cachedresult;
+	}
+
 	global $log,$default_charset;
 	//$log->debug("Entering to_html(".$string.",".$encode.") method ...");
-	global $toHtml;
 	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
 	$search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
 
@@ -387,6 +392,7 @@ function to_html($string, $encode=true)
 	}
 
 	//$log->debug("Exiting to_html method ...");
+	Vtiger_Cache::set('to_html', $startstring, $string);
 	return $string;
 }
 

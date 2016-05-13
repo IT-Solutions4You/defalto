@@ -20,7 +20,8 @@ class SMSNotifier_Record_Model extends Vtiger_Record_Model {
 
 		$statusColor = $this->getColorForStatus($statusDetails[0]['status']);
 
-		$this->setData($statusDetails[0]);
+		$data = array_merge($statusDetails[0], array('statuscolor' => $statusColor));
+		$this->setData($data);
 
 		return $this;
 	}

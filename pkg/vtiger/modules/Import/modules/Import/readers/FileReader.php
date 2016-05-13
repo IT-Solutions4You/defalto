@@ -70,7 +70,10 @@ class Import_FileReader_Reader {
 	}
 
 	public function convertCharacterEncoding($value, $fromCharset, $toCharset) {
-		if (function_exists("mb_convert_encoding")) {
+		if (function_exists("mb_convert_encoding")
+				&& function_exists("mb_list_encodings")
+				&& in_array($fromCharset, mb_list_encodings())
+				&& in_array($toCharset, mb_list_encodings())) {
 			$value = mb_convert_encoding($value, $toCharset, $fromCharset);
 		} else {
 			$value = iconv($fromCharset, $toCharset, $value);

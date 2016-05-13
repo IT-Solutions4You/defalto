@@ -770,6 +770,7 @@ class Install_InitSchema_Model {
 		//Fix for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7974
         $userFirstName = $_SESSION['config_file_info']['firstname']; 
         $userLastName = $_SESSION['config_file_info']['lastname']; 
+        $userLanguage = $_SESSION['config_file_info']['default_language'];
         // create default admin user
     	$user = CRMEntity::getInstance('Users');
 		//Fix for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7974
@@ -781,6 +782,7 @@ class Install_InitSchema_Model {
         $user->column_fields["is_admin"] = 'on';
         $user->column_fields["user_password"] = $adminPassword;
         $user->column_fields["time_zone"] = $userTimeZone;
+        $user->column_fields["language"] = $userLanguage;
         $user->column_fields["holidays"] = 'de,en_uk,fr,it,us,';
         $user->column_fields["workdays"] = '0,1,2,3,4,5,6,';
         $user->column_fields["weekstart"] = '1';

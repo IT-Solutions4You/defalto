@@ -174,6 +174,12 @@ function vtws_populateConvertLeadEntities($entityvalue, $entity, $entityHandler,
 		$entityFields = $entityHandler->getMeta()->getModuleFields();
 		$row = $adb->fetch_array($result);
 		$count = 1;
+                foreach ($entityFields as $fieldname=>$field){
+                        $defaultvalue=$field->getDefault();
+                        if($defaultvalue){
+                                $entity[$fieldname]=$defaultvalue;
+                        }
+                }
 		do {
 			$entityField = vtws_getFieldfromFieldId($row[$column], $entityFields);
 			if ($entityField == null) {
@@ -265,6 +271,12 @@ function vtws_updateConvertLeadStatus($entityIds, $leadId, $user) {
 		$leadModifiedTime = $adb->formatDate(date('Y-m-d H:i:s'), true);
 		$crmentityUpdateSql = "UPDATE vtiger_crmentity SET modifiedtime=?, modifiedby=? WHERE crmid=?";
 		$adb->pquery($crmentityUpdateSql, array($leadModifiedTime, $user->id, $leadIdComponents[1]));
+                //raise an event so that modules can take their actions on lead conversion
+                require_once("include/events/include.inc");
+                $em = new VTEventsManager($adb);
+                $em->initTriggerCache();
+                $entityData = VTEntityData::fromEntityId($adb, $leadIdComponents[1]);
+                $em->triggerEvent("vtiger.entity.leadconverted", $entityData);
 	}
     $moduleArray = array('Accounts','Contacts','Potentials');
 

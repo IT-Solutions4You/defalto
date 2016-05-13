@@ -188,8 +188,13 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
         if(empty($searchParams)) {
             $searchParams = array();
         }
-        $transformedSearchParams = Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($searchParams, $moduleModel);
-        $queryGenerator->parseAdvFilterList($transformedSearchParams);
+		$transformedSearchParams = Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($searchParams, $moduleModel);
+
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($transformedSearchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+        $queryGenerator->parseAdvFilterList($transformedSearchParams, $glue);
 
 		$listQuery = $queryGenerator->getQuery();
 		if($module == 'RecycleBin'){
