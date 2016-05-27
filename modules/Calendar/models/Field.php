@@ -45,11 +45,15 @@ class Calendar_Field_Model extends Vtiger_Field_Model {
 	 * @return <String> Data type of the field
 	*/
 	public function getFieldDataType() {
-                if ($this->getModule()->getName()=="Calendar" && $this->getName() == 'due_date'){
-                        return 'date';
-                }
-		if($this->getName() == 'date_start' || $this->getName() == 'due_date') {
+		if($this->getName() == 'date_start') {
 			return 'datetime';
+		} else if($this->getName() == 'due_date') {
+			/* special treatment for Events module alone */
+			if ($this->getModule()->getName() == 'Events') {
+				return 'datetime';
+			} else {
+				return 'date';
+			}
 		} else if($this->get('uitype') == '30') {
 			return 'reminder';
 		} else if($this->getName() == 'recurringtype') {
