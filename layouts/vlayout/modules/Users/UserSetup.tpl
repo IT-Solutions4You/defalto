@@ -400,7 +400,7 @@
 							{/if}
 
 							<div class="span4">
-								<label class="control-label"><strong>Preferences</strong> <span class="muted">{vtranslate('LBL_ALL_FIELDS_BELOW_ARE_REQUIRED', $MODULE)}</label>
+								<label class="control-label"><strong>{vtranslate('Preferences', $MODULE)}</strong> <span class="muted">{vtranslate('LBL_ALL_FIELDS_BELOW_ARE_REQUIRED', $MODULE)}</label>
 
 								{if $IS_FIRST_USER}
 								<div class="controls" id="currency_name_controls">

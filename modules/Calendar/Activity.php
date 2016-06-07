@@ -204,19 +204,26 @@ class Activity extends CRMEntity {
 				$reminderid = $adb->query_result($reminderidres, 0, "reminderid");
 			}
 
-			if(isset($reminderid)) {
-                $current_date = new DateTime();
-                $record_date = new DateTime($cbdate.' '.$cbtime);
+            $current_date = new DateTime();
+            $record_date = new DateTime($cbdate.' '.$cbtime);
 
-                $current = $current_date->format('Y-m-d H:i:s');
-                $record = $record_date->format('Y-m-d H:i:s');
-                if(strtotime($record) > strtotime($current)){
-                    $callback_query = "UPDATE vtiger_activity_reminder_popup set status = 0, date_start = ?, time_start = ? WHERE reminderid = ?";
-                    $callback_params = array($cbdate, $cbtime, $reminderid);
-                }
+            $current = $current_date->format('Y-m-d H:i:s');
+			$record = $record_date->format('Y-m-d H:i:s');
+
+			$reminder = false;
+			if(strtotime($record) > strtotime($current)){
+				$status = 0;
+				$reminder = true;
 			} else {
-				$callback_query = "INSERT INTO vtiger_activity_reminder_popup (recordid, semodule, date_start, time_start) VALUES (?,?,?,?)";
-				$callback_params = array($cbrecord, $cbmodule, $cbdate, $cbtime);
+				$status = 1;
+			}
+
+            if(isset($reminderid)){
+                $callback_query = "UPDATE vtiger_activity_reminder_popup set status = 0, date_start = ?, time_start = ? WHERE reminderid = ?";
+                $callback_params = array($cbdate, $cbtime, $reminderid);
+			} else if ($reminder) {
+				$callback_query = "INSERT INTO vtiger_activity_reminder_popup (recordid, semodule, date_start, time_start, status) VALUES (?,?,?,?,?)";
+				$callback_params = array($cbrecord, $cbmodule, $cbdate, $cbtime, $status);
 			}
 
             if($callback_query)
@@ -536,14 +543,15 @@ function insertIntoRecurringTable(& $recurObj)
 		return $return_data;
 	}
 
-	/**
-         * Function to get activities for given criteria
-	 * @param   string   $criteria     - query string
-	 * returns  activity records in array format($list) or null value
-         */
-  	function get_full_list($criteria) {
-	 	global $log;
-		$log->debug("Entering get_full_list(".$criteria.") method ...");
+ 	 /**
+	  * Function to get activities for given criteria
+	  * @param   string   $order_by     - query string
+	  * @param   string   $where     - query string
+	  * returns  activity records in array format($list) or null value
+	  */
+  	function get_full_list($order_by = '', $where = '') {
+			global $log;
+			$log->debug("Entering get_full_list(".$order_by.", ".$where.") method ...");
 	    $query = "select vtiger_crmentity.crmid,vtiger_crmentity.smownerid,vtiger_crmentity.setype, vtiger_activity.*,
 	    		vtiger_contactdetails.lastname, vtiger_contactdetails.firstname, vtiger_contactdetails.contactid
 	    		from vtiger_activity
@@ -551,37 +559,30 @@ function insertIntoRecurringTable(& $recurObj)
 	    		left join vtiger_cntactivityrel on vtiger_cntactivityrel.activityid= vtiger_activity.activityid
 	    		left join vtiger_contactdetails on vtiger_contactdetails.contactid= vtiger_cntactivityrel.contactid
 	    		left join vtiger_seactivityrel on vtiger_seactivityrel.activityid = vtiger_activity.activityid
-	    		WHERE vtiger_crmentity.deleted=0 ".$criteria;
+	    		WHERE vtiger_crmentity.deleted=0 ".$order_by;
     	$result =& $this->db->query($query);
 
-    if($this->db->getRowCount($result) > 0){
-
-      // We have some data.
-      while ($row = $this->db->fetchByAssoc($result)) {
-        foreach($this->list_fields_name as $field)
-        {
-          if (isset($row[$field])) {
-            $this->$field = $row[$field];
-          }
-          else {
-            $this->$field = '';
-          }
-        }
-        $list[] = $this;
-      }
-    }
-    if (isset($list))
-    	{
-		$log->debug("Exiting get_full_list method ...");
-	    return $list;
-	}
-	else
-	{
-		$log->debug("Exiting get_full_list method ...");
-	    return null;
-	}
-
-  }
+      if($this->db->getRowCount($result) > 0){
+				// We have some data.
+				while ($row = $this->db->fetchByAssoc($result)) {
+					foreach($this->list_fields_name as $field){
+						if (isset($row[$field])) {
+							$this->$field = $row[$field];
+						} else {
+							$this->$field = '';
+						}
+					}
+					$list[] = $this;
+				}
+			}
+			if (isset($list)){
+				$log->debug("Exiting get_full_list method ...");
+				return $list;
+			} else {
+				$log->debug("Exiting get_full_list method ...");
+				return null;
+			}
+		}
 
 
 //calendarsync

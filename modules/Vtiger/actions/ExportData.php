@@ -170,17 +170,14 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
 		header("Cache-Control: post-check=0, pre-check=0", false );
 
-		$header = implode("\", \"", $headers);
-		$header = "\"" .$header;
-		$header .= "\"\r\n";
-		echo $header;
+		$fp = fopen("php://output", "w");
+		fputcsv($fp, $headers);
 
 		foreach($entries as $row) {
-			$line = implode("\",\"",$row);
-			$line = "\"" .$line;
-			$line .= "\"\r\n";
-			echo $line;
+			fputcsv($fp, $row);
 		}
+		
+		fclose($fp);
 	}
 
 	private $picklistValues;

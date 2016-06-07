@@ -213,6 +213,13 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		$orderBy = $this->getForSql('orderby');
 		$sortOrder = $this->getForSql('sortorder');
+
+                if (!$orderBy & PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
+                        $entityModule=CRMEntity::getInstance($relationModule->name);
+                        $orderBy=$entityModule->default_order_by;
+                        $sortOrder=$entityModule->default_sort_order;
+                }
+
 		if($orderBy) {
 
             $orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);

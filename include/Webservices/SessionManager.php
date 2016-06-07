@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-	require_once("libraries/HTTP_Session/Session.php");
+	require_once("libraries/HTTP_Session2/HTTP/Session2.php");
 	// Later may we can move this to config file.
 	
 	global $maxWebServiceSessionLifeSpan, $maxWebServiceSessionIdleTime;
@@ -34,37 +34,37 @@
 			$this->maxLife = $now + $maxWebServiceSessionLifeSpan;
 			$this->idleLife = $now + $maxWebServiceSessionIdleTime;
 			
-			HTTP_Session::useCookies(false); //disable cookie usage. may this could be moved out constructor?
+			HTTP_Session2::useCookies(false); //disable cookie usage. may this could be moved out constructor?
 			// only first invocation of following method, which is setExpire 
 			//have an effect and any further invocation will be have no effect.
-			HTTP_Session::setExpire($this->maxLife);
+			HTTP_Session2::setExpire($this->maxLife);
 			// this method replaces the new with old time if second params is true 
 			//otherwise it subtracts the time from previous time
-			HTTP_Session::setIdle($this->idleLife, true);
+			HTTP_Session2::setIdle($this->idleLife, true);
 		}
 		
 		function isValid(){
 			
 			$valid = true;
 			// expired
-			if (HTTP_Session::isExpired()) {
+			if (HTTP_Session2::isExpired()) {
 				$valid = false;
-				HTTP_Session::destroy();
+				HTTP_Session2::destroy();
 				throw new WebServiceException(WebServiceErrorCode::$SESSLIFEOVER,"Session has life span over please login again");
 			}
 			
 			// idled
-			if (HTTP_Session::isIdle()) {
+			if (HTTP_Session2::isIdle()) {
 				$valid = false;
-				HTTP_Session::destroy();
+				HTTP_Session2::destroy();
 				throw new WebServiceException(WebServiceErrorCode::$SESSIONIDLE,"Session has been invalidated to due lack activity");
 			}
-			//echo "<br>is new: ", HTTP_Session::isNew();
+			//echo "<br>is new: ", HTTP_Session2::isNew();
 			//invalid sessionId provided.
 			//echo "<br>get: ",$this->get($this->sessionVar);
-			if(!$this->get($this->sessionVar) && !HTTP_Session::isNew()){
+			if(!$this->get($this->sessionVar) && !HTTP_Session2::isNew()){
 				$valid = false;
-				HTTP_Session::destroy();
+				HTTP_Session2::destroy();
 				throw new WebServiceException(WebServiceErrorCode::$SESSIONIDINVALID,"Session Identifier provided is Invalid");
 			}
 			
@@ -74,7 +74,7 @@
 		function startSession($sid = null,$adoptSession=false){
 			
 //			if($sid){
-//				HTTP_Session::id($sid);
+//				HTTP_Session2::id($sid);
 //			}
 			
 			if(!$sid || strlen($sid) ===0){
@@ -82,15 +82,15 @@
 			}
 			
 			//session name is used for guessing the session id by http_session so pass null.
-			HTTP_Session::start(null, $sid);
+			HTTP_Session2::start(null, $sid);
 			
-			$newSID = HTTP_Session::id();
+			$newSID = HTTP_Session2::id();
 			
 			if(!$sid || $adoptSession==true){
 				$this->set($this->sessionVar,"true");
 			}else{
 				if(!$this->get($this->sessionVar)){
-					HTTP_Session::destroy();
+					HTTP_Session2::destroy();
 					throw new WebServiceException(WebServiceErrorCode::$SESSIONIDINVALID,"Session Identifier provided is Invalid");
 					$newSID = null;
 				}
@@ -105,18 +105,18 @@
 		}
 		
 		function getSessionId(){
-			return HTTP_Session::id();
+			return HTTP_Session2::id();
 		}
 		
 		function set($var_name, $var_value){
 			//TODO test setRef and getRef combination
 			//echo "<br>setting name: ",$var_name," :value: ",$var_value;
-			HTTP_Session::set($var_name, $var_value);
+			HTTP_Session2::set($var_name, $var_value);
 		}
 		
 		function get($name){
-			//echo "<br> getting for: ",$name," :value: ",HTTP_Session::get($name);
-			return HTTP_Session::get($name);
+			//echo "<br> getting for: ",$name," :value: ",HTTP_Session2::get($name);
+			return HTTP_Session2::get($name);
 		}
 		
 		FUNCTION getError(){
@@ -124,7 +124,7 @@
 		}
 		
 		function destroy(){
-			HTTP_Session::destroy();
+			HTTP_Session2::destroy();
 		}
 		
 	}

@@ -106,7 +106,7 @@ class Users_Privileges_Model extends Users_Record_Model {
 	 * @param <Number> $userId
 	 * @return Users_Privilege_Model object
 	 */
-	public static function getInstanceById($userId) {
+	public static function getInstanceById($userId, $module=null) {
 		if (empty($userId))
 			return null;
 
@@ -115,21 +115,21 @@ class Users_Privileges_Model extends Users_Record_Model {
 
 		$valueMap = array();
 		$valueMap['id'] = $userId;
-		$valueMap['is_admin'] = (bool) $is_admin;
-		$valueMap['roleid'] = $current_user_roles;
-		$valueMap['parent_role_seq'] = $current_user_parent_role_seq;
-		$valueMap['profiles'] = $current_user_profiles;
-		$valueMap['profile_global_permission'] = $profileGlobalPermission;
-		$valueMap['profile_tabs_permission'] = $profileTabsPermission;
-		$valueMap['profile_action_permission'] = $profileActionPermission;
-		$valueMap['groups'] = $current_user_groups;
-		$valueMap['subordinate_roles'] = $subordinate_roles;
-		$valueMap['parent_roles'] = $parent_roles;
-		$valueMap['subordinate_roles_users'] = $subordinate_roles_users;
-		$valueMap['defaultOrgSharingPermission'] = $defaultOrgSharingPermission;
-		$valueMap['related_module_share'] = $related_module_share;
+		$valueMap['is_admin'] = isset($is_admin) ? (bool) $is_admin : null;
+		$valueMap['roleid'] = isset($current_user_roles) ? $current_user_roles : null;
+		$valueMap['parent_role_seq'] = isset($current_user_parent_role_seq) ? $current_user_parent_role_seq : null;
+		$valueMap['profiles'] = isset($current_user_profiles) ? $current_user_profiles : null;
+		$valueMap['profile_global_permission'] = isset($profileGlobalPermission) ? $profileGlobalPermission : null;
+		$valueMap['profile_tabs_permission'] = isset($profileTabsPermission) ? $profileTabsPermission : null;
+		$valueMap['profile_action_permission'] = isset($profileActionPermission) ? $profileActionPermission : null;
+		$valueMap['groups'] = isset($current_user_groups) ? $current_user_groups : null;
+		$valueMap['subordinate_roles'] = isset($subordinate_roles) ? $subordinate_roles : null;
+		$valueMap['parent_roles'] = isset($parent_roles) ? $parent_roles : null;
+		$valueMap['subordinate_roles_users'] = isset($subordinate_roles_users) ? $subordinate_roles_users : null;
+		$valueMap['defaultOrgSharingPermission'] = isset($defaultOrgSharingPermission) ? $defaultOrgSharingPermission : null;
+		$valueMap['related_module_share'] = isset($related_module_share) ? $related_module_share : null;
 
-		if(is_array($user_info)) {
+		if(isset($user_info) && is_array($user_info)) {
 			$valueMap = array_merge($valueMap, $user_info);
 		}
 

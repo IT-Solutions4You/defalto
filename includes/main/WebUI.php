@@ -22,15 +22,15 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	 * @throws AppException
 	 */
 	protected function checkLogin (Vtiger_Request $request) {
-		 if (!$this->hasLogin()) {
-			    $return_params = $_SERVER['QUERY_STRING'];
-                 if($return_params && !$_SESSION['return_params']) {
-                    //Take the url that user would like to redirect after they have successfully logged in.
-                    $return_params = urlencode($return_params);
-                    Vtiger_Session::set('return_params', $return_params);
-                }
-                header ('Location: index.php');
-                throw new AppException('Login is required');
+		if (!$this->hasLogin()) {
+			$return_params = $_SERVER['QUERY_STRING'];
+            if($return_params && !$_SESSION['return_params']) {
+                //Take the url that user would like to redirect after they have successfully logged in.
+                $return_params = urlencode($return_params);
+                Vtiger_Session::set('return_params', $return_params);
+            }
+            header ('Location: index.php');
+            throw new AppException('Login is required');
 		}
 	}
 
@@ -40,9 +40,9 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	 */
 	function getLogin() {
 		$user = parent::getLogin();
-		if (!$user) {
+		if (!$user && isset($_SESSION['authenticated_user_id'])) {
 			$userid = Vtiger_Session::get('AUTHUSERID', $_SESSION['authenticated_user_id']);
-			if ($userid) {
+			if ($userid && vglobal('application_unique_key')==$_SESSION['app_unique_key']) {
 				$user = CRMEntity::getInstance('Users');
 				$user->retrieveCurrentUserInfoFromFile($userid);
 				$this->setLogin($user);
@@ -103,6 +103,14 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		// common utils api called, depend on this variable right now
 		$currentUser = $this->getLogin();
 		vglobal('current_user', $currentUser);
+		
+		// Check we are being connected to on the right host and protocol
+		global $site_URL;
+		$request_URL = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on')? 'https': 'http')."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        if ($site_URL && stripos($request_URL, $site_URL) !== 0){
+            header("Location: $site_URL",TRUE,301);
+            exit;
+        }
 
 		global $default_language;
 		vglobal('default_language', $default_language);
@@ -113,12 +121,16 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 
 		if ($currentUser && $qualifiedModuleName) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$qualifiedModuleName);
-			vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		if ($currentUser) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage);
-			vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			if(isset($moduleLanguageStrings['languageStrings'])){
+			    vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+			}
 		}
 
 		$view = $request->get('view');
@@ -200,8 +212,9 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 			}
 		} catch(Exception $e) {
 			if ($view) {
-				// Log for developement.
-				error_log($e->getTraceAsString(), E_NOTICE);
+				// log for development
+				global $log;
+				$log->debug($e->getMessage().":".$e->getTraceAsString());
 
 				$viewer = new Vtiger_Viewer();
 				$viewer->assign('MESSAGE', $e->getMessage());

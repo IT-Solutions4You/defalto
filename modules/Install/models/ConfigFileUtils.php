@@ -20,6 +20,7 @@ class Install_ConfigFileUtils_Model {
 	private $siteUrl;
 	private $cacheDir;
 	private $vtCharset = 'UTF-8';
+	private $vtDefaultLanguage = 'en_us';
 	private $currencyName;
 	private $adminEmail;
 
@@ -43,6 +44,7 @@ class Install_ConfigFileUtils_Model {
 		if (isset($configFileParameters['admin_email'])) $this->adminEmail = $configFileParameters['admin_email'];
 		if (isset($configFileParameters['currency_name'])) $this->currencyName = $configFileParameters['currency_name'];
 		if (isset($configFileParameters['vt_charset'])) $this->vtCharset = $configFileParameters['vt_charset'];
+		if (isset($configFileParameters['default_language'])) $this->vtDefaultLanguage = $configFileParameters['default_language'];
 
 		// update default port
 		if ($this->dbPort == '') $this->dbPort = self::getDbDefaultPort($this->dbType);
@@ -87,6 +89,9 @@ class Install_ConfigFileUtils_Model {
 
 					/* replace charset variable */
 					$buffer = str_replace( "_VT_CHARSET_", $this->vtCharset, $buffer);
+
+					/* replace default lanugage variable */
+					$buffer = str_replace( "_VT_DEFAULT_LANGUAGE_", $this->vtDefaultLanguage, $buffer);
 
 			      	/* replace master currency variable */
 		  			$buffer = str_replace( "_MASTER_CURRENCY_", $this->currencyName, $buffer);
@@ -254,7 +259,7 @@ ini_set('memory_limit','64M');
 
 // default language
 // default_language default value = en_us
-\$default_language = 'en_us';
+\$default_language = '{$this->vtDefaultLanguage}';
 
 // add the language pack name to every translation string in the display.
 // translation_string_prefix default value = false

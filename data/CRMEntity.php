@@ -136,10 +136,11 @@ class CRMEntity {
 		} else {
 			$file_name = $file_details['name'];
 		}
-                
+
+		// Check 1
                 $save_file = 'true'; 
                 //only images are allowed for Image Attachmenttype 
-                $mimeType = mime_content_type($file_details['tmp_name']); 
+                $mimeType = vtlib_mime_content_type($file_details['tmp_name']); 
                 $mimeTypeContents = explode('/', $mimeType); 
                 // For contacts and products we are sending attachmentType as value 
                 if ($attachmentType == 'Image' || ($file_details['size'] && $mimeTypeContents[0] == 'image')) { 
@@ -148,6 +149,13 @@ class CRMEntity {
                 if ($save_file == 'false') { 
                         return false; 
                 } 
+
+		// Check 2
+		$save_file = 'true';
+		//only images are allowed for these modules
+		if ($module == 'Contacts' || $module == 'Products') {
+			$save_file = validateImageFile($file_details);
+		}
 
 		$binFile = sanitizeUploadFileName($file_name, $upload_badext);
 
@@ -163,12 +171,6 @@ class CRMEntity {
 
 		//upload the file in server
 		$upload_status = move_uploaded_file($filetmp_name, $upload_file_path . $current_id . "_" . $binFile);
-
-		$save_file = 'true';
-		//only images are allowed for these modules
-		if ($module == 'Contacts' || $module == 'Products') {
-			$save_file = validateImageFile($file_details);
-		}
 
 		if ($save_file == 'true' && $upload_status == 'true') {
 			//This is only to update the attached filename in the vtiger_notes vtiger_table for the Notes module
@@ -2365,6 +2367,9 @@ class CRMEntity {
 					$i++;
 				}
 			}
+		}
+		if($this->table_name == 'vtiger_leaddetails') {
+			$query .= " AND $this->table_name.converted = 0 ";
 		}
 		return $query;
 	}

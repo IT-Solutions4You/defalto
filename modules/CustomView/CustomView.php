@@ -14,20 +14,22 @@ require_once 'include/Webservices/Utils.php';
 
 global $adv_filter_options;
 
-$adv_filter_options = array("e" => "" . $mod_strings['equals'] . "",
-	"n" => "" . $mod_strings['not equal to'] . "",
-	"s" => "" . $mod_strings['starts with'] . "",
-	"ew" => "" . $mod_strings['ends with'] . "",
-	"c" => "" . $mod_strings['contains'] . "",
-	"k" => "" . $mod_strings['does not contain'] . "",
-	"l" => "" . $mod_strings['less than'] . "",
-	"g" => "" . $mod_strings['greater than'] . "",
-	"m" => "" . $mod_strings['less or equal'] . "",
-	"h" => "" . $mod_strings['greater or equal'] . "",
-	"b" => "" . $mod_strings['before'] . "",
-	"a" => "" . $mod_strings['after'] . "",
-	"bw" => "" . $mod_strings['between'] . "",
-);
+if(isset($mod_strings)){
+	$adv_filter_options = array("e" => "" . $mod_strings['equals'] . "",
+		"n" => "" . $mod_strings['not equal to'] . "",
+		"s" => "" . $mod_strings['starts with'] . "",
+		"ew" => "" . $mod_strings['ends with'] . "",
+		"c" => "" . $mod_strings['contains'] . "",
+		"k" => "" . $mod_strings['does not contain'] . "",
+		"l" => "" . $mod_strings['less than'] . "",
+		"g" => "" . $mod_strings['greater than'] . "",
+		"m" => "" . $mod_strings['less or equal'] . "",
+		"h" => "" . $mod_strings['greater or equal'] . "",
+		"b" => "" . $mod_strings['before'] . "",
+		"a" => "" . $mod_strings['after'] . "",
+		"bw" => "" . $mod_strings['between'] . "",
+	);
+}
 
 class CustomView extends CRMEntity {
 
@@ -1897,11 +1899,7 @@ class CustomView extends CRMEntity {
 
 				if ($status == CV_STATUS_DEFAULT) {
 					$log->debug("Entering when status=0");
-					if ($action == 'ListView' || $action == $module . "Ajax" || $action == 'index' || $action == 'DetailView') {
-						$permission = "yes";
-					}
-					else
-						$permission = "no";
+					$permission = "yes";
 				}
 				elseif ($is_admin) {
 					$permission = 'yes';
@@ -1911,11 +1909,7 @@ class CustomView extends CRMEntity {
 						$permission = "yes";
 					} elseif ($status == CV_STATUS_PUBLIC) {
 						$log->debug("Entering when status=3");
-						if ($action == 'ListView' || $action == $module . "Ajax" || $action == 'index' || $action == 'DetailView') {
-							$permission = "yes";
-						}
-						else
-							$permission = "no";
+						$permission = "yes";
 					}
 					elseif ($status == CV_STATUS_PRIVATE || $status == CV_STATUS_PENDING) {
 						$log->debug("Entering when status=1 or 2");

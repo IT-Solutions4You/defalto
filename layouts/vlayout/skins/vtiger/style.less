@@ -3160,3 +3160,36 @@ td.listViewEntryValue .row-fluid input {
 .deleteCustomMapping .icon-trash { 
     vertical-align: middle !important; 
 } 
+
+//Printing on paper
+//Turn off surounding bits of user interface such as menus and side bars, just print the content
+//Don't have grey backgrounds, it should be white, shadows look OK on screen don't look good on paper
+
+@media print{
+  div#leftPanel, .detailViewButtoncontainer, .detailViewPagingButton, ul.nav, button, .recentComments .addCommentBlock, .toggleButton, div.datepicker, th.blockHeader img{
+      display:none;
+  }
+  table.detailview-table{
+    width:100%;
+  }
+  .mainContainer {
+    margin-top:0;
+    .contentsDiv{
+      background:white;
+      border-left:none;
+    }
+  }
+  th.blockHeader{
+    text-align:left;
+  }
+  .fieldLabel label, .fieldValue{
+    font-size: smaller;
+  }
+  .detailViewInfo {
+    box-shadow:none;
+    .details{
+      border-right:none;
+    }
+  }
+}
+

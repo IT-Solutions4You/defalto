@@ -648,12 +648,30 @@ function vtlib_purify($input, $ignore=false) {
 				}
 			} else { // Simple type
 				$value = $__htmlpurifier_instance->purify($input);
+				$value = purifyHtmlEventAttributes($value);
 			}
 		}
 		$purified_cache[$md5OfInput] = $value;
 	}
 	 $value = str_replace('&amp;','&',$value);
 	return $value;
+}
+
+/**
+ * To purify malicious html event attributes
+ * @param <String> $value
+ * @return <String>
+ */
+function purifyHtmlEventAttributes($value){
+    $htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|".
+                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
+                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
+                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
+                        "onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
+    if(preg_match("/\s(".$htmlEventAttributes.")\s*=/i", $value)) {
+        $value = str_replace("=", "&equals;", $value);
+    }
+    return $value;
 }
 
 /**
@@ -702,6 +720,10 @@ function vtlib_module_icon($modulename){
 		return "modules/$modulename/$modulename.png";
 	}
 	return "modules/Vtiger/Vtiger.png";
+}
+
+function vtlib_mime_content_type($filename) {
+	return Vtiger_Functions::mime_content_type($filename);
 }
 
 ?>

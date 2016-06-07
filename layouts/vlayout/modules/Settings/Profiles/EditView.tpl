@@ -215,7 +215,7 @@
 										{else}
 											style="border-right: 1px solid #DDD !important;"
 										{/if}>
-									<input type="checkbox" class="alignTop"  name="permissions[{$TABID}][actions][{$ACTIONID}]" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTIONID)}checked="true" {elseif empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if}> {$ACTION_MODEL->getName()}</td>
+									<input type="checkbox" class="alignTop"  name="permissions[{$TABID}][actions][{$ACTIONID}]" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTIONID)}checked="true" {elseif empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if}> {vtranslate($ACTION_MODEL->getName(), $MODULE)}</td>
 									{if $smarty.foreach.actions.last OR ($smarty.foreach.actions.index+1) % 3 == 0}
 										</div>
 									{/if}
@@ -234,7 +234,7 @@
         <br>
 		<div class="pull-right">
 			<button class="btn btn-success" type="submit"><strong>{vtranslate('LBL_SAVE',$MODULE)}</strong></button>
-			<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">Cancel</a>
+			<a class="cancelLink" onclick="javascript:window.history.back();" type="reset">{vtranslate('LBL_CANCEL',$MODULE)}</a>
 			<br><br>
 		</div>
 	</form>

@@ -55,7 +55,13 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 			// Check if the message is already linked.
 			$linkedto = MailManager_Relate_Action::associatedLink($request->get('_msguid'));
-			// If the message was not linked, lookup for matching records, using FROM address
+			// If the message was not linked, lookup for matching records, using FROM address unless it is in the sent folder
+      $folder=$request->get('_folder');
+      if ($folder=="Sent"){
+        $contacts=$request->get('_msendto');
+      }else{
+			  $contacts=$request->get('_mfrom');
+			}
 			if (empty($linkedto)) {
 				$results = array();
 				$modules = array();
@@ -63,10 +69,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 				foreach (self::$MODULES as $MODULE) {
 					if(!in_array($MODULE, $allowedModules)) continue;
 
-					$from = $request->get('_mfrom');
-					if(empty($from)) continue;
-
-					$results[$MODULE] = $this->lookupModuleRecordsWithEmail($MODULE, $from);
+					if(empty($contacts)) continue;
+					$results[$MODULE] = $this->lookupModuleRecordsWithEmail($MODULE, $contacts);
 					$describe = $this->ws_describe($MODULE);
 					$modules[$MODULE] = array('label' => $describe['label'], 'name' => textlength_check($describe['name']), 'id' => $describe['idPrefix'] );
 
@@ -417,18 +421,22 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @param Email Address $email
 	 * @return Array
 	 */
-	public function lookupModuleRecordsWithEmail($module, $email) {
+	public function lookupModuleRecordsWithEmail($module, $emails) {
 		$currentUserModel = vglobal('current_user');
-		$query = $this->buildSearchQuery($module, $email, 'EMAIL');
-		$qresults = vtws_query( $query, $currentUserModel );
-		$describe = $this->ws_describe($module);
-		$labelFields = explode(',', $describe['labelFields']);
-
+    //could be to multiple email addresses
 		$results = array();
-		foreach($qresults as $qresult) {
-			$labelValues = array();
-			foreach($labelFields as $fieldname) {
-				if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
+    foreach(explode(",",$emails) as $email){
+      $query = $this->buildSearchQuery($module, $email, 'EMAIL');
+      $qresults = vtws_query( $query, $currentUserModel );
+      $describe = $this->ws_describe($module);
+      $labelFields = explode(',', $describe['labelFields']);
+      foreach($qresults as $qresult) {
+        $labelValues = array();
+        foreach($labelFields as $fieldname) {
+          if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
+        }
+        $ids = vtws_getIdComponents($qresult['id']);
+        $results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));
 			}
 			$ids = vtws_getIdComponents($qresult['id']);
 			$results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));

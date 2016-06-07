@@ -14,6 +14,8 @@ include_once 'vtlib/Vtiger/Field.php';
  */
 class Vtiger_Field_Model extends Vtiger_Field {
 
+    protected $fieldDataType;
+    protected $uitype_instance;
 	var $webserviceField = false;
 
     const REFERENCE_TYPE = 'reference';

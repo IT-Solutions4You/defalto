@@ -45,7 +45,7 @@ class Mobile_Index_Controller {
 
 	static function process(Mobile_API_Request $request) {
 		$operation = $request->getOperation();
-		$sessionid = HTTP_Session::detectId(); //$request->getSession();
+		$sessionid = HTTP_Session2::detectId(); //$request->getSession();
 
 		if (empty($operation)) $operation = 'login';
 

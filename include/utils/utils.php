@@ -345,11 +345,16 @@ $toHtml = array(
        */
 function to_html($string, $encode=true)
 {
+        $startstring=$string;
+	$cachedresult=Vtiger_Cache::get('to_html',$startstring);
+	if($cachedresult){
+		return $cachedresult;
+	}
+
 	global $log,$default_charset;
 	//$log->debug("Entering to_html(".$string.",".$encode.") method ...");
-	global $toHtml;
-	$action = $_REQUEST['action'];
-	$search = $_REQUEST['search'];
+	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
+	$search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
 
 	$doconvert = false;
 
@@ -359,12 +364,14 @@ function to_html($string, $encode=true)
 		$inUTF8 = (strtoupper($default_charset) == 'UTF-8');
 	}
 
-	if($_REQUEST['module'] != 'Settings' && $_REQUEST['file'] != 'ListView' && $_REQUEST['module'] != 'Portal' && $_REQUEST['module'] != "Reports")// && $_REQUEST['module'] != 'Emails')
-		$ajax_action = $_REQUEST['module'].'Ajax';
+	$module = isset($_REQUEST['module']) ? $_REQUEST['module'] : null;
+	$file = isset($_REQUEST['file']) ? $_REQUEST['file'] : null;
+	if($module != 'Settings' && $file != 'ListView' && $module != 'Portal' && $module != "Reports")// && $module != 'Emails')
+		$ajax_action = $module.'Ajax';
 
 	if(is_string($string))
 	{
-		if($action != 'CustomView' && $action != 'Export' && $action != $ajax_action && $action != 'LeadConvertToEntities' && $action != 'CreatePDF' && $action != 'ConvertAsFAQ' && $_REQUEST['module'] != 'Dashboard' && $action != 'CreateSOPDF' && $action != 'SendPDFMail' && (!isset($_REQUEST['submode'])) )
+		if($action != 'CustomView' && $action != 'Export' && $action != $ajax_action && $action != 'LeadConvertToEntities' && $action != 'CreatePDF' && $action != 'ConvertAsFAQ' && $module != 'Dashboard' && $action != 'CreateSOPDF' && $action != 'SendPDFMail' && (!isset($_REQUEST['submode'])) )
 		{
 			$doconvert = true;
 		}
@@ -385,6 +392,7 @@ function to_html($string, $encode=true)
 	}
 
 	//$log->debug("Exiting to_html method ...");
+	Vtiger_Cache::set('to_html', $startstring, $string);
 	return $string;
 }
 
@@ -2296,4 +2304,17 @@ function getCompanyDetails() {
 function lower_array(&$string){
 		$string = strtolower(trim($string));
 }
+
+/* PHP 7 support */
+if (!function_exists('split')) {
+	function split($delim, $str) { return explode($delim, $str); }
+}
+if (!function_exists('spliti')) {
+	function spliti($delim, $str) {
+		// TODO - Review backward compatibilty on use-cases.
+		$str = str_replace($delim, strtolower($delim), $str);
+		return explode(strtolower($delim), $str);
+	}
+}
+
 ?>

@@ -90,7 +90,7 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
 	protected function preProcessDisplay(Vtiger_Request $request) {
 	}
 
-	protected function preProcessTplName() {
+	protected function preProcessTplName(Vtiger_Request $request) {
 		return false;
 	}
 
@@ -109,6 +109,8 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
  */
 abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
+    protected $viewer;
+    
 	function __construct() {
 		parent::__construct();
 	}
@@ -119,6 +121,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('APPTITLE', getTranslatedString('APPTITLE'));
 			$viewer->assign('VTIGER_VERSION', $vtiger_current_version);
+			$viewer->assign('MODULE_NAME', $request->getModule());
 			$this->viewer = $viewer;
 		}
 		return $this->viewer;

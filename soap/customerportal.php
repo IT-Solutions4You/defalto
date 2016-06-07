@@ -1065,7 +1065,7 @@ function change_password($input_array)
 		return array('MORE_THAN_ONE_USER');
 	}
 	$sql = "update vtiger_portalinfo set user_password=? where id=? and user_name=?";
-	$result = $adb->pquery($sql, array($password, $id, $username));
+	$result = $adb->pquery($sql, array(md5($password), $id, $username));
 
 	$log->debug("Exiting customer portal function change_password");
 	return $list;

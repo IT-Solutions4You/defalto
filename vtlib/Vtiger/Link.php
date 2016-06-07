@@ -41,17 +41,17 @@ class Vtiger_Link {
 	 * Initialize this instance.
 	 */
 	function initialize($valuemap) {
-		$this->tabid  = $valuemap['tabid'];
-		$this->linkid = $valuemap['linkid'];
-		$this->linktype=$valuemap['linktype'];
-		$this->linklabel=$valuemap['linklabel'];
-		$this->linkurl  =decode_html($valuemap['linkurl']);
-		$this->linkicon =decode_html($valuemap['linkicon']);
-		$this->sequence =$valuemap['sequence'];
-		$this->status   =$valuemap['status'];
-		$this->handler_path	=$valuemap['handler_path'];
-		$this->handler_class=$valuemap['handler_class'];
-		$this->handler		=$valuemap['handler'];
+		$this->tabid  = isset($valuemap['tabid']) ? $valuemap['tabid'] : null;
+		$this->linkid = isset($valuemap['linkid']) ? $valuemap['linkid'] : null;
+		$this->linktype=isset($valuemap['linktype']) ? $valuemap['linktype'] : null;
+		$this->linklabel=isset($valuemap['linklabel']) ? $valuemap['linklabel'] : null;
+		$this->linkurl  =isset($valuemap['linkurl']) ? decode_html($valuemap['linkurl']) : null;
+		$this->linkicon =isset($valuemap['linkicon']) ? decode_html($valuemap['linkicon']) : null;
+		$this->sequence =isset($valuemap['sequence']) ? $valuemap['sequence'] : null;
+		$this->status   =isset($valuemap['status']) ? $valuemap['status'] : null;
+		$this->handler_path	=isset($valuemap['handler_path']) ? $valuemap['handler_path'] : null;
+		$this->handler_class=isset($valuemap['handler_class']) ? $valuemap['handler_class'] : null;
+		$this->handler		=isset($valuemap['handler']) ? $valuemap['handler'] : null;
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Vtiger_Link {
 			$uniqueid = self::__getUniqueId();
 			$sql = 'INSERT INTO vtiger_links (linkid,tabid,linktype,linklabel,linkurl,linkicon,'.
 			'sequence';
-			$params = Array($uniqueid, $tabid, $type, $label, $url, $iconpath, $sequence);
+			$params = Array($uniqueid, $tabid, $type, $label, $url, $iconpath, intval($sequence));
 			if(!empty($handlerInfo)) {
 				$sql .= (', handler_path, handler_class, handler');
 				$params[] = $handlerInfo['path'];

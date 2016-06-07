@@ -382,6 +382,8 @@ var Vtiger_Index_Js = {
 			jQuery('button[name="vtTooltipClose"]').on('click', function(e){
 				var lastPopover = lastPopovers.pop();
 				lastPopover.popover('hide');
+				// Fix suggested http://code.vtiger.com/vtiger/vtigercrm/issues/43
+				jQuery('.popover').css( "display", "none", "important");
 			});
 		}
 	},

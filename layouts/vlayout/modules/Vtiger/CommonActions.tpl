@@ -15,7 +15,7 @@
     {assign var='count' value=0}
     {assign var="dateFormat" value=$USER_MODEL->get('date_format')}
     <div class="navbar commonActionsContainer noprint">
-        <div class="actionsContainer row-fluid">
+        <div class="actionsContainer row-fluid clearfix">
             <div class="span2">
                 <span class="companyLogo"><img src="{$COMPANY_LOGO->get('imagepath')}" title="{$COMPANY_LOGO->get('title')}" alt="{$COMPANY_LOGO->get('alt')}"/>&nbsp;</span>
             </div>

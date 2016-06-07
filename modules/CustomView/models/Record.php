@@ -188,8 +188,13 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
         if(empty($searchParams)) {
             $searchParams = array();
         }
-        $transformedSearchParams = Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($searchParams, $moduleModel);
-        $queryGenerator->parseAdvFilterList($transformedSearchParams);
+		$transformedSearchParams = Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($searchParams, $moduleModel);
+
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($transformedSearchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+        $queryGenerator->parseAdvFilterList($transformedSearchParams, $glue);
 
 		$listQuery = $queryGenerator->getQuery();
 		if($module == 'RecycleBin'){
@@ -219,8 +224,8 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		$moduleModel = $this->getModule();
 		$moduleName = $moduleModel->get('name');
 		$viewName = $this->get('viewname');
-		$setDefault = $this->get('setdefault');
-		$setMetrics = $this->get('setmetrics');
+		$setDefault = intval($this->get('setdefault'));
+		$setMetrics = intval($this->get('setmetrics'));
 		$status = $this->get('status');
 
 		if($status == self::CV_STATUS_PENDING) {

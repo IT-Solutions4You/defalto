@@ -17,6 +17,7 @@ $languageStrings = array(
 	'ERR_UNABLE_CREATE_DATABASE' => 'Unable to Create database',
 	'LBL_ADMIN_INFORMATION'=>'Admin User Information',
 	'LBL_ADMIN_USER_INFORMATION' => 'Admin User Information',
+	'LBL_CHOOSE_LANGUAGE' => 'Choose the default language for this installation:',
 	'LBL_CONFIRM_CONFIGURATION_SETTINGS' => 'Confirm Configuration Settings',
 	'LBL_CREATE_NEW_DB'=>'Create new database',
 	'LBL_CURRENCIES'=>'Currency',

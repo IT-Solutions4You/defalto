@@ -49,7 +49,7 @@
 	                            &nbsp;&nbsp;<a href="//www.vtiger.com/products/crm/privacy_policy.html" target="_blank"><img src="{vimage_path('linkedin.png')}"></a> 
 								<br><br>
 							<div class="button-container">
-								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary" value="Finish"/>
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary" value="{vtranslate('Finish', $MODULE)}"/>
 							</div>
 					</div>
 				</div>
