@@ -21,10 +21,10 @@ class Users_Save_Action extends Vtiger_Save_Action {
 		
 		if ($allowed) {
 			// Deny access if not administrator or account-owner or self
-			if(!$currentUserModel->isAdminUser()) {
+			if(!$currentUserModel->isAdminUser() && !$recordModel->isAccountOwner()) {
 				if (empty($record)) {
 					$allowed = false;
-				} else if (!$recordModel->isAccountOwner() || ($currentUserModel->get('id') != $recordModel->getId())) {
+				} else if ($currentUserModel->get('id') != $recordModel->getId()) {
 					$allowed = false;
 				}
 			}
