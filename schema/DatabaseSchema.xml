@@ -29,7 +29,6 @@
 		</field>
 		<field name="date_modified" type="T">
 			<notnull />
-			<deftimestamp />
 		</field>
 		<field name="modified_user_id" type="C" size="36" />
 		<field name="title" type="C" size="50" />
