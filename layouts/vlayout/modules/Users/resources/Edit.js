@@ -70,7 +70,7 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 			var groupingSeperatorValue = jQuery('[name="currency_grouping_separator"]', form).val();
 			var decimalSeperatorValue = jQuery('[name="currency_decimal_separator"]', form).val();
 			if(groupingSeperatorValue == decimalSeperatorValue){
-				Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME'));
+				Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME'));
 				e.preventDefault();
 			}
 			var userName = jQuery('input[name="user_name"]').val();

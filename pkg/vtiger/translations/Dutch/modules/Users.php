@@ -250,8 +250,8 @@ $languageStrings['narrow'] = 'smal'; # auto added 2014-04-17 20:04:01
 
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimaal scheidingsteken en groepscheidingsteken kunnen niet hetzelfde zijn',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimaal scheidingsteken en groepscheidingsteken kunnen niet hetzelfde zijn',
 	'JS_ENTER_OLD_PASSWORD'=>'Voer a.u.b. uw oude wachtwoord in.',
 	'JS_ENTER_NEW_PASSWORD'=>'Voer a.u.b. uw nieuwe wachtwoord in.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Voer a.u.b. nogmaals uw wachtwoord in ter bevestiging.',
