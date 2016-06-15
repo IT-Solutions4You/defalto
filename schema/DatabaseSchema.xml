@@ -28,8 +28,11 @@
 			<deftimestamp />
 		</field>
 		<field name="date_modified" type="T">
+			<!-- Troublesome with STRICT_TRANS_TABLE mode depends on MySQL 5.5 or 5.6+ -->
+			<!--
 			<notnull />
 			<deftimestamp />
+			-->
 		</field>
 		<field name="modified_user_id" type="C" size="36" />
 		<field name="title" type="C" size="50" />
@@ -1780,8 +1783,11 @@
 			<deftimestamp />
 		</field>
 		<field name="date_modified" type="T">
+            <!-- Troublesome with STRICT_TRANS_TABLE mode depends on MySQL 5.5 or 5.6+ -->
+			<!--
 			<notnull />
 			<deftimestamp />
+			-->
 		</field>
 		<field name="assigned_user_id" type="C" size="36" />
 		<field name="is_published" type="C" size="3">

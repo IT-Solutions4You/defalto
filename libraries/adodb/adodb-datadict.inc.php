@@ -750,7 +750,8 @@ class ADODB_DataDict {
 			if ($fdefts) {
 				if (substr($this->connection->databaseType,0,5) == 'mysql') {
 					$ftype = 'TIMESTAMP';
-					$fdefault = ' CURRENT_TIMESTAMP'; /* STRICT_TRANS_TABLES fix */
+					// Fix works only for MySQL 5.6 (which allows one or more column to have default timestamp
+					// $fdefault = ' CURRENT_TIMESTAMP'; /* STRICT_TRANS_TABLES fix */
 				} else {
 					$fdefault = $this->connection->sysTimeStamp;
 				}
