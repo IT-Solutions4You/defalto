@@ -211,8 +211,8 @@ $languageStrings = array(
 
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'El separador de decimales y separador de grupos no pueden ser el mismo',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'El separador de decimales y separador de grupos no pueden ser el mismo',
 	'JS_ENTER_OLD_PASSWORD'=>'Ingresa tu contraseña actual.',
 	'JS_ENTER_NEW_PASSWORD'=>'Ingresa tu nueva contraseña.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Confirma tu nueva contraseña.',
