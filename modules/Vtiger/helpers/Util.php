@@ -163,7 +163,7 @@ class Vtiger_Util_Helper {
 			}
 		} else {
 			/**
-			 * To support strtotime() for 'mm-dd-yyyy' format the seperator should be '/'
+			 * To support strtotime() for 'mm-dd-yyyy' format the separator should be '/'
 			 * For more referrences
 			 * http://php.net/manual/en/datetime.formats.date.php
 			 */
@@ -220,7 +220,7 @@ class Vtiger_Util_Helper {
 		$displayTime = $hours .':'. $minutes .' '. $meridiem;
         
 		/**
-		 * To support strtotime() for 'mm-dd-yyyy' format the seperator should be '/'
+		 * To support strtotime() for 'mm-dd-yyyy' format the separator should be '/'
 		 * For more referrences
 		 * http://php.net/manual/en/datetime.formats.date.php
 		 */

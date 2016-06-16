@@ -246,13 +246,13 @@ $languageStrings = array(
     'Asia/Magadan'  =>  '(UTC+12:00) Magadan',
     'Pacific/Tongatapu'  =>  '(UTC+13:00) Nukualofa',
     
-    // currency seperatar in user preferance
+    // currency separator in user preferance
       'LBL_Space' => 'Space',
 );
 
 $jsLanguageStrings = array(
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',

@@ -266,8 +266,8 @@ $languageStrings = array(
 );
 
 $jsLanguageStrings = array(
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'O separador de casas decimais e separador de milhar não podem ser os mesmos',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'O separador de casas decimais e separador de milhar não podem ser os mesmos',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Por favor, digite confirmação da senha.',
 	'JS_ENTER_NEW_PASSWORD'=>'Por favor, digite sua nova senha.',
 	'JS_ENTER_OLD_PASSWORD'=>'Por favor, digite sua senha antiga.',

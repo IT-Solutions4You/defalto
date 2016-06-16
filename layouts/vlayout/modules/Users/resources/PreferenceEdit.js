@@ -10,7 +10,7 @@
 Users_Edit_Js("Users_PreferenceEdit_Js",{
 	
 	/**
-	 * Function to register change event for currency seperator
+	 * Function to register change event for currency separator
 	 */
 	registerChangeEventForCurrencySeperator : function(){
 		var form = jQuery('form');
@@ -19,7 +19,7 @@ Users_Edit_Js("Users_PreferenceEdit_Js",{
 			var selectedValue = element.val();
 			var groupingSeperatorValue = jQuery('[name="currency_grouping_separator"]',form).data('selectedValue');
 			if(groupingSeperatorValue == selectedValue){
-				var message = app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME');
+				var message = app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME');
 				var params = {
 					text: message,
 					type: 'error'
@@ -38,7 +38,7 @@ Users_Edit_Js("Users_PreferenceEdit_Js",{
 			var selectedValue = element.val();
 			var decimalSeperatorValue = jQuery('[name="currency_decimal_separator"]',form).data('selectedValue');
 			if(decimalSeperatorValue == selectedValue){
-				var message = app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME');
+				var message = app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME');
 				var params = {
 					text: message,
 					type: 'error'
