@@ -667,8 +667,9 @@ function purifyHtmlEventAttributes($value){
                         "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
                         "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
                         "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
-                        "onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
-    if(preg_match("/\s(".$htmlEventAttributes.")\s*=/i", $value)) {
+                        "onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|".
+                        "onselectionchange|onabort|onselectstart";
+    if(preg_match("/\s*(".$htmlEventAttributes.")\s*=/i", $value)) {
         $value = str_replace("=", "&equals;", $value);
     }
     return $value;

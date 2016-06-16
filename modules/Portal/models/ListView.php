@@ -33,7 +33,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
         
 		$listResult = $db->pquery($listQuery, array());
 
-		$listViewEntries = array();
+        $listViewEntries = array();
         
         for($i = 0; $i < $db->num_rows($listResult); $i++) {
             $row = $db->fetch_row($listResult, $i);
@@ -54,10 +54,10 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
     
     public function getQuery() {
         $query = 'SELECT portalid, portalname, portalurl, createdtime FROM vtiger_portal';
-        $searchValue = $this->get('search_value');
+        $searchValue = $this->getForSql('search_value');
         if(!empty($searchValue))
             $query .= " WHERE portalname LIKE '".$searchValue."%'";
-        
+
         return $query;
     }
 
