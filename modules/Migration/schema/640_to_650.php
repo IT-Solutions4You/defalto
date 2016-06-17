@@ -14,8 +14,23 @@ if(defined('VTIGER_UPGRADE')) {
 global $adb;
 
 Vtiger_Utils::AddColumn('vtiger_portalinfo', 'cryptmode', 'varchar(20)');
+$adb->pquery("ALTER TABLE vtiger_portalinfo MODIFY COLUMN user_password varchar(255)", array());
 
 //Updating existing users password to thier md5 hash
+$portalinfo_hasmore = true;
+do {
+	$result = $adb->pquery('SELECT id, user_password FROM vtiger_portalinfo WHERE cryptmode is null limit 1000', array());
+	
+	$portalinfo_hasmore = false; // assume we are done.
+	while ($row = $adb->fetch_array($result)) {
+		$portalinfo_hasmore = true; // we found at-least one so there could be more.
+		
+		$enc_password = Vtiger_Functions::generateEncryptedPassword(decode_html($row['user_password']));
+		$adb->pquery('UPDATE vtiger_portalinfo SET user_password=?, cryptmode = ? WHERE id=?', array($enc_password, 'CRYPT', $row['id']));
+	}
+	
+} while ($portalinfo_hasmore);
+
 $updateQuery = "UPDATE vtiger_portalinfo SET user_password=MD5(user_password),cryptmode='MD5' WHERE cryptmode is null";
 $adb->pquery($updateQuery, array());
 

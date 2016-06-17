@@ -18,6 +18,7 @@ if (file_exists('config_override.php')) {
 }
 
 include_once 'vtlib/Vtiger/Module.php';
+include_once 'vtlib/Vtiger/Functions.php';
 include_once 'includes/main/WebUI.php';
 
 require_once('libraries/nusoap/nusoap.php');
@@ -996,23 +997,33 @@ function authenticate_user($username,$password,$version,$login = 'true')
 	$password = $adb->sql_escape_string($password);
 
 	$current_date = date("Y-m-d");
-	$sql = "select id, user_name, user_password,last_login_time, support_start_date, support_end_date
+	$sql = "select id, user_name, user_password,last_login_time, support_start_date, support_end_date, cryptmode
 				from vtiger_portalinfo
 					inner join vtiger_customerdetails on vtiger_portalinfo.id=vtiger_customerdetails.customerid
 					inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_portalinfo.id
-				where vtiger_crmentity.deleted=0 and user_name=? and user_password = ?
+				where vtiger_crmentity.deleted=0 and user_name=?
 					and isactive=1 and vtiger_customerdetails.portal=1
 					and vtiger_customerdetails.support_start_date <= ? and vtiger_customerdetails.support_end_date >= ?";
-	$result = $adb->pquery($sql, array($username, $password, $current_date, $current_date));
+	$result = $adb->pquery($sql, array($username, $current_date, $current_date));
 	$err[0]['err1'] = "MORE_THAN_ONE_USER";
 	$err[1]['err1'] = "INVALID_USERNAME_OR_PASSWORD";
 
 	$num_rows = $adb->num_rows($result);
 
-	if($num_rows > 1)		return $err[0];//More than one user
-	elseif($num_rows <= 0)		return $err[1];//No user
+	if($num_rows <= 0)		return $err[1];//No user
 
-	$customerid = $adb->query_result($result,0,'id');
+	// Match password against multiple user and decide.
+	$customerid = null;
+	for ($i = 0; $i < $num_rows; ++$i) {
+		$customerid = $adb->query_result($result, $i,'id');
+		if (Vtiger_Function::compareEncryptedPassword($password, $adb->query_result($result, $i, 'id'), $adb->query_result($result, $i, 'cryptmode'))) {
+			break;
+		} else {
+			$customerid = null;
+		}
+	}
+
+	if (!$customerid) return $err[1];//No user again.
 
 	$list[0]['id'] = $customerid;
 	$list[0]['user_name'] = $adb->query_result($result,0,'user_name');
@@ -1064,8 +1075,8 @@ function change_password($input_array)
 	if(!empty($list[0]['id'])){
 		return array('MORE_THAN_ONE_USER');
 	}
-	$sql = "update vtiger_portalinfo set user_password=? where id=? and user_name=?";
-	$result = $adb->pquery($sql, array(md5($password), $id, $username));
+	$sql = "update vtiger_portalinfo set user_password=?, cryptmode=? where id=? and user_name=?";
+	$result = $adb->pquery($sql, array(Vtiger_Functions::generateEncryptedPassword($password), 'CRYPT', $id, $username));
 
 	$log->debug("Exiting customer portal function change_password");
 	return $list;
@@ -1122,6 +1133,13 @@ function send_mail_for_password($mailid)
 	$user_name = $adb->query_result($res,0,'user_name');
 	$password = $adb->query_result($res,0,'user_password');
 	$isactive = $adb->query_result($res,0,'isactive');
+
+	// We no longer have the original password!
+	if (!empty($adb->query_result($res, 0, 'cryptmode'))) {
+		$password = '*****';
+		// TODO - we need to send link to reset the password
+		// For now CRM user can do the same.
+	}
 
 	$fromquery = "select vtiger_users.user_name, vtiger_users.email1 from vtiger_users inner join vtiger_crmentity on vtiger_users.id = vtiger_crmentity.smownerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_crmentity.crmid where vtiger_contactdetails.email =?";
 	$from_res = $adb->pquery($fromquery, array($mailid));

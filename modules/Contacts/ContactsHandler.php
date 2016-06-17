@@ -40,15 +40,15 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 			}
 		}
 		$password = makeRandomPassword();
-		$md5_password = md5($password);
+		$enc_password = Vtiger_Functions::generateEncryptedPassword($password);
 		if ($insert == true) {
 			$sql = "INSERT INTO vtiger_portalinfo(id,user_name,user_password,cryptmode,type,isactive) VALUES(?,?,?,?,?,?)";
-			$params = array($entityId, $email, $md5_password, 'MD5', 'C', 1);
+			$params = array($entityId, $email, $enc_password, 'CRYPT', 'C', 1);
 			$adb->pquery($sql, $params);
 		}
 		if ($update == true && $portalChanged == true) {
 			$sql = "UPDATE vtiger_portalinfo SET user_password=?, cryptmode=? WHERE id=?";
-			$params = array($md5_password, 'MD5', $entityId);
+			$params = array($enc_password, 'CRYPT', $entityId);
 			$adb->pquery($sql, $params);
 		}
 		if (($insert == true || ($update = true && $portalChanged == true)) && $entityData->get('emailoptout') == 0) {
