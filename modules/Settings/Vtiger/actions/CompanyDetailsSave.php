@@ -12,6 +12,7 @@
 class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Action {
 
 	public function process(Vtiger_Request $request) {
+        global $upload_badext;
 		$qualifiedModuleName = $request->getModule(false);
 		$moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
 		$status = false;
@@ -20,36 +21,18 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
             $saveLogo = $status = true;
 			if(!empty($_FILES['logo']['name'])) {
                 $logoDetails = $_FILES['logo'];
-                $fileType = explode('/', $logoDetails['type']);
-                $fileType = $fileType[1];
-
-                if (!$logoDetails['size'] || !in_array($fileType, Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) { 
-                    $saveLogo = false; 
-                } 
-
-                //mime type check 
-                $mimeType = vtlib_mime_content_type($logoDetails['tmp_name']); 
-                $mimeTypeContents = explode('/', $mimeType); 
-                if (!$logoDetails['size'] || $mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) { 
-                    $saveLogo = false; 
-                } 
-				// Check for php code injection
-				$imageContents = file_get_contents($_FILES["logo"]["tmp_name"]);
-				if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
-					$saveLogo = false;
-				}
+                $saveLogo = (Vtiger_Functions::validateImage($logoDetails) == 'true') ? true : false;
                 if ($saveLogo) {
                     $moduleModel->saveLogo();
                 }
-            }else{
-                $saveLogo = true;
             }
 			$fields = $moduleModel->getFields();
 			foreach ($fields as $fieldName => $fieldType) {
 				$fieldValue = $request->get($fieldName);
 				if ($fieldName === 'logoname') {
 					if (!empty($logoDetails['name'])) {
-						$fieldValue = ltrim(basename(" " . $logoDetails['name']));
+                        $fieldValue = sanitizeUploadFileName($logoDetails["name"], $upload_badext);
+                        $fieldValue = ltrim(basename(" " . $fieldValue));
 					} else {
 						$fieldValue = $moduleModel->get($fieldName);
 					}

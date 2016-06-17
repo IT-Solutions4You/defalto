@@ -592,9 +592,9 @@ class Vtiger_Functions {
 		}
 
 		//mime type check
-		$mimeType = mime_content_type($file_details['tmp_name']);
+		$mimeType = vtlib_mime_content_type($file_details['tmp_name']);
 		$mimeTypeContents = explode('/', $mimeType);
-		if (!$file_details['size'] || !in_array($mimeTypeContents[1], $mimeTypesList)) {
+		if (!$file_details['size'] || $mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], $mimeTypesList)) {
 			$saveimage = 'false';
 		}
 

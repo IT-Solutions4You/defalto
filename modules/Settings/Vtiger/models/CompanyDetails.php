@@ -10,7 +10,7 @@
 
 class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model {
 
-	STATIC $logoSupportedFormats = array('jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png');
+	STATIC $logoSupportedFormats = array('jpeg', 'png', 'jpg', 'pjpeg', 'x-png', 'gif', 'bmp', 'x-ms-bmp');
 
 	var $baseTable = 'vtiger_organizationdetails';
 	var $baseIndex = 'organization_id';
@@ -74,12 +74,12 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	public function getLogoPath() {
 		$logoPath = $this->logoPath;
 		$handler = @opendir($logoPath);
-		$logoName = $this->get('logoname');
+		$logoName = decode_html($this->get('logoname'));
 		if ($logoName && $handler) {
 			while ($file = readdir($handler)) {
 				if($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file!= "..") {
 					closedir($handler);
-					return $logoPath.$logoName;
+					return $logoPath.rawurlencode($logoName);
 				}
 			}
 		}
@@ -90,10 +90,11 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	 * Function to save the logoinfo
 	 */
 	public function saveLogo() {
-		$uploadDir = vglobal('root_directory'). '/' .$this->logoPath;
-		$logoName = $uploadDir.$_FILES["logo"]["name"];
-		move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
-		copy($logoName, $uploadDir.'application.ico');
+        global $upload_badext;
+        $logoPath = vglobal('root_directory'). '/' .$this->logoPath;
+        $binFile = sanitizeUploadFileName($_FILES["logo"]["name"], $upload_badext);
+		$response = move_uploaded_file($_FILES["logo"]["tmp_name"], $logoPath . $binFile);
+		copy($logoPath . $binFile, $logoPath.'application.ico');
 	}
 
 	/**
