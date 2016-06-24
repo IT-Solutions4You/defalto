@@ -575,6 +575,21 @@ class Vtiger_Functions {
 		return $filepath;
 	}
 
+	static function validateImageMetadata($data) {
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				$ok = self::validateImageMetadata($value);
+				if (!$ok) return false;
+			}
+		} else {
+			if (stripos($data, "<?php")!== false ||
+				(stripos($data, "<?") !== false && preg_match("/\)[\s]*;/", $data)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	static function validateImage($file_details) {
 		global $app_strings;
 		$allowedImageFormats = array('jpeg', 'png', 'jpg', 'pjpeg', 'x-png', 'gif', 'bmp');
@@ -598,10 +613,20 @@ class Vtiger_Functions {
 			$saveimage = 'false';
 		}
 
+		//metadata check
+		if ($saveimage == 'true') {
+			$exifdata = exif_read_data($file_details['tmp_name']);
+			if ($exifdata && !self::validateImageMetadata($exifdata)) {
+				$saveimage = 'false';
+			}
+		}
+
 		// Check for php code injection
-		$imageContents = file_get_contents($file_details['tmp_name']);
-		if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
-			$saveimage = 'false';
+		if ($saveimage == 'true') {
+			$imageContents = file_get_contents($file_details['tmp_name']);
+			if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
+				$saveimage = 'false';
+			}
 		}
 		return $saveimage;
 	}
