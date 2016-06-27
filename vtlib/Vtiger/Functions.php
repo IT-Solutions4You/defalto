@@ -1023,8 +1023,8 @@ class Vtiger_Functions {
 		$reEncryptedPassword = null;
 		switch ($mode) {
 			case 'CRYPT': $reEncryptedPassword = crypt($plainText, $encryptedPassword); break;
-			case 'MD5'  : $reEncryptedPassword = md5($plainText);
-			default     : $reEncryptedPassword = $plainText;
+			case 'MD5'  : $reEncryptedPassword = md5($plainText);	break;
+			default     : $reEncryptedPassword = $plainText;		break;
 		}
 		return ($reEncryptedPassword == $encryptedPassword);
 	}
