@@ -583,7 +583,7 @@ class Vtiger_Functions {
 			}
 		} else {
 			if (stripos($data, "<?php")!== false ||
-				(stripos($data, "<?") !== false && preg_match("/\)[\s]*;/", $data)) {
+				(stripos($data, "<?") !== false && preg_match("/\)[\s]*;/", $data))) {
 				return false;
 			}
 		}
@@ -989,11 +989,11 @@ class Vtiger_Functions {
 	 * @param  $claimedMime Array of bad file extenstions
 	 */
     static function verifyClaimedMIME($targetFile,$claimedMime) {
-    $fileMimeContentType= self::mime_content_type($targetFile);
-    if (in_array(strtolower($fileMimeContentType), $claimedMime)) {
-     return false; 
-    }
-    return true;
+    	$fileMimeContentType= self::mime_content_type($targetFile);
+    	if (in_array(strtolower($fileMimeContentType), $claimedMime)) {
+     		return false; 
+   		}
+    	return true;
 	}
 
 	/*
