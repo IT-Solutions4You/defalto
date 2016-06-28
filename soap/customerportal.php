@@ -1016,7 +1016,7 @@ function authenticate_user($username,$password,$version,$login = 'true')
 	$customerid = null;
 	for ($i = 0; $i < $num_rows; ++$i) {
 		$customerid = $adb->query_result($result, $i,'id');
-		if (Vtiger_Function::compareEncryptedPassword($password, $adb->query_result($result, $i, 'id'), $adb->query_result($result, $i, 'cryptmode'))) {
+		if (Vtiger_Functions::compareEncryptedPassword($password, $adb->query_result($result, $i, 'user_password'), $adb->query_result($result, $i, 'cryptmode'))) {
 			break;
 		} else {
 			$customerid = null;
@@ -1026,11 +1026,11 @@ function authenticate_user($username,$password,$version,$login = 'true')
 	if (!$customerid) return $err[1];//No user again.
 
 	$list[0]['id'] = $customerid;
-	$list[0]['user_name'] = $adb->query_result($result,0,'user_name');
-	$list[0]['user_password'] = $adb->query_result($result,0,'user_password');
-	$list[0]['last_login_time'] = $adb->query_result($result,0,'last_login_time');
-	$list[0]['support_start_date'] = $adb->query_result($result,0,'support_start_date');
-	$list[0]['support_end_date'] = $adb->query_result($result,0,'support_end_date');
+	$list[0]['user_name'] = $adb->query_result($result,$i,'user_name');
+	$list[0]['user_password'] = $password;
+	$list[0]['last_login_time'] = $adb->query_result($result,$i,'last_login_time');
+	$list[0]['support_start_date'] = $adb->query_result($result,$i,'support_start_date');
+	$list[0]['support_end_date'] = $adb->query_result($result,$i,'support_end_date');
 
 	//During login process we will pass the value true. Other times (change password) we will pass false
 	if($login != 'false')
