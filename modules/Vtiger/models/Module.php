@@ -1441,7 +1441,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 				$sql = "SELECT vtiger_crmentity.crmid FROM vtiger_crmentity";
 				if($tablename == 'vtiger_crmentityrel'){
 					$sql .= " INNER JOIN $tablename ON ($tablename.relcrmid = vtiger_crmentity.crmid OR $tablename.crmid = vtiger_crmentity.crmid)
-						WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).")) OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds)."))";
+						WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).") OR $tablename.relcrmid IN (".  generateQuestionMarks($recordIds)."))";
 					foreach ($recordIds as $key => $recordId) {
 						array_push($params, $recordId);
 					}
