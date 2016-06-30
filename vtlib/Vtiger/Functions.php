@@ -575,14 +575,14 @@ class Vtiger_Functions {
 		return $filepath;
 	}
 
-	static function validateImageMetadata($data) {
+	static function validateImageMetadata($data, $short=true) {
 		if (is_array($data)) {
 			foreach ($data as $key => $value) {
 				$ok = self::validateImageMetadata($value);
 				if (!$ok) return false;
 			}
 		} else {
-			if (stripos($data, "<?") !== false) { // suspicious dynamic content 
+			if (stripos($data, $short ? "<?" : "<?php") !== false) { // suspicious dynamic content 
 				return false;
 			}
 		}
@@ -613,9 +613,10 @@ class Vtiger_Functions {
 		}
 
 		//metadata check
+		$shortTagSupported = ini_get('short_open_tag') ? true : false;
 		if ($saveimage == 'true') {
 			$exifdata = exif_read_data($file_details['tmp_name']);
-			if ($exifdata && !self::validateImageMetadata($exifdata)) {
+			if ($exifdata && !self::validateImageMetadata($exifdata, $shortTagSupported)) {
 				$saveimage = 'false';
 			}
 		}
@@ -623,7 +624,7 @@ class Vtiger_Functions {
 		// Check for php code injection
 		if ($saveimage == 'true') {
 			$imageContents = file_get_contents($file_details['tmp_name']);
-			if (stripos('<?', $imageContents) !== false) { // suspicious dynamic content.
+			if (stripos($imageContents, $shortTagSupported ? "<?" : "<?php") !== false) { // suspicious dynamic content.
 				$saveimage = 'false';
 			}
 		}
