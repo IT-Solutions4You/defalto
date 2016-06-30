@@ -582,8 +582,7 @@ class Vtiger_Functions {
 				if (!$ok) return false;
 			}
 		} else {
-			if (stripos($data, "<?php")!== false ||
-				(stripos($data, "<?") !== false && preg_match("/\)[\s]*;/", $data))) {
+			if (stripos($data, "<?") !== false) { // suspicious dynamic content 
 				return false;
 			}
 		}
@@ -609,7 +608,7 @@ class Vtiger_Functions {
 		//mime type check
 		$mimeType = mime_content_type($file_details['tmp_name']);
 		$mimeTypeContents = explode('/', $mimeType);
-		if (!$file_details['size'] || !in_array($mimeTypeContents[1], $mimeTypesList)) {
+		if (!$file_details['size'] || strtolower($mimeTypeContents[0]) !== 'image' || !in_array($mimeTypeContents[1], $mimeTypesList)) {
 			$saveimage = 'false';
 		}
 
@@ -624,7 +623,7 @@ class Vtiger_Functions {
 		// Check for php code injection
 		if ($saveimage == 'true') {
 			$imageContents = file_get_contents($file_details['tmp_name']);
-			if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
+			if (stripos('<?', $imageContents) !== false) { // suspicious dynamic content.
 				$saveimage = 'false';
 			}
 		}
