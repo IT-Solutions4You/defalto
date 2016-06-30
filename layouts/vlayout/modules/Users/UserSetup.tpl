@@ -59,6 +59,7 @@
 		<div class="container">
 			<div class="modal-backdrop"></div>
 			<form class="form" method="POST" action="index.php?module=Users&action=UserSetupSave">
+				<input type="hidden" name="record" value="{$CURRENT_USER_MODEL->getId()}">
 				<div class="modal" {if false && $IS_FIRST_USER}style="width: 700px;"{/if}> {* FirstUser information gather - paused *}
 					<div class="modal-header">
 						<h3>{vtranslate('LBL_ALMOST_THERE', $MODULE)}</h3>
