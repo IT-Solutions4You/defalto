@@ -20,10 +20,28 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
             $saveLogo = $status = true;
 			if(!empty($_FILES['logo']['name'])) {
 				$logoDetails = $_FILES['logo'];
-				$saveLogo = Vtiger_Functions::validateImage($logoDetails);
-				if (is_string($saveLogo)) $saveLogo = ($saveLogo == 'false')? false : true;
+				$fileType = explode('/', $logoDetails['type']);
+				$fileType = $fileType[1];
 
-                if ($saveLogo) {
+				if (!$logoDetails['size'] || !in_array($fileType, Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
+					$saveLogo = false;
+				}
+
+				if ($saveLogo) {
+					//mime type check
+					$mimeType = mime_content_type($logoDetails['tmp_name']);
+					$mimeTypeContents = explode('/', $mimeType);
+					if ($mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
+						$saveLogo = false;
+					}
+				}
+
+				if ($saveLogo) {
+					$saveLogo = Vtiger_Functions::validateImage($logoDetails);
+					if (is_string($saveLogo)) $saveLogo = ($saveLogo == 'false')? false : true;
+				}
+
+				if ($saveLogo) {
                     $moduleModel->saveLogo();
                 }
             }else{
