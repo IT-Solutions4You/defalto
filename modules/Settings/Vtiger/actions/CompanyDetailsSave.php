@@ -17,32 +17,17 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 		$status = false;
 
         if ($request->get('organizationname')) {
-            $saveLogo = $status = true;
+			$saveLogo = $status = true;
+			$binFileName = false;
 			if(!empty($_FILES['logo']['name'])) {
 				$logoDetails = $_FILES['logo'];
-				$fileType = explode('/', $logoDetails['type']);
-				$fileType = $fileType[1];
+				$saveLogo = Vtiger_Functions::validateImage($logoDetails);
+				if (is_string($saveLogo)) $saveLogo = ($saveLogo == 'false')? false : true;
 
-				if (!$logoDetails['size'] || !in_array($fileType, Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
-					$saveLogo = false;
-				}
-
-				if ($saveLogo) {
-					//mime type check
-					$mimeType = mime_content_type($logoDetails['tmp_name']);
-					$mimeTypeContents = explode('/', $mimeType);
-					if ($mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
-						$saveLogo = false;
-					}
-				}
-
-				if ($saveLogo) {
-					$saveLogo = Vtiger_Functions::validateImage($logoDetails);
-					if (is_string($saveLogo)) $saveLogo = ($saveLogo == 'false')? false : true;
-				}
-
-				if ($saveLogo) {
-                    $moduleModel->saveLogo();
+				global $upload_badext;
+				$binFileName = sanitizeUploadFileName($logoDetails['name'], $upload_badext);
+                if ($saveLogo) {
+                    $moduleModel->saveLogo($binFileName);
                 }
             }else{
                 $saveLogo = true;
@@ -51,8 +36,8 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 			foreach ($fields as $fieldName => $fieldType) {
 				$fieldValue = $request->get($fieldName);
 				if ($fieldName === 'logoname') {
-					if (!empty($logoDetails['name'])) {
-						$fieldValue = ltrim(basename(" " . $logoDetails['name']));
+					if (!empty($logoDetails['name']) && $binFileName) {
+						$fieldValue = ltrim(basename(" " . $binFileName));
 					} else {
 						$fieldValue = $moduleModel->get($fieldName);
 					}

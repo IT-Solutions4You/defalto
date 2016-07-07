@@ -11,7 +11,7 @@
 /* NOTE: Should be inline with Calendar language translation but few variations */
 
 $languageStrings = array(
-	'Activity Type'=>'Activity Type',
+	'Activity Type'=>'Event Type', /* Events Field */
 	'Busy' => 'Busy',
 	'Call' => 'Call',
 	'Daily'=>'Day(s)',
