@@ -8,7 +8,7 @@
  * All Rights Reserved.
  * *********************************************************************************** */
 $languageStrings = array(
-	'Activity Type' => 'Activity Type',
+	'Activity Type' => 'Event Type', /* Event field */
 	'Call' => 'Call',
 	'Completed' => 'Completed',
 	'Daily' => 'Day(s)',
