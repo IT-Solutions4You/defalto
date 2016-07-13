@@ -157,16 +157,16 @@ class XML_HTMLSax3_StateParser {
     * @access protected
     */
     function XML_HTMLSax3_StateParser (& $htmlsax) {
-        $this->htmlsax = & $htmlsax;
-        $this->State[XML_HTMLSAX3_STATE_START] =& new XML_HTMLSax3_StartingState();
+        $this->htmlsax =  $htmlsax;
+        $this->State[XML_HTMLSAX3_STATE_START] = new XML_HTMLSax3_StartingState();
 
-        $this->State[XML_HTMLSAX3_STATE_CLOSING_TAG] =& new XML_HTMLSax3_ClosingTagState();
-        $this->State[XML_HTMLSAX3_STATE_TAG] =& new XML_HTMLSax3_TagState();
-        $this->State[XML_HTMLSAX3_STATE_OPENING_TAG] =& new XML_HTMLSax3_OpeningTagState();
+        $this->State[XML_HTMLSAX3_STATE_CLOSING_TAG] = new XML_HTMLSax3_ClosingTagState();
+        $this->State[XML_HTMLSAX3_STATE_TAG] = new XML_HTMLSax3_TagState();
+        $this->State[XML_HTMLSAX3_STATE_OPENING_TAG] = new XML_HTMLSax3_OpeningTagState();
 
-        $this->State[XML_HTMLSAX3_STATE_PI] =& new XML_HTMLSax3_PiState();
-        $this->State[XML_HTMLSAX3_STATE_JASP] =& new XML_HTMLSax3_JaspState();
-        $this->State[XML_HTMLSAX3_STATE_ESCAPE] =& new XML_HTMLSax3_EscapeState();
+        $this->State[XML_HTMLSAX3_STATE_PI] = new XML_HTMLSax3_PiState();
+        $this->State[XML_HTMLSAX3_STATE_JASP] = new XML_HTMLSax3_JaspState();
+        $this->State[XML_HTMLSAX3_STATE_ESCAPE] = new XML_HTMLSax3_EscapeState();
     }
 
     /**
@@ -241,55 +241,55 @@ class XML_HTMLSax3_StateParser {
     */
     function parse($data) {
         if ($this->parser_options['XML_OPTION_TRIM_DATA_NODES']==1) {
-            $decorator =& new XML_HTMLSax3_Trim(
+            $decorator = new XML_HTMLSax3_Trim(
                 $this->handler_object_data,
                 $this->handler_method_data);
-            $this->handler_object_data =& $decorator;
+            $this->handler_object_data = $decorator;
             $this->handler_method_data = 'trimData';
         }
         if ($this->parser_options['XML_OPTION_CASE_FOLDING']==1) {
-            $open_decor =& new XML_HTMLSax3_CaseFolding(
+            $open_decor = new XML_HTMLSax3_CaseFolding(
                 $this->handler_object_element,
                 $this->handler_method_opening,
                 $this->handler_method_closing);
-            $this->handler_object_element =& $open_decor;
+            $this->handler_object_element = $open_decor;
             $this->handler_method_opening ='foldOpen';
             $this->handler_method_closing ='foldClose';
         }
         if ($this->parser_options['XML_OPTION_LINEFEED_BREAK']==1) {
-            $decorator =& new XML_HTMLSax3_Linefeed(
+            $decorator = new XML_HTMLSax3_Linefeed(
                 $this->handler_object_data,
                 $this->handler_method_data);
-            $this->handler_object_data =& $decorator;
+            $this->handler_object_data = $decorator;
             $this->handler_method_data = 'breakData';
         }
         if ($this->parser_options['XML_OPTION_TAB_BREAK']==1) {
-            $decorator =& new XML_HTMLSax3_Tab(
+            $decorator = new XML_HTMLSax3_Tab(
                 $this->handler_object_data,
                 $this->handler_method_data);
-            $this->handler_object_data =& $decorator;
+            $this->handler_object_data = $decorator;
             $this->handler_method_data = 'breakData';
         }
         if ($this->parser_options['XML_OPTION_ENTITIES_UNPARSED']==1) {
-            $decorator =& new XML_HTMLSax3_Entities_Unparsed(
+            $decorator = new XML_HTMLSax3_Entities_Unparsed(
                 $this->handler_object_data,
                 $this->handler_method_data);
-            $this->handler_object_data =& $decorator;
+            $this->handler_object_data = $decorator;
             $this->handler_method_data = 'breakData';
         }
         if ($this->parser_options['XML_OPTION_ENTITIES_PARSED']==1) {
-            $decorator =& new XML_HTMLSax3_Entities_Parsed(
+            $decorator = new XML_HTMLSax3_Entities_Parsed(
                 $this->handler_object_data,
                 $this->handler_method_data);
-            $this->handler_object_data =& $decorator;
+            $this->handler_object_data = $decorator;
             $this->handler_method_data = 'breakData';
         }
         // Note switched on by default
         if ($this->parser_options['XML_OPTION_STRIP_ESCAPES']==1) {
-            $decorator =& new XML_HTMLSax3_Escape_Stripper(
+            $decorator = new XML_HTMLSax3_Escape_Stripper(
                 $this->handler_object_escape,
                 $this->handler_method_escape);
-            $this->handler_object_escape =& $decorator;
+            $this->handler_object_escape = $decorator;
             $this->handler_method_escape = 'strip';
         }
         $this->rawtext = $data;
@@ -471,7 +471,7 @@ class XML_HTMLSax3 {
     * NullHandler for all callbacks<br />
     * <b>Example:</b>
     * <pre>
-    * $myHandler = & new MyHandler();
+    * $myHandler =  new MyHandler();
     * $parser = new XML_HTMLSax3();
     * $parser->set_object($myHandler);
     * $parser->set_option('XML_OPTION_CASE_FOLDING');
@@ -483,11 +483,11 @@ class XML_HTMLSax3 {
     */
     function XML_HTMLSax3() {
         if (version_compare(phpversion(), '4.3', 'ge')) {
-            $this->state_parser =& new XML_HTMLSax3_StateParser_Gtet430($this);
+            $this->state_parser = new XML_HTMLSax3_StateParser_Gtet430($this);
         } else {
-            $this->state_parser =& new XML_HTMLSax3_StateParser_Lt430($this);
+            $this->state_parser = new XML_HTMLSax3_StateParser_Lt430($this);
         }
-        $nullhandler =& new XML_HTMLSax3_NullHandler();
+        $nullhandler = new XML_HTMLSax3_NullHandler();
         $this->set_object($nullhandler);
         $this->set_element_handler('DoNothing', 'DoNothing');
         $this->set_data_handler('DoNothing');
@@ -505,7 +505,7 @@ class XML_HTMLSax3 {
     */
     function set_object(&$object) {
         if ( is_object($object) ) {
-            $this->state_parser->handler_default =& $object;
+            $this->state_parser->handler_default = $object;
             return true;
         } else {
             require_once('PEAR.php');
@@ -566,7 +566,7 @@ class XML_HTMLSax3 {
     * @see set_object
     */
     function set_data_handler($data_method) {
-        $this->state_parser->handler_object_data =& $this->state_parser->handler_default;
+        $this->state_parser->handler_object_data = $this->state_parser->handler_default;
         $this->state_parser->handler_method_data = $data_method;
     }
 
@@ -589,7 +589,7 @@ class XML_HTMLSax3 {
     * @see set_object
     */
     function set_element_handler($opening_method, $closing_method) {
-        $this->state_parser->handler_object_element =& $this->state_parser->handler_default;
+        $this->state_parser->handler_object_element = $this->state_parser->handler_default;
         $this->state_parser->handler_method_opening = $opening_method;
         $this->state_parser->handler_method_closing = $closing_method;
     }
@@ -608,7 +608,7 @@ class XML_HTMLSax3 {
     * @see set_object
     */
     function set_pi_handler($pi_method) {
-        $this->state_parser->handler_object_pi =& $this->state_parser->handler_default;
+        $this->state_parser->handler_object_pi = $this->state_parser->handler_default;
         $this->state_parser->handler_method_pi = $pi_method;
     }
 
@@ -626,7 +626,7 @@ class XML_HTMLSax3 {
     * @see set_object
     */
     function set_escape_handler($escape_method) {
-        $this->state_parser->handler_object_escape =& $this->state_parser->handler_default;
+        $this->state_parser->handler_object_escape = $this->state_parser->handler_default;
         $this->state_parser->handler_method_escape = $escape_method;
     }
 
@@ -643,7 +643,7 @@ class XML_HTMLSax3 {
     * @see set_object
     */
     function set_jasp_handler ($jasp_method) {
-        $this->state_parser->handler_object_jasp =& $this->state_parser->handler_default;
+        $this->state_parser->handler_object_jasp = $this->state_parser->handler_default;
         $this->state_parser->handler_method_jasp = $jasp_method;
     }
 
