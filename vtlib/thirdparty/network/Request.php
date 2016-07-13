@@ -108,7 +108,7 @@ if (extension_loaded('mbstring') && (2 & ini_get('mbstring.func_overload'))) {
  *
  * Simple example (fetches yahoo.com and displays it):
  * <code>
- * $a = &new HTTP_Request('http://www.yahoo.com/');
+ * $a = new HTTP_Request('http://www.yahoo.com/');
  * $a->sendRequest();
  * echo $a->getResponseBody();
  * </code>
@@ -410,7 +410,7 @@ class HTTP_Request
     */
     function setURL($url)
     {
-        $this->_url = &new Net_URL($url, $this->_useBrackets);
+        $this->_url = new Net_URL($url, $this->_useBrackets);
 
         if (!empty($this->_url->user) || !empty($this->_url->pass)) {
             $this->setBasicAuth($this->_url->user, $this->_url->pass);
@@ -722,7 +722,7 @@ class HTTP_Request
 
         $keepAlive = (HTTP_REQUEST_HTTP_VER_1_1 == $this->_http && empty($this->_requestHeaders['connection'])) ||
                      (!empty($this->_requestHeaders['connection']) && 'Keep-Alive' == $this->_requestHeaders['connection']);
-        $sockets   = &PEAR::getStaticProperty('HTTP_Request', 'sockets');
+        $sockets   = PEAR::getStaticProperty('HTTP_Request', 'sockets');
         $sockKey   = $host . ':' . $port;
         unset($this->_sock);
 
@@ -730,11 +730,11 @@ class HTTP_Request
         if ($keepAlive && !empty($sockets[$sockKey]) &&
             !empty($sockets[$sockKey]->fp))
         {
-            $this->_sock =& $sockets[$sockKey];
+            $this->_sock = $sockets[$sockKey];
             $err = null;
         } else {
             $this->_notify('connect');
-            $this->_sock =& new Net_Socket();
+            $this->_sock = new Net_Socket();
             $err = $this->_sock->connect($host, $port, null, $this->_timeout, $this->_socketOptions);
         }
         PEAR::isError($err) or $err = $this->_sock->write($this->_buildRequest());
@@ -747,7 +747,7 @@ class HTTP_Request
             $this->_notify('sentRequest');
 
             // Read the response
-            $this->_response = &new HTTP_Response($this->_sock, $this->_listeners);
+            $this->_response = new HTTP_Response($this->_sock, $this->_listeners);
             $err = $this->_response->process(
                 $this->_saveBody && $saveBody,
                 HTTP_REQUEST_METHOD_HEAD != $this->_method
@@ -777,7 +777,7 @@ class HTTP_Request
             $this->disconnect();
         // Store the connected socket in "static" property
         } elseif (empty($sockets[$sockKey]) || empty($sockets[$sockKey]->fp)) {
-            $sockets[$sockKey] =& $this->_sock;
+            $sockets[$sockKey] = $this->_sock;
         }
 
         // Check for redirection
@@ -792,7 +792,7 @@ class HTTP_Request
 
             // Absolute URL
             if (preg_match('/^https?:\/\//i', $redirect)) {
-                $this->_url = &new Net_URL($redirect);
+                $this->_url = new Net_URL($redirect);
                 $this->addHeader('Host', $this->_generateHostHeader());
             // Absolute path
             } elseif ($redirect{0} == '/') {
@@ -1079,7 +1079,7 @@ class HTTP_Request
         if (!is_a($listener, 'HTTP_Request_Listener')) {
             return false;
         }
-        $this->_listeners[$listener->getId()] =& $listener;
+        $this->_listeners[$listener->getId()] = $listener;
         return true;
     }
 
@@ -1198,8 +1198,8 @@ class HTTP_Response
     */
     function HTTP_Response(&$sock, &$listeners)
     {
-        $this->_sock      =& $sock;
-        $this->_listeners =& $listeners;
+        $this->_sock      = $sock;
+        $this->_listeners = $listeners;
     }
 
 
