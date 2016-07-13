@@ -2306,14 +2306,27 @@ function lower_array(&$string){
 }
 
 /* PHP 7 support */
+function php7_compat_split($delim, $str, $ignore_case=false) {
+	$splits = array();
+	while ($str) {
+		$pos = $ignore_case ? stripos($str, $delim) : strpos($str, $delim);
+		if ($pos !== false) {
+			$splits[] = substr($str, 0, $pos);
+			$str = substr($str, $pos + strlen($delim));
+		} else {
+			$splits[] = $str;
+			$str = false;
+		}
+	}
+	return $splits;
+}
+
 if (!function_exists('split')) {
-	function split($delim, $str) { return explode($delim, $str); }
+	function split($delim, $str) { return php7_compat_split($delim, $str); }
 }
 if (!function_exists('spliti')) {
 	function spliti($delim, $str) {
-		// TODO - Review backward compatibilty on use-cases.
-		$str = str_replace($delim, strtolower($delim), $str);
-		return explode(strtolower($delim), $str);
+		return php7_compat_split($delim, $str, true);
 	}
 }
 
