@@ -67,9 +67,9 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 	registerRecordPreSaveEvent : function(form){
 		var thisInstance = this;
 		form.on(Vtiger_Edit_Js.recordPreSave, function(e, data) {
-			var groupingSeperatorValue = jQuery('[name="currency_grouping_separator"]', form).val();
-			var decimalSeperatorValue = jQuery('[name="currency_decimal_separator"]', form).val();
-			if(groupingSeperatorValue == decimalSeperatorValue){
+			var groupingSeparatorValue = jQuery('[name="currency_grouping_separator"]', form).val();
+			var decimalSeparatorValue = jQuery('[name="currency_decimal_separator"]', form).val();
+			if(groupingSeparatorValue == decimalSeparatorValue){
 				Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME'));
 				e.preventDefault();
 			}
