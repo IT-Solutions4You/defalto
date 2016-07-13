@@ -2321,13 +2321,16 @@ function php7_compat_split($delim, $str, $ignore_case=false) {
 	return $splits;
 }
 
-if (!function_exists('split')) {
-	function split($delim, $str) { return php7_compat_split($delim, $str); }
+if (!function_exists('split'))  { function split($delim, $str)  {return php7_compat_split($delim, $str); } }
+if (!function_exists('spliti')) { function spliti($delim, $str) {return php7_compat_split($delim, $str, true);}}
+
+function php7_compat_ereg($pattern, $str, $ignore_case=false) {
+	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
+	return preg_match($regex, $str);
 }
-if (!function_exists('spliti')) {
-	function spliti($delim, $str) {
-		return php7_compat_split($delim, $str, true);
-	}
-}
+
+if (!function_exists('ereg')) { function ereg($pattern, $str) { return php7_compat_ereg($pattern, $str); } }
+if (!function_exists('eregi')) { function ereg($pattern, $str) { return php7_compat_ereg($pattern, $str, true); } }
+
 
 ?>
