@@ -423,28 +423,26 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 */
 	public function lookupModuleRecordsWithEmail($module, $emails) {
 		$currentUserModel = vglobal('current_user');
-    //could be to multiple email addresses
+		//could be to multiple email addresses
 		$results = array();
-    foreach(explode(",",$emails) as $email){
-      $query = $this->buildSearchQuery($module, $email, 'EMAIL');
-      $qresults = vtws_query( $query, $currentUserModel );
-      $describe = $this->ws_describe($module);
-      $labelFields = explode(',', $describe['labelFields']);
-      foreach($qresults as $qresult) {
-        $labelValues = array();
-        foreach($labelFields as $fieldname) {
-          if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
-        }
-        $ids = vtws_getIdComponents($qresult['id']);
-        $results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));
+		foreach(explode(",",$emails) as $email){
+			$query = $this->buildSearchQuery($module, $email, 'EMAIL');
+			$qresults = vtws_query( $query, $currentUserModel );
+			$describe = $this->ws_describe($module);
+			$labelFields = explode(',', $describe['labelFields']);
+			foreach($qresults as $qresult) {
+				$labelValues = array();
+				foreach($labelFields as $fieldname) {
+					if(isset($qresult[$fieldname])) $labelValues[] = $qresult[$fieldname];
+				}
+				$ids = vtws_getIdComponents($qresult['id']);
+				$results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));
 			}
-			$ids = vtws_getIdComponents($qresult['id']);
-			$results[] = array( 'wsid' => $qresult['id'], 'id' => $ids[1], 'label' => implode(' ', $labelValues));
 		}
 		return $results;
 	}
         
-        public function validateRequest(Vtiger_Request $request) { 
+       public function validateRequest(Vtiger_Request $request) { 
             return $request->validateWriteAccess(); 
         }
 }
