@@ -1072,8 +1072,8 @@ function change_password($input_array)
 		return null;
 
 	$list = authenticate_user($username,$password,$version ,'false');
-	if(!isset($list[0]) || empty($list[0]['id'])){
-		return array('INVALID_USERNAME_OR_PASSWORD');
+	if(!empty($list[0]['id']) && $id != $list[0]['id']){
+		return array('MORE_THAN_ONE_USER'); /* compatability with portal app */
 	}
 	$sql = "update vtiger_portalinfo set user_password=?, cryptmode=? where id=? and user_name=?";
 	$result = $adb->pquery($sql, array(Vtiger_Functions::generateEncryptedPassword($password), 'CRYPT', $id, $username));
