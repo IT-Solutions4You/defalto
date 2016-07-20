@@ -411,7 +411,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					if (count($fieldValueDetails) > 1) {
 						$referenceModuleName = trim($fieldValueDetails[0]);
 						$entityLabel = trim($fieldValueDetails[1]);
-						$entityId = getEntityId($referenceModuleName, $entityLabel);
+						$entityId = getEntityId($referenceModuleName, decode_html($entityLabel));
 					} else {
 						$referencedModules = $fieldInstance->getReferenceList();
 						$entityLabel = $fieldValue;
@@ -426,7 +426,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 							}elseif ($referenceModule == 'Currency') {
 								$referenceEntityId = getCurrencyId($entityLabel);
 							} else {
-								$referenceEntityId = getEntityId($referenceModule, $entityLabel);
+								$referenceEntityId = getEntityId($referenceModule, decode_html($entityLabel));
 							}
 							if ($referenceEntityId != 0) {
 								$entityId = $referenceEntityId;
