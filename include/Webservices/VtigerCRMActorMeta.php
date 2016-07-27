@@ -241,7 +241,15 @@ class VtigerCRMActorMeta extends EntityMeta {
 	public function hasReadAccess(){
 		return true;
 	}
-	
+
+	public function hasCreateAccess() {
+		if (is_admin($this->user)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public function hasWriteAccess(){
 		if(is_admin($this->user)){
 			return true;
