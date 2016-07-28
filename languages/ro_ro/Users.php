@@ -196,8 +196,11 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Format dată',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Alegeți Format dată',
 	'LBL_PHONE'	=> 'Telefon',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Schimbare cheie de acces',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Cheia de acces a fost actualizat',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Actualizarea nu a reușit cheie de acces',
+);
 $jsLanguageStrings = array(
 		
 	//Curency separator validation messages
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Tasta de acces nou solicitat',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ați solicitat o nouă cheie de acces. cu acces noua prevedere cheie, trebuie să înlocuiți cheia de acces vechi cu unul nou, în toate extensiile instalate. Do doriți să continuați?',
 );

@@ -286,6 +286,9 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 	 */
 	function getJSLanguageStrings(Vtiger_Request $request) {
 		$moduleName = $request->getModule(false);
+		if ($moduleName === 'Settings:Users') {
+			$moduleName = 'Users';
+		} 
 		return Vtiger_Language_Handler::export($moduleName, 'jsLanguageStrings');
 	}
 }

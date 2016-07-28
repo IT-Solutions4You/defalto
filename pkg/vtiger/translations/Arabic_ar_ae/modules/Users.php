@@ -186,8 +186,11 @@ $languageStrings = array(
     'LBL_DELETE_USER_PERMANENTLY' => 'حذف العضو بشكل دائم',
     'LBL_RESTORE' => 'استعادة',
     'LBL_USER_RESTORED_SUCCESSFULLY' => 'المستخدم استعادة بنجاح',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'تغيير مفتاح الوصول',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'مفتاح الوصول بنجاح تحديث',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'فشل تحديث مفتاح الوصول',
+);
 $jsLanguageStrings = array(
 		
 	//Curency separator validation messages
@@ -200,5 +203,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
-);
 
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'طلب مفتاح وصول جديدة',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'لقد طلبت للحصول على مفتاح وصول جديد العلامة   & اللفتنانت؛ ر & GT؛ مع وصول الحكم الرئيسي الجديد، لديك ليحل محل مفتاح الوصول القديم مع واحدة جديدة في جميع ملحقات تثبيت العلامة   & اللفتنانت؛ ر & GT، هل هل ترغب في الاستمرار؟',
+);

@@ -40,6 +40,9 @@ $languageStrings = array(
 	'LBL_CHOOSE_TIMEZONE'	       => 'Válasszon időzónát'            ,
 	'LBL_COMPANY_SIZE'		       => 'Cég méret'                     ,
 	'LBL_CONFIRM_PASSWORD'         => 'Jelszó megerősítése'           ,
+	'LBL_CHANGE_ACCESS_KEY' => 'Hozzáférés módosítása Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Hozzáférési kulcs sikeresen frissítve',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Nem sikerült frissíteni a hozzáférési kulcs',
 	'LBL_CONNECT_WITH_US'          => 'Lépjen kapcsolatba velünk: '   ,
 	'LBL_CURRENCY_CONFIGURATION'   => 'Pénznem beállításai'           ,
 	'LBL_DATE_FORMAT'		       => 'Dátum formátum'                ,
@@ -215,8 +218,8 @@ $languageStrings = array(
 	'Pacific/Auckland'             => '(UTC+12:00) Auckland'        ,
 	'Asia/Magadan'                 => '(UTC+12:00) Magadan'         ,
 	'Pacific/Tongatapu'            => '(UTC+13:00) Nukualofa'       ,
-);
 
+);
 $jsLanguageStrings = array(
 	//Curency separator validation messages
 	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'A tizedesjel és az ezres elválasztó nem lehet ugyanaz.',
@@ -228,4 +231,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' sikertelen. Új jelszót kell megadnia.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Helytelen régi jelszó lett megadva. Adja meg újra a jelszó információkat.',
 	'JS_REENTER_PASSWORDS'=>'Kérjük, hogy adja meg újra a jelszót.  Az \"új jelszó\" és a \"jelszó megerősítése\" értékek nem egyeznek meg.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Új hozzáférési kulcsot kért',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Azt kérte, egy új hozzáférési kulcsot. Az új hozzáférési kulcsot rendelkezés, ki kell cserélni a régi hozzáférési kulcsot az újat minden telepített bővítmények. Do szeretné folytatni?',
 );

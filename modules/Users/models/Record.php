@@ -166,6 +166,15 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	}
 
 	/**
+	 * Function to return user object from preference file.
+	 */
+	public static function getInstanceFromPreferenceFile($userId) {
+		$focusObj = new Users();
+		$focusObj->retrieveCurrentUserInfoFromFile($userId);
+		return self::getInstanceFromUserObject($focusObj);
+	}
+
+	/**
 	 * Static Function to get the instance of the User Record model from the given Users object
 	 * @return Users_Record_Model instance
 	 */
