@@ -196,8 +196,11 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Data Format',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Scegli la Data Format',
 	'LBL_PHONE'	=> 'Telefono',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Cambio Accessibilità',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Chiave di accesso aggiornato con successo',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Impossibile aggiornare chiave di accesso',
+);
 $jsLanguageStrings = array(
 		
 	//Curency separator validation messages
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'nuova chiave di accesso richiesto',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Hai richiesto per una nuova chiave di accesso. &lt; br &gt;&lt;br &gt;Con la nuova disposizione chiave di accesso, è necessario sostituire la chiave di accesso vecchio con quello nuovo in tutte le estensioni installate. &lt; br &gt;&lt;br &gt;Do si desidera continuare?',
 );

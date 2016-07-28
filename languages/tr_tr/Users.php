@@ -196,8 +196,11 @@ $languageStrings = array(
 		'LBL_DATE_FORMAT'		=> 'Tarih Biçimi',
 		'LBL_CHOOSE_DATE_FORMAT'=> 'Tarih Biçimi seçin',
 		'LBL_PHONE'	=> 'Telefon',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Değişim Erişim Anahtarı',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Erişim tuşu başarıyla güncellendi',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'erişim anahtarı güncellenemedi',
+);
 $jsLanguageStrings = array(
 		
 	//Curency separator validation messages
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Yeni Erişim anahtarı talep',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Yeni Erişim anahtarı için istenen & lt olması,. Br &gt;&lt;br & gt;. Yeni Erişim tuşu hüküm ile, yeni yüklü tüm uzantıları biri & lt eski erişim anahtarı değiştirmek zorunda; br &gt;&lt;br &gt;Do devam etmek istiyor musunuz?',
 );

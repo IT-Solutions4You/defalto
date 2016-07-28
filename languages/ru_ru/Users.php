@@ -196,8 +196,11 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Формат даты',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Выберите формат даты',
 	'LBL_PHONE'	=> 'Телефон',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Изменение ключа доступа',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Ключ доступа успешно обновлен',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Не удалось обновить ключ доступа',
+);
 $jsLanguageStrings = array(
 		
 	//Curency separator validation messages
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Ключ доступа Новый просил',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Вы запросили для нового ключа доступа & л;. Бр & GT; & л; BR & GT; с новым ключом предоставления доступа, вы должны заменить старый ключ доступа с новым во всех установленных расширений и ЛТ;. Бр & GT; & л; BR & GT; Do вы хотите продолжить?',
 );
