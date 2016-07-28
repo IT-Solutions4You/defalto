@@ -222,5 +222,5 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Neue Zugriffsschlüssel angefordert',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Sie haben für einen neuen Zugriffsschlüssel angefordert. &lt; br &gt;&lt;br &gt;Mit dem neuen Access-Schlüsselbestimmung, können Sie die alten Zugriffsschlüssel mit dem neuen in allen installierten Erweiterungen zu ersetzen haben. &lt; br &gt;&lt;br &gt;Do Sie wollen weitermachen?',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Sie haben für einen neuen Zugriffsschlüssel angefordert. Mit dem neuen Access-Schlüsselbestimmung, können Sie die alten Zugriffsschlüssel mit dem neuen in allen installierten Erweiterungen zu ersetzen haben. Do Sie wollen weitermachen?',
 );

@@ -215,5 +215,5 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Yeni Erişim anahtarı talep',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Yeni Erişim anahtarı için istenen & lt olması,. Br &gt;&lt;br & gt;. Yeni Erişim tuşu hüküm ile, yeni yüklü tüm uzantıları biri & lt eski erişim anahtarı değiştirmek zorunda; br &gt;&lt;br &gt;Do devam etmek istiyor musunuz?',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Yeni Erişim anahtarı hüküm key.With yeni erişim için talep ettiğiniz, size devam etmek istiyor yüklü tüm extensions.Do içinde yenisi ile eski erişim anahtarı değiştirmek zorunda?',
 );

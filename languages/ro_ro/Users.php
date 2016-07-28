@@ -215,5 +215,5 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Tasta de acces nou solicitat',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ați solicitat o nouă cheie de acces. &lt; br &gt;&lt;br &gt;cu acces noua prevedere cheie, trebuie să înlocuiți cheia de acces vechi cu unul nou, în toate extensiile instalate. &lt; br &gt;&lt;br &gt;Do doriți să continuați?',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ați solicitat o nouă cheie de acces. cu acces noua prevedere cheie, trebuie să înlocuiți cheia de acces vechi cu unul nou, în toate extensiile instalate. Do doriți să continuați?',
 );

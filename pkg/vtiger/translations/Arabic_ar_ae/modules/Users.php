@@ -205,5 +205,5 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'طلب مفتاح وصول جديدة',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'لقد طلبت للحصول على مفتاح وصول جديد العلامة & lt؛ BR & GT؛ & اللفتنانت؛ ر & GT؛ مع وصول الحكم الرئيسي الجديد، لديك ليحل محل مفتاح الوصول القديم مع واحدة جديدة في جميع ملحقات تثبيت العلامة & lt؛ BR & GT؛ & اللفتنانت؛ ر & GT، هل هل ترغب في الاستمرار؟',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'لقد طلبت للحصول على مفتاح وصول جديد العلامة   & اللفتنانت؛ ر & GT؛ مع وصول الحكم الرئيسي الجديد، لديك ليحل محل مفتاح الوصول القديم مع واحدة جديدة في جميع ملحقات تثبيت العلامة   & اللفتنانت؛ ر & GT، هل هل ترغب في الاستمرار؟',
 );

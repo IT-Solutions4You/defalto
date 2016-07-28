@@ -233,5 +233,5 @@ $jsLanguageStrings = array(
 	'JS_REENTER_PASSWORDS'=>'Kérjük, hogy adja meg újra a jelszót.  Az \"új jelszó\" és a \"jelszó megerősítése\" értékek nem egyeznek meg.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Új hozzáférési kulcsot kért',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Azt kérte, egy új hozzáférési kulcsot. &lt; br &gt;&lt;br &gt;Az új hozzáférési kulcsot rendelkezés, ki kell cserélni a régi hozzáférési kulcsot az újat minden telepített bővítmények. &lt; br &gt;&lt;br &gt;Do szeretné folytatni?',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Azt kérte, egy új hozzáférési kulcsot. Az új hozzáférési kulcsot rendelkezés, ki kell cserélni a régi hozzáférési kulcsot az újat minden telepített bővítmények. Do szeretné folytatni?',
 );

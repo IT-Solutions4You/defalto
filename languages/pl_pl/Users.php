@@ -246,5 +246,5 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_INCORRECT_OLD'=>'Podano niepoprawne stare hasło. Wpisz ponownie.',
 
 	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nowy klucz dostępu wymagane',
-	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Zażądano nowego klucza dostępowego. &lt; br &gt;&lt;br &gt;Z nowego przepisu klucz dostępu, trzeba zastąpić stary klucz dostępu z nową we wszystkich zainstalowanych rozszerzeń. &lt; br &gt;&lt;br &gt;chcesz kontynuować?',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Zażądano nowego klucza dostępowego. Z nowego przepisu klucz dostępu, trzeba zastąpić stary klucz dostępu z nową we wszystkich zainstalowanych rozszerzeń. chcesz kontynuować?',
 );
