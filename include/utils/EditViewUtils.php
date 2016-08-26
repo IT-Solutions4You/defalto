@@ -324,10 +324,12 @@ function getAssociatedProducts($module,$focus,$seid='')
 			//condition to avoid this function call when create new PO/SO/Quotes/Invoice from Product module
 			if($focus->id != '')
 			{
-				if($taxtype == 'individual')//if individual then show the entered tax percentage
-					$tax_value = getInventoryProductTaxValue($focus->id, $hdnProductId, $tax_name);
-				else//if group tax then we have to show the default value when change to individual tax
+				if($taxtype == 'individual') {//if individual then show the entered tax percentage
+					$tax_value = ($adb->query_result($result, $i-1, $tax_name));
+					$tax_value = ($tax_value) ? $tax_value : 0;
+				} else {//if group tax then we have to show the default value when change to individual tax
 					$tax_value = $tax_details[$tax_count]['percentage'];
+				}
 			}
 			else//if the above function not called then assign the default associated value of the product
 				$tax_value = $tax_details[$tax_count]['percentage'];
