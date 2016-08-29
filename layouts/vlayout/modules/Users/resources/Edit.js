@@ -92,6 +92,7 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 						}, 
 						function (data, error){
 							thisInstance.duplicateCheckCache[userName] = data.result;
+							InitialFormData = form.serialize();
 							form.submit();
 						}
 					);
