@@ -42,6 +42,7 @@ $jsLanguageStrings = array(
 	'JS_CANT_MAP'                  => 'Не могу карту'                    , 
 	'JS_WITH'                      => 'с'                        , 
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Отображение успешно удален', 
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Mapping Сохраненный Успешно',
 	'JS_phone'                     => 'Телефон'                       , 
 	'JS_picklist'                  => 'Памятка'                   , 
 	'JS_email'                     => 'E-mail'                       , 

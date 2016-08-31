@@ -42,6 +42,7 @@ $jsLanguageStrings = array(
 	'JS_CANT_MAP'                  => 'Cant map'                    , // TODO: Review
 	'JS_WITH'                      => 'with'                        , // TODO: Review
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Mapping Deleted Successfully', // TODO: Review
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Mapping Succesvol Opgeslagen',
 	'JS_phone'                     => 'Phone'                       , // TODO: Review
 	'JS_picklist'                  => 'Pick List'                   , // TODO: Review
 	'JS_email'                     => 'Email'                       , // TODO: Review
