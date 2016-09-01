@@ -260,6 +260,7 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		   $label = decode_html($adb->query_result($result, $i, 'label'));
 		   $languages_list[$lang_prefix] = $label;
 	   }
+	   asort($languages_list);
 	   return $languages_list;
    }
 
