@@ -47,6 +47,7 @@ $jsLanguageStrings = array(
 	'JS_integer'					=> 'Egész szám'                 ,
 	'JS_IS_ALREADY_BEEN_MAPPED'    => 'már le van képezve'          ,
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Leképezés sikeresen törölve',
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Mapping sikeresen mentve',
 	'JS_multiSelectCombo'          => 'Többszörös kiválasztó doboz' ,
 	'JS_NONE'                      => 'Nincs'                       ,
 	'JS_None'                      => 'Nincs'                       ,

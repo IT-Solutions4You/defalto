@@ -45,7 +45,7 @@ $jsLanguageStrings = array(
 	'JS_CANT_MAP' => 'Kan inte Mappa',
 	'JS_WITH' => 'med',
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Mappning Raderades Framgångsrikt',
-	
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Kartläggning sparats',
 	//JS Field Type Translation
 	'JS_phone' => 'Telefon',
 	'JS_picklist' => 'Plocklista',

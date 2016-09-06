@@ -383,7 +383,7 @@ class ReportRun extends CRMEntity
 
 
 	function getColumnSQL($selectedfields) {
-		global $adb;
+		global $adb, $current_user;
 		$header_label = $selectedfields[2]; // Header label to be displayed in the reports table
 
 		list($module,$field) = split("_",$selectedfields[2]);
@@ -2013,7 +2013,7 @@ class ReportRun extends CRMEntity
                         if(count($secondarymodule) > 1){
                             $query .= $focQuery . $this->getReportsNonAdminAccessControlQuery($value,$current_user,$value);
                         }else{
-                            $query .= $focQuery . getNonAdminAccessControlQuery($value,$current_user,$value);;
+                            $query .= $focQuery . getNonAdminAccessControlQuery($value,$current_user,$value);
                         }
 					}
 			}

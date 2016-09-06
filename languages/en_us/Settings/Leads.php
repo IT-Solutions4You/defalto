@@ -47,6 +47,7 @@ $jsLanguageStrings = array(
 	'JS_integer' => 'Integer',
 	'JS_IS_ALREADY_BEEN_MAPPED' => 'has already been mapped',
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Mapping Deleted Successfully',
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Mapping Saved Successfully',
 	'JS_multiSelectCombo' => 'Multi-Select Combo Box',
 	'JS_NONE' => 'None',
 	'JS_percent' => 'Percent',
