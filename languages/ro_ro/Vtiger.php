@@ -722,7 +722,8 @@ $jsLanguageStrings = array(
 	'JS_PBX_OUTGOING_FAILURE'=>'Suna a eșuat',
 	'JS_PBX_FILL_ALL_FIELDS'=>'Vă rugăm să completați toate câmpurile',
 	// ends
-    
-    //Edit view mode Translations
-        'JS_CHANGES_WILL_BE_LOST' => 'Modificările dvs. se vor pierde!',
+
+	//Edit view mode Translations
+	'JS_CHANGES_WILL_BE_LOST' => 'Modificările dvs. se vor pierde!',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Moneda de bază trebuie să fie schimbat pentru a dezactiva',
 );

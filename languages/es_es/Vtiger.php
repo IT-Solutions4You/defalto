@@ -761,5 +761,6 @@ $jsLanguageStrings = array(
 	// ends
     
     //Edit view mode Translations
-        'JS_CHANGES_WILL_BE_LOST' => 'Sus cambios se perderán!',
+	'JS_CHANGES_WILL_BE_LOST' => 'Sus cambios se perderán!',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Moneda base tiene que ser cambiado para desactivar',
 );

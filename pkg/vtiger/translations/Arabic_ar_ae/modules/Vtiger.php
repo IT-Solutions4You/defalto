@@ -961,7 +961,8 @@ $jsLanguageStrings = array(
     'JS_PBX_OUTGOING_FAILURE'=>'استدعاء فشل',
     'JS_PBX_FILL_ALL_FIELDS'=>'يرجى ملء جميع الحقول',
     // ends
-    
-    //No Tax exist 
-    'JS_LBL_NO_TAXES'=>'لا الضرائب', 
+
+	//No Tax exist 
+	'JS_LBL_NO_TAXES'=>'لا الضرائب',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'لابد من تغيير لتعطيل العملة الأساسية',
 );

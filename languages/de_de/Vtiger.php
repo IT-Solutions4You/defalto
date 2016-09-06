@@ -720,8 +720,7 @@ $jsLanguageStrings = array(
 	'JS_PBX_OUTGOING_FAILURE'=>'Anruf fehlgeschlagen',
 	'JS_PBX_FILL_ALL_FIELDS'=>'Bitte füllen Sie alle Felder',
 	// ends
-    
-           //Edit view mode Translations
-        'JS_CHANGES_WILL_BE_LOST' => 'Ihre Änderungen gehen verloren!',
-    
+	//Edit view mode Translations
+	'JS_CHANGES_WILL_BE_LOST' => 'Ihre Änderungen gehen verloren!',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Basiswährung muss geändert werden, um zu deaktivieren',
 );
