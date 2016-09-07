@@ -728,6 +728,7 @@ $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MANDATORY_FIELD' => 'Please select at least one Mandatory Field',
 	'JS_PLEASE_SELECT_ATLEAST_ONE_OPTION' => 'Please select at least one option',
 	'JS_PLEASE_SELECT_BASE_CURRENCY_FOR_PRODUCT' => 'Please select base currency for product',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Base Currency has to be changed to disable ',
 	'JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE' => 'Select at least one field for merge criteria',
 	'JS_PLEASE_SELECT_ONE_RECORD' => 'Please select at least one record',
 	'JS_PLEASE_SPLIT_FILE_AND_IMPORT_AGAIN' => 'Please split the file into smaller files and import again.',

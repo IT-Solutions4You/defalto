@@ -44,7 +44,7 @@
 						<td>
 							<span class="row-fluid">
 								<span class="span8 alignBottom">
-									<span class="pull-left">{$price.currencylabel|@getTranslatedCurrencyString} ({$price.currencysymbol})</span>
+									<span class="pull-left currencyName">{$price.currencylabel|@getTranslatedCurrencyString} ({$price.currencysymbol})</span>
 								</span>
 								<span class="span2"><input type="checkbox" name="cur_{$price.curid}_check" id="cur_{$price.curid}_check" class="small pull-right enableCurrency" {$check_value}></span>
 							</span>
