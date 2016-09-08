@@ -312,8 +312,9 @@ function getAssociatedProducts($module,$focus,$seid='')
 		}
 		$product_Detail[$i]['netPrice'.$i] = $netPrice;
 
+		$taxMode = ($focus->id) ? 'available_associated' : 'all';
 		//First we will get all associated taxes as array
-		$tax_details = getTaxDetailsForProduct($hdnProductId,'all');
+		$tax_details = getTaxDetailsForProduct($hdnProductId, $taxMode);
 		//Now retrieve the tax values from the current query with the name
 		for($tax_count=0;$tax_count<count($tax_details);$tax_count++)
 		{
