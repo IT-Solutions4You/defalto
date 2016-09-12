@@ -774,15 +774,15 @@ class QueryGenerator {
 							$fieldSql .= "$dateFieldColumnName $valueSql";
 						}
 					} else {
-                                                if(is_array($value)){
-                                                    $value = $value[0];
-                                                }
-                                                $values = explode(' ', $value);
-                                                if(count($values) == 2) {
-                                                        $fieldSql .= "$fieldGlue CAST(CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) AS DATETIME) $valueSql ";
-                                                } else {
-                                                        $fieldSql .= "$fieldGlue $dateFieldColumnName $valueSql";
-                                                }
+						if(is_array($value)){
+							$value = $value[0];
+						}
+						$values = explode(' ', $value);
+						if(count($values) == 2) {
+								$fieldSql .= "$fieldGlue CAST(CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) AS DATETIME) $valueSql ";
+						} else {
+								$fieldSql .= "$fieldGlue $dateFieldColumnName $valueSql";
+						}
 					}
 				} elseif($field->getFieldDataType() == 'datetime') {
 					$value = $conditionInfo['value'];
@@ -792,7 +792,7 @@ class QueryGenerator {
 						$startDateValue = explode(' ', $values[0]);
 						$endDateValue = explode(' ', $values[1]);
 						if($startDateValue[1] == '00:00:00' && ($endDateValue[1] == '00:00:00' || $endDateValue[1] == '23:59:59')) {
-							$fieldSql .= "$fieldGlue CAST(".$field->getTableName().'.'.$field->getColumnName()." AS DATE) $valueSql";
+							$fieldSql .= "$fieldGlue CAST(".$field->getTableName().'.'.$field->getColumnName()." AS DATETIME) $valueSql";
 						} else {
 							$fieldSql .= "$fieldGlue ".$field->getTableName().'.'.$field->getColumnName().' '.$valueSql;
 						}
