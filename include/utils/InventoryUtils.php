@@ -457,7 +457,7 @@ function updateInventoryProductRel($entity) {
 
 	$statusChanged = false;
 	$vtEntityDelta = new VTEntityDelta ();
-	$oldEntity = $vtEntityDelta-> getOldValue($moduleName, $entity_id, $statusFieldName);
+	$oldEntity = $vtEntityDelta->getOldValue($moduleName, $entity_id, $statusFieldName);
 	$recordDetails = $entity->getData();
 	$statusChanged = $vtEntityDelta->hasChanged($moduleName, $entity_id, $statusFieldName);
 	if($statusChanged) {
