@@ -62,6 +62,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 
 		//Updating Tax details
 		$taxtype = $relatedProducts[1]['final_details']['taxtype'];
+		$taxMode = ($this->getId()) ? 'available_associated' : 'all';
 
 		$subTotal = 0;
 		for ($i=1;$i<=$productsCount; $i++) {
@@ -70,7 +71,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			$totalAfterDiscount = $product['totalAfterDiscount'.$i];
 
 			if ($taxtype == 'individual') {
-				$taxDetails = getTaxDetailsForProduct($productId, 'all');
+				$taxDetails = getTaxDetailsForProduct($productId, $taxMode);
 				$taxCount = count($taxDetails);
 				$taxTotal = '0';
 
