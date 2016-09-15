@@ -1870,6 +1870,7 @@ Should any need arise,please do give us a call.';
 		$this->db->query("insert into vtiger_actionmapping values(4,'DetailView',0)");
 		$this->db->query("insert into vtiger_actionmapping values(5,'Import',0)");
 		$this->db->query("insert into vtiger_actionmapping values(6,'Export',0)");
+		$this->db->query("insert into vtiger_actionmapping values(7,'CreateView',0)");
 		//$this->db->query("insert into vtiger_actionmapping values(7,'AddBusinessCard',0)");
 		$this->db->query("insert into vtiger_actionmapping values(8,'Merge',0)");
 		$this->db->query("insert into vtiger_actionmapping values(1,'VendorEditView',1)");

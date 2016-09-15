@@ -435,15 +435,15 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 						}
 					}
 					if ((empty($entityId) || $entityId == 0) && !empty($referenceModuleName)) {
-						if(isPermitted($referenceModuleName, 'EditView') == 'yes') {
-                                                    try {
-							$wsEntityIdInfo = $this->createEntityRecord($referenceModuleName, $entityLabel);
-							$wsEntityId = $wsEntityIdInfo['id'];
-							$entityIdComponents = vtws_getIdComponents($wsEntityId);
-							$entityId = $entityIdComponents[1];
-                                                    } catch (Exception $e) {
-                                                        $entityId = false;
-                                                    }
+						if(isPermitted($referenceModuleName, 'CreateView') == 'yes') {
+							try {
+								$wsEntityIdInfo = $this->createEntityRecord($referenceModuleName, $entityLabel);
+								$wsEntityId = $wsEntityIdInfo['id'];
+								$entityIdComponents = vtws_getIdComponents($wsEntityId);
+								$entityId = $entityIdComponents[1];
+							} catch (Exception $e) {
+								$entityId = false;
+							}
 						}
 					}
 					$fieldData[$fieldName] = $entityId;
@@ -574,32 +574,32 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 		$fieldData = DataTransform::sanitizeData($fieldData, $moduleMeta);
 		$entityIdInfo = vtws_create($moduleName, $fieldData, $this->user);
-                $adb = PearDatabase::getInstance();
-                $entityIdComponents = vtws_getIdComponents($entityIdInfo['id']);
-                $recordId = $entityIdComponents[1];
-                $entityfields = getEntityFieldNames($moduleName);
-                switch($moduleName) {
-                    case 'HelpDesk': $entityfields['fieldname'] = array('ticket_title');break;
-					case 'Documents':$entityfields['fieldname'] = array('notes_title');break;
-                   case 'Documents': $entityfields['fieldname'] = array('notes_title');break;
-                }
-                $label = '';
-                if(is_array($entityfields['fieldname'])){
-                    foreach($entityfields['fieldname'] as $field){
-                        $label .= $fieldData[$field]." ";
-                    }
-                }else {
-                    $label = $fieldData[$entityfields['fieldname']];
-                }
+		$adb = PearDatabase::getInstance();
+		$entityIdComponents = vtws_getIdComponents($entityIdInfo['id']);
+		$recordId = $entityIdComponents[1];
+		$entityfields = getEntityFieldNames($moduleName);
+		switch($moduleName) {
+			case 'HelpDesk': $entityfields['fieldname'] = array('ticket_title');break;
+			case 'Documents':$entityfields['fieldname'] = array('notes_title');break;
+			case 'Documents': $entityfields['fieldname'] = array('notes_title');break;
+		}
+		$label = '';
+		if(is_array($entityfields['fieldname'])){
+			foreach($entityfields['fieldname'] as $field){
+				$label .= $fieldData[$field]." ";
+			}
+		}else {
+			$label = $fieldData[$entityfields['fieldname']];
+		}
 
-                $label = trim($label);
-                $adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array($label, $recordId));
+		$label = trim($label);
+		$adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array($label, $recordId));
 
-                $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-                $focus = $recordModel->getEntity();
-                $focus->id = $recordId;
-                $focus->column_fields = $fieldData;
-                $this->entityData[] = VTEntityData::fromCRMEntity($focus);
+		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+		$focus = $recordModel->getEntity();
+		$focus->id = $recordId;
+		$focus->column_fields = $fieldData;
+		$this->entityData[] = VTEntityData::fromCRMEntity($focus);
 		$focus->updateMissingSeqNumber($moduleName);
 		return $entityIdInfo;
 	}

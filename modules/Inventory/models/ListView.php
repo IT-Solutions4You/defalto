@@ -35,7 +35,7 @@ class Inventory_ListView_Model extends Vtiger_ListView_Model {
 
 		$basicLinks = array();
 
-		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
 		if($createPermission) {
 			$basicLinks[] = array(
 					'linktype' => 'LISTVIEWBASIC',

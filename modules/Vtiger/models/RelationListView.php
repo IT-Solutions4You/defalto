@@ -143,34 +143,36 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		}
 		$relatedModel = $relationModel->getRelationModuleModel();
 
-		if($relatedModel->get('label') == 'Calendar'){
+		if ($relatedModel->isPermitted('CreateView')) {
+			if($relatedModel->get('label') == 'Calendar'){
 
-			$addLinkList[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => vtranslate('LBL_ADD_EVENT'),
-					'linkurl' => $this->getCreateEventRecordUrl(),
-					'linkicon' => '',
-			);
-			$addLinkList[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => vtranslate('LBL_ADD_TASK'),
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => '',
-			);
-		}else{
-			$addLinkList = array(
-				array(
-					'linktype' => 'LISTVIEWBASIC',
-					// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
-					'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_' . $relatedModel->getName(), $relatedModel->getName()),
-					'linkurl' => $this->getCreateViewUrl(),
-					'linkicon' => '',
-				)
-			);
-		}
+				$addLinkList[] = array(
+						'linktype' => 'LISTVIEWBASIC',
+						'linklabel' => vtranslate('LBL_ADD_EVENT'),
+						'linkurl' => $this->getCreateEventRecordUrl(),
+						'linkicon' => '',
+				);
+				$addLinkList[] = array(
+						'linktype' => 'LISTVIEWBASIC',
+						'linklabel' => vtranslate('LBL_ADD_TASK'),
+						'linkurl' => $this->getCreateTaskRecordUrl(),
+						'linkicon' => '',
+				);
+			}else{
+				$addLinkList = array(
+					array(
+						'linktype' => 'LISTVIEWBASIC',
+						// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
+						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_' . $relatedModel->getName(), $relatedModel->getName()),
+						'linkurl' => $this->getCreateViewUrl(),
+						'linkicon' => '',
+					)
+				);
+			}
 
-		foreach($addLinkList as $addLink) {
-			$addLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($addLink);
+			foreach($addLinkList as $addLink) {
+				$addLinkModel[] = Vtiger_Link_Model::getInstanceFromValues($addLink);
+			}
 		}
 		return $addLinkModel;
 	}

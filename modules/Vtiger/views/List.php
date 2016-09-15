@@ -216,6 +216,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		}
 		$viewer->assign('LIST_VIEW_MODEL', $listViewModel);
 		$viewer->assign('GROUPS_IDS', Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId()));
+		$viewer->assign('IS_RECORD_CREATABLE', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
         $viewer->assign('SEARCH_DETAILS', $searchParmams);

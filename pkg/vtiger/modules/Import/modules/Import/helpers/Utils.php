@@ -44,11 +44,13 @@ class Import_Utils_Helper {
 		return self::$supportedDelimiters;
 	}
 
-	public static function getAutoMergeTypes() {
-		return array(
-			self::$AUTO_MERGE_IGNORE => 'Skip',
-			self::$AUTO_MERGE_OVERWRITE => 'Overwrite',
-			self::$AUTO_MERGE_MERGEFIELDS => 'Merge');
+	public static function getAutoMergeTypes($moduleName) {
+		$mergeTypes = array(self::$AUTO_MERGE_IGNORE => 'Skip');
+		if (Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
+			$mergeTypes[self::$AUTO_MERGE_OVERWRITE]		= 'Overwrite';
+			$mergeTypes[self::$AUTO_MERGE_MERGEFIELDS]	= 'Merge';
+		}
+		return $mergeTypes;
 	}
 
 	public static function getMaxUploadSize() {

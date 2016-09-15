@@ -18,9 +18,12 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'EditView', $record);
+		$actionName = 'CreateView';
+		if ($record && !$request->get('isDuplicate')) {
+			$actionName = 'EditView';
+		}
 
-		if(!$recordPermission) {
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}

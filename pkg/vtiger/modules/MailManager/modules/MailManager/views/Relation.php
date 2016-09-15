@@ -361,6 +361,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	public function getCurrentUserMailManagerAllowedModules() {
 		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Calendar');
 
+		$mailManagerAllowedModules = array();
 		foreach($moduleListForCreateRecordFromMail as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
@@ -376,6 +377,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	public function linkToAvailableActions() {
 		$moduleListForLinkTo = array('Calendar','HelpDesk','ModComments','Emails');
 
+		$mailManagerAllowedModules = array();
 		foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
