@@ -11,6 +11,33 @@
 if(defined('VTIGER_UPGRADE')) {
 global $adb; $db = $adb;
 
+// Migration for - #141 - Separating Create/Edit into 2 separate Role/Profile permissions
+$actionMappingResult = $adb->pquery('SELECT 1 FROM vtiger_actionmapping WHERE actionname=?', array('CreateView'));
+if (!$adb->num_rows($actionMappingResult)) {
+	$adb->pquery('INSERT INTO vtiger_actionmapping VALUES(?, ?, ?)', array(7, 'CreateView', 0));
+}
+
+$createActionResult = $adb->pquery('SELECT * FROM vtiger_profile2standardpermissions WHERE operation=?', array(1));
+$query = 'INSERT INTO vtiger_profile2standardpermissions VALUES';
+while($rowData = $adb->fetch_array($createActionResult)) {
+	$tabId			= $rowData['tabid'];
+	$profileId		= $rowData['profileid'];
+	$permissions	= $rowData['permissions'];
+	$query .= "('$profileId', '$tabId', '7', '$permissions'),";
+}
+$adb->pquery(trim($query, ','), array());
+
+require_once 'modules/Users/CreateUserPrivilegeFile.php';
+$usersResult = $adb->pquery('SELECT id FROM vtiger_users', array());
+$numOfRows = $adb->num_rows($usersResult);
+$userIdsList = array();
+for($i=0; $i<$numOfRows; $i++) {
+	$userId = $adb->query_result($usersResult, $i, 'id');
+	createUserPrivilegesfile($userId);
+}
+
+echo '<br>#141 - Successfully updated create and edit permissions<br>';
+
 // Migration for - #117 - Convert lead field mapping NULL values and redundant rows
 $phoneFieldId = getFieldid(getTabid('Leads'), 'phone');
 $db->pquery('UPDATE vtiger_convertleadmapping SET editable=? WHERE leadfid=?', array(1, $phoneFieldId));
