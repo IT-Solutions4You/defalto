@@ -11,5 +11,9 @@
 if(defined('VTIGER_UPGRADE')) {
 global $adb;
 
+// Migration for - #117 - Convert lead field mapping NULL values and redundant rows
+$phoneFieldId = getFieldid(getTabid('Leads'), 'phone');
+$db->pquery('UPDATE vtiger_convertleadmapping SET editable=? WHERE leadfid=?', array(1, $phoneFieldId));
+
 }
 
