@@ -106,7 +106,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 				foreach ($fieldMapping as $key => $mappingInfo) {
 					if (array_key_exists($mappingInfo['fieldname'], $ownerFieldModels)) {
 						if ($mappingInfo['value'] == 'assigned_user_id') {
-							$mappingInfo['valuetype'] = 'fieldname';
+							$fieldMapping[$key]['valuetype'] = 'fieldname';
 						} else {
 							$userRecordModel = Users_Record_Model::getInstanceById($mappingInfo['value'], 'Users');
 							$ownerName = $userRecordModel->get('user_name');
