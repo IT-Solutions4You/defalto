@@ -8,6 +8,11 @@ Get involved
 
 Development on vtiger is done at http://code.vtiger.com
 
+**Note**: Any contributions submitted to Vtiger project should be made available under Vtiger Public License. 
+If contribution has any patented code, or commercial code, then please communicate with Vtiger team before making the contribution.
+
+https://www.vtiger.com/vtiger-public-license/
+
 To register for an account, please contact info @ vtiger.com, you will need this to file issues and/or fix the code
 Once you have an account, you can [browse the code](http://code.vtiger.com/vtiger/vtigercrm/tree/master),
 [see if your issue is already reported](http://code.vtiger.com/vtiger/vtigercrm/issues) and if you have a new problem
