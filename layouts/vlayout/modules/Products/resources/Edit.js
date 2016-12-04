@@ -110,7 +110,7 @@ Vtiger_Edit_Js("Products_Edit_Js",{
 			var price = parseFloat(unitPrice) * parseFloat(conversionRate);
 			var userPreferredDecimalPlaces = unitPriceFieldData.numberOfDecimalPlaces;
 			price = price.toFixed(userPreferredDecimalPlaces);
-			var calculatedPrice = price.toString().replace('.',unitPriceFieldData.decimalSeperator);
+			var calculatedPrice = price.toString().replace('.',unitPriceFieldData.decimalSeparator);
 			jQuery('.convertedPrice',parentElem).val(calculatedPrice);
 		});
 		return this;
@@ -128,9 +128,9 @@ Vtiger_Edit_Js("Products_Edit_Js",{
 				var fieldData = field.data();
 				//As replace is doing replace of single occurence and using regex 
 				//replace has a problem with meta characters  like (.,$),so using split and join
-				var strippedValue = unitPrice.split(fieldData.groupSeperator);
+				var strippedValue = unitPrice.split(fieldData.groupSeparator);
 				strippedValue = strippedValue.join("");
-				strippedValue = strippedValue.replace(fieldData.decimalSeperator, '.');
+				strippedValue = strippedValue.replace(fieldData.decimalSeparator, '.');
 				unitPrice = strippedValue;
 			}
 			return unitPrice;
@@ -176,16 +176,24 @@ Vtiger_Edit_Js("Products_Edit_Js",{
 				jQuery('button.currencyReset', parentRow).attr('disabled', true).removeAttr('disabled');
 				var userPreferredDecimalPlaces = unitPriceFieldData.numberOfDecimalPlaces;
 				price = price.toFixed(userPreferredDecimalPlaces);
-				var calculatedPrice = price.toString().replace('.',unitPriceFieldData.decimalSeperator);
+				var calculatedPrice = price.toString().replace('.',unitPriceFieldData.decimalSeparator);
 				jQuery('input.convertedPrice',parentRow).val(calculatedPrice)
 			}else{
+				var baseCurrency = jQuery('.baseCurrency', parentRow);
+				if (baseCurrency.is(':checked')) {
+					var currencyName = jQuery('.currencyName', parentRow).text();
+					var params = {
+									'type' : 'error',
+									'title': app.vtranslate('JS_ERROR'),
+									'text' : app.vtranslate('JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY') + '"' + currencyName + '"'
+								};
+					Vtiger_Helper_Js.showPnotify(params);
+					elem.prop('checked', true);
+					return;
+				}
 				jQuery('input',parentRow).attr('disabled', true);
 				jQuery('input.enableCurrency',parentRow).removeAttr('disabled');
 				jQuery('button.currencyReset', parentRow).attr('disabled', 'disabled');
-				var baseCurrency = jQuery('.baseCurrency', parentRow);
-				if(baseCurrency.is(':checked')){
-					baseCurrency.removeAttr('checked');
-				}
 			}
 		})
 		return this;
@@ -256,8 +264,10 @@ Vtiger_Edit_Js("Products_Edit_Js",{
 						var multiCurrencyEditUI = jQuery('.multiCurrencyEditUI');
 						thisInstance.multiCurrencyContainer = multiCurrencyEditUI;
                         thisInstance.calculateConversionRate();
-						thisInstance.registerEventForEnableCurrency().registerEventForEnableBaseCurrency()
-											.registerEventForResetCurrency().triggerForBaseCurrencyCalc();
+						thisInstance.registerEventForEnableCurrency();
+						thisInstance.registerEventForEnableBaseCurrency();
+						thisInstance.registerEventForResetCurrency();
+						thisInstance.triggerForBaseCurrencyCalc();
 					}
                     var moreCurrenciesContainer = jQuery('#moreCurrenciesContainer').find('.multiCurrencyEditUI');
 					var contentInsideForm = moreCurrenciesUi.find('.multiCurrencyContainer').html();
@@ -325,6 +335,7 @@ Vtiger_Edit_Js("Products_Edit_Js",{
 				e.preventDefault();
 				thisInstance.getMoreCurrenciesUI().then(function(data){
 					thisInstance.preSaveConfigOfForm(form);
+					InitialFormData = form.serialize();
 					form.submit();
 				})
 			}else if(multiCurrencyContent.length > 0){

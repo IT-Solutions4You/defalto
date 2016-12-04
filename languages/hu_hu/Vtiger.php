@@ -758,6 +758,7 @@ $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MANDATORY_FIELD' => 'Kérjük,hogy legalább egy Kötelező mezőt válasszon ki',
 	'JS_PLEASE_SELECT_ATLEAST_ONE_OPTION' => 'Kérjük,hogy legalább egy lehetőséget válasszon ki',
 	'JS_PLEASE_SELECT_BASE_CURRENCY_FOR_PRODUCT' => 'Kérjük,hogy válasszon alap pénznemet a termékekhez',	
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Bázisvaluta meg kell változtatni, hogy tiltsa',
 	'JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE' => 'Kérjük,hogy legalább egy mezőt válasszon ki az egyesítés feltételei végett',
 	'JS_PLEASE_SELECT_ONE_RECORD'  => 'Kérjük,hogy legalább egy rekordot válasszon ki',
 	'JS_PLEASE_SPLIT_FILE_AND_IMPORT_AGAIN' => 'Kérjük,hogy szeletelje fel a fájlt kisebb részekre,majd importálja újból.',
@@ -808,7 +809,7 @@ $jsLanguageStrings = array(
 	'SHOULD_BE_LESS_THAN_TODAY'    => 'Ennek a mai nap előttinek kell lennie',
 	'SINGLE_Accounts'              => 'Szervezet'                   ,
 	'SINGLE_Contacts'              => 'Kapcsolat'                   ,
-     
-//Edit view mode Translations
-        'JS_CHANGES_WILL_BE_LOST' => 'A változtatások elvesznek!',
+
+	//Edit view mode Translations
+	'JS_CHANGES_WILL_BE_LOST' => 'A változtatások elvesznek!',
 );

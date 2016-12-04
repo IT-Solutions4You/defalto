@@ -259,6 +259,7 @@ abstract class EntityMeta{
 	abstract function hasDeleteAccess();
 	abstract function hasAccess();
 	abstract function hasReadAccess();
+	abstract function hasCreateAccess();
 	abstract function hasWriteAccess();
 	abstract function getEntityName();
 	abstract function getEntityId();

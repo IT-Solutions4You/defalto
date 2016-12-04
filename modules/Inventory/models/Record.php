@@ -56,33 +56,22 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 	}
 
 	function getProducts() {
-                $numOfCurrencyDecimalPlaces = getCurrencyDecimalPlaces(); 
+		$numOfCurrencyDecimalPlaces = getCurrencyDecimalPlaces(); 
 		$relatedProducts = getAssociatedProducts($this->getModuleName(), $this->getEntity());
 		$productsCount = count($relatedProducts);
 
-		//Updating Pre tax total
-		$preTaxTotal = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
-						+ (float)$relatedProducts[1]['final_details']['shipping_handling_charge']
-						- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
-
-		$relatedProducts[1]['final_details']['preTaxTotal'] = number_format($preTaxTotal, $numOfCurrencyDecimalPlaces,'.','');
-		
-		//Updating Total After Discount
-		$totalAfterDiscount = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
-								- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
-		
-		$relatedProducts[1]['final_details']['totalAfterDiscount'] = number_format($totalAfterDiscount, $numOfCurrencyDecimalPlaces,'.','');
-		
 		//Updating Tax details
 		$taxtype = $relatedProducts[1]['final_details']['taxtype'];
+		$taxMode = ($this->getId()) ? 'available_associated' : 'all';
 
+		$subTotal = 0;
 		for ($i=1;$i<=$productsCount; $i++) {
 			$product = $relatedProducts[$i];
 			$productId = $product['hdnProductId'.$i];
 			$totalAfterDiscount = $product['totalAfterDiscount'.$i];
 
 			if ($taxtype == 'individual') {
-				$taxDetails = getTaxDetailsForProduct($productId, 'all');
+				$taxDetails = getTaxDetailsForProduct($productId, $taxMode);
 				$taxCount = count($taxDetails);
 				$taxTotal = '0';
 
@@ -97,8 +86,26 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 				}
 				$netPrice = $totalAfterDiscount + $taxTotal;
 				$relatedProducts[$i]['netPrice'.$i] = $netPrice;
+				$subTotal = $subTotal+$netPrice;
 			}
 		}
+
+		//Updating sub total
+		$relatedProducts[1]['final_details']['hdnSubTotal'] = $subTotal;
+
+		//Updating Pre tax total
+		$preTaxTotal = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
+						+ (float)$relatedProducts[1]['final_details']['shipping_handling_charge']
+						- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
+
+		$relatedProducts[1]['final_details']['preTaxTotal'] = number_format($preTaxTotal, $numOfCurrencyDecimalPlaces,'.','');
+		
+		//Updating Total After Discount
+		$totalAfterDiscount = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
+								- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
+		
+		$relatedProducts[1]['final_details']['totalAfterDiscount'] = number_format($totalAfterDiscount, $numOfCurrencyDecimalPlaces,'.','');
+		
 		return $relatedProducts;
 	}
 

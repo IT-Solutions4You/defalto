@@ -196,12 +196,15 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Date Format',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Kies datumnotatie',
 	'LBL_PHONE'	=> 'Telefoon',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Toegang Change Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Access key bijgewerkt',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Mislukt toegangssleutel actualiseren',
+);
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'New Access key gevraagd',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'U heeft gevraagd voor een nieuwe Access key. Met de nieuwe Access belangrijkste bepaling, moet u de oude toegang toets met het nieuwe in alle geïnstalleerde extensies & lt vervangen;. Br &gt;&lt;br &gt;Do u wilt doorgaan?',
 );

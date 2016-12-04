@@ -59,7 +59,7 @@
                             <div id="block_{$BLOCK_ID}" class="editFieldsTable block_{$BLOCK_ID} marginBottom10px border1px {if $IS_BLOCK_SORTABLE} blockSortable{/if}" data-block-id="{$BLOCK_ID}" data-sequence="{$BLOCK_MODEL->get('sequence')}" style="border-radius: 4px 4px 0px 0px;background: white;">
                                 <div class="row-fluid layoutBlockHeader">
                                     <div class="blockLabel span5 padding10 marginLeftZero">
-                                        <img class="alignMiddle" src="{vimage_path('drag.png')}" />&nbsp;&nbsp;
+										{if $IS_BLOCK_SORTABLE}<img class="alignMiddle" src="{vimage_path('drag.png')}" />&nbsp;&nbsp;{/if}
                                         <strong>{vtranslate($BLOCK_LABEL_KEY, $SELECTED_MODULE_NAME)}</strong>
                                     </div>
                                     <div class="span6 marginLeftZero" style="float:right !important;"><div class="pull-right btn-toolbar blockActions" style="margin: 4px;">
@@ -96,8 +96,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="blockFieldsList {if $SELECTED_MODULE_MODEL->isFieldsSortableAllowed($BLOCK_LABEL_KEY)}blockFieldsSortable {/if} row-fluid" style="padding:5px;min-height: 27px">
-                                    <ul name="sortable1" class="connectedSortable span6" style="list-style-type: none; float: left;min-height: 1px;padding:2px;">
+                                <div class="blockFieldsList blockFieldsSortable row-fluid" style="padding:5px;min-height: 27px">
+                                    <ul name=" {if $SELECTED_MODULE_MODEL->isFieldsSortableAllowed($BLOCK_LABEL_KEY)}sortable1{/if}" class="connectedSortable span6" style="list-style-type: none; float: left;min-height: 1px;padding:2px;">
                                         {foreach item=FIELD_MODEL from=$FIELDS_LIST name=fieldlist}
                                             {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
                                             {if $smarty.foreach.fieldlist.index % 2 eq 0}
@@ -222,7 +222,7 @@
                                                                 <span class="add-on">{$USER_MODEL->get('currency_symbol')}</span>
                                                                 <input type="text" data-validation-engine="validate[required,funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" {if !$FIELD_MODEL->hasDefaultValue()} disabled="" {/if}  class="input-medium" name="fieldDefaultValue"
                                                                        data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('defaultvalue'))}"
-                                                                       data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' />
+                                                                       data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
                                                             </div>
                                                         {else if $FIELD_MODEL->getFieldName() eq "terms_conditions" && $FIELD_MODEL->get('uitype') == 19}
                                                             {assign var=INVENTORY_TERMS_AND_CONDITIONS_MODEL value= Settings_Vtiger_MenuItem_Model::getInstance("INVENTORYTERMSANDCONDITIONS")}
@@ -387,7 +387,7 @@
                                 <span class="add-on">{$USER_MODEL->get('currency_symbol')}</span>
                                 <input type="text" data-validation-engine="validate[required,funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" {if !$FIELD_MODEL->hasDefaultValue()} disabled="" {/if}  class="input-medium" name="fieldDefaultValue"
                                        data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('defaultvalue'))}"
-                                       data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' />
+                                       data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
                             </div>
                         {else}
                             <input type="text" class="input-medium" data-validation-engine="validate[required,funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" {if !$FIELD_MODEL->hasDefaultValue()} disabled="" {/if}  name="fieldDefaultValue" value="{$FIELD_MODEL->get('defaultvalue')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}'/>

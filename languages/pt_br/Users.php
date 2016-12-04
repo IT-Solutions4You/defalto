@@ -196,12 +196,15 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Formato de data',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Escolha Formato de data',
 	'LBL_PHONE'	=> 'Telefone',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Alterar Chave de Acesso',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'chave de acesso atualizado com sucesso',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Falha ao atualizar a chave de acesso',
+);
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'chave New Access solicitado',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Você pediu para uma nova chave de acesso. Com a nova disposição fundamental Access, você tem que substituir a chave de acesso antigo com o novo, em todas as extensões instaladas. Do você quer continuar?',
 );

@@ -196,12 +196,15 @@ $languageStrings = array(
 		'LBL_DATE_FORMAT'		=> 'Tarih Biçimi',
 		'LBL_CHOOSE_DATE_FORMAT'=> 'Tarih Biçimi seçin',
 		'LBL_PHONE'	=> 'Telefon',
-);
 
+	'LBL_CHANGE_ACCESS_KEY' => 'Değişim Erişim Anahtarı',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Erişim tuşu başarıyla güncellendi',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'erişim anahtarı güncellenemedi',
+);
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -210,4 +213,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Yeni Erişim anahtarı talep',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Yeni Erişim anahtarı hüküm key.With yeni erişim için talep ettiğiniz, size devam etmek istiyor yüklü tüm extensions.Do içinde yenisi ile eski erişim anahtarı değiştirmek zorunda?',
 );

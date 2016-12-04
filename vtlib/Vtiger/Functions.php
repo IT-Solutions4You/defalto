@@ -575,6 +575,20 @@ class Vtiger_Functions {
 		return $filepath;
 	}
 
+	static function validateImageMetadata($data, $short=true) {
+		if (is_array($data)) {
+			foreach ($data as $key => $value) {
+				$ok = self::validateImageMetadata($value);
+				if (!$ok) return false;
+			}
+		} else {
+			if (stripos($data, $short ? "<?" : "<?php") !== false) { // suspicious dynamic content 
+				return false;
+			}
+		}
+		return true;
+	}
+
 	static function validateImage($file_details) {
 		global $app_strings;
 		$allowedImageFormats = array('jpeg', 'png', 'jpg', 'pjpeg', 'x-png', 'gif', 'bmp');
@@ -592,16 +606,27 @@ class Vtiger_Functions {
 		}
 
 		//mime type check
-		$mimeType = mime_content_type($file_details['tmp_name']);
+		$mimeType = self::mime_content_type($file_details['tmp_name']);
 		$mimeTypeContents = explode('/', $mimeType);
-		if (!$file_details['size'] || !in_array($mimeTypeContents[1], $mimeTypesList)) {
+		if (!$file_details['size'] || strtolower($mimeTypeContents[0]) !== 'image' || !in_array($mimeTypeContents[1], $mimeTypesList)) {
 			$saveimage = 'false';
 		}
 
+		//metadata check
+		$shortTagSupported = ini_get('short_open_tag') ? true : false;
+		if ($saveimage == 'true') {
+			$exifdata = exif_read_data($file_details['tmp_name']);
+			if ($exifdata && !self::validateImageMetadata($exifdata, $shortTagSupported)) {
+				$saveimage = 'false';
+			}
+		}
+
 		// Check for php code injection
-		$imageContents = file_get_contents($file_details['tmp_name']);
-		if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
-			$saveimage = 'false';
+		if ($saveimage == 'true') {
+			$imageContents = file_get_contents($file_details['tmp_name']);
+			if (stripos($imageContents, $shortTagSupported ? "<?" : "<?php") !== false) { // suspicious dynamic content.
+				$saveimage = 'false';
+			}
 		}
 		return $saveimage;
 	}
@@ -964,11 +989,43 @@ class Vtiger_Functions {
 	 * @param  $claimedMime Array of bad file extenstions
 	 */
     static function verifyClaimedMIME($targetFile,$claimedMime) {
-    $fileMimeContentType= self::mime_content_type($targetFile);
-    if (in_array(strtolower($fileMimeContentType), $claimedMime)) {
-     return false; 
-    }
-    return true;
-    } 
-    
+    	$fileMimeContentType= self::mime_content_type($targetFile);
+    	if (in_array(strtolower($fileMimeContentType), $claimedMime)) {
+     		return false; 
+   		}
+    	return true;
+	}
+
+	/*
+	 * Function to generate encrypted password.
+	 */
+	static function generateEncryptedPassword($password, $mode='CRYPT') {
+
+		if ($mode == 'MD5') return md5($password);
+
+		if ($mode == 'CRYPT') {
+			$salt = null;
+			if (function_exists('password_hash')) { // php 5.5+
+				$salt = password_hash();
+			} else {
+				$salt = '$2y$11$'.str_replace("+",".",substr(base64_encode(openssl_random_pseudo_bytes(17)),0,22));
+			}
+			return crypt($password, $salt);
+		}
+
+		throw new Exception('Invalid encryption mode: '.$mode);
+	}
+
+	/*
+	 * Function to compare encrypted password.
+	 */
+	static function compareEncryptedPassword($plainText, $encryptedPassword, $mode='CRYPT') {
+		$reEncryptedPassword = null;
+		switch ($mode) {
+			case 'CRYPT': $reEncryptedPassword = crypt($plainText, $encryptedPassword); break;
+			case 'MD5'  : $reEncryptedPassword = md5($plainText);	break;
+			default     : $reEncryptedPassword = $plainText;		break;
+		}
+		return ($reEncryptedPassword == $encryptedPassword);
+	}
 }

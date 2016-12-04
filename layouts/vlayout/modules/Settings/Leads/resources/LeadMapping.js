@@ -193,17 +193,15 @@ jQuery.Class("Settings_LeadMapping_Js",{
 					});
 				}
 				if(!data.result.status){
-                                    var notifyParams={
-                                            title:app.vtranslate('JS_INVALID_MAPPING'),
-                                            text:data.result,
-                                            type:'error',
-                                            width:'25%'
-                                    };
-				}
-				else{
+					var notifyParams={
+							title:app.vtranslate('JS_INVALID_MAPPING'),
+							text:data.result,
+							type:'error',
+							width:'25%'
+					};
+				} else {
 					notifyParams={
 						title:app.vtranslate('JS_MAPPING_SAVED_SUCCESSFULLY'),
-						text:data.result,
 						type:'info',
 						width:'25%'
 					};

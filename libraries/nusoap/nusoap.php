@@ -55,7 +55,7 @@ require_once('class.soap_server.php');*/
 // cf. http://www.webkreator.com/php/techniques/php-static-class-variables.html
 $GLOBALS['_transient']['static']['nusoap_base']->globalDebugLevel = 9;
 global $soap_log;
-$soap_log =& LoggerManager::getLogger('SOAP');
+$soap_log = LoggerManager::getLogger('SOAP');
 /**
 *
 * nusoap_base
@@ -4722,7 +4722,7 @@ class wsdl extends nusoap_base {
 		if (isset($this->schemas[$ns])) {
 			$this->debug("in getTypeDef: have schema for namespace $ns");
 			for ($i = 0; $i < count($this->schemas[$ns]); $i++) {
-				$xs = &$this->schemas[$ns][$i];
+				$xs = $this->schemas[$ns][$i];
 				$t = $xs->getTypeDef($type);
 				$this->appendDebug($xs->getDebug());
 				$xs->clearDebug();
@@ -6124,7 +6124,7 @@ class soap_parser extends nusoap_base {
 				// add placeholder to href array
 				$this->multirefs[$id][$pos] = 'placeholder';
 				// add set a reference to it as the result value
-				$this->message[$pos]['result'] =& $this->multirefs[$id][$pos];
+				$this->message[$pos]['result'] = $this->multirefs[$id][$pos];
             // build complexType values
 			} elseif($this->message[$pos]['children'] != ''){
 				// if result has already been generated (struct/array)
@@ -6326,14 +6326,14 @@ class soap_parser extends nusoap_base {
 			} elseif($this->message[$pos]['type'] == 'array' || $this->message[$pos]['type'] == 'Array'){
                 $this->debug('in buildVal, adding array '.$this->message[$pos]['name']);
                 foreach($children as $child_pos){
-                	$params[] = &$this->message[$child_pos]['result'];
+                	$params[] = $this->message[$child_pos]['result'];
                 }
             // apache Map type: java hashtable
             } elseif($this->message[$pos]['type'] == 'Map' && $this->message[$pos]['type_namespace'] == 'http://xml.apache.org/xml-soap'){
                 $this->debug('in buildVal, Java Map '.$this->message[$pos]['name']);
                 foreach($children as $child_pos){
                 	$kv = explode("|",$this->message[$child_pos]['children']);
-                   	$params[$this->message[$kv[1]]['result']] = &$this->message[$kv[2]]['result'];
+                   	$params[$this->message[$kv[1]]['result']] = $this->message[$kv[2]]['result'];
                 }
             // generic compound type
             //} elseif($this->message[$pos]['type'] == 'SOAPStruct' || $this->message[$pos]['type'] == 'struct') {
@@ -6348,16 +6348,16 @@ class soap_parser extends nusoap_base {
             	//
             	foreach($children as $child_pos){
             		if($notstruct){
-            			$params[] = &$this->message[$child_pos]['result'];
+            			$params[] = $this->message[$child_pos]['result'];
             		} else {
             			if (isset($params[$this->message[$child_pos]['name']])) {
             				// de-serialize repeated element name into an array
             				if ((!is_array($params[$this->message[$child_pos]['name']])) || (!isset($params[$this->message[$child_pos]['name']][0]))) {
             					$params[$this->message[$child_pos]['name']] = array($params[$this->message[$child_pos]['name']]);
             				}
-            				$params[$this->message[$child_pos]['name']][] = &$this->message[$child_pos]['result'];
+            				$params[$this->message[$child_pos]['name']][] = $this->message[$child_pos]['result'];
             			} else {
-					    	$params[$this->message[$child_pos]['name']] = &$this->message[$child_pos]['result'];
+					    	$params[$this->message[$child_pos]['name']] = $this->message[$child_pos]['result'];
 					    }
                 	}
                 }
@@ -6512,7 +6512,7 @@ class soapclient2 extends nusoap_base  {
 				
 				// instantiate wsdl object and parse wsdl file
 				$this->debug('instantiating wsdl class with doc: '.$endpoint);
-				$this->wsdl =& new wsdl($this->wsdlFile,$this->proxyhost,$this->proxyport,$this->proxyusername,$this->proxypassword,$this->timeout,$this->response_timeout);
+				$this->wsdl = new wsdl($this->wsdlFile,$this->proxyhost,$this->proxyport,$this->proxyusername,$this->proxypassword,$this->timeout,$this->response_timeout);
 			}
 			$this->appendDebug($this->wsdl->getDebug());
 			$this->wsdl->clearDebug();
@@ -6763,7 +6763,7 @@ class soapclient2 extends nusoap_base  {
 			case ereg('^http',$this->endpoint):
 				$this->debug('transporting via HTTP');
 				if($this->persistentConnection == true && is_object($this->persistentConnection)){
-					$http =& $this->persistentConnection;
+					$http = $this->persistentConnection;
 				} else {
 					$http = new soap_transport_http($this->endpoint);
 					if ($this->persistentConnection) {

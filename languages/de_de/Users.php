@@ -175,6 +175,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD'	       => 'Change Password',
 	'LBL_NEW_PASSWORD'			   => 'New Password',
 	'LBL_CONFIRM_PASSWORD'		   => 'Confirm Password',
+	'LBL_CHANGE_ACCESS_KEY' => 'Ändern Access Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Zugriffsschlüssel aktualisiert erfolgreich',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Fehlgeschlagen Zugriffsschlüssel zu aktualisieren',
 	'LBL_TRANSFER_OWNERSHIP' => 'Transfer Owner',
 	'LBL_LOGIN_AS' => 'Login as ',
 	'LBL_USER_DELETED_SUCCESSFULLY' => 'Benutzer erfolgreich gelöscht',
@@ -204,11 +207,11 @@ $languageStrings = array(
 		'LBL_DATE_FORMAT'		=> 'Datumsformat',
 		'LBL_CHOOSE_DATE_FORMAT'=> 'Wählen Sie Datumsformat',
 		'LBL_PHONE'	=> 'Telefon',
-);
 
+);
 $jsLanguageStrings = array(
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -217,4 +220,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Neue Zugriffsschlüssel angefordert',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Sie haben für einen neuen Zugriffsschlüssel angefordert. Mit dem neuen Access-Schlüsselbestimmung, können Sie die alten Zugriffsschlüssel mit dem neuen in allen installierten Erweiterungen zu ersetzen haben. Do Sie wollen weitermachen?',
 );

@@ -628,7 +628,7 @@ $languageStrings = array(
     'LBL_MERGE'                    => 'Łączyć',
     
     	'LBL_CONVERSION_RATE'          => 'Conversion Rate', //TOreview
-	
+
 );
 
 $jsLanguageStrings = array(
@@ -722,4 +722,5 @@ $jsLanguageStrings = array(
 	'JS_PBX_OUTGOING_FAILURE'=>'Połączenie nie powiodło się',
 	'JS_PBX_FILL_ALL_FIELDS'=>'Proszę wypełnić wszystkie pola',
 	// ends	
-	);
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Waluta bazowa musi zostać zmieniony, aby wyłączyć',
+);

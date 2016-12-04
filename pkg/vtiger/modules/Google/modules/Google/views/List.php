@@ -51,7 +51,7 @@ class Google_List_View extends Vtiger_PopupAjax_View {
         $oauth2 = new Google_Oauth2_Connector($sourceModule); 
         if ($request->has('oauth_verifier')) {
             try {
-                $oauth->getHttpClient($sourceModule);
+                $oauth2->getHttpClient($sourceModule);
             } catch (Exception $e) {
                 $viewer->assign('DENY', true);
             }

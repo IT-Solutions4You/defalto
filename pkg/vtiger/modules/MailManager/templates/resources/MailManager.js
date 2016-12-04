@@ -901,7 +901,7 @@ if (typeof(MailManager) == 'undefined') {
 						'mode' : 'hide'
 					})
 					//var response = MailManager.removeHidElement(transport.responseText);
-					//var responseJSON = JSON.parse(response);
+					responseJSON = JSON.parse(response);
 					var resultJSON = responseJSON['result'];
 					if (resultJSON['ui']) {
 						MailManager.mail_associate_create_cancel();

@@ -188,6 +188,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD' => 'Zmień hasło',
 	'LBL_NEW_PASSWORD' => 'Nowe hasło',
 	'LBL_CONFIRM_PASSWORD' => 'Potwierdź hasło',
+	'LBL_CHANGE_ACCESS_KEY' => 'Zmień Access Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Klawisz pomyślnie zaktualizowane',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Nie udało się zaktualizować klucz dostępu',
 	
 	//Login strings
 	'LBL_TO_CRM' => 'Zaloguj do Vtiger CRM',
@@ -227,12 +230,12 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Format daty',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Wybierz format daty',
 	'LBL_PHONE'	=> 'Telefon',
-);
 
+);
 $jsLanguageStrings = array(
 		
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Wpisz swoje stare hasło.',
 	'JS_ENTER_NEW_PASSWORD'=>'Wpisz nowe hasło.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Wpisz potwierdzenie nowego hasła.',
@@ -241,4 +244,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'Nie udało się zmienic hasła dla ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' niepowodzenie. Nowe hasło musi zostać ustawione.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Podano niepoprawne stare hasło. Wpisz ponownie.',
+
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nowy klucz dostępu wymagane',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Zażądano nowego klucza dostępowego. Z nowego przepisu klucz dostępu, trzeba zastąpić stary klucz dostępu z nową we wszystkich zainstalowanych rozszerzeń. chcesz kontynuować?',
 );

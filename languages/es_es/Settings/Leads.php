@@ -53,7 +53,7 @@ $jsLanguageStrings = array(
 	'JS_CANT_MAP' => 'No se puede asignar',
 	'JS_WITH' => 'con',
 	'JS_MAPPING_DELETED_SUCCESSFULLY' => 'Se ha eliminado la asignación',
-	
+	'JS_MAPPING_SAVED_SUCCESSFULLY' => 'Mapeo guardado con éxito',
 	//JS Field Type Translation
 	'JS_phone' => 'Teléfono',
 	'JS_picklist' => 'Lista Desplegable',

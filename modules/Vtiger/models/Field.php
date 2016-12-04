@@ -513,8 +513,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		if($this->getFieldDataType() == 'currency') {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$this->fieldInfo['currency_symbol'] = $currentUser->get('currency_symbol');
-			$this->fieldInfo['decimal_seperator'] = $currentUser->get('currency_decimal_separator');
-			$this->fieldInfo['group_seperator'] = $currentUser->get('currency_grouping_separator');
+			$this->fieldInfo['decimal_separator'] = $currentUser->get('currency_decimal_separator');
+			$this->fieldInfo['group_separator'] = $currentUser->get('currency_grouping_separator');
 		}
 
 		if($this->getFieldDataType() == 'owner') {
@@ -989,12 +989,13 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 */
 	public function getCurrencyList() {
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_currency_info WHERE currency_status = ? AND deleted=0', array('Active'));
+		$result = $db->pquery('SELECT id, currency_name FROM vtiger_currency_info WHERE currency_status = ? AND deleted=0', array('Active'));
 		for($i=0; $i<$db->num_rows($result); $i++) {
 			$currencyId = $db->query_result($result, $i, 'id');
 			$currencyName = $db->query_result($result, $i, 'currency_name');
 			$currencies[$currencyId] = $currencyName;
 		}
+		asort($currencies);
 		return $currencies;
 	}
 

@@ -89,11 +89,13 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	/**
 	 * Function to save the logoinfo
 	 */
-	public function saveLogo() {
-		$uploadDir = vglobal('root_directory'). '/' .$this->logoPath;
-		$logoName = $uploadDir.$_FILES["logo"]["name"];
-		move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
-		copy($logoName, $uploadDir.'application.ico');
+	public function saveLogo($binFileName) {
+		if ($binFileName) {
+			$uploadDir = vglobal('root_directory'). '/' .$this->logoPath;
+			$logoName = $uploadDir.$binFileName;
+			move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
+			copy($logoName, $uploadDir.'application.ico');
+		}
 	}
 
 	/**

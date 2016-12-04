@@ -62,17 +62,20 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			aDeferred.resolve(this.calendarCreateView.clone(true,true));
 			return aDeferred.promise();
 		}
-		var progressInstance = jQuery.progressIndicator();
-		this.loadCalendarCreateView().then(
-			function(data){
-				progressInstance.hide();
-				thisInstance.calendarCreateView = data;
-				aDeferred.resolve(data.clone(true,true));
-			},
-			function(){
-				progressInstance.hide();
-			}
-		);
+
+		if (jQuery('.isRecordCreatable').val()) {
+			var progressInstance = jQuery.progressIndicator();
+			this.loadCalendarCreateView().then(
+				function(data){
+					progressInstance.hide();
+					thisInstance.calendarCreateView = data;
+					aDeferred.resolve(data.clone(true,true));
+				},
+				function(){
+					progressInstance.hide();
+				}
+			);
+		}
 		return aDeferred.promise();
 	},
 
@@ -501,15 +504,17 @@ jQuery.Class("Calendar_CalendarView_Js",{
                 var targetElement = jQuery(this).find('.fc-event-time');
                 var trashElement = jQuery(this).find('a.delete');
                 if(!trashElement.length) {
-                    if(!targetElement.length) {
-                        targetElement = jQuery(this).find('.fc-event-title');
-                            targetElement.append('<a class="delete" style="position:absolute;right:1px;" href="javascript:void(0)"><i class="icon-trash icon-white"></i></a>'); 
-                    }
-                    else {
-                        if(view.name == 'month') targetElement = jQuery(this).find('.fc-event-inner');
-                        targetElement.append('<a class="delete" style="position:absolute;right:1px;" href="javascript:void(0)"><i class="icon-trash icon-white"></i></a>');                    
-                    }
-                    thisInstance.registerEventDelete(targetElement,calEvent);
+					if (jQuery('.isModuleDeletable').val()) {
+						if(!targetElement.length) {
+							targetElement = jQuery(this).find('.fc-event-title');
+							targetElement.append('<a class="delete" style="position:absolute;right:1px;" href="javascript:void(0)"><i class="icon-trash icon-white"></i></a>'); 
+						}
+						else {
+							if(view.name == 'month') targetElement = jQuery(this).find('.fc-event-inner');
+							targetElement.append('<a class="delete" style="position:absolute;right:1px;" href="javascript:void(0)"><i class="icon-trash icon-white"></i></a>');                    
+						}
+						thisInstance.registerEventDelete(targetElement,calEvent);
+					}
                 }
                 else {
                     trashElement.removeClass('hide');
@@ -521,22 +526,29 @@ jQuery.Class("Calendar_CalendarView_Js",{
                 jQuery(this).find('.delete').addClass('hide');
 			}
 		}
+
+		if (!jQuery('.isModuleEditable').val()) {
+			config['editable'] = false;
+		}
+
 		if(typeof customConfig != 'undefined'){
 			config = jQuery.extend(config,customConfig);
 		}
 		calendarview.fullCalendar(config);
 
-		//To create custom button to create event or task
-		jQuery('<span class="pull-left"><button class="btn addButton">'+ app.vtranslate('LBL_ADD_EVENT_TASK') +'</button></span>')
-				.prependTo(calendarview.find('.fc-header .fc-header-right')).on('click', 'button', function(e){
-					thisInstance.getCalendarCreateView().then(function(data){
-						var headerInstance = new Vtiger_Header_Js();
-						headerInstance.handleQuickCreateData(data,{callbackFunction:function(data){
-								thisInstance.addCalendarEvent(data.result);
-						}});
-					});
+		if (jQuery('.isRecordCreatable').val()) {
+			//To create custom button to create event or task
+			jQuery('<span class="pull-left"><button class="btn addButton">'+ app.vtranslate('LBL_ADD_EVENT_TASK') +'</button></span>')
+			.prependTo(calendarview.find('.fc-header .fc-header-right')).on('click', 'button', function(e){
+				thisInstance.getCalendarCreateView().then(function(data){
+					var headerInstance = new Vtiger_Header_Js();
+					headerInstance.handleQuickCreateData(data,{callbackFunction:function(data){
+						thisInstance.addCalendarEvent(data.result);
+					}});
+				});
 
-				})
+			})
+		}
 		jQuery('<span class="pull-right marginLeft5px"><button class="btn"><i id="calendarSettings" class="icon-cog"></i></button></span>')
 		.prependTo(calendarview.find('.fc-header .fc-header-right')).on('click', 'button', function(e){
 			var params = {

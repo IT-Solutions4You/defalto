@@ -94,7 +94,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
 		}
 
-		if(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
+		if(Users_Privileges_Model::isPermitted($moduleName, 'CreateView', $recordId)) {
 			$duplicateLinkModel = array(
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => 'LBL_DUPLICATE',

@@ -936,6 +936,7 @@ $jsLanguageStrings = array(
 	//More currencies message
 	'JS_PLEASE_ENABLE_BASE_CURRENCY_FOR_PRODUCT' => 'Vänligen aktivera basvaluta för produkt',
 	'JS_PLEASE_SELECT_BASE_CURRENCY_FOR_PRODUCT' => 'Vänligen aktivera basvaluta för produkt',
+	'JS_BASE_CURRENCY_CHANGED_TO_DISABLE_CURRENCY' => 'Basvaluta måste ändras för att inaktivera',
 	
 	//Delete Records message
 	'JS_RECORDS_ARE_GETTING_DELETED' => 'Poster håller på att Raderas',

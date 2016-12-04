@@ -217,8 +217,8 @@ $languageStrings = array(
 );
 
 $jsLanguageStrings = array(
-	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'A tizedesjel és az ezres elválasztó nem lehet ugyanaz.',
+	//Curency separator validation messages
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'A tizedesjel és az ezres elválasztó nem lehet ugyanaz.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Kérjük, hogy erősítse meg a jelszavát.',
 	'JS_ENTER_NEW_PASSWORD'=>'Kérjük, hogy adja meg az új jelszavát.',
 	'JS_ENTER_OLD_PASSWORD'=>'Kérjük, hogy adja meg a régi jelszavát.',
