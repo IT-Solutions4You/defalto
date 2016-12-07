@@ -11,7 +11,7 @@ class Google_Module_Model extends Vtiger_Module_Model {
     
     public static function removeSync($module, $id) {
         $db = PearDatabase::getInstance();
-        $query = "DELETE FROM vtiger_google_oauth WHERE service = ? AND userid = ?";
+        $query = "DELETE FROM vtiger_app_oauth1 WHERE service = ? AND userid = ?";
         $db->pquery($query, array($module, $id));
     }
     
@@ -21,6 +21,7 @@ class Google_Module_Model extends Vtiger_Module_Model {
      * @param <integer> $user - User Id
      */
     public function deleteSync($module, $user) {
+        $module = str_replace("Google", '', $module);
         if($module == 'Contacts' || $module == 'Calendar') {
             $name = 'Vtiger_Google'.$module;
         }
@@ -42,9 +43,11 @@ class Google_Module_Model extends Vtiger_Module_Model {
         $db->pquery("DELETE FROM vtiger_wsapp_recordmapping WHERE appid = ?", array($appId));
         $db->pquery("DELETE FROM vtiger_wsapp WHERE appid = ?", array($appId));
         $db->pquery("DELETE FROM vtiger_wsapp_sync_state WHERE name = ? AND userid = ?", array($name, $user));
+        $db->pquery("DELETE FROM vtiger_google_sync_settings WHERE user = ? AND module = ?", array($user,$module));
         if($module == 'Contacts') {
-            $db->pquery("DELETE FROM vtiger_google_sync_settings WHERE user = ?", array($user));
             $db->pquery("DELETE FROM vtiger_google_sync_fieldmapping WHERE user = ?", array($user));
+        } elseif($module == 'Calendar') {
+            $db->pquery("DELETE FROM vtiger_google_event_calendar_mapping WHERE user_id = ?", array($user));
         }
         Google_Utils_Helper::errorLog();
         

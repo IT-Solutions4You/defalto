@@ -119,7 +119,7 @@ class Leads extends CRMEntity {
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "SELECT $fields_list,case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-	      			FROM ".$this->entity_table."
+					FROM ".$this->entity_table."
 				INNER JOIN vtiger_leaddetails
 					ON vtiger_crmentity.crmid=vtiger_leaddetails.leadid
 				LEFT JOIN vtiger_leadsubdetails
@@ -128,8 +128,8 @@ class Leads extends CRMEntity {
 					ON vtiger_leaddetails.leadid=vtiger_leadaddress.leadaddressid
 				LEFT JOIN vtiger_leadscf
 					ON vtiger_leadscf.leadid=vtiger_leaddetails.leadid
-	                        LEFT JOIN vtiger_groups
-                        	        ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+							LEFT JOIN vtiger_groups
+									ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 				LEFT JOIN vtiger_users
 					ON vtiger_crmentity.smownerid = vtiger_users.id and vtiger_users.status='Active'
 				";
@@ -149,18 +149,18 @@ class Leads extends CRMEntity {
 
 
 	/** Returns a list of the associated tasks
- 	 * @param  integer   $id      - leadid
- 	 * returns related Task or Event record in array format
+	 * @param  integer   $id      - leadid
+	 * returns related Task or Event record in array format
 	*/
 	function get_activities($id, $cur_tab_id, $rel_tab_id, $actions=false) {
 		global $log, $singlepane_view,$currentModule,$current_user;
 		$log->debug("Entering get_activities(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/Activity.php");
 		$other = new Activity();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -220,6 +220,59 @@ class Leads extends CRMEntity {
 		return $return_value;
 	}
 
+	function get_quotes($id, $cur_tab_id, $rel_tab_id, $actions=false) {
+		global $log, $singlepane_view,$currentModule,$current_user;
+		$log->debug("Entering get_quotes(".$id.") method ...");
+		$this_module = $currentModule;
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
+
+		require_once("modules/$related_module/$related_module.php");
+		$other = new $related_module();
+		vtlib_setup_modulevars($related_module, $other);
+		$singular_modname = vtlib_toSingular($related_module);
+
+		$parenttab = getParentTab();
+		if($singlepane_view == 'true')
+			$returnset = '&return_module='.$this_module.'&return_action=DetailView&return_id='.$id;
+		else
+			$returnset = '&return_module='.$this_module.'&return_action=CallRelatedList&return_id='.$id;
+
+		$button = '';
+		if($actions && getFieldVisibilityPermission($related_module, $current_user->id, 'account_id','readwrite') == '0') {
+			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
+				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
+			}
+			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
+				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
+					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
+					" value='". getTranslatedString('LBL_ADD_NEW'). " " . getTranslatedString($singular_modname) ."'>&nbsp;";
+			}
+		}
+
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+
+		$query = "SELECT vtiger_crmentity.*, vtiger_quotes.*, vtiger_leaddetails.leadid,
+					case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
+					FROM vtiger_quotes
+					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_quotes.quoteid
+					LEFT JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_quotes.contactid
+					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+					LEFT JOIN vtiger_quotescf ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
+					LEFT JOIN vtiger_quotesbillads ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
+					LEFT JOIN vtiger_quotesshipads ON vtiger_quotesshipads.quoteshipaddressid = vtiger_quotes.quoteid
+					LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+					WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.leadid = $id";
+
+		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
+
+		if($return_value == null) $return_value = Array();
+		$return_value['CUSTOM_BUTTON'] = $button;
+
+		$log->debug("Exiting get_quotes method ...");
+		return $return_value;
+	}
+
 	/** Returns a list of the associated Campaigns
 	  * @param $id -- campaign id :: Type Integer
 	  * @returns list of campaigns in array format
@@ -229,10 +282,10 @@ class Leads extends CRMEntity {
 		$log->debug("Entering get_campaigns(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -277,18 +330,18 @@ class Leads extends CRMEntity {
 
 
 		/** Returns a list of the associated emails
-	 	 * @param  integer   $id      - leadid
-	 	 * returns related emails record in array format
+		 * @param  integer   $id      - leadid
+		 * returns related emails record in array format
 		*/
 	function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
 		global $log, $singlepane_view,$currentModule,$current_user;
 		$log->debug("Entering get_emails(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -358,7 +411,7 @@ class Leads extends CRMEntity {
 				where (vtiger_activity.activitytype != 'Emails')
 				and (vtiger_activity.status = 'Completed' or vtiger_activity.status = 'Deferred' or (vtiger_activity.eventstatus = 'Held' and vtiger_activity.eventstatus != ''))
 				and vtiger_seactivityrel.crmid=".$id."
-	                        and vtiger_crmentity.deleted = 0";
+							and vtiger_crmentity.deleted = 0";
 		//Don't add order by, because, for security, one more condition will be added with this query in include/RelatedListView.php
 
 		$log->debug("Exiting get_history method ...");
@@ -375,10 +428,10 @@ class Leads extends CRMEntity {
 		$log->debug("Entering get_products(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -407,7 +460,7 @@ class Leads extends CRMEntity {
 				vtiger_crmentity.crmid, vtiger_crmentity.smownerid
 				FROM vtiger_products
 				INNER JOIN vtiger_seproductsrel ON vtiger_products.productid = vtiger_seproductsrel.productid  and vtiger_seproductsrel.setype = 'Leads'
-			 	INNER JOIN vtiger_productcf
+				INNER JOIN vtiger_productcf
 					ON vtiger_products.productid = vtiger_productcf.productid
 				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
 				INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_seproductsrel.crmid
@@ -453,9 +506,9 @@ class Leads extends CRMEntity {
 		$numRows = $this->db->num_rows($result);
 		for($i=0; $i < $numRows;$i++)
 		{
-	   	$custom_fields[$i] = $this->db->query_result($result,$i,"fieldlabel");
-	   	$custom_fields[$i] = preg_replace("/\s+/","",$custom_fields[$i]);
-	   	$custom_fields[$i] = strtoupper($custom_fields[$i]);
+		$custom_fields[$i] = $this->db->query_result($result,$i,"fieldlabel");
+		$custom_fields[$i] = preg_replace("/\s+/","",$custom_fields[$i]);
+		$custom_fields[$i] = strtoupper($custom_fields[$i]);
 		}
 		$mergeflds = $custom_fields;
 		$log->debug("Exiting getColumnNames_Lead method ...");
@@ -473,13 +526,13 @@ class Leads extends CRMEntity {
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
 		$rel_table_arr = Array("Activities"=>"vtiger_seactivityrel","Documents"=>"vtiger_senotesrel","Attachments"=>"vtiger_seattachmentsrel",
-					"Products"=>"vtiger_seproductsrel","Campaigns"=>"vtiger_campaignleadrel");
+					"Products"=>"vtiger_seproductsrel","Campaigns"=>"vtiger_campaignleadrel","Emails"=>"vtiger_seactivityrel");
 
 		$tbl_field_arr = Array("vtiger_seactivityrel"=>"activityid","vtiger_senotesrel"=>"notesid","vtiger_seattachmentsrel"=>"attachmentsid",
-					"vtiger_seproductsrel"=>"productid","vtiger_campaignleadrel"=>"campaignid");
+					"vtiger_seproductsrel"=>"productid","vtiger_campaignleadrel"=>"campaignid","vtiger_seactivityrel"=>"activityid");
 
 		$entity_tbl_field_arr = Array("vtiger_seactivityrel"=>"crmid","vtiger_senotesrel"=>"crmid","vtiger_seattachmentsrel"=>"crmid",
-					"vtiger_seproductsrel"=>"crmid","vtiger_campaignleadrel"=>"leadid");
+					"vtiger_seproductsrel"=>"crmid","vtiger_campaignleadrel"=>"leadid","vtiger_seactivityrel"=>"crmid");
 
 		foreach($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
@@ -511,39 +564,41 @@ class Leads extends CRMEntity {
 	 */
 	function generateReportsSecQuery($module,$secmodule, $queryPlanner) {
 		$matrix = $queryPlanner->newDependencyMatrix();
-		$matrix->setDependency('vtiger_leaddetails',array('vtiger_crmentityLeads', 'vtiger_leadaddress','vtiger_leadsubdetails','vtiger_leadscf','vtiger_email_trackLeads'));
 		$matrix->setDependency('vtiger_crmentityLeads',array('vtiger_groupsLeads','vtiger_usersLeads','vtiger_lastModifiedByLeads'));
 
 		// TODO Support query planner
 		if (!$queryPlanner->requireTable("vtiger_leaddetails",$matrix)){
 			return '';
 		}
+
+		$matrix->setDependency('vtiger_leaddetails',array('vtiger_crmentityLeads', 'vtiger_leadaddress','vtiger_leadsubdetails','vtiger_leadscf','vtiger_email_trackLeads'));
+
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_leaddetails","leadid", $queryPlanner);
 		if ($queryPlanner->requireTable("vtiger_crmentityLeads",$matrix)){
-		    $query .= " left join vtiger_crmentity as vtiger_crmentityLeads on vtiger_crmentityLeads.crmid = vtiger_leaddetails.leadid and vtiger_crmentityLeads.deleted=0";
+			$query .= " left join vtiger_crmentity as vtiger_crmentityLeads on vtiger_crmentityLeads.crmid = vtiger_leaddetails.leadid and vtiger_crmentityLeads.deleted=0";
 		}
 		if ($queryPlanner->requireTable("vtiger_leadaddress")){
-		    $query .= " left join vtiger_leadaddress on vtiger_leaddetails.leadid = vtiger_leadaddress.leadaddressid";
+			$query .= " left join vtiger_leadaddress on vtiger_leaddetails.leadid = vtiger_leadaddress.leadaddressid";
 		}
 		if ($queryPlanner->requireTable("vtiger_leadsubdetails")){
-		    $query .= " left join vtiger_leadsubdetails on vtiger_leadsubdetails.leadsubscriptionid = vtiger_leaddetails.leadid";
+			$query .= " left join vtiger_leadsubdetails on vtiger_leadsubdetails.leadsubscriptionid = vtiger_leaddetails.leadid";
 		}
 		if ($queryPlanner->requireTable("vtiger_leadscf")){
-		    $query .= " left join vtiger_leadscf on vtiger_leadscf.leadid = vtiger_leaddetails.leadid";
+			$query .= " left join vtiger_leadscf on vtiger_leadscf.leadid = vtiger_leaddetails.leadid";
 		}
 		if ($queryPlanner->requireTable("vtiger_email_trackLeads")){
-		    $query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackLeads ON vtiger_email_trackLeads.crmid = vtiger_leaddetails.leadid";
+			$query .= " LEFT JOIN vtiger_email_track AS vtiger_email_trackLeads ON vtiger_email_trackLeads.crmid = vtiger_leaddetails.leadid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsLeads")){
-		    $query .= " left join vtiger_groups as vtiger_groupsLeads on vtiger_groupsLeads.groupid = vtiger_crmentityLeads.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groupsLeads on vtiger_groupsLeads.groupid = vtiger_crmentityLeads.smownerid";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersLeads")){
-		    $query .= " left join vtiger_users as vtiger_usersLeads on vtiger_usersLeads.id = vtiger_crmentityLeads.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersLeads on vtiger_usersLeads.id = vtiger_crmentityLeads.smownerid";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByLeads")){
-		    $query .= " left join vtiger_users as vtiger_lastModifiedByLeads on vtiger_lastModifiedByLeads.id = vtiger_crmentityLeads.modifiedby ";
+			$query .= " left join vtiger_users as vtiger_lastModifiedByLeads on vtiger_lastModifiedByLeads.id = vtiger_crmentityLeads.modifiedby ";
 		}
-        if ($queryPlanner->requireTable("vtiger_createdbyLeads")){
+		if ($queryPlanner->requireTable("vtiger_createdbyLeads")){
 			$query .= " left join vtiger_users as vtiger_createdbyLeads on vtiger_createdbyLeads.id = vtiger_crmentityLeads.smcreatorid ";
 		}
 		return $query;
@@ -578,14 +633,15 @@ class Leads extends CRMEntity {
 		elseif($return_module == 'Products') {
 			$sql = 'DELETE FROM vtiger_seproductsrel WHERE crmid=? AND productid=?';
 			$this->db->pquery($sql, array($id, $return_id));
+		} elseif($return_module == 'Documents') {
+			$sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+			$this->db->pquery($sql, array($id, $return_id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
-	function getListButtons($app_strings,$mod_strings = false) {
+	function getListButtons($app_strings) {
 		$list_buttons = Array();
 
 		if(isPermitted('Leads','Delete','') == 'yes') {
@@ -602,13 +658,13 @@ class Leads extends CRMEntity {
 		return $list_buttons;
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids) {
+	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
 		$adb = PearDatabase::getInstance();
 
 		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
 		foreach($with_crmids as $with_crmid) {
 			if($with_module == 'Products')
-				$adb->pquery("insert into vtiger_seproductsrel values (?,?,?)", array($crmid, $with_crmid, $module));
+				$adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', array($crmid, $with_crmid, $module, 1));
 			elseif($with_module == 'Campaigns')
 				$adb->pquery("insert into  vtiger_campaignleadrel values(?,?,1)", array($with_crmid, $crmid));
 			else {
@@ -617,23 +673,23 @@ class Leads extends CRMEntity {
 		}
 	}
 
-	function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false) {
+	function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false, $requiredTables = array()) {
 		if(is_array($tableColumns)) {
 			$tableColumnsString = implode(',', $tableColumns);
 		}
-        $selectClause = "SELECT " . $this->table_name . "." . $this->table_index . " AS recordid," . $tableColumnsString;
+		$selectClause = "SELECT " . $this->table_name . "." . $this->table_index . " AS recordid," . $tableColumnsString;
 
-        // Select Custom Field Table Columns if present
-        if (isset($this->customFieldTable))
-            $query .= ", " . $this->customFieldTable[0] . ".* ";
+		// Select Custom Field Table Columns if present
+		if (isset($this->customFieldTable))
+			$query .= ", " . $this->customFieldTable[0] . ".* ";
 
-        $fromClause = " FROM $this->table_name";
+		$fromClause = " FROM $this->table_name";
 
-        $fromClause .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $this->table_name.$this->table_index";
+		$fromClause .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $this->table_name.$this->table_index";
 
 		if($this->tab_name) {
 			foreach($this->tab_name as $tableName) {
-				if($tableName != 'vtiger_crmentity' && $tableName != $this->table_name) {
+				if($tableName != 'vtiger_crmentity' && $tableName != $this->table_name && in_array($tableName, $requiredTables)) {
 					if($this->tab_name_index[$tableName]) {
 						$fromClause .= " INNER JOIN " . $tableName . " ON " . $tableName . '.' . $this->tab_name_index[$tableName] .
 							" = $this->table_name.$this->table_index";
@@ -641,11 +697,9 @@ class Leads extends CRMEntity {
 				}
 			}
 		}
-        $fromClause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
 
-        $whereClause = " WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.converted=0 ";
-        $whereClause .= $this->getListViewSecurityParameter($module);
+		$whereClause = " WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.converted=0 ";
+		$whereClause .= $this->getListViewSecurityParameter($module);
 
 		if($ignoreEmpty) {
 			foreach($tableColumns as $tableColumn){
@@ -653,17 +707,17 @@ class Leads extends CRMEntity {
 			}
 		}
 
-        if (isset($selectedColumns) && trim($selectedColumns) != '') {
-            $sub_query = "SELECT $selectedColumns FROM $this->table_name AS t " .
-                    " INNER JOIN vtiger_crmentity AS crm ON crm.crmid = t." . $this->table_index;
-            // Consider custom table join as well.
-            if (isset($this->customFieldTable)) {
-                $sub_query .= " LEFT JOIN " . $this->customFieldTable[0] . " tcf ON tcf." . $this->customFieldTable[1] . " = t.$this->table_index";
-            }
-            $sub_query .= " WHERE crm.deleted=0 GROUP BY $selectedColumns HAVING COUNT(*)>1";
-        } else {
-            $sub_query = "SELECT $tableColumnsString $fromClause $whereClause GROUP BY $tableColumnsString HAVING COUNT(*)>1";
-        }
+		if (isset($selectedColumns) && trim($selectedColumns) != '') {
+			$sub_query = "SELECT $selectedColumns FROM $this->table_name AS t " .
+					" INNER JOIN vtiger_crmentity AS crm ON crm.crmid = t." . $this->table_index;
+			// Consider custom table join as well.
+			if (isset($this->customFieldTable)) {
+				$sub_query .= " LEFT JOIN " . $this->customFieldTable[0] . " tcf ON tcf." . $this->customFieldTable[1] . " = t.$this->table_index";
+			}
+			$sub_query .= " WHERE crm.deleted=0 GROUP BY $selectedColumns HAVING COUNT(*)>1";
+		} else {
+			$sub_query = "SELECT $tableColumnsString $fromClause $whereClause GROUP BY $tableColumnsString HAVING COUNT(*)>1";
+		}
 
 		$i = 1;
 		foreach($tableColumns as $tableColumn){
@@ -672,13 +726,13 @@ class Leads extends CRMEntity {
 			if (count($tableColumns) != $i++) $duplicateCheckClause .= " AND ";
 		}
 
-        $query = $selectClause . $fromClause .
-                " LEFT JOIN vtiger_users_last_import ON vtiger_users_last_import.bean_id=" . $this->table_name . "." . $this->table_index .
-                " INNER JOIN (" . $sub_query . ") AS temp ON " . $duplicateCheckClause .
-                $whereClause .
-                " ORDER BY $tableColumnsString," . $this->table_name . "." . $this->table_index . " ASC";
+		$query = $selectClause . $fromClause .
+				" LEFT JOIN vtiger_users_last_import ON vtiger_users_last_import.bean_id=" . $this->table_name . "." . $this->table_index .
+				" INNER JOIN (" . $sub_query . ") AS temp ON " . $duplicateCheckClause .
+				$whereClause .
+				" ORDER BY $tableColumnsString," . $this->table_name . "." . $this->table_index . " ASC";
 		return $query;
-    }
+	}
 }
 
 ?>

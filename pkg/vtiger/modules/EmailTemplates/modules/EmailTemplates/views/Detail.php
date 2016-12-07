@@ -9,7 +9,7 @@
  ************************************************************************************/
 
 class EmailTemplates_Detail_View extends Vtiger_Index_View {
-	
+
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
@@ -48,27 +48,31 @@ class EmailTemplates_Detail_View extends Vtiger_Index_View {
 	function preProcessTplName(Vtiger_Request $request) {
 		return 'DetailViewPreProcess.tpl';
 	}
-	
+
 	function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 		$viewer = $this->getViewer($request);
-		
+
 		$recordModel = EmailTemplates_Record_Model::getInstanceById($record);
 		$recordModel->setModule($moduleName);
 
-        $viewer->assign('RECORD', $recordModel);
+		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('MODULE_NAME', $moduleName);
-		
+
 		$viewer->view('DetailViewFullContents.tpl', $moduleName);
 	}
-	
+
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 
 		$jsFileNames = array(
 			'modules.Vtiger.resources.Detail',
+			'modules.EmailTemplates.resources.Detail',
+			'modules.Settings.Vtiger.resources.Index',
+			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
+
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

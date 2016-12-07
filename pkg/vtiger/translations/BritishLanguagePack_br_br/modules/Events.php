@@ -14,8 +14,8 @@ $languageStrings = array(
 	'LBL_RECORDS_LIST'             => 'List View'                   , 
 	'LBL_EVENTS'                   => 'Events'                      , 
 	'LBL_TODOS'                    => 'To Do'                       , 
-	'LBL_HOLD_FOLLOWUP_ON'         => 'Hold Follow up on'            ,
-    'LBL_CREATE_FOLLOWUP_EVENT'    => 'Create Follow up Event'      ,
+	'LBL_HOLD_FOLLOWUP_ON'         => 'Hold Followup on'            ,
+    'LBL_CREATE_FOLLOWUP_EVENT'    => 'Create Follow Up Event'      ,
 	'LBL_EVENT_INFORMATION'        => 'Event Details'               , 
 	'LBL_RECURRENCE_INFORMATION'   => 'Recurrence Details'          , 
 	'LBL_RELATED_TO'               => 'Related To'                  , // TODO: Review
@@ -24,7 +24,8 @@ $languageStrings = array(
 	'Send Notification'            => 'Send Notification'           , 
 	'Location'                     => 'Location'                    , 
 	'Send Reminder'                => 'Send Email Reminder Before'               , 
-	'End Date & Time'              => 'End Date & Time'             , 
+	'End Date & Time'              => 'End Date & Time'             ,
+    'End Date'                     => 'End Date & Time'             ,
 	'Activity Type'                => 'Activity Type'               , 
 	'Visibility'                   => 'Visibility'                  , 
 	'Private'                      => 'Private'                     , 
@@ -34,6 +35,7 @@ $languageStrings = array(
 	'Planned'                      => 'Planned'                     , 
 	'Held'                         => 'Held'                        , 
 	'Not Held'                     => 'Not Held'                    , 
+    'Related To'                   => 'Related To'                  ,
 	'LBL_DAYS'                     => 'Days'                        , 
 	'LBL_HOURS'                    => 'Hours'                       , 
 	'LBL_DAYS_TYPE'                => 'Day(s)'                      , // TODO: Review
@@ -67,4 +69,9 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
-);
+        'LBL_INVITE_PEOPLE'            => 'Pozovi Ljudi'               ,
+        
+  'INVITATION' => ' Invitation ',
+  'Busy' => 'Busy',
+
+);     

@@ -12,7 +12,9 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View {
 
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
-		if ($mode) {
+		if ($mode == 'v7Edit') {
+			$this->$mode($request);
+		} else if ($mode) {
 			$this->$mode($request);
 		} else {
 			$this->step1($request);
@@ -87,7 +89,7 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View {
 		}
 
 		$requestData = $request->getAll();
-		foreach($requestData as $name=>$value) {			
+		foreach($requestData as $name=>$value) {
 			if($name == 'schdayofweek' || $name == 'schdayofmonth' || $name == 'schannualdates') {
 				if(is_string($value)) {	// need to save these as json data
 					$value = array($value);
@@ -137,6 +139,9 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('IS_FILTER_SAVED_NEW',$workFlowModel->isFilterSavedInNew());
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+        
+        $userModel = Users_Record_Model::getCurrentUserModel();
+        $viewer->assign('DATE_FORMAT', $userModel->get('date_format'));
 
 		$viewer->view('Step2.tpl', $qualifiedModuleName);
 	}
@@ -183,22 +188,74 @@ class Settings_Workflows_Edit_View extends Settings_Vtiger_Index_View {
 			"modules.Settings.$moduleName.resources.AdvanceFilter",
 			'~libraries/jquery/ckeditor/ckeditor.js',
 			"modules.Vtiger.resources.CkEditor",
+            '~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
 			'~libraries/jquery/jquery.datepick.package-4.1.0/jquery.datepick.js',
-			);
+		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
-        
-        function getHeaderCss(Vtiger_Request $request) {
+
+	function getHeaderCss(Vtiger_Request $request) {
 		$headerCssInstances = parent::getHeaderCss($request);
 		$moduleName = $request->getModule();
 		$cssFileNames = array(
 			'~libraries/jquery/jquery.datepick.package-4.1.0/jquery.datepick.css',
+            '~/libraries/jquery/bootstrapswitch/css/bootstrap3/bootstrap-switch.min.css',
 		);
 		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
 		$headerCssInstances = array_merge($cssInstances, $headerCssInstances);
 		return $headerCssInstances;
 	}
+    
+   function v7Edit(Vtiger_Request $request) {
+      $currentUser = Users_Record_Model::getCurrentUserModel();
+      $viewer = $this->getViewer($request);
+      $moduleName = $request->getModule();
+      $qualifiedModuleName = $request->getModule(false);
+      $allModules = Settings_Workflows_Module_Model::getSupportedModules();
+
+      $recordId = $request->get('record');
+      if ($recordId) {
+         $workflowModel = Settings_Workflows_Record_Model::getInstance($recordId);
+         $workflowSourceModuleModel = $workflowModel->getModule();
+         $viewer->assign('RECORDID', $recordId);
+         $viewer->assign('MODULE_MODEL', $workflowSourceModuleModel);
+         $viewer->assign('SELECTED_MODULE', $workflowSourceModuleModel->getName());
+         $viewer->assign('MODE', 'edit');
+      } else {
+         $workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
+         $selectedModule = $request->get('source_module');
+         if (!empty($selectedModule)) {
+            $viewer->assign('SELECTED_MODULE', $selectedModule);
+         } else {
+             foreach ($allModules as $moduleModel) {
+                 $viewer->assign('SELECTED_MODULE', $moduleModel->getName());
+                 break;
+             }
+         }
+      }
+
+      $db = PearDatabase::getInstance();
+      $workflowManager = new VTWorkflowManager($db);
+      $viewer->assign('MAX_ALLOWED_SCHEDULED_WORKFLOWS', $workflowManager->getMaxAllowedScheduledWorkflows());
+      $viewer->assign('SCHEDULED_WORKFLOW_COUNT', $workflowManager->getScheduledWorkflowsCount());
+
+      $viewer->assign('WORKFLOW_MODEL', $workflowModel);
+      $viewer->assign('ALL_MODULES', $allModules);
+      $viewer->assign('TRIGGER_TYPES', Settings_Workflows_Module_Model::getTriggerTypes());
+
+      $viewer->assign('MODULE', $moduleName);
+      $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+      $viewer->assign('CURRENT_USER', $currentUser);
+      $admin = Users::getActiveAdminUser();
+      $viewer->assign('ACTIVE_ADMIN', $admin);
+      $viewer->assign('RETURN_SOURCE_MODULE', $request->get("returnsourceModule"));
+      $viewer->assign('RETURN_PAGE', $request->get("returnpage"));
+      $viewer->assign('RETURN_SEARCH_VALUE',$request->get("returnsearch_value"));
+      
+      $viewer->view('EditView.tpl', $qualifiedModuleName);
+   }
+   
 }

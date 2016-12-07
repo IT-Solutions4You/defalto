@@ -18,7 +18,7 @@ class MailManager_Search_View extends MailManager_Relation_View {
 	 */
 	public function process(Vtiger_Request $request) {
 
-		$response = new Vtiger_Response(true);
+		$response = new MailManager_Response(true);
 		$viewer = $this->getViewer($request);
 		if ('popupui' == $this->getOperationArg($request)) {
 			$viewer->view( 'Search.Popupui.tpl', 'MailManager' );

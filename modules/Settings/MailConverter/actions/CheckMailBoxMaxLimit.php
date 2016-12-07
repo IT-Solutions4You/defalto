@@ -14,12 +14,11 @@ class Settings_MailConverter_CheckMailBoxMaxLimit_Action extends Settings_Vtiger
 		$recordsCount = Settings_MailConverter_Record_Model::getCount();
 		$qualifiedModuleName = $request->getModule(false);
 		$response = new Vtiger_Response();
-        global $max_mailboxes;
-        if ($recordsCount < $max_mailboxes) {
+		if ($recordsCount < 2) {
 			$result = array(true);
 			$response->setResult($result);
 		} else {
-			$response->setError(vtranslate('LBL_MAX_LIMIT_EXCEEDED', $qualifiedModuleName));
+			$response->setError(vtranslate('LBL_MAX_LIMIT_ONLY_TWO', $qualifiedModuleName));
 		}
 		$response->emit();
 	}

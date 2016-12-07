@@ -23,100 +23,145 @@ class Home_Module_Model extends Vtiger_Module_Model {
 	 * @param <Vtiger_Paging_Model> $pagingModel
 	 * @return <Array>
 	 */
-	public function getComments($pagingModel) {
+	public function getComments($pagingModel, $user, $dateFilter='') {
 		$db = PearDatabase::getInstance();
 
-		$nonAdminAccessQuery = Users_Privileges_Model::getNonAdminAccessControlQuery('ModComments');
+		$sql = 'SELECT vtiger_modcomments.*,vtiger_crmentity.setype AS setype,vtiger_crmentity.createdtime AS createdtime, vtiger_crmentity.smownerid AS smownerid,
+				crmentity2.crmid AS parentId, crmentity2.setype AS parentModule FROM vtiger_modcomments
+				INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
+				AND vtiger_crmentity.deleted = 0
+				INNER JOIN vtiger_crmentity crmentity2 ON vtiger_modcomments.related_to = crmentity2.crmid
+				AND crmentity2.deleted = 0 
+				INNER JOIN vtiger_modtracker_basic ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid';
 
-		$result = $db->pquery('SELECT *, vtiger_crmentity.createdtime AS createdtime, vtiger_crmentity.smownerid AS smownerid,
-						crmentity2.crmid AS parentId, crmentity2.setype AS parentModule FROM vtiger_modcomments
-						INNER JOIN vtiger_crmentity ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid
-							AND vtiger_crmentity.deleted = 0
-						INNER JOIN vtiger_crmentity crmentity2 ON vtiger_modcomments.related_to = crmentity2.crmid
-							AND crmentity2.deleted = 0
-						 '.$nonAdminAccessQuery.'
-						ORDER BY vtiger_crmentity.crmid DESC LIMIT ?, ?',
-				array($pagingModel->getStartIndex(), $pagingModel->getPageLimit()));
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$params = array();
 
+		if($user === 'all') {
+			if(!$currentUser->isAdminUser()){
+				$accessibleUsers = array_keys($currentUser->getAccessibleUsers());
+				$nonAdminAccessQuery = Users_Privileges_Model::getNonAdminAccessControlQuery('ModComments');
+				$sql .= $nonAdminAccessQuery;
+				$sql .= ' AND userid IN('.  generateQuestionMarks($accessibleUsers).')';
+				$params = array_merge($params,$accessibleUsers);
+			}
+		}else{
+			$sql .= ' AND userid = ?';
+			$params[] = $user;
+		}
+		//handling date filter for history widget in home page
+		if(!empty($dateFilter)) {
+			$sql .= ' AND vtiger_modtracker_basic.changedon BETWEEN ? AND ? ';
+			$params[] = $dateFilter['start'];
+			$params[] = $dateFilter['end'];
+		}
+
+		$sql .= ' ORDER BY vtiger_crmentity.crmid DESC LIMIT ?, ?';
+		$params[] = $pagingModel->getStartIndex();
+		$params[] = $pagingModel->getPageLimit();
+		$result = $db->pquery($sql,$params);
+		
+		$noOfRows = $db->num_rows($result);
+		//setting up the count of records before checking permissions in history
+		$pagingModel->set('historycount', $noOfRows);
 		$comments = array();
-		for($i=0; $i<$db->num_rows($result); $i++) {
+		for($i=0; $i<$noOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			if(Users_Privileges_Model::isPermitted($row['setype'], 'DetailView', $row['related_to'])){
 				$commentModel = Vtiger_Record_Model::getCleanInstance('ModComments');
 				$commentModel->setData($row);
-				$time = $commentModel->get('createdtime');
-				$comments[$time] = $commentModel;
+                $commentModel->set('commentcontent', $commentModel->getParsedContent());
+				$comments[] = $commentModel;
 			}
 		}
 
 		return $comments;
 	}
 
-        /**
-	 * Function returns part of the query to  fetch only  activity
-	 * @param <String> $type - comments, updates or all
-	 * @return <String> $query 
-	 */
-          public function getActivityQuery($type)
-        {
-             if($type == 'updates'){
-                 $query=' AND module != "ModComments" ';
-		return $query;	
-             }
-            
-        }
-
-        
 	/**
 	 * Function returns comments and recent activities across CRM
 	 * @param <Vtiger_Paging_Model> $pagingModel
 	 * @param <String> $type - comments, updates or all
 	 * @return <Array>
 	 */
-	public function getHistory($pagingModel, $type=false) {
-		if(empty($type)) {
-			$type = 'all';
-		}
+	public function getHistory($pagingModel, $type='all', $userId='all', $dateFilter='') {
 		//TODO: need to handle security
 		$comments = array();
-		if( $type == 'comments') {
+		if($type == 'all' || $type == 'comments') {
 			$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments'); 
 			if($modCommentsModel->isPermitted('DetailView')){
-				$comments = $this->getComments($pagingModel);
+				$comments = $this->getComments($pagingModel, $userId, $dateFilter);
 			}
 			if($type == 'comments') {
 				return $comments;
 			}
 		}
+		$db = PearDatabase::getInstance();
+		$params = array();
+		$sql = 'SELECT vtiger_modtracker_basic.*
+				FROM vtiger_modtracker_basic
+				INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid
+				AND module NOT IN ("ModComments","Users") ';
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if($userId === 'all') {
+			if(!$currentUser->isAdminUser()) {
+				$accessibleUsers = array_keys($currentUser->getAccessibleUsers());
+				$sql .= ' AND whodid IN ('.  generateQuestionMarks($accessibleUsers).')';
+				$params = array_merge($params, $accessibleUsers);
+			}
+		}else{
+			$sql .= ' AND whodid = ?';
+			$params[] = $userId;
+		}
+		//handling date filter for history widget in home page
+		if(!empty($dateFilter)) {
+			$sql .= ' AND vtiger_modtracker_basic.changedon BETWEEN ? AND ? ';
+			$params[] = $dateFilter['start'];
+			$params[] = $dateFilter['end'];
+		}
+		$sql .= ' ORDER BY vtiger_modtracker_basic.id DESC LIMIT ?, ?';
+		$params[] = $pagingModel->getStartIndex();
+		$params[] = $pagingModel->getPageLimit();
+                
 		//As getComments api is used to get comment infomation,no need of getting
 		//comment information again,so avoiding from modtracker
-               //updateActivityQuery api is used to update a query to fetch a only activity
-		
-                else if($type == 'updates' || $type == 'all' )
-                {
-                     $db = PearDatabase::getInstance();
-                     $queryforActivity= $this->getActivityQuery($type);
-                     $result = $db->pquery('SELECT vtiger_modtracker_basic.*
-								FROM vtiger_modtracker_basic
-								INNER JOIN vtiger_crmentity ON vtiger_modtracker_basic.crmid = vtiger_crmentity.crmid
-								AND deleted = 0 ' .  $queryforActivity .'
-								ORDER BY vtiger_modtracker_basic.id DESC LIMIT ?, ?',array($pagingModel->getStartIndex(), $pagingModel->getPageLimit()));
-
-                     $history = array();
-		     for($i=0; $i<$db->num_rows($result); $i++) {
+		$result = $db->pquery($sql,$params);
+                
+		$activites = array();
+		$noOfRows = $db->num_rows($result);
+		//set the records count before checking permissions and unsetting it
+		//If updates count more than comments count, this count should consider
+		if($pagingModel->get('historycount') < $noOfRows) {
+			$pagingModel->set('historycount', $noOfRows);
+		}
+		for($i=0; $i<$noOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$moduleName = $row['module'];
 			$recordId = $row['crmid'];
 			if(Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId)){
 				$modTrackerRecorModel = new ModTracker_Record_Model();
 				$modTrackerRecorModel->setData($row)->setParent($recordId, $moduleName);
-				$time = $modTrackerRecorModel->get('changedon');
-				$history[$time] = $modTrackerRecorModel;
-			      }
-		    }  
-                    
-                    return $history;
-                }
+				$activites[] = $modTrackerRecorModel;
+			}
+		}
+
+		$history = array_merge($activites, $comments);
+		
+		$dateTime = array();
+		foreach($history as $model) {
+			if(get_class($model) == 'ModComments_Record_Model') {
+				$time = $model->get('createdtime');
+			} else {
+				$time = $model->get('changedon');
+			}
+			$dateTime[] = $time;
+		}
+
+		if(!empty($history)) {
+			array_multisort($dateTime,SORT_DESC,SORT_STRING,$history);
+			return $history;
+		}
 		return false;
 	}
 
@@ -128,7 +173,7 @@ class Home_Module_Model extends Vtiger_Module_Model {
 	 * @param <String> $recordId - record id
 	 * @return <Array>
 	 */
-	function getCalendarActivities($mode, $pagingModel, $user, $recordId = false) {
+	function getCalendarActivities($mode, $pagingModel, $user) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$db = PearDatabase::getInstance();
 
@@ -148,8 +193,8 @@ class Home_Module_Model extends Vtiger_Module_Model {
 
 		$query .= " WHERE vtiger_crmentity.deleted=0
 					AND (vtiger_activity.activitytype NOT IN ('Emails'))
-					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred'))
-					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held'))";
+					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
+					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held', 'Cancelled'))";
 
 		if ($mode === 'upcoming') {
 			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date >= '$currentDate' ELSE CONCAT(due_date,' ',time_end) >= '$nowInDBFormat' END";
@@ -171,24 +216,48 @@ class Home_Module_Model extends Vtiger_Module_Model {
 
 		$result = $db->pquery($query, $params);
 		$numOfRows = $db->num_rows($result);
-
+		
+		$groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
 		$activities = array();
+		$recordsToUnset = array();
 		for($i=0; $i<$numOfRows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
+			$newRow = $db->query_result_rowdata($result, $i);
 			$model = Vtiger_Record_Model::getCleanInstance('Calendar');
-			$model->setData($row);
-            if($row['activitytype'] == 'Task'){
-                $due_date = $row["due_date"];
+			$ownerId = $newRow['smownerid'];
+			$currentUser = Users_Record_Model::getCurrentUserModel();
+			$visibleFields = array('activitytype','date_start','time_start','due_date','time_end','assigned_user_id','visibility','smownerid','crmid');
+			$visibility = true;
+			if(in_array($ownerId, $groupsIds)) {
+				$visibility = false;
+			} else if($ownerId == $currentUser->getId()){
+				$visibility = false;
+			}
+			if(!$currentUser->isAdminUser() && $newRow['activitytype'] != 'Task' && $newRow['visibility'] == 'Private' && $ownerId && $visibility) {
+				foreach($newRow as $data => $value) {
+					if(in_array($data, $visibleFields) != -1) {
+						unset($newRow[$data]);
+					}
+				}
+				$newRow['subject'] = vtranslate('Busy','Events').'*';
+			}
+			if($newRow['activitytype'] == 'Task') {
+				unset($newRow['visibility']);
+				
+                $due_date = $newRow["due_date"];
                 $dayEndTime = "23:59:59";
                 $EndDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($due_date." ".$dayEndTime);
                 $dueDateTimeInDbFormat = explode(' ',$EndDateTime);
                 $dueTimeInDbFormat = $dueDateTimeInDbFormat[1];
-                $model->set('time_end',$dueTimeInDbFormat);
+                $newRow['time_end'] = $dueTimeInDbFormat;
             }
-			$model->setId($row['crmid']);
-			$activities[] = $model;
+			$model->setData($newRow);
+			$model->setId($newRow['crmid']);
+			$activities[$newRow['crmid']] = $model;
+			if(!$currentUser->isAdminUser() && $newRow['activitytype'] == 'Task' && isToDoPermittedBySharing($newRow['crmid']) == 'no') { 
+				$recordsToUnset[] = $newRow['crmid'];
+			}
 		}
-
+		
 		$pagingModel->calculatePageRange($activities);
 		if($numOfRows > $pagingModel->getPageLimit()){
 			array_pop($activities);
@@ -196,7 +265,17 @@ class Home_Module_Model extends Vtiger_Module_Model {
 		} else {
 			$pagingModel->set('nextPageExists', false);
 		}
-
+		//after setting paging model, unsetting the records which has no permissions
+		foreach($recordsToUnset as $record) {
+			unset($activities[$record]);
+		}
 		return $activities;
 	}
+    
+    /*
+     * Function to get supported utility actions for a module
+     */
+    function getUtilityActionsNames() {
+        return array();
+    }
 }

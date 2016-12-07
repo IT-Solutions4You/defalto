@@ -13,7 +13,7 @@ class Mobile_WS_Describe extends Mobile_WS_Controller {
 	
 	function process(Mobile_API_Request $request) {
 		$current_user = $this->getActiveUser();
-		
+
 		$module = $request->get('module');
 		$describeInfo = vtws_describe($module, $current_user);
 		Mobile_WS_Utils::fixDescribeFieldInfo($module, $describeInfo);

@@ -25,6 +25,7 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 		$searchKey = $request->get('search_key');
 		$searchValue = $request->get('search_value');
 		$currencyId = $request->get('currency_id');
+		$searchParams=$request->get('search_params');
 
 		//To handle special operation when selecting record from Popup
 		$getUrl = $request->get('get_url');
@@ -34,10 +35,10 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 		if(empty($multiSelectMode)) {
 			$multiSelectMode = false;
 		}
-                
-                if(empty($getUrl) && !empty($sourceField) && $sourceField=='productid' && !$multiSelectMode) { 
-                    $getUrl = 'getProductListPriceURL'; 
-                }
+
+		if(empty($getUrl) && !empty($sourceField) && !$multiSelectMode) {
+			$getUrl = 'getProductListPriceURL';
+		}
 
 		if(empty($cvId)) {
 			$cvId = '0';
@@ -71,6 +72,11 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 			$listViewModel->set('currency_id', $currencyId);
 		}
 
+		if(!empty($searchParams)) {
+			$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
+			$listViewModel->set('search_params',$transformedSearchParams);
+		}
+
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();
 		}
@@ -91,7 +97,18 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 		}
 		
 		$noOfEntries = count($this->listViewEntries);
-
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+	   //To make smarty to get the details easily accesible
+		foreach($searchParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$searchParams[$fieldName] = $fieldSearchInfo;
+			}
+		}
 		if(empty($sortOrder)) {
 			$sortOrder = "ASC";
 		}
@@ -127,6 +144,8 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 		$viewer->assign('LISTVIEW_ENTRIES_COUNT',$noOfEntries);
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
+		$viewer->assign('SEARCH_DETAILS', $searchParams);
+		$viewer->assign('MODULE_MODEL', $moduleModel);
 		
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			if(!$this->listViewCount){

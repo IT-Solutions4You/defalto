@@ -274,6 +274,9 @@ class PriceBooks extends CRMEntity {
 				if ($queryplanner->requireTable("vtiger_lastModifiedByPriceBooks")){
 				    $query .= " left join vtiger_users as vtiger_lastModifiedByPriceBooks on vtiger_lastModifiedByPriceBooks.id = vtiger_crmentity.modifiedby ";
 				}
+                if($queryplanner->requireTable('vtiger_createdby'.$module)){
+                    $query .= " left join vtiger_users as vtiger_createdby".$module." on vtiger_createdby".$module.".id = vtiger_crmentity.smcreatorid";
+                }
 				return $query;
 	}
 
@@ -288,10 +291,10 @@ class PriceBooks extends CRMEntity {
 		$matrix = $queryplanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityPriceBooks",array("vtiger_usersPriceBooks","vtiger_groupsPriceBooks"));
-		$matrix->setDependency("vtiger_pricebook",array("vtiger_crmentityPriceBooks","vtiger_currency_infoPriceBooks"));
 		if (!$queryplanner->requireTable('vtiger_pricebook', $matrix)) {
 			return '';
 		}
+        $matrix->setDependency("vtiger_pricebook",array("vtiger_crmentityPriceBooks","vtiger_currency_infoPriceBooks"));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_pricebook","pricebookid", $queryplanner);
 		// TODO Support query planner
@@ -329,5 +332,146 @@ class PriceBooks extends CRMEntity {
 		return $rel_tables[$secmodule];
 	}
 
+	function createRecords($obj){
+		global $adb;
+		$moduleName = $obj->module;
+		$moduleHandler = vtws_getModuleHandlerFromName($moduleName, $obj->user);
+		$moduleMeta = $moduleHandler->getMeta();
+		$moduleObjectId = $moduleMeta->getEntityId();
+		$moduleFields = $moduleMeta->getModuleFields();
+		$focus = CRMEntity::getInstance($moduleName);
+        $moduleSubject = 'bookname';
+
+		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
+		$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = '. Import_Data_Action::$IMPORT_RECORD_NONE .' GROUP BY '. $moduleSubject;
+
+		if($obj->batchImport) {
+			$importBatchLimit = getImportBatchLimit();
+			$sql .= ' LIMIT '. $importBatchLimit;
+		}
+		$result = $adb->query($sql);
+		$numberOfRecords = $adb->num_rows($result);
+
+		if ($numberOfRecords <= 0) {
+			return;
+		}
+		$bookNameList = array();
+		$fieldMapping = $obj->fieldMapping;
+		$fieldColumnMapping = $moduleMeta->getFieldColumnMapping();
+		for ($i = 0; $i < $numberOfRecords; ++$i) {
+			$row = $adb->raw_query_result_rowdata($result, $i);
+			$rowId = $row['id'];
+			$subject = $row['bookname'];
+			$entityInfo = null;
+			$fieldData = array();
+			$subject = str_replace("\\", "\\\\", $subject);
+			$subject = str_replace('"', '""', $subject);
+			$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = '. Import_Data_Action::$IMPORT_RECORD_NONE .' AND '. $moduleSubject . ' = "'. $subject .'"';
+			$subjectResult = $adb->query($sql);
+			$count = $adb->num_rows($subjectResult);
+			$subjectRowIDs = $fieldArray = $productList = array();
+			for ($j = 0; $j < $count; ++$j) {
+				$subjectRow = $adb->raw_query_result_rowdata($subjectResult, $j);
+				array_push($subjectRowIDs, $subjectRow['id']);
+				$productList[$j]['relatedto'] = $subjectRow['relatedto'];
+				$productList[$j]['listprice'] = $subjectRow['listprice'];
+			}
+			foreach ($fieldMapping as $fieldName => $index) {
+				$fieldData[$fieldName] = $row[strtolower($fieldName)];
+			}
+
+            $entityInfo = $this->importRecord($obj, $fieldData, $productList);
+            unset($productList);
+			if ($entityInfo == null) {
+                $entityInfo = array('id' => null, 'status' => Import_Data_Action::$IMPORT_RECORD_FAILED);
+            } else if(!$entityInfo['status']){
+                $entityInfo['status'] = Import_Data_Action::$IMPORT_RECORD_CREATED;
+            }
+
+                $entityIdComponents = vtws_getIdComponents($entityInfo['id']);
+                $recordId = $entityIdComponents[1];
+                if(!empty($recordId)) {
+                    $entityfields = getEntityFieldNames($moduleName);
+                    $label = '';
+                    if(is_array($entityfields['fieldname'])){
+                        foreach($entityfields['fieldname'] as $field){
+                            $label .= $fieldData[$field]." ";
+                        }
+                    }else {
+                        $label = $fieldData[$entityfields['fieldname']];
+                    }
+
+                    $adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array(trim($label), $recordId));
+                    //updating solr while import records
+                    $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+                    $focus = $recordModel->getEntity();
+                    $focus->id = $recordId;
+                    $focus->column_fields = $fieldData;
+                    $this->entityData[] = VTEntityData::fromCRMEntity($focus);
+                }
+
+                $label = trim($label);
+                $adb->pquery('UPDATE vtiger_crmentity SET label=? WHERE crmid=?', array($label, $recordId));
+                //Creating entity data of updated records for post save events
+                if ($entityInfo['status'] !== Import_Data_Action::$IMPORT_RECORD_CREATED) {
+                    $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+                    $focus = $recordModel->getEntity();
+                    $focus->id = $recordId;
+                    $focus->column_fields = $entityInfo;
+                    $this->entitydata[] = VTEntityData::fromCRMEntity($focus);
+                }
+				
+			foreach($subjectRowIDs as $id){
+				$obj->importedRecordInfo[$id] = $entityInfo;
+				$obj->updateImportStatus($id, $entityInfo);
+			}
+		}
+
+        $obj->entitydata = null;
+		$result = null;
+		return true;
+	}
+
+	function importRecord($obj, $fieldData, $productList) {
+		$moduleName = 'PriceBooks';
+		$moduleHandler = vtws_getModuleHandlerFromName($moduleName, $obj->user);
+		$moduleMeta = $moduleHandler->getMeta();
+		unset($fieldData['listprice']); unset($fieldData['relatedto']);
+		$fieldData = $obj->transformForImport($fieldData, $moduleMeta);
+		try{
+			$entityInfo = vtws_create($moduleName, $fieldData, $obj->user);
+			if($entityInfo && $productList){
+				$this->relatePriceBookWithProduct($entityInfo, $productList);
+			}
+		} catch (Exception $e){
+		}
+		$entityInfo['status'] = $obj->getImportRecordStatus('created');
+		return $entityInfo;
+	}
+
+	function relatePriceBookWithProduct($entityinfo, $productList) {
+		if(count($productList) > 0){
+			foreach($productList as $product){
+				if(!$product['relatedto'])
+					continue;
+				$productName = $product['relatedto'];
+				$productName = explode('::::', $productName);
+				$productId = getEntityId($productName[0], $productName[1]);
+                $presence = isRecordExists($productId);
+                if($presence){
+                    $productInstance = Vtiger_Record_Model::getInstanceById($productId);
+                    $pricebookId = vtws_getIdComponents($entityinfo['id']);
+                    if($productInstance){
+                        $recordModel = Vtiger_Record_Model::getInstanceById($pricebookId[1]);
+                        $recordModel->updateListPrice($productId, $product['listprice']);
+                    }
+                }
+			}
+		}
+	}
+
+	function getGroupQuery($tableName){
+		return 'SELECT status FROM '.$tableName.' GROUP BY bookname';
+	}
 }
 ?>

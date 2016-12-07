@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Quotes'                       => 'Teklif'                      , 
 	'SINGLE_Quotes'                => 'Teklif'                      , 
 	'LBL_EXPORT_TO_PDF'            => 'PDF Olarak Aktar'            , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
@@ -19,11 +20,11 @@ $languageStrings = array(
 	'Valid Till'                   => 'Geçerlilik Tarihi'          , 
 	'Inventory Manager'            => 'Stok Yöneticisi'            , 
 	'Accepted'                     => 'Kabul Edildi'                , 
-	'Rejected'                     => 'İptal'                      ,
-	 'Open Quotes'                  =>'Açık Kurları', 
-    
-        //Taxes 
-        'VAT'      => 'KDV', 
-        'Service'  => 'Hizmet', 
-        'Sales'    => 'Satış'
+	'Rejected'                     => 'İptal'                      , 
+    'Related To'                   => 'İlgili'                      ,
+
+  'LBL_THIS' => 'Bu',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'sistem silinmiş.veya bu öğeyi kaldırmak yerine lütfen ',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Bu satır öğesi sistemi,lütfen bu satırı Kaldır öğeler silinir ',
+
 );

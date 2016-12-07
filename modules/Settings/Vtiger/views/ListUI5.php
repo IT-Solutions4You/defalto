@@ -9,12 +9,13 @@
  ************************************************************************************/
 
 class Settings_Vtiger_ListUI5_View extends Settings_Vtiger_UI5Embed_View {
-
+	
 	protected function getUI5EmbedURL(Vtiger_Request $request) {
         $module = $request->getModule();
         if($module == 'EmailTemplate') {
             return 'index.php?module=Settings&action=listemailtemplates&parenttab=Settings';
+        } else if($module == 'PDFMaker') {
+            return 'index.php?module=PDFMaker&action=index&parenttab=Settings';
         }
 	}
-
 }

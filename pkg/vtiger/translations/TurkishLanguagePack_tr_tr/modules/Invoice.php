@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Invoice'                      => 'Faturalar'                      , 
 	'SINGLE_Invoice'               => 'Fatura'                      , 
 	'LBL_EXPORT_TO_PDF'            => 'PDF Olarak Aktar'            , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
@@ -30,4 +31,9 @@ $languageStrings = array(
 	'LBL_NOT_A_BUNDLE' => 'Değil bir Bundle',
 	'LBL_SUB_PRODUCTS'	=> 'Alt Ürünler',
 	'LBL_ACTION'	=> 'Eylem',
+
+  'LBL_THIS' => 'Bu',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'sistem silinmiş.veya bu öğeyi kaldırmak yerine lütfen ',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Bu satır öğesi sistemi,lütfen bu satırı Kaldır öğeler silinir ',
+
 );

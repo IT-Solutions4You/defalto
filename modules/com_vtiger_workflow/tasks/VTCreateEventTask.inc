@@ -49,7 +49,7 @@ class VTCreateEventTask extends VTTask{
 		global $adb, $current_user;
 		$userId = $entityData->get('assigned_user_id');
 		if($userId===null){
-			$userId = vtws_getWebserviceEntityId('Users', 1);
+			$userId = vtws_getWebserviceEntityId('Users', Users::getActiveAdminId());
 		}
 
 		$moduleName = $entityData->getModuleName();
@@ -72,22 +72,31 @@ class VTCreateEventTask extends VTTask{
 					$assignedGroupId = vtws_getWebserviceEntityId('Groups', $this->assigned_user_id);
 					$userId = $assignedGroupId;
 				}
+				else{ 
+					if($this->assigned_user_id == 'copyParentOwner'){ 
+						$userId = $entityData->get('assigned_user_id'); 
+					}
+				}
 			}
 		}
-
+		
+		$time = ($this->startTime) ? self::convertToDBFormat($this->startTime) : date('H:i:s');
+		$endTime = ($this->endTime) ? self::convertToDBFormat($this->endTime) : date('H:i:s');
+		
 		$fields = array(
 			'activitytype'=>$this->eventType,
-			'description'=>$this->description,
-			'subject'=>$this->eventName,
+			'description'=> decode_html($this->description),
+			'subject'=> decode_html($this->eventName),
 			'taskpriority'=>$this->priority,
 			'eventstatus'=>$this->status,
 			'assigned_user_id'=>$userId,
-			'time_start'=>self::convertToDBFormat($this->startTime),
+			'time_start'=>$time,
 			'date_start'=> $startDate,
-			'time_end'=>self::convertToDBFormat($this->endTime),
+			'time_end'=>$endTime,
 			'due_date'=>$endDate,
 			'taskstatus'=>'',
-			'duration_hours'=>'0'
+			'duration_hours'=>'0',
+			'recurringtype' => $this->recurringtype
 		);
 		
 		//Setting visibility value
@@ -115,7 +124,55 @@ class VTCreateEventTask extends VTTask{
 				$fields['parent_id'] = $id;
 			}
 		}
-
+		
+		$entityModuleHandler = vtws_getModuleHandlerFromName('Events', $current_user);
+		$handlerMeta = $entityModuleHandler->getMeta();
+		$moduleFields = $handlerMeta->getModuleFields();
+		foreach ($moduleFields as $name => $fieldModel) {
+			if(!empty($fields[$name])) {
+				continue;
+			} else if(!empty($this->$name)) {
+				$fields[$name] = $this->$name;
+			}
+		}
+		
+		$mandatoryFields = $handlerMeta->getMandatoryFields();
+		foreach ($mandatoryFields as $fieldName) {
+			$fieldInstance = $moduleFields[$fieldName];
+			$fieldDataType = $fieldInstance->getFieldDataType();
+			if(!empty($fields[$fieldName])) {
+				continue;
+			} else {
+				$fieldValue = $this->$fieldName;
+				if(empty($fieldValue)) {
+					$defaultValue = $fieldInstance->getDefault();
+					$fieldValue = $defaultValue;
+				}
+				if(empty($fieldValue)) {
+					$fieldValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldDataType);
+					if($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist') {
+						$picklistValues = $fieldInstance->getPickListOptions();
+						$fieldValue = $picklistValues[0]['label'];
+					}
+				}
+				$fields[$fieldName] = $fieldValue;
+			}
+		}
+		
+		//Activity Save api depends on $_REQUEST to save the recurring info, here we will get the parent module $_REQUEST
+		//So, setting up the event details to $_REQUEST as repeat events should work properly
+		if($this->recurringcheck) {
+			$fieldNames = $this->getFieldNames();
+			foreach($fieldNames as $name) {
+				$_REQUEST[$name] = $this->$name;
+			}
+		}
+		//If recurring check empty, recurring type should not be set
+		if(empty($this->recurringcheck)) {
+			unset($_REQUEST['recurringtype']);
+			unset($fields['recurringtype']);
+		}
+		
 		$event = vtws_create('Events', $fields, $adminUser);
 		$eventIdDetails = vtws_getIdComponents($event['id']);
 		$entityIdDetails = vtws_getIdComponents($id);
@@ -128,69 +185,31 @@ class VTCreateEventTask extends VTTask{
 		list($typeId, $id) = vtws_getIdComponents($event['id']);
 		$event = CRMEntity::getInstance('Events');
 		$event->id = $id;
-		$event->column_fields = $recordValues;
-
+		foreach($recordValues as $recordFieldname => $recordFieldValue){
+			$event->column_fields[$recordFieldname] = $recordFieldValue;
+		}
+		$event->column_fields['id'] = $event->id;
+		
 		if($this->recurringcheck && !empty($startDate) &&
 				($this->calendar_repeat_limit_date)) {
-
-			$resultRow = array();
-
-			$resultRow['date_start'] = $startDate;
-			$resultRow['time_start'] = self::conv12to24hour($this->startTime);
-			$resultRow['due_date'] = $this->calendar_repeat_limit_date;
-			$resultRow['time_end'] = self::conv12to24hour($this->endTime);
-			$resultRow['recurringtype'] = $this->recurringtype;
-			$resultRow['recurringfreq'] = $this->repeat_frequency;
-
-			if ($this->sun_flag) {
-				$daysOfWeekToRepeat[] = 0;
-			}
-			if ($this->mon_flag) {
-				$daysOfWeekToRepeat[] = 1;
-			}
-			if ($this->tue_flag) {
-				$daysOfWeekToRepeat[] = 2;
-			}
-			if ($this->wed_flag) {
-				$daysOfWeekToRepeat[] = 3;
-			}
-			if ($this->thu_flag) {
-				$daysOfWeekToRepeat[] = 4;
-			}
-			if ($this->fri_flag) {
-				$daysOfWeekToRepeat[] = 5;
-			}
-			if ($this->sat_flag) {
-				$daysOfWeekToRepeat[] = 6;
-			}
-
-			if ($this->recurringtype == 'Daily' || $this->recurringtype == 'Yearly') {
-				$recurringInfo = $this->recurringtype;
-			} elseif ($this->recurringtype == 'Weekly') {
-				if ($daysOfWeekToRepeat != null) {
-					$recurringInfo = $this->recurringtype . '::' . implode('::', $daysOfWeekToRepeat);
-				} else {
-					$recurringInfo = $recurringType;
-				}
-			} elseif ($this->recurringtype == 'Monthly') {
-				$recurringInfo = $this->recurringtype . '::' . $this->repeatMonth;
-				if ($this->repeatMonth == 'date') {
-					$recurringInfo = $recurringInfo . '::' . $this->repeatMonth_date;
-				} else {
-					$recurringInfo = $recurringInfo . '::' . $this->repeatMonth_daytype . '::' . $this->repeatMonth_day;
-				}
-			}
-			$resultRow['recurringinfo'] = $recurringInfo;
-	
 			// Added this to relate these events to parent module.
 			$_REQUEST['createmode'] = 'link';
 			$_REQUEST['return_module'] = $moduleName;
 			$_REQUEST['return_id'] = $entityIdDetails[1];
-
-			$recurObj = RecurringType::fromDBRequest($resultRow);
-
+			
+			//repeatFromRequest calling getrecurringObjValue(), api expecting UserTimeZone values, so converting to UserTimeZone values
+			$startDateObj = DateTimeField::convertToUserTimeZone($startDate . ' ' . self::convertToDBFormat($this->startTime));
+			$_REQUEST['date_start'] = $startDateObj->format('Y-m-d');
+			$_REQUEST['time_start'] = $startDateObj->format('H:i');
+			$endDateObj = DateTimeField::convertToUserTimeZone($endDate . ' ' . self::convertToDBFormat($this->endTime));
+			$_REQUEST['due_date'] = $endDateObj->format('Y-m-d');
+			$_REQUEST['time_end'] = $endDateObj->format('H:i');
+			//comparing date_start with recurring dates, which are in the format of Y-m-d always
+			$event->column_fields['date_start'] = $startDateObj->format('Y-m-d');
+			$event->column_fields['due_date'] = $endDateObj->format('Y-m-d');
+			
 			include_once 'modules/Calendar/RepeatEvents.php';
-			Calendar_RepeatEvents::repeat($event, $recurObj);
+			Calendar_RepeatEvents::repeatFromRequest($event, false);
 
 			$_REQUEST['createmode'] = '';
 
@@ -214,18 +233,18 @@ class VTCreateEventTask extends VTTask{
 		return $date;
 	}
 
-    /**
-     * To convert time_start & time_end values to db format
-     * @param type $timeStr
-     * @return time
-     */
-    static function convertToDBFormat($timeStr){
-        $date = new DateTime();
-        $time = Vtiger_Time_UIType::getTimeValueWithSeconds($timeStr);
-        $dbInsertDateTime = DateTimeField::convertToDBTimeZone($date->format('Y-m-d').' '.$time);
-        return $dbInsertDateTime->format('H:i:s');
-    }
-    
+	/**
+	 * To convert time_start & time_end values to db format
+	 * @param type $timeStr
+	 * @return time
+	 */
+	static function convertToDBFormat($timeStr){
+		$date = new DateTime();
+		$time = Vtiger_Time_UIType::getTimeValueWithSeconds($timeStr);
+		$dbInsertDateTime = DateTimeField::convertToDBTimeZone($date->format('Y-m-d').' '.$time);
+		return $dbInsertDateTime->format('H:i:s');
+	}
+
 	static function conv12to24hour($timeStr){
 		$arr = array();
 		preg_match('/(\d{1,2}):(\d{1,2})(am|pm)/', $timeStr, $arr);

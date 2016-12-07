@@ -17,53 +17,50 @@ class Webforms {
 	// Cache to speed up describe information store
 	protected static $moduleDescribeCache = array();
 
-
 	function vtlib_handler($moduleName, $eventType) {
-
 		require_once('include/utils/utils.php');
 		global $adb;
-		
 
-			if($eventType == 'module.postinstall') {
-				// Mark the module as Standard module
-				// Mark the module as Standard module
-				$this->updateSettings();
-				$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($this->LBL_WEBFORMS));
-			} else if($eventType == 'module.disabled') {
-			// TODO Handle actions when this module is disabled.
-				global $log,$adb;
-				$adb->pquery('UPDATE vtiger_settings_field SET active= 1  WHERE  name= ?',array($this->LBL_WEBFORMS));
-			} else if($eventType == 'module.enabled') {
-			// TODO Handle actions when this module is enabled.
-				global $log,$adb;
-				$adb->pquery('UPDATE vtiger_settings_field SET active= 0  WHERE  name= ?',array($this->LBL_WEBFORMS));
-			} else if($eventType == 'module.preuninstall') {
-			// TODO Handle actions when this module is about to be deleted.
-			} else if($eventType == 'module.preupdate') {
-			// TODO Handle actions before this module is updated.
-			} else if($eventType == 'module.postupdate') {
-			// TODO Handle actions after this module is updated.
-				$this->updateSettings();
-			}
-        }
+		if($eventType == 'module.postinstall') {
+			// Mark the module as Standard module
+			// Mark the module as Standard module
+			$this->updateSettings();
+			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($this->LBL_WEBFORMS));
+		} else if($eventType == 'module.disabled') {
+		// TODO Handle actions when this module is disabled.
+			global $log,$adb;
+			$adb->pquery('UPDATE vtiger_settings_field SET active= 1  WHERE  name= ?',array($this->LBL_WEBFORMS));
+		} else if($eventType == 'module.enabled') {
+		// TODO Handle actions when this module is enabled.
+			global $log,$adb;
+			$adb->pquery('UPDATE vtiger_settings_field SET active= 0  WHERE  name= ?',array($this->LBL_WEBFORMS));
+		} else if($eventType == 'module.preuninstall') {
+		// TODO Handle actions when this module is about to be deleted.
+		} else if($eventType == 'module.preupdate') {
+		// TODO Handle actions before this module is updated.
+		} else if($eventType == 'module.postupdate') {
+		// TODO Handle actions after this module is updated.
+			$this->updateSettings();
+		}
+	}
 
 	function updateSettings(){
-			global $adb;
+		global $adb;
 
-			$fieldid = $adb->getUniqueID('vtiger_settings_field');
-			$blockid = getSettingsBlockId('LBL_OTHER_SETTINGS');
-			$seq_res = $adb->pquery("SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid = ?", array($blockid));
-			if ($adb->num_rows($seq_res) > 0) {
-				$cur_seq = $adb->query_result($seq_res, 0, 'max_seq');
-				if ($cur_seq != null)	$seq = $cur_seq + 1;
-			}
-
-			$result=$adb->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?',array($this->LBL_WEBFORMS));
-			if(!$adb->num_rows($result)){
-				$adb->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence)
-					VALUES (?,?,?,?,?,?,?)', array($fieldid, $blockid, $this->LBL_WEBFORMS , 'modules/Webforms/img/Webform.png', 'Allows you to manage Webforms', 'index.php?module=Webforms&action=index&parenttab=Settings', $seq));
-			}			
+		$fieldid = $adb->getUniqueID('vtiger_settings_field');
+		$blockid = getSettingsBlockId('LBL_OTHER_SETTINGS');
+		$seq_res = $adb->pquery("SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid = ?", array($blockid));
+		if ($adb->num_rows($seq_res) > 0) {
+			$cur_seq = $adb->query_result($seq_res, 0, 'max_seq');
+			if ($cur_seq != null)	$seq = $cur_seq + 1;
 		}
+
+		$result=$adb->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?',array($this->LBL_WEBFORMS));
+		if(!$adb->num_rows($result)){
+			$adb->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence)
+				VALUES (?,?,?,?,?,?,?)', array($fieldid, $blockid, $this->LBL_WEBFORMS , 'modules/Webforms/img/Webform.png', 'Allows you to manage Webforms', 'index.php?module=Webforms&action=index&parenttab=Settings', $seq));
+		}
+	}
 
 	static function checkAdminAccess($user) {
 		if (is_admin($user))

@@ -63,5 +63,9 @@ class Vtiger_Reminder_UIType extends Vtiger_Date_UIType {
             return '';
         }
 	}
-    
+
+	public function getListSearchTemplateName() {
+		return 'uitypes/FieldSearchView.tpl';
+	}
+
 }

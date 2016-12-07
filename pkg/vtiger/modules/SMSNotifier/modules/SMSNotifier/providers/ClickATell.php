@@ -15,7 +15,7 @@ class SMSNotifier_ClickATell_Provider implements SMSNotifier_ISMSProvider_Model 
 	private $parameters = array();
 
 	const SERVICE_URI = 'http://api.clickatell.com';
-	private static $REQUIRED_PARAMETERS = array('api_id', 'from', 'mo');
+	private static $REQUIRED_PARAMETERS = array('api_id', 'from', 'mo', 'unicode');
 
 	/**
 	 * Function to get provider name

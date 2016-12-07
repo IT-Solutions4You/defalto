@@ -37,4 +37,14 @@ $languageStrings = array(
 	'Date & Time Sent'             => 'Date Sent'                   , // TODO: Review
     'Time Start'                   => 'Gönderilen Zaman'            ,
     'LBL_EMAIL_INFORMATION' => 'E-mail Bilgileri',
+    'LBL_EMAILTEMPLATE_WARNING'    => 'Birleştirme etiketleri düzeltmek mısınız',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Seçtiğiniz şablon alıcı kaydına ilgili birleştirme etiketleri sahip olduğundan emin olun. 
+                                            Eğer Kurşun bir e-posta gönderiyor, ancak birleştirme etiketleri modülü İletişim aitse: (ex $contacts-lastname$) 
+                                            daha sonra birleştirilmiş değerleri olmayacaktır.',  
+	'Draft'                        => 'Taslak'                      ,
+    'Parent ID'                    => 'Ana Tutanak',
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'uyarı',
+);  

@@ -18,6 +18,7 @@ $languageStrings = array(
 	'LBL_ASSIGN_ROLE'              => 'Назначить роль'                 , 
 	'LBL_CHOOSE_PROFILES'          => 'Выберите профили'             , 
 	'LBL_COPY_PRIVILEGES_FROM'     => 'Скопируйте привилегии от'        , 
+    'LBL_TRANSFER_TO_OTHER_ROLE' =>'Передача права собственности другим роли',
 	'LBL_PROFILE'                  => 'Профиль'              , // KEY 5.x: LBL_PROFILE_M
 	'LBL_REPORTS_TO'               => 'Подчиняется'      , 
 	'LBL_NAME'                     => 'Имя'                      , 
@@ -25,4 +26,12 @@ $languageStrings = array(
 	'LBL_ASSIGN_EXISTING_PRIVILEGES' => 'Связать priviliges из существующих профилей', 
 	'LBL_PRIVILEGES'               => 'Права'                  , 
 	'LBL_DUPLICATES_EXIST'         => 'Дубликат Роль Существует'       , 
+
+  'LBL_CAN_ASSIGN_RECORDS_TO' => 'Можно Присваивать Записям В',
+  'LBL_ALL_USERS' => 'Все Пользователи',
+  'LBL_USERS_WITH_LOWER_LEVEL' => 'Пользователи, имеющие подчиненную роль',
+  'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'Пользователи, имеющие одинаковую роль или второстепенную роль',
+  'LBL_EDIT_ROLE' => 'Изменение Роли',
+  'LBL_CREATE_ROLE' => 'Создать Роль',
+
 );

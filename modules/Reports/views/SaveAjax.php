@@ -21,8 +21,8 @@ class Reports_SaveAjax_View extends Vtiger_IndexAjax_View {
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId()) && !$reportModel->isEditable()) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -35,7 +35,7 @@ class Reports_SaveAjax_View extends Vtiger_IndexAjax_View {
 		$reportModel = Reports_Record_Model::getInstanceById($record);
 
 		$reportModel->setModule('Reports');
-       
+
 		$reportModel->set('advancedFilter', $request->get('advanced_filter'));
 
 		$page = $request->get('page');
@@ -46,25 +46,27 @@ class Reports_SaveAjax_View extends Vtiger_IndexAjax_View {
 		if ($mode === 'save') {
 			$reportModel->saveAdvancedFilters();
 			$reportData = $reportModel->getReportData($pagingModel);
-            $data = $reportData['data'];
+			$data = $reportData['data'];
 		} else if ($mode === 'generate') {
 			$reportData = $reportModel->generateData($pagingModel);
-            $data = $reportData['data'];
+			$data = $reportData['data'];
 		}
 		$calculation = $reportModel->generateCalculationData();
 
 		$viewer->assign('PRIMARY_MODULE', $reportModel->getPrimaryModule());
 		$viewer->assign('CALCULATION_FIELDS', $calculation);
-        $viewer->assign('DATA', $data);
+		$viewer->assign('DATA', $data);
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('MODULE', $moduleName);
-        $viewer->assign('NEW_COUNT',$reportData['count']);
-        $viewer->assign('REPORT_RUN_INSTANCE', ReportRun::getInstance($record));
+		$viewer->assign('NEW_COUNT',$reportData['count']);
+		$viewer->assign('REPORT_RUN_INSTANCE', ReportRun::getInstance($record));
+		$viewer->assign('REPORT_MODEL', $reportModel);
 		$viewer->view('ReportContents.tpl', $moduleName);
 	}
 
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
+
 }

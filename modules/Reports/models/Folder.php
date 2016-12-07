@@ -8,6 +8,7 @@
  * All Rights Reserved.
  * *********************************************************************************** */
 
+require_once 'modules/Reports/ReportUtils.php';
 class Reports_Folder_Model extends Vtiger_Base_Model {
 
 	/**
@@ -33,7 +34,7 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	function getName() {
 		return $this->get('foldername');
 	}
-    
+
 	/**
 	 * Function returns the instance of Folder model
 	 * @return <Reports_Folder_Model>
@@ -82,42 +83,31 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 						'sortBy'=>$this->get('sortby'));
 
 		$reportClassInstance = Vtiger_Module_Model::getClassInstance('Reports');
-		
+
 		$fldrId = $this->getId ();
 		if($fldrId == 'All') {
-			$fldrId = false;
 			$paramsList = array( 'startIndex'=>$pagingModel->getStartIndex(),
 								 'pageLimit'=>$pagingModel->getPageLimit(),
 								 'orderBy'=>$this->get('orderby'),
 								 'sortBy'=>$this->get('sortby')
 							);
 		}
-		
+		$paramsList['searchParams'] = $this->get('search_params');
+
 		$reportsList = $reportClassInstance->sgetRptsforFldr($fldrId, $paramsList);
-		if(!$fldrId){
-			foreach ($reportsList as $reportId => $reports) {
-				$reportsCount += count($reports);
-			}
-		}else{
-			$reportsCount = count($reportsList);
-		}
-		
+		$reportsCount = count($reportsList);
+
 		$pageLimit = $pagingModel->getPageLimit();
 		if($reportsCount > $pageLimit){
-			if(!$fldrId){
-				$lastKey = end(array_keys($reportsList));
-				array_pop($reportsList[$lastKey]);
-			}else{
-				array_pop($reportsList);
-			}
+			array_pop($reportsList);
 			$pagingModel->set('nextPageExists', true);
 		}else{
 			$pagingModel->set('nextPageExists', false);
 		}
-		
+
 		$reportModuleModel = Vtiger_Module_Model::getInstance('Reports');
-		
-		if($fldrId == false) {
+
+		if($fldrId == 'All' || $fldrId == 'shared') {
 			return $this->getAllReportModels($reportsList, $reportModuleModel);
 		} else {
 			$reportModels = array();
@@ -163,64 +153,63 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	 */
 	public static function getInstanceById($folderId) {
 		$folderModel = Vtiger_Cache::get('reportsFolder',$folderId);
-        if(!$folderModel){
-            $db = PearDatabase::getInstance();
-            $folderModel = Reports_Folder_Model::getInstance();
+		if(!$folderModel){
+			$db = PearDatabase::getInstance();
+			$folderModel = Reports_Folder_Model::getInstance();
 
-            $result = $db->pquery("SELECT * FROM vtiger_reportfolder WHERE folderid = ?", array($folderId));
+			$result = $db->pquery("SELECT * FROM vtiger_reportfolder WHERE folderid = ?", array($folderId));
 
-            if ($db->num_rows($result) > 0) {
-                $values = $db->query_result_rowdata($result, 0);
-                $folderModel->setData($values);
-            }
-            Vtiger_Cache::set('reportsFolder',$folderId,$folderModel);
-        }
-        return $folderModel;
+			if ($db->num_rows($result) > 0) {
+				$values = $db->query_result_rowdata($result, 0);
+				$folderModel->setData($values);
+			}
+			Vtiger_Cache::set('reportsFolder',$folderId,$folderModel);
+		}
+		return $folderModel;
 	}
-    
-    /**
-     * Function returns the instance of Folder model
-     * @return <Reports_Folder_Model>
-     */
-    public static function getAll() {
-        $db = PearDatabase::getInstance();
-        $folders = Vtiger_Cache::get('reports', 'folders');
-        if (!$folders) {
-            $folders = array();
-            $result = $db->pquery("SELECT * FROM vtiger_reportfolder ORDER BY foldername ASC", array());
-            $noOfFolders = $db->num_rows($result);
-            if ($noOfFolders > 0) {
-                for ($i = 0; $i < $noOfFolders; $i++) {
-                    $folderModel = Reports_Folder_Model::getInstance();
-                    $values = $db->query_result_rowdata($result, $i);
-                    $folders[$values['folderid']] = $folderModel->setData($values);
-                    Vtiger_Cache::set('reportsFolder',$values['folderid'],$folderModel);
-                }
-            }
-            Vtiger_Cache::set('reports','folders',$folders);
-        }
-        return $folders;
-    }
 
-    /**
+	/**
+	 * Function returns the instance of Folder model
+	 * @return <Reports_Folder_Model>
+	 */
+	public static function getAll() {
+		$db = PearDatabase::getInstance();
+		$folders = Vtiger_Cache::get('reports', 'folders');
+		if (!$folders) {
+			$folders = array();
+			$result = $db->pquery("SELECT * FROM vtiger_reportfolder ORDER BY foldername ASC", array());
+			$noOfFolders = $db->num_rows($result);
+			if ($noOfFolders > 0) {
+				for ($i = 0; $i < $noOfFolders; $i++) {
+					$folderModel = Reports_Folder_Model::getInstance();
+					$values = $db->query_result_rowdata($result, $i);
+					$folders[$values['folderid']] = $folderModel->setData($values);
+					Vtiger_Cache::set('reportsFolder',$values['folderid'],$folderModel);
+				}
+			}
+			Vtiger_Cache::set('reports','folders',$folders);
+		}
+		return $folders;
+	}
+
+	/**
 	 * Function returns duplicate record status of the module
 	 * @return true if duplicate records exists else false
 	 */
 	function checkDuplicate() {
 		$db = PearDatabase::getInstance();
 
-		$query = 'SELECT 1 FROM vtiger_reportfolder WHERE foldername = ?';
+		$query = 'SELECT 1 FROM vtiger_reportfolder WHERE foldername = ?'; 
 		$params = array($this->getName());
-
 		$folderId = $this->getId();
 		if ($folderId) {
 			$query .= ' AND folderid != ?';
 			array_push($params, $folderId);
 		}
-
+		$folderName = $this->getName();
 		$result = $db->pquery($query, $params);
 
-		if ($db->num_rows($result) > 0) {
+		if (($db->num_rows($result) > 0)||($folderName == "Shared With Me")||($folderName == "All Reports")) {
 			return true;
 		}
 		return false;
@@ -246,12 +235,12 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	 * @return true if it is read only else false
 	 */
 	function isDefault() {
-        if ($this->get('state') == 'SAVED') {
+		if ($this->get('state') == 'SAVED') {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Function to get info array while saving a folder
 	 * @return Array  info array
@@ -294,23 +283,23 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	public function getReportsCount() {
 		$db = PearDatabase::getInstance();
 		$params = array();
-		
-        // To get the report ids which are permitted for the user
-            $query = "SELECT reportmodulesid, primarymodule from vtiger_reportmodules";
-            $result = $db->pquery($query, array());
-            $noOfRows = $db->num_rows($result);
-            $allowedReportIds = array();
-            for($i=0;$i<$noOfRows;$i++){
-                $primaryModule = $db->query_result($result,$i,'primarymodule');
-                $reportid = $db->query_result($result,$i,'reportmodulesid');
-                if(isPermitted($primaryModule,'index') == "yes"){
-                    $allowedReportIds[] = $reportid;
-                }
-            }
-        //End
+
+		// To get the report ids which are permitted for the user
+			$query = "SELECT reportmodulesid, primarymodule from vtiger_reportmodules";
+			$result = $db->pquery($query, array());
+			$noOfRows = $db->num_rows($result);
+			$allowedReportIds = array();
+			for($i=0;$i<$noOfRows;$i++){
+				$primaryModule = $db->query_result($result,$i,'primarymodule');
+				$reportid = $db->query_result($result,$i,'reportmodulesid');
+				if(isPermitted($primaryModule,'index') == "yes"){
+					$allowedReportIds[] = $reportid;
+				}
+			}
+		//End
 		$sql = "SELECT count(*) AS count FROM vtiger_report
 				INNER JOIN vtiger_reportfolder ON vtiger_reportfolder.folderid = vtiger_report.folderid AND 
-                vtiger_report.reportid in (".implode(',',$allowedReportIds).")";
+				vtiger_report.reportid in (".implode(',',$allowedReportIds).")";
 		$fldrId = $this->getId();
 		if($fldrId == 'All') {
 			$fldrId = false;
@@ -321,15 +310,22 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 			$sql .= " WHERE vtiger_reportfolder.folderid=?";
 			array_push($params,$fldrId);
 		}
+
+		$searchParams = $this->get('searchParams');
+		$searchCondition = getReportSearchCondition($searchParams, $fldrId);
+		if($searchCondition) {
+			$sql .= $searchCondition;
+		}
+
 		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if (!$currentUserModel->isAdminUser()) {
 			$currentUserId = $currentUserModel->getId();
-			
+
 			$groupId = implode(',',$currentUserModel->get('groups'));
 			if ($groupId) {
 				$groupQuery = "(SELECT reportid from vtiger_reportsharing WHERE shareid IN ($groupId) AND setype = 'groups') OR ";
 			}
-			
+
 			$sql .= " AND (vtiger_report.reportid IN (SELECT reportid from vtiger_reportsharing WHERE $groupQuery shareid = ? AND setype = 'users')
 						OR vtiger_report.sharingtype = 'Public'
 						OR vtiger_report.owner = ?
@@ -344,8 +340,8 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 		$result = $db->pquery($sql, $params);
 		return $db->query_result($result, 0, 'count');
 	}
-	
-    /**
+
+	/**
 	 * Function to get all Report Record Models
 	 * @param <Array> $allReportsList
 	 * @param <Vtiger_Module_Model> - Reports Module Model
@@ -353,30 +349,28 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	 */
 	public function getAllReportModels($allReportsList, $reportModuleModel){
 		$allReportModels = array();
-        $folders = self::getAll();
+		$folders = self::getAll();
 		foreach ($allReportsList as $key => $reportsList) {
-			for($i=0; $i < count($reportsList); $i++) {
-				$reportModel = new Reports_Record_Model();
-				$reportModel->setData($reportsList[$i])->setModuleFromInstance($reportModuleModel);
-				$reportModel->set('foldername', $folders[$key]->getName());
-				$allReportModels[] = $reportModel;
-				unset($reportModel);
-			}
+			$reportModel = new Reports_Record_Model();
+			$reportModel->setData($reportsList)->setModuleFromInstance($reportModuleModel);
+			$reportModel->set('foldername', $folders[$reportsList['folderid']]->getName());
+			$allReportModels[] = $reportModel;
+			unset($reportModel);
 		}
 		return $allReportModels;
 	}
-    
-     /**
+
+	 /**
 	 * Function which provides the records for the current view
 	 * @param <Boolean> $skipRecords - List of the RecordIds to be skipped
 	 * @return <Array> List of RecordsIds
 	 */
-	public function getRecordIds($skipRecords=false, $module) {
+	public function getRecordIds($skipRecords=false, $module, $searchParams = array()) {
 		$db = PearDatabase::getInstance();
-        $baseTableName = "vtiger_report";
-        $baseTableId = "reportid";
+		$baseTableName = "vtiger_report";
+		$baseTableId = "reportid";
 		$folderId = $this->getId();
-		$listQuery = $this->getListViewQuery($folderId);
+		$listQuery = $this->getListViewQuery($folderId, $searchParams);
 
 		if($skipRecords && !empty($skipRecords) && is_array($skipRecords) && count($skipRecords) > 0) {
 			$listQuery .= ' AND '.$baseTableName.'.'.$baseTableId.' NOT IN ('. implode(',', $skipRecords) .')';
@@ -389,19 +383,23 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 		}
 		return $recordIds;
 	}
-    
-    /**
+
+	/**
 	 * Function returns Report Models for the folder
 	 * @return <Reports_Record_Model>
 	 */
-	function getListViewQuery($folderId) {
-        $sql = "select vtiger_report.*, vtiger_reportmodules.*, vtiger_reportfolder.folderid from vtiger_report 
-                inner join vtiger_reportfolder on vtiger_reportfolder.folderid = vtiger_report.folderid 
-                inner join vtiger_reportmodules on vtiger_reportmodules.reportmodulesid = vtiger_report.reportid ";
-        
-        if($folderId != "All") {
-                $sql = $sql." where vtiger_reportfolder.folderid = ".$folderId;
-        }        
-        return $sql;
+	function getListViewQuery($folderId, $searchParams = array()) {
+		$sql = "select vtiger_report.*, vtiger_reportmodules.*, vtiger_reportfolder.folderid from vtiger_report 
+				inner join vtiger_reportfolder on vtiger_reportfolder.folderid = vtiger_report.folderid 
+				inner join vtiger_reportmodules on vtiger_reportmodules.reportmodulesid = vtiger_report.reportid ";
+
+		if($folderId != "All") {
+				$sql = $sql." where vtiger_reportfolder.folderid = ".$folderId;
+		}  
+		$searchCondition = getReportSearchCondition($searchParams, $folderId);
+		if($searchCondition) {
+			$sql .= $searchCondition;
+		}
+		return $sql;
 	}
 }

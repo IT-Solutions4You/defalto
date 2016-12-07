@@ -31,4 +31,8 @@ class Vtiger_DocumentsFolder_UIType extends Vtiger_Base_UIType {
 		}
 		return false;
 	}
+    
+    public function getListSearchTemplateName() {
+        return 'uitypes/DocumentsFolderFieldSearchView.tpl';
+    }
 }

@@ -27,36 +27,51 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	 * @return Integer
 	 */
 	public function __CreateNewEmail($mailrecord, $module, $linkfocus) {
+		$site_URL = vglobal('site_URL');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$handler = vtws_getModuleHandlerFromName('Emails', $currentUserModel);
 		$meta = $handler->getMeta();
 		if ($meta->hasWriteAccess() != true) {
 			return false;
 		}
-
+		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
+		$username = $mailBoxModel->username();
 		$recordModel = Vtiger_Record_Model::getCleanInstance('Emails');
 		$recordModel->set('subject', $mailrecord->_subject);
 
 		if(!empty($module)) $recordModel->set('parent_type', $module);
 		if(!empty($linkfocus->id)) $recordModel->set('parent_id', "$linkfocus->id@-1|");
 
-		$recordModel->set('description', $mailrecord->getBodyHTML());
+		//To display inline image in body of email when we go to detail view of email from email related tab of related record.
+		$body = $mailrecord->getBodyHTML();
+		$inlineAttachments = $mailrecord->inlineAttachments();
+		if (is_array($inlineAttachments)) {
+			foreach ($inlineAttachments as $index => $att) {
+				$cid = $att['cid'];
+				$attch_name = Vtiger_MailRecord::__mime_decode($att['filename']);
+				$id = $mailrecord->muid();
+				$src = $site_URL . "/index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=$id&_atname=" . urlencode($attch_name);
+				$body = preg_replace('/cid:' . $cid . '/', $src, $body);
+				$inline_cid[$attch_name] = $cid;
+			}
+		}
+		$recordModel->set('description', $body);
 		$recordModel->set('assigned_user_id', $currentUserModel->get('id'));
-                //Opensource fix mailmanager related data
-		$recordModel->set('date_start', date('Y-m-d',$mailrecord->_date)); 
-                $recordModel->set('time_start', date('H:i',$mailrecord->_date)); 
+		$recordModel->set('date_start', date('Y-m-d', $mailrecord->_date));
+        $recordModel->set('time_start', date('H:i',$mailrecord->_date));
 		$recordModel->set('email_flag', 'MailManager');
 
 		$from = $mailrecord->_from[0];
-		$to = $mailrecord->_to[0];
+		$to = implode(',', $mailrecord->_to);
 		$cc = (!empty($mailrecord->_cc))? implode(',', $mailrecord->_cc) : '';
 		$bcc= (!empty($mailrecord->_bcc))? implode(',', $mailrecord->_bcc) : '';
-
+		
 		//emails field were restructured and to,bcc and cc field are JSON arrays
 		$recordModel->set('from_email', $from);
 		$recordModel->set('saved_toid', $to);
 		$recordModel->set('ccmail', $cc);
 		$recordModel->set('bccmail', $bcc);
+		$recordModel->set('mailboxemail', $username);
 		$recordModel->save();
 
 		// TODO: Handle attachments of the mail (inline/file)
@@ -85,8 +100,10 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 
 		$date_var = $db->formatDate(date('YmdHis'), true);
 
-		foreach($mailrecord->_attachments as $filename=>$filecontent) {
-
+		foreach($mailrecord->_attachments as $attachmentData) {
+			$filename = $attachmentData['filename'];
+			$filecontent = $attachmentData['data'];
+			
 			if(empty($filecontent)) continue;
 
 			$attachid = $db->getUniqueId('vtiger_crmentity');
@@ -139,6 +156,8 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 
 		if (!empty($emailid)) {
 			MailManager::updateMailAssociation($mailrecord->uniqueid(), $emailid, $linkfocus->id);
+			// To add entry in ModTracker for email relation
+			relateEntities($linkfocus, $modulename, $linkto, 'Emails', $emailid);
 		}
 
 		$name = getEntityName($modulename, $linkto);

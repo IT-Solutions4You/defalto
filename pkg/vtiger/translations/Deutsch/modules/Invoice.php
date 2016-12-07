@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Invoice'                      => 'Rechnungen'                    ,
 	'SINGLE_Invoice'               => 'Rechnung'                    , 
 	'LBL_EXPORT_TO_PDF'            => 'Export als PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , 
@@ -30,4 +31,9 @@ $languageStrings = array(
 	'LBL_NOT_A_BUNDLE' => 'Nicht ein Bundle',
 	'LBL_SUB_PRODUCTS'	=> 'Unter Produkte',
 	'LBL_ACTION'	=> 'Aktion',
+
+  'LBL_THIS' => 'Diese',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+
 );

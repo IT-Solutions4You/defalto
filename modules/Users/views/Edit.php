@@ -42,13 +42,24 @@ Class Users_Edit_View extends Users_PreferenceEdit_View {
 			$firstKey = key($menuModels);
 			$selectedMenu = $menuModels[$firstKey];
 		}
+        
+        //Specific change for Vtiger7
+        $settingsMenItems = array();
+        foreach($menuModels as $menuModel) {
+            $menuItems = $menuModel->getMenuItems();
+            foreach($menuItems as $menuItem) {
+                $settingsMenItems[$menuItem->get('name')] = $menuItem;
+            }
+        }
+        $viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
+        $viewer->assign('ACTIVE_BLOCK', array('block' => 'LBL_USER_MANAGEMENT', 
+                                              'menu' => 'LBL_USERS'));
 
 		$viewer->assign('SELECTED_FIELDID',$fieldId);
 		$viewer->assign('SELECTED_MENU', $selectedMenu);
 		$viewer->assign('SETTINGS_MENUS', $menuModels);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-        $viewer->assign('LOAD_OLD', Settings_Vtiger_Index_View::$loadOlderSettingUi);
 		$viewer->assign('IS_PREFERENCE', false);
 
 		$viewer->view('SettingsMenuStart.tpl', $qualifiedModuleName);
@@ -70,7 +81,8 @@ Class Users_Edit_View extends Users_PreferenceEdit_View {
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
-			'modules.Settings.Vtiger.resources.Index'
+			'modules.Settings.Vtiger.resources.Index',
+			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

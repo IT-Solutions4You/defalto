@@ -23,7 +23,9 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 		$recordModel->set('scannerOldName', $request->get('scannerOldName'));
 		$fieldsList = $recordModel->getModule()->getFields();
 		foreach ($fieldsList as $fieldName=>$fieldModel) {
-			$recordModel->set($fieldName, $request->get($fieldName));
+			$fieldValue = $request->get($fieldName);
+			if(!empty($fieldValue) || $fieldName == 'isvalid')
+				$recordModel->set($fieldName, $request->get($fieldName));
 		}
 
 		$status = $recordModel->save();
@@ -35,12 +37,18 @@ class Settings_MailConverter_SaveMailBox_Action extends Settings_Vtiger_Index_Ac
 			$result['listViewUrl'] = $recordModel->getListUrl();
 			$response->setResult($result);
 		} else {
-			$response->setError(vtranslate('LBL_CONNECTION_TO_MAILBOX_FAILED', $qualifiedModuleName));
+            $errorMsg = $recordModel->get('errorMsg');
+            if(!empty($errorMsg)) {
+                $response->setError(vtranslate($errorMsg, $qualifiedModuleName));
+            } else {
+                $response->setError(vtranslate('LBL_CONNECTION_TO_MAILBOX_FAILED', $qualifiedModuleName));
+            }
 		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        }
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
+
 }

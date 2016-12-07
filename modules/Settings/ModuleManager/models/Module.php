@@ -10,52 +10,43 @@
 
 class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 
-    public static function getNonVisibleModulesList() {
-        return array('ModTracker','Webmails','Users','Mobile','Integration','WSAPP',
-                     'ConfigEditor','FieldFormulas','VtigerBackup','CronTasks','Import' ,'Tooltip',
-                    'CustomerPortal', 'Home', 'ExtensionStore');
-    }
+	public static function getNonVisibleModulesList() {
+		return array('ModTracker', 'Users', 'Mobile', 'Integration', 'WSAPP', 'Dashboard', 'ConfigEditor', 'CronTasks',
+						'Import', 'Tooltip', 'Home', 'VtigerBackup', 'FieldFormulas', 'EmailTemplates', 'ExtensionStore');
+	}
 
 
-    /**
-     * Function to get the url of new module import
-     */
-    public static function getNewModuleImportUrl() {
-		return 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionImport';
-    }
-	
-    
-    /**
-     * Function to get the url of Extension store
-     */
-    public static function getExtensionStoreUrl() {
-        return 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionImport&mode=index';
-    }
-
-    /**
-     * Function to get the url of new module import 
-     */
-    public static function getUserModuleFileImportUrl() {
-            return 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1'; 
-    }
-	
 	/**
-     * Function to disable a module 
-     * @param type $moduleName - name of the module
-     */
-    public function disableModule($moduleName) {
+	 * Function to get the url of new module import 
+	 */
+	public static function getNewModuleImportUrl() {
+		$importURL = '';
+		$extensionStore = Vtiger_Module_Model::getInstance('ExtensionStore');
+		if($extensionStore && $extensionStore->isActive()) {
+			$importURL = Settings_ExtensionStore_Module_Model::getInstance()->getDefaultUrl();
+		}  else {
+			$importURL = 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport';
+		}
+		return $importURL;
+	}
+
+	/**
+	 * Function to disable a module 
+	 * @param type $moduleName - name of the module
+	 */
+	public function disableModule($moduleName) {
 		//Handling events after disable module
 		vtlib_toggleModuleAccess($moduleName, false);
-    }
+	}
 
-    /**
-     * Function to enable the module
-     * @param type $moduleName -- name of the module
-     */
-    public function enableModule($moduleName) {
+	/**
+	 * Function to enable the module 
+	 * @param type $moduleName -- name of the module
+	 */
+	public function enableModule($moduleName) {
 		//Handling events after enable module
 		vtlib_toggleModuleAccess($moduleName, true);
-    }
+	}
 
 
 	/**
@@ -66,26 +57,26 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 		 return parent::getAll(array(0,1), self::getNonVisibleModulesList());
 	}
 
-    /**
-     * Function which will get count of modules
-     * @param <Boolean> $onlyActive - if true get count of only active modules else all the modules
-     * @return <integer> number of modules
-     */
-    public static function getModulesCount($onlyActive = false) {
-        $db = PearDatabase::getInstance();
+	/**
+	 * Function which will get count of modules
+	 * @param <Boolean> $onlyActive - if true get count of only active modules else all the modules
+	 * @return <integer> number of modules
+	 */
+	public static function getModulesCount($onlyActive = false) {
+		$db = PearDatabase::getInstance();
 
-        $query = 'SELECT * FROM vtiger_tab';
+		$query = 'SELECT * FROM vtiger_tab';
 		$params = array();
 		if($onlyActive) {
-            $presence = array(0);
-            $nonVisibleModules = self::getNonVisibleModulesList();
+			$presence = array(0);
+			$nonVisibleModules = self::getNonVisibleModulesList();
 			$query .= ' WHERE presence IN ('. generateQuestionMarks($presence) .')';
-            $query .= ' AND name NOT IN ('.generateQuestionMarks($nonVisibleModules).')';
+			$query .= ' AND name NOT IN ('.generateQuestionMarks($nonVisibleModules).')';
 			array_push($params, $presence,$nonVisibleModules);
 		}
-        $result = $db->pquery($query, $params);
+		$result = $db->pquery($query, $params);
 		return $db->num_rows($result);
-    }
+	}
 
 	/**
 	 * Function that returns all those modules that support Module Sequence Numbering

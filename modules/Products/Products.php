@@ -7,12 +7,13 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 class Products extends CRMEntity {
 	var $db, $log; // Used in class functions of CRMEntity
 
 	var $table_name = 'vtiger_products';
 	var $table_index= 'productid';
-    var $column_fields = Array();
+	var $column_fields = Array();
 
 	/**
 	 * Mandatory table for supporting custom fields.
@@ -54,9 +55,7 @@ class Products extends CRMEntity {
 		'Unit Price'=>'unit_price'
 	);
 
-    var $required_fields = Array(
-            'productname'=>1
-    );
+	var $required_fields = Array('productname'=>1);
 
 	// Placeholder for sort fields - All the fields will be initialized for Sorting through initSortFields
 	var $sortby_fields = Array();
@@ -70,7 +69,7 @@ class Products extends CRMEntity {
 	// Refers to vtiger_field.fieldname values.
 	var $mandatory_fields = Array('createdtime', 'modifiedtime', 'productname', 'assigned_user_id');
 	 // Josh added for importing and exporting -added in patch2
-    var $unit_price;
+	var $unit_price;
 
 	/**	Constructor which will set the column_fields in this object
 	 */
@@ -85,16 +84,24 @@ class Products extends CRMEntity {
 	function save_module($module)
 	{
 		//Inserting into product_taxrel table
-		if($_REQUEST['ajxaction'] != 'DETAILVIEW' && $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates')
+		if($_REQUEST['ajxaction'] != 'DETAILVIEW' && $_REQUEST['action'] != 'ProcessDuplicates' && !$this->isWorkFlowFieldUpdate)
 		{
-			$this->insertTaxInformation('vtiger_producttaxrel', 'Products');
-			$this->insertPriceInformation('vtiger_productcurrencyrel', 'Products');
+			if ($_REQUEST['ajxaction'] != 'CurrencyUpdate') {
+				$this->insertTaxInformation('vtiger_producttaxrel', 'Products');
+			}
+
+			if ($_REQUEST['action'] != 'MassEditSave' ) {
+				$this->insertPriceInformation('vtiger_productcurrencyrel', 'Products');
+			}
 		}
 
+		if($_REQUEST['action'] == 'SaveAjax' && isset($_REQUEST['base_currency']) && isset($_REQUEST['unit_price'])){
+			$this->insertPriceInformation('vtiger_productcurrencyrel', 'Products');
+		}
 		// Update unit price value in vtiger_productcurrencyrel
 		$this->updateUnitPrice();
-		//Inserting into attachments
-		$this->insertIntoAttachment($this->id,'Products');
+		//Inserting into attachments, handle image save in crmentity uitype 69
+		//$this->insertIntoAttachment($this->id,'Products');
 
 	}
 
@@ -112,12 +119,12 @@ class Products extends CRMEntity {
 		$tax_per = '';
 		//Save the Product - tax relationship if corresponding tax check box is enabled
 		//Delete the existing tax if any
-		if($this->mode == 'edit')
+		if($this->mode == 'edit' && $_REQUEST['action'] != 'MassEditSave')
 		{
 			for($i=0;$i<count($tax_details);$i++)
 			{
 				$taxid = getTaxId($tax_details[$i]['taxname']);
-				$sql = "delete from vtiger_producttaxrel where productid=? and taxid=?";
+				$sql = "DELETE FROM vtiger_producttaxrel WHERE productid=? AND taxid=?";
 				$adb->pquery($sql, array($this->id,$taxid));
 			}
 		}
@@ -129,6 +136,14 @@ class Products extends CRMEntity {
 			{
 				$taxid = getTaxId($tax_name);
 				$tax_per = $_REQUEST[$tax_name];
+
+				$taxRegions = $_REQUEST[$tax_name.'_regions'];
+				if ($taxRegions || $_REQUEST[$tax_name.'_defaultPercentage'] != '') {
+					$tax_per = $_REQUEST[$tax_name.'_defaultPercentage'];
+				} else {
+					$taxRegions = array();
+				}
+
 				if($tax_per == '')
 				{
 					$log->debug("Tax selected but value not given so default value will be saved.");
@@ -137,8 +152,12 @@ class Products extends CRMEntity {
 
 				$log->debug("Going to save the Product - $tax_name tax relationship");
 
-				$query = "insert into vtiger_producttaxrel values(?,?,?)";
-				$adb->pquery($query, array($this->id,$taxid,$tax_per));
+				if ($_REQUEST['action'] === 'MassEditSave') {
+					$adb->pquery('DELETE FROM vtiger_producttaxrel WHERE productid=? AND taxid=?', array($this->id, $taxid));
+				}
+
+				$query = "INSERT INTO vtiger_producttaxrel VALUES(?,?,?,?)";
+				$adb->pquery($query, array($this->id, $taxid, $tax_per, Zend_Json::encode($taxRegions)));
 			}
 		}
 
@@ -159,7 +178,7 @@ class Products extends CRMEntity {
 		$currency_details = getAllCurrencies('all');
 
 		//Delete the existing currency relationship if any
-		if($this->mode == 'edit' && $_REQUEST['action'] !== 'MassEditSave')
+		if($this->mode == 'edit' && $_REQUEST['action'] !== 'CurrencyUpdate')
 		{
 			for($i=0;$i<count($currency_details);$i++)
 			{
@@ -181,13 +200,22 @@ class Products extends CRMEntity {
 
 			$requestPrice = CurrencyField::convertToDBFormat($_REQUEST['unit_price'], null, true);
 			$actualPrice = CurrencyField::convertToDBFormat($_REQUEST[$cur_valuename], null, true);
-			if($_REQUEST[$cur_checkname] == 'on' || $_REQUEST[$cur_checkname] == 1)
+			$isQuickCreate = false;
+			if($_REQUEST['action']=='SaveAjax' && isset($_REQUEST['base_currency']) && $_REQUEST['base_currency'] == $cur_valuename){
+				$actualPrice = $requestPrice;
+				$isQuickCreate = true;
+			}
+			if($_REQUEST[$cur_checkname] == 'on' || $_REQUEST[$cur_checkname] == 1 || $isQuickCreate)
 			{
 				$conversion_rate = $currency_details[$i]['conversionrate'];
 				$actual_conversion_rate = $product_base_conv_rate * $conversion_rate;
 				$converted_price = $actual_conversion_rate * $requestPrice;
 
 				$log->debug("Going to save the Product - $curname currency relationship");
+
+				if ($_REQUEST['action'] === 'CurrencyUpdate') {
+					$adb->pquery('DELETE FROM vtiger_productcurrencyrel WHERE productid=? AND currencyid=?', array($this->id, $curid));
+				}
 
 				$query = "insert into vtiger_productcurrencyrel values(?,?,?,?)";
 				$adb->pquery($query, array($this->id,$curid,$converted_price,$actualPrice));
@@ -227,11 +255,11 @@ class Products extends CRMEntity {
 		{
 			if($files['name'] != '' && $files['size'] > 0)
 			{
-			      if($_REQUEST[$fileindex.'_hidden'] != '')
-				      $files['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
-			      else
-				      $files['original_name'] = stripslashes($files['name']);
-			      $files['original_name'] = str_replace('"','',$files['original_name']);
+				  if($_REQUEST[$fileindex.'_hidden'] != '')
+					  $files['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
+				  else
+					  $files['original_name'] = stripslashes($files['name']);
+				  $files['original_name'] = str_replace('"','',$files['original_name']);
 				$file_saved = $this->uploadAndSaveFile($id,$module,$files);
 			}
 		}
@@ -280,10 +308,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_leads(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -317,7 +345,7 @@ class Products extends CRMEntity {
 			INNER JOIN vtiger_leadscf ON vtiger_leaddetails.leadid = vtiger_leadscf.leadid
 			LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 			LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			WHERE vtiger_crmentity.deleted = 0 AND vtiger_products.productid = ".$id;
+			WHERE vtiger_crmentity.deleted = 0 AND vtiger_leaddetails.converted=0 AND vtiger_products.productid = ".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -337,10 +365,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_accounts(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -368,7 +396,7 @@ class Products extends CRMEntity {
 			FROM vtiger_account
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid
 			INNER JOIN vtiger_accountbillads ON vtiger_accountbillads.accountaddressid = vtiger_account.accountid
-            LEFT JOIN vtiger_accountshipads ON vtiger_accountshipads.accountaddressid = vtiger_account.accountid
+			LEFT JOIN vtiger_accountshipads ON vtiger_accountshipads.accountaddressid = vtiger_account.accountid
 			INNER JOIN vtiger_seproductsrel ON vtiger_seproductsrel.crmid=vtiger_account.accountid
 			INNER JOIN vtiger_products ON vtiger_seproductsrel.productid = vtiger_products.productid
 			INNER JOIN vtiger_accountscf ON vtiger_account.accountid = vtiger_accountscf.accountid
@@ -394,10 +422,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_contacts(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -454,10 +482,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_opportunities(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -518,10 +546,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_tickets(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -578,61 +606,6 @@ class Products extends CRMEntity {
 		return $return_value;
 	}
 
-	/**	function used to get the list of activities which are related to the product
-	 *	@param int $id - product id
-	 *	@return array - array which will be returned from the function GetRelatedList
-	 */
-	function get_activities($id)
-	{
-		global $log, $singlepane_view;
-		$log->debug("Entering get_activities(".$id.") method ...");
-		global $app_strings;
-
-		require_once('modules/Calendar/Activity.php');
-
-        	//if($this->column_fields['contact_id']!=0 && $this->column_fields['contact_id']!='')
-        	$focus = new Activity();
-
-		$button = '';
-
-		if($singlepane_view == 'true')
-			$returnset = '&return_module=Products&return_action=DetailView&return_id='.$id;
-		else
-			$returnset = '&return_module=Products&return_action=CallRelatedList&return_id='.$id;
-
-
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_contactdetails.lastname,
-			vtiger_contactdetails.firstname,
-			vtiger_contactdetails.contactid,
-			vtiger_activity.*,
-			vtiger_seactivityrel.crmid as parent_id,
-			vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
-			vtiger_crmentity.modifiedtime,
-			$userNameSql,
-			vtiger_recurringevents.recurringtype
-			FROM vtiger_activity
-			INNER JOIN vtiger_seactivityrel
-				ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
-			INNER JOIN vtiger_crmentity
-				ON vtiger_crmentity.crmid=vtiger_activity.activityid
-			LEFT JOIN vtiger_cntactivityrel
-				ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid
-			LEFT JOIN vtiger_contactdetails
-				ON vtiger_contactdetails.contactid = vtiger_cntactivityrel.contactid
-			LEFT JOIN vtiger_users
-				ON vtiger_users.id = vtiger_crmentity.smownerid
-			LEFT OUTER JOIN vtiger_recurringevents
-				ON vtiger_recurringevents.activityid = vtiger_activity.activityid
-			LEFT JOIN vtiger_groups
-				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-			WHERE vtiger_seactivityrel.crmid=".$id."
-			AND (activitytype != 'Emails')";
-		$log->debug("Exiting get_activities method ...");
-		return GetRelatedList('Products','Calendar',$focus,$query,$button,$returnset);
-	}
-
 	/**	function used to get the list of quotes which are related to the product
 	 *	@param int $id - product id
 	 *	@return array - array which will be returned from the function GetRelatedList
@@ -642,10 +615,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_quotes(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -689,8 +662,8 @@ class Products extends CRMEntity {
 				ON vtiger_potential.potentialid = vtiger_quotes.potentialid
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_quotescf
-                ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
+			LEFT JOIN vtiger_quotescf
+				ON vtiger_quotescf.quoteid = vtiger_quotes.quoteid
 			LEFT JOIN vtiger_quotesbillads
 				ON vtiger_quotesbillads.quotebilladdressid = vtiger_quotes.quoteid
 			LEFT JOIN vtiger_quotesshipads
@@ -718,10 +691,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_purchase_orders(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -762,8 +735,8 @@ class Products extends CRMEntity {
 				ON vtiger_products.productid = vtiger_inventoryproductrel.productid
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_purchaseordercf
-                ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid
+			LEFT JOIN vtiger_purchaseordercf
+				ON vtiger_purchaseordercf.purchaseorderid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_pobillads
 				ON vtiger_pobillads.pobilladdressid = vtiger_purchaseorder.purchaseorderid
 			LEFT JOIN vtiger_poshipads
@@ -791,10 +764,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_salesorder(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -837,10 +810,10 @@ class Products extends CRMEntity {
 				ON vtiger_account.accountid = vtiger_salesorder.accountid
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_salesordercf
-                ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
-            LEFT JOIN vtiger_invoice_recurring_info
-                ON vtiger_invoice_recurring_info.start_period = vtiger_salesorder.salesorderid
+			LEFT JOIN vtiger_salesordercf
+				ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
+			LEFT JOIN vtiger_invoice_recurring_info
+				ON vtiger_invoice_recurring_info.start_period = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_sobillads
 				ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_soshipads
@@ -868,10 +841,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_invoices(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -912,8 +885,8 @@ class Products extends CRMEntity {
 				ON vtiger_inventoryproductrel.id = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_groups
 				ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-            LEFT JOIN vtiger_invoicecf
-                ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
+			LEFT JOIN vtiger_invoicecf
+				ON vtiger_invoicecf.invoiceid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoicebillads
 				ON vtiger_invoicebillads.invoicebilladdressid = vtiger_invoice.invoiceid
 			LEFT JOIN vtiger_invoiceshipads
@@ -1014,10 +987,10 @@ class Products extends CRMEntity {
 		$log->debug("Entering get_products(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -1044,7 +1017,7 @@ class Products extends CRMEntity {
 
 		$query = "SELECT vtiger_products.productid, vtiger_products.productname,
 			vtiger_products.productcode, vtiger_products.commissionrate,
-			vtiger_products.qty_per_unit, vtiger_products.unit_price,
+			vtiger_seproductsrel.quantity AS qty_per_unit, vtiger_products.unit_price, 
 			vtiger_crmentity.crmid, vtiger_crmentity.smownerid
 			FROM vtiger_products
 			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_products.productid
@@ -1074,7 +1047,7 @@ class Products extends CRMEntity {
 	function get_parent_products($id)
 	{
 		global $log, $singlepane_view;
-                $log->debug("Entering get_products(".$id.") method ...");
+				$log->debug("Entering get_products(".$id.") method ...");
 
 		global $app_strings;
 
@@ -1215,43 +1188,44 @@ class Products extends CRMEntity {
 		$matrix = $queryplanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityProducts",array("vtiger_groupsProducts","vtiger_usersProducts","vtiger_lastModifiedByProducts"));
-		$matrix->setDependency("vtiger_products",array("innerProduct","vtiger_crmentityProducts","vtiger_productcf","vtiger_vendorRelProducts"));
 		//query planner Support  added
 		if (!$queryplanner->requireTable('vtiger_products', $matrix)) {
 			return '';
 		}
+		$matrix->setDependency("vtiger_products",array("innerProduct","vtiger_crmentityProducts","vtiger_productcf","vtiger_vendorRelProducts"));
+
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_products","productid", $queryplanner);
 		if ($queryplanner->requireTable("innerProduct")){
-		    $query .= " LEFT JOIN (
-				    SELECT vtiger_products.productid,
-						    (CASE WHEN (vtiger_products.currency_id = 1 ) THEN vtiger_products.unit_price
-							    ELSE (vtiger_products.unit_price / vtiger_currency_info.conversion_rate) END
-						    ) AS actual_unit_price
-				    FROM vtiger_products
-				    LEFT JOIN vtiger_currency_info ON vtiger_products.currency_id = vtiger_currency_info.id
-				    LEFT JOIN vtiger_productcurrencyrel ON vtiger_products.productid = vtiger_productcurrencyrel.productid
-				    AND vtiger_productcurrencyrel.currencyid = ". $current_user->currency_id . "
-			    ) AS innerProduct ON innerProduct.productid = vtiger_products.productid";
+			$query .= " LEFT JOIN (
+					SELECT vtiger_products.productid,
+							(CASE WHEN (vtiger_products.currency_id = 1 ) THEN vtiger_products.unit_price
+								ELSE (vtiger_products.unit_price / vtiger_currency_info.conversion_rate) END
+							) AS actual_unit_price
+					FROM vtiger_products
+					LEFT JOIN vtiger_currency_info ON vtiger_products.currency_id = vtiger_currency_info.id
+					LEFT JOIN vtiger_productcurrencyrel ON vtiger_products.productid = vtiger_productcurrencyrel.productid
+					AND vtiger_productcurrencyrel.currencyid = ". $current_user->currency_id . "
+				) AS innerProduct ON innerProduct.productid = vtiger_products.productid";
 		}
 		if ($queryplanner->requireTable("vtiger_crmentityProducts")){
-		    $query .= " left join vtiger_crmentity as vtiger_crmentityProducts on vtiger_crmentityProducts.crmid=vtiger_products.productid and vtiger_crmentityProducts.deleted=0";
+			$query .= " left join vtiger_crmentity as vtiger_crmentityProducts on vtiger_crmentityProducts.crmid=vtiger_products.productid and vtiger_crmentityProducts.deleted=0";
 		}
 		if ($queryplanner->requireTable("vtiger_productcf")){
-		    $query .= " left join vtiger_productcf on vtiger_products.productid = vtiger_productcf.productid";
+			$query .= " left join vtiger_productcf on vtiger_products.productid = vtiger_productcf.productid";
 		}
-    		if ($queryplanner->requireTable("vtiger_groupsProducts")){
-		    $query .= " left join vtiger_groups as vtiger_groupsProducts on vtiger_groupsProducts.groupid = vtiger_crmentityProducts.smownerid";
+			if ($queryplanner->requireTable("vtiger_groupsProducts")){
+			$query .= " left join vtiger_groups as vtiger_groupsProducts on vtiger_groupsProducts.groupid = vtiger_crmentityProducts.smownerid";
 		}
 		if ($queryplanner->requireTable("vtiger_usersProducts")){
-		    $query .= " left join vtiger_users as vtiger_usersProducts on vtiger_usersProducts.id = vtiger_crmentityProducts.smownerid";
+			$query .= " left join vtiger_users as vtiger_usersProducts on vtiger_usersProducts.id = vtiger_crmentityProducts.smownerid";
 		}
 		if ($queryplanner->requireTable("vtiger_vendorRelProducts")){
-		    $query .= " left join vtiger_vendor as vtiger_vendorRelProducts on vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id";
+			$query .= " left join vtiger_vendor as vtiger_vendorRelProducts on vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id";
 		}
 		if ($queryplanner->requireTable("vtiger_lastModifiedByProducts")){
-		    $query .= " left join vtiger_users as vtiger_lastModifiedByProducts on vtiger_lastModifiedByProducts.id = vtiger_crmentityProducts.modifiedby ";
+			$query .= " left join vtiger_users as vtiger_lastModifiedByProducts on vtiger_lastModifiedByProducts.id = vtiger_crmentityProducts.modifiedby ";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyProducts")){
+		if ($queryplanner->requireTable("vtiger_createdbyProducts")){
 			$query .= " left join vtiger_users as vtiger_createdbyProducts on vtiger_createdbyProducts.id = vtiger_crmentityProducts.smcreatorid ";
 		}
 		return $query;
@@ -1309,6 +1283,17 @@ class Products extends CRMEntity {
 		//we have to update the product_id as null for the campaigns which are related to this product
 		$this->db->pquery('UPDATE vtiger_campaign SET product_id=0 WHERE product_id = ?', array($id));
 
+		// restoring products relations
+		$productRelRB = $this->db->pquery('SELECT * FROM vtiger_seproductsrel WHERE productid = ?' ,array($id));
+		$rows = $this->db->num_rows($productRelRB);
+		if($this->db->num_rows($productRelRB)) {
+			for($i=0; $i<$rows; $i++) {
+				$crmid = $this->db->query_result($productRelRB, $i, "crmid");
+				$params = array($id, RB_RECORD_DELETED, 'vtiger_seproductsrel', 'productid', 'crmid', $crmid);
+				$this->db->pquery('INSERT INTO vtiger_relatedlists_rb(entityid, action, rel_table, rel_column, ref_column, related_crm_ids)
+						VALUES (?,?,?,?,?,?)', $params);
+			}
+		}
 		$this->db->pquery('DELETE from vtiger_seproductsrel WHERE productid=? or crmid=?',array($id,$id));
 
 		parent::unlinkDependencies($module, $id);
@@ -1332,26 +1317,38 @@ class Products extends CRMEntity {
 			$sql = 'DELETE FROM vtiger_seproductsrel WHERE productid = ? AND (crmid = ? OR crmid IN (SELECT contactid FROM vtiger_contactdetails WHERE accountid=?))';
 			$param = array($id, $return_id,$return_id);
 			$this->db->pquery($sql, $param);
+		} elseif($return_module == 'Documents') {
+			$sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+			$this->db->pquery($sql, array($id, $return_id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids) {
+	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
 		$adb = PearDatabase::getInstance();
+
+		$qtysList = array();
+		if ($otherParams && is_array($otherParams['quantities'])) {
+			$qtysList = $otherParams['quantities'];
+		}
 
 		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
 		foreach($with_crmids as $with_crmid) {
-			if($with_module == 'Leads' || $with_module == 'Accounts' ||
-					$with_module == 'Contacts' || $with_module == 'Potentials' || $with_module == 'Products'){
-				$query = $adb->pquery("SELECT * from vtiger_seproductsrel WHERE crmid=? and productid=?",array($crmid, $with_crmid));
-				if($adb->num_rows($query)==0){
-					$adb->pquery("insert into vtiger_seproductsrel values (?,?,?)", array($with_crmid, $crmid, $with_module));
-				}
+			$qty = 0;
+			if (array_key_exists($with_crmid, $qtysList)) {
+				$qty = (float) $qtysList[$with_crmid];
 			}
-			else {
+			if (!$qty) {
+				$qty = 1;
+			}
+
+			if (in_array($with_module, array('Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'))) {
+				$query = $adb->pquery("SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?", array($crmid, $with_crmid));
+				if($adb->num_rows($query) == 0) {
+					$adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($with_crmid, $crmid, $with_module, $qty));
+				}
+			} else {
 				parent::save_related_module($module, $crmid, $with_module, $with_crmid);
 			}
 		}

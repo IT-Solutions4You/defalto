@@ -8,19 +8,27 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+	'Faq' => 'FAQ',
+	'SINGLE_Faq' => 'FAQ',
+	'LBL_RECORDS_LIST' => 'FAQs List',
+	'LBL_ADD_RECORD' => 'Add FAQ',
+
+	//Blocks
+	'LBL_FAQ_INFORMATION' => 'FAQ Information',
+	'LBL_COMMENT_INFORMATION' =>  'Comments',
+
+	//Fields
+	'Question'=>'Question',
 	'Answer'=>'Answer',
 	'Comments'=>'Comments',
-	'Draft'=>'Draft',
-	'Faq' => 'FAQ',
 	'Faq No' => 'Faq Number',
+
+	//Added for existing Picklist Entries
 	'General'=>'General',
-	'LBL_ADD_RECORD' => 'Add FAQ',
-	'LBL_COMMENT_INFORMATION' =>  'Comments',
-	'LBL_FAQ_INFORMATION' => 'FAQ Information',
-	'LBL_RECORDS_LIST' => 'FAQs List',
-	'LBL_SOLUTION' => 'Solution',
-	'Obsolete'=>'Obsolete',
+	'Draft'=>'Draft',
 	'Published'=>'Published',
-	'Question'=>'Question',
-	'SINGLE_Faq' => 'FAQ',
+	'Obsolete'=>'Obsolete',
+
+	//EditView
+	'LBL_SOLUTION' => 'Solution',
 );

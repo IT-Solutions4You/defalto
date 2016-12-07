@@ -1,0 +1,96 @@
+<?php
+/*+***********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ *************************************************************************************/
+
+class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
+
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+
+		if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView'))) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
+		}
+	}
+
+	public function process(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+		$moduleModel = $recordModel->getModule();
+
+		$documentTypes = array( 'I' => array('tabName' => 'InternalDoc','label' => 'LBL_INTERNAL'),
+								'E' => array('tabName' => 'ExternalDoc','label' => 'LBL_EXTERNAL'),
+								'W' => array('tabName' => 'WebDoc',		'label' => 'LBL_WEB'));
+		foreach($documentTypes as $documentType => $typeDetails){
+			$fields[$documentType] = $this->getFields($documentType);
+		}
+
+		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
+		$recordStructure = $recordStructureInstance->getStructure();
+		foreach($fields as $docType => $specificFields){
+			foreach($specificFields as $specificFieldName){
+				if(in_array($specificFieldName,  array_keys($recordStructure)))
+					$specificFieldModels[] = $recordStructure[$specificFieldName];
+			}
+			$quickCreateContents[$docType] = $specificFieldModels;
+			unset($specificFieldModels);
+		}
+
+		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
+
+		$fieldsInfo = array();
+		$fieldList = $moduleModel->getFields();
+		foreach($fieldList as $name => $model){
+			$fieldsInfo[$name] = $model->getFieldInfo();
+		}
+
+		$viewer = $this->getViewer($request);
+		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
+		$viewer->assign('CURRENTDATE', date('Y-n-j'));
+		$viewer->assign('MODULE', $moduleName);
+		$viewer->assign('DOC_TYPES',$documentTypes);
+		$viewer->assign('SINGLE_MODULE', 'SINGLE_'.$moduleName);
+		$viewer->assign('MODULE_MODEL', $moduleModel);
+		$viewer->assign('QUICK_CREATE_CONTENTS', $quickCreateContents);
+		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+		$viewer->assign('SELECTED_DOC_TYPE', $request->get('type'));
+		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+
+		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
+		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+		echo $viewer->view('QuickCreate.tpl',$moduleName,true);
+	}
+
+	public function getFields($documentType){
+		switch($documentType){
+			case 'I' : case 'E' : return array('filename','assigned_user_id','folderid');
+			case 'W' : 
+				$recordModel = Vtiger_Record_Model::getCleanInstance('Documents');
+				$moduleModel = $recordModel->getModule();
+				$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
+				$quickCreateFields = $recordStructureInstance->getStructure();
+				//make sure the note content is always at the bottom
+				$quickCreateFieldNames = array_diff(array_keys($quickCreateFields),array('notecontent'));
+				$quickCreateFieldNames[] = 'notecontent';
+				return $quickCreateFieldNames;
+		}
+	}
+
+	public function getHeaderScripts(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$jsFileNames = array(
+			"modules.$moduleName.resources.Edit",
+			"modules.Vtiger.resources.CkEditor"
+		);
+
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		return $jsScriptInstances;
+	}
+
+}

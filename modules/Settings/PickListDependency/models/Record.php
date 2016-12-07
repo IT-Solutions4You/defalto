@@ -11,12 +11,12 @@ vimport('~~modules/PickList/DependentPickListUtils.php');
 
 class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Model {
 
-    private $mapping = false;
-    private $sourcePickListValues = false;
-    private $targetPickListValues = false;
-    private $nonMappedSourcePickListValues = false;
+	private $mapping = false;
+	private $sourcePickListValues = false;
+	private $targetPickListValues = false;
+	private $nonMappedSourcePickListValues = false;
 
-    /**
+	/**
 	 * Function to get the Id
 	 * @return <Number>
 	 */
@@ -27,28 +27,28 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
 	public function getName() {
 		return '';
 	}
-    
-    public function getRecordLinks() {
-        $soureModule = $this->get('sourceModule');
-        $sourceField = $this->get('sourcefield');
-        $targetField = $this->get('targetfield');
-        $editLink = array(
-            'linkurl' => "javascript:Settings_PickListDependency_Js.triggerEdit(event, '$soureModule', '$sourceField', '$targetField')",
-            'linklabel' => 'LBL_EDIT',
-            'linkicon' => 'icon-pencil'
-        );
-        $editLinkInstance = Vtiger_Link_Model::getInstanceFromValues($editLink);
-        
-        $deleteLink = array(
-            'linkurl' => "javascript:Settings_PickListDependency_Js.triggerDelete(event, '$soureModule','$sourceField', '$targetField')",
-            'linklabel' => 'LBL_DELETE',
-            'linkicon' => 'icon-trash'
-        );
-        $deleteLinkInstance = Vtiger_Link_Model::getInstanceFromValues($deleteLink);
-        return array($editLinkInstance,$deleteLinkInstance);
-    }
-    
-    public function getAllPickListFields() {
+
+	public function getRecordLinks() {
+		$soureModule = $this->get('sourceModule');
+		$sourceField = $this->get('sourcefield');
+		$targetField = $this->get('targetfield');
+		$editLink = array(
+			'linkurl' => "javascript:Settings_PickListDependency_Js.triggerEdit(event, '$soureModule', '$sourceField', '$targetField')",
+			'linklabel' => 'LBL_EDIT',
+			'linkicon' => 'icon-pencil'
+		);
+		$editLinkInstance = Vtiger_Link_Model::getInstanceFromValues($editLink);
+
+		$deleteLink = array(
+			'linkurl' => "javascript:Settings_PickListDependency_Js.triggerDelete(event, '$soureModule','$sourceField', '$targetField')",
+			'linklabel' => 'LBL_DELETE',
+			'linkicon' => 'icon-trash'
+		);
+		$deleteLinkInstance = Vtiger_Link_Model::getInstanceFromValues($deleteLink);
+		return array($editLinkInstance,$deleteLinkInstance);
+	}
+
+	public function getAllPickListFields() {
 		$db = PearDatabase::getInstance();
 		$tabId = getTabid($this->get('sourceModule'));
 
@@ -66,67 +66,83 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
 			}
 		}
 		return $fieldlist;
-    }
-    
+	}
+
 	public function getPickListDependency() {
-        if(empty($this->mapping)) {
-            $dependency = Vtiger_DependencyPicklist::getPickListDependency($this->get('sourceModule'), $this->get('sourcefield'), $this->get('targetfield'));
-            $this->mapping = $dependency['valuemapping'];
-        }
+		if(empty($this->mapping)) {
+			$dependency = Vtiger_DependencyPicklist::getPickListDependency($this->get('sourceModule'), $this->get('sourcefield'), $this->get('targetfield'));
+			$this->mapping = $dependency['valuemapping'];
+		}
 		return $this->mapping;
 	}
-    
-    private function getPickListValues($fieldName) {
+
+	private function getPickListValues($fieldName) {
+		$sourceModule = $this->get('sourceModule');
 		//Need to decode the picklist values twice which are saved from old ui
-        return array_map('decode_html', getAllPickListValues($fieldName));
-    }
-    
-    public function getSourcePickListValues() {
-        if(empty($this->sourcePickListValues)) {
-            $this->sourcePickListValues = $this->getPickListValues($this->get('sourcefield'));
-        }
-        return $this->sourcePickListValues;
-    }
-    
-    public function getTargetPickListValues() {
-        if(empty($this->targetPickListValues)) {
-            $this->targetPickListValues = $this->getPickListValues($this->get('targetfield'));
-        }
-        return $this->targetPickListValues;
-    }
-    
-    public function getNonMappedSourcePickListValues() {
-        if(empty($this->nonMappedSourcePickListValues)) {
-            $sourcePickListValues = $this->getSourcePickListValues();
-            $dependencyMapping = $this->getPickListDependency();
-            foreach($dependencyMapping as $mappingDetails) {
-                unset($sourcePickListValues[$mappingDetails['sourcevalue']]);
-            }
-            $this->nonMappedSourcePickListValues =  $sourcePickListValues;
-        }
-        return $this->nonMappedSourcePickListValues;
-    }
-    
-    public function save($mapping) {
-        $dependencyMap = array();
-        $dependencyMap['sourcefield'] = $this->get('sourcefield');
-        $dependencyMap['targetfield'] = $this->get('targetfield');
-        $dependencyMap['valuemapping'] = $mapping;
-        Vtiger_DependencyPicklist::savePickListDependencies($this->get('sourceModule'), $dependencyMap);
-        return true;
-    }
-    
-    public function delete() {
-        Vtiger_DependencyPicklist::deletePickListDependencies($this->get('sourceModule'), $this->get('sourcefield'), $this->get('targetfield'));
-        return true;
-    }
-	
+
+		if ($fieldName == 'group_id') {
+			$userRecordModel = Users_Record_Model::getCurrentUserModel();
+			$picklists = array_map('decode_html', $userRecordModel->getAccessibleGroups());
+		} else if ($fieldName == 'assigned_user_id') {
+			$userRecordModel = Users_Record_Model::getCurrentUserModel();
+			$picklists = array_map('decode_html', $userRecordModel->getAccessibleUsers());
+		} else {
+			$picklists = array_map('decode_html', getAllPickListValues($fieldName));
+		}
+
+		$picklistValues = array();
+		foreach($picklists as $key=>$value) {
+			$picklistValues[$key] = vtranslate($value, $sourceModule);
+		}
+		return $picklistValues;
+	}
+
+	public function getSourcePickListValues() {
+		if(empty($this->sourcePickListValues)) {
+			$this->sourcePickListValues = $this->getPickListValues($this->get('sourcefield'));
+		}
+		return $this->sourcePickListValues;
+	}
+
+	public function getTargetPickListValues() {
+		if(empty($this->targetPickListValues)) {
+			$this->targetPickListValues = $this->getPickListValues($this->get('targetfield'));
+		}
+		return $this->targetPickListValues;
+	}
+
+	public function getNonMappedSourcePickListValues() {
+		if(empty($this->nonMappedSourcePickListValues)) {
+			$sourcePickListValues = $this->getSourcePickListValues();
+			$dependencyMapping = $this->getPickListDependency();
+			foreach($dependencyMapping as $mappingDetails) {
+				unset($sourcePickListValues[$mappingDetails['sourcevalue']]);
+			}
+			$this->nonMappedSourcePickListValues =  $sourcePickListValues;
+		}
+		return $this->nonMappedSourcePickListValues;
+	}
+
+	public function save($mapping) {
+		$dependencyMap = array();
+		$dependencyMap['sourcefield'] = $this->get('sourcefield');
+		$dependencyMap['targetfield'] = $this->get('targetfield');
+		$dependencyMap['valuemapping'] = $mapping;
+		Vtiger_DependencyPicklist::savePickListDependencies($this->get('sourceModule'), $dependencyMap);
+		return true;
+	}
+
+	public function delete() {
+		Vtiger_DependencyPicklist::deletePickListDependencies($this->get('sourceModule'), $this->get('sourcefield'), $this->get('targetfield'));
+		return true;
+	}
+
 	private function loadFieldLabels()  {
 		$db = PearDatabase::getInstance();
-		
+
 		$tabId = getTabid($this->get('sourceModule'));
 		$fieldNames = array($this->get('sourcefield'),$this->get('targetfield'));
-		
+
 		$query = 'SELECT fieldlabel,fieldname FROM vtiger_field WHERE fieldname IN ('.generateQuestionMarks($fieldNames).') AND tabid = ?';
 		$params = array($fieldNames, $tabId);
 		$result = $db->pquery($query, $params);
@@ -141,7 +157,7 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
 			}
 		}
 	}
-	
+
 	public function getSourceFieldLabel() {
 		$sourceFieldLabel = $this->get('sourcelabel');
 		if(empty($sourceFieldLabel)) {
@@ -149,7 +165,7 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
 		}
 		return vtranslate($this->get('sourcelabel'), $this->get('sourceModule'));
 	}
-	
+
 	public function getTargetFieldLabel() {
 		$targetFieldLabel = $this->get('targetlabel');
 		if(empty($targetFieldLabel)) {
@@ -157,13 +173,17 @@ class Settings_PickListDependency_Record_Model extends Settings_Vtiger_Record_Mo
 		}
 		return vtranslate($this->get('targetlabel'), $this->get('sourceModule'));
 	}
-    
+
 	public static function getInstance($module, $sourceField, $targetField) {
 		$self = new self();
 		$self->set('sourceModule', $module)
-            ->set('sourcefield', $sourceField)
-            ->set('targetfield', $targetField);
+			->set('sourcefield', $sourceField)
+			->set('targetfield', $targetField);
 		return $self;
+	}
+
+	public function getDisplayValue($key) {
+		return vtranslate($this->get($key), $this->get('sourceModule'));
 	}
 
 }

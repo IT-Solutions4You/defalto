@@ -15,7 +15,9 @@ class Settings_MailConverter_SaveFolders_Action extends Settings_Vtiger_Index_Ac
         $qualifiedModuleName = $request->getModule(false);
         $checkedFolders = $request->get('folders');
         $folders = explode(',', $checkedFolders);
-        Settings_MailConverter_Module_Model::updateFolders($recordId, $folders);
+        
+        $moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+        $moduleModel->updateFolders($recordId, $folders);
 
         $response = new Vtiger_Response();
 
@@ -24,8 +26,11 @@ class Settings_MailConverter_SaveFolders_Action extends Settings_Vtiger_Index_Ac
         $response->setResult($result);
 
         $response->emit();
-        }
-
+    }
+        
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }
 
 ?>

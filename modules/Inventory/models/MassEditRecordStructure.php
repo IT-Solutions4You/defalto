@@ -36,9 +36,9 @@ class Inventory_MassEditRecordStructure_Model extends Vtiger_MassEditRecordStruc
 						if($fieldModel->isViewable() && $this->isFieldRestricted($fieldModel)) {
 							if($recordExists) {
 								$fieldModel->set('fieldvalue', $recordModel->get($fieldName));
-							}
-							if ($fieldName == 'terms_conditions') {
-								$fieldModel->set('fieldvalue', getTermsandConditions());
+								if ($fieldName == 'terms_conditions') {
+									$fieldModel->set('fieldvalue', $recordModel->getInventoryTermsAndConditions());
+								}
 							}
 							$values[$blockLabel][$fieldName] = $fieldModel;
 						}

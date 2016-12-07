@@ -294,11 +294,11 @@ class Vendors extends CRMEntity {
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Products"=>"vtiger_products","PurchaseOrder"=>"vtiger_purchaseorder","Contacts"=>"vtiger_vendorcontactrel");
+		$rel_table_arr = Array("Products"=>"vtiger_products","PurchaseOrder"=>"vtiger_purchaseorder","Contacts"=>"vtiger_vendorcontactrel","Emails"=>"vtiger_seactivityrel");
 
-		$tbl_field_arr = Array("vtiger_products"=>"productid","vtiger_vendorcontactrel"=>"contactid","vtiger_purchaseorder"=>"purchaseorderid");
+		$tbl_field_arr = Array("vtiger_products"=>"productid","vtiger_vendorcontactrel"=>"contactid","vtiger_purchaseorder"=>"purchaseorderid","vtiger_seactivityrel"=>"activityid");
 
-		$entity_tbl_field_arr = Array("vtiger_products"=>"vendor_id","vtiger_vendorcontactrel"=>"vendorid","vtiger_purchaseorder"=>"vendorid");
+		$entity_tbl_field_arr = Array("vtiger_products"=>"vendor_id","vtiger_vendorcontactrel"=>"vendorid","vtiger_purchaseorder"=>"vendorid","vtiger_seactivityrel"=>"crmid");
 
 		foreach($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
@@ -399,7 +399,8 @@ class Vendors extends CRMEntity {
 			left join vtiger_groups as vtiger_groups$module on vtiger_groups$module.groupid = vtiger_crmentity.smownerid
 			left join vtiger_users as vtiger_users".$module." on vtiger_users".$module.".id = vtiger_crmentity.smownerid
 			left join vtiger_groups on vtiger_groups.groupid = vtiger_crmentity.smownerid
-			left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid
+			left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid 
+            left join vtiger_users as vtiger_createdby".$module." on vtiger_createdby".$module.".id = vtiger_crmentity.smcreatorid 
 			left join vtiger_users as vtiger_lastModifiedByVendors on vtiger_lastModifiedByVendors.id = vtiger_crmentity.modifiedby ";
 		return $query;
 	}
@@ -415,10 +416,10 @@ class Vendors extends CRMEntity {
 		$matrix = $queryplanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityVendors",array("vtiger_usersVendors","vtiger_lastModifiedByVendors"));
-		$matrix->setDependency("vtiger_vendor",array("vtiger_crmentityVendors","vtiger_vendorcf","vtiger_email_trackVendors"));
 		if (!$queryplanner->requireTable('vtiger_vendor', $matrix)) {
 			return '';
 		}
+        $matrix->setDependency("vtiger_vendor",array("vtiger_crmentityVendors","vtiger_vendorcf","vtiger_email_trackVendors"));
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_vendor","vendorid", $queryplanner);
 		// TODO Support query planner
 		if ($queryplanner->requireTable("vtiger_crmentityVendors",$matrix)){
@@ -512,7 +513,7 @@ class Vendors extends CRMEntity {
 		parent::unlinkDependencies($module, $id);
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids) {
+	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
 		$adb = PearDatabase::getInstance();
 
 		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
@@ -527,11 +528,11 @@ class Vendors extends CRMEntity {
 		}
 	}
 
-    // Function to unlink an entity with given Id from another entity
+	// Function to unlink an entity with given Id from another entity
 	function unlinkRelationship($id, $return_module, $return_id) {
 		global $log;
 		if(empty($return_module) || empty($return_id)) return;
-        if($return_module == 'Contacts') {
+		if($return_module == 'Contacts') {
 			$sql = 'DELETE FROM vtiger_vendorcontactrel WHERE vendorid=? AND contactid=?';
 			$this->db->pquery($sql, array($id,$return_id));
 		} else {

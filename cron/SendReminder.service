@@ -49,7 +49,16 @@ if(empty($current_language))
 $app_strings = return_application_language($current_language);
 
 //modified query for recurring events -Jag
-$query="select vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid as setype,vtiger_activity.*,vtiger_activity_reminder.reminder_time,vtiger_activity_reminder.reminder_sent,vtiger_activity_reminder.recurringid,vtiger_recurringevents.recurringdate from vtiger_activity inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_activity.activityid inner join vtiger_activity_reminder on vtiger_activity.activityid=vtiger_activity_reminder.activity_id left outer join vtiger_recurringevents on vtiger_activity.activityid=vtiger_recurringevents.activityid left outer join vtiger_seactivityrel on vtiger_seactivityrel.activityid = vtiger_activity.activityid where DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '".date('Y-m-d')."' and vtiger_crmentity.crmid != 0 and vtiger_activity.eventstatus = 'Planned' and vtiger_activity_reminder.reminder_sent = 0 group by vtiger_activity.activityid,vtiger_recurringevents.recurringid";
+$query="SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*,vtiger_activity_reminder.reminder_time,
+		vtiger_activity_reminder.reminder_sent,vtiger_activity_reminder.recurringid FROM vtiger_activity 
+		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid 
+		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id 
+		LEFT OUTER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid 
+		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '".date('Y-m-d')."' AND vtiger_crmentity.crmid != 0 AND 
+		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled')) 
+		AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
+		AND vtiger_activity_reminder.reminder_sent = 0 AND vtiger_activity_reminder.reminder_time != 0 
+		GROUP BY vtiger_activity.activityid";
 $result = $adb->pquery($query, array());
 
 if($adb->num_rows($result) >= 1)
@@ -59,15 +68,20 @@ if($adb->num_rows($result) >= 1)
 	$reminderResult = $adb->pquery($reminderFrequencyQuery, array());
 	$reminderFrequency = $adb->query_result($reminderResult,0,'frequency');
 
+	// Retriving the reminder email content from emailtemplates table
+	$templateQuery='SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?';
+	$templateResult = $adb->pquery($templateQuery, array('Activity Reminder', '1'));
+	$todoReminderBody=decode_html($adb->query_result($templateResult,0,'body'));
+	
 	while($result_set = $adb->fetch_array($result))
 	{
 		$date_start = $result_set['date_start'];
 		$time_start = $result_set['time_start'];
 		$reminder_time = $result_set['reminder_time']*60;
 		$date = new DateTimeField( null );
-        $userFormatedString = $date->getDisplayDate();
-        $timeFormatedString = $date->getDisplayTime();
-        $dBFomatedDate = DateTimeField::convertToDBFormat($userFormatedString);
+		$userFormatedString = $date->getDisplayDate();
+		$timeFormatedString = $date->getDisplayTime();
+		$dBFomatedDate = DateTimeField::convertToDBFormat($userFormatedString);
 		$curr_time = strtotime($dBFomatedDate." ". $timeFormatedString);
 		$activity_id = $result_set['activityid'];
 		$activitymode = ($result_set['activitytype'] == "Task")?"Task":"Events";
@@ -92,9 +106,9 @@ if($adb->num_rows($result) >= 1)
 		}
 		//code included for recurring events by jaguar ends
 		$date = new DateTimeField("$date_start $time_start");
-        $userFormatedString = $date->getDisplayDate();
-        $timeFormatedString = $date->getDisplayTime();
-        $dBFomatedDate = DateTimeField::convertToDBFormat($userFormatedString);
+		$userFormatedString = $date->getDisplayDate();
+		$timeFormatedString = $date->getDisplayTime();
+		$dBFomatedDate = DateTimeField::convertToDBFormat($userFormatedString);
 		$activity_time = strtotime($dBFomatedDate.' '.$timeFormatedString);
 		$differenceOfActivityTimeAndCurrentTime = ($activity_time - $curr_time);
 		if (($differenceOfActivityTimeAndCurrentTime > 0) && (($differenceOfActivityTimeAndCurrentTime <= $reminder_time) || ($differenceOfActivityTimeAndCurrentTime <= $reminderFrequency)))
@@ -138,6 +152,25 @@ if($adb->num_rows($result) >= 1)
 							$app_strings['Subject']." : ".$activity_sub."\n ". $parent_content ." ".
 							$app_strings['Date & Time']." : $dateTimeInOwnerFormat ($ownerTimeZone)\n\n ".
 							$app_strings['Visit_Link']." <a href='".$site_URL."/index.php?view=Detail&module=Calendar&record=".$activity_id."'>".$app_strings['Click here']."</a>";
+
+			if($result_set['activitytype'] == "Task") {
+				$enddateInOwnerFormat = $enddateTime->getDisplayDate($ownerFocus);
+				$list = $todoReminderBody;
+				$list = str_replace('$calendar-date_start$', $dateTimeInOwnerFormat.' '.$ownerTimeZone, $list);
+				$list = str_replace('$calendar-due_date$', $enddateInOwnerFormat.' '.$ownerTimeZone, $list);
+
+				$contents = getMergedDescription($list, $activity_id, 'Calendar');
+				$subject = vtranslate('Activity Reminder', 'Calendar').': '.$result_set['subject'] . " @ $dateTimeInOwnerFormat";
+			} else {
+				$list = $eventReminderBody;
+				$list = str_replace('$events-date_start$', $dateTimeInOwnerFormat.' '.$ownerTimeZone, $list);
+				$list = str_replace('$events-due_date$', $enddateTimeInOwnerFormat.' '.$ownerTimeZone, $list);
+				$list = str_replace('$events-contactid$', $cont_name, $list);
+
+				$contents = getMergedDescription($list, $activity_id, 'Events');
+				$subject = vtranslate('Reminder', 'Calendar').': '.$result_set['subject'] . " @ $dateTimeInOwnerFormat";
+			}
+			
 			if(count($to_addr) >=1)
 			{
 				send_email($to_addr,$from,$subject,$contents,$mail_server,$mail_server_username,$mail_server_password);
@@ -172,8 +205,8 @@ if($adb->num_rows($result) >= 1)
 function send_email($to,$from,$subject,$contents,$mail_server,$mail_server_username,$mail_server_password)
 {
 	global $adb;
-	 global $log;
-        $log->info("This is send_mail function in SendReminder.php(vtiger home).");
+	global $log;
+	$log->info("This is send_mail function in SendReminder.php(vtiger home).");
 	global $root_directory;
 
 	$mail = new PHPMailer();
@@ -182,20 +215,17 @@ function send_email($to,$from,$subject,$contents,$mail_server,$mail_server_usern
 	$mail->Subject = $subject;
 	$mail->Body    = nl2br($contents);//"This is the HTML message body <b>in bold!</b>";
 
+	$mail->IsSMTP();// set mailer to use SMTP
+	$mailserverresult=$adb->pquery("select * from vtiger_systems where server_type='email'", array());
+	$mail_server = $adb->query_result($mailserverresult,0,'server');
+	$mail_server_username = $adb->query_result($mailserverresult,0,'server_username');
+	$mail_server_password = $adb->query_result($mailserverresult,0,'server_password');
+	$smtp_auth = $adb->query_result($mailserverresult,0,'smtp_auth');
 
-	$mail->IsSMTP();                                      // set mailer to use SMTP
+	$_REQUEST['server']=$mail_server;
+	$log->info("Mail Server Details => '".$mail_server."','".$mail_server_username."','".$mail_server_password."'");
 
-		$mailserverresult=$adb->pquery("select * from vtiger_systems where server_type='email'", array());
-		$mail_server = $adb->query_result($mailserverresult,0,'server');
-		$mail_server_username = $adb->query_result($mailserverresult,0,'server_username');
-		$mail_server_password = $adb->query_result($mailserverresult,0,'server_password');
-		$smtp_auth = $adb->query_result($mailserverresult,0,'smtp_auth');
-
-		$_REQUEST['server']=$mail_server;
-		$log->info("Mail Server Details => '".$mail_server."','".$mail_server_username."','".$mail_server_password."'");
-
-
-	$mail->Host = $mail_server;			// specify main and backup server
+	$mail->Host = $mail_server;	// specify main and backup server
 	if($smtp_auth == 'true' || $smtp_auth == '1')
 		$mail->SMTPAuth = true;
 	else
@@ -207,15 +237,24 @@ function send_email($to,$from,$subject,$contents,$mail_server,$mail_server_usern
 	$log->info("Mail sending process : From Name & email id => '".$initialfrom."','".$from."'");
 	foreach($to as $pos=>$addr)
 	{
-		$mail->AddAddress($addr);                  // name is optional
+		$mail->AddAddress($addr);// name is optional
 		$log->info("Mail sending process : To Email id = '".$addr."' (set in the mail object)");
 
 	}
-	$mail->WordWrap = 50;                                 // set word wrap to 50 characters
+	$mail->WordWrap = 50;// set word wrap to 50 characters
 
-	$mail->IsHTML(true);                                  // set email format to HTML
+	$mail->IsHTML(true);// set email format to HTML
 
 	$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
+
+	// To Support TLS
+	$serverinfo = explode("://", $mail_server);
+	$smtpsecure = $serverinfo[0];
+	if($smtpsecure == 'tls'){
+		$mail->SMTPSecure = $smtpsecure;
+		$mail->Host = $serverinfo[1];
+	}
+	// End
 
 	$flag = MailSend($mail);
 	$log->info("After executing the mail->Send() function.");

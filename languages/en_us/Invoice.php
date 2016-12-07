@@ -8,31 +8,44 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'AutoCreated'=>'AutoCreated',
-	'Cancel' => 'Cancel',
-	'Credit Invoice'=>'Credit Invoice',
+    
+    'Invoice'   =>  'Invoices',
+	//DetailView Actions
+	'SINGLE_Invoice' => 'Invoice',
+	'LBL_EXPORT_TO_PDF' => 'Export to PDF',
+    'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
+
+	//Basic strings
+	'LBL_ADD_RECORD' => 'Add Invoice',
+	'LBL_RECORDS_LIST' => 'Invoice List',
+
+	// Blocks
+	'LBL_INVOICE_INFORMATION' => 'Invoice Details',
+
+	//Field labels
+	'Sales Order' => 'Sales Order',
 	'Customer No' => 'Customer No',
 	'Invoice Date' => 'Invoice Date',
-	'Invoice No' => 'Invoice No',
-	'LBL_ACTION'	=> 'Action',
-	'LBL_ADD_RECORD' => 'Add Invoice',
-	'LBL_BALANCE' => 'Balance',
-	'LBL_EXPORT_TO_PDF' => 'Export to PDF',
-	'LBL_INVOICE_INFORMATION' => 'Invoice Details',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
-	'LBL_NOT_A_BUNDLE' => 'Not a Bundle',
-	'LBL_RECEIVED' => 'Received',
-	'LBL_RECORDS_LIST' => 'Invoice List',
-	'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
-	'LBL_SUB_PRODUCTS'	=> 'Sub Products',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
-	'LBL_THIS' => 'This',
-	'Paid'=>'Paid',
 	'Purchase Order' => 'Purchase Order',
 	'Sales Commission' => 'Sales Commission',
-	'Sales Order' => 'Sales Order',
+	'Invoice No' => 'Invoice No',
+	'LBL_RECEIVED' => 'Received',
+	'LBL_BALANCE' => 'Balance',
+	//Added for existing Picklist Entries
+
 	'Sent'=>'Sent',
-	'SINGLE_Invoice' => 'Invoice',
+	'Credit Invoice'=>'Credit Invoice',
+	'Paid'=>'Paid',
+	'AutoCreated'=>'AutoCreated',
+	'Cancel' => 'Cancel',
+	
+	//Translation for product not found
+	'LBL_THIS' => 'This',
+	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
+	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+	'LBL_NOT_A_BUNDLE' => 'Not a Bundle',
+	'LBL_SUB_PRODUCTS'	=> 'Sub Products',
+	'LBL_ACTION'	=> 'Action',
 );
 
 $jsLanguageStrings = array(

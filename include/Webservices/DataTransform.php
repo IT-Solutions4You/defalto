@@ -7,14 +7,15 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-	
+
 	class DataTransform{
-		
+
 		public static $recordString = "record_id";
 		public static $recordModuleString = 'record_module';
-		
+		public static $recordSource = 'WEBSERVICE';
+
 		function sanitizeDataWithColumn($row,$meta){
-			
+
 			$newRow = array();
 			if(isset($row['count(*)'])){
 				return DataTransform::sanitizeDataWithCountColumn($row,$meta);
@@ -28,7 +29,7 @@
 			$newRow = DataTransform::sanitizeData($newRow,$meta,true);
 			return $newRow;
 		}
-		
+
 		function sanitizeDataWithCountColumn($row,$meta){
 			$newRow = array();
 			foreach($row as $col=>$val){
@@ -36,22 +37,25 @@
 			}
 			return $newRow;
 		}
-		
+
 		function filterAndSanitize($row,$meta){
-			
+			$recordLabel = $row['label'];
 			$row = DataTransform::filterAllColumns($row,$meta);
 			$row = DataTransform::sanitizeData($row,$meta);
+			if(!empty($recordLabel)){
+				$row['label'] = $recordLabel;
+			}
 			return $row;
 		}
-		
+
 		function sanitizeData($newRow,$meta,$t=null){
-			
+
 			$newRow = DataTransform::sanitizeReferences($newRow,$meta);
 			$newRow = DataTransform::sanitizeOwnerFields($newRow,$meta,$t);
 			$newRow = DataTransform::sanitizeFields($newRow,$meta);
 			return $newRow;
 		}
-		
+
 		function sanitizeForInsert($row,$meta){
 			global $adb;
 			$associatedToUser = false;
@@ -61,12 +65,12 @@
 					$components = vtws_getIdComponents($row['parent_id']);
 					$userObj = VtigerWebserviceObject::fromName($adb,'Users');
 					$parentTypeId = $components[0];
- 		            if($components[0] == $userObj->getEntityId()){
+					if($components[0] == $userObj->getEntityId()){
 						$associatedToUser = true;
 					}
 				}
 			}
-                        // added to handle the setting reminder time
+						// added to handle the setting reminder time
 			if(strtolower($meta->getEntityName()) == "events"){
 				if(isset($row['reminder_time'])&& $row['reminder_time']!= null && $row['reminder_time'] != 0){
 					$_REQUEST['set_reminder'] = "Yes";
@@ -135,14 +139,19 @@
 			$row = DataTransform::sanitizeDateFieldsForInsert($row,$meta);
 			$row = DataTransform::sanitizeCurrencyFieldsForInsert($row,$meta);
 
+			// New field added to store Source of Created Record
+			if (!isset($row['source'])) {
+				$row['source'] = self::$recordSource;
+			}
+
 			return $row;
-			
+
 		}
-		
+
 		function filterAllColumns($row,$meta){
-			
+
 			$recordString = DataTransform::$recordString;
-			
+
 			$allFields = $meta->getFieldColumnMapping();
 			$newRow = array();
 			foreach($allFields as $field=>$col){
@@ -152,30 +161,30 @@
 				$newRow[$recordString] = $row[$recordString];
 			}
 			return $newRow;
-			
+
 		}
-		
+
 		function sanitizeFields($row,$meta){
 			$default_charset = VTWS_PreserveGlobal::getGlobal('default_charset');
 			$recordString = DataTransform::$recordString;
-			
+
 			$recordModuleString = DataTransform::$recordModuleString;
-			
+
 			if(isset($row[$recordModuleString])){
 				unset($row[$recordModuleString]);
 			}
-			
+
 			if(isset($row['id'])){
 				if(strpos($row['id'],'x')===false){
 					$row['id'] = vtws_getId($meta->getEntityId(),$row['id']);
 				}
 			}
-			
+
 			if(isset($row[$recordString])){
 				$row['id'] = vtws_getId($meta->getEntityId(),$row[$recordString]);
 				unset($row[$recordString]);
 			}
-			
+
 			if(!isset($row['id'])){
 				if($row[$meta->getObectIndexColumn()] ){
 					$row['id'] = vtws_getId($meta->getEntityId(),$row[$meta->getObectIndexColumn()]);
@@ -186,13 +195,13 @@
 			}else if(isset($row[$meta->getObectIndexColumn()]) && strcmp($meta->getObectIndexColumn(),"id")!==0){
 				unset($row[$meta->getObectIndexColumn()]);
 			}
-			
+
 			foreach ($row as $field => $value) {
 				$row[$field] = html_entity_decode($value, ENT_QUOTES, $default_charset);
 			}
 			return $row;
 		}
-		
+
 		function sanitizeReferences($row,$meta){
 			global $adb,$log;
 			$references = $meta->getReferenceFieldDetails();
@@ -208,9 +217,9 @@
 						$webserviceObject = VtigerWebserviceObject::fromName($adb,$entity);
 						$handlerPath = $webserviceObject->getHandlerPath();
 						$handlerClass = $webserviceObject->getHandlerClass();
-						
+
 						require_once $handlerPath;
-						
+
 						$handler = new $handlerClass($webserviceObject,$meta->getUser(),$adb,$log);
 						$entityMeta = $handler->getMeta();
 						if($entityMeta->exists($row[$field])){
@@ -231,15 +240,17 @@
 			}
 			return $row;
 		}
-		
+
 		function sanitizeOwnerFields($row,$meta,$t=null){
 			global $adb;
 			$ownerFields = $meta->getOwnerFields();
 			foreach($ownerFields as $index=>$field){
-				if(isset($row[$field]) && $row[$field]!=null){
+				if(isset($row[$field]) && $row[$field]!=null && $row[$field] != 0){
 					$ownerType = vtws_getOwnerType($row[$field]);
-					$webserviceObject = VtigerWebserviceObject::fromName($adb,$ownerType);
-					$row[$field] = vtws_getId($webserviceObject->getEntityId(),$row[$field]);
+					if ($ownerType) {
+						$webserviceObject = VtigerWebserviceObject::fromName($adb,$ownerType);
+						$row[$field] = vtws_getId($webserviceObject->getEntityId(),$row[$field]);
+					}
 				}
 			}
 			return $row;
@@ -263,10 +274,23 @@
 			global $current_user;
 			$moduleFields = $meta->getModuleFields();
 			foreach($moduleFields as $fieldName=>$fieldObj){
-				if($fieldObj->getFieldDataType()=="currency" && !empty($row[$fieldName])) {
-					if($fieldObj->getUIType() == '71') {
-						$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user);
-					} else if($fieldObj->getUIType() == '72') {
+				if (!empty($row[$fieldName])) {
+					if($fieldObj->getFieldDataType()=="currency") {
+						if($fieldObj->getUIType() == '71') {
+							$row[$fieldName."_raw"] = $row[$fieldName];
+							$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user);
+						} else if($fieldObj->getUIType() == '72') {
+							$currencyConversionRate = $row['conversion_rate'];
+							if (!empty($currencyConversionRate)) {
+								$rawBaseCurrencyValue = CurrencyField::convertToDollar($row[$fieldName], $currencyConversionRate);
+								$row[$fieldName."_raw"] = $rawBaseCurrencyValue;
+								$row[$fieldName."_raw_converted"] = CurrencyField::convertToUserFormat($rawBaseCurrencyValue, $current_user);
+							}
+							$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
+						}
+					} else if($fieldObj->getUIType() == 7 && in_array($fieldObj->getFieldType(), array('N', 'NN'))) {
+						$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
+					} else if($fieldObj->getUIType() == 1 && in_array($fieldObj->getFieldType(), array('N', 'NN')) && in_array($fieldObj->getFieldName(), array('qty_per_unit', 'qtyinstock'))) {
 						$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
 					}
 				}

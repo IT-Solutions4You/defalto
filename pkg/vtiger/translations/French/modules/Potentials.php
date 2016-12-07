@@ -19,7 +19,7 @@ $languageStrings = array(
 	'Sales Stage'                  => 'Phase de vente'              , 
 	'Probability'                  => 'Probabilité'                , 
 	'Campaign Source'              => 'Campagne'                    , 
-	'Forecast Amount'              => 'Forecast Amount'             , 
+	'Forecast Amount'              => 'Revenu pondéré'             , 
 	'Funnel'                       => 'Sales Funnel'                , 
 	'Potentials by Stage'          => 'Opportunities by Stage'      , 
 	'Total Revenue'                => 'Revenue by Salesperson'      , 
@@ -41,5 +41,23 @@ $languageStrings = array(
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Expected to close on'        , 
 	'LBL_RELATED_CONTACTS'         => 'Related Contacts'            , // TODO: Review
 	'LBL_RELATED_PRODUCTS'         => 'Related Products'            , // TODO: Review
-        'Potentials Won'               =>'Potentiels gagnés',
+    'Related To'                   => 'Nom de l\'organisation'      ,
+    'Type'                         => 'Type'                        , 
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Conversion nécessite la sélection du projet',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Possibilités de cartographie sur le terrain',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Vous devez activer le projet de convertir l\'opportunité',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Opportunités mappage de champs est incomplète (Paramètres> Gestionnaire de modules> Perspectives> Perspectives mappage de champs)',
+	'LBL_CREATE_PROJECT'           => 'Créer le projet'            , 
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Possibilité de projet de cartographie',
+
+  'Contact Name' => 'Nom Du Contact',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Conversion nécessite la sélection du projet',
 );

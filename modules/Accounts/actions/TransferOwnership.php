@@ -55,6 +55,16 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 		if($selectedIds == 'all'){
 			$customViewModel = CustomView_Record_Model::getInstanceById($cvId);
 			if($customViewModel) {
+				$operator = $request->get('operator');
+				$searchParams = $request->get('search_params');
+				if (!empty($operator)) {
+					$customViewModel->set('operator', $operator);
+					$customViewModel->set('search_key', $request->get('search_key'));
+					$customViewModel->set('search_value', $request->get('search_value'));
+				}
+				if (!empty($searchParams)) {
+					$customViewModel->set('search_params', $searchParams);
+				}
 				return $customViewModel->getRecordIds($excludedIds, $module);
 			}
 		}

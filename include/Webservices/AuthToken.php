@@ -12,10 +12,18 @@
 		
 		global $adb;
 		
+		if(empty($username)){
+			throw new WebServiceException(WebServiceErrorCode::$ACCESSDENIED,"No username given");
+		}
+
 		$user = new Users();
 		$userid = $user->retrieve_user_id($username);
+
+        if(empty($userid)){
+			throw new WebServiceException(WebServiceErrorCode::$ACCESSDENIED,"username does not exists");
+		}
+
 		$authToken = uniqid();
-		
 		$servertime = time();
 		$expireTime = time()+(60*5);
 		

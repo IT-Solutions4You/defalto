@@ -13,7 +13,7 @@ class Vendors_Record_Model extends Vtiger_Record_Model {
 	function getCreatePurchaseOrderUrl() {
 		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 
-		return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&vendor_id=".$this->getId();
+		return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&vendor_id=".$this->getId()."&sourceModule=".$this->getModuleName()."&sourceRecord=".$this->getId();
 	}
 
 	/**

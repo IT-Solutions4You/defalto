@@ -95,7 +95,7 @@ class Vtiger_Request {
 	function getAll() {
 		return $this->valuemap;
 	}
-
+	
 	/**
 	 * Check for existence of key
 	 */
@@ -220,5 +220,56 @@ class Vtiger_Request {
 		if (!csrf_check(false)) {
 			throw new Exception('Unsupported request');
 		}
+	}
+
+	/**
+	 * Get purified data map
+	 */
+	function getAllPurified() {
+		foreach ($this->valuemap as $key => $value) {
+			$sanitizedMap[$key] = $this->get($key);
+		}
+		return $sanitizedMap;
+	}
+
+	/**
+	* Function gives the return url for a request
+	* @return <String> - return url
+	*/
+	function getReturnURL() {
+		$data = $this->getAll();
+		$returnURL = array();
+		foreach($data as $key => $value) {
+			if(stripos($key, 'return') === 0 && !empty($value) && $value != '/') {
+				if($key == 'returnsearch_params' && $value == '""') continue;
+				$newKey = str_replace('return','',$key);
+				$returnURL[$newKey] = $value;
+			}
+		}
+		return http_build_query($returnURL);
+	}
+
+	/**
+	* Function sets the viewer with the return url parameters
+	* @param $viewer <Vtiger_Viewer> - template object 
+	*/
+	function setViewerReturnValues($viewer) {
+		$viewer->assign('RETURN_MODULE', $this->get('returnmodule'));
+		$viewer->assign('RETURN_VIEW', $this->get('returnview'));
+		$viewer->assign('RETURN_PAGE', $this->get('returnpage'));
+		$viewer->assign('RETURN_VIEW_NAME', $this->get('returnviewname'));
+		$viewer->assign('RETURN_SEARCH_PARAMS', $this->get('returnsearch_params'));
+		$viewer->assign('RETURN_SEARCH_KEY', $this->get('returnsearch_key'));
+		$viewer->assign('RETURN_SEARCH_VALUE', $this->get('returnsearch_value'));
+		$viewer->assign('RETURN_SEARCH_OPERATOR', $this->get('returnoperator'));
+		$viewer->assign('RETURN_SORTBY', $this->get('returnsortorder'));
+		$viewer->assign('RETURN_ORDERBY', $this->get('returnorderby'));
+		
+		$viewer->assign('RETURN_RECORD', $this->get('returnrecord'));
+		$viewer->assign('RETURN_RELATED_TAB', $this->get('returntab_label'));
+		$viewer->assign('RETURN_RELATED_MODULE', $this->get('returnrelatedModuleName'));
+		$viewer->assign('RETURN_MODE', $this->get('returnmode'));
+        $viewer->assign('RETURN_RELATION_ID', $this->get('returnrelationId'));
+        $viewer->assign('RETURN_PARENT_MODULE', $this->get('returnparent'));
 	}
 }

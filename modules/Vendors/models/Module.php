@@ -9,8 +9,8 @@
  *************************************************************************************/
 
 class Vendors_Module_Model extends Vtiger_Module_Model {
-    
-    /**
+
+	/**
 	 * Function to check whether the module is summary view supported
 	 * @return <Boolean> - true/false
 	 */
@@ -18,4 +18,10 @@ class Vendors_Module_Model extends Vtiger_Module_Model {
 		return false;
 	}
 
+	/*
+	 * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+		return array('Import', 'Export', 'DuplicatesHandling');
+	}
 }

@@ -101,6 +101,8 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		$wf->schmonth = $this->get('schmonth');
 		$wf->schannualdates = $this->get('schannualdates');
 		$wf->nexttrigger_time = $this->get('nexttrigger_time');
+		$wf->status = $this->get('status');
+		$wf->name = $this->get('name');
 		$wm->save($wf);
 
 		$this->set('workflow_id', $wf->id);
@@ -164,6 +166,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		$wm = new VTWorkflowManager($db);
 		$wf = $wm->newWorkflow($moduleName);
 		$wf->filtersavedinnew = 6;
+		$wf->status = 1;
 		return self::getInstanceFromWorkflowObject($wf);
 	}
 
@@ -176,6 +179,16 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		$workflowModel->set('module_name', $wf->moduleName);
 		$workflowModel->set('workflow_id', $wf->id);
 		$workflowModel->set('filtersavedinnew', $wf->filtersavedinnew);
+		$workflowModel->set('schtypeid', $wf->schtypeid);
+		$workflowModel->set('schtime', $wf->schtime);
+		$workflowModel->set('schdayofmonth', $wf->schdayofmonth);
+		$workflowModel->set('schdayofweek', $wf->schdayofweek);
+		$workflowModel->set('schmonth', $wf->schmonth);
+		$workflowModel->set('schannualdates', $wf->schannualdates);
+		$workflowModel->set('nexttrigger_time', $wf->nexttrigger_time);
+		$workflowModel->set('status', $wf->status);
+		$workflowModel->set('name', $wf->workflowname);
+
 		$workflowModel->setWorkflowObject($wf);
 		$workflowModel->setModule($wf->moduleName);
 		return $workflowModel;
@@ -186,6 +199,21 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 			$executionCondition = $this->get('execution_condition');
 		}
 		$arr = array('ON_FIRST_SAVE', 'ONCE', 'ON_EVERY_SAVE', 'ON_MODIFY', '', 'ON_SCHEDULE', 'MANUAL');
+		return $arr[$executionCondition-1];
+	}
+
+	function getV7executionConditionAsLabel($executionCondition=null, $module_name) {
+		if($executionCondition == null) {
+			$executionCondition = $this->get('execution_condition');
+		}
+		$module = "Settings:Workflows";
+		$arr = array(vtranslate($module_name, $module_name)." ".vtranslate('LBL_CREATION', $module),
+					 vtranslate('LBL_FIRST_TIME_CONDITION_MET', $module), 
+					 vtranslate('LBL_EVERY_TIME_CONDITION_MET', $module),
+					 vtranslate('ON_MODIFY', $module),
+					 '', 
+					 vtranslate('LBL_TIME_INTERVAL', $module), 
+					 'MANUAL');
 		return $arr[$executionCondition-1];
 	}
 
@@ -206,11 +234,32 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 
 		if(!empty($conditions)) {
 			foreach($conditions as $index => $info) {
+				$columnName = $info['fieldname'];
+				$value = $info['value'];
+				// To convert date value from yyyy-mm-dd format to user format
+				$valueArray = explode(',', $value);
+				$isDateValue = false;
+				for($i = 0; $i < count($valueArray); $i++) {
+					if(Vtiger_Functions::isDateValue($valueArray[$i])) {
+						$isDateValue = true;
+						$valueArray[$i] = DateTimeField::convertToUserFormat($valueArray[$i]);
+					}
+				}
+				if($isDateValue) {
+					$value = implode(',', $valueArray);
+				}
+				// End
+				if($columnName == 'filelocationtype')
+					$value = ($value == 'I') ? vtranslate('LBL_INTERNAL','Documents') : vtranslate('LBL_EXTERNAL','Documents');
+				elseif ($columnName == 'folderid') {
+					$folderInstance = Documents_Folder_Model::getInstanceById($value);
+					$value = $folderInstance->getName();
+				}
 				if(!($info['groupid'])) {
-					$firstGroup[] = array('columnname' => $info['fieldname'], 'comparator' => $info['operation'], 'value' => $info['value'],
+					$firstGroup[] = array('columnname' => $columnName, 'comparator' => $info['operation'], 'value' => $value,
 						'column_condition' => $info['joincondition'], 'valuetype' => $info['valuetype'], 'groupid' => $info['groupid']);
 				} else {
-					$secondGroup[] = array('columnname' => $info['fieldname'], 'comparator' => $info['operation'], 'value' => $info['value'],
+					$secondGroup[] = array('columnname' => $columnName, 'comparator' => $info['operation'], 'value' => $value,
 						'column_condition' => $info['joincondition'], 'valuetype' => $info['valuetype'], 'groupid' => $info['groupid']);
 				}
 			}
@@ -262,55 +311,30 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		$this->set('conditions', $wfCondition);
 	}
 
-
 	/**
 	 * Function returns all the related modules for workflows create entity task
 	 * @return <JSON>
 	 */
 	public function getDependentModules() {
-		$db = PearDatabase::getInstance();
-		$moduleName = $this->getModule()->getName();
+		$modulesList = Settings_LayoutEditor_Module_Model::getEntityModulesList();
+		$primaryModule = $this->getModule();
 
-		$result = $db->pquery("SELECT fieldname, tabid, typeofdata, vtiger_ws_referencetype.type as reference_module FROM vtiger_field
-								INNER JOIN vtiger_ws_fieldtype ON vtiger_field.uitype = vtiger_ws_fieldtype.uitype
-								INNER JOIN vtiger_ws_referencetype ON vtiger_ws_fieldtype.fieldtypeid = vtiger_ws_referencetype.fieldtypeid
-							UNION
-							SELECT fieldname, tabid, typeofdata, relmodule as reference_module FROM vtiger_field
-								INNER JOIN vtiger_fieldmodulerel ON vtiger_field.fieldid = vtiger_fieldmodulerel.fieldid", array());
-
-		$noOfFields = $db->num_rows($result);
-
-		$dependentFields = array();
+		if($primaryModule->isCommentEnabled()) {
+			$modulesList['ModComments'] = 'ModComments';
+		}
+		$createModuleModels = array();
 		// List of modules which will not be supported by 'Create Entity' workflow task
-		$filterModules = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder', 'Emails', 'Calendar', 'Events', 'Accounts');
-		$skipFieldsList = array();
-		for ($i = 0; $i < $noOfFields; ++$i) {
-			$tabId = $db->query_result($result, $i, 'tabid');
-			$fieldName = $db->query_result($result, $i, 'fieldname');
-			$typeOfData = $db->query_result($result, $i, 'typeofdata');
-			$referenceModule = $db->query_result($result, $i, 'reference_module');
-			$tabModuleName = getTabModuleName($tabId);
-			if (in_array($tabModuleName, $filterModules))
+		$filterModules = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder', 'Emails', 'Calendar', 'Events');
+
+		foreach ($modulesList as $moduleName) {
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			if (in_array($moduleName, $filterModules))
 				continue;
-			if ($referenceModule == $moduleName && $tabModuleName != $moduleName) {
-				if(!vtlib_isModuleActive($tabModuleName))continue;
-				$dependentFields[$tabModuleName] = array('fieldname' => $fieldName, 'modulelabel' => getTranslatedString($tabModuleName, $tabModuleName));
-			} else {
-				$dataTypeInfo = explode('~', $typeOfData);
-				if ($dataTypeInfo[1] == 'M') { // If the current reference field is mandatory
-					$skipFieldsList[$tabModuleName] = array('fieldname' => $fieldName);
-				}
+			$createModuleModels[$moduleName] = $moduleModel;
 			}
-		}
-		foreach ($skipFieldsList as $tabModuleName => $fieldInfo) {
-			$dependentFieldInfo = $dependentFields[$tabModuleName];
-			if ($dependentFieldInfo['fieldname'] != $fieldInfo['fieldname']) {
-				unset($dependentFields[$tabModuleName]);
-			}
+		return $createModuleModels;
 		}
 
-		return $dependentFields;
-	}
 
 	/**
 	 * Function to get reference field name
@@ -337,5 +361,128 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		$wm = new VTWorkflowManager($db);
 		$wf = $this->getWorkflowObject();
 		$wm->updateNexTriggerTime($wf);
+	}
+
+	/**
+	 * function to delete the update workflow related to a field
+	 * @param type $moduleName
+	 * @param type $fieldName
+	 */
+	public static function deleteUpadateFieldWorkflow($moduleName, $fieldName) {
+		$ids = Settings_Workflows_Record_Model::getUpdateFieldTaskIdsForModule($moduleName, $fieldName);
+		if($ids) {
+			foreach ($ids as $id) {
+				$taskModel = Settings_Workflows_TaskRecord_Model::getInstance($id);
+				$taskTypeModel = $taskModel->getTaskType();
+				if($taskTypeModel->get('tasktypename') == 'VTUpdateFieldsTask') {
+					$taskObject = $taskModel->getTaskObject();
+					$fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
+					foreach ($fieldMapping as $key=>$field) {
+						if($field['fieldname'] == $fieldName || strpos($field['value'],$fieldName) !== false) {
+							unset($fieldMapping[$key]);
+						}
+					}
+					$taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
+					$taskModel->setTaskObject($taskObject);
+					$taskModel->save();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to get the update field task ids from modulename and fieldname
+	 * @param type $moduleName
+	 * @param type $fieldName
+	 * @return $ids
+	 */
+	public static function getUpdateFieldTaskIdsForModule($moduleName, $fieldName) {
+		$ids = array();
+		$db = PearDatabase::getInstance();
+		$sql = 'SELECT * FROM com_vtiger_workflows
+				INNER JOIN com_vtiger_workflowtasks ON com_vtiger_workflows.workflow_id = com_vtiger_workflowtasks.workflow_id
+				WHERE module_name = ?
+				AND task LIKE ? 
+				AND task LIKE ? ';
+		$result = $db->pquery($sql, array($moduleName, '%VTUpdateFieldsTask%', "%".$fieldName."%"));
+		$count = $db->num_rows($result);
+		if($count > 0) {
+			for($i=0;$i<$count;$i++) {
+				$ids[] = $db->query_result($result, $i, 'task_id');
+			}
+			return $ids;
+		}
+		return false;
+	}
+
+	public static function updateWorkflowStatus($record, $status){
+	  $db = PearDatabase::getInstance();
+	  $sql = 'UPDATE com_vtiger_workflows SET status = ? WHERE workflow_id = ?';
+	  $db->pquery($sql, array($status, $record));
+	}
+
+	function getConditonDisplayValue() {
+		$test = $this->get('raw_test');
+		$moduleName = $this->get('raw_module_name');
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$wfCond = json_decode($test,true);
+		$conditionList = array();
+		if(is_array($wfCond)) {
+			for ($k=0; $k<(count($wfCond)); ++$k){
+				$fieldName = $wfCond[$k]['fieldname'];
+				preg_match('/\((\w+) : \(([_\w]+)\) (\w+)\)/', $fieldName, $matches);
+
+				if(count($matches)==0){
+					$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+					if($fieldModel) {
+						$fieldLabel = vtranslate($fieldModel->get('label'), $moduleName);
+					} else {
+						$fieldLabel = $fieldName;
+					}
+				} else {
+					list($full, $referenceField, $referenceModule, $fieldName) = $matches;
+					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+					$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $referenceModuleModel);
+					$referenceFieldModel = Vtiger_Field_Model::getInstance($referenceField, $moduleModel);
+					if($fieldModel) {
+						$translatedReferenceModule = vtranslate($referenceModule, $referenceModule);
+						$referenceFieldLabel = vtranslate($referenceFieldModel->get('label'), $moduleName);
+						$fieldLabel = vtranslate($fieldModel->get('label'), $referenceModule);
+						$fieldLabel = "(".$translatedReferenceModule.") ".$referenceFieldLabel." - ".$fieldLabel;
+					} else {
+						$fieldLabel = $fieldName;
+					}
+				}
+				$value = $wfCond[$k]['value'];
+				$operation = $wfCond[$k]['operation'];
+				if($wfCond[$k]['groupjoin'] == 'and') {
+					$conditionGroup = 'All';
+				} else {
+					$conditionGroup = 'Any';
+				}
+				if($value == 'true:boolean' || ($fieldModel && $fieldModel->getFieldDataType() == 'boolean' && $value == '1')) {
+					$value = 'LBL_ENABLED';
+				}
+				if($value == 'false:boolean' || ($fieldModel && $fieldModel->getFieldDataType() == 'boolean' && $value == '0')) {
+					$value = 'LBL_DISABLED';
+				}
+				if($fieldLabel == '_VT_add_comment') {
+					$fieldLabel = 'Comment';
+				}
+				$conditionList[$conditionGroup][] = $fieldLabel.' '.vtranslate($operation, $moduleName).' '.vtranslate($value, $moduleName);
+			}
+		}
+
+		return $conditionList;
+	}
+
+	function getActionsDisplayValue() {
+		$actions = array();
+		$tasks = Settings_Workflows_TaskRecord_Model::getAllForWorkflow($this, true);
+		foreach($tasks as $task) {
+			$taskName = $task->getTaskType()->get('tasktypename');
+			$actions[$taskName] = $actions[$taskName] + 1;
+		}
+		return $actions;
 	}
 }

@@ -16,17 +16,19 @@ $languageStrings = array(
 	'LBL_TODOS'                    => 'Görev'                      , 
 	'LBL_HOLD_FOLLOWUP_ON'         => 'İzleyen Hold On'             ,
     'LBL_CREATE_FOLLOWUP_EVENT'    => 'Takip Etkinlik Oluştur'      ,
-	'LBL_EVENT_INFORMATION'        => 'Event Details'               , 
+	'LBL_EVENT_INFORMATION'        => 'Etkinlik Ayrıntıları'        , 
 	'LBL_RECURRENCE_INFORMATION'   => 'Recurrence Details'          , 
 	'LBL_RELATED_TO'               => 'Related To'                  , // TODO: Review
+    'Related To'                   => 'İlgili'                      ,
 	'Start Date & Time'            => 'Başlangıç Tarihi ve Zamanı', 
-	'Recurrence'                   => 'Recurrence'                  , 
+	'Recurrence'                   => 'Yinelenme'                  , 
 	'Send Notification'            => 'Send Notification'           , 
 	'Location'                     => 'Location'                    , 
 	'Send Reminder'                => 'Send Reminder'               , 
 	'End Date & Time'              => 'Bitiş Tarihi ve Zamanı'    , 
+    'End Date'                     => 'Bitiş Tarihi ve Zamanı'    , 
 	'Activity Type'                => 'Aktivite Tipi'               , 
-	'Visibility'                   => 'Visibility'                  , 
+	'Visibility'                   => 'Görünürlük'                  , 
 	'Private'                      => 'Özel'                       , 
 	'Public'                       => 'Herkese Açık'              , 
 	'Call'                         => 'Arama'                       , 
@@ -67,4 +69,10 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
+        'LBL_INVITE_PEOPLE'            => 'İnsanlar Davet',
+
+
+  'INVITATION' => ' Davetiye ',
+  'Busy' => 'Meşgul',
+
 );

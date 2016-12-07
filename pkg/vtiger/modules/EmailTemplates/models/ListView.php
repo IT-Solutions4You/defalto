@@ -79,6 +79,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$pageLimit = $pagingModel->getPageLimit();
 		$orderBy = $this->getForSql('orderby');
 		$sortOrder = $this->getForSql('sortorder');
+		$moduleModel = $this->getModule();
 
 		$listQuery = $this->getQuery();
 		$searchKey = $this->get('search_key');

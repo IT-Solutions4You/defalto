@@ -38,7 +38,7 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 				$db = PearDatabase::getInstance();
 				$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-				$queryGenerator = new QueryGenerator($relatedModuleName, $currentUserModel);
+				$queryGenerator = new EnhancedQueryGenerator($relatedModuleName, $currentUserModel);
 				$queryGenerator->initForCustomViewById($viewId);
 
 				$query = $queryGenerator->getQuery();

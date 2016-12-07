@@ -12,16 +12,14 @@ vimport('~~/modules/SMSNotifier/SMSNotifier.php');
 class SMSNotifier_Record_Model extends Vtiger_Record_Model {
 
 	public static function SendSMS($message, $toNumbers, $currentUserId, $recordIds, $moduleName) {
-		SMSNotifier::sendsms($message, $toNumbers, $currentUserId, $recordIds, $moduleName);
+		return SMSNotifier::sendsms($message, $toNumbers, $currentUserId, $recordIds, $moduleName);
 	}
 
 	public function checkStatus() {
-		$statusDetails = SMSNotifier::getSMSStatusInfo($this->get('id'));
-
+		$statusDetails = SMSNotifier::smsquery($this->get('id'));
 		$statusColor = $this->getColorForStatus($statusDetails[0]['status']);
 
-		$data = array_merge($statusDetails[0], array('statuscolor' => $statusColor));
-		$this->setData($data);
+		$this->setData($statusDetails[0]);
 
 		return $this;
 	}

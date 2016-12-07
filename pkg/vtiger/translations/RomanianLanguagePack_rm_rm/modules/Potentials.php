@@ -19,7 +19,7 @@ $languageStrings = array(
 	'Sales Stage'                  => 'Stadiu vanzari'              , 
 	'Probability'                  => 'Probabilitate (%)'           , 
 	'Campaign Source'              => 'Sursa campanie'              , 
-	'Forecast Amount'              => 'Forecast Amount'             , 
+	'Forecast Amount'              => 'Venituri ponderată'             , 
 	'Funnel'                       => 'Sales Funnel'                , 
 	'Potentials by Stage'          => 'Opportunities by Stage'      , 
 	'Total Revenue'                => 'Revenue by Salesperson'      , 
@@ -41,5 +41,23 @@ $languageStrings = array(
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Expected to close on'        , 
 	'LBL_RELATED_CONTACTS'         => 'Related Contacts'            , // TODO: Review
 	'LBL_RELATED_PRODUCTS'         => 'Related Products'            , // TODO: Review
-        'Potentials Won'               => 'Potentiale Victorii',
+    'Related To'                   => 'Numele organizației'         ,
+    'Type'                         => 'Tip'                         , 
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Conversia Oportunități',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Oportunități de Mapping câmp',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Trebuie sa activati ​​proiect pentru a converti Oportunitate',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Oportunități de câmp Mapping este incompletă (Settings> Module Manager de> Oportunități> Oportunități de câmp Mapping)',
+	'LBL_CREATE_PROJECT' => 'Creați Project',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Oportunitatea de a proiect de cartografiere',
+
+  'Contact Name' => 'Nume De Contact',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Conversie necesită selectarea proiectelor',
 );

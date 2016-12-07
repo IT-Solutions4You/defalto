@@ -28,6 +28,8 @@ class Documents_MoveDocuments_View extends Vtiger_Index_View {
 		$viewer->assign('SELECTED_IDS', $request->get('selected_ids'));
 		$viewer->assign('EXCLUDED_IDS', $request->get('excluded_ids'));
 		$viewer->assign('VIEWNAME',$request->get('viewname'));
+        $viewer->assign('FOLDER_ID',$request->get('folder_id'));
+        $viewer->assign('FOLDER_VALUE',$request->get('folder_value'));
         
         $searchKey = $request->get('search_key');
         $searchValue = $request->get('search_value');

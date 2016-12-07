@@ -9,6 +9,7 @@
  *
  ********************************************************************************/
 
+require_once 'modules/Settings/MailConverter/handlers/MailParser.php';
 /**
  * This class provides structured way of accessing details of email.
  */
@@ -29,9 +30,9 @@ class Vtiger_MailRecord {
 	var $_subject;
 	// BODY (either HTML / PLAIN message)
 	var $_body;
-     // Name of Mail Sender 
+    // Name of Mail Sender 
     var $_fromname;
-    // CHARSET of the body content
+	// CHARSET of the body content
 	var $_charset;
 	// If HTML message was set as body content
 	var $_isbodyhtml;
@@ -50,10 +51,13 @@ class Vtiger_MailRecord {
 	/** DEBUG Functionality. */
 	var $debug = false;
 	function log($message=false) {
-		if(!$message) $message = $this->__toString();
+		if(!$message)
+            $message = $this->__toString();
 
 		global $log;
-		if($log && $this->debug) { $log->debug($message); }
+		if($log && $this->debug) {
+            $log->debug($message);
+        }
 		else if($this->debug) {
 			echo var_export($message, true) . "\n";
 		}
@@ -79,8 +83,10 @@ class Vtiger_MailRecord {
 	 * Constructor.
 	 */
 	function __construct($imap, $messageid, $fetchbody=true) {
-		$this->__parseHeader($imap, $messageid);
-		if($fetchbody) $this->__parseBody($imap, $messageid);
+        if($imap) {
+            $this->__parseHeader($imap, $messageid);
+            if($fetchbody) $this->__parseBody($imap, $messageid);
+        }
 	}
 
 	/**
@@ -141,13 +147,19 @@ class Vtiger_MailRecord {
 		if ($mb_function === NULL) $mb_function = function_exists('mb_convert_encoding');
 		if ($iconv_function === NULL) $iconv_function = function_exists('iconv');
 
-		if($mb_function) {
-			if(!$from) $from = mb_detect_encoding($input);
+		$mbAcceptedEncodings=array();
+		$mbAcceptedEncodings=  mb_list_encodings();
+		if(!in_array($from,$mbAcceptedEncodings)){
+		   return iconv($from,"UTF-8", $input);
+		} else {
+			if($mb_function) {
+				if(!$from) $from = mb_detect_encoding($input);
 
-			if(strtolower(trim($to)) == strtolower(trim($from))) {                         
+				if(strtolower(trim($to)) == strtolower(trim($from))) {                         
 					return $input;
-			} else {
-				return mb_convert_encoding($input, $to, $from);
+				} else {
+					return mb_convert_encoding($input, $to, $from);
+				}
 			}
 		}
 		return $input;
@@ -160,14 +172,15 @@ class Vtiger_MailRecord {
 		if(is_null($words)) $words = array();
 		$returnvalue = $input;
 		
-		preg_match_all('/=\?([^\?]+)\?([^\?]+)\?([^\?]+)\?=/', $input, $matches);
-                array_filter($matches);
-                if(count($matches[0])>0){
-                $decodedArray=  imap_mime_header_decode($input);
-                foreach($decodedArray as $part=>$prop){
-                            $decodevalue=$prop->text;
-                            $charset=$prop->charset;
-				$value = self::__convert_encoding($decodevalue, $targetEncoding, $charset);				
+		preg_match_all('/=\?([^\?]+)\?([^\?]+)\?([^\?]+)\?=/', $input, $matches); 
+		array_filter($matches); 
+		if(count($matches[0]) > 0) { 
+			$decodedArray =  imap_mime_header_decode($input); 
+			foreach($decodedArray as $part=>$prop) {
+				$decodevalue = $prop->text; 
+				$charset = $prop->charset;
+				if($charset != 'default')
+					$value = self::__convert_encoding($decodevalue, $targetEncoding, $charset);	
 				array_push($words, $value);				
 			}
 		}
@@ -216,7 +229,7 @@ class Vtiger_MailRecord {
 		$this->_uniqueid = $mailheader->message_id;
 
 		$this->_from = $this->__getEmailIdList($mailheader->from);
-                $this->_fromname = self::__mime_decode($mailheader->from[0]->personal);
+        $this->_fromname = self::__mime_decode($mailheader->from[0]->personal);
 		$this->_to   = $this->__getEmailIdList($mailheader->to);
 		$this->_cc   = $this->__getEmailIdList($mailheader->cc);
 		$this->_bcc  = $this->__getEmailIdList($mailheader->bcc);
@@ -226,10 +239,11 @@ class Vtiger_MailRecord {
 		$this->_subject = self::__mime_decode($mailheader->subject);
 		if(!$this->_subject) $this->_subject = 'Untitled';
 	}
+    
 	// Modified: http://in2.php.net/manual/en/function.imap-fetchstructure.php#85685
 	function __parseBody($imap, $messageid) {
 		$structure = imap_fetchstructure($imap, $messageid);
-
+		
 		$this->_plainmessage = '';
 		$this->_htmlmessage = '';
 		$this->_body = '';
@@ -269,14 +283,15 @@ class Vtiger_MailRecord {
 
 		$this->_bodyparsed = true;
 	}
+    
 	// Modified: http://in2.php.net/manual/en/function.imap-fetchstructure.php#85685	
 	function __getpart($imap, $messageid, $p, $partno) {
 	    // $partno = '1', '2', '2.1', '2.1.3', etc if multipart, 0 if not multipart
     	
 	    // DECODE DATA
     	$data = ($partno)? 
-			imap_fetchbody($imap,$messageid,$partno):  // multipart
-			imap_body($imap,$messageid);               // not multipart
+			imap_fetchbody($imap,$messageid,$partno, FT_PEEK):  // multipart
+			imap_body($imap,$messageid, FT_PEEK);				// not multipart
 	
 		// Any part may be encoded, even plain text messages, so check everything.
     	if ($p->encoding==4) $data = quoted_printable_decode($data);
@@ -292,7 +307,7 @@ class Vtiger_MailRecord {
 	    if ($p->dparameters) {
 			foreach ($p->dparameters as $x) $params[ strtolower( $x->attribute ) ] = $x->value;
 		}
-
+		
 	    // ATTACHMENT
     	// Any part with a filename is an attachment,
 	    // so an attached text file (type 0) is not mistaken as the message.
@@ -330,5 +345,14 @@ class Vtiger_MailRecord {
             	$this->__getpart($imap,$messageid,$p2,$partno.'.'.($partno0+1));  // 1.2, 1.2.1, etc.
     	}
 	}
+        
+        function getParsedBody() {
+            if($this->_isbodyhtml) {
+                $htmlParser = new Vtiger_MailParser($this->getBodyHTML());
+                return $htmlParser->parseHtml();
+            } else {
+                return $this->getBodyText();
+            }
+        }
 }
 ?>

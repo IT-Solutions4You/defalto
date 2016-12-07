@@ -52,9 +52,20 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function getPreferenceDetailViewUrl() {
 		$module = $this->getModule();
-		return 'index.php?module='.$this->getModuleName().'&view=PreferenceDetail&record='.$this->getId();
+		return 'index.php?module='.$this->getModuleName().'&view=PreferenceDetail&parent=Settings&record='.$this->getId();
 	}
 	
+	public function getCalendarSettingsDetailViewUrl(){
+		return 'index.php?module=' .$this->getModuleName() . '&parent=Settings&view=Calendar&record='.$this->getId();
+	}
+	
+	public function getCalendarSettingsEditViewUrl(){
+		return 'index.php?module='.$this->getModuleName() . '&parent=Settings&view=Calendar&mode=Edit&record='.$this->getId();
+	}
+    
+    public function getMyTagSettingsListUrl() {
+        return 'index.php?module=Tags&parent=Settings&view=List&record='.$this->getId();
+    }
 	/**
 	 * Function to get the url for the Profile page
 	 * @return <String> - Profile Url
@@ -79,7 +90,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function getPreferenceEditViewUrl() {
 		$module = $this->getModule();
-		return 'index.php?module='.$this->getModuleName().'&view=PreferenceEdit&record='.$this->getId();
+		return 'index.php?module='.$this->getModuleName().'&view=PreferenceEdit&parent=Settings&record='.$this->getId();
 	}
 
 	/**
@@ -89,6 +100,14 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	public function getDeleteUrl() {
 		$module = $this->getModule();
 		return 'index.php?module='.$this->getModuleName().'&parent=Settings&view='.$module->getDeleteActionName().'User&record='.$this->getId();
+	}
+
+	public function getChangeUsernameUrl(){
+		return 'index.php?module='.$this->getModuleName().'&view=EditAjax&mode=changeUsername&record='.$this->getId();
+	}
+
+	public function getChangePwdUrl(){
+		return 'index.php?module='.$this->getModuleName().'&view=EditAjax&mode=changePassword&recordId='.$this->getId();
 	}
 
 	/**
@@ -120,11 +139,35 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * Function to save the current Record Model
 	 */
 	public function save() {
+        $newUser = false;
+        $userId = $this->getId();
+        
+        if(empty($userId)) {
+            $newUser = true;
+        }
 		parent::save();
-
 		$this->saveTagCloud();
+        $this->addDashboardTabs();
 	}
-
+    
+    /**
+     * Funtion to add default Dashboard Tab in Vtiger7 Home Page
+     */
+    function addDashboardTabs(){
+        $db = PearDatabase::getInstance();
+        $tabs = array("1"=>array('name'=>"My Dashboard",'app'=>'','module' =>''));
+        $isDefault = 1;
+        foreach($tabs as $seq => $tabName){
+            if(is_array($tabName)) {
+                $appName = $tabName['app'];
+                $moduleName = $tabName['module'];
+                $tabName = $tabName['name'];
+            }
+           
+            $db->pquery("INSERT INTO vtiger_dashboard_tabs(tabname,userid,isdefault,sequence,appname,modulename) VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE tabname=?,userid=?,appname=?,modulename=?",
+                    array($tabName, $this->getId(),$isDefault,$seq,$appName,$moduleName,$tabName, $this->getId(),$appName, $moduleName));
+        }
+    }
 
 	/**
 	 * Function to get all the Home Page components list
@@ -140,7 +183,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * Static Function to get the instance of the User Record model for the current user
 	 * @return Users_Record_Model instance
 	 */
-	protected static $currentUserModels = array();
+	public static $currentUserModels = array();
 	public static function getCurrentUserModel() {
 		//TODO : Remove the global dependency
 		$currentUser = vglobal('current_user');
@@ -151,10 +194,9 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			$currentUserModel = NULL;
 			if (isset(self::$currentUserModels[$currentUser->id])) {
 				$currentUserModel = self::$currentUserModels[$currentUser->id];
-				if (isset($currentUser->column_fields['modifiedtime']) && 
-				    $currentUser->column_fields['modifiedtime'] != $currentUserModel->get('modifiedtime')) {
+				if ($currentUser->column_fields['modifiedtime'] != $currentUserModel->get('modifiedtime')) {
 					$currentUserModel = NULL;
-		        }
+		}
 			}
 			if (!$currentUserModel) {
 				$currentUserModel = self::getInstanceFromUserObject($currentUser);
@@ -163,15 +205,6 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			return $currentUserModel;
 		}
 		return new self();
-	}
-
-	/**
-	 * Function to return user object from preference file.
-	 */
-	public static function getInstanceFromPreferenceFile($userId) {
-		$focusObj = new Users();
-		$focusObj->retrieveCurrentUserInfoFromFile($userId);
-		return self::getInstanceFromUserObject($focusObj);
 	}
 
 	/**
@@ -191,7 +224,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * Static Function to get the instance of all the User Record models
 	 * @return <Array> - List of Users_Record_Model instances
 	 */
-	public static function getAll($onlyActive=true) {
+	public static function getAll($onlyActive=true, $excludeDefaultAdmin = true) {
 		$db = PearDatabase::getInstance();
 
 		$sql = 'SELECT id FROM vtiger_users';
@@ -271,6 +304,23 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
 		return $privilegesModel->get('roleid');
 	}
+    
+    /**
+     * Function returns User Current Role Name
+     * @return <String>
+     */
+    function getUserRoleName(){
+        global $adb;
+        $roleName = null;
+        $roleId = $this->get('roleid');
+        $query = "SELECT rolename from vtiger_role WHERE roleid = ?";
+        $result = $adb->pquery($query, array($roleId));
+        if($result){
+            $roleName = $adb->query_result($result, 0,'rolename');
+        }
+        return $roleName;
+    }
+    
 
 	/**
 	 * Function returns List of Accessible Users for a Module
@@ -285,7 +335,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			$users = $this->getAccessibleUsers("",$module);
 		} else {
 			$sharingAccessModel = Settings_SharingAccess_Module_Model::getInstance($module);
-			if($sharingAccessModel->isPrivate()) {
+			if($sharingAccessModel && $sharingAccessModel->isPrivate()) {
 				$users = $this->getAccessibleUsers('private',$module);
 			} else {
 				$users = $this->getAccessibleUsers("",$module);
@@ -307,7 +357,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			$groups = $this->getAccessibleGroups("",$module);
 		} else {
 			$sharingAccessModel = Settings_SharingAccess_Module_Model::getInstance($module);
-			if($sharingAccessModel->isPrivate()) {
+			if($sharingAccessModel && $sharingAccessModel->isPrivate()) {
 				$groups = $this->getAccessibleGroups('private',$module);
 			} else {
 				$groups = $this->getAccessibleGroups("",$module);
@@ -321,16 +371,16 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <Array> list of Image names and paths
 	 */
 	public function getImageDetails() {
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$db = PearDatabase::getInstance();
 
 		$imageDetails = array();
 		$recordId = $this->getId();
 
 		if ($recordId) {
-			$query = "SELECT vtiger_attachments.* FROM vtiger_attachments
-            LEFT JOIN vtiger_salesmanattachmentsrel ON vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
-            WHERE vtiger_salesmanattachmentsrel.smid=?";
+                        // Not a good approach to get all the fields if not required(May lead to Performance issue)
+			$query = "SELECT vtiger_attachments.attachmentsid, vtiger_attachments.path, vtiger_attachments.name FROM vtiger_attachments
+                                  LEFT JOIN vtiger_salesmanattachmentsrel ON vtiger_salesmanattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
+                                  WHERE vtiger_salesmanattachmentsrel.smid=?";
 
 			$result = $db->pquery($query, array($recordId));
 
@@ -339,7 +389,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			$imageName = $db->query_result($result, 0, 'name');
 
 			//decode_html - added to handle UTF-8 characters in file names
-			$imageOriginalName = decode_html($imageName);
+			$imageOriginalName = urlencode(decode_html($imageName));
 
 			$imageDetails[] = array(
 					'id' => $imageId,
@@ -449,7 +499,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
             $accessibleGroups = get_group_array(false, "ACTIVE", "", $private,$module);
             Vtiger_Cache::set('vtiger-'.$private, 'accessiblegroups',$accessibleGroups);
         }
-		return get_group_array(false, "ACTIVE", "", $private);
+		return $accessibleGroups;
 	}
 
 	/**
@@ -489,6 +539,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		if ($this->getId() === $smId) {
 			$db->pquery('DELETE FROM vtiger_attachments WHERE attachmentsid = ?', array($imageId));
 			$db->pquery('DELETE FROM vtiger_salesmanattachmentsrel WHERE attachmentsid = ?', array($imageId));
+            $db->pquery('DELETE FROM vtiger_crmentity WHERE crmid = ?',array($imageId));
 			return true;
 		}
 		return false;
@@ -551,16 +602,29 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <array> - groupId's
 	 */
 	public static function getUserGroups($userId){
-		$db = PearDatabase::getInstance();
-		$groupIds = array();
-		$query = "SELECT groupid FROM vtiger_users2group WHERE userid=?";
-		$result = $db->pquery($query, array($userId));
-		for($i=0; $i<$db->num_rows($result); $i++){
-			$groupId = $db->query_result($result, $i, 'groupid');
-			$groupIds[] = $groupId;
-		}
-		return $groupIds;
+        self::getAllUserGroups();
+        return self::$allUserGroups[$userId];
 	}
+    
+    /**
+	 * Function to get all users groups
+	 * @return <array> - all users groupId's
+	 */
+    static $allUserGroups;
+    public static function getAllUserGroups() {
+        if (empty(self::$allUserGroups)) {
+            $db = PearDatabase::getInstance();
+            $query = "SELECT * FROM vtiger_users2group";
+            $result = $db->pquery($query, array());
+            for ($i = 0; $i < $db->num_rows($result); $i++) {
+                $userId = $db->query_result($result, $i, 'userid');
+                $userGroups = self::$allUserGroups[$userId];
+                $userGroups[] = $db->query_result($result, $i, 'groupid');
+                self::$allUserGroups[$userId] = $userGroups;
+            }
+        }
+		return self::$allUserGroups;
+    }
 
 	/**
 	 * Function returns the users activity reminder in seconds
@@ -645,11 +709,10 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$this->getModule()->deleteRecord($this);
 	}
 	
-        public function isAccountOwner() {
+	public function isAccountOwner() {
 		$db = PearDatabase::getInstance();
 		$query = 'SELECT is_owner FROM vtiger_users WHERE id = ?';
-		$res = $db->pquery($query, array($this->getId()));
-		$isOwner = $db->query_result($res, 0, 'is_owner');
+		$isOwner = $db->query_result($db->pquery($query, array($this->getId())), 0, 'is_owner');
 		if($isOwner == 1) {
 			return true;
 		} 
@@ -715,8 +778,12 @@ class Users_Record_Model extends Vtiger_Record_Model {
         public function deleteUserPermanently($userId, $newOwnerId) {
                 $db = PearDatabase::getInstance();
                 
-                $sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=? WHERE smcreatorid=? AND setype=?";
-                $db->pquery($sql, array($newOwnerId, $newOwnerId, $userId,'ModComments'));
+                $sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";
+                $db->pquery($sql, array($newOwnerId, $newOwnerId, date('Y-m-d H:i:s'), $userId,'ModComments'));
+                
+                // Update creator Id in vtiger_crmentity table
+                $sql = "UPDATE vtiger_crmentity SET smcreatorid = ? WHERE smcreatorid = ? AND setype <> ?";
+                $db->pquery($sql, array($newOwnerId, $userId,'ModComments'));
                 
                 //update history details in vtiger_modtracker_basic 
                 $sql ="update vtiger_modtracker_basic set whodid=? where whodid=?"; 
@@ -729,6 +796,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
                 $sql = "DELETE FROM vtiger_users WHERE id=?";
                 $db->pquery($sql, array($userId));
                 
+                vtws_removeGoogleSync($userId);
         }
 	
 	/**
@@ -738,4 +806,123 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	public function getDisplayName() {
 		return getFullNameFromArray($this->getModuleName(),$this->getData());
 	}
+
+	/**
+	 * Function to return user object from preference file.
+	 */
+	public static function getInstanceFromPreferenceFile($userId) {
+		$focusObj = new Users();
+		$focusObj->retrieveCurrentUserInfoFromFile($userId);
+		return self::getInstanceFromUserObject($focusObj);
+	}
+    
+    /**
+     * Function returns all the subordinates based on Reports To field
+     * @return Array
+     */
+    public function getAllSubordinatesByReportsToField($forUserId) {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT id, reports_to_id FROM vtiger_users where status = ?', array('Active'));
+        $rows = $db->num_rows($result);
+        for($i=0; $i<$rows; $i++) {
+            $userId = $db->query_result($result, $i, 'id');
+            $reportsToId = $db->query_result($result, $i, 'reports_to_id');
+            $users[$userId] = $reportsToId;
+        }
+        $subUsers = array($forUserId);
+        foreach($users as $user => $manager) {
+            if(in_array($manager, $subUsers)) {
+                $subUsers[] = (int)$user;
+            }
+        }
+        $subUsers = array_diff($subUsers, array($forUserId));
+        return $subUsers;
+    }
+    
+     /**
+	 * Function returns List of Accessible Users given Group
+	 * @param <String> groupid
+	 * @return <Array of Users>
+	 */
+	public function getAccessibleGroupUsers($groupId) {
+        vimport('~~/include/utils/GetGroupUsers.php');
+        $getGroupUsers = new GetGroupUsers();
+        $getGroupUsers->getAllUsersInGroup($groupId);
+        return $getGroupUsers->group_users;
+	}
+    /**
+	 * Function returns List of All Group Users
+	 * @return <Array of Group and Users>
+	 */
+    public function getAllAccessibleGroupUsers(){
+       $groups = $this->getAccessibleGroups();
+        $groupUsers = array();
+        foreach ($groups as $groupid => $name) {
+            $groupUsers[$groupid] = $this->getAccessibleGroupUsers($groupid);
+        }
+        return $groupUsers;
+    }
+
+
+	/**
+	 * Function to change username 
+	 * @param <string> $newUsername
+	 * @param <string> $newpassword
+	 * @param <string> $oldPassword
+	 * @param <integer> $forUserId
+	 * @return <array> $reponse
+	 */
+	public static function changeUsername($newUsername,$newpassword,$oldPassword,$forUserId) {
+		$response = array('success'=> false,'message' => 'error');
+		$record = self::getInstanceFromPreferenceFile($forUserId);
+		$moduleName = $record->getModuleName();
+		
+		if(!Users_Privileges_Model::isPermittedToChangeUsername($forUserId)) {
+			$response['message'] = vtranslate('LBL_PERMISSION_DENIED', $moduleName);
+			return $response;
+		}
+
+		if($newUsername !== $record->get('user_name')){
+			$status = self::isUserExists($newUsername);
+			if($status) {
+				$response['message'] = vJSTranslate('JS_USER_EXISTS',  $moduleName);
+			}else{
+				//save new username and password
+				$record->set('mode','edit');
+				$record->set('user_name',$newUsername);
+
+				try{
+					$record->save();
+					$users = CRMEntity::getInstance('Users');
+					$users->retrieveCurrentUserInfoFromFile($forUserId);
+					$changePwdResponse = $users->change_password($oldPassword,$newpassword);
+					if($changePwdResponse) {
+						$response['success'] = true;
+						$response['message'] = vtranslate('LBL_USERNAME_CHANGED',  $moduleName);	
+					}else{
+						$response['message'] = vtranslate('ERROR_CHANGE_USERNAME',  $moduleName);
+					}
+				}  catch (Exception $e) {
+					$response['success'] = false;
+					$response['message'] = vtranslate('ERROR_CHANGE_USERNAME',  $moduleName);
+				}		
+			}
+		}else{
+			$response['message'] = vJSTranslate('JS_ENTERED_CURRENT_USERNAME_MSG', $moduleName);
+		}
+		return $response;
+	}
+
+	/**
+	 * Function to check whether user exists in CRM and in VAS
+	 * @param <string> $userName
+	 * @return <boolean> $status
+	 */
+	public static function isUserExists($userName) {
+		$userModuleModel = Users_Module_Model::getCleanInstance('Users');
+		$status = false;
+		// To check username existence in db
+		return $userModuleModel->checkDuplicateUser($userName);
+	}
+
 }

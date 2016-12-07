@@ -10,15 +10,17 @@
 
 Class Settings_SharingAccess_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 
-         public function checkPermission(Vtiger_Request $request) { 
-            $currentUser = Users_Record_Model::getCurrentUserModel(); 
-            if(!$currentUser->isAdminUser()) { 
-                    throw new AppException('LBL_PERMISSION_DENIED'); 
-            } 
-        } 
+    public function checkPermission(Vtiger_Request $request) {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        if($currentUser->isAdminUser()) {
+            return true;
+        } else {
+            throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+        }
+	}
+
 	public function process(Vtiger_Request $request) {
 		$modulePermissions = $request->get('permissions');
-		$modulePermissions[4] = $modulePermissions[6];
 
 		foreach($modulePermissions as $tabId => $permission) {
 			$moduleModel = Settings_SharingAccess_Module_Model::getInstance($tabId);
@@ -36,4 +38,4 @@ Class Settings_SharingAccess_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->emit();
 	}
-}
+ }

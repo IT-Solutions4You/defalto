@@ -19,7 +19,7 @@ $languageStrings = array(
 	'Sales Stage'                  => 'Satış Aşaması'           , 
 	'Probability'                  => 'Olabilirlik (%)'             , 
 	'Campaign Source'              => 'Kaynak Kampanya'             , 
-	'Forecast Amount'              => 'Forecast Amount'             , 
+	'Forecast Amount'              => 'Ağırlıklı Gelir'             , 
 	'Funnel'                       => 'Sales Funnel'                , 
 	'Potentials by Stage'          => 'Opportunities by Stage'      , 
 	'Total Revenue'                => 'Revenue by Salesperson'      , 
@@ -41,5 +41,23 @@ $languageStrings = array(
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Expected to close on'        , 
 	'LBL_RELATED_CONTACTS'         => 'Related Contacts'            , // TODO: Review
 	'LBL_RELATED_PRODUCTS'         => 'Related Products'            , // TODO: Review
-        'Potentials Won'               => 'Kazanılan Potansiyelleri',
+    'Related To'                   => 'Kuruluş Adı',
+    'Type'                         => 'Tip'                         , 
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Fırsatlar dönüştürmek',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Fırsatlar Alan Haritalama',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Sen Fırsat dönüştürmek Projesi etkinleştirmek zorunda',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Fırsatlar Alan Haritalama eksiktir (Ayarlar> Modül Yöneticisi> Fırsatlar> Fırsatlar Field Mapping)',
+	'LBL_CREATE_PROJECT' => 'Proje Oluşturma',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Haritalama Proje Fırsat',
+
+  'Contact Name' => 'Kişi Adı',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Dönüşüm Projesi seçimi gerektirir',
 );

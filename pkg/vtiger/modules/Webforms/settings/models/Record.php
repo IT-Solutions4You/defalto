@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -90,20 +90,20 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 				array(
 						'linktype' => 'LISTVIEWRECORD',
 						'linklabel' => 'LBL_SHOW_FORM',
-						'linkurl' => "javascript:Settings_Webforms_List_Js.showForm(event,'".$this->getShowFormUrl()."');",
-						'linkicon' => 'icon-picture'
+						'linkurl' => "javascript:Settings_Webforms_List_Js.showForm(event,'".$this->getId()."');",
+						'linkicon' => 'fa fa-picture-o icon-picture'
 				),
 				array(
 						'linktype' => 'LISTVIEWRECORD',
 						'linklabel' => 'LBL_EDIT',
 						'linkurl' => $this->getEditViewUrl(),
-						'linkicon' => 'icon-pencil'
+						'linkicon' => 'fa fa-pencil icon-pencil'
 				),
 				array(
 						'linktype' => 'LISTVIEWRECORD',
 						'linklabel' => 'LBL_DELETE',
 						'linkurl' => "javascript:Settings_Vtiger_List_Js.triggerDelete(event,'".$this->getDeleteUrl()."');",
-						'linkicon' => 'icon-trash'
+						'linkicon' => 'fa fa-trash icon-trash'
 				)
 		);
 		foreach($recordLinks as $recordLink) {
@@ -132,7 +132,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 				array(
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => vtranslate('LBL_SHOW_FORM', $moduleModel->getParentName(). ':' .$moduleModel->getName()),
-						'linkurl' => 'javascript:Settings_Webforms_Detail_Js.showForm("'.$this->getShowFormUrl().'")',
+						'linkurl' => 'javascript:Settings_Webforms_Detail_Js.showForm("'.$this->getId().'")',
 						'linkicon' => 'icon-picture'
 				),
 				array(
@@ -185,7 +185,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 								$fieldValue = 0;
 							}
 						}
-						
+
 						if ($fieldModel->isViewable()) {
 							foreach ($fieldData as $key => $value) {
 								$fieldModel->set($key, $value);
@@ -247,38 +247,38 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 	public function delete() {
 		$this->getModule()->deleteRecord($this);
 	}
-    
-    /**
-     * Function to set db insert value value for checkbox
-     * @param <string> $fieldName
-     */
-    public function setCheckBoxValue($fieldName) {
-        if($this->get($fieldName) == "on"){
+
+	/**
+	 * Function to set db insert value value for checkbox
+	 * @param <string> $fieldName
+	 */
+	public function setCheckBoxValue($fieldName) {
+		if($this->get($fieldName) == "on"){
 			$this->set($fieldName,1);
 		} else {
 			$this->set($fieldName,0);
 		}
-    }
+	}
 
-    /**
+	/**
 	 * Function to save the record
 	 */
 	public function save() {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$mode = $this->get('mode');
-    
+
 		$db = PearDatabase::getInstance();		
 		$this->setCheckBoxValue('enabled');
-        $this->setCheckBoxValue('captcha');
-        $this->setCheckBoxValue('roundrobin');
-        if(is_array($this->get('roundrobin_userid'))){
-            $roundrobinUsersList = json_encode($this->get('roundrobin_userid'),JSON_FORCE_OBJECT);
-        }
+		$this->setCheckBoxValue('captcha');
+		$this->setCheckBoxValue('roundrobin');
+		if(is_array($this->get('roundrobin_userid'))){
+			$roundrobinUsersList = json_encode($this->get('roundrobin_userid'),JSON_FORCE_OBJECT);
+		}
 		//Saving data about webform
 		if ($mode) {
 			$updateQuery = "UPDATE vtiger_webforms SET description = ?, returnurl = ?, ownerid = ?, enabled = ?, captcha = ? , roundrobin = ?, roundrobin_userid = ?, roundrobin_logic = ? ,targetmodule = ? WHERE id = ?";
-            $params = array($this->get('description'), $this->get('returnurl'), $this->get('ownerid'), $this->get('enabled'), $this->get('captcha'),  $this->get('roundrobin'), $roundrobinUsersList, 0, $this->get('targetmodule'),$this->getId()); 
-            $db->pquery($updateQuery, $params);
+			$params = array($this->get('description'), $this->get('returnurl'), $this->get('ownerid'), $this->get('enabled'), $this->get('captcha'),  $this->get('roundrobin'), $roundrobinUsersList, 0, $this->get('targetmodule'),$this->getId()); 
+			$db->pquery($updateQuery, $params);
 		} else {
 			$insertQuery = "INSERT INTO vtiger_webforms(name, targetmodule, publicid, enabled, description, ownerid, returnurl, captcha, roundrobin, roundrobin_userid, roundrobin_logic) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$params = array($this->getName(), $this->get('targetmodule'), $this->generatePublicId(), $this->get('enabled'),  $this->get('description'), $this->get('ownerid'), $this->get('returnurl'), $this->get('captcha'), $this->get('roundrobin'),$roundrobinUsersList,0);
@@ -317,33 +317,25 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 			if ($dataType === 'date') {
 				$fieldDefaultValue = Vtiger_Date_UIType::getDBInsertedValue($fieldDefaultValue);
 			}
-	
+
 			if ($dataType === 'time') {
 				$fieldDefaultValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldDefaultValue);
 			}
 
-			//Handling CheckBox value
-			if ($dataType === 'boolean') {
-				if ($fieldDefaultValue) {
-					$fieldDefaultValue = 'on';
-				} else {
-					$fieldDefaultValue = '';
-				}
-			}
 			if ($dataType === 'reference') {
 				$referenceModule = $fieldDetails['referenceModule'];
 				$referenceObject = VtigerWebserviceObject::fromName($db,$referenceModule);
 				$referenceEntityId = $referenceObject->getEntityId();
 				$fieldDefaultValue = $referenceEntityId."x".$fieldDefaultValue;
 			}
-			
-			if ($dataType === 'currency') {
-				$decimalSeparator = $currentUser->get('currency_decimal_separator');
-				$groupSeparator = $currentUser->get('currency_grouping_separator');
-				$fieldDefaultValue = str_replace($decimalSeparator, '.', $fieldDefaultValue);
-				$fieldDefaultValue = str_replace($groupSeparator, '', $fieldDefaultValue);
+
+			if ($dataType === 'currency' && $fieldDefaultValue != null) {
+				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue);
 			}
 
+			if ($dataType === 'double') {
+				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue, NULL, true);
+			}
 			array_push($params, $fieldName, $neutralizedField, $fieldDefaultValue, $fieldDetails['required'], $fieldDetails['sequence'], $fieldDetails['hidden']);
 			$db->pquery($fieldInsertQuery, $params);
 	}
@@ -421,16 +413,16 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 		$fieldModel = $fields[$key];
 		return $fieldModel->getDisplayValue($this->get($key));
 	}
-    
-    /**
-     * Function to check whether the captcha is enabled or not
-     * @return <boolean> true/false
-     */
-    public function isCaptchaEnabled() { 
-        if ($this->get('captcha') == '1') {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
+	/**
+	 * Function to check whether the captcha is enabled or not
+	 * @return <boolean> true/false
+	 */
+	public function isCaptchaEnabled() { 
+		if ($this->get('captcha') == '1') {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -30,9 +30,9 @@ class Users_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Model {
 			if ($fieldModelList) {
 				$values[$blockLabel] = array();
 				foreach($fieldModelList as $fieldName => $fieldModel) {
-                    if($fieldModel->get('uitype') == 115) {
-                        $fieldModel->set('editable', false);
-                    }
+					if($fieldModel->get('uitype') == 115) {
+						$fieldModel->set('editable', false);
+					}
 					if(empty($recordId) && ($fieldModel->get('uitype') == 99 || $fieldModel->get('uitype') == 106)) {
 							$fieldModel->set('editable', true);
 					}
@@ -49,9 +49,9 @@ class Users_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Model {
 						}
 					}
 					if($fieldName == 'is_owner') {
-                                            $fieldModel->set('editable', false);
-                                        } else if($fieldName == 'reports_to_id' && !$currentUserModel->isAdminUser()) {
-                                            continue;
+					   $fieldModel->set('editable', false);
+					} else if($fieldName == 'reports_to_id' && !$currentUserModel->isAdminUser()) {
+					   continue;
 					}
 					if($fieldModel->isEditable() && $fieldName != 'is_owner') {
 						if($recordModel->get($fieldName) != '') {
@@ -61,7 +61,7 @@ class Users_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Model {
 							if(!empty($defaultValue) && !$recordId)
 								$fieldModel->set('fieldvalue', $defaultValue);
 						}
-						
+
 						if(!$recordId && $fieldModel->get('uitype') == 99) {
 							$fieldModel->set('editable', true);
 							$values[$blockLabel][$fieldName] = $fieldModel;

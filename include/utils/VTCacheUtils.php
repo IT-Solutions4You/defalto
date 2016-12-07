@@ -102,8 +102,12 @@ class VTCacheUtils {
         }
 		return false;
 	}
+    static $lookupModuleFieldInfo = array();
 	static function lookupFieldInfo_Module($module, $presencein = array('0', '2')) {
-	    $tabid = getTabid($module);
+		$tabid = getTabid($module);
+        if(isset(self::$lookupModuleFieldInfo[$tabid][implode('-',$presencein)])){
+            return self::$lookupModuleFieldInfo[$tabid][implode('-',$presencein)];
+        }
 		$modulefields = false;
 		$fieldInfo = Vtiger_Cache::get('fieldInfo', $tabid);
         if($fieldInfo){
@@ -112,7 +116,7 @@ class VTCacheUtils {
             $fldcache = self::$_fieldinfo_cache[$tabid];
         }
 
-        if(isset($fldcache) && $fldcache){
+        if($fldcache){
             $modulefields = array();
 
 			foreach($fldcache as $fieldname=>$fieldinfo) {
@@ -122,26 +126,32 @@ class VTCacheUtils {
 			}
 		}
 
-        $fieldInfo = Vtiger_Cache::get('ModuleFields',$tabid);
-        if($fieldInfo){
-            foreach($fieldInfo as $block => $blockFields){
-                foreach ($blockFields as $field){
-                if(in_array($field->get('presence'), $presencein)) {
-                     $cacheField = array(
-                            'tabid' => $tabid,
-                            'fieldid' => $field->getId(),
-                            'fieldname' => $field->getName(),
-                            'fieldlabel' => $field->get('label'),
-                            'columnname' => $field->get('column'),
-                            'tablename' => $field->get('table'),
-                            'uitype' => $field->get('uitype'),
-                            'typeofdata' => $field->get('typeofdata'),
-                            'presence' => $field->get('presence'),
-                        );
-                     $modulefields[] = $cacheField;
-                 }
+        // If modulefields are already loaded then no need of this again
+        if(!$modulefields){
+            $fieldInfo = Vtiger_Cache::get('ModuleFields',$tabid);
+            if($fieldInfo){
+                foreach($fieldInfo as $block => $blockFields){
+                    foreach ($blockFields as $field){
+                    if(in_array($field->get('presence'), $presencein)) {
+                         $cacheField = array(
+                                'tabid' => $tabid,
+                                'fieldid' => $field->getId(),
+                                'fieldname' => $field->getName(),
+                                'fieldlabel' => $field->get('label'),
+                                'columnname' => $field->get('column'),
+                                'tablename' => $field->get('table'),
+                                'uitype' => $field->get('uitype'),
+                                'typeofdata' => $field->get('typeofdata'),
+                                'presence' => $field->get('presence'),
+                            );
+                         $modulefields[] = $cacheField;
+                     }
+                    }
                 }
             }
+        }
+        if($modulefields){
+            self::$lookupModuleFieldInfo[$tabid][implode('-',$presencein)] = $modulefields;
         }
 		return $modulefields;
 	}
@@ -434,6 +444,19 @@ class VTCacheUtils {
 
 	public static function setReportFieldByLabel($module, $label, $fieldInfo) {
 		self::$_report_field_bylabel[$module][$label] = $fieldInfo;
+	}
+    
+    /** Record group Id */
+	static $_record_groupid_cache = array();
+	static function lookupRecordGroup($record) {
+		if(isset(self::$_record_groupid_cache[$record])) {
+			return self::$_record_groupid_cache[$record];
+		}
+		return false;
+	}
+	
+	static function updateRecordGroup($record, $groupId) {
+		self::$_record_groupid_cache[$record] = $groupId;
 	}
 }
 

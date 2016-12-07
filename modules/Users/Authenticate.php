@@ -66,9 +66,9 @@ if($focus->is_authenticated()) {
 	createUserPrivilegesfile($focus->id);
 
 	//Security related entries end
-	session_unregister('login_password');
-	session_unregister('login_error');
-	session_unregister('login_user_name');
+	unset($_SESSION['login_password']);
+	unset($_SESSION['login_error']);
+	unset($_SESSION['login_user_name']);
 
 	$_SESSION['authenticated_user_id'] = $focus->id;
 	$_SESSION['AUTHUSERID'] = $focus->id;
@@ -127,7 +127,7 @@ if($focus->is_authenticated()) {
 		$user = $focus->retrieve_entity_info($focus->id, 'Users');
 		$isFirstUser = Users_CRMSetup::isFirstUser($user);
 		if($isFirstUser) {
-			header('Location: index.php?module=Users&action=SystemSetup');
+			header('Location: index.php?module=Users&action=UserSetup');
 		} else {
 			$arr = $_SESSION['lastpage'];
 			if(isset($_SESSION['lastpage'])) {

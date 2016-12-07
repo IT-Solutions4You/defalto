@@ -118,12 +118,32 @@ class Vtiger_Net_Client {
 
 		return $content;
 	}
+    
+	/**
+	 * Add File to Send with a post
+	 * @param String file upload fieldname
+	 * @param Mixed path of file to add
+	 * @param Mixed file content type of file being uploaded(default : application/octet-stream)
+	 */
+	function addFiles($inputName, $filePath, $fileContentType = 'application/octet-stream') {
+		$this->client->addFile($inputName, $filePath, $fileContentType);
+	}
 
 	/**
 	 * Did last request resulted in error?
 	 */
 	function wasError() {
-		return PEAR::isError($this->response);
+		// calling non-static method statically is throwing error while Cron run
+		return $this->_isError();
+	}
+
+	/**
+	 * Tell whether a value is a PEAR error.
+	 * @return type
+	 */
+	function _isError() {
+		$pear = new PEAR();
+		return $pear->isError($this->response);
 	}
 
 	/**

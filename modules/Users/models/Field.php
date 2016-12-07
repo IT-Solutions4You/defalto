@@ -13,15 +13,15 @@
  */
 class Users_Field_Model extends Vtiger_Field_Model {
 
-    /**
+	/**
 	 * Function to check whether the current field is read-only
 	 * @return <Boolean> - true/false
 	 */
 	public function isReadOnly() {
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-        if(($currentUserModel->isAdminUser() == false && $this->get('uitype') == 98) || in_array($this->get('uitype'), array(106, 115, 156))) {
-            return true;
-        }
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		if(($currentUserModel->isAdminUser() == false && $this->get('uitype') == 98) || $this->get('uitype') == 106 || $this->get('uitype') == 156 || $this->get('uitype') == 115) {
+			return true;
+		}
 	}
 
 
@@ -37,7 +37,7 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	}
 
 
-    /**
+	/**
 	 * Function to get the Webservice Field data type
 	 * @return <String> Data type of the field
 	 */
@@ -45,20 +45,20 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		if($this->get('uitype') == 99){
 			return 'password';
 		}else if(in_array($this->get('uitype'), array(32, 115))) {
-            return 'picklist';
-        } else if($this->get('uitype') == 101) {
-            return 'userReference';
-        } else if($this->get('uitype') == 98) {
-            return 'userRole';
-        } elseif($this->get('uitype') == 105) {
+			return 'picklist';
+		} else if($this->get('uitype') == 101) {
+			return 'userReference';
+		} else if($this->get('uitype') == 98) {
+			return 'userRole';
+		} elseif($this->get('uitype') == 105) {
 			return 'image';
 		} else if($this->get('uitype') == 31) {
 			return 'theme';
 		}
-        return parent::getFieldDataType();
-    }
+		return parent::getFieldDataType();
+	}
 
-    /**
+	/**
 	 * Function to check whether field is ajax editable'
 	 * @return <Boolean>
 	 */
@@ -77,61 +77,60 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		if($this->get('uitype') == 32) {
 			return Vtiger_Language_Handler::getAllLanguages();
 		}
-        else if ($this->get('uitype') == '115') {
-            $db = PearDatabase::getInstance();
-            
-            $query = 'SELECT '.$this->getFieldName().' FROM vtiger_'.$this->getFieldName();
-            $result = $db->pquery($query, array());
-            $num_rows = $db->num_rows($result);
-            $fieldPickListValues = array();
-            for($i=0; $i<$num_rows; $i++) {
-                $picklistValue = $db->query_result($result,$i,$this->getFieldName());
-                $fieldPickListValues[$picklistValue] = vtranslate($picklistValue,$this->getModuleName());
-            }
-            return $fieldPickListValues;
-        }
+		else if ($this->get('uitype') == '115') {
+			$db = PearDatabase::getInstance();
+
+			$query = 'SELECT '.$this->getFieldName().' FROM vtiger_'.$this->getFieldName();
+			$result = $db->pquery($query, array());
+			$num_rows = $db->num_rows($result);
+			$fieldPickListValues = array();
+			for($i=0; $i<$num_rows; $i++) {
+				$picklistValue = $db->query_result($result,$i,$this->getFieldName());
+				$fieldPickListValues[$picklistValue] = vtranslate($picklistValue,$this->getModuleName());
+			}
+			return $fieldPickListValues;
+		}
 		return parent::getPicklistValues();
 	}
 
-    /**
-     * Function to returns all skins(themes)
-     * @return <Array>
-     */
-    public function getAllSkins(){
-        return Vtiger_Theme::getAllSkins();
-    }
+	/**
+	 * Function to returns all skins(themes)
+	 * @return <Array>
+	 */
+	public function getAllSkins(){
+		return Vtiger_Theme::getAllSkins();
+	}
 
-    /**
+	/**
 	 * Function to retieve display value for a value
 	 * @param <String> $value - value which need to be converted to display value
 	 * @return <String> - converted display value
 	 */
-    public function getDisplayValue($value, $recordId = false, $recordInstance = false) {
-        
+	public function getDisplayValue($value, $recordId = false) {
+
 		 if($this->get('uitype') == 32){
 			return Vtiger_Language_Handler::getLanguageLabel($value);
 		 }
-          
-         $fieldName = $this->getFieldName();
-         if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($value == '&nbsp;')) {
-             return vtranslate('LBL_Space', 'Users');
-         }
-        return parent::getDisplayValue($value, $recordId);
-    }
+		 $fieldName = $this->getFieldName();
+		 if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($value == "&nbsp;")) {
+			 return vtranslate('Space', 'Users');
+		 }
+		return parent::getDisplayValue($value, $recordId);
+	}
 
 	/**
 	 * Function returns all the User Roles
 	 * @return
 	 */
-     public function getAllRoles(){
-        $roleModels = Settings_Roles_Record_Model::getAll();
+	 public function getAllRoles(){
+		$roleModels = Settings_Roles_Record_Model::getAll();
 		$roles = array();
 		foreach ($roleModels as $roleId=>$roleModel) {
 			$roleName = $roleModel->getName();
 			$roles[$roleName] = $roleId;
 		}
 		return $roles;
-    }
+	}
 
 	/**
 	 * Function to check whether this field editable or not
@@ -144,14 +143,14 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		}
 		return $this->get('editable');
 	}
-	
+
 	/**
-     * Function which will check if empty piclist option should be given
-     */
-    public function isEmptyPicklistOptionAllowed() {
+	 * Function which will check if empty piclist option should be given
+	 */
+	public function isEmptyPicklistOptionAllowed() {
 		if($this->getFieldName() == 'reminder_interval') {
 			return true;
 		}
-        return false;
-    }
+		return false;
+	}
 }

@@ -18,10 +18,20 @@ $languageStrings = array(
 	'LBL_ASSIGN_ROLE'              => 'Assign Role'                 , // TODO: Review
 	'LBL_CHOOSE_PROFILES'          => 'Choose profiles'             , // TODO: Review
 	'LBL_COPY_PRIVILEGES_FROM'     => 'Copy privileges from'        , // TODO: Review
+    'LBL_TRANSFER_TO_OTHER_ROLE' =>'Transférer la propriété à un autre rôle',
 	'LBL_PROFILE'                  => 'Profile'                     , // TODO: Review
 	'LBL_REPORTS_TO'               => 'Reports To'                  , // TODO: Review
 	'LBL_NAME'                     => 'Name'                        , // TODO: Review
 	'LBL_ASSIGN_NEW_PRIVILEGES'    => 'Assign privileges directly to Role', // TODO: Review
 	'LBL_ASSIGN_EXISTING_PRIVILEGES' => 'Assign priviliges from existing profiles', // TODO: Review
 	'LBL_PRIVILEGES'               => 'Privileges'                  , // TODO: Review
+
+  'LBL_DUPLICATES_EXIST' => 'Double Rôle Existe',
+  'LBL_CAN_ASSIGN_RECORDS_TO' => 'Pouvez Attribuer Des Enregistrements De',
+  'LBL_ALL_USERS' => 'Tous Les Utilisateurs',
+  'LBL_USERS_WITH_LOWER_LEVEL' => 'Les utilisateurs ayant Rôle Subalterne',
+  'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'Les utilisateurs ayant le Même Rôle ou un Rôle Subalterne',
+  'LBL_EDIT_ROLE' => 'Edit Rôle',
+  'LBL_CREATE_ROLE' => 'Créer Un Rôle',
+
 );

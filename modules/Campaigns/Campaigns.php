@@ -361,7 +361,7 @@ class Campaigns extends CRMEntity {
 				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
 				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
 				LEFT JOIN vtiger_campaignrelstatus ON vtiger_campaignrelstatus.campaignrelstatusid = vtiger_campaignleadrel.campaignrelstatusid
-				WHERE vtiger_crmentity.deleted=0 AND vtiger_campaignleadrel.campaignid = ".$id;
+				WHERE vtiger_crmentity.deleted=0 AND vtiger_leaddetails.converted=0 AND vtiger_campaignleadrel.campaignid = ".$id;
 
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
 
@@ -566,11 +566,12 @@ class Campaigns extends CRMEntity {
 	function generateReportsSecQuery($module,$secmodule,$queryplanner){
 		$matrix = $queryplanner->newDependencyMatrix();
         $matrix->setDependency('vtiger_crmentityCampaigns',array('vtiger_groupsCampaigns','vtiger_usersCampaignss','vtiger_lastModifiedByCampaigns','vtiger_campaignscf'));
-        $matrix->setDependency('vtiger_campaign', array('vtiger_crmentityCampaigns','vtiger_productsCampaigns'));
-
+        
 		if (!$queryplanner->requireTable("vtiger_campaign",$matrix)){
 			return '';
 		}
+
+        $matrix->setDependency('vtiger_campaign', array('vtiger_crmentityCampaigns','vtiger_productsCampaigns'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_campaign","campaignid", $queryplanner);
 
@@ -632,13 +633,11 @@ class Campaigns extends CRMEntity {
 			$sql = 'DELETE FROM vtiger_campaigncontrel WHERE campaignid=? AND contactid IN (SELECT contactid FROM vtiger_contactdetails WHERE accountid=?)';
 			$this->db->pquery($sql, array($id, $return_id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids) {
+	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
 		$adb = PearDatabase::getInstance();
 
 		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);

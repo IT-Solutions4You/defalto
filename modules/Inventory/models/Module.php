@@ -26,7 +26,11 @@ class Inventory_Module_Model extends Vtiger_Module_Model {
 	 * @return <Boolean> - true/false
 	 */
 	public function isSummaryViewSupported() {
-		return false;
+		return true;
+	}
+
+	public function isCommentEnabled() {
+		return true;
 	}
 
 	static function getAllCurrencies() {
@@ -34,11 +38,21 @@ class Inventory_Module_Model extends Vtiger_Module_Model {
 	}
 
 	static function getAllProductTaxes() {
-		return getAllTaxes('available');
+		$taxes = array();
+		$availbleTaxes = getAllTaxes('available');
+		foreach ($availbleTaxes as $taxInfo) {
+			if ($taxInfo['method'] === 'Deducted') {
+				continue;
+			}
+			$taxInfo['compoundon'] = Zend_Json::decode(html_entity_decode($taxInfo['compoundon']));
+			$taxInfo['regions'] = Zend_Json::decode(html_entity_decode($taxInfo['regions']));
+			$taxes[$taxInfo['taxid']] = $taxInfo;
+		}
+		return $taxes;
 	}
 
 	static function getAllShippingTaxes() {
-		return getAllTaxes('available', 'sh');
+		return Inventory_Charges_Model::getChargeTaxesList();
 	}
 
 	/**
@@ -62,7 +76,7 @@ class Inventory_Module_Model extends Vtiger_Module_Model {
 						LEFT JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid
 						LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-							WHERE vtiger_crmentity.deleted = 0 AND vtiger_activity.activitytype = 'Task'
+							WHERE vtiger_crmentity.deleted = 0 AND vtiger_activity.activitytype <> 'Emails'
 								AND vtiger_seactivityrel.crmid = ".$recordId;
 
 			$relatedModuleName = $relatedModule->getName();
@@ -103,5 +117,12 @@ class Inventory_Module_Model extends Vtiger_Module_Model {
 		$query = implode(',', $columnFields).' FROM ' . $splitQuery[1];
 		
 		return $query;
+	}
+
+	/*
+	 * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+		return array('Import', 'Export');
 	}
 }

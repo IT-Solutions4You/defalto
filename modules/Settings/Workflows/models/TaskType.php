@@ -36,6 +36,10 @@ class Settings_Workflows_TaskType_Model extends Vtiger_Base_Model {
 	public function getEditViewUrl() {
 		return '?module=Workflows&parent=Settings&view=EditTask&type='.$this->getName();
 	}
+    
+    public function getV7EditViewUrl() {
+		return '?module=Workflows&parent=Settings&view=EditV7Task&type='.$this->getName();
+	}
 
 	public static function getInstanceFromClassName($taskClass) {
 		$db = PearDatabase::getInstance();

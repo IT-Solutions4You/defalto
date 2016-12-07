@@ -71,5 +71,20 @@ $languageStrings = array(
 	'Sheet'                        => 'Fisa'                        , 
 	'Spiral Binder'                => 'Spiral Binder'               , 
 	'Sq Ft'                        => 'Sq Ft'                       , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
     'LBL_PRODUCTSMOD_DISABLED'     => 'Permite Produse Module pentru a vizualiza produsele',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Afișați elementele pachet în factura/Citate/comandă de vânzări/Comandă',
+	'LBL_BUNDLE_TOTAL_COST' => 'Costul total al Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Actualizare Bundle Preț',
+
+  'LBL_PRODUCT_NAME' => 'Denumirea Produsului',
+  'LBL_PRICE_QUANTITY' => 'Pret x Cantitate',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Produsele Sub vor fi afișate în Inventarul',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Produsele Sub nu vor fi afișate în Inventarul',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Costul total schimbat cu succes de pachet',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Acest produs face parte dintr-un pachet de produse. Prețul fasciculului rămân neschimbate, atunci când un element pachet este șters sau inactivat. Sigur doriți să continuați?',
 );

@@ -11,6 +11,15 @@ require_once('libraries/magpierss/rss_fetch.inc');
 
 class Rss_Save_Action extends Vtiger_Save_Action {
 
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$record = $request->get('record');
+
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+	}
+
 	public function process(Vtiger_Request $request) {
         $response = new Vtiger_Response();
 		$moduleName = $request->getModule();
@@ -20,8 +29,8 @@ class Rss_Save_Action extends Vtiger_Save_Action {
         
         if($result) {
             $recordModel->save($url);
-            $response->setResult(array('success' => true, 'message' => vtranslate('JS_RSS_SUCCESSFULLY_SAVED', $moduleName), 'id' => $recordModel->getId()));
-        } else {
+            $response->setResult(array('success' => true, 'message' => vtranslate('JS_RSS_SUCCESSFULLY_SAVED', $moduleName), 'id' => $recordModel->getId(), 'title' => $recordModel->get('rsstitle')));
+		} else {
             $response->setResult(array('success' => false, 'message' => vtranslate('JS_INVALID_RSS_URL', $moduleName)));   
         }
         

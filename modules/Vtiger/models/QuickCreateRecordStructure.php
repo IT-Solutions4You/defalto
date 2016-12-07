@@ -35,11 +35,17 @@ class Vtiger_QuickCreateRecordStructure_Model extends Vtiger_RecordStructure_Mod
                     $currentUserModel = Users_Record_Model::getCurrentUserModel();
                     $defaulteventstatus = $currentUserModel->get('defaulteventstatus');
                     $fieldValue = $defaulteventstatus;
+                    if(!$defaulteventstatus || $defaulteventstatus=='Select an Option'){
+                        $fieldValue=$fieldModel->getDefaultFieldValue();
+                    }
                     $fieldModel->set('fieldvalue', $fieldValue);
             } else if($fieldName == 'activitytype') {
                     $currentUserModel = Users_Record_Model::getCurrentUserModel();
                     $defaultactivitytype = $currentUserModel->get('defaultactivitytype');
                     $fieldValue = $defaultactivitytype;
+                    if(!$defaultactivitytype || $defaultactivitytype=='Select an Option'){
+                        $fieldValue=$fieldModel->getDefaultFieldValue();
+                    }
                     $fieldModel->set('fieldvalue', $fieldValue);
             } else{
                 $defaultValue = $fieldModel->getDefaultFieldValue();

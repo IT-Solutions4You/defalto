@@ -10,23 +10,25 @@
 
 class Google_Utils_Helper {
     
-    const settings_table_name = 'vtiger_google_sync_settings'; 
-    const fieldmapping_table_name = 'vtiger_google_sync_fieldmapping'; 
+    const settings_table_name = 'vtiger_google_sync_settings';
+    
+    const fieldmapping_table_name = 'vtiger_google_sync_fieldmapping';
 
     /**
      * Updates the database with syncronization times
      * @param <sting> $sourceModule module to which sync time should be stored
      * @param <date> $modifiedTime Max modified time of record that are sync 
      */
-    public static function updateSyncTime($sourceModule, $modifiedTime = false) {
+    public static function updateSyncTime($sourceModule, $modifiedTime = false, $user = false) {
         $db = PearDatabase::getInstance();
         self::intialiseUpdateSchema();
-        $user = Users_Record_Model::getCurrentUserModel();
+        if(!$user)
+            $user = Users_Record_Model::getCurrentUserModel();
         if (!$modifiedTime) {
-            $modifiedTime = self::getSyncTime($sourceModule);
+            $modifiedTime = self::getSyncTime($sourceModule, $user);
         }
-        if (!self::getSyncTime($sourceModule)) {
-            if ($modifiedTime) {
+        if (!self::getSyncTime($sourceModule, $user)) {
+            if ($modifiedTime) {    
                 $db->pquery('INSERT INTO vtiger_google_sync (googlemodule,user,synctime,lastsynctime) VALUES (?,?,?,?)', array($sourceModule, $user->id, $modifiedTime, date('Y-m-d H:i:s')));
             }
         } else {
@@ -48,10 +50,11 @@ class Google_Utils_Helper {
      *  @param <sting> $sourceModule modulename to which sync time should return
      *  @return <date> max Modified time of last sync records OR <boolean> false when date not present  
      */
-    public static function getSyncTime($sourceModule) {
+    public static function getSyncTime($sourceModule, $user = false) {
         $db = PearDatabase::getInstance();
         self::intialiseUpdateSchema();
-        $user = Users_Record_Model::getCurrentUserModel();
+        if(!$user)
+            $user = Users_Record_Model::getCurrentUserModel();
         $result = $db->pquery('SELECT synctime FROM vtiger_google_sync WHERE user=? AND googlemodule=?', array($user->id, $sourceModule));
         if ($result && $db->num_rows($result) > 0) {
             $row = $db->fetch_array($result);
@@ -89,17 +92,35 @@ class Google_Utils_Helper {
     static function getCallbackUrl($request, $options = array()) {
         global $site_URL;
 
-        $callback = rtrim($site_URL, '/') . "/index.php?module=" . $request['module'] . "&view=List&sourcemodule=" . $request['sourcemodule'];
+        $callback = $site_URL . "/index.php?module=" . $request['module'] . "&view=List&sourcemodule=" . $request['sourcemodule'];
         foreach ($options as $key => $value) {
             $callback.="&" . $key . "=" . $value;
         }
         return $callback;
     }
     
-    static function hasSettingsForUser($userId) {
+    /**
+     * To get users currently in sync with Google
+     * @global type $adb
+     * @return type
+     */
+    public static function getSyncUsers(){
+        global $adb;
+        $users = array();
+        $result = $adb->pquery("SELECT DISTINCT userid FROM vtiger_google_oauth2", array());
+        
+        if($result && $adb->num_rows($result)) {
+			while($resultrow = $adb->fetch_array($result)) {
+				$users[] = $resultrow['id'];
+			}
+		}
+        return $users;
+    }
+
+    static function hasSettingsForUser($userId,$source_module) {
         $db = PearDatabase::getInstance();
-        $sql = 'SELECT 1 FROM ' . self::settings_table_name . ' WHERE user = ?';
-        $result = $db->pquery($sql, array($userId));
+        $sql = 'SELECT 1 FROM ' . self::settings_table_name . ' WHERE user = ? AND module = ?';
+        $result = $db->pquery($sql, array($userId,$source_module));
         if($db->num_rows($result) > 0){
             return true;
         }
@@ -113,12 +134,12 @@ class Google_Utils_Helper {
         $source_module = $request->get('sourcemodule');
         $google_group = $request->get('google_group');
         $sync_direction = $request->get('sync_direction');
-        if(Google_Utils_Helper::hasSettingsForUser($userId)) {
-            $sql = 'UPDATE ' . self::settings_table_name . ' SET clientgroup = ?, direction = ?';
-            $params = array($google_group,$sync_direction);
+        if(Google_Utils_Helper::hasSettingsForUser($userId,$source_module)) {
+            $sql = 'UPDATE ' . self::settings_table_name . ' SET clientgroup = ?, direction = ? WHERE user = ? AND module = ?';
+            $params = array($google_group,$sync_direction,$userId,$source_module);
             $db->pquery($sql, $params);
         } else {
-            $sql = 'INSERT INTO ' . self::settings_table_name . ' VALUES (?,?,?,?)';
+            $sql = 'INSERT INTO ' . self::settings_table_name . '(user,module,clientgroup,direction) VALUES (?,?,?,?)';
             $params = array($userId,$source_module,$google_group,$sync_direction);
             $db->pquery($sql, $params);
         }
@@ -152,24 +173,24 @@ class Google_Utils_Helper {
     static function getSelectedContactGroupForUser($user = false) {
         if(!$user) $user = Users_Record_Model::getCurrentUserModel();
         $userId = $user->getId();
-        if(!Google_Utils_Helper::hasSettingsForUser($userId)) {
+        if(!Google_Utils_Helper::hasSettingsForUser($userId,'Contacts')) {
             return ''; // defaults to all - other contacts groups
         } else {
             $db = PearDatabase::getInstance();
-            $sql = 'SELECT clientgroup FROM ' . self::settings_table_name . ' WHERE user = ?';
-            $result = $db->pquery($sql, array($userId));
+            $sql = 'SELECT clientgroup FROM ' . self::settings_table_name . ' WHERE user = ? AND module = ?';
+            $result = $db->pquery($sql, array($userId,'Contacts'));
             return $db->query_result($result, 0, 'clientgroup');
         }
     }
     
-    static function getSyncDirectionForUser($user = false) {
+    static function getSyncDirectionForUser($user = false, $module = 'Contacts') {
         if(!$user) $user = Users_Record_Model::getCurrentUserModel();
-        if(!Google_Utils_Helper::hasSettingsForUser($user->getId())) {
+        if(!Google_Utils_Helper::hasSettingsForUser($user->getId(),$module)) {
             return '11'; // defaults to bi-directional sync
         } else {
             $db = PearDatabase::getInstance();
-            $sql = 'SELECT direction FROM ' . self::settings_table_name . ' WHERE user = ?';
-            $result = $db->pquery($sql, array($user->getId()));
+            $sql = 'SELECT direction FROM ' . self::settings_table_name . ' WHERE user = ? AND module = ?';
+            $result = $db->pquery($sql, array($user->getId(),$module));
             return $db->query_result($result, 0, 'direction');
         }
     }
@@ -260,5 +281,87 @@ class Google_Utils_Helper {
             );
         }
         return $fieldmapping;
+    }
+
+    public static function getSelectedCalendarForUser($user = false) {
+        if(!$user) $user = Users_Record_Model::getCurrentUserModel();
+        $userId = $user->getId();
+        if(!Google_Utils_Helper::hasSettingsForUser($userId,'Calendar')) {
+            return 'primary'; // defaults to primary calendar
+        } else {
+            $db = PearDatabase::getInstance();
+            $sql = 'SELECT clientgroup FROM ' . self::settings_table_name . ' WHERE user = ? AND module = ?';
+            $result = $db->pquery($sql, array($userId,'Calendar'));
+            return $db->query_result($result, 0, 'clientgroup');
+        }
+    }
+
+    public static function errorLog() {
+        $i = 0;
+        $debug = debug_backtrace();
+        array_shift($debug);
+        foreach ($debug as $value) {
+            $error.= "\t#".$i++.'  File : '.$value['file'].' || Line : '.$value['line'].' || Class : '.$value['class'].' || Function : '.$value['function']."\n";
+        }
+        $fp = fopen('logs/googleErrorLog.txt','a+');
+        fwrite($fp, "Debug traced ON ".date('Y-m-d H:i:s')."\n\n");
+        fwrite($fp, $error);
+        fwrite($fp, "\n\n");
+        fclose($fp);
+    }
+    
+    static function toGoogleXml($string) {
+        $string = str_replace('&', '&amp;amp;', $string);
+        $string = str_replace('<', '&amp;lt;', $string);
+        $string = str_replace('>', '&amp;gt;', $string);
+        return $string;
+    }
+    
+    static function saveSyncSettings($request) {
+        $db = PearDatabase::getInstance();
+        $user = Users_Record_Model::getCurrentUserModel();
+        $userId = $user->getId();
+        $source_module = $request->get('sourcemodule');
+        $google_group = $request->get('google_group');
+        $sync_direction = $request->get('sync_direction');
+        if($request->get('enabled') == 'on' || $request->get('enabled') == 1) {
+            $enabled = 1;
+        } else {
+            $enabled = 0;
+        }
+        if(Google_Utils_Helper::hasSettingsForUser($userId,$source_module)) {
+            $sql = 'UPDATE ' . self::settings_table_name . ' SET clientgroup = ?, direction = ?, enabled = ? WHERE user = ? AND module = ?';
+            $params = array($google_group,$sync_direction,$enabled,$userId,$source_module);
+            $db->pquery($sql, $params);
+        } else {
+            $sql = 'INSERT INTO ' . self::settings_table_name . ' VALUES (?,?,?,?,?)';
+            $params = array($userId,$source_module,$google_group,$sync_direction,$enabled);
+            $db->pquery($sql, $params);
+        }
+    }
+    
+    /**
+     * Function to check if the sync is enabled for a module and for user given
+     * @param <string > $module
+     * @param <Users_Record_Model> $user
+     * @return <boolean> true/false
+     */
+    static function checkSyncEnabled($module, $user = false) {
+        if(!$user) $user = Users_Record_Model::getCurrentUserModel();
+        $userId = $user->getId();
+        if(!Google_Utils_Helper::hasSettingsForUser($userId,$module)) {
+            return true; // defaults to enabled
+        } else {
+            $db = PearDatabase::getInstance();
+            $sql = 'SELECT enabled FROM ' . self::settings_table_name . ' WHERE user = ? AND module = ?';
+            $result = $db->pquery($sql, array($userId,$module));
+            $enabled = $db->query_result($result, 0, 'enabled');
+        }
+        
+        if($enabled == 1) {
+            return true;
+        }
+        
+        return false;
     }
 }

@@ -25,7 +25,7 @@ class VTExpressionTokenizer{
 	function __construct($expr){		
 		$tokenTypes = array(
 				"SPACE" => array('\s+', '_vt_processtoken_id'),
-				"SYMBOL" => array('[a-zA-Z][\w]*', '_vt_processtoken_symbol'),
+				"SYMBOL" => array('[a-zA-Z][\w]*|\(\w+ : \(\w+\) \w+\)', '_vt_processtoken_symbol'),
 				"ESCAPED_SYMBOL" => array('?:`([^`]+)`', '_vt_processtoken_symbol'),
 				//"STRING" => array('?:(?:"((?:\\\\"|[^"])+)"|'."'((?:\\\\'|[^'])+)')", 'stripcslashes'),
                 //"STRING" => array('?:"((?:\\\\"|[^"])+)"', 'stripcslashes'),

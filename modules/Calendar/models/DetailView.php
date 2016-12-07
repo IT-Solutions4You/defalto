@@ -21,7 +21,8 @@ class Calendar_DetailView_Model extends Vtiger_DetailView_Model {
 		//link which shows the summary information(generally detail of record)
 		$relatedLinks[] = array(
 				'linktype' => 'DETAILVIEWTAB',
-				'linklabel' => vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName),
+				'linklabel' => vtranslate('LBL_DETAILS', $moduleName),
+				'linkKey' => 'LBL_RECORD_DETAILS',
 				'linkurl' => $recordModel->getDetailViewUrl().'&mode=showDetailViewByMode&requestMode=full',
 				'linkicon' => ''
 		);

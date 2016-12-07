@@ -10,7 +10,7 @@
  * *********************************************************************************** */
 
 class Services_Detail_View extends Products_Detail_View {
-	
+
 	public function getHeaderScripts(Vtiger_Request $request) {
 		parent::getHeaderScripts($request);
 		$headerScriptInstances = parent::getHeaderScripts($request);
@@ -34,5 +34,16 @@ class Services_Detail_View extends Products_Detail_View {
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
+	}
+
+	public function getOverlayHeaderScripts(Vtiger_Request $request){
+		$moduleName = $request->getModule();
+		$jsFileNames = array(
+			"modules.PriceBooks.resources.Detail",
+			"modules.Products.resources.Detail",
+			"modules.$moduleName.resources.Detail",
+		);
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		return $jsScriptInstances;	
 	}
 }

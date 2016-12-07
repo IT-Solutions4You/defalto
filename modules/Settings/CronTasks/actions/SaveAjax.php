@@ -15,7 +15,7 @@ class Settings_CronTasks_SaveAjax_Action extends Settings_Vtiger_Index_Action {
 
 		$recordId = $request->get('record');
 		if(!$recordId) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -35,12 +35,12 @@ class Settings_CronTasks_SaveAjax_Action extends Settings_Vtiger_Index_Action {
 
 		$recordModel->save();
 
-		$response = new Vtiger_Response();
+        $response = new Vtiger_Response();
 		$response->setResult(array(true));
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        }
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

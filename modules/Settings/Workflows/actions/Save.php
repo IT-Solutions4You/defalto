@@ -22,14 +22,35 @@ class Settings_Workflows_Save_Action extends Settings_Vtiger_Basic_Action {
 			$workflowModel = Settings_Workflows_Record_Model::getInstance($recordId);
 		} else {
 			$workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
+			$workflowModel->set('name', $summary);
 		}
 
+		require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
 		$response = new Vtiger_Response();
+		if (!empty($conditions) && is_array($conditions)) {
+			foreach ($conditions as $info) {
+				if (!empty($info['columns']) && is_array($info['columns'])) {
+					foreach ($info['columns'] as $conditionRow) {
+						if ($conditionRow['valuetype'] == 'expression') {
+							try {
+								$parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($conditionRow['value'])));
+								$expression = $parser->expression();
+							} catch (Exception $e) {
+								$response->setError($conditionRow, vJsTranslate('LBL_EXPRESSION_INVALID', $request->getModule(false)));
+								$response->emit();
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
 		$workflowModel->set('summary', $summary);
 		$workflowModel->set('module_name', $moduleName);
 		$workflowModel->set('conditions', $conditions);
 		$workflowModel->set('execution_condition', $executionCondition);
-		
+		$workflowModel->set('status', 1);
+
 		if($executionCondition == '6') {
 			$schtime = $request->get("schtime");
 			if(!preg_match('/^[0-2]\d(:[0-5]\d){1,2}$/', $schtime) or substr($schtime,0,2)>23) {  // invalid time format
@@ -66,7 +87,7 @@ class Settings_Workflows_Save_Action extends Settings_Vtiger_Basic_Action {
 			$workflowModel->set('schdayofweek', $dayOfWeek);
 			$workflowModel->set('schannualdates', $annualDates);
 		}
-		
+
 		// Added to save the condition only when its changed from vtiger6
 		if($filterSavedInNew == '6') {
 			//Added to change advanced filter condition to workflow
@@ -79,12 +100,11 @@ class Settings_Workflows_Save_Action extends Settings_Vtiger_Basic_Action {
 		if($workflowScheduleType != Workflow::$SCHEDULED_ON_SPECIFIC_DATE && $executionCondition == '6') {
 			$workflowModel->updateNextTriggerTime();
 		}
-		
 		$response->setResult(array('id' => $workflowModel->get('workflow_id')));
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        }
-} 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
+}

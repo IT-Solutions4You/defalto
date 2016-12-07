@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Invoice'                      => 'Invoice'                     , 
 	'SINGLE_Invoice'               => 'Invoice'                     , 
 	'LBL_EXPORT_TO_PDF'            => 'Export To PDF'               , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
@@ -27,7 +28,12 @@ $languageStrings = array(
 	'Paid'                         => 'Paid'                        , 
 	'AutoCreated'                  => 'Auto Created'                , 
 	'Cancel'                       => 'Cancel'                      , 
-	'LBL_NOT_A_BUNDLE'             => 'Not a Bundle',
-	'LBL_SUB_PRODUCTS'	           => 'Sub Products',
-	'LBL_ACTION'	               => 'Action',
+	'LBL_NOT_A_BUNDLE' => 'Not a Bundle',
+	'LBL_SUB_PRODUCTS'	=> 'Sub Products',
+	'LBL_ACTION'	=> 'Action',
+
+  'LBL_THIS' => 'This',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
+
 );

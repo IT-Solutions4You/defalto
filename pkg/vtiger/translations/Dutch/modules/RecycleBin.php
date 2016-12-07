@@ -6,28 +6,24 @@
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * *******************************************************************************
- * Vicus eBusiness Solutions (www.vicus.nl) Version Control
- * Dutch language pack for vtiger CRM version 6.x
- * 
- * @package   NL-Dutch
- * @version   $Author: luuk $
- * @version   CVS: $Revision: 1.3 $ $Date: 2014/09/07 21:06:45 $
- * @source    $Source: /var/lib/cvs/vtiger600/languages/nl_nl/RecycleBin.php,v $
- * @copyright Copyright (c)2005-2014 Vicus eBusiness Solutions B.V. <info@vicus.nl>
- * @link      http://www.vicus.nl
  ************************************************************************************/
 $languageStrings = array(
-   'Recycle Bin'                   => 'Prullenbak'                     ,
-    'LBL_SELECT_MODULE'            => 'Selecteer Module'               ,
-    'LBL_EMPTY_RECYCLEBIN'         => 'Maak Prullenbak leeg'           ,
-    'LBL_RESTORE'                  => 'Herstel'                        ,
-    'LBL_NO_PERMITTED_MODULES'     => 'Geen toegestane modules beschikbaar',
-    'LBL_RECORDS_LIST'             => 'Prullenbak Lijst'               ,
-    'LBL_NO_RECORDS_FOUND'         => 'Geen herstelbare records in module',
-    'Recycle Bin'                  => 'Prullenbak'                     ,
+    'Recycle Bin'                  => 'Recycle Bin'                 , // TODO: Review
+	'RecycleBin'                   => 'Recycle Bin'                 , // TODO: Review
+	'LBL_SELECT_MODULE'            => 'Select Module'               , // TODO: Review
+	'LBL_EMPTY_RECYCLEBIN'         => 'Empty Recycle Bin'           , // TODO: Review
+	'LBL_RESTORE'                  => 'Restore'                     , // TODO: Review
+	'LBL_NO_PERMITTED_MODULES'     => 'No permitted modules available', // TODO: Review
+	'LBL_RECORDS_LIST'             => 'Recycle Bin List'            , // TODO: Review
+	'LBL_NO_RECORDS_FOUND'         => 'No records found to Restore in module', // TODO: Review
 );
 $jsLanguageStrings = array(
-    'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Weet u zeker dat u alle verwijderde records permanent uit de database wilt verwijderen?',
-    'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Weet u zeker dat u de geselecteerde records wilt herstellen?',
+	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?', // TODO: Review
+	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?', // TODO: Review
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Weet u zeker dat u het record te herstellen?',
+    'JS_RESTORING_RECORD' => 'Het herstellen Records',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Herstel in Vtiger and Drive',
+
+  'JS_RESTORING_RECORDS' => 'Het herstellen van records',
+
 );

@@ -53,11 +53,7 @@ class Vtiger_MassEditRecordStructure_Model extends Vtiger_EditRecordStructure_Mo
 	 *  @returns boolean true or false
 	 */
 	public function isFieldRestricted($fieldModel){
-		if($fieldModel->getFieldDataType() == 'image'){
-			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 	 
 }

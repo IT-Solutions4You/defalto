@@ -19,7 +19,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW'             => 'Вид профиля'                , 
 	'LBL_FIELDS'                   => 'Поля'                      , 
 	'LBL_TOOLS'                    => 'Инструменты'      , 
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Полевые и инструментов Привилегии'   , 
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Полевые и инструментов Привилегии'   ,
 	'LBL_EDIT_RECORD'              => 'Редактировать'  , // KEY 5.x: Edit
 	'LBL_DUPLICATE_RECORD'         => 'Дублировать'      , // KEY 5.x: LBL_DUPLICATE_BUTTON
 	'LBL_DELETE_RECORD'            => 'Удалить'              , // KEY 5.x: LBL_DELETE
@@ -38,15 +38,11 @@ $languageStrings = array(
 	'LBL_VIEW_ALL_DESC'            => 'Можно просматривать всю информацию о модули', 
 	'LBL_EDIT_ALL_DESC'            => 'Может редактировать всю информацию о модули', 
 	'LBL_DUPLICATES_EXIST'         => 'Дубликат профиля Существует'    , 
-    
-        'Import' => 'Импорт',
-        'Export' => 'Экспорт',
-	'Merge'  => 'Слияние',
-        'ConvertLead' => 'Преобразование свинец',
-        'DuplicatesHandling' => 'Дубликаты Обработка',
-        'ReceiveIncomingCalls' => 'Принимать входящие звонки',
-        'MakeOutgoingCalls' => 'Сделать исходящий телефонный звонок',
-        'Print' => 'Печать',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Предупреждение: Люди, связанные с этим профилем может получить доступ все записи в CRM',
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Права доступа на редактирование этого профиля',
+  'LBL_EDIT_PROFILE' => 'Редактировать Профиль',
+
 );
 $jsLanguageStrings = array(
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Профиль успешно удален', 

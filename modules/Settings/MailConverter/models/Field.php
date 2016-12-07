@@ -52,18 +52,30 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
         $fieldName = $this->getName();
         $pickListValues = array();
         if($fieldName == 'searchfor') {
-            $optionList = array('ALL','UNSEEN');
+            $optionList = array('UNSEEN', 'ALL');
             foreach($optionList as $option) {
                 $pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
         }else if ($fieldName == 'markas') {
-            $optionList = array('UNSEEN','SEEN');
+            $optionList = array('SEEN', 'UNSEEN');
             foreach($optionList as $option) {
 				$pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
         }else if ($fieldName == 'time_zone') {
             $pickListValues = self::$timeZonePickListValues;
-            
+        } else if($fieldName == 'scanfrom') {
+            $optionList = array('YESTERDAY', 'ALL');
+            foreach($optionList as $option) {
+				$pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
+            }
+        } else if($fieldName == 'servertype') {
+            $pickListValues = array(
+                '' => 'Select Server Type',
+                'imap.gmail.com' => 'Gmail',
+                'imap.mail.yahoo.com' => 'Yahoo',
+                'mail.messagingengine.com' => 'Fastmail',
+                'other' => 'Other'
+            );
         }
         return $pickListValues;
     }

@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Recycle Bin'                  => 'Recycle Bin'                 , 
 	'RecycleBin'                   => 'Recycle Bin'                 , 
 	'LBL_SELECT_MODULE'            => 'Select Module'               , 
 	'LBL_EMPTY_RECYCLEBIN'         => 'Empty Recycle Bin'           , 
@@ -19,4 +20,10 @@ $languageStrings = array(
 $jsLanguageStrings = array(
 	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?', 
 	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?', 
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Sind Sie sicher, dass Sie den Datensatz wiederherstellen?',
+    'JS_RESTORING_RECORD' => 'Wiederherstellen Rekord',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Wiederherstellung in Vtiger und Antriebs',
+
+  'JS_RESTORING_RECORDS' => 'Wiederherstellen von Datensätzen',
+
 );

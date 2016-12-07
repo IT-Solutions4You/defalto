@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -25,7 +25,7 @@ class Settings_Webforms_Block_Model extends Vtiger_Block_Model {
                             'name' => array(
                                     'uitype' => '1',
                                     'name' => 'name',
-                                    'label' => 'WebForm Name',
+                                    'label' => 'Webform Name',
                                     'typeofdata' => 'V~M',
                                     'diplaytype' => '1',
                             ),
@@ -102,7 +102,7 @@ class Settings_Webforms_Block_Model extends Vtiger_Block_Model {
                                     'defaultvalue' => '0',
                             ),
                             'roundrobin_userid' =>array(
-                                    'uitype' => '54',	                                                        
+                                    'uitype' => '55',	                                                        
                                     'name' => 'roundrobin_userid',
                                     'label' => 'LBL_ROUNDROBIN_USERS_LIST',
                                     'typeofdata' => 'V~M',

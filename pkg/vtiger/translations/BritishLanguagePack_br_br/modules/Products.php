@@ -15,7 +15,7 @@ $languageStrings = array(
 	'LBL_PRODUCT_INFORMATION'      => 'Product Information'         , 
 	'LBL_IMAGE_INFORMATION'        => 'Product image information:'  , 
 	'LBL_STOCK_INFORMATION'        => 'Stock Information:'          , 
-	'LBL_MORE_CURRENCIES'          => 'More currencies'             , 
+	'LBL_MORE_CURRENCIES'          => 'more currencies'             , 
 	'LBL_PRICES'                   => 'Product Prices'              , 
 	'LBL_PRICE'                    => 'Price'                       , 
 	'LBL_RESET_PRICE'              => 'Reset price'                 , 
@@ -62,7 +62,7 @@ $languageStrings = array(
 	'Each'                         => 'Each'                        , 
 	'Hours'                        => 'Hours'                       , 
 	'Impressions'                  => 'Impressions'                 , 
-	'Lb'                           => 'lb'                          , 
+	'Lb'                           => 'Lb'                          , 
 	'M'                            => 'M'                           , 
 	'Pack'                         => 'Pack'                        , 
 	'Pages'                        => 'Pages'                       , 
@@ -71,5 +71,20 @@ $languageStrings = array(
 	'Sheet'                        => 'Sheet'                       , 
 	'Spiral Binder'                => 'Spiral Binder'               , 
 	'Sq Ft'                        => 'Sq. Ft.'                     , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
     'LBL_PRODUCTSMOD_DISABLED' => 'Enable Products Module to view Products',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Show bundle items in Invoice/Quotes/Sales Order/Purchase Order',
+	'LBL_BUNDLE_TOTAL_COST' => 'Total cost of Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Update Bundle Price',
+
+  'LBL_PRODUCT_NAME' => 'Product Name',
+  'LBL_PRICE_QUANTITY' => 'Price x Quantity',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Sub products will be shown in the Inventory',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Sub products will not be shown in the Inventory',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Successfully changed total cost of bundle',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'This product is part of a Product bundle. The price of the bundle remain unchanged when a bundle item is deleted or inactivated. Are you sure you want to proceed?',
 );

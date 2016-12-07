@@ -138,6 +138,7 @@ class Vtiger_MailScanner {
 			$rescanFolderFlag = false;
 			$this->updateLastScan($lookAtFolder, $rescanFolderFlag);
 		}
+        $this->updateScannerLastScanTime();
 		// Close the mailbox at end
 		$mailbox->close();
                 return true;
@@ -178,7 +179,7 @@ class Vtiger_MailScanner {
 		global $adb;
 		if($crmid === false) $crmid = null;
 		// TODO Make sure we have unique entry
-		$adb->pquery("INSERT INTO vtiger_mailscanner_ids(scannerid, messageid, crmid) VALUES(?,?,?)",
+		$adb->pquery("INSERT INTO vtiger_message_ids(scannerid, messageid, crmid) VALUES(?,?,?)",
 			Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid, $crmid));
 	}
 
@@ -187,8 +188,8 @@ class Vtiger_MailScanner {
 	 */
 	function isMessageScanned($mailrecord, $lookAtFolder) {
 		global $adb;
-		$messages = $adb->pquery("SELECT 1 FROM vtiger_mailscanner_ids WHERE scannerid=? AND messageid=?",
-			Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid));
+		$messages = $adb->pquery("SELECT 1 FROM vtiger_message_ids WHERE messageid=?",
+			Array($mailrecord->_uniqueid));
 
 		$folderRescan = $this->_scannerinfo->needRescan($lookAtFolder);
 		$isScanned = false;
@@ -200,7 +201,7 @@ class Vtiger_MailScanner {
 			$relatedCRMId = $adb->query_result($messages, 0, 'crmid');
 
 			if($folderRescan && empty($relatedCRMId)) {
-				$adb->pquery("DELETE FROM vtiger_mailscanner_ids WHERE scannerid=? AND messageid=?",
+				$adb->pquery("DELETE FROM vtiger_message_ids WHERE scannerid=? AND messageid=?",
 					Array($this->_scannerinfo->scannerid, $mailrecord->_uniqueid));
 				$isScanned = false;
 			}
@@ -234,10 +235,14 @@ class Vtiger_MailScanner {
 	var $_cachedLeadIds = Array();
 	var $_cachedAccountIds = Array();
 	var $_cachedTicketIds = Array();
+    var $_cachedPotentialIds = Array();
+    var $_cachedHelpDeskIds = Array();
 	var $_cachedAccounts = Array();
 	var $_cachedContacts = Array();
 	var $_cachedLeads = Array();
 	var $_cachedTickets = Array();
+    var $_cachedPotentials = Array();
+    var $_cachedHelpdesk = Array();
 
 	/**
 	 * Lookup Contact record based on the email given.
@@ -249,12 +254,13 @@ class Vtiger_MailScanner {
 			return $this->_cachedContactIds[$email];
 		}
 		$contactid = false;
-		$contactres = $adb->pquery("SELECT contactid FROM vtiger_contactdetails INNER JOIN vtiger_crmentity ON crmid = contactid WHERE setype = ? AND email = ? AND deleted = ?", array('Contacts', $email, 0));
+		$lookupQuery = $this->getLookupQuery('Contacts', $email);
+                if(!$lookupQuery) {
+                    return false;
+                }
+                $contactres = $adb->pquery($lookupQuery['query'], $lookupQuery['params']);
 		if($adb->num_rows($contactres)) {
-			$deleted = $adb->query_result($contactres, 0, 'deleted');
-			if ($deleted != 1) {
-				$contactid = $adb->query_result($contactres, 0, 'contactid');
-			}
+                    $contactid = $adb->query_result($contactres, 0, 'contactid');
 		}
 		if($contactid) {
 			$this->log("Caching Contact Id found for email: $email");
@@ -275,12 +281,13 @@ class Vtiger_MailScanner {
 			return $this->_cachedLeadIds[$email];
 		}
 		$leadid = false;
-		$leadres = $adb->pquery("SELECT leadid FROM vtiger_leaddetails INNER JOIN vtiger_crmentity ON crmid = leadid WHERE setype=? AND email = ? AND converted = ? AND deleted = ?", array('Leads', $email, 0, 0));
+                $lookupQuery = $this->getLookupQuery('Leads', $email);
+                if(!$lookupQuery) {
+                    return false;
+                }
+                $leadres = $adb->pquery($lookupQuery['query'], $lookupQuery['params']);
 		if ($adb->num_rows($leadres)) {
-			$deleted = $adb->query_result($leadres, 0, 'deleted');
-			if ($deleted != 1) {
-				$leadid = $adb->query_result($leadres, 0, 'leadid');
-			}
+                    $leadid = $adb->query_result($leadres, 0, 'leadid');
 		}
 		if ($leadid) {
 			$this->log("Caching Lead Id found for email: $email");
@@ -302,12 +309,13 @@ class Vtiger_MailScanner {
 		}
 
 		$accountid = false;
-		$accountres = $adb->pquery("SELECT accountid FROM vtiger_account INNER JOIN vtiger_crmentity ON crmid = accountid WHERE setype=? AND (email1 = ? OR email2 = ?) AND deleted = ?", Array('Accounts', $email, $email, 0));
+                $lookupQuery = $this->getLookupQuery('Accounts', $email);
+                if(!$lookupQuery) {
+                    return false;
+                }
+                $accountres = $adb->pquery($lookupQuery['query'], $lookupQuery['params']);
 		if($adb->num_rows($accountres)) {
-			$deleted = $adb->query_result($accountres, 0, 'deleted');
-			if ($deleted != 1) {
-				$accountid = $adb->query_result($accountres, 0, 'accountid');
-			}
+                    $accountid = $adb->query_result($accountres, 0, 'accountid');
 		}
 		if($accountid) {
 			$this->log("Caching Account Id found for email: $email");
@@ -317,8 +325,64 @@ class Vtiger_MailScanner {
 		}
 		return $accountid;
 	}
+    
+    /**
+     * Lookup Potential record based on email
+     */
+    function LookupPotential($email) {
+        global $adb;
+		if($this->_cachedPotentialIds[$email]) {
+			$this->log("Reusing Cached Potential Id for email: $email");
+			return $this->_cachedPotentialIds[$email];
+		}
 
-	/**
+		$potentialId = false;
+                $lookupQuery = $this->getLookupQuery('Potentials', $email);
+                if(!$lookupQuery) {
+                    return false;
+                }
+                $potentialres = $adb->pquery($lookupQuery['query'], $lookupQuery['params']);
+		if($adb->num_rows($potentialres)) {
+                    $potentialId = $adb->query_result($potentialres, 0, 'potentialid');
+		}
+		if($potentialId) {
+			$this->log("Caching Potential Id found for email: $email");
+			$this->_cachedPotentialIds[$email] = $potentialId;
+		} else {
+			$this->log("No matching Potentials found for email: $email");
+		}
+		return $potentialId;
+    }
+    
+    /**
+     * Lookup Tickets record based on email
+     */
+    function LookupHelpDesk($email) {
+        global $adb;
+		if($this->_cachedHelpDeskIds[$email]) {
+			$this->log("Reusing Cached HelpDesk Id for email: $email");
+			return $this->_cachedHelpDeskIds[$email];
+		}
+
+		$ticketId = false;
+                $lookupQuery = $this->getLookupQuery('HelpDesk', $email);
+                if(!$lookupQuery) {
+                    return false;
+                }
+                $ticketres = $adb->pquery($lookupQuery['query'], $lookupQuery['params']);
+		if($adb->num_rows($ticketres)) {
+                    $ticketId = $adb->query_result($ticketres, 0, 'ticketid');
+		}
+		if($ticketId) {
+			$this->log("Caching Ticket Id found for email: $email");
+			$this->_cachedHelpDeskIds[$email] = $ticketId;
+		} else {
+			$this->log("No matching Tickets found for email: $email");
+		}
+		return $ticketId;
+    }
+
+    /**
 	 * Lookup Ticket record based on the subject or id given.
 	 */
 	function LookupTicket($subjectOrId) {
@@ -373,7 +437,7 @@ class Vtiger_MailScanner {
 				$account_focus = $this->_cachedAccounts[$accountid];
 				$this->log("Reusing Cached Account [" . $account_focus->column_fields[accountname] . "]");
 			} else {
-				$account_focus = new Accounts();
+				$account_focus = CRMEntity::getInstance("Accounts");
 				$account_focus->retrieve_entity_info($accountid, 'Accounts');
 				$account_focus->id = $accountid;
 
@@ -398,7 +462,7 @@ class Vtiger_MailScanner {
 				$this->log("Reusing Cached Contact [" . $contact_focus->column_fields[lastname] .
 				   	'-' . $contact_focus->column_fields[firstname] . "]");
 			} else {
-				$contact_focus = new Contacts();
+				$contact_focus = CRMEntity::getInstance("Contacts");
 				$contact_focus->retrieve_entity_info($contactid, 'Contacts');
 				$contact_focus->id = $contactid;
 
@@ -423,7 +487,7 @@ class Vtiger_MailScanner {
 				$this->log("Reusing Cached Lead [" . $lead_focus->column_fields[lastname] .
 						'-' . $lead_focus->column_fields[firstname] . "]");
 			} else {
-				$lead_focus = new Leads();
+				$lead_focus = CRMEntity::getInstance("Leads");
 				$lead_focus->retrieve_entity_info($leadid, 'Leads');
 				$lead_focus->id = $leadid;
 
@@ -434,15 +498,55 @@ class Vtiger_MailScanner {
 		}
 		return $lead_focus;
 	}
+    
+    /**
+     * Get Potential record based on email
+     */
+    function GetPotentialRecord($email) {
+        require_once('modules/Potentials/Potentials.php');
+		$potentialId = $this->LookupPotential($email);
+		$focus = false;
+		if ($potentialId) {
+			if ($this->_cachedPotentials[$potentialId]) {
+				$focus = $this->_cachedPotentials[$potentialId];
+			} else {
+				$focus = CRMEntity::getInstance("Potentials");
+				$focus->retrieve_entity_info($potentialId, 'Potentials');
+				$focus->id = $potentialId;
+				$this->_cachedPotentials[$potentialId] = $focus;
+			}
+		}
+		return $focus;
+    }
+    
+    /**
+     * Get Ticket record based on email
+     */
+    function GetTicketFocus($email) {
+        require_once('modules/HelpDesk/HelpDesk.php');
+		$ticketId = $this->LookupHelpDesk($email);
+		$focus = false;
+		if ($ticketId) {
+			if ($this->_cachedHelpdesk[$ticketId]) {
+				$focus = $this->_cachedHelpdesk[$ticketId];
+			} else {
+				$focus = CRMEntity::getInstance("HelpDesk");
+				$focus->retrieve_entity_info($ticketId, 'HelpDesk');
+				$focus->id = $ticketId;
+				$this->_cachedHelpdesk[$ticketId] = $focus;
+			}
+		}
+		return $focus;
+    }
 
-	/**
+    /**
 	 * Lookup Contact or Account based on from email and with respect to given CRMID
 	 */
 	function LookupContactOrAccount($fromemail, $checkWith) {
 		$recordid = $this->LookupContact($fromemail);
-		if ($checkWith['contact_id'] && $recordid != $checkWith['contact_id']) {
+		if ($recordid != $checkWith['contact_id'] || !$recordid) {
 			$recordid = $this->LookupAccount($fromemail);
-			if (($checkWith['parent_id'] && $recordid != $checkWith['parent_id']))
+			if ($recordid != $checkWith['parent_id'] || !$recordid)
 				$recordid = false;
 		}
 		return $recordid;
@@ -458,21 +562,13 @@ class Vtiger_MailScanner {
 		if($ticketid) {
 			if($this->_cachedTickets[$ticketid]) {
 				$ticket_focus = $this->_cachedTickets[$ticketid];
-				// Check the parentid association if specified.
-				if ($fromemail && !$this->LookupContactOrAccount($fromemail, $ticket_focus->column_fields)) {
-					$ticket_focus = false;
-				}
 				if($ticket_focus) {
 					$this->log("Reusing Cached Ticket [" . $ticket_focus->column_fields[ticket_title] ."]");
 				}
 			} else {
-				$ticket_focus = new HelpDesk();
+				$ticket_focus = CRMEntity::getInstance("HelpDesk");
 				$ticket_focus->retrieve_entity_info($ticketid, 'HelpDesk');
 				$ticket_focus->id = $ticketid;
-				// Check the parentid association if specified.
-				if ($fromemail && !$this->LookupContactOrAccount($fromemail, $ticket_focus->column_fields)) {
-					$ticket_focus = false;
-				}
 				if($ticket_focus) {
 					$this->log("Caching Ticket [" . $ticket_focus->column_fields[ticket_title] . "]");
 					$this->_cachedTickets[$ticketid] = $ticket_focus;
@@ -495,6 +591,53 @@ class Vtiger_MailScanner {
 		$adb->pquery("UPDATE vtiger_mailscanner SET isvalid=? WHERE scannerid=?", array(0,$scannerId));
     }
     
+    function updateScannerLastScanTime() {
+        $scannerId = $this->_scannerinfo->scannerid;
+        $db = PearDatabase::getInstance();
+        $db->pquery("UPDATE vtiger_mailscanner SET last_scan = ? WHERE scannerid = ?", array(date('Y-m-d H:i:s'), $scannerId));
+    }
+    
+    function getLookupQuery($module, $email) {
+        $moduleModel = Vtiger_Module_Model::getInstance($module);
+        $baseTable  = $moduleModel->get('basetable');
+        $baseTableId = $moduleModel->get('basetableid');
+        if($module == "HelpDesk") {
+            $customTable = "vtiger_ticketcf";
+        } else {
+            $customTable = "vtiger_".strtolower($module)."cf";
+        }
+        
+        $emailFields = $moduleModel->getFieldsByType('email');
+        $fieldInfos = array();
+        foreach($emailFields as $fieldName => $fieldInstance) {
+            $fieldInfos[] = array('fieldname' => $fieldName, 'columnname' => $fieldInstance->get('column'), 'tablename' => $fieldInstance->get('table'));
+        }
+        
+        if(count($fieldInfos) <= 0) {
+            return false;
+        }
+        
+        $query = "SELECT $baseTable.$baseTableId FROM $baseTable INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $baseTable.$baseTableId";
+        $query .= " INNER JOIN $customTable ON $customTable.$baseTableId = $baseTable.$baseTableId WHERE vtiger_crmentity.setype = ? AND vtiger_crmentity.deleted = ? AND ";
+        $params = array($module, 0);
+        
+        if($module == 'Leads') {
+            $query .= "$baseTable.converted = ? AND ";
+            array_push($params, 0);
+        }
+        
+        $query .= '(';
+        foreach($fieldInfos as $key => $fieldInfo) {
+            $query .= $fieldInfo['tablename'].".".$fieldInfo['columnname']." = ? ";
+            array_push($params, $email);
+            if((count($fieldInfos) - 1) != $key) {
+                $query .= "OR ";
+            }
+        }
+        $query .= ')';
+        
+        return array('query' => $query, 'params' => $params);
+    }
 }
 
 ?>

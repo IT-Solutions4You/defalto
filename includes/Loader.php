@@ -119,9 +119,10 @@ class Vtiger_Loader {
 			$moduleClassPath = str_replace(':', '_', $moduleName);
 			$actualModule = $moduleHierarchyParts[count($moduleHierarchyParts)-1];
 			$secondFallBackModuleDir= $secondFallBackModuleClassPath =  $actualModule;
+			$modules = array('Users');
 			if($actualModule != 'Users') {
-			$baseModule = $moduleHierarchyParts[0];
-			if($baseModule == 'Settings')  $baseModule = 'Settings:Vtiger';
+				$baseModule = $moduleHierarchyParts[0];
+				if($baseModule == 'Settings')  $baseModule = 'Settings:Vtiger';
 				$firstFallBackDir = str_replace(':', '.', $baseModule);
 				$firstFallBackClassPath = str_replace(':', '_', $baseModule);
 			}

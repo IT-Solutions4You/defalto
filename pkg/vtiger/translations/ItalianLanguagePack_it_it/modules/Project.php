@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Project'                      => 'Progetto'                    , 
 	'SINGLE_Project'               => 'Progetto'                    , 
 	'LBL_ADD_RECORD'               => 'Add Project'                 , 
 	'LBL_RECORDS_LIST'             => 'Projects List'               , 
@@ -20,6 +21,8 @@ $languageStrings = array(
 	'Target Budget'                => 'Target Budget'               , 
 	'Project Url'                  => 'Project Url'                 , 
 	'Progress'                     => 'Progress'                    , 
+        'Type'                         => 'Tipo'                        , 
+    'Related to'                   => 'Relativi a'                  ,
 	'LBL_TASKS_OPEN'               => 'Tasks Open'                  , 
 	'LBL_TASKS_DUE'                => 'Tasks Due'                   , 
 	'LBL_TASKS_COMPLETED'          => 'Tasks Completed'             , 
@@ -31,14 +34,14 @@ $languageStrings = array(
 	'LBL_STATUS_IS'                => 'Status is'                   , // TODO: Review
 	'LBL_STATUS'                   => 'Status'                      , // TODO: Review
 	'LBL_TICKET_PRIORITY'          => 'Priority'                    , // TODO: Review
-	'LBL_MORE'                     => 'more'                        , // TODO: Review
 	'LBL_DOWNLOAD_FILE'            => 'Download File'               , // TODO: Review
     'LBL_MILESTONES_LIST'          => 'Lista Milestones'            ,
     'LBL_TASKS_HIGH'               => 'Alta priorità'               ,
     'LBL_TASKS_NORMAL'             => 'Priorità normale'            ,
     'LBL_TASKS_LOW'                => 'Bassa priorità'              ,
     'LBL_TASKS_OTHER'              => 'Altre priorità'              ,
-    'LBL_SELECT_PROGRESS'          => 'Selezionare Progress'        ,
+    'LBL_SELECT_PROGRESS'			=> 'Progress - Tutti',
+	'LBL_SELECT_STATUS'				=> 'Stato - Tutto',
 	
 	//picklist values
 	'prospecting' => 'Prospezione',
@@ -55,9 +58,23 @@ $languageStrings = array(
     'low' => 'Basso',
     'normal' => 'Normale',
     'high' => 'Alto',
+    
+    //Gantt chart 
+    'LBL_CHART' => 'Diagramma di Gantt',
+    'LBL_PROGRESS_CHART' => 'progresso Diagramma di Gantt',
+    'LBL_TASK_NAME' => 'nome del task',
+    'LBL_START_DATE' => 'data di inizio',
+    'LBL_END_DATE' => 'data di fine',
+    'LBL_DURATION' => 'durata',
+    'LBL_INFO' => 'Info',
+    'LBL_GANTT_INFO1' => 'Far scorrere sul lato destro del compito di ampliare la durata',
+    'LBL_GANTT_INFO2' => 'Trascinare sul centro del compito sinistra o per cambiare iniziale e quella finale.',
+    'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Modifica del progetto Task Colore Stato',
+    'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Selezionare Progetto Task Colore Stato',
+    'LBL_SELECT_STATUS' => 'Selezionare Stato',
+    'LBL_EDIT_COLOR' => 'Modifica colore',
 );
 
 $jsLanguageStrings = array(
-    'JS_LBL_SELECT_STATUS' => 'Selezionare Stato',
-    'JS_LBL_SELECT_PROGRESS' => 'Selezionare Progress',
+    'JS_COLOR_SAVED_SUCESSFULLY' => 'Colore salvato con successo',
 );

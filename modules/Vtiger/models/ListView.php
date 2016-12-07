@@ -138,13 +138,38 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 	 * @return <Array> - List of Vtiger_Field_Model instances
 	 */
 	public function getListViewHeaders() {
-        $listViewContoller = $this->get('listview_controller');
-        $module = $this->getModule();
+		$listViewContoller = $this->get('listview_controller');
+		$module = $this->getModule();
 		$headerFieldModels = array();
 		$headerFields = $listViewContoller->getListViewHeaderFields();
 		foreach($headerFields as $fieldName => $webserviceField) {
 			if($webserviceField && !in_array($webserviceField->getPresence(), array(0,2))) continue;
-			$headerFieldModels[$fieldName] = Vtiger_Field_Model::getInstance($fieldName,$module);
+			if($webserviceField && $webserviceField->parentReferenceField && !in_array($webserviceField->parentReferenceField->getPresence(), array(0,2))){
+				continue;
+			}
+			if($webserviceField->getDisplayType() == '6') continue;
+			// check if the field is reference field
+			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
+			if(count($matches) > 0) {
+				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+				$referenceFieldModel = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
+				$referenceFieldModel->set('webserviceField', $webserviceField);
+				// added tp use in list view to see the title, for reference field rawdata key is different than the actual field
+				// eg: in rawdata its account_idcf_2342 (raw column name used in querygenerator), actual field name (account_id ;(Accounts) cf_2342)
+				// When generating the title we use rawdata and from field model we have no way to find querygenrator raw column name.
+
+				$referenceFieldModel->set('listViewRawFieldName', $referenceParentField.$referenceFieldName);
+
+				// this is added for picklist colorizer (picklistColorMap.tpl), for fetching picklist colors we need the actual field name of the picklist
+				$referenceFieldModel->set('_name', $referenceFieldName);
+				$headerFieldModels[$fieldName] = $referenceFieldModel->set('name', $fieldName); // resetting the fieldname as we use it to fetch the value from that name
+				$matches=null;
+			} else {
+				$fieldInstance = Vtiger_Field_Model::getInstance($fieldName,$module);
+				$fieldInstance->set('listViewRawFieldName', $fieldInstance->get('column'));
+				$headerFieldModels[$fieldName] = $fieldInstance;
+			}
 		}
 		return $headerFieldModels;
 	}
@@ -164,15 +189,15 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
 
-         $searchParams = $this->get('search_params');
-        if(empty($searchParams)) {
-            $searchParams = array();
-        }
-        $glue = "";
-        if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
-            $glue = QueryGenerator::$AND;
-        }
-        $queryGenerator->parseAdvFilterList($searchParams, $glue);
+		 $searchParams = $this->get('search_params');
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+		$queryGenerator->parseAdvFilterList($searchParams, $glue);
 
 		$searchKey = $this->get('search_key');
 		$searchValue = $this->get('search_value');
@@ -181,37 +206,24 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
 
-        
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
+		$orderBy = $this->get('orderby');
+		$sortOrder = $this->get('sortorder');
 
-		//List view will be displayed on recently created/modified records
-		if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
-			$orderBy = 'modifiedtime';
-			$sortOrder = 'DESC';
-			if (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
-                                $orderBy = $moduleFocus->default_order_by;
-                                $sortOrder = $moduleFocus->default_sort_order;
-                        }
+		if(!empty($orderBy)){
+			$queryGenerator = $this->get('query_generator');
+			$fieldModels = $queryGenerator->getModuleFields();
+			$orderByFieldModel = $fieldModels[$orderBy];
+			if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
+					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
+				$queryGenerator->addWhereField($orderBy);
+			}
 		}
-
-        if(!empty($orderBy)){
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-            if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE){
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-                //$queryGenerator->whereFields[] = $orderByFieldName;
-            }
-        }
 		$listQuery = $this->getQuery();
 
 		$sourceModule = $this->get('src_module');
 		if(!empty($sourceModule)) {
 			if(method_exists($moduleModel, 'getQueryByModuleField')) {
-				$overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery);
+				$overrideQuery = $moduleModel->getQueryByModuleField($sourceModule, $this->get('src_field'), $this->get('src_record'), $listQuery,$this->get('relationId'));
 				if(!empty($overrideQuery)) {
 					$listQuery = $overrideQuery;
 				}
@@ -221,44 +233,26 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
-		if(!empty($orderBy)) {
-            if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
-                $referenceModules = $orderByFieldModel->getReferenceList();
-                $referenceNameFieldOrderBy = array();
-                foreach($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
+		if(!empty($orderBy) && $orderByFieldModel) {
+			if($orderBy == 'roleid' && $moduleName == 'Users'){
+				$listQuery .= ' ORDER BY vtiger_role.rolename '.' '. $sortOrder; 
+			} else {
+				$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+			}
 
-                    $columnList = array();
-                    foreach($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table').$orderByFieldModel->getName().'.'.$fieldModel->get('column');
-                    }
-                    if(count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users', '').' '.$sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
-                    }
-                }
-                $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
-            }
-            else if (!empty($orderBy) && $orderBy === 'smownerid') { 
-                $fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel); 
-                if ($fieldModel->getFieldDataType() == 'owner') { 
-                    $orderBy = 'COALESCE(CONCAT(vtiger_users.first_name,vtiger_users.last_name),vtiger_groups.groupname)'; 
-                } 
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
-            else{
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
+			if ($orderBy == 'first_name' && $moduleName == 'Users') {
+				$listQuery .= ' , last_name '.' '. $sortOrder .' ,  email1 '. ' '. $sortOrder;
+			} 
+		} else if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
+			//List view will be displayed on recently created/modified records
+			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
 		}
 
 		$viewid = ListViewSession::getCurrentView($moduleName);
 		if(empty($viewid)) {
-            $viewid = $pagingModel->get('viewid');
+			$viewid = $pagingModel->get('viewid');
 		}
-        $_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
+		$_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
 
 		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
 
@@ -297,32 +291,35 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 		$queryGenerator = $this->get('query_generator');
 
-        
-        $searchParams = $this->get('search_params');
-        if(empty($searchParams)) {
-            $searchParams = array();
-        }
-        
-        $glue = "";
-        if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
-            $glue = QueryGenerator::$AND;
-        }
-        $queryGenerator->parseAdvFilterList($searchParams, $glue);
-        
-        $searchKey = $this->get('search_key');
+
+		$searchParams = $this->get('search_params');
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+
+		// for Documents folders we should filter with folder id as well
+		$folderKey = $this->get('folder_id');
+		$folderValue = $this->get('folder_value');
+		if(!empty($folderValue)) {
+			$queryGenerator->addCondition($folderKey,$folderValue,'e');
+		}
+
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+		$queryGenerator->parseAdvFilterList($searchParams, $glue);
+
+		$searchKey = $this->get('search_key');
 		$searchValue = $this->get('search_value');
 		$operator = $this->get('operator');
 		if(!empty($searchKey)) {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
-        $moduleName = $this->getModule()->get('name');
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        
-        
+		$moduleName = $this->getModule()->get('name');
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
 		$listQuery = $this->getQuery();
-
-
 		$sourceModule = $this->get('src_module');
 		if(!empty($sourceModule)) {
 			$moduleModel = $this->getModule();
@@ -337,7 +334,11 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		if ($position) {
 			$split = spliti(' from ', $listQuery);
 			$splitCount = count($split);
-			$listQuery = 'SELECT count(*) AS count ';
+			// If records is related to two records then we'll get duplicates. Then count will be wrong
+			$meta = $queryGenerator->getMeta($this->getModule()->getName());
+			$columnIndex = $meta->getObectIndexColumn();
+			$baseTable = $meta->getEntityBaseTable();
+			$listQuery = "SELECT count(distinct($baseTable.$columnIndex)) AS count ";
 			for ($i=1; $i<$splitCount; $i++) {
 				$listQuery = $listQuery. ' FROM ' .$split[$i];
 			}
@@ -362,14 +363,14 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 	 * @param <Number> $viewId - Custom View Id
 	 * @return Vtiger_ListView_Model instance
 	 */
-	public static function getInstance($moduleName, $viewId='0') {
+	public static function getInstance($moduleName, $viewId='0', $listHeaders = array()) {
 		$db = PearDatabase::getInstance();
 		$currentUser = vglobal('current_user');
 
 		$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'ListView', $moduleName);
 		$instance = new $modelClassName();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $currentUser);
+		$queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
 		$customView = new CustomView();
 		if (!empty($viewId) && $viewId != "0") {
 			$queryGenerator->initForCustomViewById($viewId);
@@ -387,12 +388,41 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 				$queryGenerator->setFields($listFields);
 			}
 		}
-		$controller = new ListViewController($db, $currentUser, $queryGenerator);
+
+		$fieldsList = $queryGenerator->getFields();
+		if(!empty($listHeaders) && is_array($listHeaders) && count($listHeaders) > 0) {
+			$fieldsList = $listHeaders;
+			$fieldsList[] = 'id';
+		}
+		//to show starred field in list view
+		$fieldsList[] = 'starred';
+		$queryGenerator->setFields($fieldsList);
+
+		$moduleSpecificControllerPath = 'modules/'.$moduleName.'/controllers/ListViewController.php';
+		if(file_exists($moduleSpecificControllerPath)) {
+			include_once $moduleSpecificControllerPath;
+			$moduleSpecificControllerClassName = $moduleName.'ListViewController';
+			$controller = new $moduleSpecificControllerClassName($db, $currentUser, $queryGenerator);
+		} else {
+			$controller = new ListViewController($db, $currentUser, $queryGenerator);
+		}
 
 		return $instance->set('module', $moduleModel)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
 	}
 
-    /**
+	/**
+	 * Function to create clean instance
+	 * @param type $moduleName -- module for which list view model has to be created
+	 * @return type -- List view model  
+	 */
+	public static function getCleanInstance($moduleName) {
+		$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'ListView', $moduleName);
+		$instance = new $modelClassName();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		return $instance->set('module', $moduleModel);
+	}
+
+	/**
 	 * Static Function to get the Instance of Vtiger ListView model for a given module and custom view
 	 * @param <String> $value - Module Name
 	 * @param <Number> $viewId - Custom View Id
@@ -406,12 +436,12 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$instance = new $modelClassName();
 		$moduleModel = Vtiger_Module_Model::getInstance($value);
 
-		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $currentUser);
-		
+		$queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
+
 		$listFields = $moduleModel->getPopupViewFieldsList();
-        
-        $listFields[] = 'id';
-        $queryGenerator->setFields($listFields);
+
+		$listFields[] = 'id';
+		$queryGenerator->setFields($listFields);
 
 		$controller = new ListViewController($db, $currentUser, $queryGenerator);
 
@@ -436,6 +466,18 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			);
 		}
 
+		$duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
+		$editPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+		if($duplicatePermission && $editPermission) {
+			$advancedLinks[] = array(
+				'linktype' => 'LISTVIEWMASSACTION',
+				'linklabel' => 'LBL_FIND_DUPLICATES',
+				'linkurl' => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module='.$moduleModel->getName().
+								'&view=MassActionAjax&mode=showDuplicatesSearchForm")',
+				'linkicon' => ''
+			);
+		}
+
 		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
 		if($exportPermission) {
 			$advancedLinks[] = array(
@@ -444,17 +486,6 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 					'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("'.$this->getModule()->getExportUrl().'")',
 					'linkicon' => ''
 				);
-		}
-
-		$duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
-		if($duplicatePermission) {
-			$advancedLinks[] = array(
-				'linktype' => 'LISTVIEWMASSACTION',
-				'linklabel' => 'LBL_FIND_DUPLICATES',
-				'linkurl' => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module='.$moduleModel->getName().
-								'&view=MassActionAjax&mode=showDuplicatesSearchForm")',
-				'linkicon' => ''
-			);
 		}
 
 		return $advancedLinks;
@@ -492,9 +523,41 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$queryGenerator = $this->get('query_generator');
 
 		$listFields = $moduleModel->getPopupViewFieldsList();
-		
+
 		$listFields[] = 'id';
 		$listFields = array_merge($listFields, $fieldsList);
 		$queryGenerator->setFields($listFields);
+		$this->get('query_generator', $queryGenerator);
+	}
+
+	public function getSortParamsSession($key) {
+		return $_SESSION[$key];
+			}
+
+	public function setSortParamsSession($key, $params) {
+		$_SESSION[$key] = $params;
+	}
+
+	public function deleteParamsSession($key, $params) {
+		if(!is_array($params)) {
+			$params = array($params);
+		}
+		foreach($params as $param) {
+			$_SESSION[$key][$param] = '';
+		}
+	}
+
+	public function isImportEnabled() {
+		$linkParams = array('MODULE'=>$this->getModule()->getName(), 'ACTION'=>'LIST');
+		$listViewLinks = $this->getListViewLinks($linkParams);
+		$listViewActions = $listViewLinks['LISTVIEW'];
+		if (is_array($listViewActions)) {
+			foreach($listViewActions as $linkAction) {
+				if($linkAction->getLabel() == 'LBL_IMPORT'){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

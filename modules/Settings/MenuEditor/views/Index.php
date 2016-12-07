@@ -15,12 +15,17 @@ class Settings_MenuEditor_Index_View extends Settings_Vtiger_Index_View {
 		$menuModelStructure = Vtiger_MenuStructure_Model::getInstanceFromMenuList($allModelsList);
 		$moduleName = $request->getModule();
 		$qualifiedModuleName = $request->getModule(false);
-		
+
 		$viewer = $this->getViewer($request);
 		$viewer->assign('ALL_MODULES', $menuModelStructure->getMore());
 		$viewer->assign('SELECTED_MODULES', $menuModelStructure->getTop());
 		$viewer->assign('MODULE_NAME', $moduleName);
-		
+		$viewer->assign('QUALIFIED_MODULE_NAME', $qualifiedModuleName);
+
+		$mappedModuleList = Settings_MenuEditor_Module_Model::getAllVisibleModules();
+		$viewer->assign('APP_MAPPED_MODULES', $mappedModuleList);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+
 		$viewer->view('Index.tpl', $qualifiedModuleName);
 	}
 }

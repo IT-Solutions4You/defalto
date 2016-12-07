@@ -49,7 +49,10 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 		'index.php?module=CronTasks&action=ListCronJobs&parenttab=Settings' => 'index.php?module=CronTasks&parent=Settings&view=List',
 		'index.php?module=Webforms&action=index&parenttab=Settings' => 'index.php?module=Webforms&parent=Settings&view=List',
 		'index.php?module=Settings&action=MenuEditor&parenttab=Settings' => 'index.php?module=MenuEditor&parent=Settings&view=Index',
-                'index.php?module=ExchangeConnector&action=index&parenttab=Settings' => 'index.php?module=ExchangeConnector&parent=Settings&view=Index'
+		// STOP-GAP
+		'index.php?module=Settings&action=listemailtemplates&parenttab=Settings' => 'index.php?module=EmailTemplate&parent=Settings&view=ListUI5',
+        'index.php?module=PDFMaker&action=index&parenttab=Settings' => 'index.php?module=PDFMaker&parent=Settings&view=ListUI5',
+        'index.php?module=ExchangeConnector&action=index&parenttab=Settings' => 'index.php?module=ExchangeConnector&parent=Settings&view=Index'
 	);
 
 	/**
@@ -109,23 +112,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 	public function getModuleName() {
 		return 'Settings:Vtiger';
 	}
-    
-    /**
-     * 
-     * @param type $url
-     * @return type modulename 
-     */
-     public function getModuleNameFromUrl($url) {
-
-        $query_str = parse_url(htmlspecialchars_decode($url), PHP_URL_QUERY);
-        parse_str($query_str, $query_params);
-
-        if ($query_params[parent]) {
-            return ("$query_params[parent]:$query_params[module]");
-        }
-
-        return $query_params[module];
-    }
     /**
 	 *  Function to get the pin and unpin action url
 	 */

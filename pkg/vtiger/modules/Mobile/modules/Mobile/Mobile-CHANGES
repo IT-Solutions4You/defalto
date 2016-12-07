@@ -1,8 +1,15 @@
-CHANGES TO CORE PRODUCT
-=======================
+MOBILE MODULE IS NOW PART OF STANDARD PRODUCT.
 
-Support for ORDER BY ... DESC was missing in 5.1.0, you will need to apply the patch available at:
-* http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/6635 - Should be available in 5.2.0
+Vtiger CRM 6.4.0 
+================
 
-Support for overriding GetRelatedList global API
-* http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/6768 - Should be available in 5.2.0
+1. Introduces APIV2 to enable extension of API set
+and retain the backward compatability to earlier version (consumed by Mobile Devices).
+
+* api.php has been refactored to load api.v1.php or api.v2.php
+
+
+2. Web UI enabled with multi-layout support (see Mobile.Config.php) - default layout ng added (based on AngularJS+API).
+
+* modules/Mobile/ui, modules/Mobile/resources, layouts/vlayout/modules/Mobile/generic - folders deleted.
+* modules/Mobile/html, layouts/vlayout/modules/Mobile/simple - folders added.

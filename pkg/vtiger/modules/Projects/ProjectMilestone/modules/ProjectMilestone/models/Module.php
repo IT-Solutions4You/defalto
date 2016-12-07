@@ -51,5 +51,12 @@ class ProjectMilestone_Module_Model extends Vtiger_Module_Model {
 		$taskModel = Vtiger_Module_Model::getInstance('ProjectTask');
 		return $taskModel->getListViewUrl();
 	}
+    
+    /*
+     * Function to get supported utility actions for a module
+     */
+    function getUtilityActionsNames() {
+        return array('Import', 'Export', 'DuplicatesHandling');
+    }
 }
 ?>

@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -26,7 +26,8 @@ $languageStrings = array(
 	'Role' => 'Roll',
 	'Admin' => 'Admin',
 	'User Name' => 'Användarnamn',
-	'Default Activity View' => 'Förvald Kalendervy',
+	'Default Activity View'		   => 'Standard min kalender Visa',
+	'Default Calendar View'        => 'Förvald Kalendervy'            ,
 	'Default Lead View' => 'Förvald Leadvy',
 	'Title' => 'Titel',
 	'Office Phone' => 'Arbetstelefon',
@@ -172,6 +173,7 @@ $languageStrings = array(
     'Asia/Vladivostok'  =>  '(UTC+10:00) Vladivostok',
     'Pacific/Guam'  =>  '(UTC+10:00) Guam, Port Moresby',
     'Asia/Yakutsk'  =>  '(UTC+10:00) Yakutsk',
+	'Etc/GMT-11' => '(UTC+11:00) Solomon Is., New Caledonia',
     'Pacific/Fiji'  =>  '(UTC+12:00) Fiji',
     'Asia/Kamchatka'  =>  '(UTC+12:00) Kamchatka',
     'Pacific/Auckland'  =>  '(UTC+12:00) Auckland',
@@ -206,4 +208,70 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Datumformat',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Välj datumformat',
 	'LBL_PHONE'	=> 'Telefon',
+    'Space' => 'Space',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'Lista',
+	'MyCalendar' => 'Min kalender',
+	'SharedCalendar' => 'Delad kalender',
+    
+    'LBL_CHANGE_OWNER' => 'Ändra Owner',
+    'LBL_TRANSFER_OWNERSHIP' => 'Överföra äganderätten',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'Överföra äganderätten till Användar',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'CRM ägaren förändrats framgångsrikt',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'Det gick inte att ändra CRM ägare',
+    'Account Owner' => 'Konto Owner',
+    'Starting Day of the week' => 'Start Veckodag',
+    'Day starts at' => 'Dag börjar',
+    'Default Event Status' => 'Standard Händelse Status',
+    'Default Activity Type' => 'Standard Aktivitetstyp',
+    'Default Record View' => 'Standard Record View',
+    'Left Panel Hide' => 'Vänster Panel Göm',
+    'Row Height' => 'Radhöjd',
+	'LBL_RESTORE_USER_FAILED' => 'Det gick inte att återställa användaren. Det finns redan en CRM-användare med detta användarnamn.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Användaren finns redan',
+
+
+	'LBL_CHANGE_USERNAME'          => 'Ändra Användarnamn'        ,
+	'LBL_USERNAME_CHANGED'         => 'Användarnamn ändrats'      ,
+	'ERROR_CHANGE_USERNAME'        => 'Fel i förändring användarnamn. Försök senare',
+
+  'LBL_REMOVE_USER' => 'Ta bort',
+  'LBL_MORE_OPTIONS' => 'Fler Alternativ',
+  'LBL_RESTORE_USER' => 'Återställ Användare',
+  'LBL_OLD_PASSWORD' => 'Gammalt Lösenord',
+  'LBL_CHANGE_PASSWORD' => 'Ändra Lösenord',
+  'LBL_NEW_PASSWORD' => 'Nytt Lösenord',
+  'LBL_CONFIRM_PASSWORD' => 'Bekräfta Lösenord',
+  'LBL_LOGIN_AS' => 'Logga in som ',
+  'LBL_USER_DELETED_SUCCESSFULLY' => 'Användare som har tagits bort',
+  'LBL_CREATE_USER' => 'Skapa Användare',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'En användare tas bort permanent kommer att överföra alla poster, inklusive kommentarer och historia till nya användare.',
+  'LBL_TO_CRM' => 'Logga in för att Vtiger CRM',
+  'LBL_INVALID_USER_OR_PASSWORD' => 'Felaktigt användarnamn och / eller lösenord.',
+  'LBL_INVALID_USER_OR_EMAIL' => 'Ogiltigt Användarnamn eller E-postadress.',
+  'LBL_EMAIL_SEND' => 'Vi har skickat e-post att återställa ditt lösenord.',
+  'ForgotPassword' => 'Glömt Lösenord',
+  'LBL_CONNECT_WITH_US' => 'Kontakt med OSS',
+  'LBL_GET_MORE' => 'Få ut mer av Vtiger',
+  'LBL_TRANSFER_RECORDS_TO_USER' => 'Överföra poster till användaren',
+  'LBL_USER_TO_BE_DELETED' => 'Användare som ska tas Bort',
+  'LBL_USERS_SETTINGS' => 'INSTÄLLNINGAR FÖR ANVÄNDARE',
+  'LBL_TEMPLATES' => 'Mallar',
+
+);
+
+$jsLanguageStrings = array(
+    'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Du angav den nuvarande användarnamn. Ange nytt användarnamn.',
+
+
+  'JS_ENTER_OLD_PASSWORD' => 'Vänligen skriv in ditt gamla lösenord.',
+  'JS_ENTER_NEW_PASSWORD' => 'Vänligen ange ditt nya lösenord.',
+  'JS_ENTER_CONFIRMATION_PASSWORD' => 'Vänligen ange ditt lösenord för bekräftelse.',
+  'JS_REENTER_PASSWORDS' => 'Vänligen ange lösenord. \\"Det nya lösenordet\\" och \\"bekräfta lösenord\\" värden stämmer inte.',
+  'JS_INVALID_PASSWORD' => 'Du måste ange ett giltigt användarnamn och lösenord.',
+  'JS_PASSWORD_CHANGE_FAILED_1' => 'Användare att byta lösenord misslyckades för ',
+  'JS_PASSWORD_CHANGE_FAILED_2' => ' misslyckades. Den nya lösenord måste anges.',
+  'JS_PASSWORD_INCORRECT_OLD' => 'Felaktigt lösenord anges. Re-enter password information.',
+
 );

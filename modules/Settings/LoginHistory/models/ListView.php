@@ -26,8 +26,7 @@ class Settings_LoginHistory_ListView_Model extends Settings_Vtiger_ListView_Mode
 		if(!empty($search_key) && !empty($value)) {
 			$query .= " WHERE $module->baseTable.$search_key = '$value'";
 		}
-		//Fix for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7996
-         $query .= " ORDER BY login_time DESC"; 
+        $query .= " ORDER BY login_time DESC"; 
  	 return $query; 
     }
 

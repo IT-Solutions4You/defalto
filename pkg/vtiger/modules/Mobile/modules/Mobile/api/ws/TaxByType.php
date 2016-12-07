@@ -16,11 +16,17 @@ class Mobile_WS_TaxByType extends Mobile_WS_Controller{
 		$current_user = $this->getActiveUser();
 
 		$taxType = $request->get('taxType');
+        $recordId = $request->get('record');
         
+        if ($taxType == "charges" && $recordId){
+            $result = $this->getCharges($recordId);
+            $response->setResult($result);
+            return $response;
+        } else {
         	$result = $this->getTaxDetails($taxType);
-		$response->setResult($result);
-
-		return $response;
+			$response->setResult($result);
+			return $response;
+		}
 	}
     
     protected function getTaxDetails($taxType){
@@ -37,6 +43,23 @@ class Mobile_WS_TaxByType extends Mobile_WS_Controller{
         return $recordDetails;
     }
     
+    protected function getCharges($recordId) {
+		global $adb;
+		$chargesAndItsTaxes = array();
+                
+		if ($recordId) {
+			$result = $adb->pquery('SELECT * FROM vtiger_inventorychargesrel WHERE recordid = ?', array($recordId));
+			while ($rowData = $adb->fetch_array($result)) {
+				$chargesAndItsTaxes = Zend_Json::decode(html_entity_decode($rowData['charges']));
+			}
+		}
+		if ($chargesAndItsTaxes) {
+			return $chargesAndItsTaxes;
+		} else {
+			return False;
+		}
+    }
+    
     protected function getTableName($taxType){
         switch($taxType){
             case 'shipping':
@@ -44,6 +67,9 @@ class Mobile_WS_TaxByType extends Mobile_WS_Controller{
                 break;
             case 'inventory':
                 return 'vtiger_inventorytaxinfo';
+                break;
+            case 'charges':
+                return 'vtiger_inventorychargesrel';
                 break;
         }
     }

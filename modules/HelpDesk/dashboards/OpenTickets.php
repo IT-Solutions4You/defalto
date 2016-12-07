@@ -12,7 +12,7 @@ class HelpDesk_OpenTickets_Dashboard extends Vtiger_IndexAjax_View {
     
     function getSearchParams($value) {
         $listSearchParams = array();
-        $conditions = array(array('ticketstatus','e','Open'),array('assigned_user_id','e',$value));
+        $conditions = array(array('ticketstatus','e','Open'),array('assigned_user_id','e',decode_html(urlencode(escapeSlashes($value)))));
         $listSearchParams[] = $conditions;
         return '&search_params='. json_encode($listSearchParams);
     }
@@ -26,9 +26,9 @@ class HelpDesk_OpenTickets_Dashboard extends Vtiger_IndexAjax_View {
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getOpenTickets();
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][name]);
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][name]).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());

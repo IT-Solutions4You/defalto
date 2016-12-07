@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -20,7 +20,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW' => 'Profilvy',
 	'LBL_FIELDS' => 'Fält',
 	'LBL_TOOLS' => 'Verktyg',
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Fält och Verktygsprivilegier',
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Fält och Verktygs privilegier',
 	'LBL_EDIT_RECORD' => 'Redigera',
 	'LBL_DUPLICATE_RECORD' => 'Duplicera',
 	'LBL_DELETE_RECORD' => 'Ta Bort',
@@ -37,21 +37,17 @@ $languageStrings = array(
 	'LBL_PROFILES' => 'Profiler',
 	'LBL_CHOOSE_PROFILES' => 'Välj Profiler',
     
-        'LBL_VIEW_ALL' => 'Granska Alla',
-        'LBL_EDIT_ALL' => 'Redigera Alla',
-        'LBL_VIEW_ALL_DESC' => 'Kan visa alla moduler uppgifter',
-        'LBL_EDIT_ALL_DESC' => 'Kan redigera alla moduler uppgifter',
+    'LBL_VIEW_ALL' => 'Granska Alla',
+    'LBL_EDIT_ALL' => 'Redigera Alla',
+    'LBL_VIEW_ALL_DESC' => 'Kan visa alla moduler uppgifter',
+    'LBL_EDIT_ALL_DESC' => 'Kan redigera alla moduler uppgifter',
 	'LBL_DUPLICATES_EXIST' => 'Dubbletter av Profil Existerar',
-    
-        'Import' => 'Import',
-        'Export' => 'Export',
-	'Merge'  => 'Merge',
-        'ConvertLead' => 'Konvertera Bly',
-        'DuplicatesHandling' => 'Dubbletter Handling',
-        'ReceiveIncomingCalls' => 'Ta emot inkommande samtal',
-        'MakeOutgoingCalls' => 'Gör Utgående samtal',
-        'Print' => 'Tryckt',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Varning: Användare som är förknippade med den här profilen kan komma åt alla poster i CRM',
 	
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Ändra privilegier för denna profil',
+  'LBL_EDIT_PROFILE' => 'Redigera Profil',
+
 );
 
 $jsLanguageStrings = array(

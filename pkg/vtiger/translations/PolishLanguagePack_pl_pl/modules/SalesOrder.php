@@ -9,7 +9,8 @@
  *************************************************************************************/
 $languageStrings = array(
 	//DetailView Actions
-	'SINGLE_SalesOrder' => 'Zamówienie od Klienta',
+    'SalesOrder' => 'Zlecenia sprzedaży',
+	'SINGLE_SalesOrder' => 'Zlecenia sprzedaży',
 	'LBL_EXPORT_TO_PDF' => 'Eksport do PDF',
 
 	//Basic strings
@@ -19,7 +20,6 @@ $languageStrings = array(
 
 	// Blocks
 	'LBL_SO_INFORMATION' => 'Szczegóły zamówienia od Klienta',
-    'Recurring Invoive Information'=>'Informacja faktury cykliczne',
 	
 	//Field labels
 	'SalesOrder No'=>'Numer zamówienia od Klienta',
@@ -45,11 +45,10 @@ $languageStrings = array(
 	'Sent'=>'Wysłana',
 	'Credit Invoice'=>'Faktura kredytowa',
 	'Paid'=>'Zapłacona',
-    'Daily'=>'Codziennie',
-    'Monthly'=>'Miesięcznie',
-    'Quarterly'=>'Kwartalnie',
-    'Yearly'=>'Rocznie',
-    'Net 30 days'=>'Netto 30 dni',
-    'Net 45 days'=>'Netto 45 dni',
-    'Net 60 days'=>'Netto 60 dni',
+
+  'LBL_SEND_MAIL_PDF' => 'Wysłać e-mail z PDF',
+  'LBL_THIS' => 'To',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'zostanie usunięty z systemu.uprzejmie usunąć lub wymienić ten element',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Pozycja ta jest usuwana z systemu,należy usunąć ten ciąg elementów',
+
 );

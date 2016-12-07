@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -37,6 +37,13 @@ $languageStrings = array(
 	'LBL_ASSIGN_VALUES_TO_ROLES' => 'Tilldela värden till roller',
 	'LBL_SELECTED_VALUES' => 'Valda Värden',
     'NO_PICKLIST_FIELDS'=> 'har inte några plocklistefält',
+    'LBL_EDIT_PICKLIST_ITEM'=> 'Redigera Plock Punkt',
+	
+	//Translation for module
+	'Calendar' => 'Uppgift',
+
+  'LBL_NON_EDITABLE_PICKLIST_VALUES' => 'Icke Ändringsbara Värden',
+
 );
 $jsLanguageStrings = array(
 	//PickList 

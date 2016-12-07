@@ -26,10 +26,6 @@
 						<option value="none"></option>
 						{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
 							{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
-							{if $FIELD_MODEL->getFieldDataType() == 'owner'}
-								{$SPECIAL_OPTION = [vtranslate('LBL_SPECIAL_OPTIONS') => ['assigned_user_id' => {vtranslate('LBL_PARENT_OWNER')}]]}
-								{$FIELD_INFO['picklistvalues'] = array_merge($FIELD_INFO['picklistvalues'], $SPECIAL_OPTION)}
-							{/if}
 							<option value="{$FIELD_MODEL->get('name')}" {if $FIELD_MAP['fieldname'] eq $FIELD_MODEL->get('name')} {if $FIELD_MODEL->isMandatory()}{assign var=MANDATORY_FIELD value=true} {else} {assign var=MANDATORY_FIELD value=false} {/if}{assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
 								{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}{if $SELECTED_FIELD_MODEL->isMandatory()}<span class="redColor">*</span>{/if}
 							</option>	
@@ -71,12 +67,8 @@
 							<option value="none"></option>
 							{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
 								{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
-								{if $FIELD_MODEL->getFieldDataType() == 'owner'}
-									{$SPECIAL_OPTION = [vtranslate('LBL_SPECIAL_OPTIONS') => ['assigned_user_id' => {vtranslate('LBL_PARENT_OWNER')}]]}
-									{$FIELD_INFO['picklistvalues'] = array_merge($FIELD_INFO['picklistvalues'], $SPECIAL_OPTION)}
-								{/if}
 								<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" {if $FIELD_MODEL->get('name') eq $MANDATORY_FIELD_MODEL->get('name')} {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
-									{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}<span class="redColor">*</span>
+								{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}<span class="redColor">*</span>
 								</option>	
 							{/foreach}
 						</select>

@@ -16,7 +16,7 @@ class Rss_MakeDefaultAjax_Action extends Vtiger_Action_Controller {
 
 		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPrivilegesModel->isPermitted($moduleName, 'ListView', $record)) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -28,7 +28,7 @@ class Rss_MakeDefaultAjax_Action extends Vtiger_Action_Controller {
 		$recordModel->makeDefault();
 
 		$response = new Vtiger_Response();
-		$response->setResult(array('message'=>'JS_RSS_MADE_AS_DEFAULT', 'record'=>$recordId, 'module'=>$moduleName));
+		$response->setResult(array('message'=>'JS_RSS_MADE_AS_DEFAULT', 'record'=>$recordId, 'module'=>$moduleName, 'rssname' =>$recordModel->getName()));
 		$response->emit();
 	}
 }

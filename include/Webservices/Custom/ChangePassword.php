@@ -67,6 +67,4 @@ function vtws_changePassword($id, $oldPassword, $newPassword, $confirmPassword, 
 		return array('message' => 'Changed password successfully');
 	}
 }
-
-
 ?>

@@ -14,6 +14,7 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		$this->exposeMethod('addRelation');
 		$this->exposeMethod('deleteRelation');
 		$this->exposeMethod('getRelatedListPageCount');
+		$this->exposeMethod('getRelatedRecordInfo');
 	}
 
 	function checkPermission(Vtiger_Request $request) { }
@@ -56,6 +57,10 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		foreach($relatedRecordIdList as $relatedRecordId) {
 			$relationModel->addRelation($sourceRecordId,$relatedRecordId);
 		}
+
+		$response = new Vtiger_Response();
+		$response->setResult(true);
+		$response->emit();
 	}
 
 	/**
@@ -73,6 +78,31 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 
 		$relatedModule = $request->get('related_module');
 		$relatedRecordIdList = $request->get('related_record_list');
+		$recurringEditMode = $request->get('recurringEditMode');
+		$relatedRecordList = array();
+		if($relatedModule == 'Calendar' && !empty($recurringEditMode) && $recurringEditMode != 'current') {
+			foreach($relatedRecordIdList as $relatedRecordId) {
+				$recordModel = Vtiger_Record_Model::getCleanInstance($relatedModule);
+				$recordModel->set('id', $relatedRecordId);
+				$recurringRecordsList = $recordModel->getRecurringRecordsList();
+				foreach($recurringRecordsList as $parent => $childs) {
+					$parentRecurringId = $parent;
+					$childRecords = $childs;
+				}
+				if($recurringEditMode == 'future') {
+					$parentKey = array_keys($childRecords, $relatedRecordId);
+					$childRecords = array_slice($childRecords, $parentKey[0]);
+				}
+				foreach($childRecords as $recordId) {
+					$relatedRecordList[] = $recordId;
+				}
+				$relatedRecordIdList = array_slice($relatedRecordIdList, $relatedRecordId);
+			}
+		}
+
+		foreach($relatedRecordList as $record) {
+			$relatedRecordIdList[] = $record;
+		}
 
 		//Setting related module as current module to delete the relation
 		vglobal('currentModule', $relatedModule);
@@ -83,9 +113,12 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		foreach($relatedRecordIdList as $relatedRecordId) {
 			$response = $relationModel->deleteRelation($sourceRecordId,$relatedRecordId);
 		}
-		echo $response;
+
+		$response = new Vtiger_Response();
+		$response->setResult(true);
+		$response->emit();
 	}
-	
+
 	/**
 	 * Function to get the page count for reltedlist
 	 * @return total number of pages
@@ -112,8 +145,55 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		$response->setResult($result);
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
+
+	function getRelatedRecordInfo($request) {
+		try {
+			return $this->getParentRecordInfo($request);
+		} catch (Exception $e) {
+			$response = new Vtiger_Response();
+			$response->setError($e->getCode(), $e->getMessage());
+			$response->emit();
+		}
+	}
+
+	function getParentRecordInfo($request) {
+		$moduleName = $request->get('module');
+		$recordModel = Vtiger_Record_Model::getInstanceById($request->get('id'), $moduleName);
+		$moduleModel = $recordModel->getModule();
+		$autoFillData = $moduleModel->getAutoFillModuleAndField($moduleName);
+
+		if($autoFillData) {
+			foreach($autoFillData as $data) {
+				$autoFillModule = $data['module'];
+				$autoFillFieldName = $data['fieldname'];
+				$autofillRecordId = $recordModel->get($autoFillFieldName);
+
+				$autoFillNameArray = getEntityName($autoFillModule, $autofillRecordId);
+				$autoFillName = $autoFillNameArray[$autofillRecordId];
+
+				$resultData[] = array(	'id'		=> $request->get('id'), 
+										'name'		=> decode_html($recordModel->getName()),
+										'parent_id'	=> array(	'id' => $autofillRecordId,
+																'name' => decode_html($autoFillName),
+																'module' => $autoFillModule));
+			}
+
+			$result[$request->get('id')] = $resultData;
+
+		} else {
+			$resultData = array('id'	=> $request->get('id'), 
+								'name'	=> decode_html($recordModel->getName()),
+								'info'	=> $recordModel->getRawData());
+			$result[$request->get('id')] = $resultData;
+		}
+
+		$response = new Vtiger_Response();
+		$response->setResult($result);
+		$response->emit();
+	}
+
 }

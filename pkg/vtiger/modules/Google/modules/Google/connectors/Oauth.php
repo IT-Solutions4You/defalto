@@ -31,8 +31,6 @@ class Google_Oauth_Connector {
     protected $_oauthOptions = array(
         'requestScheme' => Zend_Oauth::REQUEST_SCHEME_HEADER,
         'version' => '1.0',
-        'consumerKey' => '639253257022.apps.googleusercontent.com',
-        'consumerSecret' => 'CxnOsnYx_RNyTWVfzTIenmhQ',
         'signatureMethod' => 'HMAC-SHA1',
         'requestTokenUrl' => 'https://www.google.com/accounts/OAuthGetRequestToken',
         'userAuthorizationUrl' => 'https://www.google.com/accounts/OAuthAuthorizeToken',
@@ -47,6 +45,8 @@ class Google_Oauth_Connector {
         self::initializeSchema();
         $this->userId = $userId;
         $this->_oauthOptions['callbackUrl'] = $callbackUrl;
+        $this->_oauthOptions['consumerKey'] = VtigerConfig::getOD('GOOGLESYNC_CONSUMER_KEY');
+        $this->_oauthOptions['consumerSecret'] = VtigerConfig::getOD('GOOGLESYNC_CONSUMER_SECRET');
         $this->db = PearDatabase::getInstance();
     }
 
@@ -77,15 +77,15 @@ class Google_Oauth_Connector {
             $this->userId = Users_Record_Model::getCurrentUserModel()->getId();
         
         if (!$accessToken && !$requestToken){
-            $query = "SELECT  1 FROM vtiger_google_oauth WHERE  userid=? and service=?";
+            $query = "SELECT  1 FROM vtiger_app_oauth1 WHERE  userid=? and service=?";
             $params = array($this->userId, $service);
         }
         else if ($accessToken){
-            $query = "SELECT  access_token FROM vtiger_google_oauth WHERE  userid=? and service=? AND access_token<>? AND access_token IS NOT NULL";
+            $query = "SELECT  access_token FROM vtiger_app_oauth1 WHERE  userid=? and service=? AND access_token<>? AND access_token IS NOT NULL";
             $params = array($this->userId, $service, '');
         }
         else if ($requestToken){
-            $query = "SELECT  request_token FROM vtiger_google_oauth WHERE  userid=? and service=? AND request_token<>? AND request_token IS NOT NULL";
+            $query = "SELECT  request_token FROM vtiger_app_oauth1 WHERE  userid=? and service=? AND request_token<>? AND request_token IS NOT NULL";
             $params = array($this->userId, $service, '');
         }
         $result = $this->db->pquery($query, $params);
@@ -103,10 +103,10 @@ class Google_Oauth_Connector {
      */
     protected function storeAccessToken($service, $token) {
         $user = Users_Record_Model::getCurrentUserModel();
-        $query = "INSERT INTO vtiger_google_oauth(service,access_token,userid) VALUES(?,?,?)";
+        $query = "INSERT INTO vtiger_app_oauth1(service,access_token,userid) VALUES(?,?,?)";
         $params = array($service, base64_encode(serialize($token)), $user->getid());
         if (self::hasStoredToken($service, false, true)) {
-            $query = "UPDATE vtiger_google_oauth SET access_token=? WHERE userid=? AND  service=?";
+            $query = "UPDATE vtiger_app_oauth1 SET access_token=? WHERE userid=? AND  service=?";
             $params = array(base64_encode(serialize($token)), $user->getId(), $service);
         }
 
@@ -117,7 +117,7 @@ class Google_Oauth_Connector {
         if(!$this->userId)
             $this->userId = Users_Record_Model::getCurrentUserModel()->getId();
         
-        $query = "SELECT access_token FROM vtiger_google_oauth WHERE userid=? AND service =?";
+        $query = "SELECT access_token FROM vtiger_app_oauth1 WHERE userid=? AND service =?";
         $params = array($this->userId, $service);
 
         $result = $this->db->pquery($query, $params);
@@ -128,10 +128,10 @@ class Google_Oauth_Connector {
 
     protected function storeRequestToken($service, $token) {
         $user = Users_Record_Model::getCurrentUserModel();
-        $query = "DELETE FROM vtiger_google_oauth where service=? and userid=?";
+        $query = "DELETE FROM vtiger_app_oauth1 where service=? and userid=?";
         $this->db->pquery($query, array($service, $user->getId()));
 
-        $query = "INSERT INTO vtiger_google_oauth(service,request_token,userid) values(?,?,?)";
+        $query = "INSERT INTO vtiger_app_oauth1(service,request_token,userid) values(?,?,?)";
         $this->db->pquery($query, array($service, base64_encode(serialize($token)), $user->getId()));
 
     }
@@ -139,7 +139,7 @@ class Google_Oauth_Connector {
     protected function retrieveRequestToken($service) {
         $user = Users_Record_Model::getCurrentUserModel();
 
-        $query = "SELECT request_token FROM vtiger_google_oauth WHERE userid=? AND service =?";
+        $query = "SELECT request_token FROM vtiger_app_oauth1 WHERE userid=? AND service =?";
         $params = array($user->getId(), $service);
 
         $result = $this->db->pquery($query, $params);
@@ -180,9 +180,9 @@ class Google_Oauth_Connector {
     
     
 	 public static function initializeSchema(){
-		 if(!Vtiger_Utils::CheckTable('vtiger_google_oauth')) {
-                Vtiger_Utils::CreateTable('vtiger_google_oauth',
-                        '(service varchar(64),request_token text,access_token text,userid int)',true);
+		 if(!Vtiger_Utils::CheckTable('vtiger_app_oauth1')) {
+                Vtiger_Utils::CreateTable('vtiger_app_oauth1',
+                        '(service varchar(64),request_token text,access_token text,userid int, serviceid varchar(255), name varchar(255))',true);
             }
 	 }
 

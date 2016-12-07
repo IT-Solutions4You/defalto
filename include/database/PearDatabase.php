@@ -805,6 +805,12 @@ class PearDatabase{
 		    return;
 		}
 		$this->database = ADONewConnection($this->dbType);
+	
+		// Setting client flag for Import csv to database(LOAD DATA LOCAL INFILE.....)
+		if ($this->database->clientFlags == 0 && isset($dbconfigoption['clientFlags'])) {
+			$this->database->clientFlags = $dbconfigoption['clientFlags'];
+		}
+		// End
 
 		$result = $this->database->PConnect($this->dbHostName, $this->userName, $this->userPassword, $this->dbName);
 		if ($result) {

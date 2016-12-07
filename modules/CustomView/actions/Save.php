@@ -11,13 +11,20 @@
 class CustomView_Save_Action extends Vtiger_Action_Controller {
 
 	public function process(Vtiger_Request $request) {
-		$moduleModel = Vtiger_Module_Model::getInstance($request->get('source_module'));
+        $sourceModuleName = $request->get('source_module');
+        $moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
 		$customViewModel = $this->getCVModelFromRequest($request);
 		$response = new Vtiger_Response();
 		
 		if (!$customViewModel->checkDuplicate()) {
 			$customViewModel->save();
 			$cvId = $customViewModel->getId();
+            /**
+             * We are setting list_headers in session when we manage columns.
+             * we should clear this from session in order to apply view
+             */
+            $listViewSessionKey = $sourceModuleName.'_'.$cvId;
+            Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey,'list_headers');
 			$response->setResult(array('id'=>$cvId, 'listviewurl'=>$moduleModel->getListViewUrl().'&viewname='.$cvId));
 		} else {
 			$response->setError(vtranslate('LBL_CUSTOM_VIEW_NAME_DUPLICATES_EXIST', $moduleName));
@@ -60,11 +67,15 @@ class CustomView_Save_Action extends Vtiger_Action_Controller {
 		if(!empty($advFilterList)) {
 			$customViewData['advfilterlist'] = $advFilterList;
 		}
-
+        if($request->has('sharelist')) {
+            $customViewData['sharelist'] = $request->get('sharelist');
+            if($customViewData['sharelist'] == '1')
+                $customViewData['members'] = $request->get('members');
+        }
 		return $customViewModel->setData($customViewData);
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

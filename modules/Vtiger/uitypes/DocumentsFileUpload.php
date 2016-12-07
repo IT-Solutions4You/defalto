@@ -37,9 +37,11 @@ class Vtiger_DocumentsFileUpload_UIType extends Vtiger_Base_UIType {
 									' title="'.	vtranslate('LBL_DOWNLOAD_FILE', 'Documents').'" >'.$value.'</a>';
 					}
 				} else {
-					$value = '<a href="'.$value.'" target="_blank" title="'. vtranslate('LBL_DOWNLOAD_FILE', 'Documents').'" >'.$value.'</a>';
+					$value = '<a href="'.$value.'" target="_blank" title="'. vtranslate('LBL_DOWNLOAD_FILE', 'Documents').'" >'.textlength_check($value).'</a>';
 				}
-			}
+			} else{
+                $value = textlength_check($value);
+            }
 		}
 		return $value;
 	}

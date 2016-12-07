@@ -59,4 +59,34 @@ class Campaigns_Module_Model extends Vtiger_Module_Model {
 			return $overRideQuery;
 		}
 	}
+
+	/**
+	 * Function is used to give links in the All menu bar
+	 */
+	public function getQuickMenuModels() {
+		if ($this->isEntityModule()) {
+			$moduleName = $this->getName();
+			$listViewModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
+			$basicListViewLinks = $listViewModel->getBasicLinks();
+		}
+
+		if ($basicListViewLinks) {
+			foreach ($basicListViewLinks as $basicListViewLink) {
+				if (is_array($basicListViewLink)) {
+					$links[] = Vtiger_Link_Model::getInstanceFromValues($basicListViewLink);
+				} else if (is_a($basicListViewLink, 'Vtiger_Link_Model')) {
+					$links[] = $basicListViewLink;
+				}
+			}
+		}
+		return $links;
+	}
+
+	/*
+	 * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+		return array();
+	}
+
 }

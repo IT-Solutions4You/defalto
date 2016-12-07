@@ -13,6 +13,8 @@ class Documents_ListAjax_View extends Documents_List_View {
 		parent::__construct();
 		$this->exposeMethod('getRecordsCount');
 		$this->exposeMethod('getPageCount');
+		$this->exposeMethod('showSearchResults');
+		$this->exposeMethod('ShowListColumnsEdit');
 	}
 
 	function preProcess(Vtiger_Request $request) {
@@ -29,5 +31,23 @@ class Documents_ListAjax_View extends Documents_List_View {
 			$this->invokeExposedMethod($mode, $request);
 			return;
 		}
+	}
+
+	/**
+	 * Extending Vtiger List Ajax API to show Advance Search results
+	 * @param Vtiger_Request $request
+	 */
+	public function showSearchResults(Vtiger_Request $request) {
+		$vtigerListAjaxInstance = new Vtiger_ListAjax_View();
+		$vtigerListAjaxInstance->showSearchResults($request);
+	}
+
+	/**
+	 * Extending Vtiger List Ajax API to show List Columns Edit view
+	 * @param Vtiger_Request $request
+	 */
+	public function ShowListColumnsEdit(Vtiger_Request $request){
+		$vtigerListAjaxInstance = new Vtiger_ListAjax_View();
+		$vtigerListAjaxInstance->ShowListColumnsEdit($request);
 	}
 }

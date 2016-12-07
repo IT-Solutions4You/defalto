@@ -27,6 +27,10 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 		if(method_exists($parentModuleModel, $functionName)) {
 			$query = $parentModuleModel->$functionName($recordModel, $relatedModuleModel);
 		} else {
+            //For get_dependent_list fourth parameter should be relation id. So we are replacing actions by relation id if it is not given
+            if(!$actions && $functionName == "get_dependents_list") {
+                $actions = $this->getId();
+            }
 			$result = $focus->$functionName($recordModel->getId(), $parentModuleModel->getId(),
 											$relatedModuleModel->getId(), $actions);
 			$query = $result['query'];
@@ -41,14 +45,18 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 			$selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
 			$newQuery = spliti('FROM', $query);
 			$selectColumnSql = 'SELECT DISTINCT vtiger_crmentity.crmid, '.$selectColumnSql;
+			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
 		if($functionName == 'get_product_pricebooks'){
-			$selectColumnSql = $selectColumnSql.' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_products.unit_price';
+			$newQuery = spliti('FROM', $query);
+			$selectColumnSql = $newQuery[0].' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_products.unit_price';
+			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
 		if($functionName == 'get_service_pricebooks'){
-			$selectColumnSql = $selectColumnSql.' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_service.unit_price';
+			$newQuery = spliti('FROM', $query);
+			$selectColumnSql = $newQuery[0].' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_service.unit_price';
+			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
-		$query = $selectColumnSql.' FROM '.$newQuery[1];
 		return $query;
 	}
 	
@@ -64,7 +72,9 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 			//Description: deleteListPrice function is deleting the relation between Pricebook and Product/Service 
 			$priceBookModel = Vtiger_Record_Model::getInstanceById($relatedRecordId, $relatedModuleName);
 			$priceBookModel->deleteListPrice($sourceRecordId);
-		} else if($sourceModuleName == $relatedModuleName){
+			$relatedModuleFocus = CRMEntity::getInstance($relatedModuleName);
+			$relatedModuleFocus->trackUnLinkedInfo($sourceModuleName, $sourceRecordId, $relatedModuleName, $relatedRecordId);
+		} else if($sourceModuleName == $relatedModuleName && $this->get('source')!='custom'){
 			$this->deleteProductToProductRelation($sourceRecordId, $relatedRecordId);
 		} else {
 			parent::deleteRelation($sourceRecordId, $relatedRecordId);
@@ -126,5 +136,26 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 		$productModel = Vtiger_Record_Model::getInstanceById($sourceRecordId, $sourceModuleName);
 		$productModel->updateListPrice($destinationRecordId, $listPrice, $relationModuleModel->get('currency_id'));
 	}
-	
+
+	public function updateShowBundlesOption($recordId, $value) {
+		$sourceModuleName = $this->getParentModuleModel()->get('name');
+
+		$productRecordModel = Vtiger_Record_Model::getInstanceById($recordId, $sourceModuleName);
+		$productRecordModel->updateShowBundlesOption($value);
+	}
+
+	/**
+	 * Function to update Product bundles relation
+	 * @param <Integer> $sourceRecordId
+	 * @param <Integer> $destinationRecordId
+	 * @param <Integer> $quantity
+	 */
+	public function updateQuantity($sourceRecordId, $destinationRecordId, $quantity) {
+		$sourceModuleName = $this->getParentModuleModel()->get('name');
+		$relatedModuleName = $this->getRelationModuleModel()->get('name');
+		$relationModuleModel = Vtiger_Record_Model::getInstanceById($destinationRecordId, $relatedModuleName);
+
+		$productModel = Vtiger_Record_Model::getInstanceById($sourceRecordId, $sourceModuleName);
+		$productModel->updateSubProductQuantity($destinationRecordId, $quantity);
+	}
 }

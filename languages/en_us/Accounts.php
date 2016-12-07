@@ -8,43 +8,57 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+	// Basic Strings
+	'Accounts' => 'Organizations',
+	'SINGLE_Accounts' => 'Organization',
+	'LBL_ADD_RECORD' => 'Add Organization',
+	'LBL_RECORDS_LIST' => 'Organization List',
+
+	// Blocks
+	'LBL_ACCOUNT_INFORMATION' => 'Organization Details',
+
+	// Mass Action
+	'LBL_SHOW_ACCOUNT_HIERARCHY' => 'Organization Hierarchy',
+
+	//Field Labels
+	'industry' => 'Industry',
 	'Account Name' => 'Organization Name',
 	'Account No' => 'Organization Number',
-	'Accounts' => 'Organizations',
+	'Website' => 'Website',
+	'Ticker Symbol' => 'Ticker Symbol',
+	'Member Of' => 'Member Of',
+	'Employees' => 'Employees',
+	'Ownership' => 'Ownership',
+	'SIC Code' => 'SIC Code',
+	'Other Email' => 'Secondary Email',
+	'Other Phone' => 'Secondary Phone',
+	'Phone' => 'Primary Phone',
+	'Email' => 'Primary Email',
+	'Type' => 'Type',
+
+	//Added for existing picklist entries
 	'Analyst'=>'Analyst',
 	'Competitor'=>'Competitor',
 	'Customer'=>'Customer',
-	'Email' => 'Primary Email',
-	'Employees' => 'Employees',
-	'industry' => 'Industry',
 	'Integrator'=>'Integrator',
 	'Investor'=>'Investor',
-	'LBL_ACCOUNT_INFORMATION' => 'Organization Details',
-	'LBL_ADD_RECORD' => 'Add Organization',
-	'LBL_COPY_BILLING_ADDRESS' => 'Copy Billing Address',
-	'LBL_COPY_SHIPPING_ADDRESS' => 'Copy Shipping Address',
-	'LBL_DUPLICATES_EXIST' => 'Organization Name already exists',
-	'LBL_END_DATE' => 'End Date',
-	'LBL_RECORDS_LIST' => 'Organization List',
-	'LBL_SHOW_ACCOUNT_HIERARCHY' => 'Organization Hierarchy',
-	'LBL_START_DATE' => 'Start Date',
-	'Member Of' => 'Member Of',
-	'Other Email' => 'Secondary Email',
-	'Other Phone' => 'Secondary Phone',
-	'Ownership' => 'Ownership',
-	'Phone' => 'Primary Phone',
 	'Press'=>'Press',
 	'Prospect'=>'Prospect',
 	'Reseller'=>'Reseller',
-	'SIC Code' => 'SIC Code',
-	'SINGLE_Accounts' => 'Organization',
-	'Ticker Symbol' => 'Ticker Symbol',
-	'Website' => 'Website',
+	'LBL_START_DATE' => 'Start Date',
+	'LBL_END_DATE' => 'End Date',
+
+	//Duplication error message
+	'LBL_DUPLICATES_EXIST' => 'Organization Name already exists',
+	'LBL_COPY_SHIPPING_ADDRESS' => 'Copy Shipping Address',
+	'LBL_COPY_BILLING_ADDRESS' => 'Copy Billing Address',
+	'LBL_IMAGE_INFORMATION' => 'Profile Picture',
+	'Organization Image' => 'Organization Image',
 );
 
 $jsLanguageStrings = array(
-	'JS_DUPLICTAE_CREATION_CONFIRMATION' => 'Organization Name already Exists.Do you want to create a duplicate record?',
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
 	'LBL_DELETE_CONFIRMATION' => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?',
 	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organization(s) will remove its related Opportunities & Quotes. Are you sure you want to delete the selected records?',
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
+	'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organization Name already Exists.Do you want to create a duplicate record?'
 );

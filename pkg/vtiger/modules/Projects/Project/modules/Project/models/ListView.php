@@ -19,20 +19,24 @@ class Project_ListView_Model extends Vtiger_ListView_Model {
 	 * @return <Array> - an array of Vtiger_Link_Model instances
 	 */
 	public function getListViewLinks($linkParams) {
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$links = parent::getListViewLinks($linkParams);
+        $quickLinks = array();
+        
+        $projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
+        if($userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
+            $quickLinks[] = array(
+                                'linktype' => 'LISTVIEWQUICK',
+                                'linklabel' => 'Tasks List',
+                                'linkurl' => $this->getModule()->getDefaultUrl(),
+                                'linkicon' => ''
+                            );
+        }
 
-		$quickLinks = array(
-			array(
-				'linktype' => 'LISTVIEWQUICK',
-				'linklabel' => 'Tasks List',
-				'linkurl' => $this->getModule()->getDefaultUrl(),
-				'linkicon' => ''
-			),
-		);
-		foreach($quickLinks as $quickLink) {
-			$links['LISTVIEWQUICK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
-		}
-
+        foreach($quickLinks as $quickLink) {
+            $links['LISTVIEWQUICK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
+        }
+        
 		return $links;
 	}
 

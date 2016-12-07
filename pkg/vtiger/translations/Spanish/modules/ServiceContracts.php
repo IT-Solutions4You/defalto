@@ -17,7 +17,6 @@
  ************************************************************************************/
 $languageStrings = array(
 	'ServiceContracts'             => 'Contratos de Servicio',
-	'Service Contracts' => 'Contratos de Servicio',
 	'SINGLE_ServiceContracts'      => 'Contrato de Servicio',
 	'LBL_ADD_RECORD'               => 'Añadir Contrato de Servicio',
 	'LBL_RECORDS_LIST'             => 'Lista de Contratos de Servicio',
@@ -31,4 +30,24 @@ $languageStrings = array(
 	'Progress'                     => 'Progreso',
 	'Planned Duration'             => 'Duración estimada (días)',
 	'Actual Duration'              => 'Duración real (días)',
+        'Type'                         => 'Tipo',
+    'Related to'                   => 'En relación con',
+	'Hours'                        => 'Horas',
+	'Days'                         => 'Días',
+	'Incidents'                    => 'Incidentes',
+	'Normal'                       => 'Normal',
+	'Support'                      => 'Apoyo',
+	'Administrative'               => 'Administrativo',
+	'Undefined'                    => 'Indefinido',
+	'In Planning'                  => 'En Planificación',
+	'On Hold'                      => 'En Espera',
+	'Complete'                     => 'Completo',
+	'Archived'                     => 'Archivado',
+	'Low'                          => 'Bajo',
+	'High'                         => 'Alto',
+	'Services'                     => 'Servicios',
+	'In Progress'                  => 'En Progreso',
+
+  'Service Contracts' => 'Los Contratos De Servicio',
+
 );

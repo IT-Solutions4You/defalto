@@ -37,6 +37,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Kullanıcı Atama',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Round Robin yılında Kullanıcılar atama',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Round Robin Kullanıcılar Listesi',
+
+  'LBL_ADD_RECORD' => 'Web Formunu Ekleyin',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -46,4 +49,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Referans alanlar geçersiz kılma değeri olmayan zorunlu olamaz',
 	'JS_TYPE_TO_SEARCH' => 'Aramak için yazın',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Bu adla Webform zaten var',
+
+  'JS_SELECT_AN_OPTION' => 'Bir Seçenek belirleyin',
+  'JS_LABEL' => 'etiket',
+
 );

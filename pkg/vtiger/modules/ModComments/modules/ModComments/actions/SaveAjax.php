@@ -15,28 +15,34 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$record = $request->get('record');
 		//Do not allow ajax edit of existing comments
 		if ($record) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
 	public function process(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$request->set('assigned_user_id', $currentUserModel->getId());
-		$request->set('userid', $currentUserModel->getId());
+        $userId = $currentUserModel->getId();
+		$request->set('assigned_user_id', $userId);
+		$request->set('userid', $userId);
 		
 		$recordModel = $this->saveRecord($request);
-
+        
 		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
 			$fieldValue = $recordModel->get($fieldName);
 			$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $fieldModel->getDisplayValue($fieldValue));
 		}
-		$result['id'] = $recordModel->getId();
-
+		$result['id'] = $result['_recordId'] = $recordModel->getId();
 		$result['_recordLabel'] = $recordModel->getName();
-		$result['_recordId'] = $recordModel->getId();
-
+        
+        if($request->get('source_module') == 'Cases'){
+            $caseRecordModel = Vtiger_Record_Model::getInstanceById($request->get('related_to'));
+            //Notify to other users, who are there in detail view of the same record
+            $caseRecordModel->notifyToUser($userId);
+            //
+        }
+        
 		$response = new Vtiger_Response();
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->setResult($result);
@@ -74,6 +80,7 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$recordModel = parent::getRecordModelFromRequest($request);
 		
 		$recordModel->set('commentcontent', $request->getRaw('commentcontent'));
+        $recordModel->set('is_private', $request->get('is_private'));
 
 		return $recordModel;
 	}

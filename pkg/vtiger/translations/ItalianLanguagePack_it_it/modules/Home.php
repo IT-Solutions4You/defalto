@@ -21,7 +21,9 @@ $languageStrings = array(
 	'LTFAQ'                        => 'Mie FAQ recenti'             , 
 	'UA'                           => 'Prossimi Eventi'             , 
 	'PA'                           => 'Eventi Pendenti'             , 
-        'Home'                         => 'Domestico'                         ,
-        'Key Metrics'                  => 'Metriche chiave',
-	'Tag Cloud'                    => 'Tag Cloud',
+        'Home'                         => 'Cruscotto'                         ,
+
+  'LBL_SAVE_ORDER' => 'Salvare L\'Ordine',
+  'LBL_ADD_NEW_DASHBOARD' => 'Aggiungere un nuovo pannello',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Massimo 30 caratteri sono consentiti per il nome cruscotto.',
 );

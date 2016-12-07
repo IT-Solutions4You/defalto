@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 class Vtiger_CurrencyList_UIType extends Vtiger_Base_UIType {
 	/**
 	 * Function to get the Template name for the current UI Type Object
@@ -28,6 +29,10 @@ class Vtiger_CurrencyList_UIType extends Vtiger_Base_UIType {
 
 	public function getCurrenyListReferenceFieldName() {
 		return 'currency_name';
+	}
+
+	public function getListSearchTemplateName() {
+		return 'uitypes/CurrencyListFieldSearchView.tpl';
 	}
 }
 ?>

@@ -683,7 +683,16 @@ class HTML_Safe
      */
     function repackUTF7Callback($str)
     {
-       $str = base64_decode($str[1]);
+       /* If $str[1] is not a valid string for base64_decode than it return false or binary which json_encode cannot identify.
+        * So we need to check if the string is valid for base64_decode and then only decode it, otherwise return original string.
+        * Source : http://stackoverflow.com/questions/4278106/how-to-check-if-a-string-is-base64-valid-in-php
+        */
+       if(base64_encode(base64_decode($str[1])) === $str[1]) {
+            $str = base64_decode($str[1]);
+       }
+       else {
+           return $str[0];
+       }
        $str = preg_replace_callback('/^((?:\x00.)*)((?:[^\x00].)+)/', array($this, 'repackUTF7Back'), $str);
        return preg_replace('/\x00(.)/', '$1', $str);
     }

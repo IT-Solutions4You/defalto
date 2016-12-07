@@ -122,33 +122,33 @@ class Vtiger_Paging_Model extends Vtiger_Base_Model {
 		$rangeInfo = array();
 		$recordCount = count($recordList);
 		$pageLimit = $this->getPageLimit();
+		$prevPageExists = $nextPageExists = false;
 
-		$this->set('prevPageExists', true);
-
-		if( $recordCount > 0) {
+		if ($recordCount > 0) {
 			//specifies what sequencce number of last record in prev page
 			$prevPageLastRecordSequence = (($this->getCurrentPage()-1)*$pageLimit);
 
 			$rangeInfo['start'] = $prevPageLastRecordSequence+1;
-			if($rangeInfo['start'] == 1){
-				$this->set('prevPageExists', false);
+			if ($rangeInfo['start'] != 1) {
+				$prevPageExists = true;
 			}
-			//Have less number of records than the page limit
-			if($recordCount < $pageLimit) {
-				$this->set('nextPageExists', false);
-				$rangeInfo['end'] = $prevPageLastRecordSequence+$recordCount;
-			}else {
-				$rangeInfo['end'] = $prevPageLastRecordSequence+$pageLimit;
+
+			$rangeInfo['end'] = $prevPageLastRecordSequence + $recordCount;
+			if ($recordCount > $pageLimit) {
+				$nextPageExists = true;
+				$rangeInfo['end'] = $prevPageLastRecordSequence + $pageLimit;
 			}
-			$this->set('range',$rangeInfo);
+
+			$this->set('range', $rangeInfo);
 		} else {
 			//Disable previous page only if page is first page and no records exists
-			if($this->getCurrentPage() == 1) {
-				$this->set('prevPageExists', false);
+			if ($this->getCurrentPage() != 1) {
+				$prevPageExists = true;
 			}
-			$this->set('nextPageExists', false);
-			
 		}
+
+		$this->set('prevPageExists', $prevPageExists);
+		$this->set('nextPageExists', $nextPageExists);
 		return $this;
 	}
 

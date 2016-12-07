@@ -16,7 +16,7 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 	 * @return MailManager_Response
 	 */
 	public function process(Vtiger_Request $request) {
-		$response = new Vtiger_Response();
+		$response = new MailManager_Response();
 		$module = $request->getModule();
 		if ('edit' == $this->getOperationArg($request)) {
 
@@ -39,6 +39,7 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 			$model = $this->getMailBoxModel();
 			$model->setServer($request->get('_mbox_server'));
 			$model->setUsername($request->get('_mbox_user'));
+            // MailManager_Request->get($key) is give urldecoded value which is replacing + with space
 			$model->setPassword($request->getRaw('_mbox_pwd'));
 			$model->setProtocol($request->get('_mbox_protocol', 'IMAP4'));
 			$model->setSSLType($request->get('_mbox_ssltype', 'ssl'));
@@ -62,7 +63,7 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 				return parent::process($request);
 			} else if($connector->hasError()) {
                 $error = $connector->lastError();
-                		$response->isJSON(true);
+				$response->isJSON(true);
 				$response->setError(101, $error);
 			}
 		} else if ('remove' == $this->getOperationArg($request)) {
@@ -87,9 +88,9 @@ class MailManager_Settings_View extends MailManager_MainUI_View {
 
 		return $response;
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            return $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        return $request->validateWriteAccess();
+    }
 }
 ?>

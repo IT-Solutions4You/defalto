@@ -12,6 +12,7 @@
 class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
     function __construct() {
+		parent::__construct();
         $this->exposeMethod('add');
         $this->exposeMethod('save');
         $this->exposeMethod('delete');
@@ -26,7 +27,6 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
         $moduleModel = Settings_LayoutEditor_Module_Model::getInstanceByName($moduleName);
         $response = new Vtiger_Response();
         try{
-
             $fieldModel = $moduleModel->addField($type,$blockId,$request->getAll());
             $fieldInfo = $fieldModel->getFieldInfo();
             $responseData = array_merge(array('id'=>$fieldModel->getId(), 'blockid'=>$blockId, 'customField'=>$fieldModel->isCustomField()),$fieldInfo);
@@ -39,32 +39,55 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
     public function save(Vtiger_Request $request) {
         $fieldId = $request->get('fieldid');
-        $fieldInstance = Vtiger_Field_Model::getInstance($fieldId);
-        $fieldInstance->updateTypeofDataFromMandatory($request->get('mandatory'))
-					  ->set('presence', $request->get('presence'))
-                      ->set('quickcreate', $request->get('quickcreate'))
-					  ->set('summaryfield', $request->get('summaryfield'))
-                      ->set('masseditable', $request->get('masseditable'));
-		$defaultValue = $request->get('fieldDefaultValue');
-		if($fieldInstance->getFieldDataType() == 'date') {
-			$dateInstance = new Vtiger_Date_UIType();
-			$defaultValue = $dateInstance->getDBInsertedValue($defaultValue);
-		}
+        $fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
+        
+        $oldFieldLabel = decode_html($fieldInstance->get('label'));
+        $mandatory = $request->get('mandatory',null);
+        $presence = $request->get('presence',null);
+        $quickCreate = $request->get('quickcreate',null);
+        $summaryField = $request->get('summaryfield',null);
+        $massEditable = $request->get('masseditable',null);
+        $headerField = $request->get('headerfield',null);
 
-		if(is_array($defaultValue)) {
-			$defaultValue = implode(' |##| ',$defaultValue);
-		}
-        $fieldInstance->set('defaultvalue', $defaultValue);
-        $response = new Vtiger_Response();
+		if(!empty($mandatory)){
+            $fieldInstance->updateTypeofDataFromMandatory($mandatory);
+        }
+        if(!empty($presence)){
+            $fieldInstance->set('presence', $presence);
+        }
+        
+        if(!empty($quickCreate)){
+            $fieldInstance->set('quickcreate', $quickCreate);
+        }
+        
+        if(isset($summaryField) && $summaryField != null){
+            $fieldInstance->set('summaryfield', $summaryField);
+        }
+        
+        if(isset($headerField) && $headerField != null){
+            $fieldInstance->set('headerfield', $headerField);
+        }
+        
+        if(!empty($massEditable)){
+            $fieldInstance->set('masseditable', $massEditable);
+        }
+
+		$fieldInstance->set('defaultvalue', decode_html($fieldInstance->get('defaultvalue')));
+		$response = new Vtiger_Response();
         try{
             $fieldInstance->save();
-            $response->setResult(array('success'=>true, 'presence'=>$request->get('presence'), 'mandatory'=>$fieldInstance->isMandatory(),
-									'label'=>vtranslate($fieldInstance->get('label'), $request->get('sourceModule'))));
+			$fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
+
+			$fieldInfo = $fieldInstance->getFieldInfo();
+			$fieldInfo['id'] = $fieldInstance->getId();
+			$fieldInfo['label'] = decode_html($request->get('fieldLabel'));
+            
+            $response->setResult(array_merge(array('success'=>true), $fieldInfo));
         }catch(Exception $e) {
-            $response->setError($e->getCode(), $e->getMessage());
-        }
-        $response->emit();
-    }
+			$response->setError($e->getCode(), $e->getMessage());
+		}
+		$response->emit();
+	}
 
     public function delete(Vtiger_Request $request) {
         $fieldId = $request->get('fieldid');
@@ -78,20 +101,37 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
         }
 
         try{
-            $fieldInstance->delete();
-            $response->setResult(array('success'=>true));
+            $this->_deleteField($fieldInstance);
         }catch(Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
         }
         $response->emit();
     }
+    
+    private function _deleteField($fieldInstance) {
+        $sourceModule = $fieldInstance->get('block')->module->name;
+        $fieldLabel = $fieldInstance->get('label');
+        if($fieldInstance->uitype == 16 || $fieldInstance->uitype == 33){
+            $pickListValues = Settings_Picklist_Field_Model::getEditablePicklistValues ($fieldInstance->name);
+            $fieldLabel = array_merge(array($fieldLabel),$pickListValues);
+        }
+        $fieldInstance->delete();
+        Settings_LayoutEditor_Module_Model::removeLabelFromLangFile($sourceModule, $fieldLabel);
+        //we should delete any update field workflow associated with custom field
+        $moduleName = $fieldInstance->getModule()->getName();
+        Settings_Workflows_Record_Model::deleteUpadateFieldWorkflow($moduleName, $fieldInstance->getFieldName());
+    }
 
     public function move(Vtiger_Request $request) {
         $updatedFieldsList = $request->get('updatedFields');
-
+        
+        // for Clearing cache we need Module Model
+        $sourceModule = $request->get('selectedModule');
+        $moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
+        
 		//This will update the fields sequence for the updated blocks
-        Settings_LayoutEditor_Block_Model::updateFieldSequenceNumber($updatedFieldsList);
-
+        Settings_LayoutEditor_Block_Model::updateFieldSequenceNumber($updatedFieldsList,$moduleModel);
+        
         $response = new Vtiger_Response();
 		$response->setResult(array('success'=>true));
         $response->emit();
@@ -101,7 +141,7 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
         $response = new Vtiger_Response();
         try{
 			$fieldIds = $request->get('fieldIdList');
-            Settings_LayoutEditor_Field_Model::makeFieldActive($fieldIds, $request->get('blockId'));
+            Settings_LayoutEditor_Field_Model::makeFieldActive($fieldIds, $request->get('blockId'),$request->get('selectedModule'));
 			$responseData = array();
 			foreach($fieldIds as $fieldId) {
 				$fieldModel = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
@@ -116,7 +156,7 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
     }
     
-    public function validateRequest(Vtiger_Request $request) { 
-        $request->validateWriteAccess(); 
-    } 
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

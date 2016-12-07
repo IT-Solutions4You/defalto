@@ -2,14 +2,15 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
 	//DetailView Actions
-	'SINGLE_SalesOrder' => 'Försäljningsorder',
+    'SalesOrder'     => 'Kundorder',
+	'SINGLE_SalesOrder' => 'Kundorder',
 	'LBL_EXPORT_TO_PDF' => 'Exportera till PDF',
     'LBL_SEND_MAIL_PDF' => 'Skicka E-post med PDF',
 
@@ -30,7 +31,6 @@ $languageStrings = array(
 	'Purchase Order'=>'Inköpsorder',
 	'Vendor Terms'=>'Leverantör Villkor',
 	'Pending'=>'Pågående',
-    'Recurring Invoive Information'=>'Återkommande Fakturainformation',
 	'Enable Recurring' => 'Aktivera Återkommande',
 	'Frequency' => 'Frekvens',
 	'Start Period' => 'Startperiod',
@@ -45,13 +45,6 @@ $languageStrings = array(
 	'Sent'=>'Skickat',
 	'Credit Invoice'=>'Kreditfaktura',
 	'Paid'=>'Betald',
-    'Daily'=>'Dagligen',
-    'Monthly'=>'Månadsvis',
-    'Quarterly'=>'Kvartalsvis',
-    'Yearly'=>'Årlig',
-    'Net 30 days'=>'Netto 30 dagar',
-    'Net 45 days'=>'Netto 45 dagar',
-    'Net 60 days'=>'Netto 60 dagar',
 	
 	//Translation for product not found
 	'LBL_THIS' => 'Den här',

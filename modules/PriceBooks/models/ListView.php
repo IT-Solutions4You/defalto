@@ -9,7 +9,36 @@
  *************************************************************************************/
 
 class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
-	
+	/*
+	 * Function to give advance links of a module
+	 *	@RETURN array of advanced links
+	*/
+	public function getAdvancedLinks() {
+		$moduleModel = $this->getModule();
+		$advancedLinks = array();
+
+		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'CreateView');
+		$importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
+		if($importPermission && $createPermission) {
+			$advancedLinks[] = array(
+							'linktype' => 'LISTVIEW',
+							'linklabel' => 'LBL_IMPORT',
+							'linkurl' => $moduleModel->getImportUrl(),
+							'linkicon' => ''
+			);
+		}
+
+		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+		if($exportPermission) {
+			$advancedLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_EXPORT',
+					'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("'.$this->getModule()->getExportUrl().'")',
+					'linkicon' => ''
+				);
+		}
+		return $advancedLinks;
+	}
 
 	/**
 	 * Function to get the list view entries
@@ -43,38 +72,19 @@ class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
 		if(!empty($searchKey)) {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
-        
-        
 
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
-
-		//List view will be displayed on recently created/modified records
-		if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
-			$orderBy = 'modifiedtime';
-			$sortOrder = 'DESC';
-		}
+        $orderBy = $this->get('orderby');
+		$sortOrder = $this->get('sortorder');
 
         if(!empty($orderBy)){
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-            if($orderByFieldModel && ($orderByFieldModel->isReferenceField()
-					|| $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::CURRENCY_LIST)){
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-                //$queryGenerator->whereFields[] = $orderByFieldName;
+			$queryGenerator = $this->get('query_generator');
+			$fieldModels = $queryGenerator->getModuleFields();
+			$orderByFieldModel = $fieldModels[$orderBy];
+            if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
+					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
+                $queryGenerator->addWhereField($orderBy);
             }
         }
-		
-		if (!empty($orderBy) && $orderBy === 'smownerid') { 
-			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel); 
-			if ($fieldModel->getFieldDataType() == 'owner') { 
-				$orderBy = 'COALESCE(CONCAT(vtiger_users.first_name,vtiger_users.last_name),vtiger_groups.groupname)'; 
-			} 
-		} 
-
 		$listQuery = $this->getQuery();
 
 		$sourceModule = $this->get('src_module');
@@ -91,32 +101,11 @@ class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
-		if(!empty($orderBy)) {
-            if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
-                $referenceModules = $orderByFieldModel->getReferenceList();
-                $referenceNameFieldOrderBy = array();
-                foreach($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
-
-                    $columnList = array();
-                    foreach($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table').$orderByFieldModel->getName().'.'.$fieldModel->get('column');
-                    }
-                    if(count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users').' '.$sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
-                    }
-                }
-                $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
-
-            } else if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::CURRENCY_LIST) {
-				$listQuery .= ' ORDER BY ' . $orderByFieldModel->getUITypeModel()->getCurrenyListReferenceFieldName() . ' ' . $sortOrder;
-			} else {
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
+		if(!empty($orderBy) && $orderByFieldModel) {
+			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+		} else if(empty($orderBy) && empty($sortOrder)){
+			//List view will be displayed on recently created/modified records
+			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
 		}
 
 		$viewid = ListViewSession::getCurrentView($moduleName);
@@ -130,7 +119,6 @@ class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
 		if($sourceField !== 'productsRelatedList') {
 			$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
 		}
-
 		$listResult = $db->pquery($listQuery, array());
 
 		$listViewRecordModels = array();

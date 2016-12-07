@@ -96,8 +96,45 @@ class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
             $recordModel->set('eventstatus',$status);
             $result = array("valid"=>TRUE,"markedascompleted"=>TRUE,"activitytype"=>"Event");
         }
+		$_REQUEST['mode'] = 'edit';
+		$this->setRecurrenceInfo($recordModel);
         $recordModel->save();
         $response->setResult($result);
         $response->emit();
     }
+	
+	function setRecurrenceInfo($recordModel) {
+		$startDateTime = DateTimeField::convertToUserTimeZone($recordModel->get('date_start') . ' ' . $recordModel->get('time_start'));
+		$endDateTime = DateTimeField::convertToUserTimeZone($recordModel->get('due_date') . ' ' . $recordModel->get('time_end'));
+		$_REQUEST['date_start'] = $startDateTime->format('Y-m-d');
+		$_REQUEST['time_start'] = $startDateTime->format('H:i');
+		$_REQUEST['due_date'] = $endDateTime->format('Y-m-d');
+		$_REQUEST['time_end'] = $endDateTime->format('H:i');
+		
+		$recurringInfo = $recordModel->getRecurrenceInformation();
+		$_REQUEST['recurringcheck'] = $recurringInfo['recurringcheck'];
+		$_REQUEST['repeat_frequency'] = $recurringInfo['repeat_frequency'];
+		$_REQUEST['recurringtype'] = $recurringInfo['eventrecurringtype'];
+		$_REQUEST['calendar_repeat_limit_date'] = $recurringInfo['recurringenddate'];
+		
+		if($recurringInfo['eventrecurringtype'] == 'Weekly') {
+			$_REQUEST['sun_flag'] = $recurringInfo['week0'];
+			$_REQUEST['mon_flag'] = $recurringInfo['week1'];
+			$_REQUEST['tue_flag'] = $recurringInfo['week2'];
+			$_REQUEST['wed_flag'] = $recurringInfo['week3'];
+			$_REQUEST['thu_flag'] = $recurringInfo['week4'];
+			$_REQUEST['fri_flag'] = $recurringInfo['week5'];
+			$_REQUEST['sat_flag'] = $recurringInfo['week6'];
+		}
+		
+		if($recurringInfo['eventrecurringtype'] == 'Monthly') {
+			if($recurringInfo['repeatMonth'] == 'date') {
+				$_REQUEST['repeatMonth'] = $recurringInfo['repeatMonth'];
+				$_REQUEST['repeatMonth_date'] = $recurringInfo['repeatMonth_date'];
+			} else if($recurringInfo['repeatMonth'] == 'day') {
+				$_REQUEST['repeatMonth_daytype'] = $recurringInfo['repeatMonth_daytype'];
+				$_REQUEST['repeatMonth_day'] = $recurringInfo['repeatMonth_day'];
+			}
+		}
+	}
 }

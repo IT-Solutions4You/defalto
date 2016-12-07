@@ -13,14 +13,15 @@ class Settings_Leads_MappingEdit_View extends Settings_Vtiger_Index_View {
 	public function process(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 		$viewer = $this->getViewer($request);
-
-		$viewer->assign('MODULE_MODEL', Settings_Leads_Mapping_Model::getInstance(TRUE));
+		
+		$viewer->assign('MODULE_MODEL', Settings_Leads_Mapping_Model::getInstance());
 		$viewer->assign('LEADS_MODULE_MODEL', Settings_Leads_Module_Model::getInstance('Leads'));
 		$viewer->assign('ACCOUNTS_MODULE_MODEL', Settings_Leads_Module_Model::getInstance('Accounts'));
 		$viewer->assign('CONTACTS_MODULE_MODEL', Settings_Leads_Module_Model::getInstance('Contacts'));
 		$viewer->assign('POTENTIALS_MODULE_MODEL', Settings_Leads_Module_Model::getInstance('Potentials'));
 
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+		$viewer->assign('RESTRICTED_FIELD_IDS_LIST', Settings_Leads_Mapping_Model::getRestrictedFieldIdsList());
 		$viewer->view('LeadMappingEdit.tpl', $qualifiedModuleName);
 	}
 	

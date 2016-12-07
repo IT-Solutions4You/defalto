@@ -16,7 +16,8 @@
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_PurchaseOrder'         => 'Orden Compra',
+    'PurchaseOrder'                => 'Ordenes de compra',
+	'SINGLE_PurchaseOrder'         => 'Ordenes de compra',
 	'LBL_EXPORT_TO_PDF'            => 'Exportar a PDF',
 	'LBL_ADD_RECORD'               => 'Añadir Orden Compra',
 	'LBL_RECORDS_LIST'             => 'Lista de Orden Compra',
@@ -31,16 +32,35 @@ $languageStrings = array(
 	'LBL_COPY_BILLING_ADDRESS' => 'Copiar Dirección Facturación',
 	'LBL_PAID' => 'Pagado',
 	'LBL_BALANCE' => 'Balance',
-	'LBL_LIST_PRICE'               => 'Precio Venta',
-	'List Price'                   => 'Precio Venta',
-        'LBL_COPY_COMPANY_ADDRESS' => 'Copiar Dirección de la empresa',
-	//Translation for product not found
-	'LBL_THIS' => 'Este',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Este artículo ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
+        'LBL_LIST_PRICE'               => 'Precio de lista',
+        'List Price'                   => 'Precio de lista',
+    'LBL_COPY_COMPANY_ADDRESS' => 'Copiar Dirección de la empresa',
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Copiar Dirección de la organización',
+	'LBL_SELECT_ADDRESS_OPTION' => 'Seleccione Dirección para copiar',
+	'LBL_BILLING_ADDRESS' => 'Dirección de Envio',
+	'LBL_COMPANY_ADDRESS' => 'Dirección de la empresa',
+	'LBL_ACCOUNT_ADDRESS' => 'Organización Dirección',
+	'LBL_VENDOR_ADDRESS' => 'Vendor Dirección',
+	'LBL_CONTACT_ADDRESS' => 'Contacto Dirección',
+	
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Copiar Dirección de la Cuenta',
+
+  'LBL_THIS' => 'Este',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'se elimina del sistema.por favor, quitar o reemplazar este elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Esta línea de ítem es eliminado del sistema,por favor, elimine esta línea de artículos',
 
 );
 
 $jsLanguageStrings = array(
-	'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Por favor arregla la línea con artículo eliminado',
+    'JS_ORGANIZATION_NOT_FOUND'=> 'Cuenta vacío',
+    'JS_ORGANIZATION_NOT_FOUND_MESSAGE'=> 'Por favor, seleccione una Cuenta antes de copiar la dirección',
+	'JS_ACCOUNT_NOT_FOUND' => 'Organización vacía!',
+	'JS_ACCOUNT_NOT_FOUND_MESSAGE' =>  'Por favor, seleccione una organización antes de copiar la dirección',
+	'JS_VENDOR_NOT_FOUND' => 'Vendor vacíox', 
+	'JS_VENDOR_NOT_FOUND_MESSAGE' => 'Por favor, seleccione un proveedor antes de copiar la dirección',
+	'JS_CONTACT_NOT_FOUND' => 'Contacto vacía', 
+	'JS_CONTACT_NOT_FOUND_MESSAGE' =>  'Por favor, seleccione un contacto antes de copiar la dirección',
+
+  'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Por favor, quitar el elemento de línea que se elimina',
+
 );

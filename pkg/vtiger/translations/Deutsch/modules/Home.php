@@ -21,7 +21,9 @@ $languageStrings = array(
 	'LTFAQ'                        => 'meine Wissensbasis'          , 
 	'UA'                           => 'aktuelle Aktivitäten'       , 
 	'PA'                           => 'unerledigte Aktivitäten'    , 
-        'Home'                         => 'Startseite'                  ,
-	'Key Metrics'                  => 'Key Metrics',
-	'Tag Cloud'                    => 'Tag Cloud',
+        'Home'                         => 'Armaturenbrett'                  ,
+
+  'LBL_SAVE_ORDER' => 'Sparen Bestellen',
+  'LBL_ADD_NEW_DASHBOARD' => 'Fügen Sie neue dashboard',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximal 30 Zeichen sind für Armaturenbrett Namen erlaubt.',
 );

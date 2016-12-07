@@ -17,7 +17,7 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 		if($currentUserModel->isAdminUser() == true || $currentUserModel->get('id') == $record) {
 			return true;
 		} else {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -40,11 +40,13 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 
 	public function preProcess(Vtiger_Request $request, $display=true) {
 		if($this->checkPermission($request)) {
+			$qualifiedModuleName = $request->getModule(false);
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$recordId = $request->get('record');
 			$moduleName = $request->getModule();
 			$detailViewModel = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
 			$recordModel = $detailViewModel->getRecord();
+			$selectedModuleMenuCategory = 'MARKETING';
 
 			$detailViewLinkParams = array('MODULE'=>$moduleName,'RECORD'=>$recordId);
 			$detailViewLinks = $detailViewModel->getDetailViewLinks($detailViewLinkParams);
@@ -76,12 +78,14 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 
 			$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
 			$companyLogo = $companyDetails->getLogo();
-
+			$viewer->assign('SELECTED_MENU_CATEGORY',$selectedModuleMenuCategory);
 			$viewer->assign('CURRENTDATE', date('Y-n-j'));
 			$viewer->assign('MODULE', $selectedModule);
+			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 			$viewer->assign('PARENT_MODULE', $request->get('parent'));
-            $viewer->assign('VIEW', $request->get('view'));
+			$viewer->assign('VIEW', $request->get('view'));
 			$viewer->assign('MENUS', $menuModelsList);
+			$viewer->assign('QUICK_CREATE_MODULES', Vtiger_Menu_Model::getAllForQuickCreate());
 			$viewer->assign('MENU_STRUCTURE', $menuStructure);
 			$viewer->assign('MENU_SELECTED_MODULENAME', $selectedModule);
 			$viewer->assign('MENU_TOPITEMS_LIMIT', $menuStructure->getLimit());
@@ -94,7 +98,47 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 			$viewer->assign('ANNOUNCEMENT', $this->getAnnouncement());
 			$viewer->assign('CURRENT_VIEW', $request->get('view'));
 			$viewer->assign('SKIN_PATH', Vtiger_Theme::getCurrentUserThemePath());
+			$viewer->assign('CURRENT_USER_MODEL', $currentUser);
 			$viewer->assign('LANGUAGE', $currentUser->get('language'));
+			$viewer->assign('COMPANY_DETAILS_SETTINGS',new Settings_Vtiger_CompanyDetails_Model());
+
+			$settingsModel = Settings_Vtiger_Module_Model::getInstance(); 
+			$menuModels = $settingsModel->getMenus(); 
+
+			if(!empty($selectedMenuId)) {
+				$selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($selectedMenuId);
+			} elseif(!empty($moduleName) && $moduleName != 'Vtiger') {
+				$fieldItem = Settings_Vtiger_Index_View::getSelectedFieldFromModule($menuModels,$moduleName);
+				if($fieldItem){
+					$selectedMenu = Settings_Vtiger_Menu_Model::getInstanceById($fieldItem->get('blockid'));
+					$fieldId = $fieldItem->get('fieldid');
+				} else {
+					reset($menuModels);
+					$firstKey = key($menuModels);
+					$selectedMenu = $menuModels[$firstKey];
+				}
+			} else {
+				reset($menuModels);
+				$firstKey = key($menuModels);
+				$selectedMenu = $menuModels[$firstKey];
+			}
+
+			$settingsMenItems = array();
+			foreach($menuModels as $menuModel) {
+				$menuItems = $menuModel->getMenuItems();
+				foreach($menuItems as $menuItem) {
+					$settingsMenItems[$menuItem->get('name')] = $menuItem;
+				}
+			}
+			$viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
+
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+			$moduleFields = $moduleModel->getFields();
+			foreach($moduleFields as $fieldName => $fieldModel){
+				$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+			}
+			$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
 			if($display) {
 				$this->preProcessDisplay($request);
@@ -113,8 +157,8 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 
 		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
 
+		//This part is fetching picklist values from calendar settings
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
-
 		$dayStartPicklistValues = Users_Record_Model::getDayStartsPicklistValues($recordStructureInstance->getStructure());
 
 		$viewer = $this->getViewer($request);
@@ -124,20 +168,24 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 		return parent::process($request);
 	}
 
-    public function getHeaderScripts(Vtiger_Request $request) {
+	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$moduleName = $request->getModule();
-        $moduleDetailFile = 'modules.'.$moduleName.'.resources.PreferenceDetail';
-        unset($headerScriptInstances[$moduleDetailFile]);
+		$moduleDetailFile = 'modules.'.$moduleName.'.resources.PreferenceDetail';
+		unset($headerScriptInstances[$moduleDetailFile]);
 
 		$jsFileNames = array(
-                        "modules.Users.resources.Detail",
-                        'modules.'.$moduleName.'.resources.PreferenceDetail',
-                        'modules.'.$moduleName.'.resources.PreferenceEdit'
+			"modules.Users.resources.Detail",
+			"modules.Users.resources.Users",
+			'modules.'.$moduleName.'.resources.PreferenceDetail',
+			'modules.'.$moduleName.'.resources.PreferenceEdit',
+			'modules.Settings.Vtiger.resources.Index',
+			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
+
 }

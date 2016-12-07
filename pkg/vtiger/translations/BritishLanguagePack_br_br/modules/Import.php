@@ -65,11 +65,39 @@ $languageStrings = array(
 	'LBL_INVALID_FILE'             => 'Invalid File'                , // TODO: Review
 	'LBL_NO_ROWS_FOUND'            => 'No rows found'               , // TODO: Review
 	'LBL_SCHEDULED_IMPORT_DETAILS' => 'Your import has been scheduled and will start within 15 minutes. You will receive an email after import is completed.  <br> <br>
-										Please make sure that the Outgoing server and your email address are configured to receive email notifications', // TODO: Review
+										Please make sure that the Outgoing server and your email address is configured to receive email notification', // TODO: Review
 	'LBL_DETAILS'                  => 'Details'                     , // TODO: Review
 	'skipped'                      => 'Skipped Records'             , // TODO: Review
 	'failed'                       => 'Failed Records'              , // TODO: Review
-        'Skip'=>'Skip', 
-        'Overwrite'=>'Overwrite', 
-        'Merge'=>'Merge', 
+    
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'Currency(Line Items)',
+
+	'LBL_SKIP_THIS_STEP' => 'Skip this step',
+	'LBL_UPLOAD_ICS' => 'Upload ICS File',
+	'LBL_ICS_FILE' => 'ICS File',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'Import from ICS file',
+	'LBL_SELECT_ICS_FILE' => 'Select ICS file',
+
+  'LBL_USE_SAVED_MAPS' => 'Use Saved Maps',
+  'LBL_IMPORT_MAP_FIELDS' => 'Map the coloumns to CRM fields',
+  'LBL_UPLOAD_CSV' => 'Upload CSV File',
+  'LBL_UPLOAD_VCF' => 'Upload VCF File',
+  'LBL_DUPLICATE_HANDLING' => 'Duplicate Handling',
+  'LBL_FIELD_MAPPING' => 'Field Mapping',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'Import from CSV file',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'Where would you like to import from ?',
+  'LBL_CSV_FILE' => 'CSV File',
+  'LBL_VCF_FILE' => 'VCF File',
+  'LBL_GOOGLE' => 'Google',
+  'LBL_IMPORT_COMPLETED' => 'Import Completed',
+  'LBL_IMPORT_SUMMARY' => 'Import summary',
+  'LBL_DELETION_COMPLETED' => 'Deletion Completed',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'Total records scanned',
+  'LBL_SKIP_BUTTON' => 'Skip',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'Duplicate record handling',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'Import from VCF file',
+  'LBL_SELECT_VCF_FILE' => 'Select VCF file',
+  'LBL_DONE_BUTTON' => 'Done',
+  'LBL_DELETION_SUMMARY' => 'Delete summary',
+
 );

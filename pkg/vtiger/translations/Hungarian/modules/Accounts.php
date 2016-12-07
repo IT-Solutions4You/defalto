@@ -1,52 +1,56 @@
 <?php
-/*+***********************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ ************************************************************************************/
 $languageStrings = array(
-	'Account Name'                 => 'Cég neve' 					,
-	'Account No'                   => 'Cég No.' 					,
-	'Accounts'                     => 'Cégek'         				,
-	'Analyst'                      => 'Elemző'           			,
-	'Competitor'                   => 'Versenytárs'                	,
-	'Created By'                   => 'Létrehozó'             		,
-	'Customer'                     => 'Vevő'                       	,
-	'Email'                        => 'E-mail, elsődleges'          ,
-	'Employees'                    => 'Alkalmazottak száma'        	,
-	'industry'                     => 'Iparág'             			,
-	'Integrator'                   => 'Integrátor'                 	,
-	'Investor'                     => 'Befektető'                  	,
-	'LBL_ACCOUNT_INFORMATION'      => 'Cég adatok'                 	,
-	'LBL_ADD_RECORD'               => 'Cég hozzáadása'           	,
-	'LBL_COPY_BILLING_ADDRESS'     => 'Számlázási cím másolása'		,
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Szállítási cím másolása'		,
-	'LBL_DUPLICATES_EXIST'         => 'Ez a cégnév már használatos'	,
-	'LBL_END_DATE'                 => 'Záró dátum'      			,
-	'LBL_RECORDS_LIST'             => 'Cégek listája'    			,
-	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Cég hierarchiát mutat' 		,
-	'LBL_START_DATE'               => 'Kezdő dátum'     			,
-	'Member Of'                    => 'Tagság itt'       			,
-	'Other Email'                  => 'E-mail, másik'      			,
-	'Other Phone'                  => 'Telefon, másik'              ,
-	'Ownership'                    => 'Tulajdonviszonyok'    		,
-	'Phone'                        => 'Telefon'                     ,
-	'Press'                        => 'Sajtó'            			,
-	'Prospect'                     => 'Vevőjelölt'     				,
-    'Prospect Accounts'            => 'Vevőjelölt számlák',
-	'Reseller'                     => 'Viszonteladó'       			,
-	'SIC Code'                     => 'TEÁOR'              			,
-	'SINGLE_Accounts'              => 'Cég'              			,
-	'Ticker Symbol'                => 'Tőzsdei rövidítés' 			,
-	'Website'                      => 'Weboldal'             		,
-);
+	'Accounts'                     => 'Cégek'                      , 
+	'SINGLE_Accounts'              => 'Cég'                        , 
+	'LBL_ADD_RECORD'               => 'Cég hozzáadása'           , 
+	'LBL_RECORDS_LIST'             => 'Cégek listája'             , 
+	'LBL_ACCOUNT_INFORMATION'      => 'Cég adatok'                 , 
+	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Cég hierarchiát mutat'     , 
+	'industry'                     => 'Iparág'                     , 
+	'Account Name'                 => 'Cég neve'                   , 
+	'Account No'                   => 'Cég No.'                    , 
+	'Website'                      => 'Weboldal'                    , 
+	'Ticker Symbol'                => 'Tőzsdei rövidítés'       , 
+	'Member Of'                    => 'Tagság itt'                 , 
+	'Employees'                    => 'Alkalmazottak száma'        , 
+	'Ownership'                    => 'Tulajdonviszonyok'           , 
+	'SIC Code'                     => 'TEÁOR'                      , 
+	'Other Email'                  => 'Email, másik'               , 
+	'Analyst'                      => 'Elemző'                     , 
+	'Competitor'                   => 'Versenytárs'                , 
+	'Customer'                     => 'Vevő'                       , 
+	'Integrator'                   => 'Integrátor'                 , 
+	'Investor'                     => 'Befektető'                  , 
+	'Press'                        => 'Sajtó'                      , 
+	'Prospect'                     => 'Vevőjelölt'                , 
+	'Reseller'                     => 'Viszonteladó'               , 
+        'Type'                         => 'Típus'                      , 
+	'LBL_START_DATE'               => 'Kezdő dátum'               , 
+	'LBL_END_DATE'                 => 'Záró dátum'               , 
+	'LBL_DUPLICATES_EXIST'         => 'Ez a cégnév már használatos', 
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copy Szállítási cím'       , // TODO: Review
+	'LBL_COPY_BILLING_ADDRESS'     => 'Copy Számlázási cím'        , // TODO: Review
+    'LBL_IMAGE_INFORMATION' => 'Profilkép',
+    'Organization Image' => 'Szervezet Kép',
 
+  'Other Phone' => 'Másodlagos Telefon',
+  'Phone' => 'Elsődleges Telefon',
+  'Email' => 'Elsődleges E-Mail',
+
+);
 $jsLanguageStrings = array(
-	'JS_DUPLICTAE_CREATION_CONFIRMATION' => 'A Cégnév már létezik. Létre kíván hozni egy duplikált rekordot?'     ,
-	'LBL_DELETE_CONFIRMATION'      => 'Ennek a Cégnek a törlése törölni fogja a kapcsolódó Ajánlatokat és Lehetőségeket is. Biztos, hogy törölni szeretné ezt a Céget?'          ,
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Ezeknek a Cégeknek a törlése törölni fogja a kapcsolódó Ajánlatokat és Lehetőségeket is. Biztos, hogy törölni szeretné ezeket a Cégeket?' ,
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Biztos ön abban, hogy törölni akarja?'                           ,
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?', // TODO: Review
+	'LBL_DELETE_CONFIRMATION'      => 'Ennek a Cégnek a törlése törölni fogja a kapcsolódó Ajánlatokat és Lehetőségeket is. Biztos, hogy törölni szeretnéd ezt a Céget?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Ezeknek a Cégeknek a törlése törölni fogja a kapcsolódó Ajánlatokat és Lehetőségeket is. Biztos, hogy törölni szeretnéd ezeket a Cégeket?', 
+
+  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Szervezet Név már Létezik.Szeretne egy duplikált bejegyzést?',
+
 );

@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Quotes'                       => 'Preventivo'                  , 
 	'SINGLE_Quotes'                => 'Preventivo'                  , 
 	'LBL_EXPORT_TO_PDF'            => 'Esporta in PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
@@ -20,10 +21,10 @@ $languageStrings = array(
 	'Inventory Manager'            => 'Responsabile inventario'     , 
 	'Accepted'                     => 'Accettato'                   , 
 	'Rejected'                     => 'Rifiutato'                   , 
-	 'Open Quotes'                  => 'Aperto Quotes',
-    
-        //Taxes 
-        'VAT'      => 'IVA', 
-        'Service'  => 'Servizio', 
-        'Sales'    => 'Vendite'
+    'Related To'                   => 'Relativi a'                  ,
+
+  'LBL_THIS' => 'Questo',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema.si prega di rimuovere o sostituire questo elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema,si prega di rimuovere questa riga di elementi',
+
 );

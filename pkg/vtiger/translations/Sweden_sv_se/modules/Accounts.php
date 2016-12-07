@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -34,6 +34,7 @@ $languageStrings = array(
 	'Other Phone' => 'Sekundär Telefon',
 	'Phone' => 'Primär Telefon',
 	'Email' => 'Primär E-post',
+        'Type' => 'Typ',
 	
 	//Added for existing picklist entries
 
@@ -52,11 +53,13 @@ $languageStrings = array(
 	'LBL_DUPLICATES_EXIST' => 'Organisationsnamnet existerar redan',
 	'LBL_COPY_SHIPPING_ADDRESS' => 'Kopiera Fraktadress',
 	'LBL_COPY_BILLING_ADDRESS' => 'Kopiera Faktureringsadress',
+    'LBL_IMAGE_INFORMATION' => 'Profilbild',
+    'Organization Image' => 'Organisationen bild',
 );
 
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Är du säker på att du vill radera?',
 	'LBL_DELETE_CONFIRMATION' => 'Radera den här Organisation kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera den här Organisationen?',
 	'LBL_MASS_DELETE_CONFIRMATION' => 'Radera den här Organisationen(erna) kommer att ta bort dess relaterade Affärsmöjligheter & Offerter. Är du säker på att du vill radera de valda posterna?',
-	'JS_DUPLICTAE_CREATION_CONFIRMATION' => 'Organisationsnamnet finns redan. Vill du skapa en dubblett av poseten?'
+	'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organisationsnamnet finns redan. Vill du skapa en dubblett av poseten?'
 );

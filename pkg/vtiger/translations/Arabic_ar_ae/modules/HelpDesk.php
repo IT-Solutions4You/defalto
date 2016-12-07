@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -27,6 +27,7 @@ $languageStrings = array(
 	'Title' => 'عنوان',
 	'Solution' => 'حل',
 	'From Portal' => 'من بوابة',
+    'Related To' => 'المتعلقة',
 
 	//Added for existing picklist entries
 
@@ -95,4 +96,10 @@ $languageStrings = array(
 	'LBL_MAIL_SENT' => 'تم ارسال بريد الى بريدك الالكتروني بتفاصيل الدخول',
 	'LBL_ALTBODY' => 'This is the body in plain text for non-HTML mail clients',
 	'HelpDesk ID' => 'رقم التذكرة',
+
+  'Contact Name' => 'اسم جهة الاتصال',
+  'LBL_ADD_DOCUMENT' => 'إضافة الوثيقة',
+  'LBL_OPEN_TICKETS' => 'تذاكر مفتوحة',
+  'LBL_CREATE_TICKET' => 'إنشاء تذكرة',
+
 );

@@ -13,18 +13,20 @@ $languageStrings = array(
 	'LBL_ADD_RECORD'               => 'Добавить событие'                   ,
 	'LBL_RECORDS_LIST'             => 'Список'                   ,
 	'LBL_EVENTS'                   => 'События'              , // KEY 5.x: Events
-	'LBL_TODOS'                    => 'Календарь'          , // KEY 5.x: SINGLE_Calendar
+	'LBL_TODOS'                    => 'Задача'          , // KEY 5.x: SINGLE_Calendar
 	'LBL_HOLD_FOLLOWUP_ON'         => 'Держите последующих на'      ,
     'LBL_CREATE_FOLLOWUP_EVENT'    => 'Создание следить за событие' ,
 	'LBL_EVENT_INFORMATION'        => 'Детали события'               ,
 	'LBL_RECURRENCE_INFORMATION'   => 'Повторение Подробнее'          ,
 	'LBL_RELATED_TO'               => 'Связан с'             , 
+    'Related To'                   => 'В связи с'              ,
 	'Start Date & Time'            => 'Дата и Время Начала', 
 	'Recurrence'                   => 'Повторение'                      ,
 	'Send Notification'            => 'Отправить уведомление'           ,
 	'Location'                     => 'Расположение'                    ,
 	'Send Reminder'                => 'Отправить напоминание'               ,
 	'End Date & Time'              => 'Дата и Время Завершения', 
+    'End Date'                     => 'Дата и Время Завершения', 
 	'Activity Type'                => 'Тип Действия'     , 
 	'Visibility'                   => 'Видимость'                  ,
 	'Private'                      => 'Личное'                , // KEY 5.x: PRIVATE_FILTER
@@ -64,7 +66,12 @@ $languageStrings = array(
 	'LBL_UNTIL'                    => 'До'                       , 
 	'LBL_DAY_OF_THE_MONTH'         => 'день месяца'            , 
 	'LBL_ON'                       => 'на'                          , 
-	'LBL_CALENDAR_VIEW'            => 'Календарь Просмотр'               , 
+	'LBL_CALENDAR_VIEW'            => 'Задача Просмотр'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Приглашать'                      , 
 	'LBL_INVITE_USERS'             => 'Пригласить пользователей'                , 
+        'LBL_INVITE_PEOPLE'           => 'Пригласить людей',
+
+  'INVITATION' => ' Приглашение ',
+  'Busy' => 'Занят',
+
 );

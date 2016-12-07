@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -22,6 +22,12 @@ $languageStrings = array(
 	'LBL_SELECT_SOURCE_VALUES' => 'Select Source Values',
 	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Select Source Picklist Values',
 	'LBL_ERR_CYCLIC_DEPENDENCY' => 'This dependency setup is not allowed as it ends up in some cyclic dependency',
+	'LBL_SELECT_ALL_VALUES' => 'حدد كافة',
+	'LBL_UNSELECT_ALL_VALUES' => 'إلغاء تحديد الكل',
+    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'وهذا يمكن أن ينتهي بهم المطاف في دوري التكرار كما تم تكوين الحقل s% بالفعل لحقل s%',
+
+  'PickListDependency' => 'PickList التبعية',
+
 );
 
 $jsLanguageStrings = array(

@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+require_once 'vtlib/Vtiger/Cron.php';
 
 class Import_Main_View extends Vtiger_View_Controller{
 
@@ -33,11 +34,9 @@ class Import_Main_View extends Vtiger_View_Controller{
 		}
 
 		$isImportScheduled = $importController->request->get('is_scheduled');
-
 		if($isImportScheduled) {
 			$importInfo = Import_Queue_Action::getUserCurrentImportInfo($importController->user);
 			self::showScheduledStatus($importInfo);
-
 		} else {
 			$importController->triggerImport();
 		}
@@ -73,7 +72,7 @@ class Import_Main_View extends Vtiger_View_Controller{
 		} else {
 			$continueImport = false;
 		}
-		
+
 		$focus = CRMEntity::getInstance($importInfo['module']);
 		if(method_exists($focus, 'getImportStatusCount')) {
 			$importStatusCount = $focus->getImportStatusCount($importDataController);
@@ -98,15 +97,20 @@ class Import_Main_View extends Vtiger_View_Controller{
 		$moduleName = $importInfo['module'];
 		$importId = $importInfo['id'];
 
-		$viewer = new Vtiger_Viewer();
+		$params = array('module' => $moduleName);
+		$request = new Vtiger_Request($params);
+		$indexViewer = new Vtiger_Index_View();
+		$viewer = $indexViewer->getViewer($request);  
 
 		$viewer->assign('FOR_MODULE', $moduleName);
 		$viewer->assign('MODULE', 'Import');
 		$viewer->assign('IMPORT_ID', $importId);
 		$viewer->assign('IMPORT_RESULT', $importStatusCount);
-		$viewer->assign('INVENTORY_MODULES', getInventoryModules());
+		$inventoryModules = getInventoryModules();
+		array_push($inventoryModules, 'Users');
+		$viewer->assign('INVENTORY_MODULES', $inventoryModules);
 		$viewer->assign('CONTINUE_IMPORT', $continueImport);
-
+		$viewer->assign('JS_SCRIPTS', $indexViewer->getHeaderScripts($request));
 		$viewer->view('ImportStatus.tpl', 'Import');
 	}
 
@@ -114,14 +118,16 @@ class Import_Main_View extends Vtiger_View_Controller{
 		$moduleName = $importInfo['module'];
 		$ownerId = $importInfo['user_id'];
 
-        $viewer = new Vtiger_Viewer();
-        
+		$viewer = new Vtiger_Viewer();
+
 		$viewer->assign('SKIPPED_RECORDS',$skippedRecords);
-        $viewer->assign('FOR_MODULE', $moduleName);
+		$viewer->assign('FOR_MODULE', $moduleName);
 		$viewer->assign('MODULE', 'Import');
 		$viewer->assign('OWNER_ID', $ownerId);
 		$viewer->assign('IMPORT_RESULT', $importStatusCount);
-		$viewer->assign('INVENTORY_MODULES', getInventoryModules());
+		$inventoryModules = getInventoryModules();
+		array_push($inventoryModules, 'Users');
+		$viewer->assign('INVENTORY_MODULES', $inventoryModules);
 		$viewer->assign('MERGE_ENABLED', $importInfo['merge_type']);
 
 		$viewer->view('ImportResult.tpl', 'Import');
@@ -180,8 +186,7 @@ class Import_Main_View extends Vtiger_View_Controller{
 			$this->numberOfRecords = $fileReader->getNumberOfRecordsRead();
 			return true;
 		} else {
-			Import_Utils_Helper::showErrorPage(vtranslate('ERR_FILE_READ_FAILED', 'Import').' - '.
-											vtranslate($fileReader->getErrorMessage(), 'Import'));
+			Import_Utils_Helper::showErrorPage(vtranslate('ERR_FILE_READ_FAILED', 'Import').' - '.vtranslate($fileReader->getErrorMessage(), 'Import'));
 			return false;
 		}
 	}
@@ -189,10 +194,14 @@ class Import_Main_View extends Vtiger_View_Controller{
 	public function queueDataImport() {
 		$configReader = new Import_Config_Model();
 		$immediateImportRecordLimit = $configReader->get('immediateImportLimit');
+		$pagingLimit  = $configReader->get('importPagingLimit');
 
 		$numberOfRecordsToImport = $this->numberOfRecords;
 		if($numberOfRecordsToImport > $immediateImportRecordLimit) {
 			$this->request->set('is_scheduled', true);
+		}
+		if($numberOfRecordsToImport > $pagingLimit){
+			$this->request->set('paging_enabled', true);
 		}
 		Import_Queue_Action::add($this->request, $this->user);
 	}
@@ -210,6 +219,20 @@ class Import_Main_View extends Vtiger_View_Controller{
 		$viewer->assign('SAVED_MAPS', Import_Map_Model::getAllByModule($moduleName));
 		$viewer->view('Import_Saved_Maps.tpl', 'Import');
 	}
-}
 
+	static function updateMap($request) {
+		$moduleName = $request->getModule();
+		$mapId = $request->get('mapid');
+		if (!empty($mapId)) {
+			$mapping = $request->get('mapping');
+			Import_Map_Model::updateMap($mapId, $mapping);
+		}
+		$viewer = new Vtiger_Viewer();
+		$viewer->assign('FOR_MODULE', $moduleName);
+		$viewer->assign('MODULE', 'Import');
+		$viewer->assign('SAVED_MAPS', Import_Map_Model::getAllByModule($moduleName));
+		$viewer->assign('SELECTED_MAP_ID', $mapId);
+		$viewer->view('Import_Saved_Maps.tpl', 'Import');
+	}
+}
 ?>

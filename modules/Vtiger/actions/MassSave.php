@@ -21,26 +21,26 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
+		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$recordModels = $this->getRecordModelsFromRequest($request);
-        $allRecordSave= true;
+		$allRecordSave= true;
 		foreach($recordModels as $recordId => $recordModel) {
 			if(Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
 				$recordModel->save();
+			} else {
+				$allRecordSave= false;
 			}
-            else {
-                $allRecordSave= false;
-            }
 		}
-        
-        $response = new Vtiger_Response();
-        if($allRecordSave) {
-           $response->setResult(true);
-        } else {
-           $response->setResult(false);
-        }
-   	$response->emit();
+		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
+		$response = new Vtiger_Response();
+		if($allRecordSave) {
+			$response->setResult(true);
+		} else {
+		   $response->setResult(false);
+		}
+		$response->emit();
 	}
 
 	/**
@@ -73,13 +73,13 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 					}
 					$recordModel->set($fieldName, $fieldValue);
 				} else {
-                    $uiType = $fieldModel->get('uitype');
-                    if($uiType == 70) {
-                        $recordModel->set($fieldName, $recordModel->get($fieldName));
-                    }  else {
-                        $uiTypeModel = $fieldModel->getUITypeModel();
-                        $recordModel->set($fieldName, $uiTypeModel->getUserRequestValue($recordModel->get($fieldName)));
-                    }
+					$uiType = $fieldModel->get('uitype');
+					if($uiType == 70) {
+						$recordModel->set($fieldName, $recordModel->get($fieldName));
+					}  else {
+						$uiTypeModel = $fieldModel->getUITypeModel();
+						$recordModel->set($fieldName, $uiTypeModel->getUserRequestValue($recordModel->get($fieldName)));
+					}
 				}
 			}
 			$recordModels[$recordId] = $recordModel;

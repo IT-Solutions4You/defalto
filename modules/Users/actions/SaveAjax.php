@@ -10,41 +10,43 @@
 vimport('~~/include/Webservices/Custom/ChangePassword.php');
 
 class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
-	
+
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('userExists');
 		$this->exposeMethod('savePassword');
-		$this->exposeMethod('changeAccessKey');
-                $this->exposeMethod('restoreUser');
+		$this->exposeMethod('restoreUser');
+		$this->exposeMethod('transferOwner');
+		$this->exposeMethod('changeUsername');
 	}
 
 	public function checkPermission(Vtiger_Request $request) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-            $userId = $request->get('userid');
-            if (!$currentUserModel->isAdminUser()) {
-                $mode = $request->getMode();
-                if ($mode == 'savePassword' && (isset($userId) && $currentUserModel->getId() != $userId)) {
-                    throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
-                }
-                 else if ($mode != 'savePassword' && ($currentUserModel->getId() != $request->get('record'))) {
-                    throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
-                }
-            }
-    }
+		$userId = $request->get('userid');
+		if(!$currentUserModel->isAdminUser()) {
+			$mode = $request->getMode();
+			if($mode == 'savePassword' && (isset($userId) && $currentUserModel->getId() != $userId)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+			} else if(in_array($mode, array('userExists','restoreUser','transferOwner','changeUsername'))) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+			} else if($mode != 'savePassword' && ($currentUserModel->getId() != $request->get('record'))) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+			}
+		}
+	}
 
 	public function process(Vtiger_Request $request) {
 
-                $mode = $request->get('mode');
+		$mode = $request->get('mode');
 		if (!empty($mode)) {
 			$this->invokeExposedMethod($mode, $request);
 			return;
 		}
-		
+
 		$recordModel = $this->saveRecord($request);
 
-                $fieldModelList = $recordModel->getModule()->getFields();
+		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
 			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordModel->get($fieldName));
@@ -54,11 +56,9 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			if($fieldName == 'language') {
 				$displayValue =  Vtiger_Language_Handler::getLanguageLabel($fieldValue);
 			}
-            
-            if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($displayValue == '&nbsp;')) {
-                $displayValue = vtranslate('LBL_Space', 'Users');
-            }
-            
+			if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($displayValue == '&nbsp;')) {
+				$displayValue = vtranslate('Space', 'Users');
+			}
 			$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
 		}
 
@@ -79,38 +79,42 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 	public function getRecordModelFromRequest(Vtiger_Request $request) {
 		$recordModel = parent::getRecordModelFromRequest($request);
 		$fieldName = $request->get('field');
-                $currentUserModel=  Users_Record_Model::getCurrentUserModel();
-		if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser()||!$request->get('value'))) {
+
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$request->get('value'))) {
 			$recordModel->set($fieldName, 'off');
-                        $recordModel->set('is_owner',0);
 		}
-                else if($fieldName === 'is_admin' && $currentUserModel->isAdminUser()){
-                    $recordModel->set($fieldName, 'on');
-                    $recordModel->set('is_owner',1);
-                }       
-                return $recordModel;
+
+		if($fieldName == "is_owner") {
+			$recordId = $request->get('record');
+			$moduleName = $request->getModule();
+			if(!empty($recordId)) {
+				$existingRecordModel =  Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+				$recordModel->set($fieldName,$existingRecordModel->get($fieldName));
+			}
+		}
+		return $recordModel;
 	}
-	
-		
+
+
 	public function userExists(Vtiger_Request $request){
 		$module = $request->getModule();
 		$userName = $request->get('user_name');
-		$userModuleModel = Users_Module_Model::getCleanInstance($module);
-		$status = $userModuleModel->checkDuplicateUser($userName);
+		$status = Users_Record_Model::isUserExists($userName);
 		$response = new Vtiger_Response();
 		$response->setResult($status);
 		$response->emit();
 	}
-	
+
 	public function savePassword(Vtiger_Request $request) {
 		$module = $request->getModule();
 		$userModel = vglobal('current_user');
 		$newPassword = $request->get('new_password');
 		$oldPassword = $request->get('old_password');
-		
+
 		$wsUserId = vtws_getWebserviceEntityId($module, $request->get('userid'));
 		$wsStatus = vtws_changePassword($wsUserId, $oldPassword, $newPassword, $newPassword, $userModel);
-		
+
 		$response = new Vtiger_Response();
 		if ($wsStatus['message']) {
 			$response->setResult($wsStatus);
@@ -119,58 +123,62 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		}
 		$response->emit();
 	}
-        
-        /*
-         * To restore a user
-         * @param Vtiger_Request Object
-         */
-        public function restoreUser(Vtiger_Request $request) {
-                $moduleName = $request->getModule();
-                $record = $request->get('userid');
-                
-                $recordModel = Users_Record_Model::getInstanceById($record, $moduleName);
-                $recordModel->set('status', 'Active');
-                $recordModel->set('id', $record);
-                $recordModel->set('mode', 'edit');
-                $recordModel->set('user_hash', $recordModel->getUserHash());
-                $recordModel->save();
-                
-                $db = PearDatabase::getInstance();
-                $db->pquery("UPDATE vtiger_users SET deleted=? WHERE id=?", array(0,$record));
-                
-                $userModuleModel = Users_Module_Model::getInstance($moduleName);
-		$listViewUrl = $userModuleModel->getListViewUrl();
-		
+
+		/*
+		 * To restore a user
+		 * @param Vtiger_Request Object
+		 */
+		public function restoreUser(Vtiger_Request $request) {
+			$moduleName = $request->getModule();
+			$record = $request->get('userid');
+
+			$recordModel = Users_Record_Model::getInstanceById($record, $moduleName);
+				$recordModel->set('status', 'Active');
+				$recordModel->set('id', $record);
+				$recordModel->set('mode', 'edit');
+				$recordModel->set('user_hash', $recordModel->getUserHash());
+				$recordModel->save();
+
+				$db = PearDatabase::getInstance();
+				$db->pquery("UPDATE vtiger_users SET deleted=? WHERE id=?", array(0,$record));
+
+				$userModuleModel = Users_Module_Model::getInstance($moduleName);
+				$listViewUrl = $userModuleModel->getListViewUrl();
+
+			$response = new Vtiger_Response();
+			$response->setResult(array('message'=>vtranslate('LBL_USER_RESTORED_SUCCESSFULLY', $moduleName), 'listViewUrl' => $listViewUrl));
+			$response->emit();
+		}
+
+	/*
+	 * Function to transfer CRM owner without deleting User
+	 */
+	public function transferOwner(Vtiger_Request $request) {
+		$moduleName = $request->getModule(false);
+		$record = $request->get('record');
+		$usersInstance = CRMEntity::getInstance($moduleName);
+		$status = $usersInstance->transferOwnership($record);
 		$response = new Vtiger_Response();
-		$response->setResult(array('message'=>vtranslate('LBL_USER_RESTORED_SUCCESSFULLY', $moduleName), 'listViewUrl' => $listViewUrl));
+		if($status) {
+			$response->setResult(array('message' => vtranslate('LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY', $moduleName)));
+		} else {
+			$response->setError(vtranslate('LBL_OWNERSHIP_TRANSFERRED_FAILED', $moduleName));
+		}
 		$response->emit();
-        }
-	
-	public function changeAccessKey(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$moduleName = $request->getModule();
+	}
 
+	/**
+	 * Function to change username
+	 */
+	public function changeUsername(Vtiger_Request $request) {
 		$response = new Vtiger_Response();
-		try {
-			$recordModel = Users_Record_Model::getInstanceById($recordId, $moduleName);
-			$oldAccessKey = $recordModel->get('accesskey');
+		$userId = $request->get('userid');
 
-			$entity = $recordModel->getEntity();
-			$entity->createAccessKey();
-
-			require_once('modules/Users/CreateUserPrivilegeFile.php');
-			createUserPrivilegesfile($recordId);
-
-			$recordModel = Users_Record_Model::getInstanceFromPreferenceFile($recordId);
-			$newAccessKey = $recordModel->get('accesskey');
-
-			if ($newAccessKey != $oldAccessKey) {
-				$response->setResult(array('message' => vtranslate('LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY', $moduleName), 'accessKey' => $newAccessKey));
-			} else {
-				$response->setError(vtranslate('LBL_FAILED_TO_UPDATE_ACCESS_KEY', $moduleName));
-			}
-		} catch (Exception $ex) {
-			$response->setError($ex->getMessage());
+		$status = Users_Record_Model::changeUsername($request->get('newUsername'), $request->get('newPassword'), $request->get('oldPassword'), $userId);
+		if($status['success']) {
+			$response->setResult($status['message']);
+		}else{
+			$response->setError($status['message']);
 		}
 		$response->emit();
 	}

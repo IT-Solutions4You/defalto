@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -44,7 +44,6 @@ $languageStrings = array(
 	'Contact in Future'=>'الاتصال بالمستقبل',
 	'Contacted'=>'متصل',
 	'Hot'=>'نشيط',
-        'Hot Leads'                    => 'العروض الساخنة',
 	'Junk Lead'=>'سلة محذوفات',
 	'Lost Lead'=>'ضائع',
 	'Not Contacted'=>'لم يتم التواصل معه',
@@ -58,16 +57,14 @@ $languageStrings = array(
 	//Convert Lead
 	'LBL_TRANSFER_RELATED_RECORD' => 'نقل السجل المرتبط الى',
 	'LBL_CONVERT_LEAD_ERROR' => 'عليك تفعيل المنظمات او جهات الاتصال لتحويل الزبون المحتمل',
-	'LBL_CONVERT_LEAD_ERROR_TITLE' => 'الموديل معطل',
-	'CANNOT_CONVERT' => 'لايمكن التحويل',
-	'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'الأسباب المحتملة تشمل ما يلي:',
 	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'خريطة حقول الزبون المحتمل غير مكتملة(تحقق من اعدادات خريطة الزبون المحتمل)',
-	'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'الحقول الالزامية فارغة',
 	'LBL_LEADS_FIELD_MAPPING' => 'خريطة حقول الزبون المحتمل',
 
 	//Leads Custom Field Mapping
-	'LBL_CUSTOM_FIELD_MAPPING'=> 'تعديل خريطة الحقول',
-	'LBL_LEAD_SOURCE' => 'مصدر الزبون المحتمل'
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'يؤدي تعيين بيانات التحويل',
+	'LBL_LEAD_SOURCE' => 'مصدر الزبون المحتمل',
+    'LBL_IMAGE_INFORMATION' => 'الصورة الشخصية',
+    'Lead Image' => 'الرصاص صورة',
 );
 $jsLanguageStrings = array(
 	'JS_SELECT_CONTACTS' => 'حدد جهات الاتصال للمضي قدما',

@@ -35,10 +35,22 @@ class VTSMSTask extends VTTask {
 			$et = new VTSimpleTemplate($this->sms_recepient);
 			$recepient = $et->render($entityCache, $ws_id);
 			$recepients = explode(',',$recepient);
-			
+			$relatedIds = $this->getRelatedIdsFromTemplate($this->sms_recepient, $entityCache, $ws_id);
+			$relatedIds = explode(',', $relatedIds);
+			$relatedIdsArray = array();
+			foreach ($relatedIds as $entityId) {
+				if (!empty($entityId)) {
+					list($moduleId, $recordId) = vtws_getIdComponents($entityId);
+					if (!empty($recordId)) {
+						$relatedIdsArray[] = $recordId;
+					}
+				}
+			}
+
 			$ct = new VTSimpleTemplate($this->content);
 			$content = $ct->render($entityCache, $ws_id);
 			$relatedCRMid = substr($ws_id, stripos($ws_id, 'x')+1);
+			$relatedIdsArray[] = $relatedCRMid;
 			
 			$relatedModule = $entity->getModuleName();
 			
@@ -47,10 +59,34 @@ class VTSMSTask extends VTTask {
 			foreach($recepients as $tonumber) {
 				if(!empty($tonumber)) $tonumbers[] = $tonumber;
 			}
-			
-			SMSNotifier::sendsms($content, $tonumbers, $current_user->id, $relatedCRMid, $relatedModule);
+			$this->smsNotifierId = SMSNotifier::sendsms($content, $tonumbers, $current_user->id, $relatedIdsArray);
+			$util->revertUser();
 		}
 		
+	}
+
+	public function getRelatedIdsFromTemplate($template, $entityCache, $entityId) {
+		$this->template = $template;
+		$this->cache = $entityCache;
+		$this->parent = $this->cache->forId($entityId);
+		return preg_replace_callback('/\\$(\w+|\((\w+) : \(([_\w]+)\) (\w+)\))/', array($this,"matchHandler"), $this->template);
+	}
+
+	public function matchHandler($match) {
+		preg_match('/\((\w+) : \(([_\w]+)\) (\w+)\)/', $match[1], $matches);
+		// If parent is empty then we can't do any thing here
+		if(!empty($this->parent)){
+			if(count($matches) != 0){
+				list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+				$referenceId = $this->parent->get($referenceField);
+				if($referenceModule==="Users" || $referenceId==null){
+					$result ="";
+				} else {
+					$result = $referenceId;
+				}
+			}
+		}
+		return $result;
 	}
 }
 ?>

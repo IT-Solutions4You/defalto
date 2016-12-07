@@ -19,7 +19,7 @@ $languageStrings = array(
 	'Sales Stage'                  => 'Стадия'                , 
 	'Probability'                  => 'Вероятность (%)'  , 
 	'Campaign Source'              => 'Кампания Источник', 
-	'Forecast Amount'              => 'Прогноз Количество'             , 
+	'Forecast Amount'              => 'Взвешенная Выручка'             , 
 	'Funnel'                       => 'Воронка продаж'                , 
 	'Potentials by Stage'          => 'Возможности по сцене'      , 
 	'Total Revenue'                => 'Выручка по продавцам'      , 
@@ -40,6 +40,24 @@ $languageStrings = array(
 	'New Business'                 => 'Новый Бизнес'     , 
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Ожидается, будет завершена на'        , 
 	'LBL_RELATED_CONTACTS'         => 'Связанные Контакты'            , 
-	'LBL_RELATED_PRODUCTS'         => 'Похожие продукты'            ,
-        'Potentials Won'               => 'Потенциалы Выигранные',
+	'LBL_RELATED_PRODUCTS'         => 'Похожие продукты'            , 
+    'Related To'                   => 'Название организации',
+    'Type'                         => 'Тип'                      , 
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Преобразование возможности',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Возможности Поле Mapping',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Вы должны включить проект для преобразования возможность',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Возможности Поле Mapping является неполной (Настройки> Менеджер модулей> Возможности> Возможности Поле Mapping)',
+	'LBL_CREATE_PROJECT' => 'Создать проект',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Возможность картографический проект',
+
+  'Contact Name' => 'Имя Контакта',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Преобразование требует выбора проекта',
 );

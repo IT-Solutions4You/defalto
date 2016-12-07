@@ -7,16 +7,17 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+require_once 'modules/MailManager/runtime/Response.php';
 
 class MailManager_List_View extends MailManager_Abstract_View {
 
 	static $controllers = array(
-			'mainui' =>	array( 'file' => 'controllers/MainUIController.php',	'class' => 'MailManager_MainUI_View' ),
-			'folder' => array( 'file' => 'controllers/FolderController.php',	'class' => 'MailManager_Folder_View' ),
-			'mail'   => array( 'file' => 'controllers/MailController.php',		'class' => 'MailManager_Mail_View'   ),
-			'relation'=>array( 'file' => 'controllers/RelationController.php',	'class'=> 'MailManager_Relation_View'),
-			'settings'=>array( 'file' => 'controllers/SettingsController.php',	'class'=> 'MailManager_Settings_View'),
-			'search'  =>array( 'file' => 'controllers/SearchController.php',	'class'=> 'MailManager_Search_View'	 ),
+			'mainui' =>	array('class' => 'MailManager_MainUI_View'),
+			'folder' => array('class' => 'MailManager_Folder_View'),
+			'mail'   => array('class' => 'MailManager_Mail_View'),
+			'relation'=>array('class' => 'MailManager_Relation_View'),
+			'settings'=>array('class' => 'MailManager_Settings_View'),
+			'search'  =>array('class' => 'MailManager_Search_View'),
 	);
 
 	public function getHeaderScripts(Vtiger_Request $request) {
@@ -27,7 +28,8 @@ class MailManager_List_View extends MailManager_Abstract_View {
 				"libraries.jquery.ckeditor.ckeditor",
 				"libraries.jquery.ckeditor.adapters.jquery",
 				"modules.Vtiger.resources.CkEditor",
-				"modules.Emails.resources.MassEdit"
+				"modules.Emails.resources.MassEdit",
+				"modules.MailManager.resources.List"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -43,19 +45,14 @@ class MailManager_List_View extends MailManager_Abstract_View {
 		}
 		$operation = $request->getOperation();
 		$controllerInfo = self::$controllers[$operation];
-		// TODO Handle case when controller information is not available
-		//$controllerFile = dirname(__FILE__) . '/' . $controllerInfo['file'];
-		//checkFileAccessForInclusion($controllerFile);
-		//include_once $controllerFile;
 		$controller = new $controllerInfo['class'];
 
 		// Making sure to close the open connection
 		if ($controller) $controller->closeConnector();
-		if($controller->validateRequest($request)) { 
-                    $response = $controller->process($request); 
-                    if ($response) $response->emit(); 
-	        } 
-		
+        if($controller->validateRequest($request)) {
+            $response = $controller->process($request);
+            if ($response) $response->emit();
+        }
 		unset($request);
 		unset($response);
 	}

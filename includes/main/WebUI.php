@@ -24,13 +24,13 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	protected function checkLogin (Vtiger_Request $request) {
 		if (!$this->hasLogin()) {
 			$return_params = $_SERVER['QUERY_STRING'];
-            if($return_params && !$_SESSION['return_params']) {
-                //Take the url that user would like to redirect after they have successfully logged in.
-                $return_params = urlencode($return_params);
-                Vtiger_Session::set('return_params', $return_params);
-            }
-            header ('Location: index.php');
-            throw new AppException('Login is required');
+			if($return_params && !$_SESSION['return_params']) {
+				//Take the url that user would like to redirect after they have successfully logged in.
+				$return_params = urlencode($return_params);
+				Vtiger_Session::set('return_params', $return_params);
+			}
+			header ('Location: index.php');
+			throw new AppException('Login is required');
 		}
 	}
 
@@ -95,9 +95,9 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		Vtiger_Session::init();
 		
 		// Better place this here as session get initiated
-                //skipping the csrf checking for the forgot(reset) password 
-                if($request->get('mode') != 'reset' && $request->get('action') != 'Login')
-		require_once 'libraries/csrf-magic/csrf-magic.php';
+		//skipping the csrf checking for the forgot(reset) password 
+		if($request->get('mode') != 'reset' && $request->get('action') != 'Login')
+			require_once 'libraries/csrf-magic/csrf-magic.php';
 
 		// TODO - Get rid of global variable $current_user
 		// common utils api called, depend on this variable right now
@@ -107,10 +107,10 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		// Check we are being connected to on the right host and protocol
 		global $site_URL;
 		$request_URL = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']==='on')? 'https': 'http')."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        if ($site_URL && stripos($request_URL, $site_URL) !== 0){
-            header("Location: $site_URL",TRUE,301);
-            exit;
-        }
+		if ($site_URL && stripos($request_URL, $site_URL) !== 0){
+			header("Location: $site_URL",TRUE,301);
+			exit;
+		}
 
 		global $default_language;
 		vglobal('default_language', $default_language);
@@ -122,20 +122,26 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		if ($currentUser && $qualifiedModuleName) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$qualifiedModuleName);
 			if(isset($moduleLanguageStrings['languageStrings'])){
-			    vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+				vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
 			}
 		}
 
 		if ($currentUser) {
 			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage);
 			if(isset($moduleLanguageStrings['languageStrings'])){
-			    vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
+				vglobal('app_strings', $moduleLanguageStrings['languageStrings']);
 			}
 		}
 
 		$view = $request->get('view');
 		$action = $request->get('action');
 		$response = false;
+
+		//Not able to open other pages when heavy duty view is open.
+		//heavy duty report views are open and to navigate to other module list view / detail view the page loading almost freezes page.
+		if ($module == 'Reports' && !$view) {
+			Vtiger_Session::readonly();
+		}
 
 		try {
 			if($this->isInstalled() === false && $module != 'Install') {
@@ -146,13 +152,14 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 			if(empty($module)) {
 				if ($this->hasLogin()) {
 					$defaultModule = vglobal('default_module');
-					if(!empty($defaultModule) && $defaultModule != 'Home') {
+					$moduleModel = Vtiger_Module_Model::getInstance($defaultModule);
+					if(!empty($defaultModule) && $defaultModule != 'Home' && $moduleModel && $moduleModel->isActive()) {
 						$module = $defaultModule; $qualifiedModuleName = $defaultModule; $view = 'List';
-                        if($module == 'Calendar') { 
-                            // To load MyCalendar instead of list view for calendar
-                            //TODO: see if it has to enhanced and get the default view from module model
-                            $view = 'Calendar';
-                        }
+						if($module == 'Calendar') { 
+							// To load MyCalendar instead of list view for calendar
+							//TODO: see if it has to enhanced and get the default view from module model
+							$view = 'Calendar';
+						}
 					} else {
 						$module = 'Home'; $qualifiedModuleName = 'Home'; $view = 'DashBoard';
 					}
@@ -175,30 +182,30 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 			}
 			$handlerClass = Vtiger_Loader::getComponentClassName($componentType, $componentName, $qualifiedModuleName);
 			$handler = new $handlerClass();
-            
-            if ($handler) {
-                vglobal('currentModule', $module);
-                
-                // Ensure handler validates the request
-                $handler->validateRequest($request);
-                
+
+			if ($handler) {
+				vglobal('currentModule', $module);
+
+				// Ensure handler validates the request
+				$handler->validateRequest($request);
+
 				if ($handler->loginRequired()) {
 					$this->checkLogin ($request);
 				}
 
 				//TODO : Need to review the design as there can potential security threat
-				$skipList = array('Users', 'Home', 'CustomView', 'Import', 'Export', 'Inventory', 'Vtiger','PriceBooks','Migration','Install');
+				$skipList = array('Users', 'Home', 'CustomView', 'Import', 'Export', 'Inventory', 'Vtiger', 'PriceBooks', 'Migration', 'Install');
 
 				if(!in_array($module, $skipList) && stripos($qualifiedModuleName, 'Settings') === false) {
 					$this->triggerCheckPermission($handler, $request);
 				}
 
 				// Every settings page handler should implement this method
-				if(stripos($qualifiedModuleName, 'Settings') === 0 || ($module=='Users')) {
+				if(stripos($qualifiedModuleName, 'Settings') === 0 || ($module == 'Users')) {
 					$handler->checkPermission($request);
 				}
 
-				$notPermittedModules = array('ModComments','Integration' ,'DashBoard');
+				$notPermittedModules = array('ModComments','Integration','DashBoard');
 
 				if(in_array($module, $notPermittedModules) && $view == 'List'){
 					header('Location:index.php?module=Home&view=DashBoard');

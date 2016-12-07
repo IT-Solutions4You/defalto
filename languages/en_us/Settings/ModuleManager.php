@@ -8,6 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+	'ModuleManager' => 'Module Manager',
 	'LBL_IMPORT_MODULE' => 'Import Module',
 	'LBL_VTIGER_EXTENSION_STORE' => 'Vtiger Extension Store',
 	'LBL_PUBLISHER' => 'Publisher',
@@ -18,6 +19,7 @@ $languageStrings = array(
 	'LBL_VERSION' => 'Version',
 	'LBL_DECLINE' => 'Decline',
 	'LBL_ACCEPT_AND_INSTALL' => 'Accept and Install',
+	'LBL_ALREADY_EXISTS' => 'Already Exists',
 	'LBL_OK' => 'OK',
 	'LBL_EXTENSION_NOT_COMPATABLE' => 'Extension is not Vtiger CRM Compatable',
 	'LBL_INVALID_FILE' => 'Invalid File',
@@ -40,31 +42,31 @@ $languageStrings = array(
 	'LBL_INVALID_IMPORT_TRY_AGAIN' => ' provided for module import! Try Again.',
 	'LBL_IMPORTED_MODULE' => ' module was imported successfully.',
 	'LBL__IMPORTING_MODULE' => 'Importing Module',
-        'LBL_EXTENSION_STORE' => 'Extension Store',
-        'LBL_ACCEPT_WITH_THE_DISCLAIMER' => 'I accept with disclaimer and would like to proceed',
-        'LBL_INSTALL_FROM_ZIP' => 'Install from Zip',
-        'LBL_DELETE_EXIST_DIRECTORY' => 'Please delete the module direcctory that exist to proceed with import module',
-	
+	'LBL_EXTENSION_STORE' => 'Extension Store',
+	'LBL_ACCEPT_WITH_THE_DISCLAIMER' => 'I accept with disclaimer and would like to proceed',
+	'LBL_INSTALL_FROM_ZIP' => 'Install from Zip',
+	'LBL_DELETE_EXIST_DIRECTORY' => 'Please delete the module direcctory that exist to proceed with import module',
+
 	'LBL_UPDATE_MODULE_FROM_FILE' => 'Update Module From File',
 	'LBL_UPDATED_MODULE' => ' module was updated successfully.',
 	'LBL__UPDATING_MODULE' => 'Updating Module',
-        'LBL_PHP_EXTENSION_LOADER_IS_NOT_AVAIABLE' => 'Please install extension loader',
-        'LBL_IMPORT_MODULE_FROM_ZIP' => 'Import Module from Zip',
-        'LBL_UPDATE_NOW' => 'Update Now',
-        'LBL_IMPORT_NOW' => 'Import Now',
-        'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Disclaimer - Custom Files could put your CRM at risk</b> <br>  
-                                                 This functionality has been made available for Developers to test new modules.
-                                                    If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Vtiger.',
+	'LBL_PHP_EXTENSION_LOADER_IS_NOT_AVAIABLE' => 'Please install extension loader',
+	'LBL_IMPORT_MODULE_FROM_ZIP' => 'Import Module from Zip',
+	'LBL_UPDATE_NOW' => 'Update Now',
+	'LBL_IMPORT_NOW' => 'Import Now',
+	'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Disclaimer - Custom Files could put your CRM at risk</b> <br>  
+												 This functionality has been made available for Developers to test new modules.
+													If you are installing from a file provided 3rd party, please proceed only if you trust the publisher. Custom Modules could include security vulnerabilities and overwrite system files putting your CRM at risk. The module you are about to install has not been reviewed by Vtiger.',
 );
 $jsLanguageStrings = array(
-  'JS_ON' => 'on',
-  'JS_PLEASE_INSTALL_EXTENSION_LOADER_TO_INSTALL_THIS_EXTENSION_FROM_BELOW_LINK' => 'Please install extension loader to install this extension from below link',
-  'JS_EXTENSION_STORE_IS_NOT_SUPPOTED_WOULD_YOU_LIKE_TO_INSTALL' => 'Extension is not supported, Would you like to install?',
-  'JS_PHP_EXTENSION_LOADER_NOT_INSTALLED' => 'Php extension loader not installed ',
-  'JS_CLICK_HERE' => 'Click here ',
-  'JS_FOR_INSTALLATION' => 'for installation',
-  'JS_IMPORT_SUCCESSFULL' => 'Import Successfull',
-  'JS_IMPORTED_MODULE' => ' module was imported successfully.',
-  'JS_UPDATE_SUCCESSFULL' => 'Update Successfull',
-  'JS_UPDATED_MODULE' => 'module was updated successfully',
+	'JS_ON' => 'on',
+	'JS_PLEASE_INSTALL_EXTENSION_LOADER_TO_INSTALL_THIS_EXTENSION_FROM_BELOW_LINK' => 'Please install extension loader to install this extension from below link',
+	'JS_EXTENSION_STORE_IS_NOT_SUPPOTED_WOULD_YOU_LIKE_TO_INSTALL' => 'Extension is not supported, Would you like to install?',
+	'JS_PHP_EXTENSION_LOADER_NOT_INSTALLED' => 'Php extension loader not installed ',
+	'JS_CLICK_HERE' => 'Click here ',
+	'JS_FOR_INSTALLATION' => 'for installation',
+	'JS_IMPORT_SUCCESSFULL' => 'Import Successfull',
+	'JS_IMPORTED_MODULE' => ' module was imported successfully.',
+	'JS_UPDATE_SUCCESSFULL' => 'Update Successfull',
+	'JS_UPDATED_MODULE' => 'module was updated successfully',
 );

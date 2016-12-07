@@ -2,21 +2,26 @@
 /*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * Translated by ABOnline solutions - http://www.abo-s.com/
- * Boris CLEMENT
- * December 2013      
  ************************************************************************************/
 $languageStrings = array(
-	'ProjectMilestone'      => 'Jalons Projet'           , 
-	'SINGLE_ProjectMilestone'      => 'Jalon Projet'           , 
-	'LBL_ADD_RECORD'               => 'Ajouter Jalon Projet'       , 
-	'LBL_RECORDS_LIST'             => 'Liste des Jalons Projet'     , 
-	'LBL_PROJECT_MILESTONE_INFORMATION' => 'Details Jalon Projet'   , 
-	'Project Milestone Name'       => 'Nom Jalon Projet'      , 
-	'Milestone Date'               => 'Date du jalon'              , 
-	'Project Milestone No'         => 'Numéro du Jalon Projet'    , 
+	'SINGLE_ProjectMilestone'	=>	"Projet Milestone",
+	'LBL_ADD_RECORD'	=>	"Ajouter Milestone Project",
+	'LBL_RECORDS_LIST'	=>	"Liste des jalons du projet",
+	'LBL_PROJECTS_LIST'	=>	"Liste des projets",
+	'LBL_TASKS_LIST'	=>	"Liste des tâches",
+	'LBL_MILESTONES_LIST'	=>	"Liste des jalons",
+	'LBL_PROJECT_MILESTONE_INFORMATION'	=>	"Détails du projet Milestone",
+	'Project Milestone Name'	=>	"Nom du projet Milestone",
+	'Milestone Date'	=>	"Date de Milestone",
+	'Project Milestone No'	=>	"Numéro du projet Milestone",
+        'Type'                         => 'Type'                        , 
+    'Related to' => 'Relatif à la',
+	//picklist values
+	'administrative' => 'Administratif',
+    'operative' => 'Opératoire',
+    'other' => 'Autre',
 );

@@ -18,6 +18,7 @@ class Settings_Roles_Index_View extends Settings_Vtiger_Index_View {
 
 		$viewer->assign('ROOT_ROLE', $rootRole);
 		$viewer->assign('ROLES', $allRoles);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->view('Index.tpl', $qualifiedModuleName);
 	}
 

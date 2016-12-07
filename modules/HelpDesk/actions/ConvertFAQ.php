@@ -14,7 +14,7 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller {
 		$recordPermission = Users_Privileges_Model::isPermitted('Faq', 'CreateView');
 
 		if(!$recordPermission) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -36,5 +36,9 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller {
 				header("Location: ".$faqRecordModel->getEditViewUrl()."&parentId=$recordId&parentModule=$moduleName");
 			}
 		}
+	}
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
 	}
 }

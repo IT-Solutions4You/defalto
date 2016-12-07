@@ -8,10 +8,11 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_SalesOrder'            => 'Sales Order'                 , 
+    'SalesOrder'                   => 'Kundenaufträge'                 , 
+	'SINGLE_SalesOrder'            => 'Kundenaufträge'                 , 
 	'LBL_EXPORT_TO_PDF'            => 'Export als PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , 
-	'LBL_ADD_RECORD'               => 'Add Sales Order'             , 
+	'LBL_ADD_RECORD'               => 'Add Kundenaufträge'             , 
 	'LBL_RECORDS_LIST'             => 'Verkäufe'                   , 
 	'LBL_SO_INFORMATION'           => 'Verkauf'                     , 
 	'SalesOrder No'                => 'Verkaufsbestellung Nr.'      , 
@@ -22,8 +23,7 @@ $languageStrings = array(
 	'Sales Commission'             => 'Provision'                   , 
 	'Purchase Order'               => 'Bestellnummer'               , 
 	'Vendor Terms'                 => 'Lieferbedingungen'           , 
-	'Pending'                      => 'hängig'                     ,
-        'Recurring Invoive Information'=>'Wiederkehrende Rechnung Informationen',
+	'Pending'                      => 'hängig'                     , 
 	'Enable Recurring'             => 'Wiederholung zulassen'       , 
 	'Frequency'                    => 'Frequenz'                    , 
 	'Start Period'                 => 'Start'                       , 
@@ -34,12 +34,10 @@ $languageStrings = array(
 	'AutoCreated'                  => 'automatisch'                 , 
 	'Sent'                         => 'gesendet'                    , 
 	'Credit Invoice'               => 'Rechnung erstellen'          , 
-	'Paid'                         => 'bezahlt'                     ,
-    'Daily'=>'Täglich',
-    'Monthly'=>'Monatlich',
-    'Quarterly'=>'Vierteljährlich',
-    'Yearly'=>'Jährlich',
-    'Net 30 days'=>'Net 30 Tage',
-    'Net 45 days'=>'Net 45 Tage',
-    'Net 60 days'=>'Net 60 Tage', 
+	'Paid'                         => 'bezahlt'                     , 
+
+  'LBL_THIS' => 'Diese',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+
 );

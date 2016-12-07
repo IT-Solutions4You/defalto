@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -19,6 +19,7 @@ $languageStrings = array(
 	'LBL_ASSIGN_ROLE' => 'Assign Role',
 	'LBL_CHOOSE_PROFILES' => 'Choose profiles',
 	'LBL_COPY_PRIVILEGES_FROM' => 'Copy privileges from',
+    'LBL_TRANSFER_TO_OTHER_ROLE' =>'نقل الملكية إلى دور آخر',
 	
 	//Edit View
 	'LBL_PROFILE' => 'Profile',
@@ -28,6 +29,14 @@ $languageStrings = array(
 	'LBL_ASSIGN_EXISTING_PRIVILEGES' => 'Assign priviliges from existing profiles',
 	'LBL_PRIVILEGES' => 'Privileges',
 	'LBL_DUPLICATES_EXIST' => 'Duplicate Role Exists',
+
+  'LBL_CAN_ASSIGN_RECORDS_TO' => 'يمكن تعيين السجلات إلى',
+  'LBL_ALL_USERS' => 'جميع المستخدمين',
+  'LBL_USERS_WITH_LOWER_LEVEL' => 'المستخدمين وجود دور التبعية',
+  'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'المستخدمين لديها نفس الدور أو دور التبعية',
+  'LBL_EDIT_ROLE' => 'تحرير دور',
+  'LBL_CREATE_ROLE' => 'إنشاء دور',
+
 );
 
 $jsLanguageStrings = array(

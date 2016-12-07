@@ -45,4 +45,14 @@ $languageStrings = array(
 	'Date & Time Sent' => 'Fecha Envío',
     'Time Start'       => 'Hora de envío',
     'LBL_EMAIL_INFORMATION' => 'Información E-mail',
+    'LBL_EMAILTEMPLATE_WARNING'    => '¿Sus etiquetas de combinación corregir',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Por favor, asegúrese de que la plantilla que ha seleccionado tiene fusionar las etiquetas pertinentes para el registro del destinatario. 
+                                            Si va a enviar un correo electrónico a plomo, pero los de combinación-tags pertenece al módulo de contacto (por ejemplo: $contacts-lastname$), 
+                                            entonces no se fusionarán los valores.',
+	'Draft' => 'Borrador',
+    'Parent ID' => 'Registro de Padres',
+);
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'advertencia',
 );

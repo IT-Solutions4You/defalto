@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -17,7 +17,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
 		if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -32,7 +32,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		if ($recordId) {
 			$recordModel = Settings_Webforms_Record_Model::getInstanceById($recordId, $qualifiedModuleName);
 			$selectedFieldsList = $recordModel->getSelectedFieldsList();
-			
+
 			$sourceModule = $recordModel->get('targetmodule');
 			$mode = 'edit';
 		} else {
@@ -41,7 +41,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 			if (!$sourceModule) {
 				$sourceModule = reset(array_keys($supportedModules));
 			}
-            $recordModel->set('targetmodule',$sourceModule);
+			$recordModel->set('targetmodule',$sourceModule);
 		}
 		if(!$supportedModules[$sourceModule]){
 			$message = vtranslate('LBL_ENABLE_TARGET_MODULES_FOR_WEBFORM',$qualifiedModuleName);
@@ -65,7 +65,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructure);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		
+
 		$viewer->view('EditView.tpl', $qualifiedModuleName);
 	}
 

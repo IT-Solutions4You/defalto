@@ -50,8 +50,9 @@ class SMSNotifier_MassSaveAjax_Action extends Vtiger_Mass_Action {
 		$response = new Vtiger_Response();
         
 		if(!empty($toNumbers)) {
-			SMSNotifier_Record_Model::SendSMS($message, $toNumbers, $currentUserModel->getId(), $recordIds, $moduleName);
-			$response->setResult(true);
+			$id = SMSNotifier_Record_Model::SendSMS($message, $toNumbers, $currentUserModel->getId(), $recordIds, $moduleName);
+            $statusDetails = SMSNotifier::getSMSStatusInfo($id);
+			$response->setResult(array('id' => $id, 'statusdetails' => $statusDetails[0]));
 		} else {
 			$response->setResult(false);
 		}

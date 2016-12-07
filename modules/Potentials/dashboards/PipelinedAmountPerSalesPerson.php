@@ -12,12 +12,12 @@ class Potentials_PipelinedAmountPerSalesPerson_Dashboard extends Vtiger_IndexAja
     
     function getSearchParams($assignedto,$stage) {
         $listSearchParams = array();
-        $conditions = array(array('assigned_user_id','e',$assignedto),array("sales_stage","e",$stage));
+        $conditions = array(array('assigned_user_id','e',decode_html(urlencode(escapeSlashes($assignedto)))),array("sales_stage","e",decode_html(urlencode(escapeSlashes($stage)))));
         $listSearchParams[] = $conditions;
         return '&search_params='. json_encode($listSearchParams);
     }
 
-public function process(Vtiger_Request $request) {
+	public function process(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
@@ -26,9 +26,9 @@ public function process(Vtiger_Request $request) {
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getPotentialsPipelinedAmountPerSalesPerson();
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$data[$i]["sales_stage"]);
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$data[$i]["link"]).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
@@ -36,6 +36,7 @@ public function process(Vtiger_Request $request) {
 		$viewer->assign('WIDGET', $widget);
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('DATA', $data);
+		$viewer->assign('YAXIS_FIELD_TYPE', 'currency');
 
 		//Include special script and css needed for this widget
 		$viewer->assign('STYLES',$this->getHeaderCss($request));

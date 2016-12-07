@@ -15,7 +15,7 @@ class HelpDesk_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> - Entity Display Name for the record
 	 */
 	public function getDisplayName() {
-		return Vtiger_Util_Helper::getLabel($this->getId());
+		return Vtiger_Util_Helper::getRecordName($this->getId());
 	}
 
 	/**

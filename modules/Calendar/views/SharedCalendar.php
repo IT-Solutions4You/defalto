@@ -21,7 +21,7 @@ class Calendar_SharedCalendar_View extends Calendar_Calendar_View {
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$jsFileNames = array(
-			"modules.Calendar.resources.SharedCalendarView",
+			'modules.Calendar.resources.SharedCalendar',
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

@@ -12,8 +12,10 @@
 class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 
 	function __construct() {
+		parent::__construct();
 		$this->exposeMethod('showFieldLayout');
 		$this->exposeMethod('showRelatedListLayout');
+		$this->exposeMethod('showFieldEdit');
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -38,14 +40,19 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$fieldModels = $moduleModel->getFields();
 		$blockModels = $moduleModel->getBlocks();
 
-
 		$blockIdFieldMap = array();
 		$inactiveFields = array();
-		foreach($fieldModels as $fieldModel) {
+		$headerFieldsCount = 0;
+		$headerFieldsMeta = array();
+		foreach ($fieldModels as $fieldModel) {
 			$blockIdFieldMap[$fieldModel->getBlockId()][$fieldModel->getName()] = $fieldModel;
 			if(!$fieldModel->isActiveField()) {
 				$inactiveFields[$fieldModel->getBlockId()][$fieldModel->getId()] = vtranslate($fieldModel->get('label'), $sourceModule);
 			}
+			if ($fieldModel->isHeaderField()) {
+				$headerFieldsCount++;
+			}
+			$headerFieldsMeta[$fieldModel->getId()] = $fieldModel->isHeaderField() ? 1 : 0;
 		}
 
 		foreach($blockModels as $blockLabel => $blockModel) {
@@ -53,17 +60,30 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 			$blockModel->setFields($fieldModelList);
 		}
 
-		$qualifiedModule = $request->getModule(false);
+		$cleanFieldModel = Settings_LayoutEditor_Field_Model::getCleanInstance();
+		$cleanFieldModel->setModule($moduleModel);
 
+		$qualifiedModule = $request->getModule(false);
 		$viewer = $this->getViewer($request);
+		$viewer->assign('CLEAN_FIELD_MODEL', $cleanFieldModel);
+		$viewer->assign('REQUEST_INSTANCE', $request);
 		$viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
-		$viewer->assign('SUPPORTED_MODULES',$supportedModulesList);
 		$viewer->assign('SELECTED_MODULE_MODEL', $moduleModel);
 		$viewer->assign('BLOCKS',$blockModels);
+		$viewer->assign('SUPPORTED_MODULES',$supportedModulesList);
 		$viewer->assign('ADD_SUPPORTED_FIELD_TYPES', $moduleModel->getAddSupportedFieldTypes());
+		$viewer->assign('FIELD_TYPE_INFO', $moduleModel->getAddFieldTypeInfo());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
 		$viewer->assign('IN_ACTIVE_FIELDS', $inactiveFields);
+		$viewer->assign('HEADER_FIELDS_COUNT', $headerFieldsCount);
+		$viewer->assign('HEADER_FIELDS_META', $headerFieldsMeta);
+
+		$cleanFieldModel = Settings_LayoutEditor_Field_Model::getCleanInstance();
+		$cleanFieldModel->setModule($moduleModel);
+		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
+		$this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
+
 		$viewer->view('Index.tpl',$qualifiedModule);
 	}
 
@@ -87,6 +107,103 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
 		$viewer->view('RelatedList.tpl',$qualifiedModule);
+	}
+
+	public function showFieldEdit(Vtiger_Request $request) {
+		$sourceModule = $request->get('sourceModule');
+		$fieldId = $request->get('fieldid');
+		$fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
+		$moduleModel = Settings_LayoutEditor_Module_Model::getInstanceByName($sourceModule);
+
+		$fieldModels = $moduleModel->getFields();
+		$headerFieldsCount = 0;
+		foreach ($fieldModels as $fieldModel) {
+			if ($fieldModel->isHeaderField()) {
+				$headerFieldsCount++;
+			}
+		}
+
+		$qualifiedModule = $request->getModule(false);
+		$viewer = $this->getViewer($request);
+		$viewer->assign('FIELD_INFO', $fieldInstance->getFieldInfo());
+		$viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
+		$viewer->assign('ADD_SUPPORTED_FIELD_TYPES', $moduleModel->getAddSupportedFieldTypes());
+		$viewer->assign('FIELD_TYPE_INFO', $moduleModel->getAddFieldTypeInfo());
+		$viewer->assign('FIELD_MODEL', $fieldInstance);
+		$viewer->assign('IS_FIELD_EDIT_MODE', true);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('HEADER_FIELDS_COUNT', $headerFieldsCount);
+		$viewer->assign('IS_NAME_FIELD', in_array($fieldInstance->getName(), $moduleModel->getNameFields()));
+
+		$cleanFieldModel = Settings_LayoutEditor_Field_Model::getCleanInstance();
+        $cleanFieldModel->setModule($moduleModel);
+        $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
+		$this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
+
+		$viewer->view('FieldCreate.tpl', $qualifiedModule);
+	}
+
+	/**
+	 * Function to get the list of Script models to be included
+	 * @param Vtiger_Request $request
+	 * @return <Array> - List of Vtiger_JsScript_Model instances
+	 */
+	function getHeaderScripts(Vtiger_Request $request) {
+		$headerScriptInstances = parent::getHeaderScripts($request);
+
+		$jsFileNames = array(
+			'~libraries/garand-sticky/jquery.sticky.js',
+			'~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
+		);
+
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+		return $headerScriptInstances;
+	}
+
+	/**
+	 * Setting module related Information to $viewer (for Vtiger7)
+	 * @param type $request
+	 * @param type $moduleModel
+	 */
+	public function setModuleInfo($request, $moduleModel, $cleanFieldModel = false) {
+		$fieldsInfo = array();
+		$basicLinks = array();
+		$viewer = $this->getViewer($request);
+
+		if (method_exists($moduleModel, 'getFields')) {
+			$moduleFields = $moduleModel->getFields();
+			foreach ($moduleFields as $fieldName => $fieldModel) {
+				$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+			}
+
+			//To set the clean field meta for new field creation
+			if ($cleanFieldModel) {
+				$newfieldsInfo['newfieldinfo'] = $cleanFieldModel->getFieldInfo();
+				$viewer->assign('NEW_FIELDS_INFO', json_encode($newfieldsInfo));
+			}
+
+			$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+		}
+
+		if (method_exists($moduleModel, 'getModuleBasicLinks')) {
+			$moduleBasicLinks = $moduleModel->getModuleBasicLinks();
+			foreach ($moduleBasicLinks as $basicLink) {
+				$basicLinks[] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
+			}
+			$viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
+		}
+	}
+
+	public function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$cssFileNames = array(
+			'~/libraries/jquery/bootstrapswitch/css/bootstrap2/bootstrap-switch.min.css',
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
+		return $headerCssInstances;
 	}
 
 }

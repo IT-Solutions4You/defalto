@@ -10,7 +10,7 @@
 
 class PriceBooks_ListPriceUpdate_View extends Vtiger_View_Controller {
 
-	function checkPermssion(Vtiger_Request $request) {
+	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 

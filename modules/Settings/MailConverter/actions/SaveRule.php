@@ -26,30 +26,65 @@ class Settings_MailConverter_SaveRule_Action extends Settings_Vtiger_Index_Actio
 		$action = $request->get('action1');
 		$request->set('action', $action);
 		$qualifiedModuleName = $request->getModule(false);
-
+        $modelClassName = Vtiger_Loader::getComponentClassName('Model','RuleRecord', $qualifiedModuleName);
 		if ($recordId) {
-			$recordModel = Settings_MailConverter_RuleRecord_Model::getInstanceById($recordId);
+            $recordModel = call_user_func_array(array($modelClassName,'getInstanceById'), array($recordId));
 		} else {
-			$recordModel = Settings_MailConverter_RuleRecord_Model::getCleanInstance($scannerId);
+            $recordModel = call_user_func_array(array($modelClassName,'getCleanInstance'), array($scannerId));
 		}
-
-		$recordModel->assignedTo = $request->get('assignedTo');
-		$recordModel->cc = $request->get('cc');
-		$recordModel->bcc = $request->get('bcc');
 		$fieldsList = $recordModel->getFields();
 		foreach ($fieldsList as $fieldName) {
 			$recordModel->set($fieldName, $request->get($fieldName));
 		}
 		$recordModel->set('newAction', $request->get('action'));
-
-		$ruleId = $recordModel->save();
-
-		$response = new Vtiger_Response();
-		$response->setResult(array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName), 'id' => $ruleId, 'scannerId' => $scannerId));
+        
+        $ruleId = $recordModel->save();
+        
+        $status = $this->saveBodyRule($ruleId, $request);
+        $response = new Vtiger_Response();
+        if($status) {
+            $response->setResult(array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName), 'id' => $ruleId, 'scannerId' => $scannerId));
+        } else {
+            $response->setError(vtranslate('LBL_MULTIPLE_FIELDS_MAPPED', $qualifiedModuleName));
+        }
 		$response->emit();
 	}
+
+    public function saveBodyRule($ruleId, $request) {
+        $mailBody = $request->get('mailBody');
+        $scannerId = $request->get('scannerId');
+        $qualifiedModule = $request->getModule(false);
+        $bodyRuleModel = Settings_MailConverter_BodyRule_Model::getCleanInstance($qualifiedModule);
         
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
+        if(empty($mailBody)) {
+            $bodyRuleModel->deleteBodyRule($scannerId, $ruleId);
+            return true;
         }
+        $delimiter = $request->get('delimeter');
+        $mappingData = $request->get('mappingData');
+        $action = $request->get('action');
+        
+        foreach($mappingData as $key => $value) {
+            if($value != ' ') {
+                $mapFields[$key] = $value;
+            }
+        }
+        
+        if(count($mapFields) == count(array_unique($mapFields))) {
+            $bodyRuleModel->set('scannerId', $scannerId);
+            $bodyRuleModel->set('ruleId', $ruleId);
+            $bodyRuleModel->set('delimiter', $delimiter);
+            $bodyRuleModel->set('filedsMapping', $mapFields);
+            $bodyRuleModel->set('action', $action);
+            $bodyRuleModel->set('body', $mailBody);
+            $bodyRuleModel->saveBodyRule();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

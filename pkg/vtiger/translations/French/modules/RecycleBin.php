@@ -6,20 +6,24 @@
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- * Translated by ABOnline solutions - http://www.abo-s.com/
- * Boris CLEMENT
- * December 2013    
  ************************************************************************************/
 $languageStrings = array(
-	'Recycle Bin'                   => 'Corbeille'                 , 
-	'LBL_SELECT_MODULE'            => 'Choix du module'               , 
-	'LBL_EMPTY_RECYCLEBIN'         => 'Corbeille vide'           , 
-	'LBL_RESTORE'                  => 'Restaurer'                     , 
-	'LBL_NO_PERMITTED_MODULES'     => 'Module(s) non accessible(s)', 
-	'LBL_RECORDS_LIST'             => 'Liste Corbeille'            , 
-	'LBL_NO_RECORDS_FOUND'         => 'aucun enregistrement à restaurer pour ce module', 
+    'Recycle Bin'                  => 'Recycle Bin'                 , // TODO: Review
+	'RecycleBin'                   => 'Recycle Bin'                 , // TODO: Review
+	'LBL_SELECT_MODULE'            => 'Select Module'               , // TODO: Review
+	'LBL_EMPTY_RECYCLEBIN'         => 'Empty Recycle Bin'           , // TODO: Review
+	'LBL_RESTORE'                  => 'Restore'                     , // TODO: Review
+	'LBL_NO_PERMITTED_MODULES'     => 'No permitted modules available', // TODO: Review
+	'LBL_RECORDS_LIST'             => 'Recycle Bin List'            , // TODO: Review
+	'LBL_NO_RECORDS_FOUND'         => 'No records found to Restore in module', // TODO: Review
 );
 $jsLanguageStrings = array(
-	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Confirmer la suppression définitive et irréverssible des éléments sélectionnés?', 
-	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Confirmer la restauration des éléments sélectionnés?', 
+	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?', // TODO: Review
+	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?', // TODO: Review
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Êtes-vous sûr de que vouloir restaurer enregistrement ?',
+    'JS_RESTORING_RECORD' => 'Restauration de la fiche',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restaurer dans Vtiger et dur',
+
+  'JS_RESTORING_RECORDS' => 'La restauration d\'enregistrements',
+
 );

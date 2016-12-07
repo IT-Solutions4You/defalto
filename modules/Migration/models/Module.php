@@ -29,12 +29,14 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 		$versions = array(
 			array('540'   => '5.4.0'),
 			array('600RC' => '6.0.0 RC'),
-                        array('600' => '6.0.0'),
-                        array('610' => '6.1.0'),
-                        array('620' => '6.2.0'),
-                        array('630' => '6.3.0'),
-                        array('640' => '6.4.0'),
-                        array('650' => '6.5.0')
+			array('600' => '6.0.0'),
+			array('610' => '6.1.0'),
+			array('620' => '6.2.0'),
+			array('630' => '6.3.0'),
+			array('640' => '6.4.0'),
+			array('650' => '6.5.0'),
+			array('660' => '6.6.0'),
+			array('700' => '7.0.0'),
 		);
 		return $versions;
 	}

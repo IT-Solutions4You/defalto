@@ -158,7 +158,7 @@ class ModCommentsCore extends CRMEntity {
 		// Consider custom table join as well.
 		if(!empty($this->customFieldTable)) {
 			$query .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 			$joinedTables[] = $this->customFieldTable[0];
 		}
 		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
@@ -186,8 +186,6 @@ class ModCommentsCore extends CRMEntity {
 			}
 		}
 
-                global $current_user; 
-                $query .= getNonAdminAccessControlQuery($module, $current_user); 
 		$query .= "	WHERE vtiger_crmentity.deleted = 0 ";
 		if($usewhere) {
 			$query .= $usewhere;
@@ -260,7 +258,7 @@ class ModCommentsCore extends CRMEntity {
 
 		if(!empty($this->customFieldTable)) {
 			$query .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 		}
 
 		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
@@ -322,7 +320,7 @@ class ModCommentsCore extends CRMEntity {
 		// Consider custom table join as well.
 		if(isset($this->customFieldTable)) {
 			$from_clause .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 		}
 		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
@@ -351,7 +349,7 @@ class ModCommentsCore extends CRMEntity {
 
 		return $query;
 	}
-	
+
 	/*
 	 * Function to get the secondary query part of a report
 	 * @param - $module primary module name
@@ -360,13 +358,13 @@ class ModCommentsCore extends CRMEntity {
 	 */
 	function generateReportsSecQuery($module,$secmodule,$queryplanner){
 		$matrix = $queryplanner->newDependencyMatrix();
-		
+
 		$matrix->setDependency('vtiger_crmentityModComments',array('vtiger_groupsModComments','vtiger_usersModComments', 'vtiger_contactdetailsRelModComments', 'vtiger_modcommentsRelModComments'));
-		$matrix->setDependency('vtiger_modcomments', array('vtiger_crmentityModComments'));
 
 		if (!$queryplanner->requireTable("vtiger_modcomments",$matrix)){
 			return '';
 		}
+		$matrix->setDependency('vtiger_modcomments', array('vtiger_crmentityModComments'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_modcomments","modcommentsid", $queryplanner);
 
@@ -387,7 +385,7 @@ class ModCommentsCore extends CRMEntity {
 		}
 		return $query;
 	}
-	
+
 	/**
 	 * Invoked when special actions are performed on the module.
 	 * @param String Module name

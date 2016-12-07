@@ -17,8 +17,9 @@ class Documents_Folder_Model extends Vtiger_Base_Model {
 	public function checkDuplicate() {
 		$db = PearDatabase::getInstance();
 		$folderName = $this->getName();
-
-		$result = $db->pquery("SELECT 1 FROM vtiger_attachmentsfolder WHERE foldername = ?", array($folderName));
+		$folderId = $this->getId();
+		//added folder id check to support folder edit feature
+		$result = $db->pquery("SELECT 1 FROM vtiger_attachmentsfolder WHERE foldername = ? AND folderid != ?", array($folderName, $folderId));
 		$num_rows = $db->num_rows($result);
 		if ($num_rows > 0) {
 			return true;
@@ -59,17 +60,21 @@ class Documents_Folder_Model extends Vtiger_Base_Model {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$currentUserId = $currentUserModel->getId();
 
-		$result = $db->pquery("SELECT max(sequence) AS max, max(folderid) AS max_folderid FROM vtiger_attachmentsfolder", array());
-		$sequence = $db->query_result($result, 0, 'max') + 1;
-		$folderId = $db->query_result($result,0,'max_folderid') + 1;
-		$params = array($folderId,$folderName, $folderDesc, $currentUserId, $sequence);
+		if($this->get('mode') != 'edit') {
+			$result = $db->pquery("SELECT max(sequence) AS max, max(folderid) AS max_folderid FROM vtiger_attachmentsfolder", array());
+			$sequence = $db->query_result($result, 0, 'max') + 1;
+			$folderId = $db->query_result($result,0,'max_folderid') + 1;
+			$params = array($folderId,$folderName, $folderDesc, $currentUserId, $sequence);
 
-		$db->pquery("INSERT INTO vtiger_attachmentsfolder(folderid,foldername, description, createdby, sequence) VALUES(?, ?, ?, ?, ?)", $params);
-		
-		$this->set('sequence', $sequence);
-		$this->set('createdby', $currentUserId);
-		$this->set('folderid',$folderId);
-		
+			$db->pquery("INSERT INTO vtiger_attachmentsfolder(folderid,foldername, description, createdby, sequence) VALUES(?, ?, ?, ?, ?)", $params);
+
+			$this->set('sequence', $sequence);
+			$this->set('createdby', $currentUserId);
+			$this->set('folderid',$folderId);
+		} else {
+			$db->pquery('UPDATE vtiger_attachmentsfolder SET foldername=?, description=? WHERE folderid=?', array($folderName, $folderDesc, $this->getId()));
+		}
+
 		return $this;
 	}
 
@@ -152,13 +157,17 @@ class Documents_Folder_Model extends Vtiger_Base_Model {
 	function getDescription() {
 		return $this->get('description');
 	}
-	
+
 	/**
 	 * Function to get info array while saving a folder
 	 * @return Array  info array
 	 */
 	public function getInfoArray() {
-		return array('folderName' => $this->getName(),'folderid' => $this->getId());
+		return array(
+			'folderName'=> $this->getName(),
+			'folderid'	=> $this->getId(),
+			'folderDesc'=> $this->getDescription()
+		);
 	}
 
 }

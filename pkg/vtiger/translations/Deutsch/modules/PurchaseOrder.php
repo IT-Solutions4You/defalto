@@ -8,13 +8,14 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_PurchaseOrder'         => 'Einkaufsbestellung'          , 
+    'PurchaseOrder'                => 'Kauforder'          , 
+	'SINGLE_PurchaseOrder'         => 'Kauforder'          , 
 	'LBL_EXPORT_TO_PDF'            => 'Export als PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , 
 	'LBL_ADD_RECORD'               => 'Add Purchase Order'          , 
 	'LBL_RECORDS_LIST'             => 'Einkäufe'                   , 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copy Shipping Address'       , 
-	'LBL_COPY_BILLING_ADDRESS'     => 'Copy Billing Address'        , 
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Kopieren Versandadresse'       , 
+	'LBL_COPY_BILLING_ADDRESS'     => 'Kopieren Rechnungsadresse'        , 
 	'LBL_PO_INFORMATION'           => 'Einkauf'                     , 
 	'PurchaseOrder No'             => 'Einkaufsbestellungen Nr.'    , 
 	'Requisition No'               => 'Bestellnummer'               , 
@@ -25,5 +26,32 @@ $languageStrings = array(
 	'Received Shipment'            => 'Lieferung empfangen'         , 
         'LBL_LIST_PRICE'               => 'Listenpreis',
         'List Price'                   => 'Listenpreis',
-        'LBL_COPY_COMPANY_ADDRESS' => 'Kopieren Firma Adresse',
+    'LBL_COPY_COMPANY_ADDRESS' => 'Kopieren Firma Adresse',
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Kopieren Organisation Adresse',
+	'LBL_SELECT_ADDRESS_OPTION' => 'Wählen Sie Adresse kopieren',
+	'LBL_BILLING_ADDRESS' => 'Rechnungsadresse',
+	'LBL_COMPANY_ADDRESS' => 'Unternehmen Adresse',
+	'LBL_ACCOUNT_ADDRESS' => 'Organisation Adresse',
+	'LBL_VENDOR_ADDRESS' => 'Händler Adresse',
+	'LBL_CONTACT_ADDRESS' => 'Kontakt Adresse',
+    
+
+  'LBL_THIS' => 'Diese',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+
+);
+
+$jsLanguageStrings = array(
+    'JS_ORGANIZATION_NOT_FOUND'=> 'Organisation leer',
+    'JS_ORGANIZATION_NOT_FOUND_MESSAGE'=> 'Bitte wählen Sie eine Organisation, bevor Sie Adresse kopieren',
+	'JS_ACCOUNT_NOT_FOUND' => 'Organisation leer',
+	'JS_ACCOUNT_NOT_FOUND_MESSAGE' =>  'Bitte wählen Sie eine Organisation, bevor Sie Adresse kopieren',
+	'JS_VENDOR_NOT_FOUND' => 'Anbieter Leere', 
+	'JS_VENDOR_NOT_FOUND_MESSAGE' => 'Bitte wählen Sie einen Anbieter, bevor Sie Adresse kopieren',
+	'JS_CONTACT_NOT_FOUND' => 'Kontakt Leere', 
+	'JS_CONTACT_NOT_FOUND_MESSAGE' =>  'Bitte wählen Sie einen Kontakt, bevor Sie Adresse kopieren',
+
+  'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Bitte entfernen Sie werbebuchung, die gelöscht wird',
+
 );

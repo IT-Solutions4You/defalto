@@ -14,9 +14,17 @@ require_once 'modules/WSAPP/Utils.php';
 
 function wsapp_put ($key, $element, $user) {
         $name = wsapp_getApplicationName($key);
-        $handlerDetails  = wsapp_getHandler($name);
-        require_once $handlerDetails['handlerpath'];
-        $handler = new $handlerDetails['handlerclass']($key);
-        return $handler->put($element,$user);
+        if($name){
+            $handlerDetails  = wsapp_getHandler($name);
+            require_once $handlerDetails['handlerpath'];
+            $handler = new $handlerDetails['handlerclass']($key);
+
+            // for Record Source
+            $appNameParts = explode("_",$name);
+            Vtiger_Cache::set('WSAPP', 'appName', strtoupper($appNameParts[0]));
+            
+            return $handler->put($element,$user);
+        }
+        return array();
 }
 

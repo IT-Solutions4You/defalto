@@ -126,15 +126,15 @@ class VtigerCRMObjectMeta extends EntityMeta {
 				}
 			}
 			
-			$sql = 'select * from vtiger_profile2tab where profileid in ('.generateQuestionMarks($profileList).') and tabid = ?;';
-			$result = $adb->pquery($sql,array($profileList,$this->getTabId()));
+			$sql = 'select * from vtiger_profile2tab where profileid in ('.generateQuestionMarks($profileList).') and tabid = ? and permissions = ?';
+			$result = $adb->pquery($sql,array($profileList,$this->getTabId(),0));
 			$standardDefined = false;
-			$permission = $adb->query_result($result,1,"permissions");
-			if($permission == 1 || $permission == "1"){
+			$permission = $adb->num_rows($result);
+			if ($permission > 0) {
+				$this->hasAccess = true;
+			} else {
 				$this->hasAccess = false;
 				return;
-			}else{
-				$this->hasAccess = true;
 			}
 			
 			//operation=2 is delete operation.
@@ -191,7 +191,7 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		}
 		return $this->hasWriteAccess;
 	}
-
+	
 	function hasCreateAccess() {
 		if(!$this->meta) {
 			$this->retrieveMeta();
@@ -293,8 +293,12 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		}
 		if($this->fieldColumnMapping === null){
 			$this->fieldColumnMapping =  array();
-			foreach ($this->moduleFields as $fieldName=>$webserviceField) {
-                if(strcasecmp($webserviceField->getFieldDataType(),'file') !== 0){
+			foreach ($this->moduleFields as $fieldName => $webserviceField) {
+				if ($this->getEntityName() == "Emails") {
+					if (strcasecmp($webserviceField->getFieldDataType(), 'file') !== 0) {
+						$this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
+					}
+				} else {
 					$this->fieldColumnMapping[$fieldName] = $webserviceField->getColumnName();
 				}
 			}
@@ -390,7 +394,7 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		$tabid = $this->getTabId();
 		require('user_privileges/user_privileges_'.$this->user->id.'.php');
 		if($is_admin == true || $profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] ==0){
-			$sql = "select *, '0' as readonly from vtiger_field where tabid =? and block in (".generateQuestionMarks($block).") and displaytype in (1,2,3,4,5)";
+			$sql = "select *, '0' as readonly from vtiger_field where tabid =? and block in (".generateQuestionMarks($block).") and displaytype in (1,2,3,4,5,6)";
 			$params = array($tabid, $block);	
 		}else{
 			$profileList = getCurrentUserProfileList();

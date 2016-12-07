@@ -19,23 +19,22 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$moduleModel = Reports_Module_Model::getInstance($moduleName);
-		
+
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 
 		$record = $request->get('record');
 		if ($record) {
 			$reportModel = Reports_Record_Model::getCleanInstance($record);
 			if (!$reportModel->isEditable()) {
-				throw new AppException('LBL_PERMISSION_DENIED');
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
 	}
 
 	public function preProcess(Vtiger_Request $request) {
-		parent::preProcess($request);
 		$viewer = $this->getViewer($request);
 		$record = $request->get('record');
 		$moduleName = $request->getModule();
@@ -50,7 +49,7 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 
 			if (!$permission) {
 				$viewer->assign('MODULE', $primaryModule);
-				$viewer->assign('MESSAGE', 'LBL_PERMISSION_DENIED');
+				$viewer->assign('MESSAGE', vtranslate('LBL_PERMISSION_DENIED'));
 				$viewer->view('OperationNotPermitted.tpl', $primaryModule);
 				exit;
 			}
@@ -60,8 +59,9 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('VIEW', 'ChartEdit');
+		$viewer->assign('REPORT_TYPE', 'ChartEdit');
 		$viewer->assign('RECORD_MODE', $request->getMode());
-		$viewer->view('EditChartHeader.tpl', $request->getModule());
+		parent::preProcess($request);
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -87,14 +87,14 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 			$reportModel->set($name, $value);
 		}
 
-        $modulesList = $reportModel->getModulesList();
+		$modulesList = $reportModel->getModulesList();
 
 		if (!empty($record)) {
 			$viewer->assign('MODE', 'edit');
 		} else {
-            $firstModuleName = reset($modulesList);
-            if($firstModuleName)
-                $reportModel->setPrimaryModule($firstModuleName);
+			$firstModuleName = reset($modulesList);
+			if($firstModuleName)
+				$reportModel->setPrimaryModule($firstModuleName);
 			$viewer->assign('MODE', '');
 		}
 
@@ -111,12 +111,25 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 			}
 			$relatedModules[$primaryModule] = $translatedRelatedModules;
 		}
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-        $viewer->assign('MODULELIST', $modulesList);
+		$viewer->assign('SCHEDULEDREPORTS', $reportModel->getScheduledReport());
+		$viewer->assign('MODULELIST', $modulesList);
 		$viewer->assign('RELATED_MODULES', $relatedModules);
 		$viewer->assign('REPORT_MODEL', $reportModel);
 		$viewer->assign('REPORT_FOLDERS', $reportFolderModels);
 		$viewer->assign('RECORD_ID', $record);
+		$viewer->assign('CURRENT_USER', $currentUserModel);
+		$viewer->assign('ROLES', Settings_Roles_Record_Model::getAll());
+		$admin = Users::getActiveAdminUser();
+		$viewer->assign('ACTIVE_ADMIN', $admin);
+		$viewer->assign('TYPE', 'Chart');
+		$viewer->assign('REPORT_TYPE',$request->get('view'));
+
+		//Sharing access to users and groups
+		$sharedMembers = $reportModel->getMembers();
+		$viewer->assign('SELECTED_MEMBERS_GROUP', $sharedMembers);
+		$viewer->assign('MEMBER_GROUPS',  Settings_Groups_Member_Model::getAll());
 
 		if ($request->get('isDuplicate')) {
 			$viewer->assign('IS_DUPLICATE', true);
@@ -131,12 +144,17 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		$record = $request->get('record');
 
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
-		if (!empty($record) && !$request->get('isDuplicate')) {
+		if (!empty($record)) {
 			$viewer->assign('SELECTED_STANDARD_FILTER_FIELDS', $reportModel->getSelectedStandardFilter());
 			$viewer->assign('SELECTED_ADVANCED_FILTER_FIELDS', $reportModel->transformToNewAdvancedFilter());
 		}
 		$data = $request->getAll();
 		foreach ($data as $name => $value) {
+			if($name == 'schdayoftheweek' || $name == 'schdayofthemonth' || $name == 'schannualdates' || $name == 'recipients') {
+				if(is_string($value)) {
+					$value = array($value);
+				}
+			}
 			$reportModel->set($name, $value);
 		}
 		$primaryModule = $request->get('primary_module');
@@ -148,8 +166,8 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 
 			$secondaryModules = explode(':',$secondaryModules);
 		}else{
-            $secondaryModules = array();
-        }
+			$secondaryModules = array();
+		}
 
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('REPORT_MODEL', $reportModel);
@@ -157,18 +175,20 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($reportModel);
 		$primaryModuleRecordStructure = $recordStructureInstance->getPrimaryModuleRecordStructure();
-		$secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure();
+				if($secondaryModules) {
+					$secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure();
+				}
 
 		$viewer->assign('SECONDARY_MODULES',$secondaryModules);
 		$viewer->assign('PRIMARY_MODULE_RECORD_STRUCTURE', $primaryModuleRecordStructure);
 		$viewer->assign('SECONDARY_MODULE_RECORD_STRUCTURES', $secondaryModuleRecordStructures);
-        $dateFilters = Vtiger_Field_Model::getDateFilterTypes();
-        foreach($dateFilters as $comparatorKey => $comparatorInfo) {
-            $comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
-            $comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
-            $comparatorInfo['label'] = vtranslate($comparatorInfo['label'],$moduleName);
-            $dateFilters[$comparatorKey] = $comparatorInfo;
-        }
+		$dateFilters = Vtiger_Field_Model::getDateFilterTypes();
+		foreach($dateFilters as $comparatorKey => $comparatorInfo) {
+			$comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
+			$comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
+			$comparatorInfo['label'] = vtranslate($comparatorInfo['label'],$moduleName);
+			$dateFilters[$comparatorKey] = $comparatorInfo;
+		}
 		$viewer->assign('DATE_FILTERS', $dateFilters);
 
 		if(($primaryModule == 'Calendar') || (in_array('Calendar', $secondaryModules))){
@@ -203,6 +223,12 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		}
 		$data = $request->getAll();
 		foreach ($data as $name => $value) {
+			if($name == 'schdayoftheweek' || $name == 'schdayofthemonth' || $name == 'schannualdates' || $name == 'recipients' || $name == 'members') {
+				$value = Zend_Json::decode($value);
+				if(!is_array($value)) {
+					$value = array($value);
+				}
+			}
 			$reportModel->set($name, $value);
 		}
 		$primaryModule = $request->get('primary_module');
@@ -213,8 +239,9 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 			$reportModel->setSecondaryModule($secondaryModules);
 			$secondaryModules = explode(':',$secondaryModules);
 		} else {
-            $secondaryModules = array();
-        }
+			$secondaryModules = array();
+			$reportModel->setSecondaryModule('');
+		}
 
 		$chartModel = Reports_Chart_Model::getInstanceById($reportModel);
 		$viewer->assign('CHART_MODEL', $chartModel);
@@ -263,5 +290,16 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
+	}
+
+	function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$moduleName = $request->getModule();
+		$cssFileNames = array(
+			'~libraries/jquery/jquery.datepick.package-4.1.0/jquery.datepick.css',
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($cssInstances, $headerCssInstances);
+		return $headerCssInstances;
 	}
 }

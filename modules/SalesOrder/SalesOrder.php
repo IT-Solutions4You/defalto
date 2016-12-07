@@ -94,7 +94,7 @@ class SalesOrder extends CRMEntity {
 	var $default_sort_order = 'ASC';
 	//var $groupTable = Array('vtiger_sogrouprelation','salesorderid');
 
-	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id');
+	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id','quantity', 'listprice', 'productid');
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'subject';
@@ -114,14 +114,15 @@ class SalesOrder extends CRMEntity {
 
 	function save_module($module)
 	{
-
-		//Checking if quote_id is present and updating the quote status
-		if($this->column_fields["quote_id"] != '')
-		{
-        		$qt_id = $this->column_fields["quote_id"];
-        		$query1 = "update vtiger_quotes set quotestage='Accepted' where quoteid=?";
-        		$this->db->pquery($query1, array($qt_id));
+		/* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
+		 * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
+		 * This should be done by webservices, not be normal save of Inventory record.
+		 * So unsetting the value $_REQUEST['totalProductCount'] through check point
+		 */
+		if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
+			unset($_REQUEST['totalProductCount']);
 		}
+
 
 		//in ajax save we should not call this function, because this will delete all the existing product values
 		if($_REQUEST['action'] != 'SalesOrderAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
@@ -330,14 +331,14 @@ class SalesOrder extends CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentitySalesOrder', array('vtiger_usersSalesOrder', 'vtiger_groupsSalesOrder', 'vtiger_lastModifiedBySalesOrder'));
 		$matrix->setDependency('vtiger_inventoryproductrelSalesOrder', array('vtiger_productsSalesOrder', 'vtiger_serviceSalesOrder'));
-		$matrix->setDependency('vtiger_salesorder',array('vtiger_crmentitySalesOrder', "vtiger_currency_info$secmodule",
+		if (!$queryPlanner->requireTable('vtiger_salesorder', $matrix)) {
+			return '';
+		}
+        $matrix->setDependency('vtiger_salesorder',array('vtiger_crmentitySalesOrder', "vtiger_currency_info$secmodule",
 				'vtiger_salesordercf', 'vtiger_potentialRelSalesOrder', 'vtiger_sobillads','vtiger_soshipads',
 				'vtiger_inventoryproductrelSalesOrder', 'vtiger_contactdetailsSalesOrder', 'vtiger_accountSalesOrder',
 				'vtiger_invoice_recurring_info','vtiger_quotesSalesOrder'));
 
-		if (!$queryPlanner->requireTable('vtiger_salesorder', $matrix)) {
-			return '';
-		}
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_salesorder","salesorderid", $queryPlanner);
 		if ($queryPlanner->requireTable("vtiger_crmentitySalesOrder",$matrix)){
@@ -356,21 +357,12 @@ class SalesOrder extends CRMEntity {
 			$query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_salesorder.currency_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_inventoryproductrelSalesOrder", $matrix)){
-			$query .= " left join vtiger_inventoryproductrel as vtiger_inventoryproductrelSalesOrder on vtiger_salesorder.salesorderid = vtiger_inventoryproductrelSalesOrder.id";
-            // To Eliminate duplicates in reports
-            if(($module == 'Products' || $module == 'Services') && $secmodule == "SalesOrder"){
-                if($module == 'Products'){
-                    $query .= " and vtiger_inventoryproductrelSalesOrder.productid = vtiger_products.productid ";    
-                }else if($module == 'Services'){
-                    $query .= " and vtiger_inventoryproductrelSalesOrder.productid = vtiger_service.serviceid "; 
-                }
-            }
 		}
 		if ($queryPlanner->requireTable("vtiger_productsSalesOrder")){
-			$query .= " left join vtiger_products as vtiger_productsSalesOrder on vtiger_productsSalesOrder.productid = vtiger_inventoryproductrelSalesOrder.productid";
+			$query .= " left join vtiger_products as vtiger_productsSalesOrder on vtiger_productsSalesOrder.productid = vtiger_inventoryproductreltmpSalesOrder.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_serviceSalesOrder")){
-			$query .= " left join vtiger_service as vtiger_serviceSalesOrder on vtiger_serviceSalesOrder.serviceid = vtiger_inventoryproductrelSalesOrder.productid";
+			$query .= " left join vtiger_service as vtiger_serviceSalesOrder on vtiger_serviceSalesOrder.serviceid = vtiger_inventoryproductreltmpSalesOrder.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsSalesOrder")){
 			$query .= " left join vtiger_groups as vtiger_groupsSalesOrder on vtiger_groupsSalesOrder.groupid = vtiger_crmentitySalesOrder.smownerid";
@@ -396,7 +388,7 @@ class SalesOrder extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_lastModifiedBySalesOrder")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedBySalesOrder on vtiger_lastModifiedBySalesOrder.id = vtiger_crmentitySalesOrder.modifiedby ";
 		}
-        if ($queryPlanner->requireTable("vtiger_createdbySalesOrder")){
+		if ($queryPlanner->requireTable("vtiger_createdbySalesOrder")){
 			$query .= " left join vtiger_users as vtiger_createdbySalesOrder on vtiger_createdbySalesOrder.id = vtiger_crmentitySalesOrder.smcreatorid ";
 		}
 		return $query;
@@ -435,10 +427,11 @@ class SalesOrder extends CRMEntity {
 		elseif($return_module == 'Contacts') {
 			$relation_query = 'UPDATE vtiger_salesorder SET contactid=? WHERE salesorderid=?';
 			$this->db->pquery($relation_query, array(null, $id));
-		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+		} elseif($return_module == 'Documents') {
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+            $this->db->pquery($sql, array($id, $return_id));
+        } else {
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -536,10 +529,11 @@ class SalesOrder extends CRMEntity {
 	 * @param <String> $tableColumns
 	 * @param <String> $selectedColumns
 	 * @param <Boolean> $ignoreEmpty
+     * @param <Array> $requiredTables 
 	 * @return string
 	 */
 	// Note : remove getDuplicatesQuery API once vtiger5 code is removed
-    function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false) {
+    function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false,$requiredTables = array()) {
 		if(is_array($tableColumns)) {
 			$tableColumnsString = implode(',', $tableColumns);
 		}
@@ -555,7 +549,7 @@ class SalesOrder extends CRMEntity {
 
 		if($this->tab_name) {
 			foreach($this->tab_name as $tableName) {
-				if($tableName != 'vtiger_crmentity' && $tableName != $this->table_name && $tableName != 'vtiger_inventoryproductrel') {
+				if($tableName != 'vtiger_crmentity' && $tableName != $this->table_name && $tableName != 'vtiger_inventoryproductrel' && in_array($tableName,$requiredTables)) {
                     if($tableName == 'vtiger_invoice_recurring_info') {
 						$fromClause .= " LEFT JOIN " . $tableName . " ON " . $tableName . '.' . $this->tab_name_index[$tableName] .
 							" = $this->table_name.$this->table_index";
@@ -605,6 +599,14 @@ class SalesOrder extends CRMEntity {
         return $query;
     }
 
+	/**
+	 * Function to get importable mandatory fields
+	 * By default some fields like Quantity, List Price is not mandaroty for Invertory modules but
+	 * import fails if those fields are not mapped during import.
+	 */
+	function getMandatoryImportableFields() {
+		return getInventoryImportableMandatoryFeilds($this->moduleName);
+	}
 }
 
 ?>

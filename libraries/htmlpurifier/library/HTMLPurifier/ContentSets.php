@@ -7,7 +7,7 @@ class HTMLPurifier_ContentSets
 {
 
     /**
-     * List of content set strings (pipe separators) indexed by name.
+     * List of content set strings (pipe seperators) indexed by name.
      */
     public $info = array();
 

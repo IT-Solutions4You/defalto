@@ -24,7 +24,7 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType {
 	 * @return <Object>
 	 */
 	public function getDisplayValue($value) {
-		return $dateValue = self::getDisplayDateTimeValue($value);
+		return $dateValue = ($value != '') ? self::getDisplayDateTimeValue($value) : '--';
 	}
 	
 	/**
@@ -37,7 +37,7 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType {
 		return $date->getDisplayDateTimeValue();
 	}
 
-    /**
+	/**
 	 * Function to get Date and Time value for Display
 	 * @param <type> $date
 	 * @return <String>

@@ -13,11 +13,15 @@
  */
 class Vtiger_DetailRecordStructure_Model extends Vtiger_RecordStructure_Model {
 
+	private $picklistValueMap = array();
+	private $picklistRoleMap = array();
+
 	/**
 	 * Function to get the values in stuctured format
 	 * @return <array> - values in structure array('block'=>array(fieldinfo));
 	 */
 	public function getStructure() {
+		$currentUsersModel = Users_Record_Model::getCurrentUserModel();
 		if(!empty($this->structuredValues)) {
 			return $this->structuredValues;
 		}
@@ -34,7 +38,36 @@ class Vtiger_DetailRecordStructure_Model extends Vtiger_RecordStructure_Model {
 				foreach($fieldModelList as $fieldName=>$fieldModel) {
 					if($fieldModel->isViewableInDetailView()) {
 						if($recordExists) {
-							$fieldModel->set('fieldvalue', $recordModel->get($fieldName));
+							$value = $recordModel->get($fieldName);
+							if(!$currentUsersModel->isAdminUser() && ($fieldModel->getFieldDataType() == 'picklist' || $fieldModel->getFieldDataType() == 'multipicklist')) {
+								$value = decode_html($value);
+								$this->setupAccessiblePicklistValueList($fieldName);
+								if($fieldModel->getFieldDataType() == 'picklist') {
+									if ($value != '' && $this->picklistRoleMap[$fieldName] && !in_array($value, $this->picklistValueMap[$fieldName]) && strtolower($value) != '--none--' && strtolower($value) != 'none' ) {
+										$value = "<font color='red'>". vtranslate('LBL_NOT_ACCESSIBLE',
+										$moduleModel->getName())."</font>";
+									}
+								}
+								if($fieldModel->getFieldDataType() == 'multipicklist') {
+									if (!$currentUsersModel->isAdminUser() && $value != '') {
+										$valueArray = ($value != "") ? explode(' |##| ', $value) : array();
+										$notaccess = '<font color="red">'.vtranslate('LBL_NOT_ACCESSIBLE', $moduleModel->getName())."</font>";
+										$tmp = '';
+										$tmpArray = array();
+										foreach ($valueArray as $val) {
+											if (!$currentUsersModel->isAdminUser() && $this->picklistRoleMap[$fieldName] && !in_array(trim($val), $this->picklistValueMap[$fieldName])) {
+													$tmpArray[] = $notaccess;
+													$tmp .= ', '.$notaccess;
+												} else {
+													$tmpArray[] = $val;
+													$tmp .= ', '.$val;
+												}
+										}
+										$value = implode(' |##| ', $tmpArray);
+									}
+								}
+							} 
+							$fieldModel->set('fieldvalue', $value);
 						}
 						$values[$blockLabel][$fieldName] = $fieldModel;
 					}
@@ -44,4 +77,16 @@ class Vtiger_DetailRecordStructure_Model extends Vtiger_RecordStructure_Model {
 		$this->structuredValues = $values;
 		return $values;
 	}
+
+	public function setupAccessiblePicklistValueList($name) {
+		$db = PearDatabase::getInstance();
+		$currentUsersModel = Users_Record_Model::getCurrentUserModel();
+		$roleId = $currentUsersModel->getRole();
+		$isRoleBased = vtws_isRoleBasedPicklist($name);
+		$this->picklistRoleMap[$name] = $isRoleBased;
+		if ($this->picklistRoleMap[$name]) {
+			$this->picklistValueMap[$name] = getAssignedPicklistValues($name, $roleId, $db);
+		}
+	}
+
 }

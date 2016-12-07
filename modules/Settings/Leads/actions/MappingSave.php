@@ -13,24 +13,26 @@ class Settings_Leads_MappingSave_Action extends Settings_Vtiger_Index_Action {
 	public function process(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 		$mapping = $request->get('mapping');
-		$csrfKey = $GLOBALS['csrf']['input-name'];
-		if(array_key_exists($csrfKey,$mapping)){
-			unset($mapping[$csrfKey]);
-		}
-		$mappingModel = Settings_Leads_Mapping_Model::getCleanInstance();
+
+        //removing csrf token from mapping array because it'll cause query failure
+        $csrfKey = '__vtrftk';
+        if (array_key_exists($csrfKey, $mapping)) {
+            unset($mapping[$csrfKey]);
+        }
+        
+        $mappingModel = Settings_Leads_Mapping_Model::getCleanInstance();
 
 		$response = new Vtiger_Response();
 		if ($mapping) {
 			$mappingModel->save($mapping);
-            $result = array('status' => true);
+			$response->setResult(array(vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName)));
 		} else {
-            $result['status'] = false;
+			$response->setError(vtranslate('LBL_INVALID_MAPPING', $qualifiedModuleName));
 		}
-        $response->setResult($result);
-		return $response->emit();
+		$response->emit();
 	}
-
-	public function validateRequest(Vtiger_Request $request){
-		$request->validateWriteAccess();
-	}
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

@@ -9,37 +9,37 @@
  *************************************************************************************/
 
 class Portal_Detail_View extends Vtiger_Index_View {
-    
-    function preProcess(Vtiger_Request $request, $display=true) {
-        parent::preProcess($request);
-    }
-    
-    public function process(Vtiger_Request $request) {
-        $recordId = $request->get('record');
-        $module = $request->getModule();
-        
-        $url = Portal_Module_Model::getWebsiteUrl($recordId);
-        $recordList = Portal_Module_Model::getAllRecords();
-        
-        $viewer = $this->getViewer($request);
-        
-        $viewer->assign('MODULE', $module);
-        $viewer->assign('RECORD_ID', $recordId);
-        $viewer->assign('URL', $url);
-        $viewer->assign('RECORDS_LIST', $recordList);
-        
-        $viewer->view('DetailView.tpl', $module);
-    }
-    
-    function getHeaderScripts(Vtiger_Request $request) {
+
+	function preProcess(Vtiger_Request $request, $display=true) {
+		parent::preProcess($request);
+	}
+
+	public function process(Vtiger_Request $request) {
+		$recordId = $request->get('record');
+		$module = $request->getModule();
+
+		$url = Portal_Module_Model::getWebsiteUrl($recordId);
+		$recordList = Portal_Module_Model::getAllRecords();
+
+		$viewer = $this->getViewer($request);
+
+		$viewer->assign('MODULE', $module);
+		$viewer->assign('RECORD_ID', $recordId);
+		$viewer->assign('URL', $url);
+		$viewer->assign('RECORDS_LIST', $recordList);
+
+		$viewer->view('DetailView.tpl', $module);
+	}
+
+	function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
 			'modules.Vtiger.resources.List',
-            'modules.Vtiger.resources.Detail',
+			'modules.Vtiger.resources.Detail',
 			"modules.$moduleName.resources.List",
-            "modules.$moduleName.resources.Detail",
+			"modules.$moduleName.resources.Detail",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

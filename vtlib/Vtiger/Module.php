@@ -16,7 +16,7 @@ include_once('vtlib/Vtiger/ModuleBasic.php');
  */
 class Vtiger_Module extends Vtiger_ModuleBasic {
 
-        /**
+	/**
 	 * Function to get the Module/Tab id
 	 * @return <Number>
 	 */
@@ -54,7 +54,7 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 	 *
 	 * @internal Creates table vtiger_crmentityrel if it does not exists
 	 */
-	function setRelatedList($moduleInstance, $label='', $actions=false, $function_name='get_related_list') {
+	function setRelatedList($moduleInstance, $label = '', $actions = false, $function_name = 'get_related_list', $fieldId = null) {
 		global $adb;
 
 		if(empty($moduleInstance)) return;
@@ -83,8 +83,8 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 		// Add column to vtiger_relatedlists to save extended actions
 		Vtiger_Utils::AddColumn('vtiger_relatedlists', 'actions', 'VARCHAR(50)');
 
-		$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence,actions) VALUES(?,?,?,?,?,?,?,?)",
-			Array($relation_id,$this->id,$moduleInstance->id,$function_name,$sequence,$label,$presence,$useactions_text));
+		$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence,actions,relationfieldid) VALUES(?,?,?,?,?,?,?,?,?)",
+			Array($relation_id,$this->id,$moduleInstance->id,$function_name,$sequence,$label,$presence,$useactions_text,$fieldId));
 
 		self::log("Setting relation with $moduleInstance->name [$useactions_text] ... DONE");
 	}
@@ -106,6 +106,11 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 			Array($this->id, $moduleInstance->id, $function_name, $label));
 
 		self::log("Unsetting relation with $moduleInstance->name ... DONE");
+	}
+    
+	function unsetRelatedListForField($fieldId) {
+		$db = PearDatabase::getInstance();
+		$db->pquery("DELETE FROM vtiger_relatedlists WHERE relationfieldid=?", array($fieldId));
 	}
 
 	/**
@@ -167,13 +172,19 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 	 * @param mixed id or name of the module
 	 */
 	static function getInstance($value) {
-		$instance = false;
-		$data = Vtiger_Functions::getModuleData($value);
-		if ($data) {
-			$instance = new self();
-			$instance->initialize($data);
+		$instance = Vtiger_Cache::get('module', $value);
+		if (!$instance && $instance !== NULL) {
+			$data = Vtiger_Functions::getModuleData($value);
+			if ($data) {
+				$instance = new self();
+				$instance->initialize($data);
+				Vtiger_Cache::set('module', $instance->id, $instance);
+				Vtiger_Cache::set('module', $instance->name, $instance);
+			} else {
+				Vtiger_Cache::set('module', $value, NULL);
+			}
 		}
-		return $instance;
+		return $instance ? $instance : false;
 	}
 
 	/**

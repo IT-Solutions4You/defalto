@@ -18,7 +18,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$widgetLinks = parent::getWidgets();
 		$widgets = array();
-		
+
 		$helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
 		if($userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'DetailView')) {
 			$createPermission = $userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'CreateView');
@@ -34,7 +34,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		$projectMileStoneInstance = Vtiger_Module_Model::getInstance('ProjectMilestone');
-		if($userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'DetailView')) {
+		if($userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission($projectMileStoneInstance->getId())) {
 			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
@@ -48,7 +48,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		$projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
-		if($userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'DetailView')) {
+		if($userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
 			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
@@ -81,5 +81,23 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		return $widgetLinks;
+	}
+
+	/**
+	 * Function to get the detail view related links
+	 * @return <array> - list of links parameters
+	 */
+	public function getDetailViewRelatedLinks() {
+		$relatedLinks = parent::getDetailViewRelatedLinks();
+		$recordModel = $this->getRecord();
+		$moduleName = $recordModel->getModuleName();
+		$relatedLinks[] = array(
+			'linktype' => 'DETAILVIEWTAB',
+			'linklabel' => vtranslate('LBL_CHART', $moduleName),
+			'linkurl' => $recordModel->getDetailViewUrl().'&mode=showChart',
+			'linkicon' => ''
+			);
+
+		return $relatedLinks;
 	}
 }

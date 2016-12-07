@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -69,7 +69,35 @@ $languageStrings = array(
 	'LBL_DETAILS' => 'Uppgifter',
 	'skipped' => 'Hoppa över Poster',
 	'failed' => 'Misslyckade Poster',
-        'Skip'    =>'SKIP',
-        'Overwrite' =>'Skriv över',
-        'Merge'    =>'Sammanfoga',
+    
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'Valuta (rader)',
+
+	'LBL_SKIP_THIS_STEP' => 'Hoppa över det här steget',
+	'LBL_UPLOAD_ICS' => 'Ladda upp ICS-fil',
+	'LBL_ICS_FILE' => 'ICS Arkiv',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'Import från ICS-fil',
+	'LBL_SELECT_ICS_FILE' => 'Välj ICS-fil',
+
+  'LBL_USE_SAVED_MAPS' => 'Använda Sparade Kartor',
+  'LBL_IMPORT_MAP_FIELDS' => 'Karta coloumns att CRM-fält',
+  'LBL_UPLOAD_CSV' => 'Ladda upp CSV-Fil',
+  'LBL_UPLOAD_VCF' => 'Ladda upp VCF-Fil',
+  'LBL_DUPLICATE_HANDLING' => 'Dubbla Hantering',
+  'LBL_FIELD_MAPPING' => 'Fältmappning',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'Import från CSV-fil',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'Var skulle du vilja importera från ?',
+  'LBL_CSV_FILE' => 'CSV-Fil',
+  'LBL_VCF_FILE' => 'VCF-Fil',
+  'LBL_GOOGLE' => 'Google',
+  'LBL_IMPORT_COMPLETED' => 'Importera Avslutats',
+  'LBL_IMPORT_SUMMARY' => 'Importera sammanfattning',
+  'LBL_DELETION_COMPLETED' => 'Radering Klar',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'Totalt antal poster skannade',
+  'LBL_SKIP_BUTTON' => 'Hoppa över',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'Dubblettpost hantering',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'Import från VCF-fil',
+  'LBL_SELECT_VCF_FILE' => 'Välj VCF-fil',
+  'LBL_DONE_BUTTON' => 'Gjort',
+  'LBL_DELETION_SUMMARY' => 'Ta bort sammanfattning',
+
 );

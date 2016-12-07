@@ -15,7 +15,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> - Entity Display Name for the record
 	 */
 	function getDisplayName() {
-		return Vtiger_Util_Helper::getLabel($this->getId());
+		return Vtiger_Util_Helper::getRecordName($this->getId());
 	}
 
 	function getDownloadFileURL() {
@@ -41,7 +41,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 			if (!empty ($fileDetails)) {
 				$filePath = $fileDetails['path'];
 
-				$savedFile = $fileDetails['attachmentsid']."_".$this->get('filename');
+				$savedFile = $fileDetails['attachmentsid']."_".decode_html($this->get('filename'));
 
 				if(fopen($filePath.$savedFile, "r")) {
 					$returnValue = true;
@@ -77,6 +77,9 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 				$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
 				$savedFile = $fileDetails['attachmentsid']."_".$fileName;
 
+				while(ob_get_level()) {
+					ob_end_clean();
+				}
 				$fileSize = filesize($filePath.$savedFile);
 				$fileSize = $fileSize + ($fileSize % 1024);
 
@@ -86,18 +89,19 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 					header("Content-type: ".$fileDetails['type']);
 					header("Pragma: public");
 					header("Cache-Control: private");
-					header("Content-Disposition: attachment; filename=$fileName");
+					header("Content-Disposition: attachment; filename=\"$fileName\"");
 					header("Content-Description: PHP Generated Data");
+                    header("Content-Encoding: none");
 				}
 			}
 		}
 		echo $fileContent;
 	}
 
-	function updateFileStatus($status) {
+	function updateFileStatus() {
 		$db = PearDatabase::getInstance();
 
-                $db->pquery("UPDATE vtiger_notes SET filestatus = ? WHERE notesid= ?", array($status,$this->get('id')));
+		$db->pquery("UPDATE vtiger_notes SET filestatus = 0 WHERE notesid= ?", array($this->get('id')));
 	}
 
 	function updateDownloadCount() {
@@ -121,5 +125,5 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		}
 		return $value;
 	}
-
+    
 }

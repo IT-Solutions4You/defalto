@@ -35,39 +35,39 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 	 * @param <Vtiger_Request> $request
 	 */
 	public function massSave(Vtiger_Request $request) {
-        global $upload_badext;
-        $adb = PearDatabase::getInstance();
+		global $upload_badext;
+		$adb = PearDatabase::getInstance();
 
 		$moduleName = $request->getModule();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$recordIds = $this->getRecordsListFromRequest($request);
 		$documentIds = $request->get('documentids');
-
+		$signature = $request->get('signature');
 		// This is either SENT or SAVED
 		$flag = $request->get('flag');
 
 		$result = Vtiger_Util_Helper::transformUploadedFiles($_FILES, true);
 		$_FILES = $result['file'];
 
-        $recordId = $request->get('record');
+		$recordId = $request->get('record');
 
-        if(!empty($recordId)) {
-            $recordModel = Vtiger_Record_Model::getInstanceById($recordId,$moduleName);
-            $recordModel->set('mode', 'edit');
-        }else{
-            $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-            $recordModel->set('mode', '');
-        }
+		if(!empty($recordId)) {
+			$recordModel = Vtiger_Record_Model::getInstanceById($recordId,$moduleName);
+			$recordModel->set('mode', 'edit');
+		}else{
+			$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+			$recordModel->set('mode', '');
+		}
 
 
-        $parentEmailId = $request->get('parent_id',null);
-        $attachmentsWithParentEmail = array();
-        if(!empty($parentEmailId) && !empty ($recordId)) {
-            $parentEmailModel = Vtiger_Record_Model::getInstanceById($parentEmailId);
-            $attachmentsWithParentEmail = $parentEmailModel->getAttachmentDetails();
-        }
-        $existingAttachments = $request->get('attachments',array());
-        if(empty($recordId)) {
+		$parentEmailId = $request->get('parent_id',null);
+		$attachmentsWithParentEmail = array();
+		if(!empty($parentEmailId) && !empty ($recordId)) {
+			$parentEmailModel = Vtiger_Record_Model::getInstanceById($parentEmailId);
+			$attachmentsWithParentEmail = $parentEmailModel->getAttachmentDetails();
+		}
+		$existingAttachments = $request->get('attachments',array());
+		if(empty($recordId)) {
 			if(is_array($existingAttachments)) {
 				foreach ($existingAttachments as $index =>  $existingAttachInfo) {
 					$existingAttachInfo['tmp_name'] = $existingAttachInfo['name'];
@@ -79,43 +79,43 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 
 				}
 			}
-        }else{
-            //If it is edit view unset the exising attachments
-            //remove the exising attachments if it is in edit view
+		}else{
+			//If it is edit view unset the exising attachments
+			//remove the exising attachments if it is in edit view
 
-            $attachmentsToUnlink = array();
-            $documentsToUnlink = array();
+			$attachmentsToUnlink = array();
+			$documentsToUnlink = array();
 
 
-            foreach($attachmentsWithParentEmail as $i => $attachInfo) {
-                $found = false;
-                foreach ($existingAttachments as $index =>  $existingAttachInfo) {
-                    if($attachInfo['fileid'] == $existingAttachInfo['fileid']) {
-                        $found = true;
-                        break;
-                    }
-                }
-                //Means attachment is deleted
-                if(!$found) {
-                    if(array_key_exists('docid',$attachInfo)) {
-                        $documentsToUnlink[] = $attachInfo['docid'];
-                    }else{
-                        $attachmentsToUnlink[] = $attachInfo;
-                    }
-                }
-                unset($attachmentsWithParentEmail[$i]);
-            }
-            //Make the attachments as empty for edit view since all the attachments will already be there
-            $existingAttachments = array();
-            if(!empty($documentsToUnlink)) {
-                $recordModel->deleteDocumentLink($documentsToUnlink);
-            }
+			foreach($attachmentsWithParentEmail as $i => $attachInfo) {
+				$found = false;
+				foreach ($existingAttachments as $index =>  $existingAttachInfo) {
+					if($attachInfo['fileid'] == $existingAttachInfo['fileid']) {
+						$found = true;
+						break;
+					}
+				}
+				//Means attachment is deleted
+				if(!$found) {
+					if(array_key_exists('docid',$attachInfo)) {
+						$documentsToUnlink[] = $attachInfo['docid'];
+					}else{
+						$attachmentsToUnlink[] = $attachInfo;
+					}
+				}
+				unset($attachmentsWithParentEmail[$i]);
+			}
+			//Make the attachments as empty for edit view since all the attachments will already be there
+			$existingAttachments = array();
+			if(!empty($documentsToUnlink)) {
+				$recordModel->deleteDocumentLink($documentsToUnlink);
+			}
 
-            if(!empty($attachmentsToUnlink)){
-                $recordModel->deleteAttachment($attachmentsToUnlink);
-            }
+			if(!empty($attachmentsToUnlink)){
+				$recordModel->deleteAttachment($attachmentsToUnlink);
+			}
 
-        }
+		}
 
 
 		// This will be used for sending mails to each individual
@@ -126,16 +126,20 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 			$to = implode(',',$to);
 		}
 
-
-		$recordModel->set('description', $request->get('description'));
+		$content = $request->getRaw('description');
+		$processedContent = Emails_Mailer_Model::getProcessedContent($content); // To remove script tags
+		$mailerInstance = Emails_Mailer_Model::getInstance();
+		$processedContentWithURLS = $mailerInstance->convertToValidURL($processedContent);
+		$recordModel->set('description', $processedContentWithURLS);
 		$recordModel->set('subject', $request->get('subject'));
-        $recordModel->set('toMailNamesList',$request->get('toMailNamesList'));
+		$recordModel->set('toMailNamesList',$request->get('toMailNamesList'));
 		$recordModel->set('saved_toid', $to);
 		$recordModel->set('ccmail', $request->get('cc'));
 		$recordModel->set('bccmail', $request->get('bcc'));
 		$recordModel->set('assigned_user_id', $currentUserModel->getId());
 		$recordModel->set('email_flag', $flag);
 		$recordModel->set('documentids', $documentIds);
+		$recordModel->set('signature',$signature);
 
 		$recordModel->set('toemailinfo', $toMailInfo);
 		foreach($toMailInfo as $recordId=>$emailValueList) {
@@ -155,10 +159,24 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		if ($recordModel->checkUploadSize($documentIds)) {
 			$recordModel->save();
 
-            //To Handle existing attachments
-            $current_user = Users_Record_Model::getCurrentUserModel();
-            $ownerId = $recordModel->get('assigned_user_id');
-            $date_var = date("Y-m-d H:i:s");
+			// To add entry in ModTracker for email relation
+			$emailRecordId = $recordModel->getId();
+			foreach ($toMailInfo as $recordId => $emailValueList) {
+				$relatedModule = $recordModel->getEntityType($recordId);
+				if (!empty($relatedModule) && $relatedModule != 'Users') {
+					$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
+					$relationModel = Vtiger_Relation_Model::getInstance($relatedModuleModel, $recordModel->getModule());
+					if ($relationModel) {
+						$relationModel->addRelation($recordId, $emailRecordId);
+					}
+				}
+			}
+			// End
+
+			//To Handle existing attachments
+			$current_user = Users_Record_Model::getCurrentUserModel();
+			$ownerId = $recordModel->get('assigned_user_id');
+			$date_var = date("Y-m-d H:i:s");
 			if(is_array($existingAttachments)) {
 				foreach ($existingAttachments as $index =>  $existingAttachInfo) {
 					$file_name = $existingAttachInfo['attachment'];
@@ -215,10 +233,11 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		}
 		$viewer->assign('SUCCESS', $success);
 		$viewer->assign('MESSAGE', $message);
-        $loadRelatedList = $request->get('related_load');
-        if(!empty($loadRelatedList)){
-            $viewer->assign('RELATED_LOAD',true);
-        }
+		$viewer->assign('MODULE',$moduleName);
+		$loadRelatedList = $request->get('related_load');
+		if(!empty($loadRelatedList)){
+			$viewer->assign('RELATED_LOAD',true);
+		}
 		$viewer->view('SendEmailResult.tpl', $moduleName);
 	}
 
@@ -251,18 +270,18 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 				$searchKey = $request->get('search_key');
 				$searchValue = $request->get('search_value');
 				$operator = $request->get('operator');
-                if(!empty($operator)) {
-                    $customViewModel->set('operator', $operator);
-                    $customViewModel->set('search_key', $searchKey);
-                    $customViewModel->set('search_value', $searchValue);
-                }
+				if(!empty($operator)) {
+					$customViewModel->set('operator', $operator);
+					$customViewModel->set('search_key', $searchKey);
+					$customViewModel->set('search_value', $searchValue);
+				}
 				return $customViewModel->getRecordIds($excludedIds);
 			}
 		}
-        return array();
+		return array();
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateWriteAccess();
-    }
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

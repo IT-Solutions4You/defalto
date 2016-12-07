@@ -14,8 +14,10 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * Function to get the Detail View url for the record
 	 * @return <String> - Record Detail View Url
 	 */
-	public function getDetailViewUrl() {
-		list($parentId, $status) = explode('@', reset(array_filter(explode('|', $this->get('parent_id')))));
+	public function getDetailViewUrl($parentId = false) {
+        if(!$parentId) {
+            list($parentId, $status) = explode('@', reset(array_filter(explode('|', $this->get('parent_id')))));
+        }
 		return 'Javascript:Vtiger_Index_Js.showEmailPreview("'.$this->getId().'","'.$parentId.'")';
 	}
 
@@ -23,11 +25,11 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * Function to save an Email
 	 */
 	public function save() {
-            //Opensource fix for MailManager data mail attachment
-		if($this->get('email_flag')!="MailManager"){ 
-                    $this->set('date_start', date('Y-m-d')); 
-                    $this->set('time_start', date('H:i')); 
-                }
+		//Opensource fix for MailManager data mail attachment
+        if($this->get('email_flag')!='MailManager'){
+            $this->set('date_start', date('Y-m-d'));
+            $this->set('time_start', date('H:i'));
+        }
 		$this->set('activitytype', 'Emails');
 
 		//$currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -43,27 +45,19 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	/**
 	 * Function sends mail
 	 */
-	public function send() {
+	public function send($addToQueue = false) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$rootDirectory =  vglobal('root_directory');
 
 		$mailer = Emails_Mailer_Model::getInstance();
-		$mailer->IsHTML(true);
+        $mailer->IsHTML(true);
 
-		$fromEmail = $this->getFromEmailAddress();
-		$replyTo = $currentUserModel->get('email1');
+        $fromEmail = $this->getFromEmailAddress();
+		$replyTo = $this->getReplyToEmail();
 		$userName = $currentUserModel->getName();
 
 		// To eliminate the empty value of an array
 		$toEmailInfo = array_filter($this->get('toemailinfo'));
-        $toMailNamesList = array_filter($this->get('toMailNamesList'));
-        foreach($toMailNamesList as $id => $emailData){
-            foreach($emailData as $key => $email){
-                if($toEmailInfo[$id]){
-                    array_push($toEmailInfo[$id], $email['value']);
-                }
-            }
-        }
         $emailsInfo = array();
 		foreach ($toEmailInfo as $id => $emails) {
             foreach($emails as $key => $value){
@@ -71,6 +65,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
             }
 		}
 
+                $toEmailInfo = array_map("unserialize", array_unique(array_map("serialize", array_map("array_unique", $toEmailInfo))));
         $toFieldData = array_diff(explode(',', $this->get('saved_toid')), $emailsInfo);
 		$toEmailsData = array();
 		$i = 1;
@@ -79,51 +74,81 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		}
 		$attachments = $this->getAttachmentDetails();
 		$status = false;
-
+        
 		// Merge Users module merge tags based on current user.
 		$mergedDescription = getMergedDescription($this->get('description'), $currentUserModel->getId(), 'Users');
-                $mergedSubject = getMergedDescription($this->get('subject'),$currentUserModel->getId(), 'Users');
-                
+		$mergedSubject = getMergedDescription($this->get('subject'),$currentUserModel->getId(), 'Users');
 		foreach($toEmailInfo as $id => $emails) {
+            $inReplyToMessageId = ''; 
+            $generatedMessageId = '';
 			$mailer->reinitialize();
 			$mailer->ConfigSenderInfo($fromEmail, $userName, $replyTo);
 			$old_mod_strings = vglobal('mod_strings');
 			$description = $this->get('description');
-                        $subject = $this->get('subject');
+			$subject = $this->get('subject');
 			$parentModule = $this->getEntityType($id);
 			if ($parentModule) {
-			$currentLanguage = Vtiger_Language_Handler::getLanguage();
-			$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$parentModule);
-			vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
-
-			if ($parentModule != 'Users') {
-				// Apply merge for non-Users module merge tags.
-				$description = getMergedDescription($mergedDescription, $id, $parentModule);
-                                $subject = getMergedDescription($mergedSubject, $id, $parentModule);
-			} else {
-				// Re-merge the description for user tags based on actual user.
-					$description = getMergedDescription($description, $id, 'Users');
-                                        $subject = getMergedDescription($mergedSubject, $id, 'Users');
+				$currentLanguage = Vtiger_Language_Handler::getLanguage();
+				$moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage,$parentModule);
+				vglobal('mod_strings', $moduleLanguageStrings['languageStrings']);
+				$mergedDescriptionWithHyperLinkConversion = $this->replaceBrowserMergeTagWithValue($mergedDescription,$parentModule,$id); 
+				if ($parentModule != 'Users') {
+                    //Retrieve MessageID from Mailroom table only if module is not users 
+                    $inReplyToMessageId = $mailer->retrieveMessageIdFromMailroom($id); 
+                    
+                    $generatedMessageId = $mailer->generateMessageID();
+                    //If there is no reference id exist in crm. 
+                    //Generate messageId for sending email and attach to mailer header
+                    if(empty($inReplyToMessageId)){
+                        $inReplyToMessageId = $generatedMessageId;
+                    }
+					// Apply merge for non-Users module merge tags.
+					$description = getMergedDescription($mergedDescriptionWithHyperLinkConversion, $id, $parentModule);
+					$subject = getMergedDescription($mergedSubject, $id, $parentModule);
+				} else {
+					// Re-merge the description for user tags based on actual user.
+					$description = getMergedDescription($mergedDescriptionWithHyperLinkConversion, $id, 'Users');
+					$subject = getMergedDescription($mergedSubject, $id, 'Users');
 					vglobal('mod_strings', $old_mod_strings);
 				}
 			}
 
+            //If variable is not empty then add custom header 
+            if(!empty($inReplyToMessageId)){ 
+                $mailer->AddCustomHeader("In-Reply-To", $inReplyToMessageId); 
+            } 
+            
+            if(!empty($generatedMessageId)){
+                $mailer->MessageID  = $generatedMessageId;
+            }
+            
 			if (strpos($description, '$logo$')) {
 				$description = str_replace('$logo$',"<img src='cid:logo' />", $description);
 				$logo = true;
 			}
 
 			foreach($emails as $email) {
-				$mailer->Body = '';
-				if ($parentModule) {
-					$mailer->Body = $this->getTrackImageDetails($id, $this->isEmailTrackEnabled());
+				$mailer->Body = $description;
+                if ($parentModule) {
+					$mailer->Body = $this->convertUrlsToTrackUrls($mailer->Body, $id);;
+					$mailer->Body .= $this->getTrackImageDetails($id, $this->isEmailTrackEnabled($parentModule));
 				}
-				$mailer->Body .= $description;
-				$mailer->Signature = str_replace(array('\r\n', '\n'),'<br>',$currentUserModel->get('signature'));
-				if($mailer->Signature != '') {
-					$mailer->Body.= '<br><br>'.decode_html($mailer->Signature);
+				//Checking whether user requested to add signature or not
+				if($this->get('signature') == 'Yes'){
+					$mailer->Signature = $currentUserModel->get('signature');
+					if($mailer->Signature != '') {
+						$mailer->Body.= '<br><br>'.decode_html($mailer->Signature);
+					}
 				}
-				$mailer->Subject = $subject;
+				$mailer->Subject = decode_html(strip_tags($subject));
+			
+                $plainBody = decode_emptyspace_html($description);
+                $plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
+                $plainBody .= "\n\n".$currentUserModel->get('signature');
+                $plainBody = strip_tags($plainBody);
+                $plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
+				$plainBody = $this->convertUrlsToTrackUrls($plainBody, $id,'plain');
+                $mailer->AltBody = $plainBody;
 				$mailer->AddAddress($email);
 
 				//Adding attachments to mail
@@ -137,7 +162,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				}
 				if ($logo) {
 					//While sending email template and which has '$logo$' then it should replace with company logo
-					$mailer->AddEmbeddedImage(dirname(__FILE__).'/../../../layouts/vlayout/skins/images/logo_mail.jpg', 'logo', 'logo.jpg', 'base64', 'image/jpg');
+					$mailer->AddEmbeddedImage(dirname(__FILE__).'/../../../layouts/v7/skins/images/logo_mail.jpg', 'logo', 'logo.jpg', 'base64', 'image/jpg');
 				}
 
 				$ccs = array_filter(explode(',',$this->get('ccmail')));
@@ -150,16 +175,37 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 					foreach($bccs as $bcc) $mailer->AddBCC($bcc);
 				}
 			}
-			$status = $mailer->Send(true);
+            // to convert external css to inline css
+            $mailer->Body = Emails_Mailer_Model::convertCssToInline($mailer->Body);	
+            //To convert image url to valid
+            $mailer->Body = Emails_Mailer_Model::makeImageURLValid($mailer->Body);
+			if ($addToQueue) {
+				$status = $mailer->Send(false, $this->get('parent_id'));
+			} else {
+				$status = $mailer->Send(true);
+			}
 			if(!$status) {
 				$status = $mailer->getError();
+                //If mailer error, then update emailflag as saved   
+                if($status){
+                    $this->updateEmailFlag();
+                }
 			} else {
+                //If mail sending is success store message Id for given crmId
+                if($generatedMessageId && $id){
+                    $mailer->updateMessageIdByCrmId($generatedMessageId,$id);
+                }
+                
                 $mailString=$mailer->getMailString();
                 $mailBoxModel = MailManager_Mailbox_Model::activeInstance();
                 $folderName = $mailBoxModel->folder();
                 if(!empty($folderName) && !empty($mailString)) {
                     $connector = MailManager_Connector_Connector::connectorWithModel($mailBoxModel, '');
-                    imap_append($connector->mBox, $connector->mBoxUrl.$folderName, $mailString, "\\Seen");
+                    $message = str_replace("\n", "\r\n", $mailString);
+					if (function_exists('mb_convert_encoding')) {
+						$folderName = mb_convert_encoding($folderName, "UTF7-IMAP", "UTF-8");
+					}
+                    imap_append($connector->mBox, $connector->mBoxUrl.$folderName, $message, "\\Seen");
                 }
             }
 		}
@@ -182,7 +228,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		if (empty($fromEmail)) $fromEmail = $currentUserModel->get('email1');
 		return $fromEmail;
 	}
-
+	
 	/**
 	 * Function returns the attachment details for a email
 	 * @return <Array> List of attachments
@@ -203,6 +249,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$attachmentsList[$i]['path'] = $path;
                 $attachmentsList[$i]['size'] = filesize($path.$attachmentsList[$i]['fileid'].'_'.$attachmentsList[$i]['attachment']);
                 $attachmentsList[$i]['type'] = $db->query_result($attachmentRes, $i, 'type');
+				$attachmentsList[$i]['cid'] = $db->query_result($attachmentRes, $i, 'cid');
 			}
 		}
 
@@ -239,7 +286,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 						INNER JOIN vtiger_attachments ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid
 						WHERE vtiger_crmentity.deleted = 0", array($this->getId()));
 		$numOfRows = $db->num_rows($documentRes);
-
+		
+		$documentsList = array();
 		if($numOfRows) {
 			for($i=0; $i<$numOfRows; $i++) {
 				$documentsList[$i]['name'] = $db->query_result($documentRes, $i, 'filename');
@@ -248,7 +296,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$documentsList[$i]['docid'] = $db->query_result($documentRes, $i, 'notesid');
 				$documentsList[$i]['path'] = $db->query_result($documentRes, $i, 'path');
 				$documentsList[$i]['fileid'] = $db->query_result($documentRes, $i, 'attachmentsid');
-				$documentsList[$i]['attachment'] = $db->query_result($documentRes, $i, 'name');
+				$documentsList[$i]['attachment'] = decode_html($db->query_result($documentRes, $i, 'name'));
                 $documentsList[$i]['type'] = $db->query_result($documentRes, $i, 'type');
 			}
 		}
@@ -338,12 +386,16 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		if (!empty ($documentIds)) {
 			$count = count($documentIds);
 			for ($i=0; $i<$count; $i++) {
-				$documentRecordModel = Vtiger_Record_Model::getInstanceById($documentIds[$i], 'Documents');
-				$totalFileSize = $totalFileSize + (int) $documentRecordModel->get('filesize');
+				try {
+					$documentRecordModel = Vtiger_Record_Model::getInstanceById($documentIds[$i], 'Documents');
+					$totalFileSize = $totalFileSize + (int) $documentRecordModel->get('filesize');
+				} catch(Exception $ex) {
+					continue;
+				}
 			}
 		}
-
-		if ($totalFileSize > vglobal('upload_maxsize')) {
+		$uploadLimit = Vtiger_Util_Helper::getMaxUploadSizeInBytes();
+		if ($totalFileSize > $uploadLimit) {
 			return false;
 		}
 		return true;
@@ -356,13 +408,14 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * @return <String>
 	 */
 	public function getTrackImageDetails($crmId, $emailTrack = true) {
-		$siteURL = vglobal('site_URL');
-		$applicationKey = vglobal('application_unique_key');
-		$emailId = $this->getId();
-
-		$trackURL = "$siteURL/modules/Emails/actions/TrackAccess.php?record=$emailId&parentId=$crmId&applicationKey=$applicationKey";
-		$imageDetails = "<img src='$trackURL' alt='' width='1' height='1'>";
-		return $imageDetails;
+		// return open tracking shorturl only if email tracking is enabled in configuration editor
+		if($emailTrack){
+			$emailId = $this->getId();
+            $imageDetails = Vtiger_Functions::getTrackImageContent($emailId, $crmId);
+			return $imageDetails;
+		} else {
+			return null;
+		}
 	}
 
 
@@ -371,12 +424,16 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * @return <boolean> true/false
 	 */
 	public function isEmailTrackEnabled() {
-		//In future this track will be coming from client side/User preferences
-		return true;
+		$emailTracking = vglobal("email_tracking");
+		if($emailTracking == 'Yes'){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
-	 * Function to update Email track details
+	 * Function to update Email track(opens) details.
 	 * @param <String> $parentId
 	 */
 	public function updateTrackDetails($parentId) {
@@ -392,7 +449,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			$db->pquery("INSERT INTO vtiger_email_track(crmid, mailid, access_count) values(?, ?, ?)", array($parentId, $recordId, 1));
 		}
 	}
-
+	
 	/**
 	 * Function to set Access count value by default as 0
 	 */
@@ -402,6 +459,13 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 
 		$focus = new $moduleName();
 		$focus->setEmailAccessCountValue($record);
+	}
+
+	public function getClickCountValue($parentId){
+		$db = PearDatabase::getInstance();
+
+		$result = $db->pquery("SELECT click_count FROM vtiger_email_track WHERE crmid = ? AND mailid = ?", array($parentId, $this->getId()));
+		return $db->query_result($result, 0, 'click_count');
 	}
 
 	/**
@@ -416,46 +480,42 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		return $db->query_result($result, 0, 'access_count');
 	}
 
-	/**
-	 * Function checks if the mail is sent or not
-	 * @return <Boolean>
-	 */
-	public function isSentMail(){
-		if(!array_key_exists('email_flag', $this->getData())){
+	public static function getTrackingInfo($emailIds,$parentId) {
+		if(!is_array($emailIds)) {
+			$emailIds = array($emailIds);
+		}
+		$trackingInfo = array();
+
+		if(empty($emailIds)) {
+			return $trackingInfo;
+		}
+		$db = PearDatabase::getInstance();
+
+		$sql = 'SELECT mailid, access_count,click_count FROM vtiger_email_track WHERE crmid = ? AND mailid IN('.  generateQuestionMarks($emailIds).')';
+		$result = $db->pquery($sql, array($parentId,  $emailIds));
+		$numRows = $db->num_rows($result);
+		if($numRows > 0) {
+			for($i=0;$i<$numRows;$i++){
+				$row = $db->query_result_rowdata($result,$i);
+				$trackingInfo[$row['mailid']] = array('access_count' => $row['access_count'],'click_count' => $row['click_count']);
+			}
+		}
+		return $trackingInfo;
+	}
+
+	public function getEmailFlag() {
+        if(!array_key_exists('email_flag', $this->getData())) {
 			$db = PearDatabase::getInstance();
-			$query = 'SELECT email_flag FROM vtiger_emaildetails WHERE emailid=?';
-			$result = $db->pquery($query,array($this->getId()));
-			if($db->num_rows($result)>0) {
-				$this->set('email_flag',$db->query_result($result,0,'email_flag'));
+			$result = $db->pquery("SELECT email_flag FROM vtiger_emaildetails WHERE emailid = ?", array($this->getId()));
+			if($db->num_rows($result) > 0) {
+				$this->set('email_flag', $db->query_result($result, 0, 'email_flag'));
 			} else {
-				//If not row exits then make it as false
 				return false;
 			}
 		}
-		if($this->get('email_flag') == "SENT"){
-			return true;
-		}
-		return false;
-	}
-
-        //Opensource fix for data updation for mail attached from mailmanager
-        public function isFromMailManager(){ 
-            if(!array_key_exists('email_flag', $this->getData())){ 
-                    $db = PearDatabase::getInstance(); 
-                    $query = 'SELECT email_flag FROM vtiger_emaildetails WHERE emailid=?'; 
-                    $result = $db->pquery($query,array($this->getId())); 
-                    if($db->num_rows($result)>0) { 
-                            $this->set('email_flag',$db->query_result($result,0,'email_flag')); 
-                    } else { 
-                            //If not row exits then make it as false 
-                            return false; 
-                    } 
-            } 
-            if($this->get('email_flag') == "MailManager"){ 
-                    return true; 
-            } 
-            return false; 
-        } 
+        return $this->get('email_flag');
+    }
+	
 	function getEntityType($id) {
 		$db = PearDatabase::getInstance();
 		$moduleModel = $this->getModule();
@@ -475,5 +535,222 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			}
 		}
 		return $relatedModule;
+	}
+
+	/**
+	 * Function stores emailid,parentmodule and generates shorturl  
+	 * @param type $parentModule 
+	 * @return type 
+	 */
+	public function getTrackingShortUrl($parentModule) {
+		$options = array(
+			'handler_path' => 'modules/Emails/handlers/ViewInBrowser.php',
+			'handler_class' => 'Emails_ViewInBrowser_Handler',
+			'handler_function' => "viewInBrowser",
+			'handler_data' => array(
+				'emailId' => $this->getId(),
+				'parentModule' => $parentModule
+			)
+		);
+		$trackURL = Vtiger_ShortURL_Helper::generateURL($options);
+		return $trackURL;
+	}
+
+	/**
+	 * Function to replace browser merge tag with value 
+	 * @param type $mergedDescription 
+	 * @param type $parentModule 
+	 * @param type $recipientId 
+	 * @return type 
+	 */
+	public function replaceBrowserMergeTagWithValue($mergedDescription, $parentModule, $recipientId) {
+		global $application_unique_key;
+		if (!$this->trackURL) {
+			$this->trackURL = $this->getTrackingShortUrl($parentModule);
+		}
+		$receiverId = $parentModule[0] . $recipientId;
+		$urlParameters = http_build_query(array('rid' => $receiverId, 'applicationKey' => $application_unique_key));
+		$rlock = $this->generateSecureKey($urlParameters);
+		$URL = $this->trackURL . "&$urlParameters" . "&rv=$rlock";
+		return str_replace(EmailTemplates_Module_Model::$BROWSER_MERGE_TAG, $URL, $mergedDescription);
+	}
+
+	public function generateSecureKey($urlParameters) {
+		return md5($urlParameters);
+	}
+
+	/**
+	 * Functiont to track clicks
+	 * @param <int> $parentId
+	 */
+	public function trackClicks($parentId) {
+		$db = PearDatabase::getInstance();
+		$recordId = $this->getId();
+
+		$db->pquery("INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)", array($parentId, $recordId, date('Y-m-d'), date('Y-m-d H:i:s')));
+
+		$result = $db->pquery("SELECT 1 FROM vtiger_email_track WHERE crmid = ? AND mailid = ?", array($parentId, $recordId));
+		if ($db->num_rows($result) > 0) {
+			$db->pquery("UPDATE vtiger_email_track SET click_count = click_count+1 WHERE crmid = ? AND mailid = ?", array($parentId, $recordId));
+		} else {
+			$db->pquery("INSERT INTO vtiger_email_track(crmid, mailid, click_count) values(?, ?, ?)", array($parentId, $recordId, 1));
+		}
+	}
+
+	/**
+	 * Function to get Sender Name for the email
+	 * @return <String> Sender Name or Email
+	 */
+	public function getSenderName($relatedModule = false, $relatedRecordId = false) {
+			$db = PearDatabase::getInstance();
+			$result = $db->pquery("SELECT from_email,idlists FROM vtiger_emaildetails WHERE emailid = ?", array($this->getId()));
+		if ($db->num_rows($result) > 0) {
+				$fromEmail = $db->query_result($result, 0, 'from_email');
+				$supportEmail = vglobal('HELPDESK_SUPPORT_EMAIL_ID');
+				$supportName = vglobal('HELPDESK_SUPPORT_NAME');
+				if ($fromEmail == $supportEmail && !empty($supportName)) {
+					return $supportName;
+				}
+				$moduleModel = $this->getModule();
+				$emails = $moduleModel->searchEmails($fromEmail);
+				if ($emails) {
+					if ($emails[$relatedModule][$relatedRecordId]) {
+						return $emails[$relatedModule][$relatedRecordId][0]['name'];
+					}
+
+					if ($emails['Users']) {
+						$emailInfo = array_values($emails['Users']);
+					} else {
+						$emailsInfo = array_values($emails);
+						$emailInfo = array_values($emailsInfo[0]);
+					}
+					return $emailInfo[0][0]['name'];
+				}
+				return $fromEmail;
+			} else {
+				return false;
+			}
+    }
+	
+	public function convertUrlsToTrackUrls($content, $crmid, $type = 'html') {
+		if ($this->isEmailTrackEnabled()) {
+			$extractedUrls = Vtiger_Functions::getUrlsFromHtml($content);
+
+			foreach ($extractedUrls as $sourceUrl => $value) {
+				$trackingUrl = $this->getTrackUrlForClicks($crmid, $sourceUrl);
+				$content = $this->replaceLinkWithShortUrl($content, $trackingUrl, $sourceUrl, $type);
+			}
+			return $content;
+		}
+	}
+
+	public function replaceLinkWithShortUrl($content, $toReplace, $search, $type) {
+		if ($type == 'html') {
+			$search = '"' . $search . '"';
+			$toReplace = '"' . $toReplace . '"';
+		}
+		$pos = strpos($content, $search);
+
+		if ($pos != false) {
+			$replacedContent = substr_replace($content, $toReplace, $pos) . substr($content, $pos + strlen($search));
+			return $replacedContent;
+		}
+
+		return $content;
+	}
+
+	public function getTrackUrlForClicks($parentId, $redirectUrl = false) {
+		$siteURL = vglobal('site_URL');
+		$applicationKey = vglobal('application_unique_key');
+		$recordId = $this->getId();
+		$trackURL = "$siteURL/modules/Emails/actions/TrackAccess.php?record=$recordId&parentId=$parentId&applicationKey=$applicationKey&method=click";
+		if ($redirectUrl) {
+			$encodedRedirUrl = rawurlencode($redirectUrl);
+			$trackURL .= "&redirectUrl=$encodedRedirUrl";
+		}
+		return $trackURL;
+	}
+
+    /**
+     * Function to save email lookup value for searching
+     * @param type $fieldName
+     * @param type $values
+     */
+	function recieveEmailLookup($fieldId, $values) {
+        $db = PearDatabase::getInstance();
+		$params = array($values['crmid'], $values['setype'], $values[$fieldId], $fieldId);
+
+        $db->pquery('INSERT INTO vtiger_emailslookup
+                    (crmid, setype, value, fieldid) 
+                    VALUES(?,?,?,?) 
+                    ON DUPLICATE KEY 
+					UPDATE value=VALUES(value)', $params);
+    }
+
+     /**
+     * Function to delete email lookup value for searching
+     * @param type $crmid
+     * @param type $fieldid
+     */
+	function deleteEmailLookup($crmid, $fieldid = false) {
+        $db = PearDatabase::getInstance();
+		if ($fieldid) {
+            $params = array($crmid, $fieldid);
+            $db->pquery('DELETE FROM vtiger_emailslookup WHERE crmid=? AND fieldid=?', $params);
+		} else {
+			$params = array($crmid);
+			$db->pquery('DELETE FROM vtiger_emailslookup WHERE crmid=?', $params);
+        }
+    }
+
+     /**
+     * Function to update Email flag if SMTP fails
+     */    
+	public function updateEmailFlag() {
+        $db = PearDatabase::getInstance();
+		$query = 'UPDATE vtiger_emaildetails SET email_flag="SAVED" WHERE emailid=?';
+		$db->pquery($query, array($this->get('id')));
+    }
+
+    function replaceMergeTags($id) {
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $entityType = $this->getEntityType($id);
+        
+        $description = getMergedDescription($this->get('description'), $currentUserModel->getId(), 'Users');
+        $subject = getMergedDescription($this->get('subject'), $currentUserModel->getId(), 'Users');
+        
+        $description = getMergedDescription($description, $id, $entityType);
+        $subject = getMergedDescription($subject, $id, $entityType);
+        
+        if (strpos($description, '$logo$')) {
+			$description = str_replace('$logo$', "<img src='cid:logo' />", $description);
+		}
+
+        $this->set('description', $description);
+        $this->set('subject', strip_tags($subject));
+    }
+
+	function getReplyToEmail() {
+		$db = PearDatabase::getInstance();
+		$defaultReplyTo = vglobal('default_reply_to');
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$replyTo = $currentUserModel->get('email1');
+
+		if ($defaultReplyTo == 'outgoing_server_from_email') {
+			$result = $db->pquery('SELECT from_email_field FROM vtiger_systems WHERE server_type=?', array('email'));
+			if ($db->num_rows($result)) {
+				$fromEmail = decode_html($db->query_result($result, 0, 'from_email_field'));
+			}
+			if (!empty($fromEmail)) {
+				$replyTo = $fromEmail;
+			}
+		} else if ($defaultReplyTo == 'hepldesk_support_email') {
+			$helpDeskEmail = vglobal('HELPDESK_SUPPORT_EMAIL_ID');
+			if (!empty($helpDeskEmail)) {
+				$replyTo = $helpDeskEmail;
+			}
+		}
+
+		return $replyTo;
 	}
 }
