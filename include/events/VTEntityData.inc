@@ -87,11 +87,11 @@ class VTEntityData{
 		$entityFields = Vtiger_Functions::getEntityModuleInfo($crmEntity->moduleName);
 		if (!empty($entityFields['fieldname'])) {
 			$entityFieldNames = explode(',', $entityFields['fieldname']);
-			if (count($entityFieldNames) > 1) {
-				$obj->focus->column_fields['label'] = $crmEntity->column_fields[$entityFieldNames[0]].' '.$crmEntity->column_fields[$entityFieldNames[1]];
-			} else {
-				$obj->focus->column_fields['label'] = $crmEntity->column_fields[$entityFieldNames[0]];
+			$label = '';
+			foreach ($entityFieldNames as $fieldName) {
+				$label .= $crmEntity->column_fields[$fieldName].' ';
 			}
+			$obj->focus->column_fields['label'] = trim($label);
 		}
 	return $obj;
 	}
