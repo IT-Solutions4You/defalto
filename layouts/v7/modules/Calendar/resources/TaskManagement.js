@@ -343,6 +343,7 @@ Vtiger_Index_Js("Vtiger_TaskManagement_Js",{},{
 				fieldNameValueMap["taskpriority"] = priority;
 				fieldNameValueMap["subject"] = subject;
 				fieldNameValueMap["taskstatus"] = 'Not Started';
+				fieldNameValueMap["assigned_user_id"] = app.getUserId();
 
 				app.helper.showProgress();
 				thisInstance.saveNewTask(fieldNameValueMap).then(function(e){

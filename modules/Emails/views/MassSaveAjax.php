@@ -129,7 +129,7 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		$content = $request->getRaw('description');
 		$processedContent = Emails_Mailer_Model::getProcessedContent($content); // To remove script tags
 		$mailerInstance = Emails_Mailer_Model::getInstance();
-		$processedContentWithURLS = $mailerInstance->convertToValidURL($processedContent);
+		$processedContentWithURLS = decode_html($mailerInstance->convertToValidURL($processedContent));
 		$recordModel->set('description', $processedContentWithURLS);
 		$recordModel->set('subject', $request->get('subject'));
 		$recordModel->set('toMailNamesList',$request->get('toMailNamesList'));
@@ -233,6 +233,7 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		}
 		$viewer->assign('SUCCESS', $success);
 		$viewer->assign('MESSAGE', $message);
+		$viewer->assign('FLAG', $flag);
 		$viewer->assign('MODULE',$moduleName);
 		$loadRelatedList = $request->get('related_load');
 		if(!empty($loadRelatedList)){
