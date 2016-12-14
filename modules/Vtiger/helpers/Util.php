@@ -511,6 +511,10 @@ class Vtiger_Util_Helper {
 		$date = $dateTimeField->getDisplayDate($userModel);
 		$time = $dateTimeField->getDisplayTime($userModel);
 
+		if ($userModel->get('hour_format') == '12') {
+			$time = Vtiger_Time_UIType::getTimeValueInAMorPM($time);
+		}
+
 		return $date.' ' .$time;
 	}
 

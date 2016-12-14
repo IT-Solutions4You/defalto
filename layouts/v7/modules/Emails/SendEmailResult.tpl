@@ -7,24 +7,27 @@
 * All Rights Reserved.
 ************************************************************************************}
 {* modules/Emails/views/MassSaveAjax.php *}
-    
+
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 
 <div class="modal-dialog">
-    <div class="modal-content">
-        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="Result"} 
-        <div class="modal-body">
-            {if $SUCCESS}
-                <div class="mailSentSuccessfully" data-relatedload="{$RELATED_LOAD}">
-                    Mail Sent Successfully
-                </div>
-            {else}
-                <div class="failedToSend" data-relatedload="false">
-                    Failed to Send
-                    <br>
-                    {$MESSAGE}
-                </div>
-            {/if}
-        </div>
-    </div>
+	<div class="modal-content">
+		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="Result"} 
+		<div class="modal-body">
+			{if $SUCCESS}
+				<div class="mailSentSuccessfully" data-relatedload="{$RELATED_LOAD}">
+					{vtranslate('LBL_MAIL_SENT_SUCCESSFULLY')}
+				</div>
+				{if $FLAG}
+					<input type="hidden" id="flag" value="{$FLAG}">
+				{/if}
+			{else}
+				<div class="failedToSend" data-relatedload="false">
+					{vtranslate('LBL_FAILED_TO_SEND')}
+					<br>
+					{$MESSAGE}
+				</div>
+			{/if}
+		</div>
+	</div>
 </div>
