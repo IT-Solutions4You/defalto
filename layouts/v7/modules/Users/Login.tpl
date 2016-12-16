@@ -80,22 +80,20 @@
 				display: block;
 				color: red;
 			}
+			.app-footer p {
+				margin-top: 0px;
+			}
+			#page {
+				padding-top: 55px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="header">
-			<div class="row">
-				<div class="login-logo">
-					<img  src='layouts/v7/resources/Images/vtiger.jpg'/>
-				</div>
-			</div>
-			<div class="row">
-				<h1>One account. All of Vtiger.</h1>
-			</div>
-			<div class="row">
-				<h4>Sign in to continue to Vtiger</h4>
-			</div>
+			<div class="login-logo"><img src='layouts/v7/resources/Images/vtiger.jpg'/></div>
+			<div><h1>One account. All of Vtiger.</h1></div>
+			<div><h4>Sign in to continue to Vtiger</h4></div>
 		</div>
 		<div class="body">
 			<div class="container login-form" id="login-form-div">
@@ -139,8 +137,10 @@
 				</form>
 			</div>
 		</div>
-	<div class="footer"></div>
-</body>
+		<div class="footer">
+			{include file="Footer.tpl"|vtemplate_path:$MODULE}
+		</div> 
+	</body>
 	<script>
 		jQuery(document).ready(function () {
 			jQuery('#login-form-div #username').focus();

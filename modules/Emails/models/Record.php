@@ -47,7 +47,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function send($addToQueue = false) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$rootDirectory =  vglobal('root_directory');
+		$rootDirectory = vglobal('root_directory');
 
 		$mailer = Emails_Mailer_Model::getInstance();
 		$mailer->IsHTML(true);
@@ -119,7 +119,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			} 
 
 			if(!empty($generatedMessageId)){
-				$mailer->MessageID  = $generatedMessageId;
+				$mailer->MessageID = $generatedMessageId;
 			}
 
 			if (strpos($description, '$logo$')) {
@@ -186,7 +186,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			}
 			if(!$status) {
 				$status = $mailer->getError();
-				//If mailer error, then update emailflag as saved   
+				//If mailer error, then update emailflag as saved
 				if($status){
 					$this->updateEmailFlag();
 				}
@@ -340,7 +340,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function deleteDocumentLink($idList = array()){
 		$db = PearDatabase::getInstance();
-		$query =  'DELETE FROM vtiger_senotesrel where crmid=?';
+		$query = 'DELETE FROM vtiger_senotesrel where crmid=?';
 		$params = array($this->getId());
 		if(count($idList) > 0) {
 			$query .= 'AND notesid IN ('.generateQuestionMarks($idList).')';
@@ -491,8 +491,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		}
 		$db = PearDatabase::getInstance();
 
-		$sql = 'SELECT mailid, access_count,click_count FROM vtiger_email_track WHERE crmid = ? AND mailid IN('.  generateQuestionMarks($emailIds).')';
-		$result = $db->pquery($sql, array($parentId,  $emailIds));
+		$sql = 'SELECT mailid, access_count,click_count FROM vtiger_email_track WHERE crmid = ? AND mailid IN('.generateQuestionMarks($emailIds).')';
+		$result = $db->pquery($sql, array($parentId, $emailIds));
 		$numRows = $db->num_rows($result);
 		if($numRows > 0) {
 			for($i=0;$i<$numRows;$i++){
@@ -538,7 +538,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	}
 
 	/**
-	 * Function stores emailid,parentmodule and generates shorturl  
+	 * Function stores emailid,parentmodule and generates shorturl 
 	 * @param type $parentModule 
 	 * @return type 
 	 */
@@ -640,8 +640,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$trackingUrl = $this->getTrackUrlForClicks($crmid, $sourceUrl);
 				$content = $this->replaceLinkWithShortUrl($content, $trackingUrl, $sourceUrl, $type);
 			}
-			return $content;
 		}
+		return $content;
 	}
 
 	public function replaceLinkWithShortUrl($content, $toReplace, $search, $type) {

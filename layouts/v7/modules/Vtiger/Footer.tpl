@@ -8,7 +8,8 @@
 ************************************************************************************}
 
 <footer class="app-footer">
-	<p>Powered by vtiger CRM - 7.0 &nbsp;© 2004 - 2015&nbsp;&nbsp;
+	<p>
+		Powered by vtiger CRM - 7.0&nbsp;&nbsp;© 2004 - 2017&nbsp;&nbsp;
 		<a href="//www.vtiger.com" target="_blank">Vtiger</a>&nbsp;|&nbsp;
 		<a href="https://www.vtiger.com/privacy-policy" target="_blank">Privacy Policy</a>
 	</p>
