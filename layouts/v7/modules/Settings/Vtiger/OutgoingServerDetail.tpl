@@ -13,8 +13,13 @@
 	<div class="detailViewContainer" id="OutgoingServerDetails">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<div class="clearfix">
-				<div class="btn-group pull-right" >
-					<button class="btn btn-default editButton" data-url='{$MODEL->getEditViewUrl()}' type="button" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}">{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}</button>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<h3 style="margin-top: 0px;">{vtranslate('LBL_OUTGOING_SERVER', $QUALIFIED_MODULE)}</h3>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+					<div class="btn-group pull-right">
+						<button class="btn btn-default editButton" data-url='{$MODEL->getEditViewUrl()}' type="button" title="{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}">{vtranslate('LBL_EDIT', $QUALIFIED_MODULE)}</button>
+					</div>
 				</div>
 			</div>
 			<div>

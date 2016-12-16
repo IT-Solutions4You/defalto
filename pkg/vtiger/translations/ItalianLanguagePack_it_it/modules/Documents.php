@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'Di %s',
   'LBL_FROM_SERVICE' => 'Da %s',
   'LBL_CREATE_NEW' => 'Creare Nuova %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Si prega di selezionare una cartella di muoversi',
 );
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER'                => 'New Folder'                  , 

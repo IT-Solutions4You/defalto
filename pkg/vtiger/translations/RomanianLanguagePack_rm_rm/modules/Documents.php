@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'La %s',
   'LBL_FROM_SERVICE' => 'De la %s',
   'LBL_CREATE_NEW' => 'Crearea unui nou %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Vă rugăm să selectați un dosar pentru a muta',
 );
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER'                => 'New Folder'                  , 

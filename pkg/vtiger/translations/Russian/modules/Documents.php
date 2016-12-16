@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'К %s',
   'LBL_FROM_SERVICE' => 'Из %s',
   'LBL_CREATE_NEW' => 'Создание новой %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Пожалуйста, выберите папку для перемещения',
 );
 $jsLanguageStrings = array(
 	'JS_EXCEEDS_MAX_UPLOAD_SIZE'   => 'Превышен максимальный размер загрузки',

@@ -49,29 +49,25 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 		}
 	},
     
-    updateRelatedRecordsCount : function (relationId, idList,added){
-        var additionalIdCount = idList.length;
-        var element = new Object(jQuery("a","li[data-relation-id="+relationId+"]"));
-        var newCount = 0;
-        
-        var previousCount = parseInt(element.attr('recordscount'));
-        if(added){
-           newCount = previousCount + additionalIdCount;
-        }else{
-           newCount = previousCount - additionalIdCount;
-        }
-        
-        // we should only show if there are any related records
-        var numberEle = element.find('.numberCircle');
-        numberEle.text(newCount);
-        if(newCount > 0) {
-            numberEle.removeClass('hide');
-        }else{
-            numberEle.addClass('hide');
-        }
-        element.attr("recordscount",newCount);
-    },
-	
+	updateRelatedRecordsCount: function (relationId) {
+		var recordId = app.getRecordId();
+		var moduleName = app.getModuleName();
+		var detailInstance = new Vtiger_Detail_Js();
+		detailInstance.getRelatedRecordsCount(recordId, moduleName, relationId).then(function (data) {
+			var relatedRecordsCount = data[relationId];
+			var element = new Object(jQuery("a", "li[data-relation-id=" + relationId + "]"));
+			// we should only show if there are any related records
+			var numberEle = element.find('.numberCircle');
+			numberEle.text(relatedRecordsCount);
+			if (relatedRecordsCount > 0) {
+				numberEle.removeClass('hide');
+			} else {
+				numberEle.addClass('hide');
+			}
+			element.attr("recordscount", relatedRecordsCount);
+		});
+	},
+
 	getCurrentPageNum : function() {
 		return jQuery('input[name="currentPageNum"]',this.relatedContentContainer).val();
 	},

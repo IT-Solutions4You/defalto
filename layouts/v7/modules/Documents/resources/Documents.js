@@ -11,6 +11,9 @@ Vtiger.Class('Documents_Index_Js', {
 
 	fileObj : false,
 
+	referenceCreateMode : false,
+	referenceFieldName : '',
+
 	hierarchyMap : {
 		'GoogleDrive' : {},
 		'Dropbox' : {}
@@ -20,18 +23,21 @@ Vtiger.Class('Documents_Index_Js', {
 		return new Documents_Index_Js();
 	},
 
-	authorize : function(serviceName,parentId,relatedModule,mode) {
+	authorize : function(serviceName,parentId,relatedModule,mode,referenceFieldName) {
 		var instance = Documents_Index_Js.getInstance();
-		instance.authorize(serviceName,parentId,relatedModule,mode);
+		instance.detectReferenceCreateMode(referenceFieldName);
+		instance.authorize(serviceName,parentId,relatedModule,mode,referenceFieldName);
 	},
 
-	uploadTo : function(service,parentId,relatedModule) {
+	uploadTo : function(service,parentId,relatedModule,referenceFieldName) {
 		var instance = Documents_Index_Js.getInstance();
+		instance.detectReferenceCreateMode(referenceFieldName);
 		instance.uploadTo(service,parentId,relatedModule);
 	},
 
-	createDocument : function(type,parentId,relatedModule) {
+	createDocument : function(type,parentId,relatedModule,referenceFieldName) {
 		var instance = Documents_Index_Js.getInstance();
+		instance.detectReferenceCreateMode(referenceFieldName);
 		instance.createDocument(type,parentId,relatedModule);
 	},
 
@@ -40,12 +46,23 @@ Vtiger.Class('Documents_Index_Js', {
 		instance.revokeAccess(label,revokeUrl);
 	},
 
-	selectFrom : function(service,parentId,relatedModule) {
+	selectFrom : function(service,parentId,relatedModule, referenceFieldName) {
 		var instance = Documents_Index_Js.getInstance();
+		instance.detectReferenceCreateMode(referenceFieldName);
 		instance.selectFrom(service,parentId,relatedModule);
 	}
 
 }, {
+
+	detectReferenceCreateMode : function(referenceFieldName) {
+		if(typeof referenceFieldName !== 'undefined') {
+			Documents_Index_Js.referenceCreateMode = true;
+			Documents_Index_Js.referenceFieldName = referenceFieldName;
+		} else {
+			Documents_Index_Js.referenceCreateMode = false;
+			Documents_Index_Js.referenceFieldName = '';
+		}
+	},
 
 	revokeAccess : function(label,revokeUrl) {
 		app.helper.showConfirmationBox({
@@ -57,6 +74,9 @@ Vtiger.Class('Documents_Index_Js', {
 				if(!e) {
 					if(resp.accessRevoked) {
 						jQuery('#Documents_listview_customsettingaction_'+label).addClass('hide');
+						if(jQuery('.settingsIcon').find('ul.dropdown-menu').find('li').not('.hide').length <= 0) {
+							jQuery('.settingsIcon').parent('li').addClass('hide');
+						}
 						var service = 'GoogleDrive'
 						if(label !== 'LBL_REVOKE_ACCESS_TO_DRIVE') {
 							service = 'Dropbox';
@@ -178,10 +198,10 @@ Vtiger.Class('Documents_Index_Js', {
 			'filelocationtype' : 'I'
 		};
 		if(file) {
-			extraData['notes_title'] = file.name;
+			extraData['notes_title'] = container.find('form').find('[name="notes_title"]').val();
 		}
 
-		this._upload(container.find('form'),extraData).then(function() {
+		this._upload(container.find('form'),extraData).then(function(data) {
 			app.helper.showSuccessNotification({
 				'message' : app.vtranslate('JS_UPLOAD_SUCCESSFUL')
 			});
@@ -190,11 +210,35 @@ Vtiger.Class('Documents_Index_Js', {
 			var form = container.find('form');
 			var folderid = form.find('[name="folderid"]').val();
 			app.event.trigger('post.documents.save', {'folderid' : folderid});
-		}, function() {
-			app.helper.showErrorNotification({
-				'message' : app.vtranslate('JS_UPLOAD_FAILED')
-			});
+
+			//reference create handling
+			if(Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
+				self.postQuickCreateSave(data);
+			}
+		}, function(e) {
+			app.helper.showErrorNotification({'message' : app.vtranslate('JS_UPLOAD_FAILED')});
 		});
+	},
+
+	postQuickCreateSave: function (data) {
+		var vtigerInstance = Vtiger_Index_Js.getInstance();
+		var container = vtigerInstance.getParentElement(jQuery('[name="'+Documents_Index_Js.referenceFieldName+'"]'));
+		var module = vtigerInstance.getReferencedModuleName(container);
+		var params = {};
+		params.name = data._recordLabel;
+		params.id = data._recordId;
+		params.module = module;
+		vtigerInstance.setReferenceFieldValue(container, params);
+
+		var tdElement = vtigerInstance.getParentElement(container.find('[value="' + module + '"]'));
+		var sourceField = tdElement.find('input[class="sourceField"]').attr('name');
+		var fieldElement = tdElement.find('input[name="' + sourceField + '"]');
+		vtigerInstance.autoFillElement = fieldElement;
+		var parentModule = jQuery('.editViewContents [name=module]').val();
+		if (parentModule != "Events") {
+			vtigerInstance.postRefrenceSearch(params, container);
+		}
+		tdElement.find('input[class="sourceField"]').trigger(Vtiger_Edit_Js.postReferenceQuickCreateSave, {'data': data});
 	},
 
 	showFileDetails : function(container) {
@@ -203,7 +247,10 @@ Vtiger.Class('Documents_Index_Js', {
 			var fileName = fileObj.name;
 			var fileSize = fileObj.size;
 			fileSize = vtUtils.convertFileSizeInToDisplayFormat(fileSize);
-			container.find('.uploadedFileDetails').text(fileName + ' (' + fileSize + ')');
+			container.find('.fileDetails').text(fileName + ' (' + fileSize + ')');
+			var fileParts = fileName.split('.');
+			var fileType = fileParts[fileParts.length - 1];
+			container.find('[name="notes_title"]').val(fileName.replace('.'+fileType, ''));
 		}
 	},
 
@@ -300,12 +347,12 @@ Vtiger.Class('Documents_Index_Js', {
 	},
 
 	addToHierarchyMap : function(childDir,parentDir,service) {
-	   Documents_Index_Js.hierarchyMap[service][childDir] = parentDir;
+		Documents_Index_Js.hierarchyMap[service][childDir] = parentDir;
 	},
 
 	getParentDirFromHierarchyMap : function(childDir,service) {
-	   if(childDir == '/') return false;
-	   return Documents_Index_Js.hierarchyMap[service][childDir];
+		if(childDir == '/') return false;
+		return Documents_Index_Js.hierarchyMap[service][childDir];
 	},
 
 	updateDirectoryMeta : function(folderId,tab,backwardNavigation) {
@@ -330,7 +377,7 @@ Vtiger.Class('Documents_Index_Js', {
 			}
 			parentDirElement.val(parentDir);
 		}
-   },
+	},
 
 	registerInlineAuthEvent : function(container) {
 		var self = this;
@@ -388,7 +435,7 @@ Vtiger.Class('Documents_Index_Js', {
 				self.registerPostTabLoadEvents(tab);
 			} else {
 				console.log("error while loading tab : ",e);
-			}  
+			}
 		});
 		tab.data('tabLoaded',true);
 	},
@@ -411,6 +458,7 @@ Vtiger.Class('Documents_Index_Js', {
 				return false;
 			}
 		});
+		self.registerQuickCreateEvents(container);
 		this.registerFileHandlingEvents(container);
 	},
 
@@ -431,10 +479,51 @@ Vtiger.Class('Documents_Index_Js', {
 				app.helper.showModal(resp, {
 					'cb' : function(modalContainer) {
 						self.registerUploadDocumentEvents(modalContainer);
+						self.applyScrollToModal(modalContainer);
+						self.registerQuickCreateEvents(modalContainer);
 					}
 				});
 			}
 		});
+	},
+
+	loadQuickCreateContents : function(container) {
+		var self = this;
+		var params = {
+			'module' : container.find('[name="module"]').val(),
+			'view' : 'AjaxView',
+			'mode' : 'showContents'
+		};
+		var quickCreateForm = jQuery('.recordEditView');
+
+		var textAreaElement = quickCreateForm.find('textarea[name="notecontent"]');
+		if(textAreaElement.length){
+			if(CKEDITOR.instances.Documents_editView_fieldName_notecontent_popup) {
+				var notecontent = CKEDITOR.instances.Documents_editView_fieldName_notecontent_popup.getData();
+				textAreaElement.val(notecontent);
+			}
+		}
+
+		var formData = quickCreateForm.serializeFormData();
+		params = jQuery.extend(params, formData);
+		delete params['action'];
+		app.helper.showProgress();
+		app.request.post({'data' : params}).then(function(err, data) {
+			if(!err) {
+				app.helper.hideProgress();
+				container.find('.quickCreateContent').html(data);
+				if(formData.operation == 'CreateDocument') {
+					if(container.find('input[name="type"]').val() === 'W') {
+						 //change id of text area to workaround multiple instances of ckeditor on same element
+						 self.applyEditor(
+							 container.find('#Documents_editView_fieldName_notecontent')
+							 .attr('id','Documents_editView_fieldName_notecontent_popup')
+						 );
+					 }
+				 }
+				vtUtils.applyFieldElementsView(container.find('.quickCreateContent'));
+			} 
+		 });
 	},
 
 	_uploadToExternalStorage : function(container) {
@@ -458,10 +547,12 @@ Vtiger.Class('Documents_Index_Js', {
 			}
 			app.helper.hideModal();
 			self.reloadList();
-		}, function() {
-			app.helper.showErrorNotification({
-				'message' : app.vtranslate('JS_UPLOAD_FAILED')
-			});
+
+			if(Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
+				self.postQuickCreateSave(resp);
+			}
+		}, function(e) {
+			app.helper.showErrorNotification({'message' : app.vtranslate('JS_UPLOAD_FAILED')});
 		});
 	},
 
@@ -476,9 +567,46 @@ Vtiger.Class('Documents_Index_Js', {
 		this.registerFileHandlingEvents(container);
 	},
 
+	applyScrollToModal : function(modalContainer) {
+		app.helper.showVerticalScroll(modalContainer.find('.modal-body').css('max-height', '415px'), 
+		{'autoHideScrollbar': true});
+	},
+
+	showUploadToExternalStorageModal : function(service,parentId,relatedModule) {
+		var self = this;
+		var url = 'index.php?module=Documents&view=ExternalStorage&operation=UploadTo'+service;
+		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
+			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
+		}
+		var relationField = jQuery('div.related-tabs').find('li').filter('.active').data('relatedfield');
+		if (relationField && parentId) {
+			url += '&'+relationField+"="+parentId;
+		}
+		app.helper.showProgress();
+		app.request.get({'url':url}).then(function(e,resp) {
+			app.helper.hideProgress();
+			if(!e) {
+				app.helper.showModal(resp, {
+					'cb' : function(modalContainer) {
+						self.registerUploadToExternalStorageEvents(modalContainer);
+						self.applyScrollToModal(modalContainer);
+					}
+				});
+			}
+		});
+	},
+
+	showUploadDocumentModal : function(service,parentId,relatedModule) {
+		if(service === 'Vtiger') {
+			this.showUploadToVtigerModal(parentId,relatedModule);
+		} else {
+			this.showUploadToExternalStorageModal(service,parentId,relatedModule);
+		}
+	},
+
 	uploadTo : function(service,parentId,relatedModule) {
 		this.setFile(false);
-		this.showUploadToVtigerModal(parentId,relatedModule);
+		this.showUploadDocumentModal(service,parentId,relatedModule);
 	},
 
 	createExternalDocument : function(container) {
@@ -500,16 +628,16 @@ Vtiger.Class('Documents_Index_Js', {
 		}
 
 		var params = {
-		   module : 'Documents',
-		   action : 'SaveAjax',
-		   service : service,
-		   notes_title : selection.data('title'),
-		   filename : selection.data('link'),
-		   filelocationtype : 'E',
-		   assigned_user_id : assignedUserId,
-		   document_source : documentSource,
-		   externalFileId : selection.data('fileid'),
-		   folderid : jQuery('input[name="vtigerFolderId"]',container).val()
+			module : 'Documents',
+			action : 'SaveAjax',
+			service : service,
+			notes_title : selection.data('title'),
+			filename : selection.data('link'),
+			filelocationtype : 'E',
+			assigned_user_id : assignedUserId,
+			document_source : documentSource,
+			externalFileId : selection.data('fileid'),
+			folderid : jQuery('input[name="vtigerFolderId"]',container).val()
 		};
 
 		if(service === 'Dropbox'){
@@ -540,10 +668,13 @@ Vtiger.Class('Documents_Index_Js', {
 				});
 				app.helper.hideModal();
 				self.reloadList();
+
+				//reference create handling
+				if (Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
+					self.postQuickCreateSave(res);
+				}
 			} else {
-				app.helper.showErrorNotification({
-					'message' : app.vtranslate('JS_DOCUMENT_CREATION_FAILED')
-				});
+				app.event.trigger('post.save.failed', e);
 			}
 		});
 	},
@@ -566,8 +697,8 @@ Vtiger.Class('Documents_Index_Js', {
 									app.vtranslate('JS_NO_RESULTS_FOUND')+
 							'</span>'+
 						'</div>';
-		   tableContainer.append(listItem);
-		   return;
+			tableContainer.append(listItem);
+			return;
 		} else {
 			for(var i=0;i<files.length;i++) {
 				if(files[i].is_dir) {
@@ -591,7 +722,7 @@ Vtiger.Class('Documents_Index_Js', {
 					}
 					listItem += "</tr>";
 				} else {
-				  listItem = "<tr class='listViewEntries file' data-fileid='"+files[i].id+"' data-title='"+files[i].title+"' data-link='"+files[i].alternateLink+"'>"+
+					listItem = "<tr class='listViewEntries file' data-fileid='"+files[i].id+"' data-title='"+files[i].title+"' data-link='"+files[i].alternateLink+"'>"+
 								"<td class='listViewEntryValue medium fileTitleData' nowrap=''>"+
 									"<i class='fa fa-file'></i>&nbsp;<a>"+files[i].title+"</a>"+
 								"</td>";
@@ -730,7 +861,7 @@ Vtiger.Class('Documents_Index_Js', {
 					jQuery('.browseBack',container).attr('disabled','disabled');
 					jQuery('.gotoRoot',container).removeAttr('disabled');
 				}
-			});            
+			});
 		});
 	},
 
@@ -808,7 +939,7 @@ Vtiger.Class('Documents_Index_Js', {
 		return aDeferred.promise();
 	},
 
-	authorize : function(serviceName,parentId,relatedModule,mode) {
+	authorize : function(serviceName,parentId,relatedModule,mode,referenceFieldName) {
 		if(typeof mode === 'undefined') {
 			mode = 'upload';
 		}
@@ -822,15 +953,16 @@ Vtiger.Class('Documents_Index_Js', {
 					actionHref += ')';
 					jQuery('#'+serviceName+'Action').find('a').attr('href',actionHref);
 					if(mode === 'select') {
-						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule);
+						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule,referenceFieldName);
 					} else {
-						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule);
+						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule,referenceFieldName);
 					}
 					var revokeSelector = 'Documents_listview_customsettingaction_LBL_REVOKE_ACCESS_TO_DRIVE';
 					if(serviceName === 'Dropbox') {
 						revokeSelector = 'Documents_listview_customsettingaction_LBL_REVOKE_ACCESS_TO_DROPBOX';
 					}
 					jQuery('#'+revokeSelector).removeClass('hide');
+					jQuery('.settingsIcon').parent('li').removeClass('hide');
 				}
 			};
 			window.open(authUrl,'','height=600,width=600,channelmode=1');
@@ -838,9 +970,9 @@ Vtiger.Class('Documents_Index_Js', {
 			if(e.hasOwnProperty('postAuthorization')) {
 				if(e.postAuthorization) {
 					if(mode === 'select') {
-						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule);
+						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule,referenceFieldName);
 					} else {
-						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule);
+						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule,referenceFieldName);
 					}
 				}
 			}
@@ -858,13 +990,22 @@ Vtiger.Class('Documents_Index_Js', {
 		app.helper.showProgress();
 		app.request.post({'data':formData}).then(function(e,res) {
 			app.helper.hideProgress();
-			app.helper.hideModal();
-			app.helper.showSuccessNotification({
-				'message' : app.vtranslate('JS_DOCUMENT_CREATED')
-			});
-			self.reloadList();
-			var folderid = form.find('[name="folderid"]').val();
-			app.event.trigger('post.documents.save', {'folderid' : folderid});
+			if (e === null) {
+				app.helper.hideModal();
+				app.helper.showSuccessNotification({
+					'message' : app.vtranslate('JS_DOCUMENT_CREATED')
+				});
+				self.reloadList();
+				var folderid = form.find('[name="folderid"]').val();
+				app.event.trigger('post.documents.save', {'folderid' : folderid});
+
+				//reference create handling
+				if (Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
+					self.postQuickCreateSave(res);
+				}
+			} else {
+				app.event.trigger('post.save.failed', e);
+			}
 		});
 	},
 
@@ -898,7 +1039,7 @@ Vtiger.Class('Documents_Index_Js', {
 
 	showCreateDocumentModal : function(type,parentId,relatedModule) {
 		var self = this;
-		var url = 'index.php?module=Documents&view=QuickCreateAjax&operation=CreateDocument&type='+type;
+		var url = 'index.php?module=Documents&view=AjaxView&operation=CreateDocument&type='+type;
 		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
 			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
 		}
@@ -913,6 +1054,8 @@ Vtiger.Class('Documents_Index_Js', {
 				app.helper.showModal(resp, {
 					'cb' : function(modalContainer) {
 						self.registerCreateDocumentModalEvents(modalContainer);
+						self.registerQuickCreateEvents(modalContainer);
+						self.applyScrollToModal(modalContainer);
 					}
 				});
 			}
@@ -921,6 +1064,29 @@ Vtiger.Class('Documents_Index_Js', {
 
 	createDocument : function(type,parentId,relatedModule) {
 		this.showCreateDocumentModal(type,parentId,relatedModule);
+	},
+
+	registerQuickCreateEvents : function(container) {
+		var vtigerInstance = Vtiger_Index_Js.getInstance();
+		vtigerInstance.registerReferenceCreate(container);
+		vtigerInstance.registerPostReferenceEvent(container);
+		vtigerInstance.referenceModulePopupRegisterEvent(container);
+		vtigerInstance.registerClearReferenceSelectionEvent(container);
+		vtigerInstance.registerAutoCompleteFields(container);
+		app.helper.registerModalDismissWithoutSubmit(container.find('form'));
+		var moduleInstance = Vtiger_Edit_Js.getInstanceByModuleName('Documents');
+		moduleInstance.registerEventForPicklistDependencySetup(container);
+
+		app.event.on('post.documents.save', function(event, data){
+			var relatedTabs = jQuery('div.related-tabs');
+			if(relatedTabs.length > 0){
+				var tabElement = jQuery('div.related-tabs').find('li.active');
+				var relatedModuleName = jQuery('.relatedModuleName').val();
+				var relatedInstance = new Vtiger_RelatedList_Js(app.getRecordId(), app.getModuleName(), tabElement, relatedModuleName);
+				var relatedTab = relatedInstance.selectedRelatedTabElement;
+				relatedInstance.updateRelatedRecordsCount(relatedTab.data('relation-id'));
+			}
+		});
 	}
 
 });

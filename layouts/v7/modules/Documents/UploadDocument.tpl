@@ -10,7 +10,7 @@
 {strip}
 <div class="modal-dialog modelContainer">
 	{assign var=HEADER_TITLE value={vtranslate('LBL_UPLOAD_TO_VTIGER', $MODULE)}}
-	<div class = "modal-content">
+	<div class="modal-content" style="width:675px;">
 		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 		<div class="modal-body">
 			<div class="uploadview-content container-fluid">
@@ -24,7 +24,6 @@
 							<input type="hidden" name="module" value="{$MODULE}" />
 							<input type="hidden" name="action" value="SaveAjax" />
 							<input type="hidden" name="document_source" value="Vtiger" />
-							<input type="hidden" name='service' value="{$STORAGE_SERVICE}" />
 							{if $RELATION_OPERATOR eq 'true'}
 								<input type="hidden" name="relationOperation" value="{$RELATION_OPERATOR}" />
 								<input type="hidden" name="sourceModule" value="{$PARENT_MODULE}" />
@@ -49,10 +48,7 @@
 									<div class="fileUploadBtn btn btn-primary">
 										<span><i class="fa fa-laptop"></i> {vtranslate('LBL_SELECT_FILE_FROM_COMPUTER', $MODULE)}</span>
 										{assign var=FIELD_MODEL value=$FIELD_MODELS['filename']}
-										<input type="file" name="{$FIELD_MODEL->getFieldName()}"
-										value="{$FIELD_VALUE}" 
-										data-rule-required="true" 
-										/>
+										<input type="file" name="{$FIELD_MODEL->getFieldName()}" value="{$FIELD_VALUE}" data-rule-required="true" />
 									</div>
 									&nbsp;&nbsp;&nbsp;<i class="fa fa-info-circle cursorPointer" data-toggle="tooltip" title="{vtranslate('LBL_MAX_UPLOAD_SIZE', $MODULE)} {$MAX_UPLOAD_LIMIT_MB}{vtranslate('MB', $MODULE)}"></i>
 								</div>
@@ -61,6 +57,20 @@
 
 							<table class="massEditTable table no-border">
 								<tr>
+									<tr>
+										{assign var="FIELD_MODEL" value=$FIELD_MODELS['notes_title']}
+										<td class="fieldLabel col-lg-2">
+											<label class="muted pull-right">
+												{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;
+												{if $FIELD_MODEL->isMandatory() eq true}
+													<span class="redColor">*</span>
+												{/if}
+											</label>
+										</td>
+										<td class="fieldValue col-lg-4" colspan="3">
+											{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+										</td>
+									</tr>
 									{assign var="FIELD_MODEL" value=$FIELD_MODELS['assigned_user_id']}
 									<td class="fieldLabel col-lg-2">
 										<label class="muted pull-right">

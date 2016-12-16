@@ -93,6 +93,7 @@ $languageStrings = array(
     'LBL_TO_SERVICE' => 'To %s',
     'LBL_FROM_SERVICE' => 'From %s',
     'LBL_CREATE_NEW' => 'Create New %s',
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Please select a folder to move',
 );
 
 $jsLanguageStrings = array(

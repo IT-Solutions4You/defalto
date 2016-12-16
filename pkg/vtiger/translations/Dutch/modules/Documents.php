@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'Tot %s',
   'LBL_FROM_SERVICE' => 'Vanaf %s',
   'LBL_CREATE_NEW' => 'Maak Nieuwe %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Selecteer een map om te bewegen',
 );
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER'                => 'Nieuwe map'                  , 

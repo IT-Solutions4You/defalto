@@ -91,9 +91,8 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'Do %s',
   'LBL_FROM_SERVICE' => 'Z %s',
   'LBL_CREATE_NEW' => 'Tworzenie nowej %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Proszę wybrać folder, aby przenieść',
 );
-
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER' => 'Nowy folder',
 	'JS_MOVE_DOCUMENTS' => 'Przenieś dokument',

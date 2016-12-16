@@ -90,9 +90,8 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'Till %s',
   'LBL_FROM_SERVICE' => 'Från %s',
   'LBL_CREATE_NEW' => 'Skapa Ny %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Välj en mapp för att flytta',
 );
-
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER' => 'Ny Mapp',
 	'JS_MOVE_DOCUMENTS' => 'Flytta Dokument',

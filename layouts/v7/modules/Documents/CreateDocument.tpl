@@ -9,7 +9,7 @@
 
 {strip}
 <div class="modal-dialog modelContainer">
-	<div class="modal-content">
+	<div class="modal-content" style="width:675px;">
 	{assign var=HEADER_TITLE value={vtranslate('LBL_NEW_DOCUMENT', $MODULE)}}
 	{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 	<div class="modal-body">
@@ -50,8 +50,8 @@
 						</tr>
 
 						<tr>
-							<input type="hidden" name='filelocationtype' value="E" />
 							{if $FILE_LOCATION_TYPE eq 'W'}
+								<input type="hidden" name='filelocationtype' value="I" />
 								{assign var="FIELD_MODEL" value=$FIELD_MODELS['notecontent']}
 								{if $FIELD_MODELS['notecontent']}
 									<td class="fieldLabel col-lg-2">
@@ -67,6 +67,7 @@
 									</td>
 								{/if}
 							{else if $FILE_LOCATION_TYPE eq 'E'}
+								<input type="hidden" name='filelocationtype' value="E" />
 								{assign var="FIELD_MODEL" value=$FIELD_MODELS['filename']}
 								<td class="fieldLabel col-lg-2">
 									<label class="muted pull-right">
