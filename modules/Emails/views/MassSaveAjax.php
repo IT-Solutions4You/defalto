@@ -59,7 +59,6 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 			$recordModel->set('mode', '');
 		}
 
-
 		$parentEmailId = $request->get('parent_id',null);
 		$attachmentsWithParentEmail = array();
 		if(!empty($parentEmailId) && !empty ($recordId)) {
@@ -116,7 +115,6 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 			}
 
 		}
-
 
 		// This will be used for sending mails to each individual
 		$toMailInfo = $request->get('toemailinfo');

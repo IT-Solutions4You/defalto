@@ -213,7 +213,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$result = $db->pquery($query, array());
 	$num_rows = $db->num_rows($result);
 	$relationShipMapping = array();
-	for ($i = 0; $i < $num_rows; $i++) {
+	for ($i=0; $i<$num_rows; $i++) {
 		$tabId = $db->query_result($result, $i, 'tabid');
 		$relatedTabid = $db->query_result($result, $i, 'related_tabid');
 		$relationId = $db->query_result($result, $i, 'relation_id');
@@ -345,7 +345,7 @@ if(defined('VTIGER_UPGRADE')) {
 												WHERE vtiger_crmentity.setype NOT IN ('.generateQuestionMarks($internalCommentModules).') 
 												OR vtiger_crmentity.setype IS NULL', $internalCommentModules, array());
 	$commentCount = $db->num_rows($commentsResult);
-	for ($i = 0; $i < $commentCount; $i++) {
+	for ($i=0; $i<$commentCount; $i++) {
 		$commentIds[] = $db->query_result($commentsResult, $i, 'modcommentsid');
 	}
 	if (count($commentIds) > 0) {
@@ -388,7 +388,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$result = $db->pquery($query, array($tabid, $modcommentTabid));
 			$count = $db->num_rows($result);
 
-			for ($i = 0; $i < $count; $i++) {
+			for ($i=0; $i<$count; $i++) {
 				$relationId = $db->query_result($result, $i, 'relation_id');
 				$sequence = $db->query_result($result, $i, 'sequence');
 				$sequence += 1;
@@ -888,7 +888,7 @@ if(defined('VTIGER_UPGRADE')) {
 	//Adding Create Event and Create Todo workflow tasks for Project module.
 	$taskResult = $db->pquery('SELECT id, modules FROM com_vtiger_workflow_tasktypes WHERE tasktypename IN (?, ?)', array('VTCreateTodoTask', 'VTCreateEventTask'));
 	$taskResultCount = $db->num_rows($taskResult);
-	for ($i = 0; $i < $taskResultCount; $i++) {
+	for ($i=0; $i<$taskResultCount; $i++) {
 		$taskId = $db->query_result($taskResult, $i, 'id');
 		$modules = Zend_Json::decode(decode_html($db->query_result($taskResult, $i, 'modules')));
 		$modules['include'][] = 'Project';
@@ -1146,7 +1146,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$tagOwners = array();
 		$tagNamesList = array();
 		$visibility = Vtiger_Tag_Model::PRIVATE_TYPE;
-		for ($i = 0; $i < $num_rows; $i++) {
+		for ($i=0; $i<$num_rows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$tagId = $row['tag_id'];
 			$tagOwners[$tagId][] = $row['tagger_id'];
@@ -1176,7 +1176,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$fieldRows = $db->num_rows($fieldResult);
 	$ignorePickListFields = array('hdnTaxType', 'email_flag');
 
-	for ($i = 0; $i < $fieldRows; $i++) {
+	for ($i=0; $i<$fieldRows; $i++) {
 		$fieldName = $db->query_result($fieldResult, $i, 'fieldname');
 		if (in_array($fieldName, $ignorePickListFields) || !Vtiger_Utils::CheckTable("vtiger_$fieldName"))
 			continue;
@@ -1192,7 +1192,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$fieldResult = $db->pquery('SELECT fieldname FROM vtiger_field WHERE uitype IN (?,?,?,?) AND tabid IN (?)', array('15', '16', '33', '114', getTabid('Users')));
 	$fieldRows = $db->num_rows($fieldResult);
 
-	for ($i = 0; $i < $fieldRows; $i++) {
+	for ($i=0; $i<$fieldRows; $i++) {
 		$fieldName = $db->query_result($fieldResult, $i, 'fieldname');
 		if (!Vtiger_Utils::CheckTable("vtiger_$fieldName"))
 			continue;
@@ -1241,7 +1241,8 @@ if(defined('VTIGER_UPGRADE')) {
 	//End
 
 	$result = $db->pquery('SELECT * FROM vtiger_module_dashboard_widgets', array());
-	for ($i = 0; $i < $db->num_rows($result); $i++) {
+	$num_rows = $db->num_rows($result);
+	for ($i=0; $i<$num_rows; $i++) {
 		$rowdata = $db->query_result_rowdata($result, $i);
 		if ($rowdata['dashboardtabid'] == null) {
 			$result1 = $db->pquery('SELECT id FROM vtiger_dashboard_tabs WHERE userid=? AND tabname=?', array($rowdata['userid'], 'My Dashboard'));
@@ -1269,7 +1270,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$fieldResult = $db->pquery('SELECT fieldname FROM vtiger_field WHERE fieldname=? AND tabid NOT IN (?)', array('salutationtype', getTabid('Users')));
 	$fieldRows = $db->num_rows($fieldResult);
 
-	for ($i = 0; $i < $fieldRows; $i++) {
+	for ($i=0; $i<$fieldRows; $i++) {
 		$fieldName = $db->query_result($fieldResult, $i, 'fieldname');
 		if (!Vtiger_Utils::CheckTable("vtiger_$fieldName")) {
 			continue;
@@ -1298,8 +1299,8 @@ if(defined('VTIGER_UPGRADE')) {
 										INNER JOIN vtiger_role2picklist ON vtiger_role2picklist.picklistid = vtiger_picklist.picklistid)', array());
 	$rows = $db->num_rows($deletedPicklistResult);
 	$deletablePicklists = array();
-	for ($z = 0; $z < $rows; $z++) {
-		$deletablePicklists[] = $db->query_result($deletedPicklistResult, $z, 'picklistid');
+	for ($i=0; $i<$rows; $i++) {
+		$deletablePicklists[] = $db->query_result($deletedPicklistResult, $i, 'picklistid');
 	}
 	if (count($deletablePicklists)) {
 		$db->pquery('DELETE FROM vtiger_role2picklist WHERE picklistid IN ('.generateQuestionMarks($deletablePicklists).')', array($deletablePicklists));
@@ -1702,6 +1703,27 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN (?,?,?) AND module IS NULL', array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users'));
 	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE module IS NULL', array('Contacts'));
+
+	$columns = $db->getColumnNames('vtiger_mailmanager_mailrecord');
+	if (!in_array('mfolder', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_mailmanager_mailrecord ADD COLUMN mfolder VARCHAR(250)', array());
+		$duplicateResult = $db->pquery('SELECT muid FROM vtiger_mailmanager_mailrecord GROUP BY muid HAVING COUNT(muid) > ?', array('1'));
+		$noOfDuplicate = $db->num_rows($duplicateResult);
+		if ($noOfDuplicate) {
+			$duplicateMuid = array();
+			for ($i=0; $i<$noOfDuplicate; $i++) {
+				$duplicateMuid[] = $db->query_result($duplicateResult, $i, 'muid');
+			}
+			$db->pquery('DELETE FROM vtiger_mailmanager_mailrecord WHERE muid IN ('.generateQuestionMarks($duplicateMuid).')', $duplicateMuid);
+			$db->pquery('DELETE FROM vtiger_mailmanager_mailattachments WHERE muid IN ('.generateQuestionMarks($duplicateMuid).')', $duplicateMuid);
+		}
+	}
+
+	if (Vtiger_Utils::CheckTable('vtiger_mailscanner_ids')) {
+		$db->pquery('RENAME TABLE vtiger_mailscanner_ids TO vtiger_message_ids', array());
+		$db->pquery('ALTER TABLE vtiger_message_ids ADD COLUMN refids MEDIUMTEXT', array());
+		$db->pquery('ALTER TABLE vtiger_message_ids ADD INDEX messageids_crmid_idx(crmid)',array());
+	}
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();

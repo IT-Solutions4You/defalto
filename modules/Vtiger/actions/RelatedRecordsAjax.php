@@ -38,6 +38,7 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
 		$relationModels = $parentModuleModel->getRelations();
 		$relatedRecordsCount = array();
 		foreach ($relationModels as $relation) {
+			$relationId = $relation->getId();
 			$relatedModuleName = $relation->get('relatedModuleName');
 			$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName, $relation->get('label'));
 			$count = $relationListView->getRelatedEntriesCount();
