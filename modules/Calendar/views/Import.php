@@ -89,6 +89,9 @@ class Calendar_Import_View extends Vtiger_Import_View {
 					if(strtotime($dueDate) < strtotime($currentDate))
 						$activityFieldsList['eventstatus'] = 'Held';
 				}
+				if (!$activityFieldsList['time_end']) {
+					$activityFieldsList['time_end'] = '';
+				}
 
 				$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 				$recordModel->setData($activityFieldsList);

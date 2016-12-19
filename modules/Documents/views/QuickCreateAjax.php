@@ -41,9 +41,21 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 
 		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
-		$fieldsInfo = array();
+		$relationOperation = $request->get('relationOperation');
 		$fieldList = $moduleModel->getFields();
-		foreach($fieldList as $name => $model){
+		$requestFieldList = array_intersect_key($request->getAll(), $fieldList);
+        foreach($requestFieldList as $requestFieldName => $requestFieldValue) {
+            if(array_key_exists($requestFieldName, $fieldList)) {
+                $moduleFieldModel = $fieldList[$requestFieldName];
+                $recordModel->set($requestFieldName, $moduleFieldModel->getDBInsertValue($requestFieldValue));
+            }
+        }
+
+		$fieldsInfo = array();
+		foreach ($fieldList as $name => $model) {
+			if ($relationOperation && array_key_exists($name, $requestFieldList)) {
+				$relationFieldName = $name;
+			}
 			$fieldsInfo[$name] = $model->getFieldInfo();
 		}
 
@@ -60,6 +72,15 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('FIELD_MODELS', $fieldList);
 		$viewer->assign('FILE_LOCATION_TYPE', $request->get('type'));
 		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+
+		if ($relationOperation) {
+			$viewer->assign('RELATION_OPERATOR', $relationOperation);
+			$viewer->assign('PARENT_MODULE', $request->get('sourceModule'));
+			$viewer->assign('PARENT_ID', $request->get('sourceRecord'));
+			if ($relationFieldName) {
+				$viewer->assign('RELATION_FIELD_NAME', $relationFieldName);
+			}
+		}
 
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());

@@ -57,19 +57,19 @@
 							<br><div><b>{vtranslate('LBL_EXPORT_DATA',$MODULE)}</b></div><br>
 							<div style="margin-left: 50px;">
 								<div>
-									<input type="radio" name="mode" value="ExportSelectedRecords" id="group1" {if !empty($SELECTED_IDS)} checked="checked" {else} disabled="disabled"{/if} />
+									<input type="radio" name="mode" value="ExportSelectedRecords" id="group1" {if !empty($SELECTED_IDS)} checked="checked" {else} disabled="disabled"{/if} style="margin:2px 0 -4px" />
 									<label style="font-weight:normal" for="group1">&nbsp;&nbsp;{vtranslate('LBL_EXPORT_SELECTED_RECORDS',$MODULE)}</label>
 									{if empty($SELECTED_IDS)}&nbsp; <span style="color:red">{vtranslate('LBL_NO_RECORD_SELECTED',$MODULE)}</span>{/if}
 									<input type="hidden" class="isSelectedRecords" value="{if $SELECTED_IDS}1{else}0{/if}" >
 								</div>
 								<br>
 								<div>
-									<input type="radio" name="mode" value="ExportCurrentPage" id="group2"/>
+									<input type="radio" name="mode" value="ExportCurrentPage" id="group2" style="margin:2px 0 -4px" />
 									<label style="font-weight:normal" for="group2">&nbsp;&nbsp;{vtranslate('LBL_EXPORT_DATA_IN_CURRENT_PAGE',$MODULE)}</label>
 								</div>
 								<br>
 								<div>
-									<input type="radio" name="mode" value="ExportAllData" id="group3" {if empty($SELECTED_IDS)} checked="checked" {/if}/>
+									<input type="radio" name="mode" value="ExportAllData" id="group3" {if empty($SELECTED_IDS)} checked="checked" {/if} style="margin:2px 0 -4px" />
 									<label style="font-weight:normal" for="group3">&nbsp;&nbsp;{vtranslate('LBL_EXPORT_ALL_DATA',$MODULE)}</label>
 								</div>
 								{if $MULTI_CURRENCY}

@@ -12,10 +12,15 @@ if(defined('VTIGER_UPGRADE')) {
 	global $adb, $current_user;
 	$db = PearDatabase::getInstance();
 
+	if (!Vtiger_Utils::CheckTable('vtiger_activity_recurring_info')) {
+		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_activity_recurring_info(activityid INT(19) NOT NULL, recurrenceid INT(19) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
+	}
+
 	$columns = $db->getColumnNames('vtiger_crmentity');
 	if (!in_array('smgroupid', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
 	}
+
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));

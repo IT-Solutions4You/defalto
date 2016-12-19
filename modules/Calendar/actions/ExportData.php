@@ -186,6 +186,11 @@ class Calendar_ExportData_Action extends Vtiger_ExportData_Action {
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$moduleFields = $moduleModel->getFields();
+
+		$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
+		$eventModuleFieldList = $eventsModuleModel->getFields();
+		$moduleFields = array_merge($moduleFields, $eventModuleFieldList);
+
 		foreach ($moduleFields as $fieldName => $fieldModel) {
 			if (in_array($fieldName, $skippedFields)) {
 				unset($moduleFields[$fieldName]);

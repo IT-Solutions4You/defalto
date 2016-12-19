@@ -1071,6 +1071,7 @@ Vtiger.Class("Vtiger_List_Js", {
 					}, 500));
 				}
 			}
+			e.preventDefault();
 			e.stopPropagation();
 		});
 
