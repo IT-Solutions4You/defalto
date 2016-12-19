@@ -552,7 +552,7 @@
 		</div>
 	</li>
 
-	<div class="modal-dialog addBlockModal hide">
+	<div class="modal-dialog modal-content addBlockModal hide">
 		{assign var=HEADER_TITLE value={vtranslate('LBL_ADD_CUSTOM_BLOCK', $QUALIFIED_MODULE)}}
 		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 		<form class="form-horizontal addCustomBlockForm">

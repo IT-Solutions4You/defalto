@@ -23,9 +23,7 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 		$moduleModel = $recordModel->getModule();
 
-		$documentTypes = array( 'I' => array('tabName' => 'InternalDoc','label' => 'LBL_INTERNAL'),
-								'E' => array('tabName' => 'ExternalDoc','label' => 'LBL_EXTERNAL'),
-								'W' => array('tabName' => 'WebDoc',		'label' => 'LBL_WEB'));
+		$documentTypes = array('I' => array('tabName' => 'InternalDoc', 'label' => 'LBL_INTERNAL'));
 		foreach($documentTypes as $documentType => $typeDetails){
 			$fields[$documentType] = $this->getFields($documentType);
 		}
@@ -59,7 +57,8 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('QUICK_CREATE_CONTENTS', $quickCreateContents);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
-		$viewer->assign('SELECTED_DOC_TYPE', $request->get('type'));
+		$viewer->assign('FIELD_MODELS', $fieldList);
+		$viewer->assign('FILE_LOCATION_TYPE', $request->get('type'));
 		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
 
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
@@ -68,18 +67,19 @@ class Documents_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 	}
 
 	public function getFields($documentType){
-		switch($documentType){
-			case 'I' : case 'E' : return array('filename','assigned_user_id','folderid');
-			case 'W' : 
-				$recordModel = Vtiger_Record_Model::getCleanInstance('Documents');
-				$moduleModel = $recordModel->getModule();
-				$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
-				$quickCreateFields = $recordStructureInstance->getStructure();
-				//make sure the note content is always at the bottom
-				$quickCreateFieldNames = array_diff(array_keys($quickCreateFields),array('notecontent'));
-				$quickCreateFieldNames[] = 'notecontent';
-				return $quickCreateFieldNames;
+		$fields = array();
+		switch ($documentType) {
+			case 'I' :
+			case 'E' :	$fields = array('filename', 'assigned_user_id', 'folderid');	break;
+			case 'W' :	$recordModel = Vtiger_Record_Model::getCleanInstance('Documents');
+						$moduleModel = $recordModel->getModule();
+						$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
+						$quickCreateFields = $recordStructureInstance->getStructure();
+						//make sure the note content is always at the bottom
+						$fields = array_diff(array_keys($quickCreateFields), array('notecontent'));
+						$fields[] = 'notecontent';
 		}
+		return $fields;
 	}
 
 	public function getHeaderScripts(Vtiger_Request $request) {

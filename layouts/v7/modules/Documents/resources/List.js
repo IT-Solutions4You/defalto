@@ -369,6 +369,19 @@ Vtiger_List_Js("Documents_List_Js", {
     registerRowDoubleClickEvent: function () {
         return true;
     },
+
+	getDefaultParams: function() {
+		var search_value = jQuery('.sidebar-menu').find('.documentFolder.active').find('.filterName').data('folder-name');
+		var customParams = {
+			'folder_id' : 'folderid',
+			'folder_value' : search_value
+		};
+		var params = this._super();
+		if(search_value){
+			jQuery.extend(params,customParams);
+		}
+		return params;
+	},
     
     registerEvents: function() {
         this._super();

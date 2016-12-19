@@ -9,15 +9,13 @@
 {* modules/Settings/Vtiger/views/OutgoingServerEdit.php *}
 
 {strip}
-	<div class="editViewPageDiv editViewContainer" id="EditViewOutgoing">
+	<div class="editViewPageDiv editViewContainer" id="EditViewOutgoing" style="padding-top:0px;">
 		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div>
+				<h3 style="margin-top: 0px;">{vtranslate('LBL_OUTGOING_SERVER', $QUALIFIED_MODULE)}</h3>&nbsp;{vtranslate('LBL_OUTGOING_SERVER_DESC', $QUALIFIED_MODULE)}
+			</div>
 			{assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
 			<form id="OutgoingServerForm" data-detail-url="{$MODEL->getDetailViewUrl()}" method="POST">
-				<div class="clearfix">
-					<div class="btn-group pull-right">
-						<button class="btn btn-default resetButton" type="button" title="{vtranslate('LBL_RESET_TO_DEFAULT', $QUALIFIED_MODULE)}"><strong>{vtranslate('LBL_RESET_TO_DEFAULT', $QUALIFIED_MODULE)}</strong></button>
-					</div>
-				</div>
 				<input type="hidden" name="default" value="false" />
 				<input type="hidden" name="server_port" value="0" />
 				<input type="hidden" name="server_type" value="email"/>

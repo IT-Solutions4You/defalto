@@ -8,7 +8,7 @@
  ************************************************************************************}
 {* modules/Documents/views/MoveDocuments.php *}
 {strip}
-    <div class="modal-dialog modelContainer">
+    <div class="modal-dialog modelContainer modal-content">
         {assign var=HEADER_TITLE value={vtranslate('LBL_SELECT_A_FOLDER_TO_MOVE', $MODULE)}}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 		<form class="form-horizontal contentsBackground" id="moveDocuments" method="post" action="index.php">

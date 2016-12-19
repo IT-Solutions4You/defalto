@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'A %s',
   'LBL_FROM_SERVICE' => 'A %s',
   'LBL_CREATE_NEW' => 'Az Új létrehozása %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'Kérjük, válasszon ki egy mappát mozgatni',
 );
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER'                => 'Új Mappa'                   , 

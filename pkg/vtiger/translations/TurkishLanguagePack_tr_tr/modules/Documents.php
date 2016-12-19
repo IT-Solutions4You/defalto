@@ -74,7 +74,7 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => '%S için ',
   'LBL_FROM_SERVICE' => '%S ',
   'LBL_CREATE_NEW' => 'Yeni %s oluşturulamıyor ',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'taşımak için bir klasör seçiniz',
 );
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER'                => 'New Folder'                  , 

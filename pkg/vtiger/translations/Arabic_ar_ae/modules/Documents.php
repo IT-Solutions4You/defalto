@@ -90,9 +90,8 @@ $languageStrings = array(
   'LBL_TO_SERVICE' => 'إلى %s',
   'LBL_FROM_SERVICE' => 'من %s',
   'LBL_CREATE_NEW' => 'إنشاء جديد " %s',
-
+	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'الرجاء تحديد مجلد لنقل',
 );
-
 $jsLanguageStrings = array(
 	'JS_NEW_FOLDER' => 'مجلد جديد',
 	'JS_MOVE_DOCUMENTS' => 'نقل المستندات',
