@@ -487,45 +487,6 @@ Vtiger.Class('Documents_Index_Js', {
 		});
 	},
 
-	loadQuickCreateContents : function(container) {
-		var self = this;
-		var params = {
-			'module' : container.find('[name="module"]').val(),
-			'view' : 'AjaxView',
-			'mode' : 'showContents'
-		};
-		var quickCreateForm = jQuery('.recordEditView');
-
-		var textAreaElement = quickCreateForm.find('textarea[name="notecontent"]');
-		if(textAreaElement.length){
-			if(CKEDITOR.instances.Documents_editView_fieldName_notecontent_popup) {
-				var notecontent = CKEDITOR.instances.Documents_editView_fieldName_notecontent_popup.getData();
-				textAreaElement.val(notecontent);
-			}
-		}
-
-		var formData = quickCreateForm.serializeFormData();
-		params = jQuery.extend(params, formData);
-		delete params['action'];
-		app.helper.showProgress();
-		app.request.post({'data' : params}).then(function(err, data) {
-			if(!err) {
-				app.helper.hideProgress();
-				container.find('.quickCreateContent').html(data);
-				if(formData.operation == 'CreateDocument') {
-					if(container.find('input[name="type"]').val() === 'W') {
-						 //change id of text area to workaround multiple instances of ckeditor on same element
-						 self.applyEditor(
-							 container.find('#Documents_editView_fieldName_notecontent')
-							 .attr('id','Documents_editView_fieldName_notecontent_popup')
-						 );
-					 }
-				 }
-				vtUtils.applyFieldElementsView(container.find('.quickCreateContent'));
-			} 
-		 });
-	},
-
 	_uploadToExternalStorage : function(container) {
 		var self = this;
 		if(!self.getFile()) {
@@ -572,41 +533,9 @@ Vtiger.Class('Documents_Index_Js', {
 		{'autoHideScrollbar': true});
 	},
 
-	showUploadToExternalStorageModal : function(service,parentId,relatedModule) {
-		var self = this;
-		var url = 'index.php?module=Documents&view=ExternalStorage&operation=UploadTo'+service;
-		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
-			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
-		}
-		var relationField = jQuery('div.related-tabs').find('li').filter('.active').data('relatedfield');
-		if (relationField && parentId) {
-			url += '&'+relationField+"="+parentId;
-		}
-		app.helper.showProgress();
-		app.request.get({'url':url}).then(function(e,resp) {
-			app.helper.hideProgress();
-			if(!e) {
-				app.helper.showModal(resp, {
-					'cb' : function(modalContainer) {
-						self.registerUploadToExternalStorageEvents(modalContainer);
-						self.applyScrollToModal(modalContainer);
-					}
-				});
-			}
-		});
-	},
-
-	showUploadDocumentModal : function(service,parentId,relatedModule) {
-		if(service === 'Vtiger') {
-			this.showUploadToVtigerModal(parentId,relatedModule);
-		} else {
-			this.showUploadToExternalStorageModal(service,parentId,relatedModule);
-		}
-	},
-
 	uploadTo : function(service,parentId,relatedModule) {
 		this.setFile(false);
-		this.showUploadDocumentModal(service,parentId,relatedModule);
+		this.showUploadToVtigerModal(service,parentId,relatedModule);
 	},
 
 	createExternalDocument : function(container) {
@@ -1039,7 +968,7 @@ Vtiger.Class('Documents_Index_Js', {
 
 	showCreateDocumentModal : function(type,parentId,relatedModule) {
 		var self = this;
-		var url = 'index.php?module=Documents&view=AjaxView&operation=CreateDocument&type='+type;
+		var url = 'index.php?module=Documents&view=QuickCreateAjax&operation=CreateDocument&type='+type;
 		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
 			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
 		}

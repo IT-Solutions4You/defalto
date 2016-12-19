@@ -237,7 +237,10 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 		var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
 		var pickListValues = this.getPickListValues();
 		var selectedOption = app.htmlDecode(this.getValue());
-            html += '<option value="">Select an Option</option>';
+		
+		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0) {
+			html += '<option value="">Select an Option</option>';
+		}
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
 			if(option == selectedOption) {
