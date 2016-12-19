@@ -9,40 +9,28 @@
 {* modules/Settings/Vtiger/views/TaxIndex.php *}
 
 {strip}
-    <div class="col-lg-12 col-md-12 col-sm-12" id="TaxCalculationsContainer">
-        <div class="editViewHeader">
-            <h4>{vtranslate('LBL_TAX_CALCULATIONS', $QUALIFIED_MODULE)}</h4>
-        </div>
-        <hr>
-        <br>
-        <div class="contents tabbable clearfix">
-            <ul class="nav nav-tabs layoutTabs massEditTabs">
-                <li class="tab-item taxesTab active"><a data-toggle="tab" href="#taxes"><strong>{vtranslate('LBL_TAXES', $QUALIFIED_MODULE)}</strong></a></li>
-                <li class="tab-item chargesTab"><a data-toggle="tab" href="#charges"><strong>{vtranslate('LBL_CHARGES_AND ITS_TAXES', $QUALIFIED_MODULE)}</strong></a></li>
-                <li class="tab-item taxRegionsTab"><a data-toggle="tab" href="#taxRegions"><strong>{vtranslate('LBL_TAX_REGIONS', $QUALIFIED_MODULE)}</strong></a></li>
-            </ul>
-            <div class="tab-content layoutContent padding20 overflowVisible">
-                <div class="tab-pane active" id="taxes">
-                    <div class="col-lg-3 col-md-3 col-sm-3"></div>
-                        <div class="col-lg-6">
-						<div class="defaultTaxMode">
-							<input type="hidden" id="selectedTaxMode" value="{$SELECTED_TAX_MODE}">
-							<div class="pull-left">{vtranslate('LBL_DEFAULT_TAX_MODE', $QUALIFIED_MODULE)} : </div>
-							<label class="span radio-group">&nbsp;&nbsp;
-								<input class="input-medium" type="radio" name="default_tax_mode" {if $SELECTED_TAX_MODE eq 'group'}checked{/if} value='group' style="display: inline-block;">&nbsp;&nbsp;
-								<span class="mode radio-label">{vtranslate('LBL_GROUP', $QUALIFIED_MODULE)}</span>
-							</label>
-							<label class="span radio-group">&nbsp;&nbsp;
-								<input class="input-medium" type="radio" name="default_tax_mode" {if $SELECTED_TAX_MODE eq 'individual'}checked{/if} value='individual' style="display: inline-block;">&nbsp;&nbsp;
-								<span class="mode radio-label">{vtranslate('LBL_INDIVIDUAL', $QUALIFIED_MODULE)}</span>
-							</label>
-						</div>
-						<br>
+	<div class="col-lg-12 col-md-12 col-sm-12" id="TaxCalculationsContainer">
+		<div class="editViewHeader">
+			<h4>{vtranslate('LBL_TAX_CALCULATIONS', $QUALIFIED_MODULE)}</h4>
+		</div>
+		<hr>
+		<br>
+		<div class="contents tabbable clearfix">
+			<ul class="nav nav-tabs layoutTabs massEditTabs">
+				<li class="tab-item taxesTab active"><a data-toggle="tab" href="#taxes"><strong>{vtranslate('LBL_TAXES', $QUALIFIED_MODULE)}</strong></a></li>
+				<li class="tab-item chargesTab"><a data-toggle="tab" href="#charges"><strong>{vtranslate('LBL_CHARGES_AND ITS_TAXES', $QUALIFIED_MODULE)}</strong></a></li>
+				<li class="tab-item taxRegionsTab"><a data-toggle="tab" href="#taxRegions"><strong>{vtranslate('LBL_TAX_REGIONS', $QUALIFIED_MODULE)}</strong></a></li>
+			</ul>
+			<div class="tab-content layoutContent padding20 overflowVisible">
+				<div class="tab-pane active" id="taxes">
+					<div class="col-lg-3 col-md-3 col-sm-3"></div>
+					<div class="col-lg-6">
 						{assign var=CREATE_TAX_URL value=$TAX_RECORD_MODEL->getCreateTaxUrl()}
 						{assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
 						<div class="marginBottom10px">
 							<button type="button" class="btn btn-default addTax addButton btn-default module-buttons" data-url="{$CREATE_TAX_URL}" data-type="0">
-								<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_NEW_TAX', $QUALIFIED_MODULE)}</button>
+								<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_NEW_TAX', $QUALIFIED_MODULE)}
+							</button>
 						</div>
 						<table class="table table-bordered inventoryTaxTable">
 							<tr>
@@ -68,10 +56,10 @@
 							{/foreach}
 						</table>
 					</div>
-                </div>
-                <div class="tab-pane" id="charges"></div>
-                <div class="tab-pane" id="taxRegions"></div>
-            </div>
-        </div>
-    </div>
+				</div>
+				<div class="tab-pane" id="charges"></div>
+				<div class="tab-pane" id="taxRegions"></div>
+			</div>
+		</div>
+	</div>
 {/strip}

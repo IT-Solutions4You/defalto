@@ -10,23 +10,11 @@
 Vtiger.Class('Documents_Index_Js', {
 
 	fileObj : false,
-
 	referenceCreateMode : false,
 	referenceFieldName : '',
 
-	hierarchyMap : {
-		'GoogleDrive' : {},
-		'Dropbox' : {}
-	},
-
 	getInstance : function() {
 		return new Documents_Index_Js();
-	},
-
-	authorize : function(serviceName,parentId,relatedModule,mode,referenceFieldName) {
-		var instance = Documents_Index_Js.getInstance();
-		instance.detectReferenceCreateMode(referenceFieldName);
-		instance.authorize(serviceName,parentId,relatedModule,mode,referenceFieldName);
 	},
 
 	uploadTo : function(service,parentId,relatedModule,referenceFieldName) {
@@ -41,17 +29,6 @@ Vtiger.Class('Documents_Index_Js', {
 		instance.createDocument(type,parentId,relatedModule);
 	},
 
-	revokeAccess : function(label,revokeUrl) {
-		var instance = Documents_Index_Js.getInstance();
-		instance.revokeAccess(label,revokeUrl);
-	},
-
-	selectFrom : function(service,parentId,relatedModule, referenceFieldName) {
-		var instance = Documents_Index_Js.getInstance();
-		instance.detectReferenceCreateMode(referenceFieldName);
-		instance.selectFrom(service,parentId,relatedModule);
-	}
-
 }, {
 
 	detectReferenceCreateMode : function(referenceFieldName) {
@@ -62,34 +39,6 @@ Vtiger.Class('Documents_Index_Js', {
 			Documents_Index_Js.referenceCreateMode = false;
 			Documents_Index_Js.referenceFieldName = '';
 		}
-	},
-
-	revokeAccess : function(label,revokeUrl) {
-		app.helper.showConfirmationBox({
-			message:app.vtranslate('JS_ARE_YOU_SURE_TO_REVOKE_ACCESS')
-		}).then(function() {
-			app.helper.showProgress();
-			app.request.post({'url' : revokeUrl}).then(function(e,resp) {
-				app.helper.hideProgress();
-				if(!e) {
-					if(resp.accessRevoked) {
-						jQuery('#Documents_listview_customsettingaction_'+label).addClass('hide');
-						if(jQuery('.settingsIcon').find('ul.dropdown-menu').find('li').not('.hide').length <= 0) {
-							jQuery('.settingsIcon').parent('li').addClass('hide');
-						}
-						var service = 'GoogleDrive'
-						if(label !== 'LBL_REVOKE_ACCESS_TO_DRIVE') {
-							service = 'Dropbox';
-						}
-						jQuery('#'+service+'UploadAction > a').attr('href','javascript:Documents_Index_Js.authorize(\''+service+'\', undefined, undefined, "upload")');
-						jQuery('#'+service+'SelectAction > a').attr('href','javascript:Documents_Index_Js.authorize(\''+service+'\', undefined, undefined, "select")');
-						app.helper.showSuccessNotification({
-							'message' : app.vtranslate('JS_ACCESS_REVOKED')
-						});
-					}
-				}
-			});
-		});
 	},
 
 	getFile : function() {
@@ -124,8 +73,7 @@ Vtiger.Class('Documents_Index_Js', {
 		var parentId = jQuery('#recordId').val();
 		var parentModule = app.getModuleName();
 		var relatedModuleName = jQuery('.relatedModuleName').val();
-		var selectedRelatedTabElement = jQuery('div.related-tabs')
-				.find('li').filter('.active');
+		var selectedRelatedTabElement = jQuery('div.related-tabs').find('li').filter('.active');
 		var relatedList = Vtiger_RelatedList_Js.getInstance(parentId, parentModule, selectedRelatedTabElement, relatedModuleName);
 		relatedList.loadRelatedList();
 	},
@@ -329,97 +277,20 @@ Vtiger.Class('Documents_Index_Js', {
 		vtUtils.enableTooltips();
 	},
 
-	tabChangeHandler : function(container) {
-		jQuery('.tab-item', container).on('click', function() {
-			var currentTab = jQuery(this);
-			//activate tab
-			currentTab.closest('.nav-tabs').find('.tab-item').removeClass('active');
-			currentTab.addClass('active');
-
-			//activate tab-pane
-			container.find('.tab-content > .tab-pane').removeClass('active in');
-			var activatedPane = container.find('.tab-content > '+currentTab.data('tabcontentSelector'));
-			activatedPane.addClass('active in');
-
-			//intimate activated tab-pane
-			activatedPane.trigger('Documents.Upload.Tab.Active');
-		});
-	},
-
-	addToHierarchyMap : function(childDir,parentDir,service) {
-		Documents_Index_Js.hierarchyMap[service][childDir] = parentDir;
-	},
-
-	getParentDirFromHierarchyMap : function(childDir,service) {
-		if(childDir == '/') return false;
-		return Documents_Index_Js.hierarchyMap[service][childDir];
-	},
-
 	updateDirectoryMeta : function(folderId,tab,backwardNavigation) {
 		backwardNavigation = (typeof backwardNavigation == "undefined") ? false : true;
 		var currentDirElement = jQuery('input[name="currentDir"]',tab);
 		var parentDirElement = jQuery('input[name="parentDir"]',tab);
-		var service = jQuery('input[name="serviceProvider"]',tab).val();
 		var currentDir = currentDirElement.val();
 		var parentDir = parentDirElement.val();
 		if(!backwardNavigation) {
-			this.addToHierarchyMap(folderId,currentDir,service);
 			parentDirElement.val(currentDir);
 			currentDirElement.val(folderId);
 			jQuery('.browseBack',tab).removeAttr('disabled');
 			jQuery('.gotoRoot',tab).removeAttr('disabled');
 		} else {
 			currentDirElement.val(folderId);
-			parentDir = this.getParentDirFromHierarchyMap(folderId,service)
-			if(!parentDir) {
-				jQuery('.browseBack',tab).attr('disabled','disabled');
-				jQuery('.gotoRoot',tab).attr('disabled','disabled');
-			}
 			parentDirElement.val(parentDir);
-		}
-	},
-
-	registerInlineAuthEvent : function(container) {
-		var self = this;
-		var authorizeButton = jQuery('.inlineAuth',container);
-		if(authorizeButton.length) {
-			authorizeButton.on('click', function() {
-				var currentTarget = jQuery(this);
-				currentTarget.attr('disabled','disabled');
-				self._getAuthUrl(currentTarget.data('service'),true).then(function(authUrl) {
-					window.resumeAuth = function(status) {
-						if(status) {
-							app.helper.hideModal();
-							var serviceProvider = container.find('input[name="serviceProvider"]').val(),
-							parentId, relatedModule;
-							if(container.find('.relationDetails').length) {
-								var relationDetailsContainer = container.find('.relationDetails');
-								parentId = relationDetailsContainer.find('input[name="sourceRecord"]').val();
-								relatedModule = relationDetailsContainer.find('input[name="sourceModule"]').val();
-							}
-							Documents_Index_Js.selectFrom(serviceProvider,parentId,relatedModule);
-						}
-					};
-					window.open(authUrl,'','height=600,width=600,channelmode=1');
-				}, function(e) {
-					console.log("error : ",e);
-				});
-			});
-		}
-	},
-
-	registerExternalStorageTabEvents : function(tab) {
-		this.registerSearchFilesEvent(tab);
-		this.registerGotoRootFolderEvent(tab);
-		this.registerBackBrowseButton(tab);
-		this.registerFileSelectionHandler(tab);
-		this.registerBrowseFolder(tab);
-		this.registerInlineAuthEvent(tab);
-	},
-
-	registerPostTabLoadEvents : function(tab) {
-		if(tab.data('service') === 'GoogleDrive' || tab.data('service') === 'Dropbox') {
-			this.registerExternalStorageTabEvents(tab);
 		}
 	},
 
@@ -432,7 +303,6 @@ Vtiger.Class('Documents_Index_Js', {
 			if(!e) {
 				tab.html(resp);
 				vtUtils.applyFieldElementsView(tab);
-				self.registerPostTabLoadEvents(tab);
 			} else {
 				console.log("error while loading tab : ",e);
 			}
@@ -487,47 +357,6 @@ Vtiger.Class('Documents_Index_Js', {
 		});
 	},
 
-	_uploadToExternalStorage : function(container) {
-		var self = this;
-		if(!self.getFile()) {
-			app.helper.showErrorNotification({
-				'message' : app.vtranslate('JS_PLEASE_SELECT_A_FILE')
-			});
-			return;
-		}
-		var uploadForm = container.find('form[name="uploadToService"]');
-		self._upload(uploadForm).then(function(resp) {
-			if(resp.uploadFail) {
-				app.helper.showErrorNotification({
-					'message' : app.vtranslate(resp.msg)
-				});
-			} else {
-				app.helper.showSuccessNotification({
-					'message' : app.vtranslate('JS_UPLOAD_SUCCESSFUL')
-				});
-			}
-			app.helper.hideModal();
-			self.reloadList();
-
-			if(Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
-				self.postQuickCreateSave(resp);
-			}
-		}, function(e) {
-			app.helper.showErrorNotification({'message' : app.vtranslate('JS_UPLOAD_FAILED')});
-		});
-	},
-
-	registerUploadToExternalStorageEvents : function(container) {
-		var self = this;
-		container.find('form').vtValidate({
-			'submitHandler' : function() {
-				self._uploadToExternalStorage(container);
-				return false;
-			}
-		});
-		this.registerFileHandlingEvents(container);
-	},
-
 	applyScrollToModal : function(modalContainer) {
 		app.helper.showVerticalScroll(modalContainer.find('.modal-body').css('max-height', '415px'), 
 		{'autoHideScrollbar': true});
@@ -535,195 +364,7 @@ Vtiger.Class('Documents_Index_Js', {
 
 	uploadTo : function(service,parentId,relatedModule) {
 		this.setFile(false);
-		this.showUploadToVtigerModal(service,parentId,relatedModule);
-	},
-
-	createExternalDocument : function(container) {
-		var self = this;
-		var selection = jQuery('.selectList', container).find('.selectedFile');
-		if(!selection.length) {
-			app.helper.showAlertNotification({
-				'message' : app.vtranslate('JS_PLEASE_SELECT_A_FILE')
-			});
-			return;
-		}
-
-		var service = jQuery('input[name="serviceProvider"]', container).val();
-
-		var assignedUserId = jQuery('select[name="assigned_user_id"] option:selected', container).val();
-		var documentSource = service;
-		if(service === 'GoogleDrive') {
-			documentSource = 'Google Drive';
-		}
-
-		var params = {
-			module : 'Documents',
-			action : 'SaveAjax',
-			service : service,
-			notes_title : selection.data('title'),
-			filename : selection.data('link'),
-			filelocationtype : 'E',
-			assigned_user_id : assignedUserId,
-			document_source : documentSource,
-			externalFileId : selection.data('fileid'),
-			folderid : jQuery('input[name="vtigerFolderId"]',container).val()
-		};
-
-		if(service === 'Dropbox'){
-			params.createDirectLink = "yes";
-		}
-
-		var relationDetailsContainer = container.find('.relationDetails');
-		if(relationDetailsContainer.length) {
-			var relationOperationElement = relationDetailsContainer.find('input[name="relationOperation"]');
-			var relationOperator = relationOperationElement.val();
-			var sourceModule = relationDetailsContainer.find('input[name="sourceModule"]').val();
-			var sourceRecord = relationDetailsContainer.find('input[name="sourceRecord"]').val();
-			var relationFieldName = relationDetailsContainer.find('input[name="relationFieldName"]').val();
-			params.relationOperation = relationOperator;
-			params.sourceModule = sourceModule;
-			params.sourceRecord = sourceRecord;
-			if(relationFieldName){
-				params[relationFieldName] = sourceRecord;
-			}
-		}
-
-		app.helper.showProgress();
-		app.request.post({'data':params}).then(function(e,res) {
-			app.helper.hideProgress();
-			if(!e) {
-				app.helper.showSuccessNotification({
-					'message' : app.vtranslate('JS_DOCUMENT_CREATED')
-				});
-				app.helper.hideModal();
-				self.reloadList();
-
-				//reference create handling
-				if (Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
-					self.postQuickCreateSave(res);
-				}
-			} else {
-				app.event.trigger('post.save.failed', e);
-			}
-		});
-	},
-
-	registerLinkExternalDocumentEvent : function(container) {
-		var self = this;
-		jQuery('#js-select-document',container).on('click',function() {
-			self.createExternalDocument(container.find('form'));
-		});
-	},
-
-	updateFilesList : function(files, container) {
-		var tableContainer = container.find('.selectList').find('tbody'),
-			listItem = '';
-		tableContainer.empty();
-		if(typeof files === 'undefined' || !files.length) {
-			listItem = '<div style="padding:20px">'+
-							'<span class="span">'+
-								'<i class="fa fa-info-circle"></i>'+
-									app.vtranslate('JS_NO_RESULTS_FOUND')+
-							'</span>'+
-						'</div>';
-			tableContainer.append(listItem);
-			return;
-		} else {
-			for(var i=0;i<files.length;i++) {
-				if(files[i].is_dir) {
-					listItem = "<tr class='listViewEntries folder' data-fileid='"+files[i].id+"' data-title='"+files[i].title+"' data-link='"+files[i].alternateLink+"'>"+
-									"<td class='listViewEntryValue medium fileTitleData' nowrap=''>"+
-										"<i class='fa fa-folder'></i>&nbsp;<a>"+files[i].title+"</a>"+
-									"</td>";
-					if(files[i].owner_name) {
-						listItem += "<td class='listViewEntryValue medium fileOwnerData' nowrap=''>"+
-										"<a>" + files[i].owner_name + "</a>"+
-									"</td>";
-					}
-					if(files[i].fileSize && !files[i].is_dir) {
-						var fileSize = files[i].fileSize;
-						if(container.find('input[name="serviceProvider"]').val() === 'GoogleDrive') {
-							fileSize = vtUtils.convertFileSizeInToDisplayFormat(fileSize);
-						}
-						listItem += "<td class='listViewEntryValue medium fileSizeData' nowrap=''>"+
-										"<a>" + fileSize + "</a>"+
-									"</td>";
-					}
-					listItem += "</tr>";
-				} else {
-					listItem = "<tr class='listViewEntries file' data-fileid='"+files[i].id+"' data-title='"+files[i].title+"' data-link='"+files[i].alternateLink+"'>"+
-								"<td class='listViewEntryValue medium fileTitleData' nowrap=''>"+
-									"<i class='fa fa-file'></i>&nbsp;<a>"+files[i].title+"</a>"+
-								"</td>";
-					if(files[i].owner_name) {
-						listItem += "<td class='listViewEntryValue medium fileOwnerData' nowrap=''>"+
-										"<a>" + files[i].owner_name + "</a>"+
-									"</td>";
-					}
-					if(files[i].fileSize) {
-						var fileSize = files[i].fileSize;
-						if(container.find('input[name="serviceProvider"]').val() === 'GoogleDrive') {
-							fileSize = vtUtils.convertFileSizeInToDisplayFormat(fileSize);
-						}
-						listItem += "<td class='listViewEntryValue medium fileSizeData' nowrap=''>"+
-									"<a>" + fileSize + "</a>"+
-								"</td>";
-					}
-					listItem += "</tr>";
-				}
-				tableContainer.append(listItem);
-			}
-		}
-		this.registerFileSelectionHandler(container);
-		this.registerBrowseFolder(container);
-	},
-
-	showEmptyDirectoryMessage : function(tab) {
-		var container = jQuery('.selectList',tab).find('tbody');
-		container.empty();
-		var content = '<div style="padding:20px">\n\
-						<span class="span">\n\
-							<i class="fa fa-info-circle"></i>\n\
-							'+app.vtranslate('JS_DIRECTORY_IS_EMPTY')+
-						'</span>\n\
-					</div>';
-		container.append(content);
-	},
-
-	openFolder : function(folderId,container,backwardNavigation) {
-		var self = this;
-		var service = jQuery('input[name="serviceProvider"]',container).val();
-
-		var params = {
-			 'module' : 'Documents',
-			 'action' : 'ServiceProvidersAjax',
-			 'mode' : 'getFilesForDirectory',
-			 'service' : service,
-			 'folderId' : folderId
-		 };
-		 app.helper.showProgress(app.vtranslate('JS_PLEASE_WAIT'));
-		 app.request.post({'data':params}).then(function(e,res) {
-			 app.helper.hideProgress();
-			 if(!e) {
-				 if(res.is_directory_empty) {
-					 self.showEmptyDirectoryMessage(container);
-				 } else {
-					 self.updateFilesList(res.filesList,container);
-				 }
-				 self.updateDirectoryMeta(folderId,container,backwardNavigation);
-				 self.registerBackBrowseButton(container);
-			 }
-		 });
-	},
-
-	registerBrowseFolder : function(container) {
-		var self = this;
-		jQuery('.folder', container).on('click', function() {
-			jQuery('.folder',container).off('click');
-			jQuery('.browseBack',container).off('click');
-			var folderId = jQuery(this).data('fileid');
-			self.openFolder(folderId,container);
-		});
+		this.showUploadToVtigerModal(parentId,relatedModule);
 	},
 
 	registerFileSelectionHandler : function(container) {
@@ -733,178 +374,6 @@ Vtiger.Class('Documents_Index_Js', {
 			}
 			jQuery(this).addClass('selectedFile');
 			prevSelection = jQuery(this);
-		});
-	},
-
-	registerBackBrowseButton : function(container) {
-		var thisInstance = this;
-		var currentDirElement = jQuery('input[name="currentDir"]',container);
-		jQuery('.browseBack',container).on('click',function() {
-			var service = jQuery('input[name="serviceProvider"]',container).val();
-			var parentDir = thisInstance.getParentDirFromHierarchyMap(currentDirElement.val(),service);
-			if(parentDir) {
-				jQuery('.browseBack',container).off('click');
-				jQuery('.folder',container).off('click');
-				thisInstance.openFolder(parentDir,container,true);
-			}
-		});
-	},
-
-	registerGotoRootFolderEvent : function(container) {
-		var self = this;
-		jQuery('.gotoRoot', container).on('click', function() {
-			jQuery(this).attr('disabled','disabled');
-			jQuery('.browseBack',container).attr('disabled','disabled');
-			var rootMetaElement = jQuery('input[name="rootDirContents"]',container);
-			var filesList = rootMetaElement.val();
-			var rootDirId = rootMetaElement.attr('data-rootDirId');
-			filesList = JSON.parse(filesList);
-			self.updateFilesList(filesList,container);
-			jQuery('input[name="currentDir"]',container).val(rootDirId);
-			jQuery('input[name="parentDir"]',container).val('');
-		});
-	},
-
-	registerSearchFilesEvent : function(container) {
-		var self = this;
-		jQuery('input[name="searchFiles"]', container).on('change', function() {
-			var searchKey = jQuery(this).val();
-			searchKey = jQuery.trim(searchKey);
-			if(searchKey.length === 0) {
-				jQuery(this).val('');
-				return;
-			}
-
-			var params = {
-				'module' : 'Documents',
-				'action' : 'ServiceProvidersAjax',
-				'mode' : 'search',
-				'searchKey' : searchKey,
-				'service' : jQuery('input[name="serviceProvider"]',container).val()
-			};
-			app.helper.showProgress(app.vtranslate('JS_PLEASE_WAIT'));
-			app.request.post({'data':params}).then(function(e,res) {
-				app.helper.hideProgress();
-				if(!e) {
-					self.updateFilesList(res,container);
-					jQuery('.browseBack',container).attr('disabled','disabled');
-					jQuery('.gotoRoot',container).removeAttr('disabled');
-				}
-			});
-		});
-	},
-
-	registerSelectFromExternalStorageEvents : function(modalContainer) {
-		modalContainer.find('form').vtValidate({
-			'submitHandler' : function() {
-				return false;
-			}
-		});
-
-		this.registerSearchFilesEvent(modalContainer);
-		this.registerGotoRootFolderEvent(modalContainer);
-		this.registerBackBrowseButton(modalContainer);
-		this.registerFileSelectionHandler(modalContainer);
-		this.registerBrowseFolder(modalContainer);
-		this.registerInlineAuthEvent(modalContainer);
-		this.registerLinkExternalDocumentEvent(modalContainer);
-
-		app.helper.showVerticalScroll(modalContainer.find('.selectList'), 
-		{'autoHideScrollbar' : true, 'setHeight' : 270});
-	},
-
-	showSelectFromExternalStorageModal : function(service,parentId,relatedModule) {
-		var self = this;
-		var url = 'index.php?module=Documents&view=ExternalStorage&operation=SelectFrom'+service;
-		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
-			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
-		}
-		var relationField = jQuery('div.related-tabs').find('li').filter('.active').data('relatedfield');
-		if (relationField && parentId) {
-			url += '&'+relationField+"="+parentId;
-		}
-		app.helper.showProgress();
-		app.request.get({'url':url}).then(function(e,resp) {
-			app.helper.hideProgress();
-			if(!e) {
-				app.helper.showModal(resp, {
-					'cb' : function(modalContainer) {
-						self.registerSelectFromExternalStorageEvents(modalContainer);
-					}
-				});
-			}
-		});
-	},
-
-	selectFrom : function(service,parentId,relatedModule) {
-		this.showSelectFromExternalStorageModal(service,parentId,relatedModule);
-	},
-
-	_getAuthUrl : function(serviceName,inline) {
-		var aDeferred = jQuery.Deferred();
-		if(typeof inline === 'undefined') {
-			inline = false;
-		}
-		var params = {
-			'module' : 'Documents',
-			'action' : 'ServiceProvidersAjax',
-			'mode' : 'getOauthUrl',
-			'service' : serviceName,
-			'inline' : inline
-		};
-		app.helper.showProgress();
-		app.request.post({'data':params}).then(function(e,resp) {
-			app.helper.hideProgress();
-			if(!e) {
-				if(resp.hasOwnProperty('authUrl')) {
-					aDeferred.resolve(resp.authUrl);
-				} else if(resp.hasOwnProperty('postAuthorization')) {
-					aDeferred.reject({postAuthorization:resp.postAuthorization});
-				}
-			} else {
-				aDeferred.reject(e);
-			}
-		});
-		return aDeferred.promise();
-	},
-
-	authorize : function(serviceName,parentId,relatedModule,mode,referenceFieldName) {
-		if(typeof mode === 'undefined') {
-			mode = 'upload';
-		}
-		this._getAuthUrl(serviceName,true).then(function(authUrl) {
-			window.resumeAuth = function(status) {
-				if(status) {
-					var actionHref = 'javascript:Documents_Index_Js.uploadTo(\''+serviceName+'\'';
-					if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
-						actionHref += ','+parentId+',\''+relatedModule+'\'';
-					}
-					actionHref += ')';
-					jQuery('#'+serviceName+'Action').find('a').attr('href',actionHref);
-					if(mode === 'select') {
-						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule,referenceFieldName);
-					} else {
-						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule,referenceFieldName);
-					}
-					var revokeSelector = 'Documents_listview_customsettingaction_LBL_REVOKE_ACCESS_TO_DRIVE';
-					if(serviceName === 'Dropbox') {
-						revokeSelector = 'Documents_listview_customsettingaction_LBL_REVOKE_ACCESS_TO_DROPBOX';
-					}
-					jQuery('#'+revokeSelector).removeClass('hide');
-					jQuery('.settingsIcon').parent('li').removeClass('hide');
-				}
-			};
-			window.open(authUrl,'','height=600,width=600,channelmode=1');
-		}, function(e) {
-			if(e.hasOwnProperty('postAuthorization')) {
-				if(e.postAuthorization) {
-					if(mode === 'select') {
-						Documents_Index_Js.selectFrom(serviceName,parentId,relatedModule,referenceFieldName);
-					} else {
-						Documents_Index_Js.uploadTo(serviceName,parentId,relatedModule,referenceFieldName);
-					}
-				}
-			}
 		});
 	},
 
@@ -966,7 +435,7 @@ Vtiger.Class('Documents_Index_Js', {
 		this.registerCreateDocumentEvent(container);
 	},
 
-	showCreateDocumentModal : function(type,parentId,relatedModule) {
+	createDocument : function(type,parentId,relatedModule) {
 		var self = this;
 		var url = 'index.php?module=Documents&view=QuickCreateAjax&operation=CreateDocument&type='+type;
 		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
@@ -989,10 +458,6 @@ Vtiger.Class('Documents_Index_Js', {
 				});
 			}
 		});
-	},
-
-	createDocument : function(type,parentId,relatedModule) {
-		this.showCreateDocumentModal(type,parentId,relatedModule);
 	},
 
 	registerQuickCreateEvents : function(container) {
