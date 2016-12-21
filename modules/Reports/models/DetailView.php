@@ -40,7 +40,7 @@ class Reports_DetailView_Model extends Vtiger_DetailView_Model {
 
 		$detailViewLinks = array();
         $printPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Print');
-        if($printPermission && $recordModel->getReportType() != 'pivot') {
+        if($printPermission) {
             $detailViewLinks[] = array(
                 'linklabel' => vtranslate('LBL_REPORT_PRINT', $moduleName),
                 'linkurl' => $recordModel->getReportPrintURL(),

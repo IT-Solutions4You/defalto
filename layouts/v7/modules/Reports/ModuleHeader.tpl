@@ -26,7 +26,7 @@
 				</span>
 				<span>
 					<p class="current-filter-name pull-left">&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>
-						{if $VIEW eq 'Detail' or $VIEW eq 'PivotDetail' or $VIEW eq 'ChartDetail'}
+						{if $VIEW eq 'Detail' or $VIEW eq 'ChartDetail'}
 							&nbsp;{$REPORT_NAME}
 						{else}
 							&nbsp;{$VIEW}
@@ -65,13 +65,11 @@
 									{foreach item="childLink" from=$childLinks}
 										{if $childLink->getLabel() eq 'LBL_CHARTS'}
 											{assign var="ICON_CLASS" value='fa fa-pie-chart'}
-										{elseif $childLink->getLabel() eq 'LBL_PIVOT_REPORT'}
-											{assign var="ICON_CLASS" value='vicon-pivots'}
 										{elseif $childLink->getLabel() eq 'LBL_DETAIL_REPORT'}
 											{assign var="ICON_CLASS" value='vicon-detailreport'}
 										{/if}
 										<li id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($childLink->getLabel())}" data-edition-disable="{$childLink->disabled}" data-edition-message="{$childLink->message}">
-											<a {if $childLink->disabled neq '1'} {if stripos($childLink->getUrl(), 'javascript:') === 0} onclick='{$childLink->getUrl()|substr:strlen("javascript:")};' {else} href='{$childLink->getUrl()}' {/if} {else} href="javascript:void(0);" {/if}><i class='{$ICON_CLASS}'  style="font-size:13px;"></i>&nbsp; {vtranslate($childLink->getLabel(), $MODULE)}</a>
+											<a {if $childLink->disabled neq '1'} {if stripos($childLink->getUrl(), 'javascript:') === 0} onclick='{$childLink->getUrl()|substr:strlen("javascript:")};' {else} href='{$childLink->getUrl()}' {/if} {else} href="javascript:void(0);" {/if}><i class='{$ICON_CLASS}' style="font-size:13px;"></i>&nbsp; {vtranslate($childLink->getLabel(), $MODULE)}</a>
 										</li>
 									{/foreach}
 								</ul>
@@ -108,7 +106,7 @@
 								}
 								return false;
 							}
-						},
+						}
 					};
 				})();
 			</script>

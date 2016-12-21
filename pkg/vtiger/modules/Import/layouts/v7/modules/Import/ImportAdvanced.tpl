@@ -60,7 +60,7 @@
                     </table>
                 </div>
             </div>
-            <div class='modal-overlay-footer clearfix'>
+            <div class='modal-overlay-footer border1px clearfix'>
                 <div class="row clearfix">
                         <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
                         <button type="submit" name="import" id="importButton" class="btn btn-success btn-lg" onclick="return Vtiger_Import_Js.sanitizeAndSubmit()"

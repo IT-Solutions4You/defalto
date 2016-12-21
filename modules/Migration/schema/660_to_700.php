@@ -252,10 +252,53 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$columns = $db->getColumnNames('vtiger_links');
+	if (!in_array('parent_link', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_links ADD COLUMN parent_link INT(19)', array());
+	}
+
+	$moduleName = 'Reports';
+	$reportModel = Vtiger_Module_Model::getInstance($moduleName);
+	$reportTabId = $reportModel->getId();
+	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_ADD_RECORD', '', '', '0');
+
+	$reportAddRecordLink = $db->pquery('SELECT linkid FROM vtiger_links WHERE tabid = ? AND linklabel = ?', array($reportTabId, 'LBL_ADD_RECORD'));
+	$parentLinkId = $db->query_result($reportAddRecordLink, 0, 'linkid');
+
+	$reportModelHandler = array('path' => 'modules/Reports/models/Module.php', 'class' => 'Reports_Module_Model', 'method' => 'checkLinkAccess');
+	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_DETAIL_REPORT', 'javascript:Reports_List_Js.addReport("'.$reportModel->getCreateRecordUrl().'")', '', '0', $reportModelHandler, $parentLinkId);
+	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_CHARTS', 'javascript:Reports_List_Js.addReport("index.php?module=Reports&view=ChartEdit")', '', '0', $reportModelHandler, $parentLinkId);
+	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_ADD_FOLDER', 'javascript:Reports_List_Js.triggerAddFolder("'.$reportModel->getAddFolderUrl().'")', '', '0', $reportModelHandler);
+
+	$allFolders = Reports_Folder_Model::getAll();
+	foreach ($allFolders as $folderId => $folderModel) {
+		$folderModel->set('foldername', decode_html(vtranslate($folderModel->getName(), $moduleName)));
+		$folderModel->set('folderdesc', decode_html(vtranslate($folderModel->get('folderdesc'), $moduleName)));
+		$folderModel->save();
+	}
+
+	$modCommentsInstance = Vtiger_Module_Model::getInstance('ModComments');
+	$modCommentsTabId = $modCommentsInstance->getId();
+
+	$modCommentFieldInstance = Vtiger_Field_Model::getInstance('related_to', $modCommentsInstance);
+	$modCommentFieldInstance->setRelatedModules(getInventoryModules());
+
+	$refModulesList = $modCommentFieldInstance->getReferenceList();
+	foreach ($refModulesList as $refModuleName) {
+		$refModuleModel = Vtiger_Module_Model::getInstance($refModuleName);
+		$refModuleTabId = $refModuleModel->getId();
+		$db->pquery('UPDATE vtiger_relatedlists SET sequence=(sequence+1) WHERE tabid=?', array($refModuleTabId));
+
+		$query = 'SELECT 1 FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
+		$result = $db->pquery($query, array($refModuleTabId, $modCommentsTabId));
+		if (!$db->num_rows($result)) {
+			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'Comments', '0', '', $fieldId, 'NULL', '1:N'));
+		}
+	}
+
 	$moduleName = 'Calendar';
-	$inviteUsersTemplate = $db->pquery('SELECT * FROM vtiger_emailtemplates WHERE subject=?', array('Invitation'));
-	$rows = $db->num_rows($inviteUsersTemplate);
-	if ($rows < 1) {
+	$inviteUsersTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=?', array('Invitation'));
+	if (!$db->num_rows($inviteUsersTemplate)) {
 		$body = '<p>$invitee_name$,<br/><br/>' .
 				vtranslate('LBL_ACTIVITY_INVITATION', $moduleName).'<br/><br/>' .
 				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
@@ -361,47 +404,13 @@ if(defined('VTIGER_UPGRADE')) {
 	$row = $db->fetch_array($cvidQuery);
 	if ($row['cvid']) {
 		$columnNameCount = $db->pquery('SELECT 1 FROM vtiger_cvcolumnlist WHERE cvid=? and columnname=?', array($row['cvid'], 'vtiger_project:contactid:contactid:Project_Contact_Name:V'));
-		if ($db->num_rows($columnNameCount) == 0) {
+		if (!$db->num_rows($columnNameCount)) {
 			$columnIndexQuery = $db->pquery('SELECT MAX(columnindex) AS columnindex FROM vtiger_cvcolumnlist WHERE cvid=?', array($row['cvid']));
 			$colIndex = $db->fetch_array($columnIndexQuery);
 			$db->pquery('INSERT INTO vtiger_cvcolumnlist(cvid,columnindex,columnname) VALUES(?,?,?)', array($row['cvid'], $colIndex['columnindex']+11, 'vtiger_project:contactid:contactid:Project_Contact_Name:V'));
 		}
 	}
 	//End
-
-	$modcommentsInstance = Vtiger_Module_Model::getInstance('ModComments');
-	$modcommentFieldInstance = Vtiger_Field_Model::getInstance('related_to', $modcommentsInstance);
-	$modcommentFieldId = $modcommentFieldInstance->getId();
-	$modcommentTabid = $modcommentsInstance->getId();
-
-	$inventoryModules = getInventoryModules();
-	foreach ($inventoryModules as $inventoryModule) {
-		$tabid = getTabid($inventoryModule);
-
-		$query = 'SELECT * FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
-		$result = $db->pquery($query, array($tabid, $modcommentTabid));
-
-		if ($db->num_rows($result) == 0) {
-			$inventoryModuleInstance = Vtiger_Module::getInstance($inventoryModule);
-			$inventoryModuleInstance->setRelatedList($modcommentsInstance, 'ModComments', array(), 'get_comments', $modcommentFieldId);
-
-			$commentSequence = 1;
-			$query = 'UPDATE vtiger_relatedlists SET sequence=? WHERE tabid=? AND related_tabid=?';
-			$db->pquery($query, array($commentSequence, $tabid, $modcommentTabid));
-
-			$query = 'SELECT relation_id, sequence FROM vtiger_relatedlists WHERE tabid=? AND related_tabid NOT IN (?)';
-			$result = $db->pquery($query, array($tabid, $modcommentTabid));
-			$count = $db->num_rows($result);
-
-			for ($i=0; $i<$count; $i++) {
-				$relationId = $db->query_result($result, $i, 'relation_id');
-				$sequence = $db->query_result($result, $i, 'sequence');
-				$sequence += 1;
-				$query = 'UPDATE vtiger_relatedlists SET sequence=? WHERE tabid=? AND relation_id=?';
-				$db->pquery($query, array($sequence, $tabid, $relationId));
-			}
-		}
-	}
 
 	$moduleSpecificHeaderFields = array(
 		'Accounts'			=> array('website', 'email1', 'phone'),
@@ -480,7 +489,7 @@ if(defined('VTIGER_UPGRADE')) {
 	//To change the convert lead webserice operation parameters which was wrong earliear 
 	require_once 'include/Webservices/Utils.php';
 	$convertLeadOperationQueryRes = $db->pquery('SELECT operationid FROM vtiger_ws_operation WHERE name=?', array('convertlead'));
-	if ($db->num_rows($convertLeadOperationQueryRes) > 0) {
+	if (!$db->num_rows($convertLeadOperationQueryRes)) {
 		$operationId = $db->query_result($convertLeadOperationQueryRes, '0', 'operationid');
 		$deleteParameterQuery = $db->pquery('DELETE FROM vtiger_ws_operation_parameters WHERE operationid=?', array($operationId));
 		vtws_addWebserviceOperationParam($operationId, 'element', 'encoded', 1);
@@ -543,7 +552,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$recordVisibilityQuery = 'SELECT prefvalue from vtiger_customerportal_prefs WHERE tabid=? AND prefkey=?';
 			$recordVisibilityQueryResult = $db->pquery($recordVisibilityQuery, array($tabid, 'showrelatedinfo'));
 			$visibilty = 1;
-			if ($db->num_rows($recordVisibilityQueryResult) > 0) {
+			if (!$db->num_rows($recordVisibilityQueryResult)) {
 				$visibilty = $db->query_result($recordVisibilityQueryResult, 0, 'prefvalue');
 			}
 			$db->pquery('INSERT INTO vtiger_customerportal_fields(tabid,fieldinfo,records_visible) VALUES(?,?,?)', array($tabid, json_encode($mandatoryFields), $visibilty));
@@ -638,13 +647,12 @@ if(defined('VTIGER_UPGRADE')) {
 	);
 	foreach ($relatedWebservicesOperations as $operation) {
 		$rs = $db->pquery('SELECT 1 FROM vtiger_ws_operation WHERE name=?', array($operation['name']));
-		if ($db->num_rows($rs)) {//Skip duplicate attempt
-			continue;
-		}
-		$operationId = vtws_addWebserviceOperation($operation['name'], $operation['path'], $operation['method'], $operation['type']);
-		$sequence = 1;
-		foreach ($operation['params'] as $param) {
-			vtws_addWebserviceOperationParam($operationId, $param['name'], $param['type'], $sequence++);
+		if (!$db->num_rows($rs)) {
+			$operationId = vtws_addWebserviceOperation($operation['name'], $operation['path'], $operation['method'], $operation['type']);
+			$sequence = 1;
+			foreach ($operation['params'] as $param) {
+				vtws_addWebserviceOperationParam($operationId, $param['name'], $param['type'], $sequence++);
+			}
 		}
 	}
 	//Change to modify shipping tax percent column type
@@ -709,9 +717,8 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_field SET block=?, displaytype=? WHERE tabid=? AND fieldname=?', array($reminderBlockInstance->id, '1', $tabId, 'reminder_time'));
 
 	//adding new reminder template for todo
-	$reminderTemplate = $db->pquery('SELECT * FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Activity Reminder', '1'));
-	$rows = $db->num_rows($reminderTemplate);
-	if ($rows < 1) {
+	$reminderTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Activity Reminder', '1'));
+	if (!$db->num_rows($reminderTemplate)) {
 		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
 				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
 								&nbsp; '.vtranslate('Subject', $moduleName).' : $calendar-subject$<br/>
@@ -726,10 +733,8 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$db->pquery('ALTER TABLE vtiger_webforms_field MODIFY COLUMN defaultvalue TEXT', array());
 
-	$integrationBlock = $db->pquery('SELECT * FROM vtiger_settings_blocks WHERE label=?', array('LBL_OTHER_SETTINGS'));
-	$integrationBlockCount = $db->num_rows($integrationBlock);
-
-	if ($integrationBlockCount > 0) {
+	$integrationBlock = $db->pquery('SELECT 1 FROM vtiger_settings_blocks WHERE label=?', array('LBL_OTHER_SETTINGS'));
+	if (!$db->num_rows($integrationBlock)) {
 		$blockid = $db->query_result($integrationBlock, 0, 'blockid');
 		//To add a Field
 		$fieldid = $db->getUniqueID('vtiger_settings_field');
@@ -776,32 +781,29 @@ if(defined('VTIGER_UPGRADE')) {
 
 		$projectTabId = getTabid('Project');
 		$calendarTabId = getTabid('Calendar');
-		$result = $db->pquery('SELECT * FROM vtiger_ws_fieldtype WHERE uitype=?', array($fieldModel->get('uitype')));
+		$result = $db->pquery('SELECT fieldtypeid FROM vtiger_ws_fieldtype WHERE uitype=?', array($fieldModel->get('uitype')));
 		$fieldType = $db->query_result($result, 0, 'fieldtypeid');
 
-		$query = 'SELECT 1 FROM vtiger_ws_referencetype WHERE fieldtypeid=? and type=?';
-		$result = $db->pquery($query, array($fieldType, 'Project'));
-		if ($db->num_rows($result) <= 0) {
-			$insertQuery = 'INSERT INTO vtiger_ws_referencetype(fieldtypeid,type) values(?,?)';
-			$db->pquery($insertQuery, array($fieldType, 'Project'));
+		$result = $db->pquery('SELECT 1 FROM vtiger_ws_referencetype WHERE fieldtypeid=? and type=?', array($fieldType, 'Project'));
+		if (!$db->num_rows($result)) {
+			$db->pquery('INSERT INTO vtiger_ws_referencetype(fieldtypeid,type) VALUES(?, ?)', array($fieldType, 'Project'));
 		}
 
-		if ($relationModel->get('relationfieldid') == null) {
+		if (!$relationModel->get('relationfieldid')) {
 			$query = 'UPDATE vtiger_relatedlists SET relationfieldid=? ,name=?, relationtype=? WHERE tabid=? AND related_tabid=?';
 			$db->pquery($query, array($fieldId, 'get_activities', '1:N', $projectTabId, $calendarTabId));
 		}
 
 		//Migrate data from vtiger_crmentityrel to vtiger_seactivityrel
-		$query = 'SELECT * FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?';
+		$query = 'SELECT 1 FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?';
 		$result = $db->pquery($query, array('Project', 'Calendar'));
-		$rows = $db->num_rows($result);
-
-		$insertQuery = 'INSERT INTO vtiger_seactivityrel(crmid, activityid) values(?,?)';
-		while($data = $db->fetch_array($result)) {
-			$db->pquery($insertQuery, array($data['crmid'], $data['relcrmid']));
+		if ($db->num_rows($result)) {
+			$insertQuery = 'INSERT INTO vtiger_seactivityrel(crmid, activityid) values(?,?)';
+			while($data = $db->fetch_array($result)) {
+				$db->pquery($insertQuery, array($data['crmid'], $data['relcrmid']));
+			}
+			$db->pquery('DELETE FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?', array('Project', 'Calendar'));
 		}
-
-		$db->pquery('DELETE FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?', array('Project', 'Calendar'));
 	}
 
 	$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX crmid_idx(crmid)', array());

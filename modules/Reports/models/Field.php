@@ -14,22 +14,24 @@ class Reports_Field_Model extends Vtiger_Field_Model {
 		$picklistValues = false;
 		if ($fieldName == 'reporttype') {
 			$picklistValues = array(
-				'tabular' => vtranslate('tabular', 'Reports'),
-				'pivot' => vtranslate('pivot', 'Reports'),
-				'chart' => vtranslate('chart', 'Reports')
+				'tabular'	=> vtranslate('tabular', 'Reports'),
+				'chart'		=> vtranslate('chart', 'Reports')
 			);
 		} else if ($fieldName == 'foldername') {
 			$allFolders = Reports_Folder_Model::getAll();
 			foreach ($allFolders as $folder) {
-				$picklistValues[$folder->get('folderid')] = $folder->get('foldername');
+				$picklistValues[$folder->get('folderid')] = vtranslate($folder->get('foldername'), 'Reports');
 			}
-		}else if ($fieldName == 'owner') {
+		} else if ($fieldName == 'owner') {
 			$currentUserModel = Users_Record_Model::getCurrentUserModel();
 			$allUsers = $currentUserModel->getAccessibleUsers();
 			foreach ($allUsers as $userId => $userName) {
 				$picklistValues[$userId] = $userName;
 			}
-		}
+		} else if ($fieldName == 'primarymodule') {
+            $reportModel = Reports_Record_Model::getCleanInstance();
+            $picklistValues = $reportModel->getModulesList();
+        }
 
 		return $picklistValues;
 	}

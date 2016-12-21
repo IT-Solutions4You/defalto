@@ -1236,7 +1236,7 @@ $languageStrings = array(
 	'SINGLE_SalesOrder' => 'Sales Order',
 	'SINGLE_PurchaseOrder' => 'Purchase Order',
 	'SINGLE_Quotes' => 'Quote',
-	'LBL_POST_YOUR_COMMENT_HERE' => 'Post a comment and mention @user / @group / @All to notify',
+	'LBL_POST_YOUR_COMMENT_HERE' => 'Post your comment here',
 	// Phone Calls
 	'LBL_CLICK_TO_CALL' => 'Click-to-Call',
 	'LBL_SHOW_TOTAL_NUMBER_OF_RECORDS' => 'Click for this list size',

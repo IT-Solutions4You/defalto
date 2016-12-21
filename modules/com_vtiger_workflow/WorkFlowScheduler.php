@@ -155,8 +155,6 @@ class WorkFlowScheduler {
 			}
 			$vtWorflowManager->updateNexTriggerTime($workflow);
 		}
-		$taskQueue->finalizeScheduledTasks($scheduleDates);
-        $taskQueue->finalizeTasks();
 		$scheduledWorkflows = null;
 	}
 

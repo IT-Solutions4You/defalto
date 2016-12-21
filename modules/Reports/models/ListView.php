@@ -59,11 +59,11 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 		$headers = array(
 			'reporttype' => array('label' => 'Report Type', 'type' => 'picklist'),
 			'reportname' => array('label' => 'Report Name', 'type' => 'string'),
+            'primarymodule' => array('label' => 'Primary Module', 'type' => 'picklist'),
 			'foldername' => array('label' => 'LBL_FOLDER_NAME', 'type' => 'picklist'),
-			'description' => array('label' => 'Description', 'type' => 'string'),
+            'owner' => array('label' => 'LBL_OWNER', 'type' => 'picklist'),
 		);
-		if($folderId == "shared"){
-			$headers['owner'] = array('label' => 'LBL_OWNER', 'type' => 'picklist');
+		if ($folderId == 'shared') {
 			unset($headers['foldername']);
 		}
 		return $headers;

@@ -30,7 +30,7 @@
                     <div class="form-group">
                         <label for="description" class="col-sm-4 control-label">{vtranslate('LBL_FOLDER_DESCRIPTION', $MODULE)}</label>
                         <div class="col-sm-7">
-                            <textarea name="description" class="col-sm-12" rows="3" placeholder="{vtranslate('LBL_WRITE_YOUR_DESCRIPTION_HERE', $MODULE)}">{vtranslate($FOLDER_MODEL->getDescription(), $MODULE)}</textarea>
+                            <textarea name="description" class="form-control col-sm-12" rows="3" placeholder="{vtranslate('LBL_WRITE_YOUR_DESCRIPTION_HERE', $MODULE)}">{vtranslate($FOLDER_MODEL->getDescription(), $MODULE)}</textarea>
                         </div>
                     </div>
                 </div>

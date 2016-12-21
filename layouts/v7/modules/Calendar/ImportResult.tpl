@@ -46,7 +46,7 @@
 					</tr>
 				</table>   
 			</div>
-			<div class="modal-overlay-footer clearfix">
+			<div class="modal-overlay-footer border1px clearfix">
 				<div class="row clearfix">
 					<div class="textAlignCenter col-lg-12 col-md-12 col-sm-12">
 						<button class="btn btn-danger" onclick="return Vtiger_Import_Js.undoImport('index.php?module={$MODULE}&view=Import&mode=undoIcalImport');"><strong>{'LBL_UNDO_LAST_IMPORT'|@vtranslate:$MODULE}</strong></button>
