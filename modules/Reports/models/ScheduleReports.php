@@ -52,49 +52,48 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 	 */
 	public function saveScheduleReport() {
 		$adb = PearDatabase::getInstance();
-        $scheduleCronTx = true;
 
 		$reportid = $this->get('reportid');
-        $scheduleid = $this->get('scheduleid');
+		$scheduleid = $this->get('scheduleid');
 		$schtime = $this->get('schtime');
-        if(!preg_match('/^[0-2]\d(:[0-5]\d){1,2}$/', $schtime) or substr($schtime,0,2)>23) {  // invalid time format
-            $schtime='00:00';
-        }
-        $schtime .=':00';
+		if(!preg_match('/^[0-2]\d(:[0-5]\d){1,2}$/', $schtime) or substr($schtime,0,2)>23) {  // invalid time format
+			$schtime='00:00';
+		}
+		$schtime .=':00';
 
 		$schdate = null; $schdayoftheweek = null; $schdayofthemonth = null; $schannualdates = null;
 		if ($scheduleid == self::$SCHEDULED_ON_SPECIFIC_DATE) {
 			$date = $this->get('schdate');
 			$dateDBFormat = DateTimeField::convertToDBFormat($date);
-                        $nextTriggerTime = $dateDBFormat.' '.$schtime;
-                        $currentTime = date('Y-m-d H:i:s');
-                        $user = Users::getActiveAdminUser();
-                        $dateTime = new DateTimeField($nextTriggerTime);
-                        $nextTriggerTime = $dateTime->getDBInsertDateTimeValue($user);
-                        if($nextTriggerTime > $currentTime) {
-                            $this->set('next_trigger_time', $nextTriggerTime);
-                        } else {
-                            $this->set('next_trigger_time', date('Y-m-d H:i:s', strtotime('+10 year')));
-                        }
+			$nextTriggerTime = $dateDBFormat.' '.$schtime;
+			$currentTime = date('Y-m-d H:i:s');
+			$user = Users::getActiveAdminUser();
+			$dateTime = new DateTimeField($nextTriggerTime);
+			$nextTriggerTime = $dateTime->getDBInsertDateTimeValue($user);
+			if($nextTriggerTime > $currentTime) {
+				$this->set('next_trigger_time', $nextTriggerTime);
+			} else {
+				$this->set('next_trigger_time', date('Y-m-d H:i:s', strtotime('+10 year')));
+			}
 			$schdate = Zend_Json::encode(array($dateDBFormat));
 		} else if ($scheduleid == self::$SCHEDULED_WEEKLY) {
 			$schdayoftheweek = Zend_Json::encode($this->get('schdayoftheweek'));
-                        $this->set('schdayoftheweek', $schdayoftheweek);
+			$this->set('schdayoftheweek', $schdayoftheweek);
 		} else if ($scheduleid == self::$SCHEDULED_MONTHLY_BY_DATE) {
 			$schdayofthemonth = Zend_Json::encode($this->get('schdayofthemonth'));
-                        $this->set('schdayofthemonth', $schdayofthemonth);
+			$this->set('schdayofthemonth', $schdayofthemonth);
 		} else if ($scheduleid == self::$SCHEDULED_ANNUALLY) {
 			$schannualdates = Zend_Json::encode($this->get('schannualdates'));
-                        $this->set('schannualdates', $schannualdates);
+			$this->set('schannualdates', $schannualdates);
 		}
 
 		$recipients = Zend_Json::encode($this->get('recipients'));
 		$specificemails = Zend_Json::encode($this->get('specificemails'));
 		$isReportScheduled = $this->get('isReportScheduled');
-        $fileFormat = $this->get('fileformat');
+		$fileFormat = $this->get('fileformat');
 
-        if($scheduleid != self::$SCHEDULED_ON_SPECIFIC_DATE) {
-            $nextTriggerTime = $this->getNextTriggerTime();
+		if($scheduleid != self::$SCHEDULED_ON_SPECIFIC_DATE) {
+			$nextTriggerTime = $this->getNextTriggerTime();
 		}
 		if ($isReportScheduled == '0' || $isReportScheduled == '' || $isReportScheduled == false) {
 			$deleteScheduledReportSql = "DELETE FROM vtiger_schedulereports WHERE reportid=?";
@@ -102,21 +101,14 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 		} else {
 			$checkScheduledResult = $adb->pquery('SELECT next_trigger_time FROM vtiger_schedulereports WHERE reportid=?', array($reportid));
 			if ($adb->num_rows($checkScheduledResult) > 0) {
-                $scheduledReportSql = 'UPDATE vtiger_schedulereports SET scheduleid=?, recipients=?, schdate=?, schtime=?, schdayoftheweek=?, schdayofthemonth=?, schannualdates=?, specificemails=?, next_trigger_time=?, fileformat = ? WHERE reportid=?';
+				$scheduledReportSql = 'UPDATE vtiger_schedulereports SET scheduleid=?, recipients=?, schdate=?, schtime=?, schdayoftheweek=?, schdayofthemonth=?, schannualdates=?, specificemails=?, next_trigger_time=?, fileformat = ? WHERE reportid=?';
 				$adb->pquery($scheduledReportSql, array($scheduleid, $recipients, $schdate, $schtime, $schdayoftheweek, $schdayofthemonth, $schannualdates, $specificemails, $nextTriggerTime, $fileFormat, $reportid));
-                $trigger_time = $adb->query_result($checkScheduledResult,0,'next_trigger_time');
-				if($trigger_time == $nextTriggerTime){
-                    $scheduleCronTx = false;
-                }
 			} else {
 				$scheduleReportSql = 'INSERT INTO vtiger_schedulereports (reportid,scheduleid,recipients,schdate,schtime,schdayoftheweek,schdayofthemonth,schannualdates,next_trigger_time,specificemails, fileformat) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
 				$adb->pquery($scheduleReportSql, array($reportid, $scheduleid, $recipients, $schdate, $schtime, $schdayoftheweek, $schdayofthemonth, $schannualdates, $nextTriggerTime,$specificemails,$fileFormat));
 			}
-            }
-            if($scheduleCronTx){
-                $this->scheduleCronTx($nextTriggerTime);
-            }
 		}
+	}
 
 	public function getRecipientEmails() {
 		$recipientsInfo = $this->get('recipients');
@@ -168,14 +160,14 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 		$recipientsEmails = array();
 		if (!empty($recipientsList) && count($recipientsList) > 0) {
 			foreach ($recipientsList as $userId) {
-                if(!Vtiger_Util_Helper::isUserDeleted($userId)) {
-				$userName = getUserFullName($userId);
-				$userEmail = getUserEmail($userId);
-				if (!in_array($userEmail, $recipientsEmails)) {
-					$recipientsEmails[$userName] = $userEmail;
+				if(!Vtiger_Util_Helper::isUserDeleted($userId)) {
+					$userName = getUserFullName($userId);
+					$userEmail = getUserEmail($userId);
+					if (!in_array($userEmail, $recipientsEmails)) {
+						$recipientsEmails[$userName] = $userEmail;
+					}
 				}
 			}
-		}
 		}
 		//Added for specific email address.
 		$specificemails = explode(',', Zend_Json::decode($this->get('specificemails')));
@@ -188,75 +180,67 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 
 	public function sendEmail() {
 		require_once 'vtlib/Vtiger/Mailer.php';
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
 		$vtigerMailer = new Vtiger_Mailer();
 
 		$recipientEmails = $this->getRecipientEmails();
-        Vtiger_Utils::ModuleLog('ScheduleReprots', $recipientEmails);
+		Vtiger_Utils::ModuleLog('ScheduleReprots', $recipientEmails);
 		foreach ($recipientEmails as $name => $email) {
 			$vtigerMailer->AddAddress($email, decode_html($name));
 		}
 		vimport('~modules/Report/models/Record.php');
 		$reportRecordModel = Reports_Record_Model::getInstanceById($this->get('reportid'));
 		$currentTime = date('Y-m-d H:i:s');
-        Vtiger_Utils::ModuleLog('ScheduleReprots Send Mail Start ::', $currentTime);
+		Vtiger_Utils::ModuleLog('ScheduleReprots Send Mail Start ::', $currentTime);
 		$reportname = decode_html($reportRecordModel->getName());
-        $subject = $reportname;
-        Vtiger_Utils::ModuleLog('ScheduleReprot Name ::', $reportname);
-        if(empty($vtigerMailer->From)) {
-            $fromName = trim($currentUserModel->get('first_name').' '.$currentUserModel->get('last_name'));
-            $vtigerMailer->ConfigSenderInfo($currentUserModel->get('email1'), $fromName);
-        }
+		$subject = $reportname;
+		Vtiger_Utils::ModuleLog('ScheduleReprot Name ::', $reportname);
+		if(empty($vtigerMailer->From)) {
+			$fromName = trim($currentUserModel->get('first_name').' '.$currentUserModel->get('last_name'));
+			$vtigerMailer->ConfigSenderInfo($currentUserModel->get('email1'), $fromName);
+		}
 		$vtigerMailer->Subject = $subject;
 		$vtigerMailer->Body = $this->getEmailContent($reportRecordModel);
-        $plainBody = decode_html($vtigerMailer->Body);
-        $plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
-        $plainBody = strip_tags($plainBody);
-        $plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
-        $vtigerMailer->AltBody = $plainBody;
+		$plainBody = decode_html($vtigerMailer->Body);
+		$plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
+		$plainBody = strip_tags($plainBody);
+		$plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
+		$vtigerMailer->AltBody = $plainBody;
 
 		$vtigerMailer->IsHTML();
 
-        $baseFileName = preg_replace("/[^\p{L}\p{N}\s]+/", "", $reportname);
-        
+		$baseFileName = preg_replace("/[^\p{L}\p{N}\s]+/", "", $reportname);
+
 		$oReportRun = ReportRun::getInstance($this->get('reportid'));
 		$reportFormat = $this->get('fileformat');
 		$attachments = array();
-        $reportType = $reportRecordModel->get('reporttype');
+		$reportType = $reportRecordModel->get('reporttype');
 
-        if($reportType != 'chart') {
-            if ($reportFormat == 'CSV') {
-                $fileName = $baseFileName . '.csv';
-                $filePath = 'storage/' . $fileName;
-                $attachments[$fileName] = $filePath;
-                if($reportType == 'pivot') {
-                    $oReportRun->writePivotReportToCSVFile($filePath);
-                } else {
-                    $oReportRun->writeReportToCSVFile($filePath);
-                }
-            } else if($reportFormat == 'XLS') {
-                $fileName = $baseFileName . '.xls';
-                $filePath = 'storage/' . $fileName;
-                $attachments[$fileName] = $filePath;
-                if($reportType == 'pivot') {
-                    $oReportRun->writePivotReportToExcelFile($filePath);
-                } else {
-                    $oReportRun->writeReportToExcelFile($filePath);
-                }
-            }
+		if($reportType != 'chart') {
+			if ($reportFormat == 'CSV') {
+				$fileName = $baseFileName . '.csv';
+				$filePath = 'storage/' . $fileName;
+				$attachments[$fileName] = $filePath;
+				$oReportRun->writeReportToCSVFile($filePath);
+			} else if($reportFormat == 'XLS') {
+				$fileName = $baseFileName . '.xls';
+				$filePath = 'storage/' . $fileName;
+				$attachments[$fileName] = $filePath;
+				$oReportRun->writeReportToExcelFile($filePath);
+			}
 
-            foreach ($attachments as $attachmentName => $path) {
-                $vtigerMailer->AddAttachment($path, decode_html($attachmentName));
-            }
-        }
+			foreach ($attachments as $attachmentName => $path) {
+				$vtigerMailer->AddAttachment($path, decode_html($attachmentName));
+			}
+		}
 		$status = $vtigerMailer->Send(true);
 
-        if($reportType != 'chart') {
-            foreach ($attachments as $attachmentName => $path) {
-                unlink($path);
-            }
-        }
+		if($reportType != 'chart') {
+			foreach ($attachments as $attachmentName => $path) {
+				unlink($path);
+			}
+		}
 		return $status;
 	}
 
@@ -291,26 +275,25 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 			$nextTime = $workflow->getNextTriggerTimeForAnnualDates($this->get('schannualdates'), $this->get('schtime'));
 		}
 		@date_default_timezone_set($default_timezone);
-                if($scheduleType != self::$SCHEDULED_ON_SPECIFIC_DATE) {
-                    $dateTime = new DateTimeField($nextTime);
-                    $nextTime = $dateTime->getDBInsertDateTimeValue($admin);
-                }
+		if($scheduleType != self::$SCHEDULED_ON_SPECIFIC_DATE) {
+			$dateTime = new DateTimeField($nextTime);
+			$nextTime = $dateTime->getDBInsertDateTimeValue($admin);
+		}
 		return $nextTime;
 	}
 
 	public function updateNextTriggerTime() {
 		$adb = PearDatabase::getInstance();
 		$nextTriggerTime = $this->getNextTriggerTime();
-        Vtiger_Utils::ModuleLog('ScheduleReprot Next Trigger Time >> ', $nextTriggerTime);
+		Vtiger_Utils::ModuleLog('ScheduleReprot Next Trigger Time >> ', $nextTriggerTime);
 		$adb->pquery('UPDATE vtiger_schedulereports SET next_trigger_time=? WHERE reportid=?', array($nextTriggerTime, $this->get('reportid')));
-        $this->scheduleCronTx($nextTriggerTime);
-        Vtiger_Utils::ModuleLog('ScheduleReprot', 'Next Trigger Time updated');
+		Vtiger_Utils::ModuleLog('ScheduleReprot', 'Next Trigger Time updated');
 	}
 
 	public static function getScheduledReports() {
 		$adb = PearDatabase::getInstance();
 
-		$currentTimestamp  = date("Y-m-d H:i:s");
+		$currentTimestamp = date("Y-m-d H:i:s");
 		$result = $adb->pquery("SELECT reportid FROM vtiger_schedulereports
 								INNER JOIN vtiger_reportmodules ON vtiger_reportmodules.reportmodulesid = vtiger_schedulereports.reportid
 								INNER JOIN vtiger_tab ON vtiger_tab.name = vtiger_reportmodules.primarymodule AND presence = 0
@@ -336,18 +319,18 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 
 		$scheduledReports = self::getScheduledReports();
 		foreach ($scheduledReports as $reportId => $scheduledReport) {
-            $reportRecordModel = Reports_Record_Model::getInstanceById($reportId);
-            $reportType = $reportRecordModel->get('reporttype');
-            if($reportType == 'pivot' || $reportType == 'chart') {
-                $status = $scheduledReport->sendEmail();
-            } else {
-                $query = $reportRecordModel->getReportSQL();
-                $countQuery = $reportRecordModel->generateCountQuery($query);
-                if($reportRecordModel->getReportsCount($countQuery) > 0){
-                    $status = $scheduledReport->sendEmail();
-                }
-            }
-            Vtiger_Utils::ModuleLog('ScheduleReprot Send Mail Status ', $status);
+			$reportRecordModel = Reports_Record_Model::getInstanceById($reportId);
+			$reportType = $reportRecordModel->get('reporttype');
+			if($reportType == 'chart') {
+				$status = $scheduledReport->sendEmail();
+			} else {
+				$query = $reportRecordModel->getReportSQL();
+				$countQuery = $reportRecordModel->generateCountQuery($query);
+				if($reportRecordModel->getReportsCount($countQuery) > 0){
+					$status = $scheduledReport->sendEmail();
+				}
+			}
+			Vtiger_Utils::ModuleLog('ScheduleReprot Send Mail Status ', $status);
 			$scheduledReport->updateNextTriggerTime();
 		}
 		$util->revertUser();
@@ -357,7 +340,7 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 	function getEmailContent($reportRecordModel){
 		$site_URL = vglobal('site_URL');
 		$currentModule = vglobal('currentModule');
-        $companydetails = getCompanyDetails();
+		$companydetails = getCompanyDetails();
 		$logo = $site_URL.'/test/logo/'.$companydetails['logoname'];
 
 		$body = '<table width="700" cellspacing="0" cellpadding="0" border="0" align="center" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; text-decoration: none; ">
@@ -426,48 +409,14 @@ class Reports_ScheduleReports_Model extends Vtiger_Base_Model {
 
 	return $body;
 	}
-    
-    public function getNextTriggerTimeInUserFormat() {
-        $dateTime = new DateTimeField($this->get('next_trigger_time'));
-        $nextTriggerTime = $dateTime->getDisplayDateTimeValue();
-        $valueParts = explode(' ', $nextTriggerTime);
-        $value = $valueParts[0].' '.Vtiger_Time_UIType::getDisplayValue($valueParts[1]);
-        return $value;
-    }
-    
-    /**
-     * To Schedule Cron Job in CronTx
-     * @param type $nextTriggerTime
-     */
-    protected function scheduleCronTx($nextTriggerTime){
-        if(!is_array($nextTriggerTime)){
-            $nextTriggerTime = array($nextTriggerTime);
-        }
-        if(Vtiger_Cron::$enableCronTx){
-            $cron = Vtiger_Cron::getInstance('ScheduleReports');
-            $admin = Users::getActiveAdminUser();
-            foreach ($nextTriggerTime as $triggertime){
-                // Converting next trigger time to UTC format for registering to CronTx
-                $dateTime = new DateTime($triggertime, new DateTimeZone($admin->time_zone));
-                $cron->schedule($dateTime->format('Y-m-d H:i:s'));
-            }
-        }
-    }
-    
-    /**
-     * To schedule CronTx for already scheduled reports
-     */
-    public function sendScheduledReportsToCronTx(){
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery("SELECT next_trigger_time FROM vtiger_schedulereports",array());
-        $count = $adb->num_rows($result);
-        if($count > 0){
-            $trigger_times = array();
-            while($row = $adb->fetchByAssoc($result)){
-                $trigger_times[] = $row['next_trigger_time'];
-            }
-            $this->scheduleCronTx($trigger_times);
-        }
-    }
+
+	public function getNextTriggerTimeInUserFormat() {
+		$dateTime = new DateTimeField($this->get('next_trigger_time'));
+		$nextTriggerTime = $dateTime->getDisplayDateTimeValue();
+		$valueParts = explode(' ', $nextTriggerTime);
+		$value = $valueParts[0].' '.Vtiger_Time_UIType::getDisplayValue($valueParts[1]);
+		return $value;
+	}
+
 }
 

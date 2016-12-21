@@ -48,7 +48,7 @@
 				</div>
 			</form>
 		</div>
-		<div class='modal-overlay-footer clearfix'>
+		<div class='modal-overlay-footer border1px clearfix'>
 			<div class="row clearfix">
 				<div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
 					{if $FORMAT eq 'ics'}

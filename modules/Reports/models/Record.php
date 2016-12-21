@@ -63,9 +63,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	function getDetailViewUrl() {
 		$module = $this->getModule();
 		$reporttype = $this->get('reporttype');
-		if($reporttype == 'pivot') {
-			$view = 'PivotDetail';
-		} else if($reporttype == 'chart'){
+		if ($reporttype == 'chart') {
 			$view = 'ChartDetail';
 		} else {
 			$view = $module->getDetailViewName();
@@ -80,9 +78,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	function getEditViewUrl() {
 		$module = $this->getModule();
 		$reporttype = $this->get('reporttype');
-		if($reporttype == 'pivot') {
-			$view = 'PivotEdit';
-		} else if($reporttype == 'chart'){
+		if($reporttype == 'chart'){
 			$view = 'ChartEdit';
 		} else {
 			$view = $module->getEditViewName();
@@ -97,9 +93,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	public function getDuplicateRecordUrl() {
 		$module = $this->getModule();
 		$reporttype = $this->get('reporttype');
-		if($reporttype == 'pivot') {
-			$view = 'PivotEdit';
-		} else if($reporttype == 'chart'){
+		if ($reporttype == 'chart') {
 			$view = 'ChartEdit';
 		} else {
 			$view = $module->getEditViewName();
@@ -820,11 +814,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 
 		$tempFileName = tempnam($rootDirectory.$tmpDir, 'xls');
 		$fileName = decode_html($this->getName()).'.xls';
-		if($type == 'pivot') {
-			$reportRun->writePivotReportToExcelFile($tempFileName, $advanceFilterSql);
-		} else {
-			$reportRun->writeReportToExcelFile($tempFileName, $advanceFilterSql);
-		}
+		$reportRun->writeReportToExcelFile($tempFileName, $advanceFilterSql);
 
 		if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
 			header('Pragma: public');
@@ -851,11 +841,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 		$tmpDir = vglobal('tmp_dir');
 
 		$tempFileName = tempnam($rootDirectory.$tmpDir, 'csv');
-		if($type == 'pivot') {
-			$reportRun->writePivotReportToCSVFile($tempFileName, $advanceFilterSql);
-		} else {
-			$reportRun->writeReportToCSVFile($tempFileName, $advanceFilterSql);
-		}
+		$reportRun->writeReportToCSVFile($tempFileName, $advanceFilterSql);
 		$fileName = decode_html($this->getName()).'.csv';
 
 		if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'MSIE')) {

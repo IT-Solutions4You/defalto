@@ -13,7 +13,7 @@
 		<div class="vtFooter">
 			<p>
 				{vtranslate('POWEREDBY')} {$VTIGER_VERSION}&nbsp;
-				&copy; 2004 - {date('Y')}&nbsp
+				&copy; 2004 - {date('Y')}&nbsp;
 				<a href="//www.vtiger.com" target="_blank">vtiger.com</a>
 				&nbsp;|&nbsp;
 				<a href="#" onclick="window.open('copyright.html', 'copyright', 'height=115,width=575').moveTo(210, 620)">{vtranslate('LBL_READ_LICENSE')}</a>

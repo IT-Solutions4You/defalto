@@ -174,7 +174,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 	public function validateRequest(Vtiger_Request $request) {
 		//Removed validation check for specific views
 		$allowedViews = array("List", "Index", "Detail", "PreferenceDetail", "ExtensionStore", "CompanyDetails", "TaxIndex", "OutgoingServerDetail",
-								"TermsAndConditionsEdit", "AnnouncementEdit", "CustomRecordNumbering", "ConfigEditorDetail", "PivotDetail", "ChartDetail");
+								"TermsAndConditionsEdit", "AnnouncementEdit", "CustomRecordNumbering", "ConfigEditorDetail", "ChartDetail");
 		$view = $request->get("view");
 		$mode = $request->get("mode");
 		if (!(in_array($view, $allowedViews) || ($view == "Import" && !$mode) || ($view == "Edit" && $request->get("module") == "Workflows" && !$mode))) {

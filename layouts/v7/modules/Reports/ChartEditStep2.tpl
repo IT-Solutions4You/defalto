@@ -63,7 +63,7 @@
             </div>
         </div>
         <br>
-        <div class="marginLeftZero modal-overlay-footer clearfix">
+        <div class="modal-overlay-footer border1px clearfix">
             <div class="row clearfix">
                 <div class="textAlignCenter col-lg-12 col-md-12 col-sm-12 ">
                     <button type="button" class="btn btn-danger backStep"><strong>{vtranslate('LBL_BACK',$MODULE)}</strong></button>&nbsp;&nbsp;

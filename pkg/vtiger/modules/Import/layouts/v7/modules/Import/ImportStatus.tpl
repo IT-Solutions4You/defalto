@@ -69,7 +69,7 @@
                     <div class = "col-lg-2 col-md-2"><span><strong>{$IMPORT_RESULT.MERGED}</strong></span></div> 
                 </div>
         </div>
-        <div class='modal-overlay-footer clearfix'>
+        <div class='modal-overlay-footer border1px clearfix'>
             <div class="row clearfix">
                 <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
                     <button name="cancel" class="btn btn-danger btn-lg"

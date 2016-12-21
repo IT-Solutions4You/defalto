@@ -1180,7 +1180,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
   'SINGLE_SalesOrder' => 'ترتيب المبيعات',
   'SINGLE_PurchaseOrder' => 'أمر الشراء',
   'SINGLE_Quotes' => 'اقتباس',
-  'LBL_POST_YOUR_COMMENT_HERE' => 'مرحلة ما بعد تعليق و ذكر @user / @المجموعة / @جميع إخطار',
+	'LBL_POST_YOUR_COMMENT_HERE' => 'أضف تعليقك هنا',
   'LBL_CLICK_TO_CALL' => 'انقر فوق الاتصال',
   'LBL_SHOW_TOTAL_NUMBER_OF_RECORDS' => 'انقر فوق الحصول على مجموع سجل التهم',
   'LBL_GENERAL_FIELDS' => 'المجالات العامة',

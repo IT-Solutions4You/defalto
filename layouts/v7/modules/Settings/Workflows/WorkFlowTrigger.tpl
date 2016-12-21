@@ -18,9 +18,9 @@
         </label>
         <div class="col-sm-5 controls">
             {assign var=SINGLE_SELECTED_MODULE value="SINGLE_$SELECTED_MODULE"}
-            <span><input type="radio" name="workflow_trigger" value="1" {if $EXECUTION_CONDITION eq '1'} checked="" {/if}> &nbsp; <span id="workflowTriggerCreate">{vtranslate($SINGLE_SELECTED_MODULE, $SELECTED_MODULE)} &nbsp; {vtranslate('LBL_CREATION', $QUALIFIED_MODULE)}</span></span><br>
-            <span><input type="radio" name="workflow_trigger" value="3" {if $EXECUTION_CONDITION eq '3' or $EXECUTION_CONDITION eq '2'} checked="" {/if}> &nbsp; <span id="workflowTriggerUpdate">{vtranslate($SINGLE_SELECTED_MODULE, $SELECTED_MODULE)} &nbsp; {vtranslate('LBL_UPDATED', $QUALIFIED_MODULE)}</span> &nbsp;({vtranslate('LBL_INCLUDES_CREATION', $QUALIFIED_MODULE)})</span><br>
-            <span><input type="radio" name="workflow_trigger" value="6" {if $EXECUTION_CONDITION eq '6'} checked="" {/if}> &nbsp; {vtranslate('LBL_TIME_INTERVAL', $QUALIFIED_MODULE)}</span>
+            <span><input type="radio" name="workflow_trigger" value="1" {if $EXECUTION_CONDITION eq '1'} checked="" {/if}> <span id="workflowTriggerCreate">{vtranslate($SINGLE_SELECTED_MODULE, $SELECTED_MODULE)} {vtranslate('LBL_CREATION', $QUALIFIED_MODULE)}</span></span><br>
+            <span><input type="radio" name="workflow_trigger" value="3" {if $EXECUTION_CONDITION eq '3' or $EXECUTION_CONDITION eq '2'} checked="" {/if}> <span id="workflowTriggerUpdate">{vtranslate($SINGLE_SELECTED_MODULE, $SELECTED_MODULE)} {vtranslate('LBL_UPDATED', $QUALIFIED_MODULE)}</span> &nbsp;({vtranslate('LBL_INCLUDES_CREATION', $QUALIFIED_MODULE)})</span><br>
+            <span><input type="radio" name="workflow_trigger" value="6" {if $EXECUTION_CONDITION eq '6'} checked="" {/if}> {vtranslate('LBL_TIME_INTERVAL', $QUALIFIED_MODULE)}</span>
         </div>
     </div>
 
@@ -29,8 +29,8 @@
           {vtranslate('LBL_RECURRENCE', $QUALIFIED_MODULE)}
        </label>
        <div class="col-sm-5 controls">
-           <span><input type="radio" name="workflow_recurrence" value="2" {if $EXECUTION_CONDITION eq '2'} checked="" {/if}> &nbsp; {vtranslate('LBL_FIRST_TIME_CONDITION_MET', $QUALIFIED_MODULE)}</span><br>
-           <span><input type="radio" name="workflow_recurrence" value="3" {if $EXECUTION_CONDITION eq '3'} checked="" {/if}> &nbsp; {vtranslate('LBL_EVERY_TIME_CONDITION_MET', $QUALIFIED_MODULE)}</span>
+           <span><input type="radio" name="workflow_recurrence" value="2" {if $EXECUTION_CONDITION eq '2'} checked="" {/if}> {vtranslate('LBL_FIRST_TIME_CONDITION_MET', $QUALIFIED_MODULE)}</span><br>
+           <span><input type="radio" name="workflow_recurrence" value="3" {if $EXECUTION_CONDITION eq '3'} checked="" {/if}> {vtranslate('LBL_EVERY_TIME_CONDITION_MET', $QUALIFIED_MODULE)}</span>
        </div>
     </div>
 

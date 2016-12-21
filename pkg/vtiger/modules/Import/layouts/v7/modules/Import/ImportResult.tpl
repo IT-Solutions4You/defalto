@@ -23,7 +23,7 @@
             <div>{include file="Import_Result_Details.tpl"|@vtemplate_path:'Import'}</div>
         </div>
     </div>
-    <div class='modal-overlay-footer clearfix'>
+    <div class='modal-overlay-footer border1px clearfix'>
        <div class="row clearfix">
             <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
                 <button name="next" class="btn btn-primary btn-lg"

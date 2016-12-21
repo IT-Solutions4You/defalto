@@ -61,8 +61,8 @@
                                      {assign var=TARGET_MODULE_NAME value=$MODULE_MODEL->getName()}
                                      {assign var=SINGLE_MODULE value="SINGLE_$TARGET_MODULE_NAME"}
                                      <option value="{$MODULE_MODEL->getName()}" {if $SELECTED_MODULE == $MODULE_MODEL->getName()} selected {/if}
-                                         data-create-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} &nbsp; {vtranslate('LBL_CREATION', $QUALIFIED_MODULE)}"
-                                         data-update-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} &nbsp; {vtranslate('LBL_UPDATED', $QUALIFIED_MODULE)}"
+                                         data-create-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} {vtranslate('LBL_CREATION', $QUALIFIED_MODULE)}"
+                                         data-update-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} {vtranslate('LBL_UPDATED', $QUALIFIED_MODULE)}"
                                          >
                                          {if $MODULE_MODEL->getName() eq 'Calendar'}
                                              {vtranslate('LBL_TASK', $MODULE_MODEL->getName())}
@@ -82,11 +82,11 @@
                      <div class="col-sm-5 controls">
                         <div class="pull-left">
                             <span style="margin-right: 10px;">
-                               <input name="status" type="radio" value="active" {if $WORKFLOW_MODEL_OBJ->status eq '1'} checked="" {/if}>
+                               <input name="status" type="radio" value="active" {if $WORKFLOW_MODEL_OBJ->status eq '1'} checked="" {/if}>&nbsp;
                                <span>{vtranslate('Active', $QUALIFIED_MODULE)}</span>
                             </span>
                             <span style="margin-right: 10px;">
-                               <input name="status" type="radio" value="inActive" {if $WORKFLOW_MODEL_OBJ->status eq '0' or empty($WORKFLOW_MODEL_OBJ)} checked="" {/if}>
+                               <input name="status" type="radio" value="inActive" {if $WORKFLOW_MODEL_OBJ->status eq '0' or empty($WORKFLOW_MODEL_OBJ)} checked="" {/if}>&nbsp;
                                <span>{vtranslate('InActive', $QUALIFIED_MODULE)}</span>
                             </span>
                         </div>

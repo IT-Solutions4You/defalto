@@ -6,20 +6,15 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{if $REPORT_TYPE eq 'PivotEdit'}
-    {include file="PivotEditHeader.tpl"|vtemplate_path:$MODULE}
-{elseif $REPORT_TYPE eq 'ChartEdit'}
+
+{if $REPORT_TYPE eq 'ChartEdit'}
     {include file="EditChartHeader.tpl"|vtemplate_path:$MODULE}
 {else}
     {include file="EditHeader.tpl"|vtemplate_path:$MODULE}
 {/if}
 <div class="reportContents">
     <form class="form-horizontal recordEditView" id="report_step1" method="post" action="index.php">
-        {if $REPORT_TYPE eq 'PivotEdit'}
-            <input type="hidden" name="mode" value="PivotStep2" />
-        {else}
-            <input type="hidden" name="mode" value="step2" />
-        {/if}
+		<input type="hidden" name="mode" value="step2" />
         <input type="hidden" name="module" value="{$MODULE}" />
         <input type="hidden" name="view" value="{$VIEW}" />
         <input type="hidden" class="step" value="1" />
@@ -122,7 +117,7 @@
             </div>	
             {include file="ScheduleReport.tpl"|@vtemplate_path:$MODULE}	
         </div>
-        <div class="marginLeftZero modal-overlay-footer clearfix">
+        <div class="border1px modal-overlay-footer clearfix">
             <div class="row clearfix">
                 <div class="textAlignCenter col-lg-12 col-md-12 col-lg-12 ">
                     <button class="btn btn-success nextStep" type="submit">{vtranslate('LBL_NEXT',$MODULE)}</button>&nbsp;&nbsp;
