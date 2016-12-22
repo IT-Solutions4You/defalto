@@ -1392,8 +1392,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 				cb: function () {
 					thisInstance.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
 					thisInstance.registerNavigationEvents(jQuery('#helpPageOverlay'));
-					ListTemplates_Js = new PrintTemplates_ListTemplates_Js();
-					ListTemplates_Js.registerEvents();
 				}
 			};
 			jQuery('#helpPageOverlay').css({"width": "870px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white'});

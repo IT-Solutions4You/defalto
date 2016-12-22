@@ -292,8 +292,19 @@ if(defined('VTIGER_UPGRADE')) {
 		$query = 'SELECT 1 FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
 		$result = $db->pquery($query, array($refModuleTabId, $modCommentsTabId));
 		if (!$db->num_rows($result)) {
-			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'Comments', '0', '', $fieldId, 'NULL', '1:N'));
+			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'ModComments', '0', '', $fieldId, 'NULL', '1:N'));
 		}
+	}
+
+	$columns = $db->getColumnNames('vtiger_modcomments');
+	if (in_array('parent_comments', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY parent_comments INT(19)',array());
+	}
+	if (in_array('customer', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY customer INT(19)', array());
+	}
+	if (in_array('userid', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY userid INT(19)', array());
 	}
 
 	$moduleName = 'Calendar';

@@ -10,7 +10,9 @@
 {strip}
 	<div class="table-actions">
 		<span class="more dropdown action">
-			<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i title="{vtranslate("LBL_MORE_OPTIONS",$MODULE)}" class="fa fa-ellipsis-v icon"></i></a>
+			<span href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+				<i title="{vtranslate("LBL_MORE_OPTIONS",$MODULE)}" class="fa fa-ellipsis-v icon"></i>
+			</span>
 			<ul class="dropdown-menu">
 				{if $LISTVIEW_ENTRY->get('status') eq 'Active'}
 					{if Users_Privileges_Model::isPermittedToChangeUsername($LISTVIEW_ENTRY->getId())}
@@ -22,18 +24,14 @@
 					{/if}
 				{/if}
 				{if $IS_MODULE_DELETABLE && $LISTVIEW_ENTRY->getId() != $USER_MODEL->getId()}
-					{if $LISTVIEW_ENTRY->get('status') eq 'Active'}
-						<li>
-							<a href='javascript:Settings_Users_List_Js.triggerDeleteUser("{$LISTVIEW_ENTRY->getDeleteUrl()}")'>{vtranslate("LBL_REMOVE_USER",$MODULE)}</i></a>
-						</li>
-					{else}
+					{if $LISTVIEW_ENTRY->get('status') neq 'Active'}
 						<li>
 							<a onclick="Settings_Users_List_Js.restoreUser({$LISTVIEW_ENTRY->getId()}, event);">{vtranslate("LBL_RESTORE_USER",$MODULE)}</a>
 						</li>
-						<li>
-							<a href='javascript:Settings_Users_List_Js.triggerDeleteUser("{$LISTVIEW_ENTRY->getDeleteUrl()}", 1)'>{vtranslate("LBL_REMOVE_USER",$MODULE)}</a>
-						</li>
 					{/if}
+					<li>
+						<a href='javascript:Settings_Users_List_Js.triggerDeleteUser("{$LISTVIEW_ENTRY->getDeleteUrl()}")'>{vtranslate("LBL_REMOVE_USER",$MODULE)}</i></a>
+					</li>
 				{/if}
 			</ul>
 		</span>

@@ -13,7 +13,7 @@
 		<input id="selectedModuleName" type="hidden" value="{$SELECTED_MODULE_NAME}" />
 		<input type="hidden" id="selectedModuleLabel" value="{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}" />
 		<div class="widget_header row">
-			<label class="col-sm-2" style="padding-top: 8px;">
+			<label class="col-sm-2 textAlignCenter" style="padding-top: 8px;">
 				{vtranslate('SELECT_MODULE', $QUALIFIED_MODULE)}
 			</label>
 			<div class="col-sm-6">
@@ -90,7 +90,7 @@
 		</script>
 	{/if}
 
-	{if !$REQUEST_INSTANCE->isAjax()}   
+	{if !$REQUEST_INSTANCE->isAjax()}
 		<script type="text/javascript">
 			{literal}
 				jQuery(document).ready(function () {

@@ -38,10 +38,11 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
     }
 
     public function save(Vtiger_Request $request) {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
         $fieldId = $request->get('fieldid');
         $fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
         
-        $oldFieldLabel = decode_html($fieldInstance->get('label'));
+        $fieldLabel = $fieldInstance->get('label');
         $mandatory = $request->get('mandatory',null);
         $presence = $request->get('presence',null);
         $quickCreate = $request->get('quickcreate',null);
@@ -49,6 +50,9 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
         $massEditable = $request->get('masseditable',null);
         $headerField = $request->get('headerfield',null);
 
+		if (!$fieldLabel) {
+			$fieldInstance->set('label', $fieldLabel);
+		}
 		if(!empty($mandatory)){
             $fieldInstance->updateTypeofDataFromMandatory($mandatory);
         }
@@ -72,16 +76,31 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
             $fieldInstance->set('masseditable', $massEditable);
         }
 
-		$fieldInstance->set('defaultvalue', decode_html($fieldInstance->get('defaultvalue')));
+		$defaultValue = decode_html($request->get('fieldDefaultValue'));
+		$fieldInstance->set('defaultvalue', $defaultValue);
 		$response = new Vtiger_Response();
         try{
             $fieldInstance->save();
 			$fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
-
+			$fieldLabel = decode_html($request->get('fieldLabel'));
 			$fieldInfo = $fieldInstance->getFieldInfo();
 			$fieldInfo['id'] = $fieldInstance->getId();
-			$fieldInfo['label'] = decode_html($request->get('fieldLabel'));
-            
+
+			if (isset($defaultValue)) {
+				if ($defaultValue && $fieldInfo['type'] == 'date') {
+					$fieldInfo['fieldDefaultValue'] = DateTimeField::convertToUserFormat($defaultValue);
+				} else if (!$defaultValue) {
+					$fieldInfo['fieldDefaultValueRaw'] = strip_tags($defaultValue);
+					$defaultValue = $fieldInstance->getDisplayValue($defaultValue);
+				} else if (is_array($defaultValue)) {
+					foreach ($defaultValue as $key => $value) {
+						$defaultValue[$key] = $fieldInstance->getDisplayValue($value);
+					}
+					$defaultValue = Zend_Json::encode($defaultValue);
+				}
+				$fieldInfo['fieldDefaultValue'] = $defaultValue;
+			}
+			
             $response->setResult(array_merge(array('success'=>true), $fieldInfo));
         }catch(Exception $e) {
 			$response->setError($e->getCode(), $e->getMessage());

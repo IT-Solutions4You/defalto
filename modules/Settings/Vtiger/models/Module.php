@@ -190,7 +190,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 									'LBL_MARKETING_SALES'	=> array('LBL_LEAD_MAPPING'			=> 'index.php?parent=Settings&module=Leads&view=MappingDetail',
 																	'LBL_OPPORTUNITY_MAPPING'	=> 'index.php?parent=Settings&module=Potentials&view=MappingDetail'),
 
-									'LBL_INVENTORY'			=> array('LBL_TAX_SETTINGS'			=> 'LBL_TAX_SETTINGS',
+									'LBL_INVOICES'			=> array('LBL_TAX_SETTINGS'			=> 'LBL_TAX_SETTINGS',
 																	'INVENTORYTERMSANDCONDITIONS'=> 'INVENTORYTERMSANDCONDITIONS'),
 									'LBL_MY_PREFERENCES'	=> array('My Preferences'			=> '',
 																	'Calendar Settings'			=> '',
@@ -239,7 +239,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 								  'LBL_MARKETING_SALES'		=> array('LBL_LEAD_MAPPING'			=> 'LeadsMappingDetail',
 																	 'LBL_OPPORTUNITY_MAPPING'	=> 'PotentialsMappingDetail'),
 
-								  'LBL_INVENTORY'			=> array('LBL_TAX_SETTINGS'			=> 'TaxIndex',
+								  'LBL_INVOICES'			=> array('LBL_TAX_SETTINGS'			=> 'TaxIndex',
 																	 'INVENTORYTERMSANDCONDITIONS'=> 'TermsAndConditionsEdit'),
 
 								  'LBL_MY_PREFERENCES'		=> array('1'						=> 'My Preferences',

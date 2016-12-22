@@ -11,6 +11,9 @@
 <div class="modal-dialog modelContainer">
 	<div class = "modal-content">
 	{assign var=HEADER_TITLE value={vtranslate('LBL_ADD_NEW_FOLDER', $MODULE)}}
+	{if $FOLDER_ID}
+		{assign var=HEADER_TITLE value="{vtranslate('LBL_EDIT_FOLDER', $MODULE)}: {$FOLDER_NAME}"}
+	{/if}
 	{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 	<form class="form-horizontal" id="addDocumentsFolder" method="post" action="index.php">
 		<input type="hidden" name="module" value="{$MODULE}" />

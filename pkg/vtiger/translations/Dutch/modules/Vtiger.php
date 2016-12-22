@@ -504,6 +504,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Map opgeslagen'              , 
 	'LBL_FOLDER_EXISTS'            => 'Map bestaat al'              , 
 	'LBL_FOLDER_DELETED'           => 'Map verwijderd'              , 
+	'LBL_EDIT_FOLDER' => 'map bewerken',
 	'Lead Source'                  => 'Lead bron'                   , 
 	'Mobile'                       => 'Telefoon Mobiel'             , 
 	'Notify Owner'                 => 'Eigenaar inlichten'          , 
@@ -1058,6 +1059,7 @@ buiten Vtiger.',
   'LBL_HOUR(S)' => 'uur(s)',
   'LBL_SLA_INFORMATION' => 'SLA Informatie',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Om gebruik te maken <b>%s</b>, raden wij u aan om te schakelen naar de nieuwe look.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'Wanneer een gebruiker is verwijderd, zal de gebruiker worden gemarkeerd als "inactief" en er geen nieuwe records kunnen worden toegewezen aan de gebruiker, en de gebruiker zal niet in staat om in te loggen. Weet je zeker dat je wilt verwijderen?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Configureer a.u.b. uw uitgaande server instellingen op de instellingenpagina', 

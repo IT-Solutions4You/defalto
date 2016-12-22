@@ -504,6 +504,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Folder saved'                ,
 	'LBL_FOLDER_EXISTS'            => 'Folder already exists'       ,
 	'LBL_FOLDER_DELETED'           => 'Folder deleted'              ,
+	'LBL_EDIT_FOLDER' => 'Modifica cartella',
 	'Lead Source'                  => 'Origine Lead'                ,
 	'Mobile'                       => 'Cellulare'                   ,
 	'Notify Owner'                 => 'Notificare il proprietario'  ,
@@ -1060,6 +1061,7 @@ al di fuori di Vtiger.',
   'LBL_HOUR(S)' => 'ore(s)',
   'LBL_SLA_INFORMATION' => 'SLA Informazioni',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Per utilizzare il <b>%s</b>, si consiglia di passare a nuovo look.',
+	'LBL_DELETE_USER_CONFIRMATION' => "Quando viene cancellato un utente, l'utente verrà contrassegnato come inattivo e non nuovi record possono essere assegnati all'Utente, e l'utente non sarà in grado di effettuare il login. Sei sicuro di voler eliminare?",
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
