@@ -12,7 +12,12 @@
 {strip}
     <div id="addFolderContainer" class="modal-dialog" style='min-width:350px;'>
         <div class='modal-content'>
+			{assign var=FOLDER_ID value=$FOLDER_MODEL->getId()}
+			{assign var=FOLDER_NAME value={Vtiger_Util_Helper::tosafeHTML(vtranslate($FOLDER_MODEL->getName(), $MODULE))}}
             {assign var=HEADER_TITLE value={vtranslate('LBL_ADD_NEW_FOLDER', $MODULE)}}
+			{if $FOLDER_ID}
+				{assign var=HEADER_TITLE value="{vtranslate('LBL_EDIT_FOLDER', $MODULE)}: {$FOLDER_NAME}"}
+			{/if}
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
             <form class="form-horizontal contentsBackground" id="addFolder" method="post" action="index.php">
                 <input type="hidden" name="module" value="{$MODULE}" />
@@ -23,7 +28,7 @@
                     <div class="form-group">
                         <label for="foldername" class="col-sm-4 control-label">{vtranslate('LBL_FOLDER_NAME', $MODULE)}<span class="redColor">*</span></label>
                         <div class="col-sm-7">
-                            <input id="foldername" name="foldername" class="form-control col-lg-12" data-rule-required="true" type="text" value="{Vtiger_Util_Helper::tosafeHTML(vtranslate($FOLDER_MODEL->getName(), $MODULE))}"/>
+                            <input id="foldername" name="foldername" class="form-control col-lg-12" data-rule-required="true" type="text" value="{$FOLDER_NAME}"/>
                         </div>
                     </div>
 

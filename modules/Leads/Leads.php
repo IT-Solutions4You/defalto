@@ -82,6 +82,7 @@ class Leads extends CRMEntity {
 	// For Alphabetical search
 	var $def_basicsearch_col = 'lastname';
 
+	var $LBL_LEAD_MAPPING = 'LBL_LEAD_MAPPING';
 	//var $groupTable = Array('vtiger_leadgrouprelation','leadid');
 
 	function Leads()	{
@@ -732,6 +733,22 @@ class Leads extends CRMEntity {
 				$whereClause .
 				" ORDER BY $tableColumnsString," . $this->table_name . "." . $this->table_index . " ASC";
 		return $query;
+	}
+
+	/**
+	 * Invoked when special actions are to be performed on the module.
+	 * @param String Module name
+	 * @param String Event Type
+	 */
+	function vtlib_handler($moduleName, $eventType) {
+		if ($moduleName == 'Leads') {
+			$db = PearDatabase::getInstance();
+			if ($eventType == 'module.disabled') {
+				$db->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', array($this->LBL_LEAD_MAPPING));
+			} else if ($eventType == 'module.enabled') {
+				$db->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', array($this->LBL_LEAD_MAPPING));
+			}
+		}
 	}
 }
 

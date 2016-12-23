@@ -595,6 +595,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED' => 'Folder zapisania',
 	'LBL_FOLDER_EXISTS' => 'Folder już istnieje',
 	'LBL_FOLDER_DELETED' => 'Folder usunięto',
+	'LBL_EDIT_FOLDER' => 'Edit Folder',
 
 	'Lead Source' => 'Źródło pozyskania',
 	'Mobile' => 'Telefon komórkowy',
@@ -1189,6 +1190,7 @@ na zewnątrz free rosyjska.',
   'LBL_HOUR(S)' => 'godzina(y)',
   'LBL_SLA_INFORMATION' => 'CCA informacje',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Aby korzystać <b>%s</ b>, zalecamy, aby przełączyć na nowy wygląd.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'Gdy użytkownik zostanie usunięty, użytkownik zostanie oznaczona jako "nieaktywny" i żadne nowe rekordy mogą być przypisane do użytkownika, a użytkownik nie będzie mógł się zalogować. Czy na pewno chcesz usunąć?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Należy skonfigurować ustawienia serwera poczty wychodzącej - SMTP',

@@ -262,7 +262,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$reportTabId = $reportModel->getId();
 	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_ADD_RECORD', '', '', '0');
 
-	$reportAddRecordLink = $db->pquery('SELECT linkid FROM vtiger_links WHERE tabid = ? AND linklabel = ?', array($reportTabId, 'LBL_ADD_RECORD'));
+	$reportAddRecordLink = $db->pquery('SELECT linkid FROM vtiger_links WHERE tabid=? AND linklabel=?', array($reportTabId, 'LBL_ADD_RECORD'));
 	$parentLinkId = $db->query_result($reportAddRecordLink, 0, 'linkid');
 
 	$reportModelHandler = array('path' => 'modules/Reports/models/Module.php', 'class' => 'Reports_Module_Model', 'method' => 'checkLinkAccess');
@@ -292,8 +292,19 @@ if(defined('VTIGER_UPGRADE')) {
 		$query = 'SELECT 1 FROM vtiger_relatedlists WHERE tabid=? AND related_tabid =?';
 		$result = $db->pquery($query, array($refModuleTabId, $modCommentsTabId));
 		if (!$db->num_rows($result)) {
-			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'Comments', '0', '', $fieldId, 'NULL', '1:N'));
+			$db->pquery('INSERT INTO vtiger_relatedlists VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', array($db->getUniqueID('vtiger_relatedlists'), $refModuleTabId, $modCommentsTabId, 'get_comments', '1', 'ModComments', '0', '', $fieldId, 'NULL', '1:N'));
 		}
+	}
+
+	$columns = $db->getColumnNames('vtiger_modcomments');
+	if (in_array('parent_comments', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY parent_comments INT(19)',array());
+	}
+	if (in_array('customer', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY customer INT(19)', array());
+	}
+	if (in_array('userid', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY userid INT(19)', array());
 	}
 
 	$moduleName = 'Calendar';
@@ -732,14 +743,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('ALTER TABLE vtiger_webforms_field MODIFY COLUMN defaultvalue TEXT', array());
-
-	$integrationBlock = $db->pquery('SELECT 1 FROM vtiger_settings_blocks WHERE label=?', array('LBL_OTHER_SETTINGS'));
-	if (!$db->num_rows($integrationBlock)) {
-		$blockid = $db->query_result($integrationBlock, 0, 'blockid');
-		//To add a Field
-		$fieldid = $db->getUniqueID('vtiger_settings_field');
-		$db->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active) VALUES(?,?,?,?,?,?,?,?)', array($fieldid, $blockid, 'LBL_MAILROOM', '', 'Mailroom', 'index.php?module=Mailroom&parent=Settings&view=List', 12, 0));
-	}
 
 	//Rollup Comments Settings table
 	if (!Vtiger_Utils::CheckTable('vtiger_rollupcomments_settings')) {
@@ -1731,6 +1734,224 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_message_ids ADD COLUMN refids MEDIUMTEXT', array());
 		$db->pquery('ALTER TABLE vtiger_message_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
+
+	//Migrating data missed in vtiger_settings_field from file to database.
+	//Start:: user management block
+	$userResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_USER_MANAGEMENT'));
+	if ($db->num_rows($userResult)) {
+		$userManagementBlockId = $db->query_result($userResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(1, $userManagementBlockId));
+	} else {
+		$userManagementBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($userManagementBlockId, 'LBL_USER_MANAGEMENT', 1));
+	}
+
+	$userManagementFields = array(	'LBL_USERS'					=> 'index.php?module=Users&parent=Settings&view=List',
+									'LBL_ROLES'					=> 'index.php?module=Roles&parent=Settings&view=Index',
+									'LBL_PROFILES'				=> 'index.php?module=Profiles&parent=Settings&view=List',
+									'LBL_SHARING_ACCESS'		=> 'index.php?module=SharingAccess&parent=Settings&view=Index',
+									'USERGROUPLIST'				=> 'index.php?module=Groups&parent=Settings&view=List',
+									'LBL_LOGIN_HISTORY_DETAILS'	=> 'index.php?module=LoginHistory&parent=Settings&view=List');
+
+	$userManagementSequence = 1;
+	foreach ($userManagementFields as $fieldName => $linkTo) {
+		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=? WHERE name=? AND blockid=?', array($userManagementSequence++, $linkTo, $fieldName, $userManagementBlockId));
+	}
+	//End:: user management block
+
+	//Start:: module manager block
+	$moduleManagerResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_MODULE_MANAGER'));
+	if ($db->num_rows($moduleManagerResult)) {
+		$moduleManagerBlockId = $db->query_result($moduleManagerResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(2, $moduleManagerBlockId));
+	} else {
+		$moduleManagerBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($moduleManagerBlockId, 'LBL_MODULE_MANAGER', 2));
+	}
+
+	$moduleManagerFields = array(	'VTLIB_LBL_MODULE_MANAGER'		=> 'index.php?module=ModuleManager&parent=Settings&view=List',
+									'LBL_EDIT_FIELDS'				=> 'index.php?module=LayoutEditor&parent=Settings&view=Index',
+									'Labels Editor'					=> 'index.php?module=LanguageEditor&view=List',
+									'LBL_CUSTOMIZE_MODENT_NUMBER'	=> 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering');
+	$moduleManagerSequence = 1;
+	foreach ($moduleManagerFields as $fieldName => $linkTo) {
+		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($moduleManagerSequence++, $linkTo, $moduleManagerBlockId, $fieldName));
+	}
+	//End:: module manager block
+
+	//Start:: automation block
+	$automationResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_AUTOMATION'));
+	if ($db->num_rows($automationResult)) {
+		$automationBlockId = $db->query_result($automationResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(3, $automationBlockId));
+	} else {
+		$automationBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($automationBlockId, 'LBL_AUTOMATION', 3));
+	}
+
+	$automationFields = array(	'Webforms'			=> 'index.php?module=Webforms&parent=Settings&view=List',
+								'Scheduler'			=> 'index.php?module=CronTasks&parent=Settings&view=List',
+								'LBL_LIST_WORKFLOWS'=> 'index.php?module=Workflows&parent=Settings&view=List');
+
+	$automationSequence = 1;
+	foreach ($automationFields as $fieldName => $linkTo) {
+		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($automationSequence++, $linkTo, $automationBlockId, $fieldName));
+	}
+	//End:: automation block
+
+	//Start:: configuration block
+	$configurationResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_CONFIGURATION'));
+	if ($db->num_rows($configurationResult)) {
+		$configurationBlockId = $db->query_result($configurationResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(4, $configurationBlockId));
+	} else {
+		$configurationBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($configurationBlockId, 'LBL_CONFIGURATION', 4));
+	}
+
+	$configurationFields = array(	'LBL_COMPANY_DETAILS'			=> 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
+									'LBL_CUSTOMER_PORTAL'			=> 'index.php?module=CustomerPortal&parent=Settings&view=Index',
+									'LBL_CURRENCY_SETTINGS'			=> 'index.php?parent=Settings&module=Currency&view=List',
+									'LBL_MAIL_SERVER_SETTINGS'		=> 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
+									'Configuration Editor'			=> 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
+									'LBL_PICKLIST_EDITOR'			=> 'index.php?parent=Settings&module=Picklist&view=Index',
+									'LBL_PICKLIST_DEPENDENCY_SETUP'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
+									'LBL_MENU_EDITOR'				=> 'index.php?module=MenuEditor&parent=Settings&view=Index');
+
+	$configurationSequence = 1;
+	foreach ($configurationFields as $fieldName => $linkTo) {
+		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($configurationSequence++, $linkTo, $configurationBlockId, $fieldName));
+	}
+	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=? AND blockid=?', array('LBL_PICKLIST_DEPENDENCY', 'LBL_PICKLIST_DEPENDENCY_SETUP', $configurationBlockId));
+	//End:: configuration block
+
+	//Start:: marketing sales block
+	$marketingSalesResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_MARKETING_SALES'));
+	if ($db->num_rows($marketingSalesResult)) {
+		$marketingSalesBlockId = $db->query_result($marketingSalesResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(5, $marketingSalesBlockId));
+	} else {
+		$marketingSalesBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($marketingSalesBlockId, 'LBL_MARKETING_SALES', 5));
+	}
+
+	$marketingSalesFields = array(	'LBL_LEAD_MAPPING'			=> 'index.php?parent=Settings&module=Leads&view=MappingDetail',
+									'LBL_OPPORTUNITY_MAPPING'	=> 'index.php?parent=Settings&module=Potentials&view=MappingDetail');
+
+	$marketingSequence = 1;
+	foreach ($marketingSalesFields as $fieldName => $linkTo) {
+		$updateQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+		$params = array($db->getUniqueID('vtiger_settings_field'), $marketingSalesBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $marketingSequence++, 0, 1);
+		$db->pquery($updateQuery, $params);
+	}
+	//End:: marketing sales block
+
+	//Start:: inventory block
+	$inventoryResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_INVENTORY'));
+	if ($db->num_rows($inventoryResult)) {
+		$inventoryBlockId = $db->query_result($inventoryResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(6, $inventoryBlockId));
+	} else {
+		$inventoryBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($inventoryBlockId, 'LBL_INVENTORY', 6));
+	}
+
+	$inventoryFields = array(	'LBL_TAX_SETTINGS'				=> 'index.php?module=Vtiger&parent=Settings&view=TaxIndex',
+								'INVENTORYTERMSANDCONDITIONS'	=> 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit');
+
+	$inventorySequence = 1;
+	foreach ($inventoryFields as $fieldName => $linkTo) {
+		$updateQuery = 'UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?';
+		$params = array($inventorySequence, $linkTo, $inventoryBlockId, $fieldName);
+		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($inventorySequence++, $linkTo, $inventoryBlockId, $fieldName));
+		$inventorySequence = $inventorySequence+1;
+	}
+	//End:: inventory block
+
+	//Start:: mypreference block
+	$myPreferenceResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_MY_PREFERENCES'));
+	if ($db->num_rows($myPreferenceResult)) {
+		$myPreferenceBlockId = $db->query_result($myPreferenceResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(7, $myPreferenceBlockId));
+	} else {
+		$myPreferenceBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid,label,sequence) VALUES(?,?,?)', array($myPreferenceBlockId, 'LBL_MY_PREFERENCES', 7));
+	}
+
+	$myPreferenceFields = array(	'My Preferences'	=> 'index.php?module=Users&view=PreferenceDetail&parent=Settings&record=1',
+									'Calendar Settings' => 'index.php?module=Users&parent=Settings&view=Calendar&record=1',
+									'LBL_MY_TAGS'		=> 'index.php?module=Tags&parent=Settings&view=List&record=1');
+
+	$myPreferenceSequence = 1;
+	foreach ($myPreferenceFields as $fieldName => $linkTo) {
+		$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+		$params = array($db->getUniqueID('vtiger_settings_field'), $myPreferenceBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $myPreferenceSequence++, 0, 1);
+		$db->pquery($fieldQuery, $params);
+	}
+	//End:: mypreference block
+
+	//Start:: integrations block
+	$integrationBlockResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_INTEGRATION'));
+	if ($db->num_rows($integrationBlockResult)) {
+		$integrationBlockId = $db->query_result($integrationBlockResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(8, $integrationBlockId));
+	} else {
+		$integrationBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($integrationBlockId, 'LBL_INTEGRATION', 8));
+	}
+	//End:: integrations block
+
+	//Start:: extensions block
+	$extensionResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_EXTENSIONS'));
+	if ($db->num_rows($extensionResult)) {
+		$extensionsBlockId = $db->query_result($extensionResult, 0, 'blockid');
+		$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE blockid=?', array(9, $extensionsBlockId));
+	} else {
+		$extensionsBlockId = $db->getUniqueID('vtiger_settings_blocks');
+		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($extensionsBlockId, 'LBL_EXTENSIONS', 9));
+	}
+
+	$extensionFields = array(	'LBL_EXTENSION_STORE'	=> 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionStore',
+								'LBL_GOOGLE'			=> 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings');
+
+	$extSequence = 1;
+	foreach ($extensionFields as $fieldName => $linkTo) {
+		$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active, pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+		$params = array($db->getUniqueID('vtiger_settings_field'), $extensionsBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $extSequence++, 0, 1);
+		$db->pquery($fieldQuery, $params);
+	}
+	//End:: extensions block
+
+	//Deleting duplicate entries of blocks and Fields
+	$blocksAndNameFields = array(	$userManagementBlockId => array_keys($userManagementFields),
+									$moduleManagerBlockId => array_keys($moduleManagerFields),
+									$automationBlockId => array_keys($automationFields),
+									$configurationBlockId => array_keys($configurationFields),
+									$inventoryBlockId => array_keys($inventoryFields));
+
+	foreach ($blocksAndNameFields as $blockId => $blockFields) {
+		//Delete duplicate entries of block fields in other blocks.
+		$db->pquery('DELETE FROM vtiger_settings_field WHERE name IN ('.generateQuestionMarks($blockFields).') AND blockid != ?', array($blockFields, $blockId));
+
+		//Delete non block fields in specific blocks
+		$db->pquery('DELETE FROM vtiger_settings_field WHERE name NOT IN ('.generateQuestionMarks($blockFields).') AND blockid=?', array($blockFields, $blockId));
+	}
+
+	//Deleting unused blocks from Settings page
+	$unusedSettingsBlocks = array('LBL_STUDIO', 'LBL_COMMUNICATION_TEMPLATES');
+	$db->pquery('DELETE FROM vtiger_settings_blocks WHERE label IN ('.generateQuestionMarks($unusedSettingsBlocks).')', array($unusedSettingsBlocks));
+	echo 'Deleted unused blocks from settings page';
+
+	//Update other settings block sequence to last
+	$db->pquery('UPDATE vtiger_settings_blocks SET sequence=? WHERE label=?', array('10', 'LBL_OTHER_SETTINGS'));
+	$otheBlockResult = $db->pquery('SELECT blockid FROM vtiger_settings_blocks WHERE label=?', array('LBL_OTHER_SETTINGS'));
+	if ($db->num_rows($otheBlockResult) > 0) {
+		$otherBlockId = $db->query_result($otheBlockResult, 0, 'blockid');
+	}
+
+	$duplicateOtherBlockFields = array('LBL_ANNOUNCEMENT');
+	$db->pquery('DELETE FROM vtiger_settings_field WHERE name IN ('.generateQuestionMarks($duplicateOtherBlockFields).') AND blockid=?', array($duplicateOtherBlockFields, $otherBlockId));
+	//Migration of data to vtiger_settings blocks and fields ends
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();

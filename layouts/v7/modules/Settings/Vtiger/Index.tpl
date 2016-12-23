@@ -35,10 +35,19 @@
         <br><br>&nbsp;
         <h4>{vtranslate('LBL_SETTINGS_SHORTCUTS',$MODULE)}</h4>
         <hr>
-        <div id="settingsShortCutsContainer" class="col-lg-12"/>
-            {foreach item=SETTINGS_SHORTCUT from=$SETTINGS_SHORTCUTS name=shortcuts}
-                    {include file='SettingsShortCut.tpl'|@vtemplate_path:$MODULE}
-            {/foreach}
+        <div id="settingsShortCutsContainer">
+			<div class="col-lg-12">
+				{assign var=COUNTER value=0}
+				{foreach item=SETTINGS_SHORTCUT from=$SETTINGS_SHORTCUTS name=shortcuts}
+					{if $COUNTER eq 4}
+						</div><div class="col-lg-12">
+						{assign var=COUNTER value=1}
+					{else}
+						{assign var=COUNTER value=$COUNTER+1}
+					{/if}
+					{include file='SettingsShortCut.tpl'|@vtemplate_path:$MODULE}
+				{/foreach}
+			</div>
         </div>
     </div>
 {/strip}

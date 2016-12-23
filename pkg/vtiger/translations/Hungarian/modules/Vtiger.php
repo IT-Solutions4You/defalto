@@ -503,6 +503,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Mappa mentve'                ,
 	'LBL_FOLDER_EXISTS'            => 'Mappa már létezik'         ,
 	'LBL_FOLDER_DELETED'           => 'Mappa törölve'             ,
+	'LBL_EDIT_FOLDER' => 'Mappa szerkesztése',
 	'Lead Source'                  => 'Vevőjelölt forrása'       ,
 	'Mobile'                       => 'Mobil'                       ,
 	'Notify Owner'                 => 'Értesítsd a rekord felelősét',
@@ -1065,6 +1066,7 @@ kívül Vtiger.',
   'LBL_HOUR(S)' => 'óra(s)',
   'LBL_SLA_INFORMATION' => 'SLA Információk',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'A <b>%s</ b>, azt ajánljuk, hogy kapcsolja ki a új megjelenés.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'Amikor egy felhasználó törlésre kerül, a felhasználó lesz megjelölve, mint "inaktív", és új rekordokat lehet rendelni a felhasználó, és a felhasználó nem lesz képes bejelentkezni. Biztos vagy benne, hogy törölni akarod?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Kérjük, hogy állítsd be a kimenő email szerver (SMTP) beállításait a Beállítások oldalon',

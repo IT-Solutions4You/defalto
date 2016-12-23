@@ -121,7 +121,7 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 
 	registerSettingShortCutAlignmentEvent : function() {
 		jQuery('#settingsShortCutsContainer').find('.moduleBlock').removeClass('marginLeftZero');
-		jQuery('#settingsShortCutsContainer').find('.moduleBlock:nth-child(3n+1)').addClass('marginLeftZero');
+		jQuery('#settingsShortCutsContainer').find('.moduleBlock:nth-child(4n+1)').addClass('marginLeftZero');
 	},
 
 	registerWidgetsEvents : function() {

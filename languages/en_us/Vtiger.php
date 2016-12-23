@@ -676,6 +676,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED' => 'Folder saved',
 	'LBL_FOLDER_EXISTS' => 'Folder already exists',
 	'LBL_FOLDER_DELETED' => 'Folder deleted',
+	'LBL_EDIT_FOLDER' => 'Edit Folder',
 
 	'Lead Source' => 'Lead Source',
 	'Mobile' => 'Mobile Phone',
@@ -1410,7 +1411,7 @@ $jsLanguageStrings = array(
 
 	'LBL_DELETE_CONFIRMATION' => 'Are you sure you want to delete?', // This is added as duplicate as we need to show different message for different modules. Ex:Accounts has different message
 	'LBL_UNLINK_CONFIRMATION' => 'Are you sure you want to unlink?',
-	'LBL_DELETE_USER_CONFIRMATION' => 'When user is suspended, user will be marked as Inactive and no new records can be assigned to the user, and the user will not be able to login. Billing will stop for the user. Any records assigned to the suspended user will remain as they are. These records can be transferred at a later time.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'When a User is deleted, user will be marked as "Inactive" and no new records can be assigned to the User, and the user will not be able to login. Are you sure you want to delete?',
 	'LBL_DELETE_CONFIRMATION_NOTE' => 'Note : Deleted records will be kept in recycle bin and cleared after %s days',
 	'LBL_MASS_DELETE_CONFIRMATION' => 'Are you sure you want to delete the selected Records?',
 	'JS_LBL_SAVE' => 'Save',

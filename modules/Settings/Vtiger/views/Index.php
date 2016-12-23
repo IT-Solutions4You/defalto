@@ -64,39 +64,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 		}
 		$viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
 
-		switch($request->get('view')) {
-			case 'CustomRecordNumbering'	: 
-			case 'CompanyDetails'			:
-			case 'TermsAndConditionsEdit'	:	$menu = $request->get('view');
-												break;
-
-			case 'ConfigEditorDetail'		:
-			case 'ConfigEditorEdit'			:	$menu = 'ConfigurationEditor';
-												break;
-
-			case 'OutgoingServerDetail'		:
-			case 'OutgoingServerEdit'		:	$menu = 'OutgoingServer';
-												break;
-
-			case 'MappingDetail'			:
-			case 'MappingEdit'				:	if ($moduleName == 'Leads') {
-													$menu = 'LeadsMappingDetail';
-												} else if ($moduleName == 'Potentials') {
-													$menu = 'PotentialsMappingDetail';
-												}
-												break;
-
-			case 'TaxIndex'					:	$menu = 'TaxIndex';
-												break;
-
-			case 'Extension'				:	$menu = 'Extension';
-												break;
-
-			default							:	$menu = $moduleName;
-												break;
-		}
-
-		$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($menu,$request);
+		$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($_SERVER['REQUEST_URI']);
 		$viewer->assign('ACTIVE_BLOCK', $activeBLock);
 
 		$restrictedModules = array('Vtiger', 'ExtensionStore', 'CustomerPortal', 'Roles', 'ExchangeConnector', 'LoginHistory', 'SharingAccess');

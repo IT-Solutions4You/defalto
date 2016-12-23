@@ -11,12 +11,10 @@
 -->*}
 
 {strip}
-{assign var=ACTIVE_BLOCK value=['block' => 'LBL_MY_PREFERENCES',
-                                'menu' => 'Calendar Settings']}
 {include file="SettingsMenuStart.tpl"|vtemplate_path:$QUALIFIED_MODULE}
 
 <div class="bodyContents">
 	<div>
-            {include file="CalendarDetailViewHeader.tpl"|vtemplate_path:$QUALIFIED_MODULE}
+		{include file="CalendarDetailViewHeader.tpl"|vtemplate_path:$QUALIFIED_MODULE}
 
 {/strip}

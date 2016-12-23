@@ -141,6 +141,11 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		if ($recordName) {
 			return vtranslate($moduleName, $moduleName).' - '.$recordName;
 		} else {
+			$currentLang = Vtiger_Language_Handler::getLanguage();
+			$customWebTitle = Vtiger_Language_Handler::getLanguageTranslatedString($currentLang, 'LBL_'.$moduleName.'_WEBTITLE', $request->getModule(false));
+			if ($customWebTitle) {
+				return $customWebTitle;
+			}
 			return vtranslate($moduleName, $moduleName);
 		}
 	}

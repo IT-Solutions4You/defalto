@@ -37,7 +37,7 @@
          {else}
             {assign var=OPTION_VALUE value=Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}
          {/if}    
-        <option value="{$OPTION_VALUE}" {if trim(decode_html($FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+        <option value="{$OPTION_VALUE}" {if decode_html($FIELD_MODEL->get('fieldvalue')) eq decode_html($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
     {/foreach}
 </select>
 {/strip}

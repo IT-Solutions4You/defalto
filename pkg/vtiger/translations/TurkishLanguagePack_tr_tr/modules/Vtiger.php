@@ -504,6 +504,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Folder saved'                , 
 	'LBL_FOLDER_EXISTS'            => 'Folder already exists'       , 
 	'LBL_FOLDER_DELETED'           => 'Folder deleted'              , 
+	'LBL_EDIT_FOLDER' => 'Düzenleme Klasör',
 	'Lead Source'                  => 'Kaynak Nereden'              , 
 	'Mobile'                       => 'Cep Tel'                     , 
 	'Notify Owner'                 => 'Sahibini Bilgilendir'        , 
@@ -1058,6 +1059,7 @@ Vtiger dışında.',
   'LBL_HOUR' => 'saat(ler)',
   'LBL_SLA_INFORMATION' => 'SLA Bilgi',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => '%s öneririz  kullanmak için yeni bir görünüm geçmek için.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'Kullanıcı silindiğinde, kullanıcı "Etkin" ve yeni kayıt Kullanıcı atanabilir olarak işaretlenir ve kullanıcı giriş mümkün olmayacaktır. Silmek istediğine emin misin?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 

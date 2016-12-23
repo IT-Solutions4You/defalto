@@ -15,7 +15,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 
 	var $baseTable = 'vtiger_settings_field';
 	var $baseIndex = 'fieldid';
-	var $listFields = array('name' => 'Name','description' => 'Description');
+	var $listFields = array('name' => 'Name', 'description' => 'Description');
 	var $nameFields = array('name');
 	var $name = 'Vtiger';
 
@@ -144,118 +144,23 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return $settingsMenItems;
 	}
 
-	static function getExtensionList($settingsMenuList) {
-		$exchangeConnectorInstance = Vtiger_Module_Model::getInstance('ExchangeConnector');
-		if ($exchangeConnectorInstance && $exchangeConnectorInstance->isActive()) {
-			$settingsMenuList['LBL_EXTENSIONS']['LBL_EXCHANGE_CONNECTOR'] = 'LBL_EXCHANGE_CONNECTOR';
+	static function getActiveBlockName($requestUrl) {
+		$explodedUrl = explode("/index.php", $requestUrl);
+		$explodeOnBlock = explode('&block', $explodedUrl[1]);
+		$activeBlockUrl = 'index.php'.$explodeOnBlock[0];
+
+		$db = PearDatabase::getInstance();
+		$result = $db->pquery("SELECT blockid, name FROM vtiger_settings_field WHERE linkto like '%$activeBlockUrl%'", array());
+		if($db->num_rows($result) > 0){
+			$blockId = $db->query_result($result, 0, 'blockid');
+			$name = $db->query_result($result, 0, 'name');
 		}
-
-		return $settingsMenuList;
-	}
-
-	/**
-	 * Function to get Vtiger Menu List
-	 * @return string
-	 */
-	static function getSettingsMenuList() {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
-		$extensionStoreInstance = Settings_ExtensionStore_Module_Model::getInstance();
-
-
-		$settingsMenuList = array(	'LBL_USER_MANAGEMENT'	=> array('LBL_USERS'				=> 'LBL_USERS',
-																	'LBL_ROLES'					=> 'LBL_ROLES',
-																	'LBL_PROFILES'				=> 'LBL_PROFILES',
-																	'LBL_SHARING_ACCESS'		=> 'LBL_SHARING_ACCESS',
-																	'USERGROUPLIST'				=> 'USERGROUPLIST',
-																	'LBL_LOGIN_HISTORY_DETAILS' => 'LBL_LOGIN_HISTORY_DETAILS'),
-
-									'LBL_MODULE_MANAGEMENT' => array('VTLIB_LBL_MODULE_MANAGER' => 'VTLIB_LBL_MODULE_MANAGER',
-																	'LBL_EDIT_FIELDS'			=> 'LBL_EDIT_FIELDS',
-																	'LBL_CUSTOMIZE_MODENT_NUMBER'=> 'LBL_CUSTOMIZE_MODENT_NUMBER'),
-
-									'LBL_AUTOMATION'		=> array('Webforms'					=> 'Webforms',
-																	'Scheduler'					=> 'Scheduler',
-																	'LBL_LIST_WORKFLOWS'		=> 'LBL_LIST_WORKFLOWS'),
-
-									'LBL_CONFIGURATION'		=> array('LBL_COMPANY_DETAILS'		=> 'LBL_COMPANY_DETAILS',
-																	'LBL_CUSTOMER_PORTAL'		=> 'LBL_CUSTOMER_PORTAL',
-																	'LBL_CURRENCY_SETTINGS'		=> 'LBL_CURRENCY_SETTINGS',
-																	'LBL_MAIL_SERVER_SETTINGS'	=> 'LBL_MAIL_SERVER_SETTINGS',
-																	'Configuration Editor'		=> 'Configuration Editor',
-																	'LBL_PICKLIST_EDITOR'		=> 'index.php?parent=Settings&module=Picklist&view=Index',
-																	'LBL_PICKLIST_DEPENDENCY'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
-																	'LBL_MENU_EDITOR'			=> 'LBL_MENU_EDITOR'),
-
-									'LBL_MARKETING_SALES'	=> array('LBL_LEAD_MAPPING'			=> 'index.php?parent=Settings&module=Leads&view=MappingDetail',
-																	'LBL_OPPORTUNITY_MAPPING'	=> 'index.php?parent=Settings&module=Potentials&view=MappingDetail'),
-
-									'LBL_INVENTORY'			=> array('LBL_TAX_SETTINGS'			=> 'LBL_TAX_SETTINGS',
-																	'INVENTORYTERMSANDCONDITIONS'=> 'INVENTORYTERMSANDCONDITIONS'),
-									'LBL_MY_PREFERENCES'	=> array('My Preferences'			=> '',
-																	'Calendar Settings'			=> '',
-																	'LBL_MY_TAGS'				=> "$myTagSettingsUrl"),
-
-									'LBL_TEMPLATES'			=> array('Email Templates'			=> 'index.php?module=EmailTemplates&view=List'),
-
-									'LBL_EXTENSIONS'		=> array('LBL_EXTENSION_STORE'		=> $extensionStoreInstance->getDefaultUrl())
-								);
-
-		$settingsMenuList = self::getExtensionList($settingsMenuList);
-		$webformsInstance = Vtiger_Module_Model::getInstance('Webforms');
-		if($webformsInstance && !$webformsInstance->isActive()) {
-			unset($settingsMenuList['LBL_AUTOMATION']['Webforms']);
+		$blockNameResult = $db->pquery('SELECT label FROM vtiger_settings_blocks WHERE blockid = ?', array($blockId));
+		if($db->num_rows($result) > 0){
+			$blockName = $db->query_result($blockNameResult, 0, 'label');
 		}
-
-		return $settingsMenuList;
-	}
-
-	static function getActiveBlockName($menu, $request) {
-		$settingsMenuList = array('LBL_USER_MANAGEMENT'		=> array('LBL_USERS'				=> 'Users',
-																	 'LBL_ROLES'				=> 'Roles',
-																	 'LBL_PROFILES'				=> 'Profiles',
-																	 'LBL_SHARING_ACCESS'		=> 'SharingAccess',
-																	 'USERGROUPLIST'			=> 'Groups',
-																	 'LBL_LOGIN_HISTORY_DETAILS' => 'LoginHistory'),
-
-								  'LBL_MODULE_MANAGEMENT'	=> array('VTLIB_LBL_MODULE_MANAGER' => 'ModuleManager',
-																	 'LBL_EDIT_FIELDS'			=> 'LayoutEditor',
-																	 'Labels Editor'			=> 'Labels Editor',
-																	 'LBL_CUSTOMIZE_MODENT_NUMBER' => 'CustomRecordNumbering'),
-			
-								  'LBL_AUTOMATION'			=> array('Webforms'					=> 'Webforms',
-																	 'Scheduler'				=> 'CronTasks',
-																	 'LBL_LIST_WORKFLOWS'		=> 'Workflows'),
-
-								  'LBL_CONFIGURATION'		=> array('LBL_COMPANY_DETAILS'		=> 'CompanyDetails',
-																	 'LBL_CUSTOMER_PORTAL'		=> 'CustomerPortal',
-																	 'LBL_CURRENCY_SETTINGS'	=> 'Currency',
-																	 'LBL_MAIL_SERVER_SETTINGS'	=> 'OutgoingServer',
-																	 'Configuration Editor'		=> 'ConfigurationEditor',
-																	 'LBL_PICKLIST_EDITOR'		=> 'Picklist',
-																	 'LBL_PICKLIST_DEPENDENCY'	=> 'PickListDependency',
-																	 'LBL_MENU_EDITOR'			=> 'LBL_MENU_EDITOR'),
-
-								  'LBL_MARKETING_SALES'		=> array('LBL_LEAD_MAPPING'			=> 'LeadsMappingDetail',
-																	 'LBL_OPPORTUNITY_MAPPING'	=> 'PotentialsMappingDetail'),
-
-								  'LBL_INVENTORY'			=> array('LBL_TAX_SETTINGS'			=> 'TaxIndex',
-																	 'INVENTORYTERMSANDCONDITIONS'=> 'TermsAndConditionsEdit'),
-
-								  'LBL_MY_PREFERENCES'		=> array('1'						=> 'My Preferences',
-																	 '2'						=> 'Calendar Settings',
-																	 'LBL_MY_TAGS'				=> 'Tags'),
-								  'LBL_TEMPLATES'			=> array('Email Templates'			=> 'EmailTemplates'),
-								  'LBL_EXTENSIONS'			=> array('LBL_EXTENSIONS'			=> 'Extension')
-			);
-		foreach ($settingsMenuList as $blockname => $menulist) {
-			if($key = array_search($menu, $menulist)) {
-				if($menu == 'Extension') {
-					$extMenu = 'LBL_'.strtoupper($request->get('extensionModule'));
-					return array('block' => $blockname, 'menu' => $extMenu);
-				}
-				return array('block' => $blockname, 'menu' => $key);
-			}
+		if(!empty($blockName)){
+			return array('block' => $blockName, 'menu' => $name);
 		}
 		return array();
 	}
@@ -264,11 +169,15 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
 
-		$settingsMenuList = array(	'LBL_MY_PREFERENCES'	=> array('My Preferences'			=> '',
-																	'Calendar Settings'			=> '',
-																	'LBL_MY_TAGS'				=> "$myTagSettingsUrl"),
-									'LBL_TEMPLATES'			=> array('Email Templates'			=> 'index.php?module=EmailTemplates&view=List'),
-								  );
+		$settingsMenuList = array('LBL_MY_PREFERENCES'	=> array('My Preferences'	=> '',
+																 'Calendar Settings'=> '',
+																 'LBL_MY_TAGS'		=> $myTagSettingsUrl),
+									'LBL_EXTENSIONS'	=> array('LBL_GOOGLE'		=> 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings')
+								);
+		if(!vtlib_isModuleActive('Google')) {
+			unset($settingsMenuList['LBL_EXTENSIONS']['LBL_GOOGLE']);
+		}
+
 		return $settingsMenuList;
 	}
 

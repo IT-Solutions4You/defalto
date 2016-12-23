@@ -90,6 +90,7 @@ class Potentials extends CRMEntity {
 		'Contacts' => array('table_name'=>'vtiger_contactdetails','table_index'=>'contactid','rel_index'=>'contactid')
 	);
 
+	var $LBL_POTENTIAL_MAPPING = 'LBL_OPPORTUNITY_MAPPING';
 	//var $groupTable = Array('vtiger_potentialgrouprelation','potentialid');
 	function Potentials() {
 		$this->log = LoggerManager::getLogger('potential');
@@ -811,5 +812,22 @@ class Potentials extends CRMEntity {
 
 		return $return_value;
 	}
+
+	/**
+	 * Invoked when special actions are to be performed on the module.
+	 * @param String Module name
+	 * @param String Event Type
+	 */
+	function vtlib_handler($moduleName, $eventType) {
+		if ($moduleName == 'Potentials') {
+			$db = PearDatabase::getInstance();
+			if ($eventType == 'module.disabled') {
+				$db->pquery('UPDATE vtiger_settings_field SET active=1 WHERE name=?', array($this->LBL_POTENTIAL_MAPPING));
+			} else if ($eventType == 'module.enabled') {
+				$db->pquery('UPDATE vtiger_settings_field SET active=0 WHERE name=?', array($this->LBL_POTENTIAL_MAPPING));
+			}
+		}
+	}
 }
+
 ?>

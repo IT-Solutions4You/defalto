@@ -504,6 +504,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Folder saved'                ,
 	'LBL_FOLDER_EXISTS'            => 'Folder already exists'       ,
 	'LBL_FOLDER_DELETED'           => 'Folder deleted'              ,
+	'LBL_EDIT_FOLDER' => 'editaţi dosarul',
 	'Lead Source'                  => 'Sursa prospectare'           ,
 	'Mobile'                       => 'Nr tel mobil'                ,
 	'Notify Owner'                 => 'Instiinteaza proprietar'     ,
@@ -1060,6 +1061,7 @@ Faceți clic pe autorizați și de a obține Contacte din Google.',
   'LBL_HOUR(S)' => 'oră(e)',
   'LBL_SLA_INFORMATION' => 'SLA informații',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Pentru a utiliza <b>%s</b>, vă recomandăm să treceți la nou look.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'Atunci când un utilizator este șters, utilizatorul va fi marcat ca fiind "inactive" și nici o nouă înregistrări pot fi atribuite Utilizatorului, iar utilizatorul nu va putea conecta. Ești sigur că vrei să ștergi?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',

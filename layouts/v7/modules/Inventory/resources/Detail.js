@@ -53,12 +53,7 @@ Vtiger_Detail_Js("Inventory_Detail_Js", {
             }
             app.helper.showModal(response, {'cb': function(modal) {
                     jQuery('.modal-dialog').css({"width": "870px"});
-                    ListTemplates_Js = new PrintTemplates_ListTemplates_Js();
-                    ListTemplates_Js.registerEvents();
-                    
                     thisInstance.registerChangeTemplateEvent(modal, recordId);
-
-                    
                 }
             });
         });

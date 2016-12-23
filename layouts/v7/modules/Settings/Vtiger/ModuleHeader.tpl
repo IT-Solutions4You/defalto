@@ -25,39 +25,38 @@
 				{else}
 					<h4 title="{vtranslate($ACTIVE_BLOCK['block'], $QUALIFIED_MODULE)}" class="module-title pull-left text-uppercase">{vtranslate($ACTIVE_BLOCK['block'], $QUALIFIED_MODULE)}</h4>
 					{if $MODULE neq 'Vtiger'}
-						{if $smarty.request.view eq 'PreferenceDetail' or
-$smarty.request.view eq 'PreferenceEdit'}
-						{assign var=SELECTED_MODULE value='My Preferences'}
-					{elseif $smarty.request.view eq 'Calendar'}
-						{assign var=SELECTED_MODULE value='Calendar Settings'}
-					{elseif $smarty.request.module eq 'LayoutEditor'}
-						{assign var=SELECTED_MODULE value='LBL_MODULE_CUSTOMIZATION'}
-					{elseif $smarty.request.module eq 'Currency'}
-						{assign var=SELECTED_MODULE value='LBL_CURRENCY_SETTINGS'}
-					{elseif $smarty.request.module eq 'Picklist'}
-						{assign var=SELECTED_MODULE value='LBL_PICKLIST_EDITOR'}
-					{elseif $smarty.request.view eq 'MappingDetail' and $smarty.request.module eq 'Potentials'}
-						{assign var=SELECTED_MODULE value='LBL_OPPORTUNITY_MAPPING'}
-					{elseif $smarty.request.view eq 'MappingDetail' and $smarty.request.module eq 'Leads'}
-						{assign var=SELECTED_MODULE value='LBL_LEAD_MAPPING'}
-					{elseif $smarty.request.module eq 'MenuEditor'}
-						{assign var=SELECTED_MODULE value='LBL_MENU_EDITOR'}
-					{elseif $smarty.request.module eq 'Tags'}
-						{assign var=SELECTED_MODULE value='LBL_MY_TAGS'}
+						{if $smarty.request.view eq 'PreferenceDetail' or $smarty.request.view eq 'PreferenceEdit'}
+							{assign var=SELECTED_MODULE value='My Preferences'}
+						{elseif $smarty.request.view eq 'Calendar'}
+							{assign var=SELECTED_MODULE value='Calendar Settings'}
+						{elseif $smarty.request.module eq 'LayoutEditor'}
+							{assign var=SELECTED_MODULE value='LBL_MODULE_CUSTOMIZATION'}
+						{elseif $smarty.request.module eq 'Currency'}
+							{assign var=SELECTED_MODULE value='LBL_CURRENCY_SETTINGS'}
+						{elseif $smarty.request.module eq 'Picklist'}
+							{assign var=SELECTED_MODULE value='LBL_PICKLIST_EDITOR'}
+						{elseif $smarty.request.view eq 'MappingDetail' and $smarty.request.module eq 'Potentials'}
+							{assign var=SELECTED_MODULE value='LBL_OPPORTUNITY_MAPPING'}
+						{elseif $smarty.request.view eq 'MappingDetail' and $smarty.request.module eq 'Leads'}
+							{assign var=SELECTED_MODULE value='LBL_LEAD_MAPPING'}
+						{elseif $smarty.request.module eq 'MenuEditor'}
+							{assign var=SELECTED_MODULE value='LBL_MENU_EDITOR'}
+						{elseif $smarty.request.module eq 'Tags'}
+							{assign var=SELECTED_MODULE value='LBL_MY_TAGS'}
+						{else}
+							{assign var=SELECTED_MODULE value=$smarty.request.module}
+						{/if}
+						<span class="current-filter-name filter-name pull-left" style='width:50%;'>&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{vtranslate($SELECTED_MODULE, $QUALIFIED_MODULE)}</span>
 					{else}
-						{assign var=SELECTED_MODULE value=$smarty.request.module}
+						{if $smarty.request.view eq 'TaxIndex'}
+							{assign var=SELECTED_MODULE value='LBL_TAX_MANAGEMENT'}
+						{elseif $smarty.request.view eq 'TermsAndConditionsEdit'}
+							{assign var=SELECTED_MODULE value='LBL_TERMS_AND_CONDITIONS'}
+						{else}
+							{assign var=SELECTED_MODULE value=$ACTIVE_BLOCK['menu']}
+						{/if}
+						<span class="current-filter-name filter-name pull-left" style='width:50%;'>&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{vtranslate({$SELECTED_MODULE}, $QUALIFIED_MODULE)}</span>
 					{/if}
-					<span class="current-filter-name filter-name pull-left" style='width:50%;'>&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{vtranslate($SELECTED_MODULE, $QUALIFIED_MODULE)}</span>
-				{else}
-					{if $smarty.request.view eq 'TaxIndex'}
-						{assign var=SELECTED_MODULE value='LBL_TAX_MANAGEMENT'}
-					{elseif $smarty.request.view eq 'TermsAndConditionsEdit'}
-						{assign var=SELECTED_MODULE value='LBL_TERMS_AND_CONDITIONS'}
-					{else}
-						{assign var=SELECTED_MODULE value=$ACTIVE_BLOCK['menu']}
-					{/if}
-					<span class="current-filter-name filter-name pull-left" style='width:50%;'>&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{vtranslate({$SELECTED_MODULE}, $QUALIFIED_MODULE)}</span>
-				{/if}
 				{/if}
 				</div>
 				<div class="col-lg-5 col-md-5 pull-right">
@@ -67,11 +66,11 @@ $smarty.request.view eq 'PreferenceEdit'}
 								{if $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}
 									<li>
 										<button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn addButton btn-default module-buttons" 
-												{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}  
-													onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
-												{else} 
-													onclick="Vtiger_Import_Js.triggerImportAction('{$BASIC_ACTION->getUrl()}')"
-												{/if}>
+											{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
+												onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
+											{else} 
+												onclick="Vtiger_Import_Js.triggerImportAction('{$BASIC_ACTION->getUrl()}')"
+											{/if}>
 											<div class="fa {$BASIC_ACTION->getIcon()}" aria-hidden="true"></div>&nbsp;&nbsp;
 											{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}
 										</button>
@@ -79,18 +78,19 @@ $smarty.request.view eq 'PreferenceEdit'}
 								{else}
 									<li>
 										<button type="button" class="btn addButton btn-default module-buttons" 
-												{if $MODULE eq 'SLA' || $MODULE eq 'BusinessHours'}
-													id="addRecord" data-url="{$BASIC_ACTION->getUrl()}">
-												{else}
-													id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}"
-													{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}  
-														onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
-													{else} 
-														onclick='window.location.href="{$BASIC_ACTION->getUrl()}"'
-													{/if}>
+											{if $MODULE eq 'SLA' || $MODULE eq 'BusinessHours'}
+												id="addRecord" data-url="{$BASIC_ACTION->getUrl()}"
+											{else}
+												id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}"
+												{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
+													onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
+												{else} 
+													onclick='window.location.href="{$BASIC_ACTION->getUrl()}"'
 												{/if}
-												<div class="fa {$BASIC_ACTION->getIcon()}" aria-hidden="true"></div>
-												&nbsp;&nbsp;{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}
+											{/if}
+											>
+											<div class="fa {$BASIC_ACTION->getIcon()}" aria-hidden="true"></div>
+											&nbsp;&nbsp;{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}
 										</button>
 									</li>
 								{/if}
@@ -109,13 +109,13 @@ $smarty.request.view eq 'PreferenceEdit'}
 										<ul class="detailViewSetting dropdown-menu">
 											{foreach item=SETTING from=$LISTVIEW_LINKS['LISTVIEWSETTING']}
 												<li id="{$MODULE}_setings_lisview_advancedAction_{$SETTING->getLabel()}"><a href="javascript:void(0);" onclick="{$SETTING->getUrl()};">{vtranslate($SETTING->getLabel(), $QUALIFIEDMODULE)}</a></li>
-												{/foreach}
+											{/foreach}
 										</ul>
 									</div>
 								</li>
 							{/if}
 
-							{assign var=RESTRICTED_MODULE_LIST value=['Users', 'EmailTemplates','PrintTemplates']}
+							{assign var=RESTRICTED_MODULE_LIST value=['Users', 'EmailTemplates']}
 							{if $LISTVIEW_LINKS['LISTVIEWBASIC']|@count gt 0 and !in_array($MODULE, $RESTRICTED_MODULE_LIST)}
 								{if empty($QUALIFIED_MODULE)} 
 									{assign var=QUALIFIED_MODULE value='Settings:'|cat:$MODULE}
@@ -124,18 +124,22 @@ $smarty.request.view eq 'PreferenceEdit'}
 									{if $MODULE eq 'Users'} {assign var=LANGMODULE value=$MODULE} {/if}
 									<li>
 										<button class="btn btn-default addButton module-buttons"
-												id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}" 
-												{if $MODULE eq 'Workflows'}
-													onclick='Settings_Workflows_List_Js.triggerCreate("{$LISTVIEW_BASICACTION->getUrl()}&mode=V7Edit")'
+											id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}" 
+											{if $MODULE eq 'Workflows'}
+												onclick='Settings_Workflows_List_Js.triggerCreate("{$LISTVIEW_BASICACTION->getUrl()}&mode=V7Edit")'
+											{else}
+												{if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0}
+													onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'
 												{else}
-													{if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0}
-														onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'
-													{else}
-														onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'
-													{/if}
-												{/if}>
+													onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'
+												{/if}
+											{/if}>
 											<i class="fa fa-plus"></i>&nbsp;&nbsp;
-											{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}
+											{if $MODULE eq 'Tags'}
+												{vtranslate('LBL_ADD_TAG', $QUALIFIED_MODULE)}
+											{else}
+												{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}
+											{/if}
 										</button>
 									</li>
 								{/foreach}

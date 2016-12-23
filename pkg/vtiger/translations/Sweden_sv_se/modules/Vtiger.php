@@ -628,6 +628,7 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED' => 'Mapp sparad',
 	'LBL_FOLDER_EXISTS' => 'Mapp finns redan',
 	'LBL_FOLDER_DELETED' => 'Mapp raderad',
+	'LBL_EDIT_FOLDER' => 'Redigera mapp',
 
 	'Lead Source' => 'Leadkälla',
 	'Mobile' => 'Mobiltelefon',
@@ -1200,6 +1201,7 @@ utanför Vtiger.',
   'LBL_HOUR(S)' => 'timme(s)',
   'LBL_SLA_INFORMATION' => 'SLA Information',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Om du vill använda <b>%s</b>, rekommenderar vi att du Växla till nytt utseende.',
+	'LBL_DELETE_USER_CONFIRMATION' => 'När en användare tas bort, kommer användaren att markeras som "inaktiva" och inga nya rekord kan tilldelas till användaren, och användaren kommer inte att kunna logga in. Är du säker att du vill radera?',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Vänligen konfigurera utgående serverinställningar från inställningssidan',
