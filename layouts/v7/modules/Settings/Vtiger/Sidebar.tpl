@@ -8,39 +8,38 @@
 ************************************************************************************}
 {strip}
 	{if $USER_MODEL->isAdminUser()}
-		{assign var=SETTINGS_MENU_LIST value=Settings_Vtiger_Module_Model::getSettingsMenuList()}	
+		{assign var=SETTINGS_MODULE_MODEL value= Settings_Vtiger_Module_Model::getInstance()}
+		{assign var=SETTINGS_MENUS value=$SETTINGS_MODULE_MODEL->getMenus()}
 		<div class="settingsgroup">
 			<div>
 				<input type="text" placeholder="{vtranslate('LBL_SEARCH_FOR_SETTINGS', $QUALIFIED_MODULE)}" class="search-list col-lg-8" id='settingsMenuSearch'>
 			</div>
 			<br><br>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-				{foreach item=BLOCK_MENUS key=BLOCK_NAME from=$SETTINGS_MENU_LIST}
-					<div class="settingsgroup-panel panel panel-default instaSearch">
-						<div id="{$BLOCK_NAME}_accordion" class="app-nav" role="tab">
-							<div class="app-settings-accordion">
-								<div class="settingsgroup-accordion">
-									<a data-toggle="collapse" data-parent="#accordion" class='collapsed' href="#{$BLOCK_NAME}">
-										<i class="indicator fa{if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} fa-chevron-down {else} fa-chevron-right {/if}"></i>
-										&nbsp;<span>{vtranslate($BLOCK_NAME,$QUALIFIED_MODULE)}</span>
-									</a>
+				{foreach item=BLOCK_MENUS from=$SETTINGS_MENUS}
+					{assign var=BLOCK_NAME value=$BLOCK_MENUS->getLabel()}
+					{assign var=BLOCK_MENU_ITEMS value=$BLOCK_MENUS->getMenuItems()}
+					{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENU_ITEMS|@sizeof}
+					{if $BLOCK_NAME eq 'LBL_EXTENSIONS'}
+						{continue}
+					{/if}
+					{if $NUM_OF_MENU_ITEMS gt 0}
+						<div class="settingsgroup-panel panel panel-default instaSearch">
+							<div id="{$BLOCK_NAME}_accordion" class="app-nav" role="tab">
+								<div class="app-settings-accordion">
+									<div class="settingsgroup-accordion">
+										<a data-toggle="collapse" data-parent="#accordion" class='collapsed' href="#{$BLOCK_NAME}">
+											<i class="indicator fa{if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} fa-chevron-down {else} fa-chevron-right {/if}"></i>
+											&nbsp;<span>{vtranslate($BLOCK_NAME,$QUALIFIED_MODULE)}</span>
+										</a>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div id="{$BLOCK_NAME}" class="panel-collapse collapse ulBlock {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} in {/if}">
-							<ul class="list-group widgetContainer">
-								{foreach item=URL key=MENU from=$BLOCK_MENUS}
-									{assign var=MENU_URL value='#'}
-									{assign var=MENU_LABEL value=$MENU}
-
-									{if $MENU eq 'My Preferences'}
-										{assign var=MENU_URL value=$USER_MODEL->getPreferenceDetailViewUrl()}
-									{elseif $MENU eq 'Calendar Settings'}
-										{assign var=MENU_URL value=$USER_MODEL->getCalendarSettingsDetailViewUrl()}
-									{elseif $MENU === $URL}
-										{if $SETTINGS_MENU_ITEMS[$MENU]}
-											{assign var=MENU_URL value=$SETTINGS_MENU_ITEMS[$MENU]->getURL()}
-										{/if}
+							<div id="{$BLOCK_NAME}" class="panel-collapse collapse ulBlock {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} in {/if}">
+								<ul class="list-group widgetContainer">
+									{foreach item=MENUITEM from=$BLOCK_MENU_ITEMS}
+										{assign var=MENU value= $MENUITEM->get('name')}
+										{assign var=MENU_LABEL value=$MENU}
 										{if $MENU eq 'LBL_EDIT_FIELDS'}
 											{assign var=MENU_LABEL value='LBL_MODULE_CUSTOMIZATION'}
 										{elseif $MENU eq 'LBL_TAX_SETTINGS'}
@@ -50,14 +49,20 @@
 										{elseif $MENU eq 'LBL_PHONE_CALLS'}
 											{assign var=MENU_LABEL value='LBL_PHONE_CONFIGURATION'}
 										{/if}
-									{elseif is_string($URL)}
-										{assign var=MENU_URL value=$URL}
-									{/if}
-									<li><a data-name = "{$MENU}" href="{$MENU_URL}" class="menuItemLabel {if $ACTIVE_BLOCK['menu'] eq $MENU} settingsgroup-menu-color {/if}">{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}</a></li>
-								{/foreach}
-							</ul>
+
+										{assign var=MENU_URL value=$MENUITEM->getUrl()}
+										{assign var=USER_MODEL value=Users_Record_Model::getCurrentUserModel()}
+										{if $MENU eq 'My Preferences'}
+											{assign var=MENU_URL value=$USER_MODEL->getPreferenceDetailViewUrl()}
+										{elseif $MENU eq 'Calendar Settings'}
+											{assign var=MENU_URL value=$USER_MODEL->getCalendarSettingsDetailViewUrl()}
+										{/if}
+										<li><a data-name="{$MENU}" href="{$MENU_URL}" class="menuItemLabel {if $ACTIVE_BLOCK['menu'] eq $MENU} settingsgroup-menu-color {/if}">{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}</a></li>
+									{/foreach}
+								</ul>
+							</div>
 						</div>
-					</div>  
+					{/if}
 				{/foreach}
 			</div>
 		</div>

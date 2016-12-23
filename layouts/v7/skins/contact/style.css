@@ -4646,7 +4646,7 @@ form[name="notification_settings"] .select2-choice {
   border-radius: 1px;
 }
 .modal {
-  z-index: 1070;
+  z-index: 1200;
 }
 .select2-container .select2-choice {
   height: 28px;

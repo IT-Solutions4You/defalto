@@ -11,8 +11,6 @@
 -->*}
 
 {strip}
-{assign var=ACTIVE_BLOCK value=['block' => 'LBL_MY_PREFERENCES',
-                            'menu' => 'My Preferences']}
 {include file="SettingsMenuStart.tpl"|vtemplate_path:$QUALIFIED_MODULE}
 
 <div class="bodyContents">

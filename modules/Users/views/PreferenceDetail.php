@@ -140,6 +140,9 @@ class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 			}
 			$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
+			$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($_SERVER['REQUEST_URI']);
+			$viewer->assign('ACTIVE_BLOCK', $activeBLock);
+
 			if($display) {
 				$this->preProcessDisplay($request);
 			}

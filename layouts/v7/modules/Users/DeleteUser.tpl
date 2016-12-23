@@ -10,7 +10,7 @@
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
-    <div class="modal-dialog modelContainer"'>
+    <div class="modal-dialog modelContainer">
         {assign var=HEADER_TITLE value={vtranslate('Transfer records to user', $MODULE)}}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
         <div class="modal-content">
