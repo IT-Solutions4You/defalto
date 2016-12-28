@@ -317,4 +317,15 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		return 'javascript:Settings_Users_List_Js.showTransferOwnershipForm()';
 	}
 
+	/**
+	 * Function to get active block name of module
+	 * @return type
+	 */
+	public function getSettingsActiveBlock($viewName) {
+		$blocksList = array('Edit'			=> array('block' => 'LBL_USER_MANAGEMENT', 'menu' => 'LBL_USERS'),
+							'Calendar'		=> array('block' => 'LBL_MY_PREFERENCES', 'menu' => 'Calendar Settings'),
+							'PreferenceEdit'=> array('block' => 'LBL_MY_PREFERENCES', 'menu' => 'My Preferences'));
+		return $blocksList[$viewName];
+	}
+
 }

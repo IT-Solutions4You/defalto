@@ -969,6 +969,8 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 				var fieldUi = fieldModel.getUiTypeSpecificHtml();
 				if (type == 'Text') {
 					fieldUi.css({'width': '75%', 'resize': 'vertical'});
+				} else if (type == 'Date' || type == 'Time') {
+					fieldUi.css({'width': '82%'});
 				} else if (type != 'Boolean') {
 					fieldUi.css('width', '75%');
 				}

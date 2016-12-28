@@ -251,6 +251,7 @@ $languageStrings = array(
   'LBL_PIN' => 'pin',
   'LBL_EXTENSIONS_PLACE' => 'Dany Miejsce',
   'LBL_EXTENSIONS' => 'Dany',
+	'LBL_PBXMANAGER' => 'PBXManager',
   'LBL_EXCHANGE_CONNECTOR' => 'Łącznik Exchange',
   'LBL_DESCRIPTION' => 'Opis',
   'LBL_SELECT_DATE' => 'Wybierz daty',

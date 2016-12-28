@@ -64,7 +64,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 		}
 		$viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
 
-		$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($_SERVER['REQUEST_URI']);
+		$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($request);
 		$viewer->assign('ACTIVE_BLOCK', $activeBLock);
 
 		$restrictedModules = array('Vtiger', 'ExtensionStore', 'CustomerPortal', 'Roles', 'ExchangeConnector', 'LoginHistory', 'SharingAccess');

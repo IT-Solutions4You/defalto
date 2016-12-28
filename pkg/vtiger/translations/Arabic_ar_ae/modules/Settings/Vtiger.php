@@ -34,6 +34,7 @@ $languageStrings = array(
 	'LBL_OTHER_SETTINGS' => 'Other Settings',
 	'LBL_EXTENSIONS_PLACE' => 'Extensions Place',
 	'LBL_EXTENSIONS' => 'Extensions',
+	'LBL_PBXMANAGER' => 'PBXManager',
 
 	// Fields
 	'LBL_DESCRIPTION' => 'Description',

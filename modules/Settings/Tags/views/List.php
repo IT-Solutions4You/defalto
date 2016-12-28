@@ -11,6 +11,14 @@
 
 class Settings_Tags_List_View extends Settings_Vtiger_List_View {
 
+	function checkPermission(Vtiger_Request $request) {
+		$layout = Vtiger_Viewer::getDefaultLayoutName();
+		if ($layout == 'vlayout') {
+			throw new AppException(vtranslate('LBL_NOT_ACCESSIBLE'));
+		}
+		return true;
+	}
+
 	public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
 		parent::initializeListViewContents($request, $viewer);
 		$viewer->assign('SHOW_LISTVIEW_CHECKBOX', false);

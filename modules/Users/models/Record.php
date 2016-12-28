@@ -765,40 +765,38 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			return $db->query_result($result, 0, 'user_hash');
 			
 		}
-        }
+	}
         
-        /*
-         * Function to delete user permanemtly from CRM and
-         * assign all record which are assigned to that user
-         * and not transfered to other user to other user
-         * 
-         * @param User Ids of user to be deleted and user
-         * to whom records should be assigned
-         */
-        public function deleteUserPermanently($userId, $newOwnerId) {
-                $db = PearDatabase::getInstance();
-                
-                $sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";
-                $db->pquery($sql, array($newOwnerId, $newOwnerId, date('Y-m-d H:i:s'), $userId,'ModComments'));
-                
-                // Update creator Id in vtiger_crmentity table
-                $sql = "UPDATE vtiger_crmentity SET smcreatorid = ? WHERE smcreatorid = ? AND setype <> ?";
-                $db->pquery($sql, array($newOwnerId, $userId,'ModComments'));
-                
-                //update history details in vtiger_modtracker_basic 
-                $sql ="update vtiger_modtracker_basic set whodid=? where whodid=?"; 
-                $db->pquery($sql, array($newOwnerId, $userId)); 
+	/*
+	 * Function to delete user permanemtly from CRM and
+	 * assign all record which are assigned to that user
+	 * and not transfered to other user to other user
+	 * 
+	 * @param User Ids of user to be deleted and user
+	 * to whom records should be assigned
+	 */
+	public function deleteUserPermanently($userId, $newOwnerId) {
+		$db = PearDatabase::getInstance();
 
-                //update comments details in vtiger_modcomments 
-                $sql ="update vtiger_modcomments set userid=? where userid=?"; 
-                $db->pquery($sql, array($newOwnerId, $userId));
+		$sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";
+		$db->pquery($sql, array($newOwnerId, $newOwnerId, date('Y-m-d H:i:s'), $userId,'ModComments'));
 
-                $sql = "DELETE FROM vtiger_users WHERE id=?";
-                $db->pquery($sql, array($userId));
-                
-                vtws_removeGoogleSync($userId);
-        }
-	
+		// Update creator Id in vtiger_crmentity table
+		$sql = "UPDATE vtiger_crmentity SET smcreatorid = ? WHERE smcreatorid = ? AND setype <> ?";
+		$db->pquery($sql, array($newOwnerId, $userId,'ModComments'));
+
+		//update history details in vtiger_modtracker_basic 
+		$sql ="update vtiger_modtracker_basic set whodid=? where whodid=?"; 
+		$db->pquery($sql, array($newOwnerId, $userId)); 
+
+		//update comments details in vtiger_modcomments 
+		$sql ="update vtiger_modcomments set userid=? where userid=?"; 
+		$db->pquery($sql, array($newOwnerId, $userId));
+
+		$sql = "DELETE FROM vtiger_users WHERE id=?";
+		$db->pquery($sql, array($userId));
+	}
+
 	/**
 	 * Function to get the Display Name for the record
 	 * @return <String> - Entity Display Name for the record

@@ -1686,7 +1686,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$productsInstance = Vtiger_Module_Model::getInstance('Products');
 	$poInstance = Vtiger_Module_Model::getInstance('PurchaseOrder');
-	$productsInstance->setRelatedList($poInstance, 'PurchaseOrder', false, 'get_purchaseorder');
+	$productsInstance->setRelatedList($poInstance, 'PurchaseOrder', false, 'get_purchase_orders');
 
 	$modules = array('Potentials', 'Contacts', 'Accounts', 'Project');
 	foreach ($modules as $moduleName) {

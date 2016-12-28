@@ -38,6 +38,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 
 	public function preProcess(Vtiger_Request $request, $display=true) {
 		if($this->checkPermission($request)) {
+			parent::preProcess($request, false);
 			$qualifiedModuleName = $request->getModule(false);
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$recordId = $request->get('record');
@@ -140,7 +141,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 			}
 			$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
-			$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($_SERVER['REQUEST_URI']);
+			$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($request);
 			$viewer->assign('ACTIVE_BLOCK', $activeBLock);
 
 			if($display) {

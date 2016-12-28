@@ -296,6 +296,7 @@ Vtiger_RelatedList_Js("Campaigns_RelatedList_Js",{
     },
     
     registerEvents : function() {
+		this.registerEditLink();
         this.changeCustomFilterElementView();
         this.registerEventToEditRelatedStatus();
         this.registerChangeCustomFilterEvent();
