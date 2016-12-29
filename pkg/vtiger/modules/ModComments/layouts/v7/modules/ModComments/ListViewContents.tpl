@@ -164,7 +164,7 @@
                                 <div class="emptyRecordsContent">
                                     {assign var=SINGLE_MODULE value="SINGLE_$MODULE"}
                                     {vtranslate('LBL_NO')} {vtranslate($MODULE, $MODULE)} {vtranslate('LBL_FOUND')}.
-                                    {if $IS_MODULE_EDITABLE}
+                                    {if $IS_RECORD_CREATABLE}
                                         <a style="color:blue" href="{$MODULE_MODEL->getCreateRecordUrl()}"> {vtranslate('LBL_CREATE')}</a>
                                         {if Users_Privileges_Model::isPermitted($MODULE, 'Import') && $LIST_VIEW_MODEL->isImportEnabled()}
                                             {vtranslate('LBL_OR', $MODULE)}

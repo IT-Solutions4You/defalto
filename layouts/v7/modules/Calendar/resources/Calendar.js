@@ -1070,26 +1070,29 @@ Vtiger.Class("Calendar_Calendar_Js", {
 		startDateElement.trigger('change');
 	},
 	showCreateModal: function (moduleName, startDateTime) {
-		var thisInstance = this;
-		var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + moduleName + '"]');
-		if (quickCreateNode.length <= 0) {
-			app.helper.showAlertNotification({
-				'message': app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED')
-			});
-		} else {
-			quickCreateNode.trigger('click');
-		}
+		var isAllowed = jQuery('#is_record_creation_allowed').val();
+        if (isAllowed) {
+			var thisInstance = this;
+			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + moduleName + '"]');
+			if (quickCreateNode.length <= 0) {
+				app.helper.showAlertNotification({
+					'message': app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED')
+				});
+			} else {
+				quickCreateNode.trigger('click');
+			}
 
-		app.event.one('post.QuickCreateForm.show', function (e, form) {
-			thisInstance.performingDayClickOperation = false;
-			var modalContainer = form.closest('.modal');
-			if (typeof startDateTime !== 'undefined' && startDateTime) {
-				thisInstance.setStartDateTime(modalContainer, startDateTime);
-			}
-			if (moduleName === 'Events') {
-				thisInstance.registerCreateEventModalEvents(form.closest('.modal'));
-			}
-		});
+			app.event.one('post.QuickCreateForm.show', function (e, form) {
+				thisInstance.performingDayClickOperation = false;
+				var modalContainer = form.closest('.modal');
+				if (typeof startDateTime !== 'undefined' && startDateTime) {
+					thisInstance.setStartDateTime(modalContainer, startDateTime);
+				}
+				if (moduleName === 'Events') {
+					thisInstance.registerCreateEventModalEvents(form.closest('.modal'));
+				}
+			});
+		}
 	},
 	_updateAllOnCalendar: function (calendarModule) {
 		var thisInstance = this;

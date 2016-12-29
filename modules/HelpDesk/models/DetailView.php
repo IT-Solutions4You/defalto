@@ -35,7 +35,7 @@ class HelpDesk_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		$quotesModuleModel = Vtiger_Module_Model::getInstance('Faq');
-		if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'DetailView')) {
+		if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEW',
 				'linklabel' => 'LBL_CONVERT_FAQ',

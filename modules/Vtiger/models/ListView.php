@@ -117,7 +117,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		}
 
 		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
-		if($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('EditView')) {
+		if($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('CreateView')) {
 			$massActionLinks[] = array(
 				'linktype' => 'LISTVIEWMASSACTION',
 				'linklabel' => 'LBL_ADD_COMMENT',

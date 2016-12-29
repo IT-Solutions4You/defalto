@@ -10,6 +10,13 @@
 
 class Inventory_SendEmail_View extends Vtiger_ComposeEmail_View {
 
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'index') || !Users_Privileges_Model::isPermitted('Emails', 'CreateView')) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+	}
+
 	/**
 	 * Function which will construct the compose email
 	 * This will handle the case of attaching the invoice pdf as attachment

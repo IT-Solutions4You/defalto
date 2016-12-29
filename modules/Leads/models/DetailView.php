@@ -51,7 +51,7 @@ class Leads_DetailView_Model extends Accounts_DetailView_Model {
 		
 		$CalendarActionLinks[] = array();
 		$CalendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		if($currentUserModel->hasModuleActionPermission($CalendarModuleModel->getId(), 'EditView')) {
+		if($currentUserModel->hasModuleActionPermission($CalendarModuleModel->getId(), 'CreateView')) {
 			$CalendarActionLinks[] = array(
 					'linktype' => 'DETAILVIEW',
 					'linklabel' => 'LBL_ADD_EVENT',

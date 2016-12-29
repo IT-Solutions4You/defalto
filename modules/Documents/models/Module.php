@@ -128,7 +128,7 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 		if($this->isEntityModule()) {
 			$moduleName = $this->getName();
             
-			$createPermission = Users_Privileges_Model::isPermitted($moduleName, 'EditView');
+			$createPermission = Users_Privileges_Model::isPermitted($moduleName, 'CreateView');
             if($createPermission) {
                 $basicListViewLinks[] = array(
 					'linktype' => 'LISTVIEW',

@@ -45,6 +45,7 @@ var Settings_Profiles_Js = {
 			var parent = target.closest('tr');
 			if (target.is(':checked')) {
 				jQuery('[data-action-state]', parent).prop('checked', true);
+				jQuery('[data-action-tool="'+tabid+'"]').prop('checked', true);
 				jQuery('[data-handlerfor]', parent).removeAttr('disabled');
 			} else {
 				jQuery('[data-action-state]', parent).prop('checked', false);
@@ -63,7 +64,7 @@ var Settings_Profiles_Js = {
 			var parent = target.closest('tr');
 			var checked = target.prop('checked')? true : false;
 			
-			if (target.data('action-state') == 'EditView' || target.data('action-state') == 'Delete') {
+			if (jQuery.inArray(target.data('action-state'), ['CreateView', 'EditView', 'Delete']) != -1) {
 				if (checked) {
 					jQuery('[data-action-state="DetailView"]', parent).prop('checked', true);
 					jQuery('[data-module-state]', parent).prop('checked', true);
@@ -95,11 +96,14 @@ var Settings_Profiles_Js = {
 		
 		jQuery('[data-module-state]').change(handleModuleSelectionState);
 		jQuery('[data-action-state]').change(handleActionSelectionState);
-		jQuery('#mainAction1CheckBox,#mainAction2CheckBox').change(selectAllModulesViewAndToolPriviliges);
+		jQuery('#mainAction1CheckBox,#mainAction7CheckBox,#mainAction2CheckBox').change(selectAllModulesViewAndToolPriviliges);
 		
 		jQuery('[data-togglehandler]').click(toggleEditViewTableRow);
 		jQuery('[data-range]').each(function(index, item) {
 			item = jQuery(item);
+			if(item.data('locked')){
+				jQuery('.editViewMiniSlider').css('cursor','pointer');
+			}
 			var value = item.data('value');
 			item.slider({
 				min: 0,
@@ -118,8 +122,9 @@ var Settings_Profiles_Js = {
 	registerSelectAllModulesEvent : function() {
 		var moduleCheckBoxes = jQuery('.modulesCheckBox');
 		var viewAction = jQuery('#mainAction4CheckBox');
-		var createAction = jQuery('#mainAction1CheckBox');
-		var deleteACtion = jQuery('#mainAction2CheckBox');
+		var createAction = jQuery('#mainAction7CheckBox');
+		var editAction = jQuery('#mainAction1CheckBox');
+		var deleteAction = jQuery('#mainAction2CheckBox');
 		var mainModulesCheckBox = jQuery('#mainModulesCheckBox');
 		mainModulesCheckBox.on('change',function(e) {
 			var mainCheckBox = jQuery(e.currentTarget);
@@ -127,22 +132,26 @@ var Settings_Profiles_Js = {
 				moduleCheckBoxes.prop('checked',true);
 				viewAction.prop('checked',true);
 				createAction.show().prop('checked',true);
-				deleteACtion.show().prop('checked',true);
+				editAction.show().prop('checked',true);
+				deleteAction.show().prop('checked',true);
 				moduleCheckBoxes.trigger('change');
 			} else {
-				moduleCheckBoxes.prop('checked',false);
+				//Some modules like TextSearch, BusinessHours, SLA will not be shown in the UI. But they should be always enabled
+				moduleCheckBoxes.filter(':visible').not(':disabled').prop('checked',false);
 				moduleCheckBoxes.trigger('change');
 				viewAction.prop('checked',false);
 				createAction.prop('checked', false);
-				deleteACtion.prop('checked', false);
+				editAction.prop('checked', false);
+				deleteAction.prop('checked', false);
 			}
 		});
 		
 		moduleCheckBoxes.on('change',function(){
 			Settings_Profiles_Js.checkSelectAll(moduleCheckBoxes,mainModulesCheckBox);
 			Settings_Profiles_Js.checkSelectAll(jQuery('.action4CheckBox'),viewAction);
-			Settings_Profiles_Js.checkSelectAll(jQuery('.action1CheckBox'),createAction);
-			Settings_Profiles_Js.checkSelectAll(jQuery('.action2CheckBox'),deleteACtion);
+			Settings_Profiles_Js.checkSelectAll(jQuery('.action7CheckBox'),createAction);
+			Settings_Profiles_Js.checkSelectAll(jQuery('.action1CheckBox'),editAction);
+			Settings_Profiles_Js.checkSelectAll(jQuery('.action2CheckBox'),deleteAction);
 		});
 	},
 	
@@ -167,8 +176,25 @@ var Settings_Profiles_Js = {
 		});
 		
 	},
-	
+
 	registerSelectAllCreateActionsEvent : function() {
+		var createActionCheckBoxes = jQuery('.action7CheckBox');
+		var mainCreateActionCheckBox = jQuery('#mainAction7CheckBox');
+		mainCreateActionCheckBox.on('change', function (e) {
+			var mainCheckBox = jQuery(e.currentTarget);
+			if (mainCheckBox.is(':checked')) {
+				createActionCheckBoxes.prop('checked', true);
+			} else {
+				createActionCheckBoxes.prop('checked', false);
+			}
+		});
+		createActionCheckBoxes.on('change', function () {
+			Settings_Profiles_Js.checkSelectAll(createActionCheckBoxes, mainCreateActionCheckBox);
+		});
+
+	},
+
+	registerSelectAllEditActionsEvent : function() {
 		var createActionCheckBoxes = jQuery('.action1CheckBox');
 		var mainCreateActionCheckBox =  jQuery('#mainAction1CheckBox');
 		mainCreateActionCheckBox.on('change',function(e){
@@ -225,9 +251,12 @@ var Settings_Profiles_Js = {
 		if(jQuery('[data-module-unchecked]').length > 0){
 			jQuery('#mainModulesCheckBox').prop('checked',false);
 		}
-        
+
 		if(jQuery('[data-action4-unchecked]').length <= 0){
 			jQuery('#mainAction4CheckBox').prop('checked',true);
+		}
+		if(jQuery('[data-action7-unchecked]').length <= 0) {
+			jQuery('#mainAction7CheckBox').prop('checked',true);
 		}
 		if(jQuery('[data-action1-unchecked]').length <= 0) {
 			jQuery('#mainAction1CheckBox').prop('checked',true);
@@ -254,6 +283,7 @@ var Settings_Profiles_Js = {
 		var params = {
 			submitHandler : function(form) {
 				var form = jQuery(form);
+				jQuery('[name="EditProfile"]').find('.saveButton').attr('disabled',true);
 				if(form.data('submit') === 'true' && form.data('performCheck') === 'true') {
 					return true;
 				} else {
@@ -289,11 +319,13 @@ var Settings_Profiles_Js = {
 								});
 							},
 							function(err){
+								jQuery('[name="EditProfile"]').find('.saveButton').removeAttr('disabled');
 								app.helper.hideProgress();
 								app.helper.showErrorNotification({'message' : err.message});
 							});
 					} else {
 						//If validation fails, form should submit again
+						jQuery('[name="EditProfile"]').find('.saveButton').removeAttr('disabled');
 						form.removeData('submit');
 					}
 				}
@@ -394,22 +426,23 @@ var Settings_Profiles_Js = {
 		Settings_Profiles_Js.registerSelectAllModulesEvent();
 		Settings_Profiles_Js.registerSelectAllViewActionsEvent();
 		Settings_Profiles_Js.registerSelectAllCreateActionsEvent();
+		Settings_Profiles_Js.registerSelectAllEditActionsEvent();
 		Settings_Profiles_Js.registerSelectAllDeleteActionsEvent();
 		Settings_Profiles_Js.performSelectAllActionsOnLoad();
 		Settings_Profiles_Js.registerGlobalPermissionActionsEvent();
-        if(app.getModuleName() === 'Profiles' && app.view() === 'Edit') {
-            Settings_Profiles_Js.registerSubmitEvent();
-        }
+		if(app.getModuleName() === 'Profiles' && app.view() === 'Edit') {
+			Settings_Profiles_Js.registerSubmitEvent();
+		}
 	}
-	
+
 };
 
 Vtiger.Class("Settings_Profiles_Detail_Js",{},{
 	init : function() {
 		this.addComponents();
-                Settings_Profiles_Js.registerEvents();
+		Settings_Profiles_Js.registerEvents();
 	},
-	
+
 	addComponents : function() {
 		this.addModuleSpecificComponent('Index','Vtiger',app.getParentModuleName());
 	}
@@ -418,7 +451,7 @@ Vtiger.Class("Settings_Profiles_Detail_Js",{},{
 Vtiger.Class("Settings_Profiles_Edit_Js",{},{
 	init : function() {
 		this.addComponents();
-                Settings_Profiles_Js.registerEvents();
+		Settings_Profiles_Js.registerEvents();
 	},
 	
 	addComponents : function() {

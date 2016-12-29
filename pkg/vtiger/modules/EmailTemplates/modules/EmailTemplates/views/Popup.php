@@ -106,6 +106,7 @@ class EmailTemplates_Popup_View extends Vtiger_Popup_View {
 			$viewer->assign('LISTVIEW_COUNT', $this->listViewCount);
 		}
 
+		$viewer->assign('IS_RECORD_CREATABLE', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 

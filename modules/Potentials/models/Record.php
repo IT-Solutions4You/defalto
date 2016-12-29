@@ -94,7 +94,7 @@ class Potentials_Record_Model extends Vtiger_Record_Model {
 		$privilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$moduleName = 'Project';
 
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
 			return;
 		}
 

@@ -126,6 +126,7 @@ class Products_InRelation_View extends Vtiger_RelatedList_View {
 
 		$viewer->assign('IS_EDITABLE', $relationModel->isEditable());
 		$viewer->assign('IS_DELETABLE', $relationModel->isDeletable());
+		$viewer->assign('IS_CREATE_PERMITTED', $relatedModuleModel->isPermitted('CreateView'));
 
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('PAGING', $pagingModel);

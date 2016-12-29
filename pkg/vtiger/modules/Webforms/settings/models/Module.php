@@ -101,7 +101,7 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 	 * @return array
 	 */
 	public function getModuleBasicLinks(){
-	   $createPermission = Users_Privileges_Model::isPermitted($this->getName(), 'EditView');
+	   $createPermission = Users_Privileges_Model::isPermitted($this->getName(), 'CreateView');
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {

@@ -587,7 +587,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 						}
 					}
 					if ((empty($entityId) || $entityId == 0) && !empty($referenceModuleName)) {
-						if (isPermitted($referenceModuleName, 'EditView') == 'yes') {
+						if (isPermitted($referenceModuleName, 'CreateView') == 'yes') {
 							try {
 								$wsEntityIdInfo = $this->createEntityRecord($referenceModuleName, $entityLabel);
 								$wsEntityId = $wsEntityIdInfo['id'];
@@ -1142,7 +1142,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 				$entityLabel = trim(trim($entityLabel), ',');
 				$entityId = getEntityId($referenceModuleName, decode_html($entityLabel));
 				if (!$entityId) {
-					if (isPermitted($referenceModuleName, 'EditView') == 'yes') {
+					if (isPermitted($referenceModuleName, 'CreateView') == 'yes') {
 						try {
 							$wsEntityIdInfo = $this->createEntityRecord($referenceModuleName, $entityLabel);
 							$wsEntityId = $wsEntityIdInfo['id'];

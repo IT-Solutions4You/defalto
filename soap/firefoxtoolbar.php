@@ -224,7 +224,7 @@ function CheckLeadPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Leads","EditView") == "yes")
+	if(isPermitted("Leads",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -244,7 +244,7 @@ function CheckContactPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Contacts","EditView") == "yes")
+	if(isPermitted("Contacts",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -264,7 +264,7 @@ function CheckAccountPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Accounts","EditView") == "yes")
+	if(isPermitted("Accounts",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -284,7 +284,7 @@ function CheckTicketPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("HelpDesk","EditView") == "yes")
+	if(isPermitted("HelpDesk",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -304,7 +304,7 @@ function CheckVendorPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Vendors","EditView") == "yes")
+	if(isPermitted("Vendors",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -324,7 +324,7 @@ function CheckProductPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Products","EditView") == "yes")
+	if(isPermitted("Products",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -344,7 +344,7 @@ function CheckNotePermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Documents","EditView") == "yes")
+	if(isPermitted("Documents",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -364,7 +364,7 @@ function CheckSitePermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Portal","EditView") == "yes")
+	if(isPermitted("Portal",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -384,7 +384,7 @@ function CheckRssPermission($username,$sessionid)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("Rss","EditView") == "yes")
+	if(isPermitted("Rss",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else
@@ -407,7 +407,7 @@ function create_site_from_webform($username,$sessionid,$portalname,$portalurl)
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 	require_once("modules/Portal/Portal.php");
-	if(isPermitted("Portals","EditView") == "yes")
+	if(isPermitted("Portals",'CreateView') == "yes")
 	{
 		$result = SavePortal($portalname,$portalurl);
 
@@ -477,7 +477,7 @@ function create_rss_from_webform($username,$sessionid,$url)
 	require_once("modules/Rss/Rss.php");
 
 	$oRss = new vtigerRSS();
-	if(isPermitted("RSS","EditView") == "yes")
+	if(isPermitted("RSS",'CreateView') == "yes")
 	{
 		if($oRss->setRSSUrl($url))
 		{
@@ -519,7 +519,7 @@ function create_note_from_webform($username,$sessionid,$subject,$desc)
 	require_once("modules/Documents/Documents.php");
 
 	$focus = new Documents();
-	if(isPermitted("Documents","EditView") == "yes")
+	if(isPermitted("Documents",'CreateView') == "yes")
 	{
 		$focus->column_fields['notes_title'] = $subject;
 		$focus->column_fields['notecontent'] = $desc;
@@ -557,7 +557,7 @@ function create_product_from_webform($username,$sessionid,$productname,$code,$we
 	$adb->println("Create New Product from Web Form - Starts");
 	
   require_once("modules/Products/Products.php");
-	if(isPermitted("Products","EditView") == "yes")
+	if(isPermitted("Products",'CreateView') == "yes")
 	{
 		$focus = new Products();
 		$focus->column_fields['productname'] = $productname;
@@ -596,7 +596,7 @@ function create_vendor_from_webform($username,$sessionid,$vendorname,$email,$pho
 	$current_user->retrieve_entity_info($user_id, 'Users');
 	$adb->println("Create New Vendor from Web Form - Starts");
 	require_once("modules/Vendors/Vendors.php");
-	if(isPermitted("Vendors","EditView" ) == "yes")
+	if(isPermitted("Vendors",'CreateView' ) == "yes")
 	{
 		$focus = new Vendors();
 		$focus->column_fields['vendorname'] = $vendorname;
@@ -636,7 +636,7 @@ function create_ticket_from_toolbar($username,$sessionid,$title,$description,$pr
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id, 'Users');
 
-	if(isPermitted("HelpDesk","EditView") == "yes")
+	if(isPermitted("HelpDesk",'CreateView') == "yes")
 	{
 
 		$seed_ticket = new HelpDesk();
@@ -683,7 +683,7 @@ function create_account($username,$sessionid,$accountname,$email,$phone,$primary
 	$current_user=$seed_user;
 	$current_user->retrieve_entity_info($user_id,'Users');
 	require_once("modules/Accounts/Accounts.php");
-	if(isPermitted("Accounts","EditView") == "yes")
+	if(isPermitted("Accounts",'CreateView') == "yes")
 	{
 		$query = "SELECT accountname FROM vtiger_account,vtiger_crmentity WHERE accountname =? and vtiger_account.accountid = vtiger_crmentity.crmid and vtiger_crmentity.deleted != 1";
 		$result = $adb->pquery($query, array($accountname));
@@ -737,7 +737,7 @@ function create_lead_from_webform($username,$sessionid,$lastname,$email,$phone,$
 	require_once("modules/Leads/Leads.php");
 
 	$focus = new Leads();
-	if(isPermitted("Leads","EditView") == "yes")
+	if(isPermitted("Leads",'CreateView') == "yes")
 	{
 		$focus->column_fields['lastname'] = $lastname;
 		$focus->column_fields['firstname'] = $firstname;
@@ -785,7 +785,7 @@ function create_contact1($user_name, $first_name, $last_name, $email_address ,$a
 	$current_user->retrieve_entity_info($user_id,'Users');
 
 	require_once('modules/Contacts/Contacts.php');
-  if(isPermitted("Contacts","EditView") == "yes")
+  if(isPermitted("Contacts",'CreateView') == "yes")
   {
    $contact = new Contacts();
    $contact->column_fields[firstname]= $first_name;
@@ -854,7 +854,7 @@ function GetPicklistValues($username,$sessionid,$tablename)
 			$output[$i] = decode_html($adb->query_result($result1,$i,$tablename));
 		}			
 	}
-	else if((isPermitted("HelpDesk","EditView") == "yes") && (CheckFieldPermission($tablename,'HelpDesk') == 'true'))
+	else if((isPermitted("HelpDesk",'CreateView') == "yes") && (CheckFieldPermission($tablename,'HelpDesk') == 'true'))
 	{
 		$query = "select " .$adb->sql_escape_string($tablename) . " from vtiger_". $adb->sql_escape_string($tablename) ." inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_". $adb->sql_escape_string($tablename) .".picklist_valueid where roleid=? and picklistid in (select picklistid from vtiger_". $adb->sql_escape_string($tablename)." ) order by sortid";	
 		$result1 = $adb->pquery($query, array($roleid));

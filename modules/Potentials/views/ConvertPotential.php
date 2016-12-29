@@ -16,7 +16,7 @@ class Potentials_ConvertPotential_View extends Vtiger_Index_View {
 		$projectModuleModel = Vtiger_Module_Model::getInstance('Project');
 
 		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserModel->hasModuleActionPermission($projectModuleModel->getId(), 'EditView')) {
+		if(!$currentUserModel->hasModuleActionPermission($projectModuleModel->getId(), 'CreateView')) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
 		}
 	}

@@ -9,7 +9,29 @@
  *************************************************************************************/
 
 class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
-    
+
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$record = $request->get('record');
+
+		$actionName = ($record && $request->getMode() != 'createFollowupEvent') ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if ($record) {
+			$activityModulesList = array('Calendar', 'Events');
+			$recordEntityName = getSalesEntityType($record);
+			if (!in_array($recordEntityName, $activityModulesList) || !in_array($moduleName, $activityModulesList)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
+		}
+	}
+
     function __construct() {
         $this->exposeMethod('createFollowupEvent');
         $this->exposeMethod('markAsHeldCompleted');
