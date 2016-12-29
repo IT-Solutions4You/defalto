@@ -232,6 +232,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Wachtwoord Wijzigen',
   'LBL_NEW_PASSWORD' => 'Nieuw Wachtwoord',
   'LBL_CONFIRM_PASSWORD' => 'Wachtwoord Bevestigen',
+	'LBL_CHANGE_ACCESS_KEY' => 'Toegang Change Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Access key bijgewerkt',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Mislukt toegangssleutel actualiseren',
   'LBL_LOGIN_AS' => 'Login als ',
   'LBL_CREATE_USER' => 'Gebruiker Aanmaken',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Het verwijderen van een gebruiker permanent zal de overdracht van alle records, inclusief opmerkingen en geschiedenis op een nieuwe gebruiker.',
@@ -260,4 +263,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Je ging de huidige gebruikersnaam. Voer een nieuwe gebruikersnaam.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'New Access key gevraagd',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'U heeft gevraagd voor een nieuwe Access key. &lt;br&gt;&lt;br&gt;Met de nieuwe Access belangrijkste bepaling, moet u de oude toegang toets met het nieuwe in alle geïnstalleerde extensies & lt vervangen;. Br &gt;&lt;br&gt;Do u wilt doorgaan?',
 );

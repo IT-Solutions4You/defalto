@@ -86,6 +86,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD' => 'Cambiar Contraseña',
 	'LBL_NEW_PASSWORD' => 'Nueva Contraseña',
 	'LBL_CONFIRM_PASSWORD' => 'Confirmar Contraseña',
+	'LBL_CHANGE_ACCESS_KEY' => 'Cambiar la clave de acceso',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Tecla de acceso actualizado correctamente',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'No se pudo actualizar la clave de acceso',
 
 	'Kwajalein'                    => '(UTC-12:00) International Date Line West',
 	'Pacific/Midway'               => '(UTC-11:00) Coordinated Universal Time-11',
@@ -268,4 +271,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' La nueva contraseña debe ser definida.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Contraseña actual incorrecta. Introduce de nuevo la información de las contraseñas.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Ha introducido el nombre de usuario actual. Por favor, introduzca nombre de usuario nuevo.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nueva clave de acceso solicitado',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ha solicitado una nueva clave de acceso. &lt;br&gt;&lt;br&gt;Con la nueva disposición clave de acceso, lo que tiene que sustituir la clave de acceso antiguo por uno nuevo en todas las extensiones instaladas. &lt;br&gt;&lt;br&gt;Do desea continuar?',
 );

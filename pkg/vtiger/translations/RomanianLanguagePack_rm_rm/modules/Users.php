@@ -232,6 +232,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Schimba Parola',
   'LBL_NEW_PASSWORD' => 'O Noua Parola',
   'LBL_CONFIRM_PASSWORD' => 'Confirmați Parola',
+	'LBL_CHANGE_ACCESS_KEY' => 'Schimbare cheie de acces',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Cheia de acces a fost actualizat',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Actualizarea nu a reușit cheie de acces',
   'LBL_LOGIN_AS' => 'Login ca ',
   'LBL_CREATE_USER' => 'A Crea Un Utilizator',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Ștergerea unui utilizator în mod constant va muta toate înregistrările, inclusiv comentariile și istorie de la un nou utilizator.',
@@ -260,4 +263,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Ați introdus numele de utilizator curent. Vă rugăm introduceți numele de utilizator nou.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Tasta de acces nou solicitat',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ați solicitat o nouă cheie de acces. &lt;br&gt;&lt;br&gt;cu acces noua prevedere cheie, trebuie să înlocuiți cheia de acces vechi cu unul nou, în toate extensiile instalate. &lt;br&gt;&lt;br&gt;Do doriți să continuați?',
 );

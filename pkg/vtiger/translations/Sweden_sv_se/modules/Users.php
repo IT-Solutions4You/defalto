@@ -243,6 +243,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Ändra Lösenord',
   'LBL_NEW_PASSWORD' => 'Nytt Lösenord',
   'LBL_CONFIRM_PASSWORD' => 'Bekräfta Lösenord',
+	'LBL_CHANGE_ACCESS_KEY' => 'Ändra åtkomst Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Snabbtangent uppdaterats',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Det gick inte att uppdatera åtkomstnyckel',
   'LBL_LOGIN_AS' => 'Logga in som ',
   'LBL_USER_DELETED_SUCCESSFULLY' => 'Användare som har tagits bort',
   'LBL_CREATE_USER' => 'Skapa Användare',
@@ -258,9 +261,7 @@ $languageStrings = array(
   'LBL_USER_TO_BE_DELETED' => 'Användare som ska tas Bort',
   'LBL_USERS_SETTINGS' => 'INSTÄLLNINGAR FÖR ANVÄNDARE',
   'LBL_TEMPLATES' => 'Mallar',
-
 );
-
 $jsLanguageStrings = array(
     'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Du angav den nuvarande användarnamn. Ange nytt användarnamn.',
 
@@ -273,5 +274,6 @@ $jsLanguageStrings = array(
   'JS_PASSWORD_CHANGE_FAILED_1' => 'Användare att byta lösenord misslyckades för ',
   'JS_PASSWORD_CHANGE_FAILED_2' => ' misslyckades. Den nya lösenord måste anges.',
   'JS_PASSWORD_INCORRECT_OLD' => 'Felaktigt lösenord anges. Re-enter password information.',
-
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nya tillträdesnyckel begärda',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Du har begärt en ny snabbtangent. &lt;br&gt;&lt;br&gt;Med det nya tillträdes centrala bestämmelsen, måste du ersätta den gamla nyckeln tillgång med den nya i alla installerade tillägg. &lt;br&gt;&lt;br&gt;Do du vill fortsätta?',
 );

@@ -52,7 +52,7 @@
                             <button class="btn btn-default" data-toggle="dropdown" href="javascript:void(0);">
                                 {vtranslate('LBL_MORE', $MODULE)}&nbsp;<i class="caret"></i>
                             </button>
-                            <ul class="dropdown-menu pull-right" style="margin-right: 41%;">
+                            <ul class="dropdown-menu pull-right">
                                 {foreach item=DETAIL_VIEW_LINK from=$DETAILVIEW_LINKS['DETAILVIEW']}
                                     {if $DETAIL_VIEW_LINK->getLabel() eq "Delete"}
                                         {if $CURRENT_USER_MODEL->isAdminUser() && $CURRENT_USER_MODEL->getId() neq $RECORD->getId()}

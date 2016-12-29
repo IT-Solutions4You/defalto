@@ -189,6 +189,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD' => 'Zmień hasło',
 	'LBL_NEW_PASSWORD' => 'Nowe hasło',
 	'LBL_CONFIRM_PASSWORD' => 'Potwierdź hasło',
+	'LBL_CHANGE_ACCESS_KEY' => 'Zmień Access Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Klawisz pomyślnie zaktualizowane',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Nie udało się zaktualizować klucz dostępu',
 	
 	//Login strings
 	'LBL_TO_CRM' => 'Zaloguj do Vtiger CRM',
@@ -279,4 +282,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' niepowodzenie. Nowe hasło musi zostać ustawione.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Podano niepoprawne stare hasło. Wpisz ponownie.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Wprowadzono aktualną nazwę użytkownika. Proszę wprowadzić nową nazwę użytkownika.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nowy klucz dostępu wymagane',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Zażądano nowego klucza dostępowego. &lt;br&gt;&lt;br&gt;Z nowego przepisu klucz dostępu, trzeba zastąpić stary klucz dostępu z nową we wszystkich zainstalowanych rozszerzeń. &lt;br&gt;&lt;br&gt;chcesz kontynuować?',
 );

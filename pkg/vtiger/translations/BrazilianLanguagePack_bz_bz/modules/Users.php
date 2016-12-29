@@ -232,6 +232,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Alteração De Senha',
   'LBL_NEW_PASSWORD' => 'Nova Palavra-Passe',
   'LBL_CONFIRM_PASSWORD' => 'Confirmar Senha',
+	'LBL_CHANGE_ACCESS_KEY' => 'Alterar Chave de Acesso',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'chave de acesso atualizado com sucesso',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Falha ao atualizar a chave de acesso',
   'LBL_LOGIN_AS' => 'Início de sessão como ',
   'LBL_CREATE_USER' => 'Criar Usuário',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'A exclusão de um usuário permanentemente irá transferir todos os registros, incluindo comentários e histórico para o novo usuário.',
@@ -259,6 +262,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
-
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Você digitou o nome de usuário atual. Por favor, insira o novo nome de usuário.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'chave New Access solicitado',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Você pediu para uma nova chave de acesso. &lt;br&gt;&lt;br&gt;Com a nova disposição fundamental Access, você tem que substituir a chave de acesso antigo com o novo, em todas as extensões instaladas. &lt;br&gt;&lt;br&gt;Do você quer continuar?',
 );

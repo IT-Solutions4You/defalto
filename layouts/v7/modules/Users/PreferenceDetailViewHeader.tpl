@@ -14,7 +14,7 @@
 	<input id="recordId" type="hidden" value="{$RECORD->getId()}" />
 	<div class="detailViewContainer">
 		<div class="detailViewTitle" id="prefPageHeader">
-			<div class="col-sm-12 col-xs-12">
+			<div class="col-lg-12 col-sm-12 col-xs-12">
 				<div class="col-xs-8">
 					{assign var=IMAGE_DETAILS value=$RECORD->getImageDetails()}
 					{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
@@ -23,7 +23,6 @@
 								<img height="75px" width="75px" src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" alt="{$IMAGE_INFO.orgname}" title="{$IMAGE_INFO.orgname}" data-image-id="{$IMAGE_INFO.id}">
 							</span>
 						{/if}
-						</span>
 					{/foreach}
 					{if $IMAGE_DETAILS[0]['id'] eq null}
 						<span class="logo col-xs-2">
@@ -41,18 +40,38 @@
 				</div>
 				<div class="col-xs-4">
 					<div class="row detailViewButtoncontainer">
-						<div class="btn-group  pull-right">
+						<div class="btn-group pull-right">
 							{foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWPREFERENCE']}
 								<button class="btn btn-default"
 									{if $DETAIL_VIEW_BASIC_LINK->isPageLoadLink()}
-										onclick="window.location.href = '{$DETAIL_VIEW_BASIC_LINK->getUrl()}'"
+										onclick="window.location.href='{$DETAIL_VIEW_BASIC_LINK->getUrl()}'"
 									{else}
 										onclick={$DETAIL_VIEW_BASIC_LINK->getUrl()}
 									{/if}>
 									{vtranslate($DETAIL_VIEW_BASIC_LINK->getLabel(), $MODULE_NAME)}
 								</button>
 							{/foreach}
-						</div>  
+							{if $DETAILVIEW_LINKS['DETAILVIEW']|@count gt 0}
+								<button class="btn btn-default" data-toggle="dropdown" href="javascript:void(0);">
+									{vtranslate('LBL_MORE', $MODULE)}&nbsp;<i class="caret"></i>
+								</button>
+								<ul class="dropdown-menu pull-right">
+									{foreach item=DETAIL_VIEW_LINK from=$DETAILVIEW_LINKS['DETAILVIEW']}
+										{if $DETAIL_VIEW_LINK->getLabel() eq "Delete"}
+											{if $CURRENT_USER_MODEL->isAdminUser() && $CURRENT_USER_MODEL->getId() neq $RECORD->getId()}
+												<li id="{$MODULE}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
+													<a href={$DETAIL_VIEW_LINK->getUrl()} >{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE)}</a>
+												</li>
+											{/if}
+										{else}
+											<li id="{$MODULE}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
+												<a href={$DETAIL_VIEW_LINK->getUrl()} >{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE)}</a>
+											</li>
+										{/if}
+									{/foreach}
+								</ul>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -61,4 +80,4 @@
 					<form id="detailView" data-name-fields='{ZEND_JSON::encode($MODULE_MODEL->getNameFields())}' method="POST">
 						<div class="contents">
 							<br>
-{/strip}
+						{/strip}

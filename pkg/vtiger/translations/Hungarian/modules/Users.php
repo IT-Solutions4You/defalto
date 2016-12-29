@@ -232,6 +232,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Jelszó Módosítása',
   'LBL_NEW_PASSWORD' => 'Új Jelszó',
   'LBL_CONFIRM_PASSWORD' => 'Jelszó Megerősítése',
+	'LBL_CHANGE_ACCESS_KEY' => 'Hozzáférés módosítása Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Hozzáférési kulcs sikeresen frissítve',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Nem sikerült frissíteni a hozzáférési kulcs',
   'LBL_LOGIN_AS' => 'Bejelentkezési mint ',
   'LBL_CREATE_USER' => 'Felhasználó Létrehozása',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Felhasználó törlése véglegesen át minden adatot, beleértve a megjegyzéseket, s a történelem új felhasználó.',
@@ -260,4 +263,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Ön belépett a jelenlegi felhasználónévvel. Kérjük, adja meg az új felhasználónevet.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Új hozzáférési kulcsot kért',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Azt kérte, egy új hozzáférési kulcsot. &lt;br&gt;&lt;br&gt;Az új hozzáférési kulcsot rendelkezés, ki kell cserélni a régi hozzáférési kulcsot az újat minden telepített bővítmények. &lt;br&gt;&lt;br&gt;Do szeretné folytatni?',
 );
