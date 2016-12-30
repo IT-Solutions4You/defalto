@@ -8,6 +8,7 @@
 *************************************************************************************}
 
 {strip}
+	<input type="hidden" name="is_record_creation_allowed" id="is_record_creation_allowed" value="{$IS_CREATE_PERMITTED}">
 	<div class="col-sm-12 col-xs-12 module-action-bar clearfix">
 		<div class="module-action-content clearfix coloredBorderTop">
 			<div class="col-lg-5 col-md-5">
@@ -22,20 +23,22 @@
 			<div class="col-lg-7 col-md-7 pull-right">
 				<div id="appnav" class="navbar-right">
 					<ul class="nav navbar-nav">
-						<li>
-							<button id="calendarview_basicaction_addevent" type="button" 
-									class="btn addButton btn-default module-buttons cursorPointer" 
-									onclick='Calendar_Calendar_Js.showCreateEventModal();'>
-								<div class="fa fa-plus" aria-hidden="true"></div>&nbsp;&nbsp;
-								{vtranslate('LBL_ADD_EVENT', $MODULE)}
-							</button>
-							<button id="calendarview_basicaction_addtask" type="button" 
-									class="btn addButton btn-default module-buttons cursorPointer" 
-									onclick='Calendar_Calendar_Js.showCreateTaskModal();'>
-								<div class="fa fa-plus" aria-hidden="true"></div>&nbsp;&nbsp;
-								{vtranslate('LBL_ADD_TASK', $MODULE)}
-							</button>
-						</li>
+						{if $IS_CREATE_PERMITTED}
+							<li>
+								<button id="calendarview_basicaction_addevent" type="button" 
+										class="btn addButton btn-default module-buttons cursorPointer" 
+										onclick='Calendar_Calendar_Js.showCreateEventModal();'>
+									<div class="fa fa-plus" aria-hidden="true"></div>&nbsp;&nbsp;
+									{vtranslate('LBL_ADD_EVENT', $MODULE)}
+								</button>
+								<button id="calendarview_basicaction_addtask" type="button" 
+										class="btn addButton btn-default module-buttons cursorPointer" 
+										onclick='Calendar_Calendar_Js.showCreateTaskModal();'>
+									<div class="fa fa-plus" aria-hidden="true"></div>&nbsp;&nbsp;
+									{vtranslate('LBL_ADD_TASK', $MODULE)}
+								</button>
+							</li>
+						{/if}
 						{if $MODULE_SETTING_ACTIONS|@count gt 0}
 							<li>
 								<div class="settingsIcon">

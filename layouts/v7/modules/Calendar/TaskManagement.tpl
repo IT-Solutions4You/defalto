@@ -58,12 +58,14 @@
 							</div>
 							<br>
 							<div class="{strtolower($PRIORITY)}-content content" data-priority='{$PRIORITY}' style="border-bottom: 1px solid {$COLORS[$PRIORITY]};padding-bottom: 10px">
-								<div class="input-group">
-									<input type="text" class="form-control taskSubject {$PRIORITY}" placeholder="{vtranslate('LBL_ADD_TASK_AND_PRESS_ENTER', $MODULE)}" aria-describedby="basic-addon1" style="width: 99%">
-									<span class="quickTask input-group-addon js-task-popover-container more cursorPointer" id="basic-addon1" style="border: 1px solid #ddd; padding: 0 13px;"> 
-										<a href="#" id="taskPopover" priority='{$PRIORITY}'><i class="fa fa-plus icon"></i></a>
-									</span>
-								</div>
+								{if $USER_PRIVILEGES_MODEL->hasModuleActionPermission($MODULE_MODEL->getId(), 'CreateView')}
+									<div class="input-group">
+										<input type="text" class="form-control taskSubject {$PRIORITY}" placeholder="{vtranslate('LBL_ADD_TASK_AND_PRESS_ENTER', $MODULE)}" aria-describedby="basic-addon1" style="width: 99%">
+										<span class="quickTask input-group-addon js-task-popover-container more cursorPointer" id="basic-addon1" style="border: 1px solid #ddd; padding: 0 13px;"> 
+											<a href="#" id="taskPopover" priority='{$PRIORITY}'><i class="fa fa-plus icon"></i></a>
+										</span>
+									</div>
+								{/if}
 								<br>
 								<div class='{strtolower($PRIORITY)}-entries container-fluid scrollable dataEntries padding20' style="height:400px;overflow:auto;width:400px;padding-left: 0px;padding-right: 0px;">
 

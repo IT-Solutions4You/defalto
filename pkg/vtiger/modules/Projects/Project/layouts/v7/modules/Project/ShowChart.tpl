@@ -241,7 +241,7 @@
 			<tr>
 				<td>
                     {assign var="PROJECT_TASK_MODEL" value=Vtiger_Module_Model::getInstance('ProjectTask')}
-                    {assign var="IS_MODULE_EDITABLE" value=$PROJECT_TASK_MODEL->isPermitted('EditView')}
+                    {assign var="IS_MODULE_EDITABLE" value=$PROJECT_TASK_MODEL->isPermitted('CreateView')}
                     {assign var=SINGLE_MODULE value="SINGLE_ProjectTask"}
 					{vtranslate('LBL_NO')} {vtranslate('ProjectTask', 'ProjectTask')} {vtranslate('LBL_FOUND')} {vtranslate('LBL_NO_DATE_VALUE_MSG', 'ProjectTask')}.{if $IS_MODULE_EDITABLE} <a href="{$PROJECT_TASK_MODEL->getCreateRecordUrl()}&projectid={$PARENT_ID}"> {vtranslate('LBL_CREATE')} </a>{/if}
 				</td>

@@ -70,6 +70,7 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 			return $this->getCalendarSettings($request);
 		}
 		$viewer->assign('CURRENT_USER', $currentUserModel);
+		$viewer->assign('IS_CREATE_PERMITTED', isPermitted('Calendar', 'CreateView'));
 
 		$viewer->view('CalendarView.tpl', $request->getModule());
 	}

@@ -144,25 +144,46 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return $settingsMenItems;
 	}
 
-	static function getActiveBlockName($requestUrl) {
-		$explodedUrl = explode("/index.php", $requestUrl);
-		$explodeOnBlock = explode('&block', $explodedUrl[1]);
-		$activeBlockUrl = 'index.php'.$explodeOnBlock[0];
+	static function getActiveBlockName($request) {
+		$finalResult = array();
+		$view = $request->get('view');
+		$moduleName = $request->getModule();
+		$qualifiedModuleName = $request->getModule(false);
+
+		$whereCondition .= "linkto LIKE '%$moduleName%' AND (linkto LIKE '%parent=Settings%' OR linkto LIKE '%parenttab=Settings%')";
 
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery("SELECT blockid, name FROM vtiger_settings_field WHERE linkto like '%$activeBlockUrl%'", array());
-		if($db->num_rows($result) > 0){
-			$blockId = $db->query_result($result, 0, 'blockid');
-			$name = $db->query_result($result, 0, 'name');
+		$query = "SELECT vtiger_settings_blocks.label AS blockname, vtiger_settings_field.name AS menu FROM vtiger_settings_blocks
+					INNER JOIN vtiger_settings_field ON vtiger_settings_field.blockid=vtiger_settings_blocks.blockid
+					WHERE $whereCondition";
+		$result = $db->pquery($query, array());
+		$numOfRows = $db->num_rows($result);
+		if ($numOfRows == 1) {
+			$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
+									'menu'	=> $db->query_result($result, 0, 'menu'));
+		} elseif ($numOfRows > 1) {
+			$result = $db->pquery("$query AND linkto LIKE '%$view%'", array());
+			$numOfRows = $db->num_rows($result);
+			if ($numOfRows == 1) {
+				$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
+										'menu'	=> $db->query_result($result, 0, 'menu'));
+			}
 		}
-		$blockNameResult = $db->pquery('SELECT label FROM vtiger_settings_blocks WHERE blockid = ?', array($blockId));
-		if($db->num_rows($result) > 0){
-			$blockName = $db->query_result($blockNameResult, 0, 'label');
+
+		if (!$finalResult) {
+			if ($moduleName === 'Users') {
+				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			} else {
+				$moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+			}
+			$finalResult = $moduleModel->getSettingsActiveBlock($view);
 		}
-		if(!empty($blockName)){
-			return array('block' => $blockName, 'menu' => $name);
-		}
-		return array();
+		return $finalResult;
+	}
+
+	public function getSettingsActiveBlock($viewName) {
+		$blocksList = array('OutgoingServerEdit' => array('block' => 'LBL_CONFIGURATION', 'menu' => 'LBL_MAIL_SERVER_SETTINGS'));
+		return $blocksList[$viewName];
 	}
 
 	static function getSettingsMenuListForNonAdmin() {

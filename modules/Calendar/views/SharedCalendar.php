@@ -15,6 +15,7 @@ class Calendar_SharedCalendar_View extends Calendar_Calendar_View {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		
 		$viewer->assign('CURRENT_USER', $currentUserModel);
+		$viewer->assign('IS_CREATE_PERMITTED', isPermitted('Calendar', 'CreateView'));
 		$viewer->view('SharedCalendarView.tpl', $request->getModule());
 	}
 	

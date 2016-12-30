@@ -223,6 +223,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'تغيير كلمة المرور',
   'LBL_NEW_PASSWORD' => 'كلمة المرور الجديدة',
   'LBL_CONFIRM_PASSWORD' => 'تأكيد كلمة المرور',
+	'LBL_CHANGE_ACCESS_KEY' => 'تغيير مفتاح الوصول',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'مفتاح الوصول بنجاح تحديث',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'فشل تحديث مفتاح الوصول',
   'LBL_LOGIN_AS' => 'تسجيل الدخول كما ',
   'LBL_USER_DELETED_SUCCESSFULLY' => 'المستخدم حذف بنجاح',
   'LBL_CREATE_USER' => 'إنشاء مستخدم',
@@ -271,9 +274,8 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
-
-
-
   'JS_ENTERED_CURRENT_USERNAME_MSG' => 'دخلت اسم المستخدم الحالي. يرجى إدخال اسم المستخدم الجديد.',
 
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'طلب مفتاح وصول جديدة',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'لقد طلبت للحصول على مفتاح وصول جديد العلامة & lt؛ BR & GT؛ & اللفتنانت؛ ر & GT؛ مع وصول الحكم الرئيسي الجديد، لديك ليحل محل مفتاح الوصول القديم مع واحدة جديدة في جميع ملحقات تثبيت العلامة & lt؛ BR & GT؛ & اللفتنانت؛ ر & GT، هل هل ترغب في الاستمرار؟',
 );

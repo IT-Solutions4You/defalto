@@ -233,6 +233,9 @@ $languageStrings = array(
   'LBL_CHANGE_PASSWORD' => 'Changer De Mot De Passe',
   'LBL_NEW_PASSWORD' => 'Nouveau Mot De Passe',
   'LBL_CONFIRM_PASSWORD' => 'Confirmer Le Mot De Passe',
+	'LBL_CHANGE_ACCESS_KEY' => "Changer la clé d'accès",
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => "Clé d'accès mis à jour avec succès",
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => "Impossible de mettre à jour la clé d'accès",
   'LBL_LOGIN_AS' => 'Connexion en tant que ',
   'LBL_CREATE_USER' => 'Créer Un Utilisateur',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Suppression d\'un utilisateur de façon permanente va transférer tous les documents, y compris les commentaires et histoire pour un nouvel utilisateur.',
@@ -260,6 +263,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
-
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Vous avez entré le nom d\'utilisateur actuel. Se il vous plaît entrer un nouveau nom d\'utilisateur.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'clé New Access demandé',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => "Vous avez demandé une nouvelle clé d'accès. &lt;br&gt;&lt;br&gt;Avec la nouvelle disposition clé d'accès, vous devez remplacer la clé d'accès ancien et le nouveau dans toutes les extensions installées. &lt;br&gt;&lt;br&gt;Do vous voulez continuer?",
 );

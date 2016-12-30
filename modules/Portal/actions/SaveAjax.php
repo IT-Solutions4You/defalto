@@ -14,6 +14,11 @@ class Portal_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
 		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}

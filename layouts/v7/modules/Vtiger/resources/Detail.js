@@ -2159,9 +2159,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						'url' : url
 					};
 					app.request.get(params).then(function(err, data){
-						currentTarget.attr('rollup-status', 0);
-						jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
-					});
+                        currentTarget.attr('rollup-status', 0);
+//                        Vtiger_Index_Js.getInstance().registerMentionListener(jQuery('.widgetContainer_comments').find('.mention_listener'));
+                        jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
+                    });
 				}else {
 					url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
 							recordId+'&mode=showRecentComments'+'&rollupid='+rollupId

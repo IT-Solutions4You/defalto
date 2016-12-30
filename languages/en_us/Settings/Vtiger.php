@@ -31,12 +31,9 @@ $languageStrings = array(
 	'LBL_OTHER_SETTINGS' => 'Other Settings',
 	'LBL_EXTENSIONS_PLACE' => 'Extensions Place',
 	'LBL_EXTENSIONS' => 'Extensions',
-
-    
-        // Phone Calls
+	'LBL_PBXMANAGER' => 'PBXManager',
     'LBL_INTEGRATION' => 'Integration',
     'LBL_EXCHANGE_CONNECTOR' => 'Exchange Connector',
-	'LBL_PHONE_CALLS'=>'Phone Calls',
     
     // Fields
 	'LBL_DESCRIPTION' => 'Description',

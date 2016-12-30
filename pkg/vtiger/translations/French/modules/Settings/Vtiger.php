@@ -29,6 +29,7 @@ $languageStrings = array(
 	'LBL_OTHER_SETTINGS'           => 'Autres réglages'            , 
 	'LBL_EXTENSIONS_PLACE'         => 'Extensions Place'            , // TODO: Review
 	'LBL_EXTENSIONS'               => 'Extensions'                  , // TODO: Review
+	'LBL_PBXMANAGER' => 'PBXManager',
 	'LBL_DESCRIPTION'              => 'Description'                 , // TODO: Review
 	'LBL_USER_DESCRIPTION'         => 'Gérer les utilisateurs qui peuvent accéder Vtiger CRM', 
 	'LBL_ROLES'                    => 'Rôles'                      , 

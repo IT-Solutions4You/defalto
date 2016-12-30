@@ -605,7 +605,7 @@ function CheckContactPerm($user_name,$password)
 		$user_id = $seed_user->retrieve_user_id($user_name);
 		$current_user = $seed_user;
 		$current_user->retrieve_entity_info($user_id,"Users");
-		if(isPermitted("Contacts","EditView") == "yes")
+		if(isPermitted("Contacts",'CreateView') == "yes")
 		{
 			return "allowed";
 		}else
@@ -662,7 +662,7 @@ function CheckLeadViewPerm($user_name)
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$current_user = $seed_user;
 	$current_user->retrieve_entity_info($user_id,"Users");
-	if(isPermitted("Leads","EditView") == "yes")
+	if(isPermitted("Leads",'CreateView') == "yes")
 	{
 		return "allowed";
 	}else

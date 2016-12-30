@@ -176,6 +176,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD'	       => 'Change Password',
 	'LBL_NEW_PASSWORD'			   => 'New Password',
 	'LBL_CONFIRM_PASSWORD'		   => 'Confirm Password',
+	'LBL_CHANGE_ACCESS_KEY' => 'Ändern Access Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Zugriffsschlüssel aktualisiert erfolgreich',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Fehlgeschlagen Zugriffsschlüssel zu aktualisieren',
 	'LBL_TRANSFER_OWNERSHIP' => 'Transfer Owner',
 	'LBL_LOGIN_AS' => 'Login as ',
 	'LBL_USER_DELETED_SUCCESSFULLY' => 'Benutzer erfolgreich gelöscht',
@@ -262,4 +265,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
  	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Sie betrat den aktuellen Benutzernamen. Bitte geben Sie neuen Benutzernamen ein.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Neue Zugriffsschlüssel angefordert',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Sie haben für einen neuen Zugriffsschlüssel angefordert. &lt;br&gt;&lt;br&gt;Mit dem neuen Access-Schlüsselbestimmung, können Sie die alten Zugriffsschlüssel mit dem neuen in allen installierten Erweiterungen zu ersetzen haben. &lt;br&gt;&lt;br&gt;Do Sie wollen weitermachen?',
 );

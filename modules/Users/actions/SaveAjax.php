@@ -18,6 +18,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$this->exposeMethod('restoreUser');
 		$this->exposeMethod('transferOwner');
 		$this->exposeMethod('changeUsername');
+		$this->exposeMethod('changeAccessKey');
 	}
 
 	public function checkPermission(Vtiger_Request $request) {
@@ -179,6 +180,36 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			$response->setResult($status['message']);
 		}else{
 			$response->setError($status['message']);
+		}
+		$response->emit();
+	}
+
+	public function changeAccessKey(Vtiger_Request $request) {
+		$recordId = $request->get('record');
+		$moduleName = $request->getModule();
+
+		$response = new Vtiger_Response();
+		try {
+			$recordModel = Users_Record_Model::getInstanceById($recordId, $moduleName);
+			$oldAccessKey = $recordModel->get('accesskey');
+
+			$entity = $recordModel->getEntity();
+			$entity->createAccessKey();
+
+			require_once('modules/Users/CreateUserPrivilegeFile.php');
+			createUserPrivilegesfile($recordId);
+			Vtiger_AccessControl::clearUserPrivileges($recordId);
+
+			$recordModel = Users_Record_Model::getInstanceFromPreferenceFile($recordId);
+			$newAccessKey = $recordModel->get('accesskey');
+
+			if ($newAccessKey != $oldAccessKey) {
+				$response->setResult(array('success' => true, 'message' => vtranslate('LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY', $moduleName), 'accessKey' => $newAccessKey));
+			} else {
+				$response->setError(vtranslate('LBL_FAILED_TO_UPDATE_ACCESS_KEY', $moduleName));
+			}
+		} catch (Exception $ex) {
+			$response->setError($ex->getMessage());
 		}
 		$response->emit();
 	}

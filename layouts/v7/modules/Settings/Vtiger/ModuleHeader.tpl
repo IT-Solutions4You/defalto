@@ -78,17 +78,12 @@
 								{else}
 									<li>
 										<button type="button" class="btn addButton btn-default module-buttons" 
-											{if $MODULE eq 'SLA' || $MODULE eq 'BusinessHours'}
-												id="addRecord" data-url="{$BASIC_ACTION->getUrl()}"
-											{else}
-												id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}"
-												{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
-													onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
-												{else} 
-													onclick='window.location.href="{$BASIC_ACTION->getUrl()}"'
-												{/if}
-											{/if}
-											>
+											id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}"
+											{if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
+												onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
+											{else} 
+												onclick='window.location.href="{$BASIC_ACTION->getUrl()}"'
+											{/if}>
 											<div class="fa {$BASIC_ACTION->getIcon()}" aria-hidden="true"></div>
 											&nbsp;&nbsp;{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}
 										</button>

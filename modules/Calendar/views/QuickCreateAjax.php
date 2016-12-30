@@ -10,6 +10,17 @@
 
 class Calendar_QuickCreateAjax_View extends Vtiger_QuickCreateAjax_View {
 
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		//Need to check record permission as Calendar view is using QuickCreateAjax to show edit form	
+		$record = $request->get('record');
+
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+	}
+
 	public function  process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 

@@ -66,7 +66,27 @@ Vtiger_Detail_Js("Users_Detail_Js",{
 			}
 		);
 	},
-	
+
+	triggerChangeAccessKey: function (url) {
+		var title = app.vtranslate('JS_NEW_ACCESS_KEY_REQUESTED');
+		var message = app.vtranslate('JS_CHANGE_ACCESS_KEY_CONFIRMATION');
+		app.helper.showConfirmationBox({'title': title,'message': message}).then(function (data) {
+			app.helper.showProgress(app.vtranslate('JS_PLEASE_WAIT'));
+			app.request.post({'url': url}).then(function (err, data) {
+				app.helper.hideProgress();
+				if (err === null) {
+					app.helper.showSuccessNotification({'message': data.message});
+					var accessKeyEle = jQuery('#Users_detailView_fieldValue_accesskey');
+					if (accessKeyEle.length) {
+						accessKeyEle.find('.value').html(data.accessKey);
+					}
+				} else {
+					app.helper.showErrorNotification({'message': err.message});
+				}
+			});
+		});
+	},
+
 	/*
 	 * function to trigger delete record action
 	 * @params: delete record url.

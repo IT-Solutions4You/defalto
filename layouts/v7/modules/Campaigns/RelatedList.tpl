@@ -46,22 +46,23 @@
 										<ul class="dropdown-menu">
 											{foreach item=DROPDOWN from=$DROPDOWNS}
 												<li><a id="{$RELATED_MODULE_NAME}_relatedlistView_add_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DROPDOWN['label'])}" class="{$RELATED_LINK->get('linkclass')}" href='javascript:void(0)' data-documentType="{$DROPDOWN['type']}" data-url="{$DROPDOWN['url']}" data-name="{$RELATED_MODULE_NAME}" data-firsttime="{$DROPDOWN['firsttime']}"><i class="icon-plus"></i>&nbsp;{vtranslate($DROPDOWN['label'], $RELATED_MODULE_NAME)}</a></li>
-												{/foreach}
+											{/foreach}
 										</ul>
 									</div>
 								{else}
 									{assign var=IS_SEND_EMAIL_BUTTON value={$RELATED_LINK->get('_sendEmail')}}
 									{assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
 									<button type="button" module="{$RELATED_MODULE_NAME}"  class="btn addButton btn-default
-											{if $IS_SELECT_BUTTON eq true} selectRelation {/if} {if $IS_SEND_EMAIL_BUTTON eq true} sendEmail {/if}"
-											{if $IS_SELECT_BUTTON eq true} data-moduleName={$RELATED_LINK->get('_module')->get('name')} {/if}
-											{if ($RELATED_LINK->isPageLoadLink())}
-												{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
-												{if $IS_SEND_EMAIL_BUTTON neq true}data-url="{$RELATED_LINK->getUrl()}"{/if}
-											{elseif $IS_SEND_EMAIL_BUTTON eq true}onclick="{$RELATED_LINK->getUrl()}"
-											{/if}
-											{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}name="addButton"{/if}
-											{if $IS_SEND_EMAIL_BUTTON eq true} disabled="disabled" {/if}>{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}<i class="fa fa-plus"></i>{/if}&nbsp;{$RELATED_LINK->getLabel()}</button>
+										{if $IS_SELECT_BUTTON eq true} selectRelation {/if} {if $IS_SEND_EMAIL_BUTTON eq true} sendEmail {/if}"
+										{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}"{/if}
+										{if ($RELATED_LINK->isPageLoadLink())}
+											{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
+											{if $IS_SEND_EMAIL_BUTTON neq true}data-url="{$RELATED_LINK->getUrl()}"{/if}
+										{elseif $IS_SEND_EMAIL_BUTTON eq true}
+											onclick="{$RELATED_LINK->getUrl()}"
+										{/if}
+										{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}name="addButton"{/if}
+										{if $IS_SEND_EMAIL_BUTTON eq true} disabled="disabled" {/if}>{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}<i class="fa fa-plus"></i>{/if}&nbsp;{$RELATED_LINK->getLabel()}</button>
 								{/if}
 							</div>
 						{/foreach}&nbsp;
@@ -128,7 +129,7 @@
 										</a>
 										{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 											<a href="#" class="removeSorting"><i class="fa fa-remove"></i></a>
-											{/if}
+										{/if}
 									</th>
 								{/foreach}
 								<th class="nowrap">
@@ -145,8 +146,7 @@
 										{if $HEADER_FIELD->get('column') eq 'time_start' or $HEADER_FIELD->get('column') eq 'time_end' or $HEADER_FIELD->getFieldDataType() eq 'reference'}
 										{else}
 											{assign var=FIELD_UI_TYPE_MODEL value=$HEADER_FIELD->getUITypeModel()}
-											{include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$RELATED_MODULE_NAME)
-											FIELD_MODEL= $HEADER_FIELD SEARCH_INFO=$SEARCH_DETAILS[$HEADER_FIELD->getName()] USER_MODEL=$USER_MODEL}
+											{include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$RELATED_MODULE_NAME) FIELD_MODEL= $HEADER_FIELD SEARCH_INFO=$SEARCH_DETAILS[$HEADER_FIELD->getName()] USER_MODEL=$USER_MODEL}
 											<input type="hidden" class="operatorValue" value="{$SEARCH_DETAILS[$HEADER_FIELD->getName()]['comparator']}">
 										{/if}
 									</th>
@@ -162,11 +162,10 @@
 								<td style="width:100px">
 									<span class="actionImages">
 										<a name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}" href="javascript:void(0)"><i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i></a> &nbsp;&nbsp;
-											{if $IS_DELETABLE}
+										{if $IS_DELETABLE}
 											<a class="relationDelete"><i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i></a>
-											{/if}
+										{/if}
 									</span>
-
 								</td>
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 									{assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}

@@ -232,6 +232,9 @@ $languageStrings = array(
   'LBL_OLD_PASSWORD' => 'Vecchia Password',
   'LBL_NEW_PASSWORD' => 'Nuova Password',
   'LBL_CONFIRM_PASSWORD' => 'Conferma Password',
+	'LBL_CHANGE_ACCESS_KEY' => 'Cambio Accessibilità',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Chiave di accesso aggiornato con successo',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Impossibile aggiornare chiave di accesso',
   'LBL_LOGIN_AS' => 'Il Login ',
   'LBL_CREATE_USER' => 'Creare Utente',
   'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Eliminazione di un utente in modo permanente il trasferimento di tutti i record compresi i commenti e la storia sono un nuovo utente.',
@@ -260,4 +263,6 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
 	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Hai inserito il nome utente corrente. Inserisci il nuovo nome utente.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'nuova chiave di accesso richiesto',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Hai richiesto per una nuova chiave di accesso. &lt;br&gt;&lt;br&gt;Con la nuova disposizione chiave di accesso, è necessario sostituire la chiave di accesso vecchio con quello nuovo in tutte le estensioni installate. &lt;br&gt;&lt;br&gt;Do si desidera continuare?',
 );

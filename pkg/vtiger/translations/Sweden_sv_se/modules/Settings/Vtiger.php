@@ -30,6 +30,7 @@ $languageStrings = array(
 	'LBL_OTHER_SETTINGS' => 'Andra Inställningar',
 	'LBL_EXTENSIONS_PLACE' => 'Tillägg Place',
 	'LBL_EXTENSIONS' => 'Tillägg',
+	'LBL_PBXMANAGER' => 'PBXManager',
         
 	// Fields
 	'LBL_DESCRIPTION' => 'Beskrivning',

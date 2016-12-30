@@ -31,6 +31,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 	public function showFieldLayout(Vtiger_Request $request) {
 		$sourceModule = $request->get('sourceModule');
 		$supportedModulesList = Settings_LayoutEditor_Module_Model::getSupportedModules();
+		$supportedModulesList = array_flip($supportedModulesList);
+		ksort($supportedModulesList);
 
 		if(empty($sourceModule)) {
 			//To get the first element

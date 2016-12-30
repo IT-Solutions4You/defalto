@@ -176,21 +176,22 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$relatedModel = $relationModel->getRelationModuleModel();
 
 		if($relatedModel->get('label') == 'Calendar'){
-
-			$addLinkList[] = array(
-				'linktype' => 'LISTVIEWBASIC',
-				'linklabel' => vtranslate('LBL_ADD_EVENT'),
-				'linkurl' => $this->getCreateEventRecordUrl(),
-				'linkicon' => '',
-					'_linklabel' => '_add_event'// used in relatedlist.tpl to identify module to open quickcreate popup
-			);
-			$addLinkList[] = array(
-				'linktype' => 'LISTVIEWBASIC',
-				'linklabel' => vtranslate('LBL_ADD_TASK'),
-				'linkurl' => $this->getCreateTaskRecordUrl(),
-				'linkicon' => '',
-				'_linklabel' => '_add_task'
-			);
+			if($relatedModel->isPermitted('CreateView')) {
+				$addLinkList[] = array(
+					'linktype' => 'LISTVIEWBASIC',
+					'linklabel' => vtranslate('LBL_ADD_EVENT'),
+					'linkurl' => $this->getCreateEventRecordUrl(),
+					'linkicon' => '',
+						'_linklabel' => '_add_event'// used in relatedlist.tpl to identify module to open quickcreate popup
+				);
+				$addLinkList[] = array(
+					'linktype' => 'LISTVIEWBASIC',
+					'linklabel' => vtranslate('LBL_ADD_TASK'),
+					'linkurl' => $this->getCreateTaskRecordUrl(),
+					'linkicon' => '',
+					'_linklabel' => '_add_task'
+				);
+			}
 		} else if ($relatedModel->get('label') == 'Documents') {
 			$parentRecordModule = $this->getParentRecordModel();
 			$parentModule = $parentRecordModule->getModule();
@@ -226,15 +227,17 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				'linkclass' => 'addDocumentToVtiger',
 			);
 		}else{
-			$addLinkList = array(
-				array(
-					'linktype' => 'LISTVIEWBASIC',
-					// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
-					'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
-					'linkurl' => $this->getCreateViewUrl(),
-					'linkicon' => '',
-				)
-			);
+			if (Users_Privileges_Model::isPermitted($relatedModel->getName(), 'CreateView')) {
+				$addLinkList = array(
+					array(
+						'linktype' => 'LISTVIEWBASIC',
+						// NOTE: $relatedModel->get('label') assuming it to be a module name - we need singular label for Add action.
+						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
+						'linkurl' => $this->getCreateViewUrl(),
+						'linkicon' => '',
+					)
+				);
+			}
 		}
 
 		foreach($addLinkList as $addLink) {

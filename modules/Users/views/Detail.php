@@ -116,5 +116,8 @@ class Users_Detail_View extends Users_PreferenceDetail_View {
 		}
 		return $recordModel->isEditable();
 	}
-    
+
+	public function getPageTitle(Vtiger_Request $request) {
+		return vtranslate($request->getModule(), $request->getModule());
+	}
 }

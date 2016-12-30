@@ -88,7 +88,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
 		}
 
-		if($moduleModel->isDuplicateOptionAllowed('EditView', $recordId)) {
+		if($moduleModel->isDuplicateOptionAllowed('CreateView', $recordId)) {
 			$duplicateLinkModel = array(
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => 'LBL_DUPLICATE',
@@ -229,7 +229,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$documentsInstance = Vtiger_Module_Model::getInstance('Documents');
 		if($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Documents')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'EditView');
+			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Documents',

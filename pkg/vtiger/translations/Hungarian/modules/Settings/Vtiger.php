@@ -31,6 +31,7 @@ $languageStrings = array(
 	'LBL_OTHER_SETTINGS'           => 'Egyéb beállítások'       , 
 	'LBL_EXTENSIONS_PLACE'         => 'Extensions Place'            , // TODO: Review
 	'LBL_EXTENSIONS'               => 'Extensions'                  , // TODO: Review
+	'LBL_PBXMANAGER' => 'PBXManager',
 	'LBL_DESCRIPTION'              => 'Description'                 , // TODO: Review
 	'LBL_USER_DESCRIPTION'         => 'Kezelje felhasználók, akik hozzáférhetnek Vtiger CRM', 
 	'LBL_ROLES'                    => 'Munkakörök'                , 

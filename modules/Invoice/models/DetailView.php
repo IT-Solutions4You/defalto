@@ -17,7 +17,7 @@ class Invoice_DetailView_Model extends Inventory_DetailView_Model {
 		$recordModel = $this->getRecord();
 
 		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-		if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'EditView')) {
+		if ($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEW',
 				'linklabel' => vtranslate('LBL_GENERATE') . ' ' . vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),

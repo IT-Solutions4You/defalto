@@ -57,9 +57,10 @@
 									<li id="quickCreateModules" style="padding: 0 5px;">
 										<div class="col-lg-12" style="padding-bottom:15px;">
 											{foreach key=moduleName item=moduleModel from=$QUICK_CREATE_MODULES}
-												{if $moduleModel->isPermitted('EditView')}
+												{if $moduleModel->isPermitted('CreateView') || $moduleModel->isPermitted('EditView')}
 													{assign var='quickCreateModule' value=$moduleModel->isQuickCreateSupported()}
 													{assign var='singularLabel' value=$moduleModel->getSingularLabelKey()}
+													{assign var=hideDiv value={!$moduleModel->isPermitted('CreateView') && $moduleModel->isPermitted('EditView')}}
 													{if $quickCreateModule == '1'}
 														{if $count % 3 == 0}
 															<div class="row">
@@ -67,7 +68,7 @@
 															{* Adding two links,Event and Task if module is Calendar *}
 															{if $singularLabel == 'SINGLE_Calendar'}
 																{assign var='singularLabel' value='LBL_TASK'}
-																<div class="col-lg-4">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_Events" class="quickCreateModule" data-name="Events"
 																	   data-url="index.php?module=Events&view=QuickCreateAjax" href="javascript:void(0)"><i class="vicon-calendar pull-left"></i><span class="quick-create-module">{vtranslate('LBL_EVENT',$moduleName)}</span></a>
 																</div>
@@ -76,13 +77,15 @@
 																	<br>
 																	<div class="row">
 																{/if}
-																<div class="col-lg-4">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)"><i class="vicon-task pull-left"></i><span class="quick-create-module">{vtranslate($singularLabel,$moduleName)}</span></a>
 																</div>
-																{assign var='count' value=$count+1}
+																{if !$hideDiv}
+																	{assign var='count' value=$count+1}
+																{/if}
 															{else if $singularLabel == 'SINGLE_Documents'}
-																<div class="col-lg-4 dropdown">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if} dropdown">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModuleSubmenu dropdown-toggle" data-name="{$moduleModel->getName()}" data-toggle="dropdown" 
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
 																		<i class="vicon-{strtolower($moduleName)} pull-left"></i>
@@ -106,7 +109,7 @@
 																	</ul>
 																</div>
 															{else}
-																<div class="col-lg-4">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
 																		<i class="vicon-{strtolower($moduleName)} pull-left"></i>
@@ -118,7 +121,9 @@
 																</div>
 																<br>
 															{/if}
-														{assign var='count' value=$count+1}
+														{if !$hideDiv}
+															{assign var='count' value=$count+1}
+														{/if}
 													{/if}
 												{/if}
 											{/foreach}

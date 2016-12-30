@@ -33,7 +33,7 @@ class Vendors_DetailView_Model extends Vtiger_DetailView_Model {
 			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
 		}
 		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-		if($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'EditView')) {
+		if($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEW',
 				'linklabel' => vtranslate('LBL_CREATE').' '.vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),

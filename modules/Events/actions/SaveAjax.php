@@ -14,7 +14,12 @@ class Events_SaveAjax_Action extends Events_Save_Action {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		if (!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 
