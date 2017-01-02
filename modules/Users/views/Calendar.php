@@ -54,6 +54,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 
 			$viewer->assign('MODULE_MODEL', $detailViewModel->getModule());
 			$viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
+			$viewer->assign('MODULE_BASIC_ACTIONS', array());
 
 			$viewer->assign('IS_EDITABLE', $detailViewModel->getRecord()->isEditable($moduleName));
 			$viewer->assign('IS_DELETABLE', $detailViewModel->getRecord()->isDeletable($moduleName));

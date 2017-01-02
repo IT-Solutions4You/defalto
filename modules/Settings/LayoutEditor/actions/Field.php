@@ -30,6 +30,23 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
             $fieldModel = $moduleModel->addField($type,$blockId,$request->getAll());
             $fieldInfo = $fieldModel->getFieldInfo();
             $responseData = array_merge(array('id'=>$fieldModel->getId(), 'blockid'=>$blockId, 'customField'=>$fieldModel->isCustomField()),$fieldInfo);
+
+			$defaultValue = $fieldModel->get('defaultvalue');
+			$responseData['fieldDefaultValueRaw'] = $defaultValue;
+			if (isset($defaultValue)) {
+				if ($defaultValue && $fieldInfo['type'] == 'date') {
+					$defaultValue = DateTimeField::convertToUserFormat($defaultValue);
+				} else if (!$defaultValue) {
+					$defaultValue = $fieldModel->getDisplayValue($defaultValue);
+				} else if (is_array($defaultValue)) {
+					foreach ($defaultValue as $key => $value) {
+						$defaultValue[$key] = $fieldModel->getDisplayValue($value);
+					}
+					$defaultValue = Zend_Json::encode($defaultValue);
+				}
+			}
+			$responseData['fieldDefaultValue'] = $defaultValue;
+
             $response->setResult($responseData);
         }catch(Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
@@ -86,11 +103,11 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 			$fieldInfo = $fieldInstance->getFieldInfo();
 			$fieldInfo['id'] = $fieldInstance->getId();
 
+			$fieldInfo['fieldDefaultValueRaw'] = $defaultValue;
 			if (isset($defaultValue)) {
 				if ($defaultValue && $fieldInfo['type'] == 'date') {
-					$fieldInfo['fieldDefaultValue'] = DateTimeField::convertToUserFormat($defaultValue);
+					$defaultValue = DateTimeField::convertToUserFormat($defaultValue);
 				} else if (!$defaultValue) {
-					$fieldInfo['fieldDefaultValueRaw'] = strip_tags($defaultValue);
 					$defaultValue = $fieldInstance->getDisplayValue($defaultValue);
 				} else if (is_array($defaultValue)) {
 					foreach ($defaultValue as $key => $value) {
@@ -98,9 +115,9 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 					}
 					$defaultValue = Zend_Json::encode($defaultValue);
 				}
-				$fieldInfo['fieldDefaultValue'] = $defaultValue;
 			}
-			
+			$fieldInfo['fieldDefaultValue'] = $defaultValue;
+
             $response->setResult(array_merge(array('success'=>true), $fieldInfo));
         }catch(Exception $e) {
 			$response->setError($e->getCode(), $e->getMessage());

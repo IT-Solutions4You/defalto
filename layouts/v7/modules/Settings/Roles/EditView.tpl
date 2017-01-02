@@ -96,7 +96,7 @@
                         </div>
                         <br>
                         <div class="form-group " data-content="new" >
-                            <div class="fieldValue col-sm-12">
+                            <div class="profileData col-sm-12">
                             </div>
                         </div>
                         <div class="form-group " data-content="existing">

@@ -15,7 +15,7 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$viewer->assign('IS_RECORD_CREATABLE', $moduleModel->isPermitted('CreateView'));
+		$viewer->assign('IS_CREATE_PERMITTED', $moduleModel->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $moduleModel->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $moduleModel->isPermitted('Delete'));
 

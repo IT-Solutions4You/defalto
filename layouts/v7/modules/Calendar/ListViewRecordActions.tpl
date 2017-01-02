@@ -27,7 +27,7 @@
 		{if $IS_MODULE_EDITABLE && $EDIT_VIEW_URL && $LISTVIEW_ENTRY->get('taskstatus') neq vtranslate('Held', $MODULE) && $LISTVIEW_ENTRY->get('taskstatus') neq vtranslate('Completed', $MODULE)}
 			<span class="fa fa-check icon action" title="{vtranslate('LBL_MARK_AS_HELD', $MODULE)}" onclick="Calendar_Calendar_Js.markAsHeld('{$LISTVIEW_ENTRY->getId()}');"></span>
 		{/if}
-		{if $IS_RECORD_CREATABLE && $EDIT_VIEW_URL && $LISTVIEW_ENTRY->get('taskstatus') eq vtranslate('Held', $MODULE)}
+		{if $IS_CREATE_PERMITTED && $EDIT_VIEW_URL && $LISTVIEW_ENTRY->get('taskstatus') eq vtranslate('Held', $MODULE)}
 			<span class="fa fa-flag icon action" title="{vtranslate('LBL_HOLD_FOLLOWUP_ON', "Events")}" onclick="Calendar_Calendar_Js.holdFollowUp('{$LISTVIEW_ENTRY->getId()}');"></span>
 		{/if}
 		<span class="more dropdown action">

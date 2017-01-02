@@ -4960,7 +4960,6 @@ TN-34230
 .relatedTabModulesList .addButton {
   border-radius: 2px;
   border: 1px solid #DDDDDD;
-  text-transform: uppercase;
   color: #666666;
   background: #FFFFFF;
 }
@@ -5082,7 +5081,7 @@ TN-34230
 }
 .timePicker {
   width: 9.5em !important;
-  z-index: 1070 !important;
+  z-index: 1101 !important;
 }
 .weekDaySelect .ui-state-default {
   background: inherit;

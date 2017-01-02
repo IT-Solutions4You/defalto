@@ -12,11 +12,9 @@
 	{foreach key=index item=jsModel from=$SCRIPTS}
 		<script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 	{/foreach}
-	<div class="row">
-		<div class="col-lg-3 col-md-3 col-sm-3 control-label ">
-			<label class="fieldLabel">
-				{vtranslate('LBL_COPY_PRIVILEGES_FROM',"Settings:Roles")}
-			</label>
+	<div class="form-group row">
+		<div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
+			<strong>{vtranslate('LBL_COPY_PRIVILEGES_FROM',"Settings:Roles")}</strong>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6">
 			<select class="select2" id="directProfilePriviligesSelect" placeholder="{vtranslate('LBL_CHOOSE_PROFILES',$QUALIFIED_MODULE)}">
@@ -34,7 +32,7 @@
 <input type="hidden" name="editall" value="0" />
 {if $RECORD_MODEL && $RECORD_MODEL->getId() && empty($IS_DUPLICATE_RECORD)}
 	{if $RECORD_MODEL->hasGlobalReadPermission() || $RECORD_MODEL->hasGlobalWritePermission()}
-		<div class="row">
+		<div class="form-group row">
 			<div class="col-lg-3 col-md-3 col-sm-3 fieldLabel"></div>
 			<div class="col-lg-6 col-md-6 col-sm-6">
 				<label class="control-label">
