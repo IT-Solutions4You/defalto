@@ -204,7 +204,7 @@ class EmailTemplates_List_View extends Vtiger_Index_View {
 		}
 
 		$viewer->assign('LIST_VIEW_MODEL', $listViewModel);
-		$viewer->assign('IS_RECORD_CREATABLE', $listViewModel->getModule()->isPermitted('CreateView'));
+		$viewer->assign('IS_CREATE_PERMITTED', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 	}

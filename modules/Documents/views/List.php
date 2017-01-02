@@ -265,7 +265,7 @@ class Documents_List_View extends Vtiger_List_View {
 			$viewer->assign('LISTVIEW_COUNT', $totalCount);
 		}
 
-		$viewer->assign('IS_RECORD_CREATABLE', $listViewModel->getModule()->isPermitted('CreateView'));
+		$viewer->assign('IS_CREATE_PERMITTED', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 		$viewer->assign('SEARCH_DETAILS', $searchParams);

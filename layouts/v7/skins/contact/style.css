@@ -4960,7 +4960,6 @@ TN-34230
 .relatedTabModulesList .addButton {
   border-radius: 2px;
   border: 1px solid #DDDDDD;
-  text-transform: uppercase;
   color: #666666;
   background: #FFFFFF;
 }

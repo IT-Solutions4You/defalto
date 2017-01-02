@@ -176,7 +176,19 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		if(strtolower($fieldType) == 'date') {
 			$dateInstance = new Vtiger_Date_UIType();
 			$defaultValue = $dateInstance->getDBInsertedValue($defaultValue);
+		} else if (strtolower($fieldType) == 'time') {
+			$defaultValue = Vtiger_Time_UIType::getTimeValueWithSeconds($defaultValue);
+		} else if (strtolower($fieldType) == 'currency') {
+			$defaultValue = CurrencyField::convertToDBFormat($defaultValue, null, true);
+		} else if (strtolower($fieldType) == 'decimal') {
+			$defaultValue = CurrencyField::convertToDBFormat($defaultValue, null, true);
 		}
+
+		if (is_array($defaultValue)) {
+			$defaultValue = implode(' |##| ', $defaultValue);
+		}
+		$fieldModel->set('defaultvalue', $defaultValue);
+
 		$blockModel = Vtiger_Block_Model::getInstance($blockId, $this);
 		$blockModel->addField($fieldModel);
 

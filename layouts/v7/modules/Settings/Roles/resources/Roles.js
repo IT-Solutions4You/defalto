@@ -247,7 +247,7 @@ var Settings_Roles_Js = {
 		app.request.post(params).then(function(err, data) {
 			app.helper.hideProgress();
 			if(err === null) {
-				content.find('.fieldValue').html(data);
+				content.find('.profileData').html(data);
 				vtUtils.showSelect2ElementView(jQuery('#directProfilePriviligesSelect'));
 				Settings_Roles_Js.registerExistingProfilesChangeEvent();
 				Settings_Roles_Js.newPriviliges = true;
@@ -276,7 +276,7 @@ var Settings_Roles_Js = {
 			app.request.get({'data' : params}).then(function(err, data) {
 				app.helper.hideProgress();
 				if(err === null) {
-					jQuery('[data-content="new"]').find('.fieldValue').html(data);
+					jQuery('[data-content="new"]').find('.profileData').html(data);
 					vtUtils.showSelect2ElementView(jQuery('#directProfilePriviligesSelect'));
 					Settings_Roles_Js.registerExistingProfilesChangeEvent();
                     Settings_Roles_Js.registerProfileEvents();
