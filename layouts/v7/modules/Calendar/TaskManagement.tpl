@@ -51,6 +51,8 @@
 				<hr>
 
 				<div class="data-body row">
+					{assign var=MODULE_MODEL value= Vtiger_Module_Model::getInstance($MODULE)}
+                    {assign var=USER_PRIVILEGES_MODEL value= Users_Privileges_Model::getCurrentUserPrivilegesModel()}
 					{foreach item=PRIORITY from=$PRIORITIES}
 						<div class="col-lg-4 contentsBlock {strtolower($PRIORITY)} ui-droppable" data-priority='{$PRIORITY}' data-page="{$PAGE}">
 							<div class="{strtolower($PRIORITY)}-header" style="border-bottom: 2px solid {$COLORS[$PRIORITY]}">
