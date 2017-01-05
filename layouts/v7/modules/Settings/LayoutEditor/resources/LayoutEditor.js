@@ -962,6 +962,12 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 					delete data.picklistvalues[" "];
 				}
 
+				if (type == 'Boolean') {
+					if (form.find('input[type="checkbox"][name="' + nameAttr + '"]').is(":checked")) {
+						data.value = '1';
+					}
+				}
+
 				var defaultValueUiContainer = defaultValueUi.closest('.defaultValueUi');
 				//based on the field model it will give the respective ui for the field
 				var fieldModel = Vtiger_Field_Js.getInstance(data);

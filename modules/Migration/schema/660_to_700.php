@@ -24,6 +24,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
+	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
 
 	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
 	foreach ($lineItemModules as $moduleName => $tableName) {
@@ -45,6 +46,13 @@ if(defined('VTIGER_UPGRADE')) {
 				$blockInstance->addField($fieldInstance);
 			}
 		}
+	}
+
+	$documentsModuleModel = Vtiger_Module_Model::getInstance('Documents');
+	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $userModuleModel);
+	if ($noteContentFieldModel) {
+		$noteContentFieldModel->set('masseditable', '0');
+		$noteContentFieldModel->save();
 	}
 
 	$userModuleModel = Vtiger_Module_Model::getInstance('Users');
@@ -599,6 +607,13 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$columns = $db->getColumnNames('vtiger_customerportal_relatedmoduleinfo');
+	if (!in_array('module', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo CHANGE module tabid INT(19)', array());
+		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo ADD PRIMARY KEY(tabid)', array());
+		$db->pquery('ALTER TABLE vtiger_customerportal_fields ADD PRIMARY KEY(tabid)', array());
+	}
+
 	if (!Vtiger_Utils::CheckTable('vtiger_customerportal_settings')) {
 		$db->pquery('CREATE TABLE vtiger_customerportal_settings(id int, url VARCHAR(250),default_assignee INT(11),
 							support_notification INT(11), announcement TEXT, shortcuts TEXT,widgets TEXT,charts TEXT)', array());
@@ -1041,13 +1056,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$columns = $db->getColumnNames('vtiger_invitees');
 	if (!in_array('status', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_invitees ADD COLUMN status VARCHAR(50) DEFAULT NULL', array());
-	}
-
-	$columns = $db->getColumnNames('vtiger_customerportal_relatedmoduleinfo');
-	if (!in_array('module', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo CHANGE module tabid INT', array());
-		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo ADD PRIMARY KEY(tabid)', array());
-		$db->pquery('ALTER TABLE vtiger_customerportal_fields ADD PRIMARY KEY(tabid)', array());
 	}
 
 	$ignoreModules = array('SMSNotifier', 'ModComments');

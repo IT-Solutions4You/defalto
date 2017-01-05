@@ -79,19 +79,18 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CV_PENDING_VALUE', CustomView_Record_Model::CV_STATUS_PENDING);
 		$viewer->assign('CV_PUBLIC_VALUE', CustomView_Record_Model::CV_STATUS_PUBLIC);
 		$viewer->assign('MODULE_MODEL',$moduleModel);
-		if($currentUserModel->isAdminUser()){
-			$customViewSharedMembers = $customViewModel->getMembers();
-			$listShared = ($customViewModel->get('status') == CustomView_Record_Model::CV_STATUS_PUBLIC) ? true : false;
-			foreach ($customViewSharedMembers as $memberGroupLabel => $membersList) {
-				if(count($membersList) > 0){
-					$listShared = true;
-					break;
-				}
+
+		$customViewSharedMembers = $customViewModel->getMembers();
+		$listShared = ($customViewModel->get('status') == CustomView_Record_Model::CV_STATUS_PUBLIC) ? true : false;
+		foreach ($customViewSharedMembers as $memberGroupLabel => $membersList) {
+			if(count($membersList) > 0){
+				$listShared = true;
+				break;
 			}
-			$viewer->assign('LIST_SHARED',$listShared);
-			$viewer->assign('SELECTED_MEMBERS_GROUP', $customViewSharedMembers);
-			$viewer->assign('MEMBER_GROUPS',  Settings_Groups_Member_Model::getAll());
 		}
+		$viewer->assign('LIST_SHARED',$listShared);
+		$viewer->assign('SELECTED_MEMBERS_GROUP', $customViewSharedMembers);
+		$viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
 
 		echo $viewer->view('EditView.tpl', $module, true);
 	}
