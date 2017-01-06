@@ -2104,15 +2104,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
-	registerAddTwitterToRecordEvent : function(elementId){ 
-		jQuery('.searchProfileToolTip').tooltip({'placement': 'top','content':'html'});
-		jQuery('#'+elementId).on('click', function(e){ 
-			jQuery('.searchProfileToolTip').tooltip('hide');
-			var twitterNameArray = elementId.split("__"); 
-			Vtiger_Detail_Js.saveTwitterHandler(twitterNameArray[1]); 
-				});
-	},
-
 	toggleRollupComments : function (e) {
 			e.stopPropagation();
 			e.preventDefault();

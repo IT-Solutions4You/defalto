@@ -12,12 +12,12 @@
 {include file="PicklistColorMap.tpl"|vtemplate_path:$MODULE}
 
 <div class="col-sm-12 col-xs-12 ">
-    {if $MODULE neq 'EmailTemplates' && $SEARCH_MODE_RESULTS neq true}
-        {assign var=LEFTPANELHIDE value=$CURRENT_USER_MODEL->get('leftpanelhide')}
-        <div class="essentials-toggle" title="{vtranslate('LBL_LEFT_PANEL_SHOW_HIDE', 'Vtiger')}">
-            <span class="essentials-toggle-marker fa {if $LEFTPANELHIDE eq '1'}fa-chevron-right{else}fa-chevron-left{/if} cursorPointer"></span>
-        </div>
-    {/if}
+	{if $MODULE neq 'EmailTemplates' && $SEARCH_MODE_RESULTS neq true}
+		{assign var=LEFTPANELHIDE value=$CURRENT_USER_MODEL->get('leftpanelhide')}
+		<div class="essentials-toggle" title="{vtranslate('LBL_LEFT_PANEL_SHOW_HIDE', 'Vtiger')}">
+			<span class="essentials-toggle-marker fa {if $LEFTPANELHIDE eq '1'}fa-chevron-right{else}fa-chevron-left{/if} cursorPointer"></span>
+		</div>
+	{/if}
 	<input type="hidden" name="view" id="view" value="{$VIEW}" />
 	<input type="hidden" name="cvid" value="{$VIEWID}" />
 	<input type="hidden" name="pageStartRange" id="pageStartRange" value="{$PAGING_MODEL->getRecordStartRange()}" />
@@ -61,13 +61,28 @@
 								<input class="listViewEntriesMainCheckBox" type="checkbox">
 							</span>
 						</div>
-						{if $MODULE_MODEL->isFilterColumnEnabled()}                        
+						{if $MODULE_MODEL->isFilterColumnEnabled()}
 							<div id="listColumnFilterContainer">
-								<div class="listColumnFilter {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isEditable() and $CURRENT_CV_MODEL->isMine())}disabled{/if}"  title="{vtranslate('LBL_CLICK_HERE_TO_MANAGE_LIST_COLUMNS',$MODULE)}">
+								<div class="listColumnFilter {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isCvEditable())}disabled{/if}"  
+									 {if $CURRENT_CV_MODEL->isCvEditable()}
+										 title="{vtranslate('LBL_CLICK_HERE_TO_MANAGE_LIST_COLUMNS',$MODULE)}"
+									 {else}
+										 {if $CURRENT_CV_MODEL->get('viewname') eq 'All' and !$CURRENT_USER_MODEL->isAdminUser()} 
+											 title="{vtranslate('LBL_SHARED_LIST_NON_ADMIN_MESSAGE',$MODULE)}"
+										 {elseif !$CURRENT_CV_MODEL->isMine()}
+											 {assign var=CURRENT_CV_USER_ID value=$CURRENT_CV_MODEL->get('userid')}
+											 {if !Vtiger_Functions::isUserExist($CURRENT_CV_USER_ID)}
+												 {assign var=CURRENT_CV_USER_ID value=Users::getActiveAdminId()}
+											 {/if}
+											 title="{vtranslate('LBL_SHARED_LIST_OWNER_MESSAGE',$MODULE, getUserFullName($CURRENT_CV_USER_ID))}"
+										 {/if}
+									 {/if}
+									 {if $MODULE eq 'Documents'}style="width: 10%;"{/if}
+									 data-toggle="tooltip" data-placement="bottom" data-container="body">
 									<i class="fa fa-th-large"></i>
 								</div>
-							</div>                
-						{/if}     
+							</div>
+						{/if}
 					</div>
 				{elseif $SEARCH_MODE_RESULTS}
 					{vtranslate('LBL_ACTIONS',$MODULE)}
@@ -116,14 +131,14 @@
 				</thead>
 				<tbody class="overflow-y">
 					{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
-                        {assign var=DATA_ID value=$LISTVIEW_ENTRY->getId()}
-                        {assign var=DATA_URL value=$LISTVIEW_ENTRY->getDetailViewUrl()}
-                        {if $SEARCH_MODE_RESULTS && $LISTVIEW_ENTRY->getModuleName() == "ModComments"}
-                            {assign var=RELATED_TO value=$LISTVIEW_ENTRY->get('related_to_model')}
-                            {assign var=DATA_ID value=$RELATED_TO->getId()}
-                            {assign var=DATA_URL value=$RELATED_TO->getDetailViewUrl()}
-                        {/if}
-                        <tr class="listViewEntries" data-id='{$DATA_ID}' data-recordUrl='{$DATA_URL}&app={$SELECTED_MENU_CATEGORY}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}" {if $MODULE eq 'Calendar'}data-recurring-enabled='{$LISTVIEW_ENTRY->isRecurringEnabled()}'{/if}>
+						{assign var=DATA_ID value=$LISTVIEW_ENTRY->getId()}
+						{assign var=DATA_URL value=$LISTVIEW_ENTRY->getDetailViewUrl()}
+						{if $SEARCH_MODE_RESULTS && $LISTVIEW_ENTRY->getModuleName() == "ModComments"}
+							{assign var=RELATED_TO value=$LISTVIEW_ENTRY->get('related_to_model')}
+							{assign var=DATA_ID value=$RELATED_TO->getId()}
+							{assign var=DATA_URL value=$RELATED_TO->getDetailViewUrl()}
+						{/if}
+						<tr class="listViewEntries" data-id='{$DATA_ID}' data-recordUrl='{$DATA_URL}&app={$SELECTED_MENU_CATEGORY}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}" {if $MODULE eq 'Calendar'}data-recurring-enabled='{$LISTVIEW_ENTRY->isRecurringEnabled()}'{/if}>
 							<td class = "listViewRecordActions">
 								{include file="ListViewRecordActions.tpl"|vtemplate_path:$MODULE}
 							</td>

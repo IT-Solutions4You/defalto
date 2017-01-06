@@ -25,8 +25,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('getActivities');
 		$this->exposeMethod('showRelatedRecords');
-		$this->exposeMethod('showSocialAcitivityView');
-		$this->exposeMethod('showAddTwitterHandlerForm');
 	}
 
 	function checkPermission(Vtiger_Request $request) {
@@ -245,7 +243,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 			"libraries.jquery.ckeditor.adapters.jquery",
 			"modules.Emails.resources.MassEdit",
 			"modules.Vtiger.resources.CkEditor",
-			"modules.Social.resources.Actions",
 			"~/libraries/jquery/twitter-text-js/twitter-text.js",
 			"libraries.jquery.multiplefileupload.jquery_MultiFile",
 			'~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
@@ -613,79 +610,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 
 		return $viewer->view('SummaryWidgets.tpl', $moduleName, 'true');
-	}
-
-	public function showSocialAcitivityView($request) {
-		$recordId = $request->get('record');
-		$moduleName = $request->getModule();
-		$authorize = $request->get('authorize');
-		if(!$this->record){
-			$this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
-		}
-		$recordModel = $this->record->getRecord();
-		$twitterModuleModel = Social_Module_Model::getInstance();
-		$viewer = $this->getViewer($request);
-		if($authorize == true) {
-			$entityName = getEntityName($moduleName, $recordId);
-			$publicProfiles = $twitterModuleModel->getPublicProfiles($entityName[$recordId]);
-			// added to log twitter request count
-			$this->logSocialRequestCount("Search", 1);
-			$viewer->assign('ASSOCIATE',false);
-			$viewer->assign('TWEETS',$publicProfiles);
-		} elseif($recordModel->get('primary_twitter')) {
-			$viewer->assign('ASSOCIATE',true);
-			$filter = array('screen_name'=>$recordModel->get('primary_twitter'), 'count'=>'40');
-			$details = $twitterModuleModel->getUserTimeLineTweets($filter);
-			// added to log twitter request count
-			$this->logSocialRequestCount("Tweets", 1);
-			$viewer->assign('TWEETS',$details[0]);
-			$viewer->assign('TWITTERUSERMODEL',$details[1]);
-		}
-
-		$viewer->assign('PROFILE_NAME', $recordModel->get('primary_twitter'));
-		$viewer->assign('MODULE_NAME',$moduleName);
-		$viewer->assign('RECORD_ID',$recordId);
-		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-
-		return $viewer->view('SocialAcitivityView.tpl', 'Social', true);
-	}
-
-	/**
-	 * Function to get related Records count from this relation
-	 * @param <Vtiger_Request> $request
-	 * @return <Number> Number of record from this relation
-	 */
-	public function getTwitterPublicProfiles(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$moduleName = $request->getModule();
-		$entityName = getEntityName($moduleName, $recordId);
-		$twitterModuleModel = Social_Module_Model::getInstance();
-		$userProfileModel = $twitterModuleModel->getPublicProfiles($entityName[$recordId]);
-		// added to log twitter request count
-		$this->logSocialRequestCount("Search", 1);
-		$viewer = $this->getViewer($request);
-		$viewer->assign('USER_PROFILE',$userProfileModel);
-		$viewer->assign('MODULE_NAME',$moduleName);
-		return $viewer->view('ShowTwitterPublicProfiles.tpl', 'Social', true);
-	}
-
-	/**
-	 * Function to show add twitter form in the detail view
-	 * @param Vtiger_Request $request
-	 */
-	public function showAddTwitterHandlerForm(Vtiger_Request $request) {
-		$viewer = $this->getViewer($request);
-		$viewer->assign('MODULE_NAME',$moduleName);
-		return $viewer->view('ShowAddTwitterHandlerForm.tpl', 'Social', true);
-	}
-
-	/**
-	 * Function to log twitter request count in database
-	 */
-	function logSocialRequestCount($type, $count) {
-		$db = PearDatabase::getInstance();
-		$db->pquery('INSERT INTO vtiger_social_log(date,type,count) VALUES(?,?,?) 
-							ON DUPLICATE KEY UPDATE count = count + ?',array(date('Y-m-d'), $type, $count, $count));
 	}
 
 	public function getHeaderCss(Vtiger_Request $request) {

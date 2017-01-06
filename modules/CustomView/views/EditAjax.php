@@ -80,6 +80,17 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CV_PUBLIC_VALUE', CustomView_Record_Model::CV_STATUS_PUBLIC);
 		$viewer->assign('MODULE_MODEL',$moduleModel);
 
+		$allCustomViews = CustomView_Record_Model::getAllByGroup($moduleName);
+		$allViewNames = array();
+		foreach ($allCustomViews as $views) {
+			foreach ($views as $view) {
+				if ($currentUserModel->getId() == $view->get('userid')) {
+					$allViewNames[$view->getId()] = strtolower(vtranslate($view->get('viewname'), $moduleName));
+				}
+			}
+		}
+		$viewer->assign('CUSTOM_VIEWS_LIST', $allViewNames);
+
 		$customViewSharedMembers = $customViewModel->getMembers();
 		$listShared = ($customViewModel->get('status') == CustomView_Record_Model::CV_STATUS_PUBLIC) ? true : false;
 		foreach ($customViewSharedMembers as $memberGroupLabel => $membersList) {

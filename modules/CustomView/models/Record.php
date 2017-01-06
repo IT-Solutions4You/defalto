@@ -150,6 +150,18 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		return ($this->get('status') == self::CV_STATUS_PUBLIC || $this->get('status') == self::CV_STATUS_PENDING);
 	}
 
+	public function isCvEditable() {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if ($this->get('viewname') == 'All' && !$currentUser->isAdminUser()) {
+			return false;
+		}
+		if ($currentUser->isAdminUser() || $this->isMine()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function isEditable() {
 		if($this->get('viewname') == 'All') {
 			return false;
@@ -1141,9 +1153,10 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 	 */
 	public function checkDuplicate() {
 		$db = PearDatabase::getInstance();
+		$currentUser = Users_Record_Model::getCurrentUserModel();
 
-		$query = "SELECT 1 FROM vtiger_customview WHERE viewname = ? AND entitytype = ?";
-		$params = array($this->get('viewname'), $this->getModule()->getName());
+		$query = "SELECT 1 FROM vtiger_customview WHERE viewname = ? AND entitytype = ? AND userid = ?";
+		$params = array($this->get('viewname'), $this->getModule()->getName(), $currentUser->getId());
 
 		$cvid = $this->getId();
 		if ($cvid) {

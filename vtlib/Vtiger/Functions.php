@@ -1338,6 +1338,16 @@ class Vtiger_Functions {
 		return (self::getUserSpecificTableName($moduleName) == $tableName) ? true : false;
 	}
 
+	public static function isUserExist($userId) {
+		$adb = PearDatabase::getInstance();
+		$query = "SELECT 1 FROM vtiger_users WHERE id=? AND deleted=? AND status = ?";
+		$result = $adb->pquery($query, array($userId, 0, 'Active'));
+		if ($adb->num_rows($result) > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/**
 	 * Function to decode JWT web token
 	 * @param <string> $id_token
