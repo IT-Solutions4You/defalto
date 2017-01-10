@@ -10,6 +10,7 @@
 // Switch the working directory to base
 chdir(dirname(__FILE__) . '/../..');
 
+include_once 'includes/Loader.php';
 include_once 'include/Zend/Json.php';
 include_once 'vtlib/Vtiger/Module.php';
 include_once 'include/utils/VtlibUtils.php';

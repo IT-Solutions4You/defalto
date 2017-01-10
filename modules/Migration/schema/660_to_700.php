@@ -12,6 +12,11 @@ if(defined('VTIGER_UPGRADE')) {
 	global $adb, $current_user;
 	$db = PearDatabase::getInstance();
 
+	$result = $db->pquery('SELECT 1 FROM vtiger_ws_fieldtype WHERE uitype=?', array('98'));
+	if ($db->num_rows($result)) {
+		$db->pquery('INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES(?, ?)', array('98', 'reference'));
+	}
+
 	if (!Vtiger_Utils::CheckTable('vtiger_activity_recurring_info')) {
 		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_activity_recurring_info(activityid INT(19) NOT NULL, recurrenceid INT(19) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
 	}
