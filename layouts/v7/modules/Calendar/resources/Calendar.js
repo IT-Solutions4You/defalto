@@ -195,9 +195,11 @@ Vtiger.Class("Calendar_Calendar_Js", {
 	registerCalendarSettingsShownEvents: function (modalContainer) {
 		this.registerCalendarSharingTypeChangeEvent(modalContainer);
 		this.registerHourFormatChangeEvent(modalContainer);
-
+		app.helper.showVerticalScroll(jQuery('.modal-body'), {setHeight: '400px'});
+		vtUtils.enableTooltips();
 		modalContainer.find('button[name="saveButton"]').on('click', function () {
 			jQuery(this).attr('disabled', 'disabled');
+			modalContainer.find('form').find('[name="sourceView"]').val(app.view());
 			modalContainer.find('form').submit();
 		});
 	},

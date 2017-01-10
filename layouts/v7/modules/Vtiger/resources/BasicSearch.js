@@ -63,20 +63,20 @@ Vtiger.Class('Vtiger_BasicSearch_Js',{},{
 		}
 
 		params.view = 'ListAjax';
-        params.mode = 'showSearchResults';
-        params.transformedSearchParams = true;
+		params.mode = 'showSearchResults';
+		params.transformedSearchParams = true;
 
 		if(typeof params.module == 'undefined') {
 			params.module = app.getModuleName();
-            //if you are in Settings then module should be Vtiger for normal text search
-            if(app.getParentModuleName().length > 0) {
-                params.module = 'Vtiger';
-            }
+			//if you are in Settings then module should be Vtiger for normal text search
+			if(app.getParentModuleName().length > 0) {
+				params.module = 'Vtiger';
+			}
 		}
-        app.helper.showProgress();
+		app.helper.showProgress();
 		app.request.post({data:params}).then(
 			function(err, data){
-                app.helper.hideProgress();
+				app.helper.hideProgress();
 				aDeferred.resolve(data);
 			},
 
@@ -126,17 +126,28 @@ Vtiger.Class('Vtiger_BasicSearch_Js',{},{
 		app.showModalWindow(params);
 		return aDeferred.promise();
 	},
+
     
-    
-    addSearchListener : function () {
-        jQuery('.search-link .keyword-input').on('VT_SEARCH_INTIATED',function(e,args){
-            console.log(args);
-        })
-    },
-    
-    registerEvents : function () {
-        this.addSearchListener();
-    }
-	
+	addSearchListener : function () {
+		jQuery('.search-link .keyword-input').on('VT_SEARCH_INTIATED',function(e,args){
+			var val = args.searchValue;
+			var url = '?module='+app.getModuleName()+'&view=ListAjax&value='+encodeURIComponent(val)+'&searchModule=All';
+			app.helper.showProgress();
+			app.request.get({'url': url}).then(function (error, data) {
+				if (error == null) {
+					var params = {'ignoreScroll': true};
+					app.helper.hideProgress();
+					app.helper.loadPageOverlay(data, params).then(function (modal) {
+						modal.find('.keyword-input').val(jQuery('.keyword-input').val());
+					});
+				}
+			});
+		});
+	},
+
+	registerEvents : function () {
+		this.addSearchListener();
+	}
+
 });
 

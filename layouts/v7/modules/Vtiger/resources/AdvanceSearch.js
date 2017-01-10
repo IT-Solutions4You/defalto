@@ -284,7 +284,6 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	},
     
     initiateListInstance : function(container)   {
-        console.log(container.find('.moduleResults-container').length);
         var listInstance = new Vtiger_AdvanceSearchList_Js();
         listInstance.setListViewContainer(container.find('.moduleResults-container')).setModuleName(this.getSearchModule());
         listInstance.registerEvents();

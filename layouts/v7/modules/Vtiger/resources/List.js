@@ -1070,8 +1070,8 @@ Vtiger.Class("Vtiger_List_Js", {
 						window.location = href;
 					}, 500));
 				}
+				e.preventDefault();
 			}
-			e.preventDefault();
 			e.stopPropagation();
 		});
 

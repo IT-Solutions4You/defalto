@@ -919,10 +919,16 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			$settingLinks[] = array(
 					'linktype' => 'LISTVIEWSETTING',
 					'linklabel' => 'LBL_EDIT_FIELDS',
-					'linkurl' => 'index.php?parent=Settings&module=LayoutEditor&sourceModule='.$this->getName(),
+					'linkurl' => 'index.php?parent=Settings&module=LayoutEditor',
 					'linkicon' => Vtiger_Theme::getImagePath('LayoutEditor.gif')
 			);
 
+			 $settingLinks[] = array( 
+					'linktype' => 'LISTVIEWSETTING',
+					'linklabel' => 'LBL_EDIT_WORKFLOWS',
+					'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List',
+					'linkicon' => ''
+			);
 			$settingLinks[] = array(
 					'linktype' => 'LISTVIEWSETTING',
 					'linklabel' => 'LBL_EDIT_PICKLIST_VALUES',
