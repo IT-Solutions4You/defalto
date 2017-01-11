@@ -1822,20 +1822,20 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($configurationBlockId, 'LBL_CONFIGURATION', 4));
 	}
 
-	$configurationFields = array(	'LBL_COMPANY_DETAILS'			=> 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
-									'LBL_CUSTOMER_PORTAL'			=> 'index.php?module=CustomerPortal&parent=Settings&view=Index',
-									'LBL_CURRENCY_SETTINGS'			=> 'index.php?parent=Settings&module=Currency&view=List',
-									'LBL_MAIL_SERVER_SETTINGS'		=> 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
-									'Configuration Editor'			=> 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
-									'LBL_PICKLIST_EDITOR'			=> 'index.php?parent=Settings&module=Picklist&view=Index',
-									'LBL_PICKLIST_DEPENDENCY_SETUP'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
-									'LBL_MENU_EDITOR'				=> 'index.php?module=MenuEditor&parent=Settings&view=Index');
+	$configurationFields = array(	'LBL_COMPANY_DETAILS'		=> 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
+									'LBL_CUSTOMER_PORTAL'		=> 'index.php?module=CustomerPortal&parent=Settings&view=Index',
+									'LBL_CURRENCY_SETTINGS'		=> 'index.php?parent=Settings&module=Currency&view=List',
+									'LBL_MAIL_SERVER_SETTINGS'	=> 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
+									'Configuration Editor'		=> 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
+									'LBL_PICKLIST_EDITOR'		=> 'index.php?parent=Settings&module=Picklist&view=Index',
+									'LBL_PICKLIST_DEPENDENCY'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
+									'LBL_MENU_EDITOR'			=> 'index.php?module=MenuEditor&parent=Settings&view=Index');
 
+	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('LBL_PICKLIST_DEPENDENCY', 'LBL_PICKLIST_DEPENDENCY_SETUP'));
 	$configurationSequence = 1;
 	foreach ($configurationFields as $fieldName => $linkTo) {
 		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($configurationSequence++, $linkTo, $configurationBlockId, $fieldName));
 	}
-	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=? AND blockid=?', array('LBL_PICKLIST_DEPENDENCY', 'LBL_PICKLIST_DEPENDENCY_SETUP', $configurationBlockId));
 	//End:: configuration block
 
 	//Start:: marketing sales block

@@ -2202,6 +2202,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			app.request.post({data:params}).then(function(err,data){
 				element.removeClass('processing');
 			})
+			if(element.hasClass('active')){
+				app.helper.showSuccessNotification({'message':app.vtranslate('JS_FOLLOW_RECORD')});
+			} else {
+				app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOW_RECORD')});
+			}
 	  });
 	},
 

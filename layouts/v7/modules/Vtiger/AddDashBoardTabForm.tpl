@@ -8,7 +8,7 @@
 ************************************************************************************}
 {strip}
     <div class="modal-dialog modelContainer">
-        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="Add Tab"}
+        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="{vtranslate('LBL_ADD_DASHBOARD')}"}
         <div class="modal-content">
             <form id="AddDashBoardTab" name="AddDashBoardTab" method="post" action="index.php">
                 <input type="hidden" name="module" value="{$MODULE}"/>
