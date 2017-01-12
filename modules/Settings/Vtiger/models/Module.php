@@ -162,7 +162,7 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 			$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
 									'menu'	=> $db->query_result($result, 0, 'menu'));
 		} elseif ($numOfRows > 1) {
-			$result = $db->pquery("$query AND linkto LIKE '%$view%'", array());
+			$result = $db->pquery("$query AND linkto LIKE '%view=$view%'", array());
 			$numOfRows = $db->num_rows($result);
 			if ($numOfRows == 1) {
 				$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),

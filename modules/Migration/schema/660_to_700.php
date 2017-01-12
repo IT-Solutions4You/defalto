@@ -13,7 +13,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db = PearDatabase::getInstance();
 
 	$result = $db->pquery('SELECT 1 FROM vtiger_ws_fieldtype WHERE uitype=?', array('98'));
-	if ($db->num_rows($result)) {
+	if (!$db->num_rows($result)) {
 		$db->pquery('INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES(?, ?)', array('98', 'reference'));
 	}
 
@@ -72,7 +72,7 @@ if(defined('VTIGER_UPGRADE')) {
 	if ($defaultEventStatusFieldModel) {
 		$defaultEventStatusFieldModel->set('defaultvalue', 'Planned');
 		$defaultEventStatusFieldModel->save();
-		$db->pquery('UPDATE vtiger_users SET defaultactivitytype=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
+		$db->pquery('UPDATE vtiger_users SET defaulteventstatus=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
 	}
 
 	$fieldNamesList = array();

@@ -11,23 +11,36 @@
 class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 
 	public static function getNonVisibleModulesList() {
-		return array('ModTracker', 'Users', 'Mobile', 'Integration', 'WSAPP', 'Dashboard', 'ConfigEditor', 'CronTasks',
-						'Import', 'Tooltip', 'Home', 'VtigerBackup', 'FieldFormulas', 'EmailTemplates', 'ExtensionStore');
+		return array('ModTracker', 'Users', 'Mobile', 'Integration', 'WSAPP', 'ModComments', 'Dashboard', 'ConfigEditor', 'CronTasks',
+						'Import', 'Tooltip', 'CustomerPortal', 'Home', 'VtigerBackup', 'FieldFormulas', 'EmailTemplates', 'ExtensionStore');
 	}
 
-
 	/**
-	 * Function to get the url of new module import 
+	 * Function to get the url of new module import
 	 */
 	public static function getNewModuleImportUrl() {
 		$importURL = '';
 		$extensionStore = Vtiger_Module_Model::getInstance('ExtensionStore');
 		if($extensionStore && $extensionStore->isActive()) {
 			$importURL = Settings_ExtensionStore_Module_Model::getInstance()->getDefaultUrl();
-		}  else {
+		} else {
 			$importURL = 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport';
 		}
 		return $importURL;
+	}
+
+	/**
+	 * Function to get the url of Extension store
+	 */
+	public static function getExtensionStoreUrl() {
+		return 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionImport&mode=index';
+	}
+
+	/**
+	 * Function to get the url of new module import 
+	 */
+	public static function getUserModuleFileImportUrl() {
+		return 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1'; 
 	}
 
 	/**
@@ -40,7 +53,7 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	}
 
 	/**
-	 * Function to enable the module 
+	 * Function to enable the module
 	 * @param type $moduleName -- name of the module
 	 */
 	public function enableModule($moduleName) {
@@ -91,7 +104,7 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 
 		$moduleModels = array();
 		for($i=0; $i<$db->num_rows($result); ++$i) {
-			$row =  $db->query_result_rowdata($result, $i);
+			$row = $db->query_result_rowdata($result, $i);
 			$moduleModels[$row['name']] = self::getInstanceFromArray($row);
 		}
 		return $moduleModels;
