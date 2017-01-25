@@ -36,7 +36,7 @@
 							<tbody>
 								<tr>
 									<td class="{$WIDTHTYPE} fieldLabel"><label>{vtranslate('LBL_SERVER_TYPE', $QUALIFIED_MODULE)}</label></td>
-									<td class="fieldValue {$WIDTHTYPE}">
+									<td class="{$WIDTHTYPE} fieldValue">
 										<div class=" col-lg-6 col-md-6 col-sm-12">
 											<select class="select2 inputElement col-lg-12 col-md-12 col-lg-12" name="serverType">
 												<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>

@@ -29,20 +29,12 @@ class Settings_MailConverter_ScanNow_Action extends Settings_Vtiger_Index_Action
 		$response = new Vtiger_Response();
 		if (is_bool($status) && $status) {
 			$result = array('message'=> vtranslate('LBL_SCANNED_SUCCESSFULLY', $qualifiedModuleName));
-            $recordModel = Settings_MailConverter_Record_Model::getInstanceById($recordId);
             $result['id'] = $recordModel->getId();
-            $lastScanTime = $recordModel->getLastScanTime();
-            $moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
-            $foldersScanned = $moduleModel->getScannedFolders($recordId);
-            $scanTimeMsg = vtranslate('LBL_LAST_SCAN_AT', $qualifiedModuleName).$lastScanTime.'<br>'.
-                    vtranslate('LBL_FOLDERS_SCANNED', $qualifiedModuleName).' : <strong>'.implode(', ', $foldersScanned).'</strong>';
-            $result['lastScanMessage'] = $scanTimeMsg;
 			$response->setResult($result);
 		} else if($status) {
-            $response->setError($status);
-        } else {
-            $errorMsg = $recordModel->get('errorMsg');
-            $response->setError(vtranslate($errorMsg, $qualifiedModuleName));
+                        $response->setError($status);
+                } else {
+			$response->setError(vtranslate($request->getModule(), $qualifiedModuleName). ' ' .vtranslate('LBL_IS_IN_RUNNING_STATE', $qualifiedModuleName));
 		}
 		$response->emit();
 	}

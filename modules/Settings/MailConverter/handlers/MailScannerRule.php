@@ -16,7 +16,7 @@ require_once('modules/Settings/MailConverter/handlers/MailScannerAction.php');
  */
 class Vtiger_MailScannerRule {
     // id of this instance
-	var $ruleid    = false;	
+	var $ruleid    = false;
     // scanner to which this rule is linked
     var $scannerid = false;
     // from address criteria
@@ -35,7 +35,7 @@ class Vtiger_MailScannerRule {
 	var $bodyop    = false;
     // body criteria
 	var $body      = false;
-    // order of this rule 
+    // order of this rule
 	var $sequence  = false;
     // is this action valid
 	var $isvalid   = false;
@@ -168,9 +168,9 @@ class Vtiger_MailScannerRule {
             }
         } else {
             $matchfound = false;
-            if($this->matchusing == 'OR') {
-                $matchfound = true;
-                $matchresults[] = $this->__CreateMatchResult('BLANK','','','');
+                if($this->matchusing == 'OR') {
+            $matchfound = true;
+                    $matchresults[] = $this->__CreateMatchResult('BLANK','','','');
             }
         }
 		return ($matchfound)? $matchresults : false;
@@ -206,41 +206,35 @@ class Vtiger_MailScannerRule {
                 }
                 break;
             case 'TO':
-                if($this->toaddress) {
-                    if(strpos($this->toaddress, '*') == 0)
-                        $this->toaddress = trim($this->toaddress, '*');
-                    foreach($mailrecord->_to as $toemail) {
-                        $matchfound = $this->find($subrule, 'Contains', $toemail, $this->toaddress);
-                            if($matchfound) break;
-                    }
+                        if($this->toaddress) {
+                            foreach($mailrecord->_to as $toemail) {
+                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->toaddress);
+                                if($matchfound) break;
+                }
                 } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
+                $matchfound = $this->__CreateDefaultMatchResult($subrule);
                 }
                 break;
             case 'CC':
                 if ($this->cc) {
-                    if(strpos($this->cc, '*') == 0)
-                        $this->cc = trim($this->cc, '*');
-                    foreach ($mailrecord->_cc as $toemail) {
-                        $matchfound = $this->find($subrule, 'Contains', $toemail, $this->cc);
-                        if ($matchfound) 
-                            break;
-                    }
+                foreach ($mailrecord->_cc as $toemail) {
+                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->cc);
+                    if ($matchfound)
+                    break;
+                }
                 } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
+                $matchfound = $this->__CreateDefaultMatchResult($subrule);
                 }
                 break;
             case 'BCC':
                 if ($this->bcc) {
-                    if(strpos($this->bcc, '*') == 0)
-                        $this->bcc = trim($this->bcc, '*');
-                    foreach ($mailrecord->_bcc as $toemail) {
-                        $matchfound = $this->find($subrule, 'Contains', $toemail, $this->bcc);
-                        if ($matchfound)
-                            break;
-                    }
+                foreach ($mailrecord->_bcc as $toemail) {
+                    $matchfound = $this->find($subrule, 'Contains', $toemail, $this->bcc);
+                    if ($matchfound)
+                    break;
+                }
                 } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
+                $matchfound = $this->__CreateDefaultMatchResult($subrule);
                 }
                 break;
             case 'SUBJECT':
@@ -252,9 +246,9 @@ class Vtiger_MailScannerRule {
                 break;
             case 'BODY':
                 if ($this->bodyop) {
-                    $matchfound = $this->find($subrule, $this->bodyop, $mailrecord->getBodyText(), trim($this->body));
+                $matchfound = $this->find($subrule, $this->bodyop, trim(strip_tags($mailrecord->_body)), trim($this->body));
                 } else {
-                    $matchfound = $this->__CreateDefaultMatchResult($subrule);
+                $matchfound = $this->__CreateDefaultMatchResult($subrule);
                 }
                 break;
             }
@@ -268,8 +262,8 @@ class Vtiger_MailScannerRule {
     function find($subrule, $condition, $input, $searchfor) {
         if (!$input)
             return false;
-        $input = trim(preg_replace("/\r/", '', decode_html($input)));
-        $searchfor = decode_html($searchfor);
+            $input = trim(preg_replace("/\r/", '', decode_html($input))); 
+            $searchfor = decode_html($searchfor);
         $matchfound = false;
         $matches = false;
 
@@ -318,7 +312,7 @@ class Vtiger_MailScannerRule {
             case 'Has Ticket Number':
             $regmatches = Array();
             $matchfound = false;
-            $searchfor = "Ticket Id[^:]?: ([0-9]+)";
+            $searchfor = "Ticket Id[^:]?: ([0-9]+)"; 
             $searchfor = str_replace('/', '\/', $searchfor);
             if (preg_match("/$searchfor/i", $input, $regmatches)) {
                 // Pick the last matching group
@@ -355,7 +349,7 @@ class Vtiger_MailScannerRule {
 		foreach($matchresult as $matchinfo) {
             $match_condition = $matchinfo['condition'];
             $match_string = $matchinfo['matches'];
-                if(($match_condition == 'Regex' || $match_condition == 'Has Ticket Number') && $match_string)
+                if(($match_condition == 'Regex' || $match_condition == 'Has Ticket Number') && $match_string) 
             return $matchinfo;
         }
         return false;
@@ -390,7 +384,7 @@ class Vtiger_MailScannerRule {
             $this->bodyop, $this->body, $this->matchusing, $this->assigned_to, $this->cc, $this->bcc, $this->ruleid));
         } else {
             $this->sequence = $this->__nextsequence();
-            $adb->pquery("INSERT INTO vtiger_mailscanner_rules(scannerid,fromaddress,toaddress,subjectop,subject,bodyop,body,matchusing,sequence,assigned_to,cc,bcc) 
+            $adb->pquery("INSERT INTO vtiger_mailscanner_rules(scannerid,fromaddress,toaddress,subjectop,subject,bodyop,body,matchusing,sequence,assigned_to,cc,bcc)
                     VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", Array($this->scannerid, $this->fromaddress, $this->toaddress, $this->subjectop, $this->subject,
             $this->bodyop, $this->body, $this->matchusing, $this->sequence, $this->assigned_to, $this->cc, $this->bcc));
             $this->ruleid = $adb->database->Insert_ID();
@@ -426,8 +420,6 @@ class Vtiger_MailScannerRule {
             if($this->ruleid) {
             $adb->pquery("DELETE FROM vtiger_mailscanner_ruleactions WHERE ruleid = ?", Array($this->ruleid));
             $adb->pquery("DELETE FROM vtiger_mailscanner_rules WHERE ruleid=?", Array($this->ruleid));
-            $adb->pquery("DELETE FROM vtiger_mailscanner_bodyrule WHERE ruleid = ? AND scannerid = ?", array($this->ruleid, $this->scannerid));
-            $adb->pquery("DELETE FROM vtiger_mailscanner_mapping WHERE ruleid = ? AND scannerid = ?", array($this->ruleid, $this->scannerid));
         }
     }
 
@@ -456,23 +448,6 @@ class Vtiger_MailScannerRule {
 
         $action = $this->useaction; // Action is limited to One right now
         return $action->apply($mailscanner, $mailrecord, $this, $matchresult);
-    }
-
-    /**
-     * Function to get number of rules currently exist(for CronTx)
-     * @global type $adb
-     * @param type $scannerId
-     * @return type
-     */
-    static function getNoOfRules($scannerId = false){
-        global $adb;
-        $query = "SELECT count(*) as count FROM vtiger_mailscanner_rules";
-        if($scannerId){
-            $query = "$query where scannerid = $scannerId";
-        }
-		$result = $adb->pquery($query, array());
-        $count = $adb->query_result($result,0,'count');
-        return $count;
     }
 
 }

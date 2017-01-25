@@ -29,8 +29,6 @@ class Vtiger_MailBox {
 
 	// Mailbox crendential information (as a map)
 	var $_mailboxsettings = false;
-    // IMAP Errors
-    var $_imaperror = false;
 
 	/** DEBUG functionality. */
 	var $debug = false;
@@ -117,7 +115,7 @@ class Vtiger_MailBox {
 		$this->_imap = $imap;
 		return $isconnected;
 	}
-    
+
 	/**
 	 * Open the mailbox folder.
 	 * @param $folder Folder name to open
@@ -134,9 +132,8 @@ class Vtiger_MailBox {
 
 		$isconnected = false;
 		$connectString = $this->_imapurl;
-        $folderUrl = MailManager_Connector_Connector::convertCharacterEncoding(html_entity_decode("$connectString$folder"),'UTF7-IMAP','UTF-8');
-		$this->log("Trying to open folder using $folderUrl");
-		$imap = @imap_open($folderUrl, $mailboxsettings[username], $mailboxsettings[password]);
+		$this->log("Trying to open folder using $connectString$folder");
+		$imap = @imap_open("$connectString$folder", $mailboxsettings[username], $mailboxsettings[password]);
 		if($imap) {
 
 			// Perform cleanup task before re-initializing the connection
@@ -156,7 +153,6 @@ class Vtiger_MailBox {
 	 * @return imap_search records or false
 	 */
 	function search($folder, $searchQuery=false) {
-        $folder = decode_html($folder);
 		if(!$searchQuery) {
 			$lastscanOn = $this->_scannerinfo->getLastscan($folder);
 			$searchfor = $this->_scannerinfo->searchfor;
@@ -187,8 +183,7 @@ class Vtiger_MailBox {
 			$imapfolders = imap_list($this->_imap, $this->_imapurl, '*');
 			if($imapfolders) {
 				foreach($imapfolders as $imapfolder) {
-					$folder = substr($imapfolder, strlen($this->_imapurl));
-                    $folders[] = MailManager_Connector_Connector::convertCharacterEncoding($folder, 'UTF-8', 'UTF7-IMAP');
+					$folders[] = substr($imapfolder, strlen($this->_imapurl));
 				}
 			} else {
                             return imap_last_error();
@@ -215,6 +210,8 @@ class Vtiger_MailBox {
 		    if (strtoupper($markas) == 'SEEN') {
 				$markas = "\\Seen";
 				imap_setflag_full($this->_imap, $messageid, $markas);
+		    } else if (strtoupper($markas) == 'UNSEEN') {
+				imap_clearflag_full($this->_imap, $messageid, "\\Seen");
 		    }
 		}
 	}

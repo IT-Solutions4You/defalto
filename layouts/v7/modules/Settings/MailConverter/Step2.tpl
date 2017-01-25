@@ -6,7 +6,52 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************}
-{* modules/Settings/MailConverter/views/Edit.php *}
 
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-<DIV>TEMPLATE: layout/modules/Settings/MailConverter/Step2.tpl</DIV>
+{strip}
+	{if $IMAP_ERROR || $CONNECTION_ERROR}
+		<div class="block">
+			<strong>
+				{if $IMAP_ERROR}
+					{$IMAP_ERROR}
+				{else if $CONNECTION_ERROR}
+					{vtranslate('LBL_CONNECTION_ERROR',$QUALIFIED_MODULE)}
+				{/if}
+			</strong>
+		</div>
+		<br>
+	{/if}
+	<div class="addMailBoxBlock">
+		<div class="row col-lg-12 padding-bottom1per">
+			<div id="mailConverterDragIcon"><i class="icon-info-sign"></i>&nbsp;&nbsp;{vtranslate('TO_CHANGE_THE_FOLDER_SELECTION_DESELECT_ANY_OF_THE_SELECTED_FOLDERS',$QUALIFIED_MODULE)}</div>
+		</div>
+		<br>
+		<br>
+		<form class="form-horizontal" id="mailBoxEditView" name="step2">
+			<div class="block">
+				<div class="addMailBoxStep row">
+					{foreach key=FOLDER item=SELECTED from=$FOLDERS}
+						<div class="col-lg-3">
+							<input type="checkbox" name="folders" value="{$FOLDER}" {if $SELECTED eq 'checked'}checked{/if}>
+							&nbsp;&nbsp;&nbsp;{$FOLDER}
+						</div>
+					{/foreach}
+				</div>
+				<div class="border1px modal-overlay-footer clearfix">
+					<div class="row clearfix">
+						<div class="textAlignCenter col-lg-12 col-md-12 col-lg-12 ">
+							<button class="btn btn-danger backStep" type="button" onclick="javascript:window.history.back();"><strong>{vtranslate('LBL_BACK', $QUALIFIED_MODULE)}</strong></button>&nbsp;&nbsp;
+							<button class="btn btn-success" onclick="javascript:Settings_MailConverter_Edit_Js.secondStep()">
+								<strong>
+									{if $CREATE eq 'new'}{vtranslate('LBL_NEXT', $QUALIFIED_MODULE)}{else}{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}{/if}
+								</strong>
+							</button>
+							<a class="cancelLink" type="reset" onclick="javascript:window.history.go(-2);">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+{/strip}

@@ -23,12 +23,8 @@ class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Act
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
-        
-        
-        $ruleRecordModel = Vtiger_Loader::getComponentClassName('Model', 'RuleRecord', $qualifiedModuleName);
-        $ruleRecordModel = new $ruleRecordModel();
-        
-		$recordModel = call_user_func_array(array($ruleRecordModel,'getInstanceById'),array($recordId));
+
+		$recordModel = Settings_MailConverter_RuleRecord_Model::getInstanceById($recordId);
 		$scannerId = $recordModel->getScannerId();
 
 		$response = new Vtiger_Response();
@@ -40,8 +36,8 @@ class Settings_MailConverter_DeleteRule_Action extends Settings_Vtiger_Index_Act
 		}
 		$response->emit();
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateWriteAccess();
-    }
+        
+        public function validateRequest(Vtiger_Request $request) { 
+            $request->validateWriteAccess(); 
+        } 
 }

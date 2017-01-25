@@ -36,8 +36,8 @@ class Settings_MailConverter_UpdateSequence_Action extends Settings_Vtiger_Index
 
 		$response->emit();
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateWriteAccess();
-    }
+        
+        public function validateRequest(Vtiger_Request $request) { 
+            $request->validateWriteAccess(); 
+        } 
 }

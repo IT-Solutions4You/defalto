@@ -12,9 +12,11 @@ vimport('~~modules/Settings/MailConverter/handlers/MailScannerAction.php');
 vimport('~~modules/Settings/MailConverter/handlers/MailScannerRule.php');
 
 class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Model {
-    
-    var $_bodyruleTable = 'vtiger_mailscanner_bodyrule';
-    
+
+	var $assignedTo = false;
+	var $cc = false;
+	var $bcc = false;
+
 	/**
 	 * Function to get Id of this record instance
 	 * @return <Integer> Id
@@ -35,7 +37,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 * @return <Array> List of fields
 	 */
 	public function getFields() {
-		return array('fromaddress', 'toaddress', 'cc', 'bcc', 'subjectop', 'subject', 'bodyop', 'body', 'matchusing', 'assigned_to');
+		return array('fromaddress', 'toaddress', 'cc', 'bcc', 'subjectop', 'subject', 'bodyop', 'body', 'matchusing');
 	}
 
 	/**
@@ -59,8 +61,8 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 * @return <String> Url
 	 */
 	public function getEditViewUrl() {
-		$url = $this->getDefaultUrl(). '&view=EditRule&mode=step1';
-		return $url;
+		$url = $this->getDefaultUrl(). '&view=EditRule';
+		return 'javascript:Settings_MailConverter_Index_Js.triggerRuleEdit("'.$url.'")';
 	}
 
 	/**
@@ -134,6 +136,9 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 		$ruleModel = new Vtiger_MailScannerRule($recordId);
 		$fieldsList = $this->getFields();
 		$ruleModel->scannerid = $this->get('scannerid');
+		$ruleModel->assigned_to = $this->assignedTo;
+		$ruleModel->cc = $this->cc;
+		$ruleModel->bcc = $this->bcc;
 		foreach ($fieldsList as $fieldName) {
 			$ruleModel->$fieldName = $this->get($fieldName);
 		}
@@ -243,10 +248,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 * @return <Array> List of default actions
 	 */
 	public static function getDefaultActions() {
-		return array('CREATE_HelpDesk_FROM', 'CREATE_HelpDeskNoContact_FROM', 'UPDATE_HelpDesk_SUBJECT', 'CREATE_Leads_SUBJECT',
-            'CREATE_Contacts_SUBJECT', 'CREATE_Accounts_SUBJECT', 'CREATE_Potentials_SUBJECT', 'CREATE_PotentialsNoContact_SUBJECT', 'LINK_Contacts_FROM', 'LINK_Contacts_TO',
-            'LINK_Leads_FROM', 'LINK_Leads_TO', 'LINK_Accounts_FROM', 'LINK_Accounts_TO', 'LINK_Potentials_FROM', 'LINK_Potentials_TO',
-            'LINK_HelpDesk_FROM', 'LINK_HelpDesk_TO');
+		return array('CREATE_HelpDesk_FROM', 'UPDATE_HelpDesk_SUBJECT', 'LINK_Contacts_FROM', 'LINK_Contacts_TO', 'LINK_Leads_FROM', 'LINK_Leads_TO', 'LINK_Accounts_FROM', 'LINK_Accounts_TO');
 	}
 
 	public function getAssignedTo($scannerId, $ruleId) {
@@ -264,19 +266,4 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 		}
 		return array($id, $assignedUserName);
 	}
-    
-    public function bodyRuleExists() {
-        $ruleId = $this->getId();
-        $scannerId = $this->getScannerId();
-        if(empty($ruleId) || empty($scannerId)) {
-            return false;
-        }
-        $db = PearDatabase::getInstance();
-        $result = $db->pquery("SELECT 1 FROM $this->_bodyruleTable WHERE scannerid = ? AND ruleid = ?", array($scannerId, $ruleId));
-        $count = $db->num_rows($result);
-        if($count > 0)
-            return true;
-        else
-            return false;
-    }
 }
