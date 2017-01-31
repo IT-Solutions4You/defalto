@@ -10,67 +10,72 @@
 Settings_Vtiger_Edit_Js("Settings_Groups_Edit_Js",{},{
 	
 	registerCancel: function(){
-     jQuery('.cancelLink').click(function(){
-        window.history.back();
-        return false;
-        });
-    },
-    
+		jQuery('.cancelLink').click(function(){
+			window.history.back();
+			return false;
+		});
+	},
+
 	/**
-     * Function to Validate and Save Event 
-     * @returns {undefined}
-     */
-    registerValidation : function () {
-        var thisInstance = this;
+	 * Function to Validate and Save Event 
+	 * @returns {undefined}
+	 */
+	registerValidation : function () {
+		var thisInstance = this;
 		var form = jQuery('#EditView');
-            var params = {
-            submitHandler : function(form) {
-                var form = jQuery(form);
-                if(form.data('submit') === 'true' && form.data('performCheck') === 'true') {
+			var params = {
+			submitHandler : function(form) {
+				var form = jQuery(form);
+				jQuery('.saveButton').attr('disabled', true);
+				if(form.data('submit') === 'true' && form.data('performCheck') === 'true') {
 					return true;
-                    } else {
-                if(this.numberOfInvalids() <= 0) {
-					var formData = form.serializeFormData();
-                    var groupName = formData.groupname;
-                    var specialChars = /[<\>\"\,]/;
-                    if(specialChars.test(groupName)) {
-                        var groupNameEle = jQuery('[name="groupname"]');
-                        var errorMsg = app.vtranslate('JS_COMMA_NOT_ALLOWED_GROUP');
-                        app.helper.showErrorNotification({message:errorMsg});
-                        return false;
-                    }
-					var groupName = formData.groupname;
-					if(groupName.indexOf(',') !== -1) {
-						var groupNameEle = jQuery('[name="groupname"]');
-						 errorMsg = app.vtranslate('JS_COMMA_NOT_ALLOWED_GROUP');
-						app.helper.showErrorNotification({message:errorMsg});
-						return false;
-					}
-					thisInstance.checkDuplicateName({
-						'groupname' : formData.groupname,
-						'record' : formData.record
-					}).then(
-						function(data){
-							form.data('submit', 'true');
-							form.data('performCheck', 'true');
-							form.submit();
-						},
-						function(data, err){
-							app.helper.showErrorNotification({message:app.vtranslate('LBL_DUPLICATES_EXIST')});
+				} else {
+					if(this.numberOfInvalids() <= 0) {
+						var formData = form.serializeFormData();
+						var groupName = formData.groupname;
+						var specialChars = /[<\>\"\,]/;
+						if(specialChars.test(groupName)) {
+							var groupNameEle = jQuery('[name="groupname"]');
+							var errorMsg = app.vtranslate('JS_COMMA_NOT_ALLOWED_GROUP');
+							app.helper.showErrorNotification({message:errorMsg});
+							jQuery('.saveButton').removeAttr('disabled');
 							return false;
 						}
-					);
-                   }
-                }
-            }
-        };
-       form.vtValidate(params);
-    },
+						var groupName = formData.groupname;
+						if(groupName.indexOf(',') !== -1) {
+							var groupNameEle = jQuery('[name="groupname"]');
+							 errorMsg = app.vtranslate('JS_COMMA_NOT_ALLOWED_GROUP');
+							app.helper.showErrorNotification({message:errorMsg});
+							jQuery('.saveButton').removeAttr('disabled');
+							return false;
+						}
+						thisInstance.checkDuplicateName({
+							'groupname' : formData.groupname,
+							'record' : formData.record
+						}).then(
+							function(data){
+								app.event.trigger('POST.GROUP.SAVE',formData);
+								form.data('submit', 'true');
+								form.data('performCheck', 'true');
+								form.submit();
+							},
+							function(data, err){
+								app.helper.showErrorNotification({message:app.vtranslate('JS_DUPLICATES_EXIST')});
+								jQuery('.saveButton').removeAttr('disabled');
+								return false;
+							}
+						);
+					}
+				}
+			}
+		};
+		form.vtValidate(params);
+	},
 
 	checkDuplicateName : function(details) {
-        var aDeferred = jQuery.Deferred();
-		
-        var params = {
+		var aDeferred = jQuery.Deferred();
+
+		var params = {
 			'module' : app.getModuleName(),
 			'parent' : app.getParentModuleName(),
 			'action' : 'EditAjax',
@@ -91,9 +96,9 @@ Settings_Vtiger_Edit_Js("Settings_Groups_Edit_Js",{},{
 			});
 		return aDeferred.promise();
 	},
-    
-    memberSelectElement : false,
-    getMemberSelectElement : function () {
+
+	memberSelectElement : false,
+	getMemberSelectElement : function () {
 		if(this.memberSelectElement == false) {
 			this.memberSelectElement = jQuery('#memberList');
 		}
@@ -105,20 +110,21 @@ Settings_Vtiger_Edit_Js("Settings_Groups_Edit_Js",{},{
 	registerEventForSelect2Element : function(){
 		var editViewForm = this.getForm();
 		var selectElement = this.getMemberSelectElement();
-        selectElement.addClass('select2');
+		selectElement.addClass('select2');
 		var params = {};
 		params.formatSelection = function(object,container){
 			var selectedId = object.id;
 			var selectedOptionTag = editViewForm.find('option[value="'+selectedId+'"]');
 			var selectedMemberType = selectedOptionTag.data('memberType');
+			container.prevObject.addClass(selectedMemberType);
 			var element = '<div>'+selectedOptionTag.text()+'</div>';
 			return element;
 		};
-        selectElement.select2('destroy');
+		selectElement.select2('destroy');
 		this.changeSelectElementView(selectElement, 'select2',params);
 	},
-    
-    changeSelectElementView : function(parent, view, viewParams){
+
+	changeSelectElementView : function(parent, view, viewParams){
 		if(typeof parent == 'undefined') {
 			parent = jQuery('body');
 		}
@@ -129,7 +135,7 @@ Settings_Vtiger_Edit_Js("Settings_Groups_Edit_Js",{},{
 			return;
 		}
 	},
-    
+
 	registerEvents : function() {
 		this._super();
 		this.registerCancel();

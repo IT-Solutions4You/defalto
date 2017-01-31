@@ -538,7 +538,6 @@ class Users extends CRMEntity {
 
 		$query = "UPDATE $this->table_name SET user_password=?, confirm_password=?, user_hash=?, ".
 				"crypt_type=? where id=?";
-		$this->db->startTransaction();
 		$this->db->pquery($query, array($encrypted_new_password, $encrypted_new_password,
 				$user_hash, $crypt_type, $this->id));
 		if($this->db->hasFailedTransaction()) {

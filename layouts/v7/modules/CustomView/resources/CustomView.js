@@ -153,12 +153,12 @@ jQuery.Class("Vtiger_CustomView_Js",{
 		var aDeferred = jQuery.Deferred();
 		var formElement = jQuery("#CustomView");
 		var formData = formElement.serializeFormData();
-
+        
 		app.helper.showProgress();
 
 		app.request.post({'data':formData}).then(
 			function(error,data){
-			   if(error === null){
+               if(error === null){
 				app.helper.hideProgress();
 				window.onbeforeunload = null;
 				aDeferred.resolve(data);
@@ -174,26 +174,16 @@ jQuery.Class("Vtiger_CustomView_Js",{
 	},
 
 	saveAndViewFilter : function(){
-		this.saveFilter().then(
-			function(response){
-				app.helper.showSuccessNotification({'message':'' });
-								var appName = app.getAppName();
+		this.saveFilter().then(function (response) {
+			if (typeof response != "undefined") {
+				app.helper.showSuccessNotification({'message':app.vtranslate('JS_LIST_SAVED')});
+				var appName = app.getAppName();
 				var url = response['listviewurl']+'&app='+appName;
-					window.location.href=url;
-//				} else {
-//					var params = {
-//						title: app.vtranslate('JS_DUPLICATE_RECORD'),
-//						text: response.error['message']
-//					};
-//					Vtiger_Helper_Js.showPnotify(params);
-//				}
-			},
-
-			function(error) {
-
+				window.location.href = url;
+			} else {
+				app.helper.showErrorNotification({message: app.vtranslate('JS_FAILED_TO_SAVE')});
 			}
-
-		);
+		});
 	},
 
 	isAllUsersSelected : function() {

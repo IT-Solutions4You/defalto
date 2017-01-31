@@ -47,8 +47,7 @@
 						</select>
 					{elseif $FIELD_MODEL->getFieldDataType() eq "boolean"}
 						<input type="hidden" name="{$NAME_ATTR}" value="" />
-						<input type="checkbox" name="{$NAME_ATTR}" value="1"
-							   {if $DEFAULT_VALUE eq 1} checked {/if}  />
+						<input type="checkbox" name="{$NAME_ATTR}" value="1" {if $DEFAULT_VALUE eq 'on' or $DEFAULT_VALUE eq 1} checked {/if} />
 					{elseif $FIELD_MODEL->getFieldDataType() eq "time"}
 						<div class="input-group time">
 							<input type="text" class="timepicker-default inputElement" data-format="{$USER_MODEL->get('hour_format')}" data-toregister="time" value="{$DEFAULT_VALUE}" name="{$NAME_ATTR}"  style='width: 75%'/>
@@ -60,7 +59,7 @@
 						<div class="input-group date">
 							{assign var=FIELD_NAME value=$FIELD_MODEL->get('name')}
 							<input type="text" class="inputElement dateField" name="{$NAME_ATTR}" data-toregister="date" data-date-format="{$USER_MODEL->get('date_format')}" 
-								   value="{$FIELD_MODEL->getEditViewDisplayValue($DEFAULT_VALUE)}" style='width: 75%'/>
+								value="{$FIELD_MODEL->getEditViewDisplayValue($DEFAULT_VALUE)}" style='width: 75%'/>
 							<span class="input-group-addon">
 								<i class="fa fa-calendar"></i>
 							</span>
@@ -68,15 +67,15 @@
 					{elseif $FIELD_MODEL->getFieldDataType() eq "percentage"}
 						<div class="input-group" style='width: 75%'>
 							<input type="number" class="form-control" name="{$NAME_ATTR}"
-								   value="{$DEFAULT_VALUE}"  step="any"/>
+								value="{$DEFAULT_VALUE}"  step="any"/>
 							<span class="input-group-addon">%</span>
 						</div>
 					{elseif $FIELD_MODEL->getFieldDataType() eq "currency"}
 						<div class="input-group">
 							<span class="input-group-addon">{$USER_MODEL->get('currency_symbol')}</span>
 							<input type="text" class="inputElement" name="{$NAME_ATTR}"
-								   value="{$FIELD_MODEL->getEditViewDisplayValue($DEFAULT_VALUE, true)}"
-								   data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' style='width: 75%'/>
+								value="{$FIELD_MODEL->getEditViewDisplayValue($DEFAULT_VALUE, true)}"
+								data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' style='width: 75%'/>
 						</div>
 					{else if $FIELD_MODEL->getFieldName() eq "terms_conditions" && $FIELD_MODEL->get('uitype') == 19}
 						{assign var=INVENTORY_TERMS_AND_CONDITIONS_MODEL value= Settings_Vtiger_MenuItem_Model::getInstance("INVENTORYTERMSANDCONDITIONS")}

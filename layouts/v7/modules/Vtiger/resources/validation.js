@@ -271,6 +271,22 @@ jQuery.validator.addMethod("owner", function(value, element, params) {
 	}, jQuery.validator.format("Please enter the correct date")
 );
 
+jQuery.validator.addMethod("check-filter-duplicate", function (value, element, params) {
+		var duplicateExist = false;
+		var recordId = jQuery(element).data('recordId');
+		for (var id in params) {
+			var filterName = params[id];
+			if (recordId != id && filterName.toLowerCase() == value.toLowerCase().trim()) {
+				duplicateExist = true;
+				return false;
+			}
+		}
+		if (duplicateExist == false) {
+			return true;
+		}
+	}, jQuery.validator.format(app.vtranslate('JS_VIEW_ALREADY_EXISTS'))
+);
+
 jQuery.validator.addMethod("time", function(value, element, params) {
 		if(!value) return true;
 		try {

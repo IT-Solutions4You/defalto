@@ -12,6 +12,11 @@ if(defined('VTIGER_UPGRADE')) {
 	global $adb, $current_user;
 	$db = PearDatabase::getInstance();
 
+	$result = $db->pquery('SELECT 1 FROM vtiger_ws_fieldtype WHERE uitype=?', array('98'));
+	if (!$db->num_rows($result)) {
+		$db->pquery('INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES(?, ?)', array('98', 'reference'));
+	}
+
 	if (!Vtiger_Utils::CheckTable('vtiger_activity_recurring_info')) {
 		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_activity_recurring_info(activityid INT(19) NOT NULL, recurrenceid INT(19) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
 	}
@@ -24,6 +29,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
+	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
 
 	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
 	foreach ($lineItemModules as $moduleName => $tableName) {
@@ -47,6 +53,13 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$documentsModuleModel = Vtiger_Module_Model::getInstance('Documents');
+	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $userModuleModel);
+	if ($noteContentFieldModel) {
+		$noteContentFieldModel->set('masseditable', '0');
+		$noteContentFieldModel->save();
+	}
+
 	$userModuleModel = Vtiger_Module_Model::getInstance('Users');
 	$defaultActivityTypeFieldModel = Vtiger_Field_Model::getInstance('defaultactivitytype', $userModuleModel);
 	if ($defaultActivityTypeFieldModel) {
@@ -59,7 +72,7 @@ if(defined('VTIGER_UPGRADE')) {
 	if ($defaultEventStatusFieldModel) {
 		$defaultEventStatusFieldModel->set('defaultvalue', 'Planned');
 		$defaultEventStatusFieldModel->save();
-		$db->pquery('UPDATE vtiger_users SET defaultactivitytype=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
+		$db->pquery('UPDATE vtiger_users SET defaulteventstatus=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
 	}
 
 	$fieldNamesList = array();
@@ -599,6 +612,13 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$columns = $db->getColumnNames('vtiger_customerportal_relatedmoduleinfo');
+	if (!in_array('module', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo CHANGE module tabid INT(19)', array());
+		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo ADD PRIMARY KEY(tabid)', array());
+		$db->pquery('ALTER TABLE vtiger_customerportal_fields ADD PRIMARY KEY(tabid)', array());
+	}
+
 	if (!Vtiger_Utils::CheckTable('vtiger_customerportal_settings')) {
 		$db->pquery('CREATE TABLE vtiger_customerportal_settings(id int, url VARCHAR(250),default_assignee INT(11),
 							support_notification INT(11), announcement TEXT, shortcuts TEXT,widgets TEXT,charts TEXT)', array());
@@ -1041,13 +1061,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$columns = $db->getColumnNames('vtiger_invitees');
 	if (!in_array('status', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_invitees ADD COLUMN status VARCHAR(50) DEFAULT NULL', array());
-	}
-
-	$columns = $db->getColumnNames('vtiger_customerportal_relatedmoduleinfo');
-	if (!in_array('module', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo CHANGE module tabid INT', array());
-		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo ADD PRIMARY KEY(tabid)', array());
-		$db->pquery('ALTER TABLE vtiger_customerportal_fields ADD PRIMARY KEY(tabid)', array());
 	}
 
 	$ignoreModules = array('SMSNotifier', 'ModComments');
@@ -1809,20 +1822,20 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($configurationBlockId, 'LBL_CONFIGURATION', 4));
 	}
 
-	$configurationFields = array(	'LBL_COMPANY_DETAILS'			=> 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
-									'LBL_CUSTOMER_PORTAL'			=> 'index.php?module=CustomerPortal&parent=Settings&view=Index',
-									'LBL_CURRENCY_SETTINGS'			=> 'index.php?parent=Settings&module=Currency&view=List',
-									'LBL_MAIL_SERVER_SETTINGS'		=> 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
-									'Configuration Editor'			=> 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
-									'LBL_PICKLIST_EDITOR'			=> 'index.php?parent=Settings&module=Picklist&view=Index',
-									'LBL_PICKLIST_DEPENDENCY_SETUP'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
-									'LBL_MENU_EDITOR'				=> 'index.php?module=MenuEditor&parent=Settings&view=Index');
+	$configurationFields = array(	'LBL_COMPANY_DETAILS'		=> 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
+									'LBL_CUSTOMER_PORTAL'		=> 'index.php?module=CustomerPortal&parent=Settings&view=Index',
+									'LBL_CURRENCY_SETTINGS'		=> 'index.php?parent=Settings&module=Currency&view=List',
+									'LBL_MAIL_SERVER_SETTINGS'	=> 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
+									'Configuration Editor'		=> 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
+									'LBL_PICKLIST_EDITOR'		=> 'index.php?parent=Settings&module=Picklist&view=Index',
+									'LBL_PICKLIST_DEPENDENCY'	=> 'index.php?parent=Settings&module=PickListDependency&view=List',
+									'LBL_MENU_EDITOR'			=> 'index.php?module=MenuEditor&parent=Settings&view=Index');
 
+	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('LBL_PICKLIST_DEPENDENCY', 'LBL_PICKLIST_DEPENDENCY_SETUP'));
 	$configurationSequence = 1;
 	foreach ($configurationFields as $fieldName => $linkTo) {
 		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($configurationSequence++, $linkTo, $configurationBlockId, $fieldName));
 	}
-	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=? AND blockid=?', array('LBL_PICKLIST_DEPENDENCY', 'LBL_PICKLIST_DEPENDENCY_SETUP', $configurationBlockId));
 	//End:: configuration block
 
 	//Start:: marketing sales block

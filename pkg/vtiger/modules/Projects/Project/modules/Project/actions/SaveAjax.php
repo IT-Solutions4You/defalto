@@ -18,7 +18,6 @@ class Project_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
 		if (!empty($mode)) {
-			$this->twitterConnector = Social_Module_Model::getTwitterConnector();
 			echo $this->invokeExposedMethod($mode, $request);
 			return;
 		} else {

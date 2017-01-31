@@ -184,7 +184,7 @@
 					<selected>0</selected>
 					<sequence>1</sequence>
 					<maximumlength>100</maximumlength>
-					<typeofdata>T~O</typeofdata>
+					<typeofdata>DT~O</typeofdata>
 					<quickcreate>1</quickcreate>
 					<quickcreatesequence></quickcreatesequence>
 					<displaytype>2</displaytype>
@@ -204,7 +204,7 @@
 					<selected>0</selected>
 					<sequence>2</sequence>
 					<maximumlength>100</maximumlength>
-					<typeofdata>T~O</typeofdata>
+					<typeofdata>DT~O</typeofdata>
 					<quickcreate>1</quickcreate>
 					<quickcreatesequence></quickcreatesequence>
 					<displaytype>2</displaytype>

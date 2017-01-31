@@ -9,9 +9,9 @@
 
 {strip}
 	{assign var=SELECTED_FIELDS value=$CUSTOMVIEW_MODEL->getSelectedFields()}
-	<div id="filterContainer"  >
+	<div id="filterContainer">
 		<form id="CustomView">
-			<div class = "modal-content">
+			<div class="modal-content">
 				<div class="overlayHeader">
 					{if $RECORD_ID}
 						{assign var="TITLE" value={vtranslate('LBL_EDIT_CUSTOM',$MODULE)}}
@@ -30,14 +30,14 @@
 						<input type="hidden" id="advfilterlist" name="advfilterlist" value=""/>
 						<input type="hidden" name="status" value="{$CV_PRIVATE_VALUE}"/>
 						{if $RECORD_ID}
-							<input type="hidden" name="status"  value="{$CUSTOMVIEW_MODEL->get('status')}" />
+							<input type="hidden" name="status" value="{$CUSTOMVIEW_MODEL->get('status')}" />
 						{/if}
 						<input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}' />
 						<div class="form-group">
 							<label>{vtranslate('LBL_VIEW_NAME',$MODULE)}&nbsp;<span class="redColor">*</span> </label>
 							<div class="row">
 								<div class="col-lg-5">
-									<input class="form-control" type="text" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true">
+									<input class="form-control" type="text" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true" data-record-id="{$RECORD_ID}" data-rule-maxsize="100" data-rule-check-filter-duplicate='{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($CUSTOM_VIEWS_LIST))}'>
 								</div>
 								<div class="col-lg-5">
 									<label class="checkbox-inline">
@@ -70,16 +70,16 @@
 												{/if}
 												{assign var=FIELD_MODULE_NAME value=$FIELD_MODEL->getModule()->getName()}
 												<option value="{$FIELD_MODEL->getCustomViewColumnName()}" data-field-name="{$FIELD_NAME}"
-														{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
-															selected
-														{elseif (!$RECORD_ID) && ($FIELD_MODEL->isSummaryField() || $FIELD_MODEL->isHeaderField()) && ($FIELD_MODULE_NAME eq $SOURCE_MODULE) && (!(preg_match("/\([A-Za-z_0-9]* \; \([A-Za-z_0-9]*\) [A-Za-z_0-9]*\)/", $FIELD_NAME))) && $NUMBER_OF_COLUMNS_SELECTED < $MAX_ALLOWED_COLUMNS}    
-															selected
-															{assign var=NUMBER_OF_COLUMNS_SELECTED value=$NUMBER_OF_COLUMNS_SELECTED + 1}
-														{/if}
-														>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
-											{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
-											</option>
-										{/foreach}
+													{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
+														selected
+													{elseif (!$RECORD_ID) && ($FIELD_MODEL->isSummaryField() || $FIELD_MODEL->isHeaderField()) && ($FIELD_MODULE_NAME eq $SOURCE_MODULE) && (!(preg_match("/\([A-Za-z_0-9]* \; \([A-Za-z_0-9]*\) [A-Za-z_0-9]*\)/", $FIELD_NAME))) && $NUMBER_OF_COLUMNS_SELECTED < $MAX_ALLOWED_COLUMNS}
+														selected
+														{assign var=NUMBER_OF_COLUMNS_SELECTED value=$NUMBER_OF_COLUMNS_SELECTED + 1}
+													{/if}
+													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
+													{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
+												</option>
+											{/foreach}
 										</optgroup>
 									{/foreach}
 									{*Required to include event fields for columns in calendar module advanced filter*}
@@ -94,13 +94,13 @@
 													{array_push($MANDATORY_FIELDS, $FIELD_MODEL->getCustomViewColumnName())}
 												{/if}
 												<option value="{$FIELD_MODEL->getCustomViewColumnName()}" data-field-name="{$FIELD_NAME}"
-														{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
-															selected
-														{/if}
-														>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
-											{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
-											</option>
-										{/foreach}
+													{if in_array(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}
+														selected
+													{/if}
+													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
+												{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
+												</option>
+											{/foreach}
 										</optgroup>
 									{/foreach}
 								</select>
@@ -111,7 +111,7 @@
 						</div>
 						<div>
 							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)} :</label>
-							<div  class="filterElements well filterConditionContainer filterConditionsDiv">
+							<div class="filterElements well filterConditionContainer filterConditionsDiv">
 								{include file='AdvanceFilter.tpl'|@vtemplate_path}
 							</div>
 						</div>
@@ -129,15 +129,20 @@
 								</option>
 							</optgroup>
 							{foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
-								<optgroup label="{$GROUP_LABEL}">
+								{assign var=TRANS_GROUP_LABEL value=$GROUP_LABEL}
+								{if $GROUP_LABEL eq 'RoleAndSubordinates'}
+									{assign var=TRANS_GROUP_LABEL value='LBL_ROLEANDSUBORDINATE'}
+								{/if}
+								{assign var=TRANS_GROUP_LABEL value={vtranslate($TRANS_GROUP_LABEL)}}
+								<optgroup label="{$TRANS_GROUP_LABEL}">
 									{foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
-										<option value="{$MEMBER->getId()}"  data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
+										<option value="{$MEMBER->getId()}" data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
 									{/foreach}
 								</optgroup>
 							{/foreach}
 						</select>
 						<input type="hidden" name="status" id="allUsersStatusValue" value=""
-							   data-public="{$CV_PUBLIC_VALUE}" data-private="{$CV_PRIVATE_VALUE}"/>
+							data-public="{$CV_PUBLIC_VALUE}" data-private="{$CV_PRIVATE_VALUE}"/>
 						<div class='clearfix modal-footer-overwrite-style'>
 							<div class="row clearfix">
 								<div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
@@ -147,7 +152,7 @@
 							</div>
 						</div>
 					</div>
-				</div>  
+				</div>
 			</div>
 		</form>
 	</div>

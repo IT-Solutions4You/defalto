@@ -39,7 +39,7 @@
 					<div class="search-link hidden-xs">
 						<span class="fa fa-search" aria-hidden="true"></span>
 						<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
-						<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right" aria-hidden="true"></span>
+						<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
 					</div>
 				</div>
 				<div id="navbar" class="col-sm-6 col-md-3 col-lg-3 collapse navbar-collapse navbar-right global-actions">

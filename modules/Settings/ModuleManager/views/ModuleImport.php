@@ -14,6 +14,8 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 		parent::__construct();
 		$this->exposeMethod('step2');
 		$this->exposeMethod('step3');
+		$this->exposeMethod('importUserModuleStep1');
+		$this->exposeMethod('importUserModuleStep2');
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -23,10 +25,12 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 			return;
 		}
 
+		$EXTENSIONS = Settings_ModuleManager_Extension_Model::getAll();
 		$qualifiedModuleName = $request->getModule(false);
 		$viewer = $this->getViewer($request);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('EXTENSIONS', Settings_ModuleManager_Extension_Model::getAll());
+		$viewer->assign('EXTENSIONS', $EXTENSIONS);
+		$viewer->assign('EXTENSIONS_AVAILABLE', (count($EXTENSIONS) > 0)? true :false);
 		$viewer->view('Step1.tpl', $qualifiedModuleName);
 	}
 
@@ -71,7 +75,7 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 					$viewer->assign('FILE_NAME', $extensionModel->getFileName());
 					$viewer->assign('MODULE_LICENSE', (string)$package->getLicense());
 					$viewer->assign('SUPPORTED_VTVERSION', $package->getDependentVtigerVersion());
-					
+
 				} else {
 					$viewer->assign('ERROR', true);
 					$viewer->assign('ERROR_MESSAGE', vtranslate('LBL_INVALID_FILE', $qualifiedModuleName));
@@ -125,8 +129,8 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->view('Step3.tpl', $qualifiedModuleName);
 	}
-    
-    /**
+
+	/**
 	 * Function to get the list of Script models to be included
 	 * @param Vtiger_Request $request
 	 * @return <Array> - List of Vtiger_JsScript_Model instances
@@ -143,8 +147,59 @@ class Settings_ModuleManager_ModuleImport_View extends Settings_Vtiger_Index_Vie
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateReadAccess();
-    }
+
+	public function importUserModuleStep1(Vtiger_Request $request){
+		$viewer = $this->getViewer($request);
+		$qualifiedModuleName = $request->getModule(false);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+		$viewer->view('ImportUserModuleStep1.tpl', $qualifiedModuleName);
+	}
+
+	public function importUserModuleStep2(Vtiger_Request $request){
+		$viewer = $this->getViewer($request);
+		$uploadDir = Settings_ModuleManager_Extension_Model::getUploadDirectory();
+		$qualifiedModuleName = $request->getModule(false);
+
+		$uploadFile = 'usermodule_'.time().'.zip';
+		$uploadFileName = "$uploadDir/$uploadFile";
+		checkFileAccess($uploadDir);
+		if(!move_uploaded_file($_FILES['moduleZip']['tmp_name'], $uploadFileName)) {
+			$viewer->assign('MODULEIMPORT_FAILED', true);
+		}else{
+			$package = new Vtiger_Package();
+			$importModuleName = $package->getModuleNameFromZip($uploadFileName);
+			$importModuleDepVtVersion = $package->getDependentVtigerVersion();
+
+			if($importModuleName == null ) {
+				$viewer->assign('MODULEIMPORT_FAILED', true);
+				$viewer->assign("MODULEIMPORT_FILE_INVALID", true);
+				checkFileAccessForDeletion($uploadFileName);
+				unlink($uploadFileName);
+			} else {
+				// We need these information to push for Update if module is detected to be present.
+				$moduleLicence = vtlib_purify($package->getLicense());
+
+				$viewer->assign("MODULEIMPORT_FILE", $uploadFile);
+				$viewer->assign("MODULEIMPORT_TYPE", $package->type());
+				$viewer->assign("MODULEIMPORT_NAME", $importModuleName);
+				$viewer->assign("MODULEIMPORT_DEP_VTVERSION", $importModuleDepVtVersion);
+				$viewer->assign("MODULEIMPORT_LICENSE", $moduleLicence);
+
+				if(!$package->isLanguageType() && !$package->isModuleBundle()) {
+					$moduleInstance = Vtiger_Module::getInstance($importModuleName);
+					$moduleimport_exists = ($moduleInstance)? "true" : "false";
+					$moduleimport_dir_name = "modules/$importModuleName";
+					$moduleimport_dir_exists = (is_dir($moduleimport_dir_name)? "true" : "false");
+					$viewer->assign("MODULEIMPORT_EXISTS", $moduleimport_exists);
+					$viewer->assign("MODULEIMPORT_DIR", $moduleimport_dir_name);
+					$viewer->assign("MODULEIMPORT_DIR_EXISTS", $moduleimport_dir_exists);
+				}
+			}
+		}
+		$viewer->view('ImportUserModuleStep2.tpl', $qualifiedModuleName);
+	}
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateReadAccess();
+	}
 }

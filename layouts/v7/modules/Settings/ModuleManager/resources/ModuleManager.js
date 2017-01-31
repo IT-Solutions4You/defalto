@@ -41,9 +41,92 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 		);
 		return aDeferred.promise();
 	},
+	registerEventsForImportFromZip: function (container) {
+		container.on('change', '[name="acceptDisclaimer"]', function (e) {
+			var element = jQuery(e.currentTarget);
+			var importFromZip = container.find('[name="importFromZip"]');
+			var uploadedFile = jQuery('#moduleZip').val();
+			var disabledStatus = importFromZip.attr('disabled');
+			if ((element.is(':checked')) && (uploadedFile != '')) {
+				if (typeof disabledStatus != "undefined") {
+					importFromZip.removeAttr('disabled');
+				}
+			} else {
+				if (typeof disabledStatus == "undefined") {
+					importFromZip.attr('disabled', "disabled");
+				}
+			}
+		});
+
+		container.on('change', '[name="moduleZip"]', function (e) {
+			container.find('[name="acceptDisclaimer"]').trigger('click');
+		});
+
+		container.on('click', '.finishButton', function() {
+			window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
+		});
+
+		container.on('click', '.importModule, .updateModule', function (e) {
+			var element = jQuery(e.currentTarget);
+			var params = {};
+			if (element.hasClass('updateModule')) {
+				params = {
+					'module': app.getModuleName(),
+					'parent': app.getParentModuleName(),
+					'action': 'Basic',
+					'mode': 'updateUserModuleStep3'
+				};
+			} else if (element.hasClass('importModule')) {
+				params = {
+					'module': app.getModuleName(),
+					'parent': app.getParentModuleName(),
+					'action': 'Basic',
+					'mode': 'importUserModuleStep3'
+				};
+			}
+			params['module_import_file'] = container.find('[name="module_import_file"]').val();
+			params['module_import_type'] = container.find('[name="module_import_type"]').val();
+			params['module_import_name'] = container.find('[name="module_import_name"]').val();
+
+			AppConnector.request(params).then(
+				function (data) {
+					element.addClass('hide');
+					var headerMessage, containerMessage;
+
+					if (element.hasClass('updateModule')) {
+						headerMessage = app.vtranslate('JS_UPDATE_SUCCESSFULL');
+						containerMessage = app.vtranslate('JS_UPDATED_MODULE');
+					} else if (element.hasClass('importModule')) {
+						headerMessage = app.vtranslate('JS_IMPORT_SUCCESSFULL');
+						containerMessage = app.vtranslate('JS_IMPORTED_MODULE');
+					}
+					app.helper.showSuccessNotification({'title': headerMessage, 'message': data.result.importModuleName+' '+containerMessage});
+					setTimeout(function() {
+						window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
+					}, 3000);
+				}
+			);
+		});
+
+		container.on('click', '.acceptLicense', function (e) {
+			var element = jQuery(e.currentTarget);
+			var saveButton = container.find('[name="saveButton"]')
+			if (element.is(':checked')) {
+				saveButton.removeAttr("disabled");
+			} else {
+				if (typeof saveButton.attr('disabled') == 'undefined') {
+					saveButton.attr('disabled', "disabled");
+				}
+			}
+		});
+	},
 	registerEvents: function (e) {
 		var thisInstance = this;
 		var container = jQuery('#moduleManagerContents');
+		var importFromZipContainer = jQuery('#importModules');
+		if (importFromZipContainer.length > 0) {
+			thisInstance.registerEventsForImportFromZip(importFromZipContainer);
+		}
 
 		//register click event for check box to update the module status
 		container.on('click', '[name="moduleStatus"]', function (e) {
@@ -61,13 +144,10 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 				moduleDetails.removeClass('dull');
 
 				//update the module status as enabled
-				thisInstance.updateModuleStatus(currentTarget).then(
-					function (data) {
-						var message = forModule+' '+app.vtranslate('JS_MODULE_ENABLED');
-						app.helper.showSuccessNotification({'message': message});
-					}
-				);
-
+				thisInstance.updateModuleStatus(currentTarget).then(function (data) {
+					var message = forModule+' '+app.vtranslate('JS_MODULE_ENABLED');
+					app.helper.showSuccessNotification({'message': message});
+				});
 			} else {
 				//hide the settings button for the module.
 				actionButtons.addClass('hide');
@@ -76,22 +156,14 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 				moduleDetails.addClass('dull');
 
 				//update the module status as disabled
-				thisInstance.updateModuleStatus(currentTarget).then(
-					function (data) {
-						var message = forModule+' '+app.vtranslate('JS_MODULE_DISABLED');
-						app.helper.showSuccessNotification({'message': message});
-					}
-
-				);
+				thisInstance.updateModuleStatus(currentTarget).then(function (data) {
+					var message = forModule+' '+app.vtranslate('JS_MODULE_DISABLED');
+					app.helper.showSuccessNotification({'message': message});
+				});
 			}
-
 		});
-
 	}
 });
 
-Settings_Module_Manager_Js('Settings_ModuleManager_List_Js', {}, {
-	init: function () {
-		this.addModuleSpecificComponent('Index', 'Vtiger', app.getParentModuleName());
-	}
-});
+var moduleManagerInstance = new Settings_Module_Manager_Js();
+moduleManagerInstance.registerEvents();

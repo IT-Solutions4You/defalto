@@ -1070,8 +1070,8 @@ Vtiger.Class("Vtiger_List_Js", {
 						window.location = href;
 					}, 500));
 				}
+				e.preventDefault();
 			}
-			e.preventDefault();
 			e.stopPropagation();
 		});
 
@@ -1639,11 +1639,17 @@ Vtiger.Class("Vtiger_List_Js", {
 				}
 				element.removeClass('processing');
 			})
-			app.helper.showSuccessNotification({"message": app.vtranslate("JS_SUCCESS")});
+			if(element.hasClass('active')){
+				app.helper.showSuccessNotification({'message':app.vtranslate('JS_FOLLOW_RECORD')});
+			} else {
+				app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOW_RECORD')});
+			}
 		});
 	},
 	massStarSave: function (params) {
 		var self = this;
+		var listInstance = window.app.controller();
+		var selectedRecordCount = listInstance.getSelectedRecordCount();
 		params.module = this.getModuleName();
 		params.action = 'SaveStar';
 		var cvId = this.getCurrentCvId();
@@ -1656,7 +1662,11 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.helper.hideProgress();
 			self.loadListViewRecords().then(function (e) {
 				self.clearList();
-				app.helper.showSuccessNotification({"message": ''});
+				 if(params.value == 1){
+                    app.helper.showSuccessNotification({'message':(app.vtranslate('JS_FOLLOWING')) +' '+ selectedRecordCount +' '+ app.vtranslate(params.module)});
+                } else {
+					app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOWING') +' '+ selectedRecordCount +' '+ app.vtranslate(params.module)}); 
+                }
 			});
 		})
 	},

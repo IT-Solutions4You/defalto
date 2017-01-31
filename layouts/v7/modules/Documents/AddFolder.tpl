@@ -39,7 +39,7 @@
 						{vtranslate('LBL_FOLDER_DESCRIPTION', $MODULE)}
 					</label>
 					<div class="controls col-sm-9">
-						<textarea rows="3" class="inputElement" name="folderdesc" id="description" style="resize: vertical;">{if $FOLDER_DESC neq null}{$FOLDER_DESC}{/if}</textarea>
+						<textarea rows="3" class="inputElement form-control" name="folderdesc" id="description" style="resize: vertical;">{if $FOLDER_DESC neq null}{$FOLDER_DESC}{/if}</textarea>
 					</div>
 				</div>
 			</div>

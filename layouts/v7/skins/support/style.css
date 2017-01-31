@@ -2762,6 +2762,9 @@ th {
 .active .stepNum {
   color: #FFFFFF;
 }
+.mailBoxEditDiv .crumbs li {
+  width: 22%;
+}
 .stepNum {
   display: inline-block;
   padding: 0 5px;
