@@ -1306,4 +1306,30 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return ($this->get('headerfield')) ? true : false;
 	}
 
+	public function getPicklistColors() {
+		$picklistColors = array();
+		$fieldDataType = $this->getFieldDataType();
+		if (in_array($fieldDataType, array('picklist', 'multipicklist'))) {
+			$fieldName = $this->getName();
+
+			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
+			if (count($matches) > 0) {
+				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				$fieldName = $referenceFieldName;
+			}
+
+			if (!in_array($fieldName, array('hdnTaxType', 'region_id'))) {
+				$db = PearDatabase::getInstance();
+				$picklistValues = $this->getPicklistValues();
+
+				if (is_array($picklistValues)) {
+					$result = $db->pquery("SELECT $fieldName, color FROM vtiger_$fieldName WHERE $fieldName IN (".generateQuestionMarks($picklistValues).")", array_keys($picklistValues));
+					while ($row = $db->fetch_row($result)) {
+						$picklistColors[$row[$fieldName]] = $row['color'];
+					}
+				}
+			}
+		}
+		return $picklistColors;
+	}
 }
