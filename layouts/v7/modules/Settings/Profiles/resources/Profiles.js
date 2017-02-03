@@ -136,7 +136,6 @@ var Settings_Profiles_Js = {
 				deleteAction.show().prop('checked',true);
 				moduleCheckBoxes.trigger('change');
 			} else {
-				//Some modules like TextSearch, BusinessHours, SLA will not be shown in the UI. But they should be always enabled
 				moduleCheckBoxes.filter(':visible').not(':disabled').prop('checked',false);
 				moduleCheckBoxes.trigger('change');
 				viewAction.prop('checked',false);
