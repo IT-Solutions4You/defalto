@@ -66,9 +66,9 @@ class Project_Module_Model extends Vtiger_Module_Model {
 	 * @param Vtiger_Module_Model $relatedModule
 	 * @return <String>
 	 */
-	public function getRelationQuery($recordId, $functionName, $relatedModule,$relationId) {
+	public function getRelationQuery($recordId, $functionName, $relatedModule, $relationId) {
 		$relatedModuleName = $relatedModule->getName();
-		$query = parent::getRelationQuery($recordId, $functionName, $relatedModule,$relationId);
+		$query = parent::getRelationQuery($recordId, $functionName, $relatedModule, $relationId);
 		return $query;
 	}
 
