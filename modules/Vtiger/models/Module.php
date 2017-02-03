@@ -1491,13 +1491,13 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @param Vtiger_Module_Model $relatedModule
 	 * @return <String>
 	 */
-	public function getRelationQuery($recordId, $functionName, $relatedModule) {
+	public function getRelationQuery($recordId, $functionName, $relatedModule, $relationId) {
 		$relatedModuleName = $relatedModule->getName();
 
 		$focus = CRMEntity::getInstance($this->getName());
 		$focus->id = $recordId;
 
-		$result = $focus->$functionName($recordId, $this->getId(), $relatedModule->getId());
+		$result = $focus->$functionName($recordId, $this->getId(), $relatedModule->getId(), $relationId);
 		$query = $result['query'] .' '. $this->getSpecificRelationQuery($relatedModuleName);
 		$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
 
