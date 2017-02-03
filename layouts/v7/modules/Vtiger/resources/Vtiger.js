@@ -314,13 +314,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	addComponents : function() {
-		var basicSearchClassName = 'Vtiger_BasicSearch_Js';
-		var textsearchClassName = 'TextSearch_BasicSearch_Js';
-		if(typeof window[textsearchClassName] != "undefined") {
-			this.addComponent(textsearchClassName);
-		} else{
-			this.addComponent(basicSearchClassName);
-		}
+		this.addComponent('Vtiger_BasicSearch_Js');
 	},
 
 	registerListEssentialsToggleEvent : function() {
@@ -1396,6 +1390,15 @@ Vtiger.Class('Vtiger_Index_Js', {
 			};
 			jQuery('#helpPageOverlay').css({"width": "870px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white'});
 			app.helper.loadHelpPageOverlay(response, params);
+			var params = {
+				setHeight: "100%",
+				alwaysShowScrollbar: 2,
+				autoExpandScrollbar: true,
+				setTop: 0,
+				scrollInertia: 70,
+				mouseWheel: {preventDefault: true}
+			};
+			app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), params);
 		});
 	},
 
@@ -1447,7 +1450,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	showQuickPreviewForId: function(recordId, moduleName, appName, templateId, isReference, mode) {
 		var self = this;
-		if(self.isInventoryModule(moduleName) && moduleName != 'Subscription') {
+		if(self.isInventoryModule(moduleName)) {
 			self._showInventoryQuickPreviewForId(recordId, moduleName, templateId, isReference, mode);
 		} else {
 			self._showQuickPreviewForId(recordId, moduleName, appName, isReference);

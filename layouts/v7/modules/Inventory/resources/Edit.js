@@ -744,18 +744,6 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		jQuery('.lineItemCommentBox', lineItemRow).val('');
 		jQuery('.subProductIds', lineItemRow).val('');
 		jQuery('.subProductsContainer', lineItemRow).html('');
-
-		var lineItemCustomFields = this.customLineItemFields
-		for(var cfName in lineItemCustomFields) {
-			var cfDataType = lineItemCustomFields[cfName];
-			var element = lineItemRow.find('[name*="'+cfName+'"]');
-			switch(cfDataType) {
-				case 'boolean'		: element.attr('checked', false); break;
-				case 'picklist'		:
-				case 'multipicklist': element.select2('val', '').trigger('change'); break;
-				default				: element.val('');
-			}
-		}
 		this.quantityChangeActions(lineItemRow);
 	},
     
@@ -791,11 +779,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 
 		var nameFields = new Array('discount', 'purchaseCost', 'margin');
 		var classFields = new Array('taxPercentage');
-		var lineItemCustomFields = this.customLineItemFields;
-		for(var cfName in lineItemCustomFields) {
-			nameFields.push(cfName);
-		}
-        
+
 		//To handle variable tax ids
 		for(var classIndex in classFields) {
 			var className = classFields[classIndex];
@@ -813,15 +797,6 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 			var expectedElementId = elementId + expectedSequenceNumber;
 			lineItemRow.find('#'+actualElementId).attr('id',expectedElementId)
 					   .filter('[name="'+actualElementId+'"]').attr('name',expectedElementId);
-		}
-
-		for(var nameIndex in nameFields) {
-			var elementName = nameFields[nameIndex];
-			var actualElementName = elementName + currentSequenceNumber;
-			var expectedElementName = elementName + expectedSequenceNumber;
-            (elementName in lineItemCustomFields) && (lineItemCustomFields[elementName] == "multipicklist") 
-                && ( actualElementName+='[]',expectedElementName+='[]'); 
-			lineItemRow.find('[name="'+actualElementName+'"]').attr('name',expectedElementName);
 		}
 
 		lineItemRow.attr('id', expectedRowId).attr('data-row-num', expectedSequenceNumber);
@@ -1587,36 +1562,6 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
                     taxPercentage.val(parseFloat(value));
                 });
             }
-
-			var lineItemCustomFieldsData = this.customLineItemFields;
-            var lineItemCustomFields = recordData.lineItemCustomFields;
-            for(var cfName in lineItemCustomFields) {
-				var cfValue = lineItemCustomFields[cfName];
-				if (cfValue) {
-					var cfDataType = lineItemCustomFieldsData[cfName];
-                    cfName+=lineItemRowNumber;
-                    (cfDataType == 'multipicklist') && (cfName+='[]')
-					var element = jQuery('[name="'+cfName+'"]', parentRow);
-
-					switch(cfDataType) {
-						case 'boolean'		:
-                            if (parseInt(cfValue) > 0) {
-                                element.attr('checked', "checked");
-                                element.prop("true");
-                            } else {
-                                element.removeAttr('checked');
-                                element.prop("false");
-                            }
-                            break;
-						case 'picklist'		:	element.select2('val', cfValue).trigger('change'); break;
-						case 'multipicklist':	element = jQuery('[name="'+cfName+'"].select2', parentRow);
-												cfValue = cfValue.split(" |##| ");
-												element.select2('val', cfValue).trigger('change');
-                                                break;
-						default				:	element.val(cfValue);
-					}
-				}
-			}
 
 			if(this.isIndividualTaxMode()) {
                 parentRow.find('.productTaxTotal').removeClass('hide')
