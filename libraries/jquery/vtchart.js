@@ -26,7 +26,7 @@
         for (var i=0, l=arguments.length; i<l; i++) {
                 data.push(arguments[i]);
         }
-		if($.isFunction($.vtJqPlotInterface))
+		if($.isFunction(vtJqPlotInterface))
             vtChart.prototype = new vtJqPlotInterface();
         else
             console.log('supported interface not found!');
