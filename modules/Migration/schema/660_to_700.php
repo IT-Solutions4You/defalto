@@ -75,6 +75,34 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('UPDATE vtiger_users SET defaulteventstatus=? WHERE defaulteventstatus=? OR defaulteventstatus IS NULL', array('Planned', ''));
 	}
 
+	$moduleInstance = Vtiger_Module::getInstance('Users');
+	$blockInstance = Vtiger_Block::getInstance('LBL_CALENDAR_SETTINGS', $moduleInstance);
+	if ($blockInstance) {
+		$fieldInstance = Vtiger_Field::getInstance('defaultcalendarview', $moduleInstance);
+		if (!$fieldInstance) {
+			$fieldInstance				= new Vtiger_Field();
+			$fieldInstance->name		= 'defaultcalendarview';
+			$fieldInstance->label		= 'Default Calendar View';
+			$fieldInstance->table		= 'vtiger_users';
+			$fieldInstance->column		= 'defaultcalendarview';
+			$fieldInstance->uitype		= '16';
+			$fieldInstance->presence	= '0';
+			$fieldInstance->typeofdata	= 'V~O';
+			$fieldInstance->columntype	= 'VARCHAR(100)';
+			$fieldInstance->defaultvalue= 'MyCalendar';
+
+			$blockInstance->addField($fieldInstance);
+			$fieldInstance->setPicklistValues(array('ListView', 'MyCalendar', 'SharedCalendar'));
+			echo '<br>Default Calendar view field added <br>';
+		}
+	}
+
+	$allUsers = Users_Record_Model::getAll(true);
+	foreach ($allUsers as $userId => $userModel) {
+		$db->pquery('UPDATE vtiger_users SET defaultcalendarview=? WHERE id=?', array('MyCalendar', $userId));
+	}
+	echo 'Default calendar view updated for all active users <br>';
+
 	$fieldNamesList = array();
 	$updateQuery = 'UPDATE vtiger_field SET fieldlabel = CASE fieldname';
 	$result = $db->pquery('SELECT taxname, taxlabel FROM vtiger_inventorytaxinfo', array());

@@ -7395,3 +7395,8 @@ div.flip {
   width: 15px;
   height: 15px;
 }
+#composeEmailContainer .modal-body .quickCreateContent,
+#QuickCreate .modal-body .quickCreateContent,
+#create .quickCreateContent {
+  margin-top: 25px;
+}
