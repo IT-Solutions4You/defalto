@@ -1321,11 +1321,13 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			if (!in_array($fieldName, array('hdnTaxType', 'region_id'))) {
 				$db = PearDatabase::getInstance();
 				$picklistValues = $this->getPicklistValues();
-
-				if (is_array($picklistValues)) {
-					$result = $db->pquery("SELECT $fieldName, color FROM vtiger_$fieldName WHERE $fieldName IN (".generateQuestionMarks($picklistValues).")", array_keys($picklistValues));
-					while ($row = $db->fetch_row($result)) {
-						$picklistColors[$row[$fieldName]] = $row['color'];
+				$tableName = "vtiger_$fieldName";
+				if (Vtiger_Utils::CheckTable($tableName)) {
+					if (is_array($picklistValues)) {
+						$result = $db->pquery("SELECT $fieldName, color FROM $tableName WHERE $fieldName IN (".generateQuestionMarks($picklistValues).")", array_keys($picklistValues));
+						while ($row = $db->fetch_row($result)) {
+							$picklistColors[$row[$fieldName]] = $row['color'];
+						}
 					}
 				}
 			}
