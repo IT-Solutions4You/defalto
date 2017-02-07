@@ -57,7 +57,22 @@
 										{elseif $MENU eq 'Calendar Settings'}
 											{assign var=MENU_URL value=$USER_MODEL->getCalendarSettingsDetailViewUrl()}
 										{/if}
-										<li><a data-name="{$MENU}" href="{$MENU_URL}" class="menuItemLabel {if $ACTIVE_BLOCK['menu'] eq $MENU} settingsgroup-menu-color {/if}">{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}</a></li>
+										<li>
+											<a data-name="{$MENU}" href="{$MENU_URL}" class="menuItemLabel {if $ACTIVE_BLOCK['menu'] eq $MENU} settingsgroup-menu-color {/if}">
+												{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}
+												<img id="{$MENUITEM->getId()}_menuItem" data-id="{$MENUITEM->getId()}" class="pinUnpinShortCut cursorPointer pull-right"
+													 data-actionurl="{$MENUITEM->getPinUnpinActionUrl()}"
+													 data-pintitle="{vtranslate('LBL_PIN',$QUALIFIED_MODULE)}"
+													 data-unpintitle="{vtranslate('LBL_UNPIN',$QUALIFIED_MODULE)}"
+													 data-pinimageurl="{{vimage_path('pin.png')}}"
+													 data-unpinimageurl="{{vimage_path('unpin.png')}}"
+													 {if $MENUITEM->isPinned()}
+														 title="{vtranslate('LBL_UNPIN',$QUALIFIED_MODULE)}" src="{vimage_path('unpin.png')}" data-action="unpin"
+													 {else}
+														 title="{vtranslate('LBL_PIN',$QUALIFIED_MODULE)}" src="{vimage_path('pin.png')}" data-action="pin" 
+													 {/if} />
+											</a>
+										</li>
 									{/foreach}
 								</ul>
 							</div>

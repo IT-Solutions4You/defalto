@@ -8,8 +8,8 @@
  *************************************************************************************/
 
 Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
-    
-    showMessage : function(customParams){
+
+	showMessage : function(customParams){
 		var params = {};
 		params.animation = "show";
 		params.type = 'info';
@@ -20,11 +20,10 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 		}
 		Vtiger_Helper_Js.showPnotify(params);
 	}
-    
-    
+
+
 },{
-    
-    registerDeleteShortCutEvent : function(shortCutBlock) {
+	registerDeleteShortCutEvent : function(shortCutBlock) {
 		var thisInstance = this;
 		if(typeof shortCutBlock == 'undefined') {
 			var shortCutBlock = jQuery('.moduleBlock');
@@ -43,18 +42,19 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 					var shortCutActionEle = jQuery(menuItemId);
 					var imagePath = shortCutActionEle.data('pinimageurl');
 					shortCutActionEle.attr('src',imagePath).data('action','pin');
-                        app.helper.showSuccessNotification({'message':''});
-			}});
+					app.helper.showSuccessNotification({'message':''});
+				}
+			});
 			e.stopPropagation();
 		});
 	},
 
 	registerPinUnpinShortCutEvent : function() {
 		var thisInstance = this;
-		var widgets = jQuery('div.widgetContainer');
-		widgets.on('click','.pinUnpinShortCut',function(e){
+		var widget = jQuery('#accordion');
+		widget.on('click','.pinUnpinShortCut',function(e){
 			var shortCutActionEle = jQuery(e.currentTarget);
-			var url = shortCutActionEle.closest('.menuItem').data('actionurl');
+			var url = shortCutActionEle.data('actionurl');
 			var shortCutElementActionStatus = shortCutActionEle.data('action');
 			if(shortCutElementActionStatus == 'pin'){
 				var actionUrl = url+'&pin=true';
@@ -66,49 +66,35 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 				'enabled' : true
 				}
 			});
-			app.request.post({'url':actionUrl}).then(function(data) {
-				if(data.result.SUCCESS == 'OK') {
-					if(shortCutElementActionStatus == 'pin'){
+			app.request.post({'url':actionUrl}).then(function(err, data) {
+				if(data.SUCCESS == 'OK') {
+					if (shortCutElementActionStatus == 'pin') {
 						var imagePath = shortCutActionEle.data('unpinimageurl');
 						var unpinTitle = shortCutActionEle.data('unpintitle');
 						shortCutActionEle.attr('src',imagePath).data('action','unpin').attr('title',unpinTitle);
-						var params = {
-							'fieldid' : shortCutActionEle.data('id'),
-							'mode'  : 'getSettingsShortCutBlock',
-							'module'  : 'Vtiger',
-							'parent' : 'Settings',
-							'view' : 'IndexAjax'
-						};
-						app.request.post({'params':params}).then(function(data){
-							var shortCutsMainContainer = jQuery('#settingsShortCutsContainer');
-							var newBlock = jQuery(data).appendTo(shortCutsMainContainer);
-							thisInstance.registerSettingShortCutAlignmentEvent();
-							progressIndicatorElement.progressIndicator({
-								'mode' : 'hide'
+						var shortCutsMainContainer = jQuery('#settingsShortCutsContainer').find('.col-lg-12:last-child');
+						if (shortCutsMainContainer.length > 0) {
+							var url = 'module=Vtiger&parent=Settings&view=IndexAjax&mode=getSettingsShortCutBlock&fieldid='+shortCutActionEle.data('id');
+							app.request.post({url:url}).then(function(err, data){
+								var newBlock = jQuery(data).appendTo(shortCutsMainContainer);
+								thisInstance.registerSettingShortCutAlignmentEvent();
+								thisInstance.registerDeleteShortCutEvent(newBlock);
 							});
-							var Message= app.vtranslate('JS_SUCCESSFULLY_PINNED')
-							app.helper.showSuccessNotification()({'message':Message});
-							thisInstance.registerDeleteShortCutEvent(newBlock);
-						});
+						}
+						progressIndicatorElement.progressIndicator({'mode' : 'hide'});
+						app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_PINNED')});
 					} else {
 						var imagePath = shortCutActionEle.data('pinimageurl');
 						var pinTitle = shortCutActionEle.data('pintitle');
 						shortCutActionEle.attr('src',imagePath).data('action','pin').attr('title',pinTitle);
 						jQuery('#shortcut_'+shortCutActionEle.data('id')).remove();
 						thisInstance.registerSettingShortCutAlignmentEvent();
-						progressIndicatorElement.progressIndicator({
-							'mode' : 'hide'
-						});
-						var params = {
-							title : app.vtranslate('JS_MESSAGE'),
-							text: app.vtranslate('JS_SUCCESSFULLY_UNPINNED'),
-							animation: 'show',
-							type: 'info'
-						};
-						Vtiger_Helper_Js.showPnotify(params);
+						progressIndicatorElement.progressIndicator({'mode' : 'hide'});
+						app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_UNPINNED')});
 					}
 				}
 			});
+			e.preventDefault();
 		});
 	},
 
@@ -156,31 +142,24 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 			hoverClass: "ui-state-hover",
 			accept: ".menuItemLabel",
 			drop: function( event, ui ) {
-				var actionElement = ui.draggable.closest('.menuItem').find('.pinUnpinShortCut');
+				var actionElement = ui.draggable.find('.pinUnpinShortCut');
 				var pinStatus = actionElement.data('action');
 				if(pinStatus === 'unpin') {
-					var params = {
-						title : app.vtranslate('JS_MESSAGE'),
-						text: app.vtranslate('JS_SHORTCUT_ALREADY_ADDED'),
-						animation: 'show',
-						type: 'info'
-					};
-					Vtiger_Helper_Js.showPnotify(params);
+					app.helper.showSuccessNotification({'message':app.vtranslate('JS_SHORTCUT_ALREADY_ADDED')});
 				} else {
-					ui.draggable.closest('.menuItem').find('.pinUnpinShortCut').trigger('click');
-					thisInstance.registerSettingShortCutAlignmentEvent();
+					actionElement.trigger('click');
 				}
 			}
 		});
 	},
-    
+
 	registerEventForShowOrHideSettingsLinks: function () {
 		jQuery('.slidingDiv').hide();
 		jQuery('.show_hide').click(function (e) {
-		   jQuery(this).next(".slidingDiv").slideToggle('fast');
+			jQuery(this).next(".slidingDiv").slideToggle('fast');
 		});
 	},
-   
+
 	registerAccordionClickEvent : function() {
 		function toggleChevron(e) {
 			$(e.target)
@@ -190,50 +169,26 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 		}
 		$('#accordion').on('hidden.bs.collapse', toggleChevron);
 		$('#accordion').on('shown.bs.collapse', toggleChevron);
-		
-//		jQuery('.settingsgroup-accordion a[data-parent="#accordion"]').on('click', function(e){
-//			var target = jQuery(e.currentTarget);
-//			var closestItag = target.find('i');
-//			
-//			var hasInClass = target.parents('.instaSearch').find('.widgetContainer').closest('.panel-collapse').filter('.in');
-//			
-//			if(hasInClass){
-//				closestItag.removeClass('fa-chevron-right').toggleClass('fa-chevron-down fa-chevron-right');
-//			}
-//			jQuery('.settingsgroup i').not(closestItag).removeClass('fa-chevron-down').addClass('fa-chevron-right');
-//		});
 	},
-    
-	
-	registerBasicSettingsEvents : function() {
-            this.registerAccordionClickEvent();
-			this.registerFilterSearch();
-//            var container = jQuery('#listViewContent');
-//            if(jQuery('#listViewContent').find('table.listview-table').length){
-//                if(jQuery('.sticky-wrap').length == 0){
-//                    stickyheader.controller();				
-//                    container.find('.sticky-thead').addClass('listview-table');
-//                }
-//                app.helper.dynamicListViewHorizontalScroll();
-//            }
-            
-            //check if list view
-            //floatTHead, some timeout so correct height can be caught for computations
-            if(window.hasOwnProperty('Vtiger_List_Js')) {
-                var listInstance = new Vtiger_List_Js();
-                setTimeout(function(){
-                    listInstance.registerFloatingThead();
-                }, 10);
 
-                app.event.on('Vtiger.Post.MenuToggle', function() {
-                    listInstance.reflowList();
-                });
-                listInstance.registerDynamicDropdownPosition();
-            }
+	registerBasicSettingsEvents : function() {
+			this.registerAccordionClickEvent();
+			this.registerFilterSearch();
+			if(window.hasOwnProperty('Vtiger_List_Js')) {
+				var listInstance = new Vtiger_List_Js();
+				setTimeout(function(){
+					listInstance.registerFloatingThead();
+				}, 10);
+
+				app.event.on('Vtiger.Post.MenuToggle', function() {
+					listInstance.reflowList();
+				});
+				listInstance.registerDynamicDropdownPosition();
+			}
 	},
-	
+
 	registerFilterSearch : function () {
-        var settings = jQuery('.settingsgroup');
+		var settings = jQuery('.settingsgroup');
 			jQuery('.search-list').instaFilta({
 				targets: '.menuItemLabel',
 				sections : '.instaSearch',
@@ -248,11 +203,11 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 					jQuery('.instaSearch').filter(':visible').find('[data-instafilta-hide="false"]').parents('.instaSearch').find('.indicator').removeClass('fa-chevron-right').addClass('fa-chevron-down');
 				}
 			});
-    },
-	
+	},
+
 	registerEvents: function() {
 		this._super();
-        this.registerSettingsShortcutClickEvent();
+		this.registerSettingsShortcutClickEvent();
 		this.registerDeleteShortCutEvent();
 		this.registerWidgetsEvents();
 		this.registerPinUnpinShortCutEvent();
