@@ -438,6 +438,21 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_currency_info SET currency_symbol=? WHERE currency_name=?', array('E£', 'Egypt, Pounds'));
 
 	//setting is_private value of comments to 0 if internal comments is not supported for that module
+	$modCommentsInstance = Vtiger_Module::getInstance('ModComments');
+	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $modCommentsInstance);
+	if ($blockInstance) {
+		$fieldInstance = Vtiger_Field::getInstance('is_private', $modCommentsInstance);
+		if (!$fieldInstance) {
+			$fieldInstance			= new Vtiger_Field();
+			$fieldInstance->name	= 'is_private';
+			$fieldInstance->label	= 'Is Private';
+			$fieldInstance->uitype	= 7;
+			$fieldInstance->column	= 'is_private';
+			$fieldInstance->columntype = 'INT(1) DEFAULT 0';
+			$fieldInstance->typeofdata = 'I~O';
+			$blockInstance->addField($fieldInstance);
+		}
+	}
 	$commentIds = array();
 	$internalCommentModules = Vtiger_Functions::getPrivateCommentModules();
 	$commentsResult = $db->pquery('SELECT vtiger_modcomments.modcommentsid FROM vtiger_modcomments 
