@@ -30,12 +30,12 @@ jQuery.validator.addMethod("datetime", function(value, element, params) {
 );
 
 jQuery.validator.addMethod("reference", function(value, element, params) {
-	   return true;
+		return true;
 	}, jQuery.validator.format("Please enter the correct date")
 );
 
 jQuery.validator.addMethod("double", function(value, element, params) {
-	   element = jQuery(element);
+		element = jQuery(element);
 
 		var groupSeparator = app.getGroupingSeparator();
 		var decimalSeparator = app.getDecimalSeparator();
@@ -46,26 +46,31 @@ jQuery.validator.addMethod("double", function(value, element, params) {
 			strippedValue = strippedValue.replace(/ /g, '');
 		}
 		if(groupSeparator === "$"){
-			fieldInfo.group_seperator="\\$"
+			groupSeparator = "\\$";
 		}
-		  //Replace all occurence of groupSeperator with ''.
+		//Replace all occurence of groupSeperator with ''.
 		var regex = new RegExp(groupSeparator,'g');
 		strippedValue = strippedValue.replace(regex, '');
 
 		if(isNaN(strippedValue)) {
 			return false;
 		}
-	   return true;
+		return true;
 	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );
 
 
 
 jQuery.validator.addMethod("WholeNumber", function(value, element, params) {
-	   if((value % 1) != 0){
-		   return false;
-	   }
-	   return true;
+	var regex= /[+]/;
+	if(value.match(regex)){
+		return;
+
+		if((value % 1) != 0){
+			return false;
+		}
+	}
+		return true;
 	}, jQuery.validator.format(app.vtranslate('INVALID_NUMBER'))
 );
 /*
@@ -104,14 +109,14 @@ jQuery.Class('Vtiger_Validations_Helper', {
 });
 
 jQuery.validator.addMethod("greaterThanDependentField", function(value, element, params) {
-	   var helper = Vtiger_Validations_Helper.getInstance();
-	   var validatorName = 'greaterThanDependentField';
-	   if(helper.isModuleSpecificValidatorExists(validatorName)) {
-		   var validatorInstance = helper.getModuleSpecificValidatorInstance(validatorName);
-		   return validatorInstance.validate(value, element, params);
-	   }
-	   //fallback to generic validation
-	   return true;
+	var helper = Vtiger_Validations_Helper.getInstance();
+	var validatorName = 'greaterThanDependentField';
+	if(helper.isModuleSpecificValidatorExists(validatorName)) {
+		var validatorInstance = helper.getModuleSpecificValidatorInstance(validatorName);
+		return validatorInstance.validate(value, element, params);
+	}
+	//fallback to generic validation
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 */
@@ -158,13 +163,22 @@ jQuery.validator.addMethod("Calendar_greaterThanDependentField", function(value,
 jQuery.validator.addMethod("greaterThanDependentField", function(value, element, params) {
 		var result = true;
 		if(!value.length) {
-		   return result;
+			return result;
+		}
+
+		var validationMeta = this.settings.validationMeta;
+		if (typeof validationMeta != 'undefined') {
+			var meta = validationMeta;
+		} else if (typeof uimeta != 'undefined') {
+			var meta = uimeta;
+		} else {
+			var meta = quickcreate_uimeta;
 		}
 
 		var sourceField = jQuery(element);
-		var sourceFieldInfo = uimeta.field.get(sourceField.attr('name'));
+		var sourceFieldInfo = meta.field.get(sourceField.attr('name'));
 		var depFieldName = params[0];
-		var depFieldInfo = uimeta.field.get(depFieldName);
+		var depFieldInfo = meta.field.get(depFieldName);
 
 		//Remove this once uimeta cleanup is done
 		if(typeof sourceFieldInfo == 'undefined' || typeof depFieldInfo == 'undefined')
@@ -203,9 +217,15 @@ jQuery.validator.addMethod("greaterThanDependentField", function(value, element,
 		var dateFormat = app.getDateFormat();
 		var m1 = moment(value,dateFormat.toUpperCase());
 		var m2 = moment(depFieldVal,dateFormat.toUpperCase());
+
+		//To ignore validation when dependent field value is empty
+		if(depFieldVal.trim().length <= 0 ) {
+			return true;
+		}
+
 		result = m1.unix() >= m2.unix(); 
 
-	   jQuery.validator.messages.greaterThanDependentField = sourceFieldInfo.label+' '+app.vtranslate('JS_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO')+' '+depFieldInfo.label+'';
+		jQuery.validator.messages.greaterThanDependentField = sourceFieldInfo.label+' '+app.vtranslate('JS_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO')+' '+depFieldInfo.label+'';
 	return result;
 	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );
@@ -227,17 +247,17 @@ jQuery.validator.addMethod("currency", function(value, element, params) {
 	var regex = new RegExp(groupSeparator,'g');
 	strippedValue = strippedValue.replace(regex, '');
 	if(isNaN(strippedValue)){
-		   return false;
+		return false;
 	}
 	if(strippedValue < 0){
 		return false;
 	}
-   return true;
-   }, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
+	return true;
+	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );
 
 jQuery.validator.addMethod("currencyList", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the valid value")
 );
 
@@ -257,7 +277,7 @@ jQuery.validator.addMethod("integer", function(value, element, params) {
 );
 
 jQuery.validator.addMethod("boolean", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the valid value")
 );
 
@@ -288,12 +308,16 @@ jQuery.validator.addMethod("check-filter-duplicate", function (value, element, p
 );
 
 jQuery.validator.addMethod("time", function(value, element, params) {
+		element = jQuery(element);
 		if(!value) return true;
 		try {
 			var fieldValue = value;
 			var time = fieldValue.replace(fieldValue.match(/[AP]M/i),'');
 			var timeValue = time.split(":");
-			if(timeValue.length != 2 || (isNaN(timeValue[0]) && isNaN(timeValue[1]))) {
+			var dateformat = element.data('format');
+
+			if(timeValue.length != 2 || isNaN(timeValue[0]) || isNaN(timeValue[1])
+				|| timeValue[0] > dateformat || timeValue[1] > 59) {
 				return false;
 			}
 			return true;
@@ -301,11 +325,12 @@ jQuery.validator.addMethod("time", function(value, element, params) {
 			console.log(err);
 			return false;
 		}
-	}, jQuery.validator.format("Please enter the correct date")
+	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_TIME'))
 );
 
 jQuery.validator.addMethod("email", function(value, element, params) {
-		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
+		value = value.trim();
+		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
 
 		if(!value) return true;
 
@@ -317,24 +342,28 @@ jQuery.validator.addMethod("email", function(value, element, params) {
 );
 
 jQuery.validator.addMethod("multiEmails", function(value, element, params) {
-		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
+		var emailFilter = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`'{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\.]?[a-zA-Z0-9\-]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
 
 		if(!value) return true;
-		  var fieldValuesList = value.split(',');
-		  for (var i in fieldValuesList) {
+		var fieldValuesList = value.split(',');
+		for (var i in fieldValuesList) {
 			var splittedFieldValue = fieldValuesList[i];
+			splittedFieldValue = splittedFieldValue.trim();
 			var response = emailFilter.test(splittedFieldValue);
 			if(response != true) {
-				   return false;
+				return false;
 			}
 		}
-		  return true;
+		return true;
 	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_EMAIL_ADDRESS'))
 );
 
 jQuery.validator.addMethod("illegal", function(value, element, params) {
 		var illegalChars= /[\(\)\<\>\,\;\:\\\\"\[\]\'\/\`\&]/;
-
+		//allow apostrophe
+		if (jQuery(element).attr('data-rule-email')) {
+			illegalChars = /[\(\)\<\>\,\;\:\\\\"\[\]\/\`\&]/;
+		}
 		if (value.match(illegalChars)) {
 			return false;
 		}
@@ -408,6 +437,7 @@ jQuery.validator.addMethod("phone", function(value, element, params) {
 
 jQuery.validator.addMethod("url", function(value, element, params) {
 		try {
+			value = value.trim();
 			if(!value) return true;
 
 			var regexp = /(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)/gi;
@@ -430,7 +460,7 @@ jQuery.validator.addMethod("lessThanToday", function(value, element, params) {
 				fieldDateInstance.setHours(0,0,0,0);
 				var todayDateInstance = new Date();
 				todayDateInstance.setHours(0,0,0,0);
-				var comparedDateVal =  todayDateInstance - fieldDateInstance;
+				var comparedDateVal = todayDateInstance - fieldDateInstance;
 				if(comparedDateVal <= 0){
 					return false;
 				}
@@ -451,7 +481,7 @@ jQuery.validator.addMethod("lessThanOrEqualToToday", function(value, element, pa
 				fieldDateInstance.setHours(0,0,0,0);
 				var todayDateInstance = new Date();
 				todayDateInstance.setHours(0,0,0,0);
-				var comparedDateVal =  todayDateInstance - fieldDateInstance;
+				var comparedDateVal = todayDateInstance - fieldDateInstance;
 				if(comparedDateVal < 0){
 					return false;
 				}
@@ -492,17 +522,20 @@ jQuery.validator.addMethod("lessThanDependentField", function(value, element, pa
 
 			return result; 
 		} 
-		var sourceField = jQuery(element); 
-		var sourceFieldInfo = uimeta.field.get(sourceField.attr('name')); 
-		var depFieldName = params[0];
-		var depFieldInfo = uimeta.field.get(depFieldName);
 
-		if(!sourceFieldInfo) {
-			var sourceFieldInfo = quickcreate_uimeta.field.get(sourceField.attr('name')); 
+		var validationMeta = this.settings.validationMeta;
+		if (typeof validationMeta != 'undefined') {
+			var meta = validationMeta;
+		} else if (typeof uimeta != 'undefined') {
+			var meta = uimeta;
+		} else {
+			var meta = quickcreate_uimeta;
 		}
-		if(!depFieldInfo) {
-			var depFieldInfo = quickcreate_uimeta.field.get(depFieldName); 
-		}
+
+		var sourceField = jQuery(element); 
+		var sourceFieldInfo = meta.field.get(sourceField.attr('name')); 
+		var depFieldName = params[0];
+		var depFieldInfo = meta.field.get(depFieldName);
 
 		//Remove this once uimeta cleanup is done 
 		if(typeof sourceFieldInfo == 'undefined' || typeof depFieldInfo == 'undefined') 
@@ -517,19 +550,29 @@ jQuery.validator.addMethod("lessThanDependentField", function(value, element, pa
 		//eg: Perform this validation method when quick create a module record within same module 
 		//list view 
 		var closestForm = sourceField.closest('form.recordEditView').first(); 
+		var depFieldDateFormat = app.getDateFormat();
 		if(closestForm.length > 0) { 
 			var depFieldVal = closestForm.find('[name="'+depFieldName+'"]').val(); 
 		}else{ 
 			var controller = app.controller(); 
 			var depFieldVal = jQuery('.fieldBasicData').filter('[data-name="'+depFieldName+'"]').data('displayvalue');
+			//depFieldVal for date field will be in yyyy-mm-dd format. If user format is other than yyyy-mm-dd moment function
+			//generates wrong date and validation fails. For example ajax edit of Support Start Date in Contact detail view,
+			//depFieldVal will be in yyyy-mm-dd format.
+			if(depFieldVal) {
+				var depFieldValParts = depFieldVal.split('-');
+				if(depFieldValParts[0].length == 4) {
+					depFieldDateFormat = 'yyyy-mm-dd';
+				}
+			}
 		} 
 		if(typeof depFieldVal === 'undefined' || depFieldVal == '') { 
 			return result; 
 		} 
 		var dateFormat = app.getDateFormat(); 
-		var m1 = moment(value,dateFormat.toUpperCase());
-		var m2 = moment(depFieldVal,dateFormat.toUpperCase());
-		result = m1.unix() <= m2.unix();  
+		var m1 = moment(value,dateFormat.toUpperCase()); 
+		var m2 = moment(depFieldVal,depFieldDateFormat.toUpperCase()); 
+		result = m1.unix() <= m2.unix();
 
 		jQuery.validator.messages.lessThanDependentField = sourceFieldInfo.label+' '+app.vtranslate('JS_SHOULD_BE_LESS_THAN_OR_EQUAL_TO')+' '+depFieldInfo.label+''; 
 		return result; 
@@ -550,7 +593,7 @@ jQuery.validator.addMethod("futureEventCannotBeHeld", function(value, element, p
 						var time = jQuery('input[name=time_start]',formElem);
 						var fieldValue = dependentFieldInContext.val()+" "+time.val();
 						var dependentFieldDateInstance = app.helper.getDateInstance(fieldValue,dateFormat);
-						var comparedDateVal =  todayDateInstance - dependentFieldDateInstance;
+						var comparedDateVal = todayDateInstance - dependentFieldDateInstance;
 						if(comparedDateVal < 0){
 							return false;
 						}
@@ -566,23 +609,23 @@ jQuery.validator.addMethod("futureEventCannotBeHeld", function(value, element, p
 );
 
 jQuery.validator.addMethod("recurrence", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
 // Documents Module
 jQuery.validator.addMethod("documentsFileUpload", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
 jQuery.validator.addMethod("fileLocationType", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
 jQuery.validator.addMethod("documentsFolder", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
@@ -632,11 +675,16 @@ jQuery.validator.addMethod("PositiveNumber",function(value,element,params){
 }, jQuery.validator.format(app.vtranslate('JS_ACCEPT_POSITIVE_NUMBER')));
 
 jQuery.validator.addMethod("percentage", function(value, element, params){
-	var negativeRegex= /(^[-]+\d+)$/ ;
-	if(isNaN(value) || value < 0 || value.match(negativeRegex)){
-		return false;
-	}
-	return true;
+		var decimalSeparator = app.getDecimalSeparator();
+		var strippedValue = value.replace(decimalSeparator, '');
+		var spacePattern = /\s/;
+		if(spacePattern.test(decimalSeparator)) {
+			strippedValue = strippedValue.replace(/ /g, '');
+		}
+		if(isNaN(strippedValue) || strippedValue < 0) {
+			return false;
+		}
+		return true;
 }, jQuery.validator.format(app.vtranslate('JS_ACCEPT_POSITIVE_NUMBER')));
 
 jQuery.validator.addMethod("inventory_percentage", function(value, element, params){
@@ -657,7 +705,7 @@ jQuery.validator.addMethod("greater_than_zero", function(value, element, params)
 // End
 
 jQuery.validator.addMethod("RepeatMonthDate", function(value, element, params) {
-	   return true;
+	return true;
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
@@ -688,15 +736,24 @@ function calculateValidationRules(form,params,meta){
 			//for non-entity modules return empty rules
 			return rules;
 		}else{
-			meta = uimeta;
-		}
+			if(jQuery('.overlayEdit').length > 0 || jQuery('.overlayDetail').length > 0) {
+				meta = related_uimeta;
+			} else {
+				meta = uimeta;
+			}
+		 }
 	}
 
 	if(typeof params.ignoreTypes === 'undefined'){
 		params.ignoreTypes = [];
 	}
-	var inputElements = form.get(0).elements;
-
+	var inputElements = 0;
+	//There can be no form element for a view
+	//calling elements on undefined function will
+	//stop javascript from executing next code
+	if(typeof form.get(0) != 'undefined'){
+		inputElements = form.get(0).elements;
+	}
 	for(var i=0;i<inputElements.length;i++){
 		var element = jQuery(inputElements[i]);
 		var fieldName = element.attr('name');
@@ -713,7 +770,7 @@ function calculateValidationRules(form,params,meta){
 				}
 			}
 			if(fieldBasicInfo['type'] in jQuery.validator.methods){
-			   rules[ruleFieldName][fieldBasicInfo['type']] = true;
+				rules[ruleFieldName][fieldBasicInfo['type']] = true;
 			}
 
 			if(typeof fieldBasicInfo['validator']!=='undefined' && fieldBasicInfo['validator'].length > 0) {
@@ -740,7 +797,7 @@ function calculateValidationRules(form,params,meta){
 	* @param <jQuery> form
 	* @returns Object
 	*/
-   function getResolvedRules(container, meta) {
+	function getResolvedRules(container, meta) {
 		var basicRules = calculateValidationRules(container,{}, meta);
 		var rules = {};
 		var elements = container.find('[data-specific-rules]');
@@ -790,7 +847,7 @@ function calculateValidationRules(form,params,meta){
 			params = {};
 		}
 
-	   var defaults = {
+		var defaults = {
 		'errorClass': 'input-error',
 		'focusInvalid': true,
 		//Refer for explanation on ignore attrbute https://github.com/select2/select2/issues/215
@@ -809,7 +866,18 @@ function calculateValidationRules(form,params,meta){
 				};
 
 				var positionContainer = element.closest('.editViewContents');
+				if(element.closest('.editViewPageDiv').length){
+					positionContainer = element[0];
+				}
 				if(!positionContainer.length) {
+					if(element.closest('#overlayPageContent').length) {
+						var overlayElement = element.closest('#overlayPageContent');
+						positionsConf.adjust = {
+							x: parseInt(overlayElement.css('margin-left'))
+						};
+						positionContainer = overlayElement;
+					}
+
 					if(element.closest('.slimScrollDiv').length) {
 						positionContainer = element.closest('.slimScrollDiv');
 					} else if(element.closest('.mCustomScrollbar').length) {
@@ -819,7 +887,10 @@ function calculateValidationRules(form,params,meta){
 					} else {
 						positionContainer = element.closest('form');
 					}
+				}
 
+				if(positionContainer.length) {
+					positionsConf.container = positionContainer;
 					if(element.closest('#overlayPageContent').length) {
 						var overlayElement = element.closest('#overlayPageContent');
 						positionsConf.adjust = {
@@ -827,10 +898,6 @@ function calculateValidationRules(form,params,meta){
 						};
 						positionContainer = overlayElement;
 					}
-				}
-
-				if(positionContainer.length) {
-					positionsConf.container = positionContainer;
 				}
 
 				element.qtip({
@@ -846,6 +913,17 @@ function calculateValidationRules(form,params,meta){
 					position: positionsConf,
 					style: {
 						classes: 'qtip-red qtip-shadow'
+					},
+					events : {
+						render: function(event, api) {
+							var tooltip = api.elements.tooltip;
+							setTimeout(function() {
+								tooltip.hide();
+							}, 5000);
+							tooltip.on('click', function(event, api) {
+								tooltip.hide();
+							});
+						}
 					}
 				});
 				element.trigger('Vtiger.Validation.Show.Messsage');
@@ -876,7 +954,7 @@ function calculateValidationRules(form,params,meta){
 				element = app.helper.getSelect2FromSelect(element);
 			}
 			element.trigger('Vtiger.Validation.Hide.Messsage');
-//            element.tooltipster('hide');
+//			element.tooltipster('hide');
 		},
 		highlight: function (element, errorClass, validClass) {
 			var elem = $(element);
@@ -933,11 +1011,11 @@ function calculateValidationRules(form,params,meta){
 
 		var validobj = this.validate(newParams);
 
-//        $(document).one("change", ".select2-offscreen", function () {
-//            if (!$.isEmptyObject(validobj.submitted)) {
-//                validobj.form();
-//            }
-//        });
+//		$(document).one("change", ".select2-offscreen", function () {
+//			if (!$.isEmptyObject(validobj.submitted)) {
+//				validobj.form();
+//			}
+//		});
 
 		$(document).on("select2-opening", function (arg) {
 			var elem = $(arg.target);
@@ -970,7 +1048,7 @@ function calculateValidationRules(form,params,meta){
 		});
 
 		//invoke validation on reference post selection
-		this.on('Vtiger.PostReference.Selection', function (e) {
+		this.on('Vtiger.PostReference.Selection Vtiger.PostReference.QuickCreateSave', function (e) {
 			var referenceWrapper = jQuery(e.target).closest('.referencefield-wrapper');
 			var referenceElement = referenceWrapper.find('[data-fieldtype="reference"]').length ?
 					referenceWrapper.find('[data-fieldtype="reference"]') :

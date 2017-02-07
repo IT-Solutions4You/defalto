@@ -191,7 +191,6 @@ class VTCreateEntityTask extends VTTask {
 			} else{
 				$newEntity->save($entityType);
 			}
-			TextSearch_RecordUpdater::unsetMassOperation();
 			relateEntities($focus, $moduleName, $recordId, $entityType, $newEntity->id);
 		}
 
