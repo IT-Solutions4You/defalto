@@ -42,26 +42,16 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View {
         
         $widgets = $dashBoardModel->getDashboards($moduleName);
         $selectableWidgets = $dashBoardModel->getSelectableDashboard();
-        
         $dashBoardTabInfo = $dashBoardModel->getTabInfo($tabId);
          
         $viewer = $this->getViewer($request);
-        if(!empty($dashBoardTabInfo['appname'])) {
-            $viewer->assign('MODULE_NAME', 'Insights');
-            $viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
-            $viewer->assign('WIDGETS', Insights_Widget_Model::getVisibleWidgets());
-            $viewer->assign('HIDDEN_WIDGETS', Insights_Widget_Model::getHiddenWidgets());
-            $viewer->assign('MODE', 'SupportDashboard');
-            echo $viewer->view('dashboards/DashBoardContents.tpl', 'Insights', true);    
-        } else{
-            $viewer->assign('MODULE_NAME', $moduleName);
-            $viewer->assign('WIDGETS', $widgets);        
-            $viewer->assign('SELECTABLE_WIDGETS', $selectableWidgets);
-            $viewer->assign('TABID',$tabId);
+		$viewer->assign('MODULE_NAME', $moduleName);
+		$viewer->assign('WIDGETS', $widgets);        
+		$viewer->assign('SELECTABLE_WIDGETS', $selectableWidgets);
+		$viewer->assign('TABID',$tabId);
 
-            $viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
-            echo $viewer->view('dashboards/DashBoardTabContents.tpl', $moduleName,true);
-        }
+		$viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
+		echo $viewer->view('dashboards/DashBoardTabContents.tpl', $moduleName,true);
     }
     
     public function showDashBoardTabList(Vtiger_Request $request) {
