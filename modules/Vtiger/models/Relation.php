@@ -120,7 +120,7 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 			$focus = CRMEntity::getInstance($relatedModuleName);
 			$query = $focus->$functionName($parentRecord->getId());
 		} else {
-			$query = $parentModuleModel->getRelationQuery($parentRecord->getId(), $functionName, $relatedModuleModel);
+			$query = $parentModuleModel->getRelationQuery($parentRecord->getId(), $functionName, $relatedModuleModel, $this->getId());
 		}
 
 		return $query;
