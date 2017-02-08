@@ -24,12 +24,14 @@
 		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if trim(decode_html($FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
 	{/foreach}
 </select>
-<style type="text/css">
-	{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
-	{assign var=CLASS_NAME value="{$FIELD_MODEL->getFieldName()}_{$PICKLIST_NAME|replace:' ':'_'}"}
-	.picklistColor_{$CLASS_NAME} {
-		background-color: {$PICKLIST_COLORS[$PICKLIST_NAME]} !important;
-	}
-	{/foreach}
-</style>
+{if $PICKLIST_COLORS}
+	<style type="text/css">
+		{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
+		{assign var=CLASS_NAME value="{$FIELD_MODEL->getFieldName()}_{$PICKLIST_NAME|replace:' ':'_'}"}
+		.picklistColor_{$CLASS_NAME} {
+			background-color: {$PICKLIST_COLORS[$PICKLIST_NAME]} !important;
+		}
+		{/foreach}
+	</style>
+{/if}
 {/strip}
