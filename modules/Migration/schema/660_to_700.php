@@ -348,6 +348,19 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_modcomments MODIFY userid INT(19)', array());
 	}
 
+	$columns = $db->getColumnNames('vtiger_emailtemplates');
+	if (!in_array('systemtemplate', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN systemtemplate INT(1) NOT NULL DEFAULT 0', array());
+	}
+	if (!in_array('templatepath', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN templatepath VARCHAR(100) AFTER templatename', array());
+	}
+	if (!in_array('module', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN module VARCHAR(100)', array());
+	}
+	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN (?,?,?) AND module IS NULL', array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users'));
+	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE module IS NULL', array('Contacts'));
+
 	$moduleName = 'Calendar';
 	$inviteUsersTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=?', array('Invitation'));
 	if (!$db->num_rows($inviteUsersTemplate)) {
@@ -453,19 +466,35 @@ if(defined('VTIGER_UPGRADE')) {
 			$blockInstance->addField($fieldInstance);
 		}
 	}
-	$commentIds = array();
+
 	$internalCommentModules = Vtiger_Functions::getPrivateCommentModules();
-	$commentsResult = $db->pquery('SELECT vtiger_modcomments.modcommentsid FROM vtiger_modcomments 
+	$lastMaxCRMId = 0;
+	do {
+		$commentsResult = $db->pquery('SELECT vtiger_modcomments.modcommentsid FROM vtiger_modcomments 
 												LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.related_to 
 												WHERE vtiger_crmentity.setype NOT IN ('.generateQuestionMarks($internalCommentModules).') 
-												OR vtiger_crmentity.setype IS NULL', $internalCommentModules, array());
-	$commentCount = $db->num_rows($commentsResult);
-	for ($i=0; $i<$commentCount; $i++) {
-		$commentIds[] = $db->query_result($commentsResult, $i, 'modcommentsid');
-	}
-	if (count($commentIds) > 0) {
-		$db->pquery('UPDATE vtiger_modcomments SET is_private = 0 WHERE modcommentsid IN ('.generateQuestionMarks($commentIds).')', $commentIds);
-	}
+												OR vtiger_crmentity.setype IS NULL modcommentsid > ? LIMIT 500', array_merge($internalCommentModules, array($lastMaxCRMId)));
+		if (!$db->num_rows($result)) {
+			break;
+		}
+
+		$commentIds = array();
+		while ($row = $db->fetch_array($commentsResult)) {
+			$commentIds[] = $row['modcommentsid'];
+		}
+
+		if (count($commentIds) > 0) {
+			$db->pquery('UPDATE vtiger_modcomments SET is_private = 0 WHERE modcommentsid IN ('.generateQuestionMarks($commentIds).')', $commentIds);
+		}
+
+		$commentId = end($commentIds);
+		if (intval($commentId) > $lastMaxCRMId) {
+			$lastMaxCRMId = intval($commentId);
+		}
+		$commentsResult = NULL;
+		unset($commentsResult);
+	} while (true);
+	
 	//Start - Add Contact Name to Default filter of project
 	$cvidQuery = $db->pquery('SELECT cvid FROM vtiger_customview where viewname=? AND entitytype=?', array('All', 'Project'));
 	$row = $db->fetch_array($cvidQuery);
@@ -580,7 +609,8 @@ if(defined('VTIGER_UPGRADE')) {
 	if (Vtiger_Utils::CheckTable('vtiger_customerportal_tabs')) {
 		$db->pquery('UPDATE vtiger_customerportal_tabs SET visible=? WHERE tabid IN(?,?)', array(0, getTabid('Contacts'), getTabid('Accounts')));
 		$moduleId = getTabid('ServiceContracts');
-		$sequenceQuery = 'SELECT max(sequence) as sequence FROM vtiger_customerportal_tabs';
+		$db->pquery('DELETE FROM vtiger_customerportal_tabs WHERE tabid=?', array($moduleId));
+		$sequenceQuery = 'SELECT max(sequence) AS sequence FROM vtiger_customerportal_tabs';
 		$seqResult = $db->pquery($sequenceQuery, array());
 		$sequence = $db->query_result($seqResult, 0, 'sequence');
 		$db->pquery('INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)', array($moduleId, 1, $sequence+11));
@@ -872,8 +902,14 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX crmid_idx(crmid)', array());
-	$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX relcrmid_idx(relcrmid)', array());
+	$result = $db->pquery('SHOW INDEX FROM vtiger_crmentityrel WHERE key_name=?', array('crmid_idx'));
+	if (!$db->num_rows($result)) {
+		$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX crmid_idx(crmid)', array());
+	}
+	$result = $db->pquery('SHOW INDEX FROM vtiger_crmentityrel WHERE key_name=?', array('relcrmid_idx'));
+	if (!$db->num_rows($result)) {
+		$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX relcrmid_idx(relcrmid)', array());
+	}
 
 	//Start : Inactivate update_log field from ticket module
 	$fieldId = getFieldid(getTabid('HelpDesk'), 'update_log');
@@ -1322,9 +1358,10 @@ if(defined('VTIGER_UPGRADE')) {
 	//Workflows
 	$columns = $db->getColumnNames('com_vtiger_workflows');
 	if (in_array('status', $columns)) {
-		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN status SET DEFAULT 1', array());
+		$db->pquery('ALTER TABLE com_vtiger_workflows MODIFY COLUMN status INT(11)', array());
+		$db->pquery('ALTER TABLE com_vtiger_workflows ALTER COLUMN status SET DEFAULT 1', array());
+		$db->pquery('UPDATE com_vtiger_workflows SET status=? WHERE status IS NULL', array(1));
 	}
-	$db->pquery('UPDATE com_vtiger_workflows SET status=? WHERE status IS NULL', array(1));
 
 	if (!in_array('workflowname', $columns)) {
 		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN workflowname VARCHAR(100)', array());
@@ -1472,6 +1509,7 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 
 		$tablesList = array('quoteid' => 'vtiger_quotes', 'purchaseorderid' => 'vtiger_purchaseorder', 'salesorderid' => 'vtiger_salesorder', 'invoiceid' => 'vtiger_invoice');
+		$isResultExists = false;
 
 		$query = 'INSERT INTO vtiger_inventorychargesrel VALUES';
 		foreach ($tablesList as $index => $tableName) {
@@ -1480,6 +1518,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 			$result = $db->pquery($sql, array());
 			while ($rowData = $db->fetch_array($result)) {
+				$isResultExists = true;
 				$recordId = $rowData['id'];
 
 				$taxesList = array();
@@ -1490,25 +1529,36 @@ if(defined('VTIGER_UPGRADE')) {
 				$query .= "($recordId, '".Zend_Json::encode(array(1 => array('value' => $rowData['s_h_amount'], 'taxes' => $taxesList)))."'), ";
 			}
 		}
-		$db->pquery(rtrim($query, ', '), array());
+		if ($isResultExists) {
+			$db->pquery(rtrim($query, ', '), array());
+		}
 	}
 
 	//Updating existing tax tables
 	$taxTablesList = array('vtiger_inventorytaxinfo', 'vtiger_shippingtaxinfo');
 	foreach ($taxTablesList as $taxTable) {
-		$sql = "ALTER TABLE $taxTable ADD (
-					method VARCHAR(10),
-					type VARCHAR(10),
-					compoundon VARCHAR(400),
-					regions TEXT
-				)";
-		$db->pquery($sql, array());
+		$columns = $db->getColumnNames($taxTable);
+		if (!in_array('method', $columns)) {
+			$db->pquery("ALTER TABLE $taxTable ADD COLUMN method VARCHAR(10)", array());
+		}
+		if (!in_array('type', $columns)) {
+			$db->pquery("ALTER TABLE $taxTable ADD COLUMN type VARCHAR(10)", array());
+		}
+		if (!in_array('compoundon', $columns)) {
+			$db->pquery("ALTER TABLE $taxTable ADD COLUMN compoundon VARCHAR(400)", array());
+		}
+		if (!in_array('regions', $columns)) {
+			$db->pquery("ALTER TABLE $taxTable ADD COLUMN regions TEXT", array());
+		}
 
 		$db->pquery("UPDATE $taxTable SET method =?, type=?, compoundon=?, regions=?", array('Simple', 'Fixed', '[]', '[]'));
 	}
 
 	//Updating existing tax tables
-	$db->pquery('ALTER TABLE vtiger_producttaxrel ADD regions TEXT', array());
+	$columns = $db->getColumnNames('vtiger_producttaxrel');
+	if (!in_array('regions', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_producttaxrel ADD COLUMN regions TEXT', array());
+	}
 	$db->pquery('UPDATE vtiger_producttaxrel SET regions=?', array('[]'));
 
 	$modulesList = array('Quotes' => 'vtiger_quotes', 'PurchaseOrder' => 'vtiger_purchaseorder', 'SalesOrder' => 'vtiger_salesorder', 'Invoice' => 'vtiger_invoice');
@@ -1516,7 +1566,10 @@ if(defined('VTIGER_UPGRADE')) {
 
 	foreach ($modulesList as $moduleName => $tableName) {
 		//Updating existing inventory tax tables
-		$db->pquery('ALTER TABLE '.$tableName.' ADD compound_taxes_info TEXT', array());
+		$columns = $db->getColumnNames($tableName);
+		if (!in_array('compound_taxes_info', $columns)) {
+			$db->pquery("ALTER TABLE $tableName ADD COLUMN compound_taxes_info TEXT", array());
+		}
 		$db->pquery('UPDATE '.$tableName.' SET compound_taxes_info=?', array('[]'));
 
 		//creating new field in entity tables
@@ -1662,16 +1715,17 @@ if(defined('VTIGER_UPGRADE')) {
 		$menuEditorModuleModel->addModuleToApp('Quotes', 'MARKETING');
 	}
 
-	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
-	$keyResult = $db->pquery("show index from vtiger_cvstdfilter where key_name ='fk_1_vtiger_cvstdfilter'", array());
-	if ($db->num_rows($keyResult) <= 0) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
-	}
 
-	$keyResult = $db->pquery("show index from vtiger_app2tab where key_name ='vtiger_app2tab_fk_tab'", array());
-	if ($db->num_rows($keyResult) <= 0) {
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='fk_1_vtiger_cvstdfilter'", array());
+	if ($db->num_rows($keyResult)) {
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
+	}
+	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
+
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_app2tab WHERE key_name='vtiger_app2tab_fk_tab'", array());
+	if (!$db->num_rows($keyResult)) {
 		$db->pquery('ALTER TABLE vtiger_app2tab ADD CONSTRAINT vtiger_app2tab_fk_tab FOREIGN KEY(tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE', array());
 	}
 
@@ -1756,19 +1810,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('DELETE FROM vtiger_links WHERE linktype=? AND handler_class=?', array('DETAILVIEWBASIC', 'Documents'));
-
-	$columns = $db->getColumnNames('vtiger_emailtemplates');
-	if (!in_array('systemtemplate', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN systemtemplate INT(1) NOT NULL DEFAULT 0', array());
-	}
-	if (!in_array('templatepath', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN templatepath VARCHAR(100) AFTER templatename', array());
-	}
-	if (!in_array('module', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN module VARCHAR(100)', array());
-	}
-	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN (?,?,?) AND module IS NULL', array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users'));
-	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE module IS NULL', array('Contacts'));
 
 	$columns = $db->getColumnNames('vtiger_mailmanager_mailrecord');
 	if (!in_array('mfolder', $columns)) {
