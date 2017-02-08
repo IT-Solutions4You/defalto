@@ -473,7 +473,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$commentsResult = $db->pquery('SELECT vtiger_modcomments.modcommentsid FROM vtiger_modcomments 
 												LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.related_to 
 												WHERE vtiger_crmentity.setype NOT IN ('.generateQuestionMarks($internalCommentModules).') 
-												OR vtiger_crmentity.setype IS NULL modcommentsid > ? LIMIT 500', array_merge($internalCommentModules, array($lastMaxCRMId)));
+												OR vtiger_crmentity.setype IS NULL AND modcommentsid > ? LIMIT 500', array_merge($internalCommentModules, array($lastMaxCRMId)));
 		if (!$db->num_rows($result)) {
 			break;
 		}
