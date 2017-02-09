@@ -88,4 +88,10 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		return $headerScriptInstances;
 	}
 
+	public function setModuleInfo($request, $moduleModel){
+		$record = $request->get('record');
+		if ($record) {
+			parent::setModuleInfo($request, $moduleModel);
+		}
+	}
 }

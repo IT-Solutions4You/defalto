@@ -97,6 +97,12 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$fieldInstance = Vtiger_Field_Model::getInstance('language', $moduleInstance);
+	if ($fieldInstance) {
+		$fieldInstance->set('defaultvalue', 'en_us');
+		$fieldInstance->save();
+	}
+
 	$allUsers = Users_Record_Model::getAll(true);
 	foreach ($allUsers as $userId => $userModel) {
 		$db->pquery('UPDATE vtiger_users SET defaultcalendarview=? WHERE id=?', array('MyCalendar', $userId));

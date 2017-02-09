@@ -164,8 +164,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				$fieldDataType = 'picklist';
 			} else if($uiType == '55' && stripos($this->getName(), 'firstname') !== false) {
 				$fieldDataType = 'salutation';
-			} else if($uiType == '54') {
-				$fieldDataType = 'multiowner';
+            } else if($uiType == '55' && stripos($this->getName(), 'roundrobin_userid') !== false) {
+                $fieldDataType = 'multiowner';
 			} else {
 				$webserviceField = $this->getWebserviceFieldObject();
 				$fieldDataType = $webserviceField->getFieldDataType();

@@ -23,7 +23,7 @@ Class Settings_Groups_Edit_View extends Settings_Vtiger_Index_View {
 			$recordModel = new Settings_Groups_Record_Model();
 			$viewer->assign('MODE', '');
 		}
-                
+
 		$viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
 		$viewer->assign('RECORD_MODEL', $recordModel);
 		$viewer->assign('RECORD_ID', $record);
@@ -57,15 +57,16 @@ Class Settings_Groups_Edit_View extends Settings_Vtiger_Index_View {
      * @param type $moduleModel
      */
     public function setModuleInfo($request, $moduleModel){
-        
-        $viewer = $this->getViewer($request);
-        $listViewModel = Settings_Vtiger_ListView_Model::getInstance($request->getModule(false));
-        $linkParams = array('MODULE'=>$request->getModule(false), 'ACTION'=>$request->get('view'));
+        $record = $request->get('record');
+		if ($record) {
+			$viewer = $this->getViewer($request);
+			$listViewModel = Settings_Vtiger_ListView_Model::getInstance($request->getModule(false));
+			$linkParams = array('MODULE'=>$request->getModule(false), 'ACTION'=>$request->get('view'));
 
-        if(!$this->listViewLinks){
-            $this->listViewLinks = $listViewModel->getListViewLinks($linkParams);
-        }
-        $viewer->assign('LISTVIEW_LINKS', $this->listViewLinks);
-        
+			if(!$this->listViewLinks){
+				$this->listViewLinks = $listViewModel->getListViewLinks($linkParams);
+			}
+			$viewer->assign('LISTVIEW_LINKS', $this->listViewLinks);
+		}
     }
 }

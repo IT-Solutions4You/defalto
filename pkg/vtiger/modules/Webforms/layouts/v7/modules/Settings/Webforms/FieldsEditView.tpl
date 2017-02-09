@@ -13,7 +13,7 @@
     <input type="hidden" name="selectedFieldsData" val=""/>
     <input type="hidden" name="mode" value="{$MODE}"/>
     <input type="hidden" name="targetModule" value="{$SOURCE_MODULE}"/>
-    <div class="fieldBlockContainer">
+    <div class="fieldBlockContainer-webform" style="margin-bottom: 0;">
         <div class="fieldBlockHeader">
             <h4>{vtranslate($SOURCE_MODULE, $SOURCE_MODULE)} {vtranslate('LBL_FIELD_INFORMATION', $MODULE)}</h4>
         </div>
@@ -29,8 +29,8 @@
             <tr>
                 <td colspan="5">
                     <div class="row">
-                        <div class="col-sm-2 fieldLabel"><div class="marginTop20px textAlignCenter pushDown"><b>{vtranslate('LBL_ADD_FIELDS', $MODULE)}</b></div></div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-2 col-lg-2"><div class="textAlignCenter" style="margin-top:8px;"><b>{vtranslate('LBL_ADD_FIELDS', $MODULE)}</b></div></div>
+                        <div class="col-sm-8 col-lg-8">
                             <select id="fieldsList" multiple="multiple" data-placeholder="{vtranslate('LBL_SELECT_FIELDS_OF_TARGET_MODULE', $MODULE)}" class="select2" style="width:100%">
                                 {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$ALL_FIELD_MODELS_LIST name="EditViewBlockLevelLoop"}
                                     {foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS name=blockfields}
@@ -46,10 +46,8 @@
                                 {/foreach}
                             </select>
                         </div>
-                        <div class="col-sm-2">
-                            <div class=" marginTop20px pull-right">
-                                <button type="button" id="saveFieldsOrder" class="btn btn-success" disabled="disabled">{vtranslate('LBL_SAVE_FIELDS_ORDER', $MODULE)}</button>
-                            </div>
+                        <div class="col-sm-2 col-lg-2" style="margin-top: 2px">
+                            <button type="button" id="saveFieldsOrder" class="btn btn-success" disabled="disabled">{vtranslate('LBL_SAVE_FIELDS_ORDER', $MODULE)}</button>
                         </div>
                     </div>
                 </td>
@@ -70,7 +68,7 @@
                             {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue',$SELECETED_FIELD_MODEL->get('fieldvalue'))}
                         {/if}
                         <tr data-name="{$FIELD_MODEL->getFieldName()}" class="listViewEntries" data-type="{$FIELD_MODEL->getFieldDataType()}" data-mandatory-field={($FIELD_MODEL->isMandatory(true) eq 1) ? "true":"false"}>
-                            <td class="textAlignCenter">
+                            <td class="textAlignCenter" style="vertical-align: inherit">
                                 {if !empty($SELECETED_FIELD_MODEL)}
                                     <input type="hidden" value="{$SELECETED_FIELD_MODEL->get('sequence')}" class="sequenceNumber" name='selectedFieldsData[{$FIELD_NAME}][sequence]'/>
                                 {else}
@@ -79,17 +77,17 @@
                                 <input type="hidden" value="0" name='selectedFieldsData[{$FIELD_NAME}][required]'/>
                                 <input type="checkbox" {if ($FIELD_MODEL->isMandatory(true) eq 1) or ($SELECETED_FIELD_MODEL->get('required') eq 1)}checked="checked"{/if} 
                                        {if $FIELD_MODEL->isMandatory(true) eq 1} onclick="return false;" onkeydown="return false;"{/if} 
-                                       name='selectedFieldsData[{$FIELD_NAME}][required]' class="markRequired mandatoryField" value="1" />
+                                       name='selectedFieldsData[{$FIELD_NAME}][required]' class="markRequired mandatoryField" value="1" style="margin-top: -3px;"/>
                             </td>
-                            <td class="textAlignCenter">
+                            <td class="textAlignCenter verticalAlignMiddle" style="vertical-align: inherit">
                                 <input type="hidden" value="0" name='selectedFieldsData[{$FIELD_NAME}][hidden]'/>
                                 <input type="checkbox" {if (!empty($SELECETED_FIELD_MODEL)) and ($SELECETED_FIELD_MODEL->get('hidden') eq 1)} checked="checked"{/if}
                                        name="selectedFieldsData[{$FIELD_NAME}][hidden]" class="markRequired hiddenField" value="1"/>
                             </td>
-                            <td class="fieldLabel" data-label="{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}{if $FIELD_MODEL->isMandatory(true)}*{/if}">
+                            <td class="fieldLabel" style="vertical-align: inherit" data-label="{vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}{if $FIELD_MODEL->isMandatory(true)}*{/if}">
                                 {vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}{if $FIELD_MODEL->isMandatory(true)}<span class="redColor">*</span>{/if}
                             </td>
-                            {assign var=DATATYPEMARGINLEFT value= array("date","currency","percentage","reference")}
+                            {assign var=DATATYPEMARGINLEFT value= array("date","currency","percentage","reference","multicurrency")}
                             {assign var=IS_PARENT_EXISTS value=strpos($MODULE,":")}
                             {if $IS_PARENT_EXISTS}
                                 {assign var=SPLITTED_MODULE value=":"|explode:$MODULE}
@@ -106,10 +104,10 @@
                                             {/foreach}
                                     </select>
                                 {else if $FIELD_MODEL->getFieldDataType() != 'image'}
-                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $SOURCE_MODULE) BLOCK_FIELDS=$BLOCK_FIELDS MODULE_NAME=$MODULE FIELD_NAME=$FIELD_MODEL->getFieldName()}
+									{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(), $SOURCE_MODULE) BLOCK_FIELDS=$BLOCK_FIELDS MODULE_NAME=$MODULE FIELD_NAME=$FIELD_MODEL->getFieldName() MODE = 'webform'}
                                 {/if}
                             </td>
-                            <td>
+                            <td style="vertical-align: inherit">
                                 {if Settings_Webforms_Record_Model::isCustomField($FIELD_MODEL->get('name'))}
                                     {vtranslate('LBL_LABEL', $QUALIFIED_MODULE)} : {vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE)}
                                 {else}

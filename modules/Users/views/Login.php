@@ -46,4 +46,9 @@ class Users_Login_View extends Vtiger_View_Controller {
 		$viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
 		$viewer->view('LoginFooter.tpl', $moduleName);
 	}
+
+	function getPageTitle(Vtiger_Request $request) {
+		$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
+		return $companyDetails->get('organizationname');
+	}
 }
