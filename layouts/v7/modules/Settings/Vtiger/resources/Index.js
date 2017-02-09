@@ -42,7 +42,7 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 					var shortCutActionEle = jQuery(menuItemId);
 					var imagePath = shortCutActionEle.data('pinimageurl');
 					shortCutActionEle.attr('src',imagePath).data('action','pin');
-					app.helper.showSuccessNotification({'message':''});
+					app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_UNPINNED')});
 				}
 			});
 			e.stopPropagation();

@@ -23,13 +23,13 @@ Settings_Vtiger_Index_Js("Settings_PBXManager_Index_Js", {}, {
 		data.parent = app.getParentModuleName();
 		data.action = 'SaveAjax';
 
-		app.request.post(data).then(
-			function (data) {
-				if (data['success']) {
+		app.request.post({data:data}).then(
+			function (err, data) {
+				if (data) {
 					var OutgoingServerDetailUrl = form.data('detailUrl');
 					//after save, load detail view contents and register events
 					thisInstance.loadContents(OutgoingServerDetailUrl).then(
-						function (data) {
+						function (err, data) {
 							app.helper.hideProgress();
 							thisInstance.registerDetailViewEvents();
 						},
@@ -56,23 +56,22 @@ Settings_Vtiger_Index_Js("Settings_PBXManager_Index_Js", {}, {
 
 		//To Auto-Generate Vtiger Secret Key
 		var url = 'index.php?module=PBXManager&parent=Settings&action=Gateway&mode=getSecretKey';
-		app.request.post(url).then(
-			function (data) {
-				jQuery("input[name='vtigersecretkey']").attr("value", data.result);
+		app.request.post({url:url}).then(
+			function (err, data) {
+				var form = jQuery('#MyModal');
+				jQuery("input[name='vtigersecretkey']").attr("value", data);
 			}
 		);
 		//END
 
-		//register validation engine
-		var params = app.validationEngineOptions;
-		params.onValidationComplete = function (form, valid) {
-			if (valid) {
+		var params = {
+			submitHandler: function (form) {
+				var form = jQuery(form);
+				form.find('[name="saveButton"]').attr('disabled', 'disabled');
 				thisInstance.saveAsteriskServerDetails(form);
-				return valid;
 			}
 		}
-		form.validationEngine(params);
-		//END
+		form.vtValidate(params);
 
 		form.submit(function (e) {
 			e.preventDefault();
@@ -81,12 +80,7 @@ Settings_Vtiger_Index_Js("Settings_PBXManager_Index_Js", {}, {
 		//register click event for cancelLink
 		cancelLink.click(function (e) {
 			var OutgoingServerDetailUrl = form.data('detailUrl');
-			var progressIndicatorElement = jQuery.progressIndicator({
-				'position': 'html',
-				'blockInfo': {
-					'enabled': true
-				}
-			});
+			app.helper.showProgress();
 
 			thisInstance.loadContents(OutgoingServerDetailUrl).then(
 				function (data) {
@@ -115,7 +109,7 @@ Settings_Vtiger_Index_Js("Settings_PBXManager_Index_Js", {}, {
 			app.helper.showProgress();
 
 			thisInstance.loadContents(url).then(
-				function (data) {
+				function(err, data) {
 					//after load the contents register the edit view events
 					thisInstance.registerEditViewEvents();
 					app.helper.hideProgress();
@@ -131,9 +125,9 @@ Settings_Vtiger_Index_Js("Settings_PBXManager_Index_Js", {}, {
 	 */
 	loadContents: function (url) {
 		var aDeferred = jQuery.Deferred();
-		app.request.pjax(url).then(
-			function (data) {
-				jQuery('.contentsDiv').html(data);
+		app.request.get({url:url}).then(
+			function (err, data) {
+				jQuery('.settingsPageDiv').html(data);
 				aDeferred.resolve(data);
 			},
 			function (error, err) {
