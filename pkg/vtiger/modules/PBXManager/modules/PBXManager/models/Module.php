@@ -32,7 +32,7 @@ class PBXManager_Module_Model extends Vtiger_Module_Model {
 	public function getModuleBasicLinks() {
 		$basicLinks = parent::getModuleBasicLinks();
 		foreach ($basicLinks as $key => $basicLink) {
-			if ($basicLink['linklabel'] == 'LBL_ADD_RECORD') {
+			if (in_array($basicLink['linklabel'], array('LBL_ADD_RECORD', 'LBL_IMPORT'))) {
 				unset($basicLinks[$key]);
 			}
 		}
@@ -47,27 +47,31 @@ class PBXManager_Module_Model extends Vtiger_Module_Model {
 		if(!$this->isEntityModule()) {
 			return array();
 		}
-		vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
-		$layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
-		$editWorkflowsImagePath = Vtiger_Theme::getImagePath('EditWorkflows.png');
 		$settingsLinks = array();
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if($currentUser->isAdminUser()) {
+			vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
-		if(VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
+			$layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
+			$editWorkflowsImagePath = Vtiger_Theme::getImagePath('EditWorkflows.png');
+
+			if(VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
+				$settingsLinks[] = array(
+						'linktype' => 'LISTVIEWSETTING',
+						'linklabel' => 'LBL_EDIT_WORKFLOWS',
+						'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule='.$this->getName(),
+						'linkicon' => $editWorkflowsImagePath
+				);
+			}
+
 			$settingsLinks[] = array(
-					'linktype' => 'LISTVIEWSETTING',
-					'linklabel' => 'LBL_EDIT_WORKFLOWS',
-					'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule='.$this->getName(),
-					'linkicon' => $editWorkflowsImagePath
+						'linktype' => 'LISTVIEWSETTINGS',
+						'linklabel'=> 'LBL_SERVER_CONFIGURATION',
+						'linkurl' => 'index.php?parent=Settings&module=PBXManager&view=Index',
+						'linkicon'=> ''
 			);
 		}
-
-		$settingsLinks[] = array(
-					'linktype' => 'LISTVIEWSETTINGS',
-					'linklabel'=> 'LBL_SERVER_CONFIGURATION',
-					'linkurl' => 'index.php?parent=Settings&module=PBXManager&view=Index',
-					'linkicon'=> ''
-		);
 		return $settingsLinks;
 	}
 
