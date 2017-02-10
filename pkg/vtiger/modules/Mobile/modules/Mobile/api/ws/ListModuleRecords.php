@@ -12,7 +12,7 @@ include_once dirname(__FILE__) . '/models/SearchFilter.php';
 include_once dirname(__FILE__) . '/models/Paging.php';
 
 class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
-	
+
 	function isCalendarModule($module) {
 		return ($module == 'Events' || $module == 'Calendar');
 	}
@@ -25,87 +25,89 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 		$page = $request->get('page', 0);
 		return Mobile_WS_PagingModel::modelWithPageStart($page);
 	}
-	
+
 	function process(Mobile_API_Request $request) {
-		return $this->processSearchRecordLabel($request);
-	}
-	
-	function processSearchRecordLabel(Mobile_API_Request $request) {
-		global $current_user; // Few core API assumes this variable availability
-		
 		$current_user = $this->getActiveUser();
 		$module = $request->get('module');
-		$alertid = $request->get('alertid');
-		$filterid = $request->get('filterid');
-		$search = $request->get('search');
+		$filterId = $request->get('filterid');
+		$page = $request->get('page','1');
+		$orderBy = $request->getForSql('orderBy');
+		$sortOrder = $request->getForSql('sortOrder');
 		
-		$filterOrAlertInstance = false;
-		if(!empty($alertid)) {
-			$filterOrAlertInstance = Mobile_WS_AlertModel::modelWithId($alertid);
-		}
-		else if(!empty($filterid)) {
-			$filterOrAlertInstance = Mobile_WS_FilterModel::modelWithId($module, $filterid);
-		}
-		else if(!empty($search)) {
-			$filterOrAlertInstance = $this->getSearchFilterModel($module, $search);
-		}
+		$moduleModel = Vtiger_Module_Model::getInstance($module);
+		$headerFieldModels = $moduleModel->getHeaderViewFieldsList();
 		
-		if($filterOrAlertInstance && strcmp($module, $filterOrAlertInstance->moduleName)) {
-			$response = new Mobile_API_Response();
-			$response->setError(1001, 'Mistached module information.');
-			return $response;
-		}
-
-		// Initialize with more information
-		if($filterOrAlertInstance) {
-			$filterOrAlertInstance->setUser($current_user);
+		$headerFields = array();
+		$fields = array();
+		
+		$nameFields = $moduleModel->getNameFields();
+		if(is_string($nameFields)) {
+			$nameFieldModel = $moduleModel->getField($nameFields);
+			$headerFields[] = $nameFields;
+			$fields = array('name'=>$nameFieldModel->get('name'), 'label'=>$nameFieldModel->get('label'), 'fieldType'=>$nameFieldModel->getFieldDataType());
+		} else if(is_array($nameFields)) {
+			foreach($nameFields as $nameField) {
+				$nameFieldModel = $moduleModel->getField($nameField);
+				$headerFields[] = $nameField;
+				$fields[] = array('name'=>$nameFieldModel->get('name'), 'label'=>$nameFieldModel->get('label'), 'fieldType'=>$nameFieldModel->getFieldDataType());
+			}
 		}
 		
-		// Paging model
-		$pagingModel = $this->getPagingModel($request);
-
-		if($this->isCalendarModule($module)) {
-			return $this->processSearchRecordLabelForCalendar($request, $pagingModel);
+		foreach($headerFieldModels as $fieldName => $fieldModel) {
+			$headerFields[] = $fieldName;
+			$fields[] = array('name'=>$fieldName, 'label'=>$fieldModel->get('label'), 'fieldType'=>$fieldModel->getFieldDataType());
 		}
-		$records = $this->fetchRecordLabelsForModule($module, $current_user, array(), $filterOrAlertInstance, $pagingModel);
-
-		$modifiedRecords = array();
-		foreach($records as $record) {
-			if ($record instanceof SqlResultIteratorRow) {
-				$record = $record->data;
-				// Remove all integer indexed mappings
-				for($index = count($record); $index > -1; --$index) {
-					if(isset($record[$index])) {
-						unset($record[$index]);
+		
+		$listViewModel = Vtiger_ListView_Model::getInstance($module, $filterId, $headerFields);
+		
+		if(!empty($sortOrder)) {
+			$listViewModel->set('orderby', $orderBy);
+			$listViewModel->set('sortorder',$sortOrder);
+		}
+		
+		$pagingModel = new Vtiger_Paging_Model();
+		$pageLimit = $pagingModel->getPageLimit();
+		$pagingModel->set('page', $page);
+		$pagingModel->set('limit', $pageLimit+1);
+		
+		$listViewEntries = $listViewModel->getListViewEntries($pagingModel);
+		
+		if(empty($filterId)) {
+			$customView = new CustomView($module);
+			$filterId = $customView->getViewId($module);
+		}
+		
+		if($listViewEntries) {
+			foreach($listViewEntries as $index => $listViewEntryModel) {
+				$data = $listViewEntryModel->getRawData();
+				$record = array('id'=>$listViewEntryModel->getId());
+				foreach($data as $i => $value) {
+					if(is_string($i)) {
+						$record[$i]= decode_html($value); 
 					}
 				}
+				$records[] = $record;
 			}
-			
-			$recordid = $record['id'];
-			unset($record['id']);
-			
-			$eventstart = '';
-			if($this->isCalendarModule($module)) {
-				$eventstart = $record['date_start'];
-				unset($record['date_start']);
-			}
-
-			$values = array_values($record);
-			$label = implode(' ', $values);
-			
-			$modifiedRecord = array('id' => $recordid, 'label'=>$label); 
-			if(!empty($eventstart)) {
-				$modifiedRecord['eventstart'] = $eventstart;
-			}
-			$modifiedRecords[] = $modifiedRecord;
 		}
 		
+		$moreRecords = false;
+		if(count($listViewEntries) > $pageLimit) {
+			$moreRecords = true;
+			array_pop($records);
+		}
+
 		$response = new Mobile_API_Response();
-		$response->setResult(array('records'=>$modifiedRecords, 'module'=>$module));
-		
+		$response->setResult(array(	'records'=>$records, 
+									'headers'=>$fields, 
+									'selectedFilter'=>$filterId, 
+									'nameFields'=>$nameFields,
+									'moreRecords'=>$moreRecords,
+									'orderBy'=>$orderBy,
+									'sortOrder'=>$sortOrder,
+									'page'=>$page));
 		return $response;
 	}
-	
+
 	function processSearchRecordLabelForCalendar(Mobile_API_Request $request, $pagingModel = false) {
 		$current_user = $this->getActiveUser();
 		

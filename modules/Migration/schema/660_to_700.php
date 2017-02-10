@@ -1943,9 +1943,12 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$marketingSequence = 1;
 	foreach ($marketingSalesFields as $fieldName => $linkTo) {
-		$updateQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
-		$params = array($db->getUniqueID('vtiger_settings_field'), $marketingSalesBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $marketingSequence++, 0, 1);
-		$db->pquery($updateQuery, $params);
+		$marketingFieldResult = $db->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', array($fieldName));
+		if (!$db->num_rows($marketingFieldResult)) {
+			$updateQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+			$params = array($db->getUniqueID('vtiger_settings_field'), $marketingSalesBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $marketingSequence++, 0, 1);
+			$db->pquery($updateQuery, $params);
+		}
 	}
 	//End:: marketing sales block
 
@@ -1964,10 +1967,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$inventorySequence = 1;
 	foreach ($inventoryFields as $fieldName => $linkTo) {
-		$updateQuery = 'UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?';
-		$params = array($inventorySequence, $linkTo, $inventoryBlockId, $fieldName);
 		$db->pquery('UPDATE vtiger_settings_field SET sequence=?, linkto=?, blockid=? WHERE name=?', array($inventorySequence++, $linkTo, $inventoryBlockId, $fieldName));
-		$inventorySequence = $inventorySequence+1;
 	}
 	//End:: inventory block
 
@@ -1987,9 +1987,12 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$myPreferenceSequence = 1;
 	foreach ($myPreferenceFields as $fieldName => $linkTo) {
-		$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
-		$params = array($db->getUniqueID('vtiger_settings_field'), $myPreferenceBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $myPreferenceSequence++, 0, 1);
-		$db->pquery($fieldQuery, $params);
+		$myPrefFieldResult = $db->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', array($fieldName));
+		if (!$db->num_rows($myPrefFieldResult)) {
+			$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid,blockid,name,iconpath,description,linkto,sequence,active,pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+			$params = array($db->getUniqueID('vtiger_settings_field'), $myPreferenceBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $myPreferenceSequence++, 0, 1);
+			$db->pquery($fieldQuery, $params);
+		}
 	}
 	//End:: mypreference block
 
@@ -2019,9 +2022,12 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$extSequence = 1;
 	foreach ($extensionFields as $fieldName => $linkTo) {
-		$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active, pinned) VALUES(?,?,?,?,?,?,?,?,?)';
-		$params = array($db->getUniqueID('vtiger_settings_field'), $extensionsBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $extSequence++, 0, 1);
-		$db->pquery($fieldQuery, $params);
+		$extFieldResult = $db->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', array($fieldName));
+		if (!$db->num_rows($extFieldResult)) {
+			$fieldQuery = 'INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active, pinned) VALUES(?,?,?,?,?,?,?,?,?)';
+			$params = array($db->getUniqueID('vtiger_settings_field'), $extensionsBlockId, $fieldName, 'NULL', 'NULL', $linkTo, $extSequence++, 0, 1);
+			$db->pquery($fieldQuery, $params);
+		}
 	}
 	//End:: extensions block
 
