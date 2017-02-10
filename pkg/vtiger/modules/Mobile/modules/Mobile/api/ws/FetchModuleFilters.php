@@ -10,29 +10,22 @@
 class Mobile_WS_FetchModuleFilters extends Mobile_WS_Controller {
 	
 	function process(Mobile_API_Request $request) {
-		$response = new Mobile_API_Response();
-
 		$module = $request->get('module');
 		$current_user = $this->getActiveUser();
-		
+
+		$allFilters = CustomView_Record_Model::getAllByGroup($module);
+		unset($allFilters['Public']);
 		$result = array();
-		
-		$filters = $this->getModuleFilters($module, $current_user);
-		$yours = array();
-		$others= array();
-		if(!empty($filters)) {
-			foreach($filters as $filter) {
-				if($filter['userName'] == $current_user->column_fields['user_name']) {
-					$yours[] = $filter;
-				} else {
-					$others[]= $filter;
+		if($allFilters) {
+			foreach($allFilters as $group => $filters) {
+				$result[$group] = array();
+				foreach($filters as $filter) {
+					$result[$group][] = array('id'=>$filter->get('cvid'), 'name'=>$filter->get('viewname'), 'default'=>$filter->isDefault()); 
 				}
 			}
 		}
-		
-		$result['filters'] = array('yours' => $yours, 'others' => $others);
-		$response->setResult($result);
-
+		$response = new Mobile_API_Response();
+		$response->setResult(array('filters'=>$result));
 		return $response;
 	}
 

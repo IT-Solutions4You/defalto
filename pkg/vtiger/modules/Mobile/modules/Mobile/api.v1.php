@@ -11,32 +11,30 @@
 class Mobile_APIV1_Controller {
 
 	static $opControllers = array(
-		'login'                   => array('file' => '/api/ws/Login.php', 'class' => 'Mobile_WS_Login'),
-		'loginAndFetchModules'    => array('file' => '/api/ws/LoginAndFetchModules.php', 'class' => 'Mobile_WS_LoginAndFetchModules'),
-		'fetchModuleFilters'      => array('file' => '/api/ws/FetchModuleFilters.php'  , 'class' => 'Mobile_WS_FetchModuleFilters'),
-		'filterDetailsWithCount'  => array('file' => '/api/ws/FilterDetailsWithCount.php', 'class' => 'Mobile_WS_FilterDetailsWithCount'),
-		'fetchAllAlerts'          => array('file' => '/api/ws/FetchAllAlerts.php', 'class' => 'Mobile_WS_FetchAllAlerts'),
-		'alertDetailsWithMessage' => array('file' => '/api/ws/AlertDetailsWithMessage.php', 'class' => 'Mobile_WS_AlertDetailsWithMessage'),
-		'listModuleRecords'       => array('file' => '/api/ws/ListModuleRecords.php', 'class' => 'Mobile_WS_ListModuleRecords'),
-		'fetchRecord'             => array('file' => '/api/ws/FetchRecord.php', 'class' => 'Mobile_WS_FetchRecord'),
-		'fetchRecordWithGrouping' => array('file' => '/api/ws/FetchRecordWithGrouping.php', 'class' => 'Mobile_WS_FetchRecordWithGrouping'),
-		'fetchRecordsWithGrouping' => array('file' => '/api/ws/FetchRecordsWithGrouping.php', 'class' => 'Mobile_WS_FetchRecordsWithGrouping'),
-		'describe'                => array('file' => '/api/ws/Describe.php', 'class' => 'Mobile_WS_Describe'),
-		'saveRecord'              => array('file' => '/api/ws/SaveRecord.php', 'class' => 'Mobile_WS_SaveRecord'),
-		'syncModuleRecords'       => array('file' => '/api/ws/SyncModuleRecords.php', 'class' => 'Mobile_WS_SyncModuleRecords'),
-
-		'query'                   => array('file' => '/api/ws/Query.php', 'class' => 'Mobile_WS_Query'),
-		'queryWithGrouping'       => array('file' => '/api/ws/QueryWithGrouping.php', 'class' => 'Mobile_WS_QueryWithGrouping'),
-
-		'relatedRecordsWithGrouping' => array('file' => '/api/ws/RelatedRecordsWithGrouping.php', 'class' => 'Mobile_WS_RelatedRecordsWithGrouping'),
-		'deleteRecords'              => array('file' => '/api/ws/DeleteRecords.php', 'class' => 'Mobile_WS_DeleteRecords'),
-
-		'addRecordComment'           => array('file' => '/api/ws/AddRecordComment.php', 'class' => 'Mobile_WS_AddRecordComment'),
-		'history'                    => array('file' => '/api/ws/History.php', 'class' => 'Mobile_WS_History'),
-        'taxByType'                  => array('file'=>'/api/ws/TaxByType.php','class'=>'Mobile_WS_TaxByType'),
-		'pushNotificationSubscription' => array('file' => '/api/pushnotification/PushNotificationSubscription.php', 'class'=>'Mobile_WS_PushNotificationSubscription'),
-        'fetchModuleOwners'          => array('file' => '/api/ws/FetchModuleOwners.php', 'class'=>'Mobile_WS_FetchModuleOwners'),
-        'fetchCompanyDetails'        => array('file' => '/api/ws/FetchCompanyDetails.php', 'class'=>'Mobile_WS_FetchCompanyDetails')
+		'login'						=> array('file' => '/api/ws/Login.php',						'class' => 'Mobile_WS_Login'),
+		'loginAndFetchModules'		=> array('file' => '/api/ws/LoginAndFetchModules.php',		'class' => 'Mobile_WS_LoginAndFetchModules'),
+		'fetchModuleFilters'		=> array('file' => '/api/ws/FetchModuleFilters.php'  ,		'class' => 'Mobile_WS_FetchModuleFilters'),
+		'filterDetailsWithCount'	=> array('file' => '/api/ws/FilterDetailsWithCount.php',	'class' => 'Mobile_WS_FilterDetailsWithCount'),
+		'fetchAllAlerts'			=> array('file' => '/api/ws/FetchAllAlerts.php',			'class' => 'Mobile_WS_FetchAllAlerts'),
+		'alertDetailsWithMessage'	=> array('file' => '/api/ws/AlertDetailsWithMessage.php',	'class' => 'Mobile_WS_AlertDetailsWithMessage'),
+		'listModuleRecords'			=> array('file' => '/api/ws/ListModuleRecords.php',			'class' => 'Mobile_WS_ListModuleRecords'),
+		'fetchRecord'				=> array('file' => '/api/ws/FetchRecord.php',				'class' => 'Mobile_WS_FetchRecord'),
+		'fetchRecordWithGrouping'	=> array('file' => '/api/ws/FetchRecordWithGrouping.php',	'class' => 'Mobile_WS_FetchRecordWithGrouping'),
+		'fetchRecordsWithGrouping'	=> array('file' => '/api/ws/FetchRecordsWithGrouping.php',	'class' => 'Mobile_WS_FetchRecordsWithGrouping'),
+		'describe'					=> array('file' => '/api/ws/Describe.php',					'class' => 'Mobile_WS_Describe'),
+		'saveRecord'				=> array('file' => '/api/ws/SaveRecord.php',				'class' => 'Mobile_WS_SaveRecord'),
+		'syncModuleRecords'			=> array('file' => '/api/ws/SyncModuleRecords.php',			'class' => 'Mobile_WS_SyncModuleRecords'),
+		'query'						=> array('file' => '/api/ws/Query.php',						'class' => 'Mobile_WS_Query'),
+		'queryWithGrouping'			=> array('file' => '/api/ws/QueryWithGrouping.php',			'class' => 'Mobile_WS_QueryWithGrouping'),
+		'relatedRecordsWithGrouping'=> array('file' => '/api/ws/RelatedRecordsWithGrouping.php','class' => 'Mobile_WS_RelatedRecordsWithGrouping'),
+		'deleteRecords'				=> array('file' => '/api/ws/DeleteRecords.php',				'class' => 'Mobile_WS_DeleteRecords'),
+		'logout'					=> array('file' => '/api/ws/Logout.php',					'class' => 'Mobile_WS_Logout'),
+		'fetchModules'				=> array('file' => '/api/ws/FetchModules.php',				'class' => 'Mobile_WS_FetchModules'),
+		'userInfo'					=> array('file' => '/api/ws/UserInfo.php',					'class' => 'Mobile_WS_UserInfo'),
+		'addRecordComment'			=> array('file' => '/api/ws/AddRecordComment.php',			'class' => 'Mobile_WS_AddRecordComment'),
+		'history'					=> array('file' => '/api/ws/History.php',					'class' => 'Mobile_WS_History'),
+		'taxByType'					=> array('file' => '/api/ws/TaxByType.php',					'class' => 'Mobile_WS_TaxByType'),
+		'fetchModuleOwners'			=> array('file' => '/api/ws/FetchModuleOwners.php',			'class' => 'Mobile_WS_FetchModuleOwners'),
 	);
 
 	protected function initSession(Mobile_API_Request $request) {

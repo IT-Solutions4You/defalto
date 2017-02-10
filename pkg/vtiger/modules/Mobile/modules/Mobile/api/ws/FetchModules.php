@@ -7,35 +7,21 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-include_once 'include/Webservices/Delete.php';
+include_once dirname(__FILE__) . '/../../api/ws/LoginAndFetchModules.php';
 
-class Mobile_WS_DeleteRecords extends Mobile_WS_Controller {
+class Mobile_WS_FetchModules extends Mobile_WS_LoginAndFetchModules {
+
+	function requireLogin() {
+		return true;
+	}
 	
 	function process(Mobile_API_Request $request) {
-		global $current_user;
-		
 		$current_user = $this->getActiveUser();
-		$records = $request->get('records');
-		if (empty($records)) {
-			$records = array($request->get('record'));
-		} else {
-			$records = Zend_Json::decode($records);
-		}
-		$deleted = array();
-		foreach($records as $record) {
-			try {
-				$recordModel = Vtiger_Record_Model::getInstanceById($record);
-				$recordModel->delete();
-				$result = true;
-			} catch(Exception $e) {
-				$result = false;
-			}
-			$deleted[$record] = $result;
-		}
 		
 		$response = new Mobile_API_Response();
-		$response->setResult(array('deleted' => $deleted));
-		
+		$result = array();
+		$result['modules'] = $this->getListing($current_user);
+		$response->setResult($result);
 		return $response;
 	}
 }

@@ -25,7 +25,7 @@
             <form name="loginForm" ng-submit="login()" class="login-form" ng-validate>
                 <md-input-container  md-no-float class="md-hue-1">
                     <label for="username" >User name</label>
-                    <input type="email" autoFilled="true" id="user-name" name="username" ng-model="auth.username" ng-required="true">
+                    <input type="text" autoFilled="true" id="user-name" name="username" ng-model="auth.username" ng-required="true">
                     <div class="form-errors" ng-message="required" ng-show="loginForm.username.$invalid && loginForm.username.$touched">User Name required!</div>
                 </md-input-container>
                 <md-input-container class="md-hue-1">

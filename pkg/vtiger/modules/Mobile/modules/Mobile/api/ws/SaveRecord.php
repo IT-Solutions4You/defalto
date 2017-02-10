@@ -30,63 +30,64 @@ class Mobile_WS_SaveRecord extends Mobile_WS_FetchRecordWithGrouping {
 		
 		$values = "";
 		if(!empty($valuesJSONString) && is_string($valuesJSONString)) {
-            $values = Zend_Json::decode($valuesJSONString);
-        } else {
-            $values = $valuesJSONString; // Either empty or already decoded.
-        }
+			$values = Zend_Json::decode($valuesJSONString);
+		} else {
+			$values = $valuesJSONString; // Either empty or already decoded.
+		}
 
-        $response = new Mobile_API_Response();
+		$response = new Mobile_API_Response();
 
-        if (empty($values)) {
-            $response->setError(1501, "Values cannot be empty!");
-            return $response;
-        }
+		if (empty($values)) {
+			$response->setError(1501, "Values cannot be empty!");
+			return $response;
+		}
 
+		try {
+			if (vtws_recordExists($recordid)) {
+				// Retrieve or Initalize
+				if (!empty($recordid)) {
+					$recordModel = Vtiger_Record_Model::getInstanceById($recordid, $module);
+				} else {
+					$recordModel = Vtiger_Record_Model::getCleanInstance($module);
+				}
 
-        try {
-           if (vtws_recordExists($recordid)) {
-                // Retrieve or Initalize
-                if (!empty($recordid) && !$this->isTemplateRecordRequest($request)) {
-                    $this->recordValues = vtws_retrieve($recordid, $current_user);
-                } else {
-                    $this->recordValues = array();
-                }
+				// Set the modified values
+				foreach($values as $name => $value) {
+					$recordModel->set($name, $value);
+				}
 
-                // Set the modified values
-                foreach($values as $name => $value) {
-                    $this->recordValues[$name] = $value;
-                }
-
-                // Update or Create
-                if (isset($this->recordValues['id'])) {
-                    $this->recordValues = vtws_update($this->recordValues, $current_user);
-                } else {
-
-                    // Set right target module name for Calendar/Event record
-                    if ($module == 'Calendar') {
-                        if (!empty($this->recordValues['eventstatus']) && $this->recordValues['activitytype'] != 'Task') {
-                            $module = 'Events';
-                        }
-                    }
-					// to save Source of Record while Creating
-                    $this->recordValues['source'] = 'MOBILE';
-                    $this->recordValues = vtws_create($module, $this->recordValues, $current_user);
-                }
-
-                // Update the record id
-                $request->set('record', $this->recordValues['id']);
-
-                // Gather response with full details
-                $response = parent::process($request);
-            } else {
-                $response->setError("RECORD_NOT_FOUND", "Record does not exist");
-                return $response;
-            }
-            
-        } catch(Exception $e) {
-            $response->setError($e->getCode(), $e->getMessage());
-        }
-        return $response;
-    }
+				$moduleModel = Vtiger_Module_Model::getInstance($module);
+				$fieldModelList = $moduleModel->getFields();
+				foreach ($fieldModelList as $fieldName => $fieldModel) {
+					$fieldValue = $values[$fieldName];
+					$fieldDataType = $fieldModel->getFieldDataType();
+					if($fieldDataType == 'time'){
+						$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+					}
+					if($fieldValue !== null) {
+						if(!is_array($fieldValue) && $fieldDataType != 'currency') {
+							$fieldValue = trim($fieldValue);
+						}
+						$recordModel->set($fieldName, $fieldValue);
+					}
+				}
+				// Update or Create
+				if (!empty($recordid)) {
+					$recordModel->set('id', $recordid);
+					$recordModel->set('mode', 'edit');
+					$recordModel->save();
+				} else {
+					$recordModel->save();
+				}
+				$response->setResult($recordModel->getData());
+			} else {
+				$response->setError("RECORD_NOT_FOUND", "Record does not exist");
+				return $response;
+			}
+		} catch(Exception $e) {
+			$response->setError($e->getCode(), $e->getMessage());
+		}
+		return $response;
+	}
 
 }
