@@ -17,8 +17,7 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 	 * @return <String> Url
 	 */
 	public function getCreateRecordUrl() {
-		$url = 'index.php?module=MailConverter&parent='.$this->getParentName().'&action=CheckMailBoxMaxLimit';
-		return 'javascript:Settings_MailConverter_List_Js.checkMailBoxMaxLimit("'.$url.'")';
+		return 'index.php?module=MailConverter&parent=Settings&view=Edit&mode=step1&create=new';
 	}
 
 	/**
@@ -27,28 +26,28 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 	 */
 	public function getFields() {
 		$fields =  array(
-                'scannername' => array('name' => 'scannername','typeofdata'=>'V~M','label'=>'Scanner Name','datatype'=>'string'),
-                'server'      => array('name' => 'server','typeofdata'=>'V~M','label'=>'Server','datatype'=>'string'),
-                'username'    => array('name' => 'username','typeofdata'=>'V~M','label'=>'User Name','datatype'=>'string') ,
-                'password'    => array('name' => 'password','typeofdata'=>'V~M','label'=>'Password','datatype'=>'password') ,
-                'protocol'    => array('name' => 'protocol','typeofdata'=>'C~O','label'=>'Protocol','datatype'=>'radio') ,
-                'ssltype'     => array('name' => 'ssltype','typeofdata'=>'C~O','label'=>'SSL Type','datatype'=>'radio') ,
-                'sslmethod'   => array('name' => 'sslmethod','typeofdata'=>'C~O','label'=>'SSL Method','datatype'=>'radio') ,
-                'connecturl'  => array('name' => 'connecturl', 'typeofdata'=>'V~O','label' => 'Connect URL','datatype' => 'string','isEditable'=>false),
-                'searchfor'   => array('name' => 'searchfor', 'typeofdata'=>'V~O','label'=>'Look For','datatype'=>'picklist'),
-                'markas'      => array('name' => 'markas', 'typeofdata'=>'V~O','label'=>'After Scan','datatype'=>'picklist'),
-                'isvalid'     => array('name' => 'isvalid', 'typeofdata'=>'C~O','label'=>'Status','datatype'=>'boolean'),
-                'time_zone'    => array('name' => 'time_zone', 'typeofdata'=>'V~O','label'=>'Time Zone','datatype'=>'picklist'));
+			'scannername'	=> array('name' => 'scannername',	'typeofdata' => 'V~M',	'label' => 'Scanner Name',	'datatype' => 'string'),
+			'server'		=> array('name' => 'server',		'typeofdata' => 'V~M',	'label' => 'Server',		'datatype' => 'string'),
+			'username'		=> array('name' => 'username',		'typeofdata' => 'V~M',	'label' => 'User Name',		'datatype' => 'string'),
+			'password'		=> array('name' => 'password',		'typeofdata' => 'V~M',	'label' => 'Password',		'datatype' => 'password'),
+			'protocol'		=> array('name' => 'protocol',		'typeofdata' => 'C~O',	'label' => 'Protocol',		'datatype' => 'radio'),
+			'ssltype'		=> array('name' => 'ssltype',		'typeofdata' => 'C~O',	'label' => 'SSL Type',		'datatype' => 'radio'),
+			'sslmethod'		=> array('name' => 'sslmethod',		'typeofdata' => 'C~O',	'label' => 'SSL Method',	'datatype' => 'radio'),
+			'connecturl'	=> array('name' => 'connecturl',	'typeofdata' => 'V~O',	'label' => 'Connect URL',	'datatype' => 'string', 'isEditable' => false),
+			'searchfor'		=> array('name' => 'searchfor',		'typeofdata' => 'V~O',	'label' => 'Look For',		'datatype' => 'picklist'),
+			'markas'		=> array('name' => 'markas',		'typeofdata' => 'V~O',	'label' => 'After Scan',	'datatype' => 'picklist'),
+			'isvalid'		=> array('name' => 'isvalid',		'typeofdata' => 'C~O',	'label' => 'Status',		'datatype' => 'boolean'),
+			'time_zone'		=> array('name' => 'time_zone',		'typeofdata' => 'V~O',	'label' => 'Time Zone',		'datatype' => 'picklist'));
 
-        $fieldsList = array();
-        foreach($fields as $fieldName => $fieldInfo) {
-            $fieldModel = new Settings_MailConverter_Field_Model();
-            foreach($fieldInfo as $key=>$value) {
-                $fieldModel->set($key, $value);
-            }
-            $fieldsList[$fieldName] = $fieldModel;
-        }
-        return $fieldsList;
+		$fieldsList = array();
+		foreach($fields as $fieldName => $fieldInfo) {
+			$fieldModel = new Settings_MailConverter_Field_Model();
+			foreach($fieldInfo as $key=>$value) {
+				$fieldModel->set($key, $value);
+			}
+			$fieldsList[$fieldName] = $fieldModel;
+		}
+		return $fieldsList;
 	}
 
 	/**
@@ -56,25 +55,25 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 	 *  @return <Array> List of setup rule fields
 	 */
 
-	public function getSetupRuleFiels() {
+	public function getSetupRuleFields() {
 		$ruleFields = array(
-			'fromaddress' => array('name' => 'fromaddress', 'label' => 'LBL_FROM', 'datatype' => 'email'),
-			'toaddress' => array('name' => 'toaddress', 'label' => 'LBL_TO', 'datatype' => 'email'),
-			'cc' => array('name' => 'cc', 'label' => 'LBL_CC', 'datatype' => 'email'),
-			'bcc' => array('name' => 'bcc', 'label' => 'LBL_BCC', 'datatype' => 'email'),
-			'subject' => array('name' => 'subject', 'label' => 'LBL_SUBJECT', 'datatype' => 'picklist'),
-			'body' => array('name' => 'body', 'label' => 'LBL_BODY', 'datatype' => 'picklist'),
-			'matchusing' => array('name' => 'matchusing', 'label' => 'LBL_MATCH', 'datatype' => 'radio'),
-			'action' => array('name' => 'action', 'label' => 'LBL_ACTION', 'datatype' => 'picklist')
+			'fromaddress'	=> array('name' => 'fromaddress',	'label' => 'LBL_FROM',		'datatype' => 'email'),
+			'toaddress'		=> array('name' => 'toaddress',		'label' => 'LBL_TO',		'datatype' => 'email'),
+			'cc'			=> array('name' => 'cc',			'label' => 'LBL_CC',		'datatype' => 'email'),
+			'bcc'			=> array('name' => 'bcc',			'label' => 'LBL_BCC',		'datatype' => 'email'),
+			'subject'		=> array('name' => 'subject',		'label' => 'LBL_SUBJECT',	'datatype' => 'picklist'),
+			'body'			=> array('name' => 'body',			'label' => 'LBL_BODY',		'datatype' => 'picklist'),
+			'matchusing'	=> array('name' => 'matchusing',	'label' => 'LBL_MATCH',		'datatype' => 'radio'),
+			'action'		=> array('name' => 'action',		'label' => 'LBL_ACTION',	'datatype' => 'picklist')
 		);
 		$ruleFieldsList = array();
 		foreach($ruleFields as $fieldName => $fieldInfo) {
-            $fieldModel = new Settings_MailConverter_RuleField_Model();
-            foreach($fieldInfo as $key=>$value) {
-                $fieldModel->set($key, $value);
-            }
-            $ruleFieldsList[$fieldName] = $fieldModel;
-        }
+			$fieldModel = new Settings_MailConverter_RuleField_Model();
+			foreach($fieldInfo as $key=>$value) {
+				$fieldModel->set($key, $value);
+			}
+			$ruleFieldsList[$fieldName] = $fieldModel;
+		}
 		return $ruleFieldsList;
 	}
 
@@ -136,25 +135,25 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 		$scannerInfo = new Vtiger_MailScannerInfo($scannerName);
 		$mailBox = new Vtiger_MailBox($scannerInfo);
 		$isConnected = $mailBox->connect();
-                if($isConnected) {
-                        $allFolders = $mailBox->getFolders();
-                        $folders = array();
-                        $selectedFolders = Settings_MailConverter_Module_Model::getScannedFolders($id);
-                        if(is_array($allFolders)) {
-                                foreach ($allFolders as $a) {
-                                        if (in_array($a, $selectedFolders)) {
-                                                $folders[$a] = 'checked';
-                                        } else {
-                                                $folders[$a] = '';
-                                        }
-                                }
-                                return $folders;
-                        } else {
-                                return $allFolders;
-                        }
+		if($isConnected) {
+			$allFolders = $mailBox->getFolders();
+			$folders = array();
+			$selectedFolders = Settings_MailConverter_Module_Model::getScannedFolders($id);
+			if(is_array($allFolders)) {
+				foreach ($allFolders as $a) {
+						if (in_array($a, $selectedFolders)) {
+							$folders[$a] = 'checked';
+						} else {
+							$folders[$a] = '';
+						}
+				}
+				return $folders;
+			} else {
+				return $allFolders;
+			}
 
-                }
-                return false;
+		}
+		return false;
 	}
 
 	public function getScannerName($id) {
@@ -174,6 +173,17 @@ class Settings_MailConverter_Module_Model extends Settings_Vtiger_Module_Model {
 		foreach ($folders as $folder) {
 			$db->pquery("INSERT INTO vtiger_mailscanner_folders VALUES(?,?,?,?,?,?)", array('', $scannerId, $folder, $lastScan, '0', '1'));
 		}
+	}
+
+	public function hasCreatePermissions() {
+		$permissions = false;
+		$recordsCount = Settings_MailConverter_Record_Model::getCount();
+
+		global $max_mailboxes;
+		if ($recordsCount < $max_mailboxes) {
+			$permissions = true;
+		}
+		return $permissions;
 	}
 
 }

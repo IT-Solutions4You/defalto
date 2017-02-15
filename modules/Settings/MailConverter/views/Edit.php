@@ -63,10 +63,10 @@ class Settings_MailConverter_Edit_View extends Settings_Vtiger_Index_View {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 		$folders = Settings_MailConverter_Module_Model::getFolders($recordId);
+
 		$viewer = $this->getViewer($request);
-		$folders = array('aasdasdsad','bsadasdsad','casadsad','dsdasdsa', 'eadasdsd', 'fasdsasd');
 		if (is_array($folders)) {
-			$viewer->assign('FOLDERS', array_flip($folders));
+			$viewer->assign('FOLDERS', $folders);
 		} else if ($folders) {
 			$viewer->assign('IMAP_ERROR', $folders);
 		} else {

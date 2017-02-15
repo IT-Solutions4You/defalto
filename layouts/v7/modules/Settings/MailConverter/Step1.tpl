@@ -30,11 +30,13 @@
 									{continue}
 								{/if}
 								<tr>
-									<td class="fieldLabel" style="width:20%;"><label>{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</label></td>
-									<td class="fieldValue">
+									<td class="fieldLabel control-label" style="width:25%;">
+										<label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}{if $FIELD_MODEL->isMandatory()} <span class="redColor">*</span>{/if}</label>
+									</td>
+									<td style="word-wrap:break-word;">
 										{assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
 										{if $FIELD_DATA_TYPE eq 'password'}
-											<input class="inputElement" type="password" name="{$FIELD_MODEL->getName()}" {if $RECORD_EXISTS} value="{$RECORD_MODEL->get($FIELD_NAME)}" {/if}
+											<input class="fieldValue inputElement" type="password" name="{$FIELD_MODEL->getName()}" {if $RECORD_EXISTS} value="{$RECORD_MODEL->get($FIELD_NAME)}" {/if}
 												{if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} />
 										{elseif $FIELD_DATA_TYPE eq 'boolean'}
 											{assign var=RECORD_ID value=$RECORD_MODEL->getId()}
@@ -46,7 +48,7 @@
 											{if $FIELD_MODEL->getName() eq 'time_zone' && empty($FIELD_VALUE)}
 												{assign var=FIELD_VALUE value=" "}
 											{/if}
-											<select name="{$FIELD_MODEL->getName()}" class="select2 inputElement"
+											<select name="{$FIELD_MODEL->getName()}" class="select2 fieldValue inputElement"
 												{* to show dropdown above *}
 												{if $FIELD_MODEL->getName() eq 'time_zone'}
 													data-dropdownCssClass="select2-drop-above"
@@ -55,7 +57,7 @@
 												{if $FIELD_MODEL->getName() eq 'time_zone'}
 													{* since in time zone its array of value and key, since there will mutiple areas with same time_zone *}
 													{foreach item=PICKLIST_VALUE key=PICKLIST_KEY from=$PICKLIST_VALUES}
-														<option value="{$PICKLIST_KEY}" {if $FIELD_VALUE eq $PICKLIST_KEY} selected {/if} >{vtranslate($PICKLIST_VALUE,$QUALIFIED_MODULE)}</option>
+														<option value="{$PICKLIST_KEY}" {if $FIELD_VALUE eq $PICKLIST_KEY} selected {/if} >{vtranslate($PICKLIST_VALUE, $QUALIFIED_MODULE)}</option>
 													{/foreach}
 												{else}
 													{foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
@@ -77,7 +79,7 @@
 												</label>&nbsp;&nbsp;&nbsp;&nbsp;
 											{/foreach}
 										{else}
-											<input type="text" class="inputElement" name="{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
+											<input type="text" class="fieldValue inputElement" name="{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->isMandatory()}data-validation-engine="validate[required]"{/if} value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
 										{/if}
 									</td>
 								</tr>

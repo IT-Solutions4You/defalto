@@ -15,16 +15,19 @@
 			<input type="hidden" id="step" value="{$STEP}" />
 			<h4>
 				{if $CREATE eq 'new'}
-					{vtranslate('LBL_ADDING_NEW_MAILBOX',$QUALIFIED_MODULE)}
+					{vtranslate('LBL_ADDING_NEW_MAILBOX', $QUALIFIED_MODULE)}
 				{else}
-					{vtranslate('LBL_EDIT_MAILBOX',$QUALIFIED_MODULE)}
+					{vtranslate('LBL_EDIT_MAILBOX', $QUALIFIED_MODULE)}
 				{/if}
 			</h4>
 			<hr>
 			<div class="editViewContainer" style="padding-left: 2%;padding-right: 2%">
 				<div class="row">
-					{assign var=BREADCRUMB_LABELS value = ["step1" => "MAILBOX_DETAILS", "step2" => "SELECT_FOLDERS", "step3" => "ADD_RULES"]}
-					{include file="BreadCrumbs.tpl"|vtemplate_path:$QUALIFIED_MODULE ACTIVESTEP=1 BREADCRUMB_LABELS=$BREADCRUMB_LABELS MODULE=$QUALIFIED_MODULE}
+					{assign var=BREADCRUMB_LABELS value = ["step1" => "MAILBOX_DETAILS", "step2" => "SELECT_FOLDERS"]}
+					{if $CREATE eq 'new'}
+						{append var=BREADCRUMB_LABELS index=step3 value=ADD_RULES}
+					{/if}
+					{include file="BreadCrumbs.tpl"|vtemplate_path:$QUALIFIED_MODULE BREADCRUMB_LABELS=$BREADCRUMB_LABELS MODULE=$QUALIFIED_MODULE}
 				</div>
 				<div class="clearfix"></div>
 {/strip}

@@ -324,6 +324,11 @@ if(defined('VTIGER_UPGRADE')) {
 		$folderModel->save();
 	}
 
+	$columns = $db->getColumnNames('vtiger_schedulereports');
+	if (!in_array('fileformat', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_schedulereports ADD COLUMN fileformat VARCHAR(10) DEFAULT "CSV"', array());
+	}
+
 	$modCommentsInstance = Vtiger_Module_Model::getInstance('ModComments');
 	$modCommentsTabId = $modCommentsInstance->getId();
 
@@ -692,7 +697,7 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$columns = $db->getColumnNames('vtiger_customerportal_relatedmoduleinfo');
-	if (!in_array('module', $columns)) {
+	if (in_array('module', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo CHANGE module tabid INT(19)', array());
 		$db->pquery('ALTER TABLE vtiger_customerportal_relatedmoduleinfo ADD PRIMARY KEY(tabid)', array());
 		$db->pquery('ALTER TABLE vtiger_customerportal_fields ADD PRIMARY KEY(tabid)', array());
@@ -1832,10 +1837,14 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$columns = $db->getColumnNames('vtiger_mailscanner');
+	if (!in_array('scanfrom', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_mailscanner ADD COLUMN scanfrom VARCHAR(10) DEFAULT "ALL"', array());
+	}
+
 	if (Vtiger_Utils::CheckTable('vtiger_mailscanner_ids')) {
-		$db->pquery('RENAME TABLE vtiger_mailscanner_ids TO vtiger_message_ids', array());
-		$db->pquery('ALTER TABLE vtiger_message_ids ADD COLUMN refids MEDIUMTEXT', array());
-		$db->pquery('ALTER TABLE vtiger_message_ids ADD INDEX messageids_crmid_idx(crmid)',array());
+		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
+		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
 
 	//Migrating data missed in vtiger_settings_field from file to database.

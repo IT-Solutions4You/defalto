@@ -14,7 +14,7 @@
 				{if $IMAP_ERROR}
 					{$IMAP_ERROR}
 				{else if $CONNECTION_ERROR}
-					{vtranslate('LBL_CONNECTION_ERROR',$QUALIFIED_MODULE)}
+					{vtranslate('LBL_CONNECTION_ERROR', $QUALIFIED_MODULE)}
 				{/if}
 			</strong>
 		</div>
@@ -22,17 +22,19 @@
 	{/if}
 	<div class="addMailBoxBlock">
 		<div class="row col-lg-12 padding-bottom1per">
-			<div id="mailConverterDragIcon"><i class="icon-info-sign"></i>&nbsp;&nbsp;{vtranslate('TO_CHANGE_THE_FOLDER_SELECTION_DESELECT_ANY_OF_THE_SELECTED_FOLDERS',$QUALIFIED_MODULE)}</div>
+			<div id="mailConverterDragIcon"><i class="icon-info-sign"></i>&nbsp;&nbsp;{vtranslate('TO_CHANGE_THE_FOLDER_SELECTION_DESELECT_ANY_OF_THE_SELECTED_FOLDERS', $QUALIFIED_MODULE)}</div>
 		</div>
 		<br>
 		<br>
 		<form class="form-horizontal" id="mailBoxEditView" name="step2">
 			<div class="block">
-				<div class="addMailBoxStep row">
+				<div class="addMailBoxStep row" style="margin-top: 10px; margin-bottom: 10px;">
 					{foreach key=FOLDER item=SELECTED from=$FOLDERS}
 						<div class="col-lg-3">
-							<input type="checkbox" name="folders" value="{$FOLDER}" {if $SELECTED eq 'checked'}checked{/if}>
-							&nbsp;&nbsp;&nbsp;{$FOLDER}
+							<label>
+								<input type="checkbox" name="folders" value="{$FOLDER}" {if $SELECTED eq 'checked'}checked{/if}>
+								<span>&nbsp;&nbsp;{$FOLDER}</span>
+							</label>
 						</div>
 					{/foreach}
 				</div>
