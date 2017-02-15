@@ -7,7 +7,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-Vtiger.Class('Settings_MailConverter_Edit_Js', {
+Settings_Vtiger_Index_Js('Settings_MailConverter_Edit_Js', {
 	firstStep: function (e) {
 		var form = jQuery('#mailBoxEditView');
 		var params = {
@@ -129,6 +129,7 @@ Vtiger.Class('Settings_MailConverter_Edit_Js', {
 
 },{
 	registerEvents: function () {
+		this._super();
 		Settings_MailConverter_Edit_Js.firstStep();
 		Settings_MailConverter_Edit_Js.activateHeader();
 	}

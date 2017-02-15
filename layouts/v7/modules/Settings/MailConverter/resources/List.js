@@ -70,5 +70,6 @@ Settings_Vtiger_Index_Js('Settings_MailConverter_List_Js', {
 	}
 }, {
 	registerEvents: function () {
+		this._super();
 	}
 })
