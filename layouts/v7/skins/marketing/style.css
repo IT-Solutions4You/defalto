@@ -7533,8 +7533,7 @@ a.btnReport:hover {
 }
 .settingsgroup-panel .widgetContainer .menuItemLabel .pinUnpinShortCut {
   display: none;
-  margin-top: 5px;
-  margin-right: 10px;
+  margin-top: 2px;
 }
 .settingsgroup-panel .widgetContainer .menuItemLabel:hover .pinUnpinShortCut {
   display: inline-block;

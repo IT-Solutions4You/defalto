@@ -31,72 +31,60 @@
 						</div>
 						<input type="hidden" name="view" value="List">
 					{else}
-						<div class="row" style="margin-top: 2%">
+						<div class="col-lg-12">
 							<div>
 								<h3>{vtranslate('LBL_VERIFY_IMPORT_DETAILS',$QUALIFIED_MODULE)}</h3>
 							</div><hr>
 						</div>
 						<div class="container-fluid"><br>
-							<div class="row">
-								<div class="col-lg-12">
-									<h4>
-										{vtranslate($MODULEIMPORT_NAME, $QUALIFIED_MODULE)}
-										{if $MODULEIMPORT_EXISTS eq 'true'} <font color=red><b>{vtranslate('LBL_EXISTS', $QUALIFIED_MODULE)}</b></font> {/if}
-									</h4>
-								</div>
+							<div class="col-lg-12">
+								<h4>
+									{vtranslate($MODULEIMPORT_NAME, $QUALIFIED_MODULE)}
+									{if $MODULEIMPORT_EXISTS eq 'true'} <font color=red><b>{vtranslate('LBL_EXISTS', $QUALIFIED_MODULE)}</b></font> {/if}
+								</h4>
 							</div>
-							<div class="row">
-								<div class="col-lg-12">
-									<p>
-										<small>{vtranslate('LBL_REQ_VTIGER_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
-									</p>
-								</div>
+							<div class="col-lg-12">
+								<p>
+									<small>{vtranslate('LBL_REQ_VTIGER_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
+								</p>
 							</div>
 							{assign var="need_license_agreement" value="false"}
 							{if $MODULEIMPORT_LICENSE}
 								{assign var="need_license_agreement" value="true"}
-								<div class="row">
-									<div class="col-lg-12">
-										<p>{vtranslate('LBL_LICENSE', $QUALIFIED_MODULE)}</p>
-									</div>
+								<div class="col-lg-12">
+									<p>{vtranslate('LBL_LICENSE', $QUALIFIED_MODULE)}</p>
 								</div>
-								<div class="row">
-									<div class="col-lg-12">
-										<div style="background: #eee;padding: 20px;box-sizing: border-box;height: 150px;overflow-y: scroll;">
-											<p>{$MODULEIMPORT_LICENSE|nl2br}</p>
-										</div>
+								<div class="col-lg-12">
+									<div style="background: #eee;padding: 20px;box-sizing: border-box;height: 150px;overflow-y: scroll;">
+										<p>{$MODULEIMPORT_LICENSE|nl2br}</p>
 									</div>
 								</div>
 							{/if}
 							<br>
-							<div class="row">
-								<div class="col-lg-4">
-									{if $MODULEIMPORT_EXISTS neq 'true'}
-										<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
-									{/if}&nbsp;
-								</div>
-								<div class="col-lg-8">
-									<span class="pull-right">
-										<div class="row">
-											{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
-												<div class="col-lg-2"></div>
-												<div class="col-lg-10">
-													{if $MODULEIMPORT_EXISTS eq 'true'}
-														<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-														<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-														<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
-													{else}
-														<p class="alert-info">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</p>
-													{/if}
-												</div>
-											{else}
-												<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-												<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-												<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
-											{/if}
-										</div>
-									</span>
-								</div>
+							<div class="col-lg-12">
+								{if $MODULEIMPORT_EXISTS neq 'true'}
+									<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
+								{/if}&nbsp;
+								<span class="pull-right">
+									<div class="row">
+										{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
+											<div class="col-lg-2"></div>
+											<div class="col-lg-10">
+												{if $MODULEIMPORT_EXISTS eq 'true'}
+													<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
+													<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
+													<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
+												{else}
+													<p class="alert-info">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</p>
+												{/if}
+											</div>
+										{else}
+											<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
+											<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
+											<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
+										{/if}
+									</div>
+								</span>
 							</div>
 						</div>
 						<br><br>

@@ -19,33 +19,33 @@
 				<div class="row">
 					<table class="table editview-table no-border">
 						<tbody>
-							{assign var=FIELDS value=$MODULE_MODEL->getSetupRuleFiels()}
+							{assign var=FIELDS value=$MODULE_MODEL->getSetupRuleFields()}
 							{foreach key=FIELD_NAME item=FIELD_MODEL from=$FIELDS}
 								<tr>
-									<td class="fieldLabel" style="width:20%;"><label>{vtranslate($FIELD_MODEL->get('label'),$QUALIFIED_MODULE)}</label></td>
-									<td class="fieldValue">
+									<td class="fieldLabel control-label" style="width:25%; padding-right:20px;"><label>{vtranslate($FIELD_MODEL->get('label'), $QUALIFIED_MODULE)}</label>
+									<td style="word-wrap:break-word;">
 										{assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
 										{if $FIELD_DATA_TYPE eq 'picklist'}
 											{assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPickListValues()}
 											{if $FIELD_NAME eq 'subject'}
-												<select name="subjectop" class="select2 inputElement">
-													<option value="">{vtranslate('LBL_SELECT_OPTION',$QUALIFIED_MODULE)}</option>
+												<select name="subjectop" class="select2 fieldValue inputElement">
+													<option value="">{vtranslate('LBL_SELECT_OPTION', $QUALIFIED_MODULE)}</option>
 													{foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
 														<option value="{$PICKLIST_KEY}" {if $RECORD_MODEL->get('subjectop') eq $PICKLIST_KEY} selected {/if} >{$PICKLIST_VALUE}</option>
 													{/foreach}
 												</select>&nbsp;&nbsp;
-												<input type="text" class="inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}" style="margin-left: 10px;" />
+												<input type="text" class="fieldValue inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}" style="margin-left: 10px;" />
 											{elseif $FIELD_NAME eq 'body'}
-												<select name="bodyop" class="select2 inputElement">
-													<option value="" {if $RECORD_MODEL->get('bodyop') eq ""}selected{/if}>{vtranslate('LBL_SELECT_OPTION',$QUALIFIED_MODULE)}</option>
+												<select name="bodyop" class="select2 fieldValue inputElement">
+													<option value="" {if $RECORD_MODEL->get('bodyop') eq ""}selected{/if}>{vtranslate('LBL_SELECT_OPTION', $QUALIFIED_MODULE)}</option>
 													{foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
 														<option value="{$PICKLIST_KEY}" {if $RECORD_MODEL->get('bodyop') eq $PICKLIST_KEY} selected {/if} >{$PICKLIST_VALUE}</option>
 													{/foreach}
-												</select>&nbsp;&nbsp;
+												</select>
 												<br><br>
-												<textarea name="{$FIELD_MODEL->getName()}" class="boxSizingBorderBox inputElement" style="width:416px;padding: 3px 8px;">{$RECORD_MODEL->get($FIELD_NAME)}</textarea>
+												<textarea name="{$FIELD_MODEL->getName()}" class="boxSizingBorderBox fieldValue inputElement" style="width:416px;padding: 3px 8px;">{$RECORD_MODEL->get($FIELD_NAME)}</textarea>
 											{else}
-												<select id="actions" name="action1" class="select2 inputElement" style="min-width:220px">
+												<select id="actions" name="action1" class="select2 fieldValue inputElement" style="min-width:220px">
 													{foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
 														<option value="{$PICKLIST_KEY}" {if $RECORD_MODEL->get($FIELD_NAME) eq $PICKLIST_KEY} selected {/if} >{$PICKLIST_VALUE}</option>
 													{/foreach}
@@ -60,17 +60,17 @@
 												</label>&nbsp;&nbsp;&nbsp;&nbsp;
 											{/foreach}
 										{elseif $FIELD_DATA_TYPE eq 'email'}
-											<input type="text" class="inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}" data-validation-engine="validate[funcCall[Vtiger_Email_Validator_Js.invokeValidation]]"/>
+											<input type="text" class="fieldValue inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}" data-validation-engine="validate[funcCall[Vtiger_Email_Validator_Js.invokeValidation]]"/>
 										{else}
-											<input type="text" class="inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
+											<input type="text" class="fieldValue inputElement" name="{$FIELD_MODEL->getName()}" value="{$RECORD_MODEL->get($FIELD_NAME)}"/>
 										{/if}
 									</td>
 								</tr>
 							{/foreach}
-							<tr>
-								<td class="fieldLabel" style="width:20%;"><label>{vtranslate('Assigned To')}</label></td>
-								<td class="fieldValue">
-									<select class="select2 inputElement" id="assignedTo" name="assignedTo">
+							<tr id="assignedToBlock">
+								<td class="fieldLabel control-label" style="width:25%; padding-right:20px;"><label>{vtranslate('Assigned To')}</label></td>
+								<td style="word-wrap:break-word;">
+									<select class="select2 fieldValue inputElement" id="assignedTo" name="assignedTo">
 										<optgroup label="{vtranslate('LBL_USERS')}">
 											{assign var=USERS value=$USER_MODEL->getAccessibleUsersForModule($MODULE_NAME)}
 											{foreach key=OWNER_ID item=OWNER_NAME from=$USERS}

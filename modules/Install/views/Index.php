@@ -232,7 +232,9 @@ class Install_Index_view extends Vtiger_View_Controller {
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$parentScripts = parent::getHeaderScripts($request);
-		$jsFileNames = array("modules.$moduleName.resources.Index");
+		$jsFileNames = array("modules.Vtiger.resources.List",
+							 "modules.Vtiger.resources.Popup",
+							 "modules.$moduleName.resources.Index");
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($parentScripts, $jsScriptInstances);
 		return $headerScriptInstances;
