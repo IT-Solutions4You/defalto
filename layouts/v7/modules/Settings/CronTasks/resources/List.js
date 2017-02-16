@@ -23,8 +23,32 @@ Settings_Vtiger_List_Js("Settings_CronTasks_List_Js",{
         jQuery('#cronJobSaveAjax').on('submit',function(e){
             e.preventDefault();
             var form = jQuery(e.currentTarget);
-            app.helper.showProgress();
-            app.helper.hideModal();
+	
+			var timeFormat = jQuery('#time_format').val();
+			var frequencyElement = jQuery('#frequencyValue');
+			var frequencyValue = frequencyElement.val() * 60;
+			if (timeFormat == 'hours') {
+				frequencyValue = frequencyValue * 60;
+			}
+
+			var minimumFrequency = jQuery('#minimumFrequency').val();
+			if (frequencyValue < minimumFrequency) {
+				var message = app.vtranslate('JS_VALUE_SHOULD_NOT_BE_LESS_THAN');
+				var minutes = app.vtranslate('JS_MINUTES');
+				vtUtils.showValidationMessage(frequencyElement, message+' '+(minimumFrequency / 60)+' '+minutes, {
+                    position: {
+                        my: 'bottom left',
+                        at: 'top left',
+                        container: frequencyElement.closest('.form-group')
+                    }
+                });
+				e.preventDefault();
+				return;
+			} else {
+				jQuery('#frequency').val(frequencyValue);
+			}
+			app.helper.showProgress();
+			app.helper.hideModal();
             var params = form.serializeFormData();
             
             app.request.post({"data":params}).then(function(err,data){
@@ -35,7 +59,7 @@ Settings_Vtiger_List_Js("Settings_CronTasks_List_Js",{
                 }else{
                     app.helper.showErrorNotification({'message':err.message});
                 }
-            });			
+            });
 			e.preventDefault();
 		});
 	},
