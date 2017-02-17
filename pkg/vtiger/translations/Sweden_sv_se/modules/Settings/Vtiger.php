@@ -264,6 +264,7 @@ $languageStrings = array(
 	'phone' => 'Telefon',
 	'fax' => 'Fax',
 	'website' => 'Hemsida',
+	'vatid' => 'Momsregistreringsnummer',
     'facebook' => 'Facebook',
     'twitter' => 'Twitter',
     'linkedin' => 'LinkedIn',
@@ -373,8 +374,8 @@ $languageStrings = array(
   'LBL_TALLY' => 'Stämmer',
   'LBL_SHOPPINGCART' => 'Varukorg',
 
-);
 
+);
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Vänligen välj minst en medlem för en grupp',
 	'JS_GROUP_DELETED_SUCCESSFULLY' => 'Gruppen har raderats framgångsrikt',

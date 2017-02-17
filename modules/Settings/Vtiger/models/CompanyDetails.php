@@ -30,6 +30,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 		'phone' => 'text',
 		'fax' => 'text',
 		'website' => 'text',
+		'vatid' => 'text' 
 	);
 
 	var $companyBasicFields = array(
@@ -42,7 +43,8 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 		'code'  => 'text',
 		'country' => 'text',
 		'phone' => 'text',
-		'fax' => 'text'
+		'fax' => 'text',
+		'vatid' => 'text'
 	);
 
 	var $companySocialLinks = array(

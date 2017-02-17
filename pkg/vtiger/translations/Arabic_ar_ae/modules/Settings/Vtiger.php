@@ -269,6 +269,7 @@ $languageStrings = array(
 	'phone' => 'Phone',
 	'fax' => 'Fax',
 	'website' => 'Website',
+	'vatid' => 'VAT ID',
     'facebook' => 'الفيسبوك',
     'twitter' => 'تغريد',
     'linkedin' => 'ينكدين',
@@ -378,8 +379,8 @@ $languageStrings = array(
   'LBL_TALLY' => 'تالي',
   'LBL_SHOPPINGCART' => 'ShoppingCart',
 
-);
 
+);
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group',
 	'JS_GROUP_DELETED_SUCCESSFULLY' => 'Group deleted successfully',
