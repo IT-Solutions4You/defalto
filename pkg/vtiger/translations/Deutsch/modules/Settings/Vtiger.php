@@ -219,6 +219,7 @@ $languageStrings = array(
 	'phone'                        => 'Phone'                       , 
 	'fax'                          => 'Fax'                         , 
 	'website'                      => 'Website'                     , 
+	'vatid' => 'Umsatzsteuer-ID',
     'facebook'                     => 'Facebook'                    ,
     'twitter'                      => 'Twitter'                     ,
     'linkedin'                     => 'LinkedIn'                    ,

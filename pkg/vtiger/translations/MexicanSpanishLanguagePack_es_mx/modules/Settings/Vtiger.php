@@ -220,6 +220,7 @@ $languageStrings = array(
 	'phone'                        => 'Phone'                       , // TODO: Review
 	'fax'                          => 'Fax'                         , // TODO: Review
 	'website'                      => 'Website'                     , // TODO: Review
+	'vatid' => 'ID de IVA',
     'facebook'                     => 'Facebook'                    ,
     'twitter'                      => 'Twitter'                     ,
     'linkedin'                     => 'LinkedIn'                    ,

@@ -19,17 +19,12 @@ class Users_Login_View extends Vtiger_View_Controller {
 	}
 	
 	function preProcess(Vtiger_Request $request, $display = true) {
-		$loginUrl = VtigerConfig::getOD('LOGIN_URL');
-		if(!empty($loginUrl)) {
-			header('Location:' .$loginUrl);
-			exit;
-		}
-		
 		$viewer = $this->getViewer($request);
 		$viewer->assign('PAGETITLE', $this->getPageTitle($request));
 		$viewer->assign('SCRIPTS',$this->getHeaderScripts($request));
 		$viewer->assign('STYLES',$this->getHeaderCss($request));
-		if($display) {
+		$viewer->assign('LANGUAGE_STRINGS', array());
+		if ($display) {
 			$this->preProcessDisplay($request);
 		}
 	}
@@ -39,16 +34,26 @@ class Users_Login_View extends Vtiger_View_Controller {
 		$viewer->view('Login.tpl', 'Users');
 	}
 
-    function postProcess(Vtiger_Request $request) {
-        $moduleName = $request->getModule();
+	function postProcess(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
 		$viewer->view('LoginFooter.tpl', $moduleName);
 	}
 
 	function getPageTitle(Vtiger_Request $request) {
 		$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
 		return $companyDetails->get('organizationname');
+	}
+
+	function getHeaderScripts(Vtiger_Request $request){
+		$headerScriptInstances = parent::getHeaderScripts($request);
+
+		$jsFileNames = array(
+							'modules.Vtiger.resources.List',
+							'modules.Vtiger.resources.Popup',
+							);
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		$headerScriptInstances = array_merge($jsScriptInstances,$headerScriptInstances);
+		return $headerScriptInstances;
 	}
 }

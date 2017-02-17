@@ -329,6 +329,7 @@ $languageStrings = array(
   'country' => 'Kraj',
   'fax' => 'Faks',
   'website' => 'Strona',
+	'vatid' => 'NIP',
   'LBL_IMAGE_CORRUPTED' => 'Wykryty wirus lub Przesłany plik jest uszkodzony',
   'LBL_LOGO_RECOMMENDED_MESSAGE' => 'Dozwolony rozmiar 150X40 pikseli (format .jpeg, .jpg, .png, .gif, .pjpeg, .x-png).',
   'LBL_COMPANY_INFORMATION' => 'Informacje O Firmie',
@@ -377,8 +378,8 @@ $languageStrings = array(
   'LBL_TALLY' => 'Tully',
   'LBL_SHOPPINGCART' => 'Fura sam',
 
-);
 
+);
 $jsLanguageStrings = array(
 	'JS_DEFAULT_TAX_MODE_SET_AS' => 'Tryb domyślny ustawiony jako podatek ',
 	'JS_SELECT_SIMPLE_TAXES' => 'Wybierz proste podatki',

@@ -86,7 +86,7 @@
 									</button>
 									<ul class="detailViewSetting dropdown-menu">
 										{foreach item=SETTING from=$MODULE_SETTING_ACTIONS}
-											<li id="{$MODULE_NAME}_listview_advancedAction_{$SETTING->getLabel()}"><a href={$SETTING->getUrl()}>{vtranslate($SETTING->getLabel(), $MODULE_NAME ,vtranslate($MODULE_NAME))}</a></li>
+											<li id="{$MODULE_NAME}_listview_advancedAction_{$SETTING->getLabel()}"><a href={$SETTING->getUrl()}>{vtranslate($SETTING->getLabel(), $MODULE_NAME ,vtranslate($MODULE_NAME, $MODULE_NAME))}</a></li>
 										{/foreach}
 									</ul>
 								</div>

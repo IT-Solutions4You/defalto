@@ -39,7 +39,7 @@
 										{assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
 										<span class="text-muted">
 											{vtranslate('LBL_ON','Vtiger')}&nbsp;
-											{vtranslate($SINGULR_MODULE)}&nbsp;
+											{vtranslate($SINGULR_MODULE, $COMMENT->get('module'))}&nbsp;
 											<a href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
 												{$ENTITY_NAME[$COMMENT->get('related_to')]}
 											</a>

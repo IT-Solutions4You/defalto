@@ -171,6 +171,7 @@ $languageStrings = array(
 	'phone'                        => 'Phone'                       , // TODO: Review
 	'fax'                          => 'Fax'                         , // TODO: Review
 	'website'                      => 'Website'                     , // TODO: Review
+	'vatid' => 'IVA ID',
     'facebook'                     => 'Facebook'                    ,
     'twitter'                      => 'Twitter'                     ,
     'linkedin'                     => 'LinkedIn'                    ,

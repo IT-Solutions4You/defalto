@@ -220,6 +220,7 @@ $languageStrings = array(
 	'phone'                        => 'Тел.'                     , // KEY 5.x: Phone
 	'fax'                          => 'Факс'                    , // KEY 5.x: LBL_ORGANIZATION_FAX
 	'website'                      => 'Вебсайт'              , // KEY 5.x: LBL_ORGANIZATION_WEBSITE
+	'vatid' => 'Код плательщика НДС',
     'facebook'                     => 'Facebook'                    ,
     'twitter'                      => 'Twitter'                     ,
     'linkedin'                     => 'LinkedIn'                    ,
