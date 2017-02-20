@@ -795,6 +795,7 @@ a.menu-item:hover {
 .fieldValue .value {
   max-width: 85%;
   display: inline-block;
+  word-break: break-word;
 }
 .modal-header button.close {
   padding: 0;
