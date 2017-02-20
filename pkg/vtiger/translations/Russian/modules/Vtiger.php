@@ -758,7 +758,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Предварительно Налоговый Всего',
 	'Received' => 'Получено',
 	'Balance' => 'Баланс',
-	'S&H Percent' => 'S & H Процент',
+	'S&H Amount' => 'расходы',
+	'S&H Percent' => 'Налоги на сборах',
 	'Tax Region' => 'Налоговый Регион',
     
     'SINGLE_Potentials' => 'Возможность',

@@ -758,7 +758,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pré fiscal total',
 	'Received' => 'Recebido',
 	'Balance' => 'Equilíbrio',
-	'S&H Percent' => 'S & H Percent',
+	'S&H Amount' => 'Cobranças',
+	'S&H Percent' => 'Impostos sobre os encargos',
 	'Tax Region' => 'Região Fiscal',
     
     'SINGLE_Potentials' => 'Oportunidade',

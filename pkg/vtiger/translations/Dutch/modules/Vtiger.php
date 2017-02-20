@@ -757,7 +757,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pre Btw',
 	'Received' => 'Ontvangen',
 	'Balance' => 'Balans',
-	'S&H Percent' => 'S & H Procent',
+	'S&H Amount' => 'kosten',
+	'S&H Percent' => 'Belastingen op beschuldiging',
 	'Tax Region' => 'Belasting Regio',
     
     'group' => 'Groep',

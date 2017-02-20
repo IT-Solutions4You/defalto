@@ -888,7 +888,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'قبل الضرائب إجمالي',
 	'Received' => 'تلقى',
 	'Balance' => 'توازن',
-	'S&H Percent' => 'S & H في المئة',
+	'S&H Amount' => 'شحنة',
+	'S&H Percent' => 'الضرائب على رسوم',
 	'Tax Region' => 'منطقة الضريبية',
     
     'SINGLE_Potentials' => 'فرصة',
