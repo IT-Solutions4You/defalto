@@ -23,15 +23,6 @@
                     <md-button class="md-icon-button" ng-click="detailViewEditEvent();" aria-label="global-search">
                          <i class="mdi mdi-pencil actionbar-icon"></i>
                     </md-button>
-                    <md-button class="md-icon-button" aria-label="notifications">
-                        <i class="mdi mdi-phone actionbar-icon"></i>
-                    </md-button>
-                    <md-button class="md-icon-button" aria-label="notifications">
-                        <i class="mdi mdi-email actionbar-icon"></i>
-                    </md-button>
-                    <md-button class="md-icon-button" aria-label="notifications">
-                        <i class="mdi mdi-dots-vertical actionbar-icon"></i>
-                    </md-button>
                 </div>
             </md-toolbar>
         </header>

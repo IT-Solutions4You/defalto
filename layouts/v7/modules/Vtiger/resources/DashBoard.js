@@ -444,7 +444,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			var widgetTitle = parent.find('.dashboardTitle').attr('title');
 			var activeTabId = element.closest(".tab-pane").data("tabid");
 
-			var message = app.vtranslate('JS_ARE_YOU_SURE_TO_DELETE_WIDGET')+" "+widgetTitle;
+			var message = app.vtranslate('JS_ARE_YOU_SURE_TO_DELETE_WIDGET', widgetTitle);
 			app.helper.showConfirmationBox({'message' : message, 'htmlSupportEnable' : false}).then(function(e) {
 				app.helper.showProgress();
 				app.request.post({"url":url}).then(
@@ -592,7 +592,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 
 			var tabId = tab.data("tabid");
 			var tabName = tab.data("tabname");
-			var message = app.vtranslate('JS_ARE_YOU_SURE_TO_DELETE_DASHBOARDTAB')+" - "+tabName;
+			var message = app.vtranslate('JS_ARE_YOU_SURE_TO_DELETE_DASHBOARDTAB', tabName);
 			app.helper.showConfirmationBox({'message' : message, 'htmlSupportEnable' : false}).then(function(e) {
 				app.helper.showProgress();
 				var data = {
