@@ -629,8 +629,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 				}
 			}
 			if($dataType == 'multipicklist') {
-				$values = explode('|##|', $rawValue);
-				$rawValue = implode(',', array_map('vtranslate',$values));
+				$rawValue = $fieldInstance->getDisplayValue($rawValue);
 			}
 		}
 		return $rawValue;
