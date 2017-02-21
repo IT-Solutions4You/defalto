@@ -30,6 +30,7 @@ class Vtiger_SaveStar_Action extends Vtiger_Mass_Action {
 			$focus = CRMEntity::getInstance($module);
 			$focus->mode = "edit";
 			$focus->id = $recordId;
+			$focus->column_fields->startTracking();
 			$focus->column_fields['starred'] = $request->get('value');
 			$focus->insertIntoEntityTable($moduleUserSpecificTableName, $module);
 		}

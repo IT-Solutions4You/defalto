@@ -84,7 +84,9 @@ class Home_Module_Model extends Vtiger_Module_Model {
 	 * @param <String> $type - comments, updates or all
 	 * @return <Array>
 	 */
-	public function getHistory($pagingModel, $type='all', $userId='all', $dateFilter='') {
+	public function getHistory($pagingModel, $type='', $userId='', $dateFilter='') {
+		if(!$userId)	$userId	= 'all';
+		if(!$type)		$type	= 'all';
 		//TODO: need to handle security
 		$comments = array();
 		if($type == 'all' || $type == 'comments') {
