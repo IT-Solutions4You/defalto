@@ -782,7 +782,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pre podatkowa Razem',
 	'Received' => 'Otrzymane',
 	'Balance' => 'Bilans',
-	'S&H Percent' => 'S & H Procent',
+	'S&H Amount' => 'opłaty',
+	'S&H Percent' => 'Podatki w sprawie opłat',
 	'Tax Region' => 'Region podatkowa',
     
     'SINGLE_Potentials' => 'Okazja',

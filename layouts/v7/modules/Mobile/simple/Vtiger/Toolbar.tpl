@@ -10,9 +10,6 @@
                 <md-button class="md-icon-button" aria-label="global-search">
                     <i class="mdi mdi-magnify  actionbar-icon"></i>
                 </md-button>
-                <md-button class="md-icon-button" aria-label="notifications">
-                    <i class="mdi mdi-bell-outline actionbar-icon"></i>
-                </md-button>
             </div>
         </md-toolbar>
     </header>

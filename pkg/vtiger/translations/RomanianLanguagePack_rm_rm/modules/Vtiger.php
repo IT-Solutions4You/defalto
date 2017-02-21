@@ -790,7 +790,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pre totală de impozitare',
 	'Received' => 'Primit',
 	'Balance' => 'Balanța',
-	'S&H Percent' => 'S & H Procent',
+	'S&H Amount' => 'cheltuieli',
+	'S&H Percent' => 'Impozite pe Taxe',
 	'Tax Region' => 'Taxa Regiune',
 	
     'SINGLE_Potentials' => 'Oportunitate',

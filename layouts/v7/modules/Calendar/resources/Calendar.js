@@ -1427,6 +1427,8 @@ Vtiger.Class("Calendar_Calendar_Js", {
 		this.showEditEventModal(eventId, isRecurring);
 	},
 	registerPopoverEvent: function (event, element, calendarView) {
+		var dateFormat = this.getUserPrefered('date_format');
+		dateFormat = dateFormat.toUpperCase();
 		var hourFormat = this.getUserPrefered('time_format');
 		var timeFormat = 'HH:mm';
 		if (hourFormat === '12') {
@@ -1434,18 +1436,27 @@ Vtiger.Class("Calendar_Calendar_Js", {
 		}
 
 		var generatePopoverContentHTML = function (eventObj) {
-			var timeString = eventObj._start.format(timeFormat);
-			if (eventObj._end !== null) {
-				timeString += ' - ' + eventObj._end.format(timeFormat);
+			var timeString = '';
+			if (eventObj.activitytype === 'Task') {
+				timeString = moment(eventObj._start._i, eventObj._start._f).format(timeFormat);
+			} else if (eventObj.module === "Events") {
+				if (eventObj._start && typeof eventObj._start != 'undefined') {
+					timeString = eventObj._start.format(timeFormat);
+				}
+				if (eventObj._end && typeof eventObj._end != 'undefined') {
+					timeString += ' - ' + eventObj._end.format(timeFormat);
+				}
+			} else {
+				timeString = eventObj._start.format(dateFormat);
 			}
 			var sourceModule = eventObj.module;
 			if (!sourceModule) {
 				sourceModule = 'Calendar';
 			}
 			var popOverHTML = '' +
-					'<span>' +
-					timeString +
-					'</span>';
+			'<span>' +
+				timeString +
+			'</span>';
 
 			if (sourceModule === 'Calendar' || sourceModule == 'Events') {
 				popOverHTML += '' +

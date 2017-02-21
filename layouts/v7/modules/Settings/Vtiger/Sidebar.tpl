@@ -20,9 +20,6 @@
 					{assign var=BLOCK_NAME value=$BLOCK_MENUS->getLabel()}
 					{assign var=BLOCK_MENU_ITEMS value=$BLOCK_MENUS->getMenuItems()}
 					{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENU_ITEMS|@sizeof}
-					{if $BLOCK_NAME eq 'LBL_EXTENSIONS'}
-						{continue}
-					{/if}
 					{if $NUM_OF_MENU_ITEMS gt 0}
 						<div class="settingsgroup-panel panel panel-default instaSearch">
 							<div id="{$BLOCK_NAME}_accordion" class="app-nav" role="tab">
@@ -46,8 +43,6 @@
 											{assign var=MENU_LABEL value='LBL_TAX_MANAGEMENT'}
 										{elseif $MENU eq 'INVENTORYTERMSANDCONDITIONS'}
 											{assign var=MENU_LABEL value='LBL_TERMS_AND_CONDITIONS'}
-										{elseif $MENU eq 'LBL_PHONE_CALLS'}
-											{assign var=MENU_LABEL value='LBL_PHONE_CONFIGURATION'}
 										{/if}
 
 										{assign var=MENU_URL value=$MENUITEM->getUrl()}

@@ -67,7 +67,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 					continue;
 				}
 
-				if($block->get('label') != 'LBL_ITEM_DETAILS') {
+				if($block->get('label') != 'LBL_RELATED_PRODUCTS') {
 					$blocksList[$block->get('label')] = $block;
 				}
 			}

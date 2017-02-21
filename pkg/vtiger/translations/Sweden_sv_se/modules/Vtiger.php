@@ -908,7 +908,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pre Skatt Total',
 	'Received' => 'Mottaget',
 	'Balance' => 'Balans',
-	'S&H Percent' => 'S & H Procent',
+	'S&H Amount' => 'Kostnader',
+	'S&H Percent' => 'Skatter på avgifter',
 	'Tax Region' => 'Tax Region',
     
     'SINGLE_Potentials' => 'Möjlighet',

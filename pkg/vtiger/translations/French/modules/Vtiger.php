@@ -756,7 +756,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pré Total Tax',
 	'Received' => 'Reçu',
 	'Balance' => 'Balance',
-	'S&H Percent' => 'S & H Pourcentage',
+	'S&H Amount' => 'Des charges',
+	'S&H Percent' => 'Taxes sur les redevances',
 	'Tax Region' => 'Région impôt',
     
     'SINGLE_Potentials' => 'Occasion',

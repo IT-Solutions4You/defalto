@@ -1043,7 +1043,8 @@ $languageStrings = array(
 	'Pre Tax Total' => 'Pre Tax Total',
 	'Received' => 'Received',
 	'Balance' => 'Balance',
-	'S&H Percent' => 'S&H Percent',
+	'S&H Amount' => 'Charges',
+	'S&H Percent' => 'Taxes On Charges',
 	'Tax Region' => 'Tax Region',
 
 	//Singular Modulenames

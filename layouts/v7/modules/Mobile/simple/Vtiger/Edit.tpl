@@ -22,9 +22,6 @@
                     </md-button>
                     <h2 flex>Edit Title</h2>
                     <span flex></span>
-                    <md-button type="submit" class="md-icon-button" aria-label="notifications">
-                        <i class="mdi mdi-check actionbar-icon"></i>
-                    </md-button>
                 </div>
             </md-toolbar>
         </header>

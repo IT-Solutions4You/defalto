@@ -32,12 +32,6 @@
         <div flex class="list-content">
             <div class="list-filters" layout="row" >
                 <div flex="60" class="change-filter">
-                    <md-button class="filter-btn" aria-label="notifications">
-                        <!--md-tooltip md-delay="400" md-direction="bottom" md-autohide="true">
-                            {{selectedFilter}}
-                        </md-tooltip-->
-                        <i class="mdi mdi-filter-outline"></i>
-                    </md-button>
                     <md-input-container class="current-filter">
                         <md-select ng-model="selectedFilter" aria-label="filter">
                             <md-optgroup label="Mine">
@@ -50,14 +44,6 @@
                     </md-input-container>
                 </div>
                 <div flex="40" class="sort-filter" ng-show="records.length">
-                    <md-button class="filter-btn" ng-click="sortRecords()" aria-label="notifications" >
-                        <i class="mdi mdi-sort-ascending" ng-show="sortOrder && sortOrder == 'asc'"></i>
-                        <i class="mdi mdi-sort-descending" ng-show="sortOrder && sortOrder == 'desc'"></i>
-                        <!--md-tooltip flex md-delay="400" md-direction="bottom" md-autohide="true">
-                            This is the filter name in on which sort apply This is the filter name in on which sort apply
-                        </md-tooltip-->
-                    </md-button>
-
                     <md-input-container class="current-sort-field">
                         <md-select ng-model="orderBy" aria-label="sortfield" placeholder="Select sort field">
                             <md-option ng-repeat="header in headers" ng-value="header.name">{{header.label}}</md-option>

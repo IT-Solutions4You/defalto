@@ -438,7 +438,6 @@ class ListViewController {
 				} elseif($field->getUIType() == 98) {
 					$value = '<a href="index.php?module=Roles&parent=Settings&view=Edit&record='.$value.'">'.textlength_check(getRoleName($value)).'</a>';
 				} elseif($fieldDataType == 'multipicklist') {
-					$value = ($value != "") ? str_replace(' |##| ',', ',$value) : "";
 					if(!$is_admin && $value != '') {
 						$valueArray = ($rawValue != "") ? explode(' |##| ',$rawValue) : array();
 						$notaccess = '<font color="red">'.getTranslatedString('LBL_NOT_ACCESSIBLE',
@@ -465,6 +464,14 @@ class ListViewController {
 						}
 						$value = implode(', ', $tmpArray);
 						$value = textlength_check($value);
+					} else if ($value != '') {
+						$moduleName = getTabModuleName($field->getTabId());
+						$value = explode(' |##| ', $value);
+						foreach ($value as $key => $val) {
+							$value[$key] = vtranslate($val, $moduleName);
+						}
+						$value = implode(' |##| ', $value);
+						$value = str_replace(' |##| ', ', ', $value);
 					}
 				} elseif ($fieldDataType == 'skype') {
 					$value = ($value != "") ? "<a href='skype:$value?call'>".textlength_check($value)."</a>" : "";
