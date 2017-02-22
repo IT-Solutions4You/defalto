@@ -175,12 +175,12 @@ Vtiger.Class('Vtiger_ListSidebar_Js',{},{
                 contentEle.find('.deleteFilter').css("display","none");
             }
             if (!jQuery(ele).data('editable')) {
-                contentEle.find('.editFilter').addClass('disabled');
+                contentEle.find('.editFilter').remove();
             } else {
                 contentEle.find('.editFilter').removeClass('disabled');
             }
             if (!jQuery(ele).data('deletable')) {
-                contentEle.find('.deleteFilter').addClass('disabled');
+                contentEle.find('.deleteFilter').remove();
             } else {
                 contentEle.find('.deleteFilter').removeClass('disabled');
             } 
