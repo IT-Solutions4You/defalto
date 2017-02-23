@@ -42,7 +42,7 @@
             value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}" 
             placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
             {if $displayId neq 0}disabled="disabled"{/if}  
-            {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
+            {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" data-rule-reference_required="true" {/if}
             {if count($FIELD_INFO['validator'])} 
                 data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
             {/if}

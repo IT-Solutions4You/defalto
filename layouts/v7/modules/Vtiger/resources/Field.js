@@ -163,6 +163,10 @@ jQuery.Class("Vtiger_Field_Js",{
 		}
 		if(this.isMandatory()) {
             addValidationToElement.attr('data-rule-required', 'true');
+			var type = this.getType();
+			if (type == 'reference') {
+				addValidationToElement.attr('data-rule-reference_required', 'true');
+			}
 		}
 		addValidationToElement.attr('data-fieldinfo',JSON.stringify(this.getData())).attr('data-specific-rules',JSON.stringify(this.getData().specialValidator));
         return element;

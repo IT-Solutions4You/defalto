@@ -709,6 +709,18 @@ jQuery.validator.addMethod("RepeatMonthDate", function(value, element, params) {
 	}, jQuery.validator.format("Please enter the proper value")
 );
 
+jQuery.validator.addMethod("reference_required", function (value, element, params) {
+	var referenceValue = jQuery(element).parent().parent().find('input.sourceField').val();
+	if (isNaN(referenceValue)) {
+		referenceValue = jQuery(element).parent().parent().find('input.sourceField').attr('value');
+	}
+	if (referenceValue && parseInt(referenceValue) > 0) {
+		return true;
+	} else {
+		return false;
+	}
+}, jQuery.validator.format(app.vtranslate('JS_REQUIRED_FIELD')));
+
 function validateAndSubmitForm (form, params, meta) {
 	if(typeof meta === 'undefined' && typeof uimeta !== "undefined"){
 		meta = uimeta;

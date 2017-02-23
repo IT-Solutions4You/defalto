@@ -341,7 +341,7 @@ function getReportSearchCondition($searchParams, $filterId) {
 			$fieldName = $condition[0];
 			$searchValue = $condition[2];
 			if ($fieldName == 'reportname' || $fieldName == 'description') {
-				$conditionQuery .= " vtiger_report." . $fieldName . " LIKE ? ";
+				$conditionQuery .= " vtiger_report.$fieldName. LIKE ? ";
 				array_push($params, "%$searchValue%");
 			} else if ($fieldName == 'reporttype' || $fieldName == 'foldername' || $fieldName == 'owner') {
 				$searchValue = explode(',', $searchValue);
@@ -351,7 +351,13 @@ function getReportSearchCondition($searchParams, $filterId) {
 				if ($fieldName == 'reporttype' && in_array('tabular', $searchValue)) {
 					array_push($searchValue, 'summary');
 				}
-				$conditionQuery .= " vtiger_report." . $fieldName . " IN (" . generateQuestionMarks($searchValue) . ") ";
+				$conditionQuery .= " vtiger_report.$fieldName IN (".generateQuestionMarks($searchValue).") ";
+				foreach ($searchValue as $value) {
+					array_push($params, $value);
+				}
+			} else if ($fieldName == 'primarymodule') {
+				$searchValue = explode(',', $searchValue);
+				$conditionQuery .= " vtiger_reportmodules.$fieldName IN (".generateQuestionMarks($searchValue).") ";
 				foreach ($searchValue as $value) {
 					array_push($params, $value);
 				}
