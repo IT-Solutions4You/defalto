@@ -172,7 +172,8 @@ class VTCreateEventTask extends VTTask{
 			unset($_REQUEST['recurringtype']);
 			unset($fields['recurringtype']);
 		}
-		
+
+		$fields['source'] = 'WORKFLOW';
 		$event = vtws_create('Events', $fields, $adminUser);
 		$eventIdDetails = vtws_getIdComponents($event['id']);
 		$entityIdDetails = vtws_getIdComponents($id);

@@ -183,6 +183,7 @@ class VTCreateEntityTask extends VTTask {
 			$newEntity->column_fields[$this->reference_field] = $focus->id;
 			// To handle cyclic process
 			$newEntity->_from_workflow = true;
+			$newEntity->column_fields['source'] = 'WORKFLOW';
 
 			//If the module triggering workflow and new entity we are creating are same, Then it might end up in infinite loop.
 			//So we need to call saveentity than save in order to avoid workflow triggering for new entity
