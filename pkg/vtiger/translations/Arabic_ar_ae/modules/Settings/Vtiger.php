@@ -105,6 +105,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Create and edit workflows',
 
 	'Configuration Editor' => 'Configuration Editor',
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'ملف التكوين تحديث للتطبيق',
 	'Update configuration file of the application' => 'Update configuration file of the application',
 
 	'LBL_CUSTOMER_PORTAL' => 'Customer Portal',

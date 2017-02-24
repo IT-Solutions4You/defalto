@@ -95,6 +95,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS'           => 'Flujos de Trabajo',
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Crear y editar flujos de trabajo',
 	'Configuration Editor'         => 'Editor de Configuración',
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Actualizar archivo de configuración de la aplicación',
 	'Update configuration file of the application' => 'Actualizar el fichero de configuración de la aplicación.',
 	'LBL_CUSTOMER_PORTAL'          => 'Portal del Cliente',
 	'PORTAL_EXTENSION_DESCRIPTION' => 'Permite configurar la extensión del portal del cliente',

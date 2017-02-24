@@ -101,6 +101,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Skapa och redigera arbetsflöden',
 
 	'Configuration Editor' => 'konfiguratorredigeraren',
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Uppdatera konfigurationsfilen för ansökan',
 	'Update configuration file of the application' => 'Uppdatering konfigurationsfil av programmet',
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => 'Om du vill spåra öppnar direkta e-postmeddelanden som skickas till kontakter, vänligen aktivera denna kryssruta. Observera att e-post som skickas från e-postkampanjer modul alltid spåras, och påverkas inte av den här inställningen',
 	'LBL_CUSTOMER_PORTAL' => 'Kundportal',

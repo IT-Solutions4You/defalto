@@ -483,7 +483,6 @@ Settings_Vtiger_List_Js("Settings_Users_List_Js",{
 			if(fieldName == 'first_name') {
 				listSearchParams[1] = new Array();
 				listSearchParams[1].push(searchInfo);
-				console.log('in herer');
 				//To add both lastname and email for search , since all those three are combined to show in list view 
 				var combinedFields = new Array('last_name','email1');
 

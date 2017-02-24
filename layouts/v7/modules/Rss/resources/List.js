@@ -241,8 +241,6 @@ Vtiger_List_Js("Rss_List_Js",{},{
                 app.helper.hideProgress();
                 if (!error) {
                     thisInstance.getRssFeeds().then(function () {
-                        console.log("delete");
-                        console.log(data);
                         thisInstance.loadRssWidget(data);
                     });
                 } else {
@@ -313,8 +311,6 @@ Vtiger_List_Js("Rss_List_Js",{},{
         } else if (data.deleted) {
             widgetContainer.find('a[data-id="' + data.record + '"]').parent().remove();
             var noRssFeedsHtml = '<li  class="noRssFeeds" style="text-align:center">' + app.vtranslate('JS_NO_RECORDS') + '</li>';
-            console.log("lenghtOfFeeds");
-            console.log(lengthOfFeeds);
             if (lengthOfFeeds === 1) {
                 widgetContainer.append(noRssFeedsHtml);
             }

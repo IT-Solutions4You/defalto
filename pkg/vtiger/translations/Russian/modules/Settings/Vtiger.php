@@ -75,6 +75,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS'           => 'Обработчики'      , 
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Создавайте и редактируйте Обработчики для vtiger', 
 	'Configuration Editor'         => 'Редактор Конфигурации', 
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Файл конфигурации Обновление приложения',
 	'Update configuration file of the application' => 'Обновите файл конфигурации приложения', 
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => 'Для отслеживания открывает прямых сообщений, отправленных к контактам, пожалуйста, включите эту опцию. Пожалуйста, обратите внимание, что сообщение, отправленное из модуля кампании по электронной почте всегда отслеживается, и не зависит от этого параметра',
 	'LBL_CUSTOMER_PORTAL'          => 'Клиентский Портал', 

@@ -22,7 +22,7 @@
     </div>
     <hr style="margin-top: 0px !important;">
     <div class="editViewBody">
-       <div class="editViewContents">
+       <div class="editViewContents" style="padding-bottom: 0px;">
           <div class="form-group">
              <div class="col-sm-12">
                  {if $IS_FILTER_SAVED_NEW == false}

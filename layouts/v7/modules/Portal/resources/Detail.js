@@ -21,7 +21,6 @@ Vtiger_Detail_Js('Portal_Detail_Js', {}, {
 	registerDetailViewChangeEvent: function () {
 		jQuery('#bookmarksDropdown').change(function () {
 			var selectedBookmark = jQuery('#bookmarksDropdown').val();
-			console.log(selectedBookmark);
 			app.helper.showProgress();
 			var url = 'index.php?module='+app.getModuleName()+'&view=Detail&record='+selectedBookmark;
 			window.location.href = url;

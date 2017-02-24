@@ -75,6 +75,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS'           => 'İşakışları'             , 
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'vtiger için İşAkışlarını yarat veya düzenle', 
 	'Configuration Editor'         => 'Configuration Editor'        , 
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Uygulamanın Güncelleme yapılandırma dosyası',
 	'Update configuration file of the application' => 'Update application configuration file', 
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => "Kişilerine gönderilen doğrudan e-postaların açar izlemek için bu onay kutusunu etkinleştirin. E-posta Kampanyaları modülünden gönderilen e-posta unutmayın her zaman bu ayardan etkilenmez izlenen ve değil",
 	'LBL_CUSTOMER_PORTAL'          => 'Kullanıcı Portali'         , 

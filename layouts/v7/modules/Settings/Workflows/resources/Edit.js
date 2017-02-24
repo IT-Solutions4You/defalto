@@ -980,8 +980,6 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       jQuery('#createEntityModule').on('change', function (e) {
          var relatedModule = jQuery(e.currentTarget).val();
          var module_name = jQuery('#module_name').val();
-         console.log(relatedModule);
-         console.log(module_name);
          if( relatedModule == module_name ) {
              jQuery(e.currentTarget).closest('.taskTypeUi').find('.sameModuleError').removeClass('hide');
          } else{
@@ -1004,7 +1002,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
             thisInstance.registerAddFieldEvent();
             thisInstance.fieldValueMap = false;
             if (jQuery('#fieldValueMapping').val() != '') {
-               this.fieldValueReMapping();
+               thisInstance.fieldValueReMapping();
             }
             var fields = jQuery('#save_fieldvaluemapping').find('select[name="fieldname"]');
             jQuery.each(fields, function (i, field) {

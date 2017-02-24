@@ -119,8 +119,6 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js',{},{
                             for(var key in picklistValues){
                                 var picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
                                 options += '<option value="'+picklistvalue+'"';
-                                console.log(picklistvalue);
-                                console.log(conditionSelected);
                                 if(picklistvalue == conditionSelected){
                                     options += ' selected="selected" ';
                                 }

@@ -55,7 +55,6 @@ Vtiger_Popup_Js('Inventory_Popup_Js',{},{
 	registerEventForBackToProductsButtonClick : function(){
         var self = this;
 		jQuery('#backToProducts').on('click',function(){
-            console.log('in back to products');
 			self.getPopupPageContainer().html(self.parentProductEle.html());
 		})
 	},

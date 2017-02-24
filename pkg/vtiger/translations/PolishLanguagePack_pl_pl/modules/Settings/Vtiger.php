@@ -120,6 +120,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Twórz i zarządzają przepływem pracy',
 	
 	'Configuration Editor' => 'Konfiguracja globalna',
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Zaktualizuj plik konfiguracyjny aplikacji',
 	'Update configuration file of the application' => 'Aktualizuj konfiguracje w pliku config.inc.php.',
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => 'Aby śledzić otwiera bezpośrednich e-maile wysyłane do kontaktów, należy włączyć to pole wyboru. Należy pamiętać, że adres e-mail wysłany z modułu kampanii e-mail są zawsze śledzone, i nie wpływa to ustawienie',
 	'LBL_CUSTOMER_PORTAL' => 'Portal Klienta',
