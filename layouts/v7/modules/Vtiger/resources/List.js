@@ -2445,7 +2445,6 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.request.post({data: params}).then(
 					function (error, data) {
 						app.helper.hideProgress();
-						console.log(error);
 						if (error === null) {
 							app.helper.showSuccessNotification({
 								'message': app.vtranslate('JS_CASE_ACCEPTED_SUCCESSFULLY')

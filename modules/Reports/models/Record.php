@@ -1086,6 +1086,9 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function generateData($pagingModel = false) {
 		$filterQuery = $this->getAdvancedFilterSQL();
+		if (!$filterQuery) {
+			$filterQuery = true;
+		}
 		return $this->getReportData($pagingModel, $filterQuery);
 	}
 

@@ -27,9 +27,10 @@
                             <option {if $TASK_OBJECT->entity_type eq $MODULE} selected="" {/if} value="{$MODULE}">{vtranslate($MODULE,$MODULE)}</option>
                         {/foreach}	
                     </select>
-                    <span class='sameModuleError alert alert-danger hide' style='margin-left:20px;margin-bottom:0px'>
+					{*let not show this message since workflow will never end in loop*}
+                    {*<span class='sameModuleError alert alert-danger hide' style='margin-left:20px;margin-bottom:0px'>
                         {vtranslate('LBL_SAME_MODULE_ERROR_MIGHT_END_IN_LOOP',$QUALIFIED_MODULE)}
-                    </span>
+                    </span>*}
                 </div>
             </div>
         </div>

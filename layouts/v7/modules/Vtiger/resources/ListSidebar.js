@@ -255,7 +255,6 @@ Vtiger.Class('Vtiger_ListSidebar_Js',{},{
             params.tag_params = JSON.stringify(listSearchParams);
             params.tag = tagId;
             params.page = '';
-            console.log(params);
             self.loadListView(viewId, params);
         });
         

@@ -92,8 +92,15 @@
                         {include file="{$TASK_TEMPLATE_PATH}" }
                      </div>
                   </div>
-               </div>	
-               {include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
+               </div>
+				<div class="modal-overlay-footer clearfix" style="margin-left: 230px; border-left-width: 0px;">
+					<div class="row clearfix">
+						<div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
+							<button type="submit" class="btn btn-success" >{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+							<a href="#" class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+						</div>
+					</div>
+				</div>
             </form>
          </div>
      </div>

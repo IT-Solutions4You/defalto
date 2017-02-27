@@ -326,14 +326,14 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		// List of modules which will not be supported by 'Create Entity' workflow task
 		$filterModules = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder', 'Emails', 'Calendar', 'Events');
 
-		foreach ($modulesList as $moduleName) {
+		foreach ($modulesList as $moduleName => $translatedModuleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 			if (in_array($moduleName, $filterModules))
 				continue;
 			$createModuleModels[$moduleName] = $moduleModel;
-			}
-		return $createModuleModels;
 		}
+		return $createModuleModels;
+	}
 
 
 	/**
@@ -346,11 +346,13 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 			$db = PearDatabase::getInstance();
 
 			$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
-			$referenceFieldsList = $relatedModuleModel->getFieldsByType('reference');
+			if ($relatedModuleModel) {
+				$referenceFieldsList = $relatedModuleModel->getFieldsByType('reference');
 
-			foreach ($referenceFieldsList as $fieldName => $fieldModel) {
-				if (in_array($this->getModule()->getName(), $fieldModel->getReferenceList())) {
-					return $fieldName;
+				foreach ($referenceFieldsList as $fieldName => $fieldModel) {
+					if (in_array($this->getModule()->getName(), $fieldModel->getReferenceList())) {
+						return $fieldName;
+					}
 				}
 			}
 		}

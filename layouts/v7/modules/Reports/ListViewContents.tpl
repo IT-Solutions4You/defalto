@@ -84,7 +84,7 @@
 										{assign var="DATA_TYPE" value=$LISTVIEW_HEADER['type']}
 										{if $DATA_TYPE == 'string'}
 											<div class="row-fluid">
-												<input type="text" name="{$LISTVIEW_HEADER_KEY}" class="listSearchContributor" value="{$SEARCH_DETAILS[$LISTVIEW_HEADER_KEY]['searchValue']}" data-fieldinfo='{$FIELD_INFO|escape}'/>
+												<input type="text" name="{$LISTVIEW_HEADER_KEY}" class="listSearchContributor inputElement" value="{$SEARCH_DETAILS[$LISTVIEW_HEADER_KEY]['searchValue']}" data-fieldinfo='{$FIELD_INFO|escape}'/>
 											</div>
 										{elseif $DATA_TYPE == 'picklist'}
 											{assign var=PICKLIST_VALUES value=Reports_Field_Model::getPicklistValueByField($LISTVIEW_HEADER_KEY)}

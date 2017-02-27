@@ -105,6 +105,7 @@ $languageStrings = array(
     'LBL_SELECT_DATE' => 'Select dates',
 
 	'Configuration Editor' => 'Configuration Editor',
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Update configuration file of the application',
 	'Update configuration file of the application' => 'Update configuration file of the application',
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => "To track opens of direct emails sent to contacts, please enable this checkbox. Please note that email sent from Email Campaigns module are always tracked, and not affected by this setting",
 	'LBL_CUSTOMER_PORTAL' => 'Customer Portal',

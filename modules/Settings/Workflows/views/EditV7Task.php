@@ -136,7 +136,7 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 		$templateVariables = array(
 			$individualTaxBlockValue => $individualTaxBlockLabel,
 			$groupTaxBlockValue => $groupTaxBlockLabel
-				);
+		);
 
 		$viewer->assign('META_VARIABLES', $metaVariables);
 		$viewer->assign('TEMPLATE_VARIABLES', $templateVariables);
@@ -154,16 +154,16 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
-
-
 		$emailFields = $recordStructureInstance->getAllEmailFields();
 		foreach($emailFields as $metaKey => $emailField) {
 			$emailFieldoptions .= '<option value=",$'.$metaKey.'">'.$emailField->get('workflow_columnlabel').'</option>';
 		}
 		$usersModuleModel = Vtiger_Module_Model::getInstance('Users');
 
-		$emailFieldoptions .= '<option value=",$(general : (__VtigerMeta__) reports_to_id)"> '.
+		if($moduleModel->getField('assigned_user_id')) {
+			$emailFieldoptions .= '<option value=",$(general : (__VtigerMeta__) reports_to_id)"> '.
 									vtranslate($moduleModel->getField('assigned_user_id')->get('label'),'Users').' : (' . vtranslate('Users','Users') . ') '. vtranslate($usersModuleModel->getField('reports_to_id')->get('label'),'Users') .'</option>';
+		}
 
 		$nameFields = $recordStructureInstance->getNameFields();
 		$fromEmailFieldOptions = '<option value="">'. vtranslate('ENTER_FROM_EMAIL_ADDRESS', $qualifiedModuleName) .'</option>';

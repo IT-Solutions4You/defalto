@@ -90,7 +90,6 @@ Vtiger_List_Js('Vtiger_AdvanceSearchList_Js',{},{
              app.request.post({data:params}).then(
                  function(error,data) {
                      app.helper.hideProgress();
-                        console.log(error);
                      if(error === null) {
                          app.helper.showSuccessNotification({
                              'message':app.vtranslate('JS_CASE_ACCEPTED_SUCCESSFULLY')
@@ -137,7 +136,6 @@ Vtiger_List_Js('Vtiger_AdvanceSearchList_Js',{},{
        var container= jQuery('.searchResults');
         jQuery('.table-actions').on('click', '.dropdown', function (e) {
             var containerTarget = jQuery(this).closest(container);
-            console.log(containerTarget)
             var dropdown = jQuery(e.currentTarget);
              if(dropdown.find('[data-toggle]').length <=0){ 
  		                return; 

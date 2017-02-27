@@ -151,7 +151,6 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 	 * Function to select related record for the module
 	 */
     showSelectRelationPopup : function(){
-        console.log("Show select relation popup");
         var popupParams = this.getPopupParams(); 
         var popupjs = new Vtiger_Popup_Js();
         popupjs.showPopup(popupParams,"post.RecordList.click");

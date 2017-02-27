@@ -631,7 +631,8 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	}
 
 	public function isWorkflowSupported() {
-		if($this->isEntityModule()) {
+		vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
+		if($this->isEntityModule() && VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
 			return true;
 		}
 		return false;
@@ -1303,7 +1304,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		if(!$this->isEntityModule() && $this->getName() !== 'Users') {
 			return array();
 		}
-		vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
 		$layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
 		$editWorkflowsImagePath = Vtiger_Theme::getImagePath('EditWorkflows.png');
@@ -1319,7 +1319,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 						'linkicon' => $layoutEditorImagePath
 			);
 
-			if(VTWorkflowUtils::checkModuleWorkflow($this->getName())) {
+			if($this->isWorkflowSupported()) {
 				$settingsLinks[] = array(
 						'linktype' => 'LISTVIEWSETTING',
 						'linklabel' => 'LBL_EDIT_WORKFLOWS',

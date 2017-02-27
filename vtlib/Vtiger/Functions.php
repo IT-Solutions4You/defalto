@@ -655,7 +655,7 @@ class Vtiger_Functions {
 		$description = $emailTemplate->getProcessedDescription();
 		$tokenDataPair = explode('$', $description);
 		$fields = Array();
-		for ($i = 1; $i < count($token_data_pair); $i+=2) {
+		for ($i = 1; $i < count($token_data_pair); $i++) {
 			$module = explode('-', $tokenDataPair[$i]);
 			$fields[$module[0]][] = $module[1];
 		}

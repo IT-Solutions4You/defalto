@@ -75,6 +75,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS'           => 'Werkstromen'                 , 
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Maak en bewerk de CRM workflows', 
 	'Configuration Editor'         => 'Configuratie bewerker'       , 
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'Update-configuratiebestand van de toepassing',
 	'Update configuration file of the application' => 'Bewerk de configuratie van deze toepassing.', 
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => "Om sporen opent direct e-mails gestuurd naar contacten, schakelt u dit vakje. Houdt u er rekening mee dat e-mail verstuurd vanaf E-mail campagnes module worden altijd gevolgd, en niet beïnvloed door deze instelling",
 	'LBL_CUSTOMER_PORTAL'          => 'Klant Portaal'               , 

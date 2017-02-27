@@ -75,6 +75,7 @@ $languageStrings = array(
 	'LBL_LIST_WORKFLOWS'           => 'Workflows'                   , 
 	'LBL_LIST_WORKFLOWS_DESCRIPTION' => 'Criar e Editar Workflows para o vtiger', 
 	'Configuration Editor'         => 'Editor Configuração'       , 
+	'LBL_CONFIG_EDITOR_DESCRIPTION' => 'arquivo de configuração de atualização do aplicativo',
 	'Update configuration file of the application' => 'Update application configuration file', 
 	'LBL_PERSONAL_EMAIL_TRACKING_INFO' => 'Para acompanhar abre de e-mails enviados para contatos diretos, por favor habilite esta opção. Por favor, note que o email enviado do módulo Campanhas de e-mail são sempre monitorado, e não é afetado por essa configuração',
 	'LBL_CUSTOMER_PORTAL'          => 'Portal do Cliente'           , 

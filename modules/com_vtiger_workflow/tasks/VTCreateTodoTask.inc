@@ -109,8 +109,7 @@ class VTCreateTodoTask extends VTTask{
 			'taskstatus'=>$this->status,
 			'assigned_user_id'=>$userId,
 			'time_start'=> $time,
-			'sendnotification'=>($this->sendNotification!='' && $this->sendNotification!='N')?
-					true: false,
+			'sendnotification'=>($this->sendNotification!='' && $this->sendNotification!='N') ? true: false,
 			'date_start'=>$startDate, 
 			'due_date'=>$date,
 			'visibility'=>'Private',
@@ -169,7 +168,8 @@ class VTCreateTodoTask extends VTTask{
 				$fields[$fieldName] = $fieldValue;
 			}
 		}
-		
+
+		$fields['source'] = 'WORKFLOW';
 		$todo = vtws_create('Calendar', $fields, $adminUser);
 		$todoIdDetails = vtws_getIdComponents($todo['id']);
 		$entityIdDetails = vtws_getIdComponents($id);

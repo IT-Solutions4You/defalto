@@ -2101,6 +2101,10 @@ class ReportRun extends CRMEntity {
 		if ($secmodule != '') {
 			$secondarymodule = explode(":", $secmodule);
 			foreach ($secondarymodule as $key => $value) {
+				if (!Vtiger_Module_Model::getInstance($value)) {
+					continue;
+				}
+
 				$foc = CRMEntity::getInstance($value);
 
 				// Case handling: Force table requirement ahead of time.
@@ -2113,9 +2117,11 @@ class ReportRun extends CRMEntity {
 						$query .= $focQuery . $this->getReportsNonAdminAccessControlQuery($value, $current_user, $value);
 					} else {
 						$query .= $focQuery . getNonAdminAccessControlQuery($value, $current_user, $value);
-						;
 					}
 				}
+			}
+			if ($this->queryPlanner->requireTable('vtiger_inventoryproductreltmp'.$value) && stripos($query, 'join vtiger_inventoryproductrel') === false) {
+				$query .= " LEFT JOIN vtiger_inventoryproductrel AS vtiger_inventoryproductreltmp$value ON vtiger_inventoryproductreltmp$value.id = $foc->table_name.$foc->table_index ";
 			}
 		}
 		$log->info("ReportRun :: Successfully returned getRelatedModulesQuery" . $secmodule);
@@ -3233,6 +3239,219 @@ class ReportRun extends CRMEntity {
 				}
 			}
 			return $totalpdf;
+		} elseif ($outputformat == 'XLS') {
+			$escapedchars = Array('_SUM', '_AVG', '_MIN', '_MAX');
+			$totalpdf = array();
+			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
+			if (isset($this->totallist)) {
+				if ($sSQL != '') {
+					$result = $adb->query($sSQL);
+					$y = $adb->num_fields($result);
+					$custom_field_values = $adb->fetch_array($result);
+
+					static $mod_query_details = array();
+					foreach ($this->totallist as $key => $value) {
+						$fieldlist = explode(':', $key);
+						$key = $fieldlist[1].'_'.$fieldlist[2];
+						if (!isset($mod_query_details[$this->reportid][$key]['modulename']) && !isset($mod_query_details[$this->reportid][$key]['uitype'])) {
+							$mod_query = $adb->pquery('SELECT DISTINCT(tabid) AS tabid, uitype AS uitype FROM vtiger_field WHERE tablename = ? AND columnname=?', array($fieldlist[1], $fieldlist[2]));
+							$moduleName = getTabModuleName($adb->query_result($mod_query, 0, 'tabid'));
+							$mod_query_details[$this->reportid][$key]['translatedmodulename'] = getTranslatedString($moduleName, $moduleName);
+							$mod_query_details[$this->reportid][$key]['modulename'] = $moduleName;
+							$mod_query_details[$this->reportid][$key]['uitype'] = $adb->query_result($mod_query, 0, 'uitype');
+						}
+
+						if ($adb->num_rows($mod_query) > 0) {
+							$module_name = $mod_query_details[$this->reportid][$key]['modulename'];
+							$translatedModuleLabel = $mod_query_details[$this->reportid][$key]['translatedmodulename'];
+							$fieldlabel = trim(str_replace($escapedchars, ' ', $fieldlist[3]));
+							$fieldlabel = str_replace('_', ' ', $fieldlabel);
+							if ($module_name) {
+								$field = $translatedModuleLabel.' '.getTranslatedString($fieldlabel, $module_name);
+							} else {
+								$field = getTranslatedString($fieldlabel);
+							}
+						}
+						// Since there are duplicate entries for this table
+						if ($fieldlist[1] == 'vtiger_inventoryproductrel') {
+							$module_name = $this->primarymodule;
+						}
+						$uitype_arr[str_replace($escapedchars, ' ', $module_name.'_'.$fieldlist[3])] = $mod_query_details[$this->reportid][$key]['uitype'];
+						$totclmnflds[str_replace($escapedchars, ' ', $module_name.'_'.$fieldlist[3])] = $field;
+					}
+
+					$sumcount = 0;
+					$avgcount = 0;
+					$mincount = 0;
+					$maxcount = 0;
+					for ($i = 0; $i < $y; $i++) {
+						$fld = $adb->field_name($result, $i);
+						if (strpos($fld->name, '_SUM') !== false) {
+							$sumcount++;
+						} else if (strpos($fld->name, '_AVG') !== false) {
+							$avgcount++;
+						} else if (strpos($fld->name, '_MIN') !== false) {
+							$mincount++;
+						} else if (strpos($fld->name, '_MAX') !== false) {
+							$maxcount++;
+						}
+						$keyhdr[decode_html($fld->name)] = $custom_field_values[$i];
+					}
+
+					$rowcount = 0;
+					foreach ($totclmnflds as $key => $value) {
+						$col_header = trim(str_replace($modules, ' ', $value));
+						$fld_name_1 = $this->primarymodule.'_'.trim($value);
+						$fld_name_2 = $this->secondarymodule.'_'.trim($value);
+						if ($uitype_arr[$key] == 71 || $uitype_arr[$key] == 72 || $uitype_arr[$key] == 74 ||
+								in_array($fld_name_1, $this->append_currency_symbol_to_value) || in_array($fld_name_2, $this->append_currency_symbol_to_value)) {
+							$col_header .= ' ('.$app_strings['LBL_IN'].' '.$current_user->currency_symbol.')';
+							$convert_price = true;
+						} else {
+							$convert_price = false;
+						}
+						$value = trim($key);
+						$totalpdf[$rowcount]['Field Names'] = $col_header;
+						$originalkey = $value.'_SUM';
+						$arraykey = $this->replaceSpecialChar($value).'_SUM';
+						if (isset($keyhdr[$arraykey])) {
+							if ($convert_price) {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, false, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey]);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							} else {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							}
+							$totalpdf[$rowcount][$originalkey] = $conv_value;
+						} else if ($sumcount) {
+							$totalpdf[$rowcount][$originalkey] = '';
+						}
+
+						$originalkey = $value.'_AVG';
+						$arraykey = $this->replaceSpecialChar($value).'_AVG';
+						if (isset($keyhdr[$arraykey])) {
+							if ($convert_price) {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, false, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey]);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							} else {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							}
+							$totalpdf[$rowcount][$originalkey] = $conv_value;
+						} else if ($avgcount) {
+							$totalpdf[$rowcount][$originalkey] = '';
+						}
+
+						$originalkey = $value.'_MIN';
+						$arraykey = $this->replaceSpecialChar($value).'_MIN';
+						if (isset($keyhdr[$arraykey])) {
+							if ($convert_price) {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, false, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey]);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							} else {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							}
+							$totalpdf[$rowcount][$originalkey] = $conv_value;
+						} else if ($mincount) {
+							$totalpdf[$rowcount][$originalkey] = '';
+						}
+
+						$originalkey = $value.'_MAX';
+						$arraykey = $this->replaceSpecialChar($value).'_MAX';
+						if (isset($keyhdr[$arraykey])) {
+							if ($convert_price) {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, false, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey]);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							} else {
+								if ($operation == 'ExcelExport') {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true, true);
+									if ($uitype_arr[$key] == 74) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								} else {
+									$conv_value = CurrencyField::convertToUserFormat($keyhdr[$arraykey], null, true);
+									if (in_array($uitype_arr[$key], array(71, 72, 74))) {
+										$conv_value = CurrencyField::appendCurrencySymbol($conv_value, $userCurrencySymbol);
+									}
+								}
+							}
+							$totalpdf[$rowcount][$originalkey] = $conv_value;
+						} else if ($maxcount) {
+							$totalpdf[$rowcount][$originalkey] = '';
+						}
+						$rowcount++;
+					}
+					$totalpdf[$rowcount]['sumcount'] = $sumcount;
+					$totalpdf[$rowcount]['avgcount'] = $avgcount;
+					$totalpdf[$rowcount]['mincount'] = $mincount;
+					$totalpdf[$rowcount]['maxcount'] = $maxcount;
+				}
+			}
+			return $totalpdf;
 		} elseif ($outputformat == "TOTALHTML") {
 			$escapedchars = Array('_SUM', '_AVG', '_MIN', '_MAX');
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
@@ -4015,7 +4234,7 @@ class ReportRun extends CRMEntity {
 
 		$reportData = $this->GenerateReport("PDF", $filterlist, false, false, false, 'ExcelExport');
 		$arr_val = $reportData['data'];
-		$totalxls = $this->GenerateReport("TOTALXLS", $filterlist, false, false, false, 'ExcelExport');
+		$totalxls = $this->GenerateReport("XLS", $filterlist, false, false, false, 'ExcelExport');
 		$numericTypes = array('currency', 'double', 'integer', 'percentage');
 
 		$header_styles = array(
@@ -4072,8 +4291,9 @@ class ReportRun extends CRMEntity {
 			$count = 0;
 			if (is_array($totalxls[0])) {
 				foreach ($totalxls[0] as $key => $value) {
-					$chdr = substr($key, -3, 3);
-					$translated_str = in_array($chdr, array_keys($mod_strings)) ? $mod_strings[$chdr] : $key;
+					$exploedKey = explode('_', $key);
+					$chdr = end($exploedKey);
+					$translated_str = in_array($chdr, array_keys($mod_strings)) ? $mod_strings[$chdr] : $chdr;
 					$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, $translated_str);
 
 					$worksheet->getStyleByColumnAndRow($count, $rowcount)->applyFromArray($header_styles);
@@ -4082,12 +4302,20 @@ class ReportRun extends CRMEntity {
 				}
 			}
 
+			$ignoreValues = array('sumcount','avgcount','mincount','maxcount');
 			$rowcount++;
 			foreach ($totalxls as $key => $array_value) {
 				$count = 0;
 				foreach ($array_value as $hdr => $value) {
+					if (in_array($hdr, $ignoreValues)) {
+						continue;
+					}
 					$value = decode_html($value);
-					$worksheet->setCellValueExplicitByColumnAndRow($count, $key + $rowcount, $value, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+					$excelDatatype = PHPExcel_Cell_DataType::TYPE_STRING;
+					if (is_numeric($value)) {
+						$excelDatatype = PHPExcel_Cell_DataType::TYPE_NUMERIC;
+					}
+					$worksheet->setCellValueExplicitByColumnAndRow($count, $key + $rowcount, $value, $excelDatatype);
 					$count = $count + 1;
 				}
 			}
