@@ -53,3 +53,7 @@ $languageStrings = array(
 	'Contacted - Unsuccessful'     => 'Kapcsolatfelvétel - Sikertelen', 
 	'Contacted - Never Contact Again' => 'Kapcsolatfelvétel - Felejtős örökre', 
 );
+
+$jsLanguageStrings = array(
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s A kiválasztott lista lesz hozzáfűzve a meglévő listát.',
+);

@@ -829,6 +829,8 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		dashBoardContainer.on("shown.bs.tab",".dashboardTab",function(e){
 			var currentTarget = jQuery(e.currentTarget);
 			var tabid = currentTarget.data('tabid');
+			app.changeURL("index.php?module=Home&view=DashBoard&tabid="+tabid);
+
 			// If tab is already loaded earlier then we shouldn't reload tab and register gridster
 			if(typeof jQuery("#tab_"+tabid).find(".dashBoardTabContainer").val() !== 'undefined'){
 				// We should overwrite gridster with current tab which is clicked

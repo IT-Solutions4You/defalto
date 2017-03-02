@@ -311,6 +311,13 @@ window.app = (function () {
 				return '';
 			}
 		},
+        changeURL : function(url){
+            if (typeof history.pushState !== "undefined") {
+                history.pushState({}, "", url);
+            } else {
+                console.log("Browser does not support HTML5.");
+            }
+        },
 		/**
 		 * Function returns translated string
 		 */

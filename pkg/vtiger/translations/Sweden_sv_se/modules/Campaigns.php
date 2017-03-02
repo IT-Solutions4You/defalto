@@ -68,3 +68,7 @@ $languageStrings = array(
   'Contacted - Never Contact Again' => 'Kontaktade Aldrig Kontakt Igen',
 
 );
+
+$jsLanguageStrings = array(
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s från den valda listan kommer att läggas med den befintliga listan.',
+);

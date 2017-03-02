@@ -26,6 +26,22 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
 	}
 
+	$moduleName = 'Calendar';
+	$reminderTemplateResult = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Reminder', '1'));
+	if (!$db->num_rows($reminderTemplateResult)) {
+		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
+				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/> 
+							&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/> 
+							&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/>  
+							&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/> 
+							&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/> 
+							&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/> 
+							&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/> 
+							<p/>';
+		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'Activity Reminder', 'Reminder', 'Reminder', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
+	}
+
+	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
