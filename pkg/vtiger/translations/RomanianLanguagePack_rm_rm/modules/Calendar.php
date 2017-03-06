@@ -146,7 +146,7 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'Octombrie',
   'LBL_NOVEMBER' => 'Noiembrie',
   'LBL_DECEMBER' => 'Decembrie',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'Apasa aici pentru a vizualiza',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / Sarcină'            , 

@@ -146,7 +146,7 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'Ekim',
   'LBL_NOVEMBER' => 'Kasım',
   'LBL_DECEMBER' => 'Aralık',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'görmek için buraya tıklayın',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / Görev'            , 

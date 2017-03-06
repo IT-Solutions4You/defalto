@@ -110,7 +110,7 @@
                                 <span class="pull-right">{vtranslate('LBL_SUBJECT',$MODULE)}&nbsp;<span class="redColor">*</span></span>
                             </div>
                             <div class="col-lg-6">
-                                <input type="text" name="subject" value="{$SUBJECT}" data-rule-required="true" id="subject" spellcheck="true"/>
+                                <input type="text" name="subject" value="{$SUBJECT}" data-rule-required="true" id="subject" spellcheck="true" class="inputElement"/>
                             </div>
                             <div class="col-lg-4"></div>
                         </div>
