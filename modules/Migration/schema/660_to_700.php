@@ -26,21 +26,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
 	}
 
-	$moduleName = 'Calendar';
-	$reminderTemplateResult = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Reminder', '1'));
-	if (!$db->num_rows($reminderTemplateResult)) {
-		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
-				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/> 
-							&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/> 
-							&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/>  
-							&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/> 
-							&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/> 
-							&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/> 
-							&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/> 
-							<p/>';
-		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'Activity Reminder', 'Reminder', 'Reminder', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
-	}
-
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
@@ -389,6 +374,53 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE module IS NULL', array('Contacts'));
 
 	$moduleName = 'Calendar';
+	$reminderTemplateResult = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Reminder', '1'));
+	if (!$db->num_rows($reminderTemplateResult)) {
+		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
+				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/> 
+							&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/> 
+							&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/>  
+							&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/> 
+							&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/> 
+							&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/> 
+							&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/> 
+							<p/>';
+		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'Activity Reminder', 'Reminder', 'Reminder', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
+	}
+
+	//Creating new reminder block in calendar todo
+	$calendarInstance = Vtiger_Module_Model::getInstance($moduleName);
+	$tabId = $calendarInstance->getId();
+
+	//Updates sequence of blocks available in users module.
+	Vtiger_Block_Model::pushDown('1', $tabId);
+
+	if (!Vtiger_Block_Model::checkDuplicate('LBL_REMINDER_INFORMATION', $tabId)) {
+		$reminderBlock = new Vtiger_Block();
+		$reminderBlock->label = 'LBL_REMINDER_INFORMATION';
+		$reminderBlock->sequence = 2;
+		$calendarInstance->addBlock($reminderBlock);
+	}
+
+	//updating block and displaytype for send reminder field
+	$reminderBlockInstance = Vtiger_Block_Model::getInstance('LBL_REMINDER_INFORMATION', $calendarInstance);
+	$db->pquery('UPDATE vtiger_field SET block=?, displaytype=? WHERE tabid=? AND fieldname=?', array($reminderBlockInstance->id, '1', $tabId, 'reminder_time'));
+
+	//adding new reminder template for todo
+	$reminderTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Activity Reminder', '1'));
+	if (!$db->num_rows($reminderTemplate)) {
+		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
+				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
+								&nbsp; '.vtranslate('Subject', $moduleName).' : $calendar-subject$<br/>
+								&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $calendar-date_start$<br/>
+								&nbsp; '.vtranslate('Due Date', $moduleName).' : $calendar-due_date$<br/>
+								&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $calendar-status$<br/>
+								&nbsp; '.vtranslate('Location', $moduleName).' : $calendar-location$<br/>
+								&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $calendar-description$<br/><br/>
+								<p/>';
+		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'ToDo Reminder', 'Activity Reminder', 'Reminder', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
+	}
+
 	$inviteUsersTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=?', array('Invitation'));
 	if (!$db->num_rows($inviteUsersTemplate)) {
 		$body = '<p>$invitee_name$,<br/><br/>' .
@@ -826,40 +858,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 		$fieldInstance->set('typeofdata', $typeOfData);
 		$fieldInstance->save();
-	}
-
-	//Creating new reminder block in calendar todo
-	$moduleName = 'Calendar';
-	$calendarInstance = Vtiger_Module_Model::getInstance($moduleName);
-	$tabId = $calendarInstance->getId();
-
-	//Updates sequence of blocks available in users module.
-	Vtiger_Block_Model::pushDown('1', $tabId);
-
-	if (!Vtiger_Block_Model::checkDuplicate('LBL_REMINDER_INFORMATION', $tabId)) {
-		$reminderBlock = new Vtiger_Block();
-		$reminderBlock->label = 'LBL_REMINDER_INFORMATION';
-		$reminderBlock->sequence = 2;
-		$calendarInstance->addBlock($reminderBlock);
-	}
-
-	//updating block and displaytype for send reminder field
-	$reminderBlockInstance = Vtiger_Block_Model::getInstance('LBL_REMINDER_INFORMATION', $calendarInstance);
-	$db->pquery('UPDATE vtiger_field SET block=?, displaytype=? WHERE tabid=? AND fieldname=?', array($reminderBlockInstance->id, '1', $tabId, 'reminder_time'));
-
-	//adding new reminder template for todo
-	$reminderTemplate = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Activity Reminder', '1'));
-	if (!$db->num_rows($reminderTemplate)) {
-		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
-				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
-								&nbsp; '.vtranslate('Subject', $moduleName).' : $calendar-subject$<br/>
-								&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $calendar-date_start$<br/>
-								&nbsp; '.vtranslate('Due Date', $moduleName).' : $calendar-due_date$<br/>
-								&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $calendar-status$<br/>
-								&nbsp; '.vtranslate('Location', $moduleName).' : $calendar-location$<br/>
-								&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $calendar-description$<br/><br/>
-								<p/>';
-		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'ToDo Reminder', 'Activity Reminder', 'Reminder', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
 	}
 
 	$db->pquery('ALTER TABLE vtiger_webforms_field MODIFY COLUMN defaultvalue TEXT', array());
