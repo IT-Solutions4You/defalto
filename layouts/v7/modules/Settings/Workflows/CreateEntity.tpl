@@ -14,7 +14,7 @@
 <div class="conditionsContainer" id="save_fieldvaluemapping">
 	{if $RELATED_MODULE_MODEL_NAME neq '' && getTabid($RELATED_MODULE_MODEL_NAME)}
 		<div>
-			<button type="button" class="btn" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
+			<button type="button" class="btn btn-default" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
 		</div><br>
 		{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($TASK_OBJECT->entity_type)}
 		{assign var=FIELD_VALUE_MAPPING value=ZEND_JSON::decode($TASK_OBJECT->field_value_mapping)}
@@ -58,7 +58,7 @@
 	{else}
 		{if $RELATED_MODULE_MODEL}
 			<div>
-				<button type="button" class="btn" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
+				<button type="button" class="btn btn-default" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
 			</div><br>
 			{assign var=MANDATORY_FIELD_MODELS value=$RELATED_MODULE_MODEL->getMandatoryFieldModels()}
 			{foreach from=$MANDATORY_FIELD_MODELS item=MANDATORY_FIELD_MODEL}
@@ -95,7 +95,7 @@
 	{/if}
 </div><br>
 {if $RELATED_MODULE_MODEL}
-	<div class="row basicAddFieldContainer hide">
+	<div class="row form-group basicAddFieldContainer hide">
         <span class="col-lg-4">
 			<select name="fieldname" style="min-width: 250px">
 				<option value="none">{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}</option>

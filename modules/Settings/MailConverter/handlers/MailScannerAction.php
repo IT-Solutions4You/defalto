@@ -37,6 +37,8 @@ class Vtiger_MailScannerAction {
 	// Storage folder to use
 	var $STORAGE_FOLDER = 'storage/mailscanner/';
 
+	var $recordSource = 'MAIL SCANNER';
+
 	/** DEBUG functionality */
 	var $debug		= false;
 	function log($message) {
@@ -219,6 +221,7 @@ class Vtiger_MailScannerAction {
 		$contact->column_fields['email'] = $email;
 		$contact->column_fields['assigned_user_id'] = $mailscannerrule->assigned_to;
 		$contact->column_fields['description'] = $description;
+		$contact->column_fields['source'] = $this->recordSource;
 		$contact->save('Contacts');
 
 		$this->__SaveAttachements($mailrecord, 'Contacts', $contact);
@@ -245,6 +248,7 @@ class Vtiger_MailScannerAction {
 		$lead->column_fields['email'] = $email;
 		$lead->column_fields['assigned_user_id'] = $mailscannerrule->assigned_to;
 		$lead->column_fields['description'] = $description;
+		$lead->column_fields['source'] = $this->recordSource;
 		$lead->save('Leads');
 
 		$this->__SaveAttachements($mailrecord, 'Leads', $lead);
@@ -270,6 +274,7 @@ class Vtiger_MailScannerAction {
 		$account->column_fields['email1'] = $email;
 		$account->column_fields['assigned_user_id'] = $mailscannerrule->assigned_to;
 		$account->column_fields['description'] = $description;
+		$account->column_fields['source'] = $this->recordSource;
 		$account->save('Accounts');
 
 		$this->__SaveAttachements($mailrecord, 'Accounts', $account);
@@ -308,6 +313,8 @@ class Vtiger_MailScannerAction {
 			$ticket->column_fields['contact_id'] = $contactLinktoid;
 		if ($linktoid)
 			$ticket->column_fields['parent_id'] = $linktoid;
+
+		$ticket->column_fields['source'] = $this->recordSource;
 		$ticket->save('HelpDesk');
 
 		// Associate any attachement of the email to ticket
@@ -415,6 +422,7 @@ class Vtiger_MailScannerAction {
 		$focus->column_fields['saved_toid'] = $to;
 		$focus->column_fields['ccmail'] = $cc;
 		$focus->column_fields['bccmail'] = $bcc;
+		$focus->column_fields['source'] = $this->recordSource;
 		$focus->save('Emails');
 
 		$emailid = $focus->id;
@@ -461,6 +469,7 @@ class Vtiger_MailScannerAction {
 				$document->column_fields['filelocationtype']= 'I';
 				$document->column_fields['folderid']		= 1; // Default Folder
 				$document->column_fields['assigned_user_id']= $userid;
+				$document->column_fields['source']			= $this->recordSource;
 				$document->save('Documents');
 
 				// Link file attached to document
