@@ -65,26 +65,19 @@
 								{if $MODULEIMPORT_EXISTS neq 'true'}
 									<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
 								{/if}&nbsp;
-								<span class="pull-right">
-									<div class="row">
-										{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
-											<div class="col-lg-2"></div>
-											<div class="col-lg-10">
-												{if $MODULEIMPORT_EXISTS eq 'true'}
-													<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-													<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-													<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
-												{else}
-													<p class="alert-info">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</p>
-												{/if}
-											</div>
-										{else}
-											<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
-											<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
-											<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
-										{/if}
-									</div>
-								</span>
+								{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
+									{if $MODULEIMPORT_EXISTS eq 'true'}
+										<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
+										<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
+										<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
+									{else}
+										<br><br><span class="alert-info" style="padding: 4px 10px;">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</span>
+									{/if}
+								{else}
+									<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
+									<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
+									<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
+								{/if}
 							</div>
 						</div>
 						<br><br>
@@ -98,12 +91,12 @@
 					{if $MODULEIMPORT_FAILED neq ''}
 						<button class="btn btn-success finishButton" type="submit"><strong>{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}</strong></button>
 					{else if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
-						<button class="btn btn-success updateModule" name="saveButton">{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</button>
+						<button class="btn btn-success updateModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</button>
 					{else}
 						<button class="btn btn-success importModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}><strong>{vtranslate('LBL_IMPORT_NOW', $QUALIFIED_MODULE)}</strong></button>
 					{/if}
 					&nbsp;&nbsp;
-					<a class="cancelLink" href="index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
+					<a class="cancelLink" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 				</div>
 			</div>
 		</div>

@@ -46,6 +46,9 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 			var element = jQuery(e.currentTarget);
 			var importFromZip = container.find('[name="importFromZip"]');
 			var uploadedFile = jQuery('#moduleZip').val();
+			if (uploadedFile) {
+				jQuery('#moduleFileDetails').attr('title', uploadedFile).html(uploadedFile);
+			}
 			var disabledStatus = importFromZip.attr('disabled');
 			if ((element.is(':checked')) && (uploadedFile != '')) {
 				if (typeof disabledStatus != "undefined") {
@@ -59,7 +62,10 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 		});
 
 		container.on('change', '[name="moduleZip"]', function (e) {
-			container.find('[name="acceptDisclaimer"]').trigger('click');
+			var acceptDisclaimer = container.find('[name="acceptDisclaimer"]');
+			if (!acceptDisclaimer.is(':checked')) {
+				acceptDisclaimer.trigger('click');
+			}
 		});
 
 		container.on('click', '.finishButton', function() {

@@ -14,19 +14,19 @@
 <div class="conditionsContainer" id="save_fieldvaluemapping">
 	{if $RELATED_MODULE_MODEL_NAME neq '' && getTabid($RELATED_MODULE_MODEL_NAME)}
 		<div>
-			<button type="button" class="btn" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
+			<button type="button" class="btn btn-default" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
 		</div><br>
 		{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($TASK_OBJECT->entity_type)}
 		{assign var=FIELD_VALUE_MAPPING value=ZEND_JSON::decode($TASK_OBJECT->field_value_mapping)}
 		{foreach from=$FIELD_VALUE_MAPPING item=FIELD_MAP}
-            {assign var=SELECTED_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField($FIELD_MAP['fieldname'])}
-            {if empty($SELECTED_FIELD_MODEL)}
-                {continue}
-            {/if}
-            {assign var=SELECTED_FIELD_MODEL_FIELD_TYPE value=$SELECTED_FIELD_MODEL->getFieldDataType()}
+			{assign var=SELECTED_FIELD_MODEL value=$RELATED_MODULE_MODEL->getField($FIELD_MAP['fieldname'])}
+			{if empty($SELECTED_FIELD_MODEL)}
+				{continue}
+			{/if}
+			{assign var=SELECTED_FIELD_MODEL_FIELD_TYPE value=$SELECTED_FIELD_MODEL->getFieldDataType()}
 			<div class="row conditionRow form-group">
 				<span class="col-lg-4">
-                	<select name="fieldname" class="select2" style="min-width: 250px" {if $SELECTED_FIELD_MODEL->isMandatory() || ($DISABLE_ROW eq 'true') } disabled="" {/if} >
+					<select name="fieldname" class="select2" style="min-width: 250px" {if $SELECTED_FIELD_MODEL->isMandatory() || ($DISABLE_ROW eq 'true') } disabled="" {/if} >
 						<option value="none"></option>
 						{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
 							{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
@@ -36,9 +36,9 @@
 						{/foreach}
 					</select>
 				</span>
-				<span class="col-lg-1">
+				<span>
 					<input name="modulename" type="hidden"
-						{if $FIELD_MAP['modulename'] eq $SOURCE_MODULE}  value="{$SOURCE_MODULE}" {/if}
+						{if $FIELD_MAP['modulename'] eq $SOURCE_MODULE} value="{$SOURCE_MODULE}" {/if}
 						{if $FIELD_MAP['modulename'] eq $RELATED_MODULE_MODEL_NAME} value="{$RELATED_MODULE_MODEL_NAME}" {/if} 
 					/>
 				</span>
@@ -58,7 +58,7 @@
 	{else}
 		{if $RELATED_MODULE_MODEL}
 			<div>
-				<button type="button" class="btn" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
+				<button type="button" class="btn btn-default" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
 			</div><br>
 			{assign var=MANDATORY_FIELD_MODELS value=$RELATED_MODULE_MODEL->getMandatoryFieldModels()}
 			{foreach from=$MANDATORY_FIELD_MODELS item=MANDATORY_FIELD_MODEL}
@@ -72,17 +72,17 @@
 							{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
 								{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 								<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" {if $FIELD_MODEL->get('name') eq $MANDATORY_FIELD_MODEL->get('name')} {assign var=FIELD_TYPE value=$FIELD_MODEL->getFieldDataType()} selected=""{/if} data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
-                                    {vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}<span class="redColor">*</span>
+									{vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}<span class="redColor">*</span>
 								</option>	
 							{/foreach}
 						</select>
 					</span>
 					<span>
-                        {if ($FIELD_TYPE eq 'picklist' || $FIELD_TYPE eq 'multipicklist')}
-                            <input type="hidden" name="modulename" value="{$RELATED_MODULE_MODEL->get('name')}" />
-                        {else}
-                            <input type="hidden" name="modulename" value="{$SOURCE_MODULE}" />
-                        {/if}
+						{if ($FIELD_TYPE eq 'picklist' || $FIELD_TYPE eq 'multipicklist')}
+							<input type="hidden" name="modulename" value="{$RELATED_MODULE_MODEL->get('name')}" />
+						{else}
+							<input type="hidden" name="modulename" value="{$SOURCE_MODULE}" />
+						{/if}
 					</span>
 					<span class="fieldUiHolder col-lg-4">
 						<input type="text" class="getPopupUi inputElement" name="fieldValue" value="" />
@@ -95,14 +95,14 @@
 	{/if}
 </div><br>
 {if $RELATED_MODULE_MODEL}
-	<div class="row basicAddFieldContainer hide">
-        <span class="col-lg-4">
+	<div class="row form-group basicAddFieldContainer hide">
+		<span class="col-lg-4">
 			<select name="fieldname" style="min-width: 250px">
 				<option value="none">{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}</option>
 				{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
 					{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 					{if !$FIELD_MODEL->isMandatory()}
-					<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}"  data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
+					<option value="{$FIELD_MODEL->get('name')}" data-fieldtype="{$FIELD_MODEL->getFieldType()}" data-field-name="{$FIELD_MODEL->get('name')}" data-fieldinfo='{ZEND_JSON::encode($FIELD_INFO)}' >
 						{vtranslate($FIELD_MODEL->get('label'), $FIELD_MODEL->getModuleName())}
 					</option>
 					{/if}
@@ -110,7 +110,7 @@
 			</select>
 		</span>
 		<span>
-            <input type="hidden" name="modulename" value="{$SOURCE_MODULE}" />
+			<input type="hidden" name="modulename" value="{$SOURCE_MODULE}" />
 		</span>
 		<span class="fieldUiHolder col-lg-4">
 			<input type="text" class="inputElement" readonly="" name="fieldValue" value="" />

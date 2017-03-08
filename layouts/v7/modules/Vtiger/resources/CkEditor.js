@@ -75,13 +75,10 @@ jQuery.Class("Vtiger_CkEditor_Js",{},{
 	 * @params : textArea Element,contents ;
 	 */
 	loadContentsInCkeditor : function(contents){
-		var editor = this.getCkEditorInstanceFromName();
-		var editorData = editor.getData();
-        contents = contents.replace(/&nbsp;/g, ' '); // to replace &nbsp; with space
-		var replaced_text = editorData.replace(editorData, contents); 
-		editor.setData(replaced_text);	
+		var CkEditor = this.getCkEditorInstanceFromName();
+		CkEditor.setData(contents);
 	},
-    
+
     /**
      * Function to remove ckeditor instance
      */

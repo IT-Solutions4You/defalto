@@ -740,7 +740,7 @@ var app = {
 	 */
 	destroyTimeFields : function(container) {
 
-		if(typeof cotainer == 'undefined') {
+		if(typeof container == 'undefined') {
 			container = jQuery('body');
 		}
 

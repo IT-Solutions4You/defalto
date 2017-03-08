@@ -506,6 +506,7 @@ Vtiger_Owner_Field_Js('Workflows_Owner_Field_Js',{},{
 
         html +='</select>';
         var selectContainer = jQuery(html);
+		this.addValidationToElement(selectContainer);
         return selectContainer;
     }
 });

@@ -146,7 +146,7 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'Október',
   'LBL_NOVEMBER' => 'November',
   'LBL_DECEMBER' => 'December',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'Ide kattintva megtekintheti',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Esemény / Feladat', 

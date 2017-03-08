@@ -174,9 +174,8 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'Oktober',
   'LBL_NOVEMBER' => 'November',
   'LBL_DECEMBER' => 'December',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'Klicka här för att se',
 );
-
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK' => 'Lägg till händelse / att göra',
 	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'Uppgift har lagts till i din kalender',

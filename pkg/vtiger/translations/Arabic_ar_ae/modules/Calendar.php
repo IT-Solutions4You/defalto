@@ -174,9 +174,8 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'تشرين الأول / أكتوبر',
   'LBL_NOVEMBER' => 'تشرين الثاني / نوفمبر',
   'LBL_DECEMBER' => 'كانون الأول / ديسمبر',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'انقر هنا لعرض',
 );
-
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK' => 'إضافة حدث / القيام',
 	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'مهمةيضاف إلى التقويم الخاص بك بنجاح',

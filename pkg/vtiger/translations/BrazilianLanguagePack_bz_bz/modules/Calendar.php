@@ -146,7 +146,7 @@ $languageStrings = array(
   'LBL_OCTOBER' => 'Outubro',
   'LBL_NOVEMBER' => 'Novembro',
   'LBL_DECEMBER' => 'Dezembro',
-
+	'LBL_CLICK_HERE_TO_VIEW' => 'Clique aqui para ver',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / Tarefa'            , 
