@@ -536,7 +536,8 @@ Vtiger_Field_Js('Vtiger_Email_Field_Js',{},{
 	getUi : function() {
 		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'"  data-rule-email="true" data-rule-illegal="true"/>';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
-		return jQuery(html);
+		var element = jQuery(html);
+		return this.addValidationToElement(element);
 	}
 });
 

@@ -28,12 +28,14 @@
 						<div>
 							<input type="checkbox" name="acceptDisclaimer" /> &nbsp;&nbsp;<b>{vtranslate('LBL_ACCEPT_WITH_THE_DISCLAIMER', $QUALIFIED_MODULE)}</b>
 						</div>
-						<div name="proceedInstallation" style="margin-top: 15px;" class="fileUploadBtn btn btn-primary">
-							<span><i class="fa fa-laptop"></i> {vtranslate('Select from My Computer', $MODULE)}</span>
-							<input type="file" name="moduleZip" id="moduleZip" size="80px" data-validation-engine="validate[required, funcCall[Vtiger_Base_Validator_Js.invokeValidation]]"
-									data-validator={Zend_Json::encode([['name'=>'UploadModuleZip']])} />
+						<div style="margin-top: 15px;">
+							<span name="proceedInstallation" class="fileUploadBtn btn btn-primary">
+								<span><i class="fa fa-laptop"></i> {vtranslate('Select from My Computer', $MODULE)}</span>
+								<input type="file" name="moduleZip" id="moduleZip" size="80px" data-validation-engine="validate[required, funcCall[Vtiger_Base_Validator_Js.invokeValidation]]"
+										data-validator={Zend_Json::encode([['name'=>'UploadModuleZip']])} />
+							</span>
+							<span id="moduleFileDetails" style="margin-left: 15px;"></span>
 						</div>
-						<div id="moduleFileDetails" style="margin-top: 15px;"></div>
 					</div>
 				</div>
 			</div>
