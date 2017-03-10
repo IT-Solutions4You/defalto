@@ -236,7 +236,7 @@ Vtiger_Detail_Js("Users_Detail_Js",{
 	},
 	validateDigitSeparators: function (e, params) {
 		var fieldNamesToValidate = ['currency_decimal_separator', 'currency_grouping_separator'];
-		var fieldInfo = params.tiggeredFiledInfo;
+		var fieldInfo = params.triggeredFieldInfo;
 
 		if (jQuery.inArray(fieldInfo.field, fieldNamesToValidate) === -1) {
 			return true;
