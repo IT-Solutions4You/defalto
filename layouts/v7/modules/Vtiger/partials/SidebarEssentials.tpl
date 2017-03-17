@@ -38,6 +38,7 @@
                                 <input type="hidden" name="allCvId" value="{CustomView_Record_Model::getAllFilterByModule($MODULE)->get('cvid')}" />
                                 <ul class="lists-menu">
 								{assign var=count value=0}
+								{assign var=LISTVIEW_URL value=$MODULE_MODEL->getListViewUrl()}
                                 {foreach item="CUSTOM_VIEW" from=$GROUP_CUSTOM_VIEWS name="customView"}
                                     {assign var=IS_DEFAULT value=$CUSTOM_VIEW->isDefault()}
 									{assign var="CUSTOME_VIEW_RECORD_MODEL" value=CustomView_Record_Model::getInstanceById($CUSTOM_VIEW->getId())}
@@ -51,7 +52,7 @@
 									<li style="font-size:12px;" class='listViewFilter {if $VIEWID eq $CUSTOM_VIEW->getId() && ($CURRENT_TAG eq '')} active {if $smarty.foreach.customView.iteration gt 10} {assign var=count value=1} {/if} {else if $smarty.foreach.customView.iteration gt 10} filterHidden hide{/if} '> 
                                         {assign var=VIEWNAME value={vtranslate($CUSTOM_VIEW->get('viewname'), $MODULE)}}
 										{append var="CUSTOM_VIEW_NAMES" value=$VIEWNAME}
-                                         <a class="filterName listViewFilterElipsis" href="javascript:;" oncontextmenu="return false;" data-filter-id="{$CUSTOM_VIEW->getId()}" title="{$VIEWNAME|@escape:'html'}">{$VIEWNAME|@escape:'html'}</a> 
+                                         <a class="filterName listViewFilterElipsis" href="{$LISTVIEW_URL|cat:'&viewname='|cat:$CUSTOM_VIEW->getId()}" oncontextmenu="return false;" data-filter-id="{$CUSTOM_VIEW->getId()}" title="{$VIEWNAME|@escape:'html'}">{$VIEWNAME|@escape:'html'}</a> 
                                             <div class="pull-right">
                                                 <span class="js-popover-container" style="cursor:pointer;">
                                                     <span  class="fa fa-angle-down" rel="popover" data-toggle="popover" aria-expanded="true" 
