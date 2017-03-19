@@ -2544,6 +2544,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								detailjs.registerClickEvent();
 								detailjs.registerHeaderAjaxEditEvents(container.find('.overlayDetailHeader'));
 								detailjs.registerEventToReloadRelatedListOnCloseOverlay(parentRecordId);
+								app.event.trigger('post.overlay.load', parentRecordId, params); 
 								container.find('form#detailView').on('submit', function(e) {
 									e.preventDefault();
 							});
