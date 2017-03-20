@@ -18,7 +18,7 @@ $languageStrings = array(
 	'Account Name'                 => 'Nombre de la Cuenta'         , 
 	'Account No'                   => 'Núm. Cuenta'                , 
 	'Website'                      => 'Página Web'                 , 
-	'Ticker Symbol'                => 'Símbolo de bolsa'           , 
+	'Ticker Symbol'                => 'Código bursátil'           , 
 	'Member Of'                    => 'Miembro de'                  , 
 	'Employees'                    => 'Empleados'                   , 
 	'Ownership'                    => 'Propietario'                 , 
@@ -41,9 +41,9 @@ $languageStrings = array(
     'LBL_IMAGE_INFORMATION' => 'Foto de Perfil',
     'Organization Image' => 'Organización de imagen',
 
-  'Other Phone' => 'Teléfono Secundario',
-  'Phone' => 'Teléfono Principal',
-  'Email' => 'De Correo Electrónico Principal',
+  'Other Phone' => 'Teléfono secundario',
+  'Phone' => 'Teléfono principal',
+  'Email' => 'Correo electrónico principal',
 
 );
 $jsLanguageStrings = array(

@@ -21,11 +21,11 @@ $languageStrings = array(
 	'Home Phone'                   => 'Tel. Particular'             , 
 	'Title'                        => 'Cargo'                       , 
 	'Department'                   => 'Departamento'                , 
-	'Birthdate'                    => 'Fecha de Nacimiento'         , 
+	'Birthdate'                    => 'Fecha de nacimiento'         , 
 	'Reports To'                   => 'Informa a'                   , 
 	'Assistant'                    => 'Secretaria'                  , 
-	'Assistant Phone'              => 'Teléfono de la Secretaria'  , 
-	'Do Not Call'                  => 'No Llamar por Teléfono'     , 
+	'Assistant Phone'              => 'Teléfono de la secretaria'  , 
+	'Do Not Call'                  => 'No llamar por teléfono'     , 
 	'Reference'                    => 'Referencias'                 , 
 	'Portal User'                  => 'Usuario de Portal'           , 
 	'Mailing Street'               => 'Dirección (Factura)'        , 
@@ -52,9 +52,9 @@ $languageStrings = array(
     'Support End Date'             => 'Soporte Fecha de finalización',
 	'LBL_TRANSACTIONS' => 'Transactions',
 
-  'Other Phone' => 'Teléfono Secundario',
-  'Email' => 'De Correo Electrónico Principal',
-  'Secondary Email' => 'Correo Electrónico Secundaria',
+  'Other Phone' => 'Teléfono secundario',
+  'Email' => 'Correo electrónico principal',
+  'Secondary Email' => 'Correo electrónico secundario',
 
 );
 $jsLanguageStrings = array(

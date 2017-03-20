@@ -24,8 +24,8 @@ $languageStrings = array(
 	'Actual Duration'              => 'Duración real (días)'      , 
         'Type'                         => 'Tipo'                        , 
     'Related to'                   => 'En relación con'             ,
-	'Hours'                        => 'Hours',
-	'Days'                         => 'Days',
+	'Hours'                        => 'Horas',
+	'Days'                         => 'Días',
 	'Incidents'                    => 'Incidents',
 	'Normal'                       => 'Normal',
 	'Support'                      => 'Apoyo',
@@ -40,6 +40,6 @@ $languageStrings = array(
 	'Services'                     => 'Servicios',
 	'In Progress'                  => 'En Progreso',
 
-  'Service Contracts' => 'Los Contratos De Servicio',
+  'Service Contracts' => 'Contratos de Servicio',
 
 );
