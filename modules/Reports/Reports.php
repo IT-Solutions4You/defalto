@@ -492,35 +492,42 @@ class Reports extends CRMEntity{
 		if($searchCondition) {
 			$sql .= $searchCondition;
 		}
-		require('user_privileges/user_privileges_'.$current_user->id.'.php');
-		require_once('include/utils/GetUserGroups.php');
-		$userGroups = new GetUserGroups();
-		$userGroups->getAllUserGroups($current_user->id);
-		$user_groups = $userGroups->user_groups;
-		if(!empty($user_groups) && ($rpt_fldr_id == 'shared' || $rpt_fldr_id == 'All')){
-			$user_group_query = " (shareid IN (".generateQuestionMarks($user_groups).") AND setype='groups') OR";
-			array_push($params, $user_groups);
-		}
-		
-		$non_admin_query = " vtiger_report.reportid IN (SELECT reportid FROM vtiger_reportsharing WHERE $user_group_query (shareid=? AND setype='users'))";
-		if($rpt_fldr_id == 'shared' || $rpt_fldr_id == 'All'){
-			$sql .= " AND ( ( (".$non_admin_query.") OR vtiger_report.sharingtype='Public' OR "
-					. "vtiger_report.owner = ? OR vtiger_report.owner IN (SELECT vtiger_user2role.userid "
-					. "FROM vtiger_user2role INNER JOIN vtiger_users ON vtiger_users.id=vtiger_user2role.userid "
-					. "INNER JOIN vtiger_role ON vtiger_role.roleid=vtiger_user2role.roleid "
-					. "WHERE vtiger_role.parentrole LIKE '".$current_user_parent_role_seq."::%'))";
-			array_push($params, $current_user->id);
-			array_push($params, $current_user->id);
-		}
-		
-		//Report sharing for vtiger7
-		$queryObj = new stdClass();
-		$queryObj->query = $sql;
-		$queryObj->queryParams = $params;
-		//This function will append sharing access query for a current user
-		$queryObj = self::getReportSharingQuery($queryObj,$rpt_fldr_id);
-		$sql = $queryObj->query;
-		$params = $queryObj->queryParams;
+
+		if (strtolower($current_user->is_admin) != "on") {
+			require('user_privileges/user_privileges_'.$current_user->id.'.php');
+			require_once('include/utils/GetUserGroups.php');
+			$userGroups = new GetUserGroups();
+			$userGroups->getAllUserGroups($current_user->id);
+			$user_groups = $userGroups->user_groups;
+			if(!empty($user_groups) && ($rpt_fldr_id == 'shared' || $rpt_fldr_id == 'All')){
+				$user_group_query = " (shareid IN (".generateQuestionMarks($user_groups).") AND setype='groups') OR";
+				$non_admin_query = " vtiger_report.reportid IN (SELECT reportid FROM vtiger_reportsharing WHERE $user_group_query (shareid=? AND setype='users'))";
+				foreach ($user_groups as $userGroup) {
+					array_push($params, $userGroup);
+				}
+				array_push($params, $current_user->id);
+			}
+
+			if ($rpt_fldr_id == 'shared' || $rpt_fldr_id == 'All') {
+				if ($non_admin_query) {
+					$non_admin_query = "( $non_admin_query ) OR ";
+				}
+				$sql .= " AND ( ($non_admin_query vtiger_report.sharingtype='Public' OR "
+						. "vtiger_report.owner = ? OR vtiger_report.owner IN (SELECT vtiger_user2role.userid "
+						. "FROM vtiger_user2role INNER JOIN vtiger_users ON vtiger_users.id=vtiger_user2role.userid "
+						. "INNER JOIN vtiger_role ON vtiger_role.roleid=vtiger_user2role.roleid "
+						. "WHERE vtiger_role.parentrole LIKE '".$current_user_parent_role_seq."::%'))";
+				array_push($params, $current_user->id);
+			}
+
+			$queryObj = new stdClass();
+            $queryObj->query = $sql;
+            $queryObj->queryParams = $params;
+            //This function will append sharing access query for a current user
+            $queryObj = self::getReportSharingQuery($queryObj,$rpt_fldr_id);
+            $sql = $queryObj->query;
+            $params = $queryObj->queryParams;
+        }
 		if ($paramsList) {
 			$startIndex = $paramsList['startIndex'];
 			$pageLimit = $paramsList['pageLimit'];
