@@ -23,7 +23,7 @@ $languageStrings = array(
 	'PA'                           => 'Eventos Pendientes'          , 
         'Home'                         => 'Tablero'                     ,
 
-  'LBL_SAVE_ORDER' => 'Guardar El Fin De',
-  'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo panel de control',
-	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Máximo 30 caracteres están permitidos para el nombre salpicadero.',
+  'LBL_SAVE_ORDER' => 'Guardar Orden',
+  'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo Tablero',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Máximo 30 caracteres están permitidos para el Tablero',
 );

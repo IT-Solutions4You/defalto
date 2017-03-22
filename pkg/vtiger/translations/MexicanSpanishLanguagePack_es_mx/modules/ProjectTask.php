@@ -8,26 +8,26 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_ProjectTask'           => 'Actividad'                   , 
-	'LBL_ADD_RECORD'               => 'Agregar Actividad'           , 
-	'LBL_RECORDS_LIST'             => 'Lista de actividades'        , 
-	'LBL_PROJECT_TASK_INFORMATION' => 'Información Actividad'      , 
-	'LBL_PROJECTS_LIST'            => 'Projects List'               , // TODO: Review
-	'LBL_TASKS_LIST'               => 'Tasks List'                  , // TODO: Review
-    'LBL_MILESTONES_LIST'          => 'Lista de Hitos'              ,
+	'SINGLE_ProjectTask'           => 'Tarea de Proyecto'                   , 
+	'LBL_ADD_RECORD'               => 'Agregar Tarea de Proyecto'           , 
+	'LBL_RECORDS_LIST'             => 'Lista de Tareas de Proyecto'        , 
+	'LBL_PROJECT_TASK_INFORMATION' => 'Información de Tarea de Proyecto'      , 
+	'LBL_PROJECTS_LIST'            => 'Lista de Proyectos'               , // TODO: Review
+	'LBL_TASKS_LIST'               => 'Lista de Actividades'                  , // TODO: Review
+    'LBL_MILESTONES_LIST'          => 'Lista de Metas'              ,
 	
 	//Field Labels
-	'Project Task Name' => 'Project Task Name',
-    'Project Task No' => 'Project Task No',
-    'Project Task Number' => 'Project Task Number',
-	'Status' => 'Status',
-	'Priority' => 'Priority',
-    'Progress' => 'Progress',
-    'Type'=>'Type',
-    'Worked Hours'=>'Worked Hours',
-    'Start Date'=>'Start Date',
-    'End Date'=>'End Date',
-    'Related to' => 'Related To',
+	'Project Task Name' => 'Nombre de la Tarea de Proyecto',
+    'Project Task No' => 'No de la Tarea de Proyecto',
+    'Project Task Number' => 'Número de la Tarea de Proyecto',
+	'Status' => 'Estado',
+	'Priority' => 'Prioridad',
+    'Progress' => 'Progreso',
+    'Type'=>'Tipo',
+    'Worked Hours'=>'Horas trabajadas',
+    'Start Date'=>'Fecha inicio',
+    'End Date'=>'Fecha fin',
+    'Related to' => 'Relacionado con',
     'administrative' => 'Administrativo',
     'operative' => 'Operatorio',
     'other' => 'Otro',
@@ -36,12 +36,11 @@ $languageStrings = array(
     'high' => 'Alto',
     'Created Time' => 'Created Time',
     'Modified Time' => 'Modified Time',
-    'description' => 'Description',
-	'Assigned To' => 'Assigned To',
-	'Open' => 'Open',
-	'In Progress' => 'In Progress',
-	'Completed' => 'Completed',
-	'Deferred' => 'Deferred',
-	'Canceled ' => 'Canceled',
+    'description' => 'Descripción',
+	'Assigned To' => 'Asignado a',
+	'Open' => 'Abierto',
+	'In Progress' => 'En progreso',
+	'Deferred' => 'Diferido',
+	'Canceled ' => 'Cancelado',
         'LBL_NO_DATE_VALUE_MSG' => 'o Tareas del proyecto no tienen inicio y / o fecha de finalización',
 );

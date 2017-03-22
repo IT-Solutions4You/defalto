@@ -8,7 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Add User'                    , // TODO: Review
+	'LBL_ADD_RECORD'               => 'Agregar Usuario'                    , // TODO: Review
 	'LBL_MY_PREFERENCES'           => 'Mis Preferencias'            , 
 	'LBL_MORE_INFORMATION'         => 'Más Información'           , 
 	'LBL_USERLOGIN_ROLE'           => 'Usuario Login y Rol'         , 
@@ -173,7 +173,7 @@ $languageStrings = array(
 	'LBL_USER_LIST_DETAILS'        => 'Details'                     , // TODO: Review
 	'LBL_USER_DELETED_SUCCESSFULLY' => 'Usuario eliminado correctamente',
     'LBL_ACTIVE_USERS' => 'Usuarios Activos',
-    'LBL_INACTIVE_USERS' => 'Los usuarios inactivos',
+    'LBL_INACTIVE_USERS' => 'Usuarios inactivos',
     'LBL_DELETE_USER_PERMANENTLY' => 'Eliminar usuario de forma permanente',
     'LBL_RESTORE' => 'Restaurar',
     'LBL_USER_RESTORED_SUCCESSFULLY' => 'Usuario restaurado con éxito',

@@ -10,8 +10,8 @@
 $languageStrings = array(
 	'HelpDesk'                     => 'Casos'                       , 
 	'SINGLE_HelpDesk'              => 'Caso'                        , 
-	'LBL_ADD_RECORD'               => 'Agregar Ticket'              , 
-	'LBL_RECORDS_LIST'             => 'Lista de casos'              , 
+	'LBL_ADD_RECORD'               => 'Agregar Caso'              , 
+	'LBL_RECORDS_LIST'             => 'Lista de Casos'              , 
 	'LBL_TICKET_INFORMATION'       => 'Información del Caso'       , 
 	'LBL_TICKET_RESOLUTION'        => 'Solución Propuesta'         , 
 	'Ticket No'                    => 'Núm. Caso'                  , 
@@ -65,7 +65,7 @@ $languageStrings = array(
 	'LBL_STATUS_CLOSED' => 'Closed',//Do not convert this label. This is used to check the status. If the status 'Closed' is changed in vtigerCRM server side then you have to change in customerportal language file also.
 	'LBL_STATUS_UPDATE' => 'Estado de Caso actualizado a',
 	'LBL_COULDNOT_CLOSED' => 'El Caso no puede ser',
-	'LBL_CUSTOMER_COMMENTS' => 'EL Cliente ha incluido la siguiente información a su respuesta:',
+	'LBL_CUSTOMER_COMMENTS' => 'El Cliente ha incluido la siguiente información a su respuesta:',
 	'LBL_RESPOND' => 'Por favor responde al Caso lo más pronto posible.',
 	'LBL_REGARDS' => 'Saludos Cordiales,',
 	'LBL_SUPPORT_ADMIN' => 'Atención al Cliente',
@@ -86,9 +86,9 @@ $languageStrings = array(
 	'Ticket ID' => 'ID del Caso',
 	'LBL_TICKET_NUMBER' => 'Número de entradas',
 
-  'Contact Name' => 'Nombre De Contacto',
+  'Contact Name' => 'Nombre de Contacto',
   'LBL_ADD_DOCUMENT' => 'Añadir Documento',
-  'LBL_OPEN_TICKETS' => 'Tickets Abiertos',
-  'LBL_CREATE_TICKET' => 'Crear Ticket',
+  'LBL_OPEN_TICKETS' => 'Casos abiertos',
+  'LBL_CREATE_TICKET' => 'Crear Caso',
 
 );

@@ -8,7 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-    'Project'                      => 'Proyecto'                    , 
+    'Project'                      => 'Proyectos'                    , 
 	'SINGLE_Project'               => 'Proyecto'                    , 
 	'LBL_ADD_RECORD'               => 'Agregar Proyecto'            , 
 	'LBL_RECORDS_LIST'             => 'Lista de proyectos'          , 
@@ -18,7 +18,7 @@ $languageStrings = array(
 	'Target End Date'              => 'Fecha fin prevista'          , 
 	'Actual End Date'              => 'Fecha fin real'              , 
 	'Project No'                   => 'Nº Proyecto'                , 
-	'Target Budget'                => 'Presupuesto Inicial'         , 
+	'Target Budget'                => 'Presupuesto inicial'         , 
 	'Project Url'                  => 'URL Proyecto'                , 
 	'Progress'                     => 'Progreso'                    ,
         'Type'                         => 'Tipo'                        , 
@@ -28,14 +28,14 @@ $languageStrings = array(
 	'LBL_TASKS_COMPLETED'          => 'Actividades completadas'     , 
 	'LBL_PEOPLE'                   => 'Gente'                       , 
 	'LBL_CHARTS'                   => 'Gráficos'                   , 
-	'LBL_TASKS_LIST'               => 'Tasks List'                  , // TODO: Review
-	'LBL_MILESTONES'               => 'Milestones'                  , // TODO: Review
-	'LBL_TASKS'                    => 'Tasks'                       , // TODO: Review
-	'LBL_STATUS_IS'                => 'Status is'                   , // TODO: Review
-	'LBL_STATUS'                   => 'Status'                      , // TODO: Review
+	'LBL_TASKS_LIST'               => 'Lista de Tareas'                  , // TODO: Review
+	'LBL_MILESTONES'               => 'Metas'                  , // TODO: Review
+	'LBL_TASKS'                    => 'Tareas'                       , // TODO: Review
+	'LBL_STATUS_IS'                => 'El estado es'                   , // TODO: Review
+	'LBL_STATUS'                   => 'Estado'                      , // TODO: Review
 	'LBL_TICKET_PRIORITY'          => 'Priority'                    , // TODO: Review
 	'LBL_DOWNLOAD_FILE'            => 'Download File'               , // TODO: Review
-    'LBL_MILESTONES_LIST'          => 'Lista de Hitos'              ,
+    'LBL_MILESTONES_LIST'          => 'Lista de Metas'              ,
     'LBL_TASKS_HIGH'               => 'Alta Prioridad'              ,
     'LBL_TASKS_NORMAL'             => 'Prioridad Normal'            ,
     'LBL_TASKS_LOW'                => 'Prioridad baja'              ,
@@ -69,9 +69,9 @@ $languageStrings = array(
     'LBL_INFO' => 'Info',
     'LBL_GANTT_INFO1' => 'Deslice el lado derecho de la tarea de ampliar la duración',
     'LBL_GANTT_INFO2' => 'Arrastrar a la izquierda o en el centro de la tarea de cambiar de inicio y fecha de finalización.',
-    'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Estado Editar tarea Proyecto color',
-    'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Seleccione Estado del Proyecto Tarea color',
-    'LBL_SELECT_STATUS' => 'Seleccione Estado',
+    'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Editar el color del estado  de la Tarea de Proyecto',
+    'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Seleccionar el color del estado de la Tarea de Proyecto',
+    'LBL_SELECT_STATUS' => 'Seleccionar Estado',
     'LBL_EDIT_COLOR' => 'Editar color',
 );
 
