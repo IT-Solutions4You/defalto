@@ -104,8 +104,8 @@
                 </div>
                 <div class='col-lg-2' id='schtime'>
                     <div class='input-group inputElement time'>
-                        <input type='text' class='timepicker-default form-control ui-timepicker-input' data-format='{$CURRENT_USER->get('hour_format')}' name='schtime' value="{$SCHEDULEDREPORTS->get('schtime')}" data-rule-required="true"  />
-                        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+						<input type='text' class='timepicker-default form-control ui-timepicker-input' data-format='{$CURRENT_USER->get('hour_format')}' name='schtime' value="{$SCHEDULEDREPORTS->get('schtime')}" data-rule-required="true" data-rule-time="true" />
+							<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
                     </div>
                 </div>
             </div>
