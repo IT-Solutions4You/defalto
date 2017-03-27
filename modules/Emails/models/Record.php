@@ -123,7 +123,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			}
 
 			if (strpos($description, '$logo$')) {
-				$description = str_replace('$logo$',"<img src='cid:logo' />", $description);
+				$description = str_replace('$logo$',"<img src='cid:companyLogo' />", $description);
 				$logo = true;
 			}
 
@@ -161,8 +161,10 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 					}
 				}
 				if ($logo) {
+					$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
+					$companyLogoDetails = $companyDetails->getLogo();
 					//While sending email template and which has '$logo$' then it should replace with company logo
-					$mailer->AddEmbeddedImage(dirname(__FILE__).'/../../../layouts/v7/skins/images/logo_mail.jpg', 'logo', 'logo.jpg', 'base64', 'image/jpg');
+					$mailer->AddEmbeddedImage($companyLogoDetails->get('imagepath'), 'companyLogo', 'attachment', 'base64', 'image/jpg');
 				}
 
 				$ccs = array_filter(explode(',',$this->get('ccmail')));

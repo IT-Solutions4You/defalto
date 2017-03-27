@@ -46,7 +46,7 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 			if($systemtemplate) {
 				$sql = "UPDATE vtiger_emailtemplates SET templatename=?, description=?, module=?, body=?, deleted=?, systemtemplate=? WHERE templateid = ?";
 			} else {
-				$sql = "UPDATE vtiger_emailtemplates SET templatename=?, subject=?,  description=?, module=?, body=?, deleted=?, systemtemplate=?  WHERE templateid = ?";
+				$sql = "UPDATE vtiger_emailtemplates SET templatename=?, subject=?, description=?, module=?, body=?, deleted=?, systemtemplate=? WHERE templateid = ?";
 			}
 		}
 		if(!empty($recordId) && $systemtemplate) {
@@ -138,11 +138,11 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 		$logoPath = $site_URL . '/' . $companyModuleModel->getLogoPath(); 
 		foreach ($basicFields as $columnName => $value) { 
 			//For column logo we need place logo in content 
-			if($columnName == 'logo'){ 
-					$allFields[] = array($moduleName.':'. vtranslate($columnName, $qualifiedModule),"<img src='".$logoPath."'>"); 
-			} else { 
-					$allFields[] = array($moduleName.':'. vtranslate($columnName, $qualifiedModule),"$".strtolower("companydetails")."-".$columnName."$"); 
-			} 
+			if($columnName == 'logo'){
+				$allFields[] = array($moduleName.':'. vtranslate($columnName, $qualifiedModule),"$$columnName$");
+			} else {
+				$allFields[] = array($moduleName.':'. vtranslate($columnName, $qualifiedModule),"$".strtolower("companydetails")."-".$columnName."$");
+			}
 		} 
 		// Social links will be having hyperlink redirected to URL mentioned 
 		foreach($socialFields as $columnName => $value){ 
@@ -188,8 +188,8 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 		$moduleFields = $meta->getModuleFields();
 		$db = PearDatabase::getInstance();
 		//adding record id merge tag option 
-		$fieldInfo = array('columnname' => 'id','fieldname' => 'id','fieldlabel' =>vtranslate('LBL_RECORD_ID',  $this->getName()));
-		$recordIdField = WebserviceField::fromArray($db, $fieldInfo); 
+		$fieldInfo = array('columnname' => 'id','fieldname' => 'id','fieldlabel' =>vtranslate('LBL_RECORD_ID', $this->getName()));
+		$recordIdField = WebserviceField::fromArray($db, $fieldInfo);
 		$moduleFields[$recordIdField->getFieldName()] = $recordIdField;
 
 		$returnData = array();
@@ -233,7 +233,7 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 				continue;
 			}
 			if($relModule == 'Users') {
-								if(in_array($relModuleField->getFieldDataType(),array('string','phone','email','text'))) {
+				if(in_array($relModuleField->getFieldDataType(),array('string','phone','email','text'))) {
 					$skipFields = array(98,115,116,31,32);
 					if(!in_array($relModuleField->getUIType(), $skipFields) && $relModuleField->getFieldName() != 'asterisk_extension'){
 						$relModuleFieldList[] = array('module' => $relModule, 'fieldname' => $relModuleField->getFieldName(), 'columnname' => $relModuleField->getColumnName(), 'fieldlabel' => $relModuleField->getFieldLabelKey());
@@ -254,8 +254,8 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		// Get modules names only those are active
 		$query = 'SELECT DISTINCT(name) AS modulename FROM vtiger_tab 
-				  LEFT JOIN vtiger_field ON vtiger_field.tabid = vtiger_tab.tabid
-				  WHERE (vtiger_field.uitype = ? AND vtiger_tab.presence = ?) ';
+					LEFT JOIN vtiger_field ON vtiger_field.tabid = vtiger_tab.tabid
+					WHERE (vtiger_field.uitype = ? AND vtiger_tab.presence = ?) ';
 		$params = array('13',0);
 		// Check whether calendar module is active or not.
 		if(vtlib_isModuleActive("Calendar")){
