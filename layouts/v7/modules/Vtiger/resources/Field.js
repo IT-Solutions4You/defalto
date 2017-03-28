@@ -14,18 +14,18 @@ jQuery.Class("Vtiger_Field_Js",{
 	 * @param moduleName module for which Instance should be created
 	 * @return Instance of field class
 	 */
-    getInstance : function(data,moduleName){
+	getInstance : function(data,moduleName){
 		if(typeof moduleName == 'undefined'){
 			var moduleName = app.getModuleName();
 		}
-        var moduleField = moduleName+"_Field_Js";
+		var moduleField = moduleName+"_Field_Js";
 		var moduleFieldObj = window[moduleField];
-        if (typeof moduleFieldObj != 'undefined'){
+		if (typeof moduleFieldObj != 'undefined'){
 			 var fieldClass = moduleFieldObj;
 		}else{
-            var fieldClass = Vtiger_Field_Js;
-        }
-        var fieldObj = new fieldClass();
+			var fieldClass = Vtiger_Field_Js;
+		}
+		var fieldObj = new fieldClass();
 
 		if(typeof data == 'undefined'){
 			data = {};
@@ -41,7 +41,7 @@ jQuery.Class("Vtiger_Field_Js",{
 	 * @return false if field is not mandatory
 	 */
 	isMandatory : function(){
-        return this.get('mandatory');
+		return this.get('mandatory');
 	},
 
 
@@ -50,12 +50,12 @@ jQuery.Class("Vtiger_Field_Js",{
 	 * @return value for the passed key
 	 */
 
-    get : function(key){
+	get : function(key){
 		if(key in this.data){
 			return this.data[key];
 		}
-        return '';
-    },
+		return '';
+	},
 
 
 	/**
@@ -99,11 +99,11 @@ jQuery.Class("Vtiger_Field_Js",{
 	 * Function to set data attribute of the class
 	 * @return Instance of the class
 	 */
-    setData : function(fieldInfo){
-        this.data = fieldInfo;
+	setData : function(fieldInfo){
+		this.data = fieldInfo;
 		return this;
-    },
-	
+	},
+
 	getModuleName : function() {
 		return app.getModuleName();
 	},
@@ -121,24 +121,24 @@ jQuery.Class("Vtiger_Field_Js",{
 		var BasicUiTypeClassName = window["Vtiger_"+ typeClassName + "_Field_Js"];
 
 		if(typeof moduleUiTypeClassName != 'undefined') {
-			var instance =  new moduleUiTypeClassName();
+			var instance = new moduleUiTypeClassName();
 			return instance.setData(this.getData());
 		}else if (typeof BasicUiTypeClassName != 'undefined') {
-			var instance =  new BasicUiTypeClassName();
+			var instance = new BasicUiTypeClassName();
 			return instance.setData(this.getData());
 		}
 		return this;
 	},
 
 	/**
-	 * Funtion to get the ui for the field  - generally this will be extend by the child classes to
+	 * Funtion to get the ui for the field - generally this will be extend by the child classes to
 	 * give ui type specific ui
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi : function() {
 		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-'+this.getType()+'=true />';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
-		return jQuery(html);
+		return this.addValidationToElement(html);
 	},
 
 	/**
@@ -157,68 +157,68 @@ jQuery.Class("Vtiger_Field_Js",{
 	addValidationToElement : function(element) {
 		var element = jQuery(element);
 		var addValidationToElement = element;
-		var elementInStructure = element.find('[name="'+this.getName()+'"]'); 
-		if(elementInStructure.length > 0){ 
-			addValidationToElement = elementInStructure; 
+		var elementInStructure = element.find('[name="'+this.getName()+'"]');
+		if(elementInStructure.length > 0){
+			addValidationToElement = elementInStructure;
 		}
 		if(this.isMandatory()) {
-            addValidationToElement.attr('data-rule-required', 'true');
+			addValidationToElement.attr('data-rule-required', 'true');
 			var type = this.getType();
 			if (type == 'reference') {
 				addValidationToElement.attr('data-rule-reference_required', 'true');
 			}
 		}
 		addValidationToElement.attr('data-fieldinfo',JSON.stringify(this.getData())).attr('data-specific-rules',JSON.stringify(this.getData().specialValidator));
-        return element;
+		return element;
 	},
-	
+
 	getNewFieldInfo : function() {
 		return this.get('newfieldinfo');
 	},
-    
+
 })
 
 Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
-    
-    getReferenceModules : function(){
-        return this.get('referencemodules');
-    },
-    
-    getUi : function(){
-        var referenceModules = this.getReferenceModules();
-        var value = this.getValue();
-        var html = '<div class="referencefield-wrapper';
-        if(value){
-            html += ' selected';
-        } else {
-            html += '"';
-        }
-        html += '">';
-        html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
-        html += '<div class="input-group ">' 
-        html += '<input class="autoComplete inputElement sourceField" type="search" data-fieldtype="reference" name="'+this.getName()+'"';
-        var reset = false;
-        if(value){
-            html += ' value="'+value+'" disabled="disabled"';
-            reset = true;
-        }
-        html += '/>';
-        
-        if(reset){
-            html += '<a href="#" class="clearReferenceSelection"> X </a>';
-        }else {
-            html += '<a href="#" class="clearReferenceSelection hide"> X </a>';
-        }
-        //popup search element
-        html += '<span class="input-group-addon relatedPopup cursorPointer" title="'+referenceModules[0]+'">';
-        html += '<i class="fa fa-search"></i>';
-        html += '</span>';
-        
-        html += '</div>';
-        html += '</div>'; 
-        return this.addValidationToElement(html);
-    }
-    
+
+	getReferenceModules : function(){
+		return this.get('referencemodules');
+	},
+
+	getUi : function(){
+		var referenceModules = this.getReferenceModules();
+		var value = this.getValue();
+		var html = '<div class="referencefield-wrapper';
+		if(value){
+			html += ' selected';
+		} else {
+			html += '"';
+		}
+		html += '">';
+		html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
+		html += '<div class="input-group ">'
+		html += '<input class="autoComplete inputElement sourceField" type="search" data-fieldtype="reference" name="'+this.getName()+'"';
+		var reset = false;
+		if(value){
+			html += ' value="'+value+'" disabled="disabled"';
+			reset = true;
+		}
+		html += '/>';
+
+		if(reset){
+			html += '<a href="#" class="clearReferenceSelection"> X </a>';
+		}else {
+			html += '<a href="#" class="clearReferenceSelection hide"> X </a>';
+		}
+		//popup search element
+		html += '<span class="input-group-addon relatedPopup cursorPointer" title="'+referenceModules[0]+'">';
+		html += '<i class="fa fa-search"></i>';
+		html += '</span>';
+
+		html += '</div>';
+		html += '</div>';
+		return this.addValidationToElement(html);
+	}
+
 });
 
 
@@ -237,12 +237,12 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi : function() {
-        //added class inlinewidth
+		//added class inlinewidth
 		var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
 		var pickListValues = this.getPickListValues();
 		var selectedOption = app.htmlDecode(this.getValue());
-		
-		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0) {
+
+		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
 			html += '<option value="">Select an Option</option>';
 		}
 		for(var option in pickListValues) {
@@ -299,16 +299,16 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 	getPickListValues : function() {
 		return this.get('picklistvalues');
 	},
-    
-    getSelectedOptions : function(selectedOption){
-        var valueArray = selectedOption.split('|##|');
-        var selectedOptionsArray = [];
-        for(var i=0;i<valueArray.length;i++){
-            selectedOptionsArray.push(valueArray[i].trim());
-        }
-        return selectedOptionsArray;
-    },
-	
+
+	getSelectedOptions : function(selectedOption){
+		var valueArray = selectedOption.split('|##|');
+		var selectedOptionsArray = [];
+		for(var i=0;i<valueArray.length;i++){
+			selectedOptionsArray.push(valueArray[i].trim());
+		}
+		return selectedOptionsArray;
+	},
+
 	/**
 	 * Function to get the ui
 	 * @return - select element and chosen element
@@ -318,7 +318,7 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 		var pickListValues = this.getPickListValues();
 		var selectedOption = app.htmlDecode(this.getValue());
 		var selectedOptionsArray = this.getSelectedOptions(selectedOption);
-        
+
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
 			if(jQuery.inArray(option,selectedOptionsArray) != -1){
@@ -341,7 +341,7 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js',{},{
 	 */
 	isChecked : function() {
 		var value = this.getValue();
-		if(value==1 || value == '1' || value.toLowerCase() == 'on' || value.toLowerCase() == 'yes'){
+		if(value==1 || value == '1' || (value && (value.toLowerCase() == 'on' || value.toLowerCase() == 'yes'))){
 			return true;
 		}
 		return false;
@@ -376,10 +376,10 @@ Vtiger_Field_Js('Vtiger_Date_Field_Js',{},{
 	 * @return - input text field
 	 */
 	getUi : function() {
-        //wrappig with another div for consistency
+		//wrappig with another div for consistency
 		var html = '<div class="referencefield-wrapper"><div class="input-group date">'+
-                        '<input class="inputElement dateField form-control" type="text" data-rule="date" data-format="'+ this.getDateFormat() +'" name="'+ this.getName() +'"  value="'+  this.getValue() + '" />'+
-                        '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>'+
+						'<input class="inputElement dateField form-control" type="text" data-rule-date="true" data-format="'+ this.getDateFormat() +'" name="'+ this.getName() +'" value="'+ this.getValue() + '" />'+
+						'<span class="input-group-addon"><i class="fa fa-calendar"></i></span>'+
 					'</div></div>';
 		var element = jQuery(html);
 		return this.addValidationToElement(element);
@@ -396,10 +396,10 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 	},
 
 	getUi : function() {
-        //wrappig with another div for consistency
+		//wrappig with another div for consistency
 		var html = '<div class="referencefield-wrapper"><div class="input-group">'+
-                        '<span class="input-group-addon" id="basic-addon1">'+this.getCurrencySymbol()+'</span>'+
-                        '<input class="inputElement" type="text" name="'+ this.getName() +'" data-rule-currency="true" value="'+  this.getValue() + '"  />'+
+						'<span class="input-group-addon" id="basic-addon1">'+this.getCurrencySymbol()+'</span>'+
+						'<input class="inputElement" type="text" name="'+ this.getName() +'" data-rule-currency="true" value="'+ this.getValue() + '" />'+
 					'</div></div>';
 		var element = jQuery(html);
 		return this.addValidationToElement(element);
@@ -445,7 +445,7 @@ Vtiger_Date_Field_Js('Vtiger_Datetime_Field_Js',{},{
 });
 
 Vtiger_Field_Js('Vtiger_Time_Field_Js',{},{
-	
+
 	/**
 	 * Function to get the user date format
 	 */
@@ -459,8 +459,8 @@ Vtiger_Field_Js('Vtiger_Time_Field_Js',{},{
 	 */
 	getUi : function() {
 		var html = '<div class="referencefield-wrapper">'+'<div class="input-group time">'+
-                        '<input class="timepicker-default form-control" type="text" data-format="'+ this.getTimeFormat() +'" name="'+ this.getName() +'"  value="'+  this.getValue() + '" />'+
-                        '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>'+
+						'<input class="timepicker-default form-control inputElement" type="text" data-format="'+ this.getTimeFormat() +'" name="'+ this.getName() +'" value="'+ this.getValue() + '" />'+
+						'<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>'+
 					'</div>'+'</div>';
 		var element = jQuery(html);
 		return this.addValidationToElement(element);
@@ -474,7 +474,7 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 	 * @return - input text field
 	 */
 	getUi : function() {
-		var html = '<textarea class="input-xxlarge form-control inputElement" name="'+ this.getName() +'"  value="'+  this.getValue() + '" style="max-width:80%; height:200px;">'+  this.getValue() + '</textarea>';
+		var html = '<textarea class="input-xxlarge form-control inputElement" name="'+ this.getName() +'" value="'+ this.getValue() + '" >'+ this.getValue() + '</textarea>';
 		var element = jQuery(html);
 		return this.addValidationToElement(element);
 	}
@@ -487,8 +487,8 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * @return - input percentage field
 	 */
 	getUi : function() {
-		var html = '<div class="input-group">'+
-                        '<input type="number" class="form-control" min="0" max="100" name="'+this.getName() +'" value="'+  this.getValue() + '" step="any"/>'+
+		var html = '<div class="input-group percentage-input-group">'+
+						'<input type="text" class="form-control inputElement percentage-input-element" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
 						'<span class="input-group-addon">%</span>'+
 					'</div>';
 		var element = jQuery(html);
@@ -528,21 +528,21 @@ Vtiger_Field_Js('Vtiger_Recurrence_Field_Js',{},{
 });
 
 Vtiger_Field_Js('Vtiger_Email_Field_Js',{},{
-	
+
 	/**
 	 * Funtion to get the ui for the email field
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi : function() {
-		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'"  data-rule-email="true" data-rule-illegal="true"/>';
+		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-email="true" data-rule-illegal="true"/>';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
-		var element = jQuery(html);
-		return this.addValidationToElement(element);
+		this.addValidationToElement(html);
+		return jQuery(html);
 	}
 });
 
 Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
-	
+
 	/**
 	 * Funtion to get the ui for the Image field
 	 * return <String or Jquery> it can return either plain html or jquery object
@@ -550,5 +550,13 @@ Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
 	getUi : function() {
 		var html = '';
 		return jQuery(html);
+	}
+});
+
+Vtiger_Field_Js('Vtiger_Integer_Field_Js',{},{
+	getUi : function() {
+		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-'+this.getType()+'=true />';
+		html = jQuery(html).val(app.htmlDecode(this.getValue()));
+		return this.addValidationToElement(html);
 	}
 });
