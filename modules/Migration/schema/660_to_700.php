@@ -26,6 +26,32 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
 	}
 
+	require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
+	$result = $db->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflows WHERE summary=?', array('Ticket Creation From Portal : Send Email to Record Owner and Contact'));
+	if ($db->num_rows($result)) {
+		$wfs = new VTWorkflowManager($db);
+		$workflowModel = $wfs->retrieve($db->query_result($result, 0, 'workflow_id'));
+
+		$selectedFields = array();
+		$conditions = Zend_Json::decode(html_entity_decode($workflowModel->test));
+		if ($conditions) {
+			foreach ($conditions as $conditionKey => $condition) {
+				if ($condition['fieldname'] == 'from_portal') {
+					$selectedFieldKeys[] = $conditionKey;
+				}
+			}
+			foreach ($selectedFieldKeys as $key => $conditionKey) {
+				if ($key) {
+					unset($conditions[$conditionKey]);
+				}
+			}
+			$workflowModel->name = $workflowModel->description;
+			$workflowModel->test = Zend_Json::encode($conditions);
+			$wfs->save($workflowModel);
+		}
+	}
+
+	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
