@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 
+vimport('~~/vtlib/Vtiger/Net/Client.php');
 class Users_Login_View extends Vtiger_View_Controller {
 
 	function loginRequired() {
@@ -30,7 +31,47 @@ class Users_Login_View extends Vtiger_View_Controller {
 	}
 
 	function process (Vtiger_Request $request) {
+		$jsonData = array();
+		$marketingJsonUrl = vglobal('MARKETING_JSON_URL');
+		if ($marketingJsonUrl && !filter_var($marketingJsonUrl, FILTER_VALIDATE_URL) === false) {
+			$clientModel = new Vtiger_Net_Client($marketingJsonUrl);
+			if ($clientModel) {
+				$jsonData = $clientModel->doGet();
+				$jsonData = Zend_Json::decode($jsonData);
+				if ($jsonData) {
+					$oldTextLength = vglobal('listview_max_textlength');
+					foreach ($jsonData as $blockName => $blockData) {
+						vglobal('listview_max_textlength', $blockData['title_length']);
+						$blockData['displayTitle'] = textlength_check($blockData['title']);
+
+						vglobal('listview_max_textlength', $blockData['summary_length']);
+						$blockData['displaySummary'] = textlength_check($blockData['summary']);
+						$jsonData[$blockName] = $blockData;
+					}
+					vglobal('listview_max_textlength', $oldTextLength);
+				}
+			}
+		}
+
 		$viewer = $this->getViewer($request);
+		$viewer->assign('JSON_DATA', $jsonData);
+
+		$mailStatus = $request->get('mailStatus');
+		$error = $request->get('error');
+		$message = '';
+		if ($error) {
+			switch ($error) {
+				case 'login'		:	$message = 'Invalid credentials';						break;
+				case 'fpError'		:	$message = 'Invalid Username or Email address';			break;
+				case 'statusError'	:	$message = 'Outgoing mail server was not configured';	break;
+			}
+		} else if ($mailStatus) {
+			$message = 'Mail has been sent to your inbox, please check your e-mail';
+		}
+
+		$viewer->assign('ERROR', $error);
+		$viewer->assign('MESSAGE', $message);
+		$viewer->assign('MAIL_STATUS', $mailStatus);
 		$viewer->view('Login.tpl', 'Users');
 	}
 

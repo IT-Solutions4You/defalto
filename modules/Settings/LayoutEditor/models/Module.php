@@ -359,6 +359,9 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$numOfRows; $i++) {
 			$moduleName = $db->query_result($result, $i, 'name');
 			$modulesList[$moduleName] = vtranslate($moduleName, $moduleName);
+			if ($moduleName == 'Calendar') {
+				$modulesList[$moduleName] = vtranslate($moduleName, 'Settings:LayoutEditor');
+			}
 		}
 		// If calendar is disabled we should not show events module too
 		// in layout editor

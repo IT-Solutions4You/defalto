@@ -341,7 +341,7 @@ function getReportSearchCondition($searchParams, $filterId) {
 			$fieldName = $condition[0];
 			$searchValue = $condition[2];
 			if ($fieldName == 'reportname' || $fieldName == 'description') {
-				$conditionQuery .= " vtiger_report.$fieldName. LIKE ? ";
+				$conditionQuery .= " vtiger_report.$fieldName LIKE ? ";
 				array_push($params, "%$searchValue%");
 			} else if ($fieldName == 'reporttype' || $fieldName == 'foldername' || $fieldName == 'owner') {
 				$searchValue = explode(',', $searchValue);

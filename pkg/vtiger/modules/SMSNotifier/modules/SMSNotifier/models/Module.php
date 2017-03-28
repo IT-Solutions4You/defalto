@@ -33,7 +33,7 @@ class SMSNotifier_Module_Model extends Vtiger_Module_Model {
 	 * @return <boolean>
 	 */
 	public function isPermitted($actionName) {
-		if ($actionName === 'EditView') {
+		if ($actionName === 'EditView' || $actionName === 'CreateView') {
 			return false;
 		}
 		return Users_Privileges_Model::isPermitted($this->getName(), $actionName);

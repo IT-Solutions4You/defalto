@@ -67,6 +67,8 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('QUICK_LINKS', $quickLinkModels);
 		$this->initializeListViewContents($request, $viewer);
 		$viewer->assign('VIEWID', $this->viewName);
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$viewer->assign('MODULE_MODEL', $moduleModel);
 
 		if($display) {
 			$this->preProcessDisplay($request);

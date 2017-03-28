@@ -31,7 +31,7 @@ class Inventory_RelationListView_Model extends Vtiger_RelationListView_Model {
 				$addLinkList = array(
 					array(
 						'linktype' => 'LISTVIEWBASIC',
-						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate($relatedModel->get('label')),
+						'linklabel' => vtranslate('LBL_ADD')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
 						'linkurl' => $this->getCreateViewUrl(),
 						'linkicon' => '',
 					)

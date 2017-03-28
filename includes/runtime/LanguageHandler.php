@@ -207,7 +207,6 @@ class Vtiger_Language_Handler {
 		}
 
 		return $resultantLanguageString;
-		;
 	}
 
 	/**
