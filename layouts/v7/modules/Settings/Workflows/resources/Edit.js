@@ -888,6 +888,9 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       var taskType = jQuery('#taskType').val();
       if (taskType == "VTUpdateFieldsTask") {
          fieldValueMappingKey = fieldInfo.workflow_columnname;
+		 if (fieldValueMappingKey === undefined || fieldValueMappingKey === null){
+			fieldValueMappingKey = selectedOption.val();
+		 }
       }
       if (fieldValueMapping != '' && typeof fieldValueMapping[fieldValueMappingKey] != 'undefined') {
          fieldInfo.value = fieldValueMapping[fieldValueMappingKey]['value'];
@@ -896,7 +899,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
          fieldInfo.workflow_valuetype = 'rawtext';
       }
       
-      if( fieldInfo.type == 'reference') {
+      if(fieldInfo.type == 'reference' || fieldInfo.type == 'multireference') {
           fieldInfo.referenceLabel = fieldUiHolder.find('[name="referenceValueLabel"]').val();
           fieldInfo.type = 'string';
       }
