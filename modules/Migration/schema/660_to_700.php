@@ -51,14 +51,17 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$result = $db->pquery('SELECT templateid FROM vtiger_emailtemplates ORDER BY templateid DESC LIMIT 1', array());
+	$db->pquery('UPDATE vtiger_emailtemplates_seq SET id=?', array($db->query_result($result, 0, 'templateid')));
+
 	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
 	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.','currency_decimal_separator'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',','currency_grouping_separator'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.', 'currency_decimal_separator'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',', 'currency_grouping_separator'));
 
 	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
 	foreach ($lineItemModules as $moduleName => $tableName) {
@@ -83,7 +86,7 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$documentsModuleModel = Vtiger_Module_Model::getInstance('Documents');
-	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $userModuleModel);
+	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $documentsModuleModel);
 	if ($noteContentFieldModel) {
 		$noteContentFieldModel->set('masseditable', '0');
 		$noteContentFieldModel->save();
@@ -454,18 +457,18 @@ if(defined('VTIGER_UPGRADE')) {
 		$body = '<p>$invitee_name$,<br/><br/>' .
 				vtranslate('LBL_ACTIVITY_INVITATION', $moduleName).'<br/><br/>' .
 				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
-						&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/>
-						&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/> 
-						&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/>
-						&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/>
-						&nbsp; '.vtranslate('Priority', $moduleName).' : $events-priority$<br/>
-						&nbsp; '.vtranslate('Related To', $moduleName).' : $events-crmid$<br/>
-						&nbsp; '.vtranslate('LBL_CONTACT_LIST', $moduleName).' : $events-contactid$<br/>
-						&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/>
-						&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/>
-						'.vtranslate('LBL_REGARDS_STRING', $moduleName).',<br/>
-						$current_user_name$
-						<p/>';
+								&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/>
+								&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/> 
+								&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/>
+								&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/>
+								&nbsp; '.vtranslate('Priority', $moduleName).' : $events-priority$<br/>
+								&nbsp; '.vtranslate('Related To', $moduleName).' : $events-crmid$<br/>
+								&nbsp; '.vtranslate('LBL_CONTACT_LIST', $moduleName).' : $events-contactid$<br/>
+								&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/>
+								&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/>
+								'.vtranslate('LBL_REGARDS_STRING', $moduleName).',<br/>
+								$current_user_name$
+								<p/>';
 		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate) values(?,?,?,?,?,?)', array('Public', 'Invite Users', 'Invitation', 'Invite Users', $body, '1'));
 	}
 
