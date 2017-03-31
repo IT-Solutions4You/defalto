@@ -119,6 +119,8 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 		jQuery.extend(completeParams,params);
         app.helper.showProgress();
         
+		app.event.trigger('pre.relatedListLoad.click');
+		
         app.request.get({data:completeParams}).then(
 			function(error,responseData){
                 app.helper.hideProgress();
@@ -128,8 +130,10 @@ jQuery.Class("Vtiger_RelatedList_Js",{
                 container.html(responseData);
                 vtUtils. applyFieldElementsView(container);
 				thisInstance.initializePaginationEvents();
-                                thisInstance.triggerRelationAdditionalActions();
-                                aDeferred.resolve(responseData);
+                thisInstance.triggerRelationAdditionalActions();
+				app.event.trigger('post.relatedListLoad.click', completeParams);
+                
+				aDeferred.resolve(responseData);
 			},
 			
 			function(textStatus, errorThrown){
