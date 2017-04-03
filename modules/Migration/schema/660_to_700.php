@@ -51,9 +51,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	$result = $db->pquery('SELECT templateid FROM vtiger_emailtemplates ORDER BY templateid DESC LIMIT 1', array());
-	$db->pquery('UPDATE vtiger_emailtemplates_seq SET id=?', array($db->query_result($result, 0, 'templateid')));
-
 	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
@@ -469,7 +466,7 @@ if(defined('VTIGER_UPGRADE')) {
 								'.vtranslate('LBL_REGARDS_STRING', $moduleName).',<br/>
 								$current_user_name$
 								<p/>';
-		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate) values(?,?,?,?,?,?)', array('Public', 'Invite Users', 'Invitation', 'Invite Users', $body, '1'));
+		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'Invite Users', 'Invitation', 'Invite Users', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
 	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_emailslookup')) {
@@ -1891,6 +1888,9 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
 		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
+
+	$result = $db->pquery('SELECT templateid FROM vtiger_emailtemplates ORDER BY templateid DESC LIMIT 1', array());
+	$db->pquery('UPDATE vtiger_emailtemplates_seq SET id=?', array($db->query_result($result, 0, 'templateid')));
 
 	//Migrating data missed in vtiger_settings_field from file to database.
 	//Start:: user management block
