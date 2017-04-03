@@ -26,13 +26,39 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
 	}
 
+	require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
+	$result = $db->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflows WHERE summary=?', array('Ticket Creation From Portal : Send Email to Record Owner and Contact'));
+	if ($db->num_rows($result)) {
+		$wfs = new VTWorkflowManager($db);
+		$workflowModel = $wfs->retrieve($db->query_result($result, 0, 'workflow_id'));
+
+		$selectedFields = array();
+		$conditions = Zend_Json::decode(html_entity_decode($workflowModel->test));
+		if ($conditions) {
+			foreach ($conditions as $conditionKey => $condition) {
+				if ($condition['fieldname'] == 'from_portal') {
+					$selectedFieldKeys[] = $conditionKey;
+				}
+			}
+			foreach ($selectedFieldKeys as $key => $conditionKey) {
+				if ($key) {
+					unset($conditions[$conditionKey]);
+				}
+			}
+			$workflowModel->name = $workflowModel->description;
+			$workflowModel->test = Zend_Json::encode($conditions);
+			$wfs->save($workflowModel);
+		}
+	}
+
+	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
 	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
 	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.','currency_decimal_separator'));
-	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',','currency_grouping_separator'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.', 'currency_decimal_separator'));
+	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',', 'currency_grouping_separator'));
 
 	$lineItemModules = array('Products' => 'vtiger_products', 'Services' => 'vtiger_service');
 	foreach ($lineItemModules as $moduleName => $tableName) {
@@ -57,7 +83,7 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$documentsModuleModel = Vtiger_Module_Model::getInstance('Documents');
-	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $userModuleModel);
+	$noteContentFieldModel = Vtiger_Field_Model::getInstance('notecontent', $documentsModuleModel);
 	if ($noteContentFieldModel) {
 		$noteContentFieldModel->set('masseditable', '0');
 		$noteContentFieldModel->save();
@@ -428,19 +454,19 @@ if(defined('VTIGER_UPGRADE')) {
 		$body = '<p>$invitee_name$,<br/><br/>' .
 				vtranslate('LBL_ACTIVITY_INVITATION', $moduleName).'<br/><br/>' .
 				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/>
-						&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/>
-						&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/> 
-						&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/>
-						&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/>
-						&nbsp; '.vtranslate('Priority', $moduleName).' : $events-priority$<br/>
-						&nbsp; '.vtranslate('Related To', $moduleName).' : $events-crmid$<br/>
-						&nbsp; '.vtranslate('LBL_CONTACT_LIST', $moduleName).' : $events-contactid$<br/>
-						&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/>
-						&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/>
-						'.vtranslate('LBL_REGARDS_STRING', $moduleName).',<br/>
-						$current_user_name$
-						<p/>';
-		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate) values(?,?,?,?,?,?)', array('Public', 'Invite Users', 'Invitation', 'Invite Users', $body, '1'));
+								&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/>
+								&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/> 
+								&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/>
+								&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/>
+								&nbsp; '.vtranslate('Priority', $moduleName).' : $events-priority$<br/>
+								&nbsp; '.vtranslate('Related To', $moduleName).' : $events-crmid$<br/>
+								&nbsp; '.vtranslate('LBL_CONTACT_LIST', $moduleName).' : $events-contactid$<br/>
+								&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/>
+								&nbsp; '.vtranslate('LBL_APP_DESCRIPTION', $moduleName).' : $events-description$<br/><br/>
+								'.vtranslate('LBL_REGARDS_STRING', $moduleName).',<br/>
+								$current_user_name$
+								<p/>';
+		$db->pquery('INSERT INTO vtiger_emailtemplates(foldername,templatename,subject,description,body,systemtemplate,templateid) values(?,?,?,?,?,?,?)', array('Public', 'Invite Users', 'Invitation', 'Invite Users', $body, '1', $db->getUniqueID('vtiger_emailtemplates')));
 	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_emailslookup')) {
@@ -1862,6 +1888,9 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
 		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
+
+	$result = $db->pquery('SELECT templateid FROM vtiger_emailtemplates ORDER BY templateid DESC LIMIT 1', array());
+	$db->pquery('UPDATE vtiger_emailtemplates_seq SET id=?', array($db->query_result($result, 0, 'templateid')));
 
 	//Migrating data missed in vtiger_settings_field from file to database.
 	//Start:: user management block

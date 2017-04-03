@@ -163,11 +163,11 @@
                 </div>
             {/if}
             {if $SCHEDULEDREPORTS->get('next_trigger_time')}
-                <div class="col-lg-12">
+                <div class="col-lg-12" style="padding:5px 0px 10px 0px;">
                     <div class='col-lg-3'>
                         <span class=''>{vtranslate('LBL_NEXT_TRIGGER_TIME', $MODULE)}</span>
                     </div>
-                    <div class='span'>
+                    <div class='col-lg-5'>
                         {$SCHEDULEDREPORTS->getNextTriggerTimeInUserFormat()}<span>&nbsp;({$CURRENT_USER->time_zone})</span>
                     </div>
                 </div>

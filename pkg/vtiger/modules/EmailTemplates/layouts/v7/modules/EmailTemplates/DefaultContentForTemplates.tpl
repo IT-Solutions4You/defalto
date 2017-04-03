@@ -21,21 +21,6 @@
 			<center>
 				<table border="0" cellpadding="0" cellspacing="0" class="borderGrey" width="600px">
 					<tbody>
-						<tr>
-							<td colspan="6"><!-- Begin Pre header -->
-								<table border="0" cellpadding="5" cellspacing="0" height="52" style="font-family: Helvetica,Verdana,sans-serif; font-size: 10px; color: rgb(102, 102, 102); background-color: rgb(232, 245, 254);" width="597">
-									<tbody>
-										<tr>
-											<td>
-												<div>Use this area to offer a short teaser of your email&#39;s content. Text here will show in the preview area<br />
-													of some email clients.</div>
-											</td>
-											<td><a href="{$VIEW_IN_BROWSER_TAG}" target="_blank">View in browser</a></td>
-										</tr>
-									</tbody>
-								</table>
-								<!-- // End Pre header \ --></td>
-						</tr>
 						<tr style="height:50px;">
 							<td colspan="6" style="border-top: 1px solid #ddd; font-family: Helvetica,Verdana,sans-serif"></td>
 						</tr>
@@ -54,7 +39,7 @@
 										<tr>
 											<td valign="top" width="350px">
 												<center>
-													<div><em>Copyright &copy; 2014 {if !(empty($WEBSITE_URL))}<a href="{$WEBSITE_URL}" target="_blank">{$WEBSITE_URL}</a>{else}your company.com{/if}, All rights reserved.</em></div>
+													<div><em>Copyright &copy; {date('Y')} {if !(empty($WEBSITE_URL))}<a href="{$WEBSITE_URL}" target="_blank">{$WEBSITE_URL}</a>{else}your company.com{/if}, All rights reserved.</em></div>
 												</center>
 											</td>
 										</tr>

@@ -54,13 +54,14 @@ class Google_Oauth2_Connector {
     const OAUTH2_REVOKE_URI = 'https://accounts.google.com/o/oauth2/revoke';
     
     public function __construct($module,$userId=false) {
+        global $site_URL;
         $this->source_module = $module;
         if($userId) $this->user_id = $userId;
         $this->service_name = $this->service_provider . $module;
-        $this->client_id = VtigerConfig::getOD('GOOGLE_SYNC_CLIENT_ID');
-        $this->client_secret = VtigerConfig::getOD('GOOGLE_SYNC_CLIENT_SECRET');
-        $this->redirect_uri = VtigerConfig::getOD('OAUTH_SERVER_URL');
-        $this->scope = 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.google.com/m8/feeds https://www.googleapis.com/auth/calendar';
+        $this->client_id = Google_Config_Connector::$clientId;
+        $this->client_secret = Google_Config_Connector::$clientSecret;
+        $this->redirect_uri = rtrim($site_URL, '/').'/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module.'&service='.$this->service_name;
+        $this->scope = $this->scopes[$this->source_module];
     }
     
     public function getClientId() {
@@ -100,9 +101,6 @@ class Google_Oauth2_Connector {
             'access_type=' . urlencode($this->access_type),
             'approval_prompt=' . urlencode($this->approval_prompt),
         );
-        if (isset($this->state)) {
-            $params[] = 'state=' . urlencode($this->state);
-        }
         $queryString = implode('&', $params);
         return self::OAUTH2_AUTH_URL . "?$queryString";
     }
@@ -119,8 +117,8 @@ class Google_Oauth2_Connector {
     
     public function getState($source) {
         global $site_URL;
-        $callbackUri = $site_URL . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $source.'&_ignoreOnBoardCompletion=true';
+        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
+                $this->source_module . '&service=' . $source;
         $stateDetails['url'] = $callbackUri;
         $parse = parse_url($site_URL);
         $ipAddr = getHostByName($parse['host']);
@@ -183,11 +181,11 @@ class Google_Oauth2_Connector {
         $modulesSupported = array('Contacts', 'Calendar');
         foreach($modulesSupported as $moduleName) {
             $params = array($this->service_provider.$moduleName,$accessToken,$refresh_token,$this->user_id);
-            $sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
-            $this->db->pquery($sql,$params);
-        }
+			$sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
+			$this->db->pquery($sql,$params);
+		}
 	}
-
+    
     protected function retreiveToken() {
         if(!$this->user_id) $this->user_id = Users_Record_Model::getCurrentUserModel()->getId();
         $query = 'SELECT access_token,refresh_token FROM ' . $this->table_name . ' WHERE userid=? AND service =?';
@@ -232,12 +230,12 @@ class Google_Oauth2_Connector {
         $encodedToken = $this->fireRequest(self::OAUTH2_TOKEN_URI,array(),$params);
         $decodedToken = json_decode($encodedToken,true);
         if(!isset($decodedToken['error'])) {
-            $decodedToken['created'] = time();
-            $token['access_token'] = $decodedToken;
-            $token['refresh_token'] = $this->token['refresh_token'];
-            $this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
-            $this->setToken($token);
-        }
+			$decodedToken['created'] = time();
+			$token['access_token'] = $decodedToken;
+			$token['refresh_token'] = $this->token['refresh_token'];
+			$this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
+			$this->setToken($token);
+		}
     }
 
     public function authorize() {

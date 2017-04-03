@@ -195,6 +195,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
                 $recordModel->set('mode', '');
                 $recordModel->set('accountname', $orgName);
                 $recordModel->set('assigned_user_id', $userId);
+				$recordModel->set('source', 'GOOGLE');
                 if($description) {
                     $recordModel->set('description', $description);
                 }   
