@@ -263,7 +263,7 @@
 										<h4>{$BLOCK_DATA.displayTitle}</h4>
 										{$BLOCK_DATA.displaySummary}<br><br>
 										<span class="blockLink">
-											<a href="{$BLOCK_DATA.link}" target="_blank">{$BLOCK_DATA.urlalt}</a>
+											<a href="{$BLOCK_DATA.url}" target="_blank">{$BLOCK_DATA.urlalt}</a>
 										</span>
 									</div>
 								</div>
