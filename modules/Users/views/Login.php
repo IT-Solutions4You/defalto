@@ -22,8 +22,10 @@ class Users_Login_View extends Vtiger_View_Controller {
 	function preProcess(Vtiger_Request $request, $display = true) {
 		$viewer = $this->getViewer($request);
 		$viewer->assign('PAGETITLE', $this->getPageTitle($request));
-		$viewer->assign('SCRIPTS',$this->getHeaderScripts($request));
-		$viewer->assign('STYLES',$this->getHeaderCss($request));
+		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
+		$viewer->assign('STYLES', $this->getHeaderCss($request));
+		$viewer->assign('MODULE', $request->getModule());
+		$viewer->assign('VIEW', $request->get('view'));
 		$viewer->assign('LANGUAGE_STRINGS', array());
 		if ($display) {
 			$this->preProcessDisplay($request);
@@ -32,25 +34,29 @@ class Users_Login_View extends Vtiger_View_Controller {
 
 	function process (Vtiger_Request $request) {
 		$jsonData = array();
-		$marketingJsonUrl = vglobal('MARKETING_JSON_URL');
-		if ($marketingJsonUrl && !filter_var($marketingJsonUrl, FILTER_VALIDATE_URL) === false) {
-			$clientModel = new Vtiger_Net_Client($marketingJsonUrl);
-			if ($clientModel) {
-				$jsonData = $clientModel->doGet();
-				$jsonData = Zend_Json::decode($jsonData);
-				if ($jsonData) {
-					$oldTextLength = vglobal('listview_max_textlength');
-					foreach ($jsonData as $blockName => $blockData) {
-						vglobal('listview_max_textlength', $blockData['title_length']);
-						$blockData['displayTitle'] = textlength_check($blockData['title']);
 
-						vglobal('listview_max_textlength', $blockData['summary_length']);
-						$blockData['displaySummary'] = textlength_check($blockData['summary']);
-						$jsonData[$blockName] = $blockData;
-					}
-					vglobal('listview_max_textlength', $oldTextLength);
+		$modelInstance = Settings_ExtensionStore_Extension_Model::getInstance();
+		$news = $modelInstance->getNews();
+
+		if ($news && $news['result']) {
+			$jsonData = $news['result'];
+			$oldTextLength = vglobal('listview_max_textlength');
+			foreach ($jsonData as $blockName => $blockData) {
+				if ($blockData['type'] === 'feature') {
+					$blockData['heading'] = "What's new in Vtiger";
+				} else {
+					$blockData['heading'] = "Latest News";
+					$blockData['image'] = '';
 				}
+
+				vglobal('listview_max_textlength', '80');
+				$blockData['displayTitle'] = textlength_check($blockData['title']);
+
+				vglobal('listview_max_textlength', '340');
+				$blockData['displaySummary'] = textlength_check($blockData['summary']);
+				$jsonData[$blockName] = $blockData;
 			}
+			vglobal('listview_max_textlength', $oldTextLength);
 		}
 
 		$viewer = $this->getViewer($request);

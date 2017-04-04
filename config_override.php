@@ -10,7 +10,3 @@
 
 //Maximum number of Mailboxes in mail converter
 $max_mailboxes = 3;
-
-//marketing json data url
-$MARKETING_JSON_URL = 'https://marketplace.vtiger.com/api/app/news/MarketingJson.json';
-
