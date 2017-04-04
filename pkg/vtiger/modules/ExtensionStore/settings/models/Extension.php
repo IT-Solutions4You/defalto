@@ -1,9 +1,12 @@
 <?php
-
-/*
- * Copyright (C) www.vtiger.com. All rights reserved.
- * @license Proprietary
- */
+/* +**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ * ***********************************************************************************/
 
 vimport('~~/vtlib/Vtiger/Package.php');
 vimport('~/libraries/PHPMarkdown/Michelf/Markdown.inc.php');
@@ -208,6 +211,16 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 			$listings = $connector->getMaxCreatedOn($type, $function, $field);
 			return $listings;
 		}
+	}
+
+	public function getNews() {
+		$news = array();
+		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
+		if ($extensionLookUpUrl) {
+			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+			$news = $connector->getNews();
+		}
+		return $news;
 	}
 
 	/**
@@ -487,45 +500,36 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 
 		foreach ($listing as $key => $value) {
 			switch ($key) {
-				case 'name' : $key = 'label';
-					break;
-				case 'identifier': $key = 'name';
-					break;
-				case 'version' : $key = 'pkgVersion';
-					break;
-				case 'minrange': $key = 'vtigerVersion';
-					break;
-				case 'maxrange': $key = 'vtigerMaxVersion';
-					break;
-				case 'CustomerId': $key = 'publisher';
-					break;
-				case 'price': $value = $value ? $value : 'Free';
-					break;
-				case 'approvedon': $key = 'pubDate';
-					break;
-				case 'ListingFileId':
-					if ($value) {
-						$key = 'downloadURL';
-						$value = $this->getExtensionsLookUpUrl().'/customer/listingfiles?id='.$value;
-					}
-					break;
-				case 'thumbnail':
-					if ($value) {
-						$key = 'thumbnailURL';
-						$value = str_replace('api', "_listingimages/$value", $this->getExtensionsLookUpUrl());
-					}
-					break;
-				case 'banner' :
-					if ($value) {
-						$key = 'bannerURL';
-						$value = str_replace('api', "_listingimages/$value", $this->getExtensionsLookUpUrl());
-					}
-					break;
-				case 'description':
-					if ($value) {
-						$markDownInstance = new Michelf\Markdown();
-						$value = $markDownInstance->transform($value);
-					}
+				case 'name'			:	$key = 'label';				break;
+				case 'identifier'	:	$key = 'name';				break;
+				case 'version'		:	$key = 'pkgVersion';		break;
+				case 'minrange'		:	$key = 'vtigerVersion';		break;
+				case 'maxrange'		:	$key = 'vtigerMaxVersion';	break;
+				case 'CustomerId'	:	$key = 'publisher';			break;
+				case 'approvedon'	:	$key = 'pubDate';			break;
+				case 'price'		:	if (!$value) {
+											$value = 'Free';
+										}
+										break;
+				case 'ListingFileId':	if ($value) {
+											$key = 'downloadURL';
+											$value = $this->getExtensionsLookUpUrl().'/customer/listingfiles?id='.$value;
+										}
+										break;
+				case 'thumbnail'	:	if ($value) {
+											$key = 'thumbnailURL';
+											$value = str_replace('api', "_listingimages/$value", $this->getExtensionsLookUpUrl());
+										}
+										break;
+				case 'banner'		:	if ($value) {
+											$key = 'bannerURL';
+											$value = str_replace('api', "_listingimages/$value", $this->getExtensionsLookUpUrl());
+										}
+										break;
+				case 'description'	:	if ($value) {
+											$markDownInstance = new Michelf\Markdown();
+											$value = $markDownInstance->transform($value);
+										}
 			}
 			$extensionModel->set($key, $value);
 		}
