@@ -33,7 +33,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 	}
 
 	function process (Vtiger_Request $request) {
-		$jsonData = array();
+		$finalJsonData = array();
 
 		$modelInstance = Settings_ExtensionStore_Extension_Model::getInstance();
 		$news = $modelInstance->getNews();
@@ -41,7 +41,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 		if ($news && $news['result']) {
 			$jsonData = $news['result'];
 			$oldTextLength = vglobal('listview_max_textlength');
-			foreach ($jsonData as $blockName => $blockData) {
+			foreach ($jsonData as $blockData) {
 				if ($blockData['type'] === 'feature') {
 					$blockData['heading'] = "What's new in Vtiger";
 				} else {
@@ -54,13 +54,13 @@ class Users_Login_View extends Vtiger_View_Controller {
 
 				vglobal('listview_max_textlength', '340');
 				$blockData['displaySummary'] = textlength_check($blockData['summary']);
-				$jsonData[$blockName] = $blockData;
+				$finalJsonData[$blockData['type']][] = $blockData;
 			}
 			vglobal('listview_max_textlength', $oldTextLength);
 		}
 
 		$viewer = $this->getViewer($request);
-		$viewer->assign('JSON_DATA', $jsonData);
+		$viewer->assign('JSON_DATA', $finalJsonData);
 
 		$mailStatus = $request->get('mailStatus');
 		$error = $request->get('error');
