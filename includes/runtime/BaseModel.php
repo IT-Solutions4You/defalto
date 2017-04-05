@@ -28,7 +28,16 @@ class Vtiger_Base_Model {
 	 * @return Value for the given key
 	 */
 	public function get($key){
-		return isset($this->valueMap[$key]) ? $this->valueMap[$key] : false;
+		return $this->valueMap[$key];
+	}
+
+	/**
+	* Function to get the raw value for a given key
+	* @param $key
+	* @return Raw Value for the given key
+	*/
+	public function getRaw($key){
+		return $this->rawData[$key];
 	}
 
 	/**

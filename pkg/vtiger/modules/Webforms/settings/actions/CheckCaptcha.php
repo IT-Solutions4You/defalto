@@ -2,7 +2,7 @@
 /*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -15,29 +15,19 @@ include_once 'includes/http/Response.php';
 include_once 'vtlib/Vtiger/Module.php';
 include_once 'include/utils/VtlibUtils.php';
 include_once 'include/recaptcha/recaptchalib.php';
-include_once 'modules/Webforms/config.captcha.php';
 
 class Webform_CheckCaptcha {
-    
-    protected $PUBLIC_KEY = false;
-    protected $PRIVATE_KEY = false;
-    
-    /**
-     * Function to intialize captch keys
-     */
-    function __construct() {
-        global $captchaConfig;
-        $this->PUBLIC_KEY = $captchaConfig['VTIGER_RECAPTCHA_PUBLIC_KEY'];
-        $this->PRIVATE_KEY = $captchaConfig['VTIGER_RECAPTCHA_PRIVATE_KEY'];
-    }
 
 	function checkCaptchaNow($request) {
+        // reCAPTCHA public and private keys to validate
+		$publickey = "6Lchg-wSAAAAAIkV51_LSksz6fFdD2vgy59jwa38";
+        $privatekey = "6Lchg-wSAAAAABUvZ57ogylowuv8SK0Hq4h2Yghs";
 
         // to store the response from reCAPTCHA
         $resp = null;
 
         if ($request["recaptcha_response_field"]) {
-                $resp = recaptcha_check_answer ($this->PRIVATE_KEY,
+                $resp = recaptcha_check_answer ($privatekey,
                                                 $_SERVER["REMOTE_ADDR"],
                                                 $request["recaptcha_challenge_field"],
                                                 $request["recaptcha_response_field"]);

@@ -49,6 +49,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Asignación de usuario',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Asignar Usuarios En Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Ronda de Usuarios Lista de Robin',
+
+  'LBL_ADD_RECORD' => 'Agregar Formulario Web',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Se ha eliminado el formulario correctamente',
@@ -58,4 +61,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campos de referencia no puedo ser obligatoria y sin valor de reemplazo',
 	'JS_TYPE_TO_SEARCH' => 'Escriba para buscar',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Formulario web con este nombre ya existe',
+
+  'JS_SELECT_AN_OPTION' => 'Seleccione una Opción',
+  'JS_LABEL' => 'etiqueta',
+
 );

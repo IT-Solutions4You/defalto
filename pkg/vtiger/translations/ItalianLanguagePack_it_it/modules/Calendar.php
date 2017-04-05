@@ -8,12 +8,13 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_Calendar'              => 'Da fare'                     , 
-	'LBL_ADD_TASK'                 => 'Add Da fare'                    , 
+    'Calendar'                     => 'Calendar'                    , 
+	'SINGLE_Calendar'              => 'Compito'                     , 
+	'LBL_ADD_TASK'                 => 'Add Compito'                    , 
 	'LBL_ADD_EVENT'                => 'Aggiungi Evento'             , 
 	'LBL_RECORDS_LIST'             => 'Vista per Lista'             , 
 	'LBL_EVENTS'                   => 'Eventi'                      , 
-	'LBL_TODOS'                    => 'Compiti'                     , 
+	'LBL_TODOS'                    => 'Compito'                     , 
 	'LBL_CALENDAR_SETTINGS'        => 'Calendar Settings'           , // TODO: Review
 	'LBL_CALENDAR_SHARING'         => 'Calendar Sharing'            , // TODO: Review
 	'LBL_DEFAULT_EVENT_DURATION'   => 'Default Event Duration'      , // TODO: Review
@@ -21,34 +22,38 @@ $languageStrings = array(
 	'LBL_OTHER_EVENTS'             => 'Other Events'                , // TODO: Review
 	'LBL_MINUTES'                  => 'Minutes'                     , // TODO: Review
 	'LBL_SELECT_USERS'             => 'Select Users'                , // TODO: Review
-	'LBL_EVENT_OR_TASK'            => 'Evento / Da fare'                ,
-	'LBL_TASK_INFORMATION'         => 'Da fare Informazione'        , 
+	'LBL_EVENT_OR_TASK'            => 'Evento / Compito'                ,
+	'LBL_TASK_INFORMATION'         => 'Compito Informazione'        , 
     'LBL_EVENT_INFORMATION'        => 'Dettagli evento'             ,
 	'Subject'                      => 'Soggetto'                    , 
 	'Start Date & Time'            => 'Orario e data inizio'        , 
 	'Activity Type'                => 'Tipo Attivit&agrave;'        , 
 	'Send Notification'            => 'Manda Notifica'              , 
 	'Location'                     => 'Luogo'                       , 
-	'End Date & Time'              => 'Data e Ora Fine'             , 
+	'End Date & Time'              => 'Data e Ora Fine'             ,
+	'Visibility'					=> 'Visibilità',
+	'Recurrence'					=> 'Ricorrenza',
+	'Private'						=> 'Privato',
+	'Public'						=> 'Pubblico',
 	'LBL_ACTIVITY_TYPES'           => 'Activity Types'              , 
 	'LBL_CONTACTS_SUPPORT_END_DATE' => 'Data Fine Supporto'          , 
 	'LBL_CONTACTS_BIRTH_DAY'       => 'Date of Birth'               , 
 	'LBL_ADDED_CALENDARS'          => 'Added Calendars'             , // TODO: Review
 	'Call'                         => 'Chiamata'                    , 
 	'Meeting'                      => 'Riunione'                    , 
-	'Task'                         => 'Da fare'                        , // TODO: Review
-	'Planned'                      => 'Previsto'                 , 
-        'Held'                         =>  'Held',
-        'Not Held'                     => 'Non Held',
+	'Task'                         => 'Compito'                        , // TODO: Review
+	'Planned'                      => 'Pianificato'                 , 
 	'Completed'                    => 'Completato'                  , 
 	'Pending Input'                => 'In Attesa di Input'          , 
 	'Not Started'                  => 'Non Iniziato'                , 
-	'Deferred'                     => 'Posticipato'                 , 
+	'Deferred'                     => 'Posticipato'                 ,
+	'Held'							=> 'Tenuto',
+	'Not Held'						=> 'Non Tenuto',
 	'Medium'                       => 'Medio'                       , 
 	'LBL_CHANGE_OWNER'             => 'Cambia Proprietario'         , 
 	'LBL_EVENT'                    => 'Evento'                      , 
-	'LBL_TASK'                     => 'Da fare'                     , 
-	'LBL_TASKS'						=> 'Da fare',
+	'LBL_TASK'                     => 'Compito'                     , 
+	'LBL_TASKS'						=> 'Compito',
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_SHARED_CALENDAR'          => 'Shared Calendar'             , // TODO: Review
 	'LBL_DAY0'                     => 'Sunday'                      , // TODO: Review
@@ -77,12 +82,76 @@ $languageStrings = array(
 	'LBL_EDITING_CALENDAR_VIEW' => 'Editing Calendar View',
 	'LBL_DELETE_CALENDAR' => 'Elimina Calendario',
 	'LBL_SELECT_ACTIVITY_TYPE' => 'Selezionare il tipo di attività',
-	'Tasks' => 'Compiti',
+	'Tasks' => 'Compito',
+	'LBL_SELECT_FIELDS_FOR_RANGE' => 'Selezionare i campi per la gamma',
+	'LBL_DUPLICATE_VIEW_EXIST' => 'Calendar View esiste già',
+    
+    // For Event Invitation
+    'LBL_ACTIVITY_NOTIFICATION' => "Questa è una notifica che un'attività venga assegnato all'utente che è stata",
+    'LBL_ACTIVITY_INVITATION' => "Sei stato invitato per un'attività",
+    'LBL_DETAILS_STRING' => 'I dettagli sono',
+    'LBL_CREATED' => 'creato',
+    'LBL_UPDATED' => 'aggiornato',
+    'Due Date' => 'Due Date',
+    'Priority' => 'Priorità',
+    'Related To' => 'Relativi a',
+    'LBL_CONTACT_LIST' => 'Elenco dei contatti',
+    'LBL_APP_DESCRIPTION' => 'Descrizione',
+    'LBL_REGARDS_STRING' => 'Grazie e saluti',
+    'LBL_EVENT_INFORMATION' => 'Dettagli evento',
+	'LBL_UPDATED_INVITATION' => 'Invito Aggiornato',
+	'LBL_INVITATION' => 'Invito',
+	//Recurring Events
+	'LBL_EDIT_RECURRING_EVENT' => 'Modifica Evento ricorrente',
+	'LBL_ALL_EVENTS_EDIT_INFO' => 'Tutti gli eventi della serie saranno cambiati.</br> Saranno mantenute le eventuali modifiche apportate agli altri eventi.',
+	'LBL_FUTURE_EVENTS_EDIT_INFO' => 'Questo e tutti i seguenti eventi saranno cambiate.</br> Eventuali modifiche a eventi futuri saranno persi.',
+	'LBL_ONLY_THIS_EVENT_EDIT_INFO' => 'Tutti gli altri eventi della serie rimarranno le stesse.',
+	'LBL_EDIT_RECURRING_EVENTS_INFO' => 'Vuoi salvare le modifiche per',
+	
+	'LBL_DELETE_RECURRING_EVENT' => 'Elimina Evento ricorrente',
+	'LBL_ALL_EVENTS_DELETE_INFO' => 'Tutti gli eventi della serie saranno cancellati.',
+	'LBL_FUTURE_EVENTS_DELETE_INFO' => 'Questo e tutti i seguenti eventi sarà cancellata.',
+	'LBL_ONLY_THIS_EVENT_DELETE_INFO' => 'Tutti gli altri eventi della serie rimarranno le stesse.',
+	'LBL_DELETE_RECURRING_EVENTS_INFO' => 'Vuoi eliminare solo questo evento, tutti gli eventi della serie e questo e tutti gli eventi futuri della serie?',
+	'LBL_ONLY_THIS_EVENT' => 'Solo questo evento',
+	'LBL_FUTURE_EVENTS' => 'A seguito di eventi',
+	'LBL_ALL_EVENTS' => 'Tutti gli eventi',
+
+  'SINGLE_Events' => 'Evento',
+  'LBL_IMPORT_RECORDS' => 'L\'Importazione Dei Record',
+  'LBL_RESULT' => 'Risultato',
+  'LBL_FINISH' => 'Finitura',
+  'LBL_TOTAL_TASKS_IMPORTED' => 'No. di Attività Importato Correttamente ',
+  'LBL_TOTAL_TASKS_SKIPPED' => 'No. di Attività Saltato come erano mancanti di uno o più richieste di campo ',
+  'LBL_TOTAL_EVENTS_IMPORTED' => 'No. di Eventi Importati Correttamente ',
+  'LBL_TOTAL_EVENTS_SKIPPED' => 'No. di Eventi Saltato come erano mancanti di uno o più richieste di campo ',
+  'ICAL_FORMAT' => 'Formato iCal',
+  'LBL_LAST_IMPORT_UNDONE' => 'La Tua Ultima Importazione È Stata Annullata',
+  'LBL_UNDO_LAST_IMPORT' => 'Annulla L\'Ultima Importazione',
+  'LBL_REMINDER_NOTIFICATION' => 'Questo è un promemoria di notifica per l\'Attività',
+  'LBL_SELECT_EVENT_TYPE' => 'Tipo Di Attività',
+  'LBL_THIS_WEEK' => 'Questa Settimana',
+  'LBL_ADD_TASK_AND_PRESS_ENTER' => 'Aggiungi Operazione e premere Invio',
+
+
+  'LBL_JANUARY' => 'Gennaio',
+  'LBL_FEBRUARY' => 'Febbraio',
+  'LBL_MARCH' => 'Marzo',
+  'LBL_APRIL' => 'Aprile',
+  'LBL_MAY' => 'Può',
+  'LBL_JUNE' => 'Giugno',
+  'LBL_JULY' => 'Luglio',
+  'LBL_AUGUST' => 'Agosto',
+  'LBL_SEPTEMBER' => 'Settembre',
+  'LBL_OCTOBER' => 'Ottobre',
+  'LBL_NOVEMBER' => 'Novembre',
+  'LBL_DECEMBER' => 'Dicembre',
+	'LBL_CLICK_HERE_TO_VIEW' => 'Clicca qui per vedere',
 );
 $jsLanguageStrings = array(
-	'LBL_ADD_EVENT_TASK'           => 'Add Event / Da fare'            , 
-	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'Da fare is successfully added to your Calendar', // TODO: Review
-	'LBL_CANT_SELECT_CONTACT_FROM_LEADS' => 'Cannot select related Contacts for Leads', // TODO: Review
+	'LBL_ADD_EVENT_TASK'           => 'Add Event / Compito'            , 
+	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'Compito is successfully added to your Calendar', // TODO: Review
+	'LBL_CANT_SELECT_CONTACT_FROM_LEADS' => 'Impossibile selezionare i contatti correlati per cavi', // TODO: Review
         'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Non possiamo essere ritenuti Per Futuro',
 	
 	//Calendar view label translation
@@ -134,8 +203,6 @@ $jsLanguageStrings = array(
 	'LBL_DEC' => 'Dec',
 	
 	'LBL_ALL_DAY' => 'All-Day',
-	
-	'Mobile Call' => 'Mobile Call',
 	//End
 	
 	//Fixing colors for Shared Calendar and My Calendar
@@ -145,4 +212,21 @@ $jsLanguageStrings = array(
 	'JS_CALENDAR_VIEW_DELETED_SUCCESSFULLY' => 'Calendario Vista eliminata correttamente',
 	'JS_NO_CALENDAR_VIEWS_TO_ADD' => 'No Calendar View per aggiungere',
 	'JS_EDIT_CALENDAR' => 'Modifica Calendario',
+
+  'LBL_TOMORROW' => 'Domani',
+  'JS_EVENT_UPDATED' => 'Evento Aggiornato',
+  'JS_NO_EVENTS_F0R_THE_DAY' => 'Nessun evento per il giorno',
+  'LBL_AGENDA' => 'Agenda',
+  'JS_CALENDAR_VIEW_YOU_ARE_EDITING_NOT_FOUND' => 'Visualizzazione del calendario non trovato',
+  'JS_DELETE' => 'Eliminare',
+  'JS_EDIT' => 'Modifica',
+  'JS_MARK_AS_HELD' => 'Marco tenuta',
+  'JS_CREATE_FOLLOW_UP' => 'Creare follow-up',
+  'JS_RECURRING_EVENT' => 'Evento ricorrente',
+  'JS_DETAILS' => 'Più&nbsp;Dettagli',
+
+
+  'JS_CHECK_START_AND_END_DATE' => 'Fine-Data e Ora deve essere maggiore o uguale alla Data di Inizio e Ora',
+  'JS_CHECK_START_AND_END_DATE_SHOULD_BE_GREATER' => 'Fine-Data e Ora dovrebbe essere maggiore di Data di Inizio e Ora',
+
 );

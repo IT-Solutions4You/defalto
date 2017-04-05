@@ -11,6 +11,7 @@
 class Inventory_MassSave_Action extends Vtiger_MassSave_Action {
 
 	public function process(Vtiger_Request $request) {
+        vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
 		$moduleName = $request->getModule();
 		$recordModels = $this->getRecordModelsFromRequest($request);
 		foreach($recordModels as $recordId => $recordModel) {
@@ -20,7 +21,7 @@ class Inventory_MassSave_Action extends Vtiger_MassSave_Action {
 				$recordModel->save();
 			}
 		}
-
+        vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
 		$response = new Vtiger_Response();
 		$response->setResult(true);
 		$response->emit();

@@ -11,10 +11,10 @@
 	<license>VPL1.0</license>
 	<dependencies>
 		<vtiger_version>6.0.0</vtiger_version>
-		<vtiger_max_version>6.*</vtiger_max_version>
+		<vtiger_max_version>7.*</vtiger_max_version>
 	</dependencies>
-  <license>
-   <inline><![CDATA[
+	<license>
+		<inline><![CDATA[
 /*******************************************************************************
  * Vicus eBusiness Solutions Version Control
  * @package 	NL-Dutch
@@ -26,6 +26,6 @@
  * @license		vtiger CRM Public License Version 1.0 (by definition)
  ********************************************************************************/
 ]]></inline>
-  </license>
+	</license>
 </module>
 

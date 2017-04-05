@@ -37,6 +37,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Назначение Пользователь',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Назначение пользователей В Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Круглый Список Робин Пользователи',
+
+  'LBL_ADD_RECORD' => 'Добавить Веб-Форму',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform успешно удален', 
@@ -47,4 +50,7 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Ориентир поля не могу быть обязательным без коррекции стоимости',
 	'JS_TYPE_TO_SEARCH' => 'Введите для поиска',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform с таким именем уже существует',
+
+  'JS_SELECT_AN_OPTION' => 'Выберите вариант',
+
 );

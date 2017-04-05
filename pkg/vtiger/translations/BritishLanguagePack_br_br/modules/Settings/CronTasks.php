@@ -19,5 +19,5 @@ $languageStrings = array(
 	'LBL_COMPLETED'                => 'Completed'                   , // TODO: Review
 	'LBL_RUNNING'                  => 'Running'                     , // TODO: Review
 	'LBL_ACTIVE'                   => 'Active'                      , // TODO: Review
-	'LBL_INACTIVE'                 => 'Inactive'                    , // TODO: Review
+	'LBL_INACTIVE'                 => 'In Active'                   , // TODO: Review
 );

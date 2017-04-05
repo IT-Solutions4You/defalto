@@ -24,4 +24,14 @@ abstract class Vtiger_Footer_View extends Vtiger_Header_View {
 	/*function postProcess(Vtiger_Request $request) {
 		parent::postProcess($request);
 	}*/
+       public function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$cssFileNames = array(
+            '~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/timepicker/jquery.timepicker.css',
+            '~/libraries/jquery/lazyYT/lazyYT.min.css'
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
+		return $headerCssInstances;
+	}
 }

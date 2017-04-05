@@ -16,24 +16,27 @@ $languageStrings = array(
 	'LBL_TODOS'                    => 'Tâche'                      , 
 	'LBL_HOLD_FOLLOWUP_ON'         => 'Tenez Suivi sur'            ,
     'LBL_CREATE_FOLLOWUP_EVENT'    => 'Créer Suivi événement'       ,
-	'LBL_EVENT_INFORMATION'        => 'Event Details'               , 
+	'LBL_EVENT_INFORMATION'        => 'Détails de l\'événement'     , 
 	'LBL_RECURRENCE_INFORMATION'   => 'Recurrence Details'          , 
 	'LBL_RELATED_TO'               => 'Related To'                  , // TODO: Review
+    'Related To'                   => 'Relatif à la'                ,
 	'Start Date & Time'            => 'Date et heure de début'     , 
-	'Recurrence'                   => 'Recurrence'                  , 
+	'Recurrence'                   => 'Récurrence'                  , 
 	'Send Notification'            => 'Send Notification'           , 
 	'Location'                     => 'Location'                    , 
 	'Send Reminder'                => 'Send Reminder'               , 
 	'End Date & Time'              => 'Date et heure de fin'        , 
-	'Activity Type'                => 'Type d\'activité'           , 
-	'Visibility'                   => 'Visibility'                  , 
+	'End Date'                     => 'Date et heure de fin'        , 
+	'Activity Type'                => 'Type d\'activité'          , 
+	'Visibility'                   => 'Visibilité'                 , 
+	'Related To'                   => 'Relatif à la'               , 
 	'Private'                      => 'Privé'                      , 
 	'Public'                       => 'Public'                      , 
 	'Call'                         => 'Appel'                       , 
 	'Meeting'                      => 'Conférence'                 , 
 	'Planned'                      => 'Planifiée'                  , 
 	'Held'                         => 'A eu lieu'                   , 
-	'Not Held'                     => 'N\'a pas eu lieu'            , 
+	'Not Held'                     => 'N\'a pas eu lieu'           , 
 	'LBL_DAYS'                     => 'Days'                        , 
 	'LBL_HOURS'                    => 'Hours'                       , 
 	'LBL_DAYS_TYPE'                => 'Day(s)'                      , // TODO: Review
@@ -67,4 +70,10 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
+        'LBL_INVITE_PEOPLE'            => 'Inviter des personnes'       ,
+
+
+  'INVITATION' => ' Invitation ',
+  'Busy' => 'Occupé',
+
 );

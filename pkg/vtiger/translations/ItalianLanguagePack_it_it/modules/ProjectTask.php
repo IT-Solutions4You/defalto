@@ -25,7 +25,7 @@ $languageStrings = array(
 	'Worked Hours'	=>	"Ore lavorate",
 	'Start Date'	=>	"Data di inizio",
 	'End Date'	=>	"Data di fine",
-	'Related To'	=>	"Legati alla",
+	'Related to'	=>	"Legati alla",
 	'administrative' => 'Amministrativo',
     'operative' => 'Operativo',
     'other' => 'Altro',
@@ -41,4 +41,8 @@ $languageStrings = array(
 	'Completed'	=>	"Completato",
 	'Deferred'	=>	"Differite",
 	'Canceled'	=>	"Cancellato",
+        'LBL_NO_DATE_VALUE_MSG' => 'o Attività di progetto non hanno inizio e Data / o Fine',
+
+  'Canceled ' => 'Annullata',
+
 );

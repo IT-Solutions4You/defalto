@@ -8,26 +8,26 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'HTTP_ERROR' => 'A weboldal, amit próbál megnyitni nem biztonságos, és lehet, hogy nem megnyitható. Ha továbbra is szeretné megtekinteni ezt a weboldalt, akkor kattintson a tartalom blokkolóra a címsorban, és ekkor engedélyezheti a megnyitást.',
-	'LBL_ADD_BOOKMARK'     => 'Könyvjelző hozzáadása',
-	'LBL_ADD_NEW_BOOKMARK' => 'Új Könyvjelző hozzáadása',
-	'LBL_BOOKMARK'         => 'Könyvjelző',
-	'LBL_BOOKMARK_NAME'    => 'Könyvjelző neve',
-	'LBL_BOOKMARK_SAVED_SUCCESSFULLY' => 'Könyvjelzőt sikeresen mentettük',
-	'LBL_BOOKMARKS'        => 'Könyvjelzők',
-	'LBL_BOOKMARKS_DELETED_SUCCESSFULLY' => 'Könyvjelzőt sikeresen töröltük',
-	'LBL_BOOKMARKS_LIST'   => 'Könyvjelzők listája',
-	'LBL_BOOKMARK_URL'     => 'Könyvjelző Url',
-	'LBL_CREATED_ON'       => 'Létrehozva:',
-	'LBL_EDIT_BOOKMARK'    => 'Könyvjelző szerkesztése',
-	'LBL_ENTER_BOOKMARK_NAME' => 'Adja meg a Könyvjelző nevét',
-	'LBL_ENTER_URL'        => 'Adjon megy egy Url-t (www.minta.hu)',
-	'LBL_OUR_SITES_LIST'   => 'A mi weboldal listánk',
-	'LBL_RECORD_DELETED_SUCCESSFULLY' => 'A rekordot sikeresen töröltük',
-	'Portal'               => 'A mi weboldalunk',
-	'SINGLE_Portal'        => 'A mi weboldalunk',
+    'Portal' => 'A webhelyek',
+    'LBL_ADD_BOOKMARK' => 'Könyvjelző hozzáadása',
+    'LBL_BOOKMARK_NAME' => 'Könyvjelző nevét',
+    'LBL_BOOKMARK_URL' => 'Könyvjelző Url',
+    'LBL_CREATED_ON' => 'Létrehozva',
+    'SINGLE_Portal' => 'Honlapunk',
+    'LBL_EDIT_BOOKMARK' => 'Könyvjelző szerkesztése',
+    'LBL_ENTER_BOOKMARK_NAME' => 'Adja meg a könyvjelző nevét',
+    'LBL_ENTER_URL' => 'Írja be az URL (www.example.com)',
+    'LBL_ADD_NEW_BOOKMARK' => 'Új könyvjelző',
+    'LBL_BOOKMARK_SAVED_SUCCESSFULLY' => 'Könyvjelző sikeresen mentve',
+    'LBL_RECORD_DELETED_SUCCESSFULLY' => 'Record sikeresen törölve',
+    'LBL_OUR_SITES_LIST' => 'A webhelyek listája',
+    'LBL_BOOKMARKS_LIST' => 'Könyvjelzők listája',
+    'LBL_BOOKMARKS_DELETED_SUCCESSFULLY' => 'Könyvjelzők sikeresen törölve',
+    'LBL_BOOKMARK' => 'Könyvjelző',
+    'LBL_BOOKMARKS' => 'Könyvjelzők',
+    'HTTP_ERROR' => 'A honlap, amit próbál megnyitni nem biztonságos, és lehet, hogy nem nyitott. Ha továbbra is szeretné megtekinteni a weboldalon, akkor kattintson a tartalmat blokkoló a címsorba, és lehetővé teszi.',
 );
 
 $jsLanguageStrings = array(
-    
+    'JS_ENTER_MANDATORY_FIELDS' => 'Kérjük, adja meg az összes kötelező mezőt',
 );

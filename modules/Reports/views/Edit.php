@@ -23,23 +23,21 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
-
-		$record = $request->get('record');
-		if ($record) {
-			$reportModel = Reports_Record_Model::getCleanInstance($record);
-			if (!$reportModel->isEditable()) {
-				throw new AppException('LBL_PERMISSION_DENIED');
-			}
+		$recordModel = Reports_Record_Model::getInstanceById($request->get('record'));
+		if(!$recordModel->isEditableBySharing()) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
 	public function preProcess(Vtiger_Request $request) {
-		parent::preProcess($request);
 		$viewer = $this->getViewer($request);
 		$record = $request->get('record');
-        $moduleName = $request->getModule();
+		$moduleName = $request->getModule();
+		$reportModuleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$folders = $reportModuleModel->getFolders();
+
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
 		$primaryModule = $reportModel->getPrimaryModule();
 		$primaryModuleModel = Vtiger_Module_Model::getInstance($primaryModule);
@@ -50,7 +48,7 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 
 			if (!$permission) {
 				$viewer->assign('MODULE', $primaryModule);
-				$viewer->assign('MESSAGE', 'LBL_PERMISSION_DENIED');
+				$viewer->assign('MESSAGE', vtranslate('LBL_PERMISSION_DENIED'));
 				$viewer->view('OperationNotPermitted.tpl', $primaryModule);
 				exit;
 			}
@@ -60,7 +58,9 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		$viewer->assign('VIEW', 'Edit');
 		$viewer->assign('RECORD_MODE', $request->getMode());
 		$viewer->assign('QUALIFIED_MODULE', $moduleName);
-		$viewer->view('EditHeader.tpl', $request->getModule());
+		$viewer->assign('FOLDERS', $folders);
+		$viewer->assign('REPORT_TYPE',$request->get('view'));
+		parent::preProcess($request);
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -86,14 +86,14 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 			$reportModel->set($name, $value);
 		}
 
-        $modulesList = $reportModel->getModulesList();
+		$modulesList = $reportModel->getModulesList();
 
 		if (!empty($record)) {
 			$viewer->assign('MODE', 'edit');
 		} else {
-            $firstModuleName = reset($modulesList);
-            if($firstModuleName)
-                $reportModel->setPrimaryModule($firstModuleName);
+			$firstModuleName = reset($modulesList);
+			if($firstModuleName)
+				$reportModel->setPrimaryModule($firstModuleName);
 			$viewer->assign('MODE', '');
 		}
 
@@ -113,7 +113,7 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
 		$viewer->assign('SCHEDULEDREPORTS', $reportModel->getScheduledReport());
-        $viewer->assign('MODULELIST', $modulesList);
+		$viewer->assign('MODULELIST', $modulesList);
 		$viewer->assign('RELATED_MODULES', $relatedModules);
 		$viewer->assign('REPORT_MODEL', $reportModel);
 		$viewer->assign('REPORT_FOLDERS', $reportFolderModels);
@@ -121,8 +121,13 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('CURRENT_USER', $currentUserModel);
 		$viewer->assign('ROLES', Settings_Roles_Record_Model::getAll());
-        $admin = Users::getActiveAdminUser();
+		$admin = Users::getActiveAdminUser();
 		$viewer->assign('ACTIVE_ADMIN', $admin);
+		$viewer->assign('TYPE', 'Detail');
+		//Sharing access to users and groups
+		$sharedMembers = $reportModel->getMembers();
+		$viewer->assign('SELECTED_MEMBERS_GROUP', $sharedMembers);
+		$viewer->assign('MEMBER_GROUPS',  Settings_Groups_Member_Model::getAll());
 
 		if ($request->get('isDuplicate')) {
 			$viewer->assign('IS_DUPLICATE', true);
@@ -155,47 +160,55 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		$secondaryModules = $request->get('secondary_modules');
 
 		$reportModel->setPrimaryModule($primaryModule);
-		if(!empty($secondaryModules)){
+		if($secondaryModules) {
 			$secondaryModules = implode(':', $secondaryModules);
 			$reportModel->setSecondaryModule($secondaryModules);
 
 			$secondaryModules = explode(':',$secondaryModules);
+		} else {
+			//while editing report, if selected secondary module is disabled, we have to reset secondary modules
+			$reportModel->setSecondaryModule($secondaryModules);
 		}
 
-        //TODO : We need to remove "update_log" field from "HelpDesk" module in New Look
+		//TODO : We need to remove "update_log" field from "HelpDesk" module in New Look
 		// after removing old look we need to remove this field from crm
-        $primaryModuleFields = $reportModel->getPrimaryModuleFields();
-        $secondaryModuleFields = $reportModel->getSecondaryModuleFields();
-        if($primaryModule == 'HelpDesk'){
-            foreach($primaryModuleFields as $module => $blockFields){
-                foreach($blockFields as $key => $value){
-                    if(isset($value)){
-                        foreach($value as $key1 => $value1){
-                            if($key1 == 'vtiger_troubletickets:update_log:HelpDesk_Update_History:update_log:V'){
-                                unset($primaryModuleFields[$module][$key][$key1]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+		$primaryModuleFields = $reportModel->getPrimaryModuleFields();
+		/** With out checking whether secondary is removed from related module field we should not send  
+		 *  secondary module info to next step 
+		 */ 
+		if($secondaryModules){ 
+			$secondaryModuleFields = $reportModel->getSecondaryModuleFields(); 
+		} 
+		if($primaryModule == 'HelpDesk'){
+			foreach($primaryModuleFields as $module => $blockFields){
+				foreach($blockFields as $key => $value){
+					if(isset($value)){
+						foreach($value as $key1 => $value1){
+							if($key1 == 'vtiger_troubletickets:update_log:HelpDesk_Update_History:update_log:V'){
+								unset($primaryModuleFields[$module][$key][$key1]);
+							}
+						}
+					}
+				}
+			}
+		}
 
-        if(!empty($secondaryModuleFields)){
-            foreach($secondaryModuleFields as $module => $blockFields){
-                if($module == 'HelpDesk'){
-                    foreach($blockFields as $key => $value){
-                        if(isset($value)){
-                            foreach($value as $key1 => $value1){
-                                if($key1 == 'vtiger_troubletickets:update_log:HelpDesk_Update_History:update_log:V'){
-                                    unset($secondaryModuleFields[$module][$key][$key1]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // End
+		if(!empty($secondaryModuleFields)){
+			foreach($secondaryModuleFields as $module => $blockFields){
+				if($module == 'HelpDesk'){
+					foreach($blockFields as $key => $value){
+						if(isset($value)){
+							foreach($value as $key1 => $value1){
+								if($key1 == 'vtiger_troubletickets:update_log:HelpDesk_Update_History:update_log:V'){
+									unset($secondaryModuleFields[$module][$key][$key1]);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		// End
 
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('REPORT_MODEL', $reportModel);
@@ -226,7 +239,7 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		}
 		$data = $request->getAll();
 		foreach ($data as $name => $value) {
-			if($name == 'schdayoftheweek' || $name == 'schdayofthemonth' || $name == 'schannualdates' || $name == 'recipients') {
+			if($name == 'schdayoftheweek' || $name == 'schdayofthemonth' || $name == 'schannualdates' || $name == 'recipients' || $name == 'members') {
 				$value = Zend_Json::decode($value);
 				if(!is_array($value)) {	// need to save these as json data
 					$value = array($value);
@@ -243,8 +256,8 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 
 			$secondaryModules = explode(':',$secondaryModules);
 		}else{
-            $secondaryModules = array();
-        }
+			$secondaryModules = array();
+		}
 
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('REPORT_MODEL', $reportModel);
@@ -252,45 +265,49 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($reportModel);
 		$primaryModuleRecordStructure = $recordStructureInstance->getPrimaryModuleRecordStructure();
-		$secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure();
-
-        //TODO : We need to remove "update_log" field from "HelpDesk" module in New Look
+		/** With out checking whether secondary is removed from related module field we should not send  
+		*  secondary module info to next step 
+		*/ 
+		if($secondaryModules){ 
+			$secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure(); 
+		} 
+		//TODO : We need to remove "update_log" field from "HelpDesk" module in New Look
 		// after removing old look we need to remove this field from crm
-        if($primaryModule == 'HelpDesk'){
-            foreach($primaryModuleRecordStructure as $blockLabel => $blockFields){
-                foreach($blockFields as $field => $object){
-                    if($field == 'update_log'){
-                        unset($primaryModuleRecordStructure[$blockLabel][$field]);
-                    }
-                }
-            }
-        }
+		if($primaryModule == 'HelpDesk'){
+			foreach($primaryModuleRecordStructure as $blockLabel => $blockFields){
+				foreach($blockFields as $field => $object){
+					if($field == 'update_log'){
+						unset($primaryModuleRecordStructure[$blockLabel][$field]);
+					}
+				}
+			}
+		}
 
-        if(!empty($secondaryModuleRecordStructures)){
-            foreach($secondaryModuleRecordStructures as $module => $structure){
-                if($module == 'HelpDesk'){
-                    foreach($structure as $blockLabel => $blockFields){
-                        foreach($blockFields as $field => $object){
-                            if($field == 'update_log'){
-                                unset($secondaryModuleRecordStructures[$module][$blockLabel][$field]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        // End
+		if(!empty($secondaryModuleRecordStructures)){
+			foreach($secondaryModuleRecordStructures as $module => $structure){
+				if($module == 'HelpDesk'){
+					foreach($structure as $blockLabel => $blockFields){
+						foreach($blockFields as $field => $object){
+							if($field == 'update_log'){
+								unset($secondaryModuleRecordStructures[$module][$blockLabel][$field]);
+							}
+						}
+					}
+				}
+			}
+		}
+		// End
 
 		$viewer->assign('SECONDARY_MODULES',$secondaryModules);
 		$viewer->assign('PRIMARY_MODULE_RECORD_STRUCTURE', $primaryModuleRecordStructure);
 		$viewer->assign('SECONDARY_MODULE_RECORD_STRUCTURES', $secondaryModuleRecordStructures);
-        $dateFilters = Vtiger_Field_Model::getDateFilterTypes();
-        foreach($dateFilters as $comparatorKey => $comparatorInfo) {
-            $comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
-            $comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
-            $comparatorInfo['label'] = vtranslate($comparatorInfo['label'],$moduleName);
-            $dateFilters[$comparatorKey] = $comparatorInfo;
-        }
+		$dateFilters = Vtiger_Field_Model::getDateFilterTypes();
+		foreach($dateFilters as $comparatorKey => $comparatorInfo) {
+			$comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
+			$comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
+			$comparatorInfo['label'] = vtranslate($comparatorInfo['label'],$moduleName);
+			$dateFilters[$comparatorKey] = $comparatorInfo;
+		}
 		$viewer->assign('DATE_FILTERS', $dateFilters);
 
 		if(($primaryModule == 'Calendar') || (in_array('Calendar', $secondaryModules))){
@@ -310,7 +327,7 @@ Class Reports_Edit_View extends Vtiger_Edit_View {
 		if ($request->get('isDuplicate')) {
 			$viewer->assign('IS_DUPLICATE', true);
 		}
-        $viewer->view('step3.tpl', $moduleName);
+		$viewer->view('step3.tpl', $moduleName);
 	}
 
 	/**

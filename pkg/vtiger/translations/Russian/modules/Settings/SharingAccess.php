@@ -27,6 +27,9 @@ $languageStrings = array(
 	'SINGLE_Groups'                => 'Группа'                , // KEY 5.x: LBL_GROUP
 	'SINGLE_Roles'                 => 'Роли'                    , // KEY 5.x: LBL_LIST_CONTACT_ROLE
 	'SINGLE_RoleAndSubordinates'   => 'RoleAndSubordinate'          , 
+
+  'SharingAccess' => 'Правила Общего Доступа',
+
 );
 $jsLanguageStrings = array(
 	'JS_CUSTOM_RULE_SAVED_SUCCESSFULLY' => 'Пользовательские Обмен Правило успешно сохранены', 

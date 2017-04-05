@@ -13,7 +13,6 @@
  */
 class Calendar_ListView_Model extends Vtiger_ListView_Model {
 
-
 	public function getBasicLinks() {
 		$basicLinks = array();
 		$moduleModel = $this->getModule();
@@ -50,7 +49,7 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			$advancedLinks[] = array(
 							'linktype' => 'LISTVIEW',
 							'linklabel' => 'LBL_IMPORT',
-							'linkurl' => 'javascript:Calendar_List_Js.triggerImportAction("'.$moduleModel->getImportUrl().'")',
+							'linkurl' => $moduleModel->getImportUrl(),
 							'linkicon' => ''
 			);
 		}
@@ -60,7 +59,7 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			$advancedLinks[] = array(
 					'linktype' => 'LISTVIEW',
 					'linklabel' => 'LBL_EXPORT',
-					'linkurl' => 'javascript:Calendar_List_Js.triggerExportAction("'.$this->getModule()->getExportUrl().'")',
+					'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("'.$moduleModel->getExportUrl().'")',
 					'linkicon' => ''
 				);
 		}
@@ -131,14 +130,37 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 		$headerFields = $listViewContoller->getListViewHeaderFields();
 		foreach($headerFields as $fieldName => $webserviceField) {
 			if($webserviceField && !in_array($webserviceField->getPresence(), array(0,2))) continue;
-            $fieldInstance = Vtiger_Field_Model::getInstance($fieldName,$module);
-            if(!$fieldInstance) {
-                if($moduleName == 'Calendar') {
-                    $eventmodule = Vtiger_Module_Model::getInstance('Events');
-                    $fieldInstance = Vtiger_Field_Model::getInstance($fieldName,$eventmodule);
-                }
-            }
-			$headerFieldModels[$fieldName] = $fieldInstance;
+			if($webserviceField && $webserviceField->parentReferenceField && !in_array($webserviceField->parentReferenceField->getPresence(), array(0,2))){
+				continue;
+			}
+            //to eliminate starred field to be shown in the list view 
+            if($webserviceField->getDisplayType() == '6') continue;
+			// check if the field is reference field
+			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
+			if(count($matches) > 0) {
+				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+				$referenceFieldModel = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
+                // added tp use in list view to see the title, for reference field rawdata key is different than the actual field
+                // eg: in rawdata its account_idcf_2342 (raw column name used in querygenerator), actual field name (account_id ;(Accounts) cf_2342)
+                // When generating the title we use rawdata and from field model we have no way to find querygenrator raw column name.
+                $referenceFieldModel->set('listViewRawFieldName', $referenceParentField.$referenceFieldName);
+
+                // this is added for picklist colorizer (picklistColorMap.tpl), for fetching picklist colors we need the actual field name of the picklist
+                $referenceFieldModel->set('_name', $referenceFieldName);
+				$headerFieldModels[$fieldName] = $referenceFieldModel->set('name', $fieldName); // resetting the fieldname as we use it to fetch the value from that name
+				$matches=null;
+			} else {
+				$fieldInstance = Vtiger_Field_Model::getInstance($fieldName,$module);
+				if(!$fieldInstance) {
+					if($moduleName == 'Calendar') {
+						$eventmodule = Vtiger_Module_Model::getInstance('Events');
+						$fieldInstance = Vtiger_Field_Model::getInstance($fieldName,$eventmodule);
+					}
+				}
+                $fieldInstance->set('listViewRawFieldName', $fieldInstance->get('column'));
+				$headerFieldModels[$fieldName] = $fieldInstance;
+			}
 		}
 		return $headerFieldModels;
 	}
@@ -155,6 +177,8 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 		$moduleFocus = CRMEntity::getInstance($moduleName);
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$currentUser = Users_Record_Model::getCurrentUserModel();
+		require('user_privileges/user_privileges_'.$currentUser->id.'.php');
+		require('user_privileges/sharing_privileges_'.$currentUser->id.'.php');
 		
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
@@ -179,41 +203,24 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
         
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
-
-		//List view will be displayed on recently created/modified records
-		if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
-			$orderBy = 'modifiedtime';
-			$sortOrder = 'DESC';
-		}
+        $orderBy = $this->get('orderby');
+		$sortOrder = $this->get('sortorder');
+        if(empty($sortOrder)) {
+            $sortOrder = 'DESC';
+        }
 
         if(!empty($orderBy)){
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-            if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE){
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-                //$queryGenerator->whereFields[] = $orderByFieldName;
+			$queryGenerator = $this->get('query_generator');
+			$fieldModels = $queryGenerator->getModuleFields();
+			$orderByFieldModel = $fieldModels[$orderBy];
+           if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
+					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
+                $queryGenerator->addWhereField($orderBy);
             }
         }
-		if (!empty($orderBy) && $orderBy === 'smownerid') { 
-			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel); 
-			if ($fieldModel->getFieldDataType() == 'owner') { 
-				$orderBy = 'COALESCE(CONCAT(vtiger_users.first_name,vtiger_users.last_name),vtiger_groups.groupname)'; 
-			} 
-		}
-        //To combine date and time fields for sorting
-        if($orderBy == 'date_start') {
-            $orderBy = "str_to_date(concat(date_start,time_start),'%Y-%m-%d %H:%i:%s')";
-        }else if($orderBy == 'due_date') {
-            $orderBy = "str_to_date(concat(due_date,time_end),'%Y-%m-%d %H:%i:%s')";
-        }
-
-		$listQuery = $this->getQuery();
 		
+		$listQuery = $this->getQuery();
+
 		$sourceModule = $this->get('src_module');
 		if(!empty($sourceModule)) {
 			if(method_exists($moduleModel, 'getQueryByModuleField')) {
@@ -224,35 +231,20 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			}
 		}
 
+		// If activity is related to two entity records(Contacts/Accounts/...) then we'll get duplicates
+        $listQuery .= " GROUP BY $moduleFocus->table_name.$moduleFocus->table_index ";
+
+		
+		if($orderBy == 'date_start' || empty($orderBy)) {
+            $listQuery .= " ORDER BY str_to_date(concat(date_start,time_start),'%Y-%m-%d %H:%i:%s') $sortOrder ";
+        } else if($orderBy == 'due_date') {
+            $listQuery .= " ORDER BY str_to_date(concat(due_date,time_end),'%Y-%m-%d %H:%i:%s') $sortOrder ";
+        } else if(!empty($orderBy) && $orderByFieldModel) {
+			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+		}
+
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
-
-
-
-		if(!empty($orderBy)) {
-            if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
-                $referenceModules = $orderByFieldModel->getReferenceList();
-                $referenceNameFieldOrderBy = array();
-                foreach($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
-
-                    $columnList = array();
-                    foreach($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table').$orderByFieldModel->getName().'.'.$fieldModel->get('column');
-                    }
-                    if(count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users').' '.$sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
-                    }
-                }
-                $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
-            }else{
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
-		}
 
 		$viewid = ListViewSession::getCurrentView($moduleName);
         if(empty($viewid)){
@@ -263,9 +255,8 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 
 		$listQueryWithNoLimit = $listQuery;
 		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-
+		
 		$listResult = $db->pquery($listQuery, array());
-
 		$listViewRecordModels = array();
 		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
 
@@ -280,6 +271,7 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 		
 		$groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
 		$index = 0;
+		$recordsToUnset = array();
 		foreach($listViewEntries as $recordId => $record) {
 			$rawData = $db->query_result_rowdata($listResult, $index++);
 			$visibleFields = array('activitytype','date_start','due_date','assigned_user_id','visibility','smownerid');
@@ -290,7 +282,13 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			} else if($ownerId == $currentUser->getId()){
 				$visibility = false;
 			}
-			
+
+			// if the user is having view all permission then it should show the record
+			// as we are showing in detail view
+			if($profileGlobalPermission[1] ==0 || $profileGlobalPermission[2] ==0) {
+				$visibility = false;
+			}
+
 			if(!$currentUser->isAdminUser() && $rawData['activitytype'] != 'Task' && $rawData['visibility'] == 'Private' && $ownerId && $visibility) {
 				foreach($record as $data => $value) {
 					if(in_array($data, $visibleFields) != -1) {
@@ -306,7 +304,15 @@ class Calendar_ListView_Model extends Vtiger_ListView_Model {
 			}
 			
 			$record['id'] = $recordId;
-			$listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
+            $listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
+            if(!$currentUser->isAdminUser() && $rawData['activitytype'] == 'Task' && isToDoPermittedBySharing($recordId) == 'no') {
+				$recordsToUnset[] = $recordId;
+			}
+		}
+		//setting list view count before unsetting permission denied records - to make sure paging should not fail
+		$pagingModel->set('_listcount', count($listViewRecordModels));
+		foreach($recordsToUnset as $record) {
+			unset($listViewRecordModels[$record]);
 		}
 		return $listViewRecordModels;
 	}

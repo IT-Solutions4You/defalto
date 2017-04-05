@@ -9,8 +9,20 @@
  *************************************************************************************/
 
 class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
-	
-	
+
+	private $querySelectColumns = array('templatename, foldername, subject', 'systemtemplate', 'module', 'description');
+	private $listViewColumns = array('templatename', 'subject', 'description', 'module');
+
+	public function addColumnToSelectCaluse($columName) {
+		if (!is_array($columName))
+			$columNameList = array($columName);
+		else
+			$columNameList = $columName;
+
+		$this->querySelectColumns = array_merge($this->querySelectColumns, $columNameList);
+		return $this; 
+	}
+
 	/**
 	 * Function to get the list of Mass actions for the module
 	 * @param <Array> $linkParams
@@ -24,7 +36,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$massActionLinks[] = array(
 			'linktype' => 'LISTVIEWMASSACTION',
 			'linklabel' => 'LBL_DELETE',
-			'linkurl' => 'javascript:Vtiger_List_Js.massDeleteRecords("index.php?module='.$moduleModel->get('name').'&action=MassDelete");',
+			'linkurl' => 'javascript:EmailTemplates_List_Js.massDeleteRecords("index.php?module='.$moduleModel->get('name').'&action=MassDelete");',
 			'linkicon' => ''
 		);
 
@@ -34,7 +46,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 
 		return $links;
 	}
-	
+
 	/**
 	 * Static Function to get the Instance of Vtiger ListView model for a given module and custom view
 	 * @param <String> $moduleName - Module Name
@@ -45,18 +57,18 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$db = PearDatabase::getInstance();
 		$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'ListView', $moduleName);
 		$instance = new $modelClassName();
-		
+
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		return $instance->set('module', $moduleModel);
 	}
-	
+
 	/**
 	 * Function to get the list view header
 	 * @return <Array> - List of Vtiger_Field_Model instances
 	 */
 	public function getListViewHeaders() {
 		$fieldObjects = array();
-		$listViewHeaders = array('Template Name' => 'templatename', 'Subject' => 'subject');
+		$listViewHeaders = array('Template Name' => 'templatename', 'Subject' => 'subject', 'Description' => 'description', 'Module Name' => 'module');
 		foreach ($listViewHeaders as $key => $fieldName) {
 			$fieldModel = new EmailTemplates_Field_Model();
 			$fieldModel->set('name', $fieldName);
@@ -66,13 +78,13 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		}
 		return $fieldObjects;
 	}
-	
+
 	/**
 	 * Function to get the list view entries
 	 * @param Vtiger_Paging_Model $pagingModel
 	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
 	 */
-	
+
 	public function getListViewEntries($pagingModel) {
 		$db = PearDatabase::getInstance();
 		$startIndex = $pagingModel->getStartIndex();
@@ -81,34 +93,50 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$sortOrder = $this->getForSql('sortorder');
 
 		$listQuery = $this->getQuery();
+		$sourceModule = $this->get('sourceModule');
 		$searchKey = $this->get('search_key');
 		$searchValue = $this->get('search_value');
-		
+
+		$whereQuery .= ' WHERE ';
 		if(!empty($searchKey) && !empty($searchValue)) {
-			$listQuery .= " WHERE $searchKey LIKE '$searchValue%'";
+			$whereQuery .= "$searchKey LIKE '$searchValue%' AND ";
 		}
-		if (!empty($orderBy) && $orderBy === 'smownerid') { 
-			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel); 
-			if ($fieldModel->getFieldDataType() == 'owner') { 
-				$orderBy = 'COALESCE(CONCAT(vtiger_users.first_name,vtiger_users.last_name),vtiger_groups.groupname)'; 
-			} 
-		}	
+
+		//module should be enabled or module should be empty then allow
+		$moduleActiveCheck = '(vtiger_tab.presence IN (0,2) OR vtiger_emailtemplates.module IS null OR vtiger_emailtemplates.module = "")';
+		$listQuery .= $whereQuery. $moduleActiveCheck;
+		//To retrieve only selected module records
+		if ($sourceModule) {
+			$listQuery .= " AND vtiger_emailtemplates.module = '".$sourceModule."'";
+		}
+
 		if ($orderBy) {
 			$listQuery .= " ORDER BY $orderBy $sortOrder";
+		} else {
+			$listQuery .= " ORDER BY templateid DESC";
 		}
 		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-
 		$result = $db->pquery($listQuery, array());
 		$num_rows = $db->num_rows($result);
-		
+
 		$listViewRecordModels = array();
 		for ($i = 0; $i < $num_rows; $i++) {
 			$recordModel = new EmailTemplates_Record_Model();
 			$recordModel->setModule('EmailTemplates');
 			$row = $db->query_result_rowdata($result, $i);
+			$recordModel->setRawData($row);
+			foreach ($row as $key => $value) {
+				if($key=="module"){
+					$value = vtranslate($value,$value);
+				}
+				if(in_array($key,$this->listViewColumns)){
+					$value = textlength_check($value);
+				}
+				$row[$key] = $value;
+			}
 			$listViewRecordModels[$row['templateid']] = $recordModel->setData($row);
 		}
-		
+
 		$pagingModel->calculatePageRange($listViewRecordModels);
 
 		if($num_rows > $pageLimit){
@@ -117,10 +145,10 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		}else{
 			$pagingModel->set('nextPageExists', false);
 		}
-		
-        return $listViewRecordModels;
+
+		return $listViewRecordModels;
 	}
-	
+
 	/**
 	 * Function to get the list of listview links for the module
 	 * @param <Array> $linkParams
@@ -146,12 +174,14 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 
 		return $links;
 	}
-	
+
 	function getQuery() {
-		$listQuery = 'SELECT templateid, templatename, foldername, subject FROM vtiger_emailtemplates';
+		$listQuery = 'SELECT templateid,'.implode(',',$this->querySelectColumns).' FROM vtiger_emailtemplates
+						LEFT JOIN vtiger_tab ON vtiger_tab.name = vtiger_emailtemplates.module
+						AND (vtiger_tab.isentitytype=1 or vtiger_tab.name = "Users") ';
 		return $listQuery;
 	}
-	
+
 	/**
 	 * Function to get the list view entries
 	 * @param Vtiger_Paging_Model $pagingModel
@@ -161,7 +191,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$db = PearDatabase::getInstance();
 
 		$listQuery = $this->getQuery();
-		
+
 		$position = stripos($listQuery, 'from');
 		if ($position) {
 			$split = spliti('from', $listQuery);
@@ -173,13 +203,23 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		}
 		$searchKey = $this->get('search_key');
 		$searchValue = $this->get('search_value');
-		
+
+		$whereQuery .= " WHERE ";
 		if(!empty($searchKey) && !empty($searchValue)) {
-			$listQuery .= " WHERE $searchKey LIKE '$searchValue%'";
+			$whereQuery .= "$searchKey LIKE '$searchValue%' AND ";
+		}
+
+		//module should be enabled or module should be empty then allow
+		$moduleActiveCheck = '(vtiger_tab.presence IN (0,2) OR vtiger_emailtemplates.module IS null OR vtiger_emailtemplates.module = "")';
+		$listQuery .= $whereQuery. $moduleActiveCheck;
+
+		$sourceModule = $this->get('sourceModule');
+		if ($sourceModule) {
+			$listQuery .= ' AND vtiger_emailtemplates.module= "' . $sourceModule . '" ';
 		}
 
 		$listResult = $db->pquery($listQuery, array());
 		return $db->query_result($listResult, 0, 'count');
 	}
-	
+
 } 

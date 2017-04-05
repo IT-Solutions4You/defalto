@@ -75,16 +75,24 @@ class Leads_Record_Model extends Vtiger_Record_Model {
                         unset($complusoryFields[$keyIndex]);
                     }
 					$leadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
-					$fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    if($this->get($leadMappedField)) {
+                        $fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    } else {
+                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
+                    } 
 					$accountsFields[] = $fieldModel;
 				}
 			}
             foreach($complusoryFields as $complusoryField) {
                 $fieldModel = Vtiger_Field_Model::getInstance($complusoryField, $moduleModel);
-				if($fieldModel->getPermissions('readwrite')) {
+				if($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
                     $industryFieldModel = $moduleModel->getField($complusoryField);
                     $industryLeadMappedField = $this->getConvertLeadMappedField($complusoryField, $moduleName);
-                    $industryFieldModel->set('fieldvalue', $this->get($industryLeadMappedField));
+                    if($this->get($industryLeadMappedField)) {
+                        $industryFieldModel->set('fieldvalue', $this->get($industryLeadMappedField));
+                    } else {
+                        $industryFieldModel->set('fieldvalue', $industryFieldModel->getDefaultFieldValue());
+                    }
                     $accountsFields[] = $industryFieldModel;
                 }
             }
@@ -121,17 +129,25 @@ class Leads_Record_Model extends Vtiger_Record_Model {
                     if ($fieldName === 'account_id') {
                         $fieldValue = $this->get('company');
                     }
-                    $fieldModel->set('fieldvalue', $fieldValue);
+                    if($fieldValue) {
+                        $fieldModel->set('fieldvalue', $fieldValue);
+                    } else {
+                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
+                    }
                     $contactsFields[] = $fieldModel;
                 }
             }
 
 			foreach($complusoryFields as $complusoryField) {
                 $fieldModel = Vtiger_Field_Model::getInstance($complusoryField, $moduleModel);
-				if($fieldModel->getPermissions('readwrite')) {
+				if($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
 					$leadMappedField = $this->getConvertLeadMappedField($complusoryField, $moduleName);
 					$fieldModel = $moduleModel->getField($complusoryField);
-					$fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    if($this->get($leadMappedField)) {
+                        $fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    } else {
+                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
+                    }
 					$contactsFields[] = $fieldModel;
 				}
 			}
@@ -165,16 +181,24 @@ class Leads_Record_Model extends Vtiger_Record_Model {
                         unset($complusoryFields[$keyIndex]);
                     }
 					$leadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
-					$fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    if($this->get($leadMappedField)) { 
+                        $fieldModel->set('fieldvalue', $this->get($leadMappedField));
+                    } else {
+                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
+                    }
 					$potentialFields[] = $fieldModel;
 				}
 			}
             foreach($complusoryFields as $complusoryField) {
                 $fieldModel = Vtiger_Field_Model::getInstance($complusoryField, $moduleModel);
-                if($fieldModel->getPermissions('readwrite')) {
+                if($fieldModel->getPermissions('readwrite') && $fieldModel->isEditable()) {
                     $fieldModel = $moduleModel->getField($complusoryField);
                     $amountLeadMappedField = $this->getConvertLeadMappedField($complusoryField, $moduleName);
-                    $fieldModel->set('fieldvalue', $this->get($amountLeadMappedField));
+                    if($this->get($amountLeadMappedField)) {
+                        $fieldModel->set('fieldvalue', $this->get($amountLeadMappedField));
+                    } else {
+                        $fieldModel->set('fieldvalue', $fieldModel->getDefaultFieldValue());
+                    }
                     $potentialFields[] = $fieldModel;
                 }
             }

@@ -17,8 +17,12 @@ $languageStrings = array(
 	'LBL_ADD_USERS_ROLES'          => 'Добавить пользователей, ролей ...'         , 
 	'LBL_ROLEANDSUBORDINATE'       => 'Роль и Подчиненные'       , 
 	'RoleAndSubordinates'          => 'Роль и Подчиненные'       , 
+
+  'LBL_DUPLICATES_EXIST' => 'Группа с таким именем уже существует',
+
 );
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Пожалуйста, выберите по крайней мере одного члена для группы', 
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Группа успешно удален'  , 
+	'JS_COMMA_NOT_ALLOWED_GROUP' => 'Специальные символы такие как ,"<> не допускаются в имени группы.',
 );

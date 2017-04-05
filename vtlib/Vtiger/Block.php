@@ -168,28 +168,22 @@ class Vtiger_Block {
 	 */
 	static function getInstance($value, $moduleInstance=false) {
 		global $adb;
-		$cache = Vtiger_Cache::getInstance();
-		if($moduleInstance && $cache->getBlockInstance($value, $moduleInstance->id)){
-			return $cache->getBlockInstance($value, $moduleInstance->id);
+		$instance = false;
+
+		if(Vtiger_Utils::isNumber($value)) {
+			$query = "SELECT * FROM vtiger_blocks WHERE blockid=?";
+			$queryParams = Array($value);
 		} else {
-			$instance = false;
-			$query = false;
-			$queryParams = false;
-			if(Vtiger_Utils::isNumber($value)) {
-				$query = "SELECT * FROM vtiger_blocks WHERE blockid=?";
-				$queryParams = Array($value);
-			} else {
-				$query = "SELECT * FROM vtiger_blocks WHERE blocklabel=? AND tabid=?";
-				$queryParams = Array($value, $moduleInstance->id);
-			}
-			$result = $adb->pquery($query, $queryParams);
-			if($adb->num_rows($result)) {
-				$instance = new self();
-				$instance->initialize($adb->fetch_array($result), $moduleInstance);
-			}
-			$cache->setBlockInstance($value,$instance->module->id, $instance);
-			return $instance;
+			$query = "SELECT * FROM vtiger_blocks WHERE blocklabel=? AND tabid=?";
+			$queryParams = Array($value, $moduleInstance->id);
 		}
+
+		$result = $adb->pquery($query, $queryParams);
+		if($adb->num_rows($result)) {
+			$instance = new self();
+			$instance->initialize($adb->fetch_array($result), $moduleInstance);
+		}
+		return $instance;
 	}
 
 	/**

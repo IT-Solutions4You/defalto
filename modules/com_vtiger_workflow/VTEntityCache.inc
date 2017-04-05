@@ -12,20 +12,40 @@ require_once 'includes/runtime/Cache.php';
 
 class VTWorkflowEntity{
 	function __construct($user, $id){
-        try {
-                $this->moduleName = null;
-                $this->id = $id;
-                $this->user = $user;
-                $data = vtws_retrieve($id, $user);
-                foreach($data as $key => $value){
-                    if(is_string($value)){
-                        $data[$key] = html_entity_decode($value, ENT_QUOTES, 'utf-8');
-                    }
-                }
-                $this->data = $data;
-                VTEntityCache::setCachedEntity($id, $this);
-        }catch(Exception $ex) {
-        }
+		try {
+				$this->moduleName = null;
+				$this->id = $id;
+				$this->user = $user;
+				$data = vtws_retrieve($id, $user);
+				$idComponents = vtws_getIdComponents($id);
+				//To support workflow filter condition on filename for documents workflow
+				global $adb;
+				$webserviceObject = VtigerWebserviceObject::fromName($adb,'Documents');
+				$documentsWsId = $webserviceObject->getEntityId();
+				if($idComponents[0] == $documentsWsId) {
+					/*
+					 getFieldColumnMapping() API in VtigerCRMObjectMeta skips filename in fieldcolumnmap
+					 due to which filter condition on filename fails. For this reason adding filename into entitycache
+					 explicitly
+					 */
+					$recordId = $idComponents[1];
+					$query = 'SELECT filename FROM vtiger_notes WHERE notesid = ?';
+					$db = PearDatabase::getInstance();
+					$result = $db->pquery($query,array($recordId));
+					if($db->num_rows($result) > 0){
+						$filename = $db->query_result($result,0,'filename');
+						$data['filename'] = $filename;
+					}
+				}
+				foreach($data as $key => $value){
+					if(is_string($value)){
+						$data[$key] = html_entity_decode($value, ENT_QUOTES, 'utf-8');
+					}
+				}
+				$this->data = $data;
+				VTEntityCache::setCachedEntity($id, $this);
+		}catch(Exception $ex) {
+		}
 	}
 	/**
 	 * Get the data from the entity object as an array.
@@ -104,26 +124,30 @@ class VTEntityCache{
 		$this->cache = array();
 	}
 
-    static $_vtWorflow_entity_cache = array();
+	static $_vtWorflow_entity_cache = array();
 	function forId($id){
 		if($this->cache[$id]==null){
-            $entity = VTEntityCache::getCachedEntity($id);
-            if(!$entity) {
-                $data  = new VTWorkflowEntity($this->user, $id);
-                $this->cache[$id] = $data;
-            } else {
-                return $entity;
-            }
+			$entity = VTEntityCache::getCachedEntity($id);
+			if(!$entity) {
+				$data  = new VTWorkflowEntity($this->user, $id);
+				$this->cache[$id] = $data;
+			} else {
+				return $entity;
+			}
 		}
 		return $this->cache[$id];
 	}
-    
-    public static function getCachedEntity($id) {
-        return self::$_vtWorflow_entity_cache[$id];
-    }
-    
-    public static function setCachedEntity($id, $entity) {
-        self::$_vtWorflow_entity_cache[$id] = $entity;
-    }
+
+	public static function getCachedEntity($id) {
+		return self::$_vtWorflow_entity_cache[$id];
+	}
+
+	public static function setCachedEntity($id, $entity) {
+		self::$_vtWorflow_entity_cache[$id] = $entity;
+	}
+
+	public static function unsetCachedEntity($id) {
+		unset(self::$_vtWorflow_entity_cache[$id]);
+	}
 }
 ?>

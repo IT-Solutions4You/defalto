@@ -37,12 +37,21 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
                 $customViewModel->set('search_value', $searchValue);
             }
 
-            $customViewModel->set('search_params',$request->get('search_params'));
+            /**
+			 *  Mass action on Documents if we select particular folder is applying on all records irrespective of
+			 *  seleted folder
+			 */
+			if ($module == 'Documents') {
+				$customViewModel->set('folder_id', $request->get('folder_id'));
+				$customViewModel->set('folder_value', $request->get('folder_value'));
+			}
+
+			$customViewModel->set('search_params',$request->get('search_params'));
 			return $customViewModel->getRecordIds($excludedIds,$module);
 		}
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

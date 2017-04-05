@@ -80,17 +80,12 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getPopupViewFieldsList() { 
 		$popupFileds = $this->getSummaryViewFieldsList();
-		foreach ($popupFileds as $fieldName => $fieldModel) { 
-			if ($fieldName === 'folderid' || $fieldName === 'modifiedtime') { 
-						unset($popupFileds[$fieldName]); 
-			}	
-		}
 		$reqPopUpFields = array('File Status' => 'filestatus', 
 								'File Size' => 'filesize', 
 								'File Location Type' => 'filelocationtype'); 
 		foreach ($reqPopUpFields as $fieldLabel => $fieldName) {
 			$fieldModel = Vtiger_Field_Model::getInstance($fieldName,$this); 
-			if ($fieldModel->getPermissions('readwrite')) { 
+			if ($fieldModel->getPermissions('readonly')) { 
 				$popupFileds[$fieldName] = $fieldModel; 
 			}
 		}
@@ -126,46 +121,75 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 		return $relatedListFields;
 	}
     
-    public function getSettingLinks() {
-        vimport('~~modules/com_vtiger_workflow/VTWorkflowUtils.php');
-        
-        
-		$layoutEditorImagePath = Vtiger_Theme::getImagePath('LayoutEditor.gif');
-                $editWorkflowsImagePath = Vtiger_Theme::getImagePath('EditWorkflows.png'); 
-		$settingsLinks = array();
-
-                if(VTWorkflowUtils::checkModuleWorkflow($this->getName())) { 
-                    $settingsLinks[] = array( 
-                                        'linktype' => 'LISTVIEWSETTING', 
-                                        'linklabel' => 'LBL_EDIT_WORKFLOWS', 
-                                        'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule='.$this->getName(), 
-                                        'linkicon' => $editWorkflowsImagePath 
-                    ); 
-                } 
-		$settingsLinks[] = array(
-					'linktype' => 'LISTVIEWSETTING',
-					'linklabel' => 'LBL_EDIT_FIELDS',
-						'linkurl' => 'index.php?parent=Settings&module=LayoutEditor&sourceModule='.$this->getName(),
-					'linkicon' => $layoutEditorImagePath
-		);
-		
-		$settingsLinks[] = array(
-					'linktype' => 'LISTVIEWSETTING',
-					'linklabel' => 'LBL_EDIT_PICKLIST_VALUES',
-				'linkurl' => 'index.php?parent=Settings&module=Picklist&source_module='.$this->getName(),
-				'linkicon' => ''
-		);
-        
-        if($this->hasSequenceNumberField()) {
-		$settingsLinks[] = array(
-				'linktype' => 'LISTVIEWSETTING',
-				'linklabel' => 'LBL_MODULE_SEQUENCE_NUMBERING',
-				'linkurl' => 'index.php?parent=Settings&module=Vtiger&view=CustomRecordNumbering&sourceModule='.$this->getName(),
+    /**
+	* Function is used to give links in the All menu bar
+	*/
+	public function getQuickMenuModels() {
+		if($this->isEntityModule()) {
+			$moduleName = $this->getName();
+            
+			$createPermission = Users_Privileges_Model::isPermitted($moduleName, 'CreateView');
+            if($createPermission) {
+                $basicListViewLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_INTERNAL_DOCUMENT_TYPE',
+					'linkurl' => 'javascript:Vtiger_Header_Js.getQuickCreateFormForModule("index.php?module=Documents&view=EditAjax&type=I","Documents")',
 					'linkicon' => ''
-			);
+				);
+                $basicListViewLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_EXTERNAL_DOCUMENT_TYPE',
+					'linkurl' => 'javascript:Vtiger_Header_Js.getQuickCreateFormForModule("index.php?module=Documents&view=EditAjax&type=E")',
+					'linkicon' => ''
+				);
+                $basicListViewLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_WEBDOCUMENT_TYPE',
+					'linkurl' => 'javascript:Vtiger_Header_Js.getQuickCreateFormForModule("index.php?module=Documents&view=EditAjax&type=W")',
+					'linkicon' => ''
+				);
+            }
+           
+		}
+		if($basicListViewLinks) {
+			foreach($basicListViewLinks as $basicListViewLink) {
+				if(is_array($basicListViewLink)) {
+					$links[] = Vtiger_Link_Model::getInstanceFromValues($basicListViewLink);
+				} else if(is_a($basicListViewLink, 'Vtiger_Link_Model')) {
+					$links[] = $basicListViewLink;
+				}
+			}
+		}
+		return $links;
+	}
+    
+    /*
+     * Function to get supported utility actions for a module
+     */
+    function getUtilityActionsNames() {
+        return array('Export');
+    }
+
+	public function getConfigureRelatedListFields() {
+		$showRelatedFieldModel = $this->getHeaderAndSummaryViewFieldsList();
+		$relatedListFields = array();
+        $defaultFields = array();
+		if(count($showRelatedFieldModel) > 0) {
+			foreach ($showRelatedFieldModel as $key => $field) {
+				$relatedListFields[$field->get('column')] = $field->get('name');
+			}
+            $defaultFields = array(
+                'title' => 'notes_title',
+                'filename' => 'filename'
+            );
 		}
 
-		return $settingsLinks;
-    }
+		foreach($defaultFields as $columnName => $fieldName) {
+			if(!array_key_exists($columnName, $relatedListFields)) {
+				$relatedListFields[$columnName] = $fieldName;
+			}
+		}
+		return $relatedListFields;
+	}
 }
 ?>

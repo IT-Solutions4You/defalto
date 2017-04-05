@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
-	
+
 	/**
 	 * Function to get the record model based on the request parameters
 	 * @param Vtiger_Request $request
@@ -17,7 +17,7 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 	public function getRecordModelFromRequest(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
-		
+
 		if($request->get('field') == 'enable_recurring'){
 			$enableRecurrence = true;
 		}
@@ -28,19 +28,21 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 
 			$fieldModelList = $recordModel->getModule()->getFields();
 			foreach ($fieldModelList as $fieldName => $fieldModel) {
-                //For not converting createdtime and modified time to user format
-                $uiType = $fieldModel->get('uitype');
-                if ($uiType == 70) {
-                    $fieldValue = $recordModel->get($fieldName);
-                } else {
+				//For not converting createdtime and modified time to user format
+				$uiType = $fieldModel->get('uitype');
+				if ($uiType == 70) {
+					$fieldValue = $recordModel->get($fieldName);
+				} else {
 					$fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
-                }
-				
+				}
 
-				if ($fieldName === $request->get('field')) {
+
+				if ($request->has($fieldName)) {
+					$fieldValue = $request->get($fieldName, null);
+				} else if ($fieldName === $request->get('field')) {
 					$fieldValue = $request->get('value');
 				}
-				
+
 				/**
 				 * If field is enable recurrence then we need to pass related fields of
 				 * recurrence to save,because untill enable recurrence is checked,the 
@@ -52,9 +54,9 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 						$fieldValue = $request->get($fieldName);
 					}
 				}
-				
-                $fieldDataType = $fieldModel->getFieldDataType();
-                if ($fieldDataType == 'time') {
+
+				$fieldDataType = $fieldModel->getFieldDataType();
+				if ($fieldDataType == 'time') {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
 				if ($fieldValue !== null) {

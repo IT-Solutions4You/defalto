@@ -35,6 +35,9 @@ $languageStrings = array(
 	'SINGLE_Groups' => 'Grupo',
 	'SINGLE_Roles' => 'Rol',
 	'SINGLE_RoleAndSubordinates' => 'Rol y Subordinado',
+
+  'SharingAccess' => 'Normas Para El Intercambio De',
+
 );
 
 $jsLanguageStrings = array(

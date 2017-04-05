@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -22,6 +22,12 @@ $languageStrings = array(
 	'LBL_SELECT_SOURCE_VALUES' => 'Välj källvärden',
 	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Välj källa för Plocklistvärden',
 	'LBL_ERR_CYCLIC_DEPENDENCY' => 'Detta relationsinställning är inte tillåten eftersom den hamnar i vissa cykliska relationer',
+	'LBL_SELECT_ALL_VALUES' => 'Markera alla',
+	'LBL_UNSELECT_ALL_VALUES' => 'Avmarkera alla',
+    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Detta kan hamna i cyklisk redundans som %s område är redan konfigurerad för %s område',
+
+  'PickListDependency' => 'Beroende Kombinationsruta',
+
 );
 
 $jsLanguageStrings = array(

@@ -9,6 +9,7 @@
  ************************************************************************************/
 
 class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
+
 	function checkPermission(Vtiger_Request $request) {
 		$module = $request->getModule();
 		$records = $request->get('records');
@@ -33,6 +34,9 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
 		foreach($fields as $field) {
 			$fieldValue = $request->get($field->getName());
 			if($field->isEditable()) {
+				if($field->uitype==71){
+					$fieldValue = CurrencyField::convertToUserFormat($fieldValue);
+				}
 				$primaryRecordModel->set($field->getName(), $fieldValue);
 			}
 		}
@@ -53,8 +57,8 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
 		$response->setResult(true);
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

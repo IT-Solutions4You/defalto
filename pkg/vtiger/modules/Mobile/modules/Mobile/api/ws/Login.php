@@ -48,10 +48,10 @@ class Mobile_WS_Login extends Mobile_WS_Controller {
 				'userid' => $current_user->id,
 				'crm_tz' => DateTimeField::getDBTimeZone(),
 				'user_tz' => $current_user->time_zone,
-                                'user_currency' => $current_user->currency_code,
+				'user_currency' => $current_user->currency_code,
 				'session'=> $sessionid,
 				'vtiger_version' => Mobile_WS_Utils::getVtigerVersion(),
-                                'date_format' => $current_user->date_format, 
+                'date_format' => $current_user->date_format,
 				'mobile_module_version' => Mobile_WS_Utils::getVersion()
 			);
 			$response->setResult($result);

@@ -77,7 +77,7 @@ class PurchaseOrder extends CRMEntity {
 				      );
 	// Used when enabling/disabling the mandatory fields for the module.
 	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('subject', 'vendor_id','createdtime' ,'modifiedtime', 'assigned_user_id');
+	var $mandatory_fields = Array('subject', 'vendor_id','createdtime' ,'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid');
 
 	// This is the list of vtiger_fields that are required.
 	var $required_fields =  array("accountname"=>1);
@@ -107,81 +107,181 @@ class PurchaseOrder extends CRMEntity {
 	{
 		global $adb, $updateInventoryProductRel_deduct_stock;
 		$updateInventoryProductRel_deduct_stock = false;
+
+		$requestProductIdsList = $requestQuantitiesList = array();
+		$totalNoOfProducts = $_REQUEST['totalProductCount'];
+		for($i=1; $i<=$totalNoOfProducts; $i++) {
+			$productId = $_REQUEST['hdnProductId'.$i];
+			$requestProductIdsList[$productId] = $productId;
+			//Checking same item more than once
+			if(array_key_exists($productId, $requestQuantitiesList)) {
+				$requestQuantitiesList[$productId] = $requestQuantitiesList[$productId] + $_REQUEST['qty'.$i];
+				continue;
+			}
+			$requestQuantitiesList[$productId] = $_REQUEST['qty'.$i];
+		}
+
+		global $itemQuantitiesList, $isItemsRequest;
+		$itemQuantitiesList = array();
+		$statusValue = $this->column_fields['postatus'];
+
+		if ($totalNoOfProducts) {
+			$isItemsRequest = true;
+		}
+
+		if ($this->mode == '' && $statusValue === 'Received Shipment') {
+			$itemQuantitiesList['new'] = $requestQuantitiesList;
+
+		} else if ($this->mode != '' && in_array($statusValue, array('Received Shipment', 'Cancelled'))) {
+
+			$productIdsList = $quantitiesList = array();
+			$recordId = $this->id;
+			$result = $adb->pquery("SELECT productid, quantity FROM vtiger_inventoryproductrel WHERE id = ?", array($recordId));
+			$numOfRows = $adb->num_rows($result);
+			for ($i=0; $i<$numOfRows; $i++) {
+				$productId = $adb->query_result($result, $i, 'productid');
+				$productIdsList[$productId] = $productId;
+				if(array_key_exists($productId, $quantitiesList)) {
+					$quantitiesList[$productId] = $quantitiesList[$productId] + $adb->query_result($result, $i, 'quantity');
+					continue;
+				}
+				$qty = $adb->query_result($result, $i, 'quantity');
+				$quantitiesList[$productId] = $qty;
+				$subProductQtys = $this->getSubProductsQty($productId);
+				if ($statusValue === 'Cancelled' && !empty($subProductQtys)) {
+					foreach ($subProductQtys as $subProdId => $subProdQty) {
+						$subProdQty = $subProdQty * $qty;
+						if (array_key_exists($subProdId, $quantitiesList)) {
+							$quantitiesList[$subProdId] = $quantitiesList[$subProdId] + $subProdQty;
+							continue;
+						}
+						$quantitiesList[$subProdId] = $subProdQty;
+					}
+				}
+			}
+				
+			if ($statusValue === 'Cancelled') {
+				$itemQuantitiesList = $quantitiesList;
+			} else {
+
+				//Constructing quantities array for newly added line items
+				$newProductIds = array_diff($requestProductIdsList, $productIdsList);
+				if ($newProductIds) {
+					$newQuantitiesList = array();
+					foreach ($newProductIds as $productId) {
+						$newQuantitiesList[$productId] = $requestQuantitiesList[$productId];
+					}
+					if ($newQuantitiesList) {
+						$itemQuantitiesList['new'] = $newQuantitiesList;
+					}
+				}
+
+				//Constructing quantities array for deleted line items
+				$deletedProductIds = array_diff($productIdsList, $requestProductIdsList);
+				if ($deletedProductIds && $totalNoOfProducts) {//$totalNoOfProducts is exist means its not ajax save
+					$deletedQuantitiesList = array();
+					foreach ($deletedProductIds as $productId) {
+						//Checking same item more than once
+						if(array_key_exists($productId, $deletedQuantitiesList)) {
+							$deletedQuantitiesList[$productId] = $deletedQuantitiesList[$productId] + $quantitiesList[$productId];
+							continue;
+						}
+						$deletedQuantitiesList[$productId] = $quantitiesList[$productId];
+					}
+
+					if ($deletedQuantitiesList) {
+						$itemQuantitiesList['deleted'] = $deletedQuantitiesList;
+					}
+				}
+
+				//Constructing quantities array for updated line items
+				$updatedProductIds = array_intersect($productIdsList, $requestProductIdsList);
+				if (!$totalNoOfProducts) {//$totalNoOfProducts is null then its ajax save
+					$updatedProductIds = $productIdsList;
+				}
+				if ($updatedProductIds) {
+					$updatedQuantitiesList = array();
+					foreach ($updatedProductIds as $productId) {
+						//Checking same item more than once
+						if(array_key_exists($productId, $updatedQuantitiesList)) {
+							$updatedQuantitiesList[$productId] = $updatedQuantitiesList[$productId] + $quantitiesList[$productId];
+							continue;
+						}
+						
+						$quantity = $quantitiesList[$productId];
+						if ($totalNoOfProducts) {
+							$quantity = $requestQuantitiesList[$productId] - $quantitiesList[$productId];
+						}
+
+						if ($quantity) {
+							$updatedQuantitiesList[$productId] = $quantity;
+						}
+						//Check for subproducts
+						$subProductQtys = $this->getSubProductsQty($productId);
+						if (!empty($subProductQtys) && $quantity) {
+							foreach ($subProductQtys as $subProdId => $subProductQty) {
+								$subProductQty = $subProductQty * $quantity;
+								if (array_key_exists($subProdId, $updatedQuantitiesList)) {
+									$updatedQuantitiesList[$subProdId] = $updatedQuantitiesList[$subProdId] + ($subProductQty);
+									continue;
+								}
+								$updatedQuantitiesList[$subProdId] = $subProductQty;
+							}
+						}
+					}
+					if ($updatedQuantitiesList) {
+						$itemQuantitiesList['updated'] = $updatedQuantitiesList;
+					}
+				}
+			}
+		}
+
+		/* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
+		 * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
+		 * This should be done by webservices, not be normal save of Inventory record.
+		 * So unsetting the value $_REQUEST['totalProductCount'] through check point
+		 */
+		if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
+			unset($_REQUEST['totalProductCount']);
+		}
+
 		//in ajax save we should not call this function, because this will delete all the existing product values
 		if($_REQUEST['action'] != 'PurchaseOrderAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
 				&& $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
 				&& $_REQUEST['action'] != 'SaveAjax' && $this->isLineItemUpdate != false && $_REQUEST['action'] != 'FROM_WS') {
 
-			$requestProductIdsList = $requestQuantitiesList = array();
-			$totalNoOfProducts = $_REQUEST['totalProductCount'];
-			for($i=1; $i<=$totalNoOfProducts; $i++) {
-				$productId = $_REQUEST['hdnProductId'.$i];
-				$requestProductIdsList[$productId] = $productId;
-                if(array_key_exists($productId, $requestQuantitiesList)){
-                    $requestQuantitiesList[$productId] = $requestQuantitiesList[$productId] + $_REQUEST['qty'.$i];
-                    continue;
-                }
-				$requestQuantitiesList[$productId] =  $_REQUEST['qty'.$i];
-			}
-
-			if($this->mode == '' && $this->column_fields['postatus'] === 'Received Shipment') {																			//Updating Product stock quantity during create mode
-				foreach ($requestProductIdsList as $productId) {
-					addToProductStock($productId, $requestQuantitiesList[$productId]);
-				}
-			} else if ($this->column_fields['postatus'] === 'Received Shipment' && $this->mode != '') {		//Updating Product stock quantity during edit mode
-				$recordId = $this->id;
-				$result = $adb->pquery("SELECT productid, quantity FROM vtiger_inventoryproductrel WHERE id = ?", array($recordId));
-				$numOfRows = $adb->num_rows($result);
-				for ($i=0; $i<$numOfRows; $i++) {
-					$productId = $adb->query_result($result, $i, 'productid');
-					$productIdsList[$productId] = $productId;
-					$quantitiesList[$productId] = $adb->query_result($result, $i, 'quantity');
-				}
-
-				$newProductIds = array_diff($requestProductIdsList, $productIdsList);
-				if ($newProductIds) {
-					foreach ($newProductIds as $productId) {
-						addToProductStock($productId, $requestQuantitiesList[$productId]);
-					}
-				}
-
-				$deletedProductIds = array_diff($productIdsList, $requestProductIdsList);
-				if ($deletedProductIds) {
-					foreach ($deletedProductIds as $productId) {
-						$productStock= getPrdQtyInStck($productId);
-						$quantity = $productStock - $quantitiesList[$productId];
-						updateProductQty($productId, $quantity);
-					}
-				}
-
-				$updatedProductIds = array_intersect($productIdsList, $requestProductIdsList);
-				if ($updatedProductIds) {
-					foreach ($updatedProductIds as $productId) {
-						$quantityDiff = $quantitiesList[$productId] - $requestQuantitiesList[$productId];
-						if ($quantityDiff < 0) {
-							$quantityDiff = -($quantityDiff);
-							addToProductStock($productId, $quantityDiff);
-						} elseif ($quantityDiff > 0) {
-							$productStock= getPrdQtyInStck($productId);
-							$quantity = $productStock - $quantityDiff;
-							updateProductQty($productId, $quantity);
-						}
-					}
-				}
-			}
-
 			//Based on the total Number of rows we will save the product relationship with this entity
-			saveInventoryProductDetails($this, 'PurchaseOrder', $this->update_prod_stock);
-
-			if ($this->mode != '') {
-				$updateInventoryProductRel_deduct_stock = true;
-			}
+			saveInventoryProductDetails($this, 'PurchaseOrder');
 		}
 
 		// Update the currency id and the conversion rate for the purchase order
 		$update_query = "update vtiger_purchaseorder set currency_id=?, conversion_rate=? where purchaseorderid=?";
 		$update_params = array($this->column_fields['currency_id'], $this->column_fields['conversion_rate'], $this->id);
 		$adb->pquery($update_query, $update_params);
+	}
+
+	/** Function to get subproducts quantity for given product
+	 *  This function accepts the productId as arguments and returns array of subproduct qty for given productId
+	 */
+	function getSubProductsQty($productId) {
+		$subProductQtys = array();
+		$adb = PearDatabase::getInstance();
+		$result = $adb->pquery("SELECT sequence_no FROM vtiger_inventoryproductrel WHERE id = ? and productid=?", array($this->id, $productId));
+		$numOfRows = $adb->num_rows($result);
+		if ($numOfRows > 0) {
+			for ($i = 0; $i < $numOfRows; $i++) {
+				$sequenceNo = $adb->query_result($result, $i, 'sequence_no');
+				$subProdQuery = $adb->pquery("SELECT productid, quantity FROM vtiger_inventorysubproductrel WHERE id=? AND sequence_no=?", array($this->id, $sequenceNo));
+				if ($adb->num_rows($subProdQuery) > 0) {
+					for ($j = 0; $j < $adb->num_rows($subProdQuery); $j++) {
+						$subProdId = $adb->query_result($subProdQuery, $j, 'productid');
+						$subProdQty = $adb->query_result($subProdQuery, $j, 'quantity');
+						$subProductQtys[$subProdId] = $subProdQty;
+					}
+				}
+			}
+		}
+		return $subProductQtys;
 	}
 
 	/** Function to get activities associated with the Purchase Order
@@ -338,13 +438,13 @@ class PurchaseOrder extends CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityPurchaseOrder', array('vtiger_usersPurchaseOrder', 'vtiger_groupsPurchaseOrder', 'vtiger_lastModifiedByPurchaseOrder'));
 		$matrix->setDependency('vtiger_inventoryproductrelPurchaseOrder', array('vtiger_productsPurchaseOrder', 'vtiger_servicePurchaseOrder'));
-		$matrix->setDependency('vtiger_purchaseorder',array('vtiger_crmentityPurchaseOrder', "vtiger_currency_info$secmodule",
-				'vtiger_purchaseordercf', 'vtiger_vendorRelPurchaseOrder', 'vtiger_pobillads',
-				'vtiger_poshipads', 'vtiger_inventoryproductrelPurchaseOrder', 'vtiger_contactdetailsPurchaseOrder'));
-
+		
 		if (!$queryPlanner->requireTable('vtiger_purchaseorder', $matrix)) {
 			return '';
 		}
+        $matrix->setDependency('vtiger_purchaseorder',array('vtiger_crmentityPurchaseOrder', "vtiger_currency_info$secmodule",
+				'vtiger_purchaseordercf', 'vtiger_vendorRelPurchaseOrder', 'vtiger_pobillads',
+				'vtiger_poshipads', 'vtiger_inventoryproductrelPurchaseOrder', 'vtiger_contactdetailsPurchaseOrder'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_purchaseorder","purchaseorderid",$queryPlanner);
 		if ($queryPlanner->requireTable("vtiger_crmentityPurchaseOrder", $matrix)){
@@ -363,21 +463,12 @@ class PurchaseOrder extends CRMEntity {
 			$query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_purchaseorder.currency_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_inventoryproductrelPurchaseOrder", $matrix)){
-			$query .= " left join vtiger_inventoryproductrel as vtiger_inventoryproductrelPurchaseOrder on vtiger_purchaseorder.purchaseorderid = vtiger_inventoryproductrelPurchaseOrder.id";
-            // To Eliminate duplicates in reports
-            if(($module == 'Products' || $module == 'Services') && $secmodule == "PurchaseOrder"){
-                if($module == 'Products'){
-                    $query .= " and vtiger_inventoryproductrelPurchaseOrder.productid = vtiger_products.productid ";    
-                }else if($module == 'Services'){
-                    $query .= " and vtiger_inventoryproductrelPurchaseOrder.productid = vtiger_service.serviceid ";
-                }
-            }
 		}
 		if ($queryPlanner->requireTable("vtiger_productsPurchaseOrder")){
-			$query .= " left join vtiger_products as vtiger_productsPurchaseOrder on vtiger_productsPurchaseOrder.productid = vtiger_inventoryproductrelPurchaseOrder.productid";
+			$query .= " left join vtiger_products as vtiger_productsPurchaseOrder on vtiger_productsPurchaseOrder.productid = vtiger_inventoryproductreltmpPurchaseOrder.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_servicePurchaseOrder")){
-			$query .= " left join vtiger_service as vtiger_servicePurchaseOrder on vtiger_servicePurchaseOrder.serviceid = vtiger_inventoryproductrelPurchaseOrder.productid";
+			$query .= " left join vtiger_service as vtiger_servicePurchaseOrder on vtiger_servicePurchaseOrder.serviceid = vtiger_inventoryproductreltmpPurchaseOrder.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersPurchaseOrder")){
 			$query .= " left join vtiger_users as vtiger_usersPurchaseOrder on vtiger_usersPurchaseOrder.id = vtiger_crmentityPurchaseOrder.smownerid";
@@ -425,10 +516,14 @@ class PurchaseOrder extends CRMEntity {
 		} elseif($return_module == 'Contacts') {
 			$sql_req ='UPDATE vtiger_purchaseorder SET contactid=? WHERE purchaseorderid = ?';
 			$this->db->pquery($sql_req, array(null, $id));
+		} elseif($return_module == 'Documents') {
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+            $this->db->pquery($sql, array($id, $return_id));
+		} elseif($return_module == 'Accounts') {
+			$sql ='UPDATE vtiger_purchaseorder SET accountid=? WHERE purchaseorderid=?';
+			$this->db->pquery($sql, array(null, $id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -510,6 +605,14 @@ class PurchaseOrder extends CRMEntity {
 		return $query;
 	}
 
+	/**
+	 * Function to get importable mandatory fields
+	 * By default some fields like Quantity, List Price is not mandaroty for Invertory modules but
+	 * import fails if those fields are not mapped during import.
+	 */
+	function getMandatoryImportableFields() {
+		return getInventoryImportableMandatoryFeilds($this->moduleName);
+	}
 }
 
 ?>

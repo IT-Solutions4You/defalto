@@ -9,20 +9,24 @@
  ************************************************************************************/
 
 $languageStrings = Array(
-    'LBL_ADD_FEED_SOURCE'   => 'RSS forrás hozzáadása',
-    'LBL_ENTER_FEED_SOURCE' => 'Adja meg a hírforrást',
-    'LBL_FEEDS_LIST_FROM'   => 'Hírforrások listája innen',
-    'LBL_FEED_SOURCE'       => 'Hírforrás',
-	'LBL_RSS_FEED_SOURCES'  => 'RSS Hírforrások',
-    'LBL_SENDER'            => 'Küldő',
-    'LBL_SET_AS_DEFAULT'    => 'Alapértelmezettként beállít',
-    'SINGLE_Rss'            => 'RSS Hírforrás',
+    'Rss'=>'Rss',
+    'LBL_RSS_FEED_SOURCES' => 'RSS hírcsatorna Források',
+    'LBL_ADD_FEED_SOURCE' => 'Add hírcsatorna forrás',
+    'LBL_FEEDS_LIST_FROM' => 'Hírcsatornák listája A',
+    'LBL_SET_AS_DEFAULT' => 'Beállítás alapértelmezettként',
+    'LBL_SENDER' => 'adó',
+    'LBL_FEED_SOURCE' => 'Takarmány Forrás',
+    'LBL_ENTER_FEED_SOURCE' => 'Adja meg a hírcsatorna forrás',  
+    'SINGLE_Rss' => 'RSS hírcsatorna',
 );
 
 $jsLanguageStrings = array(
-    'JS_INVALID_RSS_URL'        => 'Érvénytelen RSS Url',
-    'JS_RSS_MADE_AS_DEFAULT'    => 'RSS beállítva alapértelmezettnek',
-	'JS_RSS_SUCCESSFULLY_SAVED' => 'RSS sikeresen elmentve',
+	'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss Sikeresen mentve',
+    'JS_INVALID_RSS_URL' => 'Invalid Rss Url',
+    'JS_RSS_MADE_AS_DEFAULT' => 'Rss Made alapértelmezett',
+    
+
+  'JS_NO_RECORDS' => 'Nincs Bejegyzés',
 
 );
 

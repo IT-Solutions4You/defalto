@@ -10,9 +10,9 @@
 include_once 'include/Webservices/Retrieve.php';
 
 class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
-	
+
 	private $module = false;
-	
+
 	protected $resolvedValueCache = array();
 	
 	protected function detectModuleName($recordid) {
@@ -30,36 +30,53 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
 		
 		return $record;
 	}
-	
+
 	function process(Mobile_API_Request $request) {
 		$current_user = $this->getActiveUser();
-		$record = $this->processRetrieve($request);
+		$record = $request->get('record');
+		$module = $request->get('module');
 		
-		$this->resolveRecordValues($record, $current_user);
+		$moduleModel = Vtiger_Module_Model::getInstance($module);
+		$recordModel = Vtiger_Record_Model::getInstanceById($record, $moduleModel);
+		$data = $recordModel->getData();
+		
+		$data = $this->resolveRecordValues($data, $moduleModel);
 		
 		$response = new Mobile_API_Response();
-		$response->setResult(array('record' => $record));
+		$response->setResult(array('record' => $data));
 		
 		return $response;
 	}
-	
-	function resolveRecordValues(&$record, $user, $ignoreUnsetFields=false) {
-		if(empty($record)) return $record;
+
+	function resolveRecordValues($data, $moduleModel) {
+		$fields = $moduleModel->getFields();
 		
-		$fieldnamesToResolve = Mobile_WS_Utils::detectFieldnamesToResolve(
-			$this->detectModuleName($record['id']) );
-		
-		if(!empty($fieldnamesToResolve)) {
-			foreach($fieldnamesToResolve as $resolveFieldname) {
-				if ($ignoreUnsetFields === false || isset($record[$resolveFieldname])) {
-					$fieldvalueid = $record[$resolveFieldname];
-					$fieldvalue = $this->fetchRecordLabelForId($fieldvalueid, $user);
-					$record[$resolveFieldname] = array('value' => $fieldvalueid, 'label'=>$fieldvalue);
+		foreach ($data as $fieldName => $value) {
+			if ($fields[$fieldName]) {
+				$fieldModel = $fields[$fieldName];
+				$fieldType = $fieldModel->getFieldDataType();
+				$referenceModules = $fieldModel->getReferenceList();
+				if ($fieldType == 'reference' && !in_array('Users', $referenceModules)) {
+					$data[$fieldName] = array('value' => $value, 'label' => decode_html(Vtiger_Functions::getCRMRecordLabel($value)));
+				} else if ($fieldType == 'reference' && in_array('Users', $referenceModules)) {
+					$data[$fieldName] = array('value' => $value, 'label' => decode_html(Vtiger_Functions::getUserRecordLabel($value)));
+				} else if ($fieldType == 'url') {
+					$data[$fieldName] = array('value' => $value, 'label' => $value);
+				} else if ($fieldType == 'owner') {
+					$ownerName = Vtiger_Functions::getUserRecordLabel($value);
+					if (!empty($ownerName)) {
+						$data[$fieldName] = array('value' => $value, 'label' => decode_html($ownerName));
+					} else {
+						$data[$fieldName] = array('value' => $value, 'label' => decode_html(Vtiger_Functions::getGroupRecordLabel($value)));
+					}
+				} else {
+					$data[$fieldName] = array('value' => $value, 'label' => decode_html($fieldModel->getDisplayValue($value)));
 				}
 			}
 		}
+		return $data;
 	}
-	
+
 	function fetchRecordLabelForId($id, $user) {
 		$value = null;
 		

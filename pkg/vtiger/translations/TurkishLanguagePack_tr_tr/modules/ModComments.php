@@ -17,4 +17,5 @@ $languageStrings = array(
 	'Comment'                      => 'Comment'                     , 
 	'Creator'                      => 'Creator'                     , 
 	'Related To Comments'          => 'İlgili Kişi'               , 
+	'LBL_COMMENTED_AT'             => 'De yorumladı'               , 
 );

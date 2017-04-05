@@ -13,6 +13,8 @@ vimport('~~/vtlib/Vtiger/Package.php');
 
 class Settings_ModuleManager_Extension_Model extends Vtiger_Base_Model {
 
+	STATIC $EXTENSION_LOOKUP_URL = false;
+	STATIC $EXTENSION_MANAGER_URL= false;
 
 	var $fileName;
 
@@ -22,6 +24,14 @@ class Settings_ModuleManager_Extension_Model extends Vtiger_Base_Model {
 			$uploadDir = '../'.$uploadDir;
 		}
 		return $uploadDir;
+	}
+
+	public static function getExtensionsLookUpUrl() {
+		return self::$EXTENSION_LOOKUP_URL;
+	}
+
+	public static function getExtensionsManagerUrl() {
+		return self::$EXTENSION_MANAGER_URL;
 	}
 
 	/**
@@ -126,6 +136,26 @@ class Settings_ModuleManager_Extension_Model extends Vtiger_Base_Model {
 	}
 
 	/**
+	 * Function to store the details of tracking
+	 * @return <boolean> true/false
+	 */
+	public function installTrackDetails() {
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+
+		$client = new Vtiger_Net_Client(self::getExtensionsManagerUrl() . '/api.php');
+		$client->setHeaders(array('Referer' => vglobal('site_URL')));
+
+		$params['operation'] = 'extensionTrack';
+		$params['extensionid'] = $this->getId();
+		$params['email'] = $currentUserModel->get('email1');
+		$params['lname'] = $currentUserModel->get('last_name');
+		$params['fname'] = $currentUserModel->get('first_name');
+
+		$client->doGet($params);
+		return true;
+	}
+
+	/**
 	 * Function to get instance by using XML node
 	 * @param <XML DOM> $extensionXMLNode
 	 * @return <Settings_ModuleManager_Extension_Model> $extensionModel
@@ -183,9 +213,32 @@ class Settings_ModuleManager_Extension_Model extends Vtiger_Base_Model {
 		}
 		return false;
 	}
-        
-	
-     /**
+
+	/**
+	 * Function to get all availible extensions
+	 * @param <Object> $xmlContent
+	 * @return <Array> list of extensions <Settings_ModuleManager_Extension_Model>
+	 */
+	public static function getAll() {
+		$extensionModelsList = array();
+		$extensionLookUpUrl = self::getExtensionsLookUpUrl();
+		if ($extensionLookUpUrl) {
+			$clientModel = new Vtiger_Net_Client($extensionLookUpUrl);
+			$xmlContent = $clientModel->doGet();
+
+			if (!$extensionModelsList && $xmlContent && !stripos($xmlContent, "<?xml")) {
+				$extensionsXML = simplexml_load_string($xmlContent);
+				if ($extensionsXML->extension) {
+					foreach ($extensionsXML->extension as $extensionXMLNode) {
+						$extensionModelsList[(string) ($extensionXMLNode->id)] = self::getInstanceFromXMLNodeObject($extensionXMLNode);
+					}
+				}
+			}
+		}
+		return $extensionModelsList;
+	}
+
+	/**
 	 * Function to download the file of this instance
 	 * @param <Integer> $extensionId
 	 * @param <String> $targetFileName

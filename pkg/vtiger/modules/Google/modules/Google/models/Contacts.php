@@ -10,13 +10,13 @@
 vimport('~~/modules/WSAPP/synclib/models/SyncRecordModel.php');
 
 class Google_Contacts_Model extends WSAPP_SyncRecordModel {
-
+    
     /**
      * return id of Google Record
      * @return <string> id
      */
     public function getId() {
-        return $this->data['entity']['id']['$t']; 
+        return $this->data['entity']['id']['$t'];
     }
 
     /**
@@ -24,11 +24,11 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <date> modified time 
      */
     public function getModifiedTime() {
-        return $this->vtigerFormat($this->data['entity']['updated']['$t']); 
-    } 
-
-    function getNamePrefix() { 
-        $namePrefix = $this->data['entity']['gd$name']['gd$namePrefix']['$t']; 
+        return $this->vtigerFormat($this->data['entity']['updated']['$t']);
+    }
+    
+    function getNamePrefix() {
+        $namePrefix = $this->data['entity']['gd$name']['gd$namePrefix']['$t'];
         return $namePrefix;
     }
 
@@ -37,7 +37,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <string> $first name
      */
     function getFirstName() {
-        $fname = $this->data['entity']['gd$name']['gd$givenName']['$t']; 
+        $fname = $this->data['entity']['gd$name']['gd$givenName']['$t'];
         return $fname;
     }
 
@@ -46,7 +46,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <string> Last name
      */
     function getLastName() {
-        $lname = $this->data['entity']['gd$name']['gd$familyName']['$t']; 
+        $lname = $this->data['entity']['gd$name']['gd$familyName']['$t'];
         return $lname;
     }
 
@@ -55,18 +55,18 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <array> emails
      */
     function getEmails() {
-        $arr = $this->data['entity']['gd$email']; 
-        $emails = array(); 
-        if (is_array($arr)) { 
-            foreach ($arr as $email) { 
-                if(isset($email['rel'])) 
-                    $labelEmail = parse_url($email['rel'], PHP_URL_FRAGMENT); 
-                else 
-                    $labelEmail = $email['label']; 
-                $emails[$labelEmail] = $email['address']; 
-            } 
-        } 
-        return $emails; 
+        $arr = $this->data['entity']['gd$email'];
+        $emails = array();
+        if (is_array($arr)) {
+            foreach ($arr as $email) {
+                if(isset($email['rel']))
+                    $labelEmail = parse_url($email['rel'], PHP_URL_FRAGMENT);
+                else
+                    $labelEmail = $email['label'];
+                $emails[$labelEmail] = $email['address'];
+            }
+        }
+        return $emails;
     }
 
     /**
@@ -74,20 +74,19 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @return <array> phone numbers
      */
     function getPhones() {
-
-        $arr = $this->data['entity']['gd$phoneNumber']; 
-        $phones = array(); 
-        if(is_array($arr)) { 
-            foreach ($arr as $phone) { 
-                $phoneNo = $phone['$t']; 
-                if(isset($phone['rel'])) 
-                    $labelPhone = parse_url($phone['rel'], PHP_URL_FRAGMENT); 
-                else 
-                    $labelPhone = $phone['label']; 
-                $phones[$labelPhone] = $phoneNo; 
-            } 
-        } 
-        return $phones; 
+        $arr = $this->data['entity']['gd$phoneNumber'];
+        $phones = array();
+        if(is_array($arr)) {
+            foreach ($arr as $phone) {
+                $phoneNo = $phone['$t'];
+                if(isset($phone['rel']))
+                    $labelPhone = parse_url($phone['rel'], PHP_URL_FRAGMENT);
+                else
+                    $labelPhone = $phone['label'];
+                $phones[$labelPhone] = $phoneNo;
+            }
+        }
+        return $phones;
     }
 
     /**
@@ -151,16 +150,64 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
     }
     
     function getTitle() {
-        return $this->data['entity']['gd$organization'][0]['gd$orgTitle']['$t']; 
+        return $this->data['entity']['gd$organization'][0]['gd$orgTitle']['$t'];
     }
     
-    function getAccountName() {
-        $orgName = $this->data['entity']['gd$organization'][0]['gd$orgName']['$t']; 
-        return $orgName;
+    function getAccountName($userId) {
+        $description = false;
+        $orgName = $this->data['entity']['gd$organization'][0]['gd$orgName']['$t'];
+        if(empty($orgName)) {
+            $contactsModel = Vtiger_Module_Model::getInstance('Contacts');
+            $accountFieldInstance = Vtiger_Field_Model::getInstance('account_id', $contactsModel);
+            if($accountFieldInstance->isMandatory()) {
+                $orgName = '????';
+                $description = 'This Organization is created to support Google Contacts Synchronization. Since Organization Name is mandatory !';
+            }
+        }
+        if(!empty($orgName)) {
+            $db = PearDatabase::getInstance();
+            $result = $db->pquery("SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?", array($orgName, 0, 'Accounts'));
+            if($db->num_rows($result) < 1) {
+                $accountModel = Vtiger_Module_Model::getInstance('Accounts');
+                $recordModel = Vtiger_Record_Model::getCleanInstance('Accounts');
+                
+                $fieldInstances = Vtiger_Field_Model::getAllForModule($accountModel);
+                foreach($fieldInstances as $blockInstance) {
+                    foreach($blockInstance as $fieldInstance) {
+                        $fieldName = $fieldInstance->getName();
+                        $fieldValue = $recordModel->get($fieldName);
+                        if(empty($fieldValue)) {
+                            $defaultValue = $fieldInstance->getDefaultFieldValue();
+                            if($defaultValue) {
+                                $recordModel->set($fieldName, decode_html($defaultValue));
+                            }
+                            if($fieldInstance->isMandatory() && !$defaultValue) {
+                                $randomValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType());
+                                if($fieldInstance->getFieldDataType() == 'picklist' || $fieldInstance->getFieldDataType() == 'multipicklist') {
+                                    $picklistValues = $fieldInstance->getPicklistValues();
+                                    $randomValue = reset($picklistValues);
+                                }
+                                $recordModel->set($fieldName, $randomValue);
+                            }
+                        }
+                    }
+                }
+                $recordModel->set('mode', '');
+                $recordModel->set('accountname', $orgName);
+                $recordModel->set('assigned_user_id', $userId);
+				$recordModel->set('source', 'GOOGLE');
+                if($description) {
+                    $recordModel->set('description', $description);
+                }   
+                $recordModel->save();
+            }
+            return $orgName;
+        }
+        return false;
     }
     
-    function getDescription() { 
-        return $this->data['entity']['content']['$t']; 
+    function getDescription() {
+        return $this->data['entity']['content']['$t'];
     }
 
     /**

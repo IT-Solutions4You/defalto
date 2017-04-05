@@ -14,7 +14,7 @@ class SMSNotifier_CheckStatus_View extends Vtiger_IndexAjax_View {
 		$moduleName = $request->getModule();
 
 		if(!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
-			throw new AppException(vtranslate($moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
+			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
 	}
 
@@ -25,7 +25,11 @@ class SMSNotifier_CheckStatus_View extends Vtiger_IndexAjax_View {
 		$notifierRecordModel = Vtiger_Record_Model::getInstanceById($request->get('record'), $moduleName);
 		$notifierRecordModel->checkStatus();
 
-		$viewer->assign('RECORD', $notifierRecordModel);
-		$viewer->view('StatusWidget.tpl', $moduleName);
+		$response = new Vtiger_Response();
+		$response->setResult(array(	'to'		=> $notifierRecordModel->get('tonumber'), 
+									'status'	=> $notifierRecordModel->get('status'),
+									'message'	=> $notifierRecordModel->get('statusmessage')
+							));
+		$response->emit();
 	}
 }

@@ -11,6 +11,7 @@
 class Invoice_MassSave_Action extends Inventory_MassSave_Action {
 
 	public function process(Vtiger_Request $request) {
+        vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
 		$moduleName = $request->getModule();
 		$recordModels = $this->getRecordModelsFromRequest($request);
 
@@ -21,7 +22,7 @@ class Invoice_MassSave_Action extends Inventory_MassSave_Action {
 				$recordModel->save();
 			}
 		}
-
+        vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
 		$response = new Vtiger_Response();
 		$response->setResult(true);
 		$response->emit();
@@ -55,8 +56,10 @@ class Invoice_MassSave_Action extends Inventory_MassSave_Action {
 					$fieldValue = $fieldModel->getUITypeModel()->getDBInsertValue($fieldValue);
 				}
 
-				if(isset($fieldValue) && $fieldValue != null && !is_array($fieldValue)) {
-					$fieldValue = trim($fieldValue);
+				if(isset($fieldValue) && $fieldValue != null) {
+					if(!is_array($fieldValue)) {
+						$fieldValue = trim($fieldValue);
+					}
 					$recordModel->set($fieldName, $fieldValue);
 				}
 			}

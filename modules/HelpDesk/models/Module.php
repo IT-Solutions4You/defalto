@@ -32,7 +32,7 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 		if($permission) {
 			$parentQuickLinks['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
 		}
-		
+
 		return $parentQuickLinks;
 	}
 
@@ -64,15 +64,24 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 	public function getOpenTickets() {
 		$db = PearDatabase::getInstance();
 		//TODO need to handle security
-		$result = $db->pquery('SELECT count(*) AS count, concat(vtiger_users.first_name, " " ,vtiger_users.last_name) as name, vtiger_users.id as id  FROM vtiger_troubletickets
+		$params = array();
+		if(vtws_isRoleBasedPicklist('ticketstatus')) {
+			$currentUserModel = Users_Record_Model::getCurrentUserModel();
+			$picklistvaluesmap = getAssignedPicklistValues("ticketstatus",$currentUserModel->getRole(), $db);
+			if(in_array('Open', $picklistvaluesmap)) $params[] = 'Open';
+		}
+		if(count($params) > 0) {
+		$result = $db->pquery('SELECT count(*) AS count, COALESCE(vtiger_groups.groupname,concat(vtiger_users.first_name, " " ,vtiger_users.last_name)) as name, COALESCE(vtiger_groups.groupid,vtiger_users.id) as id  FROM vtiger_troubletickets
 						INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid
-						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
-						AND vtiger_crmentity.deleted = 0'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()).
-						' WHERE vtiger_troubletickets.status = ? GROUP BY smownerid', array('Open'));
-
+						LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
+						LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
+						'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()).
+						' WHERE vtiger_troubletickets.status = ? AND vtiger_crmentity.deleted = 0 GROUP BY smownerid', $params);
+		}
 		$data = array();
 		for($i=0; $i<$db->num_rows($result); $i++) {
 			$row = $db->query_result_rowdata($result, $i);
+						$row['name'] = decode_html($row['name']);
 			$data[] = $row;
 		}
 		return $data;
@@ -90,19 +99,26 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 		if(!empty($ownerSql)) {
 			$ownerSql = ' AND '.$ownerSql;
 		}
-		
+
 		$params = array();
 		if(!empty($dateFilter)) {
 			$dateFilterSql = ' AND createdtime BETWEEN ? AND ? ';
-			//client is not giving time frame so we are appending it
-			$params[] = $dateFilter['start']. ' 00:00:00';
-			$params[] = $dateFilter['end']. ' 23:59:59';
+			//appended time frame and converted to db time zone in showwidget.php
+			$params[] = $dateFilter['start'];
+			$params[] = $dateFilter['end'];
 		}
-		
+		if(vtws_isRoleBasedPicklist('ticketstatus')) {
+			$currentUserModel = Users_Record_Model::getCurrentUserModel();
+			$picklistvaluesmap = getAssignedPicklistValues("ticketstatus",$currentUserModel->getRole(), $db);
+			foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+		}
+
 		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_troubletickets.status IS NULL OR vtiger_troubletickets.status = "" THEN "" ELSE vtiger_troubletickets.status END AS statusvalue 
 							FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted=0
 							'.Users_Privileges_Model::getNonAdminAccessControlQuery($this->getName()). $ownerSql .' '.$dateFilterSql.
-							' INNER JOIN vtiger_ticketstatus ON vtiger_troubletickets.status = vtiger_ticketstatus.ticketstatus GROUP BY statusvalue ORDER BY vtiger_ticketstatus.sortorderid', $params);
+							' INNER JOIN vtiger_ticketstatus ON vtiger_troubletickets.status = vtiger_ticketstatus.ticketstatus 
+							WHERE vtiger_troubletickets.status IN ('.generateQuestionMarks($picklistvaluesmap).') 
+							GROUP BY statusvalue ORDER BY vtiger_ticketstatus.sortorderid', $params);
 
 		$response = array();
 
@@ -126,7 +142,7 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 	 * @param Vtiger_Module_Model $relatedModule
 	 * @return <String>
 	 */
-	public function getRelationQuery($recordId, $functionName, $relatedModule) {
+	public function getRelationQuery($recordId, $functionName, $relatedModule, $relationId) {
 		if ($functionName === 'get_activities') {
 			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
@@ -150,7 +166,7 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 				$query = appendFromClauseToQuery($query, $nonAdminQuery);
 			}
 		} else {
-			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
+			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule, $relationId);
 		}
 
 		return $query;
@@ -177,5 +193,33 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 			}
 			return $overRideQuery;
 		}
+	}
+
+	 /**
+	 * Function to get list of field for header view
+	 * @return <Array> list of field models <Vtiger_Field_Model>
+	 */
+	function getConfigureRelatedListFields(){
+		$summaryViewFields = $this->getSummaryViewFieldsList();
+		$headerViewFields = $this->getHeaderViewFieldsList();
+		$allRelationListViewFields = array_merge($headerViewFields,$summaryViewFields);
+		$relatedListFields = array();
+		if(count($allRelationListViewFields) > 0) {
+			foreach ($allRelationListViewFields as $key => $field) {
+				$relatedListFields[$field->get('column')] = $field->get('name');
+			}
+		}
+
+		if(count($relatedListFields)>0) {
+			$nameFields = $this->getNameFields();
+			foreach($nameFields as $fieldName){
+				if(!$relatedListFields[$fieldName]) {
+					$fieldModel = $this->getField($fieldName);
+					$relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
+				}
+			}
+		}
+
+		return $relatedListFields;
 	}
 }

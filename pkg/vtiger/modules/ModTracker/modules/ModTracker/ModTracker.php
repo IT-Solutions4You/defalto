@@ -35,8 +35,10 @@ class ModTracker {
  		global $adb, $currentModule;
 		
 		$modtrackerModule = Vtiger_Module::getInstance($currentModule);
-        $otherModuleNames = $this->getModTrackerEnabledModules();
-        
+
+		// Shouldn't assign any thing to variable if we are not going use that
+		$this->getModTrackerEnabledModules();
+
  		if($eventType == 'module.postinstall') {
 			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
 
@@ -57,12 +59,16 @@ class ModTracker {
 			$em = new VTEventsManager($adb);
 			$em->setHandlerInActive('ModTrackerHandler');
 			
-			
+			// De-register Common Javascript
+			$modtrackerModule->deleteLink( 'HEADERSCRIPT', 'ModTrackerCommon_JS');
+
         }  else if($eventType == 'module.enabled') {
 			$em = new VTEventsManager($adb);
 			$em->setHandlerActive('ModTrackerHandler');
 			
-		
+			// Register Common Javascript
+			$modtrackerModule->addLink( 'HEADERSCRIPT', 'ModTrackerCommon_JS', 'modules/ModTracker/ModTrackerCommon.js');
+
 		} else if($eventType == 'module.preuninstall') {
 			// TODO Handle actions when this module is about to be deleted.
 		} else if($eventType == 'module.preupdate') {
@@ -99,10 +105,10 @@ class ModTracker {
 	static function disableTrackingForModule($tabid){
 		global $adb;
 		if(!self::isModulePresent($tabid)){
-				$res=$adb->pquery("INSERT INTO vtiger_modtracker_tabs VALUES(?,?)",array($tabid,0));
+				$adb->pquery("INSERT INTO vtiger_modtracker_tabs VALUES(?,?)",array($tabid,0));
 				self::updateCache($tabid,0);
 		} else{
-				$updatevisibility = $adb->pquery("UPDATE vtiger_modtracker_tabs SET visible = 0 WHERE tabid = ?", array($tabid));
+				$adb->pquery("UPDATE vtiger_modtracker_tabs SET visible = 0 WHERE tabid = ?", array($tabid));
 				self::updateCache($tabid,0);
 		}
 		if(self::isModtrackerLinkPresent($tabid)) {
@@ -118,10 +124,12 @@ class ModTracker {
 	static function enableTrackingForModule($tabid){
 		global $adb;
 		if(!self::isModulePresent($tabid)){
-			$res=$adb->pquery("INSERT INTO vtiger_modtracker_tabs VALUES(?,?)",array($tabid,1));
+			// Shouldn't assign any thing to variable if we are not going use that
+			$adb->pquery("INSERT INTO vtiger_modtracker_tabs VALUES(?,?)",array($tabid,1));
 			self::updateCache($tabid,1);
 		} else{
-			$updatevisibility = $adb->pquery("UPDATE vtiger_modtracker_tabs SET visible = 1 WHERE tabid = ?", array($tabid));
+			// Shouldn't assign any thing to variable if we are not going use that
+			$adb->pquery("UPDATE vtiger_modtracker_tabs SET visible = 1 WHERE tabid = ?", array($tabid));
 			self::updateCache($tabid,1);
 		}
 		if(!self::isModTrackerLinkPresent($tabid)){
@@ -142,8 +150,9 @@ class ModTracker {
 			$query = $adb->pquery("SELECT * FROM vtiger_modtracker_tabs WHERE vtiger_modtracker_tabs.visible = 1
 								   AND vtiger_modtracker_tabs.tabid=?", array($tabid));
 			$rows = $adb->num_rows($query);
-			
-			$visible=$adb->query_result($query,0,'visible');
+
+			//We are not using this variable. No need.
+			//$visible=$adb->query_result($query,0,'visible');
 			if($rows<1){
 				self::updateCache($tabid,0);
 				return false;
@@ -200,8 +209,8 @@ class ModTracker {
 	 */
 	static function updateCache($tabid,$visible){
 		self::$__cache_modtracker[$tabid] = array(
-				'tabid'     => $tabid,
-				'visible'   => $visible
+				'tabid'		=> $tabid,
+				'visible'	=> $visible
 		);
 	}
 

@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -24,7 +24,7 @@ $languageStrings = array(
 	'Sales Stage' => 'Försäljningsfas',
 	'Probability' => 'Sannolikhet',
 	'Campaign Source' => 'Kampanjkälla',
-	'Forecast Amount' => 'Prognosbelopp',
+	'Forecast Amount' => 'Viktat Omsättning',
 	
 	//Dashboard widgets
 	'Funnel' => 'försäljningstratt',
@@ -54,4 +54,23 @@ $languageStrings = array(
 	//widgets headers
 	'LBL_RELATED_CONTACTS' => 'Relaterade Kontakter',
 	'LBL_RELATED_PRODUCTS' => 'Relaterade Produkter',
+    'Related To'           => 'Organisationens namn',
+    'Type' => 'Typ',
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'konvertera möjligheter',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Möjligheter Fältmappning',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Du måste aktivera Project att konvertera Opportunity',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Möjligheter Field Mapping är ofullständig (Inställningar> Modul Chef> Möjligheter> Möjligheter Field Mapping)',
+	'LBL_CREATE_PROJECT' => 'Skapa projekt',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Möjlighet att Project kartläggning',
+
+  'Contact Name' => 'Kontakta Namn',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Omvandling kräver val av Project',
 );

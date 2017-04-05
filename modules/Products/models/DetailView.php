@@ -24,7 +24,7 @@ class Products_DetailView_Model extends Vtiger_DetailView_Model {
 
 		if ($recordModel->getActiveStatusOfRecord()) {
 			$quotesModuleModel = Vtiger_Module_Model::getInstance('Quotes');
-			if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'EditView')) {
+			if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
 				$basicActionLink = array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' => vtranslate('LBL_CREATE').' '.vtranslate($quotesModuleModel->getSingularLabelKey(), 'Quotes'),
@@ -35,7 +35,7 @@ class Products_DetailView_Model extends Vtiger_DetailView_Model {
 			}
 
 			$invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
-			if($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'EditView')) {
+			if($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
 				$basicActionLink = array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' => vtranslate('LBL_CREATE').' '.vtranslate($invoiceModuleModel->getSingularLabelKey(), 'Invoice'),
@@ -46,7 +46,7 @@ class Products_DetailView_Model extends Vtiger_DetailView_Model {
 			}
 
 			$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
-			if($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'EditView')) {
+			if($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel->getId(), 'CreateView')) {
 				$basicActionLink = array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' => vtranslate('LBL_CREATE').' '.vtranslate($purchaseOrderModuleModel->getSingularLabelKey(), 'PurchaseOrder'),
@@ -57,7 +57,7 @@ class Products_DetailView_Model extends Vtiger_DetailView_Model {
 			}
 
 			$salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
-			if($currentUserModel->hasModuleActionPermission($salesOrderModuleModel->getId(), 'EditView')) {
+			if($currentUserModel->hasModuleActionPermission($salesOrderModuleModel->getId(), 'CreateView')) {
 				$basicActionLink = array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' =>  vtranslate('LBL_CREATE').' '.vtranslate($salesOrderModuleModel->getSingularLabelKey(), 'SalesOrder'),

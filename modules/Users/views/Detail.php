@@ -43,13 +43,32 @@ class Users_Detail_View extends Users_PreferenceDetail_View {
 			$firstKey = key($menuModels);
 			$selectedMenu = $menuModels[$firstKey];
 		}
-
+        
+        //Specific change for Vtiger7
+        $settingsMenItems = array();
+        foreach($menuModels as $menuModel) {
+            $menuItems = $menuModel->getMenuItems();
+            foreach($menuItems as $menuItem) {
+                $settingsMenItems[$menuItem->get('name')] = $menuItem;
+            }
+        }
+        $viewer->assign('SETTINGS_MENU_ITEMS', $settingsMenItems);
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        $this->setModuleInfo($request, $moduleModel);
+        $viewer->assign('ACTIVE_BLOCK', array('block' => 'LBL_USER_MANAGEMENT', 
+                                              'menu' => 'LBL_USERS'));
+        
+        $moduleFields = $moduleModel->getFields();
+        foreach($moduleFields as $fieldName => $fieldModel){
+            $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+        }
+        $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+        
 		$viewer->assign('SELECTED_FIELDID',$fieldId);
 		$viewer->assign('SELECTED_MENU', $selectedMenu);
 		$viewer->assign('SETTINGS_MENUS', $menuModels);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-        $viewer->assign('LOAD_OLD', Settings_Vtiger_Index_View::$loadOlderSettingUi);
 		$viewer->assign('CURRENT_USER_MODEL', $currentUserModel);
 		$viewer->view('SettingsMenuStart.tpl', $qualifiedModuleName);
 	}
@@ -96,5 +115,9 @@ class Users_Detail_View extends Users_PreferenceDetail_View {
 			return false;
 		}
 		return $recordModel->isEditable();
+	}
+
+	public function getPageTitle(Vtiger_Request $request) {
+		return vtranslate($request->getModule(), $request->getModule());
 	}
 }

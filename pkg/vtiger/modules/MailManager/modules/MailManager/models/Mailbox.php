@@ -11,7 +11,7 @@
 class MailManager_Mailbox_Model {
 
 	protected $mServer;
-	protected $mUsername;
+	public $mUsername;
 	protected $mPassword;
 	protected $mProtocol = 'IMAP4';
 	protected $mSSLType  = 'ssl';
@@ -106,7 +106,7 @@ class MailManager_Mailbox_Model {
 	}
 
 	public function folder() {
-		return $this->mFolder;
+		return decode_html($this->mFolder);
 	}
 
 	public function delete() {

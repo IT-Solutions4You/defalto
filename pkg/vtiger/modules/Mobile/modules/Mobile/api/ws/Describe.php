@@ -13,10 +13,23 @@ class Mobile_WS_Describe extends Mobile_WS_Controller {
 	
 	function process(Mobile_API_Request $request) {
 		$current_user = $this->getActiveUser();
-		
 		$module = $request->get('module');
 		$describeInfo = vtws_describe($module, $current_user);
-		Mobile_WS_Utils::fixDescribeFieldInfo($module, $describeInfo);
+
+		$fields = $describeInfo['fields'];
+		
+		$moduleModel = Vtiger_Module_Model::getInstance($module);
+		$fieldModels = $moduleModel->getFields();
+		foreach($fields as $index=>$field) {
+			$fieldModel = $fieldModels[$field['name']];
+			if($fieldModel) {
+				$field['headerfield'] = $fieldModel->get('headerfield');
+				$field['summaryfield'] = $fieldModel->get('summaryfield');
+			}
+			$newFields[] = $field;
+		}
+		$fields=null;
+		$describeInfo['fields'] = $newFields;
 		
 		$response = new Mobile_API_Response();
 		$response->setResult(array('describe' => $describeInfo));

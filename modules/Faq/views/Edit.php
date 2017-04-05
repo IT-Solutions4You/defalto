@@ -36,7 +36,7 @@ class Faq_Edit_View extends Vtiger_Edit_View {
 
 		$moduleModel = $recordModel->getModule();
 		$fieldList = $moduleModel->getFields();
-		$requestFieldList = array_intersect_key($request->getAll(), $fieldList);
+		$requestFieldList = array_intersect_key($request->getAllPurified(), $fieldList);
 
 		foreach($requestFieldList as $fieldName=>$fieldValue) {
 			$fieldModel = $fieldList[$fieldName];
@@ -53,7 +53,7 @@ class Faq_Edit_View extends Vtiger_Edit_View {
 		
 		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
-		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE',Zend_Json::encode($picklistDependencyDatasource));
+		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
 		$viewer->assign('MODULE', $moduleName);
@@ -69,8 +69,17 @@ class Faq_Edit_View extends Vtiger_Edit_View {
 			$viewer->assign('SOURCE_RECORD', $request->get('sourceRecord'));
 		}
 
+		// added to set the return values
+		if($request->get('returnview')) {
+			$request->setViewerReturnValues($viewer);
+		}
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
-		$viewer->assign('MAX_UPLOAD_LIMIT', vglobal('upload_maxsize'));
-		$viewer->view('EditView.tpl', $moduleName);
+		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
+		if ($request->get('displayMode') == 'overlay') {
+			$viewer->assign('SCRIPTS', $this->getOverlayHeaderScripts($request));
+			$viewer->view('OverlayEditView.tpl', $moduleName);
+		} else {
+			$viewer->view('EditView.tpl', $moduleName);
+		}
 	}
 }

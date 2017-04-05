@@ -31,9 +31,9 @@ $version = explode('.', phpversion());
 
 $php = ($version[0] * 10000 + $version[1] * 100 + $version[2]);
 if($php <  50300){
-    $hostName = php_uname('n');
+	$hostName = php_uname('n');
 } else {
-    $hostName = gethostname();
+	$hostName = gethostname();
 }
 
 $mailbody ="Instance dir : $root_directory <br/> Company Name : $organization_name <br/> Site Url : $site_URL <br/> Host Name : $hostName<br/>";
@@ -41,65 +41,62 @@ $mailbody ="Instance dir : $root_directory <br/> Company Name : $organization_na
 $mailSubject = "[Alert] $organization_name ";
 if(PHP_SAPI === "cli" || (isset($_SESSION["authenticated_user_id"]) &&	isset($_SESSION["app_unique_key"]) && $_SESSION["app_unique_key"] == $application_unique_key)){
 
-$cronTasks = false;
-if (isset($_REQUEST['service'])) {
-	// Run specific service
-	$cronTasks = array(Vtiger_Cron::getInstance($_REQUEST['service']));
-}
-else {
-	// Run all service
-	$cronTasks = Vtiger_Cron::listAllActiveInstances();
-}
+	$cronTasks = false;
+	if (isset($_REQUEST['service'])) {
+		// Run specific service
+		$cronTasks = array(Vtiger_Cron::getInstance($_REQUEST['service']));
+	} else {
+		// Run all service
+		$cronTasks = Vtiger_Cron::listAllActiveInstances();
+	}
 
-$cronRunId = microtime(true);
-$cronStarts = date('Y-m-d H:i:s');
+	$cronRunId = microtime(true);
+	$cronStarts = date('Y-m-d H:i:s');
 
-//set global current user permissions
-global $current_user;
-$current_user = Users::getActiveAdminUser();
+	//set global current user permissions
+	global $current_user;
+	$current_user = Users::getActiveAdminUser();
 
-echo sprintf('[CRON],"%s",%s,Instance,"%s","",[STARTS]',$cronRunId,$site_URL,$cronStarts)."\n";
-foreach ($cronTasks as $cronTask) {
-	try {
-		$cronTask->setBulkMode(true);
+	echo sprintf('[CRON],"%s",%s,Instance,"%s","",[STARTS]',$cronRunId,$site_URL,$cronStarts)."\n";
+	foreach ($cronTasks as $cronTask) {
+		try {
+			$cronTask->setBulkMode(true);
 
-		// Not ready to run yet?
-		if (!$cronTask->isRunnable()) {
-			echo sprintf("[INFO] %s - not ready to run as the time to run again is not completed\n", $cronTask->getName());
-			continue;
-		}
+			// Not ready to run yet?
+			if (!$cronTask->isRunnable()) {
+				echo sprintf("[INFO] %s - not ready to run as the time to run again is not completed\n", $cronTask->getName());
+				continue;
+			}
 
-		// Timeout could happen if intermediate cron-tasks fails
-		// and affect the next task. Which need to be handled in this cycle.				
-		if ($cronTask->hadTimedout()) {
-			echo sprintf("[INFO] %s - cron task had timedout as it is not completed last time it run- restarting\n", $cronTask->getName());	
-		}
-		
-		// Mark the status - running		
-		$cronTask->markRunning();
-		echo sprintf('[CRON],"%s",%s,%s,"%s","",[STARTS]',$cronRunId,$site_URL,$cronTask->getName(),date('Y-m-d H:i:s',$cronTask->getLastStart()))."\n";
-		
-        checkFileAccess($cronTask->getHandlerFile());		
-		require_once $cronTask->getHandlerFile();
-		
-		// Mark the status - finished
-		$cronTask->markFinished();
-		echo "\n".sprintf('[CRON],"%s",%s,%s,"%s","%s",[ENDS]',$cronRunId,$site_URL,$cronTask->getName(),date('Y-m-d H:i:s',$cronTask->getLastStart()),date('Y-m-d H:i:s',$cronTask->getLastEnd()))."\n";
-        
-	} catch (Exception $e) {
-		echo sprintf("[ERROR]: %s - cron task execution throwed exception.\n", $cronTask->getName());
-		echo $e->getMessage();
-		echo "\n";
-	}		
-}
+			// Timeout could happen if intermediate cron-tasks fails
+			// and affect the next task. Which need to be handled in this cycle.				
+			if ($cronTask->hadTimedout()) {
+				echo sprintf("[INFO] %s - cron task had timedout as it is not completed last time it run- restarting\n", $cronTask->getName());	
+			}
 
-$cronEnds = date('Y-m-d H:i:s');
-echo sprintf('[CRON],"%s",%s,Instance,"%s","%s",[ENDS]',$cronRunId,$site_URL,$cronStarts,$cronEnds)."\n";
+			// Mark the status - running		
+			$cronTask->markRunning();
+			echo sprintf('[CRON],"%s",%s,%s,"%s","",[STARTS]',$cronRunId,$site_URL,$cronTask->getName(),date('Y-m-d H:i:s',$cronTask->getLastStart()))."\n";
 
-}
+			checkFileAccess($cronTask->getHandlerFile());		
+			require_once $cronTask->getHandlerFile();
 
-else{
-    echo("Access denied!");
+			// Mark the status - finished
+			$cronTask->markFinished();
+			echo "\n".sprintf('[CRON],"%s",%s,%s,"%s","%s",[ENDS]',$cronRunId,$site_URL,$cronTask->getName(),date('Y-m-d H:i:s',$cronTask->getLastStart()),date('Y-m-d H:i:s',$cronTask->getLastEnd()))."\n";
+
+		} catch (Exception $e) {
+			echo sprintf("[ERROR]: %s - cron task execution throwed exception.\n", $cronTask->getName());
+			echo $e->getMessage();
+			echo "\n";
+		}		
+	}
+
+	$cronEnds = date('Y-m-d H:i:s');
+	echo sprintf('[CRON],"%s",%s,Instance,"%s","%s",[ENDS]',$cronRunId,$site_URL,$cronStarts,$cronEnds)."\n";
+
+} else {
+	echo("Access denied!");
 }
 
 

@@ -13,7 +13,7 @@ class Reports_ChartSaveAjax_View extends Vtiger_IndexAjax_View {
 	public function checkPermission(Vtiger_Request $request) {
 		$record = $request->get('record');
 		if (!$record) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 
 		$moduleName = $request->getModule();
@@ -21,8 +21,8 @@ class Reports_ChartSaveAjax_View extends Vtiger_IndexAjax_View {
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId()) && !$reportModel->isEditable()) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -57,8 +57,27 @@ class Reports_ChartSaveAjax_View extends Vtiger_IndexAjax_View {
         
         $data = $reportChartModel->getData();
 		$viewer->assign('CHART_TYPE', $reportChartModel->getChartType());
-		$viewer->assign('DATA', json_encode($data, JSON_HEX_APOS));
+		$viewer->assign('DATA', $data);
 		$viewer->assign('MODULE', $moduleName);
+        $viewer->assign('REPORT_MODEL', $reportModel);
+
+		$isPercentExist = false;
+		$selectedDataFields = $reportChartModel->get('datafields');
+		foreach ($selectedDataFields as $dataField) {
+			list($tableName, $columnName, $moduleField, $fieldName, $single) = split(':', $dataField);
+			list($relModuleName, $fieldLabel) = split('_', $moduleField);
+			$relModuleModel = Vtiger_Module_Model::getInstance($relModuleName);
+			$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $relModuleModel);
+			if ($fieldModel && $fieldModel->getFieldDataType() != 'currency') {
+				$isPercentExist = true;
+				break;
+			} else if (!$fieldModel) {
+				$isPercentExist = true;
+			}
+		}
+
+		$yAxisFieldDataType = (!$isPercentExist) ? 'currency' : '';
+		$viewer->assign('YAXIS_FIELD_TYPE', $yAxisFieldDataType);
 
 		$viewer->view('ChartReportContents.tpl', $moduleName);
 	}

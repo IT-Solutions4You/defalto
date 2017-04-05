@@ -27,7 +27,7 @@ class Documents extends CRMEntity {
 
 	var $column_fields = Array();
 
-    var $sortby_fields = Array('title','modifiedtime','filename','createdtime','lastname','filedownloadcount','smownerid');
+	var $sortby_fields = Array('title','modifiedtime','filename','createdtime','lastname','filedownloadcount','smownerid');
 
 	// This is used to retrieve related vtiger_fields from form posts.
 	var $additional_column_fields = Array('', '', '', '');
@@ -46,7 +46,7 @@ class Documents extends CRMEntity {
 					'Modified Time'=>'modifiedtime',
 					'Assigned To'=>'assigned_user_id',
 					'Folder Name' => 'folderid'
-				     );
+					 );
 
 	var $search_fields = Array(
 					'Title' => Array('notes'=>'notes_title'),
@@ -65,7 +65,7 @@ class Documents extends CRMEntity {
 	var $old_filename = '';
 	//var $groupTable = Array('vtiger_notegrouprelation','notesid');
 
-	var $mandatory_fields = Array('notes_title','createdtime' ,'modifiedtime','filename','filesize','filetype','filedownloadcount','assigned_user_id');
+	var $mandatory_fields = Array('notes_title','createdtime' ,'modifiedtime','filename','filesize','filetype','filedownloadcount','assigned_user_id','document_source','notecontent','filelocationtype','folderid');
 
 	//Added these variables which are used as default order by and sortorder in ListView
 	var $default_order_by = 'title';
@@ -143,7 +143,7 @@ class Documents extends CRMEntity {
 			$filedownloadcount = null;
 		}
 		$query = "UPDATE vtiger_notes SET filename = ? ,filesize = ?, filetype = ? , filelocationtype = ? , filedownloadcount = ? WHERE notesid = ?";
- 		$re=$adb->pquery($query,array(decode_html($filename),$filesize,$filetype,$filelocationtype,$filedownloadcount,$this->id));
+		$re=$adb->pquery($query,array(decode_html($filename),$filesize,$filetype,$filelocationtype,$filedownloadcount,$this->id));
 		//Inserting into attachments table
 		if($filelocationtype == 'I') {
 			$this->insertIntoAttachment($this->id,'Documents');
@@ -152,11 +152,11 @@ class Documents extends CRMEntity {
 			$qparams = array($this->id);
 			$adb->pquery($query, $qparams);
 		}
-        //set the column_fields so that its available in the event handlers
-        $this->column_fields['filename'] = $filename;
-        $this->column_fields['filesize'] = $filesize;
-        $this->column_fields['filetype'] = $filetype;
-        $this->column_fields['filedownloadcount'] = $filedownloadcount;
+		//set the column_fields so that its available in the event handlers
+		$this->column_fields['filename'] = $filename;
+		$this->column_fields['filesize'] = $filesize;
+		$this->column_fields['filetype'] = $filetype;
+		$this->column_fields['filedownloadcount'] = $filedownloadcount;
 	}
 
 
@@ -288,7 +288,7 @@ class Documents extends CRMEntity {
 			$query .= "  WHERE ".$where_auto;
 
 		$log->debug("Exiting create_export_query method ...");
-		        return $query;
+				return $query;
 	}
 
 	function del_create_def_folder($query)
@@ -299,15 +299,15 @@ class Documents extends CRMEntity {
 		$noofnotes = $adb->num_rows($dbresult);
 		if($noofnotes > 0)
 		{
-            $folderQuery = "select folderid from vtiger_attachmentsfolder";
-            $folderresult = $adb->pquery($folderQuery,array());
-            $noofdeffolders = $adb->num_rows($folderresult);
+			$folderQuery = "select folderid from vtiger_attachmentsfolder";
+			$folderresult = $adb->pquery($folderQuery,array());
+			$noofdeffolders = $adb->num_rows($folderresult);
 
-            if($noofdeffolders == 0)
-            {
-			    $insertQuery = "insert into vtiger_attachmentsfolder values (0,'Default','Contains all attachments for which a folder is not set',1,0)";
-			    $insertresult = $adb->pquery($insertQuery,array());
-            }
+			if($noofdeffolders == 0)
+			{
+				$insertQuery = "insert into vtiger_attachmentsfolder values (0,'Default','Contains all attachments for which a folder is not set',1,0)";
+				$insertresult = $adb->pquery($insertQuery,array());
+			}
 		}
 
 	}
@@ -334,19 +334,22 @@ class Documents extends CRMEntity {
 		$query = "from $moduletable
 			inner join vtiger_crmentity on vtiger_crmentity.crmid=$moduletable.$moduleindex";
 		if ($queryplanner->requireTable("vtiger_attachmentsfolder")){
-		    $query .= " inner join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=$moduletable.folderid";
+			$query .= " inner join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=$moduletable.folderid";
 		}
 		if ($queryplanner->requireTable("vtiger_groups".$module)){
-		    $query .= " left join vtiger_groups as vtiger_groups".$module." on vtiger_groups".$module.".groupid = vtiger_crmentity.smownerid";
+			$query .= " left join vtiger_groups as vtiger_groups".$module." on vtiger_groups".$module.".groupid = vtiger_crmentity.smownerid";
+		}
+		if($queryplanner->requireTable('vtiger_createdby'.$module)){
+			$query .= " LEFT JOIN vtiger_users AS vtiger_createdby$module ON vtiger_createdby$module.id = vtiger_crmentity.smcreatorid";
 		}
 		if ($queryplanner->requireTable("vtiger_users".$module)){
-		    $query .= " left join vtiger_users as vtiger_users".$module." on vtiger_users".$module.".id = vtiger_crmentity.smownerid";
+			$query .= " left join vtiger_users as vtiger_users".$module." on vtiger_users".$module.".id = vtiger_crmentity.smownerid";
 		}
 		$query .= " left join vtiger_groups on vtiger_groups.groupid = vtiger_crmentity.smownerid";
-        $query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
+		$query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
 		$query .= " left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid";
 		if ($queryplanner->requireTable("vtiger_lastModifiedBy".$module)){
-		    $query .= " left join vtiger_users as vtiger_lastModifiedBy".$module." on vtiger_lastModifiedBy".$module.".id = vtiger_crmentity.modifiedby ";
+			$query .= " left join vtiger_users as vtiger_lastModifiedBy".$module." on vtiger_lastModifiedBy".$module.".id = vtiger_crmentity.modifiedby ";
 		}
 		return $query;
 
@@ -361,32 +364,31 @@ class Documents extends CRMEntity {
 	function generateReportsSecQuery($module,$secmodule,$queryplanner) {
 
 		$matrix = $queryplanner->newDependencyMatrix();
-
 		$matrix->setDependency("vtiger_crmentityDocuments",array("vtiger_groupsDocuments","vtiger_usersDocuments","vtiger_lastModifiedByDocuments"));
-		$matrix->setDependency("vtiger_notes",array("vtiger_crmentityDocuments","vtiger_attachmentsfolder"));
 
 		if (!$queryplanner->requireTable('vtiger_notes', $matrix)) {
 			return '';
 		}
+		$matrix->setDependency("vtiger_notes",array("vtiger_crmentityDocuments","vtiger_attachmentsfolder"));
 		// TODO Support query planner
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_notes","notesid", $queryplanner);
-        $query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
+		$query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
 		if ($queryplanner->requireTable("vtiger_crmentityDocuments",$matrix)){
-		    $query .=" left join vtiger_crmentity as vtiger_crmentityDocuments on vtiger_crmentityDocuments.crmid=vtiger_notes.notesid and vtiger_crmentityDocuments.deleted=0";
+			$query .=" left join vtiger_crmentity as vtiger_crmentityDocuments on vtiger_crmentityDocuments.crmid=vtiger_notes.notesid and vtiger_crmentityDocuments.deleted=0";
 		}
 		if ($queryplanner->requireTable("vtiger_attachmentsfolder")){
-		    $query .=" left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=vtiger_notes.folderid";
+			$query .=" left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=vtiger_notes.folderid";
 		}
 		if ($queryplanner->requireTable("vtiger_groupsDocuments")){
-		    $query .=" left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.smownerid";
+			$query .=" left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.smownerid";
 		}
 		if ($queryplanner->requireTable("vtiger_usersDocuments")){
-		    $query .=" left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.smownerid";
+			$query .=" left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.smownerid";
 		}
 		if ($queryplanner->requireTable("vtiger_lastModifiedByDocuments")){
-		    $query .=" left join vtiger_users as vtiger_lastModifiedByDocuments on vtiger_lastModifiedByDocuments.id = vtiger_crmentityDocuments.modifiedby ";
+			$query .=" left join vtiger_users as vtiger_lastModifiedByDocuments on vtiger_lastModifiedByDocuments.id = vtiger_crmentityDocuments.modifiedby ";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyDocuments")){
+		if ($queryplanner->requireTable("vtiger_createdbyDocuments")){
 			$query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.smcreatorid ";
 		}
 		return $query;
@@ -434,9 +436,7 @@ class Documents extends CRMEntity {
 			$sql = 'DELETE FROM vtiger_senotesrel WHERE notesid = ? AND crmid = ?';
 			$this->db->pquery($sql, array($id, $return_id));
 
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -528,6 +528,47 @@ class Documents extends CRMEntity {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Function to get query for related list in Documents module
+	 */
+	function get_related_list($id, $cur_tab_id, $rel_tab_id) {
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
+		$other = CRMEntity::getInstance($related_module);
+		vtlib_setup_modulevars('Documents', $this);
+		vtlib_setup_modulevars($related_module, $other);
+
+		$returnset = "&return_module=Documents&return_action=CallRelatedList&return_id=".$id;
+
+		$query = "SELECT vtiger_crmentity.*, $other->table_name.*";
+
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+
+		if (!empty($other->related_tables)) {
+			foreach ($other->related_tables as $tname => $relmap) {
+				$query .= ", $tname.*";
+				if (empty($relmap[1]))
+					$relmap[1] = $other->table_name;
+				if (empty($relmap[2]))
+					$relmap[2] = $relmap[0];
+				$more_relation .= " LEFT JOIN $tname ON $tname.$relmap[0] = $relmap[1].$relmap[2]";
+			}
+		}
+		$query .= " FROM $other->table_name";
+		$query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
+		$query .= " INNER JOIN vtiger_senotesrel ON vtiger_senotesrel.crmid = vtiger_crmentity.crmid ".$more_relation;
+		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
+		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
+		$query .= " WHERE vtiger_crmentity.deleted = 0 AND vtiger_senotesrel.notesid=$id";
+
+		//eliminate lead converted 
+		if($related_module == 'Leads') {
+			$query .= " AND vtiger_leaddetails.converted=0 ";
+		}
+
+		$return_value = GetRelatedList('Documents', $related_module, $other, $query, '', $returnset);
+		return $return_value;
 	}
 }
 ?>

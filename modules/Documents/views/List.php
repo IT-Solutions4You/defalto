@@ -12,7 +12,7 @@ class Documents_List_View extends Vtiger_List_View {
 	function __construct() {
 		parent::__construct();
 	}
-	
+
 	function preProcess (Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
@@ -26,9 +26,9 @@ class Documents_List_View extends Vtiger_List_View {
 
 		parent::preProcess($request);
 	}
-    
-    
-    /*
+
+
+	/*
 	 * Function to initialize the required data in smarty to display the List View Contents
 	 */
 	public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
@@ -37,35 +37,120 @@ class Documents_List_View extends Vtiger_List_View {
 		$pageNumber = $request->get('page');
 		$orderBy = $request->get('orderby');
 		$sortOrder = $request->get('sortorder');
+		$searchKey = $request->get('search_key');
+		$searchValue = $request->get('search_value');
+		$operator = $request->get('operator');
+		$searchParams = $request->get('search_params');
+		 $tagParams = $request->get('tag_params');
+		$listHeaders = $request->get('list_headers', array());
+		$tag = $request->get('tag');
+		$requestViewName = $request->get('viewname');
+		$tagSessionKey = $moduleName.'_TAG';
+
+		if(!empty($requestViewName) && empty($tag)) {
+			unset($_SESSION[$tagSessionKey]);
+		}
+
+		if(empty($tag)) {   
+			$tagSessionVal = Vtiger_ListView_Model::getSortParamsSession($tagSessionKey);
+			if(!empty($tagSessionVal)) {
+				$tag = $tagSessionVal;
+			}
+		}else{
+			Vtiger_ListView_Model::setSortParamsSession($tagSessionKey, $tag);
+		}
+
+		if(empty($cvId)) {
+			$customView = new CustomView();
+			$cvId = $customView->getViewId($moduleName);
+		}
+
+		$listViewSessionKey = $moduleName.'_'.$cvId;
+		if(!empty($tag)) {
+			$listViewSessionKey .='_'.$tag;
+		}
+
+		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+		if($request->get('mode') == 'removeAlphabetSearch') {
+			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('search_key', 'search_value', 'operator'));
+			$searchKey = '';
+			$searchValue = '';
+			$operator = '';
+		}
+		if($request->get('mode') == 'removeSorting') {
+			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('orderby', 'sortorder'));
+			$orderBy = '';
+			$sortOrder = '';
+		}
+		if(empty($listHeaders)) {
+			$listHeaders = $orderParams['list_headers'];
+		}
+		global $log;
+		$log->fatal(var_export($_REQUEST,true));
+		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
+			$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+			$log->fatal(var_export($orderParams,true));
+			$log->fatal($listViewSessionKey);
+			if($orderParams) {
+				$pageNumber = $orderParams['page'];
+				$orderBy = $orderParams['orderby'];
+				$sortOrder = $orderParams['sortorder'];
+				$searchKey = $orderParams['search_key'];
+				$searchValue = $orderParams['search_value'];
+				$operator = $orderParams['operator'];
+				if(empty($tagParams)){
+					$tagParams = $orderParams['tag_params'];
+				}
+				if(empty($searchParams)) { 
+					$searchParams = $orderParams['search_params']; 
+				}
+			}
+		} else if($request->get('nolistcache') != 1) {
+			$params = array('page' => $pageNumber, 'orderby' => $orderBy, 'sortorder' => $sortOrder, 'search_key' => $searchKey,
+				'search_value' => $searchValue, 'operator' => $operator, 'tag_params' => $tagParams,'search_params' =>$searchParams);
+			if(!empty($listHeaders)) {
+				$params['list_headers'] = $listHeaders;
+			}
+			Vtiger_ListView_Model::setSortParamsSession($listViewSessionKey, $params);
+		}
+
 		if($sortOrder == "ASC"){
 			$nextSortOrder = "DESC";
 			$sortImage = "icon-chevron-down";
+			$faSortImage = "fa-sort-desc";
 		}else{
 			$nextSortOrder = "ASC";
 			$sortImage = "icon-chevron-up";
+			$faSortImage = "fa-sort-asc";
 		}
 
 		if(empty ($pageNumber)){
 			$pageNumber = '1';
 		}
 
-		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
+		if(!$this->listViewModel) {
+					$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
+				} else {
+					$listViewModel = $this->listViewModel;
+				}
 
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'), 'CVID'=>$cvId);
 		$linkModels = $listViewModel->getListViewMassActions($linkParams);
 
-		$pagingModel = new Vtiger_Paging_Model();
-		$pagingModel->set('page', $pageNumber);
-        $pagingModel->set('viewid', $request->get('viewname'));
+		// preProcess is already loading this, we can reuse
+		if(!$this->pagingModel){
+			$pagingModel = new Vtiger_Paging_Model();
+			$pagingModel->set('page', $pageNumber);
+			$pagingModel->set('viewid', $request->get('viewname'));
+		} else{
+			$pagingModel = $this->pagingModel;
+		}
 
 		if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder',$sortOrder);
 		}
 
-		$searchKey = $request->get('search_key');
-		$searchValue = $request->get('search_value');
-		$operator = $request->get('operator');
 		if(!empty($operator)) {
 			$listViewModel->set('operator', $operator);
 			$viewer->assign('OPERATOR',$operator);
@@ -75,30 +160,39 @@ class Documents_List_View extends Vtiger_List_View {
 			$listViewModel->set('search_key', $searchKey);
 			$listViewModel->set('search_value', $searchValue);
 		}
-        
-         $searchParmams = $request->get('search_params');
-        if(empty($searchParmams)) {
-            $searchParmams = array();
-        }
-        $transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParmams, $listViewModel->getModule());
-        $listViewModel->set('search_params',$transformedSearchParams);
-     
-        
-        //To make smarty to get the details easily accesible
-        foreach($searchParmams as $fieldListGroup){
-            foreach($fieldListGroup as $fieldSearchInfo){
-                $fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
-                $fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
-                $searchParmams[$fieldName] = $fieldSearchInfo;
-            }
-            
-        }
-        
-        
-        
-        $listViewModel->set('folder_id',$request->get('folder_id'));
-        $listViewModel->set('folder_value',$request->get('folder_value'));
-        
+
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+
+		 if(empty($tagParams)){
+			$tagParams = array();
+		}
+
+		$searchParams = array_merge($searchParams, $tagParams);
+
+		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
+		$listViewModel->set('search_params',$transformedSearchParams);
+
+
+		//To make smarty to get the details easily accesible
+		foreach($searchParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$searchParams[$fieldName] = $fieldSearchInfo;
+			}
+
+		}
+
+		$folderId = $request->get('folder_id');
+		$folderValue = $request->get('folder_value');
+		$listViewModel->set('folder_id',$folderId);
+		$listViewModel->set('folder_value',$folderValue);
+		$viewer->assign('FOLDER_ID', $folderId);
+		$viewer->assign('FOLDER_VALUE', $folderValue);
+
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();
 		}
@@ -118,8 +212,27 @@ class Documents_List_View extends Vtiger_List_View {
 		$viewer->assign('LISTVIEW_MASSACTIONS', $linkModels['LISTVIEWMASSACTION']);
 
 		$viewer->assign('PAGING_MODEL', $pagingModel);
+		if(!$this->pagingModel){
+			$this->pagingModel = $pagingModel;
+		}
 		$viewer->assign('PAGE_NUMBER',$pageNumber);
 
+		if(!$this->moduleFieldStructure) {
+			$recordStructure = Vtiger_RecordStructure_Model::getInstanceForModule($listViewModel->getModule(), Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER);
+			$this->moduleFieldStructure = $recordStructure->getStructure();   
+		}
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if(!$this->tags) {
+			$this->tags = Vtiger_Tag_Model::getAllAccessible($currentUser->id, $moduleName);
+		}
+		if(!$this->allUserTags) {
+			$this->allUserTags = Vtiger_Tag_Model::getAllUserTags($currentUser->getId());
+		}
+
+
+		$listViewController = $listViewModel->get('listview_controller');
+		$selectedHeaderFields = $listViewController->getListViewHeaderFields();
 		$viewer->assign('ORDER_BY',$orderBy);
 		$viewer->assign('SORT_ORDER',$sortOrder);
 		$viewer->assign('NEXT_SORT_ORDER',$nextSortOrder);
@@ -129,7 +242,13 @@ class Documents_List_View extends Vtiger_List_View {
 
 		$viewer->assign('LISTVIEW_ENTRIES_COUNT',$noOfEntries);
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
+				 $viewer->assign('LIST_HEADER_FIELDS', json_encode(array_keys($this->listViewHeaders)));
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
+		$viewer->assign('MODULE_FIELD_STRUCTURE', $this->moduleFieldStructure);
+		$viewer->assign('SELECTED_HEADER_FIELDS', $selectedHeaderFields);
+		$viewer->assign('TAGS', $this->tags);
+		$viewer->assign('ALL_USER_TAGS', $this->allUserTags);
+		$viewer->assign('CURRENT_TAG',$tag);
 
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			if(!$this->listViewCount){
@@ -146,8 +265,19 @@ class Documents_List_View extends Vtiger_List_View {
 			$viewer->assign('LISTVIEW_COUNT', $totalCount);
 		}
 
+		$viewer->assign('IS_CREATE_PERMITTED', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
-        $viewer->assign('SEARCH_DETAILS', $searchParmams);
+		$viewer->assign('SEARCH_DETAILS', $searchParams);
+		$viewer->assign('LIST_VIEW_MODEL', $listViewModel);
+		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
+        $viewer->assign('VIEWID', $cvId);
+		//Vtiger7
+		$viewer->assign('REQUEST_INSTANCE',$request);
+		$viewer->assign('CUSTOM_VIEWS', CustomView_Record_Model::getAllByGroup($moduleName));
+	}
+
+	public function validateRequest(Vtiger_Request $request) {
+		return true;
 	}
 }

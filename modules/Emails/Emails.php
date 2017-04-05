@@ -41,17 +41,19 @@ class Emails extends CRMEntity {
 		'Subject' => Array('activity' => 'subject'),
 		'Related to' => Array('seactivityrel' => 'parent_id'),
 		'Date Sent' => Array('activity' => 'date_start'),
-        'Time Sent' => Array('activity' => 'time_start'),
+		'Time Sent' => Array('activity' => 'time_start'),
 		'Assigned To' => Array('crmentity', 'smownerid'),
-		'Access Count' => Array('email_track', 'access_count')
+		'Access Count' => Array('email_track', 'access_count'),
+		'Click Count' => Array('email_track','click_count'),
 	);
 	var $list_fields_name = Array(
 		'Subject' => 'subject',
 		'Related to' => 'parent_id',
 		'Date Sent' => 'date_start',
-        'Time Sent' => 'time_start',
+		'Time Sent' => 'time_start',
 		'Assigned To' => 'assigned_user_id',
-		'Access Count' => 'access_count'
+		'Access Count' => 'access_count',
+		'Click Count' => 'click_count'
 	);
 	var $list_link_field = 'subject';
 	var $column_fields = Array();
@@ -137,6 +139,27 @@ class Emails extends CRMEntity {
 		$this->insertIntoAttachment($this->id, $module);
 	}
 
+	/**
+	 * Function to get the array of record ids from a string pattern like "2@71|17@-1|120@15"
+	 * This will filter user record ids
+	 * @param type $recordIdsStr
+	 * @return type
+	 */
+	function getCRMIdsFromStringPattern($recordIdsStr) {
+		$recordIds = array();
+		if(strpos($recordIdsStr, '@') !== false && strpos($recordIdsStr, '|') !== false) {
+			$recordIdsParts = explode('|', $recordIdsStr);
+			for ($i = 0; $i < (count($recordIdsParts) - 1); $i++) {
+				$recordIdParts = explode('@', $recordIdsParts[$i]);
+				//filter user records 
+				if($recordIdParts[1] !== -1) {
+					$recordIds[] = $recordIdParts[0];
+				}
+			}
+		}
+		return $recordIds;
+	}
+
 	function insertIntoAttachment($id, $module) {
 		global $log, $adb;
 		$log->debug("Entering into insertIntoAttachment($id,$module) method.");
@@ -150,13 +173,16 @@ class Emails extends CRMEntity {
 			$file_saved = pdfAttach($this, $module, $pdfAttached, $id);
 		}
 
-		//This is to added to store the existing attachment id of the contact where we should delete this when we give new image
-		foreach ($_FILES as $fileindex => $files) {
-			if ($files['name'] != '' && $files['size'] > 0) {
-				$files['original_name'] = vtlib_purify($_REQUEST[$fileindex . '_hidden']);
-				$file_saved = $this->uploadAndSaveFile($id, $module, $files);
+		if ($_FILES) {
+			//This is to added to store the existing attachment id of the contact where we should delete this when we give new image
+			foreach ($_FILES as $fileindex => $files) {
+				if ($files['name'] != '' && $files['size'] > 0) {
+					$files['original_name'] = vtlib_purify($_REQUEST[$fileindex . '_hidden']);
+					$file_saved = $this->uploadAndSaveFile($id, $module, $files);
+				}
 			}
 		}
+
 		if ($module == 'Emails' && isset($_REQUEST['att_id_list']) && $_REQUEST['att_id_list'] != '') {
 			$att_lists = explode(";", $_REQUEST['att_id_list'], -1);
 			$id_cnt = count($att_lists);
@@ -490,15 +516,13 @@ class Emails extends CRMEntity {
 		$sql = 'DELETE FROM vtiger_seactivityrel WHERE activityid=? AND crmid = ?';
 		$this->db->pquery($sql, array($id, $return_id));
 
-		$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-		$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-		$this->db->pquery($sql, $params);
+		parent::unlinkRelationship($id, $return_module, $return_id);
 
 		$this->db->pquery('UPDATE vtiger_crmentity SET modifiedtime = ? WHERE crmid = ?', array(date('y-m-d H:i:d'), $id));
 	}
 
 	public function getNonAdminAccessControlQuery($module, $user, $scope='') {
-        require('user_privileges/user_privileges_' . $user->id . '.php');
+		require('user_privileges/user_privileges_' . $user->id . '.php');
 		require('user_privileges/sharing_privileges_' . $user->id . '.php');
 		$query = ' ';
 		$tabId = getTabid($module);
@@ -517,7 +541,7 @@ class Emails extends CRMEntity {
 			$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
 					"vtiger_crmentity$scope.smownerid ";
 		}
-        return $query;
+		return $query;
 	}
 
 	protected function setupTemporaryTable($tableName, $tabId, $user, $parentRole, $userGroups) {
@@ -561,30 +585,31 @@ class Emails extends CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityEmails",array("vtiger_groupsEmails","vtiger_usersEmails","vtiger_lastModifiedByEmails"));
-		$matrix->setDependency("vtiger_activity",array("vtiger_crmentityEmails","vtiger_email_track"));
 
 		if (!$queryPlanner->requireTable('vtiger_activity', $matrix)) {
 			return '';
 		}
 
+		$matrix->setDependency("vtiger_activity",array("vtiger_crmentityEmails","vtiger_email_track"));
+
 		$query = $this->getRelationQuery($module, $secmodule, "vtiger_activity","activityid", $queryPlanner);
 		if ($queryPlanner->requireTable("vtiger_crmentityEmails")){
-		    $query .= " LEFT JOIN vtiger_crmentity AS vtiger_crmentityEmails ON vtiger_crmentityEmails.crmid=vtiger_activity.activityid and vtiger_crmentityEmails.deleted = 0";
+			$query .= " LEFT JOIN vtiger_crmentity AS vtiger_crmentityEmails ON vtiger_crmentityEmails.crmid=vtiger_activityEmails.activityid and vtiger_crmentityEmails.deleted = 0";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsEmails")){
-		    $query .= " LEFT JOIN vtiger_groups AS vtiger_groupsEmails ON vtiger_groupsEmails.groupid = vtiger_crmentityEmails.smownerid";
+			$query .= " LEFT JOIN vtiger_groups AS vtiger_groupsEmails ON vtiger_groupsEmails.groupid = vtiger_crmentityEmails.smownerid";
 		}
 		if ($queryPlanner->requireTable("vtiger_usersEmails")){
-		    $query .= " LEFT JOIN vtiger_users AS vtiger_usersEmails ON vtiger_usersEmails.id = vtiger_crmentityEmails.smownerid";
+			$query .= " LEFT JOIN vtiger_users AS vtiger_usersEmails ON vtiger_usersEmails.id = vtiger_crmentityEmails.smownerid";
 		}
 		if ($queryPlanner->requireTable("vtiger_lastModifiedByEmails")){
-		    $query .= " LEFT JOIN vtiger_users AS vtiger_lastModifiedByEmails ON vtiger_lastModifiedByEmails.id = vtiger_crmentityEmails.modifiedby and vtiger_seactivityreltmpEmails.activityid = vtiger_activity.activityid";
+			$query .= " LEFT JOIN vtiger_users AS vtiger_lastModifiedByEmails ON vtiger_lastModifiedByEmails.id = vtiger_crmentityEmails.modifiedby and vtiger_seactivityreltmpEmails.activityid = vtiger_activityEmails.activityid";
 		}
-        if ($queryPlanner->requireTable("vtiger_createdbyEmails")){
-			$query .= " left join vtiger_users as vtiger_createdbyEmails on vtiger_createdbyEmails.id = vtiger_crmentityEmails.smcreatorid and vtiger_seactivityreltmpEmails.activityid = vtiger_activity.activityid";
+		if ($queryPlanner->requireTable("vtiger_createdbyEmails")){
+			$query .= " left join vtiger_users as vtiger_createdbyEmails on vtiger_createdbyEmails.id = vtiger_crmentityEmails.smcreatorid and vtiger_seactivityreltmpEmails.activityid = vtiger_activityEmails.activityid";
 		}
 		if ($queryPlanner->requireTable("vtiger_email_track")){
-		    $query .= " LEFT JOIN vtiger_email_track ON vtiger_email_track.mailid = vtiger_activity.activityid and vtiger_email_track.crmid = ".$focus->table_name.".".$focus->table_index;
+			$query .= " LEFT JOIN vtiger_email_track ON vtiger_email_track.mailid = vtiger_activityEmails.activityid and vtiger_email_track.crmid = ".$focus->table_name.".".$focus->table_index;
 		}
 		return $query;
 	}
@@ -614,7 +639,7 @@ class Emails extends CRMEntity {
 }
 
 //added for attach the generated pdf with email
-function pdfAttach($obj, $module, $file_name, $id) {
+function pdfAttach($obj, $module, $file_name, $id, $filePath = 'storage/') {
 	global $log;
 	$log->debug("Entering into pdfAttach() method.");
 
@@ -631,7 +656,7 @@ function pdfAttach($obj, $module, $file_name, $id) {
 	$upload_file_path = decideFilePath();
 
 	//Copy the file from temporary directory into storage directory for upload
-	$source_file_path = "storage/" . $file_name;
+	$source_file_path = $filePath . $file_name;
 	$status = copy($source_file_path, $upload_file_path . $current_id . "_" . $file_name);
 	//Check wheather the copy process is completed successfully or not. if failed no need to put entry in attachment table
 	if ($status) {

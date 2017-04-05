@@ -29,7 +29,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
             $listQuery .= ' ORDER BY '.$orderBy.' '.$sortOrder;
         
 
-		$listQuery .= " LIMIT $startIndex,".($pageLimit);
+		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
         
 		$listResult = $db->pquery($listQuery, array());
 
@@ -42,11 +42,18 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
             $listViewEntries[$row['portalid']]['portalurl'] = $row['portalurl'];
             $listViewEntries[$row['portalid']]['createdtime'] = Vtiger_Date_UIType::getDisplayDateValue($row['createdtime']);
         }
+        $pagingModel->calculatePageRange($listViewEntries);
         $index = 0;
 		foreach($listViewEntries as $recordId => $record) {
 			$rawData = $db->query_result_rowdata($listResult, $index++);
 			$record['id'] = $recordId;
 			$listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record, $rawData);
+		}
+		if(count($listViewRecordModels) > $pageLimit) {
+			array_pop($listViewRecordModels);
+			$pagingModel->set('nextPageExists', true);
+		} else {
+			$pagingModel->set('nextPageExists', false);
 		}
         
         return $listViewRecordModels;
@@ -54,7 +61,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
     
     public function getQuery() {
         $query = 'SELECT portalid, portalname, portalurl, createdtime FROM vtiger_portal';
-        $searchValue = $this->getForSql('search_value');
+        $searchValue = $this->get('search_value');
         if(!empty($searchValue))
             $query .= " WHERE portalname LIKE '".$searchValue."%'";
         

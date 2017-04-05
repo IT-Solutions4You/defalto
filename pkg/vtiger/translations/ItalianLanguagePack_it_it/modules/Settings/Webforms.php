@@ -37,6 +37,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Assegnazione utente',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Assegna utenti Nel Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Turno Lista Utenti Robin',
+
+  'LBL_ADD_RECORD' => 'Aggiungere Webform',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -45,5 +48,9 @@ $jsLanguageStrings = array(
 	'JS_MANDATORY_FIELDS_WITHOUT_OVERRIDE_VALUE_CANT_BE_HIDDEN' => 'I campi obbligatori senza valori di override smussano essere nascosti',
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campi di riferimento cant essere obbligatorio senza valore di override',
 	'JS_TYPE_TO_SEARCH' => 'Tipo di ricerca',
-	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform con questo nome esiste giÃ ',
+	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform con questo nome esiste già',
+
+  'JS_SELECT_AN_OPTION' => 'Selezionare un\'Opzione',
+  'JS_LABEL' => 'etichetta',
+
 );

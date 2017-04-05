@@ -37,6 +37,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Cesiunea de utilizator',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Atribui Utilizatorii In Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Runda Lista de Utilizatori Robin',
+
+  'LBL_ADD_RECORD' => 'Adăugare Formular Web',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -46,4 +49,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Domenii de referință cant fi obligatorie, fără valoare de anulare',
 	'JS_TYPE_TO_SEARCH' => 'Tastați pentru a căuta',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform cu acest nume există deja',
+
+  'JS_SELECT_AN_OPTION' => 'Selectați o opțiune',
+  'JS_LABEL' => 'tag-uri',
+
 );

@@ -1,5 +1,4 @@
 <?php
-
 /* +***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -58,15 +57,15 @@ $languageStrings = array(
 	'LBL_TRUE' => 'True',
 	'LBL_URL' => 'URL',
 	'LBL_USERNAME' => 'User Name',
-	'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'This wizard will guide you through the installation of Vtiger CRM6',
-	'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Welcome to Vtiger CRM 6 Setup Wizard',
+	'LBL_VTIGER7_SETUP_WIZARD_DESCRIPTION' => 'This wizard will guide you through the installation of Vtiger CRM7',
+	'LBL_WELCOME_TO_VTIGER7_SETUP_WIZARD' => 'Welcome to Vtiger CRM 7 Setup Wizard',
 	'LBL_WELCOME' => 'Welcome',
 	'LBL_ZLIB_SUPPORT' => 'Zlib Support',
 	'MSG_DB_PARAMETERS_INVALID' => 'specified database user, password, hostname, database type, or port is invalid',
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Message: Specified database Root User doesn\'t have permission to Create database or the Database name has special characters. Try changing the Database settings',
 	'MSG_DB_USER_NOT_AUTHORIZED' => 'specified database user does not have access to connect to the database server from the host',
 	'MSG_LIST_REASONS' => 'This may be due to the following reasons',
-        'LBL_MYSQLI_CONNECT_SUPPORT'=>'mysqli support',
-        'LBL_OPEN_SSL'=>'openssl support',
-        'LBL_CURL'=>'cURL support',
+	'LBL_MYSQLI_CONNECT_SUPPORT'=>'mysqli support',
+	'LBL_OPEN_SSL'=>'openssl support',
+	'LBL_CURL'=>'cURL support',
 );

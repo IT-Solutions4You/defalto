@@ -60,15 +60,6 @@ if(defined('VTIGER_UPGRADE')) {
 			),
 			array(
 				'fieldname' => 'email',
-				'operation' => 'has changed',
-				'value' => '',
-				'valuetype' => 'rawtext',
-				'joincondition' => 'and',
-				'groupjoin' => 'and',
-				'groupid' => '0',
-			),
-			array(
-				'fieldname' => 'email',
 				'operation' => 'is not empty',
 				'value' => '',
 				'valuetype' => 'rawtext',
@@ -79,6 +70,7 @@ if(defined('VTIGER_UPGRADE')) {
 		);
 		$workflowModel->set('conditions', $conditions);
 		$workflowModel->set('filtersavedinnew', 6);
+		$workflowModel->set('status', 1);
 		$workflowModel->save();
 		echo '<b>"#261 - vtiger_portalinfo doesnt update contact"</b> fixed';
 	}

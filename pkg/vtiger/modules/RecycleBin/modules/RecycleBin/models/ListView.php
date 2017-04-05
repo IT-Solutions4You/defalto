@@ -24,7 +24,7 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		$instance = new $modelClassName();
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
-		$queryGenerator = new QueryGenerator($sourceModuleModel->get('name'), $currentUser);
+		$queryGenerator = new EnhancedQueryGenerator($sourceModuleModel->get('name'), $currentUser);
 		$cvidObj = CustomView_Record_Model::getAllFilterByModule($sourceModuleModel->get('name')); 
         $cvid = $cvidObj->getId('cvid'); 
         $queryGenerator->initForCustomViewById($cvid);
@@ -48,24 +48,35 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
 
-        $orderBy = $this->getForSql('orderby');
-		$sortOrder = $this->getForSql('sortorder');
+		$orderBy = $this->get('orderby');
+		$sortOrder = $this->get('sortorder');
+
+		$searchParams = $this->get('search_params');
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+		$queryGenerator->parseAdvFilterList($searchParams, $glue);
 
 		if(!empty($orderBy)){
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-            if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE){
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-            }
-        }
-		if (!empty($orderBy) && $orderBy === 'smownerid') {
-			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel);
-			if ($fieldModel->getFieldDataType() == 'owner') {
-				$orderBy = 'COALESCE(CONCAT(vtiger_users.first_name,vtiger_users.last_name),vtiger_groups.groupname)';
+			$queryGenerator = $this->get('query_generator');
+			$fieldModels = $queryGenerator->getModuleFields();
+			$orderByFieldModel = $fieldModels[$orderBy];
+			if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
+					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
+				$queryGenerator->addWhereField($orderBy);
 			}
+		}
+		if($moduleName == 'Documents'){
+			//Document source required in list view for managing delete 
+			$listViewFields = $queryGenerator->getFields(); 
+			if(!in_array('document_source', $listViewFields)){ 
+				$listViewFields[] = 'document_source'; 
+			}
+			$queryGenerator->setFields($listViewFields);
 		}
 
 		$listQuery = $this->getQuery();
@@ -74,32 +85,14 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
-		if(!empty($orderBy)) {
-            if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
-                $referenceModules = $orderByFieldModel->getReferenceList();
-                $referenceNameFieldOrderBy = array();
-                foreach($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
-
-                    $columnList = array();
-                    foreach($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table').'.'.$fieldModel->get('column');
-                    }
-                    if(count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users').' '.$sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
-                    }
-                }
-                $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
-            }else{
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
+		if(!empty($orderBy) && $orderByFieldModel) {
+			$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+		} else if(empty($orderBy) && empty($sortOrder)){
+			//List view will be displayed on recently created/modified records
+			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
 		}
 		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-
+        
 		$listResult = $db->pquery($listQuery, array());
 		$listViewRecordModels = array();
 		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
@@ -130,6 +123,17 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		$db = PearDatabase::getInstance();
 
 		$queryGenerator = $this->get('query_generator');
+
+		$searchParams = $this->get('search_params');
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+		$queryGenerator->parseAdvFilterList($searchParams, $glue);
 
 		$listQuery = $queryGenerator->getQuery();
 		$listQuery = preg_replace("/vtiger_crmentity.deleted\s*=\s*0/i", 'vtiger_crmentity.deleted = 1', $listQuery);

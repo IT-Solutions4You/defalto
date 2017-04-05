@@ -66,8 +66,8 @@ Class Settings_SharingAccess_IndexAjax_Action extends Settings_Vtiger_IndexAjax_
 		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

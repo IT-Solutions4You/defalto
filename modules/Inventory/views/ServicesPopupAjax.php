@@ -9,6 +9,14 @@
  ************************************************************************************/
 
 class Inventory_ServicesPopupAjax_View extends Inventory_ServicesPopup_View {
+
+	function __construct() {
+		parent::__construct();
+		$this->exposeMethod('getListViewCount');
+		$this->exposeMethod('getRecordsCount');
+		$this->exposeMethod('getPageCount');
+	}
+
 	function preProcess(Vtiger_Request $request) {
 		return true;
 	}
@@ -18,6 +26,11 @@ class Inventory_ServicesPopupAjax_View extends Inventory_ServicesPopup_View {
 	}
 
 	function process (Vtiger_Request $request) {
+		$mode = $request->get('mode');
+		if(!empty($mode)) {
+			$this->invokeExposedMethod($mode, $request);
+			return;
+		}
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
 

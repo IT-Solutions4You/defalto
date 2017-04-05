@@ -29,11 +29,30 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 					$widget->set('linkid', $linkId);
 					$widget->set('userid', $currentUser->getId());
 					$widget->set('filterid', $request->get('filterid', NULL));
+                    
+                    // In Vtiger7, we need to pin this report widget to first tab of that user
+                    $dasbBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+                    $defaultTab = $dasbBoardModel->getUserDefaultTab($currentUser->getId());
+                    $widget->set('tabid', $request->get('tab', $defaultTab['id']));
+                    
 					if ($request->has('data')) {
 						$widget->set('data', $request->get('data'));
 					}
 					$widget->add();
 				}
+				
+				//Date conversion from user format to database format
+				$createdTime = $request->get('createdtime');
+				//user format dates should be used in getSearchParams() api
+				$request->set('dateFilter', $createdTime);
+				if(!empty($createdTime)) {
+					$startDate = Vtiger_Date_UIType::getDBInsertedValue($createdTime['start']);
+					$dates['start'] = getValidDBInsertDateTimeValue($startDate . ' 00:00:00');
+					$endDate = Vtiger_Date_UIType::getDBInsertedValue($createdTime['end']);
+					$dates['end'] = getValidDBInsertDateTimeValue($endDate . ' 23:59:59');
+				}
+				$request->set('createdtime', $dates);
+				
 				$classInstance = new $className();
 				$classInstance->process($request, $widget);
 				return;
@@ -44,8 +63,8 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 		$response->setResult(array('success'=>false,'message'=>  vtranslate('NO_DATA')));
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

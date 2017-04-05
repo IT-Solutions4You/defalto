@@ -25,11 +25,14 @@ $languageStrings = array(
 	'LBL_ADD_USERS_ROLES' => 'Añadir Usuarios, Roles...',
 	'LBL_ROLEANDSUBORDINATE' => 'Rol y Subordinados',
 	'RoleAndSubordinates' => 'Rol y Subordinados',
-	'LBL_DUPLICATES_EXIST' => 'Nombre de Grupo ya existe',
+
+  'LBL_DUPLICATES_EXIST' => 'Nombre del grupo ya Existe',
+
 );
 
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Selecciona al menos un miembro para el grupo',
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Se ha eliminado el grupo correctamente',
+	'JS_COMMA_NOT_ALLOWED_GROUP' => 'Los caracteres especiales como ,"<> no se permite la entrada Nombre de grupo.',
 );
 		

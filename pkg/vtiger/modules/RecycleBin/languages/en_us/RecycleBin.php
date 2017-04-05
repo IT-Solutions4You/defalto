@@ -8,8 +8,9 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-$languageStrings  = Array(
-	'RecycleBin' => 'Recycle Bin',
+$languageStrings = Array(
+    'Recycle Bin'=> 'Recycle Bin' ,
+    'RecycleBin' => 'Recycle Bin',
 	'LBL_SELECT_MODULE' => 'Select Module',
 	'LBL_EMPTY_RECYCLEBIN' => 'Empty Recycle Bin',
 	'LBL_RESTORE' => 'Restore',
@@ -22,6 +23,9 @@ $jsLanguageStrings = array(
 	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?',
 	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?',
 	'JS_RESTORING_RECORDS' => 'Restoring records',
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Are you sure you want to restore the record?',
+    'JS_RESTORING_RECORD' => 'Restoring Record',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restore in Vtiger and Drive',
 );
 
 

@@ -1,26 +1,28 @@
 <?php
-/*+***********************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *************************************************************************************/
+ ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Csoport hozzáadása'          ,
-	'LBL_ADD_USERS_ROLES'          => 'Felhasználók, Szerepek hozzáadása...',
-	'LBL_DUPLICATES_EXIST'         => 'A csoport név már létezik'   ,
-	'LBL_GROUP_MEMBERS'            => 'Csoport tagok'               ,
-	'LBL_GROUP_NAME'               => 'Csoport neve'                ,
-	'LBL_ROLEANDSUBORDINATE'       => 'Szerepek és beosztások'      ,
-	'LBL_TO_OTHER_GROUP'           => 'Másik csoportra'             ,
-	'LBL_TRANSFORM_OWNERSHIP'      => 'Tulajdonosság átruházása'    ,
-	'RoleAndSubordinates'          => 'Szerepek és beosztások'      ,
-	'SINGLE_Groups'                => 'Csoport'                     ,
-);
+	'LBL_TRANSFORM_OWNERSHIP'      => 'Tulajdonossï¿½g ï¿½truhï¿½zï¿½sa'    , 
+	'SINGLE_Groups'                => 'Group'                       , // TODO: Review
+	'LBL_TO_OTHER_GROUP'           => 'Mï¿½sik csoportra'             , 
+	'LBL_ADD_RECORD'               => 'Add Group'                   , // TODO: Review
+	'LBL_GROUP_NAME'               => 'Group Name'                  , // TODO: Review
+	'LBL_GROUP_MEMBERS'            => 'Group Members'               , // TODO: Review
+	'LBL_ADD_USERS_ROLES'          => 'Add Users, Roles...'         , // TODO: Review
+	'LBL_ROLEANDSUBORDINATE'       => 'Role and Subordinates'       , // TODO: Review
+	'RoleAndSubordinates'          => 'Role and Subordinates'       , // TODO: Review
 
+  'LBL_DUPLICATES_EXIST' => 'Csoport NÃ©v mÃ¡r LÃ©tezik',
+
+);
 $jsLanguageStrings = array(
-	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Kérjük, hogy legalább egy tagot válasszon a csoporthoz',
-	'JS_RECORD_DELETED_SUCCESSFULLY' => 'A csoportot sikeresen töröltük'  ,
+	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Please select atleast one member for a group', // TODO: Review
+	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Group deleted successfully'  , // TODO: Review
+	'JS_COMMA_NOT_ALLOWED_GROUP' => 'SpeciÃ¡lis karakterek mint ,"<> nem engedÃ©lyezettek a csoport nevÃ©t.',
 );

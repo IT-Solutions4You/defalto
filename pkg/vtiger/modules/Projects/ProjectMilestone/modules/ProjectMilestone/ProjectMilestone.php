@@ -33,7 +33,7 @@ class ProjectMilestone extends CRMEntity {
 	var $tab_name_index = Array(
 		'vtiger_crmentity' => 'crmid',
 		'vtiger_projectmilestone'   => 'projectmilestoneid',
-	    'vtiger_projectmilestonecf' => 'projectmilestoneid');
+		'vtiger_projectmilestonecf' => 'projectmilestoneid');
 
 	/**
 	 * Mandatory for Listing (Related listview)
@@ -136,7 +136,7 @@ class ProjectMilestone extends CRMEntity {
 		// Consider custom table join as well.
 		if(!empty($this->customFieldTable)) {
 			$query .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 			$joinedTables[] = $this->customFieldTable[0];
 		}
 		$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
@@ -234,7 +234,7 @@ class ProjectMilestone extends CRMEntity {
 
 		if(!empty($this->customFieldTable)) {
 			$query .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 		}
 
 		$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
@@ -288,7 +288,7 @@ class ProjectMilestone extends CRMEntity {
 		// Consider custom table join as well.
 		if(isset($this->customFieldTable)) {
 			$from_clause .= " INNER JOIN ".$this->customFieldTable[0]." ON ".$this->customFieldTable[0].'.'.$this->customFieldTable[1] .
-				      " = $this->table_name.$this->table_index";
+					  " = $this->table_name.$this->table_index";
 		}
 		$from_clause .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
@@ -396,5 +396,43 @@ class ProjectMilestone extends CRMEntity {
 	 * You can override the behavior by re-defining it here.
 	 */
 	//function get_dependents_list($id, $cur_tab_id, $rel_tab_id, $actions=false) { }
+
+	 /*
+	 * Function to get the secondary query part of a report
+	 * @param - $module primary module name
+	 * @param - $secmodule secondary module name
+	 * returns the query string formed on fetching the related data for report for secondary module
+	 */
+	function generateReportsSecQuery($module, $secmodule, $queryPlanner) {
+		$matrix = $queryPlanner->newDependencyMatrix();
+		$matrix->setDependency('vtiger_crmentityProjectMilestone', array('vtiger_groupsProjectMilestone', 'vtiger_usersProjectMilestone', 'vtiger_lastModifiedByProjectMilestone'));
+
+		if (!$queryPlanner->requireTable('vtiger_projectmilestone', $matrix)) {
+			return '';
+		}
+		$matrix->setDependency('vtiger_projectmilestone', array('vtiger_crmentityProjectMilestone'));
+
+		$query .= $this->getRelationQuery($module,$secmodule,"vtiger_projectmilestone","projectmilestoneid", $queryPlanner);
+
+		if ($queryPlanner->requireTable('vtiger_crmentityProjectMilestone', $matrix)) {
+			$query .= " LEFT JOIN vtiger_crmentity AS vtiger_crmentityProjectMilestone ON vtiger_crmentityProjectMilestone.crmid=vtiger_projectmilestone.projectmilestoneid and vtiger_crmentityProjectMilestone.deleted=0";
+		}
+		if ($queryPlanner->requireTable('vtiger_projectmilestonecf')) {
+			$query .= " LEFT JOIN vtiger_projectmilestonecf ON vtiger_projectmilestone.projectmilestoneid = vtiger_projectmilestonecf.projectmilestoneid";
+		}
+		if ($queryPlanner->requireTable('vtiger_groupsProjectMilestone')) {
+			$query .= "	left join vtiger_groups AS vtiger_groupsProjectMilestone ON vtiger_groupsProjectMilestone.groupid = vtiger_crmentityProjectMilestone.smownerid";
+		}
+		if ($queryPlanner->requireTable('vtiger_usersProjectMilestone')) {
+			$query .= " LEFT JOIN vtiger_users AS vtiger_usersProjectMilestone ON vtiger_usersProjectMilestone.id = vtiger_crmentityProjectMilestone.smownerid";
+		}
+		if ($queryPlanner->requireTable('vtiger_lastModifiedByProjectMilestone')) {
+			$query .= " LEFT JOIN vtiger_users AS vtiger_lastModifiedByProjectMilestone ON vtiger_lastModifiedByProjectMilestone.id = vtiger_crmentityProjectMilestone.modifiedby ";
+		}
+		if ($queryPlanner->requireTable("vtiger_createdbyProjectMilestone")){
+			$query .= " LEFT JOIN vtiger_users AS vtiger_createdbyProjectMilestone ON vtiger_createdbyProjectMilestone.id = vtiger_crmentityProjectMilestone.smcreatorid ";
+		}
+		return $query;
+	}
 }
 ?>

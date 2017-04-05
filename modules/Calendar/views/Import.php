@@ -20,44 +20,8 @@ class Calendar_Import_View extends Vtiger_Import_View {
 
 	function __construct() {
 		parent::__construct();
-		$this->exposeMethod('import');
 		$this->exposeMethod('importResult');
-		$this->exposeMethod('undoImport');
-	}
-
-	public function preprocess(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if (!empty ($mode)) {
-			parent::preProcess($request);
-		}
-	}
-
-	public function process(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if(!empty($mode)) {
-			echo $this->invokeExposedMethod($mode, $request);
-			return;
-		}
-		echo $this->import($request);
-	}
-
-	public function postprocess(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if (!empty ($mode)) {
-			parent::postProcess($request);
-		}
-	}
-
-	/**
-	 * Function to show import UI in Calendar Module
-	 * @param Vtiger_Request $request
-	 */
-	public function import(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$viewer = $this->getViewer($request);
-
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->view('Import.tpl', $moduleName);
+		$this->exposeMethod('undoIcalImport');
 	}
 
 	/**
@@ -112,12 +76,22 @@ class Calendar_Import_View extends Vtiger_Import_View {
 				if (!array_key_exists('visibility', $activityFieldsList)) {
 					$activityFieldsList['visibility'] = ' ';
 				}
-                if(array_key_exists('taskpriority',$activityFieldsList)) {
-                    $priorityMap = array('0'=>'Medium','1'=>'High','2'=>'Medium','3'=>'Low');
-                    $priorityval = $activityFieldsList['taskpriority'];
-                    if(array_key_exists($priorityval,$priorityMap))
-                        $activityFieldsList['taskpriority'] = $priorityMap[$priorityval];
-                }
+				if(array_key_exists('taskpriority',$activityFieldsList)) {
+					$priorityMap = array('0'=>'Medium','1'=>'High','2'=>'Medium','3'=>'Low');
+					$priorityval = $activityFieldsList['taskpriority'];
+					if(array_key_exists($priorityval,$priorityMap))
+						$activityFieldsList['taskpriority'] = $priorityMap[$priorityval];
+				}
+				if(array_key_exists('eventstatus',$activityFieldsList) && !isset($activityFieldsList['eventstatus'])) {
+					$dueDate = date($activityFieldsList['due_date']);
+					$currentDate = date('Y-m-d');
+					$activityFieldsList['eventstatus'] = 'Planned';
+					if(strtotime($dueDate) < strtotime($currentDate))
+						$activityFieldsList['eventstatus'] = 'Held';
+				}
+				if (!$activityFieldsList['time_end']) {
+					$activityFieldsList['time_end'] = '';
+				}
 
 				$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 				$recordModel->setData($activityFieldsList);
@@ -168,7 +142,7 @@ class Calendar_Import_View extends Vtiger_Import_View {
 	 * Function to show result of undo import
 	 * @param Vtiger_Request $request
 	 */
-	public function undoImport(Vtiger_Request $request) {
+	public function undoIcalImport(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$moduleName = $request->getModule();
 

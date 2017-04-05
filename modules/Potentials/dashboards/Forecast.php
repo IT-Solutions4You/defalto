@@ -44,13 +44,7 @@ class Potentials_Forecast_Dashboard extends Vtiger_IndexAjax_View {
 			$closingdates['end'] = Vtiger_Date_UIType::getDBInsertedValue($expectedclosedate['end']);
 		}
 		
-		$createdTime = $request->get('createdtime');
-		
-		//Date conversion from user to database format
-		if(!empty($createdTime)) {
-			$dates['start'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['start']);
-			$dates['end'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['end']);
-		}
+		$dates = $request->get('createdtime');
 		
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getForecast($closingdates,$dates);

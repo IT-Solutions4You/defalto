@@ -23,10 +23,10 @@ class VTEntityDelta extends VTEventHandler {
 		$adb = PearDatabase::getInstance();
 		$moduleName = $entityData->getModuleName();
 		$recordId = $entityData->getId();
-		
+
 		if($eventName == 'vtiger.entity.beforesave') {
 			if(!empty($recordId)) {
-				$entityData = VTEntityData::fromEntityId($adb, $recordId);
+				$entityData = VTEntityData::fromEntityId($adb, $recordId, $moduleName);
 				if($moduleName == 'HelpDesk') {
 					$entityData->set('comments', getTicketComments($recordId));
 				} elseif($moduleName == 'Invoice'){
@@ -113,6 +113,9 @@ class VTEntityDelta extends VTEventHandler {
 			return false;
 		}
 		$fieldDelta = self::$entityDelta[$moduleName][$recordId][$fieldName];
+		if(is_array($fieldDelta)) {
+			$fieldDelta = array_map('decode_html', $fieldDelta);
+		}
 		$result = $fieldDelta['oldValue'] != $fieldDelta['currentValue'];
 		if ($fieldValue !== NULL) {
 			$result = $result && ($fieldDelta['currentValue'] === $fieldValue);

@@ -51,9 +51,11 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 					return $db->query_result($nameResult, 0, 'first_name').' '.$db->query_result($nameResult, 0, 'last_name');
 				}
 			} else {
+				$fieldModel = $this->get('field');
 				$entityNames = getEntityName($referenceModuleName, array($value));
 				$linkValue = "<a href='index.php?module=$referenceModuleName&view=".$referenceModule->getDetailViewName()."&record=$value'
-							title='".vtranslate($referenceModuleName, $referenceModuleName)."'>$entityNames[$value]</a>";
+							title='".vtranslate($fieldModel->get('label'), $referenceModuleName).":". $entityNames[$value] ."' "
+							. "data-original-title='".vtranslate($referenceModuleName, $referenceModuleName)."'>$entityNames[$value]</a>";
 				return $linkValue;
 			}
 		}
@@ -74,14 +76,13 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 		}
 		return '';
 	}
-    
-    public function getListSearchTemplateName() {
-        $fieldModel = $this->get('field');
-        $fieldName = $fieldModel->getName();
-        if($fieldName == 'modifiedby'){
-            return 'uitypes/OwnerFieldSearchView.tpl';
-        }
-        return parent::getListSearchTemplateName();
-    }
+
+	public function getListSearchTemplateName() {
+		$fieldModel = $this->get('field');
+		if($fieldModel->get('uitype') == '52' || $fieldModel->get('uitype') == '77'){
+			return 'uitypes/OwnerFieldSearchView.tpl';
+		}
+		return parent::getListSearchTemplateName();
+	}
 
 }

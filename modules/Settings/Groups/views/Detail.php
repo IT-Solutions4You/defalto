@@ -29,4 +29,40 @@ Class Settings_Groups_Detail_View extends Settings_Vtiger_Index_View {
         
         
     }
+    
+    /**
+	 * Function to get the list of Script models to be included
+	 * @param Vtiger_Request $request
+	 * @return <Array> - List of Vtiger_JsScript_Model instances
+	 */
+	function getHeaderScripts(Vtiger_Request $request) {
+		$headerScriptInstances = parent::getHeaderScripts($request);
+		$moduleName = $request->getModule();
+
+		$jsFileNames = array(
+			"modules.Settings.$moduleName.resources.Detail"
+		);
+
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+		return $headerScriptInstances;
+	}
+    
+    /**
+     * Setting module related Information to $viewer (for Vtiger7)
+     * @param type $request
+     * @param type $moduleModel
+     */
+    public function setModuleInfo($request, $moduleModel){
+        
+        $viewer = $this->getViewer($request);
+        $listViewModel = Settings_Vtiger_ListView_Model::getInstance($request->getModule(false));
+        $linkParams = array('MODULE'=>$request->getModule(false), 'ACTION'=>$request->get('view'));
+
+        if(!$this->listViewLinks){
+            $this->listViewLinks = $listViewModel->getListViewLinks($linkParams);
+        }
+        $viewer->assign('LISTVIEW_LINKS', $this->listViewLinks);
+        
+    }
 }

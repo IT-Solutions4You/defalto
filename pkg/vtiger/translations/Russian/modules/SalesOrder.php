@@ -8,7 +8,8 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_SalesOrder'            => 'Заказ на Продажу', 
+    'SalesOrder'            => 'Заказы на продажу', 
+	'SINGLE_SalesOrder'            => 'Заказ на продажу', 
 	'LBL_EXPORT_TO_PDF'            => 'Экспорт в PDF'       , 
 	'LBL_SEND_MAIL_PDF'            => 'Отправить на e-mail с PDF'         , 
 	'LBL_ADD_RECORD'               => 'Добавить заказа клиента'             , 
@@ -22,8 +23,7 @@ $languageStrings = array(
 	'Sales Commission'             => 'Комиссионные'    , 
 	'Purchase Order'               => 'Заказ на Закупку', 
 	'Vendor Terms'                 => 'Условия Поставщика', 
-	'Pending'                      => 'В ожидании'         ,
-    'Recurring Invoive Information'=>'Повторяющиеся Счет Информация',
+	'Pending'                      => 'В ожидании'         , 
 	'Enable Recurring'             => 'Включить Периодичность', 
 	'Frequency'                    => 'Периодичность'  , 
 	'Start Period'                 => 'Начало'                , 
@@ -34,12 +34,10 @@ $languageStrings = array(
 	'AutoCreated'                  => 'АвтоСоздан'        , 
 	'Sent'                         => 'Отправлен'          , 
 	'Credit Invoice'               => 'Кредит'                , 
-	'Paid'                         => 'Оплачен'              ,
-    'Daily'=>'Ежедневно',
-    'Monthly'=>'Ежемесячно',
-    'Quarterly'=>'Ежеквартальный',
-    'Yearly'=>'Годовой',
-    'Net 30 days'=>'Чистые 30 дней',
-    'Net 45 days'=>'Чистые 45 дней',
-    'Net 60 days'=>'Чистые 60 дней',
+	'Paid'                         => 'Оплачен'              , 
+
+  'LBL_THIS' => 'Это',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'будет удален из системы.просьба удалить или заменить этот пункт',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Эта позиция удаляется из системы,пожалуйста, удалите эту строку элементов',
+
 );

@@ -94,7 +94,7 @@ class Quotes extends CRMEntity {
 	var $default_sort_order = 'ASC';
 	//var $groupTable = Array('vtiger_quotegrouprelation','quoteid');
 
-	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id');
+	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid');
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'subject';
@@ -113,6 +113,16 @@ class Quotes extends CRMEntity {
 	function save_module()
 	{
 		global $adb;
+
+		/* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
+		 * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
+		 * This should be done by webservices, not be normal save of Inventory record.
+		 * So unsetting the value $_REQUEST['totalProductCount'] through check point
+		 */
+		if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
+			unset($_REQUEST['totalProductCount']);
+		}
+
 		//in ajax save we should not call this function, because this will delete all the existing product values
 		if($_REQUEST['action'] != 'QuotesAjax' && $_REQUEST['ajxaction'] != 'DETAILVIEW'
 				&& $_REQUEST['action'] != 'MassEditSave' && $_REQUEST['action'] != 'ProcessDuplicates'
@@ -350,14 +360,14 @@ class Quotes extends CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityQuotes', array('vtiger_usersQuotes', 'vtiger_groupsQuotes', 'vtiger_lastModifiedByQuotes'));
 		$matrix->setDependency('vtiger_inventoryproductrelQuotes', array('vtiger_productsQuotes', 'vtiger_serviceQuotes'));
-		$matrix->setDependency('vtiger_quotes',array('vtiger_crmentityQuotes', "vtiger_currency_info$secmodule",
-				'vtiger_quotescf', 'vtiger_potentialRelQuotes', 'vtiger_quotesbillads','vtiger_quotesshipads',
-				'vtiger_inventoryproductrelQuotes', 'vtiger_contactdetailsQuotes', 'vtiger_accountQuotes',
-				'vtiger_invoice_recurring_info','vtiger_quotesQuotes','vtiger_usersRel1'));
-
+		
 		if (!$queryPlanner->requireTable('vtiger_quotes', $matrix)) {
 			return '';
 		}
+        $matrix->setDependency('vtiger_quotes',array('vtiger_crmentityQuotes', "vtiger_currency_info$secmodule",
+				'vtiger_quotescf', 'vtiger_potentialRelQuotes', 'vtiger_quotesbillads','vtiger_quotesshipads',
+				'vtiger_inventoryproductrelQuotes', 'vtiger_contactdetailsQuotes', 'vtiger_accountQuotes',
+				'vtiger_invoice_recurring_info','vtiger_quotesQuotes','vtiger_usersRel1'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_quotes","quoteid", $queryPlanner);
 		if ($queryPlanner->requireTable("vtiger_crmentityQuotes", $matrix)){
@@ -376,21 +386,12 @@ class Quotes extends CRMEntity {
 			$query .= " left join vtiger_currency_info as vtiger_currency_info$secmodule on vtiger_currency_info$secmodule.id = vtiger_quotes.currency_id";
 		}
 		if ($queryPlanner->requireTable("vtiger_inventoryproductrelQuotes",$matrix)){
-			$query .= " left join vtiger_inventoryproductrel as vtiger_inventoryproductrelQuotes on vtiger_quotes.quoteid = vtiger_inventoryproductrelQuotes.id";
-            // To Eliminate duplicates in reports
-            if(($module == 'Products' || $module == 'Services') && $secmodule == "Quotes"){
-                if($module == 'Products'){
-                    $query .= " and vtiger_inventoryproductrelQuotes.productid = vtiger_products.productid ";    
-                }else if($module== 'Services'){
-                    $query .= " and vtiger_inventoryproductrelQuotes.productid = vtiger_service.serviceid ";
-                }
-            }
 		}
 		if ($queryPlanner->requireTable("vtiger_productsQuotes")){
-			$query .= " left join vtiger_products as vtiger_productsQuotes on vtiger_productsQuotes.productid = vtiger_inventoryproductrelQuotes.productid";
+			$query .= " left join vtiger_products as vtiger_productsQuotes on vtiger_productsQuotes.productid = vtiger_inventoryproductreltmpQuotes.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_serviceQuotes")){
-			$query .= " left join vtiger_service as vtiger_serviceQuotes on vtiger_serviceQuotes.serviceid = vtiger_inventoryproductrelQuotes.productid";
+			$query .= " left join vtiger_service as vtiger_serviceQuotes on vtiger_serviceQuotes.serviceid = vtiger_inventoryproductreltmpQuotes.productid";
 		}
 		if ($queryPlanner->requireTable("vtiger_groupsQuotes")){
 			$query .= " left join vtiger_groups as vtiger_groupsQuotes on vtiger_groupsQuotes.groupid = vtiger_crmentityQuotes.smownerid";
@@ -449,10 +450,14 @@ class Quotes extends CRMEntity {
 		} elseif($return_module == 'Contacts') {
 			$relation_query = 'UPDATE vtiger_quotes SET contactid=? WHERE quoteid=?';
 			$this->db->pquery($relation_query, array(null, $id));
+		} elseif($return_module == 'Documents') {
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+            $this->db->pquery($sql, array($id, $return_id));
+        } elseif($return_module == 'Leads'){
+            $relation_query = 'UPDATE vtiger_quotes SET contactid=? WHERE quoteid=?';
+            $this->db->pquery($relation_query, array(null, $id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -536,6 +541,14 @@ class Quotes extends CRMEntity {
 		return $query;
 	}
 
+	/**
+	 * Function to get importable mandatory fields
+	 * By default some fields like Quantity, List Price is not mandaroty for Invertory modules but
+	 * import fails if those fields are not mapped during import.
+	 */
+	function getMandatoryImportableFields() {
+		return getInventoryImportableMandatoryFeilds($this->moduleName);
+	}
 }
 
 ?>

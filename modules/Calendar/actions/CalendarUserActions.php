@@ -15,14 +15,15 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 		$this->exposeMethod('addUserCalendar');
 		$this->exposeMethod('deleteCalendarView');
 		$this->exposeMethod('addCalendarView');
+		$this->exposeMethod('checkDuplicateView');
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+		
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'View', $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 	
@@ -52,7 +53,11 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 			$db->pquery('INSERT INTO vtiger_shareduserinfo (userid, shareduserid, visible) VALUES(?, ?, ?)', array($userId, $sharedUserId, '0'));
 		}
 		
-		$result = array('userid' => $userId, 'sharedid' => $sharedUserId, 'username' => getUserFullName($sharedUserId));
+		$userName = getUserFullName($sharedUserId);
+		if(!$userName) {
+			$userName = Vtiger_Functions::getGroupRecordLabel($sharedUserId);
+		}
+		$result = array('userid' => $userId, 'sharedid' => $sharedUserId, 'username' => $userName);
 		$response = new Vtiger_Response();
 		$response->setResult($result);
 		$response->emit();
@@ -85,24 +90,32 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 	}
 	
 	/**
+	 * Function to check duplication for calendar views while adding
+	 * @param Vtiger_Request $request
+	 * @return Vtiger_Response $response
+	 */
+	function checkDuplicateView(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		if (Calendar_Module_Model::checkDuplicateView($request)) {
+			$result = array('success' => true, 'message' => vtranslate('LBL_DUPLICATE_VIEW_EXIST', $moduleName));
+		} else {
+			$result = array('success' => false);
+		}
+		
+		$response = new Vtiger_Response();
+		$response->setResult($result);
+		$response->emit();
+	}
+	
+	/**
 	 * Function to delete the calendar view from My Calendar
 	 * @param Vtiger_Request $request
 	 * @return Vtiger_Response $response
 	 */
 	function deleteCalendarView(Vtiger_Request $request) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$userId = $currentUser->getId();
-		$viewmodule = $request->get('viewmodule');
-		$viewfieldname = $request->get('viewfieldname');
+		Calendar_Module_Model::deleteCalendarView($request);
 		
-		
-		$db = PearDatabase::getInstance();
-		$db->pquery('UPDATE vtiger_calendar_user_activitytypes 
-			INNER JOIN vtiger_calendar_default_activitytypes ON vtiger_calendar_default_activitytypes.id = vtiger_calendar_user_activitytypes.defaultid
-			SET vtiger_calendar_user_activitytypes.visible=? WHERE vtiger_calendar_user_activitytypes.userid=? AND vtiger_calendar_default_activitytypes.module=? AND vtiger_calendar_default_activitytypes.fieldname=?', 
-				array('0', $userId, $viewmodule, $viewfieldname));
-		
-		$result = array('viewmodule' => $viewmodule, 'viewfieldname' => $viewfieldname, 'viewfieldlabel' => $request->get('viewfieldlabel'));
+		$result = array('viewmodule' => $request->get('viewmodule'), 'viewfieldname' => $request->get('viewfieldname'), 'viewfieldlabel' => $request->get('viewfieldlabel'));
 		$response = new Vtiger_Response();
 		$response->setResult($result);
 		$response->emit();
@@ -114,22 +127,10 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 	 * @return Vtiger_Response $response
 	 */
 	function addCalendarView(Vtiger_Request $request) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$userId = $currentUser->getId();
-		$viewmodule = $request->get('viewmodule');
-		$viewfieldname = $request->get('viewfieldname');
-		$viewcolor = $request->get('viewColor');
-		
-		$db = PearDatabase::getInstance();
-		
-		$db->pquery('UPDATE vtiger_calendar_user_activitytypes 
-					INNER JOIN vtiger_calendar_default_activitytypes ON vtiger_calendar_default_activitytypes.id = vtiger_calendar_user_activitytypes.defaultid
-					SET vtiger_calendar_user_activitytypes.color=?, vtiger_calendar_user_activitytypes.visible=? 
-					WHERE vtiger_calendar_user_activitytypes.userid=? AND vtiger_calendar_default_activitytypes.module=? AND vtiger_calendar_default_activitytypes.fieldname=?',
-						array($viewcolor, '1', $userId, $viewmodule, $viewfieldname));
+		$type = Calendar_Module_Model::addCalendarView($request);
 		
 		$response = new Vtiger_Response();
-		$response->setResult(array('success' => true));
+		$response->setResult(array('success' => true, 'type' => $type));
 		$response->emit();
 	}
 	

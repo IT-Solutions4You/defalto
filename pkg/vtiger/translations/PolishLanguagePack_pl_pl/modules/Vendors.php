@@ -36,9 +36,16 @@ $languageStrings = array(
 	'306-Internet Sales'=>'306 Sprzedaż internetowa',
 	'307-Service-Hardware Labor'=>'307 Koszty naprawy',
 	'308-Sales-Books'=>'308 Sprzedaż książek',
+
+  'Phone' => 'Podstawowy Telefon',
+  'Email' => 'Podstawowy Adres E-Mail',
+
 );
 
 $jsLanguageStrings = array(
 	'LBL_DELETE_CONFIRMATION' => 'Usunięcie dostawcy spowoduje usunięcie wszystkich zamówieniń z którymi jest powiązany, czy na pewno chcesz usunąć rekord?',
 	'LBL_MASS_DELETE_CONFIRMATION' => 'Usunięcie dostawcy (ów) spowoduje usunięcie wszystkich zamówieniń z którymi jest (są) powiązany (i), czy na pewno chcesz usunąć rekord?',
+
+  'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Jesteś pewien, że chcesz usunąć?',
+
 );

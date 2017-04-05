@@ -37,4 +37,14 @@ $languageStrings = array(
 	'Date & Time Sent'             => 'Date Sent'                   , 
     'Time Start'                   => 'Time Sent'                   ,
     'LBL_EMAIL_INFORMATION' => 'E-Mail Informationen',
+    'LBL_EMAILTEMPLATE_WARNING'    => 'Sind Ihre merge-Tags korrigieren',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Bitte stellen Sie sicher, dass der von Ihnen gewählte Vorlage hat, die für die Empfängerdatensatz zusammen-Tags. 
+                                            Wenn Sie senden eine E-Mail zu führen, aber die merge-Tags gehören zu Modul Kontakt (ex: $contacts-lastname$) 
+                                            dann werden die Werte nicht zusammengeführt werden.',
+	'Draft' => 'Entwurf',
+    'Parent ID' => 'Geordneten Datensatzes',
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'Warnung',
+);   

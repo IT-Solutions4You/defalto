@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -87,5 +87,20 @@ $languageStrings = array(
 	'Sq Ft'=>'Sq Ft',
 	
 	'LBL_ADD_TO_PRICEBOOKS' => 'Lägg till Prisguide',
+	'LBL_CONVERSION_RATE' => 'Omvandlingshastighet',
     'LBL_PRODUCTSMOD_DISABLED' => 'Aktivera Produkter Module för att visa produkter',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Visa bunt poster i Faktura/Citat/kundorder/inköpsorder',
+	'LBL_BUNDLE_TOTAL_COST' => 'Total kostnad för Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Uppdatera Bundle Pris',
+
+  'LBL_PRODUCT_NAME' => 'Produkt Namn',
+  'LBL_PRICE_QUANTITY' => 'Pris x Kvantitet',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Tillbehörsprodukter kommer att visas i förteckningen',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Tillbehörsprodukter kommer inte att visas i förteckningen',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Framgångsrikt förändrats totala kostnaden för bunt',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Denna produkt är en del av en produkt bunt. Priset på bunten förblir oförändrade när en bunt objekt tas bort eller inaktiv. Är du säker på att du vill fortsätta?',
 );

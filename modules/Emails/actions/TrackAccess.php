@@ -23,6 +23,7 @@ vimport('includes.http.Request');
 vimport('includes.runtime.Globals');
 vimport('includes.runtime.BaseModel');
 vimport ('includes.runtime.Controller');
+vimport('includes.runtime.LanguageHandler');
 
 class Emails_TrackAccess_Action extends Vtiger_Action_Controller {
 
@@ -30,19 +31,40 @@ class Emails_TrackAccess_Action extends Vtiger_Action_Controller {
 		if (vglobal('application_unique_key') !== $request->get('applicationKey')) {
 			exit;
 		}
+		if((strpos($_SERVER['HTTP_REFERER'], vglobal('site_URL')) !== false)) {
+			exit;
+		}
 
+		global $current_user;
+		$current_user = Users::getActiveAdminUser();
+		
+		if($request->get('method') == 'click') {
+			$this->clickHandler($request);
+		}else{
+			$parentId = $request->get('parentId');
+			$recordId = $request->get('record');
+
+			if ($parentId && $recordId) {
+				$recordModel = Emails_Record_Model::getInstanceById($recordId);
+				$recordModel->updateTrackDetails($parentId);
+				Vtiger_ShortURL_Helper::sendTrackerImage();
+			}
+		}
+	}
+	
+	public function clickHandler(Vtiger_Request $request) {
 		$parentId = $request->get('parentId');
 		$recordId = $request->get('record');
 
 		if ($parentId && $recordId) {
 			$recordModel = Emails_Record_Model::getInstanceById($recordId);
-			$recordModel->updateTrackDetails($parentId);
+			$recordModel->trackClicks($parentId);
 		}
-	}
-
-	function validateRequest(Vtiger_Request $request) {
-		// This is a callback entry point file.
-		return true;
+		
+		$redirectUrl = $request->get('redirectUrl');
+		if(!empty($redirectUrl)) {
+			return Vtiger_Functions::redirectUrl(rawurldecode($redirectUrl));
+		}
 	}
 }
 

@@ -296,7 +296,7 @@ if(isset(\$default_timezone) && function_exists('date_default_timezone_set')) {
 }
 
 //Set the default layout 
-\$default_layout = 'vlayout';
+\$default_layout = 'v7';
 
 include_once 'config.security.php';";
 		return $configFileContents;

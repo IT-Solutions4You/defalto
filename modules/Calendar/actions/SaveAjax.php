@@ -10,62 +10,98 @@
 
 class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 
-	public function process(Vtiger_Request $request) {
-        $user = Users_Record_Model::getCurrentUserModel();
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$record = $request->get('record');
 
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if ($record) {
+			$activityModulesList = array('Calendar', 'Events');
+			$recordEntityName = getSalesEntityType($record);
+
+			if (!in_array($recordEntityName, $activityModulesList) || !in_array($moduleName, $activityModulesList)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
+		}
+	}
+
+	public function process(Vtiger_Request $request) {
+		$user = Users_Record_Model::getCurrentUserModel();
+
+		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
 		$recordModel = $this->saveRecord($request);
+		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
 
 		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$fieldValue =  Vtiger_Util_Helper::toSafeHTML($recordModel->get($fieldName));
-            $result[$fieldName] = array();
+			$recordFieldValue = $recordModel->get($fieldName);
+			if(is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+				$recordFieldValue = implode(' |##| ', $recordFieldValue);
+			}
+			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
+			if ($fieldModel->getFieldDataType() !== 'currency' && $fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date') { 
+				$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId()); 
+			}
+			$result[$fieldName] = array();
 			if($fieldName == 'date_start') {
 				$timeStart = $recordModel->get('time_start');
-                $dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeStart);
+				$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeStart);
 
 				$fieldValue = $fieldValue.' '.$timeStart;
 
-                $userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-                $dateTimeComponents = explode(' ',$userDateTimeString);
-                $dateComponent = $dateTimeComponents[0];
-                //Conveting the date format in to Y-m-d . since full calendar expects in the same format
-                $dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
-                $result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+				$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
+				$dateTimeComponents = explode(' ',$userDateTimeString);
+				$dateComponent = $dateTimeComponents[0];
+				//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+				$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
+				$result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+				$displayValue = $fieldModel->getDisplayValue($fieldValue);
 			} else if($fieldName == 'due_date') {
 				$timeEnd = $recordModel->get('time_end');
-                $dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeEnd);
+				$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeEnd);
 
 				$fieldValue = $fieldValue.' '.$timeEnd;
 
-                $userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-                $dateTimeComponents = explode(' ',$userDateTimeString);
-                $dateComponent = $dateTimeComponents[0];
-                //Conveting the date format in to Y-m-d . since full calendar expects in the same format
-                $dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
-                $result[$fieldName]['calendar_display_value']   =  $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+				$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
+				$dateTimeComponents = explode(' ',$userDateTimeString);
+				$dateComponent = $dateTimeComponents[0];
+				//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+				$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
+				$result[$fieldName]['calendar_display_value']   =  $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+				$displayValue = $fieldModel->getDisplayValue($fieldValue);
 			}
 			$result[$fieldName]['value'] = $fieldValue;
-            $result[$fieldName]['display_value'] = decode_html($fieldModel->getDisplayValue($fieldValue));
+			$result[$fieldName]['display_value'] = decode_html($displayValue);
 		}
 
 		$result['_recordLabel'] = $recordModel->getName();
 		$result['_recordId'] = $recordModel->getId();
+		$result['calendarModule'] = $request->get('calendarModule');
+		$result['sourceModule'] = $request->get('calendarModule');
 
 		// Handled to save follow up event
 		$followupMode = $request->get('followup');
 
-        if($followupMode == 'on') {
-            //Start Date and Time values
-            $startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('followup_time_start'));
-            $startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('followup_date_start') . " " . $startTime);
-            list($startDate, $startTime) = explode(' ', $startDateTime);
+		if($followupMode == 'on') {
+			//Start Date and Time values
+			$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('followup_time_start'));
+			$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('followup_date_start') . " " . $startTime);
+			list($startDate, $startTime) = explode(' ', $startDateTime);
 
-            $subject = $request->get('subject');
-            if($startTime != '' && $startDate != ''){
-                $recordModel->set('eventstatus', 'Planned');
-                $recordModel->set('subject','[Followup] '.$subject);
-                $recordModel->set('date_start',$startDate);
+			$subject = $request->get('subject');
+			if($startTime != '' && $startDate != ''){
+				$recordModel->set('eventstatus', 'Planned');
+				$recordModel->set('subject','[Followup] '.$subject);
+				$recordModel->set('date_start',$startDate);
 				$recordModel->set('time_start',$startTime);
 
 				$currentUser = Users_Record_Model::getCurrentUserModel();
@@ -79,11 +115,11 @@ class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				list($endDate, $endTime) = explode(' ', $dueDateTime);
 
 				$recordModel->set('due_date',$endDate);
-                $recordModel->set('time_end',$endTime);
-                $recordModel->set('mode', 'create');
-                $recordModel->save();
-            }
-        }
+				$recordModel->set('time_end',$endTime);
+				$recordModel->set('mode', 'create');
+				$recordModel->save();
+			}
+		}
 		$response = new Vtiger_Response();
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->setResult($result);
@@ -102,7 +138,14 @@ class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		if(!empty($startDate)) {
 			//Start Date and Time values
 			$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
-			$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
+			$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($startDate." ".$startTime);
+			list($startDate, $startTime) = explode(' ', $startDateTime);
+
+			$recordModel->set('date_start', $startDate);
+			$recordModel->set('time_start', $startTime);
+		} else {
+			$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($recordModel->get('time_start'));
+			$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($recordModel->get('date_start')." ".$startTime);
 			list($startDate, $startTime) = explode(' ', $startDateTime);
 
 			$recordModel->set('date_start', $startDate);
@@ -118,6 +161,19 @@ class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			if ($endTime) {
 				$endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
 				$endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
+				list($endDate, $endTime) = explode(' ', $endDateTime);
+			}
+
+			$recordModel->set('time_end', $endTime);
+			$recordModel->set('due_date', $endDate);
+		} else {
+			//End Date and Time values
+			$endTime = $recordModel->get('time_end');
+			$endDate = Vtiger_Date_UIType::getDBInsertedValue($recordModel->get('due_date'));
+
+			if ($endTime) {
+				$endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
+				$endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($recordModel->get('due_date')." ".$endTime);
 				list($endDate, $endTime) = explode(' ', $endDateTime);
 			}
 
@@ -142,16 +198,13 @@ class Calendar_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			$recordModel->set('visibility', ucfirst($sharedType));
 		}
 
-        $time = (strtotime($endTime))- (strtotime($startTime));
-        $diffinSec=  (strtotime($endDate))- (strtotime($startDate));
-        $diff_days=floor($diffinSec/(60*60*24));
-          
-        $hours=((float)$time/3600)+($diff_days*24);
-        $minutes = ((float)$hours-(int)$hours)*60;  
-        
-        $recordModel->set('duration_hours', (int)$hours);
-		$recordModel->set('duration_minutes', round($minutes,0)); 
-        
+		$setReminder = $request->get('set_reminder');
+		if($setReminder) {
+			$_REQUEST['set_reminder'] = 'Yes';
+		} else {
+			$_REQUEST['set_reminder'] = 'No';
+		}
+
 		return $recordModel;
 	}
 }

@@ -11,7 +11,13 @@
 class MailManager_Request extends Vtiger_Request {
 
 	public function get($key, $defvalue = '') {
-		return urldecode(parent::get($key, $defvalue));
+		$value = parent::get($key, $defvalue);
+		if (is_array($value)) {
+			//For Review: http://stackoverflow.com/questions/8734626/how-to-urlencode-a-multidimensional-array#answer-8734910
+			$str = urlencode(serialize($value));
+			return unserialize(urldecode($str));
+		}
+       	return urldecode($value);
 	}
 
 	public static function getInstance($request) {

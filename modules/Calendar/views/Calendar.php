@@ -15,7 +15,7 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$viewer->assign('IS_RECORD_CREATABLE', $moduleModel->isPermitted('CreateView'));
+		$viewer->assign('IS_CREATE_PERMITTED', $moduleModel->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $moduleModel->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $moduleModel->isPermitted('Delete'));
 
@@ -32,8 +32,10 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$jsFileNames = array(
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/fullcalendar/lib/moment.min.js",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/fullcalendar/fullcalendar.js",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/webui-popover/dist/jquery.webui-popover.js",
 			"modules.Calendar.resources.CalendarView",
-			"~/libraries/fullcalendar/fullcalendar.js",
 			"~/libraries/jquery/colorpicker/js/colorpicker.js"
 		);
 
@@ -45,10 +47,10 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 	public function getHeaderCss(Vtiger_Request $request) {
 		$headerCssInstances = parent::getHeaderCss($request);
 
-
 		$cssFileNames = array(
-			'~/libraries/fullcalendar/fullcalendar.css',
-			'~/libraries/fullcalendar/fullcalendar-bootstrap.css',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/fullcalendar/fullcalendar.css',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/fullcalendar/fullcalendar-bootstrap.css',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/webui-popover/dist/jquery.webui-popover.css',
 			'~/libraries/jquery/colorpicker/css/colorpicker.css'
 		);
 		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
@@ -68,15 +70,16 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 			return $this->getCalendarSettings($request);
 		}
 		$viewer->assign('CURRENT_USER', $currentUserModel);
+		$viewer->assign('IS_CREATE_PERMITTED', isPermitted('Calendar', 'CreateView'));
 
 		$viewer->view('CalendarView.tpl', $request->getModule());
 	}
-	
+
 	/*
 	 * Function to get the calendar settings view
 	 */
 	public function getCalendarSettings(Vtiger_Request $request){
-		
+
 		$viewer = $this->getViewer($request);
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$module = $request->getModule();
@@ -87,9 +90,9 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 		$sharedUsers = Calendar_Module_Model::getCaledarSharedUsers($currentUserModel->id);
 		$sharedType = Calendar_Module_Model::getSharedType($currentUserModel->id);
 		$dayStartPicklistValues = Users_Record_Model::getDayStartsPicklistValues($recordStructure);
-		
-        $hourFormatFeildModel = $recordStructure['LBL_CALENDAR_SETTINGS']['hour_format'];
-        
+
+		$hourFormatFeildModel = $recordStructure['LBL_CALENDAR_SETTINGS']['hour_format'];
+
 		$viewer->assign('CURRENTUSER_MODEL',$currentUserModel);
 		$viewer->assign('SHAREDUSERS', $sharedUsers);
 		$viewer->assign("DAY_STARTS", Zend_Json::encode($dayStartPicklistValues));
@@ -98,10 +101,10 @@ class Calendar_Calendar_View extends Vtiger_Index_View {
 		$viewer->assign('MODULE',$module);
 		$viewer->assign('RECORD', $currentUserModel->id);
 		$viewer->assign('SHAREDTYPE', $sharedType);
-        $viewer->assign('HOUR_FORMAT_VALUE', $hourFormatFeildModel->get('fieldvalue'));
-		
+		$viewer->assign('HOUR_FORMAT_VALUE', $hourFormatFeildModel->get('fieldvalue'));
+
 		$viewer->view('CalendarSettings.tpl', $request->getModule());
 	}
-	
-	
+
+
 }

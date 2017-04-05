@@ -18,10 +18,11 @@ class Settings_Vtiger_ConfigEditorEdit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('MODEL', $moduleModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedName);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
 		$viewer->view('ConfigEditorEdit.tpl', $qualifiedName);
 	}
-	
-		
+
+
 	function getPageTitle(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 		return vtranslate('LBL_CONFIG_EDITOR',$qualifiedModuleName);

@@ -28,6 +28,7 @@ $languageStrings = array(
 	'Title' => 'Temat',
 	'Solution' => 'Rozwiązanie',
 	'From Portal' => 'Z portalu Klienta',
+    'Related To' => 'Związane z',
 
 	//Added for existing picklist entries
 
@@ -97,4 +98,10 @@ $languageStrings = array(
 	'HelpDesk ID' => 'ID Zgłoszenia',
 	'Ticket ID' => 'Nr zgłoszenia',
 	'LBL_TICKET_NUMBER' => 'Numer Ticket',
+
+  'Contact Name' => 'Nazwa Kontaktu',
+  'LBL_ADD_DOCUMENT' => 'Dodaj Dokument',
+  'LBL_OPEN_TICKETS' => 'Bilety Z Otwartą',
+  'LBL_CREATE_TICKET' => 'Utwórz Zgłoszenie',
+
 );

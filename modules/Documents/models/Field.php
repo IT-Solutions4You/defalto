@@ -36,4 +36,13 @@ class Documents_Field_Model extends Vtiger_Field_Model {
 
 		return parent::getDisplayValue($value, $record, $recordInstance);
 	}
+    
+    public function hasCustomLock() {
+        $fieldsToLock = array('filename','notecontent','folderid','document_source','filelocationtype');
+        if(in_array($this->getName(), $fieldsToLock)) {
+            return true;
+        }
+        return false;
+    }
+    
 }

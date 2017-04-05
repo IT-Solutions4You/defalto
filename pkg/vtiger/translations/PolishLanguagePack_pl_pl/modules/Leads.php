@@ -42,7 +42,6 @@ $languageStrings = array(
 	'Contact in Future'=>'Kontakt w przyszłości',
 	'Contacted'=>'Nawiązano kontakt',
 	'Hot'=>'Zainteresowany',
-        'Hot Leads'=>'Gorące przewody',
 	'Junk Lead'=>'Nowy',
 	'Lost Lead'=>'Utracony',
 	'Not Contacted'=>'Brak kontaktu',
@@ -56,16 +55,19 @@ $languageStrings = array(
 	//Convert Lead
 	'LBL_TRANSFER_RELATED_RECORD' => 'Transfer powizanych rekordów do',
 	'LBL_CONVERT_LEAD_ERROR' => 'Aby konwertować Potencjalnego Klienta musiszą być aktywne moduły Kontrahenci i Kontakty.',
-	'LBL_CONVERT_LEAD_ERROR_TITLE' => 'Moduły wyłączone',
-	'CANNOT_CONVERT' => 'Nie można przekonwertować',
-	'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'Poniżej może znajdować się jeden z możliwych powodów:',
 	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'Wszystkie obowiązkowe pola nie są mapowane (Narzędzia konfiguracyjne > Zarządzanie modułami > Potencjalni Klienci > Mapowanie utworzony pół w Potencjalnych klientach)',
-	'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Niektóre wartość z obowiązkowych pól są puste',
 	'LBL_LEADS_FIELD_MAPPING' => 'Potencjalni Klienci - niestandardowe mapowanie pól',
 
 	//Leads Custom Field Mapping
-	'LBL_CUSTOM_FIELD_MAPPING'=> 'Edytuj mapowanie pól',
-	'LBL_LEAD_SOURCE' => 'Źródło pozyskania'
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Prowadzić mapowanie danych konwersji',
+	'LBL_LEAD_SOURCE' => 'Źródło pozyskania',
+    'LBL_IMAGE_INFORMATION' => 'Zdjęcie Profilu',
+    'Lead Image' => 'Ołów Obraz',
+
+  'Phone' => 'Podstawowy Telefon',
+  'Secondary Email' => 'Wtórne E-Mail',
+  'Email' => 'Podstawowy Adres E-Mail',
+
 );
 $jsLanguageStrings = array(
 	'JS_SELECT_CONTACTS' => 'Wybierz Kontakty aby kontynuować',

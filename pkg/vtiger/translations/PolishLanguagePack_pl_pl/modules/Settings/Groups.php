@@ -8,18 +8,23 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'LBL_TRANSFORM_OWNERSHIP' => 'Przenieść właściciela',
-	'SINGLE_Groups' => 'Grupa',
-	'LBL_TO_OTHER_GROUP' => 'Do innej grupy ',
-	'LBL_ADD_RECORD' => 'Dodaj grupę',
-	'LBL_GROUP_NAME' => 'Nazwa grupy',
-	'LBL_GROUP_MEMBERS' => 'Członkowie grupy',
-	'LBL_ADD_USERS_ROLES' => 'Dodaj użytkowników, grupy...',
-	'LBL_ROLEANDSUBORDINATE' => 'Role i role podrzędne',
-	'RoleAndSubordinates' => 'Role i role podrzędne',
-	'LBL_DUPLICATES_EXIST' => 'Nazwa grupy już istnieje',
+	'LBL_TRANSFORM_OWNERSHIP' => 'Przenieś właściciela',
+	'LBL_TO_OTHER_GROUP' => 'do innej grupy ',
+
+  'SINGLE_Groups' => 'Grupa',
+  'LBL_ADD_RECORD' => 'Dodaj Grupę',
+  'LBL_GROUP_NAME' => 'Nazwa Grupy',
+  'LBL_GROUP_MEMBERS' => 'Członkowie Grupy',
+  'LBL_ROLEANDSUBORDINATE' => 'Rola i podwładnych',
+  'RoleAndSubordinates' => 'Rola i podwładnych',
+  'LBL_DUPLICATES_EXIST' => 'Grupa o tej nazwie już istnieje',
+
 );
 $jsLanguageStrings = array(
-	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Do grupy musisz przydzielić przynajmniej jednego członka',
-	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Usunięcie grupy wykonano poprawnie',
+	'JS_COMMA_NOT_ALLOWED_GROUP' => 'Znaki specjalne, takie jak ,"<> nie są dozwolone w Nazwa grupy.',
+
+  'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Proszę wybrać przynajmniej jednego członka grupy',
+  'JS_RECORD_DELETED_SUCCESSFULLY' => 'Grupa z powodzeniem usunięte',
+
 );
+

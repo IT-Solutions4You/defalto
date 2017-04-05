@@ -21,7 +21,9 @@ $languageStrings = array(
 	'LTFAQ'                        => 'Mes FAQ récentes'           , 
 	'UA'                           => 'Activités à venir'         , 
 	'PA'                           => 'En attente'                  , 
-        'Home'                         => 'Accueil'                     ,
-        'Key Metrics'                  => 'Indicateurs Clés',
-	'Tag Cloud'                    => 'Tag Cloud',
+        'Home'                         => 'Tableau de bord'                     ,
+
+  'LBL_SAVE_ORDER' => 'Enregistrer La Commande',
+  'LBL_ADD_NEW_DASHBOARD' => 'Ajouter un nouveau tableau de bord',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => '30 caractères maximum sont autorisés pour le nom du tableau de bord.',
 );

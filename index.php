@@ -10,7 +10,9 @@
 
 //Overrides GetRelatedList : used to get related query
 //TODO : Eliminate below hacking solution
+include_once 'config.php';
 include_once 'include/Webservices/Relation.php';
+
 include_once 'vtlib/Vtiger/Module.php';
 include_once 'includes/main/WebUI.php';
 

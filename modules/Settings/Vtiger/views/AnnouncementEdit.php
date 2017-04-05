@@ -38,7 +38,8 @@ class Settings_Vtiger_AnnouncementEdit_View extends Settings_Vtiger_Index_View {
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
-			"modules.Settings.$moduleName.resources.Announcement"
+			"modules.Settings.$moduleName.resources.Announcement",
+            "modules.Settings.$moduleName.resources.AnnouncementEdit"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

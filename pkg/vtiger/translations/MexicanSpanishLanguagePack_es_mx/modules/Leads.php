@@ -1,14 +1,11 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
 	'Leads'                        => 'Prospectos'                  , 
@@ -18,7 +15,7 @@ $languageStrings = array(
 	'LBL_LEAD_INFORMATION'         => 'Información del Prospecto'   , 
 	'Lead No'                      => 'Núm. Prospecto'             , 
 	'Company'                      => 'Empresa'                     , 
-	'Designation'                  => 'Cargo'                      , 
+	'Designation'                  => 'Puesto'                      , 
 	'Website'                      => 'Página Web'                 , 
 	'Industry'                     => 'Actividad'                   , 
 	'Lead Status'                  => 'Estado del Prospecto'        , 
@@ -33,25 +30,27 @@ $languageStrings = array(
 	'Cold'                         => 'Frio'                        , 
 	'Contact in Future'            => 'Contactar más adelante'     , 
 	'Contacted'                    => 'Contactado'                  , 
-	'Hot'                          => 'Caliente'                    ,
-        'Hot Leads'                    => 'Prospectos calientes',
+	'Hot'                          => 'Caliente'                    , 
 	'Junk Lead'                    => 'Prospecto Basura'            , 
 	'Lost Lead'                    => 'Prospecto Fallido'           , 
 	'Not Contacted'                => 'No Contactado'               , 
 	'Pre Qualified'                => 'Pre Calificado'              , 
 	'Qualified'                    => 'Calificado'                  , 
 	'Warm'                         => 'Tibio'                       , 
-	'LBL_CONVERT_LEAD'             => 'Convertir Prospecto'        , 
+	'LBL_CONVERT_LEAD'             => 'Convertir Prospecto:'        , 
 	'LBL_TRANSFER_RELATED_RECORD'  => 'Transferir registro relacionado a', 
 	'LBL_CONVERT_LEAD_ERROR'       => 'Necesitas tener habilitado el módulo de Cuentas o Contactos pasra convertir el prospecto', 
-	'LBL_CONVERT_LEAD_ERROR_TITLE' => 'Módulos deshabilitados'     , 
-	'CANNOT_CONVERT'               => 'No se puede Convertir'       , 
-	'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'A continuación se detallan algunas de las posibles causas', 
 	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'No se han vinculado todos los campos obligatorios', 
-	'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Algún campo obligatorio está vacío', 
 	'LBL_LEADS_FIELD_MAPPING'      => 'Vinculación de Campos Personalizados', 
-	'LBL_CUSTOM_FIELD_MAPPING'     => 'Editar mapeo de campos'      , 
+	'LBL_CUSTOM_FIELD_MAPPING'     => 'Plomo Mapeo de conversión de datos'      , 
+    'LBL_IMAGE_INFORMATION' => 'Foto de Perfil',
+    'Lead Image' => 'Imagen Plomo',
 	
+
+  'Phone' => 'Teléfono Principal',
+  'Secondary Email' => 'Correo Electrónico Secundaria',
+  'Email' => 'De Correo Electrónico Principal',
+
 );
 $jsLanguageStrings = array(
 	'JS_SELECT_CONTACTS'           => 'Selecciona un contacto para proceder', 

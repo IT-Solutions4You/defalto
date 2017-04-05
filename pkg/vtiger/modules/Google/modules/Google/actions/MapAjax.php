@@ -13,8 +13,8 @@ class Google_MapAjax_Action extends Vtiger_BasicAjax_Action {
 
     public function process(Vtiger_Request $request) {
         switch ($request->get("mode")) {
-            case 'getLocation':$result = $this->getLocation($request);
-                break;
+            case 'getLocation'	:	$result = $this->getLocation($request);
+									break;
         }
         echo json_encode($result);
     }
@@ -25,14 +25,13 @@ class Google_MapAjax_Action extends Vtiger_BasicAjax_Action {
      * @return type 
      */
     function getLocation(Vtiger_Request $request) {
-        $address = Google_Map_Helper::getLocation($request);
-        return empty($address) ? "" : array("address" => join(",", $address));
+        $result = Google_Map_Helper::getLocation($request);
+        return $result;
     }
     
-    public function validateRequest(Vtiger_Request $request) { 
-        $request->validateReadAccess(); 
-    } 
-
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateReadAccess();
+    }
 }
 
 ?>

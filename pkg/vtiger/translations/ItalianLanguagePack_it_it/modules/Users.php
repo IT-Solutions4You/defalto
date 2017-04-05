@@ -22,7 +22,8 @@ $languageStrings = array(
 	'Role'                         => 'Ruolo'                       , 
 	'Admin'                        => 'Amministratore'              , 
 	'User Name'                    => 'Nome Utente'                 , 
-	'Default Activity View'        => 'Vista Calendario di Default' , 
+	'Default Activity View'		   => 'Predefinito MyCalendar View',
+	'Default Calendar View'        => 'Vista Calendario di Default'            ,
 	'Default Lead View'            => 'Vista Lead di Default'       , 
 	'Title'                        => 'Titolo'                      , 
 	'Office Phone'                 => 'Telefono Ufficio'            , 
@@ -161,6 +162,7 @@ $languageStrings = array(
 	'Asia/Vladivostok'             => '(UTC+10:00) Vladivostok'     , 
 	'Pacific/Guam'                 => '(UTC+10:00) Guam, Port Moresby', 
 	'Asia/Yakutsk'                 => '(UTC+10:00) Yakutsk'         , 
+	'Etc/GMT-11'				   => '(UTC+11:00) Solomon Is., New Caledonia',
 	'Pacific/Fiji'                 => '(UTC+12:00) Fiji'            , 
 	'Asia/Kamchatka'               => '(UTC+12:00) Kamchatka'       , 
 	'Pacific/Auckland'             => '(UTC+12:00) Auckland'        , 
@@ -195,12 +197,63 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Data Format',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Scegli la Data Format',
 	'LBL_PHONE'	=> 'Telefono',
-);
+    'Space' => 'Spazio',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'List View',
+	'MyCalendar' => 'Il mio calendario',
+	'SharedCalendar' => 'Calendario condiviso',
+    
+    'LBL_CHANGE_OWNER' => 'Cambia proprietario',
+    'LBL_TRANSFER_OWNERSHIP' => 'Trasferimento della proprietà',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'Trasferire la proprietà a utente',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'CRM proprietario ha cambiato con successo',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'Impossibile cambiare proprietario CRM',
+    'Account Owner' => 'Account Proprietario',
+    'Starting Day of the week' => 'Avvio Giorno della settimana',
+    'Day starts at' => 'Giorno inizia alle',
+    'Default Event Status' => 'Predefinito Stato evento',
+    'Default Activity Type' => 'Predefinito Tipo Attività',
+    'Default Record View' => 'Predefinito Record View',
+    'Left Panel Hide' => 'Pannello sinistro Hide',
+    'Row Height' => 'Altezza riga',
+	'LBL_RESTORE_USER_FAILED' => 'Impossibile ripristinare utente. Esiste già un utente CRM con questo nome utente.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Utente esiste già',
+    'LBL_CHANGE_PASSWORD' => 'Cambiare La Password',
 
+
+	'LBL_CHANGE_USERNAME'          => 'Cambia nome utente'          ,
+	'LBL_USERNAME_CHANGED'         => 'Nome utente modificata correttamente',
+	'ERROR_CHANGE_USERNAME'        => 'Errore nel cambiamento nome utente. Si prega di riprovare più tardi',
+
+  'LBL_REMOVE_USER' => 'Eliminare',
+  'LBL_MORE_OPTIONS' => 'Più Opzioni',
+  'LBL_RESTORE_USER' => 'Ripristino Configurazione Di Utente',
+  'LBL_OLD_PASSWORD' => 'Vecchia Password',
+  'LBL_NEW_PASSWORD' => 'Nuova Password',
+  'LBL_CONFIRM_PASSWORD' => 'Conferma Password',
+	'LBL_CHANGE_ACCESS_KEY' => 'Cambio Accessibilità',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Chiave di accesso aggiornato con successo',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Impossibile aggiornare chiave di accesso',
+  'LBL_LOGIN_AS' => 'Il Login ',
+  'LBL_CREATE_USER' => 'Creare Utente',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Eliminazione di un utente in modo permanente il trasferimento di tutti i record compresi i commenti e la storia sono un nuovo utente.',
+  'LBL_TO_CRM' => 'Login per Vtiger CRM',
+  'LBL_INVALID_USER_OR_PASSWORD' => 'Non valido nome utente o la password.',
+  'LBL_INVALID_USER_OR_EMAIL' => 'Non valido nome utente o indirizzo Email.',
+  'LBL_EMAIL_SEND' => 'Abbiamo inviato una email per reimpostare la password.',
+  'ForgotPassword' => 'Hai Dimenticato La Password?',
+  'LBL_CONNECT_WITH_US' => 'Connettiti con NOI',
+  'LBL_GET_MORE' => 'Ottenere di più di Vtiger',
+  'LBL_TRANSFER_RECORDS_TO_USER' => 'Trasferire i record utente',
+  'LBL_USER_TO_BE_DELETED' => 'Utente Cancellato',
+  'LBL_USERS_SETTINGS' => 'IMPOSTAZIONI DEGLI UTENTI',
+  'LBL_TEMPLATES' => 'Modelli',
+
+);
 $jsLanguageStrings = array(
 		
-	//Curency separator validation messages
-	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
+	//Curency seperator validation messages
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -209,4 +262,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Hai inserito il nome utente corrente. Inserisci il nuovo nome utente.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'nuova chiave di accesso richiesto',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Hai richiesto per una nuova chiave di accesso. &lt;br&gt;&lt;br&gt;Con la nuova disposizione chiave di accesso, è necessario sostituire la chiave di accesso vecchio con quello nuovo in tutte le estensioni installate. &lt;br&gt;&lt;br&gt;Do si desidera continuare?',
 );

@@ -16,21 +16,28 @@ class Products_SubProducts_Action extends Vtiger_Action_Controller {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate($moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
+			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
 	}
 
 	function process(Vtiger_Request $request) {
 		$productId = $request->get('record');
 		$productModel = Vtiger_Record_Model::getInstanceById($productId, 'Products');
-		$subProducts = $productModel->getSubProducts();
+		$subProducts = $productModel->getSubProducts($active = true);
 		$values = array();
-		foreach($subProducts as $subProduct) {
-			$values[$subProduct->getId()] = $subProduct->getName();
+		foreach($subProducts as $id => $subProduct) {
+			$stockMessage = '';
+			if ($subProduct->get('quantityInBundle') > $subProduct->get('qtyinstock')) {
+				$stockMessage = vtranslate('LBL_STOCK_NOT_ENOUGH', $request->getModule());
+			}
+			$values[$id] = array('productName'	=> $subProduct->getName(),
+								 'quantity'		=> $subProduct->get('quantityInBundle'),
+								 'stockMessage'	=> $stockMessage);
 		}
 
+		$result = array('isBundleViewable' => $productModel->isBundleViewable(), 'values' => $values);
 		$response = new Vtiger_Response();
-		$response->setResult($values);
+		$response->setResult($result);
 		$response->emit();
 	}
 }

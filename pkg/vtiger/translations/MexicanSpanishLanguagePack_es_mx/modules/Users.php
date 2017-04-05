@@ -1,18 +1,14 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Agregar Usuario'                    ,
-	'LBL_USERS'                    => 'Usuarios'          ,	
+	'LBL_ADD_RECORD'               => 'Agregar Usuario'                    , // TODO: Review
 	'LBL_MY_PREFERENCES'           => 'Mis Preferencias'            , 
 	'LBL_MORE_INFORMATION'         => 'Más Información'           , 
 	'LBL_USERLOGIN_ROLE'           => 'Usuario Login y Rol'         , 
@@ -22,13 +18,14 @@ $languageStrings = array(
 	'LBL_USER_ADV_OPTIONS'         => 'Opciones Avanzadas de Usuario', 
 	'Asterisk Configuration'       => 'Configuración Asterisk'     , 
 	'LBL_HOME_PAGE_COMPONENTS'     => 'Componentes de la Página Principal', 
-	'LBL_TAG_CLOUD_DISPLAY'        => 'Mostrar nube de etiquetas'           , 
+	'LBL_TAG_CLOUD_DISPLAY'        => 'Tag Cloud Display'           , // TODO: Review
 	'Role'                         => 'Rol'                         , 
 	'Admin'                        => 'Admin'                       , 
 	'User Name'                    => 'Usuario'                     , 
-	'Default Activity View'        => 'Vista de Calendario por Defecto', 
-	'Default Lead View'            => 'Vista de Prospectos por Defecto', 
-	'Title'                        => 'Puesto'                       , 
+	'Default Calendar View'        => 'Vista de Calendario predeterminada',
+	'Default Activity View'		   => 'Por defecto MyCalendar Ver',
+	'Default Lead View'            => 'Vista de Prospectos predeterminada', 
+	'Title'                        => 'Cargo'                       , 
 	'Office Phone'                 => 'Tel. Oficina'                , 
 	'Department'                   => 'Departamento'                , 
 	'Reports To'                   => 'Informa a'                   , 
@@ -58,7 +55,7 @@ $languageStrings = array(
 	'LBL_PROFILE_TO_BE_DELETED'    => 'Perfil para Borrar'          , 
 	'INTERNAL_MAIL_COMPOSER'       => 'Cliente de Email Interno'    , 
 	'Asterisk Extension'           => 'Extensión Asterisk'         , 
-	' Receive Incoming Calls'      => 'Aceptar llamadas entrantes'      , 
+	' Receive Incoming Calls'      => 'Receive Incoming Calls'      , // TODO: Review
 	'Reminder Interval'            => 'Intervalo de Recordatorio'   , 
 	'Webservice Access Key'        => 'Clave de acceso'             , 
 	'Language'                     => 'Idioma'                      , 
@@ -70,17 +67,9 @@ $languageStrings = array(
 	'Symbol Placement'             => 'Lugar de símbolo de moneda' , 
 	'Number Of Currency Decimals'  => 'Decimales en campos de moneda', 
 	'Truncate Trailing Zeros'      => 'Truncar Ceros a la derecha'  , 
-	'Default Call Duration'        => 'Duración de llamadas (Mins)',
-    'Default Event Status'		   => 'Estado de eventos Defecto',
-	'Default Activity Type'		   => 'Evento por Defecto',
-	'Left Panel Hide'			   => 'Ocultar Panel Izquierdo',
-	'CRM Phone Extension'		   => 'Extensión telefónica CRM',
-	'Row Height'		  		   => 'Alto de fila',
-	'Default Record View'		   => 'Vista de registro por defecto',
-	'Day starts at'				   => 'Día inicia a las',
-	'Starting Day of the week'     => 'Día de inicio de semana',
-	'Other Event Duration'         => 'Duración de otros eventos (Mins)' , 
-	'Calendar Hour Format'         => 'Formato de hora Calendario'        , 
+	'Default Call Duration'        => 'Default Call Duration (Mins)', // TODO: Review
+	'Other Event Duration'         => 'Other Event Duration (Mins)' , // TODO: Review
+	'Calendar Hour Format'         => 'Calendar Hour Format'        , // TODO: Review
 	'Kwajalein'                    => '(UTC-12:00) International Date Line West', 
 	'Pacific/Midway'               => '(UTC-11:00) Coordinated Universal Time-11', 
 	'Pacific/Samoa'                => '(UTC-11:00) Samoa'           , 
@@ -95,7 +84,7 @@ $languageStrings = array(
 	'America/Regina'               => '(UTC-06:00) Saskatchewan'    , 
 	'America/Tegucigalpa'          => '(UTC-06:00) Central America' , 
 	'America/Chicago'              => '(UTC-06:00) Central Time (US &amp; Canada)', 
-	'America/Mexico_City'          => '(UTC-06:00) Ciudad de Mexico, Guadalajara', 
+	'America/Mexico_City'          => '(UTC-06:00) Ciudad de Mexico', 
 	'America/Monterrey'            => '(UTC-06:00) Monterrey'       , 
 	'America/New_York'             => '(UTC-05:00) Eastern Time (US &amp; Canada)', 
 	'America/Bogota'               => '(UTC-05:00) Bogota, Lima, Quito', 
@@ -173,26 +162,27 @@ $languageStrings = array(
 	'Asia/Vladivostok'             => '(UTC+10:00) Vladivostok'     , 
 	'Pacific/Guam'                 => '(UTC+10:00) Guam, Port Moresby', 
 	'Asia/Yakutsk'                 => '(UTC+10:00) Yakutsk'         , 
+	'Etc/GMT-11'				   => '(UTC+11:00) Solomon Is., New Caledonia',
 	'Pacific/Fiji'                 => '(UTC+12:00) Fiji'            , 
 	'Asia/Kamchatka'               => '(UTC+12:00) Kamchatka'       , 
 	'Pacific/Auckland'             => '(UTC+12:00) Auckland'        , 
 	'Asia/Magadan'                 => '(UTC+12:00) Magadan'         , 
 	'Pacific/Tongatapu'            => '(UTC+13:00) Nukualofa'       , 
-	'Summary'                      => 'Resumen'                     , 
-	'Detail'                       => 'Detalle'                      , 
-	'LBL_USER_LIST_DETAILS'        => 'Detalles'                     , 
+	'Summary'                      => 'Summary'                     , // TODO: Review
+	'Detail'                       => 'Detail'                      , // TODO: Review
+	'LBL_USER_LIST_DETAILS'        => 'Details'                     , // TODO: Review
 	'LBL_USER_DELETED_SUCCESSFULLY' => 'Usuario eliminado correctamente',
-    'LBL_ACTIVE_USERS' 				=> 'Usuarios Activos',
-    'LBL_INACTIVE_USERS'			 => 'Usuarios inactivos',
-    'LBL_DELETE_USER_PERMANENTLY'	 => 'Eliminar usuario de forma permanente',
-    'LBL_RESTORE' 					=> 'Restaurar',
+    'LBL_ACTIVE_USERS' => 'Usuarios Activos',
+    'LBL_INACTIVE_USERS' => 'Usuarios inactivos',
+    'LBL_DELETE_USER_PERMANENTLY' => 'Eliminar usuario de forma permanente',
+    'LBL_RESTORE' => 'Restaurar',
     'LBL_USER_RESTORED_SUCCESSFULLY' => 'Usuario restaurado con éxito',
-	'LBL_ALMOST_THERE'		=>	'Casi ahí!',
+	'LBL_ALMOST_THERE'	=>	'Casi allí!',
 	'LBL_ABOUT_ME'		=>	'Acerca de mí',
 	'LBL_WE_PROMISE_TO_KEEP_THIS_PRIVATE'	=>	'(Nos comprometemos a mantener esta privada)',
 	'LBL_ALL_FIELDS_BELOW_ARE_REQUIRED'		=>	'(Todos los campos siguientes son obligatorios)',
 	'LBL_GET_STARTED'	=> 'Comenzar',
-	'LBL_YOUR_CONTACT_NUMBER' => 'Tu número de contacto',
+	'LBL_YOUR_CONTACT_NUMBER' => 'Su número de contacto',
 	'LBL_WHERE_ARE_YOU_FROM' =>	'¿De dónde eres?',
 	'LBL_SELECT_COUNTRY'	=> 'Seleccionar país',
 	'LBL_COMPANY_SIZE'		=> 'Tamaño de empresa',
@@ -200,25 +190,79 @@ $languageStrings = array(
 	'LBL_DEPARTMENT'		=> 'Departamento',
 	'LBL_BASE_CURRENCY'		=> 'Moneda de Cuenta',
 	'LBL_CHOOSE_BASE_CURRENCY'	=> 'Elegir Divisa Base',
-	'LBL_OPERATING_CURRENCY'	=> 'Divisa de referencia no puede ser modificado posteriormente. Selecciona tu moneda de operación',
-	'LBL_LANGUAGE' 				=> 'Idioma',
+	'LBL_OPERATING_CURRENCY'	=> 'Divisa de referencia no puede ser modificado posteriormente. Seleccione su moneda de operación',
+	'LBL_LANGUAGE' => 'Idioma',
 	'LBL_CHOOSE_LANGUAGE'	=> 'Escoge tu Idioma',
 	'LBL_CHOOSE_TIMEZONE'	=> 'Elija Zona Horaria',
 	'LBL_DATE_FORMAT'		=> 'Formato de la fecha',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Seleccione Formato de fecha',
-	'LBL_PHONE'				=> 'Teléfono',
-);
+	'LBL_PHONE'	=> 'Teléfono',
+    'Space' => 'Espacio',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'Lista Vista',
+	'MyCalendar' => 'Mi calendario',
+	'SharedCalendar' => 'Calendario compartido',
+    
+    'LBL_CHANGE_OWNER' => 'Cambiar propietario',
+    'LBL_TRANSFER_OWNERSHIP' => 'Transferencia de la propiedad',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'Transferir la propiedad al usuario',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'CRM Propietario cambia correctamente',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'Error propietario CRM cambiar',
+    'Account Owner' => 'Titular de la cuenta',
+    'Starting Day of the week' => 'Día de inicio de la semana',
+    'Day starts at' => 'Día comienza a las',
+    'Default Event Status' => 'Por defecto Estado de Eventos',
+    'Default Activity Type' => 'Por defecto Tipo de Actividad',
+    'Default Record View' => 'Predeterminado de registros Vista',
+    'Left Panel Hide' => 'Panel izquierdo Ocultar',
+    'Row Height' => 'Alto de fila',
+	'LBL_RESTORE_USER_FAILED' => 'Error al restaurar el usuario. Ya existe un usuario CRM con este nombre de usuario.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Usuario ya existe',
 
+
+	'LBL_CHANGE_USERNAME'          => 'Cambiar nombre de usuario'   ,
+	'LBL_USERNAME_CHANGED'         => 'Nombre de usuario cambiado correctamente',
+	'ERROR_CHANGE_USERNAME'        => 'Error en el cambio nombre de usuario. Por favor intente mas tarde',
+
+  'LBL_REMOVE_USER' => 'Eliminar',
+  'LBL_MORE_OPTIONS' => 'Más Opciones',
+  'LBL_RESTORE_USER' => 'Restauración De Usuario',
+  'LBL_OLD_PASSWORD' => 'Contraseña Antigua',
+  'LBL_CHANGE_PASSWORD' => 'Cambiar La Contraseña',
+  'LBL_NEW_PASSWORD' => 'Nueva Contraseña',
+  'LBL_CONFIRM_PASSWORD' => 'Confirmar Contraseña',
+	'LBL_CHANGE_ACCESS_KEY' => 'Cambiar la clave de acceso',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Tecla de acceso actualizado correctamente',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'No se pudo actualizar la clave de acceso',
+  'LBL_LOGIN_AS' => 'Inicio de sesión como ',
+  'LBL_CREATE_USER' => 'Crear Usuario',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Eliminación de un usuario de forma permanente transferencia de todos los registros, incluidos los comentarios y la historia para un usuario nuevo.',
+  'LBL_TO_CRM' => 'Inicio de sesión para Vtiger CRM',
+  'LBL_INVALID_USER_OR_PASSWORD' => 'No válido nombre de usuario o contraseña.',
+  'LBL_INVALID_USER_OR_EMAIL' => 'No válido nombre de Usuario o dirección de Correo electrónico.',
+  'LBL_EMAIL_SEND' => 'Le hemos enviado el correo electrónico para restablecer su contraseña.',
+  'ForgotPassword' => '¿Olvidó Su Contraseña?',
+  'LBL_CONNECT_WITH_US' => 'Conecte con NOSOTROS',
+  'LBL_GET_MORE' => 'Obtener más de Vtiger',
+  'LBL_TRANSFER_RECORDS_TO_USER' => 'La transferencia de los registros de usuario',
+  'LBL_USER_TO_BE_DELETED' => 'Usuario Eliminado',
+  'LBL_USERS_SETTINGS' => 'CONFIGURACIÓN DE LOS USUARIOS',
+  'LBL_TEMPLATES' => 'Plantillas',
+
+);
 $jsLanguageStrings = array(
 		
-	//Curency separator validation messages
-	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'El separador de decimales y separador de grupos no pueden ser el mismo',
-	'JS_ENTER_OLD_PASSWORD'=>'Ingresa tu contraseña actual.',
-	'JS_ENTER_NEW_PASSWORD'=>'Ingresa tu nueva contraseña.',
-	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Confirma tu nueva contraseña.',
-	'JS_REENTER_PASSWORDS'=>'Vuelve a capturar las contraseñas. La \"nueva contraseña\" y \"Confirma tu nueva contraseña\" no coinciden.',
-	'JS_INVALID_PASSWORD'=>'Debes especificar un usuario y contraseña válidos.',
-	'JS_PASSWORD_CHANGE_FAILED_1'=>'Falló el cambio de contraseña para el usuario ',
-	'JS_PASSWORD_CHANGE_FAILED_2'=>' Falló. la nueva contraseña debe ser establecida.',
-	'JS_PASSWORD_INCORRECT_OLD'=>'Contraseña actual especificada incorrecta, vuelve a introducir la información.',
+	//Curency seperator validation messages
+	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
+	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
+	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
+	'JS_REENTER_PASSWORDS'=>'Please re-enter passwords.  The \"new password\" and \"confirm password\" values do not match.',
+	'JS_INVALID_PASSWORD'=>'You must specify a valid username and password.',
+	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
+	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
+	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+  'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Introducido el nombre de usuario actual. Por favor, introduzca su nombre de usuario.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nueva clave de acceso solicitado',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ha solicitado una nueva clave de acceso. &lt;br&gt;&lt;br&gt;Con la nueva disposición clave de acceso, lo que tiene que sustituir la clave de acceso antiguo por uno nuevo en todas las extensiones instaladas. &lt;br&gt;&lt;br&gt;Do desea continuar?',
 );

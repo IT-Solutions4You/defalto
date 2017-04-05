@@ -9,7 +9,7 @@
  * *********************************************************************************** */
 
 class RecycleBin_Module_Model extends Vtiger_Module_Model {
-	
+
 
 	/**
 	 * Function to get the url for list view of the module
@@ -18,7 +18,7 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 	public function getDefaultUrl() {
 		return 'index.php?module='.$this->get('name').'&view='.$this->getListViewName();
 	}
-	
+
 	/**
 	 * Function to get the list of listview links for the module
 	 * @return <Array> - Associate array of Link Type to List of Vtiger_Link_Model instances
@@ -69,12 +69,12 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 					'linkurl' => 'javascript:RecycleBin_List_Js.restoreRecords("index.php?module='.$this->get('name').'&action=RecycleBinAjax")',
 					'linkicon' => ''
 			);
-		
+
 
 		foreach($massActionLinks as $massActionLink) {
 			$links[] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
 		}
-		
+
 		return $links;
 	}
 
@@ -100,14 +100,14 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 		}
 		return $links;
 	}
-	
+
 	/**
 	 * Function to get all entity modules
 	 * @return <array>
 	 */
 	public function getAllModuleList(){
 		$moduleModels = parent::getEntityModules();
-		$restrictedModules = array('Emails', 'ProjectMilestone', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+		$restrictedModules = array('Emails', 'ProjectMilestone', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home', 'Events');
 		foreach($moduleModels as $key => $moduleModel){
 			if(in_array($moduleModel->getName(),$restrictedModules) || $moduleModel->get('isentitytype') != 1){
 				unset($moduleModels[$key]);
@@ -115,12 +115,16 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 		}
 		return $moduleModels;
 	}
-	
+
 	/**
 	 * Function to delete the reccords perminently in vitger CRM database
 	 */
 	public function emptyRecycleBin(){
-		$db = PearDatabase::getInstance(); 
+		$db = PearDatabase::getInstance();
+
+		$db->pquery('DELETE vtiger_modtracker_basic.* FROM vtiger_modtracker_basic INNER JOIN vtiger_crmentity on 
+					vtiger_crmentity.crmid = vtiger_modtracker_basic.crmid AND vtiger_crmentity.deleted = 1', array());
+
 		$getIdsQuery='SELECT crmid from vtiger_crmentity WHERE deleted=?';
 		$resultIds=$db->pquery($getIdsQuery,array(1));
 		$recordIds=array();
@@ -132,63 +136,66 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 		$this->deleteFiles($recordIds);
 		$db->query('DELETE FROM vtiger_crmentity WHERE deleted = 1');
 		$db->query('DELETE FROM vtiger_relatedlists_rb');
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Function to deleted the records perminently in CRM
 	 * @param type $reocrdIds
 	 */
 	public function deleteRecords($recordIds){
-	        $db = PearDatabase::getInstance(); 
-		//Delete the records in vtiger crmentity and relatedlists.
-		$query = 'DELETE FROM vtiger_crmentity WHERE deleted = ? and crmid in('.generateQuestionMarks($recordIds).')';
-		$db->pquery($query, array(1, $recordIds));
-		
+		$db = PearDatabase::getInstance();
+
 		$query = 'DELETE FROM vtiger_relatedlists_rb WHERE entityid in('.generateQuestionMarks($recordIds).')';
 		$db->pquery($query, array($recordIds));
 
+		// TODO - Remove records from module tables and other related stores.
+		$query = 'DELETE FROM vtiger_modtracker_basic WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
+		$db->pquery($query, array($recordIds));
 		// Delete entries of attachments from vtiger_attachments and vtiger_seattachmentsrel
 		$this->deleteFiles($recordIds);
-		// TODO - Remove records from module tables and other related stores.
+
+		//Delete the records in vtiger crmentity and relatedlists.
+		$query = 'DELETE FROM vtiger_crmentity WHERE deleted = ? and crmid in('.generateQuestionMarks($recordIds).')';
+		$db->pquery($query, array(1, $recordIds));
 	}
 
 	/**Function to delete files from CRM.
 	 *@param type $recordIds
 	 */
-
 	public function deleteFiles($recordIds){
-		$db = PearDatabase::getInstance(); 
+		global $db;
+		$db=PearDatabase::getInstance();
 		$getAttachmentsIdQuery='SELECT * FROM vtiger_seattachmentsrel WHERE crmid in('.generateQuestionMarks($recordIds).')';
 		$result=$db->pquery($getAttachmentsIdQuery,array($recordIds));
 		$attachmentsIds=array();
 		if($db->num_rows($result)){
 			for($i=0;$i<($db->num_rows($result));$i++){
-			$attachmentsIds[$i]=$db->query_result($result,$i,'attachmentsid');
+				$attachmentsIds[$i]=$db->query_result($result,$i,'attachmentsid');
 			}
 		}
 		if(!empty($attachmentsIds)){
-                        $deleteRelQuery='DELETE FROM vtiger_seattachmentsrel WHERE crmid in('.generateQuestionMarks($recordIds).')';
-                        $db->pquery($deleteRelQuery,array($recordIds));
-                        $attachmentsLocation=array();
-                        $getPathQuery='SELECT * FROM vtiger_attachments WHERE attachmentsid in ('.generateQuestionMarks($attachmentsIds).')';
-                        $pathResult=$db->pquery($getPathQuery,array($attachmentsIds));
-                        if($db->num_rows($pathResult)){
-                                for($i=0;$i<($db->num_rows($pathResult));$i++){
-                                        $attachmentsLocation[$i]=$db->query_result($pathResult,$i,'path');
-                                        $attachmentName=$db->query_result($pathResult,$i,'name');
-                                        $attachmentId=$db->query_result($pathResult,$i,'attachmentsid');
-                                        $fileName=$attachmentsLocation[$i].$attachmentId.'_'.$attachmentName;
-                                        if(file_exists($fileName)){
-                                                chmod($fileName,0750);
-                                                unlink($fileName);
-                                        }
-                                }
-                        }
-                        $deleteAttachmentQuery='DELETE FROM vtiger_attachments WHERE attachmentsid in ('.generateQuestionMarks($attachmentsIds).')';
-                        $db->pquery($deleteAttachmentQuery,array($attachmentsIds));
-                }
+			$deleteRelQuery='DELETE FROM vtiger_seattachmentsrel WHERE crmid in('.generateQuestionMarks($recordIds).')';
+			$db->pquery($deleteRelQuery,array($recordIds));
+			$attachmentsLocation=array();
+			$getPathQuery='SELECT * FROM vtiger_attachments WHERE attachmentsid in ('.generateQuestionMarks($attachmentsIds).')';
+			$pathResult=$db->pquery($getPathQuery,array($attachmentsIds));
+			if($db->num_rows($pathResult)){
+				for($i=0;$i<($db->num_rows($pathResult));$i++){
+					$attachmentsLocation[$i]=$db->query_result($pathResult,$i,'path');
+					$attachmentName=$db->query_result($pathResult,$i,'name');
+					$attachmentId=$db->query_result($pathResult,$i,'attachmentsid');
+					$fileName=$attachmentsLocation[$i].$attachmentId.'_'.decode_html($attachmentName);
+					if(file_exists($fileName)){
+						chmod($fileName,0750);
+						unlink($fileName);
+					}
+				}
+			}
+			$deleteAttachmentQuery='DELETE FROM vtiger_attachments WHERE attachmentsid in ('.generateQuestionMarks($attachmentsIds).')';
+			$db->pquery($deleteAttachmentQuery,array($attachmentsIds));
+		}
 	}
 
 	/**
@@ -204,10 +211,37 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 	}
-        
-          public function getDeletedRecordsTotalCount() {  
-                $db = PearDatabase::getInstance();  
-                $totalCount = $db->pquery('select count(*) as count from vtiger_crmentity where deleted=1',array());  
-                return $db->query_result($totalCount, 0, 'count');  
-        }
+
+	public function getDeletedRecordsTotalCount() {  
+		$db = PearDatabase::getInstance();  
+		$totalCount = $db->pquery('select count(*) as count from vtiger_crmentity where deleted=1',array());  
+		return $db->query_result($totalCount, 0, 'count');  
+	}
+
+	/**
+	 * Function to check deleted records exists in recyclebin
+	 * @return <Boolean> true/false
+	 */
+	public function isRecordsDeleted() {
+		$db = PearDatabase::getInstance(); 
+		$totalCount = $db->pquery('SELECT 1 FROM vtiger_crmentity WHERE deleted=1 LIMIT 1',array());
+		if($db->num_rows($totalCount) > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+		return array();
+	}
+
+	/**
+	 * Funxtion to identify if the module supports quick search or not
+	 */
+	public function isQuickSearchEnabled() {
+		return true;
+	}
 }

@@ -131,21 +131,33 @@ class WSAPP_VtigerConnector extends WSAPP_BaseConnector {
 		$createdRecords = $records['created'];
 		$updatedRecords = $records['updated'];
 		$deletedRecords = $records['deleted'];
+		$clientID2ServerIDMap = $records['client2serverIdMap'];
 
-		foreach ($createdRecords as $record) {
-			$model = $this->getRecordModelFromData($record);
-			$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_CREATE_MODE);
+		if(is_array($createdRecords)) {
+			foreach ($createdRecords as $record) {
+				$model = $this->getRecordModelFromData($record);
+			$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_CREATE_MODE)->setType($this->getSynchronizeController()->getSourceType());
+			}
 		}
 
-		foreach ($updatedRecords as $record) {
-			$model = $this->getRecordModelFromData($record);
-			$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE);
+		if(is_array($updatedRecords)) {
+			foreach ($updatedRecords as $record) {
+				$model = $this->getRecordModelFromData($record);
+				$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE)->setType($this->getSynchronizeController()->getSourceType());
+			}
 		}
 
-		foreach ($deletedRecords as $record) {
-			$model = $this->getRecordModelFromData($record);
-			$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_DELETE_MODE);
+		if(is_array($deletedRecords)) {
+			foreach ($deletedRecords as $record) {
+				$model = $this->getRecordModelFromData($record);
+				//For WSAPP Logs
+				$clientId = $record['_id'];
+				$model->set('_serverid', $clientID2ServerIDMap[$clientId]);
+				//END
+				$recordModels[] = $model->setMode(WSAPP_SyncRecordModel::WSAPP_DELETE_MODE)->setType($this->getSynchronizeController()->getSourceType());
+			}
 		}
+
 		$nextSyncState = clone $syncStateModel;
 		$nextSyncState->setSyncToken($records['lastModifiedTime'])->set('more', $records['more']);
 		$pullResultModel = new WSAPP_PullResultModel();
@@ -157,15 +169,21 @@ class WSAPP_VtigerConnector extends WSAPP_BaseConnector {
 	public function push($recordList, $syncStateModel) {
 		$pushResult = wsapp_put($syncStateModel->getSyncTrackerId(), $this->convertToPushSyncTrackerFormat($recordList), $this->getSynchronizeController()->user);
 		$pushResponseRecordList = array();
+		$clientID2ServerIDMap = $pushResult['client2serverIdMap'];
+
 		foreach ($pushResult as $mode => $records) {
 			if ($mode == 'created') {
 				$recordMode = WSAPP_SyncRecordModel::WSAPP_CREATE_MODE;
 			} else if ($mode == 'updated') {
 				$recordMode = WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE;
-			} else {
+			} else if ($mode == 'deleted') {
 				$recordMode = WSAPP_SyncRecordModel::WSAPP_DELETE_MODE;
+			} else {
+				$recordMode = 'skipped';
 			}
 			foreach ($records as $record) {
+				$clientid = $record['_id'];
+				$record['_serverid'] = $clientID2ServerIDMap[$clientid]; //For WSAPP Logs
 				$pushResponseRecordList[] = $this->getRecordModelFromData($record)->setMode($recordMode)->setType($this->getSynchronizeController()->getSourceType());
 			}
 		}
@@ -216,8 +234,8 @@ class WSAPP_VtigerConnector extends WSAPP_BaseConnector {
 				$syncTrackerRecord['values']['modifiedtime'] = $record->getModifiedTime();
 				$syncTrackerRecord['values']['id'] = $record->getId();
 			} else {
-               $syncTrackerRecord['_syncidentificationkey'] = $record->get('_syncidentificationkey');
-            }
+			   $syncTrackerRecord['_syncidentificationkey'] = $record->get('_syncidentificationkey');
+			}
 			$syncTrackerRecordList[] = $syncTrackerRecord;
 		}
 		return $syncTrackerRecordList;

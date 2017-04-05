@@ -2,14 +2,15 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
 	//DetailView Actions
-	'SINGLE_SalesOrder' => 'طلب المبيعات',
+    'SalesOrder' => 'أوامر البيع',
+	'SINGLE_SalesOrder' => 'أوامر البيع',
 	'LBL_EXPORT_TO_PDF' => 'تصدير الى PDF',
     'LBL_SEND_MAIL_PDF' => 'ارسال بريد الكتروني مع PDF',
 
@@ -19,7 +20,6 @@ $languageStrings = array(
 
 	// Blocks
 	'LBL_SO_INFORMATION' => 'تفاصيل طلب المبيعات',
-        'Recurring Invoive Information'=>'المتكررة معلومات الفاتورة',
 
 	//Field labels
 	'SalesOrder No'=>'رقم طلب المبيعات',
@@ -45,13 +45,6 @@ $languageStrings = array(
 	'Sent'=>'ارسل',
 	'Credit Invoice'=>'فاتورة دائن',
 	'Paid'=>'مدفوع',
-    'Daily'=>'يوميا',
-    'Monthly'=>'شهريا',
-    'Quarterly'=>'فصلي',
-    'Yearly'=>'سنويا',
-    'Net 30 days'=>'صافي 30 يوما',
-    'Net 45 days'=>'صافي 45 يوما',
-    'Net 60 days'=>'صافي 60 يوما',
 	
 	//Translation for product not found
 	'LBL_THIS' => 'هذا',

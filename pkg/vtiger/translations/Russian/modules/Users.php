@@ -22,7 +22,8 @@ $languageStrings = array(
 	'Role'                         => 'Роль'                    , 
 	'Admin'                        => 'Администратор'  , 
 	'User Name'                    => 'Пользователь'    , 
-	'Default Activity View'        => 'Вид Календаря по умолчанию', 
+	'Default Activity View'		   => 'По умолчанию Мой календарь Вид',
+	'Default Calendar View'        => 'Вид Календаря по умолчанию'            ,
 	'Default Lead View'            => 'Вид Обращения по умолчанию', 
 	'Title'                        => 'Должность'          , 
 	'Office Phone'                 => 'Тел.'                     , 
@@ -161,6 +162,7 @@ $languageStrings = array(
 	'Asia/Vladivostok'             => '(UTC+10:00) Владивосток', 
 	'Pacific/Guam'                 => '(UTC+10:00) Guam, Port Moresby', 
 	'Asia/Yakutsk'                 => '(UTC+10:00) Якутск'    , 
+	'Etc/GMT-11'				   => '(UTC+11:00) Solomon Is., New Caledonia',
 	'Pacific/Fiji'                 => '(UTC+12:00) Fiji'            , 
 	'Asia/Kamchatka'               => '(UTC+12:00) Камчатка', 
 	'Pacific/Auckland'             => '(UTC+12:00) Auckland'        , 
@@ -195,12 +197,63 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Формат даты',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Выберите формат даты',
 	'LBL_PHONE'	=> 'Телефон',
-);
+    'Space' => 'Пространство',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'Список',
+	'MyCalendar' => 'Мой календарь',
+	'SharedCalendar' => 'Общий календарь',
+    
+    'LBL_CHANGE_OWNER' => 'Сменить владельца',
+    'LBL_TRANSFER_OWNERSHIP' => 'Передача права собственности',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'С передачей прав собственности на пользователя',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'CRM Владелец успешно изменен',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'Не удалось меняется владелец CRM',
+    'Account Owner' => 'Владелец счета',
+    'Starting Day of the week' => 'Начиная День недели',
+    'Day starts at' => 'День начинается с',
+    'Default Event Status' => 'Состояние по умолчанию события',
+    'Default Activity Type' => 'По умолчанию Тип деятельности',
+    'Default Record View' => 'По умолчанию запись Просмотр',
+    'Left Panel Hide' => 'Левая панель Скрыть',
+    'Row Height' => 'Высота строки',
+	'LBL_RESTORE_USER_FAILED' => 'Не удалось восстановить пользователя. Существует уже пользователь CRM от имени этого пользователя.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Пользователь уже существует',
 
+
+	'LBL_CHANGE_USERNAME'          => 'Изменить Имя пользователя',
+	'LBL_USERNAME_CHANGED'         => 'Имя пользователя успешно изменен',
+	'ERROR_CHANGE_USERNAME'        => 'Ошибка в изменение имени пользователя. Пожалуйста, попробуйте позже',
+
+  'LBL_REMOVE_USER' => 'Удалить',
+  'LBL_MORE_OPTIONS' => 'Другие Варианты',
+  'LBL_RESTORE_USER' => 'Восстановить Пользователя',
+  'LBL_OLD_PASSWORD' => 'Старый Пароль',
+  'LBL_CHANGE_PASSWORD' => 'Изменить Пароль',
+  'LBL_NEW_PASSWORD' => 'Новый Пароль',
+  'LBL_CONFIRM_PASSWORD' => 'Подтвердите Пароль',
+	'LBL_CHANGE_ACCESS_KEY' => 'Изменение ключа доступа',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Ключ доступа успешно обновлен',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Не удалось обновить ключ доступа',
+  'LBL_LOGIN_AS' => 'Логин как ',
+  'LBL_CREATE_USER' => 'Создать Пользователя',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Удаление пользователя постоянно будет перенести все записи, включая комментарии и истории к новому пользователю.',
+  'LBL_TO_CRM' => 'Логин вольная русская CRM',
+  'LBL_INVALID_USER_OR_PASSWORD' => 'Неверное имя пользователя или пароль.',
+  'LBL_INVALID_USER_OR_EMAIL' => 'Неверное имя пользователя или адрес электронной почты.',
+  'LBL_EMAIL_SEND' => 'Мы отправили вам письмо для сброса пароля.',
+  'ForgotPassword' => 'Забыл Пароль',
+  'LBL_CONNECT_WITH_US' => 'Связаться с нами',
+  'LBL_GET_MORE' => 'Получите больше от вольная русская',
+  'LBL_TRANSFER_RECORDS_TO_USER' => 'Перенос записей пользователя',
+  'LBL_USER_TO_BE_DELETED' => 'Пользователь удален',
+  'LBL_USERS_SETTINGS' => 'НАСТРОЙКИ ПОЛЬЗОВАТЕЛЕЙ',
+  'LBL_TEMPLATES' => 'Шаблоны',
+
+);
 $jsLanguageStrings = array(
 		
-	//Curency separator validation messages
-	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
+	//Curency seperator validation message
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -209,4 +262,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Вы вошли в текущее имя пользователя. Пожалуйста, введите новое имя пользователя.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Ключ доступа Новый просил',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Вы запросили для нового ключа доступа & л;. Бр & GT; & л; BR & GT; с новым ключом предоставления доступа, вы должны заменить старый ключ доступа с новым во всех установленных расширений и ЛТ;. Бр & GT; & л; BR & GT; Do вы хотите продолжить?',
 );

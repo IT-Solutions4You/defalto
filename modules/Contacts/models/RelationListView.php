@@ -9,16 +9,4 @@
  *************************************************************************************/
 
 class Contacts_RelationListView_Model extends Vtiger_RelationListView_Model {
-    
-    public function getCreateViewUrl(){
-        $createViewUrl = parent::getCreateViewUrl();
-		$relationModuleModel = $this->getRelationModel()->getRelationModuleModel();
-		$parentRecordModule = $this->getParentRecordModel();
-
-        //if parent module has account id it should be related to Potentials
-        if($parentRecordModule->get('account_id') && $relationModuleModel->getName() == 'Potentials') {
-            $createViewUrl .= '&related_to='.$parentRecordModule->get('account_id');
-        }
-		return $createViewUrl;
-	}
 }

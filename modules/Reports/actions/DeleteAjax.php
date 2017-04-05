@@ -9,6 +9,16 @@
  *************************************************************************************/
 
 class Reports_DeleteAjax_Action extends Vtiger_DeleteAjax_Action {
+    
+	public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$record = $request->get('record');
+
+		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+		if(!$currentUserPrivilegesModel->isPermitted($moduleName, 'Delete', $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+	}
 
 	public function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
@@ -17,7 +27,7 @@ class Reports_DeleteAjax_Action extends Vtiger_DeleteAjax_Action {
 
 		$recordModel = Reports_Record_Model::getInstanceById($recordId, $moduleName);
 
-		if (!$recordModel->isDefault() && $recordModel->isEditable()) {
+		if (!$recordModel->isDefault() && $recordModel->isEditable() && $recordModel->isEditableBySharing()) {
 			$recordModel->delete();
 			$response->setResult(array(vtranslate('LBL_REPORTS_DELETED_SUCCESSFULLY', $parentModule)));
 		} else {

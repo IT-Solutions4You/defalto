@@ -194,8 +194,11 @@ if($handle)
 			$newbuf .= "\$Accounts_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($account_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($account_share_write_per['GROUP']).");\n\n";
 
 			//Constructing Contact Sharing Rules
-			$newbuf .= "\$Contacts_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($account_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($account_share_read_per['GROUP']).");\n\n";	
-			$newbuf .= "\$Contacts_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($account_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($account_share_write_per['GROUP']).");\n\n";
+                        $contact_share_per_array=getUserModuleSharingObjects("Contacts",$userid,$def_org_share,$current_user_roles,$parent_roles,$current_user_groups);
+			$contact_share_read_per=$contact_share_per_array['read'];
+			$contact_share_write_per=$contact_share_per_array['write'];
+			$newbuf .= "\$Contacts_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($contact_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($contact_share_read_per['GROUP']).");\n\n";	
+			$newbuf .= "\$Contacts_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($contact_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($contact_share_write_per['GROUP']).");\n\n";
 
 
 					
@@ -599,6 +602,7 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 		{
 			$share_rsid=$adb->query_result($result,$i,'share_roleandsubid');
 			$share_roleids=getRoleAndSubordinatesRoleIds($share_rsid);
+			array_push($share_roleids, $share_rsid);
 			$share_permission=$adb->query_result($result,$i,'permission');
 
 			$shareid=$adb->query_result($result,$i,'shareid');
@@ -658,6 +662,7 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 		{
 			$share_rsid=$adb->query_result($result,$i,'share_roleandsubid');
 			$share_roleids=getRoleAndSubordinatesRoleIds($share_rsid);
+			array_push($share_roleids, $share_rsid);
 			$share_permission=$adb->query_result($result,$i,'permission');
 		
 			$shareid=$adb->query_result($result,$i,'shareid');
@@ -716,6 +721,7 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 		{
 			$share_rsid=$adb->query_result($result,$i,'share_roleandsubid');
 			$share_roleids=getRoleAndSubordinatesRoleIds($share_rsid);
+			array_push($share_roleids, $share_rsid);
 			$share_permission=$adb->query_result($result,$i,'permission');
 
 			$shareid=$adb->query_result($result,$i,'shareid');
@@ -788,6 +794,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 					{
 						$focusGrpUsers = new GetGroupUsers();
 						$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+						//Clearing static cache for sub groups
+						GetGroupUsers::$groupIdsList = array();
+
 						$share_grp_users=$focusGrpUsers->group_users;
 						$share_grp_subgroups=$focusGrpUsers->group_subgroups;
 						$grp_read_per[$share_grpid]=$share_grp_users;
@@ -809,6 +819,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_write_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -832,6 +846,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_read_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -878,6 +896,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 					{
 						$focusGrpUsers = new GetGroupUsers();
 						$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+						//Clearing static cache for sub groups
+						GetGroupUsers::$groupIdsList = array();
+
 						$share_grp_users=$focusGrpUsers->group_users;
 						$grp_read_per[$share_grpid]=$share_grp_users;
 
@@ -899,6 +921,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_write_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -922,6 +948,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_read_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -972,6 +1002,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 					{
 						$focusGrpUsers = new GetGroupUsers();
 						$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+						//Clearing static cache for sub groups
+						GetGroupUsers::$groupIdsList = array();
+
 						$share_grp_users=$focusGrpUsers->group_users;
 						$grp_read_per[$share_grpid]=$share_grp_users;
 						foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -993,6 +1027,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_write_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -1016,6 +1054,10 @@ function getUserModuleSharingObjects($module,$userid,$def_org_share,$current_use
 				{
 					$focusGrpUsers = new GetGroupUsers();
 					$focusGrpUsers->getAllUsersInGroup($share_grpid);
+
+					//Clearing static cache for sub groups
+					GetGroupUsers::$groupIdsList = array();
+
 					$share_grp_users=$focusGrpUsers->group_users;
 					$grp_read_per[$share_grpid]=$share_grp_users;
 					foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -1186,6 +1228,9 @@ function getRelatedModuleSharingArray($par_mod,$share_mod,$mod_sharingrule_membe
 									{
 										$focusGrpUsers = new GetGroupUsers();
 										$focusGrpUsers->getAllUsersInGroup($shareEntId);
+
+										//Clearing static cache for sub groups
+										GetGroupUsers::$groupIdsList = array();
 										$share_grp_users=$focusGrpUsers->group_users;
 										
 										foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
@@ -1219,6 +1264,9 @@ function getRelatedModuleSharingArray($par_mod,$share_mod,$mod_sharingrule_membe
 									{
 										$focusGrpUsers = new GetGroupUsers();
 										$focusGrpUsers->getAllUsersInGroup($shareEntId);
+
+										//Clearing static cache for sub groups
+										GetGroupUsers::$groupIdsList = array();
 										$share_grp_users=$focusGrpUsers->group_users;
 										foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
 										{
@@ -1252,6 +1300,10 @@ function getRelatedModuleSharingArray($par_mod,$share_mod,$mod_sharingrule_membe
 								{
 									$focusGrpUsers = new GetGroupUsers();
 									$focusGrpUsers->getAllUsersInGroup($shareEntId);
+
+									//Clearing static cache for sub groups
+									GetGroupUsers::$groupIdsList = array();
+
 									$share_grp_users=$focusGrpUsers->group_users;
 									foreach($focusGrpUsers->group_subgroups as $subgrpid=>$subgrpusers)
 									{
@@ -1382,7 +1434,7 @@ function constructSingleStringKeyValueArray($var) {
 		$code = 'array(';
 		foreach ($var as $key => $value) {
 		    //fix for signatue quote(') issue
-		    $value=$adb->sql_escape_string($value);    
+            $value = escape_single_quotes($value);
 			if($i<$size) {
 				$code .= "'".$key."'=>'".$value."',";
 			} else {

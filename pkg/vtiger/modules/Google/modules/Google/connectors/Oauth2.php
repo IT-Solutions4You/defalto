@@ -60,9 +60,7 @@ class Google_Oauth2_Connector {
         $this->service_name = $this->service_provider . $module;
         $this->client_id = Google_Config_Connector::$clientId;
         $this->client_secret = Google_Config_Connector::$clientSecret;
-        $this->redirect_uri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $this->service_name;
-        
+        $this->redirect_uri = rtrim($site_URL, '/').'/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module.'&service='.$this->service_name;
         $this->scope = $this->scopes[$this->source_module];
     }
     
@@ -180,10 +178,13 @@ class Google_Oauth2_Connector {
         unset($decodedToken['refresh_token']);
         $decodedToken['created'] = time();
         $accessToken = json_encode($decodedToken);
-        $params = array($this->service_name,$accessToken,$refresh_token,$this->user_id);
-        $sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
-        $this->db->pquery($sql,$params);
-    }
+        $modulesSupported = array('Contacts', 'Calendar');
+        foreach($modulesSupported as $moduleName) {
+            $params = array($this->service_provider.$moduleName,$accessToken,$refresh_token,$this->user_id);
+			$sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
+			$this->db->pquery($sql,$params);
+		}
+	}
     
     protected function retreiveToken() {
         if(!$this->user_id) $this->user_id = Users_Record_Model::getCurrentUserModel()->getId();
@@ -228,11 +229,13 @@ class Google_Oauth2_Connector {
         );
         $encodedToken = $this->fireRequest(self::OAUTH2_TOKEN_URI,array(),$params);
         $decodedToken = json_decode($encodedToken,true);
-        $decodedToken['created'] = time();
-        $token['access_token'] = $decodedToken;
-        $token['refresh_token'] = $this->token['refresh_token'];
-        $this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
-        $this->setToken($token);
+        if(!isset($decodedToken['error'])) {
+			$decodedToken['created'] = time();
+			$token['access_token'] = $decodedToken;
+			$token['refresh_token'] = $this->token['refresh_token'];
+			$this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
+			$this->setToken($token);
+		}
     }
 
     public function authorize() {
@@ -243,7 +246,7 @@ class Google_Oauth2_Connector {
             return $this;
         } else {
             if($_REQUEST['service'] && $_REQUEST['code']) {
-                $authCode = $_REQUEST['code'];
+                $authCode = $this->decryptAuthCode($_REQUEST['code']);
                 $token = $this->exchangeCodeForToken($authCode);
                 $this->storeToken($token);
                 echo '<script>window.opener.sync();window.close();</script>'; exit;

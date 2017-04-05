@@ -38,6 +38,11 @@ Class Vtiger_OverdueActivities_Dashboard extends Vtiger_IndexAjax_View {
 		if(!empty($content)) {
 			$viewer->view('dashboards/CalendarActivitiesContents.tpl', $moduleName);
 		} else {
+			$sharedUsers = Calendar_Module_Model::getSharedUsersOfCurrentUser($currentUser->id);
+			$sharedGroups = Calendar_Module_Model::getSharedCalendarGroupsList($currentUser->id);
+			$viewer->assign('SHARED_USERS', $sharedUsers);
+			$viewer->assign('SHARED_GROUPS', $sharedGroups);
+			
 			$viewer->view('dashboards/CalendarActivities.tpl', $moduleName);
 		}
 	}

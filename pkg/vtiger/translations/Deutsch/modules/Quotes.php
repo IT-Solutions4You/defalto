@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Quotes'                       => 'Angebot'                     , 
 	'SINGLE_Quotes'                => 'Angebot'                     , 
 	'LBL_EXPORT_TO_PDF'            => 'Export als PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , 
@@ -20,9 +21,10 @@ $languageStrings = array(
 	'Inventory Manager'            => 'Bestandsmanager'             , 
 	'Accepted'                     => 'akzeptiert'                  , 
 	'Rejected'                     => 'abgelehnt'                   , 
-	'Open Quotes'                  => 'Offene Zitate',
-        //Taxes 
-        'VAT'                          => 'Mehrwertsteuer', 
-        'Service'                      => 'Service', 
-        'Sales'                        => 'Vertrieb'
+    'Related To'                   => 'Bezogen auf'                 ,
+
+  'LBL_THIS' => 'Diese',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'wird aus dem system gelöscht.bitte entfernen oder ersetzen Sie diesen Artikel',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Diese Position wird aus dem system gelöscht,bitte entfernen Sie diese Zeile Elemente',
+
 );

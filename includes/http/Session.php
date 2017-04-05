@@ -68,4 +68,7 @@ class Vtiger_Session {
 		HTTP_Session2::set($key, $value);
 	}
 
+	static function readonly() {
+		HTTP_Session2::pause();
+	}
 }

@@ -70,6 +70,17 @@ class EmailTemplates_Record_Model extends Vtiger_Record_Model {
 		$module = $this->getModule();
 		return 'index.php?module='.$this->getModuleName().'&view='.$module->getDetailViewName().'&record='.$this->getId();
 	}
+    
+    public function getName(){
+        return $this->get('subject');
+    }
+	
+	public function isSystemTemplate() {
+		if($this->get('systemtemplate') == '1') {
+			return true;
+		}
+		return false;
+    }
 	
 	/**
 	 * Function to get the instance of Custom View module, given custom view id
@@ -86,7 +97,53 @@ class EmailTemplates_Record_Model extends Vtiger_Record_Model {
 			$recordModel = new self();
 			return $recordModel->setData($row)->setModule('EmailTemplates');
 		}
-		return null;
+		throw new Exception(vtranslate('LBL_RECORD_DELETE', 'Vtiger'), 1);
 	}
+    
+    public static function getAllForEmailTask($moduleName) {
+        $db = PearDatabase::getInstance();
+		$sql = 'SELECT templateid, templatename, body, deleted FROM vtiger_emailtemplates WHERE module = ? ORDER BY templateid DESC';
+		$params = array($moduleName);
+		$result = $db->pquery($sql, $params);
+        $numRows = $db->num_rows($result);
+        $recordModels = array();
+		if($numRows > 0) {
+            for($i=0;$i<$numRows;$i++) {
+                $row = $db->query_result_rowdata($result, $i);
+                $recordModel = new self();
+                $recordModels[$row['templateid']] = $recordModel->setData($row)->setModule('EmailTemplates');
+            }
+		}
+        return $recordModels;
+    }
 	
+	public static function getSystemTemplateBySubject($subject) {
+        $db = PearDatabase::getInstance();
+		$sql = 'SELECT * FROM vtiger_emailtemplates WHERE subject = ? AND systemtemplate = ?';
+		$params = array($subject,1);
+		$result = $db->pquery($sql, $params);
+        $numRows = $db->num_rows($result);
+		if($numRows > 0) {
+			$row = $db->query_result_rowdata($result, 0);
+			$recordModel = new self();
+			$recordModel->setData($row)->setModule('EmailTemplates');
+			return $recordModel;
+		}
+    }
+
+	public function isDeleted() {
+		if ($this->get('deleted') == '1') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function updateImageName($imageName) {
+		$db = PearDatabase::getInstance();
+		if (!empty($imageName)) {
+			$db->pquery('UPDATE vtiger_emailtemplates SET templatepath=? WHERE templateid=?', array($imageName . ".png", $this->getId()));
+		}
+	}
+
 }

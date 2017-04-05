@@ -30,7 +30,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST'             => 'Folders List'                ,
 	'LBL_DENIED_REPORTS'           => 'Denied Reports'              ,
 	'LBL_NO_OF_RECORDS'            => 'Total Records : '           , // TODO: Review
-	'LBL_MORE_RECORDS_TXT'=>'Only 1000 records are shown below. Please export to see all Records',
+	'LBL_MORE_RECORDS_TXT'=>'Only 500 records are shown below. Please export to see all Records',
 	'LBL_ADD_RECORD'               => 'Add Report'                  ,
 	'LBL_ADD_FOLDER'               => 'Add Folder'                  ,
 	'LBL_REPORT_DELETE_DENIED'     => 'Permission denied to delete the Report',
@@ -54,7 +54,7 @@ $languageStrings = array(
 	'LBL_AVERAGE'                  => 'Media'                       ,
 	'LBL_LOWEST_VALUE'             => 'Valore pi&ugrave; basso'     ,
 	'LBL_HIGHEST_VALUE'            => 'Highest Value'               ,
-	'LBL_GENERATE_REPORT'          => 'Generate Report'             ,
+	'LBL_GENERATE_REPORT'          => 'Salva e Genera rapporto'     ,
 	'LBL_SUM'                      => 'Somma'                       ,
 	'LBL_AVG'                      => 'Media'                       ,
 	'LBL_MIN'                      => 'Minimo'                      ,
@@ -119,10 +119,106 @@ $languageStrings = array(
 	'LBL_LIMIT_EXCEEDED'           => 'Only 1000 + records are displayed. Use CSV or Excel Export to see all the records', // TODO: Review
 	'LBL_TOP'                      => 'Top'                         , // TODO: Review
 	'LBL_ALL_REPORTS'              => 'All Reports'                 , // TODO: Review
-	'LBL_CALCULATION_CONVERSION_MESSAGE' => 'Calculation are based on the base currency of your CRM', // TODO: Review
+	'LBL_CALCULATION_CONVERSION_MESSAGE' => 'Il calcolo si basa sulle preferenze valuta del vostro CRM Mia', // TODO: Review
+
+    //Schedule Reports
+    'LBL_CREATING_REPORT'	=>	'Creazione di report',
+	'LBL_EDITING_REPORT'	=>	'Editing Rapporto',
+	'LBL_SCHEDULE_REPORTS'	=>	'Rapporti Pianificazione',
+	'LBL_AT_TIME'	=>	'Al tempo',
+	'LBL_DAILY'	=>	'Quotidiano',
+	'LBL_WEEKLY'	=>	'Settimanale',
+	'LBL_MONTHLY_BY_DATE'	=>	'Mensile per Data',
+	'LBL_YEARLY'	=>	'Annuale',
+	'LBL_SPECIFIC_DATE'	=>	'Su specifica Data',
+	'LBL_CHOOSE_DATE'	=>	'Scegli data',
+	'LBL_ON_THESE_DAYS'	=>	'In questi giorni',
+	'LBL_SELECT_MONTH_AND_DAY'	=>	'Selezionare Mese e Data',
+	'LBL_SELECTED_DATES'	=>	'Date selezionate',
+	'LBL_EXCEEDING_MAXIMUM_LIMIT'	=>	'Limite massimo superato',
+	'LBL_NEXT_TRIGGER_TIME'	=>	'Tempo di trigger su Avanti',
+	'LBL_RUN_REPORT'	=>	'Esegui rapporto',
+	'LBL_SELECT_RECIEPIENTS'	=>	'Seleziona destinatari',
+	'LBL_SPECIFIC_EMAIL_ADDRESS'	=>	'Invia a e-mail specifico',
+
+    //Summary/Pivot Reports
+    'LBL_CREATING_PIVOT_REPORT' => 'Crea Pivot rapporto',
+    'LBL_EDITING_PIVOT_REPORT' => 'Modifica report Pivot',
+    'LBL_SELECT_PIVOT_FIELDS' => 'Selezionare Pivot Fields',
+    'LBL_SELECT_ROWS' => 'Selezionare Righe',
+    'LBL_SELECT_DATA_FIELDS' => 'Selezionare Campi dati',
+    'LBL_ADD_ROWS' => 'Aggiungere righe',
+    'LBL_ADD_COLUMNS' => 'Aggiungere colonne',
+    'LBL_ADD_DATA_FIELDS' => 'Aggiungere campi dati',
+    'LBL_PIVOT_FIELDS' => 'Selezionato Pivot Fields',
+    'LBL_RECORD_COUNT' => 'Conteggio Record',
+    'LBL_SELECT_PIVOT_FIELDS_WARNING' => 'Attenzione: Si prega di selezionare almeno un campo Row, campo Colonna e Campo dati',
+    'LBL_PIVOT_DATA_FIELDS_WARNING' => 'Attenzione: Nella colonna di dati - funzioni di aggregazione (somma, media, min e max) non dovrebbero ripetere.',
+    'LBL_MODIFY_CONDITIONS' => 'Modificare le condizioni',
+    'LBL_PIVOT_PREVIEW_EX' => 'Pivot Anteprima di report (esempio)',
+
+	//charts labels
+	'LBL_SELECT_CHART_TYPE' => 'Selezionare il tipo di grafico',
+	'LBL_CLICK_THROUGH_NOT_AVAILABLE' => 'Fare clic through non disponibile come avete selezionato più di un modulo',
+	'LBL_TOTAL_SUM_OF' => 'Somma totale di %s',
+	'LBL_AVG_OF' => 'Medio di %s',
+	'LBL_MIN_OF' => 'Minimo di %s',
+	'LBL_MAX_OF' => 'Massimo di %s',
+	'LBL_RECORD_COUNT' => 'Conteggio Record',
+	'LBL_PIE_CHART' => 'Grafico a torta',
+	'LBL_VERTICAL_BAR_CHART' => 'Barra verticale Grafico',
+	'LBL_HORIZONTAL_BAR_CHART' => 'Grafico a barre orizzontali',
+	'LBL_LINE_CHART' => 'Grafico a linee',
+	'LBL_SELECT_CHART' => 'Selezionare Grafico',
+	'LBL_CREATING_CHART_REPORT' => 'Creazione di report grafico',
+	'LBL_EDITING_CHART_REPORT' => 'Editing report grafico',
+	'LBL_GENERATE_CHART' => 'Genera Grafico',
+	'LBL_SELECT_GROUP_BY_FIELD' => 'Seleziona gruppo da campo',
+	'LBL_SELECT_DATA_FIELD' => 'Selezionare Campi dati',
+	'LBL_MODIFY_CONDITION' => 'Modificare le condizioni',
+	'LBL_PLEASE_SELECT_ATLEAST_ONE_GROUP_FIELD_AND_DATA_FIELD' => 'Si prega di selezionare almeno un campo Groupby e un campo di dati.',
+	'LBL_FOR_BAR_GRAPH_AND_LINE_GRAPH_SELECT_3_MAX_DATA_FIELDS' => 'Per bar e Linea grafico, è possibile selezionare fino a 3 campi di dati.',
+	'LBL_DETAIL_REPORT' =>	'Report dettaglio',
+	'LBL_PIVOT_REPORT'	=> 'Pivot Rapporto',
+	'LBL_CHARTS' => 'Grafici',
+    //Schedule Reports - Mail Content
+    'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'Questa è una mail generata automaticamente inviata a nome di un report pianificato.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'Grafico Pin Per DashBoard',
+    'LBL_FILE_FORMAT' => 'Formato di file',
+    
+    'Report Type' => 'Tipo di rapporto',
+    'tabular' => 'Dettaglio',
+    'summary' => 'Dettaglio',
+    'pivot' => 'Perno',
+    'chart' => 'Grafico',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Rapporti spostato con successo.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'Cartella di destinazione è la stessa cartella di origine.',
+	'LBL_SEARCH_FOR_FOLDERS' => 'Ricerca di cartelle',
+	'LBL_CHART_REPORT' => 'Diagramma di rapporto',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'Sblocca grafico da cruscotto',
+
+  'LBL_SAME_LEVEL_ROLES' => 'Stesso Livello Di Ruoli',
+  'LBL_SUBORDINATE_ROLES' => 'Subordinato Ruoli',
+  'LBL_SHARE_REPORT' => 'Condividere Report',
+  'LBL_SHARED_REPORTS' => 'Ha Condiviso Con Me',
+  'LBL_PINNED' => 'Appuntato',
+  'LBL_UNPINNED' => 'Sbloccati',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'Report Eliminato Con Successo',
+
 );
 $jsLanguageStrings = array(
 	'JS_DUPLICATE_RECORD'          => 'Duplicate Report'            , // TODO: Review
 	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.', // TODO: Review
-        'JS_NO_CHART_DATA_AVAILABLE' => 'Dati non disponibili, si prega di controllare i campi selezionati',
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'Grafico appuntato ad DashBoard',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'Grafico già appuntato ad DashBoard',
+	'JS_MOVE_REPORTS'=>'Spostare Reports',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'Data e orario programmati dovrebbero essere maggiore di data e ora correnti',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'Grafico Pin a Dashboard',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'Sblocca grafico da cruscotto',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'Grafico rimosso dal cruscotto',
+
+  'JS_NO_CHART_DATA_AVAILABLE' => 'I dati non sono disponibili, si prega di verificare i campi selezionati',
+
 );

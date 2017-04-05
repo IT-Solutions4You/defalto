@@ -36,9 +36,10 @@ class Mobile_WS_FetchModuleOwners extends Mobile_WS_Controller {
         $usersWSId = Mobile_WS_Utils::getEntityModuleWSId('Users');
         foreach ($userIds as $userId) {
             $userRecord = Users_Record_Model::getInstanceById($userId, 'Users');
-            $usersList[] = array('value' => $usersWSId . 'x' . $userId,
-                                 'label' => $userRecord->get("first_name") . ' ' . $userRecord->get('last_name')
-                                );
+            $usersList[] = array(
+                'value' => $usersWSId . 'x' . $userId,
+                'label' => decode_html($userRecord->get("first_name") . ' ' . $userRecord->get('last_name'))
+            );
         }
         return $usersList;
     }
@@ -50,9 +51,10 @@ class Mobile_WS_FetchModuleOwners extends Mobile_WS_Controller {
         $groupsWSId = Mobile_WS_Utils::getEntityModuleWSId('Groups');
         foreach ($groupIds as $groupId) {
             $groupName = getGroupName($groupId);
-            $groupsList[] = array('value' => $groupsWSId . 'x' . $groupId,
-                                  'label' => $groupName[0]
-                                 );
+            $groupsList[] = array(
+                'value' => $groupsWSId . 'x' . $groupId,
+                'label' => decode_html($groupName[0])
+            );
         }
         return $groupsList;
     }

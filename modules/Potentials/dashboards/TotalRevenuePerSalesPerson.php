@@ -12,7 +12,7 @@ class Potentials_TotalRevenuePerSalesPerson_Dashboard extends Vtiger_IndexAjax_V
     
     function getSearchParams($assignedto,$dates) {
         $listSearchParams = array();
-        $conditions = array(array('assigned_user_id','e',$assignedto),array("sales_stage","e","Closed Won"));
+        $conditions = array(array('assigned_user_id','e',decode_html(urlencode(escapeSlashes($assignedto)))),array("sales_stage","e","Closed Won"));
         if(!empty($dates)) {
             array_push($conditions,array('createdtime','bw',$dates['start'].' 00:00:00,'.$dates['end'].' 23:59:59'));
         }
@@ -27,19 +27,13 @@ class Potentials_TotalRevenuePerSalesPerson_Dashboard extends Vtiger_IndexAjax_V
 
 		$linkId = $request->get('linkid');
 		
-		$createdTime = $request->get('createdtime');
-		//Date conversion from user to database format
-		if(!empty($createdTime)) {
-			$dates['start'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['start']);
-			$dates['end'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['end']);
-		}
-		
+		$dates = $request->get('createdtime');
         
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getTotalRevenuePerSalesPerson($dates);
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$dates);
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"], $request->get('dateFilter')).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
@@ -47,6 +41,7 @@ class Potentials_TotalRevenuePerSalesPerson_Dashboard extends Vtiger_IndexAjax_V
 		$viewer->assign('WIDGET', $widget);
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('DATA', $data);
+		$viewer->assign('YAXIS_FIELD_TYPE', 'currency');
 
 		//Include special script and css needed for this widget
 		$viewer->assign('STYLES',$this->getHeaderCss($request));

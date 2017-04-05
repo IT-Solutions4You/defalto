@@ -25,14 +25,15 @@ class Potentials_TopPotentials_Dashboard extends Vtiger_IndexAjax_View {
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$models = $moduleModel->getTopPotentials($pagingModel);
-        $moduleHeader = $moduleModel->getTopPotentialsHeader();
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
 
 		$viewer->assign('WIDGET', $widget);
 		$viewer->assign('MODULE_NAME', $moduleName);
-        $viewer->assign('MODULE_HEADER', $moduleHeader);
 		$viewer->assign('MODELS', $models);
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
+		$viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
 
 		$content = $request->get('content');
 		if(!empty($content)) {

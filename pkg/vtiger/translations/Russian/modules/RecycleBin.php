@@ -8,7 +8,8 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'Recycle Bin'                   => 'Корзина'              , 
+    'Recycle Bin'                  => 'Корзина'              , 
+	'RecycleBin'                   => 'Корзина'              , 
 	'LBL_SELECT_MODULE'            => 'Выберите Модуль', 
 	'LBL_EMPTY_RECYCLEBIN'         => 'Очистить Корзину', 
 	'LBL_RESTORE'                  => 'Востановить'      , // KEY 5.x: LBL_MASS_RESTORE
@@ -19,4 +20,10 @@ $languageStrings = array(
 $jsLanguageStrings = array(
 	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Вы уверены, что хотите навсегда удалить все удаленные записи из базы данных?', 
 	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Вы уверены, что хотите восстановить записи?', 
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Вы уверены, что вы хотите восстановить запись?',
+    'JS_RESTORING_RECORD' => 'Восстановление рекорд',
+    'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Восстановление в Vtiger и Drive',
+
+  'JS_RESTORING_RECORDS' => 'Восстановление записей',
+
 );

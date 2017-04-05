@@ -864,6 +864,8 @@ function create_ticket($input_array)
 
 	$ticket->column_fields['assigned_user_id']=$defaultAssignee;
 	$ticket->column_fields['from_portal'] = 1;
+	// New field added to show source of the Record 
+	$ticket->column_fields['source'] = 'CUSTOMER PORTAL';
 
 	$accountResult = $adb->pquery('SELECT accountid FROM vtiger_contactdetails WHERE contactid = ?', array($parent_id));
 	$accountId = $adb->query_result($accountResult, 0, 'accountid');
@@ -1448,6 +1450,7 @@ function add_ticket_attachment($input_array)
 	$focus->column_fields['filestatus'] = 1;
 	$focus->column_fields['assigned_user_id'] = $user_id;
 	$focus->column_fields['folderid'] = 1;
+	$focus->column_fields['source'] = 'CUSTOMER PORTAL';
 	$focus->parent_id = $ticketid;
 	$focus->save('Documents');
 
@@ -2412,6 +2415,7 @@ function get_details($id,$module,$customerid,$sessionid)
 		$fieldlabel = getTranslatedString($adb->query_result($fieldres,$i,'fieldlabel'));
 		$fieldvalue = $adb->query_result($res,0,$columnname);
 
+		$output[0][$module][$i]['fieldname'] = $fieldname;
 		$output[0][$module][$i]['fieldlabel'] = $fieldlabel ;
 		$output[0][$module][$i]['blockname'] = $blockname;
 		if($columnname == 'title' || $columnname == 'description') {

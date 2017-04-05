@@ -25,7 +25,8 @@ class Vtiger_ModuleMeta_Model extends Vtiger_Base_Model {
 	 * @return Vtiger_ModuleMeta_Model
 	 */
 	public static function getInstance($name, $user) {
-		$self = new Vtiger_ModuleMeta_Model();
+		$moduleMetaClassName = Vtiger_Loader::getComponentClassName('Model', 'ModuleMeta', $name);
+		$self = new $moduleMetaClassName();
 		$self->moduleName = $name;
 		$self->user = $user;
 
@@ -131,7 +132,8 @@ class Vtiger_ModuleMeta_Model extends Vtiger_Base_Model {
 	 * @return <Array of Vtiger_Field>
 	 */
 	public function getImportableFields() {
-		$focus = CRMEntity::getInstance($this->moduleName);
+		$moduleName = $this->moduleName;
+		$focus = CRMEntity::getInstance($moduleName);
 		if(method_exists($focus, 'getImportableFields')) {
 			$importableFields = $focus->getImportableFields();
 		} else {
@@ -145,6 +147,15 @@ class Vtiger_ModuleMeta_Model extends Vtiger_Base_Model {
 				}
 			}
 		}
+
+		if ($moduleName) {
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			$moduleImportFields = $moduleModel->getAdditionalImportFields();
+			foreach ($moduleImportFields as $fieldName => $fieldModel) {
+				$importableFields[$fieldName] = $fieldModel->getWebserviceFieldObject();
+			}
+		}
+
 		return $importableFields;
 	}
 

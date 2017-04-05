@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -19,6 +19,7 @@ $languageStrings = array(
 	'LBL_ASSIGN_ROLE' => 'Tilldela Roll',
 	'LBL_CHOOSE_PROFILES' => 'Välj profiler',
 	'LBL_COPY_PRIVILEGES_FROM' => 'Kopiera privilegier från',
+    'LBL_TRANSFER_TO_OTHER_ROLE' =>'Transfer ownership to other role',
 	
 	//Edit View
 	'LBL_PROFILE' => 'Profil',
@@ -34,6 +35,10 @@ $languageStrings = array(
 	'LBL_ALL_USERS' => 'Alla Användare',
 	'LBL_USERS_WITH_LOWER_LEVEL' => 'Användare med underordnade',
 	'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'Användare med samma nivå & underordnade',
+
+  'LBL_EDIT_ROLE' => 'Redigera Roll',
+  'LBL_CREATE_ROLE' => 'Skapa Roll',
+
 );
 
 $jsLanguageStrings = array(

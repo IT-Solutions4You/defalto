@@ -27,9 +27,13 @@ $languageStrings = array(
 	'306-Internet Sales'           => '306-Internet Sales'          , 
 	'307-Service-Hardware Labor'   => '307-Service-Hardware Labor'  , 
 	'308-Sales-Books'              => '308-Sales-Books'             , 
+
+  'Phone' => 'Primary Phone',
+  'Email' => 'Primary Email',
+
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?', 
 	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Vendor will remove its related PurchaseOrders. Are you sure you want to delete this Vendor?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting Vendors will remove their related Purchase Orders. Are you sure you want to delete the selected records?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this vendor(s) will remove its related Purchase Orders. Are you sure you want to delete the selected Records?', 
 );

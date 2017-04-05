@@ -15,8 +15,8 @@ $languageStrings = array(
 	'LBL_CONTACT_INFORMATION'      => 'Détail contact '            , 
 	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Portail de service client'   , 
 	'LBL_IMAGE_INFORMATION'        => 'Image/Photo du contact'      , 
-	'LBL_COPY_OTHER_ADDRESS'       => 'Copy Other Address'          , // TODO: Review
-	'LBL_COPY_MAILING_ADDRESS'     => 'Copy Mailing Address'        , // TODO: Review
+	'LBL_COPY_OTHER_ADDRESS'       => 'Copie Autres adresses'          , // TODO: Review
+	'LBL_COPY_MAILING_ADDRESS'     => 'Copie Adresse postale'        , // TODO: Review
 	'Office Phone'                 => 'Téléphone (bureau)'        , 
 	'Home Phone'                   => 'Téléphone (domicile)'      , 
 	'Title'                        => 'Fonction'                    , 
@@ -50,6 +50,12 @@ $languageStrings = array(
 	'Contact Id' => 'Contact Id',
     'Support Start Date'           => 'Soutien Date de début'       ,
     'Support End Date'             => 'Soutien Date de fin'         ,
+	'LBL_TRANSACTIONS' => 'Transactions',
+
+  'Other Phone' => 'Téléphone Secondaire',
+  'Email' => 'E-Mail Principale',
+  'Secondary Email' => 'E-Mail Secondaire',
+
 );
 $jsLanguageStrings = array(
 );

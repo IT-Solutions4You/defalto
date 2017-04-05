@@ -1,10 +1,8 @@
 /*�örn Zaefferer, Paul McLanahan
  *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+	* Licensed under http://en.wikipedia.org/wiki/MIT_License
  *
- * Revision: $Id: jquery.MetaData.js 16 2012-07-19 11:20:56Z diego.alto $
+ * Revision: $Id: jquery.MetaData.js 49 2013-02-19 01:19:14Z diego.alto@gmail.com $
  *
  */
 

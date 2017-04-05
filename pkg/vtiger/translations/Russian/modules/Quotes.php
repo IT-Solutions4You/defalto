@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Quotes'                       => 'Предложение'      , 
 	'SINGLE_Quotes'                => 'Предложение'      , 
 	'LBL_EXPORT_TO_PDF'            => 'Экспорт в PDF'       , 
 	'LBL_SEND_MAIL_PDF'            => 'Отправить на e-mail с PDF'         , 
@@ -20,10 +21,10 @@ $languageStrings = array(
 	'Inventory Manager'            => 'Ответственный за склад', 
 	'Accepted'                     => 'Принято'              , 
 	'Rejected'                     => 'Отклонено'          , 
-	 'Open Quotes'                  => 'Открытые Цитаты',
-    
-    //Taxes 
-    'VAT'      => 'НДС', 
-    'Service'  => 'Служба', 
-    'Sales'    => 'Реализация'
+    'Related To'                   => 'В связи с'              ,
+
+  'LBL_THIS' => 'Это',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'будет удален из системы.просьба удалить или заменить этот пункт',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Эта позиция удаляется из системы,пожалуйста, удалите эту строку элементов',
+
 );

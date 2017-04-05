@@ -8,11 +8,11 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-include_once dirname(__FILE__) . '/cache/Connector.php';
+include_once dirname(__FILE__).'/cache/Connector.php';
 
-class Vtiger_Cache  {
-    private static  $selfInstance = false;
-    public static $cacheEnable = true;
+class Vtiger_Cache {
+	private static $selfInstance = false;
+	public static $cacheEnable = true;
 
 	protected $connector;
 
@@ -20,14 +20,14 @@ class Vtiger_Cache  {
 		$this->connector = Vtiger_Cache_Connector::getInstance();
 	}
 
-    public static function getInstance(){
+	public static function getInstance(){
 		if(self::$selfInstance){
 			return self::$selfInstance;
 		} else{
 			self::$selfInstance = new self();
 			return self::$selfInstance;
 		}
-    }
+	}
 
 	public static function get($ns, $key) {
 		$self = self::getInstance();
@@ -37,19 +37,26 @@ class Vtiger_Cache  {
 		return false;
 	}
 
+	public static function delete($ns, $key) {
+		$self = self::getInstance();
+		if ($key && self::$cacheEnable) {
+			$self->connector->delete($ns, $key);
+		}
+	}
+
 	public static function set($ns, $key, $value) {
 		$self = self::getInstance();
 		if(self::$cacheEnable) {
 			$self->connector->set($ns, $key, $value);
 		}
 	}
-    
-    public static function flush(){
-        $self = self::getInstance();
-        $self->connector->flush();
-    }
 
-    
+	public static function flush(){
+		$self = self::getInstance();
+		$self->connector->flush();
+	}
+
+
 	private static $_user_list;
 
 	public function getUserList($module,$currentUser){
@@ -80,33 +87,29 @@ class Vtiger_Cache  {
 		}
 	}
 
-	private static $_picklist_values;
-
 	public function getPicklistValues($fieldName){
-		if(isset(self::$_picklist_values[$fieldName])){
-			return self::$_picklist_values[$fieldName];
+		if(self::get('PicklistValues',$fieldName)){
+			return self::get('PicklistValues',$fieldName);
 		}
 		return false;
 	}
 
 	public function setPicklistValues($fieldName,$values){
-		if(self::$cacheEnable){
-			self::$_picklist_values[$fieldName]=$values;
+		if(isset($values) && isset($fieldName)){
+			self::set('PicklistValues',$fieldName,$values);
 		}
 	}
 
-	private static $_picklist_details;
-
 	public function getPicklistDetails($module,$field){
-		if(isset(self::$_picklist_details[$module][$field])){
-			return self::$_picklist_details[$module][$field];
+		if(self::get('PicklistDetails',$field)){
+			return self::get('PicklistDetails',$field);
 		}
 		return false;
 	}
 
 	public function setPicklistDetails($module,$field,$picklistDetails){
-		if(self::$cacheEnable){
-			self::$_picklist_details[$module][$field] = $picklistDetails;
+		if(isset($picklistDetails) && isset($field)){
+			self::set('PicklistDetails',$field,$picklistDetails);
 		}
 	}
 
@@ -114,7 +117,7 @@ class Vtiger_Cache  {
 
 	public function getModuleOwned($module){
 		if(isset(self::$_module_ownedby[$module])){
- 			return self::$_module_ownedby[$module];
+			return self::$_module_ownedby[$module];
 		}
 		return false;
 	}
@@ -125,18 +128,16 @@ class Vtiger_Cache  {
 		}
 	}
 
-	private static $_block_instance;
-
 	public function getBlockInstance($block, $moduleName){
-		if(isset(self::$_block_instance[$moduleName][$block])){
- 			return self::$_block_instance[$moduleName][$block];
+		if(Vtiger_Cache::get('BlockInstance',$moduleName.'-'.$block)){
+			return Vtiger_Cache::get('BlockInstance',$moduleName.'-'.$block);
 		}
 		return false;
 	}
 
 	public function setBlockInstance($block, $moduleName, $instance){
-		if(self::$cacheEnable){
-			self::$_block_instance[$moduleName][$block] = $instance;
+		if(isset($instance) && isset($block)){
+			Vtiger_Cache::set('BlockInstance',$moduleName.'-'.$block,$instance);
 		}
 	}
 
@@ -145,7 +146,7 @@ class Vtiger_Cache  {
 
 	public function getFieldInstance($field,$moduleId){
 		if(isset(self::$_field_instance[$moduleId][$field])){
- 			return self::$_field_instance[$moduleId][$field];
+			return self::$_field_instance[$moduleId][$field];
 		}
 		return false;
 	}
@@ -159,7 +160,7 @@ class Vtiger_Cache  {
 	private static $_admin_user_id = false;
 
 	public function getAdminUserId(){
- 			return self::$_admin_user_id;
+			return self::$_admin_user_id;
 	}
 
 	public function setAdminUserId($userId){
@@ -169,53 +170,72 @@ class Vtiger_Cache  {
 	}
 
 	//cache for the module Instance
-    private static  $_module_name = array();
+	private static  $_module_name = array();
 
-    public function getModuleName($moduleId){
+	public function getModuleName($moduleId){
 	if(isset(self::$_module_name[$moduleId])){
-	    return self::$_module_name[$moduleId];
+		return self::$_module_name[$moduleId];
 	}
 	return false;
-    }
+	}
 
-    public function setModuleName($moduleId,$moduleName){
+	public function setModuleName($moduleId,$moduleName){
 		if(self::$cacheEnable){
 			self::$_module_name[$moduleId] = $moduleName;
 		}
-    }
+	}
 
 	//cache for the module Instance
-    private static  $_workflow_for_module = array();
+	private static  $_workflow_for_module = array();
 
-    public function getWorkflowForModule($module){
+	public function getWorkflowForModule($module){
 		if(isset(self::$_workflow_for_module[$module])){
 			return self::$_workflow_for_module[$module];
 		}
 		return false;
-    }
+	}
 
-    public function setWorkflowForModule($module,$workflows){
+	public function setWorkflowForModule($module,$workflows){
 		if(self::$cacheEnable){
 			self::$_workflow_for_module[$module] = $workflows;
 		}
-    }
+	}
 
 	//cache for the module Instance
-    private static  $_workflow_for_module_supporting_comments = array();
+	private static  $_workflow_for_module_supporting_comments = array();
 
-    public function getWorkflowForModuleSupportingComments($module){
+	public function getWorkflowForModuleSupportingComments($module){
 		if(isset(self::$_workflow_for_module_supporting_comments[$module])){
 			return self::$_workflow_for_module_supporting_comments[$module];
 		}
 		return false;
-    }
+	}
 
-    public function setWorkflowForModuleSupportingComments($module,$workflows){
+	public function setWorkflowForModuleSupportingComments($module,$workflows){
 		if(self::$cacheEnable){
 			self::$_workflow_for_module_supporting_comments[$module] = $workflows;
 		}
-    }
+	}
 
+	//cache for the workflow, supporting product update from inventory
+	private static  $_workflows_of_inventory_supporting_product_qty_update = array();
+
+	public function hasInventoryWorkflowsSupportingProductQtyUpdate($module) {
+		if(isset(self::$_workflows_of_inventory_supporting_product_qty_update[$module])) {
+			return true;
+		}
+		return false;
+	}
+
+	public function getInventoryWorkflowsSupportingProductQtyUpdate($module) {
+		return self::$_workflows_of_inventory_supporting_product_qty_update[$module];
+	}
+
+	public function setInventoryWorkflowsSupportingProductQtyUpdate($module, $workflows) {
+		if(self::$cacheEnable) {
+			self::$_workflows_of_inventory_supporting_product_qty_update[$module] = $workflows;
+		}
+	}
 
 	private static $_user_id ;
 
@@ -276,18 +296,16 @@ class Vtiger_Cache  {
 		}
 	}
 
-	private static $_assigned_picklist_values;
-
 	public function getAssignedPicklistValues($tableName,$roleId){
-		if(isset(self::$_assigned_picklist_values[$tableName][$roleId])){
-			return self::$_assigned_picklist_values[$tableName][$roleId];
+		if(self::get('PicklistRoleBasedValues',$tableName.$roleId)){
+			return self::get('PicklistRoleBasedValues',$tableName.$roleId);
 		}
 		return false;
 	}
 
 	public function setAssignedPicklistValues($tableName,$roleId,$values){
-		if(self::$cacheEnable){
-			self::$_assigned_picklist_values[$tableName][$roleId]=$values;
+		if(isset($values)){
+			self::set('PicklistRoleBasedValues',$tableName.$roleId,$values);
 		}
 	}
 
@@ -296,19 +314,15 @@ class Vtiger_Cache  {
 		return $values !== false;
 	}
 
-	private static $_block_fields;
-
-	public function getBlockFields($block,$module){
-		if(isset(self::$_block_fields[$module][$block])){
-			return self::$_block_fields[$module][$block];
+	public function getBlockFields($moduleName,$blockId){
+		if(Vtiger_Cache::get('BlockFields',$moduleName.'_'.$blockId)){
+			return Vtiger_Cache::get('BlockFields',$moduleName.'_'.$blockId);
 		}
 		return false;
 	}
 
-	public function setBlockFields($block,$module,$fields){
-		if(self::$cacheEnable){
-			self::$_block_fields[$module][$block] = $fields;
-		}
+	public function setBlockFields($moduleName,$blockId,$fields){
+		Vtiger_Cache::set('BlockFields',$moduleName.'_'.$blockId,$fields);
 	}
 
 	private static $_name_fields;	
@@ -319,7 +333,7 @@ class Vtiger_Cache  {
 		}
 		return false;
 	}
-	
+
 	public function setNameFields($module,$nameFields){
 		if(self::$cacheEnable){
 			self::$_name_fields[$module] = $nameFields; 
@@ -397,5 +411,95 @@ class Vtiger_Cache  {
 	public function hasCreator($id) {
 		$value = $this->getCreator($id);
 		return $value !== false;
+	}	
+
+	/**
+	 * To clear module information from cache
+	 * @param type $moduleName
+	 */
+	public static function flushModuleCache($moduleName) {
+		$module = Vtiger_Module_Model::getInstance($moduleName);
+		if (empty($module))
+			return;
+
+		Vtiger_Cache::delete('module', $moduleName);
+		Vtiger_Cache::delete('module', $module->id);
+
+		$moduleBlocks = $module->getBlocks();
+		foreach ($moduleBlocks as $label => $block) {
+			Vtiger_Cache::delete('BlockInstance', $module->id.'-'.$label);
+			Vtiger_Cache::delete('BlockInstance', $module->id.'-'.$block->id);
+		}
+
+		Vtiger_Cache::delete('ModuleFieldInfo', $moduleName);
+		Vtiger_Cache::delete('ModuleFieldInfo', $module->id);
+
+		Vtiger_Cache::delete('ModuleFields', $module->id);
+		Vtiger_Cache::delete('ModuleFields', $moduleName);
+
+		Vtiger_Cache::delete('ModuleBlocks', $moduleName);
+		Vtiger_Cache::delete('ModuleBlocks', $module->id);
 	}
+
+	/**
+	 * Function to clear Picklist values from cache
+	 * @param type $pickListName
+	 * @param type $rolesList
+	 */
+	public static function flushPicklistCache($pickListName, $rolesList = false) {
+		Vtiger_Cache::delete('PicklistValues', $pickListName);
+		Vtiger_Cache::delete('EditablePicklistValues', $pickListName);
+		Vtiger_Cache::delete('NonEditablePicklistValues', $pickListName);
+		Vtiger_Cache::delete('AllPicklistValues', $pickListName);
+		Vtiger_Cache::delete('PicklistDetails', $pickListName);
+
+		if ($rolesList) {
+			foreach ($rolesList as $key => $roleId) {
+				Vtiger_Cache::delete('PicklistRoleBasedValues', $pickListName.$roleId);
+			}
+		}
+	}
+
+	/**
+	 * Function to clear Module and Block Field data from cache
+	 * @param type $module
+	 * @param type $blockId
+	 */
+	public static function flushModuleandBlockFieldsCache($module, $blockId = false) {
+		Vtiger_Cache::delete('ModuleFieldInfo', $module->name);
+		Vtiger_Cache::delete('ModuleFields', $module->id);
+
+		if ($blockId) {
+			Vtiger_Cache::delete('BlockFields', $module->name.'_'.$blockId);
+		} else {
+			$blocks = $module->getBlocks();
+			foreach ($blocks as $label => $block) {
+				Vtiger_Cache::delete('BlockFields', $module->name.'_'.$block->id);
+			}
+		}
+	}
+
+	/**
+	 * Function to clear module Block information from cache
+	 * @param type $moduleInstance
+	 * @param type $block
+	 */
+	static function flushModuleBlocksCache($moduleInstance, $block = null) {
+		if ($block == null) {
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleInstance->name);
+			$moduleBlocks = $moduleModel->getBlocks();
+			Vtiger_Cache::delete('ModuleBlocks', $moduleInstance->id);
+			foreach ($moduleBlocks as $label => $block) {
+				Vtiger_Cache::delete('BlockInstance', $moduleInstance->id.'-'.$label);
+				Vtiger_Cache::delete('BlockInstance', $moduleInstance->id.'-'.$block->id);
+				Vtiger_Cache::delete('BlockFields', $moduleInstance->name.'_'.$block->label);
+			}
+		} else {
+			Vtiger_Cache::delete('ModuleBlocks', $moduleInstance->id);
+			Vtiger_Cache::delete('BlockInstance', $moduleInstance->id.'-'.$block->label);
+			Vtiger_Cache::delete('BlockInstance', $moduleInstance->id.'-'.$block->id);
+			Vtiger_Cache::delete('BlockFields', $moduleInstance->name.'_'.$block->id);
+		}
+	}
+
 }

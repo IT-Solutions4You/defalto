@@ -49,17 +49,18 @@ function vtRunTaskJob($adb){
 	$readyTasks = $tq->getReadyTasks();
 	$tm = new VTTaskManager($adb);
 	foreach($readyTasks as $taskDetails){
-		list($taskId, $entityId, $taskContents) = $taskDetails;
+		list($taskId, $entityId, $taskContents, $relatedInfo) = $taskDetails;
 		$task = $tm->retrieveTask($taskId);
-        //If task is not there then continue
-        if(empty($task)){
-            continue;
-        }
+		//If task is not there then continue
+		if(empty($task)){
+			continue;
+		}
 		$task->setContents($taskContents);
-        $entity = VTEntityCache::getCachedEntity($entityId);
-        if(!$entity) {
-            $entity = new VTWorkflowEntity($adminUser, $entityId);
-        }
+		$task->setRelatedInfo($relatedInfo);
+		$entity = VTEntityCache::getCachedEntity($entityId);
+		if(!$entity) {
+			$entity = new VTWorkflowEntity($adminUser, $entityId);
+		}
 
 		$task->doTask($entity);
 	}

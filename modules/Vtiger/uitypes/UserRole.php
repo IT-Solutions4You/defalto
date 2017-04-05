@@ -46,4 +46,8 @@ class Vtiger_UserRole_UIType extends Vtiger_Base_UIType {
 		}
 		return $displayValue;
 	}
+
+	public function getListSearchTemplateName() {
+		return 'uitypes/UserRoleFieldSearchView.tpl';
+	}
 }

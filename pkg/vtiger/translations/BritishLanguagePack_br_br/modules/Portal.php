@@ -11,12 +11,12 @@ $languageStrings = array(
     'Portal' => 'Our Sites',
     'LBL_ADD_BOOKMARK' => 'Add Bookmark',
     'LBL_BOOKMARK_NAME' => 'Bookmark Name',
-    'LBL_BOOKMARK_URL' => 'Bookmark URL',
-    'LBL_CREATED_ON' => 'Created on',
+    'LBL_BOOKMARK_URL' => 'Bookmark Url',
+    'LBL_CREATED_ON' => 'Created On',
     'SINGLE_Portal' => 'Our Site',
     'LBL_EDIT_BOOKMARK' => 'Edit Bookmark',
     'LBL_ENTER_BOOKMARK_NAME' => 'Enter Bookmark Name',
-    'LBL_ENTER_URL' => 'Enter URL (www.example.com)',
+    'LBL_ENTER_URL' => 'Enter Url (www.example.com)',
     'LBL_ADD_NEW_BOOKMARK' => 'Add New Bookmark',
     'LBL_BOOKMARK_SAVED_SUCCESSFULLY' => 'Bookmark saved successfully',
     'LBL_RECORD_DELETED_SUCCESSFULLY' => 'Record deleted successfully',
@@ -29,5 +29,5 @@ $languageStrings = array(
 );
 
 $jsLanguageStrings = array(
-    
+    'JS_ENTER_MANDATORY_FIELDS' => 'Please enter all mandatory fields',
 );

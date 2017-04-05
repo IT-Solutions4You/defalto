@@ -30,10 +30,10 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 	 * @return menu item Model
 	 */
 	public function getMenuItem() {
-		$menuItem = Settings_Vtiger_MenuItem_Model::getInstance('LBL_CONFIG_EDITOR');
+		$menuItem = Settings_Vtiger_MenuItem_Model::getInstance('Configuration Editor');
 		return $menuItem;
 	}
-    
+
 	/**
 	 * Function to get Edit view Url
 	 * @return <String> Url
@@ -98,7 +98,7 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 			$db = PearDatabase::getInstance();
 
 			$presence = array(0);
-			$restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard');
+			$restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
 			$query = 'SELECT name, tablabel FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
 
 			$result = $db->pquery($query, array($presence, '1', $restrictedModules));
@@ -111,23 +111,6 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 			}
 			return $moduleData;
 		}
-        
-             else if ($fieldName === 'default_layout') {
-            $db = PearDatabase::getInstance();
-            $query = 'SELECT name,label FROM vtiger_layout';
-
-            $result = $db->pquery($query, array());
-            $numOfRows = $db->num_rows($result);
-
-            $folders =  array('vlayout' => 'Vlayout');
-            
-            for ($i = 0; $i < $numOfRows; $i++) {
-                $row = $db->query_result_rowdata($result, $i);
-                $folders[$db->query_result($result, $i, 'name')] = $db->query_result($result, $i, 'label');
-           }
-            return $folders;
-        }
-        
 		return array('true', 'false');
 	}
 
@@ -137,18 +120,12 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 	 */
 	public function getEditableFields() {
 		return array(
-//			'CALENDAR_DISPLAY'				=> array('label' => 'LBL_MINI_CALENDAR_DISPLAY',			'fieldType' => 'checkbox'),
-//			'WORLD_CLOCK_DISPLAY'			=> array('label' => 'LBL_WORLD_CLOCK_DISPLAY',				'fieldType' => 'checkbox'),
-//			'CALCULATOR_DISPLAY'			=> array('label' => 'LBL_CALCULATOR_DISPLAY',				'fieldType' => 'checkbox'),
-//			'USE_RTE'						=> array('label' => 'LBL_USE_RTE',							'fieldType' => 'checkbox'),
 			'HELPDESK_SUPPORT_EMAIL_ID'		=> array('label' => 'LBL_HELPDESK_SUPPORT_EMAILID',			'fieldType' => 'input'),
 			'HELPDESK_SUPPORT_NAME'			=> array('label' => 'LBL_HELPDESK_SUPPORT_NAME',			'fieldType' => 'input'),
 			'upload_maxsize'				=> array('label' => 'LBL_MAX_UPLOAD_SIZE',					'fieldType' => 'input'),
-//			'history_max_viewed'			=> array('label' => 'LBL_MAX_HISTORY_VIEWED',				'fieldType' => 'input'),
 			'default_module'				=> array('label' => 'LBL_DEFAULT_MODULE',					'fieldType' => 'picklist'),
 			'listview_max_textlength'		=> array('label' => 'LBL_MAX_TEXT_LENGTH_IN_LISTVIEW',		'fieldType' => 'input'),
-			'list_max_entries_per_page'		=> array('label' => 'LBL_MAX_ENTRIES_PER_PAGE_IN_LISTVIEW',	'fieldType' => 'input'),
-            'default_layout'                => array('label' => 'LBL_DEFAULT_LAYOUT',					'fieldType' => 'picklist')
+			'list_max_entries_per_page'		=> array('label' => 'LBL_MAX_ENTRIES_PER_PAGE_IN_LISTVIEW',	'fieldType' => 'input')
 		);
 	}
 
@@ -165,6 +142,9 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 				if ($fieldName === 'upload_maxsize') {
 					$fieldValue = $fieldValue * 1048576; //(1024 * 1024)
 					$patternString = "\$%s = %s;";
+				}
+				if($fieldName==='list_max_entries_per_page' || $fieldName ==='listview_max_textlength'){
+					$fieldValue= intval($fieldValue);
 				}
 				$pattern = '/\$' . $fieldName . '[\s]+=([^;]+);/';
 				$replacement = sprintf($patternString, $fieldName, ltrim($fieldValue, '0'));
@@ -183,15 +163,15 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 	 * @return <String> True/Error message
 	 */
 	public function validateFieldValues($updatedFields){
-		if (!filter_var($updatedFields['HELPDESK_SUPPORT_EMAIL_ID'], FILTER_VALIDATE_EMAIL)) {
+		if (array_key_exists('HELPDESK_SUPPORT_EMAIL_ID',$updatedFields) && !filter_var($updatedFields['HELPDESK_SUPPORT_EMAIL_ID'], FILTER_VALIDATE_EMAIL)) {
 			return "LBL_INVALID_EMAILID";
-		} else if(preg_match ('/[\'";?><]/', $updatedFields['HELPDESK_SUPPORT_NAME'])) {
+		} else if(array_key_exists('HELPDESK_SUPPORT_NAME',$updatedFields) && preg_match ('/[\'";?><]/', $updatedFields['HELPDESK_SUPPORT_NAME'])) {
 			return "LBL_INVALID_SUPPORT_NAME";
-		} else if(!preg_match ('/[a-zA-z0-9]/', $updatedFields['default_module'])) {
+		} else if(array_key_exists('default_module',$updatedFields) && !preg_match ('/[a-zA-z0-9]/', $updatedFields['default_module'])) {
 			return "LBL_INVALID_MODULE";
-		} else if(!filter_var(ltrim($updatedFields['upload_maxsize'],'0'), FILTER_VALIDATE_INT)
-				|| !filter_var(ltrim($updatedFields['list_max_entries_per_page'], '0'), FILTER_VALIDATE_INT)
-				|| !filter_var(ltrim($updatedFields['listview_max_textlength'], '0'), FILTER_VALIDATE_INT)) {
+		} else if((array_key_exists('upload_maxsize',$updatedFields) && !filter_var(ltrim($updatedFields['upload_maxsize'],'0'), FILTER_VALIDATE_INT))
+				|| (array_key_exists('list_max_entries_per_page',$updatedFields) &&  !filter_var(ltrim($updatedFields['list_max_entries_per_page'], '0'), FILTER_VALIDATE_INT))
+				|| (array_key_exists('listview_max_textlength',$updatedFields) && !filter_var(ltrim($updatedFields['listview_max_textlength'], '0'), FILTER_VALIDATE_INT))) {
 			return "LBL_INVALID_NUMBER";
 		}
 		return true;

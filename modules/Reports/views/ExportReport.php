@@ -26,7 +26,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -53,7 +53,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 		$recordId = $request->get('record');
 		$reportModel = Reports_Record_Model::getInstanceById($recordId);
         $reportModel->set('advancedFilter', $request->get('advanced_filter'));
-		$reportModel->getReportXLS();
+		$reportModel->getReportXLS($request->get('source'));
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 		$recordId = $request->get('record');
 		$reportModel = Reports_Record_Model::getInstanceById($recordId);
         $reportModel->set('advancedFilter', $request->get('advanced_filter'));
-		$reportModel->getReportCSV();
+		$reportModel->getReportCSV($request->get('source'));
 	}
 
 	/**

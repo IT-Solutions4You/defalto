@@ -1,4 +1,12 @@
 <?php
+/*+**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.0
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is:  vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ ************************************************************************************/
 
 class PickListHandler extends VTEventHandler {
 
@@ -11,7 +19,7 @@ class PickListHandler extends VTEventHandler {
 			$this->operationsAfterPicklistDelete($entityData);
 		}
 	}
-	
+
 	/**
 	 * Function to perform operation after picklist rename
 	 * @param type $entityData
@@ -54,6 +62,11 @@ class PickListHandler extends VTEventHandler {
 			$row = $db->query_result_rowdata($result, $i);
 			$value = $row['value'];
 			$explodedValueArray = explode(',', $value);
+            if(is_array($explodedValueArray)) {
+                foreach($explodedValueArray as $key => $value)
+                    $explodedValueArray[$key] = decode_html($value);
+                    
+            }
 			$arrayKey = array_search($oldValue, $explodedValueArray);
 			if($arrayKey !== false){
 				$explodedValueArray[$arrayKey] = $newValue;
@@ -81,8 +94,8 @@ class PickListHandler extends VTEventHandler {
 		}
 		
 		//update Workflows values
-		$query= 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE "%'.$oldValue.'%"';
-		$result = $db->pquery($query, array($moduleName));
+		$query= 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
+		$result = $db->pquery($query, array($moduleName,"%$oldValue%"));
 		$num_rows = $db->num_rows($result);
 		for($i = 0;$i < $num_rows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
@@ -109,8 +122,8 @@ class PickListHandler extends VTEventHandler {
 		}
 		
 		//update workflow task
-		$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE "%'.$oldValue.'%"';
-		$result = $db->pquery($query, array());
+		$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
+		$result = $db->pquery($query, array("%$oldValue%"));
 		$num_rows = $db->num_rows($result);
 		
 		for ($i = 0; $i < $num_rows; $i++) {
@@ -232,8 +245,8 @@ class PickListHandler extends VTEventHandler {
 		
 		foreach ($valueToDelete as $value) {
 			//update Workflows values
-			$query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE "%' . $value . '%"';
-			$result = $db->pquery($query, array($moduleName));
+			$query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
+			$result = $db->pquery($query, array($moduleName,"%$value%"));
 			$num_rows = $db->num_rows($result);
 			for ($i = 0; $i < $num_rows; $i++) {
 				$row = $db->query_result_rowdata($result, $i);
@@ -265,8 +278,8 @@ class PickListHandler extends VTEventHandler {
 		
 		foreach ($valueToDelete as $value) {
 			//update workflow task
-			$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE "%' . $value . '%"';
-			$result = $db->pquery($query, array());
+			$query = 'SELECT task,task_id,workflow_id FROM com_vtiger_workflowtasks where task LIKE ?';
+			$result = $db->pquery($query, array("%$value%"));
 			$num_rows = $db->num_rows($result);
 
 			for ($i = 0; $i < $num_rows; $i++) {
@@ -334,7 +347,7 @@ class PickListHandler extends VTEventHandler {
 				}
 			}
 		}
-		
+
 	}
 }
 ?>

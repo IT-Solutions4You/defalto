@@ -26,6 +26,7 @@ $languageStrings = array(
 	'LBL_ASSIGN_ROLE' => 'Asignar Rol',
 	'LBL_CHOOSE_PROFILES' => 'Selecciona perfiles',
 	'LBL_COPY_PRIVILEGES_FROM' => 'Copiar privilegios desde',
+    'LBL_TRANSFER_TO_OTHER_ROLE' =>'Transferir la propiedad a otra función',
 
 	//Edit View
 	'LBL_PROFILE' => 'Perfil',
@@ -34,15 +35,14 @@ $languageStrings = array(
 	'LBL_ASSIGN_NEW_PRIVILEGES' => 'Asignar privilegios directamente al Rol',
 	'LBL_ASSIGN_EXISTING_PRIVILEGES' => 'Asignar privilegios a partir de perfiles existentes',
 	'LBL_PRIVILEGES' => 'Privilegios',
-	'LBL_DUPLICATES_EXIST' => 'Existe Rol Duplicado',
-	//Assign Records to
-	'LBL_CAN_ASSIGN_RECORDS_TO' => 'Se pueden asignar registros a',
-	'LBL_ALL_USERS' => 'Todos los Usuarios',
-	'LBL_USERS_WITH_LOWER_LEVEL' => 'Usuarios con Roles Subordinados',
-	'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'Usuarios con mismo Rol o Subordinado',
-);
 
-$jsLanguageStrings = array(
-	'JS_PERMISSION_DENIED' => 'Permiso Denegado',
-	'JS_NO_PERMISSIONS_TO_MOVE' => 'No hay permiso para Mover',
+
+  'LBL_DUPLICATES_EXIST' => 'Función Duplicada Existe',
+  'LBL_CAN_ASSIGN_RECORDS_TO' => 'Puede Asignar Registros A',
+  'LBL_ALL_USERS' => 'Todos Los Usuarios',
+  'LBL_USERS_WITH_LOWER_LEVEL' => 'Usuarios que tienen el Rol Subordinado',
+  'LBL_USERS_WITH_SAME_OR_LOWER_LEVEL' => 'Usuarios que tienen el Mismo Rol o Papel Subordinado',
+  'LBL_EDIT_ROLE' => 'Edición Papel',
+  'LBL_CREATE_ROLE' => 'Crear Papel',
+
 );

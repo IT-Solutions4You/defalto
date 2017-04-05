@@ -22,6 +22,12 @@ $languageStrings = array(
 	'LBL_SELECT_SOURCE_VALUES'     => 'Выбор источника значений'        , 
 	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Выберите Источник PickList значения', 
 	'LBL_ERR_CYCLIC_DEPENDENCY'    => 'Эта установка зависимость не допускается, как она попадает в некоторых циклических зависимости', 
+	'LBL_SELECT_ALL_VALUES' => 'Выбрать все',
+	'LBL_UNSELECT_ALL_VALUES' => 'Снять все',
+    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Это может в конечном итоге в циклическом избыточности в поле %s уже настроен для области %s',
+
+  'PickListDependency' => 'Раскрывающегося Списка Зависимостей',
+
 );
 $jsLanguageStrings = array(
 	'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Вы уверены, что хотите удалить этот PickList зависимость?', 

@@ -89,4 +89,19 @@ $languageStrings = array(
 	
 	'LBL_ADD_TO_PRICEBOOKS' => 'Dodaj do Cenników',
     'LBL_PRODUCTSMOD_DISABLED' => 'Włącz Produkty modułu aby zobaczyć produkty',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Pokaż produkty, wiązanej, faktura/Cytaty/zlecenia/Zamówienia',
+	'LBL_BUNDLE_TOTAL_COST' => 'Koszt Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Aktualizacja Bundle Cena',
+
+  'LBL_CONVERSION_RATE' => 'Współczynnik Konwersji',
+  'LBL_PRODUCT_NAME' => 'Nazwa Produktu',
+  'LBL_PRICE_QUANTITY' => 'Cena x Ilość',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Dostawa uzupełniająca zostanie pokazany w wykazie',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Dostawa uzupełniająca nie zostanie pokazany w wykazie',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Pomyślnie zmienione Całkowity koszt pakietu',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Ten produkt jest częścią pakietu produktów. Cena pakietu pozostają niezmienione, gdy pozycja pakiet zostanie usunięty lub inaktywowane. Czy na pewno chcesz kontynuować?',
 );

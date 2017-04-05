@@ -7,7 +7,10 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ******************************************************************************/
+
 require_once 'includes/runtime/Cache.php';
+require_once 'vtlib/Vtiger/Runtime.php';
+
 class WebserviceField{
 	private $fieldId;
 	private $uitype;
@@ -235,7 +238,7 @@ class WebserviceField{
 		return $this->fieldDataType;
 	}
 
-	public function getReferenceList(){
+	public function getReferenceList($hideDisabledModules = true){
 		static $referenceList = array();
 		if($this->referenceList === null){
 			if(isset($referenceList[$this->getFieldId()])){
@@ -248,10 +251,10 @@ class WebserviceField{
 			$fieldTypeData = WebserviceField::$fieldTypeMapping[$this->getUIType()];
 			$referenceTypes = array();
 			if($this->getUIType() != $this->genericUIType){
-				$sql = "select * from vtiger_ws_referencetype where fieldtypeid=?";
+				$sql = "select type from vtiger_ws_referencetype where fieldtypeid=?";
 				$params = array($fieldTypeData['fieldtypeid']);
 			}else{
-				$sql = 'select relmodule as type from vtiger_fieldmodulerel where fieldid=?';
+				$sql = 'SELECT relmodule AS type FROM vtiger_fieldmodulerel WHERE fieldid=? ORDER BY sequence ASC';
 				$params = array($this->getFieldId());
 			}
 			$result = $this->pearDB->pquery($sql,$params);
@@ -259,24 +262,17 @@ class WebserviceField{
 			for($i=0;$i<$numRows;++$i){
 				array_push($referenceTypes,$this->pearDB->query_result($result,$i,"type"));
 			}
+            if($hideDisabledModules) {
+				global $current_user;
+				$types = vtws_listtypes(null, $current_user);
+				$accessibleTypes = $types['types'];
+	            //If it is non admin user or the edit and view is there for profile then users module will be accessible
+				if(!is_admin($current_user)&& !in_array("Users",$accessibleTypes)) {
+					array_push($accessibleTypes, 'Users');
+				}
 
-			//to handle hardcoding done for Calendar module todo activities.
-			if($this->tabid == 9 && $this->fieldName =='parent_id'){
-				$referenceTypes[] = 'Invoice';
-				$referenceTypes[] = 'Quotes';
-				$referenceTypes[] = 'PurchaseOrder';
-				$referenceTypes[] = 'SalesOrder';
-				$referenceTypes[] = 'Campaigns';
-			}
-
-			global $current_user;
-			$types = vtws_listtypes(null, $current_user);
-			$accessibleTypes = $types['types'];
-            //If it is non admin user or the edit and view is there for profile then users module will be accessible
-			if(!is_admin($current_user)&& !in_array("Users",$accessibleTypes)) {
-				array_push($accessibleTypes, 'Users');
-			}
-			$referenceTypes = array_values(array_intersect($accessibleTypes,$referenceTypes));
+				$referenceTypes = array_values(array_intersect($referenceTypes, $accessibleTypes));
+            }
 			$referenceList[$this->getFieldId()] = $referenceTypes;
 			$this->referenceList = $referenceTypes;
 			return $referenceTypes;
@@ -337,22 +333,26 @@ class WebserviceField{
 		if($cache->getPicklistDetails($this->getTabId(),$this->getFieldName())){
 			return $cache->getPicklistDetails($this->getTabId(),$this->getFieldName());
 		} else {
-		$hardCodedPickListNames = array("hdntaxtype","email_flag");
-		$hardCodedPickListValues = array(
-				"hdntaxtype"=>array(
-					array("label"=>"Individual","value"=>"individual"),
-					array("label"=>"Group","value"=>"group")
-				),
-				"email_flag" => array(
-					array('label'=>'SAVED','value'=>'SAVED'),
-					array('label'=>'SENT','value' => 'SENT'),
-					array('label'=>'MAILSCANNER','value' => 'MAILSCANNER')
-				)
-			);
-		if(in_array(strtolower($this->getFieldName()),$hardCodedPickListNames)){
-			return $hardCodedPickListValues[strtolower($this->getFieldName())];
-		}
-			$picklistDetails = $this->getPickListOptions($this->getFieldName());
+			//Inventory picklist values
+			if ($this->getDisplayType() == 5 && $this->getFieldName() === 'region_id') {
+				$picklistDetails = array();
+				$allRegions = getAllRegions();
+				foreach ($allRegions as $regionId => $regionDetails) {
+					$picklistDetails[] = array('value' => $regionId, 'label' => $regionDetails['name']);
+				}
+			} else {
+				$hardCodedPickListNames = array('hdntaxtype','email_flag');
+				$hardCodedPickListValues = array('hdntaxtype'=> array(	array('label' => 'Individual',	'value' => 'individual'),
+																		array('label' => 'Group',		'value' => 'group')),
+												 'email_flag'=> array(	array('label' => 'SAVED',		'value' => 'SAVED'),
+																		array('label' => 'SENT',		'value' => 'SENT'),
+																		array('label' => 'MAILSCANNER',	'value' => 'MAILSCANNER')));
+
+				if (in_array(strtolower($this->getFieldName()), $hardCodedPickListNames)) {
+					return $hardCodedPickListValues[strtolower($this->getFieldName())];
+				}
+				$picklistDetails = $this->getPickListOptions($this->getFieldName());
+			}
 			$cache->setPicklistDetails($this->getTabId(),$this->getFieldName(),$picklistDetails);
 			return $picklistDetails;
 		}
@@ -360,12 +360,17 @@ class WebserviceField{
 
 	function getPickListOptions(){
 		$fieldName = $this->getFieldName();
+		$language = Vtiger_Language_Handler::getLanguage();
 
 		$default_charset = VTWS_PreserveGlobal::getGlobal('default_charset');
 		$options = array();
 		$sql = "select * from vtiger_picklist where name=?";
 		$result = $this->pearDB->pquery($sql,array($fieldName));
 		$numRows = $this->pearDB->num_rows($result);
+
+		$moduleName = getTabModuleName($this->getTabId());
+		if ($moduleName == 'Events') $moduleName = 'Calendar';
+
 		if($numRows == 0){
 			$sql = "select * from vtiger_$fieldName";
 			$result = $this->pearDB->pquery($sql,array());
@@ -374,9 +379,7 @@ class WebserviceField{
 				$elem = array();
 				$picklistValue = $this->pearDB->query_result($result,$i,$fieldName);
 				$picklistValue = decode_html($picklistValue);
-				$moduleName = getTabModuleName($this->getTabId());
-				if($moduleName == 'Events') $moduleName = 'Calendar';
-				$elem["label"] = getTranslatedString($picklistValue,$moduleName);
+				$elem["label"] = getTranslatedString($picklistValue, $moduleName, $language);
 				$elem["value"] = $picklistValue;
 				array_push($options,$elem);
 			}
@@ -386,9 +389,7 @@ class WebserviceField{
 			for($i=0;$i<sizeof($details);++$i){
 				$elem = array();
 				$picklistValue = decode_html($details[$i]);
-				$moduleName = getTabModuleName($this->getTabId());
-				if($moduleName == 'Events') $moduleName = 'Calendar';
-				$elem["label"] = getTranslatedString($picklistValue,$moduleName);
+				$elem["label"] = getTranslatedString($picklistValue, $moduleName, $language);
 				$elem["value"] = $picklistValue;
 				array_push($options,$elem);
 			}

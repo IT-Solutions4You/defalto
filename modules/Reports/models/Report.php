@@ -20,6 +20,9 @@ class Vtiger_Report_Model extends Reports {
 		$db = PearDatabase::getInstance();
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
+		$currentUserRoleId = $currentUser->get('roleid');
+		$subordinateRoles = getRoleSubordinates($currentUserRoleId);
+		array_push($subordinateRoles, $currentUserRoleId);
 
 		$this->initListOfModules();
 
@@ -43,7 +46,9 @@ class Vtiger_Report_Model extends Reports {
 
 				if(!empty($userGroupsList) && $currentUser->isAdminUser() == false) {
 					$userGroupsQuery = " (shareid IN (".generateQuestionMarks($userGroupsList).") AND setype='groups') OR";
-					array_push($params, $userGroupsList);
+					foreach($userGroupsList as $group) {
+						array_push($params, $group);
+					}
 				}
 
 				$nonAdminQuery = " vtiger_report.reportid IN (SELECT reportid from vtiger_reportsharing
@@ -55,11 +60,25 @@ class Vtiger_Report_Model extends Reports {
 									(SELECT vtiger_user2role.userid FROM vtiger_user2role
 									INNER JOIN vtiger_users ON vtiger_users.id = vtiger_user2role.userid
 									INNER JOIN vtiger_role ON vtiger_role.roleid = vtiger_user2role.roleid
-									WHERE vtiger_role.parentrole LIKE '$current_user_parent_role_seq::%')
-								)";
-					array_push($params, $userId, $userId);
+									WHERE vtiger_role.parentrole LIKE '$current_user_parent_role_seq::%') 
+								OR (vtiger_report.reportid IN (SELECT reportid FROM vtiger_report_shareusers WHERE userid = ?))";
+					if(!empty($userGroupsList)) {
+						$ssql .= " OR (vtiger_report.reportid IN (SELECT reportid FROM vtiger_report_sharegroups 
+									WHERE groupid IN (".generateQuestionMarks($userGroupsList).")))";
+					}
+					$ssql .= " OR (vtiger_report.reportid IN (SELECT reportid FROM vtiger_report_sharerole WHERE roleid = ?))
+							   OR (vtiger_report.reportid IN (SELECT reportid FROM vtiger_report_sharers 
+								WHERE rsid IN (".generateQuestionMarks($subordinateRoles).")))
+							  )";
+					array_push($params, $userId, $userId, $userId);
+					foreach($userGroupsList as $groups) {
+						array_push($params, $groups);
+					}
+					array_push($params, $currentUserRoleId);
+					foreach($subordinateRoles as $role) {
+						array_push($params, $role);
+					}
 				}
-
 				$result = $db->pquery($ssql, $params);
 
 				if($result && $db->num_rows($result)) {
@@ -114,14 +133,14 @@ class Vtiger_Report_Model extends Reports {
 	function isEditable() {
 		return $this->is_editable;
 	}
-    
-    function getModulesList() {
-        foreach($this->module_list as $key=>$value) {
-            if(isPermitted($key,'index') == "yes") {
-                $modules [$key] = vtranslate($key, $key);
-            }
-        }
-        asort($modules);
-        return $modules;
-    }
+
+	function getModulesList() {
+		foreach($this->module_list as $key=>$value) {
+			if(isPermitted($key,'index') == "yes") {
+				$modules [$key] = vtranslate($key, $key);
+			}
+		}
+		asort($modules);
+		return $modules;
+	}
 }

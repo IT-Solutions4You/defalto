@@ -15,9 +15,11 @@ class Vtiger_RemoveWidget_Action extends Vtiger_IndexAjax_View {
 		$linkId = $request->get('linkid');
 		$response = new Vtiger_Response();
 		
-		if ($request->has('widgetid')) {
+		if ($request->has('reportid')) {
+			$widget = Vtiger_Widget_Model::getInstanceWithReportId($request->get('reportid'), $currentUser->getId());
+		} else if ($request->has('widgetid')) {
 			$widget = Vtiger_Widget_Model::getInstanceWithWidgetId($request->get('widgetid'), $currentUser->getId());
-		} else {
+        } else {
 			$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());
 		}
 
@@ -29,8 +31,8 @@ class Vtiger_RemoveWidget_Action extends Vtiger_IndexAjax_View {
 		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

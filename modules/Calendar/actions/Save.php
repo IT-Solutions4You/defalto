@@ -14,8 +14,22 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
 		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if ($record) {
+			$activityModulesList = array('Calendar', 'Events');
+			$recordEntityName = getSalesEntityType($record);
+
+			if (!in_array($recordEntityName, $activityModulesList) || !in_array($moduleName, $activityModulesList)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
 		}
 	}
 
@@ -23,7 +37,9 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		$recordModel = $this->saveRecord($request);
 		$loadUrl = $recordModel->getDetailViewUrl();
 
-		if($request->get('relationOperation')) {
+		if ($request->get('returntab_label')) {
+			$loadUrl = 'index.php?'.$request->getReturnURL();
+		} else if($request->get('relationOperation')) {
 			$parentModuleName = $request->get('sourceModule');
 			$parentRecordId = $request->get('sourceRecord');
 			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleName);
@@ -48,6 +64,8 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 					$loadUrl = $listViewUrl;
 				}
 			}
+		} else if ($request->get('returnmodule') && $request->get('returnview')){
+			$loadUrl = 'index.php?'.$request->getReturnURL();
 		}
 		header("Location: $loadUrl");
 	}
@@ -105,10 +123,14 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 			$fieldValue = $request->get($fieldName, null);
             // For custom time fields in Calendar, it was not converting to db insert format(sending as 10:00 AM/PM)
             $fieldDataType = $fieldModel->getFieldDataType();
-            if($fieldDataType == 'time'){
+			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
             }
             // End
+            if ($fieldName === $request->get('field')) {
+				$fieldValue = $request->get('value');
+			}
+
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
 					$fieldValue = trim($fieldValue);
@@ -151,16 +173,6 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		} else {
 			$_REQUEST['set_reminder'] = 'No';
 		}
-
-		$time = (strtotime($request->get('time_end')))- (strtotime($request->get('time_start')));
-        $diffinSec=  (strtotime($request->get('due_date')))- (strtotime($request->get('date_start')));
-        $diff_days=floor($diffinSec/(60*60*24));
-       
-        $hours=((float)$time/3600)+($diff_days*24);
-        $minutes = ((float)$hours-(int)$hours)*60;  
-        
-        $recordModel->set('duration_hours', (int)$hours);
-		$recordModel->set('duration_minutes', round($minutes,0));
 
 		return $recordModel;
 	}

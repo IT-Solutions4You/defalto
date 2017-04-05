@@ -10,6 +10,14 @@
 
 class Settings_Leads_MappingDetail_View extends Settings_Vtiger_Index_View {
 
+	function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+		$sourceModule = 'Leads';
+		if(!vtlib_isModuleActive($sourceModule)){
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $sourceModule));
+		}
+	}
+
 	public function process(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 
@@ -19,7 +27,7 @@ class Settings_Leads_MappingDetail_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->view('MappingDetail.tpl', $qualifiedModuleName);
 	}
-	
+
 	/**
 	 * Function to get the list of Script models to be included
 	 * @param Vtiger_Request $request
@@ -30,11 +38,23 @@ class Settings_Leads_MappingDetail_View extends Settings_Vtiger_Index_View {
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
-			"modules.Settings.$moduleName.resources.LeadMapping"
+			"modules.Settings.$moduleName.resources.LeadMapping",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/floatThead/jquery.floatThead.js",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/js/perfect-scrollbar.jquery.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
+	}
+
+	public function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$cssFileNames = array(
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/css/perfect-scrollbar.css",
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
+		return $headerCssInstances;
 	}
 }

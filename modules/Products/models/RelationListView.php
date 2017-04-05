@@ -51,4 +51,26 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 		return $headerFields;
 	}
 	
+	public function getRelationQuery() {
+		$query = parent::getRelationQuery();
+
+		$relationModel = $this->getRelationModel();
+		$parentModule = $relationModel->getParentModuleModel();
+		$parentModuleName = $parentModule->getName();
+		$relatedModuleName = $this->getRelatedModuleModel()->getName();
+		$quantityField = $parentModule->getField('qty_per_unit');
+
+		if ($parentModuleName === $relatedModuleName && $this->tab_label === 'Product Bundles' && $quantityField->isActiveField()) {//Products && Child Products
+			$queryComponents = spliti(' FROM ', $query);
+			$count = count($queryComponents);
+
+			$query = $queryComponents[0]. ', vtiger_seproductsrel.quantity AS qty_per_unit ';
+			for($i=1; $i<$count; $i++) {
+				$query .= ' FROM '.$queryComponents[$i];
+			}
+		}
+
+		return $query;
+	}
+
 }

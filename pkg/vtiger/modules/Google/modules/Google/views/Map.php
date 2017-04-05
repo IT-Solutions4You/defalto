@@ -11,51 +11,61 @@
 
 class Google_Map_View extends Vtiger_Detail_View {
 
-    /**
-     * must be overriden
-     * @param Vtiger_Request $request
-     * @return boolean 
-     */
-    function preProcess(Vtiger_Request $request) {
-        return true;
-    }
+	function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$recordId = $request->get('record');
 
-    /**
-     * must be overriden
-     * @param Vtiger_Request $request
-     * @return boolean 
-     */
-    function postProcess(Vtiger_Request $request) {
-        return true;
-    }
+		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
+		if(!$recordPermission) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
 
-    /**
-     * called when the request is recieved.
-     * if viewtype : detail then show location
-     * TODO : if viewtype : list then show the optimal route.    
-     * @param Vtiger_Request $request 
-     */
-    function process(Vtiger_Request $request) {
-        switch ($request->get('viewtype')) {
-            case 'detail':$this->showLocation($request);
-                break;
-            default:break;
-        }
-    }
+		return true;
+	}
 
-    /**
-     * display the template.
-     * @param Vtiger_Request $request 
-     */
-    function showLocation(Vtiger_Request $request) {
-        $viewer = $this->getViewer($request);
-        // record and source_module values to be passed to populate the values in the template,
-        // required to get the respective records address based on the module type.
-        $viewer->assign('RECORD', $request->get('record'));
-        $viewer->assign('SOURCE_MODULE', $request->get('source_module'));
-        $viewer->view('map.tpl', $request->getModule());
-    }
+	/**
+	 * must be overriden
+	 * @param Vtiger_Request $request
+	 * @return boolean 
+	 */
+	function preProcess(Vtiger_Request $request) {
+		return true;
+	}
+
+	/**
+	 * must be overriden
+	 * @param Vtiger_Request $request
+	 * @return boolean 
+	 */
+	function postProcess(Vtiger_Request $request) {
+		return true;
+	}
+
+	/**
+	 * called when the request is recieved.
+	 * if viewtype : detail then show location
+	 * TODO : if viewtype : list then show the optimal route.
+	 * @param Vtiger_Request $request 
+	 */
+	function process(Vtiger_Request $request) {
+		switch ($request->get('viewtype')) {
+			case 'detail':$this->showLocation($request);
+				break;
+			default:break;
+		}
+	}
+
+	/**
+	 * display the template.
+	 * @param Vtiger_Request $request 
+	 */
+	function showLocation(Vtiger_Request $request) {
+		$viewer = $this->getViewer($request);
+		// record and source_module values to be passed to populate the values in the template,
+		// required to get the respective records address based on the module type.
+		$viewer->assign('RECORD', $request->get('record'));
+		$viewer->assign('SOURCE_MODULE', $request->get('source_module'));
+		$viewer->view('map.tpl', $request->getModule());
+	}
 
 }
-
-?>

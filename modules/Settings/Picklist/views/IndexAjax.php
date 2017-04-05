@@ -18,7 +18,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View {
         $this->exposeMethod('getPickListDetailsForModule');
         $this->exposeMethod('getPickListValueForField');
         $this->exposeMethod('getPickListValueByRole');
-        $this->exposeMethod('showAssignValueToRoleView');
+		$this->exposeMethod('showAssignValueToRoleView');
     }
 
     public function process(Vtiger_Request $request) {
@@ -44,6 +44,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View {
         $viewer->assign('SOURCE_MODULE_NAME',$module);
         $viewer->assign('FIELD_MODEL',$fieldModel);
         $viewer->assign('FIELD_VALUE',$valueToEdit);
+        $viewer->assign('FIELD_VALUE_ID', $request->get('fieldValueId'));
 		$viewer->assign('SELECTED_PICKLISTFIELD_EDITABLE_VALUES',$selectedFieldEditablePickListValues);
 		$viewer->assign('SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES',$selectedFieldNonEditablePickListValues);
 		$viewer->assign('MODULE',$moduleName);
@@ -64,8 +65,7 @@ class Settings_Picklist_IndexAjax_View extends Settings_Vtiger_IndexAjax_View {
 			$selectedFieldNonEditablePickListValues =  array_map('Vtiger_Util_Helper::toSafeHTML', $selectedFieldNonEditablePickListValues);
 		}
 
-		
-        $qualifiedName = $request->getModule(false);
+		$qualifiedName = $request->getModule(false);
         $viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
         $viewer->assign('SOURCE_MODULE', $module);

@@ -20,32 +20,40 @@ class Settings_Vtiger_TermsAndConditions_Model extends Vtiger_Base_Model{
         return $this->set('tandc',$text);
     }
     
-    public function getType(){
-        return "Inventory";
+    public function getType() {
+		return $this->get('type');
     }
-    
+
+	public function setType($type) {
+        return $this->set('type', $type);
+    }
+
     public function save() {
         $db = PearDatabase::getInstance();
-        $query = 'SELECT 1 FROM '.self::tableName;
-        $result = $db->pquery($query,array());
+		$type = $this->getType();
+
+        $query = 'SELECT 1 FROM '.self::tableName.' WHERE type = ?';
+        $result = $db->pquery($query,array($type));
         if($db->num_rows($result) > 0) {
-            $query = 'UPDATE '.self::tableName.' SET tandc=?';
-            $params = array($this->getText());
-        }else{
+            $query = 'UPDATE '.self::tableName.' SET tandc = ? WHERE type = ?';
+			$params = array($this->getText(), $type);
+        } else {
             $query = 'INSERT INTO '.self::tableName.' (id,type,tandc) VALUES(?,?,?)';
-            $params = array($db->getUniqueID(self::tableName, $this->getType(), $this->getText()));
+            $params = array($db->getUniqueID(self::tableName), $type, $this->getText());
         }
         $result = $db->pquery($query, $params);
     }
     
-    public static function getInstance() {
+    public static function getInstance($moduleName) {
         $db = PearDatabase::getInstance();
-        $query = 'SELECT tandc FROM '.self::tableName;
-        $result = $db->pquery($query,array());
+
+        $query = 'SELECT tandc FROM '.self::tableName.' WHERE type = ?';
+        $result = $db->pquery($query, array($moduleName));
         $instance = new self();
         if($db->num_rows($result) > 0) {
             $text = $db->query_result($result,0,'tandc');
             $instance->setText($text);
+			$instance->setType($moduleName);
         }
         return $instance;
     }

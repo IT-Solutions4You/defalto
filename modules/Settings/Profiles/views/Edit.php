@@ -68,4 +68,12 @@ Class Settings_Profiles_Edit_View extends Settings_Vtiger_Index_View {
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
+    
+    /**
+     * Setting module related Information to $viewer (for Vtiger7)
+     * @param type $request
+     * @param type $moduleModel
+     */
+    public function setModuleInfo($request, $moduleModel){
+    }
 }

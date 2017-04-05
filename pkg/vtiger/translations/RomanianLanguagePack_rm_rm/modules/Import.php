@@ -69,7 +69,35 @@ $languageStrings = array(
 	'LBL_DETAILS'                  => 'Details'                     , // TODO: Review
 	'skipped'                      => 'Skipped Records'             , // TODO: Review
 	'failed'                       => 'Failed Records'              , // TODO: Review
-        'Skip'                         =>'Skip',
-        'Overwrite'                    =>'Suprascrie',
-        'Merge'                        =>'ÃŽmbinare',
+    
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'Valuta (Elemente rând)',
+
+	'LBL_SKIP_THIS_STEP' => 'Sari peste acest pas',
+	'LBL_UPLOAD_ICS' => 'Încărcați ICS fișiere',
+	'LBL_ICS_FILE' => 'ICS fișiere',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'Import din fișier ICS',
+	'LBL_SELECT_ICS_FILE' => 'Selectați fișierul ICS',
+
+  'LBL_USE_SAVED_MAPS' => 'Folosi De Hărțile Memorate',
+  'LBL_IMPORT_MAP_FIELDS' => 'Cărțile în foc, ca un câmp CRM',
+  'LBL_UPLOAD_CSV' => 'Încărcați un fișier CSV',
+  'LBL_UPLOAD_VCF' => 'Descărcați fișierul vcf',
+  'LBL_DUPLICATE_HANDLING' => 'Duplicat De Circulație',
+  'LBL_FIELD_MAPPING' => 'Potrivire Câmpuri',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'Import dintr-un fișier CSV',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'În cazul în care doriți să importați din ?',
+  'LBL_CSV_FILE' => 'Fișierul CSV',
+  'LBL_VCF_FILE' => 'Vcf',
+  'LBL_GOOGLE' => 'Google',
+  'LBL_IMPORT_COMPLETED' => 'Import Finalizat',
+  'LBL_IMPORT_SUMMARY' => 'Importul de pictură',
+  'LBL_DELETION_COMPLETED' => 'Eliminarea Finalizat.',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'Total de înregistrări scanate',
+  'LBL_SKIP_BUTTON' => 'Dor',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'Înregistrarea repetitivă de prelucrare',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'Import din fișier vcf',
+  'LBL_SELECT_VCF_FILE' => 'Selectați fișierul vcf',
+  'LBL_DONE_BUTTON' => 'Face',
+  'LBL_DELETION_SUMMARY' => 'Elimina rezumat',
+
 );

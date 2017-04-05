@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -17,12 +17,12 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 	var $name = 'Webforms';
 
 	public static function getSupportedModulesList() {
-		$webformModules = array('Contacts','Accounts','Leads','Potentials','HelpDesk');
+		$webformModules = array('Contacts', 'Accounts', 'Leads', 'Potentials', 'HelpDesk', 'Vendors');
 		$sourceModule = array();
 		foreach ($webformModules as $key => $moduleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 			$presenceValues = array(0,2);
-			if(in_array($moduleModel->presence, $presenceValues)){
+			if($moduleModel && in_array($moduleModel->presence, $presenceValues)){
 				$sourceModule[$moduleName] = vtranslate($moduleName, $moduleName);
 			}
 		}
@@ -94,5 +94,28 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 		$db->pquery("DELETE from vtiger_webforms_field WHERE webformid = ?", array($recordId));
 		$db->pquery("DELETE from vtiger_webforms WHERE id = ?", array($recordId));
 		return true;
+	}
+
+	/**
+	 * Function to get Module Header Links (for Vtiger7)
+	 * @return array
+	 */
+	public function getModuleBasicLinks(){
+	   $createPermission = Users_Privileges_Model::isPermitted($this->getName(), 'CreateView');
+		$moduleName = $this->getName();
+		$basicLinks = array();
+		if($createPermission) {
+		   $basicLinks[] = array(
+			   'linktype' => 'BASIC',
+			   'linklabel' => 'LBL_ADD_RECORD',
+			   'linkurl' => $this->getCreateRecordUrl(),
+			   'linkicon' => 'fa-plus'
+		   );
+		}
+		 return $basicLinks;
+	}
+
+	function isStarredEnabled(){
+		return false;
 	}
 }

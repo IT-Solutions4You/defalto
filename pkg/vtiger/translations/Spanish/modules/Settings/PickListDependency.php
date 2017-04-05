@@ -29,6 +29,12 @@ $languageStrings = array(
 	'LBL_SELECT_SOURCE_VALUES' => 'Selecciona Valores Origen',
 	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Selecciona Valores Origen de la Lista',
 	'LBL_ERR_CYCLIC_DEPENDENCY' => 'Esta dependencia no esta permitida ya que produce una dependencia cíclica',
+	'LBL_SELECT_ALL_VALUES' => 'Seleccionar todo',
+	'LBL_UNSELECT_ALL_VALUES' => 'Elija ninguno',
+    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Esto podría terminar en redundancia cíclica como campo %s ya está configurado para el campo %s',
+
+  'PickListDependency' => 'Lista De Selección De Dependencia',
+
 );
 
 $jsLanguageStrings = array(

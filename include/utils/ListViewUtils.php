@@ -23,7 +23,6 @@
 require_once('include/database/PearDatabase.php');
 require_once('include/ComboUtil.php'); //new
 require_once('include/utils/CommonUtils.php'); //new
-require_once('user_privileges/default_module_view.php'); //new
 require_once('include/utils/UserInfoUtil.php');
 require_once('include/Zend/Json.php');
 
@@ -664,10 +663,18 @@ function getEntityId($module, $entityName) {
 		return 0;
 }
 
+function decode_emptyspace_html($str){
+	$str = str_replace("&nbsp;", "*#chr*#",$str); // (*#chr*#) used as jargan to replace it back with &nbsp;
+	$str = str_replace("\xc2", "*#chr*#",$str); // Ã (for special chrtr)
+	$str = decode_html($str);
+	return str_replace("*#chr*#", "&nbsp;", $str);
+	
+}
+
 function decode_html($str) {
-	global $default_charset;$default_charset='UTF-8'; 
+	global $default_charset;
 	// Direct Popup action or Ajax Popup action should be treated the same.
-	if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'Popup') || (isset($_REQUEST['file']) && $_REQUEST['file'] == 'Popup'))
+	if ($_REQUEST['action'] == 'Popup' || $_REQUEST['file'] == 'Popup')
 		return html_entity_decode($str);
 	else
 		return html_entity_decode($str, ENT_QUOTES, $default_charset);
@@ -686,8 +693,8 @@ function textlength_check($field_val) {
 	if ($listview_max_textlength && $listview_max_textlength > 0) {
 		$temp_val = preg_replace("/(<\/?)(\w+)([^>]*>)/i", "", $field_val);
 		if (function_exists('mb_strlen')) {
-			if (mb_strlen(html_entity_decode($temp_val)) > $listview_max_textlength) {
-				$temp_val = mb_substr(preg_replace("/(<\/?)(\w+)([^>]*>)/i", "", $field_val), 0, $listview_max_textlength, $default_charset) . '...';
+			if (mb_strlen(decode_html($temp_val)) > $listview_max_textlength) {
+				$temp_val = mb_substr(preg_replace("/(<\/?)(\w+)([^>]*>)/i", "", decode_html($field_val)), 0, $listview_max_textlength, $default_charset) . '...';
 			}
 		} elseif (strlen(html_entity_decode($field_val)) > $listview_max_textlength) {
 			$temp_val = substr(preg_replace("/(<\/?)(\w+)([^>]*>)/i", "", $field_val), 0, $listview_max_textlength) . '...';

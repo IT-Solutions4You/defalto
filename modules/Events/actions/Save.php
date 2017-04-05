@@ -18,6 +18,10 @@ class Events_Save_Action extends Calendar_Save_Action {
 	public function saveRecord($request) {
 		$adb = PearDatabase::getInstance();
 		$recordModel = $this->getRecordModelFromRequest($request);
+		$recurObjDb = false;
+		if($recordModel->get('mode') == 'edit') {
+			$recurObjDb = $recordModel->getRecurringObject();
+		}
 		$recordModel->save();
 		$originalRecordId = $recordModel->getId();
 		if($request->get('relationOperation')) {
@@ -44,13 +48,16 @@ class Events_Save_Action extends Calendar_Save_Action {
 
 		$subject = $request->get('subject');
 		if($followupMode == 'on' && $startTime != '' && $startDate != ''){
+			$record = $this->getRecordModelFromRequest($request);
+			$record->set('eventstatus', 'Planned');
+			//recurring events status should not be held for future events
 			$recordModel->set('eventstatus', 'Planned');
-			$recordModel->set('subject','[Followup] '.$subject);
-			$recordModel->set('date_start',$startDate);
-			$recordModel->set('time_start',$startTime);
+			$record->set('subject','[Followup] '.$subject);
+			$record->set('date_start',$startDate);
+			$record->set('time_start',$startTime);
 
 			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$activityType = $recordModel->get('activitytype');
+			$activityType = $record->get('activitytype');
 			if($activityType == 'Call') {
 				$minutes = $currentUser->get('callduration');
 			} else {
@@ -59,37 +66,40 @@ class Events_Save_Action extends Calendar_Save_Action {
 			$dueDateTime = date('Y-m-d H:i:s', strtotime("$startDateTime+$minutes minutes"));
 			list($startDate, $startTime) = explode(' ', $dueDateTime);
 
-			$recordModel->set('due_date',$startDate);
-			$recordModel->set('time_end',$startTime);
-			$recordModel->set('recurringtype', '');
-			$recordModel->set('mode', 'create');
-			$recordModel->save();
+			$record->set('due_date',$startDate);
+			$record->set('time_end',$startTime);
+			$record->set('recurringtype', '');
+			$record->set('mode', 'create');
+			$record->save();
 			$heldevent = true;
 		}
+		$recurringEditMode = $request->get('recurringEditMode');
+		$recordModel->set('recurringEditMode', $recurringEditMode);
 
+		vimport('~~/modules/Calendar/RepeatEvents.php');
+		$recurObj = getrecurringObjValue();
+		$recurringDataChanged = Calendar_RepeatEvents::checkRecurringDataChanged($recurObj, $recurObjDb);
 		//TODO: remove the dependency on $_REQUEST
-		if($_REQUEST['recurringtype'] != '' && $_REQUEST['recurringtype'] != '--None--') {
-			vimport('~~/modules/Calendar/RepeatEvents.php');
-			$focus =  new Activity();
-
+		if(($_REQUEST['recurringtype'] != '' && $_REQUEST['recurringtype'] != '--None--' && $recurringEditMode != 'current') || ($recurringDataChanged && empty($recurObj))) {
+			$focus =  CRMEntity::getInstance('Events');
 			//get all the stored data to this object
-			$focus->column_fields = $recordModel->getData();
-
-			Calendar_RepeatEvents::repeatFromRequest($focus);
+			$focus->column_fields = new TrackableObject($recordModel->getData());
+			Calendar_RepeatEvents::repeatFromRequest($focus, $recurObjDb);
 		}
-        return $recordModel;
-    }
+		return $recordModel;
+	}
 
 
-    /**
+	/**
 	 * Function to get the record model based on the request parameters
 	 * @param Vtiger_Request $request
 	 * @return Vtiger_Record_Model or Module specific Record Model instance
 	 */
 	protected function getRecordModelFromRequest(Vtiger_Request $request) {
-        $recordModel = parent::getRecordModelFromRequest($request);
-
-        $recordModel->set('selectedusers', $request->get('selectedusers'));
-        return $recordModel;
-    }
+		$recordModel = parent::getRecordModelFromRequest($request);
+		if($request->has('selectedusers')) {
+			$recordModel->set('selectedusers', $request->get('selectedusers'));
+		}
+		return $recordModel;
+	}
 }

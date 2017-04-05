@@ -39,6 +39,7 @@ $languageStrings = array(
 	'LBL_SEVERITY'                 => 'Gravitate'                   , 
 	'LBL_CONVERT_FAQ'              => 'Convert to FAQ'              , 
 	'LBL_RELATED_TO'               => 'Se refera la'                ,
+    'Related To'                   => 'Legate de'                   ,
 
 	//added to support i18n in ticket mails
 	'Hi' => 'Catre',
@@ -81,4 +82,13 @@ $languageStrings = array(
 	'LBL_ALTBODY' => 'Aceasta este continutul in format text pentru clientii de email fara suport HTML.',
 	'HelpDesk ID' => 'ID Tichet',
 	'Ticket ID' => 'ID Tichet',
+
+  'Contact Name' => 'Nume De Contact',
+  'The comments are' => 'Comentarii',
+  'Ticket Title' => 'Bilet De Titlu',
+  'Re' => 'Re :',
+  'LBL_ADD_DOCUMENT' => 'Pentru A Adăuga Un Document',
+  'LBL_OPEN_TICKETS' => 'Bilete Deschisă',
+  'LBL_CREATE_TICKET' => 'Creați Un Bilet',
+
 );

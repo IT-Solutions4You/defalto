@@ -84,7 +84,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Function to get the Display Value, for the current field type with given DB Insert Value
 	 * @param <Object> $value
@@ -97,7 +97,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 		}
 		return $value;
 	}
-	
+
 	/**
 	 * Function to get the display value in edit view
 	 * @param $value
@@ -106,9 +106,9 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	public function getEditViewDisplayValue($value) {
 		return self::getTimeValueInAMorPM($value);
 	}
-    
-    public function getListSearchTemplateName() {
-        return 'uitypes/TimeFieldSearchView.tpl';
-    }
-	
+
+	public function getListSearchTemplateName() {
+		return 'uitypes/TimeFieldSearchView.tpl';
+	}
+
 }

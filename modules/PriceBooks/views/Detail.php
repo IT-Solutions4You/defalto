@@ -27,6 +27,9 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 			$requestedPage = 1;
 		}
 
+		if($relatedModuleName != "Products"  &&  $relatedModuleName != "Services") {
+			return parent::showRelatedList($request);
+		}
 
 		$pagingModel = new Vtiger_Paging_Model();
 		$pagingModel->set('page',$requestedPage);
@@ -63,12 +66,21 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 			foreach ($models as $recordId => $recorModel) {
 				$recorModel->set('unit_price', $unitPricesList[$recordId]);
 			}
+
+			$parentRecordCurrencyDetails = getCurrencySymbolandCRate($parentRecordCurrencyId);
+		}
+
+		$moduleFields = $relatedModuleModel->getFields();
+		$fieldsInfo = array();
+		foreach($moduleFields as $fieldName => $fieldModel){
+			$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
 		}
 
 		$relationModel = $relationListView->getRelationModel();
 		$relationField = $relationModel->getRelationField();
 
 		$viewer = $this->getViewer($request);
+		$viewer->assign('RELATED_FIELDS_INFO', json_encode($fieldsInfo));
 		$viewer->assign('RELATED_RECORDS' , $models);
 		$viewer->assign('PARENT_RECORD', $parentRecordModel);
 		$viewer->assign('RELATED_LIST_LINKS', $links);
@@ -76,6 +88,10 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 		$viewer->assign('RELATED_MODULE', $relationModel->getRelationModuleModel());
 		$viewer->assign('RELATED_ENTIRES_COUNT', $noOfEntries);
 		$viewer->assign('RELATION_FIELD', $relationField);
+
+		if ($parentRecordCurrencyDetails) {
+			$viewer->assign('PARENT_RECORD_CURRENCY_SYMBOL', $parentRecordCurrencyDetails['symbol']);
+		}
 
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			$totalCount = $relationListView->getRelatedEntriesCount();
@@ -98,6 +114,7 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 		$viewer->assign('SORT_IMAGE',$sortImage);
 		$viewer->assign('COLUMN_NAME',$orderBy);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('TAB_LABEL', $request->get('tab_label'));
 		
 		return $viewer->view('RelatedList.tpl', $moduleName, 'true');
 	}

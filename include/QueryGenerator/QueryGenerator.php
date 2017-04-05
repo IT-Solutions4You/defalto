@@ -20,44 +20,42 @@ require_once 'include/Webservices/RelatedModuleMeta.php';
  * @author MAK
  */
 class QueryGenerator {
-	private $module;
-	private $customViewColumnList;
-	private $stdFilterList;
-	private $conditionals;
-	private $manyToManyRelatedModuleConditions;
-	private $groupType;
-	private $whereFields;
+	protected $module;
+	protected $customViewColumnList;
+	protected $stdFilterList;
+	protected $conditionals;
+	protected $manyToManyRelatedModuleConditions;
+	protected $groupType;
+	protected $whereFields;
 	/**
-	 *
 	 * @var VtigerCRMObjectMeta
 	 */
-	private $meta;
+	protected $meta;
 	/**
-	 *
 	 * @var Users
 	 */
-	private $user;
-	private $advFilterList;
-	private $fields;
-	private $referenceModuleMetaInfo;
-	private $moduleNameFields;
-	private $referenceFieldInfoList;
-	private $referenceFieldList;
-	private $ownerFields;
-	private $columns;
-	private $fromClause;
-	private $whereClause;
-	private $query;
-	private $groupInfo;
+	protected $user;
+	protected $advFilterList;
+	protected $fields;
+	protected $referenceModuleMetaInfo;
+	protected $moduleNameFields;
+	protected $referenceFieldInfoList;
+	protected $referenceFieldList;
+	protected $ownerFields;
+	protected $columns;
+	protected $fromClause;
+	protected $whereClause;
+	protected $query;
+	protected $groupInfo;
 	public $conditionInstanceCount;
-	private $conditionalWhere;
+	protected $conditionalWhere;
 	public static $AND = 'AND';
 	public static $OR = 'OR';
-	private $customViewFields;
+	protected $customViewFields;
 	/**
 	 * Import Feature
 	 */
-	private $ignoreComma;
+	protected $ignoreComma;
 	public function __construct($module, $user) {
 		$db = PearDatabase::getInstance();
 		$this->module = $module;
@@ -74,7 +72,7 @@ class QueryGenerator {
 		$this->meta = $this->getMeta($module);
 		$this->moduleNameFields[$module] = $this->meta->getNameFields();
 		$this->referenceFieldInfoList = $this->meta->getReferenceFieldDetails();
-		$this->referenceFieldList = array_keys($this->referenceFieldInfoList);;
+		$this->referenceFieldList = array_keys($this->referenceFieldInfoList);
 		$this->ownerFields = $this->meta->getOwnerFields();
 		$this->columns = null;
 		$this->fromClause = null;
@@ -126,9 +124,9 @@ class QueryGenerator {
 		return $this->whereFields;
 	}
 
-    public function addWhereField($fieldName) {
-        $this->whereFields[] = $fieldName;
-    }
+	public function addWhereField($fieldName) {
+		$this->whereFields[] = $fieldName;
+	}
 
 	public function getOwnerFieldList() {
 		return $this->ownerFields;
@@ -150,17 +148,17 @@ class QueryGenerator {
 		return $this->module;
 	}
 
-    public function getModuleFields() {
-        $moduleFields = $this->meta->getModuleFields();
+	public function getModuleFields() {
+		$moduleFields = $this->meta->getModuleFields();
 
-        $module = $this->getModule();
-        if($module == 'Calendar') {
-            $eventmoduleMeta = $this->getMeta('Events');
-            $eventModuleFieldList = $eventmoduleMeta->getModuleFields();
-            $moduleFields = array_merge($moduleFields, $eventModuleFieldList);
-        }
-        return $moduleFields;
-    }
+		$module = $this->getModule();
+		if($module == 'Calendar') {
+			$eventmoduleMeta = $this->getMeta('Events');
+			$eventModuleFieldList = $eventmoduleMeta->getModuleFields();
+			$moduleFields = array_merge($moduleFields, $eventModuleFieldList);
+		}
+		return $moduleFields;
+	}
 
 	public function getConditionalWhere() {
 		return $this->conditionalWhere;
@@ -181,14 +179,16 @@ class QueryGenerator {
 	public function initForCustomViewById($viewId) {
 		$customView = new CustomView($this->module);
 		$this->customViewColumnList = $customView->getColumnsListByCvid($viewId);
-		foreach ($this->customViewColumnList as $customViewColumnInfo) {
-			$details = explode(':', $customViewColumnInfo);
+		if ($this->customViewColumnList && is_array($this->customViewColumnList)) {
+			foreach ($this->customViewColumnList as $customViewColumnInfo) {
+				$details = explode(':', $customViewColumnInfo);
 			if(empty($details[2]) && $details[1] == 'crmid' && $details[0] == 'vtiger_crmentity') {
-				$name = 'id';
-				$this->customViewFields[] = $name;
-			} else {
-				$this->fields[] = $details[2];
-				$this->customViewFields[] = $details[2];
+					$name = 'id';
+					$this->customViewFields[] = $name;
+				} else {
+					$this->fields[] = $details[2];
+					$this->customViewFields[] = $details[2];
+				}
 			}
 		}
 
@@ -227,7 +227,7 @@ class QueryGenerator {
 		} elseif($this->conditionInstanceCount > 0 && is_array($this->advFilterList) && count($this->advFilterList) > 0) {
 			$this->addConditionGlue(self::$AND);
 		}
-        if(is_array($this->advFilterList) && count($this->advFilterList) > 0) {
+		if(is_array($this->advFilterList) && count($this->advFilterList) > 0) {
 			$this->parseAdvFilterList($this->advFilterList);
 		}
 		if($this->conditionInstanceCount > 0) {
@@ -246,9 +246,9 @@ class QueryGenerator {
 				$this->startGroup('');
 				foreach ($filtercolumns as $index=>$filter) {
 					$nameComponents = explode(':',$filter['columnname']);
-                    // For Events "End Date & Time" field datatype should be DT. But, db will give D for due_date field
-                    if($nameComponents[2] == 'due_date' && $nameComponents[3] == 'Events_End_Date_&_Time')
-                        $nameComponents[4] = 'DT';
+					// For Events "End Date & Time" field datatype should be DT. But, db will give D for due_date field
+					if($nameComponents[2] == 'due_date' && $nameComponents[3] == 'Events_End_Date_&_Time')
+						$nameComponents[4] = 'DT';
 					if(empty($nameComponents[2]) && $nameComponents[1] == 'crmid' && $nameComponents[0] == 'vtiger_crmentity') {
 						$name = $this->getSQLColumn('id');
 					} else {
@@ -269,19 +269,19 @@ class QueryGenerator {
 							}
 						}
 						$dateFilterResolvedList = $customView->resolveDateFilterValue($filter);
-                        // If datatype is DT then we should append time also
-                        if($nameComponents[4] == 'DT'){
-                            $startdate = explode(' ', $dateFilterResolvedList['startdate']);
-                            if($startdate[1] == '')
-                                $startdate[1] = '00:00:00';
-                            $dateFilterResolvedList['startdate'] = $startdate[0].' '.$startdate[1];
+						// If datatype is DT then we should append time also
+						if($nameComponents[4] == 'DT'){
+							$startdate = explode(' ', $dateFilterResolvedList['startdate']);
+							if($startdate[1] == '')
+								$startdate[1] = '00:00:00';
+							$dateFilterResolvedList['startdate'] = $startdate[0].' '.$startdate[1];
 
-                            $enddate = explode(' ',$dateFilterResolvedList['enddate']);
-                            if($enddate[1] == '')
-                                $enddate[1] = '23:59:59';
-                            $dateFilterResolvedList['enddate'] = $enddate[0].' '.$enddate[1];
-                        }
-                        $value = array();
+							$enddate = explode(' ',$dateFilterResolvedList['enddate']);
+							if($enddate[1] == '')
+								$enddate[1] = '23:59:59';
+							$dateFilterResolvedList['enddate'] = $enddate[0].' '.$enddate[1];
+						}
+						$value = array();
 						$value[] = $this->fixDateTimeValue($name, $dateFilterResolvedList['startdate']);
 						$value[] = $this->fixDateTimeValue($name, $dateFilterResolvedList['enddate'], false);
 						$this->addCondition($name, $value, 'BETWEEN');
@@ -291,20 +291,20 @@ class QueryGenerator {
 						$filter['startdate'] = DateTimeField::convertToDBFormat($dateTimeComponents[0]);
 						$filter['enddate'] = DateTimeField::convertToDBFormat($dateTimeComponents[0]);
 
-                        $startDate = $this->fixDateTimeValue($name, $filter['startdate']);
-                        $endDate = $this->fixDateTimeValue($name, $filter['enddate'],false);
+						$startDate = $this->fixDateTimeValue($name, $filter['startdate']);
+						$endDate = $this->fixDateTimeValue($name, $filter['enddate'],false);
 
-                        $value = array();
-                        $start = explode(' ', $startDate);
-                        if($start[1] == "")
-                            $startDate = $start[0].' '.'00:00:00';
+						$value = array();
+						$start = explode(' ', $startDate);
+						if($start[1] == "")
+							$startDate = $start[0].' '.'00:00:00';
 
-                        $end = explode(' ',$endDate);
-                        if($end[1] == "")
-                            $endDate = $end[0].' '.'23:59:59';
+						$end = explode(' ',$endDate);
+						if($end[1] == "")
+							$endDate = $end[0].' '.'23:59:59';
 
-                        $value[] = $startDate;
-                        $value[] = $endDate;
+						$value[] = $startDate;
+						$value[] = $endDate;
 						if($filter['comparator'] == 'n') {
 							$this->addCondition($name, $value, 'NOTEQUAL');
 						} else {
@@ -312,17 +312,17 @@ class QueryGenerator {
 						}
 					} else if($nameComponents[4] == 'DT' && ($filter['comparator'] == 'a' || $filter['comparator'] == 'b')) {
 						$dateTime = explode(' ', $filter['value']);
-                        $date = DateTimeField::convertToDBFormat($dateTime[0]);
-                        $value = array();
+						$date = DateTimeField::convertToDBFormat($dateTime[0]);
+						$value = array();
 						$value[] = $this->fixDateTimeValue($name, $date, false);
-                        // Still fixDateTimeValue returns only date value, we need to append time because it is DT type
-                        for($i=0;$i<count($value);$i++){
-                            $values = explode(' ', $value[$i]);
-                            if($values[1] == ''){
-                                $values[1] = '00:00:00';
-                            }
-                            $value[$i] = $values[0].' '.$values[1];
-                        }
+						// Still fixDateTimeValue returns only date value, we need to append time because it is DT type
+						for($i=0;$i<count($value);$i++){
+							$values = explode(' ', $value[$i]);
+							if($values[1] == ''){
+								$values[1] = '00:00:00';
+							}
+							$value[$i] = $values[0].' '.$values[1];
+						}
 						$this->addCondition($name, $value, $filter['comparator']);
 					} else{
 						$this->addCondition($name, $filter['value'], $filter['comparator']);
@@ -348,7 +348,7 @@ class QueryGenerator {
 	public function getQuery() {
 		if(empty($this->query)) {
 			$conditionedReferenceFields = array();
-			$allFields = array_merge($this->whereFields,$this->fields);
+			$allFields = array_merge($this->fields, (array)$this->whereFields);
 			foreach ($allFields as $fieldName) {
 				if(in_array($fieldName,$this->referenceFieldList)) {
 					$moduleList = $this->referenceFieldInfoList[$fieldName];
@@ -374,7 +374,7 @@ class QueryGenerator {
 		}
 	}
 
-	public function getSQLColumn($name) {
+	public function getSQLColumn($name, $fieldObj=false) {
 		if ($name == 'id') {
 			$baseTable = $this->meta->getEntityBaseTable();
 			$moduleTableIndexList = $this->meta->getEntityTableIndexList();
@@ -431,8 +431,8 @@ class QueryGenerator {
 			return $this->fromClause;
 		}
 		$baseModule = $this->getModule();
-        $moduleFields = $this->getModuleFields();
-        $tableList = array();
+		$moduleFields = $this->getModuleFields();
+		$tableList = array();
 		$tableJoinMapping = array();
 		$tableJoinCondition = array();
 		$i =1;
@@ -444,6 +444,7 @@ class QueryGenerator {
 			}
 
 			$field = $moduleFields[$fieldName];
+			if(!$field) continue;
 			$baseTable = $field->getTableName();
 			$tableIndexList = $this->meta->getEntityTableIndexList();
 			$baseTableIndex = $tableIndexList[$baseTable];
@@ -452,28 +453,37 @@ class QueryGenerator {
 				$tableJoinMapping[$field->getTableName()] = 'INNER JOIN';
 				foreach($moduleList as $module) {
 					if($module == 'Users' && $baseModule != 'Users') {
-						$tableJoinCondition[$fieldName]['vtiger_users'.$fieldName] = $field->getTableName().
+						if($fieldName == 'created_user_id' || $fieldName == 'modifiedby') {
+							$tableJoinCondition[$fieldName]['vtiger_users'.$fieldName] = $field->getTableName().
 								".".$field->getColumnName()." = vtiger_users".$fieldName.".id";
-						$tableJoinCondition[$fieldName]['vtiger_groups'.$fieldName] = $field->getTableName().
-								".".$field->getColumnName()." = vtiger_groups".$fieldName.".groupid";
-						$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
-						$tableJoinMapping['vtiger_groups'.$fieldName] = 'LEFT JOIN vtiger_groups AS';
-						$i++;
+							$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
+							$i++;
+						} else {
+							$tableJoinCondition[$fieldName]['vtiger_users'.$fieldName] = $field->getTableName().
+									".".$field->getColumnName()." = vtiger_users".$fieldName.".id";
+							$tableJoinCondition[$fieldName]['vtiger_groups'.$fieldName] = $field->getTableName().
+									".".$field->getColumnName()." = vtiger_groups".$fieldName.".groupid";
+							$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
+							$tableJoinMapping['vtiger_groups'.$fieldName] = 'LEFT JOIN vtiger_groups AS';
+							$i++;
+						}
 					}
+				}
+
+				if($fieldName == 'roleid' && $baseModule == 'Users') {
+					$tableJoinMapping['vtiger_role'] = 'INNER JOIN';
+					$tableList['vtiger_role'] = 'vtiger_role';
 				}
 			} elseif($field->getFieldDataType() == 'owner') {
 				$tableList['vtiger_users'] = 'vtiger_users';
 				$tableList['vtiger_groups'] = 'vtiger_groups';
 				$tableJoinMapping['vtiger_users'] = 'LEFT JOIN';
 				$tableJoinMapping['vtiger_groups'] = 'LEFT JOIN';
-                if($fieldName == "created_user_id"){
-                    $tableJoinCondition[$fieldName]['vtiger_users'.$fieldName] = $field->getTableName().
-                            ".".$field->getColumnName()." = vtiger_users".$fieldName.".id";
-                    $tableJoinCondition[$fieldName]['vtiger_groups'.$fieldName] = $field->getTableName().
-                            ".".$field->getColumnName()." = vtiger_groups".$fieldName.".groupid";
-                    $tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
-                        $tableJoinMapping['vtiger_groups'.$fieldName] = 'LEFT JOIN vtiger_groups AS';
-                }
+				if($fieldName == "created_user_id"){
+					$tableJoinCondition[$fieldName]['vtiger_users'.$fieldName] = $field->getTableName().
+							".".$field->getColumnName()." = vtiger_users".$fieldName.".id";
+					$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
+				}
 			}
 			$tableList[$field->getTableName()] = $field->getTableName();
 				$tableJoinMapping[$field->getTableName()] =
@@ -494,21 +504,26 @@ class QueryGenerator {
 			// When a field is included in Where Clause, but not is Select Clause, and the field table is not base table,
 			// The table will not be present in tablesList and hence needs to be added to the list.
 			if(empty($tableList[$baseTable])) {
-				$tableList[$baseTable] = $field->getTableName();
-				$tableJoinMapping[$baseTable] = $this->meta->getJoinClause($field->getTableName());
+				if($fieldName == 'tags') {
+						$tableList['vtiger_freetagged_objects'] = 'vtiger_freetagged_objects';
+						$tableJoinMapping['vtiger_freetagged_objects'] = 'INNER JOIN';
+				}else{
+					$tableList[$baseTable] = $field->getTableName();
+					$tableJoinMapping[$baseTable] = $this->meta->getJoinClause($field->getTableName());
+				}
 			}
 			if($field->getFieldDataType() == 'reference') {
 				$moduleList = $this->referenceFieldInfoList[$fieldName];
-				// This is special condition as the data is not stored in the base table, 
-                                // If empty search is performed on this field then it fails to retrieve any information. 
-                                if ($fieldName == 'parent_id' && $field->getTableName() == 'vtiger_seactivityrel') {
-                                    $tableJoinMapping[$field->getTableName()] = 'LEFT JOIN';
-                                } else if ($fieldName == 'contact_id' && $field->getTableName() == 'vtiger_cntactivityrel') {
-                                    $tableJoinMapping[$field->getTableName()] = "LEFT JOIN";
-                                } else {
-                                    $tableJoinMapping[$field->getTableName()] = 'INNER JOIN';
-                                }
-                foreach($moduleList as $module) {
+				// This is special condition as the data is not stored in the base table,
+				// If empty search is performed on this field then it fails to retrieve any information.
+				if($fieldName == 'parent_id' && $field->getTableName() == 'vtiger_seactivityrel') {
+					$tableJoinMapping[$field->getTableName()] = 'LEFT JOIN';
+				} else if($fieldName == 'contact_id' && $field->getTableName() == 'vtiger_cntactivityrel') {
+					$tableJoinMapping[$field->getTableName()] = "LEFT JOIN";
+				} else {
+					$tableJoinMapping[$field->getTableName()] = 'INNER JOIN';
+				}
+				foreach($moduleList as $module) {
 					$meta = $this->getMeta($module);
 					$nameFields = $this->moduleNameFields[$module];
 					$nameFieldList = explode(',',$nameFields);
@@ -528,6 +543,11 @@ class QueryGenerator {
 								$field->getColumnName().' = '.$referenceTable.'.'.$referenceTableIndex;
 						}
 					}
+				}
+
+				if($fieldName == 'roleid' && $baseModule == 'Users') {
+					$tableJoinMapping['vtiger_role'] = 'INNER JOIN';
+					$tableList['vtiger_role'] = 'vtiger_role';
 				}
 			} elseif($field->getFieldDataType() == 'owner') {
 				$tableList['vtiger_users'] = 'vtiger_users';
@@ -550,12 +570,7 @@ class QueryGenerator {
 		}
 		$ownerFields = $this->meta->getOwnerFields();
 		if (count($ownerFields) > 0) {
-			//there are more than one field pointing to the users table, the real one is the one called assigned_user_id if there is one, otherwise pick the first
-			if(in_array("assigned_user_id",$ownerFields)){
-				$ownerField="assigned_user_id";
-			}else{
-				$ownerField = $ownerFields[0];
-			}
+			$ownerField = $ownerFields[0];
 		}
 		$baseTable = $this->meta->getEntityBaseTable();
 		$sql = " FROM $baseTable ";
@@ -574,9 +589,18 @@ class QueryGenerator {
 				$field = $moduleFields[$ownerField];
 				$sql .= " $tableJoinMapping[$tableName] $tableName ON ".$field->getTableName().".".
 					$field->getColumnName()." = $tableName.groupid";
+			} elseif($tableName == 'vtiger_freetagged_objects') {
+				$sql .= " $tableJoinMapping[$tableName] $tableName ON $baseTable.$baseTableIndex = $tableName.object_id ".
+						"INNER JOIN vtiger_freetags ON $tableName.tag_id = vtiger_freetags.id ";
+			} elseif($tableName == 'vtiger_role') {
+				$sql .= " $tableJoinMapping[$tableName] $tableName ON vtiger_role.roleid = vtiger_user2role.roleid";
 			} else {
+				$tableCondition = $tableName.'.'.$moduleTableIndexList[$tableName];
+				if(Vtiger_Functions::isUserSpecificFieldTable($tableName, $this->getModule())) {
+					$tableCondition.=  ' AND '.$tableName.'.userid='.$this->user->id;
+				}
 				$sql .= " $tableJoinMapping[$tableName] $tableName ON $baseTable.".
-					"$baseTableIndex = $tableName.$moduleTableIndexList[$tableName]";
+					"$baseTableIndex = $tableCondition";
 			}
 		}
 
@@ -668,39 +692,39 @@ class QueryGenerator {
 		$baseTableIndex = $moduleTableIndexList[$baseTable];
 		$groupSql = $this->groupInfo;
 		$fieldSqlList = array();
-        foreach ($this->conditionals as $index=>$conditionInfo) {
+		foreach ($this->conditionals as $index=>$conditionInfo) {
 			$fieldName = $conditionInfo['name'];
 			$field = $moduleFieldList[$fieldName];
-            if(empty($field) || $conditionInfo['operator'] == 'None') {
+			if(empty($field) || $conditionInfo['operator'] == 'None') {
 				continue;
 			}
 			$fieldSql = '(';
 			$fieldGlue = '';
 			$valueSqlList = $this->getConditionValue($conditionInfo['value'],
 				$conditionInfo['operator'], $field);
-            $operator = strtolower($conditionInfo['operator']);
-            if($operator == 'between'&& $this->isDateType($field->getFieldDataType())){
-                $start = explode(' ', $conditionInfo['value'][0]);
-                if(count($start) == 2)
-                    $conditionInfo['value'][0] = getValidDBInsertDateTimeValue($start[0].' '.$start[1]);
+			$operator = strtolower($conditionInfo['operator']);
+			if($operator == 'between' && $this->isDateType($field->getFieldDataType())){
+				$start = explode(' ', $conditionInfo['value'][0]);
+				if(count($start) == 2)
+					$conditionInfo['value'][0] = getValidDBInsertDateTimeValue($start[0].' '.$start[1]);
 
-                $end = explode(' ', $conditionInfo['values'][1]);
-                // Dates will be equal for Today, Tomorrow, Yesterday.
-                if(count($end) == 2){
-                    if($start[0] == $end[0]){
-                        $dateTime = new DateTime($conditionInfo['value'][0]);
-                        $nextDay = $dateTime->modify('+1 days');
-                        $nextDay = $nextDay->format('Y-m-d H:i:s');
-                        $values = explode(' ', $nextDay);
-                        $conditionInfo['value'][1] = getValidDBInsertDateTimeValue($values[0]).' '.$values[1];
-                    }else{
-                        $end = $conditionInfo['value'][1];
-                        $dateObject = new DateTimeField($end);
-                        $conditionInfo['value'][1] = $dateObject->getDBInsertDateTimeValue();
-                    }
-                }
+				$end = explode(' ', $conditionInfo['values'][1]);
+				// Dates will be equal for Today, Tomorrow, Yesterday.
+				if(count($end) == 2){
+					if($start[0] == $end[0]){
+						$dateTime = new DateTime($conditionInfo['value'][0]);
+						$nextDay = $dateTime->modify('+1 days');
+						$nextDay = $nextDay->format('Y-m-d H:i:s');
+						$values = explode(' ', $nextDay);
+						$conditionInfo['value'][1] = getValidDBInsertDateTimeValue($values[0]).' '.$values[1];
+					}else{
+						$end = $conditionInfo['value'][1];
+						$dateObject = new DateTimeField($end);
+						$conditionInfo['value'][1] = $dateObject->getDBInsertDateTimeValue();
+					}
+				}
 
-            }
+			}
 			if(!is_array($valueSqlList)) {
 				$valueSqlList = array($valueSqlList);
 			}
@@ -723,8 +747,9 @@ class QueryGenerator {
 								if($module == 'Users') {
 									$instance = CRMEntity::getInstance($module);
 									$referenceTable = $instance->table_name;
+									// PriceBook don't have any owner fields
 									if(count($this->ownerFields) > 0 ||
-											$this->getModule() == 'Quotes') {
+											$this->getModule() == 'Quotes' || $this->getModule() == 'PriceBooks') {
 										$referenceTable .= $fieldName;
 									}
 								} else {
@@ -745,15 +770,20 @@ class QueryGenerator {
 							$fieldSql .= "$fieldGlue trim($columnSql) $valueSql";
 							$fieldGlue = ' OR';
 						}
+						if ($fieldName == 'roleid'){
+							$columnSql = 'vtiger_role.rolename';
+							$fieldSql .= "$fieldGlue trim($columnSql) $valueSql";
+							$fieldGlue = ' OR';
+						}
 					}
 				} elseif (in_array($fieldName, $this->ownerFields)) {
-                    if($fieldName == 'created_user_id'){
-                        $concatSql = getSqlForNameInDisplayFormat(array('first_name'=>"vtiger_users$fieldName.first_name",'last_name'=>"vtiger_users$fieldName.last_name"), 'Users');
-                        $fieldSql .= "$fieldGlue (trim($concatSql) $valueSql)";
-                    }else{
+					if($fieldName == 'created_user_id'){
+						$concatSql = getSqlForNameInDisplayFormat(array('first_name'=>"vtiger_users$fieldName.first_name",'last_name'=>"vtiger_users$fieldName.last_name"), 'Users');
+						$fieldSql .= "$fieldGlue (trim($concatSql) $valueSql)";
+					}else{
 						$concatSql = getSqlForNameInDisplayFormat(array('first_name'=>"vtiger_users.first_name",'last_name'=>"vtiger_users.last_name"), 'Users');
 						$fieldSql .= "$fieldGlue (trim($concatSql) $valueSql or "."vtiger_groups.groupname $valueSql)";
-                    }
+					}
 				} elseif($field->getFieldDataType() == 'date' && ($baseModule == 'Events' || $baseModule == 'Calendar') && ($fieldName == 'date_start' || $fieldName == 'due_date')) {
 					$value = $conditionInfo['value'];
 					$operator = $conditionInfo['operator'];
@@ -792,7 +822,7 @@ class QueryGenerator {
 						$startDateValue = explode(' ', $values[0]);
 						$endDateValue = explode(' ', $values[1]);
 						if($startDateValue[1] == '00:00:00' && ($endDateValue[1] == '00:00:00' || $endDateValue[1] == '23:59:59')) {
-							$fieldSql .= "$fieldGlue CAST(".$field->getTableName().'.'.$field->getColumnName()." AS DATETIME) $valueSql";
+							$fieldSql .= "$fieldGlue CAST(".$field->getTableName().'.'.$field->getColumnName()." AS DATE) $valueSql";
 						} else {
 							$fieldSql .= "$fieldGlue ".$field->getTableName().'.'.$field->getColumnName().' '.$valueSql;
 						}
@@ -807,37 +837,44 @@ class QueryGenerator {
 						}
 					}
 				} else if (($baseModule == 'Events' || $baseModule == 'Calendar') 
-                        && ($field->getColumnName() == 'status' || $field->getColumnName() == 'eventstatus')) {
-                    $otherFieldName = 'eventstatus';
-                    if($field->getColumnName() == 'eventstatus'){
-                        $otherFieldName = 'taskstatus';
-                    }
-                    $otherField = $moduleFieldList[$otherFieldName];
-                    
-                    $specialCondition = '';
-                    $specialConditionForOtherField='';
-                    $conditionGlue = ' OR ';
-                    if($conditionInfo['operator'] == 'n' || $conditionInfo['operator'] == 'k' || $conditionInfo['operator'] == 'y') {
-                       $conditionGlue = ' AND '; 
-                       if($conditionInfo['operator'] == 'n') {
-                           $specialCondition = ' OR '.$field->getTableName().'.'.$field->getColumnName().' IS NULL ';
-                           if(!empty($otherField))
-                           $specialConditionForOtherField = ' OR '.$otherField->getTableName().'.'.$otherField->getColumnName().' IS NULL ';
-                    }
-                    }
-                    
-                    $otherFieldValueSql = $valueSql;
-                    if($conditionInfo['operator'] == 'ny' && !empty($otherField)){
-                        $otherFieldValueSql = "IS NOT NULL AND ".$otherField->getTableName().'.'.$otherField->getColumnName()." != ''";
-                    }
-                    
-                    $fieldSql .= "$fieldGlue ((". $field->getTableName().'.'.$field->getColumnName().' '.$valueSql." $specialCondition) ";
-                    if(!empty($otherField))
-                        $fieldSql .= $conditionGlue .'('.$otherField->getTableName().'.'.$otherField->getColumnName() . ' '. $otherFieldValueSql .' '.$specialConditionForOtherField .'))';
-                    else
-                        $fieldSql .= ')';
-                }
-                else {
+						&& ($field->getColumnName() == 'status' || $field->getColumnName() == 'eventstatus')) {
+					$otherFieldName = 'eventstatus';
+					if($field->getColumnName() == 'eventstatus'){
+						$otherFieldName = 'taskstatus';
+					}
+					$otherField = $moduleFieldList[$otherFieldName];
+
+					$specialCondition = '';
+					$specialConditionForOtherField='';
+					$conditionGlue = ' OR ';
+					if($conditionInfo['operator'] == 'n' || $conditionInfo['operator'] == 'k' || $conditionInfo['operator'] == 'y') {
+					   $conditionGlue = ' AND '; 
+					   if($conditionInfo['operator'] == 'n') {
+						   $specialCondition = ' OR '.$field->getTableName().'.'.$field->getColumnName().' IS NULL ';
+						   if(!empty($otherField))
+						   $specialConditionForOtherField = ' OR '.$otherField->getTableName().'.'.$otherField->getColumnName().' IS NULL ';
+						}
+					}
+
+					$otherFieldValueSql = $valueSql;
+					if($conditionInfo['operator'] == 'ny' && !empty($otherField)){
+						$otherFieldValueSql = "IS NOT NULL AND ".$otherField->getTableName().'.'.$otherField->getColumnName()." != ''";
+					}
+
+					$fieldSql .= "$fieldGlue ((". $field->getTableName().'.'.$field->getColumnName().' '.$valueSql." $specialCondition) ";
+					if(!empty($otherField))
+						$fieldSql .= $conditionGlue .'('.$otherField->getTableName().'.'.$otherField->getColumnName() . ' '. $otherFieldValueSql .' '.$specialConditionForOtherField .'))';
+					else
+						$fieldSql .= ')';
+				}else if (Vtiger_Functions::isUserSpecificFieldTable($field->getTableName(), getTabModuleName($field->getTabId())) && $fieldName == "starred"
+						&& $conditionInfo['value'] != 1) {
+						// since not for all records you will have entry in starred field table. So for disabled (value 0) we need to check both 0 and null
+						$fieldSql .= "$fieldGlue (".$field->getTableName().'.'.$field->getColumnName().' '.$valueSql.' OR ';
+						$fieldSql .=                $field->getTableName().'.'.$field->getColumnName().' IS NULL)';
+				} else if($fieldName == "tags") {
+					$fieldSql .= " $fieldGlue ( vtiger_freetags.id " . $valueSql . ' AND '.
+							'( vtiger_freetagged_objects.tagger_id = ' . $this->user->id . ' OR vtiger_freetags.visibility = "public")) ';
+				} else {
 					if($fieldName == 'birthday' && !$this->isRelativeSearchOperators(
 							$conditionInfo['operator'])) {
 						$fieldSql .= "$fieldGlue DATE_FORMAT(".$field->getTableName().'.'.
@@ -857,8 +894,7 @@ class QueryGenerator {
 			$fieldSqlList[$index] = $fieldSql;
 		}
 		foreach ($this->manyToManyRelatedModuleConditions as $index=>$conditionInfo) {
-			$relatedModuleMeta = RelatedModuleMeta::getInstance($this->meta->getTabName(),
-					$conditionInfo['relatedModule']);
+			$relatedModuleMeta = RelatedModuleMeta::getInstance($this->meta->getTabName(), $conditionInfo['relatedModule']);
 			$relationInfo = $relatedModuleMeta->getRelationMeta();
 			$relatedModule = $this->meta->getTabName();
 			$fieldSql = "(".$relationInfo['relationTable'].'.'.
@@ -870,6 +906,7 @@ class QueryGenerator {
 		// This is added to support reference module fields
 		if($this->referenceModuleField) {
 			foreach ($this->referenceModuleField as $index=>$conditionInfo) {
+				if(empty($conditionInfo['SQLOperator'])) continue;
 				$handler = vtws_getModuleHandlerFromName($conditionInfo['relatedModule'], $current_user);
 				$meta = $handler->getMeta();
 				$fieldName = $conditionInfo['fieldName'];
@@ -901,25 +938,24 @@ class QueryGenerator {
 	 * @param String $operator
 	 * @param WebserviceField $field
 	 */
-	private function getConditionValue($value, $operator, $field) {
+	protected function getConditionValue($value, $operator, $field) {
 
 		$operator = strtolower($operator);
 		$db = PearDatabase::getInstance();
-        $inEqualityFieldTypes = array('currency','percentage','double','integer','number');
-        
+
 		if(is_string($value) && $this->ignoreComma == false) {
-            $commaSeparatedFieldTypes = array('picklist', 'multipicklist', 'owner', 'date', 'datetime', 'time');
-            if(in_array($field->getFieldDataType(), $commaSeparatedFieldTypes)) {
-                $valueArray = explode(',' , $value);
-                if ($field->getFieldDataType() == 'multipicklist' && in_array($operator, array('e', 'n'))) {
-                    $valueArray = getCombinations($valueArray);
-                    foreach ($valueArray as $key => $value) {
-                        $valueArray[$key] = ltrim($value, ' |##| ');
-                    }
-                }
-            } else {
-                $valueArray = array($value);
-            }
+			$commaSeparatedFieldTypes = array('picklist', 'multipicklist', 'owner', 'date', 'datetime', 'time');
+			if(in_array($operator, array('s', 'ew', 'c', 'k')) || in_array($field->getFieldDataType(), $commaSeparatedFieldTypes) || ($field->getFieldName() == 'salutationtype') || ($field->getFieldDataType()=='reference' && in_array('Users', $field->getReferenceList()))) {
+			$valueArray = explode(',' , $value);
+			if ($field->getFieldDataType() == 'multipicklist' && in_array($operator, array('e', 'n'))) {
+				$valueArray = getCombinations($valueArray);
+				foreach ($valueArray as $key => $value) {
+					$valueArray[$key] = ltrim($value, ' |##| ');
+				}
+			}
+			} else {
+				$valueArray = array($value);
+			}
 		} elseif(is_array($value)) {
 			$valueArray = $value;
 		} else{
@@ -934,35 +970,35 @@ class QueryGenerator {
 						"DATE_FORMAT(".$db->quote($valueArray[1]).", '%m%d')";
 			} else {
 				if($this->isDateType($field->getFieldDataType())) {
-                    $start = explode(' ', $valueArray[0]);
-                    $end = explode(' ',$valueArray[1]);
-                    if($operator == 'between' && count($start) == 2 && count($end) == 2){
-                            $valueArray[0] = getValidDBInsertDateTimeValue($start[0].' '.$start[1]);
+					$start = explode(' ', $valueArray[0]);
+					$end = explode(' ',$valueArray[1]);
+					if($operator == 'between' && count($start) == 2 && count($end) == 2){
+							$valueArray[0] = getValidDBInsertDateTimeValue($start[0].' '.$start[1]);
 
-                            if($start[0] == $end[0]){
-                                $dateTime = new DateTime($valueArray[0]);
-                                $nextDay = $dateTime->modify('+1 days');
-                                $nextDay = strtotime($nextDay->format('Y-m-d H:i:s'))-1;
-                                $nextDay = date('Y-m-d H:i:s', $nextDay);
-                                $values = explode(' ', $nextDay);
-                                $valueArray[1] = getValidDBInsertDateTimeValue($values[0]).' '.$values[1];
-                            }else{
-                                $end = $valueArray[1];
-                                $dateObject = new DateTimeField($end);
-                                $valueArray[1] = $dateObject->getDBInsertDateTimeValue();
-                            }
-                    }else{
-                        $valueArray[0] = getValidDBInsertDateTimeValue($valueArray[0]);
-                        $dateTimeStart = explode(' ',$valueArray[0]);
-                        if($dateTimeStart[1] == '00:00:00' && $operator != 'between') {
-                            $valueArray[0] = $dateTimeStart[0];
-                        }
-                        $valueArray[1] = getValidDBInsertDateTimeValue($valueArray[1]);
-                        $dateTimeEnd = explode(' ', $valueArray[1]);
-                        if($dateTimeEnd[1] == '00:00:00' || $dateTimeEnd[1] == '23:59:59') {
-                            $valueArray[1] = $dateTimeEnd[0];
-                        }
-                    }
+							if($start[0] == $end[0]){
+								$dateTime = new DateTime($valueArray[0]);
+								$nextDay = $dateTime->modify('+1 days');
+								$nextDay = strtotime($nextDay->format('Y-m-d H:i:s'))-1;
+								$nextDay = date('Y-m-d H:i:s', $nextDay);
+								$values = explode(' ', $nextDay);
+								$valueArray[1] = getValidDBInsertDateTimeValue($values[0]).' '.$values[1];
+							}else{
+								$end = $valueArray[1];
+								$dateObject = new DateTimeField($end);
+								$valueArray[1] = $dateObject->getDBInsertDateTimeValue();
+							}
+					}else{
+						$valueArray[0] = getValidDBInsertDateTimeValue($valueArray[0]);
+						$dateTimeStart = explode(' ',$valueArray[0]);
+						if($dateTimeStart[1] == '00:00:00' && $operator != 'between' && $field->getFieldDataType()=='date') {
+							$valueArray[0] = $dateTimeStart[0];
+						}
+						$valueArray[1] = getValidDBInsertDateTimeValue($valueArray[1]);
+						$dateTimeEnd = explode(' ', $valueArray[1]);
+						if(($dateTimeEnd[1] == '00:00:00' || $dateTimeEnd[1] == '23:59:59') && $field->getFieldDataType()=='date' ) {
+							$valueArray[1] = $dateTimeEnd[0];
+						}
+					}
 				}
 
 				if($operator == 'notequal') {
@@ -980,22 +1016,25 @@ class QueryGenerator {
 				$value = trim($value);
 			}
 			if ($operator == 'empty' || $operator == 'y') {
-				$sql[] = sprintf("IS NULL OR %s = ''", $this->getSQLColumn($field->getFieldName()));
+				$sql[] = sprintf("IS NULL OR %s = ''", $this->getSQLColumn($field->getFieldName(), $field));
 				continue;
 			}
-            if($operator == 'ny'){
-                $sql[] = sprintf("IS NOT NULL AND %s != ''", $this->getSQLColumn($field->getFieldName()));
+			if($operator == 'ny'){
+				$sql[] = sprintf("IS NOT NULL AND %s != ''", $this->getSQLColumn($field->getFieldName(), $field));
 				continue;
-            }
+			}
 			if((strtolower(trim($value)) == 'null') ||
 					(trim($value) == '' && !$this->isStringType($field->getFieldDataType())) &&
 							($operator == 'e' || $operator == 'n')) {
 				if($operator == 'e'){
 					$sql[] = "IS NULL";
+					$sql[] = "= ''";
+					continue;
+				} else {
+					$sql[] = "IS NOT NULL";
+					$sql[] = "!= ''";
 					continue;
 				}
-					$sql[] = "IS NOT NULL";
-					continue;
 			} elseif($field->getFieldDataType() == 'boolean') {
 				$value = strtolower($value);
 				if ($value == 'yes') {
@@ -1004,43 +1043,32 @@ class QueryGenerator {
 					$value = 0;
 				}
 			} elseif($this->isDateType($field->getFieldDataType())) {
-                // For "after" and "before" conditions
-                $values = explode(' ',$value);
-                if(($operator == 'a' || $operator == 'b') && count($values) == 2){
-                    if($operator == 'a'){
-                        // for after comparator we should check the date after the given
-                        $dateTime = new DateTime($value);
-                        $modifiedDate = $dateTime->modify('+1 days');
-                        $nextday = $modifiedDate->format('Y-m-d H:i:s');
-                        $temp = strtotime($nextday)-1;
-                        $date = date('Y-m-d H:i:s', $temp);
-                        $value = getValidDBInsertDateTimeValue($date);
-                    }else{
-                        $dateTime = new DateTime($value);
-                        $prevday = $dateTime->format('Y-m-d H:i:s');
-                        $temp = strtotime($prevday)-1;
-                        $date = date('Y-m-d H:i:s', $temp);
-                        $value = getValidDBInsertDateTimeValue($date);
-                    }
-                }else{
-                    $value = getValidDBInsertDateTimeValue($value);
-                    $dateTime = explode(' ', $value);
-                    if($dateTime[1] == '00:00:00') {
-                        $value = $dateTime[0];
-                    }
-                }
-			} else   if(in_array($field->getFieldDataType(), $inEqualityFieldTypes)){
-              global $default_charset;
-                $table = get_html_translation_table(HTML_ENTITIES, ENT_COMPAT,$default_charset);
-                $chars = implode('', array_keys($table));
-                        if (preg_match("/[{$chars}]+/", $value) === 1){
-                         if ($operator == 'g' || $operator == 'l') {
-                            $value = substr($value, 4);
-                        } else if ($operator == 'h' || $operator == 'm') {
-                            $value = substr($value, 5);
-                        }
-                       }
-            } else if ($field->getFieldDataType() === 'currency') {
+				// For "after" and "before" conditions
+				$values = explode(' ',$value);
+				if(($operator == 'a' || $operator == 'b') && count($values) == 2){
+					if($operator == 'a'){
+						// for after comparator we should check the date after the given
+						$dateTime = new DateTime($value);
+						$modifiedDate = $dateTime->modify('+1 days');
+						$nextday = $modifiedDate->format('Y-m-d H:i:s');
+						$temp = strtotime($nextday)-1;
+						$date = date('Y-m-d H:i:s', $temp);
+						$value = getValidDBInsertDateTimeValue($date);
+					}else{
+						$dateTime = new DateTime($value);
+						$prevday = $dateTime->format('Y-m-d H:i:s');
+						$temp = strtotime($prevday)-1;
+						$date = date('Y-m-d H:i:s', $temp);
+						$value = getValidDBInsertDateTimeValue($date);
+					}
+				}else{
+					$value = getValidDBInsertDateTimeValue($value);
+					$dateTime = explode(' ', $value);
+					if($dateTime[1] == '00:00:00') {
+						$value = $dateTime[0];
+					}
+				}
+			} else if ($field->getFieldDataType() === 'currency') {
 				$uiType = $field->getUIType();
 				if ($uiType == 72) {
 					$value = CurrencyField::convertToDBFormat($value, null, true);
@@ -1100,11 +1128,18 @@ class QueryGenerator {
 				case 'b': $sqlOperator = "<";
 					break;
 			}
-			if(!$this->isNumericType($field->getFieldDataType()) &&
-					($field->getFieldName() != 'birthday' || ($field->getFieldName() == 'birthday'
+
+			// for not equal(!=) and for equal(=) with empty value we need to check for null
+			if(($operator == 'n' && !isset($value) && ($field->getFieldName() != 'activitytype' && $value != 'Emails')) ||
+					($operator == 'e' && !isset($value))) {
+				$sql[] = "IS NULL";
+			}
+
+			if( ($field->getFieldName() != 'birthday' || ($field->getFieldName() == 'birthday'
 							&& $this->isRelativeSearchOperators($operator)))){
 				$value = "'$value'";
 			}
+
 			if($this->isNumericType($field->getFieldDataType()) && empty($value)) {
 				$value = '0';
 			}
@@ -1113,7 +1148,7 @@ class QueryGenerator {
 		return $sql;
 	}
 
-	private function makeGroupSqlReplacements($fieldSqlList, $groupSql) {
+	protected function makeGroupSqlReplacements($fieldSqlList, $groupSql) {
 		$pos = 0;
 		$nextOffset = 0;
 		foreach ($fieldSqlList as $index => $fieldSql) {
@@ -1128,19 +1163,19 @@ class QueryGenerator {
 		return $groupSql;
 	}
 
-	private function isRelativeSearchOperators($operator) {
+	protected function isRelativeSearchOperators($operator) {
 		$nonDaySearchOperators = array('l','g','m','h');
 		return in_array($operator, $nonDaySearchOperators);
 	}
-	private function isNumericType($type) {
+	protected function isNumericType($type) {
 		return ($type == 'integer' || $type == 'double' || $type == 'currency');
 	}
 
-	private function isStringType($type) {
+	protected function isStringType($type) {
 		return ($type == 'string' || $type == 'text' || $type == 'email' || $type == 'reference');
 	}
 
-	private function isDateType($type) {
+	protected function isDateType($type) {
 		return ($type == 'date' || $type == 'datetime');
 	}
 
@@ -1160,6 +1195,13 @@ class QueryGenerator {
 		return $value;
 	}
 
+	public function clearConditionals(){
+		$this->conditionals = null;
+		$this->conditionInstanceCount = 0;
+		$this->groupInfo = null;
+		$this->whereFields = null;
+	}
+
 	public function addCondition($fieldname,$value,$operator,$glue= null,$newGroup = false,
 		$newGroupType = null, $ignoreComma = false) {
 		$conditionNumber = $this->conditionInstanceCount++;
@@ -1172,6 +1214,13 @@ class QueryGenerator {
 		$this->reset();
 		$this->conditionals[$conditionNumber] = $this->getConditionalArray($fieldname,
 				$value, $operator);
+	}
+
+	public function hasConditionals() {
+		if(count($this->conditionals) > 0) {
+			return true;
+		}
+		return false;
 	}
 
 	public function addRelatedModuleCondition($relatedModule,$column, $value, $SQLOperator) {
@@ -1191,7 +1240,7 @@ class QueryGenerator {
 			'SQLOperator'=>$SQLOperator);
 	}
 
-	private function getConditionalArray($fieldname,$value,$operator) {
+	protected function getConditionalArray($fieldname,$value,$operator) {
 		if(is_string($value)) {
 			$value = trim($value);
 		} elseif(is_array($value)) {

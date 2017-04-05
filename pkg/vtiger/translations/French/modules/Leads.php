@@ -30,8 +30,7 @@ $languageStrings = array(
 	'Cold'                         => 'Froid'                       , 
 	'Contact in Future'            => 'A contacter'                 , 
 	'Contacted'                    => 'Contacté'                   , 
-	'Hot'                          => 'Chaud'                       ,
-        'Hot Leads'                    => 'Contacts Hot',
+	'Hot'                          => 'Chaud'                       , 
 	'Junk Lead'                    => 'En sommeil'                  , 
 	'Lost Lead'                    => 'Perdu'                       , 
 	'Not Contacted'                => 'Non contacté'               , 
@@ -41,14 +40,17 @@ $languageStrings = array(
 	'LBL_CONVERT_LEAD'             => 'Convertir :'                 , 
 	'LBL_TRANSFER_RELATED_RECORD'  => 'Transfer related record to'  , 
 	'LBL_CONVERT_LEAD_ERROR'       => 'You have to enable either Organization or Contact to convert the Lead', 
-	'LBL_CONVERT_LEAD_ERROR_TITLE' => 'Modules Disabled'            , 
-	'CANNOT_CONVERT'               => 'ne peut être converti'      , 
-	'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'Voici les raisons possibles' , 
 	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'Tous les champs obligatoires ne sont pas mappés', 
-	'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Certains champs obligatoires sont vides', 
 	'LBL_LEADS_FIELD_MAPPING'      => 'Mapping des champs du module prospects', 
-	'LBL_CUSTOM_FIELD_MAPPING'     => 'Edit Field Mapping'          , 
+	'LBL_CUSTOM_FIELD_MAPPING'     => 'Plomb cartographie de conversion de données'          , 
+    'LBL_IMAGE_INFORMATION' => 'Photo de profil',
+    'Lead Image' => 'Image de plomb',
 	
+
+  'Phone' => 'Téléphone Principal',
+  'Secondary Email' => 'E-Mail Secondaire',
+  'Email' => 'E-Mail Principale',
+
 );
 $jsLanguageStrings = array(
 	'JS_SELECT_CONTACTS'           => 'Select Contacts to proceed'  , 

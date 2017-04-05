@@ -10,7 +10,15 @@
 	
 	function vtws_update($element,$user){
 		
-		global $log,$adb;
+		global $log,$adb,$app_strings;
+    
+        //setting $app_strings 
+        if(empty($app_strings)) { 
+            $currentLanguage = Vtiger_Language_Handler::getLanguage(); 
+            $moduleLanguageStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage); 
+            $app_strings = $moduleLanguageStrings['languageStrings']; 
+        }
+        
 		$idList = vtws_getIdComponents($element['id']);
 		$webserviceObject = VtigerWebserviceObject::fromId($adb,$idList[0]);
 		$handlerPath = $webserviceObject->getHandlerPath();

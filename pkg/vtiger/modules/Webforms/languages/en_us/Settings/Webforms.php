@@ -42,6 +42,7 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'User Assignment',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Assign Users In Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Round Robin Users List',
+    'LBL_ADD_RECORD' => 'Add Webform',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully',

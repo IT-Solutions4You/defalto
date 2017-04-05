@@ -16,7 +16,8 @@
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_Quotes'                => 'Presupuesto',
+    'Quotes'                       => 'cotizaciones',
+	'SINGLE_Quotes'                => 'cotizaciones',
 	'LBL_EXPORT_TO_PDF'            => 'Exportar a PDF',
 	'LBL_ADD_RECORD'               => 'Añadir Presupuesto',
 	'LBL_RECORDS_LIST'             => 'Lista de Presupuestos',
@@ -28,19 +29,10 @@ $languageStrings = array(
 	'Accepted'                     => 'Aceptado',
 	'Rejected'                     => 'Rechazado',
 	'LBL_SEND_MAIL_PDF' => 'Enviar Email con PDF',
-       'Open Quotes'                  => 'Abrir Cotizaciones',
-	//Translation for product not found
-	'LBL_THIS' => 'Este',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Este artículo ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
-    
-        //Taxes 
-        'VAT'      => 'IVA', 
-        'Service'  => 'Servicio', 
-        'Sales'    => 'Venta'
+    'Related To'                   => 'En relación con',
 
-);
+  'LBL_THIS' => 'Este',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'se elimina del sistema.por favor, quitar o reemplazar este elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Esta línea de ítem es eliminado del sistema,por favor, elimine esta línea de artículos',
 
-$jsLanguageStrings = array(
-	'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Por favor arregla la línea con artículo eliminado',
 );

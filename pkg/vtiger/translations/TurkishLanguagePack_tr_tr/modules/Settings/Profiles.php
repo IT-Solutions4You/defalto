@@ -19,7 +19,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW'             => 'Profile view'                , // TODO: Review
 	'LBL_FIELDS'                   => 'Fields'                      , // TODO: Review
 	'LBL_TOOLS'                    => 'Tools'                       , // TODO: Review
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Field and Tool Privileges'   , // TODO: Review
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Saha ve Alet Ayrıcalıklar'   , // TODO: Review
 	'LBL_EDIT_RECORD'              => 'Edit'                        , // TODO: Review
 	'LBL_DUPLICATE_RECORD'         => 'Duplicate'                   , // TODO: Review
 	'LBL_DELETE_RECORD'            => 'Delete'                      , // TODO: Review
@@ -33,15 +33,16 @@ $languageStrings = array(
 	'LBL_TRANSFER_ROLES_TO_PROFILE' => 'Transfer roles to profile'   , // TODO: Review
 	'LBL_PROFILES'                 => 'Profiles'                    , // TODO: Review
 	'LBL_CHOOSE_PROFILES'          => 'Choose Profiles'             , // TODO: Review
-    
-        'Import' => 'Ithalat',
-        'Export' => 'Ihracat',
-	'Merge'  => 'Birleşmek',
-        'ConvertLead' => 'Kurşun dönüştürmek',
-        'DuplicatesHandling' => 'Taşıma çoğaltır',
-        'ReceiveIncomingCalls' => 'Gelen Aramalar Alma',
-        'MakeOutgoingCalls' => 'Giden Aramalar olun',
-        'Print' => 'Baskı',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Uyarı: Bu profili ile ilişkili kullanıcılar CRM tüm kayıtları erişebilirsiniz',
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Bu Profili Düzenle ayrıcalıkları ',
+  'LBL_VIEW_ALL' => 'Görünüm',
+  'LBL_EDIT_ALL' => 'Tüm Düzenle ',
+  'LBL_VIEW_ALL_DESC' => 'Tüm modülleri bilgi görüntüleyin ',
+  'LBL_EDIT_ALL_DESC' => 'Tüm modülleri düzenleyebilirsiniz bilgi',
+  'LBL_DUPLICATES_EXIST' => 'Profil Var Yinelenen ',
+  'LBL_EDIT_PROFILE' => 'Profil Düzenle',
+
 );
 $jsLanguageStrings = array(
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Profile deleted successfully', // TODO: Review

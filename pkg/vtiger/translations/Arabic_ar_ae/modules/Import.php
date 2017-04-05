@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -69,7 +69,35 @@ $languageStrings = array(
 	'LBL_DETAILS' => 'التفاصيل',
 	'skipped' => 'تخطى السجلات',
 	'failed' => 'فشل السجلات',
-	'Skip'=>'تخطي',
-        'Overwrite'=>'الكتابة فوق',
-        'Merge'=>'دمج',
+        
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'عملة(خط الأصناف)',
+
+	'LBL_SKIP_THIS_STEP' => 'تخطي هذه الخطوة',
+	'LBL_UPLOAD_ICS' => 'تحميل ملف ICS',
+	'LBL_ICS_FILE' => 'ICS الملفات',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'الاستيراد من ملف ICS',
+	'LBL_SELECT_ICS_FILE' => 'حدد ملف ICS',
+
+  'LBL_USE_SAVED_MAPS' => 'استخدام حفظ الخرائط',
+  'LBL_IMPORT_MAP_FIELDS' => 'خريطة مطلق إلى حقول CRM',
+  'LBL_UPLOAD_CSV' => 'تحميل ملف CSV',
+  'LBL_UPLOAD_VCF' => 'تحميل ملف VCF',
+  'LBL_DUPLICATE_HANDLING' => 'مكررة التعامل مع',
+  'LBL_FIELD_MAPPING' => 'تعيين حقل',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'استيراد من ملف CSV',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'أين تريد استيراد ؟ ',
+  'LBL_CSV_FILE' => 'CSV',
+  'LBL_VCF_FILE' => 'ملف VCF',
+  'LBL_GOOGLE' => 'جوجل',
+  'LBL_IMPORT_COMPLETED' => 'استيراد الانتهاء',
+  'LBL_IMPORT_SUMMARY' => 'استيراد موجز',
+  'LBL_DELETION_COMPLETED' => 'حذف الانتهاء',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'مجموع الوثائق الممسوحة ضوئيا',
+  'LBL_SKIP_BUTTON' => 'تخطي',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'سجل مكرر التعامل مع',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'استيراد من ملف VCF',
+  'LBL_SELECT_VCF_FILE' => 'حدد ملف VCF',
+  'LBL_DONE_BUTTON' => 'فعلت',
+  'LBL_DELETION_SUMMARY' => 'حذف موجز',
+
 );

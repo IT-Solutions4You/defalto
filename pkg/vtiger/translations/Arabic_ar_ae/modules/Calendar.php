@@ -2,20 +2,21 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
 	// Basic Strings
-	'SINGLE_Calendar' => 'هل ل',
+    'Calendar' => 'مهمة',
+	'SINGLE_Calendar' => 'مهمة',
 	'SINGLE_Events' => 'حدث',
-	'LBL_ADD_TASK' => 'إضافة إلى عدم',
+	'LBL_ADD_TASK' => 'إضافة مهمة',
 	'LBL_ADD_EVENT' => 'اضافة حدث',
 	'LBL_RECORDS_LIST' => 'قائمة المفكرة',
 	'LBL_EVENTS' => 'الاحداث',
-	'LBL_TODOS' => 'للعمل',
+	'LBL_TODOS' => 'مهمة',
 	'LBL_CALENDAR_SETTINGS' => 'اعدادات المفكرة',
 	'LBL_CALENDAR_SHARING' => 'مشاركة المفكرة',
 	'LBL_DEFAULT_EVENT_DURATION' => 'مدة الحدث الافتراضي',
@@ -23,10 +24,10 @@ $languageStrings = array(
 	'LBL_OTHER_EVENTS' => 'احداث اخرى',
 	'LBL_MINUTES' => 'دقائق',
 	'LBL_SELECT_USERS' => 'حدد المستخدمين',
-	'LBL_EVENT_OR_TASK' => 'الحدث / القيام',
+	'LBL_EVENT_OR_TASK' => 'الحدث / العمل',
 
 	// Blocks
-	'LBL_TASK_INFORMATION' => 'هل لمعلومات',
+	'LBL_TASK_INFORMATION' => 'مهمةمعلومات',
     'LBL_EVENT_INFORMATION'=> 'تفاصيل الحدث',
 
 	//Fields
@@ -36,6 +37,12 @@ $languageStrings = array(
 	'Send Notification'=>'ارسال تنبيه',
 	'Location'=>'الموقع',
 	'End Date & Time' => 'تاريخ ووقت الانتهاء',
+	'Visibility' => 'مرئية',
+	'Recurrence' => 'تكرار',
+	
+	//Visibility picklist values
+	'Private' => 'خاص',
+	'Public' => 'عام',
 
 	//Side Bar Names
 	'LBL_ACTIVITY_TYPES' => 'نوع النشاط',
@@ -47,16 +54,16 @@ $languageStrings = array(
 	//Activity Type picklist values
 	'Call' => 'اتصال',
 	'Meeting' => 'مقابلة',
-	'Task' => 'هل ل',
+	'Task' => 'مهمة',
 
 	//Status picklist values
 	'Planned' => 'مخطط',
-         'Held'   => 'عقد',
-         'Not Held' => 'لا تعقد',
 	'Completed' => 'مكتمل',
 	'Pending Input' => 'في انتظار ادخال',
 	'Not Started' => 'لم يبدء',
 	'Deferred' => 'مؤجل',
+	'Held' => 'متابعة',
+	'Not Held' => 'بدون متابعة',
 
 	//Priority picklist values
 	'Medium' => 'متوسط',
@@ -64,8 +71,8 @@ $languageStrings = array(
 	'LBL_CHANGE_OWNER' => 'تغير المالك',
 
 	'LBL_EVENT' => 'حدث',
-	'LBL_TASK' => 'هل ل',
-	'LBL_TASKS' => 'هل ل',
+	'LBL_TASK' => 'مهمة',
+	'LBL_TASKS' => 'المهام',
 
 	'LBL_RECORDS_LIST' => 'قائمة عرض',
 	'LBL_CALENDAR_VIEW' => 'مفكرتي',
@@ -103,8 +110,6 @@ $languageStrings = array(
 	'LBL_LAST_IMPORT_UNDONE'=>'الاستيراد الاخير لم يتم',
 	'LBL_UNDO_LAST_IMPORT' => 'التراجع عن اخر استيراد',
 	
-	'Mobile Call' => 'الإتصال موبايل',
-	
 	//Fixing colors for Shared Calendar and My Calendar
 	'LBL_EDIT_COLOR' => 'تحرير اللون',
 	'LBL_ADD_CALENDAR_VIEW' => 'إضافة طريقة عرض التقويم',
@@ -114,12 +119,66 @@ $languageStrings = array(
 	'LBL_DELETE_CALENDAR' => 'حذف التقويم',
 	'LBL_SELECT_ACTIVITY_TYPE' => 'حدد نوع آخر',
 	'Tasks' => 'للعمل',
+	'LBL_SELECT_FIELDS_FOR_RANGE' => 'تحديد الحقول لمجموعة',
+	'LBL_DUPLICATE_VIEW_EXIST' => 'التقويم عرض موجود بالفعل',
+    
+    // For Event Invitation
+    'LBL_ACTIVITY_NOTIFICATION' => 'هذا هو الإخطار الذي تم تعيينه نشاط لك التي كانت',
+    'LBL_ACTIVITY_INVITATION' =>'كنت قد دعيت لنشاط',
+    'LBL_DETAILS_STRING' => 'والتفاصيل هي',
+    'LBL_CREATED' => 'خلق',
+    'LBL_UPDATED' => 'تحديث',
+    'Due Date' => 'بسبب التسجيل',
+    'Priority' => 'أفضلية',
+    'Related To' => 'المتعلقة',
+    'LBL_CONTACT_LIST' => 'قائمة الاتصال',
+    'LBL_APP_DESCRIPTION' => 'وصف',
+    'LBL_REGARDS_STRING' => 'الشكر والتحيات',
+    'LBL_EVENT_INFORMATION' => 'تفاصيل الحدث',
+	'LBL_UPDATED_INVITATION' => 'دعوة محدثة',
+	'LBL_INVITATION' => 'دعوة',
+	//Recurring Events
+	'LBL_EDIT_RECURRING_EVENT' => 'تعديل حدث متكرر',
+	'LBL_ALL_EVENTS_EDIT_INFO' => 'سيتم تغيير جميع الأحداث في سلسلة.</br> سيتم الاحتفاظ أي تغييرات يتم إجراؤها على الأحداث الأخرى.',
+	'LBL_FUTURE_EVENTS_EDIT_INFO' => 'هذا وسيتم تغيير جميع الأحداث التالية.</br> سيتم فقدان أية تغييرات على الأحداث المستقبلية.',
+	'LBL_ONLY_THIS_EVENT_EDIT_INFO' => 'وجميع الأحداث الأخرى في سلسلة لا تزال هي نفسها.',
+	'LBL_EDIT_RECURRING_EVENTS_INFO' => 'هل ترغب في حفظ التغييرات ل',
+	
+	'LBL_DELETE_RECURRING_EVENT' => 'حذف حدث متكرر',
+	'LBL_ALL_EVENTS_DELETE_INFO' => 'سيتم حذف جميع الأحداث في سلسلة.',
+	'LBL_FUTURE_EVENTS_DELETE_INFO' => 'سوف يتم حذف هذا وجميع الأحداث التالية.',
+	'LBL_ONLY_THIS_EVENT_DELETE_INFO' => 'وجميع الأحداث الأخرى في سلسلة لا تزال هي نفسها.',
+	'LBL_DELETE_RECURRING_EVENTS_INFO' => 'هل ترغب في حذف هذا الحدث فقط، وجميع الأحداث في سلسلة أو هذه وكافة الأحداث المستقبلية في سلسلة؟',
+	'LBL_ONLY_THIS_EVENT' => 'فقط هذا الحدث',
+	'LBL_FUTURE_EVENTS' => 'الأحداث التالية',
+	'LBL_ALL_EVENTS' => 'جميع الأحداث',
 
+  'LBL_DEFAULT_STATUS_TYPE' => 'الوضع الافتراضي & Type',
+  'LBL_STATUS' => 'مركز',
+  'LBL_TYPE' => 'نوع',
+  'LBL_REMINDER_NOTIFICATION' => 'هذا هو تذكير إعلام النشاط',
+  'LBL_SELECT_EVENT_TYPE' => 'نوع النشاط',
+  'LBL_THIS_WEEK' => 'هذا الأسبوع',
+  'LBL_ADD_TASK_AND_PRESS_ENTER' => 'إضافة مهمة و اضغط Enter',
+
+
+  'LBL_JANUARY' => 'كانون الثاني / يناير',
+  'LBL_FEBRUARY' => 'شباط / فبراير',
+  'LBL_MARCH' => 'آذار / مارس',
+  'LBL_APRIL' => 'نيسان / أبريل',
+  'LBL_MAY' => 'قد',
+  'LBL_JUNE' => 'حزيران / يونيه',
+  'LBL_JULY' => 'تموز / يوليه',
+  'LBL_AUGUST' => 'آب / أغسطس',
+  'LBL_SEPTEMBER' => 'أيلول / سبتمبر',
+  'LBL_OCTOBER' => 'تشرين الأول / أكتوبر',
+  'LBL_NOVEMBER' => 'تشرين الثاني / نوفمبر',
+  'LBL_DECEMBER' => 'كانون الأول / ديسمبر',
+	'LBL_CLICK_HERE_TO_VIEW' => 'انقر هنا لعرض',
 );
-
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK' => 'إضافة حدث / القيام',
-	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'هل ليضاف إلى التقويم الخاص بك بنجاح',
+	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'مهمةيضاف إلى التقويم الخاص بك بنجاح',
     'LBL_SYNC_BUTTON' => 'مزامنة الان',
     'LBL_SYNCRONIZING' => 'مزامنة ‫....‬',
     'LBL_NOT_SYNCRONIZED' => 'غير متزامنة حتى الان',
@@ -186,4 +245,22 @@ $jsLanguageStrings = array(
 	'JS_CALENDAR_VIEW_DELETED_SUCCESSFULLY' => 'عرض تقويم حذف بنجاح',
 	'JS_NO_CALENDAR_VIEWS_TO_ADD' => 'لا التقويم الشخصي لإضافة',
 	'JS_EDIT_CALENDAR' => 'تحرير التقويم',
+
+  'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'لا يمكن أن تعقد في المستقبل',
+  'LBL_TOMORROW' => 'غدا',
+  'JS_EVENT_UPDATED' => 'الحدث تحديث',
+  'JS_NO_EVENTS_F0R_THE_DAY' => 'لا أحداث اليوم',
+  'LBL_AGENDA' => 'الأعمال',
+  'JS_CALENDAR_VIEW_YOU_ARE_EDITING_NOT_FOUND' => 'عرض التقويم لم يتم العثور على',
+  'JS_DELETE' => 'حذف',
+  'JS_EDIT' => 'تحرير',
+  'JS_MARK_AS_HELD' => 'مارك كما عقدت',
+  'JS_CREATE_FOLLOW_UP' => 'إنشاء ومتابعة',
+  'JS_RECURRING_EVENT' => 'الأحداث المتكررة',
+  'JS_DETAILS' => 'أكثر&nbsp;التفاصيل',
+
+
+  'JS_CHECK_START_AND_END_DATE' => 'نهاية التاريخ & الوقت يجب أن يكون أكبر من أو يساوي تاريخ البدء والوقت',
+  'JS_CHECK_START_AND_END_DATE_SHOULD_BE_GREATER' => 'نهاية التاريخ & الوقت يجب أن يكون أكبر من تاريخ البدء والوقت',
+
 );

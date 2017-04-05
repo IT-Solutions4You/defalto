@@ -17,4 +17,5 @@ $languageStrings = array(
 	'Comment'                      => 'Комментарий'      , 
 	'Creator'                      => 'Автор'                  , 
 	'Related To Comments'          => 'Относится к Комментарию', 
+	'LBL_COMMENTED_AT'             => 'Прокомментировал на', 
 );

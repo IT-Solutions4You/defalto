@@ -61,7 +61,7 @@ class MailManager_Draft_Model {
 		} else {
 			$limitClause = "LIMIT 0, ".$limit;
 		}
-		$query = "SELECT * FROM Emails where email_flag='SAVED' $where $limitClause;";
+		$query = "SELECT * FROM Emails where email_flag='SAVED' $where ORDER BY modifiedtime DESC $limitClause;";
 		$draftMails = vtws_query($query, $currentUserModel);
 		for($i=0; $i<count($draftMails); $i++) {
 			foreach($draftMails[$i] as $fieldname=>$fieldvalue) {
@@ -275,7 +275,7 @@ class MailManager_Draft_Model {
 	public function handleUpload() {
 		$allowedFileExtension = array();
 
-		$uploadLimit = MailManager_Config_Model::get('MAXUPLOADLIMIT', vglobal('upload_maxsize'));
+		$uploadLimit = MailManager_Config_Model::get('MAXUPLOADLIMIT', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 		$filePath = decideFilePath();
 
 		$upload = new MailManager_Upload_Action($allowedFileExtension, $uploadLimit);

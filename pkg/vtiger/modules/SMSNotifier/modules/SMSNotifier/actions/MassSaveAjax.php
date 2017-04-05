@@ -16,7 +16,7 @@ class SMSNotifier_MassSaveAjax_Action extends Vtiger_Mass_Action {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
-			throw new AppException(vtranslate($moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
+			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
 	}
 
@@ -50,8 +50,9 @@ class SMSNotifier_MassSaveAjax_Action extends Vtiger_Mass_Action {
 		$response = new Vtiger_Response();
         
 		if(!empty($toNumbers)) {
-			SMSNotifier_Record_Model::SendSMS($message, $toNumbers, $currentUserModel->getId(), $recordIds, $moduleName);
-			$response->setResult(true);
+			$id = SMSNotifier_Record_Model::SendSMS($message, $toNumbers, $currentUserModel->getId(), $recordIds, $moduleName);
+            $statusDetails = SMSNotifier::getSMSStatusInfo($id);
+			$response->setResult(array('id' => $id, 'statusdetails' => $statusDetails[0]));
 		} else {
 			$response->setResult(false);
 		}

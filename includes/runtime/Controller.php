@@ -117,18 +117,37 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
 	function getViewer(Vtiger_Request $request) {
 		if(!$this->viewer) {
-			global $vtiger_current_version;
+			global $vtiger_current_version, $vtiger_display_version, $onlyV7Instance;
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('APPTITLE', getTranslatedString('APPTITLE'));
 			$viewer->assign('VTIGER_VERSION', $vtiger_current_version);
-			$viewer->assign('MODULE_NAME', $request->getModule());
+			$viewer->assign('VTIGER_DISPLAY_VERSION', $vtiger_display_version);
+            $viewer->assign('ONLY_V7_INSTANCE', $onlyV7Instance);
 			$this->viewer = $viewer;
 		}
 		return $this->viewer;
 	}
 
 	function getPageTitle(Vtiger_Request $request) {
-		return vtranslate($request->getModule(), $request->get('module'));
+		$moduleName = $request->getModule();
+		$recordId	= $request->get('record');
+		if($recordId && $moduleName) {
+			$module = Vtiger_Module_Model::getInstance($moduleName);
+			if($module && $module->isEntityModule()) {
+				$recordName = Vtiger_Util_Helper::getRecordName($recordId);
+			}
+		}
+
+		if ($recordName) {
+			return vtranslate($moduleName, $moduleName).' - '.$recordName;
+		} else {
+			$currentLang = Vtiger_Language_Handler::getLanguage();
+			$customWebTitle = Vtiger_Language_Handler::getLanguageTranslatedString($currentLang, 'LBL_'.$moduleName.'_WEBTITLE', $request->getModule(false));
+			if ($customWebTitle) {
+				return $customWebTitle;
+			}
+			return vtranslate($moduleName, $moduleName);
+		}
 	}
 
 	function preProcess(Vtiger_Request $request, $display=true) {
@@ -140,6 +159,13 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		$viewer->assign('SKIN_PATH', Vtiger_Theme::getCurrentUserThemePath());
 		$viewer->assign('LANGUAGE_STRINGS', $this->getJSLanguageStrings($request));
 		$viewer->assign('LANGUAGE', $currentUser->get('language'));
+
+		if ($request->getModule() != 'Install') {
+			$userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));
+			$viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
+		}
+		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
 		if($display) {
 			$this->preProcessDisplay($request);
 		}
@@ -158,7 +184,7 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
 	protected function preProcessDisplay(Vtiger_Request $request) {
 		$viewer = $this->getViewer($request);
-		$displayed = $viewer->view($this->preProcessTplName($request), $request->getModule());
+        $displayed = $viewer->view($this->preProcessTplName($request), $request->getModule(false));
 		/*if(!$displayed) {
 			$tplName = $this->preProcessParentTplName($request);
 			if($tplName) {
@@ -169,10 +195,11 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
 
 	function postProcess(Vtiger_Request $request) {
+        $moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$viewer->assign('ACTIVITY_REMINDER', $currentUser->getCurrentUserActivityReminderInSeconds());
-		$viewer->view('Footer.tpl');
+		$viewer->view('Footer.tpl', $moduleName);
 	}
 
 	/**
@@ -199,35 +226,37 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		$fileExtension = 'js';
 
 		$jsScriptInstances = array();
-		foreach($jsFileNames as $jsFileName) {
-			// TODO Handle absolute inclusions (~/...) like in checkAndConvertCssStyles
-			$jsScript = new Vtiger_JsScript_Model();
+		if($jsFileNames) {
+			foreach($jsFileNames as $jsFileName) {
+				// TODO Handle absolute inclusions (~/...) like in checkAndConvertCssStyles
+				$jsScript = new Vtiger_JsScript_Model();
 
-			// external javascript source file handling
-			if(strpos($jsFileName, 'http://') === 0 || strpos($jsFileName, 'https://') === 0) {
-				$jsScriptInstances[$jsFileName] = $jsScript->set('src', $jsFileName);
-				continue;
-			}
-
-			$completeFilePath = Vtiger_Loader::resolveNameToPath($jsFileName, $fileExtension);
-
-			if(file_exists($completeFilePath)) {
-				if (strpos($jsFileName, '~') === 0) {
-					$filePath = ltrim(ltrim($jsFileName, '~'), '/');
-					// if ~~ (reference is outside vtiger6 folder)
-					if (substr_count($jsFileName, "~") == 2) {
-						$filePath = "../" . $filePath;
-					}
-				} else {
-					$filePath = str_replace('.','/', $jsFileName) . '.'.$fileExtension;
+				// external javascript source file handling
+				if(strpos($jsFileName, 'http://') === 0 || strpos($jsFileName, 'https://') === 0) {
+					$jsScriptInstances[$jsFileName] = $jsScript->set('src', $jsFileName);
+					continue;
 				}
 
-				$jsScriptInstances[$jsFileName] = $jsScript->set('src', $filePath);
-			} else {
-				$fallBackFilePath = Vtiger_Loader::resolveNameToPath(Vtiger_JavaScript::getBaseJavaScriptPath().'/'.$jsFileName, 'js');
-				if(file_exists($fallBackFilePath)) {
-					$filePath = str_replace('.','/', $jsFileName) . '.js';
-					$jsScriptInstances[$jsFileName] = $jsScript->set('src', Vtiger_JavaScript::getFilePath($filePath));
+				$completeFilePath = Vtiger_Loader::resolveNameToPath($jsFileName, $fileExtension);
+
+				if(file_exists($completeFilePath)) {
+					if (strpos($jsFileName, '~') === 0) {
+						$filePath = ltrim(ltrim($jsFileName, '~'), '/');
+						// if ~~ (reference is outside vtiger6 folder)
+						if (substr_count($jsFileName, "~") == 2) {
+							$filePath = "../" . $filePath;
+						}
+					} else {
+						$filePath = str_replace('.','/', $jsFileName) . '.'.$fileExtension;
+					}
+
+					$jsScriptInstances[$jsFileName] = $jsScript->set('src', $filePath);
+				} else {
+					$fallBackFilePath = Vtiger_Loader::resolveNameToPath(Vtiger_JavaScript::getBaseJavaScriptPath().'/'.$jsFileName, 'js');
+					if(file_exists($fallBackFilePath)) {
+						$filePath = str_replace('.','/', $jsFileName) . '.js';
+						$jsScriptInstances[$jsFileName] = $jsScript->set('src', Vtiger_JavaScript::getFilePath($filePath));
+					}
 				}
 			}
 		}

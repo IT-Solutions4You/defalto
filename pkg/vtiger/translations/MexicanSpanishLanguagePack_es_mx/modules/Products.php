@@ -1,14 +1,11 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
 	'Products'                     => 'Productos'                   , 
@@ -16,8 +13,8 @@ $languageStrings = array(
 	'LBL_ADD_RECORD'               => 'Agregar Producto'            , 
 	'LBL_RECORDS_LIST'             => 'Lista de productos'          , 
 	'LBL_PRODUCT_INFORMATION'      => 'Información del Producto'   , 
-	'LBL_IMAGE_INFORMATION'        => 'Imagen del Producto:', 
-	'LBL_STOCK_INFORMATION'        => 'Información de Stock:'     , 
+	'LBL_IMAGE_INFORMATION'        => 'Información de la Imagen del Producto:', 
+	'LBL_STOCK_INFORMATION'        => 'Información del Stock:'     , 
 	'LBL_MORE_CURRENCIES'          => 'más monedas'                , 
 	'LBL_PRICES'                   => 'Precios Productos'           , 
 	'LBL_PRICE'                    => 'Precio'                      , 
@@ -43,7 +40,7 @@ $languageStrings = array(
 	'GL Account'                   => 'Cuenta Contable'             , 
 	'Product Image'                => 'Imagen del Producto'         , 
 	'Unit Price'                   => 'Precio Unitario'             , 
-	'Commission Rate'              => 'Comisión'                    , 
+	'Commission Rate'              => 'Comisión (%)'               , 
 	'Qty/Unit'                     => 'Cantidad/Unidad'             , 
 	'--None--'                     => '-----'                       , 
 	'Hardware'                     => 'Hardware'                    , 
@@ -67,12 +64,27 @@ $languageStrings = array(
 	'Impressions'                  => 'Impresiones'                 , 
 	'Lb'                           => 'Kg'                          , 
 	'M'                            => 'M'                           , 
-	'Pack'                         => 'Paquete'                        , 
+	'Pack'                         => 'Pack'                        , 
 	'Pages'                        => 'Páginas'                    , 
 	'Pieces'                       => 'Piezas'                      , 
 	'Reams'                        => 'Resma'                       , 
 	'Sheet'                        => 'Hoja'                        , 
 	'Spiral Binder'                => 'Encuadernado Espiral'        , 
-	'Sq Ft'                        => 'm&sup2;'                     ,
-    'LBL_PRODUCTSMOD_DISABLED' => 'Habilita el módulo de Productos para poder ver Productos',
+	'Sq Ft'                        => 'm&sup2;'                     , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
+    'LBL_PRODUCTSMOD_DISABLED' => 'Habilitar Productos Módulo para ver Productos',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Mostrar elementos de paquete en factura/Cotizaciones/Sales Order/Orden de Compra',
+	'LBL_BUNDLE_TOTAL_COST' => 'Coste total de Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Actualización Bundle Precio',
+
+  'LBL_PRODUCT_NAME' => 'Nombre Del Producto',
+  'LBL_PRICE_QUANTITY' => 'Precio x Cantidad',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Subproductos se le aparecen en el Inventario',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Subproductos no se mostrarán en el Inventario',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Costo total cambiado con éxito del paquete',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Este producto es parte de un paquete de productos. El precio del paquete no se modifican cuando un elemento de paquete se elimina o inactiva. ¿Seguro que desea continuar?',
 );

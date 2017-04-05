@@ -22,7 +22,8 @@ $languageStrings = array(
 	'Role'                         => 'Rol'                         , 
 	'Admin'                        => 'Admin'                       , 
 	'User Name'                    => 'Nume Utilizator'             , 
-	'Default Activity View'        => 'Vizualizare implicita Calendar', 
+	'Default Activity View'		   => 'Implicit MyCalendar View',
+	'Default Calendar View'        => 'Vizualizare implicita Calendar'            ,
 	'Default Lead View'            => 'Vizualizare implicita Prospectare', 
 	'Title'                        => 'Titlu'                       , 
 	'Office Phone'                 => 'Nr tel birou'                , 
@@ -161,6 +162,7 @@ $languageStrings = array(
 	'Asia/Vladivostok'             => '(UTC+10:00) Vladivostok'     , 
 	'Pacific/Guam'                 => '(UTC+10:00) Guam, Port Moresby', 
 	'Asia/Yakutsk'                 => '(UTC+10:00) Yakutsk'         , 
+	'Etc/GMT-11'				   => '(UTC+11:00) Solomon Is., New Caledonia',
 	'Pacific/Fiji'                 => '(UTC+12:00) Fiji'            , 
 	'Asia/Kamchatka'               => '(UTC+12:00) Kamchatka'       , 
 	'Pacific/Auckland'             => '(UTC+12:00) Auckland'        , 
@@ -195,12 +197,63 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Format dată',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Alegeți Format dată',
 	'LBL_PHONE'	=> 'Telefon',
-);
+    'Space' => 'Spațiu',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'Vizualizare listă',
+	'MyCalendar' => 'Calendarul meu',
+	'SharedCalendar' => 'Calendar comun',
+    
+    'LBL_CHANGE_OWNER' => 'Schimbare Proprietar',
+    'LBL_TRANSFER_OWNERSHIP' => 'Transfer de proprietate',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'Transfer de proprietate a utilizatorului',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'CRM Proprietar schimbat cu succes',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'Nu a reușit schimbarea proprietar CRM',
+    'Account Owner' => 'Cont Proprietarul',
+    'Starting Day of the week' => 'Zi a săptămânii',
+    'Day starts at' => 'Ziua începe la',
+    'Default Event Status' => 'Implicit Eveniment Stare',
+    'Default Activity Type' => 'Implicit Tipul activității',
+    'Default Record View' => 'Implicit Înregistrare Vezi',
+    'Left Panel Hide' => 'Panou stânga Ascunde',
+    'Row Height' => 'Row Înălțime',
+	'LBL_RESTORE_USER_FAILED' => 'Nu a reușit pentru a restabili utilizator. Există deja un utilizator CRM cu acest nume de utilizator.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Utilizatorul există deja',
 
+
+	'LBL_CHANGE_USERNAME'          => 'Schimbare Utilizator'        ,
+	'LBL_USERNAME_CHANGED'         => 'Utilizator schimbat cu succes',
+	'ERROR_CHANGE_USERNAME'        => 'Eroare în schimbare nume de utilizator. Vă rugăm să încercați mai târziu',
+
+  'LBL_REMOVE_USER' => 'Elimina',
+  'LBL_MORE_OPTIONS' => 'Alte Opțiuni',
+  'LBL_RESTORE_USER' => 'Repara De Utilizator',
+  'LBL_OLD_PASSWORD' => 'Parola Veche',
+  'LBL_CHANGE_PASSWORD' => 'Schimba Parola',
+  'LBL_NEW_PASSWORD' => 'O Noua Parola',
+  'LBL_CONFIRM_PASSWORD' => 'Confirmați Parola',
+	'LBL_CHANGE_ACCESS_KEY' => 'Schimbare cheie de acces',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Cheia de acces a fost actualizat',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Actualizarea nu a reușit cheie de acces',
+  'LBL_LOGIN_AS' => 'Login ca ',
+  'LBL_CREATE_USER' => 'A Crea Un Utilizator',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Ștergerea unui utilizator în mod constant va muta toate înregistrările, inclusiv comentariile și istorie de la un nou utilizator.',
+  'LBL_TO_CRM' => 'Login voluntare rusă CRM',
+  'LBL_INVALID_USER_OR_PASSWORD' => 'Greșit numele de utilizator sau parola.',
+  'LBL_INVALID_USER_OR_EMAIL' => 'Greșit numele de utilizator sau adresa de e-mail.',
+  'LBL_EMAIL_SEND' => 'Am trimis un e-mail pentru a reseta parola.',
+  'ForgotPassword' => 'A Uitat Parola',
+  'LBL_CONNECT_WITH_US' => 'Contactati-ne',
+  'LBL_GET_MORE' => 'Obțineți mai mult de la lupte libere rusă',
+  'LBL_TRANSFER_RECORDS_TO_USER' => 'Transferul de înregistrări de utilizator',
+  'LBL_USER_TO_BE_DELETED' => 'Utilizator șters',
+  'LBL_USERS_SETTINGS' => 'SETĂRILE DE UTILIZATOR',
+  'LBL_TEMPLATES' => 'Template-uri',
+
+);
 $jsLanguageStrings = array(
 		
-	//Curency separator validation messages
-	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
+	//Curency seperator validation messages
 	'JS_ENTER_OLD_PASSWORD'=>'Please enter your old password.',
 	'JS_ENTER_NEW_PASSWORD'=>'Please enter your new password.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Please enter your password confirmation.',
@@ -209,4 +262,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'User password change failed for ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' failed.  The new password must be set.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Incorrect old password specified. Re-enter password information.',
+	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Ați introdus numele de utilizator curent. Vă rugăm introduceți numele de utilizator nou.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Tasta de acces nou solicitat',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Ați solicitat o nouă cheie de acces. &lt;br&gt;&lt;br&gt;cu acces noua prevedere cheie, trebuie să înlocuiți cheia de acces vechi cu unul nou, în toate extensiile instalate. &lt;br&gt;&lt;br&gt;Do doriți să continuați?',
 );

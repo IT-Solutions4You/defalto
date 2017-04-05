@@ -25,7 +25,9 @@ $languageStrings = array(
 	'Sales Stage' => 'Etap sprzedaży',
 	'Probability' => 'Prawdopodobieństwo sukcesu',
 	'Campaign Source' => 'Kampania reklamowa',
-	'Forecast Amount' => 'Planowany przychód',
+	'Forecast Amount' => 'Przychody ważona',
+    'Related To'      => 'Nazwa organizacji',
+    'Type' => 'Rodzaj',
 	
 	//Dashboard widgets
 	'Funnel' => 'Lejek Szans Sprzedaży',
@@ -42,7 +44,7 @@ $languageStrings = array(
 	'Value Proposition'=>'Wstępna Wycena',
 	'Id. Decision Makers'=>'Podejmowanie decyzji',
 	'Perception Analysis'=>'Analiza potrzeb',
-	'Proposal or Price Quote'=>'Oferta cenowa',
+	'Proposal/Price Quote'=>'Oferta cenowa',
 	'Negotiation/Review'=>'Negocjacje',
 	'Closed Won'=>'Zakończone sukcesem',
 	'Closed Lost'=>'Zakończone porażką',
@@ -51,5 +53,23 @@ $languageStrings = array(
 	'Existing Business'=>'Dla istniejącego klienta',
 	'New Business'=>'Dla nowego klienta',
 	'LBL_EXPECTED_CLOSE_DATE_ON' => 'Oczekuje się, że zakończy się',
-        'Potentials Won'               => 'Potencjały Wygrane',
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Konwersja szans',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Możliwości mapowania pól',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Musisz włączyć projekt do konwersji okazja',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Mapowanie jest możliwości Pole niepełne (Ustawienia> Moduł zarządzania> Możliwości> Szans Pole Mapowanie)',
+	'LBL_CREATE_PROJECT' => 'Tworzenie projektu',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Okazją do projektu mapowania',
+
+  'Contact Name' => 'Nazwa Kontaktu',
+  'LBL_RELATED_CONTACTS' => 'Odpowiednie Kontakty',
+  'LBL_RELATED_PRODUCTS' => 'Produkty Powiązane',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Nawrócenie wymaga wybór projektu',
 );

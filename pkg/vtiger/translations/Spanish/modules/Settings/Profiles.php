@@ -27,7 +27,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW' => 'Vista Perfil',
 	'LBL_FIELDS' => 'Campos',
 	'LBL_TOOLS' => 'Herramientas',
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Privilegios Campo y Herramientas',
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Privilegios de campo y de herramientas',
 	'LBL_EDIT_RECORD' => 'Editar',
 	'LBL_DUPLICATE_RECORD' => 'Duplicar',
 	'LBL_DELETE_RECORD' => 'Eliminar',
@@ -44,20 +44,17 @@ $languageStrings = array(
 	'LBL_PROFILES' => 'Perfiles',
 	'LBL_CHOOSE_PROFILES' => 'Selecciona Perfiles',
 
-	'LBL_VIEW_ALL' => 'Ver Todos',
-	'LBL_EDIT_ALL' => 'Editar Todos',
-	'LBL_VIEW_ALL_DESC' => 'Puede ver toda la información del módulo',
-        'LBL_EDIT_ALL_DESC' => 'Puede edtar toda la información del módulo',
-	'LBL_DUPLICATES_EXIST' => 'Existen Perfiles Duplicados',
-    
-        'Import' => 'Importación',
-        'Export' => 'Exportación',
-	'Merge'  => 'Fundirse',
-        'ConvertLead' => 'Convertir plomo',
-        'DuplicatesHandling' => 'Duplicados de manipulación',
-        'ReceiveIncomingCalls' => 'Recibir llamadas entrantes',
-        'MakeOutgoingCalls' => 'Hacer Llamadas salientes',
-        'Print' => 'Impresión',
+    'LBL_VIEW_ALL' => 'Ver Todos',
+    'LBL_EDIT_ALL' => 'Editar Todos',
+    'LBL_VIEW_ALL_DESC' => 'Puede ver toda la información del módulo',
+    'LBL_EDIT_ALL_DESC' => 'Puede edtar toda la información del módulo',
+    'LBL_GLOBAL_PERMISSION_WARNING' => 'Advertencia: Los usuarios asociados a este perfil puede acceder a todos los registros de la CRM',
+
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Editar los privilegios de este perfil',
+  'LBL_DUPLICATES_EXIST' => 'Perfil Duplicado Existe',
+  'LBL_EDIT_PROFILE' => 'Editar Perfil',
+
 );
 
 $jsLanguageStrings = array(

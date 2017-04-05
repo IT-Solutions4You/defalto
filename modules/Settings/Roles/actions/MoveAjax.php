@@ -30,6 +30,12 @@ class Settings_Roles_MoveAjax_Action extends Settings_Vtiger_Basic_Action {
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		try {
 			$recordModel->moveTo($parentRole);
+            //on moving a role sharing privilages should be recalculated for all the users
+            $allUsers = Users_Record_Model::getAll();
+            foreach ($allUsers as $userId=>$userModel) {
+                require_once('modules/Users/CreateUserPrivilegeFile.php');
+                createUserSharingPrivilegesfile($userId);
+            }
 		} catch (AppException $e) {
 			$response->setError('Move Role Failed');
 		}

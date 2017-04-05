@@ -8,57 +8,64 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'Actual Cost' => 'Actual Cost',
-	'Actual Response Count' => 'Actual Response Count',
-	'Actual ROI' => 'Actual ROI',
-	'Actual Sales Count' => 'Actual Sales Count',
-	'Advertisement'=>'Advertisement',
-	'Average'=>'Average',
-	'Banner Ads'=>'Banner Ads',
-	'Budget Cost' => 'Budget Cost',
-	'Campaign Name' => 'Campaign Name',
-	'Campaign No' => 'Campaign No', 
+	// Basic Strings
 	'Campaigns' => 'Campaigns',
-	'Campaign Status' => 'Campaign Status',
-	'Campaign Type' => 'Campaign Type', 
-	'Cancelled'=>'Cancelled',							      
-	'Completed'=>'Completed',
-	'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
-	'Contacted - Successful' => 'Contacted - Successful',
-	'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
-	'Direct Mail'=>'Direct Mail',
-	'Excellent'=>'Excellent',
-	'Expected Response Count' => 'Expected Response Count',
-	'Expected Response' => 'Expected Response',
-	'Expected Revenue' => 'Expected Revenue',
-	'Expected ROI' => 'Expected ROI',
-	'Expected Sales Count' => 'Expected Sales Count',
-	'Good'=>'Good',
-	'Inactive'=>'Inactive',
+	'SINGLE_Campaigns' => 'Campaign',
 	'LBL_ADD_RECORD' => 'Add Campaign',
+	'LBL_RECORDS_LIST' => 'Campaigns List',
+
+	// Blocks
 	'LBL_CAMPAIGN_INFORMATION' => 'Campaign Details',
 	'LBL_EXPECTATIONS_AND_ACTUALS' => 'Expectations & Actuals',
-	'LBL_RECORDS_LIST' => 'Campaigns List',
-	'--None--'=>'--None--',
-	'Num Sent' => 'Num Sent',
-	'Others'=>'Others',
-	'Planning'=>'Planning',						      	    
-	'Poor'=>'Poor',
+
+	//Field Labels
+	'Campaign Name' => 'Campaign Name',
+	'Campaign No' => 'Campaign No', 
+	'Campaign Type' => 'Campaign Type', 
 	'Product' => 'Product',
-	'Referral Program'=>'Referral Program',
-	'SINGLE_Campaigns' => 'Campaign',
+	'Campaign Status' => 'Campaign Status',
+	'Num Sent' => 'Num Sent',
 	'Sponsor' => 'Sponsor',
 	'Target Audience' => 'Target Audience',
 	'TargetSize' => 'TargetSize',
-	'Telemarketing'=>'Telemarketing',
+	'Expected Response' => 'Expected Response',
+	'Expected Revenue' => 'Expected Revenue',
+	'Budget Cost' => 'Budget Cost',
+	'Actual Cost' => 'Actual Cost',
+	'Expected Response Count' => 'Expected Response Count',
+	'Expected Sales Count' => 'Expected Sales Count',
+	'Expected ROI' => 'Expected ROI',
+	'Actual Response Count' => 'Actual Response Count',
+	'Actual Sales Count' => 'Actual Sales Count',
+	'Actual ROI' => 'Actual ROI',
+
+	//Added for existing Picklist Entries
+
 	'Webinar'=>'Webinar',
-    
-         //Patch provided by http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7884
-         //campaignstatus picklist values 
-        'Planning'=>'Planning', 
-        'Active'=>'Active'
+	'Referral Program'=>'Referral Program',
+	'Advertisement'=>'Advertisement',
+	'Banner Ads'=>'Banner Ads',
+	'Direct Mail'=>'Direct Mail',
+	'Telemarketing'=>'Telemarketing',
+	'Others'=>'Others',
+
+	'Planning'=>'Planning',						      	    
+	'Inactive'=>'Inactive',
+	'Complete'=>'Complete',
+	'Cancelled'=>'Cancelled',							      
+
+	'Excellent'=>'Excellent',
+	'Good'=>'Good',
+	'Average'=>'Average',
+	'Poor'=>'Poor',
+
+	// status fields 
+	'--None--'=>'--None--',
+	'Contacted - Successful' => 'Contacted - Successful',
+	'Contacted - Unsuccessful' => 'Contacted - Unsuccessful',
+	'Contacted - Never Contact Again' => 'Contacted - Never Contact Again',
 );
 
 $jsLanguageStrings = array(
-       'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_ADD_THIS_FILTER' => 'Are you sure you want to add this filter records?.',
- );
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s from the selected list will be appended with the existing list.',
+);

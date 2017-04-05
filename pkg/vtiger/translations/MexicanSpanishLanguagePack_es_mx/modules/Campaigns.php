@@ -1,14 +1,11 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
 	'Campaigns'                    => 'Campañas'                   , 
@@ -55,4 +52,8 @@ $languageStrings = array(
 	'Contacted - Successful'       => 'Contactado - Éxito'         , 
 	'Contacted - Unsuccessful'     => 'Contactado - Fracaso'        , 
 	'Contacted - Never Contact Again' => 'Contactado - No volver a contactar', 
+);
+
+$jsLanguageStrings = array(
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s de la lista seleccionada se anexará a la lista existente.',
 );

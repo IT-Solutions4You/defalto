@@ -23,7 +23,7 @@ class Calendar_ActivityReminder_Action extends Vtiger_Action_Controller{
 		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
 
 		if(!$permission) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 

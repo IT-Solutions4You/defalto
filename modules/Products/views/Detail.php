@@ -1,5 +1,4 @@
 <?php
-
 /* +***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -10,6 +9,24 @@
  * *********************************************************************************** */
 
 class Products_Detail_View extends Vtiger_Detail_View {
+
+	public function __construct() {
+		parent::__construct();
+		$this->exposeMethod('showBundleTotalCostView');
+	}
+	
+	function preProcess(Vtiger_Request $request, $display = true) {
+		$recordId = $request->get('record');
+		$moduleName = $request->getModule();
+
+		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+		$baseCurrenctDetails = $recordModel->getBaseCurrencyDetails();
+		
+		$viewer = $this->getViewer($request);
+		$viewer->assign('BASE_CURRENCY_SYMBOL', $baseCurrenctDetails['symbol']);
+		
+		parent::preProcess($request, $display);
+	}
 
 	public function showModuleDetailView(Vtiger_Request $request) {
 		$recordId = $request->get('record');
@@ -29,6 +46,18 @@ class Products_Detail_View extends Vtiger_Detail_View {
 	public function showModuleBasicView(Vtiger_Request $request) {
 		return $this->showModuleDetailView($request);
 	}
+	
+	public function getOverlayHeaderScripts(Vtiger_Request $request){
+		$moduleName = $request->getModule();
+		$moduleDetailFile = 'modules.'.$moduleName.'.resources.Detail';
+		$jsFileNames = array(
+			'~libraries/jquery/boxslider/jquery.bxslider.min.js',
+			'modules.PriceBooks.resources.Detail',
+		);
+		$jsFileNames[] = $moduleDetailFile;
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		return $jsScriptInstances;	
+	}
 
 	public function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
@@ -40,104 +69,43 @@ class Products_Detail_View extends Vtiger_Detail_View {
 
 		$jsFileNames = array(
 			'~libraries/jquery/jquery.cycle.min.js',
+			'~libraries/jquery/boxslider/jquery.bxslider.min.js', 
 			'modules.PriceBooks.resources.Detail',
 			'modules.PriceBooks.resources.RelatedList',
 		);
 		
 		$jsFileNames[] = $moduleDetailFile;
 		$jsFileNames[] = $moduleRelatedListFile;
-		
+
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
 	
-	/**
-	 * Function returns related records
-	 * @param Vtiger_Request $request
-	 * @return <type>
-	 */
-	function showRelatedList(Vtiger_Request $request) {
+	public function showBundleTotalCostView(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$relatedModuleName = $request->get('relatedModule');
-		$parentId = $request->get('record');
-		$label = $request->get('tab_label');
+		$parentRecordId = $request->get('record');
+		$tabLabel = $request->get('tabLabel');
 
-		$requestedPage = $request->get('page');
-		if(empty ($requestedPage)) {
-			$requestedPage = 1;
+		if ($moduleName === $relatedModuleName && $tabLabel === 'Product Bundles') {//Products && Child Products
+			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $moduleName);
+			$parentModuleModel = $parentRecordModel->getModule();
+			$parentRecordModel->set('currency_id', getProductBaseCurrency($parentRecordId, $parentModuleModel->getName()));
+
+			$subProductsCostsInfo = $parentRecordModel->getSubProductsCostsAndTotalCostInUserCurrency();
+			$subProductsTotalCost = $subProductsCostsInfo['subProductsTotalCost'];
+			$subProductsCostsInfo = $subProductsCostsInfo['subProductsCosts'];
+
+			$viewer = $this->getViewer($request);
+			$viewer->assign('MODULE', $moduleName);
+			$viewer->assign('TAB_LABEL', $tabLabel);
+			$viewer->assign('PARENT_RECORD', $parentRecordModel);
+			$viewer->assign('SUB_PRODUCTS_TOTAL_COST', $subProductsTotalCost);
+			$viewer->assign('SUB_PRODUCTS_COSTS_INFO', $subProductsCostsInfo);
+			$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+			return $viewer->view('BundleCostView.tpl', $moduleName, 'true');
 		}
-
-		$pagingModel = new Vtiger_Paging_Model();
-		$pagingModel->set('page',$requestedPage);
-
-		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
-		$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName, $label);
-		$orderBy = $request->get('orderby');
-		$sortOrder = $request->get('sortorder');
-		if($sortOrder == "ASC") {
-			$nextSortOrder = "DESC";
-			$sortImage = "icon-chevron-down";
-		} else {
-			$nextSortOrder = "ASC";
-			$sortImage = "icon-chevron-up";
-		}
-		if(!empty($orderBy)) {
-			$relationListView->set('orderby', $orderBy);
-			$relationListView->set('sortorder',$sortOrder);
-		}
-		$models = $relationListView->getEntries($pagingModel);
-		$links = $relationListView->getLinks();
-		$header = $relationListView->getHeaders();
-		$noOfEntries = count($models);
-		
-		if($relatedModuleName == 'PriceBooks'){
-			foreach ($models as $recordId => $recorModel) {
-				$productIdsList[$parentId] = $parentId;
-				$relatedRecordCurrencyId = $recorModel->get('currency_id');
-				$parentModuleModel = $parentRecordModel->getModule();
-				$unitPricesList = $parentModuleModel->getPricesForProducts($relatedRecordCurrencyId, $productIdsList);
-				$recorModel->set('unit_price', $unitPricesList[$parentId]);
-			}
-		}
-
-		$relationModel = $relationListView->getRelationModel();
-		$relationField = $relationModel->getRelationField();
-		
-		$viewer = $this->getViewer($request);
-		$viewer->assign('RELATED_RECORDS' , $models);
-		$viewer->assign('PARENT_RECORD', $parentRecordModel);
-		$viewer->assign('RELATED_LIST_LINKS', $links);
-		$viewer->assign('RELATED_HEADERS', $header);
-		$viewer->assign('RELATED_MODULE', $relationModel->getRelationModuleModel());
-		$viewer->assign('RELATED_ENTIRES_COUNT', $noOfEntries);
-		$viewer->assign('RELATION_FIELD', $relationField);
-
-		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
-			$totalCount = $relationListView->getRelatedEntriesCount();
-			$pageLimit = $pagingModel->getPageLimit();
-			$pageCount = ceil((int) $totalCount / (int) $pageLimit);
-
-			if($pageCount == 0){
-				$pageCount = 1;
-			}
-			$viewer->assign('PAGE_COUNT', $pageCount);
-			$viewer->assign('TOTAL_ENTRIES', $totalCount);
-			$viewer->assign('PERFORMANCE', true);
-		}
-        
-        $viewer->assign('IS_EDITABLE', $relationModel->isEditable());
-		$viewer->assign('IS_DELETABLE', $relationModel->isDeletable());
-        
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('PAGING', $pagingModel);
-		$viewer->assign('ORDER_BY',$orderBy);
-		$viewer->assign('SORT_ORDER',$sortOrder);
-		$viewer->assign('NEXT_SORT_ORDER',$nextSortOrder);
-		$viewer->assign('SORT_IMAGE',$sortImage);
-		$viewer->assign('COLUMN_NAME',$orderBy);
-		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		
-		return $viewer->view('RelatedList.tpl', $moduleName, 'true');
 	}
 }

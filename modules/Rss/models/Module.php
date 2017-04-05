@@ -63,4 +63,11 @@ class Rss_Module_Model extends Vtiger_Module_Model {
 		}
         return $records;
     }
+    
+    /*
+     * Function to get supported utility actions for a module
+     */
+    function getUtilityActionsNames() {
+        return array();
+    }
 }

@@ -37,6 +37,9 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Benutzerzuweisung',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Weisen Sie Benutzer In Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Round Robin Benutzerliste',
+
+  'LBL_ADD_RECORD' => 'Hinzufügen Webform',
+
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', 
@@ -46,4 +49,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Referenzfelder kann nicht obligatorisch sein, ohne Override-Wert',
 	'JS_TYPE_TO_SEARCH' => 'Geben Sie zur Suche',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform mit diesem Namen ist bereits vorhanden',
+
+  'JS_SELECT_AN_OPTION' => 'Wählen Sie eine Option',
+  'JS_LABEL' => 'label',
+
 );

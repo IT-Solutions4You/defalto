@@ -11,43 +11,59 @@
 
 class Google_Map_Helper {
 
-    /**
-     * get the location for the record based on the module type
-     * @param type $request
-     * @return type
-     */
-    static function getLocation($request) {
-        $recordId = $request->get('recordid');
-        $module = $request->get('source_module');
-        $locationFields = self::getLocationFields($module);
-        $address = array();
-        if (!empty($locationFields)) {
-            $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $module);
-            foreach ($locationFields as $key => $value) {
-                $address[$key] = Vtiger_Util_Helper::getDecodedValue($recordModel->get($value));
-            }
-        }
-        return $address;
-    }
+	/**
+	 * get the location for the record based on the module type
+	 * @param type $request
+	 * @return type
+	 */
+	static function getLocation($request) {
+		$result = array();
+		$recordId = $request->get('recordid');
+		$module = $request->get('source_module');
+		$locationFields = self::getLocationFields($module);
+		$address = array();
+		if (!empty($locationFields)) {
+			$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $module);
+			foreach ($locationFields as $key => $value) {
+				$address[$key] = Vtiger_Util_Helper::getDecodedValue($recordModel->get($value));
+			}
+			$result['label'] = $recordModel->getName();
+		}
+		$result['address'] = implode(",", $address);
 
-    /**
-     * get location values for:
-     * street, city, country
-     * @param type $module
-     * @return type
-     */
-    static function getLocationFields($module) {
-        switch ($module) {
-            case 'Contacts': return array('street' => 'mailingstreet', 'city' => 'mailingcity', 'country' => 'mailingcountry');
-                break;
-            case 'Leads' : return array('street' => 'lane', 'city' => 'city', 'country' => 'country');
-                break;
-	    case 'Accounts' : return array('street' => 'bill_street', 'city' => 'bill_city', 'country' => 'bill_country');
-		break;
-            default : return array();
-                break;
-        }
-    }
+		return $result;
+	}
+
+	/**
+	 * get location values for:
+	 * street, city, country
+	 * @param type $module
+	 * @return type
+	 */
+	static function getLocationFields($module) {
+		$locationFields = array();
+		switch ($module) {
+			case 'Contacts'	:	$locationFields = array('street'	=> 'mailingstreet',
+														'city'		=> 'mailingcity',
+														'state'		=> 'mailingstate',
+														'zip'		=> 'mailingzip',
+														'country'	=> 'mailingcountry');
+								break;
+			case 'Leads'	:	$locationFields = array('street'	=> 'lane',
+														'city'		=> 'city',
+														'state'		=> 'state',
+														'zip'		=> 'code',
+														'country'	=> 'country');
+								break;
+			case 'Accounts'	:	$locationFields = array('street'	=> 'bill_street',
+														'city'		=> 'bill_city',
+														'state'		=> 'bill_state',
+														'zip'		=> 'bill_code',
+														'country'	=> 'bill_country');
+								break;
+		}
+		return $locationFields;
+	}
 
 }
 

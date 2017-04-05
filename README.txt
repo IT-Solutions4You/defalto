@@ -902,8 +902,6 @@ Important Notes
 
 * We have tested vtiger CRM 4 in MySQL database software. Though we didn't tested in other database software, we feel it should work.
 
-* Cases Module is phased out (Help desk module take care of all the customer support related features)
-
 * Opportunities module is renamed as Potentials
 
 * Tasks, Calls and, Meetings modules are phased out (Activities module take care of all the tasks and events related features)

@@ -16,42 +16,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 	protected static $itemsTable = 'vtiger_settings_field';
 	protected static $itemId = 'fieldid';
 
-	public static $transformedUrlMapping = array(
-		'index.php?module=Administration&action=index&parenttab=Settings' => 'index.php?module=Users&parent=Settings&view=List',
-		'index.php?module=Settings&action=listroles&parenttab=Settings' => 'index.php?module=Roles&parent=Settings&view=Index',
-		'index.php?module=Settings&action=ListProfiles&parenttab=Settings' => 'index.php?module=Profiles&parent=Settings&view=List',
-		'index.php?module=Settings&action=listgroups&parenttab=Settings' => 'index.php?module=Groups&parent=Settings&view=List',
-		'index.php?module=Settings&action=OrgSharingDetailView&parenttab=Settings' => 'index.php?module=SharingAccess&parent=Settings&view=Index',
-		'index.php?module=Settings&action=DefaultFieldPermissions&parenttab=Settings' => 'index.php?module=FieldAccess&parent=Settings&view=Index',
-		'index.php?module=Settings&action=ListLoginHistory&parenttab=Settings' => 'index.php?module=LoginHistory&parent=Settings&view=List',
-		'index.php?module=Settings&action=ModuleManager&parenttab=Settings' => 'index.php?module=ModuleManager&parent=Settings&view=List',
-		'index.php?module=PickList&action=PickList&parenttab=Settings' => 'index.php?parent=Settings&module=Picklist&view=Index',
-		'index.php?module=Settings&action=listemailtemplates&parenttab=Settings' => 'index.php?module=Emails&view=ListTemplates',
-		'index.php?module=Settings&action=listwordtemplates&parenttab=Settings' => 'index.php?module=Settings&submodule=ModuleManager&view=WordTemplates',
-		'index.php?module=Settings&action=listnotificationschedulers&parenttab=Settings' => 'index.php?module=Settings&submodule=Vtiger&view=Schedulers',
-		'index.php?module=Settings&action=listinventorynotifications&parenttab=Settings' => 'index.php?module=Settings&submodule=Notifications&view=InventoryAlerts',
-		'index.php?module=Settings&action=OrganizationConfig&parenttab=Settings' => 'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
-		'index.php?module=Settings&action=EmailConfig&parenttab=Settings' => 'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
-		'index.php?module=Settings&action=CurrencyListView&parenttab=Settings' => 'index.php?parent=Settings&module=Currency&view=List',
-		'index.php?module=Settings&action=TaxConfig&parenttab=Settings' => 'index.php?module=Vtiger&parent=Settings&view=TaxIndex',
-		'index.php?module=Settings&action=ProxyServerConfig&parenttab=Settings' => 'index.php?module=Settings&submodule=Server&view=ProxyConfig',
-		'index.php?module=Settings&action=OrganizationTermsandConditions&parenttab=Settings' => 'index.php?parent=Settings&module=Vtiger&view=TermsAndConditionsEdit',
-		'index.php?module=Settings&action=CustomModEntityNo&parenttab=Settings' => 'index.php?module=Vtiger&parent=Settings&view=CustomRecordNumbering',
-		'index.php?module=Settings&action=MailScanner&parenttab=Settings' => 'index.php?parent=Settings&module=MailConverter&view=List',
-		'index.php?module=com_vtiger_workflow&action=workflowlist&parenttab=Settings' => 'index.php?module=Workflows&parent=Settings&view=List',
-		'index.php?module=com_vtiger_workflow&action=workflowlist' => 'index.php?module=Workflows&parent=Settings&view=List',
-		'index.php?module=ConfigEditor&action=index' => 'index.php?module=Vtiger&parent=Settings&view=ConfigEditorDetail',
-		'index.php?module=Tooltip&action=QuickView&parenttab=Settings' => 'index.php?module=Settings&submodule=Tooltip&view=Index',
-		'index.php?module=CustomerPortal&action=index&parenttab=Settings' => 'index.php?module=CustomerPortal&parent=Settings&view=Index',
-		'index.php?module=Settings&action=Announcements&parenttab=Settings' => 'index.php?parent=Settings&module=Vtiger&view=AnnouncementEdit',
-		'index.php?module=PickList&action=PickListDependencySetup&parenttab=Settings' => 'index.php?parent=Settings&module=PickListDependency&view=List',
-		'index.php?module=ModTracker&action=BasicSettings&parenttab=Settings&formodule=ModTracker' => 'index.php?module=Settings&submodule=ModTracker&view=Index',
-		'index.php?module=CronTasks&action=ListCronJobs&parenttab=Settings' => 'index.php?module=CronTasks&parent=Settings&view=List',
-		'index.php?module=Webforms&action=index&parenttab=Settings' => 'index.php?module=Webforms&parent=Settings&view=List',
-		'index.php?module=Settings&action=MenuEditor&parenttab=Settings' => 'index.php?module=MenuEditor&parent=Settings&view=Index',
-                'index.php?module=ExchangeConnector&action=index&parenttab=Settings' => 'index.php?module=ExchangeConnector&parent=Settings&view=Index'
-	);
-
 	/**
 	 * Function to get the Id of the menu item
 	 * @return <Number> - Menu Item Id
@@ -93,11 +57,8 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 	 * @return <String> - Menu Item landing url
 	 */
 	public function getUrl() {
-		$url = $this->get('linkto');
-		$url = decode_html($url);
-		if(isset(self::$transformedUrlMapping[$url])) {
-			$url = self::$transformedUrlMapping[$url];
-		}
+		$url = decode_html($this->get('linkto'));
+		$menu = $this->getMenu();
 		$url .= '&block='.$this->getMenu()->getId().'&fieldid='.$this->getId();
 		return $url;
 	}
@@ -109,23 +70,6 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 	public function getModuleName() {
 		return 'Settings:Vtiger';
 	}
-    
-    /**
-     * 
-     * @param type $url
-     * @return type modulename 
-     */
-     public function getModuleNameFromUrl($url) {
-
-        $query_str = parse_url(htmlspecialchars_decode($url), PHP_URL_QUERY);
-        parse_str($query_str, $query_params);
-
-        if ($query_params[parent]) {
-            return ("$query_params[parent]:$query_params[module]");
-        }
-
-        return $query_params[module];
-    }
     /**
 	 *  Function to get the pin and unpin action url
 	 */

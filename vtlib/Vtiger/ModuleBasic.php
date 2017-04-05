@@ -37,8 +37,7 @@ class Vtiger_ModuleBasic {
 	var $tabsequence = false;
 	var $parent = false;
 	var $customized = 0;
-        var $trial = 0;
-
+	var $trial = 0;
 	var $isentitytype = true; // Real module or an extension?
 
 	var $entityidcolumn = false;
@@ -78,10 +77,9 @@ class Vtiger_ModuleBasic {
 		$this->tabsequence = $valuemap['tabsequence'];
 		$this->parent = $valuemap['parent'];
 		$this->customized = $valuemap['customized'];
-                $this->trial = $valuemap['trial'];
+		$this->trial = $valuemap['trial']; 
 
 		$this->isentitytype = $valuemap['isentitytype'];
-
 		if($this->isentitytype || $this->name == 'Users') {
 			// Initialize other details too
 			$this->initialize2();
@@ -186,14 +184,14 @@ class Vtiger_ModuleBasic {
 		if($this->isentitytype) {
 			Vtiger_Access::initSharing($this);
 		}
-                
-                $moduleInstance=  Vtiger_Module::getInstance($this->name);                
-                $parentTab=$this->parent;
-                
-                if(!empty($parentTab)){
-                        $menuInstance = Vtiger_Menu::getInstance($parentTab);
+
+		$moduleInstance = Vtiger_Module::getInstance($this->name);
+		$parentTab = $this->parent;
+
+		if (!empty($parentTab)) {
+			$menuInstance = Vtiger_Menu::getInstance($parentTab);
 			$menuInstance->addModule($moduleInstance);
-                }
+		}
 
 		self::log("Creating Module $this->name ... DONE");
 	}
@@ -242,6 +240,7 @@ class Vtiger_ModuleBasic {
 	function save() {
 		if($this->id) $this->__update();
 		else $this->__create();
+		Vtiger_Cache::delete('module', $this->name);
 		return $this->id;
 	}
 
@@ -263,6 +262,7 @@ class Vtiger_ModuleBasic {
 		Vtiger_Link::deleteAll($this->id);
 		Vtiger_Menu::detachModule($this);
 		self::syncfile();
+        Vtiger_Cache::flushModuleCache($this->name);
 	}
 
 	/**
@@ -286,12 +286,10 @@ class Vtiger_ModuleBasic {
 		if(!$this->customtable)$this->customtable = $this->basetable . "cf";
 		if(!$this->grouptable)$this->grouptable = $this->basetable."grouprel";
 
-		Vtiger_Utils::CreateTable($this->basetable,"($this->basetableid INT)",true);
-		Vtiger_Utils::CreateTable($this->customtable,
-			"($this->basetableid INT PRIMARY KEY)", true);
+		Vtiger_Utils::CreateTable($this->basetable,"($this->basetableid INT(19) PRIMARY KEY)",true);
+		Vtiger_Utils::CreateTable($this->customtable,"($this->basetableid INT(19) PRIMARY KEY)", true);
 		if(Vtiger_Version::check('5.0.4', '<=')) {
-			Vtiger_Utils::CreateTable($this->grouptable,
-				"($this->basetableid INT PRIMARY KEY, groupname varchar(100))",true);
+			Vtiger_Utils::CreateTable($this->grouptable, "($this->basetableid INT PRIMARY KEY, groupname varchar(100))",true);
 		}
 	}
 
@@ -306,17 +304,15 @@ class Vtiger_ModuleBasic {
 			if(!$this->entityidfield) $this->entityidfield = $this->basetableid;
 			if(!$this->entityidcolumn)$this->entityidcolumn= $this->basetableid;
 		}
-		if($this->entityidfield && $this->entityidcolumn) {
-                         $result=$adb->pquery("SELECT tabid FROM vtiger_entityname WHERE tablename=? AND tabid=?",array($fieldInstance->table,$this->id)); 
-                        if($adb->num_rows($result)==0){
-                            $adb->pquery("INSERT INTO vtiger_entityname(tabid, modulename, tablename, fieldname, entityidfield, entityidcolumn) VALUES(?,?,?,?,?,?)",
-                                    Array($this->id, $this->name, $fieldInstance->table, $fieldInstance->name, $this->entityidfield, $this->entityidcolumn));
-                            self::log("Setting entity identifier ... DONE");
-                        }else{ 
-                            $adb->pquery("UPDATE vtiger_entityname SET fieldname=?,entityidfield=?,entityidcolumn=? WHERE tablename=? AND tabid=?", 
-                               array($fieldInstance->name,$this->entityidfield,$this->entityidcolumn,$fieldInstance->table,$this->id)); 
-                           self::log("Updating entity identifier ... DONE"); 
-                        } 
+		if ($this->entityidfield && $this->entityidcolumn) {
+			$result = $adb->pquery("SELECT tabid FROM vtiger_entityname WHERE tablename=? AND tabid=?", array($fieldInstance->table, $this->id));
+			if ($adb->num_rows($result) == 0) {
+				$adb->pquery("INSERT INTO vtiger_entityname(tabid, modulename, tablename, fieldname, entityidfield, entityidcolumn) VALUES(?,?,?,?,?,?)", Array($this->id, $this->name, $fieldInstance->table, $fieldInstance->name, $this->entityidfield, $this->entityidcolumn));
+				self::log("Setting entity identifier ... DONE");
+			} else {
+				$adb->pquery("UPDATE vtiger_entityname SET fieldname=?,entityidfield=?,entityidcolumn=? WHERE tablename=? AND tabid=?", array($fieldInstance->name, $this->entityidfield, $this->entityidcolumn, $fieldInstance->table, $this->id));
+				self::log("Updating entity identifier ... DONE");
+			}
 		}
 	}
 

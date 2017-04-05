@@ -29,14 +29,14 @@ function vtws_history($element, $user) {
 	$record = $element['record'];
 	$mode = empty($element['mode'])? 'Private' : $element['mode']; // Private or All
 	$page = empty($element['page'])? 0 : intval($element['page']); // Page to start
-
+	$idComponents = vtws_getIdComponents($record); // We have it - as the input is validated.
+    
 	$acrossAllModule = false;
 	if ($moduleName == 'Home') $acrossAllModule = true;
 
 	// Pre-condition check
 	if (empty($moduleName)) {
 		$moduleName = Mobile_WS_Utils::detectModulenameFromRecordId($record);
-		$idComponents = vtws_getIdComponents($record); // We have it - as the input is validated.
 	}
 
 	if (!$acrossAllModule && !ModTracker::isTrackingEnabledForModule($moduleName)) {
@@ -55,16 +55,29 @@ function vtws_history($element, $user) {
 		AND vtiger_crmentity.deleted = 0';
 
 	if ($mode == 'Private') {
-		$sql .= ' WHERE vtiger_modtracker_basic.whodid = ?';
-		$params[] = $user->getId();
+        $sql .= ' WHERE vtiger_modtracker_basic.whodid = ?';
+		$params[] = $user->id;
+
+		if ($acrossAllModule) {
+			// TODO collate only active (or enabled) modules for tracking.
+		} else if ($moduleName) {
+			$sql .= ' AND vtiger_modtracker_basic.module = ?';
+			$params[] = $moduleName;
+		}
+
+		if ($idComponents[1]) {
+			$sql .= ' AND vtiger_modtracker_basic.crmid = ?';
+			$params[] = $idComponents[1];
+		}
 	} else if ($mode == 'All') {
 		if ($acrossAllModule) {
 			// TODO collate only active (or enabled) modules for tracking.
 		} else if($moduleName) {
             $sql .= ' WHERE vtiger_modtracker_basic.module = ?';
             $params[] = $moduleName;
-        } else {
-            $sql .= ' WHERE vtiger_modtracker_basic.crmid = ?';
+		}
+		if ($idComponents[1]) {
+			$sql .= ' AND vtiger_modtracker_basic.crmid = ?';
             $params[] = $idComponents[1];
         }
 	}
@@ -72,14 +85,21 @@ function vtws_history($element, $user) {
 	// Get most recently tracked changes with limit
 	$start = $page*$MAXLIMIT; if ($start > 0) $start = $start + 1; // Adjust the start range
 	$sql .= sprintf(' ORDER BY vtiger_modtracker_basic.id DESC LIMIT %s,%s', $start, $MAXLIMIT);
-
 	$result = $adb->pquery($sql, $params);
 
 	$recordValuesMap = array();
 	$orderedIds = array();
+	$updatesOrderedIds = array();
+	$relationOrderedIds = array();
 
 	while ($row = $adb->fetch_array($result)) {
 		$orderedIds[] = $row['id'];
+        
+        if ($row['status'] === ModTracker::$LINK) {
+			$relationOrderedIds[] = $row['id'];
+		} else {
+			$updatesOrderedIds[] = $row['id'];
+		}
 
 		$whodid = vtws_history_entityIdHelper('Users', $row['whodid']);
 		$crmid = vtws_history_entityIdHelper($acrossAllModule? '' : $moduleName, $row['crmid']);
@@ -106,12 +126,12 @@ function vtws_history($element, $user) {
 	$historyItems = array();
 
 	// Minor optimizatin to avoid 2nd query run when there is nothing to expect.
-	if (!empty($orderedIds)) {
+	if (!empty($updatesOrderedIds)) {
 		$sql = 'SELECT vtiger_modtracker_detail.* FROM vtiger_modtracker_detail';
-		$sql .= ' WHERE vtiger_modtracker_detail.id IN (' . generateQuestionMarks($orderedIds) . ')';
+		$sql .= ' WHERE vtiger_modtracker_detail.id IN (' . generateQuestionMarks($updatesOrderedIds) . ')';
 
 		// LIMIT here is not required as $ids extracted is with limit at record level earlier.
-		$params = $orderedIds;
+		$params = $updatesOrderedIds;
 
 		$result = $adb->pquery($sql, $params);
 		while ($row = $adb->fetch_array($result)) {
@@ -124,8 +144,33 @@ function vtws_history($element, $user) {
 			);
 			$recordValuesMap[$row['id']] = $item;
 		}
+	}
 
-		// Group the values per basic-transaction
+	if (!empty($relationOrderedIds)) {
+		// get related record ids
+		$sql = 'SELECT vtiger_modtracker_relations.* , vtiger_crmentity.label FROM vtiger_modtracker_relations 
+					INNER JOIN vtiger_crmentity ON vtiger_modtracker_relations.targetid = vtiger_crmentity.crmid
+						WHERE vtiger_modtracker_relations.id IN ('.generateQuestionMarks($relationOrderedIds).') ORDER BY vtiger_modtracker_relations.changedon DESC';
+
+		// LIMIT here is not required as $ids extracted is with limit at record level earlier.
+		$params = $relationOrderedIds;
+		$result = $adb->pquery($sql, $params);
+
+		while ($row = $adb->fetch_array($result)) {
+			$item = $recordValuesMap[$row['id']];
+
+			// NOTE: For reference field values transform them to webservice id.
+			$item['values']['record'] = array(
+											'id'		=> $row['targetid'],
+											'module'	=> $row['targetmodule'],
+											'label'		=> decode_html($row['label'])
+			);
+			$recordValuesMap[$row['id']] = $item;
+		}
+	}
+
+	// Group the values per basic-transaction
+	if (!empty($orderedIds)) {
 		foreach ($orderedIds as $id) {
 			$historyItems[] = $recordValuesMap[$id];
 		}

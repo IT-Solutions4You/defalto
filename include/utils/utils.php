@@ -39,7 +39,7 @@ require_once 'vtlib/Vtiger/Deprecated.php';
 
 require_once 'includes/runtime/Cache.php';
 require_once 'modules/Vtiger/helpers/Util.php';
-
+require_once 'vtlib/Vtiger/AccessControl.php';
 // Constants to be defined here
 
 // For Migration status.
@@ -147,13 +147,13 @@ function get_user_array($add_blank=true, $status="Active", $assigned_user="",$pr
 							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name
 							  from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like ? and status='Active' union
 							  select shareduserid as id,vtiger_users.user_name as user_name ,
-							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name  from vtiger_tmp_write_user_sharing_per inner join vtiger_users on vtiger_users.id=vtiger_tmp_write_user_sharing_per.shareduserid where status='Active' and vtiger_tmp_write_user_sharing_per.userid=? and vtiger_tmp_write_user_sharing_per.tabid=?";
+							  vtiger_users.first_name as first_name ,vtiger_users.last_name as last_name  from vtiger_tmp_write_user_sharing_per inner join vtiger_users on vtiger_users.id=vtiger_tmp_write_user_sharing_per.shareduserid where status='Active' and vtiger_tmp_write_user_sharing_per.userid=? and vtiger_tmp_write_user_sharing_per.tabid=? and (user_name != 'admin' OR is_owner=1)";
 					$params = array($current_user->id, $current_user_parent_role_seq."::%", $current_user->id, getTabid($module));
 				}
 				else
 				{
 					$log->debug("Sharing is Public. All vtiger_users should be listed");
-					$query = "SELECT id, user_name,first_name,last_name from vtiger_users WHERE status=?";
+					$query = "SELECT id, user_name,first_name,last_name from vtiger_users WHERE status=? and (user_name != 'admin' OR is_owner=1)";
 					$params = array($status);
 				}
 		}
@@ -326,73 +326,48 @@ function set_default_config(&$defaults)
 	$log->debug("Exiting set_default_config method ...");
 }
 
-$toHtml = array(
-        '"' => '&quot;',
-        '<' => '&lt;',
-        '>' => '&gt;',
-        '& ' => '&amp; ',
-        "'" =>  '&#039;',
-	'' => '\r',
-        '\r\n'=>'\n',
+/**
+ * Function to decide whether to_html should convert values or not for a request
+ * @global type $doconvert
+ * @global type $inUTF8
+ * @global type $default_charset
+ */
+function decide_to_html() {
+	global $doconvert, $inUTF8, $default_charset;
+ 	$action = $_REQUEST['action']; 
+ 		     
+    $inUTF8 = (strtoupper($default_charset) == 'UTF-8'); 
 
-);
+    $doconvert = true; 
+	if ($action == 'ExportData') {
+        $doconvert = false; 
+    } 
+}
+decide_to_html();
 
 /** Function to convert the given string to html
   * @param $string -- string:: Type string
-  * @param $ecnode -- boolean:: Type boolean
+  * @param $encode -- boolean:: Type boolean
     * @returns $string -- string:: Type string
-      *
        */
-function to_html($string, $encode=true)
-{
-        $startstring=$string;
-	$cachedresult=Vtiger_Cache::get('to_html',$startstring);
-	if($cachedresult){
-		return $cachedresult;
-	}
-
-	global $log,$default_charset;
-	//$log->debug("Entering to_html(".$string.",".$encode.") method ...");
-	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
-	$search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
-
-	$doconvert = false;
-
+function to_html($string, $encode=true) {
 	// For optimization - default_charset can be either upper / lower case.
-	static $inUTF8 = NULL;
-	if ($inUTF8 === NULL) {
-		$inUTF8 = (strtoupper($default_charset) == 'UTF-8');
-	}
+    global $doconvert,$inUTF8,$default_charset,$htmlCache;
 
-	$module = isset($_REQUEST['module']) ? $_REQUEST['module'] : null;
-	$file = isset($_REQUEST['file']) ? $_REQUEST['file'] : null;
-	if($module != 'Settings' && $file != 'ListView' && $module != 'Portal' && $module != "Reports")// && $module != 'Emails')
-		$ajax_action = $module.'Ajax';
-
-	if(is_string($string))
-	{
-		if($action != 'CustomView' && $action != 'Export' && $action != $ajax_action && $action != 'LeadConvertToEntities' && $action != 'CreatePDF' && $action != 'ConvertAsFAQ' && $module != 'Dashboard' && $action != 'CreateSOPDF' && $action != 'SendPDFMail' && (!isset($_REQUEST['submode'])) )
-		{
-			$doconvert = true;
-		}
-		else if($search == true)
-		{
-			// Fix for tickets #4647, #4648. Conversion required in case of search results also.
-			$doconvert = true;
-		}
-
+    if(is_string($string)) {
 		// In vtiger5 ajax request are treated specially and the data is encoded
-		if ($doconvert == true)
-		{
+		if ($doconvert == true) {
+            if(isset($htmlCache[$string])){
+                $string = $htmlCache[$string];
+            }else{
 			if($inUTF8)
 				$string = htmlentities($string, ENT_QUOTES, $default_charset);
 			else
 				$string = preg_replace(array('/</', '/>/', '/"/'), array('&lt;', '&gt;', '&quot;'), $string);
+                $htmlCache[$string] = $string;
+            }
 		}
 	}
-
-	//$log->debug("Exiting to_html method ...");
-	Vtiger_Cache::set('to_html', $startstring, $string);
 	return $string;
 }
 
@@ -486,18 +461,18 @@ function getColumnFields($module)
 	if($module == 'Calendar') {
 		$cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
 		if (!$cachedEventsFields) {
-			getColumnFields('Events');
-			$cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-		}
-
+            getColumnFields('Events');
+            $cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
+        }
+        
 		if (!$cachedModuleFields) {
-			$cachedModuleFields = $cachedEventsFields;
+            $cachedModuleFields = $cachedEventsFields;
 		} else {
-			$cachedModuleFields = array_merge($cachedModuleFields, $cachedEventsFields);
-		}
-	}
+            $cachedModuleFields = array_merge($cachedModuleFields, $cachedEventsFields);
+        }
+    }
 
-	$column_fld = array();
+	$column_fld = new TrackableObject();
 	if($cachedModuleFields) {
 		foreach($cachedModuleFields as $fieldinfo) {
 			$column_fld[$fieldinfo['fieldname']] = '';
@@ -658,8 +633,8 @@ function getRecordOwnerId($record)
 		$count = VTCacheUtils::lookupOwnerType($ownerId);
 
 		if($count === false) {
-			$sql_result = $adb->pquery("select count(*) as count from vtiger_users where id = ?",array($ownerId));
-			$count = $adb->query_result($sql_result,0,'count');
+			$sql_result = $adb->pquery('SELECT 1 FROM vtiger_users WHERE id = ?', array($ownerId));
+			$count = $adb->query_result($sql_result, 0, 1);
 			// Update cache for re-use
 			VTCacheUtils::updateOwnerType($ownerId, $count);
 		}
@@ -1368,17 +1343,26 @@ function transferCurrency($old_cur, $new_cur) {
 
 	// Transfer PriceBook Currency to new currency
 	transferPriceBookCurrency($old_cur, $new_cur);
-    }
+    
+    // Transfer Services Currency to new currency
+    transferServicesCurrency($old_cur, $new_cur);
+}
 
 // Function to transfer the users with currency $old_cur to $new_cur as currency
 function transferUserCurrency($old_cur, $new_cur) {
 	global $log, $adb, $current_user;
 	$log->debug("Entering function transferUserCurrency...");
 
-	$sql = "update vtiger_users set currency_id=? where currency_id=?";
+	$sql = 'UPDATE vtiger_users SET currency_id=? WHERE currency_id=?';
 	$adb->pquery($sql, array($new_cur, $old_cur));
 
-	$current_user->retrieve_entity_info($current_user->id,"Users");
+	$currentUserId = $current_user->id;
+	$current_user->retrieve_entity_info($currentUserId, 'Users');
+	unset(Users_Record_Model::$currentUserModels[$currentUserId]);
+
+	require_once('modules/Users/CreateUserPrivilegeFile.php'); 
+	createUserPrivilegesfile($currentUserId);
+
 	$log->debug("Exiting function transferUserCurrency...");
 }
 
@@ -1433,6 +1417,29 @@ function transferPriceBookCurrency($old_cur, $new_cur) {
 }
 
 	$log->debug("Exiting function updatePriceBookCurrency...");
+}
+
+//To transfer all services after deleting currency to transfered currency
+function transferServicesCurrency($old_cur, $new_cur) {
+    global $log, $adb;
+    $log->debug("Entering function updateServicesCurrency...");
+	$ser_res = $adb->pquery('SELECT serviceid FROM vtiger_service WHERE currency_id = ?', array($old_cur));
+    $numRows = $adb->num_rows($ser_res);
+    $ser_ids = array();
+    for ($i = 0; $i < $numRows; $i++) {
+        $ser_ids[] = $adb->query_result($ser_res, $i, 'serviceid');
+    }
+    if (count($ser_ids) > 0) {
+        $ser_price_list = getPricesForProducts($new_cur, $ser_ids, 'Services');
+        for ($i = 0; $i < count($ser_ids); $i++) {
+            $service_id = $ser_ids[$i];
+            $unit_price = $ser_price_list[$service_id];
+			$query = 'UPDATE vtiger_service SET currency_id=?, unit_price=? WHERE serviceid=?';
+            $params = array($new_cur, $unit_price, $service_id);
+            $adb->pquery($query, $params);
+        }
+    }
+    $log->debug("Exiting function updateServicesCurrency...");
 }
 
 /**
@@ -1571,24 +1578,24 @@ function getRelationTables($module,$secmodule){
 	$secondary_obj = CRMEntity::getInstance($secmodule);
 
 	$ui10_query = $adb->pquery("SELECT vtiger_field.tabid AS tabid,vtiger_field.tablename AS tablename, vtiger_field.columnname AS columnname FROM vtiger_field INNER JOIN vtiger_fieldmodulerel ON vtiger_fieldmodulerel.fieldid = vtiger_field.fieldid WHERE (vtiger_fieldmodulerel.module=? AND vtiger_fieldmodulerel.relmodule=?) OR (vtiger_fieldmodulerel.module=? AND vtiger_fieldmodulerel.relmodule=?)",array($module,$secmodule,$secmodule,$module));
-	if($adb->num_rows($ui10_query)>0){
-		$ui10_tablename = $adb->query_result($ui10_query,0,'tablename');
-		$ui10_columnname = $adb->query_result($ui10_query,0,'columnname');
-		$ui10_tabid = $adb->query_result($ui10_query,0,'tabid');
+		if($adb->num_rows($ui10_query)>0){
+			$ui10_tablename = $adb->query_result($ui10_query,0,'tablename');
+			$ui10_columnname = $adb->query_result($ui10_query,0,'columnname');
+			$ui10_tabid = $adb->query_result($ui10_query,0,'tabid');
 
-		if($primary_obj->table_name == $ui10_tablename){
-			$reltables = array($ui10_tablename=>array("".$primary_obj->table_index."","$ui10_columnname"));
-		} else if($secondary_obj->table_name == $ui10_tablename){
-			$reltables = array($ui10_tablename=>array("$ui10_columnname","".$secondary_obj->table_index.""),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
-		} else {
-			if(isset($secondary_obj->tab_name_index[$ui10_tablename])){
-				$rel_field = $secondary_obj->tab_name_index[$ui10_tablename];
-				$reltables = array($ui10_tablename=>array("$ui10_columnname","$rel_field"),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
+			if($primary_obj->table_name == $ui10_tablename){
+				$reltables = array($ui10_tablename=>array("".$primary_obj->table_index."","$ui10_columnname"));
+			} else if($secondary_obj->table_name == $ui10_tablename){
+				$reltables = array($ui10_tablename=>array("$ui10_columnname","".$secondary_obj->table_index.""),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
 			} else {
-				$rel_field = $primary_obj->tab_name_index[$ui10_tablename];
-				$reltables = array($ui10_tablename=>array("$rel_field","$ui10_columnname"),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
+				if(isset($secondary_obj->tab_name_index[$ui10_tablename])){
+					$rel_field = $secondary_obj->tab_name_index[$ui10_tablename];
+					$reltables = array($ui10_tablename=>array("$ui10_columnname","$rel_field"),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
+				} else {
+					$rel_field = $primary_obj->tab_name_index[$ui10_tablename];
+					$reltables = array($ui10_tablename=>array("$rel_field","$ui10_columnname"),"".$primary_obj->table_name."" => "".$primary_obj->table_index."");
+				}
 			}
-		}
 	}else {
 		if(method_exists($primary_obj,setRelationTables)){
 			$reltables = $primary_obj->setRelationTables($secmodule);
@@ -1933,7 +1940,7 @@ function validateEmailId($string){
     if(count($matches) == 0) {
         return false;
     }
-    return true;
+		return true;
 }
 
 /**
@@ -1993,15 +2000,19 @@ function getEmailRelatedModules() {
 }
 
 //Get the User selected NumberOfCurrencyDecimals
-function getCurrencyDecimalPlaces() {
-	global $current_user;
-	$currency_decimal_places = $current_user->no_of_currency_decimals;
-	if(isset($currency_decimal_places)) {
-		return $currency_decimal_places;
-		} else {
-		return 2;
-			}
-		}
+function getCurrencyDecimalPlaces($user = null) {
+    global $current_user;
+    if (!empty($user)) {
+        $currency_decimal_places = $user->no_of_currency_decimals;
+    } else {
+        $currency_decimal_places = $current_user->no_of_currency_decimals;
+    }
+    if (isset($currency_decimal_places)) {
+        return $currency_decimal_places;
+    } else {
+        return 2;
+    }
+}
 
 function getInventoryModules() {
 	$inventoryModules = array('Invoice','Quotes','PurchaseOrder','SalesOrder');
@@ -2288,10 +2299,10 @@ function getCombinations($array, $tempString = '') {
 
 function getCompanyDetails() {
 	global $adb;
-	
+
 	$sql="select * from vtiger_organizationdetails";
 	$result = $adb->pquery($sql, array());
-	
+
 	$companyDetails = array();
 	$companyDetails['companyname'] = $adb->query_result($result,0,'organizationname');
 	$companyDetails['website'] = $adb->query_result($result,0,'website');
@@ -2302,13 +2313,13 @@ function getCompanyDetails() {
 	$companyDetails['phone'] = $adb->query_result($result,0,'phone');
 	$companyDetails['fax'] = $adb->query_result($result,0,'fax');
 	$companyDetails['logoname'] = $adb->query_result($result,0,'logoname');
-	
+
 	return $companyDetails;
 }
 
 /** call back function to change the array values in to lower case */
 function lower_array(&$string){
-		$string = strtolower(trim($string));
+	$string = strtolower(trim($string));
 }
 
 /* PHP 7 support */
@@ -2341,5 +2352,110 @@ if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_co
 if (!function_exists('get_magic_quotes_runtime')) { function get_magic_quotes_runtime() { return false; } }
 if (!function_exists('set_magic_quotes_runtime')) { function set_magic_quotes_runtime($flag) {} }
 
+/** 
+ * Function to escape backslash (\ to \\) in a string
+ * @param string $value String to be escaped
+ * @return string escaped string
+ */
+function escapeSlashes($value) {
+    return str_replace('\\', '\\\\', $value);
+}
+
+/** Function to get a user id or group id for a given entity
+ *  @param $record -- entity id :: Type integer
+ *  @returns reports to id <int>
+ */
+function getRecordOwnerReportsToId($record) {
+    global $adb;
+    $reportsToId = false;
+    $ownerArr = getRecordOwnerId($record);
+    if ($ownerArr['Users']) {
+        $query = "SELECT reports_to_id FROM vtiger_users WHERE id = ?";
+        $result = $adb->pquery($query, array($ownerArr['Users']));
+        if ($adb->num_rows($result) > 0) {
+            $reportsToId = $adb->query_result($result, 0, 'reports_to_id');
+        }
+    }
+    return $reportsToId;
+}
+
+/**
+ * Function to get last week range of give date
+ * @param type $date
+ * @return array($timestamps)
+ */
+function getLastWeekRange($date) {
+	$given_time = strtotime($date);
+	$day = gmdate('D', $given_time);
+
+	if ($day == 'Sun') {
+		$thissunday = strtotime("this sunday", $given_time);
+	} else {
+		$thissunday = strtotime("-1 week sunday", $given_time);
+	}
+
+	$lastSunday = $thissunday - (7 * 24 * 60 * 60); // 7 days; 24 hours; 60 mins; 60secs
+	$lastSaturday = $lastSunday + (6 * 24 * 60 * 60);
+
+	$lastWeekRange = array("start" => $lastSunday, "end" => $lastSaturday);
+	return $lastWeekRange;
+}
+
+/**
+ * Function to get current week range of given date
+ * @param type $date
+ * @return array($timestamps)
+ */
+function getCurrentWeekRange($date) {
+	$given_time = strtotime($date);
+	$day = gmdate('D', $given_time);
+
+	if ($day == 'Sun') {
+		$thissunday = $given_time;
+	} else {
+		$thissunday = strtotime("-1 week sunday", $given_time);
+	}
+	$thisSaturday = $thissunday + (6 * 24 * 60 * 60);
+
+	$currentWeekRange = array("start" => $thissunday, "end" => $thisSaturday);
+	return $currentWeekRange;
+}
+
+/**
+ * Function to get a group id for a given entity
+ * @param $record -- entity id :: Type integer
+ * @returns group id <int>
+ */
+function getRecordGroupId($record) {
+	global $adb;
+	// Look at cache first for information
+	$groupId = VTCacheUtils::lookupRecordGroup($record);
+
+	if ($groupId === false) {
+		$query = "SELECT smgroupid FROM vtiger_crmentity WHERE crmid = ?";
+		$result = $adb->pquery($query, array($record));
+		if ($adb->num_rows($result) > 0) {
+			$groupId = $adb->query_result($result, 0, 'smgroupid');
+			// Update cache forupdateRecordGroup re-use
+			VTCacheUtils::updateRecordGroup($record, $groupId);
+		}
+	}
+
+	return $groupId;
+}
+
+/**
+ * Function to delete record from $_SESSION[$moduleName.'_DetailView_Navigation'.$cvId]
+ */
+function deleteRecordFromDetailViewNavigationRecords($recordId, $cvId, $moduleName) {
+	$recordNavigationInfo = Zend_Json::decode($_SESSION[$moduleName . '_DetailView_Navigation' . $cvId]);
+	if (count($recordNavigationInfo) != 0) {
+		foreach ($recordNavigationInfo as $key => $recordIdList) {
+			$recordIdList = array_diff($recordIdList, array($recordId));
+			$recordNavigationInfo[$key] = $recordIdList;
+		}
+		$_SESSION[$moduleName . '_DetailView_Navigation' . $cvId] = Zend_Json::encode($recordNavigationInfo);
+	}
+}
 
 ?>
