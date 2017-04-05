@@ -8,5 +8,8 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-//Maximum number of Mailboxes in mail converter
-$max_mailboxes = 3;
+class ExtensionStore {
+	
+}
+
+?>
