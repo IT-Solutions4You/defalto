@@ -211,12 +211,12 @@
 						<input type="hidden" name="module" value="Users"/>
 						<input type="hidden" name="action" value="Login"/>
 						<div class="group">
-							<input id="username" type="text" name="username" placeholder="Username" value="">
+							<input id="username" type="text" name="username" placeholder="Username" value="admin">
 							<span class="bar"></span>
 							<label>Username</label>
 						</div>
 						<div class="group">
-							<input id="password" type="password" name="password" placeholder="Password" value="">
+							<input id="password" type="password" name="password" placeholder="Password" value="admin">
 							<span class="bar"></span>
 							<label>Password</label>
 						</div>
@@ -293,7 +293,7 @@
 				var forgotPasswordDiv = jQuery('#forgotPasswordDiv');
 
 				var loginFormDiv = jQuery('#loginFormDiv');
-				loginFormDiv.find('#username').focus();
+				loginFormDiv.find('#password').focus();
 
 				loginFormDiv.find('a').click(function () {
 					loginFormDiv.toggleClass('hide');
@@ -367,6 +367,7 @@
 				ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function (e) {
 					jQuery(e.currentTarget).removeClass('is-active');
 				});
+				loginFormDiv.find('#username').focus();
 			});
 		</script>
 	{/strip}

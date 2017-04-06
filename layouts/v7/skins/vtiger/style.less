@@ -7774,13 +7774,16 @@ a.btnReport, a.btnReport:hover{
 
 .bx-wrapper img { 
     max-width: 100%; 
-    display: block; 
-} 
-
-/** THEME 
-===================================*/ 
-
-.bx-wrapper .bx-viewport { 
+}.bx-wrapper {
+	max-width: 99% !important;
+}
+.bxslider li {
+	position: relative;
+	text-align: center;
+	left: 0px;
+}
+.bx-wrapper .bx-viewport {
+	width:99%; 
     -moz-box-shadow: 0 0 5px #ccc; 
     -webkit-box-shadow: 0 0 5px #ccc; 
     box-shadow: 0 0 5px #ccc; 

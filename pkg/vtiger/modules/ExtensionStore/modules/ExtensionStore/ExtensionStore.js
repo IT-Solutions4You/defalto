@@ -40,7 +40,7 @@ jQuery.Class('ExtensionStore_ExtensionStore_Js', {}, {
 		app.request.post({data:params}).then(
 			function (err, data) {
 				if ((typeof data != 'undefined') && (jQuery(data).find('img').length > 0)) {
-					jQuery('.dashboardHeading').append(data);
+					jQuery('.dashboardBanner').append(data);
 					thisInstance.registerEventsForBanner();
 				} else {
 					jQuery('.togglePromotion').addClass('hide');
