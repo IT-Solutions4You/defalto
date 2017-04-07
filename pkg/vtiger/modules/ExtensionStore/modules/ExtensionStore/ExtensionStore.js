@@ -20,10 +20,7 @@ jQuery.Class('ExtensionStore_ExtensionStore_Js', {}, {
 				auto: true,
 				pager: items.length > 1,
 				speed: items.length > 1 ? 1500 : 0,
-				pause: 3000,
-				onSlideBefore: function () {
-					jQuery('.bx-viewport').css({'height': '150px', 'overflow': 'hidden'});
-				}
+				pause: 3000
 			});
 		}
 	},
@@ -87,29 +84,29 @@ jQuery.Class('ExtensionStore_ExtensionStore_Js', {}, {
 
 			if (element.hasClass('up')) {
 				bannerContainer.slideUp();
-				element.find('.icon-chevron-up').addClass('hide');
-				element.find('.icon-chevron-down').removeClass('hide');
+				element.find('.fa-chevron-up').addClass('hide');
+				element.find('.fa-chevron-down').removeClass('hide');
 				element.addClass('down').removeClass('up');
 			} else if (element.hasClass('down')) {
 				if (bannerContainer.find('img').length <= 0) {
 					thisInstance.getPromotionsFromMarketPlace(null);
 				}
 				bannerContainer.slideDown();
-				element.find('.icon-chevron-down').addClass('hide');
-				element.find('.icon-chevron-up').removeClass('hide');
+				element.find('.fa-chevron-down').addClass('hide');
+				element.find('.fa-chevron-up').removeClass('hide');
 				element.addClass('up').removeClass('down');
 			}
 		});
 	},
 
 	insertTogglePromotionHtml: function () {
-		var toggleHtml = '<span class="btn-group">'+
-				'<button class="btn addButton togglePromotion up">'+
-					'<span id="hide" class="icon icon-chevron-up"></span>'+
-					'<span id="show" class="icon icon-chevron-down hide"></span>'+
+		var toggleHtml = '<div class="btn-group">'+
+				'<button class="btn btn-default addButton togglePromotion up">'+
+					'<span id="hide" class="fa fa-chevron-up"></span>'+
+					'<span id="show" class="fa fa-chevron-down hide"></span>'+
 				'</button>'+
-				'</span>';
-		jQuery('.dashboardHeading').find('.btn-toolbar').append(toggleHtml);
+				'</div>';
+		jQuery('.dashboardHeading').find('.buttonGroups').append(toggleHtml);
 	},
 
 	registerEvents: function () {
@@ -119,10 +116,8 @@ jQuery.Class('ExtensionStore_ExtensionStore_Js', {}, {
 		if ((moduleName == 'Home')) {
 			thisInstance.insertTogglePromotionHtml();
 			thisInstance.getPromotionsFromMarketPlace();
-			jQuery('.togglePromotion').find('.icon-chevron-up').addClass('hide');
-			jQuery('.togglePromotion').find('.icon-chevron-down').removeClass('hide');
-			jQuery('.togglePromotion').addClass('down').removeClass('up');
 			thisInstance.registerEventsForTogglePromotion();
+			jQuery('.togglePromotion').trigger('click');
 		}
 	}
 });

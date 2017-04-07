@@ -6795,21 +6795,22 @@ a.btnReport:hover {
 }
 .bx-wrapper img {
   max-width: 100%;
+  width: 500px;
+  height: 45px;
 }
-.bx-wrapper {
-  max-width: 99% !important;
+.bx-wrapper .bxslider {
+  padding-left: 0px;
 }
-.bxslider li {
+.bxslider ul {
+  padding-left: 0px;
+}
+.bx-wrapper .bxslider li {
   position: relative;
   text-align: center;
   left: 0px;
 }
 .bx-wrapper .bx-viewport {
   width:99%;
-  -moz-box-shadow: 0 0 5px #ccc;
-  -webkit-box-shadow: 0 0 5px #ccc;
-  box-shadow: 0 0 5px #ccc;
-  border: 5px solid #fff;
   left: 0px;
   background: #fff;
   -webkit-transform: translatez(0);
