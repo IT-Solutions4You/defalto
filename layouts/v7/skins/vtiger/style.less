@@ -7766,7 +7766,6 @@ a.btnReport, a.btnReport:hover{
 //Image Animation - Products - start
 .bx-wrapper { 
     position: relative; 
-    //margin: 0 auto 10px; 
     margin-bottom: 10px; 
     padding: 0; 
     *zoom: 1; 
@@ -7774,17 +7773,26 @@ a.btnReport, a.btnReport:hover{
 
 .bx-wrapper img { 
     max-width: 100%; 
-    display: block; 
-} 
+    width: 500px;
+    height: 45px;
+}
 
-/** THEME 
-===================================*/ 
+.bx-wrapper .bxslider {
+  padding-left: 0px;
+}
 
-.bx-wrapper .bx-viewport { 
-    -moz-box-shadow: 0 0 5px #ccc; 
-    -webkit-box-shadow: 0 0 5px #ccc; 
-    box-shadow: 0 0 5px #ccc; 
-    border:  5px solid #fff; 
+.bxslider ul {
+  padding-left: 0px;
+}
+
+.bx-wrapper .bxslider li {
+	position: relative;
+	text-align: center;
+	left: 0px;
+}
+
+.bx-wrapper .bx-viewport {
+	width:99%;
     left: 0px; 
     background: #fff; 
 

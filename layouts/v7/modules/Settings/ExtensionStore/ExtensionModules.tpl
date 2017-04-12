@@ -10,7 +10,11 @@
 {strip}
 	<div class="row">
 		{assign var=IS_AUTH value=($REGISTRATION_STATUS and $PASSWORD_STATUS)}
+		{assign var=EXTENSIONS_COUNT value=0}
 		{foreach item=EXTENSION from=$EXTENSIONS_LIST name=extensions}
+			{if !$EXTENSION->isVtigerCompatible()}{continue}{/if}
+			{assign var=EXTENSIONS_COUNT value=$EXTENSIONS_COUNT+1}
+
 			{if $EXTENSION->isAlreadyExists()}
 				{assign var=EXTENSION_MODULE_MODEL value= $EXTENSION->get('moduleModel')}
 			{else}
@@ -92,7 +96,7 @@
 				</div>
 			</div>
 		{/foreach}
-		{if empty($EXTENSIONS_LIST)}
+		{if empty($EXTENSIONS_LIST) || $EXTENSIONS_COUNT eq 0}
 			<div class="row">
 				<div class="col-sm-2 col-xs-2"></div>
 				<div class="col-sm-8 col-xs-8">
