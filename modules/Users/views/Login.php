@@ -43,7 +43,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 			$oldTextLength = vglobal('listview_max_textlength');
 			foreach ($jsonData as $blockData) {
 				if ($blockData['type'] === 'feature') {
-					$blockData['heading'] = "What's new in Vtiger";
+					$blockData['heading'] = "What's new in Vtiger Cloud";
 				} else if ($blockData['type'] === 'news') {
 					$blockData['heading'] = "Latest News";
 					$blockData['image'] = '';
