@@ -1261,7 +1261,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				}
 				fieldElement = fieldElement.filter('[type="checkbox"]');
 			} else if(fieldType == 'reference'){
-				ajaxEditNewValue = fieldElement.attr('value');
+				ajaxEditNewValue = fieldElement.data('value');
 			}
 
 			// prev Value should be taken based on field Type

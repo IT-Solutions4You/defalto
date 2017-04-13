@@ -258,16 +258,17 @@
 									<div class="row">
 										{if $BLOCK_DATA.image}
 											<div class="col-lg-3" style="min-height: 100px;"><img src="{$BLOCK_DATA.image}" style="width: 100%;height: 100%;"/></div>
-											<div class="col-lg-9" title="{$BLOCK_DATA.summary}">
-											{else}
-												<div class="col-lg-12" title="{$BLOCK_DATA.summary}">
-												{/if}
+											<div class="col-lg-9">
+										{else}
+											<div class="col-lg-12">
+										{/if}
+											<div title="{$BLOCK_DATA.summary}">
 												<h4>{$BLOCK_DATA.displayTitle}</h4>
 												{$BLOCK_DATA.displaySummary}<br><br>
-												<span class="blockLink">
-													<a href="{$BLOCK_DATA.url}" target="_blank">{$BLOCK_DATA.urlalt}</a>
-												</span>
 											</div>
+											<span class="blockLink">
+												<a href="{$BLOCK_DATA.url}" target="_blank">{$BLOCK_DATA.urlalt}</a>
+											</span>
 										</div>
 									</div>
 								{/foreach}

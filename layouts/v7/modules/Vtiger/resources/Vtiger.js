@@ -829,6 +829,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				var fieldName = sourceField.attr("name");
 				parent.find('input[name="'+fieldName+'"]').val(selectedItemData.id);
 				element.attr("value",selectedItemData.id);
+				element.data("value",selectedItemData.id);
 				parent.find('.clearReferenceSelection').removeClass('hide');
 				parent.find('.referencefield-wrapper').addClass('selected');
 				element.attr("disabled","disabled");
