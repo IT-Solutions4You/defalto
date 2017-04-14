@@ -1073,7 +1073,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 	},
 	showCreateModal: function (moduleName, startDateTime) {
 		var isAllowed = jQuery('#is_record_creation_allowed').val();
-        if (isAllowed) {
+		if (isAllowed) {
 			var thisInstance = this;
 			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + moduleName + '"]');
 			if (quickCreateNode.length <= 0) {
@@ -1173,7 +1173,11 @@ Vtiger.Class("Calendar_Calendar_Js", {
 	performDayClickAction: function (date, jsEvent, view) {
 		if (!this.performingDayClickOperation) {
 			this.performingDayClickOperation = true;
-			this.showCreateEventModal(date);
+			if (date.hasTime() || view.type == 'month') {
+				this.showCreateEventModal(date);
+			} else {
+				this.showCreateModal('Calendar', date);
+			}
 		}
 	},
 	daysOfWeek: {

@@ -52,7 +52,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 				vglobal('listview_max_textlength', '80');
 				$blockData['displayTitle'] = textlength_check($blockData['title']);
 
-				vglobal('listview_max_textlength', '340');
+				vglobal('listview_max_textlength', '200');
 				$blockData['displaySummary'] = textlength_check($blockData['summary']);
 				$finalJsonData[$blockData['type']][] = $blockData;
 			}
@@ -60,6 +60,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 		}
 
 		$viewer = $this->getViewer($request);
+		$viewer->assign('DATA_COUNT', count($jsonData));
 		$viewer->assign('JSON_DATA', $finalJsonData);
 
 		$mailStatus = $request->get('mailStatus');
