@@ -31,7 +31,7 @@
                         <strong><span id="totalPageCount"></span></strong>
                     </div>
                     <div class="listview-pagejump">
-                        <input type="text" id="pageToJump" placeholder="Jump To" class="{$CLASS_VIEW_PAGING_INPUT} text-center"/>&nbsp;
+                        <input type="text" id="pageToJump" placeholder="{vtranslate('LBL_LISTVIEW_JUMP_TO',$moduleName)}" class="{$CLASS_VIEW_PAGING_INPUT} text-center"/>&nbsp;
                         <button type="button" id="pageToJumpSubmit" class="btn btn-success {$CLASS_VIEW_PAGING_INPUT_SUBMIT} text-center">{'GO'}</button>
                     </div>    
                 </li>
