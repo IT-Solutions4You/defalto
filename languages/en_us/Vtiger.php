@@ -117,6 +117,7 @@ $languageStrings = array(
 	'LBL_MAKE_PUBLIC' => 'Make Public',
 	'LBL_PAGE' => 'Page',
 	'LBL_LISTVIEW_PAGE_JUMP' => 'Page Jump',
+	'LBL_LISTVIEW_JUMP_TO' => 'Jump To',
 	'LBL_PROFILE_PASSWORD' => 'Profile / Password',
 	'LBL_INFO' => 'Info',
 	'LBL_CANT_MOVE_FROM_PUBLIC_TO_PRIVATE' => 'Cannot able to move from Public tag to Private tag.',
