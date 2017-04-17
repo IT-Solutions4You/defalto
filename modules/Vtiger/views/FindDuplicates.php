@@ -60,13 +60,19 @@ class Vtiger_FindDuplicates_View extends Vtiger_List_View {
 		$module = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($module);
 
-		$massActionLink = array(
-			'linktype' => 'LISTVIEWBASIC',
-			'linklabel' => 'LBL_DELETE',
-			'linkurl' => 'Javascript:Vtiger_FindDuplicates_Js.massDeleteRecords("index.php?module='.$module.'&action=MassDelete");',
-			'linkicon' => ''
-		);
-		$massActionLinks[] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
+		$massActionLinks = array();
+		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+		if ($userPrivilegesModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
+			$massActionLink = array(
+				'linktype' => 'LISTVIEWBASIC',
+				'linklabel' => 'LBL_DELETE',
+				'linkurl' => 'Javascript:Vtiger_FindDuplicates_Js.massDeleteRecords("index.php?module='.$module.'&action=MassDelete");',
+				'linkicon' => ''
+			);
+			$massActionLinks[] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
+		}
+
+		$viewer->assign('CURRENT_USER_PRIVILAGES_MODEL', $userPrivilegesModel);
 		$viewer->assign('LISTVIEW_LINKS', $massActionLinks);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 

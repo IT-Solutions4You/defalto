@@ -10,58 +10,6 @@
 
 {strip}
 	<style>
-		.container {
-			width: 380px;
-			height: 420px;
-			margin: 0 auto;
-		}
-		.loginDiv {
-			border-radius: 4px;
-			box-shadow: 0 0 10px gray;
-			background-color: #FFFFFF;
-		}
-		.inActiveImgDiv {
-			padding: 5px;
-			text-align: center;
-			margin: 30px 0px;
-		}
-		.user-logo {
-			height: 110px;
-			margin: 0 auto;
-			padding-top: 40px;
-			padding-bottom: 20px;
-		}
-		.failureMessage {
-			color: red;
-			display: block;
-			text-align: center;
-			padding: 0px 0px 10px;
-		}
-		.successMessage {
-			color: green;
-			display: block;
-			text-align: center;
-			padding: 0px 0px 10px;
-		}
-		.app-footer p {
-			margin-top: 0px;
-			padding-bottom: 0px !important;
-		}
-		.footer {
-			background-color: #fbfbfb;
-			height:26px;
-		}
-		.marketingDiv {
-			padding-right: 100px;
-			color: white;
-		}
-		.blockLink {
-			border: 1px solid white;
-			padding: 3px 5px;
-		}
-		#page {
-			padding-top: 100px;
-		}
 		body {
 			background: url(layouts/v7/resources/Images/login-background.jpg);
 			background-position: center;
@@ -70,20 +18,18 @@
 			height: 100%;
 			background-repeat: no-repeat;
 		}
-		h3 {
-			margin-top: 10px;
+		hr {
+		    margin-top: 15px;
+			background-color: #7C7C7C;
+			height: 2px;
+			border-width: 0;
 		}
-		h4 {
+		h3, h4 {
 			margin-top: 0px;
 		}
-		//New
 		hgroup {
 			text-align:center;
 			margin-top: 4em;
-		}
-		.group { 
-			position: relative;
-			margin: 10px 10px 40px;
 		}
 		input {
 			font-size: 16px;
@@ -114,6 +60,72 @@
 			left: -12px;
 			font-size: 18px;
 		}
+		input:focus ~ .bar:before, input:focus ~ .bar:after {
+			width: 50%;
+		}
+		#page {
+			padding-top: 6%;
+		}
+		.widgetHeight {
+			height: 410px;
+			margin-top: 20px !important;
+		}
+		.loginDiv {
+			width: 380px;
+			margin: 0 auto;
+			border-radius: 4px;
+			box-shadow: 0 0 10px gray;
+			background-color: #FFFFFF;
+		}
+		.marketingDiv {
+			color: #303030;
+			padding: 10px 20px;
+		}
+		.separatorDiv {
+			background-color: #7C7C7C;
+			width: 2px;
+			height: 460px;
+			margin-left: 20px;
+		}
+		.user-logo {
+			height: 110px;
+			margin: 0 auto;
+			padding-top: 40px;
+			padding-bottom: 20px;
+		}
+		.blockLink {
+			border: 1px solid #303030;
+			padding: 3px 5px;
+		}
+		.group {
+			position: relative;
+			margin: 20px 20px 40px;
+		}
+		.failureMessage {
+			color: red;
+			display: block;
+			text-align: center;
+			padding: 0px 0px 10px;
+		}
+		.successMessage {
+			color: green;
+			display: block;
+			text-align: center;
+			padding: 0px 0px 10px;
+		}
+		.inActiveImgDiv {
+			padding: 5px;
+			text-align: center;
+			margin: 30px 0px;
+		}
+		.app-footer p {
+			margin-top: 0px;
+			padding-bottom: 0px !important;
+		}
+		.footer {
+			background-color: #fbfbfb;
+			height:26px;
+		}
 		.bar {
 			position: relative;
 			display: block;
@@ -133,9 +145,6 @@
 		}
 		.bar:after {
 			right: 50%;
-		}
-		input:focus ~ .bar:before, input:focus ~ .bar:after {
-			width: 50%;
 		}
 		.button {
 			position: relative;
@@ -198,8 +207,8 @@
 
 	<span class="app-nav"></span>
 	<div class="col-lg-12">
-		<div class="col-lg-6">
-			<div class="container loginDiv">
+		<div class="col-lg-5">
+			<div class="loginDiv widgetHeight">
 				<img class="img-responsive user-logo" src="layouts/v7/resources/Images/vtiger.png">
 				<div>
 					<span class="{if !$ERROR}hide{/if} failureMessage" id="validationMessage">{$MESSAGE}</span>
@@ -247,43 +256,55 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-6">
-			<div class="marketingDiv">
+
+		<div class="col-lg-1">
+			<div class="separatorDiv"></div>
+		</div>
+
+		<div class="col-lg-5">
+			<div class="marketingDiv widgetHeight">
 				{if $JSON_DATA}
+					{assign var=COUNTER value=0}
 					{foreach key=BLOCK_NAME item=BLOCKS_DATA from=$JSON_DATA}
-						<div>
-							{if $BLOCKS_DATA}
-								<h3><b>{$BLOCKS_DATA[0].heading}</b></h3>
+						{if $BLOCKS_DATA}
+							<div>
+								{assign var=COUNTER value=$COUNTER+1}
+								<h4>{$BLOCKS_DATA[0].heading}</h4>
 								{foreach item=BLOCK_DATA from=$BLOCKS_DATA}
 									<div class="row">
 										{if $BLOCK_DATA.image}
-											<div class="col-lg-3" style="min-height: 100px;"><img src="{$BLOCK_DATA.image}" style="width: 100%;height: 100%;"/></div>
-											<div class="col-lg-9">
+											<div class="col-lg-4" style="min-height: 100px;"><img src="{$BLOCK_DATA.image}" style="width: 100%;height: 100%;margin-top: 10px;"/></div>
+											<div class="col-lg-8">
 										{else}
 											<div class="col-lg-12">
 										{/if}
 											<div title="{$BLOCK_DATA.summary}">
-												<h4>{$BLOCK_DATA.displayTitle}</h4>
+												<h3><b>{$BLOCK_DATA.displayTitle}</b></h3>
 												{$BLOCK_DATA.displaySummary}<br><br>
 											</div>
-											<span class="blockLink">
-												<a href="{$BLOCK_DATA.url}" target="_blank">{$BLOCK_DATA.urlalt}</a>
-											</span>
-										</div>
+											<a href="{$BLOCK_DATA.url}" target="_blank"><u>{$BLOCK_DATA.urlalt}</u></a>
+										{if $BLOCK_DATA.image}
+											</div>
+										{else}
+											</div>
+										{/if}
 									</div>
 								{/foreach}
-							{/if}
-							<br>
-						{/foreach}
-					{else}
-						<div class="inActiveImgDiv">
-							<div>
-								<h4>Get more out of Vtiger with extensions from</h4>
-								<h4>Vtiger Marketplace</h4>
 							</div>
-							<a href="https://marketplace.vtiger.com/app/listings" target="_blank" style="margin-right: 25px;"><img src="layouts/v7/resources/Images/extensionstore.png" style="width: 85%; height: 100%; margin-top: 25px;"/></a>
+							{if $COUNTER neq $DATA_COUNT}
+								<hr>
+							{/if}
+						{/if}
+					{/foreach}
+				{else}
+					<div class="inActiveImgDiv">
+						<div>
+							<h4>Get more out of Vtiger with extensions from</h4>
+							<h4>Vtiger Marketplace</h4>
 						</div>
-					{/if}
+						<a href="https://marketplace.vtiger.com/app/listings" target="_blank" style="margin-right: 25px;"><img src="layouts/v7/resources/Images/extensionstore.png" style="width: 85%; height: 100%; margin-top: 25px;"/></a>
+					</div>
+				{/if}
 				</div>
 			</div>
 		</div>

@@ -122,13 +122,7 @@
 									<td class="{$WIDTHTYPE}" nowrap>
 										<span class="fieldValue">
 											<span class="value textOverflowEllipsis">
-												{if $LISTVIEW_HEADER->getName() eq 'is_owner'}
-													{if $LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME) eq 1}
-														{vtranslate('LBL_YES')}
-													{/if}
-												{else}
-													{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-												{/if}
+												{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 											</span>
 										</span>
 									</td>
