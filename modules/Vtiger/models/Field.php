@@ -538,6 +538,12 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			} else {
 				$this->fieldInfo['picklistvalues'] = array();
 			}
+
+			$this->fieldInfo['picklistColors'] = array();
+			$picklistColors = $this->getPicklistColors();
+			if ($picklistColors) {
+				$this->fieldInfo['picklistColors'] = $picklistColors;
+			}
 		}
 
 		if($fieldDataType === 'currencyList'){

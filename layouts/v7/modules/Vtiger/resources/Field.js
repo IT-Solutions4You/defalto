@@ -245,14 +245,39 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
 			html += '<option value="">Select an Option</option>';
 		}
+
+		var data = this.getData();
+		var picklistColors = data['picklistColors'];
+
+		var fieldName = this.getName();
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
+
+			var className = '';
+			if (picklistColors[option]) {
+				className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+				html += 'class="'+className+'"';
+			}
+
 			if(option == selectedOption) {
 				html += ' selected ';
 			}
 			html += '>'+pickListValues[option]+'</option>';
 		}
 		html +='</select>';
+
+		if (picklistColors) {
+			html +='<style type="text/css">';
+			for(option in picklistColors) {
+				var picklistColor = picklistColors[option];
+				if (picklistColor) {
+					className = '.picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+					html += className+'{background-color: '+picklistColor+' !important;}';
+				}
+			}
+			html +='<\style>';
+		}
+
 		var selectContainer = jQuery(html);
 		this.addValidationToElement(selectContainer);
 		return selectContainer;
@@ -319,14 +344,38 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 		var selectedOption = app.htmlDecode(this.getValue());
 		var selectedOptionsArray = this.getSelectedOptions(selectedOption);
 
+		var data = this.getData();
+		var picklistColors = data['picklistColors'];
+
+		var fieldName = this.getName();
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
+
+			var className = '';
+			if (picklistColors[option]) {
+				className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+				html += 'class="'+className+'"';
+			}
+
 			if(jQuery.inArray(option,selectedOptionsArray) != -1){
 				html += ' selected ';
 			}
 			html += '>'+pickListValues[option]+'</option>';
 		}
 		html +='</select>';
+
+		if (picklistColors) {
+			html +='<style type="text/css">';
+			for(option in picklistColors) {
+				var picklistColor = picklistColors[option];
+				if (picklistColor) {
+					className = '.picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+					html += className+'{background-color: '+picklistColor+' !important;}';
+				}
+			}
+			html +='<\style>';
+		}
+
 		var selectContainer = jQuery(html);
 		this.addValidationToElement(selectContainer);
 		return selectContainer;
