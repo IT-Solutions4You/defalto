@@ -1411,8 +1411,7 @@ if(defined('VTIGER_UPGRADE')) {
 	//Workflows
 	$columns = $db->getColumnNames('com_vtiger_workflows');
 	if (in_array('status', $columns)) {
-		$db->pquery('ALTER TABLE com_vtiger_workflows MODIFY COLUMN status INT(11)', array());
-		$db->pquery('ALTER TABLE com_vtiger_workflows ALTER COLUMN status SET DEFAULT 1', array());
+		$db->pquery('ALTER TABLE com_vtiger_workflows MODIFY COLUMN status INT(11) DEFAULT 1', array());
 		$db->pquery('UPDATE com_vtiger_workflows SET status=? WHERE status IS NULL', array(1));
 	}
 
