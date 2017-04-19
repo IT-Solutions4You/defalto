@@ -63,8 +63,6 @@
 	{assign var="IS_INDIVIDUAL_TAX_TYPE" value=true}
 {/if}
 
-<input type="hidden" id="customFields" value='{Zend_Json::encode($CUSTOM_FIELDS)}'>
-<input type="hidden" id="customFieldsDefaultValues" value='{Zend_Json::encode($CUSTOM_FIELDS_DEFAULT_VALUES)}'>
 <input type="hidden" class="numberOfCurrencyDecimal" value="{$USER_MODEL->get('no_of_currency_decimals')}" />
 <input type="hidden" name="totalProductCount" id="totalProductCount" value="{$row_no}" />
 <input type="hidden" name="subtotal" id="subtotal" value="" />

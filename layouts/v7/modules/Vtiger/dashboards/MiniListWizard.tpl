@@ -54,7 +54,7 @@
 							<td class="col-lg-4"></td>
 						</tr>
 				   </tbody>
-				   <input type="hidden" id="translatedModuleNames" value='{ZEND_JSON::encode($TRANSLATED_MODULE_NAMES)}'>
+				   <input type="hidden" id="translatedModuleNames" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($TRANSLATED_MODULE_NAMES))}'>
 				</table>
 				{include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
 			</form>

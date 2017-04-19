@@ -14,7 +14,7 @@
 	{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	{assign var="FIELD_VALUE_LIST" value=explode(' |##| ',$FIELD_MODEL->get('fieldvalue'))}
-	{assign var=PICKLIST_COLORS value=$FIELD_MODEL->getPicklistColors()}
+	{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']}
 	<input type="hidden" name="{$FIELD_MODEL->getFieldName()}" value=""  data-fieldtype="multipicklist"/>
 	<select id="{$MODULE}_{$smarty.request.view}_fieldName_{$FIELD_MODEL->getFieldName()}" multiple class="select2" name="{$FIELD_MODEL->getFieldName()}[]" data-fieldtype="multipicklist" style='width:210px;height:30px;' 
 			{if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
