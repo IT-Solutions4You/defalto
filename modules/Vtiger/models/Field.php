@@ -1324,7 +1324,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				$fieldName = $referenceFieldName;
 			}
 
-			if (!in_array($fieldName, array('hdnTaxType', 'region_id'))) {
+			if (!in_array($fieldName, array('hdnTaxType', 'region_id')) && !in_array($this->getModuleName(), array('Users'))) {
 				$db = PearDatabase::getInstance();
 				$picklistValues = $this->getPicklistValues();
 				$tableName = "vtiger_$fieldName";

@@ -35,8 +35,9 @@
 						</div>
 						<div class='field pull-left' style="width:250px;padding-right: 5px;">
 							{assign var=FIELD_MODEL value=$STATUS_FIELD}
-							{assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
-							{assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPicklistValues()}
+							{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+							{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
+							{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}
 							{assign var=SEARCH_VALUES value=explode(',',$SEARCH_INFO['searchValue'])}
 							<select class="select2 listSearchContributor" name="{$FIELD_MODEL->get('name')}" multiple data-fieldinfo='{$FIELD_INFO|escape}'>
 								{foreach item=PICKLIST_LABEL key=PICKLIST_KEY from=$PICKLIST_VALUES}
