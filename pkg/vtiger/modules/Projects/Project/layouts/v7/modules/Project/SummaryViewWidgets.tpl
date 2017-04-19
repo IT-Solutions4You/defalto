@@ -146,8 +146,9 @@
 							<div class="pull-left">
 								{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance('HelpDesk')}
 								{assign var=FIELD_MODEL value=$RELATED_MODULE_MODEL->getField('ticketstatus')}
-								{assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
-								{assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPicklistValues()}
+								{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
+								{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
+								{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}
 								{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 								<select class="select2" name="{$FIELD_MODEL->get('name')}" data-validation-engine="validate[{if $FIELD_MODEL->isMandatory() eq true} required,{/if}funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-fieldinfo='{$FIELD_INFO|escape}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} >
 									<option value="">{vtranslate('LBL_SELECT_STATUS',$MODULE_NAME)}</option>
@@ -211,8 +212,9 @@
 						<div class="widget_filter clearfix">
 							{if $PROGRESS_FIELD_MODEL->isViewableInDetailView()}
 								<div class="pull-left marginRight15">
-									{assign var="FIELD_INFO" value=Zend_Json::encode($PROGRESS_FIELD_MODEL->getFieldInfo())}
-									{assign var=PICKLIST_VALUES value=$PROGRESS_FIELD_MODEL->getPicklistValues()}
+									{assign var=FIELD_INFO value=$PROGRESS_FIELD_MODEL->getFieldInfo()}
+									{assign var=PICKLIST_VALUES value=$PROGRESS_FIELD_MODEL['picklistvalues']}
+									{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}
 									{assign var="SPECIAL_VALIDATOR" value=$PROGRESS_FIELD_MODEL->getValidator()}
 									<select class="select2" name="{$PROGRESS_FIELD_MODEL->get('name')}" data-validation-engine="validate[{if $PROGRESS_FIELD_MODEL->isMandatory() eq true} required,{/if}funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-fieldinfo='{$FIELD_INFO|escape}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} >
 										<option value="">{vtranslate('LBL_SELECT_PROGRESS',$MODULE_NAME)}</option>
@@ -225,8 +227,9 @@
 							&nbsp;&nbsp;
 							{if $STATUS_FIELD_MODEL->isViewableInDetailView()}
 								<div class="pull-left marginRight15">
-									{assign var="FIELD_INFO" value=Zend_Json::encode($STATUS_FIELD_MODEL->getFieldInfo())}
-									{assign var=PICKLIST_VALUES value=$STATUS_FIELD_MODEL->getPicklistValues()}
+									{assign var=FIELD_INFO value=$STATUS_FIELD_MODEL->getFieldInfo()}
+									{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
+									{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}
 									{assign var="SPECIAL_VALIDATOR" value=$STATUS_FIELD_MODEL->getValidator()}
 									<select class="select2" name="{$STATUS_FIELD_MODEL->get('name')}" data-validation-engine="validate[{if $STATUS_FIELD_MODEL->isMandatory() eq true} required,{/if}funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-fieldinfo='{$FIELD_INFO|escape}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} >
 										<option value="">{vtranslate('LBL_SELECT_STATUS',$MODULE_NAME)}</option>

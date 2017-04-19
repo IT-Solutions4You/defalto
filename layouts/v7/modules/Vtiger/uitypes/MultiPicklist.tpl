@@ -10,10 +10,10 @@
  ********************************************************************************/
 -->*}
 {strip}
-	{assign var=PICKLIST_VALUES value=$FIELD_MODEL->getPicklistValues()}
 	{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	{assign var="FIELD_VALUE_LIST" value=explode(' |##| ',$FIELD_MODEL->get('fieldvalue'))}
+	{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
 	{assign var=PICKLIST_COLORS value=$FIELD_INFO['picklistColors']}
 	<input type="hidden" name="{$FIELD_MODEL->getFieldName()}" value=""  data-fieldtype="multipicklist"/>
 	<select id="{$MODULE}_{$smarty.request.view}_fieldName_{$FIELD_MODEL->getFieldName()}" multiple class="select2" name="{$FIELD_MODEL->getFieldName()}[]" data-fieldtype="multipicklist" style='width:210px;height:30px;' 
