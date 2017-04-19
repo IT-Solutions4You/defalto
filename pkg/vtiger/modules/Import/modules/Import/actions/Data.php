@@ -656,7 +656,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 						$fieldData[$fieldName] = CurrencyField::convertToDBFormat($fieldValue, $current_user, false);
 					}
 				}
-			} else if($fieldInstance->getUIType() == 56) {
+			} else if($fieldDataType == 'boolean') {
 				$fieldValue = strtolower($fieldValue);
 				if($fieldValue == 'yes' || $fieldValue == 1) {
 					$fieldData[$fieldName] = 1;
