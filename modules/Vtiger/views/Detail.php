@@ -478,6 +478,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		}
 
 		$pagingModel->calculatePageRange($recentComments);
+		array_pop($recentComments);
 		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 
 		$fileNameFieldModel = Vtiger_Field::getInstance("filename", $modCommentsModel);
