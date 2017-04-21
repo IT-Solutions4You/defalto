@@ -43,6 +43,19 @@ if(defined('VTIGER_UPGRADE')) {
 	$adb->pquery('UPDATE vtiger_convertleadmapping SET editable=? WHERE leadfid=?', array(1, $phoneFieldId));
 
 	// Migration for #261 - vtiger_portalinfo doesn't update contact
+	$columns = $db->getColumnNames('com_vtiger_workflows');
+	if (in_array('status', $columns)) {
+		$db->pquery('ALTER TABLE com_vtiger_workflows MODIFY COLUMN status TINYINT(1) DEFAULT 1', array());
+		$db->pquery('UPDATE com_vtiger_workflows SET status=? WHERE status IS NULL', array(1));
+	} else {
+		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN status TINYINT DEFAULT 1', array());
+	}
+
+	if (!in_array('workflowname', $columns)) {
+		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN workflowname VARCHAR(100)', array());
+	}
+	$db->pquery('UPDATE com_vtiger_workflows SET workflowname = summary', array());
+
 	$result = $adb->pquery('SELECT workflow_id FROM com_vtiger_workflows WHERE test LIKE ? AND module_name=? AND defaultworkflow=?', array('%portal%', 'Contacts', 1));
 	if ($adb->num_rows($result) == 1) {
 		$workflowId = $adb->query_result($result, 0, 'workflow_id');

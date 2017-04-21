@@ -130,8 +130,8 @@
 		{/if}
 		{if $PAGING_MODEL->isNextPageExists()}
 			<div class="row">
-				<div class="pull-right">
-					<a href="javascript:void(0)" class="moreRecentActivities" style="line-height: 0px;padding-right:30px;">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
+				<div class="textAlignCenter">
+					<a href="javascript:void(0)" class="moreRecentActivities">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
 				</div>
 			</div>
 		{/if}

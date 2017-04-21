@@ -241,6 +241,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		if($pagingModel){
 			$startIndex = $pagingModel->getStartIndex();
 			$limit = $pagingModel->getPageLimit();
+			$limit = $limit+1;
 			$query = $query . " LIMIT $startIndex, $limit";
 		}
 
