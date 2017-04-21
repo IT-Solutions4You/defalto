@@ -2102,6 +2102,37 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('DELETE FROM vtiger_settings_field WHERE name IN ('.generateQuestionMarks($duplicateOtherBlockFields).') AND blockid=?', array($duplicateOtherBlockFields, $otherBlockId));
 	//Migration of data to vtiger_settings blocks and fields ends
 
+	$result = $db->pquery('SELECT cvid, entitytype FROM vtiger_customview WHERE viewname=?', array('All'));
+	if ($result && $db->num_rows($result) > 0) {
+		while ($row = $db->fetch_array($result)) {
+			$cvId = $row['cvid'];
+			$cvModel = CustomView_Record_Model::getInstanceById($cvId);
+			$cvSelectedFields = $cvModel->getSelectedFields();
+
+			$moduleModel = Vtiger_Module_Model::getInstance($row['entitytype']);
+			if ($moduleModel) {
+				$fields = $moduleModel->getFields();
+				$cvSelectedFieldModels = array();
+
+				foreach ($fields as $fieldModel) {
+					$cvSelectedFieldModels[] = decode_html($fieldModel->getCustomViewColumnName());
+				}
+
+				foreach ($cvSelectedFields as $cvSelectedField) {
+					if (!in_array($cvSelectedField, $cvSelectedFieldModels)) {
+						$fieldData = explode(':', $cvSelectedField);
+						$fieldName = $fieldData[2];
+						$fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+						if ($fieldInstance) {
+							$columnname = decode_html($fieldInstance->getCustomViewColumnName());
+							$db->pquery('UPDATE vtiger_cvcolumnlist SET columnname=? WHERE cvid=? AND columnname=?', array($columnname, $cvId, $cvSelectedField));
+						}
+					}
+				}
+			}
+		}
+	}
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 
