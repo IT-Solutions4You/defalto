@@ -52,10 +52,10 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
-	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
 	$db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE fieldname IN (?, ?)', array('DT~O', 'createdtime', 'modifiedtime'));
+	$db->pquery('UPDATE vtiger_field SET presence=0 WHERE columnname=? AND fieldname=?', array('emailoptout', 'emailoptout'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('1', 'discontinued'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array('.', 'currency_decimal_separator'));
 	$db->pquery('UPDATE vtiger_field SET defaultvalue=? WHERE fieldname=?', array(',', 'currency_grouping_separator'));
@@ -276,13 +276,13 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$columns = $db->getColumnNames('vtiger_relatedlists');
 	if (!in_array('relationfieldid', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationfieldid INT(18)', array());
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationfieldid INT(19)', array());
 	}
 	if (!in_array('source', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN source varchar(25)', array());
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN source VARCHAR(25)', array());
 	}
 	if (!in_array('relationtype', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationtype varchar(10)', array());
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationtype VARCHAR(10)', array());
 	}
 
 	$accountsTabId = getTabId('Accounts');
@@ -407,7 +407,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$body = '<p>'.vtranslate('LBL_REMINDER_NOTIFICATION', $moduleName).'<br/>' .
 				vtranslate('LBL_DETAILS_STRING', $moduleName).' :<br/> 
 							&nbsp; '.vtranslate('Subject', $moduleName).' : $events-subject$<br/> 
-							&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/>  
+							&nbsp; '.vtranslate('Start Date & Time', $moduleName).' : $events-date_start$<br/>
 							&nbsp; '.vtranslate('End Date & Time', $moduleName).' : $events-due_date$<br/> 
 							&nbsp; '.vtranslate('LBL_STATUS', $moduleName).' : $events-eventstatus$<br/> 
 							&nbsp; '.vtranslate('Location', $moduleName).' : $events-location$<br/> 
@@ -1283,10 +1283,10 @@ if(defined('VTIGER_UPGRADE')) {
 	//Add column to track public and private for tags
 	$columns = $db->getColumnNames('vtiger_freetags');
 	if (!in_array('visibility', $columns)) {
-		$db->pquery("ALTER TABLE vtiger_freetags ADD column visibility VARCHAR(100) NOT NULL DEFAULT 'PRIVATE'", array());
+		$db->pquery("ALTER TABLE vtiger_freetags ADD COLUMN visibility VARCHAR(100) NOT NULL DEFAULT 'PRIVATE'", array());
 	}
 	if (!in_array('owner', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_freetags ADD column owner INT(19) NOT NULL', array());
+		$db->pquery('ALTER TABLE vtiger_freetags ADD COLUMN owner INT(19) NOT NULL', array());
 	}
 
 	//remove ON update field property for tagged_on since below script will update details but we dont want to change time stamp 
@@ -1407,21 +1407,6 @@ if(defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
-
-	//Workflows
-	$columns = $db->getColumnNames('com_vtiger_workflows');
-	if (in_array('status', $columns)) {
-		$db->pquery('ALTER TABLE com_vtiger_workflows MODIFY COLUMN status TINYINT DEFAULT 1', array());
-		$db->pquery('UPDATE com_vtiger_workflows SET status=? WHERE status IS NULL', array(1));
-	} else {
-		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN status TINYINT DEFAULT 1', array());
-	}
-
-	if (!in_array('workflowname', $columns)) {
-		$db->pquery('ALTER TABLE com_vtiger_workflows ADD COLUMN workflowname VARCHAR(100)', array());
-	}
-	$db->pquery('UPDATE com_vtiger_workflows SET workflowname = summary', array());
-	//End
 
 	//Adding color column for vtiger_salutationtype.
 	$fieldResult = $db->pquery('SELECT fieldname FROM vtiger_field WHERE fieldname=? AND tabid NOT IN (?)', array('salutationtype', getTabid('Users')));

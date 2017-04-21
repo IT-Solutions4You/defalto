@@ -152,6 +152,7 @@
 			<notnull />
 			<default value="0" />
 		</field>
+		<field name="smgroupid" type="I" size="19" />
 
 		<index name="crmentity_smcreatorid_idx">
 			<col>smcreatorid</col>
@@ -1151,6 +1152,9 @@
 			<notnull />
 			<default value="1" />
 		</field>
+		<field name="is_subproducts_viewable" type="I" size="1">
+			<default value="1" />
+		</field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
@@ -1716,6 +1720,9 @@
 		<field name="setype" type="C" size="30">
 			<notnull />
 		</field>
+		<field name="quantity" type="I" size="19">
+			<default value="1" />
+		</field>
 
 		<index name="seproductsrel_productid_idx">
 			<col>productid</col>
@@ -1864,6 +1871,7 @@
 	<table name="vtiger_emailtemplates">
 		<field name="foldername" type="C" size="100" />
 		<field name="templatename" type="C" size="100" />
+		<field name="templatepath" type="C" size="100" />
 		<field name="subject" type="C" size="100" />
 		<field name="description" type="X" />
 		<field name="body" type="X" />
@@ -1875,6 +1883,11 @@
 			<key />
 			<autoincrement />
 		</field>
+		<field name="systemtemplate" type="I" size="1">
+			<notnull />
+			<default value="0" />
+		</field>
+		<field name="module" type="C" size="100" />
 
 		<index name="emailtemplates_foldernamd_templatename_subject_idx">
 			<col>foldername</col>
@@ -2871,6 +2884,7 @@
 		<field name="enable_recurring" type="I">
 			<default value="0" />
 		</field>
+		<field name="compound_taxes_info" type="X" />
 		<index name="salesorder_vendorid_idx">
 			<col>vendorid</col>
 		</index>
@@ -3012,7 +3026,9 @@
 			<notnull />
 			<default value="" />
 		</field>
-		<field name="relationfieldid" type="I" size="100" />
+		<field name="relationfieldid" type="I" size="19" />
+		<field name="source" type="C" size="25" />
+		<field name="relationtype" type="C" size="10" />
 
 		<index name="relatedlists_relation_id_idx">
 			<col>relation_id</col>
@@ -3191,6 +3207,7 @@
 			<notnull />
 			<default value="1.000" />
 		</field>
+		<field name="compound_taxes_info" type="X" />
 		<index name="quote_quotestage_idx">
 			<col>quotestage</col>
 		</index>
@@ -3310,6 +3327,7 @@
 			<notnull />
 			<default value="1.000" />
 		</field>
+		<field name="compound_taxes_info" type="X" />
 
 		<index name="purchaseorder_vendorid_idx">
 			<col>vendorid</col>
@@ -3436,6 +3454,7 @@
 			<notnull />
 			<default value="1.000" />
 		</field>
+		<field name="compound_taxes_info" type="X" />
 		<index name="invoice_purchaseorderid_idx">
 			<col>invoiceid</col>
 		</index>
@@ -5075,6 +5094,13 @@
 			<notnull />
 			<default value="" />
 		</field>
+		<field name="visibility" type="C" size="100">
+			<notnull />
+			<default value="PRIVATE" />
+		</field>
+		<field name="owner" type="I" size="19">
+			<notnull />
+		</field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
@@ -5151,6 +5177,7 @@
 		<field name="inviteeid" type="I" size="19">
 			<KEY/>
 		</field>
+		<field name="status" type="C" size="50" />
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
@@ -5166,6 +5193,10 @@
 		<field name="percentage" type="N" size="7.3">
 		</field>
 		<field name="deleted" type="I" size="1" />
+		<field name="method" type="C" size="10" />
+		<field name="type" type="C" size="10" />
+		<field name="compoundon" type="C" size="400" />
+		<field name="regions" type="X" />
 
 		<index name="inventorytaxinfo_taxname_idx">
 			<col>taxname</col>
@@ -5183,6 +5214,7 @@
 		</field>
 		<field name="taxpercentage" type="N" size="7.3">
 		</field>
+		<field name="regions" type="X" />
 
 		<index name="producttaxrel_productid_idx">
 			<col>productid</col>
@@ -5445,6 +5477,10 @@
 		<field name="percentage" type="N" size="7.3">
 		</field>
 		<field name="deleted" type="I" size="1" />
+		<field name="method" type="C" size="10" />
+		<field name="type" type="C" size="10" />
+		<field name="compoundon" type="C" size="400" />
+		<field name="regions" type="X" />
 
 		<index name="shippingtaxinfo_taxname_idx">
 			<col>taxname</col>
@@ -6030,6 +6066,9 @@
 		<field name="searchfor" type="C" size="10"></field>
 		<field name="markas" type="C" size="10"></field>
 		<field name="isvalid" type="I" size="1"></field>
+		<field name="scanfrom" type="V" size="10">
+			<default value="ALL" />
+		</field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
@@ -6037,6 +6076,7 @@
 		<field name="scannerid" type="I"></field>
 		<field name="messageid" type="X"></field>
 		<field name="crmid" type="I"></field>
+		<field name="refids" type="X"></field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
@@ -6157,8 +6197,8 @@
 		</field>
 		<field name="nexttrigger_time" type="T">
 		</field>
-		<field name="status" type="I" size="255"></field>
-		<field name="workflowname" type="C" size="100"></field>
+		<field name="status" type="I" size="1" />
+		<field name="workflowname" type="C" size="100" />
 
 		<index name="com_vtiger_workflows_idx">
 			<unique />
@@ -6205,6 +6245,8 @@
 		</field>
 		<field name="do_after" type="I" >
 		</field>
+		<field name="relatedinfo" type="C" size="255" />
+		
 		<index name="com_vtiger_workflowtask_queue_idx">
 			<unique />
 			<col>task_id</col>
@@ -6448,6 +6490,7 @@
 		<field name="handler" type="C" size="50">
 			<default value="NULL" />
 		</field>
+		<field name="parent_link" type="I" size="19" />
 		<opt platform="mysql">Engine=InnoDB</opt>
 		<index name="link_tabidtype_idx">
 			<col>tabid</col>
@@ -6566,6 +6609,9 @@
 		</field>
 		<field name="productid" type="I" size="19">
 			<notnull />
+		</field>
+		<field name="quantity" type="I" size="19">
+			<default value="1" />
 		</field>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
@@ -6928,6 +6974,12 @@
 		<field name="module" type="C" size="50" />
 		<field name="fieldname" type="C" size="50" />
 		<field name="defaultcolor" type="C" size="50" />
+		<field name="isdefault" type="I" size="11" >
+			<default value="1" />
+		</field>
+		<field name="conditions" type="C" size="255" >
+			<default value="1" />
+		</field>
 
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
