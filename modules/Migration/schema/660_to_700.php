@@ -51,6 +51,7 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$db->pquery('UPDATE vtiger_ws_entity SET handler_path=?, handler_class=? WHERE name IN("Products","Services")', array('include/Webservices/VtigerProductOperation.php', 'VtigerProductOperation'));
 	$db->pquery('UPDATE vtiger_def_org_share SET editstatus=? WHERE tabid=?', array(0, getTabid('Contacts')));
 	$db->pquery('UPDATE vtiger_settings_field SET name=? WHERE name=?', array('Configuration Editor', 'LBL_CONFIG_EDITOR'));
 	$db->pquery('UPDATE vtiger_links SET linktype=? WHERE linklabel=?', array('DETAILVIEW', 'LBL_SHOW_ACCOUNT_HIERARCHY'));
