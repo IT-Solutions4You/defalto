@@ -6977,9 +6977,7 @@
 		<field name="isdefault" type="I" size="11" >
 			<default value="1" />
 		</field>
-		<field name="conditions" type="C" size="255" >
-			<default value="1" />
-		</field>
+		<field name="conditions" type="C" size="255" />
 
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>

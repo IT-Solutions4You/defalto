@@ -228,6 +228,7 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 	 * @return ModComments_Record_Model if exits or null
 	 */
 	public static function getRecentComments($parentRecordId, $pagingModel = false){
+		$recordInstances = array();
 		$db = PearDatabase::getInstance();
 
 		$listView = Vtiger_ListView_Model::getInstance('ModComments');
