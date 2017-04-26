@@ -405,6 +405,10 @@ class ListViewController {
 							}
 						}
 					}
+				} elseif ($fieldDataType == 'double') {
+					if ($value) {
+						$value = CurrencyField::convertToUserFormat($value, null, true);
+					}
 				} elseif($fieldDataType == 'url') {
 					$matchPattern = "^[\w]+:\/\/^";
 					preg_match($matchPattern, $rawValue, $matches);
