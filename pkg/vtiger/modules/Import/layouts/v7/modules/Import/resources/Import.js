@@ -60,7 +60,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 			return false;
         },
         uploadAndParse: function(auto_merge) {
-            if (Vtiger_Import_Js.validateFilePath() && Vtiger_Import_Js.validateMergeCriteria()) {
+            if (Vtiger_Import_Js.validateFilePath() && Vtiger_Import_Js.validateMergeCriteria(auto_merge)) {
                 jQuery("#auto_merge").val(auto_merge);
                 var form = jQuery("form[name='importBasic']");
                 var data = new FormData(form[0]);
@@ -245,18 +245,16 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                         });
             }
         },
-        validateMergeCriteria: function() {
-            var selectedOptions = jQuery('#selected_merge_fields option');
-            if (selectedOptions.length == 0) {
-                var errorMessage = app.vtranslate('JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE');
-                var params = {
-                    text: errorMessage,
-                    'type': 'error'
-                };
-                Vtiger_Helper_Js.showMessage(params);
-                return false;
-            }
-            Vtiger_Import_Js.convertOptionsToJSONArray('#selected_merge_fields', '#merge_fields');
+        validateMergeCriteria: function(auto_merge) {
+			if (auto_merge == 1) {
+				var selectedOptions = jQuery('#selected_merge_fields option');
+				if (selectedOptions.length == 0) {
+					var errorMessage = app.vtranslate('JS_PLEASE_SELECT_ONE_FIELD_FOR_MERGE');
+					app.helper.showErrorNotification({message: errorMessage});
+					return false;
+				}
+				Vtiger_Import_Js.convertOptionsToJSONArray('#selected_merge_fields', '#merge_fields');
+			}
             return true;
         },
         //TODO move to a common file
