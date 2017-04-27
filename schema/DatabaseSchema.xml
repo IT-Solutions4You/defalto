@@ -3026,9 +3026,6 @@
 			<notnull />
 			<default value="" />
 		</field>
-		<field name="relationfieldid" type="I" size="19" />
-		<field name="source" type="C" size="25" />
-		<field name="relationtype" type="C" size="10" />
 
 		<index name="relatedlists_relation_id_idx">
 			<col>relation_id</col>
@@ -5193,10 +5190,6 @@
 		<field name="percentage" type="N" size="7.3">
 		</field>
 		<field name="deleted" type="I" size="1" />
-		<field name="method" type="C" size="10" />
-		<field name="type" type="C" size="10" />
-		<field name="compoundon" type="C" size="400" />
-		<field name="regions" type="X" />
 
 		<index name="inventorytaxinfo_taxname_idx">
 			<col>taxname</col>
@@ -5477,10 +5470,6 @@
 		<field name="percentage" type="N" size="7.3">
 		</field>
 		<field name="deleted" type="I" size="1" />
-		<field name="method" type="C" size="10" />
-		<field name="type" type="C" size="10" />
-		<field name="compoundon" type="C" size="400" />
-		<field name="regions" type="X" />
 
 		<index name="shippingtaxinfo_taxname_idx">
 			<col>taxname</col>
@@ -6977,9 +6966,7 @@
 		<field name="isdefault" type="I" size="11" >
 			<default value="1" />
 		</field>
-		<field name="conditions" type="C" size="255" >
-			<default value="1" />
-		</field>
+		<field name="conditions" type="C" size="255" />
 
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>

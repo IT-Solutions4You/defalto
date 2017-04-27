@@ -2188,12 +2188,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var record = self.getRecordId();
 			var params = {};
 			params.module = app.getModuleName();
-			params.action = 'SaveAjax';
+			params.action = 'SaveStar';
 			params.record = record;
 			if(element.hasClass('active')) {
-				params.starred = 0;
+				params.value = 0;
 			}else {
-				params.starred = 1;
+				params.value = 1;
 			}
 
 			element.toggleClass('active');

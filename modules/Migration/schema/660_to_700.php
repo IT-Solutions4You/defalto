@@ -17,6 +17,18 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES(?, ?)', array('98', 'reference'));
 	}
 
+	$result = $db->pquery('SELECT fieldtypeid FROM vtiger_ws_fieldtype WHERE uitype=(SELECT DISTINCT uitype FROM vtiger_field WHERE fieldname=?)', array('modifiedby'));
+	if ($db->num_rows($result)) {
+		$fieldTypeId = $db->query_result($result, 0, 'fieldtypeid');
+		$referenceResult = $db->pquery('SELECT * FROM vtiger_ws_referencetype WHERE fieldtypeid=?', array($fieldTypeId));
+		while($rowData = $db->fetch_row($referenceResult)) {
+			$type = $rowData['type'];
+			if ($type != 'Users') {
+				$db->pquery('DELETE FROM vtiger_ws_referencetype WHERE fieldtypeid=? AND type=?', array($fieldTypeId, $type));
+			}
+		}
+	}
+
 	if (!Vtiger_Utils::CheckTable('vtiger_activity_recurring_info')) {
 		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_activity_recurring_info(activityid INT(19) NOT NULL, recurrenceid INT(19) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
 	}
@@ -80,6 +92,25 @@ if(defined('VTIGER_UPGRADE')) {
 
 				$blockInstance->addField($fieldInstance);
 			}
+		}
+	}
+
+	$invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
+	$blockInstance = Vtiger_Block::getInstance('LBL_INVOICE_INFORMATION', $invoiceModuleInstance);
+	if ($blockInstance) {
+		$fieldInstance = Vtiger_Field::getInstance('potential_id', $invoiceModuleInstance);
+		if (!$fieldInstance) {
+			$field = new Vtiger_Field();
+			$field->name			= 'potential_id';
+			$field->label			= 'Potential Name';
+			$field->uitype			= 10;
+			$field->typeofdata		= 'I~O';
+
+			$blockInstance->addField($field);
+			$field->setRelatedModules(Array('Potentials'));
+
+			$oppModuleModel = Vtiger_Module_Model::getInstance('Potentials');
+			$oppModuleModel->setRelatedlist($invoiceModuleInstance, 'Invoice', array('ADD'), 'get_dependents_list');
 		}
 	}
 
@@ -285,6 +316,8 @@ if(defined('VTIGER_UPGRADE')) {
 	if (!in_array('relationtype', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationtype VARCHAR(10)', array());
 	}
+	$result = $db->pquery('SELECT relation_id FROM vtiger_relatedlists ORDER BY relation_id DESC LIMIT 1', array());
+	$db->pquery('UPDATE vtiger_relatedlists_seq SET id=?', array($db->query_result($result, 0, 'relation_id')));
 
 	$accountsTabId = getTabId('Accounts');
 	$db->pquery('UPDATE vtiger_relatedlists SET name=? WHERE name=? and tabid=?', array('get_merged_list', 'get_dependents_list', $accountsTabId));
@@ -544,13 +577,13 @@ if(defined('VTIGER_UPGRADE')) {
 	if ($blockInstance) {
 		$fieldInstance = Vtiger_Field::getInstance('is_private', $modCommentsInstance);
 		if (!$fieldInstance) {
-			$fieldInstance			= new Vtiger_Field();
-			$fieldInstance->name	= 'is_private';
-			$fieldInstance->label	= 'Is Private';
-			$fieldInstance->uitype	= 7;
-			$fieldInstance->column	= 'is_private';
-			$fieldInstance->columntype = 'INT(1) DEFAULT 0';
-			$fieldInstance->typeofdata = 'I~O';
+			$fieldInstance				= new Vtiger_Field();
+			$fieldInstance->name		= 'is_private';
+			$fieldInstance->label		= 'Is Private';
+			$fieldInstance->uitype		= 7;
+			$fieldInstance->column		= 'is_private';
+			$fieldInstance->columntype	= 'INT(1) DEFAULT 0';
+			$fieldInstance->typeofdata	= 'I~O';
 			$blockInstance->addField($fieldInstance);
 		}
 	}
@@ -645,16 +678,16 @@ if(defined('VTIGER_UPGRADE')) {
 			if ($block) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 				$field = new Vtiger_Field();
-				$field->name = 'source';
-				$field->label = 'Source';
-				$field->table = 'vtiger_crmentity';
-				$field->presence = 2;
-				$field->displaytype = 2;
-				$field->readonly = 1;
-				$field->uitype = 1;
-				$field->typeofdata = 'V~O';
-				$field->quickcreate = 3;
-				$field->masseditable = 0;
+				$field->name			= 'source';
+				$field->label			= 'Source';
+				$field->table			= 'vtiger_crmentity';
+				$field->presence		= 2;
+				$field->displaytype		= 2;
+				$field->readonly		= 1;
+				$field->uitype			= 1;
+				$field->typeofdata		= 'V~O';
+				$field->quickcreate		= 3;
+				$field->masseditable	= 0;
 				$blockInstance->addField($field);
 			}
 		}
@@ -1160,14 +1193,14 @@ if(defined('VTIGER_UPGRADE')) {
 		$fieldInstance = Vtiger_Field::getInstance('filename', $modCommentsInstance);
 		if (!$fieldInstance) {
 			$fieldInstance = new Vtiger_Field();
-			$fieldInstance->name = 'filename';
-			$fieldInstance->column = 'filename';
-			$fieldInstance->label = 'Attachment';
-			$fieldInstance->columntype = 'VARCHAR(255)';
-			$fieldInstance->table = 'vtiger_modcomments';
-			$fieldInstance->typeofdata = 'V~O';
-			$fieldInstance->uitype = '61';
-			$fieldInstance->presence = '0';
+			$fieldInstance->name		= 'filename';
+			$fieldInstance->column		= 'filename';
+			$fieldInstance->label		= 'Attachment';
+			$fieldInstance->columntype	= 'VARCHAR(255)';
+			$fieldInstance->table		= 'vtiger_modcomments';
+			$fieldInstance->typeofdata	= 'V~O';
+			$fieldInstance->uitype		= '61';
+			$fieldInstance->presence	= '0';
 			$blockInstance->addField($fieldInstance);
 		}
 		unset($fieldInstance);
@@ -1175,13 +1208,13 @@ if(defined('VTIGER_UPGRADE')) {
 		$fieldInstance = Vtiger_Field::getInstance('related_email_id', $modCommentsInstance);
 		if (!$fieldInstance) {
 			$fieldInstance = new Vtiger_Field();
-			$fieldInstance->name = 'related_email_id';
-			$fieldInstance->label = 'Related Email Id';
-			$fieldInstance->uitype = 1;
-			$fieldInstance->column = $fieldInstance->name;
-			$fieldInstance->columntype = 'INT(11)';
-			$fieldInstance->typeofdata = 'I~O';
-			$fieldInstance->defaultvalue = 0;
+			$fieldInstance->name		= 'related_email_id';
+			$fieldInstance->label		= 'Related Email Id';
+			$fieldInstance->uitype		= 1;
+			$fieldInstance->column		= $fieldInstance->name;
+			$fieldInstance->columntype	= 'INT(11)';
+			$fieldInstance->typeofdata	= 'I~O';
+			$fieldInstance->defaultvalue= 0;
 			$blockInstance->addField($fieldInstance);
 		}
 		unset($fieldInstance);
@@ -1226,15 +1259,15 @@ if(defined('VTIGER_UPGRADE')) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 				if ($blockInstance) {
 					$field = new Vtiger_Field();
-					$field->name = 'starred';
-					$field->label = 'starred';
-					$field->table = $moduleUserSpecificTable;
-					$field->presence = 2;
+					$field->name		= 'starred';
+					$field->label		= 'starred';
+					$field->table		= $moduleUserSpecificTable;
+					$field->presence	= 2;
 					$field->displaytype = 6;
-					$field->readonly = 1;
-					$field->uitype = 56;
-					$field->typeofdata = 'C~O';
-					$field->quickcreate = 3;
+					$field->readonly	= 1;
+					$field->uitype		= 56;
+					$field->typeofdata	= 'C~O';
+					$field->quickcreate	= 3;
 					$field->masseditable = 0;
 					$blockInstance->addField($field);
 				}
@@ -1264,17 +1297,17 @@ if(defined('VTIGER_UPGRADE')) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 				if ($blockInstance) {
 					$field = new Vtiger_Field();
-					$field->name = 'tags';
-					$field->label = 'tags';
-					$field->table = $tableName;
-					$field->presence = 2;
-					$field->displaytype = 6;
-					$field->readonly = 1;
-					$field->uitype = 1;
-					$field->typeofdata = 'V~O';
-					$field->columntype = 'varchar(1)';
-					$field->quickcreate = 3;
-					$field->masseditable = 0;
+					$field->name		= 'tags';
+					$field->label		= 'tags';
+					$field->table		= $tableName;
+					$field->presence	= 2;
+					$field->displaytype	= 6;
+					$field->readonly	= 1;
+					$field->uitype		= 1;
+					$field->typeofdata	= 'V~O';
+					$field->columntype	= 'VARCHAR(1)';
+					$field->quickcreate	= 3;
+					$field->masseditable= 0;
 					$blockInstance->addField($field);
 				}
 			}
@@ -1621,15 +1654,15 @@ if(defined('VTIGER_UPGRADE')) {
 			$fieldInstance = new Vtiger_Field();
 
 			$fieldInstance->name = $fieldName;
-			$fieldInstance->column = $fieldName;
-			$fieldInstance->table = $tableName;
-			$fieldInstance->label = 'Tax Region';
-			$fieldInstance->columntype = 'int(19)';
-			$fieldInstance->typeofdata = 'N~O';
-			$fieldInstance->uitype = '16';
-			$fieldInstance->readonly = '0';
-			$fieldInstance->displaytype = '5';
-			$fieldInstance->masseditable = '0';
+			$fieldInstance->column		= $fieldName;
+			$fieldInstance->table		= $tableName;
+			$fieldInstance->label		= 'Tax Region';
+			$fieldInstance->columntype	= 'int(19)';
+			$fieldInstance->typeofdata	= 'N~O';
+			$fieldInstance->uitype		= '16';
+			$fieldInstance->readonly	= '0';
+			$fieldInstance->displaytype	= '5';
+			$fieldInstance->masseditable= '0';
 
 			$blockInstance->addField($fieldInstance);
 		}
@@ -1805,13 +1838,13 @@ if(defined('VTIGER_UPGRADE')) {
 		$field = Vtiger_Field::getInstance('isconvertedfrompotential', $moduleInstance);
 		if (!$field) {
 			$field = new Vtiger_Field();
-			$field->name = 'isconvertedfrompotential';
-			$field->label = 'Is Converted From Opportunity';
-			$field->uitype = 56;
-			$field->column = 'isconvertedfrompotential';
-			$field->displaytype = 2;
-			$field->columntype = 'int(1) NOT NULL DEFAULT 0';
-			$field->typeofdata = 'C~O';
+			$field->name		= 'isconvertedfrompotential';
+			$field->label		= 'Is Converted From Opportunity';
+			$field->uitype		= 56;
+			$field->column		= 'isconvertedfrompotential';
+			$field->displaytype	= 2;
+			$field->columntype	= 'INT(1) NOT NULL DEFAULT 0';
+			$field->typeofdata	= 'C~O';
 			$blockInstance->addField($field);
 		}
 	}
@@ -1826,10 +1859,11 @@ if(defined('VTIGER_UPGRADE')) {
 	if (!Vtiger_Field::getInstance('potentialid', $projectInstance)) {
 		$blockInstance = Vtiger_Block_Model::getInstance('LBL_PROJECT_INFORMATION', $projectInstance);
 		$potentialField = new Vtiger_Field();
-		$potentialField->name = 'potentialid';
-		$potentialField->label = 'Potential Name';
-		$potentialField->uitype = 10;
-		$potentialField->typeofdata = 'I~O';
+		$potentialField->name		= 'potentialid';
+		$potentialField->label		= 'Potential Name';
+		$potentialField->uitype		= 10;
+		$potentialField->typeofdata	= 'I~O';
+
 		$blockInstance->addField($potentialField);
 		$potentialField->setRelatedModules(Array('Potentials'));
 	}
