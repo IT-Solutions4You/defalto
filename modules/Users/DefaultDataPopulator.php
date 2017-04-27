@@ -2519,7 +2519,7 @@ Should any need arise,please do give us a call.';
 		$fieldMap = array(
 			array('company', 'accountname', null, 'potentialname', 0),
 			array('industry', 'industry', null, null, 1),
-			array('phone', 'phone', 'phone', null), 1,
+			array('phone', 'phone', 'phone', null, 1),
 			array('fax', 'fax', 'fax', null, 1),
 			array('rating', 'rating', null, null, 1),
 			array('email', 'email1', 'email', null, 0),
