@@ -19,6 +19,8 @@
                 <div class="col-sm-4">
                     <select class="textType">
 						<option data-ui="textarea" value="rawtext">{vtranslate('LBL_RAW_TEXT',$QUALIFIED_MODULE)}</option>
+						<option data-ui="textarea" value="fieldname">{vtranslate('LBL_FIELD_NAME',$QUALIFIED_MODULE)}</option>
+						<option data-ui="textarea" value="expression">{vtranslate('LBL_EXPRESSION',$QUALIFIED_MODULE)}</option>
                     </select>
                 </div>
                 <div class="col-sm-4 hide useFieldContainer">
