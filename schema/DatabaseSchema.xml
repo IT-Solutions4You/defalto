@@ -3026,6 +3026,9 @@
 			<notnull />
 			<default value="" />
 		</field>
+		<field name="relationfieldid" type="I" size="19" />
+		<field name="source" type="C" size="25" />
+		<field name="relationtype" type="C" size="10" />
 
 		<index name="relatedlists_relation_id_idx">
 			<col>relation_id</col>

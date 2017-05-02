@@ -210,6 +210,10 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 			selectEle.find('option[value="'+selectedVal[0]+'"]').remove();
 
 			thisInstance.removeModulesArray.splice(thisInstance.removeModulesArray.indexOf(selectedVal[0]), 1);
+
+			if (!selectEle.find('option').length) {
+				jQuery('.hiddenModulesContainer').removeClass('show').addClass('hide');
+			}
 			thisInstance.showSaveButton();
 		})
 
@@ -221,10 +225,11 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 			var relationId = liEle.data('relationId');
 			var moduleLabel = liEle.find('.moduleLabel').text();
 			liEle.fadeOut('slow').addClass('deleted');
-			selectEle.append('<option value="'+relationId+'">'+moduleLabel+'</option>');
+			jQuery('.hiddenModulesContainer').addClass('show').removeClass('hide');
+			selectEle.append('<option value="'+relationId+'" data-module-translated-label="'+moduleLabel+'">'+moduleLabel+'</option>');
 		})
 
-		//register click event for save related  list button
+		//register click event for save related list button
 		relatedList.off('click', '.saveRelatedList').on('click', '.saveRelatedList', function (e) {
 			var currentTarget = jQuery(e.currentTarget);
 			if (currentTarget.attr('disabled') != 'disabled') {
@@ -388,7 +393,7 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 		var thisInstance = this;
 		var contents = jQuery('#layoutEditorContainer').find('.contents');
 
-		for (var index in  thisInstance.updatedBlocksList) {
+		for (var index in thisInstance.updatedBlocksList) {
 			var updatedBlockId = thisInstance.updatedBlocksList[index];
 			var updatedBlock = contents.find('.block_'+updatedBlockId);
 			var firstBlockSortFields = updatedBlock.find('ul[name=sortable1]');
@@ -951,7 +956,7 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 					case 'Text'		:	type = 'String';	break;
 					case 'TextArea'	:	type = 'Text';		break;
 
-					case  'MultiSelectCombo':type = 'Multipicklist';break;
+					case 'MultiSelectCombo':type = 'Multipicklist';break;
 				}
 				data.type = type;
 
@@ -1758,10 +1763,6 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 						thisInstance.makeRelatedModuleSortable();
 						thisInstance.registerRelatedListEvents();
 						thisInstance.setRemovedModulesList();
-						if (jQuery('#addRelationContainer').length > 0) {
-							thisInstance.registerAddRelationSpecificEvents();
-						}
-
 					}
 				}
 			});

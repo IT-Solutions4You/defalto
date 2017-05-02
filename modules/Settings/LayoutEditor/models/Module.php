@@ -12,6 +12,10 @@
 class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 
 	public static $supportedModules = false;
+	const ONE_TO_ONE = '1:1';
+	const ONE_TO_MANY = '1:N';
+	const MANY_TO_ONE = 'N:1';
+	const MANY_TO_MANY = 'N:N';
 
 	/**
 	 * Function that returns all the fields for the module
@@ -446,5 +450,11 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		}
 
 		return $this->relations;
+	}
+
+	public function getRelationTypeFromRelationField($fieldModel) {
+		$db = PearDatabase::getInstance();
+		$result = $db->pquery('SELECT 1 FROM vtiger_relatedlists WHERE relationfieldid=?',array($fieldModel->getId()));
+		return ($db->num_rows($result) > 0) ? self::MANY_TO_ONE : self::ONE_TO_ONE;
 	}
 }

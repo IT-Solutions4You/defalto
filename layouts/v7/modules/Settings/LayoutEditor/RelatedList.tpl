@@ -103,6 +103,11 @@
 																	{/if}
 																</div>
 															</div>
+															<div class="col-sm-1 deleteButton" style="padding-right: 0px;" data-relation="1">
+																<div class="pull-right">
+																	<button class="close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}">x</button>
+																</div>
+															</div>
 														</div>
 													</li>
 												{/if}
@@ -136,37 +141,21 @@
 								{/if}
 							</div>
 							<br>
-							{if $HIDDEN_TAB_EXISTS}
-								<div class="row">
-									<div class="col-sm-2">
-										<strong>
-											{vtranslate('LBL_SELECT_HIDDEN_MODULE', $QUALIFIED_MODULE)}
-										</strong>
-									</div>
-									<div class="col-sm-4">
-										<ul style="list-style: none; width:213px;" class="displayInlineBlock">
-											<li>
-												<div class="row">
-													<select class="select2" multiple name="addToList" placeholder="{vtranslate('LBL_SELECT_MODULE', $QUALIFIED_MODULE)}">
-														{foreach item=MODULE_MODEL from=$RELATED_MODULES}
-															{$ModulesList[$MODULE_MODEL->getId()] = vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}
-															{if !$MODULE_MODEL->isActive()}
-																{array_push($removedModuleIds, $MODULE_MODEL->getId())}
-																<option value="{$MODULE_MODEL->getId()}" data-module-translated-label="{vtranslate($MODULE_MODEL->getRelationModuleName(),$MODULE_MODEL->getRelationModuleName())}">
-																	{vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}
-																</option>
-															{/if}
-														{/foreach}
-													</select>
-												</div>
-											</li>
-										</ul>
-									</div>
-									<div class="col-sm-6">
-										<br>
-									</div>
+							<div class="row hiddenModulesContainer {if !$HIDDEN_TAB_EXISTS}hide{/if}">
+								<div class="col-lg-6" style="padding-right: 0px;">
+									<select class="select2 inputElement" multiple name="addToList" placeholder="{vtranslate('LBL_SELECT_HIDDEN_MODULE', $QUALIFIED_MODULE)}">
+										{foreach item=MODULE_MODEL from=$RELATED_MODULES}
+											{$ModulesList[$MODULE_MODEL->getId()] = vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}
+											{if !$MODULE_MODEL->isActive()}
+												{array_push($removedModuleIds, $MODULE_MODEL->getId())}
+												<option value="{$MODULE_MODEL->getId()}" data-module-translated-label="{vtranslate($MODULE_MODEL->getRelationModuleName(),$MODULE_MODEL->getRelationModuleName())}">
+													{vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}
+												</option>
+											{/if}
+										{/foreach}
+									</select>
 								</div>
-							{/if}
+							</div>
 						</div>
 					</div>
 					<div class='modal-overlay-footer clearfix saveRelatedListContainer hide'>
@@ -177,26 +166,28 @@
 						</div>
 					</div>
 					<li class="moduleCopy hide border1px " style="width: 300px;padding: 5px;">
-						<div class="row" style="margin-bottom: -15px;">
-							<div class="col-sm-1" style="margin-top:18px;">
+						<div class="row">
+							<span class="col-sm-1" style="margin-top:18px;">
 								<img class="cursorPointerMove" src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$QUALIFIED_MODULE)}"/>&nbsp;&nbsp;
-							</div>
-							<div class="col-sm--5" style="margin-top:5px;">
+							</span>
+							<div class="col-sm-5" style="margin-top:4px;">
 								<div class="textOverflowEllipsis">
 									<span class="moduleLabel" style="font-size:15px;"></span>
 								</div>
 								<span class="moduletranslatedLabel"></span>
 							</div>
-							<div class="col-sm-5" style="margin-top:5px;">
+							<div class="col-sm-4" style="margin-top: 4px;">
 								<div class="pull-right">
-									<img src="{vimage_path('1-N.png')}" width="100" height="50" />
+									{if $MODULE_MODEL->get('relationtype') eq '1:N' and $MODULE_MODEL->getRelationModuleName() neq 'Calendar'}
+										<img src="{vimage_path('1-N.png')}" width="100" height="50" />
+									{else}
+										<img src="{vimage_path('N-N.png')}" width="100" height="50" />
+									{/if}
 								</div>
 							</div>
-							<div class="col-sm-2 deleteButton" style="margin-top:18px;">
+							<div class="col-sm-1 deleteButton" style="padding-right: 0px;" data-relation="1">
 								<div class="pull-right">
-									<a href="javascript:void(0)" class="deleteRelationShip pull-right">
-										<i class="fa fa-trash alignMiddle" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}"></i>
-									</a>
+									<button class="close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}">x</button>
 								</div>
 							</div>
 						</div>
