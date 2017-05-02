@@ -101,14 +101,37 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$moduleModel = Settings_LayoutEditor_Module_Model::getInstanceByName($sourceModule);
 		$relatedModuleModels = $moduleModel->getRelations();
 
+		$hiddenRelationTabExists = false;
+		foreach ($relatedModuleModels as $relationModel) {
+			if (!$relationModel->isActive()) {
+				// to show select hidden element only if inactive tab exists 
+				$hiddenRelationTabExists = true;
+				break;
+			}
+		}
+
+		$relationFields = array();
+		$referenceFields = $moduleModel->getFieldsByType('reference');
+
+		foreach ($referenceFields as $fieldModel) {
+			if ($fieldModel->get('uitype') == '52' || !$fieldModel->isActiveField()) {
+				continue;
+			}
+			$relationType = $moduleModel->getRelationTypeFromRelationField($fieldModel);
+			$fieldModel->set('_relationType', $relationType);
+			$relationFields[$fieldModel->getName()] = $fieldModel;
+		}
+
 		$qualifiedModule = $request->getModule(false);
 		$viewer = $this->getViewer($request);
 
 		$viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
-		$viewer->assign('RELATED_MODULES',$relatedModuleModels);
+		$viewer->assign('RELATED_MODULES', $relatedModuleModels);
+		$viewer->assign('RELATION_FIELDS', $relationFields);
+		$viewer->assign('HIDDEN_TAB_EXISTS', $hiddenRelationTabExists);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
-		$viewer->view('RelatedList.tpl',$qualifiedModule);
+		$viewer->view('RelatedList.tpl', $qualifiedModule);
 	}
 
 	public function showFieldEdit(Vtiger_Request $request) {
@@ -139,8 +162,8 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('IS_NAME_FIELD', in_array($fieldInstance->getName(), $moduleModel->getNameFields()));
 
 		$cleanFieldModel = Settings_LayoutEditor_Field_Model::getCleanInstance();
-        $cleanFieldModel->setModule($moduleModel);
-        $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
+		$cleanFieldModel->setModule($moduleModel);
+		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
 
 		$viewer->view('FieldCreate.tpl', $qualifiedModule);
