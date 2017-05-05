@@ -2168,6 +2168,49 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$skippedTables = array('Calendar' => array('vtiger_seactivityrel', 'vtiger_cntactivityrel', 'vtiger_salesmanactivityrel'));
+	$allEntityModules = Vtiger_Module_Model::getEntityModules();
+	require_once './config.inc.php';
+	$dbName = $dbconfig['db_name'];
+	foreach ($allEntityModules as $tabId => $moduleModel) {
+		$moduleName = $moduleModel->getName();
+		$baseTableName = $moduleModel->basetable;
+		$baseTableIndex = $moduleModel->basetableid;
+
+		if ($baseTableName) {
+			//Checking foriegn key with vtiger_crmenity
+			$query = 'SELECT 1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+							WHERE CONSTRAINT_SCHEMA=? AND CONSTRAINT_NAME LIKE ?
+								AND TABLE_NAME=? AND COLUMN_NAME=?
+								AND REFERENCED_TABLE_NAME=? AND REFERENCED_COLUMN_NAME=?';
+			$checkIfConstraintExists = $db->pquery($query, array($dbName, '%fk%', $baseTableName, $baseTableIndex, 'vtiger_crmentity', 'crmid'));
+			if ($db->num_rows($checkIfConstraintExists) < 1) {
+				$db->pquery("ALTER TABLE $baseTableName ADD CONSTRAINT fk_crmid_$baseTableName FOREIGN KEY ($baseTableIndex) REFERENCES vtiger_crmentity (crmid) ON DELETE CASCADE", array());
+			}
+
+			$focus = CRMEntity::getInstance($moduleName);
+			$relatedTables = $focus->tab_name_index;
+			unset($relatedTables[$baseTableName]);
+			unset($relatedTables['vtiger_crmentity']);
+
+			if (is_array($relatedTables)) {
+				if ($skippedTables[$moduleName]) {
+					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTables[$moduleName]));
+				}
+
+				//Checking foriegn key with base table
+				foreach ($relatedTables as $tableName => $index) {
+					$checkIfRelConstraintExists = $db->pquery($query, array($dbName, '%fk%', $tableName, $index, $baseTableName, $baseTableIndex));
+					if ($db->num_rows($checkIfRelConstraintExists) < 1) {
+						$newForiegnKey = "fk_$baseTableIndex"."_$tableName";
+						$db->pquery("ALTER TABLE $tableName ADD CONSTRAINT $newForiegnKey FOREIGN KEY ($index) REFERENCES $baseTableName ($baseTableIndex) ON DELETE CASCADE", array());
+					}
+				}
+			}
+			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype=?)", array($moduleName));
+		}
+	}
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 
