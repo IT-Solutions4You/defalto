@@ -30,3 +30,4 @@ $ADODB_LANG_ARRAY = array (
             DB_ERROR_NOSUCHDB           => 'database ikke fundet',
             DB_ERROR_ACCESS_VIOLATION   => 'utilstr&aelig;kkelige rettigheder'
 );
+?>

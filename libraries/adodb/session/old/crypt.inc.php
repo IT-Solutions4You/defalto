@@ -61,3 +61,4 @@ class MD5Crypt{
 		}
 
 }
+?>

@@ -64,6 +64,7 @@ class MD5Crypt{
 
 
 class SHA1Crypt{
+
 		function keyED($txt,$encrypt_key)
 		{
 
@@ -79,6 +80,8 @@ class SHA1Crypt{
 				return $tmp;
 
 		}
+
+
 
 		function Encrypt($txt,$key)
 		{
@@ -155,3 +158,4 @@ class SHA1Crypt{
 
 
 }
+?>

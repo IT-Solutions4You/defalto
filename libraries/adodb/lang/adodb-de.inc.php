@@ -30,3 +30,4 @@ $ADODB_LANG_ARRAY = array (
             DB_ERROR_NOSUCHDB           => 'keine Datenbank',
             DB_ERROR_ACCESS_VIOLATION   => 'ungen&uml;gende Rechte'
 );
+?>
