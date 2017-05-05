@@ -23,7 +23,7 @@
                     <label class="col-sm-4 control-label">{vtranslate('LBL_EDIT_LIST_PRICE',$MODULE)} &nbsp <span class="redColor">*</span> &nbsp; </label>
                     <div class="controls col-sm-4">
                         <input type="text" name="currentPrice" value="{$CURRENT_PRICE}" data-rule-required="true" class="inputElement" data-rule-currency="true"
-                               data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' />
+                               data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
                     </div>
                 </div>
                 {include file="ModalFooter.tpl"|vtemplate_path:$MODULE}

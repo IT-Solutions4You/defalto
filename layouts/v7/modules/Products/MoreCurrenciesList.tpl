@@ -51,7 +51,7 @@
 									</td>
 									<td>
 										<div>
-											<input {$disable_value} type="text" size="10" class="col-lg-9 form-control convertedPrice" data-rule-currency ="true" name="{$price.curname}" id="{$price.curname}" value="{$price.curvalue}" data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' />
+											<input {$disable_value} type="text" size="10" class="col-lg-9 form-control convertedPrice" data-rule-currency ="true" name="{$price.curname}" id="{$price.curname}" value="{$price.curvalue}" data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' />
 										</div>
 									</td>
 									<td>

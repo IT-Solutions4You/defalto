@@ -114,7 +114,7 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 		var form = this.getForm();
 		this.registerRecordPreSaveEvent(form);
         this.registerSignatureEvent();
-        Settings_Users_PreferenceEdit_Js.registerChangeEventForCurrencySeperator();
+        Settings_Users_PreferenceEdit_Js.registerChangeEventForCurrencySeparator();
         
         var instance = new Settings_Vtiger_Index_Js(); 
         instance.registerBasicSettingsEvents();

@@ -1160,7 +1160,7 @@ $languageStrings = array(
 	'LBL_CREATE_NEW_TAG'=> 'Create New Tag',
 	'LBL_ADD_TAG' => 'Add Tag',
 	'LBL_REMOVE_TAG' => 'Remove Tag',
-	'LBL_TAG_SEPERATOR_DESC' => 'Use comma to separate multiple tags',
+	'LBL_TAG_SEPARATOR_DESC' => 'Use comma to separate multiple tags',
 	'LBL_ENTER_TAG_NAME'=> 'Enter tag name',
 
 	'LBL_SELECT_COLOR' => 'Select Color',
@@ -1630,7 +1630,7 @@ $jsLanguageStrings = array(
 	'LBL_WARNING' => 'Warning',
 	'DELETE_USER_PERMANENT_WARNING' => 'Deleting a user permanently will transfer all records including comments and history to new user.',
 	'JS_CLOSE' => 'Close',
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
+	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Cannot Be Held For Future',
 	'JS_CLOSE' => 'Close',
 

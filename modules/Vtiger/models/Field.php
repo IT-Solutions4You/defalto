@@ -564,8 +564,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		if($this->getFieldDataType() == 'currency') {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$this->fieldInfo['currency_symbol'] = $currentUser->get('currency_symbol');
-			$this->fieldInfo['decimal_seperator'] = $currentUser->get('currency_decimal_separator');
-			$this->fieldInfo['group_seperator'] = $currentUser->get('currency_grouping_separator');
+			$this->fieldInfo['decimal_separator'] = $currentUser->get('currency_decimal_separator');
+			$this->fieldInfo['group_separator'] = $currentUser->get('currency_grouping_separator');
 		}
 
 		if($this->getFieldDataType() == 'owner') {

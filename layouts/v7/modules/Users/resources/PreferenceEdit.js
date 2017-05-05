@@ -10,16 +10,16 @@
 Users_Edit_Js("Settings_Users_PreferenceEdit_Js",{
 	
 	/**
-	 * Function to register change event for currency seperator
+	 * Function to register change event for currency separator
 	 */
-	registerChangeEventForCurrencySeperator : function(){
+	registerChangeEventForCurrencySeparator : function(){
 		var form = jQuery('form');
 		jQuery('[name="currency_decimal_separator"]',form).on('change',function(e){
 			var element = jQuery(e.currentTarget);
 			var selectedValue = element.val();
-			var groupingSeperatorValue = jQuery('[name="currency_grouping_separator"]',form).data('selectedValue');
-			if(groupingSeperatorValue == selectedValue){
-				app.helper.showErrorNotification({'message': app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME')});
+			var groupingSeparatorValue = jQuery('[name="currency_grouping_separator"]',form).data('selectedValue');
+			if(groupingSeparatorValue == selectedValue){
+				app.helper.showErrorNotification({'message': app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME')});
 				var previousSelectedValue = element.data('selectedValue');
 				element.select2('val', previousSelectedValue);
 			} else {
@@ -29,9 +29,9 @@ Users_Edit_Js("Settings_Users_PreferenceEdit_Js",{
 		jQuery('[name="currency_grouping_separator"]',form).on('change',function(e){
 			var element = jQuery(e.currentTarget);
 			var selectedValue = element.val();
-			var decimalSeperatorValue = jQuery('[name="currency_decimal_separator"]',form).data('selectedValue');
-			if(decimalSeperatorValue == selectedValue){
-				app.helper.showErrorNotification({'message': app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME')});
+			var decimalSeparatorValue = jQuery('[name="currency_decimal_separator"]',form).data('selectedValue');
+			if(decimalSeparatorValue == selectedValue){
+				app.helper.showErrorNotification({'message': app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME')});
 				var previousSelectedValue = element.data('selectedValue');
 				element.select2('val', previousSelectedValue);
 			} else {
@@ -92,6 +92,6 @@ Users_Edit_Js("Settings_Users_PreferenceEdit_Js",{
 	 */
 	registerEvents : function(){
 		this._super();
-		Users_PreferenceEdit_Js.registerChangeEventForCurrencySeperator();
+		Users_PreferenceEdit_Js.registerChangeEventForCurrencySeparator();
 	}
 });
