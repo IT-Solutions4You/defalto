@@ -94,8 +94,11 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 			params['module_import_type'] = container.find('[name="module_import_type"]').val();
 			params['module_import_name'] = container.find('[name="module_import_name"]').val();
 
-			AppConnector.request(params).then(
-				function (data) {
+			app.helper.showProgress();
+
+            AppConnector.request(params).then(
+                function (data) {
+                    app.helper.hideProgress(); 					
 					element.addClass('hide');
 					var headerMessage, containerMessage;
 
