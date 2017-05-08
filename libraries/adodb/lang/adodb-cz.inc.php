@@ -37,3 +37,4 @@ $ADODB_LANG_ARRAY = array (
             DB_ERROR_NOSUCHDB           => 'databáze neexistuje',
             DB_ERROR_ACCESS_VIOLATION   => 'nedostate?ná práva'
 );
+?>

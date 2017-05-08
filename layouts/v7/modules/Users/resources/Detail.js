@@ -256,7 +256,7 @@ Vtiger_Detail_Js("Users_Detail_Js",{
 		sourceFieldValue = jQuery('<div/>').html(sourceFieldValue).text();
 		targetFieldValue = jQuery('<div/>').html(targetFieldValue).text();
 		if (targetFieldValue.length > 0 && (sourceFieldValue === targetFieldValue)) {
-			app.helper.showErrorNotification({message: app.vtranslate('JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME')});
+			app.helper.showErrorNotification({message: app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME')});
 			e.preventDefault();
 		}
 	},

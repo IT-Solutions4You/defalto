@@ -779,7 +779,7 @@ class Vtiger_Util_Helper {
 			$formatedDate = $displayTime;
 		} else {
 			/**
-			 * To support strtotime() for 'mm-dd-yyyy' format the seperator should be '/'
+			 * To support strtotime() for 'mm-dd-yyyy' format the separator should be '/'
 			 * For more referrences
 			 * http://php.net/manual/en/datetime.formats.date.php
 			 */

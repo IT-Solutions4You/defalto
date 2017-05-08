@@ -1133,7 +1133,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
   'LBL_CREATE_NEW_TAG' => 'إنشاء علامة جديدة',
   'LBL_ADD_TAG' => 'إضافة علامة',
   'LBL_REMOVE_TAG' => 'إزالة العلامة',
-  'LBL_TAG_SEPERATOR_DESC' => 'استخدام الفاصلة لفصل علامات متعددة',
+  'LBL_TAG_SEPARATOR_DESC' => 'استخدام الفاصلة لفصل علامات متعددة',
   'LBL_ENTER_TAG_NAME' => 'أدخل اسم العلامة',
   'LBL_ADD_NEW_TAG' => 'إضافة علامة',
   'LBL_SELECT_EXISTING_TAG' => 'اكتب هنا لتحديد القائمة الوسم',
@@ -1423,7 +1423,7 @@ $jsLanguageStrings = array(
     'LBL_WARNING' => 'تحذير',
     'DELETE_USER_PERMANENT_WARNING' => 'وحذف مستخدم بشكل دائم نقل جميع السجلات بما في ذلك التعليقات والتاريخ لمستخدم جديد.',
     'JS_CLOSE' => 'قريب',
-    'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'العشري المفرق المفرق والتجمع لا يمكن أن يكون نفس',
+    'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'العشري المفرق المفرق والتجمع لا يمكن أن يكون نفس',
     // For Line Iteam Currency Symbol select while Import
     'JS_CURRENCY_TOOLTIP_CONTENT_TITLE' => 'خط وحدات العملة',
     'JS_CURRENCY_TOOLTIP_CONTENT_MESSAGE' => 'لاستيراد قيم العملات في بنود، وسوف vtiger إدارة استخدام هذا الإعداد لتحديد العملة. أي قيم العملات خارج بنود الجداول، Assumel أن يكون من المفضل العملة في المستخدمين ( مختارة في بلدي تفضيلات )',    

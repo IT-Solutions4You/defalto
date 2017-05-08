@@ -48,7 +48,7 @@ jQuery.validator.addMethod("double", function(value, element, params) {
 		if(groupSeparator === "$"){
 			groupSeparator = "\\$";
 		}
-		//Replace all occurence of groupSeperator with ''.
+		//Replace all occurence of groupSeparator with ''.
 		var regex = new RegExp(groupSeparator,'g');
 		strippedValue = strippedValue.replace(regex, '');
 

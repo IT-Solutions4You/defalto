@@ -30,3 +30,4 @@ $ADODB_LANG_ARRAY = array (
 	DB_ERROR_NOSUCHDB           => 'base de donn&eacute;es inconnue',
 	DB_ERROR_ACCESS_VIOLATION   => 'droits insuffisants'
 );
+?>

@@ -75,7 +75,7 @@
 							<span class="input-group-addon">{$USER_MODEL->get('currency_symbol')}</span>
 							<input type="text" class="inputElement" name="{$NAME_ATTR}"
 								value="{$FIELD_MODEL->getEditViewDisplayValue($DEFAULT_VALUE, true)}"
-								data-decimal-seperator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-seperator='{$USER_MODEL->get('currency_grouping_separator')}' style='width: 75%'/>
+								data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' style='width: 75%'/>
 						</div>
 					{else if $FIELD_MODEL->getFieldName() eq "terms_conditions" && $FIELD_MODEL->get('uitype') == 19}
 						{assign var=INVENTORY_TERMS_AND_CONDITIONS_MODEL value= Settings_Vtiger_MenuItem_Model::getInstance("INVENTORYTERMSANDCONDITIONS")}

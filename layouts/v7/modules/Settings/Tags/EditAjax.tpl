@@ -39,7 +39,7 @@
 						<div class=" vt-default-callout vt-info-callout tagInfoblock">
 							<h5 class="vt-callout-header">
 							<span class="fa fa-info-circle"></span>&nbsp; Info </h5>
-							<div>{vtranslate('LBL_TAG_SEPERATOR_DESC', $MODULE)}</div><br>
+							<div>{vtranslate('LBL_TAG_SEPARATOR_DESC', $MODULE)}</div><br>
 							<div>{vtranslate('LBL_SHARED_TAGS_ACCESS',$QUALIFIED_MODULE)}</div>
 						</div>
 					</div>

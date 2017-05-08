@@ -998,7 +998,7 @@ $languageStrings = array(
   'LBL_CREATE_NEW_TAG' => 'Создать новый тег',
   'LBL_ADD_TAG' => 'Добавить Метку',
   'LBL_REMOVE_TAG' => 'Удалить Тег',
-  'LBL_TAG_SEPERATOR_DESC' => 'Используйте запятую для разделения нескольких тегов',
+  'LBL_TAG_SEPARATOR_DESC' => 'Используйте запятую для разделения нескольких тегов',
   'LBL_ENTER_TAG_NAME' => 'Введите имя тега',
   'LBL_ADD_NEW_TAG' => 'Добавить Метку',
   'LBL_SELECT_EXISTING_TAG' => 'Введите здесь, чтобы выбрать существующую метку',
@@ -1227,7 +1227,7 @@ $jsLanguageStrings = array(
     'LBL_WARNING' => 'Предупреждение',
     'DELETE_USER_PERMANENT_WARNING' => 'Удаление пользователя постоянно будет передать все записи, включая комментарии и истории до нового пользователя.',
     'JS_CLOSE' => 'Близко',
-    'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Десятичная Seperator и группировка Seperator не могу быть таким же',
+    'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Десятичная Separator и группировка Separator не могу быть таким же',
     // For Line Iteam Currency Symbol select while Import
     'JS_CURRENCY_TOOLTIP_CONTENT_TITLE' => 'Позиции валюты',
     'JS_CURRENCY_TOOLTIP_CONTENT_MESSAGE' => 'Валютные ценности в очереди за импортом предметов, Vtiger будет использовать этот параметр, чтобы определить валюту. Любые валютные ценности за пределами таблиц позиций, предполагаются в разделе Пользователи предпочитают валюты (выбирается в моих предпочтениях)',

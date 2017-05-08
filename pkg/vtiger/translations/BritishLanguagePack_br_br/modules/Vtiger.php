@@ -989,7 +989,7 @@ $languageStrings = array(
   'LBL_CREATE_NEW_TAG' => 'Create new tag',
   'LBL_ADD_TAG' => 'Add Tag',
   'LBL_REMOVE_TAG' => 'Remove Tag',
-  'LBL_TAG_SEPERATOR_DESC' => 'Use comma to separate multiple tags',
+  'LBL_TAG_SEPARATOR_DESC' => 'Use comma to separate multiple tags',
   'LBL_ENTER_TAG_NAME' => 'Enter tag name',
   'LBL_ADD_NEW_TAG' => 'Add Tag',
   'LBL_SELECT_EXISTING_TAG' => 'Type here to select an existing tag',
@@ -1213,7 +1213,7 @@ $jsLanguageStrings = array(
     'LBL_WARNING' => 'Warning',
     'DELETE_USER_PERMANENT_WARNING' => 'Deleting a user permanently will transfer all records including comments and history to new user.',
     'JS_CLOSE' => 'Close',
-    'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
+    'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
     // For Line Iteam Currency Symbol select while Import
     'JS_CURRENCY_TOOLTIP_CONTENT_TITLE' => 'Line Items Currency',
     'JS_CURRENCY_TOOLTIP_CONTENT_MESSAGE' => 'For importing Currency values in Line items, Vtiger will use this setting to identify the currency. Any currency values outside the line items tables, are assumed to be in User\'s preferred currency (selected in \'My Preferences\')',

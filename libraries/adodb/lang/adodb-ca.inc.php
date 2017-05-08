@@ -31,3 +31,5 @@ $ADODB_LANG_ARRAY = array (
             DB_ERROR_NOSUCHDB           => 'base de dades inexistent',
             DB_ERROR_ACCESS_VIOLATION   => 'permisos insuficients'
 );
+?>
+		

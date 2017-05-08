@@ -30,3 +30,5 @@ $ADODB_LANG_ARRAY = array (
 	    DB_ERROR_NOSUCHDB		=> 'áíÓ åäÇáß ÞÇÚÏÉ ÈíÇäÇÊ ÈåÐÇ ÇáÇÓã',
 	    DB_ERROR_ACCESS_VIOLATION	=> 'ÓãÇÍíÇÊ ÛíÑ ßÇÝíÉ'
 );
+?>
+		
