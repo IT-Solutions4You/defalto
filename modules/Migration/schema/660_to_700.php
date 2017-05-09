@@ -673,7 +673,7 @@ if(defined('VTIGER_UPGRADE')) {
 				continue;
 			}
 			$blockQuery = 'SELECT blockid FROM vtiger_blocks WHERE tabid=? ORDER BY sequence LIMIT 1';
-			$result = $db->pquery($blockQuery, array($moduleInstance->id, 1));
+			$result = $db->pquery($blockQuery, array($moduleInstance->id));
 			$block = $db->query_result($result, 0, 'blockid');
 			if ($block) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
@@ -1253,7 +1253,7 @@ if(defined('VTIGER_UPGRADE')) {
 				continue;
 			}
 			$blockQuery = 'SELECT blocklabel FROM vtiger_blocks WHERE tabid=? ORDER BY sequence LIMIT 1';
-			$result = $db->pquery($blockQuery, array($moduleInstance->id, 1));
+			$result = $db->pquery($blockQuery, array($moduleInstance->id));
 			$block = $db->query_result($result, 0, 'blocklabel');
 			if ($block) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
@@ -1291,7 +1291,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$tableName = $focus->table_name;
 
 			$blockQuery = 'SELECT blocklabel FROM vtiger_blocks WHERE tabid=? ORDER BY sequence LIMIT 1';
-			$result = $db->pquery($blockQuery, array($moduleInstance->id, 1));
+			$result = $db->pquery($blockQuery, array($moduleInstance->id));
 			$block = $db->query_result($result, 0, 'blocklabel');
 			if ($block) {
 				$blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
