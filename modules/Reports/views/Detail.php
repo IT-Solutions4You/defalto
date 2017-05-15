@@ -158,14 +158,14 @@ class Reports_Detail_View extends Vtiger_Index_View {
 		$data = $this->reportData;
 		$calculation = $this->calculationFields;
 
+		$pagingModel = new Vtiger_Paging_Model();
+		$pagingModel->set('page', $page);
+		$pagingModel->set('limit', self::REPORT_LIMIT+1);
+
 		if(empty($data)){
 			$reportModel = Reports_Record_Model::getInstanceById($record);
 			$reportModel->setModule('Reports');
 			$reportType = $reportModel->get('reporttype');
-
-			$pagingModel = new Vtiger_Paging_Model();
-			$pagingModel->set('page', $page);
-			$pagingModel->set('limit', self::REPORT_LIMIT+1);
 
 			$reportData = $reportModel->getReportData($pagingModel);
 			$data = $reportData['data'];
