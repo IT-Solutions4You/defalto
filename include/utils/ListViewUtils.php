@@ -674,7 +674,7 @@ function decode_emptyspace_html($str){
 function decode_html($str) {
 	global $default_charset;
 	// Direct Popup action or Ajax Popup action should be treated the same.
-	if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'Popup') ||(isset($_REQUEST['action']) && $_REQUEST['file'] == 'Popup'))
+	if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'Popup') || (isset($_REQUEST['file']) && $_REQUEST['file'] == 'Popup'))
 		return html_entity_decode($str);
 	else
 		return html_entity_decode($str, ENT_QUOTES, $default_charset);
