@@ -2691,7 +2691,7 @@ class CRMEntity {
 		//as mysql query optimizer puts crmentity on the left side and considerably slow down
 		$query = preg_replace('/\s+/', ' ', $query);
 		if (strripos($query, ' WHERE ') !== false) {
-			vtlib_setup_modulevars($module, $this);
+			vtlib_setup_modulevars($this->moduleName, $this);
 			$query = str_ireplace(' where ', " WHERE $this->table_name.$this->table_index > 0  AND ", $query);
 		}
 		return $query;
@@ -2934,6 +2934,8 @@ class CRMEntity {
 class TrackableObject implements ArrayAccess, IteratorAggregate {
 	private $storage;
 	private $trackingEnabled = true;
+	private $tracking;
+	
 	function __construct($value = array()) {
 		$this->storage = $value;
 	}
