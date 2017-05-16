@@ -1,111 +1,124 @@
 <?php
-/*+**********************************************************************************
+/* +**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- ************************************************************************************/
+ * ***********************************************************************************/
+
 chdir (dirname(__FILE__) . '/..');
 include_once 'vtigerversion.php';
 include_once 'data/CRMEntity.php';
+include_once 'includes/main/WebUI.php';
 
-@session_start();
-
-if(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
-	global $root_directory, $log;
-	$userName = $_REQUEST['username'];
-	$password = $_REQUEST['password'];
-
-	$user = CRMEntity::getInstance('Users');
-	$user->column_fields['user_name'] = $userName;
-	if ($user->doLogin($password)) {
-		$zip = new ZipArchive();
-		$fileName = 'vtiger6.zip';
-		if ($zip->open($fileName)) {
-			for ($i = 0; $i < $zip->numFiles; $i++) {
-				$log->fatal('Filename: ' . $zip->getNameIndex($i) . '<br />');
+$errorMessage = $_REQUEST['error'];
+if (!$errorMessage) {
+	$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
+	$vtigerStandardModules = array( 'Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal',
+									'Dashboard', 'Documents', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
+									'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 'MailManager', 'Mobile', 'ModComments', 'ModTracker',
+									'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 'ProjectTask', 'PurchaseOrder',
+									'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
+									'Webforms', 'Webmails', 'WSAPP');
+	$nonPortedExtns = array();
+	$db = PearDatabase::getInstance();
+	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE trim(name) NOT IN ('.generateQuestionMarks($vtigerStandardModules).')', $vtigerStandardModules);
+	while($row = $db->fetch_row($result)) {
+		$module = $row['name'];//label
+		if ($module) {
+			$moduleModelsList = $extensionStoreInstance->findListings($module, 'Extension');
+			if ($moduleModelsList) {
+				foreach ($moduleModelsList as $moduleId => $moduleModel) {
+					$vtigerVersion = $moduleModel->get('vtigerVersion');
+					$vtigerMaxVersion = $moduleModel->get('vtigerMaxVersion');
+					if (($vtigerVersion && strpos($vtigerVersion, '7.') === false)
+							&& ($vtigerMaxVersion && strpos($vtigerMaxVersion, '7.') === false)) {
+						$nonPortedExtns[] = $module;
+					}
+				}
 			}
-			if ($zip->extractTo($root_directory)) {
-				$zip->close();
-				
-				$userid = $user->retrieve_user_id($userName);
-				$_SESSION['authenticated_user_id'] = $userid;
-
-				header('Location: ../index.php?module=Migration&view=Index&mode=step1');
-			} else {
-				$errorMessage = '<p>ERROR EXTRACTING MIGRATION ZIP FILE!</p>';
-				header('Location: index.php?error='.$errorMessage);
-			}
-		} else {
-			$errorMessage = 'ERROR READING MIGRATION ZIP FILE!';
-			header('Location: index.php?error='.$errorMessage);
 		}
-	} else {
-		$errorMessage = 'INVALID CREDENTIALS';
-		header('Location: index.php?error='.$errorMessage);
+	}
+	if ($nonPortedExtns) {
+		$portingMessage = 'Following extensions seem to have failed upgrade check with Vtiger7.<br><ul>';
+		foreach ($nonPortedExtns as $module) {
+			$portingMessage .= "<li>$module</li>";
+		}
+		$portingMessage .= '</ul>';
 	}
 }
 ?>
+
 <html>
-    <head>
+	<head>
 		<title>Vtiger CRM Setup</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="resources/js/jquery-min.js"></script>
-		<link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../layouts/v7/lib/todc/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../layouts/v7/lib/todc/css/todc-bootstrap.min.css" rel="stylesheet">
 		<link href="resources/css/mkCheckbox.css" rel="stylesheet">
 		<link href="resources/css/style.css" rel="stylesheet">
-    </head>
-    <body>
+	</head>
+	<body style="font-size: 14px !important;">
 		<div class="container-fluid page-container">
-			<div class="row-fluid">
-				<div class="span6">
+			<div class="row">
+				<div class="col-lg-6">
 					<div class="logo">
 						<img src="resources/images/vt1.png" alt="Vtiger Logo"/>
 					</div>
 				</div>
-				<div class="span6">
+				<div class="col-lg-6">
 					<div class="head pull-right">
 						<h3>Migration Wizard</h3>
 					</div>
 				</div>
 			</div>
-			<div class="row-fluid main-container">
-				<div class="span12 inner-container">
-					<div class="row-fluid">
-						<div class="span10">
-							<h4 class=""> Welcome </h4>
+			<div class="row main-container">
+				<div class="col-lg-12 inner-container">
+					<div class="row">
+						<div class="col-lg-10">
+							<h4 class="">Welcome</h4>
 						</div>
-						<div class="span2">
-							<a href="https://wiki.vtiger.com/vtiger6/" target="_blank" class="pull-right">
+						<div class="col-lg-2">
+							<a href="https://wiki.vtiger.com/vtiger7/" target="_blank" class="pull-right">
 								<img src="resources/images/help40.png" alt="Help-Icon"/>
 							</a>
 						</div>
 					</div>
 					<hr>
-					<div class="row-fluid">
-						<div class="span4 welcome-image">
-							<img src="resources/images/migration_screen.png" alt="Vtiger Logo"/>
+					<div class="row">
+						<div class="col-lg-4 welcome-image">
+							<img src="resources/images/migration_screen.png" alt="Vtiger Logo" style="width: 100%;"/>
 						</div>
-						<div class="span8">
-							<?php $currentVersion = explode('.', $vtiger_current_version);
-							if($currentVersion[0] >= 6 && $currentVersion[1] >= 0){?>
-							<div>
-								<h3> Welcome to Vtiger Migration </h3>
-								<?php
-								if(isset($_REQUEST['error'])) {
-									echo '<span><font color="red"><b>'.filter_var($_REQUEST['error'], FILTER_SANITIZE_STRING).'</b></font></span><br><br>';
-								}?>
-								<p>We have detected that you have <strong>Vtiger <?php echo $vtiger_current_version?> </strong>installation. <br> <br> </p>
+						<?php
+							$currentVersion = explode('.', $vtiger_current_version);
+							 if ($portingMessage) { ?>
+								<div class="col-lg-8">
+									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
+									<p><?php echo $portingMessage;?></p>
+								</div>
+							</div>
+							<div class="button-container col-lg-12">
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+						<?php } else if($currentVersion[0] >= 6 && $currentVersion[1] >= 0) { ?>
+							<div class="col-lg-8">
+								<h3> Welcome to Vtiger Migration</h3>
+								<?php if(isset($errorMessage)) {
+									echo '<span><font color="red"><b>'.filter_var($errorMessage, FILTER_SANITIZE_STRING).'</b></font></span><br><br>';
+								} ?>
+								<p>We have detected that you have <strong>Vtiger <?php echo $vtiger_current_version ?></strong> installation.<br><br></p>
 								<p>
-									<strong> Warning: </strong>Please note that it is not possible to revert back to <?php echo $vtiger_current_version?> after the upgrade to vtiger 6 <br>
-									So, it is important to take a backup of the <?php echo $vtiger_current_version?> installation, including the source files
-									and database.</p><br>
-								<form action="index.php" method="POST">
-									<div><input type="checkbox" id="checkBox1" name="checkBox1"/> <div class="chkbox"></div> I have taken the backup of database <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a> </div><br>
-									<div><input type="checkbox" id="checkBox2" name="checkBox2"/> <div class="chkbox"></div> I have taken the backup of source folder <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a></div><br>
-									<br><div>
+									<strong>Warning: </strong>
+									Please note that it is not possible to revert back to <?php echo $vtiger_current_version ?>&nbsp; after the upgrade to vtiger 6 <br>
+									So, it is important to take a backup of the <?php echo $vtiger_current_version ?> installation, including the source files and database.
+								</p><br>
+								<form action="../index.php?module=Migration&action=Extract&mode=reset" method="POST">
+									<div><input type="checkbox" id="checkBox1" name="checkBox1"/><div class="chkbox"></div> I have taken the backup of database <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a></div><br>
+									<div><input type="checkbox" id="checkBox2" name="checkBox2"/><div class="chkbox"></div> I have taken the backup of source folder <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a></div><br>
+									<br>
+									<div>
 										<span id="error"></span>
 										User Name <span class="no">&nbsp;</span>
 										<input type="text" value="" name="username" id="username" />&nbsp;&nbsp;
@@ -118,29 +131,31 @@ if(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
 									</div>
 								</form>
 							</div>
-							<?php } else if($currentVersion[0] < 6){?>
-							<div><br><br><br><br><br>
-								<h3><font color='red'>WARNING : Cannot continue with Migration </font></h3>
-								<p>
-									We detected that this installation is running <strong>Vtiger CRM </strong><?php if($vtiger_current_version < 6 ) { echo '<b>'.$vtiger_current_version.'</b>'; } ?>.
+						<?php } else if($currentVersion[0] < 6) { ?>
+							<div class="col-lg-8">
+								<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
+								<p>We detected that this installation is running <strong>Vtiger CRM</strong>
+										<?php
+											if($vtiger_current_version < 6 ) {
+												echo '<b>'.$vtiger_current_version.'</b>';
+											}
+										?>.
 									Please upgrade to <strong>5.4.0</strong> first before continuing with this wizard.
 								</p>
-								<br><br><br><br>
-								<div class="button-container">
-										<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary" value="Finish"/>
-								</div>
 							</div>
-							<?php } else {?><br><br><br><br>
-								<h3><font color='red'>WARNING : Cannot continue with Migration </font></h3>
-								<p>
-									<strong>We detected that this source is upgraded latest version.</strong>
-								</p>
-								<br><br><br><br>
-								<div class="button-container">
-										<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary" value="Finish"/>
+							<div class="button-container col-lg-12">
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+						<?php } else { ?>
+								<div class="col-lg-8">	
+									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3>
+									<br>
+									<p>
+										We detected that this source is upgraded latest version.
+									</p>
 								</div>
-							<?php }?>
-						</div>
+								<div class="button-container col-lg-12">
+									<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+						<?php } ?>
 					</div>
 				</div>
 			</div>
@@ -159,6 +174,6 @@ if(isset($_REQUEST['username']) && isset($_REQUEST['password'])){
 					});
 				});
 			</script>
-    </body>
+	</body>
 </html>
 
