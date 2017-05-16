@@ -2848,6 +2848,9 @@ class ReportRun extends CRMEntity {
 		$advfiltersql = $this->getAdvFilterSql($reportid);
 
 		$this->totallist = $columnstotallist;
+		
+		$wheresql = "";
+		
 		global $current_user;
 		//Fix for ticket #4915.
 		$selectlist = $columnlist;
