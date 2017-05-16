@@ -7,7 +7,7 @@
 * All Rights Reserved.
 ************************************************************************************}
 
-<div class="row-fluid main-container">
+<div class="row main-container">
 	<div class="inner-container">
 		<div class="row">
 			<div class="col-sm-10">

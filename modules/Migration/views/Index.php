@@ -22,9 +22,9 @@ class Migration_Index_View extends Vtiger_Basic_View {
 	}
 
 	public function process(Vtiger_Request $request) {
-                // Override error reporting to production mode
-                version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED) : error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT); 
-            
+		// Override error reporting to production mode
+		version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED) : error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT); 
+
 		$mode = $request->getMode();
 		if(!empty($mode)) {
 			$this->invokeExposedMethod($mode, $request);
@@ -52,6 +52,12 @@ class Migration_Index_View extends Vtiger_Basic_View {
 		parent::preProcess($request, false);
 	}
 
+	public function postProcess(Vtiger_Request $request) {
+		$viewer = $this->getViewer($request);
+		$moduleName = $request->getModule();
+		$viewer->view('InstallPostProcess.tpl', 'Install');
+	}
+
 	public function getHeaderCss(Vtiger_Request $request) {
 		$headerCssInstances = array();
 		$cssFileNames = array(
@@ -66,7 +72,7 @@ class Migration_Index_View extends Vtiger_Basic_View {
 	}
 
 	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = array();
+		$headerScriptInstances = parent::getHeaderScripts($request);
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
