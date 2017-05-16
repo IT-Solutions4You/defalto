@@ -96,7 +96,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		
 		// Better place this here as session get initiated
 		//skipping the csrf checking for the forgot(reset) password 
-		if($request->get('mode') != 'reset' && $request->get('action') != 'Login')
+		if($request->get('mode') != 'reset' && $request->get('action') != 'Login' && $request->get('mode') != 'fromMig')
 			require_once 'libraries/csrf-magic/csrf-magic.php';
 
 		// TODO - Get rid of global variable $current_user
