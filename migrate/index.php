@@ -102,7 +102,7 @@ if (!$errorMessage) {
 								</div>
 							</div>
 							<div class="button-container col-lg-12">
-								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+								<input type="button" onclick="window.location.href='../index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
 						<?php } else if($currentVersion[0] >= 6 && $currentVersion[1] >= 0) { ?>
 							<div class="col-lg-8" style="padding-left: 30px;">
 								<h3> Welcome to Vtiger Migration</h3>
