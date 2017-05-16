@@ -111,7 +111,7 @@ if (!$errorMessage) {
 								<p>We have detected that you have <strong>Vtiger <?php echo $vtiger_current_version ?></strong> installation.<br><br></p>
 								<p>
 									<strong>Warning: </strong>
-									Please note that it is not possible to revert back to <?php echo $vtiger_current_version ?>&nbsp; after the upgrade to vtiger 6 <br>
+									Please note that it is not possible to revert back to <?php echo $vtiger_current_version ?>&nbsp;after the upgrade to vtiger 7 <br>
 									So, it is important to take a backup of the <?php echo $vtiger_current_version ?> installation, including the source files and database.
 								</p><br>
 								<form action="../index.php?module=Migration&action=Extract&mode=reset" method="POST">
