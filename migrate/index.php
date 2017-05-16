@@ -42,7 +42,7 @@ if (!$errorMessage) {
 		}
 	}
 	if ($nonPortedExtns) {
-		$portingMessage = 'Following extensions seem to have failed upgrade check with Vtiger7.<br><ul>';
+		$portingMessage = 'Following extension(s) seem to have failed upgrade check with Vtiger7.<br><ul>';
 		foreach ($nonPortedExtns as $module) {
 			$portingMessage .= "<li>$module</li>";
 		}
@@ -90,12 +90,13 @@ if (!$errorMessage) {
 					<hr>
 					<div class="row">
 						<div class="col-lg-4 welcome-image">
-							<img src="resources/images/migration_screen.png" alt="Vtiger Logo" style="width: 100%;"/>
+							<img src="resources/images/migration_screen.png" alt="Vtiger Logo" style="width: 100%; margin-left: 15px;"/>
 						</div>
 						<?php
 							$currentVersion = explode('.', $vtiger_current_version);
 							 if ($portingMessage) { ?>
-								<div class="col-lg-8">
+								<div class="col-lg-1"></div>
+								<div class="col-lg-7">
 									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
 									<p><?php echo $portingMessage;?></p>
 								</div>
@@ -103,7 +104,7 @@ if (!$errorMessage) {
 							<div class="button-container col-lg-12">
 								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
 						<?php } else if($currentVersion[0] >= 6 && $currentVersion[1] >= 0) { ?>
-							<div class="col-lg-8">
+							<div class="col-lg-8" style="padding-left: 30px;">
 								<h3> Welcome to Vtiger Migration</h3>
 								<?php if(isset($errorMessage)) {
 									echo '<span><font color="red"><b>'.filter_var($errorMessage, FILTER_SANITIZE_STRING).'</b></font></span><br><br>';
@@ -132,7 +133,8 @@ if (!$errorMessage) {
 								</form>
 							</div>
 						<?php } else if($currentVersion[0] < 6) { ?>
-							<div class="col-lg-8">
+							<div class="col-lg-1"></div>
+							<div class="col-lg-7">
 								<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
 								<p>We detected that this installation is running <strong>Vtiger CRM</strong>
 										<?php
@@ -146,15 +148,16 @@ if (!$errorMessage) {
 							<div class="button-container col-lg-12">
 								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
 						<?php } else { ?>
-								<div class="col-lg-8">	
-									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3>
-									<br>
-									<p>
-										We detected that this source is upgraded latest version.
-									</p>
-								</div>
-								<div class="button-container col-lg-12">
-									<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+							<div class="col-lg-1"></div>
+							<div class="col-lg-7">
+								<h3><font color="red">WARNING : Cannot continue with Migration</font></h3>
+								<br>
+								<p>
+									We detected that this source is upgraded latest version.
+								</p>
+							</div>
+							<div class="button-container col-lg-12">
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
 						<?php } ?>
 					</div>
 				</div>
