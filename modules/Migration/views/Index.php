@@ -55,7 +55,7 @@ class Migration_Index_View extends Vtiger_Basic_View {
 	public function postProcess(Vtiger_Request $request) {
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
-		$viewer->view('InstallPostProcess.tpl', 'Install');
+		$viewer->view('MigrationPostProcess.tpl', $moduleName);
 	}
 
 	public function getHeaderCss(Vtiger_Request $request) {

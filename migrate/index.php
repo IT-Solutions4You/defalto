@@ -16,15 +16,14 @@ include_once 'includes/main/WebUI.php';
 $errorMessage = $_REQUEST['error'];
 if (!$errorMessage) {
 	$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
-	$vtigerStandardModules = array( 'Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal',
-									'Dashboard', 'Documents', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
+	$vtigerStandardModules = array( 'Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal', 'Dashboard', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
 									'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 'MailManager', 'Mobile', 'ModComments', 'ModTracker',
 									'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 'ProjectTask', 'PurchaseOrder',
 									'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
 									'Webforms', 'Webmails', 'WSAPP');
 	$nonPortedExtns = array();
 	$db = PearDatabase::getInstance();
-	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE trim(name) NOT IN ('.generateQuestionMarks($vtigerStandardModules).')', $vtigerStandardModules);
+	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype != ? AND presence != ? AND trim(name) NOT IN ('.generateQuestionMarks($vtigerStandardModules).')', array(1, 1, $vtigerStandardModules));
 	while($row = $db->fetch_row($result)) {
 		$module = $row['name'];//label
 		if ($module) {
@@ -42,7 +41,7 @@ if (!$errorMessage) {
 		}
 	}
 	if ($nonPortedExtns) {
-		$portingMessage = 'Following extensions seem to have failed upgrade check with Vtiger7.<br><ul>';
+		$portingMessage = 'Following custom modules are not compatible with Vtiger 7. Please disable these modules to proceed.';
 		foreach ($nonPortedExtns as $module) {
 			$portingMessage .= "<li>$module</li>";
 		}
@@ -90,20 +89,27 @@ if (!$errorMessage) {
 					<hr>
 					<div class="row">
 						<div class="col-lg-4 welcome-image">
-							<img src="resources/images/migration_screen.png" alt="Vtiger Logo" style="width: 100%;"/>
+							<img src="resources/images/migration_screen.png" alt="Vtiger Logo" style="width: 100%; margin-left: 15px;"/>
 						</div>
 						<?php
 							$currentVersion = explode('.', $vtiger_current_version);
 							 if ($portingMessage) { ?>
-								<div class="col-lg-8">
+								<div class="col-lg-1"></div>
+								<div class="col-lg-7">
 									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
 									<p><?php echo $portingMessage;?></p>
 								</div>
 							</div>
 							<div class="button-container col-lg-12">
-								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+								<div class="pull-right">
+									<form action="../index.php?module=Migration&action=DisableModules&mode=fromMig" method="POST">
+										<input type="hidden" name="modulesList" <?php echo 'value="'.Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($nonPortedExtns)).'"'; ?> />
+										<input type="submit" class="btn btn-warning" value="Disable modules & Proceed"/>
+										<input type="button" onclick="window.location.href='../index.php'" class="btn btn-default" value="Close"/>
+									</form>
+								</div>
 						<?php } else if($currentVersion[0] >= 6 && $currentVersion[1] >= 0) { ?>
-							<div class="col-lg-8">
+							<div class="col-lg-8" style="padding-left: 30px;">
 								<h3> Welcome to Vtiger Migration</h3>
 								<?php if(isset($errorMessage)) {
 									echo '<span><font color="red"><b>'.filter_var($errorMessage, FILTER_SANITIZE_STRING).'</b></font></span><br><br>';
@@ -111,10 +117,10 @@ if (!$errorMessage) {
 								<p>We have detected that you have <strong>Vtiger <?php echo $vtiger_current_version ?></strong> installation.<br><br></p>
 								<p>
 									<strong>Warning: </strong>
-									Please note that it is not possible to revert back to <?php echo $vtiger_current_version ?>&nbsp; after the upgrade to vtiger 6 <br>
+									Please note that it is not possible to revert back to <?php echo $vtiger_current_version ?>&nbsp;after the upgrade to vtiger 7 <br>
 									So, it is important to take a backup of the <?php echo $vtiger_current_version ?> installation, including the source files and database.
 								</p><br>
-								<form action="../index.php?module=Migration&action=Extract&mode=reset" method="POST">
+								<form action="../index.php?module=Migration&action=Extract&mode=fromMig" method="POST">
 									<div><input type="checkbox" id="checkBox1" name="checkBox1"/><div class="chkbox"></div> I have taken the backup of database <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a></div><br>
 									<div><input type="checkbox" id="checkBox2" name="checkBox2"/><div class="chkbox"></div> I have taken the backup of source folder <a href="http://community.vtiger.com/help/vtigercrm/administrators/backup.html" target="_blank" >(how to?)</a></div><br>
 									<br>
@@ -127,12 +133,13 @@ if (!$errorMessage) {
 									</div>
 									<br><br><br>
 									<div class="button-container">
-										<input type="submit" class="btn btn-large btn-primary" id="startMigration" name="startMigration" value="Start Migration" />
+										<input type="submit" class="btn btn-primary" id="startMigration" name="startMigration" value="Start Migration" />
 									</div>
 								</form>
 							</div>
 						<?php } else if($currentVersion[0] < 6) { ?>
-							<div class="col-lg-8">
+							<div class="col-lg-1"></div>
+							<div class="col-lg-7">
 								<h3><font color="red">WARNING : Cannot continue with Migration</font></h3><br>
 								<p>We detected that this installation is running <strong>Vtiger CRM</strong>
 										<?php
@@ -144,17 +151,18 @@ if (!$errorMessage) {
 								</p>
 							</div>
 							<div class="button-container col-lg-12">
-								<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-primary pull-right" value="Finish"/>
 						<?php } else { ?>
-								<div class="col-lg-8">	
-									<h3><font color="red">WARNING : Cannot continue with Migration</font></h3>
-									<br>
-									<p>
-										We detected that this source is upgraded latest version.
-									</p>
-								</div>
-								<div class="button-container col-lg-12">
-									<input type="button" onclick="window.location.href='index.php'" class="btn btn-large btn-primary pull-right" value="Finish"/>
+							<div class="col-lg-1"></div>
+							<div class="col-lg-7">
+								<h3><font color="red">WARNING : Cannot continue with Migration</font></h3>
+								<br>
+								<p>
+									We detected that this source is upgraded latest version.
+								</p>
+							</div>
+							<div class="button-container col-lg-12">
+								<input type="button" onclick="window.location.href='index.php'" class="btn btn-primary pull-right" value="Finish"/>
 						<?php } ?>
 					</div>
 				</div>
