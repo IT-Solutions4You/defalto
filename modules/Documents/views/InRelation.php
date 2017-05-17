@@ -125,6 +125,7 @@ class Documents_InRelation_View extends Vtiger_RelatedList_View {
 		$viewer->assign('IS_EDITABLE', $relationModel->isEditable());
 		$viewer->assign('IS_DELETABLE', $relationModel->isDeletable());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('IS_CREATE_PERMITTED', $relatedModuleModel->isPermitted('CreateView')); 
 		$viewer->assign('VIEW', $request->get('view'));
 		$viewer->assign('PARENT_ID', $parentId);
 		$viewer->assign('SEARCH_DETAILS', $searchParams);

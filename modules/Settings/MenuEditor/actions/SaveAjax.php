@@ -58,11 +58,7 @@ Class Settings_MenuEditor_SaveAjax_Action extends Settings_Vtiger_IndexAjax_View
 		$db = PearDatabase::getInstance();
 		foreach ($moduleSequence as $moduleName => $sequence) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-			if ($moduleModel->get('source') == 'custom') {
-				$db->pquery('UPDATE vtiger_app2tab SET sequence = ?, appname = ? WHERE tabid = ?', array($sequence, $appName, $moduleModel->getId()));
-			} else {
-				$db->pquery('UPDATE vtiger_app2tab SET sequence = ? WHERE tabid = ? AND appname = ?', array($sequence, $moduleModel->getId(), $appName));
-			}
+			$db->pquery('UPDATE vtiger_app2tab SET sequence = ? WHERE tabid = ? AND appname = ?', array($sequence, $moduleModel->getId(), $appName));
 		}
 
 		$response = new Vtiger_Response();
