@@ -156,6 +156,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				'linklabel' => vtranslate('LBL_SELECT')." ".vtranslate('SINGLE_'.$relatedModel->getName(), $relatedModel->getName()),
 				'linkurl' => '',
 				'linkicon' => '',
+				'linkmodule' => $relatedModel->getName(),
 			)
 		);
 
