@@ -2170,8 +2170,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$skippedTables = array('Calendar' => array('vtiger_seactivityrel', 'vtiger_cntactivityrel', 'vtiger_salesmanactivityrel'));
 	$allEntityModules = Vtiger_Module_Model::getEntityModules();
-	require_once './config.inc.php';
-	$dbName = $dbconfig['db_name'];
+	$dbName = $db->dbName;
 	foreach ($allEntityModules as $tabId => $moduleModel) {
 		$moduleName = $moduleModel->getName();
 		$baseTableName = $moduleModel->basetable;
@@ -2200,10 +2199,18 @@ if(defined('VTIGER_UPGRADE')) {
 
 				//Checking foriegn key with base table
 				foreach ($relatedTables as $tableName => $index) {
-					$checkIfRelConstraintExists = $db->pquery($query, array($dbName, '%fk%', $tableName, $index, $baseTableName, $baseTableIndex));
+					$referenceTable = $baseTableName;
+					$referenceColumn = $baseTableIndex;
+
+					if ($tableName == 'vtiger_producttaxrel' || $tableName == 'vtiger_inventoryproductrel') {
+						$referenceTable = 'vtiger_crmentity';
+						$referenceColumn = 'crmid';
+					}
+
+					$checkIfRelConstraintExists = $db->pquery($query, array($dbName, '%fk%', $tableName, $index, $referenceTable, $referenceColumn));
 					if ($db->num_rows($checkIfRelConstraintExists) < 1) {
-						$newForiegnKey = "fk_$baseTableIndex"."_$tableName";
-						$db->pquery("ALTER TABLE $tableName ADD CONSTRAINT $newForiegnKey FOREIGN KEY ($index) REFERENCES $baseTableName ($baseTableIndex) ON DELETE CASCADE", array());
+						$newForiegnKey = "fk_$referenceColumn"."_$tableName";
+						$db->pquery("ALTER TABLE $tableName ADD CONSTRAINT $newForiegnKey FOREIGN KEY ($index) REFERENCES $referenceTable ($referenceColumn) ON DELETE CASCADE", array());
 					}
 				}
 			}
