@@ -72,10 +72,12 @@ class Migration_Index_View extends Vtiger_Basic_View {
 	}
 
 	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
+		$headerScriptInstances = array();
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
+			'modules.Vtiger.resources.Popup',
+			"modules.Vtiger.resources.List",
 			"modules.$moduleName.resources.Index"
 			);
 
