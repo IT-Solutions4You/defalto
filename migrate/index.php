@@ -55,8 +55,8 @@ if (!$errorMessage) {
 		<title>Vtiger CRM Setup</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script type="text/javascript" src="resources/js/jquery-min.js"></script>
-		<link href="../layouts/v7/lib/todc/css/bootstrap.min.css" rel="stylesheet">
-		<link href="../layouts/v7/lib/todc/css/todc-bootstrap.min.css" rel="stylesheet">
+		<link href="resources/todc/css/bootstrap.min.css" rel="stylesheet">
+		<link href="resources/todc/css/todc-bootstrap.min.css" rel="stylesheet">
 		<link href="resources/css/mkCheckbox.css" rel="stylesheet">
 		<link href="resources/css/style.css" rel="stylesheet">
 	</head>
@@ -184,4 +184,3 @@ if (!$errorMessage) {
 			</script>
 	</body>
 </html>
-
