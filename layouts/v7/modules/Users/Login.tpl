@@ -15,7 +15,7 @@
 			background-position: center;
 			background-size: cover;
 			width: 100%;
-			height: 100%;
+			height: 96%;
 			background-repeat: no-repeat;
 		}
 		hr {
@@ -120,7 +120,6 @@
 		}
 		.app-footer p {
 			margin-top: 0px;
-			padding-bottom: 0px !important;
 		}
 		.footer {
 			background-color: #fbfbfb;
@@ -392,4 +391,5 @@
 				loginFormDiv.find('#username').focus();
 			});
 		</script>
+		</div>
 	{/strip}
