@@ -59,16 +59,18 @@
                             {if count($LISTVIEW_MASSACTIONS_1) gt 0 and $LISTVIEW_LINKS['LISTVIEW']|@count gt 0}
                                 <li class="divider hide"></li>
                             {/if}
-                            <li class="hide">
-                                <a id="{$MODULE}_listView_massAction_LBL_ADD_STAR" onclick="Vtiger_List_Js.triggerAddStar()">
-                                    {vtranslate('LBL_FOLLOW',$MODULE)}
-                                </a>
-                            </li>
-                            <li class="hide">
-                                <a id="{$MODULE}_listView_massAction_LBL_REMOVE_STAR" onclick="Vtiger_List_Js.triggerRemoveStar()">
-                                    {vtranslate('LBL_UNFOLLOW',$MODULE)}
-                                </a>
-                            </li>
+							{if $MODULE_MODEL->isStarredEnabled()}
+								<li class="hide">
+									<a id="{$MODULE}_listView_massAction_LBL_ADD_STAR" onclick="Vtiger_List_Js.triggerAddStar()">
+										{vtranslate('LBL_FOLLOW',$MODULE)}
+									</a>
+								</li>
+								<li class="hide">
+									<a id="{$MODULE}_listView_massAction_LBL_REMOVE_STAR" onclick="Vtiger_List_Js.triggerRemoveStar()">
+										{vtranslate('LBL_UNFOLLOW',$MODULE)}
+									</a>
+								</li>
+							{/if}
                             <li class="hide">
                                 <a id="{$MODULE}_listView_massAction_LBL_ADD_TAG" onclick="Vtiger_List_Js.triggerAddTag()">
                                     {vtranslate('LBL_ADD_TAG',$MODULE)}
