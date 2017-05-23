@@ -70,6 +70,11 @@
 										<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
 										<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
 										<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
+
+										{if $need_license_agreement eq 'true'}
+											<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
+										{/if}
+
 									{else}
 										<br><br><span class="alert-info" style="padding: 4px 10px;">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</span>
 									{/if}
