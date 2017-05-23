@@ -8,7 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Migration_Index_View extends Vtiger_Basic_View {
+class Migration_Index_View extends Vtiger_View_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -49,6 +49,9 @@ class Migration_Index_View extends Vtiger_Basic_View {
 
 
 	public function preProcess(Vtiger_Request $request, $display = true) {
+		$viewer = $this->getViewer($request);
+		$selectedModule = $request->getModule();
+		$viewer->assign('MODULE', $selectedModule);
 		parent::preProcess($request, false);
 	}
 

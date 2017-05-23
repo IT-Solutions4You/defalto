@@ -426,7 +426,7 @@ class Install_Utils_Model {
 		require_once('vtlib/Vtiger/Module.php');
 		require_once('include/utils/utils.php');
 
-		$moduleFolders = array('packages/vtiger/mandatory', 'packages/vtiger/optional');
+		$moduleFolders = array('packages/vtiger/mandatory', 'packages/vtiger/optional', 'packages/vtiger/marketplace');
 		foreach($moduleFolders as $moduleFolder) {
 			if ($handle = opendir($moduleFolder)) {
 				while (false !== ($file = readdir($handle))) {

@@ -95,6 +95,22 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$columns = $db->getColumnNames('vtiger_relatedlists');
+	if (!in_array('relationfieldid', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationfieldid INT(19)', array());
+	}
+	if (!in_array('source', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN source VARCHAR(25)', array());
+	}
+	if (!in_array('relationtype', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationtype VARCHAR(10)', array());
+	}
+	$result = $db->pquery('SELECT relation_id FROM vtiger_relatedlists ORDER BY relation_id DESC LIMIT 1', array());
+	$db->pquery('UPDATE vtiger_relatedlists_seq SET id=?', array($db->query_result($result, 0, 'relation_id')));
+
+	$accountsTabId = getTabId('Accounts');
+	$db->pquery('UPDATE vtiger_relatedlists SET name=? WHERE name=? and tabid=?', array('get_merged_list', 'get_dependents_list', $accountsTabId));
+
 	$invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
 	$blockInstance = Vtiger_Block::getInstance('LBL_INVOICE_INFORMATION', $invoiceModuleInstance);
 	if ($blockInstance) {
@@ -305,22 +321,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$documentsInstance->setRelatedList(Vtiger_Module::getInstance('HelpDesk'), 'HelpDesk', true);
 		$documentsInstance->setRelatedList(Vtiger_Module::getInstance('Faq'), 'Faq', true);
 	}
-
-	$columns = $db->getColumnNames('vtiger_relatedlists');
-	if (!in_array('relationfieldid', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationfieldid INT(19)', array());
-	}
-	if (!in_array('source', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN source VARCHAR(25)', array());
-	}
-	if (!in_array('relationtype', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_relatedlists ADD COLUMN relationtype VARCHAR(10)', array());
-	}
-	$result = $db->pquery('SELECT relation_id FROM vtiger_relatedlists ORDER BY relation_id DESC LIMIT 1', array());
-	$db->pquery('UPDATE vtiger_relatedlists_seq SET id=?', array($db->query_result($result, 0, 'relation_id')));
-
-	$accountsTabId = getTabId('Accounts');
-	$db->pquery('UPDATE vtiger_relatedlists SET name=? WHERE name=? and tabid=?', array('get_merged_list', 'get_dependents_list', $accountsTabId));
 
 	//Update relation field for existing relation ships
 	$ignoreRelationFieldMapping = array('Emails');
@@ -586,6 +586,36 @@ if(defined('VTIGER_UPGRADE')) {
 			$fieldInstance->typeofdata	= 'I~O';
 			$blockInstance->addField($fieldInstance);
 		}
+		unset($fieldInstance);
+
+		$fieldInstance = Vtiger_Field::getInstance('filename', $modCommentsInstance);
+		if (!$fieldInstance) {
+			$fieldInstance = new Vtiger_Field();
+			$fieldInstance->name		= 'filename';
+			$fieldInstance->column		= 'filename';
+			$fieldInstance->label		= 'Attachment';
+			$fieldInstance->columntype	= 'VARCHAR(255)';
+			$fieldInstance->table		= 'vtiger_modcomments';
+			$fieldInstance->typeofdata	= 'V~O';
+			$fieldInstance->uitype		= '61';
+			$fieldInstance->presence	= '0';
+			$blockInstance->addField($fieldInstance);
+		}
+		unset($fieldInstance);
+
+		$fieldInstance = Vtiger_Field::getInstance('related_email_id', $modCommentsInstance);
+		if (!$fieldInstance) {
+			$fieldInstance = new Vtiger_Field();
+			$fieldInstance->name		= 'related_email_id';
+			$fieldInstance->label		= 'Related Email Id';
+			$fieldInstance->uitype		= 1;
+			$fieldInstance->column		= $fieldInstance->name;
+			$fieldInstance->columntype	= 'INT(11)';
+			$fieldInstance->typeofdata	= 'I~O';
+			$fieldInstance->defaultvalue= 0;
+			$blockInstance->addField($fieldInstance);
+		}
+		unset($fieldInstance);
 	}
 
 	$internalCommentModules = Vtiger_Functions::getPrivateCommentModules();
@@ -656,16 +686,13 @@ if(defined('VTIGER_UPGRADE')) {
 	$updateQuery = 'UPDATE vtiger_field SET typeofdata=? WHERE fieldname=? AND tabid=?';
 	$db->pquery($updateQuery, array('T~M', 'time_start', getTabid('Calendar')));
 
-	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=?', array(1));
+	$ignoreModules = array('SMSNotifier', 'ModComments');
+	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	while ($row = $db->fetchByAssoc($result)) {
 		$modules[] = $row['name'];
 	}
 
-	$ignoreModules = array('SMSNotifier', 'ModComments');
 	foreach ($modules as $module) {
-		if (in_array($module, $ignoreModules)) {
-			continue;
-		}
 		$moduleInstance = Vtiger_Module::getInstance($module);
 		if ($moduleInstance) {
 			$fieldInstance = Vtiger_Field::getInstance('source', $moduleInstance);
@@ -692,6 +719,7 @@ if(defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
+
 	$projectModule = Vtiger_Module_Model::getInstance('Project');
 	$emailModule = Vtiger_Module_Model::getInstance('Emails');
 	$projectModule->setRelatedList($emailModule, 'Emails', 'ADD', 'get_emails');
@@ -1187,39 +1215,6 @@ if(defined('VTIGER_UPGRADE')) {
 				transition_data VARCHAR(1000) NOT NULL)', true);
 	}
 
-	$modCommentsInstance = Vtiger_Module::getInstance('ModComments');
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $modCommentsInstance);
-	if ($blockInstance) {
-		$fieldInstance = Vtiger_Field::getInstance('filename', $modCommentsInstance);
-		if (!$fieldInstance) {
-			$fieldInstance = new Vtiger_Field();
-			$fieldInstance->name		= 'filename';
-			$fieldInstance->column		= 'filename';
-			$fieldInstance->label		= 'Attachment';
-			$fieldInstance->columntype	= 'VARCHAR(255)';
-			$fieldInstance->table		= 'vtiger_modcomments';
-			$fieldInstance->typeofdata	= 'V~O';
-			$fieldInstance->uitype		= '61';
-			$fieldInstance->presence	= '0';
-			$blockInstance->addField($fieldInstance);
-		}
-		unset($fieldInstance);
-
-		$fieldInstance = Vtiger_Field::getInstance('related_email_id', $modCommentsInstance);
-		if (!$fieldInstance) {
-			$fieldInstance = new Vtiger_Field();
-			$fieldInstance->name		= 'related_email_id';
-			$fieldInstance->label		= 'Related Email Id';
-			$fieldInstance->uitype		= 1;
-			$fieldInstance->column		= $fieldInstance->name;
-			$fieldInstance->columntype	= 'INT(11)';
-			$fieldInstance->typeofdata	= 'I~O';
-			$fieldInstance->defaultvalue= 0;
-			$blockInstance->addField($fieldInstance);
-		}
-		unset($fieldInstance);
-	}
-
 	//Adding user specific field to Calendar table instead of events table
 	$db->pquery('UPDATE vtiger_field SET tablename=? WHERE tablename=?', array('vtiger_calendar_user_field', 'vtiger_events_user_field'));
 
@@ -1230,16 +1225,12 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$ignoreModules = array('SMSNotifier', 'ModComments');
-	$modules = array();
-	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=?', array(1));
+	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	while ($row = $db->fetchByAssoc($result)) {
 		$modules[] = $row['name'];
 	}
 
 	foreach ($modules as $module) {
-		if (in_array($module, $ignoreModules)) {
-			continue;
-		}
 		$moduleUserSpecificTable = Vtiger_Functions::getUserSpecificTableName($module);
 		if (!Vtiger_Utils::CheckTable($moduleUserSpecificTable)) {
 			Vtiger_Utils::CreateTable($moduleUserSpecificTable,
@@ -1827,7 +1818,10 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	$db->pquery('ALTER TABLE vtiger_potential ADD converted INT(1) NOT NULL DEFAULT 0', array());
+	$columns = $db->getColumnNames('vtiger_potential');
+	if (!in_array('converted', $columns)) {
+		$db->pquery('ALTER TABLE vtiger_potential ADD converted INT(1) NOT NULL DEFAULT 0', array());
+	}
 
 	$Vtiger_Utils_Log = true;
 	$moduleArray = array('Project' => 'LBL_PROJECT_INFORMATION');
@@ -1906,7 +1900,10 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	if (Vtiger_Utils::CheckTable('vtiger_mailscanner_ids')) {
-		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
+		$columns = $db->getColumnNames('vtiger_mailscanner_ids');
+		if (!in_array('refids', $columns)) {
+			$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD COLUMN refids MEDIUMTEXT', array());
+		}
 		$db->pquery('ALTER TABLE vtiger_mailscanner_ids ADD INDEX messageids_crmid_idx(crmid)',array());
 	}
 
@@ -2216,6 +2213,10 @@ if(defined('VTIGER_UPGRADE')) {
 			}
 			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype=?)", array($moduleName));
 		}
+	}
+
+	if (is_dir('modules/Vtiger/resources')) {
+		rename('modules/Vtiger/resources', 'modules/Vtiger/resources_650');
 	}
 
 	//Update existing package modules

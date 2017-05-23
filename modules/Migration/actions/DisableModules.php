@@ -14,7 +14,9 @@ class Migration_DisableModules_Action extends Vtiger_Action_Controller {
 		$modulesList = $request->get('modulesList');
 		if ($modulesList) {
 			$moduleManagerModel = new Settings_ModuleManager_Module_Model();
-			$moduleManagerModel->disableModule($modulesList);
+			foreach ($modulesList as $moduleName) {
+				$moduleManagerModel->disableModule($moduleName);
+			}
 		}
 
 		header('Location: migrate/index.php');
