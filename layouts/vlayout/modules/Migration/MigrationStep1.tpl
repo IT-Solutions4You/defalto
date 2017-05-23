@@ -50,3 +50,8 @@
 		</div>
 	</div>
 </div>
+<script>
+	jQuery(document).ready(function () {
+		location.reload();
+	});
+</script>

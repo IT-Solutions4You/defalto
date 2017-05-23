@@ -22,30 +22,52 @@ if (!$errorMessage) {
 									'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
 									'Webforms', 'Webmails', 'WSAPP');
 	$nonPortedExtns = array();
+	$moduleModelsList = array();
 	$db = PearDatabase::getInstance();
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype != ? AND presence != ? AND trim(name) NOT IN ('.generateQuestionMarks($vtigerStandardModules).')', array(1, 1, $vtigerStandardModules));
-	while($row = $db->fetch_row($result)) {
-		$module = $row['name'];//label
-		if ($module) {
-			$moduleModelsList = $extensionStoreInstance->findListings($module, 'Extension');
-			if ($moduleModelsList) {
-				foreach ($moduleModelsList as $moduleId => $moduleModel) {
+	if ($db->num_rows($result)) {
+		$moduleModelsList = $extensionStoreInstance->getListings();
+	}
+
+	$moduleModelsListByName = array();
+	$moduleModelsListByLabel = array();
+	foreach ($moduleModelsList as $moduleId => $moduleModel) {
+		if ($moduleModel->get('name') != $moduleModel->get('label')) {
+			$moduleModelsListByName[$moduleModel->get('name')] = $moduleModel;
+		} else {
+			$moduleModelsListByLabel[$moduleModel->get('label')] = $moduleModel;
+		}
+	}
+
+	if ($moduleModelsList) {
+		while($row = $db->fetch_row($result)) {
+			$moduleName = $row['name'];//label
+			if ($moduleName) {
+				unset($moduleModel);
+				if (array_key_exists($moduleName, $moduleModelsListByName)) {
+					$moduleModel = $moduleModelsListByName[$moduleName];
+				} else if (array_key_exists($moduleName, $moduleModelsListByLabel)) {
+					$moduleModel = $moduleModelsListByLabel[$moduleName];
+				}
+
+				if ($moduleModel) {
 					$vtigerVersion = $moduleModel->get('vtigerVersion');
 					$vtigerMaxVersion = $moduleModel->get('vtigerMaxVersion');
 					if (($vtigerVersion && strpos($vtigerVersion, '7.') === false)
 							&& ($vtigerMaxVersion && strpos($vtigerMaxVersion, '7.') === false)) {
-						$nonPortedExtns[] = $module;
+						$nonPortedExtns[] = $moduleName;
 					}
 				}
 			}
 		}
-	}
-	if ($nonPortedExtns) {
-		$portingMessage = 'Following custom modules are not compatible with Vtiger 7. Please disable these modules to proceed.';
-		foreach ($nonPortedExtns as $module) {
-			$portingMessage .= "<li>$module</li>";
+
+		if ($nonPortedExtns) {
+			$portingMessage = 'Following custom modules are not compatible with Vtiger 7. Please disable these modules to proceed.';
+			foreach ($nonPortedExtns as $moduleName) {
+				$portingMessage .= "<li>$moduleName</li>";
+			}
+			$portingMessage .= '</ul>';
 		}
-		$portingMessage .= '</ul>';
 	}
 }
 ?>
