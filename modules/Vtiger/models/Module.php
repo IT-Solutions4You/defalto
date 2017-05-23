@@ -1935,7 +1935,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	}
 
 	function isStarredEnabled(){
-		return true;
+		return false;
 	}
 
 	/**
