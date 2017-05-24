@@ -22,7 +22,9 @@
 		{if $QUICK_PREVIEW_ENABLED eq 'true'}
 			<span class="quickView fa fa-eye icon action" title="{vtranslate('LBL_QUICK_VIEW', $MODULE)}"></span>
 		{/if}
-		<span class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></span> 
+		{if $MODULE_MODEL->isStarredEnabled()}
+			<span class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></span> 
+		{/if}
 		{assign var=EDIT_VIEW_URL value={$LISTVIEW_ENTRY->getEditViewUrl()}}
 		{if $IS_MODULE_EDITABLE && $EDIT_VIEW_URL && $LISTVIEW_ENTRY->get('taskstatus') neq vtranslate('Held', $MODULE) && $LISTVIEW_ENTRY->get('taskstatus') neq vtranslate('Completed', $MODULE)}
 			<span class="fa fa-check icon action" title="{vtranslate('LBL_MARK_AS_HELD', $MODULE)}" onclick="Calendar_Calendar_Js.markAsHeld('{$LISTVIEW_ENTRY->getId()}');"></span>

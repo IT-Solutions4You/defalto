@@ -92,6 +92,8 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
         }
         return $this->isEditable;
     }
-    
-    
+
+	public function getPicklistColors() {
+		return array();
+	}
 }
