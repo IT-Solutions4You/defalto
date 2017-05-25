@@ -13,7 +13,7 @@
     <form id="detailView" data-name-fields='{ZEND_JSON::encode($MODULE_MODEL->getNameFields())}' method="POST">
         <div class="contents">
             {foreach key=BLOCK_LABEL_KEY item=FIELD_MODEL_LIST from=$RECORD_STRUCTURE}
-                <div class="block block_{$BLOCK_LABEL_KEY}">
+                <div class="block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}">
                     {assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}
                 {if $BLOCK eq null or $FIELD_MODEL_LIST|@count lte 0}{continue}{/if}
                 {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
