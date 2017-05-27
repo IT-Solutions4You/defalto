@@ -497,7 +497,7 @@ class ListViewController {
 					if(!empty($value) && !empty($this->nameList[$fieldName]) && !empty($parentModule)) {
 						$parentMeta = $this->queryGenerator->getMeta($parentModule);
 						$value = textlength_check($this->nameList[$fieldName][$value]);
-						if ($parentMeta->isModuleEntity() && $parentModule != "Users" && $parentModule != 'SLA') {
+						if ($parentMeta->isModuleEntity() && $parentModule != "Users") {
 							$value = "<a class='js-reference-display-value' href='?module=$parentModule&view=Detail&".
 								"record=$rawValue' title='".getTranslatedString($parentModule, $parentModule)."'>$value</a>";
 						}
