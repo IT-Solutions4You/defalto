@@ -16,6 +16,7 @@ require_once 'modules/WSAPP/synclib/connectors/VtigerConnector.php';
 require_once 'include/database/PearDatabase.php';
 
 require_once 'modules/WSAPP/api/ws/Register.php';
+require_once 'modules/WSAPP/WSAPPLogs.php';
 
 abstract class WSAPP_SynchronizeController {
 	
