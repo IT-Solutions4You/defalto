@@ -136,14 +136,6 @@ class Google_Oauth2_Connector {
         header('Location: ' . $this->getAuthUrl());
     }
     
-    protected function decryptAuthCode($cipherText) {
-        $publicKey = VtigerConfig::getOD('OAUTHREDIR_PUBK');
-        $pubkey_res = openssl_get_publickey($publicKey);
-        $base64Decoded = base64_decode($cipherText);
-        openssl_public_decrypt($base64Decoded,$decipheredText,$pubkey_res);
-        return $decipheredText;
-    }
-    
     protected function fireRequest($url,$headers,$params=array(),$method='POST') {
         $httpClient = new Vtiger_Net_Client($url);
         if(count($headers)) $httpClient->setHeaders($headers);
@@ -246,7 +238,7 @@ class Google_Oauth2_Connector {
             return $this;
         } else {
             if($_REQUEST['service'] && $_REQUEST['code']) {
-                $authCode = $this->decryptAuthCode($_REQUEST['code']);
+                $authCode = $_REQUEST['code'];
                 $token = $this->exchangeCodeForToken($authCode);
                 $this->storeToken($token);
                 echo '<script>window.opener.sync();window.close();</script>'; exit;
