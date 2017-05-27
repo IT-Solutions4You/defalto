@@ -302,7 +302,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			$orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);
 			if($orderByFieldModuleModel && $orderByFieldModuleModel->isReferenceField()) {
 				//If reference field then we need to perform a join with crmentity with the related to field
-				$queryComponents = $split = spliti(' where ', $query);
+				$queryComponents = $split = preg_split('/ where /i', $query);
 				$selectAndFromClause = $queryComponents[0];
 				$whereCondition = $queryComponents[1];
 				$qualifiedOrderBy = 'vtiger_crmentity'.$orderByFieldModuleModel->get('column');
@@ -453,10 +453,10 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		$query = $queryGenerator->getQuery();
 
-		$queryComponents = spliti(' FROM ', $query);
+		$queryComponents = preg_split('/ FROM /i', $query);
 		$query = $queryComponents[0].' ,vtiger_crmentity.crmid FROM '.$queryComponents[1];
 
-		$whereSplitQueryComponents = spliti(' WHERE ', $query);
+		$whereSplitQueryComponents = preg_split('/ WHERE /i', $query);
 		$joinQuery = ' INNER JOIN '.$parentModuleBaseTable.' ON '.$parentModuleBaseTable.'.'.$parentModuleDirectRelatedField." = ".$relatedModuleBaseTable.'.'.$relatedModuleEntityIdField;
 
 		$query = "$whereSplitQueryComponents[0] $joinQuery WHERE $parentModuleBaseTable.$parentModuleEntityIdField = $parentRecordId AND $whereSplitQueryComponents[1]";
@@ -510,7 +510,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$relationQuery = ereg_replace("[ \t\n\r]+", " ", $relationQuery);
 		$position = stripos($relationQuery,' from ');
 		if ($position) {
-			$split = spliti(' FROM ', $relationQuery);
+			$split = preg_split('/ FROM /i', $relationQuery);
 			$splitCount = count($split);
 			if($relatedModuleName == 'Calendar') {
 				$relationQuery = 'SELECT DISTINCT vtiger_crmentity.crmid, vtiger_activity.activitytype ';
@@ -582,7 +582,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		$pos = stripos($relationQuery, 'where');
 		if ($pos) {
-			$split = spliti('where', $relationQuery);
+			$split = preg_split('/where/i', $relationQuery);
 			$updatedQuery = $split[0].' WHERE '.$split[1].' AND '.$condition;
 		} else {
 			$updatedQuery = $relationQuery.' WHERE '.$condition;

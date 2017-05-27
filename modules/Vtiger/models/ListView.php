@@ -332,7 +332,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		}
 		$position = stripos($listQuery, ' from ');
 		if ($position) {
-			$split = spliti(' from ', $listQuery);
+			$split = preg_split('/ from /i', $listQuery);
 			$splitCount = count($split);
 			// If records is related to two records then we'll get duplicates. Then count will be wrong
 			$meta = $queryGenerator->getMeta($this->getModule()->getName());

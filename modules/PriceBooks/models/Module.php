@@ -75,7 +75,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 								AND vtiger_pricebook.active = 1";
 			}
 			if ($pos) {
-				$split = spliti(' where ', $listQuery);
+				$split = preg_split('/ where /i', $listQuery);
 				$overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
 			} else {
 				$overRideQuery = $listQuery . ' WHERE ' . $condition;
@@ -144,7 +144,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getExportQuery($focus, $query) {
 		$baseTableName = $focus->table_name;
-		$splitQuery = spliti(' FROM ', $query, 2);
+		$splitQuery = preg_split('/ FROM /i', $query, 2);
 		$columnFields = explode(',', $splitQuery[0]);
 		foreach ($columnFields as &$value) {
 			if(trim($value) == "$baseTableName.currency_id") {
@@ -152,7 +152,7 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 		array_push($columnFields, "vtiger_pricebookproductrel.productid as Relatedto", "vtiger_pricebookproductrel.listprice as ListPrice");
-		$joinSplit = spliti(' WHERE ',$splitQuery[1], 2);
+		$joinSplit = preg_split('/ WHERE /i',$splitQuery[1], 2);
 		$joinSplit[0] .= " LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = $baseTableName.currency_id "
 				."LEFT JOIN vtiger_pricebookproductrel on vtiger_pricebook.pricebookid = vtiger_pricebookproductrel.pricebookid ";
 		$splitQuery[1] = $joinSplit[0] . ' WHERE ' .$joinSplit[1];

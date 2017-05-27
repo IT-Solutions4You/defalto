@@ -61,7 +61,7 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 		$quantityField = $parentModule->getField('qty_per_unit');
 
 		if ($parentModuleName === $relatedModuleName && $this->tab_label === 'Product Bundles' && $quantityField->isActiveField()) {//Products && Child Products
-			$queryComponents = spliti(' FROM ', $query);
+			$queryComponents = preg_split('/ FROM /i', $query);
 			$count = count($queryComponents);
 
 			$query = $queryComponents[0]. ', vtiger_seproductsrel.quantity AS qty_per_unit ';
