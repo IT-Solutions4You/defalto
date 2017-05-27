@@ -208,4 +208,20 @@ class Reports_ChartDetail_View extends Vtiger_Index_View {
 		return $headerScriptInstances;
 	}
 
+	/**
+	 * Function to get the list of Css models to be included
+	 * @param Vtiger_Request $request
+	 * @return <Array> - List of Vtiger_CssScript_Model instances
+	 */
+	public function getHeaderCss(Vtiger_Request $request) {
+		$parentHeaderCssScriptInstances = parent::getHeaderCss($request);
+
+		$headerCss = array(
+			'~libraries/jquery/jqplot/jquery.jqplot.min.css'
+		);
+		$cssScripts = $this->checkAndConvertCssStyles($headerCss);
+		$headerCssScriptInstances = array_merge($parentHeaderCssScriptInstances , $cssScripts);
+		return $headerCssScriptInstances;
+	}
+
 }
