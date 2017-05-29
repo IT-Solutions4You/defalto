@@ -507,7 +507,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$realtedModuleModel = $this->getRelatedModuleModel();
 		$relatedModuleName = $realtedModuleModel->getName();
 		$relationQuery = $this->getRelationQuery();
-		$relationQuery = ereg_replace("[ \t\n\r]+", " ", $relationQuery);
+		$relationQuery = preg_replace("[ \t\n\r]+", " ", $relationQuery);
 		$position = stripos($relationQuery,' from ');
 		if ($position) {
 			$split = spliti(' FROM ', $relationQuery);
