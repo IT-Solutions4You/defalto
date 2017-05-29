@@ -688,6 +688,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
+	$modules = array();
 	while ($row = $db->fetchByAssoc($result)) {
 		$modules[] = $row['name'];
 	}
@@ -1224,6 +1225,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_invitees ADD COLUMN status VARCHAR(50) DEFAULT NULL', array());
 	}
 
+	$modules = array();
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	while ($row = $db->fetchByAssoc($result)) {
