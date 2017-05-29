@@ -21,23 +21,6 @@ class Contacts_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 				$autoFillFieldName = $data['fieldname'];
 				$autofillRecordId = $recordModel->get($autoFillFieldName);
 
-				//added to handle extra relation for cases sla
-				if ($autoFillFieldName == 'slaid') {
-					//if contact doesn't have related sla then fetch contact related sla
-					if (!$autofillRecordId) {
-						$account_id = $recordModel->get('account_id');
-						if ($account_id) {
-							$accountsRecordModel = Vtiger_Record_Model::getInstanceById($account_id, 'Accounts');
-							$autofillRecordId = $accountsRecordModel->get($autoFillFieldName);
-						}
-						//if organization doesn't have related sla get default sla
-						if (!$autofillRecordId) {
-							include_once 'modules/Settings/SLA/models/Record.php';
-							$autofillRecordId = Settings_SLA_Record_Model::getDefaultSLA();
-						}
-					}
-				}
-
 				$autoFillNameArray = getEntityName($autoFillModule, $autofillRecordId);
 				$autoFillName = $autoFillNameArray[$autofillRecordId];
 

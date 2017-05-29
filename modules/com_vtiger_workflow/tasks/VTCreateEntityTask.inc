@@ -168,12 +168,6 @@ class VTCreateEntityTask extends VTTask {
 							$fieldValue = $recordId;
 						} else {
 							$fieldValue = '';
-							if ($fieldReferenceModule == 'SLA') {
-								$slaDefaultId = Settings_SLA_Record_Model::getDefaultSLA();
-								if (!empty($slaDefaultId)) {
-									$fieldValue = $slaDefaultId;
-								}
-							}
 						}
 					}
 				}

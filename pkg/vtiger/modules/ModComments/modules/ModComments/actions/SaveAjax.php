@@ -36,13 +36,6 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$result['id'] = $result['_recordId'] = $recordModel->getId();
 		$result['_recordLabel'] = $recordModel->getName();
         
-        if($request->get('source_module') == 'Cases'){
-            $caseRecordModel = Vtiger_Record_Model::getInstanceById($request->get('related_to'));
-            //Notify to other users, who are there in detail view of the same record
-            $caseRecordModel->notifyToUser($userId);
-            //
-        }
-        
 		$response = new Vtiger_Response();
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->setResult($result);

@@ -84,7 +84,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 	}
 
 	function getAdditionalQueryModules(){
-		return array_merge(getInventoryModules(), array('Products', 'Services', 'PriceBooks', 'Cases'));
+		return array_merge(getInventoryModules(), array('Products', 'Services', 'PriceBooks'));
 	}
 
 	/**
