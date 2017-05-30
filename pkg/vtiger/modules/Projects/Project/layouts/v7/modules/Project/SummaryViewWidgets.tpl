@@ -213,7 +213,7 @@
 							{if $PROGRESS_FIELD_MODEL->isViewableInDetailView()}
 								<div class="pull-left marginRight15">
 									{assign var=FIELD_INFO value=$PROGRESS_FIELD_MODEL->getFieldInfo()}
-									{assign var=PICKLIST_VALUES value=$PROGRESS_FIELD_MODEL['picklistvalues']}
+									{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
 									{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}
 									{assign var="SPECIAL_VALIDATOR" value=$PROGRESS_FIELD_MODEL->getValidator()}
 									<select class="select2" name="{$PROGRESS_FIELD_MODEL->get('name')}" data-validation-engine="validate[{if $PROGRESS_FIELD_MODEL->isMandatory() eq true} required,{/if}funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-fieldinfo='{$FIELD_INFO|escape}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} >
