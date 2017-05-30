@@ -623,9 +623,9 @@ if(defined('VTIGER_UPGRADE')) {
 	do {
 		$commentsResult = $db->pquery('SELECT vtiger_modcomments.modcommentsid FROM vtiger_modcomments 
 												LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_modcomments.related_to 
-												WHERE vtiger_crmentity.setype NOT IN ('.generateQuestionMarks($internalCommentModules).') 
-												OR vtiger_crmentity.setype IS NULL AND modcommentsid > ? LIMIT 500', array_merge($internalCommentModules, array($lastMaxCRMId)));
-		if (!$db->num_rows($result)) {
+												WHERE (vtiger_crmentity.setype NOT IN ('.generateQuestionMarks($internalCommentModules).') 
+												OR vtiger_crmentity.setype IS NULL) AND modcommentsid > ? LIMIT 500', array_merge($internalCommentModules, array($lastMaxCRMId)));
+		if (!$db->num_rows($commentsResult)) {
 			break;
 		}
 
@@ -645,7 +645,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$commentsResult = NULL;
 		unset($commentsResult);
 	} while (true);
-	
+
 	//Start - Add Contact Name to Default filter of project
 	$cvidQuery = $db->pquery('SELECT cvid FROM vtiger_customview where viewname=? AND entitytype=?', array('All', 'Project'));
 	$row = $db->fetch_array($cvidQuery);
@@ -688,6 +688,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
+	$modules = array();
 	while ($row = $db->fetchByAssoc($result)) {
 		$modules[] = $row['name'];
 	}
@@ -1224,6 +1225,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_invitees ADD COLUMN status VARCHAR(50) DEFAULT NULL', array());
 	}
 
+	$modules = array();
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	while ($row = $db->fetchByAssoc($result)) {
