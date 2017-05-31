@@ -38,7 +38,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 
 	public function preProcess(Vtiger_Request $request, $display=true) {
 		if($this->checkPermission($request)) {
-			parent::preProcess($request, false);
+			
 			$qualifiedModuleName = $request->getModule(false);
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$recordId = $request->get('record');
