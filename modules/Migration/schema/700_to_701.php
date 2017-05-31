@@ -31,4 +31,12 @@ if(defined('VTIGER_UPGRADE')) {
 				PRIMARY KEY (`scannerid`)
 			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8", true);
 	}
+
+	$updateModulesList = array('Project' => 'packages/vtiger/optional/Projects.zip');
+	foreach ($updateModulesList as $moduleName => $packagePath) {
+		$moduleInstance = Vtiger_Module::getInstance($moduleName);
+		if($moduleInstance) {
+			updateVtlibModule($moduleName, $packagepath);
+		}
+	}
 }
