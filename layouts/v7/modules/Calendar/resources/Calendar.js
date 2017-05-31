@@ -1579,7 +1579,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 			editable: true,
 			eventLimit: true,
 			defaultView: userDefaultActivityView,
-			axisFormat: userDefaultTimeFormat,
+			slotLabelFormat: userDefaultTimeFormat,
 			timeFormat: userDefaultTimeFormat,
 			events: [],
 			monthNames: [
