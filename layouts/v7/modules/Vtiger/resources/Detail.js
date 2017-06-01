@@ -2105,72 +2105,46 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 	toggleRollupComments : function (e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var self = this;
-			var currentTarget = jQuery(e.currentTarget);
-			var moduleName = currentTarget.attr('module');
-			var recordId = currentTarget.attr('record');
-			var rollupId = currentTarget.attr('rollupid');
-			var rollupstatus = currentTarget.attr('rollup-status');
-			var viewtype = currentTarget.data('view');
-			var startindex = parseInt(currentTarget.attr('startindex'));
-			var contents, url, params;
+		e.stopPropagation();
+		e.preventDefault();
+		var self = this;
+		var currentTarget = jQuery(e.currentTarget);
+		var moduleName = currentTarget.attr('module');
+		var recordId = currentTarget.attr('record');
+		var rollupId = currentTarget.attr('rollupid');
+		var rollupstatus = currentTarget.attr('rollup-status');
+		var viewtype = currentTarget.data('view');
+		var startindex = parseInt(currentTarget.attr('startindex'));
+		var contents, url, params;
 
-			if(rollupstatus == 0) {
-				if(viewtype == 'relatedlist') {
-					url = 'index.php?module=Vtiger&view=ModCommentsDetailAjax&parent='+
-							moduleName+'&parentId='+recordId+'&rollupid='+rollupId+'&rollup_status='+rollupstatus+
-							'&startindex='+startindex;
-					contents = jQuery('.details');
-				}else {
-					url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
-							recordId+'&mode=showRecentComments'+'&rollupid='+rollupId
-							+'&rollup_status=1&parent='+moduleName+'&rollup-toggle=1&limit=5';
-					contents = jQuery('div[data-name="ModComments"] div.widget_contents');
-				}
-
-				params = {
-					'type' : 'GET',
-					'url' : url
-				};
-
-				app.request.get(params).then(function(err, data){
-					app.helper.hideProgress();
-					contents.html(data);
-					self.registerRollupCommentsSwitchEvent();
-					jQuery('#rollupcomments').bootstrapSwitch('state', true, true);
-				});
-			}else {
-				if(viewtype == 'relatedlist') {
-					url = 'index.php?module=Vtiger&view=ModCommentsDetailAjax&parent='+
-					  moduleName+'&parentId='+recordId+'&rollupid='+rollupId+'&rollup_status=0&mode=saveRollupSettings';
-					params = {
-						'type' : 'GET',
-						'url' : url
-					};
-					app.request.get(params).then(function(err, data){
-                        currentTarget.attr('rollup-status', 0);
-//                        Vtiger_Index_Js.getInstance().registerMentionListener(jQuery('.widgetContainer_comments').find('.mention_listener'));
-                        jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
-                    });
-				}else {
-					url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
-							recordId+'&mode=showRecentComments'+'&rollupid='+rollupId
-							+'&rollup_status=0&parent='+moduleName+'&rollup-toggle=1&limit=5';
-					contents = jQuery('div[data-name="ModComments"] div.widget_contents');
-					params = {
-						'type' : 'GET',
-						'url' : url
-					};
-					app.request.get(params).then(function(err, data){
-						app.helper.hideProgress();
-						contents.html(data);
-						self.registerRollupCommentsSwitchEvent();
-						jQuery('#rollupcomments').bootstrapSwitch('state', false, true);
-					});
-				}
-			}
+		if(viewtype == 'relatedlist') {
+			url = 'index.php?module=Vtiger&view=ModCommentsDetailAjax&parent='+moduleName+'&parentId='+recordId+
+								'&rollupid='+rollupId+'&rollup_status='+rollupstatus+'&mode=saveRollupSettings';
+			params = {
+				'type' : 'GET',
+				'url' : url
+			};
+			app.request.get(params).then(function(err, data){
+				currentTarget.attr('rollup-status', !rollupstatus);
+				jQuery('div.related-tabs li[data-label-key="ModComments"]').trigger('click');
+			});
+		} else {
+			url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
+					recordId+'&mode=showRecentComments'+'&rollupid='+rollupId
+					+'&rollup_status=0&parent='+moduleName+'&rollup-toggle=1&limit=5';
+			contents = jQuery('div[data-name="ModComments"] div.widget_contents');
+			params = {
+				'type' : 'GET',
+				'url' : url
+			};
+			app.request.get(params).then(function(err, data){
+				app.helper.hideProgress();
+				contents.html(data);
+				vtUtils.enableTooltips();
+				self.registerRollupCommentsSwitchEvent();
+				jQuery('#rollupcomments').bootstrapSwitch('state', !rollupstatus, true);
+			});
+		}
 	},
 
 	registerScrollForRollupEvents : function() {
