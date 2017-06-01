@@ -38,7 +38,6 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 
 	public function preProcess(Vtiger_Request $request, $display=true) {
 		if($this->checkPermission($request)) {
-			
 			$qualifiedModuleName = $request->getModule(false);
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$recordId = $request->get('record');
@@ -98,7 +97,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 			$viewer->assign('SKIN_PATH', Vtiger_Theme::getCurrentUserThemePath());
 			$viewer->assign('LANGUAGE', $currentUser->get('language'));
 			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-			
+			$viewer->assign('SELECTED_MENU_CATEGORY', 'MARKETING');
 			$settingsModel = Settings_Vtiger_Module_Model::getInstance();
 			$menuModels = $settingsModel->getMenus();
 
