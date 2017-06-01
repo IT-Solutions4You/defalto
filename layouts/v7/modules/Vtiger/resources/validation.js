@@ -184,7 +184,8 @@ jQuery.validator.addMethod("greaterThanDependentField", function(value, element,
 		if(typeof sourceFieldInfo == 'undefined' || typeof depFieldInfo == 'undefined')
 			return result;
 
-		if(sourceFieldInfo.type !== 'date' || depFieldInfo.type !== 'date') {
+		if((sourceFieldInfo.type !== 'date' || depFieldInfo.type !== 'date') 
+				&& (sourceFieldInfo.type !== 'datetime' || depFieldInfo.type !== 'datetime')) { //start_date, end_date fields data type is datetime.
 			console.log('greaterThanDependentField() validation method should be used for date fields only');
 			return result;
 		}
