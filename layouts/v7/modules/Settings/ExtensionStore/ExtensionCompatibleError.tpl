@@ -18,7 +18,7 @@
 								<tr>
 									<td rowspan="2"><img src="{vimage_path("denied.gif")}" style="margin: 10px;"></td>
 									<td width="80%" style="border-bottom: 1px solid rgb(204, 204, 204);">
-										<span class="genHeaderSmall"><b>{vtranslate($EXTENSION_LABEL, $QUALIFIED_MODULE)}</b> {vtranslate('LBL_EXTENSION_NOT_COMPATABLE', $QUALIFIED_MODULE)}</span>
+										<span class="genHeaderSmall"><b>{vtranslate($EXTENSION_LABEL, $QUALIFIED_MODULE)}</b> {ucfirst(strtolower(vtranslate('LBL_EXTENSION_NOT_COMPATABLE', $QUALIFIED_MODULE)))}</span>
 									</td>
 								</tr>
 								<tr>
