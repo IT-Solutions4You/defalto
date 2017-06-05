@@ -132,45 +132,52 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 		$modelInstance = $this->getModelInstance();
 
 		$extensionDetail = $modelInstance->getExtensionListings($extensionId);
-		$customerReviews = $modelInstance->getCustomerReviews($extensionId);
-		$screenShots = $modelInstance->getScreenShots($extensionId);
-		$authorInfo = $modelInstance->getListingAuthor($extensionId);
-		$registrationStatus = $modelInstance->checkRegistration();
-
-		if ($registrationStatus) {
-			$pwdStatus = $modelInstance->passwordStatus();
-			if (!$pwdStatus) {
-				$sessionIdentifer = $modelInstance->getSessionIdentifier();
-				$pwd = $_SESSION[$sessionIdentifer.'_password'];
-				if (!empty($pwd)) {
-					$pwdStatus = true;
-				}
-			}
-			$viewer->assign('PASSWORD_STATUS', $pwdStatus);
-		}
-
-		if ($registrationStatus && $pwdStatus) {
-			$customerProfile = $modelInstance->getProfile();
-			$customerCardId = $customerProfile['CustomerCardId'];
-			if (!empty($customerCardId)) {
-				$customerCardDetails = $modelInstance->getCardDetails($customerCardId);
-				$viewer->assign('CUSTOMER_CARD_INFO', $customerCardDetails);
-			}
-			$viewer->assign('CUSTOMER_PROFILE', $customerProfile);
-		}
-
 		$extension = $extensionDetail[$extensionId];
-		$viewer->assign('IS_PRO', true);
-		$viewer->assign('MODULE_ACTION', $moduleAction);
-		$viewer->assign('SCREEN_SHOTS', $screenShots);
-		$viewer->assign('AUTHOR_INFO', $authorInfo);
-		$viewer->assign('CUSTOMER_REVIEWS', $customerReviews);
-		$viewer->assign('EXTENSION_DETAIL', $extension);
-		$viewer->assign('EXTENSION_MODULE_MODEL', $extension->get('moduleModel'));
-		$viewer->assign('EXTENSION_ID', $extensionId);
-		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-		$viewer->assign('REGISTRATION_STATUS', $registrationStatus);
-		$viewer->view('Detail.tpl', $qualifiedModuleName);
+
+		if ($extension && $extension->isVtigerCompatible()) {
+			$customerReviews = $modelInstance->getCustomerReviews($extensionId);
+			$screenShots = $modelInstance->getScreenShots($extensionId);
+			$authorInfo = $modelInstance->getListingAuthor($extensionId);
+			$registrationStatus = $modelInstance->checkRegistration();
+
+			if ($registrationStatus) {
+				$pwdStatus = $modelInstance->passwordStatus();
+				if (!$pwdStatus) {
+					$sessionIdentifer = $modelInstance->getSessionIdentifier();
+					$pwd = $_SESSION[$sessionIdentifer.'_password'];
+					if (!empty($pwd)) {
+						$pwdStatus = true;
+					}
+				}
+				$viewer->assign('PASSWORD_STATUS', $pwdStatus);
+			}
+
+			if ($registrationStatus && $pwdStatus) {
+				$customerProfile = $modelInstance->getProfile();
+				$customerCardId = $customerProfile['CustomerCardId'];
+				if (!empty($customerCardId)) {
+					$customerCardDetails = $modelInstance->getCardDetails($customerCardId);
+					$viewer->assign('CUSTOMER_CARD_INFO', $customerCardDetails);
+				}
+				$viewer->assign('CUSTOMER_PROFILE', $customerProfile);
+			}
+
+			$viewer->assign('IS_PRO', true);
+			$viewer->assign('MODULE_ACTION', $moduleAction);
+			$viewer->assign('SCREEN_SHOTS', $screenShots);
+			$viewer->assign('AUTHOR_INFO', $authorInfo);
+			$viewer->assign('CUSTOMER_REVIEWS', $customerReviews);
+			$viewer->assign('EXTENSION_DETAIL', $extension);
+			$viewer->assign('EXTENSION_MODULE_MODEL', $extension->get('moduleModel'));
+			$viewer->assign('EXTENSION_ID', $extensionId);
+			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+			$viewer->assign('REGISTRATION_STATUS', $registrationStatus);
+			$viewer->view('Detail.tpl', $qualifiedModuleName);
+		} else {
+			$viewer->assign('EXTENSION_LABEL', $extension->get('label'));
+			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
+			$viewer->view('ExtensionCompatibleError.tpl', $qualifiedModuleName);
+		}
 	}
 
 	protected function installationLog(Vtiger_Request $request) {

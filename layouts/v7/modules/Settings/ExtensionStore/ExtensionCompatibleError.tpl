@@ -16,9 +16,14 @@
 						<table border="0" cellpadding="5" cellspacing="0" width="98%">
 							<tbody>
 								<tr>
-									<td rowspan="2" width="10%"><img src="{vimage_path("denied.gif")}" style="margin: 10px;"></td>
-									<td rowspan="2" width="40%" style="border-bottom: 1px solid rgb(204, 204, 204);">
+									<td rowspan="2"><img src="{vimage_path("denied.gif")}" style="margin: 10px;"></td>
+									<td width="80%" style="border-bottom: 1px solid rgb(204, 204, 204);">
 										<span class="genHeaderSmall"><b>{vtranslate($EXTENSION_LABEL, $QUALIFIED_MODULE)}</b> {vtranslate('LBL_EXTENSION_NOT_COMPATABLE', $QUALIFIED_MODULE)}</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="small" align="right" nowrap="nowrap">
+										<a href="index.php?module=ExtensionStore&parent=Settings&view=ExtensionStore">{vtranslate('LBL_GO_BACK', $MODULE)}</a><br>
 									</td>
 								</tr>
 							</tbody>
