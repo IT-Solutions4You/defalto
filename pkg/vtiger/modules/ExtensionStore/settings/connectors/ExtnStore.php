@@ -176,7 +176,12 @@ class Settings_ExtensionStore_ExtnStore_Connector {
 	 * @return type json reponse
 	 */
 	public function getListings($id = null, $type = 'Extension') {
-		$q = $id ? array('id' => $id, 'type' => $type) : array('type' => $type);
+		global $vtiger_current_version;
+		$q = array('type' => $type, 'vv'=> $vtiger_current_version);
+		if ($id) {
+			$q['id'] = $id;
+		}
+
 		try {
 			$response = $this->api('/app/listings', 'GET', $q ? array('q' => Zend_Json::encode($q)) : null, false);
 			return array('success' => true, 'response' => $response);
