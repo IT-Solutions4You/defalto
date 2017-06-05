@@ -846,7 +846,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @param <jQUery> container
 	 */
 	registerClearReferenceSelectionEvent : function(container) {
-		container.find('.clearReferenceSelection').on('click', function(e){
+		container.off('click', 'clearReferenceSelection');
+		container.on('click', 'clearReferenceSelection',function(e){
 			e.preventDefault();
 			var element = jQuery(e.currentTarget);
 			var parentTdElement = element.closest('td');
@@ -859,6 +860,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 			parentTdElement.find('.referencefield-wrapper').removeClass('selected');
 			inputElement.removeAttr("disabled").removeAttr('readonly');
 			inputElement.attr("value","");
+			inputElement.data('value','');
 			inputElement.val("");
 			parentTdElement.find('input[name="'+fieldName+'"]').val("");
 			element.addClass('hide');
@@ -1147,9 +1149,11 @@ Vtiger.Class('Vtiger_Index_Js', {
 		if (id && selectedName) {
 			if(!fieldDisplayElement.length) {
 				fieldElement.attr('value',id);
+				fieldElement.data('value', id);
 				fieldElement.val(selectedName);
 			} else {
 				fieldElement.val(id);
+				fieldElement.data('value', id);
 				fieldDisplayElement.val(selectedName);
 				if(selectedName) {
 					fieldDisplayElement.attr('readonly', 'readonly');
