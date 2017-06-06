@@ -970,7 +970,7 @@ Vtiger.Class("Vtiger_List_Js", {
 		if (jQuery.inArray(fieldType, picklistTypes) !== -1) {
 			value = jQuery(".inputElement.select2", fieldElement).find(":selected").val();
 		} else if (fieldType === "reference") {
-			value = inputElement.attr("value");
+			value = inputElement.data('value');
 		} else if (fieldType === "multipicklist") {
 			var selectedOptions = jQuery(".inputElement.select2", fieldElement).find(":selected");
 			value = [];
