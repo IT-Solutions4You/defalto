@@ -159,6 +159,16 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 										$request->set($referenceFieldName, $this->setParentForHelpDesk($parent, $from));
 									}
 									break;
+									
+				case 'Potentials' : if ($parent) {
+										if($linkedto['module'] == 'Contacts') {
+											$referenceFieldName = 'contact_id';
+										} elseif ($linkedto['module'] == 'Accounts') {
+											$referenceFieldName = 'related_to';
+										}
+										$request->set($referenceFieldName, $request->get('_mlinkto'));
+									}
+									break;
 				case 'Events'	:
 				case 'Calendar' :   if ($parent) {
 										if($linkedto['module'] == 'Contacts') {
@@ -438,7 +448,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return string
 	 */
 	public function linkToAvailableActions() {
-		$moduleListForLinkTo = array('Calendar','HelpDesk','ModComments','Emails');
+		$moduleListForLinkTo = array('Calendar','HelpDesk','ModComments','Emails','Potentials');
 
 		foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
