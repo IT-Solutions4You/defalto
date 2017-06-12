@@ -62,9 +62,27 @@
 													</button>
 													<ul class="dropdown-menu pull-right dropdownfields">
 														{foreach item=SETTINGS_LINK from=$SETTINGS_LINKS}
-															<li>
-																<a {if stripos($SETTINGS_LINK['linkurl'], 'javascript:')===0} onclick='{$SETTINGS_LINK['linkurl']|substr:strlen("javascript:")};'{else} onclick='window.location.href = "{$SETTINGS_LINK['linkurl']}"'{/if}>{vtranslate($SETTINGS_LINK['linklabel'], $MODULE_NAME, vtranslate("SINGLE_$MODULE_NAME", $MODULE_NAME))}</a>
-															</li>
+															{if $MODULE_NAME eq 'Calendar'}
+																{if $SETTINGS_LINK['linklabel'] eq 'LBL_EDIT_FIELDS'}
+																	<li><a href="{$SETTINGS_LINK['linkurl']}&sourceModule=Events">{vtranslate($SETTINGS_LINK['linklabel'], $MODULE_NAME, vtranslate('LBL_EVENTS',$MODULE_NAME))}</a></li>
+																	<li><a href="{$SETTINGS_LINK['linkurl']}&sourceModule=Calendar">{vtranslate($SETTINGS_LINK['linklabel'], $MODULE_NAME, vtranslate('LBL_TASKS','Calendar'))}</a></li>
+																{else if $SETTINGS_LINK['linklabel'] eq 'LBL_EDIT_WORKFLOWS'} 
+																	<li><a href="{$SETTINGS_LINK['linkurl']}&sourceModule=Events">{vtranslate('LBL_EVENTS', $MODULE_NAME)} {vtranslate('LBL_WORKFLOWS',$MODULE_NAME)}</a></li>	
+																	<li><a href="{$SETTINGS_LINK['linkurl']}&sourceModule=Calendar">{vtranslate('LBL_TASKS', 'Calendar')} {vtranslate('LBL_WORKFLOWS',$MODULE_NAME)}</a></li>
+																{else}
+																	<li><a href={$SETTINGS_LINK['linkurl']}>{vtranslate($SETTINGS_LINK['linklabel'], $MODULE_NAME, vtranslate($MODULE_NAME, $MODULE_NAME))}</a></li>
+																{/if}
+															{else}
+																<li>
+																	<a	{if stripos($SETTINGS_LINK['linkurl'], 'javascript:')===0}
+																			onclick='{$SETTINGS_LINK['linkurl']|substr:strlen("javascript:")};'
+																		{else}
+																			onclick='window.location.href = "{$SETTINGS_LINK['linkurl']}"'
+																		{/if}>
+																		{vtranslate($SETTINGS_LINK['linklabel'], $MODULE_NAME, vtranslate("SINGLE_$MODULE_NAME", $MODULE_NAME))}
+																	</a>
+																</li>
+															{/if}
 														{/foreach}
 													</ul>
 												</span>
