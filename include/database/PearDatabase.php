@@ -810,6 +810,16 @@ class PearDatabase{
 		if ($this->database->clientFlags == 0 && isset($dbconfigoption['clientFlags'])) {
 			$this->database->clientFlags = $dbconfigoption['clientFlags'];
 		}
+
+		if ($this->dbType == 'mysqli') {
+			$optionFlags = array();
+			if ($this->database->optionFlags) {
+				$optionFlags = $this->database->optionFlags;
+			}
+
+			$optionFlags = array_merge($optionFlags, array(array(MYSQLI_OPT_LOCAL_INFILE, true)));
+			$this->database->optionFlags = $optionFlags;
+		}
 		// End
 
 		$result = $this->database->PConnect($this->dbHostName, $this->userName, $this->userPassword, $this->dbName);
