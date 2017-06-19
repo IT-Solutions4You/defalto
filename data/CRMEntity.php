@@ -2948,7 +2948,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 			// decode_html only expects string
 			$olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue ;
 			//same logic is used in vtEntityDelta to check for delta
-			if((empty($olderValue) && !empty($value)) || ($olderValue != $value)) {
+			if((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
 				$this->changed[] = $key;
 			}
 		}
