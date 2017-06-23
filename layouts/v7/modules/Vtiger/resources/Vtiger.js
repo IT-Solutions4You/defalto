@@ -846,8 +846,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @param <jQUery> container
 	 */
 	registerClearReferenceSelectionEvent : function(container) {
-		container.off('click', 'clearReferenceSelection');
-		container.on('click', 'clearReferenceSelection',function(e){
+		container.off('click', '.clearReferenceSelection');
+		container.on('click', '.clearReferenceSelection',function(e){
 			e.preventDefault();
 			var element = jQuery(e.currentTarget);
 			var parentTdElement = element.closest('td');
