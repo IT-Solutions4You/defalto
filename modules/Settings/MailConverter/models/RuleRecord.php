@@ -180,7 +180,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 	 */
 	public static function getInstanceById($recordId) {
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_mailscanner_rules WHERE ruleid = ', array($recordId));
+		$result = $db->pquery('SELECT * FROM vtiger_mailscanner_rules WHERE ruleid = ?', array($recordId));
 		if ($db->num_rows($result)) {
 			$recordModel = new self();
 			$recordModel->setData($db->query_result_rowdata($result));
