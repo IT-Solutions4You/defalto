@@ -2114,9 +2114,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var moduleName = currentTarget.attr('module');
 		var recordId = currentTarget.attr('record');
 		var rollupId = currentTarget.attr('rollupid');
-		var rollupstatus = currentTarget.attr('rollup-status');
+		var rollup_status = currentTarget.attr('rollup-status');
+		var rollupstatus = 0;
+		if (rollup_status == 0) {
+			rollupstatus = 1;
+		}
 		var viewtype = currentTarget.data('view');
-		var startindex = parseInt(currentTarget.attr('startindex'));
 		var contents, url, params;
 
 		if(viewtype == 'relatedlist') {
@@ -2133,7 +2136,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		} else {
 			url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
 					recordId+'&mode=showRecentComments'+'&rollupid='+rollupId
-					+'&rollup_status=0&parent='+moduleName+'&rollup-toggle=1&limit=5';
+					+'&rollup_status='+rollupstatus+'&parent='+moduleName+'&rollup-toggle=1&limit=5';
 			contents = jQuery('div[data-name="ModComments"] div.widget_contents');
 			params = {
 				'type' : 'GET',
@@ -2144,7 +2147,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				contents.html(data);
 				vtUtils.enableTooltips();
 				self.registerRollupCommentsSwitchEvent();
-				jQuery('#rollupcomments').bootstrapSwitch('state', !rollupstatus, true);
+				jQuery('#rollupcomments').bootstrapSwitch('state', rollupstatus, true);
 			});
 		}
 	},
