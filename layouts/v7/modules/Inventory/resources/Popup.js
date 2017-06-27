@@ -63,7 +63,10 @@ Vtiger_Popup_Js('Inventory_Popup_Js',{},{
 			params['productid'] = parentProductId;
 			params['view'] = 'SubProductsPopupAjax';
 		}
-		params['module'] = jQuery('#EditView').find('[name="module"]').val();
+		var module = jQuery('#EditView').find('[name="module"]').val();
+		if(typeof module != "undefined") {
+		          params['module'] = module;
+		}		
 		return params;
 	},
 
