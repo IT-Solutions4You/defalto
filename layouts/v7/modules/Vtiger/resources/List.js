@@ -2426,38 +2426,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			self.registerFloatingThead();
 		});
 	},
-	/*
-	 * Function to register the list view accept record click event
-	 */
-	registerAcceptRecordClickEvent: function () {
-		jQuery('#page').on('click', '.acceptCase', function (e) {
-			var elem = jQuery(e.currentTarget);
-			var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
-			var parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
-			var recordId = parent.closest('tr').data('id');
-			var params = {
-				'module': 'Cases',
-				'action': 'SaveAjax',
-				'record': recordId,
-				'mode': 'updateCaseStatus'
-			}
-			app.helper.showProgress();
-			app.request.post({data: params}).then(
-					function (error, data) {
-						app.helper.hideProgress();
-						if (error === null) {
-							app.helper.showSuccessNotification({
-								'message': app.vtranslate('JS_CASE_ACCEPTED_SUCCESSFULLY')
-							});
-							window.location.href = data.url;
-						} else {
-							app.helper.showErrorNotification({message: app.vtranslate(error.message)});
-						}
-					}
-			);
-			e.stopPropagation();
-		});
-	},
+
 	registerEvents: function () {
 		var thisInstance = this;
 		this._super();
@@ -2481,7 +2450,6 @@ Vtiger.Class("Vtiger_List_Js", {
 		this.registerDynamicDropdownPosition();
 		this.registerDropdownPosition();
 		this.registerConfigureColumnsEvents();
-		this.registerAcceptRecordClickEvent();
 		var recordSelectTrackerObj = this.getRecordSelectTrackerInstance();
 		recordSelectTrackerObj.registerEvents();
 

@@ -108,11 +108,7 @@
 												</span>
 
 												<div class="">
-													{if $COMMENT->get('module') eq 'Cases' and !$COMMENT->get('is_private')}
-														{assign var=COMMENT_CONTENT value={decode_html($COMMENT->get('commentcontent'))}}
-													{else}
-														{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
-													{/if}
+													{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
 													{if $COMMENT_CONTENT}
 														{assign var=DISPLAYNAME value={decode_html($COMMENT_CONTENT)}}
 														<span class="commentInfoContent" style="display: block" data-fullComment="{$COMMENT_CONTENT|escape:"html"}" data-shortComment="{$DISPLAYNAME|mb_substr:0:200|escape:"html"}..." data-more='{vtranslate('LBL_SHOW_MORE',$MODULE)}' data-less='{vtranslate('LBL_SHOW',$MODULE)} {vtranslate('LBL_LESS',$MODULE)}'>
