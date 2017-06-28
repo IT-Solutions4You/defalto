@@ -45,7 +45,10 @@
 											</a>
 										</span>&nbsp;&nbsp;
 									{/if}
-									<div class="">
+									<span class="commentTime text-muted cursorDefault">
+										<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</small>
+									</span>
+									<div class="commentInfoContentBlock">
 										<span class="commentInfoContent">
 											{nl2br($COMMENT->get('commentcontent'))}
 										</span>
@@ -76,44 +79,46 @@
 											{if $CHILD_COMMENTS_MODEL neq null and ($CHILDS_ROOT_PARENT_ID neq $PARENT_COMMENT_ID)}
 												{if $COMMENTS_MODULE_MODEL->isPermitted('EditView')}&nbsp;&nbsp;&nbsp;{/if}
 												<span class="viewThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}">
-													<a href="javascript:void(0)" class="cursorPointer viewThread">
+													<a href="javascript:void(0)" class="cursorPointer viewThread" style="color: blue;">
 														<span class="childCommentsCount">{$CHILD_COMMENTS_COUNT}</span>&nbsp;{if $CHILD_COMMENTS_COUNT eq 1}{vtranslate('LBL_REPLY',$MODULE_NAME)}{else}{vtranslate('LBL_REPLIES',$MODULE_NAME)}{/if}&nbsp;
 													</a>
 												</span>
 												<span class="hideThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}" style="display:none;">
-													<a href="javascript:void(0)" class="cursorPointer hideThread">
+													<a href="javascript:void(0)" class="cursorPointer hideThread" style="color: blue;">
 														<span class="childCommentsCount">{$CHILD_COMMENTS_COUNT}</span>&nbsp;{if $CHILD_COMMENTS_COUNT eq 1}{vtranslate('LBL_REPLY',$MODULE_NAME)}{else}{vtranslate('LBL_REPLIES',$MODULE_NAME)}{/if}&nbsp;
 													</a>
 												</span>
 											{elseif $CHILD_COMMENTS_MODEL neq null and ($CHILDS_ROOT_PARENT_ID eq $PARENT_COMMENT_ID)}
 												{if $COMMENTS_MODULE_MODEL->isPermitted('EditView')}&nbsp;&nbsp;&nbsp;{/if}
 												<span class="viewThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}" style="display:none;">
-													<a href="javascript:void(0)" class="cursorPointer viewThread">
+													<a href="javascript:void(0)" class="cursorPointer viewThread" style="color: blue;">
 														<span class="childCommentsCount">{$CHILD_COMMENTS_COUNT}</span>&nbsp;{if $CHILD_COMMENTS_COUNT eq 1}{vtranslate('LBL_REPLY',$MODULE_NAME)}{else}{vtranslate('LBL_REPLIES',$MODULE_NAME)}{/if}&nbsp;
 													</a>
 												</span>
 												<span class="hideThreadBlock" data-child-comments-count="{$CHILD_COMMENTS_COUNT}">
-													<a href="javascript:void(0)" class="cursorPointer hideThread">
+													<a href="javascript:void(0)" class="cursorPointer hideThread" style="color: blue;">
 														<span class="childCommentsCount">{$CHILD_COMMENTS_COUNT}</span>&nbsp;{if $CHILD_COMMENTS_COUNT eq 1}{vtranslate('LBL_REPLY',$MODULE_NAME)}{else}{vtranslate('LBL_REPLIES',$MODULE_NAME)}{/if}&nbsp;
 													</a>
 												</span>
 											{/if}
 										</span>
-
-										<span class="commentTime text-muted cursorDefault" style="padding:20px;">
-											<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</small>
-										</span>
 									</div>
-									<br>
 									{assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
-									<div class="editedStatus" name="editStatus">
-										<div class="{if empty($REASON_TO_EDIT)}hide{/if} editReason">
-											<p class="text-muted"><small>[ {vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} ] : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small></p>
+									{if $COMMENT->getCommentedTime() neq $COMMENT->getModifiedTime()}
+										<br>
+										<div class="commentEditStatus" name="editStatus">
+											{assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
+											{if $REASON_TO_EDIT}
+												<div class="text-muted">
+													<small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small>
+												</div>
+											{/if}
+											<div style="margin-top:5px;" class="text-muted">
+												<small>{vtranslate('LBL_COMMENT',$MODULE_NAME)} {strtolower(vtranslate('LBL_MODIFIED',$MODULE_NAME))}</small>&nbsp;
+												<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small>
+											</div>
 										</div>
-										{if $COMMENT->getCommentedTime() neq $COMMENT->getModifiedTime()}
-											<p class="text-muted cursorDefault"><small><em>{vtranslate('LBL_MODIFIED',$MODULE_NAME)}</em></small>&nbsp;<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small></p>
-										{/if}
-									</div>
+									{/if}
 									<div style="margin-top:5px;">
 										{assign var="FILE_DETAILS" value=$COMMENT->getFileNameAndDownloadURL()}
 										{foreach key=index item=FILE_DETAIL from=$FILE_DETAILS}
@@ -136,12 +141,11 @@
 									</div>
 								</div>
 							</div>
-							<hr>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
+		<hr>
 	</div>
 {/strip}

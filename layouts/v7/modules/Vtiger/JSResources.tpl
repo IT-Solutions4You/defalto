@@ -36,6 +36,7 @@
     <script type="text/javascript" src="layouts/v7/lib/jquery/jquery.timeago.js"></script>
     <script type="text/javascript" src="libraries/jquery/ckeditor/ckeditor.js"></script>
     <script type="text/javascript" src="libraries/jquery/ckeditor/adapters/jquery.js"></script>
+	<script type='text/javascript' src='layouts/v7/lib/anchorme_js/anchorme.min.js'></script>
     <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Vtiger/resources/Class.js')}"></script>
     <script type='text/javascript' src="{vresource_url('layouts/v7/resources/helper.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/v7/resources/application.js')}"></script>

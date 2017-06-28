@@ -2106,6 +2106,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
+	toggleCommentContent: function (e) {
+		var currentTarget = jQuery(e.currentTarget);
+		var commentContentBlock = currentTarget.closest('.commentInfoContentBlock');
+		var commentContentInfo = commentContentBlock.find('.commentInfoContent');
+		var toggleElement = jQuery('<div><a class="pull-right toggleComment" style="color: blue;"><small></small></a><div>');
+		var fullComment = vtUtils.linkifyStr(commentContentInfo.data('fullcomment'));
+
+		if (currentTarget.hasClass('showMore')) {
+			toggleElement.find('small').text(commentContentInfo.data('less'));
+			commentContentInfo.html(fullComment+toggleElement.clone().html());
+		} else {
+			var maxLength = commentContentInfo.data('maxlength');
+			toggleElement.find('small').text(commentContentInfo.data('more'));
+			toggleElement.find('.toggleComment').addClass('showMore');
+			commentContentInfo.html(vtUtils.htmlSubstring(fullComment, maxLength)+"..."+toggleElement.clone().html());
+		}
+	},
+
 	toggleRollupComments : function (e) {
 		e.stopPropagation();
 		e.preventDefault();
@@ -2849,7 +2867,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var commentInfoContent = commentInfoBlock.find('.commentInfoContent');
 			var commentReason = commentInfoBlock.find('[name="editReason"]');
 			var editCommentBlock = self.getEditCommentBlock();
-			editCommentBlock.find('.commentcontent').text(commentInfoContent.text());
+			var fullComment = commentInfoContent.data('fullcomment');
+			if (fullComment) {
+				fullComment = app.helper.getDecodedValue(fullComment);
+			} else {
+				fullComment = commentInfoContent.text();
+			}
+			editCommentBlock.find('.commentcontent').text(fullComment);
 			editCommentBlock.find('[name="reasonToEdit"]').val(commentReason.text());
 			editCommentBlock.find('[name="is_private"]').val(commentInfoBlock.find('[name="is_private"]').val());
 			/*commentInfoContent.hide();
@@ -2886,7 +2910,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			app.request.post({data: params}).then(
 				function(err, data) {
 					if (data) {
-						commentArea = commentInfoBlock.find('.commentcontent');
+						var commentArea = commentInfoBlock.find('.commentcontent');
 						commentArea.val(data.usersString);
 						commentArea.focus();
 						var strLength= commentArea.val().length * 2;
@@ -2908,6 +2932,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		detailContentsHolder.on('click', '.moreRecentDocuments', function () {
 			var recentDocumentsTab = self.getTabByLabel(self.detailViewRecentDocumentsLabel);
 			recentDocumentsTab.trigger('click');
+		});
+
+		detailContentsHolder.off('.toggleComment').on('click', '.toggleComment', function (e) {
+			self.toggleCommentContent(e);
 		});
 
 		app.event.on('post.summarywidget.load',function(event,widgetContainer){
