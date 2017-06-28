@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="email-preview-toolbar pull-right">
-                                {if $RECORD->getEmailFlag() neq 'SAVED' AND $PARENT_MODULE neq 'Cases'}
+                                {if $RECORD->getEmailFlag() neq 'SAVED'}
                                     <button type="button" name="previewReply" class="btn btn-sm" data-mode="emailReply">
                                         <strong>{vtranslate('LBL_REPLY',$MODULE)}</strong>
                                     </button>
