@@ -29,7 +29,7 @@
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row commentTextArea" id="mass_action_add_comment">
-                        <textarea class="col-lg-12 mention_listener" name="commentcontent" id="commentcontent" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}" placeholder="{vtranslate('LBL_WRITE_YOUR_COMMENT_HERE', $MODULE)}..." data-rule-required="true"></textarea>
+                        <textarea class="col-lg-12" name="commentcontent" id="commentcontent" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}" placeholder="{vtranslate('LBL_WRITE_YOUR_COMMENT_HERE', $MODULE)}..." data-rule-required="true"></textarea>
                     </div>
                 </div>
             </div>

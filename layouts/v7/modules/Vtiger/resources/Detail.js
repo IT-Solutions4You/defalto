@@ -2006,7 +2006,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var detailContentsHolder = this.getContentHolder();
 		var clonedCommentBlock = jQuery('.basicEditCommentBlock',detailContentsHolder).clone(true,true).removeClass('basicEditCommentBlock hide').addClass('addCommentBlock');
 		clonedCommentBlock.find('.commentcontenthidden').removeClass('commentcontenthidden').addClass('commentcontent');
-		clonedCommentBlock.find('.commentcontent').addClass('mention_listener');
 		return clonedCommentBlock;
 	},
 
@@ -2018,7 +2017,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var detailContentsHolder = this.getContentHolder();
 		var clonedCommentBlock = jQuery('.basicAddCommentBlock',detailContentsHolder).clone(true,true).removeClass('basicAddCommentBlock hide').addClass('addCommentBlock');
 		clonedCommentBlock.find('.commentcontenthidden').removeClass('commentcontenthidden').addClass('commentcontent');
-		clonedCommentBlock.find('.commentcontent').addClass('mention_listener');
 		return clonedCommentBlock;
 	},
 
