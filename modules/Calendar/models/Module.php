@@ -46,7 +46,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 * @return <String>
 	 */
 	public function getCalendarViewUrl() {
-		return 'index.php?module='.$this->get('name').'&view='.$this->getCalendarViewName();
+		return 'index.php?module='.$this->get('name').'&view=Calendar';
 	}
 
 	/**
