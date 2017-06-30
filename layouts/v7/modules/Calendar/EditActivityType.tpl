@@ -8,7 +8,7 @@
  ************************************************************************************}
 {* modules/Calendar/views/ActivityTypeViews.php *}
 {strip}
-<div class="modal-dialog modelContainer">
+<div class="modal-dialog modelContainer modal-content">
     {assign var=HEADER_TITLE value={vtranslate('LBL_EDITING_CALENDAR_VIEW', $MODULE)}}
     {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
     <div class="modal-body">

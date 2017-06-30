@@ -14,8 +14,8 @@
                 <input type="hidden" name="module" value="{$MODULE}"/>
                 <input type="hidden" name="action" value="DashBoardTab"/>
                 <input type="hidden" name="mode" value="addTab"/>
-                <div class="modal-body  clearfix">
-                    <div class="col-lg-3">
+                <div class="modal-body clearfix">
+                    <div class="col-lg-5">
                         <label class="control-label pull-right marginTop5px">
                             {vtranslate('LBL_TAB_NAME',$MODULE)}&nbsp;<span class="redColor">*</span>
                         </label>

@@ -36,7 +36,7 @@
 			<input type="hidden" name="recurringEditMode" value="" />
 			<!--Confirmation modal for updating Recurring Events-->
 			{assign var=MODULE value="Calendar"}
-			<div class="modal-dialog modelContainer recurringEventsUpdation hide" style='min-width:350px;'>
+			<div class="modal-dialog modelContainer recurringEventsUpdation modal-content hide" style='min-width:350px;'>
 				{assign var=HEADER_TITLE value={vtranslate('LBL_EDIT_RECURRING_EVENT', $MODULE)}}
 				{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 				<div class="modal-body">
@@ -45,7 +45,7 @@
 						<div class="row" style="padding: 1%;">
 							<span class="col-sm-12">
 								<span class="col-sm-4">
-									<button class="btn onlyThisEvent" style="width : 150px"><strong>{vtranslate('LBL_ONLY_THIS_EVENT', $MODULE)}</strong></button>
+									<button class="btn btn-default onlyThisEvent" style="width : 150px">{vtranslate('LBL_ONLY_THIS_EVENT', $MODULE)}</button>
 								</span>
 								<span class="col-sm-8">{vtranslate('LBL_ONLY_THIS_EVENT_EDIT_INFO', $MODULE)}</span>
 							</span>
@@ -53,7 +53,7 @@
 						<div class="row" style="padding: 1%;">
 							<span class="col-sm-12">
 								<span class="col-sm-4">
-									<button class="btn futureEvents" style="width : 150px"><strong>{vtranslate('LBL_FUTURE_EVENTS', $MODULE)}</strong></button>
+									<button class="btn btn-default futureEvents" style="width : 150px">{vtranslate('LBL_FUTURE_EVENTS', $MODULE)}</button>
 								</span>
 								<span class="col-sm-8">{vtranslate('LBL_FUTURE_EVENTS_EDIT_INFO', $MODULE)}</span>
 							</span>
@@ -61,7 +61,7 @@
 						<div class="row" style="padding: 1%;">
 							<span class="col-sm-12">
 								<span class="col-sm-4">
-									<button class="btn allEvents" style="width : 150px"><strong>{vtranslate('LBL_ALL_EVENTS', $MODULE)}</strong></button>
+									<button class="btn btn-default allEvents" style="width : 150px">{vtranslate('LBL_ALL_EVENTS', $MODULE)}</button>
 								</span>
 								<span class="col-sm-8">{vtranslate('LBL_ALL_EVENTS_EDIT_INFO', $MODULE)}</span>
 							</span>

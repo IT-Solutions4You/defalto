@@ -50,7 +50,7 @@
 
 				</ul>
 			{else if $MODULE_PERMISSION}
-				<button class='btn addButton dropdown-toggle' disabled="disabled" data-toggle='dropdown'>
+				<button class='btn btn-default addButton dropdown-toggle' disabled="disabled" data-toggle='dropdown'>
 					<strong>{vtranslate('LBL_ADD_WIDGET')}</strong> &nbsp;&nbsp;
 					<i class="caret"></i>
 				</button>
