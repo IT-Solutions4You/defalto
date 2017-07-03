@@ -102,7 +102,7 @@ class Install_Utils_Model {
 		'memory_limit' => '32',
 		'error_reporting' => 'E_WARNING & ~E_NOTICE',
 		'log_errors' => 'Off',
-		'short_open_tag' => 'On'
+		'short_open_tag' => 'Off'
 	);
 
 	/**
