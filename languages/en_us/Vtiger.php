@@ -464,6 +464,18 @@ $languageStrings = array(
 	'LBL_IS_EMPTY'=> 'is empty',
 	'LBL_IS_NOT_EMPTY' => 'is not empty',
 	'LBL_APPROVE' => 'Approve',
+	'LBL_HAS_CHANGED' => 'has changed',
+	'LBL_HAS_CHANGED_TO' => 'has changed to',
+	'LBL_HAS_CHANGED_FROM' => 'has changed from',
+	'LBL_LESS_THAN_OR_EQUAL_TO' => 'less than or equal to',
+	'LBL_GREATER_THAN_OR_EQUAL_TO' => 'greater than or equal to',
+	'LBL_IS_NOT' => 'is not',
+	'LBL_IS_ADDED' => 'is added',
+	'LBL_IS_TODAY' => 'is today',
+	'LBL_IS_TOMORROW' => 'is tomorrow',
+	'LBL_IS_YESTERDAY' => 'is yesterday',
+	'LBL_LESS_THAN_DAYS_LATER' => 'less than days later',
+	'LBL_MORE_THAN_DAYS_LATER' => 'more than days later',
 
 	//Detail view summary widgets
 	'LBL_OWNER' => 'Owner',
