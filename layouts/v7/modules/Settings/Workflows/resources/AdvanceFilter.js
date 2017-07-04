@@ -317,7 +317,7 @@ Vtiger_Field_Js('Workflows_Field_Js',{},{
 
 Workflows_Field_Js('Workflows_Text_Field_Js', {}, {
     getUi : function() {
-        var html = '<textarea class="getPopupUi" name="'+this.getName()+'" value="">'+this.getValue()+'</textarea>'+
+        var html = '<textarea class="getPopupUi textarea inputElement" name="'+this.getName()+'" value="">'+this.getValue()+'</textarea>'+
         '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         html = jQuery(html);
         return this.addValidationToElement(html);
@@ -398,7 +398,7 @@ Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js',{},{
         } else if(comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
         // show nothing
         } else {
-            var html = '<input type="text" class="getPopupUi date" name="'+ this.getName() +'"  data-date-format="'+ this.getDateFormat() +'"  value="'+  this.getValue() + '" />'+
+            var html = '<input type="text" class="getPopupUi datetime inputElement" name="'+ this.getName() +'"  data-date-format="'+ this.getDateFormat() +'"  value="'+  this.getValue() + '" />'+
             '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />'
             var element = jQuery(html);
         }
@@ -420,7 +420,7 @@ Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js',{},{
 Vtiger_Currency_Field_Js('Workflows_Currency_Field_Js',{},{
 
     getUi : function() {
-        var html = '<input type="text" class="getPopupUi marginLeftZero inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '"  />'+
+        var html = '<input type="text" class="getPopupUi marginLeftZero currency inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '"  />'+
         '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         var element = jQuery(html);
         return this.addValidationToElement(element);
@@ -449,7 +449,7 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * @return - input percentage field
 	 */
     getUi : function() {
-        var html = '<input type="text" class="getPopupUi" name="'+ this.getName() +'" value="'+  this.getValue() + '" />'+
+        var html = '<input type="text" class="getPopupUi percent inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '" />'+
         '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         var element = jQuery(html);
         return this.addValidationToElement(element);
@@ -463,7 +463,7 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 	 * @return - input text field
 	 */
     getUi : function() {
-        var html = '<input type="text" class="getPopupUi inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '" />'+
+        var html = '<input type="text" class="getPopupUi text inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '" />'+
         '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         var element = jQuery(html);
         return this.addValidationToElement(element);
