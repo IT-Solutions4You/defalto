@@ -43,17 +43,17 @@ class Products_Relation_Model extends Vtiger_Relation_Model {
 			$queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
 			$queryGenerator->setFields($relatedListFields);
 			$selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
-			$newQuery = spliti('FROM', $query);
+			$newQuery = preg_split('/FROM/i', $query);
 			$selectColumnSql = 'SELECT DISTINCT vtiger_crmentity.crmid, '.$selectColumnSql;
 			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
 		if($functionName == 'get_product_pricebooks'){
-			$newQuery = spliti('FROM', $query);
+			$newQuery = preg_split('/FROM/i', $query);
 			$selectColumnSql = $newQuery[0].' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_products.unit_price';
 			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
 		if($functionName == 'get_service_pricebooks'){
-			$newQuery = spliti('FROM', $query);
+			$newQuery = preg_split('/FROM/i', $query);
 			$selectColumnSql = $newQuery[0].' ,vtiger_pricebookproductrel.listprice, vtiger_pricebook.currency_id, vtiger_service.unit_price';
 			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}

@@ -34,7 +34,7 @@ class Services_Module_Model extends Products_Module_Model {
 
 			$pos = stripos($listQuery, 'where');
 			if ($pos) {
-				$split = spliti('where', $listQuery);
+				$split = preg_split('/where/i', $listQuery);
 				$overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
 			} else {
 				$overRideQuery = $listQuery . ' WHERE ' . $condition;
