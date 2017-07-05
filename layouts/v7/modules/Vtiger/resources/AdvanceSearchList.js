@@ -72,39 +72,7 @@ Vtiger_List_Js('Vtiger_AdvanceSearchList_Js',{},{
 			window.location.href = url +'&'+ $.param(postData);
 		});
 	},
-	
    
-     registerAcceptRecordClickEvent: function(){
-         jQuery('#searchResults-container').on('click', '.acceptCase', function(e){
-            var elem = jQuery(e.currentTarget);
-            var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
-            var parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
-            var recordId = parent.closest('tr').data('id');
-            var params = {
-                'module' : 'Cases',
-                'action' : 'SaveAjax',
-                'record' : recordId,
-                'mode' : 'updateCaseStatus'
-            }
-            app.helper.showProgress();
-             app.request.post({data:params}).then(
-                 function(error,data) {
-                     app.helper.hideProgress();
-                     if(error === null) {
-                         app.helper.showSuccessNotification({
-                             'message':app.vtranslate('JS_CASE_ACCEPTED_SUCCESSFULLY')
-                         });
-                         window.location.href = data.url;
-                     } else {
-                         app.helper.showErrorNotification({message : app.vtranslate(error.message)});
-                     }
-                 }
-             );
-            e.stopPropagation();
-        });
-    },
-	
-	
     registerDeleteRecordClickEvent :function(){
 		var thisInstance = this;
         jQuery('#searchResults-container').off('click');

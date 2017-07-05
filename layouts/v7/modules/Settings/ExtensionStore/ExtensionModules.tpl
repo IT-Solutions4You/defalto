@@ -61,7 +61,7 @@
 								<div class="col-sm-7 col-xs-7">
 									<div class="pull-right">
 										{if $EXTENSION->isVtigerCompatible()}
-											<button class="btn btn-sm installExtension addButton" style="margin-right:5px;">{vtranslate('LBL_MORE_DETAILS', $QUALIFIED_MODULE)}</button>
+											<button class="btn btn-sm btn-default installExtension addButton" style="margin-right:5px;">{vtranslate('LBL_MORE_DETAILS', $QUALIFIED_MODULE)}</button>
 											{if $EXTENSION->isAlreadyExists()}
 												{if ($EXTENSION->isUpgradable())}
 													<button class="oneclickInstallFree btn btn-success btn-sm margin0px {if $IS_AUTH}authenticated {else} loginRequired{/if}">

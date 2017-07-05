@@ -1329,7 +1329,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				$picklistValues = $this->getPicklistValues();
 				$tableName = "vtiger_$fieldName";
 				if (Vtiger_Utils::CheckTable($tableName)) {
-					if (is_array($picklistValues)) {
+					if (is_array($picklistValues) && count($picklistValues)) {
 						$result = $db->pquery("SELECT $fieldName, color FROM $tableName WHERE $fieldName IN (".generateQuestionMarks($picklistValues).")", array_keys($picklistValues));
 						while ($row = $db->fetch_row($result)) {
 							$picklistColors[$row[$fieldName]] = $row['color'];

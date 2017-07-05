@@ -50,8 +50,11 @@ Vtiger.Class('Vtiger_MergeRecords_Js',{},{
         // Adding Scroll 
         var offset = container.find('.modal-body .datacontent').offset();
         var viewPortHeight = $(window).height()-60;
+		if (offset) {
+			viewPortHeight = (viewPortHeight-offset['top']);
+		}
         var params = {
-                        setHeight:(viewPortHeight-offset['top'])+'px'
+                        setHeight:viewPortHeight+'px'
                     };
         app.helper.showVerticalScroll(container.find('.modal-body .datacontent'), params);
         

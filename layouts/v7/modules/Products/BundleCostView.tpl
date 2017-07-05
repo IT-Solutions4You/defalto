@@ -15,7 +15,7 @@
     </label>
     {assign var=PRODUCT_ACTUAL_PRICE value="{CurrencyField::convertToUserFormat((float)$PARENT_RECORD->get('unit_price'), '', true, true)}"}
     &nbsp;&nbsp;
-    <button type="button" id ="updatePrice" class="btn btn-sm btn-dark"
+    <button type="button" id ="updatePrice" class="btn btn-sm btn-dark btn-default"
             {if $SUB_PRODUCTS_TOTAL_COST eq $PRODUCT_ACTUAL_PRICE && $USER_MODEL->get('currency_id') eq $PARENT_RECORD->get('currency_id')}
                 disabled
             {/if}>

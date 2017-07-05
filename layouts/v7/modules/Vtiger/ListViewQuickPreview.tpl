@@ -72,7 +72,7 @@
             </div>
 
             <br>
-            {if $MODULE_MODEL->isCommentEnabled() && $MODULE_NAME neq 'Cases'}
+            {if $MODULE_MODEL->isCommentEnabled()}
                 <div class="quickPreviewComments">
                     {include file="ListViewQuickPreviewSectionHeader.tpl"|vtemplate_path:$MODULE_NAME TITLE="{vtranslate('LBL_RECENT_COMMENTS',$MODULE_NAME)}"}
                     {include file="QuickViewCommentsList.tpl"|vtemplate_path:$MODULE_NAME}

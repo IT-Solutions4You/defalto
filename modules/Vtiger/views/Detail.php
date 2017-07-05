@@ -472,7 +472,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 
 		if($rollupsettings['rollup_status']) {
 			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
-			$recentComments = $parentRecordModel->getRollupCommentsForModule(0, 5);
+			$recentComments = $parentRecordModel->getRollupCommentsForModule(0, 6);
 		}else {
 			$recentComments = ModComments_Record_Model::getRecentComments($parentId, $pagingModel);
 		}

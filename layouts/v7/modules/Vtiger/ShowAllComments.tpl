@@ -18,7 +18,7 @@
 			<div class="commentTitle row">
 				<div class="addCommentBlock">
 					<div class="commentTextArea">
-						<textarea name="commentcontent" class="commentcontent form-control mention_listener"  placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
+						<textarea name="commentcontent" class="commentcontent form-control"  placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
 					</div>
 					<div class="row">
 						<div class="col-xs-4 pull-right">

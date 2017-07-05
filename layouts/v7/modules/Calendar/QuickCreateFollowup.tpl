@@ -8,7 +8,7 @@
  ************************************************************************************}
 {* modules/Calendar/views/QuickCreateFollowupAjax.php *}
 {strip}
-<div class="modal-dialog modelContainer">
+<div class="modal-dialog modelContainer modal-content">
 	{assign var=HEADER_TITLE value={vtranslate('LBL_CREATE_FOLLOWUP_EVENT', "Events")}}
 	{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 	<form class="form-horizontal followupCreateView" id="followupQuickCreate" name="followupQuickCreate" method="post" action="index.php">

@@ -372,7 +372,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 		this.registerMultiUpload();
 		this.registerHoverEventOnAttachment();
 		//this.addBodyScroll();
-		this.mentionerCallBack();
 		this.modulesMenuScrollbar();
 		Vtiger_Index_Js.registerActivityReminder();
 		//reference preview event registeration
@@ -1289,18 +1288,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	modulesMenuScrollbar : function(){
 		app.helper.showVerticalScroll(jQuery("#modnavigator #modules-menu"),{autoHideScrollbar:true});
-	},
-
-	mentionerCallBack: function() {
-		jQuery(document).on('textComplete:select', '.mention_listener', function(e, word, strategy) {
-			//First charecter is " " if user mentioned in the begining
-			//Removing it here
-			var value = $(e.currentTarget).val();
-			value = app.getDecodedValue(value);
-			if(value.charAt(0) === ' ') value = value.substr(1);
-			$(e.currentTarget).val(value);
-			Vtiger_Index_Js.hideNC = false;
-		});
 	},
 
 	registerChangeTemplateEvent: function (container, recordId) {

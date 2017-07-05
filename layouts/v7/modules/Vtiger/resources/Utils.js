@@ -1,3 +1,11 @@
+/*+**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ ************************************************************************************/
 
 var vtUtils = {
 
@@ -239,6 +247,51 @@ var vtUtils = {
     hideQtip : function(element) {
         element.trigger('Vtiger.Qtip.HideMesssage');
     },
+
+	linkifyStr : function(str) {
+		var options = {'TLDs':267};
+		return anchorme.js(str,options);
+	},
+
+	htmlSubstring : function(content, maxlength) {
+		var m, r = /<([^>\s]*)[^>]*>/g,
+			stack = [],
+			lasti = 0,
+			result = '';
+
+		//for each tag, while we don't have enough characters
+		while ((m = r.exec(content)) && maxlength) {
+			//get the text substring between the last tag and this one
+			var temp = content.substring(lasti, m.index).substr(0, maxlength);
+			//append to the result and count the number of characters added
+			result += temp;
+			maxlength -= temp.length;
+			lasti = r.lastIndex;
+
+			if (content) {
+				result += m[0];
+				if (m[1].indexOf('/') === 0) {
+					//if this is a closing tag, then pop the stack (does not account for bad html)
+					stack.pop();
+				} else if (m[1].lastIndexOf('/') !== m[1].length - 1) {
+					//if this is not a self closing tag then push it in the stack
+					stack.push(m[1]);
+				}
+			}
+		}
+
+		//add the remainder of the string, if needed (there are no more tags in here)
+		result += content.substr(lasti, maxlength);
+
+		//fix the unclosed tags
+		while (stack.length) {
+			var unclosedtag = stack.pop();
+			if(jQuery.inArray(unclosedtag,['br']) == -1){
+				result += '</' + unclosedtag + '>';
+			}
+		}
+		return result;
+	},
 
     showValidationMessage : function(element,message,params) {
         if(element.hasClass('select2')) {

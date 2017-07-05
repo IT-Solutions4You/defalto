@@ -26,7 +26,7 @@
 								<span class="app-icon fa fa-bars"></span>
 							</div>
 						</div>
-						<div class="logo-container col-lg-8 col-md-8 col-sm-8 col-xs-8">
+						<div class="logo-container col-lg-9 col-md-9 col-sm-9 col-xs-9">
 							<div class="row">
 								<a href="index.php" class="company-logo">
 									<img src="{$COMPANY_LOGO->get('imagepath')}" alt="{$COMPANY_LOGO->get('alt')}"/>

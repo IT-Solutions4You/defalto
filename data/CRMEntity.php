@@ -267,9 +267,7 @@ class CRMEntity {
 			$groupid = 0;
 
 
-		if(empty($ownerid) && $ownerid === 0 && $module == "Cases"){
-			// Allow $ownerid = 0 for Cases module    
-		} else if(empty($ownerid)) {
+		if (empty($ownerid)) {
 			$ownerid = $current_user->id;
 		}
 
@@ -2950,7 +2948,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 			// decode_html only expects string
 			$olderValue = is_string($olderValue) ? decode_html($olderValue) : $olderValue ;
 			//same logic is used in vtEntityDelta to check for delta
-			if((empty($olderValue) && !empty($value)) || ($olderValue != $value)) {
+			if((empty($olderValue) && !empty($value)) || ($olderValue !== $value)) {
 				$this->changed[] = $key;
 			}
 		}

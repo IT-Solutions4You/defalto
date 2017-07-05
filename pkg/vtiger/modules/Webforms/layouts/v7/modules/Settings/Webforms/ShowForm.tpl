@@ -9,7 +9,7 @@
 *
 ********************************************************************************/
 -->*}
-<div class="modal-dialog modelContainer">  
+<div class="modal-dialog modelContainer modal-content">  
     {assign var=HEADER_TITLE value={vtranslate('SINGLE_'|cat:$MODULE, $QUALIFIED_MODULE)}|cat:" - "|cat:{$RECORD_MODEL->get('name')}}
     {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 

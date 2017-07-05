@@ -328,7 +328,7 @@ class Settings_MailConverter_Record_Model extends Settings_Vtiger_Record_Model {
 	 */
 	public static function getInstanceById($recordId) {
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT * FROM vtiger_mailscanner WHERE scannerid = ', array($recordId));
+		$result = $db->pquery('SELECT * FROM vtiger_mailscanner WHERE scannerid = ?', array($recordId));
 		if ($db->num_rows($result)) {
 			$recordModel = self::getCleanInstance();
 			$recordModel->setData($db->query_result_rowdata($result));

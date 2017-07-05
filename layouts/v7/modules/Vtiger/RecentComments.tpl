@@ -20,7 +20,7 @@
 				<div class="row">
 					<div class=" col-lg-12">
 						<div class="commentTextArea ">
-							<textarea name="commentcontent" class="commentcontent form-control mention_listener" placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
+							<textarea name="commentcontent" class="commentcontent form-control col-lg-12" placeholder="{vtranslate('LBL_POST_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
 						</div>
 					</div>
 				</div>
@@ -98,7 +98,7 @@
 													<span class="text-muted wordbreak display-inline-block">
 														{vtranslate('LBL_ON','Vtiger')}&nbsp;
 														{vtranslate($SINGULR_MODULE,$COMMENT->get('module'))}&nbsp;
-														<a href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
+														<a href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}" style="color: blue;">
 															{$ENTITY_NAME[$COMMENT->get('related_to')]}
 														</a>
 													</span>&nbsp;&nbsp;
@@ -107,19 +107,16 @@
 													<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</small>
 												</span>
 
-												<div class="">
-													{if $COMMENT->get('module') eq 'Cases' and !$COMMENT->get('is_private')}
-														{assign var=COMMENT_CONTENT value={decode_html($COMMENT->get('commentcontent'))}}
-													{else}
-														{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
-													{/if}
+												<div class="commentInfoContentBlock">
+													{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
 													{if $COMMENT_CONTENT}
 														{assign var=DISPLAYNAME value={decode_html($COMMENT_CONTENT)}}
-														<span class="commentInfoContent" style="display: block" data-fullComment="{$COMMENT_CONTENT|escape:"html"}" data-shortComment="{$DISPLAYNAME|mb_substr:0:200|escape:"html"}..." data-more='{vtranslate('LBL_SHOW_MORE',$MODULE)}' data-less='{vtranslate('LBL_SHOW',$MODULE)} {vtranslate('LBL_LESS',$MODULE)}'>
-															{if $DISPLAYNAME|count_characters:true gt 200} 
-																{mb_substr(trim($DISPLAYNAME),0,200)}... 
-																<br><a class="pull-right toggleComment showMore"><small>{vtranslate('LBL_SHOW_MORE',$MODULE)}</small></a>
-															{else} 
+														{assign var=MAX_LENGTH value=200}
+														<span class="commentInfoContent" data-maxlength="{$MAX_LENGTH}" style="display: block" data-fullComment="{$COMMENT_CONTENT|escape:"html"}" data-shortComment="{$DISPLAYNAME|mb_substr:0:200|escape:"html"}..." data-more='{vtranslate('LBL_SHOW_MORE',$MODULE)}' data-less='{vtranslate('LBL_SHOW',$MODULE)} {vtranslate('LBL_LESS',$MODULE)}'>
+															{if $DISPLAYNAME|count_characters:true gt $MAX_LENGTH}
+																{mb_substr(trim($DISPLAYNAME),0,$MAX_LENGTH)}...
+																<a class="pull-right toggleComment showMore" style="color: blue;"><small>{vtranslate('LBL_SHOW_MORE',$MODULE)}</small></a>
+															{else}
 																{$COMMENT_CONTENT}
 															{/if}
 														</span>
@@ -132,10 +129,10 @@
 														<div class="commentAttachmentName">
 															<div class="filePreview clearfix">
 																<span class="fa fa-paperclip cursorPointer" ></span>&nbsp;&nbsp;
-																<a class="previewfile" onclick="Vtiger_Detail_Js.previewFile(event,{$COMMENT->get('id')},{$FILE_DETAIL['attachmentId']});" data-filename="{$FILE_NAME}" href="javascript:void(0)" name="viewfile">
+																<a class="previewfile" onclick="Vtiger_Detail_Js.previewFile(event,{$COMMENT->get('id')},{$FILE_DETAIL['attachmentId']});" data-filename="{$FILE_NAME}" href="javascript:void(0)" name="viewfile" style="color: blue;">
 																	<span title="{$FILE_DETAIL['rawFileName']}" style="line-height:1.5em;">{$FILE_NAME}</span>&nbsp
 																</a>&nbsp;
-																<a name="downloadfile" href="{$FILE_DETAIL['url']}">
+																<a name="downloadfile" href="{$FILE_DETAIL['url']}" style="color: blue;">
 																	<i title="{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}" class="hide fa fa-download alignMiddle" ></i>
 																</a>
 															</div>
@@ -146,7 +143,7 @@
 												<div class="commentActionsContainer" style="margin-top: 2px;">
 													<span>
 														{if $PARENT_COMMENT_MODEL neq false or $CHILD_COMMENTS_MODEL neq null}
-															<a href="javascript:void(0);" class="cursorPointer detailViewThread">{vtranslate('LBL_VIEW_THREAD',$MODULE_NAME)}</a>&nbsp;&nbsp;
+															<a href="javascript:void(0);" class="cursorPointer detailViewThread" style="color: blue;">{vtranslate('LBL_VIEW_THREAD',$MODULE_NAME)}</a>&nbsp;
 														{/if}
 													</span>
 													<span class="summarycommemntActionblock" >
@@ -164,30 +161,24 @@
 														{/if}
 													</span>
 												</div>
-												<br>
-												<div class="row commentEditStatus marginBottom10px" name="editStatus">
-													{assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
-													<span class="col-lg-5 col-md-5 col-sm-5{if empty($REASON_TO_EDIT)} hide{/if}">
-														<small> [{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)}]</small>
-													</span>
-													{if $COMMENT->getCommentedTime() neq $COMMENT->getModifiedTime()}
-														<span class="{if empty($REASON_TO_EDIT)}row{else} col-lg-7 col-md-7 col-sm-7{/if}">
-															<p class="text-muted pull-right">
-																<small><em>{vtranslate('LBL_MODIFIED',$MODULE_NAME)}</em></small>&nbsp;
+												{if $COMMENT->getCommentedTime() neq $COMMENT->getModifiedTime()}
+													<br>
+													<div class="row commentEditStatus" name="editStatus">
+														{assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
+														{if $REASON_TO_EDIT}
+															<span class="text-muted col-lg-5 col-md-5 col-sm-5">
+																<small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small>
+															</span>
+														{/if}
+														<span {if $REASON_TO_EDIT}class="col-lg-7 col-md-7 col-sm-7"{/if}>
+															<p class="text-muted pull-right" {if !$REASON_TO_EDIT}style="margin-right: 15px;"{/if}>
+																<small>{vtranslate('LBL_COMMENT',$MODULE_NAME)} {strtolower(vtranslate('LBL_MODIFIED',$MODULE_NAME))}</small>&nbsp;
 																<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small>
 															</p>
 														</span>
-													{/if}
-												</div> 
-												<div class="row marginBottom10px">
-													<div class="col-lg-12 col-md-12 col-sm-12">
-														<p class="text-muted">
-															<small>
-																<span name="editReason" class="wordbreak">{nl2br($REASON_TO_EDIT)}</span>
-															</small>
-														</p>
 													</div>
-												</div>
+												{/if}
+												<br>
 											</div>
 										</div>
 									</div>
@@ -206,15 +197,15 @@
 		{if $PAGING_MODEL->isNextPageExists()}
 			<div class="row">
 				<div class="textAlignCenter">
-					<a href="javascript:void(0)" class="moreRecentComments">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
+					<a href="javascript:void(0)" class="moreRecentComments" style="color: blue;">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
 				</div>
 			</div>
 		{/if}
 	</div>
 
-	<div class="hide basicAddCommentBlock container-fluid">
+	<div class="hide basicAddCommentBlock container-fluid" style="min-height: 110px;">
 		<div class="commentTextArea row">
-			<textarea name="commentcontent" class="commentcontent" placeholder="{vtranslate('LBL_ADD_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
+			<textarea name="commentcontent" class="commentcontent col-lg-12" placeholder="{vtranslate('LBL_ADD_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
 		</div>
 		<div class="pull-right row">
 			{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
@@ -235,7 +226,7 @@
 		</div>
 		<div class="row" style="padding-bottom: 10px;">
 			<div class="commentTextArea">
-				<textarea name="commentcontent" class="commentcontenthidden" placeholder="{vtranslate('LBL_ADD_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
+				<textarea name="commentcontent" class="commentcontenthidden col-lg-12" placeholder="{vtranslate('LBL_ADD_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
 			</div>
 		</div>
 		<input type="hidden" name="is_private">

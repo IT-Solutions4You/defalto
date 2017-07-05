@@ -2006,7 +2006,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var detailContentsHolder = this.getContentHolder();
 		var clonedCommentBlock = jQuery('.basicEditCommentBlock',detailContentsHolder).clone(true,true).removeClass('basicEditCommentBlock hide').addClass('addCommentBlock');
 		clonedCommentBlock.find('.commentcontenthidden').removeClass('commentcontenthidden').addClass('commentcontent');
-		clonedCommentBlock.find('.commentcontent').addClass('mention_listener');
 		return clonedCommentBlock;
 	},
 
@@ -2018,7 +2017,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var detailContentsHolder = this.getContentHolder();
 		var clonedCommentBlock = jQuery('.basicAddCommentBlock',detailContentsHolder).clone(true,true).removeClass('basicAddCommentBlock hide').addClass('addCommentBlock');
 		clonedCommentBlock.find('.commentcontenthidden').removeClass('commentcontenthidden').addClass('commentcontent');
-		clonedCommentBlock.find('.commentcontent').addClass('mention_listener');
 		return clonedCommentBlock;
 	},
 
@@ -2106,6 +2104,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
+	toggleCommentContent: function (e) {
+		var currentTarget = jQuery(e.currentTarget);
+		var commentContentBlock = currentTarget.closest('.commentInfoContentBlock');
+		var commentContentInfo = commentContentBlock.find('.commentInfoContent');
+		var toggleElement = jQuery('<div><a class="pull-right toggleComment" style="color: blue;"><small></small></a><div>');
+		var fullComment = vtUtils.linkifyStr(commentContentInfo.data('fullcomment'));
+
+		if (currentTarget.hasClass('showMore')) {
+			toggleElement.find('small').text(commentContentInfo.data('less'));
+			commentContentInfo.html(fullComment+toggleElement.clone().html());
+		} else {
+			var maxLength = commentContentInfo.data('maxlength');
+			toggleElement.find('small').text(commentContentInfo.data('more'));
+			toggleElement.find('.toggleComment').addClass('showMore');
+			commentContentInfo.html(vtUtils.htmlSubstring(fullComment, maxLength)+"..."+toggleElement.clone().html());
+		}
+	},
+
 	toggleRollupComments : function (e) {
 		e.stopPropagation();
 		e.preventDefault();
@@ -2114,9 +2130,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var moduleName = currentTarget.attr('module');
 		var recordId = currentTarget.attr('record');
 		var rollupId = currentTarget.attr('rollupid');
-		var rollupstatus = currentTarget.attr('rollup-status');
+		var rollup_status = currentTarget.attr('rollup-status');
+		var rollupstatus = 0;
+		if (rollup_status == 0) {
+			rollupstatus = 1;
+		}
 		var viewtype = currentTarget.data('view');
-		var startindex = parseInt(currentTarget.attr('startindex'));
 		var contents, url, params;
 
 		if(viewtype == 'relatedlist') {
@@ -2133,7 +2152,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		} else {
 			url = 'index.php?module='+moduleName+'&relatedModule=ModComments&view=Detail&record='+
 					recordId+'&mode=showRecentComments'+'&rollupid='+rollupId
-					+'&rollup_status=0&parent='+moduleName+'&rollup-toggle=1&limit=5';
+					+'&rollup_status='+rollupstatus+'&parent='+moduleName+'&rollup-toggle=1&limit=5';
 			contents = jQuery('div[data-name="ModComments"] div.widget_contents');
 			params = {
 				'type' : 'GET',
@@ -2144,7 +2163,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				contents.html(data);
 				vtUtils.enableTooltips();
 				self.registerRollupCommentsSwitchEvent();
-				jQuery('#rollupcomments').bootstrapSwitch('state', !rollupstatus, true);
+				jQuery('#rollupcomments').bootstrapSwitch('state', rollupstatus, true);
 			});
 		}
 	},
@@ -2846,7 +2865,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var commentInfoContent = commentInfoBlock.find('.commentInfoContent');
 			var commentReason = commentInfoBlock.find('[name="editReason"]');
 			var editCommentBlock = self.getEditCommentBlock();
-			editCommentBlock.find('.commentcontent').text(commentInfoContent.text());
+			var fullComment = commentInfoContent.data('fullcomment');
+			if (fullComment) {
+				fullComment = app.helper.getDecodedValue(fullComment);
+			} else {
+				fullComment = commentInfoContent.text();
+			}
+			editCommentBlock.find('.commentcontent').text(fullComment);
 			editCommentBlock.find('[name="reasonToEdit"]').val(commentReason.text());
 			editCommentBlock.find('[name="is_private"]').val(commentInfoBlock.find('[name="is_private"]').val());
 			/*commentInfoContent.hide();
@@ -2883,7 +2908,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			app.request.post({data: params}).then(
 				function(err, data) {
 					if (data) {
-						commentArea = commentInfoBlock.find('.commentcontent');
+						var commentArea = commentInfoBlock.find('.commentcontent');
 						commentArea.val(data.usersString);
 						commentArea.focus();
 						var strLength= commentArea.val().length * 2;
@@ -2905,6 +2930,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		detailContentsHolder.on('click', '.moreRecentDocuments', function () {
 			var recentDocumentsTab = self.getTabByLabel(self.detailViewRecentDocumentsLabel);
 			recentDocumentsTab.trigger('click');
+		});
+
+		detailContentsHolder.off('.toggleComment').on('click', '.toggleComment', function (e) {
+			self.toggleCommentContent(e);
 		});
 
 		app.event.on('post.summarywidget.load',function(event,widgetContainer){

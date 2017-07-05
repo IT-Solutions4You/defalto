@@ -10,7 +10,7 @@
 {strip}
 {assign var=SHARED_USER_INFO value= Zend_Json::encode($SHAREDUSERS_INFO)}
 {assign var=CURRENT_USER_ID value= $CURRENTUSER_MODEL->getId()}
-<div class="modal-dialog modelContainer">
+<div class="modal-dialog modelContainer modal-content">
     {assign var=HEADER_TITLE value={vtranslate('LBL_EDITING_CALENDAR_VIEW', $MODULE)}}
     {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
     <div class="modal-body">
