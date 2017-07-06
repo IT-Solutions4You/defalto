@@ -224,7 +224,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="button-container">
-						<input name="back" type="button" class="btn btn-large" value="{vtranslate('LBL_DISAGREE', 'Install')}"/>
+						<input name="back" type="button" class="btn btn-default" value="{vtranslate('LBL_DISAGREE', 'Install')}"/>
 						<input id="agree" type="submit" class="btn btn-large btn-primary" value="{vtranslate('LBL_I_AGREE', 'Install')}"/>
 					</div>
 				</div>
