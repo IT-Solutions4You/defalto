@@ -12,6 +12,26 @@ if (defined('VTIGER_UPGRADE')) {
 	global $current_user;
 	$db = PearDatabase::getInstance();
 
+	//START::Workflow task's template path
+	$pathsList = array();
+	$result = $db->pquery('SELECT classname FROM com_vtiger_workflow_tasktypes', array());
+	while($rowData = $db->fetch_row($result)) {
+		$className = $rowData['classname'];
+		if ($className) {
+			$pathsList[$className] = vtemplate_path("Tasks/$className.tpl", 'Settings:Workflows');
+		}
+	}
+
+	if ($pathsList) {
+		$updateQuery = 'UPDATE com_vtiger_workflow_tasktypes SET templatepath = CASE';
+		foreach ($pathsList as $className => $templatePath) {
+			$updateQuery .= " WHEN classname='$className' THEN '$templatePath'";
+		}
+		$updateQuery .= ' ELSE templatepath END';
+		$db->pquery($updateQuery, array());
+	}
+	//END::Workflow task's template path
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 }
