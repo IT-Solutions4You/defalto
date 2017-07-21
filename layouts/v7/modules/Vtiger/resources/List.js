@@ -901,6 +901,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				jQuery('.inline-save', currentTrElement).find('button').attr('disabled', 'disabled');
 				app.request.post({data: params}).then(function (err, result) {
 					if (result) {
+						jQuery('.vt-notification').remove();
 						jQuery('.inline-save', currentTrElement).find('button').removeAttr('disabled');
 						var params = {};
 						thisInstance.loadListViewRecords(params).then(function (data) {
@@ -912,7 +913,7 @@ Vtiger.Class("Vtiger_List_Js", {
 						});
 					} else {
 						app.helper.hideProgress();
-						app.helper.showErrorNotification({"message": err});
+						app.event.trigger('post.save.failed', err);
 						jQuery('.inline-save', currentTrElement).find('button').removeAttr('disabled');
 						return false;
 					}
@@ -1311,11 +1312,16 @@ Vtiger.Class("Vtiger_List_Js", {
 				form_update_data += key + '=' + newData[key] + '&';
 			}
 			form_update_data = form_update_data.slice(0, -1);
-			app.request.post({data: form_update_data}).then(function (data) {
+			app.request.post(postParams).then(function (err, data) {
 				app.helper.hideProgress();
-				app.helper.hidePageContentOverlay();
-				window.onbeforeunload = null;
-				app.event.trigger('post.listViewMassEditSave');
+				if (data) {
+					jQuery('.vt-notification').remove();
+					app.helper.hidePageContentOverlay();
+					window.onbeforeunload = null;
+					app.event.trigger('post.listViewMassEditSave');
+				} else {
+					app.event.trigger('post.save.failed', err);
+				}
 			});
 		} else {
 			app.helper.hideProgress();

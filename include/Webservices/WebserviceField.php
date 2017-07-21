@@ -46,6 +46,7 @@ class WebserviceField{
 	private $genericUIType = 10;
 
 	private $readOnly = 0;
+	private $isunique = 0;
 
 	private function __construct($adb,$row){
 		$this->uitype = $row['uitype'];
@@ -59,6 +60,8 @@ class WebserviceField{
 		$this->massEditable = ($row['masseditable'] === '1')? true: false;
 		$typeOfData = $row['typeofdata'];
 		$this->presence = $row['presence'];
+		$this->isunique = ($row['isunique']) ? true : false;
+		$typeOfData = $row['typeofdata'];
 		$this->typeOfData = $typeOfData;
 		$typeOfData = explode("~",$typeOfData);
 		$this->mandatory = ($typeOfData[1] == 'M')? true: false;
@@ -116,6 +119,10 @@ class WebserviceField{
 
 	public function getDisplayType(){
 		return $this->displayType;
+	}
+
+	public function isUnique(){
+		return $this->isunique;
 	}
 
 	public function getMassEditable(){

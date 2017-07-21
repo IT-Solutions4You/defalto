@@ -38,7 +38,7 @@ window.app = (function () {
 			jQuery(document).on('pjax:success', function (event, data, status, jqXHR) {
 				if (typeof data == 'object') {
 					if (!data['success'] && data['error']['message']) {
-						aDeferred.resolve(new Error(data['error']['message']));
+						aDeferred.resolve(new VtError(data['error']));
 						return;
 					} else if (data['result']) {
 						data = data['result'];
@@ -52,7 +52,7 @@ window.app = (function () {
 			});
 
 			jQuery(document).on('pjax:error', function (event, jqXHR, textStatus, errorThrown) {
-				aDeferred.resolve(new Error(errorThrown.message));
+				aDeferred.resolve(new VtError(errorThrown));
 			});
 			jQuery.pjax(params);
 			return aDeferred.promise();
@@ -71,7 +71,7 @@ window.app = (function () {
 				success: function (response) {
 					if (typeof response == 'object') {
 						if (!response['success'] && response['error']['message']) {
-							aDeferred.resolve(new Error(response['error']['message']));
+									aDeferred.resolve(new VtError(response['error']));
 							return;
 						} else if (response['result']) {
 							response = response['result'];
@@ -80,7 +80,7 @@ window.app = (function () {
 					aDeferred.resolve(null, response);
 				},
 				error: function (xhr, ajaxOptions, err) {
-					aDeferred.resolve(new Error(err.message));
+							aDeferred.resolve(new VtError(err));
 				}
 			};
 

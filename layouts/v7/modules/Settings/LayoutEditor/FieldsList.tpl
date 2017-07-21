@@ -13,7 +13,7 @@
 	{assign var=IS_SORTABLE value=$SELECTED_MODULE_MODEL->isSortableAllowed()}
 	{assign var=ALL_BLOCK_LABELS value=[]}
 
-	<div class="row" style="padding:1% 0">
+	<div class="row fieldsListContainer" style="padding:1% 0">
 		<div class="col-sm-6">
 			<button class="btn btn-default addButton addCustomBlock" type="button">
 				<i class="fa fa-plus"></i>&nbsp;
@@ -612,4 +612,44 @@
 			</form>
 		</div>
 	</div>
+	<div class="ps-scrollbar-y" style="height: 60px;">
+	</div>
+	{if $FIELDS_INFO neq '[]'}
+		<script type="text/javascript">
+			var uimeta = (function() {
+				var fieldInfo = {$FIELDS_INFO};
+				var newFieldInfo = {$NEW_FIELDS_INFO};
+				return {
+					field: {
+						get: function(name, property) {
+							if(name && property === undefined) {
+								return fieldInfo[name];
+							}
+							if(name && property) {
+								return fieldInfo[name][property]
+							}
+						},
+						isMandatory : function(name){
+							if(fieldInfo[name]) {
+								return fieldInfo[name].mandatory;
+							}
+							return false;
+						},
+						getType : function(name){
+							if(fieldInfo[name]) {
+								return fieldInfo[name].type
+							}
+							return false;
+						},
+						getNewFieldInfo : function() {
+							if(newFieldInfo['newfieldinfo']){
+								return newFieldInfo['newfieldinfo']
+							}
+							return false;
+						}
+					},
+				};
+			})();
+		</script>
+	{/if}
 {/strip}

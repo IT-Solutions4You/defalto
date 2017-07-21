@@ -107,6 +107,8 @@ $languageStrings = array(
 	'LBL_TOTAL_TASKS_SKIPPED' => 'No. of Tasks Skipped as they were missing one or more required field ',
 	'LBL_TOTAL_EVENTS_IMPORTED' => 'No. of Events Successfully Imported ',
 	'LBL_TOTAL_EVENTS_SKIPPED' => 'No. of Events Skipped as they were missing one or more required field ',
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'No. of duplicate Events skipped',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'No. of duplicate Tasks skipped',
 	
 	'ICAL_FORMAT' => 'iCal Format',
 	'LBL_LAST_IMPORT_UNDONE'=>'Your Last Import Was Undone',

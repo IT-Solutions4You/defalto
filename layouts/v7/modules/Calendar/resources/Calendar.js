@@ -83,9 +83,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 						thisInstance.updateListView();
 						thisInstance.updateCalendarView("Event");
 					} else {
-						app.helper.showErrorNotification({
-							'message': app.vtranslate('JS_NO_EDIT_PERMISSION')
-						});
+						app.event.trigger('post.save.failed', err);
 					}
 				});
 			}
@@ -140,9 +138,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 
 			app.request.post({'data': requestParams}).then(function (e, res) {
 				if (e) {
-					app.helper.showErrorNotification({
-						'message': app.vtranslate('JS_PERMISSION_DENIED')
-					});
+					app.event.trigger('post.save.failed', e);
 				} else if (res && res['valid'] === true && res['markedascompleted'] === true) {
 					thisInstance.updateListView();
 					thisInstance.updateCalendarView(res.activitytype);
@@ -1224,7 +1220,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 					});
 				}
 			} else {
-				console.log("error : ", e);
+				app.event.trigger('post.save.failed', e);
 			}
 		});
 	},

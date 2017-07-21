@@ -22,7 +22,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 		$lineItems = $element['LineItems'];
 		if (!empty($lineItems)) {
 			$eventManager = new VTEventsManager(vglobal('adb'));
-			$this->triggerBeforeSaveEvents($element, $eventManager);
+			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
+			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
 
 			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
 			if ($currentBulkSaveMode === NULL) {
@@ -69,7 +70,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
 		if (!empty($lineItemList)) {
 			$eventManager = new VTEventsManager(vglobal('adb'));
-			$this->triggerBeforeSaveEvents($element, $eventManager);
+			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
+			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
 
 			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
 			if ($currentBulkSaveMode === NULL) {
@@ -118,7 +120,8 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 			unset($element['LineItems']);
 
 			$eventManager = new VTEventsManager(vglobal('adb'));
-			$this->triggerBeforeSaveEvents($element, $eventManager);
+			$sanitizedData = DataTransform::sanitizeForInsert($element,$this->meta);
+			$this->triggerBeforeSaveEvents($sanitizedData, $eventManager);
 
 			$currentBulkSaveMode = vglobal('VTIGER_BULK_SAVE_MODE');
 			if ($currentBulkSaveMode === NULL) {

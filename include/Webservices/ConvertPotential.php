@@ -70,6 +70,8 @@ function vtws_convertPotential($entityvalues, $user) {
 				$entityObjectValues['isconvertedfrompotential'] = 1;
 				$entityRecord = vtws_create($entityvalue['name'], $entityObjectValues, $user);
 				$entityIds[$entityName] = $entityRecord['id'];
+			} catch (DuplicateException $e) {
+				throw $e;
 			} catch (Exception $e) {
 				throw new WebServiceException(WebServiceErrorCode::$FAILED_TO_CREATE, $e->getMessage().' : '.$entityvalue['name']);
 			}

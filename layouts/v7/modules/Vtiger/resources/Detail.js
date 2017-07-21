@@ -209,7 +209,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						function(error,data) {
 							if(error === null){
 								app.helper.hideModal();
-								app.helper.showAlertBox({'message':app.vtranslate('JS_RECORDS_TRANSFERRED_SUCCESSFULLY')});
+                                app.helper.showSuccessNotification({message:app.vtranslate('JS_RECORDS_TRANSFERRED_SUCCESSFULLY')});
+                            } else {
+								app.event.trigger('post.save.failed', error);
+								jQuery(form).find("button[name='saveButton']").removeAttr('disabled');
 							}
 						}
 					);
@@ -309,13 +312,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						app.helper.showProgress();
 						app.request.post(postParams).then(function(err,data){
 							app.helper.hideProgress();
-							app.helper.hidePageContentOverlay();
-							var relatedModuleName = formData.module;
-							if(relatedModuleName == 'Events') {
-								relatedModuleName = 'Calendar';
+							if (err === null) {
+								jQuery('.vt-notification').remove();
+								app.helper.hidePageContentOverlay();
+								var relatedModuleName = formData.module;
+								if(relatedModuleName == 'Events') {
+									relatedModuleName = 'Calendar';
+								}
+								var relatedController = thisInstance.getRelatedController(relatedModuleName);
+								relatedController.loadRelatedList();
+							} else {
+								app.event.trigger('post.save.failed', err);
 							}
-							var relatedController = thisInstance.getRelatedController(relatedModuleName);
-							relatedController.loadRelatedList();
 					});
 					return false;
 					}
@@ -1075,11 +1083,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		app.request.post({data:data}).then(
 			function(err, reponseData){
 				if(err === null){
-					app.helper.showSuccessNotification({"message":""});
-					aDeferred.resolve(reponseData);
-				} else {
-					app.helper.showErrorNotification({"message":err});
+					app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_UPDATED')});
 				}
+				aDeferred.resolve(err, reponseData);
 			}
 		);
 
@@ -1301,8 +1307,14 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 						jQuery(currentTdElement).find('.input-group-addon').addClass('disabled');
 						app.helper.showProgress();
-						thisInstance.saveFieldValues(fieldNameValueMap).then(function(response) {
+						thisInstance.saveFieldValues(fieldNameValueMap).then(function(err, response) {
 							app.helper.hideProgress();
+							if (err !== null) {
+								app.event.trigger('post.save.failed', err);
+								jQuery(currentTdElement).find('.input-group-addon').removeClass('disabled');
+								return true;
+							}
+							jQuery('.vt-notification').remove();
 							var postSaveRecordDetails = response;
 							if(fieldBasicData.data('type') == 'picklist' && app.getModuleName() != 'Users') {
 								var color = postSaveRecordDetails[fieldName].colormap[postSaveRecordDetails[fieldName].value];
@@ -1795,10 +1807,17 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					app.request.post({"data":params}).then(
 						function(err,data) {
 							app.helper.hideProgress();
-							detailViewElement.removeClass('hide');
-							currentTarget.show();
-							detailViewElement.html(translatedValue);
-							fieldnameElement.data('prevValue', ajaxEditNewValue);
+							if (err == null) {
+								detailViewElement.removeClass('hide');
+								currentTarget.show();
+								detailViewElement.html(translatedValue);
+								fieldnameElement.data('prevValue', ajaxEditNewValue);
+							} else {
+								app.event.trigger('post.save.failed', err);
+								detailViewElement.removeClass('hide');
+								currentTarget.show();
+								fieldElement.select2('val', previousValue);
+							}
 					});
 				}
 			}

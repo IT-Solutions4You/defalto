@@ -206,9 +206,17 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$deleteable = $this->meta->hasDeleteAccess();
 		$retrieveable = $this->meta->hasReadAccess();
 		$fields = $this->getModuleFields();
-		return array("label"=>$label,"name"=>$elementType,"createable"=>$createable,"updateable"=>$updateable,
-				"deleteable"=>$deleteable,"retrieveable"=>$retrieveable,"fields"=>$fields,
-				"idPrefix"=>$this->meta->getEntityId(),'isEntity'=>$this->isEntity,'labelFields'=>$this->meta->getNameFields());
+		return array(	'label'			=> $label,
+						'name'			=> $elementType,
+						'createable'	=> $createable,
+						'updateable'	=> $updateable,
+						'deleteable'	=> $deleteable,
+						'retrieveable'	=> $retrieveable,
+						'fields'		=> $fields,
+						'idPrefix'		=> $this->meta->getEntityId(),
+						'isEntity'		=> $this->isEntity,
+						'allowDuplicates'=>  $this->meta->isDuplicatesAllowed(),
+						'labelFields'	=> $this->meta->getNameFields());
 	}
 	
 	public function describePartial($elementType, $fields=null) {
@@ -253,9 +261,13 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		}
 		$editable = $this->isEditable($webserviceField);
 		
-		$describeArray = array('name'=>$webserviceField->getFieldName(),'label'=>$fieldLabel,'mandatory'=>
-			$webserviceField->isMandatory(),'type'=>$typeDetails,'nullable'=>$webserviceField->isNullable(),
-			"editable"=>$editable);
+		$describeArray = array(	'name'		=> $webserviceField->getFieldName(),
+								'label'		=> $fieldLabel,
+								'mandatory'	=> $webserviceField->isMandatory(),
+								'type'		=> $typeDetails,
+								'isunique'	=> $webserviceField->isUnique(),
+								'nullable'	=> $webserviceField->isNullable(),
+								'editable'	=> $editable);
 		if($webserviceField->hasDefault()){
 			$describeArray['default'] = $webserviceField->getDefault();
 		}

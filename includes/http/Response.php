@@ -64,9 +64,9 @@ class Vtiger_Response {
 	/**
 	 * Set error data to send
 	 */
-	function setError($code, $message=null) {
+	function setError($code, $message=null, $title=null) {
 		if ($message == null) $message = $code;
-		$error = array('code' => $code, 'message' => $message);
+		$error = array('code' => $code, 'message' => $message, 'title' => $title);
 		$this->error = $error;
 	}
 

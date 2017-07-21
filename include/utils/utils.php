@@ -2458,4 +2458,166 @@ function deleteRecordFromDetailViewNavigationRecords($recordId, $cvId, $moduleNa
 	}
 }
 
+function sendMailToUserOnDuplicationPrevention($moduleName, $fieldData, $mailBody, $userModel = '') {
+	if (!$userModel) {
+		$userId = $_SESSION['authenticated_user_id'];
+		if ($userId) {
+			$userModel = Users_Record_Model::getInstanceFromPreferenceFile($userId);
+		} else {
+			$userModel = Users_Record_Model::getCurrentUserModel();
+		}
+	}
+
+	$mailer = Emails_Mailer_Model::getInstance();
+	$mailer->IsHTML(true);
+
+	$emailRecordModel = Emails_Record_Model::getCleanInstance('Emails');
+	$fromEmail = $emailRecordModel->getFromEmailAddress();
+	$replyTo = $emailRecordModel->getReplyToEmail();
+	$userName = $userModel->getName();
+
+	$mailer->ConfigSenderInfo($fromEmail, $userName, $replyTo);
+	$mailer->Subject = vtranslate('LBL_VTIGER_NOTIFICATION');
+	$body = $mailBody;
+
+	$body .= '<br>';
+	$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+	$fieldModels = $moduleModel->getFields();
+	foreach ($fieldModels as $fieldName => $fieldModel) {
+		if ($fieldModel->isUniqueField() && $fieldModel->isViewable()) {
+			$fieldValue = $fieldData[$fieldName];
+
+			switch($fieldModel->getFieldDataType()) {
+				case 'reference'		:	list($refModuleId, $refRecordId) = vtws_getIdComponents($fieldValue);
+											$fieldValue = Vtiger_Functions::getCRMRecordLabel($refRecordId);
+											break;
+				case 'date'				:
+				case 'datetime'			:
+				case 'currency'			:
+				case 'currencyList'		:
+				case 'documentsFolder'	:
+				case 'multipicklist'	:	if ($fieldValue) {
+												$fieldValue = $fieldModel->getDisplayValue($fieldValue);
+											}
+											break;
+			}
+
+			$fieldLabel = $fieldModel->get('label');
+			$body .= '<br>'.vtranslate($fieldLabel, $moduleName)." : $fieldValue<br>";
+		}
+	}
+	$body .= '<br>';
+
+	if ($userModel->isAdminUser()) {
+		$siteURL = vglobal('site_URL');
+		$url = "$siteURL/index.php?parent=Settings&module=LayoutEditor&sourceModule=$moduleName&mode=showDuplicationHandling";
+		$here = '<a href="'.$url.'" target="_blank">'.vtranslate('LBL_CLICK_HERE', $moduleName).'</a>';
+		$body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_ADMIN', $moduleName, $here);
+	} else {
+		$body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN', $moduleName);
+	}
+
+	$mailer->Body = $body;
+	$mailer->AddAddress($userModel->get('email1'), $userName);
+	$mailer->Send(false);
+}
+
+function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
+	$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+	$fieldModels = $moduleModel->getFields();
+
+	$recordId = reset($duplicateRecordsList);
+	$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+	$recordData = $recordModel->getData();
+
+	$uniqueFields = array();
+	foreach ($fieldModels as $fieldName => $fieldModel) {
+		$fieldDataType = $fieldModel->getFieldDataType();
+		$fieldValue = $recordData[$fieldName];
+
+		if ($fieldDataType === 'reference' && $fieldValue == 0) {
+			$fieldValue = '';
+		}
+
+		if ($fieldModel->isUniqueField() && $fieldModel->isViewable() && $fieldValue !== '' && $fieldValue !== NULL) {
+			$uniqueFields[] = $fieldModel;
+		}
+	}
+
+	$fieldsString = '';
+	$uniqueFieldsCount = count($uniqueFields);
+	for($i=0; $i<$uniqueFieldsCount; $i++) {
+		$fieldModel = $uniqueFields[$i];
+		$fieldLabel = $fieldModel->get('label');
+		$fieldsString .= vtranslate($fieldLabel, $moduleName);
+
+		if ($uniqueFieldsCount != 1 && $i == ($uniqueFieldsCount-2)) {
+			$fieldsString .= ' '.vtranslate('LBL_AND', $moduleName).' ';
+		} else if ($i != ($uniqueFieldsCount-1)) {
+			$fieldsString .= ', ';
+		}
+	}
+	$fieldsString = rtrim($fieldsString, ',');
+
+	$singleModuleName = vtranslate('SINGLE_'.$moduleName, $moduleName);
+	$translatedModuleName = $singleModuleName;
+	$duplicateRecordsCount = count($duplicateRecordsList);
+	if ($duplicateRecordsCount > 1) {
+		$translatedModuleName = vtranslate($moduleName, $moduleName);
+	}
+	$message = vtranslate('LBL_DUPLICATES_FOUND_MESSAGE', $moduleName, $singleModuleName, $translatedModuleName, $fieldsString).' ';
+
+	$currentUserModel = Users_Record_Model::getCurrentUserModel();
+	if ($currentUserModel->isAdminUser()) {
+		$url = "index.php?parent=Settings&module=LayoutEditor&sourceModule=$moduleName&mode=showDuplicationHandling";
+		$here = '<a href="'.$url.'" target="_blank">'.vtranslate('LBL_CLICK_HERE', $moduleName).'</a>';
+		$message .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_ADMIN', $moduleName, $here);
+	} else {
+		$message .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN', $moduleName);
+	}
+
+	$message .= '<br><br>';
+    $message .= vtranslate('LBL_DUPLICATE_RECORD_LISTS',$moduleName,$singleModuleName) . '<br>';
+	for ($i=0; $i<$duplicateRecordsCount && $i<5; $i++) {
+		$dupliRecordId = $duplicateRecordsList[$i];
+		$dupliRecordModel = new Vtiger_Record_Model();
+		$dupliRecordModel->setId($dupliRecordId)->setModule($moduleName);
+		$message .= '<a href="'.$dupliRecordModel->getDetailViewUrl().'" target="_blank">'.Vtiger_Functions::getCRMRecordLabel($dupliRecordId).'</a><br>';
+	}
+
+	if ($duplicateRecordsCount === 6) {
+		$searchParams = array();
+		foreach ($uniqueFields as $fieldModel) {
+			$fieldName = $fieldModel->getName();
+			$fieldValue = $recordData[$fieldName];
+			$fieldDataType = $fieldModel->getFieldDataType();
+			switch($fieldDataType) {
+				case 'reference'		:	$fieldValue = Vtiger_Functions::getCRMRecordLabel($fieldValue);
+											break;
+				case 'date'				:
+				case 'datetime'			:
+				case 'currency'			:
+				case 'currencyList'		:
+				case 'documentsFolder'	:
+				case 'multipicklist'	:	if ($fieldValue) {
+												$fieldValue = $fieldModel->getDisplayValue($fieldValue);
+											}
+											break;
+			}
+
+			$comparator = 'e';
+			if (in_array($fieldDataType, array('date', 'datetime'))) {
+				$comparator = 'bw';
+				$fieldValue = "$fieldValue,$fieldValue";
+			}
+			$searchParams[] = array($fieldName, $comparator, $fieldValue);
+		}
+
+		$listViewUrl = $moduleModel->getListViewUrl().'&search_params='.json_encode(array($searchParams));
+		$message .= "<a href='$listViewUrl' target='_blank'>+".vtranslate('LBL_MORE', $moduleName).'</a>';
+	}
+
+	return $message;
+}
+
 ?>

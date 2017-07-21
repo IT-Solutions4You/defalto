@@ -553,5 +553,12 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		return true;
 	}
 
+	public function isDuplicatesAllowed() {
+		if (!isset($this->allowDuplicates)) {
+			$this->allowDuplicates = vtws_isDuplicatesAllowed($this->webserviceObject);
+		}
+		return $this->allowDuplicates;
+	}
+
 }
 ?>

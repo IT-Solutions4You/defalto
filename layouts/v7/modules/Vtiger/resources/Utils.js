@@ -87,9 +87,10 @@ var vtUtils = {
 		if(typeof selectElement == 'undefined') {
 			return;
 		}
-		var instance = selectElement.data('select2');
+
 		var limit = params.maximumSelectionSize;
 		selectElement.on('change',function(e){
+			var instance = jQuery(e.currentTarget).data('select2');
 			var data = instance.data();
 			if (jQuery.isArray(data) && data.length >= limit ) {
 				instance.updateResults();

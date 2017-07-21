@@ -14,6 +14,12 @@
     <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
 {/if}
 <div name='editContent'>
+	{if $DUPLICATE_RECORDS}
+		<div class="fieldBlockContainer duplicationMessageContainer">
+			<div class="duplicationMessageHeader"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></div>
+			<div>{getDuplicatesPreventionMessage($MODULE, $DUPLICATE_RECORDS)}</div>
+		</div>
+	{/if}
     {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
         {if $BLOCK_LABEL eq 'LBL_ITEM_DETAILS'}{continue}{/if}
          {if $BLOCK_FIELDS|@count gt 0}
