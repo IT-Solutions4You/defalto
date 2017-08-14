@@ -91,7 +91,7 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
     };
     
     $scope.loadRecord = function () {
-        $api('fetchRecord', {module:$scope.module, record:$scope.record}, function(e,r) {
+        $api('fetchRecord', {module:$scope.module, record:$scope.record, view_mode:'web'}, function(e,r) {
             $scope.record_label = r.record.label;
             $scope.recordId = r.record.id;
             if($scope.module == 'Invoice' || $scope.module == 'Quotes' || $scope.module == 'PurchaceOrder' || $scope.module == 'SalesOrder'){
