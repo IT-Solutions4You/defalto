@@ -22,21 +22,106 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
         window.history.back();
     };
     
+    var _VTIGER_RESTRICTIONS = {
+	'Vtiger' : {
+		'View': {
+			'Detail': {
+				'Fields': {
+					'Ignore_Fields': [
+						'modifiedby',
+						'last_contacted_via',
+						'last_contacted_on',
+						'reassign_count',
+						'from_portal',
+						'prev_sales_stage',
+                                                'txtAdjustment',
+						'hdnGrandTotal',
+						'hdnTaxType',
+						'hdnSubTotal',
+						'currency_id',
+						'conversion_rate',
+						'pre_tax_total',
+						'received',
+						'balance',
+						'hdnS_H_Amount',
+						'paid',
+                                                'tags',
+                                                'shipping_&_handling',
+                                                'shipping_&_handling_shtax1',
+                                                'shipping_&_handling_shtax2',
+                                                'shipping_&_handling_shtax3',
+                                                'starred',
+                                                'hdnS_H_Percent',
+                                                'tax1',
+                                                'tax2',
+                                                'tax3',
+                                                
+					]
+				}
+			}
+		}
+	}
+    };
+    $scope.lineitems = [];
+    $scope.lineItemsSummary = {};
+    
+    $scope.prepareLineItems = function(response){
+         $scope.lineitems = response.record['LineItems'];
+         var processedLineItems = [];
+         for(var index in $scope.lineitems) {
+             var item = $scope.lineitems[index];
+             processedLineItems.push(item);
+         }
+
+         var lineItemFinalDetails = response.record['LineItems_FinalDetails'][1]['final_details'];
+         for(var index in response.record['LineItems_FinalDetails']) {
+             var final_detail = response.record['LineItems_FinalDetails'][index];
+             processedLineItems[index - 1]['netPrice'] = final_detail["netPrice"+index];
+         }
+         $scope.lineitems = processedLineItems;
+         $scope.lineItemsSummary['pre_tax_total'] = response.record.pre_tax_total;
+         $scope.lineItemsSummary['sub_total'] = response.record.hdnSubTotal;
+         $scope.lineItemsSummary['grand_total'] = response.record.hdnGrandTotal;
+         $scope.lineItemsSummary['group_discount'] = response.record.hdnDiscountAmount;
+         $scope.lineItemsSummary['total_tax'] = lineItemFinalDetails['tax_totalamount'];
+         $scope.lineItemsSummary['totalAfterDiscount'] = lineItemFinalDetails['totalAfterDiscount'];
+         $scope.lineItemsSummary['adjustment'] = lineItemFinalDetails['adjustment'];
+         
+         
+    };
+    
     $scope.loadRecord = function () {
-        $api('fetchRecord', {module:$scope.module, record:$scope.record}, function(e,r) {
-            
+        $api('fetchRecord', {module:$scope.module, record:$scope.record, view_mode:'web'}, function(e,r) {
+            $scope.record_label = r.record.label;
+            $scope.recordId = r.record.id;
+            if($scope.module == 'Invoice' || $scope.module == 'Quotes' || $scope.module == 'PurchaceOrder' || $scope.module == 'SalesOrder'){
+                $scope.prepareLineItems(r);
+            }
             var processedData = [];
+            var ignoreFields  = _VTIGER_RESTRICTIONS['Vtiger']['View']['Detail']['Fields']['Ignore_Fields'];
             for(var index in $scope.fields) {
-                var value = r.record[$scope.fields[index].name];
-                if(typeof value === 'object') {
-                    processedData.push({label:$scope.fields[index].label, value:value.label});
+                if(ignoreFields.indexOf($scope.fields[index].name) === -1) {
+                    var value = r.record[$scope.fields[index].name];
+                    if(typeof value === 'object') {
+                        processedData.push({label:$scope.fields[index].label, value:value.label});
                     
-                } else {
-                    processedData.push({label:$scope.fields[index].label, value:value});
+                    } else {
+                        processedData.push({label:$scope.fields[index].label, value:value});
+                    }
                 }
             }
             
             $scope.recordData = processedData;
+        });
+        //related tab
+        
+        $api('fetchRecord', {mode:'getRelatedRecordCount', module:$scope.module, record:$scope.record}, function(er, re) {
+            if(re){
+                $scope.relatedModules = {};
+                for(var key in re){
+                    $scope.relatedModules[key] = re[key].count;
+                }
+            }
         });
     };
     
@@ -50,6 +135,9 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
     
     $scope.isDeleteable = function() {
         return ($scope.deleteable)? true : false;
+    };
+    $scope.showRelatedList = function(module){
+        window.location.href = "index.php?module="+module+"&view=List&app="+$scope.selectedApp;
     };
 });
 

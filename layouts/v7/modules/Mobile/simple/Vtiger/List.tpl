@@ -26,12 +26,12 @@
 <section layout="row" flex class="content-section" ng-controller="{$_controller}">
     {include file="../Vtiger/SideMenu.tpl"}
     {literal}
-        <md-button class="md-fab md-primary float-button md-fab-bottom-right" aria-label="addnew">
+        <md-button ng-click="listViewCreateEvent()" class="md-fab md-primary float-button md-fab-bottom-right" aria-label="addnew">
             <i class="mdi mdi-plus"></i>
         </md-button>
         <div flex class="list-content">
             <div class="list-filters" layout="row" >
-                <div flex="60" class="change-filter">
+                <div flex="50" class="change-filter">
                     <md-input-container class="current-filter">
                         <md-select ng-model="selectedFilter" aria-label="filter">
                             <md-optgroup label="Mine">
@@ -43,7 +43,7 @@
                         </md-select>
                     </md-input-container>
                 </div>
-                <div flex="40" class="sort-filter" ng-show="records.length">
+                <div flex="50" class="sort-filter" ng-show="records.length">
                     <md-input-container class="current-sort-field">
                         <md-select ng-model="orderBy" aria-label="sortfield" placeholder="Select sort field">
                             <md-option ng-repeat="header in headers" ng-value="header.name">{{header.label}}</md-option>
@@ -55,7 +55,6 @@
             <div layout="column" layout-fill layout-align="top center" ng-if="records.length">
                 <md-list class="records-list">
                     <md-list-item class="md-3-line" data-record-id="{{record.id}}" aria-label="row+{{record.id}}" ng-model="showActions" md-swipe-right="showActions=false;$event.stopPropagation();" md-swipe-left="showActions=true;$event.stopPropagation();" ng-click="gotoDetailView(record.id)" ng-repeat="record in records">
-                        <img ng-src="../../layouts/v7/modules/Mobile/simple/resources/images/default_1.png" class="md-avatar" alt="{{item.name}}" />
                         <div class="md-list-item-text">
                             <h3>
                                 <span ng-repeat="label in headers">
@@ -63,7 +62,7 @@
                                 </span>
                             </h3>
                             <p class="header-fields" ng-repeat="header in headers" ng-if="headerIndex(nameFields,header.name)== -1">
-                                {{record[header.name] || header.label + ' not specified'}}
+                                {{record[header.name]}}
                             </p>    
                         </div>
                         <div class="actions-slider animate-show" ng-show="showActions" ng-swipe-right="hideRecordActions();" ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">

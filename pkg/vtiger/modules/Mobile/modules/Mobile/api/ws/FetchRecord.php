@@ -26,6 +26,10 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
 		$current_user = $this->getActiveUser();
 
 		$recordid = $request->get('record');
+		if($request->get('view_mode') == 'web'){
+			$module = $request->get('module');
+			$recordid = vtws_getWebserviceEntityId($module, $recordid);
+		}
 		$record = vtws_retrieve($recordid, $current_user);
 		
 		return $record;
@@ -33,20 +37,31 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
 	
 	function process(Mobile_API_Request $request) {
 		$current_user = $this->getActiveUser();
-		$record = $this->processRetrieve($request);
+		$mode = $request->get('mode');
+		if(!empty($mode) && method_exists($this, $mode)) {
+			$result = $this->$mode($request);
+			
+			$response = new Mobile_API_Response();
+			$response->setResult($result);
+        
+			return $response;
+		}
+		else{
+			$record = $this->processRetrieve($request);
 		
-		$this->resolveRecordValues($record, $current_user);
+			$this->resolveRecordValues($record, $current_user);
 		
-		$response = new Mobile_API_Response();
-		$response->setResult(array('record' => $record));
+			$response = new Mobile_API_Response();
+			$response->setResult(array('record' => $record));
 		
-		return $response;
+			return $response;
+		}
 	}
 	
-	function resolveRecordValues(&$record, $user, $ignoreUnsetFields=false) {
+	public function resolveRecordValues(&$record, $user, $ignoreUnsetFields=false) {
 		if(empty($record)) return $record;
-		
-		$fieldnamesToResolve = Mobile_WS_Utils::detectFieldnamesToResolve(
+
+        $fieldnamesToResolve = Mobile_WS_Utils::detectFieldnamesToResolve(
 			$this->detectModuleName($record['id']) );
 		
 		if(!empty($fieldnamesToResolve)) {
@@ -54,7 +69,7 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
 				if ($ignoreUnsetFields === false || isset($record[$resolveFieldname])) {
 					$fieldvalueid = $record[$resolveFieldname];
 					$fieldvalue = $this->fetchRecordLabelForId($fieldvalueid, $user);
-					$record[$resolveFieldname] = array('value' => $fieldvalueid, 'label'=>$fieldvalue);
+					$record[$resolveFieldname] = array('value' => $fieldvalueid, 'label'=>decode_html($fieldvalue));
 				}
 			}
 		}
@@ -71,6 +86,31 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
 		} else {
 			$value = $id;
 		}
-		return $value;
+		return decode_html($value);
+	}
+	
+	function getRelatedRecordCount(Mobile_API_Request $request) {
+		$record = $request->get('record');
+		$module = $request->get('module');
+        global $currentModule;
+        $currentModule = $module;
+        
+		$parentModuleModel = Vtiger_Module_Model::getInstance($module);
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($record, $parentModuleModel);
+        $relationModels = $parentModuleModel->getRelations();
+        $relatedRecordsCount = array();
+		
+		foreach($relationModels as $relation) {
+            $relatedModuleName = $relation->get('relatedModuleName');
+            if($relatedModuleName === 'ModTracker') {
+                continue;
+            }
+            $relationId = $relation->getId();
+			$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName, $relation->get('label'),$relationId);
+            $count = $relationListView->getRelatedEntriesCount();
+			$relatedRecordsCount[$relation->get('label')] = array('count'=>$count,'relatedModule'=>$relatedModuleName);
+        }
+
+		return $relatedRecordsCount;
 	}
 }

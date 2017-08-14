@@ -77,34 +77,41 @@ class VtigerLineItemOperation  extends VtigerActorOperation {
 	 * @throws WebServiceException - Database error
 	 */
 	public function getAllLineItemForParent($parentId){
-		if (is_array($parentId)) {
-			$result = null;
-			if (!is_array($parentId)) {
-				$parentId = array($parentId);
-			}
-			$query = "SELECT vtiger_crmentity.label AS productname,vtiger_crmentity.setype as entitytype, {$this->entityTableName}.* FROM {$this->entityTableName}
-							LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid
-							WHERE id IN (". generateQuestionMarks($parentId) .")";
-
-			$transactionSuccessful = vtws_runQueryAsTransaction($query,array($parentId),$result);
-			if(!$transactionSuccessful){
-				throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR,
-					"Database error while performing required operation");
-			}
-			$lineItemList = array();
-			if($result){
-				$rowCount = $this->pearDB->num_rows($result);
-				for ($i = 0 ; $i < $rowCount ; ++$i) {
-					$element = $this->pearDB->query_result_rowdata($result,$i);
-					$element['parent_id'] = $parentId;
-					$id = vtws_getId($this->meta->getEntityId(), $element['lineitem_id']);
-					$element = DataTransform::filterAndSanitize($element,$this->meta);
-					$element['id'] = $id;
-					$lineItemList[] = $element;
-				}
-			}
-			return $lineItemList;
+		$result = null;
+		if(is_array($parentId)){
+			$query = "select vtiger_crmentity.label as productname,vtiger_crmentity.setype as entitytype,vtiger_crmentity.deleted as deleted, {$this->entityTableName}.*
+						FROM {$this->entityTableName}
+						LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid
+						WHERE id IN (". generateQuestionMarks($parentId) .")";
+		}else {
+			$query = "select vtiger_crmentity.label as productname,vtiger_crmentity.setype as entitytype,vtiger_crmentity.deleted as deleted, {$this->entityTableName}.*
+						FROM {$this->entityTableName}
+						LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid where id=?";
 		}
+
+		$transactionSuccessful = vtws_runQueryAsTransaction($query,array($parentId),$result);
+		if(!$transactionSuccessful){
+			throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR,
+				"Database error while performing required operation");
+		}
+		$lineItemList = array();
+		if($result){
+			$rowCount = $this->pearDB->num_rows($result);
+			for ($i = 0 ; $i < $rowCount ; ++$i) {
+				$rowElement = $element = $this->pearDB->query_result_rowdata($result,$i);
+				$element['parent_id'] = $parentId;
+				$productName = $element['productname'];
+				$entityType = $element['entitytype'];
+				$id = vtws_getId($this->meta->getEntityId(), $element['lineitem_id']);
+				$element = DataTransform::filterAndSanitize($element,$this->meta);
+				$element['product_name'] = $productName;
+				$element['entity_type'] = $entityType;
+				$element['id'] = $id;
+				$element['deleted'] = $rowElement['deleted'];
+				$lineItemList[] = $element;
+			}
+		}
+		return $lineItemList;
 	}
 
 	public function _create($elementType, $element){
@@ -298,7 +305,7 @@ class VtigerLineItemOperation  extends VtigerActorOperation {
 		$element['id'] = $id;
 		$parent = $this->getParentById($element['parent_id']);
 		return $this->resetTaxInfo($element, $parent);
-	}
+			}
 
 	public function update($element) {
 		$parentId = vtws_getIdComponents($element['parent_id']);

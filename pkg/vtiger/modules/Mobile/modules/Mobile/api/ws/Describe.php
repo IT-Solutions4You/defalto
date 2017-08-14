@@ -26,6 +26,24 @@ class Mobile_WS_Describe extends Mobile_WS_Controller {
 				$field['headerfield'] = $fieldModel->get('headerfield');
 				$field['summaryfield'] = $fieldModel->get('summaryfield');
 			}
+			if($fieldModel && $fieldModel->getFieldDataType() == 'owner') {
+				$currentUser = Users_Record_Model::getCurrentUserModel();
+                $users = $currentUser->getAccessibleUsers();
+                $usersWSId = Mobile_WS_Utils::getEntityModuleWSId('Users');
+                foreach ($users as $id => $name) {
+                    unset($users[$id]);
+                    $users[$usersWSId.'x'.$id] = $name; 
+                }
+                
+                $groups = $currentUser->getAccessibleGroups();
+                $groupsWSId = Mobile_WS_Utils::getEntityModuleWSId('Groups');
+                foreach ($groups as $id => $name) {
+                    unset($groups[$id]);
+                    $groups[$groupsWSId.'x'.$id] = $name; 
+                }
+				$field['type']['picklistValues']['users'] = $users; 
+				$field['type']['picklistValues']['groups'] = $groups; 
+			}
 			$newFields[] = $field;
 		}
 		$fields=null;

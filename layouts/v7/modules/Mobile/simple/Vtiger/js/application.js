@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *
  **************************************************************************************/
-window.mobileapp = angular.module('mobileapp', ['ngMaterial', 'ngTouch', 'ngAnimate']);
+window.mobileapp = angular.module('mobileapp', ['ngMaterial', 'ngTouch', 'ngAnimate','720kb.datepicker','ui.clockpicker']);
 mobileapp.factory('$api', function ($http) {
     var APIBASE = 'api.php', APIVERSION = 'v2';
 
