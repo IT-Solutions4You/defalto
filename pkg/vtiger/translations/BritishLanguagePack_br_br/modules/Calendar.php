@@ -147,6 +147,9 @@ $languageStrings = array(
   'LBL_NOVEMBER' => 'November',
   'LBL_DECEMBER' => 'December',
 	'LBL_CLICK_HERE_TO_VIEW' => 'Click here to view',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'No. of duplicate Events skipped',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'No. of duplicate Tasks skipped',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / To Do'            , 

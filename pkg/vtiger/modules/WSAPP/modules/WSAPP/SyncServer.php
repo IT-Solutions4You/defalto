@@ -141,7 +141,7 @@ class SyncServer {
 		else if ($mode == $this->update)
 			$this->idmap_update($appid, $serverid, $clientid, $clientModifiedTime,$serverModifiedTime,$serverAppId);
 		else if($mode==$this->save){
-			$result = $db->pquery("SELECT * FROM vtiger_wsapp_recordmapping WHERE appid=? and serverid=? and clientid=?",array($appid,$serverid,$clientid));
+			$result = $db->pquery("SELECT 1 FROM vtiger_wsapp_recordmapping WHERE appid=? and serverid=? and clientid=?",array($appid,$serverid,$clientid));
 			if($db->num_rows($result)<=0)
 				$this->idmap_create($appid, $serverid, $clientid, $clientModifiedTime,$serverModifiedTime,$serverAppId);
 			else
@@ -319,7 +319,7 @@ class SyncServer {
 
 	   $nextSyncDeleteRecords = $this->destHandler->getAssignToChangedRecords();
 	   foreach($result['created'] as $clientRecordId=>$record){
-		   $this->idmap_put($appid, $record['id'], $clientRecordId,$clientModifiedTimeList[$clientRecordId],$record['modifiedtime'],$serverAppId,$this->create);
+		   $this->idmap_put($appid, $record['id'], $clientRecordId,$clientModifiedTimeList[$clientRecordId],$record['modifiedtime'],$serverAppId);
 		   $responseRecord = $record;
 		   $responseRecord['_id'] = $record['id'];
 		   $responseRecord['id'] = $clientRecordId;
@@ -328,7 +328,7 @@ class SyncServer {
 		   $response['created'][] = $responseRecord;
 	   }
 	   foreach($result['updated'] as $clientRecordId=>$record){
-		   $this->idmap_put($appid, $record['id'], $clientRecordId,$clientModifiedTimeList[$clientRecordId],$record['modifiedtime'],$serverAppId,$this->update);
+		   $this->idmap_put($appid, $record['id'], $clientRecordId,$clientModifiedTimeList[$clientRecordId],$record['modifiedtime'],$serverAppId);
 		   $responseRecord = $record;
 		   $responseRecord['_id'] = $record['id'];
 		   $responseRecord['id'] = $clientRecordId;
@@ -452,7 +452,7 @@ class SyncServer {
 		$serverAppId = $this->appid_with_key($serverKey);
 		//$lookups = $this->idmap_get_clientmap($appid, array_values($createDetails));
 		foreach ($createDetails as $clientid => $serverDetails) {
-			$this->idmap_put( $appid, $serverDetails['serverid'], $clientid,$serverDetails['modifiedtime'],$serverDetails['_modifiedtime'],$serverAppId,$this->create);
+			$this->idmap_put( $appid, $serverDetails['serverid'], $clientid,$serverDetails['modifiedtime'],$serverDetails['_modifiedtime'],$serverAppId);
 		}
 		foreach($updatedDetails as $clientid=>$serverDetails){
 			$this->idmap_updateMapDetails( $appid, $clientid,$serverDetails['modifiedtime'],$serverDetails['_modifiedtime'],$this->update);

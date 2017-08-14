@@ -21,14 +21,9 @@
 			<div class="col-sm-6">
 				<select class="select2 col-sm-6" name="layoutEditorModules">
 					<option value=''>{vtranslate('LBL_SELECT_OPTION', $QUALIFIED_MODULE)}</option>
-					{foreach item=MODULE_NAME from=$SUPPORTED_MODULES}
+					{foreach item=MODULE_NAME key=TRANSLATED_MODULE_NAME from=$SUPPORTED_MODULES}
 						<option value="{$MODULE_NAME}" {if $MODULE_NAME eq $SELECTED_MODULE_NAME} selected {/if}>
-							{* Calendar needs to be shown as TODO so we are translating using Layout editor specific translations*}
-							{if $MODULE_NAME eq 'Calendar'}
-								{vtranslate($MODULE_NAME, $QUALIFIED_MODULE)}
-							{else}
-								{vtranslate($MODULE_NAME, $MODULE_NAME)}
-							{/if}
+							{$TRANSLATED_MODULE_NAME}
 						</option>
 					{/foreach}
 				</select>

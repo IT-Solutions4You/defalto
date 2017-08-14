@@ -175,6 +175,9 @@ $languageStrings = array(
   'LBL_NOVEMBER' => 'تشرين الثاني / نوفمبر',
   'LBL_DECEMBER' => 'كانون الأول / ديسمبر',
 	'LBL_CLICK_HERE_TO_VIEW' => 'انقر هنا لعرض',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'عدد الأحداث المكررة تخطي',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'عدد المهام المكررة تخطي',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK' => 'إضافة حدث / القيام',

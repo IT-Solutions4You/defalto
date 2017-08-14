@@ -35,7 +35,8 @@ class VTCreateTodoTask extends VTTask{
 	}
 
 	public function doTask($entityData){
-		if(!vtlib_isModuleActive('Calendar')) {
+		$moduleName = 'Calendar';
+		if(!vtlib_isModuleActive($moduleName)) {
 			return;
 		}
 		global $adb, $current_user;
@@ -115,13 +116,13 @@ class VTCreateTodoTask extends VTTask{
 			'visibility'=>'Private',
 			'eventstatus'=>''
 		);
-		$moduleName = $entityData->getModuleName();
+		$parentModuleName = $entityData->getModuleName();
 		$adminUser = $this->getAdmin();
 		$id = $entityData->getId();
-		if($moduleName=='Contacts'){
+		if($parentModuleName=='Contacts'){
 			$fields['contact_id'] = $id;
 		}else{
-			$data = vtws_describe('Calendar', $adminUser);
+			$data = vtws_describe($moduleName, $adminUser);
 			$fieldInfo = $data['fields'];
 			foreach($fieldInfo as $field){
 				if($field['name']=='parent_id'){
@@ -130,12 +131,12 @@ class VTCreateTodoTask extends VTTask{
 			}
 			$refersTo = $parentIdField['type']['refersTo'];
 
-			if(in_array($moduleName, $refersTo)){
+			if(in_array($parentModuleName, $refersTo)){
 				$fields['parent_id'] = $id;
 			}
 		}
 		
-		$entityModuleHandler = vtws_getModuleHandlerFromName('Calendar', $current_user);
+		$entityModuleHandler = vtws_getModuleHandlerFromName($moduleName, $current_user);
 		$handlerMeta = $entityModuleHandler->getMeta();
 		$mandatoryFields = $handlerMeta->getMandatoryFields();
 		$moduleFields = $handlerMeta->getModuleFields();
@@ -169,12 +170,22 @@ class VTCreateTodoTask extends VTTask{
 			}
 		}
 
-		$fields['source'] = 'WORKFLOW';
-		$todo = vtws_create('Calendar', $fields, $adminUser);
-		$todoIdDetails = vtws_getIdComponents($todo['id']);
-		$entityIdDetails = vtws_getIdComponents($id);
-		
-		relateEntities(CRMEntity::getInstance($moduleName), $moduleName, $entityIdDetails[1], 'Calendar', $todoIdDetails[1]);
+		try {
+			$fields['source'] = 'WORKFLOW';
+			$todo = vtws_create($moduleName, $fields, $adminUser);
+			$todoIdDetails = vtws_getIdComponents($todo['id']);
+			$entityIdDetails = vtws_getIdComponents($id);
+
+			relateEntities(CRMEntity::getInstance($parentModuleName), $parentModuleName, $entityIdDetails[1], $moduleName, $todoIdDetails[1]);
+		} catch (DuplicateException $e) {
+			$workFlowManager = new VTWorkflowManager($adb);
+			$workFlow = $workFlowManager->retrieve($this->workflowId);
+
+			$mailBody = vtranslate('LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS', $moduleName, vtranslate('SINGLE_'.$moduleName, $moduleName),
+					decode_html($workFlow->workflowname), vtranslate('SINGLE_'.$moduleName, $moduleName));
+			sendMailToUserOnDuplicationPrevention($moduleName, $fields, $mailBody);
+		} catch (Exception $e) {
+		}
 
 		global $current_user;
 		$current_user = $this->originalUser;

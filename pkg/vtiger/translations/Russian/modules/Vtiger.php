@@ -1074,6 +1074,16 @@ $languageStrings = array(
   'LBL_SLA_INFORMATION' => 'ОАС информация',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Для использования <B>%s</B>, мы рекомендуем вам перейти на новый облик.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Когда пользователь будет удален, пользователь будет помечен как "неактивные" и никаких новых записей не могут быть назначены на пользователя, и пользователь не сможет войти в систему. Вы уверены, что хотите удалить?',
+
+	'LBL_DUPLICATES' => 'Дубликаты',
+	'LBL_DUPLICATES_DETECTED' => 'Дубликат (s) обнаружено!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Это%s не может быть сохранен, так как дубликат%s существует в Vtiger с соответствующими значениями для% с.',
+	'LBL_VTIGER_NOTIFICATION' => 'Сообщение от: Vtiger системы уведомлений',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'Следующий%s не может быть спасен от «%s» рабочего процесса',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'Следующие%s не может быть спасен от «%s» веб-формы',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Вы можете%s изменить дублирующие правила профилактики.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Обратитесь к администратору для пересмотра правил дублирующих',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Дубликат%s (S):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Пожалуйста, настроить параметры исходящей сервера на странице настроек',
@@ -1477,4 +1487,6 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Файл успешно Добавленоy',
     'JS_UPLOAD_FAILED' => 'Загрузка файла Ошибка',
+
+	'JS_DUPLICATES_DETECTED' => 'Дубликат (s) обнаружено!',
 );

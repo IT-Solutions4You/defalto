@@ -28,15 +28,13 @@
 					</span>
 				{/if}
 			</span>
-			{if !$IS_DUPICATES_FAILURE}
-				<hr>
-				<div class="small" align="right" nowrap="nowrap">
-					{if $CURRENT_USER->isAdminUser()}
-						<a href="index.php?parent=Settings&module=Leads&view=MappingDetail">{vtranslate('LBL_LEADS_FIELD_MAPPING', $MODULE)}</a><br>
-					{/if}
-					<a href="javascript:window.history.back();">{vtranslate('LBL_GO_BACK', $MODULE)}</a><br>
-				</div>
-			{/if}
+			<hr>
+			<div class="small" align="right" nowrap="nowrap">
+				{if !$IS_DUPICATES_FAILURE && $CURRENT_USER->isAdminUser()}
+					<a href="index.php?parent=Settings&module=Leads&view=MappingDetail">{vtranslate('LBL_LEADS_FIELD_MAPPING', $MODULE)}</a><br>
+				{/if}
+				<a href="javascript:window.history.back();">{vtranslate('LBL_GO_BACK', $MODULE)}</a><br>
+			</div>
 		</div>
 	</div>
 {/strip}

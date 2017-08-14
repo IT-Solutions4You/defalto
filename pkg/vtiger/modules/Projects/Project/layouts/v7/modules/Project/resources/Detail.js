@@ -385,11 +385,16 @@ Vtiger_Detail_Js("Project_Detail_Js",{
                                 form = jQuery(form);
                                 if(form.attr('id') == 'projectTaskQuickEditForm') {
                                     app.helper.showProgress();
-                                    thisInstance.saveTask(form).then(function() {
+									 thisInstance.saveTask(form).then(function(err, data) {
                                         app.helper.hideProgress();
-                                        app.helper.hideModal();
-                                        // to reload chart
-                                        jQuery('[data-label-key=Chart]').click();
+										if (err === null) {
+											jQuery('.vt-notification').remove();
+											app.helper.hideModal();
+											// to reload chart
+											jQuery('[data-label-key=Chart]').click();
+										} else {
+											app.event.trigger('post.save.failed', err);
+										}
                                     });
                                 }
                             },
@@ -421,8 +426,13 @@ Vtiger_Detail_Js("Project_Detail_Js",{
                 }
                 app.helper.showProgress();
                 app.request.post({data: params}).then(
-                    function(error, data) {
+					function(error, data) {
                         app.helper.hideProgress();
+						if (error === null) {
+							jQuery('.vt-notification').remove();
+						} else {
+							app.event.trigger('post.save.failed', error);
+						}
                     }
                 );
             }
@@ -515,7 +525,7 @@ Vtiger_Detail_Js("Project_Detail_Js",{
         app.request.post({data: formData}).then(
                 function(error, data) {
                     //TODO: App Message should be shown
-                    aDeferred.resolve(data);
+                    aDeferred.resolve(error, data);
                 },
                 function(textStatus, errorThrown) {
                     aDeferred.reject(textStatus, errorThrown);

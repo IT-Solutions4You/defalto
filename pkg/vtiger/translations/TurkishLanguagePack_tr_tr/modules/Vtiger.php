@@ -1073,6 +1073,16 @@ Vtiger dışında.',
   'LBL_SLA_INFORMATION' => 'SLA Bilgi',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => '%s öneririz  kullanmak için yeni bir görünüm geçmek için.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Kullanıcı silindiğinde, kullanıcı "Etkin" ve yeni kayıt Kullanıcı atanabilir olarak işaretlenir ve kullanıcı giriş mümkün olmayacaktır. Silmek istediğine emin misin?',
+
+	'LBL_DUPLICATES' => 'çoğaltır',
+	'LBL_DUPLICATES_DETECTED' => 'Çoğaltın (ler) algılandı!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'yinelenen%s%s değerleri eşleşen vtiger var çünkü bu%s kaydedilemez.',
+	'LBL_VTIGER_NOTIFICATION' => 'Ileti: Vtiger Sistem Bildirimleri',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'Aşağıdaki%s "%s" iş akışından kurtarılamadı',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'Aşağıdaki%s "%s" web formunda gelen kurtarılamadı',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => '%s yinelenen önleme kurallarını değiştirmek olabilir.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'yinelenen kurallarını revize için yöneticinize başvurun',
+	'LBL_DUPLICATE_RECORD_LISTS' => '%s (ler) Çift:',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 
@@ -1483,4 +1493,6 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Uploaded başarıyla Dosya',
     'JS_UPLOAD_FAILED' => 'Dosya Yükleme Başarısız',
+
+	'JS_DUPLICATES_DETECTED' => 'Çoğaltın (ler) algılandı!',
 );

@@ -1075,6 +1075,16 @@ al di fuori di Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA Informazioni',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Per utilizzare il <b>%s</b>, si consiglia di passare a nuovo look.',
 	'LBL_DELETE_USER_CONFIRMATION' => "Quando viene cancellato un utente, l'utente verrà contrassegnato come inattivo e non nuovi record possono essere assegnati all'Utente, e l'utente non sarà in grado di effettuare il login. Sei sicuro di voler eliminare?",
+
+	'LBL_DUPLICATES' => 'duplicati',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicate (s) rilevata!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Questo%s non può essere salvato in quanto duplicato%s esiste in Vtiger con corrispondenti valori per%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Messaggio da: Vtiger Sistema Notifiche',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'La seguente%s non può essere salvato da "%s" del flusso di lavoro',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'La seguente%s non può essere salvato da "%s" modulo web',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'È possibile%s per modificare le regole di prevenzione duplicati.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => "Contattare l'amministratore per la revisione delle regole duplicati",
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicate%s (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
@@ -1480,4 +1490,5 @@ $jsLanguageStrings = array(
 	'JS_UPLOAD_SUCCESSFUL' => 'Caricato con successo File',
     'JS_UPLOAD_FAILED' => 'File Upload non riuscito',
 
+	'JS_DUPLICATES_DETECTED' => 'Duplicate (s) rilevata!',
 );

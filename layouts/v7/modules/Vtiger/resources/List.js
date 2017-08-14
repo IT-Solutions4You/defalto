@@ -1312,7 +1312,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				form_update_data += key + '=' + newData[key] + '&';
 			}
 			form_update_data = form_update_data.slice(0, -1);
-			app.request.post(postParams).then(function (err, data) {
+			app.request.post({data: form_update_data}).then(function (err, data) {
 				app.helper.hideProgress();
 				if (data) {
 					jQuery('.vt-notification').remove();
@@ -1601,13 +1601,17 @@ Vtiger.Class("Vtiger_List_Js", {
 			var data = jQuery.extend(formData, listSelectParams);
 			app.helper.showProgress();
 			app.request.post({'data': data}).then(function (err, data) {
+				app.helper.hideProgress();
 				if (err == null) {
-					app.helper.hideProgress();
+					jQuery('.vt-notification').remove();
 					app.helper.hideModal();
 					listInstance.loadListViewRecords().then(function (e) {
 						listInstance.clearList();
 						app.helper.showSuccessNotification({message: app.vtranslate('JS_RECORDS_TRANSFERRED_SUCCESSFULLY')});
 					});
+				} else {
+					app.event.trigger('post.save.failed', err);
+					jQuery(form).find("button[name='saveButton']").removeAttr('disabled');
 				}
 			});
 		}

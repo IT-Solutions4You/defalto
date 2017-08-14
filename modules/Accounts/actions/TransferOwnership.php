@@ -34,10 +34,14 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 			array_push($relatedModuleRecordIds, $recordId);
 		}
 		array_merge($relatedModuleRecordIds, $recordIds);
-		$moduleModel->transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds);
-		
+
+		$result = $moduleModel->transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds);
 		$response = new Vtiger_Response();
-		$response->setResult(true);
+		if ($result === true) {
+			$response->setResult(true);
+		} else {
+			$response->setError($result);
+		}
 		$response->emit();
 	}
 	

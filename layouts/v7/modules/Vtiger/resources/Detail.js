@@ -208,6 +208,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					app.request.post({data:reqParams}).then(
 						function(error,data) {
 							if(error === null){
+								jQuery('.vt-notification').remove();
 								app.helper.hideModal();
                                 app.helper.showSuccessNotification({message:app.vtranslate('JS_RECORDS_TRANSFERRED_SUCCESSFULLY')});
                             } else {
@@ -1808,6 +1809,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						function(err,data) {
 							app.helper.hideProgress();
 							if (err == null) {
+								jQuery('.vt-notification').remove();
 								detailViewElement.removeClass('hide');
 								currentTarget.show();
 								detailViewElement.html(translatedValue);

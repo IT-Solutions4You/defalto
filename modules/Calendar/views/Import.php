@@ -56,6 +56,7 @@ class Calendar_Import_View extends Vtiger_Import_View {
 				$requiredFields[$module] = array_diff($moduleRequiredFields, $skipFields[$module]);
 				$totalCount[$module] = 0;
 				$skipCount[$module] = 0;
+				$duplicatesCount[$module] = 0;
 			}
 
 			$ical = new iCal();
@@ -89,9 +90,6 @@ class Calendar_Import_View extends Vtiger_Import_View {
 					if(strtotime($dueDate) < strtotime($currentDate))
 						$activityFieldsList['eventstatus'] = 'Held';
 				}
-				if (!$activityFieldsList['time_end']) {
-					$activityFieldsList['time_end'] = '';
-				}
 
 				$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
 				$recordModel->setData($activityFieldsList);
@@ -109,24 +107,31 @@ class Calendar_Import_View extends Vtiger_Import_View {
 				if($skipRecord === true) {
 					continue;
 				}
-				$recordModel->save();
+				try {
+					$recordModel->save();
 
-				$lastImport = new iCalLastImport();
-				$lastImport->setFields(array('userid' => $userId, 'entitytype' => $todoModule, 'crmid' => $recordModel->getId()));
-				$lastImport->save();
+					$lastImport = new iCalLastImport();
+					$lastImport->setFields(array('userid' => $userId, 'entitytype' => $todoModule, 'crmid' => $recordModel->getId()));
+					$lastImport->save();
 
-				if(!empty($icalActivities[$i]['VALARM'])) {
-					$recordModel->setActivityReminder(0, '', '');
+					if(!empty($icalActivities[$i]['VALARM'])) {
+						$recordModel->setActivityReminder(0, '', '');
+					}
+				} catch (Exception $e) {
+					$duplicatesCount[$module]++;
 				}
 			}
 
-			$importedEvents = $totalCount[$eventModule] - $skipCount[$eventModule];
-			$importedTasks = $totalCount[$todoModule] - $skipCount[$todoModule];
+			$importedEvents = $totalCount[$eventModule] - $skipCount[$eventModule] - $duplicatesCount[$eventModule];
+			$importedTasks = $totalCount[$todoModule] - $skipCount[$todoModule] - $duplicatesCount[$todoModule];
 
 			$viewer->assign('SUCCESS_EVENTS', $importedEvents);
 			$viewer->assign('SKIPPED_EVENTS', $skipCount[$eventModule]);
+			$viewer->assign('DUPLICATE_EVENTS', $duplicatesCount[$eventModule]);
+
 			$viewer->assign('SUCCESS_TASKS', $importedTasks);
 			$viewer->assign('SKIPPED_TASKS', $skipCount[$todoModule]);
+			$viewer->assign('DUPLICATE_TASKS', $duplicatesCount[$todoModule]);
 
 		} else {
 			$viewer->assign('ERROR_MESSAGE', $request->get('error_message'));

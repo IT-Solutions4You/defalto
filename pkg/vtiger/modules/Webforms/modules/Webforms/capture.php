@@ -115,6 +115,15 @@ class Webform_Capture {
 
 			$this->sendResponse($returnURL, 'ok');
 			return;
+		} catch (DuplicateException $e) {
+			$sourceModule = $webform->getTargetModule();
+			$mailBody = vtranslate('LBL_DUPLICATION_FAILURE_FROM_WEBFORMS', $sourceModule, vtranslate('SINGLE_'.$sourceModule, $sourceModule), $webform->getName(), vtranslate('SINGLE_'.$sourceModule, $sourceModule));
+
+			$userModel = Users_Record_Model::getInstanceFromPreferenceFile($user->id);
+			sendMailToUserOnDuplicationPrevention($sourceModule, $parameters, $mailBody, $userModel);
+
+			$this->sendResponse($returnURL, false, $e->getMessage());
+			return;
 		} catch (Exception $e) {
 			$this->sendResponse($returnURL, false, $e->getMessage());
 			return;

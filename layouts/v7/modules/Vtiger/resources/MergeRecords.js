@@ -38,6 +38,7 @@ Vtiger.Class('Vtiger_MergeRecords_Js',{},{
         app.request.post({'data':formData}).then(function(error,data){
             app.helper.hideProgress();
 			if (error === null) {
+				jQuery('.vt-notification').remove();
 				app.helper.hidePageContentOverlay();
 				app.event.trigger('post.MergeRecords',formData);
 				aDeferred.resolve();

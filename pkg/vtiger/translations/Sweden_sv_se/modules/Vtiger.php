@@ -1215,6 +1215,16 @@ utanför Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA Information',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Om du vill använda <b>%s</b>, rekommenderar vi att du Växla till nytt utseende.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'När en användare tas bort, kommer användaren att markeras som "inaktiva" och inga nya rekord kan tilldelas till användaren, och användaren kommer inte att kunna logga in. Är du säker att du vill radera?',
+
+	'LBL_DUPLICATES' => 'dubbletter',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicera (s) upptäckt!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Denna%s kan inte sparas eftersom duplikat%s förekommer i vtiger med matchande värden för%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Meddelande från: vtiger System Notifications',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'Följande%s kunde inte räddas från "%s" workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'Följande%s kunde inte räddas från "%s" webbformulär',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Du kan%s för att ändra dubbla regler förebyggande.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Kontakta administratören för att revidera de dubbla regler',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicera%s (n):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Vänligen konfigurera utgående serverinställningar från inställningssidan',
@@ -1648,4 +1658,6 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'File Uploaded Successfuly',
     'JS_UPLOAD_FAILED' => 'Filöverföring misslyckades',
+
+	'JS_DUPLICATES_DETECTED' => 'Duplicera (s) upptäckt!',
 );

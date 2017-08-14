@@ -135,6 +135,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Rekord nagłówka',
   'LBL_HEADER_FIELD' => 'Widok Nagłówka',
 
+	'LBL_DUPLICATE_HANDLING' => 'Zapobieganie duplikat',
+	'LBL_DUPLICATE_CHECK' => 'Włącz sprawdzanie zduplikowanych',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Powielać funkcji zapobiegania tylko zapobiega powstawaniu nowych zduplikowane rekordy z coraz tworzone przez użytkowników i aplikacji zewnętrznych. Rekordy utworzone z importu',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Wybierz unikalne pól, na których mają być sprawdzane zduplikowane rekordy',
+	'LBL_SELECT_FIELDS' => 'Wybierz Fields',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fields',
+	'LBL_SELECT_RULE' => 'Wybierz reguła duplikatów obsługi',
+	'LBL_ALLOW_DUPLICATES' => 'Pozostawić duplikaty',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Nie dopuszczać duplikaty',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Działania należy podjąć, jeśli duplikat rekord zostanie znaleziony podczas synchronizacji z zewnętrznej aplikacji',
+	'LBL_PREFER_LATEST_RECORD' => 'Wolę ostatni rekord',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Wolę rekord wewnętrznego',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Wolę rekord zewnętrznego',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Wolę najnowszą płytę - Ostatnio zmodyfikowane rejestrować dane zostaną zachowane Największa wolą wewnętrzny rekord - Istniejący rekord zostanie zachowana, ponieważ jest Największa wolą rekord zewnętrznego - Dane z zewnętrznej aplikacji zostaną skopiowane',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Blok Pokaż włączony'      , 
@@ -195,4 +209,7 @@ Jesteś pewien że chcesz usunąć to pole?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Nazwa pola są wyświetlane w nagłówku domyślnie',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'To pole nagłówka jest włączona Vtiger7, zostanie ona wyświetlona w widoku "podsumowanie"',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Pomyślnie zaktualizowany do rozważenia wybranych pól w zapobieganiu duplikatów',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Nie wzięła pod uwagę wybrane pola w zapobieganiu duplikatów',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Duplikat wyboru jest wyłączony',
 );

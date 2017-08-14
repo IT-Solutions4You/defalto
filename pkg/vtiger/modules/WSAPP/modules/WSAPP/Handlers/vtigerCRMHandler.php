@@ -53,8 +53,7 @@ class vtigerCRMHandler extends SyncHandler {
 		$createdRecords = $recordDetails['created'];
 		$updatedRecords = $recordDetails['updated'];
 		$deletedRecords = $recordDetails['deleted'];
-		$recordDetails['skipped'] = array(); 
-
+		$updateDuplicateRecords = array();
 
 		if (count($createdRecords) > 0) {
 			$createdRecords = $this->translateReferenceFieldNamesToIds($createdRecords, $user);
@@ -63,13 +62,30 @@ class vtigerCRMHandler extends SyncHandler {
 		}
 		foreach ($createdRecords as $index => $record) {
 			try { 
-				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user); 
-			} catch (Exception $ex) { 
-				$recordDetails['skipped'][] = array('record' => $createdRecords[$index], 
-													'messageidentifier' => '', 
-													'message' => $ex->getMessage()); 
-				continue; 
-			} 
+				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
+			} catch (DuplicateException $e) {
+				$skipped = true;
+				$duplicateRecordIds = $e->getDuplicateRecordIds();
+				$duplicatesResult = $this->triggerSyncActionForDuplicate($record, $duplicateRecordIds);
+
+				if ($duplicatesResult) {
+					$updateDuplicateRecords[$index] = $duplicatesResult;
+					$skipped = false;
+				}
+				if ($skipped) {
+					$recordDetails['skipped'][] = array('record' => $createdRecords[$index], 
+														'messageidentifier' => '', 
+														'message' => $e->getMessage());
+				}
+				unset($createdRecords[$index]);
+				continue;
+			} catch (Exception $e) {
+				$recordDetails['skipped'][] = array('record' => $createdRecords[$index],
+													'messageidentifier' => '',
+													'message' => $e->getMessage());
+				unset($createdRecords[$index]);
+				continue;
+			}
 		}
 
 		if (count($updatedRecords) > 0) {
@@ -107,13 +123,35 @@ class vtigerCRMHandler extends SyncHandler {
 				} else {
 					$this->assignToChangedRecords[$index] = $record;
 				}
+			} catch (DuplicateException $e) {
+				$skipped = true;
+				$duplicateRecordIds = $e->getDuplicateRecordIds();
+				$duplicatesResult = $this->triggerSyncActionForDuplicate($record, $duplicateRecordIds);
+
+				if ($duplicatesResult) {
+					$updateDuplicateRecords[$index] = $duplicatesResult;
+					$skipped = false;
+				}
+				if ($skipped) {
+					$recordDetails['skipped'][] = array('record' => $updatedRecords[$index], 
+														'messageidentifier' => '', 
+														'message' => $e->getMessage());
+				}
+				unset($updatedRecords[$index]);
+                continue;
 			} catch (Exception $e) {
 				$recordDetails['skipped'][] = array('record' => $updatedRecords[$index], 
 													'messageidentifier' => '', 
-													'message' => $ex->getMessage());
+													'message' => $e->getMessage());
+				unset($updatedRecords[$index]);
 				continue;
 			}
 		}
+
+		foreach ($updateDuplicateRecords as $index => $record) {
+			$updatedRecords[$index] = $record;
+		}
+
 		$hasDeleteAccess = null;
 		$deletedCrmIds = array();
 		foreach ($deletedRecords as $index => $record) {
@@ -146,7 +184,8 @@ class vtigerCRMHandler extends SyncHandler {
 					} catch (Exception $e) {
 						$recordDetails['skipped'][] = array('record' => $deletedRecords[$index], 
 													'messageidentifier' => '', 
-													'message' => $ex->getMessage());
+													'message' => $e->getMessage());
+						unset($deletedRecords[$index]);
 						continue;
 					}
 				}
@@ -429,6 +468,63 @@ class vtigerCRMHandler extends SyncHandler {
 	public function isClientUserAndGroupSyncType() {
 		return ($this->clientSyncType == 'userandgroup') ? true : false;
 	}
+
+	public function triggerSyncActionForDuplicate($recordData, $duplicateRecordIds) {
+		$db = PearDatabase::getInstance();
+		$result = array();
+		$user = $this->user;
+		$moduleName = $recordData['module'];
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+		if ($moduleModel && $moduleModel->isSyncable) {
+			$webSeviceModuleModel = VtigerWebserviceObject::fromName($db, $moduleName);
+			$moduleId = $webSeviceModuleModel->getEntityId();
+
+			$recordId = $recordData['id'];
+			$recordIdComponents = vtws_getIdComponents($recordId);
+			if (count($recordIdComponents) == 2 && in_array($moduleId, $recordIdComponents)) {
+				return array();
 }
 
+			$elemId = reset($duplicateRecordIds);
+			$recordId = vtws_getId($moduleId, $elemId);
+			try {
+				$vtigerRecordData = vtws_retrieve($recordId, $user);
+			} catch (Exception $e) {
+		 		return $result;
+			}
+			global $skipDuplicateCheck;
+			$skipDuplicateCheck = true;
+			switch ($moduleModel->syncActionForDuplicate) {
+				case 1	:	//Prefer latest record
+							$finalRecordData = $vtigerRecordData;
+							if ($recordData['modifiedtime'] > $vtigerRecordData['modifiedtime']) {
+								$finalRecordData = $recordData;
+								$finalRecordData['id'] = $recordId;
+								$finalRecordData = vtws_revise($finalRecordData, $user);
+							}
+							$result = $finalRecordData;
+							break;
+//				case 3	:	//Prefer Vtiger Record
+//							$result = $vtigerRecordData;
+//							break;
+				case 4	:	//Prefer external record
+							$recordData['id'] = $recordId;
+							foreach ($recordData as $fieldName => $fieldValue) {
+								if (!$fieldValue) {
+									unset($recordData[$fieldName]);
+								}
+							}
+							$result = vtws_revise($recordData, $user);
+							break;
+				case 2	:	//Prefer internal record
+				default :	$result = array();
+							break;
+			}
+			$skipDuplicateCheck = false;
+		}
+		return $result;
+	}
+
+}
 ?>

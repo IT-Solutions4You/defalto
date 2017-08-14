@@ -30,8 +30,25 @@ class HelpDesk_ConvertFAQ_Action extends Vtiger_Action_Controller {
 
 			$answer = $faqRecordModel->get('faq_answer');
 			if ($answer) {
-				$faqRecordModel->save();
-				header("Location: ".$faqRecordModel->getDetailViewUrl());
+				try {
+					$faqRecordModel->save();
+					header("Location: ".$faqRecordModel->getDetailViewUrl());
+				} catch (DuplicateException $e) {
+					$requestData = $request->getAll();
+					unset($requestData['__vtrftk']);
+					unset($requestData['action']);
+					unset($requestData['record']);
+					$requestData['view'] = 'Edit';
+					$requestData['module'] = 'HelpDesk';
+					$requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
+
+					global $vtiger_current_version;
+					$viewer = new Vtiger_Viewer();
+					$viewer->assign('REQUEST_DATA', $requestData);
+					$viewer->assign('REQUEST_URL', $faqRecordModel->getEditViewUrl()."&parentId=$recordId&parentModule=$moduleName");
+					$viewer->view('RedirectToEditView.tpl', 'Vtiger');
+				} catch (Exception $e) {
+				}
 			} else {
 				header("Location: ".$faqRecordModel->getEditViewUrl()."&parentId=$recordId&parentModule=$moduleName");
 			}

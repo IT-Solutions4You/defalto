@@ -2570,19 +2570,19 @@ function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
 	$currentUserModel = Users_Record_Model::getCurrentUserModel();
 	if ($currentUserModel->isAdminUser()) {
 		$url = "index.php?parent=Settings&module=LayoutEditor&sourceModule=$moduleName&mode=showDuplicationHandling";
-		$here = '<a href="'.$url.'" target="_blank">'.vtranslate('LBL_CLICK_HERE', $moduleName).'</a>';
+		$here = '<a href="'.$url.'" target="_blank" style="color:#15c !important">'.vtranslate('LBL_CLICK_HERE', $moduleName).'</a>';
 		$message .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_ADMIN', $moduleName, $here);
 	} else {
 		$message .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN', $moduleName);
 	}
 
 	$message .= '<br><br>';
-    $message .= vtranslate('LBL_DUPLICATE_RECORD_LISTS',$moduleName,$singleModuleName) . '<br>';
+    $message .= vtranslate('LBL_DUPLICATE_RECORD_LISTS', $moduleName, $singleModuleName).'<br>';
 	for ($i=0; $i<$duplicateRecordsCount && $i<5; $i++) {
 		$dupliRecordId = $duplicateRecordsList[$i];
 		$dupliRecordModel = new Vtiger_Record_Model();
-		$dupliRecordModel->setId($dupliRecordId)->setModule($moduleName);
-		$message .= '<a href="'.$dupliRecordModel->getDetailViewUrl().'" target="_blank">'.Vtiger_Functions::getCRMRecordLabel($dupliRecordId).'</a><br>';
+		$dupliRecordModel->setId($dupliRecordId)->setModuleFromInstance($moduleModel);
+		$message .= '<a href="'.$dupliRecordModel->getDetailViewUrl().'" target="_blank" style="color:#15c !important">'.Vtiger_Functions::getCRMRecordLabel($dupliRecordId).'</a><br>';
 	}
 
 	if ($duplicateRecordsCount === 6) {
@@ -2614,7 +2614,7 @@ function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
 		}
 
 		$listViewUrl = $moduleModel->getListViewUrl().'&search_params='.json_encode(array($searchParams));
-		$message .= "<a href='$listViewUrl' target='_blank'>+".vtranslate('LBL_MORE', $moduleName).'</a>';
+		$message .= "<a href='$listViewUrl' target='_blank' style='color:#15c !important'>+".  strtolower(vtranslate('LBL_MORE', $moduleName)).'</a>';
 	}
 
 	return $message;
