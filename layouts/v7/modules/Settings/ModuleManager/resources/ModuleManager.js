@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-Vtiger.Class('Settings_Module_Manager_Js', {
+Vtiger_Index_Js('Settings_Module_Manager_Js', {
 }, {
 	/*
 	 * function to update the module status for the module
@@ -132,6 +132,7 @@ Vtiger.Class('Settings_Module_Manager_Js', {
 	registerEvents: function (e) {
 		var thisInstance = this;
 		var container = jQuery('#moduleManagerContents');
+		this._super(container);
 		var importFromZipContainer = jQuery('#importModules');
 		if (importFromZipContainer.length > 0) {
 			thisInstance.registerEventsForImportFromZip(importFromZipContainer);

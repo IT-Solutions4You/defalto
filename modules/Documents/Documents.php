@@ -294,7 +294,7 @@ class Documents extends CRMEntity {
 	function del_create_def_folder($query)
 	{
 		global $adb;
-		$dbQuery = $query." and vtiger_attachmentsfolderfolderid.folderid = 0";
+		$dbQuery = $query." AND vtiger_attachmentsfolder.folderid = 0";
 		$dbresult = $adb->pquery($dbQuery,array());
 		$noofnotes = $adb->num_rows($dbresult);
 		if($noofnotes > 0)

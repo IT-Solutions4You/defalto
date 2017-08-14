@@ -157,7 +157,7 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="button-container">
-						<input type="button" class="btn btn-large" value="{vtranslate('LBL_BACK','Install')}" name="back"/>
+						<input type="button" class="btn btn-default" value="{vtranslate('LBL_BACK','Install')}" name="back"/>
 						<input type="button" class="btn btn-large btn-primary" value="{vtranslate('LBL_NEXT','Install')}" name="step5"/>
 					</div>
 				</div>
