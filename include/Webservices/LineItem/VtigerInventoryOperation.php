@@ -178,11 +178,19 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 		$handler = vtws_getModuleHandlerFromName('LineItem', $this->user);
 		$idComponents = vtws_getIdComponents($id);
 		$lineItems = $handler->getAllLineItemForParent($idComponents[1]);
-		$element['LineItems'] = $lineItems;
 		$recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
 		$element = array_merge($element, $recordCompoundTaxesElement);
-		$element['productid'] = $lineItems[0]['productid'];
+        $element['LineItems_FinalDetails'] = $this->getLineItemFinalDetails($idComponents[1]);
 		return $element;
+	}
+	
+	public function getLineItemFinalDetails($record) {
+        $finalDetails = array();
+        $recordModel = Inventory_Record_Model::getInstanceById($record);
+        if($recordModel) {
+            $finalDetails = $recordModel->getProducts();
+        }
+        return $finalDetails;
 	}
 
 	public function delete($id) {
