@@ -111,7 +111,7 @@
                 </md-tab>
                 <md-tab label="Related">
                     <div ng-if="relatedModules" style="height:75vh; overflow: scroll;">
-                        <md-list-item ng-repeat="(module , value) in relatedModules">
+                        <md-list-item ng-repeat="(module , value) in relatedModules" ng-click="showRelatedList(module)">
                             <p style="font-size: 13px;"><span style="font-size: 12px; color:#FF4068" class="vicon-{{module | lowercase | nospace}}"></span> &nbsp;  {{module}}</p>
                             <p style="text-align:right; color:#0099FF">{{value}}</p>
                             <md-divider></md-divider>

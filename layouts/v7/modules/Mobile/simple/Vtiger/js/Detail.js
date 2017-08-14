@@ -136,6 +136,9 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
     $scope.isDeleteable = function() {
         return ($scope.deleteable)? true : false;
     };
+    $scope.showRelatedList = function(module){
+        window.location.href = "index.php?module="+module+"&view=List&app="+$scope.selectedApp;
+    };
 });
 
 

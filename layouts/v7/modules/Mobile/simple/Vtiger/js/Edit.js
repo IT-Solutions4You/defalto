@@ -29,6 +29,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
     $api('describe', {module: $scope.module}, function (e, r) {
         $scope.describeObject = r.describe;
         $scope.fields = $scope.describeObject.fields;
+        console.log($scope.fields);
         $scope.createable = $scope.describeObject.createable;
         $scope.updateable = $scope.describeObject.updateable;
         $scope.deleteable = $scope.describeObject.deleteable;
@@ -66,8 +67,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
     };
     
     $scope.loadFields = function () {
-        $api('fetchRecord', {module: $scope.module, record: $scope.record}, function (e, r) {
-
+        $api('fetchRecord', {module: $scope.module, record: $scope.record, view_mode:'web'}, function (e, r) {
             var processedData = [];
             for (var index in $scope.fields) {
                 var value = r.record[$scope.fields[index].name];

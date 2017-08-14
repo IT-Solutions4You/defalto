@@ -136,9 +136,9 @@
                             </md-input-container>
 
                             <!--*************Date Field UI***********************************-->
-                            <md-input-container class="date-input-container" ng-switch-when="date" style="width: 100%;">
+                            <md-input-container class="date-input-container" ng-switch-when="date">
                                 <label>{{field.label}}</label>
-                                <md-datepicker
+                                <md-datepicker style="width: 100%;"
                                     class="edit-date-picker"
                                     name = "{{field.name}}"
                                     ng-model="field.dateFieldValue"
@@ -230,7 +230,6 @@
 
                             <!--*************Owner UI***********************************-->
                             <md-input-container ng-switch-when="owner">
-                                {{field}}
                                 <label class="edit-select-label">{{field.label}}</label>
                                 <md-select ng-model="field.value" name="{{field.name}}" aria-label="{{field.name}}" ng-required="field.mandatory">
                                     <md-optgroup label="Users" aria-label="Users">
