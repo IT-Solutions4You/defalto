@@ -18,24 +18,23 @@
                 </div>
             </md-list-item>
         </div>
-        <md-input-container class="app-dropdown">
+        <div class="app-dropdown">
             <md-select ng-model="selectedApp" aria-label="app_menu">
                 <md-option ng-repeat="app in apps" ng-value="app">{{app}}</md-option>
             </md-select>
-        </md-input-container>
+        </div>
     </md-toolbar>
 
     <md-list class="sidenav-module-list">
         <md-list-item md-ink-ripple class="md-1-line">
-            <span class="vicon-grid"></span> &nbsp; 
+            <span style="font-size:14px;" class="vicon-grid"></span> &nbsp; 
             <span class="vmodule-name">Dashboard</span>
         </md-list-item>
         <md-list-item ng-click="navigationToggle();loadList(module.name);" class="md-1-line" ng-click="module.label" ng-repeat="module in menus[selectedApp]">
-            <span class="vicon-{{module.name | lowercase | nospace}}"></span> &nbsp; 
+            <span style="font-size: 14px;" class="vicon-{{module.name | lowercase | nospace}}"></span> &nbsp; 
             <span class="vmodule-name">{{module.label}}</span>
         </md-list-item>
     </md-list>
-    <md-divider ></md-divider>
     <md-list>
         <md-list-item md-ink-ripple class="md-1-line">
             <div class="md-list-item-text">

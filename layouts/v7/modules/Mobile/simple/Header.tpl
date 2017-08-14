@@ -2,7 +2,7 @@
 /*************************************************************************************
 ** The contents of this file are subject to the vtiger CRM Public License Version 1.1
 * ("License"); You may not use this file except in compliance with the License
-* The Original Code is: vtiger CRM Open Source
+* The Original Code is:  vtiger CRM Open Source
 * The Initial Developer of the Original Code is vtiger.
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
@@ -26,6 +26,8 @@
         {/if}
         {* End *}
         <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/libs/md-icons/css/materialdesignicons.min.css">
+        <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-datepicker.min.css">
+        <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-clockpicker.css">
         <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/libs/Vtiger-icons/style.css">
         <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/css/application.css">
         <link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/css/style.css">
@@ -38,10 +40,12 @@
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-material.min.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-touch.min.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/purl.js"></script>
-
+        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/date.js"></script>
+        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-datepicker.min.js"></script>
+        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-clockpicker.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/application.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Vtiger.js"></script>
-        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Utils.js"></script>	
+        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Utils.js"></script>
 
         {* Include desired script injected *}
         {if $_scripts}
@@ -53,5 +57,5 @@
 
     </head>
     {literal}
-    <body ng-controller="VtigerBodyController" ng-init="init();" ng-cloak md-theme="{{dynamicTheme}}" md-theme-watch>
-    {/literal}
+        <body ng-controller="VtigerBodyController" ng-init="init();" ng-cloak md-theme="{{dynamicTheme}}" md-theme-watch>
+        {/literal}
