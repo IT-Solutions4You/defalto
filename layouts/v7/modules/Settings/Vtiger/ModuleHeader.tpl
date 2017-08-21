@@ -139,13 +139,20 @@
 							{/if}
 							<li>
 								<div class="settingsIcon">
-									<button type="button" class="btn btn-default module-buttons dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-										<span class="fa fa-wrench" aria-hidden="true" title="{vtranslate('LBL_SETTINGS', $MODULE)}"></span>&nbsp; <span class="caret"></span>
+									<button type="button" class="btn btn-default module-buttons dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_SETTINGS', $MODULE)}">
+										<span class="fa fa-wrench" aria-hidden="true"></span>&nbsp; <span class="caret"></span>
 									</button>
 									<ul class="detailViewSetting dropdown-menu">
 										{foreach item=SETTING from=$LISTVIEW_LINKS['LISTVIEWSETTING']}
-											<li id="{$MODULE}_setings_lisview_advancedAction_{$SETTING->getLabel()}"><a href="javascript:void(0);" onclick="{$SETTING->getUrl()};">{vtranslate($SETTING->getLabel(), $QUALIFIEDMODULE)}</a></li>
-											{/foreach}
+											<li id="{$MODULE}_setings_lisview_advancedAction_{$SETTING->getLabel()}">
+												<a	{if stripos($SETTING->getUrl(), 'javascript:') === 0}
+														onclick='{$SETTING->getUrl()|substr:strlen("javascript:")};'
+													{else}
+														onclick='window.location.href="{$SETTING->getUrl()}"'
+													{/if}>
+													{vtranslate($SETTING->getLabel(), $QUALIFIEDMODULE)}</a>
+											</li>
+										{/foreach}
 									</ul>
 								</div>
 							</li>
