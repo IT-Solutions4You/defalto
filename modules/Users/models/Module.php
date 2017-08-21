@@ -328,4 +328,63 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		return $blocksList[$viewName];
 	}
 
+	/**
+	 * Function to get Module Header Links (for Vtiger7)
+	 * @return array
+	 */
+	public function getModuleBasicLinks() {
+		$basicLinks = array();
+		$moduleName = $this->getName();
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if ($currentUser->isAdminUser() && Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
+			$basicLinks[] = array(
+				'linktype' => 'BASIC',
+				'linklabel' => 'LBL_ADD_RECORD',
+				'linkurl' => $this->getCreateRecordUrl(),
+				'linkicon' => 'fa-plus'
+			);
+	
+			if (Users_Privileges_Model::isPermitted($moduleName, 'Import')) {
+				$basicLinks[] = array(
+					'linktype' => 'BASIC',
+					'linklabel' => 'LBL_IMPORT',
+					'linkurl' => $this->getImportUrl(),
+					'linkicon' => 'fa-download'
+				);
+			}
+		}
+		return $basicLinks;
+	}
+
+	/**
+	 * Function to get Settings links
+	 * @return <Array>
+	 */
+	public function getSettingLinks() {
+		$settingsLinks = array();
+		$moduleName = $this->getName();
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if ($currentUser->isAdminUser() && Users_Privileges_Model::isPermitted($moduleName, 'DetailView')) {
+			$settingsLinks[] = array(
+				'linktype' => 'LISTVIEW',
+				'linklabel' => 'LBL_EXPORT',
+				'linkurl' => 'index.php?module=Users&source_module=Users&action=ExportData',
+				'linkicon' => ''
+			);
+		}
+		return $settingsLinks;
+	}
+
+	public function getImportableFieldModels() {
+		$focus = CRMEntity::getInstance($this->getName());
+		$importableFields = $focus->getImportableFields();
+
+		$importableFieldModels = array();
+		foreach ($importableFields as $fieldName => $fieldInstance) {
+			$importableFieldModels[$fieldName] = $this->getField($fieldName);
+		}
+		return $importableFieldModels;
+	}
 }
