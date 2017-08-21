@@ -1489,4 +1489,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Încărcați fișier eșuat',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicate (e) detectat!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Vă rugăm să reintroduceți parolele. „Parola nouă“ și „parola confirma“ valorile nu se potrivesc.',
 );

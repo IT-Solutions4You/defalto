@@ -1497,4 +1497,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Fájl feltöltés sikertelen',
 
 	'JS_DUPLICATES_DETECTED' => 'Ismétlődő (ek) észlelt!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Kérjük, adja meg újra a jelszavakat. Az „új jelszó” és a „Jelszó megerősítése” értékek nem egyeznek.',
 );

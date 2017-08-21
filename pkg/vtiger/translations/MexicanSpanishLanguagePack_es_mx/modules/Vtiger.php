@@ -1474,4 +1474,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Cargar archivo Error',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicar (s) detectado!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Por favor, vuelva a introducir las contraseñas. La "nueva contraseña" y "Confirmar contraseña" valores no coinciden.',
 );

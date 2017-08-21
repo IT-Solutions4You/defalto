@@ -1687,4 +1687,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'تحميل ملف فشل',
 
 	'JS_DUPLICATES_DETECTED' => 'تكرار (ق) الكشف عن!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'يرجى إعادة إدخال كلمة السر. "كلمة السر الجديدة" و "كلمة السر تأكيد" عدم تطابق القيم.',
 );

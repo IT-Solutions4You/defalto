@@ -1496,4 +1496,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'File Upload is mislukt',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicate (s) gedetecteerd!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Gelieve opnieuw in te voeren wachtwoorden. De "nieuwe wachtwoord" en "Wachtwoord bevestigen" waarden komen niet overeen.',
 );

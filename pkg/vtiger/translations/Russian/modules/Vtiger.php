@@ -1489,4 +1489,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Загрузка файла Ошибка',
 
 	'JS_DUPLICATES_DETECTED' => 'Дубликат (s) обнаружено!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Пожалуйста, повторно ввести пароль. «Новый пароль» и «Подтверждение пароля» значения не совпадают.',
 );

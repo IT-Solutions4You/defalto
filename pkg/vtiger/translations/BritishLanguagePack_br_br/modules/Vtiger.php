@@ -1490,4 +1490,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'File Upload Failed',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Please re-enter passwords. The "new password" and "confirm password" values do not match.',
 );

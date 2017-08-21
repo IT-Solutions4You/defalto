@@ -1645,4 +1645,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Przesyłanie pliku nie powiodło',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplikat (e) wykryto!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Należy ponownie wprowadzić hasło. „Nowe hasło” i „Potwierdź hasło” Wartości nie pasują.',
 );

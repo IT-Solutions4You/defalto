@@ -1660,4 +1660,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Filöverföring misslyckades',
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicera (s) upptäckt!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Vänligen ange lösenord. Den "nya lösenord" och "Bekräfta lösenord" värden inte stämmer överens.',
 );

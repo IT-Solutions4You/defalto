@@ -1495,4 +1495,5 @@ $jsLanguageStrings = array(
     'JS_UPLOAD_FAILED' => 'Dosya Yükleme Başarısız',
 
 	'JS_DUPLICATES_DETECTED' => 'Çoğaltın (ler) algılandı!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'yeniden girin şifreleri. "Yeni şifre" ve "onayla parola" değerleri eşleşmiyor.',
 );
