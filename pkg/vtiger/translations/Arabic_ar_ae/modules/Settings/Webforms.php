@@ -45,6 +45,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'إضافة Webform',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'وثائق للتحميل',
+	'LBL_ADD_FILE_FIELD' => 'رفع ملف الميدان',
+	'LBL_FIELD_LABEL' => 'عنوان الوثيقة',
+	'LBL_FILE_FIELD_INFO' => 'لكل ملف مرفوع من على شبكة الإنترنت تشكل يتم إنشاء وثيقة جديدة مع الملف المرفق. يرتبط الوثيقة أيضا إلى هذه المنشأة حديثا٪ الصورة.',
+	'LBL_NO_FILE_FIELD' => 'وأضافت أية حقول الملف.',
+	'LBL_COPY_TO_CLIPBOARD' => 'نسخ إلى الحافظة',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully',
@@ -55,4 +61,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'الحقول المرجعية غير قادر على أن يكون إلزاميا دون تجاوز القيمة',
 	'JS_TYPE_TO_SEARCH' => 'اكتب للبحث',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'يبفورم مع هذا الاسم موجود بالفعل',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'الحد الأقصى الذي يمكن أن تضيف٪ الصورة حقول الملف.',
+	'JS_COPIED_SUCCESSFULLY' => 'نسخ بنجاح.',
+	'JS_COPY_FAILED' => 'فشل نسخة. يرجى نسخ يدويا.',
 );

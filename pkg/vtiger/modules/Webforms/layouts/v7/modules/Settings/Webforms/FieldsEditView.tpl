@@ -126,4 +126,62 @@
             </tbody>
         </table>
     </div>
+	{if Vtiger_Functions::isDocumentsRelated($SOURCE_MODULE)}
+		<div class="fieldBlockContainer">
+			<div class="fieldBlockHeader">
+				<h4>{vtranslate('LBL_UPLOAD_DOCUMENTS', $QUALIFIED_MODULE)}</h4>
+			</div>
+			<hr>
+			<div>
+				<div>
+					<button class="btn btn-default" id="addFileFieldBtn">
+						<span class="fa fa-plus"></span>&nbsp;&nbsp;{vtranslate('LBL_ADD_FILE_FIELD', $QUALIFIED_MODULE)}
+					</button>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px;">
+				<div class="col-lg-7">
+					<table class="table table-bordered" id='fileFieldsTable'>
+						<tbody>
+							<tr>
+								<td><b>{vtranslate('LBL_FIELD_LABEL', $QUALIFIED_MODULE)}</b></td>
+								<td class="textAlignCenter"><b>{vtranslate('LBL_MANDATORY', $QUALIFIED_MODULE)}</b></td>
+								<td class="textAlignCenter"><b>{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</b></td>
+							</tr>
+							{foreach from=$DOCUMENT_FILE_FIELDS key=FILE_INDEX item=DOCUMENT_FILE_FIELD}
+								<tr>
+									<td style="vertical-align: middle;">
+										<input type="text" class="inputElement nameField" name="file_field[{$FILE_INDEX}][fieldlabel]" value="{$DOCUMENT_FILE_FIELD['fieldlabel']}" data-rule-required="true">
+									</td>
+									<td class="textAlignCenter" style="vertical-align: middle;">
+										<input type="checkbox" name="file_field[{$FILE_INDEX}][required]" {if $DOCUMENT_FILE_FIELD['required']}checked='checked'{/if} value='1'>
+									</td>
+									<td class="textAlignCenter" style="vertical-align: middle;">
+										<a class="removeFileField" style="color: black;"><i class="fa fa-trash icon-trash"></i></a>
+									</td>
+								</tr>
+							{/foreach}
+							<tr class="noFileField {if count($DOCUMENT_FILE_FIELDS) gt 0}hide{/if}">
+								<td colspan="3" style="height: 100px; vertical-align: middle;">
+									<center>{vtranslate('LBL_NO_FILE_FIELD', $QUALIFIED_MODULE)}</center>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-lg-5">
+					<div class="vt-default-callout vt-info-callout" style="margin: 0;">
+						<h4 class="vt-callout-header">
+							<span class="fa fa-info-circle"></span>&nbsp; {vtranslate('LBL_INFO')}
+						</h4>
+						<div>
+							{vtranslate('LBL_FILE_FIELD_INFO', $QUALIFIED_MODULE, vtranslate("SINGLE_$SOURCE_MODULE", $SOURCE_MODULE))}
+						</div>
+					</div>
+				</div>
+			</div>
+			<input type="hidden" id='fileFieldNextIndex' value='{count($DOCUMENT_FILE_FIELDS) + 1}'>
+			<input type="hidden" id="fileFieldsCount" value="{count($DOCUMENT_FILE_FIELDS)}">
+		</div>
+	{/if}
 {/strip}

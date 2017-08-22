@@ -45,6 +45,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Dodaj Następującą Formę',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Dodaj Dokumenty',
+	'LBL_ADD_FILE_FIELD' => 'File Upload Pole',
+	'LBL_FIELD_LABEL' => 'Tytuł dokumentu',
+	'LBL_FILE_FIELD_INFO' => 'Dla każdego pliku przesłanego z sieci tworząc nowy dokument jest tworzony z załączonym pliku. Dokument jest również związany z tym nowo utworzonym%s.',
+	'LBL_NO_FILE_FIELD' => 'Brak pola plików dodany.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Skopiuj do schowka',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully',//ToDo Review
@@ -55,4 +61,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Pola referencyjne mogę być obowiązkowe bez wartości override',
 	'JS_TYPE_TO_SEARCH' => 'Typ wyszukiwania',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform o tej nazwie już istnieje',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maksymalna można dodać pola pliku%s.',
+	'JS_COPIED_SUCCESSFULLY' => 'Skopiowane z powodzeniem.',
+	'JS_COPY_FAILED' => 'Kopiowanie nie powiodło się. Proszę skopiować ręcznie.',
 );

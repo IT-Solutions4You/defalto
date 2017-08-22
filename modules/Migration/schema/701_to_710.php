@@ -64,6 +64,21 @@ if (defined('VTIGER_UPGRADE')) {
 	echo '<br>Succecssfully handled duplications<br>';
 	//END::Duplication Prevention
 
+	//START::Webform Attachements
+	if (!Vtiger_Utils::CheckTable('vtiger_webform_file_fields')) {
+		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_webform_file_fields(id INT(19) NOT NULL AUTO_INCREMENT, webformid INT(19) NOT NULL, fieldname VARCHAR(100) NOT NULL, fieldlabel VARCHAR(100) NOT NULL, required INT(1) NOT NULL DEFAULT 0, PRIMARY KEY (id), KEY fk_vtiger_webforms (webformid), CONSTRAINT fk_vtiger_webforms FOREIGN KEY (webformid) REFERENCES vtiger_webforms (id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
+	}
+
+	$result = $db->pquery('SELECT 1 FROM vtiger_ws_operation WHERE name=?', array('add_related'));
+	if (!$db->num_rows($result)) {
+		$operationId = vtws_addWebserviceOperation('add_related', 'include/Webservices/AddRelated.php', 'vtws_add_related', 'POST');
+		vtws_addWebserviceOperationParam($operationId, 'sourceRecordId', 'string', 1);
+		vtws_addWebserviceOperationParam($operationId, 'relatedRecordId', 'string', 2);
+		vtws_addWebserviceOperationParam($operationId, 'relationIdLabel', 'string', 3);
+	}
+	echo '<br>Succecssfully added Webforms attachements<br>';
+	//END::Webform Attachements
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 }

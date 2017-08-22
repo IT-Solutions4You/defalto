@@ -40,6 +40,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Add Webform',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Dokumentumok feltöltése',
+	'LBL_ADD_FILE_FIELD' => 'Fájl feltöltés Field',
+	'LBL_FIELD_LABEL' => 'Dokumentum címe',
+	'LBL_FILE_FIELD_INFO' => 'Minden feltöltött fájlnak a web egy új dokumentum jön létre a csatolt fájlt. A dokumentum is összefügg, hogy az újonnan létrehozott%s.',
+	'LBL_NO_FILE_FIELD' => 'Nincs fájl területeken hozzá.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Másolja a vágólapra',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -53,4 +59,7 @@ $jsLanguageStrings = array(
   'JS_SELECT_AN_OPTION' => 'Válasszon ki egy Lehetőséget',
   'JS_LABEL' => 'címke',
 
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maximum felveheti%s fájl területeken.',
+	'JS_COPIED_SUCCESSFULLY' => 'Sikeresen másolt.',
+	'JS_COPY_FAILED' => 'Másolás sikertelen. Kérjük, másolja kézzel.',
 );

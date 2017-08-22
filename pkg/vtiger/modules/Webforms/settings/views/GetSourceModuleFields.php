@@ -28,6 +28,7 @@ class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_Index
 		$viewer = $this->getViewer($request);
 		$mode = '';
 		$selectedFieldsList = array();
+		$fileFields = array();
 
 		if ($recordId) {
 			$recordModel = Settings_Webforms_Record_Model::getInstanceById($recordId, $qualifiedModuleName);
@@ -35,6 +36,7 @@ class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_Index
 			if ($sourceModule === $recordModel->get('targetmodule')) {
 				$selectedFieldsList = $recordModel->getSelectedFieldsList();
 			}
+			$fileFields = $recordModel->getFileFields();
 		} else {
 			$recordModel = Settings_Webforms_Record_Model::getCleanInstance($qualifiedModuleName);
 		}
@@ -42,6 +44,8 @@ class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_Index
 		$viewer->assign('MODE', $mode);
 		$viewer->assign('SOURCE_MODULE', $sourceModule);
 		$viewer->assign('MODULE', $qualifiedModuleName);
+		$viewer->assign('DOCUMENT_FILE_FIELDS', $fileFields);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->assign('SELECTED_FIELD_MODELS_LIST', $selectedFieldsList);
 		$viewer->assign('ALL_FIELD_MODELS_LIST', $recordModel->getAllFieldsList($sourceModule));
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());

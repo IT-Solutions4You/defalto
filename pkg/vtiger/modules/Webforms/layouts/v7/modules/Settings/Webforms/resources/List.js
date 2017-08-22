@@ -14,6 +14,7 @@ Settings_Vtiger_List_Js("Settings_Webforms_List_Js",{
 	 * @params: show form url
 	 */
 	showForm : function(event,record){
+		var self = this;
 		event.stopPropagation();
                 var params = {
                     'module' : 'Webforms',
@@ -24,6 +25,7 @@ Settings_Vtiger_List_Js("Settings_Webforms_List_Js",{
 		app.request.post({'data':params}).then(
 			function(e,data){
 				var callback = function(container){
+					var allowedAllFilesSize = container.find('.allowedAllFilesSize').val();
 					var showFormContents = container.find('pre').html();
 					showFormContents = showFormContents + '<script  type="text/javascript">'+
 					'window.onload = function() { '+
@@ -82,7 +84,21 @@ Settings_Vtiger_List_Js("Settings_Webforms_List_Js",{
 							'var dateRegex = /^[1-9][0-9]{3}-(0[1-9]|1[0-2]|[1-9]{1})-(0[1-9]|[1-2][0-9]|3[0-1]|[1-9]{1})$/;' +
 							'if(!dateRegex.test(dateVal)) {' +
 							'alert("For "+ elemLabel +" field please enter valid date in required format"); return false;' +
-							'}}}';
+							'}}}'+
+							'var inputElems = document.getElementsByTagName("input");'+
+							'var totalFileSize = 0;'+
+							'for(var i = 0; i < inputElems.length; i++) {'+
+								'if(inputElems[i].type.toLowerCase() === "file") {'+
+									'var file = inputElems[i].files[0];'+
+									'if(typeof file !== "undefined") {'+
+										'var totalFileSize = totalFileSize + file.size;'+
+									'}'+
+								'}'+
+							'}'+
+							'if(totalFileSize > '+allowedAllFilesSize+') {'+
+								'alert("Maximum allowed file size including all files is 50MB.");'+
+								'return false;'+
+							'}';
                     if(container.find('[name=isCaptchaEnabled]').val() == true) {
                         showFormContents = Settings_Webforms_List_Js.getCaptchaCode(showFormContents);
                     } else {
@@ -94,6 +110,7 @@ Settings_Vtiger_List_Js("Settings_Webforms_List_Js",{
 					container.find('#showFormContent').text(showFormContents);
 					container.find('pre').remove();
 					container.find('code').remove();
+					self.registerCopyToClipboard();
 				}
 				app.helper.showModal(data,{'cb':callback});
 			},
@@ -101,7 +118,33 @@ Settings_Vtiger_List_Js("Settings_Webforms_List_Js",{
 			}
 		)
 	},
-    
+
+	registerCopyToClipboard: function () {
+		jQuery('#webformCopyClipboard').click(function (e) {
+			e.preventDefault();
+			try {
+				document.getElementById('showFormContent').select();
+				var success = document.execCommand("copy");
+				if (success) {
+					app.helper.showSuccessNotification({message: app.vtranslate('JS_COPIED_SUCCESSFULLY')});
+				} else {
+					app.helper.showErrorNotification({message: app.vtranslate('JS_COPY_FAILED')});
+				}
+				if (window.getSelection) {
+					if (window.getSelection().empty) {
+						window.getSelection().empty();
+					} else if (window.getSelection().removeAllRanges) {
+						window.getSelection().removeAllRanges();
+					}
+				} else if (document.selection) {
+					document.selection.empty();
+				}
+			} catch (err) {
+				app.helper.showErrorNotification({message: app.vtranslate('JS_COPY_FAILED')});
+			}
+		});
+	},
+
     /**
      * Function get Captcha Code
      * @param <string> showFormContents
