@@ -1730,6 +1730,9 @@ th {
   margin-top: 3%;
   margin-right: 2%;
 }
+.overlayDetailHeader button.btn {
+  margin: 0px 1px !important;
+}
 .referencefield-wrapper .createReferenceRecord {
   float: left;
   margin-left: 5px;
