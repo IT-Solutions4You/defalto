@@ -75,12 +75,12 @@
 	{if $BLOCK_FIELDS|@count gt 0}
 		<div class='fieldBlockContainer'>
 			<div class="row">
-				<span class="col-lg-6">
+				<div class="col-lg-5 col-md-5 col-sm-5">
 					<div class="row">
-						<div class="col-lg-6">
-							<h3 class='fieldBlockHeader' style="margin-top:5px;">&nbsp;&nbsp;&nbsp;{vtranslate($BLOCK_LABEL, $MODULE)}</h3>
+						<div class="col-lg-4 col-md-4 col-sm-4">
+							<h4 class='fieldBlockHeader' style="margin-top:5px;">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
 						</div>
-						<div class="col-lg-6" style="top: 3px;">
+						<div class="col-lg-8 col-md-8 col-sm-8" style="top: 3px;">
 							{if $LINEITEM_FIELDS['region_id'] && $LINEITEM_FIELDS['region_id']->isEditable()}
 								<span class="pull-right">
 									<i class="fa fa-info-circle"></i>&nbsp;
@@ -93,13 +93,12 @@
 									</select>
 									<input type="hidden" id="prevRegionId" value="{$RECORD->get('region_id')}" />
 									&nbsp;&nbsp;<a class="fa fa-wrench" href="index.php?module=Vtiger&parent=Settings&view=TaxIndex" target="_blank" style="vertical-align:middle;"></a>
-
 								</span>
 							{/if}
 						</div>
 					</div>
-				</span>
-				<div class="col-lg-3" style="top: 3px;">
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3" style="top: 3px;">
 					<center>
 						<i class="fa fa-info-circle"></i>&nbsp;
 						<label>{vtranslate('LBL_CURRENCY',$MODULE)}</label>&nbsp;
@@ -133,7 +132,7 @@
 						<input type="hidden" value="{$SELECTED_CURRENCY.currency_id}" id="selectedCurrencyId" />
 					</center>
 				</div>
-				<div class="col-lg-3" style="top: 3px;">
+				<div class="col-lg-4 col-md-4 col-sm-4" style="top: 3px;">
 					<div style="float: right;">
 						<i class="fa fa-info-circle"></i>&nbsp;
 						<label>{vtranslate('LBL_TAX_MODE',$MODULE)}</label>&nbsp;
