@@ -128,11 +128,10 @@ jQuery.Class("Vtiger_CustomView_Js",{
 
 	showCreateFilter : function(data){
 		var self = this;
-		var overlayParams = {'backdrop' : 'static', 'keyboard' : false};
 		self.reIntialize();
-		app.helper.loadPageContentOverlay(data,overlayParams).then(function(data){
+		app.helper.loadPageContentOverlay(data).then(function(data){
+			data.find('.data').css('height','100%');
 			var Options= {
-			setHeight: jQuery('.customview-content').height() - jQuery('.modal-footer-overwrite-style').height(),
 			autoExpandScrollbar: true,
 			scrollInertia: 200,
 			autoHideScrollbar: true,

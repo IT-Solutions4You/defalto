@@ -17,7 +17,7 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="textType">
+                    <select class="textType" style="min-width: 160px;">
 						<option data-ui="textarea" value="rawtext">{vtranslate('LBL_RAW_TEXT',$QUALIFIED_MODULE)}</option>
 						<option data-ui="textarea" value="fieldname">{vtranslate('LBL_FIELD_NAME',$QUALIFIED_MODULE)}</option>
 						<option data-ui="textarea" value="expression">{vtranslate('LBL_EXPRESSION',$QUALIFIED_MODULE)}</option>
@@ -26,7 +26,7 @@
                 <div class="col-sm-4 hide useFieldContainer">
                     <span name="{$MODULE_MODEL->get('name')}" class="useFieldElement">
                         {assign var=MODULE_FIELDS value=$MODULE_MODEL->getFields()}
-                        <select class="useField" data-placeholder="{vtranslate('LBL_USE_FIELD',$QUALIFIED_MODULE)}">
+                        <select class="useField" data-placeholder="{vtranslate('LBL_USE_FIELD',$QUALIFIED_MODULE)}" style="min-width: 160px;">
                             <option></option>
                             {foreach from=$RECORD_STRUCTURE  item=FIELDS}
                                     {foreach from=$FIELDS item=MODULE_FIELD}    
@@ -38,7 +38,7 @@
                     {if $RELATED_MODULE_MODEL neq ''}
                         <span name="{$RELATED_MODULE_MODEL->get('name')}" class="useFieldElement">
                             {assign var=MODULE_FIELDS value=$RELATED_MODULE_MODEL->getFields()}
-                            <select class="useField" data-placeholder="{vtranslate('LBL_USE_FIELD',$QUALIFIED_MODULE)}">
+                            <select class="useField" data-placeholder="{vtranslate('LBL_USE_FIELD',$QUALIFIED_MODULE)}" style="min-width: 160px;">
                                 <option></option>
                                     {foreach from=$MODULE_FIELDS item=MODULE_FIELD}
                                         <option value="{$MODULE_FIELD->getName()}">{vtranslate($MODULE_FIELD->get('label'),$QUALIFIED_MODULE)}</option>
@@ -48,7 +48,7 @@
                     {/if}
                 </div>
                 <div class="col-sm-4 hide useFunctionContainer">
-                    <select class="useFunction" data-placeholder="{vtranslate('LBL_USE_FUNCTION',$QUALIFIED_MODULE)}">
+                    <select class="useFunction pull-right" data-placeholder="{vtranslate('LBL_USE_FUNCTION',$QUALIFIED_MODULE)}" style="min-width: 160px;">
                         <option></option>
                             {foreach from=$FIELD_EXPRESSIONS key=FIELD_EXPRESSION_VALUE item=FIELD_EXPRESSIONS_KEY}
                                 <option value="{$FIELD_EXPRESSIONS_KEY}">{vtranslate($FIELD_EXPRESSION_VALUE,$QUALIFIED_MODULE)}</option>

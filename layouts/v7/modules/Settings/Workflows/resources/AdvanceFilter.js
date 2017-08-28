@@ -103,58 +103,6 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js',{},{
         return conditionSelectElement;
     },
     
-    getMetricFieldSpecificConditionList: function(conditionList, conditionSelected, match, fieldSelected){
-        var options = '';
-        var fieldDataInfo = fieldSelected.data('fieldinfo');
-        var fieldModel = Vtiger_Field_Js.getInstance(fieldDataInfo, this.getModuleName());
-        var picklistValues = fieldModel.data.picklistvalues;
-        for(var key in conditionList) {
-            //IE Browser consider the prototype properties also, it should consider has own properties only.
-            if(conditionList.hasOwnProperty(key)) {
-                var conditionValue = conditionList[key];
-                var conditionLabel = this.getConditionLabel(conditionValue);
-                if(match != null){
-                    if(conditionValue != 'has changed'){
-                        if(conditionValue.indexOf("hours since") !=-1){
-                            for(var key in picklistValues){
-                                var picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
-                                options += '<option value="'+picklistvalue+'"';
-                                if(picklistvalue == conditionSelected){
-                                    options += ' selected="selected" ';
-                                }
-                                options += '>'+conditionValue.replace(/%s/i, key)+'</option>';
-                            }
-                        } else {
-                            options += '<option value="'+conditionValue+'"';
-                            if(conditionValue == conditionSelected){
-                                options += ' selected="selected" ';
-                            }
-                            options += '>'+conditionLabel+'</option>';
-                        }
-                    }
-                }else{
-                    if(conditionValue.indexOf("hours since %s") !=-1){
-                        for(var key in picklistValues){
-                            var picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
-                            options += '<option value="'+picklistvalue+'"';
-                            if(picklistvalue == conditionSelected){
-                                options += ' selected="selected" ';
-                            }
-                            options += '>'+conditionValue.replace(/%s/i, key)+'</option>';
-                        }
-                    } else {
-                        options += '<option value="'+conditionValue+'"';
-                        if(conditionValue == conditionSelected){
-                            options += ' selected="selected" ';
-                        }
-                        options += '>'+conditionLabel+'</option>';
-                    }
-                }
-            }
-        }
-        return options;
-    },
-
     /**
 	 * Function to retrieve the values of the filter
 	 * @return : object
