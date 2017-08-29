@@ -462,11 +462,43 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				} else {
 					$conditionGroup = 'Any';
 				}
-				if($value == 'true:boolean' || ($fieldModel && $fieldModel->getFieldDataType() == 'boolean' && $value == '1')) {
+
+				$fieldDataType = '';
+				if ($fieldModel) {
+					$fieldDataType = $fieldModel->getFieldDataType();
+				}
+				if($value == 'true:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '1')) {
 					$value = 'LBL_ENABLED';
 				}
-				if($value == 'false:boolean' || ($fieldModel && $fieldModel->getFieldDataType() == 'boolean' && $value == '0')) {
+				if($value == 'false:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '0')) {
 					$value = 'LBL_DISABLED';
+				}
+				if ($fieldModel && (($fieldModel->column === 'smownerid') || (($fieldModel->column === 'smgroupid')))) {
+					if (vtws_getOwnerType($value) == 'Users') {
+						$value = getUserFullName($value);
+					} else {
+						$groupNameList = getGroupName($value);
+						$value = $groupNameList[0];
+					}
+				}
+				if ($value) {
+					if ($fieldModel && in_array('Currency', $fieldModel->getReferenceList())) {
+						$currencyNamewithSymbol = getCurrencyName($value);
+						$currencyName = explode(':', $currencyNamewithSymbol);
+						$value = $currencyName[0];
+					}
+					if ($fieldModel && (in_array($fieldDataType, array('picklist', 'multipicklist')))) {
+						$picklistValues = explode(',', $value);
+						if (count($picklistValues) > 1) {
+							$translatedValues = array();
+							foreach ($picklistValues as $selectedValue) {
+								array_push($translatedValues, vtranslate($selectedValue, $moduleName));
+							}
+							$value = implode(',', $translatedValues);
+						} else {
+							$value = vtranslate($value, $moduleName);
+						}
+					}
 				}
 				if($fieldLabel == '_VT_add_comment') {
 					$fieldLabel = 'Comment';

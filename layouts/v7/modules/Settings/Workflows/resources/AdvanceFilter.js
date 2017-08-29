@@ -501,3 +501,35 @@ Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
         return selectContainer;
     }
 });
+
+Vtiger_Multipicklist_Field_Js('Workflows_Multipicklist_Field_Js', {}, {
+
+	getUi: function () {
+		var selectedOptions = new Array();
+		var selectedRawOption = app.htmlDecode(this.getValue());
+		if (selectedRawOption) {
+			var selectedOptions = selectedRawOption.split(',');
+		}
+		var pickListValues = this.getPickListValues();
+
+		var tagsArray = new Array();
+		var pickListValuesArrayFlip = {};
+		var selectedOption = '';
+		jQuery.map(pickListValues, function (pickListValue, key) {
+			(jQuery.inArray(key, selectedOptions) !== -1);
+			if (jQuery.inArray(key, selectedOptions) !== -1) {
+				selectedOption += pickListValue+',';
+			}
+			tagsArray.push(pickListValue);
+			pickListValuesArrayFlip[pickListValue] = key;
+		})
+		selectedOption = selectedOption.substring(0,selectedOption.lastIndexOf(','));
+
+		var html = '<input type="hidden" class="col-lg-12 select2" name="'+this.getName()+'[]" id="'+this.getName()+'" data-fieldtype="multipicklist" >';
+		var selectContainer = jQuery(html).val(selectedOption);
+		selectContainer.data('tags', tagsArray).data('picklistvalues', pickListValuesArrayFlip);
+		selectContainer.data('placeholder', app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION')).data('closeOnSelect', true);
+		this.addValidationToElement(selectContainer);
+		return selectContainer;
+	}
+});
