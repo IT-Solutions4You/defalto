@@ -12,9 +12,9 @@
 		<div class="col-sm-12 col-xs-12 full-height">
 			<div id="listview-actions" class="listview-actions-container">
 				<div class = "row">
-					<div class="btn-group col-md-3"></div>
-					<div class='col-md-6' style="padding-top: 5px">
-						<div class="btn-group userFilter" style="margin-left: 25%">
+					<div class="btn-group col-md-2"></div>
+					<div class='col-md-7' style="padding-top: 5px">
+						<div class="btn-group userFilter" style="text-align: center;">
 							<button class="btn btn-default btn-primary" id="activeUsers" data-searchvalue="Active">
 								{vtranslate('LBL_ACTIVE_USERS', $MODULE)}
 							</button>
