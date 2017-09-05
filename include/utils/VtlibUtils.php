@@ -764,6 +764,13 @@ function vtlib_mime_content_type($filename) {
 	return Vtiger_Functions::mime_content_type($filename);
 }
 
+/**
+ * Function to add settings entry in CRM settings page
+ * @param string $linkName
+ * @param string $linkURL
+ * @param string $blockName
+ * @return boolean true/false
+ */
 function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 	$success = true;
 	$db = PearDatabase::getInstance();
