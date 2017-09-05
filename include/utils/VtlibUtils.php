@@ -771,8 +771,15 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 	//Check entry name exist in DB or not
 	$result = $db->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', array($linkName));
 	if ($result && !$db->num_rows($result)) {
-		$blockName = ($blockName) ? $blockName : 'LBL_OTHER_SETTINGS';
-		$blockId = getSettingsBlockId($blockName);//Check block name exist in DB or not
+		$blockId = 0;
+		if ($blockName) {
+			$blockId = getSettingsBlockId($blockName);//Check block name exist in DB or not
+		}
+
+		if (!$blockId) {
+			$blockName = 'LBL_OTHER_SETTINGS';
+			$blockId = getSettingsBlockId($blockName);//Check block name exist in DB or not
+		}
 
 		//Add block in to DB if not exists
 		if (!$blockId) {
