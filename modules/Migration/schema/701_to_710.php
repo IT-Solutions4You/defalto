@@ -79,6 +79,11 @@ if (defined('VTIGER_UPGRADE')) {
 	echo '<br>Succecssfully added Webforms attachements<br>';
 	//END::Webform Attachements
 
+	//START::Follow & unfollow features
+	$em = new VTEventsManager($db);
+	$em->registerHandler('vtiger.entity.aftersave', 'modules/Vtiger/handlers/FollowRecordHandler.php', 'FollowRecordHandler');
+	//END::Follow & unfollow features
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 }
