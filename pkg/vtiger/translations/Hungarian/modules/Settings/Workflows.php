@@ -102,6 +102,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'SMS', 
     'LBL_VTPushNotificationTask' => 'Mobile bejelentése',
     'LBL_VTCreateEntityTask' => 'Rekord létrehozása',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'Maximális száma (%s) a jegyzékben szereplő munkafolyamatok túllépték',
 
   'LBL_EDITING_WORKFLOW' => 'Szerkesztési Munkafolyamat',
   'LBL_ADD_RECORD' => 'Új Munkafolyamat',

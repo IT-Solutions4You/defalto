@@ -102,6 +102,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'SMS', 
     'LBL_VTPushNotificationTask' => 'Mobil Bildirim',
     'LBL_VTCreateEntityTask' => 'Kayıt Oluştur',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'planlanan iş akışlarının maksimum sayısı (%s) aşıldı',
 
   'LBL_EDITING_WORKFLOW' => 'Düzenleme İş Akışı',
   'LBL_ADD_RECORD' => 'Yeni İş Akışı',
