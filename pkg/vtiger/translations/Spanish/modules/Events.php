@@ -77,7 +77,7 @@ $languageStrings = array(
 	'LBL_ON' => 'en',
 	'LBL_INVITE_USER_BLOCK' => 'Invita',
 	'LBL_INVITE_USERS' => 'Invita Usuarios',
-        'LBL_INVITE_PEOPLE' => 'Invitar Gente',
+	'LBL_INVITE_PEOPLE' => 'Invitar a la gente',
 
   'INVITATION' => ' Invitación ',
   'Busy' => 'Ocupado',

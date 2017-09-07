@@ -95,7 +95,7 @@ $languageStrings = array(
 
     'LBL_INVITE_USER_BLOCK' => 'دعوة',
     'LBL_INVITE_USERS' => 'دعوة مستخدمين',
-    'LBL_INVITE_PEOPLE' => 'دعوة الناس',
+	'LBL_INVITE_PEOPLE' => 'ادعو الناس',
 
 
   'INVITATION' => ' دعوة ',

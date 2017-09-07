@@ -96,7 +96,7 @@ $languageStrings = array(
 
     'LBL_INVITE_USER_BLOCK' => 'Bjud in',
     'LBL_INVITE_USERS' => 'Bjud in Användare',
-    'LBL_INVITE_PEOPLE' => 'Inbjuder folk',
+	'LBL_INVITE_PEOPLE' => 'Bjud in personer',
 
   'INVITATION' => ' Inbjudan ',
   'Busy' => 'Upptagen',

@@ -69,7 +69,7 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Naptár nézet'              , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
-        'LBL_INVITE_PEOPLE'            => 'Hívd Emberek'                ,
+	'LBL_INVITE_PEOPLE'			   => 'Személyek meghívása',
 
   'INVITATION' => ' Meghívó ',
   'Busy' => 'Foglalt',
