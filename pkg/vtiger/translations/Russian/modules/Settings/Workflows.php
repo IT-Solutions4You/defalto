@@ -102,6 +102,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'СМС', 
     'LBL_VTPushNotificationTask' => 'Мобильные уведомления',
     'LBL_VTCreateEntityTask' => 'Создать запись',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'Максимальное количество (%s) запланированных рабочих процессов был превышен',
 
   'LBL_EDITING_WORKFLOW' => 'Рабочий Процесс Редактирования',
   'LBL_ADD_RECORD' => 'Новый Рабочий Процесс',

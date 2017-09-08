@@ -69,7 +69,7 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Vista de Calendario'         , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
-        'LBL_INVITE_PEOPLE'            => 'Invitar Gente'               ,
+	'LBL_INVITE_PEOPLE'			   => 'Invitar a la gente',
 
 
   'INVITATION' => ' Invitación ',

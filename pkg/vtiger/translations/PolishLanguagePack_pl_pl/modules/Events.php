@@ -58,7 +58,7 @@ $languageStrings = array(
 	'LBL_RECORDS_LIST' => 'Widok listy',
 	'LBL_CALENDAR_VIEW' => 'Widok kalendarza',
 	'LBL_REPEATEVENT' => 'Raz w każdy',
-        'LBL_INVITE_PEOPLE' => 'Zaproś',
+	'LBL_INVITE_PEOPLE' => 'Zaproś ludzi',
 
 
   'LBL_RELATED_TO' => 'Związane Z',

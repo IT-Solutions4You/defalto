@@ -29,7 +29,7 @@
             <tbody>
                 <tr>
                     <td class="fieldLabel {$WIDTHTYPE}">
-                        <span class="muted">{vtranslate('LBL_INVITE_USERS', $MODULE)}</span>
+                        <span class="muted">{vtranslate('LBL_INVITE_USERS', $MODULE_NAME)}</span>
                     </td>
                     <td class="fieldValue {$WIDTHTYPE}">
                         {foreach key=USER_ID item=USER_NAME from=$ACCESSIBLE_USERS}

@@ -17,7 +17,7 @@
 			<hr>
 			<table class="table table-borderless">
 				<tr>
-					<td class="fieldLabel alignMiddle">{vtranslate('LBL_INVITE_PEOPLE',$MODULE)}</td>
+					<td class="fieldLabel alignMiddle">{vtranslate('LBL_INVITE_USERS', $MODULE)}</td>
 					<td class="fieldValue">
 						<select id="selectedUsers" class="select2 inputElement" multiple name="selectedusers[]">
 							{foreach key=USER_ID item=USER_NAME from=$ACCESSIBLE_USERS}

@@ -111,6 +111,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'رسالة نصية', 
     'LBL_VTPushNotificationTask' => 'إعلام المحمول',
     'LBL_VTCreateEntityTask' => 'إنشاء سجل',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'تم تجاوز الحد الأقصى (٪ ق) من سير العمل المقرر',
 
   'LBL_EDITING_WORKFLOW' => 'تحرير سير العمل',
   'LBL_ADD_RECORD' => 'جديدة في سير العمل',

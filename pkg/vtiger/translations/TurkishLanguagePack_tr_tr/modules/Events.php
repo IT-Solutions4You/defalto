@@ -69,7 +69,7 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
-        'LBL_INVITE_PEOPLE'            => 'İnsanlar Davet',
+	'LBL_INVITE_PEOPLE'			   => 'İnsanları davet et',
 
 
   'INVITATION' => ' Davetiye ',

@@ -187,4 +187,13 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 			$viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
 		}
 	}
+
+	public function getPageTitle(Vtiger_Request $request) {
+		$pageTitle = parent::getPageTitle($request);
+
+		if ($pageTitle == 'Vtiger') {
+			$pageTitle = vtranslate($request->get('parent'), $request->getModule());
+		}
+		return $pageTitle;
+	}
 }

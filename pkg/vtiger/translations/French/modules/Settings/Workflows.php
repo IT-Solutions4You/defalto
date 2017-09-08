@@ -103,6 +103,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'SMS', 
     'LBL_VTPushNotificationTask' => 'Notification mobile',
     'LBL_VTCreateEntityTask' => 'Créer enregistrement',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'Nombre maximum (%s) des flux de travail programmés a été dépassé',
 
   'LBL_EDITING_WORKFLOW' => 'Flux De Travail De Montage',
   'LBL_ADD_RECORD' => 'Nouveau Flux De Travail',

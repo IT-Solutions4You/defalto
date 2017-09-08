@@ -128,6 +128,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'SMS', 
     'LBL_VTPushNotificationTask' => 'Powiadomienie mobilna',
     'LBL_VTCreateEntityTask' => 'Utwórz rekord',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'Maksymalna liczba (%s) regularnych przepływów pracy został przekroczony',
 
   'LBL_ADD_RECORD' => 'Nowy Workflow',
   'ENTER_FROM_EMAIL_ADDRESS' => 'Wpisz adres E-mail. - mail',

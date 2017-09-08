@@ -9,9 +9,10 @@
 
 {strip}
 	{assign var=SELECTED_FIELDS value=$CUSTOMVIEW_MODEL->getSelectedFields()}
-	<div id="filterContainer">
-		<form id="CustomView">
-			<div class="modal-content">
+	{assign var=MODULE_FIELDS value=$MODULE_MODEL->getFields()}
+	<div id="filterContainer" style="height:100%">
+		<form id="CustomView" style="height:100%">
+			<div class="modal-content" style="height:100%">
 				<div class="overlayHeader">
 					{if $RECORD_ID}
 						{assign var="TITLE" value={vtranslate('LBL_EDIT_CUSTOM',$MODULE)}}
@@ -20,8 +21,8 @@
 					{/if}
 					{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
 				</div>
-				<div class="modal-body">
-					<div class="customview-content row">
+				<div class="modal-body" style="height:100%">
+					<div class="customview-content row" style="height:90%">
 						<input type=hidden name="record" id="record" value="{$RECORD_ID}" />
 						<input type="hidden" name="module" value="{$MODULE}" />
 						<input type="hidden" name="action" value="Save" />
@@ -36,10 +37,10 @@
 						<div class="form-group">
 							<label>{vtranslate('LBL_VIEW_NAME',$MODULE)}&nbsp;<span class="redColor">*</span> </label>
 							<div class="row">
-								<div class="col-lg-5">
-									<input class="form-control" type="text" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true" data-record-id="{$RECORD_ID}" data-rule-maxsize="100" data-rule-check-filter-duplicate='{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($CUSTOM_VIEWS_LIST))}'>
+								<div class="col-lg-5 col-md-5 col-sm-5">
+									<input class="form-control" type="text" data-record-id="{$RECORD_ID}" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true" data-rule-maxsize="100" data-rule-check-filter-duplicate='{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($CUSTOM_VIEWS_LIST))}'>
 								</div>
-								<div class="col-lg-5">
+								<div class="col-lg-5 col-md-5 col-sm-5">
 									<label class="checkbox-inline">
 										<input type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}
 									</label>
@@ -98,7 +99,7 @@
 														selected
 													{/if}
 													>{Vtiger_Util_Helper::toSafeHTML(vtranslate($FIELD_MODEL->get('label'), $SOURCE_MODULE))}
-												{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
+													{if $FIELD_MODEL->isMandatory() eq true} <span>*</span> {/if}
 												</option>
 											{/foreach}
 										</optgroup>
@@ -107,7 +108,7 @@
 								<input type="hidden" name="columnslist" value='{Vtiger_Functions::jsonEncode($SELECTED_FIELDS)}' />
 								<input id="mandatoryFieldsList" type="hidden" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($MANDATORY_FIELDS))}' />
 							</div>
-							<div class="col-lg-2"></div>
+							<div class="col-lg-2 col-md-2 col-sm-2"></div>
 						</div>
 						<div>
 							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)} :</label>
@@ -121,7 +122,7 @@
 								<input type="checkbox" data-toogle-members="true" name="sharelist" value="1" {if $LIST_SHARED} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SHARE_THIS_LIST',$MODULE)}
 							</label>
 						</div>
-						<select id="memberList" class="col-lg-7 select2 members op0{if $LIST_SHARED} fadeInx{/if}" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}" style="margin-bottom: 10px;" data-rule-required="{if $LIST_SHARED}true{else}false{/if}">
+						<select id="memberList" class="col-lg-7 col-md-7 col-sm-7 select2 members op0{if $LIST_SHARED} fadeInx{/if}" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}" style="margin-bottom: 10px;" data-rule-required="{if $LIST_SHARED}true{else}false{/if}">
 							<optgroup label="{vtranslate('LBL_ALL',$MODULE)}">
 								<option value="All::Users" data-member-type="{vtranslate('LBL_ALL',$MODULE)}" 
 										{if ($CUSTOMVIEW_MODEL->get('status') == $CV_PUBLIC_VALUE)} selected="selected"{/if}>
@@ -143,13 +144,14 @@
 						</select>
 						<input type="hidden" name="status" id="allUsersStatusValue" value=""
 							data-public="{$CV_PUBLIC_VALUE}" data-private="{$CV_PRIVATE_VALUE}"/>
-						<div class='clearfix modal-footer-overwrite-style'>
-							<div class="row clearfix">
-								<div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-									<button type='submit' class='btn btn-success saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-									<a class='cancelLink' href="javascript:void(0);" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-								</div>
-							</div>
+
+					</div>
+				</div>
+				<div class='modal-overlay-footer clearfix border1px'>
+					<div class="row clearfix">
+						<div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
+							<button type='submit' class='btn btn-success saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+							<a class='cancelLink' href="javascript:void(0);" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 						</div>
 					</div>
 				</div>

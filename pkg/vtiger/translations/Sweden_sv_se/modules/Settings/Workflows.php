@@ -111,6 +111,7 @@ $languageStrings = array(
     'LBL_VTSMSTask' => 'SMS', 
     'LBL_VTPushNotificationTask' => 'Mobil Anmälan',
     'LBL_VTCreateEntityTask' => 'Skapa Spela',
+	'LBL_MAX_SCHEDULED_WORKFLOWS_EXCEEDED' => 'Maximalt antal (%s) av regelbunden arbetsflöden har överskridits',
 
   'LBL_EDITING_WORKFLOW' => 'Redigering Arbetsflöde',
   'LBL_ADD_RECORD' => 'Nytt Arbetsflöde',

@@ -237,7 +237,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 */
 	requestReminder : function() {
 		var activityReminder = app.getActivityReminderInterval();
-		if(!activityReminder);return;
+		if(!activityReminder) {
+			return;
+		}
 		var currentTime = new Date().getTime()/1000;
 		//requestReminder function should call after activityreminder popup interval
 		setTimeout(function() {Vtiger_Index_Js.requestReminder()}, activityReminder*1000);

@@ -69,7 +69,7 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Задача Просмотр'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Приглашать'                      , 
 	'LBL_INVITE_USERS'             => 'Пригласить пользователей'                , 
-        'LBL_INVITE_PEOPLE'           => 'Пригласить людей',
+	'LBL_INVITE_PEOPLE'			   => 'Пригласить людей',
 
   'INVITATION' => ' Приглашение ',
   'Busy' => 'Занят',
