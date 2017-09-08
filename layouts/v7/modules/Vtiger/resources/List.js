@@ -1181,6 +1181,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			thisInstance.registerInlineSaveOnEnterEvent(editedRow);
 		});
 
+		var isOwnerChanged = false;
 		app.event.on('post.listViewMassEdit.loaded', function (e, container) {
 			app.event.trigger('post.listViewInlineEdit.click', container);
 			var offset = container.find('.modal-body .datacontent').offset();
@@ -1189,12 +1190,17 @@ Vtiger.Class("Vtiger_List_Js", {
 			var params = {
 				setHeight: (viewPortHeight - offset['top']) + 'px'
 			};
+
+			container.find('[name="assigned_user_id"]').on('click', function() {
+				isOwnerChanged = true;
+			});
 			app.helper.showVerticalScroll(container.find('.modal-body .datacontent'), params);
 			var editInstance = Vtiger_Edit_Js.getInstance();
 			editInstance.registerBasicEvents(container);
 			var form_original_data = $("#massEdit").serialize();
 			$('#massEdit').on('submit', function (event) {
-				thisInstance.saveMassedit(event, form_original_data);
+				thisInstance.saveMassedit(event, form_original_data, isOwnerChanged);
+				isOwnerChanged = false;
 			});
 			app.helper.registerLeavePageWithoutSubmit($("#massEdit"));
 			app.helper.registerModalDismissWithoutSubmit($("#massEdit"));
@@ -1289,12 +1295,12 @@ Vtiger.Class("Vtiger_List_Js", {
 			element.trigger('change');
 		});
 	},
-	saveMassedit: function (event, form_original_data) {
+	saveMassedit: function (event, form_original_data, isOwnerChanged) {
 		event.preventDefault();
 		var form = $('#massEdit');
 		var form_new_data = form.serialize();
 		app.helper.showProgress();
-		if (form_new_data !== form_original_data) {
+		if (form_new_data !== form_original_data || isOwnerChanged) {
 			var originalData = app.convertUrlToDataParams(form_original_data);
 			var newData = app.convertUrlToDataParams(form_new_data);
 
@@ -1304,6 +1310,10 @@ Vtiger.Class("Vtiger_List_Js", {
 						&& (originalData[key] == newData[key])) {
 					delete newData[key];
 				}
+			}
+
+			if (!newData['assigned_user_id'] && isOwnerChanged) {
+				newData['assigned_user_id'] = originalData['assigned_user_id'];
 			}
 
 			var form_update_data = '';
