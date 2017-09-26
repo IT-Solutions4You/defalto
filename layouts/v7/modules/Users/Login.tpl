@@ -219,12 +219,12 @@
 						<input type="hidden" name="module" value="Users"/>
 						<input type="hidden" name="action" value="Login"/>
 						<div class="group">
-							<input id="username" type="text" name="username" placeholder="Username" value="admin">
+							<input id="username" type="text" name="username" placeholder="Username" />
 							<span class="bar"></span>
 							<label>Username</label>
 						</div>
 						<div class="group">
-							<input id="password" type="password" name="password" placeholder="Password" value="admin">
+							<input id="password" type="password" name="password" placeholder="Password" />
 							<span class="bar"></span>
 							<label>Password</label>
 						</div>
