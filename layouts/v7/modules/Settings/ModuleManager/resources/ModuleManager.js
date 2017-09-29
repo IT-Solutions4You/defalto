@@ -174,6 +174,3 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 		});
 	}
 });
-
-var moduleManagerInstance = new Settings_Module_Manager_Js();
-moduleManagerInstance.registerEvents();
