@@ -46,7 +46,7 @@
 								{else}
 									<th class="nowrap">
 									{if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
-										<a href="javascript:void(0);" class="noSorting">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}</a>
+										<a href="javascript:void(0);" class="noSorting">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}</a>
 									{else}
 										<a href="javascript:void(0);" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
 											{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
@@ -55,7 +55,7 @@
 												<i class="fa fa-sort customsort"></i>
 											{/if}
 											&nbsp;
-											{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}
+											{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}
 											&nbsp;{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}<img class="{$SORT_IMAGE}">{/if}&nbsp;
 										</a>
 										{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
@@ -86,7 +86,7 @@
 						<tr class="listViewEntries" data-id='{$RELATED_RECORD->getId()}' 
 							{if $RELATED_MODULE_NAME eq 'Calendar'}
 								data-recurring-enabled='{$RELATED_RECORD->isRecurringEnabled()}'
-								{assign var=DETAILVIEWPERMITTED value=isPermitted($RELATED_MODULE->get('name'), 'DetailView', $RELATED_RECORD->getId())}
+								{assign var=DETAILVIEWPERMITTED value=isPermitted($RELATED_MODULE_NAME, 'DetailView', $RELATED_RECORD->getId())}
 								{if $DETAILVIEWPERMITTED eq 'yes'}
 									data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
 								{/if}
@@ -121,7 +121,7 @@
 								{assign var=RELATED_LIST_VALUE value=$RELATED_RECORD->get($RELATED_HEADERNAME)}
 								<td class="relatedListEntryValues" title="{strip_tags($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME))}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
 									<span class="value textOverflowEllipsis">
-										{if $RELATED_MODULE->get('name') eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
+										{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
 											<center>{$RELATED_RECORD->get($RELATED_HEADERNAME)}</center>
 											{else}
 												{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
@@ -171,7 +171,7 @@
 											{else}
 												{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
 												{* Documents list view special actions "view file" and "download file" *}
-												{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'filename' && isPermitted($RELATED_MODULE->get('name'), 'DetailView', $RELATED_RECORD->getId()) eq 'yes'}
+												{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'filename' && isPermitted($RELATED_MODULE_NAME, 'DetailView', $RELATED_RECORD->getId()) eq 'yes'}
 													<span class="actionImages">
 														{assign var=RECORD_ID value=$RELATED_RECORD->getId()}
 														{assign var="DOCUMENT_RECORD_MODEL" value=Vtiger_Record_Model::getInstanceById($RECORD_ID)}

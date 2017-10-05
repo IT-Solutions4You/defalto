@@ -18,7 +18,7 @@
 			<input type="hidden" name="emailEnabledModules" value=true />
 			<input type="hidden" id="view" value="{$VIEW}" />
 			<input type="hidden" name="currentPageNum" value="{$PAGING->getCurrentPage()}" />
-			<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE->get('name')}" />
+			<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE_NAME}" />
 			<input type="hidden" value="{$ORDER_BY}" id="orderBy">
 			<input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
 			<input type="hidden" value="{$RELATED_ENTIRES_COUNT}" id="noOfEntries">
@@ -124,7 +124,7 @@
 												<i class="fa fa-sort customsort"></i>
 											{/if}
 											&nbsp;
-											{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}
+											{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}
 											&nbsp;{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}<img class="{$SORT_IMAGE}">{/if}&nbsp;
 										</a>
 										{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
@@ -133,7 +133,7 @@
 									</th>
 								{/foreach}
 								<th class="nowrap">
-									<a href="javascript:void(0);" class="listViewContentHeaderValues noSorting">{vtranslate('Status', $RELATED_MODULE->get('name'))}</a>
+									<a href="javascript:void(0);" class="listViewContentHeaderValues noSorting">{vtranslate('Status', $RELATED_MODULE_NAME)}</a>
 								</th>
 							</tr>
 							<tr class="searchRow">
