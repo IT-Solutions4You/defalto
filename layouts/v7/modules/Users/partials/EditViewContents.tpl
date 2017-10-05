@@ -17,7 +17,7 @@
     {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
 		{if $BLOCK_LABEL neq 'LBL_CALENDAR_SETTINGS'}
          {if $BLOCK_FIELDS|@count gt 0}
-             <div class="fieldBlockContainer">
+             <div class="fieldBlockContainer" data-block="{$BLOCK_LABEL}">
                  <div>
                      <h4>{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
                  </div>
