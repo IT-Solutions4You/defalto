@@ -7,11 +7,13 @@
  * All Rights Reserved.
  *************************************************************************************}
 {strip}
-    <div class="tagsContainer" id="tagCloud">
-		{foreach from=$TAGS[1] item=TAG_ID key=TAG_NAME}
-                    <div class=" textOverflowEllipsis col-sm-4" title="{$TAG_NAME}">
-			<a class="tagName cursorPointer" data-tagid="{$TAG_ID}" rel="{$TAGS[0][$TAG_NAME]}">{$TAG_NAME}</a>&nbsp;		
-                    </div>
+	<div class="tagsContainer" id="tagCloud">
+		{foreach item=TAG_MODEL from=$TAGS name=tagCounter}
+			{assign var=TAG_LABEL value=$TAG_MODEL->getName()}
+			{assign var=TAG_ID value=$TAG_MODEL->getId()}
+			<span class="tag" title="{$TAG_MODEL->getName()}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_ID}">
+				<span class="tagName display-inline-block textOverflowEllipsis cursorPointer" data-tagid="{$TAG_ID}">{$TAG_MODEL->getName()}</span>
+			</span>
 		{/foreach}
 	</div>
 {/strip}	

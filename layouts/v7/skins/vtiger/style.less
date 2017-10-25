@@ -5109,7 +5109,24 @@ form[name="notification_settings"] .select2-choice {
             border : 1px solid #dcdcdc;
         }
     }
-} 
+}
+#tagCloud {
+	.tag {
+		background-color: @white;
+		border-color: @white;
+		border-radius: 0px;
+		color : #5ea9dd;
+		&[data-type="public"] {
+			color : #3cb878;
+		}
+		margin: 3px;
+		.tagName {
+			margin: 3px;
+			max-width: 80px;
+			vertical-align: bottom;
+		}
+	}
+}
 
 /******************************************* 
 ********** Groups view styles ********
