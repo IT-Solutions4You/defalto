@@ -161,6 +161,7 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	public function getPicklistDetails() {
 		if ($this->get('uitype') == 98) {
 			$picklistValues = $this->getAllRoles();
+			$picklistValues = array_flip($picklistValues);
 		} else {
 			$picklistValues = $this->getPicklistValues();
 		}
