@@ -73,7 +73,7 @@
 <input type="hidden" class="isCustomFieldExists" value="false">
 
 {assign var=FINAL_DETAILS value=$RELATED_PRODUCTS.1.final_details}
-<div class = "details">
+<div class="details block">
     <div class="lineItemTableDiv">
         <table class="table table-bordered lineItemsTable" style = "margin-top:15px">
             <thead>
@@ -230,7 +230,6 @@
             </tbody>
         </table>
     </div>
-    <br>
     <table class="table table-bordered lineItemsTable">
         <tr>
             <td width="83%">
