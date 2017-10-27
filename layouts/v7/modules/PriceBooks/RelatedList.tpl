@@ -9,12 +9,13 @@
 {* modules/PriceBooks/views/Detail.php *}
 
 {strip}
-	{if $RELATED_MODULE->get('name') neq 'Products' && $RELATED_MODULE->get('name') neq 'Services'}
+	{assign var=RELATED_MODULE_NAME value=$RELATED_MODULE->get('name')}
+	{if $RELATED_MODULE_NAME neq 'Products' && $RELATED_MODULE_NAME neq 'Services'}
 		{include file='RelatedList.tpl'|vtemplate_path:'Vtiger'}
 	{else}
 		<div class="relatedContainer">
 			<input type="hidden" name="currentPageNum" value="{$PAGING->getCurrentPage()}" />
-			<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE->get('name')}" />
+			<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE_NAME}" />
 			<input type="hidden" value="{$ORDER_BY}" id="orderBy">
 			<input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
 			<input type="hidden" value="{$RELATED_ENTIRES_COUNT}" id="noOfEntries">
@@ -33,7 +34,7 @@
 								</th>
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 									<th nowrap {if $HEADER_FIELD@last} {/if}>
-										<a href="javascript:void(0);" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}
+										<a href="javascript:void(0);" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}
 											{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 												<i class="fa fa-sort {$FASORT_IMAGE}"></i>
 											{else}

@@ -13,7 +13,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 	private $querySelectColumns = array('templatename, foldername, subject', 'systemtemplate', 'module', 'description');
 	private $listViewColumns = array('templatename', 'subject', 'description', 'module');
 
-	public function addColumnToSelectCaluse($columName) {
+	public function addColumnToSelectClause($columName) {
 		if (!is_array($columName))
 			$columNameList = array($columName);
 		else

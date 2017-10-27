@@ -777,9 +777,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 									'discount_amount','lineItemType','searchIcon','netPrice','subprod_names',
 									'productTotal','discountTotal','totalAfterDiscount','taxTotal');
 
-		var nameFields = new Array('discount', 'purchaseCost', 'margin');
 		var classFields = new Array('taxPercentage');
-
 		//To handle variable tax ids
 		for(var classIndex in classFields) {
 			var className = classFields[classIndex];
@@ -797,6 +795,14 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 			var expectedElementId = elementId + expectedSequenceNumber;
 			lineItemRow.find('#'+actualElementId).attr('id',expectedElementId)
 					   .filter('[name="'+actualElementId+'"]').attr('name',expectedElementId);
+		}
+
+		var nameFields = new Array('discount', 'purchaseCost', 'margin');
+		for (var nameIndex in nameFields) {
+			var elementName = nameFields[nameIndex];
+			var actualElementName = elementName+currentSequenceNumber;
+			var expectedElementName = elementName+expectedSequenceNumber;
+			lineItemRow.find('[name="'+actualElementName+'"]').attr('name', expectedElementName);
 		}
 
 		lineItemRow.attr('id', expectedRowId).attr('data-row-num', expectedSequenceNumber);

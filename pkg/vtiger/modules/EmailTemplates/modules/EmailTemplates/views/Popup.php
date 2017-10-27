@@ -33,7 +33,7 @@ class EmailTemplates_Popup_View extends Vtiger_Popup_View {
 
 		$listViewModel = EmailTemplates_ListView_Model::getInstance($moduleName, $cvId);
 		//add body to select clause so that we can retrive data after click in the popup
-		$listViewModel->addColumnToSelectCaluse('body');
+		$listViewModel->addColumnToSelectClause('body');
 		$linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'), 'CVID' => $cvId);
 		$linkModels = $listViewModel->getListViewMassActions($linkParams);
 		$pagingModel = new Vtiger_Paging_Model();

@@ -4402,6 +4402,22 @@ form[name="notification_settings"] .select2-choice {
   width: 100%;
   border: 1px solid #dcdcdc;
 }
+#tagCloud .tag {
+  color: #5ea9dd;
+  padding: 0px;
+  background-color: #FFFFFF;
+  border-color: #FFFFFF;
+  border-radius: 0px;
+  margin: 3px;
+}
+#tagCloud .tag[data-type="public"] {
+  color: #3cb878;
+}
+#tagCloud .tag .tagName {
+  margin: 3px;
+  max-width: 80px;
+  vertical-align: bottom;
+}
 #s2id_memberList li > div,
 .groupMembersColors li > div {
   margin-left: 10px;

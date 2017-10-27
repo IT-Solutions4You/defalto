@@ -218,9 +218,9 @@
 							</div>
 							<div class="row">
 								<div class="form-group col-sm-7">
-									<span class="control-label fieldLabel col-sm-10">
+									<label class="control-label fieldLabel col-sm-10">
 										<img src="{vimage_path('MassEdit.png')}" height=14 width=14/> &nbsp; {vtranslate('LBL_MASS_EDIT',$QUALIFIED_MODULE)}
-									</span>
+									</label>
 									<div class="controls col-sm-2">
 										{if $FIELD_MODEL->isMassEditOptionDisabled()}
 											<input type="hidden" name="masseditable" value={$FIELD_MODEL->get('masseditable')} />
