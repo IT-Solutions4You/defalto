@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************}
 
- {strip}
+{strip}
 	<div class="tagsContainer" id="tagCloud">
 		{foreach item=TAG_MODEL key=TAG_ID from=$TAGS}
 			{assign var=TAG_LABEL value=$TAG_MODEL->getName()}
