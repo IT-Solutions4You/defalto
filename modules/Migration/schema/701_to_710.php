@@ -49,7 +49,7 @@ if (defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_tab ADD COLUMN sync_action_for_duplicates INT(1) DEFAULT 1');
 	}
 
-	//Start - Enable prevention for Accounts module
+	//START - Enable prevention for Accounts module
 	$accounts = 'Accounts';
 	$db->pquery('UPDATE vtiger_field SET isunique=? WHERE fieldname=? AND tabid=(SELECT tabid FROM vtiger_tab WHERE name=?)', array(1, 'accountname', $accounts));
 	$db->pquery('UPDATE vtiger_tab SET allowduplicates=? WHERE name=?', array(0, $accounts));
@@ -78,6 +78,28 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	echo '<br>Succecssfully added Webforms attachements<br>';
 	//END::Webform Attachements
+
+	//START::Tag fields are pointed to cf table for the modules Assets, Services etc..
+	$fieldName = 'tags';
+	$moduleModels = Vtiger_Module_Model::getAll();
+	foreach ($moduleModels as $moduleModel) {
+		$baseTableId = $moduleModel->basetableid;
+		if ($baseTableId) {
+			$baseTableName = $moduleModel->basetable;
+			$customTableName = $baseTableName.'cf';
+			$customTableColumns = $db->getColumnNames($customTableName);
+			if (in_array($fieldName, $customTableColumns)) {
+				$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+				$db->pquery("UPDATE vtiger_field SET tablename=? WHERE fieldid=?", array($baseTableName, $fieldModel->id));
+				$db->pquery("ALTER TABLE $baseTableName ADD COLUMN $fieldName VARCHAR(1)", array());
+
+				$db->pquery("UPDATE $baseTableName, $customTableName SET $baseTableName.tags=$customTableName.tags WHERE $baseTableName.$baseTableId=$customTableName.$baseTableId", array());
+				$db->pquery("ALTER TABLE $customTableName DROP COLUMN $fieldName", array());
+			}
+		}
+	}
+	echo '<br>Succecssfully generalized tag fields<br>';
+	//START::Tag fields are pointed to cf table for the modules Assets, Services etc..
 
 	//START::Follow & unfollow features
 	$em = new VTEventsManager($db);
