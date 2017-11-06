@@ -136,9 +136,9 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	}
 
 	public static function getLanguageInstance($lang) {
-		$sql = 'SELECT id,name,prefix FROM vtiger_language WHERE name = ?';
+		$sql = 'SELECT id,name,prefix FROM vtiger_language WHERE name = ? OR prefix = ?';
 		$db = PearDatabase::getInstance();
-		$result = $db->pquery($sql, array($lang));
+		$result = $db->pquery($sql, array($lang, $lang));
 		if ($db->num_rows($result) > 0) {
 			$instance = new self();
 			$row = $db->query_result_rowdata($result, 0);
