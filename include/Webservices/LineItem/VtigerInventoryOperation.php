@@ -184,6 +184,7 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 		$element['LineItems'] = $lineItems;
 		$recordCompoundTaxesElement = $this->getCompoundTaxesElement($element, $lineItems);
 		$element = array_merge($element, $recordCompoundTaxesElement);
+		$element['productid'] = $lineItems[0]['productid'];
         $element['LineItems_FinalDetails'] = $this->getLineItemFinalDetails($idComponents[1]);
 		return $element;
 	}

@@ -78,16 +78,15 @@ class VtigerLineItemOperation  extends VtigerActorOperation {
 	 */
 	public function getAllLineItemForParent($parentId){
 		$result = null;
-		if(is_array($parentId)){
-			$query = "select vtiger_crmentity.label as productname,vtiger_crmentity.setype as entitytype,vtiger_crmentity.deleted as deleted, {$this->entityTableName}.*
+
+		if (!is_array($parentId)) {
+			$parentId = array($parentId);
+		}
+		
+		$query = "SELECT vtiger_crmentity.label AS productname,vtiger_crmentity.setype AS entitytype,vtiger_crmentity.deleted AS deleted, {$this->entityTableName}.*
 						FROM {$this->entityTableName}
 						LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid
 						WHERE id IN (". generateQuestionMarks($parentId) .")";
-		}else {
-			$query = "select vtiger_crmentity.label as productname,vtiger_crmentity.setype as entitytype,vtiger_crmentity.deleted as deleted, {$this->entityTableName}.*
-						FROM {$this->entityTableName}
-						LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_inventoryproductrel.productid where id=?";
-		}
 
 		$transactionSuccessful = vtws_runQueryAsTransaction($query,array($parentId),$result);
 		if(!$transactionSuccessful){
