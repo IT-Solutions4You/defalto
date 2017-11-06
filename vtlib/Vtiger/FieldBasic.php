@@ -38,6 +38,7 @@ class Vtiger_FieldBasic {
 	var	$quickcreate   = 1;
 	var	$quicksequence = false;
 	var	$info_type     = 'BAS';
+	var $isunique = false;
 	var $block;
 
 	/**
@@ -71,6 +72,7 @@ class Vtiger_FieldBasic {
 		$this->quickcreate = $valuemap['quickcreate'];
 		$this->sequence = $valuemap['sequence'];
 		$this->summaryfield = $valuemap['summaryfield'];
+		$this->isunique = $valuemap['isunique'];
 		$this->block= $blockInstance? $blockInstance : Vtiger_Block::getInstance($valuemap['block'], $moduleInstance);
 		$this->headerfield = $valuemap['headerfield'];
 	}

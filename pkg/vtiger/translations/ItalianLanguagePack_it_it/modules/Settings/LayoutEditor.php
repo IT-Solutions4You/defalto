@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Record di intestazione',
   'LBL_HEADER_FIELD' => 'La Visualizzazione Dell\'Intestazione',
 
+	'LBL_DUPLICATE_HANDLING' => 'Prevenzione Duplicate',
+	'LBL_DUPLICATE_CHECK' => 'Abilita controllo duplicato',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Duplicare funzione di prevenzione impedisce solo i nuovi record duplicati da sempre creati dagli utenti e le applicazioni esterne. Record creati da Import',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Selezionare i campi unici sui quali devono essere controllati i record duplicati',
+	'LBL_SELECT_FIELDS' => 'selezionare i campi',
+	'LBL_MAX_3_FIELDS' => 'Max 3 campi',
+	'LBL_SELECT_RULE' => 'Selezionare regola per i duplicati di movimentazione',
+	'LBL_ALLOW_DUPLICATES' => 'Consenti duplicati',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Non consentire duplicati',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => "Azione da intraprendere in caso di rilevamento record duplicato durante la sincronizzazione con l'applicazione esterna",
+	'LBL_PREFER_LATEST_RECORD' => 'Preferisco ultimo disco',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Preferisco record interno',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Preferisco record esterno',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => "Preferisco ultimo disco - registrare i dati di recente modificate saranno mantenute <br> Preferisco record interno - esistente record sarà trattenuto in quanto è <br> Preferisco record esterno - Dati dall'applicazione esterna verranno copiati",
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Visualizza blocco attivato'  ,
@@ -196,4 +210,7 @@ Sei sicuro di voler eliminare questo campo?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Nome campo visualizzato nell\'Intestazione di default',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Questo Campo di Intestazione è abilitato per Vtiger7, verrà visualizzato nella Visualizzazione di Riepilogo',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Con successo aggiornato a prendere in considerazione i campi selezionati nella prevenzione duplicati',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Impossibile prendere in considerazione i campi selezionati nella prevenzione duplicati',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'assegno duplicato è disattivato',
 );

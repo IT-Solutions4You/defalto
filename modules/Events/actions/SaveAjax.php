@@ -34,95 +34,101 @@ class Events_SaveAjax_Action extends Events_Save_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
-		$user = Users_Record_Model::getCurrentUserModel();
-
-		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode', false));
-		$recordModel = $this->saveRecord($request);
-		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
-
-		$fieldModelList = $recordModel->getModule()->getFields();
-		$result = array();
-		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$recordFieldValue = $recordModel->get($fieldName);
-			if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
-				$recordFieldValue = implode(' |##| ', $recordFieldValue);
-			}
-			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
-			if ($fieldModel->getFieldDataType() !== 'currency' && $fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date') {
-				$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
-			}
-			$result[$fieldName] = array();
-			if ($fieldName == 'date_start') {
-				$timeStart = $recordModel->get('time_start');
-				$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeStart);
-
-				$fieldValue = $fieldValue . ' ' . $timeStart;
-
-				$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-				$dateTimeComponents = explode(' ', $userDateTimeString);
-				$dateComponent = $dateTimeComponents[0];
-				//Conveting the date format in to Y-m-d . since full calendar expects in the same format
-				$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
-				$result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString . ' ' . $dateTimeComponents[1];
-				$displayValue = $fieldModel->getDisplayValue($fieldValue);
-			} else if ($fieldName == 'due_date') {
-				$timeEnd = $recordModel->get('time_end');
-				$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeEnd);
-
-				$fieldValue = $fieldValue . ' ' . $timeEnd;
-
-				$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-				$dateTimeComponents = explode(' ', $userDateTimeString);
-				$dateComponent = $dateTimeComponents[0];
-				//Conveting the date format in to Y-m-d . since full calendar expects in the same format
-				$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
-				$result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString . ' ' . $dateTimeComponents[1];
-				$displayValue = $fieldModel->getDisplayValue($fieldValue);
-			}
-			$result[$fieldName]['value'] = $fieldValue;
-			$result[$fieldName]['display_value'] = decode_html($displayValue);
-		}
-
-		$result['_recordLabel'] = $recordModel->getName();
-		$result['_recordId'] = $recordModel->getId();
-		$result['calendarModule'] = $request->get('calendarModule');
-		$result['sourceModule'] = $request->get('calendarModule');
-
-		// Handled to save follow up event
-		$followupMode = $request->get('followup');
-
-		if ($followupMode == 'on') {
-			//Start Date and Time values
-			$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('followup_time_start'));
-			$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('followup_date_start') . " " . $startTime);
-			list($startDate, $startTime) = explode(' ', $startDateTime);
-
-			$subject = $request->get('subject');
-			if ($startTime != '' && $startDate != '') {
-				$recordModel->set('eventstatus', 'Planned');
-				$recordModel->set('subject', '[Followup] ' . $subject);
-				$recordModel->set('date_start', $startDate);
-				$recordModel->set('time_start', $startTime);
-
-				$currentUser = Users_Record_Model::getCurrentUserModel();
-				$activityType = $recordModel->get('activitytype');
-				if ($activityType == 'Call') {
-					$minutes = $currentUser->get('callduration');
-				} else {
-					$minutes = $currentUser->get('othereventduration');
-				}
-				$dueDateTime = date('Y-m-d H:i:s', strtotime("$startDateTime+$minutes minutes"));
-				list($endDate, $endTime) = explode(' ', $dueDateTime);
-
-				$recordModel->set('due_date', $endDate);
-				$recordModel->set('time_end', $endTime);
-				$recordModel->set('mode', 'create');
-				$recordModel->save();
-			}
-		}
 		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
-		$response->setResult($result);
+		try {
+			$user = Users_Record_Model::getCurrentUserModel();
+
+			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode', false));
+			$recordModel = $this->saveRecord($request);
+			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
+
+			$fieldModelList = $recordModel->getModule()->getFields();
+			$result = array();
+			foreach ($fieldModelList as $fieldName => $fieldModel) {
+				$recordFieldValue = $recordModel->get($fieldName);
+				if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+					$recordFieldValue = implode(' |##| ', $recordFieldValue);
+				}
+				$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
+				if ($fieldModel->getFieldDataType() !== 'currency' && $fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date') {
+					$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
+				}
+				$result[$fieldName] = array();
+				if ($fieldName == 'date_start') {
+					$timeStart = $recordModel->get('time_start');
+					$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeStart);
+
+					$fieldValue = $fieldValue . ' ' . $timeStart;
+
+					$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
+					$dateTimeComponents = explode(' ', $userDateTimeString);
+					$dateComponent = $dateTimeComponents[0];
+					//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+					$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
+					$result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString . ' ' . $dateTimeComponents[1];
+					$displayValue = $fieldModel->getDisplayValue($fieldValue);
+				} else if ($fieldName == 'due_date') {
+					$timeEnd = $recordModel->get('time_end');
+					$dateTimeFieldInstance = new DateTimeField($fieldValue . ' ' . $timeEnd);
+
+					$fieldValue = $fieldValue . ' ' . $timeEnd;
+
+					$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
+					$dateTimeComponents = explode(' ', $userDateTimeString);
+					$dateComponent = $dateTimeComponents[0];
+					//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+					$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
+					$result[$fieldName]['calendar_display_value'] = $dataBaseDateFormatedString . ' ' . $dateTimeComponents[1];
+					$displayValue = $fieldModel->getDisplayValue($fieldValue);
+				}
+				$result[$fieldName]['value'] = $fieldValue;
+				$result[$fieldName]['display_value'] = decode_html($displayValue);
+			}
+
+			$result['_recordLabel'] = $recordModel->getName();
+			$result['_recordId'] = $recordModel->getId();
+			$result['calendarModule'] = $request->get('calendarModule');
+			$result['sourceModule'] = $request->get('calendarModule');
+
+			// Handled to save follow up event
+			$followupMode = $request->get('followup');
+
+			if ($followupMode == 'on') {
+				//Start Date and Time values
+				$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('followup_time_start'));
+				$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('followup_date_start') . " " . $startTime);
+				list($startDate, $startTime) = explode(' ', $startDateTime);
+
+				$subject = $request->get('subject');
+				if ($startTime != '' && $startDate != '') {
+					$recordModel->set('eventstatus', 'Planned');
+					$recordModel->set('subject', '[Followup] ' . $subject);
+					$recordModel->set('date_start', $startDate);
+					$recordModel->set('time_start', $startTime);
+
+					$currentUser = Users_Record_Model::getCurrentUserModel();
+					$activityType = $recordModel->get('activitytype');
+					if ($activityType == 'Call') {
+						$minutes = $currentUser->get('callduration');
+					} else {
+						$minutes = $currentUser->get('othereventduration');
+					}
+					$dueDateTime = date('Y-m-d H:i:s', strtotime("$startDateTime+$minutes minutes"));
+					list($endDate, $endTime) = explode(' ', $dueDateTime);
+
+					$recordModel->set('due_date', $endDate);
+					$recordModel->set('time_end', $endTime);
+					$recordModel->set('mode', 'create');
+					$recordModel->save();
+				}
+			}
+			$response->setEmitType(Vtiger_Response::$EMIT_JSON);
+			$response->setResult($result);
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
+		}
 		$response->emit();
 	}
 

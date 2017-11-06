@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-jQuery.Class('Settings_LayoutEditor_Js', {
+Vtiger.Class('Settings_LayoutEditor_Js', {
 }, {
 	updatedBlockSequence: {},
 	reactiveFieldsList: [],
@@ -1727,13 +1727,16 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 	/**
 	 * Function to register the click event for related modules list tab
 	 */
-	relatedModulesTabClickEvent: function () {
+	triggerRelatedModulesTabClickEvent: function () {
 		var thisInstance = this;
 		var contents = jQuery('#layoutEditorContainer').find('.contents');
 		var relatedContainer = contents.find('#relatedTabOrder');
 		var relatedTab = contents.find('.relatedListTab');
-		relatedTab.click(function () {
+
+		relatedTab.click(function (e) {
 			thisInstance.showRelatedTabModulesList(relatedContainer);
+			var mode = jQuery(e.currentTarget).find('a').data('mode');
+			jQuery('.selectedMode').val(mode);
 		});
 	},
 	/**
@@ -1754,7 +1757,7 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 		params = jQuery.extend(params, extraParams);
 		app.helper.showProgress();
 
-		app.request.post({'data': params}).then(
+		app.request.pjax({'data': params}).then(
 			function (err, data) {
 				app.helper.hideProgress();
 				if (err === null) {
@@ -1780,6 +1783,8 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 		params['parent'] = app.getParentModuleName();
 		params['view'] = 'Index';
 		params['sourceModule'] = selectedModule;
+		params['showFullContents'] = true;
+		params['mode'] = jQuery('.selectedMode').val();
 
 		app.request.pjax({'data': params}).then(
 			function (err, data) {
@@ -1816,6 +1821,7 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 			thisInstance.getModuleLayoutEditor(selectedModule).then(
 				function (data) {
 					contentsDiv.html(data);
+					thisInstance.fieldListTabClicked = false;
 					thisInstance.registerEvents();
 				}
 			);
@@ -2054,36 +2060,185 @@ jQuery.Class('Settings_LayoutEditor_Js', {
 			container.find('[name="'+fieldNameAttr+'"]').closest('.form-group').removeClass('hide');
 		}
 	},
+
+	fieldListTabClicked: false,
+	triggerFieldListTabClickEvent: function () {
+		var thisInstance = this;
+		var contents = jQuery('#layoutEditorContainer').find('.contents');
+		contents.find('.detailViewTab').click(function (e) {
+			var detailViewLayout = contents.find('#detailViewLayout');
+			thisInstance.showFieldsListUI(detailViewLayout, e).then(function (data) {
+				if (!thisInstance.fieldListTabClicked) {
+					thisInstance.registerBlockEvents();
+					thisInstance.registerFieldEvents();
+					thisInstance.setInactiveFieldsList();
+					thisInstance.setHeaderFieldsCount();
+					thisInstance.setHeaderFieldsMeta();
+					thisInstance.setNameFields();
+					thisInstance.registerAddCustomBlockEvent();
+					thisInstance.registerFieldSequenceSaveClick();
+					jQuery("input[name='collapseBlock']").bootstrapSwitch();
+					jQuery("input[name='collapseBlock']").bootstrapSwitch('handleWidth', '27px');
+					jQuery("input[name='collapseBlock']").bootstrapSwitch('labelWidth', '25px');
+					thisInstance.registerSwitchActionOnFieldProperties();
+					thisInstance.registerAddCustomField();
+					app.helper.showVerticalScroll(jQuery('.addFieldTypes'), {'setHeight': '350px'});
+					vtUtils.enableTooltips();
+					thisInstance.fieldListTabClicked = true;
+				}
+			});
+		});
+	},
+	showFieldsListUI: function (detailViewLayout, e) {
+		var aDeferred = jQuery.Deferred();
+		var fieldUiContainer = detailViewLayout.find('.fieldsListContainer');
+
+		var selectedTab = jQuery(e.currentTarget).find('a');
+		var mode = selectedTab.data('mode');
+		var url = selectedTab.data('url')+'&sourceModule='+jQuery('#selectedModuleName').val()+'&mode='+mode;
+		jQuery('.selectedMode').val(mode);
+
+		if (fieldUiContainer.length == 0) {
+			app.helper.showProgress();
+			app.request.pjax({'url': url}).then(function (error, data) {
+				if (error === null) {
+					app.helper.hideProgress();
+					detailViewLayout.html(data);
+					aDeferred.resolve(detailViewLayout);
+				} else {
+					aDeferred.reject(error);
+				}
+			});
+		} else {
+			window.history.pushState('fieldUiContainer', '', url);
+			aDeferred.resolve();
+		}
+		return aDeferred.promise();
+	},
+	triggerDuplicationTabClickEvent: function () {
+		var thisInstance = this;
+		var contents = jQuery('#layoutEditorContainer').find('.contents');
+
+		contents.find('.duplicationTab').click(function (e) {
+			var duplicationContainer = contents.find('#duplicationContainer');
+			thisInstance.showDuplicationHandlingUI(duplicationContainer, e).then(function (data) {
+				var form = jQuery('.duplicateHandlingForm');
+				var duplicateHandlingContainer = form.find('.duplicateHandlingContainer');
+
+				var dupliCheckEle = form.find('.duplicateCheck');
+				if (dupliCheckEle.length > 0) {
+					if (dupliCheckEle.data('currentRule') == 1) {
+						dupliCheckEle.bootstrapSwitch('state', false, true);
+						duplicateHandlingContainer.removeClass('show').addClass('hide');
+					} else {
+						dupliCheckEle.bootstrapSwitch('state', true, true);
+						duplicateHandlingContainer.removeClass('hide').addClass('show');
+					}
+					dupliCheckEle.bootstrapSwitch('handleWidth', '43px').bootstrapSwitch('labelWidth', '43px').bootstrapSwitch('size', '86px');
+				}
+
+				var fieldsList = form.find('#fieldsList');
+				form.off('switchChange.bootstrapSwitch');
+				form.on('switchChange.bootstrapSwitch', '.duplicateCheck', function (e, state) {
+					if (state == true) {
+						duplicateHandlingContainer.removeClass('hide').addClass('show');
+						fieldsList.removeAttr('data-validation-engine').attr('data-validation-engine', 'validate[required]');
+						form.find('.rule').val('0');
+					} else {
+						duplicateHandlingContainer.removeClass('show').addClass('hide');
+						fieldsList.removeAttr('data-validation-engine');
+						fieldsList.val('').trigger('liszt:updated').trigger('change', false);
+						form.find('.formFooter').removeClass('show').addClass('hide');
+						form.find('.rule').val('1');
+						if (dupliCheckEle.data('currentRule') != '1') {
+							form.submit();
+						}
+					}
+				});
+
+				form.find('select').on('change', function () {
+					form.find('.formFooter').addClass('show').removeClass('hide');
+				});
+
+				form.find('.cancelLink').on('click', function () {
+					duplicationContainer.html('');
+					contents.find('.duplicationTab').trigger('click');
+				});
+				vtUtils.showSelect2ElementView(form.find('select').addClass('select2'), {maximumSelectionSize: 3});
+				vtUtils.enableTooltips();
+
+				var params = {
+					submitHandler: function (form) {
+						var form = jQuery(form);
+						var params = form.serializeFormData();
+						if ((typeof params['fieldIdsList[]'] == 'undefined') && (typeof params['fieldIdsList'] == 'undefined')) {
+							params['fieldIdsList'] = '';
+						}
+
+						app.helper.showProgress();
+						app.request.post({'data': params}).then(function (error, data) {
+							app.helper.hideProgress();
+							if (error == null) {
+								var message = app.vtranslate('JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE');
+								if (params.rule == 1) {
+									message = app.vtranslate('JS_DUPLICATE_CHECK_DISABLED');
+								}
+								app.helper.showSuccessNotification({'message': message});
+								dupliCheckEle.data('currentRule', params.rule);
+								form.find('.formFooter').removeClass('show').addClass('hide');
+							} else {
+								app.helper.showErrorNotification({'message': app.vtranslate('JS_DUPLICATE_HANDLING_FAILURE_MESSAGE')});
+							}
+						});
+						return false;
+					}
+				}
+				form.vtValidate(params);
+			});
+		});
+	},
+	showDuplicationHandlingUI: function (duplicationContainer, e) {
+		var aDeferred = jQuery.Deferred();
+		var duplicateUiContainer = duplicationContainer.find('.duplicateHandlingDiv');
+
+		var selectedTab = jQuery(e.currentTarget).find('a');
+		var mode = selectedTab.data('mode');
+		var url = selectedTab.data('url')+'&sourceModule='+jQuery('#selectedModuleName').val()+'&mode='+mode;
+		jQuery('.selectedMode').val(mode);
+
+		if (duplicateUiContainer.length == 0) {
+			app.helper.showProgress();
+			app.request.pjax({'url': url}).then(function (error, data) {
+				if (error === null) {
+					app.helper.hideProgress();
+					duplicationContainer.html(data);
+					aDeferred.resolve(duplicationContainer);
+				} else {
+					aDeferred.reject(error);
+				}
+			});
+		} else {
+			window.history.pushState('duplicateUiContainer', '', url);
+			aDeferred.resolve();
+		}
+		return aDeferred.promise();
+	},
 	/**
 	 * register events for layout editor
 	 */
 	registerEvents: function () {
 		var thisInstance = this;
-
-		thisInstance.registerBlockEvents();
-		thisInstance.registerFieldEvents();
-		thisInstance.setInactiveFieldsList();
-		thisInstance.setHeaderFieldsCount();
-		thisInstance.setHeaderFieldsMeta();
-		thisInstance.setNameFields();
-		thisInstance.registerAddCustomBlockEvent();
-		thisInstance.registerFieldSequenceSaveClick();
-		jQuery("input[name='collapseBlock']").bootstrapSwitch();
-		jQuery("input[name='collapseBlock']").bootstrapSwitch('handleWidth', '27px');
-		jQuery("input[name='collapseBlock']").bootstrapSwitch('labelWidth', '25px');
-		thisInstance.relatedModulesTabClickEvent();
 		thisInstance.registerModulesChangeEvent();
-		thisInstance.registerSwitchActionOnFieldProperties();
-		this.registerAddCustomField();
+		thisInstance.triggerFieldListTabClickEvent();
+		thisInstance.triggerRelatedModulesTabClickEvent();
+		thisInstance.triggerDuplicationTabClickEvent();
 
-		app.helper.showVerticalScroll(jQuery('.addFieldTypes'), {'setHeight': '350px'});
-
-		vtUtils.enableTooltips();
+		var selectedTab = jQuery('.selectedTab').val();
+		jQuery('#layoutEditorContainer').find('.contents').find('.'+selectedTab).trigger('click');
 	}
-
 });
 
-Vtiger.Class('Settings_LayoutEditor_Index_Js', {}, {
+Settings_LayoutEditor_Js('Settings_LayoutEditor_Index_Js', {}, {
 	init: function () {
 		this.addComponents();
 	},

@@ -60,7 +60,7 @@ class Google_List_View extends Vtiger_PopupAjax_View {
 		$oauth2 = new Google_Oauth2_Connector($sourceModule);
 		if ($request->has('oauth_verifier')) {
 			try {
-				$oauth->getHttpClient($sourceModule);
+				$oauth2->getHttpClient($sourceModule);
 			} catch (Exception $e) {
 				$viewer->assign('DENY', true);
 			}
@@ -168,7 +168,8 @@ class Google_List_View extends Vtiger_PopupAjax_View {
 	 * @return array
 	 */
 	public function getSyncRecordsCount($syncRecords) {
-		$countRecords = array('vtiger' => array('update' => 0, 'create' => 0, 'delete' => 0), 'google' => array('update' => 0, 'create' => 0, 'delete' => 0));
+		$countRecords = array(	'vtiger'	=> array('update' => 0, 'create' => 0, 'delete' => 0),
+								'google'	=> array('update' => 0, 'create' => 0, 'delete' => 0));
 		foreach ($syncRecords as $key => $records) {
 			if ($key == 'push') {
 				$pushRecord = false;

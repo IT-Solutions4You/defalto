@@ -22,7 +22,16 @@ Class Inventory_Edit_View extends Vtiger_Edit_View {
 		}
 
 		$viewer->assign('MODE', '');
-		if(!empty($record)  && $request->get('isDuplicate') == true) {
+		$viewer->assign('IS_DUPLICATE', false);
+		if ($request->has('totalProductCount')) {
+			if($record) {
+				$recordModel = Vtiger_Record_Model::getInstanceById($record);
+			} else {
+				$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+			}
+			$relatedProducts = $recordModel->convertRequestToProducts($request);
+			$taxes = $relatedProducts[1]['final_details']['taxes'];
+		} else if(!empty($record)  && $request->get('isDuplicate') == true) {
 			$recordModel = Inventory_Record_Model::getInstanceById($record, $moduleName);
 			$currencyInfo = $recordModel->getCurrencyInfo();
 			$taxes = $recordModel->getProductTaxes();
@@ -38,6 +47,7 @@ Class Inventory_Edit_View extends Vtiger_Edit_View {
 					}
 				}
 			}
+			$viewer->assign('IS_DUPLICATE', true);
 		} elseif (!empty($record)) {
 			$recordModel = Inventory_Record_Model::getInstanceById($record, $moduleName);
 			$currencyInfo = $recordModel->getCurrencyInfo();

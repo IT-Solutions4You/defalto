@@ -1647,6 +1647,9 @@ input[type=checkbox]:checked {
 .detailViewButtoncontainer {
   padding-top: 5px;
 }
+.detailViewButtoncontainer button.btn {
+  margin: 0px 1px !important;
+}
 .detailview-header .recordBasicInfo > .info-row {
   margin-bottom: 4px;
 }
@@ -1726,6 +1729,9 @@ th {
   width: 6%;
   margin-top: 3%;
   margin-right: 2%;
+}
+.overlayDetailHeader button.btn {
+  margin: 0px 1px !important;
 }
 .referencefield-wrapper .createReferenceRecord {
   float: left;
@@ -7559,4 +7565,26 @@ a.btnReport:hover {
 }
 .settingsgroup-panel .widgetContainer .menuItemLabel:hover .pinUnpinShortCut {
   display: inline-block;
+}
+@-moz-document url-prefix() {
+  .duplicateHandlingContainer .tooltip-inner {
+    width: 550px;
+    max-width: 550px;
+  }
+}
+.duplicateHandlingContainer .tooltip-inner {
+  text-align: left !important;
+}
+.duplicateHandlingContainer .syncMessage {
+  margin-top: 5px !important;
+}
+.duplicateHandlingContainer .actionsList {
+  width: 230px !important;
+}
+.duplicationMessageContainer {
+  background-color: #f2dede !important;
+  color: #b94a48 !important;
+}
+.duplicationMessageContainer .duplicationMessageHeader {
+  margin-bottom: 8px;
 }

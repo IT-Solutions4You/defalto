@@ -872,6 +872,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Postępuj zgodnie z',
   'LBL_QUICK_VIEW' => 'Szybki Podgląd',
   'LBL_NOTIFICATION_CENTER' => 'Centrum Powiadomień',
+	'LBL_NOTIFICATION' => 'Powiadomienie',
+	'LBL_STARRED_RECORD_TO' => '%s to %s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s%s zaktualizowane',
   'LBL_EDIT_REASON' => 'Powód edycji',
   'LBL_SHOW_COMPLETE_DETAILS' => 'Pełne Informacje',
   'LBL_CONTACT' => 'ZARZĄDZANIE KONTAKTAMI',
@@ -1204,6 +1207,16 @@ na zewnątrz free rosyjska.',
   'LBL_SLA_INFORMATION' => 'CCA informacje',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Aby korzystać <b>%s</ b>, zalecamy, aby przełączyć na nowy wygląd.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Gdy użytkownik zostanie usunięty, użytkownik zostanie oznaczona jako "nieaktywny" i żadne nowe rekordy mogą być przypisane do użytkownika, a użytkownik nie będzie mógł się zalogować. Czy na pewno chcesz usunąć?',
+
+	'LBL_DUPLICATES' => 'duplikaty',
+	'LBL_DUPLICATES_DETECTED' => 'Duplikat (e) wykryto!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Ten%s nie może zostać zapisany, ponieważ duplikat%s istnieje w vtiger z pasującymi wartości dla%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Wiadomość od: vtiger Systemu Zgłoszeń',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'Poniższy%s nie może być zapisany z „%s” workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'Poniższy%s nie może być zapisany z „%s” formularza internetowego',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Można%s modyfikować duplikaty zasady profilaktyki.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Skontaktuj się z administratorem w celu rewizji zasad duplikaty',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplikat%s (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Należy skonfigurować ustawienia serwera poczty wychodzącej - SMTP',
@@ -1633,4 +1646,7 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Dodany plik z powodzeniem',
     'JS_UPLOAD_FAILED' => 'Przesyłanie pliku nie powiodło',
+
+	'JS_DUPLICATES_DETECTED' => 'Duplikat (e) wykryto!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Należy ponownie wprowadzić hasło. „Nowe hasło” i „Potwierdź hasło” Wartości nie pasują.',
 );

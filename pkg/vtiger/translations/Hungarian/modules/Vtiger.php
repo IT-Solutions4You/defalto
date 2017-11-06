@@ -847,6 +847,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Kövesse',
   'LBL_QUICK_VIEW' => 'Quick View',
   'LBL_NOTIFICATION_CENTER' => 'Értesítési Központ',
+	'LBL_NOTIFICATION' => 'Bejelentés',
+	'LBL_STARRED_RECORD_TO' => '%s to %s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s%s frissítve',
   'LBL_EDIT_REASON' => 'Szerkesztés ok',
   'LBL_CONTACT' => 'ISMERŐSÖK KEZELÉSE',
   'LBL_NO_ATTACHMENTS' => 'Nem Mellékleteket',
@@ -1080,6 +1083,16 @@ kívül Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA Információk',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'A <b>%s</ b>, azt ajánljuk, hogy kapcsolja ki a új megjelenés.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Amikor egy felhasználó törlésre kerül, a felhasználó lesz megjelölve, mint "inaktív", és új rekordokat lehet rendelni a felhasználó, és a felhasználó nem lesz képes bejelentkezni. Biztos vagy benne, hogy törölni akarod?',
+
+	'LBL_DUPLICATES' => 'ismétlődések',
+	'LBL_DUPLICATES_DETECTED' => 'Ismétlődő (ek) észlelt!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Ez a%s nem lehet menteni, mert az ismétlődő%s létezik Vtiger illő értékeket%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Üzenet: Vtiger rendszer értesítések',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'A következő%s nem lehetett menteni a „%s” workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'A következő%s nem lehetett menteni a „%s” webform',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Akkor%s módosítani ismétlődő megelőzési szabályokat.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Kérje a rendszergazda felülvizsgálata az ismétlődő szabályok',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Ismétlődő%s (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Kérjük, hogy állítsd be a kimenő email szerver (SMTP) beállításait a Beállítások oldalon',
@@ -1485,4 +1498,7 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Felküldött sikeresen',
     'JS_UPLOAD_FAILED' => 'Fájl feltöltés sikertelen',
+
+	'JS_DUPLICATES_DETECTED' => 'Ismétlődő (ek) észlelt!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Kérjük, adja meg újra a jelszavakat. Az „új jelszó” és a „Jelszó megerősítése” értékek nem egyeznek.',
 );

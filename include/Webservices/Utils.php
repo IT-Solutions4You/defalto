@@ -1273,4 +1273,15 @@ function vtws_recordExists($recordId) {
 	return !Vtiger_Util_Helper::CheckRecordExistance($ids[1]);
 }
 
+function vtws_isDuplicatesAllowed($webserviceObject){
+	$moduleName = $webserviceObject->getEntityName();
+	$allowed = true;
+	if ($moduleName) {
+		$db = PearDatabase::getInstance();
+		$result = $db->pquery('SELECT allowduplicates FROM vtiger_tab WHERE name=?', array($moduleName));
+		$allowed = ($db->query_result($result, 'allowduplicates')) ? true : false;
+	}
+	return $allowed;
+}
+
 ?>

@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Rekord fejlécét',
   'LBL_HEADER_FIELD' => 'Fejléc Megtekintése',
 
+	'LBL_DUPLICATE_HANDLING' => 'Ismétlődő megelőzése',
+	'LBL_DUPLICATE_CHECK' => 'Engedélyezze duplikáció',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Ismétlődő elleni funkció csak megakadályozza az új ismétlődő rekordok a szerzés a felhasználók által létrehozott és külső alkalmazásokhoz. Records létrehozott Import',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Válassza ki az egyedi mezőket, amelyek ismétlődő rekordokat kell ellenőrizni',
+	'LBL_SELECT_FIELDS' => 'Select Fields',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fields',
+	'LBL_SELECT_RULE' => 'Válassza szabály kezelési ismétlődések',
+	'LBL_ALLOW_DUPLICATES' => 'Hagyjuk ismétlődések',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Ne engedje, hogy másolatokat',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Kell tennie, ha duplikált rekord talált szinkronizálása közben külső alkalmazást',
+	'LBL_PREFER_LATEST_RECORD' => 'Inkább legújabb rekord',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Inkább belső rekord',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Inkább külső rekord',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Inkább legújabb rekord - Legutóbb módosított rekord adatok megmaradnak katalógusa Inkább belső rekord - Meglévő rekord megmaradnak, ez katalógusa Inkább külső rekord - Az adatok a külső alkalmazás lesz másolva',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Blokk Térkép engedélyezve',
@@ -196,4 +210,7 @@ Biztos, hogy törölni akarod ezt a mezőt?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Név mező jelenik meg a Fejlécben alapértelmezés szerint',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Ez a Mező Fejlécében engedélyezett Vtiger7, Ez jelenik meg Összefoglaló Megtekintése',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Sikeresen frissítve vizsgálni kiválasztott mezők ismétlődések megelőzés',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Elmulasztotta figyelembe venni a kiválasztott mezők ismétlődések megelőzés',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Ismétlődő deaktivált',
 );

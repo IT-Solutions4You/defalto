@@ -134,6 +134,8 @@ function vtws_convertlead($entityvalues, $user) {
 						$adb->pquery('UPDATE vtiger_crmentity SET setype = ? WHERE crmid = ?',array($entityName.' Image',$imageAttachmentId));
 					}
 				}
+			} catch (DuplicateException $e) {
+				throw $e;
 			} catch (Exception $e) {
 				throw new WebServiceException(WebServiceErrorCode::$UNKNOWNOPERATION,
 						$e->getMessage().' : '.$entityvalue['name']);

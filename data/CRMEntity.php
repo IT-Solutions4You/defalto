@@ -770,7 +770,7 @@ class CRMEntity {
 	 * @param <Integer> $record - crmid of record
 	 * @param <String> $module - module name
 	 */
-	function retrieve_entity_info($record, $module) {
+	function retrieve_entity_info($record, $module, $allowDeleted = false) {
 		global $adb, $log, $app_strings, $current_user;
 
 		// INNER JOIN is desirable if all dependent table has entries for the record.
@@ -877,8 +877,10 @@ class CRMEntity {
 				throw new Exception($app_strings['LBL_RECORD_NOT_FOUND'], -1);
 			} else {
 				$resultrow = $adb->query_result_rowdata($result);
-				if (!empty($resultrow['deleted'])) {
-					throw new Exception($app_strings['LBL_RECORD_DELETE'], 1);
+				if (!$allowDeleted) {
+					if (!empty($resultrow['deleted'])) {
+						throw new Exception($app_strings['LBL_RECORD_DELETE'], 1);
+					}
 				}
 				if(!empty($resultrow['label'])){
 					$this->column_fields['label'] = $resultrow['label'];
@@ -1369,12 +1371,6 @@ class CRMEntity {
 		$this->db->println("TRANS restore starts $module");
 		$this->db->startTransaction();
 
-		$date_var = date("Y-m-d H:i:s");
-		$query = 'UPDATE vtiger_crmentity SET deleted=0,modifiedtime=?,modifiedby=? WHERE crmid = ?';
-		$this->db->pquery($query, array($this->db->formatDate($date_var, true), $current_user->id, $id), true, "Error restoring records :");
-		//Restore related entities/records
-		$this->restoreRelatedRecords($module, $id);
-
 		//Event triggering code
 		require_once("include/events/include.inc");
 		global $adb;
@@ -1384,7 +1380,15 @@ class CRMEntity {
 		$em->initTriggerCache();
 
 		$this->id = $id;
-		$entityData = VTEntityData::fromCRMEntity($this);
+		$entityData = VTEntityData::getInstanceByDeletedEntityId($adb, $id, $module);
+		$em->triggerEvent("vtiger.entity.beforerestore", $entityData);
+
+		$date_var = date("Y-m-d H:i:s");
+		$query = 'UPDATE vtiger_crmentity SET deleted=0,modifiedtime=?,modifiedby=? WHERE crmid = ?';
+		$this->db->pquery($query, array($this->db->formatDate($date_var, true), $current_user->id, $id), true, "Error restoring records :");
+		//Restore related entities/records
+		$this->restoreRelatedRecords($module, $id);
+
 		//Event triggering code
 		$em->triggerEvent("vtiger.entity.afterrestore", $entityData);
 		//Event triggering code ends

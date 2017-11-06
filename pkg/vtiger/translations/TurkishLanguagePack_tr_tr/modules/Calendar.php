@@ -147,6 +147,9 @@ $languageStrings = array(
   'LBL_NOVEMBER' => 'Kasım',
   'LBL_DECEMBER' => 'Aralık',
 	'LBL_CLICK_HERE_TO_VIEW' => 'görmek için buraya tıklayın',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'yinelenen Olayların sayılı atlanır',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'yinelenen Görevlerin sayılı atlanır',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / Görev'            , 

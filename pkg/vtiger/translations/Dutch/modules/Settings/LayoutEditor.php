@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Record kop',
   'LBL_HEADER_FIELD' => 'Header Bekijken',
 
+	'LBL_DUPLICATE_HANDLING' => 'Duplicate Prevention',
+	'LBL_DUPLICATE_CHECK' => 'Enable dubbele check',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Dubbele preventie functie alleen voorkomt dat nieuwe dubbele records van het krijgen van door gebruikers en externe applicaties. Records gemaakt op basis van Import',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Selecteer de unieke velden waarop dubbele records moeten worden gecontroleerd',
+	'LBL_SELECT_FIELDS' => 'Velden selecteren',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fields',
+	'LBL_SELECT_RULE' => 'Selecteer de regel voor de behandeling duplicaten',
+	'LBL_ALLOW_DUPLICATES' => 'laat duplicaten',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Sta niet toe dat duplicaten',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Actie wanneer dubbele record wordt gevonden tijdens het synchroniseren met een externe applicatie',
+	'LBL_PREFER_LATEST_RECORD' => 'Liever laatste plaat',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Liever interne registratie',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Liever externe opnemen',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Liever laatste plaat - Meest recent gewijzigde record gegevens zullen worden bewaard <br> liever interne registratie - bestaande record zal worden behouden zoals het is <br> liever externe opname - De gegevens van de externe applicatie wordt gekopieerd',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Blok Toon ingeschakeld'      ,
@@ -196,4 +210,7 @@ Bent u zeker dat u op dit gebied?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'De naam velden weergegeven in de Koptekst standaard',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Dit Veld is Kop ingeschakeld voor Vtiger7, Het zal verschijnen in de overzichtsweergave',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Bijgewerkt naar geselecteerde velden in duplo preventie te overwegen',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Kan geselecteerde velden in duplo preventie te overwegen',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Dubbele controle is uitgeschakeld',
 );

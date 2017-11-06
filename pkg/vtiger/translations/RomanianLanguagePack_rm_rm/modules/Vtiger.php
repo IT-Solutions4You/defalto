@@ -847,6 +847,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Urmați',
   'LBL_QUICK_VIEW' => 'Vizualizare Rapida',
   'LBL_NOTIFICATION_CENTER' => 'Centrul De Notificare',
+	'LBL_NOTIFICATION' => 'Notificare',
+	'LBL_STARRED_RECORD_TO' => '%s la%s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s actualizat%s',
   'LBL_EDIT_REASON' => 'Motiv editare',
   'LBL_CONTACT' => 'GESTIONAREA PERSOANELOR DE CONTACT',
   'LBL_NO_ATTACHMENTS' => 'Nici O Investiție',
@@ -1075,6 +1078,16 @@ Faceți clic pe autorizați și de a obține Contacte din Google.',
   'LBL_SLA_INFORMATION' => 'SLA informații',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Pentru a utiliza <b>%s</b>, vă recomandăm să treceți la nou look.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Atunci când un utilizator este șters, utilizatorul va fi marcat ca fiind "inactive" și nici o nouă înregistrări pot fi atribuite Utilizatorului, iar utilizatorul nu va putea conecta. Ești sigur că vrei să ștergi?',
+
+	'LBL_DUPLICATES' => 'dubluri',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicate (e) detectat!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Acest%s nu poate fi salvată deoarece există două exemplare%s în Vtiger cu valori de potrivire pentru%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Mesaj din: Vtiger Notificări de sistem',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'Următoarele%s nu a putut fi salvat de la „%s“ flux de lucru',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'Următoarele%s nu a putut fi salvat de la „%s“ formularul web',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Puteți% de a modifica normele de prevenire duplicat.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contactați administratorul pentru revizuirea normelor duplicat',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplica%s (e):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
@@ -1477,4 +1490,7 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Fișier încărcat cu succes',
     'JS_UPLOAD_FAILED' => 'Încărcați fișier eșuat',
+
+	'JS_DUPLICATES_DETECTED' => 'Duplicate (e) detectat!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Vă rugăm să reintroduceți parolele. „Parola nouă“ și „parola confirma“ valorile nu se potrivesc.',
 );

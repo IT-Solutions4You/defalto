@@ -838,6 +838,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Siga',
   'LBL_QUICK_VIEW' => 'Vista Rápida',
   'LBL_NOTIFICATION_CENTER' => 'El Centro De Notificaciones',
+	'LBL_NOTIFICATION' => 'Notificación',
+	'LBL_STARRED_RECORD_TO' => '%s a%s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s%s actualizada',
   'LBL_EDIT_REASON' => 'Editar razón',
   'LBL_CONTACT' => 'GESTIÓN DE CONTACTOS',
   'LBL_NO_ATTACHMENTS' => 'No Hay Archivos Adjuntos',
@@ -1072,6 +1075,16 @@ fuera de Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA Información',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'To use <b>%s</b>, we recommend you to Switch to new look.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Cuando se elimina un usuario, el usuario será marcado como "inactivo" y no hay nuevos registros pueden ser asignados al usuario, y el usuario no será capaz de iniciar sesión. ¿Estas seguro que quieres borrarlo?',
+
+	'LBL_DUPLICATES' => 'duplicados',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicar (s) detectado!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Esto%s no se puede guardar desde duplicado%s existe en VTiger a juego con los valores de%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Mensaje: VTiger Sistema de Notificaciones',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'El siguiente%s no pudo ser salvado de flujo de trabajo "%s"',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'El siguiente%s no pudo ser salvado de formulario web "%s"',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Puede%s para modificar las normas de prevención de duplicados.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Póngase en contacto con el administrador para obtener la revisión de las reglas duplicadas',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicar%s (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor configura el servidor de salida desde la página de configuración ',
@@ -1462,4 +1475,7 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Archivo subido exitosamente',
     'JS_UPLOAD_FAILED' => 'Cargar archivo Error',
+
+	'JS_DUPLICATES_DETECTED' => 'Duplicar (s) detectado!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Por favor, vuelva a introducir las contraseñas. La "nueva contraseña" y "Confirmar contraseña" valores no coinciden.',
 );

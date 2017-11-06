@@ -63,8 +63,16 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 			$viewer->assign('RECORD',$recordModel); 
 		}  
 
+		$duplicateRecordsList = array();
+		$duplicateRecords = $request->get('duplicateRecords');
+		if (is_array($duplicateRecords)) {
+			$duplicateRecordsList = $duplicateRecords;
+		}
+
+		$viewer = $this->getViewer($request);
+		$viewer->assign('DUPLICATE_RECORDS', $duplicateRecordsList);
 		parent::preProcess($request, $display); 
-   } 
+	}
 
 	public function process(Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);

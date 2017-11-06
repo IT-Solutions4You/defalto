@@ -78,13 +78,19 @@ class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
         
         $recordModel->set('due_date', $followupEndDate);
 		$recordModel->set('time_end', $followupEndTime);
-        
-        $recordModel->save();
-        
-        $response = new Vtiger_Response();
-        $result = array('created'=>true);
-        $response->setResult($result);
-        $response->emit();
+
+		$response = new Vtiger_Response();
+		try {
+			$recordModel->set('id',null);
+			$recordModel->save();
+			$result = array('created'=>true);
+			$response->setResult($result);
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
+		}
+		$response->emit();
 	}
     
     public function markAsHeldCompleted(Vtiger_Request $request) {
@@ -120,8 +126,14 @@ class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
         }
 		$_REQUEST['mode'] = 'edit';
 		$this->setRecurrenceInfo($recordModel);
-        $recordModel->save();
-        $response->setResult($result);
+		try {
+			$recordModel->save();
+			$response->setResult($result);
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
+		}
         $response->emit();
     }
 	

@@ -315,6 +315,61 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 		this.arrangeSelectedChoicesInOrder();
 		this.registerEventToHandleOnChangeOfOverrideValue();
 		this.registerAutoCompleteFields(editViewForm);
+		//Document file fields handling
+		this.registerAddFileFieldEvent(editViewForm);
+		this.registerFileFieldRemoveEvent(editViewForm);
+	},
+
+	fileFieldsLimit: 5,
+	/**
+	 * Function to handle add file field click event
+	 * @param form - Edit view form.
+	 */
+	registerAddFileFieldEvent: function (form) {
+		var self = this;
+		var container = jQuery(form);
+		container.find('#addFileFieldBtn').click(function (e) {
+			e.preventDefault();
+			var fileFieldsCount = parseInt(jQuery('#fileFieldsCount').val());
+			if (fileFieldsCount >= self.fileFieldsLimit) {
+				app.helper.showAlertNotification({message: app.vtranslate('JS_MAX_FILE_FIELDS_LIMIT', self.fileFieldsLimit)});
+				return false;
+			}
+			var fieldIndex = jQuery('#fileFieldNextIndex').val();
+			var html = '<tr>\n\
+							<td style="vertical-align: middle;">\n\
+								<input type="text" class="inputElement nameField" name="file_field['+fieldIndex+'][fieldlabel]" data-rule-required="true">\n\
+							</td>\n\
+							<td class="textAlignCenter" style="vertical-align: middle;">\n\
+								<input type="checkbox" name="file_field['+fieldIndex+'][required]" value="1">\n\
+							</td>\n\
+							<td class="textAlignCenter" style="vertical-align: middle;">\n\
+								<a class="removeFileField" style="color: black;"><i class="fa fa-trash icon-trash"></i></a>\n\
+							</td>\n\
+						</tr>';
+			container.find('table#fileFieldsTable').find('tbody').append(html);
+			jQuery('#fileFieldNextIndex').val(parseInt(fieldIndex)+1);
+			jQuery('#fileFieldsCount').val(fileFieldsCount+1);
+			container.find('.noFileField').addClass('hide');
+			self.registerFileFieldRemoveEvent(form);
+		});
+	},
+	/**
+	 * Function to handle remove file field click event
+	 * @param container - Edit view form.
+	 */
+	registerFileFieldRemoveEvent: function (container) {
+		container = jQuery(container);
+		container.find('.removeFileField').off('click');
+		container.find('.removeFileField').on('click', function (e) {
+			e.preventDefault();
+			var fileFieldsCount = parseInt(jQuery('#fileFieldsCount').val());
+			jQuery(e.currentTarget).closest('tr').remove();
+			jQuery('#fileFieldsCount').val(fileFieldsCount-1);
+			if (container.find('#fileFieldsTable').find('tr:visible').length == 1) {
+				container.find('.noFileField').removeClass('hide');
+			}
+		});
 	},
 	
 	/**

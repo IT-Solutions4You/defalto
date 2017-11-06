@@ -74,7 +74,7 @@
                         <div class="row clearfix">
                             <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
                                 <button class="btn btn-success saveButton" type="submit">Save</button>
-                                <a class="cancelLink" href="javascript:history.back()" type="reset">Cancel</a>
+                                <a class="cancelLink" href="javascript:history.{if $DUPLICATE_RECORDS}go(-2){else}back(){/if}" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                             </div>
                         </div>
                     </div>

@@ -844,6 +844,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Volg',
   'LBL_QUICK_VIEW' => 'Snel Overzicht',
   'LBL_NOTIFICATION_CENTER' => 'Notification Center',
+	'LBL_NOTIFICATION' => 'Kennisgeving',
+	'LBL_STARRED_RECORD_TO' => '%s to %s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s update%s',
   'LBL_EDIT_REASON' => 'Bewerken reden',
   'LBL_CONTACT' => 'CONTACT MANAGEMENT',
   'LBL_NO_ATTACHMENTS' => 'Geen Bijlagen',
@@ -1073,6 +1076,16 @@ buiten Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA Informatie',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Om gebruik te maken <b>%s</b>, raden wij u aan om te schakelen naar de nieuwe look.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'Wanneer een gebruiker is verwijderd, zal de gebruiker worden gemarkeerd als "inactief" en er geen nieuwe records kunnen worden toegewezen aan de gebruiker, en de gebruiker zal niet in staat om in te loggen. Weet je zeker dat je wilt verwijderen?',
+
+	'LBL_DUPLICATES' => 'duplicaten',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicate (s) gedetecteerd!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Deze%s kan niet worden opgeslagen, omdat dubbele%s bestaat in Vtiger met bijpassende waarden voor%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Bericht van: Vtiger Systeemnotificaties',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'De volgende%s kon niet worden gered van de "%s" workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'De volgende%s kon niet worden gered van de "%s" webformulier',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'U kunt%s om dubbele preventie regels te wijzigen.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Neem contact op met uw beheerder voor de herziening van de dubbele regels',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Dupliceren%s (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Configureer a.u.b. uw uitgaande server instellingen op de instellingenpagina', 
@@ -1484,4 +1497,7 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Geüpload Successfuly',
     'JS_UPLOAD_FAILED' => 'File Upload is mislukt',
+
+	'JS_DUPLICATES_DETECTED' => 'Duplicate (s) gedetecteerd!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Gelieve opnieuw in te voeren wachtwoorden. De "nieuwe wachtwoord" en "Wachtwoord bevestigen" waarden komen niet overeen.',
 );

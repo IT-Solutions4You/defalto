@@ -141,7 +141,11 @@ function createInvoice($salesorder_id, $recurringDate = false) {
 	}
 	$focus->_salesorderid = $salesorder_id;
 	$focus->_recurring_mode = 'recurringinvoice_from_so';
-	$focus->save("Invoice");
+	try {
+		$focus->save("Invoice");
+	} catch (Exception $e) {
+		//TODO - Review
+	}
 }
 
 function getRecurringDate($recurringDate, $recurringFrequency) {

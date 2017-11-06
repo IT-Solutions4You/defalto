@@ -60,10 +60,18 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action {
  
 		$response = new Vtiger_Response();	
 		if ($recordIds) {
-			$recycleBinModule->restore($sourceModule, $recordIds);
+			try {
+				$recycleBinModule->restore($sourceModule, $recordIds);
+				$response->setResult(array(true));
+			} catch (DuplicateException $e) {
+				$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+			} catch (Exception $e) {
+				$response->setError($e->getMessage());
+			}
+		} else {
 			$response->setResult(array(true));
 		} 
-		
+
 		$response->emit();
 
 	}

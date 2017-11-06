@@ -19,14 +19,7 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
 		$linkTypes = array('LISTVIEWBASIC', 'LISTVIEW', 'LISTVIEWSETTING');
 		$links = Vtiger_Link_Model::getAllByType($this->getModule()->getId(), $linkTypes, $linkParams);
 
-		$basicLinks = array(
-			array(
-				'linktype' => 'LISTVIEWBASIC',
-				'linklabel' => 'LBL_ADD_RECORD',
-				'linkurl' => $this->getModule()->getCreateRecordUrl(),
-				'linkicon' => 'icon-plus'
-			)
-		);
+		$basicLinks = $this->getBasicLinks();
 		foreach($basicLinks as $basicLink) {
 			$links['LISTVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
 		}
@@ -39,7 +32,7 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
         
         $usersList = Users_Record_Model::getActiveAdminUsers();
         $settingLinks = array();
-        if(count($usersList) > 1) {
+        if(count($usersList) ) {
             $changeOwnerLink = array(
                 'linktype' => 'LISTVIEWSETTING',
 				'linklabel' => 'LBL_CHANGE_OWNER',
@@ -48,6 +41,8 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
             );
             array_push($settingLinks, $changeOwnerLink);
         }
+
+		$settingLinks = array_merge($settingLinks, $this->getSettingLinks());
         if(count($settingLinks) > 0) {
             foreach($settingLinks as $settingLink) {
                 $links['LISTVIEWSETTING'][] = Vtiger_Link_Model::getInstanceFromValues($settingLink);

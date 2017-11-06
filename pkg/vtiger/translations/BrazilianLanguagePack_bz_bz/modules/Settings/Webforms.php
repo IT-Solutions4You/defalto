@@ -40,6 +40,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Adicionar Formulário De Web',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'upload de documentos',
+	'LBL_ADD_FILE_FIELD' => 'Arquivo Carregar Campo',
+	'LBL_FIELD_LABEL' => 'Título do documento',
+	'LBL_FILE_FIELD_INFO' => 'Para cada arquivo carregado a partir de web formar um novo documento é criado com o arquivo anexado. Documento também está ligada a este recém-criado%s.',
+	'LBL_NO_FILE_FIELD' => 'Não há campos de arquivo adicionado.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Copiar para área de transferência',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -53,4 +59,7 @@ $jsLanguageStrings = array(
   'JS_SELECT_AN_OPTION' => 'Selecione uma Opção',
   'JS_LABEL' => 'rótulo',
 
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Máximo que você pode adicionar%s campos de arquivo.',
+	'JS_COPIED_SUCCESSFULLY' => 'Copiado com êxito.',
+	'JS_COPY_FAILED' => 'Cópia falhou. Por favor, copie manualmente.',
 );

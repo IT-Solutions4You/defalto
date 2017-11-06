@@ -59,8 +59,12 @@ class Calendar_Record_Model extends Vtiger_Record_Model {
 	 * Function returns recurring information for EditView
 	 * @return <Array> - which contains recurring Information
 	 */
-	public function getRecurrenceInformation() {
+	public function getRecurrenceInformation($request = false) {
 		$recurringObject = $this->getRecurringObject();
+
+		if ($request && !$request->get('id') && $request->get('repeat_frequency')) {
+			$recurringObject = getrecurringObjValue();
+		}
 
 		if ($recurringObject) {
 			$recurringData['recurringcheck'] = 'Yes';

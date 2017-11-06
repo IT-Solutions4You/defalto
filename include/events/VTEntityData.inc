@@ -184,5 +184,27 @@ class VTEntityData{
 		return $db->query_result($result, 0, 'label');
 	}
 
+	public static function getInstanceByDeletedEntityId($db, $entityId, $moduleName = '') {
+		$obj = new VTEntityData();
+		$obj->isNew = false;
+		$obj->entityId = $entityId;
+
+		if (!$moduleName) {
+			$result = $db->pquery('SELECT setype FROM vtiger_crmentity WHERE crmid=?', array($entityId));
+			$moduleName = $db->query_result($result, 0, 'setype');
+		}
+		if ($moduleName == 'Calendar') {
+			$moduleName = vtws_getCalendarEntityType($entityId);
+		}
+		$obj->moduleName = $moduleName;
+
+		require_once('data/CRMEntity.php');
+		$focus = CRMEntity::getInstance($moduleName);
+		$focus->retrieve_entity_info($entityId, $moduleName, $allowDeleted = true);
+		$focus->id = $entityId;
+
+		$obj->focus = $focus;
+		return $obj;
+	}
 }
 ?>

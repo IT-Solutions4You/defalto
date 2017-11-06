@@ -147,6 +147,9 @@ $languageStrings = array(
   'LBL_NOVEMBER' => 'Novembre',
   'LBL_DECEMBER' => 'Décembre',
 	'LBL_CLICK_HERE_TO_VIEW' => 'Cliquez ici pour afficher',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'Nombre de dupliquer des événements ignorés',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'Nombre de tâches en double sautée',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Add Event / Tâche'      , 

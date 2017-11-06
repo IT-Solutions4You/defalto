@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'O registo de cabeçalho',
   'LBL_HEADER_FIELD' => 'Cabeçalho De Vista',
 
+	'LBL_DUPLICATE_HANDLING' => 'Prevenção duplicado',
+	'LBL_DUPLICATE_CHECK' => 'Ativar verificação de duplicata',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Duplicar recurso de prevenção só impede novos registros duplicados de ficar criado por usuários e aplicações externas. Registros criados a partir de Importação',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Selecione os campos exclusivos no qual estão a ser verificados os registros duplicados',
+	'LBL_SELECT_FIELDS' => 'selecionar campos',
+	'LBL_MAX_3_FIELDS' => 'Max 3 campos',
+	'LBL_SELECT_RULE' => 'Select regra de duplicatas de manipulação',
+	'LBL_ALLOW_DUPLICATES' => 'permitir duplicatas',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Não permita que Duplicatas',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Ação a ser tomada se o registro duplicado for encontrado durante a sincronização com aplicação externa',
+	'LBL_PREFER_LATEST_RECORD' => 'Prefere último disco',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Prefere registro interno',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Prefere registro externo',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Prefere último disco - dados de registro Mais recentemente modificados serão mantidos <br> preferem registro interno - registro existente será mantido como é <br> preferem registro externa - Dados da aplicação externa será copiado',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Programa bloco habilitado'   ,
@@ -196,4 +210,7 @@ Tem certeza de que deseja excluir este campo?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Campos de nome aparecer no Cabeçalho padrão',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Esse Campo de Cabeçalho é habilitado para Vtiger7, Ele será exibido no modo de Exibição de Resumo',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Com sucesso atualizado para considerar campos selecionados na prevenção duplicatas',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Falha ao considerar campos selecionados na prevenção duplicatas',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'verificação duplicada é desativado',
 );

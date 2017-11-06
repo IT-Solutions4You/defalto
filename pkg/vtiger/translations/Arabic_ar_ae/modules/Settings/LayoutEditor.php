@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'سجل رأس',
   'LBL_HEADER_FIELD' => 'رأس رأي',
 
+	'LBL_DUPLICATE_HANDLING' => 'منع مكررة',
+	'LBL_DUPLICATE_CHECK' => 'تمكين الاختيار مكررة',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'تكرار ميزة منع يمنع فقط السجلات المكررة الجديدة من الحصول على إنشاؤها من قبل المستخدمين والتطبيقات الخارجية. السجلات التي تم إنشاؤها من استيراد',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'حدد الحقول فريدة من نوعها التي يتم إلى يتم فحص سجلات مكررة',
+	'LBL_SELECT_FIELDS' => 'الحقول حدد',
+	'LBL_MAX_3_FIELDS' => 'ماكس 3 الحقول',
+	'LBL_SELECT_RULE' => 'حدد قاعدة لمعالجة التكرارات',
+	'LBL_ALLOW_DUPLICATES' => 'السماح التكرارات',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'لا تسمح المكررات',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'العمل على اتخاذ إذا تم العثور على سجل مكررة بينما المزامنة مع تطبيق خارجي',
+	'LBL_PREFER_LATEST_RECORD' => 'تفضل أحدث سجل',
+	'LBL_PREFER_INTERNAL_RECORD' => 'تفضل السجل الداخلي',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'تفضل سجل خارجية',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'تفضل أحدث سجل - سيتم الاحتفاظ بيانات السجل المعدلة مؤخرا <BR> تفضل السجل الداخلي - القائمة سجل سيتم الاحتفاظ كما هو <BR> تفضل سجل خارجية - بيانات من تطبيق خارجي سيتم نسخ',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'إظهار كتلة تمكين',
@@ -196,4 +210,7 @@ $jsLanguageStrings = array(
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'اسم الحقول تظهر في رأس افتراضيا',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'هذا المجال هو رأس تمكين Vtiger7 سوف يظهر في عرض موجز',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'تحديث بنجاح للنظر في الحقول المحددة في الوقاية من التكرارات',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'لم تنظر الحقول المحددة في الوقاية من التكرارات',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'تم تعطيل الاختيار مكررة',
 );

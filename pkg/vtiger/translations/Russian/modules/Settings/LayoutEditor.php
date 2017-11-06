@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Запись заголовка',
   'LBL_HEADER_FIELD' => 'Вид Заголовка',
 
+	'LBL_DUPLICATE_HANDLING' => 'Дубликат Профилактика',
+	'LBL_DUPLICATE_CHECK' => 'Включить дубликат чека',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Дубликат функция предотвращения только предотвращает новые дубликаты записей от получения созданных пользователями и внешними приложениями. Записи, созданные из импорта',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Выберите уникальные поля, на которых будут проверяться повторяющиеся записи',
+	'LBL_SELECT_FIELDS' => 'Выберите поля',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Поля',
+	'LBL_SELECT_RULE' => 'Выберите правило для обработки дубликатов',
+	'LBL_ALLOW_DUPLICATES' => 'Разрешить дубликаты',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Не допускать Дубликаты',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Действие, предпринимаемое, если дубликат запись найдена во время синхронизации с внешним приложением',
+	'LBL_PREFER_LATEST_RECORD' => 'Предпочитают последняя запись',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Предпочитают внутреннюю запись',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Предпочитает внешнюю запись',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Предпочитает последнюю запись - Совсем недавно измененные данные записей будет сохранены <br> Предпочитают внутренние рекорд - Существующие записи будут сохранены, как это <br> Предпочитает внешнюю запись - данные из внешнего приложения будет скопировано',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Блок-шоу включен',
@@ -196,4 +210,7 @@ $jsLanguageStrings = array(
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Имя поля отображаются в заголовке по умолчанию',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Это поле заголовка включена Vtiger7, она будет отображаться в представлении "сводка"',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Успешно обновлено рассмотреть выбранные поля в области профилактики дублей',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Не удалось рассмотреть выбранные поля в области профилактики дублей',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Дубликат проверка отключена',
 );

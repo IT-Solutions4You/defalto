@@ -69,17 +69,24 @@ Vtiger_List_Js("RecycleBin_List_Js", {
 			app.helper.showConfirmationBox({'message': message}).then(
 				function (e) {
 					var sourceModule = jQuery('#sourceModule').val();
-					var restoreURL = url + '&viewname=' + cvId + '&selected_ids=' + selectedIds + '&excluded_ids=' + excludedIds + '&mode=restoreRecords&sourceModule=' + sourceModule;
+					var restoreURL = url + '&viewname=' + cvId + '&selected_ids=' + selectedIds + '&excluded_ids=' + excludedIds + '&mode=restoreRecords&sourceModule=' + sourceModule+"&search_params="+JSON.stringify(listInstance.getListSearchParams());
 					app.helper.showProgress();
-					app.request.post({url: restoreURL}).then(
-							function (error, data) {
-								if (data) {
-									app.helper.hideProgress();
-									var instance = new RecycleBin_List_Js();
-									instance.recycleBinActionPostOperations(data);
-								}
+					app.request.post({url: restoreURL}).then(function (error, data) {
+						app.helper.hideProgress();
+						if (error === null) {
+							jQuery('.vt-notification').remove();
+							var moduleLabel = data.modulelabel;
+							if (!moduleLabel) {
+								moduleLabel = app.vtranslate('SINGLE_' + sourceModule);
 							}
-					);
+							var instance = new RecycleBin_List_Js();
+							instance.recycleBinActionPostOperations(data);
+							var successNote = app.vtranslate('JS_RECORDS_RESTORED', selectedIdsArray.length, moduleLabel);
+							app.helper.showSuccessNotification({'message': successNote});
+						} else {
+							app.event.trigger('post.save.failed', error);
+						}
+					});
 				},
 				function (error, err) {
 				})
@@ -119,19 +126,20 @@ Vtiger_List_Js("RecycleBin_List_Js", {
 				}
 				app.helper.showProgress();
 				app.request.post({data: postData}).then(
-						function (error, data) {
-							if (data) {
-								app.helper.hideProgress();
-								var instance = new RecycleBin_List_Js();
-								instance.recycleBinActionPostOperations(data);
-							}
+					function (error, data) {
+						if (data) {
+							app.helper.hideProgress();
+							var instance = new RecycleBin_List_Js();
+							instance.recycleBinActionPostOperations(data);
 						}
+					}
 				);
 			},
 			function (error, err) {
 			});
 	},
 	restoreAction: function (recordId, restoreExternalFile) {
+		var aDeferred = jQuery.Deferred();
 		var recordId = RecycleBin_List_Js.convertToJsonString(recordId);
 		var listInstance = Vtiger_List_Js.getInstance();
 		var sourceModule = jQuery('#sourceModule').val();
@@ -152,13 +160,19 @@ Vtiger_List_Js("RecycleBin_List_Js", {
 		app.helper.showProgress();
 		app.request.post({data: postData}).then(
 			function (error, data) {
-				if (data) {
-					app.helper.hideProgress();
+				app.helper.hideProgress();
+				if (error === null) {
+					jQuery('.vt-notification').remove();
 					var instance = new RecycleBin_List_Js();
 					instance.recycleBinActionPostOperations(data);
+					aDeferred.resolve(data);
+				} else {
+					app.event.trigger('post.save.failed', error);
+					aDeferred.resolve(data);
 				}
 			}
 		);
+		return aDeferred.promise();
 	},
 	/**
 	 * Function to restore a record
