@@ -10,7 +10,7 @@
 $languageStrings = array(
 	'Accounts'                     => 'Organisationen'              , 
 	'SINGLE_Accounts'              => 'Organisation'                , 
-	'LBL_ADD_RECORD'               => 'Add Organization'            , 
+	'LBL_ADD_RECORD'               => 'Neue Organisation'            , 
 	'LBL_RECORDS_LIST'             => 'Organisationen'              , 
 	'LBL_ACCOUNT_INFORMATION'      => 'Organisation'                , 
 	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Zeige Organisationshierarchie', 
@@ -34,13 +34,13 @@ $languageStrings = array(
        'Prospect Accounts'            => 'Prospect-Konten',
 	'Reseller'                     => 'Wiederverkäufer'            , 
 	'LBL_START_DATE'               => 'Startdatum'                  , 
-	'LBL_END_DATE'                 => 'Endedatum'                   , 
-	'LBL_DUPLICATES_EXIST'         => 'Organization Name already exists', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copy Shipping Address'       , 
-	'LBL_COPY_BILLING_ADDRESS'     => 'Copy Billing Address'        , 
+	'LBL_END_DATE'                 => 'Enddatum'                   , 
+	'LBL_DUPLICATES_EXIST'         => 'Organisation existiert bereits', 
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Kopiere Lieferadresse'       , 
+	'LBL_COPY_BILLING_ADDRESS'     => 'Kopiere Rechnungsadresse'        , 
 );
 $jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to delete?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Möchten Sie diese Organisation jetzt entfernen?', 
+	'LBL_DELETE_CONFIRMATION'      => 'Durch das Entfernen der Organisation werden auch verknüpfte Verkaufschancen und Angebote entfernt. Jetzt dennoch entfernen?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Durch das Entfernen der Organisation werden auch verknüpfte Verkaufschancen und Angebote entfernt. Jetzt dennoch entfernen?', 
 );
