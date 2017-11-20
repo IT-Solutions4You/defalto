@@ -8,21 +8,21 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-    'Quotes'                       => 'Devis'                       , 
+	'Quotes'                       => 'Devis'                       , 
 	'SINGLE_Quotes'                => 'Devis'                       , 
 	'LBL_EXPORT_TO_PDF'            => 'Export PDF'                  , 
-	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
-	'LBL_ADD_RECORD'               => 'Add Quote'                   , 
-	'LBL_RECORDS_LIST'             => 'Liste devis'                 , 
-	'LBL_QUOTE_INFORMATION'        => 'Détail devis'               , 
+	'LBL_SEND_MAIL_PDF'            => 'Envoyer le PDF par Email'         , 
+	'LBL_ADD_RECORD'               => 'Ajouter un Devis'                   , 
+	'LBL_RECORDS_LIST'             => 'Liste des devis'                 , 
+	'LBL_QUOTE_INFORMATION'        => 'Détail du devis'               , 
 	'Quote No'                     => 'Devis N°'                   , 
 	'Quote Stage'                  => 'Phase'                       , 
 	'Valid Till'                   => 'Echéance'                   , 
 	'Inventory Manager'            => 'Responsable du stock'        , 
 	'Accepted'                     => 'Accepté'                    , 
 	'Rejected'                     => 'Rejeté'                     ,
-    'Related To'                   => 'Relatif à la'                ,
-	
+	'Related To'                   => 'Relatif à la'                ,
+
 	//Translations used for Export to Pdf
 	'Valid Date' => 'Date de validité',
 	'Phone: ' => 'Téléphone: ',
@@ -39,8 +39,8 @@ $languageStrings = array(
 	'Contact Name' => 'Nom contact',
 	'Grand Total:' => 'Total:',
 
-  'LBL_THIS' => 'Cette',
-  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'est supprimé du système.merci de supprimer ou de remplacer cet élément',
-  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Cet élément est supprimé du système,veuillez supprimer cette ligne d\'articles',
+	'LBL_THIS' => 'Cette',
+	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'est supprimé du système.merci de supprimer ou de remplacer cet élément',
+	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Cet élément est supprimé du système,veuillez supprimer cette ligne d\'articles',
 
 );
