@@ -10,8 +10,8 @@
 $languageStrings = array(
 	'Products'                     => 'Produkte'                    , 
 	'SINGLE_Products'              => 'Produkt'                     , 
-	'LBL_ADD_RECORD'               => 'Produkt hinzufügen'         , 
-	'LBL_RECORDS_LIST'             => 'Products List'               , 
+	'LBL_ADD_RECORD'               => 'Neues Produkt'         , 
+	'LBL_RECORDS_LIST'             => 'Produktübersicht'               , 
 	'LBL_PRODUCT_INFORMATION'      => 'Produkt'                     , 
 	'LBL_IMAGE_INFORMATION'        => 'Produktbilder:'              , 
 	'LBL_STOCK_INFORMATION'        => 'Lager:'                      , 
@@ -21,7 +21,7 @@ $languageStrings = array(
 	'LBL_RESET_PRICE'              => 'Preis zurücksetzen'         , 
 	'LBL_RESET'                    => 'zurücksetzen'               , 
 	'LBL_ADD_TO_PRICEBOOKS'        => 'Add to PriceBooks'           , 
-	'Product No'                   => 'Produkt Nr.'                 , 
+	'Product No'                   => 'Produktnummer.'                 , 
 	'Part Number'                  => 'Produktcode'                 , 
 	'Product Active'               => 'Aktiv'                       , 
 	'Manufacturer'                 => 'Hersteller'                  , 
@@ -77,8 +77,8 @@ $languageStrings = array(
 	'LBL_BUNDLE_TOTAL_COST' => 'Gesamtkosten des Bundle',
 	'LBL_UPDATE_BUNDLE_PRICE' => 'Update-Bundle Preis',
 
-  'LBL_PRODUCT_NAME' => 'Produkt-Name',
-  'LBL_PRICE_QUANTITY' => 'Preis x Menge',
+	'LBL_PRODUCT_NAME' => 'Produkt-Name',
+	'LBL_PRICE_QUANTITY' => 'Preis x Menge',
 
 );
 
