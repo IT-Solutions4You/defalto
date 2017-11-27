@@ -1691,4 +1691,5 @@ $jsLanguageStrings = array(
 
 	'JS_DUPLICATES_DETECTED' => 'تكرار (ق) الكشف عن!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'يرجى إعادة إدخال كلمة السر. "كلمة السر الجديدة" و "كلمة السر تأكيد" عدم تطابق القيم.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'هل أنت متأكد أنك تريد حذف؟',
 );

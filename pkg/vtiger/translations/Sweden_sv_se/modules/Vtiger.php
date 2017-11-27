@@ -1664,4 +1664,5 @@ $jsLanguageStrings = array(
 
 	'JS_DUPLICATES_DETECTED' => 'Duplicera (s) upptäckt!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Vänligen ange lösenord. Den "nya lösenord" och "Bekräfta lösenord" värden inte stämmer överens.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'Är du säker att du vill radera?',
 );

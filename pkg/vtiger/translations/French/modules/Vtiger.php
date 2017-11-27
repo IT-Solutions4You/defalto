@@ -1500,4 +1500,5 @@ $jsLanguageStrings = array(
 
 	'JS_DUPLICATES_DETECTED' => 'Double (s) détectée!',
 	'JS_PASSWORD_MISMATCH_ERROR' => "S'il vous plaît entrer de nouveau les mots de passe. Les valeurs « nouveau mot de passe » et « mot de passe de confirmation » ne correspondent pas.",
+	'JS_LIST_DELETE_CONFIRMATION' => 'Etes-vous sûr que vous voulez supprimer?',
 );

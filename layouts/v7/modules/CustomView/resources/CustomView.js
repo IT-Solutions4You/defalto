@@ -288,7 +288,7 @@ jQuery.Class("Vtiger_CustomView_Js",{
 
 		jQuery(document).on('post.DeleteFilter.click',function(e,params){
 			var target = jQuery(e.target);
-			app.helper.showConfirmationBox({'message': app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(
+			app.helper.showConfirmationBox({'message': app.vtranslate('LBL_LIST_DELETE_CONFIRMATION')}).then(
 				function(){
 					app.helper.showProgress();
 					app.request.post({'url':params.url}).then(function(){
