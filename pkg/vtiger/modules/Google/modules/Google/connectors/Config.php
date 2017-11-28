@@ -1,12 +1,15 @@
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/* +**********************************************************************************
+ * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+ * ("License"); You may not use this file except in compliance with the License
+ * The Original Code is: vtiger CRM Open Source
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (C) vtiger.
+ * All Rights Reserved.
+ * ***********************************************************************************/
 
 Class Google_Config_Connector {
-    static $clientId = '';
-    static $clientSecret = '';
+	static $clientId = '';
+	static $clientSecret = '';
+	static $redirectUrl = '';
 }

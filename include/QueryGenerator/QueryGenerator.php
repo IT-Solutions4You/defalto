@@ -448,9 +448,12 @@ class QueryGenerator {
 			$baseTable = $field->getTableName();
 			$tableIndexList = $this->meta->getEntityTableIndexList();
 			$baseTableIndex = $tableIndexList[$baseTable];
+
+			$tableList[$field->getTableName()] = $field->getTableName();
+			$tableJoinMapping[$field->getTableName()] = $this->meta->getJoinClause($field->getTableName());
+
 			if($field->getFieldDataType() == 'reference') {
 				$moduleList = $this->referenceFieldInfoList[$fieldName];
-				$tableJoinMapping[$field->getTableName()] = 'INNER JOIN';
 				foreach($moduleList as $module) {
 					if($module == 'Users' && $baseModule != 'Users') {
 						if($fieldName == 'created_user_id' || $fieldName == 'modifiedby') {
@@ -485,9 +488,6 @@ class QueryGenerator {
 					$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
 				}
 			}
-			$tableList[$field->getTableName()] = $field->getTableName();
-				$tableJoinMapping[$field->getTableName()] =
-						$this->meta->getJoinClause($field->getTableName());
 		}
 		$baseTable = $this->meta->getEntityBaseTable();
 		$baseTableIndex = $moduleTableIndexList[$baseTable];
