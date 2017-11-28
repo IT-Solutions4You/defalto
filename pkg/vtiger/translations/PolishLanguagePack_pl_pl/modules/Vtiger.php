@@ -1649,4 +1649,5 @@ $jsLanguageStrings = array(
 
 	'JS_DUPLICATES_DETECTED' => 'Duplikat (e) wykryto!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Należy ponownie wprowadzić hasło. „Nowe hasło” i „Potwierdź hasło” Wartości nie pasują.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'Czy na pewno chcesz usunąć?',
 );

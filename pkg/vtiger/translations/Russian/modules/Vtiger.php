@@ -1493,4 +1493,5 @@ $jsLanguageStrings = array(
 
 	'JS_DUPLICATES_DETECTED' => 'Дубликат (s) обнаружено!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Пожалуйста, повторно ввести пароль. «Новый пароль» и «Подтверждение пароля» значения не совпадают.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'Вы уверены, что хотите удалить?',
 );

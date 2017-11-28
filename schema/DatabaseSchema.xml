@@ -1971,9 +1971,10 @@
 			<deftimestamp />
 		</field>
 		<field name="login_time" type="T">
-			<deftimestamp />
-			<!--mysql 5.7 not able create table as default value missing for this field-->
-			<default value="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" />
+			<!-- Troublesome with STRICT_TRANS_TABLE mode depends on MySQL 5.5 or 5.6+ -->
+			<!--
+				<deftimestamp />
+			-->
 		</field>
 		<field name="status" type="C" size="25" />
 		<opt platform="mysql">Engine=InnoDB</opt>

@@ -106,6 +106,38 @@ if (defined('VTIGER_UPGRADE')) {
 	$em->registerHandler('vtiger.entity.aftersave', 'modules/Vtiger/handlers/FollowRecordHandler.php', 'FollowRecordHandler');
 	//END::Follow & unfollow features
 
+	//START::Reordering Timezones
+	$fieldName = 'time_zone';
+	$userModuleModel = Vtiger_Module_Model::getInstance('Users');
+	$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $userModuleModel);
+	if ($fieldModel) {
+		$picklistValues = $fieldModel->getPicklistValues();
+
+		$utcTimezones = preg_grep('/\(UTC\)/', $picklistValues);
+		asort($utcTimezones);
+
+		$utcPlusTimezones = preg_grep('/\(UTC\+/', $picklistValues);
+		asort($utcPlusTimezones);
+
+		$utcMinusTimezones = preg_grep('/\(UTC\-/', $picklistValues);
+		arsort($utcMinusTimezones);
+
+		$timeZones = array_merge($utcMinusTimezones, $utcTimezones, $utcPlusTimezones);
+		$originalPicklistValues = array_flip(Vtiger_Util_Helper::getPickListValues($fieldName));
+
+		$orderedPicklists = array();
+		$i = 0;
+		foreach ($timeZones as $timeZone => $value) {
+			$orderedPicklists[$originalPicklistValues[$timeZone]] = $i++;
+		}
+		ksort($orderedPicklists);
+
+		$moduleModel = new Settings_Picklist_Module_Model();
+		$moduleModel->updateSequence($fieldName, $orderedPicklists);
+		echo '<br>Succecssfully reordered timezones<br>';
+	}
+	//END::Reordering Timezones
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 }
