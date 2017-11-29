@@ -927,7 +927,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 			$field = new Vtiger_Field();
 			$field->name = 'tags';
 			$field->label = 'tags';
-			$field->table = $moduleInstance->basetable;
+			$field->table = $moduleModel->basetable;
 			$field->presence = 2;
 			$field->displaytype = 6;
 			$field->readonly = 1;
