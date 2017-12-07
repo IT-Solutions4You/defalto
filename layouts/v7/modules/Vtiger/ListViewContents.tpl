@@ -41,6 +41,7 @@
 	<input type="hidden" name="folder_value" value="{$FOLDER_VALUE}" />
 	<input type="hidden" name="viewType" value="{$VIEWTYPE}" />
 	<input type="hidden" name="app" id="appName" value="{$SELECTED_MENU_CATEGORY}">
+	<input type="hidden" id="isExcelEditSupported" value="{if $MODULE_MODEL->isExcelEditAllowed()}yes{else}no{/if}" />
 	{if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
 		<input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
 	{/if}

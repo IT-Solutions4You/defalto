@@ -1113,6 +1113,10 @@ Vtiger.Class("Vtiger_List_Js", {
 
 		// Double click event - ajax edit
 		listViewContentDiv.on('dblclick', '.listViewEntries', function (e) {
+			if (listViewContentDiv.find('#isExcelEditSupported').val() == 'no') {
+				return;
+			}
+
 			var currentTrElement = jQuery(e.currentTarget);
 			// added to unset the time out set for <a> tags 
 			var rows = currentTrElement.find('a');
