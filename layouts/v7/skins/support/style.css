@@ -1423,7 +1423,7 @@ ul.unstyled {
 }
 .listview-table-norecords .table-actions,
 .listview-table .table-actions {
-  width: 110px;
+  width: 120px;
   font-size: 15px;
   color: #555;
   margin-left: 7px;
@@ -7440,4 +7440,8 @@ div.flip {
 }
 .duplicationMessageContainer .duplicationMessageHeader {
   margin-bottom: 8px;
+}
+.listViewRecordActions .quickView, .listViewRecordActions .markStar,
+.listViewRecordActions .markAsHeld,.listViewRecordActions .holdFollowupOn {
+  margin-top: 4px;
 }
