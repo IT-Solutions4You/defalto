@@ -106,6 +106,37 @@ if (defined('VTIGER_UPGRADE')) {
 	$em->registerHandler('vtiger.entity.aftersave', 'modules/Vtiger/handlers/FollowRecordHandler.php', 'FollowRecordHandler');
 	//END::Follow & unfollow features
 
+	//START::Differentiate custom modules from Vtiger modules
+	$vtigerTabColumns = $db->getColumnNames('vtiger_tab');
+	if (!in_array('source', $vtigerTabColumns)) {
+		$db->pquery('ALTER TABLE vtiger_tab ADD COLUMN source VARCHAR(255) DEFAULT "custom"', array());
+	}
+	$db->pquery('UPDATE vtiger_tab SET source=NULL', array());
+
+	$pkgModules = array();
+	$pkgFolder = 'pkg/vtiger/modules';
+	$pkgHandle = opendir($pkgFolder);
+
+	if ($pkgHandle) {
+		while (($pkgModuleName = readdir($pkgHandle)) !== false) {
+			$pkgModules[$pkgModuleName] = $pkgModuleName;
+
+			$moduleHandle = opendir("$pkgFolder/$pkgModuleName");
+			while (($innerModuleName = readdir($moduleHandle)) !== false) {
+				if (is_dir("$pkgFolder/$pkgModuleName/$innerModuleName")) {
+					$pkgModules[$innerModuleName] = $innerModuleName;
+				}
+			}
+			closedir($moduleHandle);
+		}
+		closedir($pkgHandle);
+		$pkgModules = array_keys($pkgModules);
+	}
+
+	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($pkgModules).')', $pkgModules);
+	echo '<br>Succecssfully added source column vtiger tab table<br>';
+	//END::Differentiate custom modules from Vtiger modules
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 }

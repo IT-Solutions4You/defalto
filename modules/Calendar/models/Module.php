@@ -984,4 +984,12 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	public function getRelationShipActions() {
 		return array('ADD');
 	}
+
+	public function getModuleIcon($activityType) {
+		$moduleIcon = '<i class="vicon-'.strtolower($activityType).'" ></i>';
+		if ($activityType != 'Task') {
+			$moduleIcon = parent::getModuleIcon();
+		}
+		return $moduleIcon;
+	}
 }

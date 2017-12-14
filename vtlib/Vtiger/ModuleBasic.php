@@ -87,6 +87,7 @@ class Vtiger_ModuleBasic {
 			// Initialize other details too
 			$this->initialize2();
 		}
+		$this->source = $valuemap['source'];
 		$this->isSyncable = $valuemap['issyncable'];
 		$this->allowDuplicates = $valuemap['allowduplicates'];
 		$this->syncActionForDuplicate = $valuemap['sync_action_for_duplicates'];

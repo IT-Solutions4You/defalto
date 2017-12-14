@@ -70,7 +70,7 @@
 																{assign var='singularLabel' value='LBL_TASK'}
 																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_Events" class="quickCreateModule" data-name="Events"
-																	   data-url="index.php?module=Events&view=QuickCreateAjax" href="javascript:void(0)"><i class="vicon-calendar pull-left"></i><span class="quick-create-module">{vtranslate('LBL_EVENT',$moduleName)}</span></a>
+																	   data-url="index.php?module=Events&view=QuickCreateAjax" href="javascript:void(0)">{$moduleModel->getModuleIcon('Event')}<span class="quick-create-module">{vtranslate('LBL_EVENT',$moduleName)}</span></a>
 																</div>
 																{if $count % 3 == 2}
 																	</div>
@@ -79,7 +79,7 @@
 																{/if}
 																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
-																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)"><i class="vicon-task pull-left"></i><span class="quick-create-module">{vtranslate($singularLabel,$moduleName)}</span></a>
+																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">{$moduleModel->getModuleIcon('Task')}<span class="quick-create-module">{vtranslate($singularLabel,$moduleName)}</span></a>
 																</div>
 																{if !$hideDiv}
 																	{assign var='count' value=$count+1}
@@ -88,7 +88,7 @@
 																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if} dropdown">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModuleSubmenu dropdown-toggle" data-name="{$moduleModel->getName()}" data-toggle="dropdown" 
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
-																		<i class="vicon-{strtolower($moduleName)} pull-left"></i>
+																		{$moduleModel->getModuleIcon()}
 																		<span class="quick-create-module">
 																			{vtranslate($singularLabel,$moduleName)}
 																			<i class="fa fa-caret-down quickcreateMoreDropdownAction"></i>
@@ -112,7 +112,7 @@
 																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
-																		<i class="vicon-{strtolower($moduleName)} pull-left"></i>
+																		{$moduleModel->getModuleIcon()}
 																		<span class="quick-create-module">{vtranslate($singularLabel,$moduleName)}</span>
 																	</a>
 																</div>

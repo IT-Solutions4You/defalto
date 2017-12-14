@@ -112,14 +112,14 @@
                                         <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RELATION->get('changedon'))}">
                                             {Vtiger_Util_Helper::formatDateDiffInStrings($RELATION->get('changedon'))} </small>
                                     </time>
-                                    {if {$RELATED_MODULE|strtolower eq 'modcomments'}}
-                                        {assign var="VICON_MODULES" value="vicon-chat"}
-                                    {else}
-                                        {assign var="VICON_MODULES" value="vicon-{$RELATED_MODULE|strtolower}"}
-                                    {/if}
-                                    <div class="update_icon  bg-info-{$RELATED_MODULE|strtolower}">
-										<i class="update_image {$VICON_MODULES}"></i>
-                                    </div>
+									<div class="update_icon bg-info-{$RELATED_MODULE|strtolower}">
+										{if {$RELATED_MODULE|strtolower eq 'modcomments'}}
+											{assign var="VICON_MODULES" value="vicon-chat"}
+											<i class="update_image {$VICON_MODULES}"></i>
+										{else}
+											<span class="update_image">{Vtiger_Module_Model::getModuleIconPath($RELATED_MODULE)}</span>
+										{/if}
+									</div>
                                     <div class="update_info">
                                         <h5>
                                             {assign var=RELATION value=$RECENT_ACTIVITY->getRelationInstance()}
