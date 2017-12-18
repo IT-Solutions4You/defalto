@@ -12,12 +12,56 @@ include_once dirname(__FILE__).'/../libraries/LoaderSuggest.php';
 
 class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_View {
 
+	protected $registrationStatus = false;
+	protected $passwordStatus = false;
+	protected $customerProfile = array();
+	protected $customerCardInfo = array();
+
 	public function __construct() {
 		parent::__construct();
+		$this->init();
 		$this->exposeMethod('searchExtension');
 		$this->exposeMethod('detail');
 		$this->exposeMethod('installationLog');
 		$this->exposeMethod('oneClickInstall');
+	}
+
+	protected function init() {
+		$modelInstance = $this->getModelInstance();
+		$this->registrationStatus = $modelInstance->checkRegistration();
+
+		if ($this->registrationStatus) {
+			$pwdStatus = false;
+			$pwdStatus = $modelInstance->passwordStatus();
+			if (!$pwdStatus) {
+				$sessionIdentifer = $modelInstance->getSessionIdentifier();
+				$pwd = $_SESSION[$sessionIdentifer.'_password'];
+				if (!empty($pwd)) {
+					$pwdStatus = true;
+				}
+			}
+			$this->passwordStatus = $pwdStatus;
+		}
+
+		if ($this->registrationStatus && $this->passwordStatus) {
+			$customerProfile = $modelInstance->getProfile();
+			/* check if pwd is updated in marketplace by user, then marketplace will
+			 * respond with unauthozied message while getting customer profile. 
+			 * So at this time we will remove 
+			 * old password from DB and session, So user will login again with new
+			 * password
+			 */
+			if ($customerProfile['id']) {
+				$this->customerProfile = $customerProfile;
+				$customerCardId = $customerProfile['CustomerCardId'];
+				if (!empty($customerCardId)) {
+					$this->customerCardInfo = $modelInstance->getCardDetails($customerCardId);
+				}
+			} else {
+				$modelInstance->unsetPassword();
+				$this->passwordStatus = false;
+			}
+		}
 	}
 
 	protected function getModelInstance() {
@@ -27,7 +71,19 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 		return $this->modelInstance;
 	}
 
+	function preProcess(Vtiger_Request $request) {
+		parent::preProcess($request, false);
+		$extensionStoreModuleModel = Settings_ExtensionStore_Module_Model::getInstance();
+		$viewer = $this->getViewer($request);
+		$viewer->assign('MODULE_MODEL', $extensionStoreModuleModel);
+		$viewer->assign('PASSWORD_STATUS', $this->passwordStatus);
+		$viewer->assign('CUSTOMER_PROFILE', $this->customerProfile);
+		$this->preProcessSettings($request, false);
+		$this->preProcessDisplay($request);
+	}
+
 	public function process(Vtiger_Request $request) {
+		$modelInstance = $this->getModelInstance();
 		$mode = $request->getMode();
 		if (!empty($mode)) {
 			$this->invokeExposedMethod($mode, $request);
@@ -36,31 +92,14 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 
 		$viewer = $this->getViewer($request);
 		$qualifiedModuleName = $request->getModule(false);
-		$modelInstance = $this->getModelInstance();
-		$registrationStatus = $modelInstance->checkRegistration();
 
-		if ($registrationStatus) {
+		if ($this->registrationStatus) {
 			$userName = $modelInstance->getRegisteredUser();
-			//check if remember password is enabled
-			$pwdStatus = $modelInstance->passwordStatus();
-			//check if password set in current session
-			if (!$pwdStatus) {
-				$sessionIdentifer = $modelInstance->getSessionIdentifier();
-				$pwd = $_SESSION[$sessionIdentifer.'_password'];
-				if (!empty($pwd)) {
-					$pwdStatus = true;
-				}
-			}
 			$viewer->assign('USER_NAME', $userName);
 		}
-		if ($registrationStatus && $pwdStatus) {
-			$customerProfile = $modelInstance->getProfile();
-			$customerCardId = $customerProfile['CustomerCardId'];
-			if (!empty($customerCardId)) {
-				$customerCardDetails = $modelInstance->getCardDetails($customerCardId);
-				$viewer->assign('CUSTOMER_CARD_INFO', $customerCardDetails);
-			}
-			$viewer->assign('CUSTOMER_PROFILE', $customerProfile);
+		if ($this->registrationStatus && $this->passwordStatus) {
+			$viewer->assign('CUSTOMER_CARD_INFO', $this->customerCardInfo);
+			$viewer->assign('CUSTOMER_PROFILE', $this->customerProfile);
 		}
 
 		$loaderRequired = false;
@@ -69,11 +108,11 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 
 		$viewer->assign('LOADER_REQUIRED', $loaderRequired);
 		$viewer->assign('LOADER_INFO', $loaderInfo);
-		$viewer->assign('PASSWORD_STATUS', $pwdStatus);
+		$viewer->assign('PASSWORD_STATUS', $this->passwordStatus);
 		$viewer->assign('IS_PRO', true);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->assign('EXTENSIONS_LIST', $modelInstance->getListings());
-		$viewer->assign('REGISTRATION_STATUS', $registrationStatus);
+		$viewer->assign('REGISTRATION_STATUS', $this->registrationStatus);
 		$viewer->view('Index.tpl', $qualifiedModuleName);
 	}
 
@@ -103,22 +142,10 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 		$viewer = $this->getViewer($request);
 		$qualifiedModuleName = $request->getModule(false);
 		$modelInstance = $this->getModelInstance();
-		$registrationStatus = $modelInstance->checkRegistration();
 
-		if ($registrationStatus) {
-			$pwdStatus = $modelInstance->passwordStatus();
-			if (!$pwdStatus) {
-				$sessionIdentifer = $modelInstance->getSessionIdentifier();
-				$pwd = $_SESSION[$sessionIdentifer.'_password'];
-				if (!empty($pwd)) {
-					$pwdStatus = true;
-				}
-			}
-		}
-
-		$viewer->assign('PASSWORD_STATUS', $pwdStatus);
+		$viewer->assign('PASSWORD_STATUS', $this->passwordStatus);
 		$viewer->assign('IS_PRO', true);
-		$viewer->assign('REGISTRATION_STATUS', $registrationStatus);
+		$viewer->assign('REGISTRATION_STATUS', $this->registrationStatus);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->assign('EXTENSIONS_LIST', $modelInstance->findListings($searchTerm, $searchType));
 		$viewer->view('ExtensionModules.tpl', $qualifiedModuleName);
@@ -138,30 +165,19 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 			$customerReviews = $modelInstance->getCustomerReviews($extensionId);
 			$screenShots = $modelInstance->getScreenShots($extensionId);
 			$authorInfo = $modelInstance->getListingAuthor($extensionId);
-			$registrationStatus = $modelInstance->checkRegistration();
 
-			if ($registrationStatus) {
-				$pwdStatus = $modelInstance->passwordStatus();
-				if (!$pwdStatus) {
-					$sessionIdentifer = $modelInstance->getSessionIdentifier();
-					$pwd = $_SESSION[$sessionIdentifer.'_password'];
-					if (!empty($pwd)) {
-						$pwdStatus = true;
-					}
+			$viewer->assign('PASSWORD_STATUS', $this->passwordStatus);
+			$viewer->assign('CUSTOMER_CARD_INFO', $this->customerCardInfo);
+			$viewer->assign('CUSTOMER_PROFILE', $this->customerProfile);
+
+			if ($request->get('extensionName') == 'Payments') {
+				$moduleModel = Vtiger_Module_Model::getInstance('Subscription');
+				if ($moduleModel && $moduleModel->get('presence') == 0) {
+					$viewer->assign('CHECK_SUBSCRIPTION', TRUE);
 				}
-				$viewer->assign('PASSWORD_STATUS', $pwdStatus);
 			}
 
-			if ($registrationStatus && $pwdStatus) {
-				$customerProfile = $modelInstance->getProfile();
-				$customerCardId = $customerProfile['CustomerCardId'];
-				if (!empty($customerCardId)) {
-					$customerCardDetails = $modelInstance->getCardDetails($customerCardId);
-					$viewer->assign('CUSTOMER_CARD_INFO', $customerCardDetails);
-				}
-				$viewer->assign('CUSTOMER_PROFILE', $customerProfile);
-			}
-
+			$extension = $extensionDetail[$extensionId];
 			$viewer->assign('IS_PRO', true);
 			$viewer->assign('MODULE_ACTION', $moduleAction);
 			$viewer->assign('SCREEN_SHOTS', $screenShots);
@@ -171,7 +187,7 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 			$viewer->assign('EXTENSION_MODULE_MODEL', $extension->get('moduleModel'));
 			$viewer->assign('EXTENSION_ID', $extensionId);
 			$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
-			$viewer->assign('REGISTRATION_STATUS', $registrationStatus);
+			$viewer->assign('REGISTRATION_STATUS', $this->registrationStatus);
 			$viewer->view('Detail.tpl', $qualifiedModuleName);
 		} else {
 			$viewer->assign('EXTENSION_LABEL', $extension->get('label'));
@@ -242,6 +258,7 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 				$package = new Vtiger_Package();
 			}
 
+			$viewer->assign('EXTENSION_NAME', $targetModuleName);
 			$viewer->assign('MODULE_ACTION', $moduleAction);
 			$viewer->assign('MODULE_PACKAGE', $package);
 			$viewer->assign('TARGET_MODULE_INSTANCE', Vtiger_Module_Model::getInstance($targetModuleName));
@@ -281,8 +298,6 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 				}
 				if (!$upgradeError) {
 					if (!$isLanguagePackage) {
-						$moduleModel = Vtiger_Module_Model::getInstance($importedModuleName);
-
 						if (!$extensionModel->isUpgradable()) {
 							$viewer->assign('SAME_VERSION', true);
 						}
@@ -313,6 +328,7 @@ class Settings_ExtensionStore_ExtensionStore_View extends Settings_Vtiger_Index_
 				$package = new Vtiger_Package();
 			}
 
+			$viewer->assign('EXTENSION_NAME', $request->get('extensionName'));
 			$viewer->assign('MODULE_ACTION', $moduleAction);
 			$viewer->assign('MODULE_PACKAGE', $package);
 			$viewer->assign('TARGET_MODULE_INSTANCE', Vtiger_Module_Model::getInstance($targetModuleName));

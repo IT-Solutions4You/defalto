@@ -205,9 +205,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to get max created on promotion
 	 */
 	public function getMaxCreatedOn($type = 'Extension', $function, $field) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$listings = $connector->getMaxCreatedOn($type, $function, $field);
 			return $listings;
 		}
@@ -215,9 +214,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 
 	public function getNews() {
 		$news = array();
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$news = $connector->getNews();
 		}
 		return $news;
@@ -230,9 +228,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 */
 	public function getListings($id = null, $type = 'Extension') {
 		$extensionModelsList = array();
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$listings = $connector->getListings($id, $type);
 
 			if ($listings['success']) {
@@ -254,9 +251,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 */
 	public function getExtensionListings($extensionId) {
 		$extensionModelsList = array();
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$listings = $connector->getListings($extensionId);
 			if ($listings['success']) {
 				$listing = $listings['response'];
@@ -282,14 +278,15 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 			$downloadURL = $downloadURL.'&mode=Trial';
 		}
 		if ($downloadURL) {
-			$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
-			$response = $connector->download($downloadURL);
-			if ($response['success']) {
-				file_put_contents($targetFileName, $response['response']);
-				return array('success' => true);
-			} else {
-				return array('success' => false, 'message' => $response['error']);
+			$connector = $this->getConnector();
+			if ($connector) {
+				$response = $connector->download($downloadURL);
+				if ($response['success']) {
+					file_put_contents($targetFileName, $response['response']);
+					return array('success' => true);
+				} else {
+					return array('success' => false, 'message' => $response['error']);
+				}
 			}
 		}
 		return false;
@@ -302,9 +299,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 */
 	public function findListings($searchTerm = null, $searchType) {
 		$extensionModelsList = array();
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$listings = $connector->findListings($searchTerm, $searchType);
 
 			if ($listings['success']) {
@@ -322,9 +318,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	}
 
 	public function getExtensionTable() {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$tableName = $connector->getExtensionTable();
 		}
 		return $tableName;
@@ -344,9 +339,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	}
 
 	public function getSessionIdentifier() {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			return $connector->getSessionIdentifier();
 		}
 	}
@@ -382,9 +376,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to register user for extension store
 	 */
 	public function signup($options) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->signUp($options['emailAddress'], $options['password'], $options['confirmPassword'], $options['firstName'], $options['lastName'], $options['companyName']);
 			return $response;
 		}
@@ -403,9 +396,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to login user to extension store
 	 */
 	public function login($options) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->login($options['emailAddress'], $options['password'], $options['savePassword']);
 			return $response;
 		}
@@ -415,9 +407,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Funstion to get customer reviews based on extension id
 	 */
 	public function getCustomerReviews($extensionId) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->getCustomerReviews($extensionId);
 			return $response;
 		}
@@ -427,9 +418,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to post customer reviews
 	 */
 	public function postReview($listing, $comment, $rating) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->postReview($listing, $comment, $rating);
 			return $response;
 		}
@@ -440,9 +430,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 */
 	public function getScreenShots($extensionId) {
 		$screenShotListings = array();
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$listings = $connector->getScreenShots($extensionId);
 			foreach ($listings as $listing) {
 				$screenShotListings[(string) $listing['id']] = $this->getInstanceFromScreenShotArray($listing);
@@ -455,9 +444,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to verify extension purchase
 	 */
 	public function verifyPurchase($listingName) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->verifyPurchase($listingName);
 			if ($response == 1) {
 				return true;
@@ -470,9 +458,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to get listing author information
 	 */
 	public function getListingAuthor($extensionId) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$authorInfo = $connector->getListingAuthor($extensionId);
 			return $authorInfo;
 		}
@@ -482,9 +469,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to get customer profile details
 	 */
 	public function getProfile() {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$customerInfo = $connector->getProfile();
 			return $customerInfo;
 		}
@@ -587,9 +573,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	}
 
 	public function getCustomerDetails($customerId) {
-		$extensionLookUpUrl = self::getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$customerInfo = $connector->getCustomerDetails($customerId);
 			return $customerInfo;
 		}
@@ -599,9 +584,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to insert card details of registered user
 	 */
 	public function createCard($number, $expmonth, $expyear, $cvc) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->createCard($number, $expmonth, $expyear, $cvc);
 			return $response;
 		}
@@ -611,9 +595,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to update card details of registered user
 	 */
 	public function updateCard($number, $expmonth, $expyear, $cvc, $customerId) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->updateCard($number, $expmonth, $expyear, $cvc, $customerId);
 			return $response;
 		}
@@ -623,9 +606,8 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	 * Function to get card details of customer
 	 */
 	public function getCardDetails($cardId) {
-		$extensionLookUpUrl = $this->getExtensionsLookUpUrl();
-		if ($extensionLookUpUrl) {
-			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($extensionLookUpUrl);
+		$connector = $this->getConnector();
+		if ($connector) {
 			$response = $connector->getCardDetails($cardId);
 			return $response;
 		}
@@ -651,6 +633,27 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 		} else {
 			return 'https://marketplace.vtiger.com/app/listings?id='.$extensionId;
 		}
+	}
+
+	public function forgotPassword($options) {
+		$emailAddress = $options['emailAddress'];
+		if (filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
+			$connector = $this->getConnector();
+			if ($connector) {
+				$response = $connector->forgotPassword($emailAddress);
+				return $response;
+			}
+		}
+		return array('success' => false, 'error' => 'Invalid EmailAddress!');
+	}
+
+	 public function getConnector() {
+		$connector = null;
+		$url = $this->getExtensionsLookUpUrl();
+		if ($url) {
+			$connector = Settings_ExtensionStore_ExtnStore_Connector::getInstance($url);
+		}
+		return $connector;
 	}
 
 }
