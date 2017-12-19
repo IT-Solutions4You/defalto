@@ -29,6 +29,7 @@ mobileapp.controller('VtigerListController', function ($scope, $api, $mdDialog) 
 
     // To fetch data from service with the given params
     $scope.loadRecords = function () {
+        $scope.pageTitle = $scope.module;
         $api('listModuleRecords', {module: $scope.module, filterid: $scope.selectedFilter, page: $scope.page, orderBy: $scope.orderBy, sortOrder: $scope.sortOrder}, function (e, r) {
             $scope.records = r.records;
             $scope.selectedFilter = r.selectedFilter;
@@ -59,6 +60,9 @@ mobileapp.controller('VtigerListController', function ($scope, $api, $mdDialog) 
             }
         });
     };
+    $scope.listViewCreateEvent = function(){
+        window.location.href = "index.php?module=" + $scope.module + "&view=Edit&app=" + $scope.selectedApp;
+    };
 
     // Method to Reorder records in Asc / Desc
     $scope.sortRecords = function () {
@@ -87,7 +91,7 @@ mobileapp.controller('VtigerListController', function ($scope, $api, $mdDialog) 
               .targetEvent(ev);
         $mdDialog.show(confirm).then(function() {
             $api('deleteRecords', {record:id}, function(e,r) {
-                console.log(ev.currentTarget)
+//                console.log(ev.currentTarget)
             });
         });
     };
