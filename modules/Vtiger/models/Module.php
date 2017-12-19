@@ -1990,4 +1990,27 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return $this->isPermitted('EditView');
 	}
 
+	public function getModuleIcon() {
+		$moduleName = $this->getName();
+		$lowerModuleName = strtolower($moduleName);
+		$title = vtranslate($moduleName, $moduleName);
+
+		$moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
+		if ($this->source == 'custom') {
+			$moduleShortName = mb_substr(trim($title), 0, 2);
+			$moduleIcon = "<span class='custom-module' title='$title'>$moduleShortName</span>";
+		}
+
+		$imageFilePath = 'layouts/'.Vtiger_Viewer::getLayoutName()."/modules/$moduleName/$moduleName.png";
+		if (file_exists($imageFilePath)) {
+			$moduleIcon = "<img src='$imageFilePath' title='$title'/>";
+		}
+
+		return $moduleIcon;
+	}
+
+	public static function getModuleIconPath($moduleName) {
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		return $moduleModel->getModuleIcon();
+	}
 }

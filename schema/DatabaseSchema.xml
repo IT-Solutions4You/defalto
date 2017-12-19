@@ -211,6 +211,9 @@
 		</field>
 		<field name="version" type="C" size="10" />
 		<field name="parent" type="C" size="30"/>
+		<field name="source" type="C" size="255">
+			<default value="custom" />
+		</field>
 
 		<index name="tab_name_idx">
 			<col>name</col>

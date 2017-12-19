@@ -30,9 +30,9 @@
 	                  <img src="{vimage_path('summary_Products.png')}" class="summaryImg"/>
 	               {/if}
 	        {/foreach}
-                {if empty($IMAGE_DETAILS)}
-                    <div class="name"><span><strong> <i class="vicon-products"></i> </strong></span></div>
-            {/if}      
+			{if empty($IMAGE_DETAILS)}
+				<div class="name"><span><strong>{$MODULE_MODEL->getModuleIcon()}</strong></span></div>
+			{/if}
             </div>
 
             <div class="recordBasicInfo">

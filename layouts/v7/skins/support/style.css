@@ -1423,7 +1423,7 @@ ul.unstyled {
 }
 .listview-table-norecords .table-actions,
 .listview-table .table-actions {
-  width: 110px;
+  width: 120px;
   font-size: 15px;
   color: #555;
   margin-left: 7px;
@@ -7456,4 +7456,63 @@ div.flip {
 }
 .duplicationMessageContainer .duplicationMessageHeader {
   margin-bottom: 8px;
+}
+.listViewRecordActions .quickView, .listViewRecordActions .markStar,
+.listViewRecordActions .markAsHeld,.listViewRecordActions .holdFollowupOn {
+  margin-top: 4px;
+}
+.app-menu .module-icon .custom-module {
+	font-size: 14px;
+	border-radius: 4px;
+	color: #000;
+	background-color: #fff;
+	padding: 4px 10px 4px 5px !important
+}
+.menu-item .custom-module {
+	font-family: 'OpenSans-Regular', sans-serif;
+	font-size: 12px;
+	border-radius: 4px;
+	padding: 2px;
+	color: #000;
+	background-color: #fff;
+}
+.modules-menu .custom-module {
+	color: #fff;
+	margin-left: 0px;
+	display: inline;
+	border: 1px solid #fff;
+	border-radius: 4px;
+	padding: 3px 4px 3px 2px !important;
+	font-weight: bold;
+}
+#quickCreateModules .custom-module, .workflowListContainer .custom-module, .dashBoardTabContents .custom-module {
+	border-radius: 4px;
+	padding: 3px 5px;
+	color: #fff;
+	background-color: #777;
+}
+.menuEditorItem .custom-module {
+	border-radius: 4px;
+	padding: 3px 5px;
+	color: #000;
+	background-color: #fff;
+}
+.task-details .custom-module {
+	border-radius: 4px;
+	padding: 1px 4px;
+	color: white;
+	background-color: #777;
+}
+.related-tabs .custom-module, #relatedmenuList .custom-module {
+	border-radius: 4px;
+	color: #fff;
+	background-color: #777;
+	padding: 5px 7px;
+	font-weight: bold;
+}
+.record-header .custom-module {
+	font-size: 30px;
+}
+.moduleIcon .custom-module {
+	font-weight: bold;
 }

@@ -51,7 +51,7 @@
 								{else}
 							<span class="tab-icon">
 								{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}  
-								<i class="vicon-{strtolower($RELATEDMODULENAME)}" ></i>
+								{$RELATED_MODULE_MODEL->getModuleIcon()}
 							</span>
 						{/if}
 						<span class="numberCircle hide">0</span>
@@ -76,7 +76,7 @@
 								{else}  
 									<span class="tab-icon">
 										{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}  
-										<i class="vicon-{strtolower($RELATEDMODULENAME)}" ></i>
+										{$RELATED_MODULE_MODEL->getModuleIcon()}
 									</span>
 								{/if}
 								<span class="numberCircle hide">0</span>
@@ -107,7 +107,7 @@
 									{else}  
 										{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}  
 										<span class="tab-icon textOverflowEllipsis">
-											<i class="vicon-{strtolower($RELATEDMODULENAME)}"></i>
+											{$RELATED_MODULE_MODEL->getModuleIcon()}
 											<span class="content"> &nbsp;{$DETAILVIEWRELATEDLINKLBL}</span>
 										</span>
 									{/if}
