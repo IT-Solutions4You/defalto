@@ -57,25 +57,25 @@
                         <div class="col-lg-6">
                             <div class="email-preview-toolbar pull-right">
                                 {if $RECORD->getEmailFlag() neq 'SAVED'}
-                                    <button type="button" name="previewReply" class="btn btn-sm" data-mode="emailReply">
-                                        <strong>{vtranslate('LBL_REPLY',$MODULE)}</strong>
+                                    <button type="button" name="previewReply" class="btn btn-sm btn-default" data-mode="emailReply">
+                                        {vtranslate('LBL_REPLY',$MODULE)}
                                     </button>
                                     {if count($TO) > 1 || !empty($CC) || !empty($BCC)}
-                                        <button type="button" name="previewReplyAll" class="btn btn-sm" data-mode="emailReplyAll">
-                                            <strong>{vtranslate('LBL_REPLY_ALL',$MODULE)}</strong>
+                                        <button type="button" name="previewReplyAll" class="btn btn-sm btn-default" data-mode="emailReplyAll">
+                                            {vtranslate('LBL_REPLY_ALL',$MODULE)}
                                         </button>
                                     {/if}
                                 {/if}
-                                <button type="button" name="previewForward" class="btn btn-sm" data-mode="emailForward">
-                                    <strong>{vtranslate('LBL_FORWARD',$MODULE)}</strong>
+                                <button type="button" name="previewForward" class="btn btn-sm btn-default" data-mode="emailForward">
+                                    {vtranslate('LBL_FORWARD',$MODULE)}
                                 </button>
                                 {if $RECORD->getEmailFlag() eq 'SAVED'}
-                                    <button type="button" name="previewEdit" class="btn btn-sm" data-mode="emailEdit">
-                                        <strong>{vtranslate('LBL_EDIT',$MODULE)}</strong>
+                                    <button type="button" name="previewEdit" class="btn btn-sm btn-default" data-mode="emailEdit">
+                                        {vtranslate('LBL_EDIT',$MODULE)}
                                     </button>
                                 {/if}
-                                <button type="button" name="previewPrint" class="btn btn-sm" data-mode="previewPrint">
-                                    <strong>{vtranslate('LBL_PRINT',$MODULE)}</strong>
+                                <button type="button" name="previewPrint" class="btn btn-sm btn-default" data-mode="previewPrint">
+                                    {vtranslate('LBL_PRINT',$MODULE)}
                                 </button>
                             </div>
                         </div>
