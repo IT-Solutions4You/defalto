@@ -82,7 +82,10 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 		$relContactId = $request->get('contact_id');
 		if ($relContactId) {
 			$contactRecordModel = Vtiger_Record_Model::getInstanceById($relContactId);
-			$requestFieldList['parent_id'] = $contactRecordModel->get('account_id');
+			$accountId = $contactRecordModel->get('account_id');
+			if ($accountId) {
+				$requestFieldList['parent_id'] = $accountId;
+			}
 		}
 		foreach($requestFieldList as $fieldName=>$fieldValue){
 			$fieldModel = $fieldList[$fieldName];
