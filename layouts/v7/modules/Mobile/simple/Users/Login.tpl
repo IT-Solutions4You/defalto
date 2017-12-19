@@ -19,7 +19,7 @@
         <md-content class="login-background">
             <div class="logo-container">
             {/literal}
-            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/vtiger_logo_white.svg" alt="Vtiger Logo"/>
+            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/vtiger_logo.svg" alt="Vtiger Logo"/>
             {literal}
             </div>
             <form name="loginForm" ng-submit="login()" class="login-form" ng-validate>

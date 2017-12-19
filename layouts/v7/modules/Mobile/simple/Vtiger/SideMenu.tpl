@@ -1,41 +1,40 @@
 {literal}
 <md-sidenav class="md-sidenav-left" md-component-id="left">
     <md-toolbar class="app-menu md-locked-open">
-        <!--div class="md-toolbar-tools">
-            <md-button ng-click="navigationToggle()" class="md-icon-button" aria-label="side-menu-close">
-                <i class="mdi mdi-arrow-left actionbar-icon"></i>
-            </md-button>
-        </div-->
         <div class="user-details">
-            <md-list-item class="md-1-line">
+            <md-list-item class="md-1-line" style="margin:10px 0px">
             {/literal}
-            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/butler.jpg" class="md-avatar" alt="butler">
+            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/default_1.png" class="md-avatar" alt="butler">
             {literal}
                 <div class="md-list-item-text">
-                    <h5>{{userinfo.first_name + " "}}{{userinfo.last_name}}</h5>
-                    <!--p>{{userinfo.username}}</p>
-                    <p>{{userinfo.email}}</p-->
+                    <small>{{userinfo.first_name + " "}}{{userinfo.last_name}}</small>
+                    <h5 style="margin: 0px;">{{userinfo.email}}</h5>
                 </div>
             </md-list-item>
         </div>
-        <md-input-container class="app-dropdown">
+        <div class="app-dropdown">
             <md-select ng-model="selectedApp" aria-label="app_menu">
-                <md-option ng-repeat="app in apps" ng-value="app">{{app}}</md-option>
+                <md-option ng-repeat="app in apps" ng-value="app" ng-click="setSelectedApp(app)">{{app}}</md-option>
             </md-select>
-        </md-input-container>
+        </div>
     </md-toolbar>
 
     <md-list class="sidenav-module-list">
-        <md-list-item md-ink-ripple class="md-1-line">
-            <span class="vicon-grid"></span> &nbsp; 
-            <span class="vmodule-name">Dashboard</span>
+        <md-list-item ng-click="navigationToggle(); loadList('Events');" md-ink-ripple class="md-1-line">
+            <span style="font-size:14px;" class="vicon-calendar"></span> &nbsp; 
+            <span class="vmodule-name">Events</span>
         </md-list-item>
+        <md-list-item ng-click="navigationToggle(); loadList('Calendar');" md-ink-ripple class="md-1-line">
+            <span style="font-size:14px;" class="vicon-calendar"></span> &nbsp; 
+            <span class="vmodule-name">Tasks</span>
+        </md-list-item>
+        <md-divider></md-divider>
         <md-list-item ng-click="navigationToggle();loadList(module.name);" class="md-1-line" ng-click="module.label" ng-repeat="module in menus[selectedApp]">
-            <span class="vicon-{{module.name | lowercase | nospace}}"></span> &nbsp; 
+            <span style="font-size: 14px;" class="vicon-{{module.name | lowercase | nospace}}"></span> &nbsp; 
             <span class="vmodule-name">{{module.label}}</span>
         </md-list-item>
     </md-list>
-    <md-divider ></md-divider>
+    <md-divider></md-divider>
     <md-list>
         <md-list-item md-ink-ripple class="md-1-line">
             <div class="md-list-item-text">
