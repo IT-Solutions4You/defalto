@@ -1986,4 +1986,8 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return true;
 	}
 
+	public function isExcelEditAllowed() {
+		return $this->isPermitted('EditView');
+	}
+
 }
