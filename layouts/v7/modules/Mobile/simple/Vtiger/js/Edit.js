@@ -164,7 +164,6 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
                         value = field.raw;
                         var webservice_value = value.split('x');
                         value = webservice_value[1];
-                        console.log(value);
                     }
                     break;
             }
