@@ -6991,4 +6991,18 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
+	<table name="vtiger_app2tab">
+		<field name="tabid" type="I" size="11" />
+		<field name="appname" type="C" size="20" />
+		<field name="sequence" type="I" size="19" />
+		<field name="visible" type="I" size="3" >
+			<default value="1" />
+		</field>
+		<opt platform="mysql">Engine=InnoDB</opt>
+	</table>
+
+	<table name="vtiger_app2tab" alter="true">
+		<constraint>ADD CONSTRAINT vtiger_app2tab_fk_tab FOREIGN KEY (tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE</constraint>
+		<opt>Engine=InnoDB</opt>
+	</table>
 </schema>
