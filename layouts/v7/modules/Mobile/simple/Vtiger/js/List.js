@@ -91,7 +91,7 @@ mobileapp.controller('VtigerListController', function ($scope, $api, $mdDialog) 
               .targetEvent(ev);
         $mdDialog.show(confirm).then(function() {
             $api('deleteRecords', {record:id}, function(e,r) {
-                console.log(ev.currentTarget)
+//                console.log(ev.currentTarget)
             });
         });
     };
