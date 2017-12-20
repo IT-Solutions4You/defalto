@@ -34,7 +34,7 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
 						'reassign_count',
 						'from_portal',
 						'prev_sales_stage',
-                                                'txtAdjustment',
+						'txtAdjustment',
 						'hdnGrandTotal',
 						'hdnTaxType',
 						'hdnSubTotal',
@@ -45,16 +45,16 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
 						'balance',
 						'hdnS_H_Amount',
 						'paid',
-                                                'tags',
-                                                'shipping_&_handling',
-                                                'shipping_&_handling_shtax1',
-                                                'shipping_&_handling_shtax2',
-                                                'shipping_&_handling_shtax3',
-                                                'starred',
-                                                'hdnS_H_Percent',
-                                                'tax1',
-                                                'tax2',
-                                                'tax3',
+						'tags',
+						'shipping_&_handling',
+						'shipping_&_handling_shtax1',
+						'shipping_&_handling_shtax2',
+						'shipping_&_handling_shtax3',
+						'starred',
+						'hdnS_H_Percent',
+						'tax1',
+						'tax2',
+						'tax3',
                                                 
 					]
 				}
@@ -86,8 +86,6 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
          $scope.lineItemsSummary['total_tax'] = lineItemFinalDetails['tax_totalamount'];
          $scope.lineItemsSummary['totalAfterDiscount'] = lineItemFinalDetails['totalAfterDiscount'];
          $scope.lineItemsSummary['adjustment'] = lineItemFinalDetails['adjustment'];
-         
-         
     };
     
     $scope.loadRecord = function () {
@@ -103,14 +101,14 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
                 if(ignoreFields.indexOf($scope.fields[index].name) === -1) {
                     var value = r.record[$scope.fields[index].name];
                     if(typeof value === 'object') {
-                        processedData.push({label:$scope.fields[index].label, value:value.label});
+                        processedData.push({label:$scope.fields[index].label, value:value.label, type:$scope.fields[index].type.name});
                     
                     } else {
-                        processedData.push({label:$scope.fields[index].label, value:value});
+                        processedData.push({label:$scope.fields[index].label, value:value, type:$scope.fields[index].type.name});
                     }
                 }
             }
-            
+            $scope.pageTitle = r.record.label;
             $scope.recordData = processedData;
         });
         //related tab
