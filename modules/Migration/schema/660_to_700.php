@@ -1788,12 +1788,12 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
 	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='cvstdfilter_cvid_idx'", array());
 	if ($db->num_rows($keyResult)) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY cvstdfilter_cvid_idx', array());
 	}
 
 	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='fk_1_vtiger_cvstdfilter'", array());
 	if ($db->num_rows($keyResult)) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY fk_1_vtiger_cvstdfilter', array());
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
 	}
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
 
