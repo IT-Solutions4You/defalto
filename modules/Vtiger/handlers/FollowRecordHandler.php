@@ -23,60 +23,63 @@ class FollowRecordHandler extends VTEventHandler {
 			//record details
 			$recordId = $entityData->getId();
 			$moduleName = $entityData->getModuleName();
-			$tableName = Vtiger_Functions::getUserSpecificTableName($moduleName);
 
-			//following users
-			$userIdsList = array();
-			$result = $db->pquery("SELECT userid FROM $tableName WHERE recordid = ? AND starred = ? AND userid != ?", array($recordId, '1', $currentUserId));
-			if ($result && $db->num_rows($result)) {
-				while ($rowData = $db->fetch_row($result)) {
-					$userIdsList[] = $rowData['userid'];
+			if ($moduleName != 'Users') {
+				$tableName = Vtiger_Functions::getUserSpecificTableName($moduleName);
+
+				//following users
+				$userIdsList = array();
+				$result = $db->pquery("SELECT userid FROM $tableName WHERE recordid = ? AND starred = ? AND userid != ?", array($recordId, '1', $currentUserId));
+				if ($result && $db->num_rows($result)) {
+					while ($rowData = $db->fetch_row($result)) {
+						$userIdsList[] = $rowData['userid'];
+					}
 				}
-			}
 
-			if ($userIdsList) {
-				//changed fields data
-				$vtEntityDelta = new VTEntityDelta();
-				$delta = $vtEntityDelta->getEntityDelta($moduleName, $recordId, true);
+				if ($userIdsList) {
+					//changed fields data
+					$vtEntityDelta = new VTEntityDelta();
+					$delta = $vtEntityDelta->getEntityDelta($moduleName, $recordId, true);
 
-				if ($delta) {
-					$newEntity = $vtEntityDelta->getNewEntity($moduleName, $recordId);
-					$label = decode_html(trim($newEntity->get('label')));
+					if ($delta) {
+						$newEntity = $vtEntityDelta->getNewEntity($moduleName, $recordId);
+						$label = decode_html(trim($newEntity->get('label')));
 
-					$fieldModels = array();
-					$changedValues = array();
-					$skipFields = array('modifiedtime', 'modifiedby', 'label');
-					$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+						$fieldModels = array();
+						$changedValues = array();
+						$skipFields = array('modifiedtime', 'modifiedby', 'label');
+						$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
-					foreach ($delta as $fieldName => $fieldInfo) {
-						if (!in_array($fieldName, $skipFields)) {
-							$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
-							if ($fieldModel) {
-								$fieldModels[$fieldName] = $fieldModel;
-								$changedValues[$fieldName] = $fieldInfo;
+						foreach ($delta as $fieldName => $fieldInfo) {
+							if (!in_array($fieldName, $skipFields)) {
+								$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+								if ($fieldModel) {
+									$fieldModels[$fieldName] = $fieldModel;
+									$changedValues[$fieldName] = $fieldInfo;
+								}
 							}
 						}
-					}
 
-					if ($fieldModels) {
-						$companyDetails = getCompanyDetails();
-						$userModuleModel = Users_Module_Model::getInstance('Users');
+						if ($fieldModels) {
+							$companyDetails = getCompanyDetails();
+							$userModuleModel = Users_Module_Model::getInstance('Users');
 
-						foreach ($userIdsList as $userId) {
-							$userRecordModel = Users_Record_Model::getInstanceById($userId, $userModuleModel);
-							if ($userRecordModel && $userRecordModel->get('status') == 'Active') {
+							foreach ($userIdsList as $userId) {
+								$userRecordModel = Users_Record_Model::getInstanceById($userId, $userModuleModel);
+								if ($userRecordModel && $userRecordModel->get('status') == 'Active') {
 
-								$changedFieldString = $this->getChangedFieldString($fieldModels, $changedValues, $userRecordModel);
-								$detailViewLink = "$site_URL/index.php?module=$moduleName&view=Detail&record=$recordId";
-								$recordDetailViewLink = '<a style="text-decoration:none;" target="_blank" href="'.$detailViewLink.'">'.$label.'</a>';
+									$changedFieldString = $this->getChangedFieldString($fieldModels, $changedValues, $userRecordModel);
+									$detailViewLink = "$site_URL/index.php?module=$moduleName&view=Detail&record=$recordId";
+									$recordDetailViewLink = '<a style="text-decoration:none;" target="_blank" href="'.$detailViewLink.'">'.$label.'</a>';
 
-								$data = vtranslate('LBL_STARRED_RECORD_UPDATED', $moduleName, $currentUserModel->getName(), $recordDetailViewLink).$changedFieldString;
-								$body = '<table><tbody><tr><td style="padding:10px">'.nl2br(decode_html($data)).'</td></tr></tbody></table>';
+									$data = vtranslate('LBL_STARRED_RECORD_UPDATED', $moduleName, $currentUserModel->getName(), $recordDetailViewLink).$changedFieldString;
+									$body = '<table><tbody><tr><td style="padding:10px">'.nl2br(decode_html($data)).'</td></tr></tbody></table>';
 
-								$notificationMessage = ucwords($companyDetails['companyname']).' '.vtranslate('LBL_NOTIFICATION', $moduleName).' - '.$currentUserModel->getName();
-								$subject = vtranslate('LBL_STARRED_RECORD_UPDATED', $moduleName, $notificationMessage, $label);
+									$notificationMessage = ucwords($companyDetails['companyname']).' '.vtranslate('LBL_NOTIFICATION', $moduleName).' - '.$currentUserModel->getName();
+									$subject = vtranslate('LBL_STARRED_RECORD_UPDATED', $moduleName, $notificationMessage, $label);
 
-								$this->sendEmail($userRecordModel->get('email1'), $subject, $body, $recordId);
+									$this->sendEmail($userRecordModel->get('email1'), $subject, $body, $recordId);
+								}
 							}
 						}
 					}
