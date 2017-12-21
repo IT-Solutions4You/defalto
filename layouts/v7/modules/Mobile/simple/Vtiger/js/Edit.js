@@ -104,20 +104,20 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         }
         $scope.fieldsData = processedData;
     };
-    
-    $api('describe', {module: $scope.module}, function (e, r) {
-        $scope.describeObject = r.describe;
-        $scope.fields = $scope.describeObject.fields;
-        $scope.createable = $scope.describeObject.createable;
-        $scope.updateable = $scope.describeObject.updateable;
-        $scope.deleteable = $scope.describeObject.deleteable;
-        if($scope.record){
-            $scope.loadFields();
-        }
-        else{
-            prepareCreateData(true);
-        }
-    });
+
+	$api('describe', {module: $scope.module}, function (e, r) {
+       $scope.describeObject = r.describe;
+       $scope.fields = $scope.describeObject.fields;
+       $scope.createable = $scope.describeObject.createable;
+       $scope.updateable = $scope.describeObject.updateable;
+       $scope.deleteable = $scope.describeObject.deleteable;
+       if($scope.record){
+           $scope.loadFields();
+       }
+       else{
+           prepareCreateData(true);
+       }
+   });
     
     $scope.gobacktoUrl = function () {
         window.history.back();

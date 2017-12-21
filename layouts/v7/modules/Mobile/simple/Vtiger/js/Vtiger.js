@@ -27,6 +27,9 @@ mobileapp.controller('VtigerBodyController', function ($scope, $api, $mdUtil, $m
         $api('userInfo', function (e, r) {
             if (r) {
                 var currentApp = jQuery.url().param('app');
+				if (!currentApp) {
+					currentApp = 'SUPPORT';
+				}
                 scopeApply(function () {
                     $scope.userinfo = r.userinfo;
                     $scope.apps = r.apps;
