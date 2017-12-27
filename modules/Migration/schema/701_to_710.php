@@ -99,7 +99,7 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 	}
 	echo '<br>Succecssfully generalized tag fields<br>';
-	//START::Tag fields are pointed to cf table for the modules Assets, Services etc..
+	//END::Tag fields are pointed to cf table for the modules Assets, Services etc..
 
 	//START::Follow & unfollow features
 	$em = new VTEventsManager($db);
@@ -171,4 +171,6 @@ if (defined('VTIGER_UPGRADE')) {
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();
+
+	echo '<br>Succecssfully vtiger version updated to <b>7.1.0</b><br>';
 }

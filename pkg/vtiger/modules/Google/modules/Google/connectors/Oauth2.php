@@ -117,8 +117,7 @@ class Google_Oauth2_Connector {
     
     public function getState($source) {
         global $site_URL;
-        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $source;
+        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module . '&service=' . $source;
         $stateDetails['url'] = $callbackUri;
         $parse = parse_url($site_URL);
         $ipAddr = getHostByName($parse['host']);
