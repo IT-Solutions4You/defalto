@@ -1130,74 +1130,63 @@ function send_mail_for_password($mailid)
 	$log->debug("Entering customer portal function send_mail_for_password");
 	$adb->println("Inside the function send_mail_for_password($mailid).");
 
-	$sql = "select * from vtiger_portalinfo  where user_name = ? ";
+	if ($mailid == '') {
+		$ret_msg = "false@@@<b>".$mod_strings['LBL_GIVE_MAILID']."</b>";
+	}
+
+	$sql = 'SELECT * FROM vtiger_portalinfo INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid=vtiger_portalinfo.id WHERE user_name = ?';
 	$res = $adb->pquery($sql, array($mailid));
-	$user_name = $adb->query_result($res,0,'user_name');
-	$password = $adb->query_result($res,0,'user_password');
-	$isactive = $adb->query_result($res,0,'isactive');
+	$contactId = $adb->query_result($res, 0, 'id');
+	$user_name = $adb->query_result($res, 0, 'user_name');
+	$password = $adb->query_result($res, 0, 'user_password');
+	$isactive = $adb->query_result($res, 0, 'isactive');
 
 	// We no longer have the original password!
 	if (!empty($adb->query_result($res, 0, 'cryptmode'))) {
-		$password = '*****';
-		// TODO - we need to send link to reset the password
+		$password = makeRandomPassword();
+		$enc_password = Vtiger_Functions::generateEncryptedPassword($password);
+
+		$sql = 'UPDATE vtiger_portalinfo SET user_password=?, cryptmode=? WHERE id=?';
+		$params = array($enc_password, 'CRYPT', $contactId);
+		$adb->pquery($sql, $params);
 		// For now CRM user can do the same.
 	}
 
-	$fromquery = "select vtiger_users.user_name, vtiger_users.email1 from vtiger_users inner join vtiger_crmentity on vtiger_users.id = vtiger_crmentity.smownerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_crmentity.crmid where vtiger_contactdetails.email =?";
-	$from_res = $adb->pquery($fromquery, array($mailid));
-	$initialfrom = $adb->query_result($from_res,0,'user_name');
-	$from = $adb->query_result($from_res,0,'email1');
-
-	$contents = getTranslatedString('LBL_LOGIN_DETAILS');
-	$contents .= "<br><br>".getTranslatedString('LBL_USERNAME')." ".$user_name;
-	$contents .= "<br>".getTranslatedString('LBL_PASSWORD')." ".$password;
-
-	$mail = new PHPMailer();
-
-	$mail->Subject =  getTranslatedString('LBL_SUBJECT_PORTAL_LOGIN_DETAILS');
-	$mail->Body    = $contents;
-	$mail->IsSMTP();
-
-	$mailserverresult = $adb->pquery("select * from vtiger_systems where server_type=?", array('email'));
-	$mail_server = $adb->query_result($mailserverresult,0,'server');
-	$mail_server_username = $adb->query_result($mailserverresult,0,'server_username');
-	$mail_server_password = $adb->query_result($mailserverresult,0,'server_password');
-	$smtp_auth = $adb->query_result($mailserverresult,0,'smtp_auth');
-
-	$mail->Host = $mail_server;
-	if($smtp_auth) 
-	$mail->SMTPAuth = 'true';
-	$mail->Username = $mail_server_username;
-	$mail->Password = $mail_server_password;
-	$mail->From = $from;
-	$mail->FromName = $initialfrom;
-
-	$mail->AddAddress($user_name);
-	$mail->AddReplyTo($current_user->name);
-	$mail->WordWrap = 50;
-
-	$mail->IsHTML(true);
-
-	$mail->AltBody = $mod_strings['LBL_ALTBODY'];
-	if($mailid == '')
-	{
-		$ret_msg = "false@@@<b>".$mod_strings['LBL_GIVE_MAILID']."</b>";
-	}
-	elseif($user_name == '' && $password == '')
-	{
+	if ($user_name == '' && $password == '') {
 		$ret_msg = "false@@@<b>".$mod_strings['LBL_CHECK_MAILID']."</b>";
-	}
-	elseif($isactive == 0)
-	{
+	} elseif ($isactive == 0) {
 		$ret_msg = "false@@@<b>".$mod_strings['LBL_LOGIN_REVOKED']."</b>";
-	}
-	elseif(!$mail->Send())
-	{
-		$ret_msg = "false@@@<b>".$mod_strings['LBL_MAIL_COULDNOT_SENT']."</b>";
-	}
-	else
-	{
-		$ret_msg = "true@@@<b>".$mod_strings['LBL_MAIL_SENT']."</b>";
+	} else {
+
+		global $current_user,$HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
+		require_once("modules/Emails/mail.php");
+
+		$moduleName = 'Contacts';
+		require_once 'config.inc.php';
+		global $PORTAL_URL;
+
+		$portalURL = vtranslate('Please ',$moduleName).'<a href="'.$PORTAL_URL.'" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">'. vtranslate('click here', $moduleName).'</a>';
+		$contents = '<table><tr><td>
+						<strong>Dear '.$adb->query_result($res, 0, 'firstname')." ".$adb->query_result($res, 0, 'lastname').'</strong><br></td></tr><tr>
+						<td>'.vtranslate('Here is your self service portal login details:', $moduleName).'</td></tr><tr><td align="center"><br><table style="border:2px solid rgb(180,180,179);background-color:rgb(226,226,225);" cellspacing="0" cellpadding="10" border="0" width="75%"><tr>
+						<td><br>'.vtranslate('User ID').' : <font color="#990000"><strong>
+							<a target="_blank">'.$user_name.'</a></strong></font></td></tr><tr>
+						<td>'.vtranslate('Password').' : <font color="#990000">
+							<strong>'.$password.'</strong></font></td></tr><tr>
+						<td align="center"><strong>'.$portalURL.'</strong></td>
+						</tr></table><br></td></tr><tr><td><strong>NOTE: </strong>'.vtranslate('We suggest you to change your password after logging in first time').'.<br>
+					</td></tr></table>';
+
+		$subject = 'Customer Portal Login Details';
+		$subject = decode_html(getMergedDescription($subject, $contactId, 'Contacts'));
+		$mailStatus = send_mail($moduleName, $user_name, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents, '', '', '', '', '', true);
+
+		if (!$mailStatus) {
+			$ret_msg = "false@@@<b>".$mod_strings['LBL_MAIL_COULDNOT_SENT']."</b>";
+		} else {
+			$ret_msg = "true@@@<b>".$mod_strings['LBL_MAIL_SENT']."</b>";
+		}
+
 	}
 
 	$adb->println("Exit from send_mail_for_password. $ret_msg");
