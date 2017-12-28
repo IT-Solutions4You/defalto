@@ -1125,8 +1125,12 @@ if(defined('VTIGER_UPGRADE')) {
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT PRIMARY KEY (crmid,attachmentsid)', array());
-	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());
 	$db->pquery('ALTER TABLE vtiger_project MODIFY COLUMN projectid INT(19) PRIMARY KEY');
+
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_seattachmentsrel WHERE key_name='fk_2_vtiger_seattachmentsrel'", array());
+	if (!$db->num_rows($keyResult)) {
+		$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());
+	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_wsapp_logs_basic')) {
 		Vtiger_Utils::CreateTable('vtiger_wsapp_logs_basic',
@@ -1782,7 +1786,10 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
-	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='cvstdfilter_cvid_idx'", array());
+	if ($db->num_rows($keyResult)) {
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY cvstdfilter_cvid_idx', array());
+	}
 
 	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='fk_1_vtiger_cvstdfilter'", array());
 	if ($db->num_rows($keyResult)) {

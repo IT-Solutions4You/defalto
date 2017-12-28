@@ -6994,4 +6994,45 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
+	<table name="vtiger_dashboard_tabs">
+		<field name="id" type="I" size="19">
+			<key />
+		</field>
+		<field name="tabname" type="C" size="50" >
+			<unique />
+		</field>
+		<field name="isdefault" type="I" size="1" >
+			<default value="0" />
+		</field>
+		<field name="sequence" type="I" size="5" >
+			<default value="2" />
+		</field>
+		<field name="appname" type="C" size="20" />
+		<field name="modulename" type="C" size="50" />
+		<field name="userid" type="I" size="11">
+			<unique />
+		</field>
+
+		<opt platform="mysql">Engine=InnoDB</opt>
+	</table>
+
+	<table name="vtiger_dashboard_tabs" alter="true">
+		<constraint>ADD CONSTRAINT vtiger_dashboard_tabs_ibfk_1 FOREIGN KEY (userid) REFERENCES vtiger_users(id) ON DELETE CASCADE</constraint>
+		<opt>Engine=InnoDB</opt>
+	</table>
+
+	<table name="vtiger_app2tab">
+		<field name="tabid" type="I" size="11" />
+		<field name="appname" type="C" size="20" />
+		<field name="sequence" type="I" size="19" />
+		<field name="visible" type="I" size="3" >
+			<default value="1" />
+		</field>
+		<opt platform="mysql">Engine=InnoDB</opt>
+	</table>
+
+	<table name="vtiger_app2tab" alter="true">
+		<constraint>ADD CONSTRAINT vtiger_app2tab_fk_tab FOREIGN KEY (tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE</constraint>
+		<opt>Engine=InnoDB</opt>
+	</table>
 </schema>
