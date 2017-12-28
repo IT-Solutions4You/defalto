@@ -24,13 +24,12 @@ mobileapp.controller('VtigerListController', function ($scope, $api, $mdDialog) 
     // To fetch Module Filters
     $api('fetchModuleFilters', {module: $scope.module}, function (e, r) {
         $scope.filters = r.filters;
-		$scope.moduleLabel = r.moduleLabel;
         $scope.loadRecords();
     });
 
     // To fetch data from service with the given params
     $scope.loadRecords = function () {
-        $scope.pageTitle = $scope.moduleLabel;
+        $scope.pageTitle = $scope.module;
         $api('listModuleRecords', {module: $scope.module, filterid: $scope.selectedFilter, page: $scope.page, orderBy: $scope.orderBy, sortOrder: $scope.sortOrder}, function (e, r) {
             $scope.records = r.records;
             $scope.selectedFilter = r.selectedFilter;

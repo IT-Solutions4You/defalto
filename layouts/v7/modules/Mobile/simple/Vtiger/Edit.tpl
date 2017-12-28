@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Edit.js"></script>
 {literal}
 
-<form name="editForm" id="field-edit-form" ng-submit="saveThisRecord()" ng-controller="VtigerEditController">
+<form name="editForm" id="field-edit-form" ng-submit="saveThisRecord(editForm)" ng-controller="VtigerEditController">
     <header md-page-header fixed-top>
         <md-toolbar>
             <div class="md-toolbar-tools actionbar">
@@ -58,7 +58,7 @@
                                 <label ng-if="field.name == 'taskstatus'">Task Status</label>
                                 <label ng-if="field.name == 'eventstatus'">Event Status</label>
                                 <label ng-if="field.name != 'taskstatus' && field.name != 'eventstatus'">{{field.label}}</label>
-                                <md-select ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory">
+                                <md-select name="{{field.name}}" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory">
                                     <md-option ng-value="opt.value" ng-repeat="opt in field.type.picklistValues">{{opt.label}}</md-option>
                                 </md-select>
                             </div>
@@ -72,7 +72,7 @@
                                 <label ng-if="field.name == 'taskstatus'">Task Status</label>
                                 <label ng-if="field.name == 'eventstatus'">Event Status</label>
                                 <label ng-if="field.name != 'taskstatus' && field.name != 'eventstatus'">{{field.label}}</label>
-                                <md-select ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory">
+                                <md-select name="{{field.name}}" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory">
                                     <md-option ng-value="opt.value" ng-repeat="opt in field.type.picklistValues">{{opt.label}}</md-option>
                                 </md-select>
                             </div>
@@ -84,7 +84,7 @@
                         <md-input-container ng-switch-when="owner">
                             <div class="input-group-addon">
                                 <label>{{field.label}}</label>
-                                <md-select ng-model="field.raw" aria-label="{{field.label}}">
+                                <md-select name="{{field.name}}" ng-model="field.raw" aria-label="{{field.label}}">
                                     <md-optgroup label="Users" aria-label="Users">
                                         <md-option ng-value="user_id" ng-repeat="(user_id, user) in field.type.picklistValues.users">{{user}}</md-option>
                                     </md-optgroup>
@@ -101,7 +101,7 @@
                         <div ng-switch-when="reference" style="padding-bottom: 16px;">
                             <div class="input-group-addon">
                                 <label>{{field.label}}</label>
-                                <md-autocomplete flex
+                                <md-autocomplete name="{{field.name}}" flex
                                                 ng-model="field.raw"
                                                 md-search-text="field.valueLabel"
                                                 md-items="item in getMatchedReferenceFields(field.valueLabel, field)"
@@ -125,7 +125,7 @@
                         <md-input-container ng-switch-when="multipicklist">
                             <div class="input-group-addon">
                                 <label>{{field.label}}</label>
-                                <md-chips ng-model="field.valuelabel" md-autocomplete-snap md-require-match>
+                                <md-chips name="{{field.name}}" ng-model="field.valuelabel" md-autocomplete-snap md-require-match>
                                     <md-autocomplete aria-label="{{field.name}}"
                                                      md-input-name="field.name"
                                                      md-search-text="field.valuelabel"
@@ -150,7 +150,7 @@
                                 <div layout="row">
                                     <span class="mdi mdi-calendar editIcon"></span>
                                     <div flex="90">
-                                        <input type="date" ng-model="field.raw">
+                                        <input name="{{field.name}}" type="date" aria-label="Date Field UI" ng-model="field.raw">
                                     </div>
                                 </div>
                             </div>
@@ -165,8 +165,8 @@
                                 <div layout="row" class="input-group-addon" flex>
                                     <span class="mdi mdi-clock editIcon"></span>
                                     <div flex="90">
-                                        <input mdc-datetime-picker ng-if="userinfo.hour_format == '12'" date="false" time="true" type="text" format="hh:mm a" short-time="true" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory" placeholder="Time">
-                                        <input mdc-datetime-picker ng-if="userinfo.hour_format == '24'" date="false" time="true" type="text" format="HH:mm" short-time="false" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory" placeholder="Time">
+                                        <input name="{{field.name}}" mdc-datetime-picker ng-if="userinfo.hour_format == '12'" date="false" time="true" type="text" format="hh:mm a" short-time="true" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory" placeholder="Time">
+                                        <input name="{{field.name}}" mdc-datetime-picker ng-if="userinfo.hour_format == '24'" date="false" time="true" type="text" format="HH:mm" short-time="false" ng-model="field.raw" aria-label="{{field.label}}" ng-required="field.mandatory" placeholder="Time">
                                     </div>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@
                         </md-input-container>
                         <!--*************Checkbox /Boolean Box UI *********************-->
                         <md-input-container ng-switch-when="boolean">
-                            <md-checkbox class="md-primary edit-checkbox" name="{{field.name}}" ng-model="field.raw" aria-label="{{field.name}}"  ng-required="field.mandatory">
+                            <md-checkbox name="{{field.name}}" class="md-primary edit-checkbox" name="{{field.name}}" ng-model="field.raw" aria-label="{{field.name}}"  ng-required="field.mandatory">
                                 {{field.label}}
                             </md-checkbox>
                             <div ng-messages="editForm.{{field.name}}.$error">
@@ -186,7 +186,7 @@
                         <!--************* TEXT AREA *********************-->
                         <md-input-container ng-switch-when="text">
                             <label>{{field.label}}</label>
-                            <textarea ng-model="field.raw" rows="4" md-select-on-focus></textarea>
+                            <textarea name="{{field.name}}" ng-model="field.raw" rows="4" md-select-on-focus></textarea>
                             <div ng-messages="editForm.{{field.name}}.$error">
                                 <div ng-show="field.mandatory" ng-message="required"> Mandatory Field.</div>
                             </div>

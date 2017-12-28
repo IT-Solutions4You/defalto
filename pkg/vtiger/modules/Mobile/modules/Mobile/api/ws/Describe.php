@@ -44,6 +44,14 @@ class Mobile_WS_Describe extends Mobile_WS_Controller {
 				$field['type']['picklistValues']['users'] = $users; 
 				$field['type']['picklistValues']['groups'] = $groups; 
 			}
+			if($fieldModel && $fieldModel->get('name') == 'salutationtype') {
+				$values = $fieldModel->getPicklistValues();
+				$picklistValues = array();
+				foreach($values as $value => $label) {
+					$picklistValues[] = array('value'=>$value, 'label'=>$label);
+				}
+				$field['type']['picklistValues'] = $picklistValues;
+			}
 			$newFields[] = $field;
 		}
 		$fields=null;

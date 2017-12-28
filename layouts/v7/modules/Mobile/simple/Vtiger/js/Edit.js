@@ -62,7 +62,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         }
         return field;
     };
-    var ignorefields = ['duration_hours','duration_minutes','notime','starred','tags','modifiedby','reminder_time','imagename','taxclass','isconvertedfromlead','donotcall'];
+    var ignorefields = ['notime','starred','tags','modifiedby','reminder_time','imagename','taxclass','isconvertedfromlead','donotcall'];
 
     //Function to prepare create data.
     var prepareCreateData = function(newRecord, record){
@@ -147,22 +147,6 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
                     value = field.raw;
                     value = moment.utc(value).format('HH:mm:ss');
                     break;
-                    
-                case 'reference' :
-                    if(value && field.editable){
-                        value = field.raw;
-                        var webservice_value = value.split('x');
-                        value = webservice_value[1];
-                    }
-                    break;
-                    
-                case 'owner' :
-                    if(value && field.editable){
-                        value = field.raw;
-                        var webservice_value = value.split('x');
-                        value = webservice_value[1];
-                    }
-                    break;
             }
             if(field.editable){
                 $scope.editdata[field.name] = value;
@@ -170,13 +154,26 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         }
     };
     
-    $scope.saveThisRecord = function () {
+    $scope.isValid = function(form){
+        if(!form.$valid) {
+            return false;
+        }
+        return true;
+    };
+    
+    $scope.saveThisRecord = function (editForm) {
+        if(!$scope.isValid(editForm)) {
+            var toast = $mdToast.simple().content('Mandatory Fields Missing').position($scope.getToastPosition()).hideDelay(1000);
+            $mdToast.show(toast);
+            return;
+        }
         $scope.processEditData($scope.fieldsData);
         $api('saveRecord', {module: $scope.module, record: $scope.record, values: $scope.editdata}, function (e, r) {
             if (r) {
+                //split the ws id to get actual record id to fetch.
+                var id = r.record.id.split('x')[1];
                 var toast = $mdToast.simple().content('Record Saved Successfully!').position($scope.getToastPosition()).hideDelay(1000);
-                $mdToast.show(toast);
-                window.location.href = "index.php?module="+$scope.module+"&view=Detail&record="+r.id+"&app="+$scope.selectedApp;
+                window.location.href = "index.php?module="+$scope.module+"&view=Detail&record="+id+"&app="+$scope.selectedApp;
             } else {
                 var toast = $mdToast.simple().content('Some thing went wrong ! \n Save is not Succesfull.').position($scope.getToastPosition()).hideDelay(1000);
                 $mdToast.show(toast);
