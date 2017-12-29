@@ -1,14 +1,13 @@
-{*<!--
-/*************************************************************************************
-** The contents of this file are subject to the vtiger CRM Public License Version 1.1
+{*+**********************************************************************************
+* The contents of this file are subject to the vtiger CRM Public License Version 1.1
 * ("License"); You may not use this file except in compliance with the License
 * The Original Code is: vtiger CRM Open Source
 * The Initial Developer of the Original Code is vtiger.
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
-*
-**************************************************************************************/
--->*}<!doctype html>
+*************************************************************************************}
+
+<!doctype html>
 <html ng-app="mobileapp">
 	<head>
 		<meta charset="utf-8" />
@@ -34,6 +33,7 @@
 		{*Date-time-picker*}
 		<link type="text/css" rel="stylesheet" href="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-material-datetimepicker/css/material-datetimepicker.min.css">
 
+		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/date.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/jquery2.min.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-touch.min.js"></script>
@@ -42,19 +42,17 @@
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-material.min.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-touch.min.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/purl.js"></script>
-        <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/date.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-datepicker.min.js"></script>
         <script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/md-datepicker/angular-clockpicker.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/application.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Vtiger.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/Vtiger/js/Utils.js"></script>
-                
+
 		{*moment-js*}
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/moment/moment.min.js"></script>
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/moment/moment-timezone.min.js"></script>
 		{*Date-time-picker*}
 		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/angularjs/angular-material-datetimepicker/js/angular-material-datetimepicker.js"></script>
-		<script type="text/javascript" src="../../{$TEMPLATE_WEBPATH}/resources/libs/jquery/date.js"></script>
 
 		{* Include desired script injected *}
 		{if $_scripts}
