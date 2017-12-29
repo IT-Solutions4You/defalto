@@ -889,6 +889,25 @@ function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 	
 	vtws_transferOwnershipForWorkflowTasks($ownerModel, $newOwnerModel);
     vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId);
+
+	//transferring non-private filters (status not 1) of deleted user to new selected user
+	$db->pquery('UPDATE vtiger_customview SET userid = ? WHERE userid = ? AND status != ?', array($newOwnerId, $ownerId, 1));
+	//transferring private shared filters of deleted user to selected user
+	$db->pquery('UPDATE vtiger_customview SET userid = ? WHERE userid = ? AND status = ? AND cvid IN (SELECT cvid FROM vtiger_cv2users UNION SELECT cvid FROM vtiger_cv2group UNION SELECT cvid FROM vtiger_cv2role UNION SELECT cvid FROM vtiger_cv2rs)', array($newOwnerId, $ownerId, 1));
+
+	 if ($delete) {
+		//Delete from vtiger_users to vtiger_role vtiger_table
+		$db->pquery('DELETE FROM vtiger_users2group WHERE userid=?', array($ownerId));
+
+		//Mark user as deleted =1 
+		$db->pquery('UPDATE vtiger_users SET deleted=? WHERE id=?', array(1, $ownerId));
+
+		//Change the owner for report
+		$db->pquery('UPDATE vtiger_report SET owner=? WHERE owner=?', array($newOwnerId, $ownerId));
+
+		//Recalculate user privelege file
+		RecalculateSharingRules();
+	}
 }
 
 function vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId){
