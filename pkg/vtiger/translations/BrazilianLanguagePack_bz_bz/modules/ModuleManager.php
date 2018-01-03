@@ -4,8 +4,8 @@
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger. 
- * All Rights Reserved. Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
+ * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  *************************************************************************************/
 $languageStrings = array(
 	'ModuleManager' => 'Gerenciador de Módulos',
@@ -32,7 +32,7 @@ $languageStrings = array(
 	'LBL_VERIFY_IMPORT_DETAILS' => 'Verificar Detalhes da Importação',
 	'LBL_MODULE_NAME' => 'Nome Módulo',
 	'LBL_REQ_VTIGER_VERSION' => 'Versão Vtiger',
-	'LBL_LICENSE_ACCEPT_AGREEMENT' => 'Eu aceitop os termos da Licença.',
+	'LBL_LICENSE_ACCEPT_AGREEMENT' => 'Eu aceito os termos da Licença.',
 	'LBL_EXISTS'=>'Existe',
 	'LBL_PROCEED_WITH_IMPORT' => 'Você deseja executar com a importação?',
 	'LBL_VERSION_NOT_SUPPORTED' => 'A versão do Módulo não compatível com a versão do Vtiger',
