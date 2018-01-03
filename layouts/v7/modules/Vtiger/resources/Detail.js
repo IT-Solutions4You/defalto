@@ -667,7 +667,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 				//Detail tab is clicked
 				if(tabElement.data('linkKey') == self.detailViewDetailTabLabel) {
-					self.triggerDetailViewContainerEvents(detailViewContainer);
 					self.registerEventForPicklistDependencySetup(self.getForm());
 				}
 
@@ -685,9 +684,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					e.preventDefault();
 				});
 			});
-	},
-
-	triggerDetailViewContainerEvents: function(detailViewContainer) {
 	},
 
 	registerRollupCommentsSwitchEvent : function() {
