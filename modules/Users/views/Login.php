@@ -49,10 +49,10 @@ class Users_Login_View extends Vtiger_View_Controller {
 					$blockData['image'] = '';
 				}
 
-				vglobal('listview_max_textlength', $blockData['title_length']);
+				vglobal('listview_max_textlength', 80);
 				$blockData['displayTitle'] = textlength_check($blockData['title']);
 
-				vglobal('listview_max_textlength', $blockData['summary_length']);
+				vglobal('listview_max_textlength', 200);
 				$blockData['displaySummary'] = textlength_check($blockData['summary']);
 				$finalJsonData[$blockData['type']][] = $blockData;
 			}

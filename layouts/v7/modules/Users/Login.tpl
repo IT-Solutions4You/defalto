@@ -19,7 +19,7 @@
 			background-repeat: no-repeat;
 		}
 		hr {
-		    margin-top: 15px;
+			margin-top: 15px;
 			background-color: #7C7C7C;
 			height: 2px;
 			border-width: 0;
@@ -237,7 +237,7 @@
 				<div id="forgotPasswordDiv" class="hide">
 					<form class="form-horizontal" action="forgotPassword.php" method="POST">
 						<div class="group">
-							<input id="username" type="text" name="username" placeholder="Username" >
+							<input id="fusername" type="text" name="username" placeholder="Username" >
 							<span class="bar"></span>
 							<label>Username</label>
 						</div>
@@ -293,6 +293,7 @@
 									</ul>
 								</div>
 								{if $ALL_BLOCKS_COUNT neq $DATA_COUNT}
+									<br>
 									<hr>
 								{/if}
 							{/if}
@@ -350,7 +351,7 @@
 				});
 
 				forgotPasswordDiv.find('button').on('click', function () {
-					var username = jQuery('#forgotPasswordDiv #username').val();
+					var username = jQuery('#forgotPasswordDiv #fusername').val();
 					var email = jQuery('#email').val();
 
 					var email1 = email.replace(/^\s+/, '').replace(/\s+$/, '');
