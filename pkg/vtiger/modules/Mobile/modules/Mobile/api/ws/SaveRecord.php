@@ -73,10 +73,13 @@ class Mobile_WS_SaveRecord extends Mobile_WS_FetchRecordWithGrouping {
             } else {
                 $response->setError("RECORD_NOT_FOUND", "Record does not exist");
                 return $response;
-            }     
+			}
+		} catch (DuplicateException $e) {
+			$response->setError($e->getCode(), $e->getMessage());
         } catch(Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
         }
+		return $response;
 	}
 
 }

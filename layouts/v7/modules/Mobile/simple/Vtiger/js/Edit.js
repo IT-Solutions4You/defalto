@@ -175,7 +175,11 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
                 var toast = $mdToast.simple().content('Record Saved Successfully!').position($scope.getToastPosition()).hideDelay(1000);
                 window.location.href = "index.php?module="+$scope.module+"&view=Detail&record="+id+"&app="+$scope.selectedApp;
             } else {
-                var toast = $mdToast.simple().content('Some thing went wrong ! \n Save is not Succesfull.').position($scope.getToastPosition()).hideDelay(1000);
+				var message = 'Some thing went wrong ! \n Save is not Succesfull.';
+				if (e.message) {
+					message = e.message;
+				}
+                var toast = $mdToast.simple().content(message).position($scope.getToastPosition()).hideDelay(1000);
                 $mdToast.show(toast);
                 window.location.href = "index.php?module="+$scope.module+"&view=List&app="+$scope.selectedApp;
             }

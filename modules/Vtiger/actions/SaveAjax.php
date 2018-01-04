@@ -61,8 +61,6 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 			$response->setResult($result);
 		} catch (DuplicateException $e) {
 			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
-		} catch (DisplayException $e) {
-            $response->setError(null, $e->getDisplayMessage(), $e->getMessage());
 		} catch (Exception $e) {
 			$response->setError($e->getMessage());
 		}
