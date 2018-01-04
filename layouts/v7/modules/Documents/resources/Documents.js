@@ -389,6 +389,7 @@ Vtiger.Class('Documents_Index_Js', {
 		app.request.post({'data':formData}).then(function(e,res) {
 			app.helper.hideProgress();
 			if (e === null) {
+				jQuery('.vt-notification').remove();
 				app.helper.hideModal();
 				app.helper.showSuccessNotification({
 					'message' : app.vtranslate('JS_DOCUMENT_CREATED')

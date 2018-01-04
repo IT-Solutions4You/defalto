@@ -20,6 +20,7 @@ class Users_UserSetupSave_Action extends Users_Save_Action {
 		$userRecordModel->set('language', $request->get('lang_name'));
 		$userRecordModel->set('time_zone', $request->get('time_zone'));
 		$userRecordModel->set('date_format', $request->get('date_format'));
+		$userRecordModel->set('tagcloud', 0);
 		$userRecordModel->save();
 		//End
 

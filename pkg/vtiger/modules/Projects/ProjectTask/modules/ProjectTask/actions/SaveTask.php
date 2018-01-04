@@ -11,10 +11,15 @@
 class ProjectTask_SaveTask_Action extends Vtiger_Save_Action {
 
 	public function process(Vtiger_Request $request) {
-		$recordModel = $this->saveRecord($request);
-
 		$response = new Vtiger_Response();
-		$response->setResult(array('record'=>$recordModel->getId(), 'module'=>$recordModel->getModuleName()));
+		try {
+			$recordModel = $this->saveRecord($request);
+			$response->setResult(array('record' => $recordModel->getId(), 'module' => $recordModel->getModuleName()));
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
+		}
 		$response->emit();
 	}
 

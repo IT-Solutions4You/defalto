@@ -40,6 +40,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Web Formunu Ekleyin',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Yükleme Belgeler',
+	'LBL_ADD_FILE_FIELD' => 'Yükleme Field Dosya',
+	'LBL_FIELD_LABEL' => 'Belge başlığı',
+	'LBL_FILE_FIELD_INFO' => "Web'den yüklenen her dosya için yeni bir belge ekli dosya ile oluşturulur oluştururlar. Belge de bu yeni oluşturulan%s ile bağlantılıdır.",
+	'LBL_NO_FILE_FIELD' => 'Hiçbir dosya alanları eklendi.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Panoya kopyala',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -53,4 +59,7 @@ $jsLanguageStrings = array(
   'JS_SELECT_AN_OPTION' => 'Bir Seçenek belirleyin',
   'JS_LABEL' => 'etiket',
 
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maksimum Eğer%s dosyası alanları ekleyebilirsiniz.',
+	'JS_COPIED_SUCCESSFULLY' => 'Başarıyla kopyalandı.',
+	'JS_COPY_FAILED' => 'Kopya başarısız oldu. El ile kopyalayın.',
 );

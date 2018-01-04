@@ -68,7 +68,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 	}
 
 	function getProducts() {
-		$numOfCurrencyDecimalPlaces = getCurrencyDecimalPlaces(); 
+		$numOfCurrencyDecimalPlaces = getCurrencyDecimalPlaces();
 		$relatedProducts = getAssociatedProducts($this->getModuleName(), $this->getEntity());
 		$productsCount = count($relatedProducts);
 
@@ -695,4 +695,271 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 		}
 		return array();
 	}
+
+	public function convertRequestToProducts(Vtiger_Request $request) {
+		$requestData = $request->getAll();
+		$noOfDecimalPlaces = getCurrencyDecimalPlaces();
+		$totalProductsCount = $requestData['totalProductCount'];
+
+		$productIdsList = array();
+		$relatedProducts = array();
+		for ($i=1; $i<=$totalProductsCount; $i++) {
+			$productId = $requestData["hdnProductId$i"];
+			$productIdsList[] = $productId;
+			$itemRecordModel = Vtiger_Record_Model::getInstanceById($productId);
+
+			$productData = array();
+			$productData["hdnProductId$i"]	= $productId;
+			$productData["productName$i"]	= $itemRecordModel->getName();
+			$productData["comment$i"]		= $requestData["comment$i"];
+			$productData["qtyInStock$i"]	= $itemRecordModel->get('qtyinstock');
+			$productData["qty$i"]			= $requestData["qty$i"];
+			$productData["listPrice$i"]		= number_format($requestData["listPrice$i"], $noOfDecimalPlaces, '.', '');
+			$productData["unitPrice$i"]		= number_format($requestData["listPrice$i"], $noOfDecimalPlaces, '.', '');
+			$productData["purchaseCost$i"]	= number_format($purchaseCost, $noOfDecimalPlaces, '.', '');
+			$productData["productDescription$i"]= $requestData["productDescription$i"];
+
+			$margin = (float)$requestData["margin$i"];
+			if (is_numeric($margin)) {
+				$productData["margin$i"] = number_format($margin, $noOfDecimalPlaces, '.', '');
+			}
+
+			$productTotal = $requestData["qty$i"] * $requestData["listPrice$i"];
+			$productData["productTotal$i"]	= number_format($productTotal, $noOfDecimalPlaces, '.', '');
+
+			$subQtysList = array();
+			$subProducts = $requestData["subproduct_ids$i"];
+			$subProducts = split(',', rtrim($subProducts, ','));
+
+			foreach ($subProducts as $subProductInfo) {
+				 list($subProductId, $subProductQty) = explode(':', $subProductInfo);
+				 if ($subProductId) {
+					 $subProductName = getProductName($subProductId);
+					 $subQtysList[$subProductId] = array('name' => $subProductName, 'qty' => $subProductQty);
+				 }
+			}
+			$productData["subproduct_ids$i"]= $requestData["subproduct_ids$i"];
+			$productData["subprod_qty_list$i"]	= $subQtysList;
+
+			//individual disount calculation
+			$discountType = $productData["discount_type$i"] = $requestData["discount_type$i"];
+			$productData["discount_percent$i"]	= 0;
+			$productData["discount_amount$i"]	= 0;
+			$discountTotal = 0;
+
+			if ($discountType === 'percentage') {
+				$productData["discount_percent$i"] = $requestData["discount_percentage$i"];
+				$productData["checked_discount_percent$i"] = 'checked';
+				$discountTotal = $productTotal * $productData["discount_percent$i"] / 100;
+			} elseif ($discountType === 'amount') {
+				$productData["discount_amount$i"] = $requestData["discount_amount$i"];
+				$productData["checked_discount_amount$i"] = 'checked';
+				$discountTotal = $productData["discount_amount$i"];
+			} else {
+				$productData["checked_discount_zero$i"] = 'checked';
+			}
+			$productData["discountTotal$i"]		= number_format($discountTotal, $noOfDecimalPlaces, '.', '');
+
+			//individual taxes calculation
+			$taxType = $requestData['taxtype'];
+			$itemTaxDetails = $itemRecordModel->getTaxClassDetails();	
+			$regionsList = array();
+			foreach ($itemTaxDetails as $taxInfo) {
+				$regionsInfo = array('default' => $taxInfo['percentage']);
+				if ($taxInfo['productregions']) {
+					foreach ($taxInfo['productregions'] as $list) {
+						if (is_array($list['list'])) {
+							foreach (array_fill_keys($list['list'], $list['value']) as $key => $value) {
+								$regionsInfo[$key] = $value;
+							}
+						}
+					}
+				}
+				$regionsList[$taxInfo['taxid']] = $regionsInfo;
+			}
+
+			$taxTotal = 0;
+			$totalAfterDiscount = $productTotal-$discountTotal;
+			$netPrice = $totalAfterDiscount;
+			$taxDetails = array();
+
+			foreach ($itemTaxDetails as &$taxInfo) {
+				$taxId = $taxInfo['taxid'];
+				$taxName = $taxInfo['taxname'];
+				$taxValue = 0;
+				$taxAmount = 0;
+
+				$taxValue = $taxInfo['percentage'];
+				if ($taxType == 'individual') {
+					$selectedRegionId = $requestData['region_id'];
+					$taxValue = $requestData[$taxName.'_percentage'.$i];
+					if ($selectedRegionId) {
+						$regionsList[$taxId][$selectedRegionId] = $taxValue;
+					} else {
+						$regionsList[$taxId]['default'] = $taxValue;
+					}
+
+					$taxAmount = $totalAfterDiscount * $taxValue / 100;
+				}
+
+				$taxInfo['amount']		= $taxAmount;
+				$taxInfo['percentage']	= $taxValue;
+				$taxInfo['regionsList']	= $regionsList[$taxInfo['taxid']];
+				$taxDetails[$taxId] = $taxInfo;
+			}
+
+			$taxTotal = 0;
+			foreach ($taxDetails as $taxId => $taxInfo) {
+				$taxAmount = $taxInfo['amount'];
+				if ($taxInfo['compoundon']) {
+					$amount = $totalAfterDiscount;
+					foreach ($taxInfo['compoundon'] as $compTaxId) {
+						$amount = $amount + $taxDetails[$compTaxId]['amount'];
+					}
+					$taxAmount = $amount * $taxInfo['percentage'] / 100;
+				}
+				$taxTotal = $taxTotal + $taxAmount;
+
+				$taxDetails[$taxId]['amount'] = $taxAmount;
+				$relatedProducts[$i]['taxTotal'.$i]	= number_format($taxTotal, $numOfCurrencyDecimalPlaces, '.', '');
+			}
+
+			$productData["taxTotal$i"]			= number_format($taxTotal, $noOfDecimalPlaces, '.', '');
+			$productData["totalAfterDiscount$i"]= number_format($totalAfterDiscount, $noOfDecimalPlaces, '.', '');
+			$productData["netPrice$i"]			= number_format($totalAfterDiscount + $taxTotal, $noOfDecimalPlaces, '.', '');
+
+			$productData['taxes'] = $taxDetails;
+			$relatedProducts[$i] = $productData;
+		}
+
+		//Final details started
+		$finalDetails = array();
+		$finalDetails['hdnSubTotal'] = number_format($requestData['subtotal'], $noOfDecimalPlaces, '.', '');
+
+		//final discount calculation
+		$discountTotalFinal = 0;
+		$finalDiscountType = $finalDetails['discount_type_final'] = $requestData['discount_type_final'];
+		if ($finalDiscountType === 'percentage') {
+			$finalDetails['discount_percentage_final'] = $requestData['discount_percentage_final'];
+			$finalDetails['checked_discount_percentage_final'] = 'checked';
+			$discountTotalFinal = $finalDetails['discount_percentage_final'];
+		} else if ($finalDetails === 'amount') {
+			$finalDetails['discount_percentage_final'] = $requestData['discount_amount_final'];
+			$finalDetails['checked_discount_amount_final'] = 'checked';
+			$discountTotalFinal = $finalDetails['discount_percentage_final'];
+		}
+		$finalDetails['discountTotal_final'] = number_format($discountTotalFinal, $noOfDecimalPlaces, '.', '');
+
+		//group taxes calculation
+		$taxDetails = array();
+		$taxTotal = 0;
+		$allTaxes = getAllTaxes('available');
+		foreach ($allTaxes as $taxInfo) {
+			if ($taxInfo['method'] === 'Deducted') {
+				continue;
+			}
+
+			$taxName = $taxInfo['taxname'];
+			if ($taxType == 'group') {
+				$taxPercent = $requestData[$taxName.'_group_percentage'];
+			} else {
+				$taxPercent = $taxInfo['percentage'];
+			}
+			if ($taxPercent == '' || $taxPercent == 'NULL') {
+				$taxPercent = 0;
+			}
+
+			$taxInfo['percentage']	= $taxPercent;
+			$taxInfo['amount']		= $requestData[$taxName.'_group_amount'];;
+			$taxInfo['regions']		= Zend_Json::decode(html_entity_decode($taxInfo['regions']));
+			$taxInfo['compoundon']	= Zend_Json::decode(html_entity_decode($taxInfo['compoundon']));
+			$taxDetails[$taxInfo['taxid']] = $taxInfo;
+
+			$taxTotal = $taxTotal + $taxInfo['amount'];
+		}
+
+		$finalDetails['taxtype']		= $taxType;
+		$finalDetails['taxes']			= $taxDetails;
+		$finalDetails['tax_totalamount']= number_format($taxTotal, $noOfDecimalPlaces, '.', '');
+		$finalDetails['adjustment']		= number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
+		$finalDetails['grandTotal']		= number_format($requestData['total'], $noOfDecimalPlaces, '.', '');
+		$finalDetails['preTaxTotal']	= number_format($requestData['pre_tax_total'], $noOfDecimalPlaces, '.', '');
+		$finalDetails['shipping_handling_charge'] = number_format($requestData['shipping_handling_charge'], $noOfDecimalPlaces, ',', '');
+		$finalDetails['adjustment']		= $requestData['adjustmentType'].number_format($requestData['adjustment'], $noOfDecimalPlaces, '.', '');
+
+		//charge value setting to related products array
+		$selectedChargesAndItsTaxes = $requestData['charges'];
+		foreach ($selectedChargesAndItsTaxes as $chargeId => $chargeInfo) {
+			$selectedChargesAndItsTaxes[$chargeId] = Zend_Json::decode(html_entity_decode($chargeInfo));
+		}
+		$finalDetails['chargesAndItsTaxes'] = $selectedChargesAndItsTaxes;
+
+		$allChargeTaxes = array();
+		foreach ($selectedChargesAndItsTaxes as $chargeId => $chargeInfo) {
+			if (is_array($chargeInfo['taxes'])) {
+				$allChargeTaxes = array_merge($allChargeTaxes, array_keys($chargeInfo['taxes']));
+			} else {
+				$selectedChargesAndItsTaxes[$chargeId]['taxes'] = array();
+			}
+		}
+
+		$shippingTaxes = array();
+		$allShippingTaxes = getAllTaxes('all', 'sh');
+		foreach ($allShippingTaxes as $shTaxInfo) {
+			$shippingTaxes[$shTaxInfo['taxid']] = $shTaxInfo;
+		}
+
+		$totalAmount = 0;
+		foreach ($selectedChargesAndItsTaxes as $chargeId => $chargeInfo) {
+			foreach ($chargeInfo['taxes'] as $taxId => $taxPercent) {
+				$amount = $calculatedOn = $chargeInfo['value'];
+
+				if ($shippingTaxes[$taxId]['method'] === 'Compound') {
+					$compoundTaxes = Zend_Json::decode(html_entity_decode($shippingTaxes[$taxId]['compoundon']));
+					if (is_array($compoundTaxes)) {
+						foreach ($compoundTaxes as $comTaxId) {
+							if ($shippingTaxes[$comTaxId]) {
+								$calculatedOn += ((float) $amount * (float) $chargeInfo['taxes'][$comTaxId]) / 100;
+							}
+						}
+					}
+				}
+				$totalAmount += ((float) $calculatedOn * (float) $taxPercent) / 100;
+			}
+		}
+		$finalDetails['shtax_totalamount'] = number_format($totalAmount, $noOfDecimalPlaces, '.', '');
+
+		//deduct tax values setting to related products
+		$deductedTaxesTotalAmount = 0;
+		$deductTaxes = $this->getDeductTaxes();
+		foreach ($deductTaxes as $taxId => $taxInfo) {
+			$taxAmount = ($totalAfterDiscount * (float) $taxInfo['percentage']) / 100;
+			$deductTaxes[$taxId]['amount'] = number_format($taxAmount, $noOfDecimalPlaces, '.', '');
+			if ($taxInfo['selected']) {
+				$deductedTaxesTotalAmount = $deductedTaxesTotalAmount + $taxAmount;
+			}
+		}
+		$finalDetails['deductTaxes'] = $deductTaxes;
+		$finalDetails['deductTaxesTotalAmount'] = number_format($deductedTaxesTotalAmount, $noOfDecimalPlaces, '.', '');
+
+		$imageFieldModel = $this->getModule()->getField('image');
+		if ($productIdsList && $imageFieldModel && $imageFieldModel->isViewable()) {
+			$imageDetailsList = Products_Record_Model::getProductsImageDetails($productIdsList);
+
+			for ($i = 1; $i <= $totalProductsCount; $i++) {
+				$product = $relatedProducts[$i];
+				$productId = $product["hdnProductId$i"];
+				$imageDetails = $imageDetailsList[$productId];
+				if ($imageDetails) {
+					$relatedProducts[$i]["productImage$i"] = $imageDetails[0]['path'] . '_' . $imageDetails[0]['orgname'];
+				}
+			}
+		}
+
+		if ($relatedProducts[1]) {
+			$relatedProducts[1]['final_details'] = $finalDetails;
+		}
+		return $relatedProducts;
+	}
+
 }

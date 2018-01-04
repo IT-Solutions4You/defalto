@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Enregistrement d\'en-tête',
   'LBL_HEADER_FIELD' => 'Vue D\'En-Tête',
 
+	'LBL_DUPLICATE_HANDLING' => 'prévention double',
+	'LBL_DUPLICATE_CHECK' => 'Activer la vérification en double',
+	'LBL_DUPLICATION_INFO_MESSAGE' => "En double fonction de prévention empêche que les nouveaux enregistrements en double d'obtenir créé par les utilisateurs et les applications externes. Les documents créés à partir d'importation",
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Sélectionnez les champs uniques sur lesquels les doublons sont à vérifier',
+	'LBL_SELECT_FIELDS' => 'Sélectionner les champs',
+	'LBL_MAX_3_FIELDS' => 'Max 3 champs',
+	'LBL_SELECT_RULE' => 'Sélectionnez la règle des doublons de manipulation',
+	'LBL_ALLOW_DUPLICATES' => 'Autoriser les doublons',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Ne pas laisser Doublons',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => "Mesures à prendre si l'enregistrement en double est trouvé lors de la synchronisation avec l'application externe",
+	'LBL_PREFER_LATEST_RECORD' => 'Préférez dernier disque',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Préférez enregistrement interne',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Préférez enregistrement externe',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => "Préférez dernier disque - Plus récemment, des données d'enregistrement modifiés seront conservés <br> Préférer enregistrement interne - enregistrement existant sera conservé comme il est <br> Préférez enregistrement externe - Les données de l'application externe seront copiés",
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Spectacle de bloc activé'   ,
@@ -196,4 +210,7 @@ Si vous n\'êtes pas sûr et que vous souhaitez être en mesure d\'afficher ces 
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Nom de champs apparaissent dans l\'en-Tête par défaut',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Ce Champ d\'en-Tête activé pour Vtiger7, Il apparaîtra à l\'Affichage du Résumé',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Mis à jour avec succès à considérer les champs sélectionnés dans la prévention des doublons',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => "Impossible d'examiner les champs sélectionnés dans la prévention des doublons",
+	'JS_DUPLICATE_CHECK_DISABLED' => 'vérification des doublons est désactivée',
 );

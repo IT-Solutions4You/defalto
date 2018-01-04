@@ -52,7 +52,7 @@
 								{assign var='translatedModuleLabel' value=vtranslate($moduleModel->get('label'),$moduleName )}
 								<li>
 									<a href="{$moduleModel->getDefaultUrl()}&app={$APP_NAME}" title="{$translatedModuleLabel}">
-										<span class="vicon-{strtolower($moduleName)} module-icon"></span>
+										<span class="module-icon">{$moduleModel->getModuleIcon()}</span>
 										<span class="module-name textOverflowEllipsis"> {$translatedModuleLabel}</span>
 									</a>
 								</li>
@@ -66,7 +66,7 @@
 			{if $USER_PRIVILEGES_MODEL->hasModulePermission($MAILMANAGER_MODULE_MODEL->getId())}
 				<div class="menu-item app-item app-item-misc" data-default-url="index.php?module=MailManager&view=List">
 					<div class="menu-items-wrapper">
-						<span class="app-icon-list fa vicon-mailmanager"></span>
+						<span class="app-icon-list fa">{$MAILMANAGER_MODULE_MODEL->getModuleIcon()}</span>
 						<span class="app-name textOverflowEllipsis"> {vtranslate('MailManager')}</span>
 					</div>
 				</div>
@@ -75,7 +75,7 @@
 			{if $USER_PRIVILEGES_MODEL->hasModulePermission($DOCUMENTS_MODULE_MODEL->getId())}
 				<div class="menu-item app-item app-item-misc" data-default-url="index.php?module=Documents&view=List">
 					<div class="menu-items-wrapper">
-						<span class="app-icon-list fa vicon-documents"></span>
+						<span class="app-icon-list fa">{$DOCUMENTS_MODULE_MODEL->getModuleIcon()}</span>
 						<span class="app-name textOverflowEllipsis"> {vtranslate('Documents')}</span>
 					</div>
 				</div>
@@ -109,7 +109,7 @@
 					{if $EMAILTEMPLATES_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($EMAILTEMPLATES_MODULE_MODEL->getId())}
 						<li>
 							<a href="{$EMAILTEMPLATES_MODULE_MODEL->getDefaultUrl()}">
-								<span class="fa vicon-emailtemplates module-icon"></span>
+								<span class="fa module-icon">{$EMAILTEMPLATES_MODULE_MODEL->getModuleIcon()}</span>
 								<span class="module-name textOverflowEllipsis"> {vtranslate($EMAILTEMPLATES_MODULE_MODEL->getName(), $EMAILTEMPLATES_MODULE_MODEL->getName())}</span>
 							</a>
 						</li>

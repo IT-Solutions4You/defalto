@@ -34,40 +34,70 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
-		$recordModel = $this->saveRecord($request);
-		$loadUrl = $recordModel->getDetailViewUrl();
+		try {
+			$recordModel = $this->saveRecord($request);
+			$loadUrl = $recordModel->getDetailViewUrl();
 
-		if ($request->get('returntab_label')) {
-			$loadUrl = 'index.php?'.$request->getReturnURL();
-		} else if($request->get('relationOperation')) {
-			$parentModuleName = $request->get('sourceModule');
-			$parentRecordId = $request->get('sourceRecord');
-			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleName);
-			//TODO : Url should load the related list instead of detail view of record
-			$loadUrl = $parentRecordModel->getDetailViewUrl();
-		} else if ($request->get('returnToList')) {
-			$moduleModel = $recordModel->getModule();
-			$listViewUrl = $moduleModel->getListViewUrl();
+			if ($request->get('returntab_label')) {
+				$loadUrl = 'index.php?'.$request->getReturnURL();
+			} else if($request->get('relationOperation')) {
+				$parentModuleName = $request->get('sourceModule');
+				$parentRecordId = $request->get('sourceRecord');
+				$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleName);
+				//TODO : Url should load the related list instead of detail view of record
+				$loadUrl = $parentRecordModel->getDetailViewUrl();
+			} else if ($request->get('returnToList')) {
+				$moduleModel = $recordModel->getModule();
+				$listViewUrl = $moduleModel->getListViewUrl();
 
-			if ($recordModel->get('visibility') === 'Private') {
-				$loadUrl = $listViewUrl;
-			} else {
-				$userId = $recordModel->get('assigned_user_id');
-				$sharedType = $moduleModel->getSharedType($userId);
-				if ($sharedType === 'selectedusers') {
-					$currentUserModel = Users_Record_Model::getCurrentUserModel();
-					$sharedUserIds = Calendar_Module_Model::getCaledarSharedUsers($userId);
-					if (!array_key_exists($currentUserModel->id, $sharedUserIds)) {
+				if ($recordModel->get('visibility') === 'Private') {
+					$loadUrl = $listViewUrl;
+				} else {
+					$userId = $recordModel->get('assigned_user_id');
+					$sharedType = $moduleModel->getSharedType($userId);
+					if ($sharedType === 'selectedusers') {
+						$currentUserModel = Users_Record_Model::getCurrentUserModel();
+						$sharedUserIds = Calendar_Module_Model::getCaledarSharedUsers($userId);
+						if (!array_key_exists($currentUserModel->id, $sharedUserIds)) {
+							$loadUrl = $listViewUrl;
+						}
+					} else if ($sharedType === 'private') {
 						$loadUrl = $listViewUrl;
 					}
-				} else if ($sharedType === 'private') {
-					$loadUrl = $listViewUrl;
 				}
+			} else if ($request->get('returnmodule') && $request->get('returnview')){
+				$loadUrl = 'index.php?'.$request->getReturnURL();
 			}
-		} else if ($request->get('returnmodule') && $request->get('returnview')){
-			$loadUrl = 'index.php?'.$request->getReturnURL();
+			header("Location: $loadUrl");
+		} catch (DuplicateException $e) {
+			$mode = '';
+			if ($request->getModule() === 'Events') {
+				$mode = 'Events';
+			}
+
+			$requestData = $request->getAll();
+			unset($requestData['action']);
+			unset($requestData['__vtrftk']);
+
+			if ($request->isAjax()) {
+				$response = new Vtiger_Response();
+				$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+				$response->emit();
+			} else {
+				$requestData['view'] = 'Edit';
+				$requestData['mode'] = $mode;
+				$requestData['module'] = 'Calendar';
+				$requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
+
+				global $vtiger_current_version;
+				$viewer = new Vtiger_Viewer();
+				$viewer->assign('REQUEST_DATA', $requestData);
+				$viewer->assign('REQUEST_URL', "index.php?module=Calendar&view=Edit&mode=$mode&record=".$request->get('record'));
+				$viewer->view('RedirectToEditView.tpl', 'Vtiger');
+            }
+		} catch (Exception $e) {
+			 throw new Exception($e->getMessage());
 		}
-		header("Location: $loadUrl");
 	}
 
 	/**

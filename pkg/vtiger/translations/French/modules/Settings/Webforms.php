@@ -40,6 +40,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Ajouter Webform',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Documents Téléchargement',
+	'LBL_ADD_FILE_FIELD' => 'File Upload champs',
+	'LBL_FIELD_LABEL' => 'Titre du document',
+	'LBL_FILE_FIELD_INFO' => 'Pour chaque fichier téléchargé du web forment un nouveau document est créé avec le fichier joint. Le document est également lié à ce nouveau%s.',
+	'LBL_NO_FILE_FIELD' => 'Aucun champ de fichier ajouté.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Copier dans le presse-papier',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -53,4 +59,7 @@ $jsLanguageStrings = array(
   'JS_SELECT_AN_OPTION' => 'Sélectionnez une Option',
   'JS_LABEL' => 'étiquette',
 
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maximum vous pouvez ajouter des champs de fichiers%.',
+	'JS_COPIED_SUCCESSFULLY' => 'Copié avec succès.',
+	'JS_COPY_FAILED' => "Échec de la copie. S'il vous plaît copier manuellement.",
 );

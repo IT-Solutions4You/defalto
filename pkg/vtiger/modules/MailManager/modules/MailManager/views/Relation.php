@@ -349,6 +349,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 				$viewer->assign('FOLDER', $foldername);
 
 				$response->setResult( array( 'ui' => $viewer->view( 'Relationship.tpl', 'MailManager', true ) ) );
+			} catch (DuplicateException $e) {
+				$response->setResult(array('ui' => '', 'error' => $e, 'title' => $e->getMessage(), 'message' => $e->getDuplicationMessage()));
 			} catch(Exception $e) {
 				$response->setResult( array( 'ui' => '', 'error' => $e ));
 			}

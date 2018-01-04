@@ -1348,15 +1348,22 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				}
 
 				app.request.post({data:formData}).then(function(err,data){
-					app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-					if(err === null) {
-						app.helper.hideModal();
-						app.helper.showSuccessNotification({"message":''});
-						invokeParams.callbackFunction(data, err);
-					}else{
-						app.helper.showErrorNotification({"message":err});
-					}
-				});
+                    if(err === null) {
+						if (!data.error) {
+							jQuery('.vt-notification').remove();
+							app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
+							app.helper.hideModal();
+							app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_CREATED')});
+							invokeParams.callbackFunction(data, err);
+						} else {
+							jQuery("button[name='saveButton']").removeAttr('disabled');
+							app.event.trigger('post.save.failed', data);
+						}
+                    }else{
+						app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
+                        app.helper.showErrorNotification({"message":err});
+                    }
+                });
 			}
 		};
 		form.vtValidate(params);

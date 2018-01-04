@@ -40,6 +40,12 @@ $languageStrings = array(
 
   'LBL_ADD_RECORD' => 'Toevoegen Webformulier',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Upload Documents',
+	'LBL_ADD_FILE_FIELD' => 'Bestanden uploaden Field',
+	'LBL_FIELD_LABEL' => 'Document titel',
+	'LBL_FILE_FIELD_INFO' => 'Voor elk bestand geüpload van web vormen een nieuw document wordt gemaakt met het bijgevoegde bestand. Het document is ook gekoppeld aan deze nieuw gecreëerde%s.',
+	'LBL_NO_FILE_FIELD' => 'Geen bestand velden toegevoegd.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Kopieer naar klembord',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -53,4 +59,7 @@ $jsLanguageStrings = array(
   'JS_SELECT_AN_OPTION' => 'Selecteer een Optie',
   'JS_LABEL' => 'label',
 
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maximaal kun je%s bestand velden toe te voegen.',
+	'JS_COPIED_SUCCESSFULLY' => 'gekopieerd.',
+	'JS_COPY_FAILED' => 'Kopiëren mislukt. Gelieve handmatig te kopiëren.',
 );

@@ -832,6 +832,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Follow',
   'LBL_QUICK_VIEW' => 'Quick View',
   'LBL_NOTIFICATION_CENTER' => 'Notification Center',
+	'LBL_NOTIFICATION' => 'Notification',
+	'LBL_STARRED_RECORD_TO' => '%s to %s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s updated %s',
   'LBL_EDIT_REASON' => 'Edit reason',
   'LBL_CONTACT' => 'CONTACT MANAGEMENT',
   'LBL_NO_ATTACHMENTS' => 'No Attachments',
@@ -1071,6 +1074,16 @@ $languageStrings = array(
   'LBL_SLA_INFORMATION' => 'SLA Information',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'To use <b>%s</b>, we recommend you to Switch to new look.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'When a User is deleted, user will be marked as "Inactive" and no new records can be assigned to the User, and the user will not be able to login. Are you sure you want to delete?',
+
+	'LBL_DUPLICATES' => 'Duplicates',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'This %s cannot be saved since duplicate %s exists in Vtiger with matching values for %s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Message from : Vtiger System Notifications',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'The following %s could not be saved from "%s" workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'The following %s could not be saved from "%s" webform',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'You can %s to modify duplicate prevention rules.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contact your administrator for revising the duplicate rules',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicate %s(s) :',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
@@ -1479,4 +1492,7 @@ $jsLanguageStrings = array(
 	'JS_UPLOAD_SUCCESSFUL' => 'File Uploaded Successfuly',
     'JS_UPLOAD_FAILED' => 'File Upload Failed',
 
+	'JS_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Please re-enter passwords. The "new password" and "confirm password" values do not match.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
 );

@@ -1,22 +1,22 @@
 <?php
-
 /* +***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
- * Contributor(s): Valmir C. Trindade - Translate to Brazilian Portuguese - 22/08/2014 - www.ttcasolucoes.com.br
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  * *********************************************************************************** */
 
 $languageStrings = array(
 	'ERR_DATABASE_CONNECTION_FAILED' => 'Não foi possível conectar à Base de Dados',
-	'ERR_DB_NOT_FOUND' => 'Esta Base de Dados não foi encontrada.Tente mudar as configurações da Base de Dados',
+	'ERR_DB_NOT_FOUND' => 'Esta Base de Dados não foi encontrada. Tente mudar as configurações da Base de Dados',
 	'ERR_INVALID_MYSQL_PARAMETERS' => 'Os parâmetros especificados para a conexão com o MySQL são inválidos',
 	'ERR_INVALID_MYSQL_VERSION' => 'A versão do MySQL não é suportada, por favor, utilize MySQL 5.1.x ou acima',
 	'ERR_UNABLE_CREATE_DATABASE' => 'Não é possível Criar a Base de Dados',
 	'LBL_ADMIN_INFORMATION'=>'Informação Usuário Admin',
 	'LBL_ADMIN_USER_INFORMATION' => 'Informação Usuário Admin',
+	'LBL_CHOOSE_LANGUAGE' => 'Escolher o idioma padrão para esta instalação:',
 	'LBL_CONFIRM_CONFIGURATION_SETTINGS' => 'Confirmar as definições de Configuração',
 	'LBL_CREATE_NEW_DB'=>'Criar nova base de dados',
 	'LBL_CURRENCIES'=>'Moedas',
@@ -57,14 +57,16 @@ $languageStrings = array(
 	'LBL_TRUE' => 'Verdadeiro',
 	'LBL_URL' => 'URL',
 	'LBL_USERNAME' => 'Nome Usuário',
-	'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'Este assistente irá guia-lo através da instalação do Vtiger CRM 6',
-	'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Bem Vindo(a) ao Assitente de Configuração do Vtiger CRM 6',
+	'LBL_VTIGER7_SETUP_WIZARD_DESCRIPTION' => 'Este assistente irá guiá-lo através da instalação do Vtiger CRM 7',
+	'LBL_WELCOME_TO_VTIGER7_SETUP_WIZARD' => 'Bem Vindo(a) ao Assistente de Configuração do Vtiger CRM 7',
 	'LBL_WELCOME' => 'Bem Vindo(a)',
-	'LBL_ZLIB_SUPPORT' => 'Suporte Zlib',
+	'LBL_ZLIB_SUPPORT' => 'Suporte a Zlib',
+	'LBL_SIMPLEXML' => 'Suporte a SimpleXML',
 	'MSG_DB_PARAMETERS_INVALID' => 'usuário da base de dados, senha, nome do host, tipo da base de dados ou porta inválida',
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Mensagem: O Usuário Root da Base de Dados não tem permissão para Criar base de dados ou o nome da Base de Dados possui caracteres especiais. Tente mudar as configurações da Base de Dados',
 	'MSG_DB_USER_NOT_AUTHORIZED' => 'o usuário da base de dados não tem acesso para conectar à base de dados a partir do host',
 	'MSG_LIST_REASONS' => 'Isto pode ser devido às seguintes razões',
-	        'LBL_MYSQLI_CONNECT_SUPPORT'=>'Suporte Mysqli',
-        'LBL_OPEN_SSL'=>'Suporte Openssl',
+	'LBL_MYSQLI_CONNECT_SUPPORT'=>'Suporte Mysqli',
+    'LBL_OPEN_SSL'=>'Suporte Openssl',
+    'LBL_CURL'=>'Suporte cURL',
 );

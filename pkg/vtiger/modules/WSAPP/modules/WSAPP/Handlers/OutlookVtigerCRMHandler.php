@@ -52,8 +52,13 @@ class OutlookVtigerCRMHandler extends vtigerCRMHandler{
                                  * array of records
                                  */
                                 foreach ($createRecord as $key => $record) {
-                                	$result = vtws_create($record['module'], $record, $user);
-                                    $entityNameIds[$refFieldValue] = $result['id'];
+									try {
+										$result = vtws_create($record['module'], $record, $user);
+										$entityNameIds[$refFieldValue] = $result['id'];
+									} catch (Exception $e) {
+										unset($entityNameIds[$refFieldValue]);
+										continue;
+									}
                                 }
                                 $recordInfo[$referenceFieldName] = $entityNameIds[$refFieldValue];
                             }
@@ -183,7 +188,12 @@ class OutlookVtigerCRMHandler extends vtigerCRMHandler{
             if($record['module'] == "Events" && isset($record['attendees'])){
                 $record = $this->relateEventandContacts($record);
             }
-			$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
+			try {
+				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
+			} catch (Exception $e) {
+				unset($createdRecords[$index]);
+				continue;
+			}
 		}
 
 		if (count($updatedRecords) > 0) {

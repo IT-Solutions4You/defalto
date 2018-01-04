@@ -972,6 +972,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'اتبع',
   'LBL_QUICK_VIEW' => 'عرض سريع',
   'LBL_NOTIFICATION_CENTER' => 'مركز إعلام',
+	'LBL_NOTIFICATION' => 'إعلام',
+	'LBL_STARRED_RECORD_TO' => '٪ s إلى٪ s',
+	'LBL_STARRED_RECORD_UPDATED' => '٪ الصورة المحدثة٪ الصورة',
   'LBL_CONTACT' => 'إدارة الاتصال',
   'LBL_NO_ATTACHMENTS' => 'لا المرفقات',
   'LBL_REARRANGE_DASHBOARD_TABS' => 'إعادة ترتيب علامات التبويب',
@@ -1215,6 +1218,16 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
 
   'LBL_SLA_INFORMATION' => 'جيش تحرير السودان من المعلومات',
 	'LBL_DELETE_USER_CONFIRMATION' => 'عندما يتم حذف العضو لذلك، سيتم وضع علامة المستخدم بأنه "غير فعال"، ويمكن تعيين أي سجلات جديدة إلى المستخدم، والمستخدم لن يكون قادرا على تسجيل الدخول. هل أنت متأكد أنك تريد حذف؟',
+
+	'LBL_DUPLICATES' => 'التكرارات',
+	'LBL_DUPLICATES_DETECTED' => 'تكرار (ق) الكشف عن!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'لا يمكن حفظ هذه الصورة٪ منذ مكررة٪ s موجودة في vtiger إدارة مع مطابقة القيم ل٪ s.',
+	'LBL_VTIGER_NOTIFICATION' => 'رسالة من: نظام vtiger إدارة الإخطارات',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'لا يمكن حفظ التالية٪ s من "٪ الصورة" سير العمل',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'لا يمكن حفظ التالية٪ s من "٪ ليالي" نموذج ويب',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'يمكنك٪ s إلى تعديل قواعد الوقاية مكررة.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'اتصل بالمسؤول لتعديل قواعد مكررة',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'مكررة٪ ق (ق):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'يرجى تكوين إعدادات ملقم البريد الصادر الخاص بك من صفحة الاعدادات',
@@ -1676,4 +1689,7 @@ $jsLanguageStrings = array(
 	'JS_UPLOAD_SUCCESSFUL' => 'الملف الذي تم تحميله بنجاح',
     'JS_UPLOAD_FAILED' => 'تحميل ملف فشل',
 
+	'JS_DUPLICATES_DETECTED' => 'تكرار (ق) الكشف عن!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'يرجى إعادة إدخال كلمة السر. "كلمة السر الجديدة" و "كلمة السر تأكيد" عدم تطابق القيم.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'هل أنت متأكد أنك تريد حذف؟',
 );

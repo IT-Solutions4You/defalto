@@ -15,6 +15,7 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 	var $nameFields = array('name');
 	var $listFields = array('name'=>'WebForm Name', 'targetmodule' => 'Module', 'publicid'=>'Public Id', 'returnurl' => 'Return Url', 'enabled' => 'Status');
 	var $name = 'Webforms';
+	var $allowedAllFilesSize = 52428800; //50MB
 
 	public static function getSupportedModulesList() {
 		$webformModules = array('Contacts', 'Accounts', 'Leads', 'Potentials', 'HelpDesk', 'Vendors');
@@ -117,5 +118,9 @@ class Settings_Webforms_Module_Model extends Settings_Vtiger_Module_Model {
 
 	function isStarredEnabled(){
 		return false;
+	}
+
+	public function allowedAllFilesSize() {
+		return $this->allowedAllFilesSize;
 	}
 }

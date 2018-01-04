@@ -20,6 +20,7 @@ include_once 'modules/Webforms/model/WebformsFieldModel.php';
 include_once 'include/QueryGenerator/QueryGenerator.php';
 include_once 'includes/runtime/EntryPoint.php';
 include_once 'includes/main/WebUI.php';
+include_once 'include/Webservices/AddRelated.php';
 
 class Webform_Capture {
 
@@ -112,8 +113,18 @@ class Webform_Capture {
 
 			// Create the record
 			$record = vtws_create($webform->getTargetModule(), $parameters, $user);
+			$webform->createDocuments($record);
 
 			$this->sendResponse($returnURL, 'ok');
+			return;
+		} catch (DuplicateException $e) {
+			$sourceModule = $webform->getTargetModule();
+			$mailBody = vtranslate('LBL_DUPLICATION_FAILURE_FROM_WEBFORMS', $sourceModule, vtranslate('SINGLE_'.$sourceModule, $sourceModule), $webform->getName(), vtranslate('SINGLE_'.$sourceModule, $sourceModule));
+
+			$userModel = Users_Record_Model::getInstanceFromPreferenceFile($user->id);
+			sendMailToUserOnDuplicationPrevention($sourceModule, $parameters, $mailBody, $userModel);
+
+			$this->sendResponse($returnURL, false, $e->getMessage());
 			return;
 		} catch (Exception $e) {
 			$this->sendResponse($returnURL, false, $e->getMessage());

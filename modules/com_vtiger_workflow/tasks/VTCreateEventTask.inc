@@ -52,7 +52,8 @@ class VTCreateEventTask extends VTTask{
 			$userId = vtws_getWebserviceEntityId('Users', Users::getActiveAdminId());
 		}
 
-		$moduleName = $entityData->getModuleName();
+		$moduleName = 'Events';
+		$parentModuleName = $entityData->getModuleName();
 		$adminUser = $this->getAdmin();
 
 		$startDate = $this->calculateDate($entityData, $this->startDays,
@@ -108,7 +109,7 @@ class VTCreateEventTask extends VTTask{
 		$fields['visibility'] = ucfirst($sharedType);
 		
 		$id = $entityData->getId();
-		if($moduleName=='Contacts'){
+		if($parentModuleName=='Contacts'){
 			$fields['contact_id'] = $id;
 		}else{
 			$data = vtws_describe('Calendar', $adminUser);
@@ -120,12 +121,12 @@ class VTCreateEventTask extends VTTask{
 			}
 			$refersTo = $parentIdField['type']['refersTo'];
 
-			if(in_array($moduleName, $refersTo)){
+			if(in_array($parentModuleName, $refersTo)){
 				$fields['parent_id'] = $id;
 			}
 		}
 		
-		$entityModuleHandler = vtws_getModuleHandlerFromName('Events', $current_user);
+		$entityModuleHandler = vtws_getModuleHandlerFromName($moduleName, $current_user);
 		$handlerMeta = $entityModuleHandler->getMeta();
 		$moduleFields = $handlerMeta->getModuleFields();
 		foreach ($moduleFields as $name => $fieldModel) {
@@ -173,48 +174,59 @@ class VTCreateEventTask extends VTTask{
 			unset($fields['recurringtype']);
 		}
 
-		$fields['source'] = 'WORKFLOW';
-		$event = vtws_create('Events', $fields, $adminUser);
-		$eventIdDetails = vtws_getIdComponents($event['id']);
-		$entityIdDetails = vtws_getIdComponents($id);
+		try {
+			$fields['source'] = 'WORKFLOW';
+			$event = vtws_create($moduleName, $fields, $adminUser);
+			$eventIdDetails = vtws_getIdComponents($event['id']);
+			$entityIdDetails = vtws_getIdComponents($id);
 
-		relateEntities(CRMEntity::getInstance($moduleName), $moduleName, $entityIdDetails[1], 'Calendar', $eventIdDetails[1]);
+			relateEntities(CRMEntity::getInstance($parentModuleName), $parentModuleName, $entityIdDetails[1], 'Calendar', $eventIdDetails[1]);
 
-		$handler = vtws_getModuleHandlerFromName('Events', $adminUser);
-		$meta = $handler->getMeta();
-		$recordValues = DataTransform::sanitizeForInsert($event,$meta);
-		list($typeId, $id) = vtws_getIdComponents($event['id']);
-		$event = CRMEntity::getInstance('Events');
-		$event->id = $id;
-		foreach($recordValues as $recordFieldname => $recordFieldValue){
-			$event->column_fields[$recordFieldname] = $recordFieldValue;
+			$handler = vtws_getModuleHandlerFromName($moduleName, $adminUser);
+			$meta = $handler->getMeta();
+			$recordValues = DataTransform::sanitizeForInsert($event,$meta);
+			list($typeId, $id) = vtws_getIdComponents($event['id']);
+			$event = CRMEntity::getInstance($moduleName);
+			$event->id = $id;
+			foreach($recordValues as $recordFieldname => $recordFieldValue){
+				$event->column_fields[$recordFieldname] = $recordFieldValue;
+			}
+			$event->column_fields['id'] = $event->id;
+
+			if($this->recurringcheck && !empty($startDate) &&
+					($this->calendar_repeat_limit_date)) {
+				// Added this to relate these events to parent module.
+				$_REQUEST['createmode'] = 'link';
+				$_REQUEST['return_module'] = $parentModuleName;
+				$_REQUEST['return_id'] = $entityIdDetails[1];
+
+				//repeatFromRequest calling getrecurringObjValue(), api expecting UserTimeZone values, so converting to UserTimeZone values
+				$startDateObj = DateTimeField::convertToUserTimeZone($startDate . ' ' . self::convertToDBFormat($this->startTime));
+				$_REQUEST['date_start'] = $startDateObj->format('Y-m-d');
+				$_REQUEST['time_start'] = $startDateObj->format('H:i');
+				$endDateObj = DateTimeField::convertToUserTimeZone($endDate . ' ' . self::convertToDBFormat($this->endTime));
+				$_REQUEST['due_date'] = $endDateObj->format('Y-m-d');
+				$_REQUEST['time_end'] = $endDateObj->format('H:i');
+				//comparing date_start with recurring dates, which are in the format of Y-m-d always
+				$event->column_fields['date_start'] = $startDateObj->format('Y-m-d');
+				$event->column_fields['due_date'] = $endDateObj->format('Y-m-d');
+
+				include_once 'modules/Calendar/RepeatEvents.php';
+				Calendar_RepeatEvents::repeatFromRequest($event, false);
+
+				$_REQUEST['createmode'] = '';
+
+			}
+		} catch (DuplicateException $e) {
+			$workFlowManager = new VTWorkflowManager($adb);
+			$workFlow = $workFlowManager->retrieve($this->workflowId);
+
+			$mailBody = vtranslate('LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS', $moduleName, vtranslate('SINGLE_'.$moduleName, $moduleName),
+													decode_html($workFlow->workflowname), vtranslate('SINGLE_'.$moduleName, $moduleName));
+			sendMailToUserOnDuplicationPrevention($moduleName, $fields, $mailBody);
+		} catch (Exception $e) {
 		}
-		$event->column_fields['id'] = $event->id;
-		
-		if($this->recurringcheck && !empty($startDate) &&
-				($this->calendar_repeat_limit_date)) {
-			// Added this to relate these events to parent module.
-			$_REQUEST['createmode'] = 'link';
-			$_REQUEST['return_module'] = $moduleName;
-			$_REQUEST['return_id'] = $entityIdDetails[1];
-			
-			//repeatFromRequest calling getrecurringObjValue(), api expecting UserTimeZone values, so converting to UserTimeZone values
-			$startDateObj = DateTimeField::convertToUserTimeZone($startDate . ' ' . self::convertToDBFormat($this->startTime));
-			$_REQUEST['date_start'] = $startDateObj->format('Y-m-d');
-			$_REQUEST['time_start'] = $startDateObj->format('H:i');
-			$endDateObj = DateTimeField::convertToUserTimeZone($endDate . ' ' . self::convertToDBFormat($this->endTime));
-			$_REQUEST['due_date'] = $endDateObj->format('Y-m-d');
-			$_REQUEST['time_end'] = $endDateObj->format('H:i');
-			//comparing date_start with recurring dates, which are in the format of Y-m-d always
-			$event->column_fields['date_start'] = $startDateObj->format('Y-m-d');
-			$event->column_fields['due_date'] = $endDateObj->format('Y-m-d');
-			
-			include_once 'modules/Calendar/RepeatEvents.php';
-			Calendar_RepeatEvents::repeatFromRequest($event, false);
 
-			$_REQUEST['createmode'] = '';
-
-		}
 		global $current_user;
 		$current_user = $this->originalUser;
 	}

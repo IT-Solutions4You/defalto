@@ -82,7 +82,10 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 		$relContactId = $request->get('contact_id');
 		if ($relContactId) {
 			$contactRecordModel = Vtiger_Record_Model::getInstanceById($relContactId);
-			$requestFieldList['parent_id'] = $contactRecordModel->get('account_id');
+			$accountId = $contactRecordModel->get('account_id');
+			if ($accountId) {
+				$requestFieldList['parent_id'] = $accountId;
+			}
 		}
 		foreach($requestFieldList as $fieldName=>$fieldValue){
 			$fieldModel = $fieldList[$fieldName];
@@ -157,7 +160,7 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 		$viewer->assign('USER_CHANGED_END_DATE_TIME',$userChangedEndDateTime);
 		$viewer->assign('FOLLOW_UP_DATE',$followUpDate);
 		$viewer->assign('FOLLOW_UP_TIME',$followUpTime);
-		$viewer->assign('RECURRING_INFORMATION', $recordModel->getRecurrenceInformation());
+		$viewer->assign('RECURRING_INFORMATION', $recordModel->getRecurrenceInformation($request));
 		$viewer->assign('TOMORROWDATE', Vtiger_Date_UIType::getDisplayDateValue(date('Y-m-d', time()+86400)));
 
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);

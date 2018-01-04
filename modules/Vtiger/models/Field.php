@@ -1340,4 +1340,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		}
 		return $picklistColors;
 	}
+
+	public function isUniqueField() {
+		return $this->isunique;
+	}
 }

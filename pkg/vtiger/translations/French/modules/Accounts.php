@@ -10,9 +10,9 @@
 $languageStrings = array(
 	'Accounts'                     => 'Comptes'                     , 
 	'SINGLE_Accounts'              => 'Compte'                      , 
-	'LBL_ADD_RECORD'               => 'Add Organization'            , 
+	'LBL_ADD_RECORD'               => 'Ajouter un Compte'            , 
 	'LBL_RECORDS_LIST'             => 'Liste des comptes'           , 
-	'LBL_ACCOUNT_INFORMATION'      => 'Détail compte'              , 
+	'LBL_ACCOUNT_INFORMATION'      => 'Détail du compte'              , 
 	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Afficher la hiérarchie des comptes', 
 	'industry'                     => 'Secteur'                     , 
 	'Account Name'                 => 'Nom compte'                  , 
@@ -32,25 +32,25 @@ $languageStrings = array(
 	'Press'                        => 'Presse'                      , 
 	'Prospect'                     => 'Prospect'                    , 
 	'Reseller'                     => 'Revendeur'                   , 
-        'Type'                         => 'Type'                        , 
+	'Type'                         => 'Type'                        , 
 	'LBL_START_DATE'               => 'Date de début'              , 
 	'LBL_END_DATE'                 => 'Date de fin'                 , 
-	'LBL_DUPLICATES_EXIST'         => 'Organization Name already exists', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => "Copier l'adresse d'expédition"       , // TODO: Review
-	'LBL_COPY_BILLING_ADDRESS'     => "Copiez l'adresse de facturation"        , // TODO: Review
-    'LBL_IMAGE_INFORMATION' => 'Photo de profil',
-    'Organization Image' => 'Organisationen bild',
+	'LBL_DUPLICATES_EXIST'         => 'Un compte avec le même nom existe déjà', 
+	'LBL_COPY_SHIPPING_ADDRESS'    => "Copier l'adresse d'expédition"       , 
+	'LBL_COPY_BILLING_ADDRESS'     => "Copiez l'adresse de facturation"        , 
+	'LBL_IMAGE_INFORMATION' => 'Photo de profil',
+	'Organization Image' => 'Image de la société',
 
-  'Other Phone' => 'Téléphone Secondaire',
-  'Phone' => 'Téléphone Principal',
-  'Email' => 'E-Mail Principale',
+	'Other Phone' => 'Téléphone Secondaire',
+	'Phone' => 'Téléphone Principal',
+	'Email' => 'E-Mail Principale',
 
 );
 $jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Voulez-vous réellement supprimer ce compte ?', 
+	'LBL_DELETE_CONFIRMATION'      => 'Supprimer ce compte va supprimer les Affaires et Devis qui lui sont associés. Voulez-vous réellement supprimer ce compte ?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Supprimer ces comptes va supprimer les Affaires et Devis qui leur sont associés. Voulez-vous réellement supprimer ces comptes ?', 
 
-  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Nom de l\'organisation Existe déjà.Voulez-vous créer une copie de l\'enregistrement?',
+	'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Le nom de l\'organisation existe déjà. Voulez-vous créer une copie de l\'enregistrement?',
 
 );

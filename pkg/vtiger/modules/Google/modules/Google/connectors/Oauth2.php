@@ -54,14 +54,14 @@ class Google_Oauth2_Connector {
     const OAUTH2_REVOKE_URI = 'https://accounts.google.com/o/oauth2/revoke';
     
     public function __construct($module,$userId=false) {
-        global $site_URL;
-        $this->source_module = $module;
-        if($userId) $this->user_id = $userId;
-        $this->service_name = $this->service_provider . $module;
-        $this->client_id = Google_Config_Connector::$clientId;
-        $this->client_secret = Google_Config_Connector::$clientSecret;
-        $this->redirect_uri = rtrim($site_URL, '/').'/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module.'&service='.$this->service_name;
-        $this->scope = $this->scopes[$this->source_module];
+		global $site_URL;
+		$this->source_module = $module;
+		if($userId) $this->user_id = $userId;
+		$this->service_name = $this->service_provider . $module;
+		$this->client_id = Google_Config_Connector::$clientId;
+		$this->client_secret = Google_Config_Connector::$clientSecret;
+		$this->redirect_uri = Google_Config_Connector::$redirectUrl;
+		$this->scope = $this->scopes[$this->source_module];
     }
     
     public function getClientId() {
@@ -117,8 +117,7 @@ class Google_Oauth2_Connector {
     
     public function getState($source) {
         global $site_URL;
-        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $source;
+        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module . '&service=' . $source;
         $stateDetails['url'] = $callbackUri;
         $parse = parse_url($site_URL);
         $ipAddr = getHostByName($parse['host']);

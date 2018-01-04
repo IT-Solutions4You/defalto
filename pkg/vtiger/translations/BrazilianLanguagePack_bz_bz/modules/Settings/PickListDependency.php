@@ -1,39 +1,38 @@
 <?php
-/*+**********************************************************************************
+/*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************/
+ * Portions created by vtiger are Copyright (C) vtiger. 
+ * All Rights Reserved. Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
+ *************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Add Picklist Dependency'     , // TODO: Review
-	'LBL_PICKLIST_DEPENDENCY'      => 'Picklist Dependency'         , // TODO: Review
-	'LBL_SELECT_MODULE'            => 'Module'                      , // TODO: Review
-	'LBL_SOURCE_FIELD'             => 'Source Field'                , // TODO: Review
-	'LBL_TARGET_FIELD'             => 'Target Field'                , // TODO: Review
-	'LBL_SELECT_FIELD'             => 'Select field'                , // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_INFO' => 'Click on the respective cell to change the mapping for picklist values of target field', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_1' => 'Only mapped picklist values of the Source field will be shown below (except for first time)', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_2' => 'If you want to see or change the mapping for the other picklist values of Source field, <br/>
-										then you can select the values by clicking on <b>\'Select Source values\'</b> button on the right side', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_3' => 'Selected values of the Target field values, are highlighted as', // TODO: Review
-	'LBL_SELECT_SOURCE_VALUES'     => 'Select Source Values'        , // TODO: Review
-	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Select Source Picklist Values', // TODO: Review
-	'LBL_ERR_CYCLIC_DEPENDENCY'    => 'This dependency setup is not allowed as it ends up in some cyclic dependency', // TODO: Review
-	'LBL_SELECT_ALL_VALUES' => 'Selecionar tudo',
-	'LBL_UNSELECT_ALL_VALUES' => 'Desmarcar tudo',
-    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Isso poderia acabar em redundância cíclica como campo %s já está configurado para o campo %s',
-
-  'PickListDependency' => 'Lista De Opções De Dependência',
-
+	'LBL_ADD_RECORD' => 'Adicionar Dependência Lista de Opções',
+    'PickListDependency' => 'Dependência Lista Opções',
+	'LBL_PICKLIST_DEPENDENCY' => 'Dependência Lista de Opções',
+	'LBL_SELECT_MODULE' => 'Módulo',
+	'LBL_SOURCE_FIELD' => 'Campo Origem',
+	'LBL_TARGET_FIELD' => 'Campo Alvo',
+	'LBL_SELECT_FIELD' => 'Selecionar campo',
+	'LBL_CONFIGURE_DEPENDENCY_INFO' => 'Clique sobre a respectiva célula, para alterar o mapeamento de valores da Lista de Opções do campo alvo',
+	'LBL_CONFIGURE_DEPENDENCY_HELP_1' => 'Somente valores do campo Fonte, da Lista de Opções mapeada, serão exibidos a seguir (exceto na primeira vez)',
+	'LBL_CONFIGURE_DEPENDENCY_HELP_2' => "e você deseja ver ou alterar o mapeamento para outros valores da Lista de Opções do campo Fonte,<br/> 
+                                          poderá selecionar os valores clicando no botão <b>'Selecionar valores Fonte'</b> no lado direito",
+	'LBL_CONFIGURE_DEPENDENCY_HELP_3' => 'Os valores selecionados do campo Alvo, são destacados como',
+	'LBL_SELECT_SOURCE_VALUES' => 'Selecionar Valores da Fonte',
+	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Selecionar Valores da Lista de Opções Fonte',
+	'LBL_ERR_CYCLIC_DEPENDENCY' => 'Esta configuração de dependência não é permitida, uma vez que acaba gerando uma dependência cíclica',
+	'LBL_SELECT_ALL_VALUES' => 'Selecionar Tudo',
+	'LBL_UNSELECT_ALL_VALUES' => 'Remover toda seleção',
+    'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Este procedimento pode resultar em uma redundância cíclica, já que o campo %s já está configurado para o campo %s',
 );
+
 $jsLanguageStrings = array(
-	'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Are you sure you want to delete this picklist dependency?', // TODO: Review
-	'JS_DEPENDENCY_DELETED_SUEESSFULLY' => 'Dependency deleted successfully', // TODO: Review
-	'JS_PICKLIST_DEPENDENCY_SAVED' => 'Picklist Dependency Saved'   , // TODO: Review
-	'JS_DEPENDENCY_ATLEAST_ONE_VALUE' => 'You need to select atleast one value for', // TODO: Review
-	'JS_SOURCE_AND_TARGET_FIELDS_SHOULD_NOT_BE_SAME' => 'Source field and Target field should not be same', // TODO: Review
-	'JS_SELECT_SOME_VALUE'         => 'Select some value'           , // TODO: Review
+	'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Você tem certeza que deseja apagar esta dependência de Lista de Opções?',
+	'JS_DEPENDENCY_DELETED_SUEESSFULLY' => 'A dependência foi apagada com sucesso',
+	'JS_PICKLIST_DEPENDENCY_SAVED' => 'A dependência da Lista de Opções foi Salva',
+    'JS_DEPENDENCY_ATLEAST_ONE_VALUE' => 'Você precisa selecionar pelo menos um valor para',
+	'JS_SOURCE_AND_TARGET_FIELDS_SHOULD_NOT_BE_SAME' => 'Os campos Fonte e Alvo não devem ser os mesmos',
+	'JS_SELECT_SOME_VALUE' => 'Selecione algum valor'
 );

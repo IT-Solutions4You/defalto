@@ -181,7 +181,9 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		$userIPAddress = $_SERVER['REMOTE_ADDR'];
 		$loginTime = date("Y-m-d H:i:s");
 		$query = "INSERT INTO vtiger_loginhistory (user_name, user_ip, logout_time, login_time, status) VALUES (?,?,?,?,?)";
-		$params = array($username, $userIPAddress, '0000-00-00 00:00:00',  $loginTime, 'Signed in');
+		$params = array($username, $userIPAddress, $loginTime,  $loginTime, 'Signed in');
+		//Mysql 5.7 doesn't support invalid date in Timestamp field
+		//$params = array($username, $userIPAddress, '0000-00-00 00:00:00',  $loginTime, 'Signed in');
 		$adb->pquery($query, $params);
 	}
 
@@ -328,4 +330,63 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		return $blocksList[$viewName];
 	}
 
+	/**
+	 * Function to get Module Header Links (for Vtiger7)
+	 * @return array
+	 */
+	public function getModuleBasicLinks() {
+		$basicLinks = array();
+		$moduleName = $this->getName();
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if ($currentUser->isAdminUser() && Users_Privileges_Model::isPermitted($moduleName, 'CreateView')) {
+			$basicLinks[] = array(
+				'linktype' => 'BASIC',
+				'linklabel' => 'LBL_ADD_RECORD',
+				'linkurl' => $this->getCreateRecordUrl(),
+				'linkicon' => 'fa-plus'
+			);
+	
+			if (Users_Privileges_Model::isPermitted($moduleName, 'Import')) {
+				$basicLinks[] = array(
+					'linktype' => 'BASIC',
+					'linklabel' => 'LBL_IMPORT',
+					'linkurl' => $this->getImportUrl(),
+					'linkicon' => 'fa-download'
+				);
+			}
+		}
+		return $basicLinks;
+	}
+
+	/**
+	 * Function to get Settings links
+	 * @return <Array>
+	 */
+	public function getSettingLinks() {
+		$settingsLinks = array();
+		$moduleName = $this->getName();
+
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		if ($currentUser->isAdminUser() && Users_Privileges_Model::isPermitted($moduleName, 'DetailView')) {
+			$settingsLinks[] = array(
+				'linktype' => 'LISTVIEW',
+				'linklabel' => 'LBL_EXPORT',
+				'linkurl' => 'index.php?module=Users&source_module=Users&action=ExportData',
+				'linkicon' => ''
+			);
+		}
+		return $settingsLinks;
+	}
+
+	public function getImportableFieldModels() {
+		$focus = CRMEntity::getInstance($this->getName());
+		$importableFields = $focus->getImportableFields();
+
+		$importableFieldModels = array();
+		foreach ($importableFields as $fieldName => $fieldInstance) {
+			$importableFieldModels[$fieldName] = $this->getField($fieldName);
+		}
+		return $importableFieldModels;
+	}
 }

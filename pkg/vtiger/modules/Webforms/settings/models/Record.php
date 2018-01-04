@@ -121,6 +121,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 		$linkTypes = array('DETAILVIEWBASIC');
 		$moduleModel = $this->getModule();
 		$recordId = $this->getId();
+		$linkModelList = array();
 
 		$detailViewLinks = array(
 				array(
@@ -338,7 +339,42 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 			}
 			array_push($params, $fieldName, $neutralizedField, $fieldDefaultValue, $fieldDetails['required'], $fieldDetails['sequence'], $fieldDetails['hidden']);
 			$db->pquery($fieldInsertQuery, $params);
+		}
+
+		//Handling document file fields save
+		$fileFields = $this->get('file_fields');
+		$db->pquery('DELETE FROM vtiger_webform_file_fields WHERE webformid = ?', array($this->getId()));
+		$fileFieldQuery = 'INSERT INTO vtiger_webform_file_fields (webformid, fieldname, fieldlabel, required) VALUES (?, ?, ?, ?)';
+		$i = 1;
+		foreach ($fileFields as $fileField) {
+			$fileFieldName = 'file_'.$this->getId().'_'.$i++;
+			$required = $fileField['required'];
+			if ($required != 1) {
+				$required = 0;
+			}
+			$params = array($this->getId(), $fileFieldName, $fileField['fieldlabel'], $required);
+			$db->pquery($fileFieldQuery, $params);
+		}
 	}
+
+	/**
+	 * Function to get document file fields added in webform
+	 * @return <Array> Array of added file fields information.
+	 */
+	function getFileFields() {
+		$fileFields = $this->get('file_fields');
+		if (!$fileFields) {
+			$fileFields = array();
+			$db = PearDatabase::getInstance();
+
+			$result = $db->pquery('SELECT * FROM vtiger_webform_file_fields WHERE webformid = ?', array($this->getId()));
+			$count = $db->num_rows($result);
+			for ($i = 0; $i < $count; $i++) {
+				$fileFields[$i] = $db->query_result_rowdata($result, $i);
+			}
+			$this->set('file_fields', $fileFields);
+		}
+		return $fileFields;
 	}
 
 	/**

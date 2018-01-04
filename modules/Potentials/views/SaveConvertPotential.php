@@ -22,10 +22,6 @@ class Potentials_SaveConvertPotential_View extends Vtiger_View_Controller {
 		}
 	}
 
-	public function preProcess(Vtiger_Request $request) {
-		return true;
-	}
-
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$modules = $request->get('modules');
@@ -94,13 +90,20 @@ class Potentials_SaveConvertPotential_View extends Vtiger_View_Controller {
 
 	function showError($request, $exception=false) {
 		$viewer = $this->getViewer($request);
+		$moduleName = $request->getModule();
+
+		$isDupicatesFailure = false;
 		if($exception != false) {
 			$viewer->assign('EXCEPTION', $exception->getMessage());
+			if ($exception instanceof DuplicateException) {
+				$isDupicatesFailure = true;
+				$viewer->assign('EXCEPTION', $exception->getDuplicationMessage());
+			}
 		}
 
-		$moduleName = $request->getModule();
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 
+		$viewer->assign('IS_DUPICATES_FAILURE', $isDupicatesFailure);
 		$viewer->assign('CURRENT_USER', $currentUser);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->view('ConvertPotentialError.tpl', $moduleName);

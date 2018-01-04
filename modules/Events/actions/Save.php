@@ -84,7 +84,24 @@ class Events_Save_Action extends Calendar_Save_Action {
 			$focus =  CRMEntity::getInstance('Events');
 			//get all the stored data to this object
 			$focus->column_fields = new TrackableObject($recordModel->getData());
-			Calendar_RepeatEvents::repeatFromRequest($focus, $recurObjDb);
+			try {
+				Calendar_RepeatEvents::repeatFromRequest($focus, $recurObjDb);
+			} catch (DuplicateException $e) {
+                $requestData = $request->getAll();
+			    $requestData['view'] = 'Edit';
+				$requestData['mode'] = 'Events';
+				$requestData['module'] = 'Events';
+				$requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
+                
+                global $vtiger_current_version;
+				$viewer = new Vtiger_Viewer();
+                $viewer->assign('REQUEST_DATA', $requestData);
+				$viewer->assign('REQUEST_URL', 'index.php?module=Calendar&view=Edit&mode=Events&record='.$request->get('record'));
+				$viewer->view('RedirectToEditView.tpl', 'Vtiger');
+                exit();
+            } catch (Exception $ex) {
+				throw new Exception($ex->getMessage());
+			}
 		}
 		return $recordModel;
 	}

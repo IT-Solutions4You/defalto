@@ -35,7 +35,7 @@
 							{else if $MOD_NAME eq "Calendar"}
 								{assign var=VT_ICON value="Task"}
 							{/if}
-							<span><i class="vicon-{strtolower($VT_ICON)} entryIcon" title={$TRANSLATED_MODULE_NAME}></i></span>&nbsp;&nbsp;
+							<span>{$HISTORY->getParent()->getModule()->getModuleIcon($VT_ICON)}</span>&nbsp;&nbsp;
 						</div>
 						<div class="col-lg-10 pull-left">
 							{assign var=DETAILVIEW_URL value=$PARENT->getDetailViewUrl()}

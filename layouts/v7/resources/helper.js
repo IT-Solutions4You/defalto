@@ -1022,3 +1022,12 @@ jQuery.Class("Vtiger_Helper_Js",{
         return $parent && $parent.length ? $parent : $this.parent();
     }
 });
+
+function VtError(params) {
+	this.name	= 'VtError';
+	this.stack	= (new Error()).stack;
+	this.title	= params.title || app.vtranslate('JS_ERROR');
+	this.message= params.message || '';
+}
+VtError.prototype = Object.create(Error.prototype);
+VtError.prototype.constructor = VtError;

@@ -21,9 +21,6 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 		}
 	}
 
-	public function preProcess(Vtiger_Request $request) {
-	}
-
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$modules = $request->get('modules');
@@ -35,7 +32,7 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 		$entityValues['transferRelatedRecordsTo'] = $request->get('transferModule');
 		$entityValues['assignedTo'] = vtws_getWebserviceEntityId(vtws_getOwnerType($assignId), $assignId);
 		$entityValues['leadId'] =  vtws_getWebserviceEntityId($request->getModule(), $recordId);
-        $entityValues['imageAttachmentId'] = $request->get('imageAttachmentId');
+		$entityValues['imageAttachmentId'] = $request->get('imageAttachmentId');
 
 		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $request->getModule());
 		$convertLeadFields = $recordModel->getConvertLeadFields();
@@ -46,20 +43,20 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 				$entityValues['entities'][$module]['create'] = true;
 				$entityValues['entities'][$module]['name'] = $module;
 
-                // Converting lead should save records source as CRM instead of WEBSERVICE
-                $entityValues['entities'][$module]['source'] = 'CRM';
+				// Converting lead should save records source as CRM instead of WEBSERVICE
+				$entityValues['entities'][$module]['source'] = 'CRM';
 				foreach ($convertLeadFields[$module] as $fieldModel) {
 					$fieldName = $fieldModel->getName();
 					$fieldValue = $request->get($fieldName);
 
 					//Potential Amount Field value converting into DB format
 					if ($fieldModel->getFieldDataType() === 'currency') {
-                        if($fieldModel->get('uitype') == 72){
-                            // Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-                            $fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
-                        } else {
-                            $fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue);
-                        }
+					if($fieldModel->get('uitype') == 72){
+						// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
+						$fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
+					} else {
+						$fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue);
+					}
 					} elseif ($fieldModel->getFieldDataType() === 'date') {
 						$fieldValue = DateTimeField::convertToDBFormat($fieldValue);
 					} elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {
@@ -100,19 +97,26 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 
 	function showError($request, $exception=false) {
 		$viewer = $this->getViewer($request);
-		if($exception != false) {
+		$moduleName = $request->getModule();
+
+		$isDupicatesFailure = false;
+		if ($exception != false) {
 			$viewer->assign('EXCEPTION', $exception->getMessage());
+			if ($exception instanceof DuplicateException) {
+				$isDupicatesFailure = true;
+				$viewer->assign('EXCEPTION', $exception->getDuplicationMessage());
+			}
 		}
 
-		$moduleName = $request->getModule();
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 
+		$viewer->assign('IS_DUPICATES_FAILURE', $isDupicatesFailure);
 		$viewer->assign('CURRENT_USER', $currentUser);
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->view('ConvertLeadError.tpl', $moduleName);
 	}
-    
-    public function validateRequest(Vtiger_Request $request) {
-        $request->validateWriteAccess();
-    }
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

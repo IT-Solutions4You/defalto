@@ -16,10 +16,36 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$this->exposeMethod('showFieldLayout');
 		$this->exposeMethod('showRelatedListLayout');
 		$this->exposeMethod('showFieldEdit');
+		$this->exposeMethod('showDuplicationHandling');
 	}
 
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
+		switch($mode) {
+			case 'showRelatedListLayout'	:	$selectedTab = 'relatedListTab';	break;
+			case 'showDuplicationHandling'	:	$selectedTab = 'duplicationTab';	break;
+			default							:	$selectedTab = 'detailViewTab';
+												if (!$mode) {
+													$mode = 'showFieldLayout';
+												}
+												break;
+		}
+
+		$sourceModule = $request->get('sourceModule');
+		$supportedModulesList = Settings_LayoutEditor_Module_Model::getSupportedModules();
+		$supportedModulesList = array_flip($supportedModulesList);
+		ksort($supportedModulesList);
+
+		$viewer = $this->getViewer($request);
+		$viewer->assign('MODE', $mode);
+		$viewer->assign('SELECTED_TAB', $selectedTab);
+		$viewer->assign('SUPPORTED_MODULES', $supportedModulesList);
+		$viewer->assign('REQUEST_INSTANCE', $request);
+
+		if ($sourceModule) {
+			$viewer->assign('SELECTED_MODULE_NAME', $sourceModule);
+		}
+
 		if($this->isMethodExposed($mode)) {
 			$this->invokeExposedMethod($mode, $request);
 		}else {
@@ -86,7 +112,11 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
 
-		$viewer->view('Index.tpl',$qualifiedModule);
+		if ($request->isAjax() && !$request->get('showFullContents')) {
+			$viewer->view('FieldsList.tpl', $qualifiedModule);
+		} else {
+			$viewer->view('Index.tpl', $qualifiedModule);
+		}
 	}
 
 	public function showRelatedListLayout(Vtiger_Request $request) {
@@ -131,7 +161,12 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('HIDDEN_TAB_EXISTS', $hiddenRelationTabExists);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
-		$viewer->view('RelatedList.tpl', $qualifiedModule);
+
+		if ($request->isAjax() && !$request->get('showFullContents')) {
+			$viewer->view('RelatedList.tpl', $qualifiedModule);
+		} else {
+			$viewer->view('Index.tpl', $qualifiedModule);
+		}
 	}
 
 	public function showFieldEdit(Vtiger_Request $request) {
@@ -167,6 +202,40 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		$this->setModuleInfo($request, $sourceModuleModel, $cleanFieldModel);
 
 		$viewer->view('FieldCreate.tpl', $qualifiedModule);
+	}
+
+	public function showDuplicationHandling(Vtiger_Request $request) {
+		$qualifiedModule = $request->getModule(false);
+		$sourceModuleName = $request->get('sourceModule');
+		$moduleModel = Vtiger_Module_Model::getInstance($sourceModuleName);
+		$blocks = $moduleModel->getBlocks();
+
+		$fields = array();
+		foreach ($blocks as $blockId => $blockModel) {
+			$blockFields = $blockModel->getFields();
+			foreach ($blockFields as $key => $fieldModel) {
+				if ($fieldModel->isEditable()
+					&& $fieldModel->get('displaytype') != 5
+					&& !in_array($fieldModel->get('uitype'), array(28, 30, 53, 56, 69, 83))
+					&& !in_array($fieldModel->getFieldDataType(), array('text', 'multireference'))) {
+					$fields[$blockModel->get('label')][$fieldModel->getName()] = $fieldModel;
+				}
+			}
+		}
+
+		$viewer = $this->getViewer($request);
+		$viewer->assign('FIELDS', $fields);
+		$viewer->assign('SOURCE_MODULE', $sourceModuleName);
+		$viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+		$viewer->assign('SOURCE_MODULE_MODEL', $moduleModel);
+		$viewer->assign('ACTIONS', Vtiger_Module_Model::getSyncActionsInDuplicatesCheck());
+		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+		if ($request->isAjax() && !$request->get('showFullContents')) {
+			$viewer->view('DuplicateHandling.tpl', $qualifiedModule);
+		} else {
+			$viewer->view('Index.tpl', $qualifiedModule);
+		}
 	}
 
 	/**

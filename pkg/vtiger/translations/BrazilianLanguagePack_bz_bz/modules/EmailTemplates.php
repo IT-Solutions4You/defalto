@@ -4,29 +4,29 @@
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
+ * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  *************************************************************************************/
 $languageStrings = array(
-    'Email Templates' => 'Email Templates',
-	'LBL_ADD_RECORD' => 'Add Email Template',
-	'SINGLE_EmailTemplates' => 'Email Template',
-	'LBL_EMAIL_TEMPLATES'=> 'Email Templates',
-	'LBL_EMAIL_TEMPLATE' => 'Email Template',
+	'Email Templates' => 'Modelos Email',
+	'LBL_ADD_RECORD' => 'Adicionar Modelo Email',
+	'SINGLE_EmailTemplates' => 'Modelo Email',
+	'LBL_EMAIL_TEMPLATES'=> 'Modelos Emails',
+	'LBL_EMAIL_TEMPLATE' => 'Modelo Email',
 	
-	'LBL_TEMPLATE_NAME' => 'Template name',
-	'LBL_DESCRIPTION' => 'Description',
-	'LBL_SUBJECT' => 'Subject',
-	'LBL_GENERAL_FIELDS' => 'General Fields',
-	'LBL_SELECT_FIELD_TYPE' => 'Selecione Módulo & Field',
-	'LBL_MODULE_NAME' => 'Nome do Módulo',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Manage templates for E-Mail module',
-	'LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE' => 'Não há permissões para excluir Modelo de Sistema',
-	'LBL_RECORD_ID'                => 'ID de registro'              , 
+	'LBL_TEMPLATE_NAME' => 'Nome Modelo',
+	'LBL_DESCRIPTION' => 'Descrição',
+	'LBL_SUBJECT' => 'Assunto',
+	'LBL_SELECT_FIELD_TYPE' => 'Selecione Módulo e Campo',
+	'LBL_MODULE_NAME' => 'Nome Módulo',
+	
+	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Gerenciar modelos para módulo Email',
+	'LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE' => 'Você não tem mpermissão para apagar Modelos do Sistema',
+	'LBL_RECORD_ID' => 'No. Registro',
 	
 );
 
 $jsLanguageStrings = array(
-    'LBL_CUTOMER_LOGIN_DETAILS_TEMPLATE_DELETE_MESSAGE' => 'Você não será capaz de enviar os detalhes de login Portal do Cliente para o contato se você excluir "Cliente Acesso Detalhes" do modelo. Você deseja continuar?',
-	'JS_REQUIRED_FIELD' => '* Mensagem é necessária',
+    'LBL_CUTOMER_LOGIN_DETAILS_TEMPLATE_DELETE_MESSAGE' => 'Você não será capaz de enviar os detalhes de acesso ao Portal do Cliente para o Contato se apagar o modelo "Detalhes Acesso Cliente". Você deseja continuar?',
+	'JS_REQUIRED_FIELD' => '* Conteúdo do Modelo de Email do Sistema é Obrigatório',
 );

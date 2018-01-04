@@ -138,7 +138,7 @@ $languageStrings = array(
 	'Vendors'                      => 'Fournisseurs'                , 
 	'Rss'                          => 'RSS'                         , 
 	'Quotes'                       => 'Devis'                       , 
-	'PurchaseOrder'                => 'Acheter en ligne'        , 
+	'PurchaseOrder'                => 'Commandes Fournisseur'        , 
 	'SalesOrder'                   => 'Sales Orders'             , 
 	'Invoice'                      => 'Factures'                     , 
 	'MailManager'                  => 'Mail Manager'                , // TODO: Review
@@ -844,6 +844,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Suivre',
   'LBL_QUICK_VIEW' => 'Vue Rapide',
   'LBL_NOTIFICATION_CENTER' => 'Le Centre De Notifications',
+	'LBL_NOTIFICATION' => 'Notification',
+	'LBL_STARRED_RECORD_TO' => '%s à%s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s mis à jour%s',
   'LBL_EDIT_REASON' => 'Edit raison',
   'LBL_CONTACT' => 'LA GESTION DES CONTACTS',
   'LBL_NO_ATTACHMENTS' => 'Pas De Pièces Jointes',
@@ -1074,6 +1077,16 @@ en dehors de Vtiger.',
   'LBL_SLA_INFORMATION' => 'SLA de l\'Information',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'Pour utiliser <b>%s</b>, nous vous recommandons de passer à nouveau look.',
 	'LBL_DELETE_USER_CONFIRMATION' => "Lorsqu'un utilisateur est supprimé, l'utilisateur sera marqué comme «inactif» et aucun de nouveaux enregistrements peuvent être affectés à l'utilisateur, et l'utilisateur ne sera pas capable de se connecter. Etes-vous sûr que vous voulez supprimer?",
+
+	'LBL_DUPLICATES' => 'Duplicates',
+	'LBL_DUPLICATES_DETECTED' => 'Double (s) détectée!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'Ce%s ne peut pas être enregistré depuis s en double% existe en Vtiger avec des valeurs correspondant à%s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Message de: Vtiger Notifications du système',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => "%s suivant n'a pas pu être sauvé de « % de » flux de travail",
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => "%s suivant n'a pas pu être sauvé de « %s » formulaire en ligne",
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Vous pouvez%s de modifier les règles de prévention en double.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contactez votre administrateur pour la révision des règles en double',
+	'LBL_DUPLICATE_RECORD_LISTS' => '%s en double (s):',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 
@@ -1484,4 +1497,8 @@ $jsLanguageStrings = array(
 
 	'JS_UPLOAD_SUCCESSFUL' => 'Fichier téléchargé avec succès',
     'JS_UPLOAD_FAILED' => 'File Upload Failed',
+
+	'JS_DUPLICATES_DETECTED' => 'Double (s) détectée!',
+	'JS_PASSWORD_MISMATCH_ERROR' => "S'il vous plaît entrer de nouveau les mots de passe. Les valeurs « nouveau mot de passe » et « mot de passe de confirmation » ne correspondent pas.",
+	'JS_LIST_DELETE_CONFIRMATION' => 'Etes-vous sûr que vous voulez supprimer?',
 );

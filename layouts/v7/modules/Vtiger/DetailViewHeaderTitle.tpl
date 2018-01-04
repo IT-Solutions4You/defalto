@@ -14,9 +14,7 @@
 				{assign var=MODULE value=$MODULE_NAME}
 			{/if}
 			<div class="hidden-sm hidden-xs recordImage bg_{$MODULE} app-{$SELECTED_MENU_CATEGORY}">
-				<div class="name">
-					<span><strong><i class="vicon-{strtolower($MODULE)}"></i></strong></span>
-				</div>  
+				<div class="name"><span><strong>{$MODULE_MODEL->getModuleIcon()}</strong></span></div>
 			</div>
 
 			<div class="recordBasicInfo">

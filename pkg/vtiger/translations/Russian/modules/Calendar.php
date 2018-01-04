@@ -146,6 +146,9 @@ $languageStrings = array(
   'LBL_NOVEMBER' => 'Ноябрь',
   'LBL_DECEMBER' => 'Декабрь',
 	'LBL_CLICK_HERE_TO_VIEW' => 'Нажмите сюда, чтобы посмотреть',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'Количество повторяющихся событий пропускаются',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'Количество повторяющихся задач пропускаются',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Добавить событие / Задача'              ,

@@ -29,17 +29,14 @@ class Settings_Workflows_SaveWorkflow_Action extends Vtiger_Action_Controller {
 			$executionCondition = $workflow_trigger;
 		}
 
-		$status = $request->get('status');
-		$tasks = $request->get('tasks');
-		$rawTasks = $request->getRaw('tasks');
 		$moduleModel = Settings_Vtiger_Module_Model::getInstance($request->getModule(false));
-
 		if ($recordId) {
 			$workflowModel = Settings_Workflows_Record_Model::getInstance($recordId);
 		} else {
 			$workflowModel = Settings_Workflows_Record_Model::getCleanInstance($moduleName);
 		}
 
+		$status = $request->get('status');
 		if ($status == "active") {
 			$status = 1;
 		} else {
@@ -129,7 +126,7 @@ class Settings_Workflows_SaveWorkflow_Action extends Vtiger_Action_Controller {
 			$workflowModel->save();
 		}
 
-		$this->saveTasks($workflowModel->get('workflow_id'), $tasks);
+		$this->saveTasks($workflowModel, $request);
 
 		$returnPage = $request->get("returnpage", null);
 		$returnSourceModule = $request->get("returnsourcemodule", null);
@@ -139,9 +136,11 @@ class Settings_Workflows_SaveWorkflow_Action extends Vtiger_Action_Controller {
 		header("Location: " . $redirectUrl);
 	}
 
-	function saveTasks($id, $tasks) {
+	function saveTasks($workflowModel, $request) {
+		$tasks = $request->getRaw('tasks');
+		$id = $workflowModel->get('workflow_id');
 		if (!empty($tasks)) {
-			foreach ($tasks as $key => $task) {
+			foreach ($tasks as $task) {
 				$taskDecodedArray = json_decode($task, true);
 				$taskAjaxObject = new Settings_Workflows_TaskAjax_Action();
 				$request = new Vtiger_Request($taskDecodedArray, $taskDecodedArray);

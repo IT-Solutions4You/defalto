@@ -47,6 +47,7 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('SOURCE_MODULE', $recordModel->get('targetmodule'));
 		$viewer->assign('DETAILVIEW_LINKS', $recordModel->getDetailViewLinks());
 		$viewer->assign('SELECTED_FIELD_MODELS_LIST', $recordModel->getSelectedFieldsList());
+		$viewer->assign('DOCUMENT_FILE_FIELDS', $recordModel->getFileFields());
 		$viewer->assign('NO_PAGINATION',true);
 
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();

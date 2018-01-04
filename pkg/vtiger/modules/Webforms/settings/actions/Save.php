@@ -42,6 +42,12 @@ class Settings_Webforms_Save_Action extends Settings_Vtiger_Index_Action {
 			$recordModel->set($fieldName, $fieldValue);
 		}
 
+		$fileFields = array();		
+		if (is_array($request->get('file_field'))) {
+			$fileFields = $request->get('file_field');
+		}
+		$recordModel->set('file_fields', $fileFields);
+
 		$returnUrl = $recordModel->getModule()->getListViewUrl();
 		$recordModel->set('selectedFieldsData', $request->get('selectedFieldsData'));
 		if (!$recordModel->checkDuplicate()) {

@@ -1696,14 +1696,22 @@ class Vtiger_Module_Model extends Vtiger_Module {
 
 
 	public function transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds){
+		$moduleName = $this->getName();
 		foreach($relatedModuleRecordIds as $recordId) {
-			$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-			$recordModel->set('assigned_user_id', $transferOwnerId);
-			$recordModel->set('mode', 'edit');
-			// Transferring ownership with related module as Inventory modules, removes line item details.
-			// So setting $_REQUEST['ajxaction'] to DETAILVIEW
-			$_REQUEST['ajxaction'] = 'DETAILVIEW';
-			$recordModel->save();
+			if(Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
+				try {
+					$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+					$recordModel->set('assigned_user_id', $transferOwnerId);
+					$recordModel->set('mode', 'edit');
+					// Transferring ownership with related module as Inventory modules, removes line item details.
+					// So setting $_REQUEST['ajxaction'] to DETAILVIEW
+					$_REQUEST['ajxaction'] = 'DETAILVIEW';
+					$recordModel->save();
+				} catch (DuplicateException $e) {
+					return $e->getDuplicationMessage();
+				} catch (Exception $e) {
+				}
+			}
 		}
 	}
 
@@ -1935,7 +1943,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	}
 
 	function isStarredEnabled(){
-		return false;
+		return true;
 	}
 
 	/**
@@ -1965,4 +1973,44 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return true;
 	}
 
+	
+	public static function getSyncActionsInDuplicatesCheck() {
+		return array(	1 => 'LBL_PREFER_LATEST_RECORD',
+						2 => 'LBL_PREFER_INTERNAL_RECORD',
+//						3 => 'LBL_PREFER_VTIGER_RECORD',
+						4 => 'LBL_PREFER_EXTERNAL_RECORD');
+	}
+
+	
+	public function isFieldsDuplicateCheckAllowed() {
+		return true;
+	}
+
+	public function isExcelEditAllowed() {
+		return $this->isPermitted('EditView');
+	}
+
+	public function getModuleIcon() {
+		$moduleName = $this->getName();
+		$lowerModuleName = strtolower($moduleName);
+		$title = vtranslate($moduleName, $moduleName);
+
+		$moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
+		if ($this->source == 'custom') {
+			$moduleShortName = mb_substr(trim($title), 0, 2);
+			$moduleIcon = "<span class='custom-module' title='$title'>$moduleShortName</span>";
+		}
+
+		$imageFilePath = 'layouts/'.Vtiger_Viewer::getLayoutName()."/modules/$moduleName/$moduleName.png";
+		if (file_exists($imageFilePath)) {
+			$moduleIcon = "<img src='$imageFilePath' title='$title'/>";
+		}
+
+		return $moduleIcon;
+	}
+
+	public static function getModuleIconPath($moduleName) {
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		return $moduleModel->getModuleIcon();
+	}
 }

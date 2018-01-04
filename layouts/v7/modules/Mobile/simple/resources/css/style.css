@@ -189,7 +189,7 @@ md-tooltip{
     width: 100%;
     z-index: 30;
     margin-top: -1px;
-    padding: 0px 16px;
+    padding: 0px 10px;
 }
 .list-filters .change-filter{
     text-overflow: ellipsis;
@@ -232,7 +232,7 @@ md-tooltip{
     font-size: 1.2em;
 }
 .current-filter,.current-sort-field{
-    width: 100%;
+    width: 80%;
     display: inline-block;
     padding-bottom: 0;
 }
@@ -240,6 +240,11 @@ md-tooltip{
 .current-sort-field .md-select-label .md-select-icon{
     width: 15px;
     margin: -4px 4px 0;
+}
+.records-list md-list-item.md-3-line .md-list-item-text p{
+    font-size: 0.9em;
+    font-weight: normal;
+    color: black;
 }
 .records-list md-list-item.md-3-line .md-list-item-text p.header-fields{
     font-size: 0.8em;
@@ -286,7 +291,7 @@ md-list-item.md-no-proxy.load-more-link{
 
 
 .actions-slider{
-    background: #2c3b49;
+    background: #4e664e;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -303,10 +308,11 @@ md-list-item.md-no-proxy.load-more-link{
 .actions-slider .md-icon-button{
     background: transparent;
     color: #ffffff !important;
-    font-size: 2em;
+    font-size: 1.5em;
     visibility: visible;
     opacity: 1;
     z-index: 30;
+    width: 100%;
 }
 
 /* Slider animation */
@@ -382,8 +388,8 @@ form, .edit-content .md-list-item-text.field-row{
     width: 100%;
     height: 100%;
 }
-md-input-container{
-    /*padding-bottom: 15px;*/
+.edit-content md-input-container{
+    padding: 16px 0px;
 }
 
 md-list-item, md-list-item .md-list-item-inner{
@@ -396,10 +402,69 @@ md-list-item, md-list-item .md-list-item-inner{
     background-color: #B7AAAA;
     display: block;
     text-align: center;
-    /* vertical-align: middle; */
     margin-right: 10px;
     line-height: 2em;
     font-size: 20px;
-    color: #fff;
+    color: #ffffff;
     text-transform: uppercase;
+}
+md-input-container md-select{
+    width: 100%;
+}
+md-select md-select-label.md-select-label{
+    padding-top : 0px;
+}
+.app-dropdown md-select{
+    width: 100%;
+}
+md-backdrop{
+    margin-top: 0px;
+}
+.editIcon{
+    font-size: 1.5em;
+    opacity: 0.5;
+    margin: 10px 5px;
+}
+
+md-autocomplete[md-floating-label]{
+    padding-bottom: 0px;
+}
+md-checkbox{
+    margin: 0px;
+}
+md-input-container .md-input{
+    width: 100%;
+}
+
+md-autocomplete input:not(.md-input){
+    padding: 0 2px;
+    border-bottom : 1px solid #f1f1f1;
+}
+md-autocomplete{
+    background: #ffffff !important;
+    box-shadow: none;
+}
+.toolbar-title{
+    margin-left: 10px;
+}
+.detail-header-label{
+    opacity: 0.6;
+    margin: 15px;
+}
+
+.lineItem-summaryBlock .lineItem-value{
+    text-align: right;
+    color:#006400;
+}
+.lineItem-summaryBlock{
+    font-size: 0.9em;
+}
+.lineItem-summaryBlock .lineItem-label{
+    text-align: left;
+}
+md-tabs md-tab-item.md-tab{
+    text-transform: none;
+}
+md-ink-bar{
+    background: gray !important;
 }

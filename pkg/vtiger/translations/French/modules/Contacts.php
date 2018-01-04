@@ -10,9 +10,9 @@
 $languageStrings = array(
 	'Contacts'                     => 'Contacts'                    , 
 	'SINGLE_Contacts'              => 'Contact'                     , 
-	'LBL_ADD_RECORD'               => 'Add Contact'                 , 
-	'LBL_RECORDS_LIST'             => 'Contacts List'               , 
-	'LBL_CONTACT_INFORMATION'      => 'Détail contact '            , 
+	'LBL_ADD_RECORD'               => 'Ajouter un Contact'                 , 
+	'LBL_RECORDS_LIST'             => 'Liste des Contacts'               , 
+	'LBL_CONTACT_INFORMATION'      => 'Détail du contact '            , 
 	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Portail de service client'   , 
 	'LBL_IMAGE_INFORMATION'        => 'Image/Photo du contact'      , 
 	'LBL_COPY_OTHER_ADDRESS'       => 'Copie Autres adresses'          , // TODO: Review
@@ -47,14 +47,14 @@ $languageStrings = array(
 	'Dr.'                          => 'Dr'                          , 
 	'Prof.'                        => 'Prof'                        , 
 	'User List'                    => 'Liste des collaborateurs'    , 
-	'Contact Id' => 'Contact Id',
-    'Support Start Date'           => 'Soutien Date de début'       ,
-    'Support End Date'             => 'Soutien Date de fin'         ,
-	'LBL_TRANSACTIONS' => 'Transactions',
+	'Contact Id'                   => 'Contact Id',
+	'Support Start Date'           => 'Soutien Date de début'       ,
+	'Support End Date'             => 'Soutien Date de fin'         ,
+	'LBL_TRANSACTIONS'             => 'Transactions',
 
-  'Other Phone' => 'Téléphone Secondaire',
-  'Email' => 'E-Mail Principale',
-  'Secondary Email' => 'E-Mail Secondaire',
+	'Other Phone'                  => 'Téléphone Secondaire',
+	'Email'                        => 'E-Mail Principale',
+	'Secondary Email'              => 'E-Mail Secondaire',
 
 );
 $jsLanguageStrings = array(

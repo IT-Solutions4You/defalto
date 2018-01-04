@@ -19,7 +19,13 @@ class Mobile_WS_UserInfo extends Mobile_WS_Controller {
 			'id'       => $current_user->id,
 			'first_name' => $current_user->first_name,
 			'last_name' => $current_user->last_name,
-			'email' => $current_user->email1
+			'email' => $current_user->email1,
+			'time_zone' => $current_user->time_zone,
+			'hour_format' => $current_user->hour_format,
+			'date_format' => $current_user->date_format,
+			'is_admin' => $current_user->is_admin,
+			'call_duration' => $current_user->callduration,
+			'other_event_duration' => $current_user->othereventduration,
 		);
 		
 		$allVisibleModules = Settings_MenuEditor_Module_Model::getAllVisibleModules();
