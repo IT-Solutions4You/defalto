@@ -985,7 +985,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		return array('ADD');
 	}
 
-	public function getModuleIcon($activityType) {
+	public function getModuleIcon($activityType = null) {
 		$moduleName = $this->getName();
 		$title = vtranslate($moduleName, $moduleName);
 
