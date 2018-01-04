@@ -1040,7 +1040,7 @@ $languageStrings = array(
 	'LBL_CLICK_TO_SELECT_PROFILE' => 'Clique para selecionar Perfil',
 	'LBL_INVALID_IMAGE' => 'Imagem inválida',
 	'LBL_NEXT' => 'Próximo',
-	'LBL_FINISH' => 'Final'
+	'LBL_FINISH' => 'Final',
 	// Module field to store Source of Record
 	'Source' => 'Fonte',
 

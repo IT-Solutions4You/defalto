@@ -149,7 +149,7 @@ $languageStrings = array(
 	'LBL_PREFER_LATEST_RECORD' => 'Préférez dernier disque',
 	'LBL_PREFER_INTERNAL_RECORD' => 'Préférez enregistrement interne',
 	'LBL_PREFER_EXTERNAL_RECORD' => 'Préférez enregistrement externe',
-	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Préférez dernier disque - Plus récemment, des données d'enregistrement modifiés seront conservés <br> Préférer enregistrement interne - enregistrement existant sera conservé comme il est <br> Préférez enregistrement externe - Les données de l'application externe seront copiés',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => "Préférez dernier disque - Plus récemment, des données d'enregistrement modifiés seront conservés <br> Préférer enregistrement interne - enregistrement existant sera conservé comme il est <br> Préférez enregistrement externe - Les données de l'application externe seront copiés",
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Spectacle de bloc activé'   ,
