@@ -17,6 +17,11 @@ class Vtiger_RecordLabelUpdater_Handler extends VTEventHandler {
 		if ($eventName == 'vtiger.entity.aftersave') {
             $record = $data->getId();
             $module = $data->getModuleName();
+			
+            if($module === 'Users') {
+                return;
+            }
+			
 			$labelInfo = getEntityName($module, $record, true);
 
 			if ($labelInfo) {
