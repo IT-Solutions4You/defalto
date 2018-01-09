@@ -15,7 +15,7 @@
 ]}
 <div class="col-sm-12 col-xs-12 app-indicator-icon-container app-{$SELECTED_MENU_CATEGORY} moduleIcon">
     <div class="row" title="{vtranslate("Documents",$MODULE)}">
-		<span>{$MODULE_MODEL->getModuleIcon()}</span>
+		<span class="app-indicator-icon fa vicon-documents"></span>
     </div>
 </div>
     
