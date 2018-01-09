@@ -126,6 +126,20 @@
 				</div>
 			</div>
 		{/if}
+		<br>
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+				<div class="vt-default-callout vt-info-callout"> 
+					<h4 class="vt-callout-header"><span class="fa fa-info-circle"></span>&nbsp; Info </h4><br>
+					<div>
+						{vtranslate('LBL_REDIRECT_URL_MESSAGE', $MODULE)}<br><br>
+						{vtranslate('LBL_REDIRECT_URL', $MODULE)} : <span style="color: #15c !important">{Google_Config_Connector::getRedirectUrl()}</span>
+					</div>
+					<br>
+					<img src="modules/Google/images/redirect_uri.png" />
+				</div>
+			</div>
+		</div>
 		<div style="margin-top: 8%;">
 			<div>
 				<button id="saveSettings" type="submit" class="btn btn-success saveButton">{vtranslate('LBL_SAVE_SETTINGS', $MODULENAME)}</button>

@@ -60,7 +60,7 @@ class Google_Oauth2_Connector {
 		$this->service_name = $this->service_provider . $module;
 		$this->client_id = Google_Config_Connector::$clientId;
 		$this->client_secret = Google_Config_Connector::$clientSecret;
-		$this->redirect_uri = Google_Config_Connector::$redirectUrl;
+		$this->redirect_uri = Google_Config_Connector::getRedirectUrl();
 		$this->scope = $this->scopes[$this->source_module];
     }
     

@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'حفظ و استيراد',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'جوجل استيراد النتائج',
 
+	'LBL_REDIRECT_URL' => 'إعادة توجيه URL',
+	'LBL_REDIRECT_URL_MESSAGE' => 'انسخ الرابط توجيه التالية ولصقها في مشروع المصادقة جوجل الخاص بك كما يظهر صورة',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"مزامنة الآن",
 	'LBL_SYNCRONIZING'	=>	"مزامنة ....",

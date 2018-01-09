@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'De a păstra și de import',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Google import rezultate',
 
+	'LBL_REDIRECT_URL' => 'Adresă URL de redirecționare',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Copiați următorul URL de redirecționare și inserați în proiectul dvs. autorizare Google după cum arată imagine',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Sincroniza acum",
 	'LBL_SYNCRONIZING'	=>	"Sincronizarea ....",
