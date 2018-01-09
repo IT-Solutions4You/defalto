@@ -154,8 +154,7 @@ class CheckDuplicateHandler extends VTEventHandler {
 					}
 
 					if (count($conditions) > 0) {
-						$conditionGlue = ($moduleModel->duplicateCondition == 'all') ? 'AND' : 'OR';
-						$conditionsSql = implode(" $conditionGlue ", $conditions);
+						$conditionsSql = implode(" AND ", $conditions);
 						$query .= " AND ($conditionsSql)";
 					}
 
