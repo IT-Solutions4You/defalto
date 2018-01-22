@@ -150,7 +150,7 @@ class FollowRecordHandler extends VTEventHandler {
 		$mailer->AddCustomHeader("In-Reply-To", $generatedMessageId);
 		$mailer->AddAddress($toEmailId);
 
-		$response = $mailer->Send();
+		$response = $mailer->Send(true);
 	}
 
 	var $activeAdmin = '';
