@@ -7,4 +7,4 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-Settings_Module_Manager_Js('Settings_ModuleManager_ModuleImport_Js', {}, {});
+Settings_ModuleManager_List_Js('Settings_ModuleManager_ModuleImport_Js', {}, {});

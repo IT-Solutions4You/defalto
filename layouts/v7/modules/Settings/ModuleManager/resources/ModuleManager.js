@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-Vtiger_Index_Js('Settings_Module_Manager_Js', {
+Vtiger_Index_Js('Settings_ModuleManager_List_Js', {
 }, {
 	/*
 	 * function to update the module status for the module
@@ -68,7 +68,7 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 			}
 		});
 
-		container.on('click', '.finishButton', function() {
+		container.on('click', '.finishButton', function () {
 			window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
 		});
 
@@ -96,9 +96,9 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 
 			app.helper.showProgress();
 
-            AppConnector.request(params).then(
-                function (data) {
-                    app.helper.hideProgress(); 					
+			AppConnector.request(params).then(
+				function (data) {
+					app.helper.hideProgress();
 					element.addClass('hide');
 					var headerMessage, containerMessage;
 
@@ -110,7 +110,7 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 						containerMessage = app.vtranslate('JS_IMPORTED_MODULE');
 					}
 					app.helper.showSuccessNotification({'title': headerMessage, 'message': data.result.importModuleName+' '+containerMessage});
-					setTimeout(function() {
+					setTimeout(function () {
 						window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
 					}, 3000);
 				}
