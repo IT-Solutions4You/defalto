@@ -35,7 +35,7 @@
             </div>
         </div>
 	</div><br>
-	<div id="addCreateEntityContainer">
+	<div id="addCreateEntityContainer" style="margin-bottom: 70px;">
 		{include file="CreateEntity.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
 	</div>
 {/strip}

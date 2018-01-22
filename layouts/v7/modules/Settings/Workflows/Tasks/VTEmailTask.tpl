@@ -10,7 +10,7 @@
 {strip}
 	<div id="VtEmailTaskContainer">
 		<div class="row">
-			<div class="col-sm-12 col-xs-12">
+			<div class="col-sm-12 col-xs-12" style="margin-bottom: 70px;">
 				<div class="row form-group" >
 					<div class="col-sm-6 col-xs-6">
 						<div class="row">
