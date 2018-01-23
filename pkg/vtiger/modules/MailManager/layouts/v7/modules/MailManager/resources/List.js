@@ -308,21 +308,23 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	 */
 	loadMailContents : function(folderName){
 		var mailids = jQuery('input[name="folderMailIds"]').val();
-		mailids = mailids.split(",");
-		var params = {
-			'module' : 'MailManager',
-			'action' : 'Folder',
-			'mode' : 'showMailContent',
-			'mailids' : mailids,
-			'folderName':folderName
-		};
-		app.request.post({"data" : params}).then(function(error, responseData) {
-			for(var k in responseData){
-				var messageContent = responseData[k];
-				var messageEle = jQuery('#mmMailEntry_'+k);
-				messageEle.find('.mmMailDesc').html(messageContent);
-			}
-		});
+		if (typeof mailids !== 'undefined') {
+			mailids = mailids.split(",");
+			var params = {
+				'module' : 'MailManager',
+				'action' : 'Folder',
+				'mode' : 'showMailContent',
+				'mailids' : mailids,
+				'folderName':folderName
+			};
+			app.request.post({"data" : params}).then(function(error, responseData) {
+				for(var k in responseData){
+					var messageContent = responseData[k];
+					var messageEle = jQuery('#mmMailEntry_'+k);
+					messageEle.find('.mmMailDesc').html(messageContent);
+				}
+			});
+		}
 	},
 
 	registerFolderMailDeleteEvent : function() {

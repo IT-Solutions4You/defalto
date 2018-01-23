@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'A mentés gombra, majd Importálja',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'A Google Import eredmények',
 
+	'LBL_REDIRECT_URL' => 'átirányítási uRL-t',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Másold az alábbi átirányítási URL-t és illessze be a google auth projekt kép is mutatja',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Szinkronizálása most",
 	'LBL_SYNCRONIZING'	=>	"Szinkronizálása ....",

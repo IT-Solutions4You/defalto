@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'Opslaan en Importeren',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Google Importeren resultaten',
 
+	'LBL_REDIRECT_URL' => 'redirect url',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Kopieer de volgende redirect url en plakken in uw Google-authenticatie project als afbeelding laat zien',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Nu synchroniseren",
 	'LBL_SYNCRONIZING'	=>	"Synchroniseren ....",

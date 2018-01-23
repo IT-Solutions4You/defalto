@@ -10,7 +10,7 @@
 ********************************************************************************/
 -->*}
 {strip}
-    <div class="row">
+    <div class="row" style="margin-bottom: 70px;">
         <div class="col-lg-9">
             <div class="row form-group">
                 <div class="col-lg-2">{vtranslate('LBL_RECEPIENTS',$QUALIFIED_MODULE)}<span class="redColor">*</span></div>

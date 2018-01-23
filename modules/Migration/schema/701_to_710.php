@@ -169,6 +169,13 @@ if (defined('VTIGER_UPGRADE')) {
 	echo '<br>Succecssfully added source column vtiger tab table<br>';
 	//END::Differentiate custom modules from Vtiger modules
 
+	//START::Google calendar sync settings
+	if (!Vtiger_Utils::CheckTable('vtiger_google_event_calendar_mapping')) {
+		$db->pquery('CREATE TABLE vtiger_google_event_calendar_mapping (event_id varchar(255) DEFAULT NULL, calendar_id varchar(255) DEFAULT NULL, user_id int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8', array());
+		echo '<br>Succecssfully vtiger_google_event_calendar_mapping table created<br>';
+	}
+	//END::Google calendar sync settings
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 

@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'Salvare e Importare',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Google Importazione risultati',
 
+	'LBL_REDIRECT_URL' => 'URL di reindirizzamento',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Copiare il seguente URL di reindirizzamento e incollare nel vostro progetto di autenticazione di Google come spettacoli di immagini',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Sincronizzare Ora",
 	'LBL_SYNCRONIZING'	=>	"Sincronizzazione ....",

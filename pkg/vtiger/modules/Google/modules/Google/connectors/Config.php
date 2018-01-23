@@ -11,5 +11,9 @@
 Class Google_Config_Connector {
 	static $clientId = '';
 	static $clientSecret = '';
-	static $redirectUrl = '';
+
+	static function getRedirectUrl() {
+		global $site_URL;
+		return $site_URL.'index.php?module=Google&view=Authenticate&service=Google';
+	}
 }
