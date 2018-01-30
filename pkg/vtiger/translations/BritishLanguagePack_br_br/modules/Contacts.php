@@ -50,7 +50,6 @@ $languageStrings = array(
 	'Contact Id' => 'Contact Id',
     'Support Start Date'           => 'Support Start Date'          ,
     'Support End Date'             => 'Support End Date'            ,
-	'LBL_TRANSACTIONS' => 'Transactions',
 
   'Other Phone' => 'Secondary Phone',
   'Email' => 'Primary Email',

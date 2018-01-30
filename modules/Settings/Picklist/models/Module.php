@@ -300,17 +300,13 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 
 
 	public static function getPicklistSupportedModules() {
-		 $db = PearDatabase::getInstance();
-		 $restrictedPickListModule = array('Transactions');
-		// vtlib customization: Ignore disabled modules.
+		$db = PearDatabase::getInstance();
 		$query = "SELECT distinct vtiger_tab.tablabel, vtiger_tab.name as tabname
 				  FROM vtiger_tab
 						inner join vtiger_field on vtiger_tab.tabid=vtiger_field.tabid
 				  WHERE uitype IN (15,33,16,114) and vtiger_field.tabid NOT IN (29,10)  and vtiger_tab.presence != 1 and vtiger_field.presence in (0,2)
-				  AND vtiger_tab.tablabel NOT IN (" . generateQuestionMarks($restrictedPickListModule) . ")
 				  ORDER BY vtiger_tab.tabid ASC";
-		// END
-		$result = $db->pquery($query, array($restrictedPickListModule));
+		$result = $db->pquery($query, array());
 
 		$modulesModelsList = array();
 		while($row = $db->fetch_array($result)){
