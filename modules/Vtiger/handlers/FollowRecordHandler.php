@@ -24,7 +24,11 @@ class FollowRecordHandler extends VTEventHandler {
 			$recordId = $entityData->getId();
 			$moduleName = $entityData->getModuleName();
 
-			if ($moduleName != 'Users') {
+			$restrictedModules = array('CustomerPortal', 'Dashboard', 'Emails', 'EmailTemplates', 'ExtensionStore', 'Google', 'Home',
+										'Import', 'MailManager', 'Mobile', 'ModComments', 'ModTracker', 'PBXManager', 'Portal',
+										'RecycleBin', 'Reports', 'Rss', 'SMSNotifier', 'Users', 'Webforms', 'Webmails', 'WSAPP');
+
+			if (!in_array($moduleName, $restrictedModules)) {
 				$tableName = Vtiger_Functions::getUserSpecificTableName($moduleName);
 
 				//following users
