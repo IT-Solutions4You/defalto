@@ -414,6 +414,8 @@ class Install_Utils_Model {
 			$error_msg_info = getTranslatedString('MSG_DB_ROOT_USER_NOT_AUTHORIZED', 'Install');
 		} elseif(!$db_exist_status) {
 			$error_msg = $db_name.' -> '.getTranslatedString('ERR_DB_NOT_FOUND', 'Install');
+		} elseif(!$db_utf8_support) {
+			$error_msg = $db_name.' -> '.getTranslatedString('ERR_DB_NOT_UTF8', 'Install');
 		} else {
 			$dbCheckResult['flag'] = true;
 			return $dbCheckResult;
