@@ -17,7 +17,7 @@
 					<a title="{vtranslate('Home', $MODULE)}" href='index.php?module=Vtiger&parent=Settings&view=Index'>
 						<h4 class="module-title pull-left text-uppercase">{vtranslate('LBL_HOME', $MODULE)} </h4>
 					</a>
-					&nbsp;<span class="fa fa-angle-right pull-left {if $VIEW eq 'Index' && $MODULE eq 'Vtiger'} hide {/if}" aria-hidden="true" style="padding-top: 12px;padding-left: 5px;"></span>
+					&nbsp;<span class="fa fa-angle-right pull-left {if $VIEW eq 'Index' && $MODULE eq 'Vtiger'} hide {/if}" aria-hidden="true" style="padding-top: 12px;padding-left: 5px; padding-right: 5px;"></span>
 				{/if}
 				{if $MODULE neq 'Vtiger' or $smarty.request.view neq 'Index'}
 					{if $ACTIVE_BLOCK['block']}
@@ -38,7 +38,7 @@
 								{assign var=URL value=$URL|cat:'&parent='|cat:$smarty.request.parent}
 							{/if}
 						{/if}
-						<span class="current-filter-name settingModuleName filter-name pull-left">	
+						<span class="current-filter-name settingModuleName filter-name pull-left">
 							{if $smarty.request.view eq 'Calendar'}
 								{if $smarty.request.mode eq 'Edit'}
 									<a href="{"index.php?module="|cat:$smarty.request.module|cat:'&parent='|cat:$smarty.request.parent|cat:'&view='|cat:$smarty.request.view}">
