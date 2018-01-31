@@ -6997,6 +6997,7 @@
 	<table name="vtiger_dashboard_tabs">
 		<field name="id" type="I" size="19">
 			<key />
+			<autoincrement />
 		</field>
 		<field name="tabname" type="C" size="50" >
 			<unique />
