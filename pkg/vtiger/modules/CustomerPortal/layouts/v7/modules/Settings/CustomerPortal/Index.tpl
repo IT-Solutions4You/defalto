@@ -103,7 +103,6 @@
 						<div id="dashboardContent" class="show" >
 							<h4>{vtranslate('LBL_HOME_LAYOUT',$QUALIFIED_MODULE)}</h4>
 							<hr class="hrHeader">
-							<input type="hidden" name="defaultCharts" value='{Vtiger_Functions::jsonEncode($CHARTS,true)}'/>
 							<input type="hidden" name="defaultWidgets" value='{Vtiger_Functions::jsonEncode($WIDGETS,true)}'/>
 							{include file='CustomerPortalDashboard.tpl'|@vtemplate_path:$QUALIFIED_MODULE}
 						</div>

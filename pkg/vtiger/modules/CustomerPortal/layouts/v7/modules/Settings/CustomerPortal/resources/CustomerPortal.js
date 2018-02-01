@@ -167,8 +167,6 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		}
 
 		var activeWidgets = {};
-		var activeCharts = {};
-		var defaultCharts = JSON.parse(jQuery('input[name="defaultCharts"]').val());
 		var defaultWidgets = JSON.parse(jQuery('input[name="defaultWidgets"]').val());
 
 		var defaultWidgetModules = ['HelpDesk', 'Faq', 'Documents'];
@@ -187,26 +185,12 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 				activeWidgets[module] = parseInt(defaultWidgets.widgets[module]);
 		});
 
-		var chartsInfo = jQuery("input.chartsInfo");
-		jQuery.each(chartsInfo, function (index, chart) {
-			var element = jQuery(chart);
-			if (element.is(":checked")) {
-				activeCharts[element.attr('id')] = 1;
-			}
-			else {
-				activeCharts[element.attr('id')] = 0;
-			}
-		});
-		if (chartsInfo.length === 0) {
-			activeCharts = defaultCharts.charts;
-		}
 		if (widgetsInfo.length === 0) {
 			activeWidgets = defaultWidgets.widgets;
 		}
 		formData['moduleFieldsInfo'] = selectedFields;
 		formData['relatedModuleList'] = relatedModuleInfo;
 		formData['recordsVisible'] = recordsVisible;
-		formData['activeCharts'] = JSON.stringify(activeCharts);
 		formData['activeWidgets'] = JSON.stringify(activeWidgets);
 		formData['recordPermissions'] = recordPermissionsInfo;
 		return formData;
