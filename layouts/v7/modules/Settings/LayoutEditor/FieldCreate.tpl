@@ -173,7 +173,7 @@
 								</div>
 								<div class="form-group col-sm-6">
 									<label class="control-label fieldLabel col-sm-7">
-										<i class="fa fa-plus"></i> &nbsp; {vtranslate('LBL_QUICK_CREATE',$QUALIFIED_MODULE)}
+										<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_QUICK_CREATE',$QUALIFIED_MODULE)}
 									</label>
 									<div class="controls col-sm-5">
 										{if $FIELD_MODEL->isQuickCreateOptionDisabled()}
