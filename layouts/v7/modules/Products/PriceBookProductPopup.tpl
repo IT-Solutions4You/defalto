@@ -44,7 +44,7 @@
                         <center>
                             <footer>
                                 <button class="btn btn-success addProducts" type="submit">
-                                    <i class="fa fa-plus"></i>&nbsp;
+                                    <i class="fa fa-plus"></i>&nbsp;&nbsp;
                                     <strong>{vtranslate('LBL_ADD_TO_PRICEBOOKS', $MODULE)}</strong>
                                 </button>
                                 <a class="cancelLink" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>

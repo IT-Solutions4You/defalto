@@ -61,7 +61,6 @@ $languageStrings = array(
 	'Prof.'=>'Prof.',
 	
 	'User List'=>'User List',
-	'LBL_TRANSACTIONS' => 'Transactions',
 );
 
 $jsLanguageStrings = array(

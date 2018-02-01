@@ -13,20 +13,21 @@
 			<div class="col-lg-5 col-md-5 module-breadcrumb">
 				{assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
 				<a title="{vtranslate($MODULE, $MODULE)}" href='{$MODULE_MODEL->getDefaultUrl()}'>
-					<h4 class="module-title pull-left text-uppercase"> {vtranslate($MODULE, $MODULE)} &nbsp;&nbsp;</h4>
+					<h4 class="module-title pull-left text-uppercase">&nbsp;{vtranslate($MODULE, $MODULE)}&nbsp;</h4>
 				</a>
 				<p class="current-filter-name filter-name pull-left cursorPointer">&nbsp;&nbsp;
 					<span class="fa fa-angle-right pull-left" aria-hidden="true"></span> 
 					{if $smarty.request.view eq 'List'}
 						{vtranslate('LBL_FILTER', $MODULE)}
 					{/if}
+					&nbsp;
 					{if $smarty.request.view eq 'Detail'}
-						<a title="{$RECORD->get('templatename')}">&nbsp;&nbsp;{$RECORD->get('templatename')} &nbsp;&nbsp;</a>
+						<a title="{$RECORD->get('templatename')}">&nbsp;{$RECORD->get('templatename')}&nbsp;</a>
 					{/if}
 					{if $RECORD and $smarty.request.view eq 'Edit'}
-						<a title="{$RECORD->get('templatename')}">&nbsp;&nbsp;{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('templatename')} &nbsp;&nbsp;</a>
+						<a title="{$RECORD->get('templatename')}">&nbsp;{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('templatename')} &nbsp;</a>
 					{else if $smarty.request.view eq 'Edit'}
-						<a>&nbsp;&nbsp;{vtranslate('LBL_ADDING_NEW', $MODULE)}&nbsp;&nbsp;</a>
+						<a>&nbsp;{vtranslate('LBL_ADDING_NEW', $MODULE)}&nbsp;</a>
 					{/if}
 				</p>
 			</div>

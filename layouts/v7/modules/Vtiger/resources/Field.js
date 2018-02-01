@@ -243,7 +243,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 		var selectedOption = app.htmlDecode(this.getValue());
 
 		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
-			html += '<option value="">Select an Option</option>';
+			html += '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>';
 		}
 
 		var data = this.getData();
@@ -253,10 +253,12 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
 
-			var className = '';
-			if (picklistColors[option]) {
-				className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-				html += 'class="'+className+'"';
+			if (picklistColors) {
+				var className = '';
+				if (picklistColors[option]) {
+					className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+					html += 'class="'+className+'"';
+				}
 			}
 
 			if(option == selectedOption) {
@@ -351,10 +353,12 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
 
-			var className = '';
-			if (picklistColors[option]) {
-				className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-				html += 'class="'+className+'"';
+			if (picklistColors) {
+				var className = '';
+				if (picklistColors[option]) {
+					className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
+					html += 'class="'+className+'"';
+				}
 			}
 
 			if(jQuery.inArray(option,selectedOptionsArray) != -1){

@@ -55,7 +55,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		foreach ($menuGroupedByParent as $parentCategory => $menuList) {
 			if($parentCategory == 'ANALYTICS' || $parentCategory == 'SETTINGS') continue;
 			if(count($menuList) > 0) {
-				if(array_key_exists($selectedModule, $menuList)) {
+				if(array_key_exists($selectedModule, $menuList) && $parentCategory) {
 					$moduleFound = true;
 					$selectedModuleMenuCategory = $parentCategory;
 				}
