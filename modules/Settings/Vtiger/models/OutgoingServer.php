@@ -24,11 +24,17 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
                 <br><br>Thanks  and  Regards,<br> Team vTiger <br><br>';
     }
     
-    public function loadDefaultValues() {
+	public function loadDefaultValues() {
         $defaultOutgoingServerDetails = VtigerConfig::getOD('DEFAULT_OUTGOING_SERVER_DETAILS');
+        if (empty($defaultOutgoingServerDetails)) {
+            $db = PearDatabase::getInstance();
+            $db->pquery('DELETE FROM vtiger_systems WHERE server_type = ?', array('email'));
+            return;
+        }
         foreach ($defaultOutgoingServerDetails as $key=>$value){
             $this->set($key,$value);
         }
+
         $this->defaultLoaded = true;
     }
 	
