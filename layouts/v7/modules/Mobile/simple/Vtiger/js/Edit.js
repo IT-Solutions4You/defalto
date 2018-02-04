@@ -17,7 +17,8 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
     $scope.editdata = [];
 	var _processFields = function(field, newrecord, value){
         if(newrecord){
-            field.raw = field.type.defaultValue;
+            if (typeof field.default != 'undefined') field.raw = field.default;
+            else if (typeof field.type.defaultValue != 'undefined') field.raw = field.type.defaultValue;
         }
         if(!newrecord && value){
             field.raw = value;
