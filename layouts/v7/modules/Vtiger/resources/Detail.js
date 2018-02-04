@@ -1487,7 +1487,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		if(typeof contentHolder === 'undefined') {
 			contentHolder = this.getContentHolder();
 		}
-		contentHolder.off('click', 'clearReferenceSelection');
+		contentHolder.off('click', '.clearReferenceSelection');
 		contentHolder.on('click','.clearReferenceSelection',function(e){
 			e.preventDefault();
 			var element = jQuery(e.currentTarget);
