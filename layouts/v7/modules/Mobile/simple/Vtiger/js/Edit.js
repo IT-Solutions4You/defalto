@@ -127,6 +127,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         $api('fetchRecord', {module: $scope.module, record: $scope.record, view_mode:'web'}, function (e, r) {
             if(r){
                 prepareCreateData(false, r);
+				$scope.record = r.record.id;
             }
         });
     };  
