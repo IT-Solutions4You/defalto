@@ -119,7 +119,9 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
            $scope.loadFields();
        }
        else{
-           prepareCreateData(true);
+           $scope.$root.$on('UserInfo.Changed', function(){
+			   prepareCreateData(true);
+		   });
        }
    });
     
