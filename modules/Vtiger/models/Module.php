@@ -1089,6 +1089,14 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
 					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled'))";
 
+		if(!$currentUser->isAdminUser()) {
+			$moduleFocus = CRMEntity::getInstance('Calendar');
+			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+			if($condition) {
+				$query .= ' AND '.$condition;
+			}
+		}
+
 		$params = array($this->getName());
 
 		if ($recordId) {
@@ -1521,6 +1529,14 @@ class Vtiger_Module_Model extends Vtiger_Module {
 
 		if ($nonAdminQuery) {
 			$query = appendFromClauseToQuery($query, $nonAdminQuery);
+
+			if($functionName == 'get_activities' && trim($nonAdminQuery)) {
+				$moduleFocus = CRMEntity::getInstance('Calendar');
+				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+				if($condition) {
+					$query .= ' AND '.$condition;
+				}
+			}
 		}
 
 		return $query;

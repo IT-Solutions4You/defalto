@@ -65,6 +65,14 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred'))
 					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held'))";
 
+		if(!$currentUser->isAdminUser()) {
+			$moduleFocus = CRMEntity::getInstance('Calendar');
+			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+			if($condition) {
+				$query .= ' AND '.$condition;
+			}
+		}
+
 		if ($recordId) {
 			$query .= " AND vtiger_cntactivityrel.contactid = ?";
 		} elseif ($mode === 'upcoming') {
@@ -251,6 +259,14 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
 			if ($nonAdminQuery) {
 				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+
+				if(trim($nonAdminQuery)) {
+					$relModuleFocus = CRMEntity::getInstance($relatedModuleName);
+					$condition = $relModuleFocus->buildWhereClauseConditionForCalendar();
+					if($condition) {
+						$query .= ' AND '.$condition;
+					}
+				}
 			}
 		} else {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule, $relationId);

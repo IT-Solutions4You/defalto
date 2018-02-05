@@ -198,6 +198,14 @@ class Home_Module_Model extends Vtiger_Module_Model {
 					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
 					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held', 'Cancelled'))";
 
+		if(!$currentUser->isAdminUser()) {
+			$moduleFocus = CRMEntity::getInstance('Calendar');
+			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+			if($condition) {
+				$query .= ' AND '.$condition;
+			}
+		}
+
 		if ($mode === 'upcoming') {
 			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date >= '$currentDate' ELSE CONCAT(due_date,' ',time_end) >= '$nowInDBFormat' END";
 		} elseif ($mode === 'overdue') {
