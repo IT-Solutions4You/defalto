@@ -349,7 +349,10 @@ function __vtlib_get_modulevar_value($module, $varname) {
 				'IsCustomModule'=>false,
 				'table_name' => 'vtiger_quotes',
 				'table_index'=> 'quoteid',
-				'related_tables' => Array ('vtiger_account' => Array('accountid')),
+				'related_tables' => Array (
+					'vtiger_quotescf' => array('quoteid', 'vtiger_quotes', 'quoteid'),
+					'vtiger_account' => Array('accountid')
+				),
 				'popup_fields'=>Array('subject'),
 			),
 			'SalesOrder'=>
@@ -357,7 +360,10 @@ function __vtlib_get_modulevar_value($module, $varname) {
 				'IsCustomModule'=>false,
 				'table_name' => 'vtiger_salesorder',
 				'table_index'=> 'salesorderid',
-				'related_tables'=> Array ('vtiger_account' => Array('accountid')),
+				'related_tables'=> Array (
+					'vtiger_salesordercf' => array('salesorderid', 'vtiger_salesorder', 'salesorderid'),
+					'vtiger_account' => Array('accountid')
+				),
 				'popup_fields'=>Array('subject'),
 			),
 			'PurchaseOrder'=>
@@ -404,6 +410,9 @@ function __vtlib_get_modulevar_value($module, $varname) {
 				'IsCustomModule'=>false,
 				'table_name' => 'vtiger_notes',
 				'table_index'=> 'notesid',
+				'related_tables' => Array(
+					'vtiger_notescf' => Array('notesid', 'vtiger_notes', 'notesid')
+				),
 			),
 			'Products'=>
 			Array(
@@ -427,6 +436,9 @@ function __vtlib_get_modulevar_value($module, $varname) {
 				'table_name' => 'vtiger_vendor',
 				'table_index'=> 'vendorid',
 				'popup_fields'=>Array('vendorname'),
+				'related_tables'=> Array( 
+					'vtiger_vendorcf' => Array('vendorid', 'vtiger_vendor', 'vendorid')
+					),
 			),
 			'Project' => 
 			Array(
