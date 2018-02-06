@@ -20,9 +20,6 @@ $PERFORMANCE_CONFIG = Array(
 	// This avoids executing the SET NAMES SQL for each query!
 	'DB_DEFAULT_CHARSET_UTF8' => true,
 
-	// Compute record change indication for each record shown on listview
-	'LISTVIEW_RECORD_CHANGE_INDICATOR' => false,
-
 	// Turn-off default sorting in ListView, could eat up time as data grows
 	'LISTVIEW_DEFAULT_SORTING' => false,
 	
@@ -38,7 +35,5 @@ $PERFORMANCE_CONFIG = Array(
 	// reduce number of ajax requests on home page, reduce this value if home page widget dont
 	// show value.
 	'HOME_PAGE_WIDGET_GROUP_SIZE' => 12,
-	//take backup legacy style, whenever an admin user logs out.
-	'LOGOUT_BACKUP' => true,
 );
 ?>
