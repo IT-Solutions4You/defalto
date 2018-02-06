@@ -7021,6 +7021,11 @@
 		<constraint>ADD CONSTRAINT vtiger_dashboard_tabs_ibfk_1 FOREIGN KEY (userid) REFERENCES vtiger_users(id) ON DELETE CASCADE</constraint>
 		<opt>Engine=InnoDB</opt>
 	</table>
+	
+	<table name="vtiger_dashboard_tabs" alter="true">
+		<constraint>ADD CONSTRAINT tabname UNIQUE(tabname, userid)</constraint>
+		<opt>Engine=InnoDB</opt>
+	</table>
 
 	<table name="vtiger_app2tab">
 		<field name="tabid" type="I" size="11" />
