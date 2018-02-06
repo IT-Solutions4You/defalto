@@ -61,7 +61,7 @@ class Google_Oauth2_Connector {
 		$this->client_id = Google_Config_Connector::$clientId;
 		$this->client_secret = Google_Config_Connector::$clientSecret;
 		$this->redirect_uri = Google_Config_Connector::getRedirectUrl();
-		$this->scope = $this->scopes[$this->source_module];
+		$this->scope = implode(' ', array_values($this->scopes));
     }
     
     public function getClientId() {
