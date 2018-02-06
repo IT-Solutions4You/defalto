@@ -78,9 +78,11 @@ class Vtiger_Mailer extends PHPMailer {
 	function reinitialize() {
 		$this->ClearAllRecipients();
 		$this->ClearReplyTos();
+		$this->ClearCustomHeaders();
 		$this->Body = '';
 		$this->Subject ='';
 		$this->ClearAttachments();
+		$this->ErrorInfo = '';
 	}
 
 	/**
