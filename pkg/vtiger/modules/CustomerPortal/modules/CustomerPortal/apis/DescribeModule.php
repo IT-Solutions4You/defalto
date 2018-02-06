@@ -45,10 +45,11 @@ class CustomerPortal_DescribeModule extends CustomerPortal_API_Abstract {
 						$value['default'] = Vtiger_Time_UIType::getTimeValueWithSeconds($value['default']);
 					}
 					$value['label'] = decode_html($value['label']);
-					if ($activeFields[$value['name']])
+					if ($activeFields[$value['name']]) {
 						$value['editable'] = true;
-					else
+					} else {
 						$value['editable'] = false;
+					}
 					$describeInfo['fields'][$key] = $value;
 
 					$position = array_search($value['name'], $activeFieldKeys);

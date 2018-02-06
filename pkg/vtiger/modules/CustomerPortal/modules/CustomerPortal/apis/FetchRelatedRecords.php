@@ -111,8 +111,7 @@ class CustomerPortal_FetchRelatedRecords extends CustomerPortal_API_Abstract {
 						}
 					}
 				}
-			}
-			else {
+			} else {
 				$activeFields = CustomerPortal_Utils::getActiveFields($module);
 				$fields = implode(',', $activeFields);
 				$limitCaluse = sprintf('ORDER BY modifiedtime DESC LIMIT %s,%s', ($page * $pageLimit), $pageLimit);

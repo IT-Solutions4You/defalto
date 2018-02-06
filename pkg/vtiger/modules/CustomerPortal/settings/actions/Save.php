@@ -25,7 +25,6 @@ class Settings_CustomerPortal_Save_Action extends Settings_Vtiger_Index_Action {
 			$moduleModel->set('shortcuts', $request->get('defaultShortcuts'));
 			$moduleModel->set('moduleFieldsInfo', $request->get('moduleFieldsInfo'));
 			$moduleModel->set('relatedModuleList', $request->get('relatedModuleList'));
-			$moduleModel->set('charts', $request->get('activeCharts'));
 			$moduleModel->set('widgets', $request->get('activeWidgets'));
 			$moduleModel->set('recordsVisible', $request->get('recordsVisible'));
 			$moduleModel->set('recordPermissions', $request->get('recordPermissions'));
