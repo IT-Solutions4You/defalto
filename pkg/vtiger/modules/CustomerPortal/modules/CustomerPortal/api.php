@@ -34,7 +34,9 @@ class CustomerPortal_API_EntryPoint {
 	static function process(CustomerPortal_API_Request $request) {
 		$operation = $request->getOperation();
 		$response = false;
-		preg_match("/[0-9a-zA-z]*/", $operation, $match);
+		if (!preg_match("/[0-9a-zA-z]*/", $operation, $match)) {
+			throw new Exception("Invalid entry", 1412);
+		}
 
 		if ($operation == $match[0]) {
 			$operationFile = sprintf('/apis/%s.php', $operation);
