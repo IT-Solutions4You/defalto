@@ -42,29 +42,35 @@ Vtiger_Index_Js('Settings_ModuleManager_List_Js', {
 		return aDeferred.promise();
 	},
 	registerEventsForImportFromZip: function (container) {
+		// Forcefully disable file-input and submit
+		var fileuploadWrap = container.find('.fileUploadBtn').parent();
+		var importFromZip = container.find('[name="importFromZip"]');
+		var moduleZip = container.find('[name="moduleZip"]');
+		var fileDetails = jQuery('#moduleFileDetails');
+
+		fileuploadWrap.hide();
+		importFromZip.attr('disabled', 'disabled');
+
 		container.on('change', '[name="acceptDisclaimer"]', function (e) {
 			var element = jQuery(e.currentTarget);
-			var importFromZip = container.find('[name="importFromZip"]');
-			var uploadedFile = jQuery('#moduleZip').val();
-			if (uploadedFile) {
-				jQuery('#moduleFileDetails').attr('title', uploadedFile).html(uploadedFile);
-			}
-			var disabledStatus = importFromZip.attr('disabled');
-			if ((element.is(':checked')) && (uploadedFile != '')) {
-				if (typeof disabledStatus != "undefined") {
-					importFromZip.removeAttr('disabled');
-				}
+			if (element.is(':checked')) {
+				fileuploadWrap.show();
 			} else {
-				if (typeof disabledStatus == "undefined") {
-					importFromZip.attr('disabled', "disabled");
-				}
+				fileuploadWrap.hide();
+				importFromZip.attr('disabled', 'disabled');
+				fileDetails.removeAttr('title').html('');
+				moduleZip.val('');
 			}
 		});
 
 		container.on('change', '[name="moduleZip"]', function (e) {
+			var uploadedFile = moduleZip.val();
+			if (uploadedFile) {
+				jQuery('#moduleFileDetails').attr('title', uploadedFile).html(uploadedFile);
+			}
 			var acceptDisclaimer = container.find('[name="acceptDisclaimer"]');
-			if (!acceptDisclaimer.is(':checked')) {
-				acceptDisclaimer.trigger('click');
+			if (acceptDisclaimer.is(':checked') && uploadedFile) {
+				importFromZip.removeAttr('disabled');
 			}
 		});
 
