@@ -192,7 +192,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
 				}
                 var toast = $mdToast.simple().content(message).position($scope.getToastPosition()).hideDelay(1000);
                 $mdToast.show(toast);
-                window.location.href = "index.php?module="+$scope.module+"&view=List&app="+$scope.selectedApp;
+                //window.location.href = "index.php?module="+$scope.module+"&view=List&app="+$scope.selectedApp;
             }
         });
     };
