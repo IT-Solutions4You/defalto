@@ -1320,11 +1320,7 @@ class Vtiger_Functions {
 	 * @return type -- table name
 	 */
 	public static function getUserSpecificTableName($moduleName) {
-		$moduleName = strtolower($moduleName);
-		if ($moduleName == "events") {
-			$moduleName = "calendar";
-		}
-		return "vtiger_".$moduleName.'_user_field';
+		return 'vtiger_crmentity_user_field';
 	}
 
 	/**
