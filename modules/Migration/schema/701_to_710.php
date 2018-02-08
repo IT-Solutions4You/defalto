@@ -171,10 +171,49 @@ if (defined('VTIGER_UPGRADE')) {
 
 	//START::Google calendar sync settings
 	if (!Vtiger_Utils::CheckTable('vtiger_google_event_calendar_mapping')) {
-		$db->pquery('CREATE TABLE vtiger_google_event_calendar_mapping (event_id varchar(255) DEFAULT NULL, calendar_id varchar(255) DEFAULT NULL, user_id int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8', array());
+		$db->pquery('CREATE TABLE vtiger_google_event_calendar_mapping (event_id VARCHAR(255) DEFAULT NULL, calendar_id VARCHAR(255) DEFAULT NULL, user_id INT(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8', array());
 		echo '<br>Succecssfully vtiger_google_event_calendar_mapping table created<br>';
 	}
 	//END::Google calendar sync settings
+
+	//START::Centralize user field table for easy query with context of user across module
+	$generalUserFieldTable = 'vtiger_crmentity_user_field';
+	if (!Vtiger_Utils::CheckTable($generalUserFieldTable)) {
+		Vtiger_Utils::CreateTable($generalUserFieldTable,
+				'(`recordid` INT(19) NOT NULL, 
+				`userid` INT(19) NOT NULL,
+				`starred` VARCHAR(100) DEFAULT NULL,
+				Index `record_user_idx` (`recordid`, `userid`),
+				FOREIGN KEY (recordid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE)', true);
+	}
+
+	$migratedTables = array();
+	$result = $db->pquery('SELECT vtiger_tab.tabid, vtiger_tab.name, tablename, fieldid FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid=vtiger_field.tabid WHERE fieldname=?', array('starred'));
+	while ($row = $db->fetch_array($result)) {
+		$fieldId = $row['fieldid'];
+		$moduleName = $row['name'];
+		$oldTableName = $row['tablename'];
+
+		$db->pquery('UPDATE vtiger_field SET tablename=? WHERE fieldid=? AND tablename=?', array($generalUserFieldTable, $fieldId, $oldTableName));
+		echo "Updated starred field for module $moduleName to point generic table => $generalUserFieldTable<br>";
+
+		if (Vtiger_Utils::CheckTable($oldTableName)) {
+			if (!in_array($oldTableName, $migratedTables)) {
+				if ($oldTableName != $generalUserFieldTable) {
+					//Insert entries from module specific table to generic table for follow up records
+					$db->pquery("INSERT INTO $generalUserFieldTable (recordid, userid, starred) (SELECT recordid,userid,starred FROM $oldTableName INNER JOIN vtiger_crmentity ON $oldTableName.recordid = vtiger_crmentity.crmid)", array());
+					echo "entries moved from $oldTableName to $generalUserFieldTable table<br>";
+
+					//Drop module specific user table
+					$db->pquery("DROP TABLE $oldTableName", array());
+					echo "module specific user field table $oldTableName has been dropped<br>";
+					array_push($migratedTables, $oldTableName);
+				}
+			}
+		}
+	}
+	echo '<br>Succesfully centralize user field table for easy query with context of user across module<br>';
+	//END::Centralize user field table for easy query with context of user across module
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();

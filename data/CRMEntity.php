@@ -85,7 +85,7 @@ class CRMEntity {
 			return;
 		}
 
-		$userSpecificTableIgnoredModules = array("SMSNotifier", "ModComments");
+		$userSpecificTableIgnoredModules = array('SMSNotifier', 'PBXManager', 'ModComments');
 		if(in_array($moduleName, $userSpecificTableIgnoredModules)) return;
 
 		$userSpecificTable = Vtiger_Functions::getUserSpecificTableName($moduleName);
