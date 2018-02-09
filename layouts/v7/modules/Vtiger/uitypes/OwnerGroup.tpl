@@ -25,7 +25,7 @@
 		{/if}>
 		<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>
 		{foreach key=OWNER_ID item=OWNER_NAME from=$ALL_ACTIVEGROUP_LIST}
-			<option value="{$OWNER_ID}" data-picklistvalue='{$OWNER_NAME}' {if $FIELD_MODEL->get('fieldvalue') eq $OWNER_ID} selected {/if}
+			<option value="{$OWNER_ID}" data-picklistvalue='{$OWNER_NAME}' {if $VIEW_SOURCE neq 'MASSEDIT' && $FIELD_MODEL->get('fieldvalue') eq $OWNER_ID} selected {/if}
 					{if array_key_exists($OWNER_ID, $ACCESSIBLE_GROUP_LIST)} data-recordaccess=true {else} data-recordaccess=false {/if} >
 				{$OWNER_NAME}
 			</option>

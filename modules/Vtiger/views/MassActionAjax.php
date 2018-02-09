@@ -68,6 +68,7 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CVID', $cvId);
 		$viewer->assign('SELECTED_IDS', $selectedIds);
 		$viewer->assign('EXCLUDED_IDS', $excludedIds);
+		$viewer->assign('VIEW_SOURCE','MASSEDIT');
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('MODULE_MODEL',$moduleModel); 
 		$viewer->assign('MASS_EDIT_FIELD_DETAILS',$fieldInfo); 
