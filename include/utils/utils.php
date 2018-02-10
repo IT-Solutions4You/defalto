@@ -334,7 +334,7 @@ function set_default_config(&$defaults)
  */
 function decide_to_html() {
 	global $doconvert, $inUTF8, $default_charset;
- 	$action = $_REQUEST['action']; 
+ 	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : ''; 
  		     
     $inUTF8 = (strtoupper($default_charset) == 'UTF-8'); 
 
