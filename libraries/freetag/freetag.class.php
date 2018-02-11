@@ -976,7 +976,7 @@ class freetag {
 			ON ${prefix}freetagged_objects.module = vtiger_tab.name
 			WHERE vtiger_tab.presence != 1
 			$tagger_sql
-			GROUP BY tag
+			GROUP BY tag, tag_id
 			ORDER BY quantity DESC LIMIT 0, $max";
         //echo $sql;
 		$rs = $adb->pquery($sql, $params) or die("Syntax Error: $sql");
