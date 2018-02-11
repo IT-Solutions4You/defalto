@@ -24,8 +24,6 @@ require_once 'includes/Loader.php';
 vimport ('includes.runtime.EntryPoint');
 
 $site_URLArray = explode('/',$site_URL);
-$organization_name = $site_URLArray[2];
-$organization_name = str_replace('.od1.vtiger.com', '', $organization_name);
 
 $version = explode('.', phpversion());
 
@@ -36,9 +34,9 @@ if($php <  50300){
 	$hostName = gethostname();
 }
 
-$mailbody ="Instance dir : $root_directory <br/> Company Name : $organization_name <br/> Site Url : $site_URL <br/> Host Name : $hostName<br/>";
+$mailbody ="Instance dir : $root_directory <br/> Site Url : $site_URL <br/> Host Name : $hostName<br/>";
+$mailSubject = "[Alert] ";
 
-$mailSubject = "[Alert] $organization_name ";
 if(PHP_SAPI === "cli" || (isset($_SESSION["authenticated_user_id"]) &&	isset($_SESSION["app_unique_key"]) && $_SESSION["app_unique_key"] == $application_unique_key)){
 
 	$cronTasks = false;
