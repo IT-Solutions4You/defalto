@@ -210,7 +210,8 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var header = mappingPair[0];
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
-                mapping["'" + header + "'"] = mappingPair[1];
+				mapping[header] = mappingPair[1];
+				mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
             fieldsList.each(function(i, element) {
                 var fieldElement = jQuery(element);
@@ -218,11 +219,11 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var rowId = jQuery('[name=row_counter]', fieldElement).get(0).value;
                 var headerNameElement = jQuery('[name=header_name]', fieldElement).get(0);
                 var headerName = jQuery(headerNameElement).html();
-                if ("'" + headerName + "'" in mapping) {
-                    mappedFields.select2("val", mapping["'" + headerName + "'"]);
-                } else if (rowId in mapping) {
-                    mappedFields.val($rowId);
-                }
+                if (headerName in mapping) {
+                    mappedFields.select2("val", mapping[headerName]);
+				} else if (rowId-1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
+                	mappedFields.select2("val", mapping[rowId-1]);
+				}
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
             });
         },
