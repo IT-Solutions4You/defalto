@@ -37,7 +37,11 @@ if($php <  50300){
 $mailbody ="Instance dir : $root_directory <br/> Site Url : $site_URL <br/> Host Name : $hostName<br/>";
 $mailSubject = "[Alert] ";
 
-if(PHP_SAPI === "cli" || (isset($_SESSION["authenticated_user_id"]) &&	isset($_SESSION["app_unique_key"]) && $_SESSION["app_unique_key"] == $application_unique_key)){
+function vtigercron_detect_run_in_cli(){
+	return (!isset($_SERVER['SERVER_SOFTWARE']) && (php_sapi_name() == 'cli' ||  is_numeric($_SERVER['argc']) && $_SERVER['argc'] > 0));
+}
+
+if(vtigercron_detect_run_in_cli() || (isset($_SESSION["authenticated_user_id"]) &&	isset($_SESSION["app_unique_key"]) && $_SESSION["app_unique_key"] == $application_unique_key)){
 
 	$cronTasks = false;
 	if (isset($_REQUEST['service'])) {
