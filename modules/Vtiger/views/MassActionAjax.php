@@ -299,6 +299,22 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 
 		$sourceModule = $request->getModule();
 		$moduleName = 'SMSNotifier';
+
+		$isCreateAllowed = Users_Privileges_Model::isPermitted($moduleName, 'CreateView');
+		if(!$isCreateAllowed) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+		
+		$viewer = $this->getViewer($request);
+
+		require_once 'modules/SMSNotifier/SMSNotifier.php';
+		if (!SMSNotifier::checkServer()) {
+			$viewer->assign('TITLE', vtranslate('LBL_SEND_SMS', $moduleName));
+			$viewer->assign('BODY', vtranslate('LBL_NOT_ACCESSIBLE', $moduleName));
+			echo $viewer->view('NotAccessible.tpl', $moduleName, true);
+			exit;
+		}
+
 		$selectedIds = $this->getRecordsListFromRequest($request);
 		$excludedIds = $request->get('excluded_ids');
 		$cvId = $request->get('viewname');
@@ -306,7 +322,6 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$user = Users_Record_Model::getCurrentUserModel();
         $moduleModel = Vtiger_Module_Model::getInstance($sourceModule);
         $phoneFields = $moduleModel->getFieldsByType('phone');
-		$viewer = $this->getViewer($request);
 		
 		if(count($selectedIds) == 1){
 			$recordId = $selectedIds[0];
