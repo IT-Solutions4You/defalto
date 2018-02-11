@@ -26,6 +26,7 @@ class Vtiger_Mailer extends PHPMailer {
 	 * Constructor
 	 */
 	function __construct() {
+		parent::__construct();
 		$this->initialize();
 	}
 
@@ -43,6 +44,7 @@ class Vtiger_Mailer extends PHPMailer {
 	 * @access private
 	 */
 	function initialize() {
+		$this->Timeout = 30; /* Issue #155: to allow anti-spam tech be successful */
 		$this->IsSMTP();
 
 		global $adb;
