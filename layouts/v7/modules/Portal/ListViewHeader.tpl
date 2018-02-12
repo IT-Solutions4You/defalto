@@ -10,6 +10,5 @@
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
-    <div class="col-sm-12 col-xs-12" id="portalListViewPage">
-
-        {strip}
+    <div id="portalListViewPage">
+{/strip}

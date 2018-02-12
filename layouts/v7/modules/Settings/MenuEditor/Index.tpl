@@ -9,13 +9,7 @@
 {* modules/Settings/MenuEditor/views/Index.php *}
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-{assign var="APP_IMAGE_MAP" value=[
-	'MARKETING' => 'fa-users',
-	'SALES' => 'fa-dot-circle-o',
-	'INVENTORY' => 'vicon-inventory',
-	'SUPPORT' => 'fa-life-ring',
-	'PROJECT' => 'fa-briefcase'
-]}
+{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <div class="listViewPageDiv detailViewContainer col-sm-12" id="listViewContent">
 	<div class="col-sm-12">
 		<div class="row">

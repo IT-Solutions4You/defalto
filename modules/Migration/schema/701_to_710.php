@@ -215,6 +215,19 @@ if (defined('VTIGER_UPGRADE')) {
 	echo '<br>Succesfully centralize user field table for easy query with context of user across module<br>';
 	//END::Centralize user field table for easy query with context of user across module
 
+	//START::Adding new parent TOOLS in menu
+	$appsList = array('TOOLS' => array('Rss', 'Portal'));
+	foreach ($appsList as $app => $appModules) {
+		foreach ($appModules as $moduleName) {
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			if ($moduleModel) {
+				Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
+			}
+		}
+	}
+	echo '<br>Succesfully added RSS, Email Templates for new parent TOOLS<br>';
+	//END::Adding new parent TOOLS in menu
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 
