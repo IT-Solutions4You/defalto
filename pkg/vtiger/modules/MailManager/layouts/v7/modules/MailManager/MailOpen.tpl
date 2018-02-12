@@ -119,13 +119,14 @@
                     {assign var=ATTACHNAME value=$ATTACHVALUE['filename']}
                     {if $INLINE_ATT[$ATTACHNAME] eq null}
                         {assign var=DOWNLOAD_LINK value=$ATTACHNAME|@escape:'url'}
+						{assign var=ATTACHID value=$ATTACHVALUE['attachid']}
                         <span>
                             <i class="fa {$MAIL->getAttachmentIcon($ATTACHVALUE['path'])}"></i>&nbsp;&nbsp;
-                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
                                 {$ATTACHNAME}
                             </a>
                             <span>&nbsp;&nbsp;({$ATTACHVALUE['size']})</span>
-                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
+                            <a href="index.php?module={$MODULE}&view=Index&_operation=mail&_operationarg=attachment_dld&_muid={$MAIL->muid()}&_atid={$ATTACHID}&_atname={$DOWNLOAD_LINK|@escape:'htmlall':'UTF-8'}">
                                 &nbsp;&nbsp;<i class="fa fa-download"></i>
                             </a>
                         </span>

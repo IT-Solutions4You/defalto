@@ -70,6 +70,21 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 			}
 		}
 
+		$nonAdminQuery = Users_Privileges_Model::getNonAdminAccessControlQuery($relatedModuleName);
+		if (trim($nonAdminQuery)) {
+			if($relatedModuleName == 'Calendar') {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+
+				$moduleFocus = CRMEntity::getInstance('Calendar');
+				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+				if($condition) {
+					$query .= ' AND '.$condition;
+				}
+			} else {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+			}
+		}
+
 		return $query;
 	}
 

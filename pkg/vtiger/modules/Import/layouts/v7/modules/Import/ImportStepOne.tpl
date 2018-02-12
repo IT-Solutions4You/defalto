@@ -42,7 +42,7 @@
                 </div>
             </td>
         </tr>
-        {if $FORMAT eq ''}
+        {if $FORMAT eq 'csv'}
             <tr id="has_header_container" style="height:50px">
                 <td>{'LBL_HAS_HEADER'|@vtranslate:$MODULE}</td>
                 <td>
@@ -62,7 +62,7 @@
 				</td>
 			</tr>
 		{/if}
-        {if $FORMAT eq ''}
+        {if $FORMAT eq 'csv'}
             <tr id="delimiter_container" style="height:50px">
                 <td>{'LBL_DELIMITER'|@vtranslate:$MODULE}</td>
                 <td>

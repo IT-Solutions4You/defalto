@@ -11,6 +11,7 @@
 $languageStrings = array(
 	'ERR_DATABASE_CONNECTION_FAILED' => 'Unable to connect to database Server',
 	'ERR_DB_NOT_FOUND' => 'This Database is not found.Try changing the Database settings',
+	'ERR_DB_NOT_UTF8'  => 'Database charset or collation not compatible with UTF8',
 	'ERR_INVALID_MYSQL_PARAMETERS' => 'Invalid mySQL Connection Parameters specified',
 	'ERR_INVALID_MYSQL_VERSION' => 'MySQL version is not supported, kindly connect to MySQL 5.1.x or above',
 	'ERR_UNABLE_CREATE_DATABASE' => 'Unable to Create database',

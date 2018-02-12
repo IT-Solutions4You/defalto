@@ -880,6 +880,12 @@ a.menu-item:hover{
     pointer-events: none;
 }
 
+.input-group.percentage-input-group {
+    .form-control {
+        width: 100% !important;
+    }
+}
+
 //Horizontal scroll
 .bottomscroll-div,.topscroll-div {
     display: table;
@@ -1634,8 +1640,8 @@ ul.unstyled{
 }
 .listViewEntries .relatedListEntryValues .value{
     vertical-align: middle;
-        width: 80%;
-        display: inline-block;
+	width: 80%;
+	display: inline-block;
 }
 
 .floatThead-table{
@@ -1921,7 +1927,10 @@ input[type=checkbox]:checked{
 **********************************/
 
 .detailViewButtoncontainer{
-    padding-top:5px;   
+    padding-top:5px;
+}
+.detailViewButtoncontainer button.btn {
+	margin: 0px 1px !important;
 }
 .detailViewButtoncontainer button.btn {
   margin: 0px 1px !important;
@@ -2023,6 +2032,10 @@ strong, b, th{
     margin-right: 2%;
 }
 .overlayDetailHeader button.btn {
+	margin: 0px 1px !important;
+}
+
+overlayDetailHeader button.btn {
 	margin: 0px 1px !important;
 }
 
@@ -3200,7 +3213,7 @@ strong, b, th{
     color: @white;
 }
 .mailBoxEditDiv .crumbs li {
-  width: 22%;
+	width: 22%;
 }
 .stepNum{
     display: inline-block;
@@ -5282,6 +5295,9 @@ form[name="notification_settings"] .select2-choice {
 /******************************************* 
 ************* Dashboard Styles *************
 ********************************************/
+li.dashboardWidget {
+	overflow: hidden;
+}
 
 .dashboardWidgetHeader .title{
     padding-bottom: 10px;
@@ -5475,7 +5491,7 @@ form[name="notification_settings"] .select2-choice {
     border-radius: 1px;
 }
 .modal {
-    z-index:1100;
+	z-index:1100;
 }
 .select2-container .select2-choice {
     height:28px;
@@ -8357,10 +8373,10 @@ input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 	display: inline-block;
 }
 @-moz-document url-prefix() {
-  .duplicateHandlingContainer .tooltip-inner {
-    width: 550px;
-    max-width: 550px;
-  }
+	.duplicateHandlingContainer .tooltip-inner {
+		width: 550px;
+		max-width: 550px;
+	}
 }
 .duplicateHandlingContainer{
 	.tooltip-inner {

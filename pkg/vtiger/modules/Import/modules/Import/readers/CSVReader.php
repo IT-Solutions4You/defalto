@@ -95,7 +95,9 @@ class Import_CSVReader_Reader extends Import_FileReader_Reader {
 		$db = PearDatabase::getInstance();
 		$tableName = Import_Utils_Helper::getDbTableName($this->user);
 		$delimiter = $this->request->get('delimiter');
-		$query = 'LOAD DATA LOCAL INFILE "'.$filePath.'" INTO TABLE '.$tableName.' FIELDS TERMINATED BY "'.$delimiter.'" OPTIONALLY ENCLOSED BY "\"" LINES TERMINATED BY "\n"';
+		$encoding  = $this->request->get('file_encoding');
+		$withEncoding = ' CHARACTER SET ' . ($encoding == 'UTF-8' ? 'UTF8' : 'latin1');
+		$query = 'LOAD DATA LOCAL INFILE "'.$filePath.'" INTO TABLE '.$tableName. $withEncoding.' FIELDS TERMINATED BY "'.$delimiter.'" OPTIONALLY ENCLOSED BY "\"" LINES TERMINATED BY "\n"';
 		if($this->hasHeader()){
 			$query .= " IGNORE 1 LINES ";
 		}

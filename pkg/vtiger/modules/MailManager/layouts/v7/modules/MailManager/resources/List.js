@@ -156,17 +156,17 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			settingContainer.find('.selectFolderDesc').removeClass('hide');
 			if(useProtocol != '') {
 				settingContainer.find('#_mbox_server').val(useServer);
-				settingContainer.find('.mbox_protocol').each(function(node) {
+				settingContainer.find('.mbox_protocol').each(function(i, node) {
 					if(jQuery(node).val() == useProtocol) {
 						jQuery(node).attr('checked', true);
 					}
 				});
-				settingContainer.find('.mbox_ssltype').each(function(node) {
+				settingContainer.find('.mbox_ssltype').each(function(i, node) {
 					if(jQuery(node).val() == useSSLType) {
 						jQuery(node).attr('checked', true);
 					}
 				});
-				settingContainer.find('.mbox_certvalidate').each(function(node) {
+				settingContainer.find('.mbox_certvalidate').each(function(i, node) {
 					if(jQuery(node).val() == useCert) {
 						jQuery(node).attr('checked', true);
 					}

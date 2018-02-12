@@ -33,7 +33,8 @@
             <div class="row form-group">
                 <div class="col-lg-2">{vtranslate('LBL_ADD_FIELDS',$QUALIFIED_MODULE)}</div>
                 <div class="col-lg-10">
-                    <select class="select2 task-fields" style="min-width: 150px;">
+                    <select class="select2 task-fields" style="min-width: 150px;" data-placeholder="{vtranslate('LBL_SELECT_FIELDS', $QUALIFIED_MODULE)}">
+						<option></option>
                         {$ALL_FIELD_OPTIONS}
                     </select>	
                 </div>

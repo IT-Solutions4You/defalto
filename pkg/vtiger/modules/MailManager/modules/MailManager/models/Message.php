@@ -247,8 +247,9 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 * @global Array $upload_badext - List of bad extensions
 	 * @param Boolean $withContent - Used to load the Attachments with/withoud content
 	 * @param String $aName - Attachment Name
+	 * @param Integer $aId - Attachment Id (to eliminate friction with same Attachment Name)
 	 */
-	protected function loadAttachmentsFromDB($withContent, $aName=false) {
+	protected function loadAttachmentsFromDB($withContent, $aName=false, $aId=false) {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
@@ -260,7 +261,8 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 			$filteredColumns = "aname, attachid, path, cid";
 
 			$whereClause = "";
-			if ($aName) { $whereClause = " AND aname=?"; $params[] = $aName; }
+			if ($aName) { $whereClause .= " AND aname=?"; $params[] = $aName; }
+			if ($aId)   { $whereClause .= " AND aid=?"; $params[] = $aId; }
 
 			$atResult = $db->pquery("SELECT {$filteredColumns} FROM vtiger_mailmanager_mailattachments
 						WHERE userid=? AND muid=? $whereClause", $params);
@@ -279,7 +281,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 					$filePath = $atResultRow['path'].$atResultRow['attachid'].'_'.sanitizeUploadFileName($atResultRow['aname'], vglobal('upload_badext'));
 					$fileSize = $this->convertFileSize(filesize($filePath));
 					$data = ($withContent? $fileContent: false);
-					$this->_attachments[] = array('filename'=>$atResultRow['aname'], 'data' => $data, 'size' => $fileSize, 'path' => $filePath);
+					$this->_attachments[] = array('filename'=>$atResultRow['aname'], 'data' => $data, 'size' => $fileSize, 'path' => $filePath, 'attachid' => $atResultRow['attachid']);
 					unset($fileContent); // Clear immediately
 				}
 
@@ -404,10 +406,11 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 	 * Gets the Mail Attachments
 	 * @param Boolean $withContent
 	 * @param String $aName
+	 * @param Integer $aId
 	 * @return List of Attachments
 	 */
-	public function attachments($withContent=true, $aName=false) {
-		$this->loadAttachmentsFromDB($withContent, $aName);
+	public function attachments($withContent=true, $aName=false, $aId=false) {
+		$this->loadAttachmentsFromDB($withContent, $aName, $aId);
 		return $this->_attachments;
 	}
 

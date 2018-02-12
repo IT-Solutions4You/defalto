@@ -756,6 +756,19 @@ class Vtiger_Util_Helper {
 		return (stristr($db_character_set, 'utf8') && stristr($db_collation_type, 'utf8'));
 	}
 
+	public static function checkDbLocalInfileSupport() {
+		$db = PearDatabase::getInstance();
+		$rs = $db->pquery("show variables like 'local_infile'", array());
+		$db_local_infile = null;
+		while ($arr = $db->fetch_array($rs)) {
+			switch($arr['variable_name']) {
+				case 'local_infile': $db_local_infile = $arr['value']; break;
+			}
+			if ($db_local_infile != null) break;
+		}
+		return ($db_local_infile == '1' || strtolower($db_local_infile) == 'on');
+	}
+
 	/**
 	 * Function to get both date string and date difference string
 	 * @param <Date Time> $dateTime

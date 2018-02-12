@@ -40,12 +40,11 @@
                 <div class="user-details">
                     <md-list-item class="md-1-line">
                     {/literal}
-                    <img src="../../{$TEMPLATE_WEBPATH}/resources/images/butler.jpg" class="md-avatar" alt="butler">
+                    <img src="../../{$TEMPLATE_WEBPATH}/resources/images/default_1.png" class="md-avatar" alt="user">
                     {literal}
                         <div class="md-list-item-text">
-                            <h5>{{userinfo.first_name + " "}}{{userinfo.last_name}}</h5>
-                            <!--p>{{userinfo.username}}</p>
-                            <p>{{userinfo.email}}</p-->
+                            <div>{{userinfo.first_name + " "}}{{userinfo.last_name}}</div>
+							<h5 style="margin: 0px;">{{userinfo.email}}</h5>
                         </div>
                     </md-list-item>
                 </div>

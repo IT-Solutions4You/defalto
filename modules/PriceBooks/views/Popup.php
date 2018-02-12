@@ -63,6 +63,9 @@ class PriceBooks_Popup_View extends Vtiger_Popup_View {
 			$listViewModel->set('src_field', $sourceField);
 			$listViewModel->set('src_record', $sourceRecord);
 		}
+		if (!empty($sourceRecord)) {
+			$listViewModel->set('src_record', $sourceRecord);
+		}
 		if((!empty($searchKey)) && (!empty($searchValue))) {
 			$listViewModel->set('search_key', $searchKey);
 			$listViewModel->set('search_value', $searchValue);

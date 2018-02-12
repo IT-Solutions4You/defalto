@@ -4,7 +4,7 @@
         <div class="user-details">
             <md-list-item class="md-1-line" style="margin:10px 0px">
             {/literal}
-            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/default_1.png" class="md-avatar" alt="butler">
+            <img src="../../{$TEMPLATE_WEBPATH}/resources/images/default_1.png" class="md-avatar" alt="user">
             {literal}
                 <div class="md-list-item-text">
                     <small>{{userinfo.first_name + " "}}{{userinfo.last_name}}</small>

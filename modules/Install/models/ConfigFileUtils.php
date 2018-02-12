@@ -204,15 +204,8 @@ ini_set('memory_limit','64M');
 // files with one of these extensions will have '.txt' appended to their filename on upload
 \$upload_badext = array('php', 'php3', 'php4', 'php5', 'pl', 'cgi', 'py', 'asp', 'cfm', 'js', 'vbs', 'html', 'htm', 'exe', 'bin', 'bat', 'sh', 'dll', 'phps', 'phtml', 'xhtml', 'rb', 'msi', 'jsp', 'shtml', 'sth', 'shtm');
 
-// full path to include directory including the trailing slash
-// includeDirectory default value = \$root_directory..'include/
-\$includeDirectory = \$root_directory.'include/';
-
 // list_max_entries_per_page default value = 20
 \$list_max_entries_per_page = '20';
-
-// limitpage_navigation default value = 5
-\$limitpage_navigation = '5';
 
 // history_max_viewed default value = 5
 \$history_max_viewed = '5';
@@ -227,10 +220,6 @@ ini_set('memory_limit','64M');
 // default_theme default value = blue
 \$default_theme = 'softed';
 
-// show or hide time to compose each page
-// calculate_response_time default value = true
-\$calculate_response_time = true;
-
 // default text that is placed initially in the login form for user name
 // no default_user_name default value
 \$default_user_name = '';
@@ -243,13 +232,6 @@ ini_set('memory_limit','64M');
 // create_default_user default value = false
 \$create_default_user = false;
 
-// default_user_is_admin default value = false
-\$default_user_is_admin = false;
-
-// if your MySQL/PHP configuration does not support persistent connections set this to true to avoid a large performance slowdown
-// disable_persistent_connections default value = false
-\$disable_persistent_connections = false;
-
 //Master currency name
 \$currency_name = '{$this->currencyName}';
 
@@ -260,13 +242,6 @@ ini_set('memory_limit','64M');
 // default language
 // default_language default value = en_us
 \$default_language = '{$this->vtDefaultLanguage}';
-
-// add the language pack name to every translation string in the display.
-// translation_string_prefix default value = false
-\$translation_string_prefix = false;
-
-//Option to cache tabs permissions for speed.
-\$cache_tab_perms = true;
 
 //Option to hide empty home blocks if no entries.
 \$display_empty_home_blocks = false;

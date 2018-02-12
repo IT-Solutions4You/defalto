@@ -62,9 +62,6 @@
 							{/if}
 							<br>
 							<div class="col-lg-12">
-								{if $MODULEIMPORT_EXISTS neq 'true'}
-									<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
-								{/if}&nbsp;
 								{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
 									{if $MODULEIMPORT_EXISTS eq 'true'}
 										<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">

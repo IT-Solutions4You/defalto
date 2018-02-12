@@ -7,6 +7,7 @@
 * All Rights Reserved.
 ************************************************************************************}
 
+{if $MENU_STRUCTURE}
 {assign var="topMenus" value=$MENU_STRUCTURE->getTop()}
 {assign var="moreMenus" value=$MENU_STRUCTURE->getMore()}
 
@@ -23,3 +24,4 @@
 		</ul>
 	{/foreach}
 </div>
+{/if}

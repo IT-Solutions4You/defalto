@@ -62,14 +62,15 @@ jQuery.validator.addMethod("double", function(value, element, params) {
 
 
 jQuery.validator.addMethod("WholeNumber", function(value, element, params) {
-	var regex= /[+]/;
-	if(value.match(regex)){
-		return;
-
-		if((value % 1) != 0){
+		var regex= /[^+\-0-9.]+/; // not number?
+		
+		if(value.match(regex)){
 			return false;
 		}
-	}
+
+		if((value % 1) != 0){  // is decimal?
+			return false;
+		}
 		return true;
 	}, jQuery.validator.format(app.vtranslate('INVALID_NUMBER'))
 );
@@ -682,11 +683,11 @@ jQuery.validator.addMethod("percentage", function(value, element, params){
 		if(spacePattern.test(decimalSeparator)) {
 			strippedValue = strippedValue.replace(/ /g, '');
 		}
-		if(isNaN(strippedValue) || strippedValue < 0) {
+		if(isNaN(strippedValue)) {
 			return false;
 		}
 		return true;
-}, jQuery.validator.format(app.vtranslate('JS_ACCEPT_POSITIVE_NUMBER')));
+}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE')));
 
 jQuery.validator.addMethod("inventory_percentage", function(value, element, params){
 	var valid = jQuery.validator.methods.percentage.call(this,value,element,params);

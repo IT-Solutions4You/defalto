@@ -107,8 +107,9 @@ class Mobile_WS_FetchRecord extends Mobile_WS_Controller {
             }
             $relationId = $relation->getId();
 			$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName, $relation->get('label'),$relationId);
-            $count = $relationListView->getRelatedEntriesCount();
-			$relatedRecordsCount[$relation->get('label')] = array('count'=>$count,'relatedModule'=>$relatedModuleName);
+			$count = $relationListView->getRelatedEntriesCount();
+			$relatedLabel = vtranslate($relation->get('label'), $relatedModuleName);
+			$relatedRecordsCount[$relatedLabel] = array('count'=>$count,'relatedModule'=>$relatedModuleName);
         }
 
 		return $relatedRecordsCount;

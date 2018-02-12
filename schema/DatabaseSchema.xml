@@ -6997,6 +6997,7 @@
 	<table name="vtiger_dashboard_tabs">
 		<field name="id" type="I" size="19">
 			<key />
+			<autoincrement />
 		</field>
 		<field name="tabname" type="C" size="50" >
 			<unique />
@@ -7018,6 +7019,11 @@
 
 	<table name="vtiger_dashboard_tabs" alter="true">
 		<constraint>ADD CONSTRAINT vtiger_dashboard_tabs_ibfk_1 FOREIGN KEY (userid) REFERENCES vtiger_users(id) ON DELETE CASCADE</constraint>
+		<opt>Engine=InnoDB</opt>
+	</table>
+	
+	<table name="vtiger_dashboard_tabs" alter="true">
+		<constraint>ADD CONSTRAINT tabname UNIQUE(tabname, userid)</constraint>
 		<opt>Engine=InnoDB</opt>
 	</table>
 

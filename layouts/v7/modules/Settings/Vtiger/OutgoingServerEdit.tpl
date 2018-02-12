@@ -29,6 +29,9 @@
 					</div>
 					<div class="block">
 						<div>
+							<div class="btn-group pull-right">
+								<button class="btn t-btn resetButton" type="button" title="{vtranslate('LBL_RESET_TO_DEFAULT', $QUALIFIED_MODULE)}"><strong>{vtranslate('LBL_RESET_TO_DEFAULT', $QUALIFIED_MODULE)}</strong></button>
+							</div>
 							<h4>{vtranslate('LBL_MAIL_SERVER_SMTP', $QUALIFIED_MODULE)}</h4>
 						</div>
 						<hr>

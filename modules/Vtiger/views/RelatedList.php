@@ -81,8 +81,6 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 		$relatedModuleModel = $relationModel->getRelationModuleModel();
 		$relationField = $relationModel->getRelationField();
         
-        
-        $moduleFields = $relatedModuleModel->getFields();
         $fieldsInfo = array();
         foreach($moduleFields as $fieldName => $fieldModel){
             $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();

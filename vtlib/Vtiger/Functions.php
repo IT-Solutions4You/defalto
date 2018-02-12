@@ -1069,7 +1069,7 @@ class Vtiger_Functions {
 		if ($mode == 'CRYPT') {
 			$salt = null;
 			if (function_exists('password_hash')) { // php 5.5+
-				$salt = password_hash();
+				$salt = password_hash($password, PASSWORD_DEFAULT);
 			} else {
 				$salt = '$2y$11$'.str_replace("+",".",substr(base64_encode(openssl_random_pseudo_bytes(17)),0,22));
 			}

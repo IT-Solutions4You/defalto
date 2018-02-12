@@ -1052,21 +1052,22 @@ function insertIntoRecurringTable(& $recurObj)
 		$query = ' ';
 		$tabId = getTabid($module);
 		if($is_admin==false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
-				== 1 && $defaultOrgSharingPermission[$tabId] == 3) {
-			$tableName = 'vt_tmp_u'.$user->id.'_t'.$tabId;
-			$sharingRuleInfoVariable = $module.'_share_read_permission';
-			$sharingRuleInfo = $$sharingRuleInfoVariable;
+				== 1) {
 			$sharedTabId = null;
-			$this->setupTemporaryTable($tableName, $sharedTabId, $user,
-					$current_user_parent_role_seq, $current_user_groups);
+			//For Events
+			$tableName = 'vt_tmp_u'.$user->id.'_t'.$tabId.'_events';
+			$this->setupTemporaryTableForEvents($tableName, $sharedTabId, $user,
+				$current_user_parent_role_seq, $current_user_groups);
+			$query = " LEFT JOIN $tableName $tableName$scope ON ($tableName$scope.id = ".
+				"vtiger_crmentity$scope.smownerid AND vtiger_activity.activitytype NOT IN ('Emails', 'Task')) ";
 
-			$sharedUsers = $this->getListViewAccessibleUsers($user->id);
-			// we need to include group id's in $sharedUsers list to get the current user's group records
-			if($current_user_groups){
-				$sharedUsers = $sharedUsers.','. implode(',',$current_user_groups);
-			}
-			$query = " INNER JOIN $tableName $tableName$scope ON ($tableName$scope.id = ".
-					"vtiger_crmentity$scope.smownerid and $tableName$scope.shared=0 and $tableName$scope.id IN ($sharedUsers)) ";
+			//For Task
+			$task_tableName = 'vt_tmp_u'.$user->id.'_t'.$tabId.'_task';
+			$this->setupTemporaryTableForTask($task_tableName, $tabId, $user,
+				$current_user_parent_role_seq, $current_user_groups, $defaultOrgSharingPermission[$tabId]);
+
+			$query .= " LEFT JOIN $task_tableName $task_tableName$scope ON ($task_tableName$scope.id = ".
+				"vtiger_crmentity$scope.smownerid AND vtiger_activity.activitytype = 'Task') ";
 		}
 		return $query;
 	}
@@ -1087,7 +1088,7 @@ function insertIntoRecurringTable(& $recurObj)
 		return $query;
 	}
 
-	protected function setupTemporaryTable($tableName, $tabId, $user, $parentRole, $userGroups) {
+	protected function setupTemporaryTableForEvents($tableName, $tabId, $user, $parentRole, $userGroups) {
 		$module = null;
 		if (!empty($tabId)) {
 			$module = getTabname($tabId);
@@ -1113,6 +1114,26 @@ function insertIntoRecurringTable(& $recurObj)
 		return false;
 	}
 
+	protected function setupTemporaryTableForTask($tableName, $tabId, $user, $parentRole, $userGroups, $sharingPermission) {
+		$module = null;
+		if (!empty($tabId)) {
+			$module = getTabname($tabId);
+		}
+
+		if($sharingPermission == 3) {
+			$query = $this->getNonAdminAccessQuery($module, $user, $parentRole, $userGroups);
+		} else {
+			$query = " (SELECT $user->id as id) UNION (SELECT id FROM vtiger_users "
+				. "WHERE vtiger_users.deleted=0 AND vtiger_users.status='Active') "
+				. "UNION (SELECT groupid FROM vtiger_groups)";
+		}
+
+		$query = "CREATE TEMPORARY TABLE IF NOT EXISTS $tableName(id INT(11) PRIMARY KEY, shared ".
+			"int(1) DEFAULT 0) IGNORE ".$query;
+		$db = PearDatabase::getInstance();
+		$db->pquery($query, array());
+	}
+
 	protected function getListViewAccessibleUsers($sharedid) {
 		$db = PearDatabase::getInstance();;
 		$query = "SELECT vtiger_users.id as userid FROM vtiger_sharedcalendar
@@ -1130,6 +1151,20 @@ function insertIntoRecurringTable(& $recurObj)
 		$userid = array_unique($userid);
 		$shared_ids = implode(",",$userid);
 		return $shared_ids;
+	}
+
+	public function buildWhereClauseConditionForCalendar($scope = '') {
+		$userModel = Users_Record_Model::getCurrentUserModel();
+		require('user_privileges/user_privileges_'.$userModel->id.'.php');
+
+		$query = "";
+		if($profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1) {
+			$tabId = getTabid("Calendar");
+			$eventTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_events'.$scope;
+			$taskTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_task'.$scope;
+			$query = " ($eventTempTable.shared IS NOT NULL OR $taskTempTable.shared IS NOT NULL) ";
+		}
+		return $query;
 	}
 }
 ?>

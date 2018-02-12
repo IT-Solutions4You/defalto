@@ -84,6 +84,8 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 	}
 
 	public static function addModuleToApp($moduleName, $parent) {
+		if (empty($moduleName) || empty($parent)) return;
+
 		$db = PearDatabase::getInstance();
 		$parent = strtoupper($parent);
 		$oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();

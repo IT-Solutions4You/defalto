@@ -245,6 +245,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 		} else if ('attachment_dld' == $this->getOperationArg($request)) {
 			$attachmentName = $request->getRaw('_atname');
 			$attachmentName= str_replace(' ', '_', $attachmentName);
+			$attachmentId   = $request->get('_atid');
 
 			if (MailManager_Utils_Helper::allowedFileExtension($attachmentName)) {
 				// This is to handle larger uploads
@@ -253,7 +254,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 
 				$mail = new MailManager_Message_Model(false, false);
 				$mail->readFromDB($request->get('_muid'));
-				$attachment = $mail->attachments(true, $attachmentName);
+				$attachment = $mail->attachments(true, $attachmentName, $attachmentId);
 				//As we are sending attachment name, it will return only that attachment details
 				if($attachment[0]['data']) {
 					header("Content-type: application/octet-stream");

@@ -19,7 +19,9 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
     });
     
     $scope.gobacktoUrl = function(){
-        window.history.back();
+        //window.history.back();
+        // Binding DetailView back action to List view. (as Edit + Save puts back in wrong state)
+        window.location.href = (window.location.href.replace(/view=Detail/, "view=List"));
     };
     
     var _VTIGER_RESTRICTIONS = {
@@ -115,10 +117,7 @@ mobileapp.controller('VtigerDetailController', function ($scope, $api) {
         
         $api('fetchRecord', {mode:'getRelatedRecordCount', module:$scope.module, record:$scope.record}, function(er, re) {
             if(re){
-                $scope.relatedModules = {};
-                for(var key in re){
-                    $scope.relatedModules[key] = re[key].count;
-                }
+                $scope.relatedModules = re;
             }
         });
     };

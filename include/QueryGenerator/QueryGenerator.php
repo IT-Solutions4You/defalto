@@ -919,6 +919,20 @@ class QueryGenerator {
 				$fieldSqlList[$index] = $fieldSql;
 			}
 		}
+
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		if(($baseModule == 'Calendar' || $baseModule == 'Events') && !$currentUserModel->isAdminUser()) {
+			$moduleFocus = CRMEntity::getInstance('Calendar');
+			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+			if ($condition) {
+				if ($this->conditionInstanceCount > 0) {
+					$sql .= $condition . ' AND ';
+				} else {
+					$sql .= ' AND ' . $condition;
+				}
+			}
+		}
+		
 		// This is needed as there can be condition in different order and there is an assumption in makeGroupSqlReplacements API
 		// that it expects the array in an order and then replaces the sql with its the corresponding place
 		ksort($fieldSqlList);

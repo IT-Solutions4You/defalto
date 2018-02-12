@@ -53,6 +53,7 @@ $languageStrings = array(
 	'LBL_CANCEL_IMPORT' => 'Cancel Import',
 	'LBL_ERROR' => 'Error',
 	'LBL_CLEAR_DATA' => 'Clear Data',
+	'ERR_LOCAL_INFILE_NOT_ON' => 'local_infile variable is turned off on the database server.',
 	'ERR_UNIMPORTED_RECORDS_EXIST' => 'Unable to import more data in this batch. Please start a new import.',
 	'ERR_IMPORT_INTERRUPTED' => 'Current Import has been interrupted. Please try again later',
 	'ERR_FAILED_TO_LOCK_MODULE' => 'Failed to lock the module for import. Re-try again later',
