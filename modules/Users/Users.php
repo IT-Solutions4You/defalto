@@ -511,7 +511,9 @@ class Users extends CRMEntity {
 
 		if (!is_admin($current_user)) {
 			$this->db->startTransaction();
-			if(!$this->verifyPassword($user_password)) {
+			$verified = $this->verifyPassword($user_password);
+			$this->db->completeTransaction();
+			if(!$verified) {
 				$this->log->warn("Incorrect old password for $usr_name");
 				$this->error_string = $mod_strings['ERR_PASSWORD_INCORRECT_OLD'];
 				return false;
