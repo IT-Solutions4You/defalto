@@ -10,12 +10,7 @@
 {strip}
 	{include file="modules/Vtiger/Header.tpl"}
 
-	{assign var="APP_IMAGE_MAP" value=[	'MARKETING' => 'fa-users',
-										'SALES' => 'fa-dot-circle-o',
-										'SUPPORT' => 'fa-life-ring',
-										'INVENTORY' => 'vicon-inventory',
-										'PROJECT' => 'fa-briefcase' ]}
-
+	{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 	<nav class="navbar navbar-default navbar-fixed-top app-fixed-navbar">
 		<div class="container-fluid global-nav">
 			<div class="row">

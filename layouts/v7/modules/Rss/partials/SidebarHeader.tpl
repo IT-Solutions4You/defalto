@@ -6,13 +6,8 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{assign var="APP_IMAGE_MAP" value=[
-   'MARKETING' => 'fa-users',
-   'SALES' => 'fa-dot-circle-o',
-   'SUPPORT' => 'fa-life-ring',
-   'INVENTORY' => 'vicon-inventory',
-   'PROJECT' => 'fa-briefcase'
-]}
+
+{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <div id="appnavigator" class="col-sm-12 col-xs-12 app-switcher-container app-{$SELECTED_MENU_CATEGORY}">
     <a id="menu-toggle" class="menu-toggle" href="#">
         <span class="icon-bar"></span>

@@ -90,59 +90,6 @@
 					</div>
 				{/if}
 			{/if}
-			<div class="dropdown app-modules-dropdown-container dropdown-compact">
-				{foreach item=APP_MENU_MODEL from=$APP_GROUPED_MENU.$APP_NAME}
-					{assign var=FIRST_MENU_MODEL value=$APP_MENU_MODEL}
-					{if $APP_MENU_MODEL}
-						{break}
-					{/if}
-				{/foreach}
-				<div class="menu-item app-item dropdown-toggle app-item-misc" data-app-name="TOOLS" id="TOOLS_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-					<div class="menu-items-wrapper app-menu-items-wrapper">
-						<span class="app-icon-list fa fa-ellipsis-h"></span>
-						<span class="app-name textOverflowEllipsis"> {vtranslate("LBL_MORE")}</span>
-						<span class="fa fa-chevron-right pull-right"></span>
-					</div>
-				</div>
-				<ul class="dropdown-menu app-modules-dropdown dropdown-modules-compact" aria-labelledby="{$APP_NAME}_modules_dropdownMenu" data-height="0.34">
-					{assign var=EMAILTEMPLATES_MODULE_MODEL value=Vtiger_Module_Model::getInstance('EmailTemplates')}
-					{if $EMAILTEMPLATES_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($EMAILTEMPLATES_MODULE_MODEL->getId())}
-						<li>
-							<a href="{$EMAILTEMPLATES_MODULE_MODEL->getDefaultUrl()}">
-								<span class="fa module-icon">{$EMAILTEMPLATES_MODULE_MODEL->getModuleIcon()}</span>
-								<span class="module-name textOverflowEllipsis"> {vtranslate($EMAILTEMPLATES_MODULE_MODEL->getName(), $EMAILTEMPLATES_MODULE_MODEL->getName())}</span>
-							</a>
-						</li>
-					{/if}
-					{assign var=RECYCLEBIN_MODULE_MODEL value=Vtiger_Module_Model::getInstance('RecycleBin')}
-					{if $RECYCLEBIN_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($RECYCLEBIN_MODULE_MODEL->getId())}
-						<li>
-							<a href="{$RECYCLEBIN_MODULE_MODEL->getDefaultUrl()}">
-								<span class="fa fa-trash module-icon"></span>
-								<span class="module-name textOverflowEllipsis"> {vtranslate('Recycle Bin')}</span>
-							</a>
-						</li>
-					{/if}
-					{assign var=RSS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Rss')}
-					{if $RSS_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($RSS_MODULE_MODEL->getId())}
-						<li>
-							<a href="index.php?module=Rss&view=List">
-								<span class="fa fa-rss module-icon"></span>
-								<span class="module-name textOverflowEllipsis">{vtranslate($RSS_MODULE_MODEL->getName(), $RSS_MODULE_MODEL->getName())}</span>
-							</a>
-						</li>
-					{/if}
-					{assign var=PORTAL_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Portal')}
-					{if $PORTAL_MODULE_MODEL && $USER_PRIVILEGES_MODEL->hasModulePermission($PORTAL_MODULE_MODEL->getId())}
-						<li>
-							<a href="index.php?module=Portal&view=List">
-								<span class="fa fa-desktop module-icon"></span>
-								<span class="module-name textOverflowEllipsis"> {vtranslate('Portal')}</span>
-							</a>
-						</li>
-					{/if}
-				</ul>
-			</div>
 			{if $USER_MODEL->isAdminUser()}
 				<div class="dropdown app-modules-dropdown-container dropdown-compact">
 					<div class="menu-item app-item dropdown-toggle app-item-misc" data-app-name="TOOLS" id="TOOLS_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-default-url="{if $USER_MODEL->isAdminUser()}index.php?module=Vtiger&parent=Settings&view=Index{else}index.php?module=Users&view=Settings{/if}">

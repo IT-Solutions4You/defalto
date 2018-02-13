@@ -6,14 +6,8 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{assign var="APP_IMAGE_MAP" value=[
-    'MARKETING' => 'fa-users',
-    'SALES' => 'fa-dot-circle-o',
-    'SUPPORT' => 'fa-life-ring',
-    'INVENTORY' => 'vicon-inventory',
-    'PROJECT' => 'fa-briefcase'
- ]}
- 
+
+{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <div class="col-sm-12 col-xs-12 app-indicator-icon-container extensionstore app-{$SELECTED_MENU_CATEGORY}"> 
     <div class="row" title="{vtranslate('LBL_EXTENSION_STORE', 'Settings:ExtensionStore')}"> 
         <span class="app-indicator-icon cursorPointer fa fa-shopping-cart"></span> 

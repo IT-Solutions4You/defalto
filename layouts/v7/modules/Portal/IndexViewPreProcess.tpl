@@ -6,24 +6,28 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{* modules/Vtiger/views/Index.php *}
 
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-{include file="modules/Vtiger/partials/Topbar.tpl"}
+{strip}
+	{include file="modules/Vtiger/partials/Topbar.tpl"}
 
-<div class="container-fluid app-nav">
-    <div class="row">
-        {include file="modules/Portal/SidebarHeader.tpl"}
-        {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
-    </div>
-</div>
-</nav>
-<div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
-    <div class="data">
-    </div>
-    <div class="modal-dialog">
-    </div>
-</div>
-<div class="main-container main-container-{$MODULE}">
-
-    <div class="listViewPageDiv content-area full-width" id="listViewContent">
+	<div class="container-fluid app-nav">
+		<div class="row">
+			{include file="modules/Portal/SidebarHeader.tpl"}
+			{include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
+		</div>
+	</div>
+	</nav>
+	<div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
+		<div class="data">
+		</div>
+		<div class="modal-dialog">
+		</div>
+	</div>  
+	<div class="main-container main-container-{$MODULE}">
+		<div id="modnavigator" class="module-nav">
+			<div class="hidden-xs hidden-sm mod-switcher-container">
+				{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
+			</div>
+		</div>
+		<div class="listViewPageDiv content-area full-width" id="listViewContent">
+{/strip}

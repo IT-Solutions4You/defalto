@@ -2174,6 +2174,7 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$skippedTablesForAll = array('vtiger_crmentity_user_field');
 	$skippedTables = array('Calendar' => array('vtiger_seactivityrel', 'vtiger_cntactivityrel', 'vtiger_salesmanactivityrel'));
 	$allEntityModules = Vtiger_Module_Model::getEntityModules();
 	$dbName = $db->dbName;
@@ -2201,6 +2202,9 @@ if(defined('VTIGER_UPGRADE')) {
 			if (is_array($relatedTables)) {
 				if ($skippedTables[$moduleName]) {
 					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTables[$moduleName]));
+				}
+				if ($skippedTablesForAll) {
+					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTablesForAll));
 				}
 
 				//Checking foriegn key with base table

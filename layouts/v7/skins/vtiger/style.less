@@ -453,6 +453,10 @@ body{
     background: @project_app !important;
 }
 
+.app-TOOLS {
+	background: @marketing_app !important;
+}
+
 .app-DEFAULT, .app-DASHBOARD {
     background: @default_app !important;
 }
@@ -604,6 +608,11 @@ a.menu-item:hover{
 .app-item-color-PROJECT {
     border-left: 4px solid @project_app;
 }
+
+.app-item-color-TOOLS {
+	border-left: 4px solid @marketing_app;
+}
+
 .app-item .fa{
     font-size: 1.5em;
     -webkit-transition: all 0.25s ease-in;
@@ -1234,7 +1243,6 @@ input[type="password"].inputElement{
     background-color: @white;
     border: 1px solid @lightColorBorder;
     margin:5px 0 10px;
-    color: #ccc;
     padding: 5px 10px;
 }
 .search-folders:focus,
@@ -2020,8 +2028,7 @@ strong, b, th{
     margin-top: 3%;
     margin-right: 2%;
 }
-
-overlayDetailHeader button.btn {
+.overlayDetailHeader button.btn {
 	margin: 0px 1px !important;
 }
 
@@ -7388,23 +7395,6 @@ a.cp-modules:hover{
     padding: 3px;
 }
 
-.main-container-Documents .module-nav,
-.main-container-RecycleBin .module-nav,
-.main-container-Reports .module-nav {
-    width: 0;
-}
-.main-container-Documents .sidebar-essentials,
-.main-container-RecycleBin .sidebar-essentials,
-.main-container-Reports .sidebar-essentials {
-    width: 283px;
-    left: 0;
-}
-.main-container-Documents .full-width,
-.main-container-RecycleBin .full-width,
-.main-container-Reports .full-width,
-.main-container-Portal .full-width {
-    padding-left: 0px !important;
-}
 .main-container-MailManager .module-nav {
     width: 230px;
 }
@@ -7522,25 +7512,20 @@ li.select2-search-choice div{
     border-left: 1px solid @lightColorBorder;
 }
 .main-container-Documents .module-nav,
-.main-container-RecycleBin .module-nav,
 .main-container-Reports .module-nav {
     width: 0;
 }
 .main-container-Documents .mod-switcher-container,
-.main-container-RecycleBin .mod-switcher-container,
 .main-container-Reports .mod-switcher-container {
     width: 0;
 }
 .main-container-Documents .sidebar-essentials,
-.main-container-RecycleBin .sidebar-essentials,
 .main-container-Reports .sidebar-essentials {
     width: 283px;
     left: 0;
 }
 .main-container-Documents .full-width,
-.main-container-RecycleBin .full-width,
-.main-container-Reports .full-width,
-.main-container-Portal .full-width {
+.main-container-Reports .full-width {
     padding-left: 0px !important;
 }
 
