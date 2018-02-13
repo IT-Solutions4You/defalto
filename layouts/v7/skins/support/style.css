@@ -222,8 +222,8 @@ body {
   margin-left: 1px;
 }
 .company-logo img {
-  height: 100%;
-  width: auto;
+  max-height: 100%;
+  max-width: 100%;
 }
 .navbar .fa {
   font-size: 15px;
@@ -418,6 +418,9 @@ body {
 .app-PROJECT {
   background: #8E44AD !important;
 }
+.app-TOOLS {
+  background: #EF5E29 !important;
+}
 .app-DEFAULT,
 .app-DASHBOARD {
   background: #56ccc8 !important;
@@ -560,6 +563,9 @@ a.menu-item:hover {
 }
 .app-item-color-PROJECT {
   border-left: 4px solid #8E44AD;
+}
+.app-item-color-TOOLS {
+  border-left: 4px solid #EF5E29;
 }
 .app-item .fa {
   font-size: 1.5em;
@@ -811,6 +817,9 @@ a.menu-item:hover {
   opacity: 0.5;
   pointer-events: none;
 }
+.input-group.percentage-input-group .form-control {
+  width: 100% !important;
+}
 .bottomscroll-div,
 .topscroll-div {
   display: table;
@@ -822,6 +831,10 @@ a.menu-item:hover {
 .fieldValue .value {
   max-width: 85%;
   display: inline-block;
+  word-break: break-word;
+}
+.fieldValue .value a {
+  color: #15c !important;
 }
 .modal-header button.close {
   padding: 0;
@@ -1125,7 +1138,6 @@ input[type="password"].inputElement {
   background-color: #FFFFFF;
   border: 1px solid #DDDDDD;
   margin: 5px 0 10px;
-  color: #ccc;
   padding: 5px 10px;
 }
 .search-folders:focus,
@@ -1475,7 +1487,7 @@ ul.unstyled {
 }
 .listview-table-norecords .table-actions,
 .listview-table .table-actions {
-  width: 110px;
+  width: 120px;
   font-size: 15px;
   color: #555;
   margin-left: 7px;
@@ -1714,6 +1726,9 @@ input[type=checkbox]:checked {
 .detailViewButtoncontainer {
   padding-top: 5px;
 }
+.detailViewButtoncontainer button.btn {
+  margin: 0px 1px !important;
+}
 .detailview-header .recordBasicInfo > .info-row {
   margin-bottom: 4px;
 }
@@ -1793,6 +1808,9 @@ th {
   width: 6%;
   margin-top: 3%;
   margin-right: 2%;
+}
+.overlayDetailHeader button.btn {
+  margin: 0px 1px !important;
 }
 .referencefield-wrapper .createReferenceRecord {
   float: left;
@@ -2367,6 +2385,25 @@ th {
   width: 208px;
   float: left;
 }
+.editViewContents .fieldLabel {
+  min-width: 100px;
+  width: 20%;
+  word-break: break-all;
+}
+.editViewContents .fieldValue {
+  width: 30%;
+}
+.editViewContents td.fieldValue[colspan="3"] {
+  width: 80%;
+}
+.editViewContents textarea.textAreaElement {
+  width: 88%;
+}
+.editViewContents input[type="checkbox"],
+.editViewContents input[type="radio"] {
+  width: 15px;
+  height: 15px;
+}
 .input-group.inputElement .input-group-addon {
   border: none;
   border-left: 1px solid #ddd;
@@ -2848,6 +2885,9 @@ th {
 .active .stepText,
 .active .stepNum {
   color: #FFFFFF;
+}
+.mailBoxEditDiv .crumbs li {
+  width: 22%;
 }
 .stepNum {
   display: inline-block;
@@ -4559,6 +4599,7 @@ form[name="notification_settings"] .select2-choice {
   border: 1px solid #dcdcdc;
 }
 #tagCloud .tag {
+  padding: 0px;
   background-color: #FFFFFF;
   border-color: #FFFFFF;
   border-radius: 0px;
@@ -4674,7 +4715,7 @@ form[name="notification_settings"] .select2-choice {
 ************* Dashboard Styles *************
 ********************************************/
 li.dashboardWidget {
-  overflow: auto;
+  overflow: hidden;
 }
 .dashboardWidgetHeader .title {
   padding-bottom: 10px;
@@ -4835,7 +4876,7 @@ li.dashboardWidget {
   border-radius: 1px;
 }
 .modal {
-  z-index: 1070;
+  z-index: 1100;
 }
 .select2-container .select2-choice {
   height: 28px;
@@ -6536,23 +6577,6 @@ a.cp-modules:hover {
 .module-name-tooltip {
   padding: 3px;
 }
-.main-container-Documents .module-nav,
-.main-container-RecycleBin .module-nav,
-.main-container-Reports .module-nav {
-  width: 0;
-}
-.main-container-Documents .sidebar-essentials,
-.main-container-RecycleBin .sidebar-essentials,
-.main-container-Reports .sidebar-essentials {
-  width: 283px;
-  left: 0;
-}
-.main-container-Documents .full-width,
-.main-container-RecycleBin .full-width,
-.main-container-Reports .full-width,
-.main-container-Portal .full-width {
-  padding-left: 0px !important;
-}
 .main-container-MailManager .module-nav {
   width: 230px;
 }
@@ -6655,25 +6679,20 @@ li.select2-search-choice div {
   border-left: 1px solid #DDDDDD;
 }
 .main-container-Documents .module-nav,
-.main-container-RecycleBin .module-nav,
 .main-container-Reports .module-nav {
   width: 0;
 }
 .main-container-Documents .mod-switcher-container,
-.main-container-RecycleBin .mod-switcher-container,
 .main-container-Reports .mod-switcher-container {
   width: 0;
 }
 .main-container-Documents .sidebar-essentials,
-.main-container-RecycleBin .sidebar-essentials,
 .main-container-Reports .sidebar-essentials {
   width: 283px;
   left: 0;
 }
 .main-container-Documents .full-width,
-.main-container-RecycleBin .full-width,
-.main-container-Reports .full-width,
-.main-container-Portal .full-width {
+.main-container-Reports .full-width {
   padding-left: 0px !important;
 }
 .listViewPageDiv .ps-scrollbar-x-rail {
@@ -7400,6 +7419,104 @@ input:focus:-ms-input-placeholder {
 }
 .importServiceSelectionContainer .app-item {
   text-align: center;
+}
+#composeEmailContainer .modal-body .quickCreateContent,
+#QuickCreate .modal-body .quickCreateContent,
+#create .quickCreateContent {
+  margin-top: 25px;
+}
+.settingsgroup-panel .widgetContainer .menuItemLabel .pinUnpinShortCut {
+  display: none;
+  margin-top: 2px;
+}
+.settingsgroup-panel .widgetContainer .menuItemLabel:hover .pinUnpinShortCut {
+  display: inline-block;
+}
+@-moz-document url-prefix() {
+  .duplicateHandlingContainer .tooltip-inner {
+    width: 550px;
+    max-width: 550px;
+  }
+}
+.duplicateHandlingContainer .tooltip-inner {
+  text-align: left !important;
+}
+.duplicateHandlingContainer .syncMessage {
+  margin-top: 5px !important;
+}
+.duplicateHandlingContainer .actionsList {
+  width: 230px !important;
+}
+.duplicationMessageContainer {
+  background-color: #f2dede !important;
+  color: #b94a48 !important;
+}
+.duplicationMessageContainer .duplicationMessageHeader {
+  margin-bottom: 8px;
+}
+.listViewRecordActions .quickView,
+.listViewRecordActions .markStar,
+.listViewRecordActions .markAsHeld,
+.listViewRecordActions .holdFollowupOn {
+  margin-top: 4px;
+}
+.app-menu .module-icon .custom-module {
+  font-size: 14px;
+  border-radius: 4px;
+  color: #000;
+  background-color: #FFFFFF;
+  padding: 4px 10px 4px 5px !important;
+}
+.menu-item .custom-module {
+  font-family: 'OpenSans-Regular', sans-serif;
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 2px;
+  color: #000;
+  background-color: #FFFFFF;
+}
+.modules-menu .custom-module {
+  color: #FFFFFF;
+  margin-left: 0px;
+  display: inline;
+  border: 1px solid #FFFFFF;
+  border-radius: 4px;
+  padding: 3px 4px 3px 2px !important;
+  font-weight: bold;
+}
+#quickCreateModules .custom-module,
+.workflowListContainer .custom-module,
+.dashBoardTabContents .custom-module {
+  border-radius: 4px;
+  padding: 3px 5px;
+  color: #FFFFFF;
+  background-color: #777;
+}
+.menuEditorItem .custom-module {
+  border-radius: 4px;
+  padding: 3px 5px;
+  color: #000000;
+  background-color: #FFFFFF;
+}
+.task-details .custom-module {
+  border-radius: 4px;
+  padding: 1px 4px;
+  color: #FFFFFF;
+  background-color: #777;
+}
+.related-tabs .custom-module,
+#relatedmenuList .custom-module {
+  border-radius: 4px;
+  color: #FFFFFF;
+  background-color: #777;
+  padding: 5px 7px;
+  font-weight: bold;
+}
+.record-header .custom-module {
+  font-size: 30px;
+}
+.moduleIcon .custom-module {
+  font-weight: bold;
 }
 .modules-menu ul li.active a {
   border-left: 3px solid #6297C3;
