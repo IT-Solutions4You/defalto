@@ -227,7 +227,7 @@ if (defined('VTIGER_UPGRADE')) {
 	//END::Centralize user field table for easy query with context of user across module
 
 	//START::Adding new parent TOOLS in menu
-	$appsList = array('TOOLS' => array('Rss', 'Portal'));
+	$appsList = array('TOOLS' => array('Rss', 'Portal', 'Contacts', 'Accounts'));
 	foreach ($appsList as $app => $appModules) {
 		foreach ($appModules as $moduleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);

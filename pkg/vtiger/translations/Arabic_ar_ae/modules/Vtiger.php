@@ -1140,6 +1140,7 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
   'LBL_MARKETING' => 'التسويق',
   'LBL_SALES' => 'المبيعات',
   'LBL_PROJECT' => 'المشاريع',
+	'LBL_TOOLS' => 'أدوات',
   'LBL_TAGS' => 'Tags',
   'LBL_SHARE_TAGS' => 'الجمهور العلامات',
   'LBL_SHARE_TAG' => 'حصة العلامة',

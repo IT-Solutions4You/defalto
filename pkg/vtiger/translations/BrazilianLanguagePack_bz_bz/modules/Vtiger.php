@@ -1164,6 +1164,7 @@ $languageStrings = array(
 	'LBL_MARKETING' => 'MARKETING',
 	'LBL_SALES' => 'VENDAS',
 	'LBL_PROJECT' => 'PROJETOS',
+	'LBL_TOOLS' => 'FERRAMENTAS',
 	'LBL_TAGS' => 'Tags',
 	'LBL_SHARE_TAGS' => 'Tags Pública',
 	'LBL_SHARE_TAG' => 'Tag(s) Campartilhada(s)',
@@ -1385,8 +1386,8 @@ $languageStrings = array(
 	'LBL_RECENT_UPDATES' => 'Atualizações recentes',
 	'LBL_VIEW_UPDATES_IN_DETAIL' => 'Ler Mais...',
 	'LBL_DEFAULT_DASHBOARD_TOOLTIP' => 'Tornar este Painel como padrão, reordenando-o como primeira aba!',
-);
 
+);
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor, ajuste as configurações do Servidor Envio Mensagens a partir do menu Configurações',
 	'JS_SMS_SERVER_CONFIGURATION' => 'Por favor, configure seu Notificador SMS na página de configuração do Notificar SMS',
