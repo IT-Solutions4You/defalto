@@ -182,9 +182,20 @@ if (defined('VTIGER_UPGRADE')) {
 		Vtiger_Utils::CreateTable($generalUserFieldTable,
 				'(`recordid` INT(19) NOT NULL, 
 				`userid` INT(19) NOT NULL,
-				`starred` VARCHAR(100) DEFAULT NULL,
-				Index `record_user_idx` (`recordid`, `userid`),
-				FOREIGN KEY (recordid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE)', true);
+				`starred` VARCHAR(100) DEFAULT NULL', true);
+	}
+
+	if (Vtiger_Utils::CheckTable($generalUserFieldTable)) {
+		$indexRes = $db->pquery("SHOW INDEX FROM $generalUserFieldTable WHERE NON_UNIQUE=? AND KEY_NAME=?", array('1', 'record_user_idx'));
+		if ($db->num_rows($indexRes) < 2) {
+			$db->pquery('ALTER TABLE vtiger_crmentity_user_field ADD CONSTRAINT record_user_idx UNIQUE KEY(recordid, userid)', array());
+		}
+
+		$checkUserFieldConstraintExists = $db->pquery('SELECT DISTINCT 1 FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE table_name=? AND CONSTRAINT_SCHEMA=?', array($generalUserFieldTable, $db->dbName));
+		if ($db->num_rows($checkUserFieldConstraintExists) < 1) {
+			$db->pquery('ALTER TABLE vtiger_crmentity_user_field ADD CONSTRAINT `fk_vtiger_crmentity_user_field_recordid` FOREIGN KEY (`recordid`) REFERENCES `vtiger_crmentity`(`crmid`) ON DELETE CASCADE', array());
+		}
+		
 	}
 
 	$migratedTables = array();
@@ -216,7 +227,7 @@ if (defined('VTIGER_UPGRADE')) {
 	//END::Centralize user field table for easy query with context of user across module
 
 	//START::Adding new parent TOOLS in menu
-	$appsList = array('TOOLS' => array('Rss', 'Portal'));
+	$appsList = array('TOOLS' => array('Rss', 'Portal', 'Contacts', 'Accounts'));
 	foreach ($appsList as $app => $appModules) {
 		foreach ($appModules as $moduleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);

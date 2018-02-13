@@ -1220,9 +1220,6 @@ if(defined('VTIGER_UPGRADE')) {
 				transition_data VARCHAR(1000) NOT NULL)', true);
 	}
 
-	//Adding user specific field to Calendar table instead of events table
-	$db->pquery('UPDATE vtiger_field SET tablename=? WHERE tablename=?', array('vtiger_calendar_user_field', 'vtiger_events_user_field'));
-
 	//Invite users table mod to support status tracking
 	$columns = $db->getColumnNames('vtiger_invitees');
 	if (!in_array('status', $columns)) {
