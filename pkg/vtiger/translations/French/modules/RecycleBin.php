@@ -8,22 +8,21 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-    'Recycle Bin'                  => 'Recycle Bin'                 , // TODO: Review
-	'RecycleBin'                   => 'Recycle Bin'                 , // TODO: Review
-	'LBL_SELECT_MODULE'            => 'Select Module'               , // TODO: Review
-	'LBL_EMPTY_RECYCLEBIN'         => 'Empty Recycle Bin'           , // TODO: Review
-	'LBL_RESTORE'                  => 'Restore'                     , // TODO: Review
-	'LBL_NO_PERMITTED_MODULES'     => 'No permitted modules available', // TODO: Review
-	'LBL_RECORDS_LIST'             => 'Recycle Bin List'            , // TODO: Review
-	'LBL_NO_RECORDS_FOUND'         => 'No records found to Restore in module', // TODO: Review
+    'Recycle Bin'                  => 'Corbeille'                 , 
+    'RecycleBin'                   => 'Corbeille'                 , 
+    'LBL_SELECT_MODULE'            => 'Selectionner un Module'               , 
+    'LBL_EMPTY_RECYCLEBIN'         => 'La Corbeille est vide'           , 
+    'LBL_RESTORE'                  => 'Restorer'                     , 
+    'LBL_NO_PERMITTED_MODULES'     => 'Aucun module autorisé disponible', 
+    'LBL_RECORDS_LIST'             => 'Liste des objets dans la Corbeille'            , 
+    'LBL_NO_RECORDS_FOUND'         => 'Aucun enregistrement trouvé à restaurer pour le module', 
 );
 $jsLanguageStrings = array(
-	'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Are you sure you want to permanently remove all the deleted records from your database?', // TODO: Review
-	'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Are you sure you want to restore the records?', // TODO: Review
-    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Êtes-vous sûr de que vouloir restaurer enregistrement ?',
-    'JS_RESTORING_RECORD' => 'Restauration de la fiche',
+    'JS_MSG_EMPTY_RB_CONFIRMATION' => 'Vous êtes sur de vouloir définitivement supprimer tous les enregistrements de la Base de données ?', 
+    'JS_LBL_RESTORE_RECORDS_CONFIRMATION' => 'Êtes-vous sûr de vouloir restaurer les enregistrements ?', 
+    'JS_LBL_RESTORE_RECORD_CONFIRMATION' => 'Êtes-vous sûr de que vouloir restaurer l\'enregistrement ?',
+    'JS_RESTORING_RECORD' => 'Restauration de l\'enregistrement',
     'JS_RESTORE_AND_UNTRASH_FILE_IN_DRIVE' => 'Restaurer dans Vtiger et dur',
-
-  'JS_RESTORING_RECORDS' => 'La restauration d\'enregistrements',
+    'JS_RESTORING_RECORDS' => 'Restauration des enregistrements',
 
 );
