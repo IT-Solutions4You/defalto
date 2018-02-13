@@ -42,7 +42,12 @@ class Mobile_WS_Describe extends Mobile_WS_Controller {
                     $groups[$groupsWSId.'x'.$id] = $name; 
                 }
 				$field['type']['picklistValues']['users'] = $users; 
-				$field['type']['picklistValues']['groups'] = $groups; 
+				$field['type']['picklistValues']['groups'] = $groups;
+
+				//Special treatment to set default mandatory owner field
+				if (!$field['default']) {
+					$field['default'] = $usersWSId.'x'.$current_user->id;
+				}
 			}
 			if($fieldModel && $fieldModel->get('name') == 'salutationtype') {
 				$values = $fieldModel->getPicklistValues();

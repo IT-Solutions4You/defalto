@@ -19,9 +19,6 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         if(newrecord){
             if (typeof field.default != 'undefined') field.raw = field.default;
             else if (typeof field.type.defaultValue != 'undefined') field.raw = field.type.defaultValue;
-
-			// Special case
-			if (field.type.name == 'owner' && field.mandatory && !field.raw) { field.raw = "19x" + $scope.userinfo.id; }
         }
         if(!newrecord && value){
             field.raw = value;
