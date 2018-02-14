@@ -227,13 +227,92 @@ if (defined('VTIGER_UPGRADE')) {
 	//END::Centralize user field table for easy query with context of user across module
 
 	//START::Adding new parent TOOLS in menu
-	$appsList = array('TOOLS' => array('Rss', 'Portal'));
-	foreach ($appsList as $app => $appModules) {
+	$appsList = array('Tools' => array('Rss', 'Portal', 'EmailTemplates', 'RecycleBin'));
+	foreach ($appsList as $appName => $appModules) {
+		$menuInstance = Vtiger_Menu::getInstance($appName);
 		foreach ($appModules as $moduleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 			if ($moduleModel) {
-				Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $app);
+				Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $appName);
+				$menuInstance->addModule($moduleModel);
 			}
+		}
+	}
+
+	$result = $db->pquery('SELECT tabid, name FROM vtiger_tab', array());
+	$moduleTabIds = array();
+	while ($row = $db->fetch_array($result)) {
+		$moduleTabIds[$row['name']] = $row['tabid'];
+	}
+
+	$defSequenceList = array(
+		'MARKETING' => array(	$moduleTabIds['Campaigns'],
+								$moduleTabIds['Leads'],
+								$moduleTabIds['Contacts'],
+								$moduleTabIds['Accounts'],
+		),
+		'SALES' => array(		$moduleTabIds['Potentials'],
+								$moduleTabIds['Quotes'],
+								$moduleTabIds['Products'],
+								$moduleTabIds['Services'],
+								$moduleTabIds['SMSNotifier'],
+								$moduleTabIds['Contacts'],
+								$moduleTabIds['Accounts']
+		),
+		'SUPPORT' => array(		$moduleTabIds['HelpDesk'],
+								$moduleTabIds['Faq'],
+								$moduleTabIds['ServiceContracts'],
+								$moduleTabIds['Assets'],
+								$moduleTabIds['SMSNotifier'],
+								$moduleTabIds['Contacts'],
+								$moduleTabIds['Accounts']
+		),
+		'INVENTORY' => array(	$moduleTabIds['Products'],
+								$moduleTabIds['Services'],
+								$moduleTabIds['PriceBooks'],
+								$moduleTabIds['Invoice'],
+								$moduleTabIds['SalesOrder'],
+								$moduleTabIds['PurchaseOrder'],
+								$moduleTabIds['Vendors'],
+								$moduleTabIds['Contacts'],
+								$moduleTabIds['Accounts']
+		),
+		'PROJECT' => array(		$moduleTabIds['Project'],
+								$moduleTabIds['ProjectTask'],
+								$moduleTabIds['ProjectMilestone'],
+								$moduleTabIds['Contacts'],
+								$moduleTabIds['Accounts']
+		),
+		'TOOLS' => array(		$moduleTabIds['EmailTemplates'],
+								$moduleTabIds['Rss'],
+								$moduleTabIds['Portal'],
+								$moduleTabIds['RecycleBin']
+		)
+	);
+
+	$db->pquery('DELETE FROM vtiger_app2tab WHERE appname=? AND tabid IN (?, ?, ?)', array('SUPPORT', $moduleTabIds['Project'], $moduleTabIds['ProjectTask'], $moduleTabIds['ProjectMilestone']));
+	$db->pquery('DELETE FROM vtiger_app2tab WHERE appname=? AND tabid=?', array('INVENTORY', $moduleTabIds['Assets']));
+
+	foreach ($defSequenceList as $appName => $tabIdsList) {
+		$result = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname=? AND tabid NOT IN (' . generateQuestionMarks($tabIdsList) . ')', array($appName, $tabIdsList));
+		if ($db->num_rows($result)) {
+			while ($row = $db->fetch_array($result)) {
+				$defSequenceList[$appName][] = $row['tabid'];
+			}
+		}
+	}
+
+	foreach ($defSequenceList as $appName => $tabIdsList) {
+		foreach ($tabIdsList as $seq => $tabId) {
+			$result = $db->pquery('SELECT 1 FROM vtiger_app2tab WHERE tabid=? AND appname=?', array($tabId, $appName));
+
+			$params = array($seq+1, $tabId, $appName);
+			if ($db->num_rows($result)) {
+				$query = 'UPDATE vtiger_app2tab SET sequence=? WHERE tabid=? AND appname=?';
+			} else {
+				$query = 'INSERT INTO vtiger_app2tab(sequence,tabid,appname) VALUES(?,?,?)';
+			}
+			$db->pquery($query, $params);
 		}
 	}
 	echo '<br>Succesfully added RSS, Email Templates for new parent TOOLS<br>';
