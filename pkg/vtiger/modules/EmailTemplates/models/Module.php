@@ -91,10 +91,10 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 			}
 			if(is_array($allFields) && is_array($allRelFields)){
 				$allFields = array_merge($allFields, $allRelFields);
-				$allRelFields="";
+				$allRelFields = array();
 			}
 			$allOptions[vtranslate($module, $module)] = $allFields;
-			$allFields = "";
+			$allFields = array();
 		}
 		
 		$option = array(vtranslate('LBL_CURRENT_DATE'), '$custom-currentdate$');
