@@ -14,8 +14,8 @@ if (defined('VTIGER_UPGRADE')) {
 
 	//START::Workflow task's template path
 	$pathsList = array();
-	$result = $db->pquery('SELECT classname FROM com_vtiger_workflow_tasktypes', array());
-	while($rowData = $db->fetch_row($result)) {
+	$taskResult = $db->pquery('SELECT classname FROM com_vtiger_workflow_tasktypes', array());
+	while($rowData = $db->fetch_row($taskResult)) {
 		$className = $rowData['classname'];
 		if ($className) {
 			$pathsList[$className] = vtemplate_path("Tasks/$className.tpl", 'Settings:Workflows');
@@ -23,12 +23,12 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 
 	if ($pathsList) {
-		$updateQuery = 'UPDATE com_vtiger_workflow_tasktypes SET templatepath = CASE';
+		$taskUpdateQuery = 'UPDATE com_vtiger_workflow_tasktypes SET templatepath = CASE';
 		foreach ($pathsList as $className => $templatePath) {
-			$updateQuery .= " WHEN classname='$className' THEN '$templatePath'";
+			$taskUpdateQuery .= " WHEN classname='$className' THEN '$templatePath'";
 		}
-		$updateQuery .= ' ELSE templatepath END';
-		$db->pquery($updateQuery, array());
+		$taskUpdateQuery .= ' ELSE templatepath END';
+		$db->pquery($taskUpdateQuery, array());
 	}
 	//END::Workflow task's template path
 
@@ -69,8 +69,8 @@ if (defined('VTIGER_UPGRADE')) {
 		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_webform_file_fields(id INT(19) NOT NULL AUTO_INCREMENT, webformid INT(19) NOT NULL, fieldname VARCHAR(100) NOT NULL, fieldlabel VARCHAR(100) NOT NULL, required INT(1) NOT NULL DEFAULT 0, PRIMARY KEY (id), KEY fk_vtiger_webforms (webformid), CONSTRAINT fk_vtiger_webforms FOREIGN KEY (webformid) REFERENCES vtiger_webforms (id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
 	}
 
-	$result = $db->pquery('SELECT 1 FROM vtiger_ws_operation WHERE name=?', array('add_related'));
-	if (!$db->num_rows($result)) {
+	$operationResult = $db->pquery('SELECT 1 FROM vtiger_ws_operation WHERE name=?', array('add_related'));
+	if (!$db->num_rows($operationResult)) {
 		$operationId = vtws_addWebserviceOperation('add_related', 'include/Webservices/AddRelated.php', 'vtws_add_related', 'POST');
 		vtws_addWebserviceOperationParam($operationId, 'sourceRecordId', 'string', 1);
 		vtws_addWebserviceOperationParam($operationId, 'relatedRecordId', 'string', 2);
@@ -199,8 +199,8 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 
 	$migratedTables = array();
-	$result = $db->pquery('SELECT vtiger_tab.tabid, vtiger_tab.name, tablename, fieldid FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid=vtiger_field.tabid WHERE fieldname=?', array('starred'));
-	while ($row = $db->fetch_array($result)) {
+	$userTableResult = $db->pquery('SELECT vtiger_tab.tabid, vtiger_tab.name, tablename, fieldid FROM vtiger_field INNER JOIN vtiger_tab ON vtiger_tab.tabid=vtiger_field.tabid WHERE fieldname=?', array('starred'));
+	while ($row = $db->fetch_array($userTableResult)) {
 		$fieldId = $row['fieldid'];
 		$moduleName = $row['name'];
 		$oldTableName = $row['tablename'];
@@ -239,9 +239,9 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	$result = $db->pquery('SELECT tabid, name FROM vtiger_tab', array());
+	$tabResult2 = $db->pquery('SELECT tabid, name FROM vtiger_tab', array());
 	$moduleTabIds = array();
-	while ($row = $db->fetch_array($result)) {
+	while ($row = $db->fetch_array($tabResult2)) {
 		$moduleTabIds[$row['name']] = $row['tabid'];
 	}
 
@@ -294,20 +294,18 @@ if (defined('VTIGER_UPGRADE')) {
 	$db->pquery('DELETE FROM vtiger_app2tab WHERE appname=? AND tabid=?', array('INVENTORY', $moduleTabIds['Assets']));
 
 	foreach ($defSequenceList as $appName => $tabIdsList) {
-		$result = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname=? AND tabid NOT IN (' . generateQuestionMarks($tabIdsList) . ')', array($appName, $tabIdsList));
-		if ($db->num_rows($result)) {
-			while ($row = $db->fetch_array($result)) {
-				$defSequenceList[$appName][] = $row['tabid'];
-			}
+		$appTabResult1 = $db->pquery('SELECT tabid FROM vtiger_app2tab WHERE appname=? AND tabid NOT IN ('.generateQuestionMarks($tabIdsList).')', array($appName, $tabIdsList));
+		while ($row = $db->fetch_array($appTabResult1)) {
+			$defSequenceList[$appName][] = $row['tabid'];
 		}
 	}
 
 	foreach ($defSequenceList as $appName => $tabIdsList) {
 		foreach ($tabIdsList as $seq => $tabId) {
-			$result = $db->pquery('SELECT 1 FROM vtiger_app2tab WHERE tabid=? AND appname=?', array($tabId, $appName));
+			$appTabResult2 = $db->pquery('SELECT 1 FROM vtiger_app2tab WHERE tabid=? AND appname=?', array($tabId, $appName));
 
 			$params = array($seq+1, $tabId, $appName);
-			if ($db->num_rows($result)) {
+			if ($db->num_rows($appTabResult2)) {
 				$query = 'UPDATE vtiger_app2tab SET sequence=? WHERE tabid=? AND appname=?';
 			} else {
 				$query = 'INSERT INTO vtiger_app2tab(sequence,tabid,appname) VALUES(?,?,?)';
