@@ -468,7 +468,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					app.helper.loadPageContentOverlay(response);
 					if (jQuery('#scheduleImportStatus').length > 0) {
 						if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
-							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 50000);
+							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 50000);
 						}
 					}
 				}
@@ -628,7 +628,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					});
 
 					Vtiger_Import_Js.isReloadStatusPageStopped = false;
-					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 5000);
+					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
 				}
             });
         },
