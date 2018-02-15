@@ -239,6 +239,25 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$tabResult1 = $db->pquery('SELECT tabid, name, parent FROM vtiger_tab WHERE presence IN (?, ?) AND source=?', array(0, 2, 'custom'));
+	while ($row = $db->fetch_row($tabResult1)) {
+		$parentFromDb = $row['parent'];
+		if ($parentFromDb) {
+			$moduleName = $row['name'];
+			$parentTabs = explode(',', $parentFromDb);
+			foreach ($parentTabs as $parentTab) {
+				Settings_MenuEditor_Module_Model::addModuleToApp($moduleName, $parentTab);
+			}
+
+			$menuTab = $parentTabs[0];
+			$menuInstance = Vtiger_Menu::getInstance($menuTab);
+			if ($menuInstance) {
+				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+				$menuInstance->addModule($moduleModel);
+			}
+		}
+	}
+
 	$tabResult2 = $db->pquery('SELECT tabid, name FROM vtiger_tab', array());
 	$moduleTabIds = array();
 	while ($row = $db->fetch_array($tabResult2)) {
