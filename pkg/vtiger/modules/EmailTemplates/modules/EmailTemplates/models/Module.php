@@ -101,6 +101,7 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 			}else{
 				$fieldList = $this->getRelatedFields($module, $currentUserModel);
 			}
+			$allFields = array();
 			foreach ($fieldList as $key => $field) {
 				$option = array(vtranslate($field['module'], $field['module']) . ':' . vtranslate($field['fieldlabel'], $field['module']), "$" . strtolower($field['module']) . "-" . $field['columnname'] . "$");
 				$allFields[] = $option;
@@ -115,10 +116,10 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 			}
 			if(is_array($allFields) && is_array($allRelFields)){
 				$allFields = array_merge($allFields, $allRelFields);
-				$allRelFields="";
+				$allRelFields= array();
 			}
 			$allOptions[$module] = $allFields;
-			$allFields = "";
+			$allFields = array();
 		}
 		return $allOptions;
 	}
