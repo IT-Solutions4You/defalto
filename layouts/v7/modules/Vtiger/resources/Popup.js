@@ -332,10 +332,10 @@ jQuery.Class("Vtiger_Popup_Js",{
 		var aDeferred = jQuery.Deferred();
 		var completeParams = this.getCompleteParams();
 		completeParams['page'] = 1;
-		return this.getPageRecords(completeParams).then(
+		this.getPageRecords(completeParams).then(
 			function(data){
 				aDeferred.resolve(data);
-			});
+		});
 		return aDeferred.promise();
 	},
     
@@ -489,7 +489,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 		}
 		var completeParams = this.getCompleteParams();
 		jQuery.extend(completeParams,sortingParams);
-		return this.getPageRecords(completeParams).then(
+		this.getPageRecords(completeParams).then(
 			function(data){
 				aDeferred.resolve(data);
 			},
