@@ -113,6 +113,7 @@ class PBXManager extends CRMEntity {
         } else if ($event_type == 'module.preupdate') {
             // TODO Handle actions before this module is updated.
         } else if ($event_type == 'module.postupdate') {
+			$this->registerLookupEvents();
             // TODO Handle actions before this module is updated.
         }
     }
@@ -156,6 +157,7 @@ class PBXManager extends CRMEntity {
         $restoreEvent = 'vtiger.entity.afterrestore';
         $batchSaveEvent = 'vtiger.batchevent.save';
         $batchDeleteEvent = 'vtiger.batchevent.delete';
+		$convertLeadEvent = 'vtiger.lead.convertlead';
         $handler_path = 'modules/PBXManager/PBXManagerHandler.php';
         $className = 'PBXManagerHandler';
         $batchEventClassName = 'PBXManagerBatchHandler';
@@ -164,6 +166,7 @@ class PBXManager extends CRMEntity {
         $EventManager->registerHandler($restoreEvent, $handler_path, $className);
         $EventManager->registerHandler($batchSaveEvent, $handler_path, $batchEventClassName);
         $EventManager->registerHandler($batchDeleteEvent, $handler_path, $batchEventClassName);
+		$EventManager->registerHandler($convertLeadEvent, $handler_path, $className);
         $log->fatal('Lookup Events Registered');
     }
     
