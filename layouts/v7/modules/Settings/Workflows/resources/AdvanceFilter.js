@@ -290,7 +290,7 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js',{},{
         var dateSpecificConditions = this.get('dateSpecificConditions');
         if(comparatorSelectedOptionVal.length > 0) {
             if(comparatorSelectedOptionVal == 'between' || comparatorSelectedOptionVal == 'custom'){
-                var html = '<div class="date"><input class="dateField" data-calendar-type="range" name="'+ this.getName() +'" data-date-format="'+ this.getDateFormat() +'" type="text" ReadOnly="true" value="'+  this.getValue() + '"></div>';
+                var html = '<div class="date"><input class="dateField inputElement" style="width:auto;" data-calendar-type="range" name="'+ this.getName() +'" data-date-format="'+ this.getDateFormat() +'" type="text" ReadOnly="true" value="'+  this.getValue() + '"></div>';
                 var element = jQuery(html);
                 return this.addValidationToElement(element);
             } else if(this._specialDateComparator(comparatorSelectedOptionVal)) {
@@ -341,7 +341,7 @@ Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js',{},{
     getUi : function() {
         var comparatorSelectedOptionVal = this.get('comparatorElementVal');
         if(this._specialDateTimeComparator(comparatorSelectedOptionVal)) {
-            var html = '<input name="'+ this.getName() +'" type="text" value="'+this.getValue()+'" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+            var html = '<input name="'+ this.getName() +'" class="inputElement" type="text" value="'+this.getValue()+'" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
             var element = jQuery(html);
         } else if(comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
         // show nothing
@@ -435,7 +435,7 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js',{},{
 Vtiger_Owner_Field_Js('Workflows_Owner_Field_Js',{},{
 
     getUi : function() {
-        var html = '<select class="col-lg-12 select2" name="'+ this.getName() +'">';
+        var html = '<select class="inputElement select2" name="'+ this.getName() +'">';
         html += '<option value="">&nbsp;</option>';
         var pickListValues = this.getPickListValues();
         var selectedOption = this.getValue();
@@ -493,7 +493,7 @@ Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
             var pickListValue = pickListValues[key];
             pickListValuesArrayFlip[pickListValue] = key;
         }
-        var html = '<input type="hidden" class="col-lg-12 select2" name="'+ this.getName() +'" id="'+ this.getName() +'">';
+        var html = '<input type="hidden" class="inputElement select2" name="'+ this.getName() +'" id="'+ this.getName() +'">';
         var selectContainer = jQuery(html).val(selectedOption);
         selectContainer.data('tags', tagsArray).data('picklistvalues', pickListValuesArrayFlip).data('maximumSelectionSize', 1);
         selectContainer.data('placeholder', app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION')).data('closeOnSelect', true);
@@ -504,7 +504,7 @@ Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
 
 Vtiger_Multipicklist_Field_Js('Workflows_Multipicklist_Field_Js', {}, {
 
-	getUi: function () {
+	getUi : function () {
 		var selectedOptions = new Array();
 		var selectedRawOption = app.htmlDecode(this.getValue());
 		if (selectedRawOption) {
