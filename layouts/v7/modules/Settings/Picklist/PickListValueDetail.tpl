@@ -43,6 +43,7 @@
                             </tr>
                         </thead>
                         <tbody>
+							 <tr><td><!-- Placeholder role to allow drag-and-drop for last elements --></td></tr>
                         <input type="hidden" id="dragImagePath" value="{vimage_path('drag.png')}" />
                         {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_ALL_VALUES}
                         {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
