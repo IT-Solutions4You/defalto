@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Înregistrarea antet',
   'LBL_HEADER_FIELD' => 'Tip De Titlu',
 
+	'LBL_DUPLICATE_HANDLING' => 'Prevenirea dublură',
+	'LBL_DUPLICATE_CHECK' => 'Activează cec duplicat',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Caracteristica dublură de prevenire previne doar noi înregistrări duplicat de la obtinerea create de către utilizatori și aplicații externe. Înregistrări create din import',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Selectați câmpurile unice pe care urmează să fie verificate înregistrările duplicat',
+	'LBL_SELECT_FIELDS' => 'Selectați Domenii',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fields',
+	'LBL_SELECT_RULE' => 'Selectați regula pentru duplicate de manipulare',
+	'LBL_ALLOW_DUPLICATES' => 'Permiteți dubluri',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Nu permiteți dubluri',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Acțiunea de a lua în cazul în care înregistrarea duplicat este găsit în timp ce sincronizarea cu aplicație externă',
+	'LBL_PREFER_LATEST_RECORD' => 'Preferați cele mai recente de înregistrare',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Preferați înregistrare internă',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Preferați înregistrare externă',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Prefer cele mai recente înregistrări - date de înregistrare cel mai recent modificate vor fi păstrate <br> Preferați record de interne - existente de înregistrare vor fi păstrate este <br> Preferați record de externe - Datele din cererea externă va fi copiat',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Block show enabled'          ,
@@ -196,4 +210,7 @@ Sigur că doriți să ștergeți acest domeniu?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Nume câmp sunt afișate în antetul implicit',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Acest câmp de antet este activată Vtiger7, acesta va fi afișat în vizualizarea "rezumat"',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Actualizat cu succes pentru a lua în considerare domeniile selectate în prevenirea duplicate',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Nu a reușit să ia în considerare domeniile selectate în prevenirea duplicate',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'cec duplicat este dezactivat',
 );

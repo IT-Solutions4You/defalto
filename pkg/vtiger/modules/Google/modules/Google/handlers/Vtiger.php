@@ -82,6 +82,7 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 		$updatedRecords = $recordDetails['updated'];
 		$deletedRecords = $recordDetails['deleted'];
 		$recordDetails['skipped'] = array();
+		$updateDuplicateRecords = array();
 
 		if (count($createdRecords) > 0) {
 			$createdRecords = $this->translateReferenceFieldNamesToIds($createdRecords, $user);
@@ -96,11 +97,28 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 
 			try { 
 				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
-			} catch (Exception $ex) { 
-				$recordDetails['skipped'][] = array('record' => $createdRecords[$index], 
-													'messageidentifier' => '', 
-													'message' => $ex->getMessage()); 
-				continue; 
+			} catch (DuplicateException $e) {
+				$skipped = true;
+				$duplicateRecordIds = $e->getDuplicateRecordIds();
+				$duplicatesResult = $this->triggerSyncActionForDuplicate($record, $duplicateRecordIds);
+
+				if ($duplicatesResult) {
+					$updateDuplicateRecords[$index] = $duplicatesResult;
+					$skipped = false;
+				}
+				if ($skipped) {
+					$recordDetails['skipped'][] = array('record' => $createdRecords[$index],
+														'messageidentifier' => '',
+														'message' => $e->getMessage());
+				}
+				unset($createdRecords[$index]);
+				continue;
+			} catch (Exception $e) {
+				$recordDetails['skipped'][] = array('record' => $createdRecords[$index],
+													'messageidentifier' => '',
+													'message' => $e->getMessage());
+				unset($createdRecords[$index]);
+				continue;
 			}
 		}
 
@@ -148,13 +166,34 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 				} else {
 					$this->assignToChangedRecords[$index] = $record;
 				}
+			} catch (DuplicateException $e) {
+				$skipped = true;
+				$duplicateRecordIds = $e->getDuplicateRecordIds();
+				$duplicatesResult = $this->triggerSyncActionForDuplicate($record, $duplicateRecordIds);
+
+				if ($duplicatesResult) {
+					$updateDuplicateRecords[$index] = $duplicatesResult;
+					$skipped = false;
+				}
+				if ($skipped) {
+					$recordDetails['skipped'][] = array('record' => $updatedRecords[$index],
+														'messageidentifier' => '',
+														'message' => $e->getMessage());
+				}
+				unset($updatedRecords[$index]);
+				continue;
 			} catch (Exception $e) {
 				$recordDetails['skipped'][] = array('record' => $updatedRecords[$index], 
 													'messageidentifier' => '', 
 													'message' => $e->getMessage());
+				unset($updatedRecords[$index]);
 				continue;
 			}
 		}
+		foreach ($updateDuplicateRecords as $index => $record) {
+			$updatedRecords[$index] = $record;
+		}
+
 		$hasDeleteAccess = null;
 		$deletedCrmIds = array();
 		foreach ($deletedRecords as $index => $record) {
@@ -187,7 +226,7 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 					} catch (Exception $e) {
 						$recordDetails['skipped'][] = array('record' => $deletedRecords[$index], 
 													'messageidentifier' => '', 
-													'message' => $ex->getMessage());
+													'message' => $e->getMessage());
 						continue;
 					}
 				}

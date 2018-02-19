@@ -332,32 +332,6 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
         this.referenceModulePopupRegisterEvent(form);
         this.registerPostReferenceEvent(this.getEditViewContainer());
     },
-    registerClearReferenceSelectionEvent : function(contentHolder) {
-        var thisInstance = this;
-        if(typeof contentHolder === 'undefined') {
-                contentHolder = this.getContentHolder();
-        }
-        contentHolder.off('click', 'clearReferenceSelection');
-        contentHolder.on('click','.clearReferenceSelection',function(e){
-                e.preventDefault();
-                var element = jQuery(e.currentTarget);
-                var parentTdElement = element.closest('td');
-                if(parentTdElement.length == 0){
-                        parentTdElement = element.closest('.fieldValue');
-                }
-                var inputElement = parentTdElement.find('.inputElement');
-                var fieldName = parentTdElement.find('.sourceField').attr("name");
-
-                parentTdElement.find('.referencefield-wrapper').removeClass('selected');
-                inputElement.removeAttr("disabled").removeAttr('readonly');
-                inputElement.attr("value","");
-                inputElement.data('value','');
-                inputElement.val("");
-                parentTdElement.find('input[name="'+fieldName+'"]').val("");
-                element.addClass('hide');
-                element.trigger(Vtiger_Edit_Js.referenceDeSelectionEvent);
-        });
-    },
     proceedRegisterEvents : function(){
 		if(jQuery('.recordEditView').length > 0){
 			return true;

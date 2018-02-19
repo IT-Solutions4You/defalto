@@ -127,10 +127,7 @@
 										{elseif $LISTVIEW_HEADERNAME eq 'module_name' && empty($SOURCE_MODULE)}
 											<td class="listViewEntryValue {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
 												{assign var="MODULE_ICON_NAME" value="{strtolower($LISTVIEW_ENTRY->get('raw_module_name'))}"}
-												{if $MODULE_ICON_NAME eq 'events'}
-													{assign var="MODULE_ICON_NAME" value="calendar"}
-												{/if}
-												<i class="vicon-{$MODULE_ICON_NAME}" title='{$LISTVIEW_ENTRY->get('module_name')}'>&nbsp;</i>
+												{Vtiger_Module_Model::getModuleIconPath($LISTVIEW_ENTRY->get('raw_module_name'))}
 											</td>
 										{else}
 										{/if}

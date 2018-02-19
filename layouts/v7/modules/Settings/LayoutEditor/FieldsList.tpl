@@ -13,10 +13,10 @@
 	{assign var=IS_SORTABLE value=$SELECTED_MODULE_MODEL->isSortableAllowed()}
 	{assign var=ALL_BLOCK_LABELS value=[]}
 
-	<div class="row" style="padding:1% 0">
+	<div class="row fieldsListContainer" style="padding:1% 0">
 		<div class="col-sm-6">
 			<button class="btn btn-default addButton addCustomBlock" type="button">
-				<i class="fa fa-plus"></i>&nbsp;
+				<i class="fa fa-plus"></i>&nbsp;&nbsp;
 				{vtranslate('LBL_ADD_CUSTOM_BLOCK', $QUALIFIED_MODULE)}
 			</button>
 		</div>
@@ -61,7 +61,7 @@
 										&nbsp;
 										{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
 											<button class="btn btn-default addButton btn-sm addCustomField" type="button">
-												<i class="fa fa-plus"></i>&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}
+												<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}
 											</button>&nbsp;&nbsp;
 										{/if}
 										{if $BLOCK_MODEL->isActionsAllowed()}
@@ -254,7 +254,7 @@
 												{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 											</span>
 											<span class="col-sm-4" style="margin-top: 7%;margin-left: -15%;">
-												<button class="btn btn-default btn-sm addButton" style="padding: 2px 15px;"><i class="fa fa-plus"></i>&nbsp;{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
+												<button class="btn btn-default btn-sm addButton"><i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
 											</span>
 										</li>
 									{/if}
@@ -427,7 +427,7 @@
 												{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 											</span>
 											<span class="col-sm-4" style="margin-top: 7%;margin-left: -15%;">
-												<button class="btn btn-default btn-sm addButton" style="padding: 2px 15px;"><i class="fa fa-plus"></i>&nbsp{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
+												<button class="btn btn-default btn-sm addButton"><i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
 											</span>
 										</li>
 									{/if}
@@ -458,7 +458,7 @@
 								data-on-text="{vtranslate('LBL_YES', $QUALIFIED_MODULE)}" data-off-text="{vtranslate('LBL_NO', $QUALIFIED_MODULE)}" data-on-color="primary" data-block-id="{$BLOCK_MODEL->get('id')}"/>
 					</span>&nbsp;
 					<button class="btn btn-default addButton addCustomField" type="button">
-						<i class="fa fa-plus"></i>&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}
+						<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_CUSTOM_FIELD', $QUALIFIED_MODULE)}
 					</button>&nbsp;&nbsp;
 					<button class="inActiveFields addButton btn btn-default btn-sm">{vtranslate('LBL_SHOW_HIDDEN_FIELDS', $QUALIFIED_MODULE)}</button>&nbsp;&nbsp;
 					<button class="deleteCustomBlock addButton btn btn-default btn-sm">{vtranslate('LBL_DELETE_CUSTOM_BLOCK', $QUALIFIED_MODULE)}</button>
@@ -472,7 +472,7 @@
 						{vtranslate('LBL_ADD_NEW_FIELD_HERE',$QUALIFIED_MODULE)}
 					</span>
 					<span class="col-sm-4" style="margin-top: 7%;margin-left: -15%;">
-						<button class="btn btn-default btn-sm addButton" style="padding: 2px 15px;"><i class="fa fa-plus"></i>&nbsp{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
+						<button class="btn btn-default btn-sm addButton"><i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD',$QUALIFIED_MODULE)}</button>
 					</span>
 				</li>
 			</ul>
@@ -612,4 +612,44 @@
 			</form>
 		</div>
 	</div>
+	<div class="ps-scrollbar-y" style="height: 60px;">
+	</div>
+	{if $FIELDS_INFO neq '[]'}
+		<script type="text/javascript">
+			var uimeta = (function() {
+				var fieldInfo = {$FIELDS_INFO};
+				var newFieldInfo = {$NEW_FIELDS_INFO};
+				return {
+					field: {
+						get: function(name, property) {
+							if(name && property === undefined) {
+								return fieldInfo[name];
+							}
+							if(name && property) {
+								return fieldInfo[name][property]
+							}
+						},
+						isMandatory : function(name){
+							if(fieldInfo[name]) {
+								return fieldInfo[name].mandatory;
+							}
+							return false;
+						},
+						getType : function(name){
+							if(fieldInfo[name]) {
+								return fieldInfo[name].type
+							}
+							return false;
+						},
+						getNewFieldInfo : function() {
+							if(newFieldInfo['newfieldinfo']){
+								return newFieldInfo['newfieldinfo']
+							}
+							return false;
+						}
+					},
+				};
+			})();
+		</script>
+	{/if}
 {/strip}

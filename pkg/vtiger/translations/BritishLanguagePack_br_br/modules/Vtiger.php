@@ -638,7 +638,7 @@ $languageStrings = array(
 	'LBL_TRANSFER_OWNERSHIP' => 'Transfer Ownership',
 	'LBL_SELECT_RELATED_MODULES' => 'Select Related Modules',
 
-	'LBL_CUSTOMIZE_MAIN_MENU' => 'Customize Main Menu', //TODO REVIEW
+	'LBL_CUSTOMIZE_MAIN_MENU' => 'Customise Main Menu', //TODO REVIEW
 
 	//Comments Field Labels for Workflow
 	'Comment' => 'Comment',
@@ -832,6 +832,9 @@ $languageStrings = array(
   'LBL_NOT_STARRED' => 'Follow',
   'LBL_QUICK_VIEW' => 'Quick View',
   'LBL_NOTIFICATION_CENTER' => 'Notification Center',
+	'LBL_NOTIFICATION' => 'Notification',
+	'LBL_STARRED_RECORD_TO' => '%s to %s',
+	'LBL_STARRED_RECORD_UPDATED' => '%s updated %s',
   'LBL_EDIT_REASON' => 'Edit reason',
   'LBL_CONTACT' => 'CONTACT MANAGEMENT',
   'LBL_NO_ATTACHMENTS' => 'No Attachments',
@@ -871,7 +874,7 @@ $languageStrings = array(
   'LBL_MODIFIED' => 'Modified',
   'Funnel Amount' => 'Total Amount by Sales stage',
   'LBL_TYPE_AND_SEARCH' => 'Type and Search',
-  'LBL_CUSTOMIZE' => 'Customize:',
+  'LBL_CUSTOMIZE' => 'Customise:',
   'LBL_LABELS' => 'Labels',
   'LBL_WORKFLOWS' => 'Workflows',
   'LBL_PICKLIST' => 'Picklists',
@@ -923,7 +926,7 @@ $languageStrings = array(
   'LBL_CANNOT_BE_CHANGED_LATER' => 'Cannot be changed later',
   'IMPORT_CONTACTS_GOOGLE_HELP_TEXT' => 'We can bring contacts from Google and <br> you can also enable bi-direction sync to keep our<br>
                                     Vtiger contacts and Google contacts(in selected group updated.<br>
-                                    Click the button to authorize and get Contacts from Google.',
+                                    Click the button to authorise and get Contacts from Google.',
   'IMPORT_CONTACTS_CSV_HELP_TEXT' => 'You can import Contacts from CSV file.',
   'IMPORT_CONTACTS_CSV_HELP_TEXT2' => 'To Import Opportunities, Leads, Tickets, please look for Actions > Import button on any of the
                                          list views.',
@@ -935,7 +938,7 @@ $languageStrings = array(
   'LBL_IMPORT_SYNC_INTIATED_MSG' => 'Your import is in progress. You will receive an email when import is completed.<br> Proceeding to Next step will not interrupt the import.',
   'LBL_TELL_US_ABOUT_YOU' => 'Help us by telling us about your Company',
   'TELL_US_ABOUT_YOU_HELP_TEXT' => 'We continue to make improvements to the CRM, and <br>
-                                      knowing our users better will help us prioritize enhancements.',
+                                      knowing our users better will help us prioritise enhancements.',
   'TELL_US_ABOUT_YOU_HELP_TEXT_2' => 'The data you submitted here will not be revealed to anyone <Br>
                                         outside Vtiger.',
   'LBL_IMPORT_CONTACTS' => 'Import Contacts',
@@ -993,6 +996,7 @@ $languageStrings = array(
   'LBL_MARKETING' => 'MARKETING',
   'LBL_SALES' => 'SALES',
   'LBL_PROJECT' => 'PROJECTS',
+	'LBL_TOOLS' => 'TOOLS',
   'LBL_TAGS' => 'Tags',
   'LBL_SHARE_TAGS' => 'Public Tags',
   'LBL_SHARE_TAG' => 'Share Tag',
@@ -1071,6 +1075,16 @@ $languageStrings = array(
   'LBL_SLA_INFORMATION' => 'SLA Information',
   'LBL_TO_USE_SWITCH_TO_NEW_LOOK' => 'To use <b>%s</b>, we recommend you to Switch to new look.',
 	'LBL_DELETE_USER_CONFIRMATION' => 'When a User is deleted, user will be marked as "Inactive" and no new records can be assigned to the User, and the user will not be able to login. Are you sure you want to delete?',
+
+	'LBL_DUPLICATES' => 'Duplicates',
+	'LBL_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
+	'LBL_DUPLICATES_FOUND_MESSAGE' => 'This %s cannot be saved since duplicate %s exists in Vtiger with matching values for %s.',
+	'LBL_VTIGER_NOTIFICATION' => 'Message from : Vtiger System Notifications',
+	'LBL_DUPLICATION_FAILURE_FROM_WORKFLOWS' => 'The following %s could not be saved from "%s" workflow',
+	'LBL_DUPLICATION_FAILURE_FROM_WEBFORMS' => 'The following %s could not be saved from "%s" webform',
+	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'You can %s to modify duplicate prevention rules.',
+	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contact your administrator for revising the duplicate rules',
+	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicate %s(s) :',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',
@@ -1196,13 +1210,13 @@ $jsLanguageStrings = array(
     'JS_NO_EDIT_PERMISSION' => 'You don\'t have the permission to edit this event',
 
         //Google Synchronization
-        'SYNC_REMOVED_SUCCESSFULLY' => 'Google synchronization removed successfully.',
-        'REMOVE_SYNCHRONIZATION_MESSAGE' => 'Clicking on this will remove existing Gmail authentication. It will not delete any records which are already synchronized.',
-        'REMOVE_SYNCHRONIZATION' => 'Remove Synchronization',
+        'SYNC_REMOVED_SUCCESSFULLY' => 'Google synchronisation removed successfully.',
+        'REMOVE_SYNCHRONIZATION_MESSAGE' => 'Clicking on this will remove existing Gmail authentication. It will not delete any records which are already synchronised.',
+        'REMOVE_SYNCHRONIZATION' => 'Remove Synchronisation',
         'FIELD_MAPPING' => 'Field Mapping',
-        'LBL_SYNC_BUTTON' => 'Synchronize Now',
-        'LBL_SYNCRONIZING' => 'Synchronizing....',
-        'LBL_NOT_SYNCRONIZED' => 'You have not synchronized yet',
+        'LBL_SYNC_BUTTON' => 'Synchronise Now',
+        'LBL_SYNCRONIZING' => 'Synchronising....',
+        'LBL_NOT_SYNCRONIZED' => 'You have not synchronised yet',
         'LBL_FIELD_MAPPING' => 'Field Mapping',
 
         'LBL_RESTORE_CONFIRMATION' => 'Records previously assigned to this user will not be restored. Are you sure you want to restore this user?',
@@ -1320,7 +1334,7 @@ $jsLanguageStrings = array(
     'blog' => 'Blog',
     'home-page' => 'Homepage',
     'address' => 'Address',
-    'JS_REMOVE_SYNC_CONFIRMATION' => 'Remove synchronization will only remove existing authentication, it will not delete synchronized records. If you synchronize with same Google account again, duplicate records will be created. Are you sure you want to remove synchronization?',
+    'JS_REMOVE_SYNC_CONFIRMATION' => 'Remove synchronisation will only remove existing authentication, it will not delete synchronised records. If you synchronise with same Google account again, duplicate records will be created. Are you sure you want to remove synchronisation?',
     
     // Social Module Strings
     'JS_PLEASE_WAIT' => 'Please Wait...',
@@ -1344,7 +1358,7 @@ $jsLanguageStrings = array(
     //Office365
     'LBL_REMOVE_SYNC_CONFIRMATION' => 'Removes Authorization for Contacts, Calendars and Emails. Are you sure you want to remove sync?',
     'OFFICE365_SYNC_REMOVED_SUCCESSFULLY' => 'Office365 sync removed successfully',
-    'OFFICE365_REMOVE_SYNCHRONIZATION_MESSAGE' => 'Clicking on this will remove existing Office365 authentication. It will not delete any records which are already synchronized. It will not unregister the Vtiger app from you office365 account, to unregister visit https://myapps.microsoft.com/',
+    'OFFICE365_REMOVE_SYNCHRONIZATION_MESSAGE' => 'Clicking on this will remove existing Office365 authentication. It will not delete any records which are already synchronised. It will not unregister the Vtiger app from you office365 account, to unregister visit https://myapps.microsoft.com/',
     
     'JS_LOADING_COMMENTS' => 'Fetching Comments ...',
     'JS_PASSWORD_MISMATCH_ERROR' => 'Please re-enter passwords.  The "new password" and "confirm password" values do not match.',
@@ -1444,10 +1458,10 @@ $jsLanguageStrings = array(
   'JS_ADD_MAX_15_ITEMS' => 'You can only add 15 items',
   'SINGLE_SLA' => 'SLA',
   'JS_EDIT_FIELDS' => '%s Fields & Layout',
-  'JS_MORE_VTIGER' => 'There are more records to be synchronized in vtiger',
-  'JS_MORE_GOOGLE' => 'There are more records to be synchronized in Google',
-  'JS_MORE_OFFICE365' => 'There are more records to be synchronized in Office365',
-  'JS_TOKEN_EXPIRED' => 'Office365 Authentication has expired. Click on Sign in with Office365 button to re-authorize.',
+  'JS_MORE_VTIGER' => 'There are more records to be synchronised in vtiger',
+  'JS_MORE_GOOGLE' => 'There are more records to be synchronised in Google',
+  'JS_MORE_OFFICE365' => 'There are more records to be synchronised in Office365',
+  'JS_TOKEN_EXPIRED' => 'Office365 Authentication has expired. Click on Sign in with Office365 button to re-authorise.',
   'JS_WISH_TO_PROCEED' => 'Are you sure you want to proceed?',
   'JS_SWITCH_TO_OLD_LOOK_CONFIRMATION_MESSAGE' => 'Some features, including notifications, picklist colors, follow record, are not available in old version. You may switch back to new version by choosing new version from top right menu.',
   'JS_PROCEED_OLD_VERSION' => 'Proceed to old version',
@@ -1479,4 +1493,7 @@ $jsLanguageStrings = array(
 	'JS_UPLOAD_SUCCESSFUL' => 'File Uploaded Successfuly',
     'JS_UPLOAD_FAILED' => 'File Upload Failed',
 
+	'JS_DUPLICATES_DETECTED' => 'Duplicate(s) detected!',
+	'JS_PASSWORD_MISMATCH_ERROR' => 'Please re-enter passwords. The "new password" and "confirm password" values do not match.',
+	'JS_LIST_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
 );

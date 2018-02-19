@@ -25,13 +25,14 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		$recordId = $request->get('record');
 		$qualifiedModuleName = $request->getModule(false);
 		$mode = '';
-		$selectedFieldsList = $allFieldsList = array();
+		$selectedFieldsList = $allFieldsList = $fileFields = array();
 		$viewer = $this->getViewer($request);
 		$supportedModules = Settings_Webforms_Module_Model::getSupportedModulesList();
 
 		if ($recordId) {
 			$recordModel = Settings_Webforms_Record_Model::getInstanceById($recordId, $qualifiedModuleName);
 			$selectedFieldsList = $recordModel->getSelectedFieldsList();
+			$fileFields = $recordModel->getFileFields();
 
 			$sourceModule = $recordModel->get('targetmodule');
 			$mode = 'edit';
@@ -65,6 +66,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructure);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('DOCUMENT_FILE_FIELDS', $fileFields);
 
 		$viewer->view('EditView.tpl', $qualifiedModuleName);
 	}

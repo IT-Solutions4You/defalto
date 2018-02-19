@@ -9,6 +9,13 @@
  *************************************************************************************/
 
 class Users_Record_Model extends Vtiger_Record_Model {
+	
+	/**
+	 * Checks if the key is in property or data.
+	 */
+	public function has($key) {
+		return property_exists($this, $key) || parent::has($key);
+	}
 
 	/**
 	 * Gets the value of the key . First it will check whether specified key is a property if not it

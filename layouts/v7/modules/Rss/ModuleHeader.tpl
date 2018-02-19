@@ -22,10 +22,10 @@
 					{else}
 						{assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrlWithAllFilter()}
 					{/if}
-					<a title="{vtranslate($MODULE, $MODULE)}" href='{$DEFAULT_FILTER_URL}'><h4 class="module-title pull-left text-uppercase"> {vtranslate($MODULE, $MODULE)} </h4></a>
+					<a title="{vtranslate($MODULE, $MODULE)}" href='{$DEFAULT_FILTER_URL}'><h4 class="module-title pull-left text-uppercase">&nbsp;{vtranslate($MODULE, $MODULE)}&nbsp;</h4></a>
 				</span>
 				<span>
-					<p class="current-filter-name pull-left">&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span> {$VIEW} </p>
+					<p class="current-filter-name pull-left">&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{$VIEW}&nbsp;</p>
 				</span>
 				{if $VIEWID}
 					{foreach item=FILTER_TYPES from=$CUSTOM_VIEWS}
@@ -37,7 +37,7 @@
 						{/foreach}
 					{/foreach}
 					<span>
-						<p class="current-filter-name filter-name pull-left">&nbsp;&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span> {$CVNAME} </p>
+						<p class="current-filter-name filter-name pull-left">&nbsp;<span class="fa fa-angle-right" aria-hidden="true"></span>&nbsp;{$CVNAME}&nbsp;</p>
 					</span>
 				{/if}
 			</div>
@@ -47,7 +47,7 @@
 						{assign var=BASIC_ACTION value=$MODULE_BASIC_ACTIONS}
 						<li>
 							<button class="btn btn-default rssAddButton module-buttons" >
-								<i class="fa fa-plus"></i>&nbsp;{vtranslate('LBL_FEED_SOURCE',$MODULE)}</i>
+								<i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_FEED_SOURCE',$MODULE)}</i>
 							</button>
 						</li>
 					</ul>

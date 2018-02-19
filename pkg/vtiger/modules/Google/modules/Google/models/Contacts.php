@@ -168,38 +168,42 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
             $db = PearDatabase::getInstance();
             $result = $db->pquery("SELECT crmid FROM vtiger_crmentity WHERE label = ? AND deleted = ? AND setype = ?", array($orgName, 0, 'Accounts'));
             if($db->num_rows($result) < 1) {
-                $accountModel = Vtiger_Module_Model::getInstance('Accounts');
-                $recordModel = Vtiger_Record_Model::getCleanInstance('Accounts');
-                
-                $fieldInstances = Vtiger_Field_Model::getAllForModule($accountModel);
-                foreach($fieldInstances as $blockInstance) {
-                    foreach($blockInstance as $fieldInstance) {
-                        $fieldName = $fieldInstance->getName();
-                        $fieldValue = $recordModel->get($fieldName);
-                        if(empty($fieldValue)) {
-                            $defaultValue = $fieldInstance->getDefaultFieldValue();
-                            if($defaultValue) {
-                                $recordModel->set($fieldName, decode_html($defaultValue));
-                            }
-                            if($fieldInstance->isMandatory() && !$defaultValue) {
-                                $randomValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType());
-                                if($fieldInstance->getFieldDataType() == 'picklist' || $fieldInstance->getFieldDataType() == 'multipicklist') {
-                                    $picklistValues = $fieldInstance->getPicklistValues();
-                                    $randomValue = reset($picklistValues);
-                                }
-                                $recordModel->set($fieldName, $randomValue);
-                            }
-                        }
-                    }
-                }
-                $recordModel->set('mode', '');
-                $recordModel->set('accountname', $orgName);
-                $recordModel->set('assigned_user_id', $userId);
-				$recordModel->set('source', 'GOOGLE');
-                if($description) {
-                    $recordModel->set('description', $description);
-                }   
-                $recordModel->save();
+				try {
+					$accountModel = Vtiger_Module_Model::getInstance('Accounts');
+					$recordModel = Vtiger_Record_Model::getCleanInstance('Accounts');
+				
+					$fieldInstances = Vtiger_Field_Model::getAllForModule($accountModel);
+					foreach($fieldInstances as $blockInstance) {
+						foreach($blockInstance as $fieldInstance) {
+							$fieldName = $fieldInstance->getName();
+							$fieldValue = $recordModel->get($fieldName);
+							if(empty($fieldValue)) {
+								$defaultValue = $fieldInstance->getDefaultFieldValue();
+								if($defaultValue) {
+									$recordModel->set($fieldName, decode_html($defaultValue));
+								}
+								if($fieldInstance->isMandatory() && !$defaultValue) {
+									$randomValue = Vtiger_Util_Helper::getDefaultMandatoryValue($fieldInstance->getFieldDataType());
+									if($fieldInstance->getFieldDataType() == 'picklist' || $fieldInstance->getFieldDataType() == 'multipicklist') {
+										$picklistValues = $fieldInstance->getPicklistValues();
+										$randomValue = reset($picklistValues);
+									}
+									$recordModel->set($fieldName, $randomValue);
+								}
+							}
+						}
+					}
+					$recordModel->set('mode', '');
+					$recordModel->set('accountname', $orgName);
+					$recordModel->set('assigned_user_id', $userId);
+					$recordModel->set('source', 'GOOGLE');
+					if($description) {
+						$recordModel->set('description', $description);
+					}
+					$recordModel->save();
+				} catch (Exception $e) {
+					//TODO - Review
+				}
             }
             return $orgName;
         }

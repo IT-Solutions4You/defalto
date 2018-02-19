@@ -25,7 +25,7 @@ jQuery.Class('Settings_MailConverter_Index_Js', {
 	triggerDeleteRule: function (currentElement, url) {
 		var deleteElement = jQuery(currentElement);
 		app.helper.showConfirmationBox({'message': app.vtranslate('LBL_DELETE_CONFIRMATION')}).then(function () {
-			app.request.get({url:url}).then(function (err, data) {
+			app.request.post({url:url}).then(function (err, data) {
 				if (data) {
 					var closestBlock = deleteElement.closest('[data-blockid]');
 					var nextBlocks = closestBlock.nextAll('[data-blockid]');

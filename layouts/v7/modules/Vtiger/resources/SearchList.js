@@ -58,7 +58,7 @@ Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
 				params.page= previousPageNumber;
 				self.loadListViewRecords(params);
 			}
-			
+
 		});
 	},
 	registerRemoveListViewSort: function () {
@@ -174,7 +174,10 @@ Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
 
 	},
 	registerDropdownPosition: function () {
-		var container = this.getListViewContainer();
+		if (jQuery('.searchResults').height() <= 450) {
+			jQuery('.searchResults').css('padding-bottom', '100px');
+		}
+		var container = jQuery('.searchResults');
 		jQuery('.table-actions').on('click', '.dropdown', function (e) {
 			var containerTarget = jQuery(this).closest(container);
 			var dropdown = jQuery(e.currentTarget);
@@ -192,17 +195,18 @@ Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
 			dropdown_menu.css('display', 'none');
 			var currtargetTop;
 			var currtargetLeft;
+			var dropdownBottom;
 			var ftop = 'auto';
 			var fbottom = 'auto';
 
-			var ctop = container.offset().top;
-			currtargetTop = dropdown.offset().top-ctop+dropdown.height()+100;
-			currtargetLeft = dropdown.offset().left-15;
-			var dropdownftop = dropdown.position().top-dropdown_menu.height()+dropdown.height()+100;
+			var ctop = jQuery(container).offset().top;
+			currtargetTop = dropdown.offset().top-ctop+dropdown.height();
+			currtargetLeft = dropdown.offset().left-3;
+			dropdownBottom = jQuery('.searchResults').height() - currtargetTop + dropdown.height();
 			var windowBottom = jQuery(window).height()-dropdown.offset().top;
 			if (windowBottom < 250) {
-				ftop = dropdownftop+'px';
-				fbottom = 'auto';
+				ftop = 'auto';
+				fbottom = dropdownBottom+'px';
 			} else {
 				ftop = currtargetTop+'px';
 				fbottom = "auto";
@@ -215,9 +219,10 @@ Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
 				'bottom': fbottom
 			}).appendTo(containerTarget);
 
-			dropdown.on('hidden.bs.getListViewContainerdropdown', function () {
+			dropdown.on('hidden.bs.dropdown', function () {
 				dropdown_menu.removeClass('invisible');
 				fixed_dropdown_menu.remove();
+				jQuery('.listViewEntries').removeClass('dropDownOpen');
 			});
 		});
 	},

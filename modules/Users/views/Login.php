@@ -49,10 +49,10 @@ class Users_Login_View extends Vtiger_View_Controller {
 					$blockData['image'] = '';
 				}
 
-				vglobal('listview_max_textlength', '80');
+				vglobal('listview_max_textlength', 80);
 				$blockData['displayTitle'] = textlength_check($blockData['title']);
 
-				vglobal('listview_max_textlength', '200');
+				vglobal('listview_max_textlength', 200);
 				$blockData['displaySummary'] = textlength_check($blockData['summary']);
 				$finalJsonData[$blockData['type']][] = $blockData;
 			}
@@ -97,6 +97,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 
 		$jsFileNames = array(
+							'~libraries/jquery/boxslider/jquery.bxslider.min.js',
 							'modules.Vtiger.resources.List',
 							'modules.Vtiger.resources.Popup',
 							);

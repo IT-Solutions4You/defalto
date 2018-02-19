@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Datensatz-header',
   'LBL_HEADER_FIELD' => 'Header Anzeigen',
 
+	'LBL_DUPLICATE_HANDLING' => 'doppelte Prävention',
+	'LBL_DUPLICATE_CHECK' => 'Aktivieren Dublettenprüfung',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Duplizieren Prävention Funktion verhindert, dass nur neue doppelte Datensätze aus von Nutzern und externen Anwendungen erstellt zu werden. Aufzeichnungen von Import erstellt',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Wählen Sie die einzigartigen Felder, auf denen doppelte Datensätze überprüft werden',
+	'LBL_SELECT_FIELDS' => 'Felder auswählen',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Felder',
+	'LBL_SELECT_RULE' => 'Wählen Sie Regel für die Handhabung von Duplikaten',
+	'LBL_ALLOW_DUPLICATES' => 'Fachnutzung',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Lassen Sie keine Dubletten',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Maßnahmen zu ergreifen, wenn doppelte Datensatz gefunden wird, während die Synchronisierung mit externer Anwendung',
+	'LBL_PREFER_LATEST_RECORD' => 'Bevorzugen neuesten Rekords',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Bevorzugen internen Rekord',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Bevorzugen externen Rekord',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Bevorzugen neuesten Rekord - Zuletzt geändert Aufzeichnungsdaten werden beibehalten Die interne Aufzeichnung bevorzugen - Bestehende Datensatz wird beibehalten, wie es <br> bevorzugen externe Platte ist - Daten aus der externen Anwendung kopiert werden',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Block Karte aktiviert'       ,
@@ -196,4 +210,7 @@ Sind Sie sicher, dass Sie zum löschen dieses Feld?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Name Felder im Header standardmäßig',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Dieses Feld ist Kopfzeile aktiviert Vtiger7, erscheint Es in der Zusammenfassung',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Erfolgreich aktualisierte ausgewählte Felder in Duplikaten Prävention zu berücksichtigen',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Fehler beim ausgewählten Feldern in Duplikaten Prävention berücksichtigen',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Dublettenprüfung ist deaktiviert',
 );

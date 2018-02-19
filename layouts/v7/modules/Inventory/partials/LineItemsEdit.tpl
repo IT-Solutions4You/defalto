@@ -213,13 +213,13 @@
 				{elseif $PRODUCT_ACTIVE eq 'true'}
 					<div class="btn-group">
 						<button type="button" class="btn btn-default" id="addProduct" data-module-name="Products">
-							<i class="fa fa-plus"></i><strong> {vtranslate('LBL_ADD_PRODUCT',$MODULE)}</strong>
+							<i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_PRODUCT',$MODULE)}</strong>
 						</button>
 					</div>
 				{elseif $SERVICE_ACTIVE eq 'true'}
 					<div class="btn-group">
 						<button type="button" class="btn btn-default" id="addService" data-module-name="Services">
-							<i class="fa fa-plus"></i><strong> {vtranslate('LBL_ADD_SERVICE',$MODULE)}</strong>
+							<i class="fa fa-plus"></i><strong>&nbsp;&nbsp;{vtranslate('LBL_ADD_SERVICE',$MODULE)}</strong>
 						</button>
 					</div>
 				{/if}

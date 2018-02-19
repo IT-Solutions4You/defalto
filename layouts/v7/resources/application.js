@@ -38,7 +38,7 @@ window.app = (function () {
 			jQuery(document).on('pjax:success', function (event, data, status, jqXHR) {
 				if (typeof data == 'object') {
 					if (!data['success'] && data['error']['message']) {
-						aDeferred.resolve(new Error(data['error']['message']));
+						aDeferred.resolve(new VtError(data['error']));
 						return;
 					} else if (data['result']) {
 						data = data['result'];
@@ -52,7 +52,7 @@ window.app = (function () {
 			});
 
 			jQuery(document).on('pjax:error', function (event, jqXHR, textStatus, errorThrown) {
-				aDeferred.resolve(new Error(errorThrown.message));
+				aDeferred.resolve(new VtError(errorThrown));
 			});
 			jQuery.pjax(params);
 			return aDeferred.promise();
@@ -71,7 +71,7 @@ window.app = (function () {
 				success: function (response) {
 					if (typeof response == 'object') {
 						if (!response['success'] && response['error']['message']) {
-							aDeferred.resolve(new Error(response['error']['message']));
+									aDeferred.resolve(new VtError(response['error']));
 							return;
 						} else if (response['result']) {
 							response = response['result'];
@@ -80,7 +80,7 @@ window.app = (function () {
 					aDeferred.resolve(null, response);
 				},
 				error: function (xhr, ajaxOptions, err) {
-					aDeferred.resolve(new Error(err.message));
+							aDeferred.resolve(new VtError(err));
 				}
 			};
 
@@ -503,4 +503,16 @@ jQuery(function () {
 		var value = this.valueOf();
 		return value.charAt(0).toUpperCase()+value.slice(1).toLowerCase()
 	}
+	/* To push focus on CKEditor Popup when shown with Bootstrap modal */
+	/* ref https://stackoverflow.com/a/23667151 */
+	jQuery.fn.modal.Constructor.prototype.enforceFocus = function() {
+		modal_this = this
+		jQuery(document).on('focusin.modal', function (e) {
+		if (modal_this.$element[0] !== e.target && !modal_this.$element.has(e.target).length 
+		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_select') 
+		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_textarea')
+		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_text')) {
+			modal_this.$element.focus()
+		}
+	})};
 });

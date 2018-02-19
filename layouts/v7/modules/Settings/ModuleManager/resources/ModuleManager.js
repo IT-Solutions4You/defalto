@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-Vtiger_Index_Js('Settings_Module_Manager_Js', {
+Vtiger_Index_Js('Settings_ModuleManager_List_Js', {
 }, {
 	/*
 	 * function to update the module status for the module
@@ -42,33 +42,39 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 		return aDeferred.promise();
 	},
 	registerEventsForImportFromZip: function (container) {
+		// Forcefully disable file-input and submit
+		var fileuploadWrap = container.find('.fileUploadBtn').parent();
+		var importFromZip = container.find('[name="importFromZip"]');
+		var moduleZip = container.find('[name="moduleZip"]');
+		var fileDetails = jQuery('#moduleFileDetails');
+
+		fileuploadWrap.hide();
+		importFromZip.attr('disabled', 'disabled');
+
 		container.on('change', '[name="acceptDisclaimer"]', function (e) {
 			var element = jQuery(e.currentTarget);
-			var importFromZip = container.find('[name="importFromZip"]');
-			var uploadedFile = jQuery('#moduleZip').val();
-			if (uploadedFile) {
-				jQuery('#moduleFileDetails').attr('title', uploadedFile).html(uploadedFile);
-			}
-			var disabledStatus = importFromZip.attr('disabled');
-			if ((element.is(':checked')) && (uploadedFile != '')) {
-				if (typeof disabledStatus != "undefined") {
-					importFromZip.removeAttr('disabled');
-				}
+			if (element.is(':checked')) {
+				fileuploadWrap.show();
 			} else {
-				if (typeof disabledStatus == "undefined") {
-					importFromZip.attr('disabled', "disabled");
-				}
+				fileuploadWrap.hide();
+				importFromZip.attr('disabled', 'disabled');
+				fileDetails.removeAttr('title').html('');
+				moduleZip.val('');
 			}
 		});
 
 		container.on('change', '[name="moduleZip"]', function (e) {
+			var uploadedFile = moduleZip.val();
+			if (uploadedFile) {
+				jQuery('#moduleFileDetails').attr('title', uploadedFile).html(uploadedFile);
+			}
 			var acceptDisclaimer = container.find('[name="acceptDisclaimer"]');
-			if (!acceptDisclaimer.is(':checked')) {
-				acceptDisclaimer.trigger('click');
+			if (acceptDisclaimer.is(':checked') && uploadedFile) {
+				importFromZip.removeAttr('disabled');
 			}
 		});
 
-		container.on('click', '.finishButton', function() {
+		container.on('click', '.finishButton', function () {
 			window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
 		});
 
@@ -96,9 +102,9 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 
 			app.helper.showProgress();
 
-            AppConnector.request(params).then(
-                function (data) {
-                    app.helper.hideProgress(); 					
+			AppConnector.request(params).then(
+				function (data) {
+					app.helper.hideProgress();
 					element.addClass('hide');
 					var headerMessage, containerMessage;
 
@@ -110,7 +116,7 @@ Vtiger_Index_Js('Settings_Module_Manager_Js', {
 						containerMessage = app.vtranslate('JS_IMPORTED_MODULE');
 					}
 					app.helper.showSuccessNotification({'title': headerMessage, 'message': data.result.importModuleName+' '+containerMessage});
-					setTimeout(function() {
+					setTimeout(function () {
 						window.location.href = jQuery('[data-name="VTLIB_LBL_MODULE_MANAGER"]').attr('href');
 					}, 3000);
 				}

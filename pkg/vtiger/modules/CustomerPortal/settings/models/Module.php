@@ -125,12 +125,9 @@ class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model 
 
 		//Update the dashboard widgets, charts, announcement and support_notification details.
 		$activeWidgets['widgets'] = $widgets;
-		$activeCharts['charts'] = $charts;
 		$dashboardWidgets = json_encode($activeWidgets);
-		$dashboardCharts = json_encode($activeCharts);
-		if ($dashboardWidgets || $dashboardCharts) {
-			$db->pquery('UPDATE vtiger_customerportal_settings SET default_assignee = ? ,support_notification = ?
-						,announcement = ?,widgets = ?,charts=?', array($defaultAssignee, $renewalPeriod, $announcement, $dashboardWidgets, $dashboardCharts));
+		if ($dashboardWidgets) {
+			$db->pquery('UPDATE vtiger_customerportal_settings SET default_assignee=?, support_notification=?, announcement=?, widgets=?', array($defaultAssignee, $renewalPeriod, $announcement, $dashboardWidgets));
 		}
 		//Update module field info
 		if (!empty($moduleFieldsInfo)) {
@@ -214,12 +211,9 @@ class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model 
 				$dashboardInfo['announcement'] = $row['announcement'];
 				$dashboardInfo['shortcuts'] = decode_html($row['shortcuts']);
 				$dashboardInfo['widgets'] = decode_html($row['widgets']);
-				$dashboardInfo['charts'] = decode_html($row['charts']);
 			}
 			$currentWidgets = json_decode($dashboardInfo['widgets'], true);
-			$currentCharts = json_decode($dashboardInfo['charts'], true);
 			$dashboardInfo['widgets'] = json_encode($currentWidgets);
-			$dashboardInfo['charts'] = json_encode($currentCharts);
 			$this->set('dashboardInfo', $dashboardInfo);
 		}
 		return $this;

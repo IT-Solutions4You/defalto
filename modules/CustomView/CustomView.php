@@ -13,6 +13,7 @@ require_once('include/utils/utils.php');
 require_once 'include/Webservices/Utils.php';
 
 global $adv_filter_options;
+global $mod_strings;
 
 $adv_filter_options = array("e" => "" . $mod_strings['equals'] . "",
 	"n" => "" . $mod_strings['not equal to'] . "",

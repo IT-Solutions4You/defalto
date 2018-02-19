@@ -11,25 +11,8 @@
 	<div class="listViewPageDiv" id="listViewContent">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 			<br>
-			<br>
 			<form id="customerPortalForm" name="customerPortalForm" action="index.php" method="POST" class="form-horizontal">
 				<input type="hidden" name="portalModulesInfo" value="" />
-				<div class="col-sm-12 col-xs-12 input-group">					
-					<div class="form-group">
-						<label for="privileges" class="col-sm-4 control-label fieldLabel"><span>{vtranslate('LBL_PRIVILEGES', $QUALIFIED_MODULE)}</span></label>
-						<div class="fieldValue col-lg-3 col-md-3 col-sm-3 input-group">
-							<select name="privileges" class="select2 inputElement">
-								{foreach item=USER_MODEL from=$USER_MODELS}
-									{assign var=USER_ID value=$USER_MODEL->getId()}
-									<option value="{$USER_ID}" {if $CURRENT_PORTAL_USER eq $USER_ID} selected {/if}>{$USER_MODEL->getName()}</option>
-								{/foreach}
-							</select>
-							<div class="input-group-addon input-select-addon">
-								<a href="#" rel="tooltip" title="{vtranslate('LBL_PREVILEGES_MESSAGE', $QUALIFIED_MODULE)}"><i class="fa fa-info-circle"></i></a>
-							</div>
-						</div>
-					</div>
-				</div>
 				<div class="col-sm-12 col-xs-12 input-group">					
 					<div class="form-group">
 						<label for="defaultAssignee" class="col-sm-4 control-label fieldLabel"><span>{vtranslate('LBL_DEFAULT_ASSIGNEE', $QUALIFIED_MODULE)}</span></label>
@@ -58,7 +41,7 @@
 					<div class="form-group">
 						<label for="portal-url" class="col-sm-4 control-label fieldLabel">{vtranslate('LBL_PORTAL_URL', $QUALIFIED_MODULE)}</label>
 						<div class="col-sm-5">
-							<a target="_blank" href="{$PORTAL_URL}" class="help-inline" style="width: 300px;">{$PORTAL_URL}</a>
+							<a target="_blank" href="{$PORTAL_URL}" class="help-inline" style="width: 300px;color:blue;">{$PORTAL_URL}</a>
 							<div class="pull-left input-group-addon input-select-addon">
 								<a href="#" rel="tooltip" title="{vtranslate('LBL_PORTAL_URL_MESSAGE', $QUALIFIED_MODULE)}"><i class="fa fa-info-circle"></i></a>
 							</div>
@@ -103,7 +86,6 @@
 						<div id="dashboardContent" class="show" >
 							<h4>{vtranslate('LBL_HOME_LAYOUT',$QUALIFIED_MODULE)}</h4>
 							<hr class="hrHeader">
-							<input type="hidden" name="defaultCharts" value='{Vtiger_Functions::jsonEncode($CHARTS,true)}'/>
 							<input type="hidden" name="defaultWidgets" value='{Vtiger_Functions::jsonEncode($WIDGETS,true)}'/>
 							{include file='CustomerPortalDashboard.tpl'|@vtemplate_path:$QUALIFIED_MODULE}
 						</div>

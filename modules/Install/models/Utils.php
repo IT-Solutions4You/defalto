@@ -129,21 +129,27 @@ class Install_Utils_Model {
 		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0', (version_compare(phpversion(), '5.4.0', '>=')));
 		$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
 		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
-                if ($preInstallConfig['LBL_PHP_VERSION'] >= '5.5.0') {
-                    $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
-                }
-                $preInstallConfig['LBL_OPEN_SSL'] = array(extension_loaded('openssl'), true, extension_loaded('openssl'));
-                $preInstallConfig['LBL_CURL'] = array(extension_loaded('curl'), true, extension_loaded('curl'));
-                $gnInstalled = false;
+
+		if ($preInstallConfig['LBL_PHP_VERSION'] >= '5.5.0') {
+			$preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
+		}
+
+		$preInstallConfig['LBL_OPEN_SSL']		= array(extension_loaded('openssl'), true, extension_loaded('openssl'));
+		$preInstallConfig['LBL_CURL']			= array(extension_loaded('curl'), true, extension_loaded('curl'));
+
+		$gnInstalled = false;
 		if(!function_exists('gd_info')) {
 			eval(self::$gdInfoAlternate);
 		}
+
 		$gd_info = gd_info();
 		if (isset($gd_info['GD Version'])) {
 			$gnInstalled = true;
 		}
+
 		$preInstallConfig['LBL_GD_LIBRARY']		= array((extension_loaded('gd') || $gnInstalled), true, (extension_loaded('gd') || $gnInstalled));
 		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
+		$preInstallConfig['LBL_SIMPLEXML']		= array(function_exists('simplexml_load_file'), true, (function_exists('simplexml_load_file')));
 
 		return $preInstallConfig;
 	}
@@ -408,6 +414,8 @@ class Install_Utils_Model {
 			$error_msg_info = getTranslatedString('MSG_DB_ROOT_USER_NOT_AUTHORIZED', 'Install');
 		} elseif(!$db_exist_status) {
 			$error_msg = $db_name.' -> '.getTranslatedString('ERR_DB_NOT_FOUND', 'Install');
+		} elseif(!$db_utf8_support) {
+			$error_msg = $db_name.' -> '.getTranslatedString('ERR_DB_NOT_UTF8', 'Install');
 		} else {
 			$dbCheckResult['flag'] = true;
 			return $dbCheckResult;

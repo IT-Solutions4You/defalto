@@ -129,6 +129,13 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 		}
 		//End
 
+		$fileFormat = $request->get('fileFormat');
+		if (!$fileFormat || !in_array($fileFormat, $supportedFileTypes)) {
+			$fileFormat = 'csv';
+		} else {
+			$fileFormat = strtolower($fileFormat);
+		}
+
 		$viewer->assign('AVAILABLE_FIELDS', $moduleMeta->getMergableFields());
 		$viewer->assign('ENTITY_FIELDS', $moduleMeta->getEntityFields());
 		$viewer->assign('ERROR_MESSAGE', $request->get('error_message'));
@@ -140,7 +147,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 			$viewer->assign('CURRENCIES', getAllCurrencies());
 		}
 
-		$viewer->assign('FORMAT', $request->get('fileFormat'));
+		$viewer->assign('FORMAT', $fileFormat);
 		return $viewer->view('ImportBasicStep.tpl', 'Import');
 	}
 

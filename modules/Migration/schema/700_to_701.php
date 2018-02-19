@@ -38,7 +38,7 @@ if(defined('VTIGER_UPGRADE')) {
 	foreach ($updateModulesList as $moduleName => $packagePath) {
 		$moduleInstance = Vtiger_Module::getInstance($moduleName);
 		if($moduleInstance) {
-			updateVtlibModule($moduleName, $packagepath);
+			updateVtlibModule($moduleName, $packagePath);
 		}
 	}
 }

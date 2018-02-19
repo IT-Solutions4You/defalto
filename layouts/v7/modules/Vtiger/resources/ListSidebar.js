@@ -58,6 +58,7 @@ Vtiger.Class('Vtiger_ListSidebar_Js',{},{
         
         this.registerFilterSeach();
         filters.on('click','.listViewFilter', function(e){
+			e.preventDefault();
             var targetElement = jQuery(e.target);
             if(targetElement.is('.dropdown-toggle') || targetElement.closest('ul').hasClass('dropdown-menu') ) return;
             var element = jQuery(e.currentTarget);

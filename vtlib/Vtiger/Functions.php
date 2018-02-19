@@ -1069,7 +1069,7 @@ class Vtiger_Functions {
 		if ($mode == 'CRYPT') {
 			$salt = null;
 			if (function_exists('password_hash')) { // php 5.5+
-				$salt = password_hash();
+				$salt = password_hash($password, PASSWORD_DEFAULT);
 			} else {
 				$salt = '$2y$11$'.str_replace("+",".",substr(base64_encode(openssl_random_pseudo_bytes(17)),0,22));
 			}
@@ -1320,11 +1320,7 @@ class Vtiger_Functions {
 	 * @return type -- table name
 	 */
 	public static function getUserSpecificTableName($moduleName) {
-		$moduleName = strtolower($moduleName);
-		if ($moduleName == "events") {
-			$moduleName = "calendar";
-		}
-		return "vtiger_".$moduleName.'_user_field';
+		return 'vtiger_crmentity_user_field';
 	}
 
 	/**
@@ -1385,5 +1381,27 @@ class Vtiger_Functions {
 			$i++;
 		} while ($sizeInBytes > 1024);
 		return round($sizeInBytes, 2) . $fileSizeUnits[$i];
+	}
+
+	/**
+	 * Function to check if a module($sourceModule) is related to Documents module.
+	 * @param <string> $sourceModule - Source module
+	 * @return <boolean> Returns TRUE if $sourceModule is related to Documents module and 
+	 * Documents module is active else returns FALSE.
+	 */
+	static function isDocumentsRelated($sourceModule) {
+		$isRelated = false;
+		$moduleName = 'Documents';
+		if (vtlib_isModuleActive($moduleName)) {
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
+			if ($moduleModel && $sourceModuleModel) {
+				$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $moduleModel);
+			}
+			if ($relationModel) {
+				$isRelated = true;
+			}
+		}
+		return $isRelated;
 	}
 }

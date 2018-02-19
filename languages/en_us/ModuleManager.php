@@ -45,7 +45,7 @@ $languageStrings = array(
 	'LBL_EXTENSION_STORE' => 'Extension Store',
 	'LBL_ACCEPT_WITH_THE_DISCLAIMER' => 'I accept with disclaimer and would like to proceed',
 	'LBL_INSTALL_FROM_ZIP' => 'Install from Zip',
-	'LBL_DELETE_EXIST_DIRECTORY' => 'Please delete the module direcctory that exist to proceed with import module',
+	'LBL_DELETE_EXIST_DIRECTORY' => 'Please delete the module directory that exist to proceed with import module',
 
 	'LBL_UPDATE_MODULE_FROM_FILE' => 'Update Module From File',
 	'LBL_UPDATED_MODULE' => ' module was updated successfully.',

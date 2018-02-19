@@ -363,6 +363,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$numOfRows; $i++) {
 			$moduleName = $db->query_result($result, $i, 'name');
 			$modulesList[$moduleName] = vtranslate($moduleName, $moduleName);
+			//Calendar needs to be shown as TODO so we are translating using Layout editor specific translations
 			if ($moduleName == 'Calendar') {
 				$modulesList[$moduleName] = vtranslate($moduleName, 'Settings:LayoutEditor');
 			}
@@ -457,4 +458,30 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		$result = $db->pquery('SELECT 1 FROM vtiger_relatedlists WHERE relationfieldid=?',array($fieldModel->getId()));
 		return ($db->num_rows($result) > 0) ? self::MANY_TO_ONE : self::ONE_TO_ONE;
 	}
+
+	public function updateDuplicateHandling($rule, $fieldIdsList = array(), $syncActionId = 1) {
+		$db = PearDatabase::getInstance();
+		$tabId = $this->getId();
+
+		if (!$fieldIdsList) {
+			$fieldIdsList = array(0);
+		}
+
+		//Fields Info
+		if (count($fieldIdsList) < 4) {//Maximum 3 fields are allowed
+			$query = 'UPDATE vtiger_field SET isunique = CASE WHEN fieldid IN ('.  generateQuestionMarks($fieldIdsList).') THEN 1 ELSE 0 END WHERE tabid=?';
+			$params = array_merge($fieldIdsList, array($tabId));
+			$db->pquery($query, $params);
+		}
+
+		if (!$syncActionId) {
+			$syncActionId = 1;
+		}
+
+		//Rule
+		$db->pquery('UPDATE vtiger_tab SET allowduplicates=?, sync_action_for_duplicates=? WHERE tabid=?', array($rule, $syncActionId, $tabId));
+		Vtiger_Cache::flushModuleCache($this->getName());
+		return true;
+	}
+
 }

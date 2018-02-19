@@ -378,6 +378,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 		Vtiger_Index_Js.registerActivityReminder();
 		//reference preview event registeration
 		this.registerReferencePreviewEvent();
+		this.registerEventForPostSaveFail();
+
+		vtUtils.enableTooltips();
 	},
 
 	addBodyScroll: function () {
@@ -523,7 +526,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 				vtUtils.applyFieldElementsView(form);
 				targetInstance.quickCreateSave(form,params);
-				app.helper.hideProgress();
 			});
 		});
 	},
@@ -596,15 +598,19 @@ Vtiger.Class('Vtiger_Index_Js', {
 				}
 				var formData = jQuery(form).serialize();
 				app.request.post({data:formData}).then(function(err,data){
-					app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
+					app.helper.hideProgress();
 					if(err === null) {
+						jQuery('.vt-notification').remove();
+						app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
 						app.helper.hideModal();
-						app.helper.showSuccessNotification({"message":''});
+						var message = typeof formData.record !== 'undefined' ? app.vtranslate('JS_RECORD_UPDATED'):app.vtranslate('JS_RECORD_CREATED');
+						app.helper.showSuccessNotification({"message":message},{delay:4000});
 						invokeParams.callbackFunction(data, err);
 						//To unregister onbefore unload event registered for quickcreate
 						window.onbeforeunload = null;
 					}else{
-						app.helper.showErrorNotification({"message":err});
+						app.event.trigger('post.save.failed', err);
+						jQuery("button[name='saveButton']").removeAttr('disabled');
 					}
 				});
 			},
@@ -1587,6 +1593,25 @@ Vtiger.Class('Vtiger_Index_Js', {
 				function(error, err){
 				}
 		);
+	},
+
+	/**
+	 * Function to show duplication notification
+	 */
+	registerEventForPostSaveFail : function() {
+		app.event.on('post.save.failed', function (e, err) {
+			jQuery('.vt-notification').remove();
+			var options = {
+				message: err.message
+			};
+			if (err.title) {
+				options['title'] = err.title;
+			}
+			var settings = {
+				'delay': 0
+			};
+			app.helper.showErrorNotification(options, settings);
+		});
 	},
 
 	postRefrenceSearch: function(resultData, container){

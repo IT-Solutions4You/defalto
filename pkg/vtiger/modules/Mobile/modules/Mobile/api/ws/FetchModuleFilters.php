@@ -25,7 +25,7 @@ class Mobile_WS_FetchModuleFilters extends Mobile_WS_Controller {
 			}
 		}
 		$response = new Mobile_API_Response();
-		$response->setResult(array('filters'=>$result));
+		$response->setResult(array('filters'=>$result, 'moduleLabel' => vtranslate($module, $module)));
 		return $response;
 	}
 

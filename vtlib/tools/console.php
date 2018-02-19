@@ -310,6 +310,9 @@ class Vtiger_Tools_Console_ModuleController extends Vtiger_Tools_Console_Control
 
 		// Create files
 		$this->createFiles($module, $field1);
+
+		// Link to menu
+		Settings_MenuEditor_Module_Model::addModuleToApp($module->name, $module->parent);
 	}
 
 	protected function createFiles(Vtiger_Module $module, Vtiger_Field $entityField) {

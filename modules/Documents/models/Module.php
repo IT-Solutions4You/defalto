@@ -191,5 +191,8 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 		}
 		return $relatedListFields;
 	}
+
+	public function isFieldsDuplicateCheckAllowed() {
+		return false;
+	}
 }
-?>

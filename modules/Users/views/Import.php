@@ -27,7 +27,17 @@ class Users_Import_View extends Vtiger_Import_View {
             }
         }
 	}
-        
+
+	public function initializeMappingParameters(Vtiger_Request $request) {
+		parent::initializeMappingParameters($request);
+		$moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$moduleFields = $moduleModel->getFields();
+
+		$viewer = $this->getViewer($request);
+		$viewer->assign('IMPORTABLE_FIELDS', $moduleModel->getImportableFieldModels($moduleName));
+	}
+
     public function process(Vtiger_Request $request) {
         if($request->getMode() != 'undoImport') {
             parent::process($request);

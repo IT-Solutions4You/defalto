@@ -448,9 +448,12 @@ class QueryGenerator {
 			$baseTable = $field->getTableName();
 			$tableIndexList = $this->meta->getEntityTableIndexList();
 			$baseTableIndex = $tableIndexList[$baseTable];
+
+			$tableList[$field->getTableName()] = $field->getTableName();
+			$tableJoinMapping[$field->getTableName()] = $this->meta->getJoinClause($field->getTableName());
+
 			if($field->getFieldDataType() == 'reference') {
 				$moduleList = $this->referenceFieldInfoList[$fieldName];
-				$tableJoinMapping[$field->getTableName()] = 'INNER JOIN';
 				foreach($moduleList as $module) {
 					if($module == 'Users' && $baseModule != 'Users') {
 						if($fieldName == 'created_user_id' || $fieldName == 'modifiedby') {
@@ -485,9 +488,6 @@ class QueryGenerator {
 					$tableJoinMapping['vtiger_users'.$fieldName] = 'LEFT JOIN vtiger_users AS';
 				}
 			}
-			$tableList[$field->getTableName()] = $field->getTableName();
-				$tableJoinMapping[$field->getTableName()] =
-						$this->meta->getJoinClause($field->getTableName());
 		}
 		$baseTable = $this->meta->getEntityBaseTable();
 		$baseTableIndex = $moduleTableIndexList[$baseTable];
@@ -919,6 +919,20 @@ class QueryGenerator {
 				$fieldSqlList[$index] = $fieldSql;
 			}
 		}
+
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		if(($baseModule == 'Calendar' || $baseModule == 'Events') && !$currentUserModel->isAdminUser()) {
+			$moduleFocus = CRMEntity::getInstance('Calendar');
+			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+			if ($condition) {
+				if ($this->conditionInstanceCount > 0) {
+					$sql .= $condition . ' AND ';
+				} else {
+					$sql .= ' AND ' . $condition;
+				}
+			}
+		}
+		
 		// This is needed as there can be condition in different order and there is an assumption in makeGroupSqlReplacements API
 		// that it expects the array in an order and then replaces the sql with its the corresponding place
 		ksort($fieldSqlList);

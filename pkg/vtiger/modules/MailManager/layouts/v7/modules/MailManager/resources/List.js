@@ -156,17 +156,17 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			settingContainer.find('.selectFolderDesc').removeClass('hide');
 			if(useProtocol != '') {
 				settingContainer.find('#_mbox_server').val(useServer);
-				settingContainer.find('.mbox_protocol').each(function(node) {
+				settingContainer.find('.mbox_protocol').each(function(i, node) {
 					if(jQuery(node).val() == useProtocol) {
 						jQuery(node).attr('checked', true);
 					}
 				});
-				settingContainer.find('.mbox_ssltype').each(function(node) {
+				settingContainer.find('.mbox_ssltype').each(function(i, node) {
 					if(jQuery(node).val() == useSSLType) {
 						jQuery(node).attr('checked', true);
 					}
 				});
-				settingContainer.find('.mbox_certvalidate').each(function(node) {
+				settingContainer.find('.mbox_certvalidate').each(function(i, node) {
 					if(jQuery(node).val() == useCert) {
 						jQuery(node).attr('checked', true);
 					}
@@ -308,21 +308,23 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	 */
 	loadMailContents : function(folderName){
 		var mailids = jQuery('input[name="folderMailIds"]').val();
-		mailids = mailids.split(",");
-		var params = {
-			'module' : 'MailManager',
-			'action' : 'Folder',
-			'mode' : 'showMailContent',
-			'mailids' : mailids,
-			'folderName':folderName
-		};
-		app.request.post({"data" : params}).then(function(error, responseData) {
-			for(var k in responseData){
-				var messageContent = responseData[k];
-				var messageEle = jQuery('#mmMailEntry_'+k);
-				messageEle.find('.mmMailDesc').html(messageContent);
-			}
-		});
+		if (typeof mailids !== 'undefined') {
+			mailids = mailids.split(",");
+			var params = {
+				'module' : 'MailManager',
+				'action' : 'Folder',
+				'mode' : 'showMailContent',
+				'mailids' : mailids,
+				'folderName':folderName
+			};
+			app.request.post({"data" : params}).then(function(error, responseData) {
+				for(var k in responseData){
+					var messageContent = responseData[k];
+					var messageEle = jQuery('#mmMailEntry_'+k);
+					messageEle.find('.mmMailDesc').html(messageContent);
+				}
+			});
+		}
 	},
 
 	registerFolderMailDeleteEvent : function() {
@@ -1348,15 +1350,22 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				}
 
 				app.request.post({data:formData}).then(function(err,data){
-					app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
-					if(err === null) {
-						app.helper.hideModal();
-						app.helper.showSuccessNotification({"message":''});
-						invokeParams.callbackFunction(data, err);
-					}else{
-						app.helper.showErrorNotification({"message":err});
-					}
-				});
+                    if(err === null) {
+						if (!data.error) {
+							jQuery('.vt-notification').remove();
+							app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
+							app.helper.hideModal();
+							app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_CREATED')});
+							invokeParams.callbackFunction(data, err);
+						} else {
+							jQuery("button[name='saveButton']").removeAttr('disabled');
+							app.event.trigger('post.save.failed', data);
+						}
+                    }else{
+						app.event.trigger("post.QuickCreateForm.save",data,jQuery(form).serializeFormData());
+                        app.helper.showErrorNotification({"message":err});
+                    }
+                });
 			}
 		};
 		form.vtValidate(params);

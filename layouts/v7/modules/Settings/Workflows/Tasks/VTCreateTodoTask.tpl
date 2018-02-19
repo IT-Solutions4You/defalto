@@ -11,7 +11,7 @@
 -->*}
 {strip}
 	{assign var=SHOWN_FIELDS_LIST value=array()}
-	<div class="row">
+	<div class="row" style="margin-bottom: 70px;">
         <div class="col-sm-9 col-xs-9">
             <div class="row form-group">
                 <div class="col-sm-2 col-xs-2">{vtranslate('LBL_TITLE',$QUALIFIED_MODULE)}<span class="redColor">*</span></div>

@@ -46,6 +46,12 @@ $languageStrings = array(
   'SINGLE_Webforms' => 'Webbformulär',
   'LBL_ADD_RECORD' => 'Lägg Till Webbformulär',
 
+	'LBL_UPLOAD_DOCUMENTS' => 'Ladda upp dokument',
+	'LBL_ADD_FILE_FIELD' => 'Filuppladdning Field',
+	'LBL_FIELD_LABEL' => 'Dokument titel',
+	'LBL_FILE_FIELD_INFO' => 'För varje fil laddas upp från web bilda ett nytt dokument skapas med bifogad fil. Dokumentet är också kopplat till detta nyskapade%s.',
+	'LBL_NO_FILE_FIELD' => 'Ingen fil fält läggs.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Kopiera till urklipp',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webbformulär raderats framgångsrikt',
@@ -56,4 +62,8 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Referensfält kan inte vara obligatoriskt utan överbelastningsvärde',
 	'JS_TYPE_TO_SEARCH' => 'Skriv för att söka',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webbformulär med detta namn finns redan',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maximalt kan du lägga till%s fil fält.',
+	'JS_COPIED_SUCCESSFULLY' => 'Kopierats.',
+	'JS_COPY_FAILED' => 'Kopiera misslyckades. Kopiera manuellt.',
 );

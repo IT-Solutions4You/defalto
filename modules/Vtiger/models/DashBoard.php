@@ -62,9 +62,7 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model {
 			}
 		}
 
-		$sql = 'SELECT * FROM vtiger_links WHERE linktype = ?
-					AND tabid IN ('. generateQuestionMarks($moduleTabIdList) .') AND linkid NOT IN (SELECT linkid FROM vtiger_module_dashboard_widgets
-					WHERE userid = ? and dashboardtabid=? )';
+		$sql = 'SELECT * FROM vtiger_links WHERE linktype = ? AND tabid IN ('. generateQuestionMarks($moduleTabIdList) .') AND linkid NOT IN (SELECT linkid FROM vtiger_module_dashboard_widgets WHERE userid = ? and dashboardtabid=? )';
 		$params = array('DASHBOARDWIDGET');
 		$params = array_merge($params, $moduleTabIdList);
 		$params = array_merge($params, array($currentUser->getId(), $dashBoardTabId));

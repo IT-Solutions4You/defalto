@@ -316,9 +316,8 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 		var thisInstance = this;
 		this.formValidationDeferred = jQuery.Deferred();
         thisInstance.formValidationDeferred.resolve();
-        return this.formValidationDeferred.promise();
+		
 		var controlForm = this.getFilterForm();
-
 		var validationDone = function(form, status){
 			if(status) {
 				thisInstance.formValidationDeferred.resolve();

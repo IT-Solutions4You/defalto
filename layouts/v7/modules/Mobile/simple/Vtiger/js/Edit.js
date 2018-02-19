@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $animate, $filter) {
+mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $filter, $q) {
     var url = jQuery.url();
     $scope.module = url.param('module');
     $scope.record = url.param('record');
@@ -15,52 +15,116 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
     $scope.deleteable = null;
     $scope.fieldsData = null;
     $scope.editdata = [];
-    $scope.fruitsobj = {
-        fruitsList: loadFruits(),
-        selectedFruits: [],
-        selectedItem: 'Kiwi',
-        searchText: null
-                //querySearch: querySearch
-   };
-    $scope.numberChips = [];
-    $scope.numberChips2 = [];
-    $scope.numberBuffer = '';
-    /*$scope.testDate = new Date();*/
-    $api('describe', {module: $scope.module}, function (e, r) {
-        $scope.describeObject = r.describe;
-        $scope.fields = $scope.describeObject.fields;
-        console.log($scope.fields);
-        $scope.createable = $scope.describeObject.createable;
-        $scope.updateable = $scope.describeObject.updateable;
-        $scope.deleteable = $scope.describeObject.deleteable;
-        if($scope.record){
-            $scope.loadFields();
+	var _processFields = function(field, newrecord, value){
+        if(newrecord){
+            if (typeof field.default != 'undefined') field.raw = field.default;
+            else if (typeof field.type.defaultValue != 'undefined') field.raw = field.type.defaultValue;
         }
-        else{
-            $scope.createRecord();
+        if(!newrecord && value){
+            field.raw = value;
         }
-    });
-    
-    $scope.createRecord = function(){
-        var processedData = [];
-        for (var index in $scope.fields) {
-            var value = '';
-            processedData.push({
-                label: $scope.fields[index].label, // Actual field Label
-                valuelabel: value, // Value to be shown on UI
-                value: value, // Value to be stored on backend
-                name: $scope.fields[index].name, // Backend name for the field - forms will use this value
-                fieldType: $scope.fields[index].type.name, // Type of the field
-                fieldFormat: $scope.fields[index].type.format, // Format of the field ex: date -> dd/mm/yyyy
-                editable: $scope.fields[index].editable, // Returns true if field is editable
-                mandatory: $scope.fields[index].mandatory, // Returns true if field is mandatory
-                picklist: $scope.fields[index].type.picklistValues, // Picklist values for type picklist others will get null
-                dateFieldValue: new Date(), // Creates date object for md-datepicker
-                referenceModules: $scope.fields[index].type.refersTo // Reference module names for reference fields
-            });
+        if($scope.module == 'Calendar' && field.name == 'activitytype'){
+            field.raw = 'Task';
+        }
+        switch(field.type.name) {
+            case 'date':
+                if(value){
+                    field.raw = new Date(value);
+                }
+                else{
+                    field.raw = new Date();
+                }
+                break;
+            case 'time':
+                if(value){
+                    field.raw = new Date(value);
+                }
+                else{
+                    field.raw = new Date();
+                }
+                break;
+            case 'reference':
+                if(value){
+                    field.raw = value.value;
+                    field.valueLabel = value.label;
+                }
+                break;
+            case 'owner':
+                if(value){
+                    field.raw = value.value;
+                    field.display = value.label;
+                }
+                break;
+            case 'boolean':
+                if(value){
+                    field.raw = value == '1' ? true : false;
+                }
+                break;
+        }
+        return field;
+    };
+    var ignorefields = ['notime','starred','tags','modifiedby','reminder_time','imagename','taxclass','isconvertedfromlead','donotcall'];
+
+    //Function to prepare create data.
+    var prepareCreateData = function(newRecord, record){
+        var fields = $scope.fields;
+        var processedData = {};
+        for(var i=0; i < fields.length; i++) {
+            var field = fields[i];
+            if(ignorefields.indexOf(field.name) !== -1){
+                continue;
+            }
+            if(field.editable) {
+                //salutationtype type is not picklist
+                if(field.name == 'salutationtype'){
+                    field.type.name = 'picklist';
+                }
+                if(newRecord){
+                    //set default value
+                    if(field.default){
+                        field.raw = field.default;
+                    }
+                    //set today date as default date.
+                    if(!field.default && (field.type.name == 'date' || field.type.name == 'time')){
+                        field.raw = new Date();
+                    }
+                }
+                else{
+                    field.raw = record.record[field.name];
+                }
+                //Process the field data
+                if(newRecord){
+                    field = _processFields(field, true);
+                }
+                else{
+                    field = _processFields(field, false, record.record[field.name]);
+                }
+                processedData[field.name] = field;
+            }
+
         }
         $scope.fieldsData = processedData;
     };
+
+	$api('describe', {module: $scope.module}, function (e, r) {
+       $scope.describeObject = r.describe;
+       $scope.fields = $scope.describeObject.fields;
+       $scope.createable = $scope.describeObject.createable;
+       $scope.updateable = $scope.describeObject.updateable;
+       $scope.deleteable = $scope.describeObject.deleteable;
+       if($scope.record){
+           $scope.loadFields();
+       }
+       else{
+		   if ($scope.userinfo) {
+                prepareCreateData(true);
+           } else {
+               $scope.$root.$on('UserInfo.Changed', function(){
+                    prepareCreateData(true);
+               });
+           }
+       }
+   });
     
     $scope.gobacktoUrl = function () {
         window.history.back();
@@ -68,50 +132,64 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
     
     $scope.loadFields = function () {
         $api('fetchRecord', {module: $scope.module, record: $scope.record, view_mode:'web'}, function (e, r) {
-            var processedData = [];
-            for (var index in $scope.fields) {
-                var value = r.record[$scope.fields[index].name];
-                var field = $scope.fields[index];
-                if(field && (field.type.name == 'reference' || field.type.name == 'owner' || field.type.name == 'ownergroup')){
-                    value = value.label;
-                }
-                processedData.push({
-                    label: $scope.fields[index].label, // Actual field Label
-                    valuelabel: value, // Value to be shown on UI
-                    value: value, // Value to be stored on backend
-                    name: $scope.fields[index].name, // Backend name for the field - forms will use this value
-                    fieldType: $scope.fields[index].type.name, // Type of the field
-                    fieldFormat: $scope.fields[index].type.format, // Format of the field ex: date -> dd/mm/yyyy
-                    editable: $scope.fields[index].editable, // Returns true if field is editable
-                    mandatory: $scope.fields[index].mandatory, // Returns true if field is mandatory
-                    picklist: $scope.fields[index].type.picklistValues, // Picklist values for type picklist others will get null
-                    dateFieldValue: new Date(value), // Creates date object for md-datepicker
-                    referenceModules: $scope.fields[index].type.refersTo // Reference module names for reference fields
-                });
+            if(r){
+                prepareCreateData(false, r);
+				$scope.record = r.record.id;
             }
-            $scope.fieldsData = processedData;
         });
-    };
-
-    $scope.setdateString = function (val) {
-        spformat = $filter('ngdateformat')(val.fieldFormat);
-        newDateString = val.dateFieldValue.toString(spformat);
-        val.value = newDateString;
-        val.valuelabel = newDateString;
-    };
-
-    $scope.saveThisRecord = function () {
-        $scope.editdata = {};
-        for (var index in $scope.fieldsData) {
-            $scope.editdata[$scope.fieldsData[index].name] = $scope.fieldsData[index].value;
+    };  
+    $scope.editdata = {};
+    $scope.processEditData = function(fieldsData) {
+        for (var index in fieldsData) {
+            var field = fieldsData[index];
+            var value = field.raw;
+            if(!value) value='';
+            switch (field.type.name){
+                //Should convert date time to utc.
+                case 'date' :
+                    value = field.raw;
+                    value = moment.utc(value).format('MM-DD-YYYY');
+                    break;
+                    
+                case 'time' :
+                    value = field.raw;
+                    value = moment.utc(value).format('HH:mm:ss');
+                    break;
+            }
+            if(field.editable){
+                $scope.editdata[field.name] = value;
+            }
         }
+    };
+    
+    $scope.isValid = function(form){
+        if(!form.$valid) {
+            return false;
+        }
+        return true;
+    };
+    
+    $scope.saveThisRecord = function (editForm) {
+        if(!$scope.isValid(editForm)) {
+            var toast = $mdToast.simple().content('Mandatory Fields Missing').position($scope.getToastPosition()).hideDelay(1000);
+            $mdToast.show(toast);
+            return;
+        }
+        $scope.processEditData($scope.fieldsData);
         $api('saveRecord', {module: $scope.module, record: $scope.record, values: $scope.editdata}, function (e, r) {
             if (r) {
+                //split the ws id to get actual record id to fetch.
+                var id = r.record.id.split('x')[1];
                 var toast = $mdToast.simple().content('Record Saved Successfully!').position($scope.getToastPosition()).hideDelay(1000);
-                $mdToast.show(toast);
+                window.location.href = "index.php?module="+$scope.module+"&view=Detail&record="+id+"&app="+$scope.selectedApp;
             } else {
-                var toast = $mdToast.simple().content('Some thing went wrong ! \n Save is not Succesfull.').position($scope.getToastPosition()).hideDelay(1000);
+				var message = 'Some thing went wrong ! \n Save is not Succesfull.';
+				if (e.message) {
+					message = e.message;
+				}
+                var toast = $mdToast.simple().content(message).position($scope.getToastPosition()).hideDelay(1000);
                 $mdToast.show(toast);
+                //window.location.href = "index.php?module="+$scope.module+"&view=List&app="+$scope.selectedApp;
             }
         });
     };
@@ -129,94 +207,31 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
                     return $scope.toastPosition[pos];
                 }).join('');
     };
-
-    $scope.getMatchedReferenceFields = function (query) {
-        arr = loadContacts();
-        var results = query ? arr.filter(createFilterFor(query)) : [];
-        return results;
+    
+    //Search reference records
+    $scope.getMatchedReferenceFields = function (query, field) {
+        var deferred = $q.defer();
+        var refModule = field.type.refersTo[0];
+        if(query) {
+            $api('fetchReferenceRecords', {module: refModule, searchValue: query}, function (error, response) {
+                if(response) {
+                    var result = [];
+                    angular.forEach(response, function (item, key) {
+                        item['valueLabel'] = item.label;
+                        result.push(item)
+                    });
+                    return deferred.resolve(result);
+                }
+            });
+        }
+        return deferred.promise;
     };
-    function createFilterFor(query) {
-        var lowercaseQuery = angular.lowercase(query);
-        return function filterFn(option) {
-            var lowercaseOption = angular.lowercase(option.label);
-            return (lowercaseOption.indexOf(lowercaseQuery) === 0);
-        };
-    }
-
-
-    $scope.querySearch2 = function (query) {
-        arr = loadFruits();
-        var results = query ? arr.filter(createFilterFor2(query)) : [];
-        return results;
+    
+    $scope.setReferenceFieldValue = function(item, field){
+        if(item){
+            field.raw = item.value;
+            field.display = item.label;
+            field.selectedItem = { 'id' : item.id,  'label' : item.label };
+        }
     };
-    function createFilterFor2(query) {
-        var lowercaseQuery = angular.lowercase(query);
-        return function filterFn(fruit) {
-            return (fruit.value.indexOf(lowercaseQuery) === 0);
-        };
-    }
 });
-
-loadFruits = function () {
-    fruits = [
-        'Apple',
-        'Banana',
-        'Bilberry',
-        'Blackcurrant',
-        'Cantaloupe',
-        'Cherry',
-        'Date',
-        'Dragonfruit',
-        'Gooseberry',
-        'Grape',
-        'Grapefruit',
-        'Guava',
-        'Jackfruit',
-        'Kiwi fruit',
-        'Kiwano',
-        'Kumquat',
-        'Lemon',
-        'Lime',
-        'Mango',
-        'Marion berry',
-        'Cantaloupe',
-        'Honeydew',
-        'Water melon',
-        'Nectarine',
-        'Olive',
-        'Orange',
-        'Papaya',
-        'Peach',
-        'Pear',
-        'Pineapple',
-        'Pomegranate',
-        'Quince',
-        'Raspberry',
-        'Rambutan',
-        'Redcurrant',
-        'Strawberry',
-        'Squash'
-    ];
-    arry = [];
-    for (var fruit in fruits) {
-        arry.push({
-            value: fruits[fruit].toLowerCase(),
-            display: fruits[fruit]
-        });
-    }
-
-    return arry;
-};
-
-loadContacts = function () {
-    return [
-        {id: '63', label: 'Mary Smith'},
-        {id: '65', label: 'Linda Williams'},
-        {id: '68', label: 'Elizabeth Brown'},
-        {id: '71', label: 'Maria Miller'},
-        {id: '72', label: 'Susan Wilson'},
-        {id: '66', label: 'Barbara Jones'},
-        {id: '73', label: 'Margaret Moore'},
-        {id: '74', label: 'Dorothy Taylor'}
-    ];
-};

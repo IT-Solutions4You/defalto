@@ -49,6 +49,11 @@ class Vtiger_ModuleBasic {
 	var $grouptable = false;
 	var $fieldtable = false;
 
+	var $allowDuplicates = false;
+	var $isSyncable = 0;
+	var $syncActionForDuplicate = 1;
+
+
 	const EVENT_MODULE_ENABLED     = 'module.enabled';
 	const EVENT_MODULE_DISABLED    = 'module.disabled';
 	const EVENT_MODULE_POSTINSTALL = 'module.postinstall';
@@ -78,13 +83,17 @@ class Vtiger_ModuleBasic {
 		$this->tabsequence = $valuemap['tabsequence'];
 		$this->parent = $valuemap['parent'];
 		$this->customized = $valuemap['customized'];
-		$this->trial = $valuemap['trial']; 
+		$this->trial = $valuemap['trial'];
 
 		$this->isentitytype = $valuemap['isentitytype'];
 		if($this->isentitytype || $this->name == 'Users') {
 			// Initialize other details too
 			$this->initialize2();
 		}
+		$this->source = $valuemap['source'];
+		$this->isSyncable = $valuemap['issyncable'];
+		$this->allowDuplicates = $valuemap['allowduplicates'];
+		$this->syncActionForDuplicate = $valuemap['sync_action_for_duplicates'];
 	}
 
 	/**

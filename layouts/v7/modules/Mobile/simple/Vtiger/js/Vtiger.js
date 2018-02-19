@@ -13,23 +13,30 @@ mobileapp.controller('VtigerBodyController', function ($scope, $api, $mdUtil, $m
     $scope.defaultApp  = null;
     $scope.dynamicTheme = null;
     $scope.modules = null;
-    $scope.pageTitle = "Dashboard";
-
+    
     /* Use this function when you aren't sure to $apply or $digest */
     function scopeApply(fn) {
         $scope.$$phase ? fn() : $scope.$apply(fn);
+    }
+
+    $scope.setSelectedApp = function (selectedApp) {
+        $scope.selectedApp = selectedApp.toUpperCase();
     }
     
     $scope.init = function () {
         $api('userInfo', function (e, r) {
             if (r) {
+                var currentApp = jQuery.url().param('app');
+				if (!currentApp) {
+					currentApp = 'SUPPORT';
+				}
                 scopeApply(function () {
                     $scope.userinfo = r.userinfo;
                     $scope.apps = r.apps;
                     $scope.menus = r.menus;
                     $scope.edition = r.edition;
-                    $scope.selectedApp = r.defaultApp.toUpperCase();
-                    $scope.dynamicTheme = r.defaultApp.toUpperCase();
+                    $scope.selectedApp = currentApp.toUpperCase();
+                    $scope.dynamicTheme = currentApp.toUpperCase();
                     $scope.$root.$emit('UserInfo.Changed');
                 });
             }

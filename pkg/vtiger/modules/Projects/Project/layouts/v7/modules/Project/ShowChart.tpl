@@ -17,7 +17,6 @@
     {/foreach}
 </style>
 {if !empty($PROJECT_TASKS['tasks'])}
-    <h3> {vtranslate('LBL_PROGRESS_CHART',$MODULE)} </h3>
     <div class="pull-right" style="margin-right: 5px;">
         <span style="margin: 2px;">
             <button class="btn textual zoomOut" title="zoom out">

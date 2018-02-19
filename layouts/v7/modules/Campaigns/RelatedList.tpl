@@ -62,7 +62,7 @@
 											onclick="{$RELATED_LINK->getUrl()}"
 										{/if}
 										{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}name="addButton"{/if}
-										{if $IS_SEND_EMAIL_BUTTON eq true} disabled="disabled" {/if}>{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}<i class="fa fa-plus"></i>{/if}&nbsp;{$RELATED_LINK->getLabel()}</button>
+										{if $IS_SEND_EMAIL_BUTTON eq true} disabled="disabled" {/if}>{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}<i class="fa fa-plus"></i>{/if}&nbsp;&nbsp;{$RELATED_LINK->getLabel()}</button>
 								{/if}
 							</div>
 						{/foreach}&nbsp;

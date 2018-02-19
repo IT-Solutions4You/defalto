@@ -8,12 +8,7 @@
 ************************************************************************************}
 
 {strip}
-	{assign var="APP_IMAGE_MAP" value=[	'MARKETING' => 'fa-users',
-										'SALES' => 'fa-dot-circle-o',
-										'SUPPORT' => 'fa-life-ring',
-										'INVENTORY' => 'vicon-inventory',
-										'PROJECT' => 'fa-briefcase'
-]}
+	{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 	<div id="sidebar" class="col-lg-3">
 		<div id="appnavigator" class="row app-nav">
 			<div class="col-sm-12 col-xs-12 app-switcher-container app-{$SELECTED_MENU_CATEGORY}">

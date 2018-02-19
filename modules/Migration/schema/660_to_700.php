@@ -1125,8 +1125,12 @@ if(defined('VTIGER_UPGRADE')) {
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT PRIMARY KEY (crmid,attachmentsid)', array());
-	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());
 	$db->pquery('ALTER TABLE vtiger_project MODIFY COLUMN projectid INT(19) PRIMARY KEY');
+
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_seattachmentsrel WHERE key_name='fk_2_vtiger_seattachmentsrel'", array());
+	if (!$db->num_rows($keyResult)) {
+		$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());
+	}
 
 	if (!Vtiger_Utils::CheckTable('vtiger_wsapp_logs_basic')) {
 		Vtiger_Utils::CreateTable('vtiger_wsapp_logs_basic',
@@ -1215,9 +1219,6 @@ if(defined('VTIGER_UPGRADE')) {
 				module VARCHAR(100) NOT NULL,
 				transition_data VARCHAR(1000) NOT NULL)', true);
 	}
-
-	//Adding user specific field to Calendar table instead of events table
-	$db->pquery('UPDATE vtiger_field SET tablename=? WHERE tablename=?', array('vtiger_calendar_user_field', 'vtiger_events_user_field'));
 
 	//Invite users table mod to support status tracking
 	$columns = $db->getColumnNames('vtiger_invitees');
@@ -1415,7 +1416,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$result = $db->pquery('SELECT id FROM vtiger_dashboard_tabs WHERE userid=? AND tabname=?', array(1, 'Default'));
 		$defaultTabid = $db->query_result($result, 0, 'id');
 		//Setting admin user default tabid to DEFAULT
-		$db->pquery("ALTER TABLE vtiger_module_dashboard_widgets ADD COLUMN dashboardtabid INT(11) DEFAULT $defaultTabid", array());
+		$db->pquery("ALTER TABLE vtiger_module_dashboard_widgets ADD COLUMN dashboardtabid INT(11)", array());
 
 		//TODO : this will fail if there are any entries to vtiger_module_dashboard_widgets
 		$db->pquery('ALTER TABLE vtiger_module_dashboard_widgets ADD CONSTRAINT FOREIGN KEY (dashboardtabid) REFERENCES vtiger_dashboard_tabs(id) ON DELETE CASCADE', array());
@@ -1426,12 +1427,10 @@ if(defined('VTIGER_UPGRADE')) {
 	$num_rows = $db->num_rows($result);
 	for ($i=0; $i<$num_rows; $i++) {
 		$rowdata = $db->query_result_rowdata($result, $i);
-		if ($rowdata['dashboardtabid'] == null) {
-			$result1 = $db->pquery('SELECT id FROM vtiger_dashboard_tabs WHERE userid=? AND tabname=?', array($rowdata['userid'], 'My Dashboard'));
-			if ($db->num_rows($result1) > 0) {
-				$tabid = $db->query_result($result1, 0, 'id');
-				$db->pquery('UPDATE vtiger_module_dashboard_widgets SET dashboardtabid=? WHERE id=? AND userid=?', array($tabid, $rowdata['id'], $rowdata['userid']));
-			}
+		$result1 = $db->pquery('SELECT id FROM vtiger_dashboard_tabs WHERE userid=? AND tabname IN (?, ?)', array($rowdata['userid'], 'My Dashboard', 'Default'));
+		if ($db->num_rows($result1) > 0) {
+			$tabid = $db->query_result($result1, 0, 'id');
+			$db->pquery('UPDATE vtiger_module_dashboard_widgets SET dashboardtabid=? WHERE id=? AND userid=?', array($tabid, $rowdata['id'], $rowdata['userid']));
 		}
 	}
 
@@ -1782,7 +1781,10 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
-	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
+	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='cvstdfilter_cvid_idx'", array());
+	if ($db->num_rows($keyResult)) {
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY cvstdfilter_cvid_idx', array());
+	}
 
 	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='fk_1_vtiger_cvstdfilter'", array());
 	if ($db->num_rows($keyResult)) {
@@ -2167,6 +2169,7 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
+	$skippedTablesForAll = array('vtiger_crmentity_user_field');
 	$skippedTables = array('Calendar' => array('vtiger_seactivityrel', 'vtiger_cntactivityrel', 'vtiger_salesmanactivityrel'));
 	$allEntityModules = Vtiger_Module_Model::getEntityModules();
 	$dbName = $db->dbName;
@@ -2194,6 +2197,9 @@ if(defined('VTIGER_UPGRADE')) {
 			if (is_array($relatedTables)) {
 				if ($skippedTables[$moduleName]) {
 					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTables[$moduleName]));
+				}
+				if ($skippedTablesForAll) {
+					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTablesForAll));
 				}
 
 				//Checking foriegn key with base table

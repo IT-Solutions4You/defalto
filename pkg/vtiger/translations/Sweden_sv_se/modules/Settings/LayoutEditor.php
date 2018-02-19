@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Spela in header',
   'LBL_HEADER_FIELD' => 'Header Visa',
 
+	'LBL_DUPLICATE_HANDLING' => 'Duplicate Prevention',
+	'LBL_DUPLICATE_CHECK' => 'Aktivera dubbla kontroll',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Duplicera förebyggande funktion endast förhindrar nya dubbla poster från att bli skapat av användare och externa applikationer. Records som skapats från Import',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Välj unika områden som dubbla poster som ska kontrolleras',
+	'LBL_SELECT_FIELDS' => 'Välj Fields',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fält',
+	'LBL_SELECT_RULE' => 'Välj regel för hantering dubbletter',
+	'LBL_ALLOW_DUPLICATES' => 'Tillåt dubbletter',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Låt inte dubbletter',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Åtgärder för att ta om dubbla rekord hittas medan synkronisering med externa program',
+	'LBL_PREFER_LATEST_RECORD' => 'Föredrar senaste rekord',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Föredrar interna register',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Föredrar extern rekord',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Föredrar senaste rekord - ska Senast ändrade registerdata bevaras <br> föredrar interna register - befintlig post kommer att behållas eftersom det är <br> föredrar extern rekord - Data från den externa ansökan kommer att kopieras',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Block visa aktiverad'        ,
@@ -196,4 +210,7 @@ Om du är osäker och vill kunna visa data i framtiden, kan du markera det fält
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Namn som fälten visas i Sidhuvudet som standard',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Detta Område är Rubriken aktiverat för Vtiger7, Det kommer att visas i Sammanfattning',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Uppdaterats överväga utvalda fält i dubbletter förebyggande',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Det gick inte att tänka på utvalda områden i dubbletter förebyggande',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Duplicate kontroll är inaktiverad',
 );

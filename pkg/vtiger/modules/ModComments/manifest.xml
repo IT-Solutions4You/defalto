@@ -3,7 +3,7 @@
 	<exporttime>2010-04-27 15:17:37</exporttime>
 	<name>ModComments</name>
 	<label>Comments</label>
-	<parent>Tools</parent>
+	<parent></parent>
 	<version>2.1</version>
 	<dependencies>
 		<vtiger_version>6.0.0rc</vtiger_version>

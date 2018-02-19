@@ -136,6 +136,20 @@ $languageStrings = array(
   'LBL_DETAIL_HEADER' => 'Kayıt Başlığı',
   'LBL_HEADER_FIELD' => 'Başlık Görüntüleyin',
 
+	'LBL_DUPLICATE_HANDLING' => 'Yinelenen Önleme',
+	'LBL_DUPLICATE_CHECK' => 'yinelenen denetimini etkinleştir',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Sadece kullanıcı ve harici uygulamalar tarafından oluşturulan alma yeni yinelenen kayıtları engeller önleme özelliğini çoğaltın. İçe oluşturulan kayıtlar',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'yinelenen kayıtları kontrol edilecek edildiği benzersiz alanları seçin',
+	'LBL_SELECT_FIELDS' => 'seç Alanlar',
+	'LBL_MAX_3_FIELDS' => 'Maksimum 3 Alanları',
+	'LBL_SELECT_RULE' => 'elleçleme çiftleri için Seç kural',
+	'LBL_ALLOW_DUPLICATES' => 'Çiftleri izin ver',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Çiftleri izin verme',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'yinelenen kayıt bulunursa harici uygulama ile senkronizasyon yapılırken Eylem almaya',
+	'LBL_PREFER_LATEST_RECORD' => 'son kayıt tercih',
+	'LBL_PREFER_INTERNAL_RECORD' => 'İç kaydını tercih',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Harici kayıt tercih',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'son kayıt tercih - Verileri harici uygulamadan kopyalanmış olacaktır - bu dış rekoru tercih <br> olduğu gibi korunacak Mevcut rekoru - En son değiştirilen kayıt verileri dahili kayıt tercih <br> korunur',
 );
 $jsLanguageStrings = array(
 	'JS_BLOCK_VISIBILITY_SHOW'     => 'Block show enabled'          ,
@@ -196,4 +210,7 @@ Bu alanı silmek için emin misiniz?',
   'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Adı alanları varsayılan olarak Başlık görünür ',
   'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'Bu Alan Başlık Vtiger7, Özet olarak görünecektir Görüntülemek için etkindir ',
 
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Başarıyla çiftleri önlenmesinde seçili alanları dikkate güncellendi',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'çiftleri önlenmesinde seçili alanları dikkate Başarısız',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Yinelenen kontrolü devre dışı bırakıldığında',
 );

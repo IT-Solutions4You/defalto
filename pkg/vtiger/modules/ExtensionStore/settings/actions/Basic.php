@@ -21,6 +21,7 @@ class Settings_ExtensionStore_Basic_Action extends Settings_Vtiger_IndexAjax_Vie
 		$this->exposeMethod('updateTrialMode');
 		$this->exposeMethod('updateCardDetails');
 		$this->exposeMethod('logoutMarketPlace');
+		$this->exposeMethod('forgotPassword');
 	}
 
 	function process(Vtiger_Request $request) {
@@ -157,11 +158,8 @@ class Settings_ExtensionStore_Basic_Action extends Settings_Vtiger_IndexAjax_Vie
 			$options['savePassword'] = ($request->get('savePassword') == 'true') ? true : false;
 			$options['password'] = md5($options['password']);
 			$profieInfo = $modelInstance->login($options);
-		} elseif ($userAction == 'register') {
-			$options['savePassword'] = $request->get('savePassword');
-			$options['password'] = $options['password'];
-			$profieInfo = $modelInstance->register($options);
 		}
+
 		$response = new Vtiger_Response();
 		if ($profieInfo['success'] != 'true') {
 			$response->setError('', $profieInfo['error']);
@@ -201,6 +199,20 @@ class Settings_ExtensionStore_Basic_Action extends Settings_Vtiger_IndexAjax_Vie
 		} else {
 			$response->setResult($result['result']);
 		}
+		$response->emit();
+	}
+
+	public function forgotPassword(Vtiger_Request $request) {
+		$response = new Vtiger_Response();
+		$qualifiedModuleName = $request->getModule(false);
+		$modelInstance = $this->getModelInstance();
+		$forgotPasswordRes = $modelInstance->forgotPassword($request->getAll());
+		if ($forgotPasswordRes['success']) {
+			$response->setResult(array('message' => vtranslate('LBL_RESET_PASSWORD_LINK_EMAILED', $qualifiedModuleName)));
+		} else {
+			$response->setError('', $forgotPasswordRes['error']);
+		}
+
 		$response->emit();
 	}
 

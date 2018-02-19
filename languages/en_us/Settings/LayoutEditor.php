@@ -147,6 +147,21 @@ $languageStrings = array(
     'LBL_HEADER' => 'Header',
     'LBL_DETAIL_HEADER' => 'Record header',
     'LBL_HEADER_FIELD' => 'Header View',
+
+	'LBL_DUPLICATE_HANDLING' => 'Duplicate Prevention',
+	'LBL_DUPLICATE_CHECK' => 'Enable duplicate check',
+	'LBL_DUPLICATION_INFO_MESSAGE' => 'Duplicate prevention feature only prevents new duplicate records from getting created by users and external applications. Records created from Import, and from Workflows will not be checked for duplicates.<br><br>Existing duplicate records can be removed using “Find Duplicates” feature from the module page.',
+	'LBL_SELECT_FIELDS_FOR_DUPLICATION' => 'Select the unique fields on which duplicate records are to be checked',
+	'LBL_SELECT_FIELDS' => 'Select Fields',
+	'LBL_MAX_3_FIELDS' => 'Max 3 Fields',
+	'LBL_SELECT_RULE' => 'Select rule for handling duplicates',
+	'LBL_ALLOW_DUPLICATES' => 'Allow Duplicates',
+	'LBL_DO_NOT_ALLOW_DUPLICATES' => 'Do not allow Duplicates',
+	'LBL_DUPLICATES_IN_SYNC_MESSAGE' => 'Action to take if duplicate record is found while syncing with external application',
+	'LBL_PREFER_LATEST_RECORD' => 'Prefer latest record',
+	'LBL_PREFER_INTERNAL_RECORD' => 'Prefer internal record',
+	'LBL_PREFER_EXTERNAL_RECORD' => 'Prefer external record',
+	'LBL_SYNC_TOOLTIP_MESSAGE' => 'Prefer latest record - Most recently modified record data will be retained<br>Prefer internal record - Existing record will be retained as it is<br>Prefer external record - Data from the external application will be copied',
 );
 
 $jsLanguageStrings = array(
@@ -207,4 +222,8 @@ $jsLanguageStrings = array(
     'JS_MAXIMUM_HEADER_FIELDS_ALLOWED' => 'Maximum %s header fields allowed',
     'JS_NAME_FIELDS_APPEAR_IN_HEADER_BY_DEFAULT' => 'Name fields appear in Header by default',
     'JS_FIELD_IS_HEADER_ENABLED_FOR_VTIGER7' => 'This Field is Header enabled for Vtiger7, It will appear in Summary View',
+
+	'JS_DUPLICATE_HANDLING_SUCCESS_MESSAGE' => 'Successfully updated to consider selected fields in duplicates prevention',
+	'JS_DUPLICATE_HANDLING_FAILURE_MESSAGE' => 'Failed to consider selected fields in duplicates prevention',
+	'JS_DUPLICATE_CHECK_DISABLED' => 'Duplicate check is disabled',
 );

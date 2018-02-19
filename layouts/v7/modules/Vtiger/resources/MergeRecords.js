@@ -37,9 +37,15 @@ Vtiger.Class('Vtiger_MergeRecords_Js',{},{
         app.helper.showProgress();
         app.request.post({'data':formData}).then(function(error,data){
             app.helper.hideProgress();
-            app.helper.hidePageContentOverlay();
-            app.event.trigger('post.MergeRecords',formData);
-            aDeferred.resolve();
+			if (error === null) {
+				jQuery('.vt-notification').remove();
+				app.helper.hidePageContentOverlay();
+				app.event.trigger('post.MergeRecords',formData);
+				aDeferred.resolve();
+			} else {
+				app.event.trigger('post.save.failed', error);
+				aDeferred.resolve();
+			}
         })
         return aDeferred.promise();
     },
@@ -73,6 +79,8 @@ Vtiger.Class('Vtiger_MergeRecords_Js',{},{
     registerListener : function() {
         var self = this;
         app.event.on('Request.MergeRecords.show',function(event,params){
+			var vtigerInstance = Vtiger_Index_Js.getInstance();
+			vtigerInstance.registerEventForPostSaveFail();
             self.showMergeUI(params);
         })
     },

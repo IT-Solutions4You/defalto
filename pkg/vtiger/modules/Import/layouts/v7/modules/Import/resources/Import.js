@@ -90,7 +90,16 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                     app.helper.loadPageContentOverlay(response);
                     app.helper.hideProgress();
                     if(!err){
-                        app.helper.showSuccessNotification({message:'Import Completed.'});
+                        if (jQuery('#scheduleImportStatus').length > 0) {
+                            app.event.one('post.overlayPageContent.hide', function(container) {
+                                clearTimeout(Vtiger_Import_Js.timer);
+                                Vtiger_Import_Js.isReloadStatusPageStopped = true;
+                            });
+                            Vtiger_Import_Js.isReloadStatusPageStopped = false;
+                            Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
+                        } else {
+                            app.helper.showSuccessNotification({message:'Import Completed.'});
+                        }
                     }
                 });
             }
@@ -210,7 +219,8 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var header = mappingPair[0];
                 header = header.replace(/\/eq\//g, '=');
                 header = header.replace(/\/amp\//g, '&amp;');
-                mapping["'" + header + "'"] = mappingPair[1];
+				mapping[header] = mappingPair[1];
+				mapping[i] = mappingPair[1]; /* To make Row based match when there is no header */
             }
             fieldsList.each(function(i, element) {
                 var fieldElement = jQuery(element);
@@ -218,11 +228,11 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 var rowId = jQuery('[name=row_counter]', fieldElement).get(0).value;
                 var headerNameElement = jQuery('[name=header_name]', fieldElement).get(0);
                 var headerName = jQuery(headerNameElement).html();
-                if ("'" + headerName + "'" in mapping) {
-                    mappedFields.select2("val", mapping["'" + headerName + "'"]);
-                } else if (rowId in mapping) {
-                    mappedFields.val($rowId);
-                }
+                if (headerName in mapping) {
+                    mappedFields.select2("val", mapping[headerName]);
+				} else if (rowId-1 in mapping) { /* Row based match when there is no header - but saved map is loaded. */
+                	mappedFields.select2("val", mapping[rowId-1]);
+				}
                 Vtiger_Import_Js.loadDefaultValueWidget(fieldElement.attr('id'));
             });
         },
@@ -458,7 +468,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					app.helper.loadPageContentOverlay(response);
 					if (jQuery('#scheduleImportStatus').length > 0) {
 						if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
-							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 50000);
+							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 50000);
 						}
 					}
 				}
@@ -618,7 +628,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					});
 
 					Vtiger_Import_Js.isReloadStatusPageStopped = false;
-					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 5000);
+					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
 				}
             });
         },

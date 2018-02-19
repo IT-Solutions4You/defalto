@@ -21,24 +21,30 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
-		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$recordModels = $this->getRecordModelsFromRequest($request);
-		$allRecordSave= true;
-		foreach($recordModels as $recordId => $recordModel) {
-			if(Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
-				$recordModel->save();
-			} else {
-				$allRecordSave= false;
-			}
-		}
-		vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
 		$response = new Vtiger_Response();
-		if($allRecordSave) {
-			$response->setResult(true);
-		} else {
-		   $response->setResult(false);
+		try {
+			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
+			$moduleName = $request->getModule();
+			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+			$recordModels = $this->getRecordModelsFromRequest($request);
+			$allRecordSave= true;
+			foreach($recordModels as $recordId => $recordModel) {
+				if(Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
+					$recordModel->save();
+				} else {
+					$allRecordSave= false;
+				}
+			}
+			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', false);
+			if($allRecordSave) {
+				$response->setResult(true);
+			} else {
+			   $response->setResult(false);
+			}
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
 		}
 		$response->emit();
 	}

@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'Kaydet ve İthalat',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Google İthal sonuçlar',
 
+	'LBL_REDIRECT_URL' => 'Yönlendirme bağlantısı',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Aşağıdaki yönlendirme url kopyalayıp görüntü gösterildiği gibi google auth projesinde yapıştırın',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Şimdi senkronize",
 	'LBL_SYNCRONIZING'	=>	"Senkronizasyon ....",

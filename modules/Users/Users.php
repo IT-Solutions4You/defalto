@@ -511,7 +511,9 @@ class Users extends CRMEntity {
 
 		if (!is_admin($current_user)) {
 			$this->db->startTransaction();
-			if(!$this->verifyPassword($user_password)) {
+			$verified = $this->verifyPassword($user_password);
+			$this->db->completeTransaction();
+			if(!$verified) {
 				$this->log->warn("Incorrect old password for $usr_name");
 				$this->error_string = $mod_strings['ERR_PASSWORD_INCORRECT_OLD'];
 				return false;
@@ -703,7 +705,7 @@ class Users extends CRMEntity {
 	 * @param $module -- module name:: Type varchar
 	 *
 	 */
-	function saveentity($module) {
+	function saveentity($module, $fileid='') {
 		global $current_user;//$adb added by raju for mass mailing
 		$insertion_mode = $this->mode;
 		if(empty($this->column_fields['time_zone'])) {
@@ -793,7 +795,7 @@ class Users extends CRMEntity {
 	 * @param $table_name -- table name:: Type varchar
 	 * @param $module -- module:: Type varchar
 	 */
-	function insertIntoEntityTable($table_name, $module) {
+	function insertIntoEntityTable($table_name, $module, $fileid='') {
 		global $log;
 		$log->info("function insertIntoEntityTable ".$module.' vtiger_table name ' .$table_name);
 		global $adb, $current_user;
@@ -993,7 +995,7 @@ class Users extends CRMEntity {
 	 * @param $record -- record id:: Type integer
 	 * @param $module -- module:: Type varchar
 	 */
-	function retrieve_entity_info($record, $module) {
+	function retrieve_entity_info($record, $module, $allowDeleted = false) {
 		global $adb,$log;
 		$log->debug("Entering into retrieve_entity_info($record, $module) method.");
 
@@ -1075,7 +1077,7 @@ class Users extends CRMEntity {
 	 * @param $module -- module name:: Type varchar
 	 * @param $file_details -- file details array:: Type array
 	 */
-	function uploadAndSaveFile($id,$module,$file_details) {
+	function uploadAndSaveFile($id,$module,$file_details,$attachmentType='Attachment') {
 		global $log;
 		$log->debug("Entering into uploadAndSaveFile($id,$module,$file_details) method.");
 
@@ -1147,10 +1149,10 @@ class Users extends CRMEntity {
 	 * @param $module -- module name:: Type varchar
 	 *
 	 */
-	function save($module_name) {
+	function save($module_name, $fileid='') {
 		global $log, $adb;
 
-		parent::save($module_name);
+		parent::save($module_name, $fileid);
 
 		// Added for Reminder Popup support
 		$query_prev_interval = $adb->pquery("SELECT reminder_interval from vtiger_users where id=?",
@@ -1408,7 +1410,7 @@ class Users extends CRMEntity {
 	 * @param $input_value -- Input value for the column taken from the User
 	 * @return Column value of the field.
 	 */
-	function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype) {
+	function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype='') {
 		if (is_uitype($uitype, "_date_") && $fldvalue == '') {
 			return null;
 		}

@@ -697,9 +697,10 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET presence = 1 WHERE t
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET truncate_trailing_zeros = ?', array(1));
 
-//deleted the id column from the All filter
+//deleted the id column from the All filter (exclude custom modules)
 Migration_Index_View::ExecuteQuery("DELETE FROM vtiger_cvcolumnlist WHERE cvid IN
-			(SELECT cvid FROM vtiger_customview WHERE viewname='All' AND entitytype NOT IN
+			(SELECT cvid FROM vtiger_customview INNER JOIN vtiger_tab ON vtiger_tab.name=vtiger_customview.entitytype
+				WHERE vtiger_tab.customized=0 AND viewname='All' AND entitytype NOT IN
 				('Emails','Calendar','ModComments','ProjectMilestone','Project','SMSNotifier','PBXManager','Webmails'))
 			AND columnindex = 0", array());
 

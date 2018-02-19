@@ -147,17 +147,6 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 			array_push($params, $db->getUniqueID($this->baseTable));
 		}
 		$db->pquery($query, $params);
-
-		$companyName = $this->get('organizationname');
-		$companyName = preg_replace(array("/>/", "/</", "/&/", "/'/", '/""/', '/gt;/', '/lt;/', '/;/'), '', $companyName);
-		$fileContent = file_get_contents('portal/config.inc.php');
-		$pattern = '/\$companyName[\s]+=([^;]+);/';
-		$replacedValue = sprintf("\$%s = '%s';", 'companyName', $companyName);
-		$fileContent = preg_replace($pattern, $replacedValue, $fileContent);
-		$fp = fopen('portal/config.inc.php', 'w');
-		fwrite($fp, $fileContent);
-		fclose($fp);
-		// End
 	}
 
 	/**

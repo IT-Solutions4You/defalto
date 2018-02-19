@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'Сохранить и импортировать',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Гугле импорта результатов',
 
+	'LBL_REDIRECT_URL' => 'Перенаправление URL',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Скопируйте следующий URL перенаправления и вставьте в ваш Google Идент проект как изображение показывает',
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Синхронизация Теперь",
 	'LBL_SYNCRONIZING'	=>	"Синхронизация ....",

@@ -153,4 +153,23 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		}
 		return false;
 	}
+
+	public function getUIType() {
+		return $this->get('uitype');
+	}
+
+	public function getPicklistDetails() {
+		if ($this->get('uitype') == 98) {
+			$picklistValues = $this->getAllRoles();
+			$picklistValues = array_flip($picklistValues);
+		} else {
+			$picklistValues = $this->getPicklistValues();
+		}
+
+		$pickListDetails = array();
+		foreach ($picklistValues as $value => $transValue) {
+			$pickListDetails[] = array('label' => $transValue, 'value' => $value);
+		}
+		return $pickListDetails;
+	}
 }

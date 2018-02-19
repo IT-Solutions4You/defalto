@@ -2828,6 +2828,25 @@ class ReportRun extends CRMEntity {
 		}
 		$log->info("ReportRun :: Successfully returned getReportsQuery" . $module);
 
+
+		$secondarymodule = explode(":", $this->secondarymodule);
+		if(in_array('Calendar', $secondarymodule) || $module == 'Calendar') {
+			$currentUserModel = Users_Record_Model::getCurrentUserModel();
+			$tabId = getTabid('Calendar');
+			$task_tableName = 'vt_tmp_u'.$currentUserModel->id.'_t'.$tabId.'_task';
+			$event_tableName = 'vt_tmp_u'.$currentUserModel->id.'_t'.$tabId.'_events';
+			if(!$currentUserModel->isAdminUser()
+				&& stripos($query, $event_tableName) && stripos($query, $task_tableName)) {
+				$moduleFocus = CRMEntity::getInstance('Calendar');
+				$scope = '';
+				if(in_array('Calendar', $secondarymodule)) $scope = 'Calendar';
+				$condition = $moduleFocus->buildWhereClauseConditionForCalendar($scope);
+				if($condition) {
+					$query .= ' AND '.$condition;
+				}
+			}
+		}
+
 		return $query;
 	}
 

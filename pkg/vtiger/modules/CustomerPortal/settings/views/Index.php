@@ -45,12 +45,10 @@ class Settings_CustomerPortal_Index_View extends Settings_Vtiger_Index_View {
 		$default_shortcuts = $dashboardInfo['shortcuts'];
 		$announcement = $dashboardInfo['announcement'];
 		$widgets = json_decode($dashboardInfo['widgets'], true);
-		$charts = json_decode($dashboardInfo['charts'], true);
 		$supportNotification = $dashboardInfo['support_notification'];
 		$viewer->assign('DEFAULT_SHORTCUTS', $default_shortcuts);
 		$viewer->assign('ANNOUNCEMENT', $announcement);
 		$viewer->assign('WIDGETS', $widgets);
-		$viewer->assign('CHARTS', $charts);
 		$viewer->assign('SUPPORTNOTIFICATION', $supportNotification);
 		$viewer->assign('WIDGETS_MODULE_LIST', $widgetsModuleList);
 

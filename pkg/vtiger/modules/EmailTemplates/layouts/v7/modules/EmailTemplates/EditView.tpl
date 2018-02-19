@@ -1,7 +1,7 @@
 {*+**********************************************************************************
 * The contents of this file are subject to the vtiger CRM Public License Version 1.1
 * ("License"); You may not use this file except in compliance with the License
-* The Original Code is:  vtiger CRM Open Source
+* The Original Code is: vtiger CRM Open Source
 * The Initial Developer of the Original Code is vtiger.
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
@@ -9,9 +9,14 @@
 
 {strip}
 	<div class="main-container clearfix">
-		<div class="editViewPageDiv full-width">
-			<div class="col-sm-12 col-xs-12 ">
-				<form id="EditView" class="form-horizontal recordEditView"  name="EditView" method="post" action="index.php">
+		<div id="modnavigator" class="module-nav editViewModNavigator">
+			<div class="hidden-xs hidden-sm mod-switcher-container">
+				{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
+			</div>
+		</div>
+		<div class="editViewPageDiv viewContent">
+			<div class="col-sm-12 col-xs-12 content-area">
+				<form id="EditView" class="form-horizontal recordEditView" name="EditView" method="post" action="index.php">
 					<div class="editViewHeader">
 						<div class='row'>
 							<div class="col-lg-12 col-md-12 col-lg-pull-0">

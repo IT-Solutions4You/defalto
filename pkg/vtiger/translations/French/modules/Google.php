@@ -77,8 +77,9 @@ $languageStrings = array(
   'LBL_SAVE_AND_IMPORT' => 'Enregistrer et Importer',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Google Importer les résultats',
 
+	'LBL_REDIRECT_URL' => 'URL de redirection',
+	'LBL_REDIRECT_URL_MESSAGE' => "Copiez l'URL de redirection suivant et coller dans votre projet google auth comme image montre",
 );
-
 $jsLanguageStrings = array(
 	'LBL_SYNC_BUTTON'	=>	"Synchroniser maintenant",
 	'LBL_SYNCRONIZING'	=>	"Synchronisation ....",

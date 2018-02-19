@@ -324,8 +324,62 @@ class Webforms_Model {
 		$rows = $adb->num_rows($res);
 		if ($rows > 0) {
 			return true;
-		}else
+		} else {
 			return false;
+		}
+	}
+
+	/**
+	 * Function to create document records for each submitted files in webform and relate to created target module record.
+	 * @global $current_user
+	 * @param <array> $wsRecord - Webservice record array of created target module record returned by vtws_create().
+	 * @throws Exception - Throws exception if size of all uploaded files exceeds 50MB.
+	 */
+	function createDocuments($wsRecord) {
+		global $current_user;
+		$createdDocumentRecords = array();
+		$sourceModule = $this->getTargetModule();
+		if (Vtiger_Functions::isDocumentsRelated($sourceModule)) {
+			$allFileSize = 0;
+			foreach ($_FILES as $file) {
+				$allFileSize += $file['size'];
+			}
+
+			$recordModel = Settings_Webforms_Record_Model::getInstanceById($this->getId(), 'Settings:Webforms');
+			$allowedFilesSize = $recordModel->getModule()->allowedAllFilesSize();
+			if ($allFileSize > $allowedFilesSize) {
+				throw new Exception('Allowed files size exceeded. Allowed file size including all files is 50MB.');
+			}
+
+			$fileFields = $recordModel->getFileFields();
+			$fileFieldsArray = array();
+			$fileFieldsNameArray = array();
+			foreach ($fileFields as $fileField) {
+				$fileFieldsArray[$fileField['fieldname']] = $fileField['fieldlabel'];
+				$fileFieldsNameArray[] = $fileField['fieldname'];
+			}
+
+			$uploadedFiles = $_FILES;
+			foreach ($uploadedFiles as $fileFieldName => $uploadedFile) {
+				if (in_array($fileFieldName, $fileFieldsNameArray) && $uploadedFile['error'] == 0 && $uploadedFile['name']) {
+					$data['notes_title'] = $fileFieldsArray[$fileFieldName];
+					$data['document_source'] = 'Vtiger';
+					$data['filename'] = $uploadedFile['name'];
+					$data['filelocationtype'] = 'I';
+					$data['source'] = 'WEBFORM';
+					$data['assigned_user_id'] = $wsRecord['assigned_user_id'];
+					$data['filestatus'] = 1;
+					unset($_FILES);
+					$_FILES['filename'] = $uploadedFile;
+					$record = vtws_create('Documents', $data, $current_user);
+					array_push($createdDocumentRecords, $record['id']);
+				}
+			}
+
+			if (!empty($createdDocumentRecords)) {
+				vtws_add_related($wsRecord['id'], $createdDocumentRecords);
+			}
+		}
 	}
 }
 

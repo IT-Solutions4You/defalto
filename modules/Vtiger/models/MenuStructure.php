@@ -161,7 +161,7 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 	}
 
 	public static function getIgnoredModules() {
-		return array('Calendar', 'Documents', 'MailManager', 'Rss', 'Portal', 'RecycleBin', 'SMSNotifier', 'EmailTemplates', 'Reports');
+		return array('Calendar', 'Documents', 'MailManager', 'SMSNotifier', 'Reports');
 	}
 
 	function regroupMenuByParent($menuGroupedByParent) {
@@ -186,6 +186,10 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 									'ProjectTask'	=> array('PROJECT'),
 									'ProjectMilestone'	=> array('PROJECT'),
 									'ServiceContracts'	=> array('SUPPORT'),
+									'EmailTemplates'=> array('TOOLS'),
+									'Rss'			=> array('TOOLS'),
+									'Portal'		=> array('TOOLS'),
+									'RecycleBin'	=> array('TOOLS'),
 							);
 
 		$oldToNewAppMap = Vtiger_MenuStructure_Model::getOldToNewAppMapping();
@@ -215,7 +219,8 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 							'MARKETING_AND_SALES'	=> 'MARKETING',
 							'INVENTORY'				=> 'INVENTORY',
 							'SUPPORT'				=> 'SUPPORT',
-							'TOOLS'					=> 'PROJECT'
+							'PROJECT'				=> 'PROJECT',
+							'TOOLS'					=> 'TOOLS'
 						  );
 		return $oldToNewAppMap;
 	}
@@ -225,6 +230,17 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 	 * @return <array>
 	 */
 	public static function getAppMenuList(){
-		return array('MARKETING','SALES','INVENTORY','SUPPORT','PROJECT');
+		return array('MARKETING','SALES','INVENTORY','SUPPORT','PROJECT','TOOLS');
+	}
+
+	public static function getAppIcons() {
+		$appImageIcons = array(	'MARKETING' => 'fa-users',
+								'SALES'		=> 'fa-dot-circle-o',
+								'SUPPORT'	=> 'fa-life-ring',
+								'INVENTORY'	=> 'vicon-inventory',
+								'PROJECT'	=> 'fa-briefcase',
+								'TOOLS'		=> 'fa-wrench'
+							);
+		return $appImageIcons;
 	}
 }

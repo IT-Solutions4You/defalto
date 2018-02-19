@@ -133,6 +133,8 @@
 		}
 		$rawOutput = $operationManager->runOperation($operationInput,$current_user);
 		writeOutput($operationManager, $rawOutput);
+	} catch (DuplicateException $e) {
+        writeErrorOutput($operationManager,new WebServiceException($e->getCode(), $e->getMessage()));
 	}catch(WebServiceException $e){
 		writeErrorOutput($operationManager,$e);
 	}catch(Exception $e){

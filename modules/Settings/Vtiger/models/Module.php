@@ -186,6 +186,19 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		return $blocksList[$viewName];
 	}
 
+	public function getModuleIcon() {
+		$moduleName = $this->getName();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		if ($moduleModel) {
+			$moduleIcon = $moduleModel->getModuleIcon();
+		} else {
+			$lowerModuleName = strtolower($moduleName);
+			$title = vtranslate($moduleName, $moduleName);
+			$moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
+		}
+		return $moduleIcon;
+	}
+
 	static function getSettingsMenuListForNonAdmin() {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$myTagSettingsUrl = $currentUser->getMyTagSettingsListUrl();
@@ -201,5 +214,4 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 
 		return $settingsMenuList;
 	}
-
 }

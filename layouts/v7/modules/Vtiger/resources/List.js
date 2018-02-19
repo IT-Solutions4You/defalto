@@ -901,6 +901,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				jQuery('.inline-save', currentTrElement).find('button').attr('disabled', 'disabled');
 				app.request.post({data: params}).then(function (err, result) {
 					if (result) {
+						jQuery('.vt-notification').remove();
 						jQuery('.inline-save', currentTrElement).find('button').removeAttr('disabled');
 						var params = {};
 						thisInstance.loadListViewRecords(params).then(function (data) {
@@ -912,7 +913,7 @@ Vtiger.Class("Vtiger_List_Js", {
 						});
 					} else {
 						app.helper.hideProgress();
-						app.helper.showErrorNotification({"message": err});
+						app.event.trigger('post.save.failed', err);
 						jQuery('.inline-save', currentTrElement).find('button').removeAttr('disabled');
 						return false;
 					}
@@ -1112,6 +1113,10 @@ Vtiger.Class("Vtiger_List_Js", {
 
 		// Double click event - ajax edit
 		listViewContentDiv.on('dblclick', '.listViewEntries', function (e) {
+			if (listViewContentDiv.find('#isExcelEditSupported').val() == 'no') {
+				return;
+			}
+
 			var currentTrElement = jQuery(e.currentTarget);
 			// added to unset the time out set for <a> tags 
 			var rows = currentTrElement.find('a');
@@ -1321,11 +1326,16 @@ Vtiger.Class("Vtiger_List_Js", {
 				form_update_data += key + '=' + newData[key] + '&';
 			}
 			form_update_data = form_update_data.slice(0, -1);
-			app.request.post({data: form_update_data}).then(function (data) {
+			app.request.post({data: form_update_data}).then(function (err, data) {
 				app.helper.hideProgress();
-				app.helper.hidePageContentOverlay();
-				window.onbeforeunload = null;
-				app.event.trigger('post.listViewMassEditSave');
+				if (data) {
+					jQuery('.vt-notification').remove();
+					app.helper.hidePageContentOverlay();
+					window.onbeforeunload = null;
+					app.event.trigger('post.listViewMassEditSave');
+				} else {
+					app.event.trigger('post.save.failed', err);
+				}
 			});
 		} else {
 			app.helper.hideProgress();
@@ -1605,13 +1615,17 @@ Vtiger.Class("Vtiger_List_Js", {
 			var data = jQuery.extend(formData, listSelectParams);
 			app.helper.showProgress();
 			app.request.post({'data': data}).then(function (err, data) {
+				app.helper.hideProgress();
 				if (err == null) {
-					app.helper.hideProgress();
+					jQuery('.vt-notification').remove();
 					app.helper.hideModal();
 					listInstance.loadListViewRecords().then(function (e) {
 						listInstance.clearList();
 						app.helper.showSuccessNotification({message: app.vtranslate('JS_RECORDS_TRANSFERRED_SUCCESSFULLY')});
 					});
+				} else {
+					app.event.trigger('post.save.failed', err);
+					jQuery(form).find("button[name='saveButton']").removeAttr('disabled');
 				}
 			});
 		}
@@ -2589,7 +2603,21 @@ Vtiger.Class("Vtiger_List_Js", {
 			dropdown.on('hidden.bs.dropdown', function () {
 				dropdown_menu.removeClass('invisible');
 				fixed_dropdown_menu.remove();
+				jQuery('.listViewEntries').removeClass('dropDownOpen');
 			});
+		});
+		jQuery('.listViewEntries').mouseleave(function (e) {
+			var currentDropDown = jQuery(e.currentTarget).find('.dropdown');
+			setTimeout(function () {
+				if (jQuery('.dropdown-menu:hover').length == 0) {
+					if (currentDropDown.hasClass('open')) {
+						jQuery(e.currentTarget).find('.dropdown').trigger('click');
+					}
+					jQuery(e.currentTarget).removeClass('dropDownOpen');
+				} else {
+					jQuery(e.currentTarget).addClass('dropDownOpen');
+				}
+			}, 50);
 		});
 	},
 	getListViewContentHeight: function () {

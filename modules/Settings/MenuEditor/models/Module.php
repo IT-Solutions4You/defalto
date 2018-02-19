@@ -62,15 +62,15 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if ($count > 0) {
 			for ($i = 0; $i < $count; $i++) {
-				$appname = $db->query_result($result, $i, 'appname');
 				$tabid = $db->query_result($result, $i, 'tabid');
-				$sequence = $db->query_result($result, $i, 'sequence');
 				$moduleName = getTabModuleName($tabid);
-				if ($moduleName === 'Transactions')
-					continue; //Transactions module should not be available in Menu
 				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-				if (empty($moduleModel))
+				if (empty($moduleModel)) {
 					continue;
+				}
+
+				$sequence = $db->query_result($result, $i, 'sequence');
+				$appname = $db->query_result($result, $i, 'appname');
 				$moduleModel->set('app2tab_sequence', $sequence);
 				if (($userPrivModel->isAdminUser() ||
 						$userPrivModel->hasGlobalReadPermission() ||
@@ -84,6 +84,8 @@ class Settings_MenuEditor_Module_Model extends Settings_Vtiger_Module_Model {
 	}
 
 	public static function addModuleToApp($moduleName, $parent) {
+		if (empty($moduleName) || empty($parent)) return;
+
 		$db = PearDatabase::getInstance();
 		$parent = strtoupper($parent);
 		$oldToNewAppMapping = Vtiger_MenuStructure_Model::getOldToNewAppMapping();

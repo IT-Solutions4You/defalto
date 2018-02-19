@@ -924,17 +924,12 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 
 		if (Vtiger_Field::getInstance('tags', $moduleInstance) === false && $moduleModel->isTagsEnabled()) {
 			$module = (string) $moduleInstance->name;
-			$focus = CRMEntity::getInstance($module);
-			if (isset($focus->customFieldTable)) {
-				$tableName = $focus->customFieldTable[0];
-			} else {
-				$tableName = 'vtiger_'.strtolower($module).'cf';
-			}
-			//Adding tag field
+            $focus = CRMEntity::getInstance($module);
+
 			$field = new Vtiger_Field();
-			$field->name = "tags";
-			$field->label = "tags";
-			$field->table = $tableName;
+			$field->name = 'tags';
+			$field->label = 'tags';
+			$field->table = $focus->table_name;
 			$field->presence = 2;
 			$field->displaytype = 6;
 			$field->readonly = 1;

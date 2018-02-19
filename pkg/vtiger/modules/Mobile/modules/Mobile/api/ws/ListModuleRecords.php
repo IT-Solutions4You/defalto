@@ -39,7 +39,8 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 		
 		$headerFields = array();
 		$fields = array();
-		
+		$headerFieldColsMap = array();
+
 		$nameFields = $moduleModel->getNameFields();
 		if(is_string($nameFields)) {
 			$nameFieldModel = $moduleModel->getField($nameFields);
@@ -56,8 +57,12 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 		foreach($headerFieldModels as $fieldName => $fieldModel) {
 			$headerFields[] = $fieldName;
 			$fields[] = array('name'=>$fieldName, 'label'=>$fieldModel->get('label'), 'fieldType'=>$fieldModel->getFieldDataType());
+			$headerFieldColsMap[$fieldModel->get('column')] = $fieldName;
 		}
-		
+
+		if ($module == 'HelpDesk') $headerFieldColsMap['title'] = 'ticket_title';
+		if ($module == 'Documents') $headerFieldColsMap['title'] = 'notes_title';
+
 		$listViewModel = Vtiger_ListView_Model::getInstance($module, $filterId, $headerFields);
 		
 		if(!empty($sortOrder)) {
@@ -83,6 +88,10 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 				$record = array('id'=>$listViewEntryModel->getId());
 				foreach($data as $i => $value) {
 					if(is_string($i)) {
+						// Transform header-field (column to fieldname) in response.
+						if (isset($headerFieldColsMap[$i])) {
+							$i = $headerFieldColsMap[$i];
+						}	
 						$record[$i]= decode_html($value); 
 					}
 				}

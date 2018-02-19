@@ -7,6 +7,7 @@
 * All Rights Reserved.
 ************************************************************************************}
 
+{if $MENU_STRUCTURE}
 {assign var="topMenus" value=$MENU_STRUCTURE->getTop()}
 {assign var="moreMenus" value=$MENU_STRUCTURE->getMore()}
 
@@ -16,10 +17,11 @@
 		<ul title="{$translatedModuleLabel}" class="module-qtip">
 			<li {if $MODULE eq $moduleName}class="active"{else}class=""{/if}>
 				<a href="{$moduleModel->getDefaultUrl()}&app={$SELECTED_MENU_CATEGORY}">
-					<i class="vicon-{strtolower($moduleName)}"></i>
+					{$moduleModel->getModuleIcon()}
 					<span>{$translatedModuleLabel}</span>
 				</a>
 			</li>
 		</ul>
 	{/foreach}
 </div>
+{/if}
