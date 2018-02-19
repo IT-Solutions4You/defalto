@@ -71,10 +71,8 @@ body > .mCSB_inside > .mCSB_container {
 body {
   font-family: 'OpenSans-Regular', sans-serif;
   font-size: 12px;
-  -webkit-font-smoothing: antialiased;
   font-weight: normal;
   font-style: normal;
-  letter-spacing: 0.008rem;
   font-kerning: normal;
 }
 .app-fixed-navbar {
@@ -487,7 +485,6 @@ body {
 }
 .app-menu .app-name {
   padding-left: 2%;
-  font-weight: bold;
   max-width: 75%;
   display: inline-block;
 }
