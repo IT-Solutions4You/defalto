@@ -4728,7 +4728,7 @@ li.dashboardWidget {
   margin-top: 10px;
 }
 .dashBoardContainer .tabContainer ul {
-  margin: 0 auto;
+  margin: 0 inherit;
 }
 .dashBoardContainer .tabContainer .nav {
   font-size: 15px;
