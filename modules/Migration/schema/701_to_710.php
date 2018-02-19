@@ -182,7 +182,7 @@ if (defined('VTIGER_UPGRADE')) {
 		Vtiger_Utils::CreateTable($generalUserFieldTable,
 				'(`recordid` INT(19) NOT NULL, 
 				`userid` INT(19) NOT NULL,
-				`starred` VARCHAR(100) DEFAULT NULL', true);
+				`starred` VARCHAR(100) DEFAULT NULL)', true);
 	}
 
 	if (Vtiger_Utils::CheckTable($generalUserFieldTable)) {
