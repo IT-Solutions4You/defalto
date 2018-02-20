@@ -335,6 +335,13 @@ if (defined('VTIGER_UPGRADE')) {
 	echo '<br>Succesfully added RSS, Email Templates for new parent TOOLS<br>';
 	//END::Adding new parent TOOLS in menu
 
+	//START::Supporting to store dashboard size
+	$dashboardWidgetColumns = $db->getColumnNames('vtiger_module_dashboard_widgets');
+	if (!in_array('size', $dashboardWidgetColumns)) {
+		$db->pquery('ALTER TABLE vtiger_module_dashboard_widgets ADD COLUMN size VARCHAR(50)', array());
+	}
+	//END::Supporting to store dashboard size
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 

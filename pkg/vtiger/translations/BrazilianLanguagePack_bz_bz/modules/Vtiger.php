@@ -1922,4 +1922,5 @@ $jsLanguageStrings = array(
 	'JS_SET_DEFAULT_TAB' => 'é definido como o painel de controle padrão',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Por favor, redigite as senhas. Os valores da "nova senha" e "confirmação da senha" não combinam.',
 	'LBL_LIST_DELETE_CONFIRMATION' => 'Você em certeza que deseja apagar?',
+	'JS_WIDGET_RESIZING_WAIT_MSG' => 'conteúdos Widget irá carregar após o redimensionamento.',
 );

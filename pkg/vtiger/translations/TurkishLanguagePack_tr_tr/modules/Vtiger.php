@@ -1501,4 +1501,5 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATES_DETECTED' => 'Çoğaltın (ler) algılandı!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'yeniden girin şifreleri. "Yeni şifre" ve "onayla parola" değerleri eşleşmiyor.',
 	'JS_LIST_DELETE_CONFIRMATION' => 'Silmek istediğine emin misin?',
+	'JS_WIDGET_RESIZING_WAIT_MSG' => 'Araç içindekiler boyutlandırma sonra yükleyecektir.',
 );

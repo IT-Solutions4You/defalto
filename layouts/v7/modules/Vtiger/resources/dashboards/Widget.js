@@ -128,7 +128,7 @@ Vtiger.Class('Vtiger_Widget_Js',{
         widgetContent.css({height: widgetContent.height()-40});
 	},
     
-    postResizeWidget : function() {
+	postResizeWidget : function() {
 		if(!this.isEmptyData()) {
 			this.loadChart();
             this.postInitializeCalls();
@@ -305,6 +305,14 @@ Vtiger_Widget_Js('Vtiger_KeyMetrics_Widget_Js', {}, {
         var adjustedHeight = this.getContainer().height()-50;
         app.helper.showVerticalScroll(widgetContent,{'setHeight' : adjustedHeight});
 		widgetContent.css({height: widgetContent.height()-40});
+	},
+
+	postResizeWidget: function () {
+		var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
+		var slimScrollDiv = jQuery('.slimScrollDiv', this.getContainer());
+		var adjustedHeight = this.getContainer().height() - 20;
+		widgetContent.css({height: adjustedHeight});
+		slimScrollDiv.css({height: adjustedHeight});
 	}
 });
 
@@ -736,6 +744,14 @@ Vtiger_Widget_Js('Vtiger_TagCloud_Widget_Js',{},{
 	postRefreshWidget : function() {
 		this._super();
 		this.registerTagCloud();
+	},
+
+	postResizeWidget: function () {
+		var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
+		var slimScrollDiv = jQuery('.slimScrollDiv', this.getContainer());
+		var adjustedHeight = this.getContainer().height() - 20;
+		widgetContent.css({height: adjustedHeight});
+		slimScrollDiv.css({height: adjustedHeight});
 	}
 });
 

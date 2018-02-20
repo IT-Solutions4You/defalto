@@ -39,6 +39,28 @@ class Vtiger_Widget_Model extends Vtiger_Base_Model {
 		return $this->get('height');
 	}
 
+    public function getSizeX() {
+        $size = $this->get('size');
+		if ($size) {
+			$size = Zend_Json::decode(decode_html($size));
+            $width = intval($size['sizex']);
+            $this->set('width', $width);
+			return $width;
+		}
+        return $this->getWidth();
+    }
+    
+    public function getSizeY() {
+        $size = $this->get('size');
+		if ($size) {
+			$size = Zend_Json::decode(decode_html($size));
+			$height = intval($size['sizey']);
+            $this->set('height', $height);
+			return $height;
+		}
+        return $this->getHeight();
+    }
+
 	public function getPositionCol($default=0) {
 		$position = $this->get('position');
 		if ($position) {
@@ -135,6 +157,24 @@ class Vtiger_Widget_Model extends Vtiger_Base_Model {
 			$params[] = $widgetId;
 		}
 		$db->pquery($sql, $params);
+	}
+
+	public static function updateWidgetSize($size, $linkId, $widgetId, $userId, $tabId) {
+		if ($linkId || $widgetId) {
+			$db = PearDatabase::getInstance();
+			$sql = 'UPDATE vtiger_module_dashboard_widgets SET size=? WHERE userid=?';
+			$params = array($size, $userId);
+			if ($linkId) {
+				$sql .= ' AND linkid=?';
+				$params[] = $linkId;
+			} else if ($widgetId) {
+				$sql .= ' AND id=?';
+				$params[] = $widgetId;
+			}
+			$sql .= ' AND dashboardtabid=?';
+			$params[] = $tabId;
+			$db->pquery($sql, $params);
+		}
 	}
 
 	public static function getInstanceWithWidgetId($widgetId, $userId) {

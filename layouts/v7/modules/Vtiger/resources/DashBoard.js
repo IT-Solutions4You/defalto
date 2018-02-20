@@ -175,7 +175,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 							'linkId' : linkId,
 							'tab' : jQuery(".tab-pane.active").data("tabid")
 						}
-						app.request.post({"data":noteBookParams}).then(function(err,data)  {
+						app.request.post({"data":noteBookParams}).then(function(err,data) {
 							if(data){
 								var widgetId = data.widgetId;
 								app.helper.hideModal();
@@ -196,7 +196,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				}
 				form.vtValidate(params);
 			}
-		   app.helper.showModal(res,{"cb":callback});
+			app.helper.showModal(res,{"cb":callback});
 		});
 
 	}
@@ -217,7 +217,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 	},
 
 	getDashboardContainer : function(){
-	  return jQuery(".dashBoardContainer");  
+		return jQuery(".dashBoardContainer");
 	},
 
 	getContainer : function(tabid) {
@@ -268,6 +268,29 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		return gridWidth;
 	},
 
+	saveWidgetSize: function (widget) {
+		var dashboardTabId = widget.closest('.tab-pane.active').data('tabid');
+		var widgetSize = {
+			'sizex': widget.attr('data-sizex'),
+			'sizey': widget.attr('data-sizey')
+		};
+		if (widgetSize.sizex && widgetSize.sizey) {
+			var params = {
+				'module': 'Vtiger',
+				'action': 'SaveWidgetSize',
+				'id': widget.attr('id'),
+				'size': widgetSize,
+				'tabid': dashboardTabId
+			};
+			app.request.post({"data": params}).then(function (err, data) {
+			});
+		}
+	},
+
+	getWaitingForResizeCompleteMsg: function () {
+		return '<div class="wait_resizing_msg"><p class="text-info">'+app.vtranslate('JS_WIDGET_RESIZING_WAIT_MSG')+'</p></div>';
+	},
+
 	registerGridster : function() {
 		var thisInstance = this;
 		var widgetMargin = 10;
@@ -289,20 +312,30 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			max_cols: 4,
 			min_rows: 20,
 			resize : {
-			  enabled : true,  
-			  stop : function(e,ui,widget){
-				var widgetName = widget.data('name');
-				 /**
-				 * we are setting default height in DashBoardWidgetContents.tpl
-				 * need to overwrite based on resized widget height
-				 */ 
-				var widgetChartContainer = widget.find(".widgetChartContainer");
-				if(widgetChartContainer.length > 0){
-					widgetChartContainer.css("height",widget.height() - 60);
+				enabled : true,
+				start: function (e, ui, widget) {
+					var widgetContent = widget.find('.dashboardWidgetContent');
+					widgetContent.before(thisInstance.getWaitingForResizeCompleteMsg());
+					widgetContent.addClass('hide');
+				},
+				stop : function(e, ui, widget) {
+					var widgetContent = widget.find('.dashboardWidgetContent');
+					widgetContent.prev('.wait_resizing_msg').remove();
+					widgetContent.removeClass('hide');
+
+					var widgetName = widget.data('name');
+					 /**
+					 * we are setting default height in DashBoardWidgetContents.tpl
+					 * need to overwrite based on resized widget height
+					 */ 
+					var widgetChartContainer = widget.find(".widgetChartContainer");
+					if(widgetChartContainer.length > 0){
+						widgetChartContainer.css("height",widget.height() - 60);
+					}
+					Vtiger_Widget_Js.getInstance(widget, widgetName);
+					widget.trigger(Vtiger_Widget_Js.widgetPostResizeEvent);
+					thisInstance.saveWidgetSize(widget);
 				}
-				Vtiger_Widget_Js.getInstance(widget, widgetName);
-				widget.trigger(Vtiger_Widget_Js.widgetPostResizeEvent);
-			  }
 			},
 			draggable: {
 				'stop': function(event, ui) {
@@ -328,7 +361,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				return 1;
 			}
 			return -1;
-		});    
+		});
 		jQuery.each(items , function (i, e) {
 			var item = $(this);
 			var columns = parseInt(item.attr("data-sizex")) > cols ? cols : parseInt(item.attr("data-sizex"));
@@ -412,8 +445,18 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			app.request.post({"url":urlParams}).then(function(err,data){
 				widgetContainer.prepend(data);
 				vtUtils.applyFieldElementsView(widgetContainer);
+
+				var widgetChartContainer = widgetContainer.find(".widgetChartContainer");
+				if (widgetChartContainer.length > 0) {
+					widgetChartContainer.css("height", widgetContainer.height() - 60);
+				}
+
 				thisInstance.getWidgetInstance(widgetContainer);
-				widgetContainer.trigger(Vtiger_Widget_Js.widgetPostLoadEvent);
+				try {
+					widgetContainer.trigger(Vtiger_Widget_Js.widgetPostLoadEvent);
+				} catch (error) {
+					widgetContainer.find('[name="chartcontent"]').html('<div>'+app.vtranslate('JS_NO_DATA_AVAILABLE')+'</div>').css({'text-align': 'center', 'position': 'relative', 'top': '100px'});
+				}
 				app.helper.hideProgress();
 			});
 		} else {
@@ -565,9 +608,11 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			var filterContainer = widgetContainer.find('.filterContainer');
 			var dashboardWidgetFooter = jQuery('.dashBoardWidgetFooter', widgetContainer);
 
+			widgetContainer.toggleClass('dashboardFilterExpanded');
 			filterContainer.slideToggle(500);
 
 			var callbackFunction = function() {
+				widgetContainer.toggleClass('dashboardFilterExpanded');
 				filterContainer.slideToggle(500);
 			}
 			//adding clickoutside event on the dashboardWidgetHeader
@@ -598,8 +643,8 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				var data = {
 					'module' : 'Vtiger',
 					'action' : 'DashBoardTab',
-					'mode'   : 'deleteTab',
-					'tabid'  : tabId
+					'mode' : 'deleteTab',
+					'tabid': tabId
 				}
 
 				app.request.post({"data":data}).then(function(err,data){
@@ -640,9 +685,9 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			}
 			var currentElement = jQuery(e.currentTarget);
 			var data = {
-			  'module'  : 'Home',
-			  'view'    : 'DashBoardTab',
-			  'mode'    : 'showDashBoardAddTabForm'
+				'module'	: 'Home',
+				'view'		: 'DashBoardTab',
+				'mode'		: 'showDashBoardAddTabForm'
 			};
 
 			app.request.post({"data":data}).then(function(err,res){
@@ -666,9 +711,9 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 									vtUtils.hideValidationMessage(labelEle);
 								}
 
-							   var params = jQuery(form).serializeFormData();
-							   params['tabName'] = params['tabName'].trim();
-							   app.request.post({"data":params}).then(function (err,data) {
+								var params = jQuery(form).serializeFormData();
+								params['tabName'] = params['tabName'].trim();
+								app.request.post({"data":params}).then(function (err,data) {
 									app.helper.hideModal();
 									if(err) {
 										app.helper.showErrorNotification({"message":err});
@@ -704,7 +749,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 
 
 									}
-							   });
+								});
 							}
 						}
 						form.vtValidate(params);
@@ -767,37 +812,36 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				var tabId = currentTarget.data("tabid");
 
 			if(newName.trim() == "") {
-				   vtUtils.showValidationMessage(editEle, app.vtranslate('JS_TAB_NAME_SHOULD_NOT_BE_EMPTY'), {
-					   position : {
-						my: 'top left',
-						at: 'bottom left',
-						container: editEle.closest('.dashboardTab')
-					   }
-				   });
-				   return false;
-			   }	
-			   vtUtils.hideValidationMessage(editEle);
+				vtUtils.showValidationMessage(editEle, app.vtranslate('JS_TAB_NAME_SHOULD_NOT_BE_EMPTY'), {
+					position : {
+					my: 'top left',
+					at: 'bottom left',
+					container: editEle.closest('.dashboardTab')
+					}
+				});
+				return false;
+			}
+			vtUtils.hideValidationMessage(editEle);
 
 			if(newName.length > 50) {
-					vtUtils.showValidationMessage(editEle, app.vtranslate('JS_TAB_LABEL_EXCEEDS_CHARS', 50), {
-										position: {
-											my: 'bottom left',
-											at: 'top left',
-											container : jQuery('.module-action-content')
-										}
-									});
-									return false;
-			   }else {
+				vtUtils.showValidationMessage(editEle, app.vtranslate('JS_TAB_LABEL_EXCEEDS_CHARS', 50), {
+					position: {
+						my: 'bottom left',
+						at: 'top left',
+						container : jQuery('.module-action-content')
+					}
+				});
+				return false;
+			 } else {
 				vtUtils.hideValidationMessage(editEle);
-			   }
+			 }
 			currentTarget.off("clickoutside");	
 				if(newName != oldName){
-
 					var data = {
 						'module' : 'Vtiger',
 						'action' : 'DashBoardTab',
-						'mode'   : 'renameTab',
-						'tabid'  : tabId,
+						'mode' : 'renameTab',
+						'tabid': tabId,
 						'tabname': newName
 					}
 					currentTarget.find('.name > strong').text(newName);
@@ -848,17 +892,17 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				return;
 			}
 			var data = {
-				'module'    : 'Home',
-				'view'      : 'DashBoardTab',
-				'mode'      : 'getTabContents',
-				'tabid'     : tabid
+				'module': 'Home',
+				'view': 'DashBoardTab',
+				'mode': 'getTabContents',
+				'tabid' : tabid
 			}
 
 			app.request.post({"data":data}).then(function(err,data){
 				if(err === null){
 					var dashBoardModuleName = jQuery("#tab_"+tabid,".tab-content").html(data).find('[name="dashBoardModuleName"]').val();
 					if(typeof dashBoardModuleName != 'undefined' && dashBoardModuleName.length > 0 ) {
-						var dashBoardInstanceClassName =  app.getModuleSpecificViewClass(app.view(),dashBoardModuleName);
+						var dashBoardInstanceClassName = app.getModuleSpecificViewClass(app.view(),dashBoardModuleName);
 						if(dashBoardInstanceClassName != null) {
 							var dashBoardInstance = new window[dashBoardInstanceClassName]();
 						}
@@ -902,9 +946,9 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			});
 
 			var data = {
-				"module"   : "Vtiger",
-				"action"   : "DashBoardTab",
-				"mode"     : "updateTabSequence",
+				"module" : "Vtiger",
+				"action" : "DashBoardTab",
+				"mode" : "updateTabSequence",
 				"sequence" : JSON.stringify(reArrangedList)
 			}
 
@@ -943,7 +987,6 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			if(typeof dashBoardInstance != 'undefined') {
 				instance = dashBoardInstance;
 				instance.registerEvents();
-				return;
 			}
 			instance.registerGridster();
 			instance.loadWidgets();
