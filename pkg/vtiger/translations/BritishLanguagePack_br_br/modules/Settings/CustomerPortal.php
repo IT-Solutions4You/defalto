@@ -65,7 +65,7 @@ $languageStrings = array(
     "LBL_VISIBILITY"=>"Visibility",
     'LBL_RECORD_PERMISSIONS'=>'Record Permissions',
     'LBL_CREATE_RECORD'=>'Create Record',
-    'LBL_CREATE_RECORD'=>'Edit Record',
+    'LBL_EDIT_RECORD'=>'Edit Record',
 
   'LBL_CREATE_CASE' => 'Create Case',
   'LBL_OPEN_CASES' => 'Open Cases',

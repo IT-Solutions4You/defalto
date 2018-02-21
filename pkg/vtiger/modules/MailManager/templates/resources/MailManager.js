@@ -800,7 +800,8 @@ if (typeof(MailManager) == 'undefined') {
 					'enabled' : true
 				}
 			});
-                        AppConnector.request(MailManager._baseurl() + "_operation=relation&_operationarg=link&" + frmparams).then(function(responseJSON) { 
+                        AppConnector.request(MailManager._baseurl() + "_operation=relation&_operationarg=link&" + frmparams).then(function(responseJSON) {
+						   responseJSON = JSON.parse(responseJSON);	
 					progressIndicatorElement.progressIndicator({
 						'mode' : 'hide'
 					})
@@ -901,7 +902,7 @@ if (typeof(MailManager) == 'undefined') {
 						'mode' : 'hide'
 					})
 					//var response = MailManager.removeHidElement(transport.responseText);
-					responseJSON = JSON.parse(response);
+					responseJSON = JSON.parse(responseJSON);
 					var resultJSON = responseJSON['result'];
 					if (resultJSON['ui']) {
 						MailManager.mail_associate_create_cancel();

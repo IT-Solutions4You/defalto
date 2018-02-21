@@ -136,12 +136,6 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 			$fileFormat = strtolower($fileFormat);
 		}
 
-		// Pre-conditional check for CSV import.
-		if ($fileFormat == 'csv') {
-			$isLocalInfileEnabled = Vtiger_Util_Helper::checkDbLocalInfileSupport();
-			if (!$isLocalInfileEnabled) throw new Exception(vtranslate('ERR_LOCAL_INFILE_NOT_ON', 'Import'));
-		}
-
 		$viewer->assign('AVAILABLE_FIELDS', $moduleMeta->getMergableFields());
 		$viewer->assign('ENTITY_FIELDS', $moduleMeta->getEntityFields());
 		$viewer->assign('ERROR_MESSAGE', $request->get('error_message'));

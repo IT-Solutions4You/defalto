@@ -226,7 +226,7 @@ $languageStrings = array(
     'linkedin'                     => 'LinkedIn'                    ,
 	
 	'LBL_IMAGE_CORRUPTED'          => 'Virus detected or Uploaded image corrupted', 
-	'LBL_LOGO_RECOMMENDED_MESSAGE' => 'Zulässige Größe 170x45 Pixel (.jpeg, .jpg, .png, .gif, .pjpeg, .x-png-Format).', 
+	'LBL_LOGO_RECOMMENDED_MESSAGE' => 'Zulässige Größe 150x40 Pixel (.jpeg, .jpg, .png, .gif, .pjpeg, .x-png-Format).', 
 	'LBL_COMPANY_INFORMATION'      => 'Company Information'         , 
 	'LBL_UPDATE'                   => 'Update'                      , 
 	'LBL_UPDATE_LOGO'              => 'Update Logo'                 , 

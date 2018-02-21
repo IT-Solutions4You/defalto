@@ -13,6 +13,15 @@ include_once 'include.inc';
 class CustomerPortal_API_EntryPoint {
 
 	protected static function authenticate(CustomerPortal_API_Abstract $controller, CustomerPortal_API_Request $request) {
+		// Fix: https://bugs.php.net/bug.php?id=35752
+		if (!isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+			if (preg_match('/Basic\s+(.*)$/i', $_SERVER['Authorization'], $matches)) {
+				list($name, $password) = explode(':', base64_decode($matches[1]));
+				$_SERVER['PHP_AUTH_USER'] = strip_tags($name);
+				$_SERVER['PHP_AUTH_PW']    = strip_tags($password);
+			}
+		}
+
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
 			header('WWW-Authenticate: Basic realm="Customer Portal"');
 			header('HTTP/1.0 401 Unauthorized');

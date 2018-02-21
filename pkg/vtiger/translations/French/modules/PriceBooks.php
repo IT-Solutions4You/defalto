@@ -8,14 +8,14 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'PriceBooks'                   => 'Grille tarifaire'            , 
-	'SINGLE_PriceBooks'            => 'Grille tarifaire'            , 
-	'LBL_ADD_RECORD'               => 'Add Price Book'              , 
-	'LBL_RECORDS_LIST'             => 'Price Books List'            , 
+	'PriceBooks'                   => 'Grille Tarifaire'            , 
+	'SINGLE_PriceBooks'            => 'Grille Tarifaire'            , 
+	'LBL_ADD_RECORD'               => 'Ajouter une Grille Tarifaire'              , 
+	'LBL_RECORDS_LIST'             => 'Liste des v'            , 
 	'LBL_PRICEBOOK_INFORMATION'    => 'Grille tarifaire'            , 
-	'LBL_EDIT_LIST_PRICE'          => 'Edit List Price'             , 
+	'LBL_EDIT_LIST_PRICE'          => 'Editer la Liste de Grille Tarifaire'             , 
 	'Price Book Name'              => 'Objet'                       , 
-	'PriceBook No'                 => 'Grille tarifaire N°'        , 
+	'PriceBook No'                 => 'Grille Tarifaire N°'        , 
 	
 	'LBL_UNIT_PRICE' => 'Prix unitaire',
 	'LBL_ADD_TO' => 'Ajouter à',

@@ -90,7 +90,16 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                     app.helper.loadPageContentOverlay(response);
                     app.helper.hideProgress();
                     if(!err){
-                        app.helper.showSuccessNotification({message:'Import Completed.'});
+                        if (jQuery('#scheduleImportStatus').length > 0) {
+                            app.event.one('post.overlayPageContent.hide', function(container) {
+                                clearTimeout(Vtiger_Import_Js.timer);
+                                Vtiger_Import_Js.isReloadStatusPageStopped = true;
+                            });
+                            Vtiger_Import_Js.isReloadStatusPageStopped = false;
+                            Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
+                        } else {
+                            app.helper.showSuccessNotification({message:'Import Completed.'});
+                        }
                     }
                 });
             }
@@ -459,7 +468,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					app.helper.loadPageContentOverlay(response);
 					if (jQuery('#scheduleImportStatus').length > 0) {
 						if (!Vtiger_Import_Js.isReloadStatusPageStopped) {
-							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 50000);
+							Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 50000);
 						}
 					}
 				}
@@ -619,7 +628,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
 					});
 
 					Vtiger_Import_Js.isReloadStatusPageStopped = false;
-					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning(), 5000);
+					Vtiger_Import_Js.timer = setTimeout(Vtiger_Import_Js.scheduledImportRunning, 5000);
 				}
             });
         },

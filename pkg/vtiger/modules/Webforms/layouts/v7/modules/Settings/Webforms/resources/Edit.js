@@ -208,8 +208,9 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 			var containerRow = element.closest('tr');
 			var removedFieldLabel = containerRow.find('td.fieldLabel').text();
 			var selectElement = sourceModuleContainer.find('#fieldsList');
-			var select2Element = vtUtils.showSelect2ElementView(selectElement);
-			select2Element.find('li.select2-search-choice').find('div:contains('+removedFieldLabel+')').closest('li').remove();
+			//x click removes element in select2 automatically (2 actions below is not required)
+			//var select2Element = vtUtils.showSelect2ElementView(selectElement);
+			//select2Element.find('li.select2-search-choice').find('div:contains('+removedFieldLabel+')').closest('li').remove();
 			selectElement.find('option:contains('+removedFieldLabel+')').removeAttr('selected');
 			if(selectElement.val().length == 1){
 				jQuery('#saveFieldsOrder').attr('disabled',true);

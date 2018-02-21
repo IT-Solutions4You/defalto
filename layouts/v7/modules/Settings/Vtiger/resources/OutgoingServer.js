@@ -105,11 +105,13 @@ Vtiger.Class("Settings_Vtiger_OutgoingServer_Js",{},{
 				thisInstance.saveOutgoingDetails(form);
             }
 		};
-        form.vtValidate(params);
-		 form.on('submit', function(e){
-            e.preventDefault();
-            return false;
-        });
+		if (form.length) {
+        	form.vtValidate(params);
+		 	form.on('submit', function(e){
+            	e.preventDefault();
+            	return false;
+        	});
+		}
 		
 		//register click event for resetToDefault Button
 		resetButton.click(function(e) {

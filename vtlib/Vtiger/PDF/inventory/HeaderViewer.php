@@ -105,7 +105,7 @@ class Vtiger_PDF_InventoryHeaderViewer extends Vtiger_PDF_HeaderViewer {
 						$offsetY = 0;
 					}
 				} else {
-					$offsetY = 1;
+					$offsetY = 4;
 					
 				$pdf->SetFont('freeserif', 'B');
 				$pdf->SetFillColor(205,201,201);

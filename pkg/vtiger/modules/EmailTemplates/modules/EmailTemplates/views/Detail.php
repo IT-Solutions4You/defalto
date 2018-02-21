@@ -60,6 +60,9 @@ class EmailTemplates_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->assign('MODULE_NAME', $moduleName);
+		if ($request->isAjax()) {
+			$viewer->assign('MODULE_MODEL', $recordModel->getModule());
+		}
 
 		$viewer->view('DetailViewFullContents.tpl', $moduleName);
 	}
