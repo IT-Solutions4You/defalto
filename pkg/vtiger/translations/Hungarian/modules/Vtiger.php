@@ -1503,4 +1503,5 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATES_DETECTED' => 'Ismétlődő (ek) észlelt!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Kérjük, adja meg újra a jelszavakat. Az „új jelszó” és a „Jelszó megerősítése” értékek nem egyeznek.',
 	'JS_LIST_DELETE_CONFIRMATION' => 'Biztos vagy benne, hogy törölni akarod?',
+	'JS_WIDGET_RESIZING_WAIT_MSG' => 'Widget tartalma fogja betölteni az átméretezés után.',
 );

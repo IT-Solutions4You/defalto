@@ -1495,4 +1495,5 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATES_DETECTED' => 'Duplicate (e) detectat!',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Vă rugăm să reintroduceți parolele. „Parola nouă“ și „parola confirma“ valorile nu se potrivesc.',
 	'JS_LIST_DELETE_CONFIRMATION' => 'Ești sigur că vrei să ștergi?',
+	'JS_WIDGET_RESIZING_WAIT_MSG' => 'Cuprins Widget se va încărca după redimensionare.',
 );

@@ -678,7 +678,7 @@ Vtiger_Picklist_Field_Js('AdvanceFilter_Picklist_Field_Js',{},{
 	getUi : function(){
 		var comparatorSelectedOptionVal = this.get('comparatorElementVal');
 		if(comparatorSelectedOptionVal == 'e' || comparatorSelectedOptionVal =='n'){
-			var html = '<select class="select2 col-lg-12" multiple name="'+ this.getName() +'[]">';
+			var html = '<select class="select2 inputElement" multiple name="'+ this.getName() +'[]">';
 			var pickListValues = this.getPickListValues();
 			var selectedOption = app.htmlDecode(this.getValue());
 			var selectedOptionsArray = selectedOption.split(',')
@@ -739,7 +739,7 @@ Vtiger_Multipicklist_Field_Js('AdvanceFilter_Multipicklist_Field_Js',{},{
 				var pickListValue = pickListValues[key];
 				pickListValuesArrayFlip[pickListValue] = key;
 			}
-			var html = '<input type="hidden" class="row-fluid col-lg-12 select2" name="'+ this.getName() +'[]">';
+			var html = '<input type="hidden" class="row-fluid inputElement select2" name="'+ this.getName() +'[]">';
 			var selectContainer = jQuery(html).val(selectedOption);
 			selectContainer.data('tags', tagsArray).data('picklistvalues', pickListValuesArrayFlip);
 			this.addValidationToElement(selectContainer);
@@ -755,7 +755,7 @@ Vtiger_Owner_Field_Js('AdvanceFilter_Owner_Field_Js',{},{
 	getUi : function(){
 		var comparatorSelectedOptionVal = this.get('comparatorElementVal');
 		if(comparatorSelectedOptionVal == 'e' || comparatorSelectedOptionVal =='n'){
-			var html = '<select class="select2 col-lg-12 row-fluid" multiple name="'+ this.getName() +'[]">';
+			var html = '<select class="select2 inputElement row-fluid" multiple name="'+ this.getName() +'[]">';
 			var pickListValues = this.getPickListValues();
 			var selectedOption = app.htmlDecode(this.getValue());
 			var selectedOptionsArray = selectedOption.split(',')
@@ -826,7 +826,7 @@ Vtiger_Date_Field_Js('AdvanceFilter_Date_Field_Js',{},{
 		var comparatorSelectedOptionVal = this.get('comparatorElementVal');
         var dateSpecificConditions = this.get('dateSpecificConditions');
 		if(comparatorSelectedOptionVal == 'bw' || comparatorSelectedOptionVal == 'custom'){
-			var html = '<div class="date"><input class="dateField" data-calendar-type="range" name="'+ this.getName() +'" data-date-format="'+ this.getDateFormat() +'" type="text" value="'+  this.getValue() + '"></div>';
+			var html = '<div class="date"><input class="inputElement dateField" style="width:auto;" data-calendar-type="range" name="'+ this.getName() +'" data-date-format="'+ this.getDateFormat() +'" type="text" value="'+  this.getValue() + '"></div>';
 			var element = jQuery(html);
 			var dateFieldUi = element.find('.dateField');
 			if(dateFieldUi.val().indexOf(',') !== -1) {
