@@ -169,6 +169,17 @@ jQuery.Class("Settings_LeadMapping_Js",{
 							if(err === null) {
 								var detailContentsHolder = jQuery('.settingsPageDiv div');
 								detailContentsHolder.html(data);
+								if(window.hasOwnProperty('Vtiger_List_Js')) {
+									var listInstance = new Vtiger_List_Js();
+										setTimeout(function(){
+										listInstance.registerFloatingThead();
+									}, 10);
+
+									app.event.on('Vtiger.Post.MenuToggle', function() {
+										listInstance.reflowList();
+									});
+									listInstance.registerDynamicDropdownPosition();
+								}
 							}
 						});
 					}

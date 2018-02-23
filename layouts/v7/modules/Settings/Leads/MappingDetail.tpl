@@ -20,7 +20,6 @@
                     </span>
                 </span>
             </div>
-            <br/>
             <div class="contents table-container" id="detailView">
                 <table id="listview-table" class="table listview-table">
                     <thead>
@@ -31,9 +30,9 @@
                             <th colspan="3" width="70%">{vtranslate('LBL_MAPPING_WITH_OTHER_MODULES', $QUALIFIED_MODULE)}</th>
                         </tr>
                         <tr>
-                            <th width="5%"><strong>{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</strong></th>
+                            <th width="5%">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
                             {foreach key=key item=LABEL from=$MODULE_MODEL->getHeaders()}
-                                <th width="15%"><b>{vtranslate($LABEL, $LABEL)}</b></th>
+                                <th width="15%">{vtranslate($LABEL, $LABEL)}</th>
                             {/foreach}
                         </tr>
                     </thead>
@@ -64,6 +63,6 @@
             <div id="scroller_wrapper" class="bottom-fixed-scroll">
                 <div id="scroller" class="scroller-div"></div>
             </div>
-	</div>
+		</div>
     </div>
 {/strip}

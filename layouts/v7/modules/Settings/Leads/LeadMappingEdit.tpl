@@ -25,9 +25,9 @@
                                         <th colspan="3" width="70%">{vtranslate('LBL_MAPPING_WITH_OTHER_MODULES', $QUALIFIED_MODULE)}</th>
                                     </tr>
                                     <tr>
-                                        <td width="5%"><strong>{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</strong></td>
+                                        <th width="7%">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
                                         {foreach key=key item=LABEL from=$MODULE_MODEL->getHeaders()}
-                                            <td width="15%"><b>{vtranslate($LABEL, $LABEL)}</b></td>
+                                            <th width="15%">{vtranslate($LABEL, $LABEL)}</th>
                                         {/foreach}
                                     </tr>
                                     {foreach key=MAPPING_ID item=MAPPING_ARRAY from=$MODULE_MODEL->getMapping()  name="mappingLoop"}
@@ -164,21 +164,23 @@
                             </table>
                             <div class="row">
                                 <span class="col-sm-4">
-                                    <button id="addMapping" class="btn addButton module-buttons" type="button">
+                                    <button id="addMapping" class="btn addButton module-buttons" type="button" style="margin-left: 10px;">
                                         <i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_MAPPING', $QUALIFIED_MODULE)}
                                     </button>
                                 </span>
-                                <span class="col-sm-8">
-                                    <span class="pull-right">
-                                        <button type="submit" class="btn btn-success"><strong>{vtranslate('LBL_SAVE', $QUALIFIED_MODULE)}</strong></button>
-                                        <a class="cancelLink" type="reset" href="{$MODULE_MODEL->getDetailViewUrl()}">Cancel</a>
-                                    </span>
-                                </span>
-                            </div>
-			</div>
-                    </div>
-		</form>
+							</div>
+						</div>
+						<div class='modal-overlay-footer clearfix'>
+							<div class="row clearfix">
+								<div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
+									<button type='submit' class='btn btn-success saveButton' >{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+									<a class="cancelLink" type="reset" href="{$MODULE_MODEL->getDetailViewUrl()}">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
             </div>
-	</div>
+		</div>
     </div>
 {/strip}

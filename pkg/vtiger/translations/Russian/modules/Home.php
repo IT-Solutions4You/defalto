@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Добавить новую приборную панель',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Максимум 30 символов разрешено для имени панели.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Имя Dashboard не может не быть пустым',
+	'JS_NO_DATA_AVAILABLE' => 'Данные недоступны',
+);

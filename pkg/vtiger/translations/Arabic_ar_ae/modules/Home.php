@@ -28,3 +28,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'إضافة لوحة القيادة الجديدة',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'يسمح أقصى 30 حرفا لاسم لوحة أجهزة القياس.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'اسم لوحة لا يمكن أن لا تكون فارغة',
+	'JS_NO_DATA_AVAILABLE' => 'لا تتوافر بيانات',
+);

@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Yeni bir pano Ekle ',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maksimum 30 karakter pano adı için izin verilir.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Pano adı boş olamaz olamaz',
+	'JS_NO_DATA_AVAILABLE' => 'veri yok',
+);

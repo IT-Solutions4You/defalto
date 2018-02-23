@@ -28,3 +28,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Lägg till ny dashboard',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximalt 30 tecken är tillåtna för instrumentbräda namn.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard namn kan inte vara tomt',
+	'JS_NO_DATA_AVAILABLE' => 'Ingen data tillgänglig',
+);

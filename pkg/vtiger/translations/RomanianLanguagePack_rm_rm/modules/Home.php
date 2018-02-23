@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Pentru a adăuga un nou tablou de bord',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximum 30 de caractere sunt permise pentru nume tabloul de bord.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Numele tabloului de bord nu nu poate fi gol',
+	'JS_NO_DATA_AVAILABLE' => 'Nici o informatie disponibila',
+);

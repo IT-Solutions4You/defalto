@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Új műszerfal',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximum 30 karakter engedélyezett a műszerfal nevét.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Portál neve nem nem lehet üres',
+	'JS_NO_DATA_AVAILABLE' => 'Nincs elérhető adat',
+);

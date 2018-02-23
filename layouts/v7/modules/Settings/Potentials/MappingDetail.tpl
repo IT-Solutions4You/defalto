@@ -15,12 +15,11 @@
                 <span class="col-sm-12">
                     <span class="pull-right">
                         {foreach item=LINK_MODEL from=$MODULE_MODEL->getDetailViewLinks()}
-                                <button type="button" class="btn btn-default" onclick={$LINK_MODEL->getUrl()}><strong>{vtranslate($LINK_MODEL->getLabel(), $QUALIFIED_MODULE)}</strong></button>
+                            <button type="button" class="btn btn-default" onclick={$LINK_MODEL->getUrl()}>{vtranslate($LINK_MODEL->getLabel(), $QUALIFIED_MODULE)}</button>
                         {/foreach}
                     </span>
                 </span>
             </div>
-            <br/>
             <div class="contents table-container" id="detailView">
                 <table class="table listview-table" id="listview-table">
                     <thead>
@@ -31,9 +30,9 @@
                             <th>{vtranslate('LBL_MAPPING_WITH_OTHER_MODULES', $QUALIFIED_MODULE)}</th>
                         </tr>
                         <tr>
-                            <td width="5%"><strong>{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</strong></td>
+                            <th width="10%">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
                             {foreach key=key item=LABEL from=$MODULE_MODEL->getHeaders()}
-                                <td><strong>{vtranslate($LABEL, $LABEL)}</strong></td>
+                                <th width="30%">{vtranslate($LABEL, $LABEL)}</th>
                             {/foreach}
                         </tr>
                     </thead>
