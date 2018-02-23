@@ -332,6 +332,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 					if(widgetChartContainer.length > 0){
 						widgetChartContainer.css("height",widget.height() - 60);
 					}
+					widgetChartContainer.html('');
 					Vtiger_Widget_Js.getInstance(widget, widgetName);
 					widget.trigger(Vtiger_Widget_Js.widgetPostResizeEvent);
 					thisInstance.saveWidgetSize(widget);
