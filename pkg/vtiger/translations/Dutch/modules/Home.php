@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Het toevoegen van nieuwe dashboard',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximaal 30 tekens zijn toegestaan ​​voor het dashboard naam.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard naam kan niet niet leeg zijn',
+	'JS_NO_DATA_AVAILABLE' => 'Geen gegevens beschikbaar',
+);

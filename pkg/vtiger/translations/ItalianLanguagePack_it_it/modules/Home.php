@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Aggiungere un nuovo pannello',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Massimo 30 caratteri sono consentiti per il nome cruscotto.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'nome cruscotto non può non essere vuoto',
+	'JS_NO_DATA_AVAILABLE' => 'Nessun dato disponibile',
+);

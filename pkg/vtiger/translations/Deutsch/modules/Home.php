@@ -27,3 +27,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Fügen Sie neue dashboard',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Maximal 30 Zeichen sind für Armaturenbrett Namen erlaubt.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Dashboard-Name kann nicht nicht leer sein',
+	'JS_NO_DATA_AVAILABLE' => 'Keine Daten verfügbar',
+);

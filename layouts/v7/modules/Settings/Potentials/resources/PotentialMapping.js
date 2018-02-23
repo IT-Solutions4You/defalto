@@ -58,6 +58,7 @@ jQuery.Class("Settings_PotentialMapping_Js",{
 		vtUtils.showSelect2ElementView(select2Elements);
 		this.registerEventForAddingNewMapping();
 		this.registerOnChangeEventForSourceModule();
+		this.registerEventToDeleteMapping();
 		this.registerEventForFormSubmit();
 		this.registerOnChangeEventOfTargetModule();
 		jQuery('select.projectFields.select2').trigger('change',false);
@@ -109,6 +110,22 @@ jQuery.Class("Settings_PotentialMapping_Js",{
 			}
 			
 			projectFieldsSelectElement.trigger("liszt:updated").trigger('change',false);
+		})
+	},
+
+	/**
+	 * Function to register event to delete mapping
+	 */
+	registerEventToDeleteMapping : function(){
+		var form = jQuery('#potentialsMapping');
+		form.on('click','.deleteMapping',function(e){
+			var element = jQuery(e.currentTarget);
+			var mappingContainer = element.closest('tr');
+			var mappingContainerSequenceNumber = mappingContainer.attr('sequence-number');
+			var deletableName = 'mapping['+mappingContainerSequenceNumber+'][deletable]';
+			mappingContainer.prepend('<input type="hidden" name="'+deletableName+'" />')
+			mappingContainer.data('deletable',true).hide('slow');
+			app.helper.showSuccessNotification({'message' : app.vtranslate('JS_MAPPING_DELETED_SUCCESSFULLY')});
 		})
 	},
 	

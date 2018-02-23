@@ -35,3 +35,8 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo panel de control',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Máximo 30 caracteres están permitidos para el nombre salpicadero.',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Nombre del salpicadero no no puede estar vacía',
+	'JS_NO_DATA_AVAILABLE' => 'Datos no disponibles',
+);
