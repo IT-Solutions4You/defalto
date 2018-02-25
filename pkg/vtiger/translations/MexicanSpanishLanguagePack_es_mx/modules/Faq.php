@@ -8,16 +8,16 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'Faq'                          => 'Faqs'                        , 
+	'Faq'                          => 'FAQs'                        , 
 	'SINGLE_Faq'                   => 'FAQ'                         , 
 	'LBL_RECORDS_LIST'             => 'Lista de FAQs'               , 
 	'LBL_ADD_RECORD'               => 'Agregar FAQ'                 , 
-	'LBL_FAQ_INFORMATION'          => 'Información de FAQ'         , 
-	'LBL_COMMENT_INFORMATION'      => 'Información del Comentario' , 
+	'LBL_FAQ_INFORMATION'          => 'Información de las FAQ'         , 
+	'LBL_COMMENT_INFORMATION'      => 'Información del comentario' , 
 	'Question'                     => 'Pregunta'                    , 
 	'Answer'                       => 'Respuesta'                   , 
 	'Comments'                     => 'Comentarios'                 , 
-	'Faq No'                       => 'Núm. FAQ'                   , 
+	'Faq No'                       => 'Núm. de FAQ'                   , 
 	'General'                      => 'General'                     , 
 	'Draft'                        => 'Borrador'                    , 
 	'Published'                    => 'Publicada'                   , 

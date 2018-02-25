@@ -8,27 +8,22 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'ALVT'                         => 'Cuentas Importantes'         , 
-	'PLVT'                         => 'Oportunidades Importantes'   , 
-	'QLTQ'                         => 'Cotizaciones Importantes'    , 
-	'CVLVT'                        => 'Medidas Clave'               , 
+	'ALVT'                         => 'Cuentas más importantes'         , 
+	'PLVT'                         => 'Oportunidades más importantes'   , 
+	'QLTQ'                         => 'Cotizaciones más importantes'    , 
+	'CVLVT'                        => 'Medidas clave'               , 
 	'HLT'                          => 'Casos más importantes'      , 
-	'GRT'                          => 'Asignación de Grupo'        , 
-	'OLTSO'                        => 'Pedidos de Venta Importantes', 
-	'ILTI'                         => 'Facturas Importantes'        , 
-	'HDB'                          => 'Cuadro Mando Inicio'         , 
-	'OLTPO'                        => 'Ordenes de Compra Importantes', 
-	'LTFAQ'                        => 'FAQs Recientes'              , 
-	'UA'                           => 'Eventos Próximos'           , 
-	'PA'                           => 'Eventos Pendientes'          , 
+	'GRT'                          => 'Asignación de grupo'        , 
+	'OLTSO'                        => 'Órdenes de venta más importantes', 
+	'ILTI'                         => 'Facturas más importantes'        , 
+	'HDB'                          => 'Tablero de inicio'         , 
+	'OLTPO'                        => 'Órdenes de compra más importantes', 
+	'LTFAQ'                        => 'FAQs recientes'              , 
+	'UA'                           => 'Eventos próximos'           , 
+	'PA'                           => 'Eventos pendientes'          , 
         'Home'                         => 'Tablero'                     ,
 
-  'LBL_SAVE_ORDER' => 'Guardar Orden',
+  'LBL_SAVE_ORDER' => 'Guardar orden',
   'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo Tablero',
-	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Máximo 30 caracteres están permitidos para el Tablero',
-);
-
-$jsLanguageStrings = array(
-	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'Nombre del salpicadero no no puede estar vacía',
-	'JS_NO_DATA_AVAILABLE' => 'Datos no disponibles',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Se permiten máximo 30 caracteres para el Tablero',
 );

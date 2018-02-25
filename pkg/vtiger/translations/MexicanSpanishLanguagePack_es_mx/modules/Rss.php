@@ -10,23 +10,23 @@
 
 $languageStrings = Array(
     'Rss'=>'Rss',
-    'LBL_RSS_FEED_SOURCES' => 'Fuentes de alimentación de los rss',
-    'LBL_ADD_FEED_SOURCE' => 'Añadir RSS Fuente',
-    'LBL_FEEDS_LIST_FROM' => 'Feeds Lista De',
+    'LBL_RSS_FEED_SOURCES' => 'Fuentes de alimentación de los RSS',
+    'LBL_ADD_FEED_SOURCE' => 'Añadir la fuente de alimentación de los RSS',
+    'LBL_FEEDS_LIST_FROM' => 'Lista de feeds De',
     'LBL_SET_AS_DEFAULT' => 'Establecer como predeterminado',
     'LBL_SENDER' => 'emisor',
-    'LBL_FEED_SOURCE' => 'Fuente RSS',
-    'LBL_ENTER_FEED_SOURCE' => 'Introduzca RSS Fuente',  
+    'LBL_FEED_SOURCE' => 'Fuente de alimentaicón de RSS',
+    'LBL_ENTER_FEED_SOURCE' => 'Introduzca la fuente de alimentación de los RSS',  
     'SINGLE_Rss' => 'Fuente RSS',
 );
 
 $jsLanguageStrings = array(
-	'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss sucessfully ahorrado',
-    'JS_INVALID_RSS_URL' => 'Inválido Rss Url',
-    'JS_RSS_MADE_AS_DEFAULT' => 'Rss Hecho por Defecto',
+	'JS_RSS_SUCCESSFULLY_SAVED' => 'Rss guardado correctamente',
+    'JS_INVALID_RSS_URL' => 'Url de Rss inválido',
+    'JS_RSS_MADE_AS_DEFAULT' => 'Rss hecho por defecto',
     
 
-  'JS_NO_RECORDS' => 'No Hay Registros',
+  'JS_NO_RECORDS' => 'No hay registros',
 
 );
 

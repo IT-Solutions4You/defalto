@@ -11,11 +11,11 @@ $languageStrings = array(
 	'Vendors'                      => 'Proveedores'                 , 
 	'SINGLE_Vendors'               => 'Proveedor'                   , 
 	'LBL_ADD_RECORD'               => 'Agregar Proveedor'           , 
-	'LBL_RECORDS_LIST'             => 'Lista de proveedores'        , 
+	'LBL_RECORDS_LIST'             => 'Lista de Proveedores'        , 
 	'LBL_VENDOR_INFORMATION'       => 'Información sobre Proveedores:', 
-	'LBL_VENDOR_ADDRESS_INFORMATION' => 'Información sobre la Dirección:', 
+	'LBL_VENDOR_ADDRESS_INFORMATION' => 'Información sobre la dirección:', 
 	'Vendor Name'                  => 'Proveedor'                   , 
-	'Vendor No'                    => 'Núm. Proveedor'             , 
+	'Vendor No'                    => 'Núm. de Proveedor'             , 
 	'Website'                      => 'Página Web'                 , 
 	'GL Account'                   => 'Cuenta Contable'             , 
 	'300-Sales-Software'           => '300-Ventas-Software'         , 
@@ -28,12 +28,12 @@ $languageStrings = array(
 	'307-Service-Hardware Labor'   => '307-Instalación de Hardware-Ventas', 
 	'308-Sales-Books'              => '308-Ventas-Libros'           , 
 
-  'Phone' => 'Teléfono Principal',
-  'Email' => 'De Correo Electrónico Principal',
+  'Phone' => 'Teléfono principal',
+  'Email' => 'Correo electrónico principal',
 
 );
 $jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Seguro que lo quieres borrar?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Borrando a este proveedor, se eliminarán también sus ordenes de compra relacionadas; Estas seguro que deseas eliminar a este proveedor?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Borrando a estos proveedores, se eliminarán también sus ordenes de compra relacionadas; Estas seguro que deseas eliminar estos registros?', 
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => '¿Seguro que lo quiere borrar?', 
+	'LBL_DELETE_CONFIRMATION'      => 'Borrando a este proveedor, se eliminarán también sus órdenes de compra relacionadas. ¿Está seguro que desea eliminar a este proveedor?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Borrando a estos proveedores, se eliminarán también sus órdenes de compra relacionadas. ¿Está seguro que desea eliminar estos registros?', 
 );

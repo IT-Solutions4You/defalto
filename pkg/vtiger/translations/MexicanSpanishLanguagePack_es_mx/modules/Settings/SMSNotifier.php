@@ -8,18 +8,18 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'New Configuration'           , // TODO: Review
-	'SMSNotifier'                  => 'SMS Provider Configuration'  , // TODO: Review
-	'LBL_ADD_CONFIGURATION'        => 'New Configuration'           , // TODO: Review
-	'LBL_EDIT_CONFIGURATION'       => 'Edit Configuration'          , // TODO: Review
-	'LBL_SELECT_ONE'               => 'Select One'                  , // TODO: Review
-	'providertype'                 => 'Provider'                    , // TODO: Review
-	'isactive'                     => 'Active'                      , // TODO: Review
-	'username'                     => 'User Name'                   , // TODO: Review
-	'password'                     => 'Password'                    , // TODO: Review
+	'LBL_ADD_RECORD'               => 'Nueva configuración'           , 
+	'SMSNotifier'                  => 'Configuración del proveedor de SMS'  ,
+	'LBL_ADD_CONFIGURATION'        => 'Nueva configuración'           ,
+	'LBL_EDIT_CONFIGURATION'       => 'Editar configuración'          , 
+	'LBL_SELECT_ONE'               => 'Seleccionar uno'                  , 
+	'providertype'                 => 'Proveedor'                    , 
+	'isactive'                     => 'Activo'                      , 
+	'username'                     => 'Nombre de usuario'                   , 
+	'password'                     => 'Contraseña'                    , 
 );
 $jsLanguageStrings = array(
-	'LBL_DELETE_CONFIRMATION'      => 'Are you sure, you want to delete this SMSNotifier Configuration', // TODO: Review
-	'JS_RECORD_DELETED_SUCCESSFULLY' => 'SMS Provider Deleted Successfully', // TODO: Review
-	'JS_CONFIGURATION_SAVED'       => 'SMS Provider Configurations saved', // TODO: Review
+	'LBL_DELETE_CONFIRMATION'      => '¿Está segura de que quiere eliminar esta configuración del Notificador SMS?',
+	'JS_RECORD_DELETED_SUCCESSFULLY' => 'El proveedor de SMS fue eliminado exitosamente',
+	'JS_CONFIGURATION_SAVED'       => 'Configuración del proveedor de SMS guardada', 
 );
