@@ -496,6 +496,10 @@ window.app = (function () {
 	}
 })();
 
+
+/* Turn-off jQuery Migrate warnings */
+jQuery.migrateMute = true;
+
 jQuery(function () {
 	vtUtils.applyFieldElementsView(jQuery('body'));
 	window.app.controller();
