@@ -223,12 +223,5 @@
 		<default>public_readwritedelete</default>
 	</sharingaccess>
 	<customlinks>
-		<customlink>
-			<linktype>HEADERSCRIPT</linktype>
-			<linklabel>ModCommentsCommonHeaderScript</linklabel>
-			<linkurl><![CDATA[modules/ModComments/ModCommentsCommon.js]]></linkurl>
-			<linkicon><![CDATA[]]></linkicon>
-			<sequence>0</sequence>
-		</customlink>
 	</customlinks>
 </module>
