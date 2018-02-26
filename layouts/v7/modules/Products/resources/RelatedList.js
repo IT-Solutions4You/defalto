@@ -101,27 +101,27 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
     /**
      * Function to trigger related record actions
      */
-    triggerRelationAdditionalActions: function() {
-        var thisInstance = this;
-        var sourceModuleName = thisInstance.parentModuleName;
-        var relatedModuleName = thisInstance.relatedModulename;
+	triggerRelationAdditionalActions: function() {
+		var thisInstance = this;
+		var sourceModuleName = thisInstance.parentModuleName;
+		var relatedModuleName = thisInstance.relatedModulename;
 
-        var tabLabel = thisInstance.getSelectedTabElement().data('label-key');
-        if (sourceModuleName == relatedModuleName && tabLabel == 'Product Bundles') {
-            var params = {
-                'module': sourceModuleName,
-                'relatedModule': relatedModuleName,
-                'record': thisInstance.parentRecordId,
-                'tabLabel': tabLabel,
-                'view': 'Detail',
-                'mode': 'showBundleTotalCostView'
-            }
-            app.request.post({data: params}).then(
-                    function(err, data) {
-                        jQuery('.bundleCostContainer').html(data);
-            });
-        }
-    },
+		var tabLabel = thisInstance.getSelectedTabElement().data('label-key');
+		if (sourceModuleName == relatedModuleName && tabLabel == 'Product Bundles') {
+			var params = {
+				'module'		: sourceModuleName,
+				'relatedModule'	: relatedModuleName,
+				'record'		: thisInstance.parentRecordId,
+				'tabLabel'		: tabLabel,
+				'view'			: 'Detail',
+				'mode'			: 'showBundleTotalCostView'
+			}
+			app.request.post({data: params}).then(function(err, data) {
+					jQuery('.bundleCostContainer').html(data);
+					app.event.trigger('popover.click.event');
+			});
+		}
+	},
 
 	/**
 	 * Function to handle Sort
@@ -196,34 +196,6 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
 		return thisInstance._super(element, callback).then(function() {
 			thisInstance.triggerRelationAdditionalActions();
 		});
-	},
-
-	/**
-	 * Function to trigger related record actions
-	 */
-	triggerRelationAdditionalActions : function() {
-		var thisInstance = this;
-		var sourceModuleName = thisInstance.parentModuleName;
-		var relatedModuleName = thisInstance.relatedModulename;
-
-		var tabLabel = thisInstance.getSelectedTabElement().data('label-key');
-		if (sourceModuleName == relatedModuleName && tabLabel == 'Product Bundles') {
-			var params = {
-				'module'		: sourceModuleName,
-				'relatedModule'	: relatedModuleName,
-				'record'		: thisInstance.parentRecordId,
-				'tabLabel'		: tabLabel,
-				'view'			: 'Detail',
-				'mode'			: 'showBundleTotalCostView'
-			}
-
-			app.request.post({data: params}).then(
-				function(error, data) {
-					jQuery('.bundleCostContainer').html(data);
-                                        app.event.trigger('popover.click.event');
-				}
-			);
-		}
 	},
 
 })
