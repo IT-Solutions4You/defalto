@@ -131,7 +131,6 @@ class PBXManager extends CRMEntity {
         global $log;
         $module = Vtiger_Module::getInstance('Users');
         if ($module) {
-            $module->initTables();
             $blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION', $module);
             if ($blockInstance) {
                 $fieldInstance = new Vtiger_Field();
@@ -141,8 +140,8 @@ class PBXManager extends CRMEntity {
                 $fieldInstance->typeofdata = 'V~O';
                 $blockInstance->addField($fieldInstance);
             }
+        	$log->info('User Extension Field added');
         }
-        $log->fatal('User Extension Field added');
     }
     
     /**
