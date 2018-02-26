@@ -4837,6 +4837,12 @@ li.dashboardWidget {
   resize: none;
   width: 100%;
 }
+.dashboardWidget .wait_resizing_msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 /******************************************* 
 ********** Picklist DependencyGraph ********
 ********************************************/
@@ -4979,7 +4985,7 @@ hr {
   z-index: 0;
 }
 .settingsPageDiv .modal-overlay-footer {
-  margin-left: 230px;
+  border-left: 230px solid #2c3b49;
 }
 .settingsOverlayContainer .modal-overlay-footer {
   margin: 0;
@@ -5322,7 +5328,7 @@ TN-34230 .row .nav > li > a:hover {
 }
 .timePicker {
   width: 9.5em !important;
-  z-index: 1070 !important;
+  z-index: 1100 !important;
 }
 .weekDaySelect .ui-state-default {
   background: inherit;
