@@ -95,19 +95,24 @@
 							{/if}>
 							<td class="related-list-actions">
 								<span class="actionImages">&nbsp;&nbsp;&nbsp;
-									{if $RELATED_MODULE_NAME eq 'PriceBooks' AND (!empty($RELATED_HEADERS['listprice']) || !empty($RELATED_HEADERS['unit_price']))}
-										{if !empty($RELATED_HEADERS['listprice'])}
-											{assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get('listprice'), null, true)}
-										{/if}
-									{/if}
-									{if $RELATED_MODULE_NAME eq 'PriceBooks'}
-										<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}"
-											class="editListPrice cursorPointer" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
-											<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
-										</a>
-									{/if}
 									{if $IS_EDITABLE && $RELATED_RECORD->isEditable()}
-										<a name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}"><i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i></a> &nbsp;&nbsp;
+										{if $RELATED_MODULE_NAME eq 'PriceBooks' AND (!empty($RELATED_HEADERS['listprice']) || !empty($RELATED_HEADERS['unit_price']))}
+											{if !empty($RELATED_HEADERS['listprice'])}
+												{assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get('listprice'), null, true)}
+											{/if}
+										{/if}
+										{if $RELATED_MODULE_NAME eq 'PriceBooks'}
+											<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}"
+												class="editListPrice cursorPointer" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}
+										{else if $MODULE eq 'Products' && $RELATED_MODULE_NAME eq 'Products' && $TAB_LABEL === 'Product Bundles' && $RELATED_LIST_LINKS && $PARENT_RECORD->isBundle()}
+											{assign var=quantity value=$RELATED_RECORD->get($RELATION_FIELD->getName())}
+											<a class="quantityEdit"
+												data-url="index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}"
+												onclick ="Products_Detail_Js.triggerEditQuantity('index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}');if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}"
+										{else}
+											<a name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}"
+										{/if}
+										><i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i></a> &nbsp;&nbsp;
 									{/if}
 
 									{if $IS_DELETABLE}
