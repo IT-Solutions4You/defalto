@@ -15,6 +15,9 @@ global $adb;
 $query = 'SELECT DISTINCT profileid FROM vtiger_profile2utility';
 $result = $adb->pquery($query, array());
 
+// Mute query error that results due to duplicate-key.
+$oldDieOnError = $adb->dieOnError; $adb->dieOnError = false;
+
 $profileId = $adb->query_result($result,0,'profileid');
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,5,0)',array());
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,6,0)',array());
@@ -29,12 +32,13 @@ $profileId = $adb->query_result($result,$i,'profileid');
 
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,5,1)',array());
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,6,1)',array());
-Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,10,0)',array());
+Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',40,10,1)',array());
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',19,5,1)',array());
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',19,6,1)',array());
-Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',19,10,0)',array());
+Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_profile2utility(profileid,tabid,activityid,permission) VALUES ('.$profileId.',19,10,1)',array());
 
 }
+$adb->dieOnError = $oldDieOnError;
 }
 chdir(dirname(__FILE__) . '/../../../');
 require_once 'includes/main/WebUI.php';

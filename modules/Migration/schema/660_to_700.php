@@ -1127,8 +1127,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT PRIMARY KEY (crmid,attachmentsid)', array());
 	$db->pquery('ALTER TABLE vtiger_project MODIFY COLUMN projectid INT(19) PRIMARY KEY');
 
-	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_seattachmentsrel WHERE key_name='fk_2_vtiger_seattachmentsrel'", array());
-	if (!$db->num_rows($keyResult)) {
+	if (!Vtiger_Utils::TableHasForeignKey('vtiger_seattachmentsrel', 'fk_2_vtiger_seattachmentsrel')) {
 		$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT fk_2_vtiger_seattachmentsrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE', array());
 	}
 
@@ -1781,14 +1780,12 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
+	if (Vtiger_Utils::TableHasForeignKey('vtiger_cvstdfilter', 'fk_1_vtiger_cvstdfilter')) {
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
+	}
 	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='cvstdfilter_cvid_idx'", array());
 	if ($db->num_rows($keyResult)) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY cvstdfilter_cvid_idx', array());
-	}
-
-	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='fk_1_vtiger_cvstdfilter'", array());
-	if ($db->num_rows($keyResult)) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
 	}
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
 

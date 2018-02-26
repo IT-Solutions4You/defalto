@@ -2366,7 +2366,8 @@ Should any need arise,please do give us a call.';
 			'LBL_USER_MANAGEMENT',
 			'LBL_STUDIO',
 			'LBL_COMMUNICATION_TEMPLATES',
-			'LBL_OTHER_SETTINGS'
+			'LBL_OTHER_SETTINGS',
+			'LBL_MODULE_MANAGER'
 			);
 
 		//field names
