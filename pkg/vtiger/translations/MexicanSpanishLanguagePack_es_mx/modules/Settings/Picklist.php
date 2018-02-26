@@ -8,57 +8,57 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_SELECT_PICKLIST_IN'       => 'Select Picklist in'          , // TODO: Review
-	'LBL_ADD_VALUE'                => 'Add Value'                   , // TODO: Review
-	'LBL_RENAME_VALUE'             => 'Rename Value'                , // TODO: Review
-	'LBL_DELETE_VALUE'             => 'Delete Value'                , // TODO: Review
-	'LBL_ITEMS'                    => 'Values'                      , // TODO: Review
-	'LBL_DRAG_ITEMS_TO_RESPOSITION' => 'Drag items to reposition them', // TODO: Review
-	'LBL_SELECT_AN_ITEM_TO_RENAME_OR_DELETE' => 'Select an item to rename or delete', // TODO: Review
-	'LBL_TO_DELETE_MULTIPLE_HOLD_CONTROL_KEY' => 'To Delete multiple items hold Ctrl key down while selecting items', // TODO: Review
-	'LBL_ADD_ITEM_TO'              => 'Add Item to'                 , // TODO: Review
-	'LBL_ITEM_VALUE'               => 'Item value'                  , // TODO: Review
-	'LBL_ITEM_TO_RENAME'           => 'Item to rename'              , // TODO: Review
-	'LBL_ENTER_NEW_NAME'           => 'Enter new Name'              , // TODO: Review
-	'LBL_RENAME_PICKLIST_ITEM'     => 'Rename PickList Item'        , // TODO: Review
-	'LBL_DELETE_PICKLIST_ITEMS'    => 'Delete PickList Items'       , // TODO: Review
-	'LBL_ITEMS_TO_DELETE'          => 'Items to Delete'             , // TODO: Review
-	'LBL_REPLACE_IT_WITH'          => 'Replace it with'             , // TODO: Review
-	'LBL_ASSIGN_TO_ROLE'           => 'Assign to Role'              , // TODO: Review
-	'LBL_ALL_ROLES'                => 'All Roles'                   , // TODO: Review
-	'LBL_CHOOSE_ROLES'             => 'Choose Roles'                , // TODO: Review
-	'LBL_ALL_VALUES'               => 'All values'                  , // TODO: Review
-	'LBL_VALUES_ASSIGNED_TO_A_ROLE' => 'Values assigned to a role'   , // TODO: Review
-	'LBL_ASSIGN_VALUE'             => 'Assign Value'                , // TODO: Review
-	'LBL_SAVE_ORDER'               => 'Save Order'                  , // TODO: Review
-	'LBL_ROLE_NAME'                => 'Role name'                   , // TODO: Review
-	'LBL_SELECTED_VALUES_MESSGAE'  => 'will appear for the user with this role', // TODO: Review
-	'LBL_ENABLE/DISABLE_MESSGAE'   => 'Click on value to Enable/Disable it.After done click on save', // TODO: Review
-	'LBL_ASSIGN_VALUES_TO_ROLES'   => 'Assign Values to Roles'      , // TODO: Review
-	'LBL_SELECTED_VALUES'          => 'Selected Values'             , // TODO: Review
-	'NO_PICKLIST_FIELDS'           => 'do not have any picklist fields', // TODO: Review
+	'LBL_SELECT_PICKLIST_IN'       => 'Seleccionar lista de selección en'          ,
+	'LBL_ADD_VALUE'                => 'Añadir valor'                   , 
+	'LBL_RENAME_VALUE'             => 'Cambiar de nombre el valor'                , 
+	'LBL_DELETE_VALUE'             => 'Eliminar el valor'                , 
+	'LBL_ITEMS'                    => 'Artículos'                      , 
+	'LBL_DRAG_ITEMS_TO_RESPOSITION' => 'Arrastre los artículos para cambiarlos de posición',
+	'LBL_SELECT_AN_ITEM_TO_RENAME_OR_DELETE' => 'Seleccione un artículo para cambiarlo de nombre o eliminarlo',
+	'LBL_TO_DELETE_MULTIPLE_HOLD_CONTROL_KEY' => 'Para borrar varios artículos presione la tecla Ctrl al mismo tiempo que slecciona los artículos',
+	'LBL_ADD_ITEM_TO'              => 'Añadir artículo a'                 , 
+	'LBL_ITEM_VALUE'               => 'Valor del artículo'                  , 
+	'LBL_ITEM_TO_RENAME'           => 'Artículo para cambiar de nombre'              ,
+	'LBL_ENTER_NEW_NAME'           => 'Ingrese el nuevo nombre'              , 
+	'LBL_RENAME_PICKLIST_ITEM'     => 'Cambiar de nombre el artículo de la lista de selección'        ,
+	'LBL_DELETE_PICKLIST_ITEMS'    => 'Eliminar los artículos de la lista de selección'       ,
+	'LBL_ITEMS_TO_DELETE'          => 'Artículos para eliminar'             ,
+	'LBL_REPLACE_IT_WITH'          => 'Reemplazar con'             , 
+	'LBL_ASSIGN_TO_ROLE'           => 'Asignar a rol'              , 
+	'LBL_ALL_ROLES'                => 'Todos los roles'                   , 
+	'LBL_CHOOSE_ROLES'             => 'Elegir el rol'                , 
+	'LBL_ALL_VALUES'               => 'Todos los valores'                  , 
+	'LBL_VALUES_ASSIGNED_TO_A_ROLE' => 'Valores asignados a un rol'   ,
+	'LBL_ASSIGN_VALUE'             => 'Asignar valor'                , 
+	'LBL_SAVE_ORDER'               => 'Guardar orden'                  , 
+	'LBL_ROLE_NAME'                => 'Nombre del rol'                   ,
+	'LBL_SELECTED_VALUES_MESSGAE'  => 'Aparecerá para el usuario con este rol', 
+	'LBL_ENABLE/DISABLE_MESSGAE'   => 'Dé clic en el valor para activarlo/desactivarlo. Cuando termine, dé clic en Guardar',
+	'LBL_ASSIGN_VALUES_TO_ROLES'   => 'Asignar valores a roles'      , 
+	'LBL_SELECTED_VALUES'          => 'Valores seleccionados'             , 
+	'NO_PICKLIST_FIELDS'           => 'No tiene ningún campo de lista de selección', 
     'LBL_EDIT_PICKLIST_ITEM'       => 'Editar lista de selección de artículos',
 	
 	//Translation for module
 	'Calendar' => 'Tarea',
 
-  'LBL_NON_EDITABLE_PICKLIST_VALUES' => 'No Editable Valores',
+  'LBL_NON_EDITABLE_PICKLIST_VALUES' => 'Valores no editables',
 
 );
 $jsLanguageStrings = array(
-	'JS_ITEM_RENAMED_SUCCESSFULLY' => 'Item Renamed Successfully'   , // TODO: Review
-	'JS_ITEM_ADDED_SUCCESSFULLY'   => 'Item added Successfully'     , // TODO: Review
-	'JS_NO_ITEM_SELECTED'          => 'No item Selected'            , // TODO: Review
-	'JS_MORE_THAN_ONE_ITEM_SELECTED' => 'More than one Item selected' , // TODO: Review
-	'JS_ITEMS_DELETED_SUCCESSFULLY' => 'Items Deleted Successfully'  , // TODO: Review
-	'JS_YOU_CANNOT_DELETE_ALL_THE_VALUES' => 'You cannot delete all the values', // TODO: Review
-	'JS_ALL_ROLES_SELECTED'        => 'All Roles Selected'          , // TODO: Review
-	'JS_LIST_UPDATED_SUCCESSFULLY' => 'List updated Successfully'   , // TODO: Review
-	'JS_SEQUENCE_UPDATED_SUCCESSFULLY' => 'Sequence updated successfully', // TODO: Review
-	'JS_VALUE_ASSIGNED_SUCCESSFULLY' => 'Value assigned successfully' , // TODO: Review
-	'JS_PLEASE_SELECT_MODULE'      => 'Please seelct module'        , // TODO: Review
+	'JS_ITEM_RENAMED_SUCCESSFULLY' => 'Nombre del artículo cambiado exitosamente'   ,
+	'JS_ITEM_ADDED_SUCCESSFULLY'   => 'Artículo añadido exitosamente'     , 
+	'JS_NO_ITEM_SELECTED'          => 'No se ha seleccionado ningún artículo'            , 
+	'JS_MORE_THAN_ONE_ITEM_SELECTED' => 'Se ha seleccionado más de un artículo' ,
+	'JS_ITEMS_DELETED_SUCCESSFULLY' => 'Los artículos se han borrado exitosamente'  , 
+	'JS_YOU_CANNOT_DELETE_ALL_THE_VALUES' => 'No puede borrar todos los valores', 
+	'JS_ALL_ROLES_SELECTED'        => 'Se han seleccionado todos los roles'          , 
+	'JS_LIST_UPDATED_SUCCESSFULLY' => 'La lista se actualizó exitosamente'   , 
+	'JS_SEQUENCE_UPDATED_SUCCESSFULLY' => 'Secuencia actualizada exitosamente',
+	'JS_VALUE_ASSIGNED_SUCCESSFULLY' => 'Valor asignado exitosamente' , 
+	'JS_PLEASE_SELECT_MODULE'      => 'Por favor seleccione el módulo'        ,
 
-  'JS_SPECIAL_CHARACTERS' => 'Los Caracteres especiales como',
+  'JS_SPECIAL_CHARACTERS' => 'Caracteres especiales',
   'JS_NOT_ALLOWED' => 'no están permitidos',
 
 );

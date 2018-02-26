@@ -8,41 +8,41 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_Emails'                => 'Email'                       , // TODO: Review
-	'Emails'                       => 'Emails'                      , // TODO: Review
-	'LBL_SELECT_EMAIL_IDS'         => 'Seleccionar dirección de Email', 
+	'SINGLE_Emails'                => 'Correo'                       , 
+	'Emails'                       => 'Correos'                      , 
+	'LBL_SELECT_EMAIL_IDS'         => 'Seleccionar dirección de correo', 
 	'LBL_SUBJECT'                  => 'Asunto:'                     , 
 	'LBL_ATTACHMENT'               => 'Adjunto'                     , 
 	'LBL_BROWSE_CRM'               => 'Navegar por el CRM'          , 
 	'LBL_SEND'                     => 'Enviar'                      , 
 	'LBL_SAVE_AS_DRAFT'            => 'Guardar como borrador'       , 
-	'LBL_GO_TO_PREVIEW'            => 'Go to Preview'               , // TODO: Review
-	'LBL_SELECT_EMAIL_TEMPLATE'    => 'Seleccione Plantilla de Email', 
-	'LBL_COMPOSE_EMAIL'            => 'Redactar Correo'             , 
-	'LBL_TO'                       => 'To'                          , // TODO: Review
+	'LBL_GO_TO_PREVIEW'            => 'Ir a vista previa'               , 
+	'LBL_SELECT_EMAIL_TEMPLATE'    => 'Seleccione la plantilla de correo', 
+	'LBL_COMPOSE_EMAIL'            => 'Redactar correo'             , 
+	'LBL_TO'                       => 'Para'                          , 
 	'LBL_CC'                       => 'Cc: '                        , 
 	'LBL_BCC'                      => 'Cco: '                       , 
 	'LBL_ADD_CC'                   => 'Agregar Cc'                  , 
 	'LBL_ADD_BCC'                  => 'Agregar Bcc'                 , 
-	'LBL_MAX_UPLOAD_SIZE'          => 'Tamaño máximo de archivo aceptado es', 
+	'LBL_MAX_UPLOAD_SIZE'          => 'El tamaño máximo de archivo aceptado es', 
 	'LBL_EXCEEDED'                 => 'Excedido'                    , 
-	'LBL_FORWARD'                  => 'Forward'                     , // TODO: Review
-	'LBL_PRINT'                    => 'Print'                       , // TODO: Review
-	'LBL_DESCRIPTION'              => 'Description'                 , // TODO: Review
-	'LBL_FROM'                     => 'From'                        , // TODO: Review
-	'LBL_INFO'                     => 'Info'                        , // TODO: Review
-	'LBL_DRAFTED_ON'               => 'Drafted on'                  , // TODO: Review
-	'LBL_SENT_ON'                  => 'Sent on'                     , // TODO: Review
-	'LBL_OWNER'                    => 'Owner'                       , // TODO: Review
-	'Date & Time Sent'             => 'Date Sent'                   , // TODO: Review
-    'Time Start'                   => 'Time Sent'                   ,
+	'LBL_FORWARD'                  => 'Reenviar'                     , 
+	'LBL_PRINT'                    => 'Imprimir'                       , 
+	'LBL_DESCRIPTION'              => 'Descripción'                 , 
+	'LBL_FROM'                     => 'De'                        , 
+	'LBL_INFO'                     => 'Info'                        , 
+	'LBL_DRAFTED_ON'               => 'Borrador creado el'                  , 
+	'LBL_SENT_ON'                  => 'Enviado el'                     , 
+	'LBL_OWNER'                    => 'Dueño'                       , 
+	'Date & Time Sent'             => 'Fecha de envío'                   , 
+    'Time Start'                   => 'Hora de envío'                   ,
     'LBL_EMAIL_INFORMATION' => 'Información de correo electrónico',
-    'LBL_EMAILTEMPLATE_WARNING'    => '¿Sus etiquetas de combinación corregir',
-    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Por favor, asegúrese de que la plantilla que ha seleccionado tiene fusionar las etiquetas pertinentes para el registro del destinatario. 
-                                            Si va a enviar un correo electrónico a plomo, pero los de combinación-tags pertenece al módulo de contacto (por ejemplo: $contacts-lastname$), 
-                                            entonces no se fusionarán los valores.',
+    'LBL_EMAILTEMPLATE_WARNING'    => '¿Sus etiquetas de combinación están correctas?',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Por favor, asegúrese de que la plantilla que ha seleccionado tiene etiquetas de combinación pertinentes para el registro del destinatario. 
+                                            Si va a enviar un correo electrónico a un prospecto, pero las etiquetas de combinación pertenecen al módulo de contacto (por ejemplo: $contacts-lastname$), 
+                                            entonces los valores no se van a combinar.',
 	'Draft' => 'Borrador',
-    'Parent ID' => 'Registro de Padres',
+    'Parent ID' => 'Registro padre',
 );
 
 $jsLanguageStrings = array(
