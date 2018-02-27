@@ -380,6 +380,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 		this.registerHoverEventOnAttachment();
 		//this.addBodyScroll();
 		this.modulesMenuScrollbar();
+		this.modulesMenuClearIconTitle();
 		Vtiger_Index_Js.registerActivityReminder();
 		//reference preview event registeration
 		this.registerReferencePreviewEvent();
@@ -1301,6 +1302,11 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	modulesMenuScrollbar : function(){
 		app.helper.showVerticalScroll(jQuery("#modnavigator #modules-menu"),{autoHideScrollbar:true});
+	},
+
+	modulesMenuClearIconTitle: function() {
+		jQuery('#modules-menu i').removeAttr('title');
+		jQuery('#modules-menu .custom-module').removeAttr('title');
 	},
 
 	registerChangeTemplateEvent: function (container, recordId) {
