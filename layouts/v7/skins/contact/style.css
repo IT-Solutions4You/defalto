@@ -943,7 +943,7 @@ input[type="password"].inputElement {
   text-transform: uppercase;
   height: 42px;
   padding-top: 11px;
-  padding-left: 11px;
+  padding-left: 8px;
 }
 .modules-menu ul li a:before {
   content: "";
@@ -959,6 +959,7 @@ input[type="password"].inputElement {
   vertical-align: middle;
   float: left;
   font-size: 20px;
+  padding-left: 3px;
 }
 .modules-menu ul li a > span {
   margin-left: 10px;
@@ -4837,6 +4838,12 @@ li.dashboardWidget {
   resize: none;
   width: 100%;
 }
+.dashboardWidget .wait_resizing_msg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 /******************************************* 
 ********** Picklist DependencyGraph ********
 ********************************************/
@@ -4979,7 +4986,7 @@ hr {
   z-index: 0;
 }
 .settingsPageDiv .modal-overlay-footer {
-  margin-left: 230px;
+  border-left: 230px solid #2c3b49;
 }
 .settingsOverlayContainer .modal-overlay-footer {
   margin: 0;
@@ -5322,7 +5329,7 @@ TN-34230 .row .nav > li > a:hover {
 }
 .timePicker {
   width: 9.5em !important;
-  z-index: 1070 !important;
+  z-index: 1100 !important;
 }
 .weekDaySelect .ui-state-default {
   background: inherit;
@@ -7475,11 +7482,13 @@ input:focus:-ms-input-placeholder {
 .modules-menu .custom-module {
   color: #FFFFFF;
   margin-left: 0px;
-  display: inline;
+  display: block;
   border: 1px solid #FFFFFF;
   border-radius: 4px;
   padding: 3px 4px 3px 2px !important;
-  font-weight: bold;
+  font-size: 12px;
+  width: 26px;
+  height: 24px;
 }
 #quickCreateModules .custom-module,
 .workflowListContainer .custom-module,

@@ -8,25 +8,25 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-    'Email Templates' => 'Email Templates',
-	'LBL_ADD_RECORD' => 'Add Email Template',
-	'SINGLE_EmailTemplates' => 'Email Template',
-	'LBL_EMAIL_TEMPLATES'=> 'Email Templates',
-	'LBL_EMAIL_TEMPLATE' => 'Email Template',
+    'Email Templates' => 'Plantillas de correo',
+	'LBL_ADD_RECORD' => 'Añadir plantilla de correo',
+	'SINGLE_EmailTemplates' => 'Plantilla de correo',
+	'LBL_EMAIL_TEMPLATES'=> 'Plantillas de correo',
+	'LBL_EMAIL_TEMPLATE' => 'Plantilla de correo',
 	
-	'LBL_TEMPLATE_NAME' => 'Template name',
-	'LBL_DESCRIPTION' => 'Description',
-	'LBL_SUBJECT' => 'Subject',
-	'LBL_GENERAL_FIELDS' => 'General Fields',
-	'LBL_SELECT_FIELD_TYPE' => 'Seleccione Módulo & Field',
+	'LBL_TEMPLATE_NAME' => 'Nombre de la plantilla',
+	'LBL_DESCRIPTION' => 'Descripción',
+	'LBL_SUBJECT' => 'Asunto',
+	'LBL_GENERAL_FIELDS' => 'Campos generales',
+	'LBL_SELECT_FIELD_TYPE' => 'Seleccióne módulo y campo',
 	'LBL_MODULE_NAME' => 'Nombre del módulo',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Manage templates for E-Mail module',
-	'LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE' => 'No hay permisos para eliminar plantilla del sistema',
+	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Administre las plantillas para el módulo de correo',
+	'LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE' => 'No tiene permisos para eliminar la plantilla del sistema',
 	'LBL_RECORD_ID'                => 'ID de registro'              , 
 	
 );
 
 $jsLanguageStrings = array(
-    'LBL_CUTOMER_LOGIN_DETAILS_TEMPLATE_DELETE_MESSAGE' => 'Usted no será capaz de enviar los datos de acceso Portal de clientes al contacto si elimina el "Cliente Login detalles" de la plantilla. ¿Desea continuar?',
+    'LBL_CUTOMER_LOGIN_DETAILS_TEMPLATE_DELETE_MESSAGE' => 'Usted no podrá enviar al contacto los datos de acceso al Portal de clientes si elimina los "Detalles del Login del cliente" de la plantilla. ¿Desea continuar?',
 	'JS_REQUIRED_FIELD' => '* Se requiere Mensaje',
 );

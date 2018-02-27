@@ -59,6 +59,10 @@ class VTSMSTask extends VTTask {
 			foreach($recepients as $tonumber) {
 				if(!empty($tonumber)) $tonumbers[] = $tonumber;
 			}
+
+			//As content could be sent with HTML tags.
+			$content = strip_tags(br2nl($content));
+
 			$this->smsNotifierId = SMSNotifier::sendsms($content, $tonumbers, $current_user->id, $relatedIdsArray);
 			$util->revertUser();
 		}

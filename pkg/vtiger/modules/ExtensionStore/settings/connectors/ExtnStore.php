@@ -95,6 +95,10 @@ class Settings_ExtensionStore_ExtnStore_Connector {
 			$client->setAuthorization($authParams['username'], $authParams['password']);
 		}
 
+		global $application_unique_key;
+		if (!$params) $params = array();
+		if (!isset($params['uid'])) $params['uid'] = $application_unique_key;
+
 		$content = $client->$fn($params);
 		$response = $content['response'];
 		$status = $content['status'];

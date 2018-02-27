@@ -41,7 +41,7 @@
 					{assign var="RECORD_STRUCTURE" value=$QUICK_CREATE_CONTENTS[$MODULE]['recordStructure']}
 					{assign var="MODULE_MODEL" value=$QUICK_CREATE_CONTENTS[$MODULE]['moduleModel']}
 
-					<div class="quickCreateContent calendarQuickCreateContent" style="padding-top:2%;">
+					<div class="quickCreateContent calendarQuickCreateContent" style="padding-top:2%;margin-top:5px;">
 						{if $MODULE eq 'Calendar'}
 							{if !empty($PICKIST_DEPENDENCY_DATASOURCE_TODO)}
 								<input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE_TODO)}' />
@@ -64,7 +64,7 @@
 										   {assign var=VALIDATOR_NAME value=$VALIDATOR["name"]}
 										   data-rule-{$VALIDATOR_NAME} = "true" 
 									   {/foreach}
-									   placeholder="{vtranslate($FIELD_MODEL->get('label'), $MODULE)}" style="width: 100%;"/>
+									   placeholder="{vtranslate($FIELD_MODEL->get('label'), $MODULE)} *" style="width: 100%;"/>
 							</div>
 						</div>
 
