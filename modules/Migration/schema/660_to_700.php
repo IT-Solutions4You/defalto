@@ -1780,17 +1780,16 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP PRIMARY KEY', array());
+	if (Vtiger_Utils::TableHasForeignKey('vtiger_cvstdfilter', 'cvstdfilter_cvid_idx')) {
+		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY cvstdfilter_cvid_idx', array());
+	}
+
 	if (Vtiger_Utils::TableHasForeignKey('vtiger_cvstdfilter', 'fk_1_vtiger_cvstdfilter')) {
 		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP FOREIGN KEY fk_1_vtiger_cvstdfilter', array());
 	}
-	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_cvstdfilter WHERE key_name='cvstdfilter_cvid_idx'", array());
-	if ($db->num_rows($keyResult)) {
-		$db->pquery('ALTER TABLE vtiger_cvstdfilter DROP KEY cvstdfilter_cvid_idx', array());
-	}
 	$db->pquery('ALTER TABLE vtiger_cvstdfilter ADD CONSTRAINT fk_1_vtiger_cvstdfilter FOREIGN KEY (cvid) REFERENCES vtiger_customview(cvid) ON DELETE CASCADE', array());
 
-	$keyResult = $db->pquery("SHOW INDEX FROM vtiger_app2tab WHERE key_name='vtiger_app2tab_fk_tab'", array());
-	if (!$db->num_rows($keyResult)) {
+	if (!Vtiger_Utils::TableHasForeignKey('vtiger_app2tab', 'vtiger_app2tab_fk_tab')) {
 		$db->pquery('ALTER TABLE vtiger_app2tab ADD CONSTRAINT vtiger_app2tab_fk_tab FOREIGN KEY(tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE', array());
 	}
 
