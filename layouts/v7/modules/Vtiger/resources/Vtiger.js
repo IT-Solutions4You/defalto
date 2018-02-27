@@ -21,20 +21,25 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @returns {undefined}
 	 */
 	previewFile: function (e, recordId,attachmentId) {
-		e.stopPropagation();
-		if (recordId) {
-			var params = {
-				module: 'ModComments',
-				view: 'FilePreview',
-				record: recordId,
-				attachmentid: attachmentId
+        e.stopPropagation();
+        if (recordId) {
+            var params = {
+                module: 'ModComments',
+                view: 'FilePreview',
+                record: recordId,
+                attachmentid: attachmentId
+            };
+			var modalParams = {
+				cb : function(modalContainer){
+					modalContainer.find('.viewer').zoomer();
+				},
+				'ignoreScroll' : true
 			};
-			app.request.post({data:params}).then(function(err, res){
-				app.helper.showModal(res);
-				jQuery('.filePreview .preview-area').height(jQuery(window).height()-143);
-			});
-		}
-	},
+            app.request.post({data: params}).then(function (err, res) {
+                app.helper.showModal(res, modalParams);
+            });
+        }
+    },
 
 	/**
 	 * Function to show email preview in popup
