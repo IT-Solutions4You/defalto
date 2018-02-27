@@ -10,10 +10,10 @@
 
 if(defined('VTIGER_UPGRADE')) {
     
-global $adb;
+	global $adb;
 
-$query = 'SELECT DISTINCT profileid FROM vtiger_profile2utility';
-$result = $adb->pquery($query, array());
+	$query = 'SELECT DISTINCT profileid FROM vtiger_profile2utility';
+	$result = $adb->pquery($query, array());
 
 	$tabIdsList = array(getTabid('ProjectMilestone'), getTabid('PriceBooks'));
 	$actionIdPerms = array(5 => 1, 6 => 1, 10 => 1);
@@ -28,9 +28,9 @@ $result = $adb->pquery($query, array());
 					$query = 'UPDATE vtiger_profile2utility SET permission=? WHERE profileid=? AND tabid=? AND activityid=?';
 				} else {
 					$query = 'INSERT INTO vtiger_profile2utility(permission, profileid, tabid, activityid) VALUES (?, ?, ?, ?)';
-}
+				}
 				Migration_Index_View::ExecuteQuery($query, array($permission, $profileId, $tabId, $actionId));
-}
+			}
 		}
 	}
 }
