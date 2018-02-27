@@ -29,7 +29,7 @@
                     {foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
 
 						{if $RELATED_LINK->get('linkmodule') eq 'Documents'}
-                            <div class="col-sm-3">
+                            <div class="col-sm-3" style="width:22%;">
                                 {assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
                                 {* setting button module attribute to Events or Calendar based on link label *}
                                 {assign var=LINK_LABEL value={$RELATED_LINK->get('linklabel')}}
