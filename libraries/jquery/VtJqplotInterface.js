@@ -9,6 +9,8 @@
 
 var vtJqPlotInterface = function() {
 
+    this.legendPlacement = 'outsideGrid'; /* refer: http://www.jqplot.com/docs/files/jqplot-core-js.html#Legend.placement */
+
     this.renderPie = function() {
         this.element.jqplot([this.data['chartData']], {
             seriesDefaults:{
@@ -60,7 +62,7 @@ var vtJqPlotInterface = function() {
             legend: {
                 show		: (this.data['data_labels']) ? true:false,
                 location	: 'e',
-                placement	: 'outside',
+                placement	: this.legendPlacement,
                 showLabels	: (this.data['data_labels']) ? true:false,
                 showSwatch	: (this.data['data_labels']) ? true:false,
                 labels		: this.data['data_labels']
@@ -89,7 +91,7 @@ var vtJqPlotInterface = function() {
             legend: {
                 show: true,
                 location: 'ne',
-                placement: 'outside',
+                placement: this.legendPlacement,
                 labels:labels,
                 xoffset:20
             }
@@ -136,7 +138,7 @@ var vtJqPlotInterface = function() {
             legend: {
                 show: true,
                 location: 'e',
-                placement: 'outside',
+                placement: this.legendPlacement,
                 labels:labels
             }
         });
@@ -168,7 +170,7 @@ var vtJqPlotInterface = function() {
             legend: {
                 show: true,
                 location: 'e',
-                placement: 'outside',
+                placement: this.legendPlacement,
                 showSwatch : true,
                 showLabels : true,
                 labels:this.data['data_labels']
@@ -185,7 +187,7 @@ var vtJqPlotInterface = function() {
                 location:'ne',
                 showSwatch : true,
                 showLabels : true,
-                placement: 'outside'
+                placement  : this.legendPlacement,
             },
             seriesDefaults: {
                 pointLabels: {
@@ -255,7 +257,7 @@ var vtJqPlotInterface = function() {
             legend: {
                 show: true,
                 location: 'e',
-                placement: 'outside',
+                placement: this.legendPlacement,
                 labels:labels
             }
         });
@@ -312,3 +314,4 @@ var vtJqPlotInterface = function() {
         this.postRendering();
     }
 }
+
