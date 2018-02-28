@@ -342,6 +342,35 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Supporting to store dashboard size
 
+	//START:Profile save failures because of Reports module
+	$query = 'SELECT DISTINCT profileid FROM vtiger_profile';
+	$result = $adb->pquery($query, array());
+
+	$tabIdsList = array(getTabid('Reports'));
+	$actionIdPerms = array(	0 => 1,//Save
+							1 => 1,//EditView
+							2 => 1,//Delete
+							3 => 0,//Index
+							4 => 0,//DetailView
+							7 => 1);//CreateView
+
+	for ($i=0; $i<$adb->num_rows($result); $i++) {
+		$profileId = $adb->query_result($result, $i, 'profileid');
+
+		foreach ($tabIdsList as $tabId) {
+			foreach ($actionIdPerms as $actionId => $permission) {
+				$isExist = $adb->pquery('SELECT 1 FROM vtiger_profile2standardpermissions WHERE profileid=? AND tabid=? AND operation=?', array($profileId, $tabId, $actionId));
+				if ($adb->num_rows($isExist)) {
+					$query = 'UPDATE vtiger_profile2standardpermissions SET permissions=? WHERE profileid=? AND tabid=? AND operation=?';
+				} else {
+					$query = 'INSERT INTO vtiger_profile2standardpermissions(permissions, profileid, tabid, operation) VALUES (?, ?, ?, ?)';
+				}
+				$db->pquery($query, array($actionIdPerms[$actionId], $profileId, $tabId, $actionId));
+			}
+		}
+	}
+	//END:Profile save failures because of Reports module
+
 	//Update existing package modules
 	Install_Utils_Model::installModules();
 
