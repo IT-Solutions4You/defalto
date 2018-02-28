@@ -425,7 +425,7 @@ class Install_InitSchema_Model {
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",23,4,0)", array());
 
 
-        	$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,0,0)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,0,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,1,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,2,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,3,0)", array());
