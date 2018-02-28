@@ -24,7 +24,7 @@
 						</div>
 					</div>
 					<div class="col-md-3">
-						{assign var=RECORD_COUNT value=$LISTVIEW_ENTIRES_COUNT}
+						{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
 						{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
 					</div>
 				</div>
