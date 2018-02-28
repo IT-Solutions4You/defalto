@@ -64,7 +64,7 @@
                             {/if}
                         </th>
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                            {if $SEARCH_MODE_RESULTS and ($LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist')}
+                            {if $SEARCH_MODE_RESULTS || ($LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist')}
                                 {assign var=NO_SORTING value=1}
                             {else}
                                 {assign var=NO_SORTING value=0}
