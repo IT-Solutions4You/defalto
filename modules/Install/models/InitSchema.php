@@ -320,6 +320,12 @@ class Install_InitSchema_Model {
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",23,3,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",23,4,0)", array());
 
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",25,0,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",25,1,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",25,2,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",25,3,0)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",25,4,0)", array());
+
         $adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",26,0,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",26,1,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId1.",26,2,0)", array());
@@ -424,6 +430,11 @@ class Install_InitSchema_Model {
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",23,3,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",23,4,0)", array());
 
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",25,0,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",25,1,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",25,2,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",25,3,0)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",25,4,0)", array());
 
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,0,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId2.",26,1,0)", array());
@@ -529,6 +540,11 @@ class Install_InitSchema_Model {
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",23,3,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",23,4,0)", array());
 
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",25,0,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",25,1,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",25,2,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",25,3,0)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",25,4,0)", array());
 
         $adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",26,0,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId3.",26,1,0)", array());
@@ -632,6 +648,11 @@ class Install_InitSchema_Model {
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",23,3,0)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",23,4,0)", array());
 
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",25,0,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",25,1,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",25,2,1)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",25,3,0)", array());
+		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",25,4,0)", array());
 
         $adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",26,0,1)", array());
 		$adb->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (".$profileId4.",26,1,1)", array());
