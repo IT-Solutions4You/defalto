@@ -77,6 +77,15 @@ var vtJqPlotInterface = function() {
             labels[i] = dataInfo[i][2];
             dataInfo[i][1] = parseFloat(dataInfo[i][1]);
         }
+
+		/* Transform data friendly to Funnel renderer */
+        var tmpdataInfo = [];
+        for (var k in dataInfo) {
+            tmpdataInfo.push(Object.values(dataInfo[k]));
+        }
+        dataInfo = tmpdataInfo;
+        /* End */
+
         this.element.jqplot([dataInfo],  {
             seriesDefaults: {
                 renderer:jQuery.jqplot.FunnelRenderer,
