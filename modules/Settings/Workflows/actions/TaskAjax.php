@@ -154,7 +154,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 						$userRecordModel = Users_Record_Model::getInstanceById($mappingInfo['value'], 'Users');
 						$ownerName = $userRecordModel->get('user_name');
 
-						if (!$ownerName && !empty($ownerName)) {
+						if (!$ownerName && !empty($mappingInfo['value'])) {
 							$groupRecordModel = Settings_Groups_Record_Model::getInstance($mappingInfo['value']);
 							$ownerName = $groupRecordModel->getName();
 						}
