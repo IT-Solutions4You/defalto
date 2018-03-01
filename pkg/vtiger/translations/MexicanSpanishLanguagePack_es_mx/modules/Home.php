@@ -27,3 +27,9 @@ $languageStrings = array(
   'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo Tablero',
 	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Se permiten máximo 30 caracteres para el Tablero',
 );
+
+$jsLanguageStrings = array(
+	'JS_TAB_NAME_SHOULD_NOT_BE_EMPTY' => 'El nombre del Dashboard no no puede estar vacío',
+	'JS_NO_DATA_AVAILABLE' => 'Datos no disponibles',
+);
+

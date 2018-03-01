@@ -76,6 +76,8 @@ $languageStrings = array(
 
   'LBL_SAVE_AND_IMPORT' => 'Guardar e importar',
   'LBL_IMPORT_RESULTS_GOOGLE' => 'Resultados de Google Import',
+	'LBL_REDIRECT_URL' => 'URL de redireccionamiento',
+	'LBL_REDIRECT_URL_MESSAGE' => 'Copia el siguiente URL de redireccionamiento y pégalo en tu proyecto de autenticación Google como muestra la imagen',
 
 );
 
