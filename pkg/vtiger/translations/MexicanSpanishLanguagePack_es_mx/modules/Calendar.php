@@ -149,7 +149,7 @@ $languageStrings = array(
 	'LBL_CLICK_HERE_TO_VIEW' => 'Haga clic aquí para ver',
 
 	'LBL_TOTAL_EVENTS_DUPLICATED' => 'Número de eventos duplicados saltados',
-	'LBL_TOTAL_TASKS_DUPLICATED' => 'Número de tareas duplicadas saltados',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'Número de tareas duplicadas saltadas',
 );
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK'           => 'Agregar Evento / Tarea'      , 
