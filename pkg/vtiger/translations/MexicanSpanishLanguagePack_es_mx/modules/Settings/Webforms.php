@@ -43,7 +43,7 @@ $languageStrings = array(
 	'LBL_UPLOAD_DOCUMENTS' => 'Subir documentos',
 	'LBL_ADD_FILE_FIELD' => 'Campo de carga de archivos',
 	'LBL_FIELD_LABEL' => 'Titulo del documento',
-	'LBL_FILE_FIELD_INFO' => 'Para cada archivo subido desde un formulario web, se crea un nuevo documento con el archivo adjunto. El documento también se vincula con este%s de nueva creación.',
+	'LBL_FILE_FIELD_INFO' => 'Para cada archivo subido desde un formulario web, se crea un nuevo documento con el archivo adjunto. El documento también se vincula con este %s de nueva creación.',
 	'LBL_NO_FILE_FIELD' => 'No se añadieron campos de archivo.',
 	'LBL_COPY_TO_CLIPBOARD' => 'Copiar al portapapeles',
 );

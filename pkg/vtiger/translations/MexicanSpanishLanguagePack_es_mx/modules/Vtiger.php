@@ -1479,4 +1479,5 @@ $jsLanguageStrings = array(
 	'JS_DUPLICATES_DETECTED' => 'Duplicados detectados',
 	'JS_PASSWORD_MISMATCH_ERROR' => 'Por favor, vuelva a introducir las contraseñas. Los valores de "nueva contraseña" y "Confirmar contraseña" no coinciden.',
 	'JS_LIST_DELETE_CONFIRMATION' => '¿Esta seguro que quieres borrarlo?',
+	'JS_WIDGET_RESIZING_WAIT_MSG' => 'El contenido del widget se volverá cargar después de cambiar el tamaño.',
 );
