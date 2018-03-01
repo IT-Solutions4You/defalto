@@ -1,12 +1,12 @@
 <?php
 /* +**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- * ***********************************************************************************/
+ *  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
+ *   * ("License"); You may not use this file except in compliance with the License
+ *    * The Original Code is: vtiger CRM Open Source
+ *     * The Initial Developer of the Original Code is vtiger.
+ *      * Portions created by vtiger are Copyright (C) vtiger.
+ *       * All Rights Reserved.
+ *        * ***********************************************************************************/
 
 chdir (dirname(__FILE__) . '/..');
 include_once 'vtigerversion.php';
@@ -15,63 +15,75 @@ include_once 'includes/main/WebUI.php';
 
 $errorMessage = $_REQUEST['error'];
 if (!$errorMessage) {
-	$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
-	$vtigerStandardModules = array( 'Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal', 'Dashboard', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
-									'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 'MailManager', 'Mobile', 'ModComments', 'ModTracker',
-									'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 'ProjectTask', 'PurchaseOrder',
-									'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
-									'Webforms', 'Webmails', 'WSAPP');
-	$nonPortedExtns = array();
-	$moduleModelsList = array();
-	$db = PearDatabase::getInstance();
-	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype != ? AND presence != ? AND trim(name) NOT IN ('.generateQuestionMarks($vtigerStandardModules).')', array(1, 1, $vtigerStandardModules));
-	if ($db->num_rows($result)) {
-		$moduleModelsList = $extensionStoreInstance->getListings();
-	}
+		/* 7.x module compatability check when coming from earlier version */
+		if (version_compare($vtiger_current_version, '7.0.0') < 0) {
+					/* NOTE: Add list-of modules that you own / sure to upgrade later */
+					$skipCheckForModules = array();
 
-	$moduleModelsListByName = array();
-	$moduleModelsListByLabel = array();
-	foreach ($moduleModelsList as $moduleId => $moduleModel) {
-		if ($moduleModel->get('name') != $moduleModel->get('label')) {
-			$moduleModelsListByName[$moduleModel->get('name')] = $moduleModel;
-		} else {
-			$moduleModelsListByLabel[$moduleModel->get('label')] = $moduleModel;
-		}
-	}
+							$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
+							$vtigerStandardModules = array('Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal', 
+											'Dashboard', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
+														'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 
+																	'MailManager', 'Mobile', 'ModComments', 'ModTracker',
+																				'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 
+																							'ProjectTask', 'PurchaseOrder', 'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 
+																										'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
+																													'Webforms', 'Webmails', 'WSAPP');
 
-	if ($moduleModelsList) {
-		while($row = $db->fetch_row($result)) {
-			$moduleName = $row['name'];//label
-			if ($moduleName) {
-				unset($moduleModel);
-				if (array_key_exists($moduleName, $moduleModelsListByName)) {
-					$moduleModel = $moduleModelsListByName[$moduleName];
-				} else if (array_key_exists($moduleName, $moduleModelsListByLabel)) {
-					$moduleModel = $moduleModelsListByLabel[$moduleName];
-				}
+									$skipCheckForModules = array_merge($skipCheckForModules, $vtigerStandardModules);
 
-				if ($moduleModel) {
-					$vtigerVersion = $moduleModel->get('vtigerVersion');
-					$vtigerMaxVersion = $moduleModel->get('vtigerMaxVersion');
-					if (($vtigerVersion && strpos($vtigerVersion, '7.') === false)
-							&& ($vtigerMaxVersion && strpos($vtigerMaxVersion, '7.') === false)) {
-						$nonPortedExtns[] = $moduleName;
-					}
-				}
-			}
-		}
+									$nonPortedExtns = array();
+											$moduleModelsList = array();
+											$db = PearDatabase::getInstance();
+													$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype != ? AND presence != ? AND trim(name) NOT IN ('.generateQuestionMarks($skipCheckForModules).')', array(1, 1, $skipCheckForModules));
+													if ($db->num_rows($result)) {
+																	$moduleModelsList = $extensionStoreInstance->getListings();
+																			}
 
-		if ($nonPortedExtns) {
-			$portingMessage = 'Following custom modules are not compatible with Vtiger 7. Please disable these modules to proceed.';
-			foreach ($nonPortedExtns as $moduleName) {
-				$portingMessage .= "<li>$moduleName</li>";
-			}
-			$portingMessage .= '</ul>';
-		}
-	}
+															$moduleModelsListByName = array();
+															$moduleModelsListByLabel = array();
+																	foreach ($moduleModelsList as $moduleId => $moduleModel) {
+																					if ($moduleModel->get('name') != $moduleModel->get('label')) {
+																										$moduleModelsListByName[$moduleModel->get('name')] = $moduleModel;
+																													} else {
+																																		$moduleModelsListByLabel[$moduleModel->get('label')] = $moduleModel;
+																																					}
+																							}
+
+																	if ($moduleModelsList) {
+																					while($row = $db->fetch_row($result)) {
+																										$moduleName = $row['name'];//label
+																														if ($moduleName) {
+																																				unset($moduleModel);
+																																									if (array_key_exists($moduleName, $moduleModelsListByName)) {
+																																																$moduleModel = $moduleModelsListByName[$moduleName];
+																																																					} else if (array_key_exists($moduleName, $moduleModelsListByLabel)) {
+																																																												$moduleModel = $moduleModelsListByLabel[$moduleName];
+																																																																	}
+
+																																									if ($moduleModel) {
+																																																$vtigerVersion = $moduleModel->get('vtigerVersion');
+																																																						$vtigerMaxVersion = $moduleModel->get('vtigerMaxVersion');
+																																																						if (($vtigerVersion && strpos($vtigerVersion, '7.') === false)
+																																																															&& ($vtigerMaxVersion && strpos($vtigerMaxVersion, '7.') === false)) {
+																																																																						$nonPortedExtns[] = $moduleName;
+																																																																												}
+																																																											}
+																																								}
+																													}
+
+																								if ($nonPortedExtns) {
+																													$portingMessage = 'Following custom modules are not compatible with Vtiger 7. Please disable these modules to proceed.';
+																																	foreach ($nonPortedExtns as $moduleName) {
+																																							$portingMessage .= "<li>$moduleName</li>";
+																																											}
+																																	$portingMessage .= '</ul>';
+																																}
+																							}
+																}
 }
 ?>
-
+<!doctype>
 <html>
 	<head>
 		<title>Vtiger CRM Setup</title>
