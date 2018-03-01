@@ -26,8 +26,8 @@ var Vtiger_PBXManager_Js = {
 	 */
 	requestPBXgetCalls : function() {
 		var url = 'index.php?module=PBXManager&action=IncomingCallPoll&mode=searchIncomingCalls';
-		app.request.get(url).then(function(data){
-			if(data.success && data.result) {
+		app.request.get(url).then(function(e, data){
+			if(data && data.success && data.result) {
 				for(i=0; i< data.result.length; i++) {
 					var record = data.result[i];
 					if(jQuery('#pbxcall_'+record.pbxmanagerid+'').size()== 0 )
@@ -103,8 +103,8 @@ var Vtiger_PBXManager_Js = {
 
 		var number = jQuery('#caller','#pbxcall_'+pbxmanagerid+'').attr("value");
 		var url = 'index.php?module=PBXManager&action=IncomingCallPoll&mode=createRecord&number='+encodeURIComponent(number)+'&email='+encodeURIComponent(email)+'&callid='+record.sourceuuid+'&modulename='+moduleName;
-		 app.request.get(url).then(function(data){
-			if(data.success && data.result) {
+		 app.request.get(url).then(function(e, data){
+			if(data && data.success && data.result) {
 				jQuery('#contactsave_'+pbxmanagerid+'').hide();
 			}
 		 });
@@ -113,8 +113,9 @@ var Vtiger_PBXManager_Js = {
 	checkIfRelatedModuleRecordExist: function(record) {
 		switch(record.callername){
 			case null:	var url = 'index.php?module=PBXManager&action=IncomingCallPoll&mode=checkModuleViewPermission&view=EditView';
-						app.request.get(url).then(function(data){
-						   var responsedata = JSON.parse(data);
+						app.request.get(url).then(function(e, data){
+						    if (e) return;
+						    var responsedata = (typeof data == 'object') ? data : JSON.parse(data);
 							var showSaveOption = false;
 							var moduleList = responsedata.result.modules;
 							var contents = jQuery('#module_'+record.pbxmanagerid+'');
@@ -166,8 +167,8 @@ var Vtiger_PBXManager_Js = {
 		for(var i=0; i<pbxcall.length;i++){
 			callid = pbxcall[i].getAttribute('callid');
 			var url = 'index.php?module=PBXManager&action=IncomingCallPoll&mode=getCallStatus&callid='+encodeURIComponent(callid)+'';
-			app.request.get(url).then(function(data){
-				if(data.result){
+			app.request.get(url).then(function(e, data){
+				if(data && data.result){
 					if(data.result!='in-progress' && data.result!='ringing'){
 						Vtiger_PBXManager_Js.removeCallPopup(callid);
 					}
@@ -203,8 +204,8 @@ var Vtiger_PBXManager_Js = {
 			'module' : 'PBXManager',
 			'action' : 'OutgoingCall'
 		}
-		app.request.get(params).then(function(data){
-			if(data.result){
+		app.request.get(params).then(function(e, data){
+			if(data && data.result){
 				params = {
 					'text' : app.vtranslate('JS_PBX_OUTGOING_SUCCESS'),
 					'type' : 'info'
@@ -226,7 +227,7 @@ var Vtiger_PBXManager_Js = {
 		var thisInstance = this;
 		//for polling
 		var url = 'index.php?module=PBXManager&action=IncomingCallPoll&mode=checkPermissionForPolling';
-		app.request.get(url).then(function(data){
+		app.request.get(url).then(function(e, data){
 			if(data && data.result) {
 				Vtiger_PBXManager_Js.registerPBXCall();
 				setInterval("Vtiger_PBXManager_Js.registerPBXCall()", 3000);
