@@ -118,7 +118,7 @@
 										{assign var=HARDCODED_FIELDS value=','|explode:"filename,assigned_user_id,folderid,notecontent,notes_title"}
 										{assign var=COUNTER value=0}
 										{foreach key=FIELD_NAME item=FIELD_MODEL from=$FIELD_MODELS} 
-											{if $FIELD_MODEL->isMandatory() && !in_array($FIELD_NAME,$HARDCODED_FIELDS) && $FIELD_MODEL->isQuickCreateEnabled()}
+											{if !in_array($FIELD_NAME,$HARDCODED_FIELDS) && $FIELD_MODEL->isQuickCreateEnabled()}
 												{assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
 												{assign var="referenceList" value=$FIELD_MODEL->getReferenceList()}
 												{assign var="referenceListCount" value=count($referenceList)}
