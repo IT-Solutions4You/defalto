@@ -371,7 +371,7 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Profile save failures because of Reports module entry is not available in the vtiger_profile2standardpermissions
 
-	//START::Updating custom view and report columns, filters for createdtime and modifiedtime fields
+	//START::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
 	$cvTables = array('vtiger_cvcolumnlist', 'vtiger_cvadvfilter');
 	foreach ($cvTables as $tableName) {
 		$updatedColumnsList = array();
@@ -431,7 +431,7 @@ if (defined('VTIGER_UPGRADE')) {
 		$db->pquery($reportQuery, array());
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
-	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields
+	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();
