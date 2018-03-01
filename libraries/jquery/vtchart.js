@@ -13,7 +13,6 @@
         this.element = false;
         
         this.init = function(element,data,options) {
-           jQuery(element).empty(); /* Clear any existing content to avoid overlapping redraw */
            vtChart.prototype.init.call(this,element,data,options);
         }
         
