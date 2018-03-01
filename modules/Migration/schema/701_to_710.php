@@ -342,7 +342,7 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Supporting to store dashboard size
 
-	//START::Profile save failures because of Reports module
+	//START::Profile save failures because of Reports module entry is not available in the vtiger_profile2standardpermissions
 	$query = 'SELECT DISTINCT profileid FROM vtiger_profile';
 	$result = $adb->pquery($query, array());
 
@@ -369,7 +369,7 @@ if (defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
-	//END::Profile save failures because of Reports module
+	//END::Profile save failures because of Reports module entry is not available in the vtiger_profile2standardpermissions
 
 	//START::Updating custom view and report columns, filters for createdtime and modifiedtime fields
 	$cvTables = array('vtiger_cvcolumnlist', 'vtiger_cvadvfilter');
