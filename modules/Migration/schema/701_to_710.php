@@ -342,7 +342,7 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Supporting to store dashboard size
 
-	//START:Profile save failures because of Reports module
+	//START::Profile save failures because of Reports module
 	$query = 'SELECT DISTINCT profileid FROM vtiger_profile';
 	$result = $adb->pquery($query, array());
 
@@ -369,7 +369,69 @@ if (defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
-	//END:Profile save failures because of Reports module
+	//END::Profile save failures because of Reports module
+
+	//START::Updating custom view and report columns, filters for createdtime and modifiedtime fields
+	$cvTables = array('vtiger_cvcolumnlist', 'vtiger_cvadvfilter');
+	foreach ($cvTables as $tableName) {
+		$updatedColumnsList = array();
+		$result = $db->pquery("SELECT columnname FROM $tableName WHERE columnname LIKE ? OR columnname LIKE ?", array('vtiger_crmentity:createdtime%:T', 'vtiger_crmentity:modifiedtime%:T'));
+		while ($rowData = $db->fetch_array($result)) {
+			$columnName = $rowData['columnname'];
+			if (!array_key_exists($columnName, $updatedColumnsList)) {
+				if (preg_match('/vtiger_crmentity:createdtime:(\w*\:)*T/', $columnName) || preg_match('/vtiger_crmentity:modifiedtime:(\w*\:)*T/', $columnName)) {
+					$columnParts = explode(':', $columnName);
+					$lastKey = count($columnParts)-1;
+
+					if ($columnParts[$lastKey] == 'T') {
+						$columnParts[$lastKey] = 'DT';
+						$updatedColumnsList[$columnName] = implode(':', $columnParts);
+					}
+				}
+			}
+		}
+
+		if ($updatedColumnsList) {
+			$cvQuery = "UPDATE $tableName SET columnname = CASE columnname";
+			foreach ($updatedColumnsList as $oldColumnName => $newColumnName) {
+				$cvQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
+			}
+			$cvQuery .= ' ELSE columnname END';
+		}
+		$db->pquery($cvQuery, array());
+		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
+	}
+
+	$reportTables = array('vtiger_selectcolumn', 'vtiger_relcriteria');
+	foreach ($reportTables as $tableName) {
+		$updatedColumnsList = array();
+		$result = $db->pquery("SELECT columnname FROM $tableName WHERE columnname LIKE ? OR columnname LIKE ?", array('vtiger_crmentity%:createdtime:%T', 'vtiger_crmentity%:modifiedtime:%T'));
+		while ($rowData = $db->fetch_array($result)) {
+			$columnName = $rowData['columnname'];
+			if (!array_key_exists($columnName, $updatedColumnsList)) {
+				if (preg_match('/vtiger_crmentity(\w*):createdtime:(\w*\:)*T/', $columnName) || preg_match('/vtiger_crmentity(\w*):modifiedtime:(\w*\:)*T/', $columnName)) {
+					$columnParts = explode(':', $columnName);
+					$lastKey = count($columnParts)-1;
+
+					if ($columnParts[$lastKey] == 'T') {
+						$columnParts[$lastKey] = 'DT';
+						$updatedColumnsList[$columnName] = implode(':', $columnParts);
+					}
+				}
+			}
+		}
+
+		if ($updatedColumnsList) {
+			$reportQuery = "UPDATE $tableName SET columnname = CASE columnname";
+			foreach ($updatedColumnsList as $oldColumnName => $newColumnName) {
+				$reportQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
+			}
+			$reportQuery .= ' ELSE columnname END';
+		}
+		$db->pquery($reportQuery, array());
+		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
+	}
+	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields
 
 	//Update existing package modules
 	Install_Utils_Model::installModules();
