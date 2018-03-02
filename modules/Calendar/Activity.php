@@ -1043,6 +1043,9 @@ function insertIntoRecurringTable(& $recurObj)
 		if ($queryPlanner->requireTable("vtiger_createdbyCalendar")){
 			$query .= " left join vtiger_users as vtiger_createdbyCalendar on vtiger_createdbyCalendar.id = vtiger_crmentityCalendar.smcreatorid ";
 		}
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

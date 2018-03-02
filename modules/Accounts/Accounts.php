@@ -1123,6 +1123,8 @@ class Accounts extends CRMEntity {
         if ($queryPlanner->requireTable("vtiger_createdbyAccounts")){
 			$query .= " left join vtiger_users as vtiger_createdbyAccounts on vtiger_createdbyAccounts.id = vtiger_crmentityAccounts.smcreatorid ";
 		}
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
 
 		return $query;
 	}

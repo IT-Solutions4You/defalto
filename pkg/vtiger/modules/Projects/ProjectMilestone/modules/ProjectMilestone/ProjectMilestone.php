@@ -432,6 +432,9 @@ class ProjectMilestone extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbyProjectMilestone")){
 			$query .= " LEFT JOIN vtiger_users AS vtiger_createdbyProjectMilestone ON vtiger_createdbyProjectMilestone.id = vtiger_crmentityProjectMilestone.smcreatorid ";
 		}
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 }

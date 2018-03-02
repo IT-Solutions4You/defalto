@@ -383,6 +383,10 @@ class ModCommentsCore extends CRMEntity {
 		if ($queryplanner->requireTable("vtiger_modcommentsRelModComments")){
 			$query .= " left join vtiger_modcomments as vtiger_modcommentsRelModComments on vtiger_modcommentsRelModComments.modcommentsid = vtiger_crmentityModComments.crmid";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

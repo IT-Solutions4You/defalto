@@ -316,6 +316,10 @@ class PriceBooks extends CRMEntity {
         if ($queryplanner->requireTable("vtiger_createdbyPriceBooks")){
 			$query .= " left join vtiger_users as vtiger_createdbyPriceBooks on vtiger_createdbyPriceBooks.id = vtiger_crmentityPriceBooks.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

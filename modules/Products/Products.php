@@ -1228,6 +1228,10 @@ class Products extends CRMEntity {
 		if ($queryplanner->requireTable("vtiger_createdbyProducts")){
 			$query .= " left join vtiger_users as vtiger_createdbyProducts on vtiger_createdbyProducts.id = vtiger_crmentityProducts.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

@@ -634,6 +634,10 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
         if ($queryplanner->requireTable("vtiger_createdbyHelpDesk")){
 			$query .= " left join vtiger_users as vtiger_createdbyHelpDesk on vtiger_createdbyHelpDesk.id = vtiger_crmentityHelpDesk.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

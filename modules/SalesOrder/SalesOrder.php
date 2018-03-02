@@ -391,6 +391,10 @@ class SalesOrder extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbySalesOrder")){
 			$query .= " left join vtiger_users as vtiger_createdbySalesOrder on vtiger_createdbySalesOrder.id = vtiger_crmentitySalesOrder.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

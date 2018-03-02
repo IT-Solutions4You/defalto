@@ -596,6 +596,10 @@ class Campaigns extends CRMEntity {
         if ($queryplanner->requireTable("vtiger_createdbyCampaigns")){
 			$query .= " left join vtiger_users as vtiger_createdbyCampaigns on vtiger_createdbyCampaigns.id = vtiger_crmentityCampaigns.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

@@ -351,6 +351,8 @@ class Documents extends CRMEntity {
 		if ($queryplanner->requireTable("vtiger_lastModifiedBy".$module)){
 			$query .= " left join vtiger_users as vtiger_lastModifiedBy".$module." on vtiger_lastModifiedBy".$module.".id = vtiger_crmentity.modifiedby ";
 		}
+		$relQuery = $this->getReportsUiType10Query($module,$queryplanner);
+		$query .= ' '.$relQuery;
 		return $query;
 
 	}
@@ -391,6 +393,10 @@ class Documents extends CRMEntity {
 		if ($queryplanner->requireTable("vtiger_createdbyDocuments")){
 			$query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

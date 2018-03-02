@@ -2204,6 +2204,86 @@ class CRMEntity {
 		return $query;
 	}
 
+	function getReportsUiType10Query($module, $queryPlanner){
+		$adb = PearDatabase::getInstance();
+		$relquery = '';
+		$matrix = $queryPlanner->newDependencyMatrix();
+
+		$params = array($module);
+		if($module == "Calendar") {
+			array_push($params,"Events");
+		}
+
+		$fields_query = $adb->pquery("SELECT vtiger_field.fieldname,vtiger_field.tablename,vtiger_field.fieldid from vtiger_field INNER JOIN vtiger_tab on vtiger_tab.name IN (".  generateQuestionMarks($params).") WHERE vtiger_tab.tabid=vtiger_field.tabid AND vtiger_field.uitype IN (10) AND vtiger_field.presence IN (0,2)", $params);
+
+		if ($adb->num_rows($fields_query) > 0) {
+			for ($i = 0; $i < $adb->num_rows($fields_query); $i++) {
+				$field_name = $adb->query_result($fields_query, $i, 'fieldname');
+				$field_id = $adb->query_result($fields_query, $i, 'fieldid');
+				$tab_name = $adb->query_result($fields_query, $i, 'tablename');
+				$ui10_modules_query = $adb->pquery("SELECT relmodule FROM vtiger_fieldmodulerel WHERE fieldid=?", array($field_id));
+
+				if ($adb->num_rows($ui10_modules_query) > 0) {
+
+					// Capture the forward table dependencies due to dynamic related-field
+					$crmentityRelModuleFieldTable = "vtiger_crmentityRel$module$field_id";
+
+					$crmentityRelModuleFieldTableDeps = array();
+					$calendarFlag = false;
+					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
+						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
+						if(vtlib_isModuleActive($rel_mod)) {
+							if($rel_mod == 'Calendar') {
+								$calendarFlag = true;
+							}
+							if($calendarFlag && $rel_mod == 'Events') {
+								continue;
+							}
+							$rel_obj = CRMEntity::getInstance($rel_mod);
+							vtlib_setup_modulevars($rel_mod, $rel_obj);
+
+							$rel_tab_name = $rel_obj->table_name;
+							$rel_tab_index = $rel_obj->table_index;
+							$crmentityRelModuleFieldTableDeps[] = $rel_tab_name . "Rel$module$field_id";
+						}
+					}
+
+					$matrix->setDependency($crmentityRelModuleFieldTable, $crmentityRelModuleFieldTableDeps);
+					$matrix->addDependency($tab_name, $crmentityRelModuleFieldTable);
+
+					if ($queryPlanner->requireTable($crmentityRelModuleFieldTable, $matrix)) {
+						$relquery.= " LEFT JOIN vtiger_crmentity AS $crmentityRelModuleFieldTable ON $crmentityRelModuleFieldTable.crmid = $tab_name.$field_name AND vtiger_crmentityRel$module$field_id.deleted=0";
+					}
+
+					$calendarFlag = false;
+					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
+						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
+						if(vtlib_isModuleActive($rel_mod)) {
+							if($rel_mod == 'Calendar') {
+								$calendarFlag = true;
+							}
+							if($calendarFlag && $rel_mod == 'Events') {
+								continue;
+							}
+							$rel_obj = CRMEntity::getInstance($rel_mod);
+							vtlib_setup_modulevars($rel_mod, $rel_obj);
+
+							$rel_tab_name = $rel_obj->table_name;
+							$rel_tab_index = $rel_obj->table_index;
+
+							$rel_tab_name_rel_module_table_alias = $rel_tab_name . "Rel$module$field_id";
+
+							if ($queryPlanner->requireTable($rel_tab_name_rel_module_table_alias)) {
+								$relquery.= " LEFT JOIN $rel_tab_name AS $rel_tab_name_rel_module_table_alias ON $rel_tab_name_rel_module_table_alias.$rel_tab_index = $crmentityRelModuleFieldTable.crmid";
+							}
+						}
+					}
+				}
+			}
+		}
+		return $relquery;
+	}
+
 	/*
 	 * Function to get the security query part of a report
 	 * @param - $module primary module name

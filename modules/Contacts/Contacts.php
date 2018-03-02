@@ -1356,6 +1356,10 @@ function get_contactsforol($user_name)
         if ($queryplanner->requireTable("vtiger_createdbyContacts")){
 			$query .= " left join vtiger_users as vtiger_createdbyContacts on vtiger_createdbyContacts.id = vtiger_crmentityContacts.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

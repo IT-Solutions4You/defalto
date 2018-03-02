@@ -417,6 +417,10 @@ class Invoice extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbyInvoice")){
 			$query .= " left join vtiger_users as vtiger_createdbyInvoice on vtiger_createdbyInvoice.id = vtiger_crmentityInvoice.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

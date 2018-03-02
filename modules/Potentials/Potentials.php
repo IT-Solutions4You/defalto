@@ -687,6 +687,10 @@ class Potentials extends CRMEntity {
         if ($queryplanner->requireTable("vtiger_createdbyPotentials")){
 			$query .= " left join vtiger_users as vtiger_createdbyPotentials on vtiger_createdbyPotentials.id = vtiger_crmentityPotentials.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

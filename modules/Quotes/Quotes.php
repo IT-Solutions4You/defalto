@@ -417,6 +417,10 @@ class Quotes extends CRMEntity {
         if ($queryPlanner->requireTable("vtiger_createdbyQuotes")){
 			$query .= " left join vtiger_users as vtiger_createdbyQuotes on vtiger_createdbyQuotes.id = vtiger_crmentityQuotes.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 
