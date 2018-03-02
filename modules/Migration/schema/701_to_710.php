@@ -397,8 +397,8 @@ if (defined('VTIGER_UPGRADE')) {
 				$cvQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
 			}
 			$cvQuery .= ' ELSE columnname END';
+			$db->pquery($cvQuery, array());
 		}
-		$db->pquery($cvQuery, array());
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
 
@@ -427,8 +427,8 @@ if (defined('VTIGER_UPGRADE')) {
 				$reportQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
 			}
 			$reportQuery .= ' ELSE columnname END';
+			$db->pquery($reportQuery, array());
 		}
-		$db->pquery($reportQuery, array());
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
 	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
