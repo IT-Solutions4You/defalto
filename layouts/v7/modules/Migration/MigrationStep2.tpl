@@ -43,9 +43,8 @@
 						{vtranslate('LBL_TALK_TO_US_AT_FORUMS', $MODULE)}<br>
 						{vtranslate('LBL_DISCUSS_WITH_US_AT_BLOGS', $MODULE)}<br><br>
 						Connect with us &nbsp;&nbsp;
-						<a href="https://www.facebook.com/vtiger" target="_blank"><img src="{vimage_path('facebook.png')}"></a>&nbsp;&nbsp;
-						<a href="https://twitter.com/vtigercrm" target="_blank"><img src="{vimage_path('twitter.png')}"></a>&nbsp;&nbsp;
-						<a href="//www.vtiger.com/products/crm/privacy_policy.html" target="_blank"><img src="{vimage_path('linkedin.png')}"></a>
+						<a href="https://www.facebook.com/vtiger" target="_blank"><img src="layouts/v7/skins/images/facebook.png"></a>&nbsp;&nbsp;
+						<a href="https://twitter.com/vtigercrm" target="_blank"><img src="layouts/v7/skins/images/twitter.png"></a>&nbsp;&nbsp;
 					</div>
 				</div>
 				<div class="button-container col-lg-12">
