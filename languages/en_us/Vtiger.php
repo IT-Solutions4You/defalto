@@ -1283,12 +1283,11 @@ $languageStrings = array(
 	'LBL_REVOKE_ACCESS' => 'Revoke Access',
 	'GOOGLE_REVOKE_ACCESS_MESSAGE' => 'Clicking on this will remove existing Google authentication for Contacts and Calendar. It will not delete any records which are already synchronized.',
 	'OFFICE_REVOKE_ACCESS_MESSAGE' => 'Clicking on this will remove existing Office365 authentication for Contacts, Calendar and Emails. It will not delete any records which are already synchronized.',
-	'LBL_EMAIL_DOMAIN_HELPTEXT' => 'Email Domain field will be used to match Cases and Contacts created from Emails. For example, if a new support email comes from john@apple.com, it would be linked to Organization that has apple.com in the Email domain field. Multiple domains should be separated by commas',
 	'LBL_START_GUIDED_TOUR' => 'Start Guided Tour',
 	'LBL_MENU' => 'Menu',
 	'LBL_EMAIL_DOMAIN_HELPTEXT'=>'Email Domain field will be used to match Cases and Contacts created from Emails. '
-	. 'For example, if a new support email comes from john@apple.com, it would be linked to Organization that has '
-	. 'apple.com in the Email domain field. Multiple domains should be separated by commas',
+	. 'For example, if a new support email comes from john@company.com, it would be linked to Organization that has '
+	. 'company.com in the Email domain field. Multiple domains should be separated by commas',
 
 	'LBL_SHARED_LIST_NON_ADMIN_MESSAGE' => 'This is a Shared list. Please contact your CRM Administrator to configure columns for All list',
 	'LBL_SHARED_LIST_OWNER_MESSAGE' => 'This is a shared list. Please contact %s to change the columns of this list',
@@ -1646,7 +1645,6 @@ $jsLanguageStrings = array(
 	'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Cannot Be Held For Future',
 	'LBL_WARNING' => 'Warning',
 	'DELETE_USER_PERMANENT_WARNING' => 'Deleting a user permanently will transfer all records including comments and history to new user.',
-	'JS_CLOSE' => 'Close',
 	'JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME' => 'Decimal separator and Grouping separator cant be same',
 	'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Cannot Be Held For Future',
 	'JS_CLOSE' => 'Close',
@@ -1714,8 +1712,6 @@ $jsLanguageStrings = array(
 	'JS_SELECTED_LEAD_DOES_NOT_HAVE_AN_ADDRESS' => 'Selected Lead does not contain address to copy',
 	'JS_INVALID_EMAILS' => 'Invalid Emails',
 	'JS_DIRECTORY_IS_EMPTY' => 'Directory is empty',
-	'JS_INTERNAL_COMMENT' => 'Internal Comment',
-	'JS_INTERNAL_COMMENT_INFO' => 'The comment will only be seen by CRM users, if the internal comment checkbox is enabled. To notify customers (through configurable workflows or customer portal) leave this checkbox disabled',
 	'JS_NO_LINE_ITEM' =>'Line items cannot be empty.',
 	'JS_INTERNAL_COMMENT' => 'Internal Comment',
 	'JS_INTERNAL_COMMENT_INFO' => 'The comment will only be seen by CRM users, if the internal comment checkbox is enabled. To notify customers (through configurable workflows or customer portal) leave this checkbox disabled',
