@@ -9,7 +9,7 @@
  *********************************************************************************/
 
 if (defined('VTIGER_UPGRADE')) {
-	global $current_user;
+	global $current_user, $adb;
 	$db = PearDatabase::getInstance();
 
 	//START::Workflow task's template path
