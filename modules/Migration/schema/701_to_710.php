@@ -145,27 +145,13 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	$db->pquery('UPDATE vtiger_tab SET source=NULL', array());
 
-	$pkgModules = array();
-	$pkgFolder = 'pkg/vtiger/modules';
-	$pkgHandle = opendir($pkgFolder);
-
-	if ($pkgHandle) {
-		while (($pkgModuleName = readdir($pkgHandle)) !== false) {
-			$pkgModules[$pkgModuleName] = $pkgModuleName;
-
-			$moduleHandle = opendir("$pkgFolder/$pkgModuleName");
-			while (($innerModuleName = readdir($moduleHandle)) !== false) {
-				if (is_dir("$pkgFolder/$pkgModuleName/$innerModuleName")) {
-					$pkgModules[$innerModuleName] = $innerModuleName;
-				}
-			}
-			closedir($moduleHandle);
-		}
-		closedir($pkgHandle);
-		$pkgModules = array_keys($pkgModules);
+	$packageModules = array('Project', 'ProjectTask', 'ProjectMilestone'); /* Projects zip is bundle */
+	$packageZips = glob("packages/vtiger/*/*.zip");
+	foreach ($packageZips as $zipfile) {
+		$packageModules[] = str_replace('.zip', '', array_pop(explode("/", $zipfile)));
 	}
 
-	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($pkgModules).')', $pkgModules);
+	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($packageModules).')', $packageModules);
 	echo '<br>Succecssfully added source column vtiger tab table<br>';
 	//END::Differentiate custom modules from Vtiger modules
 
