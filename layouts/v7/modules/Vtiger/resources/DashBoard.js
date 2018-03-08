@@ -804,6 +804,11 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			var oldName = nameEle.attr("value");
 			var editEle = currentTarget.find(".editTabName");
 
+			// Lock renaming default dashboard for user (which otherwise would be recreated)
+			if (oldName == "My Dashboard") {
+				return;
+			}
+
 			nameEle.addClass("hide");
 			editEle.removeClass("hide");
 			editEle.find("input").val(oldName);
