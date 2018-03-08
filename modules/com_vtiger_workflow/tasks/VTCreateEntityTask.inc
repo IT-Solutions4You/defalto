@@ -32,6 +32,7 @@ class VTCreateEntityTask extends VTTask {
 
 		$entityType = $this->entity_type;		
 		if(!vtlib_isModuleActive($entityType)) {
+			$util->revertUser();
 			return;
 		}
 
@@ -198,6 +199,7 @@ class VTCreateEntityTask extends VTTask {
 			} catch (Exception $e) {
 			}
 			$util->revertUser();
+			return;
 		}
 
 		$util->revertUser();
