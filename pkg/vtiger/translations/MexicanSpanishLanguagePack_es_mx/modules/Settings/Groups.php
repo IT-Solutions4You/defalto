@@ -13,7 +13,7 @@ $languageStrings = array(
 	'LBL_TO_OTHER_GROUP'           => 'A otro grupo '               , 
 	'LBL_ADD_RECORD'               => 'Agregar grupo'                   , 
 	'LBL_GROUP_NAME'               => 'Nombre del grupo'                  , 
-	'LBL_GROUP_MEMBERS'            => 'Miembros del grupo'               , /
+	'LBL_GROUP_MEMBERS'            => 'Miembros del grupo'               , 
 	'LBL_ADD_USERS_ROLES'          => 'Agregar Usuarios, Roles...'         , 
 	'LBL_ROLEANDSUBORDINATE'       => 'Rol y subordinado'       , 
 	'RoleAndSubordinates'          => 'Rol y subordinados'       , 
@@ -23,6 +23,6 @@ $languageStrings = array(
 );
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Por favor seleccione por lo menos un miembro para un grupo', 
-	'JS_RECORD_DELETED_SUCCESSFULLY' => El grupo ha sido borrado con éxito'  ,
+	'JS_RECORD_DELETED_SUCCESSFULLY' => 'El grupo ha sido borrado con éxito'  ,
 	'JS_COMMA_NOT_ALLOWED_GROUP' => 'Los caracteres especiales como ,"<> no están permitidos en el nombre del grupo.',
 );
