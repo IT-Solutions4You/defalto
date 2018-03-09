@@ -125,11 +125,7 @@
 								{if ($REGISTRATION_STATUS) and ($PASSWORD_STATUS)}
 									<div class="col-sm-6 col-xs-6">
 										<div class="pull-right">
-											{if $EXTENSION_DETAIL->isInstalledByExtnStore()}
-													<button type="button" class="writeReview margin0px pull-right {if $MODULE_ACTION neq 'Installed'} hide{/if}">{vtranslate('LBL_WRITE_A_REVIEW', $QUALIFIED_MODULE)}</button>
-												{else}
-													<span class="alert alert-error">{vtranslate('LBL_REVIEW_RESTRICTED', $QUALIFIED_MODULE)}</span>
-											{/if}
+											<button type="button" class="writeReview margin0px pull-right {if $MODULE_ACTION neq 'Installed'} hide{/if}">{vtranslate('LBL_WRITE_A_REVIEW', $QUALIFIED_MODULE)}</button>
 										</div>
 									</div>
 								{/if}
