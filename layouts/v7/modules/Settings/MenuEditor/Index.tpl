@@ -33,16 +33,16 @@
 					<div class="sortable appContainer" data-appname="{$APP_NAME}">
 						{foreach key=moduleName item=moduleModel from=$APP_MAPPED_MODULES[$APP_NAME]}
 							<div class="modules noConnect" data-module="{$moduleName}">
-								<i data-appname="{$APP_NAME}" class="fa fa-times pull-right whiteIcon menuEditorRemoveItem" style="margin: 5%;"></i>
+								<i data-appname="{$APP_NAME}" class="fa fa-times pull-right whiteIcon menuEditorRemoveItem" style="margin: 5%;padding-top:15px;"></i>
 								<div class="menuEditorItem menuEditorModuleItem">
 									<span class="pull-left marginRight10px marginTop5px">
 										<img class="alignMiddle cursorDrag" src="{vimage_path('drag.png')}"/>
 									</span>
 									{assign var='translatedModuleLabel' value=vtranslate($moduleModel->get('label'),$moduleName )}
 									<span>
-										<span class="marginRight10px pull-left">{$moduleModel->getModuleIcon()}</span>
+										<span class="marginRight10px marginTop5px pull-left">{$moduleModel->getModuleIcon()}</span>
 									</span>
-									<div class="textOverflowEllipsis marginTop10px textAlignLeft" title="{$translatedModuleLabel}">{$translatedModuleLabel}</div>
+									<div class="textOverflowEllipsis marginTop5px textAlignLeft" title="{$translatedModuleLabel}">{$translatedModuleLabel}</div>
 								</div>
 							</div>
 						{/foreach}
