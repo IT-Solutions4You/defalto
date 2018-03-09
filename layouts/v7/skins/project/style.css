@@ -3500,7 +3500,7 @@ th {
 }
 .ModulemanagerSettings:hover .actions {
   opacity: 1;
-  background: #F3F3F4;
+  /* background:@ModulemanagerSettingshover; */
 }
 #OutgoingMoretable td,
 th {
