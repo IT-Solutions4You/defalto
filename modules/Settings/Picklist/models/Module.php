@@ -488,6 +488,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 			$query = 'SELECT '.$primaryKey.',color,'.$fieldName.' FROM vtiger_'.$fieldName;
 			$result = $db->pquery($query);
 			$pickListColorMap = array();
+			$isRoleBasedPicklist = vtws_isRoleBasedPicklist($fieldName);
 			$accessablePicklistValues = self::getAccessiblePicklistValues($fieldName);
 			if($db->num_rows($result) > 0){
 				for($i=0; $i<$db->num_rows($result); $i++) {
@@ -496,7 +497,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 					$picklistNameRaw = $db->query_result($result, $i, $fieldName);
 					$picklistName = decode_html($picklistNameRaw);
 					// show color only for accesable picklist values
-					if(vtws_isRoleBasedPicklist($fieldName) && !isset($accessablePicklistValues[$picklistNameRaw])) {
+					if($isRoleBasedPicklist && !isset($accessablePicklistValues[$picklistNameRaw])) {
 						$color = '';
 					}
 					if(!empty($color)) {
