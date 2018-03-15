@@ -718,7 +718,7 @@ function purifyHtmlEventAttributes($value){
 						"onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
 						"ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
 						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
-	if(preg_match("/\s(".$htmlEventAttributes.")\s*=/i", $value)) {
+	if(preg_match("/\s*(".$htmlEventAttributes.")\s*=/i", $value)) {
 		$value = str_replace("=", "&equals;", $value);
 	}
 	return $value;
