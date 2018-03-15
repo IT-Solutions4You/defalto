@@ -106,7 +106,7 @@ class Users_Privileges_Model extends Users_Record_Model {
 	 * @param <Number> $userId
 	 * @return Users_Privilege_Model object
 	 */
-	public static function getInstanceById($userId) {
+	public static function getInstanceById($userId, $module = NULL) {
 		if (empty($userId))
 			return null;
 

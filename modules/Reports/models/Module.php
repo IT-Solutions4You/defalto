@@ -14,7 +14,7 @@ class Reports_Module_Model extends Vtiger_Module_Model {
 	 * Function deletes report
 	 * @param Reports_Record_Model $reportModel
 	 */
-	function deleteRecord(Reports_Record_Model $reportModel) {
+	function deleteRecord(Vtiger_Record_Model $reportModel) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$subOrdinateUsers = $currentUser->getSubordinateUsers();
 
@@ -59,7 +59,7 @@ class Reports_Module_Model extends Vtiger_Module_Model {
 	 * Function returns quick links for the module
 	 * @return <Array of Vtiger_Link_Model>
 	 */
-	function getSideBarLinks() {
+	function getSideBarLinks($linkParams) {
 		$quickLinks = array(
 			array(
 				'linktype' => 'SIDEBARLINK',

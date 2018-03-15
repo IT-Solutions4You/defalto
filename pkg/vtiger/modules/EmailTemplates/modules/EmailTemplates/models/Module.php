@@ -32,7 +32,7 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 	* @param EmailtTemplates_Record_Model $recordModel
 	* @return <integer> template id
 	*/
-	public function saveRecord(EmailTemplates_Record_Model $recordModel) {
+	public function saveRecord(Vtiger_Record_Model $recordModel) {
 		$db = PearDatabase::getInstance();
 		$recordId = $templateid = $recordModel->getId();
 		$systemtemplate = $recordModel->get('systemtemplate');
@@ -65,7 +65,7 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 	 * Function to delete the email template
 	 * @param type $recordIds
 	 */
-	public function deleteRecord(EmailTemplates_Record_Model $recordModel) {
+	public function deleteRecord(Vtiger_Record_Model $recordModel) {
 		$recordId = $recordModel->getId();
 		$db = PearDatabase::getInstance();
 		$db->pquery('DELETE FROM vtiger_emailtemplates WHERE templateid = ? AND systemtemplate = ? ', array($recordId, '0'));
