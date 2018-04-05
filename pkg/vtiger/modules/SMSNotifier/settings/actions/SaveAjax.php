@@ -34,7 +34,7 @@ class Settings_SMSNotifier_SaveAjax_Action extends Settings_Vtiger_Index_Action 
 			$recordModel->set('password', $request->get('password'));
 		}
 		
-        $parameters = ''; 
+        $parameters = array(); 
 		$selectedProvider = $request->get('providertype');
 		$allProviders = $recordModel->getModule()->getAllProviders();
 		foreach ($allProviders as $provider) {
