@@ -21,8 +21,8 @@ class Settings_LoginHistory_ListView_Model extends Settings_Vtiger_ListView_Mode
 				INNER JOIN vtiger_users ON vtiger_users.user_name = $module->baseTable.user_name";
 		
 		$search_key = $this->get('search_key');
-		$value = $this->get('search_value');
-		
+		$value = Vtiger_Functions::realEscapeString($this->get('search_value'));
+
 		if(!empty($search_key) && !empty($value)) {
 			$query .= " WHERE $module->baseTable.$search_key = '$value'";
 		}

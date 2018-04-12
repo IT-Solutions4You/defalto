@@ -22,8 +22,8 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
         
-        $orderBy = $this->get('orderby');
-        $sortOrder = $this->get('sortorder');
+        $orderBy = $this->getForSql('orderby');
+        $sortOrder = $this->getForSql('sortorder');
 
         if(!empty($orderBy))
             $listQuery .= ' ORDER BY '.$orderBy.' '.$sortOrder;
@@ -61,7 +61,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
     
     public function getQuery() {
         $query = 'SELECT portalid, portalname, portalurl, createdtime FROM vtiger_portal';
-        $searchValue = $this->get('search_value');
+		$searchValue = Vtiger_Functions::realEscapeString($this->get('search_value'));
         if(!empty($searchValue))
             $query .= " WHERE portalname LIKE '".$searchValue."%'";
         

@@ -1404,4 +1404,14 @@ class Vtiger_Functions {
 		}
 		return $isRelated;
 	}
+
+	/**
+	 * Function to Escapes special characters in a string for use in an SQL statement
+	 * @param type $value
+	 * @return type
+	 */
+	static function realEscapeString($value){
+		$value = mysql_real_escape_string($value);
+		return $value;
+	}
 }
