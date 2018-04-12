@@ -1411,7 +1411,8 @@ class Vtiger_Functions {
 	 * @return type
 	 */
 	static function realEscapeString($value){
-		$value = mysql_real_escape_string($value);
+		$db = PearDatabase::getInstance();
+		$value = $db->sql_escape_string($value);
 		return $value;
 	}
 }
