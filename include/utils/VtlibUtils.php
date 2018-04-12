@@ -731,7 +731,7 @@ function purifyHtmlEventAttributes($value){
  * @return <String> $string/false
  */
 function vtlib_purifyForSql($string, $skipEmpty=true) {
-	$pattern = "/^[_a-zA-Z0-9.]+$/";
+	$pattern = "/^[_a-zA-Z0-9.:\-]+$/";
 	if ((empty($string) && $skipEmpty) || preg_match($pattern, $string)) {
 		return $string;
 	}

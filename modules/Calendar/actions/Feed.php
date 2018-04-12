@@ -53,6 +53,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	public function _process($request) {
 		try {
+			foreach ($request as $k => $v) {
+				if ($k == 'conditions' || $k == 'mapping') continue;
+				$request[$k] = $this->valForSql($v);
+			}
+
 			$start = $request['start'];
 			$end = $request['end'];
 			$type = $request['type'];
@@ -85,6 +90,10 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		} catch (Exception $ex) {
 			return $ex->getMessage();
 		}
+	}
+
+	private function valForSql($value) {
+		return Vtiger_Util_Helper::validateStringForSql($value);
 	}
 
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
@@ -216,7 +225,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}
 
 		if(!empty($operator) && !empty($conditions['fieldname']) && !empty($conditions['value'])) {
-			$conditionQuery = ' '.$conditions['fieldname'].$operator.'\'' .$conditions['value'].'\' ';
+			$conditionQuery = ' '.$conditions['fieldname'].$operator.'\'' .Vtiger_Functions::realEscapeString($conditions['value']).'\' ';
 		}
 		return $conditionQuery;
 	}
