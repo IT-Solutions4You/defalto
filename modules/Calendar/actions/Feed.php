@@ -225,7 +225,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}
 
 		if(!empty($operator) && !empty($conditions['fieldname']) && !empty($conditions['value'])) {
-			$conditionQuery = ' '.$conditions['fieldname'].$operator.'\'' .Vtiger_Functions::realEscapeString($conditions['value']).'\' ';
+			$conditionQuery = ' '.Vtiger_Functions::realEscapeString($conditions['fieldname']).$operator.'\'' .Vtiger_Functions::realEscapeString($conditions['value']).'\' ';
 		}
 		return $conditionQuery;
 	}
