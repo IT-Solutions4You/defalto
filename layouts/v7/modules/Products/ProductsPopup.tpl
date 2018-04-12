@@ -35,7 +35,6 @@
                             <div id="popupContents" class="">
                                 {include file='ProductsPopupContents.tpl'|vtemplate_path:$MODULE_NAME}
                             </div>
-                            <input type="hidden" class="ProductsPopupContents" value="{$smarty.request.triggerEventName}"/>
                         </div>
                     </div>
                     <div class = "modal-footer">

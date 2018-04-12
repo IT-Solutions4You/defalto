@@ -33,7 +33,6 @@
                 <div id="popupContents" class="">
                     {include file='PopupContents.tpl'|vtemplate_path:$MODULE_NAME}
                 </div>
-                <input type="hidden" class="triggerEventName" value="{$smarty.request.triggerEventName}"/>
             </div>
         </div>
     </div>
