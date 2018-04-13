@@ -57,7 +57,7 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
                 $pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
         }else if ($fieldName == 'markas') {
-            $optionList = array('', 'UNSEEN','SEEN');
+            $optionList = array('UNCHANGED', 'UNSEEN','SEEN');
             foreach($optionList as $option) {
 				$pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
