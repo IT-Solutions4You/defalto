@@ -1062,7 +1062,12 @@ class Vtiger_Functions {
 	/*
 	 * Function to generate encrypted password.
 	 */
-	static function generateEncryptedPassword($password, $mode='CRYPT') {
+	static function generateEncryptedPassword($password, $mode='') {
+		if ($mode == '') {
+			$mode = (version_compare(PHP_VERSION, '5.5.0') >= 0)? 'PHASH' : 'CRYPT';
+		}
+
+		if ($mode == 'PHASH') return password_hash($password, PASSWORD_DEFAULT);
 
 		if ($mode == 'MD5') return md5($password);
 
@@ -1085,6 +1090,7 @@ class Vtiger_Functions {
 	static function compareEncryptedPassword($plainText, $encryptedPassword, $mode='CRYPT') {
 		$reEncryptedPassword = null;
 		switch ($mode) {
+			case 'PHASH': return password_verify($plainText, $encryptedPassword);
 			case 'CRYPT': $reEncryptedPassword = crypt($plainText, $encryptedPassword); break;
 			case 'MD5'  : $reEncryptedPassword = md5($plainText);	break;
 			default     : $reEncryptedPassword = $plainText;		break;
