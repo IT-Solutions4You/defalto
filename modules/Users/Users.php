@@ -249,11 +249,6 @@ class Users extends CRMEntity {
 
 	}
 
-	protected function get_user_hash($input) {
-		return strtolower(md5($input));
-	}
-
-
 	/**
 	 * @return string encrypted password for storage in DB and comparison against DB password.
 	 * @param string $user_name - Must be non null and at least 2 characters
@@ -290,25 +285,6 @@ class Users extends CRMEntity {
 		return $encrypted_password;
 	}
 
-
-	/** Function to authenticate the current user with the given password
-	 * @param $password -- password::Type varchar
-	 * @returns true if authenticated or false if not authenticated
-	 */
-	function authenticate_user($password) {
-		$usr_name = $this->column_fields["user_name"];
-
-		$query = "SELECT * from $this->table_name where user_name=? AND user_hash=?";
-		$params = array($usr_name, $password);
-		$result = $this->db->requirePsSingleResult($query, $params, false);
-
-		if(empty($result)) {
-			$this->log->fatal("SECURITY: failed login by $usr_name");
-			return false;
-		}
-
-		return true;
-	}
 
 	/** Function for validation check
 	 *
@@ -437,13 +413,6 @@ class Users extends CRMEntity {
 		$this->column_fields = $row;
 		$this->id = $row['id'];
 
-		$user_hash = $this->get_user_hash($user_password);
-
-		// If there is no user_hash is not present or is out of date, then create a new one.
-		if(!isset($row['user_hash']) || $row['user_hash'] != $user_hash) {
-			$query = "UPDATE $this->table_name SET user_hash=? where id=?";
-			$this->db->pquery($query, array($user_hash, $row['id']), true, "Error setting new hash for {$row['user_name']}: ");
-		}
 		$this->loadPreferencesFromDB($row['user_preferences']);
 
 
@@ -530,27 +499,20 @@ class Users extends CRMEntity {
 		//to make entity delta available for aftersave handlers
 		$this->triggerBeforeSaveEventHandlers();
 
-		$user_hash = $this->get_user_hash($new_password);
-
 		//set new password
 		$crypt_type = $this->DEFAULT_PASSWORD_CRYPT_TYPE;
 		$encrypted_new_password = $this->encrypt_password($new_password, $crypt_type);
 
-		$query = "UPDATE $this->table_name SET user_password=?, confirm_password=?, user_hash=?, ".
+		$query = "UPDATE $this->table_name SET user_password=?, confirm_password=?, ".
 				"crypt_type=? where id=?";
 		$this->db->pquery($query, array($encrypted_new_password, $encrypted_new_password,
-				$user_hash, $crypt_type, $this->id));
+				$crypt_type, $this->id));
 		if($this->db->hasFailedTransaction()) {
 			if($dieOnError) {
 				die("error setting new password: [".$this->db->database->ErrorNo()."] ".
 						$this->db->database->ErrorMsg());
 			}
 			return false;
-		}
-
-		// Fill up the post-save state of the instance.
-		if (empty($this->column_fields['user_hash'])) {
-			$this->column_fields['user_hash'] = $user_hash;
 		}
 
 		$this->column_fields['user_password'] = $encrypted_new_password;
@@ -883,7 +845,6 @@ class Users extends CRMEntity {
 					$this->column_fields[$fieldname] = $fldvalue;
 					$this->column_fields[$fieldname.'_plain'] = $plain_text;
 					$this->column_fields['crypt_type'] = $crypt_type;
-					$this->column_fields['user_hash'] = $this->get_user_hash($plain_text);
 				}
 				else {
 					$fldvalue = $this->column_fields[$fieldname];
@@ -960,11 +921,6 @@ class Users extends CRMEntity {
 				$qparams[]= $crypt_type;
 			}
 			// END
-
-			if($table_name == 'vtiger_users' && strpos('user_hash', $column) === false) {
-				$column .= ', user_hash';
-				$qparams[] = $this->column_fields['user_hash'];
-			}
 
 			$sql1 = "insert into $table_name ($column) values(". generateQuestionMarks($qparams) .")";
 			$this->db->pquery($sql1, $qparams);
