@@ -271,7 +271,8 @@ class SMSNotifierManager {
 			foreach($parameters as $k=>$v) {
 				$provider->setParameter($k, $v);
 			}
-			$provider->setAuthParameters($resultrow['username'], $resultrow['password']);
+			$password = Vtiger_Functions::fromProtectedText($resultrow['password']);
+			$provider->setAuthParameters($resultrow['username'], $password);
 
 			return $provider;
 		}
