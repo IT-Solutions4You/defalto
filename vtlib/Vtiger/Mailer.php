@@ -52,7 +52,7 @@ class Vtiger_Mailer extends PHPMailer {
 		if($adb->num_rows($result)) {
 			$this->Host = $adb->query_result($result, 0, 'server');
 			$this->Username = decode_html($adb->query_result($result, 0, 'server_username'));
-			$this->Password = decode_html($adb->query_result($result, 0, 'server_password'));
+			$this->Password = Vtiger_Functions::fromProtectedText(decode_html($adb->query_result($result, 0, 'server_password')));
 			$this->SMTPAuth = $adb->query_result($result, 0, 'smtp_auth');
 
 			// To support TLS
