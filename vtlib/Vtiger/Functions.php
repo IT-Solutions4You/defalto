@@ -1376,6 +1376,34 @@ class Vtiger_Functions {
 		return $jwt;
 	}
 
+	/**
+	 * Function to mask input text.
+	 */
+	static function toProtectedText($text) {
+		require_once 'include/utils/encryption.php';
+		$encryption = new Encryption();
+		return '$ve$'.$encryption->encrypt($text);
+	}
+	
+	/* 
+	 * Function to determine if text is masked.
+	 */
+	static function isProtectedText($text) {
+		return strpos($text, '$ve$') === 0;
+	}
+	
+	/*
+	 * Function to unmask the text.
+	 */
+	static function fromProtectedText($text) {
+		if (static::isProtectedText($text)) {
+			require_once 'include/utils/encryption.php';
+			$encryption = new Encryption();
+			return $encryption->decrypt(substr($text, 4));
+		}
+		return $text;
+	}
+
 	/*
 	 * Function to convert file size in bytes to user displayable format
 	 */
