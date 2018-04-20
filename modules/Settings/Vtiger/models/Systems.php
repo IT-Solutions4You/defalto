@@ -28,7 +28,11 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
         $params = array();
 
         $server_password = $this->get('server_password');
-        if ($id && !Vtiger_Functions::isProtectedText($server_password)) {
+        if ($id) {
+            if (!Vtiger_Functions::isProtectedText($server_password)) {
+                $server_password = Vtiger_Functions::toProtectedText($server_password);
+            }
+        } else {
             $server_password = Vtiger_Functions::toProtectedText($server_password);
         }
         
