@@ -326,7 +326,7 @@ function setMailServerProperties($mail)
 	}
     $mail->Host = $server;		// specify main and backup server
 	$mail->Username = $username ;	// SMTP username
-    $mail->Password = $password ;	// SMTP password
+    $mail->Password = Vtiger_Functions::fromProtectedText($password);	// SMTP password
     
     // To Support TLS
     $serverinfo = explode("://", $server);

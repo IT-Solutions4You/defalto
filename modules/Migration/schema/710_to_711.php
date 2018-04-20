@@ -17,4 +17,7 @@ if (defined('VTIGER_UPGRADE')) {
 	if (in_array('user_hash', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_users DROP COLUMN user_hash', array());
 	}
+
+	// Resizing column to hold wider string value.
+	$db->pquery('ALTER TABLE vtiger_systems MODIFY server_password VARCHAR(255)', array());
 }

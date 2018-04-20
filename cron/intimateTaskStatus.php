@@ -22,7 +22,7 @@ $mailserveresult = $adb->pquery("SELECT server,server_username,server_password,s
 $mailrow = $adb->fetch_array($mailserveresult);
 $mailserver = $mailrow[0];
 $mailuname = $mailrow[1];
-$mailpwd = $mailrow[2];
+$mailpwd = Vtiger_Functions::fromProtectedText($mailrow[2]);
 $smtp_auth = $mailrow[3];
 // End Email Setup
 
