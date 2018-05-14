@@ -363,34 +363,34 @@ class Documents extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner) {
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner) {
 
-		$matrix = $queryplanner->newDependencyMatrix();
+		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency("vtiger_crmentityDocuments",array("vtiger_groupsDocuments","vtiger_usersDocuments","vtiger_lastModifiedByDocuments"));
 
-		if (!$queryplanner->requireTable('vtiger_notes', $matrix)) {
+		if (!$queryPlanner->requireTable('vtiger_notes', $matrix)) {
 			return '';
 		}
 		$matrix->setDependency("vtiger_notes",array("vtiger_crmentityDocuments","vtiger_attachmentsfolder"));
 		// TODO Support query planner
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_notes","notesid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_notes","notesid", $queryPlanner);
 		$query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
-		if ($queryplanner->requireTable("vtiger_crmentityDocuments",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityDocuments",$matrix)){
 			$query .=" left join vtiger_crmentity as vtiger_crmentityDocuments on vtiger_crmentityDocuments.crmid=vtiger_notes.notesid and vtiger_crmentityDocuments.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_attachmentsfolder")){
+		if ($queryPlanner->requireTable("vtiger_attachmentsfolder")){
 			$query .=" left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=vtiger_notes.folderid";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsDocuments")){
+		if ($queryPlanner->requireTable("vtiger_groupsDocuments")){
 			$query .=" left join vtiger_groups as vtiger_groupsDocuments on vtiger_groupsDocuments.groupid = vtiger_crmentityDocuments.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersDocuments")){
+		if ($queryPlanner->requireTable("vtiger_usersDocuments")){
 			$query .=" left join vtiger_users as vtiger_usersDocuments on vtiger_usersDocuments.id = vtiger_crmentityDocuments.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByDocuments")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByDocuments")){
 			$query .=" left join vtiger_users as vtiger_lastModifiedByDocuments on vtiger_lastModifiedByDocuments.id = vtiger_crmentityDocuments.modifiedby ";
 		}
-		if ($queryplanner->requireTable("vtiger_createdbyDocuments")){
+		if ($queryPlanner->requireTable("vtiger_createdbyDocuments")){
 			$query .= " left join vtiger_users as vtiger_createdbyDocuments on vtiger_createdbyDocuments.id = vtiger_crmentityDocuments.smcreatorid ";
 		}
 

@@ -225,39 +225,39 @@ class ServiceContracts extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner) {
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner) {
 
-		$matrix = $queryplanner->newDependencyMatrix();
+		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityServiceContracts',array('vtiger_groupsServiceContracts','vtiger_usersServiceContracts'));
-		if (!$queryplanner->requireTable('vtiger_servicecontracts', $matrix)) {
+		if (!$queryPlanner->requireTable('vtiger_servicecontracts', $matrix)) {
 			return '';
 		}
 		$matrix->setDependency('vtiger_servicecontracts',array('vtiger_servicecontractscf','vtiger_crmentityServiceContracts'));
 
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_servicecontracts","servicecontractsid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_servicecontracts","servicecontractsid", $queryPlanner);
 
-		if ($queryplanner->requireTable("vtiger_crmentityServiceContracts",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityServiceContracts",$matrix)){
 			$query .= " left join vtiger_crmentity as vtiger_crmentityServiceContracts on vtiger_crmentityServiceContracts.crmid = vtiger_servicecontracts.servicecontractsid  and vtiger_crmentityServiceContracts.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_servicecontractscf")){
+		if ($queryPlanner->requireTable("vtiger_servicecontractscf")){
 			$query .= " left join vtiger_servicecontractscf on vtiger_servicecontractscf.servicecontractsid = vtiger_servicecontracts.servicecontractsid";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsServiceContracts")){
+		if ($queryPlanner->requireTable("vtiger_groupsServiceContracts")){
 			$query .= " left join vtiger_groups as vtiger_groupsServiceContracts on vtiger_groupsServiceContracts.groupid = vtiger_crmentityServiceContracts.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersServiceContracts")){
+		if ($queryPlanner->requireTable("vtiger_usersServiceContracts")){
 			$query .= " left join vtiger_users as vtiger_usersServiceContracts on vtiger_usersServiceContracts.id = vtiger_crmentityServiceContracts.smownerid";
 		}
-		if($queryplanner->requireTable("vtiger_contactdetailsRelServiceContracts")){
+		if($queryPlanner->requireTable("vtiger_contactdetailsRelServiceContracts")){
 			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsRelServiceContracts on vtiger_contactdetailsRelServiceContracts.contactid = vtiger_servicecontracts.sc_related_to";
 		}
-		if($queryplanner->requireTable("vtiger_accountRelServiceContracts")){
+		if($queryPlanner->requireTable("vtiger_accountRelServiceContracts")){
 			$query .= " left join vtiger_account as vtiger_accountRelServiceContracts on vtiger_accountRelServiceContracts.accountid = vtiger_servicecontracts.sc_related_to";
 		}
-		 if ($queryplanner->requireTable("vtiger_lastModifiedByServiceContracts")){
+		 if ($queryPlanner->requireTable("vtiger_lastModifiedByServiceContracts")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByServiceContracts on vtiger_lastModifiedByServiceContracts.id = vtiger_crmentityServiceContracts.modifiedby ";
 		}
-		if ($queryplanner->requireTable("vtiger_createdbyServiceContracts")){
+		if ($queryPlanner->requireTable("vtiger_createdbyServiceContracts")){
 			$query .= " left join vtiger_users as vtiger_createdbyServiceContracts on vtiger_createdbyServiceContracts.id = vtiger_crmentityServiceContracts.smcreatorid ";
 		}
 		//if secondary modules custom reference field is selected

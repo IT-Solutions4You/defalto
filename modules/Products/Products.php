@@ -1183,19 +1183,19 @@ class Products extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner) {
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner) {
 		global $current_user;
-		$matrix = $queryplanner->newDependencyMatrix();
+		$matrix = $queryPlanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityProducts",array("vtiger_groupsProducts","vtiger_usersProducts","vtiger_lastModifiedByProducts"));
 		//query planner Support  added
-		if (!$queryplanner->requireTable('vtiger_products', $matrix)) {
+		if (!$queryPlanner->requireTable('vtiger_products', $matrix)) {
 			return '';
 		}
 		$matrix->setDependency("vtiger_products",array("innerProduct","vtiger_crmentityProducts","vtiger_productcf","vtiger_vendorRelProducts"));
 
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_products","productid", $queryplanner);
-		if ($queryplanner->requireTable("innerProduct")){
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_products","productid", $queryPlanner);
+		if ($queryPlanner->requireTable("innerProduct")){
 			$query .= " LEFT JOIN (
 					SELECT vtiger_products.productid,
 							(CASE WHEN (vtiger_products.currency_id = 1 ) THEN vtiger_products.unit_price
@@ -1207,25 +1207,25 @@ class Products extends CRMEntity {
 					AND vtiger_productcurrencyrel.currencyid = ". $current_user->currency_id . "
 				) AS innerProduct ON innerProduct.productid = vtiger_products.productid";
 		}
-		if ($queryplanner->requireTable("vtiger_crmentityProducts")){
+		if ($queryPlanner->requireTable("vtiger_crmentityProducts")){
 			$query .= " left join vtiger_crmentity as vtiger_crmentityProducts on vtiger_crmentityProducts.crmid=vtiger_products.productid and vtiger_crmentityProducts.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_productcf")){
+		if ($queryPlanner->requireTable("vtiger_productcf")){
 			$query .= " left join vtiger_productcf on vtiger_products.productid = vtiger_productcf.productid";
 		}
-			if ($queryplanner->requireTable("vtiger_groupsProducts")){
+			if ($queryPlanner->requireTable("vtiger_groupsProducts")){
 			$query .= " left join vtiger_groups as vtiger_groupsProducts on vtiger_groupsProducts.groupid = vtiger_crmentityProducts.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersProducts")){
+		if ($queryPlanner->requireTable("vtiger_usersProducts")){
 			$query .= " left join vtiger_users as vtiger_usersProducts on vtiger_usersProducts.id = vtiger_crmentityProducts.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_vendorRelProducts")){
+		if ($queryPlanner->requireTable("vtiger_vendorRelProducts")){
 			$query .= " left join vtiger_vendor as vtiger_vendorRelProducts on vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByProducts")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByProducts")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByProducts on vtiger_lastModifiedByProducts.id = vtiger_crmentityProducts.modifiedby ";
 		}
-		if ($queryplanner->requireTable("vtiger_createdbyProducts")){
+		if ($queryPlanner->requireTable("vtiger_createdbyProducts")){
 			$query .= " left join vtiger_users as vtiger_createdbyProducts on vtiger_createdbyProducts.id = vtiger_crmentityProducts.smcreatorid ";
 		}
 
