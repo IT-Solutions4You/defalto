@@ -22,8 +22,8 @@ Vtiger_Detail_Js("Contacts_Detail_Js", {}, {
 	checkForPortalUser: function (form) {
 		var element = jQuery('[name="portal"]', form);
 		var response = element.is(':checked');
-		var primaryEmailField = jQuery('[name="email"]');
-		var primaryEmailValue = primaryEmailField.val();
+		var primaryEmailField = jQuery('[data-name="email"]');
+		var primaryEmailValue = primaryEmailField["0"].attributes["data-value"].value;
 		if (response) {
 			if (primaryEmailField.length == 0) {
 				app.helper.showErrorNotification({message: app.vtranslate('JS_PRIMARY_EMAIL_FIELD_DOES_NOT_EXISTS')});
