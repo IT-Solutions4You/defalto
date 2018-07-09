@@ -1148,7 +1148,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			else{
 				 fieldInfo = uimeta.field.get(fieldName);
 			}
-			fieldInfo['value'] = value;
+			if(fieldType == "boolean"){
+				if(rawValue == 0){
+					fieldInfo['value'] = "No";
+				}
+				else{
+					fieldInfo['value'] = "Yes";
+				}
+			}
+			else{
+				fieldInfo['value'] = value;
+			}
+			
 			var fieldObject = Vtiger_Field_Js.getInstance(fieldInfo);
 			var fieldModel = fieldObject.getUiTypeModel();
 
