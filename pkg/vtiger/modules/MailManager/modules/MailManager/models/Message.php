@@ -262,7 +262,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 
 			$whereClause = "";
 			if ($aName) { $whereClause .= " AND aname=?"; $params[] = $aName; }
-			if ($aId)   { $whereClause .= " AND aid=?"; $params[] = $aId; }
+			if ($aId)   { $whereClause .= " AND attachid=?"; $params[] = $aId; }
 
 			$atResult = $db->pquery("SELECT {$filteredColumns} FROM vtiger_mailmanager_mailattachments
 						WHERE userid=? AND muid=? $whereClause", $params);
