@@ -46,7 +46,7 @@
                         {if $BASIC_FILE_TYPE eq 'yes'}
                             <div style="overflow:auto;height:100%;">
                                 <pre>
-                                    {$FILE_CONTENTS}
+                                    {htmlentities($FILE_CONTENTS)}
                                 </pre>
                             </div>
                         {else if $OPENDOCUMENT_FILE_TYPE eq 'yes'}

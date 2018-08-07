@@ -62,11 +62,6 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 			}
 		}
 
-		$requestAppName = $request->get('app');
-		if(!empty($requestAppName)) {
-			$selectedModuleMenuCategory = $requestAppName;
-		}
-
 		//If module is not found in any category we need to show the module itself 
 		//Eg : Home->DashBoard view we ned to show Home 
 		if($moduleFound) {
