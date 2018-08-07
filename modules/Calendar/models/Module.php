@@ -204,7 +204,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 * Function to get export query
 	 * @return <String> query;
 	 */
-	public function getExportQuery() {
+	public function getExportQuery($where) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUserModel->getId();
 		$userGroup = new GetUserGroups();

@@ -137,8 +137,10 @@ class Users extends CRMEntity {
 		$this->log = LoggerManager::getLogger('user');
 		$this->log->debug("Entering Users() method ...");
 		$this->db = PearDatabase::getInstance();
-		$this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0)?
-				'PHP5.3MD5': 'MD5';
+		$this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0)? 'PHP5.3MD5': 'MD5';
+		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
+			$this->DEFAULT_PASSWORD_CRYPT_TYPE = 'PHASH';
+		}
 		$this->column_fields = getColumnFields('Users');
 		$this->column_fields['currency_name'] = '';
 		$this->column_fields['currency_code'] = '';
@@ -249,11 +251,6 @@ class Users extends CRMEntity {
 
 	}
 
-	protected function get_user_hash($input) {
-		return strtolower(md5($input));
-	}
-
-
 	/**
 	 * @return string encrypted password for storage in DB and comparison against DB password.
 	 * @param string $user_name - Must be non null and at least 2 characters
@@ -264,9 +261,7 @@ class Users extends CRMEntity {
 	 * Contributor(s): ______________________________________..
 	 */
 	function encrypt_password($user_password, $crypt_type='') {
-		// encrypt the password.
-		$salt = substr($this->column_fields["user_name"], 0, 2);
-		//TODO : remove untill here in the next udpate
+		$salt = null; /* Recommended */
 
 		// Fix for: http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/4923
 		if($crypt_type == '') {
@@ -274,41 +269,30 @@ class Users extends CRMEntity {
 			$crypt_type = $this->get_user_crypt_type();
 		}
 
-		// For more details on salt format look at: http://in.php.net/crypt
-		if($crypt_type == 'MD5') {
-			$salt = '$1$' . $salt . '$';
-		} elseif($crypt_type == 'BLOWFISH') {
-			$salt = '$2$' . $salt . '$';
-		} elseif($crypt_type == 'PHP5.3MD5') {
-			//only change salt for php 5.3 or higher version for backward
-			//compactibility.
-			//crypt API is lot stricter in taking the value for salt.
-			$salt = '$1$' . str_pad($salt, 9, '0');
+		if ($crypt_type != 'PHASH') {
+			/* Backward compatible for PHP < 5.5.0 */
+			// encrypt the password.
+			$salt = substr($this->column_fields["user_name"], 0, 2);
+			// For more details on salt format look at: http://in.php.net/crypt
+			if($crypt_type == 'MD5') {
+				$salt = '$1$' . $salt . '$';
+			} elseif($crypt_type == 'BLOWFISH') {
+				$salt = '$2$' . $salt . '$';
+			} elseif($crypt_type == 'PHP5.3MD5') {
+				//only change salt for php 5.3 or higher version for backward
+				//compactibility.
+				//crypt API is lot stricter in taking the value for salt.
+				$salt = '$1$' . str_pad($salt, 9, '0');
+			}
 		}
 
-		$encrypted_password = crypt($user_password, $salt);
+		$encrypted_password = ($crypt_type == 'PHASH') ?
+				password_hash($user_password, PASSWORD_DEFAULT) : /* recommended */
+				crypt($user_password, $salt); /* backward compatibility */
+
 		return $encrypted_password;
 	}
 
-
-	/** Function to authenticate the current user with the given password
-	 * @param $password -- password::Type varchar
-	 * @returns true if authenticated or false if not authenticated
-	 */
-	function authenticate_user($password) {
-		$usr_name = $this->column_fields["user_name"];
-
-		$query = "SELECT * from $this->table_name where user_name=? AND user_hash=?";
-		$params = array($usr_name, $password);
-		$result = $this->db->requirePsSingleResult($query, $params, false);
-
-		if(empty($result)) {
-			$this->log->fatal("SECURITY: failed login by $usr_name");
-			return false;
-		}
-
-		return true;
-	}
 
 	/** Function for validation check
 	 *
@@ -350,52 +334,28 @@ class Users extends CRMEntity {
 	 * @return true if the user is authenticated, false otherwise
 	 */
 	function doLogin($user_password) {
-		global $AUTHCFG;
 		$usr_name = $this->column_fields["user_name"];
 
-		switch (strtoupper($AUTHCFG['authType'])) {
-			case 'LDAP':
-				$this->log->debug("Using LDAP authentication");
-				require_once('modules/Users/authTypes/LDAP.php');
-				$result = ldapAuthenticate($this->column_fields["user_name"], $user_password);
-				if ($result == NULL) {
-					return false;
-				} else {
-					return true;
-				}
-				break;
-
-			case 'AD':
-				$this->log->debug("Using Active Directory authentication");
-				require_once('modules/Users/authTypes/adLDAP.php');
-				$adldap = new adLDAP();
-				if ($adldap->authenticate($this->column_fields["user_name"],$user_password)) {
-					return true;
-				} else {
-					return false;
-				}
-				break;
-
-			default:
-				$this->log->debug("Using integrated/SQL authentication");
-				$query = "SELECT crypt_type, user_name FROM $this->table_name WHERE user_name=?";
-				$result = $this->db->requirePsSingleResult($query, array($usr_name), false);
-				if (empty($result)) {
-					return false;
-				}
-				$crypt_type = $this->db->query_result($result, 0, 'crypt_type');
-				$this->column_fields["user_name"] = $this->db->query_result($result, 0, 'user_name');
-				$encrypted_password = $this->encrypt_password($user_password, $crypt_type);
-				$query = "SELECT 1 from $this->table_name where user_name=? AND user_password=? AND status = ?";
-				$result = $this->db->requirePsSingleResult($query, array($usr_name, $encrypted_password, 'Active'), false);
-				if (empty($result)) {
-					return false;
-				} else {
-					return true;
-				}
-				break;
+		$query = "SELECT crypt_type, user_password, status, user_name FROM $this->table_name WHERE user_name=?";
+		$result = $this->db->requirePsSingleResult($query, array($usr_name), false);
+		if (empty($result)) {
+			return false;
 		}
-		return false;
+		$this->column_fields["user_name"] = $this->db->query_result($result, 0, 'user_name');
+		$crypt_type = $this->db->query_result($result, 0, 'crypt_type');
+		$user_status = $this->db->query_result($result, 0, 'status');
+		$dbuser_password = $this->db->query_result($result, 0, 'user_password');
+
+		$ok = false;
+		if ($user_status == 'Active') {
+			if ($crypt_type == 'PHASH') {
+				$ok = password_verify($user_password, $dbuser_password);
+			} else {
+				$encrypted_password = $this->encrypt_password($user_password, $crypt_type);
+				$ok = ($dbuser_password == $encrypted_password);
+			}
+		}
+		return $ok;
 	}
 
 
@@ -430,20 +390,13 @@ class Users extends CRMEntity {
 		}
 
 		// Get the fields for the user
-		$query = "SELECT * from $this->table_name where user_name='$usr_name'";
-		$result = $this->db->requireSingleResult($query, false);
+		$query = "SELECT * from $this->table_name where user_name=?";
+		$result = $this->db->requireSingleResult($query, array($usr_name), false);
 
 		$row = $this->db->fetchByAssoc($result);
 		$this->column_fields = $row;
 		$this->id = $row['id'];
 
-		$user_hash = $this->get_user_hash($user_password);
-
-		// If there is no user_hash is not present or is out of date, then create a new one.
-		if(!isset($row['user_hash']) || $row['user_hash'] != $user_hash) {
-			$query = "UPDATE $this->table_name SET user_hash=? where id=?";
-			$this->db->pquery($query, array($user_hash, $row['id']), true, "Error setting new hash for {$row['user_name']}: ");
-		}
 		$this->loadPreferencesFromDB($row['user_preferences']);
 
 
@@ -530,27 +483,20 @@ class Users extends CRMEntity {
 		//to make entity delta available for aftersave handlers
 		$this->triggerBeforeSaveEventHandlers();
 
-		$user_hash = $this->get_user_hash($new_password);
-
 		//set new password
 		$crypt_type = $this->DEFAULT_PASSWORD_CRYPT_TYPE;
 		$encrypted_new_password = $this->encrypt_password($new_password, $crypt_type);
 
-		$query = "UPDATE $this->table_name SET user_password=?, confirm_password=?, user_hash=?, ".
+		$query = "UPDATE $this->table_name SET user_password=?, confirm_password=?, ".
 				"crypt_type=? where id=?";
 		$this->db->pquery($query, array($encrypted_new_password, $encrypted_new_password,
-				$user_hash, $crypt_type, $this->id));
+				$crypt_type, $this->id));
 		if($this->db->hasFailedTransaction()) {
 			if($dieOnError) {
 				die("error setting new password: [".$this->db->database->ErrorNo()."] ".
 						$this->db->database->ErrorMsg());
 			}
 			return false;
-		}
-
-		// Fill up the post-save state of the instance.
-		if (empty($this->column_fields['user_hash'])) {
-			$this->column_fields['user_hash'] = $user_hash;
 		}
 
 		$this->column_fields['user_password'] = $encrypted_new_password;
@@ -586,11 +532,16 @@ class Users extends CRMEntity {
 		$row = $this->db->fetchByAssoc($result);
 		$this->log->debug("select old password query: $query");
 		$this->log->debug("return result of $row");
-		$encryptedPassword = $this->encrypt_password($password, $row['crypt_type']);
-		if($encryptedPassword != $row['user_password']) {
-			return false;
+		switch ($row['crypt_type']) {
+			case 'PHASH': return password_verify($password, $row['user_password']);
+			default:
+				$encryptedPassword = $this->encrypt_password($password, $row['crypt_type']);
+				if($encryptedPassword == $row['user_password']) {
+					return true;
+				}
+				break;
 		}
-		return true;
+		return false;
 	}
 
 	function is_authenticated() {
@@ -883,7 +834,6 @@ class Users extends CRMEntity {
 					$this->column_fields[$fieldname] = $fldvalue;
 					$this->column_fields[$fieldname.'_plain'] = $plain_text;
 					$this->column_fields['crypt_type'] = $crypt_type;
-					$this->column_fields['user_hash'] = $this->get_user_hash($plain_text);
 				}
 				else {
 					$fldvalue = $this->column_fields[$fieldname];
@@ -960,11 +910,6 @@ class Users extends CRMEntity {
 				$qparams[]= $crypt_type;
 			}
 			// END
-
-			if($table_name == 'vtiger_users' && strpos('user_hash', $column) === false) {
-				$column .= ', user_hash';
-				$qparams[] = $this->column_fields['user_hash'];
-			}
 
 			$sql1 = "insert into $table_name ($column) values(". generateQuestionMarks($qparams) .")";
 			$this->db->pquery($sql1, $qparams);

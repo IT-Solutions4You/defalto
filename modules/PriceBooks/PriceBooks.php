@@ -286,36 +286,40 @@ class PriceBooks extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner) {
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner) {
 
-		$matrix = $queryplanner->newDependencyMatrix();
+		$matrix = $queryPlanner->newDependencyMatrix();
 
 		$matrix->setDependency("vtiger_crmentityPriceBooks",array("vtiger_usersPriceBooks","vtiger_groupsPriceBooks"));
-		if (!$queryplanner->requireTable('vtiger_pricebook', $matrix)) {
+		if (!$queryPlanner->requireTable('vtiger_pricebook', $matrix)) {
 			return '';
 		}
         $matrix->setDependency("vtiger_pricebook",array("vtiger_crmentityPriceBooks","vtiger_currency_infoPriceBooks"));
 
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_pricebook","pricebookid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_pricebook","pricebookid", $queryPlanner);
 		// TODO Support query planner
-		if ($queryplanner->requireTable("vtiger_crmentityPriceBooks",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityPriceBooks",$matrix)){
 		$query .=" left join vtiger_crmentity as vtiger_crmentityPriceBooks on vtiger_crmentityPriceBooks.crmid=vtiger_pricebook.pricebookid and vtiger_crmentityPriceBooks.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_currency_infoPriceBooks")){
+		if ($queryPlanner->requireTable("vtiger_currency_infoPriceBooks")){
 		$query .=" left join vtiger_currency_info as vtiger_currency_infoPriceBooks on vtiger_currency_infoPriceBooks.id = vtiger_pricebook.currency_id";
 		}
-		if ($queryplanner->requireTable("vtiger_usersPriceBooks")){
+		if ($queryPlanner->requireTable("vtiger_usersPriceBooks")){
 		    $query .=" left join vtiger_users as vtiger_usersPriceBooks on vtiger_usersPriceBooks.id = vtiger_crmentityPriceBooks.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsPriceBooks")){
+		if ($queryPlanner->requireTable("vtiger_groupsPriceBooks")){
 		    $query .=" left join vtiger_groups as vtiger_groupsPriceBooks on vtiger_groupsPriceBooks.groupid = vtiger_crmentityPriceBooks.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByPriceBooks")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByPriceBooks")){
 		    $query .=" left join vtiger_users as vtiger_lastModifiedByPriceBooks on vtiger_lastModifiedByPriceBooks.id = vtiger_crmentityPriceBooks.smownerid";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyPriceBooks")){
+        if ($queryPlanner->requireTable("vtiger_createdbyPriceBooks")){
 			$query .= " left join vtiger_users as vtiger_createdbyPriceBooks on vtiger_createdbyPriceBooks.id = vtiger_crmentityPriceBooks.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

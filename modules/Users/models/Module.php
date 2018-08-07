@@ -250,10 +250,6 @@ class Users_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 
-		$user_hash = $recordModel->get('user_hash');
-		if (!empty($user_hash))
-			$focus->column_fields['user_hash'] = $user_hash;
-
 		$focus->mode = $recordModel->get('mode');
 		$focus->id = $recordModel->getId();
 		$focus->save($moduleName);

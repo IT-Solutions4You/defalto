@@ -8,7 +8,6 @@
 		</field>
 		<field name="user_name" type="C" size="255" />
 		<field name="user_password" type="C" size="200" />
-		<field name="user_hash" type="C" size="32" />
 		<field name="cal_color" type="C" size="25">
 			<default value="#E6FAD8" />
 		</field>
@@ -1823,7 +1822,7 @@
 		<field name="server" type="C" size="100" />
 		<field name="server_port" type="I" size="19" />
 		<field name="server_username" type="C" size="100" />
-		<field name="server_password" type="C" size="100" />
+		<field name="server_password" type="C" size="255" />
 		<field name="server_type" type="C" size="20" />
 		<field name="smtp_auth" type="C" size="5" />
 		<field name="server_path" type="C" size="256" />

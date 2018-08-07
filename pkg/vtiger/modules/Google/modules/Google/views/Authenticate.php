@@ -26,4 +26,8 @@ class Google_Authenticate_View extends Vtiger_Index_View {
 		$oauth2Connector = new Google_Oauth2_Connector($moduleName);
 		$oauth2Connector->authorize();
 	}
+
+	public function validateRequest(Vtiger_Request $request) {
+		/* Ignore check - as referer could be CRM or Google Accounts */
+	}
 }

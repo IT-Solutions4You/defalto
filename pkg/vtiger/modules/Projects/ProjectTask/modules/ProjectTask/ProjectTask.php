@@ -461,6 +461,9 @@ class ProjectTask extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbyProjectTask")){
 			$query .= " left join vtiger_users as vtiger_createdbyProjectTask on vtiger_createdbyProjectTask.id = vtiger_crmentityProjectTask.smcreatorid ";
 		}
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

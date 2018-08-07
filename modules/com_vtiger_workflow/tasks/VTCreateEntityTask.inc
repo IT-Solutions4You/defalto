@@ -32,6 +32,7 @@ class VTCreateEntityTask extends VTTask {
 
 		$entityType = $this->entity_type;		
 		if(!vtlib_isModuleActive($entityType)) {
+			$util->revertUser();
 			return;
 		}
 
@@ -63,6 +64,11 @@ class VTCreateEntityTask extends VTTask {
 				$fieldValueType = $fieldInfo['valuetype'];
 				$fieldValue = trim($fieldInfo['value']);
 				$moduleFieldInstance = $moduleFields[$fieldName];
+
+				//If field is invisible, then continue
+				if (!$moduleFieldInstance) {
+					continue;
+				}
 				preg_match('/\((\w+) : \((\w+)\) (\w+)\)/',$fieldValue,$matches);
 				if ($fieldValueType == 'fieldname') {
 					$field = $fieldValue;
@@ -163,7 +169,13 @@ class VTCreateEntityTask extends VTTask {
 					if ($allowNameToIdEncode) {
 						$referenceModuleList = $moduleFieldInstance->getReferenceList();
 						$fieldReferenceModule = $referenceModuleList[0];
-						$recordId = Vtiger_Util_Helper::getRecordId($fieldValue, $fieldReferenceModule, true);
+
+						if (is_numeric($fieldValue) && isRecordExists($fieldValue) && getSalesEntityType($fieldValue) == $fieldReferenceModule) {
+							$recordId = $fieldValue;
+						} else {
+							$recordId = Vtiger_Util_Helper::getRecordId($fieldValue, $fieldReferenceModule, true);
+						}
+
 						if (!empty($recordId)) {
 							$fieldValue = $recordId;
 						} else {
@@ -198,6 +210,7 @@ class VTCreateEntityTask extends VTTask {
 			} catch (Exception $e) {
 			}
 			$util->revertUser();
+			return;
 		}
 
 		$util->revertUser();

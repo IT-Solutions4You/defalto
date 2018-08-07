@@ -100,7 +100,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 						if(prefsNeedToUpdate && length > 1) {
 							app.helper.hideProgress();
 							app.helper.showModal(data);
-							emailEditInstance.registerEmailFieldSelectionEvent();
+							emailEditInstance.registerEmailFieldSelectionEvent(cb);
 							return true;
 						}
 
@@ -116,7 +116,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 							}else {
 								app.helper.hideProgress();
 								app.helper.showModal(data);
-								emailEditInstance.registerEmailFieldSelectionEvent();
+								emailEditInstance.registerEmailFieldSelectionEvent(cb);
 							}
 						}else{
 							emailFields.attr('checked','checked');

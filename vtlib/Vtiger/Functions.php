@@ -1062,7 +1062,12 @@ class Vtiger_Functions {
 	/*
 	 * Function to generate encrypted password.
 	 */
-	static function generateEncryptedPassword($password, $mode='CRYPT') {
+	static function generateEncryptedPassword($password, $mode='') {
+		if ($mode == '') {
+			$mode = (version_compare(PHP_VERSION, '5.5.0') >= 0)? 'PHASH' : 'CRYPT';
+		}
+
+		if ($mode == 'PHASH') return password_hash($password, PASSWORD_DEFAULT);
 
 		if ($mode == 'MD5') return md5($password);
 
@@ -1085,6 +1090,7 @@ class Vtiger_Functions {
 	static function compareEncryptedPassword($plainText, $encryptedPassword, $mode='CRYPT') {
 		$reEncryptedPassword = null;
 		switch ($mode) {
+			case 'PHASH': return password_verify($plainText, $encryptedPassword);
 			case 'CRYPT': $reEncryptedPassword = crypt($plainText, $encryptedPassword); break;
 			case 'MD5'  : $reEncryptedPassword = md5($plainText);	break;
 			default     : $reEncryptedPassword = $plainText;		break;
@@ -1370,6 +1376,36 @@ class Vtiger_Functions {
 		return $jwt;
 	}
 
+	/**
+	 * Function to mask input text.
+	 */
+	static function toProtectedText($text) {
+		if (empty($text)) return $text;
+
+		require_once 'include/utils/encryption.php';
+		$encryption = new Encryption();
+		return '$ve$'.$encryption->encrypt($text);
+	}
+	
+	/* 
+	 * Function to determine if text is masked.
+	 */
+	static function isProtectedText($text) {
+		return !empty($text) && (strpos($text, '$ve$') === 0);
+	}
+	
+	/*
+	 * Function to unmask the text.
+	 */
+	static function fromProtectedText($text) {
+		if (static::isProtectedText($text)) {
+			require_once 'include/utils/encryption.php';
+			$encryption = new Encryption();
+			return $encryption->decrypt(substr($text, 4));
+		}
+		return $text;
+	}
+
 	/*
 	 * Function to convert file size in bytes to user displayable format
 	 */
@@ -1403,5 +1439,16 @@ class Vtiger_Functions {
 			}
 		}
 		return $isRelated;
+	}
+
+	/**
+	 * Function to Escapes special characters in a string for use in an SQL statement
+	 * @param type $value
+	 * @return type
+	 */
+	static function realEscapeString($value){
+		$db = PearDatabase::getInstance();
+		$value = $db->sql_escape_string($value);
+		return $value;
 	}
 }

@@ -602,6 +602,10 @@ class Leads extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbyLeads")){
 			$query .= " left join vtiger_users as vtiger_createdbyLeads on vtiger_createdbyLeads.id = vtiger_crmentityLeads.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

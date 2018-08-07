@@ -53,6 +53,19 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	public function _process($request) {
 		try {
+			foreach ($request as $k => $v) {
+				if ($k == 'conditions' || $k == 'mapping') continue;
+				
+				if ($k == 'fieldname' && $v) {
+					$vp = explode(',', $v);
+					$v  = array();
+					foreach ($vp as $p) $v[] = $this->valForSql($p);
+					$request[$k] = implode(',', $v);
+				} else {
+					$request[$k] = $this->valForSql($v);
+				}
+			}
+
 			$start = $request['start'];
 			$end = $request['end'];
 			$type = $request['type'];
@@ -85,6 +98,10 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		} catch (Exception $ex) {
 			return $ex->getMessage();
 		}
+	}
+
+	private function valForSql($value) {
+		return Vtiger_Util_Helper::validateStringForSql($value);
 	}
 
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
@@ -216,7 +233,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}
 
 		if(!empty($operator) && !empty($conditions['fieldname']) && !empty($conditions['value'])) {
-			$conditionQuery = ' '.$conditions['fieldname'].$operator.'\'' .$conditions['value'].'\' ';
+			$fieldname = vtlib_purifyForSql($conditions['fieldname']);
+			if (empty($fieldname)) throw new Exception('Invalid fieldname.');
+			$conditionQuery = ' '.$fieldname.$operator.'\'' .Vtiger_Functions::realEscapeString($conditions['value']).'\' ';
 		}
 		return $conditionQuery;
 	}

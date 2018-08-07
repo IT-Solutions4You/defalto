@@ -139,6 +139,17 @@ class Vtiger_Viewer extends SmartyBC {
 			return "modules/Vtiger/$templateName";
 		}
 	}
+
+	/** @Override */
+	public function assign($tpl_var, $value = null, $nocache = false) {
+		// Reject unexpected value assignments.
+		if ($tpl_var == 'SELECTED_MENU_CATEGORY') {
+			if ($val && preg_match("/[^a-zA-Z0-9_-]/", $val, $m)) {
+				return;
+			}
+		}
+		return parent::assign($tpl_var, $value, $nocache);	
+	}
 	
 	/**
 	 * Function to display/fetch the smarty file contents

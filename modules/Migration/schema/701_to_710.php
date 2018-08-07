@@ -9,7 +9,7 @@
  *********************************************************************************/
 
 if (defined('VTIGER_UPGRADE')) {
-	global $current_user;
+	global $current_user, $adb;
 	$db = PearDatabase::getInstance();
 
 	//START::Workflow task's template path
@@ -145,27 +145,13 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	$db->pquery('UPDATE vtiger_tab SET source=NULL', array());
 
-	$pkgModules = array();
-	$pkgFolder = 'pkg/vtiger/modules';
-	$pkgHandle = opendir($pkgFolder);
-
-	if ($pkgHandle) {
-		while (($pkgModuleName = readdir($pkgHandle)) !== false) {
-			$pkgModules[$pkgModuleName] = $pkgModuleName;
-
-			$moduleHandle = opendir("$pkgFolder/$pkgModuleName");
-			while (($innerModuleName = readdir($moduleHandle)) !== false) {
-				if (is_dir("$pkgFolder/$pkgModuleName/$innerModuleName")) {
-					$pkgModules[$innerModuleName] = $innerModuleName;
-				}
-			}
-			closedir($moduleHandle);
-		}
-		closedir($pkgHandle);
-		$pkgModules = array_keys($pkgModules);
+	$packageModules = array('Project', 'ProjectTask', 'ProjectMilestone'); /* Projects zip is bundle */
+	$packageZips = glob("packages/vtiger/*/*.zip");
+	foreach ($packageZips as $zipfile) {
+		$packageModules[] = str_replace('.zip', '', array_pop(explode("/", $zipfile)));
 	}
 
-	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($pkgModules).')', $pkgModules);
+	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($packageModules).')', $packageModules);
 	echo '<br>Succecssfully added source column vtiger tab table<br>';
 	//END::Differentiate custom modules from Vtiger modules
 
@@ -397,8 +383,8 @@ if (defined('VTIGER_UPGRADE')) {
 				$cvQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
 			}
 			$cvQuery .= ' ELSE columnname END';
+			$db->pquery($cvQuery, array());
 		}
-		$db->pquery($cvQuery, array());
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
 
@@ -427,8 +413,8 @@ if (defined('VTIGER_UPGRADE')) {
 				$reportQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
 			}
 			$reportQuery .= ' ELSE columnname END';
+			$db->pquery($reportQuery, array());
 		}
-		$db->pquery($reportQuery, array());
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
 	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)

@@ -648,45 +648,49 @@ class Potentials extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner){
-		$matrix = $queryplanner->newDependencyMatrix();
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner){
+		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityPotentials',array('vtiger_groupsPotentials','vtiger_usersPotentials','vtiger_lastModifiedByPotentials'));
 
-		if (!$queryplanner->requireTable("vtiger_potential",$matrix)){
+		if (!$queryPlanner->requireTable("vtiger_potential",$matrix)){
 			return '';
 		}
         $matrix->setDependency('vtiger_potential', array('vtiger_crmentityPotentials','vtiger_accountPotentials',
 											'vtiger_contactdetailsPotentials','vtiger_campaignPotentials','vtiger_potentialscf'));
 
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_potential","potentialid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_potential","potentialid", $queryPlanner);
 
-		if ($queryplanner->requireTable("vtiger_crmentityPotentials",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityPotentials",$matrix)){
 			$query .= " left join vtiger_crmentity as vtiger_crmentityPotentials on vtiger_crmentityPotentials.crmid=vtiger_potential.potentialid and vtiger_crmentityPotentials.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_accountPotentials")){
+		if ($queryPlanner->requireTable("vtiger_accountPotentials")){
 			$query .= " left join vtiger_account as vtiger_accountPotentials on vtiger_potential.related_to = vtiger_accountPotentials.accountid";
 		}
-		if ($queryplanner->requireTable("vtiger_contactdetailsPotentials")){
+		if ($queryPlanner->requireTable("vtiger_contactdetailsPotentials")){
 			$query .= " left join vtiger_contactdetails as vtiger_contactdetailsPotentials on vtiger_potential.contact_id = vtiger_contactdetailsPotentials.contactid";
 		}
-		if ($queryplanner->requireTable("vtiger_potentialscf")){
+		if ($queryPlanner->requireTable("vtiger_potentialscf")){
 			$query .= " left join vtiger_potentialscf on vtiger_potentialscf.potentialid = vtiger_potential.potentialid";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsPotentials")){
+		if ($queryPlanner->requireTable("vtiger_groupsPotentials")){
 			$query .= " left join vtiger_groups vtiger_groupsPotentials on vtiger_groupsPotentials.groupid = vtiger_crmentityPotentials.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersPotentials")){
+		if ($queryPlanner->requireTable("vtiger_usersPotentials")){
 			$query .= " left join vtiger_users as vtiger_usersPotentials on vtiger_usersPotentials.id = vtiger_crmentityPotentials.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_campaignPotentials")){
+		if ($queryPlanner->requireTable("vtiger_campaignPotentials")){
 			$query .= " left join vtiger_campaign as vtiger_campaignPotentials on vtiger_potential.campaignid = vtiger_campaignPotentials.campaignid";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByPotentials")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByPotentials")){
 			$query .= " left join vtiger_users as vtiger_lastModifiedByPotentials on vtiger_lastModifiedByPotentials.id = vtiger_crmentityPotentials.modifiedby ";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyPotentials")){
+        if ($queryPlanner->requireTable("vtiger_createdbyPotentials")){
 			$query .= " left join vtiger_users as vtiger_createdbyPotentials on vtiger_createdbyPotentials.id = vtiger_crmentityPotentials.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

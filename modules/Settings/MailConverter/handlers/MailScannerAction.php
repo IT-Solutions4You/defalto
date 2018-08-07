@@ -431,7 +431,7 @@ class Vtiger_MailScannerAction {
 		$focus->column_fields['description'] = $mailrecord->getBodyHTML();
 		$focus->column_fields['assigned_user_id'] = $assignedToId;
 		$focus->column_fields["date_start"] = date('Y-m-d', $mailrecord->_date);
-		$focus->column_fields["time_start"] = gmdate("H:i:s");
+		$focus->column_fields["time_start"] = date('H:i:s', $mailrecord->_date);
 		$focus->column_fields["email_flag"] = 'MAILSCANNER';
 
 		$from=$mailrecord->_from[0];

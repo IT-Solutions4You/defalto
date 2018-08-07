@@ -15,6 +15,7 @@ $languageStrings = array(
 	'ERR_INVALID_MYSQL_PARAMETERS' => 'Invalid mySQL Connection Parameters specified',
 	'ERR_INVALID_MYSQL_VERSION' => 'MySQL version is not supported, kindly connect to MySQL 5.1.x or above',
 	'ERR_UNABLE_CREATE_DATABASE' => 'Unable to Create database',
+	'ERR_DB_SQLMODE_NOTFRIENDLY' => 'MySQL Server should be configured with:<br> sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION',
 	'LBL_ADMIN_INFORMATION'=>'Admin User Information',
 	'LBL_ADMIN_USER_INFORMATION' => 'Admin User Information',
 	'LBL_CHOOSE_LANGUAGE' => 'Choose the default language for this installation:',

@@ -153,7 +153,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	 * Function to get the instance of Company details module model
 	 * @return <Settings_Vtiger_CompanyDetais_Model> $moduleModel
 	 */
-	public static function getInstance() {
+	public static function getInstance($name = '') {
 		$moduleModel = new self();
 		$db = PearDatabase::getInstance();
 

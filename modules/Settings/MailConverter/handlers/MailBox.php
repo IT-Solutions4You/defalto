@@ -64,6 +64,8 @@ class Vtiger_MailBox {
 			$this->_mailboxsettings['server'] = $serverPort[0];
 		}
 		$this->_mailboxsettings['port'] = $port;
+		
+		if($this->_scannerinfo->markas == "UNCHANGED") $this->_mailboxsettings['readonly'] = "/readonly";
 	}
 
 	/**
@@ -77,6 +79,7 @@ class Vtiger_MailBox {
 		// Connect using last successful url
 		if($mailboxsettings['connecturl']) {
 			$connecturl = $mailboxsettings['connecturl'];
+			if($mailboxsettings['readonly']) $connecturl = str_replace("}", "/readonly}", $connecturl);
 			$this->log("Trying to connect using connecturl $connecturl$folder", true);
 			$imap = @imap_open("$connecturl$folder", $mailboxsettings['username'], $mailboxsettings['password']);
 			if($imap) {
@@ -89,8 +92,8 @@ class Vtiger_MailBox {
 		}
 
 		if(!$imap) {
-			$connectString = '{'. "$mailboxsettings[server]:$mailboxsettings[port]/$mailboxsettings[protocol]/$mailboxsettings[ssltype]/$mailboxsettings[sslmethod]" ."}";
-			$connectStringShort = '{'. "$mailboxsettings[server]/$mailboxsettings[protocol]:$mailboxsettings[port]" ."}";
+			$connectString = '{'. "$mailboxsettings[server]:$mailboxsettings[port]/$mailboxsettings[protocol]/$mailboxsettings[ssltype]/$mailboxsettings[sslmethod]" .$mailboxsettings[readonly] ."}";
+			$connectStringShort = '{'. "$mailboxsettings[server]/$mailboxsettings[protocol]:$mailboxsettings[port]" .$mailboxsettings[readonly] ."}";
 
 			$this->log("Trying to connect using $connectString$folder", true);
 			if(!$imap = @imap_open("$connectString$folder", $mailboxsettings[username], $mailboxsettings[password])) {

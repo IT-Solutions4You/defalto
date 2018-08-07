@@ -759,21 +759,6 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		return false;
     }
 	
-	/**
-	 * Function to get the user hash
-	 * @param type $userId
-	 * @return boolean
-	 */
-	public function getUserHash() {
-		$db = PearDatabase::getInstance();
-		$query = 'SELECT user_hash FROM vtiger_users WHERE id = ?';
-		$result = $db->pquery($query, array($this->getId()));
-		if($db->num_rows($result) > 0){
-			return $db->query_result($result, 0, 'user_hash');
-			
-		}
-	}
-        
 	/*
 	 * Function to delete user permanemtly from CRM and
 	 * assign all record which are assigned to that user

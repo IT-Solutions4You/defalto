@@ -1057,6 +1057,9 @@ class Services extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_createdbyServices")){
 			$query .= " left join vtiger_users as vtiger_createdbyServices on vtiger_createdbyServices.id = vtiger_crmentityServices.smcreatorid ";
 		}
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

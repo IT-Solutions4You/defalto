@@ -563,39 +563,43 @@ class Campaigns extends CRMEntity {
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule,$queryplanner){
-		$matrix = $queryplanner->newDependencyMatrix();
+	function generateReportsSecQuery($module,$secmodule,$queryPlanner){
+		$matrix = $queryPlanner->newDependencyMatrix();
         $matrix->setDependency('vtiger_crmentityCampaigns',array('vtiger_groupsCampaigns','vtiger_usersCampaignss','vtiger_lastModifiedByCampaigns','vtiger_campaignscf'));
         
-		if (!$queryplanner->requireTable("vtiger_campaign",$matrix)){
+		if (!$queryPlanner->requireTable("vtiger_campaign",$matrix)){
 			return '';
 		}
 
         $matrix->setDependency('vtiger_campaign', array('vtiger_crmentityCampaigns','vtiger_productsCampaigns'));
 
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_campaign","campaignid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_campaign","campaignid", $queryPlanner);
 
-		if ($queryplanner->requireTable("vtiger_crmentityCampaigns",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityCampaigns",$matrix)){
 			$query .=" left join vtiger_crmentity as vtiger_crmentityCampaigns on vtiger_crmentityCampaigns.crmid=vtiger_campaign.campaignid and vtiger_crmentityCampaigns.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_productsCampaigns")){
+		if ($queryPlanner->requireTable("vtiger_productsCampaigns")){
 			$query .=" 	left join vtiger_products as vtiger_productsCampaigns on vtiger_campaign.product_id = vtiger_productsCampaigns.productid";
 		}
-		if ($queryplanner->requireTable("vtiger_campaignscf")){
+		if ($queryPlanner->requireTable("vtiger_campaignscf")){
 			$query .=" 	left join vtiger_campaignscf on vtiger_campaignscf.campaignid = vtiger_crmentityCampaigns.crmid";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsCampaigns")){
+		if ($queryPlanner->requireTable("vtiger_groupsCampaigns")){
 			$query .=" left join vtiger_groups as vtiger_groupsCampaigns on vtiger_groupsCampaigns.groupid = vtiger_crmentityCampaigns.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersCampaigns")){
+		if ($queryPlanner->requireTable("vtiger_usersCampaigns")){
 			$query .=" left join vtiger_users as vtiger_usersCampaigns on vtiger_usersCampaigns.id = vtiger_crmentityCampaigns.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByCampaigns")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByCampaigns")){
 			$query .=" left join vtiger_users as vtiger_lastModifiedByCampaigns on vtiger_lastModifiedByCampaigns.id = vtiger_crmentityCampaigns.modifiedby ";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyCampaigns")){
+        if ($queryPlanner->requireTable("vtiger_createdbyCampaigns")){
 			$query .= " left join vtiger_users as vtiger_createdbyCampaigns on vtiger_createdbyCampaigns.id = vtiger_crmentityCampaigns.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+
 		return $query;
 	}
 

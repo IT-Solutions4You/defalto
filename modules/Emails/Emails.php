@@ -611,6 +611,10 @@ class Emails extends CRMEntity {
 		if ($queryPlanner->requireTable("vtiger_email_track")){
 			$query .= " LEFT JOIN vtiger_email_track ON vtiger_email_track.mailid = vtiger_activityEmails.activityid and vtiger_email_track.crmid = ".$focus->table_name.".".$focus->table_index;
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 

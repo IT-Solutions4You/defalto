@@ -137,7 +137,6 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				$recordModel->set('status', 'Active');
 				$recordModel->set('id', $record);
 				$recordModel->set('mode', 'edit');
-				$recordModel->set('user_hash', $recordModel->getUserHash());
 				$recordModel->save();
 
 				$db = PearDatabase::getInstance();

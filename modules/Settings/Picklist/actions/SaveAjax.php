@@ -28,7 +28,13 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
     /*
      * @function updates user tables with new picklist value for default event and status fields
      */
-    public function updateDefaultPicklistValues($pickListFieldName,$oldValue,$newValue) {
+	public function updateDefaultPicklistValues($pickListFieldName,$oldValue,$newValue) {
+
+		// No change in value - likely a color change.
+		if ($oldValue == $newValue) {
+			return;
+		}
+
 		$db = PearDatabase::getInstance();
             if($pickListFieldName == 'activitytype')
                 $defaultFieldName = 'defaultactivitytype';
