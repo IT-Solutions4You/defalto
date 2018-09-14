@@ -170,7 +170,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 	public function getAddRelationLinks() {
 		$relationModel = $this->getRelationModel();
 		$addLinkModel = array();
-
+		$addLinkList = array();
 		if(!$relationModel->isAddActionSupported()) {
 			return $addLinkModel;
 		}
