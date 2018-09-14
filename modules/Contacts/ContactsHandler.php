@@ -25,7 +25,7 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 		$sql = "SELECT id, user_name, user_password, isactive FROM vtiger_portalinfo WHERE id=?";
 		$result = $adb->pquery($sql, array($entityId));
 
-		$insert = true;
+		$insert = true; $update = false;
 		if ($adb->num_rows($result)) {
 			$insert = false;
 			$dbusername = $adb->query_result($result,0,'user_name');
