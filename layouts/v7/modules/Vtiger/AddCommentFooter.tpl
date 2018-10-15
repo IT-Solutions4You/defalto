@@ -13,7 +13,9 @@
     <div class="modal-footer">
         <div class="row-fluid">
             <div class="col-xs-6">
-                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME)}
+                {if $FIELD_MODEL->getProfileReadWritePermission()}
+                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME)}
+                {/if}
             </div>
             <div class="col-xs-6">
                 <div>

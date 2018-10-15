@@ -30,9 +30,11 @@
 								<button class="btn btn-success btn-sm saveComment" type="button" data-mode="add"><strong>{vtranslate('LBL_POST', $MODULE_NAME)}</strong></button>
 							</div>
 						</div>
-						<div class="col-xs-8 pull-left">
-							{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) MODULE="ModComments"}
-						</div>
+                                                {if $FIELD_MODEL->getProfileReadWritePermission()}
+                                                    <div class="col-xs-8 pull-left">
+                                                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) MODULE="ModComments"}
+                                                    </div>
+                                                {/if}
 					</div>
 				</div>
 			</div>

@@ -38,9 +38,11 @@
 							<button class="btn btn-success btn-sm detailViewSaveComment" type="button" data-mode="add">{vtranslate('LBL_POST', $MODULE_NAME)}</button>
 						</div>
 					</div>
-					<div class="col-xs-6 pull-left">
-						{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) MODULE="ModComments"}
-					</div>
+                                        {if $FIELD_MODEL->getProfileReadWritePermission()}
+                                            <div class="col-xs-6 pull-left">
+                                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) MODULE="ModComments"}
+                                            </div>
+                                        {/if}
 				</div>
 			</div>
 		{/if}
