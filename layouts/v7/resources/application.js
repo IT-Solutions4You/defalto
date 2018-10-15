@@ -111,6 +111,23 @@ window.app = (function () {
 				params.data = app.convertUrlToDataParams(params.url);
 				delete params.url;
 			}
+                        
+                        /**
+                        * Safari 11.1 - ajax/XHR form submission will fail if input[type=file] is empty in formData.
+                        */
+                        var isIOSDevice = navigator.userAgent.match(/iPhone|iPod|iPad/i) != null;
+                        if ((!!window.safari === true || isIOSDevice) 
+                                && params.data instanceof FormData && typeof params.data.getAll == 'function') {
+                            var fileNameAttribute = (params.data.getAll("filename[]").length > 0) ? 'filename[]' : 'file[]';
+                            var fileNames = params.data.getAll(fileNameAttribute);
+                            params.data.delete(fileNameAttribute);
+                            jQuery.each(fileNames, function (key, fileNameObject) {
+                                if (fileNameObject.name) {
+                                    params.data.append(fileNameAttribute, fileNameObject);
+                                }
+                            });
+                        }
+                        
 			this._request(params).then(function (err, data) {
 				return aDeferred.resolve(err, data);
 			});
