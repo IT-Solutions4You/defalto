@@ -436,7 +436,7 @@ jQuery.Class("Vtiger_Helper_Js",{
         if(typeof cb === "function") {
             container.off('shown.bs.modal');
             //This event is fired when the modal has been made visible to the user
-            container.on('shown.bs.modal', function () {
+            container.one('shown.bs.modal', function () {
                 cb(container);
             });
         }
