@@ -34,12 +34,19 @@ abstract class EntityMeta{
 	protected $ownerFields;
 	protected $moduleFields = null;
 	
-	protected function EntityMeta($webserviceObject,$user){
-		$this->webserviceObject = $webserviceObject;
+	protected function __construct($webserviceObject,$user)
+    {
+        $this->webserviceObject = $webserviceObject;
 		$this->objectName = $this->webserviceObject->getEntityName();
 		$this->objectId = $this->webserviceObject->getEntityId();
 		
 		$this->user = $user;
+    }
+	protected function EntityMeta($webserviceObject,$user){
+		// PHP4-style constructor.
+        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+        // In that case, call the new-style constructor to keep compatibility.
+        self::__construct($webserviceObject,$user);
 	}
 	
 	public function getEmailFields(){
