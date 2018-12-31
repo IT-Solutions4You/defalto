@@ -31,8 +31,9 @@ class RecurringType {
 	 * Constructor for class RecurringType
 	 * @param array  $repeat_arr     - array contains recurring info
 	 */
-	function RecurringType($repeat_arr) {
-
+	function __construct($repeat_arr)
+	{
+		
 		$st_date = explode("-", $repeat_arr["startdate"]);
 		$st_time = explode(":", $repeat_arr["starttime"]);
 		$end_date = explode("-", $repeat_arr["enddate"]);
@@ -74,6 +75,12 @@ class RecurringType {
 		$this->rptmonth_daytype = $repeat_arr['repeatmonth_daytype'];
 		
 		$this->recurringdates = $this->_getRecurringDates();
+	}
+	function RecurringType($repeat_arr) {
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($repeat_arr);
 	}
 
 	public static function fromUserRequest($requestArray) {
