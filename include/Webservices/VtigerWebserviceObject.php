@@ -15,7 +15,8 @@ class VtigerWebserviceObject{
 	private $handlerPath;
 	private $handlerClass;
 	
-	private function VtigerWebserviceObject($entityId,$entityName,$handler_path,$handler_class){
+	private function __construct($entityId,$entityName,$handler_path,$handler_class)
+	{
 		$this->id = $entityId;
 		$this->name = $entityName;
 		// Quick Fix to override default Actor class & path (good to update DB itself)
@@ -26,6 +27,13 @@ class VtigerWebserviceObject{
 		// END
 		$this->handlerPath = $handler_path;
 		$this->handlerClass = $handler_class;
+	}
+	
+	private function VtigerWebserviceObject($entityId,$entityName,$handler_path,$handler_class){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($entityId,$entityName,$handler_path,$handler_class);
 	}
 	
 	// Cache variables to enable result re-use

@@ -19,11 +19,19 @@
 		private $hasError ;
 		private $error ;
 		private $user; 
-		function Parser($user, $q){
+		function __construct($user, $q)
+		{
 			$this->query = $q;
 			$this->out = array();
 			$this->hasError = false;
-			$this->user = $user; 
+			$this->user = $user;
+		}
+
+		function Parser($user, $q){
+			// PHP4-style constructor.
+			// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+			// In that case, call the new-style constructor to keep compatibility.
+			self::__construct($user, $q);
 		}
 		
 		function parse(){
