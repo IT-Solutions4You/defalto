@@ -31,8 +31,9 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
 			}
 
 			if ($saveLogo) {
+				$logoName = ltrim(basename(' '.Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext'))));
 				$moduleModel->saveLogo();
-				$moduleModel->set('logoname', ltrim(basename(' '.Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext')))));
+				$moduleModel->set('logoname', $logoName);
 				$moduleModel->save();
 			}
 		}
