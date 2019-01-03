@@ -42,6 +42,7 @@ Settings_Vtiger_List_Js("Settings_SMSNotifier_List_Js", {
 					thisInstance.registerProviderTypeChangeEvent(form);
 					thisInstance.registerPhoneFormatPop(form);
 					thisInstance.registerSaveConfiguration(form);
+                                        thisInstance.copyToClipboard(form);
 				}
 				var params = {};
 				params.cb = callback;
@@ -55,6 +56,7 @@ Settings_Vtiger_List_Js("Settings_SMSNotifier_List_Js", {
 	 * Function to register change event for SMS server Provider Type
 	 */
 	registerProviderTypeChangeEvent: function (form) {
+            var thisInstance = this;
 		form.find('.providerType').change(function (e) {
 			var currentTarget = jQuery(e.currentTarget);
 			var selectedProviderName = currentTarget.val();
@@ -71,6 +73,7 @@ Settings_Vtiger_List_Js("Settings_SMSNotifier_List_Js", {
 				if (jQuery(data).find('select').hasClass('select2')) {
 					vtUtils.applyFieldElementsView(jQuery('#provider'));
 				}
+                                thisInstance.copyToClipboard(form);
 			});
 
 		});
@@ -114,6 +117,20 @@ Settings_Vtiger_List_Js("Settings_SMSNotifier_List_Js", {
 					});
 			});
 	},
+        
+        copyToClipboard : function(form) {
+            if(jQuery('.copyToClipboard', form).length > 0) {
+                jQuery('.copyToClipboard', form).on('click', function(e){
+                    var currentTarget = jQuery(e.currentTarget);
+                    currentTarget.closest('.input-group').find('input').select();
+                    var success = document.execCommand("copy");
+                    if(success) {
+                        app.helper.showSuccessNotification({message : app.vtranslate('JS_COPIED_SUCCESSFULLY')});
+                    }
+                });
+            }
+        },
+    
 	/**
 	 * Function to register all the events
 	 */
