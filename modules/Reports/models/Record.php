@@ -340,6 +340,8 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 				$selectedColumns[$module.'_'.$translatedFieldLabel] = $column;
 			} else if(CheckFieldPermission($fieldName, $module) == 'true') {
 				// we should affix key with module name to differentiate same labels from diff modules
+				$translatedFieldLabel = str_replace('"', "", $translatedFieldLabel);
+				$translatedFieldLabel = str_replace("'", "", $translatedFieldLabel);
 				$selectedColumns[$module.'_'.$translatedFieldLabel] = $column;
 			}
 		}

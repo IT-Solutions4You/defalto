@@ -167,7 +167,7 @@ class PEAR
      * @access public
      * @return void
      */
-	public function __construct($error_class = null)
+	function __construct($error_class = null)
     {
         $classname = strtolower(get_class($this));
         if ($this->_debug) {
