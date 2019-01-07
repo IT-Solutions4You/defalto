@@ -24,32 +24,36 @@ class Install_ConfigFileUtils_Model {
 	private $currencyName;
 	private $adminEmail;
 
+        function __construct($configFileParameters) {
+            if (isset($configFileParameters['root_directory'])){
+                $this->rootDirectory = $configFileParameters['root_directory'];
+            }
+
+        if (isset($configFileParameters['db_hostname'])) {
+                    if(strpos($configFileParameters['db_hostname'], ":")) {
+                            list($this->dbHostname,$this->dbPort) = explode(":",$configFileParameters['db_hostname']);
+                    } else {
+                            $this->dbHostname = $configFileParameters['db_hostname'];
+                    }
+            }
+
+            if (isset($configFileParameters['db_username'])) $this->dbUsername = $configFileParameters['db_username'];
+            if (isset($configFileParameters['db_password'])) $this->dbPassword = $configFileParameters['db_password'];
+            if (isset($configFileParameters['db_name'])) $this->dbName = $configFileParameters['db_name'];
+            if (isset($configFileParameters['db_type'])) $this->dbType = $configFileParameters['db_type'];
+            if (isset($configFileParameters['site_URL'])) $this->siteUrl = $configFileParameters['site_URL'];
+            if (isset($configFileParameters['admin_email'])) $this->adminEmail = $configFileParameters['admin_email'];
+            if (isset($configFileParameters['currency_name'])) $this->currencyName = $configFileParameters['currency_name'];
+            if (isset($configFileParameters['vt_charset'])) $this->vtCharset = $configFileParameters['vt_charset'];
+            if (isset($configFileParameters['default_language'])) $this->vtDefaultLanguage = $configFileParameters['default_language'];
+
+            // update default port
+            if ($this->dbPort == '') $this->dbPort = self::getDbDefaultPort($this->dbType);
+
+            $this->cacheDir = 'cache/';
+        }   
 	function Install_ConfigFileUtils_Model($configFileParameters) {
-		if (isset($configFileParameters['root_directory']))
-			$this->rootDirectory = $configFileParameters['root_directory'];
-
-		if (isset($configFileParameters['db_hostname'])) {
-			if(strpos($configFileParameters['db_hostname'], ":")) {
-				list($this->dbHostname,$this->dbPort) = explode(":",$configFileParameters['db_hostname']);
-			} else {
-				$this->dbHostname = $configFileParameters['db_hostname'];
-			}
-		}
-
-		if (isset($configFileParameters['db_username'])) $this->dbUsername = $configFileParameters['db_username'];
-		if (isset($configFileParameters['db_password'])) $this->dbPassword = $configFileParameters['db_password'];
-		if (isset($configFileParameters['db_name'])) $this->dbName = $configFileParameters['db_name'];
-		if (isset($configFileParameters['db_type'])) $this->dbType = $configFileParameters['db_type'];
-		if (isset($configFileParameters['site_URL'])) $this->siteUrl = $configFileParameters['site_URL'];
-		if (isset($configFileParameters['admin_email'])) $this->adminEmail = $configFileParameters['admin_email'];
-		if (isset($configFileParameters['currency_name'])) $this->currencyName = $configFileParameters['currency_name'];
-		if (isset($configFileParameters['vt_charset'])) $this->vtCharset = $configFileParameters['vt_charset'];
-		if (isset($configFileParameters['default_language'])) $this->vtDefaultLanguage = $configFileParameters['default_language'];
-
-		// update default port
-		if ($this->dbPort == '') $this->dbPort = self::getDbDefaultPort($this->dbType);
-
-		$this->cacheDir = 'cache/';
+            self::__construct($configFileParameters);
 	}
 
 	static function getDbDefaultPort($dbType) {

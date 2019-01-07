@@ -70,12 +70,16 @@ class Documents extends CRMEntity {
 	//Added these variables which are used as default order by and sortorder in ListView
 	var $default_order_by = 'title';
 	var $default_sort_order = 'ASC';
+        
+        function __construct() {
+            $this->log = LoggerManager::getLogger('notes');
+            $this->log->debug("Entering Documents() method ...");
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Documents');
+            $this->log->debug("Exiting Documents method ...");
+        }   
 	function Documents() {
-		$this->log = LoggerManager::getLogger('notes');
-		$this->log->debug("Entering Documents() method ...");
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Documents');
-		$this->log->debug("Exiting Documents method ...");
+            self::__construct();
 	}
 
 	function save_module($module)

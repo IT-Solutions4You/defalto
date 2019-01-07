@@ -68,12 +68,14 @@ class Campaigns extends CRMEntity {
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'campaignname';
-
+        function __construct() {
+            $this->log =LoggerManager::getLogger('campaign');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Campaigns');
+        }   
 	function Campaigns()
 	{
-		$this->log =LoggerManager::getLogger('campaign');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Campaigns');
+            self::__construct();	
 	}
 
 	/** Function to handle module specific operations when saving a entity

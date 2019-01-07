@@ -132,21 +132,23 @@ class Users extends CRMEntity {
 	 instantiates the Logger class and PearDatabase Class
 	 *
 	 */
-
+        function __construct() {
+            $this->log = LoggerManager::getLogger('user');
+            $this->log->debug("Entering Users() method ...");
+            $this->db = PearDatabase::getInstance();
+            $this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0)? 'PHP5.3MD5': 'MD5';
+            if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
+                    $this->DEFAULT_PASSWORD_CRYPT_TYPE = 'PHASH';
+            }
+            $this->column_fields = getColumnFields('Users');
+            $this->column_fields['currency_name'] = '';
+            $this->column_fields['currency_code'] = '';
+            $this->column_fields['currency_symbol'] = '';
+            $this->column_fields['conv_rate'] = '';
+            $this->log->debug("Exiting Users() method ...");
+        }
 	function Users() {
-		$this->log = LoggerManager::getLogger('user');
-		$this->log->debug("Entering Users() method ...");
-		$this->db = PearDatabase::getInstance();
-		$this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0)? 'PHP5.3MD5': 'MD5';
-		if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-			$this->DEFAULT_PASSWORD_CRYPT_TYPE = 'PHASH';
-		}
-		$this->column_fields = getColumnFields('Users');
-		$this->column_fields['currency_name'] = '';
-		$this->column_fields['currency_code'] = '';
-		$this->column_fields['currency_symbol'] = '';
-		$this->column_fields['conv_rate'] = '';
-		$this->log->debug("Exiting Users() method ...");
+            self::__construct();
 	}
 
 	/**

@@ -110,87 +110,89 @@ class Reports extends CRMEntity{
 	 *  This function accepts the vtiger_reportid as argument
 	 *  It sets primodule,secmodule,reporttype,reportname,reportdescription,folderid for the given vtiger_reportid
 	 */
+        function __construct($reportid="") {
+            global $adb,$current_user,$theme,$mod_strings;
+            $this->initListOfModules();
+            if($reportid != "")
+            {
+                // Lookup information in cache first
+                $cachedInfo = VTCacheUtils::lookupReport_Info($current_user->id, $reportid);
+                $subordinate_users = VTCacheUtils::lookupReport_SubordinateUsers($reportid);
 
+                $reportModel = Reports_Record_Model::getCleanInstance($reportid);
+                $sharingType = $reportModel->get('sharingtype');
+
+                if($cachedInfo === false) {
+                        $ssql = "select vtiger_reportmodules.*,vtiger_report.* from vtiger_report inner join vtiger_reportmodules on vtiger_report.reportid = vtiger_reportmodules.reportmodulesid";
+                        $ssql .= " where vtiger_report.reportid = ?";
+                        $params = array($reportid);
+
+                        require_once('include/utils/GetUserGroups.php');
+                        require('user_privileges/user_privileges_'.$current_user->id.'.php');
+                        $userGroups = new GetUserGroups();
+                        $userGroups->getAllUserGroups($current_user->id);
+                        $user_groups = $userGroups->user_groups;
+                        if(!empty($user_groups) && $sharingType == 'Private'){
+                                $user_group_query = " (shareid IN (".generateQuestionMarks($user_groups).") AND setype='groups') OR";
+                                array_push($params, $user_groups);
+                        }
+
+                        $non_admin_query = " vtiger_report.reportid IN (SELECT reportid from vtiger_reportsharing WHERE $user_group_query (shareid=? AND setype='users'))";
+                        if($sharingType == 'Private'){
+                                $ssql .= " and (( (".$non_admin_query.") or vtiger_report.sharingtype='Public' or vtiger_report.owner = ? or vtiger_report.owner in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%'))";
+                                array_push($params, $current_user->id);
+                                array_push($params, $current_user->id);
+                        }
+
+                        $query = $adb->pquery("select userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%'",array());
+                        $subordinate_users = Array();
+                        for($i=0;$i<$adb->num_rows($query);$i++){
+                                $subordinate_users[] = $adb->query_result($query,$i,'userid');
+                        }
+
+                        // Update subordinate user information for re-use
+                        VTCacheUtils::updateReport_SubordinateUsers($reportid, $subordinate_users);
+
+                        //Report sharing for vtiger7
+                        $queryObj = new stdClass();
+                        $queryObj->query = $ssql;
+                        $queryObj->queryParams = $params;
+                        $queryObj = self::getReportSharingQuery($queryObj, $sharingType);
+
+                        $result = $adb->pquery($queryObj->query, $queryObj->queryParams);
+                        if($result && $adb->num_rows($result)) {
+                                $reportmodulesrow = $adb->fetch_array($result);
+
+                                // Update information in cache now
+                                VTCacheUtils::updateReport_Info(
+                                        $current_user->id, $reportid, $reportmodulesrow["primarymodule"],
+                                        $reportmodulesrow["secondarymodules"], $reportmodulesrow["reporttype"],
+                                        $reportmodulesrow["reportname"], $reportmodulesrow["description"],
+                                        $reportmodulesrow["folderid"], $reportmodulesrow["owner"]
+                                );
+                        }
+
+                        // Re-look at cache to maintain code-consistency below
+                        $cachedInfo = VTCacheUtils::lookupReport_Info($current_user->id, $reportid);
+                }
+
+                if($cachedInfo) {
+                        $this->primodule = $cachedInfo["primarymodule"];
+                        $this->secmodule = $cachedInfo["secondarymodules"];
+                        $this->reporttype = $cachedInfo["reporttype"];
+                        $this->reportname = decode_html($cachedInfo["reportname"]);
+                        $this->reportdescription = decode_html($cachedInfo["description"]);
+                        $this->folderid = $cachedInfo["folderid"];
+                        if($is_admin==true || in_array($cachedInfo["owner"],$subordinate_users) || $cachedInfo["owner"]==$current_user->id)
+                                $this->is_editable = 'true';
+                        else
+                                $this->is_editable = 'false';
+                } 
+            }
+        }
 	function Reports($reportid="")
 	{
-		global $adb,$current_user,$theme,$mod_strings;
-		$this->initListOfModules();
-		if($reportid != "")
-		{
-			// Lookup information in cache first
-			$cachedInfo = VTCacheUtils::lookupReport_Info($current_user->id, $reportid);
-			$subordinate_users = VTCacheUtils::lookupReport_SubordinateUsers($reportid);
-			
-			$reportModel = Reports_Record_Model::getCleanInstance($reportid);
-			$sharingType = $reportModel->get('sharingtype');
-			
-			if($cachedInfo === false) {
-				$ssql = "select vtiger_reportmodules.*,vtiger_report.* from vtiger_report inner join vtiger_reportmodules on vtiger_report.reportid = vtiger_reportmodules.reportmodulesid";
-				$ssql .= " where vtiger_report.reportid = ?";
-				$params = array($reportid);
-
-				require_once('include/utils/GetUserGroups.php');
-				require('user_privileges/user_privileges_'.$current_user->id.'.php');
-				$userGroups = new GetUserGroups();
-				$userGroups->getAllUserGroups($current_user->id);
-				$user_groups = $userGroups->user_groups;
-				if(!empty($user_groups) && $sharingType == 'Private'){
-					$user_group_query = " (shareid IN (".generateQuestionMarks($user_groups).") AND setype='groups') OR";
-					array_push($params, $user_groups);
-				}
-
-				$non_admin_query = " vtiger_report.reportid IN (SELECT reportid from vtiger_reportsharing WHERE $user_group_query (shareid=? AND setype='users'))";
-				if($sharingType == 'Private'){
-					$ssql .= " and (( (".$non_admin_query.") or vtiger_report.sharingtype='Public' or vtiger_report.owner = ? or vtiger_report.owner in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%'))";
-					array_push($params, $current_user->id);
-					array_push($params, $current_user->id);
-				}
-
-				$query = $adb->pquery("select userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%'",array());
-				$subordinate_users = Array();
-				for($i=0;$i<$adb->num_rows($query);$i++){
-					$subordinate_users[] = $adb->query_result($query,$i,'userid');
-				}
-
-				// Update subordinate user information for re-use
-				VTCacheUtils::updateReport_SubordinateUsers($reportid, $subordinate_users);
-				
-				//Report sharing for vtiger7
-				$queryObj = new stdClass();
-				$queryObj->query = $ssql;
-				$queryObj->queryParams = $params;
-				$queryObj = self::getReportSharingQuery($queryObj, $sharingType);
-				
-				$result = $adb->pquery($queryObj->query, $queryObj->queryParams);
-				if($result && $adb->num_rows($result)) {
-					$reportmodulesrow = $adb->fetch_array($result);
-
-					// Update information in cache now
-					VTCacheUtils::updateReport_Info(
-						$current_user->id, $reportid, $reportmodulesrow["primarymodule"],
-						$reportmodulesrow["secondarymodules"], $reportmodulesrow["reporttype"],
-						$reportmodulesrow["reportname"], $reportmodulesrow["description"],
-						$reportmodulesrow["folderid"], $reportmodulesrow["owner"]
-					);
-				}
-
-				// Re-look at cache to maintain code-consistency below
-				$cachedInfo = VTCacheUtils::lookupReport_Info($current_user->id, $reportid);
-			}
-
-			if($cachedInfo) {
-				$this->primodule = $cachedInfo["primarymodule"];
-				$this->secmodule = $cachedInfo["secondarymodules"];
-				$this->reporttype = $cachedInfo["reporttype"];
-				$this->reportname = decode_html($cachedInfo["reportname"]);
-				$this->reportdescription = decode_html($cachedInfo["description"]);
-				$this->folderid = $cachedInfo["folderid"];
-				if($is_admin==true || in_array($cachedInfo["owner"],$subordinate_users) || $cachedInfo["owner"]==$current_user->id)
-					$this->is_editable = 'true';
-				else
-					$this->is_editable = 'false';
-			} 
-			}
+            self::__construct($reportid);
 	}
 
 	// Update the module list for listing columns for report creation.
