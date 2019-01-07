@@ -310,8 +310,7 @@ class HTTP_Request
     * </ul>
     * @access public
     */
-    function HTTP_Request($url = '', $params = array())
-    {
+    function __construct($url = '', $params = array()) {
         $this->_method         =  HTTP_REQUEST_METHOD_GET;
         $this->_http           =  HTTP_REQUEST_HTTP_VER_1_1;
         $this->_requestHeaders = array();
@@ -361,6 +360,10 @@ class HTTP_Request
         if (HTTP_REQUEST_HTTP_VER_1_1 == $this->_http && extension_loaded('zlib')) {
             $this->addHeader('Accept-Encoding', 'gzip');
         }
+    }
+    function HTTP_Request($url = '', $params = array())
+    {
+        self::__construct($url, $params);
     }
 
     /**
@@ -1196,10 +1199,13 @@ class HTTP_Response
     * @param  Net_Socket    socket to read the response from
     * @param  array         listeners attached to request
     */
-    function HTTP_Response(&$sock, &$listeners)
-    {
+    function __construct(&$sock, &$listeners) {
         $this->_sock      = $sock;
         $this->_listeners = $listeners;
+    }
+    function HTTP_Response(&$sock, &$listeners)
+    {
+        self::__construct($sock, $listeners);
     }
 
 
