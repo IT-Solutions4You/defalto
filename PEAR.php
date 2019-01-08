@@ -849,7 +849,7 @@ class PEAR_Error
      * @access public
      *
      */
-	 public function __construct($message = 'unknown error', $code = null,
+    function __construct($message = 'unknown error', $code = null,
                         $mode = null, $options = null, $userinfo = null)
     {
         if ($mode === null) {
@@ -913,7 +913,7 @@ class PEAR_Error
 		// PHP4-style constructor.
         // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
         // In that case, call the new-style constructor to keep compatibility.
-        self::__construct();
+        self::__construct($message, $code,$mode, $options, $userinfo);
         
     }
 
