@@ -41,7 +41,7 @@ class Vtiger_DetailRecordStructure_Model extends Vtiger_RecordStructure_Model {
 							$value = $recordModel->get($fieldName);
 							if(!$currentUsersModel->isAdminUser() && ($fieldModel->getFieldDataType() == 'picklist' || $fieldModel->getFieldDataType() == 'multipicklist')) {
 								$value = decode_html($value);
-								$this->setupAccessiblePicklistValueList($fieldName);
+								$this->setupAccessiblePicklistValueList($fieldModel);
 							} 
 							$fieldModel->set('fieldvalue', $value);
 						}
@@ -54,14 +54,15 @@ class Vtiger_DetailRecordStructure_Model extends Vtiger_RecordStructure_Model {
 		return $values;
 	}
 
-	public function setupAccessiblePicklistValueList($name) {
+	public function setupAccessiblePicklistValueList($fieldModel) {
 		$db = PearDatabase::getInstance();
 		$currentUsersModel = Users_Record_Model::getCurrentUserModel();
 		$roleId = $currentUsersModel->getRole();
+        $name = $fieldModel->getName();
 		$isRoleBased = vtws_isRoleBasedPicklist($name);
 		$this->picklistRoleMap[$name] = $isRoleBased;
 		if ($this->picklistRoleMap[$name]) {
-			$this->picklistValueMap[$name] = getAssignedPicklistValues($name, $roleId, $db);
+			$this->picklistValueMap[$name] = $fieldModel->getPicklistValues();
 		}
 	}
 

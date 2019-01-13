@@ -57,7 +57,7 @@ class ListViewController {
 		$isRoleBased = vtws_isRoleBasedPicklist($name);
 		$this->picklistRoleMap[$name] = $isRoleBased;
 		if ($this->picklistRoleMap[$name]) {
-			$this->picklistValueMap[$name] = getAssignedPicklistValues($name,$this->user->roleid, $this->db);
+			$this->picklistValueMap[$name] = getAllPickListValues($name,$this->user->roleid, $this->db);
 		}
 	}
 

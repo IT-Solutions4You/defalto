@@ -68,6 +68,10 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
         return $pickListValues;
     }
     
+    public function getEditablePicklistValues() {
+        return $this->getPickListValues();
+    }
+    
     public function getRadioOptions() {
         $fieldName = $this->getName();
         if($fieldName == 'ssltype') {

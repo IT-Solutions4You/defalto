@@ -92,6 +92,14 @@ class Users_Field_Model extends Vtiger_Field_Model {
 		}
 		return parent::getPicklistValues();
 	}
+    
+    /**
+	 * Function to get all the available picklist values for the current field
+	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
+	 */
+	public function getEditablePicklistValues() {
+		return $this->getPicklistValues();
+	}
 
 	/**
 	 * Function to returns all skins(themes)

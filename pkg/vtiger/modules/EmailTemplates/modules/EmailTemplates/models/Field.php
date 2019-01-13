@@ -49,5 +49,9 @@ class EmailTemplates_Field_Model extends Vtiger_Field_Model {
 	public function isNameField() {
 		return false;
 	}
+    
+    public function getEditablePicklistValues() {
+    	return $this->getPicklistValues();
+    }
 
 }

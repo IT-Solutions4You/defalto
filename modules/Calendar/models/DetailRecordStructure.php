@@ -56,15 +56,4 @@ class Calendar_DetailRecordStructure_Model extends Vtiger_DetailRecordStructure_
 		$this->structuredValues = $values;
 		return $values;
 	}
-    
-    public function setupAccessiblePicklistValueList($name) {
-        $db = PearDatabase::getInstance();
-        $currentUsersModel = Users_Record_Model::getCurrentUserModel();
-        $roleId = $currentUsersModel->getRole();
-        $isRoleBased = vtws_isRoleBasedPicklist($name);
-        $this->picklistRoleMap[$name] = $isRoleBased;
-        if ($this->picklistRoleMap[$name]) {
-            $this->picklistValueMap[$name] = getAssignedPicklistValues($name,$roleId, $db);
-        }
-    }
 }

@@ -41,6 +41,7 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		$pickListValues = $this->getPicklistValues();
 		if(!empty($pickListValues)) {
 			$fieldInfo['picklistvalues'] = $pickListValues;
+            $fieldInfo['editablepicklistvalues'] = $pickListValues;
 		}
 
 		if($this->getFieldDataType() == 'date' || $this->getFieldDataType() == 'datetime'){
@@ -91,7 +92,7 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		}
 		$pickListValues = array();
 		$pickListValues[""] = vtranslate("LBL_SELECT_OPTION", 'Settings:Webforms');
-		return ($pickListValues + parent::getPicklistValues());
+		return ($pickListValues + parent::getEditablePicklistValues());
 	}
 
 	/**

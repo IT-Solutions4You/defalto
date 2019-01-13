@@ -61,11 +61,10 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 			$params[] = $dateFilter['start'];
 			$params[] = $dateFilter['end'];
 		}
-        if(vtws_isRoleBasedPicklist('sales_stage')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("sales_stage",$currentUserModel->getRole(), $db);
-            unset($picklistvaluesmap['Closed Won']);unset($picklistvaluesmap['Closed Lost']);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        $picklistvaluesmap = getAllPickListValues("sales_stage");
+        unset($picklistvaluesmap['Closed Won']);unset($picklistvaluesmap['Closed Lost']);
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
         }
         
 		$result = $db->pquery('SELECT COUNT(*) count, vtiger_potential.sales_stage FROM vtiger_potential
@@ -95,11 +94,11 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		//TODO need to handle security
 		$params = array();
-        if(vtws_isRoleBasedPicklist('sales_stage')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("sales_stage",$currentUserModel->getRole(), $db);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        $picklistvaluesmap = getAllPickListValues("sales_stage");
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
         }
+        
 		$result = $db->pquery('SELECT COUNT(*) AS count, concat(first_name," ",last_name) as last_name, vtiger_potential.sales_stage, vtiger_groups.groupname FROM vtiger_potential
 						INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0
 						LEFT JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
@@ -131,12 +130,10 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		//TODO need to handle security
 		$params = array();
-        if(vtws_isRoleBasedPicklist('sales_stage')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("sales_stage",$currentUserModel->getRole(), $db);
-            unset($picklistvaluesmap['Closed Won']);unset($picklistvaluesmap['Closed Lost']);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
-        }
+        $picklistvaluesmap = getAllPickListValues("sales_stage");
+        unset($picklistvaluesmap['Closed Won']);unset($picklistvaluesmap['Closed Lost']);
+        foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        
 		$result = $db->pquery('SELECT sum(amount) AS amount, concat(first_name," ",last_name) as last_name, vtiger_potential.sales_stage FROM vtiger_potential
 						INNER JOIN vtiger_crmentity ON vtiger_potential.potentialid = vtiger_crmentity.crmid
 						INNER JOIN vtiger_users ON vtiger_users.id=vtiger_crmentity.smownerid AND vtiger_users.status="ACTIVE"
@@ -302,10 +299,7 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 		//$currentUser = Users_Record_Model::getCurrentUserModel();
 		$db = PearDatabase::getInstance();
 
-        if(vtws_isRoleBasedPicklist('sales_stage')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistValues = getAssignedPicklistValues("sales_stage",$currentUserModel->getRole(), $db);
-        }
+        $picklistValues = getAllPickListValues("sales_stage");
 		$data = array();
 		foreach ($picklistValues as $key => $picklistValue) {
 			$result = $db->pquery('SELECT SUM(amount) AS amount FROM vtiger_potential

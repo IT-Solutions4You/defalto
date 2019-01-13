@@ -354,6 +354,20 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 			$picklistValues = array(' '=> vtranslate('LBL_SELECT_OPTION'));
 			$fieldInfo['picklistvalues'] = $picklistValues;
 		}
+        
+        if (isset($fieldInfo['editablepicklistvalues'])) {
+            if ($fieldInfo['type'] != 'multipicklist') {
+                $picklistValues = $fieldInfo['editablepicklistvalues'];
+                $emptyOption = array(' ' => vtranslate('LBL_SELECT_OPTION'));
+
+                $picklistValues = $emptyOption + $picklistValues;
+                $fieldInfo['editablepicklistvalues'] = $picklistValues;
+            }
+        } else {
+            $picklistValues = array(' ' => vtranslate('LBL_SELECT_OPTION'));
+            $fieldInfo['editablepicklistvalues'] = $picklistValues;
+        }
+        
 		//for new field we need to have all attributes
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$fieldInfo['date-format'] = $currentUser->get('date_format');

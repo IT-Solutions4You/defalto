@@ -327,7 +327,7 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 	 * @return <object> key value pair of options
 	 */
 	getPickListValues : function() {
-		return this.get('editablepicklistvalues');
+		return this.get('picklistvalues');
 	},
 
 	getSelectedOptions : function(selectedOption){
