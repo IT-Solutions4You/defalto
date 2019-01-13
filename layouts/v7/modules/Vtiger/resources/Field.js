@@ -229,7 +229,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	 * @return <object> key value pair of options
 	 */
 	getPickListValues : function() {
-		return this.get('picklistvalues');
+		return this.get('editablepicklistvalues');
 	},
 
 	/**
@@ -327,7 +327,7 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 	 * @return <object> key value pair of options
 	 */
 	getPickListValues : function() {
-		return this.get('picklistvalues');
+		return this.get('editablepicklistvalues');
 	},
 
 	getSelectedOptions : function(selectedOption){
@@ -469,7 +469,7 @@ Vtiger_Field_Js('Vtiger_Owner_Field_Js',{},{
 	 * Function to get the picklist values
 	 */
 	getPickListValues : function() {
-		return this.get('picklistvalues');
+		return this.get('editablepicklistvalues');
 	},
 
 	getUi : function() {

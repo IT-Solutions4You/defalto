@@ -202,30 +202,13 @@ function getReportFieldValue ($report, $picklistArray, $dbField, $valueArray, $f
 			$fieldvalue = $value;
 		}
 	} elseif( $fieldType == "picklist" && !empty($value) ) {
-		if(is_array($picklistArray)) {
-			if(is_array($picklistArray[$dbField->name]) &&
-					$field->getFieldName() != 'activitytype' && !in_array(
-					$value, $picklistArray[$dbField->name])){
-				$fieldvalue =$app_strings['LBL_NOT_ACCESSIBLE'];
-			} else {
-				$fieldvalue = getTranslatedString($value, $module);
-			}
-		} else {
 			$fieldvalue = getTranslatedString($value, $module);
-		}
 	} elseif( $fieldType == "multipicklist" && !empty($value) ) {
 		if(is_array($picklistArray[1])) {
 			$valueList = explode(' |##| ', $value);
 			$translatedValueList = array();
 			foreach ( $valueList as $value) {
-				if(is_array($picklistArray[1][$dbField->name]) && !in_array(
-						$value, $picklistArray[1][$dbField->name])) {
-					$translatedValueList[] =
-							$app_strings['LBL_NOT_ACCESSIBLE'];
-				} else {
-					$translatedValueList[] = getTranslatedString($value,
-							$module);
-				}
+				$translatedValueList[] = getTranslatedString($value, $module);
 			}
 		}
 		if (!is_array($picklistArray[1]) || !is_array($picklistArray[1][$dbField->name])) {

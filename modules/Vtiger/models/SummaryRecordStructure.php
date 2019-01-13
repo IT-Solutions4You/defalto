@@ -46,36 +46,6 @@ class Vtiger_SummaryRecordStructure_Model extends Vtiger_DetailRecordStructure_M
 					$blockSequence = $fieldModel->block->sequence;
 					if(!$currentUsersModel->isAdminUser() && ($fieldModel->getFieldDataType() == 'picklist' || $fieldModel->getFieldDataType() == 'multipicklist')) {
 						$this->setupAccessiblePicklistValueList($fieldName);
-						$value = decode_html($fieldModel->get('fieldvalue'));
-						$moduleModel = $fieldModel->getModule();
-						if($fieldModel->getFieldDataType() == 'picklist') {
-							if ($value != '' && $this->picklistRoleMap[$fieldName] && !in_array($value, $this->picklistValueMap[$fieldName]) && strtolower($value) != '--none--' && strtolower($value) != 'none' ) {
-								$value = '<font color="red">'. vtranslate('LBL_NOT_ACCESSIBLE',
-								$moduleModel->getName()).'</font>';
-								$fieldModel->set('fieldvalue', $value);
-							}
-						}
-						if($fieldModel->getFieldDataType() == 'multipicklist') {
-							if(!$currentUsersModel->isAdminUser() && $value != '') {
-								$valueArray = ($value != "") ? explode(' |##| ',$value) : array();
-								$notaccess = '<font color="red">'.  vtranslate('LBL_NOT_ACCESSIBLE',
-										$moduleModel->getName())."</font>";
-								$tmp = '';
-								$tmpArray = array();
-								foreach($valueArray as $val) {
-										if (!$currentUsersModel->isAdminUser() && $this->picklistRoleMap[$fieldName] &&
-												!in_array(trim($val), $this->picklistValueMap[$fieldName])) {
-											$tmpArray[] = $notaccess;
-											$tmp .= ', '.$notaccess;
-										} else {
-											$tmpArray[] = $val;
-											$tmp .= ', '.$val;
-										}
-								}
-								$value = implode(' |##| ', $tmpArray);
-								$fieldModel->set('fieldvalue', $value);
-							}
-						}
 					}
 					$blockSeqSortSummaryFields[$blockSequence]['SUMMARY_FIELDS'][$fieldName] = $fieldModel;
 				}

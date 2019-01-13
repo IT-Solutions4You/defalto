@@ -110,7 +110,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
     },
 	
 
-    getPopUp: function (container) {
+    getPopUp: function (container, flag) {
       var thisInstance = this;
       if (typeof container == 'undefined') {
          container = thisInstance.getContainer();
@@ -811,7 +811,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       jQuery.each(fields, function (i, field) {
          thisInstance.loadFieldSpecificUi(jQuery(field));
       });
-      this.getPopUp(jQuery('#saveTask'));
+      this.getPopUp(jQuery('#saveTask'), true);
    },
    registerVTPushNotificationTaskEvents: function () {
       this.registerFillMailContentEvent();

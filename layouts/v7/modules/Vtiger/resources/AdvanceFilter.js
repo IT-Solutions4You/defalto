@@ -675,6 +675,12 @@ Vtiger_Currencylist_Field_Js('AdvanceFilter_Currencylist_Field_Js',{},{
 
 Vtiger_Picklist_Field_Js('AdvanceFilter_Picklist_Field_Js',{},{
 
+    /**
+	 * Function to get the picklist values
+	 */
+	getPickListValues : function() {
+            return this.get('picklistvalues');
+	},
 	getUi : function(){
 		var comparatorSelectedOptionVal = this.get('comparatorElementVal');
 		if(comparatorSelectedOptionVal == 'e' || comparatorSelectedOptionVal =='n'){
@@ -716,6 +722,12 @@ Vtiger_Picklist_Field_Js('AdvanceFilter_Picklist_Field_Js',{},{
 
 Vtiger_Multipicklist_Field_Js('AdvanceFilter_Multipicklist_Field_Js',{},{
     
+    /**
+    * Function to get the picklist values
+    */
+    getPickListValues : function() {
+       return this.get('picklistvalues');
+    },
     getSelectedOptions : function(selectedOption){
         var valueArray = selectedOption.split(',');
         var selectedOptionsArray = [];
