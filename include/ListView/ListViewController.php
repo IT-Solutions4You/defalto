@@ -57,7 +57,7 @@ class ListViewController {
 		$isRoleBased = vtws_isRoleBasedPicklist($name);
 		$this->picklistRoleMap[$name] = $isRoleBased;
 		if ($this->picklistRoleMap[$name]) {
-			$this->picklistValueMap[$name] = getAssignedPicklistValues($name,$this->user->roleid, $this->db);
+			$this->picklistValueMap[$name] = getAllPickListValues($name,$this->user->roleid, $this->db);
 		}
 	}
 
@@ -339,11 +339,6 @@ class ListViewController {
 					if($module == 'Calendar' && ($fieldName == 'taskstatus' || $fieldName == 'eventstatus' || $fieldName == 'activitytype')) {
 						$value = Vtiger_Language_Handler::getTranslatedString($value,$module);
 						$value = textlength_check($value);
-					}
-					else if ($value != '' && !$is_admin && $this->picklistRoleMap[$fieldName] &&
-							!in_array($value, $this->picklistValueMap[$fieldName]) && strtolower($value) != '--none--' && strtolower($value) != 'none' ) {
-						$value = "<font color='red'>". Vtiger_Language_Handler::getTranslatedString('LBL_NOT_ACCESSIBLE',
-								$module)."</font>";
 					} else {
 						$value =  Vtiger_Language_Handler::getTranslatedString($value,$module);
 						$value = textlength_check($value);
@@ -440,33 +435,7 @@ class ListViewController {
 				} elseif($field->getUIType() == 98) {
 					$value = '<a href="index.php?module=Roles&parent=Settings&view=Edit&record='.$value.'">'.textlength_check(getRoleName($value)).'</a>';
 				} elseif($fieldDataType == 'multipicklist') {
-					if(!$is_admin && $value != '') {
-						$valueArray = ($rawValue != "") ? explode(' |##| ',$rawValue) : array();
-						$notaccess = '<font color="red">'.getTranslatedString('LBL_NOT_ACCESSIBLE',
-								$module)."</font>";
-						$tmp = '';
-						$tmpArray = array();
-						foreach($valueArray as $index => $val) {
-							$val = decode_html($val);
-							if(!$listview_max_textlength ||
-									!(strlen(preg_replace("/(<\/?)(\w+)([^>]*>)/i","",$tmp)) >
-											$listview_max_textlength)) {
-								if (!$is_admin && $this->picklistRoleMap[$fieldName] &&
-										!in_array(trim($val), $this->picklistValueMap[$fieldName])) {
-									$tmpArray[] = $notaccess;
-									$tmp .= ', '.$notaccess;
-								} else {
-									$tmpArray[] = $val;
-									$tmp .= ', '.$val;
-								}
-							} else {
-								$tmpArray[] = '...';
-								$tmp .= '...';
-							}
-						}
-						$value = implode(', ', $tmpArray);
-						$value = textlength_check($value);
-					} else if ($value != '') {
+					if ($value != '') {
 						$moduleName = getTabModuleName($field->getTabId());
 						$value = explode(' |##| ', $value);
 						foreach ($value as $key => $val) {

@@ -497,9 +497,8 @@ class PieChart extends Base_Chart {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$currencyRateAndSymbol = getCurrencySymbolandCRate($currentUserModel->currency_id);
 
-		if(($legendField->getFieldDataType() == 'picklist' || $legendField->getFieldDataType() == 'multipicklist') && vtws_isRoleBasedPicklist($legendField->getName())){
-			$currentUserModel = Users_Record_Model::getCurrentUserModel();
-			$picklistvaluesmap = getAssignedPicklistValues($legendField->getName(),$currentUserModel->getRole(), $db);
+		if($legendField->getFieldDataType() == 'picklist' || $legendField->getFieldDataType() == 'multipicklist'){
+			$picklistvaluesmap = getAllPickListValues($legendField->getName(),$currentUserModel->getRole(), $db);
 		}
 
 		$sector = trim($sector, '`'); // remove backticks from sector
@@ -596,9 +595,9 @@ class VerticalbarChart extends Base_Chart {
 
 		$groupByColumnsByFieldModel = $this->getGroupbyColumnsByFieldModel();
 		foreach($groupByColumnsByFieldModel as $eachGroupByField) {
-			if($eachGroupByField->getFieldDataType() == 'picklist' && vtws_isRoleBasedPicklist($eachGroupByField->getName())){
+			if($eachGroupByField->getFieldDataType() == 'picklist'){
 				$currentUserModel = Users_Record_Model::getCurrentUserModel();
-				$picklistValueMap[$eachGroupByField->getName()] = getAssignedPicklistValues($eachGroupByField->getName(),$currentUserModel->getRole(), $db);
+				$picklistValueMap[$eachGroupByField->getName()] = getAllPickListValues($eachGroupByField->getName(),$currentUserModel->getRole(), $db);
 			}
 		}
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();

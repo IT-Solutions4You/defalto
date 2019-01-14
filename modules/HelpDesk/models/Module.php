@@ -65,11 +65,9 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		//TODO need to handle security
 		$params = array();
-		if(vtws_isRoleBasedPicklist('ticketstatus')) {
-			$currentUserModel = Users_Record_Model::getCurrentUserModel();
-			$picklistvaluesmap = getAssignedPicklistValues("ticketstatus",$currentUserModel->getRole(), $db);
-			if(in_array('Open', $picklistvaluesmap)) $params[] = 'Open';
-		}
+		$picklistvaluesmap = getAllPickListValues("ticketstatus");
+        if(in_array('Open', $picklistvaluesmap)) $params[] = 'Open';
+        
 		if(count($params) > 0) {
 		$result = $db->pquery('SELECT count(*) AS count, COALESCE(vtiger_groups.groupname,concat(vtiger_users.first_name, " " ,vtiger_users.last_name)) as name, COALESCE(vtiger_groups.groupid,vtiger_users.id) as id  FROM vtiger_troubletickets
 						INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid
@@ -107,11 +105,10 @@ class HelpDesk_Module_Model extends Vtiger_Module_Model {
 			$params[] = $dateFilter['start'];
 			$params[] = $dateFilter['end'];
 		}
-		if(vtws_isRoleBasedPicklist('ticketstatus')) {
-			$currentUserModel = Users_Record_Model::getCurrentUserModel();
-			$picklistvaluesmap = getAssignedPicklistValues("ticketstatus",$currentUserModel->getRole(), $db);
-			foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
-		}
+		$picklistvaluesmap = getAllPickListValues("ticketstatus");
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
+        }
 
 		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_troubletickets.status IS NULL OR vtiger_troubletickets.status = "" THEN "" ELSE vtiger_troubletickets.status END AS statusvalue 
 							FROM vtiger_troubletickets INNER JOIN vtiger_crmentity ON vtiger_troubletickets.ticketid = vtiger_crmentity.crmid AND vtiger_crmentity.deleted=0

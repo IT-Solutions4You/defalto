@@ -143,10 +143,9 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 			$params[] = $dateFilter['start'];
 			$params[] = $dateFilter['end'];
 		}
-        if(vtws_isRoleBasedPicklist('leadstatus')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("leadstatus",$currentUserModel->getRole(), $db);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        $picklistvaluesmap = getAllPickListValues("leadstatus");
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
         }
 
 		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_leadstatus.leadstatus IS NULL OR vtiger_leadstatus.leadstatus = "" THEN "" ELSE 
@@ -192,10 +191,9 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 			$params[] = $dateFilter['start'];
 			$params[] = $dateFilter['end'];
 		}
-        if(vtws_isRoleBasedPicklist('leadsource')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("leadsource",$currentUserModel->getRole(), $db);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        $picklistvaluesmap = getAllPickListValues("leadsource");
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
         }
         
 		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_leaddetails.leadsource IS NULL OR vtiger_leaddetails.leadsource = "" THEN "" 
@@ -240,10 +238,9 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 			$params[] = $dateFilter['start'];
 			$params[] = $dateFilter['end'];
 		}
-        if(vtws_isRoleBasedPicklist('industry')) {
-            $currentUserModel = Users_Record_Model::getCurrentUserModel();
-            $picklistvaluesmap = getAssignedPicklistValues("industry",$currentUserModel->getRole(), $db);
-            foreach($picklistvaluesmap as $picklistValue) $params[] = $picklistValue;
+        $picklistvaluesmap = getAllPickListValues("industry");
+        foreach($picklistvaluesmap as $picklistValue) {
+            $params[] = $picklistValue;
         }
 		
 		$result = $db->pquery('SELECT COUNT(*) as count, CASE WHEN vtiger_leaddetails.industry IS NULL OR vtiger_leaddetails.industry = "" THEN "" 

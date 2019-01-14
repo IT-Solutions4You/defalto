@@ -73,6 +73,14 @@ class Settings_Webforms_Field_Model extends Vtiger_Field_Model {
 		}
 		return array();
 	}
+    
+    /**
+	 * Function to get Editable Picklist values
+	 * @return <Array> Editable Picklist values
+	 */
+	public function getEditablePicklistValues() {
+		return $this->getPicklistValues();
+	}
 	
 	public function getDisplayValue($value) {
 		if ($this->getName() === 'enabled') {

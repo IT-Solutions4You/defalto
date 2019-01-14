@@ -102,7 +102,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
      * @param type $fieldName -- string
      * @return type -- array of values
      */
-	public static function getEditablePicklistValues($fieldName){
+	public function getEditablePicklistValues($fieldName){
 		$cache = Vtiger_Cache::getInstance();
 		$EditablePicklistValues = $cache->get('EditablePicklistValues', $fieldName);
         if($EditablePicklistValues) {

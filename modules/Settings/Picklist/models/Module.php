@@ -468,7 +468,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		$picklistValues = array();
 		if (vtws_isRoleBasedPicklist($name)) {
-			$picklistValues = getAssignedPicklistValues($name, $currentUser->roleid, $db);
+			$picklistValues = getAllPickListValues($name, $currentUser->roleid, $db);
 		}
 
 		return $picklistValues;
