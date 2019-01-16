@@ -295,7 +295,6 @@ class Vtiger_ModuleBasic {
 
 		if(!$this->customtable)$this->customtable = $this->basetable . "cf";
 		if(!$this->grouptable)$this->grouptable = $this->basetable."grouprel";
-		if(!$this->fieldtable)$this->fieldtable = $this->basetable."_user_field";
 
 		Vtiger_Utils::CreateTable($this->basetable,"($this->basetableid INT(19) PRIMARY KEY)",true);
 		Vtiger_Utils::CreateTable($this->customtable,"($this->basetableid INT(19) PRIMARY KEY)", true);
