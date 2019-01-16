@@ -298,7 +298,6 @@ class Vtiger_ModuleBasic {
 
 		Vtiger_Utils::CreateTable($this->basetable,"($this->basetableid INT(19) PRIMARY KEY)",true);
 		Vtiger_Utils::CreateTable($this->customtable,"($this->basetableid INT(19) PRIMARY KEY)", true);
-		Vtiger_Utils::CreateTable($this->fieldtable,"(recordid INT(25) NOT NULL,userid INT(25) NOT NULL,starred VARCHAR(100) NULL DEFAULT NULL)",true);
 		
 		if(Vtiger_Version::check('5.0.4', '<=')) {
 			Vtiger_Utils::CreateTable($this->grouptable, "($this->basetableid INT PRIMARY KEY, groupname varchar(100))",true);
