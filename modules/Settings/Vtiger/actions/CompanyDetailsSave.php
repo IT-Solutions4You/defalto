@@ -32,6 +32,7 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 		$status = false;
 		if ($request->get('organizationname')) {
 			$saveLogo = $status = true;
+			$logoName = false;
 			if(!empty($_FILES['logo']['name'])) {
 				$logoDetails = $_FILES['logo'];
 				$fileType = explode('/', $logoDetails['type']);
@@ -64,8 +65,8 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 			foreach ($fields as $fieldName => $fieldType) {
 				$fieldValue = $request->get($fieldName);
 				if ($fieldName === 'logoname') {
-					if (!empty($logoDetails['name'])) {
-						$fieldValue = decode_html(ltrim(basename(" " . $logoDetails['name'])));
+					if (!empty($logoDetails['name']) && $logoName) {
+						$fieldValue = decode_html(ltrim(basename(" " . $logoName)));
 					} else {
 						$fieldValue = decode_html($moduleModel->get($fieldName));
 					}

@@ -383,8 +383,11 @@ class Vtiger_Util_Helper {
 	 * @param <Array> $badFileExtensions
 	 * @return <String> sanitized file name
 	 */
-	public static function sanitizeUploadFileName($fileName, $badFileExtensions) {
-		$fileName = preg_replace('/\s+/', '_', $fileName);//replace space with _ in filename
+	public static function sanitizeUploadFileName($fileName, $badFileExtensions = false) {
+		if (!$badFileExtensions) {
+			$badFileExtensions = vglobal('upload_badext');
+		}
+		$fileName = preg_replace('/[\s#%&]+/', '_', $fileName);//replace space,#,%,& with _ in filename
 		$fileName = rtrim($fileName, '\\/<>?*:"<>|');
 
 		$fileNameParts = explode('.', $fileName);
@@ -403,6 +406,9 @@ class Vtiger_Util_Helper {
 		if ($badExtensionFound) {
 			$newFileName .= ".txt";
 		}
+
+		$newFileName = ltrim(basename(' '.$newFileName));//allowed filename like UTF-8 characters
+		
 		return $newFileName;
 	}
 
