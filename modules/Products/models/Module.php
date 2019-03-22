@@ -25,15 +25,21 @@ class Products_Module_Model extends Vtiger_Module_Model {
 				|| in_array($sourceModule, getInventoryModules())) {
 
 			$condition = " vtiger_products.discontinued = 1 ";
+            		$db = PearDatabase::getInstance();
+		    	$params = array($record);
 			if ($sourceModule === $this->getName()) {
-				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE setype = '". $this->getName(). "' UNION SELECT crmid FROM vtiger_seproductsrel WHERE productid = '$record') AND vtiger_products.productid <> '$record' ";
+				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE setype = '". $this->getName(). "' UNION SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?) AND vtiger_products.productid <> ? ";
+                		$params = array($record, $record);
 			} elseif ($sourceModule === 'PriceBooks') {
-				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_pricebookproductrel WHERE pricebookid = '$record') ";
+				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_pricebookproductrel WHERE pricebookid = ?) ";
 			} elseif ($sourceModule === 'Vendors') {
-				$condition .= " AND vtiger_products.vendor_id != '$record' ";
+				$condition .= " AND vtiger_products.vendor_id != ? ";
 			} elseif (in_array($sourceModule, $supportedModulesList)) {
-				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE crmid = '$record')";
+				$condition .= " AND vtiger_products.productid NOT IN (SELECT productid FROM vtiger_seproductsrel WHERE crmid = ?)";
+			} else {
+                $params = array();
 			}
+			$condition = $db->convert2Sql($condition, $params);
 
 			$pos = stripos($listQuery, 'where');
 			if ($pos) {

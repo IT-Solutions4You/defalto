@@ -331,11 +331,15 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
 		if (in_array($sourceModule, array('Products', 'Services'))) {
+            		$db = PearDatabase::getInstance();
+		    	$params = array($record);
 			if ($sourceModule === 'Products') {
-				$condition = " vtiger_potential.potentialid NOT IN (SELECT crmid FROM vtiger_seproductsrel WHERE productid = '$record')";
+				$condition = " vtiger_potential.potentialid NOT IN (SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?)";
 			} elseif ($sourceModule === 'Services') {
-				$condition = " vtiger_potential.potentialid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = '$record' UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = '$record') ";
+				$condition = " vtiger_potential.potentialid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+                		$params = array($record, $record);
 			}
+			$condition = $db->convert2Sql($condition, $params);
 
 			$pos = stripos($listQuery, 'where');
 			if ($pos) {

@@ -21,8 +21,10 @@ class Users_Module_Model extends Vtiger_Module_Model {
 		if($sourceModule == 'Users' && $field == 'reports_to_id') {
 			$overRideQuery = $listQuery;
 			if(!empty($record)){
+                		$db = PearDatabase::getInstance();
+                		$condition = $db->convert2Sql(' AND vtiger_users.id != ? ', array($record));
 				$currentUser = Users_Record_Model::getCurrentUserModel();
-				$overRideQuery = $overRideQuery. " AND vtiger_users.id != ". $record;
+				$overRideQuery = $overRideQuery. $condition;
 				$allSubordinates = $currentUser->getAllSubordinatesByReportsToField($record);
 				if(count($allSubordinates) > 0) {
 					$overRideQuery .= " AND vtiger_users.id NOT IN (". implode(',',$allSubordinates) .")"; // do not allow the subordinates

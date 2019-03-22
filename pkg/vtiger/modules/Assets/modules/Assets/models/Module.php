@@ -12,7 +12,9 @@ class Assets_Module_Model extends Vtiger_Module_Model {
 
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
 		if ($sourceModule == 'HelpDesk') {
-			$condition = " vtiger_assets.assetsid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = '$record' UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = '$record') ";
+			$condition = " vtiger_assets.assetsid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+            		$db = PearDatabase::getInstance();
+            		$condition = $db->convert2Sql($condition, array($record, $record));
 
 			$pos = stripos($listQuery, 'where');
 			if ($pos) {

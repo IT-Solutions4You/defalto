@@ -293,15 +293,19 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 				case 'Products'		: $tableName = 'vtiger_seproductsrel';		$fieldName = 'crmid';		$relatedFieldName ='productid';		break;
 			}
 
+            		$db = PearDatabase::getInstance();
+		    	$params = array($record);
 			if ($sourceModule === 'Services') {
-				$condition = " vtiger_contactdetails.contactid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = '$record' UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = '$record') ";
+				$condition = " vtiger_contactdetails.contactid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+                		$params = array($record , $record);
 			} elseif ($sourceModule === 'Emails') {
 				$condition = ' vtiger_contactdetails.emailoptout = 0';
 			} elseif ($sourceModule === 'Contacts' && $field === 'contact_id') {
-				$condition = " vtiger_contactdetails.contactid != '$record'";
+				$condition = " vtiger_contactdetails.contactid != ?";
 			} else {
-				$condition = " vtiger_contactdetails.contactid NOT IN (SELECT $fieldName FROM $tableName WHERE $relatedFieldName = '$record')";
+				$condition = " vtiger_contactdetails.contactid NOT IN (SELECT $fieldName FROM $tableName WHERE $relatedFieldName = ?)";
 			}
+            		$condition = $db->convert2Sql($condition, $params);
 
 			$position = stripos($listQuery, 'where');
 			if($position) {
