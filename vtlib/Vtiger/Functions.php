@@ -1453,7 +1453,7 @@ class Vtiger_Functions {
 	}
     
     /**
-     * Suspected request parameters and type.
+     * Request parameters and it's type.
      * @var type 
      */
     protected static $type = array(
@@ -1466,7 +1466,7 @@ class Vtiger_Functions {
     );
 
     /**
-     * Function to validate requests against SQL attacks
+     * Function to validate request parameters.
      * @param type $request
      * @throws Exception - Bad Request
      */
@@ -1480,9 +1480,9 @@ class Vtiger_Functions {
     }
 
     /**
-     * Function to validate request parameter by type.
+     * Function to validate request parameter by it's type.
      * @param  <String> type   - Type of paramter.
-     * @param  <String> $value - Which needs to be check against attacks
+     * @param  <String> $value - Which needs to be validated.
      * @return <Boolean>
      */
     public static function validateRequestParameter($type, $value) {
