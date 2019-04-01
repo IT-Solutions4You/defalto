@@ -1451,4 +1451,49 @@ class Vtiger_Functions {
 		$value = $db->sql_escape_string($value);
 		return $value;
 	}
+    
+    /**
+     * Suspected request parameters and type.
+     * @var type 
+     */
+    protected static $type = array(
+        'src_record' => 'id',
+        'parent_id' => 'id',
+        '_mfrom' => 'email',
+        '_mto' => 'email',
+        'sequencesList' => 'noAlphabet'
+    );
+
+    /**
+     * Function to validate requests against SQL attacks
+     * @param type $request
+     * @throws Exception - Bad Request
+     */
+    public static function validateRequestParameters($request) {
+        foreach (self::$type as $param => $type) {
+            if ($request[$param] && !self::validateRequestParameter($type, $request[$param])) {
+                http_response_code(400);
+                throw new Exception('Bad Request');
+            }
+        }
+    }
+
+    /**
+     * Function to validate request parameter by type.
+     * @param  <String> type   - Type of paramter.
+     * @param  <String> $value - Which needs to be check against attacks
+     * @return <Boolean>
+     */
+    public static function validateRequestParameter($type, $value) {
+        $ok = true;
+        switch ($type) {
+            case 'id' : $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
+                break;
+            case 'email' : $ok = (!filter_var($value, FILTER_VALIDATE_EMAIL)) ? false : $ok;
+                break;
+            case 'noAlphabet' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
+                break;
+        }
+        return $ok;
+    }
 }
