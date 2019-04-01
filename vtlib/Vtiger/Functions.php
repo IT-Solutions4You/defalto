@@ -1461,7 +1461,8 @@ class Vtiger_Functions {
         'parent_id' => 'id',
         '_mfrom' => 'email',
         '_mto' => 'email',
-        'sequencesList' => 'noAlphabet'
+        'sequencesList' => 'idlist',
+        'search_value' => 'keyword',
     );
 
     /**
@@ -1491,7 +1492,16 @@ class Vtiger_Functions {
                 break;
             case 'email' : $ok = (!filter_var($value, FILTER_VALIDATE_EMAIL)) ? false : $ok;
                 break;
-            case 'noAlphabet' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
+            case 'idlist' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
+                break;
+            case 'keyword':
+                $blackList = array('UNION', '--', 'SELECT ', 'SELECT*', '%', 'NULL', 'HEX');
+                foreach ($blackList as $keyword) {
+                    if (stripos($value, $keyword) !== false) {
+                        $ok = false;
+                        break;
+                    }
+                }
                 break;
         }
         return $ok;
