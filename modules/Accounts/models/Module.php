@@ -48,17 +48,22 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 		if (($sourceModule == 'Accounts' && $field == 'account_id' && $record)
 				|| in_array($sourceModule, array('Campaigns', 'Products', 'Services', 'Emails'))) {
 
+		    	$db = PearDatabase::getInstance();
+		    	$params = array($record);
 			if ($sourceModule === 'Campaigns') {
-				$condition = " vtiger_account.accountid NOT IN (SELECT accountid FROM vtiger_campaignaccountrel WHERE campaignid = '$record')";
+				$condition = " vtiger_account.accountid NOT IN (SELECT accountid FROM vtiger_campaignaccountrel WHERE campaignid = ?)";
 			} elseif ($sourceModule === 'Products') {
-				$condition = " vtiger_account.accountid NOT IN (SELECT crmid FROM vtiger_seproductsrel WHERE productid = '$record')";
+				$condition = " vtiger_account.accountid NOT IN (SELECT crmid FROM vtiger_seproductsrel WHERE productid = ?)";
 			} elseif ($sourceModule === 'Services') {
-				$condition = " vtiger_account.accountid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = '$record' UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = '$record') ";
-			} elseif ($sourceModule === 'Emails') {
+				$condition = " vtiger_account.accountid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
+                		$params = array($record, $record);
+            		} elseif ($sourceModule === 'Emails') {
 				$condition = ' vtiger_account.emailoptout = 0';
+                		$params = array();
 			} else {
-				$condition = " vtiger_account.accountid != '$record'";
+				$condition = " vtiger_account.accountid != ?";
 			}
+            		$condition = $db->convert2Sql($condition, $params);
 
 			$position = stripos($listQuery, 'where');
 			if($position) {

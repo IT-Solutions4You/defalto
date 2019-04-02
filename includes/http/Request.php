@@ -19,6 +19,7 @@ class Vtiger_Request {
 	 * Default constructor
 	 */
 	function __construct($values, $rawvalues = array(), $stripifgpc=true) {
+        	Vtiger_Functions::validateRequestParameters($values);
 		$this->valuemap = $values;
 		$this->rawvaluemap = $rawvalues;
 		if ($stripifgpc && !empty($this->valuemap) && get_magic_quotes_gpc()) {

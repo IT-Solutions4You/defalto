@@ -46,8 +46,9 @@ class Campaigns_Module_Model extends Vtiger_Module_Model {
 				case 'Accounts'		: $tableName = 'vtiger_campaignaccountrel';		$relatedFieldName = 'accountid';	break;
 				case 'Contacts'		: $tableName = 'vtiger_campaigncontrel';		$relatedFieldName = 'contactid';	break;
 			}
-
-			$condition = " vtiger_campaign.campaignid NOT IN (SELECT campaignid FROM $tableName WHERE $relatedFieldName = '$record')";
+                	$db = PearDatabase::getInstance();
+			$condition = " vtiger_campaign.campaignid NOT IN (SELECT campaignid FROM $tableName WHERE $relatedFieldName = ?)";
+            		$condition = $db->convert2Sql($condition, array($record));
 			$pos = stripos($listQuery, 'where');
 
 			if ($pos) {

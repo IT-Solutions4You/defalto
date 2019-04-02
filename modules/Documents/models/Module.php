@@ -62,7 +62,9 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 		if($sourceModule === 'Emails' && $field === 'composeEmail') {
 			$condition = ' (( vtiger_notes.filelocationtype LIKE "%I%")) AND vtiger_notes.filename != "" AND vtiger_notes.filestatus = 1';
 		} else {
-			$condition = " vtiger_notes.notesid NOT IN (SELECT notesid FROM vtiger_senotesrel WHERE crmid = '$record') AND vtiger_notes.filestatus = 1";
+            		$db = PearDatabase::getInstance();
+			$condition = " vtiger_notes.notesid NOT IN (SELECT notesid FROM vtiger_senotesrel WHERE crmid = ?) AND vtiger_notes.filestatus = 1";
+            		$condition = $db->convert2Sql($condition, array($record));
 		}
 		$pos = stripos($listQuery, 'where');
 		if($pos) {
