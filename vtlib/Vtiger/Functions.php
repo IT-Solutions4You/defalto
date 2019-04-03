@@ -1457,8 +1457,9 @@ class Vtiger_Functions {
      * @var type 
      */
     protected static $type = array(
-        'src_record' => 'id',
-        'parent_id' => 'id',
+	'record' => 'id',
+	'src_record' => 'id',
+	'parent_id' => 'id',
         '_mfrom' => 'email',
         '_mto' => 'email',
         'sequencesList' => 'idlist',
