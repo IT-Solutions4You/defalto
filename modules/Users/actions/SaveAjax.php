@@ -86,7 +86,7 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			$recordModel->set($fieldName, 'off');
 		}
 
-		if($fieldName == "is_owner") {
+		if($fieldName == "is_owner" || $fieldName == "roleid") {
 			$recordId = $request->get('record');
 			$moduleName = $request->getModule();
 			if(!empty($recordId)) {

@@ -69,6 +69,10 @@ class Users_Save_Action extends Vtiger_Save_Action {
 			if ($fieldName == 'is_owner') {
 				$fieldValue = null;
 			}
+			if ($fieldName == 'roleid' && !($currentUserModel->isAdminUser())) {
+				$fieldValue = null;
+			}
+
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
 					$fieldValue = trim($fieldValue);
