@@ -21,7 +21,7 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
 		$fileType = $fileType[1];
 
 		$logoContent = file_get_contents($logoDetails['tmp_name']);
-		if (preg_match('(<\?php?(.*?))', $imageContent) != 0) {
+		if (preg_match('(<\?php?(.*?))', $logoContent) != 0) {
 			$securityError = true;
 		}
 
