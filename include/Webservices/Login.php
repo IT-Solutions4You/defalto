@@ -31,7 +31,9 @@
 		if($user->status != 'Inactive'){
 			return $user;
 		}
-		throw new WebServiceException(WebServiceErrorCode::$AUTHREQUIRED,'Given user is inactive');
+		// Finer exception message could be handy to enumeration attacks - so normalize it. 
+		//throw new WebServiceException(WebServiceErrorCode::$AUTHREQUIRED,'Given user is inactive');
+		throw new WebServiceException(WebServiceErrorCode::$INVALIDUSERPWD,"Invalid username or password");
 	}
 	
 	function vtws_getActiveToken($userId){
