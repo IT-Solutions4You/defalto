@@ -59,8 +59,10 @@ class Install_Utils_Model {
 		$directiveValues = array();
 		if (ini_get('safe_mode') == '1' || stripos(ini_get('safe_mode'), 'On') > -1)
 			$directiveValues['safe_mode'] = 'On';
-		if (ini_get('display_errors') != '1' || stripos(ini_get('display_errors'), 'Off') > -1)
-			$directiveValues['display_errors'] = 'Off';
+		/* if (ini_get('display_errors') != '1' || stripos(ini_get('display_errors'), 'Off') > -1)
+			$directiveValues['display_errors'] = 'Off'; */
+		if (ini_get('display_errors') == '1' || stripos(ini_get('display_errors'), 'On') > -1)
+            $directiveValues['display_errors'] = 'On';
 		if (ini_get('file_uploads') != '1' || stripos(ini_get('file_uploads'), 'Off') > -1)
 			$directiveValues['file_uploads'] = 'Off';
 		if (ini_get('register_globals') == '1' || stripos(ini_get('register_globals'), 'On') > -1)
@@ -94,7 +96,7 @@ class Install_Utils_Model {
 	 */
 	public static $recommendedDirectives = array (
 		'safe_mode' => 'Off',
-		'display_errors' => 'On',
+		'display_errors' => 'Off',
 		'file_uploads' => 'On',
 		'register_globals' => 'On',
 		'output_buffering' => 'On',
@@ -126,8 +128,8 @@ class Install_Utils_Model {
 	public static function getSystemPreInstallParameters() {
 		$preInstallConfig = array();
 		// Name => array( System Value, Recommended value, supported or not(true/false) );
-		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0', (version_compare(phpversion(), '5.4.0', '>=')));
-		$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
+		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0+, 7.0', (version_compare(phpversion(), '5.4.0', '>=')));
+		//$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
 		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
 
 		if ($preInstallConfig['LBL_PHP_VERSION'] >= '5.5.0') {
@@ -136,6 +138,8 @@ class Install_Utils_Model {
 
 		$preInstallConfig['LBL_OPEN_SSL']		= array(extension_loaded('openssl'), true, extension_loaded('openssl'));
 		$preInstallConfig['LBL_CURL']			= array(extension_loaded('curl'), true, extension_loaded('curl'));
+		$preInstallConfig['LBL_IMAP_SUPPORT']	= array(extension_loaded('imap'), true, (extension_loaded('imap') == true));
+		$preInstallConfig['LBL_MB_STRING']	    = array(extension_loaded('mbstring'), true, (extension_loaded('mbstring') == true));
 
 		$gnInstalled = false;
 		if(!function_exists('gd_info')) {
