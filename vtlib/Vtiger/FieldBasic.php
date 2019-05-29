@@ -40,6 +40,7 @@ class Vtiger_FieldBasic {
 	var	$info_type     = 'BAS';
 	var $isunique = false;
 	var $block;
+	var $headerfield = 0;
 
 	/**
 	 * Constructor
