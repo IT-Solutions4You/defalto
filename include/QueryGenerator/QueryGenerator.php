@@ -1154,12 +1154,8 @@ class QueryGenerator {
 				$value = "'$value'";
 			}
 
-			if($this->isNumericType($field->getFieldDataType())) {
-				if (empty($value)) {
-					$value = '0';
-				} else if (preg_match("/[^+\-0-9.]+/", $value)) {
-					$value = $db->quote($value);
-				}
+			if(($this->isNumericType($field->getFieldDataType())) && empty($value)) {				
+				$value = '0';
 			}
 			$sql[] = "$sqlOperator $value";
 		}
