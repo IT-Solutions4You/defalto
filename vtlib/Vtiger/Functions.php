@@ -955,7 +955,7 @@ class Vtiger_Functions {
 
 	static function getPickListValuesFromTableForRole($tablename, $roleid) {
 		global $adb;
-		$query = "select $tablename from vtiger_$tablename inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$tablename.picklist_valueid where roleid=? and picklistid in (select picklistid from vtiger_picklist) order by sortid";
+		$query = "select $tablename from vtiger_$tablename inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$tablename.picklist_valueid where roleid=? and picklistid in (select picklistid from vtiger_picklist) order by sortorderid";
 		$result = $adb->pquery($query, array($roleid));
 		$fldVal = Array();
 		while ($row = $adb->fetch_array($result)) {
