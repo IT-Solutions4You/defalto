@@ -745,6 +745,7 @@ function insertIntoRecurringTable(& $recurObj)
 				$params = array($activity_id);
 			}
 		} else {
+			if ( $recurid === '' || !$recurid ) { $recurid = 0; }
 			$query = "INSERT INTO ".$this->reminder_table." VALUES (?,?,?,?)";
 			$params = array($activity_id, $reminder_time, 0, $recurid);
 		}
@@ -1045,7 +1046,7 @@ function insertIntoRecurringTable(& $recurObj)
 		}
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-        
+
 		return $query;
 	}
 
