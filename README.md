@@ -6,7 +6,7 @@ Vtiger is a PHP based web application that enables businesses to increase sales 
 Get involved
 ------------
 
-Development on vtiger is done at http://code.vtiger.com
+Development on vtiger is done at https://code.vtiger.com
 
 **Note**: Any contributions submitted to Vtiger project should be made available under Vtiger Public License. 
 If contribution has any patented code, or commercial code, then please communicate with Vtiger team before making the contribution.
@@ -14,14 +14,14 @@ If contribution has any patented code, or commercial code, then please communica
 https://www.vtiger.com/vtiger-public-license/
 
 To register for an account, please contact info @ vtiger.com, you will need this to file issues and/or fix the code
-Once you have an account, you can [browse the code](http://code.vtiger.com/vtiger/vtigercrm/tree/master),
-[see if your issue is already reported](http://code.vtiger.com/vtiger/vtigercrm/issues) and if you have a new problem
-to report you can [create an issue](http://code.vtiger.com/vtiger/vtigercrm/issues/new?issue)
+Once you have an account, you can [browse the code](https://code.vtiger.com/vtiger/vtigercrm/tree/master),
+[see if your issue is already reported](https://code.vtiger.com/vtiger/vtigercrm/issues) and if you have a new problem
+to report you can [create an issue](https://code.vtiger.com/vtiger/vtigercrm/issues/new?issue)
 
 If you then want to fix the issue (or another issue) you can create your own fork of vtiger to work on using the
 fork button on the vtiger project, this will create a new git repository for you at
     
-    http://code.vtiger.com/yourname/vtigercrm.git
+    https://code.vtiger.com/yourname/vtigercrm.git
 
 on your computer you will need a git client installed and you need to tell git who you are:
 
@@ -30,7 +30,7 @@ on your computer you will need a git client installed and you need to tell git w
 
 now clone your fork of vtiger
 
-    git clone http://code.vtiger.com/yourname/vtigercrm.git
+    git clone https://code.vtiger.com/yourname/vtigercrm.git
 
 this will pull down from the server your copy of the vtiger code and all the history.
 
@@ -63,7 +63,6 @@ And you can create additional feature branches from there to fix different thing
 If there have been other changes to the central vtiger code that you want in your work area then you can add the central
 repository as an upstream remote (only need to do this bit once), then you can fetch changes and merge them
 
-    git remote add upstream http://code.vtiger.com/vtiger/vtigercrm.git
+    git remote add upstream https://code.vtiger.com/vtiger/vtigercrm.git
     git fetch upstream
     git merge upstream/master
-
