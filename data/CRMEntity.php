@@ -193,7 +193,7 @@ class CRMEntity {
 		if ($module == 'Contacts' || $module == 'Products') {
 			$save_file = validateImageFile($file_details);
 		}
-		
+
 		$binFile = sanitizeUploadFileName($file_name, $upload_badext);
 
 		$current_id = $adb->getUniqueID("vtiger_crmentity");

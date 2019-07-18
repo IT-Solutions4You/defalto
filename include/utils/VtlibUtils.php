@@ -826,4 +826,5 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 	}
 	return $success;
 }
+
 ?>
