@@ -9,11 +9,6 @@
  *************************************************************************************/
 $languageStrings = array(
 	// Basic Strings
-	'Assistant' => 'Assistant',
-	'Assistant Phone' => 'Assistant Phone',
-	'Birthdate' => 'Date of Birth',
-	'Contact Id' => 'Contact Id',
-	'Contact Image' => 'Contact Image',
 	'Contacts' => 'Contacts',
 	'SINGLE_Contacts' => 'Contact',
 	'LBL_ADD_RECORD' => 'Add Contact',
