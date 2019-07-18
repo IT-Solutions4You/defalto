@@ -53,12 +53,16 @@ class Campaigns_Relation_Model extends Vtiger_Relation_Model {
 				$tableName = $emailEnabledModulesInfo[$relatedModuleName]['tableName'];
 				$db = PearDatabase::getInstance();
 
+				$paramArray = array();
 				$updateQuery = "UPDATE $tableName SET campaignrelstatusid = CASE $fieldName ";
 				foreach ($statusDetails as $relatedRecordId => $status) {
-					$updateQuery .= " WHEN $relatedRecordId THEN $status ";
+					$updateQuery .= " WHEN ? THEN ? ";
+					array_push($paramArray, $relatedRecordId);
+					array_push($paramArray, $status);
 				}
 				$updateQuery .= "ELSE campaignrelstatusid END WHERE campaignid = ?";
-				$db->pquery($updateQuery, array($sourceRecordId));
+				array_push($paramArray, $sourceRecordId);
+				$db->pquery($updateQuery, $paramArray);
 			}
 		}
 	}

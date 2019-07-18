@@ -298,17 +298,20 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 		}
 		return $relationField;
 	}
-
-	public static  function updateRelationSequenceAndPresence($relatedInfoList, $sourceModuleTabId) {
+    
+    public static  function updateRelationSequenceAndPresence($relatedInfoList, $sourceModuleTabId) {
 		$db = PearDatabase::getInstance();
 		$query = 'UPDATE vtiger_relatedlists SET sequence=CASE ';
 		$relation_ids = array();
+		$paramArray = array();
 		foreach($relatedInfoList as $relatedInfo){
 			$relation_id = $relatedInfo['relation_id'];
 			$relation_ids[] = $relation_id;
 			$sequence = $relatedInfo['sequence'];
 			$presence = $relatedInfo['presence'];
-			$query .= ' WHEN relation_id='.$relation_id.' THEN '.$sequence;
+			array_push($paramArray, $relation_id);
+			array_push($paramArray, $sequence);
+			$query .= ' WHEN relation_id=? THEN ?';
 		}
 		$query.= ' END , ';
 		$query.= ' presence = CASE ';
@@ -317,12 +320,16 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 			$relation_ids[] = $relation_id;
 			$sequence = $relatedInfo['sequence'];
 			$presence = $relatedInfo['presence'];
-			$query .= ' WHEN relation_id='.$relation_id.' THEN '.$presence;
+			array_push($paramArray, $relation_id);
+			array_push($paramArray, $presence);
+			$query .= ' WHEN relation_id=? THEN ?';
 		}
+		array_push($paramArray, $sourceModuleTabId);
+		$resultArray = array_merge($paramArray, $relation_ids);
 		$query .= ' END WHERE tabid=? AND relation_id IN ('.  generateQuestionMarks($relation_ids).')';
-		$result = $db->pquery($query, array($sourceModuleTabId,$relation_ids));
+		$result = $db->pquery($query, $resultArray);
 	}
-
+	
 	public function isActive() {
 		return $this->get('presence') == 0 ? true : false;
 	}
