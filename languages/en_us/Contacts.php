@@ -8,6 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+	// Basic Strings
 	'Assistant' => 'Assistant',
 	'Assistant Phone' => 'Assistant Phone',
 	'Birthdate' => 'Date of Birth',

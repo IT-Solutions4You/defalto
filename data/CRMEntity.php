@@ -174,18 +174,25 @@ class CRMEntity {
 			$file_name = $file_details['name'];
 		}
 
-		$save_file = 'true'; 
-		//only images are allowed for Image Attachmenttype 
-		$mimeType = vtlib_mime_content_type($file_details['tmp_name']); 
-		$mimeTypeContents = explode('/', $mimeType); 
-		// For contacts and products we are sending attachmentType as value 
-		if ($attachmentType == 'Image' || ($file_details['size'] && $mimeTypeContents[0] == 'image')) { 
-				$save_file = validateImageFile($file_details); 
-		} 
-		if ($save_file == 'false') { 
-				return false; 
-		} 
+		// Check 1
+		$save_file = 'true';
+		//only images are allowed for Image Attachmenttype
+		$mimeType = vtlib_mime_content_type($file_details['tmp_name']);
+		$mimeTypeContents = explode('/', $mimeType);
+		// For contacts and products we are sending attachmentType as value
+		if ($attachmentType == 'Image' || ($file_details['size'] && $mimeTypeContents[0] == 'image')) {
+			$save_file = validateImageFile($file_details);
+		}
+		if ($save_file == 'false') {
+			return false;
+		}
 
+		// Check 2
+		$save_file = 'true';
+		//only images are allowed for these modules
+		if ($module == 'Contacts' || $module == 'Products') {
+			$save_file = validateImageFile($file_details);
+		}
 		$binFile = sanitizeUploadFileName($file_name, $upload_badext);
 
 		$current_id = $adb->getUniqueID("vtiger_crmentity");
