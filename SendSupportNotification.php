@@ -58,7 +58,7 @@ if($adb->num_rows($result) >= 1)
 }
 //comment / uncomment this line if you want to hide / show the sent mail status
 //showstatus($status);
-$log->debug(" Send Support Notification Befoe a week - Status: ".$status);
+$log->debug(" Send Support Notification Before a week - Status: ".$status);
 
 //To send email notification before a month
 $query="select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 MONTH)";

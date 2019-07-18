@@ -69,7 +69,35 @@ $languageStrings = array(
 	'LBL_DETAILS'                  => 'Details'                     , // TODO: Review
 	'skipped'                      => 'Skipped Records'             , // TODO: Review
 	'failed'                       => 'Failed Records'              , // TODO: Review
-        'Skip'                         =>'Atla',
-        'Overwrite'                    =>'Ãœzerine yaz',
-        'Merge'                        =>'BirleÅŸtirme',
+    
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'Döviz (Satır Öğeleri)',
+
+	'LBL_SKIP_THIS_STEP' => 'Bu adımı atla',
+	'LBL_UPLOAD_ICS' => 'ICS Dosya Yükle',
+	'LBL_ICS_FILE' => 'ICS Dosya',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'ICS dosyasından içe',
+	'LBL_SELECT_ICS_FILE' => 'Seçin ICS dosyası',
+
+  'LBL_USE_SAVED_MAPS' => 'Kullanım Haritaları Kurtardı ',
+  'LBL_IMPORT_MAP_FIELDS' => 'CRM alanları sütunlarla göster ',
+  'LBL_UPLOAD_CSV' => 'Upload CSV Dosyası',
+  'LBL_UPLOAD_VCF' => 'VCF Dosya Upload',
+  'LBL_DUPLICATE_HANDLING' => 'Çoğaltmak ',
+  'LBL_FIELD_MAPPING' => 'Alan Eşleme',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'CSV dosyasından İçe Aktar ',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'Nereden almak istiyorsunuz ?',
+  'LBL_CSV_FILE' => 'CSV Dosyası',
+  'LBL_VCF_FILE' => 'VCF Dosyası',
+  'LBL_GOOGLE' => 'Google',
+  'LBL_IMPORT_COMPLETED' => 'İçe Aktarma Tamamlandı',
+  'LBL_IMPORT_SUMMARY' => 'İthalat özeti',
+  'LBL_DELETION_COMPLETED' => 'Silme İşlemi Tamamlandı',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'Toplam kayıtları taranmış',
+  'LBL_SKIP_BUTTON' => 'Skip',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'Yinelenen kayıt işleme',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'VCF dosyası ithalat ',
+  'LBL_SELECT_VCF_FILE' => 'VCF dosyası seçin',
+  'LBL_DONE_BUTTON' => 'Bitti',
+  'LBL_DELETION_SUMMARY' => 'Sil özeti',
+
 );

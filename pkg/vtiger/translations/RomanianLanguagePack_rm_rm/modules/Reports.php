@@ -30,7 +30,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST'             => 'Folders List'                ,
 	'LBL_DENIED_REPORTS'           => 'Denied Reports'              ,
 	'LBL_NO_OF_RECORDS'            => 'Total Records : '           , // TODO: Review
-	'LBL_MORE_RECORDS_TXT'		   => 'Only 1000 records are shown below. Please export to see all Records',
+	'LBL_MORE_RECORDS_TXT'		   => 'Only 500 records are shown below. Please export to see all Records',
 	'LBL_ADD_RECORD'               => 'Add Report'                  ,
 	'LBL_ADD_FOLDER'               => 'Add Folder'                  ,
 	'LBL_REPORT_DELETE_DENIED'     => 'Permission denied to delete the Report',
@@ -54,7 +54,7 @@ $languageStrings = array(
 	'LBL_AVERAGE'                  => 'Medie'                       ,
 	'LBL_LOWEST_VALUE'             => 'Valoarea cea mai mica'       ,
 	'LBL_HIGHEST_VALUE'            => 'Highest Value'               ,
-	'LBL_GENERATE_REPORT'          => 'Generate Report'             ,
+	'LBL_GENERATE_REPORT'          => 'Salvați & genera un raport'  ,
 	'LBL_SUM'                      => 'SUM'                         ,
 	'LBL_AVG'                      => 'AVG'                         ,
 	'LBL_MIN'                      => 'MIN'                         ,
@@ -121,10 +121,105 @@ $languageStrings = array(
 	'LBL_ALL_REPORTS'              => 'All Reports'                 , // TODO: Review
 	'LBL_CALCULATION_CONVERSION_MESSAGE' => 'Calculul se bazează pe preferințele moneda mele de CRM', // TODO: Review
 
+    //Schedule Reports
+    'LBL_CREATING_REPORT'	=>	'Crearea Raport',
+	'LBL_EDITING_REPORT'	=>	'Editare Raport',
+	'LBL_SCHEDULE_REPORTS'	=>	'Program Rapoarte',
+	'LBL_AT_TIME'	=>	'La Ora',
+	'LBL_DAILY'	=>	'Zilnic',
+	'LBL_WEEKLY'	=>	'Săptămânal',
+	'LBL_MONTHLY_BY_DATE'	=>	'Lunar de Date',
+	'LBL_YEARLY'	=>	'Anual',
+	'LBL_SPECIFIC_DATE'	=>	'Pe specific Data',
+	'LBL_CHOOSE_DATE'	=>	'Alege Data',
+	'LBL_ON_THESE_DAYS'	=>	'Pe aceste zile',
+	'LBL_SELECT_MONTH_AND_DAY'	=>	'Selectați Luna și data',
+	'LBL_SELECTED_DATES'	=>	'Selectate Perioada',
+	'LBL_EXCEEDING_MAXIMUM_LIMIT'	=>	'Limita maximă depășită',
+	'LBL_NEXT_TRIGGER_TIME'	=>	'Timp de declanșare viitoare pe',
+	'LBL_RUN_REPORT'	=>	'Run Raport',
+	'LBL_SELECT_RECIEPIENTS'	=>	'Selectați destinatari',
+	'LBL_SPECIFIC_EMAIL_ADDRESS'	=>	'Trimite e-mail specific',
+
+    //Summary/Pivot Reports
+    'LBL_CREATING_PIVOT_REPORT' => 'Crea Pivot Raport',
+    'LBL_EDITING_PIVOT_REPORT' => 'Edit Pivot Raport',
+    'LBL_SELECT_PIVOT_FIELDS' => 'Selectați Pivot Fields',
+    'LBL_SELECT_ROWS' => 'Selectați rânduri',
+    'LBL_SELECT_DATA_FIELDS' => 'Selectați câmpurile de date',
+    'LBL_ADD_ROWS' => 'Adăuga rânduri',
+    'LBL_ADD_COLUMNS' => 'Adauga Coloane',
+    'LBL_ADD_DATA_FIELDS' => 'Adauga Datele Domenii',
+    'LBL_PIVOT_FIELDS' => 'Selectat Pivot Fields',
+    'LBL_RECORD_COUNT' => 'Contele înregistrare',
+    'LBL_SELECT_PIVOT_FIELDS_WARNING' => 'Atenție: Vă rugăm să selectați cel puțin un câmp rând, câmp coloană și câmpul de date',
+    'LBL_PIVOT_DATA_FIELDS_WARNING' => 'Atenție: În coloana de date - funcții de agregare (sumă, medie, min și max) nu ar trebui să repete.',
+    'LBL_MODIFY_CONDITIONS' => 'Modifica Condiții',
+    'LBL_PIVOT_PREVIEW_EX' => 'Pivot Raport Preview (Exemplu)',
+
+	//charts labels,
+	'LBL_SELECT_CHART_TYPE' => 	'Selectați tipul de diagramă',
+	'LBL_CLICK_THROUGH_NOT_AVAILABLE' => 	'Faceți clic pe nu este disponibil ca ați selectat mai mult de un modul',
+	'LBL_TOTAL_SUM_OF' => 	'Suma totală a',
+	'LBL_AVG_OF' => 	'Medie de',
+	'LBL_MIN_OF' => 	'Minim de',
+	'LBL_MAX_OF'	 => 'Maxim de',
+	'LBL_RECORD_COUNT' => 	'Contele înregistrare',
+	'LBL_PIE_CHART' => 	'Pie Chart',
+	'LBL_VERTICAL_BAR_CHART' => 	'Vertical Bar Chart',
+	'LBL_HORIZONTAL_BAR_CHART' => 	'Bar Chart orizontală',
+	'LBL_LINE_CHART' => 	'Linie Chart',
+	'LBL_SELECT_CHART'	 => 'Selectați Grafic',
+	'LBL_CREATING_CHART_REPORT' => 	'Crearea diagramă Raport',
+	'LBL_EDITING_CHART_REPORT' => 	'Editarea Chart Raport',
+	'LBL_GENERATE_CHART' => 	'Genera Grafic',
+	'LBL_SELECT_GROUP_BY_FIELD' => 	'Selectați Group de câmp',
+	'LBL_SELECT_DATA_FIELD'	 => 'Selectați câmpurile de date',
+	'LBL_MODIFY_CONDITION'	 => 'Modifica Condiții',
+	'LBL_PLEASE_SELECT_ATLEAST_ONE_GROUP_FIELD_AND_DATA_FIELD' => 	'Vă rugăm să selectați cel puțin un câmp Groupby și un câmp de date.',
+	'LBL_FOR_BAR_GRAPH_AND_LINE_GRAPH_SELECT_3_MAX_DATA_FIELDS'	 => 'Pentru Bar și linie grafic, puteți selecta maximum 3 domenii de date.',
+	'LBL_DETAIL_REPORT' => 'Detaliu Raport',
+	'LBL_PIVOT_REPORT' => 'Pivot Raport',
+	'LBL_CHARTS' => 'Grafice',
+    //Schedule Reports - Mail Content
+    'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'Acesta este un e-mail generat automat-a trimis pe numele unui raport programat.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'Pin Chart la tabloul de bord',
+    'LBL_FILE_FORMAT' => 'Format fișier',
+    
+    'Report Type' => 'Tip de raport',
+    'tabular' => 'Detaliu',
+    'summary' => 'Detaliu',
+    'pivot' => 'Pivot',
+    'chart' => 'Diagramă',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Rapoarte mutat cu succes.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'Folder țintă este aceeași ca Folder Sursa.',
+	'LBL_SEARCH_FOR_FOLDERS' => 'Caută dosare',
+	'LBL_CHART_REPORT' => 'Grafic Raport',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'Diagramă Anulați fixarea la tabloul de bord',
+
+
+  'LBL_SAME_LEVEL_ROLES' => 'Același Nivel De Roluri',
+  'LBL_SUBORDINATE_ROLES' => 'Subordonate Rol',
+  'LBL_SHARE_REPORT' => 'Împărtăși Raport',
+  'LBL_SHARED_REPORTS' => 'A Împărtășit Cu Mine',
+  'LBL_PINNED' => 'Прикололо',
+  'LBL_UNPINNED' => 'Desprindeți',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'Rapoarte Eliminate Cu Succes',
 
 );
 $jsLanguageStrings = array(
 	'JS_DUPLICATE_RECORD'          => 'Duplicate Report'            , // TODO: Review
 	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.', // TODO: Review
-        'JS_NO_CHART_DATA_AVAILABLE' => 'Datele nu sunt disponibile, vă rugăm să verificați câmpurile selectate',
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'Grafic Pinned la tabloul de bord',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'Grafic Deja Pinned la tabloul de bord',
+	'JS_MOVE_REPORTS'=>'Mutați Rapoarte',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'Data și ora programată să fie mai mare decât data și ora curentă',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'Pin Chart la tabloul de bord',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'Diagramă Anulați fixarea la tabloul de bord',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'Grafic eliminat din tabloul de bord',
+
+  'JS_NO_CHART_DATA_AVAILABLE' => 'Nu există date, vă rugăm să verificați domeniile alocate',
+
 );

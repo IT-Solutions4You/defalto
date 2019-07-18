@@ -30,7 +30,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST'             => 'Папки Список'                , 
 	'LBL_DENIED_REPORTS'           => 'Опроверг сообщения'              , 
 	'LBL_NO_OF_RECORDS'            => 'Всего записей : '           , 
-	'LBL_MORE_RECORDS_TXT'		   => 'Только 1000 записей, приведены ниже. Пожалуйста, экспортировать на просмотр всех записей',
+	'LBL_MORE_RECORDS_TXT'		   => 'Только 500 записей, приведены ниже. Пожалуйста, экспортировать на просмотр всех записей',
 	'LBL_ADD_RECORD'               => 'Добавить отчет'                  , 
 	'LBL_ADD_FOLDER'               => 'Добавить папку'                  , 
 	'LBL_REPORT_DELETE_DENIED'     => 'Доступ запрещен удалить отчет', 
@@ -54,7 +54,7 @@ $languageStrings = array(
 	'LBL_AVERAGE'                  => 'Среднее'              , // KEY 5.x: LBL_COLUMNS_AVERAGE
 	'LBL_LOWEST_VALUE'             => 'Наименьшая величина', // KEY 5.x: LBL_COLUMNS_LOW_VALUE
 	'LBL_HIGHEST_VALUE'            => 'Высшая стоимость'               , 
-	'LBL_GENERATE_REPORT'          => 'Создать отчет'             , 
+	'LBL_GENERATE_REPORT'          => 'Сохранить и Создать отчет'             , 
 	'LBL_SUM'                      => 'СУМ'                      , // KEY 5.x: SUM
 	'LBL_AVG'                      => 'СРЕДН'                  , // KEY 5.x: AVG
 	'LBL_MIN'                      => 'МИН'                      , // KEY 5.x: MIN
@@ -140,9 +140,84 @@ $languageStrings = array(
     'LBL_SELECT_RECIEPIENTS' 	=> 'Выбор получателей',
     'LBL_SPECIFIC_EMAIL_ADDRESS' => 'Отправить конкретной электронной почте',
 
-    );
+    //Summary/Pivot Reports
+    'LBL_CREATING_PIVOT_REPORT' => 'Создание Pivot отчет',
+    'LBL_EDITING_PIVOT_REPORT' => 'Редактировать Сводные Сообщить',
+    'LBL_SELECT_PIVOT_FIELDS' => 'Выберите Pivot Fields',
+    'LBL_SELECT_ROWS' => 'Выберите строк',
+    'LBL_SELECT_DATA_FIELDS' => 'Выберите поля данных',
+    'LBL_ADD_ROWS' => 'Добавление строк',
+    'LBL_ADD_COLUMNS' => 'Добавление столбцов',
+    'LBL_ADD_DATA_FIELDS' => 'Добавить Поля данных',
+    'LBL_PIVOT_FIELDS' => 'Выбранный Сводные поля',
+    'LBL_RECORD_COUNT' => 'Запись Граф',
+    'LBL_SELECT_PIVOT_FIELDS_WARNING' => 'Внимание: Пожалуйста, выберите хотя бы одно поле строки, поле столбца и поле данных',
+    'LBL_PIVOT_DATA_FIELDS_WARNING' => 'Внимание: В колонке данных - сводные функции (сумма, в среднем, минимум и максимум) не должны повторяться.',
+    'LBL_MODIFY_CONDITIONS' => 'Изменить условия',
+    'LBL_PIVOT_PREVIEW_EX' => 'Сводные Сообщить Preview (Пример)',
+
+	//charts labels
+	'LBL_SELECT_CHART_TYPE' =>	'Выберите тип диаграммы',
+	'LBL_CLICK_THROUGH_NOT_AVAILABLE'	 =>'Щелкните через не доступны, как вы выбрали более одного модуля',
+	'LBL_TOTAL_SUM_OF'	 =>'Всего Сумма',
+	'LBL_AVG_OF' =>	'Средний из',
+	'LBL_MIN_OF' =>	'Минимум',
+	'LBL_MAX_OF' =>	'Максимум',
+	'LBL_RECORD_COUNT' =>	'Запись Граф',
+	'LBL_PIE_CHART' =>	'Круговая диаграмм',
+	'LBL_VERTICAL_BAR_CHART' =>	'Вертикальная Гистограмма',
+	'LBL_HORIZONTAL_BAR_CHART' =>	'Горизонтальное График Бар',
+	'LBL_LINE_CHART' =>	'График линия',
+	'LBL_SELECT_CHART' =>	'Выберите Chart',
+	'LBL_CREATING_CHART_REPORT'	 =>'Создание отчета с диаграммой',
+	'LBL_EDITING_CHART_REPORT' =>	'Редактирование График Сообщить',
+	'LBL_GENERATE_CHART' =>	'Создать диаграмму',
+	'LBL_SELECT_GROUP_BY_FIELD' =>	'Выберите группу по области',
+	'LBL_SELECT_DATA_FIELD' =>	'Выберите поля данных',
+	'LBL_MODIFY_CONDITION' =>	'Изменить условия',
+	'LBL_PLEASE_SELECT_ATLEAST_ONE_GROUP_FIELD_AND_DATA_FIELD' =>	'Пожалуйста, выберите хотя бы одно поле GroupBy и одно поле данных.',
+	'LBL_FOR_BAR_GRAPH_AND_LINE_GRAPH_SELECT_3_MAX_DATA_FIELDS' =>	'Для адвокатов и линейный график, вы можете выбрать не более 3 полей данных.',
+	'LBL_DETAIL_REPORT' => 'Детальный отчет',
+	'LBL_PIVOT_REPORT' => 'Сводные Сообщить',
+	'LBL_CHARTS' => 'Диаграммы',
+    //Schedule Reports - Mail Content
+    'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'Это автоматически сгенерированный сообщения, отправленные от имени запланированного отчета.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'График Pin на панель инструментов',
+    'LBL_FILE_FORMAT' => 'Формат файла',
+    
+    'Report Type' => 'Тип отчета',
+    'tabular' => 'Подробно',
+    'summary' => 'Подробно',
+    'pivot' => 'Стержень',
+    'chart' => 'Диаграмма',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Отчеты успешно перемещены.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'Целевая папка такой же, как исходной папке.',
+	'LBL_SEARCH_FOR_FOLDERS' => 'Поиск для папок',
+	'LBL_CHART_REPORT' => 'График Сообщить',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'Открепить график из приборной панели',
+
+  'LBL_SAME_LEVEL_ROLES' => 'Же Уровне Ролей',
+  'LBL_SUBORDINATE_ROLES' => 'Подчиненные Роли',
+  'LBL_SHARE_REPORT' => 'Поделиться Отчета',
+  'LBL_SHARED_REPORTS' => 'Поделился Со Мной',
+  'LBL_PINNED' => 'Прикололо',
+  'LBL_UNPINNED' => 'Открепить',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'Отчеты Успешно Удалены',
+
+);
 $jsLanguageStrings = array(
-	'JS_DUPLICATE_RECORD'          => 'Duplicate Report'            , // TODO: Review
-	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.', // TODO: Review
-        'JS_NO_CHART_DATA_AVAILABLE' => 'Нет данных, пожалуйста, проверьте выбранные поля',
+	'JS_DUPLICATE_RECORD'          => 'Дубликат отчета'            , 
+	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Ограничение: Line Характеристика поля (Список Цена, скидка и количество) можно использовать только тогда, когда другие поля расчетов не выбран.', 
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'График прижат к DashBoard',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'График Уже прижат к DashBoard',
+	'JS_MOVE_REPORTS'=>'Перемещение отчетов',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'Запланированная дата и время должно быть больше текущей даты и времени',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'График ПИН-код для приборной панели',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'Открепить график из приборной панели',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'График удален из панели',
+
+  'JS_NO_CHART_DATA_AVAILABLE' => 'Данные отсутствуют, пожалуйста, проверьте выделенные поля',
+
 );

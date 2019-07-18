@@ -16,7 +16,29 @@ class Settings_Workflows_CreateEntity_View extends Settings_Vtiger_Index_View {
 		$qualifiedModuleName = $request->getModule(false);
 
 		$workflowId = $request->get('for_workflow');
-		$workflowModel = Settings_Workflows_Record_Model::getInstance($workflowId);
+        if ($workflowId) {
+			$workflowModel = Settings_Workflows_Record_Model::getInstance($workflowId);
+			$selectedModule = $workflowModel->getModule();
+			$selectedModuleName = $selectedModule->getName();
+		} else {
+            $selectedModuleName = $request->get('module_name');
+			$selectedModule = Vtiger_Module_Model::getInstance($selectedModuleName);
+			$workflowModel = Settings_Workflows_Record_Model::getCleanInstance($selectedModuleName);
+		}
+        
+		$taskType = 'VTCreateEntityTask';
+        $taskModel = Settings_Workflows_TaskRecord_Model::getCleanInstance($workflowModel, $taskType);
+
+		$taskTypeModel = $taskModel->getTaskType();
+		$viewer->assign('TASK_TYPE_MODEL', $taskTypeModel);
+
+		$viewer->assign('TASK_TEMPLATE_PATH', $taskTypeModel->getTemplatePath());
+		$recordStructureInstance = Settings_Workflows_RecordStructure_Model::getInstanceForWorkFlowModule($workflowModel,
+																			Settings_Workflows_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDITTASK);
+        $recordStructureInstance->setTaskRecordModel($taskModel);
+
+		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
+		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
 
 		$relatedModule = $request->get('relatedModule');
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);

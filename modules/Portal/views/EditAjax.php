@@ -10,22 +10,20 @@
 
 class Portal_EditAjax_View extends Vtiger_IndexAjax_View {
 
-    public function process(Vtiger_Request $request) {
-        $moduleName = $request->getModule();
-        $recordId = $request->get('record');
+	public function process(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$recordId = $request->get('record');
 
-        $viewer = $this->getViewer($request);
-        
-        if(!empty($recordId)) {
-            $data = Portal_Module_Model::getRecord($recordId);
-            
-            $viewer->assign('RECORD', $recordId);
-            $viewer->assign('BOOKMARK_NAME', $data['bookmarkName']);
-            $viewer->assign('BOOKMARK_URL', $data['bookmarkUrl']);
-        }
-        
-        $viewer->assign('MODULE', $moduleName);
-        
-        $viewer->view('EditView.tpl', $moduleName);
-    }
+		$viewer = $this->getViewer($request);
+
+		if (!empty($recordId)) {
+			$data = Portal_Module_Model::getRecord($recordId);
+
+			$viewer->assign('RECORD', $recordId);
+			$viewer->assign('BOOKMARK_NAME', $data['bookmarkName']);
+			$viewer->assign('BOOKMARK_URL', $data['bookmarkUrl']);
+		}
+		$viewer->assign('MODULE', $moduleName);
+		$viewer->view('EditView.tpl', $moduleName);
+	}
 }

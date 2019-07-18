@@ -37,4 +37,14 @@ $languageStrings = array(
 	'Date & Time Sent'             => 'Date Sent'                   , // TODO: Review
     'Time Start'                   => 'Heure denvoi'                ,
     'LBL_EMAIL_INFORMATION' => 'E-mail Informations',
+    'LBL_EMAILTEMPLATE_WARNING'    => "Vos fusion-tags corriger",
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Sil vous plaît assurez que le modèle sélectionné a fusionner les balises pertinentes au dossier de destinataire. 
+                                            Si vous envoyez un e-mail à plomb, mais les fusion-tags appartenez à contacter le module (ex: $contacts-lastname$), 
+                                            alors les valeurs ne seront pas fusionnées.',
+	'Draft'                        => 'Brouillon'                   , 
+    'Parent ID'                    => 'enregistrement parent',
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'avertissement',
+);    

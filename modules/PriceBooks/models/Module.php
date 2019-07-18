@@ -67,15 +67,17 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 		$relatedModulesList = array('Products', 'Services');
 		if (in_array($sourceModule, $relatedModulesList)) {
 			$pos = stripos($listQuery, ' where ');
+            		$db = PearDatabase::getInstance();
 			if ($currencyId && in_array($field, array('productid', 'serviceid'))) {
-				$condition = " vtiger_pricebook.pricebookid IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = $record)
+				$condition = " vtiger_pricebook.pricebookid IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.currency_id = $currencyId AND vtiger_pricebook.active = 1";
 			} else if($field == 'productsRelatedList') {
-				$condition = "vtiger_pricebook.pricebookid NOT IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = $record)
+				$condition = "vtiger_pricebook.pricebookid NOT IN (SELECT pricebookid FROM vtiger_pricebookproductrel WHERE productid = ?)
 								AND vtiger_pricebook.active = 1";
 			}
+            		$condition = $db->convert2Sql($condition, array($record));
 			if ($pos) {
-				$split = spliti(' where ', $listQuery);
+				$split = preg_split('/ where /i', $listQuery);
 				$overRideQuery = $split[0] . ' WHERE ' . $split[1] . ' AND ' . $condition;
 			} else {
 				$overRideQuery = $listQuery . ' WHERE ' . $condition;
@@ -107,4 +109,80 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 		}
 		return array_keys($popupFileds);
 	}
+    
+    /**
+	* Function is used to give links in the All menu bar
+	*/
+	public function getQuickMenuModels() {
+		if($this->isEntityModule()) {
+			$moduleName = $this->getName();
+			$listViewModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
+			$basicListViewLinks = $listViewModel->getBasicLinks();
+		}
+        
+		if($basicListViewLinks) {
+			foreach($basicListViewLinks as $basicListViewLink) {
+				if(is_array($basicListViewLink)) {
+					$links[] = Vtiger_Link_Model::getInstanceFromValues($basicListViewLink);
+				} else if(is_a($basicListViewLink, 'Vtiger_Link_Model')) {
+					$links[] = $basicListViewLink;
+				}
+			}
+		}
+		return $links;
+	}
+
+	/*
+     * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+        return array('Import', 'Export');
+    }
+
+	/**
+	 * Function returns export query - deprecated
+	 * @param <String> $where
+	 * @return <String> export query
+	 */
+	public function getExportQuery($focus, $query) {
+		$baseTableName = $focus->table_name;
+		$splitQuery = preg_split('/ FROM /i', $query, 2);
+		$columnFields = explode(',', $splitQuery[0]);
+		foreach ($columnFields as &$value) {
+			if(trim($value) == "$baseTableName.currency_id") {
+				$value = ' vtiger_currency_info.currency_name AS currency_id';
+			}
+		}
+		array_push($columnFields, "vtiger_pricebookproductrel.productid as Relatedto", "vtiger_pricebookproductrel.listprice as ListPrice");
+		$joinSplit = preg_split('/ WHERE /i',$splitQuery[1], 2);
+		$joinSplit[0] .= " LEFT JOIN vtiger_currency_info ON vtiger_currency_info.id = $baseTableName.currency_id "
+				."LEFT JOIN vtiger_pricebookproductrel on vtiger_pricebook.pricebookid = vtiger_pricebookproductrel.pricebookid ";
+		$splitQuery[1] = $joinSplit[0] . ' WHERE ' .$joinSplit[1];
+		$query = implode(', ', $columnFields).' FROM ' . $splitQuery[1];
+		return $query;
+	}
+
+	public function getAdditionalImportFields() {
+		if (!$this->importableFields) {
+			$fieldHeaders = array(
+								'relatedto'=> array('label'=>'Related To', 'uitype'=>10),//For relation field
+								'listprice'=> array('label'=>'ListPrice', 'uitype'=>83)//For related field currency
+				);
+
+			$this->importableFields = array();
+			foreach ($fieldHeaders as $fieldName => $fieldInfo) {
+				$fieldModel = new Vtiger_Field_Model();
+				$fieldModel->name = $fieldName;
+				$fieldModel->label = $fieldInfo['label'];
+				$fieldModel->column = $fieldName;
+				$fieldModel->uitype = $fieldInfo['uitype'];
+				$webServiceField = $fieldModel->getWebserviceFieldObject();
+				$webServiceField->setFieldDataType($fieldModel->getFieldDataType());
+				$fieldModel->webserviceField = $webServiceField;
+				$this->importableFields[$fieldName] = $fieldModel;
+			}
+		}
+		return $this->importableFields;
+	}
+
 }

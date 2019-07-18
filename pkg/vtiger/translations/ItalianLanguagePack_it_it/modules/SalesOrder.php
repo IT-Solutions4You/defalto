@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'SalesOrder'                   => 'Ordini di vendita'           , 
 	'SINGLE_SalesOrder'            => 'Ordine di Vendita'           , 
 	'LBL_EXPORT_TO_PDF'            => 'Esporta in PDF'              , 
 	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
@@ -22,8 +23,7 @@ $languageStrings = array(
 	'Sales Commission'             => 'Commissione Vendita'         , 
 	'Purchase Order'               => 'Ordine di acquisto'          , 
 	'Vendor Terms'                 => 'Condizioni fornitore'        , 
-	'Pending'                      => 'Pendente'                    ,
-    'Recurring Invoive Information'=>'Ricorrente Informazioni fattura',
+	'Pending'                      => 'Pendente'                    , 
 	'Enable Recurring'             => 'Abilita ricorrenza'          , 
 	'Frequency'                    => 'Frequenza'                   , 
 	'Start Period'                 => 'Inizio Periodo'              , 
@@ -34,12 +34,10 @@ $languageStrings = array(
 	'AutoCreated'                  => 'AutoCreated'                 , 
 	'Sent'                         => 'Sent'                        , 
 	'Credit Invoice'               => 'Credit Invoice'              , 
-	'Paid'                         => 'Paid'                        ,
-    'Daily'=>'Quotidiano',
-    'Monthly'=>'Mensile',
-    'Quarterly'=>'Trimestrale',
-    'Yearly'=>'Annuale',
-    'Net 30 days'=>'Net 30 giorni',
-    'Net 45 days'=>'Net 45 giorni',
-    'Net 60 days'=>'Net 60 giorni',
+	'Paid'                         => 'Paid'                        , 
+
+  'LBL_THIS' => 'Questo',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema.si prega di rimuovere o sostituire questo elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema,si prega di rimuovere questa riga di elementi',
+
 );

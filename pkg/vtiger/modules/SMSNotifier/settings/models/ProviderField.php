@@ -38,12 +38,26 @@ class Settings_SMSNotifier_ProviderField_Model extends Settings_SMSNotifier_Fiel
 		if(!is_array($fieldsInfo[0])){
 			$newFieldInfo = array();
 			foreach($fieldsInfo as $key) {
-				array_push($newFieldInfo,array('name' => $key, 'label' => $key, 'type' => 'text'));
+				array_push($newFieldInfo,array('name' => $key, 'label' => ucfirst($key), 'type' => 'text'));
 			}
 			return $newFieldInfo;
 		} else {
 			return $fieldsInfo;
 		}
+	}
+
+	/**
+	 * Function returns all the field instance for a provider
+	 * @param <Object> $provider
+	 * @return <Array of Objects>
+	 */
+	public static function getFieldInstanceByProvider($provider) {
+		$fieldsInfo = self::getInstanceByProvider($provider);
+		$fieldModelsList = array();
+		foreach ($fieldsInfo as $fieldRow) {
+			$fieldModelsList[$fieldRow['name']] = self::getInstanceByRow($fieldRow);
+		}
+		return $fieldModelsList;
 	}
 	
 	public static function getEditFieldTemplateName($providerName) {
@@ -54,5 +68,4 @@ class Settings_SMSNotifier_ProviderField_Model extends Settings_SMSNotifier_Fiel
 			return 'ProviderEditFields.tpl';
 		}
 	}
-
 }

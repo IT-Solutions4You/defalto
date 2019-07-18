@@ -2,13 +2,14 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
 	//DetailView Actions
+    'Quotes' => 'العروض',
 	'SINGLE_Quotes' => 'العروض',
 	'LBL_EXPORT_TO_PDF' => 'تصدير ال PDF',
     'LBL_SEND_MAIL_PDF' => 'ارسال بريد الكتروني مع PDF',
@@ -25,6 +26,7 @@ $languageStrings = array(
 	'Quote Stage'=>'مرحلة العرض',
 	'Valid Till'=>'ساري حتى',
 	'Inventory Manager'=>'مدير المخزون',
+    'Related To' => 'المتعلقة',
 	//Added for existing Picklist Entries
 
 	'Accepted'=>'مقبول',
@@ -34,12 +36,6 @@ $languageStrings = array(
 	'LBL_THIS' => 'هذا',
 	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'ملغي من النظام ، الرجاء ازالة او استبدال هذا البند',
 	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'هذا البند ملغي من النظام,الرجاء ازالة هذا البند',
-    
-        //Taxes 
-        'VAT'=>'ضريبة', 
-        'Service'=>'خدمة', 
-        'Sales'=>'مبيعات',
-        'Open Quotes'=>'ونقلت مفتوحة',
 
 );
 

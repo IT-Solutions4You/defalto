@@ -19,7 +19,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW'             => 'Profile view'                , // TODO: Review
 	'LBL_FIELDS'                   => 'Fields'                      , // TODO: Review
 	'LBL_TOOLS'                    => 'Tools'                       , // TODO: Review
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Field and Tool Privileges'   , // TODO: Review
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Câmp și instrument de Privilegii'   , // TODO: Review
 	'LBL_EDIT_RECORD'              => 'Edit'                        , // TODO: Review
 	'LBL_DUPLICATE_RECORD'         => 'Duplicate'                   , // TODO: Review
 	'LBL_DELETE_RECORD'            => 'Delete'                      , // TODO: Review
@@ -33,15 +33,16 @@ $languageStrings = array(
 	'LBL_TRANSFER_ROLES_TO_PROFILE' => 'Transfer roles to profile'   , // TODO: Review
 	'LBL_PROFILES'                 => 'Profiles'                    , // TODO: Review
 	'LBL_CHOOSE_PROFILES'          => 'Choose Profiles'             , // TODO: Review
-    
-        'Import' => 'Import',
-        'Export' => 'Export',
-	'Merge'  => 'Îmbina',
-        'ConvertLead' => 'Converti plumb',
-        'DuplicatesHandling' => 'Duplicate de manipulare',
-        'ReceiveIncomingCalls' => 'Recepționa apeluri',
-        'MakeOutgoingCalls' => 'Efectua apeluri de ieșire',
-        'Print' => 'Imprimare',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Atenție: Utilizatorii asociate cu acest profil poate accesa toate înregistrările din CRM',
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Drepturile de acces la editarea acestui profil',
+  'LBL_VIEW_ALL' => 'Vezi Toate',
+  'LBL_EDIT_ALL' => 'Edita Toate',
+  'LBL_VIEW_ALL_DESC' => 'Puteți vizualiza toate modulele de informații',
+  'LBL_EDIT_ALL_DESC' => 'Puteți edita toate modulele de informații',
+  'LBL_DUPLICATES_EXIST' => 'Duplicat De Profil Nu Există',
+  'LBL_EDIT_PROFILE' => 'Editare Profil',
+
 );
 $jsLanguageStrings = array(
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Profile deleted successfully', // TODO: Review

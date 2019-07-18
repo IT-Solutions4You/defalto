@@ -87,7 +87,7 @@ class HelpDesk extends CRMEntity {
 
 	// Used when enabling/disabling the mandatory fields for the module.
 	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'update_log');
+	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'update_log','ticketpriorities','ticketstatus');
 
      //Added these variables which are used as default order by and sortorder in ListView
         var $default_order_by = 'title';
@@ -130,7 +130,7 @@ class HelpDesk extends CRMEntity {
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmid) {
+	function save_related_module($module, $crmid, $with_module, $with_crmid, $otherParams = array()) {
 		parent::save_related_module($module, $crmid, $with_module, $with_crmid);
 		if ($with_module == 'ServiceContracts') {
 			$serviceContract = CRMEntity::getInstance("ServiceContracts");
@@ -179,13 +179,15 @@ class HelpDesk extends CRMEntity {
 		$log->debug("Entering into insertIntoAttachment($id,$module) method.");
 
 		$file_saved = false;
-
-		foreach($_FILES as $fileindex => $files)
-		{
-			if($files['name'] != '' && $files['size'] > 0)
+		
+		if(count($_FILES)) {
+			foreach($_FILES as $fileindex => $files)
 			{
-				$files['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
-				$file_saved = $this->uploadAndSaveFile($id,$module,$files);
+				if($files['name'] != '' && $files['size'] > 0)
+				{
+					$files['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
+					$file_saved = $this->uploadAndSaveFile($id,$module,$files);
+				}
 			}
 		}
 
@@ -588,50 +590,54 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 	 * @param - $secmodule secondary module name
 	 * returns the query string formed on fetching the related data for report for secondary module
 	 */
-	function generateReportsSecQuery($module,$secmodule, $queryplanner) {
-		$matrix = $queryplanner->newDependencyMatrix();
-
+	function generateReportsSecQuery($module,$secmodule, $queryPlanner) {
+		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency("vtiger_crmentityHelpDesk",array("vtiger_groupsHelpDesk","vtiger_usersHelpDesk","vtiger_lastModifiedByHelpDesk"));
-		$matrix->setDependency("vtiger_troubletickets",array("vtiger_crmentityHelpDesk","vtiger_ticketcf","vtiger_crmentityRelHelpDesk","vtiger_productsRel"));
 		$matrix->setDependency("vtiger_crmentityRelHelpDesk",array("vtiger_accountRelHelpDesk","vtiger_contactdetailsRelHelpDesk"));
 
-
-		if (!$queryplanner->requireTable('vtiger_troubletickets', $matrix)) {
+		if (!$queryPlanner->requireTable('vtiger_troubletickets', $matrix)) {
 			return '';
 		}
+        
+        $matrix->setDependency("vtiger_troubletickets",array("vtiger_crmentityHelpDesk","vtiger_ticketcf","vtiger_crmentityRelHelpDesk","vtiger_productsRel"));
+		
 		// TODO Support query planner
-		$query = $this->getRelationQuery($module,$secmodule,"vtiger_troubletickets","ticketid", $queryplanner);
+		$query = $this->getRelationQuery($module,$secmodule,"vtiger_troubletickets","ticketid", $queryPlanner);
 
-		if ($queryplanner->requireTable("vtiger_crmentityHelpDesk",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityHelpDesk",$matrix)){
 		    $query .=" left join vtiger_crmentity as vtiger_crmentityHelpDesk on vtiger_crmentityHelpDesk.crmid=vtiger_troubletickets.ticketid and vtiger_crmentityHelpDesk.deleted=0";
 		}
-		if ($queryplanner->requireTable("vtiger_ticketcf")){
+		if ($queryPlanner->requireTable("vtiger_ticketcf")){
 		    $query .=" left join vtiger_ticketcf on vtiger_ticketcf.ticketid = vtiger_troubletickets.ticketid";
 		}
-		if ($queryplanner->requireTable("vtiger_crmentityRelHelpDesk",$matrix)){
+		if ($queryPlanner->requireTable("vtiger_crmentityRelHelpDesk",$matrix)){
 		    $query .=" left join vtiger_crmentity as vtiger_crmentityRelHelpDesk on vtiger_crmentityRelHelpDesk.crmid = vtiger_troubletickets.parent_id";
 		}
-		if ($queryplanner->requireTable("vtiger_accountRelHelpDesk")){
+		if ($queryPlanner->requireTable("vtiger_accountRelHelpDesk")){
 		    $query .=" left join vtiger_account as vtiger_accountRelHelpDesk on vtiger_accountRelHelpDesk.accountid=vtiger_crmentityRelHelpDesk.crmid";
 		}
-		if ($queryplanner->requireTable("vtiger_contactdetailsRelHelpDesk")){
+		if ($queryPlanner->requireTable("vtiger_contactdetailsRelHelpDesk")){
 		    $query .=" left join vtiger_contactdetails as vtiger_contactdetailsRelHelpDesk on vtiger_contactdetailsRelHelpDesk.contactid= vtiger_troubletickets.contact_id";
 		}
-		if ($queryplanner->requireTable("vtiger_productsRel")){
+		if ($queryPlanner->requireTable("vtiger_productsRel")){
 		    $query .=" left join vtiger_products as vtiger_productsRel on vtiger_productsRel.productid = vtiger_troubletickets.product_id";
 		}
-		if ($queryplanner->requireTable("vtiger_groupsHelpDesk")){
+		if ($queryPlanner->requireTable("vtiger_groupsHelpDesk")){
 		    $query .=" left join vtiger_groups as vtiger_groupsHelpDesk on vtiger_groupsHelpDesk.groupid = vtiger_crmentityHelpDesk.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_usersHelpDesk")){
+		if ($queryPlanner->requireTable("vtiger_usersHelpDesk")){
 		    $query .=" left join vtiger_users as vtiger_usersHelpDesk on vtiger_usersHelpDesk.id = vtiger_crmentityHelpDesk.smownerid";
 		}
-		if ($queryplanner->requireTable("vtiger_lastModifiedByHelpDesk")){
+		if ($queryPlanner->requireTable("vtiger_lastModifiedByHelpDesk")){
 		    $query .=" left join vtiger_users as vtiger_lastModifiedByHelpDesk on vtiger_lastModifiedByHelpDesk.id = vtiger_crmentityHelpDesk.modifiedby ";
 		}
-        if ($queryplanner->requireTable("vtiger_createdbyHelpDesk")){
+        if ($queryPlanner->requireTable("vtiger_createdbyHelpDesk")){
 			$query .= " left join vtiger_users as vtiger_createdbyHelpDesk on vtiger_createdbyHelpDesk.id = vtiger_crmentityHelpDesk.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 
@@ -646,6 +652,7 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_troubletickets"=>"ticketid"),
 			"Products" => array("vtiger_troubletickets"=>array("ticketid","product_id")),
 			"Services" => array("vtiger_crmentityrel"=>array("crmid","relcrmid"),"vtiger_troubletickets"=>"ticketid"),
+            "Emails" => array("vtiger_seactivityrel"=>array("crmid","activityid"),"vtiger_troubletickets"=>"ticketid"),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -668,10 +675,11 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 		}elseif($return_module == 'Products') {
 			$sql = 'UPDATE vtiger_troubletickets SET product_id=? WHERE ticketid=?';
 			$this->db->pquery($sql, array(null, $id));
-		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+		} elseif($return_module == 'Documents') {
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+            $this->db->pquery($sql, array($id, $return_id));
+        } else {
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -774,8 +782,36 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 	function clearSingletonSaveFields() {
 		$this->column_fields['comments'] = '';
 	}
+    
+    function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
+		global $currentModule;
+        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		require_once("modules/$related_module/$related_module.php");
+		$other = new $related_module();
+        vtlib_setup_modulevars($related_module, $other);
 
+        $returnset = '&return_module='.$currentModule.'&return_action=CallRelatedList&return_id='.$id;
 
+		$button = '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
+
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+		$query = "SELECT CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
+                vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
+                vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start, vtiger_activity.time_start,
+                vtiger_seactivityrel.crmid as parent_id FROM vtiger_activity, vtiger_seactivityrel, vtiger_troubletickets, vtiger_users,
+                vtiger_crmentity LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid WHERE 
+                vtiger_seactivityrel.activityid = vtiger_activity.activityid AND 
+                vtiger_troubletickets.ticketid = vtiger_seactivityrel.crmid AND vtiger_users.id = vtiger_crmentity.smownerid
+                AND vtiger_crmentity.crmid = vtiger_activity.activityid  AND vtiger_troubletickets.ticketid = $id AND
+                vtiger_activity.activitytype = 'Emails' AND vtiger_crmentity.deleted = 0";
+
+		$return_value = GetRelatedList($currentModule, $related_module, $other, $query, $button, $returnset);
+
+		if($return_value == null) $return_value = Array();
+		$return_value['CUSTOM_BUTTON'] = $button;
+
+		return $return_value;
+	}
 }
 
 ?>

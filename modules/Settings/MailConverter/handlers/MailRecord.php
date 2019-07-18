@@ -108,6 +108,7 @@ class Vtiger_MailRecord {
 		if(!$this->_isbodyhtml) {
 			$bodyhtml = preg_replace( Array("/\r\n/", "/\n/"), Array('<br>','<br>'), $bodyhtml );
 		}
+		if ($bodyhtml) $bodyhtml = str_replace("\xc2\xa0",' ', $bodyhtml);
 		return $bodyhtml;
 	}		
 

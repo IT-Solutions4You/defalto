@@ -24,7 +24,7 @@ Class Settings_Groups_Edit_View extends Settings_Vtiger_Index_View {
 			$viewer->assign('MODE', '');
 		}
 
-		$viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll(false));
+		$viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
 		$viewer->assign('RECORD_MODEL', $recordModel);
 		$viewer->assign('RECORD_ID', $record);
 		$viewer->assign('MODULE', $moduleName);
@@ -50,4 +50,23 @@ Class Settings_Groups_Edit_View extends Settings_Vtiger_Index_View {
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
+    
+    /**
+     * Setting module related Information to $viewer (for Vtiger7)
+     * @param type $request
+     * @param type $moduleModel
+     */
+    public function setModuleInfo($request, $moduleModel){
+        $record = $request->get('record');
+		if ($record) {
+			$viewer = $this->getViewer($request);
+			$listViewModel = Settings_Vtiger_ListView_Model::getInstance($request->getModule(false));
+			$linkParams = array('MODULE'=>$request->getModule(false), 'ACTION'=>$request->get('view'));
+
+			if(!$this->listViewLinks){
+				$this->listViewLinks = $listViewModel->getListViewLinks($linkParams);
+			}
+			$viewer->assign('LISTVIEW_LINKS', $this->listViewLinks);
+		}
+    }
 }

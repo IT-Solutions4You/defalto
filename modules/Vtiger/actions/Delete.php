@@ -18,18 +18,29 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 		if(!$currentUserPrivilegesModel->isPermitted($moduleName, 'Delete', $record)) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+
+		if ($record) {
+			$recordEntityName = getSalesEntityType($record);
+			if ($recordEntityName !== $moduleName) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
+		}
 	}
 
 	public function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 		$ajaxDelete = $request->get('ajaxDelete');
+		$recurringEditMode = $request->get('recurringEditMode');
 		
 		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+		$recordModel->set('recurringEditMode', $recurringEditMode);
 		$moduleModel = $recordModel->getModule();
 
 		$recordModel->delete();
-
+		$cv = new CustomView();
+		$cvId = $cv->getViewId($moduleName);
+		deleteRecordFromDetailViewNavigationRecords($recordId, $cvId, $moduleName);
 		$listViewUrl = $moduleModel->getListViewUrl();
 		if($ajaxDelete) {
 			$response = new Vtiger_Response();
@@ -39,8 +50,8 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 			header("Location: $listViewUrl");
 		}
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

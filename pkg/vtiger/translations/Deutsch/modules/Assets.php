@@ -8,12 +8,12 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'Assets'                       => 'Bestandsverwaltung'          ,
-	'SINGLE_Assets'                => 'Bestandsverwaltung'          , 
-	'LBL_ADD_RECORD'               => 'Add Bestandsverwaltung'      , 
-	'LBL_RECORDS_LIST'             => 'Bestandsverwaltung List'     , 
-	'LBL_ASSET_INFORMATION'        => 'Bestandsverwaltung Information', 
-	'Asset No'                     => 'Bestandsverwaltung Nr'       , 
+	'Assets'                       => 'Bestände'          ,
+	'SINGLE_Assets'                => 'Bestand'          , 
+	'LBL_ADD_RECORD'               => 'Neuer Bestand'      , 
+	'LBL_RECORDS_LIST'             => 'Bestandsübersicht'     , 
+	'LBL_ASSET_INFORMATION'        => 'Bestandinformation', 
+	'Asset No'                     => 'Bestandnummer'       , 
 	'Serial Number'                => 'Seriennummer'                , 
 	'Date Sold'                    => 'Verkaufsdatum'               , 
 	'Date in Service'              => 'Servicedatum'                , 
@@ -21,9 +21,9 @@ $languageStrings = array(
 	'Invoice Name'                 => 'Rechnung'                    , 
 	'Shipping Method'              => 'Versandmethode'              , 
 	'Shipping Tracking Number'     => 'Sendungsverfolgungsnummer'   , 
-	'Asset Name'                   => 'Titel Bestandsverwaltung'    , 
+	'Asset Name'                   => 'Bestandname'    , 
 	'Customer Name'                => 'Organisation'                , 
 	'Notes'                        => 'Beschreibung'                , 
-	'In Service'                   => 'unterstützt'                , 
-	'Out-of-service'               => 'wird nicht mehr unterstützt', 
+	'In Service'                   => 'Bestand aktiv'                , 
+	'Out-of-service'               => 'Bestand inaktiv', 
 );

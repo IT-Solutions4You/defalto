@@ -1,43 +1,40 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
 	'Campaigns'                    => 'Campañas'                   , 
 	'SINGLE_Campaigns'             => 'Campaña'                    , 
-	'LBL_ADD_RECORD'               => 'Agregar Campaña'            , 
+	'LBL_ADD_RECORD'               => 'Agregar campaña'            , 
 	'LBL_RECORDS_LIST'             => 'Lista de campañas'          , 
-	'LBL_CAMPAIGN_INFORMATION'     => 'Información de Campaña'    , 
-	'LBL_EXPECTATIONS_AND_ACTUALS' => 'Expectativa y Real'          , 
-	'Campaign Name'                => 'Nombre de Campaña'          , 
-	'Campaign No'                  => 'Núm. Campaña'              , 
-	'Campaign Type'                => 'Tipo de Campaña'            , 
+	'LBL_CAMPAIGN_INFORMATION'     => 'Información de campaña'    , 
+	'LBL_EXPECTATIONS_AND_ACTUALS' => 'Expectativas y Reales'          , 
+	'Campaign Name'                => 'Nombre de campaña'          , 
+	'Campaign No'                  => 'Núm.  de campaña'              , 
+	'Campaign Type'                => 'Tipo de campaña'            , 
 	'Product'                      => 'Producto'                    , 
-	'Campaign Status'              => 'Situación de Campaña'      , 
-	'Num Sent'                     => 'Número de Envíos'          , 
+	'Campaign Status'              => 'Estado de la campaña'      , 
+	'Num Sent'                     => 'Número de envíos'          , 
 	'Sponsor'                      => 'Patrocinador'                , 
-	'Target Audience'              => 'Público Objetivo'           , 
-	'TargetSize'                   => 'Cantidad Objetivo'           , 
-	'Expected Response'            => 'Respuesta Estimada'          , 
-	'Expected Revenue'             => 'Beneficio Estimado'          , 
-	'Budget Cost'                  => 'Costo Estimado'              , 
-	'Actual Cost'                  => 'Costo Real'                  , 
-	'Expected Response Count'      => 'Estimación de Respuestas'   , 
-	'Expected Sales Count'         => 'Estimación de Ventas'       , 
+	'Target Audience'              => 'Público objetivo'           , 
+	'TargetSize'                   => 'Cantidad objetivo'           , 
+	'Expected Response'            => 'Respuesta estimada'          , 
+	'Expected Revenue'             => 'Beneficio estimado'          , 
+	'Budget Cost'                  => 'Costo estimado'              , 
+	'Actual Cost'                  => 'Costo real'                  , 
+	'Expected Response Count'      => 'Estimación de respuestas'   , 
+	'Expected Sales Count'         => 'Estimación de ventas'       , 
 	'Expected ROI'                 => 'Estimación de ROI'          , 
 	'Actual Response Count'        => 'Respuestas'                  , 
 	'Actual Sales Count'           => 'Ventas'                      , 
-	'Actual ROI'                   => 'Retorno de Inversión'       , 
+	'Actual ROI'                   => 'Retorno de inversión'       , 
 	'Webinar'                      => 'Webinar'                     , 
-	'Referral Program'             => 'Programa de Referidos'       , 
+	'Referral Program'             => 'Programa de referidos'       , 
 	'Advertisement'                => 'Publicidad'                  , 
 	'Banner Ads'                   => 'Banners'                     , 
 	'Direct Mail'                  => 'Mailing'                     , 
@@ -55,4 +52,8 @@ $languageStrings = array(
 	'Contacted - Successful'       => 'Contactado - Éxito'         , 
 	'Contacted - Unsuccessful'     => 'Contactado - Fracaso'        , 
 	'Contacted - Never Contact Again' => 'Contactado - No volver a contactar', 
+);
+
+$jsLanguageStrings = array(
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s de la lista seleccionada se anexará a la lista existente.',
 );

@@ -12,8 +12,11 @@ class Leads_LeadsByStatus_Dashboard extends Vtiger_IndexAjax_View {
     
     function getSearchParams($value,$assignedto,$dates) {
         $listSearchParams = array();
-        $conditions = array(array('leadstatus','e',$value));
-        if($assignedto != '') array_push($conditions,array('assigned_user_id','e',getUserFullName($assignedto)));
+        $conditions = array(array('leadstatus','e',decode_html(urlencode(escapeSlashes($value)))));
+        if($value == vtranslate('LBL_BLANK', 'Leads')){
+            $conditions = array(array('leadstatus','y'));
+        }
+        if($assignedto != '') array_push($conditions,array('assigned_user_id','e',decode_html(urlencode(escapeSlashes(getUserFullName($assignedto))))));
         if(!empty($dates)){
             array_push($conditions,array('createdtime','bw',$dates['start'].' 00:00:00,'.$dates['end'].' 23:59:59'));
         }
@@ -28,20 +31,13 @@ class Leads_LeadsByStatus_Dashboard extends Vtiger_IndexAjax_View {
 
 		$linkId = $request->get('linkid');
 		$data = $request->get('data');
-		
-		$createdTime = $request->get('createdtime');
-		
-		//Date conversion from user to database format
-		if(!empty($createdTime)) {
-			$dates['start'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['start']);
-			$dates['end'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['end']);
-		}
+		$dates = $request->get('createdtime');
 		
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getLeadsByStatus($request->get('smownerid'),$dates);
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][1],$request->get('smownerid'),$dates);
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i][2],$request->get('smownerid'),$request->get('dateFilter')).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());

@@ -40,6 +40,8 @@ function vtws_getUsersInTheSameGroup($id){
 
 	foreach ($groups as $group) {
 		$groupUsers->getAllUsersInGroup($group);
+		//Clearing static cache for sub groups
+		GetGroupUsers::$groupIdsList = array();
 		$usersInGroup = $groupUsers->group_users;
 		foreach ($usersInGroup as $user) {
 		if($user != $id){
@@ -251,7 +253,8 @@ function vtws_getOwnerType($ownerId){
 	if(vtws_isRecordOwnerUser($ownerId) == true){
 		return 'Users';
 	}
-	throw new WebServiceException(WebServiceErrorCode::$INVALIDID,"Invalid owner of the record");
+	return false;
+//	throw new WebServiceException(WebServiceErrorCode::$INVALIDID,"Invalid owner of the record");
 }
 
 function vtws_runQueryAsTransaction($query,$params,&$result){
@@ -402,6 +405,16 @@ function vtws_addWebserviceOperation($name,$handlerFilePath,$handlerMethodName,$
 		return $operationId;
 	}
 	return null;
+}
+
+function vtws_deleteWebServiceOperation($oprationId) {
+	global $adb;
+	$params = array();
+	$sql = 'DELETE from vtiger_ws_operation WHERE operationid=?';
+	$adb->pquery($sql, array($oprationId));
+	$sql = 'DELETE from vtiger_ws_operation_parameters WHERE operationid=?';
+	$adb->pquery($sql, array($oprationId));
+	return true;
 }
 
 /**
@@ -616,7 +629,7 @@ function vtws_saveLeadRelatedProducts($leadId, $relatedId, $setype) {
 	$rowCount = $adb->num_rows($result);
 	for($i = 0; $i < $rowCount; ++$i) {
 		$productId = $adb->query_result($result,$i,'productid');
-		$resultNew = $adb->pquery("insert into vtiger_seproductsrel values(?,?,?)", array($relatedId, $productId, $setype));
+		$resultNew = $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', array($relatedId, $productId, $setype, 1));
 		if($resultNew === false){
 			return false;
 		}
@@ -808,111 +821,112 @@ function vtws_transferComments($sourceRecordId, $destinationRecordId) {
 
 function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 	$db = PearDatabase::getInstance();
-	//Updating the smcreatorid,smownerid, modifiedby in vtiger_crmentity
-	$sql = "UPDATE vtiger_crmentity SET smcreatorid=? WHERE smcreatorid=? AND setype<>?";
-	$db->pquery($sql, array($newOwnerId, $ownerId,'ModComments'));
-
-	$sql = "UPDATE vtiger_crmentity SET smownerid=? WHERE smownerid=? AND setype<>?";
-	$db->pquery($sql, array($newOwnerId, $ownerId, 'ModComments'));
-
-	$sql = "update vtiger_crmentity set modifiedby=? where modifiedby=?";
-	$db->pquery($sql, array($newOwnerId, $ownerId));
+	//Updating the smownerid, modifiedby in vtiger_crmentity
+	$db->pquery('UPDATE vtiger_crmentity SET smownerid=?, modifiedtime = ? WHERE smownerid=? AND setype<>?', array($newOwnerId, date('Y-m-d H:i:s'), $ownerId, 'ModComments'));
+	$db->pquery('UPDATE vtiger_crmentity SET modifiedby=? WHERE modifiedby=?', array($newOwnerId, $ownerId));
 
 	//deleting from vtiger_tracker
-	if ($delete) {
-		$sql = "delete from vtiger_tracker where user_id=?";
-		$db->pquery($sql, array($ownerId));
-	}
-
-	//updating the vtiger_import_maps
-	$sql ="update vtiger_import_maps set assigned_user_id=? where assigned_user_id=?";
-	$db->pquery($sql, array($newOwnerId, $ownerId));
-
-	if(Vtiger_Utils::CheckTable('vtiger_customerportal_prefs')) {
-		$query = 'UPDATE vtiger_customerportal_prefs SET prefvalue = ? WHERE prefkey = ? AND prefvalue = ?';
-		$params = array($newOwnerId, 'defaultassignee', $ownerId);
-		$db->pquery($query, $params);
-
-		$query = 'UPDATE vtiger_customerportal_prefs SET prefvalue = ? WHERE prefkey = ? AND prefvalue = ?';
-		$params = array($newOwnerId, 'userid', $ownerId);
-		$db->pquery($query, $params);
-	}
+	$db->pquery('DELETE FROM vtiger_tracker WHERE user_id=?', array($ownerId));
 
 	//delete from vtiger_homestuff
-	if ($delete) {
-		$sql = "delete from vtiger_homestuff where userid=?";
-		$db->pquery($sql, array($ownerId));
+	$db->pquery('DELETE FROM vtiger_homestuff WHERE userid=?', array($ownerId));
+
+	//updating the vtiger_import_maps
+	$db->pquery('UPDATE vtiger_import_maps SET assigned_user_id=? WHERE assigned_user_id=?', array($newOwnerId, $ownerId));
+
+	if (Vtiger_Utils::CheckTable('vtiger_customerportal_prefs')) {
+		$query = 'UPDATE vtiger_customerportal_prefs SET prefvalue = ? WHERE prefkey IN (?, ?) AND prefvalue = ?';
+		$params = array($newOwnerId, 'userid', 'defaultassignee', $ownerId);
+		$db->pquery($query, $params);
 	}
 
-	//delete from vtiger_users to vtiger_role vtiger_table
-	if ($delete) {
-		$sql = "delete from vtiger_users2group where userid=?";
-		$db->pquery($sql, array($ownerId));
-	}
+	$sql = "SELECT tablename,columnname FROM vtiger_field 
+            LEFT JOIN vtiger_fieldmodulerel ON vtiger_field.fieldid=vtiger_fieldmodulerel.fieldid 
+            WHERE (uitype IN (?,?,?,?) OR (uitype=? AND relmodule=?)) AND columnname <> ? GROUP BY tablename,columnname ORDER BY NULL";
+	$result = $db->pquery($sql, array(52, 53, 77, 101, 10, 'Users', 'smcreatorid'));
 
-	$sql = "select tabid,fieldname,tablename,columnname from vtiger_field left join ".
-	"vtiger_fieldmodulerel on vtiger_field.fieldid=vtiger_fieldmodulerel.fieldid where uitype ".
-	"in (52,53,77,101) or (uitype=10 and relmodule='Users')";
-	$result = $db->pquery($sql, array());
 	$it = new SqlResultIterator($db, $result);
 	$columnList = array();
 	foreach ($it as $row) {
 		$column = $row->tablename.'.'.$row->columnname;
-		if(!in_array($column, $columnList)) {
+		if (!in_array($column, $columnList)) {
 			$columnList[] = $column;
-			if($row->columnname == 'smcreatorid' || $row->columnname == 'smownerid') {
-				$sql = "update $row->tablename set $row->columnname=? where $row->columnname=? and setype<>?";
+			if ($row->columnname == 'smownerid') {
+				$sql = "UPDATE $row->tablename set $row->columnname=? WHERE $row->columnname=? AND setype<>?";
 				$db->pquery($sql, array($newOwnerId, $ownerId, 'ModComments'));
+			} elseif ($row->tablename == 'vtiger_users' && $row->columnname == 'reports_to_id') {
+				$sql = "UPDATE $row->tablename SET $row->columnname = CASE WHEN id=$newOwnerId THEN ? ELSE ? END WHERE $row->columnname=?";
+				$db->pquery($sql, array('', $newOwnerId, $ownerId));
 			} else {
-				$sql = "update $row->tablename set $row->columnname=? where $row->columnname=?";
+				$sql = "UPDATE $row->tablename SET $row->columnname=? WHERE $row->columnname=?";
 				$db->pquery($sql, array($newOwnerId, $ownerId));
 			}
 		}
 	}
-	
+
+	//update webforms assigned userid
+	$db->pquery("UPDATE vtiger_webforms SET ownerid = ? WHERE ownerid = ?", array($newOwnerId, $ownerId));
+
 	//update workflow tasks Assigned User from Deleted User to Transfer User
 	$newOwnerModel = Users_Record_Model::getInstanceById($newOwnerId, 'Users');
 	$ownerModel = Users_Record_Model::getInstanceById($ownerId, 'Users');
-	
+
 	vtws_transferOwnershipForWorkflowTasks($ownerModel, $newOwnerModel);
-    vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId);
+	vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId);
+
+	//transferring non-private filters (status not 1) of deleted user to new selected user
+	$db->pquery('UPDATE vtiger_customview SET userid = ? WHERE userid = ? AND status != ?', array($newOwnerId, $ownerId, 1));
+	//transferring private shared filters of deleted user to selected user
+	$db->pquery('UPDATE vtiger_customview SET userid = ? WHERE userid = ? AND status = ? AND cvid IN (SELECT cvid FROM vtiger_cv2users UNION SELECT cvid FROM vtiger_cv2group UNION SELECT cvid FROM vtiger_cv2role UNION SELECT cvid FROM vtiger_cv2rs)', array($newOwnerId, $ownerId, 1));
+
+	if ($delete) {
+		//Delete from vtiger_users to vtiger_role vtiger_table
+		$db->pquery('DELETE FROM vtiger_users2group WHERE userid=?', array($ownerId));
+
+		//Mark user as deleted =1 
+		$db->pquery('UPDATE vtiger_users SET deleted=? WHERE id=?', array(1, $ownerId));
+
+		//Change the owner for report
+		$db->pquery('UPDATE vtiger_report SET owner=? WHERE owner=?', array($newOwnerId, $ownerId));
+
+		//Recalculate user privelege file
+		RecalculateSharingRules();
+	}
 }
 
-function vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId){
-    $db = PearDatabase::getInstance();
-    $sql = 'SELECT id,roundrobin_userid FROM vtiger_webforms;';
-    $result = $db->pquery($sql, array());
-    $numOfRows = $db->num_rows($result);
-    for($i=0;$i<$numOfRows;$i++){
-        $rowdata = $db->query_result_rowdata($result, $i);
-        $webformId = $rowdata['id'];
-        $encodedUsersList = $rowdata['roundrobin_userid'];
-        $encodedUsersList = str_replace("&quot;","\"",$encodedUsersList);
-        $usersList = json_decode($encodedUsersList,true);
-        if(is_array($usersList)){
-            if(($key = array_search($ownerId, $usersList)) !== false){
-                if(!in_array($newOwnerId,$usersList)){
-                      $usersList[$key] = $newOwnerId;
-                }
-                else{
-                    unset($usersList[$key]);
-                    $revisedUsersList = array();
-                    $j=0;
-                    foreach($usersList as $uid){
-                        $revisedUsersList[$j++] = $uid;
-                    }
-                    $usersList = $revisedUsersList;
-                }
-                if(count($usersList) == 0){
-                    $db->pquery('UPDATE vtiger_webforms SET roundrobin_userid = ?,roundrobin = ? where id =?',array("--None--",0,$webformId));
-                }
-                else{
-                    $usersList = json_encode($usersList);
-                    $db->pquery('UPDATE vtiger_webforms SET roundrobin_userid = ? where id =?',array($usersList,$webformId));
-                }
-            }
-        }
-    }
+function vtws_updateWebformsRoundrobinUsersLists($ownerId, $newOwnerId) {
+	$db = PearDatabase::getInstance();
+	$sql = 'SELECT id,roundrobin_userid FROM vtiger_webforms;';
+	$result = $db->pquery($sql, array());
+	$numOfRows = $db->num_rows($result);
+	for ($i = 0; $i < $numOfRows; $i++) {
+		$rowdata = $db->query_result_rowdata($result, $i);
+		$webformId = $rowdata['id'];
+		$encodedUsersList = $rowdata['roundrobin_userid'];
+		$encodedUsersList = str_replace("&quot;", "\"", $encodedUsersList);
+		$usersList = json_decode($encodedUsersList, true);
+		if (is_array($usersList)) {
+			if (($key = array_search($ownerId, $usersList)) !== false) {
+				if (!in_array($newOwnerId, $usersList)) {
+					$usersList[$key] = $newOwnerId;
+				} else {
+					unset($usersList[$key]);
+					$revisedUsersList = array();
+					$j = 0;
+					foreach ($usersList as $uid) {
+						$revisedUsersList[$j++] = $uid;
+					}
+					$usersList = $revisedUsersList;
+				}
+				if (count($usersList) == 0) {
+					$db->pquery('UPDATE vtiger_webforms SET roundrobin_userid = ?,roundrobin = ? where id =?', array("--None--", 0, $webformId));
+				} else {
+					$usersList = json_encode($usersList);
+					$db->pquery('UPDATE vtiger_webforms SET roundrobin_userid = ? where id =?', array($usersList, $webformId));
+				}
+			}
+		}
+	}
 }
 
 function vtws_transferOwnershipForWorkflowTasks($ownerModel, $newOwnerModel) {
@@ -1034,6 +1048,241 @@ function vtws_getWebserviceCurrentLanguage() {
 function vtws_getWebserviceDefaultLanguage() {
 	global $default_language;
 	return $default_language;
+}
+
+/**
+ * Function used to transfer all the potential related records to given Entity(Project) record
+ * @param $leadid - potentialid
+ * @param $relatedid - related entity id (projectid)
+ * @param $setype - related module(Project)
+ */
+function vtws_transferPotentialRelatedRecords($potentialId, $relatedId, $seType) {
+
+	if (empty($potentialId) || empty($relatedId) || empty($seType)) {
+		throw new WebServiceException(WebServiceErrorCode::$POTENTIAL_RELATED_UPDATE_FAILED, "Failed to move related Records");
+	}
+	if (vtlib_isModuleActive('Calendar')) {
+		vtws_transferRelatedPotentialActivities($potentialId, $relatedId);
+	}
+	if (vtlib_isModuleActive('Quotes')) {
+		vtws_transferRelatedPotentialQuotes($potentialId, $relatedId);
+	}
+	if (vtlib_isModuleActive('ModComments')) {
+		CRMEntity::getInstance('ModComments');
+		ModComments::copyCommentsToRelatedRecord($potentialId, $relatedId);
+	}
+	if (vtlib_isModuleActive('Documents')) {
+		vtws_transferRelatedPotentialDocuments($potentialId, $relatedId);
+	}
+}
+
+/** 	Function used to get the potential related activities and transfer to Project
+ * 	@param integer $entityId - potential entity id
+ * 	@param integer $relatedId - related entity id to which the records need to be transferred
+ */
+function vtws_transferRelatedPotentialActivities($entityId, $relatedId) {
+	global $adb;
+
+	$relatedRecordInstance = Vtiger_Record_Model::getInstanceById($relatedId);
+	$relatedModuleName = $relatedRecordInstance->getModuleName();
+
+	if (empty($entityId) || empty($relatedId)) {
+		throw new WebServiceException(WebServiceErrorCode::$POTENTIAL_RELATED_UPDATE_FAILED, "Failed to move related Activities");
+	}
+
+	$sql = "SELECT * FROM vtiger_crmentityrel 
+			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_crmentityrel.relcrmid 
+			WHERE vtiger_crmentityrel.crmid=? AND vtiger_crmentityrel.relmodule=? AND vtiger_crmentity.setype <> ?";
+	$result = $adb->pquery($sql, array($entityId, 'Calendar', 'Emails'));
+
+	if ($result === false) {
+		return false;
+	}
+	$rowCount = $adb->num_rows($result);
+	for ($i = 0; $i < $rowCount; $i++) {
+		$activityId = $adb->query_result($result, $i, "relcrmid");
+		$activityModuleName = $adb->query_result($result, $i, "relmodule");
+
+		if (!empty($relatedId)) {
+			$sql = "INSERT INTO vtiger_crmentityrel (crmid,module,relcrmid,relmodule) values (?,?,?,?)";
+			$resultNew = $adb->pquery($sql, array($relatedId, $relatedModuleName, $activityId, $activityModuleName));
+			if ($resultNew === false) {
+				return false;
+			}
+		}
+	}
+
+	$sql = 'SELECT activityid,setype FROM vtiger_seactivityrel
+			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_seactivityrel.activityid
+			WHERE vtiger_seactivityrel.crmid=? AND vtiger_crmentity.setype <> ?';
+	$result = $adb->pquery($sql, array($entityId, 'Emails'));
+	if ($result === false) {
+		return false;
+	}
+	$rowCount = $adb->num_rows($result);
+
+	for ($i = 0; $i < $rowCount; $i++) {
+		$activityId = $adb->query_result($result, $i, "activityid");
+		$activityModuleName = $adb->query_result($result, $i, "setype");
+
+		if (!empty($relatedId)) {
+			$sql = "INSERT INTO vtiger_crmentityrel (crmid,module,relcrmid,relmodule) values (?,?,?,?)";
+			$resultNew = $adb->pquery($sql, array($relatedId, $relatedModuleName, $activityId, $activityModuleName));
+			if ($resultNew === false) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Function To Transfer Related Quotes From Parent Record to Related Record
+ * @param <Integer> $entityId - Parent Id
+ * @param <Integer> $relatedId - Related Id
+ * @return boolean
+ */
+function vtws_transferRelatedPotentialQuotes($entityId, $relatedId) {
+	$db = PearDatabase::getInstance();
+	$entityRecordModel = Vtiger_Record_Model::getInstanceById($entityId);
+	$relatedRecordModel = Vtiger_Record_Model::getInstanceById($relatedId);
+
+	$relatedModel = $relatedRecordModel->getModule();
+	$relatedModuleName = $relatedModel->getName();
+	$quotesModel = Vtiger_Module_Model::getInstance('Quotes');
+
+	$query = 'SELECT vtiger_quotes.quoteid FROM vtiger_quotes
+				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_quotes.quoteid
+				INNER JOIN vtiger_potential on vtiger_potential.potentialid=vtiger_quotes.potentialid
+				WHERE vtiger_crmentity.deleted=0 and vtiger_potential.potentialid=?';
+	$result = $db->pquery($query, array($entityId));
+	if ($result == false) {
+		return false;
+	}
+
+	$rowCount = $db->num_rows($result);
+	for ($i = 0; $i < $rowCount; $i++) {
+		$quoteId = $db->query_result($result, 0, 'quoteid');
+		$relationModel = Vtiger_Relation_Model::getInstance($relatedModel, $quotesModel);
+		$relationModel->addRelation($relatedId, $quoteId);
+	}
+
+	$sql = "SELECT * FROM vtiger_crmentityrel 
+			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_crmentityrel.relcrmid 
+			WHERE vtiger_crmentityrel.crmid=? AND vtiger_crmentityrel.relmodule=?";
+	$result = $db->pquery($sql, array($entityId, 'Quotes'));
+
+	if ($result === false) {
+		return false;
+	}
+
+	$rowCount = $db->num_rows($result);
+	for ($i = 0; $i < $rowCount; $i++) {
+		$quoteId = $db->query_result($result, $i, "relcrmid");
+		$quoteModuleName = $db->query_result($result, $i, "relmodule");
+
+		if (!empty($relatedId)) {
+			$sql = "INSERT INTO vtiger_crmentityrel (crmid,module,relcrmid,relmodule) values (?,?,?,?)";
+			$resultNew = $db->pquery($sql, array($relatedId, $relatedModuleName, $quoteId, $quoteModuleName));
+			if ($resultNew === false) {
+				return false;
+			}
+		}
+	}
+}
+
+/**
+ * Function To Transfer Related Documents From Parent Record to Related Record
+ * @param <Integer> $entityId - Parent Id
+ * @param <Integer> $relatedId - Related Id
+ * @return boolean
+ */
+function vtws_transferRelatedPotentialDocuments($entityId, $relatedId) {
+	$db = PearDatabase::getInstance();
+
+	$sql = "SELECT vtiger_senotesrel.notesid FROM vtiger_senotesrel 
+			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_senotesrel.crmid 
+			WHERE vtiger_senotesrel.crmid=?";
+	$result = $db->pquery($sql, array($entityId));
+
+	if ($result === false) {
+		return false;
+	}
+
+	$rowCount = $db->num_rows($result);
+	for ($i = 0; $i < $rowCount; $i++) {
+		$documentId = $db->query_result($result, $i, "notesid");
+
+		if (!empty($relatedId)) {
+			$sql = "INSERT INTO vtiger_senotesrel (crmid,notesid) values (?,?)";
+			$resultNew = $db->pquery($sql, array($relatedId, $documentId));
+			if ($resultNew === false) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+function vtws_validateConvertEntityMandatoryValues($entity, $entityHandler, $module) {
+	$mandatoryFields = $entityHandler->getMeta()->getMandatoryFields();
+	foreach ($mandatoryFields as $field) {
+		if (empty($entity[$field])) {
+			$fieldInfo = vtws_getConvertEntityFieldInfo($module, $field);
+			if (($fieldInfo['type']['name'] == 'picklist' || $fieldInfo['type']['name'] == 'multipicklist' || $fieldInfo['type']['name'] == 'date' || $fieldInfo['type']['name'] == 'datetime') && ($fieldInfo['editable'] == true)) {
+				$entity[$field] = $fieldInfo['default'];
+			} else {
+				$entity[$field] = '????';
+			}
+		}
+	}
+	return $entity;
+}
+
+function vtws_getConvertEntityFieldInfo($module, $fieldname) {
+	global $adb, $log, $current_user;
+	$describe = vtws_describe($module, $current_user);
+	foreach ($describe['fields'] as $index => $fieldInfo) {
+		if ($fieldInfo['name'] == $fieldname) {
+			return $fieldInfo;
+		}
+	}
+	return false;
+}
+
+function vtws_getCompanyEncodedImage($logoname) {
+	global $root_directory;
+	$image = "$root_directory/test/logo/$logoname";
+	$image_data = file_get_contents($image);
+	$encoded_image = base64_encode($image_data);
+	return $encoded_image;
+}
+
+function vtws_getCompanyId() {
+	$db = PearDatabase::getInstance();
+	$result = $db->pquery('SELECT organization_id FROM vtiger_organizationdetails', array());
+	if ($db->num_rows($result) == 1) {
+		$id = $db->query_result($result, 0, 'organization_id');
+	}
+	return vtws_getWebserviceEntityId('CompanyDetails', $id);
+}
+
+function vtws_recordExists($recordId) {
+	$ids = vtws_getIdComponents($recordId);
+	return !Vtiger_Util_Helper::CheckRecordExistance($ids[1]);
+}
+
+function vtws_isDuplicatesAllowed($webserviceObject){
+	$moduleName = $webserviceObject->getEntityName();
+	$allowed = true;
+	if ($moduleName) {
+		$db = PearDatabase::getInstance();
+		$result = $db->pquery('SELECT allowduplicates FROM vtiger_tab WHERE name=?', array($moduleName));
+		$allowed = ($db->query_result($result, 'allowduplicates')) ? true : false;
+	}
+	return $allowed;
 }
 
 ?>

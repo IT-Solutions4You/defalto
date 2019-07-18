@@ -37,6 +37,15 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Назначение Пользователь',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Назначение пользователей В Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Круглый Список Робин Пользователи',
+
+  'LBL_ADD_RECORD' => 'Добавить Веб-Форму',
+
+	'LBL_UPLOAD_DOCUMENTS' => 'Загрузить документы',
+	'LBL_ADD_FILE_FIELD' => 'Файл Загрузить поле',
+	'LBL_FIELD_LABEL' => 'Заголовок документа',
+	'LBL_FILE_FIELD_INFO' => 'Для каждого файла, загруженного из Интернета формируют новый документ создается с вложенным файлом. Документ также связан с этой вновь созданной% с.',
+	'LBL_NO_FILE_FIELD' => 'Нет файлов полей не добавлено.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Скопировать в буфер обмена',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform успешно удален', 
@@ -47,4 +56,10 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Ориентир поля не могу быть обязательным без коррекции стоимости',
 	'JS_TYPE_TO_SEARCH' => 'Введите для поиска',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform с таким именем уже существует',
+
+  'JS_SELECT_AN_OPTION' => 'Выберите вариант',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Максимальная вы можете добавить%s поля файлов.',
+	'JS_COPIED_SUCCESSFULLY' => 'Скопировано успешно.',
+	'JS_COPY_FAILED' => 'Копирование не удалось. Пожалуйста, скопируйте вручную.',
 );

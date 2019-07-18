@@ -3,8 +3,8 @@
     <head>
         <link rel="stylesheet" href="assets/qunit.css" />
         <script src="assets/qunit.js"></script>
-        <script src="assets/qunit-logging.js"></script> <!-- console.log for test failures -->
-        <script src="assets/coverage.js"></script>
+        <!-- console.log for test failures: enable locally if you need extra debug info-->
+        <!--<script src="assets/qunit-logging.js"></script>-->
         <script src="assets/jquery-1.7.1.min.js"></script>
         <script src="../js/bootstrap-datepicker.js"></script>
 
@@ -24,12 +24,20 @@
 
         <!-- Test suites -->
         <script src="suites/formats.js"></script>
+        <script src="suites/mouse_navigation/all.js"></script>
         <script src="suites/mouse_navigation/2012.js"></script>
         <script src="suites/mouse_navigation/2011.js"></script>
+        <script src="suites/keyboard_navigation/all.js"></script>
         <script src="suites/keyboard_navigation/2012.js"></script>
         <script src="suites/keyboard_navigation/2011.js"></script>
         <script src="suites/component.js"></script>
+        <script src="suites/events.js"></script>
         <script src="suites/options.js"></script>
+        <script src="suites/inline.js"></script>
+        <script src="suites/calendar-weeks.js"></script>
+        <script src="suites/data-api.js"></script>
+        <script src="suites/noconflict.js"></script>
+        <script src="suites/methods.js"></script>
     </head>
     <body>
         <h1 id="qunit-header">bootstrap-datepicker</h1>

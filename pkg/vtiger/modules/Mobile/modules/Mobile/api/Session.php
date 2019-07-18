@@ -15,7 +15,7 @@ class Mobile_API_Session {
 	}
 
 	static function destroy($sessionid = false) {
-		HTTP_Session_Destroy($sessionid);
+		HTTP_Session::destroy($sessionid);
 	}
 
 	static function init($sessionid = false) {

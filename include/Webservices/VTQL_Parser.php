@@ -1361,6 +1361,9 @@ if($firstTable!=$table){
 		$this->out['defaultJoinConditions'] = $this->out['defaultJoinConditions']." LEFT JOIN $table ON $firstTable.$firstIndex=$table.crmid";
 	}else{
 		$this->out['defaultJoinConditions'] = $this->out['defaultJoinConditions']." LEFT JOIN $table ON $firstTable.$firstIndex=$table.{$tabNameIndex[$table]}";
+        if($this->user && Vtiger_Functions::isUserSpecificFieldTable($table, $module)) {
+            $this->out['defaultJoinConditions'] .= ' AND '. $table. '.userid = '.$this->user->id;
+        }
 	}
 }else{
 	$this->out['tableName'] = $table;

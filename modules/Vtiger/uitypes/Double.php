@@ -27,4 +27,13 @@ class Vtiger_Double_UIType extends Vtiger_Base_UIType {
 		return decimalFormat($value);
 	}
 
+	/**
+	 * Function to get the Value of the field in the format, the user provides it on Save
+	 * @param <Object> $value
+	 * @return <Object>
+	 */
+	public function getUserRequestValue($value) {
+		return $this->getDisplayValue($value);
+	}
+
 }

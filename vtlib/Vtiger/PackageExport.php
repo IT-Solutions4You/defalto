@@ -138,27 +138,20 @@ class Vtiger_PackageExport {
 
 		//Copy module templates files
 		if(is_dir("layouts/vlayout/modules/$module"))
-			$zip->copyDirectoryFromDisk ("layouts/vlayout/modules/$module", "templates");
+			$zip->copyDirectoryFromDisk("layouts/vlayout/modules/$module", "layouts/vlayout/modules/$module");
 
 		//Copy Settings module templates files, if any
 		if(is_dir("layouts/vlayout/modules/Settings/$module"))
-			$zip->copyDirectoryFromDisk ("layouts/vlayout/modules/Settings/$module", "settings/templates");
+			$zip->copyDirectoryFromDisk("layouts/vlayout/modules/Settings/$module", "layouts/vlayout/modules/Settings/$module");
 
-                //Support to multiple layouts of module
-                $layoutDirectories = glob('layouts' . '/*', GLOB_ONLYDIR);
-                
-                foreach ($layoutDirectories as $key => $layoutName) {
-                    $moduleLayout = $layoutName."/modules/$module";
-                    if(is_dir($moduleLayout)){
-                        $zip->copyDirectoryFromDisk ($moduleLayout, $moduleLayout);
-                    }
-                    
-                    $settingsLayout = $layoutName."/modules/Settings/$module";
-                    if(is_dir($settingsLayout)){
-                        $zip->copyDirectoryFromDisk ($settingsLayout, $settingsLayout);
-                    }
-                }
+		if(is_dir("layouts/vlayout/skins/images/$module"))
+			$zip->copyDirectoryFromDisk ("layouts/vlayout/skins/images/$module", "images");
+		
+		if(is_dir("layouts/v7/modules/$module"))
+			$zip->copyDirectoryFromDisk("layouts/v7/modules/$module", "layouts/v7/modules/$module");
 
+		if(is_dir("layouts/v7/modules/Settings/$module"))
+			$zip->copyDirectoryFromDisk("layouts/v7/modules/Settings/$module", "layouts/v7/modules/Settings/$module");
 
 		//Copy language files
 		$this->__copyLanguageFiles($zip, $module);
@@ -431,9 +424,9 @@ class Vtiger_PackageExport {
 			if(isset($fieldresultrow['masseditable'])) {
 				$this->outputNode($fieldresultrow['masseditable'], 'masseditable');
 			}
-                        if(isset($fieldresultrow['summaryfield'])){
-                            $this->outputNode($fieldresultrow['summaryfield'],'summaryfield');
-                        }
+			if(isset($fieldresultrow['summaryfield'])){
+				$this->outputNode($fieldresultrow['summaryfield'],'summaryfield');
+			}
 			// Export Entity Identifier Information
 			if($fieldname == $entity_fieldname) {
 				$this->openNode('entityidentifier');
@@ -441,12 +434,18 @@ class Vtiger_PackageExport {
 				$this->outputNode($adb->query_result($entityresult, 0, 'entityidcolumn'), 'entityidcolumn');
 				$this->closeNode('entityidentifier');
 			}
-
+			$restrictedPicklist = array('hdnTaxType', 'region_id');
 			// Export picklist values for picklist fields
 			if($uitype == '15' || $uitype == '16' || $uitype == '111' || $uitype == '33' || $uitype == '55') {
-
-				if($uitype == '16') {
-					$picklistvalues = vtlib_getPicklistValues($fieldname);
+				if ($uitype == '16') {
+					if (!(in_array($fieldname, $restrictedPicklist))) {
+						$picklistvalues = vtlib_getPicklistValues($fieldname);
+					} else {
+						$this->openNode('picklistvalues');
+						$this->closeNode('picklistvalues');
+						$this->closeNode('field');
+						continue;
+					}
 				} else {
 					$picklistvalues = vtlib_getPicklistValues_AccessibleToAll($fieldname);
 				}
@@ -593,6 +592,7 @@ class Vtiger_PackageExport {
 			$this->outputNode('<![CDATA['.$event->classname.']]>', 'classname');
 			$this->outputNode('<![CDATA['.$event->filename.']]>', 'filename');
 			$this->outputNode('<![CDATA['.$event->condition.']]>', 'condition');
+            $this->outputNode('<![CDATA['.$event->dependent.']]>', 'dependent');
 			$this->closeNode('event');
 		}
 		$this->closeNode('events');

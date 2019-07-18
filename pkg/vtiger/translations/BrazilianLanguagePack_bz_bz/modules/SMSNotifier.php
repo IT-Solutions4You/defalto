@@ -5,10 +5,11 @@
  * The Original Code is:vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
- * Contributor(s): Valmir C. Trindade - Translated to Brazilian Portuguese - 21/12/2013 - www.ttcasolucoes.com.br
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  ************************************************************************************/
 $languageStrings = array(
 	// Basic Strings
+	'SMSNotifier'=>'Notificador SMS',
 	'LBL_SEND_SMS_TO_SELECTED_NUMBERS' => 'Enviar SMS para os números selecionados',
 	'LBL_STEP_1' => 'Passo 1',
 	'LBL_STEP_2' => 'Passo 2',
@@ -20,7 +21,7 @@ $languageStrings = array(
 
 	//DetailView Actions
 	'LBL_CHECK_STATUS' => 'Checar status' , 
-	'message'=> 'Mensagem',
+	'message' => 'Mensagem',
 
 	//Blocks
 	'LBL_SMSNOTIFIER_INFORMATION'=> 'Informação SMS',

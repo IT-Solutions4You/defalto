@@ -11,19 +11,34 @@
 class Inventory_GetTaxes_Action extends Vtiger_Action_Controller {
 
 	function process(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$idList = $request->get('idlist');
+		$decimalPlace = getCurrencyDecimalPlaces();
 		$currencyId = $request->get('currency_id');
-
 		$currencies = Inventory_Module_Model::getAllCurrencies();
-		$conversionRate = 1;
+		$conversionRate = $conversionRateForPurchaseCost = 1;
+
+		$idList = $request->get('idlist');
+		if (!$idList) {
+			$recordId = $request->get('record');
+			$idList = array($recordId);
+		}
 
 		$response = new Vtiger_Response();
+		$namesList = $purchaseCostsList = $taxesList = $listPricesList = $listPriceValuesList = array();
+		$descriptionsList = $quantitiesList = $imageSourcesList = $productIdsList = $baseCurrencyIdsList = array();
 
-		if(empty($idList)) {
-			$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+		foreach($idList as $id) {
+			$recordModel = Vtiger_Record_Model::getInstanceById($id);
 			$taxes = $recordModel->getTaxes();
-            $listPriceValues = $recordModel->getListPriceValues($recordModel->getId());
+			foreach ($taxes as $key => $taxInfo) {
+				$taxInfo['compoundOn'] = json_encode($taxInfo['compoundOn']);
+				$taxes[$key] = $taxInfo;
+			}
+
+			$taxesList[$id]				= $taxes;
+			$namesList[$id]				= decode_html($recordModel->getName());
+			$quantitiesList[$id]		= $recordModel->get('qtyinstock');
+			$descriptionsList[$id]		= decode_html($recordModel->get('description'));
+			$listPriceValuesList[$id]	= $recordModel->getListPriceValues($recordModel->getId());
 
 			$priceDetails = $recordModel->getPriceDetails();
 			foreach ($priceDetails as $currencyDetails) {
@@ -31,39 +46,46 @@ class Inventory_GetTaxes_Action extends Vtiger_Action_Controller {
 					$conversionRate = $currencyDetails['conversionrate'];
 				}
 			}
-			$listPrice = (float)$recordModel->get('unit_price') * (float)$conversionRate;
+			$listPricesList[$id] = (float)$recordModel->get('unit_price') * (float)$conversionRate;
 
-			$response->setResult(array(
-									$recordId => array(
-										'id'=>$recordId, 'name'=>decode_html($recordModel->getName()),
-										'taxes'=>$taxes, 'listprice'=>$listPrice, 'listpricevalues'=>$listPriceValues,
-										'description' => decode_html($recordModel->get('description')),
-										'quantityInStock' => $recordModel->get('qtyinstock')
-									)));
-		} else {
-			foreach($idList as $id) {
-				$recordModel = Vtiger_Record_Model::getInstanceById($id);
-				$taxes = $recordModel->getTaxes();
-                $listPriceValues = $recordModel->getListPriceValues($recordModel->getId());
-
-				$priceDetails = $recordModel->getPriceDetails();
-				foreach ($priceDetails as $currencyDetails) {
-					if ($currencyId == $currencyDetails['curid']) {
-						$conversionRate = $currencyDetails['conversionrate'];
-					}
+			foreach ($currencies as $currencyInfo) {
+				if ($currencyId == $currencyInfo['curid']) {
+					$conversionRateForPurchaseCost = $currencyInfo['conversionrate'];
+					break;
 				}
-
-				$listPrice = (float)$recordModel->get('unit_price') * (float)$conversionRate;
-				$info[] = array(
-							$id => array(
-								'id'=>$id, 'name'=>decode_html($recordModel->getName()),
-								'taxes'=>$taxes, 'listprice'=>$listPrice, 'listpricevalues'=>$listPriceValues,
-								'description' => decode_html($recordModel->get('description')),
-								'quantityInStock' => $recordModel->get('qtyinstock')
-							));
 			}
-			$response->setResult($info);
+			$purchaseCostsList[$id] = round((float)$recordModel->get('purchase_cost') * (float)$conversionRateForPurchaseCost, $decimalPlace);
+			$baseCurrencyIdsList[$id] = getProductBaseCurrency($id, $recordModel->getModuleName());
+
+			if ($recordModel->getModuleName() == 'Products') {
+				$productIdsList[] = $id;
+			}
 		}
+
+		if ($productIdsList) {
+			$imageDetailsList = Products_Record_Model::getProductsImageDetails($productIdsList);
+			foreach ($imageDetailsList as $productId => $imageDetails) {
+				$imageSourcesList[$productId] = $imageDetails[0]['path'].'_'.$imageDetails[0]['orgname'];
+			}
+		}
+
+		foreach($idList as $id) {
+			$resultData = array(
+								'id'					=> $id,
+								'name'					=> $namesList[$id],
+								'taxes'					=> $taxesList[$id],
+								'listprice'				=> $listPricesList[$id],
+								'listpricevalues'		=> $listPriceValuesList[$id],
+								'purchaseCost'			=> $purchaseCostsList[$id],
+								'description'			=> $descriptionsList[$id],
+								'baseCurrencyId'		=> $baseCurrencyIdsList[$id],
+								'quantityInStock'		=> $quantitiesList[$id],
+								'imageSource'			=> $imageSourcesList[$id]
+					);
+
+			$info[] = array($id => $resultData);
+		}
+		$response->setResult($info);
 		$response->emit();
 	}
 }

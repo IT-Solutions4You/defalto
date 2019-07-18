@@ -23,11 +23,9 @@ class WSAPPAssignToTracker extends VTEventHandler{
 		$db = PearDatabase::getInstance();
 		$moduleName = $entityData->getModuleName();
 		
-		//Specific to VAS
 		if ($moduleName == 'Users') { 
 			return; 
 		}	 
-		//END
 		
 		$recordId = $entityData->getId();
 		$vtEntityDelta = new VTEntityDelta ();

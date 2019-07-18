@@ -9,6 +9,7 @@
  * All Rights Reserved.
  ********************************************************************************/
 require_once('include/database/PearDatabase.php');
+require_once('Smarty_setup.php');
 require_once('include/utils/utils.php');
 global $app_strings,$mod_strings, $list_max_entries_per_page, $currentModule, $theme, $current_language, $current_user;
 

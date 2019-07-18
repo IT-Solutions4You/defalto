@@ -10,7 +10,7 @@
 $languageStrings = array(
 	'Services'                     => 'Dienstleistungen'            , 
 	'SINGLE_Services'              => 'Dienstleistung'              , 
-	'LBL_ADD_RECORD'               => 'Dienstleistung hinzufügen'  , 
+	'LBL_ADD_RECORD'               => 'Neue Dienstleistung'  , 
 	'LBL_RECORDS_LIST'             => 'Services List'               , 
 	'LBL_SERVICE_INFORMATION'      => 'Dienstleistung'              , 
 	'LBL_MORE_CURRENCIES'          => 'weitere Währungen'          , 
@@ -22,7 +22,7 @@ $languageStrings = array(
 	'Service Name'                 => 'Name der Dienstleistung'     , 
 	'Service Active'               => 'aktiv'                       , 
 	'Service Category'             => 'Kategorie'                   , 
-	'Service No'                   => 'Dienstleistungsnr.'          , 
+	'Service No'                   => 'Dienstleistungsnummer'          , 
 	'Owner'                        => 'Besitzer'                    , 
 	'No of Units'                  => 'Anzahl der Einheiten'        , 
 	'Commission Rate'              => 'Provision (%)'               , 

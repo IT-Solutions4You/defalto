@@ -8,15 +8,24 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	 'Email Templates' => 'E-mail sablonok' ,
-	'LBL_ADD_RECORD'        => 'E-mail sablon hozzáadása' ,
-	'LBL_DESCRIPTION'       => 'Leírás'                   ,
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Sablonok kezelése az E-Mail modul számára',
-	'LBL_EMAIL_TEMPLATE'    => 'E-mail sablon'            ,
-	'LBL_EMAIL_TEMPLATES'   => 'E-mail sablonok'          ,
-	'LBL_GENERAL_FIELDS'    => 'Általános mezők'          ,
-	'LBL_SELECT_FIELD_TYPE' => 'Válasszon mezőtípust'     ,
-	'LBL_SUBJECT'           => 'Tárgysor'                 ,
-	'LBL_TEMPLATE_NAME'     => 'E-mail sablon neve'       ,
-	'SINGLE_EmailTemplates' => 'E-mail sablon'            ,
+    'Email Templates' => 'Email Templates',
+	'LBL_ADD_RECORD' => 'Add Email Template',
+	'SINGLE_EmailTemplates' => 'Email Template',
+	'LBL_EMAIL_TEMPLATES'=> 'Email Templates',
+	'LBL_EMAIL_TEMPLATE' => 'Email Template',
+	
+	'LBL_TEMPLATE_NAME' => 'Template name',
+	'LBL_DESCRIPTION' => 'Description',
+	'LBL_SUBJECT' => 'Subject',
+	'LBL_GENERAL_FIELDS' => 'General Fields',
+	'LBL_SELECT_FIELD_TYPE' => 'Válassza ki a Modul & Field',
+	'LBL_MODULE_NAME' => 'Modul neve',
+	'LBL_EMAIL_TEMPLATE_DESCRIPTION'=>'Manage templates for E-Mail module',
+	'LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE' => 'Nem Engedélyek törölni Rendszer Sablon',
+	'LBL_RECORD_ID'                => 'Rekordazonosja'         , 
+);
+
+$jsLanguageStrings = array(
+    'LBL_CUTOMER_LOGIN_DETAILS_TEMPLATE_DELETE_MESSAGE' => 'Ön nem fogja tudni elküldeni az ügyfél portál bejelentkezési adatait a kapcsolatot, ha törli "Vásárló Belépés Részletek" sablont. Szeretné folytatni?',
+	'JS_REQUIRED_FIELD' => '* Message szükséges',
 );

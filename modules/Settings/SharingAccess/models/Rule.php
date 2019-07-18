@@ -385,7 +385,12 @@ class Settings_SharingAccess_Rule_Model extends Vtiger_Base_Model {
 		for($i=0; $i<$noOfRules; ++$i) {
 			$row = $db->query_result_rowdata($result, $i);
 			$ruleModel = new self();
-			$ruleModels[$row['shareid']] = $ruleModel->setData($row)->setModuleFromInstance($moduleModel);
+            $ruleModel->setData($row)->setModuleFromInstance($moduleModel);
+            $ruleComponents = $ruleModel->getRuleComponents();
+            if(!empty($ruleComponents)) {
+                $ruleModels[$row['shareid']] = $ruleModel;
+            }
+
 		}
 		return $ruleModels;
 	}

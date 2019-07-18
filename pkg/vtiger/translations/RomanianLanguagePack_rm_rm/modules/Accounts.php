@@ -30,17 +30,27 @@ $languageStrings = array(
 	'Integrator'                   => 'Integrator'                  , 
 	'Investor'                     => 'Investitor'                  , 
 	'Press'                        => 'Presa'                       , 
-	'Prospect'                     => 'Prospectare'                 ,
-        'Prospect Accounts'            => 'Conturi Prospect',
+	'Prospect'                     => 'Prospectare'                 , 
 	'Reseller'                     => 'Reseller'                    , 
+        'Type'                         => 'Tip'                         , 
 	'LBL_START_DATE'               => 'Data inceput'                , 
 	'LBL_END_DATE'                 => 'Data final'                  , 
 	'LBL_DUPLICATES_EXIST'         => 'Organization Name already exists', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copy Shipping Address'       , // TODO: Review
-	'LBL_COPY_BILLING_ADDRESS'     => 'Copy Billing Address'        , // TODO: Review
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Adresa copie Transport'       , // TODO: Review
+	'LBL_COPY_BILLING_ADDRESS'     => 'Adresa copie de facturare'        , // TODO: Review
+    'LBL_IMAGE_INFORMATION' => 'Profil Picture',
+    'Organization Image' => 'Organizația Image',
+
+  'Other Phone' => 'Medie De Telefon',
+  'Phone' => 'Telefon Principal',
+  'Email' => 'Adresa Principală De E-Mail',
+
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?', 
 	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
 	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
+
+  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organizația cu același nume există deja.Doriți cu adevărat pentru a crea o duplicat de intrare?',
+
 );

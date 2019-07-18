@@ -28,8 +28,10 @@ class MailManager {
 			$referenceModuleHandler = vtws_getModuleHandlerFromName($referenceModule, $user);
 			$referenceModuleMeta = $referenceModuleHandler->getMeta();
 			$referenceModuleEmailFields = $referenceModuleMeta->getEmailFields();
-			$referenceModuleEntityFields = $referenceModuleMeta->getNameFields();
-			$referenceModuleEntityFieldsArray = explode(',', $referenceModuleEntityFields);
+			$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
+			if($referenceModuleModel){
+				$referenceModuleEntityFieldsArray = $referenceModuleModel->getNameFields();
+			}
 			$searchFieldList = array_merge($referenceModuleEmailFields, $referenceModuleEntityFieldsArray);
 			if(!empty($searchFieldList) && !empty($referenceModuleEmailFields)) {
 				$searchFieldListString = implode(',', $referenceModuleEmailFields);
@@ -42,24 +44,24 @@ class MailManager {
 					}
 				}
 				if(!empty($where)) $where = "WHERE $where";
-                if($referenceModule == 'Users' && !is_admin($user)){
-                    //Have to do seperate query since webservices will throw permission denied for users module for non admin users
-                    global $adb;
-                    $where .= " AND vtiger_users.status='Active'";
-                    $query = "select $searchFieldListString,id from vtiger_users $where";
-                    $dbResult = $adb->pquery($query,array());
-                    $num_rows = $adb->num_rows($dbResult);
-                    $result = array();
-                    for($i=0;$i<$num_rows;$i++) {
-                        $row = $adb->query_result_rowdata($dbResult,$i);
-                        $id = $row['id'];
-                        $webserviceId = vtws_getWebserviceEntityId($referenceModule, $id);
-                        $row['id'] = $webserviceId;
-                        $result[] = $row;
-                    }
-                }else{
-                    $result = vtws_query("select $searchFieldListString from $referenceModule $where;", $user);
-                }
+				if($referenceModule == 'Users' && !is_admin($user)){
+					//Have to do seperate query since webservices will throw permission denied for users module for non admin users
+					global $adb;
+					$where .= " AND vtiger_users.status='Active'";
+					$query = "select $searchFieldListString,id from vtiger_users $where";
+					$dbResult = $adb->pquery($query,array());
+					$num_rows = $adb->num_rows($dbResult);
+					$result = array();
+					for($i=0;$i<$num_rows;$i++) {
+						$row = $adb->query_result_rowdata($dbResult,$i);
+						$id = $row['id'];
+						$webserviceId = vtws_getWebserviceEntityId($referenceModule, $id);
+						$row['id'] = $webserviceId;
+						$result[] = $row;
+					}
+				}else{
+					$result = vtws_query("select $searchFieldListString from $referenceModule $where;", $user);
+				}
 
 
 				foreach($result as $record) {
@@ -105,8 +107,8 @@ class MailManager {
 
 	static function checkModuleWriteAccessForCurrentUser($module) {
 		global $current_user;
-		if (isPermitted($module, 'EditView') == "yes" && vtlib_isModuleActive($module)) {
-            return true;
+		if (isPermitted($module, 'CreateView') == "yes" && vtlib_isModuleActive($module)) {
+			return true;
 		}
 		return false;
 	}
@@ -120,7 +122,7 @@ class MailManager {
 	static function checkModuleReadAccessForCurrentUser($module) {
 		global $current_user;
 		if (isPermitted($module, 'DetailView') == "yes" && vtlib_isModuleActive($module)) {
-            return true;
+			return true;
 		}
 		return false;
 	}

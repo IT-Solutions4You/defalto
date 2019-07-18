@@ -31,7 +31,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST' => 'Lista folderów',
 	'LBL_DENIED_REPORTS' => 'Brak dostępu do Raportów',
 	'LBL_NO_OF_RECORDS' => 'Wszystkich wpisów',
-    'LBL_MORE_RECORDS_TXT'=>'Tylko 1000 rekordy zostały przedstawione poniżej. Proszę wyeksportować, aby zobaczyć wszystkie rekordy',
+    'LBL_MORE_RECORDS_TXT'=>'Tylko 500 rekordy zostały przedstawione poniżej. Proszę wyeksportować, aby zobaczyć wszystkie rekordy',
 	//ListView Actions
 	'LBL_ADD_RECORD' => 'Dodaj Raport',
 	'LBL_ADD_FOLDER' => 'Dodaj Folder',
@@ -68,7 +68,7 @@ $languageStrings = array(
 	'LBL_HIGHEST_VALUE' => 'Najwyższa wartość',
 
 	//Step3 Strings
-	'LBL_GENERATE_REPORT' => 'Generuj raport',
+	'LBL_GENERATE_REPORT' => 'Zapisz & Generuj raport',
 
 	//DetailView
 	'LBL_SUM' => 'Suma',
@@ -139,9 +139,111 @@ $languageStrings = array(
 
 	'LBL_PRINT_REPORT' => 'Wydruk z raportu',
 	'LBL_RECORDS' => 'rekordów',
+	'LBL_CALCULATION_CONVERSION_MESSAGE' => 'Obliczenia oparte są na walutę bazową swojego CRM',
+
+    //Schedule Reports
+    'LBL_CREATING_REPORT'	=>	'Tworzenie raportu',
+	'LBL_EDITING_REPORT'	=>	'Montaż Zgłoś',
+	'LBL_SCHEDULE_REPORTS'	=>	'Raporty Harmonogram',
+	'LBL_AT_TIME'	=>	'Na czas',
+	'LBL_DAILY'	=>	'Codziennie',
+	'LBL_WEEKLY'	=>	'Tygodniowy',
+	'LBL_MONTHLY_BY_DATE'	=>	'Miesięcznie przez Data',
+	'LBL_YEARLY'	=>	'Rocznie',
+	'LBL_SPECIFIC_DATE'	=>	'Na określoną datę',
+	'LBL_CHOOSE_DATE'	=>	'Wybierz datę',
+	'LBL_ON_THESE_DAYS'	=>	'W tych dniach',
+	'LBL_SELECT_MONTH_AND_DAY'	=>	'Wybierz miesiąc i dzień',
+	'LBL_SELECTED_DATES'	=>	'Wybranych terminach',
+	'LBL_EXCEEDING_MAXIMUM_LIMIT'	=>	'Maksymalny limit przekroczony',
+	'LBL_NEXT_TRIGGER_TIME'	=>	'Następnym razem, wyzwalanie',
+	'LBL_RUN_REPORT'	=>	'Uruchom raport',
+	'LBL_SELECT_RECIEPIENTS'	=>	'Wybierz adresatów',
+	'LBL_SPECIFIC_EMAIL_ADDRESS'	=>	'Wyślij e-mail do określonego',
+
+    //Summary/Pivot Reports
+    'LBL_CREATING_PIVOT_REPORT' => 'Tworzenie raportu Pivot',
+    'LBL_EDITING_PIVOT_REPORT' => 'Edit Pivot Zgłoś',
+    'LBL_SELECT_PIVOT_FIELDS' => 'Wybierz przestawienia pól',
+    'LBL_SELECT_ROWS' => 'Wybierz wiersze',
+    'LBL_SELECT_DATA_FIELDS' => 'Wybierz Pola danych',
+    'LBL_ADD_ROWS' => 'Dodaj Wiersze',
+    'LBL_ADD_COLUMNS' => 'Dodaj kolumny',
+    'LBL_ADD_DATA_FIELDS' => 'Dodaj Pola danych',
+    'LBL_PIVOT_FIELDS' => 'Pola wybrane pivot',
+    'LBL_RECORD_COUNT' => 'Liczyć rekord',
+    'LBL_SELECT_PIVOT_FIELDS_WARNING' => 'Ostrzeżenie: Proszę wybrać co najmniej jedno pole wiersza, kolumny i pola pola danych',
+    'LBL_PIVOT_DATA_FIELDS_WARNING' => 'Uwaga: w kolumnie danych - funkcje agregujące (suma, średnia, minimalna i maksymalna) nie powinny się powtarzać.',
+    'LBL_MODIFY_CONDITIONS' => 'Zmian warunków',
+    'LBL_PIVOT_PREVIEW_EX' => 'Obrotu Zgłoś Podgląd (przykład)',
+
+	//charts labels
+	'LBL_SELECT_CHART_TYPE' =>	'Wybierz typ wykresu',
+	'LBL_CLICK_THROUGH_NOT_AVAILABLE' => 'Kliknij poprzez niedostępne po wybraniu więcej niż jeden moduł',
+	'LBL_TOTAL_SUM_OF' => 'Łączna suma',
+	'LBL_AVG_OF' => 'Średnia',
+	'LBL_MIN_OF' => 'Minimum',
+	'LBL_MAX_OF' => 'Maksymalnie',
+	'LBL_RECORD_COUNT' => 'Liczyć rekord',
+	'LBL_PIE_CHART' => 'Wykres kołowy',
+	'LBL_VERTICAL_BAR_CHART' => 'Wykres pionowy pasek',
+	'LBL_HORIZONTAL_BAR_CHART' => 'Bar Wykres poziomy',
+	'LBL_LINE_CHART' => 'Wykres liniowy',
+	'LBL_SELECT_CHART' => 'Wybierz tabelę',
+	'LBL_CREATING_CHART_REPORT' => 'Tworzenie raportu wykresu',
+	'LBL_EDITING_CHART_REPORT' => 'Montaż Report Wykres',
+	'LBL_GENERATE_CHART' => 'Wygenerować tabelę',
+	'LBL_SELECT_GROUP_BY_FIELD' => 'Wybierz grupę przez pola',
+	'LBL_SELECT_DATA_FIELD' => 'Wybierz Pola danych',
+	'LBL_MODIFY_CONDITION' => 'Zmian warunków',
+	'LBL_PLEASE_SELECT_ATLEAST_ONE_GROUP_FIELD_AND_DATA_FIELD' => 'Wybierz co najmniej jedno pole GroupBy i jedno pole danych.',
+	'LBL_FOR_BAR_GRAPH_AND_LINE_GRAPH_SELECT_3_MAX_DATA_FIELDS' => 'Do baru i linii wykresu, można wybrać maksymalnie 3 pól danych.',
+	'LBL_DETAIL_REPORT' => 'Raport szczegółowo',
+	'LBL_PIVOT_REPORT' => 'Obrotu Zgłoś',
+	'LBL_CHARTS' => 'Wykresy',
+    //Schedule Reports - Mail Content
+    'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'To jest automatycznie wygenerowany e-mail wysyłane w imieniu zaplanowanego raportu.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'Wykres pin do deski rozdzielczej',
+    'LBL_FILE_FORMAT' => 'Format pliku',
+    
+    'Report Type' => 'Typ raportu',
+    'tabular' => 'Szczegół',
+    'summary' => 'Szczegół',
+    'pivot' => 'Oś',
+    'chart' => 'Wykres',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Raporty Przeniesiony powodzeniem.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'Folder docelowy jest taki sam jak folder źródłowy.',
+	'LBL_SEARCH_FOR_FOLDERS' => 'Szukaj folderów',
+	'LBL_CHART_REPORT' => 'Wykres Zgłoś',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'Odepnij wykres z deski rozdzielczej',
+
+  'SINGLE_Reports' => 'Raport',
+  'LBL_SAME_LEVEL_ROLES' => 'Samym Poziomie Ról',
+  'LBL_SUBORDINATE_ROLES' => 'Podwładni Roli',
+  'LBL_GENERATE_NOW' => 'Teraz utworzyć',
+  'LBL_LIMIT_EXCEEDED' => 'Tylko 1000 + wpisy są wyświetlane. Korzystanie z pliku CSV lub Excel eksport, aby zobaczyć wszystkie wpisy',
+  'LBL_TOP' => 'Top',
+  'LBL_ALL_REPORTS' => 'Wszystkie Raporty',
+  'LBL_SHARE_REPORT' => 'Podziel Raportu',
+  'LBL_SHARED_REPORTS' => 'Podzielił Się Ze Mną',
+  'LBL_PINNED' => 'Прикололо',
+  'LBL_UNPINNED' => 'Odpiąć',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'Raporty Z Powodzeniem Usunięte',
+
 );
 $jsLanguageStrings = array(
-	'JS_DUPLICATE_RECORD' => 'Duplicate Report',
-	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.',
-	'JS_NO_CHART_DATA_AVAILABLE' => 'Dane nie są dostępne, należy sprawdzić wybrane pola',
+    'JS_DUPLICATE_RECORD' => 'Duplikat Zgłoś',
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'Wykres przypięte do deski rozdzielczej',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'Wykres już przypięte do deski rozdzielczej',
+	'JS_MOVE_REPORTS'=>'Przenieś Raporty',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'Planowana data i godzina powinna być większa niż bieżąca data i godzina',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'Wykres pin do Dashboard',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'Odepnij wykres z deski rozdzielczej',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'Wykres usunięty z tablicy rozdzielczej',
+
+  'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Ograniczenia: linie pola produktu(cena, rabat, Liczba może być używane tylko, gdy inne obliczenia pola nie są zaznaczone.',
+  'JS_NO_CHART_DATA_AVAILABLE' => 'Brak danych, sprawdź zaznaczone pola',
+
 );

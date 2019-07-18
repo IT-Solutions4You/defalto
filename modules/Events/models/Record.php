@@ -13,6 +13,8 @@
  */
 class Events_Record_Model extends Calendar_Record_Model {
     
+    protected $inviteesDetails;
+    
     /**
 	 * Function to get the Edit View url for the record
 	 * @return <String> - Record Edit View Url
@@ -59,23 +61,76 @@ class Events_Record_Model extends Calendar_Record_Model {
         $contactIdList = $this->getRelatedToContactIdList();
         $relatedContactInfo = array();
         foreach($contactIdList as $contactId) {
-            $relatedContactInfo[] = array('name' => Vtiger_Util_Helper::getRecordName($contactId) ,'id' => $contactId);
+            $relatedContactInfo[] = array('name' => decode_html(Vtiger_Util_Helper::toSafeHTML(Vtiger_Util_Helper::getRecordName($contactId))) ,'id' => $contactId);
         }
         return $relatedContactInfo;
      }
-
-     public function getInvities() {
+     
+     public function getRelatedContactInfoFromIds($eventIds){
          $adb = PearDatabase::getInstance();
-         $sql = "select vtiger_invitees.* from vtiger_invitees where activityid=?";
-         $result = $adb->pquery($sql,array($this->getId()));
-         $invitiesId = array();
+        $query = 'SELECT vtiger_cntactivityrel.activityid as id, vtiger_cntactivityrel.contactid, vtiger_contactdetails.email FROM vtiger_cntactivityrel INNER JOIN vtiger_contactdetails
+                  ON vtiger_contactdetails.contactid = vtiger_cntactivityrel.contactid  WHERE activityid in ('. generateQuestionMarks($eventIds) .')';
+        $result = $adb->pquery($query, array($eventIds));
+        $num_rows = $adb->num_rows($result);
 
-         $num_rows = $adb->num_rows($result);
+        $contactInfo = array();
+        for($i=0; $i<$num_rows; $i++) {
+            $row = $adb->fetchByAssoc($result, $i);
+            $contactInfo[$row['id']][] = array('name' => Vtiger_Util_Helper::toSafeHTML(Vtiger_Util_Helper::getRecordName($row['contactid'])),
+                                    'email' => $row['email'], 'id' => $row['contactid']);
+        }
+        return $contactInfo;
+     }
+     
+     /**
+      * Funtion to get inviteed details for the event
+      * @param <Int> $userId
+      * @return <Array> - list with invitees and status details
+      */
+     public function getInviteesDetails($userId=FALSE) {
+         if(!$this->inviteesDetails || $userId) {
+            $adb = PearDatabase::getInstance();
+            $sql = "SELECT vtiger_invitees.* FROM vtiger_invitees WHERE activityid=?";
+            $sqlParams = array($this->getId());
+            if($userId !== FALSE) {
+                $sql .= " AND inviteeid = ?";
+                $sqlParams[] = $userId;
+            }
+            $result = $adb->pquery($sql,$sqlParams);
+            $inviteesDetails = array();
 
-         for($i=0; $i<$num_rows; $i++) {
-             $invitiesId[] = $adb->query_result($result, $i,'inviteeid');
+            $num_rows = $adb->num_rows($result);
+            for($i=0; $i<$num_rows; $i++) {
+                $inviteesDetails[$adb->query_result($result, $i,'inviteeid')] = $adb->query_result($result, $i,'status');
+            }
+            
+            if(!$userId) {
+                $this->inviteesDetails = $inviteesDetails;
+            }
+            return $inviteesDetails;
          }
-         return $invitiesId;
+         return $this->inviteesDetails;
+     }
+     
+     /**
+      * Function to get list of invitees id's
+      * @return <Array> - List of invitees id's
+      */
+     public function getInvities() {
+         return array_keys($this->getInviteesDetails());
+     }
+     
+     /**
+      * Function to update invitation status
+      * @param <Int> $activityId
+      * @param <Int> $userId
+      * @param <String> $status
+      */
+     public function updateInvitationStatus($activityId,$userId,$status) {
+         $adb = PearDatabase::getInstance();
+         $sql = 'UPDATE vtiger_invitees SET status = ? WHERE activityid = ? AND inviteeid = ?';
+         $adb->pquery($sql,array($status,$activityId,$userId));
+         $this->inviteesDetails = NULL;
      }
 
      public function getInviteUserMailData() {

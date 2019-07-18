@@ -18,8 +18,10 @@ $languageStrings = array(
 	'Project Milestone Name'	=>	"Projekt Milestone Namen",
 	'Milestone Date'	=>	"Milestone Datum",
 	'Project Milestone No'	=>	"Projekt Milestone Nummer",
+        'Type'                         => 'Typ', 
 	//picklist values
 	'administrative' => 'Administrativ',
     'operative' => 'Operativ',
     'other' => 'Andere',
+    'Related to' => 'Bezogen auf',
 );

@@ -14,11 +14,22 @@ class Potentials_Save_Action extends Vtiger_Save_Action {
 		//Restrict to store indirect relationship from Potentials to Contacts
 		$sourceModule = $request->get('sourceModule');
 		$relationOperation = $request->get('relationOperation');
+		$skip = true;
 
 		if ($relationOperation && $sourceModule === 'Contacts') {
 			$request->set('relationOperation', false);
+			$skip = false;
 		}
 
 		parent::process($request);
+
+		// to link the relation in updates
+		if (!$skip) {
+			$sourceRecordId = $request->get('sourceRecord');
+			$focus = CRMEntity::getInstance($sourceModule);
+			$destinationModule = $request->get('module');
+			$destinationRecordId = $this->savedRecordId;
+			$focus->trackLinkedInfo($sourceModule, $sourceRecordId, $destinationModule, $destinationRecordId);
+		}
 	}
 }

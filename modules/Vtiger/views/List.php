@@ -13,6 +13,9 @@ class Vtiger_List_View extends Vtiger_Index_View {
 	protected $listViewCount = false;
 	protected $listViewLinks = false;
 	protected $listViewHeaders = false;
+	protected $noOfEntries = false;
+	protected $pagingModel = false;
+	protected $listViewModel = false;
 	function __construct() {
 		parent::__construct();
 	}
@@ -20,10 +23,36 @@ class Vtiger_List_View extends Vtiger_Index_View {
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
-		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
+		$customView = new CustomView();
+		if($customView->isPermittedCustomView($request->get('viewname'), 'List', $moduleName) != 'yes') {
+			$viewName = $customView->getViewIdByName('All', $moduleName);
+			$request->set('viewname', $viewName);
+			$_REQUEST['viewname'] = $viewName;
+		}
 
-		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName);
+		$viewer = $this->getViewer($request);
+		$cvId = $this->viewName;
+
+		if(!$cvId) {
+			$customView = new CustomView();
+			$cvId = $customView->getViewId($moduleName);
+		}
+		$listHeaders = $request->get('list_headers', array());
+		$tag = $request->get('tag');
+
+		$listViewSessionKey = $moduleName.'_'.$cvId;
+		if(!empty($tag)) {
+			$listViewSessionKey .='_'.$tag;
+		}
+
+		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+
+		if(empty($listHeaders)) {
+			$listHeaders = $orderParams['list_headers'];
+		}
+
+		$this->listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'));
 		$viewer->assign('CUSTOM_VIEWS', CustomView_Record_Model::getAllByGroup($moduleName));
 		$this->viewName = $request->get('viewname');
@@ -34,10 +63,12 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$this->viewName = $customView->getViewId($moduleName);
 		}
 
-		$quickLinkModels = $listViewModel->getSideBarLinks($linkParams);
+		$quickLinkModels = $this->listViewModel->getSideBarLinks($linkParams);
 		$viewer->assign('QUICK_LINKS', $quickLinkModels);
 		$this->initializeListViewContents($request, $viewer);
 		$viewer->assign('VIEWID', $this->viewName);
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$viewer->assign('MODULE_MODEL', $moduleModel);
 
 		if($display) {
 			$this->preProcessDisplay($request);
@@ -63,11 +94,16 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$this->viewName = $request->get('viewname');
+		$viewName = $request->get('viewname');
+		if(!empty($viewName)) {
+			$this->viewName = $viewName;
+		}
 
 		$this->initializeListViewContents($request, $viewer);
+		$this->assignCustomViews($request,$viewer);
 		$viewer->assign('VIEW', $request->get('view'));
 		$viewer->assign('MODULE_MODEL', $moduleModel);
+		$viewer->assign('RECORD_ACTIONS', $this->getRecordActionsFromModule($moduleModel));
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->view('ListViewContents.tpl', $moduleName);
 	}
@@ -92,10 +128,19 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$jsFileNames = array(
 			'modules.Vtiger.resources.List',
 			"modules.$moduleName.resources.List",
+			'modules.Vtiger.resources.ListSidebar',
+			"modules.$moduleName.resources.ListSidebar",
 			'modules.CustomView.resources.CustomView',
 			"modules.$moduleName.resources.CustomView",
-			"modules.Emails.resources.MassEdit",
-			"modules.Vtiger.resources.CkEditor"
+			"libraries.jquery.ckeditor.ckeditor",
+			"libraries.jquery.ckeditor.adapters.jquery",
+			"modules.Vtiger.resources.CkEditor",
+			//for vtiger7 
+			"modules.Vtiger.resources.MergeRecords",
+			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
+			'modules.Vtiger.resources.Tag',
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/floatThead/jquery.floatThead.js",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/js/perfect-scrollbar.jquery.js"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -112,36 +157,123 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$pageNumber = $request->get('page');
 		$orderBy = $request->get('orderby');
 		$sortOrder = $request->get('sortorder');
+		$searchKey = $request->get('search_key');
+		$searchValue = $request->get('search_value');
+		$operator = $request->get('operator');
+		$searchParams = $request->get('search_params');
+		$tagParams = $request->get('tag_params');
+		$starFilterMode = $request->get('starFilterMode');
+		$listHeaders = $request->get('list_headers', array());
+		$tag = $request->get('tag');
+		$requestViewName = $request->get('viewname');
+		$tagSessionKey = $moduleName.'_TAG';
+
+		if(!empty($requestViewName) && empty($tag)) {
+			unset($_SESSION[$tagSessionKey]);
+		}
+
+		if(empty($tag)) {   
+			$tagSessionVal = Vtiger_ListView_Model::getSortParamsSession($tagSessionKey);
+			if(!empty($tagSessionVal)) {
+				$tag = $tagSessionVal;
+			}
+		}else{
+			Vtiger_ListView_Model::setSortParamsSession($tagSessionKey, $tag);
+		}
+
+		$listViewSessionKey = $moduleName.'_'.$cvId;
+		if(!empty($tag)) {
+			$listViewSessionKey .='_'.$tag;
+		}
+
+		if(empty($cvId)) {
+			$customView = new CustomView();
+			$cvId = $customView->getViewId($moduleName);
+		}
+
+		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+		if($request->get('mode') == 'removeAlphabetSearch') {
+			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('search_key', 'search_value', 'operator'));
+			$searchKey = '';
+			$searchValue = '';
+			$operator = '';
+		}
+		if($request->get('mode') == 'removeSorting') {
+			Vtiger_ListView_Model::deleteParamsSession($listViewSessionKey, array('orderby', 'sortorder'));
+			$orderBy = '';
+			$sortOrder = '';
+		}
+		if(empty($listHeaders)) {
+			$listHeaders = $orderParams['list_headers'];
+		}
+
+		 if(!empty($tag) && empty($tagParams)){
+			$tagParams = $orderParams['tag_params'];
+		}
+
+		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
+			if($orderParams) {
+				$pageNumber = $orderParams['page'];
+				$orderBy = $orderParams['orderby'];
+				$sortOrder = $orderParams['sortorder'];
+				$searchKey = $orderParams['search_key'];
+				$searchValue = $orderParams['search_value'];
+				$operator = $orderParams['operator'];
+				if(empty($searchParams)) {
+					$searchParams = $orderParams['search_params']; 
+				}
+
+				if(empty($starFilterMode)) {
+					$starFilterMode = $orderParams['star_filter_mode'];
+				}
+			}
+		} else if($request->get('nolistcache') != 1) {
+			$params = array('page' => $pageNumber, 'orderby' => $orderBy, 'sortorder' => $sortOrder, 'search_key' => $searchKey,
+				'search_value' => $searchValue, 'operator' => $operator, 'tag_params' => $tagParams,'star_filter_mode'=> $starFilterMode,'search_params' =>$searchParams);
+
+			if(!empty($listHeaders)) {
+				$params['list_headers'] = $listHeaders;
+			}
+			Vtiger_ListView_Model::setSortParamsSession($listViewSessionKey, $params);
+		}
 		if($sortOrder == "ASC"){
 			$nextSortOrder = "DESC";
 			$sortImage = "icon-chevron-down";
+			$faSortImage = "fa-sort-desc";
 		}else{
 			$nextSortOrder = "ASC";
 			$sortImage = "icon-chevron-up";
+			$faSortImage = "fa-sort-asc";
 		}
 
 		if(empty ($pageNumber)){
 			$pageNumber = '1';
 		}
 
-		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
+		if(!$this->listViewModel) {
+			$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId, $listHeaders);
+		} else {
+			$listViewModel = $this->listViewModel;
+		}
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'), 'CVID'=>$cvId);
 		$linkModels = $listViewModel->getListViewMassActions($linkParams);
 
-		$pagingModel = new Vtiger_Paging_Model();
-		$pagingModel->set('page', $pageNumber);
-		$pagingModel->set('viewid', $request->get('viewname'));
+		// preProcess is already loading this, we can reuse
+		if(!$this->pagingModel){
+			$pagingModel = new Vtiger_Paging_Model();
+			$pagingModel->set('page', $pageNumber);
+			$pagingModel->set('viewid', $request->get('viewname'));
+		} else{
+			$pagingModel = $this->pagingModel;
+		}
 
 		if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder',$sortOrder);
 		}
 
-		$searchKey = $request->get('search_key');
-		$searchValue = $request->get('search_value');
-		$operator = $request->get('operator');
 		if(!empty($operator)) {
 			$listViewModel->set('operator', $operator);
 			$viewer->assign('OPERATOR',$operator);
@@ -152,32 +284,58 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$listViewModel->set('search_value', $searchValue);
 		}
 
-        $searchParmams = $request->get('search_params');
-        if(empty($searchParmams)) {
-            $searchParmams = array();
-        }
-        $transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParmams, $listViewModel->getModule());
-        $listViewModel->set('search_params',$transformedSearchParams);
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+		if(count($searchParams) == 2 && empty($searchParams[1])) {
+			unset($searchParams[1]);
+		}
+
+		if(empty($tagParams)){
+			$tagParams = array();
+		}
+
+		$searchAndTagParams = array_merge($searchParams, $tagParams);
+
+		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
+		$listViewModel->set('search_params',$transformedSearchParams);
 
 
-        //To make smarty to get the details easily accesible
-        foreach($searchParmams as $fieldListGroup){
-            foreach($fieldListGroup as $fieldSearchInfo){
-                $fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
-                $fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
-                $searchParmams[$fieldName] = $fieldSearchInfo;
+		//To make smarty to get the details easily accesible
+		foreach($searchParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$searchParams[$fieldName] = $fieldSearchInfo;
 			}
 		}
 
+		foreach($tagParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$tagParams[$fieldName] = $fieldSearchInfo;
+			}
+		}
 
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();
 		}
+
 		if(!$this->listViewEntries){
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
 		}
-		$noOfEntries = count($this->listViewEntries);
-
+		//if list view entries restricted to show, paging should not fail
+		if(!$this->noOfEntries) {
+			$this->noOfEntries = $pagingModel->get('_listcount');
+		}
+		if(!$this->noOfEntries) {
+			$noOfEntries = count($this->listViewEntries);
+		} else {
+			$noOfEntries = $this->noOfEntries;
+		}
 		$viewer->assign('MODULE', $moduleName);
 
 		if(!$this->listViewLinks){
@@ -188,18 +346,45 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('LISTVIEW_MASSACTIONS', $linkModels['LISTVIEWMASSACTION']);
 
 		$viewer->assign('PAGING_MODEL', $pagingModel);
+		if(!$this->pagingModel){
+			$this->pagingModel = $pagingModel;
+		}
 		$viewer->assign('PAGE_NUMBER',$pageNumber);
+
+		if(!$this->moduleFieldStructure) {
+			$recordStructure = Vtiger_RecordStructure_Model::getInstanceForModule($listViewModel->getModule(), Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER);
+			$this->moduleFieldStructure = $recordStructure->getStructure();   
+		}
+
+		if(!$this->tags) {
+			$this->tags = Vtiger_Tag_Model::getAllAccessible($currentUser->id, $moduleName);
+		}
+		if(!$this->allUserTags) {
+			$this->allUserTags = Vtiger_Tag_Model::getAllUserTags($currentUser->getId());
+		}
+
+		$listViewController = $listViewModel->get('listview_controller');
+		$selectedHeaderFields = $listViewController->getListViewHeaderFields();
 
 		$viewer->assign('ORDER_BY',$orderBy);
 		$viewer->assign('SORT_ORDER',$sortOrder);
 		$viewer->assign('NEXT_SORT_ORDER',$nextSortOrder);
 		$viewer->assign('SORT_IMAGE',$sortImage);
+		$viewer->assign('FASORT_IMAGE',$faSortImage);
 		$viewer->assign('COLUMN_NAME',$orderBy);
+		$viewer->assign('VIEWNAME',$this->viewName);
 
 		$viewer->assign('LISTVIEW_ENTRIES_COUNT',$noOfEntries);
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
+		$viewer->assign('LIST_HEADER_FIELDS', json_encode(array_keys($this->listViewHeaders)));
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
-
+		$viewer->assign('MODULE_FIELD_STRUCTURE', $this->moduleFieldStructure);
+		$viewer->assign('SELECTED_HEADER_FIELDS', $selectedHeaderFields);
+		$viewer->assign('TAGS', $this->tags);
+		$viewer->assign('ALL_USER_TAGS', $this->allUserTags);
+		$viewer->assign('ALL_CUSTOMVIEW_MODEL', CustomView_Record_Model::getAllFilterByModule($moduleName));
+		$viewer->assign('CURRENT_TAG',$tag);
+		$viewer->assign('SELECTED_MENU_CATEGORY', 'MARKETING');
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			if(!$this->listViewCount){
 				$this->listViewCount = $listViewModel->getListViewCount();
@@ -216,9 +401,42 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		}
 		$viewer->assign('LIST_VIEW_MODEL', $listViewModel);
 		$viewer->assign('GROUPS_IDS', Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId()));
+		$viewer->assign('IS_CREATE_PERMITTED', $listViewModel->getModule()->isPermitted('CreateView'));
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
-        $viewer->assign('SEARCH_DETAILS', $searchParmams);
+		$viewer->assign('SEARCH_DETAILS', $searchParams);
+		$viewer->assign('TAG_DETAILS', $tagParams);
+		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
+		$viewer->assign('STAR_FILTER_MODE',$starFilterMode);
+		$viewer->assign('VIEWID', $cvId);
+		//Vtiger7
+		$viewer->assign('REQUEST_INSTANCE',$request);
+
+		//vtiger7
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		if($moduleModel->isQuickPreviewEnabled()){
+			$viewer->assign('QUICK_PREVIEW_ENABLED', 'true');
+		}
+
+		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
+		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE',Zend_Json::encode($picklistDependencyDatasource));
+	}
+
+	protected function assignCustomViews(Vtiger_Request $request, Vtiger_Viewer $viewer) {
+		$allCustomViews = CustomView_Record_Model::getAllByGroup($request->getModule());
+		if (!empty($allCustomViews)) {
+			$viewer->assign('CUSTOM_VIEWS', $allCustomViews);
+			$currentCVSelectedFields = array();
+			foreach ($allCustomViews as $cat => $views) {
+				foreach ($views as $viewModel) {
+					if ($viewModel->getId() === $viewer->get_template_vars('VIEWID')) {
+						$currentCVSelectedFields = $viewModel->getSelectedFields();
+						$viewer->assign('CURRENT_CV_MODEL', $viewModel);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -254,15 +472,32 @@ class Vtiger_List_View extends Vtiger_Index_View {
 
 		$searchKey = $request->get('search_key');
 		$searchValue = $request->get('search_value');
+		$tagParams = $request->get('tag_params');
 
 		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
 
-        $searchParmams = $request->get('search_params');
-        $listViewModel->set('search_params',$this->transferListSearchParamsToFilterCondition($searchParmams, $listViewModel->getModule()));
+		if(empty($tagParams)){
+			$tagParams = array();
+		}
+
+		$searchParams = $request->get('search_params');
+		if(empty($searchParams) && !is_array($searchParams)){
+			$searchParams = array();
+		}
+		$searchAndTagParams = array_merge($searchParams, $tagParams);
+
+		$listViewModel->set('search_params',$this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule()));
 
 		$listViewModel->set('search_key', $searchKey);
 		$listViewModel->set('search_value', $searchValue);
 		$listViewModel->set('operator', $request->get('operator'));
+
+		// for Documents folders we should filter with folder id as well
+		$folder_value = $request->get('folder_value');
+		if(!empty($folder_value)){
+			$listViewModel->set('folder_id',$request->get('folder_id'));
+			$listViewModel->set('folder_value',$folder_value);
+		}
 
 		$count = $listViewModel->getListViewCount();
 
@@ -293,7 +528,31 @@ class Vtiger_List_View extends Vtiger_Index_View {
 	}
 
 
-    public function transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel) {
-        return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
-    }
+	public function transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel) {
+		return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
+	}
+
+	public function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$cssFileNames = array(
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/css/perfect-scrollbar.css",
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
+		return $headerCssInstances;
+	}
+
+	public function getRecordActionsFromModule($moduleModel) {
+		$editPermission = $deletePermission = 0;
+		if ($moduleModel) {
+			$editPermission	= $moduleModel->isPermitted('EditView');
+			$deletePermission = $moduleModel->isPermitted('Delete');
+		}
+
+		$recordActions = array();
+		$recordActions['edit'] = $editPermission;
+		$recordActions['delete'] = $deletePermission;
+
+		return $recordActions;
+	}
 }

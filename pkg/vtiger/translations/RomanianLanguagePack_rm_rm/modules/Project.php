@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Project'               =>	"Proiect",
 	'SINGLE_Project'	=>	"Proiect",
 	'LBL_ADD_RECORD'	=>	"Adauga proiectului",
 	'LBL_RECORDS_LIST'	=>	"Lista proiectelor",
@@ -20,6 +21,8 @@ $languageStrings = array(
 	'Target Budget'	=>	"Bugetul țintă",
 	'Project Url'	=>	"Url-ul proiectului",
 	'Progress'	=>	"Progres",
+        'Type'          => 'Tip' , 
+    'Related to'    => 'Legate de' ,
 	'LBL_TASKS_OPEN'	=>	"Sarcini Deschideți",
 	'LBL_TASKS_DUE'	=>	"Sarcini Datorită",
 	'LBL_TASKS_COMPLETED'	=>	"Sarcinile finalizate",
@@ -31,14 +34,14 @@ $languageStrings = array(
 	'LBL_STATUS_IS'	=>	"Starea este",
 	'LBL_STATUS'	=>	"Starea",
 	'LBL_TICKET_PRIORITY'	=>	"Prioritate",
-	'LBL_MORE'	=>	"mai mult",
 	'LBL_MILESTONES_LIST'	=>	"Lista Repere",
 	'LBL_DOWNLOAD_FILE'	=>	"Descărcare fișier",
-        'LBL_TASKS_HIGH' => 'Prioritate',
-        'LBL_TASKS_NORMAL' => 'Prioritate normală',
-        'LBL_TASKS_LOW' => 'Prioritate scăzută',
-        'LBL_TASKS_OTHER' => 'Alte priorități',
-        'LBL_SELECT_PROGRESS' => 'Selectați Progress',
+    'LBL_TASKS_HIGH' => 'Prioritate',
+    'LBL_TASKS_NORMAL' => 'Prioritate normală',
+    'LBL_TASKS_LOW' => 'Prioritate scăzută',
+    'LBL_TASKS_OTHER' => 'Alte priorități',
+    'LBL_SELECT_PROGRESS' => 'Progress - Toate',
+	'LBL_SELECT_STATUS' => 'Stare - Toate',
 	
 	//picklist values
 	'prospecting' => 'Prospectarea',
@@ -55,9 +58,23 @@ $languageStrings = array(
     'low' => 'Scăzut',
     'normal' => 'Normal',
     'high' => 'Mare',
+    
+    //Gantt chart 
+    'LBL_CHART' => 'Gantt Chart',
+    'LBL_PROGRESS_CHART' => 'progres Gantt Chart...',
+    'LBL_TASK_NAME' => 'Numele sarcină',
+    'LBL_START_DATE' => 'data de început',
+    'LBL_END_DATE' => 'Data de sfârșit',
+    'LBL_DURATION' => 'Durata',
+    'LBL_INFO' => 'Info',
+    'LBL_GANTT_INFO1' => 'Slide pe partea dreaptă de sarcina de a extinde durata',
+    'LBL_GANTT_INFO2' => 'Trageți la stânga sau centru de sarcina de a schimba de început și data de sfârșit.',
+    'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Editare Proiect de sarcini Culoare Stare',
+    'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Selectați proiect Sarcina de culoare Starea',
+    'LBL_SELECT_STATUS' => 'Selectați Stare',
+    'LBL_EDIT_COLOR' => 'Editați Culoare',
 );
 
 $jsLanguageStrings = array(
-    'JS_LBL_SELECT_STATUS' => 'Selectați Stare',
-    'JS_LBL_SELECT_PROGRESS' => 'Selectați Progress',
+     'JS_COLOR_SAVED_SUCESSFULLY' => 'Culoare salvate cu succes',
 );

@@ -52,5 +52,12 @@ class VtigerCompanyDetails extends VtigerActorOperation {
 		return parent::revise($element);
 	}
 
+	public function retrieve($id) {
+		$element = parent::retrieve($id);
+		if (empty($element['logo'])) {
+			$element['logo'] = vtws_getCompanyEncodedImage($element['logoname']);
+		}
+		return $element;
+	}
 }
 ?>

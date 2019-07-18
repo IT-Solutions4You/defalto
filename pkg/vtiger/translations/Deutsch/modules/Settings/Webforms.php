@@ -37,6 +37,15 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Benutzerzuweisung',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Weisen Sie Benutzer In Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Round Robin Benutzerliste',
+
+  'LBL_ADD_RECORD' => 'Hinzufügen Webform',
+
+	'LBL_UPLOAD_DOCUMENTS' => 'hochladen von Dokumenten',
+	'LBL_ADD_FILE_FIELD' => 'Datei-Upload-Feld',
+	'LBL_FIELD_LABEL' => 'Dokumenttitel',
+	'LBL_FILE_FIELD_INFO' => 'Für jede Datei von Web hochgeladen hat ein neues Dokument bildet, wird mit der angehängten Datei erstellt. Das Dokument wird auch auf dieses neu geschaffenen%s verbunden.',
+	'LBL_NO_FILE_FIELD' => 'Keine Dateifelder hinzugefügt.',
+	'LBL_COPY_TO_CLIPBOARD' => 'In die Zwischenablage kopieren',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', 
@@ -46,4 +55,11 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Referenzfelder kann nicht obligatorisch sein, ohne Override-Wert',
 	'JS_TYPE_TO_SEARCH' => 'Geben Sie zur Suche',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform mit diesem Namen ist bereits vorhanden',
+
+  'JS_SELECT_AN_OPTION' => 'Wählen Sie eine Option',
+  'JS_LABEL' => 'label',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maximal können Sie%s Dateifelder hinzufügen.',
+	'JS_COPIED_SUCCESSFULLY' => 'erfolgreich kopiert.',
+	'JS_COPY_FAILED' => 'Kopieren fehlgeschlagen. Bitte kopieren Sie manuell.',
 );

@@ -39,13 +39,29 @@ class PriceBooks_Relation_Model extends Vtiger_Relation_Model{
 			$queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
 			$queryGenerator->setFields($relatedListFields);
 			$selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
-			$newQuery = spliti('FROM', $query);
+			$newQuery = preg_split('/FROM/i', $query);
 			$selectColumnSql = 'SELECT DISTINCT vtiger_crmentity.crmid,'.$selectColumnSql;
 		}
-		if($functionName == ('get_pricebook_products' || 'get_pricebook_services')){
+		if(($functionName == 'get_pricebook_products') || ($functionName ==  'get_pricebook_services')){
 			$selectColumnSql = $selectColumnSql.', vtiger_pricebookproductrel.listprice';
 		}
-		$query = $selectColumnSql.' FROM '.$newQuery[1];
+		if(!empty($selectColumnSql)) {
+			$query = $selectColumnSql.' FROM '.$newQuery[1];
+		}
+
+		if($relatedModuleName == 'Calendar') {
+			$nonAdminQuery = Users_Privileges_Model::getNonAdminAccessControlQuery($relatedModuleName);
+
+			if (trim($nonAdminQuery)) {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+
+				$moduleFocus = CRMEntity::getInstance('Calendar');
+				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
+				if($condition) {
+					$query .= ' AND '.$condition;
+				}
+			}
+		}
 		return $query;
 	}
 

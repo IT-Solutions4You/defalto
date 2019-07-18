@@ -2,7 +2,7 @@
 /*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -18,6 +18,9 @@ class MailManager_Folder_Model {
 	protected $mPageStart;
 	protected $mPageEnd;
 	protected $mPageLimit;
+	protected $mMailIds;
+	protected $startCount;
+	protected $endCount;
 
 	public function __construct($name='') {
 		$this->setName($name);
@@ -34,22 +37,30 @@ class MailManager_Folder_Model {
 			return $prefix.$this->mName;
 		}
 	}
-    
-     public function isSentFolder() {
+	
+	public function isSentFolder() {
 		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
-        $folderName = $mailBoxModel->folder();
+		$folderName = $mailBoxModel->folder();
 		if($this->mName == $folderName) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	public function setName($name) {
 		$this->mName = $name;
 	}
 
 	public function mails() {
 		return $this->mMails;
+	}
+
+	public function mailIds(){
+		return $this->mMailIds;
+	}
+
+	public function setMailIds($ids){
+		$this->mMailIds = $ids;
 	}
 
 	public function setMails($mails) {
@@ -83,7 +94,11 @@ class MailManager_Folder_Model {
 
 		$e = min($st + $this->mPageLimit, $this->mCount);
 		$t = $this->mCount;
-		return sprintf("%s - %s ".vtranslate('LBL_OF')." %s", $s, $e, $t);
+
+		$this->startCount = $s;
+		$this->endCount = $e;
+
+		return sprintf("%s - %s of %s", $s, $e, $t);
 	}
 
 	public function pageCurrent($offset=0) {
@@ -112,6 +127,14 @@ class MailManager_Folder_Model {
 
 	public function setUnreadCount($unreadCount) {
 		$this->mUnreadCount = $unreadCount;
+	}
+
+	public function getStartCount() {
+		return $this->startCount;
+	}
+
+	public function getEndCount() {
+		return $this->endCount;
 	}
 }
 

@@ -15,8 +15,8 @@ $languageStrings = array(
 	'LBL_CONTACT_INFORMATION'      => 'İlgili Kişi Bilgisi'       , 
 	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Müşteri Portal Bilgisi'    , 
 	'LBL_IMAGE_INFORMATION'        => 'Resim Bilgisi:'              , 
-	'LBL_COPY_OTHER_ADDRESS'       => 'Copy Other Address'          , // TODO: Review
-	'LBL_COPY_MAILING_ADDRESS'     => 'Copy Mailing Address'        , // TODO: Review
+	'LBL_COPY_OTHER_ADDRESS'       => 'Kopya Diğer Adres'          , // TODO: Review
+	'LBL_COPY_MAILING_ADDRESS'     => 'Kopya Posta Adresi'        , // TODO: Review
 	'Office Phone'                 => 'Ofis Telefonu'               , 
 	'Home Phone'                   => 'Ev Telefonu'                 , 
 	'Title'                        => 'Unvani'                      , 
@@ -50,6 +50,12 @@ $languageStrings = array(
 	'Contact Id' => 'İlgili Kişi Id',
     'Support Start Date'           => 'Destek Başlangıç ​​Tarihi',
     'Support End Date'             => 'Destek Bitiş Tarihi',
+	'LBL_TRANSACTIONS' => 'Işlemler',
+
+  'Other Phone' => 'İkincil Telefon',
+  'Email' => 'Birincil E-Posta',
+  'Secondary Email' => 'İkincil E-Posta',
+
 );
 $jsLanguageStrings = array(
 );

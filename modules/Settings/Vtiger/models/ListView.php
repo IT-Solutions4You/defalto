@@ -78,10 +78,9 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 		if (!empty($orderBy)) {
 			$listQuery .= ' ORDER BY ' . $orderBy . ' ' . $this->getForSql('sortorder');
 		}
-        if($module->isPagingSupported()) {
-            $nextListQuery = $listQuery.' LIMIT '.($startIndex+$pageLimit).',1';
-            $listQuery .= " LIMIT $startIndex, $pageLimit";
-        }
+		if($module->isPagingSupported()) {
+			$listQuery .= " LIMIT $startIndex, ".($pageLimit+1);
+		}
 
 		$listResult = $db->pquery($listQuery, array());
 		$noOfRecords = $db->num_rows($listResult);
@@ -99,16 +98,15 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 			$listViewRecordModels[$record->getId()] = $record;
 		}
-        if($module->isPagingSupported()) {
-            $pagingModel->calculatePageRange($listViewRecordModels);
-            
-            $nextPageResult = $db->pquery($nextListQuery, array());
-            $nextPageNumRows = $db->num_rows($nextPageResult);
-            
-            if($nextPageNumRows <= 0) {
-                $pagingModel->set('nextPageExists', false);
-            }
-        }
+		if($module->isPagingSupported()) {
+			$pagingModel->calculatePageRange($listViewRecordModels);
+			if(count($listViewRecordModels) > $pageLimit) {
+				array_pop($listViewRecordModels);
+				$pagingModel->set('nextPageExists', true);
+			} else {
+				$pagingModel->set('nextPageExists', false);
+			}
+		}
 		return $listViewRecordModels;
 	}
 	
@@ -134,7 +132,7 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 					'linktype' => 'LISTVIEWBASIC',
 					'linklabel' => 'LBL_ADD_RECORD',
 					'linkurl' => $moduleModel->getCreateRecordUrl(),
-					'linkicon' => ''
+					'linkicon' => 'fa fa-plus'
 			);
 		
 		return $basicLinks;
@@ -152,7 +150,7 @@ class Settings_Vtiger_ListView_Model extends Vtiger_Base_Model {
 
         $position = stripos($listQuery, ' from ');
 		if ($position) {
-			$split = spliti(' from ', $listQuery);
+			$split = preg_split('/ from /i', $listQuery);
 			$splitCount = count($split);
 			$listQuery = 'SELECT count(*) AS count ';
 			for ($i=1; $i<$splitCount; $i++) {

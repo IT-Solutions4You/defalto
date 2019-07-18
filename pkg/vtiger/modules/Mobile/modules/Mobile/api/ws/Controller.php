@@ -32,6 +32,8 @@ class Mobile_WS_Controller {
 			if(!empty($userid)) {
 				$this->activeUser = CRMEntity::getInstance('Users');
 				$this->activeUser->retrieveCurrentUserInfoFromFile($userid);
+				global $current_user;
+				$current_user = $this->activeUser;
 			}
 		}
 		return $this->activeUser;

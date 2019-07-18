@@ -39,6 +39,7 @@ $languageStrings = array(
 	'LBL_SEVERITY'                 => 'Şiddet'                     , 
 	'LBL_CONVERT_FAQ'              => 'Convert to FAQ'              , 
 	'LBL_RELATED_TO'               => 'İlgili Kişi'               ,
+    'Related To'                   => 'İlgili'                      ,
 
 	//added to support i18n in ticket mails
 	'Hi' => 'Merhaba',
@@ -81,4 +82,13 @@ $languageStrings = array(
 	'HelpDesk ID' => 'İşemri No',
 	'Ticket ID' => 'İşemri No',
 	'LBL_TICKET_NUMBER' => 'Bilet sayısı',
+
+  'Contact Name' => 'Kişi Adı',
+  'The comments are' => 'Sonra da yorumları',
+  'Ticket Title' => 'Bilet Başlığı',
+  'Re' => 'Re :',
+  'LBL_ADD_DOCUMENT' => 'Belge Ekle ',
+  'LBL_OPEN_TICKETS' => 'Açık Bilet',
+  'LBL_CREATE_TICKET' => 'Bilet Oluşturun ',
+
 );

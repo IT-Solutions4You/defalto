@@ -51,7 +51,7 @@
 						{assign var="GROUP_MEMBERS" value=$RECORD_MODEL->getMembers()}
 						<select id="memberList" class="row-fluid members" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $QUALIFIED_MODULE)}" data-validation-engine="validate[required]">
 							{foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
-								<optgroup label="{$GROUP_LABEL}">
+								<optgroup label="{vtranslate($GROUP_LABEL, $QUALIFIED_MODULE)}">
 								{foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
 									{if $MEMBER->getName() neq $RECORD_MODEL->getName()}
 										<option value="{$MEMBER->getId()}"  data-member-type="{$GROUP_LABEL}" {if isset($GROUP_MEMBERS[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>

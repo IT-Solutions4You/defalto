@@ -17,14 +17,14 @@ require_once 'include/logging.php';
 include_once 'libraries/adodb/adodb.inc.php';
 require_once 'libraries/adodb/adodb-xmlschema.inc.php';
 
-$log =& LoggerManager::getLogger('VT');
-$logsqltm =& LoggerManager::getLogger('SQLTIME');
+$log = LoggerManager::getLogger('VT');
+$logsqltm = LoggerManager::getLogger('SQLTIME');
 
 // Callback class useful to convert PreparedStatement Question Marks to SQL value
 // See function convertPS2Sql in PearDatabase below
 class PreparedQMark2SqlValue {
 	// Constructor
-	function PreparedQMark2SqlValue($vals){
+	function __construct($vals){
         $this->ctr = 0;
         $this->vals = $vals;
     }
@@ -348,7 +348,7 @@ class PearDatabase{
 
 		$sql_start_time = microtime(true);
 		$params = $this->flatten_array($params);
-		if (count($params) > 0) {
+		if (is_array($params) && count($params) > 0) {
 			$log->debug('Prepared sql query parameters : [' . implode(",", $params) . ']');
 		}
 
@@ -805,6 +805,22 @@ class PearDatabase{
 		    return;
 		}
 		$this->database = ADONewConnection($this->dbType);
+	
+		// Setting client flag for Import csv to database(LOAD DATA LOCAL INFILE.....)
+		if ($this->database->clientFlags == 0 && isset($dbconfigoption['clientFlags'])) {
+			$this->database->clientFlags = $dbconfigoption['clientFlags'];
+		}
+
+		if ($this->dbType == 'mysqli') {
+			$optionFlags = array();
+			if ($this->database->optionFlags) {
+				$optionFlags = $this->database->optionFlags;
+			}
+
+			$optionFlags = array_merge($optionFlags, array(array(MYSQLI_OPT_LOCAL_INFILE, true)));
+			$this->database->optionFlags = $optionFlags;
+		}
+		// End
 
 		$result = $this->database->PConnect($this->dbHostName, $this->userName, $this->userPassword, $this->dbName);
 		if ($result) {
@@ -822,7 +838,7 @@ class PearDatabase{
 	/**
 	 * Constructor
 	 */
-    function PearDatabase($dbtype='',$host='',$dbname='',$username='',$passwd='') {
+    function __construct($dbtype='',$host='',$dbname='',$username='',$passwd='') {
 		global $currentModule;
 		$this->log = LoggerManager::getLogger('PearDatabase_'. $currentModule);
 		$this->resetSettings($dbtype,$host,$dbname,$username,$passwd);

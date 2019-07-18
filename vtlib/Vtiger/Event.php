@@ -117,6 +117,7 @@ class Vtiger_Event {
 					$event->classname = $record['handler_class']; 
 					$event->filename  = $record['handler_path'];
 					$event->condition = $record['condition'];
+                    $event->dependent = decode_html($record['dependent_on']);
 					$events[] = $event;
 				}
 			}

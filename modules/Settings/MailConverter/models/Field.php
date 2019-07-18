@@ -57,7 +57,7 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
                 $pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
         }else if ($fieldName == 'markas') {
-            $optionList = array('UNSEEN','SEEN');
+            $optionList = array('UNCHANGED', 'UNSEEN','SEEN');
             foreach($optionList as $option) {
 				$pickListValues[$option] = vtranslate($option, 'Settings::MailConverter');
             }
@@ -66,6 +66,10 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
             
         }
         return $pickListValues;
+    }
+    
+    public function getEditablePicklistValues() {
+        return $this->getPickListValues();
     }
     
     public function getRadioOptions() {
@@ -92,6 +96,8 @@ class Settings_MailConverter_Field_Model extends Vtiger_Field_Model {
         }
         return $this->isEditable;
     }
-    
-    
+
+	public function getPicklistColors() {
+		return array();
+	}
 }

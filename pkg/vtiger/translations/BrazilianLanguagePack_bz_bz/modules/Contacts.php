@@ -5,63 +5,63 @@
  * The Original Code is:vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
- * Contributor(s): Valmir C. Trindade - Translate to Brazilian Portuguese - 26/04/2014 - www.ttcasolucoes.com.br
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  ************************************************************************************/
 $languageStrings = array(
-	'Assistant'=> 'Assistente', 
-	'Assistant Phone'=> 'Telefone Assistente' , 
-	'Birthdate'=> 'Aniversário', 
-	'Contact Id' => 'No. Contato',
-	'Contact Image'=> 'Imagem Contato',
+	// Basic Strings
 	'Contacts' => 'Contatos', 
-	'Department' => 'Departamento', 
-	'Do Not Call'=> 'Recusa Chamada', 
-	'Email' => 'Email',
-	'Home Phone' => 'Telefone Residencial', 
+	'SINGLE_Contacts' => 'Contato',
 	'LBL_ADD_RECORD' => 'Adicionar Contato' , 
+	'LBL_RECORDS_LIST' => 'Lista Contatos' ,
+
+	// Blocks
 	'LBL_CONTACT_INFORMATION'=> 'Informação do Contato' , 
-	'LBL_COPY_MAILING_ADDRESS' => 'Copiar Endereço Correspondência',
-	'LBL_COPY_OTHER_ADDRESS' => 'Copiar Endereço Alterantivo',
 	'LBL_CUSTOMER_PORTAL_INFORMATION' => 'Informação Portal Cliente' , 
 	'LBL_IMAGE_INFORMATION'=> 'Informação Imagem Contato:',
-	'LBL_RECORDS_LIST' => 'Lista Contatos' , 
-	'Mailing City' => 'Cidade Correspondência' , 
-	'Mailing Country'=> 'País Correspondência', 
-	'Mailing Po Box' => 'Cx Postal Correspondência', 
-	'Mailing State'=> 'Estado Correspondência' , 
-	'Mailing Street' => 'Endereço Correspondência', 
-	'Mailing Zip'=> 'CEP Correspondência', 
+	'LBL_COPY_OTHER_ADDRESS' => 'Copiar Endereço Alternativo',
+	'LBL_COPY_MAILING_ADDRESS' => 'Copiar Endereço Correspondência',
+
+	//Field Labels
 	'Office Phone' => 'Telefone Escritório', 
-	'Other City' => 'Cidade Alternativo', 
-	'Other Country'=> 'País Alternativo' , 
-	'Other Phone' => 'Telefone Alternativo',
-	'Other Po Box' => 'Cx Postal Alternativo', 
-	'Other State'=> 'Estado Alternativo', 
-	'Other Street' => 'Endereço Alternativo' , 
-	'Other Zip'=> 'CEP Alternativo' , 
-	'Portal User'=> 'Portal Usuário' , 
-	'Reference'=> 'Referência' , 
-	'Reports To' => 'Reporta-se à' , 
-	'Secondary Email' => 'Email Alternativo',
-	'SINGLE_Contacts'=> 'Contato' , 
-    'Support End Date'   => 'Data Término Suporte',
-    'Support Start Date' => 'Data Início Suporte',
+	'Home Phone' => 'Telefone Residencial', 
 	'Title'=> 'Cargo' , 
-	'User List'=> 'Lista Usuário',
-	
+	'Department' => 'Departamento', 
+	'Birthdate'=> 'Aniversário', 
+	'Reports To' => 'Reporta-se à' , 
+	'Assistant'=> 'Assistente', 
+	'Assistant Phone'=> 'Telefone Assistente' , 
+	'Do Not Call'=> 'Recusa Chamada', 
+	'Reference'=> 'Referência' ,
+	'Portal User'=> 'Portal Usuário' , 
+	'Mailing Street' => 'Endereço Correspondência', 
+	'Mailing City' => 'Cidade Correspondência' , 
+	'Mailing State'=> 'Estado Correspondência' , 
+	'Mailing Zip'=> 'CEP Correspondência', 
+	'Mailing Country'=> 'País Correspondência', 
+	'Mailing Po Box' => 'Cx Postal Correspondência',
+	'Other Street' => 'Endereço Alternativo' ,
+	'Other City' => 'Cidade Alternativo', 
+	'Other State'=> 'Estado Alternativo', 
+	'Other Zip'=> 'CEP Alternativo' , 
+	'Other Country'=> 'País Alternativo' ,
+	'Other Po Box' => 'Cx Postal Alternativo',  
+	'Contact Image'=> 'Imagem Contato',
+	'Other Phone' => 'Telefone Alternativo',
+	'Email' => 'Email',
+	'Secondary Email' => 'Email Alternativo',
+	'Contact Id' => 'No. Contato',
+    'Support Start Date' => 'Data Início Suporte',
+    'Support End Date'   => 'Data Término Suporte',
+
 	//Added for Picklist Values
-	'Dr.'=>'Dr.',
 	'Mr.'=> 'Sr.' , 
-	'Mrs.' => 'Srta.' , 
 	'Ms.'=> 'Sra.',
+	'Mrs.' => 'Srta.' , 
+	'Dr.'=>'Dr.',
 	'Prof.'=> 'Prof.' ,
 
-	//Missing Fields | Valmir C Trindade
-	'Sales Order'=>'Pedido Vendas',
-	'Activities'=>'Atividades',
-	'Service Contracts'=>'Contratos',
-	'Projects'=>'Projetos',
-	'Purchase Order'=>'Pedido Compras',
+	'User List'=> 'Lista Usuário',
+	'LBL_TRANSACTIONS' => 'Transações',
 );
 
 $jsLanguageStrings = array(

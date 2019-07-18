@@ -50,22 +50,31 @@ jQuery.Class("Vtiger_Helper_Js",{
 	 * @return date object
 	 */
 
-	getDateInstance : function(dateTime,dateFormat){
+	getDateInstance : function(dateTime,dateFormat, fieldType){
 		var dateTimeComponents = dateTime.split(" ");
 		var dateComponent = dateTimeComponents[0];
 		var timeComponent = dateTimeComponents[1];
         var seconds = '00';
 
 		var splittedDate = dateComponent.split("-");
+		if (splittedDate.length > 3) {
+            var errorMsg = app.vtranslate("JS_INVALID_DATE");
+            throw errorMsg;
+        }
 		var splittedDateFormat = dateFormat.split("-");
 		var year = splittedDate[splittedDateFormat.indexOf("yyyy")];
 		var month = splittedDate[splittedDateFormat.indexOf("mm")];
 		var date = splittedDate[splittedDateFormat.indexOf("dd")];
         var dateInstance = Date.parse(year+"-"+month+"-"+date);
-		if((year.length > 4) || (month.length > 2) || (date.length > 2) || (dateInstance == null)){
-				var errorMsg = app.vtranslate("JS_INVALID_DATE");
-				throw errorMsg;
+		if((dateInstance == null) || (year.length != 4) || (month.length > 2) || (date.length > 2)){
+			var errorMsg = app.vtranslate("JS_INVALID_DATE");
+			throw errorMsg;
 		}
+                
+		if (fieldType == 'date' && typeof timeComponent != 'undefined') {
+            var errorMsg = app.vtranslate("JS_INVALID_DATE");
+            throw errorMsg;
+        }
 
 		//Before creating date object time is set to 00
 		//because as while calculating date object it depends system timezone
@@ -102,8 +111,8 @@ jQuery.Class("Vtiger_Helper_Js",{
 		var params = {
 			'module' : 'Emails',
             'fieldModule' : fieldmodule,
-			'selectedFields' : selectedFields,
-			'selected_ids' : selectedIds,
+			'selectedFields[]' : selectedFields,
+			'selected_ids[]' : selectedIds,
 			'view' : 'ComposeEmail'
 		}
 		var emailsMassEditInstance = Vtiger_Helper_Js.getEmailMassEditInstance();
@@ -157,6 +166,14 @@ jQuery.Class("Vtiger_Helper_Js",{
         })
 		return aDeferred.promise();
 	},
+    
+    /*
+	 * Function to show the custom dialogs
+	 */
+	showCustomDialogBox: function (data) {
+        //options are array of objects with label,button class and callback properties
+		bootbox.dialog(data['message'], data['options']);
+    },
 
 	/*
 	 * Function to check Duplication of Account Name
@@ -254,6 +271,62 @@ jQuery.Class("Vtiger_Helper_Js",{
 		bottomScroll.scroll(function(){
 			topScroll.scrollLeft(bottomScroll.scrollLeft());
 		});
+	},
+	
+	/*
+	 * Function to confirmation modal for recurring events updation and deletion 
+	 */
+	showConfirmationForRepeatEvents: function (customParams) {
+		var aDeferred = jQuery.Deferred();
+		var params = {
+			module: 'Calendar',
+			view: 'RecurringDeleteCheck'
+		}
+		jQuery.extend(params, customParams);
+		var postData = {};
+		AppConnector.request(params).then(function (data) {
+			var callBackFunction = function (modalContainer) {
+				modalContainer.on('click', '.onlyThisEvent', function () {
+					postData['recurringEditMode'] = 'current';
+					app.hideModalWindow();
+					aDeferred.resolve(postData);
+				});
+				modalContainer.on('click', '.futureEvents', function () {
+					postData['recurringEditMode'] = 'future';
+					app.hideModalWindow();
+					aDeferred.resolve(postData);
+				});
+				modalContainer.on('click', '.allEvents', function () {
+					postData['recurringEditMode'] = 'all';
+					app.hideModalWindow();
+					aDeferred.resolve(postData);
+				});
+			}
+			app.showModalWindow(data, function (data) {
+				if (typeof callBackFunction == 'function') {
+					callBackFunction(data);
+				}
+			})	
+		});
+		return aDeferred.promise();
+	},
+    
+	rand: function () {
+        return Math.floor((Math.random() * 1000) + 1);
+	},
+
+	mergeObjects: function (arrayOfObjs) {
+		var mergedObj = {};
+		jQuery.each(arrayOfObjs, function (i, kv) {
+			if (mergedObj.hasOwnProperty(kv.name)) {
+				mergedObj[kv.name] = jQuery.makeArray(mergedObj[kv.name]);
+				mergedObj[kv.name].push(kv.value);
+			}
+			else {
+				mergedObj[kv.name] = kv.value;
+			}
+		});
+		return mergedObj;
 	}
 
 },{});

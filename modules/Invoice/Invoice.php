@@ -55,31 +55,31 @@ class Invoice extends CRMEntity {
 				);
 
 	var $list_fields_name = Array(
-				        'Invoice No'=>'invoice_no',
-				        'Subject'=>'subject',
-				        'Sales Order'=>'salesorder_id',
-				        'Status'=>'invoicestatus',
-				        'Total'=>'hdnGrandTotal',
-				        'Assigned To'=>'assigned_user_id'
-				      );
+						'Invoice No'=>'invoice_no',
+						'Subject'=>'subject',
+						'Sales Order'=>'salesorder_id',
+						'Status'=>'invoicestatus',
+						'Total'=>'hdnGrandTotal',
+						'Assigned To'=>'assigned_user_id'
+					  );
 	var $list_link_field= 'subject';
 
 	var $search_fields = Array(
 				//'Invoice No'=>Array('crmentity'=>'crmid'),
 				'Invoice No'=>Array('invoice'=>'invoice_no'),
 				'Subject'=>Array('purchaseorder'=>'subject'),
-                'Account Name'=>Array('contactdetails'=>'account_id'),
-                'Created Date' => Array('crmentity'=>'createdtime'),
-                'Assigned To'=>Array('crmentity'=>'smownerid'),
+				'Account Name'=>Array('contactdetails'=>'account_id'),
+				'Created Date' => Array('crmentity'=>'createdtime'),
+				'Assigned To'=>Array('crmentity'=>'smownerid'),
 				);
 
 	var $search_fields_name = Array(
-				        'Invoice No'          => 'invoice_no',
-				        'Subject'             => 'subject',
-                        'Account Name'        => 'account_id',
-                        'Created Time'        => 'createdtime',
-                        'Assigned To'         => 'assigned_user_id'
-				      );
+						'Invoice No'          => 'invoice_no',
+						'Subject'             => 'subject',
+						'Account Name'        => 'account_id',
+						'Created Time'        => 'createdtime',
+						'Assigned To'         => 'assigned_user_id'
+					  );
 
 	// This is the list of vtiger_fields that are required.
 	var $required_fields =  array("accountname"=>1);
@@ -90,7 +90,7 @@ class Invoice extends CRMEntity {
 
 	//var $groupTable = Array('vtiger_invoicegrouprelation','invoiceid');
 
-	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id');
+	var $mandatory_fields = Array('subject','createdtime' ,'modifiedtime', 'assigned_user_id', 'quantity', 'listprice', 'productid');
 	var $_salesorderid;
 	var $_recurring_mode;
 
@@ -121,6 +121,14 @@ class Invoice extends CRMEntity {
 		global $updateInventoryProductRel_deduct_stock;
 		$updateInventoryProductRel_deduct_stock = true;
 
+		/* $_REQUEST['REQUEST_FROM_WS'] is set from webservices script.
+		 * Depending on $_REQUEST['totalProductCount'] value inserting line items into DB.
+		 * This should be done by webservices, not be normal save of Inventory record.
+		 * So unsetting the value $_REQUEST['totalProductCount'] through check point
+		 */
+		if (isset($_REQUEST['REQUEST_FROM_WS']) && $_REQUEST['REQUEST_FROM_WS']) {
+			unset($_REQUEST['totalProductCount']);
+		}
 		//in ajax save we should not call this function, because this will delete all the existing product values
 		if(isset($this->_recurring_mode) && $this->_recurring_mode == 'recurringinvoice_from_so' && isset($this->_salesorderid) && $this->_salesorderid!='') {
 			// We are getting called from the RecurringInvoice cron service!
@@ -187,10 +195,10 @@ class Invoice extends CRMEntity {
 		$log->debug("Entering get_activities(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/Activity.php");
 		$other = new Activity();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -261,7 +269,7 @@ class Invoice extends CRMEntity {
 				inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_activity.activityid
 				left join vtiger_cntactivityrel on vtiger_cntactivityrel.activityid= vtiger_activity.activityid
 				left join vtiger_contactdetails on vtiger_contactdetails.contactid = vtiger_cntactivityrel.contactid
-                left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
+				left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
 				left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
 				where vtiger_activity.activitytype='Task'
 					and (vtiger_activity.status = 'Completed' or vtiger_activity.status = 'Deferred')
@@ -329,7 +337,7 @@ class Invoice extends CRMEntity {
 
 		$return_data = Array('header'=>$header,'entries'=>$entries_list);
 
-	 	$log->debug("Exiting get_invoicestatushistory method ...");
+		$log->debug("Exiting get_invoicestatushistory method ...");
 
 		return $return_data;
 	}
@@ -354,13 +362,14 @@ class Invoice extends CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 		$matrix->setDependency('vtiger_crmentityInvoice', array('vtiger_usersInvoice', 'vtiger_groupsInvoice', 'vtiger_lastModifiedByInvoice'));
 		$matrix->setDependency('vtiger_inventoryproductrelInvoice', array('vtiger_productsInvoice', 'vtiger_serviceInvoice'));
-		$matrix->setDependency('vtiger_invoice',array('vtiger_crmentityInvoice', "vtiger_currency_info$secmodule",
-				'vtiger_invoicecf', 'vtiger_salesorderInvoice', 'vtiger_invoicebillads',
-				'vtiger_invoiceshipads', 'vtiger_inventoryproductrelInvoice', 'vtiger_contactdetailsInvoice', 'vtiger_accountInvoice'));
 
 		if (!$queryPlanner->requireTable('vtiger_invoice', $matrix)) {
 			return '';
 		}
+
+		$matrix->setDependency('vtiger_invoice',array('vtiger_crmentityInvoice', "vtiger_currency_info$secmodule",
+				'vtiger_invoicecf', 'vtiger_salesorderInvoice', 'vtiger_invoicebillads',
+				'vtiger_invoiceshipads', 'vtiger_inventoryproductrelInvoice', 'vtiger_contactdetailsInvoice', 'vtiger_accountInvoice'));
 
 		$query = $this->getRelationQuery($module,$secmodule,"vtiger_invoice","invoiceid", $queryPlanner);
 
@@ -383,21 +392,12 @@ class Invoice extends CRMEntity {
 			$query .= " left join vtiger_invoiceshipads on vtiger_invoice.invoiceid=vtiger_invoiceshipads.invoiceshipaddressid";
 		}
 		if ($queryPlanner->requireTable('vtiger_inventoryproductrelInvoice', $matrix)) {
-			$query .= " left join vtiger_inventoryproductrel as vtiger_inventoryproductrelInvoice on vtiger_invoice.invoiceid = vtiger_inventoryproductrelInvoice.id";
-            // To Eliminate duplicates in reports
-            if(($module == 'Products' || $module == 'Services') && $secmodule == "Invoice"){
-                if($module == 'Products'){
-                    $query .= " and vtiger_inventoryproductrelInvoice.productid = vtiger_products.productid ";    
-                }else if($module == 'Services'){
-                    $query .= " and vtiger_inventoryproductrelInvoice.productid = vtiger_service.serviceid "; 
-                }
-            }
 		}
 		if ($queryPlanner->requireTable('vtiger_productsInvoice')) {
-			$query .= " left join vtiger_products as vtiger_productsInvoice on vtiger_productsInvoice.productid = vtiger_inventoryproductrelInvoice.productid";
+			$query .= " left join vtiger_products as vtiger_productsInvoice on vtiger_productsInvoice.productid = vtiger_inventoryproductreltmpInvoice.productid";
 		}
 		if ($queryPlanner->requireTable('vtiger_serviceInvoice')) {
-			$query .= " left join vtiger_service as vtiger_serviceInvoice on vtiger_serviceInvoice.serviceid = vtiger_inventoryproductrelInvoice.productid";
+			$query .= " left join vtiger_service as vtiger_serviceInvoice on vtiger_serviceInvoice.serviceid = vtiger_inventoryproductreltmpInvoice.productid";
 		}
 		if ($queryPlanner->requireTable('vtiger_groupsInvoice')) {
 			$query .= " left join vtiger_groups as vtiger_groupsInvoice on vtiger_groupsInvoice.groupid = vtiger_crmentityInvoice.smownerid";
@@ -414,9 +414,13 @@ class Invoice extends CRMEntity {
 		if ($queryPlanner->requireTable('vtiger_lastModifiedByInvoice')) {
 			$query .= " left join vtiger_users as vtiger_lastModifiedByInvoice on vtiger_lastModifiedByInvoice.id = vtiger_crmentityInvoice.modifiedby ";
 		}
-        if ($queryPlanner->requireTable("vtiger_createdbyInvoice")){
+		if ($queryPlanner->requireTable("vtiger_createdbyInvoice")){
 			$query .= " left join vtiger_users as vtiger_createdbyInvoice on vtiger_createdbyInvoice.id = vtiger_crmentityInvoice.smcreatorid ";
 		}
+
+		//if secondary modules custom reference field is selected
+        $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
+        
 		return $query;
 	}
 
@@ -430,7 +434,7 @@ class Invoice extends CRMEntity {
 			"Calendar" =>array("vtiger_seactivityrel"=>array("crmid","activityid"),"vtiger_invoice"=>"invoiceid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_invoice"=>"invoiceid"),
 			"Accounts" => array("vtiger_invoice"=>array("invoiceid","accountid")),
-                        "Contacts" => array("vtiger_invoice"=>array("invoiceid","contactid")),
+			"Contacts" => array("vtiger_invoice"=>array("invoiceid","contactid")),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -445,10 +449,11 @@ class Invoice extends CRMEntity {
 		} elseif($return_module=='SalesOrder') {
 			$relation_query = 'UPDATE vtiger_invoice set salesorderid=? where invoiceid=?';
 			$this->db->pquery($relation_query, array(null,$id));
+		} elseif($return_module == 'Documents') {
+			$sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+			$this->db->pquery($sql, array($id, $return_id));
 		} else {
-			$sql = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-			$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
-			$this->db->pquery($sql, $params);
+			parent::unlinkRelationship($id, $return_module, $return_id);
 		}
 	}
 
@@ -507,28 +512,11 @@ class Invoice extends CRMEntity {
 			}
 		}
 
-		// Add the Shipping taxes for the Invoice
-		$query3 = "SELECT * FROM vtiger_inventoryshippingrel WHERE id=?";
-		$res = $adb->pquery($query3, array($salesorder_id));
-		$no_of_shippingtax = $adb->num_rows($res);
-		$fieldsList = $adb->getFieldsArray($res);
-		for($j=0; $j<$no_of_shippingtax; $j++) {
-			$row = $adb->query_result_rowdata($res, $j);
-			$col_value = array();
-			for($k=0; $k<count($fieldsList); $k++) {
-				$col_value[$fieldsList[$k]] = $row[$fieldsList[$k]];
-			}
-			if(count($col_value) > 0) {
-				$col_value['id'] = $this->id;
-				$columns = array_keys($col_value);
-				$values = array_values($col_value);
-				$query4 = "INSERT INTO vtiger_inventoryshippingrel(". implode(",",$columns) .") VALUES (". generateQuestionMarks($values) .")";
-				$adb->pquery($query4, array($values));
-			}
-		}
+		//Adding charge values
+		$adb->pquery('DELETE FROM vtiger_inventorychargesrel WHERE recordid = ?', array($this->id));
+		$adb->pquery('INSERT INTO vtiger_inventorychargesrel SELECT ?, charges FROM vtiger_inventorychargesrel WHERE recordid = ?', array($this->id, $salesorder_id));
 
 		//Update the netprice (subtotal), taxtype, discount, S&H charge, adjustment and total for the Invoice
-
 		$updatequery  = " UPDATE vtiger_invoice SET ";
 		$updateparams = array();
 		// Remaining column values to be updated -> column name to field name mapping
@@ -540,6 +528,9 @@ class Invoice extends CRMEntity {
 			'discount_percent' => 'hdnDiscountPercent',
 			'discount_amount' => 'hdnDiscountAmount',
 			's_h_amount' => 'hdnS_H_Amount',
+			'region_id' => 'region_id',
+			's_h_percent' => 'hdnS_H_Percent',
+			'balance' => 'hdnGrandTotal'
 		);
 		$updatecols = array();
 		foreach($invoice_column_field as $col => $field) {
@@ -635,6 +626,13 @@ class Invoice extends CRMEntity {
 		return $query;
 	}
 
+	/**
+	 * Function to get importable mandatory fields
+	 * By default some fields like Quantity, List Price is not mandaroty for Invertory modules but
+	 * import fails if those fields are not mapped during import.
+	 */
+	function getMandatoryImportableFields() {
+		return getInventoryImportableMandatoryFeilds($this->moduleName);
+	}
 }
-
 ?>

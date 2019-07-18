@@ -161,12 +161,20 @@
 			return array();
 		}
 
-		public function getContents($entity, $entityCache=false) {
+		public function getContents($entity) {
 			return $this->contents;
 		}
 
 		public function setContents($contents) {
 			$this->contents = $contents;
+		}
+
+		public function setRelatedInfo($relatedInfo){
+			$this->relatedInfo = $relatedInfo;
+		}
+
+		public function getRelatedInfo(){
+			return $this->relatedInfo;
 		}
 
 		public function hasContents($entity) {
@@ -256,7 +264,8 @@ class VTTaskType {
 
 	public static function getAll($moduleName='') {
 		$adb = PearDatabase::getInstance();
-
+		$referenceModules = false;
+		
 		$result = $adb->pquery("SELECT * FROM com_vtiger_workflow_tasktypes",array());
 		$numrows = $adb->num_rows($result);
 		for ($i = 0; $i < $numrows; $i++) {
@@ -267,7 +276,13 @@ class VTTaskType {
 			$modules = Zend_Json::decode($moduleslist);
 			$includeModules = $modules['include'];
 			$excludeModules = $modules['exclude'];
-
+			
+			if(in_array($taskName, array('VTCreateTodoTask','VTCreateEventTask'))) {
+				if($referenceModules == false) {
+					$referenceModules = Vtiger_Util_Helper::getCalendarReferenceModulesList();
+				}
+				$includeModules = array_unique(array_merge($includeModules, $referenceModules));
+			}
 			if(!empty ($sourceModule)) {
 				if(getTabid($sourceModule) == null || !vtlib_isModuleActive($sourceModule)) {
 					continue;

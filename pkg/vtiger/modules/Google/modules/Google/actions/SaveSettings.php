@@ -15,7 +15,9 @@ class Google_SaveSettings_Action extends Vtiger_BasicAjax_Action {
         $sourceModule = $request->get('sourcemodule');
         $fieldMapping = $request->get('fieldmapping');
         Google_Utils_Helper::saveSettings($request);
-        Google_Utils_Helper::saveFieldMappings($sourceModule, $fieldMapping);
+        if($fieldMapping) {
+            Google_Utils_Helper::saveFieldMappings($sourceModule, $fieldMapping);
+        }
         $response = new Vtiger_Response;
         $result = array('settingssaved' => true);
         $response->setResult($result);

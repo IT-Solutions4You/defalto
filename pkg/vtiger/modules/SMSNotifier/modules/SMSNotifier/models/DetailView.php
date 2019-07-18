@@ -20,6 +20,7 @@ class SMSNotifier_DetailView_Model extends Vtiger_DetailView_Model {
 		$recordModel = $this->getRecord();
 
 		$linkModelList = parent::getDetailViewLinks($linkParams);
+		$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues(array('linklabel' => 'LBL_CHECK_STATUS'));
 		unset($linkModelList['DETAILVIEWBASIC']);
 		$linkModelDetailViewList = $linkModelList['DETAILVIEW'];
 		$countOfList = count($linkModelDetailViewList);
@@ -28,7 +29,7 @@ class SMSNotifier_DetailView_Model extends Vtiger_DetailView_Model {
 			$linkModel = $linkModelDetailViewList[$i];
 			if ($linkModel->get('linklabel') == 'LBL_CHECK_STATUS') {
 				$linkModelList['DETAILVIEW'][$i]->set('linklabel', vtranslate('LBL_CHECK_STATUS', 'SMSNotifier'));
-				$linkModelList['DETAILVIEW'][$i]->set('linkurl', $recordModel->getCheckStatusUrl());
+				$linkModelList['DETAILVIEW'][$i]->set('linkurl', "javascript:Vtiger_Detail_Js.checkSMSStatus('".$recordModel->getCheckStatusUrl()."')");
 				break;
 			}
 		}

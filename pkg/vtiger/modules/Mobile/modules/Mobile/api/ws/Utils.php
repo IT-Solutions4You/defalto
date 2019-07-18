@@ -268,6 +268,7 @@ class Mobile_WS_Utils {
 						$fieldInfo['type']['picklistValues'] = self::visibilityValues();
 						$fieldInfo['type']['defaultValue'] = $fieldInfo['type']['picklistValues'][0]['value'];
 					}
+					$fieldInfo['default'] = $fieldInfo['type']['picklistValues'][0]['value'];
 				}
 				$describeInfo['fields'][$index] = $fieldInfo;				
 			}

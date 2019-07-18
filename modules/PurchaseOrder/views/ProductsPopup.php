@@ -10,4 +10,8 @@
 
 class PurchaseOrder_ProductsPopup_View extends Inventory_ProductsPopup_View {
 
+	public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
+		parent::initializeListViewContents($request, $viewer);
+		$viewer->assign('GETURL', 'getPurchaseOrderTaxesURL');
+	}
 }

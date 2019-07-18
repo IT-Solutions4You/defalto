@@ -34,7 +34,7 @@
 				<br>
                 <div class="row-fluid">
                     <label><span class="redColor">*</span> {vtranslate('LBL_VIEW_NAME',$MODULE)}&nbsp;</label>
-                    <input type="text" id="viewname" data-validation-engine='validate[required]' name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}">&nbsp;&nbsp;&nbsp;
+                    <input type="text" id="viewname" data-validation-engine='validate[required]' name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" class="span3">&nbsp;&nbsp;&nbsp;
                     <label class="checkbox"><input id="setdefault" type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}>{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}</label>&nbsp;&nbsp;&nbsp;
                     <label class="checkbox"><input id="setmetrics" name="setmetrics" type="checkbox" value="1" {if $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}>{vtranslate('LBL_LIST_IN_METRICS',$MODULE)}</label>&nbsp;&nbsp;&nbsp;
                     <label class="checkbox"><input id="status" name="status" type="checkbox" {if $CUSTOMVIEW_MODEL->isSetPublic()} value="{$CUSTOMVIEW_MODEL->get('status')}" checked="checked" {else} value="{$CV_PENDING_VALUE}" {/if}>{vtranslate('LBL_SET_AS_PUBLIC',$MODULE)}</label>

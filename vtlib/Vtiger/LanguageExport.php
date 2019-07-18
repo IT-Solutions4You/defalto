@@ -37,7 +37,7 @@ class Vtiger_LanguageExport extends Vtiger_Package {
 	 * Initialize Export
 	 * @access private
 	 */
-	function __initExport($languageCode) {
+	function __initExport($languageCode, $moduleInstance = null) {
 		// Security check to ensure file is withing the web folder.
 		Vtiger_Utils::checkFileAccessForInclusion("languages/$languageCode/Vtiger.php");
 		
@@ -117,7 +117,7 @@ class Vtiger_LanguageExport extends Vtiger_Package {
 	 * Export vtiger dependencies
 	 * @access private
 	 */
-	function export_Dependencies() {
+	function export_Dependencies($moduleInstance) {
 		global $vtiger_current_version, $adb;
 
 		$vtigerMinVersion = $vtiger_current_version;
@@ -222,6 +222,7 @@ class Vtiger_LanguageExport extends Vtiger_Package {
 				$languageinfo[$prefix] = $label;
 			}
 		}
+		asort($languageinfo);
 		return $languageinfo;
 	}
 }

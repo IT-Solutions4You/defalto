@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -27,6 +27,7 @@ $languageStrings = array(
 	'Title' => 'Titel',
 	'Solution' => 'Lösning',
 	'From Portal' => 'Från Portal',
+    'Related To' => 'Relaterat till',
 
 	//Added for existing picklist entries
 
@@ -95,4 +96,10 @@ $languageStrings = array(
 	'LBL_MAIL_SENT' => 'E-post har skickats till din e-post-id med Kundportalsinloggningsuppgifter',
 	'LBL_ALTBODY' => 'Detta är den oformaterade textmassan som skickas till icke-HTML e-postklienter',
 	'HelpDesk ID' => 'Ärende ID',
+
+  'Contact Name' => 'Kontakta Namn',
+  'LBL_ADD_DOCUMENT' => 'Lägg Till Dokument',
+  'LBL_OPEN_TICKETS' => 'Öppna Biljetter',
+  'LBL_CREATE_TICKET' => 'Skapa Biljett',
+
 );

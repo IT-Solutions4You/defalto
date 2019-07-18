@@ -13,77 +13,274 @@ vimport ('~~/include/Webservices/Query.php');
 class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	public function process(Vtiger_Request $request) {
-		try {
+		if($request->get('mode') === 'batch') {
+			$feedsRequest = $request->get('feedsRequest',array());
 			$result = array();
-
-			$start = $request->get('start');
-			$end   = $request->get('end');
-			$type = $request->get('type');
-			$userid = $request->get('userid');
-			$color = $request->get('color');
-			$textColor = $request->get('textColor');
-			
-			switch ($type) {
-				case 'Events': $this->pullEvents($start, $end, $result,$userid,$color,$textColor); break;
-				case 'Calendar': $this->pullTasks($start, $end, $result,$color,$textColor); break;
-				case 'Potentials': $this->pullPotentials($start, $end, $result, $color, $textColor); break;
-				case 'Contacts':
-							if($request->get('fieldname') == 'support_end_date') {
-								$this->pullContactsBySupportEndDate($start, $end, $result, $color, $textColor);
-							}else{
-								$this->pullContactsByBirthday($start, $end, $result, $color, $textColor);
-							}
-							break;
-
-				case 'Invoice': $this->pullInvoice($start, $end, $result, $color, $textColor); break;
-				case 'MultipleEvents' : $this->pullMultipleEvents($start,$end, $result,$request->get('mapping'));break;
-				case 'Project': $this->pullProjects($start, $end, $result, $color, $textColor); break;
-				case 'ProjectTask': $this->pullProjectTasks($start, $end, $result, $color, $textColor); break;
+			if(count($feedsRequest)) {
+				foreach($feedsRequest as $key=>$value) {
+					$requestParams = array();
+					$requestParams['start'] = $value['start'];
+					$requestParams['end'] = $value['end'];
+					$requestParams['type'] = $value['type'];
+					$requestParams['userid'] = $value['userid'];
+					$requestParams['color'] = $value['color'];
+					$requestParams['textColor'] = $value['textColor'];
+					$requestParams['targetModule'] = $value['targetModule'];
+					$requestParams['fieldname'] = $value['fieldname'];
+					$requestParams['group'] = $value['group'];
+					$requestParams['mapping'] = $value['mapping'];
+					$requestParams['conditions'] = $value['conditions'];
+					$result[$key] = $this->_process($requestParams);
+				}
 			}
 			echo json_encode($result);
-		} catch (Exception $ex) {
-			echo $ex->getMessage();
+		} else {
+			$requestParams = array();
+			$requestParams['start'] = $request->get('start');
+			$requestParams['end'] = $request->get('end');
+			$requestParams['type'] = $request->get('type');
+			$requestParams['userid'] = $request->get('userid');
+			$requestParams['color'] = $request->get('color');
+			$requestParams['textColor'] = $request->get('textColor');
+			$requestParams['targetModule'] = $request->get('targetModule');
+			$requestParams['fieldname'] = $request->get('fieldname');
+			$requestParams['group'] = $request->get('group');
+			$requestParams['mapping'] = $request->get('mapping');
+			$requestParams['conditions'] = $request->get('conditions','');
+			echo $this->_process($requestParams);
 		}
 	}
-    
-    protected function getGroupsIdsForUsers($userId) {
-        vimport('~~/include/utils/GetUserGroups.php');
-        
-        $userGroupInstance = new GetUserGroups();
-        $userGroupInstance->getAllUserGroups($userId);
-        return $userGroupInstance->user_groups;
-    }
+
+	public function _process($request) {
+		try {
+			foreach ($request as $k => $v) {
+				if ($k == 'conditions' || $k == 'mapping') continue;
+				
+				if ($k == 'fieldname' && $v) {
+					$vp = explode(',', $v);
+					$v  = array();
+					foreach ($vp as $p) $v[] = $this->valForSql($p);
+					$request[$k] = implode(',', $v);
+				} else {
+					$request[$k] = $this->valForSql($v);
+				}
+			}
+
+			$start = $request['start'];
+			$end = $request['end'];
+			$type = $request['type'];
+			$userid = $request['userid'];
+			$color = $request['color'];
+			$textColor = $request['textColor'];
+			$targetModule = $request['targetModule'];
+			$fieldName = $request['fieldname'];
+			$isGroupId = $request['group'];
+			$mapping = $request['mapping'];
+			$conditions = $request['conditions'];
+			$result = array();
+			switch ($type) {
+				case 'Events'			:	if($fieldName == 'date_start,due_date' || $userid) {
+												$this->pullEvents($start, $end, $result,$userid,$color,$textColor,$isGroupId,$conditions);
+											} else {
+												$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor, $conditions);
+											}
+											break;
+				case 'Calendar'			:	if($fieldName == 'date_start,due_date') {
+												$this->pullTasks($start, $end, $result,$color,$textColor);
+											} else {
+												$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);
+											}
+											break;
+				case 'MultipleEvents'	:	$this->pullMultipleEvents($start,$end, $result,$mapping);break;
+				case $type				:	$this->pullDetails($start, $end, $result, $type, $fieldName, $color, $textColor);break;
+			}
+			return json_encode($result);
+		} catch (Exception $ex) {
+			return $ex->getMessage();
+		}
+	}
+
+	private function valForSql($value) {
+		return Vtiger_Util_Helper::validateStringForSql($value);
+	}
+
+	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
+		$moduleModel = Vtiger_Module_Model::getInstance($type);
+		$nameFields = $moduleModel->getNameFields();
+		foreach($nameFields as $i => $nameField) {
+			$fieldInstance = $moduleModel->getField($nameField);
+			if(!$fieldInstance->isViewable()) {
+				unset($nameFields[$i]);
+			}
+		}
+		$nameFields = array_values($nameFields);
+		$selectFields = implode(',', $nameFields);		
+		$fieldsList = explode(',', $fieldName);
+		if(count($fieldsList) == 2) {
+			$db = PearDatabase::getInstance();
+			$user = Users_Record_Model::getCurrentUserModel();
+			$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
+			$queryGenerator = new QueryGenerator($moduleModel->get('name'), $user);
+			$meta = $queryGenerator->getMeta($moduleModel->get('name'));
+
+			$queryGenerator->setFields(array_merge(array_merge($nameFields, array('id')), $fieldsList));
+			$query = $queryGenerator->getQuery();
+			$query.= " AND (($fieldsList[0] >= ? AND $fieldsList[1] < ?) OR ($fieldsList[1] >= ?)) ";
+			$params = array($start,$end,$start);
+			$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userAndGroupIds).")";
+			$params = array_merge($params, $userAndGroupIds);
+			$queryResult = $db->pquery($query, $params);
+
+			$records = array();
+			while($rowData = $db->fetch_array($queryResult)) {
+				$records[] = DataTransform::sanitizeDataWithColumn($rowData, $meta);
+			}
+		} else {
+			if($fieldName == 'birthday') {
+				$startDateComponents = split('-', $start);
+				$endDateComponents = split('-', $end);
+
+				$year = $startDateComponents[0];
+				$db = PearDatabase::getInstance();
+				$user = Users_Record_Model::getCurrentUserModel();
+				$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
+				$queryGenerator = new QueryGenerator($moduleModel->get('name'), $user);
+				$meta = $queryGenerator->getMeta($moduleModel->get('name'));
+
+				$queryGenerator->setFields(array_merge(array_merge($nameFields, array('id')), $fieldsList));
+				$query = $queryGenerator->getQuery();
+				$query.= " AND ((CONCAT('$year-', date_format(birthday,'%m-%d')) >= ? AND CONCAT('$year-', date_format(birthday,'%m-%d')) <= ? )";
+				$params = array($start,$end);
+				$endDateYear = $endDateComponents[0]; 
+				if ($year !== $endDateYear) {
+					$query .= " OR (CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) >= ?  AND CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) <= ? )"; 
+					$params = array_merge($params,array($start,$end));
+				} 
+				$query .= ")";
+				$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($userAndGroupIds).")";
+				$params = array_merge($params,$userAndGroupIds);
+				$queryResult = $db->pquery($query, $params);
+				$records = array();
+				while($rowData = $db->fetch_array($queryResult)) {
+					$records[] = DataTransform::sanitizeDataWithColumn($rowData, $meta);
+				}
+			} else {
+				$query = "SELECT $selectFields, $fieldsList[0] FROM $type";
+				$query.= " WHERE $fieldsList[0] >= '$start' AND $fieldsList[0] <= '$end' ";
+
+
+				if(!empty($conditions)) {
+					$conditions = Zend_Json::decode(Zend_Json::decode($conditions));
+					$query .=  'AND '.$this->generateCalendarViewConditionQuery($conditions);
+				}
+
+				if($type == 'PriceBooks') {
+					$records = $this->queryForRecords($query, false);
+				} else {
+					$records = $this->queryForRecords($query);
+				}
+			}
+		}
+		foreach ($records as $record) {
+			$item = array();
+			list ($modid, $crmid) = vtws_getIdComponents($record['id']);
+			$item['id'] = $crmid;
+			$item['title'] = decode_html($record[$nameFields[0]]);
+			if(count($nameFields) > 1) {
+				$item['title'] = decode_html(trim($record[$nameFields[0]].' '.$record[$nameFields[1]]));
+			}
+			if(!empty($record[$fieldsList[0]])) {
+				$item['start'] = $record[$fieldsList[0]];
+			} else {
+				$item['start'] = $record[$fieldsList[1]];
+			}
+			if(count($fieldsList) == 2) {
+				$item['end'] = $record[$fieldsList[1]];
+			}
+			if($fieldName == 'birthday') {
+				$recordDateTime = new DateTime($record[$fieldName]); 
+
+				$calendarYear = $year; 
+				if($recordDateTime->format('m') < $startDateComponents[1]) { 
+						$calendarYear = $endDateYear; 
+				} 
+				$recordDateTime->setDate($calendarYear, $recordDateTime->format('m'), $recordDateTime->format('d'));
+				$item['start'] = $recordDateTime->format('Y-m-d');
+			}
+
+			$urlModule = $type;
+			if ($urlModule === 'Events') {
+				$urlModule = 'Calendar';
+			}
+			$item['url']   = sprintf('index.php?module='.$urlModule.'&view=Detail&record=%s', $crmid);
+			$item['color'] = $color;
+			$item['textColor'] = $textColor;
+			$item['module'] = $moduleModel->getName();
+			$item['sourceModule'] = $moduleModel->getName();
+			$item['fieldName'] = $fieldName;
+			$item['conditions'] = '';
+			if(!empty($conditions)) {
+				$item['conditions'] = Zend_Json::encode(Zend_Json::encode($conditions));
+			}
+			$result[] = $item;
+		}
+	}
+
+	protected function generateCalendarViewConditionQuery($conditions) {
+		$conditionQuery = $operator = '';
+		switch ($conditions['operator']) {
+			case 'e' : $operator = '=';
+		}
+
+		if(!empty($operator) && !empty($conditions['fieldname']) && !empty($conditions['value'])) {
+			$fieldname = vtlib_purifyForSql($conditions['fieldname']);
+			if (empty($fieldname)) throw new Exception('Invalid fieldname.');
+			$conditionQuery = ' '.$fieldname.$operator.'\'' .Vtiger_Functions::realEscapeString($conditions['value']).'\' ';
+		}
+		return $conditionQuery;
+	}
+
+	protected function getGroupsIdsForUsers($userId) {
+		vimport('~~/include/utils/GetUserGroups.php');
+
+		$userGroupInstance = new GetUserGroups();
+		$userGroupInstance->getAllUserGroups($userId);
+		return $userGroupInstance->user_groups;
+	}
 
 	protected function queryForRecords($query, $onlymine=true) {
 		$user = Users_Record_Model::getCurrentUserModel();
 		if ($onlymine) {
-            $groupIds = $this->getGroupsIdsForUsers($user->getId());
-            $groupWsIds = array();
-            foreach($groupIds as $groupId) {
-                $groupWsIds[] = vtws_getWebserviceEntityId('Groups', $groupId);
-            }
+			$groupIds = $this->getGroupsIdsForUsers($user->getId());
+			$groupWsIds = array();
+			foreach($groupIds as $groupId) {
+				$groupWsIds[] = vtws_getWebserviceEntityId('Groups', $groupId);
+			}
 			$userwsid = vtws_getWebserviceEntityId('Users', $user->getId());
-            $userAndGroupIds = array_merge(array($userwsid),$groupWsIds);
+			$userAndGroupIds = array_merge(array($userwsid),$groupWsIds);
 			$query .= " AND assigned_user_id IN ('".implode("','",$userAndGroupIds)."')";
 		}
 		// TODO take care of pulling 100+ records
 		return vtws_query($query.';', $user);
 	}
 
-	protected function pullEvents($start, $end, &$result, $userid = false,$color = null,$textColor = 'white') {
+	protected function pullEvents($start, $end, &$result, $userid = false, $color = null, $textColor = 'white', $isGroupId = false, $conditions = '') {
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
 		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
 		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
 		$dbStartDate = $dbStartDateTimeComponents[0];
-		
+
 		$dbEndDateObject = DateTimeField::convertToDBTimeZone($end);
 		$dbEndDateTime = $dbEndDateObject->format('Y-m-d H:i:s');
-		
+
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$db = PearDatabase::getInstance();
+		$groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
+		require('user_privileges/user_privileges_'.$currentUser->id.'.php');
+		require('user_privileges/sharing_privileges_'.$currentUser->id.'.php');
 
 		$moduleModel = Vtiger_Module_Model::getInstance('Events');
-		if($userid){
+		if($userid && !$isGroupId){
 			$focus = new Users();
 			$focus->id = $userid;
 			$focus->retrieve_entity_info($userid, 'Users');
@@ -94,76 +291,105 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$queryGenerator = new QueryGenerator($moduleModel->get('name'), $currentUser);
 		}
 
-		$queryGenerator->setFields(array('subject', 'eventstatus', 'visibility','date_start','time_start','due_date','time_end','assigned_user_id','id','activitytype'));
+		$queryGenerator->setFields(array('subject', 'eventstatus', 'visibility','date_start','time_start','due_date','time_end','assigned_user_id','id','activitytype','recurringtype'));
 		$query = $queryGenerator->getQuery();
 
 		$query.= " AND vtiger_activity.activitytype NOT IN ('Emails','Task') AND ";
-        $hideCompleted = $currentUser->get('hidecompletedevents');
-        if($hideCompleted)
-            $query.= "vtiger_activity.eventstatus != 'HELD' AND ";
+		$hideCompleted = $currentUser->get('hidecompletedevents');
+		if($hideCompleted)
+			$query.= "vtiger_activity.eventstatus != 'HELD' AND ";
+
+		if(!empty($conditions)) {
+			$conditions = Zend_Json::decode(Zend_Json::decode($conditions));
+			$query .=  $this->generateCalendarViewConditionQuery($conditions).'AND ';
+		}
 		$query.= " ((concat(date_start, '', time_start)  >= '$dbStartDateTime' AND concat(due_date, '', time_end) < '$dbEndDateTime') OR ( due_date >= '$dbStartDate'))";
-		
-        $params = array();
+
+		$params = array();
 		if(empty($userid)){
-            $eventUserId  = $currentUser->getId();
-        }else{
-            $eventUserId = $userid;
-        }
-        $params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
-        $query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
-		
+			$eventUserId  = $currentUser->getId();
+			$params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
+		}else{
+			$eventUserId = $userid;
+			$params = array($eventUserId);
+		}
+
+		$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
 		$queryResult = $db->pquery($query, $params);
 
 		while($record = $db->fetchByAssoc($queryResult)){
 			$item = array();
 			$crmid = $record['activityid'];
 			$visibility = $record['visibility'];
-            $activitytype = $record['activitytype'];
-            $status = $record['eventstatus'];
+			$activitytype = $record['activitytype'];
+			$status = $record['eventstatus'];
+			$ownerId = $record['smownerid'];
 			$item['id'] = $crmid;
 			$item['visibility'] = $visibility;
 			$item['activitytype'] = $activitytype;
-            $item['status'] = $status;
-			if(!$currentUser->isAdminUser() && $visibility == 'Private' && $userid && $userid != $currentUser->getId()) {
+			$item['status'] = $status;
+			$recordBusy = true;
+			if(in_array($ownerId, $groupsIds)) {
+				$recordBusy = false;
+			} else if($ownerId == $currentUser->getId()){
+				$recordBusy = false;
+			}
+			// if the user is having view all permission then it should show the record
+			// as we are showing in detail view
+			if($profileGlobalPermission[1] ==0 || $profileGlobalPermission[2] ==0) {
+				$recordBusy = false;
+			}
+
+			if(!$currentUser->isAdminUser() && $visibility == 'Private' && $userid && $userid != $currentUser->getId() && $recordBusy) {
 				$item['title'] = decode_html($userName).' - '.decode_html(vtranslate('Busy','Events')).'*';
 				$item['url']   = '';
 			} else {
-				$item['title'] = decode_html($record['subject']) . ' - (' . decode_html(vtranslate($record['eventstatus'],'Calendar')) . ')';
+				$item['title'] = decode_html($record['subject']).' - ('.decode_html(vtranslate($record['eventstatus'],'Calendar')).')';
 				$item['url']   = sprintf('index.php?module=Calendar&view=Detail&record=%s', $crmid);
 			}
 
-			$dateTimeFieldInstance = new DateTimeField($record['date_start'] . ' ' . $record['time_start']);
-			$userDateTimeString = $dateTimeFieldInstance->getFullcalenderDateTimevalue($currentUser);
+			$dateTimeFieldInstance = new DateTimeField($record['date_start'].' '.$record['time_start']);
+			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue($currentUser);
 			$dateTimeComponents = explode(' ',$userDateTimeString);
 			$dateComponent = $dateTimeComponents[0];
-			//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+			//Conveting the date format in to Y-m-d.since full calendar expects in the same format
 			$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $currentUser->get('date_format'));
 			$item['start'] = $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
 
-			$dateTimeFieldInstance = new DateTimeField($record['due_date'] . ' ' . $record['time_end']);
-			$userDateTimeString = $dateTimeFieldInstance->getFullcalenderDateTimevalue($currentUser);
+			$dateTimeFieldInstance = new DateTimeField($record['due_date'].' '.$record['time_end']);
+			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue($currentUser);
 			$dateTimeComponents = explode(' ',$userDateTimeString);
 			$dateComponent = $dateTimeComponents[0];
-			//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+			//Conveting the date format in to Y-m-d.since full calendar expects in the same format
 			$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $currentUser->get('date_format'));
 			$item['end']   =  $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
-
 
 			$item['className'] = $cssClass;
 			$item['allDay'] = false;
 			$item['color'] = $color;
 			$item['textColor'] = $textColor;
-            $item['module'] = $moduleModel->getName();
-			$result[] = $item;
+			$item['module'] = $moduleModel->getName();
+			$recurringCheck = false;
+			if($record['recurringtype'] != '' && $record['recurringtype'] != '--None--') {
+				$recurringCheck = true;
 			}
+			$item['recurringcheck'] = $recurringCheck;
+			$item['userid'] = $eventUserId;
+			$item['fieldName'] = 'date_start,due_date';
+			$item['conditions'] = '';
+			if(!empty($conditions)) {
+				$item['conditions'] = Zend_Json::encode(Zend_Json::encode($conditions));
+			}
+			$result[] = $item;
 		}
+	}
 
 	protected function pullMultipleEvents($start, $end, &$result, $data) {
 
 		foreach ($data as $id=>$backgroundColorAndTextColor) {
 			$userEvents = array();
 			$colorComponents = explode(',',$backgroundColorAndTextColor);
-			$this->pullEvents($start, $end, $userEvents ,$id, $colorComponents[0], $colorComponents[1]);
+			$this->pullEvents($start, $end, $userEvents ,$id, $colorComponents[0], $colorComponents[1], $colorComponents[2]);
 			$result[$id] = $userEvents;
 		}
 	}
@@ -173,36 +399,34 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$db = PearDatabase::getInstance();
 
 		$moduleModel = Vtiger_Module_Model::getInstance('Calendar');
-        $userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
+		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
 		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $user);
 
 		$queryGenerator->setFields(array('activityid','subject', 'taskstatus','activitytype', 'date_start','time_start','due_date','time_end','id'));
 		$query = $queryGenerator->getQuery();
 
 		$query.= " AND vtiger_activity.activitytype = 'Task' AND ";
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $hideCompleted = $currentUser->get('hidecompletedevents');
-        if($hideCompleted)
-            $query.= "vtiger_activity.status != 'Completed' AND ";
-		$query.= " ((date_start >= ? AND due_date < ?) OR ( due_date >= ?))";
-                $params = array($start,$end,$start);
-        $params = array_merge($params, $userAndGroupIds);
-		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userAndGroupIds).")";
-		
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$hideCompleted = $currentUser->get('hidecompletedevents');
+		if($hideCompleted)
+			$query.= "vtiger_activity.status != 'Completed' AND ";
+		$query.= " ((date_start >= '$start' AND due_date < '$end') OR ( due_date >= '$start'))";
+		$params = $userAndGroupIds;
+		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($params).")";
 		$queryResult = $db->pquery($query,$params);
-		
+
 		while($record = $db->fetchByAssoc($queryResult)){
 			$item = array();
 			$crmid = $record['activityid'];
-			$item['title'] = decode_html($record['subject']) . ' - (' . decode_html(vtranslate($record['status'],'Calendar')) . ')';
-            $item['status'] = $record['status'];
-            $item['activitytype'] = $record['activitytype'];
-            $item['id'] = $crmid;
-			$dateTimeFieldInstance = new DateTimeField($record['date_start'] . ' ' . $record['time_start']);
-			$userDateTimeString = $dateTimeFieldInstance->getFullcalenderDateTimevalue();
+			$item['title'] = decode_html($record['subject']).' - ('.decode_html(vtranslate($record['status'],'Calendar')).')';
+			$item['status'] = $record['status'];
+			$item['activitytype'] = $record['activitytype'];
+			$item['id'] = $crmid;
+			$dateTimeFieldInstance = new DateTimeField($record['date_start'].' '.$record['time_start']);
+			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
 			$dateTimeComponents = explode(' ',$userDateTimeString);
 			$dateComponent = $dateTimeComponents[0];
-			//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+			//Conveting the date format in to Y-m-d.since full calendar expects in the same format
 			$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $user->get('date_format'));
 			$item['start'] = $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
 
@@ -210,184 +434,10 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['url']   = sprintf('index.php?module=Calendar&view=Detail&record=%s', $crmid);
 			$item['color'] = $color;
 			$item['textColor'] = $textColor;
-            $item['module'] = $moduleModel->getName();
-			$result[] = $item;
-		}
-	}
-
-	protected function pullPotentials($start, $end, &$result, $color = null,$textColor = 'white') {
-		$query = "SELECT potentialname,closingdate FROM Potentials";
-		$query.= " WHERE closingdate >= '$start' AND closingdate <= '$end'";
-		$records = $this->queryForRecords($query);
-		foreach ($records as $record) {
-			$item = array();
-			list ($modid, $crmid) = vtws_getIdComponents($record['id']);
-			$item['id'] = $crmid;
-			$item['title'] = decode_html($record['potentialname']);
-			$item['start'] = $record['closingdate'];
-			$item['url']   = sprintf('index.php?module=Potentials&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
-			$result[] = $item;
-		}
-	}
-
-	protected function pullContacts($start, $end, &$result, $color = null,$textColor = 'white') {
-		$this->pullContactsBySupportEndDate($start, $end, $result, $color, $textColor);
-		$this->pullContactsByBirthday($start, $end, $result, $color, $textColor);
-	}
-
-	protected function pullContactsBySupportEndDate($start, $end, &$result, $color = null,$textColor = 'white') {
-		$query = "SELECT firstname,lastname,support_end_date FROM Contacts";
-		$query.= " WHERE support_end_date >= '$start' AND support_end_date <= '$end'";
-		$records = $this->queryForRecords($query);
-		foreach ($records as $record) {
-			$item = array();
-			list ($modid, $crmid) = vtws_getIdComponents($record['id']);
-			$item['id'] = $crmid;
-			$item['title'] = decode_html(trim($record['firstname'] . ' ' . $record['lastname']));
-			$item['start'] = $record['support_end_date'];
-			$item['url']   = sprintf('index.php?module=Contacts&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
-			$result[] = $item;
-		}
-	}
-
-	protected  function pullContactsByBirthday($start, $end, &$result, $color = null,$textColor = 'white') {
-		$db = PearDatabase::getInstance();
-		$user = Users_Record_Model::getCurrentUserModel();
-		$startDateComponents = split('-', $start);
-		$endDateComponents = split('-', $end);
-        
-        $userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
-        $params = array($start,$end,$start,$end);
-        $params = array_merge($userAndGroupIds, $params);
-        
-		$year = $startDateComponents[0];
-
-		$query = "SELECT firstname,lastname,birthday,crmid FROM vtiger_contactdetails";
-		$query.= " INNER JOIN vtiger_contactsubdetails ON vtiger_contactdetails.contactid = vtiger_contactsubdetails.contactsubscriptionid";
-		$query.= " INNER JOIN vtiger_crmentity ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid";
-		$query.= " WHERE vtiger_crmentity.deleted=0 AND smownerid IN (".  generateQuestionMarks($userAndGroupIds) .") AND";
-		$query.= " ((CONCAT('$year-', date_format(birthday,'%m-%d')) >= ?
-						AND CONCAT('$year-', date_format(birthday,'%m-%d')) <= ?)";
-
-        
-		$endDateYear = $endDateComponents[0];
-		if ($year !== $endDateYear) {
-			$query .= " OR
-						(CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) >= ?
-							AND CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) <= ?)";
-		}
-		$query .= ")";
-
-		$queryResult = $db->pquery($query, $params);
-
-		while($record = $db->fetchByAssoc($queryResult)){
-			$item = array();
-			$crmid = $record['crmid'];
-			$recordDateTime = new DateTime($record['birthday']);
-
-			$calendarYear = $year;
-			if($recordDateTime->format('m') < $startDateComponents[1]) {
-				$calendarYear = $endDateYear;
-			}
-			$recordDateTime->setDate($calendarYear, $recordDateTime->format('m'), $recordDateTime->format('d'));
-			$item['id'] = $crmid;
-			$item['title'] = decode_html(trim($record['firstname'] . ' ' . $record['lastname']));
-			$item['start'] = $recordDateTime->format('Y-m-d');
-			$item['url']   = sprintf('index.php?module=Contacts&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
-			$result[] = $item;
-		}
-	}
-
-	protected function pullInvoice($start, $end, &$result, $color = null,$textColor = 'white') {
-		$query = "SELECT subject,duedate FROM Invoice";
-		$query.= " WHERE duedate >= '$start' AND duedate <= '$end'";
-		$records = $this->queryForRecords($query);
-		foreach ($records as $record) {
-			$item = array();
-			list ($modid, $crmid) = vtws_getIdComponents($record['id']);
-			$item['id'] = $crmid;
-			$item['title'] = decode_html($record['subject']);
-			$item['start'] = $record['duedate'];
-			$item['url']   = sprintf('index.php?module=Invoice&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
-			$result[] = $item;
-		}
-	}
-
-	/**
-	 * Function to pull all the current user projects
-	 * @param type $startdate
-	 * @param type $actualenddate
-	 * @param type $result
-	 * @param type $color
-	 * @param type $textColor
-	 */
-	protected function pullProjects($start, $end, &$result, $color = null,$textColor = 'white') {
-		$db = PearDatabase::getInstance();
-		$user = Users_Record_Model::getCurrentUserModel();
-		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
-        $params = array($start,$end,$start);
-        $params = array_merge($userAndGroupIds, $params);
-        
-		$query = "SELECT projectname, startdate, targetenddate, crmid FROM vtiger_project";
-		$query.= " INNER JOIN vtiger_crmentity ON vtiger_project.projectid = vtiger_crmentity.crmid";
-		$query.= " WHERE vtiger_crmentity.deleted=0 AND smownerid IN (". generateQuestionMarks($userAndGroupIds) .") AND ";
-		$query.= " ((startdate >= ? AND targetenddate < ?) OR ( targetenddate >= ?))";
-		$queryResult = $db->pquery($query, $params);
-
-		while($record = $db->fetchByAssoc($queryResult)){
-			$item = array();
-			$crmid = $record['crmid'];
-			$item['id'] = $crmid;
-			$item['title'] = decode_html($record['projectname']);
-			$item['start'] = $record['startdate'];
-			$item['end'] = $record['targetenddate'];
-			$item['url']   = sprintf('index.php?module=Project&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
-			$result[] = $item;
-		}
-	}
-
-	/**
-	 * Function to pull all the current user porjecttasks
-	 * @param type $startdate
-	 * @param type $enddate
-	 * @param type $result
-	 * @param type $color
-	 * @param type $textColor
-	 */
-	protected function pullProjectTasks($start, $end, &$result, $color = null,$textColor = 'white') {
-		$db = PearDatabase::getInstance();
-		$user = Users_Record_Model::getCurrentUserModel();
-        $userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
-         $params = array($start,$end,$start);
-        $params = array_merge($params, $userAndGroupIds);
-		
-		$query = "SELECT projecttaskname, startdate, enddate, crmid FROM vtiger_projecttask";
-		$query.= " INNER JOIN vtiger_crmentity ON vtiger_projecttask.projecttaskid = vtiger_crmentity.crmid";
-		$query.= " WHERE vtiger_crmentity.deleted=0 AND ";
-		$query.= " ((startdate >= ? AND enddate < ?) OR ( enddate >= ?))";
-                $query.= " AND smownerid IN (". generateQuestionMarks($userAndGroupIds) .")";
-		$queryResult = $db->pquery($query, $params);
-
-		while($record = $db->fetchByAssoc($queryResult)){
-			$item = array();
-			$crmid = $record['crmid'];
-			$item['id'] = $crmid;
-			$item['title'] = decode_html($record['projecttaskname']);
-			$item['start'] = $record['startdate'];
-			$item['end'] = $record['enddate'];
-			$item['url']   = sprintf('index.php?module=ProjectTask&view=Detail&record=%s', $crmid);
-			$item['color'] = $color;
-			$item['textColor'] = $textColor;
+			$item['module'] = $moduleModel->getName();
+			$item['allDay'] = true;
+			$item['fieldName'] = 'date_start,due_date';
+			$item['conditions'] = '';
 			$result[] = $item;
 		}
 	}

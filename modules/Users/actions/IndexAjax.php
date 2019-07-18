@@ -24,14 +24,16 @@ class Users_IndexAjax_Action extends Vtiger_BasicAjax_Action {
 		}
 	}
     
-    public function toggleLeftPanel (Vtiger_Request $request) {        
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $currentUser->set('leftpanelhide',$request->get('showPanel'));
-        $currentUser->leftpanelhide = $request->get('showPanel');
-        $currentUser->set('mode','edit');
+    public function toggleLeftPanel (Vtiger_Request $request) {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$recordModel = Vtiger_Record_Model::getInstanceById($currentUser->getId(), 'Users');
+        $recordModel->set('leftpanelhide',$request->get('showPanel'));
+        $recordModel->leftpanelhide = $request->get('showPanel');
+        $recordModel->set('mode','edit');
+	
         $response = new Vtiger_Response();
         try{
-            $currentUser->save();
+            $recordModel->save();
             $response->setResult(array('success'=>true));
         }catch(Exception $e){
             $response->setError($e->getCode(),$e->getMessage());

@@ -13,7 +13,7 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 
-		if (!(Users_Privileges_Model::isPermitted($moduleName, 'EditView'))) {
+		if (!(Users_Privileges_Model::isPermitted($moduleName, 'CreateView'))) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
 		}
 	}
@@ -34,11 +34,16 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 			}
 		}
 
+		$fieldsInfo = array();
+		foreach($fieldList as $name => $model){
+			$fieldsInfo[$name] = $model->getFieldInfo();
+		}
+
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_QUICKCREATE);
 		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
 		$viewer = $this->getViewer($request);
-		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE',Zend_Json::encode($picklistDependencyDatasource));
+		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE', Vtiger_Functions::jsonEncode($picklistDependencyDatasource));
 		$viewer->assign('CURRENTDATE', date('Y-n-j'));
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('SINGLE_MODULE', 'SINGLE_'.$moduleName);
@@ -46,11 +51,12 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		
+		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+
 		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
-        
-        $viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
-		$viewer->assign('MAX_UPLOAD_LIMIT', vglobal('upload_maxsize'));
+
+		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
+		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 		echo $viewer->view('QuickCreate.tpl',$moduleName,true);
 
 	}
@@ -67,8 +73,5 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		return $jsScriptInstances;
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
 }

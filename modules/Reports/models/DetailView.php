@@ -49,7 +49,8 @@ class Reports_DetailView_Model extends Vtiger_DetailView_Model {
         }
         
         $exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
-        if($exportPermission) {
+		$primaryModuleExportPermission = Users_Privileges_Model::isPermitted($recordModel->getPrimaryModule(), 'Export');
+        if($exportPermission && $primaryModuleExportPermission) {
             $detailViewLinks[] = array(
                 'linklabel' => vtranslate('LBL_REPORT_CSV', $moduleName),
                 'linkurl' => $recordModel->getReportCSVURL(),
@@ -71,8 +72,47 @@ class Reports_DetailView_Model extends Vtiger_DetailView_Model {
 
 		return $linkModelList;
 	}
+    
+    /**
+	 * Function to get the detail view Actions (links and widgets) for Report
+	 * @return <array> - array of link models in the format as below
+	 *                   array('linktype'=>list of link models);
+	 */
+    public function getDetailViewActions() {
+        $moduleModel = $this->getModule();
+		$recordModel = $this->getRecord();
+		$moduleName = $moduleModel->getName();
 
+		$detailViewActions = array();
+		if($recordModel->isEditableBySharing()) {
+			$detailViewActions[] = array(
+				'linklabel' => vtranslate('LBL_CUSTOMIZE', $moduleName),
+				'linktitle' => vtranslate('LBL_CUSTOMIZE', $moduleName),
+				'linkurl' => $recordModel->getEditViewUrl(),
+				'linkiconclass' => 'icon-pencil',
+			);
+		}
+        if($recordModel->getReportType() == 'chart') {
+            $detailViewActions[] = array(
+                'linktitle' => vtranslate('LBL_PIN_CHART_TO_DASHBOARD', $moduleName),
+                'customclass' => 'pinToDashboard',
+                'linkiconclass' => 'vtGlyph vticon-attach',
+            );
+        }
+		if($recordModel->isEditableBySharing()) {
+			$detailViewActions[] = array(
+					'linklabel' => vtranslate('LBL_DUPLICATE', $moduleName),
+					'linkurl' => $recordModel->getDuplicateRecordUrl(),
+			);
+		}
+        
+        $linkModelList = array();
+		foreach($detailViewActions as $detailViewLinkEntry) {
+			$linkModelList[] = Vtiger_Link_Model::getInstanceFromValues($detailViewLinkEntry);
+		}
 
+		return $linkModelList;
+    }
 
 	/**
 	 * Function to get the detail view widgets

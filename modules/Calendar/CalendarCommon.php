@@ -68,66 +68,78 @@ function getaddEventPopupTime($starttime,$endtime,$format)
 }
 
 /**
+ * Function to get Acception Invitation short url
+ * @param <Int> $user_id - userId (invitee)
+ * @param <Events_Record_Model> $eventRecordModel
+ * @return <URL> - short url for tracking acception action
+ */
+function getAcceptInvitationUrl($user_id,$eventRecordModel) {
+    $options = array(
+       'handler_path' => 'modules/Events/handlers/TrackAcceptInvitation.php',
+       'handler_class' => 'Events_TrackAcceptInvitation_Handler',
+       'handler_function' => "acceptInvitation",
+       'handler_data' => array(
+			'eventId' => $eventRecordModel->getId(),
+			'userId' => $user_id
+       )
+   );
+   return Vtiger_ShortURL_Helper::generateURL($options);
+}
+
+/**
+ * Function to add accept event tracking link
+ * @param <String> $body - email body 
+ * @param <Int> $user_id - userId
+ * @param <Events_Record_Model> $recordModel
+ * @return <String> - updated body with accept tracking link
+ */
+function addAcceptEventLink($body,$user_id,$recordModel) {
+    if(!$recordModel) {
+        return $body;
+    }
+    $acceptInvitationUrl = getAcceptInvitationUrl($user_id,$recordModel);
+    if(strpos($body,'$AcceptTrackingUrl')) {
+        return str_replace('$AcceptTrackingUrl',$acceptInvitationUrl,$body);
+    }
+    //$AcceptTrackingUrl not found in body of template
+    $acceptLink = '<div class="invitationresponse"><a href="' . 
+            $acceptInvitationUrl. '" target="_blank">Accept - Add Event to Vtiger Calendar</a></div>';
+    return substr_replace($body, $acceptLink, strpos($body, '</body>'), 0);
+}
+
+/**
  * Function to get the vtiger_activity details for mail body
  * @param   string   $description       - activity description
  * @param   string   $from              - to differenciate from notification to invitation.
  * return   string   $list              - HTML in string format
  */
-function getActivityDetails($description,$user_id,$from='')
-{
-	global $log,$current_user,$current_language;
-	global $adb;
+function getActivityDetails($description,$user_id,$from='',$recordModel=false) {
+    global $log,$current_user;
 	require_once 'include/utils/utils.php';
-	$mod_strings = return_module_language($current_language, 'Calendar');
 	$log->debug("Entering getActivityDetails(".$description.") method ...");
-	$updated = $mod_strings['LBL_UPDATED'];
-	$created = $mod_strings['LBL_CREATED'];
-    $reply = (($description['mode'] == 'edit')?"$updated":"$created");
-	if($description['activity_mode'] == "Events")
-	{
-		$end_date_lable=$mod_strings['End date and time'];
-	}
-	else
-	{
-		$end_date_lable=$mod_strings['Due Date'];
-	}
-
-	$name = getUserFullName($user_id);
 
 	// Show the start date and end date in the users date format and in his time zone
 	$inviteeUser = CRMEntity::getInstance('Users');
 	$inviteeUser->retrieveCurrentUserInfoFromFile($user_id);
 	$startDate = new DateTimeField($description['st_date_time']);
 	$endDate = new DateTimeField($description['end_date_time']);
-
-	if($from == "invite")
-		$msg = getTranslatedString($mod_strings['LBL_ACTIVITY_INVITATION']);
-	else
-		$msg = getTranslatedString($mod_strings['LBL_ACTIVITY_NOTIFICATION']);
-
 	$current_username = getUserFullName($current_user->id);
-	$status = getTranslatedString($description['status'],'Calendar');
-	$list = $name.',';
-	$list .= '<br><br>'.$msg.' '.$reply.'.<br> '.$mod_strings['LBL_DETAILS_STRING'].':<br>';
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["LBL_SUBJECT"].' : '.$description['subject'];
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["Start date and time"].' : '.$startDate->getDisplayDateTimeValue($inviteeUser) .' '.getTranslatedString($inviteeUser->time_zone, 'Users');
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$end_date_lable.' : '.$endDate->getDisplayDateTimeValue($inviteeUser).' '.getTranslatedString($inviteeUser->time_zone, 'Users');
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["LBL_STATUS"].': '.$status;
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["Priority"].': '.getTranslatedString($description['taskpriority']);
-	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["Related To"].': '.getTranslatedString($description['relatedto']);
-	if(!empty($description['contact_name']))
-	{
-        	$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["LBL_CONTACT_LIST"].' '.$description['contact_name'];
-	}
-	else
-		$list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["Location"].' : '.$description['location'];
+	$name = getUserFullName($user_id);
+	
+	$db = PearDatabase::getInstance();
+	$query='SELECT body FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?';
+	$result = $db->pquery($query, array('Invitation', '1'));
+	$body=decode_html($db->query_result($result,0,'body'));
+	$body=addAcceptEventLink($body,$user_id,$recordModel);
+    $list = $body;
+	$list = str_replace('$invitee_name$', $name, $list);
+	$list = str_replace('$events-date_start$',$startDate->getDisplayDateTimeValue($inviteeUser) .' '.vtranslate($inviteeUser->time_zone, 'Users'),$list);
+	$list = str_replace('$events-due_date$',$endDate->getDisplayDateTimeValue($inviteeUser).' '.vtranslate($inviteeUser->time_zone, 'Users'),$list);
+	$list = str_replace('$events-contactid$',$description['contact_name'],$list);
+	$list = str_replace('$current_user_name$',$current_username,$list);
 
-        $list .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$mod_strings["LBL_APP_DESCRIPTION"].': '.$description['description'];
-        $list .= '<br><br>'.$mod_strings["LBL_REGARDS_STRING"].' ,';
-        $list .= '<br>'.$current_username.'.';
-
-        $log->debug("Exiting getActivityDetails method ...");
-		return $list;
+    $log->debug("Exiting getActivityDetails method ...");
+    return $list;
 }
 
 function twoDigit( $no ){
@@ -135,23 +147,37 @@ function twoDigit( $no ){
 	else return "".$no;
 }
 
-function sendInvitation($inviteesid,$mode,$subject,$desc)
-{
+function sendInvitation($inviteesid,$mode,$recordModel,$desc) {
 	global $current_user,$mod_strings;
-	require_once("modules/Emails/mail.php");
-	$invites=$mod_strings['INVITATION'];
+	require_once("vtlib/Vtiger/Mailer.php");
 	$invitees_array = explode(';',$inviteesid);
-	$subject = $invites.' : '.$subject;
-	$record = $focus->id;
-	foreach($invitees_array as $inviteeid)
-	{
-		if($inviteeid != '')
-		{
-			$description=getActivityDetails($desc,$inviteeid,"invite");
+	
+	if($desc['mode'] == 'edit') {
+        $subject = vtranslate("LBL_UPDATED_INVITATION", "Calendar").' : ';
+    } else {
+        $subject = vtranslate("LBL_INVITATION", "Calendar").' : ';
+    }
+	$subject .= $recordModel->get('subject');
+	$attachment = generateIcsAttachment($desc);
+	foreach($invitees_array as $inviteeid) {
+		if($inviteeid != '') {
+			$description=getActivityDetails($desc,$inviteeid,"invite",$recordModel);
+			$description = getMergedDescription($description, $recordModel->getId(), 'Events');
 			$to_email = getUserEmailId('id',$inviteeid);
-			send_mail('Calendar',$to_email,$current_user->user_name,'',$subject,$description);
+			$to_name = getUserFullName($inviteeid);
+            $mail = new Vtiger_Mailer();
+            $mail->IsHTML(true);
+			$currentUserModel = Users_Record_Model::getCurrentUserModel();
+			$userName = $currentUserModel->getName();
+			$fromEmail = Emails_Record_Model::getFromEmailAddress();
+			$mail->ConfigSenderInfo($fromEmail,$userName);
+            $mail->Subject = $subject;
+            $mail->Body = $description;
+            $mail->AddAttachment($attachment, '', 'base64', 'text/calendar');
+            $mail->SendTo($to_email, decode_html($to_name), false, false, true);
 		}
 	}
+    unlink($attachment);
 
 }
 
@@ -187,6 +213,32 @@ function calendarview_getSelectedUserFilterQuerySuffix() {
 		}
 	}
 	return $qcondition;
+}
+
+/*
+ * Function to generate ICS file to send as attachment with email
+ * invitation when a user is invited for an event
+ * @params $record Event record
+ * @return filename as event name
+ */
+function generateIcsAttachment($record) {
+    $fileName = str_replace(' ', '_', decode_html($record['subject']));
+    $assignedUserId = $record['user_id'];
+    $userModel = Users_Record_Model::getInstanceById($assignedUserId, 'Users');
+    $firstName = $userModel->entity->column_fields['first_name'];
+    $lastName = $userModel->entity->column_fields['last_name'];
+    $email = $userModel->entity->column_fields['email1'];
+    $fp = fopen('test/upload/'.$fileName.'.ics', "w");
+    fwrite($fp, "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\n");
+    fwrite($fp, "ORGANIZER;CN=".$firstName." ".$lastName.":MAILTO:".$email."\n");
+    fwrite($fp, "DTSTART:".date('Ymd\THis\Z', strtotime($record['st_date_time']))."\n");
+    fwrite($fp, "DTEND:".date('Ymd\THis\Z', strtotime($record['end_date_time']))."\n");
+    fwrite($fp, "DTSTAMP:".date('Ymd\THis\Z')."\n");
+    fwrite($fp, "DESCRIPTION:".$record['description']."\nLOCATION:".$record['location']."\n");
+    fwrite($fp, "STATUS:CONFIRMED\nSUMMARY:".$record['subject']."\nEND:VEVENT\nEND:VCALENDAR");
+    fclose($fp);
+    
+    return 'test/upload/'.$fileName.'.ics';
 }
 
 ?>

@@ -21,13 +21,14 @@ class Calendar_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Mode
 		if(!empty($this->structuredValues)) {
 			return $this->structuredValues;
 		}
-        
+
 		$values = array();
 		$recordModel = $this->getRecord();
 		$recordExists = !empty($recordModel);
 		$moduleModel = $this->getModule();
 		$blockModelList = $moduleModel->getBlocks();
-                
+		$recordId = $recordModel->getId();
+
 		foreach($blockModelList as $blockLabel=>$blockModel) {
 			$fieldModelList = $blockModel->getFields();
 			if (!empty ($fieldModelList)) {
@@ -39,9 +40,9 @@ class Calendar_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Mode
 							if($fieldName == 'date_start') {
 								$fieldValue = $fieldValue.' '.$recordModel->get('time_start');
 							} else if($fieldName == 'due_date' && $moduleModel->get('name') != 'Calendar') {
-                          		//Do not concat duedate and endtime for Tasks as it contains only duedate
+								//Do not concat duedate and endtime for Tasks as it contains only duedate
 								if($moduleModel->getName() != 'Calendar') {
-                                    $fieldValue = $fieldValue.' '.$recordModel->get('time_end');
+									$fieldValue = $fieldValue.' '.$recordModel->get('time_end');
 								}
 							} else if($fieldName == 'visibility' && empty($fieldValue)) {
 								$currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -49,14 +50,26 @@ class Calendar_EditRecordStructure_Model extends Vtiger_EditRecordStructure_Mode
 								if($sharedType == 'public' || $sharedType == 'selectedusers')
 									$fieldValue = 'Public';
 							} else if($fieldName == 'eventstatus' && empty($fieldValue)) {
-                                    $currentUserModel = Users_Record_Model::getCurrentUserModel();
-                                    $defaulteventstatus = $currentUserModel->get('defaulteventstatus');
-                                    $fieldValue = $defaulteventstatus;
-                            } else if($fieldName == 'activitytype' && empty($fieldValue)) {
-                                    $currentUserModel = Users_Record_Model::getCurrentUserModel();
-                                    $defaultactivitytype = $currentUserModel->get('defaultactivitytype');
-                                    $fieldValue = $defaultactivitytype;
-                            }
+								$currentUserModel = Users_Record_Model::getCurrentUserModel();
+								$defaulteventstatus = $currentUserModel->get('defaulteventstatus');
+								$fieldValue = $defaulteventstatus;
+								if(!$defaulteventstatus || $defaulteventstatus=='Select an Option'){
+									$fieldValue=$fieldModel->getDefaultFieldValue();
+								}
+							} else if($fieldName == 'activitytype' && empty($fieldValue)) {
+								$currentUserModel = Users_Record_Model::getCurrentUserModel();
+								$defaultactivitytype = $currentUserModel->get('defaultactivitytype');
+								$fieldValue = $defaultactivitytype;
+								if(!$defaultactivitytype || $defaultactivitytype=='Select an Option'){
+									$fieldValue=$fieldModel->getDefaultFieldValue();
+								}
+							}
+							if ($fieldValue == '') {
+								$defaultValue = $fieldModel->getDefaultFieldValue();
+								if ($defaultValue && !$recordId) {
+									$fieldValue = $defaultValue;
+								}
+							}
 							$fieldModel->set('fieldvalue', $fieldValue);
 						}
 						$values[$blockLabel][$fieldName] = $fieldModel;

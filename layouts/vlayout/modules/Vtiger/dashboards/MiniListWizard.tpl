@@ -57,7 +57,7 @@
 {elseif $WIZARD_STEP eq 'step2'}
 	<option></option>
 	{foreach from=$ALLFILTERS item=FILTERS key=FILTERGROUP}
-		<optgroup label="{$FILTERGROUP}">
+		<optgroup label="{vtranslate($FILTERGROUP)}">
 			{foreach from=$FILTERS item=FILTER key=FILTERNAME}
 				<option value="{$FILTER->getId()}">{$FILTER->get('viewname')}</option>
 			{/foreach}

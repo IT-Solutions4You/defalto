@@ -15,7 +15,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
 
     public function isEditable() {
         $nonEditablePickListValues = array( 'campaignrelstatus', 'duration_minutes','email_flag','hdnTaxType',
-                        'payment_duration','recurringtype','recurring_frequency','visibility');
+                        'payment_duration','recurringtype','recurring_frequency','visibility', 'paymentterms', 'modeofpayment', 'paymentgateway');
         if(in_array($this->getName(), $nonEditablePickListValues)) return false;
         return true;
     }
@@ -35,6 +35,9 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
             $intersectionMode = true;
         }
 
+        if(Vtiger_Cache::get('PicklistRoleBasedValues',$this->getName().implode('_', $roleIdList))){
+            return Vtiger_Cache::get('PicklistRoleBasedValues',$this->getName().implode('_', $roleIdList));
+        }
         $db = PearDatabase::getInstance();
         $fieldName = $this->getName();
         $tableName = 'vtiger_'.$fieldName;
@@ -44,7 +47,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
             $query .= ',count(roleid) as rolecount ';
         }
         $query .= ' FROM  vtiger_role2picklist INNER JOIN '.$tableName.' ON vtiger_role2picklist.picklistvalueid = '.$tableName.'.picklist_valueid'.
-                 ' WHERE roleid IN ('.generateQuestionMarks($roleIdList).') order by sortid';
+                 ' WHERE roleid IN ('.generateQuestionMarks($roleIdList).') order by sortorderid';
         if($intersectionMode) {
             $query .= ' GROUP BY picklistvalueid';
         }
@@ -60,8 +63,9 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
                 }
             }
 			//Need to decode the picklist values twice which are saved from old ui
-            $pickListValues[] = decode_html(decode_html($rowData[$fieldName]));
+            $pickListValues[$rowData[$fieldName]] = decode_html(decode_html($rowData[$fieldName]));
         }
+        Vtiger_Cache::set('PicklistRoleBasedValues', $fieldName.implode('_', $roleIdList), $pickListValues);
         return $pickListValues;
     }
 
@@ -98,7 +102,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
      * @param type $fieldName -- string
      * @return type -- array of values
      */
-	public static function getEditablePicklistValues($fieldName){
+	public function getEditablePicklistValues($fieldName){
 		$cache = Vtiger_Cache::getInstance();
 		$EditablePicklistValues = $cache->get('EditablePicklistValues', $fieldName);
         if($EditablePicklistValues) {
@@ -107,7 +111,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
         $db = PearDatabase::getInstance();
 		$primaryKey = Vtiger_Util_Helper::getPickListId($fieldName);
 		
-        $query="SELECT $primaryKey ,$fieldName FROM vtiger_$fieldName WHERE presence=1 AND $fieldName <> '--None--'";
+        $query="SELECT $primaryKey ,$fieldName FROM vtiger_$fieldName WHERE presence=1";
         $values = array();
         $result = $db->pquery($query, array());
         $num_rows = $db->num_rows($result);
@@ -132,13 +136,14 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
         }
         $db = PearDatabase::getInstance();
 
-        $query = "select $fieldName from vtiger_$fieldName where presence=0";
+        $columnIndex = Vtiger_Util_Helper::getPickListId($fieldName);
+        $query = "select $columnIndex, $fieldName from vtiger_$fieldName where presence=0";
         $values = array();
         $result = $db->pquery($query, array());
         $num_rows = $db->num_rows($result);
         for($i=0; $i<$num_rows; $i++) {
 			//Need to decode the picklist values twice which are saved from old ui
-            $values[] = decode_html(decode_html($db->query_result($result,$i,$fieldName)));
+            $values[$db->query_result($result,$i,$columnIndex)] = decode_html(decode_html($db->query_result($result,$i,$fieldName)));
         }
         $cache->set('NonEditablePicklistValues', $fieldName, $values);
         return $values;

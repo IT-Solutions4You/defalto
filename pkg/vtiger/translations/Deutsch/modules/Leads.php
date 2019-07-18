@@ -30,8 +30,7 @@ $languageStrings = array(
 	'Cold'                         => 'kalt'                        , 
 	'Contact in Future'            => 'in der Zukunft kontaktieren' , 
 	'Contacted'                    => 'kontaktiert'                 , 
-	'Hot'                          => 'heiss'                       ,
-        'Hot Leads'                    => 'Hot Leads',
+	'Hot'                          => 'heiss'                       , 
 	'Junk Lead'                    => 'wertloser Lead'              , 
 	'Lost Lead'                    => 'Lead verloren'               , 
 	'Not Contacted'                => 'Nicht kontaktiert'           , 
@@ -41,14 +40,17 @@ $languageStrings = array(
 	'LBL_CONVERT_LEAD'             => 'Lead umwandeln:'             , 
 	'LBL_TRANSFER_RELATED_RECORD'  => 'Transfer related record to'  , 
 	'LBL_CONVERT_LEAD_ERROR'       => 'You have to enable either Organization or Contact to convert the Lead', 
-	'LBL_CONVERT_LEAD_ERROR_TITLE' => 'Modules Disabled'            , 
-	'CANNOT_CONVERT'               => 'Umwandlung nicht möglich'   , 
-	'LBL_FOLLOWING_ARE_POSSIBLE_REASONS' => 'Folgende könnten mögliche Gründe sein', 
 	'LBL_LEADS_FIELD_MAPPING_INCOMPLETE' => 'Alle Pflichtfelder sind nicht zugeordnet', 
-	'LBL_MANDATORY_FIELDS_ARE_EMPTY' => 'Einige Pflichtfelder sind leer', 
 	'LBL_LEADS_FIELD_MAPPING'      => 'Zuordnung der benutzerdefinierten Lead Felder', 
-	'LBL_CUSTOM_FIELD_MAPPING'     => 'Edit Field Mapping'          , 
+	'LBL_CUSTOM_FIELD_MAPPING'     => 'Lead-Konvertierung Datenzuordnung'          , 
+    'LBL_IMAGE_INFORMATION' => 'Profil Bild',
+    'Lead Image' => 'Lead Bild',
 	
+
+  'Phone' => 'Primäre Telefon',
+  'Secondary Email' => 'Sekundäre E-Mail',
+  'Email' => 'Primäre E-Mail',
+
 );
 $jsLanguageStrings = array(
 	'JS_SELECT_CONTACTS'           => 'Select Contacts to proceed'  , 

@@ -1,14 +1,11 @@
 <?php
-/************************************************************************************
+/*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
- *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
- *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
 	'Products'                     => 'Productos'                   , 
@@ -16,34 +13,34 @@ $languageStrings = array(
 	'LBL_ADD_RECORD'               => 'Agregar Producto'            , 
 	'LBL_RECORDS_LIST'             => 'Lista de productos'          , 
 	'LBL_PRODUCT_INFORMATION'      => 'Información del Producto'   , 
-	'LBL_IMAGE_INFORMATION'        => 'Imagen del Producto:', 
-	'LBL_STOCK_INFORMATION'        => 'Información de Stock:'     , 
+	'LBL_IMAGE_INFORMATION'        => 'Información de la imagen del Producto:', 
+	'LBL_STOCK_INFORMATION'        => 'Información del stock:'     , 
 	'LBL_MORE_CURRENCIES'          => 'más monedas'                , 
-	'LBL_PRICES'                   => 'Precios Productos'           , 
+	'LBL_PRICES'                   => 'Precios de los productos'           , 
 	'LBL_PRICE'                    => 'Precio'                      , 
-	'LBL_RESET_PRICE'              => 'Restaurar Precio'            , 
+	'LBL_RESET_PRICE'              => 'Restaurar precio'            , 
 	'LBL_RESET'                    => 'Restaurar'                   , 
 	'LBL_ADD_TO_PRICEBOOKS'        => 'Agregar a lista de precios'  , 
-	'Product No'                   => 'Núm. Producto'              , 
+	'Product No'                   => 'Núm. de Producto'              , 
 	'Part Number'                  => 'Código de Producto'         , 
-	'Product Active'               => 'Producto Activo'             , 
+	'Product Active'               => 'Producto activo'             , 
 	'Manufacturer'                 => 'Fabricante'                  , 
 	'Product Category'             => 'Categoría de Producto'      , 
-	'Website'                      => 'Website'                     , 
-	'Mfr PartNo'                   => 'Nº de Pieza del Fabricante' , 
-	'Vendor PartNo'                => 'Nº de Pieza del Proveedor'  , 
-	'Usage Unit'                   => 'Unidad de Uso'               , 
+	'Website'                      => 'Sitio web'                     , 
+	'Mfr PartNo'                   => 'Nº de Pieza del fabricante' , 
+	'Vendor PartNo'                => 'Nº de Pieza del proveedor'  , 
+	'Usage Unit'                   => 'Unidad de uso'               , 
 	'Handler'                      => 'Responsable'                 , 
 	'Reorder Level'                => 'Nivel de pedido'             , 
-	'Tax Class'                    => 'Clase de Impuesto'           , 
+	'Tax Class'                    => 'Clase de impuesto'           , 
 	'Serial No'                    => 'Nº de serie'                , 
-	'Qty In Stock'                 => 'Cantidad en Stock'           , 
+	'Qty In Stock'                 => 'Cantidad en stock'           , 
 	'Product Sheet'                => 'Hoja del Producto'           , 
-	'Qty In Demand'                => 'Cantidad Pedida'             , 
-	'GL Account'                   => 'Cuenta Contable'             , 
+	'Qty In Demand'                => 'Cantidad pedida'             , 
+	'GL Account'                   => 'Cuenta contable'             , 
 	'Product Image'                => 'Imagen del Producto'         , 
-	'Unit Price'                   => 'Precio Unitario'             , 
-	'Commission Rate'              => 'Comisión'                    , 
+	'Unit Price'                   => 'Precio unitario'             , 
+	'Commission Rate'              => 'Comisión (%)'               , 
 	'Qty/Unit'                     => 'Cantidad/Unidad'             , 
 	'--None--'                     => '-----'                       , 
 	'Hardware'                     => 'Hardware'                    , 
@@ -62,7 +59,7 @@ $languageStrings = array(
 	'Carton'                       => 'Cartón'                     , 
 	'Caton'                        => 'Caton'                       , 
 	'Dozen'                        => 'Docena'                      , 
-	'Each'                         => 'Unidad'                      , 
+	'Each'                         => 'Cada'                      , 
 	'Hours'                        => 'Horas'                       , 
 	'Impressions'                  => 'Impresiones'                 , 
 	'Lb'                           => 'Kg'                          , 
@@ -72,7 +69,22 @@ $languageStrings = array(
 	'Pieces'                       => 'Piezas'                      , 
 	'Reams'                        => 'Resma'                       , 
 	'Sheet'                        => 'Hoja'                        , 
-	'Spiral Binder'                => 'Encuadernado Espiral'        , 
-	'Sq Ft'                        => 'm&sup2;'                     ,
-    'LBL_PRODUCTSMOD_DISABLED' => 'Habilita el módulo de Productos para poder ver Productos',
+	'Spiral Binder'                => 'Encuadernado espiral'        , 
+	'Sq Ft'                        => 'm&sup2;'                     , 
+	'LBL_CONVERSION_RATE'          => 'Tasa de conversión'             , 
+    'LBL_PRODUCTSMOD_DISABLED' => 'Habilitar módulo de productos para ver los productos',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Mostrar elementos de paquete en Factura/Cotizaciones/Orden de Compra',
+	'LBL_BUNDLE_TOTAL_COST' => 'Costo total del paquete',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Actualizar precio del paquete',
+
+  'LBL_PRODUCT_NAME' => 'Nombre del Producto',
+  'LBL_PRICE_QUANTITY' => 'Precio x cantidad',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Los subproductos se mostrarán en el inventario',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Los subproductos no se mostrarán en el inventario',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Costo total del paquete cambiado exitosamente',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Este producto es parte de un paquete de productos. El precio del paquete no se modifica cuando un elemento del paquete se elimina o inactiva. ¿Seguro que desea continuar?',
 );

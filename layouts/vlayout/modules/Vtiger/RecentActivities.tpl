@@ -45,14 +45,14 @@
 										<div class='font-x-small updateInfoContainer'>
 											<i>{vtranslate($FIELDMODEL->getName(),$MODULE_NAME)}</i> :&nbsp;
 												{if $FIELDMODEL->get('prevalue') neq '' && $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && ($FIELDMODEL->get('postvalue') eq '0' || $FIELDMODEL->get('prevalue') eq '0'))}
-													&nbsp;{vtranslate('LBL_FROM')} <b style="white-space:pre;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))}</b>
+													&nbsp;{vtranslate('LBL_FROM')} <b style="white-space:pre-wrap;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))}</b>
 												{else if $FIELDMODEL->get('postvalue') eq '' || ($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
 													&nbsp; <b> {vtranslate('LBL_DELETED')} </b> ( <del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))}</del> )
 												{else}
 													&nbsp;{vtranslate('LBL_CHANGED')}
 												{/if}
 												{if $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
-													&nbsp;{vtranslate('LBL_TO')}&nbsp;<b style="white-space:pre;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('postvalue'))))}</b>
+													&nbsp;{vtranslate('LBL_TO')}&nbsp;<b style="white-space:pre-wrap;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('postvalue'))))}</b>
 												{/if}
 	
 										</div>
@@ -64,7 +64,8 @@
 							<li>
 								<div class="row-fluid">
 									{assign var=RELATION value=$RECENT_ACTIVITY->getRelationInstance()}
-									<span>{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span> <span>
+									<span><strong>{$RECENT_ACTIVITY->getModifiedBy()->getName()} </strong></span>
+									<span>
 											{if $RECENT_ACTIVITY->isRelationLink()}
 												{vtranslate('LBL_ADDED', $MODULE_NAME)}
 											{else}
@@ -73,6 +74,7 @@
 											{if $RELATION->getLinkedRecord()->getModuleName() eq 'Calendar'}
 												{if isPermitted('Calendar', 'DetailView', $RELATION->getLinkedRecord()->getId()) eq 'yes'} <strong>{$RELATION->getLinkedRecord()->getName()}</strong> {else} {/if}
 											{else} <strong>{$RELATION->getLinkedRecord()->getName()}</strong> {/if}</span>
+									(<span>{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span>)
 									<span class="pull-right"><p class="muted"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RELATION->get('changedon'))}">{Vtiger_Util_Helper::formatDateDiffInStrings($RELATION->get('changedon'))}</small></p></span>
 								</div>
 							</li>

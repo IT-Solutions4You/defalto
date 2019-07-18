@@ -16,7 +16,7 @@ class Reports_MassDelete_Action extends Vtiger_Mass_Action {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -35,7 +35,7 @@ class Reports_MassDelete_Action extends Vtiger_Mass_Action {
 		$reportsDeleteDenied = array();
 		foreach($recordIds as $recordId) {
 			$recordModel = Reports_Record_Model::getInstanceById($recordId);
-			if (!$recordModel->isDefault() && $recordModel->isEditable()) {
+			if (!$recordModel->isDefault() && $recordModel->isEditable() && $recordModel->isEditableBySharing()) {
 				$success = $recordModel->delete();
 				if(!$success) {
 					$reportsDeleteDenied[] = vtranslate($recordModel->getName(), $parentModule);

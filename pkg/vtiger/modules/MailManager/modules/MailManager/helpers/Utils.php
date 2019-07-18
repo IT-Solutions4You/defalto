@@ -15,6 +15,15 @@ class MailManager_Utils_Helper {
 
 	public function safe_html_string( $string) {
 		$htmlSafe = new HTML_Safe();
+		// Mails coming from HipChat has xml tag in body content. It has tag like <?xml encoding="utf-8"> and no closing tag for this
+		// But HTML_Safe considers xml tag as dangerous tag and removes content between these tags.
+		// Since there is no closing tag for this it removes all content. Also if it finds opening tag with ? it searches for closing
+		// tag with ? and removes all content between them. So replacing <?xml to <xml, removing xml tag from deleteTagsContent
+		// and adding it in noClose so that this tag can be there without closing tag.
+		$string = str_replace('<?xml', '<xml', $string);
+		unset($htmlSafe->deleteTagsContent[array_search('xml', $htmlSafe->deleteTagsContent)]);
+		array_push($htmlSafe->noClose, 'xml');
+		// End
 		array_push($htmlSafe->whiteProtocols, 'cid');
 		return $htmlSafe->parse($string);
 	}

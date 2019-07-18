@@ -34,7 +34,7 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model {
 		$dataValue['lastSavedOn'] = $date;
 		
 		$data = Zend_Json::encode((object) $dataValue);
-		$this->set('data', $data);
+		$this->set('data', Vtiger_Util_Helper::toSafeHTML($data));
 		
 		
 		$db->pquery('UPDATE vtiger_module_dashboard_widgets SET data=? WHERE id=?', array($data, $noteBookId));
@@ -45,7 +45,8 @@ class Vtiger_Notebook_Model extends Vtiger_Widget_Model {
 
 			$db = PearDatabase::getInstance();
 			
-			$result = $db->pquery('SELECT vtiger_module_dashboard_widgets.* FROM vtiger_module_dashboard_widgets 
+            // linkurl is needed for dashboard widget to load in Vtiger7
+			$result = $db->pquery('SELECT vtiger_module_dashboard_widgets.*,vtiger_links.linkurl FROM vtiger_module_dashboard_widgets 
 			INNER JOIN vtiger_links ON vtiger_links.linkid = vtiger_module_dashboard_widgets.linkid 
 			WHERE linktype = ? AND vtiger_module_dashboard_widgets.id = ? AND vtiger_module_dashboard_widgets.userid = ?', array('DASHBOARDWIDGET', $widgetId, $currentUser->getId()));
 			

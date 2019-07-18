@@ -71,5 +71,20 @@ $languageStrings = array(
 	'Sheet'                        => 'Foglio'                      , 
 	'Spiral Binder'                => 'Raccoglitore a spirale '     , 
 	'Sq Ft'                        => 'Sq Ft'                       , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
     'LBL_PRODUCTSMOD_DISABLED'     => 'Abilita Prodotti Modulo per visualizzare i prodotti',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Mostra articoli fascio di fattura/Quotes/Sales Order/Ordine di Acquisto',
+	'LBL_BUNDLE_TOTAL_COST' => 'Costo totale del Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Aggiornamento Bundle Prezzo',
+
+  'LBL_PRODUCT_NAME' => 'Nome Del Prodotto',
+  'LBL_PRICE_QUANTITY' => 'Prezzo x Quantità',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Prodotti Sub verranno visualizzati nell"inventario',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Prodotti secondari non verranno visualizzati nell"inventario',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Costo totale cambiata con successo del fascio',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Questo prodotto fa parte di un pacchetto di prodotti. Il prezzo del pacchetto rimane invariato quando un elemento fascio viene eliminato o inattivato. Sei sicuro di voler continuare?',
 );

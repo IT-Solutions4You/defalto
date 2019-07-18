@@ -8,47 +8,48 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'AutoCreated'=>'Auto Created',
-	'Credit Invoice'=>'Credit Invoice',
-	'Customer No' => 'Customer No',
-	'Enable Recurring' => 'Enable Recurring',
-	'End Period' => 'End Period',
-	'Frequency' => 'Frequency',
-	'Invoice Status' => 'Invoice Status',
-	'LBL_ADD_RECORD' => 'Add Sales Order',
-	'LBL_EXPORT_TO_PDF' => 'Export to PDF',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
-	'LBL_RECORDS_LIST' => 'Sales Order List',
-	'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
-	'LBL_SO_INFORMATION' => 'Sales Order Details',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
-	'LBL_THIS' => 'This',
-	'Paid'=>'Paid',
-	'Payment Duration' => 'Payment Duration',
-	'Pending'=>'Pending',
-	'Purchase Order'=>'Purchase Order',
-	'Quote Name'=>'Quote Name',
-	'Requisition No'=>'Requisition No',
-	'Sales Commission' => 'Sales Commission',
-	'SalesOrder No'=>'Sales Order Number',
-	'Sent'=>'Sent',
+	'SalesOrder'    =>  'Sales Orders',
+    //DetailView Actions
 	'SINGLE_SalesOrder' => 'Sales Order',
-	'Start Period' => 'Start Period',
-	'Sub Total'=>'Sub Total',
-	'Tracking Number'=>'Tracking Number',
-	'Vendor Terms'=>'Vendor Terms',
-    
-        //Patch provided by http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7884
-        'Recurring Invoice Information' => 'Recurring Invoice Information', 
-        'Daily'=>'Daily', 
-        'Weekly'=>'Weekly', 
-        'Monthly'=>'Monthly', 
-        'Quarterly'=>'Quarterly', 
-        'Yearly'=>'Yearly', 
+	'LBL_EXPORT_TO_PDF' => 'Export to PDF',
+    'LBL_SEND_MAIL_PDF' => 'Send Email with PDF',
 
-        'Net 30 days' => 'Net 30 days', 
-        'Net 45 days' => 'Net 45 days', 
-        'Net 60 days' => 'Net 60 days', 
+	//Basic strings
+	'LBL_ADD_RECORD' => 'Add Sales Order',
+	'LBL_RECORDS_LIST' => 'Sales Order List',
+
+	// Blocks
+	'LBL_SO_INFORMATION' => 'Sales Order Details',
+
+	//Field labels
+	'SalesOrder No'=>'Sales Order Number',
+	'Quote Name'=>'Quote Name',
+	'Customer No' => 'Customer No',
+	'Requisition No'=>'Requisition No',
+	'Tracking Number'=>'Tracking Number',
+	'Sales Commission' => 'Sales Commission',
+	'Purchase Order'=>'Purchase Order',
+	'Vendor Terms'=>'Vendor Terms',
+	'Pending'=>'Pending',
+	'Enable Recurring' => 'Enable Recurring',
+	'Frequency' => 'Frequency',
+	'Start Period' => 'Start Period',
+	'End Period' => 'End Period',
+	'Payment Duration' => 'Payment Duration',
+	'Invoice Status' => 'Invoice Status',
+
+	//Added for existing Picklist Entries
+
+	'Sub Total'=>'Sub Total',
+	'AutoCreated'=>'Auto Created',
+	'Sent'=>'Sent',
+	'Credit Invoice'=>'Credit Invoice',
+	'Paid'=>'Paid',
+	
+	//Translation for product not found
+	'LBL_THIS' => 'This',
+	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'is deleted from the system.please remove or replace this item',
+	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'This line item is deleted from the system,please remove this line items',
 );
 
 $jsLanguageStrings = array(

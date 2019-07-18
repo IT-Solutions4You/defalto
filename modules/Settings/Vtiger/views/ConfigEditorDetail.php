@@ -18,14 +18,14 @@ class Settings_Vtiger_ConfigEditorDetail_View extends Settings_Vtiger_Index_View
 		$viewer->assign('MODEL', $moduleModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedName);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
 		$viewer->view('ConfigEditorDetail.tpl', $qualifiedName);
 	}
-	
 	function getPageTitle(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 		return vtranslate('LBL_CONFIG_EDITOR',$qualifiedModuleName);
 	}
-    
+
 	/**
 	 * Function to get the list of Script models to be included
 	 * @param Vtiger_Request $request
@@ -36,7 +36,8 @@ class Settings_Vtiger_ConfigEditorDetail_View extends Settings_Vtiger_Index_View
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
-			"modules.Settings.$moduleName.resources.ConfigEditor"
+			"modules.Settings.$moduleName.resources.ConfigEditor",
+			"modules.Settings.$moduleName.resources.ConfigEditorDetail",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

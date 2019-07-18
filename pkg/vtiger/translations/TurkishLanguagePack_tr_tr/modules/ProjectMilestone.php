@@ -18,6 +18,8 @@ $languageStrings = array(
 	'Project Milestone Name'	=>	"Proje Milestone Adı",
 	'Milestone Date'	=>	"Milestone Tarihi",
 	'Project Milestone No'	=>	"Proje Milestone sayısı",
+        'Type'                         => 'Tip'                         , 
+    'Related to'  => 'İlgili'     ,
 	//picklist values
 	'administrative' => 'Idari',
     'operative' => 'Faal',

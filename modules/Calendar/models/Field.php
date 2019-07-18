@@ -64,13 +64,23 @@ class Calendar_Field_Model extends Vtiger_Field_Model {
 			if ($this->getName() == 'date_start') {
 				$dateTimeValue = $value . ' '. $recordInstance->get('time_start');
 				$value = $this->getUITypeModel()->getDisplayValue($dateTimeValue);
-				list($startDate, $startTime,$meridiem) = explode(' ', $value);
-                 return $startDate . ' ' . $startTime.' '. $meridiem;
+				list($startDate, $startTime) = explode(' ', $value);
+
+				$currentUser = Users_Record_Model::getCurrentUserModel();
+				if($currentUser->get('hour_format') == '12')
+					$startTime = Vtiger_Time_UIType::getTimeValueInAMorPM($startTime);
+
+				return $startDate . ' ' . $startTime;
 			} else if ($this->getName() == 'due_date') {
 				$dateTimeValue = $value . ' '. $recordInstance->get('time_end');
 				$value = $this->getUITypeModel()->getDisplayValue($dateTimeValue);
-				list($startDate, $startTime,$meridiem) = explode(' ', $value);
-                return $startDate . ' ' . $startTime.' '. $meridiem;
+				list($startDate, $startTime) = explode(' ', $value);
+
+				$currentUser = Users_Record_Model::getCurrentUserModel();
+				if($currentUser->get('hour_format') == '12')
+					$startTime = Vtiger_Time_UIType::getTimeValueInAMorPM($startTime);
+
+				return $startDate . ' ' . $startTime;
 			}
 		}
 		return parent::getDisplayValue($value, $record, $recordInstance);
@@ -81,10 +91,14 @@ class Calendar_Field_Model extends Vtiger_Field_Model {
 	 * @param <String> Data base value
 	 * @return <String> value
 	 */
-	public function getEditViewDisplayValue($value) {
+	public function getEditViewDisplayValue($value, $blockfields = FALSE) {
 		$fieldName = $this->getName();
 
 		if ($fieldName == 'time_start' || $fieldName == 'time_end') {
+			if($blockfields && !empty($value)) {
+				$dateField = ($fieldName == 'time_start' ? $blockfields['date_start'] : $blockfields['due_date']);
+				$value = $dateField->get('fieldvalue')." ".$value;
+			}
 			return $this->getUITypeModel()->getDisplayTimeDifferenceValue($fieldName, $value);
 		}
 

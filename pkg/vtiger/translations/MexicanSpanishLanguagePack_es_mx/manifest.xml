@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <module>
-  <type>language</type>
-  <name>Mexican Spanish</name>
-  <label>ES Mexico</label>
-  <prefix>es_mx</prefix>
-  <version>5.4.0RC</version>
-  <dependencies>
-	  <vtiger_version>6.0.0rc</vtiger_version>
-	  <vtiger_max_version>6.*</vtiger_max_version>
-  </dependencies>
-  <license>
-   <inline><![CDATA[
+	<type>language</type>
+	<name>Mexican Spanish</name>
+	<label>ES Mexico</label>
+	<prefix>es_mx</prefix>
+	<version>7.1</version>
+	<dependencies>
+		<vtiger_version>7.1</vtiger_version>
+		<vtiger_max_version>7.*</vtiger_max_version>
+	</dependencies>
+	<license>
+		<inline><![CDATA[
  ********************************************************************************
  * The contents of these fileis are subject to the Mozilla Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@
  ********************************************************************************
  *  Language     : Español es_mx
  *  Version      : 5.4.0RC
+ *  Author       : Aimée Valckx - simplesistemas.com (Simple - Sistemas e Implementos Empresariales SA de CV)
+ *  Author       : Rubén Estrada - simplesistemas.com (Simple - Sistemas e Implementos Empresariales SA de CV)
  *  Author       : Francisco Hernandez Odin Consultores S de RL de CV
- *  Author       : www.odin.mx
  *  Author       : Joe Bordes JPL TSolucio, S. L. 5.2.1
  ********************************************************************************
 ]]></inline>
-  </license>
+	</license>
 </module>

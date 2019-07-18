@@ -24,8 +24,8 @@ class Settings_Workflows_DeleteAjax_Action extends Settings_Vtiger_Index_Action 
 		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        }
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

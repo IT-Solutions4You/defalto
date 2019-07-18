@@ -26,9 +26,8 @@ require_once 'include/utils/VTCacheUtils.php';
   *   $attachment	-- whether we want to attach the currently selected file or all vtiger_files.[values = current,all] - optional
   *   $emailid		-- id of the email object which will be used to get the vtiger_attachments
   */
-function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$cc='',$bcc='',$attachment='',$emailid='',$logo='', $useGivenFromEmailAddress=false)
+function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$cc='',$bcc='',$attachment='',$emailid='',$logo='', $useGivenFromEmailAddress=false,$useSignature = 'Yes',$inReplyToMessageId='')
 {
-
 	global $adb, $log;
 	global $root_directory;
 	global $HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
@@ -48,14 +47,14 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 
 	//if the newly defined from email field is set, then use this email address as the from address
 	//and use the username as the reply-to address
-    $cachedFromEmail = VTCacheUtils::getOutgoingMailFromEmailAddress();
-    if($cachedFromEmail === null) {
-        $query = "select from_email_field from vtiger_systems where server_type=?";
-        $params = array('email');
-        $result = $adb->pquery($query,$params);
-        $from_email_field = $adb->query_result($result,0,'from_email_field');
-        VTCacheUtils::setOutgoingMailFromEmailAddress($from_email_field);
-    }
+	$cachedFromEmail = VTCacheUtils::getOutgoingMailFromEmailAddress();
+	if($cachedFromEmail === null) {
+		$query = "select from_email_field from vtiger_systems where server_type=?";
+		$params = array('email');
+		$result = $adb->pquery($query,$params);
+		$from_email_field = $adb->query_result($result,0,'from_email_field');
+		VTCacheUtils::setOutgoingMailFromEmailAddress($from_email_field);
+	}
 
 	if(isUserInitiated()) {
 		$replyToEmail = $from_email;
@@ -67,9 +66,11 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 		$from_email = $from_email_field;
 	}
 
-	if($module != "Calendar")
-		$contents = addSignature($contents,$from_name);
-
+	if($module != "Calendar"){
+		if($useSignature == 'Yes'){
+			$contents = addSignature($contents,$from_name,$from_email);
+		}
+	}
 	$mail = new PHPMailer();
 
 	setMailerProperties($mail,$subject,$contents,$from_email,$from_name,trim($to_email,","),$attachment,$emailid,$module,$logo);
@@ -79,6 +80,9 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 		$mail->AddReplyTo($replyToEmail);
 	}
 
+	if (!empty($inReplyToMessageId)) {
+		$mail->AddCustomHeader("In-Reply-To", $inReplyToMessageId);
+	}
 	// vtmailscanner customization: If Support Reply to is defined use it.
 	global $HELPDESK_SUPPORT_EMAIL_REPLY_ID;
 	if($HELPDESK_SUPPORT_EMAIL_REPLY_ID && $HELPDESK_SUPPORT_EMAIL_ID != $HELPDESK_SUPPORT_EMAIL_REPLY_ID) {
@@ -87,10 +91,10 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 	// END
 
 	// Fix: Return immediately if Outgoing server not configured
-    if(empty($mail->Host)) {
+	if(empty($mail->Host)) {
 		return 0;
-    }
-    // END
+	}
+	// END
 
 	$mail_status = MailSend($mail);
 
@@ -142,20 +146,21 @@ function getUserEmailId($name,$val)
   *	$contents -- where we want to add the signature
   *	$fromname -- which user's signature will be added to the contents
   */
-function addSignature($contents, $fromname)
-{
+function addSignature($contents, $fromname, $fromEmail = '') {
 	global $adb;
 	$adb->println("Inside the function addSignature");
 
-    $sign = VTCacheUtils::getUserSignature($fromname);
-    if($sign === null) {
-        $result = $adb->pquery("select signature, first_name, last_name from vtiger_users where user_name=?", array($fromname));
-        $sign = $adb->query_result($result,0,"signature");
-        VTCacheUtils::setUserSignature($fromname, $sign);
-        VTCacheUtils::setUserFullName($fromname, $adb->query_result($result,0,"first_name").' '.$adb->query_result($result,0,"last_name"));
-    }
+	$sign = VTCacheUtils::getUserSignature($fromname);
+	if ($sign == null) {
+		$sign = VTCacheUtils::getUserSignature($fromEmail);
+		$result = $adb->pquery("select signature, first_name, last_name from vtiger_users where user_name=? or user_name=? or email1=? or email2=? or secondaryemail=?", array($fromname, $fromEmail, $fromEmail, $fromEmail, $fromEmail));
+		$sign = $adb->query_result($result,0,"signature");
+		VTCacheUtils::setUserSignature($fromname, $sign);
+		VTCacheUtils::setUserSignature($fromEmail, $sign);
+		VTCacheUtils::setUserFullName($fromname, $adb->query_result($result,0,"first_name").' '.$adb->query_result($result,0,"last_name"));
+	}
 
-    $sign = nl2br($sign);
+	$sign = nl2br($sign);
 
 	if($sign != '')
 	{
@@ -178,21 +183,25 @@ function addSignature($contents, $fromname)
   *	$to_email 	-- to email address  -- This can be an email in a single string, a comma separated
   *			   list of emails or an array of email addresses
   *	$attachment	-- whether we want to attach the currently selected file or all vtiger_files.
-  				[values = current,all] - optional
+				[values = current,all] - optional
   *	$emailid	-- id of the email object which will be used to get the vtiger_attachments - optional
   */
 function setMailerProperties($mail,$subject,$contents,$from_email,$from_name,$to_email,$attachment='',$emailid='',$module='',$logo='')
 {
-	global $adb;
+	global $adb,$HELPDESK_SUPPORT_NAME;
 	$adb->println("Inside the function setMailerProperties");
 	if($module == "Support" || $logo ==1)
-		$mail->AddEmbeddedImage('layouts/vlayout/skins/images/logo_mail.jpg', 'logo', 'logo.jpg',"base64","image/jpg");
+		$mail->AddEmbeddedImage('layouts/v7/skins/images/logo_mail.jpg', 'logo', 'logo.jpg',"base64","image/jpg");
 
 	$mail->Subject = $subject;
 	//Added back as we have changed php mailer library, older library was using html_entity_decode before sending mail
 	$mail->Body = decode_html($contents);
 	//$mail->Body = html_entity_decode(nl2br($contents));	//if we get html tags in mail then we will use this line
-	$mail->AltBody = strip_tags(preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$contents));
+	$plainBody = decode_html($contents);
+	$plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
+	$plainBody = strip_tags($plainBody);
+	$plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
+	$mail->AltBody = $plainBody;
 
 	$mail->IsSMTP();		//set mailer to use SMTP
 	//$mail->Host = "smtp1.example.com;smtp2.example.com";  // specify main and backup server
@@ -200,18 +209,21 @@ function setMailerProperties($mail,$subject,$contents,$from_email,$from_name,$to
 	setMailServerProperties($mail);
 
 	//Handle the from name and email for HelpDesk
-    $mail->From = $from_email;
-    $userFullName = trim(VTCacheUtils::getUserFullName($from_name));
-    if(empty($userFullName)) {
-        $rs = $adb->pquery("select first_name,last_name from vtiger_users where user_name=?", array($from_name));
-        $num_rows = $adb->num_rows($rs);
-        if($num_rows > 0) {
-            $fullName = getFullNameFromQResult($rs, 0, 'Users');
+	$mail->From = $from_email;
+	$userFullName = trim(VTCacheUtils::getUserFullName($from_name));
+	if ($from_name == $HELPDESK_SUPPORT_NAME) {
+		$userFullName = $HELPDESK_SUPPORT_NAME;
+	}
+	if(empty($userFullName)) {
+		$rs = $adb->pquery("select first_name,last_name from vtiger_users where user_name=?", array($from_name));
+		$num_rows = $adb->num_rows($rs);
+		if($num_rows > 0) {
+			$fullName = getFullNameFromQResult($rs, 0, 'Users');
 			VTCacheUtils::setUserFullName($from_name, $fullName);
 		}
-    } else {
-        $from_name = $userFullName;
-    }
+	} else {
+		$from_name = $userFullName;
+	}
 	$mail->FromName = decode_html($from_name);
 
 
@@ -250,7 +262,11 @@ function setMailerProperties($mail,$subject,$contents,$from_email,$from_name,$to
 		addAllAttachments($mail,$emailid);
 	}
 
-	$mail->IsHTML(true);		// set email format to HTML
+	// to convert external css to inline css
+	$mail->Body = Emails_Mailer_Model::convertCssToInline($mail->Body);
+	//To convert image url to valid
+	$mail->Body = Emails_Mailer_Model::makeImageURLValid($mail->Body);
+	$mail->IsHTML(true);  // set email format to HTML
 
 	return;
 }
@@ -262,20 +278,25 @@ function setMailServerProperties($mail)
 {
 	global $adb;
 	$adb->println("Inside the function setMailServerProperties");
-
+        
 	$res = $adb->pquery("select * from vtiger_systems where server_type=?", array('email'));
-	if(isset($_REQUEST['server']))
+	if(isset($_REQUEST['server'])) {
 		$server = $_REQUEST['server'];
-	else
+	} else if(!isset($_REQUEST['server'])) {
 		$server = $adb->query_result($res,0,'server');
-	if(isset($_REQUEST['server_username']))
+	}
+
+	if(isset($_REQUEST['server_username'])) {
 		$username = $_REQUEST['server_username'];
-	else
-	        $username = $adb->query_result($res,0,'server_username');
-	if(isset($_REQUEST['server_password']))
+	} else if(!isset($_REQUEST['server'])) {
+		$username = $adb->query_result($res,0,'server_username');
+	}
+
+	if(isset($_REQUEST['server_password'])) {
 		$password = $_REQUEST['server_password'];
-	else
+	} else if(!isset($_REQUEST['server'])) {
 		$password = $adb->query_result($res,0,'server_password');
+	}
 
 	// Define default state
 	$smtp_auth = false;
@@ -292,7 +313,7 @@ function setMailServerProperties($mail)
 		//added to avoid issue while editing the values in the outgoing mail server.
 		$smtp_auth = false;
 	}
-	else{
+	else if(!isset($_REQUEST['server'])){
 		$smtp_auth = $adb->query_result($res,0,'smtp_auth');
         if($smtp_auth == "1" || $smtp_auth == "true"){
             $smtp_auth = true;
@@ -305,7 +326,7 @@ function setMailServerProperties($mail)
 	}
     $mail->Host = $server;		// specify main and backup server
 	$mail->Username = $username ;	// SMTP username
-    $mail->Password = $password ;	// SMTP password
+    $mail->Password = Vtiger_Functions::fromProtectedText($password);	// SMTP password
     
     // To Support TLS
     $serverinfo = explode("://", $server);
@@ -329,12 +350,13 @@ function addAttachment($mail,$filename,$record)
 	global $adb, $root_directory;
 	$adb->println("Inside the function addAttachment");
 	$adb->println("The file name is => '".$filename."'");
+	$completePath = $root_directory."test/upload/".$filename;
 
 	//This is the file which has been selected in Email EditView
-        if(is_file($filename) && $filename != '')
-        {
-                $mail->AddAttachment($root_directory."test/upload/".$filename);
-        }
+		if(file_exists($completePath) && $filename != '')
+		{
+				$mail->AddAttachment($completePath);
+		}
 }
 
 /**     Function to add all the vtiger_files as attachment with the mail object
@@ -344,7 +366,7 @@ function addAttachment($mail,$filename,$record)
 function addAllAttachments($mail,$record)
 {
 	global $adb,$log, $root_directory;
-        $adb->println("Inside the function addAllAttachments");
+		$adb->println("Inside the function addAllAttachments");
 
 	//Retrieve the vtiger_files from database where avoid the file which has been currently selected
 	$sql = "select vtiger_attachments.* from vtiger_attachments inner join vtiger_seattachmentsrel on vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_attachments.attachmentsid where vtiger_crmentity.deleted=0 and vtiger_seattachmentsrel.crmid=?";
@@ -405,12 +427,12 @@ function setCCAddress($mail,$cc_mod,$cc_val)
 function MailSend($mail)
 {
 	global $log;
-         $log->info("Inside of Send Mail function.");
+		 $log->info("Inside of Send Mail function.");
 	if(!$mail->Send())
-        {
+		{
 		$log->debug("Error in Mail Sending : Error log = '".$mail->ErrorInfo."'");
 		return $mail->ErrorInfo;
-        }
+		}
 	else
 	{
 		 $log->info("Mail has been sent from the vtigerCRM system : Status : '".$mail->ErrorInfo."'");
@@ -427,30 +449,30 @@ function getParentMailId($parentmodule,$parentid)
 	global $adb;
 	$adb->println("Inside the function getParentMailId. \n parent module and id => ".$parentmodule."&".$parentid);
 
-        if($parentmodule == 'Contacts')
-        {
-                $tablename = 'vtiger_contactdetails';
-                $idname = 'contactid';
+		if($parentmodule == 'Contacts')
+		{
+				$tablename = 'vtiger_contactdetails';
+				$idname = 'contactid';
 		$first_email = 'email';
 		$second_email = 'secondaryemail';
-        }
-        if($parentmodule == 'Accounts')
-        {
-                $tablename = 'vtiger_account';
-                $idname = 'accountid';
+		}
+		if($parentmodule == 'Accounts')
+		{
+				$tablename = 'vtiger_account';
+				$idname = 'accountid';
 		$first_email = 'email1';
 		$second_email = 'email2';
-        }
+		}
 	if($parentid != '')
 	{
-	   	//$query = 'select * from '.$tablename.' where '.$idname.' = '.$parentid;
-	   	$query = 'select * from '.$tablename.' where '. $idname.' = ?';
+		//$query = 'select * from '.$tablename.' where '.$idname.' = '.$parentid;
+		$query = 'select * from '.$tablename.' where '. $idname.' = ?';
 		$res = $adb->pquery($query, array($parentid));
-	    $mailid = $adb->query_result($res,0,$first_email);
+		$mailid = $adb->query_result($res,0,$first_email);
 		$mailid2 = $adb->query_result($res,0,$second_email);
 	}
-        if($mailid == '' && $mailid2 != '')
-        	$mailid = $mailid2;
+		if($mailid == '' && $mailid2 != '')
+			$mailid = $mailid2;
 
 	return $mailid;
 }
@@ -560,7 +582,7 @@ function parseEmailErrorString($mail_error_str)
 				//Added to display the message about the CC && BCC mail sending status
 				if($status_str[0] == 'cc_success')
 				{
-                                        $cc_msg = 'But the mail has been sent to CC & BCC addresses.';
+										$cc_msg = 'But the mail has been sent to CC & BCC addresses.';
 					$errorstr .= '<br><b><font color=purple>'.$cc_msg.'</font></b>';
 				}
 			}
@@ -597,6 +619,8 @@ function getDefaultAssigneeEmailIds($groupId) {
 		$userGroups = new GetGroupUsers();
 		$userGroups->getAllUsersInGroup($groupId);
 
+		//Clearing static cache for sub groups
+		GetGroupUsers::$groupIdsList = array();
 		if(count($userGroups->group_users) == 0) return array();
 
 		$result = $adb->pquery('SELECT email1,email2,secondaryemail FROM vtiger_users WHERE vtiger_users.id IN

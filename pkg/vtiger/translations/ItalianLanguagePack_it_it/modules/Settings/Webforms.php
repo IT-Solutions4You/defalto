@@ -37,6 +37,15 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Assegnazione utente',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Assegna utenti Nel Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Turno Lista Utenti Robin',
+
+  'LBL_ADD_RECORD' => 'Aggiungere Webform',
+
+	'LBL_UPLOAD_DOCUMENTS' => 'Carica Documenti',
+	'LBL_ADD_FILE_FIELD' => 'File Upload Campo',
+	'LBL_FIELD_LABEL' => 'Titolo del documento',
+	'LBL_FILE_FIELD_INFO' => 'Per ogni file caricato da web formare un nuovo documento viene creato con il file allegato. Documento è legato anche a questa nuova creazione%s.',
+	'LBL_NO_FILE_FIELD' => 'Nessun campo file aggiunti.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Copia negli appunti',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -45,5 +54,12 @@ $jsLanguageStrings = array(
 	'JS_MANDATORY_FIELDS_WITHOUT_OVERRIDE_VALUE_CANT_BE_HIDDEN' => 'I campi obbligatori senza valori di override smussano essere nascosti',
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campi di riferimento cant essere obbligatorio senza valore di override',
 	'JS_TYPE_TO_SEARCH' => 'Tipo di ricerca',
-	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform con questo nome esiste già',
+	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform con questo nome esiste gi�',
+
+  'JS_SELECT_AN_OPTION' => 'Selezionare un\'Opzione',
+  'JS_LABEL' => 'etichetta',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Massima è possibile aggiungere campi del file%s.',
+	'JS_COPIED_SUCCESSFULLY' => 'Copiato con successo.',
+	'JS_COPY_FAILED' => 'Copia non riuscita. Si prega di copiare manualmente.',
 );

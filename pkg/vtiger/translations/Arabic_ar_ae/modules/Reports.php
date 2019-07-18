@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -32,7 +32,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST' => 'قائمة المجلدات',
 	'LBL_DENIED_REPORTS' => 'التقارير المرفوضة',
 	'LBL_NO_OF_RECORDS' => 'مجموع السجلات',
-	'LBL_MORE_RECORDS_TXT' => 'وتظهر السجلات فقط 1000 أدناه. يرجى تصدير لمعرفة جميع السجلات',
+	'LBL_MORE_RECORDS_TXT' => 'وتظهر السجلات فقط 500 أدناه. يرجى تصدير لمعرفة جميع السجلات',
 	//ListView Actions
 	'LBL_ADD_RECORD' => 'اضافة تقرير',
 	'LBL_ADD_FOLDER' => 'اضافة مجلد',
@@ -69,7 +69,7 @@ $languageStrings = array(
 	'LBL_HIGHEST_VALUE' => 'اعلى قيمة',
 
 	//Step3 Strings
-	'LBL_GENERATE_REPORT' => 'توليد تقرير',
+	'LBL_GENERATE_REPORT' => 'حفظ وإنشاء تقرير',
 
 	//DetailView
 	'LBL_SUM' => 'مجموع',
@@ -209,9 +209,42 @@ $languageStrings = array(
 	'LBL_CHARTS' => 'الرسوم البيانية',
     //Schedule Reports - Mail Content
     'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'هذا هو البريد الإلكتروني الذي تم إنشاؤه تلقائيا أرسلت نيابة عن تقرير المقرر.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'دبوس الرسم البياني لوحة القيادة',
+    'LBL_FILE_FORMAT' => 'تنسيق الملف',
+    
+    'Report Type' => 'تقرير نوع',
+    'tabular' => 'التفاصيل',
+    'summary' => 'التفاصيل',
+    'pivot' => 'محور',
+    'chart' => 'جدول',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'تقارير منقول بنجاح.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'المجلد الهدف هو نفس المجلد المصدر',
+	'LBL_SEARCH_FOR_FOLDERS' => 'البحث عن المجلدات',
+	'LBL_CHART_REPORT' => 'تقرير الرسم البياني',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'الرسم البياني بفصل من لوحة أجهزة القياس',
+
+  'LBL_SAME_LEVEL_ROLES' => 'نفس المستوى الأدوار',
+  'LBL_SUBORDINATE_ROLES' => 'أدوار تابعة',
+  'LBL_SHARE_REPORT' => 'حصة التقرير',
+  'LBL_SHARED_REPORTS' => 'تقاسمها مع لي',
+  'LBL_PINNED' => 'مثبت',
+  'LBL_UNPINNED' => 'غير المثبتة',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'تقارير حذف بنجاح',
+
 );
 $jsLanguageStrings = array(
 	'JS_DUPLICATE_RECORD' => 'كرر التقرير',
 	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.',
-        'JS_NO_CHART_DATA_AVAILABLE' => 'البيانات غير متوفرة، يرجى التحقق من الحقول المحددة',
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'الرسم البياني يشبك إلى لوحة التحكم',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'الرسم البياني مثبت بالفعل إلى لوحة التحكم',
+	'JS_MOVE_REPORTS'=>'نقل تقارير',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'وينبغي أن يكون الموعد المحدد ووقت أكبر من التاريخ والوقت الحالي',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'دبوس الرسم البياني لوحة القيادة',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'الرسم البياني بفصل من لوحة أجهزة القياس',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'الرسم البياني إزالتها من لوحة أجهزة القياس',
+
+  'JS_NO_CHART_DATA_AVAILABLE' => 'البيانات غير متوفرة يرجى التحقق من الحقول المحددة',
+
 );

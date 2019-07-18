@@ -9,14 +9,25 @@
  *************************************************************************************/
 
 class Users_Save_Action extends Vtiger_Save_Action {
-	
+
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 		$recordModel = Vtiger_Record_Model::getInstanceById($record, $moduleName);
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record) || ($recordModel->isAccountOwner() && 
-							$currentUserModel->get('id') != $recordModel->getId() && !$currentUserModel->isAdminUser())) {
+		// Check for operation access.
+		$allowed = Users_Privileges_Model::isPermitted($moduleName, 'Save', $record);
+		if ($allowed) {
+			// Deny access if not administrator or account-owner or self
+			if(!$currentUserModel->isAdminUser()) {
+				if (empty($record)) {
+					$allowed = false;
+				} else if (($currentUserModel->get('id') != $recordModel->getId())) {
+					$allowed = false;
+				}
+			}
+		}
+		if(!$allowed) {
 			throw new AppException('LBL_PERMISSION_DENIED');
 		}
 	}
@@ -26,10 +37,11 @@ class Users_Save_Action extends Vtiger_Save_Action {
 	 * @param Vtiger_Request $request
 	 * @return Vtiger_Record_Model or Module specific Record Model instance
 	 */
-	protected function getRecordModelFromRequest(Vtiger_Request $request) {
+	public function getRecordModelFromRequest(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
-                $currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+
 		if(!empty($recordId)) {
 			$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
 			$modelData = $recordModel->getData();
@@ -50,18 +62,17 @@ class Users_Save_Action extends Vtiger_Save_Action {
 				continue;
 			}
 			$fieldValue = $request->get($fieldName, null);
-
-			if ($fieldName === 'is_admin') {
-                            if (!$currentUserModel->isAdminUser() && (!$fieldValue)) {
+			if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$fieldValue)) {
 				$fieldValue = 'off';
-                            } else if ($currentUserModel->isAdminUser() && ($fieldValue || $fieldValue === 'on')) {
-                                $fieldValue = 'on';
-                                $recordModel->set('is_owner', 1);
-                            } else {
-                                $fieldValue = 'off';
-                                $recordModel->set('is_owner', 0);
-                            }
-                        }
+			}
+			//to not update is_owner from ui
+			if ($fieldName == 'is_owner') {
+				$fieldValue = null;
+			}
+			if ($fieldName == 'roleid' && !($currentUserModel->isAdminUser())) {
+				$fieldValue = null;
+			}
+
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
 					$fieldValue = trim($fieldValue);
@@ -78,13 +89,14 @@ class Users_Save_Action extends Vtiger_Save_Action {
 				$request->setGlobal($key, '');
 			}
 		}
-
-		// Tag cloud save
-		$tagCloud = $request->get('tagcloudview');
-		if($tagCloud == "on") {
-			$recordModel->set('tagcloud', 0);
-		} else {
-			$recordModel->set('tagcloud', 1);
+		if($request->has('tagcloudview')) {
+			// Tag cloud save
+			$tagCloud = $request->get('tagcloudview');
+			if($tagCloud == "on") {
+				$recordModel->set('tagcloud', 0);
+			} else {
+				$recordModel->set('tagcloud', 1);
+			}
 		}
 		return $recordModel;
 	}
@@ -93,6 +105,16 @@ class Users_Save_Action extends Vtiger_Save_Action {
 		$result = Vtiger_Util_Helper::transformUploadedFiles($_FILES, true);
 		$_FILES = $result['imagename'];
 
+		$recordId = $request->get('record');
+		if (!$recordId) {
+			$module = $request->getModule();
+			$userName = $request->get('user_name');
+			$userModuleModel = Users_Module_Model::getCleanInstance($module);
+			$status = $userModuleModel->checkDuplicateUser($userName);
+			if ($status == true) {
+				throw new AppException(vtranslate('LBL_DUPLICATE_USER_EXISTS', $module));
+			}
+		}
 		$recordModel = $this->saveRecord($request);
 
 		if ($request->get('relationOperation')) {
@@ -100,7 +122,11 @@ class Users_Save_Action extends Vtiger_Save_Action {
 			$loadUrl = $parentRecordModel->getDetailViewUrl();
 		} else if ($request->get('isPreference')) {
 			$loadUrl =  $recordModel->getPreferenceDetailViewUrl();
-		} else {
+		} else if ($request->get('returnmodule') && $request->get('returnview')){
+			$loadUrl = 'index.php?'.$request->getReturnURL();
+		} else if($request->get('mode') == 'Calendar'){
+			$loadUrl = $recordModel->getCalendarSettingsDetailViewUrl();
+		}else {
 			$loadUrl = $recordModel->getDetailViewUrl();
 		}
 

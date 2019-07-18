@@ -35,14 +35,8 @@ class Leads_LeadsCreated_Dashboard extends Vtiger_IndexAjax_View {
 		$moduleName = $request->getModule();
 
 		$linkId = $request->get('linkid');
-		$createdTime = $request->get('createdtime');
+		$dates = $request->get('createdtime');
 		$owner = $request->get('owner');
-
-		//Date conversion from user to database format
-		if(!empty($createdTime)) {
-			$dates['start'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['start']);
-			$dates['end'] = Vtiger_Date_UIType::getDBInsertedValue($createdTime['end']);
-		}
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getLeadsCreated($owner, $dates);

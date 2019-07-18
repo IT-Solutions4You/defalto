@@ -31,13 +31,15 @@
 		if($user->status != 'Inactive'){
 			return $user;
 		}
-		throw new WebServiceException(WebServiceErrorCode::$AUTHREQUIRED,'Given user is inactive');
+		// Finer exception message could be handy to enumeration attacks - so normalize it. 
+		//throw new WebServiceException(WebServiceErrorCode::$AUTHREQUIRED,'Given user is inactive');
+		throw new WebServiceException(WebServiceErrorCode::$INVALIDUSERPWD,"Invalid username or password");
 	}
 	
 	function vtws_getActiveToken($userId){
 		global $adb;
 		
-		$sql = "select * from vtiger_ws_userauthtoken where userid=? and expiretime >= ?";
+		$sql = "select token from vtiger_ws_userauthtoken where userid=? and expiretime >= ?";
 		$result = $adb->pquery($sql,array($userId,time()));
 		if($result != null && isset($result)){
 			if($adb->num_rows($result)>0){
@@ -50,7 +52,7 @@
 	function vtws_getUserAccessKey($userId){
 		global $adb;
 		
-		$sql = "select * from vtiger_users where id=?";
+		$sql = "select accesskey from vtiger_users where id=?";
 		$result = $adb->pquery($sql,array($userId));
 		if($result != null && isset($result)){
 			if($adb->num_rows($result)>0){

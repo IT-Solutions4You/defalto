@@ -16,17 +16,19 @@ $languageStrings = array(
 	'LBL_TODOS'                    => 'Compito'                     , 
 	'LBL_HOLD_FOLLOWUP_ON'         => 'Tenere Followup On'          ,
     'LBL_CREATE_FOLLOWUP_EVENT'    => 'Crea Follow Up Event'        ,
-	'LBL_EVENT_INFORMATION'        => 'Event Details'               , 
+	'LBL_EVENT_INFORMATION'        => 'Dettagli evento'               , 
 	'LBL_RECURRENCE_INFORMATION'   => 'Recurrence Details'          , 
 	'LBL_RELATED_TO'               => 'Related To'                  , // TODO: Review
+    'Related To'                   => 'Relativi a'                  ,
 	'Start Date & Time'            => 'Data e Ora inizio'           , 
-	'Recurrence'                   => 'Recurrence'                  , 
+	'Recurrence'                   => 'Ricorrenza'                  , 
 	'Send Notification'            => 'Send Notification'           , 
 	'Location'                     => 'Location'                    , 
 	'Send Reminder'                => 'Send Reminder'               , 
 	'End Date & Time'              => 'Data e Ora Fine'             , 
+    'End Date'                     => 'Data e Ora Fine'             , 
 	'Activity Type'                => 'Tipo Attivit&agrave;'        , 
-	'Visibility'                   => 'Visibility'                  , 
+	'Visibility'                   => 'Visibilità'                  , 
 	'Private'                      => 'Privato'                     , 
 	'Public'                       => 'Pubblico'                    , 
 	'Call'                         => 'Chiamata'                    , 
@@ -67,4 +69,9 @@ $languageStrings = array(
 	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
+	'LBL_INVITE_PEOPLE'			   => 'Invita persone',
+
+  'INVITATION' => ' Invito ',
+  'Busy' => 'Occupato',
+
 );

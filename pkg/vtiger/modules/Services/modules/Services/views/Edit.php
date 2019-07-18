@@ -9,7 +9,7 @@
  *************************************************************************************/
 
 Class Services_Edit_View extends Products_Edit_View {
-	
+
 	/**
 	 * Function to get the list of Script models to be included
 	 * @param Vtiger_Request $request
@@ -19,16 +19,26 @@ Class Services_Edit_View extends Products_Edit_View {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 
 		$moduleName = $request->getModule();
-		$modulePopUpFile = 'modules.'.$moduleName.'.resources.Edit';
-		unset($headerScriptInstances[$modulePopUpFile]);
-
+		$moduleEditFile = 'modules.'.$moduleName.'.resources.Edit';
+		unset($headerScriptInstances[$moduleEditFile]);
 
 		$jsFileNames = array(
-				'modules.Products.resources.Edit',
+			'modules.Products.resources.Edit',
 		);
-		$jsFileNames[] = $modulePopUpFile;
+
+		$jsFileNames[] = $moduleEditFile;
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
+	}
+
+	public function getOverlayHeaderScripts(Vtiger_Request $request){
+		$moduleName = $request->getModule();
+		$jsFileNames = array(
+			"modules.Products.resources.Edit",
+			"modules.$moduleName.resources.Edit",
+		);
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		return $jsScriptInstances;	
 	}
 }

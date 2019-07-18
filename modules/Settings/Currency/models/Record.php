@@ -126,8 +126,10 @@ class Settings_Currency_Record_Model extends Settings_Vtiger_Record_Model{
         $params = array();
         if(!empty($includedIds)) {
             $params = $includedIds;
-            $query .= ' or vtiger_currency_info.id IN('.generateQuestionMarks($includedIds).')';
+            $query .= ' OR vtiger_currency_info.id IN('.generateQuestionMarks($includedIds).')';
         }
+		$query .= ' ORDER BY vtiger_currencies.currency_name';
+
         $result = $db->pquery($query,$params);
         $currencyModelList = array();
         $num_rows = $db->num_rows($result);

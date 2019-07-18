@@ -11,9 +11,8 @@
 
 class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
 
-    public function isActionsAllowed () {
-        $actionNotSupportedModules = array('calendar','events');
-        if(in_array(strtolower($this->module->name), $actionNotSupportedModules)) {
+    public function isActionsAllowed() {
+        if(strtolower($this->module->name) == 'events' && $this->get('label') == 'LBL_INVITE_USER_BLOCK') {
 			return false;
 		}
 		return true;
@@ -24,15 +23,18 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
 	 * @return <Boolean> true/false
 	 */
 	public function isAddCustomFieldEnabled() {
-        $actionNotSupportedModules = array('calendar','events','faq', 'helpdesk');
-		$blocksEliminatedArray = array('calendar' => array('LBL_TASK_INFORMATION', 'LBL_DESCRIPTION_INFORMATION'),
-									'helpdesk' =>  array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
-                                                                   'faq'=>array('LBL_COMMENT_INFORMATION'),
-                                    'events' => array('LBL_EVENT_INFORMATION','LBL_REMINDER_INFORMATION','LBL_DESCRIPTION_INFORMATION',
-                                                      'LBL_RECURRENCE_INFORMATION','LBL_RELATED_TO','LBL_INVITE_USER_BLOCK'));
-        if(in_array(strtolower($this->module->name), $actionNotSupportedModules)) {
-			if(!empty($blocksEliminatedArray[strtolower($this->module->name)])) {
-				if(in_array($this->get('label'), $blocksEliminatedArray[strtolower($this->module->name)])) {
+        $actionNotSupportedModules = array_merge(getInventoryModules(), array('Calendar', 'Events', 'Faq', 'HelpDesk'));
+		$blocksEliminatedArray = array(	'Calendar'		=> array('LBL_TASK_INFORMATION', 'LBL_DESCRIPTION_INFORMATION'),
+										'HelpDesk'		=> array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
+										'Faq'			=> array('LBL_COMMENT_INFORMATION'),
+										'Invoice'		=> array('LBL_ITEM_DETAILS'),
+										'Quotes'		=> array('LBL_ITEM_DETAILS'),
+										'SalesOrder'	=> array('LBL_ITEM_DETAILS'),
+										'PurchaseOrder'	=> array('LBL_ITEM_DETAILS'),
+										'Events'		=> array('LBL_INVITE_USER_BLOCK'));
+        if(in_array($this->module->name, $actionNotSupportedModules)) {
+			if(!empty($blocksEliminatedArray[$this->module->name])) {
+				if(in_array($this->get('label'), $blocksEliminatedArray[$this->module->name])) {
 					return false;
 				}
 			} else {
@@ -42,7 +44,7 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
         return true;
     }
 
-    public static function updateFieldSequenceNumber($blockFieldSequence) {
+    public static function updateFieldSequenceNumber($blockFieldSequence, $moduleModel = false) {
         $fieldIdList = array();
         $db = PearDatabase::getInstance();
 
@@ -68,8 +70,11 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
 		$query .=' END ';
 
         $query .= ' WHERE fieldid IN ('.generateQuestionMarks($fieldIdList).')';
-
+        
         $db->pquery($query, array($fieldIdList));
+        
+        // Clearing cache
+        Vtiger_Cache::flushModuleandBlockFieldsCache($moduleModel);
     }
 
     public static function getInstance($value, $moduleInstance = false) {
@@ -113,10 +118,35 @@ class Settings_LayoutEditor_Block_Model extends Vtiger_Block_Model {
 		$fields = $this->getFields();
 		$activeFields = array();
 		foreach($fields as $fieldName => $fieldModel) {
-			if($fieldModel->isActiveField()) {
+			if ($fieldModel->get('displaytype') != 3 && $fieldModel->getDisplayType() != 6 && $fieldModel->isActiveField() && ($fieldModel->get('uitype') != '83'
+					|| ($fieldModel->get('uitype') == '83' && $fieldName == 'taxclass' && in_array($this->module->name, array('Products', 'Services'))))) {
 				$activeFields[$fieldName] = $fieldModel;
 			}
 		}
 		return $activeFields;
+	}
+
+	public function getCustomFieldsCount() {
+		$customFieldsCount = 0;
+		$blockFields = $this->getFields();
+		foreach ($blockFields as $fieldName => $fieldModel) {
+			if ($fieldModel && $fieldModel->isCustomField()) {
+				$customFieldsCount++;
+			}
+		}
+		return $customFieldsCount;
+	}
+
+	public function getFields() {
+		if (!$this->fields) {
+			$blockFields = parent::getFields();
+			$this->fields = array();
+
+			foreach ($blockFields as $fieldName => $fieldModel) {
+				$fieldModel = Settings_LayoutEditor_Field_Model::getInstanceFromFieldObject($fieldModel);
+				$this->fields[$fieldName] = $fieldModel;
+			}
+		}
+		return $this->fields;
 	}
 }

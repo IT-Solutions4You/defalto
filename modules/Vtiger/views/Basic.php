@@ -25,7 +25,7 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 	function preProcess (Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
-                $viewer = $this->getViewer($request);
+		$viewer = $this->getViewer($request);
 
 		$menuModelsList = Vtiger_Menu_Model::getAll(true);
 		$selectedModule = $request->getModule();
@@ -36,19 +36,50 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		$currentDate  = Vtiger_Date_UIType::getDisplayDateValue(date('Y-n-j'));
 		$viewer->assign('CURRENTDATE', $currentDate);
 		$viewer->assign('MODULE', $selectedModule);
-                $viewer->assign('MODULE_NAME', $selectedModule);
-		$viewer->assign('QUALIFIED_MODULE', $selectedModule);
+		$viewer->assign('MODULE_NAME', $selectedModule);
+		$viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
 		$viewer->assign('PARENT_MODULE', $request->get('parent'));
 		$viewer->assign('VIEW', $request->get('view'));
 
 		// Order by pre-defined automation process for QuickCreate.
 		uksort($menuModelsList, array('Vtiger_MenuStructure_Model', 'sortMenuItemsByProcess'));
-                
+
+		$selectedModuleMenuCategory = 'MARKETING';
+		$moduleFound = false;
+
+		$menuGroupedByParent = Settings_MenuEditor_Module_Model::getAllVisibleModules();
+		$supportGroup = $menuGroupedByParent['SUPPORT'];
+		unset($menuGroupedByParent['SUPPORT']);
+		$menuGroupedByParent['SUPPORT'] = $supportGroup;
+
+		foreach ($menuGroupedByParent as $parentCategory => $menuList) {
+			if($parentCategory == 'ANALYTICS' || $parentCategory == 'SETTINGS') continue;
+			if(count($menuList) > 0) {
+				if(array_key_exists($selectedModule, $menuList) && $parentCategory) {
+					$moduleFound = true;
+					$selectedModuleMenuCategory = $parentCategory;
+				}
+			}
+		}
+
+		//If module is not found in any category we need to show the module itself 
+		//Eg : Home->DashBoard view we ned to show Home 
+		if($moduleFound) {
+			$selectedMenuCategoryLabel = vtranslate('LBL_'.$selectedModuleMenuCategory, $selectedModule);
+		}else{
+			$selectedMenuCategoryLabel = vtranslate($selectedModule, $selectedModule);
+		}
+
+		$viewer->assign('SELECTED_MENU_CATEGORY',$selectedModuleMenuCategory);
+		$viewer->assign('SELECTED_MENU_CATEGORY_LABEL', $selectedMenuCategoryLabel);
+		$viewer->assign('SELECTED_CATEGORY_MENU_LIST',$menuGroupedByParent[$selectedModuleMenuCategory]);
 		$viewer->assign('MENUS', $menuModelsList);
+		$viewer->assign('QUICK_CREATE_MODULES', Vtiger_Menu_Model::getAllForQuickCreate());
 		$viewer->assign('MENU_STRUCTURE', $menuStructure);
 		$viewer->assign('MENU_SELECTED_MODULENAME', $selectedModule);
 		$viewer->assign('MENU_TOPITEMS_LIMIT', $menuStructure->getLimit());
 		$viewer->assign('COMPANY_LOGO',$companyLogo);
+		$viewer->assign('COMPANY_DETAILS_SETTINGS',new Settings_Vtiger_CompanyDetails_Model());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
 		$homeModuleModel = Vtiger_Module_Model::getInstance('Home');
@@ -57,6 +88,8 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		$viewer->assign('ANNOUNCEMENT', $this->getAnnouncement());
 		$viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
 
+		$inventoryModules = getInventoryModules();
+		$viewer->assign('INVENTORY_MODULES',  $inventoryModules);
 		if($display) {
 			$this->preProcessDisplay($request);
 		}
@@ -90,8 +123,9 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		$jsFileNames = array(
 			'libraries.bootstrap.js.eternicode-bootstrap-datepicker.js.bootstrap-datepicker',
 			'~libraries/bootstrap/js/eternicode-bootstrap-datepicker/js/locales/bootstrap-datepicker.'.Vtiger_Language_Handler::getShortLanguageName().'.js',
-			'~libraries/jquery/timepicker/jquery.timepicker.min.js',
-            'modules.Vtiger.resources.Header',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/timepicker/jquery.timepicker.min.js',
+			"~libraries/jquery/lazyYT/lazyYT.min.js",
+			'modules.Vtiger.resources.Header',
 			'modules.Vtiger.resources.Edit',
 			"modules.$moduleName.resources.Edit",
 			'modules.Vtiger.resources.Popup',
@@ -110,6 +144,17 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 			"modules.$moduleName.resources.SearchAdvanceFilter",
 			'modules.Vtiger.resources.AdvanceSearch',
 			"modules.$moduleName.resources.AdvanceSearch",
+			"modules.Vtiger.resources.BaseList",
+			"modules.$moduleName.resources.BaseList",
+			"modules.Vtiger.resources.List",
+			"modules.$moduleName.resources.AdvanceSearchList",
+			"modules.Vtiger.resources.AdvanceSearchList",
+			"modules.Vtiger.resources.RecordSelectTracker",
+			"modules.Vtiger.resources.Pagination",
+			"~layouts/v7/modules/Import/resources/Popup.js",
+			"modules.Emails.resources.MassEdit",
+			'modules.Vtiger.resources.EmailsRelatedPopup',
+			"~layouts/v7/lib/jquery/sadropdown.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -117,20 +162,18 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 		return $headerScriptInstances;
 	}
 
-	public function getHeaderCss(Vtiger_Request $request) {
-		$headerCssInstances = parent::getHeaderCss($request);
-
-		$cssFileNames = array(
-			'~/libraries/jquery/timepicker/jquery.timepicker.css',
-		);
-		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
-		$headerCssInstances = array_merge($headerCssInstances, $cssInstances);
-
-		return $headerCssInstances;
-	}
-
 	function getGuiderModels(Vtiger_Request $request) {
 		return array();
 	}
 
+	public function validateRequest(Vtiger_Request $request) {
+		//Removed validation check for specific views
+		$allowedViews = array("List", "Index", "Detail", "PreferenceDetail", "ExtensionStore", "CompanyDetails", "TaxIndex", "OutgoingServerDetail",
+								"TermsAndConditionsEdit", "AnnouncementEdit", "CustomRecordNumbering", "ConfigEditorDetail", "ChartDetail");
+		$view = $request->get("view");
+		$mode = $request->get("mode");
+		if (!(in_array($view, $allowedViews) || ($view == "Import" && !$mode) || ($view == "Edit" && $request->get("module") == "Workflows" && !$mode))) {
+			$request->validateReadAccess();
+		}
+	}
 }

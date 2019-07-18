@@ -76,7 +76,6 @@ var CKBUILDER_CONFIG = {
 		'showborders' : 1,
 		'sourcearea' : 1,
 		'specialchar' : 1,
-		'scayt' : 1,
 		'stylescombo' : 1,
 		'tab' : 1,
 		'table' : 1,

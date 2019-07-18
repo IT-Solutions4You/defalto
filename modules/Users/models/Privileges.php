@@ -106,31 +106,31 @@ class Users_Privileges_Model extends Users_Record_Model {
 	 * @param <Number> $userId
 	 * @return Users_Privilege_Model object
 	 */
-	public static function getInstanceById($userId) {
+	public static function getInstanceById($userId, $module = NULL) {
 		if (empty($userId))
 			return null;
 
-		require("user_privileges/user_privileges_$userId.php");
+		$acl = Vtiger_AccessControl::loadUserPrivileges($userId);
 		require("user_privileges/sharing_privileges_$userId.php");
 
 		$valueMap = array();
 		$valueMap['id'] = $userId;
-		$valueMap['is_admin'] = (bool) $is_admin;
-		$valueMap['roleid'] = $current_user_roles;
-		$valueMap['parent_role_seq'] = $current_user_parent_role_seq;
-		$valueMap['profiles'] = $current_user_profiles;
-		$valueMap['profile_global_permission'] = $profileGlobalPermission;
-		$valueMap['profile_tabs_permission'] = $profileTabsPermission;
-		$valueMap['profile_action_permission'] = $profileActionPermission;
-		$valueMap['groups'] = $current_user_groups;
-		$valueMap['subordinate_roles'] = $subordinate_roles;
-		$valueMap['parent_roles'] = $parent_roles;
-		$valueMap['subordinate_roles_users'] = $subordinate_roles_users;
+		$valueMap['is_admin'] = (bool) $acl->is_admin;
+		$valueMap['roleid'] = $acl->current_user_roles;
+		$valueMap['parent_role_seq'] = $acl->current_user_parent_role_seq;
+		$valueMap['profiles'] = $acl->current_user_profiles;
+		$valueMap['profile_global_permission'] = $acl->profileGlobalPermission;
+		$valueMap['profile_tabs_permission'] = $acl->profileTabsPermission;
+		$valueMap['profile_action_permission'] = $acl->profileActionPermission;
+		$valueMap['groups'] = $acl->current_user_groups;
+		$valueMap['subordinate_roles'] = $acl->subordinate_roles;
+		$valueMap['parent_roles'] = $acl->parent_roles;
+		$valueMap['subordinate_roles_users'] = $acl->subordinate_roles_users;
 		$valueMap['defaultOrgSharingPermission'] = $defaultOrgSharingPermission;
 		$valueMap['related_module_share'] = $related_module_share;
 
-		if(is_array($user_info)) {
-			$valueMap = array_merge($valueMap, $user_info);
+		if(is_array($acl->user_info)) {
+			$valueMap = array_merge($valueMap, $acl->user_info);
 		}
 
 		return self::getInstance($valueMap);
@@ -171,5 +171,31 @@ class Users_Privileges_Model extends Users_Record_Model {
 	public static function getNonAdminAccessControlQuery($module) {
 		$currentUser = vglobal('current_user');
 		return getNonAdminAccessControlQuery($module, $currentUser);
+	}
+
+	/**
+	 * Function to check permission for current user to change username 
+	 * @param <integer> $targetUserId
+	 * @return boolean
+	 * 
+	 * ::Rules::
+	 * 1. Admin can only change the username
+	 * 2. Admin shouldn't change other admin's username
+	 * 3. Only account owner can change other admin's username
+	 * 4. No one can change account owner's username
+	 */
+	public static function isPermittedToChangeUsername($targetUserId) {
+		$recordModel = parent::getInstanceFromPreferenceFile($targetUserId);
+		$currentUserModel = parent::getCurrentUserModel();
+		
+		if(is_int($targetUserId)) {
+			$targetUserId = strval($targetUserId);
+		}
+		if($currentUserModel->isAdminUser() && !$recordModel->isAccountOwner()) {
+			if($targetUserId === $currentUserModel->getId() || !$recordModel->isAdminUser() || $currentUserModel->isAccountOwner()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

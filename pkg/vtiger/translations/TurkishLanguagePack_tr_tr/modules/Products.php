@@ -71,5 +71,20 @@ $languageStrings = array(
 	'Sheet'                        => 'Sayfa'                       , 
 	'Spiral Binder'                => 'Spiral Binder'               , 
 	'Sq Ft'                        => 'Sq Ft'                       , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
     'LBL_PRODUCTSMOD_DISABLED'     => 'Ürünleri görmek için Ürünler Modülü etkinleştirin',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Fatura/Kurlar/Satış Sipariş/Satın Alma Emri paket ürün göster',
+	'LBL_BUNDLE_TOTAL_COST' => 'Bundle toplam maliyeti',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Güncelleme Paketi Fiyatı',
+
+  'LBL_PRODUCT_NAME' => 'Ürün İsmi',
+  'LBL_PRICE_QUANTITY' => 'Fiyat x Miktar',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Alt ürünler envanterine gösterilir',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Alt ürünler envanterine gösterilmeyecek',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Demetinin başarıyla değiştirildi toplam maliyeti',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Bu ürün, bir ürün demetinin bir parçasıdır. Bir demet öğesi silinmiş veya inaktive olduğunda paket fiyatı değişmeden kalır. Devam etmek istediğinizden emin misiniz?',
 );

@@ -21,7 +21,7 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
 		$fileType = $fileType[1];
 
 		$logoContent = file_get_contents($logoDetails['tmp_name']);
-		if (preg_match('(<\?php?(.*?))', $imageContent) != 0) {
+		if (preg_match('(<\?php?(.*?))', $logoContent) != 0) {
 			$securityError = true;
 		}
 
@@ -31,8 +31,9 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
 			}
 
 			if ($saveLogo) {
+				$logoName = ltrim(basename(' '.Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext'))));
 				$moduleModel->saveLogo();
-				$moduleModel->set('logoname', ltrim(basename(' '.Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext')))));
+				$moduleModel->set('logoname', $logoName);
 				$moduleModel->save();
 			}
 		}
@@ -45,8 +46,8 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
 		}
 		header('Location: ' . $reloadUrl);
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 }

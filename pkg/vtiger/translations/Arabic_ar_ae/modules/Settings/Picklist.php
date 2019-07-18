@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -37,9 +37,13 @@ $languageStrings = array(
 	'LBL_ASSIGN_VALUES_TO_ROLES' => 'Assign Values to Roles',
 	'LBL_SELECTED_VALUES' => 'Selected Values',
     'NO_PICKLIST_FIELDS'=> 'do not have any picklist fields',
+    'LBL_EDIT_PICKLIST_ITEM' => 'تحرير قائمة الاختيار البند',
 	
 	//Translation for module
-	'Calendar' => 'هل ل',
+	'Calendar' => 'مهمة',
+
+  'LBL_NON_EDITABLE_PICKLIST_VALUES' => 'غير قابل للتحرير القيم',
+
 );
 $jsLanguageStrings = array(
 	//PickList 

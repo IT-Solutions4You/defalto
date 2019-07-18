@@ -8,39 +8,67 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'Amount' => 'Amount',
-	'Campaign Source' => 'Campaign Source',
-	'Closed Lost'=>'Closed Lost',
-	'Closed Won'=>'Closed Won',
-	'Contact Name' => 'Contact Name',
-	'Existing Business'=>'Existing Business',
-	'Forecast Amount' => 'Forecast Amount',
-	'Forecast' => 'Sales Forecast',
-	'Funnel' => 'Sales Funnel',
-	'Id. Decision Makers'=>'Identify Decision Makers',
-	'LBL_ADD_RECORD' => 'Add Opportunity',
-	'LBL_EXPECTED_CLOSE_DATE_ON' => 'Expected to close on',
-	'LBL_OPPORTUNITY_INFORMATION' => 'Opportunity Details',
-	'LBL_RECORDS_LIST' => 'Opportunities List',
-	'LBL_RELATED_CONTACTS' => 'Related Contacts',
-	'LBL_RELATED_PRODUCTS' => 'Related Products',
-	'Needs Analysis'=>'Needs Analysis',
-	'Negotiation/Review'=>'Negotiation/Review',
-	'New Business'=>'New Business',
-	'Next Step' => 'Next Step',
-	'--None--'=>'--None--',
-	'Perception Analysis'=>'Perception Analysis',
-	'Potential No' => 'Opportunity Number',
-	'Potentials by Stage' => 'Opportunities by Stage',
+	// Basic Strings
 	'Potentials' => 'Opportunities',
+	'SINGLE_Potentials' => 'Opportunity',
+	'LBL_ADD_RECORD' => 'Add Opportunity',
+	'LBL_RECORDS_LIST' => 'Opportunities List',
+
+	// Blocks
+	'LBL_OPPORTUNITY_INFORMATION' => 'Opportunity Details',
+
+	//Field Labels
+	'Potential No' => 'Opportunity Number',
+	'Amount' => 'Amount',
+	'Next Step' => 'Next Step',
+	'Sales Stage' => 'Sales Stage',
 	'Probability' => 'Probability',
-	'Proposal/Price Quote'=>'Proposal/Quotation',
+	'Campaign Source' => 'Campaign Source',
+	'Forecast Amount' => 'Weighted Revenue',
+	'Related To' => 'Organization Name',
+	'Contact Name' => 'Contact Name',
+        'Type' => 'Type',
+	
+	//Dashboard widgets
+	'Funnel' => 'Sales Funnel',
+	'Potentials by Stage' => 'Opportunities by Stage',
+	'Total Revenue' => 'Revenue by Salesperson',
+	'Top Potentials' => 'Top Opportunities',
+	'Forecast' => 'Sales Forecast',
+
+	//Added for Existing Picklist Strings
+
 	'Prospecting'=>'Prospecting',
 	'Qualification'=>'Qualification',
-	'Related To' => 'Organization Name',
-	'Sales Stage' => 'Sales Stage',
-	'SINGLE_Potentials' => 'Opportunity',
-	'Top Potentials' => 'Top Opportunities',
-	'Total Revenue' => 'Revenue by Salesperson',
+	'Needs Analysis'=>'Needs Analysis',
 	'Value Proposition'=>'Value Proposition',
+	'Id. Decision Makers'=>'Identify Decision Makers',
+	'Perception Analysis'=>'Perception Analysis',
+	'Proposal/Price Quote'=>'Proposal/Quotation',
+	'Negotiation/Review'=>'Negotiation/Review',
+	'Closed Won'=>'Closed Won',
+	'Closed Lost'=>'Closed Lost',
+
+	'--None--'=>'--None--',
+	'Existing Business'=>'Existing Business',
+	'New Business'=>'New Business',
+	'LBL_EXPECTED_CLOSE_DATE_ON' => 'Expected to close on',
+
+	//widgets headers
+	'LBL_RELATED_CONTACTS' => 'Related Contacts',
+	'LBL_RELATED_PRODUCTS' => 'Related Products',
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL' => 'Convert Opportunity',
+	'LBL_CREATE_PROJECT' => 'Create Project',
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Opportunities Field Mapping',
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'You have to enable Project to convert the Opportunity',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Opportunities Field Mapping is incomplete(Settings > Module Manager > Opportunities > Opportunities Field Mapping)',
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'=> 'Opportunity to Project mapping',
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Conversion requires selection of Project',
 );

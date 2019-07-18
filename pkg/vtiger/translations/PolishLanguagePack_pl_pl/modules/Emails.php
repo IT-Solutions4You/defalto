@@ -24,4 +24,31 @@ $languageStrings = array(
 	'LBL_EXCEEDED' => 'przekroczony',
     'LBL_EMAIL_INFORMATION' => 'Informacje o e-mail',
 
+    'LBL_EMAILTEMPLATE_WARNING'    => 'Czy twoje seryjnej-tags poprawić',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Upewnij się, że szablon ma scalić wybrane znaczniki odpowiednie do rekordu odbiorcy. 
+                                            Jeśli wysyłasz wiadomość e-mail do bramki, jednak scalanie-tags należą do Kontakt moduł (np.: $contacts-lastname$), 
+                                            wówczas wartości nie zostaną połączone.',
+	'Draft'=>'Szkic',
+    'Parent ID' => 'Rekord rodzic',
+	
+
+  'SINGLE_Emails' => 'E-mail',
+  'Emails' => 'E-maile',
+  'LBL_GO_TO_PREVIEW' => 'Wejść w podgląd',
+  'LBL_TO' => 'Do',
+  'LBL_FORWARD' => 'Do przodu',
+  'LBL_PRINT' => 'Drukowanie',
+  'LBL_DESCRIPTION' => 'Opis',
+  'LBL_FROM' => 'Od',
+  'LBL_INFO' => 'Info',
+  'LBL_DRAFTED_ON' => 'Sporządzony na',
+  'LBL_SENT_ON' => 'Wysłał na',
+  'LBL_OWNER' => 'Właściciel',
+  'Date & Time Sent' => 'Data Wysłania',
+  'Time Start' => 'Raz Wysłał',
+
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'ostrzeżenie',
+);   

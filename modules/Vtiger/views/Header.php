@@ -47,7 +47,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 		$appUniqueKey = vglobal('application_unique_key');
 		$vtigerCurrentVersion = vglobal('vtiger_current_version');
 		$site_URL = vglobal('site_URL');
-
+		
 		$userModel = Users_Record_Model::getCurrentUserModel();
 		$userEmail = $userModel->get('email1');
 
@@ -87,7 +87,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 				)
 			)
 		);
-		
+
 		if($userModel->isAdminUser()) {
 			$crmSettingsLink = array(
 				'linktype' => 'HEADERLINK',
@@ -101,13 +101,13 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 						'linkurl' => '?module=Vtiger&parent=Settings&view=Index',
 						'linkicon' => '',
 					),
-                                        array(), // separator 
-                                        array ( 
-                                                'linktype' => 'HEADERLINK', 
-                                                'linklabel' => 'LBL_MANAGE_USERS', 
-                                                'linkurl' => '?module=Users&parent=Settings&view=List', 
-                                                'linkicon' => '', 
-                                       ),
+					array(), // separator
+					array (
+						'linktype' => 'HEADERLINK',
+						'linklabel' => 'LBL_MANAGE_USERS',
+						'linkurl' => '?module=Users&parent=Settings&view=List',
+						'linkicon' => '',
+					),
 				)
 			);
 			array_push($headerLinks, $crmSettingsLink);
@@ -159,12 +159,19 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 	 * @return <Array> - List of Vtiger_JsScript_Model instances
 	 */
 	function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
+        $headerScriptInstances = parent::getHeaderScripts($request);
 		$headerScripts = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, array('HEADERSCRIPT'));
+        $defaultLayout = Vtiger_Theme::getDefaultLayoutName();
 		foreach($headerScripts as $headerType => $headerScripts) {
 			foreach($headerScripts as $headerScript) {
 				if ($this->checkFileUriInRelocatedMouldesFolder($headerScript->linkurl)) {
-					$headerScriptInstances[] = Vtiger_JsScript_Model::getInstanceFromLinkObject($headerScript);
+                    // added check to overwrite in the layouts folder
+                    if(file_exists('layouts/'.$defaultLayout.'/'.$headerScript->linkurl)) {
+                        $headerScript->linkurl = 'layouts/'.$defaultLayout.'/'.$headerScript->linkurl;
+                        $headerScriptInstances[] = Vtiger_JsScript_Model::getInstanceFromLinkObject($headerScript);
+                    } else {
+                        $headerScriptInstances[] = Vtiger_JsScript_Model::getInstanceFromLinkObject($headerScript);
+                    }
 				}
 			}
 		}
@@ -179,16 +186,18 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 	function getHeaderCss(Vtiger_Request $request) {
 		$headerCssInstances = parent::getHeaderCss($request);
 		$headerCss = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, array('HEADERCSS'));
-		$selectedThemeCssPath = Vtiger_Theme::getStylePath();
-		//TODO : check the filename whether it is less or css and add relative less
-		$isLessType = (strpos($selectedThemeCssPath, ".less") !== false)? true:false;
-		$cssScriptModel = new Vtiger_CssScript_Model();
-		$headerCssInstances[] = $cssScriptModel->set('href', $selectedThemeCssPath)
-									->set('rel',
-											$isLessType?
-											Vtiger_CssScript_Model::LESS_REL :
-											Vtiger_CssScript_Model::DEFAULT_REL);
-
+        $selectedThemeCssPath = Vtiger_Theme::getStylePath();
+        
+        if(!empty($selectedThemeCssPath)) {
+            //TODO : check the filename whether it is less or css and add relative less
+            $isLessType = (strpos($selectedThemeCssPath, ".less") !== false)? true:false;
+            $cssScriptModel = new Vtiger_CssScript_Model();
+            $headerCssInstances[] = $cssScriptModel->set('href', $selectedThemeCssPath)
+                                        ->set('rel',
+                                                $isLessType?
+                                                Vtiger_CssScript_Model::LESS_REL :
+                                                Vtiger_CssScript_Model::DEFAULT_REL);
+        }
 		foreach($headerCss as $headerType => $cssLinks) {
 			foreach($cssLinks as $cssLink) {
 				if ($this->checkFileUriInRelocatedMouldesFolder($cssLink->linkurl)) {

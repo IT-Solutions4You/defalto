@@ -158,6 +158,8 @@
 						return $resp;
 					}
 				}
+			} catch (DuplicateException $e) {
+				throw $e;
 			}catch(WebServiceException $e){
 				throw $e;
 			}catch(Exception $e){

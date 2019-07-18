@@ -697,9 +697,10 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET presence = 1 WHERE t
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET truncate_trailing_zeros = ?', array(1));
 
-//deleted the id column from the All filter
+//deleted the id column from the All filter (exclude custom modules)
 Migration_Index_View::ExecuteQuery("DELETE FROM vtiger_cvcolumnlist WHERE cvid IN
-			(SELECT cvid FROM vtiger_customview WHERE viewname='All' AND entitytype NOT IN
+			(SELECT cvid FROM vtiger_customview INNER JOIN vtiger_tab ON vtiger_tab.name=vtiger_customview.entitytype
+				WHERE vtiger_tab.customized=0 AND viewname='All' AND entitytype NOT IN
 				('Emails','Calendar','ModComments','ProjectMilestone','Project','SMSNotifier','PBXManager','Webmails'))
 			AND columnindex = 0", array());
 
@@ -744,12 +745,30 @@ Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column linkt
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column linklabel VARCHAR(50)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column handler_class VARCHAR(50)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column handler VARCHAR(50)', array());
+
 //--
 //Add ModComments to HelpDesk and Faq module
+
+$moduleInstance = Vtiger_Module::getInstance('ModComments');
+$customer = Vtiger_Field::getInstance('customer', $moduleInstance);
+if (!$customer) {
+	$customer = new Vtiger_Field();
+	$customer->name = 'customer';
+	$customer->label = 'Customer';
+	$customer->uitype = '10';
+	$customer->displaytype = '3';
+	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
+	$blockInstance->addField($customer);
+	$customer->setRelatedModules(array('Contacts'));
+}
+
 require_once 'modules/ModComments/ModComments.php';
 ModComments::addWidgetTo(array("HelpDesk", "Faq"));
 global $current_user, $VTIGER_BULK_SAVE_MODE;
 $VTIGER_BULK_SAVE_MODE = true;
+
+$customerPortalSettings = new Settings_CustomerPortal_Module_Model();
+$portal_user_id = $customerPortalSettings->getCurrentPortalUser();
 
 $stopLoop = false;
 $pageCount = 0;
@@ -763,18 +782,30 @@ do {
 	for($i=0; $i<$rows; $i++) {
 		$modComments = CRMEntity::getInstance('ModComments');
 		$modComments->column_fields['commentcontent'] = decode_html($adb->query_result($ticketComments, $i, 'comments'));
-		$ownerId = $adb->query_result($ticketComments, $i, 'ownerid');
-		$current_user->id = $ownerId;
-		$modComments->column_fields['assigned_user_id'] = $modComments->column_fields['creator'] = $ownerId;
 		$modComments->column_fields['createdtime'] = $adb->query_result($ticketComments, $i, 'createdtime');
 		$modComments->column_fields['modifiedtime'] = $adb->query_result($ticketComments, $i, 'createdtime');
 		$modComments->column_fields['related_to'] = $adb->query_result($ticketComments, $i, 'ticketid');
+		
+		// Contact linked comments should be carried over (http://code.vtiger.com/vtiger/vtigercrm/issues/130)
+		$ownerId = $adb->query_result($ticketComments, $i, 'ownerid');
+		$ownerType = $adb->query_result($ticketComments, $i, 'ownertype');
+		if ($ownerType == 'customer') {
+			$modComments->column_fields['customer'] = $ownerId;
+			$current_user->id = $ownerId = $portal_user_id; // Owner of record marked to PortalUser, reference marked to Contact.
+		} else {
+			$current_user->id = $ownerId;
+		}
+		$modComments->column_fields['assigned_user_id'] = $modComments->column_fields['creator'] = $ownerId;
+		
 		$modComments->save('ModComments');
 		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
 			array($modComments->column_fields['createdtime'], $ownerId, $ownerId, $modComments->id));
 	}
 	++$pageCount;
 } while (!$stopLoop);
+
+// Restore the UserId
+$current_user->id = Users::getActiveAdminId();
 
 $stopLoop = false;
 $pageCount = 0;
@@ -794,7 +825,7 @@ do {
 		$modComments->column_fields['related_to'] = $adb->query_result($faqComments, $i, 'faqid');
 		$modComments->save('ModComments');
 		Migration_Index_View::ExecuteQuery('UPDATE vtiger_crmentity SET modifiedtime = ?, smcreatorid = ?, modifiedby = ? WHERE crmid = ?',
-			array($modComments->column_fields['createdtime'], '6', '6', $modComments->id));
+			array($modComments->column_fields['createdtime'], $current_user->id, $current_user->id, $modComments->id));
 	}
 	++$pageCount;
 } while (!$stopLoop);
@@ -836,18 +867,7 @@ Migration_Index_View::ExecuteQuery('CREATE INDEX vtiger_crmentity_labelidx ON vt
 $homeModule = Vtiger_Module::getInstance('Home');
 Vtiger_Event::register($homeModule, 'vtiger.entity.aftersave', 'Vtiger_RecordLabelUpdater_Handler', 'modules/Vtiger/RecordLabelUpdater.php');
 
-$moduleInstance = Vtiger_Module::getInstance('ModComments');
-$customer = Vtiger_Field::getInstance('customer', $moduleInstance);
-if (!$customer) {
-	$customer = new Vtiger_Field();
-	$customer->name = 'customer';
-	$customer->label = 'Customer';
-	$customer->uitype = '10';
-	$customer->displaytype = '3';
-	$blockInstance = Vtiger_Block::getInstance('LBL_MODCOMMENTS_INFORMATION', $moduleInstance);
-	$blockInstance->addField($customer);
-	$customer->setRelatedModules(array('Contacts'));
-}
+
 
 $moduleInstance = Vtiger_Module::getInstance('Potentials');
 $filter = Vtiger_Filter::getInstance('All', $moduleInstance);

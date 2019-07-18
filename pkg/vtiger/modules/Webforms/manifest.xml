@@ -1,56 +1,56 @@
 <?xml version='1.0'?>
 <module>
-<name>Webforms</name>
-<label>Webforms</label>
-<parent></parent>
-<type>extension</type>
-<version>1.6</version>
-<dependencies>
-  <vtiger_version>6.0.0rc</vtiger_version>
-  <vtiger_max_version>6.*</vtiger_max_version>
-</dependencies>
-<migrations>
-	<migration version='1.4'>
-		<tables>
-			<table>
-				<name>vtiger_webforms_field</name>
-				<sql><![CDATA[ALTER TABLE vtiger_webforms_field MODIFY neutralizedfield varchar(255)]]></sql>
-			</table>
-		</tables>
-	</migration>
-  <migration version='1.6'>
-    <tables>
-      <table>
-        <name>vtiger_webforms</name>
-          <sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(captcha int(1) NOT NULL DEFAULT 0)]]></sql>
-      </table>
-      <table>
-        <name>vtiger_webforms</name>
-          <sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin int(1) NOT NULL DEFAULT 0)]]></sql>
-      </table>
-      <table>
-        <name>vtiger_webforms</name>
-          <sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin_userid varchar(256) DEFAULT NULL)]]></sql>
-      </table>
-      <table>
-        <name>vtiger_webforms</name>
-          <sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin_logic int(11) NOT NULL DEFAULT 0)]]></sql>
-      </table>
-      <table>
-        <name>vtiger_webforms_field</name>
-        <sql><![CDATA[ALTER TABLE vtiger_webforms_field ADD COLUMN(sequence int(10) DEFAULT NULL)]]></sql>
-      </table>
-      <table>
-        <name>vtiger_webforms_field</name>
-        <sql><![CDATA[ALTER TABLE vtiger_webforms_field ADD COLUMN(hidden int(10) DEFAULT NULL)]]></sql>
-      </table>
-    </tables>
-  </migration>
-</migrations>
-<tables>
-<table>
-<name>vtiger_webforms</name>
-<sql><![CDATA[CREATE TABLE `vtiger_webforms` (
+	<name>Webforms</name>
+	<label>Webforms</label>
+	<parent></parent>
+	<type>extension</type>
+	<version>1.6</version>
+	<dependencies>
+		<vtiger_version>6.0.0rc</vtiger_version>
+		<vtiger_max_version>7.*</vtiger_max_version>
+	</dependencies>
+	<migrations>
+		<migration version='1.4'>
+			<tables>
+				<table>
+					<name>vtiger_webforms_field</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms_field MODIFY neutralizedfield varchar(255)]]></sql>
+				</table>
+			</tables>
+		</migration>
+		<migration version='1.6'>
+			<tables>
+				<table>
+					<name>vtiger_webforms</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(captcha int(1) NOT NULL DEFAULT 0)]]></sql>
+				</table>
+				<table>
+					<name>vtiger_webforms</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin int(1) NOT NULL DEFAULT 0)]]></sql>
+				</table>
+				<table>
+					<name>vtiger_webforms</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin_userid varchar(256) DEFAULT NULL)]]></sql>
+				</table>
+				<table>
+					<name>vtiger_webforms</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms ADD COLUMN(roundrobin_logic int(11) NOT NULL DEFAULT 0)]]></sql>
+				</table>
+				<table>
+					<name>vtiger_webforms_field</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms_field ADD COLUMN(sequence int(10) DEFAULT NULL)]]></sql>
+				</table>
+				<table>
+					<name>vtiger_webforms_field</name>
+					<sql><![CDATA[ALTER TABLE vtiger_webforms_field ADD COLUMN(hidden int(10) DEFAULT NULL)]]></sql>
+				</table>
+			</tables>
+		</migration>
+	</migrations>
+	<tables>
+		<table>
+			<name>vtiger_webforms</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_webforms` (
   `id` int(19) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `publicid` varchar(100) NOT NULL,
@@ -68,10 +68,10 @@
   UNIQUE KEY `publicid` (`id`),
   KEY `webforms_webforms_id_idx` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
-</table>
-<table>
-<name>vtiger_webforms_field</name>
-<sql><![CDATA[CREATE TABLE `vtiger_webforms_field` (
+		</table>
+		<table>
+			<name>vtiger_webforms_field</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_webforms_field` (
   `id` int(19) NOT NULL AUTO_INCREMENT,
   `webformid` int(19) NOT NULL,
   `fieldname` varchar(50) NOT NULL,
@@ -87,8 +87,8 @@
   CONSTRAINT `fk_1_vtiger_webforms_field` FOREIGN KEY (`webformid`) REFERENCES `vtiger_webforms` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_3_vtiger_webforms_field` FOREIGN KEY (`fieldname`) REFERENCES `vtiger_field` (`fieldname`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
-</table>
-</tables>
-<crons>
-</crons>
+		</table>
+	</tables>
+	<crons>
+	</crons>
 </module>

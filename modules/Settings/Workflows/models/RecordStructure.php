@@ -33,10 +33,15 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 		$recordModel = $this->getWorkFlowModel();
 		$recordId = $recordModel->getId();
 
+		$taskTypeModel = $this->getTaskRecordModel()->getTaskType();
+		$taskTypeName = $taskTypeModel->getName();
 		$values = array();
 
 		$baseModuleModel = $moduleModel = $this->getModule();
 		$blockModelList = $moduleModel->getBlocks();
+		if($taskTypeName == 'VTUpdateFieldsTask'){
+			unset($blockModelList['LBL_ITEM_DETAILS']);
+		}
 		foreach($blockModelList as $blockLabel=>$blockModel) {
 			$fieldModelList = $blockModel->getFields();
 			if (!empty ($fieldModelList)) {
@@ -50,17 +55,23 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 							 */
 							continue;
 						}
+						//Should not show starred and tag fields in edit task view
+						if($fieldModel->getDisplayType() == '6') {
+							continue;
+						}
 						if(!empty($recordId)) {
 							//Set the fieldModel with the valuetype for the client side.
 							$fieldValueType = $recordModel->getFieldFilterValueType($fieldName);
 							$fieldInfo = $fieldModel->getFieldInfo();
 							$fieldInfo['workflow_valuetype'] = $fieldValueType;
+							$fieldInfo['workflow_columnname'] = $fieldName;
 							$fieldModel->setFieldInfo($fieldInfo);
 						}
 						// This will be used during editing task like email, sms etc
 						$fieldModel->set('workflow_columnname', $fieldName)->set('workflow_columnlabel', vtranslate($fieldModel->get('label'), $moduleModel->getName()));
 						// This is used to identify the field belongs to source module of workflow
 						$fieldModel->set('workflow_sourcemodule_field', true);
+						$fieldModel->set('workflow_fieldEditable',$fieldModel->isEditable());
 						$values[$blockLabel][$fieldName] = clone $fieldModel;
 					}
 				}
@@ -76,11 +87,18 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 			foreach($referenceModules as $refModule) {
 				$moduleModel = Vtiger_Module_Model::getInstance($refModule);
 				$blockModelList = $moduleModel->getBlocks();
+				if($taskTypeName == 'VTUpdateFieldsTask'){
+					unset($blockModelList['LBL_ITEM_DETAILS']);
+				}
 				foreach($blockModelList as $blockLabel=>$blockModel) {
 					$fieldModelList = $blockModel->getFields();
 					if (!empty ($fieldModelList)) {
 						foreach($fieldModelList as $fieldName=>$fieldModel) {
 							if($fieldModel->isViewable()) {
+								//Should not show starred and tag fields in edit task view
+								if($fieldModel->getDisplayType() == '6') {
+									continue;
+								}
 								$name = "($parentFieldName : ($refModule) $fieldName)";
 								$label = vtranslate($field->get('label'), $baseModuleModel->getName()).' : ('.vtranslate($refModule, $refModule).') '.vtranslate($fieldModel->get('label'), $refModule);
 								$fieldModel->set('workflow_columnname', $name)->set('workflow_columnlabel', $label);
@@ -88,7 +106,15 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 									$fieldValueType = $recordModel->getFieldFilterValueType($name);
 									$fieldInfo = $fieldModel->getFieldInfo();
 									$fieldInfo['workflow_valuetype'] = $fieldValueType;
+									$fieldInfo['workflow_columnname'] = $name;
 									$fieldModel->setFieldInfo($fieldInfo);
+								}
+								$fieldModel->set('workflow_fieldEditable',$fieldModel->isEditable());
+								//if field is not editable all the field of that reference field should also shd be not editable
+								//eg : created by is not editable . so all user field refered by created by field shd also be non editable
+								// owner fields should also be non editable
+								if(!$field->isEditable() || $type == "owner") {
+									$fieldModel->set('workflow_fieldEditable',false);
 								}
 								$values[$field->get('label')][$name] = clone $fieldModel;
 							}

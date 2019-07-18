@@ -31,16 +31,16 @@ class Vtiger_Email_UIType extends Vtiger_Base_UIType {
                  */
                 if($moduleName == "Users" && $fieldName == "user_name"){
                     $value = "<a class='cursorPointer' onclick=\"Vtiger_Helper_Js.getInternalMailer($recordId," .
-                    		"'$fieldName','$moduleName');\">" . textlength_check($value) . "</a>";
+                    		"'$fieldName','$moduleName');\">" . ($value) . "</a>";
                 }else{
                 	$value = "<a class='emailField cursorPointer' onclick=\"Vtiger_Helper_Js.getInternalMailer($recordId," .
-                    		"'$fieldName','$moduleName');\">" . textlength_check($value) . "</a>";
+                    		"'$fieldName','$moduleName');\">" . ($value) . "</a>";
                 }
 			} else {
                 if($moduleName == "Users" && $fieldName == "user_name"){
-                    $value = "<a class='cursorPointer'  href='mailto:" . $value . "'>" . textlength_check($value) . "</a>";
+                    $value = "<a class='cursorPointer'  href='mailto:" . $value . "'>" . ($value) . "</a>";
                 }else{
-                    $value = "<a class='emailField cursorPointer'  href='mailto:" . $value . "'>" . textlength_check($value) . "</a>";
+                    $value = "<a class='emailField cursorPointer'  href='mailto:" . $value . "'>" . ($value) . "</a>";
                 }
 			}
 		}

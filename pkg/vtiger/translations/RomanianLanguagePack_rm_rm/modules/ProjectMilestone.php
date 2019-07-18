@@ -18,6 +18,8 @@ $languageStrings = array(
 	'Project Milestone Name'	=>	"Proiectul Milestone Numele",
 	'Milestone Date'	=>	"Milestone Data",
 	'Project Milestone No'	=>	"Numarul etapă a proiectului",
+        'Type'                         => 'Tip'                         , 
+    'Related to'                   => 'Legate de'   ,
 	//picklist values
 	'administrative' => 'Administrativ',
     'operative' => 'Operativ',

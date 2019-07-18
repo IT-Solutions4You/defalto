@@ -32,7 +32,8 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 		}
 		return $listViewHeaders;
 	}
-
+    
+    protected static $query = null;
 	function getListViewEntries(Vtiger_Paging_Model $paging) {
         $db = PearDatabase::getInstance();
         $moduleModel = $this->getModule();
@@ -40,9 +41,11 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 
         $fields = $this->get('fields');
         $fieldModels = $moduleModel->getFields();
+		$requiredTables = array();
         if(is_array($fields)) {
             foreach($fields as $fieldName) {
                 $fieldModel = $fieldModels[$fieldName];
+                $requiredTables[] = $fieldModel->get('table');
                 $tableColumns[] = $fieldModel->get('table').'.'.$fieldModel->get('column');
             }
         }
@@ -52,8 +55,8 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 		$ignoreEmpty = $this->get('ignoreEmpty');
 
         $focus = CRMEntity::getInstance($module);
-        $query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty);
-
+        $query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty,$requiredTables);
+        self::$query = $query;
 		$query .= " LIMIT $startIndex, ". ($pageLimit+1);
 		
 		$result = $db->pquery($query, array());
@@ -115,25 +118,27 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 		if($this->rows) {
 			$rows = $this->rows;
 		} else {
-			$db = PearDatabase::getInstance();
-
-			$moduleModel = $this->getModule();
-			$module = $moduleModel->getName();
-			$fields = $this->get('fields');
-			$fieldModels = $moduleModel->getFields();
-			if(is_array($fields)) {
-				foreach($fields as $fieldName) {
-					$fieldModel = $fieldModels[$fieldName];
-					$tableColumns[] = $fieldModel->get('table').'.'.$fieldModel->get('column');
-				}
-			}
-			$focus = CRMEntity::getInstance($module);
-			$ignoreEmpty = $this->get('ignoreEmpty');
-			$query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty);
-
+            $db = PearDatabase::getInstance();
+            if(!self::$query){
+                $moduleModel = $this->getModule();
+                $module = $moduleModel->getName();
+                $fields = $this->get('fields');
+                $fieldModels = $moduleModel->getFields();
+                if(is_array($fields)) {
+                    foreach($fields as $fieldName) {
+                        $fieldModel = $fieldModels[$fieldName];
+                        $requiredTables[] = $fieldModel->get('table');
+                        $tableColumns[] = $fieldModel->get('table').'.'.$fieldModel->get('column');
+                    }
+                }
+                $focus = CRMEntity::getInstance($module);
+                $ignoreEmpty = $this->get('ignoreEmpty');
+                self::$query = $focus->getQueryForDuplicates($module, $tableColumns, '', $ignoreEmpty,$requiredTables);
+            }
+            $query = self::$query;
 			$position = stripos($query, 'from');
 			if ($position) {
-				$split = spliti('from ', $query);
+				$split = preg_split('/from/i', $query);
 				$splitCount = count($split);
 				$query = 'SELECT count(*) AS count ';
 				for ($i=1; $i<$splitCount; $i++) {
@@ -148,7 +153,6 @@ class Vtiger_FindDuplicate_Model extends Vtiger_Base_Model {
 	}
     
     public function getMassDeleteRecords(Vtiger_Request $request) {
-       
         $db = PearDatabase::getInstance();
         $module = $request->getModule();
         $moduleModel = Vtiger_Module_Model::getInstance($module);

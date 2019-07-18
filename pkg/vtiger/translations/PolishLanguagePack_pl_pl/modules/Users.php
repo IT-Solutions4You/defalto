@@ -26,7 +26,8 @@ $languageStrings = array(
 	'Role' => 'Role',
 	'Admin' => 'Admin',
 	'User Name' => 'Nazwa użytkownika',
-	'Default Activity View' => 'Domyślny widok kalendarza',
+	'Default Activity View'		   => 'Domyślnie MyCalendar Zobacz',
+	'Default Calendar View'        => 'Domyślny widok kalendarza'            ,
 	'Default Lead View' => 'Domyślny widok w Potencjalnych Klientach',
 	'Title' => 'Stanowisko',
 	'Office Phone' => 'Telefon biurowy',
@@ -136,7 +137,7 @@ $languageStrings = array(
     'Africa/Nairobi'  =>  '(UTC+03:00) Nairobi',
     'Asia/Tehran'  =>  '(UTC+03:30) Tehran',
     'Asia/Tbilisi'  =>  '(UTC+04:00) Tbilisi',
-    'Europe/Moscow'  =>  '(UTC+04:00) Moscow, Volgograd',
+    'Europe/Moscow'  =>  '(UTC+03:00) Moscow, Volgograd',
     'Asia/Muscat'  =>  '(UTC+04:00) Abu Dhabi, Muscat',
     'Asia/Baku'  =>  '(UTC+04:00) Baku',
     'Asia/Yerevan'  =>  '(UTC+04:00) Yerevan',
@@ -168,6 +169,7 @@ $languageStrings = array(
     'Asia/Vladivostok'  =>  '(UTC+10:00) Vladivostok',
     'Pacific/Guam'  =>  '(UTC+10:00) Guam, Port Moresby',
     'Asia/Yakutsk'  =>  '(UTC+10:00) Yakutsk',
+	'Etc/GMT-11' => '(UTC+11:00) Solomon Is., New Caledonia',
     'Pacific/Fiji'  =>  '(UTC+12:00) Fiji',
     'Asia/Kamchatka'  =>  '(UTC+12:00) Kamchatka',
     'Pacific/Auckland'  =>  '(UTC+12:00) Auckland',
@@ -187,6 +189,9 @@ $languageStrings = array(
 	'LBL_CHANGE_PASSWORD' => 'Zmień hasło',
 	'LBL_NEW_PASSWORD' => 'Nowe hasło',
 	'LBL_CONFIRM_PASSWORD' => 'Potwierdź hasło',
+	'LBL_CHANGE_ACCESS_KEY' => 'Zmień Access Key',
+	'LBL_ACCESS_KEY_UPDATED_SUCCESSFULLY' => 'Klawisz pomyślnie zaktualizowane',
+	'LBL_FAILED_TO_UPDATE_ACCESS_KEY' => 'Nie udało się zaktualizować klucz dostępu',
 	
 	//Login strings
 	'LBL_TO_CRM' => 'Zaloguj do Vtiger CRM',
@@ -226,12 +231,48 @@ $languageStrings = array(
 	'LBL_DATE_FORMAT'		=> 'Format daty',
 	'LBL_CHOOSE_DATE_FORMAT'=> 'Wybierz format daty',
 	'LBL_PHONE'	=> 'Telefon',
-);
+    'Space' => 'Miejsce',
+	//picklist values for Default Calendar View field in MyPreference Page
+	'ListView' => 'Widok listy',
+	'MyCalendar' => 'Mój Kalendarz',
+	'SharedCalendar' => 'Wspólny kalendarz',
+    
+    'LBL_CHANGE_OWNER' => 'Zmiana właściciela',
+    'LBL_TRANSFER_OWNERSHIP' => 'Przeniesienia prawa własności',
+    'LBL_TRANSFER_OWNERSHIP_TO_USER' => 'Przeniesienia własności na użytkownika',
+    'LBL_OWNERSHIP_TRANSFERRED_SUCCESSFULLY' => 'Właściciel zmienił powodzeniem CRM',
+    'LBL_OWNERSHIP_TRANSFERRED_FAILED' => 'CRM nie powiodło zmienia właściciela',
+    'Account Owner' => 'Właściciel konta',
+    'Starting Day of the week' => 'Począwszy Dzień tygodnia',
+    'Day starts at' => 'Dzień zaczyna się od',
+    'Default Event Status' => 'Domyślnie Zdarzenia',
+    'Default Activity Type' => 'Domyślny typ aktywny',
+    'Default Record View' => 'Domyślny widok rekordu',
+    'Left Panel Hide' => 'Lewy panel Ukryj',
+    'Row Height' => 'Wysokość wiersza',
+	'LBL_RESTORE_USER_FAILED' => 'Nie udało się przywrócić użytkownikowi. Istnieje już użytkownik o tej nazwie CRM użytkownika.',
+    
+    'LBL_DUPLICATE_USER_EXISTS' => 'Użytkownik już istnieje',
 
+
+	'LBL_CHANGE_USERNAME'          => 'Zmień Hasło'               ,
+	'LBL_USERNAME_CHANGED'         => 'Nazwa użytkownika zmienił powodzeniem',
+	'ERROR_CHANGE_USERNAME'        => 'Błąd zmiany nazwy użytkownika. Proszę spróbować później',
+
+  'LBL_REMOVE_USER' => 'Usunąć',
+  'LBL_MORE_OPTIONS' => 'Inne Opcje',
+  'LBL_RESTORE_USER' => 'Przywrócić Użytkownika',
+  'LBL_LOGIN_AS' => 'Login jak ',
+  'LBL_USER_DELETED_SUCCESSFULLY' => 'Użytkownik usunięty pomyślnie',
+  'LBL_CREATE_USER' => 'Utworzyć Użytkownika',
+  'LBL_DELETE_USER_PERMANENTLY_INFO' => 'Usuwanie użytkownika stale będzie przenieść wszystkie zapisy, w tym komentarze i historii do nowego użytkownika.',
+  'LBL_USERS_SETTINGS' => 'USTAWIENIA UŻYTKOWNIKÓW',
+  'LBL_TEMPLATES' => 'Szablony',
+
+);
 $jsLanguageStrings = array(
 		
 	//Curency seperator validation messages
-	'JS_DECIMAL_SEPERATOR_AND_GROUPING_SEPERATOR_CANT_BE_SAME' => 'Decimal seperator and Grouping seperator cant be same',
 	'JS_ENTER_OLD_PASSWORD'=>'Wpisz swoje stare hasło.',
 	'JS_ENTER_NEW_PASSWORD'=>'Wpisz nowe hasło.',
 	'JS_ENTER_CONFIRMATION_PASSWORD'=>'Wpisz potwierdzenie nowego hasła.',
@@ -240,4 +281,7 @@ $jsLanguageStrings = array(
 	'JS_PASSWORD_CHANGE_FAILED_1'=>'Nie udało się zmienic hasła dla ',
 	'JS_PASSWORD_CHANGE_FAILED_2'=>' niepowodzenie. Nowe hasło musi zostać ustawione.',
 	'JS_PASSWORD_INCORRECT_OLD'=>'Podano niepoprawne stare hasło. Wpisz ponownie.',
+	'JS_ENTERED_CURRENT_USERNAME_MSG' => 'Wprowadzono aktualną nazwę użytkownika. Proszę wprowadzić nową nazwę użytkownika.',
+	'JS_NEW_ACCESS_KEY_REQUESTED' => 'Nowy klucz dostępu wymagane',
+	'JS_CHANGE_ACCESS_KEY_CONFIRMATION' => 'Zażądano nowego klucza dostępowego. &lt;br&gt;&lt;br&gt;Z nowego przepisu klucz dostępu, trzeba zastąpić stary klucz dostępu z nową we wszystkich zainstalowanych rozszerzeń. &lt;br&gt;&lt;br&gt;chcesz kontynuować?',
 );

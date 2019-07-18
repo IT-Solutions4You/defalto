@@ -5,25 +5,32 @@
  * The Original Code is:vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger. All Rights Reserved.
- * Contributor(s): Valmir C. Trindade - Translate to Brazilian Portuguese - 14/07/2013 - www.ttcasolucoes.com.br
+ * Contributor(s): Valmir C. Trindade - Brazilian Portuguese Translation - www.ttcasolucoes.com.br
  ************************************************************************************/
 $languageStrings = array(
-	'Asset Name' => 'Nome Ativo', 
-    'Asset No' => 'No. Ativo' , 
+	// Basic Strings
 	'Assets'        => 'Ativos',
-	'Customer Name' => 'Nome Cliente', 
-	'Date in Service' => 'Data em Serviço', 
-	'Date Sold' => 'Data Venda', 
-	'In Service'=> 'Em Serviço' , 
-	'Invoice Name'=> 'Nome Fatura' , 
+	'SINGLE_Assets'=> 'Ativo', 
 	'LBL_ADD_RECORD'=> 'Adicionar Ativos', 
-	'LBL_ASSET_INFORMATION'=> 'Informação Ativo', 
-	'LBL_RECORDS_LIST' => 'Lista Ativos' , 
-	'Notes' => 'Notas' ,
-	'Out-of-service' => 'Fora Serviço' , 
+	'LBL_RECORDS_LIST' => 'Lista Ativos',
+
+	// Blocks
+	'LBL_ASSET_INFORMATION'=> 'Informação Ativo',  
+
+	//Field Labels
+    'Asset No' => 'No. Ativo', 
 	'Serial Number'=> 'Número Série', 
+	'Date Sold' => 'Data Venda', 
+    'Date in Service' => 'Data em Serviço',
+	'Tag Number' => 'Número Etiqueta', 
+	'Invoice Name'=> 'Nome Fatura' , 
 	'Shipping Method'=> 'Método Entrega' , 
 	'Shipping Tracking Number' => 'Número Rastreamento Entrega', 
-	'SINGLE_Assets'=> 'Ativo', 
-	'Tag Number' => 'Número Etiqueta', 
+	'Asset Name' => 'Nome Ativo', 
+ 	'Customer Name' => 'Nome Cliente', 
+	'Notes' => 'Notas' ,
+
+	/*picklist values*/
+	'In Service'=> 'Em Serviço', 
+	'Out-of-service' => 'Fora Serviço' , 
 );

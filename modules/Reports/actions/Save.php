@@ -16,14 +16,14 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 
 		$record = $request->get('record');
 		if ($record) {
 			$reportModel = Reports_Record_Model::getCleanInstance($record);
 			if (!$reportModel->isEditable()) {
-				throw new AppException('LBL_PERMISSION_DENIED');
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
 	}
@@ -38,12 +38,12 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 			$reportModel->setId($record);
 		}
 
-        $reporttype = $request->get('reporttype');
-        if(empty($reporttype)) $reporttype='tabular';
+		$reporttype = $request->get('reporttype');
+		if(empty($reporttype)) $reporttype='tabular';
 		$reportModel->set('reportname', $request->get('reportname'));
 		$reportModel->set('folderid', $request->get('folderid'));
 		$reportModel->set('description', $request->get('reports_description'));
-        $reportModel->set('reporttype', $reporttype);
+		$reportModel->set('reporttype', $reporttype);
 
 		$reportModel->setPrimaryModule($request->get('primary_module'));
 
@@ -58,22 +58,24 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 		$reportModel->set('standardFilter', $request->get('standard_fiter'));
 		$reportModel->set('advancedFilter', $request->get('advanced_filter'));
 		$reportModel->set('advancedGroupFilterConditions', $request->get('advanced_group_condition'));
+		$reportModel->set('members', $request->get('members'));
 
 		$reportModel->save();
 
 		//Scheduled Reports
-        $scheduleReportModel = new Reports_ScheduleReports_Model();
-        $scheduleReportModel->set('scheduleid', $request->get('schtypeid'));
-        $scheduleReportModel->set('schtime', $request->get('schtime'));
-        $scheduleReportModel->set('schdate', $request->get('schdate'));
-        $scheduleReportModel->set('schdayoftheweek', $request->get('schdayoftheweek'));
-        $scheduleReportModel->set('schdayofthemonth', $request->get('schdayofthemonth'));
-        $scheduleReportModel->set('schannualdates', $request->get('schannualdates'));
-        $scheduleReportModel->set('reportid', $reportModel->getId());
-        $scheduleReportModel->set('recipients', $request->get('recipients'));
-        $scheduleReportModel->set('isReportScheduled', $request->get('enable_schedule'));
-        $scheduleReportModel->set('specificemails', $request->get('specificemails'));
-        $scheduleReportModel->saveScheduleReport();
+		$scheduleReportModel = new Reports_ScheduleReports_Model();
+		$scheduleReportModel->set('scheduleid', $request->get('schtypeid'));
+		$scheduleReportModel->set('schtime', date('H:i', strtotime($request->get('schtime'))));
+		$scheduleReportModel->set('schdate', $request->get('schdate'));
+		$scheduleReportModel->set('schdayoftheweek', $request->get('schdayoftheweek'));
+		$scheduleReportModel->set('schdayofthemonth', $request->get('schdayofthemonth'));
+		$scheduleReportModel->set('schannualdates', $request->get('schannualdates'));
+		$scheduleReportModel->set('reportid', $reportModel->getId());
+		$scheduleReportModel->set('recipients', $request->get('recipients'));
+		$scheduleReportModel->set('isReportScheduled', $request->get('enable_schedule'));
+		$scheduleReportModel->set('specificemails', $request->get('specificemails'));
+		$scheduleReportModel->set('fileformat', $request->get('fileformat'));
+		$scheduleReportModel->saveScheduleReport();
 		//END
 
 		$loadUrl = $reportModel->getDetailViewUrl();

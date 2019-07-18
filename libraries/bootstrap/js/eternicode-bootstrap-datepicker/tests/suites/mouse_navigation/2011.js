@@ -20,20 +20,20 @@ test('Selecting date from previous month while in January changes month and year
 
     this.input.val('01-01-2011');
     this.dp.update();
-    datesEqual(this.dp.viewDate, new Date(2011, 0, 1))
-    datesEqual(this.dp.date, new Date(2011, 0, 1))
+    datesEqual(this.dp.viewDate, UTCDate(2011, 0, 1))
+    datesEqual(this.dp.dates.get(-1), UTCDate(2011, 0, 1))
 
     // Rendered correctly
     equal(this.dp.viewMode, 0);
     target = this.picker.find('.datepicker-days tbody td:first');
     equal(target.text(), '26'); // Should be Dec 26
-    equal(this.picker.find('.datepicker-days thead th.switch').text(), 'January 2011');
+    equal(this.picker.find('.datepicker-days thead th.datepicker-switch').text(), 'January 2011');
 
     // Updated internally on click
     target.click();
-    equal(this.picker.find('.datepicker-days thead th.switch').text(), 'December 2010');
-    datesEqual(this.dp.viewDate, new Date(2010, 11, 26))
-    datesEqual(this.dp.date, new Date(2010, 11, 26))
+    equal(this.picker.find('.datepicker-days thead th.datepicker-switch').text(), 'December 2010');
+    datesEqual(this.dp.viewDate, UTCDate(2010, 11, 26))
+    datesEqual(this.dp.dates.get(-1), UTCDate(2010, 11, 26))
 
     // Re-rendered on click
     target = this.picker.find('.datepicker-days tbody td:first');
@@ -45,20 +45,20 @@ test('Selecting date from next month while in December changes month and year di
 
     this.input.val('01-12-2010');
     this.dp.update();
-    datesEqual(this.dp.viewDate, new Date(2010, 11, 1))
-    datesEqual(this.dp.date, new Date(2010, 11, 1))
+    datesEqual(this.dp.viewDate, UTCDate(2010, 11, 1))
+    datesEqual(this.dp.dates.get(-1), UTCDate(2010, 11, 1))
 
     // Rendered correctly
     equal(this.dp.viewMode, 0);
     target = this.picker.find('.datepicker-days tbody td:last');
     equal(target.text(), '8'); // Should be Jan 8
-    equal(this.picker.find('.datepicker-days thead th.switch').text(), 'December 2010');
+    equal(this.picker.find('.datepicker-days thead th.datepicker-switch').text(), 'December 2010');
 
     // Updated internally on click
     target.click();
-    equal(this.picker.find('.datepicker-days thead th.switch').text(), 'January 2011');
-    datesEqual(this.dp.viewDate, new Date(2011, 0, 8))
-    datesEqual(this.dp.date, new Date(2011, 0, 8))
+    equal(this.picker.find('.datepicker-days thead th.datepicker-switch').text(), 'January 2011');
+    datesEqual(this.dp.viewDate, UTCDate(2011, 0, 8))
+    datesEqual(this.dp.dates.get(-1), UTCDate(2011, 0, 8))
 
     // Re-rendered on click
     target = this.picker.find('.datepicker-days tbody td:first');

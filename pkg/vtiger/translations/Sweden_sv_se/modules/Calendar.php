@@ -2,20 +2,21 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
 	// Basic Strings
-	'SINGLE_Calendar' => 'Att göra',
+    'Calendar' => 'Kalender',
+	'SINGLE_Calendar' => 'Uppgift',
 	'SINGLE_Events' => 'Händelse',
-	'LBL_ADD_TASK' => 'Lägg Göra',
+	'LBL_ADD_TASK' => 'Lägg till uppgift',
 	'LBL_ADD_EVENT' => 'Lägg till Händelse',
 	'LBL_RECORDS_LIST' => 'Kalenderlista',
 	'LBL_EVENTS' => 'Händelser',
-	'LBL_TODOS' => 'Att göra',
+	'LBL_TODOS' => 'Uppgift',
 	'LBL_CALENDAR_SETTINGS' => 'Kalender Inställningar',
 	'LBL_CALENDAR_SHARING' => 'Kalenderdelning',
 	'LBL_DEFAULT_EVENT_DURATION' => 'Default Händelse Duration',
@@ -23,10 +24,10 @@ $languageStrings = array(
 	'LBL_OTHER_EVENTS' => 'Andra Händelser',
 	'LBL_MINUTES' => 'Minuter',
 	'LBL_SELECT_USERS' => 'Välj Användare',
-	'LBL_EVENT_OR_TASK' => 'Händelse / Göra',
+	'LBL_EVENT_OR_TASK' => 'Händelse / Task',
 
 	// Blocks
-	'LBL_TASK_INFORMATION' => 'Att göra-information',
+	'LBL_TASK_INFORMATION' => 'Uppgift-information',
     'LBL_EVENT_INFORMATION'=> 'Händelsedetaljer',
 
 	//Fields
@@ -36,6 +37,12 @@ $languageStrings = array(
 	'Send Notification'=>'Skicka Notifiering',
 	'Location'=>'Plats',
 	'End Date & Time' => 'Slutdatum & Tid',
+	'Visibility' => 'Synlighet',
+	'Recurrence' => 'Upprepa',
+	
+	//Visibility picklist values
+	'Private' => 'Privat',
+	'Public' => 'Publik',
 
 	//Side Bar Names
 	'LBL_ACTIVITY_TYPES' => 'Aktivitetstyper',
@@ -47,16 +54,16 @@ $languageStrings = array(
 	//Activity Type picklist values
 	'Call' => 'Ring',
 	'Meeting' => 'Möte',
-	'Task' => 'Att göra',
+	'Task' => 'Uppgift',
 
 	//Status picklist values
 	'Planned' => 'Planerad',
-        'Held'  =>  'Held',
-        'Not Held'  => 'Inte Held',
 	'Completed' => 'Komplett',
 	'Pending Input' => 'Pågående Inmatning',
 	'Not Started' => 'Ej Påbörjad',
 	'Deferred' => 'Uppskjuten',
+	'Held' => 'Anordnad',
+	'Not Held' => 'Inte Anordnad',
 
 	//Priority picklist values
 	'Medium' => 'Medium',
@@ -64,8 +71,8 @@ $languageStrings = array(
 	'LBL_CHANGE_OWNER' => 'Byt Ägare',
 
 	'LBL_EVENT' => 'Händelse',
-	'LBL_TASK' => 'Att göra',
-	'LBL_TASKS' => 'Att göra',
+	'LBL_TASK' => 'Uppgift',
+	'LBL_TASKS' => 'Uppgift',
 
 	'LBL_RECORDS_LIST' => 'Listvy',
 	'LBL_CALENDAR_VIEW' => 'Min Kalender',
@@ -103,8 +110,6 @@ $languageStrings = array(
 	'LBL_LAST_IMPORT_UNDONE'=>'Din sista import blev ångrad',
 	'LBL_UNDO_LAST_IMPORT' => 'Ångra sista importen',
 	
-	'Mobile Call' => 'Mobila samtalstjänster',
-	
 	//Fixing colors for Shared Calendar and My Calendar
 	'LBL_EDIT_COLOR' => 'Redigera färger',
 	'LBL_ADD_CALENDAR_VIEW' => 'Lägg Kalender',
@@ -113,13 +118,70 @@ $languageStrings = array(
 	'LBL_EDITING_CALENDAR_VIEW' => 'Redigerar Kalender',
 	'LBL_DELETE_CALENDAR' => 'Radera Calendar',
 	'LBL_SELECT_ACTIVITY_TYPE' => 'Välj aktivitetstyp',
-	'Tasks' => 'Att göra',
+	'Tasks' => 'Uppgift',
+	'LBL_SELECT_FIELDS_FOR_RANGE' => 'Välj fält för intervall',
+	'LBL_DUPLICATE_VIEW_EXIST' => 'Kalender Visa finns redan',
+    
+    // For Event Invitation
+    'LBL_ACTIVITY_NOTIFICATION' => 'Detta är ett meddelande om att en verksamhet har tilldelats till dig som har varit',
+    'LBL_ACTIVITY_INVITATION' => 'Du har blivit inbjuden till en aktivitet',
+    'LBL_DETAILS_STRING' => 'Detaljerna är',
+    'LBL_CREATED' => 'skapad',
+    'LBL_UPDATED' => 'uppdaterad',
+    'Due Date' => 'Förfallodatum',
+    'Priority' => 'Prioritet',
+    'Related To' => 'Relaterat till',
+    'LBL_CONTACT_LIST' => 'Kontaktlista',
+    'LBL_APP_DESCRIPTION' => 'Beskrivning',
+    'LBL_REGARDS_STRING' => 'Tack och hälsningar',
+    'LBL_EVENT_INFORMATION' => 'Händelsedetaljer',
+	'LBL_UPDATED_INVITATION' => 'Uppdaterat Inbjudan',
+	'LBL_INVITATION' => 'Inbjudan',
+	//Recurring Events
+	'LBL_EDIT_RECURRING_EVENT' => 'Redigera Återkommande händelse',
+	'LBL_ALL_EVENTS_EDIT_INFO' => 'Alla händelser i serien kommer att ändras.</br> Alla ändringar som görs på andra evenemang kommer att hållas.',
+	'LBL_FUTURE_EVENTS_EDIT_INFO' => 'Denna och alla följande händelser kommer att ändras.</br> Alla ändringar av framtida händelser kommer att gå förlorade.',
+	'LBL_ONLY_THIS_EVENT_EDIT_INFO' => 'Alla andra händelser i serien kommer att förbli densamma.',
+	'LBL_EDIT_RECURRING_EVENTS_INFO' => 'Vill du spara ändringarna för',
+	
+	'LBL_DELETE_RECURRING_EVENT' => 'Radera Återkommande händelse',
+	'LBL_ALL_EVENTS_DELETE_INFO' => 'Alla händelser i serien kommer att tas bort.',
+	'LBL_FUTURE_EVENTS_DELETE_INFO' => 'Denna och alla följande händelser kommer att raderas.',
+	'LBL_ONLY_THIS_EVENT_DELETE_INFO' => 'Alla andra händelser i serien kommer att förbli densamma.',
+	'LBL_DELETE_RECURRING_EVENTS_INFO' => 'Vill du ta bort bara den här händelsen, alla händelser i serien eller denna och alla framtida händelser i serien?',
+	'LBL_ONLY_THIS_EVENT' => 'Endast denna händelse',
+	'LBL_FUTURE_EVENTS' => 'Följande händelser',
+	'LBL_ALL_EVENTS' => 'Alla evenemang',
 
+  'LBL_DEFAULT_STATUS_TYPE' => 'Standard Status & Typ',
+  'LBL_STATUS' => 'Status',
+  'LBL_TYPE' => 'Typ',
+  'LBL_REMINDER_NOTIFICATION' => 'Detta är en påminnelse om anmälan för Aktiviteten',
+  'LBL_SELECT_EVENT_TYPE' => 'Typ Av Aktivitet',
+  'LBL_THIS_WEEK' => 'Den Här Veckan',
+  'LBL_ADD_TASK_AND_PRESS_ENTER' => 'Lägg till Uppgiften och tryck på Enter',
+
+
+  'LBL_JANUARY' => 'Januari',
+  'LBL_FEBRUARY' => 'Februari',
+  'LBL_MARCH' => 'Mars',
+  'LBL_APRIL' => 'April',
+  'LBL_MAY' => 'Maj',
+  'LBL_JUNE' => 'Juni',
+  'LBL_JULY' => 'Juli',
+  'LBL_AUGUST' => 'Augusti',
+  'LBL_SEPTEMBER' => 'September',
+  'LBL_OCTOBER' => 'Oktober',
+  'LBL_NOVEMBER' => 'November',
+  'LBL_DECEMBER' => 'December',
+	'LBL_CLICK_HERE_TO_VIEW' => 'Klicka här för att se',
+
+	'LBL_TOTAL_EVENTS_DUPLICATED' => 'Antal dubbla händelser hoppas över',
+	'LBL_TOTAL_TASKS_DUPLICATED' => 'Antal dubbla uppgifter hoppas över',
 );
-
 $jsLanguageStrings = array(
 	'LBL_ADD_EVENT_TASK' => 'Lägg till händelse / att göra',
-	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'Att göra har lagts till i din kalender',
+	'JS_TASK_IS_SUCCESSFULLY_ADDED_TO_YOUR_CALENDAR' => 'Uppgift har lagts till i din kalender',
     'LBL_SYNC_BUTTON' => 'Synkronisera Nu',
     'LBL_SYNCRONIZING' => 'Synkronisera....',
     'LBL_NOT_SYNCRONIZED' => 'Du har inte synkroniserat ännu',
@@ -186,4 +248,22 @@ $jsLanguageStrings = array(
 	'JS_CALENDAR_VIEW_DELETED_SUCCESSFULLY' => 'Kalender raderats',
 	'JS_NO_CALENDAR_VIEWS_TO_ADD' => 'Ingen kalendervy för att lägga till',
 	'JS_EDIT_CALENDAR' => 'Redigera kalender',
+
+  'JS_FUTURE_EVENT_CANNOT_BE_HELD' => 'Kan Inte Hållas För Framtiden',
+  'LBL_TOMORROW' => 'I morgon',
+  'JS_EVENT_UPDATED' => 'Händelsen Uppdaterad',
+  'JS_NO_EVENTS_F0R_THE_DAY' => 'Inga händelser för dagen',
+  'LBL_AGENDA' => 'Dagordning',
+  'JS_CALENDAR_VIEW_YOU_ARE_EDITING_NOT_FOUND' => 'Kalendern inte hittas',
+  'JS_DELETE' => 'Ta bort',
+  'JS_EDIT' => 'Ändra',
+  'JS_MARK_AS_HELD' => 'Mark som innehas',
+  'JS_CREATE_FOLLOW_UP' => 'Skapa följa upp',
+  'JS_RECURRING_EVENT' => 'Återkommande händelse',
+  'JS_DETAILS' => 'Mer&nbsp;Detaljer',
+
+
+  'JS_CHECK_START_AND_END_DATE' => 'Slut Datum & Tid bör vara större än eller lika med Start Datum & Tid',
+  'JS_CHECK_START_AND_END_DATE_SHOULD_BE_GREATER' => 'Slut Datum & Tid bör vara större än Start Datum & Tid',
+
 );

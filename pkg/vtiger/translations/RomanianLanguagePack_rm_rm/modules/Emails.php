@@ -37,4 +37,14 @@ $languageStrings = array(
 	'Date & Time Sent'             => 'Date Sent'                   , // TODO: Review
     'Time Start'                   => 'timp Trimisa'                ,
     'LBL_EMAIL_INFORMATION' => 'E-mail de informare',
+    'LBL_EMAILTEMPLATE_WARNING'    => 'Sunt de îmbinare-tag-uri corecta',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Vă rugăm să asigurați-vă că ați selectat șablonul are Merge-tag-uri relevante pentru înregistrarea destinatar. 
+                                            Dacă trimiteți un e-mail pentru a conduce, dar de îmbinare-tag-uri fac parte din modul de contact (ex: $contacts-lastname$), 
+                                            atunci valorile nu vor fi îmbinate.',
+	'Draft'                        => 'Ciorna'                      , 
+    'Parent ID'                    => 'Parent înregistrare',
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'avertizare',
+);   

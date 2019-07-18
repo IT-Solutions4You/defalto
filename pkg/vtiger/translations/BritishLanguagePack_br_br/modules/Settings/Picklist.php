@@ -20,8 +20,8 @@ $languageStrings = array(
 	'LBL_ITEM_VALUE'               => 'Item value'                  , // TODO: Review
 	'LBL_ITEM_TO_RENAME'           => 'Item to rename'              , // TODO: Review
 	'LBL_ENTER_NEW_NAME'           => 'Enter new Name'              , // TODO: Review
-	'LBL_RENAME_PICKLIST_ITEM'     => 'Rename Picklist Item'        , // TODO: Review
-	'LBL_DELETE_PICKLIST_ITEMS'    => 'Delete Picklist Items'       , // TODO: Review
+	'LBL_RENAME_PICKLIST_ITEM'     => 'Rename PickList Item'        , // TODO: Review
+	'LBL_DELETE_PICKLIST_ITEMS'    => 'Delete PickList Items'       , // TODO: Review
 	'LBL_ITEMS_TO_DELETE'          => 'Items to Delete'             , // TODO: Review
 	'LBL_REPLACE_IT_WITH'          => 'Replace it with'             , // TODO: Review
 	'LBL_ASSIGN_TO_ROLE'           => 'Assign to Role'              , // TODO: Review
@@ -31,26 +31,34 @@ $languageStrings = array(
 	'LBL_VALUES_ASSIGNED_TO_A_ROLE' => 'Values assigned to a role'   , // TODO: Review
 	'LBL_ASSIGN_VALUE'             => 'Assign Value'                , // TODO: Review
 	'LBL_SAVE_ORDER'               => 'Save Order'                  , // TODO: Review
-	'LBL_ROLE_NAME'                => 'Role Name'                   , // TODO: Review
+	'LBL_ROLE_NAME'                => 'Role name'                   , // TODO: Review
 	'LBL_SELECTED_VALUES_MESSGAE'  => 'will appear for the user with this role', // TODO: Review
-	'LBL_ENABLE/DISABLE_MESSGAE'   => 'Click on value to Enable/Disable it. Then click "Save"', // TODO: Review
+	'LBL_ENABLE/DISABLE_MESSGAE'   => 'Click on value to Enable/Disable it.After done click on save', // TODO: Review
 	'LBL_ASSIGN_VALUES_TO_ROLES'   => 'Assign Values to Roles'      , // TODO: Review
 	'LBL_SELECTED_VALUES'          => 'Selected Values'             , // TODO: Review
 	'NO_PICKLIST_FIELDS'           => 'do not have any picklist fields', // TODO: Review
+    'LBL_EDIT_PICKLIST_ITEM'       => 'Edit Picklist Item',
 	
 	//Translation for module
 	'Calendar' => 'To Do',
+
+  'LBL_NON_EDITABLE_PICKLIST_VALUES' => 'Non Editable Values',
+
 );
 $jsLanguageStrings = array(
-	'JS_ITEM_RENAMED_SUCCESSFULLY' => 'Item renamed successfully'   , // TODO: Review
-	'JS_ITEM_ADDED_SUCCESSFULLY'   => 'Item added successfully'     , // TODO: Review
-	'JS_NO_ITEM_SELECTED'          => 'No item selected'            , // TODO: Review
-	'JS_MORE_THAN_ONE_ITEM_SELECTED' => 'More than one item selected' , // TODO: Review
-	'JS_ITEMS_DELETED_SUCCESSFULLY' => 'Items deleted successfully'  , // TODO: Review
+	'JS_ITEM_RENAMED_SUCCESSFULLY' => 'Item Renamed Successfully'   , // TODO: Review
+	'JS_ITEM_ADDED_SUCCESSFULLY'   => 'Item added Successfully'     , // TODO: Review
+	'JS_NO_ITEM_SELECTED'          => 'No item Selected'            , // TODO: Review
+	'JS_MORE_THAN_ONE_ITEM_SELECTED' => 'More than one Item selected' , // TODO: Review
+	'JS_ITEMS_DELETED_SUCCESSFULLY' => 'Items Deleted Successfully'  , // TODO: Review
 	'JS_YOU_CANNOT_DELETE_ALL_THE_VALUES' => 'You cannot delete all the values', // TODO: Review
-	'JS_ALL_ROLES_SELECTED'        => 'All Roles selected'          , // TODO: Review
-	'JS_LIST_UPDATED_SUCCESSFULLY' => 'List updated successfully'   , // TODO: Review
+	'JS_ALL_ROLES_SELECTED'        => 'All Roles Selected'          , // TODO: Review
+	'JS_LIST_UPDATED_SUCCESSFULLY' => 'List updated Successfully'   , // TODO: Review
 	'JS_SEQUENCE_UPDATED_SUCCESSFULLY' => 'Sequence updated successfully', // TODO: Review
 	'JS_VALUE_ASSIGNED_SUCCESSFULLY' => 'Value assigned successfully' , // TODO: Review
-	'JS_PLEASE_SELECT_MODULE'      => 'Please select module'        , // TODO: Review
+	'JS_PLEASE_SELECT_MODULE'      => 'Please seelct module'        , // TODO: Review
+
+  'JS_SPECIAL_CHARACTERS' => 'Special Characters like',
+  'JS_NOT_ALLOWED' => 'are not allowed',
+
 );

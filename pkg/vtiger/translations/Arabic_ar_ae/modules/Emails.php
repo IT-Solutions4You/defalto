@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -26,6 +26,11 @@ $languageStrings = array(
    	'LBL_ADD_BCC' => 'Add Bcc',
 	'LBL_MAX_UPLOAD_SIZE' => 'Maximum upload size is',
 	'LBL_EXCEEDED' => 'تجاوز',
+    'LBL_EMAILTEMPLATE_WARNING'    => 'هل لديك الدمج، به تصحيح',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'يرجى التأكد من أن القالب الذي حددته لديه دمج العلامات ذات الصلة إلى السجل المتلقي. 
+                                             إذا كنت تقوم بإرسال بريد إلكتروني إلى الرصاص، ولكن دمج العلامات، تنتمي إلى الاتصال وحدة (مثلا: $contacts-lastname  $)،                                          
+                                             ثم لن يتم دمج القيم.                                            
+                                            ',
 	
 	//Button Names translation
 	'LBL_FORWARD' => 'ارسال مع',
@@ -39,4 +44,13 @@ $languageStrings = array(
 	
 	'Date & Time Sent' => 'تاريخ الارسال',
     'LBL_EMAIL_INFORMATION' => 'معلومات البريد الإلكتروني',
+	'Draft'=>'مسودة',
+    'Parent ID' => 'سجل الأم',
+
+  'Time Start' => 'الوقت وإرسالها',
+
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'تحذير',
+);    

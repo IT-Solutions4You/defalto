@@ -27,5 +27,12 @@ class Settings_Profiles_Detail_View extends Settings_Vtiger_Index_View {
 
 		$viewer->view('DetailView.tpl', $qualifiedModuleName);
 	}
-
+    
+    /**
+     * Setting module related Information to $viewer (for Vtiger7)
+     * @param type $request
+     * @param type $moduleModel
+     */
+    public function setModuleInfo($request, $moduleModel){
+    }
 }

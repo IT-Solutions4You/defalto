@@ -373,7 +373,7 @@ class Vtiger_MailScanner {
 				$account_focus = $this->_cachedAccounts[$accountid];
 				$this->log("Reusing Cached Account [" . $account_focus->column_fields[accountname] . "]");
 			} else {
-				$account_focus = new Accounts();
+				$account_focus = CRMEntity::getInstance('Accounts');
 				$account_focus->retrieve_entity_info($accountid, 'Accounts');
 				$account_focus->id = $accountid;
 
@@ -398,7 +398,7 @@ class Vtiger_MailScanner {
 				$this->log("Reusing Cached Contact [" . $contact_focus->column_fields[lastname] .
 				   	'-' . $contact_focus->column_fields[firstname] . "]");
 			} else {
-				$contact_focus = new Contacts();
+				$contact_focus = CRMEntity::getInstance('Contacts');
 				$contact_focus->retrieve_entity_info($contactid, 'Contacts');
 				$contact_focus->id = $contactid;
 
@@ -423,7 +423,7 @@ class Vtiger_MailScanner {
 				$this->log("Reusing Cached Lead [" . $lead_focus->column_fields[lastname] .
 						'-' . $lead_focus->column_fields[firstname] . "]");
 			} else {
-				$lead_focus = new Leads();
+				$lead_focus = CRMEntity::getInstance('Leads');
 				$lead_focus->retrieve_entity_info($leadid, 'Leads');
 				$lead_focus->id = $leadid;
 
@@ -466,7 +466,7 @@ class Vtiger_MailScanner {
 					$this->log("Reusing Cached Ticket [" . $ticket_focus->column_fields[ticket_title] ."]");
 				}
 			} else {
-				$ticket_focus = new HelpDesk();
+				$ticket_focus = CRMEntity::getInstance('HelpDesk');
 				$ticket_focus->retrieve_entity_info($ticketid, 'HelpDesk');
 				$ticket_focus->id = $ticketid;
 				// Check the parentid association if specified.

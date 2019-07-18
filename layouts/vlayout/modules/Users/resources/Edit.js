@@ -67,6 +67,12 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 	registerRecordPreSaveEvent : function(form){
 		var thisInstance = this;
 		form.on(Vtiger_Edit_Js.recordPreSave, function(e, data) {
+			var groupingSeparatorValue = jQuery('[name="currency_grouping_separator"]', form).val();
+			var decimalSeparatorValue = jQuery('[name="currency_decimal_separator"]', form).val();
+			if(groupingSeparatorValue == decimalSeparatorValue){
+				Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_DECIMAL_SEPARATOR_AND_GROUPING_SEPARATOR_CANT_BE_SAME'));
+				e.preventDefault();
+			}
 			var userName = jQuery('input[name="user_name"]').val();
 			var newPassword = jQuery('input[name="user_password"]').val();
 			var confirmPassword = jQuery('input[name="confirm_password"]').val();
@@ -76,7 +82,6 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 					Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_REENTER_PASSWORDS'));
 					e.preventDefault();
 				}
-
 				if(!(userName in thisInstance.duplicateCheckCache)) {
 					thisInstance.checkDuplicateUser(userName).then(
 						function(data){
@@ -87,6 +92,7 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 						}, 
 						function (data, error){
 							thisInstance.duplicateCheckCache[userName] = data.result;
+							InitialFormData = form.serialize();
 							form.submit();
 						}
 					);

@@ -8,6 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+    'Quotes' => 'Oferta',
 	//DetailView Actions
 	'SINGLE_Quotes' => 'Oferta',
 	'LBL_EXPORT_TO_PDF' => 'Eksport do PDF',
@@ -25,15 +26,16 @@ $languageStrings = array(
 	'Quote Stage'=>'Status oferty',
 	'Valid Till'=>'Termin ważności',
 	'Inventory Manager'=>'Kierownik Magazynu',
+    'Related To' => 'Związane z',
 	//Added for existing Picklist Entries
 
 	'Accepted'=>'Zaakceptowana',
 	'Rejected'=>'Odrzucona',
-	'Open Quotes'=>'Otwarte Cytaty',
-    
-        //Taxes 
-        'VAT'      => 'VAT', 
-        'Service'  => 'Serwis', 
-        'Sales'    => 'Obroty'
+
+
+  'LBL_SEND_MAIL_PDF' => 'Wysłać e-mail z PDF',
+  'LBL_THIS' => 'To',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'zostanie usunięty z systemu.uprzejmie usunąć lub wymienić ten element',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Pozycja ta jest usuwana z systemu,należy usunąć ten ciąg elementów',
 
 );

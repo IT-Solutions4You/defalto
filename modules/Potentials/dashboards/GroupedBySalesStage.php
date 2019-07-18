@@ -26,7 +26,7 @@ class Potentials_GroupedBySalesStage_Dashboard extends Vtiger_IndexAjax_View {
     function getSearchParams($stage,$assignedto,$dates) {
         $listSearchParams = array();
         $conditions = array();
-        array_push($conditions,array("sales_stage","e",$stage));
+        array_push($conditions,array("sales_stage","e",decode_html(urlencode(escapeSlashes($stage)))));
         if($assignedto == ''){
             $currenUserModel = Users_Record_Model::getCurrentUserModel();
 			$assignedto = $currenUserModel->getId();
@@ -34,11 +34,11 @@ class Potentials_GroupedBySalesStage_Dashboard extends Vtiger_IndexAjax_View {
         if($assignedto != 'all'){
             $ownerType = vtws_getOwnerType($assignedto);
             if($ownerType == 'Users')
-                array_push($conditions,array("assigned_user_id","e",getUserFullName($assignedto)));
+                array_push($conditions,array("assigned_user_id","e",decode_html(urlencode(escapeSlashes(getUserFullName($assignedto))))));
             else{
                 $groupName = getGroupName($assignedto);
                 $groupName = $groupName[0];
-                array_push($conditions,array("assigned_user_id","e",$groupName));
+                array_push($conditions,array("assigned_user_id","e",decode_html(urlencode(escapeSlashes($groupName)))));
             }
         } 
         if(!empty($dates)) {
@@ -65,9 +65,9 @@ class Potentials_GroupedBySalesStage_Dashboard extends Vtiger_IndexAjax_View {
 		
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getPotentialsCountBySalesStage($owner, $dates);
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i][] = $listViewUrl.$this->getSearchParams($data[$i][0],$owner,$dates);
+            $data[$i][] = $listViewUrl.$this->getSearchParams($data[$i]['link'],$owner,$dates).'&nolistcache=1';
         }
         
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());

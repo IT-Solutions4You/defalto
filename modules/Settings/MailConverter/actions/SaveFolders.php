@@ -11,20 +11,20 @@
 class Settings_MailConverter_SaveFolders_Action extends Settings_Vtiger_Index_Action {
 
     public function process(Vtiger_Request $request) {
-        $recordId = $request->get('record');
-        $qualifiedModuleName = $request->getModule(false);
-        $checkedFolders = $request->get('folders');
-        $folders = explode(',', $checkedFolders);
-        Settings_MailConverter_Module_Model::updateFolders($recordId, $folders);
+		$recordId = $request->get('record');
+		$qualifiedModuleName = $request->getModule(false);
+		$checkedFolders = $request->get('folders');
+		$folders = explode(',', $checkedFolders);
+		Settings_MailConverter_Module_Model::updateFolders($recordId, $folders);
 
-        $response = new Vtiger_Response();
+		$response = new Vtiger_Response();
 
-        $result = array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName));
-        $result['id'] = $recordId;
-        $response->setResult($result);
+		$result = array('message' => vtranslate('LBL_SAVED_SUCCESSFULLY', $qualifiedModuleName));
+		$result['id'] = $recordId;
+		$response->setResult($result);
 
-        $response->emit();
-        }
+		$response->emit();
+	}
 
 }
 

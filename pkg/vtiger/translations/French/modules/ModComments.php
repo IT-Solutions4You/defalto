@@ -9,12 +9,13 @@
  ************************************************************************************/
 $languageStrings = array(
 	'SINGLE_ModComments'           => 'Commentaire'                 , 
-	'LBL_RECORDS_LIST'             => 'Comments List'               , 
-	'LBL_MODCOMMENTS_INFORMATION'  => 'Information Commentaire'     , 
+	'LBL_RECORDS_LIST'             => 'Liste des Commentaires'               , 
+	'LBL_MODCOMMENTS_INFORMATION'  => 'Information sur le Commentaire'     , 
 	'LBL_OTHER_INFORMATION'        => 'Autres Informations'         , 
-	'LBL_ADDING_COMMENT'           => 'Adding Comment'              , 
-	'LBL_WRITE_YOUR_COMMENT_HERE'  => 'Enter comments here'         , 
+	'LBL_ADDING_COMMENT'           => 'Ajouter un Commentaire'              , 
+	'LBL_WRITE_YOUR_COMMENT_HERE'  => 'Entrer un commentaire ici'         , 
 	'Comment'                      => 'Commentaire'                 , 
 	'Creator'                      => 'Créé par'                  , 
 	'Related To Comments'          => 'Commentaires liés'          , 
+	'LBL_COMMENTED_AT'             => 'Commenté à'                , 
 );

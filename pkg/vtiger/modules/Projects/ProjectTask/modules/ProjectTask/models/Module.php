@@ -58,5 +58,45 @@ class ProjectTask_Module_Model extends Vtiger_Module_Model {
 	public function isSummaryViewSupported() {
 		return false;
 	}
+	
+	/**
+	 * Function to get list of field for related list
+	 * @return <Array> empty array
+	 */
+	public function getConfigureRelatedListFields(){
+		$relatedListFields = parent::getConfigureRelatedListFields();
+		if (!$relatedListFields) {
+			//If there is no summary view fieldsenabled, 
+			//default related list field values should show in related list
+			$relatedListDefaultFields = $this->getRelatedListFields();
+			foreach($relatedListDefaultFields as $fieldName) {
+				$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $this);
+				if($fieldModel && $fieldModel->isViewableInDetailView()) {
+					$relatedListFields[$fieldName] = $fieldName;
+				}
+			}
+		}
+		//ProjectTask Progress and Status should show in Projects summary view
+		if(!$relatedListFields['projecttaskstatus']) {
+			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskstatus', $this);
+			if($fieldModel && $fieldModel->isViewableInDetailView()) {
+				$relatedListFields['projecttaskstatus'] = 'projecttaskstatus';
+			}
+		}
+		if(!$relatedListFields['projecttaskprogress']) {
+			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskprogress', $this);
+			if($fieldModel && $fieldModel->isViewableInDetailView()) {
+				$relatedListFields['projecttaskprogress'] = 'projecttaskprogress';
+			}
+		}
 
+		return $relatedListFields;
+	}
+
+	/*
+	 * Function to get supported utility actions for a module
+	 */
+	function getUtilityActionsNames() {
+		return array('Import', 'Export', 'DuplicatesHandling');
+	}
 }

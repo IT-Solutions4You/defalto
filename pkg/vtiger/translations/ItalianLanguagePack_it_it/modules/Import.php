@@ -69,7 +69,35 @@ $languageStrings = array(
 	'LBL_DETAILS'                  => 'Details'                     , // TODO: Review
 	'skipped'                      => 'Skipped Records'             , // TODO: Review
 	'failed'                       => 'Failed Records'              , // TODO: Review
-        'Skip'                         =>'Skip',
-        'Overwrite'                    =>'Sovrascrivere',
-        'Merge'                        =>'Unire',
+    
+        'LBL_IMPORT_LINEITEMS_CURRENCY'=> 'Valuta (voci)',
+
+	'LBL_SKIP_THIS_STEP' => 'Ignorare questo passaggio',
+	'LBL_UPLOAD_ICS' => 'Carica file ICS',
+	'LBL_ICS_FILE' => 'ICS File',
+	'LBL_IMPORT_FROM_ICS_FILE' => 'Importa da file ICS',
+	'LBL_SELECT_ICS_FILE' => 'Seleziona il file ICS',
+
+  'LBL_USE_SAVED_MAPS' => 'Utilizzare Mappe Salvate',
+  'LBL_IMPORT_MAP_FIELDS' => 'Mappa le colonne ai campi CRM',
+  'LBL_UPLOAD_CSV' => 'Caricare il File CSV',
+  'LBL_UPLOAD_VCF' => 'Caricare File VCF',
+  'LBL_DUPLICATE_HANDLING' => 'Gestire I Duplicati',
+  'LBL_FIELD_MAPPING' => 'La Mappatura In Campo',
+  'LBL_IMPORT_FROM_CSV_FILE' => 'Importazione da file CSV',
+  'LBL_SELECT_IMPORT_FILE_FORMAT' => 'Dove vorresti importare ?',
+  'LBL_CSV_FILE' => 'File CSV',
+  'LBL_VCF_FILE' => 'File VCF',
+  'LBL_GOOGLE' => 'Google',
+  'LBL_IMPORT_COMPLETED' => 'Importazione Completata',
+  'LBL_IMPORT_SUMMARY' => 'Riepilogo di importazione',
+  'LBL_DELETION_COMPLETED' => 'La Cancellazione Completata',
+  'LBL_TOTAL_RECORDS_SCANNED' => 'Totale record acquisita',
+  'LBL_SKIP_BUTTON' => 'Saltare',
+  'LBL_DUPLICATE_RECORD_HANDLING' => 'Duplica il record di movimentazione',
+  'LBL_IMPORT_FROM_VCF_FILE' => 'Importazione da file VCF',
+  'LBL_SELECT_VCF_FILE' => 'Selezionare file VCF',
+  'LBL_DONE_BUTTON' => 'Fatto',
+  'LBL_DELETION_SUMMARY' => 'Eliminare riepilogo',
+
 );

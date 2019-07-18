@@ -21,8 +21,12 @@ class Settings_MailConverter_RuleAjax_View extends Settings_Vtiger_IndexAjax_Vie
 		$viewer->assign('SCANNER_ID', $scannerId);
 		$viewer->assign('SCANNER_MODEL', Settings_MailConverter_Record_Model::getInstanceById($scannerId));
 		$viewer->assign('RULE_MODEL', Settings_MailConverter_RuleRecord_Model::getRule($scannerId,$ruleId));
+		$moduleModel = Settings_Vtiger_Module_Model::getInstance($qualifiedModuleName);
+		$fields = $moduleModel->getSetupRuleFields();
 
 		$viewer->assign('MODULE_NAME', $moduleName);
+		$viewer->assign('MODULE_MODEL', $moduleModel);
+		$viewer->assign('FIELDS', $fields);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
 		$viewer->view('Rule.tpl', $qualifiedModuleName);

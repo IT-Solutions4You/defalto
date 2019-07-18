@@ -18,7 +18,7 @@
 						<span class="font-x-large">{$RECORD->getName()}</span>
 					<div class="pull-right btn-group">
 						<button class="btn dropdown-toggle" data-toggle="dropdown">
-							Actions
+							{vtranslate('Actions',$QUALIFIED_MODULE)}
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu pull-right">

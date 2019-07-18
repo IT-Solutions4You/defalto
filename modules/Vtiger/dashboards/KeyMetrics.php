@@ -44,22 +44,20 @@ class Vtiger_KeyMetrics_Dashboard extends Vtiger_IndexAjax_View {
 		$metriclists = getMetricList();
 		
 		foreach ($metriclists as $key => $metriclist) {
-			
 			$metricresult = NULL;
-				$queryGenerator = new QueryGenerator($metriclist['module'], $current_user);
-				$queryGenerator->initForCustomViewById($metriclist['id']);
+			$queryGenerator = new EnhancedQueryGenerator($metriclist['module'], $current_user);
+			$queryGenerator->initForCustomViewById($metriclist['id']);
             if($metriclist['module'] == "Calendar") {
                 // For calendar we need to eliminate emails or else it will break in status empty condition
                 $queryGenerator->addCondition('activitytype', "Emails", 'n',  QueryGenerator::$AND);
 			}
-				$metricsql = $queryGenerator->getQuery();
-				$metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
+			$metricsql = $queryGenerator->getQuery();
+			$metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
 			if($metricresult) {
-					$rowcount = $adb->fetch_array($metricresult);
-					$metriclists[$key]['count'] = $rowcount['count'];
-				}
+				$rowcount = $adb->fetch_array($metricresult);
+				$metriclists[$key]['count'] = $rowcount['count'];
+			}
 		}
 		return $metriclists;
 	}
-	
 }

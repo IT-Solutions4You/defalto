@@ -562,29 +562,34 @@ class Project extends CRMEntity {
 			array_push($entityIds, $return_id);
 			$entityIds = implode(',', $entityIds);
 			$return_modules = "'Accounts','Contacts'";
-		} else {
+		} elseif($return_module == 'Documents') {
+            $sql = 'DELETE FROM vtiger_senotesrel WHERE crmid=? AND notesid=?';
+            $this->db->pquery($sql, array($id, $return_id));
+		}else {
 			$entityIds = $return_id;
 			$return_modules = "'".$return_module."'";
 		}
 
-		$query = 'DELETE FROM vtiger_crmentityrel WHERE (relcrmid='.$id.' AND module IN ('.$return_modules.') AND crmid IN ('.$entityIds.')) OR (crmid='.$id.' AND relmodule IN ('.$return_modules.') AND relcrmid IN ('.$entityIds.'))';
-		$this->db->pquery($query, array());
+        if($return_module != 'Documents') {
+            $query = 'DELETE FROM vtiger_crmentityrel WHERE (relcrmid='.$id.' AND module IN ('.$return_modules.') AND crmid IN ('.$entityIds.')) OR (crmid='.$id.' AND relmodule IN ('.$return_modules.') AND relcrmid IN ('.$entityIds.'))';
+            $this->db->pquery($query, array());
 
-		$sql = 'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE module=? AND relmodule IN ('.$return_modules.'))';
-		$fieldRes = $this->db->pquery($sql, array($currentModule));
-		$numOfFields = $this->db->num_rows($fieldRes);
+            $sql = 'SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (SELECT fieldid FROM vtiger_fieldmodulerel WHERE module=? AND relmodule IN ('.$return_modules.'))';
+            $fieldRes = $this->db->pquery($sql, array($currentModule));
+            $numOfFields = $this->db->num_rows($fieldRes);
 
-		for ($i = 0; $i < $numOfFields; $i++) {
-			$tabId = $this->db->query_result($fieldRes, $i, 'tabid');
-			$tableName = $this->db->query_result($fieldRes, $i, 'tablename');
-			$columnName = $this->db->query_result($fieldRes, $i, 'columnname');
-			$relatedModule = vtlib_getModuleNameById($tabId);
-			$focusObj = CRMEntity::getInstance($relatedModule);
+            for ($i = 0; $i < $numOfFields; $i++) {
+                $tabId = $this->db->query_result($fieldRes, $i, 'tabid');
+                $tableName = $this->db->query_result($fieldRes, $i, 'tablename');
+                $columnName = $this->db->query_result($fieldRes, $i, 'columnname');
+                $relatedModule = vtlib_getModuleNameById($tabId);
+                $focusObj = CRMEntity::getInstance($relatedModule);
 
-			$updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName IN ($entityIds) AND $focusObj->table_index=?";
-			$updateParams = array(null, $id);
-			$this->db->pquery($updateQuery, $updateParams);
-		}
+                $updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName IN ($entityIds) AND $focusObj->table_index=?";
+                $updateParams = array(null, $id);
+                $this->db->pquery($updateQuery, $updateParams);
+            }
+        }
 	}
 
     /**
@@ -627,6 +632,73 @@ class Project extends CRMEntity {
 		parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
 		$log->debug("Exiting transferRelatedRecords...");
 	}
+	
+	function get_emails($recordId, $currentTabId, $relTabId, $actions=false) {
+		global $currentModule,$single_pane_view;
+		$relModuleName = vtlib_getModuleNameById($relTabId);
+		$singularRelModuleName = vtlib_tosingular($relModuleName);
+		require_once "modules/$relModuleName/$relModuleName.php";
+		$relModuleFocus = new $relModuleName();
+		vtlib_setup_modulevars($relModuleName, $relModuleFocus);
+		
+		
+		$returnSet = '&return_module='.$currentModule.'&return_action=CallRelatedList&return_id='.$recordId;
+		
+		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
+		if($actions) {
+			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			if(in_array('ADD', $actions) && isPermitted($relModuleName,1, '') == 'yes') {
+				$button .= "<input title='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."' accessyKey='F' class='crmbutton small create' onclick='fnvshobj(this,\"sendmail_cont\");sendmail(\"$currentModule\",$recordId);' type='button' name='button' value='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."'></td>";
+			}
+		}
+		
+		$projectTasks = $this->getProjectTasks($recordId);
+		$projectTaskIds = array();
+		if(!empty($projectTasks)){
+			foreach ($projectTasks as $projectTask) {
+				$projectTaskIds[] = $projectTask['projecttaskid'];
+			}
+			$projectTaskIdsForSql = implode(',', $projectTaskIds);
+		}	
+		$crmRecordIds = $projectTaskIds;
+		$crmRecordIds[] = $recordId;
+		$crmRecordIdsForSql = implode(',', $crmRecordIds);
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
+				vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
+				vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start,vtiger_activity.time_start, vtiger_seactivityrel.crmid as parent_id
+				FROM vtiger_activity, vtiger_seactivityrel, vtiger_project, vtiger_users, vtiger_crmentity
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
+				WHERE vtiger_seactivityrel.activityid = vtiger_activity.activityid
+				AND vtiger_seactivityrel.crmid IN ($crmRecordIdsForSql)
+				AND vtiger_users.id=vtiger_crmentity.smownerid
+				AND vtiger_crmentity.crmid = vtiger_activity.activityid
+				AND vtiger_activity.activitytype='Emails'
+				AND vtiger_project.projectid = $recordId
+				AND vtiger_crmentity.deleted = 0";
+		
 
+		$returnValue = GetRelatedList($currentModule, $relModuleName, $relModuleFocus, $query, $button, $returnSet);
+		if(!$returnValue) $returnValue = array();
+		
+		$returnValue['CUSTOM_BUTTON'] = $button;
+		return $returnValue;
+	}
+
+	  /** 
+	 * Function to get the project task for a project
+	 * @return <Array> - $projectTasks
+	 */
+	public function getProjectTasks($recordId) {
+		$db = PearDatabase::getInstance();
+		$sql = "SELECT projecttaskid FROM vtiger_projecttask 
+				INNER JOIN vtiger_crmentity ON vtiger_projecttask.projecttaskid = vtiger_crmentity.crmid
+				WHERE projectid=? AND vtiger_crmentity.deleted=0";
+		$result = $db->pquery($sql, array($recordId));
+		while($record = $db->fetchByAssoc($result)){
+			$projectTasks[] = $record;
+		}
+		return $projectTasks;
+	}
 }
 ?>

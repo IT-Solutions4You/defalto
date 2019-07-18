@@ -55,7 +55,7 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
 			$db = PearDatabase::getInstance();
 
 			$filterid = $this->widgetModel->get('filterid');
-			$this->queryGenerator = new QueryGenerator($this->getTargetModule(), $currentUserModel);
+			$this->queryGenerator = new EnhancedQueryGenerator($this->getTargetModule(), $currentUserModel);
 			$this->queryGenerator->initForCustomViewById($filterid);
 			$this->queryGenerator->setFields( $this->getTargetFields() );
 
@@ -92,17 +92,27 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
 			}
 			$this->listviewHeaders = $headerFieldModels;
 		}
-
 		return $this->listviewHeaders;
 	}
 
 	public function getHeaderCount() {
+		if($this->listviewHeaders) return count($this->listviewHeaders);
 		return count($this->getHeaders());
 	}
 
 	public function getRecordLimit() {
-		return 10;
+		$pageLimit = vglobal('list_max_entries_per_page');
+        if(empty($pageLimit)) {
+            $pageLimit = 10;
+        }
+        return $pageLimit;
 	}
+    
+    function getStartIndex() {
+        $nextPage = $this->get('nextPage');
+        $startIndex = (($nextPage - 1) * $this->getRecordLimit());
+        return $startIndex;
+    }
 
 	public function getRecords() {
 
@@ -112,9 +122,12 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
 			$db = PearDatabase::getInstance();
 
 			$query = $this->queryGenerator->getQuery();
-			$query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC ';
-			$query .= ' LIMIT 0,' . $this->getRecordLimit();
+			$query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
+			$query .= ' LIMIT ' . $this->getStartIndex() . ',' . $this->getRecordLimit();
 			$query = str_replace(" FROM ", ",vtiger_crmentity.crmid as id FROM ", $query);
+            if($this->getTargetModule() == 'Calendar') {
+                $query = str_replace(" WHERE ", " WHERE vtiger_crmentity.setype = 'Calendar' AND ", $query);
+            }
 
 			$result = $db->pquery($query, array());
 
@@ -134,4 +147,22 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
 
 		return $this->listviewRecords;
 	}
+    
+    function moreRecordExists() {
+        $this->initListViewController();
+        $db = PearDatabase::getInstance();
+        $query = $this->queryGenerator->getQuery();
+        
+        $startIndex = $this->getStartIndex() + $this->getRecordLimit();
+        $query .= ' LIMIT ' . $startIndex . ',' . $this->getRecordLimit();
+        if($this->getTargetModule() == 'Calendar') {
+            $query = str_replace(" WHERE ", " WHERE vtiger_crmentity.setype = 'Calendar' AND ", $query);
+        }
+        
+        $result = $db->pquery($query, array());
+        if($db->num_rows($result) > 0) {
+            return true;
+        }
+        return false;
+    }
 }

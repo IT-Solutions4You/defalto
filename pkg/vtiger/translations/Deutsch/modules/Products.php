@@ -10,8 +10,8 @@
 $languageStrings = array(
 	'Products'                     => 'Produkte'                    , 
 	'SINGLE_Products'              => 'Produkt'                     , 
-	'LBL_ADD_RECORD'               => 'Produkt hinzufügen'         , 
-	'LBL_RECORDS_LIST'             => 'Products List'               , 
+	'LBL_ADD_RECORD'               => 'Neues Produkt'         , 
+	'LBL_RECORDS_LIST'             => 'Produktübersicht'               , 
 	'LBL_PRODUCT_INFORMATION'      => 'Produkt'                     , 
 	'LBL_IMAGE_INFORMATION'        => 'Produktbilder:'              , 
 	'LBL_STOCK_INFORMATION'        => 'Lager:'                      , 
@@ -21,7 +21,7 @@ $languageStrings = array(
 	'LBL_RESET_PRICE'              => 'Preis zurücksetzen'         , 
 	'LBL_RESET'                    => 'zurücksetzen'               , 
 	'LBL_ADD_TO_PRICEBOOKS'        => 'Add to PriceBooks'           , 
-	'Product No'                   => 'Produkt Nr.'                 , 
+	'Product No'                   => 'Produktnummer.'                 , 
 	'Part Number'                  => 'Produktcode'                 , 
 	'Product Active'               => 'Aktiv'                       , 
 	'Manufacturer'                 => 'Hersteller'                  , 
@@ -71,5 +71,20 @@ $languageStrings = array(
 	'Sheet'                        => 'Lagen'                       , 
 	'Spiral Binder'                => 'Spiralen'                    , 
 	'Sq Ft'                        => 'Quadratmeter'                , 
+	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , 
     'LBL_PRODUCTSMOD_DISABLED' => 'Aktivieren Produkte Modul zur Produktansicht',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'Bündel Artikel in Rechnung/Quotes/Sales Order/Bestellung anzeigen',
+	'LBL_BUNDLE_TOTAL_COST' => 'Gesamtkosten des Bundle',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'Update-Bundle Preis',
+
+	'LBL_PRODUCT_NAME' => 'Produkt-Name',
+	'LBL_PRICE_QUANTITY' => 'Preis x Menge',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'Unter Produkte werden in der Bestands gezeigt werden,',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'Unter Produkte werden nicht in der Inventar gezeigt werden,',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'Erfolgreich geändert Gesamtkosten des Bündels',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'Dieses Produkt ist Teil einer Produktbündel. Der Preis des Bündels bleiben unverändert, wenn ein Bündel Einzel deletiert oder inaktiviert ist. Sind Sie sicher, dass Sie fortfahren möchten?',
 );

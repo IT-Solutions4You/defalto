@@ -52,7 +52,7 @@ class Vtiger_Profile {
             $sql = "INSERT INTO vtiger_profile2standardpermissions (profileid, tabid, Operation, permissions) 
                             SELECT ?, tabid, actionid, 0 
                     FROM vtiger_actionmapping, vtiger_tab 
-                            WHERE actionname IN ('Save', 'EditView', 'Delete', 'index', 'DetailView') AND isentitytype = 1"; 
+                            WHERE actionname IN ('Save', 'CreateView', 'EditView', 'Delete', 'index', 'DetailView') AND isentitytype = 1"; 
             $binds = array($this->id); 
             $adb->pquery($sql, $binds); 
 
@@ -127,8 +127,7 @@ class Vtiger_Profile {
 		global $adb;
 
 		$actionids = Array();
-		$result = $adb->pquery("SELECT actionid from vtiger_actionmapping WHERE actionname IN 
-			(?,?,?,?,?)", array('Save','EditView','Delete','index','DetailView'));
+		$result = $adb->pquery("SELECT actionid from vtiger_actionmapping WHERE actionname IN (?,?,?,?,?,?)", array('Save','EditView','CreateView','Delete','index','DetailView'));
 		/* 
 		 * NOTE: Other actionname (actionid >= 5) is considered as utility (tools) for a profile.
 		 * Gather all the actionid for associating to profile.

@@ -20,7 +20,7 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$maxEntriesPerPage = vglobal('list_max_entries_per_page');
 
-		$response = new Vtiger_Response();
+		$response = new MailManager_Response();
 		$moduleName = $request->getModule();
 		if ('open' == $this->getOperationArg($request)) {
 			$q = $request->get('q');
@@ -56,7 +56,7 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 			$folderList = $connector->getFolderList();
 
 			$viewer = $this->getViewer($request);
-
+			
 			$viewer->assign('TYPE', $type);
 			$viewer->assign('QUERY', $request->get('q'));
 			$viewer->assign('FOLDER', $folder);
@@ -65,8 +65,9 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 			$viewer->assign("JS_DATEFORMAT",parse_calendardate(getTranslatedString('NTC_DATE_FORMAT')));
 			$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
 			$viewer->assign('MODULE', $moduleName);
-			$response->setResult( $viewer->view( 'FolderOpen.tpl', $moduleName, true ) );
+			$response->setResult($viewer->view( 'FolderOpen.tpl', $moduleName, true ));
 		} elseif('drafts' == $this->getOperationArg($request)) {
+			$moduleName = $request->getModule();
 			$q = $request->get('q');
 			$type = $request->get('type');
 			$page = intval($request->get('_page', 0));
@@ -86,19 +87,25 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 			$viewer->assign('SEARCHOPTIONS' ,MailManager_Draft_View::getSearchOptions());
 			$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
 			$viewer->assign('MODULE', $moduleName);
-			$response->setResult($viewer->view('FolderDrafts.tpl', 'MailManager', true));
+			$viewer->assign('QUERY', $request->get('q'));
+			$viewer->assign('TYPE', $type);
+			$response->setResult($viewer->view('FolderDrafts.tpl', $moduleName, true));
 		} else if ('getFoldersList' == $this->getOperationArg($request)) {
 			$viewer = $this->getViewer($request);
 			if ($this->hasMailboxModel()) {
 				$connector = $this->getConnector();
 
-				if (!$connector->hasError()) {
+				if ($connector->isConnected()) {
 					$folders = $connector->folders();
 					$connector->updateFolders();
 					$viewer->assign('FOLDERS', $folders);
+				} else if($connector->hasError()) {
+					$error = $connector->lastError();
+					$response->isJSON(true);
+					$response->setError(101, $error);
 				}
 				$this->closeConnector();
-			}
+			} 
 			$viewer->assign('MODULE', $request->getModule());
 			$response->setResult($viewer->view('FolderList.tpl', $moduleName, true));
 		}
@@ -113,9 +120,8 @@ class MailManager_Folder_View extends MailManager_Abstract_View {
 		$options = array('SUBJECT'=>'SUBJECT','TO'=>'TO','BODY'=>'BODY','BCC'=>'BCC','CC'=>'CC','FROM'=>'FROM','DATE'=>'ON');
 		return $options;
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            return $request->validateWriteAccess(); 
-        } 
+    public function validateRequest(Vtiger_Request $request) {
+        return $request->validateWriteAccess();
+    }
 }
 ?>

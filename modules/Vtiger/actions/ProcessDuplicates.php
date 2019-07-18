@@ -9,6 +9,7 @@
  ************************************************************************************/
 
 class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
+
 	function checkPermission(Vtiger_Request $request) {
 		$module = $request->getModule();
 		$records = $request->get('records');
@@ -23,38 +24,52 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
 	}
 
 	function process (Vtiger_Request $request) {
+		global $skipDuplicateCheck;
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$records = $request->get('records');
 		$primaryRecord = $request->get('primaryRecord');
 		$primaryRecordModel = Vtiger_Record_Model::getInstanceById($primaryRecord, $moduleName);
 
-		$fields = $moduleModel->getFields();
-		foreach($fields as $field) {
-			$fieldValue = $request->get($field->getName());
-			if($field->isEditable()) {
-				$primaryRecordModel->set($field->getName(), $fieldValue);
-			}
-		}
-		$primaryRecordModel->set('mode', 'edit');
-		$primaryRecordModel->save();
-
-		$deleteRecords = array_diff($records, array($primaryRecord));
-		foreach($deleteRecords as $deleteRecord) {
-			$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'Delete', $deleteRecord);
-			if($recordPermission) {
-				$primaryRecordModel->transferRelationInfoOfRecords(array($deleteRecord));
-				$record = Vtiger_Record_Model::getInstanceById($deleteRecord);
-				$record->delete();
-			}
-		}
-
 		$response = new Vtiger_Response();
-		$response->setResult(true);
+		try {
+			$skipDuplicateCheckOldValue = $skipDuplicateCheck;
+			$skipDuplicateCheck = true;
+
+			$fields = $moduleModel->getFields();
+			foreach($fields as $field) {
+				$fieldValue = $request->get($field->getName());
+				if($field->isEditable()) {
+					if($field->uitype == 71) {
+						$fieldValue = CurrencyField::convertToUserFormat($fieldValue);
+					}
+					$primaryRecordModel->set($field->getName(), $fieldValue);
+				}
+			}
+			$primaryRecordModel->set('mode', 'edit');
+			$primaryRecordModel->save();
+
+			$deleteRecords = array_diff($records, array($primaryRecord));
+			foreach($deleteRecords as $deleteRecord) {
+				$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'Delete', $deleteRecord);
+				if($recordPermission) {
+					$primaryRecordModel->transferRelationInfoOfRecords(array($deleteRecord));
+					$record = Vtiger_Record_Model::getInstanceById($deleteRecord);
+					$record->delete();
+				}
+			}
+			$skipDuplicateCheck = $skipDuplicateCheckOldValue;
+
+			$response->setResult(true);
+		} catch (DuplicateException $e) {
+			$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+		} catch (Exception $e) {
+			$response->setError($e->getMessage());
+		}
 		$response->emit();
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 }

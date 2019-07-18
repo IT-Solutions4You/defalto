@@ -24,6 +24,9 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
     protected $client;
     protected $service;
 
+    protected $eventCalendarFieldMappingTableName = 'vtiger_google_event_calendar_mapping';
+    protected $calendars;
+
     public function __construct($oauth2Connection) {
         $this->apiConnection = $oauth2Connection;
         $this->client = new Google_Client();
@@ -33,12 +36,25 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
         $this->client->setScopes($oauth2Connection->getScope());
         $this->client->setAccessType($oauth2Connection->getAccessType());
         $this->client->setApprovalPrompt($oauth2Connection->getApprovalPrompt());
-        $this->client->setAccesstoken($oauth2Connection->getAccessToken());
+        try {
+            $this->client->setAccesstoken($oauth2Connection->getAccessToken());
+        } catch(Exception $e) {} //suppressing invalid access-token exception
         $this->service = new Google_Service_Calendar($this->client);
     }
 
     public function getName() {
         return 'GoogleCalendar';
+    }
+
+    public function emailLookUp($emailIds) {
+        $db = PearDatabase::getInstance();
+        $sql = 'SELECT crmid FROM vtiger_emailslookup WHERE setype = "Contacts" AND value IN (' .  generateQuestionMarks($emailIds) . ')';
+        $result = $db->pquery($sql,$emailIds);
+        $crmIds = array();
+        for($i=0;$i<$db->num_rows($result);$i++) {
+            $crmIds[] = $db->query_result($result,$i,'crmid');
+        }
+        return $crmIds;
     }
 
     /**
@@ -53,6 +69,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if ($googleRecord->getMode() != WSAPP_SyncRecordModel::WSAPP_DELETE_MODE) {
                 if(!$user)
                     $user = Users_Record_Model::getCurrentUserModel();
+                $entity = Vtiger_Functions::getMandatoryReferenceFields('Events');
                 $entity['assigned_user_id'] = vtws_getWebserviceEntityId('Users', $user->id);
                 $entity['subject'] = $googleRecord->getSubject();
                 $entity['date_start'] = $googleRecord->getStartDate($user);
@@ -68,7 +85,16 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                 if (empty($entity['subject'])) {
                     $entity['subject'] = 'Google Event';
                 }
+                $attendees = $googleRecord->getAttendees();
+                $entity['contactidlist'] = '';
+                if(count($attendees)) {
+                    $contactIds = $this->emailLookUp($attendees);
+                    if(count($contactIds)) {
+                        $entity['contactidlist'] = implode(';', $contactIds);
+                    }
+                }
             }
+
             $calendar = $this->getSynchronizeController()->getSourceRecordModel($entity);
 
             $calendar = $this->performBasicTransformations($googleRecord, $calendar);
@@ -85,7 +111,11 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
      * @return <array> google Records
      */
     public function pull($SyncState, $user = false) {
-        return $this->getCalendar($SyncState, $user);
+        try {
+            return $this->getCalendar($SyncState, $user);
+        } catch (Exception $e) {
+            return array();
+        }
     }
     
     /**
@@ -123,15 +153,22 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             //shows deleted by default
         }
         
+        $calendarId = Google_Utils_Helper::getSelectedCalendarForUser($user);
+        if(!isset($this->calendars)) {
+            $this->calendars = $this->pullCalendars(true);
+        }
+        if(!in_array($calendarId, $this->calendars)) {
+            $calendarId = 'primary';
+        }
+
         try {
-            $feed = $this->service->events->listEvents('primary',$query);
+            $feed = $this->service->events->listEvents($calendarId,$query);
         } catch (Exception $e) {
             if($e->getCode() == 410) {
                 $query['showDeleted'] = false;
-                $feed = $this->service->events->listEvents('primary',$query);
+                $feed = $this->service->events->listEvents($calendarId,$query);
             }
         }
-        
         
         $calendarRecords = array();
         if($feed) {
@@ -140,10 +177,11 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
         }
         
         if (count($calendarRecords) > 0) {
-            $maxModifiedTime = date('Y-m-d H:i:s', strtotime(Google_Calendar_Model::vtigerFormat(end($calendarRecords)->getUpdated())) + 1);
+            $maxModifiedTime = date('Y-m-d H:i:s', strtotime(Google_Contacts_Model::vtigerFormat(end($calendarRecords)->getUpdated())) + 1);
         }
 
         $googleRecords = array();
+        $googleEventIds = array();
         foreach ($calendarRecords as $i => $calendar) {
             $recordModel = Google_Calendar_Model::getInstanceFromValues(array('entity' => $calendar));
             $deleted = false;
@@ -156,6 +194,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                 $recordModel->setType($this->getSynchronizeController()->getSourceType())->setMode(WSAPP_SyncRecordModel::WSAPP_DELETE_MODE);
             }
             $googleRecords[$calendar->getId()] = $recordModel;
+            $googleEventIds[] = $calendar->getId();
         }
         $this->createdRecords = count($googleRecords);
         if (isset($maxModifiedTime)) {
@@ -163,7 +202,42 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
         } else {
             Google_Utils_Helper::updateSyncTime('Calendar', false, $user);
         }
+        if(count($googleEventIds)) {
+            $this->putGoogleEventCalendarMap($googleEventIds, $calendarId, $user);
+        }
         return $googleRecords;
+    }
+
+    protected function putGoogleEventCalendarMap($event_ids, $calendar_id, $user) {
+        if(is_array($event_ids) && count($event_ids)) {
+            $db = PearDatabase::getInstance();
+            $user_id = $user->getId();
+            $sql = 'INSERT INTO vtiger_google_event_calendar_mapping (event_id, calendar_id, user_id) VALUES ';
+            $sqlParams = array();
+            foreach($event_ids as $event_id) {
+                $sql .= '(?, ?, ?),';
+                $sqlParams[] = $event_id;
+                $sqlParams[] = $calendar_id;
+                $sqlParams[] = $user_id;
+            }
+            $sql = substr_replace($sql, "", -1);
+            $db->pquery('DELETE FROM vtiger_google_event_calendar_mapping WHERE event_id IN ('.generateQuestionMarks($event_ids).')',$event_ids);
+            $db->pquery($sql,$sqlParams);
+        }
+    }
+
+    protected function getGoogleEventCalendarMap($user) {
+        $db = PearDatabase::getInstance();
+        $map = array();
+        $sql = 'SELECT event_id, calendar_id FROM vtiger_google_event_calendar_mapping WHERE user_id = ?';
+        $res = $db->pquery($sql, array($user->getId()));
+        $num_of_rows = $db->num_rows($res);
+        for($i=0;$i<$num_of_rows;$i++) {
+            $event_id = $db->query_result($res, $i, 'event_id');
+            $calendar_id = $db->query_result($res, $i, 'calendar_id');
+            $map[$event_id] = $calendar_id;
+        }
+        return $map;
     }
 
     /**
@@ -171,10 +245,25 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
      * @param <array> $records vtiger records to be pushed to google
      * @return <array> pushed records
      */
-    public function push($records) {
-        //TODO : use batch requests
+    public function push($records,$user) {
+        //TODO : use batch requests        
+        $calendarId = Google_Utils_Helper::getSelectedCalendarForUser($user);
+        if(!isset($this->calendars)) {
+            try {
+                $this->calendars = $this->pullCalendars(true);
+            } catch (Exception $e) {
+                return $records;
+            }
+        }
+        if(!in_array($calendarId, $this->calendars)) {
+            $calendarId = 'primary';
+        }
+
+        $eventCalendarMap = $this->getGoogleEventCalendarMap($user);
+        $newEventIds = array();
         foreach ($records as $record) {
             $entity = $record->get('entity');
+            $eventCalendarId = 'primary';
             if($this->apiConnection->isTokenExpired()) {
                 $this->apiConnection->refreshToken();
                 $this->client->setAccessToken($this->apiConnection->getAccessToken());
@@ -182,19 +271,29 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             }
             try {
                 if ($record->getMode() == WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE) {
-                    $newEntity = $this->service->events->update('primary',$entity->getId(),$entity);
+                    if(array_key_exists($entity->getId(), $eventCalendarMap)) {
+                        $eventCalendarId = $eventCalendarMap[$entity->getId()];
+                    }
+                    $newEntity = $this->service->events->update($eventCalendarId,$entity->getId(),$entity);
                     $record->set('entity', $newEntity);
                 } else if ($record->getMode() == WSAPP_SyncRecordModel::WSAPP_DELETE_MODE) {
                     $record->set('entity', $entity);
-                    $newEntity = $this->service->events->delete('primary',$entity->getId());
+                    if(array_key_exists($entity->getId(), $eventCalendarMap)) {
+                        $eventCalendarId = $eventCalendarMap[$entity->getId()];
+                    }
+                    $newEntity = $this->service->events->delete($eventCalendarId,$entity->getId());
                 } else {
-                    $newEntity = $this->service->events->insert('primary',$entity);
+                    $newEntity = $this->service->events->insert($calendarId,$entity);
+                    $newEventIds[] = $newEntity->getId();
                     $record->set('entity', $newEntity);
-                } 
+                }
                 
             } catch (Exception $e) {
                 continue;
             }
+        }
+        if(count($newEventIds)) {
+            $this->putGoogleEventCalendarMap($newEventIds, $calendarId, $user);
         }
         return $records;
     }
@@ -204,7 +303,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
      * @param <array> $vtEvents 
      * @return <array> tranformed vtiger Records
      */
-    public function transformToTargetRecord($vtEvents) {
+    public function transformToTargetRecord($vtEvents, $user) {
         $records = array();
         foreach ($vtEvents as $vtEvent) {
             $newEvent = new Google_Service_Calendar_Event();
@@ -214,10 +313,21 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             } elseif($vtEvent->getMode() == WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE && $vtEvent->get('_id')) {
                 if($this->apiConnection->isTokenExpired()) {
                     $this->apiConnection->refreshToken();
-                    $this->client->setAccessToken($this->apiConnection->getAccessToken());
+                    try {
+                        $this->client->setAccessToken($this->apiConnection->getAccessToken());
+                    } catch(Exception $e) {}//suppressing invalid access-token exception if access revoked
                     $this->service = new Google_Service_Calendar($this->client);
                 }
-                $newEvent = $this->service->events->get('primary', $vtEvent->get('_id'));
+                try {
+                    $calendarId = 'primary';
+                    $eventCalendarMap = $this->getGoogleEventCalendarMap($user);
+                    if(array_key_exists($vtEvent->get('_id'), $eventCalendarMap)) {
+                        $calendarId = $eventCalendarMap[$vtEvent->get('_id')];
+                    }
+                    $newEvent = $this->service->events->get($calendarId, $vtEvent->get('_id'));
+                } catch (Exception $e) {
+                    continue;
+                }
             }
             
             $newEvent->setSummary($vtEvent->get('subject'));
@@ -240,6 +350,24 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             $end->setDateTime($this->googleFormat($endDate. ' ' .$endTime)); 
             $newEvent->setEnd($end);
             
+			/**
+			 * Commenting out adding attendees in google
+            //attendees
+            $googleAttendees = array();
+            $newEvent->setAttendees($googleAttendees);
+            $attendees = $vtEvent->get('attendees');
+            if(isset($attendees)) {
+                foreach($attendees as $attendee) {
+                    if(!empty($attendee['email'])) {
+                        $eventAttendee = new Google_Service_Calendar_EventAttendee();
+                        $eventAttendee->setEmail($attendee['email']);
+                        $googleAttendees[] = $eventAttendee;
+                    }
+                }
+                if(count($googleAttendees)) $newEvent->setAttendees($googleAttendees);
+            }
+			*/
+
             $recordModel = Google_Calendar_Model::getInstanceFromValues(array('entity' => $newEvent));
             $recordModel->setType($this->getSynchronizeController()->getSourceType())->setMode($vtEvent->getMode())->setSyncIdentificationKey($vtEvent->get('_syncidentificationkey'));
             $recordModel = $this->performBasicTransformations($vtEvent, $recordModel);
@@ -255,6 +383,42 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
      */
     public function moreRecordsExits() {
         return ($this->totalRecords - $this->createdRecords > 0) ? true : false;
+    }
+
+    public function pullCalendars($list=false) {
+        $calendarList = $this->service->calendarList->listCalendarList();
+        $allCalendarsItems = array();
+        while(true) {
+            $calendarItems = $calendarList->getItems();
+            if(is_array($calendarItems))
+                $allCalendarsItems = array_merge($allCalendarsItems, $calendarItems);
+
+            $pageToken = $calendarList->getNextPageToken();
+            if ($pageToken) {
+                $optParams = array('pageToken' => $pageToken);
+                $calendarList = $this->service->calendarList->listCalendarList($optParams);
+            } else {
+                break;
+            }
+        }
+        $calendars = array();
+        if($list) {
+            foreach($allCalendarsItems as $calendarItem) {
+                if(!$calendarItem->getPrimary())
+                    $calendars[] = $calendarItem->getId();
+                else
+                    $calendars[] = 'primary';
+            }
+            return $calendars;
+        }
+        foreach($allCalendarsItems as $calendarItem) {
+            $calendars[] = array(
+                'id' => $calendarItem->getId(),
+                'summary' => $calendarItem->getSummary(),
+                'primary' => $calendarItem->getPrimary()
+            );
+        }
+        return $calendars;
     }
 
 }

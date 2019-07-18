@@ -9,7 +9,7 @@
  ************************************************************************************/
 
 // Import dependencies
-include_once 'libraries/HTTP_Session/Session.php';
+include_once 'libraries/HTTP_Session2/HTTP/Session2.php';
 
 /**
  * Session class
@@ -27,7 +27,7 @@ class Vtiger_Session {
 	 * Destroy session
 	 */
 	static function destroy($sessionid = false) {
-		HTTP_Session::destroy($sessionid);
+		HTTP_Session2::destroy($sessionid);
 	}
 
 	/**
@@ -35,13 +35,13 @@ class Vtiger_Session {
 	 */
 	static function init($sessionid = false) {
 		if(empty($sessionid)) {
-			HTTP_Session::start(null, null);
-			$sessionid = HTTP_Session::id();
+			HTTP_Session2::start(null, null);
+			$sessionid = HTTP_Session2::id();
 		} else {
-			HTTP_Session::start(null, $sessionid);
+			HTTP_Session2::start(null, $sessionid);
 		}
 
-		if(HTTP_Session::isIdle() || HTTP_Session::isExpired()) {
+		if(HTTP_Session2::isIdle() || HTTP_Session2::isExpired()) {
 			return false;
 		}
 		return $sessionid;
@@ -51,21 +51,24 @@ class Vtiger_Session {
 	 * Is key defined in session?
 	 */
 	static function has($key) {
-		return HTTP_Session::is_set($key);
+		return HTTP_Session2::is_set($key);
 	}
 
 	/**
 	 * Get value for the key.
 	 */
 	static function get($key, $defvalue = '') {
-		return HTTP_Session::get($key, $defvalue);
+		return HTTP_Session2::get($key, $defvalue);
 	}
 
 	/**
 	 * Set value for the key.
 	 */
 	static function set($key, $value) {
-		HTTP_Session::set($key, $value);
+		HTTP_Session2::set($key, $value);
 	}
 
+	static function readonly() {
+		HTTP_Session2::pause();
+	}
 }

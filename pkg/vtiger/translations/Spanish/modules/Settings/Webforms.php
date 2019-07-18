@@ -49,6 +49,15 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Asignación de usuario',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Asignar Usuarios En Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Ronda de Usuarios Lista de Robin',
+
+  'LBL_ADD_RECORD' => 'Agregar Formulario Web',
+
+	'LBL_UPLOAD_DOCUMENTS' => 'subir documentos',
+	'LBL_ADD_FILE_FIELD' => 'El campo de carga de archivos',
+	'LBL_FIELD_LABEL' => 'Titulo del documento',
+	'LBL_FILE_FIELD_INFO' => 'Para cada archivo subido desde web formar un nuevo documento se crea con el archivo adjunto. El documento también está vinculada a este%s de nueva creación.',
+	'LBL_NO_FILE_FIELD' => 'No hay campos de archivo añadido.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Copiar al portapapeles',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Se ha eliminado el formulario correctamente',
@@ -58,4 +67,11 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campos de referencia no puedo ser obligatoria y sin valor de reemplazo',
 	'JS_TYPE_TO_SEARCH' => 'Escriba para buscar',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Formulario web con este nombre ya existe',
+
+  'JS_SELECT_AN_OPTION' => 'Seleccione una Opción',
+  'JS_LABEL' => 'etiqueta',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Máximo que se puede añadir campos de ficheros%s.',
+	'JS_COPIED_SUCCESSFULLY' => 'Copiado con éxito.',
+	'JS_COPY_FAILED' => 'Copia falló. Por favor, copiar manualmente.',
 );

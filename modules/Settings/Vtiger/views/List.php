@@ -17,7 +17,7 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 	}
 
 	function preProcess(Vtiger_Request $request, $display=true) {
-		parent::preProcess($request, false);
+		parent::preProcess($request, true);
 
 		$viewer = $this->getViewer($request);
 		$this->initializeListViewContents($request, $viewer);
@@ -60,8 +60,13 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 
 		$listViewModel = Settings_Vtiger_ListView_Model::getInstance($qualifiedModuleName);
 
-		$pagingModel = new Vtiger_Paging_Model();
-		$pagingModel->set('page', $pageNumber);
+        // preProcess is already loading this, we can reuse
+        if(!$this->pagingModel){
+            $pagingModel = new Vtiger_Paging_Model();
+            $pagingModel->set('page', $pageNumber);
+        } else{
+            $pagingModel = $this->pagingModel;
+        }
 
 		if(!empty($searchKey) && !empty($searchValue)) {
 			$listViewModel->set('search_key', $searchKey);
@@ -82,7 +87,10 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();
 		}
 		if(!$this->listViewEntries){
+            $pagingModel = new Vtiger_Paging_Model();
+            $pagingModel->set('page', $pageNumber);
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
+            $this->pagingModel = $pagingModel;
 		}
 		$noOfEntries = count($this->listViewEntries);
 		if(!$this->listViewLinks){
@@ -94,6 +102,10 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 		$viewer->assign('MODULE_MODEL', $listViewModel->getModule());
 
+        if(!$this->pagingModel){
+            $this->pagingModel = $pagingModel;
+        }
+        
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('PAGE_NUMBER',$pageNumber);
 
@@ -107,13 +119,14 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('SHOW_LISTVIEW_CHECKBOX', true);
 
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			if(!$this->listViewCount){
 				$this->listViewCount = $listViewModel->getListViewCount();
 			}
 			$totalCount = $this->listViewCount;
-			$pageLimit = $pagingModel->getPageLimit();
+			$pageLimit = $this->pagingModel->getPageLimit();
 			$pageCount = ceil((int) $totalCount / (int) $pageLimit);
 
 			if($pageCount == 0){
@@ -123,6 +136,12 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 			$viewer->assign('LISTVIEW_COUNT', $totalCount);
 		}
 	}
+    
+    public function postProcess(Vtiger_Request $request) {
+        $viewer = $this->getViewer($request);
+        $viewer->view('ListViewFooter.tpl', $request->getModule(false));
+        parent::postProcess($request);
+    }
 
 	/**
 	 * Function to get the list of Script models to be included
@@ -138,10 +157,30 @@ class Settings_Vtiger_List_View extends Settings_Vtiger_Index_View {
 			'modules.Settings.Vtiger.resources.List',
 			"modules.Settings.$moduleName.resources.List",
 			"modules.Settings.Vtiger.resources.$moduleName",
+            "~layouts/v7/lib/jquery/sadropdown.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 		return $headerScriptInstances;
 	}
+    
+     /**
+     * Setting module related Information to $viewer (for Vtiger7)
+     * @param type $request
+     * @param type $moduleModel
+     */
+    public function setModuleInfo($request, $moduleModel){
+        
+        $viewer = $this->getViewer($request);
+        $listViewModel = Settings_Vtiger_ListView_Model::getInstance($request->getModule(false));
+        $linkParams = array('MODULE'=>$request->getModule(false), 'ACTION'=>$request->get('view'));
+
+        if(!$this->listViewLinks){
+            $this->listViewLinks = $listViewModel->getListViewLinks($linkParams);
+        }
+        $viewer->assign('LISTVIEW_LINKS', $this->listViewLinks);
+        
+    }
+    
 }

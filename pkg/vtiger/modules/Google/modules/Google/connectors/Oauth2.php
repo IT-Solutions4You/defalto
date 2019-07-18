@@ -54,16 +54,14 @@ class Google_Oauth2_Connector {
     const OAUTH2_REVOKE_URI = 'https://accounts.google.com/o/oauth2/revoke';
     
     public function __construct($module,$userId=false) {
-        global $site_URL;
-        $this->source_module = $module;
-        if($userId) $this->user_id = $userId;
-        $this->service_name = $this->service_provider . $module;
-        $this->client_id = Google_Config_Connector::$clientId;
-        $this->client_secret = Google_Config_Connector::$clientSecret;
-        $this->redirect_uri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $this->service_name;
-        
-        $this->scope = $this->scopes[$this->source_module];
+		global $site_URL;
+		$this->source_module = $module;
+		if($userId) $this->user_id = $userId;
+		$this->service_name = $this->service_provider . $module;
+		$this->client_id = Google_Config_Connector::$clientId;
+		$this->client_secret = Google_Config_Connector::$clientSecret;
+		$this->redirect_uri = Google_Config_Connector::getRedirectUrl();
+		$this->scope = implode(' ', array_values($this->scopes));
     }
     
     public function getClientId() {
@@ -119,8 +117,7 @@ class Google_Oauth2_Connector {
     
     public function getState($source) {
         global $site_URL;
-        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule=' . 
-                $this->source_module . '&service=' . $source;
+        $callbackUri = rtrim($site_URL, '/') . '/index.php?module=Google&view=List&operation=sync&sourcemodule='.$this->source_module . '&service=' . $source;
         $stateDetails['url'] = $callbackUri;
         $parse = parse_url($site_URL);
         $ipAddr = getHostByName($parse['host']);
@@ -136,14 +133,6 @@ class Google_Oauth2_Connector {
 
     protected function showConsentScreen() {
         header('Location: ' . $this->getAuthUrl());
-    }
-    
-    protected function decryptAuthCode($cipherText) {
-        $publicKey = VtigerConfig::getOD('OAUTHREDIR_PUBK');
-        $pubkey_res = openssl_get_publickey($publicKey);
-        $base64Decoded = base64_decode($cipherText);
-        openssl_public_decrypt($base64Decoded,$decipheredText,$pubkey_res);
-        return $decipheredText;
     }
     
     protected function fireRequest($url,$headers,$params=array(),$method='POST') {
@@ -180,10 +169,13 @@ class Google_Oauth2_Connector {
         unset($decodedToken['refresh_token']);
         $decodedToken['created'] = time();
         $accessToken = json_encode($decodedToken);
-        $params = array($this->service_name,$accessToken,$refresh_token,$this->user_id);
-        $sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
-        $this->db->pquery($sql,$params);
-    }
+        $modulesSupported = array('Contacts', 'Calendar');
+        foreach($modulesSupported as $moduleName) {
+            $params = array($this->service_provider.$moduleName,$accessToken,$refresh_token,$this->user_id);
+			$sql = 'INSERT INTO ' . $this->table_name . ' VALUES (' . generateQuestionMarks($params) . ')';
+			$this->db->pquery($sql,$params);
+		}
+	}
     
     protected function retreiveToken() {
         if(!$this->user_id) $this->user_id = Users_Record_Model::getCurrentUserModel()->getId();
@@ -228,11 +220,13 @@ class Google_Oauth2_Connector {
         );
         $encodedToken = $this->fireRequest(self::OAUTH2_TOKEN_URI,array(),$params);
         $decodedToken = json_decode($encodedToken,true);
-        $decodedToken['created'] = time();
-        $token['access_token'] = $decodedToken;
-        $token['refresh_token'] = $this->token['refresh_token'];
-        $this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
-        $this->setToken($token);
+        if(!isset($decodedToken['error'])) {
+			$decodedToken['created'] = time();
+			$token['access_token'] = $decodedToken;
+			$token['refresh_token'] = $this->token['refresh_token'];
+			$this->updateAccessToken(json_encode($decodedToken),$token['refresh_token']);
+			$this->setToken($token);
+		}
     }
 
     public function authorize() {

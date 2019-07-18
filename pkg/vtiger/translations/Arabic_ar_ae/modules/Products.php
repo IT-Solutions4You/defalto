@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -87,5 +87,20 @@ $languageStrings = array(
 	'Sq Ft'=>'قدم مربع',
 	
 	'LBL_ADD_TO_PRICEBOOKS' => 'الاضافة لكتاب الاسعار',
+	'LBL_CONVERSION_RATE' => 'قيمة التحويل',
     'LBL_PRODUCTSMOD_DISABLED' => 'تمكين المنتجات وحدة لعرض المنتجات',
+	'LBL_SHOW_BUNDLE_IN_INVENTORY' => 'إظهار العناصر في فاتورة الباقة/اقتباسات/المبيعات ترتيب/طلب شراء',
+	'LBL_BUNDLE_TOTAL_COST' => 'التكلفة الإجمالية للحزمة',
+	'LBL_UPDATE_BUNDLE_PRICE' => 'تحديث حزمة الأسعار',
+
+  'LBL_PRODUCT_NAME' => 'اسم المنتج',
+  'LBL_PRICE_QUANTITY' => 'السعر × الكمية',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SUB_PRODUCTS_WILL_BE_SHOWN_IN_INVENTORY' => 'سيتم عرض المنتجات الفرعية في المخزون',
+	'JS_SUB_PRODUCTS_WILL_NOT_BE_SHOWN_IN_INVENTORY' => 'ولن تظهر المنتجات الفرعية في المخزون',
+	'JS_SUCCESSFULLY_CHANGED_BUNDLE_COST' => 'غيرت بنجاح التكلفة الإجمالية للحزمة',
+	'JS_DELETION_OR_IN_ACTIVATION_CHILD_PRODUCT_MESSAGE' => 'هذا المنتج هو جزء من حزمة المنتج. سعر ربطة دون تغيير عند حذف عنصر أو حزمة إبطال مفعولها. هل أنت متأكد أنك تريد المتابعة؟',
 );

@@ -7,6 +7,9 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-require_once('modules/SMSNotifier/workflow/VTSMSTask.php');
+
+if(file_exists('modules/SMSNotifier/workflow/VTSMSTask.php')) {
+	require_once('modules/SMSNotifier/workflow/VTSMSTask.php');
+}
 
 ?>

@@ -14,42 +14,90 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
 		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+
+		if ($record) {
+			$activityModulesList = array('Calendar', 'Events');
+			$recordEntityName = getSalesEntityType($record);
+
+			if (!in_array($recordEntityName, $activityModulesList) || !in_array($moduleName, $activityModulesList)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
 		}
 	}
 
 	public function process(Vtiger_Request $request) {
-		$recordModel = $this->saveRecord($request);
-		$loadUrl = $recordModel->getDetailViewUrl();
+		try {
+			$recordModel = $this->saveRecord($request);
+			$loadUrl = $recordModel->getDetailViewUrl();
 
-		if($request->get('relationOperation')) {
-			$parentModuleName = $request->get('sourceModule');
-			$parentRecordId = $request->get('sourceRecord');
-			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleName);
-			//TODO : Url should load the related list instead of detail view of record
-			$loadUrl = $parentRecordModel->getDetailViewUrl();
-		} else if ($request->get('returnToList')) {
-			$moduleModel = $recordModel->getModule();
-			$listViewUrl = $moduleModel->getListViewUrl();
+			if ($request->get('returntab_label')) {
+				$loadUrl = 'index.php?'.$request->getReturnURL();
+			} else if($request->get('relationOperation')) {
+				$parentModuleName = $request->get('sourceModule');
+				$parentRecordId = $request->get('sourceRecord');
+				$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleName);
+				//TODO : Url should load the related list instead of detail view of record
+				$loadUrl = $parentRecordModel->getDetailViewUrl();
+			} else if ($request->get('returnToList')) {
+				$moduleModel = $recordModel->getModule();
+				$listViewUrl = $moduleModel->getListViewUrl();
 
-			if ($recordModel->get('visibility') === 'Private') {
-				$loadUrl = $listViewUrl;
-			} else {
-				$userId = $recordModel->get('assigned_user_id');
-				$sharedType = $moduleModel->getSharedType($userId);
-				if ($sharedType === 'selectedusers') {
-					$currentUserModel = Users_Record_Model::getCurrentUserModel();
-					$sharedUserIds = Calendar_Module_Model::getCaledarSharedUsers($userId);
-					if (!array_key_exists($currentUserModel->id, $sharedUserIds)) {
+				if ($recordModel->get('visibility') === 'Private') {
+					$loadUrl = $listViewUrl;
+				} else {
+					$userId = $recordModel->get('assigned_user_id');
+					$sharedType = $moduleModel->getSharedType($userId);
+					if ($sharedType === 'selectedusers') {
+						$currentUserModel = Users_Record_Model::getCurrentUserModel();
+						$sharedUserIds = Calendar_Module_Model::getCaledarSharedUsers($userId);
+						if (!array_key_exists($currentUserModel->id, $sharedUserIds)) {
+							$loadUrl = $listViewUrl;
+						}
+					} else if ($sharedType === 'private') {
 						$loadUrl = $listViewUrl;
 					}
-				} else if ($sharedType === 'private') {
-					$loadUrl = $listViewUrl;
 				}
+			} else if ($request->get('returnmodule') && $request->get('returnview')){
+				$loadUrl = 'index.php?'.$request->getReturnURL();
 			}
+			header("Location: $loadUrl");
+		} catch (DuplicateException $e) {
+			$mode = '';
+			if ($request->getModule() === 'Events') {
+				$mode = 'Events';
+			}
+
+			$requestData = $request->getAll();
+			unset($requestData['action']);
+			unset($requestData['__vtrftk']);
+
+			if ($request->isAjax()) {
+				$response = new Vtiger_Response();
+				$response->setError($e->getMessage(), $e->getDuplicationMessage(), $e->getMessage());
+				$response->emit();
+			} else {
+				$requestData['view'] = 'Edit';
+				$requestData['mode'] = $mode;
+				$requestData['module'] = 'Calendar';
+				$requestData['duplicateRecords'] = $e->getDuplicateRecordIds();
+
+				global $vtiger_current_version;
+				$viewer = new Vtiger_Viewer();
+				$viewer->assign('REQUEST_DATA', $requestData);
+				$viewer->assign('REQUEST_URL', "index.php?module=Calendar&view=Edit&mode=$mode&record=".$request->get('record'));
+				$viewer->view('RedirectToEditView.tpl', 'Vtiger');
+            }
+		} catch (Exception $e) {
+			 throw new Exception($e->getMessage());
 		}
-		header("Location: $loadUrl");
 	}
 
 	/**
@@ -105,10 +153,14 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 			$fieldValue = $request->get($fieldName, null);
             // For custom time fields in Calendar, it was not converting to db insert format(sending as 10:00 AM/PM)
             $fieldDataType = $fieldModel->getFieldDataType();
-            if($fieldDataType == 'time'){
+			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
             }
             // End
+            if ($fieldName === $request->get('field')) {
+				$fieldValue = $request->get('value');
+			}
+
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
 					$fieldValue = trim($fieldValue);
@@ -151,16 +203,6 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		} else {
 			$_REQUEST['set_reminder'] = 'No';
 		}
-
-		$time = (strtotime($request->get('time_end')))- (strtotime($request->get('time_start')));
-        $diffinSec=  (strtotime($request->get('due_date')))- (strtotime($request->get('date_start')));
-        $diff_days=floor($diffinSec/(60*60*24));
-       
-        $hours=((float)$time/3600)+($diff_days*24);
-        $minutes = ((float)$hours-(int)$hours)*60;  
-        
-        $recordModel->set('duration_hours', (int)$hours);
-		$recordModel->set('duration_minutes', round($minutes,0));
 
 		return $recordModel;
 	}

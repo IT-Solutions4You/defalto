@@ -15,8 +15,20 @@ class Vtiger_Cache_Connector_Memory {
 	function get($key) {
 		return isset($this->$key)? $this->$key : false;
 	}
-    
-    function flush(){
-        return true;
-    }
+
+	function flush(){
+		return true;
+	}
+
+	function delete($key){
+		$this->$key = null;
+	}
+
+	public static function getInstance() {
+		static $singleton = NULL;
+		if ($singleton === NULL) {
+			$singleton = new self();
+		}
+		return $singleton;
+	}
 }

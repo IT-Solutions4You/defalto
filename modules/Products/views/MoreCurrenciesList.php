@@ -13,9 +13,11 @@ class Products_MoreCurrenciesList_View extends Vtiger_IndexAjax_View {
 
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
+		$record = $request->get('record');
 
-		if (!Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 

@@ -70,9 +70,9 @@ class Vtiger_Utils {
 		$relativeFilePath = str_replace($rootdirpath, '', $realfilepath);
 		$filePathParts = explode('/', $relativeFilePath);
 
-                if(stripos($realfilepath, $rootdirpath) !== 0 || in_array($filePathParts[0], $unsafeDirectories)) {
+		if(stripos($realfilepath, $rootdirpath) !== 0 || in_array($filePathParts[0], $unsafeDirectories)) {
 			if($dieOnFail) {
-				die("Sorry! Attempt to access restricted file.");
+				die('Sorry! Attempt to access restricted file. - '.$filepath);
 			}
 			return false;
 		}
@@ -105,7 +105,7 @@ class Vtiger_Utils {
 
 		if(stripos($realfilepath, $rootdirpath) !== 0) {
 			if($dieOnFail) {
-				die("Sorry! Attempt to access restricted file.");
+				die('Sorry! Attempt to access restricted file. - '.$filepath);
 			}
 			return false;
 		}
@@ -207,9 +207,21 @@ class Vtiger_Utils {
 	 */
 	static function AddColumn($tablename, $columnname, $criteria) {
 		global $adb;
-		if(!in_array($columnname, $adb->getColumnNames($tablename))) {
+		$db = PearDatabase::getInstance();
+		if (!in_array($columnname, $db->getColumnNames($tablename))) {
 			self::AlterTable($tablename, " ADD COLUMN $columnname $criteria");
 		}
+	}
+
+	/**
+	 * Detect if table has foreign key
+	 * @param String tablename to check in
+	 * @param String key foreign key to check.
+	 */
+	static function TableHasForeignKey($tablename, $key) {
+		$db = PearDatabase::getInstance();
+		$rs = $db->pquery("SELECT 1 FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_TYPE = 'FOREIGN KEY' AND TABLE_SCHEMA = ? AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?", array($db->dbName, $tablename, $key));
+		return $db->num_rows($rs) > 0 ? true : false;
 	}
 
 	/**

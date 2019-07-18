@@ -37,6 +37,15 @@ $languageStrings = array(
 	'LBL_ASSIGN_USERS' => 'Cesiunea de utilizator',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Atribui Utilizatorii In Round Robin',
     'LBL_ROUNDROBIN_USERS_LIST' => 'Runda Lista de Utilizatori Robin',
+
+  'LBL_ADD_RECORD' => 'Adăugare Formular Web',
+
+	'LBL_UPLOAD_DOCUMENTS' => 'Încărcați Documente',
+	'LBL_ADD_FILE_FIELD' => 'Fișier de încărcare Câmp',
+	'LBL_FIELD_LABEL' => 'Titlul documentului',
+	'LBL_FILE_FIELD_INFO' => 'Pentru fiecare fișier încărcat de web a forma un nou document este creat cu fișierul atașat. Documentul este, de asemenea, legat de acest nou creat%s.',
+	'LBL_NO_FILE_FIELD' => 'Nu există câmpuri de fișiere adăugate.',
+	'LBL_COPY_TO_CLIPBOARD' => 'Copiați în clipboard',
 );
 $jsLanguageStrings = array(
 	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
@@ -46,4 +55,11 @@ $jsLanguageStrings = array(
 	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Domenii de referință cant fi obligatorie, fără valoare de anulare',
 	'JS_TYPE_TO_SEARCH' => 'Tastați pentru a căuta',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform cu acest nume există deja',
+
+  'JS_SELECT_AN_OPTION' => 'Selectați o opțiune',
+  'JS_LABEL' => 'tag-uri',
+
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Maxim puteți adăuga%s câmpuri de fișiere.',
+	'JS_COPIED_SUCCESSFULLY' => 'Copiată cu succes.',
+	'JS_COPY_FAILED' => 'Copiere nu a reușit. Vă rugăm să copiați manual.',
 );

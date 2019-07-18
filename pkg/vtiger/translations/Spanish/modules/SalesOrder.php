@@ -16,7 +16,8 @@
  *  Author       : JPL TSolucio, S. L. Joe Bordes
  ************************************************************************************/
 $languageStrings = array(
-	'SINGLE_SalesOrder'            => 'Orden Venta',
+    'SalesOrder'                   => 'Ordenes de venta',
+	'SINGLE_SalesOrder'            => 'Ordenes de venta',
 	'LBL_EXPORT_TO_PDF'            => 'Exportar a PDF',
 	'LBL_ADD_RECORD'               => 'Añadir Orden Venta',
 	'LBL_RECORDS_LIST'             => 'Lista de Ordenes Venta',
@@ -30,7 +31,6 @@ $languageStrings = array(
 	'Purchase Order'               => 'Orden Compra',
 	'Vendor Terms'                 => 'Términos del Proveedor',
 	'Pending'                      => 'Pendiente',
-    'Recurring Invoive Information'=>'Recurrente Información Factura',
 	'Enable Recurring'             => 'Habilitar facturación recurrente',
 	'Frequency'                    => 'Frecuencia',
 	'Start Period'                 => 'Inicio Periodo',
@@ -43,20 +43,9 @@ $languageStrings = array(
 	'Credit Invoice'               => 'Rectificativa',
 	'Paid'                         => 'Pagada',
 	'LBL_SEND_MAIL_PDF' => 'Enviar Email con PDF',
-    'Daily'=>'Diario',
-    'Monthly'=>'Mensual',
-    'Quarterly'=>'Trimestral',
-    'Yearly'=>'Anual',
-    'Net 30 days'=>'30 días netos',
-    'Net 45 days'=>'Net 45 días',
-    'Net 60 days'=>'Netos 60 días',
 
-	//Translation for product not found
-	'LBL_THIS' => 'Este',
-	'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
-	'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Este artículo ha sido eliminado de la aplicación. Por favor, elimina o sustituye este artículo.',
-);
+  'LBL_THIS' => 'Este',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'se elimina del sistema.por favor, quitar o reemplazar este elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Esta línea de ítem es eliminado del sistema,por favor, elimine esta línea de artículos',
 
-$jsLanguageStrings = array(
-		'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Por favor arregla la línea con artículo eliminado',
 );

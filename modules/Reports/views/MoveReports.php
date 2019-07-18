@@ -16,7 +16,7 @@ class Reports_MoveReports_View extends Vtiger_Index_View {
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -30,6 +30,8 @@ class Reports_MoveReports_View extends Vtiger_Index_View {
 		$viewer->assign('EXCLUDED_IDS', $request->get('excluded_ids'));
 		$viewer->assign('VIEWNAME',$request->get('viewname'));
 		$viewer->assign('MODULE',$moduleName);
+		$searchParams = $request->get('search_params');
+		$viewer->assign('SEARCH_PARAMS',$searchParams);
 		$viewer->view('MoveReports.tpl', $moduleName);
 	}
 }

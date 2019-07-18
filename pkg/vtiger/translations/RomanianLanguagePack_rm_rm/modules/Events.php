@@ -13,20 +13,22 @@ $languageStrings = array(
 	'LBL_ADD_RECORD'               => 'Add Event'                   , 
 	'LBL_RECORDS_LIST'             => 'List View'                   , 
 	'LBL_EVENTS'                   => 'Evenimente'                  , 
-	'LBL_TODOS'                    => 'Calendar'                    , 
+	'LBL_TODOS'                    => 'Sarcină'                    , 
 	'LBL_HOLD_FOLLOWUP_ON'         => 'Hold On Urmărire'            ,
     'LBL_CREATE_FOLLOWUP_EVENT'    => 'Crea Urmărire Eveniment'     ,
-	'LBL_EVENT_INFORMATION'        => 'Event Details'               , 
+	'LBL_EVENT_INFORMATION'        => 'Detalii eveniment'           , 
 	'LBL_RECURRENCE_INFORMATION'   => 'Recurrence Details'          , 
 	'LBL_RELATED_TO'               => 'Related To'                  , // TODO: Review
+    'Related To'                   => 'Legate de'                   ,
 	'Start Date & Time'            => 'Data & ora inceput'          , 
-	'Recurrence'                   => 'Recurrence'                  , 
+	'Recurrence'                   => 'Repetare'                  , 
 	'Send Notification'            => 'Send Notification'           , 
 	'Location'                     => 'Location'                    , 
 	'Send Reminder'                => 'Send Reminder'               , 
 	'End Date & Time'              => 'Data & ora final'            , 
+    'End Date'                     => 'Data & ora final'            , 
 	'Activity Type'                => 'Tip activitate'              , 
-	'Visibility'                   => 'Visibility'                  , 
+	'Visibility'                   => 'Vizibilitate'                  , 
 	'Private'                      => 'Privat'                      , 
 	'Public'                       => 'Public'                      , 
 	'Call'                         => 'Apel'                        , 
@@ -64,7 +66,13 @@ $languageStrings = array(
 	'LBL_UNTIL'                    => 'Until'                       , // TODO: Review
 	'LBL_DAY_OF_THE_MONTH'         => 'day of the month'            , // TODO: Review
 	'LBL_ON'                       => 'on'                          , // TODO: Review
-	'LBL_CALENDAR_VIEW'            => 'Calendar View'               , 
+	'LBL_CALENDAR_VIEW'            => 'Sarcină View'               , 
 	'LBL_INVITE_USER_BLOCK'        => 'Invite'                      , // TODO: Review
 	'LBL_INVITE_USERS'             => 'Invite Users'                , // TODO: Review
+	'LBL_INVITE_PEOPLE'			   => 'Invita persoane',
+
+
+  'INVITATION' => ' Invitație ',
+  'Busy' => 'Ocupat',
+
 );

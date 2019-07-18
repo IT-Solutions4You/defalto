@@ -36,5 +36,15 @@ $languageStrings = array(
 	'LBL_OWNER'                    => 'Owner'                       , // TODO: Review
 	'Date & Time Sent'             => 'Date Sent'                   , // TODO: Review
     'Time Start'                   => 'Time Sent'                   ,
-    'LBL_EMAIL_INFORMATION'        => 'Email Information',
+    'LBL_EMAIL_INFORMATION' => 'Email Information',
+    'LBL_EMAILTEMPLATE_WARNING'    => 'Are your merge-tags correct',
+    'LBL_EMAILTEMPLATE_WARNING_CONTENT' => 'Please make sure that the template you selected has merge-tags relevant to the recipient record. 
+                                            If you are sending an email to Lead, but the merge-tags belong to Contact module (ex: $contacts-lastname$), 
+                                            then the values will not be merged.',
+	'Draft' => 'Draft',
+    'Parent ID' => 'Parent Record',
 );
+
+$jsLanguageStrings = array(
+    'JS_WARNING' => 'Warning',
+); 

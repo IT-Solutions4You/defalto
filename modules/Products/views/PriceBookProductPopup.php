@@ -60,6 +60,7 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 		$sourceRecord = $request->get('src_record');
 		$searchKey = $request->get('search_key');
 		$searchValue = $request->get('search_value');
+				$searchParams=$request->get('search_params');
 
 		if(empty($cvId)) {
 			$cvId = '0';
@@ -91,6 +92,10 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 			$listViewModel->set('search_key', $searchKey);
 			$listViewModel->set('search_value', $searchValue);
 		}
+				if(!empty($searchParams)) { 
+						$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
+						$listViewModel->set('search_params',$transformedSearchParams);
+				}
 
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();
@@ -104,7 +109,7 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 				$productIdsList[$recordId] = $recordId;
 			}
 			$unitPricesList = $moduleModel->getPricesForProducts($currencyId, $productIdsList);
-			
+
 			foreach ($this->listViewEntries as $recordId => $recordModel) {
 				$recordModel->set('unit_price', $unitPricesList[$recordId]);
 			}
@@ -117,11 +122,34 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 		}
 		if($sortOrder == "ASC"){
 			$nextSortOrder = "DESC";
-			$sortImage = "downArrowSmall.png";
+			$sortImage = "icon-chevron-down";
+			$faSortImage = "fa-sort-desc";
 		}else{
 			$nextSortOrder = "ASC";
-			$sortImage = "upArrowSmall.png";
+			$sortImage = "icon-chevron-up";
+			$faSortImage = "fa-sort-asc";
 		}
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+		//To make smarty to get the details easily accesible
+		foreach($searchParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$searchParams[$fieldName] = $fieldSearchInfo;
+			}
+		}
+
+		$fieldList = $moduleModel->getFields();
+		$fieldsInfo = array();
+		foreach($fieldList as $name => $model){
+			$fieldsInfo[$name] = $model->getFieldInfo();
+		}
+		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
+		$viewer->assign('SEARCH_DETAILS', $searchParams);
+				$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('MODULE', $request->getModule());
 
 		$viewer->assign('SOURCE_MODULE', $sourceModule);
@@ -137,6 +165,7 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 		$viewer->assign('SORT_ORDER',$sortOrder);
 		$viewer->assign('NEXT_SORT_ORDER',$nextSortOrder);
 		$viewer->assign('SORT_IMAGE',$sortImage);
+		$viewer->assign('FASORT_IMAGE',$faSortImage);
 
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
 		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
@@ -149,6 +178,9 @@ class Products_PriceBookProductPopup_View extends Vtiger_Popup_View {
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
 
 		$viewer->assign('VIEW', 'PriceBookProductPopup');
+	}
+	public function transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel) {
+		return Vtiger_Util_Helper::transferListSearchParamsToFilterCondition($listSearchParams, $moduleModel);
 	}
 
 }

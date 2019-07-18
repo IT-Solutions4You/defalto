@@ -18,6 +18,7 @@ class Settings_Vtiger_OutgoingServerDetail_View extends Settings_Vtiger_Index_Vi
         $viewer->assign('MODEL',$systemDetailsModel);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedName);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('OD_DEFAULT_MAIL_SERVER_IP', VtigerConfig::getOD('OD_DEFAULT_MAIL_SERVER_IP'));
         $viewer->view('OutgoingServerDetail.tpl',$qualifiedName);
     }
 	

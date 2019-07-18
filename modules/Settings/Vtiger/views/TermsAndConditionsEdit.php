@@ -11,12 +11,14 @@
 class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_View {
     
     public function process(Vtiger_Request $request) {
-        $model = Settings_Vtiger_TermsAndConditions_Model::getInstance();
+		$inventoryModules = getInventoryModules();
+        $model = Settings_Vtiger_TermsAndConditions_Model::getInstance($inventoryModules[0]);
         $conditionText = $model->getText();
-        
+
         $viewer = $this->getViewer($request);
         $qualifiedName = $request->getModule(false);
-        
+
+		$viewer->assign('INVENTORY_MODULES', $inventoryModules);
         $viewer->assign('CONDITION_TEXT',$conditionText);
         $viewer->assign('MODEL',$model);
         $viewer->view('TermsAndConditions.tpl',$qualifiedName);
@@ -37,7 +39,8 @@ class Settings_Vtiger_TermsAndConditionsEdit_View extends Settings_Vtiger_Index_
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(
-			"modules.Settings.$moduleName.resources.TermsAndConditions"
+			"modules.Settings.$moduleName.resources.TermsAndConditions",
+            "modules.Settings.$moduleName.resources.TermsAndConditionsEdit"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

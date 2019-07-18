@@ -4,7 +4,7 @@ The vtiger Public License Version 1.2 is based on the Mozilla Public License Ver
 
 Vtiger Public License Version 1.2
 
-Copyright (c) 2004-2013 www.vtiger.com All rights reserved.
+Copyright (c) 2004-2017 www.vtiger.com All rights reserved.
 
 PLEASE READ THE FOLLOWING LICENSE AGREEMENT CAREFULLY. ANY USE OF SOFTWARE DOWNLOADED OR ORDERED FROM VTIGER IS PERMITTED ONLY UNDER LICENSE WITH VTIGER. BY DOWNLOADING THIS SOFTWARE YOU AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE AGREEMENT. 
 

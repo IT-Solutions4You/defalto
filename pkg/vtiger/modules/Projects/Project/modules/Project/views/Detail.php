@@ -13,6 +13,7 @@ class Project_Detail_View extends Vtiger_Detail_View {
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('showRelatedRecords');
+        $this->exposeMethod('showChart');
 	}
 
 	public function showModuleSummaryView($request) {
@@ -47,6 +48,7 @@ class Project_Detail_View extends Vtiger_Detail_View {
 		$sortOrder = $request->get('sortorder');
 		$whereCondition = $request->get('whereCondition');
 		$moduleName = $request->getModule();
+		$relatedModuleInstance = Vtiger_Module_Model::getInstance($relatedModuleName);
 		
 		if($sortOrder == "ASC") {
 			$nextSortOrder = "DESC";
@@ -58,6 +60,7 @@ class Project_Detail_View extends Vtiger_Detail_View {
 		
 		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
 		$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName);
+		$relatedModuleModel = $relationListView->getRelationModel()->getRelationModuleModel();
 		
 		if(!empty($orderBy)) {
 			$relationListView->set('orderby', $orderBy);
@@ -73,23 +76,107 @@ class Project_Detail_View extends Vtiger_Detail_View {
 		if(!empty($limit)) {
 			$pagingModel->set('limit', $limit);
 		}
-
+		
 		if ($whereCondition) {
 			$relationListView->set('whereCondition', $whereCondition);
 		}
-
+		
 		$models = $relationListView->getEntries($pagingModel);
 		$header = $relationListView->getHeaders();
+		//ProjectTask Progress and Status should show in Projects summary view 
+		if($relatedModuleName == 'ProjectTask') {
+			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskstatus', $relatedModuleInstance);
+			if($fieldModel && $fieldModel->isViewableInDetailView()) {
+				$header['projecttaskstatus'] = $relatedModuleModel->getField('projecttaskstatus');
+			}
+			$fieldModel = Vtiger_Field_Model::getInstance('projecttaskprogress', $relatedModuleInstance);
+			if($fieldModel && $fieldModel->isViewableInDetailView()) {
+				$header['projecttaskprogress'] = $relatedModuleModel->getField('projecttaskprogress');
+			}
+		}
 		
 		$viewer = $this->getViewer($request);
 		$viewer->assign('MODULE' , $moduleName);
 		$viewer->assign('RELATED_RECORDS' , $models);
 		$viewer->assign('RELATED_HEADERS', $header);
 		$viewer->assign('RELATED_MODULE' , $relatedModuleName);
-		$viewer->assign('RELATED_MODULE_MODEL', Vtiger_Module_Model::getInstance($relatedModuleName));
+		$viewer->assign('RELATED_MODULE_MODEL', $relatedModuleInstance);
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 
 		return $viewer->view('SummaryWidgets.tpl', $moduleName, 'true');
+	}
+
+	/**
+	 * Function to show Gantt chart
+	 * @param Vtiger_Request $request
+	 */
+	public function showChart(Vtiger_Request $request) {
+		$parentId = $request->get('record');
+		$projectTasks = array();
+		$moduleName = $request->getModule();
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
+		$projectTaskModel = Vtiger_Module_Model::getInstance('ProjectTask');
+		$projectTasks['tasks'] = $parentRecordModel->getProjectTasks();
+		$projectTasks["selectedRow"] = 0;
+		$projectTasks["canWrite"] = true;
+		$projectTasks["canWriteOnParent"] = true;
+		$viewer = $this->getViewer($request);
+		$viewer->assign('PARENT_ID', $parentId);
+		$viewer->assign('MODULE' , $moduleName);
+		$viewer->assign('PROJECT_TASKS' , $projectTasks);
+		$viewer->assign('SCRIPTS',$this->getHeaderScripts($request));
+		$viewer->assign('TASK_STATUS', Vtiger_Util_Helper::getRoleBasedPicklistValues('projecttaskstatus', $currentUserModel->get('roleid')));
+		$viewer->assign('TASK_STATUS_COLOR', $parentRecordModel->getStatusColors());
+		$viewer->assign('STYLES',$this->getHeaderCss($request));
+		$viewer->assign('USER_DATE_FORMAT', $currentUserModel->get('date_format'));
+		$viewer->assign('STATUS_FIELD_MODEL', Vtiger_Field_Model::getInstance('projecttaskstatus', $projectTaskModel));
+
+		return $viewer->view('ShowChart.tpl', $moduleName, 'true');
+	}
+
+	/**
+	 * Function get gantt specific headerscript
+	 * @param Vtiger_Request $request
+	 */
+	public function getHeaderScripts(Vtiger_Request $request) {
+		$headerScriptInstances = parent::getHeaderScripts($request);
+		$jsFileNames = array(
+			'~/libraries/jquery/gantt/libs/jquery.livequery.min.js',
+			'~/libraries/jquery/gantt/libs/jquery.timers.js',
+			'~/libraries/jquery/gantt/libs/platform.js',
+			'~/libraries/jquery/gantt/libs/date.js',
+			'~/libraries/jquery/gantt/libs/i18nJs.js',
+			'~/libraries/jquery/gantt/libs/JST/jquery.JST.js',
+			'~/libraries/jquery/gantt/libs/jquery.svg.min.js',
+			'~/libraries/jquery/gantt/ganttUtilities.js',
+			'~/libraries/jquery/gantt/ganttTask.js',
+			'~/libraries/jquery/gantt/ganttDrawerSVG.js',
+			'~/libraries/jquery/gantt/ganttGridEditor.js',
+			'~/libraries/jquery/gantt/ganttMaster.js',
+			'~/libraries/jquery/gantt/libs/moment.min.js',
+			'~/libraries/jquery/colorpicker/js/colorpicker.js',
+		);
+
+		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+		$headerScriptInstances = array_merge($headerScriptInstances,$jsScriptInstances);
+		return $headerScriptInstances;
+	}
+
+	/**
+	 * Function to get the css styles for gantt chart
+	 * @param  Vtiger_Request $request
+	 */
+	public function getHeaderCss(Vtiger_Request $request) {
+		$headerCssInstances = parent::getHeaderCss($request);
+		$cssFileNames = array(
+			'~/libraries/jquery/gantt/platform.css',
+			'~/libraries/jquery/gantt/gantt.css',
+			'~/libraries/jquery/colorpicker/css/colorpicker.css',
+		);
+		$cssInstances = $this->checkAndConvertCssStyles($cssFileNames);
+		$headerCssInstances = array_merge($cssInstances, $headerCssInstances);
+		return $headerCssInstances;
 	}
 }
 ?>

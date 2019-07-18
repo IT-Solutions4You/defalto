@@ -23,7 +23,7 @@ class Vtiger_Date_UIType extends Vtiger_Base_UIType {
 	 * @param <Object> $value
 	 * @return <Object>
 	 */
-	public function getDisplayValue($value) {
+	public function getDisplayValue($value, $record = false, $recordInstance = false) {
 		if(empty($value)){
 			return $value;
 		} else {

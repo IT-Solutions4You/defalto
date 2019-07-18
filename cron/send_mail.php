@@ -42,7 +42,7 @@ function sendmail($to,$from,$subject,$contents,$mail_server,$mail_server_usernam
 	else
 		$mail->SMTPAuth = false;
 	$mail->Username = $mail_server_username ;//$smtp_username;  // SMTP username
-	$mail->Password = $mail_server_password ;//$smtp_password; // SMTP password
+	$mail->Password = Vtiger_Functions::fromProtectedText($mail_server_password);//$smtp_password; // SMTP password
 	$mail->From = $from;
 	$mail->FromName = $initialfrom;
 	$mail->AddAddress($to);                  // name is optional

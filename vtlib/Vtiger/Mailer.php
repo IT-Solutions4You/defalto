@@ -26,6 +26,7 @@ class Vtiger_Mailer extends PHPMailer {
 	 * Constructor
 	 */
 	function __construct() {
+		parent::__construct();
 		$this->initialize();
 	}
 
@@ -43,6 +44,7 @@ class Vtiger_Mailer extends PHPMailer {
 	 * @access private
 	 */
 	function initialize() {
+		$this->Timeout = 30; /* Issue #155: to allow anti-spam tech be successful */
 		$this->IsSMTP();
 
 		global $adb;
@@ -50,18 +52,18 @@ class Vtiger_Mailer extends PHPMailer {
 		if($adb->num_rows($result)) {
 			$this->Host = $adb->query_result($result, 0, 'server');
 			$this->Username = decode_html($adb->query_result($result, 0, 'server_username'));
-			$this->Password = decode_html($adb->query_result($result, 0, 'server_password'));
+			$this->Password = Vtiger_Functions::fromProtectedText(decode_html($adb->query_result($result, 0, 'server_password')));
 			$this->SMTPAuth = $adb->query_result($result, 0, 'smtp_auth');
-            
-            // To support TLS
-            $hostinfo = explode("://", $this->Host);
-            $smtpsecure = $hostinfo[0];
-            if($smtpsecure == 'tls'){
-                $this->SMTPSecure = $smtpsecure;
-                $this->Host = $hostinfo[1];
-            }
-            // End
-            
+
+			// To support TLS
+			$hostinfo = explode("://", $this->Host);
+			$smtpsecure = $hostinfo[0];
+			if($smtpsecure == 'tls'){
+				$this->SMTPSecure = $smtpsecure;
+				$this->Host = $hostinfo[1];
+			}
+			// End
+
 			if(empty($this->SMTPAuth)) $this->SMTPAuth = false;
 
 			$this->ConfigSenderInfo($adb->query_result($result, 0, 'from_email_field'));
@@ -78,9 +80,11 @@ class Vtiger_Mailer extends PHPMailer {
 	function reinitialize() {
 		$this->ClearAllRecipients();
 		$this->ClearReplyTos();
+		$this->ClearCustomHeaders();
 		$this->Body = '';
 		$this->Subject ='';
 		$this->ClearAttachments();
+		$this->ErrorInfo = '';
 	}
 
 	/**
@@ -120,8 +124,12 @@ class Vtiger_Mailer extends PHPMailer {
 
 		$this->From = $fromemail;
 		//fix for (http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/8001)
-                $this->FromName = decode_html($fromname); 
-		$this->AddReplyTo($replyto);
+		if($fromname) {
+			$this->FromName = decode_html($fromname);
+		}
+		if($replyto) {
+			$this->AddReplyTo($replyto);
+		}
 	}
 
 	/**
@@ -215,13 +223,13 @@ class Vtiger_Mailer extends PHPMailer {
 		}
 	}
 
-    /**
-     * Function to prepares email as string
-     * @return type
-     */
-    public function getMailString() {
-        return $this->MIMEHeader.$this->MIMEBody;
-    }
+	/**
+	 * Function to prepares email as string
+	 * @return type
+	 */
+	public function getMailString() {
+		return $this->MIMEHeader.$this->MIMEBody;
+	}
 
 	/**
 	 * Dispatch (send) email that was queued.
@@ -231,7 +239,7 @@ class Vtiger_Mailer extends PHPMailer {
 		if(!Vtiger_Utils::CheckTable('vtiger_mailer_queue')) return;
 
 		$mailer = new self();
-		$queue = $adb->pquery('SELECT * FROM vtiger_mailer_queue WHERE failed != ?', array(1));
+		$queue = $adb->pquery('SELECT * FROM vtiger_mailer_queue', array());
 		if($adb->num_rows($queue)) {
 			for($index = 0; $index < $adb->num_rows($queue); ++$index) {
 				$mailer->reinitialize();
@@ -239,11 +247,11 @@ class Vtiger_Mailer extends PHPMailer {
 				$queue_record = $adb->fetch_array($queue, $index);
 				$queueid = $queue_record['id'];
 				$relcrmid= $queue_record['relcrmid'];
-
+				
 				$mailer->From = $queue_record['fromemail'];
 				$mailer->From = $queue_record['fromname'];
 				$mailer->Subject=$queue_record['subject'];
-				$mailer->Body = decode_html($queue_record['body']);
+				$mailer->Body = decode_emptyspace_html($queue_record['body']);
 				$mailer->Mailer=$queue_record['mailer'];
 				$mailer->ContentType = $queue_record['content_type'];
 

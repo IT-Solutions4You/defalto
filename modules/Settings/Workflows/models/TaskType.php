@@ -28,13 +28,15 @@ class Settings_Workflows_TaskType_Model extends Vtiger_Base_Model {
 	}
 
 	public function getTemplatePath() {
-		// TODO - Do required template path transformation once the new template files are created, till the database is updated with new path
-		$templatePath = vtemplate_path('Tasks/'.$this->getName().'.tpl', 'Settings:Workflows');
-		return $templatePath;
+		return $this->get('templatepath');
 	}
 
 	public function getEditViewUrl() {
 		return '?module=Workflows&parent=Settings&view=EditTask&type='.$this->getName();
+	}
+    
+    public function getV7EditViewUrl() {
+		return '?module=Workflows&parent=Settings&view=EditV7Task&type='.$this->getName();
 	}
 
 	public static function getInstanceFromClassName($taskClass) {

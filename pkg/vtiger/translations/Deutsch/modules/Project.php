@@ -8,6 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
+    'Project'	=>	"Projekt",
 	'SINGLE_Project'	=>	"Projekt",
 	'LBL_ADD_RECORD'	=>	"Projekt hinzufügen",
 	'LBL_RECORDS_LIST'	=>	"Projekte Liste",
@@ -31,14 +32,16 @@ $languageStrings = array(
 	'LBL_STATUS_IS'	=>	"Der Status ist",
 	'LBL_STATUS'	=>	"Status",
 	'LBL_TICKET_PRIORITY'	=>	"Priority",
-	'LBL_MORE'	=>	"mehr",
 	'LBL_MILESTONES_LIST'	=>	"Meilensteine ​​Liste",
 	'LBL_DOWNLOAD_FILE'	=>	"Datei herunterladen",
-        'LBL_TASKS_HIGH' => 'Hohe Priorität',
-        'LBL_TASKS_NORMAL' => 'Normale Priorität',
-        'LBL_TASKS_LOW' => 'Niedrige Priorität',
-        'LBL_TASKS_OTHER' => 'Andere Prioritäten',
-        'LBL_SELECT_PROGRESS' => 'Wählen Fortschritt',
+    'LBL_TASKS_HIGH' => 'Hohe Priorität',
+    'LBL_TASKS_NORMAL' => 'Normale Priorität',
+    'LBL_TASKS_LOW' => 'Niedrige Priorität',
+    'LBL_TASKS_OTHER' => 'Andere Prioritäten',
+    'LBL_SELECT_PROGRESS' => 'Progress - Alle',
+	'LBL_SELECT_STATUS' => 'Status - Alle',
+        'Type' => 'Typ', 
+    'Related to' => 'Bezogen auf',
 	
 	//picklist values
 	'prospecting' => 'Prospektion',
@@ -55,9 +58,23 @@ $languageStrings = array(
     'low' => 'Niedrig',
     'normal' => 'Normal',
     'high' => 'Hoch',
+    
+    //Gantt chart 
+    'LBL_CHART' => 'Gantt-Diagramm',
+    'LBL_PROGRESS_CHART' => 'Gantt-Diagramm',
+    'LBL_TASK_NAME' => 'Task-Namen',
+    'LBL_START_DATE' => 'Startdatum',
+    'LBL_END_DATE' => 'Enddatum',
+    'LBL_DURATION' => 'Dauer',
+    'LBL_INFO' => 'Info',
+    'LBL_GANTT_INFO1' => 'Schieben Sie auf der rechten Seite der Aufgabe auf Dauer zu erweitern',
+    'LBL_GANTT_INFO2' => 'Ziehen Sie auf der linken Seite oder in der Mitte der Aufgabe, die Start-und Enddatum zu ändern.',
+    'LBL_EDIT_PROJECT_TASK_STATUS_COLOR' => 'Projekt bearbeiten Aufgabenstatus Farbe',
+    'LBL_SELECT_PROJECT_TASK_STATUS_COLOR' => 'Wählen Sie Projekt Aufgabenstatus Farbe',
+    'LBL_SELECT_STATUS' => 'Wählen Sie Status',
+    'LBL_EDIT_COLOR' => 'Farbe bearbeiten',
 );
 
 $jsLanguageStrings = array(
-    'JS_LBL_SELECT_STATUS' => 'Wählen Sie Status',
-    'JS_LBL_SELECT_PROGRESS' => 'Wählen Fortschritt',
+    'JS_COLOR_SAVED_SUCESSFULLY' => 'Farbe erfolgreich gespeichert',
 );

@@ -2,26 +2,26 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
 
 class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
-	
+
 	public function getFieldName() {
 		$fieldName = parent::getFieldName();
 		return 'selectedFieldsData['. $fieldName .'][defaultvalue]';
 	}
-	
+
 	public function isMandatory($forceCheck = false) {
 		if($forceCheck) {
 			return parent::isMandatory();
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Function to get the field details
 	 * @return <Array> - array of field values
@@ -41,6 +41,7 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		$pickListValues = $this->getPicklistValues();
 		if(!empty($pickListValues)) {
 			$fieldInfo['picklistvalues'] = $pickListValues;
+            $fieldInfo['editablepicklistvalues'] = $pickListValues;
 		}
 
 		if($this->getFieldDataType() == 'date' || $this->getFieldDataType() == 'datetime'){
@@ -51,8 +52,8 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		if($this->getFieldDataType() == 'currency') {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$fieldInfo['currency_symbol'] = $currentUser->get('currency_symbol');
-			$fieldInfo['decimalSeperator'] = $currentUser->get('currency_decimal_separator');
-			$fieldInfo['groupSeperator'] = $currentUser->get('currency_grouping_separator');
+			$fieldInfo['decimalSeparator'] = $currentUser->get('currency_decimal_separator');
+			$fieldInfo['groupSeparator'] = $currentUser->get('currency_grouping_separator');
 		}
 
 		if($this->getFieldDataType() == 'owner') {
@@ -63,15 +64,26 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 			$pickListValues[vtranslate('LBL_GROUPS', $this->getModuleName())] = $groupList;
 			$fieldInfo['picklistvalues'] = $pickListValues;
 		}
-		
+
 		if($this->getFieldDataType() == 'reference') {
 			$referenceList = $this->getReferenceList();
 			$fieldInfo['referencemodules']= $referenceList;
 		}
 
+		if($this->getFieldDataType() == 'ownergroup') {
+			$groupList = $currentUser->getAccessibleGroups();
+			$pickListValues = array();
+			$fieldInfo['picklistvalues'] = $groupList;
+		}
+
+		if($fieldInfo['type'] == 'boolean') {
+			$fieldInfo['type'] = 'picklist';
+			$fieldInfo['picklistvalues'] = array('' => vtranslate('LBL_SELECT_OPTION'), 'on' => vtranslate('LBL_YES'), 'off' => vtranslate('LBL_NO'));
+		}
+
 		return $fieldInfo;
 	}
-	
+
 	public function getPicklistValues() {
 		$fieldDataType = $this->getFieldDataType();
 
@@ -80,15 +92,15 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		}
 		$pickListValues = array();
 		$pickListValues[""] = vtranslate("LBL_SELECT_OPTION", 'Settings:Webforms');
-		return ($pickListValues + parent::getPicklistValues());
+		return ($pickListValues + parent::getEditablePicklistValues());
 	}
-	
+
 	/**
-     * Function which will check if empty piclist option should be given
-     */
-    public function isEmptyPicklistOptionAllowed() {
-        return false;
-    }
+	 * Function which will check if empty piclist option should be given
+	 */
+	public function isEmptyPicklistOptionAllowed() {
+		return false;
+	}
 
 	public static function getInstanceFromFieldObject(Vtiger_Field $fieldObj) {
 		$objectProperties = get_object_vars($fieldObj);

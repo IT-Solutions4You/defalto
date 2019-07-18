@@ -33,6 +33,7 @@ class EmailTemplates_DetailView_Model extends Vtiger_DetailView_Model {
 				'linkicon' => ''
 		);
 
+		$linkModelList = array();
 		foreach ($detailViewLinks as $detailViewLink) {
 			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
 		}
@@ -44,11 +45,17 @@ class EmailTemplates_DetailView_Model extends Vtiger_DetailView_Model {
 			$deletelinkModel = array(
 					'linktype' => 'DETAILVIEW',
 					'linklabel' => 'LBL_DELETE',
-					'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("'.$recordModel->getDeleteUrl().'")',
+					'linkurl' => 'javascript:EmailTemplates_Detail_Js.deleteRecord("'.$recordModel->getDeleteUrl().'")',
 					'linkicon' => ''
 			);
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
-
+			$duplicateLinkModel = array(
+						'linktype' => 'DETAILVIEWBASIC',
+						'linklabel' => 'LBL_DUPLICATE',
+						'linkurl' => $recordModel->getDuplicateRecordUrl(),
+						'linkicon' => ''
+				);
+			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
 		if(!empty($detailViewBasiclinks)) {
 			foreach($detailViewBasiclinks as $linkModel) {
 				$linkModelList['DETAILVIEW'][] = $linkModel;

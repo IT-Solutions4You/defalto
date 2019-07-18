@@ -43,6 +43,12 @@ jQuery.Class('Install_Index_Js', {}, {
 			else password.addClass('hide');
 		});
 
+		if(jQuery('input[name="create_db"]').prop('checked'))
+        {
+            jQuery('#root_user').removeClass("hide");
+            jQuery('#root_password').removeClass("hide");
+        }
+
 		function clearPasswordError() {
 			jQuery('#passwordError').html('');
 		}
@@ -51,6 +57,7 @@ jQuery.Class('Install_Index_Js', {}, {
 			jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
 		}
 
+		//This is not an event, we check if create_db is checked
 		jQuery('input[name="retype_password"]').on('blur', function(e){
 			var element = jQuery(e.currentTarget);
 			var password = jQuery('input[name="password"]').val();

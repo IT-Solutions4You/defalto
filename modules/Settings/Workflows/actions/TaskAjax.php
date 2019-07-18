@@ -16,6 +16,9 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 		$this->exposeMethod('ChangeStatus');
 		$this->exposeMethod('Save');
 	}
+	public function validateRequest(Vtiger_Request $request) {
+		$request->validateWriteAccess();
+	}
 
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
@@ -63,7 +66,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 				$workflowModel = Settings_Workflows_Record_Model::getInstance($workflowId);
 				$taskRecordModel = Settings_Workflows_TaskRecord_Model::getCleanInstance($workflowModel, $request->get('taskType'));
 			}
-			
+
 			$taskObject = $taskRecordModel->getTaskObject();
 			$taskObject->summary = $request->get("summary");
 
@@ -86,8 +89,9 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 			}
 
 			$fieldNames = $taskObject->getFieldNames();
+						$getRawFields = array('field_value_mapping', 'content', 'fromEmail');
 			foreach($fieldNames as $fieldName){
-				if($fieldName == 'field_value_mapping' || $fieldName == 'content') {
+				if(in_array($fieldName, $getRawFields)) {
 					$taskObject->$fieldName = $request->getRaw($fieldName);
 				} else {
 					$taskObject->$fieldName = $request->get($fieldName);
@@ -97,7 +101,49 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 				}
 			}
 
+			require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
+
+			$fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
+			if (is_array($fieldMapping)) {
+				foreach ($fieldMapping as $key => $mappingInfo) {
+					if ($mappingInfo['valuetype'] == 'expression') {
+						try {
+							$parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($mappingInfo['value'])));
+							$expression = $parser->expression();
+						} catch (Exception $e) {
+							$result = new Vtiger_Response();
+							$result->setError($mappingInfo);
+							$result->emit();
+							return;
+						}
+					}
+				}
+			}
+
 			$taskType = get_class($taskObject);
+			if ($taskType === 'VTCreateEventTask' || $taskType === 'VTCreateTodoTask') {
+				if($taskType === 'VTCreateEventTask') {
+					$module = 'Events';
+				} else {
+					$module = 'Calendar';
+				}
+				$moduleModel = Vtiger_Module_Model::getInstance($module);
+				$fieldsList = $moduleModel->getFields();
+				foreach($fieldsList as $fieldName => $fieldModel) {
+					$fieldValue = $request->get($fieldName);
+					if($fieldModel->get('uitype') == 33) {
+						if(is_array($fieldValue)) {
+							$field_list = implode(' |##| ', $fieldValue);
+						} else {
+							$field_list = $fieldValue;
+						}
+						$taskObject->$fieldName = $field_list;
+					} else {
+						$taskObject->$fieldName = $fieldValue;
+					}
+				}
+			}
+
 			if ($taskType === 'VTCreateEntityTask') {
 				$relationModuleModel = Vtiger_Module_Model::getInstance($taskObject->entity_type);
 				$ownerFieldModels = $relationModuleModel->getFieldsByType('owner');
@@ -108,7 +154,7 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 						$userRecordModel = Users_Record_Model::getInstanceById($mappingInfo['value'], 'Users');
 						$ownerName = $userRecordModel->get('user_name');
 
-						if (!$ownerName) {
+						if (!$ownerName && !empty($mappingInfo['value'])) {
 							$groupRecordModel = Settings_Groups_Record_Model::getInstance($mappingInfo['value']);
 							$ownerName = $groupRecordModel->getName();
 						}
@@ -124,8 +170,4 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 			$response->emit();
 		}
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            $request->validateWriteAccess(); 
-        } 
 }

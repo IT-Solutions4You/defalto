@@ -46,29 +46,69 @@ class Import_ListView_Model extends Vtiger_ListView_Model {
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
 
+		$searchParams = $this->get('search_params');
+		if(empty($searchParams)) {
+			$searchParams = array();
+		}
+		$glue = "";
+		if(count($queryGenerator->getWhereFields()) > 0 && (count($searchParams)) > 0) {
+			$glue = QueryGenerator::$AND;
+		}
+		$queryGenerator->parseAdvFilterList($searchParams, $glue);
+
+		$searchKey = $this->get('search_key');
+		$searchValue = $this->get('search_value');
+		if(!empty($searchValue)) {
+			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => 'c'));
+		}
+
+		$orderBy = $this->get('orderby');
+		$sortOrder = $this->get('sortorder');
+		if(!empty($orderBy)) {
+			$queryGenerator = $this->get('query_generator');
+			$fieldModels = $queryGenerator->getModuleFields();
+			$orderByFieldModel = $fieldModels[$orderBy];
+			if($orderByFieldModel && ($orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE ||
+					$orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::OWNER_TYPE)){
+				$queryGenerator->addWhereField($orderBy);
+			}
+		}
+
 		$listQuery = $queryGenerator->getQuery();
 
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
 		$importedRecordIds = $this->getLastImportedRecord();
-        $listViewRecordModels = array();
+		$listViewRecordModels = array();
 		if(count($importedRecordIds) != 0) {
-            $moduleModel = $this->get('module');
-            $listQuery .= ' AND '.$moduleModel->basetable.'.'.$moduleModel->basetableid.' IN ('. implode(',', $importedRecordIds).')';
+			$moduleModel = $this->get('module');
+			$listQuery .= ' AND '.$moduleModel->basetable.'.'.$moduleModel->basetableid.' IN ('. implode(',', $importedRecordIds).')';
 
-            $listQuery .= " LIMIT $startIndex, $pageLimit";
+			if(!empty($orderBy) && $orderByFieldModel) {
+				$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+			} else if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
+				$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
+			}
 
-            $listResult = $db->pquery($listQuery, array());
+			$listQuery .= " LIMIT $startIndex, ".($pageLimit+1);
 
-            $listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
-            $pagingModel->calculatePageRange($listViewEntries);
-            foreach($listViewEntries as $recordId => $record) {
-                $record['id'] = $recordId;
-                $listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record);
-            }
+			$listResult = $db->pquery($listQuery, array());
 
-        }
+			$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
+			$pagingModel->calculatePageRange($listViewEntries);
+			if($db->num_rows($listResult) > $pageLimit){
+				array_pop($listViewEntries);
+				$pagingModel->set('nextPageExists', true);
+			}else{
+				$pagingModel->set('nextPageExists', false);
+			}
+			foreach($listViewEntries as $recordId => $record) {
+				$record['id'] = $recordId;
+				$listViewRecordModels[$recordId] = $moduleModel->getRecordFromArray($record);
+			}
+
+		}
 		return $listViewRecordModels;
 	}
 
@@ -81,6 +121,13 @@ class Import_ListView_Model extends Vtiger_ListView_Model {
 		$db = PearDatabase::getInstance();
 
 		$queryGenerator = $this->get('query_generator');
+
+		$searchKey = $this->get('search_key');
+		$searchValue = $this->get('search_value');
+		if(!empty($searchValue)) {
+			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => 'c'));
+		}
+
 		//$queryGenerator->setFields(array('id'));
 
 		$listQuery = $queryGenerator->getQuery();
@@ -109,7 +156,7 @@ class Import_ListView_Model extends Vtiger_ListView_Model {
 		$instance = new $modelClassName();
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $currentUser);
+		$queryGenerator = new EnhancedQueryGenerator($moduleModel->get('name'), $currentUser);
 
 		$customView = new CustomView();
 		$viewId = $customView->getViewIdByName('All', $moduleName);

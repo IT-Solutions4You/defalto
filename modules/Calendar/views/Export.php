@@ -9,20 +9,4 @@
  *************************************************************************************/
 
 class Calendar_Export_View extends Vtiger_Export_View {
-
-	public function preprocess(Vtiger_Request $request) {
-	}
-
-	public function process(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-
-		$viewer = $this->getViewer($request);
-		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('ACTION', 'ExportData');
-		
-		$viewer->view('Export.tpl', $moduleName);
-	}
-
-	public function postprocess(Vtiger_Request $request) {
-	}
 }

@@ -458,8 +458,8 @@ class freetag {
 		} else {
 			// Add new tag! 
 			$tag_id = $adb->getUniqueId('vtiger_freetags');
-			$sql = "INSERT INTO ${prefix}freetags (id, tag, raw_tag) VALUES (?,?,?)";
-			$params = array($tag_id, $normalized_tag, $tag);
+			$sql = "INSERT INTO ${prefix}freetags (id, tag, raw_tag, owner) VALUES (?,?,?,?)";
+			$params = array($tag_id, $normalized_tag, $tag, $tagger_id);
 			$rs = $adb->pquery($sql, $params) or die("Syntax Error: $sql");
 			
 		}
@@ -945,7 +945,7 @@ class freetag {
 	 * values are numeric quantity of objects tagged with that tag.
 	 */
 
-	function get_tag_cloud_tags($max = 100, $tagger_id = NULL,$module = "",$obj_id = NULL) {
+	function get_tag_cloud_tags($max = 100, $tagger_id = NULL,$module = "",$obj_id = NULL){
 		global $adb;
 		$params = array();
 		if(isset($tagger_id) && ($tagger_id > 0)) {
@@ -972,16 +972,17 @@ class freetag {
 		$prefix = $this->_table_prefix;
 		$sql = "SELECT tag,tag_id,COUNT(object_id) AS quantity
 			FROM ${prefix}freetags INNER JOIN ${prefix}freetagged_objects
-			ON (${prefix}freetags.id = tag_id)
-			WHERE 1=1
+			ON (${prefix}freetags.id = tag_id) INNER JOIN vtiger_tab
+			ON ${prefix}freetagged_objects.module = vtiger_tab.name
+			WHERE vtiger_tab.presence != 1
 			$tagger_sql
-			GROUP BY tag
+			GROUP BY tag, tag_id
 			ORDER BY quantity DESC LIMIT 0, $max";
         //echo $sql;
 		$rs = $adb->pquery($sql, $params) or die("Syntax Error: $sql");
 		$retarr = array();
 		while(!$rs->EOF) {
-                        $rs->fields['tag'] = to_html($rs->fields['tag']); 
+			$rs->fields['tag'] = to_html($rs->fields['tag']);
 			$retarr[$rs->fields['tag']] = $rs->fields['quantity'];
 			$retarr1[$rs->fields['tag']] = $rs->fields['tag_id'];
 			$rs->MoveNext();

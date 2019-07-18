@@ -26,6 +26,9 @@ class EmailTemplate {
 	protected $user;
 	protected $processedmodules;
 	protected $referencedFields;
+	protected $multiRefValues = array();
+	protected $multiRefIds = array();
+	public $removeTags = false;
 
 	public function __construct($module, $description, $recordId, $user) {
 		$this->module = $module;
@@ -40,7 +43,7 @@ class EmailTemplate {
         $description = preg_replace("/\\$\\$/","$ $",$description);
 		$this->rawDescription = $description;
 		$this->processedDescription = $description;
-        $result = preg_match_all("/\\$(?:[a-zA-Z0-9]+)-(?:[a-zA-Z0-9]+)(?:_[a-zA-Z0-9]+)?(?::[a-zA-Z0-9]+)?(?:_[a-zA-Z0-9]+)?\\$/", $this->rawDescription, $matches);
+        $result = preg_match_all("/\\$(?:[a-zA-Z0-9]+)-(?:[a-zA-Z0-9]+)(?:_[a-zA-Z0-9]+)?(?::[a-zA-Z0-9]+)?(?:_[a-zA-Z0-9]+)*\\$/", $this->rawDescription, $matches);
         if($result != 0){
             $templateVariablePair = $matches[0];
             $this->templateFields = Array();
@@ -59,7 +62,7 @@ class EmailTemplate {
 	private function getTemplateVariableListForModule($module) {
 		return $this->templateFields[strtolower($module)];
 	}
-
+	
 	public function process($params) {
 		$module = $this->module;
 		$recordId = $this->recordId;
@@ -70,10 +73,11 @@ class EmailTemplate {
 		$fieldColumnMapping = $meta->getFieldColumnMapping();
 		$columnTableMapping = $meta->getColumnTableMapping();
         $currentUsersModel = Users_Record_Model::getCurrentUserModel();
+
 		if ($this->isProcessingReferenceField($params)) {
 			$parentFieldColumnMapping = $meta->getFieldColumnMapping();
 			$module = $params['referencedMeta']->getEntityName();
-			if ($this->processedmodules[$module] || (!$this->isModuleActive($module))) {
+			if (!$this->isModuleActive($module)) {
 				return;
 			}
 			$recordId = $params['id'];
@@ -90,6 +94,10 @@ class EmailTemplate {
 		$columnList = array();
 		$allColumnList = $meta->getUserAccessibleColumns();
 		$fieldList = array();
+
+		$baseTable = $meta->getEntityBaseTable();
+		$tableList[$baseTable] = $baseTable;
+		
 		if (count($variableList) > 0) {
 			foreach ($variableList as $column) {
 				if (in_array($column, $allColumnList)) {
@@ -102,6 +110,10 @@ class EmailTemplate {
 					$tableList[$columnTableMapping[$fieldColumnMapping[$field]]] = '';
 				}
 			}
+            $columnListTable = array();
+            foreach ($columnList as $column) {
+				$columnListTable[] = $columnTableMapping[$column] . "." . $column;
+            }
 			$tableList = array_keys($tableList);
 			$defaultTableList = $meta->getEntityDefaultTableList();
 			foreach ($defaultTableList as $defaultTable) {
@@ -110,12 +122,17 @@ class EmailTemplate {
 				}
 			}
 
-			if (count($tableList) > 0 && count($columnList) > 0) {
-				$sql = 'select ' . implode(', ', $columnList) . ' from ' . $tableList[0];
+			if (count($tableList) > 0 && count($columnListTable) > 0) {
 				$moduleTableIndexList = $meta->getEntityTableIndexList();
+				$sql = 'SELECT '.$tableList[0].'.'.$moduleTableIndexList[$tableList[0]].' AS vt_recordid, ' . implode(', ', $columnListTable) . ' FROM ' . $tableList[0];
 				foreach ($tableList as $index => $tableName) {
 					if ($tableName != $tableList[0]) {
-						$sql .=' INNER JOIN ' . $tableName . ' ON ' . $tableList[0] . '.' .
+						if($tableName == 'vtiger_seactivityrel' || $tableName == 'vtiger_cntactivityrel') {
+							$sql .= ' LEFT JOIN ';
+						} else {
+							$sql .= ' INNER JOIN ';
+						}
+						$sql .= $tableName . ' ON ' . $tableList[0] . '.' .
 								$moduleTableIndexList[$tableList[0]] . '=' . $tableName . '.' .
 								$moduleTableIndexList[$tableName];
 					}
@@ -131,8 +148,12 @@ class EmailTemplate {
 				if (!empty($deleteQuery)) {
 					$sql .= ' ' . $meta->getEntityDeletedQuery() . ' AND';
 				}
-				$sql .= ' ' . $tableList[0] . '.' . $moduleTableIndexList[$tableList[0]] . '=?';
-				$sqlparams = array($recordId);
+				/*If we are processing multi reference fields, we might have record 
+				 * id as'24,23'. So we need to explode with comma(,). 
+				 */
+				$recordIds = explode(',', $recordId);
+				$sql .= ' ' . $tableList[0] . '.' . $moduleTableIndexList[$tableList[0]] . ' IN('.  generateQuestionMarks($recordIds).')';
+				$sqlparams = $recordIds;
 				$db = PearDatabase::getInstance();
 				$result = $db->pquery($sql, $sqlparams);
 				$it = new SqlResultIterator($db, $result);
@@ -140,14 +161,52 @@ class EmailTemplate {
 				$values = array();
 				foreach ($it as $row) {
 					foreach ($fieldList as $field) {
-						     $moduleModel = Vtiger_Module_Model::getInstance($module); 
- 	                         $fieldModel = Vtiger_Field_Model::getInstance($field, $moduleModel); 
- 		                     $value = $row->get($fieldColumnMapping[$field]); 
- 		                        if($fieldModel->isReferenceField()) { 
- 		                            $values[$field] = $value; 
- 		                        } else { 
- 		                            $values[$field] = $fieldModel->getDisplayValue($value, $recordId); 
- 		                        } 
+						$moduleModel = Vtiger_Module_Model::getInstance($module);
+						$fieldModel = Vtiger_Field_Model::getInstance($field, $moduleModel);
+						if(!$fieldModel->isViewable()){
+							continue;
+						}
+						$value = $row->get($fieldColumnMapping[$field]);
+						//Emails are wrapping with hyperlinks, so skipping email fields as well
+						if($fieldModel->isReferenceField() || $fieldModel->isOwnerField() || $fieldModel->get('uitype') == 13) {
+							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
+								/**Getting multi reference record's reference/owner/uitype = 13 values 
+								 * and storing it in a class variable, later we will glue them with comma(,)
+s								 */
+								$this->multiRefValues[$field][] = strip_tags($fieldModel->getDisplayValue($value, $row->get('vt_recordid')));
+							} else {
+								if ($value) {
+									$values[$field] = $value;
+								}
+							}
+						} else if ($this->module == 'Events' && $fieldModel->getFieldDataType() == 'multireference') {
+							//get all the multi reference record ids and implode with comma(,)
+							$this->multiRefIds[] = $value;
+							$values[$field] = implode(',', array_unique($this->multiRefIds));
+						} else {
+							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
+								$this->multiRefValues[$field][] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'));
+							} else {
+								//If removetags variable is set to true then remove tags around value
+								if($this->removeTags) {
+									$values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'), false, $this->removeTags);
+								} else {
+									$values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'));
+								}
+
+								$uiType = $fieldModel->get('uitype');
+								if (in_array($uiType, array('71', '72'))) {
+									if ($uiType == '72' && $fieldModel->getName() == 'unit_price') {
+										$currencyId = getProductBaseCurrency($row->get('vt_recordid'), $module);
+									} else if ($uiType == '71') {
+										$currencyId = $this->user->currency_id;
+									}
+
+									$currencyInfo = getCurrencySymbolandCRate($currencyId);
+									$values[$field] = CurrencyField::appendCurrencySymbol($values[$field], $currencyInfo['symbol']);
+								}
+							}
+						}
 					}
 				}
 				$moduleFields = $meta->getModuleFields();
@@ -194,13 +253,21 @@ class EmailTemplate {
 									$referencedObjectMeta->getEntityId(),
 									$values[$fieldName]));
 						} elseif (strcasecmp($webserviceField->getFieldDataType(), 'picklist') === 0) {
-							$values[$fieldName] = getTranslatedString(
-									$values[$fieldName], $module);
+							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
+								$this->multiRefValues[$fieldName][] = getTranslatedString($values[$fieldName], $module);
+							} else {
+								$values[$fieldName] = getTranslatedString(
+								$values[$fieldName], $module);
+							}
 						} elseif (strcasecmp($fieldName, 'salutationtype') === 0 && $webserviceField->getUIType() == '55'){
 							$values[$fieldName] = getTranslatedString(
 									$values[$fieldName], $module);
 						} elseif (strcasecmp($webserviceField->getFieldDataType(), 'datetime') === 0) {
-							$values[$fieldName] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone; 
+							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
+								$$this->multiRefValues[$fieldName][] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone;
+							} else {
+								$values[$fieldName] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone;
+							}
 						}
 					}
 				}
@@ -208,16 +275,35 @@ class EmailTemplate {
 				if (!$this->isProcessingReferenceField($params)) {
 					foreach ($columnList as $column) {
 						$needle = '$' . strtolower($this->module) . "-$column$";
+						$replaceValue = $values[array_search($column, $fieldColumnMapping)];
+						if($this->removeTags){
+							$encodedValue = json_encode($replaceValue);
+							$replaceValue = substr($encodedValue, 1, -1);
+						}
+
 						$this->processedDescription = str_replace($needle,
-								$values[array_search($column, $fieldColumnMapping)], $this->processedDescription);
+								$replaceValue , $this->processedDescription);
 					}
-                    // Is process Description will send false even that module don't have reference record set
-                    $this->processedDescription = preg_replace("/\\$(?:[a-zA-Z0-9]+)-(?:[a-zA-Z0-9]+)(?:_[a-zA-Z0-9]+)?(?::[a-zA-Z0-9]+)(?:[a-zA-Z0-9]+)?(?:_[a-zA-Z0-9]+)?\\$/", '', $this->processedDescription);
 				} else {
 					foreach ($columnList as $column) {
 						$needle = '$' . strtolower($this->module) . '-' . $parentFieldColumnMapping[$params['field']] . ':' . $column . '$';
-						$this->processedDescription = str_replace($needle,
-								$values[array_search($column, $fieldColumnMapping)], $this->processedDescription);
+						//mergeing all multi reference fields with their respective values.
+						if ($this->module == 'Events' && $referenceColumn == 'contactid') {
+							$multiRefValues = $this->multiRefValues[array_search($column, $fieldColumnMapping)];
+							if (is_array($multiRefValues)) {
+								$replacer = implode(',', $this->multiRefValues[array_search($column, $fieldColumnMapping)]);
+							} else {
+								$replacer = '';
+							}
+						} else {
+							$replacer = $values[array_search($column, $fieldColumnMapping)];
+						}
+						if($this->removeTags){
+							$encodedValue = json_encode($replacer);
+							$replacer = substr($encodedValue, 1, -1);
+						}
+						
+						$this->processedDescription = str_replace($needle, $replacer, $this->processedDescription);
 					}
 					if (!$params['owner'])
 						$this->processedmodules[$module] = true;

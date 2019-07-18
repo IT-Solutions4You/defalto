@@ -15,8 +15,6 @@ class Products_MassSave_Action extends Vtiger_MassSave_Action {
 		$_REQUEST['action'] = 'MassEditSave';
 		$request->set('action', 'MassEditSave');
 
-		//the new values are added to $_REQUEST for MassSave, the unit price depend on the 'mass_edit_check' value
-		$_REQUEST['unit_price_mass_edit_check'] = 'off';
 		parent::process($request);
 	}
 

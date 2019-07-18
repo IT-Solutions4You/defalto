@@ -14,8 +14,17 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('changePassword');
+		$this->exposeMethod('changeUsername');
 	}
 
+	public function checkPermission(Vtiger_Request $request){
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$userId = $request->get('recordId');
+		if($currentUserModel->getId() != $userId && !$currentUserModel->isAdminUser()) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
+		}
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
 		if (!empty($mode)) {
@@ -33,6 +42,18 @@ Class Users_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('USERID', $userId);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$viewer->view('ChangePassword.tpl', $moduleName);
+	}
+
+	public function changeUsername(Vtiger_Request $request) {
+		$viewer = $this->getViewer($request);
+		$moduleName = $request->getModule();
+		$userId = $request->get('record');
+		$userModel = Users_Record_Model::getInstanceFromPreferenceFile($userId);
+		
+		$viewer->assign('MODULE',$moduleName);
+		$viewer->assign('USER_MODEL',$userModel);
+		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		$viewer->view('ChangeUsername.tpl', $moduleName);
 	}
 
 }

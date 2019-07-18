@@ -24,7 +24,20 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType {
 	 * @return <Object>
 	 */
 	public function getDisplayValue($value) {
-		return $dateValue = self::getDisplayDateTimeValue($value);
+		$dateValue = '--';
+
+		if ($value != '') {
+			$dateTimeValue = self::getDisplayDateTimeValue($value);
+			list($startDate, $startTime) = explode(' ', $dateTimeValue);
+
+			$currentUser = Users_Record_Model::getCurrentUserModel();
+			if ($currentUser->get('hour_format') == '12') {
+				$startTime = Vtiger_Time_UIType::getTimeValueInAMorPM($startTime);
+			}
+
+			$dateValue = "$startDate $startTime";
+		}
+		return $dateValue;
 	}
 	
 	/**
@@ -37,7 +50,7 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType {
 		return $date->getDisplayDateTimeValue();
 	}
 
-    /**
+	/**
 	 * Function to get Date and Time value for Display
 	 * @param <type> $date
 	 * @return <String>
@@ -55,4 +68,15 @@ class Vtiger_Datetime_UIType extends Vtiger_Date_UIType {
 	public static function getDateTimeValue($dateTime){
 		return Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat($dateTime);
 	}
+
+	public function getDBInsertValue($value) {
+		$result = explode(' ', $value);
+		//If database value is date, then fall back to parent
+		if (!$result[1]) {
+			return parent::getDBInsertValue($value);
+		} else {
+			return $this->getDBDateTimeValue($value);
+		}
+	}
+
 }

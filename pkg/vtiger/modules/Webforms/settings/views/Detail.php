@@ -2,7 +2,7 @@
 /*+***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -18,7 +18,7 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 
 		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		if(!$recordId || !$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException('LBL_PERMISSION_DENIED');
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 
@@ -27,12 +27,14 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 		$qualifiedModuleName = $request->getModule(false);
 
 		$recordModel = Settings_Webforms_Record_Model::getInstanceById($recordId, $qualifiedModuleName);
-		$trailing_slash_URL =  vglobal('site_URL') . (substr(vglobal('site_URL'),-1) == '/' ? '' : '/'); 
-                $recordModel->set('posturl', $trailing_slash_URL.'modules/Webforms/capture.php');
-	
+		$siteUrl = $postUrl = vglobal('site_URL');
+		if($siteUrl[strlen($siteUrl)-1] != '/') $postUrl .= '/';
+		$postUrl .= 'modules/Webforms/capture.php';
+		$recordModel->set('posturl', $postUrl);
+
 		$recordStructure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
 		$moduleModel = $recordModel->getModule();
-		
+
 		$navigationInfo = ListViewSession::getListViewNavigation($recordId);
 
 		$viewer = $this->getViewer($request);
@@ -45,11 +47,16 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('SOURCE_MODULE', $recordModel->get('targetmodule'));
 		$viewer->assign('DETAILVIEW_LINKS', $recordModel->getDetailViewLinks());
 		$viewer->assign('SELECTED_FIELD_MODELS_LIST', $recordModel->getSelectedFieldsList());
+		$viewer->assign('DOCUMENT_FILE_FIELDS', $recordModel->getFileFields());
 		$viewer->assign('NO_PAGINATION',true);
+
+		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$userCurrencyInfo = getCurrencySymbolandCRate($currentUserModel->get('currency_id'));
+		$viewer->assign('USER_CURRENCY_SYMBOL', $userCurrencyInfo['symbol']);
 
 		$viewer->view('DetailView.tpl', $qualifiedModuleName);
 	}
-	
+
 	/**
 	 * Function to get the list of Script models to be included
 	 * @param Vtiger_Request $request

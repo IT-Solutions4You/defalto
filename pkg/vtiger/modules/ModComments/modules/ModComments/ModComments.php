@@ -66,16 +66,18 @@ class ModComments extends ModCommentsCore {
 
 		if (is_string($moduleNames)) $moduleNames = array($moduleNames);
 
+		$modCommentsModule = Vtiger_Module::getInstance('ModComments');
+		
 		$commentWidgetModules = array();
 		foreach($moduleNames as $moduleName) {
 			$module = Vtiger_Module::getInstance($moduleName);
 			if($module) {
 				$module->addLink($widgetType, $widgetName, "block://ModComments:modules/ModComments/ModComments.php");
+				$module->setRelatedList($modCommentsModule, 'ModComments', array(''), 'get_comments');
 				$commentWidgetModules[] = $moduleName;
 			}
 		}
 		if (count($commentWidgetModules) > 0) {
-			$modCommentsModule = Vtiger_Module::getInstance('ModComments');
 			$modCommentsModule->addLink('HEADERSCRIPT', 'ModCommentsCommonHeaderScript', 'modules/ModComments/ModCommentsCommon.js');
 			$modCommentsRelatedToField = Vtiger_Field::getInstance('related_to', $modCommentsModule);
 			$modCommentsRelatedToField->setRelatedModules($commentWidgetModules);
@@ -95,17 +97,19 @@ class ModComments extends ModCommentsCore {
 		include_once 'vtlib/Vtiger/Module.php';
 
 		if (is_string($moduleNames)) $moduleNames = array($moduleNames);
+		
+		$modCommentsModule = Vtiger_Module::getInstance('ModComments');
 
 		$commentWidgetModules = array();
 		foreach($moduleNames as $moduleName) {
 			$module = Vtiger_Module::getInstance($moduleName);
 			if($module) {
 				$module->deleteLink($widgetType, $widgetName, "block://ModComments:modules/ModComments/ModComments.php");
+				$module->unsetRelatedList($modCommentsModule, 'ModComments', 'get_comments');
 				$commentWidgetModules[] = $moduleName;
 			}
 		}
 		if (count($commentWidgetModules) > 0) {
-			$modCommentsModule = Vtiger_Module::getInstance('ModComments');
 			$modCommentsRelatedToField = Vtiger_Field::getInstance('related_to', $modCommentsModule);
 			$modCommentsRelatedToField->unsetRelatedModules($commentWidgetModules);
 		}
@@ -118,9 +122,69 @@ class ModComments extends ModCommentsCore {
 		return new ModComments_CommentsModel($this->column_fields);
 	}
 
-	function getListButtons($app_strings, $mod_strings = false) {
+	function getListButtons($app_strings) {
 		$list_buttons = Array();
 		return $list_buttons;
+	}
+
+	/**
+	 * Function to copy the comments from parent record to the target record.
+	 * @param type $currentParentId
+	 * @param type $targetParentId
+	 */
+	public static function copyCommentsToRelatedRecord($currentParentId, $targetParentId) {
+		$db = PearDatabase::getInstance();
+		$relatedIdMap = array();
+		$result = $db->pquery("SELECT *FROM vtiger_modcomments WHERE related_to=?", array($currentParentId));
+		$count = $db->num_rows($result);
+
+		for($i=0;$i<$count;$i++) {
+			$commentId = $db->query_result($result, $i, 'modcommentsid');
+			$commentContent = decode_html($db->query_result($result,$i,'commentcontent'));
+			$parentComments = $db->query_result($result, $i, 'parent_comments');
+			$customer = $db->query_result($result, $i, 'customer');
+			$userId = $db->query_result($result, $i, 'userid');
+			$reasonToEdit = $db->query_result($result, $i, 'reasontoedit');
+			$fromMailConverter = $db->query_result($result, $i, 'from_mailconverter');
+			$fromMailroom = $db->query_result($result, $i, 'from_mailroom');
+			$isPrivate = $db->query_result($result, $i, 'is_private');
+			$customer_Email = $db->query_result($result, $i, 'customer_email');
+			$filename = $db->query_result($result, $i, 'filename');
+			$related_email_id = $db->query_result($result, $i, 'related_email_id');
+
+			if(!empty($parentComments)) {
+				$parentComments = $relatedIdMap[$parentComments]; // should be mapped with copied comment
+			}
+
+			$crmEntityResult = $db->pquery('SELECT *FROM vtiger_crmentity where crmid = ?', array($commentId));
+			$smcreatorId = $db->query_result($crmEntityResult, 0, 'smcreatorid');
+			$smownerId = $db->query_result($crmEntityResult, 0, 'smownerid');
+			$modifiedby = $db->query_result($crmEntityResult, 0, 'modifiedby');
+			$setype = $db->query_result($crmEntityResult, 0, 'setype');
+			$description = $db->query_result($crmEntityResult, 0, 'description');
+			$createdTime = $db->query_result($crmEntityResult, 0, 'createdtime');
+			$modifiedTime = $db->query_result($crmEntityResult, 0, 'modifiedtime');
+			$viewedTime = $db->query_result($crmEntityResult, 0, 'viewedtime');
+			$status = $db->query_result($crmEntityResult, 0, 'status');
+			$version = $db->query_result($crmEntityResult, 0, 'version');
+			$presence = $db->query_result($crmEntityResult, 0, 'presence');
+			$deleted = $db->query_result($crmEntityResult, 0, 'deleted');
+			$label = $db->query_result($crmEntityResult, 0, 'label');
+			$source = $db->query_result($crmEntityResult, 0, 'source');
+			$smgroupId = $db->query_result($crmEntityResult, 0, 'smgroupid');
+
+			$commentCrmId = $db->getUniqueID('vtiger_crmentity');
+			$crmentityParams = array($commentCrmId, $smcreatorId, 
+						$smownerId, $modifiedby, $setype, $description, $createdTime, $modifiedTime, $viewedTime, $status, $version, $presence,
+						$deleted, $label, $source, $smgroupId);
+			$db->pquery('INSERT INTO vtiger_crmentity values('. generateQuestionMarks($crmentityParams) .')', $crmentityParams);
+
+			$modcommentsParams = array($commentCrmId, $commentContent, 
+						$targetParentId, $parentComments, $customer, $userId, $reasonToEdit, $fromMailConverter, $isPrivate,
+						$customer_Email, $fromMailroom, $filename, $related_email_id);
+			$db->pquery('INSERT INTO vtiger_modcomments values('. generateQuestionMarks($modcommentsParams) .')', $modcommentsParams);
+			$relatedIdMap[$commentId] = $commentCrmId;
+		}
 	}
 
 }

@@ -8,6 +8,8 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  * *********************************************************************************** */
+//required for auto detecting file endings for files create in mac
+ini_set("auto_detect_line_endings", true);
 
 class Import_Utils_Helper {
 
@@ -17,7 +19,7 @@ class Import_Utils_Helper {
 	static $AUTO_MERGE_MERGEFIELDS = 3;
 
 	static $supportedFileEncoding = array('UTF-8'=>'UTF-8', 'ISO-8859-1'=>'ISO-8859-1');
-	static $supportedDelimiters = array(','=>'comma', ';'=>'semicolon');
+	static $supportedDelimiters = array(','=>'comma', ';'=>'semicolon', '|'=> 'Pipe', '^'=>'Caret');
 	static $supportedFileExtensions = array('csv','vcf');
 
 	public function getSupportedFileExtensions() {
@@ -32,11 +34,13 @@ class Import_Utils_Helper {
 		return self::$supportedDelimiters;
 	}
 
-	public static function getAutoMergeTypes() {
-		return array(
-			self::$AUTO_MERGE_IGNORE => 'Skip',
-			self::$AUTO_MERGE_OVERWRITE => 'Overwrite',
-			self::$AUTO_MERGE_MERGEFIELDS => 'Merge');
+	public static function getAutoMergeTypes($moduleName) {
+		$mergeTypes = array(self::$AUTO_MERGE_IGNORE => 'Skip');
+		if (Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
+			$mergeTypes[self::$AUTO_MERGE_OVERWRITE]		= 'Overwrite';
+			$mergeTypes[self::$AUTO_MERGE_MERGEFIELDS]	= 'Merge';
+		}
+		return $mergeTypes;
 	}
 
 	public static function getMaxUploadSize() {
@@ -80,13 +84,13 @@ class Import_Utils_Helper {
 		$configReader = new Import_Config_Model();
 		$userImportTablePrefix = $configReader->get('userImportTablePrefix');
 
-        $tableName = $userImportTablePrefix;
-        if(method_exists($user, 'getId')){
-            $tableName .= $user->getId();
-        } else {
-            $tableName .= $user->id;
-        }
-        return $tableName;
+		$tableName = $userImportTablePrefix;
+		if(method_exists($user, 'getId')){
+			$tableName .= $user->getId();
+		} else {
+			$tableName .= $user->id;
+		}
+		return $tableName;
 	}
 
 	public static function showErrorPage($errorMessage, $errorDetails=false, $customActions=false) {
@@ -101,13 +105,10 @@ class Import_Utils_Helper {
 	}
 
 	public static function showImportLockedError($lockInfo) {
-
-		$errorMessage = vtranslate('ERR_MODULE_IMPORT_LOCKED', 'Import');
-		$errorDetails = array(vtranslate('LBL_MODULE_NAME', 'Import') => getTabModuleName($lockInfo['tabid']),
-							vtranslate('LBL_USER_NAME', 'Import') => getUserFullName($lockInfo['userid']),
-							vtranslate('LBL_LOCKED_TIME', 'Import') => $lockInfo['locked_since']);
-
-		self::showErrorPage($errorMessage, $errorDetails);
+		$moduleName = getTabModuleName($lockInfo['tabid']);
+		$userName = getUserFullName($lockInfo['userid']);
+		$errorMessage = sprintf("%s is importing %s. Please try after some time.",$userName, $moduleName);
+		self::showErrorPage($errorMessage);
 	}
 
 	public static function showImportTableBlockedError($moduleName, $user) {
@@ -199,7 +200,11 @@ class Import_Utils_Helper {
 			return false;
 		}
 
-		$fileCopied = move_uploaded_file($_FILES['import_file']['tmp_name'], $temporaryFileName);
+		if ($request->get('type') == "ics" || $request->get('type') == "vcf") {
+			$fileCopied = move_uploaded_file($_FILES['import_file']['tmp_name'], $temporaryFileName);
+		}else{
+			$fileCopied = self::neutralizeAndMoveFile($_FILES['import_file']['tmp_name'], $temporaryFileName, $request->get('delimiter'));
+		}
 		if(!$fileCopied) {
 			$request->set('error_message', vtranslate('LBL_IMPORT_FILE_COPY_FAILED', 'Import'));
 			return false;
@@ -220,24 +225,34 @@ class Import_Utils_Helper {
 		return true;
 	}
 
+	/**
+	 * To remove carriage return(\r) in end of every line and make the file neutral
+	 * @param type $uploadedFileName
+	 * @param type $temporaryFileName
+	 * @return boolean
+	 */
+	public static function neutralizeAndMoveFile($uploadedFileName, $temporaryFileName, $delimiter = ','){
+		$file_read = fopen($uploadedFileName,'r');
+		$file_write = fopen($temporaryFileName,'w+');
+		while($data = fgetcsv($file_read, 0, $delimiter)){
+			fputcsv($file_write, $data, $delimiter);
+		}
+		fclose($file_read);
+		fclose($file_write);
+		return true;
+	}
+
 	static function fileUploadErrorMessage($error_code) {
 		switch ($error_code) {
-			case 1:
-				return 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
-			case 2:
-				return 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form';
-			case 3:
-				return 'The uploaded file was only partially uploaded';
-			case 4:
-				return 'No file was uploaded';
-			case 6:
-				return 'Missing a temporary folder';
-			case 7:
-				return 'Failed to write file to disk';
-			case 8:
-				return 'File upload stopped by extension';
-			default:
-				return 'Unknown upload error';
+			case 1	:	$errorMessage = 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
+			case 2	:	$errorMessage = 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form';
+			case 3	:	$errorMessage = 'The uploaded file was only partially uploaded';
+			case 4	:	$errorMessage = 'No file was uploaded';
+			case 6	:	$errorMessage = 'Missing a temporary folder';
+			case 7	:	$errorMessage = 'Failed to write file to disk';
+			case 8	:	$errorMessage = 'File upload stopped by extension';
+			default	:	$errorMessage = 'Unknown upload error';
 		}
+		return $errorMessage;
 	}
 }

@@ -20,8 +20,12 @@ class PBXManagerHandler extends VTEventHandler {
         if ($eventName == 'vtiger.entity.aftersave') {
             PBXManagerHandler::handlePhoneLookUpSaveEvent($entityData, $moduleName);
         }
-        
-        if($eventName == 'vtiger.entity.afterdelete'){
+ 
+		if ($eventName == 'vtiger.lead.convertlead' && $moduleName == 'Leads') {
+			PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
+		}
+
+		if($eventName == 'vtiger.entity.afterdelete'){
             PBXManagerHandler::handlePhoneLookupDeleteEvent($entityData);
         }
         

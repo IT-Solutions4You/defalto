@@ -11,7 +11,7 @@
  *  Author       : Proudly, the best Vtiger's Partner in Mexico
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_IMPORT_MODULE'            => 'Importar Módulo'               , 
+	'LBL_IMPORT_MODULE'            => 'Importar módulo'               , 
 	'LBL_VTIGER_EXTENSION_STORE'   => 'Tienda de extensiones Vtiger'      , 
 	'LBL_PUBLISHER'                => 'Editor'                   , 
 	'LBL_LICENSE'                  => 'Licencia'                     , 
@@ -21,7 +21,7 @@ $languageStrings = array(
 	'LBL_VERSION'                  => 'Versión'                     , 
 	'LBL_DECLINE'                  => 'Rechazar'                     , 
 	'LBL_ACCEPT_AND_INSTALL'       => 'Aceptar e instalar'          , 
-	'LBL_ALREADY_EXISTS'           => 'Actualmente existe'              , 
+	'LBL_ALREADY_EXISTS'           => 'Ya existe'              , 
 	'LBL_OK'                       => 'Aceptar'                          , 
 	'LBL_EXTENSION_NOT_COMPATABLE' => 'La extensión no es compatible', 
 	'LBL_INVALID_FILE'             => 'Archivo inválido'                , 
@@ -29,35 +29,35 @@ $languageStrings = array(
 	'LBL_INSTALLATION'             => 'Instalación'                , 
 	'LBL_FAILED'                   => 'Falló'                      , 
 	'LBL_SUCCESSFULL'              => 'Exitosa'                 , 
-	'LBL_INSTALLATION_LOG'         => 'Log de Instalación'            ,
-	'LBL_IMPORT_MODULE_FROM_ZIP'   => 'Importar Módulo desde un zip',
+	'LBL_INSTALLATION_LOG'         => 'Bitácora de instalación'            ,
+	'LBL_IMPORT_MODULE_FROM_ZIP'   => 'Importar módulo desde un zip',
 	'LBL_INSTALL_FROM_ZIP'		   => 'Instalar desde un zip',
 	'LBL_ACCEPT_WITH_THE_DISCLAIMER' => 'Acepto con descargo de responsabilidad y quiero continuar', 
 	'LBL_LICENSE_ACCEPT_AGREEMENT' =>'Acepto el acuerdo de licencia', 
-	'LBL_IMPORTED_MODULE' 			=> ' Modulo importado exitosamente.',
-	'LBL_IMPORT_SUCCESSFULL'		=>'Importación Exitosa',
-	'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Límite de Responsabilidad - Módulos personalizados pueden poner en riesgo tu CRM</b><br />  
+	'LBL_IMPORTED_MODULE' 			=> ' Módulo importado exitosamente.',
+	'LBL_IMPORT_SUCCESSFULL'		=>'Importación exitosa',
+	'LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP' => '<b>Límite de responsabilidad - Los módulos personalizados pueden poner en riesgo tu CRM</b><br />  
                                               Esta funcionalidad ha sido diseñada para ofrecer a los desarrolladores  un ambiente de pruebas
-											  para nuevos módulos, Si estas intentando instalar desde un archivo provisto por un tercero
-											  por favor procede solamente si confías en ese editor. Módulos personalizados pueden incluir
+											  para nuevos módulos. Si estas intentando instalar desde un archivo provisto por un tercero
+											  por favor procede solamente si confías en ese editor. Los ódulos personalizados pueden incluir
 											  vulnerabilidades de seguridad y sobreescribir archivos del sistema poniendo en riesgo tu CRM.
-											  El módulo que estas intentando instalar no ha sido revisado por Vtiger',
-       'LBL_UPDATE_NOW'				 => 'Actualizar Ahora',
-       'LBL_IMPORT_NOW'				 => 'Importar Ahora',
+											  El módulo que estás intentando instalar no ha sido revisado por Vtiger',
+       'LBL_UPDATE_NOW'				 => 'Actualizar ahora',
+       'LBL_IMPORT_NOW'				 => 'Importar ahora',
 	   'LBL_VERIFY_IMPORT_DETAILS' => 'Verifica los detalles de la importación',
 											  
         //Extension Store translations
         'LBL_VTIGER_EXTENSION_STORE' => 'Tienda de extensiones Vtiger',
-        'LBL_SEARCH_FOR_EXTENSION'  => 'Buscar Extensión',
+        'LBL_SEARCH_FOR_EXTENSION'  => 'Buscar extensión',
         'LBL_DOWNLOADS' => 'Descargas',
         'LBL_NO_EXTENSIONS_FOUND' => 'No se encontraron extensiones',
-        'LBL_REGISTER_USER' => 'Registro de Usuario',	
-        'LBL_SETUP_CARD_DETAILS' => 'Información de la Tarjeta de pago',
+        'LBL_REGISTER_USER' => 'Registro de usuario',	
+        'LBL_SETUP_CARD_DETAILS' => 'Información de la tarjeta de pago',
         'LBL_SETUP_CARD' => 'Configuración de Tarjeta',
         'LBL_CARD_NUMBER' => 'Número de tarjeta',
         'LBL_EXP_MONTH' => 'Válida hasta (mes)',
-        'LBL_EXP_YEAR' => 'Válida hasta (Año)',
-        'LBL_CVC_CODE' => 'ódigo de seguridad CVC 3 dígitos',
+        'LBL_EXP_YEAR' => 'Válida hasta (año)',
+        'LBL_CVC_CODE' => 'Código de seguridad CVC 3 dígitos',
         'LBL_RESET' => 'Reiniciar',
         'LBL_EXTENSION_STORE' => 'Tienda de extensiones',
         'LBL_INSTALLED' => 'Instalado',
@@ -65,8 +65,8 @@ $languageStrings = array(
         'LBL_BY' => 'Por',
         'LBL_RATINGS' => 'Valoraciones',
         'LBL_DESCRIPTION' => 'Descripción',
-        'LBL_AUTHOR_INFORMATION' => 'Información del Autor',
-        'LBL_AUTHOR_NAME' => 'Nombre del Autor',
+        'LBL_AUTHOR_INFORMATION' => 'Información del autor',
+        'LBL_AUTHOR_NAME' => 'Nombre del autor',
         'LBL_PHONE' => 'Teléfono',
         'LBL_EMAIL' => 'Email',
         'LBL_SCREEN_SHOTS' => 'Imágenes',
@@ -75,19 +75,19 @@ $languageStrings = array(
         'LBL_WRITE_A_REVIEW' => 'Escribe su opinión',
         'LBL_CUSTOMER_REVIEW' => 'Opinión del cliente',
         'LBL_REVIEW' => 'Revisión',
-        'LBL_CUSTOMERS_REVIEWED' => 'Opinión de los Clientes',
+        'LBL_CUSTOMERS_REVIEWED' => 'Opinión de los clientes',
         'LBL_SINGLE_CUSTOMER_REVIEWED' => 'Opinión del cliente',
-        'LBL_INSTALLATION_FAILED' => 'Fallo en la Instalación',
+        'LBL_INSTALLATION_FAILED' => 'Error en la instalación',
         'LBL_SUCCESSFULL_INSTALLATION' => 'Instalación exitosa',
         'Install' => 'Instalar',
         'Upgrade' => 'Actualizar',
-        'LBL_RATE_IT' => 'Califica!',
+        'LBL_RATE_IT' => 'Por favor califique el servicio o producto',
 );
 $jsLanguageStrings = array(
-  'JS_PLEASE_SETUP_CARD_DETAILS_TO_INSTALL_THIS_EXTENSION'  => 'Agrega la información de la tarjeta para instalar la extensión',
+  'JS_PLEASE_SETUP_CARD_DETAILS_TO_INSTALL_THIS_EXTENSION'  => 'Agregue la información de la tarjeta para instalar la extensión',
   'JS_UPDATE_CARD_DETAILS' => 'Detalles de la tarjeta',
   'JS_ON' => 'en',
-  'JS_IMPORT_SUCCESSFULL' => 'Importación Exitosa',
+  'JS_IMPORT_SUCCESSFULL' => 'Importación exitosa',
   'JS_RATINGS' => 'Valoraciones',
-  'JS_PLEASE_INSTALL_EXTENSION_LOADER_TO_INSTALL_THIS_EXTENSION_FROM_BELOW_LINK' => 'Instala el gestor de extensiones para instalar esta extensión con el enlace de abajo',
+  'JS_PLEASE_INSTALL_EXTENSION_LOADER_TO_INSTALL_THIS_EXTENSION_FROM_BELOW_LINK' => 'Instale el gestor de extensiones para instalar esta extensión con el enlace de abajo',
 );

@@ -12,7 +12,7 @@ class Potentials_GroupedBySalesPerson_Dashboard extends Vtiger_IndexAjax_View {
     
     function getSearchParams($assignedto,$stage) {
         $listSearchParams = array();
-        $conditions = array(array('assigned_user_id','e',$assignedto),array("sales_stage","e",$stage));
+        $conditions = array(array('assigned_user_id','e',decode_html(urlencode(escapeSlashes($assignedto)))),array("sales_stage","e",  decode_html(urlencode(escapeSlashes($stage)))));
         $listSearchParams[] = $conditions;
         return '&search_params='. json_encode($listSearchParams);
     }
@@ -26,9 +26,9 @@ class Potentials_GroupedBySalesPerson_Dashboard extends Vtiger_IndexAjax_View {
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$data = $moduleModel->getPotentialsCountBySalesPerson();
-        $listViewUrl = $moduleModel->getListViewUrl();
+        $listViewUrl = $moduleModel->getListViewUrlWithAllFilter();
         for($i = 0;$i<count($data);$i++){
-            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$data[$i]["sales_stage"]);
+            $data[$i]["links"] = $listViewUrl.$this->getSearchParams($data[$i]["last_name"],$data[$i]["link"]).'&nolistcache=1';
         }
 
 		$widget = Vtiger_Widget_Model::getInstance($linkId, $currentUser->getId());

@@ -30,7 +30,7 @@ $languageStrings = array(
 	'LBL_FOLDERS_LIST'             => 'Folders List'                ,
 	'LBL_DENIED_REPORTS'           => 'Denied Reports'              ,
 	'LBL_NO_OF_RECORDS'            => 'Total records : '           ,
-	'LBL_MORE_RECORDS_TXT'		   => 'Nur 1000 Einträgen finden Sie weiter unten. Bitte exportieren, um alle Datensätze zu sehen',
+	'LBL_MORE_RECORDS_TXT'		   => 'Nur 500 Einträgen finden Sie weiter unten. Bitte exportieren, um alle Datensätze zu sehen',
 	'LBL_ADD_RECORD'               => 'Add Report'                  ,
 	'LBL_ADD_FOLDER'               => 'Add Folder'                  ,
 	'LBL_REPORT_DELETE_DENIED'     => 'Permission denied to delete the Report',
@@ -54,7 +54,7 @@ $languageStrings = array(
 	'LBL_AVERAGE'                  => 'Durchschnitt'                ,
 	'LBL_LOWEST_VALUE'             => 'kleinster Wert'              ,
 	'LBL_HIGHEST_VALUE'            => 'Highest Value'               ,
-	'LBL_GENERATE_REPORT'          => 'Generate Report'             ,
+	'LBL_GENERATE_REPORT'          => 'Speichern & Generate Report' ,
 	'LBL_SUM'                      => 'Summe'                       ,
 	'LBL_AVG'                      => 'Durchschnitt'                ,
 	'LBL_MIN'                      => 'Minimum'                     ,
@@ -183,9 +183,42 @@ $languageStrings = array(
 	'LBL_CHARTS' => 'Charts',
     //Schedule Reports - Mail Content
     'LBL_AUTO_GENERATED_REPORT_EMAIL' => 'Dies ist eine automatisch generierte E-Mail im Namen einer geplanten Bericht gesendet.',
+    'LBL_PIN_CHART_TO_DASHBOARD' => 'Pin-Diagramm Dashboard',
+    'LBL_FILE_FORMAT' => 'Dateiformat',
+    
+    'Report Type' => 'Report Type',
+    'tabular' => 'Detail',
+    'summary' => 'Detail',
+    'pivot' => 'Achse',
+    'chart' => 'Tabelle',
+    'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Berichte erfolgreich verschoben.',
+    'LBL_SAME_SOURCE_AND_TARGET_FOLDER'=>'Zielordner ist der gleiche wie Quellordner',
+	'LBL_SEARCH_FOR_FOLDERS' => 'Suche nach Ordnern',
+	'LBL_CHART_REPORT' => 'Diagramm Bericht',
+	'LBL_UNPIN_CHART_FROM_DASHBOARD' => 'Unpin Diagramm aus Armaturenbrett',
+
+  'LBL_SAME_LEVEL_ROLES' => 'Gleichen Ebene Rollen',
+  'LBL_SUBORDINATE_ROLES' => 'Untergeordnete Rollen',
+  'LBL_SHARE_REPORT' => 'Teilen Bericht',
+  'LBL_SHARED_REPORTS' => 'Gemeinsam Mit Mir',
+  'LBL_PINNED' => 'Angeheftete',
+  'LBL_UNPINNED' => 'Ohne Führungsstift',
+
+
+  'LBL_REPORTS_DELETED_SUCCESSFULLY' => 'Berichte Erfolgreich Gelöscht',
+
 );
 $jsLanguageStrings = array(
 	'JS_DUPLICATE_RECORD'          => 'Duplicate Report'            ,
 	'JS_CALCULATION_LINE_ITEM_FIELDS_SELECTION_LIMITATION' => 'Limitation: Line Item fields(List Price, Discount & Quantity) can only be used when other calculation fields are not selected.',
-        'JS_NO_CHART_DATA_AVAILABLE' => 'Daten nicht verfügbar ist, überprüfen Sie bitte die gewählten Felder',
+    'JS_CHART_PINNED_TO_DASHBOARD' => 'Tabelle Fixierte Dashboard',
+    'JS_CHART_ALREADY_PINNED_TO_DASHBOARD' => 'Tabelle bereits gemerkt Dashboard',
+	'JS_MOVE_REPORTS'=>'Bewegen Berichte',
+    'JS_SCHEDULED_DATE_TIME_ERROR' => 'Datum und die Uhrzeit sollte größer als das aktuelle Datum und Zeit',
+	'JSLBL_PIN_CHART_TO_DASHBOARD' => 'Pin-Diagramm Dashboard',
+	'JSLBL_UNPIN_CHART_FROM_DASHBOARD' => 'Unpin Diagramm aus Armaturenbrett',
+	'JS_CHART_REMOVED_FROM_DASHBOARD' => 'Diagramm von Armaturenbrett entfernt',
+
+  'JS_NO_CHART_DATA_AVAILABLE' => 'Daten nicht verfügbar, bitte überprüfen Sie die markierten Felder aus',
+
 );

@@ -25,6 +25,11 @@ class Quotes_Record_Model extends Inventory_Record_Model {
 		return "index.php?module=".$salesOrderModuleModel->getName()."&view=".$salesOrderModuleModel->getEditViewName()."&quote_id=".$this->getId();
 	}
 
+	public function getCreatePurchaseOrderUrl() {
+		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
+		return "index.php?module=".$purchaseOrderModuleModel->getName()."&view=".$purchaseOrderModuleModel->getEditViewName()."&quote_id=".$this->getId();
+	}
+
 	/**
 	 * Function to get this record and details as PDF
 	 */

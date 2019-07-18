@@ -18,7 +18,7 @@ class MailManager_MainUI_View extends MailManager_Abstract_View {
      */
 	public function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
-		$response = new Vtiger_Response();
+		$response = new MailManager_Response();
 		$viewer = $this->getViewer($request);
 		if($this->getOperationArg($request) == "_quicklinks") {
 			$content = $viewer->view('MainuiQuickLinks.tpl', $moduleName, true);
@@ -43,9 +43,9 @@ class MailManager_MainUI_View extends MailManager_Abstract_View {
 			return $response;
 		}
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            return $request->validateReadAccess(); 
-        } 
+    
+    public function validateRequest(Vtiger_Request $request) {
+        return $request->validateReadAccess();
+    }
 }
 ?>

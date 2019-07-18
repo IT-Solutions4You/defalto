@@ -19,7 +19,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW'             => 'Profile view'                , 
 	'LBL_FIELDS'                   => 'Fields'                      , 
 	'LBL_TOOLS'                    => 'Tools'                       , 
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Field and Tool Privileges'   , 
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Feld und Werkzeug Privileges'   ,
 	'LBL_EDIT_RECORD'              => 'Edit'                        , 
 	'LBL_DUPLICATE_RECORD'         => 'Duplicate'                   , 
 	'LBL_DELETE_RECORD'            => 'Delete'                      , 
@@ -33,15 +33,16 @@ $languageStrings = array(
 	'LBL_TRANSFER_ROLES_TO_PROFILE' => 'Transfer roles to profile'   , 
 	'LBL_PROFILES'                 => 'Profiles'                    , 
 	'LBL_CHOOSE_PROFILES'          => 'Choose Profiles'             , 
-    
-        'Import' => 'Import',
-        'Export' => 'Export',
-	'Merge'  => 'Verschmelzen',
-        'ConvertLead' => 'Konvertieren Blei',
-        'DuplicatesHandling' => 'Duplikate Handhabung',
-        'ReceiveIncomingCalls' => 'Erhalten Eingehende Anrufe',
-        'MakeOutgoingCalls' => 'Machen Sie Abgehende Anrufe',
-        'Print' => 'Drucken',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Warnung: Benutzer mit diesem Profil verbunden sind, können alle Datensätze in der CRM zugreifen',
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Bearbeiten Berechtigungen von diesem Profil',
+  'LBL_VIEW_ALL' => 'Alle Anzeigen',
+  'LBL_EDIT_ALL' => 'Bearbeiten Sie Alle',
+  'LBL_VIEW_ALL_DESC' => 'Können alle Module Informationen',
+  'LBL_EDIT_ALL_DESC' => 'Bearbeiten können alle Module Informationen',
+  'LBL_DUPLICATES_EXIST' => 'Doppelte Profil Vorhanden Ist',
+  'LBL_EDIT_PROFILE' => 'Profil Bearbeiten',
+
 );
 $jsLanguageStrings = array(
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Profile deleted successfully', 

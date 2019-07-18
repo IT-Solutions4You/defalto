@@ -10,6 +10,8 @@
 
 class Vtiger_Dashboard_View extends Vtiger_Index_View {
 
+	protected static $selectable_dashboards;
+
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName)) {
@@ -28,7 +30,17 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
 		if($permission) {
+			// TODO : Need to optimize the widget which are retrieving twice
+			$dashboardTabs = $dashBoardModel->getActiveTabs();
+			if ($request->get("tabid")) {
+				$tabid = $request->get("tabid");
+			} else {
+				// If no tab, then select first tab of the user
+				$tabid = $dashboardTabs[0]["id"];
+			}
+			$dashBoardModel->set("tabid", $tabid);
 			$widgets = $dashBoardModel->getSelectableDashboard();
+			self::$selectable_dashboards = $widgets;
 		} else {
 			$widgets = array();
 		}
@@ -49,20 +61,36 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 
 		$dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
-		
+
 		//check profile permissions for Dashboards
 		$moduleModel = Vtiger_Module_Model::getInstance('Dashboard');
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
 		if($permission) {
-			$widgets = $dashBoardModel->getDashboards();
+			// TODO : Need to optimize the widget which are retrieving twice
+		   $dashboardTabs = $dashBoardModel->getActiveTabs();
+		   if($request->get("tabid")){
+			   $tabid = $request->get("tabid");
+		   } else {
+			   // If no tab, then select first tab of the user
+			   $tabid = $dashboardTabs[0]["id"];
+		   }
+		   $dashBoardModel->set("tabid",$tabid);
+			$widgets = $dashBoardModel->getDashboards($moduleName);
 		} else {
 			return;
 		}
 
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('WIDGETS', $widgets);
+		$viewer->assign('DASHBOARD_TABS', $dashboardTabs);
+		$viewer->assign('DASHBOARD_TABS_LIMIT', $dashBoardModel->dashboardTabLimit);
+		$viewer->assign('SELECTED_TAB',$tabid);
+        if (self::$selectable_dashboards) {
+			$viewer->assign('SELECTABLE_WIDGETS', self::$selectable_dashboards);
+		}
 		$viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
+		$viewer->assign('TABID',$tabid);
 		$viewer->view('dashboards/DashBoardContents.tpl', $moduleName);
 	}
 
@@ -84,17 +112,28 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 			'~/libraries/jquery/jqplot/jquery.jqplot.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.canvasTextRenderer.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js',
-                        '~/libraries/jquery/jqplot/plugins/jqplot.pieRenderer.min.js',
-                        '~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
-                        '~/libraries/jquery/jqplot/plugins/jqplot.categoryAxisRenderer.min.js',
+			'~/libraries/jquery/jqplot/plugins/jqplot.pieRenderer.min.js',
+			'~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
+			'~/libraries/jquery/jqplot/plugins/jqplot.categoryAxisRenderer.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.pointLabels.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.funnelRenderer.min.js',
-                        '~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
+			'~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
 			'~/libraries/jquery/jqplot/plugins/jqplot.logAxisRenderer.min.js',
+			'~/libraries/jquery/VtJqplotInterface.js',
+			'~/libraries/jquery/vtchart.js',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/gridster/jquery.gridster.min.js',
+			'~/libraries/jquery/vtchart.js',
 			'modules.Vtiger.resources.DashBoard',
 			'modules.'.$moduleName.'.resources.DashBoard',
-			'modules.Vtiger.resources.dashboards.Widget'
+			'modules.Vtiger.resources.dashboards.Widget',
+			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Vtiger/resources/Detail.js',
+			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/Detail.js',
+			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/ChartDetail.js',
+			"modules.Emails.resources.MassEdit",
+			"modules.Vtiger.resources.CkEditor",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/bootstrap-daterangepicker/moment.js",
+			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/bootstrap-daterangepicker/daterangepicker.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -111,8 +150,9 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 		$parentHeaderCssScriptInstances = parent::getHeaderCss($request);
 
 		$headerCss = array(
-			'~/libraries/jquery/gridster/jquery.gridster.min.css',
-			'~/libraries/jquery/jqplot/jquery.jqplot.min.css',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/gridster/jquery.gridster.min.css',
+			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/bootstrap-daterangepicker/daterangepicker.css',
+			'~libraries/jquery/jqplot/jquery.jqplot.min.css'
 		);
 		$cssScripts = $this->checkAndConvertCssStyles($headerCss);
 		$headerCssScriptInstances = array_merge($parentHeaderCssScriptInstances , $cssScripts);

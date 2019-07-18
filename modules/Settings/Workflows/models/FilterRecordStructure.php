@@ -31,7 +31,7 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
 			if (!empty ($fieldModelList)) {
 				$values[$blockLabel] = array();
 				foreach($fieldModelList as $fieldName=>$fieldModel) {
-					if($fieldModel->isViewable()) {
+					if($fieldModel->isViewableInFilterView()) {
 						if (in_array($moduleModel->getName(), array('Calendar', 'Events')) && $fieldModel->getDisplayType() == 3) {
 							/* Restricting the following fields(Event module fields) for "Calendar" module
 							 * time_start, time_end, eventstatus, activitytype,	visibility, duration_hours,
@@ -71,19 +71,27 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
 		}
 
 		//All the reference fields should also be sent
-		$fields = $moduleModel->getFieldsByType(array('reference', 'owner', 'multireference'));
+		$fields = $moduleModel->getFieldsByType(array('reference', 'multireference'));
 		foreach($fields as $parentFieldName => $field) {
-			$type = $field->getFieldDataType();
 			$referenceModules = $field->getReferenceList();
-			if($type == 'owner') $referenceModules = array('Users');
 			foreach($referenceModules as $refModule) {
+				if($refModule == 'Users') continue;
 				$moduleModel = Vtiger_Module_Model::getInstance($refModule);
 				$blockModelList = $moduleModel->getBlocks();
 				foreach($blockModelList as $blockLabel=>$blockModel) {
 					$fieldModelList = $blockModel->getFields();
 					if (!empty ($fieldModelList)) {
+						if(count($referenceModules) > 1) {
+							// block label format : reference field label (modulename) - block label. Eg: Related To (Organization) Address Details
+							$newblockLabel = vtranslate($field->get('label'), $baseModuleModel->getName()).' ('.vtranslate($refModule, $refModule).') - '.
+												vtranslate($blockLabel, $refModule);
+						} else {
+							$newblockLabel = vtranslate($field->get('label'), $baseModuleModel->getName()).'-'.vtranslate($blockLabel, $refModule);
+						}
+						$values[$newblockLabel] = array();
+						$fieldModel = $fieldName = null;
 						foreach($fieldModelList as $fieldName=>$fieldModel) {
-							if($fieldModel->isViewable()) {
+							if($fieldModel->isViewableInFilterView()) {
 								$name = "($parentFieldName : ($refModule) $fieldName)";
 								$label = vtranslate($field->get('label'), $baseModuleModel->getName()).' : ('.vtranslate($refModule, $refModule).') '.vtranslate($fieldModel->get('label'), $refModule);
 								$fieldModel->set('workflow_columnname', $name)->set('workflow_columnlabel', $label);
@@ -93,7 +101,10 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
 									$fieldInfo['workflow_valuetype'] = $fieldValueType;
 									$fieldModel->setFieldInfo($fieldInfo);
 								}
-								$values[$field->get('label')][$name] = clone $fieldModel;
+								$newFieldModel = clone $fieldModel;
+								$label = vtranslate($field->get('label'),$baseModuleModel->getName()).'-'.vtranslate($fieldModel->get('label'), $refModule);
+								$newFieldModel->set('label', $label);
+								$values[$newblockLabel][$name] = $newFieldModel;
 							}
 						}
 					}

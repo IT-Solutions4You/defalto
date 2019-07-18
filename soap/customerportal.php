@@ -18,6 +18,7 @@ if (file_exists('config_override.php')) {
 }
 
 include_once 'vtlib/Vtiger/Module.php';
+include_once 'vtlib/Vtiger/Functions.php';
 include_once 'includes/main/WebUI.php';
 
 require_once('libraries/nusoap/nusoap.php');
@@ -35,7 +36,7 @@ $user = new Users();
 $current_user = $user->retrieveCurrentUserInfoFromFile($userid);
 
 
-$log = &LoggerManager::getLogger('customerportal');
+$log = LoggerManager::getLogger('customerportal');
 
 error_reporting(0);
 
@@ -863,6 +864,8 @@ function create_ticket($input_array)
 
 	$ticket->column_fields['assigned_user_id']=$defaultAssignee;
 	$ticket->column_fields['from_portal'] = 1;
+	// New field added to show source of the Record 
+	$ticket->column_fields['source'] = 'CUSTOMER PORTAL';
 
 	$accountResult = $adb->pquery('SELECT accountid FROM vtiger_contactdetails WHERE contactid = ?', array($parent_id));
 	$accountId = $adb->query_result($accountResult, 0, 'accountid');
@@ -996,30 +999,40 @@ function authenticate_user($username,$password,$version,$login = 'true')
 	$password = $adb->sql_escape_string($password);
 
 	$current_date = date("Y-m-d");
-	$sql = "select id, user_name, user_password,last_login_time, support_start_date, support_end_date
+	$sql = "select id, user_name, user_password,last_login_time, support_start_date, support_end_date, cryptmode
 				from vtiger_portalinfo
 					inner join vtiger_customerdetails on vtiger_portalinfo.id=vtiger_customerdetails.customerid
 					inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_portalinfo.id
-				where vtiger_crmentity.deleted=0 and user_name=? and user_password = ?
+				where vtiger_crmentity.deleted=0 and user_name=?
 					and isactive=1 and vtiger_customerdetails.portal=1
 					and vtiger_customerdetails.support_start_date <= ? and vtiger_customerdetails.support_end_date >= ?";
-	$result = $adb->pquery($sql, array($username, $password, $current_date, $current_date));
+	$result = $adb->pquery($sql, array($username, $current_date, $current_date));
 	$err[0]['err1'] = "MORE_THAN_ONE_USER";
 	$err[1]['err1'] = "INVALID_USERNAME_OR_PASSWORD";
 
 	$num_rows = $adb->num_rows($result);
 
-	if($num_rows > 1)		return $err[0];//More than one user
-	elseif($num_rows <= 0)		return $err[1];//No user
+	if($num_rows <= 0)		return $err[1];//No user
 
-	$customerid = $adb->query_result($result,0,'id');
+	// Match password against multiple user and decide.
+	$customerid = null;
+	for ($i = 0; $i < $num_rows; ++$i) {
+		$customerid = $adb->query_result($result, $i,'id');
+		if (Vtiger_Functions::compareEncryptedPassword($password, $adb->query_result($result, $i, 'user_password'), $adb->query_result($result, $i, 'cryptmode'))) {
+			break;
+		} else {
+			$customerid = null;
+		}
+	}
+
+	if (!$customerid) return $err[1];//No user again.
 
 	$list[0]['id'] = $customerid;
-	$list[0]['user_name'] = $adb->query_result($result,0,'user_name');
-	$list[0]['user_password'] = $adb->query_result($result,0,'user_password');
-	$list[0]['last_login_time'] = $adb->query_result($result,0,'last_login_time');
-	$list[0]['support_start_date'] = $adb->query_result($result,0,'support_start_date');
-	$list[0]['support_end_date'] = $adb->query_result($result,0,'support_end_date');
+	$list[0]['user_name'] = $adb->query_result($result,$i,'user_name');
+	$list[0]['user_password'] = $password;
+	$list[0]['last_login_time'] = $adb->query_result($result,$i,'last_login_time');
+	$list[0]['support_start_date'] = $adb->query_result($result,$i,'support_start_date');
+	$list[0]['support_end_date'] = $adb->query_result($result,$i,'support_end_date');
 
 	//During login process we will pass the value true. Other times (change password) we will pass false
 	if($login != 'false')
@@ -1061,11 +1074,11 @@ function change_password($input_array)
 		return null;
 
 	$list = authenticate_user($username,$password,$version ,'false');
-	if(!empty($list[0]['id'])){
-		return array('MORE_THAN_ONE_USER');
+	if(!empty($list[0]['id']) && $id != $list[0]['id']){
+		return array('MORE_THAN_ONE_USER'); /* compatability with portal app */
 	}
-	$sql = "update vtiger_portalinfo set user_password=? where id=? and user_name=?";
-	$result = $adb->pquery($sql, array($password, $id, $username));
+	$sql = "update vtiger_portalinfo set user_password=?, cryptmode=? where id=? and user_name=?";
+	$result = $adb->pquery($sql, array(Vtiger_Functions::generateEncryptedPassword($password), 'CRYPT', $id, $username));
 
 	$log->debug("Exiting customer portal function change_password");
 	return $list;
@@ -1117,67 +1130,63 @@ function send_mail_for_password($mailid)
 	$log->debug("Entering customer portal function send_mail_for_password");
 	$adb->println("Inside the function send_mail_for_password($mailid).");
 
-	$sql = "select * from vtiger_portalinfo  where user_name = ? ";
-	$res = $adb->pquery($sql, array($mailid));
-	$user_name = $adb->query_result($res,0,'user_name');
-	$password = $adb->query_result($res,0,'user_password');
-	$isactive = $adb->query_result($res,0,'isactive');
-
-	$fromquery = "select vtiger_users.user_name, vtiger_users.email1 from vtiger_users inner join vtiger_crmentity on vtiger_users.id = vtiger_crmentity.smownerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_crmentity.crmid where vtiger_contactdetails.email =?";
-	$from_res = $adb->pquery($fromquery, array($mailid));
-	$initialfrom = $adb->query_result($from_res,0,'user_name');
-	$from = $adb->query_result($from_res,0,'email1');
-
-	$contents = getTranslatedString('LBL_LOGIN_DETAILS');
-	$contents .= "<br><br>".getTranslatedString('LBL_USERNAME')." ".$user_name;
-	$contents .= "<br>".getTranslatedString('LBL_PASSWORD')." ".$password;
-
-	$mail = new PHPMailer();
-
-	$mail->Subject =  getTranslatedString('LBL_SUBJECT_PORTAL_LOGIN_DETAILS');
-	$mail->Body    = $contents;
-	$mail->IsSMTP();
-
-	$mailserverresult = $adb->pquery("select * from vtiger_systems where server_type=?", array('email'));
-	$mail_server = $adb->query_result($mailserverresult,0,'server');
-	$mail_server_username = $adb->query_result($mailserverresult,0,'server_username');
-	$mail_server_password = $adb->query_result($mailserverresult,0,'server_password');
-	$smtp_auth = $adb->query_result($mailserverresult,0,'smtp_auth');
-
-	$mail->Host = $mail_server;
-	if($smtp_auth) 
-	$mail->SMTPAuth = 'true';
-	$mail->Username = $mail_server_username;
-	$mail->Password = $mail_server_password;
-	$mail->From = $from;
-	$mail->FromName = $initialfrom;
-
-	$mail->AddAddress($user_name);
-	$mail->AddReplyTo($current_user->name);
-	$mail->WordWrap = 50;
-
-	$mail->IsHTML(true);
-
-	$mail->AltBody = $mod_strings['LBL_ALTBODY'];
-	if($mailid == '')
-	{
+	if ($mailid == '') {
 		$ret_msg = "false@@@<b>".$mod_strings['LBL_GIVE_MAILID']."</b>";
 	}
-	elseif($user_name == '' && $password == '')
-	{
+
+	$sql = 'SELECT * FROM vtiger_portalinfo INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid=vtiger_portalinfo.id WHERE user_name = ?';
+	$res = $adb->pquery($sql, array($mailid));
+	$contactId = $adb->query_result($res, 0, 'id');
+	$user_name = $adb->query_result($res, 0, 'user_name');
+	$password = $adb->query_result($res, 0, 'user_password');
+	$isactive = $adb->query_result($res, 0, 'isactive');
+
+	// We no longer have the original password!
+	if (!empty($adb->query_result($res, 0, 'cryptmode'))) {
+		$password = makeRandomPassword();
+		$enc_password = Vtiger_Functions::generateEncryptedPassword($password);
+
+		$sql = 'UPDATE vtiger_portalinfo SET user_password=?, cryptmode=? WHERE id=?';
+		$params = array($enc_password, 'CRYPT', $contactId);
+		$adb->pquery($sql, $params);
+		// For now CRM user can do the same.
+	}
+
+	if ($user_name == '' && $password == '') {
 		$ret_msg = "false@@@<b>".$mod_strings['LBL_CHECK_MAILID']."</b>";
-	}
-	elseif($isactive == 0)
-	{
+	} elseif ($isactive == 0) {
 		$ret_msg = "false@@@<b>".$mod_strings['LBL_LOGIN_REVOKED']."</b>";
-	}
-	elseif(!$mail->Send())
-	{
-		$ret_msg = "false@@@<b>".$mod_strings['LBL_MAIL_COULDNOT_SENT']."</b>";
-	}
-	else
-	{
-		$ret_msg = "true@@@<b>".$mod_strings['LBL_MAIL_SENT']."</b>";
+	} else {
+
+		global $current_user,$HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
+		require_once("modules/Emails/mail.php");
+
+		$moduleName = 'Contacts';
+		require_once 'config.inc.php';
+		global $PORTAL_URL;
+
+		$portalURL = vtranslate('Please ',$moduleName).'<a href="'.$PORTAL_URL.'" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">'. vtranslate('click here', $moduleName).'</a>';
+		$contents = '<table><tr><td>
+						<strong>Dear '.$adb->query_result($res, 0, 'firstname')." ".$adb->query_result($res, 0, 'lastname').'</strong><br></td></tr><tr>
+						<td>'.vtranslate('Here is your self service portal login details:', $moduleName).'</td></tr><tr><td align="center"><br><table style="border:2px solid rgb(180,180,179);background-color:rgb(226,226,225);" cellspacing="0" cellpadding="10" border="0" width="75%"><tr>
+						<td><br>'.vtranslate('User ID').' : <font color="#990000"><strong>
+							<a target="_blank">'.$user_name.'</a></strong></font></td></tr><tr>
+						<td>'.vtranslate('Password').' : <font color="#990000">
+							<strong>'.$password.'</strong></font></td></tr><tr>
+						<td align="center"><strong>'.$portalURL.'</strong></td>
+						</tr></table><br></td></tr><tr><td><strong>NOTE: </strong>'.vtranslate('We suggest you to change your password after logging in first time').'.<br>
+					</td></tr></table>';
+
+		$subject = 'Customer Portal Login Details';
+		$subject = decode_html(getMergedDescription($subject, $contactId, 'Contacts'));
+		$mailStatus = send_mail($moduleName, $user_name, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents, '', '', '', '', '', true);
+
+		if (!$mailStatus) {
+			$ret_msg = "false@@@<b>".$mod_strings['LBL_MAIL_COULDNOT_SENT']."</b>";
+		} else {
+			$ret_msg = "true@@@<b>".$mod_strings['LBL_MAIL_SENT']."</b>";
+		}
+
 	}
 
 	$adb->println("Exit from send_mail_for_password. $ret_msg");
@@ -1430,6 +1439,7 @@ function add_ticket_attachment($input_array)
 	$focus->column_fields['filestatus'] = 1;
 	$focus->column_fields['assigned_user_id'] = $user_id;
 	$focus->column_fields['folderid'] = 1;
+	$focus->column_fields['source'] = 'CUSTOMER PORTAL';
 	$focus->parent_id = $ticketid;
 	$focus->save('Documents');
 
@@ -2394,6 +2404,7 @@ function get_details($id,$module,$customerid,$sessionid)
 		$fieldlabel = getTranslatedString($adb->query_result($fieldres,$i,'fieldlabel'));
 		$fieldvalue = $adb->query_result($res,0,$columnname);
 
+		$output[0][$module][$i]['fieldname'] = $fieldname;
 		$output[0][$module][$i]['fieldlabel'] = $fieldlabel ;
 		$output[0][$module][$i]['blockname'] = $blockname;
 		if($columnname == 'title' || $columnname == 'description') {

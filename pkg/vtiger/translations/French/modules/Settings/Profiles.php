@@ -19,7 +19,7 @@ $languageStrings = array(
 	'LBL_PROFILE_VIEW'             => 'Profile view'                , // TODO: Review
 	'LBL_FIELDS'                   => 'Fields'                      , // TODO: Review
 	'LBL_TOOLS'                    => 'Tools'                       , // TODO: Review
-	'LBL_FIELD_AND_TOOL_PRVILIGES' => 'Field and Tool Privileges'   , // TODO: Review
+	'LBL_FIELD_AND_TOOL_PRIVILEGES' => 'Terrain et outils privilèges'   , // TODO: Review
 	'LBL_EDIT_RECORD'              => 'Edit'                        , // TODO: Review
 	'LBL_DUPLICATE_RECORD'         => 'Duplicate'                   , // TODO: Review
 	'LBL_DELETE_RECORD'            => 'Delete'                      , // TODO: Review
@@ -33,15 +33,16 @@ $languageStrings = array(
 	'LBL_TRANSFER_ROLES_TO_PROFILE' => 'Transfer roles to profile'   , // TODO: Review
 	'LBL_PROFILES'                 => 'Profiles'                    , // TODO: Review
 	'LBL_CHOOSE_PROFILES'          => 'Choose Profiles'             , // TODO: Review
-    
-        'Import' => 'Importer',
-        'Export' => 'Export',
-	'Merge'  => 'Fusionner',
-        'ConvertLead' => 'Autre plomb',
-        'DuplicatesHandling' => 'Doublons de manutention',
-        'ReceiveIncomingCalls' => 'Recevoir des appels entrants',
-        'MakeOutgoingCalls' => 'Faire des appels sortants',
-        'Print' => 'Imprimer',
+	'LBL_GLOBAL_PERMISSION_WARNING' => 'Attention: Les utilisateurs associés à ce profil peut accéder à tous les dossiers dans le CRM',
+
+  'LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE' => 'Modifier les privilèges de ce profil',
+  'LBL_VIEW_ALL' => 'Voir Tous',
+  'LBL_EDIT_ALL' => 'Modifier Tous Les',
+  'LBL_VIEW_ALL_DESC' => 'Peut afficher toutes les informations de modules',
+  'LBL_EDIT_ALL_DESC' => 'Pouvez modifier toutes les informations de modules',
+  'LBL_DUPLICATES_EXIST' => 'Double Profil Existe',
+  'LBL_EDIT_PROFILE' => 'Modifier Le Profil',
+
 );
 $jsLanguageStrings = array(
 	'JS_RECORD_DELETED_SUCCESSFULLY' => 'Profile deleted successfully', // TODO: Review

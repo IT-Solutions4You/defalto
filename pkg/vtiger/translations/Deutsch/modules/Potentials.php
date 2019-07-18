@@ -19,7 +19,7 @@ $languageStrings = array(
 	'Sales Stage'                  => 'Verkaufsstufe'               , 
 	'Probability'                  => 'Wahrscheinlichkeit (%)'      , 
 	'Campaign Source'              => 'Kampagne'                    , 
-	'Forecast Amount'              => 'Forecast Amount'             , 
+	'Forecast Amount'              => 'Die gewichteten Revenue'             , 
 	'Funnel'                       => 'Sales Funnel'                , 
 	'Potentials by Stage'          => 'Opportunities by Stage'      , 
 	'Total Revenue'                => 'Revenue by Salesperson'      , 
@@ -40,6 +40,24 @@ $languageStrings = array(
 	'New Business'                 => 'neues Geschäft'             , 
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Expected to close on'        , 
 	'LBL_RELATED_CONTACTS'         => 'Related Contacts'            , 
-	'LBL_RELATED_PRODUCTS'         => 'Related Products'            ,
-        'Potentials Won'               => 'Potenziale erhalten',
+	'LBL_RELATED_PRODUCTS'         => 'Related Products'            , 
+    'Related To'                   => 'Name der Organisation'       ,
+    'Type'                         => 'Typ'                         , 
+    
+    //Convert Potentials
+    'LBL_CONVERT_POTENTIAL'        => 'Konvertieren Chancen'       ,
+    'LBL_POTENTIALS_FIELD_MAPPING' => 'Chancen Field Mapping' ,
+    'LBL_CONVERT_POTENTIALS_ERROR' => 'Sie haben zu Projekt zu ermöglichen, die Gelegenheit zu konvertieren',
+    'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Chancen Field Mapping ist unvollständig (Einstellungen> Module Manager> Chancen> Chancen Field Mapping)',
+	'LBL_CREATE_PROJECT'           => 'Projekt erstellen'           , 
+    
+    //Potentials Custom Field Mapping
+	'LBL_CUSTOM_FIELD_MAPPING'     => 'Gelegenheit, Mapping-Projekt'          ,
+
+  'Contact Name' => 'Kontakt Name',
+
+);
+
+$jsLanguageStrings = array(
+	'JS_SELECT_PROJECT_TO_CONVERT_LEAD' => 'Conversion Auswahl von Projekt erfordert',
 );

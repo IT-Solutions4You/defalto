@@ -53,3 +53,7 @@ $languageStrings = array(
 	'Contacted - Unsuccessful'     => 'Contacté - sans succès'    , 
 	'Contacted - Never Contact Again' => 'Contacté - Ne pas recontacter', 
 );
+
+$jsLanguageStrings = array(
+	'JS_APPENDED_TO_EXISTING_LIST' => '%s de la liste sélectionnée sera ajouté à la liste existante.',
+);

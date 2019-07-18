@@ -118,7 +118,7 @@ class dbObject {
 	/**
 	* NOP
 	*/
-	function dbObject( &$parent, $attributes = NULL ) {
+	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 	}
 
@@ -157,7 +157,6 @@ class dbObject {
 	* Destroys the object
 	*/
 	function destroy() {
-		unset( $this );
 	}
 
 	/**
@@ -241,12 +240,7 @@ class dbTable extends dbObject {
 	* @access private
 	*/
 	var $drop_field = array();
-
-	/**
-	* @var array Platform-specific options
-	* @access private
-	*/
-	var $currentPlatform = true;
+	var $alter; // GS Fix for constraint impl
 
 	/**
 	* Iniitializes a new table object.
@@ -254,9 +248,13 @@ class dbTable extends dbObject {
 	* @param string $prefix DB Object prefix
 	* @param array $attributes Array of table attributes.
 	*/
-	function dbTable( &$parent, $attributes = NULL ) {
+	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 		$this->name = $this->prefix($attributes['NAME']);
+		// GS Fix for constraint impl
+		if(isset($attributes['ALTER'])) {
+			$this->alter = $attributes['ALTER'];
+		}
 	}
 
 	/**
@@ -271,12 +269,14 @@ class dbTable extends dbObject {
 		switch( $this->currentElement ) {
 			case 'INDEX':
 				if( !isset( $attributes['PLATFORM'] ) OR $this->supportedPlatform( $attributes['PLATFORM'] ) ) {
-					xml_set_object( $parser, $this->addIndex( $attributes ) );
+					$index = $this->addIndex( $attributes );
+					xml_set_object( $parser,  $index );
 				}
 				break;
 			case 'DATA':
 				if( !isset( $attributes['PLATFORM'] ) OR $this->supportedPlatform( $attributes['PLATFORM'] ) ) {
-					xml_set_object( $parser, $this->addData( $attributes ) );
+					$data = $this->addData( $attributes );
+					xml_set_object( $parser, $data );
 				}
 				break;
 			case 'DROP':
@@ -312,11 +312,6 @@ class dbTable extends dbObject {
 				// Add a field option to the table object
 				$this->addFieldOpt( $this->current_field, $this->currentElement );
 				break;
-			case 'OPT':
-			case 'CONSTRAINT':
-				// Accept platform-specific options
-				$this->currentPlatform = ( !isset( $attributes['PLATFORM'] ) OR $this->supportedPlatform( $attributes['PLATFORM'] ) );
-				break;
 			default:
 				// print_r( array( $tag, $attributes ) );
 		}
@@ -334,12 +329,12 @@ class dbTable extends dbObject {
 				if( isset( $this->current_field ) ) {
 					$this->addFieldOpt( $this->current_field, $this->currentElement, $cdata );
 				} else {
-					$this->addTableOpt( $cdata );
+					$this->addTableOpt( $cdata, 'CONSTRAINTS' ); // GS Fix for constraint impl
 				}
 				break;
 			// Table option
 			case 'OPT':
-				$this->addTableOpt( $cdata );
+				$this->addTableOpt( $cdata, 'mysql' ); // GS Fix for constraint impl
 				break;
 			default:
 
@@ -362,10 +357,6 @@ class dbTable extends dbObject {
 				break;
 			case 'FIELD':
 				unset($this->current_field);
-				break;
-			case 'OPT':
-			case 'CONSTRAINT':
-				$this->currentPlatform = true;
 				break;
 
 		}
@@ -477,9 +468,13 @@ class dbTable extends dbObject {
 	* @param string $opt Table option
 	* @return array Options
 	*/
-	function addTableOpt( $opt ) {
-		if(isset($this->currentPlatform)) {
-			$this->opts[$this->parent->db->databaseType] = $opt;
+	function addTableOpt( $opt, $key = NULL) { // GS Fix for constraint impl
+		if ($key) {
+			$this->opts[$key] = $opt;
+		} else {
+			if(isset($this->currentPlatform)) {
+				$this->opts[$this->parent->db->databaseType] = $opt;
+			}
 		}
 		return $this->opts;
 	}
@@ -562,7 +557,7 @@ class dbTable extends dbObject {
 			}
 		}
 
-		if( empty( $legacy_fields ) ) {
+		if( empty( $legacy_fields ) && !isset($this->alter)) { // GS Fix for constraint impl
 			// Create the new table
 			$sql[] = $xmls->dict->CreateTableSQL( $this->name, $fldarray, $this->opts );
 			logMsg( end( $sql ), 'Generated CreateTableSQL' );
@@ -573,7 +568,7 @@ class dbTable extends dbObject {
 				// Use ChangeTableSQL
 				case 'ALTER':
 					logMsg( 'Generated ChangeTableSQL (ALTERing table)' );
-					$sql[] = $xmls->dict->ChangeTableSQL( $this->name, $fldarray, $this->opts );
+					$sql[] = $xmls->dict->ChangeTableSQL( $this->name, $fldarray, $this->opts, false, $this->alter ); // GS Fix for constraint impl
 					break;
 				case 'REPLACE':
 					logMsg( 'Doing upgrade REPLACE (testing)' );
@@ -657,7 +652,7 @@ class dbIndex extends dbObject {
 	*
 	* @internal
 	*/
-	function dbIndex( &$parent, $attributes = NULL ) {
+	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 
 		$this->name = $this->prefix ($attributes['NAME']);
@@ -801,7 +796,7 @@ class dbData extends dbObject {
 	*
 	* @internal
 	*/
-	function dbData( &$parent, $attributes = NULL ) {
+	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 	}
 
@@ -1000,7 +995,7 @@ class dbQuerySet extends dbObject {
 	* @param object $parent Parent object
 	* @param array $attributes Attributes
 	*/
-	function dbQuerySet( &$parent, $attributes = NULL ) {
+	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 
 		// Overrides the manual prefix key
@@ -1316,7 +1311,7 @@ class adoSchema {
 	*
 	* @param object $db ADOdb database connection object.
 	*/
-	function adoSchema( $db ) {
+	function __construct( $db ) {
 		// Initialize the environment
 		$this->mgq = get_magic_quotes_runtime();
 		ini_set("magic_quotes_runtime", 0);
@@ -2211,7 +2206,6 @@ class adoSchema {
 	function Destroy() {
 		ini_set("magic_quotes_runtime", $this->mgq );
 		#set_magic_quotes_runtime( $this->mgq );
-		unset( $this );
 	}
 }
 

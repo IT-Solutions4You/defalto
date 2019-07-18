@@ -2,7 +2,7 @@
 /*+**********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.1
  * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open source
+ * The Original Code is: vtiger CRM Open Source
  * The Initial Developer of the Original Code is vtiger.
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
@@ -18,7 +18,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$moduleName = $request->getModule();
-		$response = new Vtiger_Response();
+		$response = new MailManager_Response();
 
 		if ('open' == $this->getOperationArg($request)) {
 			$foldername = $request->get('_folder');
@@ -27,20 +27,35 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 			$folder = $connector->folderInstance($foldername);
 			$connector->markMailRead($request->get('_msgno'));
 
-			$mail = $connector->openMail($request->get('_msgno'));
+			$mail = $connector->openMail($request->get('_msgno'), $foldername);
 			$connector->updateFolder($folder, SA_MESSAGES|SA_UNSEEN);
 
 			$viewer = $this->getViewer($request);
 			$viewer->assign('FOLDER', $folder);
 			$viewer->assign('MAIL', $mail);
+			$viewer->assign('USERNAME', $this->mMailboxModel->mUsername);
 			$viewer->assign('ATTACHMENTS', $mail->attachments(false));
+			$body = $mail->body();
+			$inlineAttachments = $mail->inlineAttachments();
+			if(is_array($inlineAttachments)) {
+				foreach($inlineAttachments as $index => $att) {
+					$cid = $att['cid'];
+					$attch_name = Vtiger_MailRecord::__mime_decode($att['filename']);
+					$id = $mail->muid();
+					$src = "index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=$id&_atname=".urlencode($attch_name);
+					$body = preg_replace('/cid:'.$cid.'/', $src, $body);
+					$inline_cid[$attch_name] = $cid;
+				}
+			}
+			$viewer->assign('INLINE_ATT', $inline_cid);
+			$viewer->assign('BODY', $body);
 			$viewer->assign('MODULE', $moduleName);
 			$uicontent = $viewer->view('MailOpen.tpl', 'MailManager', true);
 
 			$metainfo  = array(
 					'from' => $mail->from(), 'subject' => $mail->subject(),
 					'msgno' => $mail->msgNo(), 'msguid' => $mail->uniqueid(),
-					'folder' => $foldername );
+					'folder' => $foldername, 'to' => $mail->to() );
 
 			$response->isJson(true);
 			$response->setResult( array(
@@ -57,14 +72,22 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 			$connector->updateFolder($folder, SA_UNSEEN);
 
 			if ('unread' == $request->get('_markas')) {
-				$connector->markMailUnread($request->get('_msgno'));
+				$msgNos = explode(',', $request->get('_msgno'));
+				foreach($msgNos as $msgNo) {
+					$connector->markMailUnread($msgNo);
+				}
+			} else if('read' == $request->get('_markas')) {
+				$msgNos = explode(',', $request->get('_msgno'));
+				foreach($msgNos as $msgNo) {
+					$connector->markMailRead($msgNo);
+				}
 			}
 
 			$response->isJson(true);
 			$response->setResult ( array('folder' => $foldername, 'unread' => $folder->unreadCount()+1,
 					'status' => true, 'msgno' => $request->get('_msgno') ));
 
-		} else if('delete' == $this->getOperationArg($request) && $request->validateWriteAccess()) {
+		} else if('delete' == $this->getOperationArg($request)&& $request->validateWriteAccess()) {
 
 			$msg_no = $request->get('_msgno');
 			$foldername = $request->get('_folder');
@@ -220,8 +243,9 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 			}
 
 		} else if ('attachment_dld' == $this->getOperationArg($request)) {
-			$attachmentName = $request->get('_atname');
+			$attachmentName = $request->getRaw('_atname');
 			$attachmentName= str_replace(' ', '_', $attachmentName);
+			$attachmentId   = $request->get('_atid');
 
 			if (MailManager_Utils_Helper::allowedFileExtension($attachmentName)) {
 				// This is to handle larger uploads
@@ -230,14 +254,14 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 
 				$mail = new MailManager_Message_Model(false, false);
 				$mail->readFromDB($request->get('_muid'));
-				$attachment = $mail->attachments(true, $attachmentName);
-
-				if($attachment[$attachmentName]) {
+				$attachment = $mail->attachments(true, $attachmentName, $attachmentId);
+				//As we are sending attachment name, it will return only that attachment details
+				if($attachment[0]['data']) {
 					header("Content-type: application/octet-stream");
 					header("Pragma: public");
 					header("Cache-Control: private");
-					header("Content-Disposition: attachment; filename=$attachmentName");
-					echo $attachment[$attachmentName];
+					header("Content-Disposition: attachment; filename=\"$attachmentName\"");
+					echo $attachment[0]['data'];
 				} else {
 					header("Content-Disposition: attachment; filename=INVALIDFILE");
 					echo "";
@@ -281,15 +305,30 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 			$folderName = $request->get('folder');
 
 			$connector = $this->getConnector($folderName);
-			$mail = $connector->openMail($messageId);
+			$mail = $connector->openMail($messageId, $folderName);
 			$attachments = $mail->attachments(true);
 
+			$inlineAttachments = $mail->inlineAttachments();
 			$draftConnector = $this->getConnector('__vt_drafts');
 			$draftId = $draftConnector->saveDraft($request);
 
+			if(is_array($inlineAttachments)) {
+				foreach($inlineAttachments as $index => $att) {
+					$cid = $att['cid'];
+					$attch_name = imap_utf8($att['filename']);
+					$id = $mail->muid();
+					$src = "index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=$id&_atname=$attch_name";
+					$body = preg_replace('/cid:'.$cid.'/', $src, $body);
+					$inline_cid[$attch_name] = $cid;
+				}
+			}
+
 			if (!empty($attachments)) {
-				foreach($attachments as $aName => $aValue) {
-					$attachInfo = $mail->__SaveAttachmentFile($aName, $aValue);
+				foreach($attachments as $aValue) {
+					if(!empty($inline_cid[$aValue['filename']])) {
+						continue;
+					}
+					$attachInfo = $mail->__SaveAttachmentFile($aValue['filename'], $aValue['data']);
 					if(is_array($attachInfo) && !empty($attachInfo) && $attachInfo['size'] > 0) {
 
 						if(!MailManager::checkModuleWriteAccessForCurrentUser('Documents')) return;
@@ -310,7 +349,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 
 						$attachmentInfo[] = array('name'=>$attachInfo['name'], 'size'=>$attachInfo['size'], 'emailid'=>$draftId, 'docid'=>$document->id);
 					}
-					unset($aValue);
+					unset($aValue['data']);
 				}
 			}
 			$response->isJson(true);
@@ -318,9 +357,9 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 		}
 		return $response;
 	}
-        
-        public function validateRequest(Vtiger_Request $request) { 
-            return $request->validateReadAccess(); 
-        } 
+
+	public function validateRequest(Vtiger_Request $request) {
+		return $request->validateReadAccess();
+	}
 }
 ?>

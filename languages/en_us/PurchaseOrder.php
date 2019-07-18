@@ -8,6 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
+    'PurchaseOrder' => 'Purchase Orders',
 	//DetailView Actions
 	'SINGLE_PurchaseOrder' => 'Purchase Order',
 	'LBL_EXPORT_TO_PDF' => 'Export to PDF',
@@ -42,9 +43,24 @@ $languageStrings = array(
         'List Price'                   => 'List Price',
     
     'LBL_COPY_COMPANY_ADDRESS' => 'Copy Company Address',
-
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Copy Organization Address',
+	'LBL_SELECT_ADDRESS_OPTION' => 'Select Address to copy',
+	'LBL_BILLING_ADDRESS' => 'Billing Address',
+	'LBL_COMPANY_ADDRESS' => 'Company Address',
+	'LBL_ACCOUNT_ADDRESS' => 'Organization Address',
+	'LBL_VENDOR_ADDRESS' => 'Vendor Address',
+	'LBL_CONTACT_ADDRESS' => 'Contact Address'
+	
 );
 
 $jsLanguageStrings = array(
 	'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Please remove line item that is deleted',
+    'JS_ORGANIZATION_NOT_FOUND'=> 'Organization empty!',
+    'JS_ORGANIZATION_NOT_FOUND_MESSAGE'=> 'Please select an organization before you copy address',
+	'JS_ACCOUNT_NOT_FOUND' => 'Organization empty!',
+	'JS_ACCOUNT_NOT_FOUND_MESSAGE' =>  'Please select an organization before you copy address',
+	'JS_VENDOR_NOT_FOUND' => 'Vendor Empty', 
+	'JS_VENDOR_NOT_FOUND_MESSAGE' => 'Please select an vendor before you copy address',
+	'JS_CONTACT_NOT_FOUND' => 'Contact Empty', 
+	'JS_CONTACT_NOT_FOUND_MESSAGE' =>  'Please select an contact before you copy address',
 );

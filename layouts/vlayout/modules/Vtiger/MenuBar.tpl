@@ -128,7 +128,7 @@
 					<span id="headerLinksBig" class="pull-right headerLinksContainer">
 						<span class="dropdown span settingIcons">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-								<img src="{vimage_path('theme_brush.png')}" alt="theme roller" title="Theme Roller" />
+								<img src="{vimage_path('theme_brush.png')}" alt="theme roller" title="{vtranslate('Theme Roller',$MODULE)}" />
 							</a>
 							<ul class="dropdown-menu themeMenuContainer">
 								<div id="themeContainer">
@@ -198,7 +198,7 @@
 								<li id="compactquickCreate">
 									<div class="CompactQC">
 										{foreach key=moduleName item=moduleModel from=$MENUS}
-											{if $moduleModel->isPermitted('EditView')}
+											{if $moduleModel->isPermitted('CreateView')}
 												{assign var='quickCreateModule' value=$moduleModel->isQuickCreateSupported()}
 												{assign var='singularLabel' value=$moduleModel->getSingularLabelKey()}
 												{if $quickCreateModule == '1'}

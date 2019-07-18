@@ -14,7 +14,7 @@
 	 */
 	class VTTaskQueue{
 		
-		public function __construct($adb){
+        public function __construct($adb){
 			$this->adb = $adb;
 		}
 		
@@ -26,10 +26,13 @@
 		 * @param $when The time after which the task should be executed. This is 
 		 *        an optional value with a default value of 0.
 		 */
-		public function queueTask($taskId, $entityId, $when=0, $taskContents = false){
+		public function queueTask($taskId, $entityId, $when=0, $taskContents = false, $relatedInfo = array()){
 			$adb = $this->adb;
-			$adb->pquery('INSERT INTO com_vtiger_workflowtask_queue (task_id, entity_id, do_after, task_contents) VALUES(?, ?, ?, ?)',
-																array($taskId, $entityId, $when, $taskContents));
+		//Mention all related info for the given $entityId
+			$relatedInfo = json_encode($relatedInfo);
+			if ($entityId) {
+				$adb->pquery('INSERT INTO com_vtiger_workflowtask_queue (task_id, entity_id, do_after, task_contents,relatedinfo) VALUES(?, ?, ?, ?,?)', array($taskId, $entityId, $when, $taskContents, $relatedInfo));
+			}
 			return true;
 		}
 		
@@ -44,15 +47,31 @@
 		public function getReadyTasks(){
 			$adb = $this->adb;
 			$time = time();
-			$result = $adb->pquery('SELECT task_id, entity_id, task_contents FROM com_vtiger_workflowtask_queue WHERE do_after<?', array($time));
+			$result = $adb->pquery('SELECT task_id, entity_id, task_contents,relatedinfo FROM com_vtiger_workflowtask_queue WHERE do_after<?', array($time));
 			$it =  new SqlResultIterator($adb, $result);
 			$arr = array();
 			foreach($it as $row){
-				$arr[]=array($row->task_id, $row->entity_id, $row->task_contents);
+				if($this->checkEntityExists($row->entity_id)) {
+					$arr[]=array($row->task_id, $row->entity_id, $row->task_contents,$row->relatedinfo);
+				}
 			}
 			$adb->pquery("delete from com_vtiger_workflowtask_queue where do_after<?", array($time));
 			return $arr;
 		}
-		
+
+	public function checkEntityExists($id) {
+		$idParts = explode('x', $id);
+		$recordId = $idParts[1];
+		$status = Vtiger_Util_Helper::checkRecordExistance($recordId);
+		if ($status == 0) {
+			$db = PearDatabase::getInstance();
+			$webServiceObject = VtigerWebserviceObject::fromId($db, $idParts[0]);
+			if ($webServiceObject->getEntityName() == 'Leads' && isLeadConverted($recordId)) {
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
+}
 ?>

@@ -19,18 +19,36 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	var $logoPath = 'test/logo/';
 
 	var $fields = array(
-			'organizationname' => 'text',
-			'logoname' => 'text',
-			'logo' => 'file',
-			'address' => 'textarea',
-			'city' => 'text',
-			'state' => 'text',
-			'code'  => 'text',
-			'country' => 'text',
-			'phone' => 'text',
-			'fax' => 'text',
-			'website' => 'text', 
-                        'vatid' => 'text' 
+		'organizationname' => 'text',
+		'logoname' => 'text',
+		'logo' => 'file',
+		'address' => 'textarea',
+		'city' => 'text',
+		'state' => 'text',
+		'code'  => 'text',
+		'country' => 'text',
+		'phone' => 'text',
+		'fax' => 'text',
+		'website' => 'text',
+		'vatid' => 'text' 
+	);
+
+	var $companyBasicFields = array(
+		'organizationname' => 'text',
+		'logoname' => 'text',
+		'logo' => 'file',
+		'address' => 'textarea',
+		'city' => 'text',
+		'state' => 'text',
+		'code'  => 'text',
+		'country' => 'text',
+		'phone' => 'text',
+		'fax' => 'text',
+		'vatid' => 'text'
+	);
+
+	var $companySocialLinks = array(
+		'website' => 'text',
 	);
 
 	/**
@@ -40,7 +58,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	public function getEditViewUrl() {
 		return 'index.php?module=Vtiger&parent=Settings&view=CompanyDetailsEdit';
 	}
-	
+
 	/**
 	 * Function to get CompanyDetails Menu item
 	 * @return menu item Model
@@ -49,7 +67,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 		$menuItem = Settings_Vtiger_MenuItem_Model::getInstance('LBL_COMPANY_DETAILS');
 		return $menuItem;
 	}
-	
+
 	/**
 	 * Function to get Index view Url
 	 * @return <String> URL
@@ -74,7 +92,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	public function getLogoPath() {
 		$logoPath = $this->logoPath;
 		$handler = @opendir($logoPath);
-		$logoName = $this->get('logoname');
+		$logoName = decode_html($this->get('logoname'));
 		if ($logoName && $handler) {
 			while ($file = readdir($handler)) {
 				if($logoName === $file && in_array(str_replace('.', '', strtolower(substr($file, -4))), self::$logoSupportedFormats) && $file != "." && $file!= "..") {
@@ -89,9 +107,9 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	/**
 	 * Function to save the logoinfo
 	 */
-	public function saveLogo() {
+	public function saveLogo($logoName) {
 		$uploadDir = vglobal('root_directory'). '/' .$this->logoPath;
-		$logoName = $uploadDir.$_FILES["logo"]["name"];
+		$logoName = $uploadDir.$logoName;
 		move_uploaded_file($_FILES["logo"]["tmp_name"], $logoName);
 		copy($logoName, $uploadDir.'application.ico');
 	}
@@ -135,7 +153,7 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 	 * Function to get the instance of Company details module model
 	 * @return <Settings_Vtiger_CompanyDetais_Model> $moduleModel
 	 */
-	public static function getInstance() {
+	public static function getInstance($name = '') {
 		$moduleModel = new self();
 		$db = PearDatabase::getInstance();
 
@@ -148,21 +166,4 @@ class Settings_Vtiger_CompanyDetails_Model extends Settings_Vtiger_Module_Model 
 		$moduleModel->getFields();
 		return $moduleModel;
 	}
-        
-        /** 
-        * @var array(string => string) 
-        */ 
-       private static $settings = array();  
-
-       /** 
-        * @param string $fieldname 
-        * @return string 
-        */ 
-       public static function getSetting($fieldname) { 
-            global $adb; 
-            if (!self::$settings) { 
-                    self::$settings = $adb->database->GetRow("SELECT * FROM vtiger_organizationdetails"); 
-            } 
-            return self::$settings[$fieldname]; 
-       } 
 }

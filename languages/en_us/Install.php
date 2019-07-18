@@ -1,5 +1,4 @@
 <?php
-
 /* +***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -12,11 +11,14 @@
 $languageStrings = array(
 	'ERR_DATABASE_CONNECTION_FAILED' => 'Unable to connect to database Server',
 	'ERR_DB_NOT_FOUND' => 'This Database is not found.Try changing the Database settings',
+	'ERR_DB_NOT_UTF8'  => 'Database charset or collation not compatible with UTF8',
 	'ERR_INVALID_MYSQL_PARAMETERS' => 'Invalid mySQL Connection Parameters specified',
 	'ERR_INVALID_MYSQL_VERSION' => 'MySQL version is not supported, kindly connect to MySQL 5.1.x or above',
 	'ERR_UNABLE_CREATE_DATABASE' => 'Unable to Create database',
+	'ERR_DB_SQLMODE_NOTFRIENDLY' => 'MySQL Server should be configured with:<br> sql_mode = ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION',
 	'LBL_ADMIN_INFORMATION'=>'Admin User Information',
 	'LBL_ADMIN_USER_INFORMATION' => 'Admin User Information',
+	'LBL_CHOOSE_LANGUAGE' => 'Choose the default language for this installation:',
 	'LBL_CONFIRM_CONFIGURATION_SETTINGS' => 'Confirm Configuration Settings',
 	'LBL_CREATE_NEW_DB'=>'Create new database',
 	'LBL_CURRENCIES'=>'Currency',
@@ -57,15 +59,17 @@ $languageStrings = array(
 	'LBL_TRUE' => 'True',
 	'LBL_URL' => 'URL',
 	'LBL_USERNAME' => 'User Name',
-	'LBL_VTIGER6_SETUP_WIZARD_DESCRIPTION' => 'This wizard will guide you through the installation of Vtiger CRM6',
-	'LBL_WELCOME_TO_VTIGER6_SETUP_WIZARD' => 'Welcome to Vtiger CRM 6 Setup Wizard',
+	'LBL_VTIGER7_SETUP_WIZARD_DESCRIPTION' => 'This wizard will guide you through the installation of Vtiger CRM7',
+	'LBL_WELCOME_TO_VTIGER7_SETUP_WIZARD' => 'Welcome to Vtiger CRM 7 Setup Wizard',
 	'LBL_WELCOME' => 'Welcome',
 	'LBL_ZLIB_SUPPORT' => 'Zlib Support',
+	'LBL_SIMPLEXML' => 'SimpleXML Support',
 	'MSG_DB_PARAMETERS_INVALID' => 'specified database user, password, hostname, database type, or port is invalid',
 	'MSG_DB_ROOT_USER_NOT_AUTHORIZED' => 'Message: Specified database Root User doesn\'t have permission to Create database or the Database name has special characters. Try changing the Database settings',
 	'MSG_DB_USER_NOT_AUTHORIZED' => 'specified database user does not have access to connect to the database server from the host',
 	'MSG_LIST_REASONS' => 'This may be due to the following reasons',
-        'LBL_MYSQLI_CONNECT_SUPPORT'=>'mysqli support',
-        'LBL_OPEN_SSL'=>'openssl support',
-        'LBL_CURL'=>'cURL support',
+	'LBL_MYSQLI_CONNECT_SUPPORT'=>'Mysqli support',
+	'LBL_OPEN_SSL'=>'Openssl support',
+	'LBL_CURL'=>'Curl support',
+	'LBL_MB_STRING'=>'Mbstring support',
 );

@@ -32,9 +32,9 @@ function getUserFldArray($fld_module,$roleid){
 	$result = $adb->pquery($query, array($tabid, $tabid));
 	$noofrows = $adb->num_rows($result);
 
-    if($noofrows > 0){
+	if($noofrows > 0){
 		$fieldlist = array();
-    	for($i=0; $i<$noofrows; $i++){
+		for($i=0; $i<$noofrows; $i++){
 			$user_fld = array();
 			$fld_name = $adb->query_result($result,$i,"fieldname");
 
@@ -102,20 +102,32 @@ function get_available_module_picklist($picklist_details){
  */
 function getAllPickListValues($fieldName,$lang = Array() ){
 	global $adb;
-	$sql = 'SELECT * FROM vtiger_'.$adb->sql_escape_string($fieldName);
-	$result = $adb->query($sql);
-	$count = $adb->num_rows($result);
+	if(Vtiger_Cache::get('AllPicklistValues',$fieldName)){
+		return Vtiger_Cache::get('AllPicklistValues',$fieldName);
+	}
+	$userRecordModel = Users_Record_Model::getCurrentUserModel();
+	if($fieldName == 'group_id'){
+		$arr = array_map('decode_html', $userRecordModel->getAccessibleGroups());
+	}else if ($fieldName == 'assigned_user_id'){ 
+		$arr = array_map('decode_html', $userRecordModel->getAccessibleUsers());
+	}else {
+		$sql = 'SELECT * FROM vtiger_'.$adb->sql_escape_string($fieldName);
+		$result = $adb->query($sql);
+		$count = $adb->num_rows($result);
 
-	$arr = array();
-	for($i=0;$i<$count;$i++){
-		$pick_val = decode_html($adb->query_result($result, $i, $fieldName));
-		if($lang[$pick_val] != ''){
-			$arr[$pick_val] = $lang[$pick_val];
-		}
-		else{
-			$arr[$pick_val] = $pick_val;
+		$arr = array();
+		for($i=0;$i<$count;$i++){
+			$pick_val = decode_html($adb->query_result($result, $i, $fieldName));
+			if($lang[$pick_val] != ''){
+				$arr[$pick_val] = $lang[$pick_val];
+			}
+			else{
+				$arr[$pick_val] = $pick_val;
+			}
 		}
 	}
+
+	Vtiger_Cache::set('AllPicklistValues', $fieldName, $arr);
 	return $arr;
 }
 
@@ -185,11 +197,11 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 	if($cache->hasAssignedPicklistValues($tableName,$roleid)) {
 		return $cache->getAssignedPicklistValues($tableName,$roleid);
 	} else {
-	$arr = array();
+		$arr = array();
 
-	$sql = "select picklistid from vtiger_picklist where name = ?";
-	$result = $adb->pquery($sql, array($tableName));
-	if($adb->num_rows($result)){
+		$sql = "select picklistid from vtiger_picklist where name = ?";
+		$result = $adb->pquery($sql, array($tableName));
+		if($adb->num_rows($result)){
 		$picklistid = $adb->query_result($result, 0, "picklistid");
 
 		$sub = getSubordinateRoleAndUsers($roleid);
@@ -203,29 +215,29 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 
 		$sql = "SELECT distinct ".$adb->sql_escape_string($tableName)." FROM ". $adb->sql_escape_string("vtiger_$tableName")
 				. " inner join vtiger_role2picklist on ".$adb->sql_escape_string("vtiger_$tableName").".picklist_valueid=vtiger_role2picklist.picklistvalueid"
-				. " and roleid in (".generateQuestionMarks($roleids).") order by sortid";
+				. " and roleid in (".generateQuestionMarks($roleids).") order by sortorderid";
 		$result = $adb->pquery($sql, $roleids);
-		$count = $adb->num_rows($result);
+			$count = $adb->num_rows($result);
 
-		if($count) {
-			while($resultrow = $adb->fetch_array($result)) {
-                /** Earlier we used to save picklist values by encoding it. Now, we are directly saving those(getRaw()).
-                 *  If value in DB is like "test1 &amp; test2" then $abd->fetch_array() is giving it as
-                 *  "test1 &amp;$amp; test2" which we should decode two time to get result
-                 */
-				$pick_val = decode_html(decode_html($resultrow[$tableName]));
-				if($lang[$pick_val] != '') {
-					$arr[$pick_val] = $lang[$pick_val];
-				}
-				else {
-					$arr[$pick_val] = $pick_val;
+			if($count) {
+				while($resultrow = $adb->fetch_array($result)) {
+					/** Earlier we used to save picklist values by encoding it. Now, we are directly saving those(getRaw()).
+					 *  If value in DB is like "test1 &amp; test2" then $abd->fetch_array() is giving it as
+					 *  "test1 &amp;$amp; test2" which we should decode two time to get result
+					 */
+					$pick_val = trim(decode_html(decode_html($resultrow[$tableName])));
+					if($lang[$pick_val] != '') {
+						$arr[$pick_val] = $lang[$pick_val];
+					}
+					else {
+						$arr[$pick_val] = $pick_val;
+					}
 				}
 			}
 		}
-	}
-	// END
+		// END
 		$cache->setAssignedPicklistValues($tableName,$roleid,$arr);
-	return $arr;
+		return $arr;
 	}
 }
 ?>

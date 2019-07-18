@@ -41,7 +41,7 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
 				//push all other block down so that we can keep new block there
 				Vtiger_Block_Model::pushDown($beforeBlockSequence, $modueInstance->getId());
             }
-			$isDuplicate = Vtiger_Block_Model::checkDuplicate($request->get('label'), $modueInstance->getId());
+			$isDuplicate = Vtiger_Block_Model::checkDuplicate(trim($request->get('label')), $modueInstance->getId());
         }
 
 		$response = new Vtiger_Response();
@@ -67,7 +67,7 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
         $response = new Vtiger_Response();
         try{
             $sequenceList = $request->get('sequence');
-            Vtiger_Block_Model::updateSequenceNumber($sequenceList);
+            Vtiger_Block_Model::updateSequenceNumber($sequenceList,$request->get('selectedModule'));
             $response->setResult(array('success'=>true));
         }catch(Exception $e) {
             $response->setError($e->getCode(),$e->getMessage());
@@ -92,7 +92,10 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
             return;
         }
         try{
+            $sourceModule = $blockInstance->get('module')->name;
+            $blockLabel = $blockInstance->get('label');
             $blockInstance->delete(false);
+            Settings_LayoutEditor_Module_Model::removeLabelFromLangFile($sourceModule, $blockLabel);
             $response->setResult(array('success'=>true));
         }catch(Exception $e) {
             $response->setError($e->getCode(),$e->getMessage());
@@ -100,8 +103,8 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
         $response->emit();
     }
     
-    public function validateRequest(Vtiger_Request $request) { 
-        $request->validateWriteAccess(); 
-    } 
+    public function validateRequest(Vtiger_Request $request) {
+        $request->validateWriteAccess();
+    }
 
 }

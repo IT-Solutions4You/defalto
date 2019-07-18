@@ -18,10 +18,10 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$widgetLinks = parent::getWidgets();
 		$widgets = array();
-		
+
 		$helpDeskInstance = Vtiger_Module_Model::getInstance('HelpDesk');
 		if($userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'EditView');
+			$createPermission = $userPrivilegesModel->hasModuleActionPermission($helpDeskInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'HelpDesk',
@@ -34,8 +34,8 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		$projectMileStoneInstance = Vtiger_Module_Model::getInstance('ProjectMilestone');
-		if($userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'EditView');
+		if($userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission($projectMileStoneInstance->getId())) {
+			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectMileStoneInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'LBL_MILESTONES',
@@ -48,8 +48,8 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		$projectTaskInstance = Vtiger_Module_Model::getInstance('ProjectTask');
-		if($userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'EditView');
+		if($userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'DetailView') && $userPrivilegesModel->hasModulePermission($projectTaskInstance->getId())) {
+			$createPermission = $userPrivilegesModel->hasModuleActionPermission($projectTaskInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'LBL_TASKS',
@@ -64,7 +64,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 
 		$documentsInstance = Vtiger_Module_Model::getInstance('Documents');
 		if($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'EditView');
+			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'CreateView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Documents',
@@ -81,5 +81,23 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 		}
 
 		return $widgetLinks;
+	}
+
+	/**
+	 * Function to get the detail view related links
+	 * @return <array> - list of links parameters
+	 */
+	public function getDetailViewRelatedLinks() {
+		$relatedLinks = parent::getDetailViewRelatedLinks();
+		$recordModel = $this->getRecord();
+		$moduleName = $recordModel->getModuleName();
+		$relatedLinks[] = array(
+			'linktype' => 'DETAILVIEWTAB',
+			'linklabel' => vtranslate('LBL_CHART', $moduleName),
+			'linkurl' => $recordModel->getDetailViewUrl().'&mode=showChart',
+			'linkicon' => ''
+			);
+
+		return $relatedLinks;
 	}
 }

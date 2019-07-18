@@ -88,20 +88,18 @@ Class OutlookHandler extends SyncHandler {
             $record['start_time'] = $record['date_start']." ".$record['time_start'];
             $record['end_time'] = $record['due_date']." ".$record['time_end'];
         } else if($module == 'Calendar') {
-                $dformat = "Y-m-d H:i:s";
-
-            $record['start_time'] = date($dformat,strtotime($record['date_start']));
+            $dformat = "Y-m-d H:i:s";
+            $record['start_time'] = date($dformat,strtotime($record['date_start']." ".$record['time_start']));
             $record['end_time'] = date($dformat,strtotime($record['due_date']));
 
-            // convert the start time and end time to user time zone as outlook does not take the datetime in utc
+            /**
+             * convert the start time to user time zone as outlook does not take the datetime in utc
+             * Because, in Outlook , there is no time field for Tasks 
+             */
             $oldDateFormat = $this->user->date_format;
             $this->user->date_format = 'yyyy-mm-dd';
-				$dateTimeField = new DateTimeField($record['start_time']);
-				$record['start_time'] = $dateTimeField->getDisplayDateTimeValue($this->user);
-
-				$dateTimeField = new DateTimeField($record['end_time']);
-				$record['end_time'] = $dateTimeField->getDisplayDateTimeValue($this->user);
-            $this->user->date_format = $oldDateFormat;
+            $dateTimeField = new DateTimeField($record['start_time']);
+            $record['start_time'] = $dateTimeField->getDisplayDateTimeValue($this->user);
         }
         return $record;
     }

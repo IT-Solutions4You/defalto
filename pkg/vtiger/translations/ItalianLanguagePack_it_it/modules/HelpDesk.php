@@ -39,6 +39,7 @@ $languageStrings = array(
 	'LBL_SEVERITY'                 => 'Importanza'                  , 
 	'LBL_CONVERT_FAQ'              => 'Convert to FAQ'              , 
 	'LBL_RELATED_TO'               => 'Relazionato a'               ,
+    'Related To'                   => 'Relativi a'                  ,
 
 	//added to support i18n in ticket mails
 	'Hi' => 'Salve',
@@ -77,4 +78,16 @@ $languageStrings = array(
 	'LBL_MAIL_SENT' => 'Una mail &egrave; stata inviata al tuo indirizzo di posta con i dettagli del tuo Login al Portale Clienti',
 	'LBL_ALTBODY' => 'Questo &egrave; il corpo del messaggio in testo semplice per client di posta non-HTML',
 	'LBL_TICKET_NUMBER' => 'Numero Ticket',
+
+  'Contact Name' => 'Nome Del Contatto',
+  'Ticket ID' => 'ID biglietto',
+  'LBL_SUBJECT' => 'Oggetto : ',
+  'The comments are' => 'I commenti sono',
+  'Ticket Title' => 'Biglietto Titolo',
+  'Re' => 'Re :',
+  'HelpDesk ID' => 'ID biglietto',
+  'LBL_ADD_DOCUMENT' => 'Aggiungi Documento',
+  'LBL_OPEN_TICKETS' => 'Biglietti Aperto',
+  'LBL_CREATE_TICKET' => 'Creare Biglietto',
+
 );

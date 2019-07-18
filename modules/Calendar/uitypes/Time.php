@@ -46,11 +46,15 @@ class Calendar_Time_UIType extends Vtiger_Time_UIType {
 			$date->setTimezone($targetTimeZone);
 		}*/
 		
-		if($fieldName == 'time_end' && empty($value)) {
-			$defaultCallDuration = $userModel->get('callduration');
+		if ($fieldName == 'time_end' && empty($value)) {
+			if ($userModel->get('defaultactivitytype') == 'Call') {
+				$defaultCallDuration = $userModel->get('callduration');
+			} else {
+				$defaultCallDuration = $userModel->get('othereventduration');
+			}
 			$date->modify("+{$defaultCallDuration} minutes");
 		}
-		
+
 		$dateTimeField = new DateTimeField($date->format('Y-m-d H:i:s'));
 		$value = $dateTimeField->getDisplayTime();
 		return $value;
