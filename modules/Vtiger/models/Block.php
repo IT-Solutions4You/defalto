@@ -141,16 +141,26 @@ class Vtiger_Block_Model extends Vtiger_Block {
 		return $blockModel;
 	}
     
-    public static function updateSequenceNumber($sequenceList) {
+	public static function updateSequenceNumber($sequenceList, $moduleName = false) {
         $db = PearDatabase::getInstance();
         $query = 'UPDATE vtiger_blocks SET sequence = CASE blockid ';
+		$paramArray = array();
         foreach ($sequenceList as $blockId => $sequence){
-            $query .=' WHEN '.$blockId.' THEN '.$sequence;
+            $query .=' WHEN ? THEN ?';
+			array_push($paramArray, $blockId);
+			array_push($paramArray, $sequence);
         }
         $query .=' END ';
         $query .= ' WHERE blockid IN ('.generateQuestionMarks($sequenceList).')';
-        $db->pquery($query, array_keys($sequenceList));
-    }
+		$resultArray = array_merge($paramArray, array_keys($sequenceList));
+        $db->pquery($query, $resultArray);
+        
+        // To clear cache
+        if($moduleName){
+            $moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
+            Vtiger_Cache::flushModuleBlocksCache($moduleInstance);
+		}
+	}
     
     public static function checkFieldsExists($blockId) {
         $db = PearDatabase::getInstance();

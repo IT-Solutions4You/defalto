@@ -261,18 +261,21 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 
     }
 
-    public function updateSequence($pickListFieldName , $picklistValues) {
-        $db = PearDatabase::getInstance();
+    public function updateSequence($pickListFieldName , $picklistValues, $rolesList = false) {
+		$db = PearDatabase::getInstance();
 
 		$primaryKey = Vtiger_Util_Helper::getPickListId($pickListFieldName);
-		
-        $query = 'UPDATE '.$this->getPickListTableName($pickListFieldName).' SET sortorderid = CASE ';
-        foreach($picklistValues as $values => $sequence) {
-            $query .= ' WHEN '.$primaryKey.'="'.$values.'" THEN "'.$sequence.'"';
-        }
+		$paramArray = array();
+		$query = 'UPDATE '.$this->getPickListTableName($pickListFieldName).' SET sortorderid = CASE ';
+		foreach($picklistValues as $values => $sequence) {
+			$query .= ' WHEN '.$primaryKey.'=? THEN ?';
+			array_push($paramArray, $values);
+			array_push($paramArray, $sequence);
+		}
 		$query .= ' END';
-        $db->pquery($query, array());
-    }
+		$db->pquery($query, $paramArray);
+		Vtiger_Cache::flushPicklistCache($pickListFieldName, $rolesList);
+	}
 
 
     public static function getPicklistSupportedModules() {
