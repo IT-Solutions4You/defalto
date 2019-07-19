@@ -12,10 +12,13 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
+		$sourceModule = $request->get('source_module');
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Export')) {
+		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Export') || 
+		  !$currentUserPriviligesModel->hasModuleActionPermission($sourceModuleModel->getId(), 'Export')) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
