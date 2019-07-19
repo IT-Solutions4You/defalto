@@ -10,6 +10,10 @@
 
 class Vtiger_IndexAjax_View extends Vtiger_Index_View {
 
+	function checkPermission(Vtiger_Request $request) {
+		return true;
+	}
+	
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('showActiveRecords');

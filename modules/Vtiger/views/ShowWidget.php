@@ -54,7 +54,9 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 				$request->set('createdtime', $dates);
 				
 				$classInstance = new $className();
-				$classInstance->process($request, $widget);
+				if($classInstance->checkPermission($request)){
+					$classInstance->process($request, $widget);
+				}
 				return;
 			}
 	}
