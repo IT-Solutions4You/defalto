@@ -66,6 +66,8 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
 	 * @return string
 	 */
     public function getQuery() {
+		echo '<pre>';
+		print_r('Get query api triggered');
             $listQuery = parent::getQuery();
             $searchKey = $this->get('search_key');
             
@@ -74,6 +76,14 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
                 $listQuery = implode(' WHERE ', $listQueryComponents);
             }
             $listQuery .= " AND (vtiger_users.user_name != 'admin' OR vtiger_users.is_owner = 1)";
+			
+			// Impose non-admin restrictions.
+			$user = vglobal('current_user');
+			if(!is_admin($user)){
+				$listQuery .= " AND vtiger_users.id = {$user->id}";
+				//TODO: Consider user based on Role-heirarchy 
+			}
+			echo "<br>";print_r($listQuery);
             return $listQuery;
     }
 
