@@ -232,12 +232,14 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
+		$paramArray = array();
 
 		if(!empty($orderBy) && $orderByFieldModel) {
 			if($orderBy == 'roleid' && $moduleName == 'Users'){
 				$listQuery .= ' ORDER BY vtiger_role.rolename '.' '. $sortOrder; 
 			} else {
-				$listQuery .= ' ORDER BY '.$queryGenerator->getOrderByColumn($orderBy).' '.$sortOrder;
+				$listQuery .= ' ORDER BY ? '.$sortOrder;
+				array_push($paramArray, $queryGenerator->getOrderByColumn($orderBy));
 			}
 
 			if ($orderBy == 'first_name' && $moduleName == 'Users') {
@@ -256,9 +258,11 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
 
-		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-
-		$listResult = $db->pquery($listQuery, array());
+		$listQuery .= " LIMIT ?, ?";
+		array_push($paramArray, $startIndex);
+		array_push($paramArray, ($pageLimit+1));
+		
+		$listResult = $db->pquery($listQuery, $paramArray);
 
 		$listViewRecordModels = array();
 		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);
