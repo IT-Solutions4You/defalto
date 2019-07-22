@@ -514,13 +514,9 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 				$targetControllerClass = Vtiger_Loader::getComponentClassName('View', 'RelatedList', $moduleName);
 			}
 		}
-		global $log;
-		$log->fatal('Related list target class => ');
-		$log->fatal($targetControllerClass);
 		if($targetControllerClass) {
 			$targetController = new $targetControllerClass();
 			if($targetController->checkPermission($request)){
-				$log->fatal('Entered check permission loop');
 				return $targetController->process($request);
 			}
 		}
