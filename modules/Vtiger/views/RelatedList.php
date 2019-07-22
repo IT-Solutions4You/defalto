@@ -9,6 +9,17 @@
  *************************************************************************************/
 
 class Vtiger_RelatedList_View extends Vtiger_Index_View {
+	
+	function checkPermission(Vtiger_Request $request) {
+		$relatedModuleName = $request->get('relatedModule');
+
+		$relatedModulePermission = Users_Privileges_Model::isPermitted($relatedModuleName, 'DetailView');
+		if(!$relatedModulePermission) {
+			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+		}
+		return true;
+	}
+	
 	function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$relatedModuleName = $request->get('relatedModule');

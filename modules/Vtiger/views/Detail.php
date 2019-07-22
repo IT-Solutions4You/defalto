@@ -516,7 +516,9 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		}
 		if($targetControllerClass) {
 			$targetController = new $targetControllerClass();
-			return $targetController->process($request);
+			if($targetController->checkPermission($request)){
+				return $targetController->process($request);
+			}
 		}
 	}
 
