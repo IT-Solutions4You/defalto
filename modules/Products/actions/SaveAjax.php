@@ -22,27 +22,29 @@ class Products_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$result = array();
 		$picklistColorMap = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$recordFieldValue = $recordModel->get($fieldName);
-			if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
-				foreach ($recordFieldValue as $picklistValue) {
-					$picklistColorMap[$picklistValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $picklistValue);
+			if($fieldModel->isViewable()){
+				$recordFieldValue = $recordModel->get($fieldName);
+				if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+					foreach ($recordFieldValue as $picklistValue) {
+						$picklistColorMap[$picklistValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $picklistValue);
+					}
+					$recordFieldValue = implode(' |##| ', $recordFieldValue);
 				}
-				$recordFieldValue = implode(' |##| ', $recordFieldValue);
-			}
-			if ($fieldModel->getFieldDataType() == 'picklist') {
-				$picklistColorMap[$recordFieldValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $recordFieldValue);
-			}
-			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
-			if ($fieldName !== 'unit_price' && $fieldModel->getFieldDataType() !== 'datetime'  && $fieldModel->getFieldDataType() !== 'double') {
-				$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
-			}
-			if ($fieldModel->getFieldDataType() == 'reference') {
-				$displayValue = $fieldModel->getEditViewDisplayValue($fieldValue);
-			}
-			if (!empty($picklistColorMap)) {
-				$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue, 'colormap' => $picklistColorMap);
-			} else {
-				$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
+				if ($fieldModel->getFieldDataType() == 'picklist') {
+					$picklistColorMap[$recordFieldValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $recordFieldValue);
+				}
+				$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
+				if ($fieldName !== 'unit_price' && $fieldModel->getFieldDataType() !== 'datetime'  && $fieldModel->getFieldDataType() !== 'double') {
+					$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
+				}
+				if ($fieldModel->getFieldDataType() == 'reference') {
+					$displayValue = $fieldModel->getEditViewDisplayValue($fieldValue);
+				}
+				if (!empty($picklistColorMap)) {
+					$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue, 'colormap' => $picklistColorMap);
+				} else {
+					$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
+				}
 			}
 		}
 

@@ -50,17 +50,19 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordModel->get($fieldName));
-			if ($fieldModel->getFieldDataType() !== 'currency') {
-				$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
+			if($fieldModel->isViewable()){
+				$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordModel->get($fieldName));
+				if ($fieldModel->getFieldDataType() !== 'currency') {
+					$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
+				}
+				if($fieldName == 'language') {
+					$displayValue =  Vtiger_Language_Handler::getLanguageLabel($fieldValue);
+				}
+				if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($displayValue == '&nbsp;')) {
+					$displayValue = vtranslate('Space', 'Users');
+				}
+				$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
 			}
-			if($fieldName == 'language') {
-				$displayValue =  Vtiger_Language_Handler::getLanguageLabel($fieldValue);
-			}
-			if(($fieldName == 'currency_decimal_separator' || $fieldName == 'currency_grouping_separator') && ($displayValue == '&nbsp;')) {
-				$displayValue = vtranslate('Space', 'Users');
-			}
-			$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
 		}
 
 		$result['_recordLabel'] = $recordModel->getName();

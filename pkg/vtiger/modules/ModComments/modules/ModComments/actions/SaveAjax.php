@@ -30,8 +30,10 @@ class ModComments_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
-			$fieldValue = $recordModel->get($fieldName);
-			$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $fieldModel->getDisplayValue($fieldValue));
+			if($fieldModel->isViewable()){
+				$fieldValue = $recordModel->get($fieldName);
+				$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $fieldModel->getDisplayValue($fieldValue));
+			}
 		}
 		$result['id'] = $result['_recordId'] = $recordModel->getId();
 		$result['_recordLabel'] = $recordModel->getName();
