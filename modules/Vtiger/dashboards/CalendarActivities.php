@@ -9,16 +9,6 @@
  *************************************************************************************/
 
 class Vtiger_CalendarActivities_Dashboard extends Vtiger_IndexAjax_View {
-	
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = 'Calendar';
-
-		$modulePermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView');
-		if(!$modulePermission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-		return true;
-	}
 
 	public function process(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();

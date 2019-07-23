@@ -53,9 +53,15 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 				}
 				$request->set('createdtime', $dates);
 				
-				$classInstance = new $className();
-				if($classInstance->checkPermission($request)){
+				if($componentName == 'CalendarActivities' || $componentName == 'OverdueActivities') {
+					$moduleName = 'Calendar';
+				}
+				$currentUserPrivilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+				if($currentUserPrivilegeModel->hasModulePermission(getTabid($moduleName)) && !Vtiger_Runtime::isRestricted('modules', $moduleName)){
+					$classInstance = new $className();
 					$classInstance->process($request, $widget);
+				}else{
+					throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 				}
 				return;
 			}
