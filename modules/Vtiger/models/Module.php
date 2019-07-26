@@ -1713,9 +1713,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 
 
 	public function transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds){
-		$moduleName = $this->getName();
 		foreach($relatedModuleRecordIds as $recordId) {
-			$moduleName = getSalesEntityType($recordId);
 			try {
 				$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
 				$recordModel->set('assigned_user_id', $transferOwnerId);
