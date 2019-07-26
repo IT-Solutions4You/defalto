@@ -1715,19 +1715,18 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	public function transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds){
 		$moduleName = $this->getName();
 		foreach($relatedModuleRecordIds as $recordId) {
-			if(Users_Privileges_Model::isPermitted($moduleName, 'Save', $recordId)) {
-				try {
-					$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-					$recordModel->set('assigned_user_id', $transferOwnerId);
-					$recordModel->set('mode', 'edit');
-					// Transferring ownership with related module as Inventory modules, removes line item details.
-					// So setting $_REQUEST['ajxaction'] to DETAILVIEW
-					$_REQUEST['ajxaction'] = 'DETAILVIEW';
-					$recordModel->save();
-				} catch (DuplicateException $e) {
-					return $e->getDuplicationMessage();
-				} catch (Exception $e) {
-				}
+			$moduleName = getSalesEntityType($recordId);
+			try {
+				$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+				$recordModel->set('assigned_user_id', $transferOwnerId);
+				$recordModel->set('mode', 'edit');
+				// Transferring ownership with related module as Inventory modules, removes line item details.
+				// So setting $_REQUEST['ajxaction'] to DETAILVIEW
+				$_REQUEST['ajxaction'] = 'DETAILVIEW';
+				$recordModel->save();
+			} catch (DuplicateException $e) {
+				return $e->getDuplicationMessage();
+			} catch (Exception $e) {
 			}
 		}
 	}
