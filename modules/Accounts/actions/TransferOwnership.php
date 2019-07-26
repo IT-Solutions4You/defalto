@@ -9,22 +9,22 @@
  *************************************************************************************/
 
 class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
+	var $transferRecordIds = Array();
 	
-	public function requiresPermission(Vtiger_Request $request){
-		//Basic permission
-		$permission[] = 'EditView';
-		return $permission;
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record');
+		return $permissions;
 	}
-	  
+	
 	public function checkPermission(Vtiger_Request $request) {
-		$permission = $this->requiresPermission($request);
+		parent::checkPermission($request);
+		$permissions = $this->requiresPermission($request);
 		$recordIds = $this->getRecordIds($request);
 		foreach ($recordIds as $key => $recordId) {
 			$moduleName = getSalesEntityType($recordId);
-			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName, $permission[0]);
-			if(!$permissionStatus){
-				$exceptionMessage = vtranslate($moduleName).' '. vtranslate('LBL_PERMISSION_DENIED');
-				throw new AppException($exceptionMessage);
+			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  $permissions['action']);
+			if($permissionStatus){
+				$this->transferRecordIds[] = $recordId;
 			}
 		}
 	}
@@ -33,8 +33,9 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 		$module = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($module);
 		$transferOwnerId = $request->get('transferOwnerId');
-		$recordIds = $this->getRecordIds($request);
-
+		if(!empty($this->transferRecordIds)){
+			$recordIds = $this->transferRecordIds;
+		}
 		$result = $moduleModel->transferRecordsOwnership($transferOwnerId, $recordIds);
 		$response = new Vtiger_Response();
 		if ($result === true) {
