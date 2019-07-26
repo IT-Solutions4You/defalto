@@ -10,24 +10,21 @@
 
 class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 	
-	public function requiredPermission(Vtiger_Request $request){
-		$permission = array();
+	public function requiresPermission(Vtiger_Request $request){
 		//Basic permission
-		array_push($permission, 'EditView');
+		$permission[] = 'EditView';
 		return $permission;
 	}
 	  
 	public function checkPermission(Vtiger_Request $request) {
-		$requiredPermission = $this->requiredPermission($request);
+		$permission = $this->requiresPermission($request);
 		$recordIds = $this->getRecordIds($request);
-		foreach ($requiredPermission as $key => $checkPermission) {
-			foreach ($recordIds as $key => $recordId) {
-				$moduleName = getSalesEntityType($recordId);
-				$permission  = Users_Privileges_Model::isPermitted($moduleName, $checkPermission);
-				if(!$permission){
-					$exceptionMessage = vtranslate($moduleName).' '. vtranslate('LBL_PERMISSION_DENIED');
-					throw new AppException($exceptionMessage);
-				}
+		foreach ($recordIds as $key => $recordId) {
+			$moduleName = getSalesEntityType($recordId);
+			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName, $permission[0]);
+			if(!$permissionStatus){
+				$exceptionMessage = vtranslate($moduleName).' '. vtranslate('LBL_PERMISSION_DENIED');
+				throw new AppException($exceptionMessage);
 			}
 		}
 	}
