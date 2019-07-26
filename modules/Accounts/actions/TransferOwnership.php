@@ -12,7 +12,7 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 	
 	public function requiredPermission(Vtiger_Request $request){
 		$permission = array();
-		//Basic permission for this action performed
+		//Basic permission
 		array_push($permission, 'EditView');
 		return $permission;
 	}
