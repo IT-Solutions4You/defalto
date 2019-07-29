@@ -9,14 +9,23 @@
  *************************************************************************************/
 
 class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
+	var $transferRecordIds = Array();
 	
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
-			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+		$permissions = $this->requiresPermission($request);
+		$recordIds = $this->getRecordIds($request);
+		foreach ($recordIds as $key => $recordId) {
+			$moduleName = getSalesEntityType($recordId);
+			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  $permissions['action']);
+			if($permissionStatus){
+				$this->transferRecordIds[] = $recordId;
+			}
 		}
 	}
 
@@ -24,18 +33,10 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 		$module = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($module);
 		$transferOwnerId = $request->get('transferOwnerId');
-		$record = $request->get('record');
-		if(empty($record))
-			$recordIds = $this->getBaseModuleRecordIds($request);
-		else
-			$recordIds[] = $record;
-		$relatedModuleRecordIds = $moduleModel->getRelatedModuleRecordIds($request, $recordIds);
-		foreach ($recordIds as $key => $recordId) {
-			array_push($relatedModuleRecordIds, $recordId);
+		if(!empty($this->transferRecordIds)){
+			$recordIds = $this->transferRecordIds;
 		}
-		array_merge($relatedModuleRecordIds, $recordIds);
-
-		$result = $moduleModel->transferRecordsOwnership($transferOwnerId, $relatedModuleRecordIds);
+		$result = $moduleModel->transferRecordsOwnership($transferOwnerId, $recordIds);
 		$response = new Vtiger_Response();
 		if ($result === true) {
 			$response->setResult(true);
@@ -43,6 +44,23 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 			$response->setError($result);
 		}
 		$response->emit();
+	}
+	
+	public function getRecordIds(Vtiger_Request $request) {
+		$module = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($module);
+		$record = $request->get('record');
+		if(empty($record))
+			$recordIds = $this->getBaseModuleRecordIds($request);
+		else
+			$recordIds[] = $record;
+		
+		$relatedModuleRecordIds = $moduleModel->getRelatedModuleRecordIds($request, $recordIds);
+		foreach ($recordIds as $key => $recordId) {
+			array_push($relatedModuleRecordIds, $recordId);
+		}
+		array_merge($relatedModuleRecordIds, $recordIds);
+		return $relatedModuleRecordIds;
 	}
 	
 	protected function getBaseModuleRecordIds(Vtiger_Request $request) {

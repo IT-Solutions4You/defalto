@@ -102,6 +102,34 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
 	function postProcess(Vtiger_Request $request) {
 		return true;
 	}
+	
+	/**
+	 * This will return all the permission checks that should be done
+	 * @param Vtiger_Request $request
+	 * @return <Array>
+	 */
+	function requiresPermission(Vtiger_Request $request) {
+		return array();
+	}
+	
+	function checkPermission(Vtiger_Request $request) {
+		$permissions = $this->requiresPermission($request);
+		foreach($permissions as $permission) {
+			if(array_key_exists('module_parameter', $permission)){
+				$moduleParameter = $request->get($permission['module_parameter']);
+			}else{
+				$moduleParameter = 'module';
+			}
+			if(array_key_exists('record_parameter', $permission)){
+				$recordParameter = $request->get($permission['record_parameter']);
+			}else{
+				$recordParameter = '';
+			}
+			if(!Users_Privileges_Model::isPermitted($moduleParameter, $permission['action'], $recordParameter)) {
+				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+			}
+		}
+	}
 }
 
 /**
