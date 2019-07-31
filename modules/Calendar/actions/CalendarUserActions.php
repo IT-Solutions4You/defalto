@@ -18,13 +18,31 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 		$this->exposeMethod('checkDuplicateView');
 	}
 	
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$record = $request->get('record');
-		
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'View', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+	public function requiresPermission(Vtiger_Request $request){
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'deleteUserCalendar':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					break;
+				case 'deleteCalendarView':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permission[] = array('module_parameter' => 'module', 'action' => 'Delete');
+					break;
+				case 'addUserCalendar':
+				case 'addCalendarView':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permission[] = array('module_parameter' => 'module', 'action' => 'CreateView');
+					break;
+				default:
+					break;
+			}
 		}
+		return $permission;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
 	}
 	
 	public function process(Vtiger_Request $request) {
@@ -44,7 +62,7 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
 		$sharedUserId = $request->get('userid');
-		
+
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery('SELECT 1 FROM vtiger_shareduserinfo WHERE userid=? AND shareduserid=?', array($userId, $sharedUserId));
 		if($db->num_rows($result) > 0) {
@@ -52,7 +70,7 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 		} else {
 			$db->pquery('INSERT INTO vtiger_shareduserinfo (userid, shareduserid, visible) VALUES(?, ?, ?)', array($userId, $sharedUserId, '0'));
 		}
-		
+
 		$userName = getUserFullName($sharedUserId);
 		if(!$userName) {
 			$userName = Vtiger_Functions::getGroupRecordLabel($sharedUserId);
@@ -73,19 +91,19 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 		$userId = $currentUser->getId();
 		$sharedUserId = $request->get('selectedUser');
 		$color = $request->get('selectedColor');
-		
+
 		$db = PearDatabase::getInstance();
-		
+
 		$queryResult = $db->pquery('SELECT 1 FROM vtiger_shareduserinfo WHERE userid=? AND shareduserid=?', array($userId, $sharedUserId));
-		
+
 		if($db->num_rows($queryResult) > 0) {
 			$db->pquery('UPDATE vtiger_shareduserinfo SET color=?, visible=? WHERE userid=? AND shareduserid=?', array($color, '1', $userId, $sharedUserId));
 		} else {
 			$db->pquery('INSERT INTO vtiger_shareduserinfo (userid, shareduserid, color, visible) VALUES(?, ?, ?, ?)', array($userId, $sharedUserId, $color, '1'));
 		}
-		
+
 		$response = new Vtiger_Response();
-		$response->setResult(array('success' => true));
+			$response->setResult(array('success' => true));
 		$response->emit();
 	}
 	
@@ -114,7 +132,7 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 	 */
 	function deleteCalendarView(Vtiger_Request $request) {
 		Calendar_Module_Model::deleteCalendarView($request);
-		
+
 		$result = array('viewmodule' => $request->get('viewmodule'), 'viewfieldname' => $request->get('viewfieldname'), 'viewfieldlabel' => $request->get('viewfieldlabel'));
 		$response = new Vtiger_Response();
 		$response->setResult($result);
@@ -127,8 +145,8 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 	 * @return Vtiger_Response $response
 	 */
 	function addCalendarView(Vtiger_Request $request) {
-		$type = Calendar_Module_Model::addCalendarView($request);
-		
+			$type = Calendar_Module_Model::addCalendarView($request);
+
 		$response = new Vtiger_Response();
 		$response->setResult(array('success' => true, 'type' => $type));
 		$response->emit();

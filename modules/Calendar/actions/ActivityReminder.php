@@ -15,16 +15,27 @@ class Calendar_ActivityReminder_Action extends Vtiger_Action_Controller{
 		$this->exposeMethod('postpone');
 	}
 
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+	public function requiresPermission(Vtiger_Request $request){
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'getReminders':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+					break;
 
-		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
+				case 'postpone':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record');
+					break;
 
-		if(!$permission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+				default:
+					break;
+			}
 		}
+		return $permission;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -49,9 +60,9 @@ class Calendar_ActivityReminder_Action extends Vtiger_Action_Controller{
 	}
 
 	function postpone(Vtiger_Request $request) {
-		$recordId = $request->get('record');
-		$module = $request->getModule();
-		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $module);
-		$recordModel->updateReminderStatus(0);
+			$recordId = $request->get('record');
+			$module = $request->getModule();
+			$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $module);
+			$recordModel->updateReminderStatus(0);
+		}
 	}
-}
