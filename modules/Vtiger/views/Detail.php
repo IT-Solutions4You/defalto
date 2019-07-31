@@ -26,14 +26,38 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showRelatedRecords');
 	}
 
+	public function requiresPermission(Vtiger_Request $request){
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'showModuleDetailView':
+				case 'showModuleSummaryView':
+				case 'showModuleBasicView':
+					$permission[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					break;
+				case 'showRecentComments':
+				case 'showChildComments':
+					$permission[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+					$request->set('custom_module', 'ModComments');
+					break;
+				case 'showRelatedList':
+				case 'showRelatedRecords':
+					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					break;
+				case 'getActivities':
+					$permission[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+					$request->set('custom_module', 'Calendar');
+					break;
+				default:
+					break;
+			}
+		}
+		return $permission;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
-
-		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
-		if(!$recordPermission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
 
 		if ($recordId) {
 			$recordEntityName = getSalesEntityType($recordId);
@@ -41,7 +65,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
-		return true;
+		parent::checkPermission($request);
 	}
 
 	function preProcess(Vtiger_Request $request, $display=true) {

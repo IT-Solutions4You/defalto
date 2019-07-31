@@ -10,18 +10,17 @@
 
 class Vtiger_Save_Action extends Vtiger_Action_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$record = $request->get('record');
+		$actionName = ($record) ? 'EditView' : 'CreateView';
+		$permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'Save', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
-
-		$actionName = ($record) ? 'EditView' : 'CreateView';
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
 
 		if ($record) {
 			$recordEntityName = getSalesEntityType($record);
@@ -29,6 +28,7 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		parent::checkPermission($request);
 	}
 	
 	public function validateRequest(Vtiger_Request $request) {

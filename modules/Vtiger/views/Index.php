@@ -14,11 +14,6 @@ class Vtiger_Index_View extends Vtiger_Basic_View {
 		parent::__construct();
 	}
 
-	function checkPermission(Vtiger_Request $request) {
-		//Return true as WebUI.php is already checking for module permission
-		return true;
-	}
-
 	public function preProcess (Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
