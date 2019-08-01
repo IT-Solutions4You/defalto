@@ -15,6 +15,23 @@ class Campaigns_DetailAjax_Action extends Vtiger_BasicAjax_Action {
 		$this->exposeMethod('getRecordsCount');
 	}
 
+	public function requiresPermission(Vtiger_Request $request){
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'getRecordsCount':
+					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					break;
+				default:
+					break;
+			}
+		}
+		return $permission;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+	}
 	public function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
 		if(!empty($mode)) {

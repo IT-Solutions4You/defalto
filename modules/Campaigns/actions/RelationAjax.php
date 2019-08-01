@@ -16,6 +16,28 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$this->exposeMethod('updateStatus');
 	}
 
+	public function requiresPermission(Vtiger_Request $request){
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'addRelationsFromRelatedModuleViewId':
+					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					break;
+				case 'updateStatus':
+					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					break;
+				default:
+					break;
+			}
+		}
+		return $permission;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+	}
+	
 	/**
 	 * Function to add relations using related module viewid
 	 * @param Vtiger_Request $request
