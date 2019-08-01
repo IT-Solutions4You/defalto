@@ -15,17 +15,18 @@ class Calendar_CalendarActions_Action extends Vtiger_BasicAjax_Action {
 	}
 	
 	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
 		if(!empty($mode)) {
 			switch ($mode) {
 				case 'fetchAgendaViewEventDetails':
-					$permission[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'id');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'id');
 					break;
 				default:
 					break;
 			}
 		}
-		return $permission;
+		return $permissions;
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {

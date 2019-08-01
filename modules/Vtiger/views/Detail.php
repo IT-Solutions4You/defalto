@@ -27,32 +27,33 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	}
 
 	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
 		if(!empty($mode)) {
 			switch ($mode) {
 				case 'showModuleDetailView':
 				case 'showModuleSummaryView':
 				case 'showModuleBasicView':
-					$permission[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 					break;
 				case 'showRecentComments':
 				case 'showChildComments':
-					$permission[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
 					$request->set('custom_module', 'ModComments');
 					break;
 				case 'showRelatedList':
 				case 'showRelatedRecords':
-					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
 					break;
 				case 'getActivities':
-					$permission[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
 					$request->set('custom_module', 'Calendar');
 					break;
 				default:
 					break;
 			}
 		}
-		return $permission;
+		return $permissions;
 	}
 	
 	function checkPermission(Vtiger_Request $request) {

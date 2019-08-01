@@ -10,7 +10,8 @@
 
 class Accounts_AccountHierarchy_View extends Vtiger_View_Controller {
 
-	public function requiresPermission(\Vtiger_Request $request) {
+	public function requiresPermission(Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		return $permissions;
 	}

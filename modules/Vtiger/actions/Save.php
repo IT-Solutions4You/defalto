@@ -11,10 +11,21 @@
 class Vtiger_Save_Action extends Vtiger_Action_Controller {
 
 	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$moduleParameter = $request->get('source_module');
+		if (!$moduleParameter) {
+			$moduleParameter = 'module';
+		}else{
+			$moduleParameter = 'source_module';
+		}
 		$record = $request->get('record');
+		if (!$record) {
+			$recordParameter = '';
+		}else{
+			$recordParameter = 'record';
+		}
 		$actionName = ($record) ? 'EditView' : 'CreateView';
-		$permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'Save', 'record_parameter' => 'record');
+		$permissions[] = array('module_parameter' => $moduleParameter, 'action' => $actionName, 'record_parameter' => $recordParameter);
 		return $permissions;
 	}
 	
