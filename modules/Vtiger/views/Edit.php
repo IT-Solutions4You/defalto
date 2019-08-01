@@ -15,6 +15,7 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 	}
 
 	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
 		$record = $request->get('record');
 		$actionName = 'CreateView';
 		if ($record && !$request->get('isDuplicate')) {

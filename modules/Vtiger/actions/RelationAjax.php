@@ -17,7 +17,31 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		$this->exposeMethod('getRelatedRecordInfo');
 	}
 
-	function checkPermission(Vtiger_Request $request) { }
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'addRelation':
+				case 'deleteRelation':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
+					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+					break;
+				case 'getRelatedListPageCount':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+				case 'getRelatedRecordInfo':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'id');
+				default:
+					break;
+			}
+		}
+		return $permissions;
+	}
+	
+	function checkPermission(Vtiger_Request $request) {
+ 		return parent::checkPermission($request);
+	}
 
 	function preProcess(Vtiger_Request $request) {
 		return true;

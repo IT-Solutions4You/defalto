@@ -19,26 +19,27 @@ class Calendar_CalendarUserActions_Action extends Vtiger_Action_Controller{
 	}
 	
 	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
 		if(!empty($mode)) {
 			switch ($mode) {
 				case 'deleteUserCalendar':
-					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
 					break;
 				case 'deleteCalendarView':
-					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
-					$permission[] = array('module_parameter' => 'module', 'action' => 'Delete');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'Delete');
 					break;
 				case 'addUserCalendar':
 				case 'addCalendarView':
-					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
-					$permission[] = array('module_parameter' => 'module', 'action' => 'CreateView');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
 					break;
 				default:
 					break;
 			}
 		}
-		return $permission;
+		return $permissions;
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {

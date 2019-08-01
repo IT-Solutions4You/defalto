@@ -17,21 +17,22 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 	}
 
 	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
 		if(!empty($mode)) {
 			switch ($mode) {
 				case 'addRelationsFromRelatedModuleViewId':
-					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
 					break;
 				case 'updateStatus':
-					$permission[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
-					$permission[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
 					break;
 				default:
 					break;
 			}
 		}
-		return $permission;
+		return $permissions;
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {

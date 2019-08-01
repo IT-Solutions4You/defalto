@@ -11,6 +11,7 @@
 class Vtiger_Save_Action extends Vtiger_Action_Controller {
 
 	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
 		$record = $request->get('record');
 		$actionName = ($record) ? 'EditView' : 'CreateView';
 		$permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
