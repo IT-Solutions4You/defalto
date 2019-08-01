@@ -16,7 +16,7 @@ class Accounts_AccountHierarchy_View extends Vtiger_View_Controller {
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 	
 	function preProcess(Vtiger_Request $request, $display = true) {

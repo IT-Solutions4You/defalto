@@ -29,7 +29,7 @@ class Calendar_CalendarActions_Action extends Vtiger_BasicAjax_Action {
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 	
 	public function process(Vtiger_Request $request) {

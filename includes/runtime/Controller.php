@@ -129,6 +129,7 @@ abstract class Vtiger_Action_Controller extends Vtiger_Controller {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 }
 

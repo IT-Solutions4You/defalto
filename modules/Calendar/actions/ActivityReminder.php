@@ -35,7 +35,7 @@ class Calendar_ActivityReminder_Action extends Vtiger_Action_Controller{
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {
