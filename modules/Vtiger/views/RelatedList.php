@@ -12,6 +12,7 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 	
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
 		
 		return $permissions;
