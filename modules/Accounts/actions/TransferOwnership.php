@@ -27,6 +27,7 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 				$this->transferRecordIds[] = $recordId;
 			}
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

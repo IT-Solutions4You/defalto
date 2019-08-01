@@ -17,7 +17,7 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 	
 	function process(Vtiger_Request $request) {
@@ -28,7 +28,6 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
 		$moduleFields = $relatedModuleModel->getFields();
-
         $searchParams = $request->get('search_params');
         
         if(empty($searchParams)) {

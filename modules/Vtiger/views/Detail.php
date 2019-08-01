@@ -65,7 +65,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 
 	function preProcess(Vtiger_Request $request, $display=true) {

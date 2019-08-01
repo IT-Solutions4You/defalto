@@ -28,7 +28,7 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 	
 	public function validateRequest(Vtiger_Request $request) {

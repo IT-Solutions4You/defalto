@@ -35,7 +35,7 @@ class Campaigns_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
+		return parent::checkPermission($request);
 	}
 	
 	/**
