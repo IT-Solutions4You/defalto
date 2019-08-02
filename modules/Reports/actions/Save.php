@@ -11,13 +11,7 @@
 class Reports_Save_Action extends Vtiger_Save_Action {
 
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Reports_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+		parent::checkPermission($request);
 
 		$record = $request->get('record');
 		if ($record) {
@@ -26,6 +20,7 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

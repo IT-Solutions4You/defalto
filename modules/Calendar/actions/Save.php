@@ -13,16 +13,7 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
-
-		$actionName = ($record) ? 'EditView' : 'CreateView';
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
+		parent::checkPermission($request);
 		if ($record) {
 			$activityModulesList = array('Calendar', 'Events');
 			$recordEntityName = getSalesEntityType($record);
