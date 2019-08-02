@@ -17,6 +17,7 @@ class Settings_CronTasks_SaveAjax_Action extends Settings_Vtiger_Index_Action {
 		if(!$recordId) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
 	public function process(Vtiger_Request $request) {

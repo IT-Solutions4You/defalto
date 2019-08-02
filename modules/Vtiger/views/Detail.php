@@ -50,6 +50,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 					$request->set('custom_module', 'Calendar');
 					break;
 				default:
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 					break;
 			}
 		}

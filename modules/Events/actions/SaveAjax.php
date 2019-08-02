@@ -10,29 +10,6 @@
 
 class Events_SaveAjax_Action extends Events_Save_Action {
 
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$record = $request->get('record');
-
-		$actionName = ($record) ? 'EditView' : 'CreateView';
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
-		if ($record) {
-			$activityModulesList = array('Calendar', 'Events');
-			$recordEntityName = getSalesEntityType($record);
-
-			if (!in_array($recordEntityName, $activityModulesList) || !in_array($moduleName, $activityModulesList)) {
-				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-			}
-		}
-	}
-
 	public function process(Vtiger_Request $request) {
 		$response = new Vtiger_Response();
 		try {
