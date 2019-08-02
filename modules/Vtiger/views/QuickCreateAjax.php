@@ -10,12 +10,14 @@
 
 class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
+		return $permissions;
+	}
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-
-		if (!(Users_Privileges_Model::isPermitted($moduleName, 'CreateView'))) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
-		}
+		return parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {
