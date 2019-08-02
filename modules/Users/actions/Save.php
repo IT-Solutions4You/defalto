@@ -11,13 +11,12 @@
 class Users_Save_Action extends Vtiger_Save_Action {
 
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$record = $request->get('record');
-		$recordModel = Vtiger_Record_Model::getInstanceById($record, $moduleName);
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		// Check for operation access.
-		$allowed = Users_Privileges_Model::isPermitted($moduleName, 'Save', $record);
+		$allowed = parent::checkPermission($request);
 		if ($allowed) {
+			$moduleName = $request->getModule();
+			$record = $request->get('record');
+			$recordModel = Vtiger_Record_Model::getInstanceById($record, $moduleName);
+			$currentUserModel = Users_Record_Model::getCurrentUserModel();
 			// Deny access if not administrator or account-owner or self
 			if(!$currentUserModel->isAdminUser()) {
 				if (empty($record)) {
@@ -30,6 +29,7 @@ class Users_Save_Action extends Vtiger_Save_Action {
 		if(!$allowed) {
 			throw new AppException('LBL_PERMISSION_DENIED');
 		}
+		return $allowed;
 	}
 
 	/**
