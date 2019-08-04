@@ -12,7 +12,7 @@ class Documents_List_View extends Vtiger_List_View {
 	function __construct() {
 		parent::__construct();
 	}
-
+	
 	function preProcess (Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
