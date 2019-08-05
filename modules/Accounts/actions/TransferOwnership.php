@@ -13,6 +13,7 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 	
 	public function requiresPermission(\Vtiger_Request $request) {
 		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record');
 		return $permissions;
 	}

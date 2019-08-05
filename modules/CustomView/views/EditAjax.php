@@ -10,6 +10,15 @@
 
 Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'source_module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->get('source_module');

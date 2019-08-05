@@ -12,8 +12,7 @@ class Documents_MoveDocuments_Action extends Vtiger_Mass_Action {
 	
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
-		
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		return $permissions;
 	}
 

@@ -13,7 +13,7 @@ class Documents_AddFolder_View extends Vtiger_IndexAjax_View {
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
 		
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		return $permissions;
 	}
 

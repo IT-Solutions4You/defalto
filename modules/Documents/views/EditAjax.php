@@ -10,18 +10,6 @@
 
 class Documents_EditAjax_View extends Vtiger_QuickCreateAjax_View {
 
-	public function requiresPermission(Vtiger_Request $request){
-		$permissions = parent::requiresPermission($request);
-		
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
-		return $permissions;
-	}
-
-
-	public function checkPermission(Vtiger_Request $request) {
-		return parent::checkPermission($request);
-	}
-
 	public function getFields($documentType){
 		switch($documentType){
 			case 'I' : case 'E' : return array('filename','assigned_user_id','folderid');

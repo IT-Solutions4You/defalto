@@ -13,6 +13,17 @@ class Documents_List_View extends Vtiger_List_View {
 		parent::__construct();
 	}
 	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+
+
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
+	}
 	function preProcess (Vtiger_Request $request) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
