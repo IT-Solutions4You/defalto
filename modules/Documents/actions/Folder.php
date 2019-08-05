@@ -18,21 +18,7 @@ class Documents_Folder_Action extends Vtiger_Action_Controller {
 	
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
-		$mode = $request->getMode();
-		if(!empty($mode)) {
-			switch ($mode) {
-				case 'save':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
-					break;
-				case 'delete':
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'Delete');
-					$request->set('custom_module', 'Calendar');
-					break;
-				default:
-					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
-					break;
-			}
-		}
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		return $permissions;
 	}
 

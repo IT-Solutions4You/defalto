@@ -13,7 +13,7 @@ class Documents_MoveDocuments_View extends Vtiger_Index_View {
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
 		
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		return $permissions;
 	}
 
