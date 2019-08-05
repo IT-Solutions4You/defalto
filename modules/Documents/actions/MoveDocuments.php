@@ -9,13 +9,17 @@
  *************************************************************************************/
 
 class Documents_MoveDocuments_Action extends Vtiger_Mass_Action {
+	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+		return $permissions;
+	}
+
 
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+		return parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {

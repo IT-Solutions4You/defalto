@@ -10,12 +10,16 @@
 
 class Documents_MoveDocuments_View extends Vtiger_Index_View {
 
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+		return $permissions;
+	}
 
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
-		}
+
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
 	}
 
 	public function process (Vtiger_Request $request) {
