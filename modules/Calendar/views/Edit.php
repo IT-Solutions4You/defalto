@@ -20,15 +20,7 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		$actionName = 'CreateView';
-		if ($record && !$request->get('isDuplicate')) {
-			$actionName = 'EditView';
-		}
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
+		parent::checkPermission($request);
 		if ($record) {
 			$activityModulesList = array('Calendar', 'Events');
 			$recordEntityName = getSalesEntityType($record);

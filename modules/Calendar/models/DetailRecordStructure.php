@@ -44,7 +44,7 @@ class Calendar_DetailRecordStructure_Model extends Vtiger_DetailRecordStructure_
                             $value = $recordModel->get($fieldName);
                             if(!$currentUsersModel->isAdminUser() && ($fieldModel->getFieldDataType() == 'picklist' || $fieldModel->getFieldDataType() == 'multipicklist')) {
                                 $value = decode_html($value);
-                                $this->setupAccessiblePicklistValueList($fieldName);
+                                $this->setupAccessiblePicklistValueList($fieldModel);
                             } 
 							$fieldModel->set('fieldvalue', $value);
 						}
