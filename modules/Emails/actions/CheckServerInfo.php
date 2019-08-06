@@ -10,14 +10,14 @@
 
 class Emails_CheckServerInfo_Action extends Vtiger_Action_Controller {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
 	}
 
 	function process(Vtiger_Request $request) {
