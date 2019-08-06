@@ -29,7 +29,8 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		if ($record) {
+		$nonEntityModules = array('Users', 'Events', 'Calendar');
+		if ($record && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($record);
 			if ($recordEntityName !== $moduleName) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));

@@ -14,11 +14,7 @@ class Calendar_Detail_View extends Vtiger_Detail_View {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
-		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
-		if(!$recordPermission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
+		parent::checkPermission($request);
 		if ($recordId) {
 			$activityModulesList = array('Calendar', 'Events');
 			$recordEntityName = getSalesEntityType($recordId);

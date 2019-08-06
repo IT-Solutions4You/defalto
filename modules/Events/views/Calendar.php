@@ -12,6 +12,17 @@
 // user continue working with Calendar when dropping from Event View.
 class Events_Calendar_View extends Vtiger_Index_View {
 	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'Calendar');
+		return $permissions;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
+	}
+	
 	public function preProcess(Vtiger_Request $request, $display = true) {}
 	public function postProcess(Vtiger_Request $request) {}
 	
