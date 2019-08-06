@@ -10,8 +10,14 @@
 
 class Emails_BasicAjax_Action extends Vtiger_Action_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
-		return;
+		return parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {

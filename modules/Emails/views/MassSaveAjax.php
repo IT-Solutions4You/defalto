@@ -13,13 +13,15 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		parent::__construct();
 		$this->exposeMethod('massSave');
 	}
-
+	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-
-		if (!Users_Privileges_Model::isPermitted($moduleName, 'Save')) {
-			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
-		}
+		return parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {

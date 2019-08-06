@@ -10,6 +10,18 @@
 
 class Emails_List_View extends Vtiger_List_View {
 
+	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'MailManager');
+		return $permissions;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		return parent::checkPermission($request);
+	}
+	
 	public function preProcess(Vtiger_Request $request) {
 	}
 
