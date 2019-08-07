@@ -14,6 +14,12 @@ class Vtiger_Index_View extends Vtiger_Basic_View {
 		parent::__construct();
 	}
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	public function preProcess (Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 
@@ -22,17 +28,7 @@ class Vtiger_Index_View extends Vtiger_Basic_View {
 		$moduleName = $request->getModule();
 		if(!empty($moduleName)) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$userPrivilegesModel = Users_Privileges_Model::getInstanceById($currentUser->getId());
-			$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
 			$viewer->assign('MODULE', $moduleName);
-
-			if(!$permission) {
-				$viewer->assign('MESSAGE', vtranslate('LBL_PERMISSION_DENIED'));
-				$viewer->view('OperationNotPermitted.tpl', $moduleName);
-				exit;
-			}
-
 			$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'));
 			$linkModels = $moduleModel->getSideBarLinks($linkParams);
 

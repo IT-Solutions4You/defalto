@@ -19,6 +19,34 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$this->exposeMethod('transferOwnership');
 	}
 
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$mode = $request->getMode();
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'showMassEditForm':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+					break;
+				case 'showAddCommentForm':
+					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'CreateView');
+					$request->set('custom_module', 'ModComments');
+					break;
+				case 'showComposeEmailForm':
+					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+					$request->set('custom_module', 'Emails');
+					break;
+				case 'showSendSMSForm':
+					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'CreateView');
+					$request->set('custom_module', 'SMSNotifier');
+					break;
+				default:
+					break;
+			}
+		}
+		return $permissions;
+	}
+	
 	function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
 		if(!empty($mode)) {

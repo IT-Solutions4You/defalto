@@ -10,16 +10,12 @@
 
 class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Save')) {
-			throw new AppException(vtranslate($moduleName, $moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'EditView');
+		return $permissions;
 	}
-
+	
 	public function process(Vtiger_Request $request) {
 		$response = new Vtiger_Response();
 		try {
