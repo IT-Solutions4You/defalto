@@ -29,7 +29,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
 		$mode = $request->getMode();
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		if(!empty($mode)) {
 			switch ($mode) {
 				case 'showModuleDetailView':
