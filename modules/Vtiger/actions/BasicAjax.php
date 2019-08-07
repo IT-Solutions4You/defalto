@@ -10,6 +10,16 @@
 
 class Vtiger_BasicAjax_Action extends Vtiger_Action_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		$permissions[] = array('module_parameter' => 'search_module', 'action' => 'DetailView');
+		if(!empty($request->get('parent_module'))){
+			$permissions[] = array('module_parameter' => 'parent_module', 'action' => 'DetailView');
+		}
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$searchValue = $request->get('search_value');
 		$searchModule = $request->get('search_module');

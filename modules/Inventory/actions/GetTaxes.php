@@ -10,6 +10,12 @@
 
 class Inventory_GetTaxes_Action extends Vtiger_Action_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'sourceModule', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	function process(Vtiger_Request $request) {
 		$decimalPlace = getCurrencyDecimalPlaces();
 		$currencyId = $request->get('currency_id');
