@@ -10,6 +10,7 @@
 
 class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 
+	var $moduleCall = false;
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$sourceModule = $request->get('source_module');
@@ -49,6 +50,13 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 		$query = $this->getExportQuery($request);
 		$result = $db->pquery($query, array());
 
+		$redirectedModules = array('Users', 'Calendar');
+		if($request->getModule() != $moduleName && in_array($moduleName, $redirectedModules) && !$this->moduleCall){
+			$handlerClass = Vtiger_Loader::getComponentClassName('Action', 'ExportData', $moduleName);
+			$handler = new $handlerClass();
+			$handler->ExportData($request);
+			return;
+		}
 		$translatedHeaders = $this->getHeaders();
 		$entries = array();
 		for ($j = 0; $j < $db->num_rows($result); $j++) {
