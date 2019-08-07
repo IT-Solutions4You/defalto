@@ -8,8 +8,6 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-ini_set('error_reporting', 6135);
-ini_set('display_errors', 'on');
 //Overrides GetRelatedList : used to get related query
 //TODO : Eliminate below hacking solution
 include_once 'config.php';
