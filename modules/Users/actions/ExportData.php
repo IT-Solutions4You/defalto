@@ -31,6 +31,7 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 	 * @param Vtiger_Request $request
 	 */
 	function ExportData(Vtiger_Request $request) {
+		$this->moduleCall = true;
 		$db = PearDatabase::getInstance();
 		$moduleName = $request->get('source_module');
 		if ($moduleName) {
@@ -72,5 +73,8 @@ class Users_ExportData_Action extends Vtiger_ExportData_Action {
 		$queryGenerator->setFields($acceptedFields);
 		return $queryGenerator->getQuery();
 	}
-
+	
+	public function validateRequest(Vtiger_Request $request) {
+        $request->validateReadAccess();
+    }
 }

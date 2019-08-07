@@ -148,7 +148,7 @@
 												<a	{if stripos($SETTING->getUrl(), 'javascript:') === 0}
 														onclick='{$SETTING->getUrl()|substr:strlen("javascript:")};'
 													{else}
-														onclick='window.location.href="{$SETTING->getUrl()}"'
+														href="{$SETTING->getUrl()}"
 													{/if}>
 													{vtranslate($SETTING->getLabel(), $QUALIFIEDMODULE)}</a>
 											</li>
