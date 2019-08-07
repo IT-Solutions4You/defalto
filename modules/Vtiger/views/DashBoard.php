@@ -12,13 +12,13 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 
 	protected static $selectable_dashboards;
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'Dashboard');
+		return $permissions;
 	}
-
+	
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 		$viewer = $this->getViewer($request);
