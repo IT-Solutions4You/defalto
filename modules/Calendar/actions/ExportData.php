@@ -44,6 +44,7 @@ class Calendar_ExportData_Action extends Vtiger_ExportData_Action {
 	 * @param Vtiger_Request $request
 	 */
 	public function ExportData(Vtiger_Request $request) {
+		$this->moduleCall = true;
 		if ($request->get('type') == 'csv') {
 			parent::ExportData($request);
 			return;
