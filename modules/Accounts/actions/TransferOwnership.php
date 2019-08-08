@@ -27,6 +27,9 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 			if($permissionStatus){
 				$this->transferRecordIds[] = $recordId;
 			}
+			if(empty($this->transferRecordIds)){
+				throw new AppException(vtranslate('LBL_RECORD_PERMISSION_DENIED'));
+			}
 		}
 		return true;
 	}
