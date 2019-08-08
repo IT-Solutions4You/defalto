@@ -20,11 +20,10 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 	
 	public function checkPermission(Vtiger_Request $request) {
 		parent::checkPermission($request);
-		$permissions = $this->requiresPermission($request);
 		$recordIds = $this->getRecordIds($request);
 		foreach ($recordIds as $key => $recordId) {
 			$moduleName = getSalesEntityType($recordId);
-			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  $permissions['action']);
+			$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  'EditView', $recordId);
 			if($permissionStatus){
 				$this->transferRecordIds[] = $recordId;
 			}
