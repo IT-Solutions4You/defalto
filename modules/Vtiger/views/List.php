@@ -27,11 +27,6 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		return $permissions;
 	}
 
-
-	public function checkPermission(Vtiger_Request $request) {
-		return parent::checkPermission($request);
-	}
-
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 

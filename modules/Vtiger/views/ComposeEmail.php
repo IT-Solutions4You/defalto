@@ -20,17 +20,17 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$this->exposeMethod('emailReply');
 		$this->exposeMethod('emailReplyAll');
 	}
-
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$record = $request->get('record');
-		$actionName = ($record) ? 'EditView' : 'CreateView';
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'Emails');
+		return $permissions;
 	}
 
-	function preProcess(Vtiger_Request $request, $display=true) {
+	  function preProcess(Vtiger_Request $request, $display=true) {
 		if($request->getMode() == 'previewPrint'){
 			return;
 		}

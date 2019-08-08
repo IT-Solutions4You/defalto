@@ -10,17 +10,6 @@
 
 class PurchaseOrder_GetTaxes_Action extends Inventory_GetTaxes_Action {
 
-	function checkPermission(Vtiger_Request $request) {
-		$record = $request->get('record');
-
-		$moduleName = getSalesEntityType($record);
-		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $record);
-
-		if(!$recordPermission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-	}
-
 	function process(Vtiger_Request $request) {
 		$decimalPlace = getCurrencyDecimalPlaces();
 		$currencyId = $request->get('currency_id');
