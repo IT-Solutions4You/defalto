@@ -10,6 +10,15 @@
 
 class Inventory_ProductsPopup_View extends Vtiger_Popup_View {
 
+	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', $this->getModule($request));
+		return $permissions;
+	}
+	
 	/**
 	 * Function returns module name for which Popup will be initialized
 	 * @param type $request
