@@ -16,14 +16,17 @@ class Vtiger_ListViewQuickPreview_View extends Vtiger_Index_View {
 		parent::__construct();
 	}
 	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
-		$recordPermission = Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $recordId);
-		if(!$recordPermission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+		parent::checkPermission($request);
 
 		if ($recordId) {
 			$recordEntityName = getSalesEntityType($recordId);
