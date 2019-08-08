@@ -97,26 +97,35 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		$searchKey = $this->get('search_key');
 		$searchValue = $this->get('search_value');
 
-		$whereQuery .= ' WHERE ';
-		if(!empty($searchKey) && !empty($searchValue)) {
-			$whereQuery .= "$searchKey LIKE '$searchValue%' AND ";
-		}
+		$params = array();
+ 		if(!empty($searchKey) && !empty($searchValue)) {
+			$whereQuery .= " WHERE ? LIKE ? AND ";
+			$params[] = $searchKey;
+			$params[] = "%".$searchValue."%";
+ 		} else {
+ 			$whereQuery .= " WHERE ";
+ 		}
 
 		//module should be enabled or module should be empty then allow
-		$moduleActiveCheck = '(vtiger_tab.presence IN (0,2) OR vtiger_emailtemplates.module IS null OR vtiger_emailtemplates.module = "")';
+		$moduleActiveCheck = '(vtiger_tab.presence IN (0,2) OR vtiger_emailtemplates.module IS NULL OR vtiger_emailtemplates.module = "")';
 		$listQuery .= $whereQuery. $moduleActiveCheck;
 		//To retrieve only selected module records
 		if ($sourceModule) {
-			$listQuery .= " AND vtiger_emailtemplates.module = '".$sourceModule."'";
+			$listQuery .= " AND vtiger_emailtemplates.module = ?";
+			$params[] = $sourceModule;
 		}
 
 		if ($orderBy) {
-			$listQuery .= " ORDER BY $orderBy $sortOrder";
+			$listQuery .= " ORDER BY ? ?";
+			$params[] = $orderBy;
+			$params[] = $sortOrder;
 		} else {
 			$listQuery .= " ORDER BY templateid DESC";
 		}
-		$listQuery .= " LIMIT $startIndex,".($pageLimit+1);
-		$result = $db->pquery($listQuery, array());
+		$listQuery .= " LIMIT ?,?";
+		$params[] = $startIndex;
+		$params[] = $pageLimit + 1;
+		$result = $db->pquery($listQuery, $params);
 		$num_rows = $db->num_rows($result);
 
 		$listViewRecordModels = array();
