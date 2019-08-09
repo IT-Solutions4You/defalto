@@ -1387,6 +1387,7 @@ $languageStrings = array(
 	'LBL_RECENT_UPDATES' => 'Recent Updates',
 	'LBL_VIEW_UPDATES_IN_DETAIL' => 'Read More ...',
 	'LBL_DEFAULT_DASHBOARD_TOOLTIP'=>'Make this dashboard as default by reordering it as the first tab!',
+	'LBL_RECORD_PERMISSION_DENIED' => 'Record permissions denied',
 );
 
 $jsLanguageStrings = array(
