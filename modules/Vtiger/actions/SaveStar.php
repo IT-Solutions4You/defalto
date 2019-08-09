@@ -9,16 +9,35 @@
  * ***********************************************************************************/
 
 class Vtiger_SaveStar_Action extends Vtiger_Mass_Action {
-
+	var $followRecordIds = Array();
+	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
 	function checkPermission(Vtiger_Request $request) {
-		//Return true as WebUI.php is already checking for module permission
+		parent::checkPermission($request);
+		if ($request->has('selected_ids')) {
+			$recordIds = $this->getRecordsListFromRequest($request);
+			foreach ($recordIds as $recordId) {
+				$moduleName = getSalesEntityType($recordId);
+				$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  'DetailView', $recordId);
+				if($permissionStatus){
+					$this->followRecordIds[] = $recordId;
+				}
+				if(empty($this->followRecordIds)){
+					throw new AppException(vtranslate('LBL_RECORD_PERMISSION_DENIED'));
+				}
+			}
+		}
 		return true;
 	}
 
 	public function process(Vtiger_Request $request) {
 		$module = $request->get('module');
 		if ($request->has('selected_ids')) {
-			$recordIds = $this->getRecordsListFromRequest($request);
+			$recordIds = $this->followRecordIds;
 		} else {
 			$recordIds = array($request->get('record'));
 		}
