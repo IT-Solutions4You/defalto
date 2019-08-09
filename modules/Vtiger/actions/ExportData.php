@@ -11,17 +11,15 @@
 class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 
 	var $moduleCall = false;
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'Export');
+		$permissions[] = array('module_parameter' => 'source_module', 'action' => 'Export');
+		return $permissions;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$sourceModule = $request->get('source_module');
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Export') || 
-		  !$currentUserPriviligesModel->hasModuleActionPermission($sourceModuleModel->getId(), 'Export')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+		parent::checkPermission($request);
 	}
 
 	/**
