@@ -18,7 +18,7 @@ class Vtiger_Menu_Model extends Vtiger_Module_Model {
 	 * @param <Boolean> $sequenced - true/false
 	 * @return <Array> - List of Vtiger_Menu_Model instances
 	 */
-	public static function getAll($sequenced = false) {
+	public static function getAll($presence = array(), $restrictedModulesList = array(),$sequenced = false) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$restrictedModulesList = array('Emails', 'ProjectMilestone', 'ProjectTask', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');

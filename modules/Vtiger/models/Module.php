@@ -708,7 +708,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @param <array> $restrictedModulesList
 	 * @return <array> List of module models <Vtiger_Module_Model>
 	 */
-	public static function getAll($presence = array(), $restrictedModulesList = array()) {
+	public static function getAll($presence = array(), $restrictedModulesList = array(),$sequenced = false) {
 		$db = PearDatabase::getInstance();
 		self::preModuleInitialize2();
 		$cacheKey = 'modules';
