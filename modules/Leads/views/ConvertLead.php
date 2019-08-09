@@ -10,14 +10,11 @@
 
 class Leads_ConvertLead_View extends Vtiger_Index_View {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'ConvertLead')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'ConvertLead', 'record_parameter' => 'record');
+		return $permissions;
 	}
 
 	function process(Vtiger_Request $request) {

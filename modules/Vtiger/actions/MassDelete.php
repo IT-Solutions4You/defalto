@@ -10,16 +10,12 @@
 
 class Vtiger_MassDelete_Action extends Vtiger_Mass_Action {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Delete')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'Delete');
+		return $permissions;
 	}
-
+	
 	function preProcess(Vtiger_Request $request) {
 		return true;
 	}
