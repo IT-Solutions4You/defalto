@@ -9,13 +9,33 @@
  *************************************************************************************/
 
 class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
-
+	var $relationModules = array();
 	function __construct() {
 		parent::__construct();
 		$this->exposeMethod('getRelatedRecordsCount');
 	}
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'recordId');
+		return $permissions;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+		$parentModule = $request->get("module");
+		$parentModuleModel = Vtiger_Module_Model::getInstance($parentModule);
+		$relationModels = $parentModuleModel->getRelations();
+		foreach ($relationModels as $relation) {
+			$relatedModuleName = $relation->get('relatedModuleName');
+			$permissionStatus  = Users_Privileges_Model::isPermitted($relatedModuleName,  'DetailView');
+			if($permissionStatus){
+				$this->relationModules[] = $relation;
+			}
+		}
+		if(empty($this->relationModules)){
+			throw new AppException(vtranslate('LBL_RELATED_MODULES_PERMISSION_DENIED'));
+		}
 	}
 
 	public function process(Vtiger_Request $request) {
@@ -35,7 +55,7 @@ class Vtiger_RelatedRecordsAjax_Action extends Vtiger_Action_Controller {
 		$parentModule = $request->get("module");
 		$parentModuleModel = Vtiger_Module_Model::getInstance($parentModule);
 		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentRecordId, $parentModuleModel);
-		$relationModels = $parentModuleModel->getRelations();
+		$relationModels = $this->relationModules;
 		$relatedRecordsCount = array();
 		foreach ($relationModels as $relation) {
 			$relationId = $relation->getId();

@@ -19,16 +19,14 @@ class Vtiger_TagCloud_Action extends Vtiger_Mass_Action {
 		$this->exposeMethod('remove');
 	}
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
-		if(!$permission) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-		return true;
+		parent::checkPermission($request);
 	}
 
 	public function process(Vtiger_Request $request) {

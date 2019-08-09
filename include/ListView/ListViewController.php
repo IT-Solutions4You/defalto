@@ -283,7 +283,7 @@ class ListViewController {
 					$fileIdRes = $db->pquery($fileIdQuery,array($recordId));
 					$fileId = $db->query_result($fileIdRes,0,'attachmentsid');
 					if($fileName != '' && $status == 1) {
-						if($downloadType == 'I' ) {
+						if($downloadType == 'I' && $fileId) {
 							$value = '<a href="index.php?module=Documents&action=DownloadFile&record='.$recordId.'&fileid='.$fileId.'"'.
 									' title="'.	getTranslatedString('LBL_DOWNLOAD_FILE',$module).
 									'" >'.textlength_check($value).
@@ -291,7 +291,7 @@ class ListViewController {
 						} elseif($downloadType == 'E') {
 							$value = '<a onclick="event.stopPropagation()"'.
 									' href="'.$fileName.'" target="_blank"'.
-									' title="'.	getTranslatedString('LBL_DOWNLOAD_FILE',$module).
+									' title="'.	getTranslatedString('LBL_DOWNLOAD_FILE',$module).	
 									'" >'.textlength_check($value).
 									'</a>';
 						} else {

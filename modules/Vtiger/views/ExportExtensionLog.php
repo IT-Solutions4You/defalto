@@ -11,6 +11,16 @@ require_once 'modules/WSAPP/WSAPPLogs.php';
 
 class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'WSAPP');
+		return $permissions;
+	}
+	
+	public function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+	}
 	function preProcess(Vtiger_Request $request) {
 		return false;
 	}
@@ -19,15 +29,6 @@ class Vtiger_ExportExtensionLog_View extends Vtiger_View_Controller {
 		return false;
 	}
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-	}
 
 	/**
 	 * Function to convert log details to user format

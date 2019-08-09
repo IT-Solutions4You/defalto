@@ -16,6 +16,17 @@ class Vtiger_ExtensionViews_View extends Vtiger_Index_View {
 		$this->exposeMethod('showLogs');
 		$this->exposeMethod('showLogDetail');
 	}
+	
+	function checkPermission(Vtiger_Request $request) {
+		parent::checkPermission($request);
+	}
+	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		$request->set('custom_module', 'WSAPP');
+		return $permissions;
+	}
 
 	function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
