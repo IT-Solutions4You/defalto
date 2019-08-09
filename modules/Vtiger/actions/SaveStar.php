@@ -18,8 +18,8 @@ class Vtiger_SaveStar_Action extends Vtiger_Mass_Action {
 	}
 	function checkPermission(Vtiger_Request $request) {
 		parent::checkPermission($request);
-		$recordIds = $this->getRecordsListFromRequest($request);
 		if ($request->has('selected_ids')) {
+			$recordIds = $this->getRecordsListFromRequest($request);
 			foreach ($recordIds as $recordId) {
 				$moduleName = getSalesEntityType($recordId);
 				$permissionStatus  = Users_Privileges_Model::isPermitted($moduleName,  'DetailView', $recordId);
