@@ -10,15 +10,13 @@
 
 class Potentials_ConvertPotential_View extends Vtiger_Index_View {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		$projectModuleModel = Vtiger_Module_Model::getInstance('Project');
-
-		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserModel->hasModuleActionPermission($projectModuleModel->getId(), 'CreateView')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
-		}
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'CreateView');
+		$request->set('custom_module', 'Project');
+		
+		return $permissions;
 	}
 
 	function process(Vtiger_Request $request) {
