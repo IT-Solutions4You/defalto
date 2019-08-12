@@ -10,14 +10,10 @@
 
 class Products_SubProductQuantityUpdate_View extends Vtiger_View_Controller {
 
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate($moduleName, $moduleName) . ' ' . vtranslate('LBL_NOT_ACCESSIBLE'));
-		}
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
 	}
 
 	public function preProcess(Vtiger_Request $request, $display = true) {

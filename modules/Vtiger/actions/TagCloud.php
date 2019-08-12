@@ -24,10 +24,6 @@ class Vtiger_TagCloud_Action extends Vtiger_Mass_Action {
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		return $permissions;
 	}
-	
-	function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
-	}
 
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();

@@ -17,6 +17,22 @@ class PriceBooks_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 			return;
 		}
 	}
+	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'addListPrice':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
+					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+					break;
+				default:
+					break;
+			}
+		}
+		return $permissions;
+	}
 
 	/**
 	 * Function adds PriceBooks-Products Relation
@@ -27,7 +43,6 @@ class PriceBooks_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$sourceRecordId = $request->get('src_record');
 		$relatedModule =  $request->get('related_module');
 		$relInfos = $request->get('relinfo');
-		$relatedModule = $request->get('related_module');
 
 		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);

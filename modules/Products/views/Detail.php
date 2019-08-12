@@ -15,6 +15,20 @@ class Products_Detail_View extends Vtiger_Detail_View {
 		$this->exposeMethod('showBundleTotalCostView');
 	}
 	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'showBundleTotalCostView':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+					break;
+			}
+		}
+		return $permissions;
+	}
+	
 	function preProcess(Vtiger_Request $request, $display = true) {
 		$recordId = $request->get('record');
 		$moduleName = $request->getModule();

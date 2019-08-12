@@ -10,16 +10,11 @@
 
 class Portal_MassDelete_Action extends Vtiger_MassDelete_Action {
 
-    function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
 	}
-
+	
     public function process(Vtiger_Request $request) {
         $module = $request->getModule();
         

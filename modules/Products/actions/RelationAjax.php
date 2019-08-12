@@ -18,6 +18,31 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$this->exposeMethod('changeBundleCost');
 	}
 	
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$mode = $request->getMode();
+		if(!empty($mode)) {
+			switch ($mode) {
+				case 'addListPrice':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
+					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+					break;
+				case 'updateShowBundles':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+				case 'updateQuantity':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'src_record');
+					$permissions[] = array('module_parameter' => 'related_module', 'action' => 'DetailView');
+				case 'changeBundleCost':
+					$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
+				default:
+					break;
+			}
+		}
+		return $permissions;
+	}
+	
 	/*
 	 * Function to add relation for specified source record id and related record id list
 	 * @param <array> $request
