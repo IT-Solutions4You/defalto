@@ -17,17 +17,10 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 		$this->exposeMethod('GetCSV');
 	}
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Reports_Module_Model::getInstance($moduleName);
-
-		$record = $request->get('record');
-		$reportModel = Reports_Record_Model::getCleanInstance($record);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
 	}
 
 	function preProcess(Vtiger_Request $request) {

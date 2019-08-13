@@ -10,6 +10,12 @@
 
 class Reports_Save_Action extends Vtiger_Save_Action {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
 		parent::checkPermission($request);
 

@@ -10,10 +10,14 @@
 
 class Reports_ChartDetail_View extends Vtiger_Index_View {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Reports_Module_Model::getInstance($moduleName);
-
+		parent::checkPermission($request);
 		$record = $request->get('record');
 		$reportModel = Reports_Record_Model::getCleanInstance($record);
 		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
@@ -25,9 +29,10 @@ class Reports_ChartDetail_View extends Vtiger_Index_View {
 		if(($currentUserPriviligesModel->id != $owner) && $sharingType == "Private"){
 			$isRecordShared = $reportModel->isRecordHasViewAccess($sharingType);
 		}
-		if(!$isRecordShared || !$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
+		if(!$isRecordShared) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+		return true;
 	}
 
 	function preProcess(Vtiger_Request $request) {

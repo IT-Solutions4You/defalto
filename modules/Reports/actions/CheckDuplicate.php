@@ -10,8 +10,10 @@
 
 class Reports_CheckDuplicate_Action extends Vtiger_Action_Controller {
 
-	function checkPermission(Vtiger_Request $request) {
-		return;
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
 	}
 
 	public function process(Vtiger_Request $request) {
