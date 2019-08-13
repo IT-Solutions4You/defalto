@@ -14,14 +14,6 @@ class Reports_List_View extends Vtiger_Index_View {
 	protected $listViewEntries = false;
 	protected $listViewCount   = false;
 
-	public function requiresPermission(\Vtiger_Request $request) {
-		$permissions = parent::requiresPermission($request);
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
-		return $permissions;
-	}
-
-
-
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request, false);
 

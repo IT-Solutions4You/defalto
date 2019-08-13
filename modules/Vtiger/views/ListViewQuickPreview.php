@@ -28,7 +28,8 @@ class Vtiger_ListViewQuickPreview_View extends Vtiger_Index_View {
 
 		parent::checkPermission($request);
 
-		if ($recordId) {
+		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports');
+		if ($recordId && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($recordId);
 			if ($recordEntityName !== $moduleName) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
