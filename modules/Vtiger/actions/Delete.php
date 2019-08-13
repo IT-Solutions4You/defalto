@@ -22,7 +22,8 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 
 		parent::checkPermission($request);
 
-		if ($record) {
+		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports');
+		if ($record && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($record);
 			if ($recordEntityName !== $moduleName) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));

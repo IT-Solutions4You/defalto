@@ -16,15 +16,13 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		$this->exposeMethod('step3');
 	}
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Reports_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
+		parent::checkPermission($request);
 		$record = $request->get('record');
 		if ($record) {
 			$reportModel = Reports_Record_Model::getCleanInstance($record);
@@ -32,6 +30,7 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
+		return true;
 	}
 
 	public function preProcess(Vtiger_Request $request) {

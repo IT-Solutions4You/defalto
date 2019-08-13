@@ -14,6 +14,12 @@ class Reports_DetailAjax_Action extends Vtiger_BasicAjax_Action{
         parent::__construct();
 		$this->exposeMethod('getRecordsCount');
 	}
+	
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
     
     public function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
