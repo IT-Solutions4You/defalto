@@ -94,13 +94,12 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 
 		$listQuery = $this->getQuery();
 		$sourceModule = $this->get('sourceModule');
-		$searchKey = $this->get('search_key');
+		$searchKey = $this->getForSql('search_key');
 		$searchValue = $this->get('search_value');
 
 		$params = array();
  		if(!empty($searchKey) && !empty($searchValue)) {
-			$whereQuery .= " WHERE ? LIKE ? AND ";
-			$params[] = $searchKey;
+			$whereQuery .= " WHERE $searchKey LIKE ? AND ";
 			$params[] = "%".$searchValue."%";
  		} else {
  			$whereQuery .= " WHERE ";
@@ -116,9 +115,7 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 		}
 
 		if ($orderBy) {
-			$listQuery .= " ORDER BY ? ?";
-			$params[] = $orderBy;
-			$params[] = $sortOrder;
+			$listQuery .= " ORDER BY $orderBy $sortOrder";
 		} else {
 			$listQuery .= " ORDER BY templateid DESC";
 		}
