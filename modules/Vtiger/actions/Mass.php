@@ -10,6 +10,12 @@
 
 abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	protected function getRecordsListFromRequest(Vtiger_Request $request) {
 		$cvId = $request->get('viewname');
 		$module = $request->get('module');

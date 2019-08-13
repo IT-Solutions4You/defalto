@@ -10,12 +10,11 @@
 
 class Vtiger_DownloadAttachment_Action extends Vtiger_Action_Controller {
 
-	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-
-		if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $request->get('record'))) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $moduleName));
-		}
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		
+		return $permissions;
 	}
 
 	public function process(Vtiger_Request $request) {

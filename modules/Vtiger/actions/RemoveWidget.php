@@ -10,6 +10,17 @@
 
 class Vtiger_RemoveWidget_Action extends Vtiger_IndexAjax_View {
 
+	public function requiresPermission(Vtiger_Request $request){
+		if($request->get('module') != 'Dashboard'){
+			$request->set('custom_module', 'Dashboard');
+			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		}else{
+			$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		}
+		
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$linkId = $request->get('linkid');

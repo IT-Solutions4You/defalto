@@ -17,6 +17,18 @@ class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller {
 		$this->exposeMethod('updateTabSequence');
 	}
 
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		if($request->get('module') != 'Dashboard'){
+			$request->set('custom_module', 'Dashboard');
+			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		}else{
+			$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		}
+		
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
 		if ($mode) {

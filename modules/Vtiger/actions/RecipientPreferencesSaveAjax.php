@@ -10,6 +10,13 @@
 
 class Vtiger_RecipientPreferencesSaveAjax_Action extends Vtiger_SaveAjax_Action {
 
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$sourceModule = $request->get('source_module');
 		$selecltedFields = $request->get('selectedFields');

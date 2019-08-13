@@ -10,19 +10,21 @@
 
 class Vtiger_GetData_Action extends Vtiger_IndexAjax_View {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'source_module', 'action' => 'DetailView', 'record_parameter' => 'record');
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
 		$record = $request->get('record');
 		$sourceModule = $request->get('source_module');
 		$response = new Vtiger_Response();
 
-		$permitted = Users_Privileges_Model::isPermitted($sourceModule, 'DetailView', $record);
-		if($permitted) {
-			$recordModel = Vtiger_Record_Model::getInstanceById($record, $sourceModule);
-			$data = $recordModel->getData();
-			$response->setResult(array('success'=>true, 'data'=>array_map('decode_html',$data)));
-		} else {
-			$response->setResult(array('success'=>false, 'message'=>vtranslate('LBL_PERMISSION_DENIED')));
-		}
+		$recordModel = Vtiger_Record_Model::getInstanceById($record, $sourceModule);
+		$data = $recordModel->getData();
+		$response->setResult(array('success'=>true, 'data'=>array_map('decode_html',$data)));
+		
 		$response->emit();
 	}
 }
