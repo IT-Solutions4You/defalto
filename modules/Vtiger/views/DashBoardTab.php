@@ -17,6 +17,18 @@ class Vtiger_DashboardTab_View extends Vtiger_Index_View {
         $this->exposeMethod('showDashBoardTabList');
 	}
     
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		if($request->get('module') != 'Dashboard'){
+			$request->set('custom_module', 'Dashboard');
+			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		}else{
+			$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		}
+		
+		return $permissions;
+	}
+	
     function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
 		if(!empty($mode)) {
