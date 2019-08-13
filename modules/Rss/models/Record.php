@@ -82,8 +82,6 @@ class Rss_Record_Model extends Vtiger_Record_Model {
         
         $params = array($id, $url, $title);
         $sql = "INSERT INTO vtiger_rss (rssid,rssurl,rsstitle) values (?,?,?)";
-		echo '<pre>';
-		print_r($db->convert2sql($sql, $params));
         $result = $db->pquery($sql, $params);
         
         if($result) {
