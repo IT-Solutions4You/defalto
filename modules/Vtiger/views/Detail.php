@@ -61,7 +61,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
-		$nonEntityModules = array('Users', 'Events', 'Calendar');
+		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss');
 		if ($recordId && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($recordId);
 			if ($recordEntityName !== $moduleName) {

@@ -11,6 +11,11 @@ require_once('libraries/magpierss/rss_fetch.inc');
 
 class Rss_Save_Action extends Vtiger_Save_Action {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+	
 	public function process(Vtiger_Request $request) {
         $response = new Vtiger_Response();
 		$moduleName = $request->getModule();

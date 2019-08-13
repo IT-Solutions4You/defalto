@@ -12,6 +12,7 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 
 	public function requiresPermission(\Vtiger_Request $request) {
 		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'Delete', 'record_parameter' => 'record');
 		return $permissions;
 	}
@@ -22,7 +23,7 @@ class Vtiger_Delete_Action extends Vtiger_Action_Controller {
 
 		parent::checkPermission($request);
 
-		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports');
+		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss');
 		if ($record && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($record);
 			if ($recordEntityName !== $moduleName) {

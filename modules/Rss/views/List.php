@@ -11,16 +11,6 @@
 
 class Rss_List_View extends Vtiger_Index_View {
 
-	function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-	}
-
 	function preProcess(Vtiger_Request $request, $display=true) {
 		parent::preProcess($request);
 	}
