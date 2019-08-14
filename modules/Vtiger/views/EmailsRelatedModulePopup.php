@@ -10,6 +10,14 @@
 
 class Vtiger_EmailsRelatedModulePopup_View extends Vtiger_Popup_View {
 
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		$permissions[] = array('module_parameter' => 'src_module', 'action' => 'DetailView');
+		
+		return $permissions;
+	}
+	
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		if($moduleName == 'Users') {

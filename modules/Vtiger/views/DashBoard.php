@@ -14,8 +14,12 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 
 	public function requiresPermission(\Vtiger_Request $request) {
 		$permissions = parent::requiresPermission($request);
-		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-		$request->set('custom_module', 'Dashboard');
+		if($request->get('module') != 'Dashboard'){
+			$request->set('custom_module', 'Dashboard');
+			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+		}else{
+			$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		}
 		return $permissions;
 	}
 	
@@ -30,17 +34,17 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
 		if($permission) {
-			// TODO : Need to optimize the widget which are retrieving twice
-			$dashboardTabs = $dashBoardModel->getActiveTabs();
-			if ($request->get("tabid")) {
-				$tabid = $request->get("tabid");
-			} else {
-				// If no tab, then select first tab of the user
-				$tabid = $dashboardTabs[0]["id"];
-			}
-			$dashBoardModel->set("tabid", $tabid);
-			$widgets = $dashBoardModel->getSelectableDashboard();
-			self::$selectable_dashboards = $widgets;
+		// TODO : Need to optimize the widget which are retrieving twice
+		$dashboardTabs = $dashBoardModel->getActiveTabs();
+		if ($request->get("tabid")) {
+			$tabid = $request->get("tabid");
+		} else {
+			// If no tab, then select first tab of the user
+			$tabid = $dashboardTabs[0]["id"];
+		}
+		$dashBoardModel->set("tabid", $tabid);
+		$widgets = $dashBoardModel->getSelectableDashboard();
+		self::$selectable_dashboards = $widgets;
 		} else {
 			$widgets = array();
 		}
