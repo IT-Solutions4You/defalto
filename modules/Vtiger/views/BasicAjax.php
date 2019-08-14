@@ -16,7 +16,12 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View {
 		$this->exposeMethod('showSearchResults');
 	}
 
-	function checkPermission() { }
+	public function requiresPermission(Vtiger_Request $request){
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		
+		return $permissions;
+	}
 
 	function preProcess(Vtiger_Request $request) {
 		return true;
