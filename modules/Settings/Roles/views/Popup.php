@@ -11,10 +11,12 @@
 class Settings_Roles_Popup_View extends Vtiger_Footer_View {
 	
 	public function checkPermission(Vtiger_Request $request) {
+        parent::checkPermission($request);
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		if(!$currentUser->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));
 		}
+        return true;
 	}
 
 	function process (Vtiger_Request $request) {

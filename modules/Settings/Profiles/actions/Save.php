@@ -11,10 +11,12 @@
 class Settings_Profiles_Save_Action extends Vtiger_Action_Controller {
 	
 	public function checkPermission(Vtiger_Request $request) {
+        parent::checkPermission($request);
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		if(!$currentUser->isAdminUser()) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+        return true;
 	}
 
 	public function process(Vtiger_Request $request) {
