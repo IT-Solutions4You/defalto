@@ -10,14 +10,8 @@
 
 class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 
-	public function requiresPermission(Vtiger_Request $request){
-		$permissions = parent::requiresPermission($request);
-		if($request->get('module') != 'Dashboard'){
-			$request->set('custom_module', 'Dashboard');
-			$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-		}
-		
-		return $permissions;
+	function checkPermission(Vtiger_Request $request) {
+		return true;
 	}
 
 	function process(Vtiger_Request $request) {
