@@ -10,7 +10,18 @@
 
 class Vtiger_TagCloudSearchAjax_View extends Vtiger_IndexAjax_View {
 
-	function process(Vtiger_Request $request) {
+    public function requiresPermission(Vtiger_Request $request){
+        $permissions = parent::requiresPermission($request);
+        if($request->get('module') != 'Dashboard'){
+            $request->set('custom_module', 'Dashboard');
+            $permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
+        }
+
+        return $permissions;
+    }
+
+    
+    function process(Vtiger_Request $request) {
 		
 		$tagId = $request->get('tag_id');
 		$taggedRecords = Vtiger_Tag_Model::getTaggedRecords($tagId);

@@ -80,8 +80,8 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
         $response = new Vtiger_Response();
         $blockId = $request->get('blockid');
         $checkIfFieldsExists = Vtiger_Block_Model::checkFieldsExists($blockId);
-        if($checkIfFieldsExists) {
-            $response->setError('502','Fields exists for the block');
+        if(!$checkIfFieldsExists) {
+            $response->setError('502','Fields not exists for the block');
             $response->emit();
             return;
         }
@@ -95,7 +95,7 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
             $sourceModule = $blockInstance->get('module')->name;
             $blockLabel = $blockInstance->get('label');
             $blockInstance->delete(false);
-            Settings_LayoutEditor_Module_Model::removeLabelFromLangFile($sourceModule, $blockLabel);
+//            Settings_LayoutEditor_Module_Model::removeLabelFromLangFile($sourceModule, $blockLabel);
             $response->setResult(array('success'=>true));
         }catch(Exception $e) {
             $response->setError($e->getCode(),$e->getMessage());
