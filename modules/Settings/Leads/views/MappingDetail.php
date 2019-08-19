@@ -10,7 +10,7 @@
 
 class Settings_Leads_MappingDetail_View extends Settings_Vtiger_Index_View {
 
-    public function requiresPermission(\Vtiger_Request $request) {
+   public function requiresPermission(\Vtiger_Request $request) {
 		$permissions = parent::requiresPermission($request);
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
 		return $permissions;

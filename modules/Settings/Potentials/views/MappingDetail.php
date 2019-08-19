@@ -10,12 +10,10 @@
 
 class Settings_Potentials_MappingDetail_View extends Settings_Vtiger_Index_View {
 
-	function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
-		$sourceModule = 'Potentials';
-		if(!vtlib_isModuleActive($sourceModule)){
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED', $sourceModule));
-		}
+	public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
 	}
 
 	public function process(Vtiger_Request $request) {

@@ -9,6 +9,12 @@
  *************************************************************************************/
 
 class Settings_Potentials_MappingSave_Action extends Settings_Vtiger_Index_Action {
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
 
 	public function process(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);

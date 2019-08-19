@@ -9,6 +9,12 @@
  *************************************************************************************/
 
 class Settings_Leads_MappingDelete_Action extends Settings_Vtiger_Index_Action {
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
 
 	public function process(Vtiger_Request $request) {
 		$recordId = $request->get('mappingId');
