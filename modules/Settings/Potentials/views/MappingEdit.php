@@ -10,6 +10,12 @@
 
 class Settings_Potentials_MappingEdit_View extends Settings_Vtiger_Index_View {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		$permissions = parent::requiresPermission($request);
+		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+		return $permissions;
+	}
+    
 	public function process(Vtiger_Request $request) {
 		$qualifiedModuleName = $request->getModule(false);
 		$viewer = $this->getViewer($request);

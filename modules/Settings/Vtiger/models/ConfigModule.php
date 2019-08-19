@@ -136,8 +136,12 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 		$fileContent = $this->completeData;
 		$updatedFields = $this->get('updatedFields');
 		$validationInfo = $this->validateFieldValues($updatedFields);
+        $editableFields = $this->getEditableFields();
 		if ($validationInfo === true) {
 			foreach ($updatedFields as $fieldName => $fieldValue) {
+                if(!in_array($fieldName, array_keys($editableFields))){
+                    continue;
+                }
 				$patternString = "\$%s = '%s';";
 				if ($fieldName === 'upload_maxsize') {
 					$fieldValue = $fieldValue * 1048576; //(1024 * 1024)
