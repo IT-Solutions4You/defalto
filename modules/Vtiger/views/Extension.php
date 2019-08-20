@@ -12,18 +12,23 @@ class Vtiger_Extension_View extends Vtiger_List_View {
     
     public function requiresPermission(\Vtiger_Request $request) {
 		$permissions = parent::requiresPermission($request);
-		$permissions[] = array('module_parameter' => 'extensionModule', 'action' => 'DetailView');
 		
 		return $permissions;
 	}
 	
 	public function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->get('extensionModule');
-
 		parent::checkPermission($request);
+		$moduleName = $request->get('extensionModule');
+		
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		if (empty($moduleModel)) {
+		if(empty($moduleModel)) {
 			throw new AppException(vtranslate('LBL_HANDLER_NOT_FOUND'));
+		}
+		
+		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
+		if(!$permission) {
+			throw new AppException(vtranslate($moduleName).' '.vtranslate('LBL_NOT_ACCESSIBLE'));
 		}
 		return true;
 	}

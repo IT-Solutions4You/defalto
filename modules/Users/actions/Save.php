@@ -10,6 +10,10 @@
 
 class Users_Save_Action extends Vtiger_Save_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+        return array();
+    }
+    
 	public function checkPermission(Vtiger_Request $request) {
 		$allowed = parent::checkPermission($request);
 		if ($allowed) {
