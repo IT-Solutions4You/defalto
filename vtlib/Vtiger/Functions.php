@@ -1473,7 +1473,7 @@ class Vtiger_Functions {
      */
     public static function validateRequestParameters($request) {
         foreach (self::$type as $param => $type) {
-            if ($request[$param] && !self::validateRequestParameter($type, $request[$param])) {
+            if ( isset($request[$param])&& $request[$param] && !self::validateRequestParameter($type, $request[$param])) {
                 http_response_code(400);
                 throw new Exception('Bad Request');
             }
