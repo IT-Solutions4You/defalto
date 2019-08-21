@@ -9,6 +9,11 @@
  *************************************************************************************/
 
 class Users_TransferOwner_View extends Vtiger_Index_View {
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	public function checkPermission(Vtiger_Request $request){
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		if(!$currentUserModel->isAdminUser()) {

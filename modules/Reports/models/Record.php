@@ -889,6 +889,18 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 		}
 		return false;
 	}
+    
+    /**
+     * Function to check whether report is custom report or not
+     * @return boolean
+     */
+    function isCustom(){
+        $handlerClass = $this->get('handler_class');
+		if(!empty($handlerClass)) {
+			return true;
+		}
+		return false;
+    }
 
 	/**
 	 * Function move report to another specified folder
@@ -1347,5 +1359,15 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 				return true;
 			}
 		}
+	}
+    
+    public static function isReportExists($recordId) {
+		$db = PearDatabase::getInstance();
+		$reportResult = $db->pquery('SELECT * FROM vtiger_report WHERE reportid = ?', array($recordId));
+		if($db->num_rows($reportResult) > 0) {
+			return true;
+		}
+
+		return false;
 	}
 }

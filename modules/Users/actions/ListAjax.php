@@ -13,6 +13,10 @@ class Users_ListAjax_Action extends Vtiger_BasicAjax_Action{
 		parent::__construct();
 	}
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	function checkPermission(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		if(!$currentUser->isAdminUser()) {
