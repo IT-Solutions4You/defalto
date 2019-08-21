@@ -10,6 +10,31 @@
 
 class Reports_ListViewQuickPreview_View extends Vtiger_ListViewQuickPreview_View {
 
+    public function checkPermission(Vtiger_Request $request) {
+		$moduleName = $request->getModule();
+		$moduleModel = Reports_Module_Model::getInstance($moduleName);
+
+		$record = $request->get('record');
+
+        if(!empty($record) && !Reports_Record_Model::isReportExists($record)) {
+			throw new AppException(vtranslate('LBL_RECORD_NOT_FOUND'));
+		}
+
+		$reportModel = Reports_Record_Model::getCleanInstance($record);
+		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+		
+		$owner = $reportModel->get('owner');
+        $sharingType = $reportModel->get('sharingtype');
+		
+		$isRecordShared = true;
+		if(($currentUserPriviligesModel->id != $owner) && $sharingType == "Private"){
+			$isRecordShared = $reportModel->isRecordHasViewAccess($sharingType);
+		}
+		if(!$isRecordShared || !$currentUserPriviligesModel->hasModulePermission($moduleModel->getId()) || $reportModel->isCustom()) {
+            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+        }
+	}
+    
     function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$viewer = $this->getViewer($request);
@@ -34,36 +59,4 @@ class Reports_ListViewQuickPreview_View extends Vtiger_ListViewQuickPreview_View
 
 		$viewer->view('ListViewQuickPreview.tpl', $moduleName);
 	}
-    
-    /**
-	 * Function to get the list of Script models to be included
-	 * @param Vtiger_Request $request
-	 * @return <Array> - List of Vtiger_JsScript_Model instances
-	 */
-	function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
-
-		$jsFileNames = array(
-			'~/libraries/jquery/gridster/jquery.gridster.min.js',
-			'~/libraries/jquery/jqplot/jquery.jqplot.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.canvasTextRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.pieRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.categoryAxisRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.pointLabels.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.funnelRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.barRenderer.min.js',
-			'~/libraries/jquery/jqplot/plugins/jqplot.logAxisRenderer.min.js',
-			'~/libraries/jquery/VtJqplotInterface.js',
-			'~/libraries/jquery/vtchart.js',
-		);
-
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
-
 }

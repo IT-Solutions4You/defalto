@@ -10,6 +10,10 @@
 
 class Users_Popup_View extends Vtiger_Popup_View {
     
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
     function checkPermission(Vtiger_Request $request) {
         $moduleName = $request->getModule();
         $sourceModuleName = $request->get('src_module');

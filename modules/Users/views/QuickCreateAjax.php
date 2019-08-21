@@ -10,7 +10,11 @@
 
 class Users_QuickCreateAjax_View extends Vtiger_QuickCreateAjax_View {
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function checkPermission(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
 		if (!$currentUserModel->isAdminUser()) {

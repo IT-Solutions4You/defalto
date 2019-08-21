@@ -10,7 +10,11 @@
 
 class Users_PreferenceDetail_View extends Vtiger_Detail_View {
 
-	public function checkPermission(Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function checkPermission(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$record = $request->get('record');
 

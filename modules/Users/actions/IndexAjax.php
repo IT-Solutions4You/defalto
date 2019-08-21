@@ -16,6 +16,10 @@ class Users_IndexAjax_Action extends Vtiger_BasicAjax_Action {
 		$this->exposeMethod('toggleLeftPanel');
 	}
     
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
     function process(Vtiger_Request $request) {
 		$mode = $request->get('mode');
 		if(!empty($mode)) {

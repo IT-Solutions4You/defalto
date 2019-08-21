@@ -10,7 +10,11 @@
 
 class Users_UserSetup_View extends Vtiger_Index_View {
 
-	public function preProcess(Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function preProcess(Vtiger_Request $request) {
 		return true;
 	}
 

@@ -20,6 +20,10 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$this->exposeMethod('changeUsername');
 		$this->exposeMethod('changeAccessKey');
 	}
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
 
 	public function checkPermission(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();

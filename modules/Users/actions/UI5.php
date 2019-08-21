@@ -10,10 +10,10 @@
 
 class Users_UI5_Action extends Vtiger_Action_Controller {
 
-	function checkPermission(Vtiger_Request $request) {
-		return true;
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
 	}
-
+    
 	function process(Vtiger_Request $request) {
 		setcookie('vtigerui', 5, time() + 60 * 60 * 24 * 30, '/');
 		$HTTP_REFERER = $_SERVER['HTTP_REFERER'];

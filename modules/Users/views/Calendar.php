@@ -15,6 +15,9 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 		$this->exposeMethod('calendarSettingsDetail');
 	}
 	
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
 	
 	public function checkPermission(Vtiger_Request $request) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();

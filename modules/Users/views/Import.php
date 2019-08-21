@@ -13,19 +13,15 @@ vimport('~~/include/Webservices/Custom/DeleteUser.php');
 class Users_Import_View extends Vtiger_Import_View {
     
     function checkPermission(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        parent::checkPermission($request);
 
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if(!$currentUserPriviligesModel->hasModuleActionPermission($moduleModel->getId(), 'Import')) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
         if($request->getMode() == 'import') {
             $currentUserModel = Users_Record_Model::getCurrentUserModel();
             if(!$currentUserModel->isAdminUser()) {
                 throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
+        return true;
 	}
 
 	public function initializeMappingParameters(Vtiger_Request $request) {
