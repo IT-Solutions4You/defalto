@@ -10,6 +10,19 @@
 
 class EmailTemplates_Save_Action extends Vtiger_Save_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function checkPermission($request) {
+        $moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if(!$moduleModel->isActive()){
+            return false;
+        }
+        return true;
+    }
+    
 	public function process(Vtiger_Request $request) {
 		$site_URL = vglobal('site_URL');
 		$moduleName = $request->getModule();

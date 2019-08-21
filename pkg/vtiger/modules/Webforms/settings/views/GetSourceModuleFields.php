@@ -19,6 +19,7 @@ class Settings_Webforms_GetSourceModuleFields_View extends Settings_Vtiger_Index
 		if(!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+        return true;
 	}
 
 	public function process(Vtiger_Request $request) {

@@ -19,6 +19,7 @@ Class Settings_Webforms_Edit_View extends Settings_Vtiger_Index_View {
 		if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+        return true;
 	}
 
 	public function process(Vtiger_Request $request) {

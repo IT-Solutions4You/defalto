@@ -14,21 +14,21 @@ class EmailTemplates_ShowTemplateContent_Action extends Vtiger_Action_Controller
 		$this->exposeMethod('getContent');
 	}
 
+    public function checkPermission($request) {
+        $moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if(!$moduleModel->isActive()){
+            return false;
+        }
+        return true;
+    }
+    
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
 		if (!empty($mode)) {
 			$this->invokeExposedMethod($mode, $request);
 		} else {
 			throw new Exception("Invalid Mode");
-		}
-	}
-
-	public function checkPermission(Vtiger_Request $request) {
-		$record = $request->get('record');
-		$moduleName = $request->getModule();
-
-		if (!Users_Privileges_Model::isPermitted($moduleName, 'DetailView', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}
 

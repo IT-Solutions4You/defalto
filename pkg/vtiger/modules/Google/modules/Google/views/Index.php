@@ -14,6 +14,10 @@ class Google_Index_View extends Vtiger_ExtensionViews_View {
 		parent::__construct();
 		$this->exposeMethod('settings');
 	}
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
 
 	function getUserEmail() {
 		$user = Users_Record_Model::getCurrentUserModel();

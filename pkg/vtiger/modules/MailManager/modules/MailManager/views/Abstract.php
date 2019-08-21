@@ -16,7 +16,11 @@ vimport('modules/Settings/MailConverter/handlers/MailRecord.php');
 
 abstract class MailManager_Abstract_View extends Vtiger_Index_View {
 
-	public function preProcess (Vtiger_Request $request, $display = true) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function preProcess (Vtiger_Request $request, $display = true) {
 		if ($this->getOperationArg($request) === 'attachment_dld') {
 			return true;
 		} else {

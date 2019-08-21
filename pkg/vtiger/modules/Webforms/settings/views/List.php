@@ -25,6 +25,7 @@ class Settings_Webforms_List_View extends Settings_Vtiger_List_View {
 		if(!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+        return true;
 	}
 
 	/**

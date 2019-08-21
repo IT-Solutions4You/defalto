@@ -16,9 +16,6 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'CreateView');
 		return $permissions;
 	}
-	public function checkPermission(Vtiger_Request $request) {
-		return parent::checkPermission($request);
-	}
 
 	public function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();

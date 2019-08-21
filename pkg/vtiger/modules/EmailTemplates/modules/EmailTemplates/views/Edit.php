@@ -10,7 +10,20 @@
 
 Class EmailTemplates_Edit_View extends Vtiger_Index_View {
 
-	public function preProcess(Vtiger_Request $request, $display = true) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function checkPermission($request) {
+        $moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if(!$moduleModel->isActive()){
+            return false;
+        }
+        return true;
+    }
+    
+    public function preProcess(Vtiger_Request $request, $display = true) {
 		$record = $request->get('record');
 		if (!empty($record)) {
 			$recordModel = EmailTemplates_Record_Model::getInstanceById($record);
@@ -34,15 +47,6 @@ Class EmailTemplates_Edit_View extends Vtiger_Index_View {
 		$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 		$viewer->assign('MODULE_BASIC_ACTIONS', $basicLinks);
 		$viewer->assign('MODULE_SETTING_ACTIONS', $settingLinks);
-	}
-
-	/**
-	 * Function to check module Edit Permission
-	 * @param Vtiger_Request $request
-	 * @return boolean
-	 */
-	public function checkPermission(Vtiger_Request $request) {
-		return true;
 	}
 
 	/**

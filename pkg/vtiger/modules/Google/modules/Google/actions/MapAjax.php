@@ -11,6 +11,10 @@
 
 class Google_MapAjax_Action extends Vtiger_BasicAjax_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
     public function process(Vtiger_Request $request) {
         switch ($request->get("mode")) {
             case 'getLocation'	:	$result = $this->getLocation($request);

@@ -58,17 +58,18 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	}
 	
 	function checkPermission(Vtiger_Request $request) {
+        parent::checkPermission($request);
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
-		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss');
+		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
 		if ($recordId && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($recordId);
 			if ($recordEntityName !== $moduleName) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
-		return parent::checkPermission($request);
+		return true;
 	}
 
 	function preProcess(Vtiger_Request $request, $display=true) {

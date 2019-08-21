@@ -20,6 +20,7 @@ class Settings_Webforms_Detail_View extends Settings_Vtiger_Index_View {
 		if(!$recordId || !$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
+        return true;
 	}
 
 	public function process(Vtiger_Request $request) {
