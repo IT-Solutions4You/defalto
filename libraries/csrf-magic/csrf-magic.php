@@ -233,7 +233,7 @@ function csrf_get_tokens() {
     // any cookies. It may or may not be used, depending on whether or not
     // the cookies "stick"
     $secret = csrf_get_secret();
-    if (!$has_cookies && $secret) {
+    if (!$has_cookies && $secret && isset($_SERVER['IP_ADDRESS'])) {
         // :TODO: Harden this against proxy-spoofing attacks
         $ip = ';ip:' . csrf_hash($_SERVER['IP_ADDRESS']);
     } else {
