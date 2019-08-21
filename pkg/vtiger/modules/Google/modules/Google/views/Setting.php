@@ -14,6 +14,10 @@ class Google_Setting_View extends Vtiger_PopupAjax_View {
 		$this->exposeMethod('emitContactSyncSettingUI');
 	}
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	public function process(Vtiger_Request $request) {
 		switch ($request->get('sourcemodule')) {
 			case "Contacts" : $this->emitContactsSyncSettingUI($request);

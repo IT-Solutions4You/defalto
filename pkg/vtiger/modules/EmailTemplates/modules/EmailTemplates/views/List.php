@@ -14,6 +14,19 @@ class EmailTemplates_List_View extends Vtiger_Index_View {
 		parent::__construct();
 	}
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    public function checkPermission($request) {
+        $moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if(!$moduleModel->isActive()){
+            return false;
+        }
+        return true;
+    }
+    
 	function preProcess(Vtiger_Request $request, $display = true) {
 		parent::preProcess($request, false);
 

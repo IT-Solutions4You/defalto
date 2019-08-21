@@ -10,6 +10,10 @@
 
 class Google_SaveSyncSettings_Action extends Vtiger_BasicAjax_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	public function process(Vtiger_Request $request) {
 		$contactsSettings = $request->get('Contacts');
 		$calendarSettings = $request->get('Calendar');

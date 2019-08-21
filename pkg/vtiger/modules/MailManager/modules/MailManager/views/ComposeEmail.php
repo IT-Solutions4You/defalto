@@ -9,6 +9,10 @@
  * ***********************************************************************************/
 
 class MailManager_ComposeEmail_View extends Vtiger_ComposeEmail_View {
+    
+    public function requiresPermission(Vtiger_Request $request){
+		return array();
+	}
 
 	public function composeMailData($request) {
 		$moduleName = 'Emails';

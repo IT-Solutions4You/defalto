@@ -10,7 +10,11 @@
 
 class MailManager_MassActionAjax_View extends Vtiger_MassActionAjax_View {
 
-	protected function getEmailFieldsInfo(Vtiger_Request $request) {
+	public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
+    protected function getEmailFieldsInfo(Vtiger_Request $request) {
 		$sourceModules = Array();
 		$linkToModule = $request->get('linktomodule');
 		if (!empty($linkToModule)) {

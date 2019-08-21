@@ -11,6 +11,10 @@
 
 class Google_SaveSettings_Action extends Vtiger_BasicAjax_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
     public function process(Vtiger_Request $request) {
         $sourceModule = $request->get('sourcemodule');
         $fieldMapping = $request->get('fieldmapping');

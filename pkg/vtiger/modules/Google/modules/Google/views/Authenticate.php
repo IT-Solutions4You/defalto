@@ -10,6 +10,10 @@
 
 class Google_Authenticate_View extends Vtiger_Index_View {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 

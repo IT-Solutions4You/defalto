@@ -10,6 +10,10 @@
 
 class Google_Import_Action extends Vtiger_BasicAjax_Action {
 
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
+    
 	function process(Vtiger_Request $request) {
 		$request->set('sourcemodule', 'Contacts');
 		$sourceModule = $request->get('sourcemodule');

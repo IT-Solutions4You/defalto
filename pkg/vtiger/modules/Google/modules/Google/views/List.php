@@ -16,6 +16,10 @@ class Google_List_View extends Vtiger_PopupAjax_View {
 		$this->exposeMethod('Contacts');
 		$this->exposeMethod('Calendar');
 	}
+    
+    public function requiresPermission(\Vtiger_Request $request) {
+		return array();
+	}
 
 	function process(Vtiger_Request $request) {
 		switch ($request->get('operation')) {

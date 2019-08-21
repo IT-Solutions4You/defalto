@@ -15,10 +15,6 @@ class MailManager_Folder_Action extends Vtiger_Action_Controller {
 		$this->exposeMethod('showMailContent');
 	}
 
-	function checkPermission(Vtiger_Request $request) {
-		return true;
-	}
-
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
 		if (!empty($mode)) {
