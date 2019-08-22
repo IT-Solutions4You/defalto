@@ -9,16 +9,6 @@
  *************************************************************************************/
 
 class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
-
-//    public function requiresPermission(Vtiger_Request $request){
-//		$permissions = parent::requiresPermission($request);
-//		$record = $request->get('record');
-//        $actionName = ($record) ? 'EditView' : 'CreateView';
-//
-//		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
-//        $permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
-//		return $permissions;
-//	}
     
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
