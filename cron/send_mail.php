@@ -49,10 +49,10 @@ function sendmail($to,$from,$subject,$contents,$mail_server,$mail_server_usernam
 	$mail->AddReplyTo($from);
 	$mail->WordWrap = 50;                                 // set word wrap to 50 characters
 	$mail->IsHTML(true);                                  // set email format to HTML
-	
+
 	$mail->AltBody = "This is the body in plain text for non-HTML mail clients";
 //	$mail->Sender= getReturnPath($mail->Host);
-	if(!$mail->Send()) 
+	if(!$mail->Send())
 	{
 	   echo "Message could not be sent. <p>";
 	   echo "Mailer Error: " . $mail->ErrorInfo;

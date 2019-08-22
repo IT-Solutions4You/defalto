@@ -9,7 +9,7 @@
  *
  ********************************************************************************/
 
-
+require_once('modules/Emails/class.smtp.php');
 require_once("modules/Emails/class.phpmailer.php");
 require_once 'include/utils/CommonUtils.php';
 require_once 'include/utils/VTCacheUtils.php';
@@ -278,7 +278,7 @@ function setMailServerProperties($mail)
 {
 	global $adb;
 	$adb->println("Inside the function setMailServerProperties");
-        
+
 	$res = $adb->pquery("select * from vtiger_systems where server_type=?", array('email'));
 	if(isset($_REQUEST['server'])) {
 		$server = $_REQUEST['server'];
@@ -327,7 +327,7 @@ function setMailServerProperties($mail)
     $mail->Host = $server;		// specify main and backup server
 	$mail->Username = $username ;	// SMTP username
     $mail->Password = Vtiger_Functions::fromProtectedText($password);	// SMTP password
-    
+
     // To Support TLS
     $serverinfo = explode("://", $server);
     $smtpsecure = $serverinfo[0];
@@ -336,7 +336,7 @@ function setMailServerProperties($mail)
         $mail->Host = $serverinfo[1];
     }
     // End
-    
+
 	return;
 }
 

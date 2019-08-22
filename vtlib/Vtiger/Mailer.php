@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+require_once('modules/Emails/class.smtp.php');
 require_once('modules/Emails/class.phpmailer.php');
 include_once('include/utils/CommonUtils.php');
 include_once('config.inc.php');
@@ -247,7 +248,7 @@ class Vtiger_Mailer extends PHPMailer {
 				$queue_record = $adb->fetch_array($queue, $index);
 				$queueid = $queue_record['id'];
 				$relcrmid= $queue_record['relcrmid'];
-				
+
 				$mailer->From = $queue_record['fromemail'];
 				$mailer->From = $queue_record['fromname'];
 				$mailer->Subject=$queue_record['subject'];
