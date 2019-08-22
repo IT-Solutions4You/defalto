@@ -27,6 +27,7 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			$recordParameter = 'record';
 		}
 		$actionName = ($record || $recordId) ? 'EditView' : 'CreateView';
+        $permissions[] = array('module_parameter' => $moduleParameter, 'action' => 'DetailView', 'record_parameter' => $recordParameter);
 		$permissions[] = array('module_parameter' => $moduleParameter, 'action' => $actionName, 'record_parameter' => $recordParameter);
 		return $permissions;
 	}

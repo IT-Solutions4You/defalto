@@ -19,7 +19,7 @@ class RecycleBin_RecycleBinAjax_Action extends Vtiger_Mass_Action {
 	
 	function checkPermission(Vtiger_Request $request) {
         if($request->get('mode') == 'emptyRecycleBin') {
-            //Only admin user can empty the recycle bin, so this check is mabdatory
+            //Only admin user can empty the recycle bin, so this check is mandatory
             $currentUserModel = Users_Record_Model::getCurrentUserModel();
             if(!$currentUserModel->isAdminUser()) {
                 throw new AppException(vtranslate('LBL_PERMISSION_DENIED', 'Vtiger'));

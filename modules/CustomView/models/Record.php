@@ -747,7 +747,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 	}
 
 	public function getToggleDefaultUrl() {
-		return 'index.php?module=CustomView&action=SaveAjax&record='.$this->getId();
+		return 'index.php?module=CustomView&source_module='.$this->getModule()->get('name').'&action=SaveAjax&record='.$this->getId();
 	}
 
 	/**

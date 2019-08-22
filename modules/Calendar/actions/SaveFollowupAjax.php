@@ -10,18 +10,21 @@
 
 class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
 
+//    public function requiresPermission(Vtiger_Request $request){
+//		$permissions = parent::requiresPermission($request);
+//		$record = $request->get('record');
+//        $actionName = ($record) ? 'EditView' : 'CreateView';
+//
+//		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
+//        $permissions[] = array('module_parameter' => 'module', 'action' => $actionName, 'record_parameter' => 'record');
+//		return $permissions;
+//	}
+    
 	public function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		$actionName = ($record && $request->getMode() != 'createFollowupEvent') ? 'EditView' : 'CreateView';
-		if(!Users_Privileges_Model::isPermitted($moduleName, $actionName, $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
-
-		if(!Users_Privileges_Model::isPermitted($moduleName, 'Save', $record)) {
-			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-		}
+		parent::checkPermission($request);
 
 		if ($record) {
 			$activityModulesList = array('Calendar', 'Events');

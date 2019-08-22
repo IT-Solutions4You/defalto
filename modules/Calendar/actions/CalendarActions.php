@@ -28,11 +28,7 @@ class Calendar_CalendarActions_Action extends Vtiger_BasicAjax_Action {
 		}
 		return $permissions;
 	}
-	
-	public function checkPermission(Vtiger_Request $request) {
-		return parent::checkPermission($request);
-	}
-	
+    
 	public function process(Vtiger_Request $request) {
 		$mode = $request->getMode();
 		if (!empty($mode) && $this->isMethodExposed($mode)) {

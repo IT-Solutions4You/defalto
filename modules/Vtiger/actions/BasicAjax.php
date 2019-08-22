@@ -10,39 +10,42 @@
 
 class Vtiger_BasicAjax_Action extends Vtiger_Action_Controller {
 
-	public function requiresPermission(\Vtiger_Request $request) {
-		$permissions = parent::requiresPermission($request);
-		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
-		$permissions[] = array('module_parameter' => 'search_module', 'action' => 'DetailView');
-		if(!empty($request->get('parent_module'))){
-			$permissions[] = array('module_parameter' => 'parent_module', 'action' => 'DetailView');
-		}
-		return $permissions;
-	}
-	
-	public function process(Vtiger_Request $request) {
-		$searchValue = $request->get('search_value');
-		$searchModule = $request->get('search_module');
+    public function requiresPermission(\Vtiger_Request $request) {
+        $permissions = parent::requiresPermission($request);
+        $permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView');
+         if (!empty($request->get('search_module'))) {
+            $permissions[] = array('module_parameter' => 'search_module', 'action' => 'DetailView');
+         }
+        if (!empty($request->get('parent_module'))) {
+            $permissions[] = array('module_parameter' => 'parent_module', 'action' => 'DetailView');
+        }
+        return $permissions;
+    }
 
-		$parentRecordId = $request->get('parent_id');
-		$parentModuleName = $request->get('parent_module');
-		$relatedModule = $request->get('module');
+    public function process(Vtiger_Request $request) {
+        $searchValue = $request->get('search_value');
+        $searchModule = $request->get('search_module');
 
-		$searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
-		$records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
+        $parentRecordId = $request->get('parent_id');
+        $parentModuleName = $request->get('parent_module');
+        $relatedModule = $request->get('module');
 
-		$baseRecordId = $request->get('base_record');
-		$result = array();
-		foreach($records as $moduleName=>$recordModels) {
-			foreach($recordModels as $recordModel) {
-				if ($recordModel->getId() != $baseRecordId) {
-					$result[] = array('label'=>decode_html($recordModel->getName()), 'value'=>decode_html($recordModel->getName()), 'id'=>$recordModel->getId());
-				}
-			}
-		}
+        $searchModuleModel = Vtiger_Module_Model::getInstance($searchModule);
+        $records = $searchModuleModel->searchRecord($searchValue, $parentRecordId, $parentModuleName, $relatedModule);
 
-		$response = new Vtiger_Response();
-		$response->setResult($result);
-		$response->emit();
-	}
+        $baseRecordId = $request->get('base_record');
+        $result = array();
+        foreach ($records as $moduleName => $recordModels) {
+            foreach ($recordModels as $recordModel) {
+                if ($recordModel->getId() != $baseRecordId) {
+                    $result[] = array('label' => decode_html($recordModel->getName()), 'value' => decode_html($recordModel->getName()), 'id' => $recordModel->getId());
+                }
+            }
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult($result);
+        $response->emit();
+    }
+
 }
