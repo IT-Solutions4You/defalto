@@ -22,6 +22,7 @@
 //file modified by richie
 
 require_once('include/utils/utils.php');
+require_once("modules/Emails/class.smtp.php");
 require_once("modules/Emails/class.phpmailer.php");
 require_once("modules/Emails/mail.php");
 require_once('include/logging.php');
@@ -51,14 +52,14 @@ $app_strings = return_application_language($current_language);
 
 //modified query for recurring events -Jag
 $query="SELECT vtiger_crmentity.crmid, vtiger_crmentity.description, vtiger_crmentity.smownerid, vtiger_seactivityrel.crmid AS setype,vtiger_activity.*,vtiger_activity_reminder.reminder_time,
-		vtiger_activity_reminder.reminder_sent,vtiger_activity_reminder.recurringid FROM vtiger_activity 
-		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid 
-		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id 
-		LEFT OUTER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid 
-		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '".date('Y-m-d')."' AND vtiger_crmentity.crmid != 0 AND 
-		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled')) 
+		vtiger_activity_reminder.reminder_sent,vtiger_activity_reminder.recurringid FROM vtiger_activity
+		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid
+		INNER JOIN vtiger_activity_reminder ON vtiger_activity.activityid=vtiger_activity_reminder.activity_id
+		LEFT OUTER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
+		WHERE DATE_FORMAT(vtiger_activity.date_start,'%Y-%m-%d, %H:%i:%s') >= '".date('Y-m-d')."' AND vtiger_crmentity.crmid != 0 AND
+		(vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled'))
 		AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
-		AND vtiger_activity_reminder.reminder_sent = 0 AND vtiger_activity_reminder.reminder_time != 0 
+		AND vtiger_activity_reminder.reminder_sent = 0 AND vtiger_activity_reminder.reminder_time != 0
 		GROUP BY vtiger_activity.activityid";
 $result = $adb->pquery($query, array());
 
@@ -170,7 +171,7 @@ if($adb->num_rows($result) >= 1)
 			$result_set['subject'] = decode_html($result_set['subject']);
 			if($result_set['activitytype'] == "Task") {
 				$enddateInOwnerFormat = $enddateTime->getDisplayDate($ownerFocus);
-				$list = $todoReminderBody;				
+				$list = $todoReminderBody;
 				$list = str_replace('$calendar-subject$',$result_set['subject'],$list);
 				$list = str_replace('$calendar-description$',$result_set['description'],$list);
 				$list = str_replace('$calendar-date_start$', $dateTimeInOwnerFormat.' '.$ownerTimeZone, $list);

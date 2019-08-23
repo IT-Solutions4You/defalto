@@ -26,6 +26,7 @@ include_once 'include/Zend/Json.php';
 include_once 'include/QueryGenerator/QueryGenerator.php';
 include_once 'include/Webservices/DescribeObject.php';
 include_once 'includes/runtime/LanguageHandler.php';
+include_once 'modules/Emails/class.smtp.php';
 include_once 'modules/Emails/class.phpmailer.php';
 include_once 'modules/ModTracker/ModTracker.php';
 include_once 'modules/Contacts/Contacts.php';
