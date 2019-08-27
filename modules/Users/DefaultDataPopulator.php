@@ -484,12 +484,12 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_field values (8," . $this->db->getUniqueID("vtiger_field") . ",'filename','vtiger_notes',1,'28','filename','File Name',1,2,'',100,3," . $fileblockid . ",1,'V~O',3,null,'BAS',0)");
 		$this->db->query("insert into vtiger_field values (8," . $this->db->getUniqueID("vtiger_field") . ",'smownerid','vtiger_crmentity',1,'53','assigned_user_id','Assigned To',1,0,'',100,4,17,1,'V~M',0,3,'BAS',1)");
 		$this->db->query("insert into vtiger_field values (8," . $this->db->getUniqueID("vtiger_field") . ",'notecontent','vtiger_notes',1,'19','notecontent','Note',1,2,'',100,1,$desc_blockid,1,'V~O',1,null,'BAS',0)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filetype','vtiger_notes',1,1,'filetype','File Type',1,2,'',100,5," . $fileblockid . ",2,'V~O',3,'','BAS',0)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filesize','vtiger_notes',1,1,'filesize','File Size',1,2,'',100,4," . $fileblockid . ",2,'I~O',3,'','BAS',0)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filelocationtype','vtiger_notes',1,27,'filelocationtype','Download Type',1,0,'',100,1," . $fileblockid . ",1,'V~O',3,'','BAS',0)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'fileversion','vtiger_notes',1,1,'fileversion','Version',1,2,'',100,6,$fileblockid,1,'V~O',1,'','BAS',1)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filestatus','vtiger_notes',1,56,'filestatus','Active',1,2,'',100,2," . $fileblockid . ",1,'V~O',1,'','BAS',1)");
-		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filedownloadcount','vtiger_notes',1,1,'filedownloadcount','Download Count',1,2,'',100,7," . $fileblockid . ",2,'I~O',3,'','BAS',0)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filetype','vtiger_notes',1,1,'filetype','File Type',1,2,null,100,5," . $fileblockid . ",2,'V~O',3,null,'BAS',0)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filesize','vtiger_notes',1,1,'filesize','File Size',1,2,null,100,4," . $fileblockid . ",2,'I~O',3,null,'BAS',0)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filelocationtype','vtiger_notes',1,27,'filelocationtype','Download Type',1,0,null,100,1," . $fileblockid . ",1,'V~O',3,null,'BAS',0)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'fileversion','vtiger_notes',1,1,'fileversion','Version',1,2,null,100,6,$fileblockid,1,'V~O',1,null,'BAS',1)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filestatus','vtiger_notes',1,56,'filestatus','Active',1,2,null,100,2," . $fileblockid . ",1,'V~O',1,null,'BAS',1)");
+		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'filedownloadcount','vtiger_notes',1,1,'filedownloadcount','Download Count',1,2,null,100,7," . $fileblockid . ",2,'I~O',3,null,'BAS',0)");
 		$this->db->query("insert into vtiger_field values(8," . $this->db->getUniqueID("vtiger_field") . ",'folderid','vtiger_notes',1,26,'folderid','Folder Name',1,2,'',100,2,17,1,'V~O',2,2,'BAS',0)");
 
 		$this->db->query("insert into vtiger_field values (8," . $this->db->getUniqueID("vtiger_field") . ",'note_no','vtiger_notes',1,'4','note_no','Document No',1,0,'',100,3,17,1,'V~O',3,null,'BAS',0)");
