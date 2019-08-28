@@ -1102,14 +1102,14 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_relatedlists VALUES(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid('Contacts') . "," . getTabid('Invoice') . ",'get_invoices',12,'Invoice',0, 'add',null,'','')");
 
 		//Inserting Potential Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Calendar") . ",'get_activities',1,'Activities',0,'add','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Contacts") . ",'get_contacts',2,'Contacts',0,'select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Products") . ",'get_products',3,'Products',0,'select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . ",0,'get_stage_history',4,'Sales Stage History',0,'','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Documents") . ",'get_attachments',5,'Documents',0,'add,select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Quotes") . ",'get_Quotes',6,'Quotes',0,'add','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("SalesOrder") . ",'get_salesorder',7,'Sales Order',0,'add','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Calendar") . ",'get_history',8,'Activity History',0,'','','','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Calendar") . ",'get_activities',1,'Activities',0,'add',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Contacts") . ",'get_contacts',2,'Contacts',0,'select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Products") . ",'get_products',3,'Products',0,'select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . ",0,'get_stage_history',4,'Sales Stage History',0,'',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Documents") . ",'get_attachments',5,'Documents',0,'add,select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Quotes") . ",'get_Quotes',6,'Quotes',0,'add',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("SalesOrder") . ",'get_salesorder',7,'Sales Order',0,'add',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Calendar") . ",'get_history',8,'Activity History',0,'',null,'','')");
 
 		//Inserting Product Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Products") . "," . getTabid("HelpDesk") . ",'get_tickets',1,'HelpDesk',0,'add','','','')");
