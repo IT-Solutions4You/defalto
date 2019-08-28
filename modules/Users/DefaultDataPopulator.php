@@ -1177,12 +1177,12 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Calendar") . ",4,'get_contacts',2,'Contacts',0,'',null,'','')");
 
 		// Inserting Campaigns Related Lists
-		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'add,select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Leads") . ",'get_leads',2,'Leads',0,'add,select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Potentials") . ",'get_opportunities',3,'Potentials',0,'add','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . ",9,'get_activities',4,'Activities',0,'add','','','')");
-		$this->db->query("INSERT INTO vtiger_relatedlists VALUES (" . $this->db->getUniqueID('vtiger_relatedlists') . ", " . getTabid("Accounts") . ", " . getTabid("Campaigns") . ", 'get_campaigns', 13, 'Campaigns', 0, 'select','','','')");
-		$this->db->query("INSERT INTO vtiger_relatedlists VALUES (" . $this->db->getUniqueID('vtiger_relatedlists') . ", " . getTabid("Campaigns") . ", " . getTabid("Accounts") . ", 'get_accounts', 5, 'Accounts', 0, 'add,select','','','')");
+		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'add,select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Leads") . ",'get_leads',2,'Leads',0,'add,select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Potentials") . ",'get_opportunities',3,'Potentials',0,'add',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . ",9,'get_activities',4,'Activities',0,'add',null,'','')");
+		$this->db->query("INSERT INTO vtiger_relatedlists VALUES (" . $this->db->getUniqueID('vtiger_relatedlists') . ", " . getTabid("Accounts") . ", " . getTabid("Campaigns") . ", 'get_campaigns', 13, 'Campaigns', 0, 'select',null,'','')");
+		$this->db->query("INSERT INTO vtiger_relatedlists VALUES (" . $this->db->getUniqueID('vtiger_relatedlists') . ", " . getTabid("Campaigns") . ", " . getTabid("Accounts") . ", 'get_accounts', 5, 'Accounts', 0, 'add,select',null,'','')");
 
 		// Inserting Faq's Related Lists
 		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Faq") . "," . getTabid("Documents") . ",'get_attachments',1,'Documents',0,'add,select','','','')");
