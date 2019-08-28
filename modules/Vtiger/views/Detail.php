@@ -542,9 +542,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 				$targetControllerClass = Vtiger_Loader::getComponentClassName('View', 'RelatedList', $moduleName);
 			}
 		}
-        global $log;
-        $log->fatal('Mod comments rollup');
-        $log->fatal($targetControllerClass);
 		if($targetControllerClass) {
 			$targetController = new $targetControllerClass();
 			if($targetController->checkPermission($request)){
