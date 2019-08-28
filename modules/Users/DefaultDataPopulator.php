@@ -1138,7 +1138,7 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . "," . getTabid("Calendar") . ",'get_history',4,'Activity History',0,'',null,'','')");
 
 		//Inserting PriceBook Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PriceBooks") . ",14,'get_pricebook_products',2,'Products',0,'select','','','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PriceBooks") . ",14,'get_pricebook_products',2,'Products',0,'select',null,'','')");
 
 		// Inserting Vendor Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",14,'get_products',1,'Products',0,'add,select','','','')");
