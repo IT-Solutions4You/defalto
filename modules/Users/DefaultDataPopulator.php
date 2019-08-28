@@ -1173,8 +1173,8 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Invoice") . ",0,'get_invoicestatushistory',4,'Invoice Status History',0,'',null,'','')");
 
 		// Inserting Activities Related Lists
-		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Calendar") . ",0,'get_users',1,'Users',0,'','','','')");
-		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Calendar") . ",4,'get_contacts',2,'Contacts',0,'','','','')");
+		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Calendar") . ",0,'get_users',1,'Users',0,'',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Calendar") . ",4,'get_contacts',2,'Contacts',0,'',null,'','')");
 
 		// Inserting Campaigns Related Lists
 		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'add,select','','','')");
