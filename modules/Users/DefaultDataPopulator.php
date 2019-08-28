@@ -1160,11 +1160,11 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PurchaseOrder") . ",0,'get_postatushistory',4,'PurchaseOrder Status History',0,'',null,'','')");
 
 		// Inserting Sales order Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . ",9,'get_activities',1,'Activities',0,'add','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Invoice") . ",'get_invoices',3,'Invoice',0,'','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Calendar") . ",'get_history',4,'Activity History',0,'','','','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . ",0,'get_sostatushistory',5,'SalesOrder Status History',0,'','','','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . ",9,'get_activities',1,'Activities',0,'add',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Invoice") . ",'get_invoices',3,'Invoice',0,'',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Calendar") . ",'get_history',4,'Activity History',0,'',null,'','')");
+		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . ",0,'get_sostatushistory',5,'SalesOrder Status History',0,'',null,'','')");
 
 		// Inserting Invoice Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Invoice") . ",9,'get_activities',1,'Activities',0,'add','','','')");
