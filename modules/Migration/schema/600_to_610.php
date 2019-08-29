@@ -678,7 +678,7 @@ $result = $adb->pquery($query, array($contactTabId));
 $sequence = $adb->query_result($result, 0 ,'maxsequence');
 
 $query = 'INSERT INTO vtiger_relatedlists VALUES(?,?,?,?,?,?,?,?,?,?,?)';
-$result = Migration_Index_View::ExecuteQuery($query, array($relationId, $contactTabId,$vendorTabId,'get_vendors',($sequence+1),'Vendors',0,$actions,'','',''));
+$result = Migration_Index_View::ExecuteQuery($query, array($relationId, $contactTabId,$vendorTabId,'get_vendors',($sequence+1),'Vendors',0,$actions,null,'',''));
 
 //Schema changes for vtiger_troubletickets hours & days column
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE fieldname IN(?,?) AND tablename = ?', array('N~O', 'hours', 'days', 'vtiger_troubletickets'));
