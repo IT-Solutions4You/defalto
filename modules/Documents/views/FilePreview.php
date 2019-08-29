@@ -44,7 +44,7 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View {
 
 			if ($recordModel->get('filelocationtype') == 'I') {
 				$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-				$savedFile = $fileDetails['attachmentsid']."_".$fileName;
+				$savedFile = md5($fileDetails['attachmentsid']."_".$fileName);
 
 				$fileSize = filesize($filePath.$savedFile);
 				$fileSize = $fileSize + ($fileSize % 1024);

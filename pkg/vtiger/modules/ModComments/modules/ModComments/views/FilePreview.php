@@ -37,7 +37,7 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
 			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".$fileName;
+			$savedFile = md5($fileDetails['attachmentsid']."_".$fileName);
 
 			$fileSize = filesize($filePath.$savedFile);
 			$fileSize = $fileSize + ($fileSize % 1024);

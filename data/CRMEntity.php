@@ -186,17 +186,20 @@ class CRMEntity {
 		if ($save_file == 'false') {
 			return false;
 		}
+        
+        $binFile = sanitizeUploadFileName($file_name, $upload_badext);
+
+		$current_id = $adb->getUniqueID("vtiger_crmentity");
 
 		// Check 2
 		$save_file = 'true';
 		//only images are allowed for these modules
 		if ($module == 'Contacts' || $module == 'Products') {
 			$save_file = validateImageFile($file_details);
-		}
-
-		$binFile = sanitizeUploadFileName($file_name, $upload_badext);
-
-		$current_id = $adb->getUniqueID("vtiger_crmentity");
+            $serverFileName = $current_id . "_" . $binFile;
+		} else {
+            $serverFileName = md5($current_id . "_" . $binFile);
+        }
 
 		$filename = ltrim(basename(" " . $binFile)); //allowed filename like UTF-8 characters
 		$filetype = $file_details['type'];
@@ -206,7 +209,7 @@ class CRMEntity {
 		$upload_file_path = decideFilePath();
 
 		// upload the file in server
-		$upload_status = copy($filetmp_name, $upload_file_path . $current_id . "_" . $binFile);
+		$upload_status = copy($filetmp_name, $upload_file_path . $serverFileName);
 		// temporary file will be deleted at the end of request
 
 		if ($save_file == 'true' && $upload_status == 'true') {
