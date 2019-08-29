@@ -1559,7 +1559,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$taxIdsList[] = $rowData['taxid'];
 		}
 
-		$db->pquery('INSERT INTO vtiger_inventorycharges VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array(1, 'Shipping & Handling', 'Flat', 'Fixed', '', '[]', 1, ZEND_JSON::encode($taxIdsList), 0));
+		$db->pquery('INSERT INTO vtiger_inventorycharges VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', array(1, 'Shipping & Handling', 'Flat', 'Fixed', null, '[]', 1, ZEND_JSON::encode($taxIdsList), 0));
 	}
 
 	if (!Vtiger_Utils::checkTable('vtiger_inventorychargesrel')) {
