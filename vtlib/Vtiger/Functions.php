@@ -1507,4 +1507,20 @@ class Vtiger_Functions {
         }
         return $ok;
     }
+    
+    /**
+	 * Function to get file public url to access outside of CRM (from emails)
+	 * @param <Integer> $fileId
+	 * @param <String> $fileName
+	 * @return <String> $sourceUrl
+	 */
+	public static function getFilePublicURL($imageId, $imageName) {
+		$publicUrl = '';
+        $fileId = $imageId;
+        $fileName = $imageName;
+		if ($fileId) {
+			$publicUrl = "public.php?fid=$fileId&key=".md5($fileName);
+		}
+		return $publicUrl;
+	}
 }

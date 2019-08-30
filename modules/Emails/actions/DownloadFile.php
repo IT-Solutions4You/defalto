@@ -34,7 +34,7 @@ class Emails_DownloadFile_Action extends Vtiger_Action_Controller {
             $name = $row["name"];
             $filepath = $row["path"];
             $name = decode_html($name);
-            $saved_filename = md5($attachmentId."_".$name);
+            $saved_filename = $attachmentId."_". Vtiger_Util_Helper::getEncryptedFileName($name);
             $disk_file_size = filesize($filepath.$saved_filename);
             $filesize = $disk_file_size + ($disk_file_size % 1024);
             $fileContent = fread(fopen($filepath.$saved_filename, "r"), $filesize);

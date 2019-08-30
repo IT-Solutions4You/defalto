@@ -342,6 +342,7 @@ class Products_Record_Model extends Vtiger_Record_Model {
 	 * @return <array> Image Details List
 	 */
 	public function getImageDetails() {
+        global $site_URL;
 		$db = PearDatabase::getInstance();
 		$imageDetails = array();
 		$recordId = $this->getId();
@@ -356,15 +357,18 @@ class Products_Record_Model extends Vtiger_Record_Model {
 			$count = $db->num_rows($result);
 
 			for($i=0; $i<$count; $i++) {
+                $imageId = $db->query_result($result, $i, 'attachmentsid');
 				$imageIdsList[] = $db->query_result($result, $i, 'attachmentsid');
 				$imagePathList[] = $db->query_result($result, $i, 'path');
 				$imageName = $db->query_result($result, $i, 'name');
+                $url = \Vtiger_Functions::getFilePublicURL($imageId, $imageName);
 
 				//decode_html - added to handle UTF-8 characters in file names
 				$imageOriginalNamesList[] = urlencode(decode_html($imageName));
 
 				//urlencode - added to handle special characters like #, %, etc.,
 				$imageNamesList[] = $imageName;
+                $imageUrlsList[] = $url;
 			}
 
 			if(is_array($imageOriginalNamesList)) {
@@ -374,7 +378,8 @@ class Products_Record_Model extends Vtiger_Record_Model {
 							'id' => $imageIdsList[$j],
 							'orgname' => $imageOriginalNamesList[$j],
 							'path' => $imagePathList[$j].$imageIdsList[$j],
-							'name' => $imageNamesList[$j]
+							'name' => $imageNamesList[$j],
+                            'url' => $imageUrlsList[$j]
 					);
 				}
 			}

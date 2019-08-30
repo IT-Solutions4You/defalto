@@ -1238,4 +1238,14 @@ class Vtiger_Util_Helper {
 			return preg_replace($pattern, '\\\\$0', $string);
 		}
 	}
+    
+    public static function getEncryptedFileName($sanitizedFileName) {
+		$encryptedFileName = $sanitizedFileName;
+		if ($sanitizedFileName) {
+			$fileNameParts = explode('.', decode_html($sanitizedFileName));
+			$fileType = array_pop($fileNameParts);
+			$encryptedFileName = md5(implode('.', $fileNameParts)).'.'.$fileType;
+		}
+		return $encryptedFileName;
+	}
 }

@@ -1058,7 +1058,7 @@ class Users extends CRMEntity {
 		//get the file path inwhich folder we want to upload the file
 		$upload_file_path = decideFilePath();
 		//upload the file in server
-		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".$binFile);
+		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".Vtiger_Util_Helper::getEncryptedFileName($binFile));
 
 		if($save_file == 'true') {
 

@@ -378,6 +378,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <Array> list of Image names and paths
 	 */
 	public function getImageDetails() {
+        global $site_URL;
 		$db = PearDatabase::getInstance();
 
 		$imageDetails = array();
@@ -394,6 +395,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			$imageId = $db->query_result($result, 0, 'attachmentsid');
 			$imagePath = $db->query_result($result, 0, 'path');
 			$imageName = $db->query_result($result, 0, 'name');
+            $url = \Vtiger_Functions::getFilePublicURL($imageId, $imageName);
 
 			//decode_html - added to handle UTF-8 characters in file names
 			$imageOriginalName = urlencode(decode_html($imageName));
@@ -402,7 +404,8 @@ class Users_Record_Model extends Vtiger_Record_Model {
 					'id' => $imageId,
 					'orgname' => $imageOriginalName,
 					'path' => $imagePath.$imageId,
-					'name' => $imageName
+					'name' => $imageName,
+                    'url'  => $site_URL.$url
 			);
 		}
 		return $imageDetails;

@@ -97,9 +97,9 @@
 												<div style="margin-left: -13px;">
 													{assign var=IMAGE_DETAILS value=$LISTVIEW_ENTRY->getImageDetails()}
 													{foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-														{if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
+														{if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
 															<div class='col-lg-2'>
-																<img height="25px" width="25px" src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}">
+																<img height="25px" width="25px" src="{$IMAGE_INFO.url}">
 															</div>
 														{/if}
 													{/foreach}
