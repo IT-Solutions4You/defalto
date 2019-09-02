@@ -150,19 +150,26 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 		$moduleName = $request->getModule();
 		$qualifiedModuleName = $request->getModule(false);
 
-		$whereCondition .= "linkto LIKE '%$moduleName%' AND (linkto LIKE '%parent=Settings%' OR linkto LIKE '%parenttab=Settings%')";
+		$arrayParams = array();
+		$whereCondition .= "linkto LIKE ?  ";
+        $arrayParams[] = "%$moduleName%";
+ 		if ($moduleName != 'LanguageEditor') {
+ 			$whereCondition .= "AND (linkto LIKE '%parent=Settings%' OR linkto LIKE '%parenttab=Settings%')";
+ 		}
 
 		$db = PearDatabase::getInstance();
 		$query = "SELECT vtiger_settings_blocks.label AS blockname, vtiger_settings_field.name AS menu FROM vtiger_settings_blocks
 					INNER JOIN vtiger_settings_field ON vtiger_settings_field.blockid=vtiger_settings_blocks.blockid
 					WHERE $whereCondition";
-		$result = $db->pquery($query, array());
+		$result = $db->pquery($query, $arrayParams);
 		$numOfRows = $db->num_rows($result);
 		if ($numOfRows == 1) {
 			$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),
 									'menu'	=> $db->query_result($result, 0, 'menu'));
 		} elseif ($numOfRows > 1) {
-			$result = $db->pquery("$query AND linkto LIKE '%view=$view%'", array());
+            $query = "$query AND linkto LIKE ? ";
+            $arrayParams[] = "%view=$view%";
+			$result = $db->pquery($query, $arrayParams);
 			$numOfRows = $db->num_rows($result);
 			if ($numOfRows == 1) {
 				$finalResult = array(	'block' => $db->query_result($result, 0, 'blockname'),

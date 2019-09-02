@@ -44,7 +44,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 					break;
 				case 'showRelatedList':
 				case 'showRelatedRecords':
-					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView', 'record_parameter' => 'record');
+					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
 					break;
 				case 'getActivities':
 					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
