@@ -601,7 +601,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 				header("Content-type: ".$fileDetails['type']);
 				header("Pragma: public");
 				header("Cache-Control: private");
-				header("Content-Disposition: attachment; filename=\"$savedFile\"");
+				header("Content-Disposition: attachment; filename=\"$fileName\"");
 				header("Content-Description: PHP Generated Data");
 				header("Content-Encoding: none");
 			}

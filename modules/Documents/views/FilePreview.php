@@ -41,10 +41,11 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View {
 		if (!empty ($fileDetails)) {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
+            $storedFileName = $fileDetails['storedname'];
 
 			if ($recordModel->get('filelocationtype') == 'I') {
 				$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-				$savedFile = $fileDetails['attachmentsid']."_".Vtiger_Util_Helper::getEncryptedFileName($fileName);
+				$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
 
 				$fileSize = filesize($filePath.$savedFile);
 				$fileSize = $fileSize + ($fileSize % 1024);
