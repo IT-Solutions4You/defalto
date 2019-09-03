@@ -24,8 +24,9 @@ class Emails_DownloadFile_Action extends Vtiger_Action_Controller {
         $db = PearDatabase::getInstance();
 
         $attachmentId = $request->get('attachment_id');
-        $query = "SELECT * FROM vtiger_attachments WHERE attachmentsid = ?" ;
-        $result = $db->pquery($query, array($attachmentId));
+        $name = $request->get('name');
+        $query = "SELECT * FROM vtiger_attachments WHERE attachmentsid = ? AND name = ?" ;
+        $result = $db->pquery($query, array($attachmentId, $name));
 
         if($db->num_rows($result) == 1)
         {
@@ -34,7 +35,8 @@ class Emails_DownloadFile_Action extends Vtiger_Action_Controller {
             $name = $row["name"];
             $filepath = $row["path"];
             $name = decode_html($name);
-            $saved_filename = $attachmentId."_". Vtiger_Util_Helper::getEncryptedFileName($name);
+            $storedFileName = $row['storedname'];
+            $saved_filename = $attachmentId."_". $storedFileName;
             $disk_file_size = filesize($filepath.$saved_filename);
             $filesize = $disk_file_size + ($disk_file_size % 1024);
             $fileContent = fread(fopen($filepath.$saved_filename, "r"), $filesize);

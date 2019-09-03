@@ -21,13 +21,14 @@ class Vtiger_ShowFile_Helper {
 
 		$query = "SELECT vtiger_attachments.* FROM vtiger_attachments
 					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_attachments.attachmentsid
-					WHERE vtiger_attachments.attachmentsid=? LIMIT 1";
-		$result = $db->pquery($query, array($fid));
+					WHERE vtiger_attachments.attachmentsid=? AND vtiger_attachments.name=? LIMIT 1";
+		$result = $db->pquery($query, array($fid, $encFileName));
 		if ($result && $db->num_rows($result)) {
 			$resultData	= $db->fetch_array($result);
 			$fileId		= $resultData['attachmentsid'];
 			$filePath	= $resultData['path'];
 			$fileName	= $resultData['name'];
+            $storedFileName = $resultData['storedname'];
 			$fileType	= $resultData['type'];
 			$sanitizedFileName = sanitizeUploadFileName($fileName, $upload_badext);
 
@@ -35,8 +36,8 @@ class Vtiger_ShowFile_Helper {
 			 * While saving the document applying decode_html to save in DB, but this is not happening for the images
 			 * This save happens from mailroom, inbox, record save, document save etc..
 			 */
-			if (md5($fileName) == $encFileName || md5($sanitizedFileName) == $encFileName) {
-				$finalFilePath = $filePath.$fileId.'_'.Vtiger_Util_Helper::getEncryptedFileName($sanitizedFileName);
+			if (!empty($encFileName) && !empty($storedFileName)) {
+				$finalFilePath = $filePath.$fileId.'_'.$storedFileName;
 				$isFileExist = false;
 				if (file_exists($finalFilePath)) {
 					$isFileExist = true;

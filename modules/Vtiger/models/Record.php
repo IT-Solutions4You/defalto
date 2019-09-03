@@ -591,8 +591,9 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		if (!empty ($fileDetails)) {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
+            $storedFileName = $fileDetails['storedname'];
 			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".Vtiger_Util_Helper::getEncryptedFileName($fileName);
+			$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
 			$fileSize = filesize($filePath.$savedFile);
 			$fileSize = $fileSize + ($fileSize % 1024);
 			if (fopen($filePath.$savedFile, "r")) {
@@ -600,7 +601,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 				header("Content-type: ".$fileDetails['type']);
 				header("Pragma: public");
 				header("Cache-Control: private");
-				header("Content-Disposition: attachment; filename=\"$fileName\"");
+				header("Content-Disposition: attachment; filename=\"$savedFile\"");
 				header("Content-Description: PHP Generated Data");
 				header("Content-Encoding: none");
 			}

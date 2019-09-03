@@ -1244,7 +1244,7 @@ class Vtiger_Util_Helper {
 		if ($sanitizedFileName) {
 			$fileNameParts = explode('.', decode_html($sanitizedFileName));
 			$fileType = array_pop($fileNameParts);
-			$encryptedFileName = md5(implode('.', $fileNameParts)).'.'.$fileType;
+            $encryptedFileName = md5(md5(microtime(true)).implode('.', $fileNameParts)).'.'.$fileType;
 		}
 		return $encryptedFileName;
 	}

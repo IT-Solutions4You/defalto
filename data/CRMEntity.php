@@ -206,7 +206,8 @@ class CRMEntity {
 		$upload_file_path = decideFilePath();
 
 		// upload the file in server
-		$upload_status = copy($filetmp_name, $upload_file_path . $current_id . "_" . Vtiger_Util_Helper::getEncryptedFileName($binFile));
+        $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
+		$upload_status = copy($filetmp_name, $upload_file_path . $current_id . "_" . $encryptFileName);
 		// temporary file will be deleted at the end of request
 
 		if ($save_file == 'true' && $upload_status == 'true') {
@@ -231,8 +232,8 @@ class CRMEntity {
 			$params1 = array($current_id, $current_user->id, $ownerid, $module." ".$attachmentType, $this->column_fields['description'], $adb->formatDate($date_var, true), $adb->formatDate($date_var, true));
 			$adb->pquery($sql1, $params1);
 			//Add entry to attachments
-			$sql2 = "INSERT INTO vtiger_attachments(attachmentsid, name, description, type, path) values(?, ?, ?, ?, ?)";
-			$params2 = array($current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path);
+			$sql2 = "INSERT INTO vtiger_attachments(attachmentsid, name, description, type, path, storedname) values(?, ?, ?, ?, ?, ?)";
+			$params2 = array($current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path, $encryptFileName);
 			$adb->pquery($sql2, $params2);
 			//Add relation
 			$sql3 = 'INSERT INTO vtiger_seattachmentsrel VALUES(?,?)';
