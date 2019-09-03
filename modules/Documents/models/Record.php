@@ -21,7 +21,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 	function getDownloadFileURL() {
 		if ($this->get('filelocationtype') == 'I') {
 			$fileDetails = $this->getFileDetails();
-			return 'index.php?module='. $this->getModuleName() .'&action=DownloadFile&record='. $this->getId() .'&fileid='. $fileDetails['attachmentsid'];
+			return 'index.php?module='. $this->getModuleName() .'&action=DownloadFile&record='. $this->getId() .'&fileid='. $fileDetails['attachmentsid'].'&name='. $fileDetails['name'];
 		} else {
 			return $this->get('filename');
 		}
@@ -40,8 +40,9 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 			$fileDetails = $this->getFileDetails();
 			if (!empty ($fileDetails)) {
 				$filePath = $fileDetails['path'];
+                $storedFileName = $fileDetails['storedname'];
 
-				$savedFile = $fileDetails['attachmentsid']."_".decode_html($this->get('filename'));
+				$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
 
 				if(fopen($filePath.$savedFile, "r")) {
 					$returnValue = true;
@@ -72,10 +73,11 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		if (!empty ($fileDetails)) {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
+            $storedFileName = $fileDetails['storedname'];
 
 			if ($this->get('filelocationtype') == 'I') {
 				$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-				$savedFile = $fileDetails['attachmentsid']."_".$fileName;
+				$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
 
 				while(ob_get_level()) {
 					ob_end_clean();

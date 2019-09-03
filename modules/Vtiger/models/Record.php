@@ -397,6 +397,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 	 * @return <array> Image Details List
 	 */
 	public function getImageDetails() {
+        global $site_URL;
 		$db = PearDatabase::getInstance();
 		$imageDetails = array();
 		$recordId = $this->getId();
@@ -412,7 +413,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 			$imageId = $db->query_result($result, 0, 'attachmentsid');
 			$imagePath = $db->query_result($result, 0, 'path');
 			$imageName = $db->query_result($result, 0, 'name');
-
+            $url = \Vtiger_Functions::getFilePublicURL($imageId, $imageName);
 			//decode_html - added to handle UTF-8 characters in file names
 			$imageOriginalName = urlencode(decode_html($imageName));
 
@@ -421,7 +422,8 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 						'id' => $imageId,
 						'orgname' => $imageOriginalName,
 						'path' => $imagePath.$imageId,
-						'name' => $imageName
+						'name' => $imageName,
+                        'url'  => $site_URL.$url
 				);
 			}
 		}
@@ -589,8 +591,9 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		if (!empty ($fileDetails)) {
 			$filePath = $fileDetails['path'];
 			$fileName = $fileDetails['name'];
+            $storedFileName = $fileDetails['storedname'];
 			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".$fileName;
+			$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
 			$fileSize = filesize($filePath.$savedFile);
 			$fileSize = $fileSize + ($fileSize % 1024);
 			if (fopen($filePath.$savedFile, "r")) {

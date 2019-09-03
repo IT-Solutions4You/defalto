@@ -1058,7 +1058,8 @@ class Users extends CRMEntity {
 		//get the file path inwhich folder we want to upload the file
 		$upload_file_path = decideFilePath();
 		//upload the file in server
-		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".$binFile);
+        $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
+		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".$encryptFileName);
 
 		if($save_file == 'true') {
 
@@ -1066,8 +1067,8 @@ class Users extends CRMEntity {
 			$params1 = array($current_id, $current_user->id, $ownerid, $module." Image", $this->column_fields['description'], $this->db->formatString("vtiger_crmentity","createdtime",$date_var), $this->db->formatDate($date_var, true));
 			$this->db->pquery($sql1, $params1);
 
-			$sql2="insert into vtiger_attachments(attachmentsid, name, description, type, path) values(?,?,?,?,?)";
-			$params2 = array($current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path);
+			$sql2="insert into vtiger_attachments(attachmentsid, name, description, type, path, storedname) values(?,?,?,?,?,?)";
+			$params2 = array($current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path, $encryptFileName);
 			$result=$this->db->pquery($sql2, $params2);
 
 			if($id != '') {
