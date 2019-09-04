@@ -593,18 +593,24 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 			$fileName = $fileDetails['name'];
             $storedFileName = $fileDetails['storedname'];
 			$fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
-			$savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
-			$fileSize = filesize($filePath.$savedFile);
-			$fileSize = $fileSize + ($fileSize % 1024);
-			if (fopen($filePath.$savedFile, "r")) {
-				$fileContent = fread(fopen($filePath.$savedFile, "r"), $fileSize);
-				header("Content-type: ".$fileDetails['type']);
-				header("Pragma: public");
-				header("Cache-Control: private");
-				header("Content-Disposition: attachment; filename=\"$fileName\"");
-				header("Content-Description: PHP Generated Data");
-				header("Content-Encoding: none");
-			}
+            if (!empty($fileName)) {
+                if(!empty($storedFileName)){
+                    $savedFile = $fileDetails['attachmentsid']."_".$storedFileName;
+                }else if(is_null($storedFileName)){
+                    $savedFile = $fileDetails['attachmentsid']."_".$fileName;
+                }
+                $fileSize = filesize($filePath.$savedFile);
+                $fileSize = $fileSize + ($fileSize % 1024);
+                if (fopen($filePath.$savedFile, "r")) {
+                    $fileContent = fread(fopen($filePath.$savedFile, "r"), $fileSize);
+                    header("Content-type: ".$fileDetails['type']);
+                    header("Pragma: public");
+                    header("Cache-Control: private");
+                    header("Content-Disposition: attachment; filename=\"$fileName\"");
+                    header("Content-Description: PHP Generated Data");
+                    header("Content-Encoding: none");
+                }
+            }
 		}
 		echo $fileContent;
 	}
