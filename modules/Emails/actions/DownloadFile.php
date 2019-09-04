@@ -36,17 +36,23 @@ class Emails_DownloadFile_Action extends Vtiger_Action_Controller {
             $filepath = $row["path"];
             $name = decode_html($name);
             $storedFileName = $row['storedname'];
-            $saved_filename = $attachmentId."_". $storedFileName;
-            $disk_file_size = filesize($filepath.$saved_filename);
-            $filesize = $disk_file_size + ($disk_file_size % 1024);
-            $fileContent = fread(fopen($filepath.$saved_filename, "r"), $filesize);
+            if (!empty($name)) {
+                if(!empty($storedFileName)){
+                    $saved_filename = $attachmentId."_". $storedFileName;
+                }else if(is_null($storedFileName)){
+                    $saved_filename = $attachmentId."_". $name;
+                }
+                $disk_file_size = filesize($filepath.$saved_filename);
+                $filesize = $disk_file_size + ($disk_file_size % 1024);
+                $fileContent = fread(fopen($filepath.$saved_filename, "r"), $filesize);
 
-            header("Content-type: $fileType");
-            header("Pragma: public");
-            header("Cache-Control: private");
-            header("Content-Disposition: attachment; filename=$name");
-            header("Content-Description: PHP Generated Data");
-            echo $fileContent;
+                header("Content-type: $fileType");
+                header("Pragma: public");
+                header("Cache-Control: private");
+                header("Content-Disposition: attachment; filename=$name");
+                header("Content-Description: PHP Generated Data");
+                echo $fileContent;
+            }
         }
     }
 }

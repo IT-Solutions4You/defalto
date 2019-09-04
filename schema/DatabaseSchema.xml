@@ -1014,6 +1014,7 @@
 		<field name="description" type="X" />
 		<field name="type" type="C" size="100" />
 		<field name="path" type="X" />
+                <field name="storedname" type="C" size="255" />
 		<field name="subject" type="C" size="255" />
 		<index name="attachments_attachmentsid_idx">
 			<col>attachmentsid</col>

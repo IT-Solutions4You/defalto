@@ -36,21 +36,25 @@ class Vtiger_ShowFile_Helper {
 			 * While saving the document applying decode_html to save in DB, but this is not happening for the images
 			 * This save happens from mailroom, inbox, record save, document save etc..
 			 */
-			if (!empty($encFileName) && !empty($storedFileName)) {
-				$finalFilePath = $filePath.$fileId.'_'.$storedFileName;
-				$isFileExist = false;
-				if (file_exists($finalFilePath)) {
-					$isFileExist = true;
-				} else {
-					$finalFilePath = $filePath.$fileId.'_'.$sanitizedFileName;
-					if (file_exists($finalFilePath)) {
-						$isFileExist = true;
-					}
-				}
-				if ($isFileExist) {
-					Vtiger_ShowFile_Helper::show($finalFilePath,$fileType);
-				}
-			}
+			if (!empty($encFileName)) {
+                if(!empty($storedFileName)){
+                    $finalFilePath = $filePath.$fileId.'_'.$storedFileName;
+                }else if(is_null($storedFileName)){
+                    $finalFilePath = $filePath.$fileId.'_'.$encFileName;
+                }
+                $isFileExist = false;
+                if (file_exists($finalFilePath)) {
+                    $isFileExist = true;
+                } else {
+                    $finalFilePath = $filePath.$fileId.'_'.$sanitizedFileName;
+                    if (file_exists($finalFilePath)) {
+                        $isFileExist = true;
+                    }
+                }
+                if ($isFileExist) {
+                    Vtiger_ShowFile_Helper::show($finalFilePath,$fileType);
+                }
+            }
 		}
 	}
 
