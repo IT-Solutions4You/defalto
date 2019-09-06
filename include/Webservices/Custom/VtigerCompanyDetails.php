@@ -17,6 +17,7 @@ require_once 'include/Webservices/VtigerActorOperation.php';
 class VtigerCompanyDetails extends VtigerActorOperation {
 	public function create($elementType, $element) {
 		$db = PearDatabase::getInstance();
+        $params = array();
 		$sql = 'select * from vtiger_organizationdetails';
 		$result = $db->pquery($sql,$params);
 		$rowCount = $db->num_rows($result);
