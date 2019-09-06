@@ -367,7 +367,8 @@ class CRMEntity {
 		$log->info("function insertIntoEntityTable " . $module . ' vtiger_table name ' . $table_name);
 		global $adb;
 		$insertion_mode = $this->mode;
-
+        $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
+        
 		//Checkin whether an entry is already is present in the vtiger_table to update
 		if ($insertion_mode == 'edit') {
 			$tablekey = $this->tab_name_index[$table_name];
@@ -726,6 +727,7 @@ class CRMEntity {
 	 */
 	function deleteRelation($table_name) {
 		global $adb;
+        $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
 		$check_query = "select * from $table_name where " . $this->tab_name_index[$table_name] . "=?";
 		$check_result = $adb->pquery($check_query, array($this->id));
 		$num_rows = $adb->num_rows($check_result);
@@ -1094,6 +1096,7 @@ class CRMEntity {
 	 */
 	function checkIfCustomTableExists($tablename) {
 		global $adb;
+        $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
 		$query = "select * from " . $adb->sql_escape_string($tablename);
 		$result = $this->db->pquery($query, array());
 		$testrow = $this->db->num_fields($result);
@@ -1541,6 +1544,8 @@ class CRMEntity {
 	/* Function to check if the mod number already exits */
 	function checkModuleSeqNumber($table, $column, $no) {
 		global $adb;
+        $table = Vtiger_Util_Helper::validateStringForSql($table);
+        $column = Vtiger_Util_Helper::validateStringForSql($column);
 		$result = $adb->pquery("select " . $adb->sql_escape_string($column) .
 				" from " . $adb->sql_escape_string($table) .
 				" where " . $adb->sql_escape_string($column) . " = ?", array($no));
@@ -1577,8 +1582,8 @@ class CRMEntity {
 			$fld_column = $adb->query_result($fieldinfo, 0, 'columnname');
 
 			if ($fld_table == $this->table_name) {
-				$records = $adb->query("SELECT $this->table_index AS recordid FROM $this->table_name " .
-						"WHERE $fld_column = '' OR $fld_column is NULL");
+				$records = $adb->pquery("SELECT $this->table_index AS recordid FROM $this->table_name " .
+						"WHERE $fld_column = '' OR $fld_column is NULL", array());
 
 				if ($records && $adb->num_rows($records)) {
 					$returninfo['totalrecords'] = $adb->num_rows($records);
@@ -2722,6 +2727,7 @@ class CRMEntity {
 			$module = getTabModuleName($tabId);
 		}
 		$query = $this->getNonAdminAccessQuery($module, $user, $parentRole, $userGroups);
+        $tableName = Vtiger_Util_Helper::validateStringForSql($tableName);
 		$query = "create temporary table IF NOT EXISTS $tableName(id int(11) primary key) ignore " .
 				$query;
 		$db = PearDatabase::getInstance();
