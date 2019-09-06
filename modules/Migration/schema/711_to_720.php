@@ -13,5 +13,5 @@ if (defined('VTIGER_UPGRADE')) {
 	$db = PearDatabase::getInstance();
 
 	// Added column storedname for vtiger_attachments to support reverse mapping.
-	$db->pquery('ALTER TABLE vtiger_attachments ADD COLUMN storedname varchar(255) NOT NULL AFTER path', array());
+	$db->pquery('ALTER TABLE vtiger_attachments ADD COLUMN storedname varchar(255) NULL AFTER path', array());
 }
