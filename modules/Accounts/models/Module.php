@@ -158,6 +158,7 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 		$focus->id = $recordId;
 		$entityIds = $focus->getRelatedContactsIds();
 		$entityIds = implode(',', $entityIds);
+        $params = array();
 
 		$query = "SELECT DISTINCT vtiger_crmentity.crmid, (CASE WHEN (crmentity2.crmid not like '') THEN crmentity2.crmid ELSE crmentity3.crmid END) AS parent_id, 
 					(CASE WHEN (crmentity2.setype not like '') then crmentity2.setype ELSE crmentity3.setype END) AS crmentity2module, vtiger_crmentity.smownerid, vtiger_crmentity.setype, vtiger_activity.* FROM vtiger_activity
@@ -184,18 +185,21 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 		}
 
 		if ($mode === 'upcoming') {
-			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date >= '$currentDate' ELSE CONCAT(due_date,' ',time_end) >= '$nowInDBFormat' END";
+			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date >= ? ELSE CONCAT(due_date,' ',time_end) >= ? END";
+            $params[] = $currentDate;
+            $params[] = $nowInDBFormat;
 		} elseif ($mode === 'overdue') {
-			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date < '$currentDate' ELSE CONCAT(due_date,' ',time_end) < '$nowInDBFormat' END";
+			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date < ? ELSE CONCAT(due_date,' ',time_end) < ? END";
+            $params[] = $currentDate;
+            $params[] = $nowInDBFormat;
 		}
-
-		$params = array();
 
 		if ($recordId) {
 			$query .= " AND (vtiger_seactivityrel.crmid = ?";
 			array_push($params, $recordId);
 			if ($entityIds) {
-				$query .= " OR vtiger_cntactivityrel.contactid IN (" . $entityIds . "))";
+				$query .= " OR vtiger_cntactivityrel.contactid IN (" . generateQuestionMarks($entityIds) . "))";
+                array_push($params, $entityIds);
 			} else {
 				$query .= ")";
 			}

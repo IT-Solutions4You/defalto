@@ -855,15 +855,15 @@ function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 				$sql = "UPDATE $row->tablename set $row->columnname=? WHERE $row->columnname=? AND setype<>?";
 				$db->pquery($sql, array($newOwnerId, $ownerId, 'ModComments'));
 			} elseif ($row->tablename == 'vtiger_users' && $row->columnname == 'reports_to_id') {
-				$sql = "UPDATE $row->tablename SET $row->columnname = CASE WHEN id=$newOwnerId THEN ? ELSE ? END WHERE $row->columnname=?";
-				$db->pquery($sql, array('', $newOwnerId, $ownerId));
+				$sql = "UPDATE $row->tablename SET $row->columnname = CASE WHEN id=? THEN ? ELSE ? END WHERE $row->columnname=?";
+				$db->pquery($sql, array($newOwnerId, '', $newOwnerId, $ownerId));
 			} else {
 				$sql = "UPDATE $row->tablename SET $row->columnname=? WHERE $row->columnname=?";
 				$db->pquery($sql, array($newOwnerId, $ownerId));
 			}
 		}
 	}
-
+                    
 	//update webforms assigned userid
 	$db->pquery("UPDATE vtiger_webforms SET ownerid = ? WHERE ownerid = ?", array($newOwnerId, $ownerId));
 

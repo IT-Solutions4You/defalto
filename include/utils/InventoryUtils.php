@@ -942,6 +942,7 @@ function getInventoryProductTaxValue($id, $productId, $taxName, $lineItemId = 0)
 	global $log, $adb;
 	$log->debug("Entering into function getInventoryProductTaxValue($id, $productId, $taxName, $lineItemId).");
 
+    $taxName = Vtiger_Util_Helper::validateStringForSql($taxName);
 	$query = "SELECT $taxName FROM vtiger_inventoryproductrel WHERE id = ? AND productid = ?";
 	$params = array($id, $productId);
 
@@ -971,6 +972,7 @@ function getInventorySHTaxPercent($id, $taxname)
 	global $log, $adb;
 	$log->debug("Entering into function getInventorySHTaxPercent($id, $taxname)");
 
+    $taxName = Vtiger_Util_Helper::validateStringForSql($taxName);
 	$res = $adb->pquery("select $taxname from vtiger_inventoryshippingrel where id= ?", array($id));
 	$taxpercentage = $adb->query_result($res,0,$taxname);
 
