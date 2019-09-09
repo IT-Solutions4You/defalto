@@ -37,15 +37,18 @@ class Calendar_FetchAgendaEvents_Action extends Vtiger_BasicAjax_Action {
 		if ($hideCompleted) {
 			$query.= "vtiger_activity.eventstatus != 'HELD' AND ";
 		}
-		$query.= " (concat(date_start,'',time_start)) >= '$dbStartDateTime' AND (concat(date_start,'',time_start)) < '$dbEndDateTime'";
+		$query.= " (concat(date_start,'',time_start)) >= ? AND (concat(date_start,'',time_start)) < ?";
+       
+		$params = array($dbStartDateTime, $dbEndDateTime);
 
 		$eventUserId = $currentUser->getId();
-		$params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
-
-		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($params).")";
+		$userIds = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
+		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userIds).")";
 		$query.= ' ORDER BY time_start';
 
+		$params = array_merge($params, $userIds);
 		$queryResult = $db->pquery($query, $params);
+
 		while ($record = $db->fetchByAssoc($queryResult)) {
 			$item = array();
 			$item['id']				= $record['activityid'];
