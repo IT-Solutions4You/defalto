@@ -151,12 +151,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 				$queryGenerator->setFields(array_merge(array_merge($nameFields, array('id')), $fieldsList));
 				$query = $queryGenerator->getQuery();
-				$query.= " AND ((CONCAT('$year-', date_format(birthday,'%m-%d')) >= ? AND CONCAT('$year-', date_format(birthday,'%m-%d')) <= ? )";
-				$params = array($start,$end);
+				$query.= " AND ((CONCAT(?, date_format(birthday,'%m-%d')) >= ? AND CONCAT(?, date_format(birthday,'%m-%d')) <= ? )";
+				$params = array("$year-",$start,"$year-",$end);
 				$endDateYear = $endDateComponents[0]; 
 				if ($year !== $endDateYear) {
-					$query .= " OR (CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) >= ?  AND CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) <= ? )"; 
-					$params = array_merge($params,array($start,$end));
+					$query .= " OR (CONCAT(?, date_format(birthday,'%m-%d')) >= ?  AND CONCAT(?, date_format(birthday,'%m-%d')) <= ? )"; 
+					$params = array_merge($params,array("$endDateYear-",$start,"$endDateYear-",$end));
 				} 
 				$query .= ")";
 				$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($userAndGroupIds).")";
