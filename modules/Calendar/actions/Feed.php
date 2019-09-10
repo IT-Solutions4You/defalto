@@ -305,18 +305,17 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$conditions = Zend_Json::decode(Zend_Json::decode($conditions));
 			$query .=  $this->generateCalendarViewConditionQuery($conditions).'AND ';
 		}
-		$query.= " ((concat(date_start, '', time_start)  >= '$dbStartDateTime' AND concat(due_date, '', time_end) < '$dbEndDateTime') OR ( due_date >= '$dbStartDate'))";
-
-		$params = array();
+		$query.= " ((concat(date_start, '', time_start)  >= ? AND concat(due_date, '', time_end) < ? ) OR ( due_date >= ? ))";
+		$params=array($dbStartDateTime,$dbEndDateTime,$dbStartDate);
 		if(empty($userid)){
 			$eventUserId  = $currentUser->getId();
-			$params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
 		}else{
 			$eventUserId = $userid;
-			$params = array($eventUserId);
 		}
-
-		$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
+		$userIds = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
+		
+		$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($userIds).")";
+		$params= array_merge($params,$userIds);
 		$queryResult = $db->pquery($query, $params);
 
 		while($record = $db->fetchByAssoc($queryResult)){
