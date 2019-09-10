@@ -411,9 +411,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$hideCompleted = $currentUser->get('hidecompletedevents');
 		if($hideCompleted)
 			$query.= "vtiger_activity.status != 'Completed' AND ";
-		$query.= " ((date_start >= '$start' AND due_date < '$end') OR ( due_date >= '$start'))";
-		$params = $userAndGroupIds;
-		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($params).")";
+		$query.= " ((date_start >= ? AND due_date < ? ) OR ( due_date >= ? ))";
+		$params=array($start,$end,$start);
+		$userIds = $userAndGroupIds;
+		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userIds).")";
+		$params=array_merge($params,$userIds);
 		$queryResult = $db->pquery($query,$params);
 
 		while($record = $db->fetchByAssoc($queryResult)){
