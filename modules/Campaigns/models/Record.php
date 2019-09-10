@@ -29,10 +29,10 @@ class Campaigns_Record_Model extends Vtiger_Record_Model {
 					INNER JOIN vtiger_crmentity ON $tableName.$fieldName = vtiger_crmentity.crmid AND vtiger_crmentity.deleted = ?
 					WHERE campaignid = ?";
 		if ($excludedIds) {
-			$query .= " AND $fieldName NOT IN (". implode(',', $excludedIds) .")";
+			$query .= " AND $fieldName NOT IN (". generateQuestionMarks($excludedIds) .")";
 		}
 
-		$result = $db->pquery($query, array(0, $this->getId()));
+		$result = $db->pquery($query, array(0, $this->getId(), $excludedIds));
 		$numOfRows = $db->num_rows($result);
 
 		$selectedIdsList = array();

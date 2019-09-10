@@ -88,8 +88,8 @@ class Emails_Module_Model extends Vtiger_Module_Model{
             $query = "SELECT vtiger_emailslookup.crmid, vtiger_emailslookup.setype, vtiger_emailslookup.value, 
                           vtiger_crmentity.label FROM vtiger_emailslookup INNER JOIN vtiger_crmentity on 
                           vtiger_crmentity.crmid = vtiger_emailslookup.crmid AND vtiger_crmentity.deleted=0 WHERE 
-						  vtiger_emailslookup.fieldid in (".implode(',', $fieldIds).") and 
-						  vtiger_emailslookup.setype in (".implode(',', $activeModules).") 
+						  vtiger_emailslookup.fieldid in (".generateQuestionMarks($fieldIds).") and 
+						  vtiger_emailslookup.setype in (".generateQuestionMarks($activeModules).") 
                           and (vtiger_emailslookup.value LIKE ? OR vtiger_crmentity.label LIKE ?)";
 
 			$emailOptOutIds = $this->getEmailOptOutRecordIds();
@@ -97,7 +97,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 				$query .= " AND vtiger_emailslookup.crmid NOT IN (".implode(',', $emailOptOutIds).")";
 			}
 
-			$result = $db->pquery($query, array('%'.$searchValue.'%', '%'.$searchValue.'%'));
+			$result = $db->pquery($query, array($fieldIds, $activeModules, '%'.$searchValue.'%', '%'.$searchValue.'%'));
             $isAdmin = is_admin($current_user);
 			while ($row = $db->fetchByAssoc($result)) {
 				if (!$isAdmin) {
