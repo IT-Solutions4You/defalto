@@ -326,6 +326,7 @@ class Vtiger_Util_Helper {
 		}
 		$db = PearDatabase::getInstance();
 
+        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$primaryKey = Vtiger_Util_Helper::getPickListId($fieldName);
 		$query = 'SELECT '.$primaryKey.', '.$fieldName.' FROM vtiger_'.$fieldName.' order by sortorderid';
 		$values = array();
@@ -361,6 +362,7 @@ class Vtiger_Util_Helper {
 		}
 		$db = PearDatabase::getInstance();
 
+        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$query = "SELECT $fieldName
 				  FROM vtiger_$fieldName
 					  INNER JOIN vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldName.picklist_valueid
