@@ -39,7 +39,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
             return Vtiger_Cache::get('PicklistRoleBasedValues',$this->getName().implode('_', $roleIdList));
         }
         $db = PearDatabase::getInstance();
-        $fieldName = $this->getName();
+        $fieldName = Vtiger_Util_Helper::validateStringForSql($this->getName());
         $tableName = 'vtiger_'.$fieldName;
         $idColName = $fieldName.'id';
         $query = 'SELECT '.$fieldName;
@@ -103,6 +103,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
      * @return type -- array of values
      */
 	public function getEditablePicklistValues($fieldName){
+        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$cache = Vtiger_Cache::getInstance();
 		$EditablePicklistValues = $cache->get('EditablePicklistValues', $fieldName);
         if($EditablePicklistValues) {
@@ -129,6 +130,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
      * @return type -- array of values
      */
 	public static function getNonEditablePicklistValues($fieldName){
+        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$cache = Vtiger_Cache::getInstance();
 		$NonEditablePicklistValues = $cache->get('NonEditablePicklistValues', $fieldName);
         if($NonEditablePicklistValues) {

@@ -157,7 +157,6 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 		$focus = CRMEntity::getInstance($this->getName());
 		$focus->id = $recordId;
 		$entityIds = $focus->getRelatedContactsIds();
-		$entityIds = implode(',', $entityIds);
         $params = array();
 
 		$query = "SELECT DISTINCT vtiger_crmentity.crmid, (CASE WHEN (crmentity2.crmid not like '') THEN crmentity2.crmid ELSE crmentity3.crmid END) AS parent_id, 
@@ -199,7 +198,7 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 			array_push($params, $recordId);
 			if ($entityIds) {
 				$query .= " OR vtiger_cntactivityrel.contactid IN (" . generateQuestionMarks($entityIds) . "))";
-                array_push($params, $entityIds);
+                $params = array_merge($params, $entityIds);
 			} else {
 				$query .= ")";
 			}
