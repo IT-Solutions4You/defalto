@@ -295,17 +295,21 @@ class Vtiger_Link {
 				$isColumnUpdate = false;
 
 				$sql = 'UPDATE vtiger_links SET ';
+                $params = array();
 				foreach ($linkInfo as $column => $columnValue) {
 					if (in_array($column, $columnsList)) {
 						$columnValue = ($column == 'sequence') ? intval($columnValue) : $columnValue;
-						$sql .= "$column='$columnValue',";
+                        $column = Vtiger_Util_Helper::validateStringForSql($column);
+						$sql .= "$column = ?,";
+                        array_push($params, $columnValue);
 						$isColumnUpdate = true;
 					}
 				}
 
 				if ($isColumnUpdate) {
 					$sql = trim($sql, ',').' WHERE tabid=? AND linkid=?';
-					$db->pquery($sql, array($tabId, $linkId));
+                    array_push($params, $tabId, $linkId);
+					$db->pquery($sql, $params);
 				}
 			}
 		}

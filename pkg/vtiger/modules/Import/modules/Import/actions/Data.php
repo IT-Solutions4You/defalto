@@ -196,8 +196,10 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 		$createdRecords = array();
 		$entityData = array();
-		$tableName = Import_Utils_Helper::getDbTableName($this->user);
-		$sql = 'SELECT * FROM '.$tableName.' WHERE status = '.Import_Data_Action::$IMPORT_RECORD_NONE;
+		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+        $params = array();
+		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
+        array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
 
 		$configReader = new Import_Config_Model();
 		if ($this->batchImport) {
@@ -208,7 +210,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			$sql .= ' LIMIT '. $pagingLimit;
 		}
 
-		$result = $adb->pquery($sql, array());
+		$result = $adb->pquery($sql, $params);
 		$numberOfRecords = $adb->num_rows($result);
 
 		if ($numberOfRecords <= 0) {

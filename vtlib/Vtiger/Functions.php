@@ -729,6 +729,8 @@ class Vtiger_Functions {
 
 	static function getSingleFieldValue($tablename, $fieldname, $idname, $id) {
 		global $adb;
+        $fieldname = Vtiger_Util_Helper::validateStringForSql($fieldname);
+        $idname = Vtiger_Util_Helper::validateStringForSql($idname);
 		$fieldval = $adb->query_result($adb->pquery("select $fieldname from $tablename where $idname = ?", array($id)), 0, $fieldname);
 		return $fieldval;
 	}
@@ -955,6 +957,7 @@ class Vtiger_Functions {
 
 	static function getPickListValuesFromTableForRole($tablename, $roleid) {
 		global $adb;
+        $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$query = "select $tablename from vtiger_$tablename inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$tablename.picklist_valueid where roleid=? and picklistid in (select picklistid from vtiger_picklist) order by sortorderid";
 		$result = $adb->pquery($query, array($roleid));
 		$fldVal = Array();

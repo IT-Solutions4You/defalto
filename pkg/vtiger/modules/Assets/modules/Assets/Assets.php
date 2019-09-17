@@ -418,11 +418,11 @@ class Assets extends CRMEntity {
 				$maxSequenceQuery = $adb->query("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs");
 				$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
 				$nextSequence = $maxSequence+1;
-				$adb->query("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES ($assetsTabId,1,$nextSequence)");
+				$adb->query("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)", array($assetsTabId,1,$nextSequence));
 			}
 			$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_prefs WHERE tabid=?', array($assetsTabId));
 			if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-				$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES ($assetsTabId,'showrelatedinfo',1)");
+				$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?,?,?)", array($assetsTabId,'showrelatedinfo',1));
 			}
 		}
 	}

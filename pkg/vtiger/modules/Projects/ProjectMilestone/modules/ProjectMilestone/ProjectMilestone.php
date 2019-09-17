@@ -339,8 +339,8 @@ class ProjectMilestone extends CRMEntity {
 					$maxSequenceQuery = $adb->query("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs");
 					$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
 					$nextSequence = $maxSequence+1;
-					$adb->query("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES ($projectmilestoneTabid,1,$nextSequence)");
-					$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES ($projectmilestoneTabid,'showrelatedinfo',1)");
+					$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)", array($projectmilestoneTabid,1,$nextSequence));
+					$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?,?,?)", array($projectmilestoneTabid,'showrelatedinfo',1));
 				}
 			}
 
