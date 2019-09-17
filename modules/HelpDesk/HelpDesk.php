@@ -305,7 +305,7 @@ class HelpDesk extends CRMEntity {
 		global $log;
 		$log->debug("Entering process_list_query(".$query.") method ...");
 
-   		$result =& $this->db->query($query,true,"Error retrieving $this->object_name list: ");
+   		$result =& $this->db->pquery($query,array(),true,"Error retrieving $this->object_name list: ");
 		$list = Array();
 	        $rows_found =  $this->db->getRowCount($result);
         	if($rows_found != 0)

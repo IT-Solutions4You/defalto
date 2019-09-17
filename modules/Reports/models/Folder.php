@@ -374,9 +374,9 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 		$listQuery = $this->getListViewQuery($folderId, $searchParams);
 
 		if($skipRecords && !empty($skipRecords) && is_array($skipRecords) && count($skipRecords) > 0) {
-			$listQuery .= ' AND '.$baseTableName.'.'.$baseTableId.' NOT IN ('. implode(',', $skipRecords) .')';
+			$listQuery .= ' AND '.$baseTableName.'.'.$baseTableId.' NOT IN ('. generateQuestionMarks($skipRecords) .')';
 		}
-		$result = $db->query($listQuery);
+		$result = $db->pquery($listQuery, $skipRecords);
 		$noOfRecords = $db->num_rows($result);
 		$recordIds = array();
 		for($i=0; $i<$noOfRecords; ++$i) {

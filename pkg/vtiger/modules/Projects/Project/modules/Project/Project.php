@@ -343,11 +343,11 @@ class Project extends CRMEntity {
 			if(getTabid('CustomerPortal') && $projectTabid) {
 				$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_tabs WHERE tabid=?', array($projectTabid));
 				if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-					$maxSequenceQuery = $adb->query("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs");
+					$maxSequenceQuery = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs", array());
 					$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
 					$nextSequence = $maxSequence+1;
-					$adb->query("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES ($projectTabid,1,$nextSequence)");
-					$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES ($projectTabid,'showrelatedinfo',1)");
+					$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?, ?, ?)", array($projectTabid,1,$nextSequence));
+					$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array($projectTabid,'showrelatedinfo',1));
 				}
 			}
 
@@ -401,7 +401,7 @@ class Project extends CRMEntity {
 			// Add Gnatt chart to the related list of the module
 			$relation_id = $adb->getUniqueID('vtiger_relatedlists');
 			$max_sequence = 0;
-			$result = $adb->query("SELECT max(sequence) as maxsequence FROM vtiger_relatedlists WHERE tabid=$projectTabid");
+			$result = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_relatedlists WHERE tabid=?", array($projectTabid));
 			if($adb->num_rows($result)) $max_sequence = $adb->query_result($result, 0, 'maxsequence');
 			$sequence = $max_sequence+1;
 			$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence) VALUES(?,?,?,?,?,?,?)",

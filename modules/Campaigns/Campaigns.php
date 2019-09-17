@@ -535,7 +535,7 @@ class Campaigns extends CRMEntity {
 
 		if(!$this->campaignrelstatus)
 		{
-			$result = $adb->query('SELECT * FROM vtiger_campaignrelstatus;');
+			$result = $adb->pquery('SELECT * FROM vtiger_campaignrelstatus;', array());
 			while($row = $adb->fetchByAssoc($result))
 			{
 				$this->campaignrelstatus[$row['campaignrelstatus']] = $row;

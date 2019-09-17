@@ -2225,9 +2225,9 @@ function getSharingModuleList($eliminateModules=false)
 	if(!in_array('Events', $eliminateModules)) $eliminateModules[] = 'Events';
 
 	$query = "SELECT name FROM vtiger_tab WHERE presence=0 AND ownedby = 0 AND isentitytype = 1";
-	$query .= " AND name NOT IN('" . implode("','", $eliminateModules) . "')";
+	$query .= " AND name NOT IN(" . generateQuestionMarks($eliminateModules) . ")";
 
-	$result = $adb->query($query);
+	$result = $adb->pquery($query, $eliminateModules);
 	while($resrow = $adb->fetch_array($result)) {
 		$sharingModuleArray[] = $resrow['name'];
 	}

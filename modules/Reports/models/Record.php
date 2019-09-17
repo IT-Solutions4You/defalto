@@ -793,7 +793,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$query = $this->get('recordCountQuery');
 		global $adb;
 		$count = 0;
-		$result = $adb->query($query, array());
+		$result = $adb->pquery($query, array());
 		if($adb->num_rows($result) > 0 ){
 			$count = $adb->query_result($result, 0, 'count');
 		}

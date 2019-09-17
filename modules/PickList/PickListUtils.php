@@ -112,7 +112,7 @@ function getAllPickListValues($fieldName,$lang = Array() ){
 		$arr = array_map('decode_html', $userRecordModel->getAccessibleUsers());
 	}else {
 		$sql = 'SELECT * FROM vtiger_'.$adb->sql_escape_string($fieldName);
-		$result = $adb->query($sql);
+		$result = $adb->pquery($sql, array());
 		$count = $adb->num_rows($result);
 
 		$arr = array();
@@ -143,7 +143,7 @@ function getEditablePicklistValues($fieldName, $lang= array(), $adb){
 	$values = array();
 	$fieldName = $adb->sql_escape_string($fieldName);
 	$sql="select $fieldName from vtiger_$fieldName where presence=1 and $fieldName <> '--None--'";
-	$res = $adb->query($sql);
+	$res = $adb->pquery($sql, array());
 	$RowCount = $adb->num_rows($res);
 	if($RowCount > 0){
 		for($i=0;$i<$RowCount;$i++){
@@ -169,7 +169,7 @@ function getNonEditablePicklistValues($fieldName, $lang=array(), $adb){
 	$values = array();
 	$fieldName = $adb->sql_escape_string($fieldName);
 	$sql = "select $fieldName from vtiger_$fieldName where presence=0";
-	$result = $adb->query($sql);
+	$result = $adb->pquery($sql, array());
 	$count = $adb->num_rows($result);
 	for($i=0;$i<$count;$i++){
 		$non_val = $adb->query_result($result,$i,$fieldName);

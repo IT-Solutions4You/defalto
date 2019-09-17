@@ -134,8 +134,8 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 		$this->deleteFiles($recordIds);
-		$db->query('DELETE FROM vtiger_crmentity WHERE deleted = 1');
-		$db->query('DELETE FROM vtiger_relatedlists_rb');
+		$db->pquery('DELETE FROM vtiger_crmentity WHERE deleted = 1', array());
+		$db->pquery('DELETE FROM vtiger_relatedlists_rb', array());
 
 		return true;
 	}

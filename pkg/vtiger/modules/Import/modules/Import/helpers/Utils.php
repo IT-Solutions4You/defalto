@@ -121,10 +121,10 @@ class Import_Utils_Helper {
 
 	public static function isUserImportBlocked($user) {
 		$adb = PearDatabase::getInstance();
-		$tableName = self::getDbTableName($user);
+		$tableName = Vtiger_Util_Helper::validateStringForSql(self::getDbTableName($user));
 
 		if(Vtiger_Utils::CheckTable($tableName)) {
-			$result = $adb->query('SELECT 1 FROM '.$tableName.' WHERE status = '.  Import_Data_Action::$IMPORT_RECORD_NONE);
+			$result = $adb->pquery('SELECT 1 FROM '.$tableName.' WHERE status = ?',  array(Import_Data_Action::$IMPORT_RECORD_NONE));
 			if($adb->num_rows($result) > 0) {
 				return true;
 			}
@@ -136,7 +136,7 @@ class Import_Utils_Helper {
 		$adb = PearDatabase::getInstance();
 		$tableName = self::getDbTableName($user);
 
-		$adb->query('DROP TABLE IF EXISTS '.$tableName);
+		$adb->pquery('DROP TABLE IF EXISTS '.$tableName, array());
 		Import_Lock_Action::unLock($user);
 		Import_Queue_Action::removeForUser($user);
 	}

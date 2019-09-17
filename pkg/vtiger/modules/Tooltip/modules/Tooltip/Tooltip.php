@@ -34,9 +34,10 @@ class Tooltip {
 			$icon = 'quickview.png';
 			$description = 'LBL_TOOLTIP_MANAGEMENT_DESCRIPTION';
 			$links = 'index.php?module=Tooltip&action=QuickView&parenttab=Settings';
-		
-			$adb->query("INSERT INTO vtiger_settings_field (fieldid, blockid, name, iconpath, description, linkto) 
-							VALUES (".$adb->getUniqueID('vtiger_settings_field').", ".getSettingsBlockId($blockname).", '$name', '$icon', '$description', '$links')");
+            $params = array($adb->getUniqueID('vtiger_settings_field'), getSettingsBlockId($blockname), $name, $icon, $description, $links);
+            
+			$adb->pquery("INSERT INTO vtiger_settings_field (fieldid, blockid, name, iconpath, description, linkto) 
+							VALUES (". generateQuestionMarks($params).")", $params);
  		} else if($eventType == 'module.disabled') {
 		// TODO Handle actions when this module is disabled.
 			$moduleInstance = Vtiger_Module::getInstance('Tooltip');

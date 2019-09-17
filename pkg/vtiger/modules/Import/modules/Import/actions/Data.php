@@ -296,7 +296,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					$query = $queryGenerator->getQuery();
 					// to eliminate clash of next record values
 					$queryGenerator->clearConditionals();
-					$duplicatesResult = $adb->query($query);
+					$duplicatesResult = $adb->pquery($query, array());
 					$noOfDuplicates = $adb->num_rows($duplicatesResult);
 
 					if ($noOfDuplicates > 0) {
@@ -825,7 +825,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 	public function getImportStatusCount() {
 		$adb = PearDatabase::getInstance();
-		$tableName = Import_Utils_Helper::getDbTableName($this->user);
+		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
 
 		$focus = CRMEntity::getInstance($this->module);
 		if ($focus && method_exists($focus, 'getGroupQuery')) {
@@ -833,7 +833,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		} else {
 			$query = 'SELECT status FROM '.$tableName;
 		}
-		$result = $adb->query($query, array());
+		$result = $adb->pquery($query, array());
 
 		$statusCount = array('TOTAL' => 0, 'IMPORTED' => 0, 'FAILED' => 0, 'PENDING' => 0, 'CREATED' => 0, 'SKIPPED' => 0, 'UPDATED' => 0, 'MERGED' => 0);
 

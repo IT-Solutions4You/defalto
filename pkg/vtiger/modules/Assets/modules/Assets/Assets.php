@@ -415,14 +415,14 @@ class Assets extends CRMEntity {
 		if(getTabid('CustomerPortal') && $assetsTabId) {
 			$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_tabs WHERE tabid=?', array($assetsTabId));
 			if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-				$maxSequenceQuery = $adb->query("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs");
+				$maxSequenceQuery = $adb->pquery("SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs", array());
 				$maxSequence = $adb->query_result($maxSequenceQuery, 0, 'maxsequence');
 				$nextSequence = $maxSequence+1;
-				$adb->query("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)", array($assetsTabId,1,$nextSequence));
+				$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?,?,?)", array($assetsTabId,1,$nextSequence));
 			}
 			$checkAlreadyExists = $adb->pquery('SELECT 1 FROM vtiger_customerportal_prefs WHERE tabid=?', array($assetsTabId));
 			if($checkAlreadyExists && $adb->num_rows($checkAlreadyExists) < 1) {
-				$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?,?,?)", array($assetsTabId,'showrelatedinfo',1));
+				$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?,?,?)", array($assetsTabId,'showrelatedinfo',1));
 			}
 		}
 	}

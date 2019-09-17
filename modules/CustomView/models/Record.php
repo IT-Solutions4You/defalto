@@ -232,9 +232,10 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		}
 
 		if($skipRecords && !empty($skipRecords) && is_array($skipRecords) && count($skipRecords) > 0) {
-			$listQuery .= ' AND '.$baseTableName.'.'.$baseTableId.' NOT IN ('. implode(',', $skipRecords) .')';
+			$listQuery .= ' AND '.$baseTableName.'.'.$baseTableId.' NOT IN ('. generateQuestionMarks($skipRecords) .')';
+            $params = array($skipRecords);
 		}
-		$result = $db->query($listQuery);
+		$result = $db->pquery($listQuery, $params);
 		$noOfRecords = $db->num_rows($result);
 		$recordIds = array();
 		for($i=0; $i<$noOfRecords; ++$i) {

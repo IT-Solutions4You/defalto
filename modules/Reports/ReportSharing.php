@@ -107,7 +107,7 @@ function getVisibleCriteria($recordid='')
 	if($selcriteria == ""){
 		$selcriteria = 'Public';
 	}
-	$filter_result = $adb->query("select * from vtiger_reportfilters");
+	$filter_result = $adb->pquery("select * from vtiger_reportfilters", array());
 	$numrows = $adb->num_rows($filter_result);
 	for($j=0;$j<$numrows;$j++)
 	{

@@ -69,8 +69,8 @@ class Vtiger_Access {
 	static function initSharing($moduleInstance) {
 		global $adb;
 
-		$result = $adb->query("SELECT share_action_id from vtiger_org_share_action_mapping WHERE share_action_name in
-			('Public: Read Only', 'Public: Read, Create/Edit', 'Public: Read, Create/Edit, Delete', 'Private')");
+		$result = $adb->pquery("SELECT share_action_id from vtiger_org_share_action_mapping WHERE share_action_name in
+			('Public: Read Only', 'Public: Read, Create/Edit', 'Public: Read, Create/Edit, Delete', 'Private')", array());
 
 		for($index = 0; $index < $adb->num_rows($result); ++$index) {
 			$actionid = $adb->query_result($result, $index, 'share_action_id');

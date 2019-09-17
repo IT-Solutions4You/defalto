@@ -3159,7 +3159,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 
@@ -3325,7 +3325,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != '') {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 
@@ -3540,7 +3540,7 @@ class ReportRun extends CRMEntity {
 
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 					$reportModule = 'Reports';
@@ -3764,7 +3764,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 					$reportModule = 'Reports';
