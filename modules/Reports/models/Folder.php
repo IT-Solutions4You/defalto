@@ -283,7 +283,8 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 	public function getReportsCount() {
 		$db = PearDatabase::getInstance();
 		$params = array();
-
+        global $log;
+        $log->fatal('get reports count api');
 		// To get the report ids which are permitted for the user
 			$query = "SELECT reportmodulesid, primarymodule from vtiger_reportmodules";
 			$result = $db->pquery($query, array());
@@ -300,7 +301,7 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 		$sql = "SELECT count(*) AS count FROM vtiger_report
 				INNER JOIN vtiger_reportfolder ON vtiger_reportfolder.folderid = vtiger_report.folderid AND 
 				vtiger_report.reportid in (". generateQuestionMarks($allowedReportIds).")";
-        array_push($params, $allowedReportIds);
+        $params = array_merge($params, $allowedReportIds);
 		$fldrId = $this->getId();
 		if($fldrId == 'All') {
 			$fldrId = false;
@@ -324,7 +325,8 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 
 			$groupId = implode(',',$currentUserModel->get('groups'));
 			if ($groupId) {
-				$groupQuery = "(SELECT reportid from vtiger_reportsharing WHERE shareid IN ($groupId) AND setype = 'groups') OR ";
+				$groupQuery = "(SELECT reportid from vtiger_reportsharing WHERE shareid IN (". generateQuestionMarks($currentUserModel->get('groups')).") AND setype = 'groups') OR ";
+                $params = array_merge($params, $currentUserModel->get('groups'));
 			}
 
 			$sql .= " AND (vtiger_report.reportid IN (SELECT reportid from vtiger_reportsharing WHERE $groupQuery shareid = ? AND setype = 'users')
@@ -338,6 +340,12 @@ class Reports_Folder_Model extends Vtiger_Base_Model {
 			$parentRoleSeq = $currentUserModel->get('parent_role_seq').'::%';
 			array_push($params, $currentUserId, $currentUserId, $parentRoleSeq);
 		}
+        $log->fatal('Final query params are => ');
+        $log->fatal($params);
+        $log->fatal('sql query is => ');
+        $log->fatal($sql);
+        $log->fatal('Converted query is => ');
+        $log->fatal($db->convert2sql($sql, $params));
 		$result = $db->pquery($sql, $params);
 		return $db->query_result($result, 0, 'count');
 	}

@@ -30,7 +30,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 
 	public function addPickListValues($fieldModel, $newValue, $rolesSelected = array(), $color = '') {
 		$db = PearDatabase::getInstance();
-		$pickListFieldName = $fieldModel->getName();
+		$pickListFieldName = Vtiger_Util_Helper::validateStringForSql($fieldModel->getName());
 		$id = $db->getUniqueID("vtiger_$pickListFieldName");
 		vimport('~~/include/ComboUtil.php');
 		$picklist_valueid = getUniquePicklistID();
@@ -290,6 +290,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
     public function updateSequence($pickListFieldName , $picklistValues, $rolesList = false) {
 		$db = PearDatabase::getInstance();
 
+        $pickListFieldName = Vtiger_Util_Helper::validateStringForSql($pickListFieldName);
 		$primaryKey = Vtiger_Util_Helper::getPickListId($pickListFieldName);
 		$paramArray = array();
 		$query = 'UPDATE '.$this->getPickListTableName($pickListFieldName).' SET sortorderid = CASE ';
@@ -430,10 +431,9 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 		} else {
 			$valueToDeleteID = $valueToDelete;
 		}
-
+        $pickListFieldName = Vtiger_Util_Helper::validateStringForSql($pickListFieldName);
 		$primaryKey = Vtiger_Util_Helper::getPickListId($pickListFieldName);
 		$pickListDeleteValue = array();
-        $pickListFieldName = Vtiger_Util_Helper::validateStringForSql($pickListFieldName);
 		$getPickListValueQuery = "SELECT $pickListFieldName FROM " . $this->getPickListTableName($pickListFieldName) . " WHERE $primaryKey IN (" . generateQuestionMarks($valueToDeleteID) . ")";
 		$result = $db->pquery($getPickListValueQuery, array($valueToDeleteID));
 		$num_rows = $db->num_rows($result);
