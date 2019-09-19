@@ -151,12 +151,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 				$queryGenerator->setFields(array_merge(array_merge($nameFields, array('id')), $fieldsList));
 				$query = $queryGenerator->getQuery();
-				$query.= " AND ((CONCAT('$year-', date_format(birthday,'%m-%d')) >= ? AND CONCAT('$year-', date_format(birthday,'%m-%d')) <= ? )";
-				$params = array($start,$end);
+				$query.= " AND ((CONCAT(?, date_format(birthday,'%m-%d')) >= ? AND CONCAT(?, date_format(birthday,'%m-%d')) <= ? )";
+				$params = array("$year-",$start,"$year-",$end);
 				$endDateYear = $endDateComponents[0]; 
 				if ($year !== $endDateYear) {
-					$query .= " OR (CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) >= ?  AND CONCAT('$endDateYear-', date_format(birthday,'%m-%d')) <= ? )"; 
-					$params = array_merge($params,array($start,$end));
+					$query .= " OR (CONCAT(?, date_format(birthday,'%m-%d')) >= ?  AND CONCAT(?, date_format(birthday,'%m-%d')) <= ? )"; 
+					$params = array_merge($params,array("$endDateYear-",$start,"$endDateYear-",$end));
 				} 
 				$query .= ")";
 				$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($userAndGroupIds).")";
@@ -305,18 +305,17 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$conditions = Zend_Json::decode(Zend_Json::decode($conditions));
 			$query .=  $this->generateCalendarViewConditionQuery($conditions).'AND ';
 		}
-		$query.= " ((concat(date_start, '', time_start)  >= '$dbStartDateTime' AND concat(due_date, '', time_end) < '$dbEndDateTime') OR ( due_date >= '$dbStartDate'))";
-
-		$params = array();
+		$query.= " ((concat(date_start, '', time_start)  >= ? AND concat(due_date, '', time_end) < ? ) OR ( due_date >= ? ))";
+		$params=array($dbStartDateTime,$dbEndDateTime,$dbStartDate);
 		if(empty($userid)){
 			$eventUserId  = $currentUser->getId();
-			$params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
 		}else{
 			$eventUserId = $userid;
-			$params = array($eventUserId);
 		}
-
-		$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
+		$userIds = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
+		
+		$query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($userIds).")";
+		$params= array_merge($params,$userIds);
 		$queryResult = $db->pquery($query, $params);
 
 		while($record = $db->fetchByAssoc($queryResult)){
@@ -412,9 +411,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$hideCompleted = $currentUser->get('hidecompletedevents');
 		if($hideCompleted)
 			$query.= "vtiger_activity.status != 'Completed' AND ";
-		$query.= " ((date_start >= '$start' AND due_date < '$end') OR ( due_date >= '$start'))";
-		$params = $userAndGroupIds;
-		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($params).")";
+		$query.= " ((date_start >= ? AND due_date < ? ) OR ( due_date >= ? ))";
+		$params=array($start,$end,$start);
+		$userIds = $userAndGroupIds;
+		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userIds).")";
+		$params=array_merge($params,$userIds);
 		$queryResult = $db->pquery($query,$params);
 
 		while($record = $db->fetchByAssoc($queryResult)){

@@ -131,16 +131,17 @@ class Activity extends CRMEntity {
 
 			$contactIdsList = explode (';', $_REQUEST['contactidlist']);
 			$count = count($contactIdsList);
-
+            $params=array();
 			$sql = 'INSERT INTO vtiger_cntactivityrel VALUES ';
 			for($i=0; $i<$count; $i++) {
 				$contactIdsList[$i] = intval($contactIdsList[$i]);
-				$sql .= " ($contactIdsList[$i], $recordId)";
+				$sql .= " (?, ?)";
+				array_push($params,$contactIdsList[$i],$recordId);
 				if ($i != $count - 1) {
 					$sql .= ',';
 				}
 			}
-			$adb->pquery($sql, array());
+			$adb->pquery($sql, $params);
 		} else if ($_REQUEST['contactidlist'] == '' && $insertion_mode == "edit") {
 			$adb->pquery('DELETE FROM vtiger_cntactivityrel WHERE activityid = ?', array($recordId));
 		}
