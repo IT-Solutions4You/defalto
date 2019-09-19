@@ -125,7 +125,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$queryGenerator->setFields(array_merge(array_merge($nameFields, array('id')), $fieldsList));
 			$query = $queryGenerator->getQuery();
-			$query.= " AND (($fieldsList[0] >= ? AND $fieldsList[1] < ?) OR ($fieldsList[1] >= ?)) ";
+			$startDateColumn = Vtiger_Util_Helper::validateStringForSql($fieldsList[0]);
+			$endDateColumn = Vtiger_Util_Helper::validateStringForSql($fieldsList[1]);
+			$query.= " AND (($startDateColumn >= ? AND $endDateColumn < ?) OR ($endDateColumn >= ?)) ";
 			$params = array($start,$end,$start);
 			$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userAndGroupIds).")";
 			$params = array_merge($params, $userAndGroupIds);
