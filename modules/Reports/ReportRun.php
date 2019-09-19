@@ -3159,7 +3159,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 
@@ -3325,7 +3325,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != '') {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 
@@ -3540,7 +3540,7 @@ class ReportRun extends CRMEntity {
 
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 					$reportModule = 'Reports';
@@ -3764,7 +3764,7 @@ class ReportRun extends CRMEntity {
 			$sSQL = $this->sGetSQLforReport($this->reportid, $filtersql, "COLUMNSTOTOTAL");
 			if (isset($this->totallist)) {
 				if ($sSQL != "") {
-					$result = $adb->query($sSQL);
+					$result = $adb->pquery($sSQL, array());
 					$y = $adb->num_fields($result);
 					$custom_field_values = $adb->fetch_array($result);
 					$reportModule = 'Reports';
@@ -4173,7 +4173,7 @@ class ReportRun extends CRMEntity {
 				$mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='" . $roleid . "' and picklistid in (select picklistid from vtiger_$fieldname)"; // order by sortid asc - not requried
 			}
 			if ($fieldname != 'firstname')
-				$mulselresult = $adb->query($mulsel);
+				$mulselresult = $adb->pquery($mulsel, array());
 			for ($j = 0; $j < $adb->num_rows($mulselresult); $j++) {
 				$fldvalue = $adb->query_result($mulselresult, $j, $fieldname);
 				if (in_array($fldvalue, $fieldvalues))

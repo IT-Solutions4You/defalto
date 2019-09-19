@@ -16,10 +16,10 @@ global $current_user,$adb,$default_timezone;
 $filename = $_REQUEST['filename'];
 $ical_query = "select vtiger_activity.*,vtiger_crmentity.description,vtiger_activity_reminder.reminder_time from vtiger_activity inner join vtiger_crmentity on vtiger_activity.activityid = vtiger_crmentity.crmid " .
 	" LEFT JOIN vtiger_activity_reminder ON vtiger_activity_reminder.activity_id=vtiger_activity.activityid AND vtiger_activity_reminder.recurringid=0" .
-	" where vtiger_crmentity.deleted = 0 and vtiger_crmentity.smownerid = " . $current_user->id . 
+	" where vtiger_crmentity.deleted = 0 and vtiger_crmentity.smownerid = ?" . 
 	" and vtiger_activity.activitytype NOT IN ('Emails')";
 
-$calendar_results = $adb->query($ical_query);
+$calendar_results = $adb->pquery($ical_query, array($current_user->id));
 
 // Send the right content type and filename
 header ("Content-type: text/calendar");

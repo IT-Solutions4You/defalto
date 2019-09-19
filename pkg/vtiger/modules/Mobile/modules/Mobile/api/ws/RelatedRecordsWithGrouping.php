@@ -48,7 +48,7 @@ class Mobile_WS_RelatedRecordsWithGrouping extends Mobile_WS_QueryWithGrouping {
 			}
 			
 			$query = sprintf("SELECT vtiger_crmentity.crmid, $querySEtype %s", substr($query, stripos($query, 'FROM')));
-			$queryResult = $adb->query($query);
+			$queryResult = $adb->pquery($query, array());
 			
 			// Gather resolved record id's
 			$relatedRecords = array();

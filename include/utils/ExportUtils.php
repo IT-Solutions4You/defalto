@@ -80,7 +80,7 @@ function getFieldsListFromQuery($query)
 	global $adb, $log;
 	$log->debug("Entering into the function getFieldsListFromQuery($query)");
 
-	$result = $adb->query($query);
+	$result = $adb->pquery($query, array());
 	$num_rows = $adb->num_rows($result);
 
 	for($i=0; $i < $num_rows;$i++)

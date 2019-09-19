@@ -14,6 +14,7 @@ class Settings_LoginHistory_ListView_Model extends Settings_Vtiger_ListView_Mode
 	 * @return type
 	 */
     public function getBasicListQuery() {
+        $db = PearDatabase::getInstance();
         $module = $this->getModule();
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 		
@@ -23,11 +24,13 @@ class Settings_LoginHistory_ListView_Model extends Settings_Vtiger_ListView_Mode
 		$search_key = $this->get('search_key');
 		$value = Vtiger_Functions::realEscapeString($this->get('search_value'));
 
+        $params = array();
 		if(!empty($search_key) && !empty($value)) {
-			$query .= " WHERE $module->baseTable.$search_key = '$value'";
+			$query .= " WHERE $module->baseTable.$search_key = ?";
+            $params[] = $value;
 		}
         $query .= " ORDER BY login_time DESC"; 
- 	 return $query; 
+ 	 return $db->convert2Sql($query, $params); 
     }
 
 	public function getListViewLinks() {
@@ -47,12 +50,13 @@ class Settings_LoginHistory_ListView_Model extends Settings_Vtiger_ListView_Mode
 
 		$search_key = $this->get('search_key');
 		$value = $this->get('search_value');
-		
+		$params = array();
 		if(!empty($search_key) && !empty($value)) {
-			$listQuery .= " WHERE $module->baseTable.$search_key = '$value'";
+			$listQuery .= " WHERE $module->baseTable.$search_key = ?";
+            $params[] = $value;
 		}
 
-		$listResult = $db->pquery($listQuery, array());
+		$listResult = $db->pquery($listQuery, $params);
 		return $db->query_result($listResult, 0, 'count');
 	}
 }

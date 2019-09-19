@@ -579,7 +579,7 @@ function insertIntoRecurringTable(& $recurObj)
 				left join vtiger_contactdetails on vtiger_contactdetails.contactid= vtiger_cntactivityrel.contactid
 				left join vtiger_seactivityrel on vtiger_seactivityrel.activityid = vtiger_activity.activityid
 				WHERE vtiger_crmentity.deleted=0 ".$criteria;
-		$result =& $this->db->query($query);
+		$result =& $this->db->pquery($query, array());
 
 	if($this->db->getRowCount($result) > 0){
 	  // We have some data.
@@ -675,7 +675,7 @@ function insertIntoRecurringTable(& $recurObj)
 	{
 		global $log;
 			$log->debug("Entering process_list_query1(".$query.") method ...");
-		$result =& $this->db->query($query,true,"Error retrieving $this->object_name list: ");
+		$result =& $this->db->pquery($query,array(),true,"Error retrieving $this->object_name list: ");
 		$list = Array();
 		$rows_found =  $this->db->getRowCount($result);
 		if($rows_found != 0)
@@ -1165,6 +1165,8 @@ function insertIntoRecurringTable(& $recurObj)
 			$tabId = getTabid("Calendar");
 			$eventTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_events'.$scope;
 			$taskTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_task'.$scope;
+            $eventTempTable = Vtiger_Util_Helper::validateStringForSql($eventTempTable);
+            $taskTempTable = Vtiger_Util_Helper::validateStringForSql($taskTempTable);
 			$query = " ($eventTempTable.shared IS NOT NULL OR $taskTempTable.shared IS NOT NULL) ";
 		}
 		return $query;

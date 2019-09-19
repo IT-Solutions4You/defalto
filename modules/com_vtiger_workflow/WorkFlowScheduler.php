@@ -57,7 +57,7 @@ class WorkFlowScheduler {
 	public function getEligibleWorkflowRecords($workflow, $start=0, $limit=0) {
 		$adb = $this->db;
 		$query = $this->getWorkflowQuery($workflow, $start, $limit);
-		$result = $adb->query($query);
+		$result = $adb->pquery($query, array());
 		$noOfRecords = $adb->num_rows($result);
 		$recordsList = array();
 		for ($i = 0; $i < $noOfRecords; ++$i) {

@@ -160,69 +160,87 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> - query
 	 */
 	function getSearchRecordsQuery($searchValue, $searchFields, $parentId=false, $parentModule=false) {
-		if($parentId && $parentModule == 'Accounts') {
+        $db = PearDatabase::getInstance();
+        if($parentId && $parentModule == 'Accounts') {
 			$query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
 						INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
-						WHERE deleted = 0 AND vtiger_contactdetails.accountid = $parentId AND label like '%$searchValue%'";
-			return $query;
+						WHERE deleted = 0 AND vtiger_contactdetails.accountid = ? AND label like ?";
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+			return $returnQuery;
 		} else if($parentId && $parentModule == 'Potentials') {
 			$query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
 						INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
 						LEFT JOIN vtiger_contpotentialrel ON vtiger_contpotentialrel.contactid = vtiger_contactdetails.contactid
 						LEFT JOIN vtiger_potential ON vtiger_potential.contact_id = vtiger_contactdetails.contactid
-						WHERE deleted = 0 AND (vtiger_contpotentialrel.potentialid = $parentId OR vtiger_potential.potentialid = $parentId)
-						AND label like '%$searchValue%'";
-			
-				return $query;
+						WHERE deleted = 0 AND (vtiger_contpotentialrel.potentialid = ? OR vtiger_potential.potentialid = ?)
+						AND label like ?";
+			$params = array($parentId, $parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
 		} else if ($parentId && $parentModule == 'HelpDesk') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_troubletickets ON vtiger_troubletickets.contact_id = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_troubletickets.ticketid  = $parentId  AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_troubletickets.ticketid  = ?  AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if($parentId && $parentModule == 'Campaigns') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_campaigncontrel ON vtiger_campaigncontrel.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_campaigncontrel.campaignid = $parentId AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_campaigncontrel.campaignid = ? AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if($parentId && $parentModule == 'Vendors') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_vendorcontactrel ON vtiger_vendorcontactrel.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_vendorcontactrel.vendorid = $parentId AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_vendorcontactrel.vendorid = ? AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if ($parentId && $parentModule == 'Quotes') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_quotes ON vtiger_quotes.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_quotes.quoteid  = $parentId  AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_quotes.quoteid  = ?  AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if ($parentId && $parentModule == 'PurchaseOrder') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_purchaseorder ON vtiger_purchaseorder.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_purchaseorder.purchaseorderid  = $parentId  AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_purchaseorder.purchaseorderid  = ?  AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if ($parentId && $parentModule == 'SalesOrder') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_salesorder ON vtiger_salesorder.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_salesorder.salesorderid  = $parentId  AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_salesorder.salesorderid  = ?  AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         } else if ($parentId && $parentModule == 'Invoice') {
             $query = "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity
                         INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid
                         INNER JOIN vtiger_invoice ON vtiger_invoice.contactid = vtiger_contactdetails.contactid
-                        WHERE deleted=0 AND vtiger_invoice.invoiceid  = $parentId  AND label like '%$searchValue%'";
+                        WHERE deleted=0 AND vtiger_invoice.invoiceid  = ?  AND label like ?";
 
-            return $query;
+            $params = array($parentId, "%$searchValue%");
+            $returnQuery = $db->convert2Sql($query, $params);
+            return $returnQuery;
         }
 
 		return parent::getSearchRecordsQuery($searchValue,$searchFields,$parentId, $parentModule);

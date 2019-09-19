@@ -207,12 +207,14 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 				$listQuery = $listQuery. ' FROM ' .$split[$i];
 			}
 		}
-		$searchKey = $this->get('search_key');
+		$searchKey = $this->getForSql('search_key');
 		$searchValue = $this->get('search_value');
 
 		$whereQuery .= " WHERE ";
+        $params = array();
 		if(!empty($searchKey) && !empty($searchValue)) {
-			$whereQuery .= "$searchKey LIKE '$searchValue%' AND ";
+			$whereQuery .= "$searchKey LIKE ? AND ";
+            array_push($params, "%$searchValue%");
 		}
 
 		//module should be enabled or module should be empty then allow
@@ -221,10 +223,11 @@ class EmailTemplates_ListView_Model extends Vtiger_ListView_Model {
 
 		$sourceModule = $this->get('sourceModule');
 		if ($sourceModule) {
-			$listQuery .= ' AND vtiger_emailtemplates.module= "' . $sourceModule . '" ';
+			$listQuery .= ' AND vtiger_emailtemplates.module= ?';
+            array_push($params, $sourceModule);
 		}
 
-		$listResult = $db->pquery($listQuery, array());
+		$listResult = $db->pquery($listQuery, $params);
 		return $db->query_result($listResult, 0, 'count');
 	}
 

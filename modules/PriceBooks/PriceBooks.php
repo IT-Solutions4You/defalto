@@ -346,14 +346,16 @@ class PriceBooks extends CRMEntity {
 		$focus = CRMEntity::getInstance($moduleName);
         $moduleSubject = 'bookname';
 
-		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
-		$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = '. Import_Data_Action::$IMPORT_RECORD_NONE .' GROUP BY '. $moduleSubject;
-
+        $params = array();
+		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+		$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = ? GROUP BY ?';
+        array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
+        array_push($params, $moduleSubject);
 		if($obj->batchImport) {
 			$importBatchLimit = getImportBatchLimit();
 			$sql .= ' LIMIT '. $importBatchLimit;
 		}
-		$result = $adb->query($sql);
+		$result = $adb->pquery($sql, $params);
 		$numberOfRecords = $adb->num_rows($result);
 
 		if ($numberOfRecords <= 0) {
@@ -370,8 +372,11 @@ class PriceBooks extends CRMEntity {
 			$fieldData = array();
 			$subject = str_replace("\\", "\\\\", $subject);
 			$subject = str_replace('"', '""', $subject);
-			$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = '. Import_Data_Action::$IMPORT_RECORD_NONE .' AND '. $moduleSubject . ' = "'. $subject .'"';
-			$subjectResult = $adb->query($sql);
+            $params = array();
+			$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = ? AND '. $moduleSubject . ' = ? ';
+            array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
+            array_push($params, $subject);
+			$subjectResult = $adb->pquery($sql, $params);
 			$count = $adb->num_rows($subjectResult);
 			$subjectRowIDs = $fieldArray = $productList = array();
 			for ($j = 0; $j < $count; ++$j) {

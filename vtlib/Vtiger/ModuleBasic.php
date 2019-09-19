@@ -114,7 +114,7 @@ class Vtiger_ModuleBasic {
 	 */
 	function __getUniqueId() {
 		global $adb;
-		$result = $adb->query("SELECT MAX(tabid) AS max_seq FROM vtiger_tab");
+		$result = $adb->pquery("SELECT MAX(tabid) AS max_seq FROM vtiger_tab", array());
 		$maxseq = $adb->query_result($result, 0, 'max_seq');
 		return ++$maxseq;
 	}

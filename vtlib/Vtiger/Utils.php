@@ -171,6 +171,7 @@ class Vtiger_Utils {
 	static function CreateTable($tablename, $criteria, $suffixTableMeta=false) {
 		global $adb;
 
+        $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$org_dieOnError = $adb->dieOnError;
 		$adb->dieOnError = false;
 		$sql = "CREATE TABLE " . $tablename . $criteria;
@@ -196,6 +197,7 @@ class Vtiger_Utils {
 	 */
 	static function AlterTable($tablename, $criteria) {
 		global $adb;
+        $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$adb->query("ALTER TABLE " . $tablename . $criteria);
 	}
 
@@ -220,6 +222,7 @@ class Vtiger_Utils {
 	 */
 	static function TableHasForeignKey($tablename, $key) {
 		$db = PearDatabase::getInstance();
+        $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$rs = $db->pquery("SELECT 1 FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_TYPE = 'FOREIGN KEY' AND TABLE_SCHEMA = ? AND TABLE_NAME = ? AND CONSTRAINT_NAME = ?", array($db->dbName, $tablename, $key));
 		return $db->num_rows($rs) > 0 ? true : false;
 	}
@@ -246,6 +249,7 @@ class Vtiger_Utils {
 	static function CreateTableSql($tablename) {
 		global $adb;
 
+        $tablename = Vtiger_Util_Helper::validateStringForSql($tablename);
 		$create_table = $adb->pquery("SHOW CREATE TABLE $tablename", array());
 		$sql = decode_html($adb->query_result($create_table, 0, 1));
 		return $sql;

@@ -571,11 +571,13 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 					//Standard permissions
 					$i = 0;
 					$count = count($actionsIdsList);
+                    $params = array();
 					$actionsInsertQuery .= 'INSERT INTO vtiger_profile2standardpermissions(profileid, tabid, operation, permissions) VALUES ';
 					foreach ($actionsIdsList as $actionId => $permission) {
 						$actionEnabled = true;
 						$permissionValue = $this->tranformInputPermissionValue($permission);
-						$actionsInsertQuery .= "($profileId, $tabId, $actionId, $permissionValue)";
+						$actionsInsertQuery .= "(?, ?, ?, ?)";
+                        array_push($params, $profileId, $tabId, $actionId, $permissionValue);
 
 						if ($i !== $count-1) {
 							$actionsInsertQuery .= ', ';
@@ -589,10 +591,12 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 					//Utility permissions
 					$i = 0;
 					$count = count($utilityIdsList);
+                    $params = array();
 					$utilityInsertQuery .= 'INSERT INTO vtiger_profile2utility(profileid, tabid, activityid, permission) VALUES ';
 					foreach($utilityIdsList as $actionId => $permission) {
 						$permissionValue = $this->tranformInputPermissionValue($permission);
-						$utilityInsertQuery .= "($profileId, $tabId, $actionId, $permissionValue)";
+						$utilityInsertQuery .= "(?, ?, ?, ?)";
+                        array_push($params, $profileId, $tabId, $actionId, $permissionValue);
 
 						if ($i !== $count-1) {
 							$utilityInsertQuery .= ', ';

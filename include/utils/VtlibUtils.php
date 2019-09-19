@@ -122,7 +122,7 @@ function vtlib_isModuleActive($module) {
  */
 function vtlib_RecreateUserPrivilegeFiles() {
 	global $adb;
-	$userres = $adb->query('SELECT id FROM vtiger_users WHERE deleted = 0');
+	$userres = $adb->pquery('SELECT id FROM vtiger_users WHERE deleted = 0', array());
 	if($userres && $adb->num_rows($userres)) {
 		while($userrow = $adb->fetch_array($userres)) {
 			createUserPrivilegesfile($userrow['id']);
@@ -194,7 +194,7 @@ function vtlib_getToggleModuleInfo() {
 
 	$modinfo = Array();
 
-	$sqlresult = $adb->query("SELECT name, presence, customized, isentitytype FROM vtiger_tab WHERE name NOT IN ('Users','Home') AND presence IN (0,1) ORDER BY name");
+	$sqlresult = $adb->pquery("SELECT name, presence, customized, isentitytype FROM vtiger_tab WHERE name NOT IN ('Users','Home') AND presence IN (0,1) ORDER BY name", array());
 	$num_rows  = $adb->num_rows($sqlresult);
 	for($idx = 0; $idx < $num_rows; ++$idx) {
 		$module = $adb->query_result($sqlresult, $idx, 'name');
@@ -219,7 +219,7 @@ function vtlib_getToggleLanguageInfo() {
 	$adb->dieOnError = false;
 
 	$langinfo = Array();
-	$sqlresult = $adb->query("SELECT * FROM vtiger_language");
+	$sqlresult = $adb->pquery("SELECT * FROM vtiger_language", array());
 	if($sqlresult) {
 		for($idx = 0; $idx < $adb->num_rows($sqlresult); ++$idx) {
 			$row = $adb->fetch_array($sqlresult);
@@ -532,7 +532,7 @@ function vtlib_getPicklistValues_AccessibleToAll($field_columnname) {
 	$tablename = "vtiger_$columnname";
 
 	// Gather all the roles (except H1 which is organization role)
-	$roleres = $adb->query("SELECT roleid FROM vtiger_role WHERE roleid != 'H1'");
+	$roleres = $adb->pquery("SELECT roleid FROM vtiger_role WHERE roleid != 'H1'", array());
 	$roleresCount= $adb->num_rows($roleres);
 	$allroles = Array();
 	if($roleresCount) {
@@ -542,10 +542,10 @@ function vtlib_getPicklistValues_AccessibleToAll($field_columnname) {
 	sort($allroles);
 
 	// Get all the picklist values associated to roles (except H1 - organization role).
-	$picklistres = $adb->query(
+	$picklistres = $adb->pquery(
 		"SELECT $columnname as pickvalue, roleid FROM $tablename
 		INNER JOIN vtiger_role2picklist ON $tablename.picklist_valueid=vtiger_role2picklist.picklistvalueid
-		WHERE roleid != 'H1'");
+		WHERE roleid != 'H1'", array());
 
 	$picklistresCount = $adb->num_rows($picklistres);
 
@@ -578,7 +578,7 @@ function vtlib_getPicklistValues($field_columnname) {
 		$columnname =  $adb->sql_escape_string($field_columnname);
 		$tablename = "vtiger_$columnname";
 
-		$picklistres = $adb->query("SELECT $columnname as pickvalue FROM $tablename");
+		$picklistres = $adb->pquery("SELECT $columnname as pickvalue FROM $tablename", array());
 
 		$picklistresCount = $adb->num_rows($picklistres);
 

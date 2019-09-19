@@ -52,7 +52,8 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model {
 		}
 
 		if(!empty($search_value)) {
-			$listQuery .= ' AND workflowname like "%'.$search_value.'%"';
+			$listQuery .= ' AND workflowname like ?';
+            array_push($params, "%$search_value%");
 		}
 
 		$startIndex = $pagingModel->getStartIndex();
@@ -136,6 +137,7 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model {
 		$db = PearDatabase::getInstance();
 
 		$module = $this->getModule();
+        $params = array();
 		$listQuery = 'SELECT count(*) AS count FROM ' . $module->baseTable . ' 
 						INNER JOIN vtiger_tab ON vtiger_tab.name = '. $module->baseTable .'.module_name
 						AND vtiger_tab.presence IN (0,2)';
@@ -143,13 +145,15 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model {
 		$sourceModule = $this->get('sourceModule');
 		if($sourceModule) {
 			$listQuery .= " WHERE module_name = '$sourceModule'";
+            array_push($params, $sourceModule);
 		}
 		$search_value = $this->get('search_value');
 		if(!empty($search_value)) {
-			$listQuery .= ' AND workflowname like "%'.$search_value.'%"';
+			$listQuery .= ' AND workflowname like ?';
+            array_push($params, "%$search_value%");
 		}
 
-		$listResult = $db->pquery($listQuery, array());
+		$listResult = $db->pquery($listQuery, $params);
 		return $db->query_result($listResult, 0, 'count');
 	}
 }

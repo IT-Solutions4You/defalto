@@ -1316,13 +1316,13 @@ class Users extends CRMEntity {
 				 if($_REQUEST[$this->homeorder_array[$i]] != '')
 				 {
 					$save_array[] = $this->homeorder_array[$i];
-					$qry=" update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=".$id." and vtiger_homedefault.hometype='".$this->homeorder_array[$i]."'";//To show the default Homestuff on the the Home Page
-					$result=$adb->pquery($qry, array());
+					$qry=" update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To show the default Homestuff on the the Home Page
+					$result=$adb->pquery($qry, array($id, $this->homeorder_array[$i]));
 				}
 				 else
 				 {
-					$qry="update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=1 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=".$id." and vtiger_homedefault.hometype='".$this->homeorder_array[$i]."'";//To hide the default Homestuff on the the Home Page
-					$result=$adb->pquery($qry, array());
+					$qry="update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=1 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To hide the default Homestuff on the the Home Page
+					$result=$adb->pquery($qry, array($id, $this->homeorder_array[$i]));
 				}
 			}
 			if($save_array !="")
@@ -1690,9 +1690,9 @@ class Users extends CRMEntity {
 		$moduleName = $obj->module;
 		$createdRecords = array();
 
-		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
-		$sql = 'SELECT * FROM '.$tableName.' WHERE status = '.Import_Data_Action::$IMPORT_RECORD_NONE;
-		$result = $adb->query($sql);
+		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
+		$result = $adb->pquery($sql, array(Import_Data_Action::$IMPORT_RECORD_NONE));
 		$numberOfRecords = $adb->num_rows($result);
 		if($numberOfRecords <= 0) {
 			return;

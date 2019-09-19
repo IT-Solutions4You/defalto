@@ -180,14 +180,16 @@ class Settings_Leads_Mapping_Model extends Settings_Vtiger_Module_Model {
 			$insertQuery = 'INSERT INTO vtiger_convertleadmapping(leadfid, accountfid, contactfid, potentialfid) VALUES ';
 
 			$count = count($createMappingsList);
+            $params = array();
 			for ($i=0; $i<$count; $i++) {
 				$mappingDetails = $createMappingsList[$i];
-				$insertQuery .= '('. $mappingDetails['lead'] .', '. $mappingDetails['account'] .', '. $mappingDetails['contact'] .', '. $mappingDetails['potential'] .')';
+				$insertQuery .= '(?, ?, ?, ?)';
+                array_push($params, $mappingDetails['lead'], $mappingDetails['account'], $mappingDetails['contact'], $mappingDetails['potential']);
 				if ($i !== $count-1) {
 					$insertQuery .= ', ';
 				}
 			}
-			$db->pquery($insertQuery, array());
+			$db->pquery($insertQuery, $params);
 		}
 
 		if ($updateMappingsList) {

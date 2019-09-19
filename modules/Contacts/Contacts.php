@@ -197,7 +197,7 @@ class Contacts extends CRMEntity {
 	global $log;
 	$log->debug("Entering process_list_query1(".$query.") method ...");
 
-        $result =& $this->db->query($query,true,"Error retrieving $this->object_name list: ");
+        $result =& $this->db->pquery($query,array(),true,"Error retrieving $this->object_name list: ");
         $list = Array();
         $rows_found =  $this->db->getRowCount($result);
         if($rows_found != 0)
@@ -266,7 +266,7 @@ class Contacts extends CRMEntity {
               $permitted_field_lists[] = $adb->query_result($result1,$i,'columnname');
           }
 
-          $result =& $this->db->query($query,true,"Error retrieving $this->object_name list: ");
+          $result =& $this->db->pquery($query,array(),true,"Error retrieving $this->object_name list: ");
           $list = Array();
           $rows_found =  $this->db->getRowCount($result);
           if($rows_found != 0)

@@ -102,7 +102,7 @@ class Import_FileReader_Reader {
 	public function createTable() {
 		$db = PearDatabase::getInstance();
 
-		$tableName = Import_Utils_Helper::getDbTableName($this->user);
+		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
 		$fieldMapping = $this->request->get('field_mapping');
 
 		$moduleFields = $this->moduleModel->getFields();
@@ -116,7 +116,7 @@ class Import_FileReader_Reader {
 			$columnsListQuery .= $this->getDBColumnType($fieldObject, $fieldTypes);
 		}
 		$createTableQuery = 'CREATE TABLE '. $tableName . ' ('.$columnsListQuery.') ENGINE=MyISAM ';
-		$db->query($createTableQuery);
+		$db->pquery($createTableQuery, array());
 		return true;
 	}
 

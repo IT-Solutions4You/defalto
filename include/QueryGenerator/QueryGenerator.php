@@ -1418,19 +1418,19 @@ class QueryGenerator {
 
 	public function getDashBoardConditionList() {
 		if(isset($_REQUEST['leadsource'])) {
-			$leadSource = $_REQUEST['leadsource'];
+			$leadSource = vtlib_purify($_REQUEST['leadsource']);
 		}
 		if(isset($_REQUEST['date_closed'])) {
-			$dateClosed = $_REQUEST['date_closed'];
+			$dateClosed = vtlib_purify($_REQUEST['date_closed']);
 		}
 		if(isset($_REQUEST['sales_stage'])) {
-			$salesStage = $_REQUEST['sales_stage'];
+			$salesStage = vtlib_purify($_REQUEST['sales_stage']);
 		}
 		if(isset($_REQUEST['closingdate_start'])) {
-			$dateClosedStart = $_REQUEST['closingdate_start'];
+			$dateClosedStart = vtlib_purify($_REQUEST['closingdate_start']);
 		}
 		if(isset($_REQUEST['closingdate_end'])) {
-			$dateClosedEnd = $_REQUEST['closingdate_end'];
+			$dateClosedEnd = vtlib_purify($_REQUEST['closingdate_end']);
 		}
 		if(isset($_REQUEST['owner'])) {
 			$owner = vtlib_purify($_REQUEST['owner']);

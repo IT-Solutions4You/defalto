@@ -1452,7 +1452,9 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <String> - query
 	 */
 	public function getSearchRecordsQuery($searchValue,$searchFields, $parentId=false, $parentModule=false) {
-		return "SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity WHERE label LIKE '%$searchValue%' AND vtiger_crmentity.deleted = 0";
+        $db = PearDatabase::getInstance();
+        $query = $db->convert2Sql("SELECT ".implode(',',$searchFields)." FROM vtiger_crmentity WHERE label LIKE ? AND vtiger_crmentity.deleted = 0", array("%$searchValue%"));
+		return $query;
 	}
 
 	/**
@@ -1464,11 +1466,14 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array of Vtiger_Record_Model>
 	 */
 	public function searchRecord($searchValue, $parentId=false, $parentModule=false, $relatedModule=false) {
+        global $log;
+        $log->fatal('search record api is triggered => ');
 			$searchFields = array('crmid','label','setype');
 		if(!empty($searchValue) && empty($parentId) && empty($parentModule)) {
 			$matchingRecords = Vtiger_Record_Model::getSearchResult($searchValue, $this->getName());
 		} else if($parentId && $parentModule) {
 			$db = PearDatabase::getInstance();
+            $log->fatal('call getSearchRecordsQuery api');
 			$result = $db->pquery($this->getSearchRecordsQuery($searchValue,$searchFields, $parentId, $parentModule), array());
 			$noOfRows = $db->num_rows($result);
 

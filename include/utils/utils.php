@@ -1230,7 +1230,7 @@ function getAccessPickListValues($module)
 	$temp_status = Array();
 	for($i=0;$i < $adb->num_rows($result);$i++)
 {
-		$fieldname = $adb->query_result($result,$i,"fieldname");
+		$fieldname = Vtiger_Util_Helper::validateStringForSql($adb->query_result($result,$i,"fieldname"));
 		$fieldlabel = $adb->query_result($result,$i,"fieldlabel");
 		$columnname = $adb->query_result($result,$i,"columnname");
 		$tabid = $adb->query_result($result,$i,"tabid");
@@ -1247,7 +1247,7 @@ function getAccessPickListValues($module)
 			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='".$roleid."' and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
 	}
 		if($fieldname != 'firstname')
-			$mulselresult = $adb->query($mulsel);
+			$mulselresult = $adb->pquery($mulsel, array());
 		for($j=0;$j < $adb->num_rows($mulselresult);$j++)
 		{
 			$fieldvalues[] = $adb->query_result($mulselresult,$j,$fieldname);
@@ -1755,7 +1755,7 @@ function com_vtGetModules($adb) {
 		inner join vtiger_tab
 			on vtiger_field.tabid=vtiger_tab.tabid
 		where vtiger_field.tabid not in(9,10,16,15,29) and vtiger_tab.presence = 0 and vtiger_tab.isentitytype=1";
-	$it = new SqlResultIterator($adb, $adb->query($sql));
+	$it = new SqlResultIterator($adb, $adb->pquery($sql, array()));
 	$modules = array();
 	foreach($it as $row) {
 		if(isPermitted($row->name,'index') == "yes") {

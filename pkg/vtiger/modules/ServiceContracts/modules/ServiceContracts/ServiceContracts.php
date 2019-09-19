@@ -390,7 +390,7 @@ class ServiceContracts extends CRMEntity {
 			$adb->pquery("INSERT into vtiger_modentity_num values(?,?,?,?,?,?)",array($adb->getUniqueId("vtiger_modentity_num"),$moduleName,'SERCON',1,1,1));
 
 			// Make the picklist value 'Complete' for status as non-editable
-			$adb->query("UPDATE vtiger_contract_status SET presence=0 WHERE contract_status='Complete'");
+			$adb->pquery("UPDATE vtiger_contract_status SET presence=0 WHERE contract_status=?", array('Complete'));
 
 			// Mark the module as Standard module
 			$adb->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', array($moduleName));
@@ -601,6 +601,9 @@ class ServiceContracts extends CRMEntity {
 	/** Function to unlink an entity with given Id from another entity */
 	function unlinkRelationship($id, $return_module, $return_id) {
 		global $log, $currentModule;
+        $id = Vtiger_Util_Helper::validateStringForSql($id);
+        $return_module = Vtiger_Util_Helper::validateStringForSql($return_module);
+        $return_id = Vtiger_Util_Helper::validateStringForSql($return_id);
 
 		if($return_module == 'Accounts') {
 			$focus = CRMEntity::getInstance($return_module);

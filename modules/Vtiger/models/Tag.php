@@ -276,14 +276,10 @@ class Vtiger_Tag_Model extends Vtiger_Base_Model {
 		$db = PearDatabase::getInstance();
 		$query = "SELECT * FROM vtiger_freetags WHERE (tag=? OR raw_tag=?) AND (owner=? OR visibility=?)";
 		$params = array($name, $name, $userId, self::PUBLIC_TYPE);
-		global $log;
-		$log->fatal($excludedTagId);
 		if($excludedTagId !== false) {
 			$query .= ' AND id != ?';
 			array_push($params, $excludedTagId);
 		}
-		global $log;
-		$log->fatal($db->convert2Sql($query , $params));
 		$result = $db->pquery($query, $params);
 		$tagModel = false;
 		if($db->num_rows($result) > 0) {
