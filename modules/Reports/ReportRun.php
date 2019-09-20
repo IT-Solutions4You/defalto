@@ -685,6 +685,10 @@ class ReportRun extends CRMEntity {
 		global $adb;
 		$access_fields = Array();
 
+                //Reports should not be allowed to access user module fields.
+                if($module == "Users"){
+                    return $access_fields;
+                }
 		$profileList = getCurrentUserProfileList();
 		$query = "select vtiger_field.fieldname from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where";
 		$params = array();
