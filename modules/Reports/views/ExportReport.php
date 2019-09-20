@@ -45,6 +45,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 	function GetXLS(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$reportModel = Reports_Record_Model::getInstanceById($recordId);
+        $this->checkReportModulePermission($request);
         $reportModel->set('advancedFilter', $request->get('advanced_filter'));
 		$reportModel->getReportXLS($request->get('source'));
 	}
@@ -56,6 +57,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 	function GetCSV(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$reportModel = Reports_Record_Model::getInstanceById($recordId);
+        $this->checkReportModulePermission($request);
         $reportModel->set('advancedFilter', $request->get('advanced_filter'));
 		$reportModel->getReportCSV($request->get('source'));
 	}
@@ -70,6 +72,7 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 
 		$recordId = $request->get('record');
 		$reportModel = Reports_Record_Model::getInstanceById($recordId);
+        $this->checkReportModulePermission($request);
         $reportModel->set('advancedFilter', $request->get('advanced_filter'));
 		$printData = $reportModel->getReportPrint();
 
@@ -81,4 +84,31 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
 
 		$viewer->view('PrintReport.tpl', $moduleName);
 	}
+    
+    function checkReportModulePermission(Vtiger_Request $request){
+        $viewer = $this->getViewer($request);
+        $recordId = $request->get('record');
+		$reportModel = Reports_Record_Model::getInstanceById($recordId);
+        $primaryModule = $reportModel->getPrimaryModule();
+		$secondaryModules = $reportModel->getSecondaryModules();
+        $modulesList = array($primaryModule);
+        if(stripos($secondaryModules, ':') >= 0){
+            $secmodules = split(':', $secondaryModules);
+            $modulesList = array_merge($modulesList, $secmodules);
+        }else{
+            array_push($modulesList, $secondaryModules);
+        }
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$userPrivilegesModel = Users_Privileges_Model::getInstanceById($currentUser->getId());
+        foreach ($modulesList as $checkModule) {
+            $moduleInstance = Vtiger_Module_Model::getInstance($checkModule);
+            $permission = $userPrivilegesModel->hasModulePermission($moduleInstance->getId());
+            if(!$permission) {
+                $viewer->assign('MODULE', $primaryModule);
+                $viewer->assign('MESSAGE', vtranslate('LBL_PERMISSION_DENIED'));
+                $viewer->view('OperationNotPermitted.tpl', $primaryModule);
+                exit;
+            }
+        }
+    }
 }
