@@ -76,7 +76,7 @@
   `webformid` int(19) NOT NULL,
   `fieldname` varchar(50) NOT NULL,
   `neutralizedfield` varchar(50) NOT NULL,
-  `defaultvalue` varchar(200) DEFAULT NULL,
+  `defaultvalue` TEXT DEFAULT NULL,
   `required` int(10) NOT NULL DEFAULT '0',
   `sequence` int(10) DEFAULT NULL,
   `hidden` int(10) DEFAULT NULL,
