@@ -469,7 +469,11 @@ Vtiger_Field_Js('Vtiger_Owner_Field_Js',{},{
 	 * Function to get the picklist values
 	 */
 	getPickListValues : function() {
-		return this.get('editablepicklistvalues');
+            var pickListValues = this.get('editablepicklistvalues');
+            if (pickListValues == ''){
+                pickListValues = this.get('picklistvalues');
+            }
+            return pickListValues;
 	},
 
 	getUi : function() {
