@@ -56,7 +56,7 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 				}
 
 				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time') {
+				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
                 if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
@@ -88,7 +88,7 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 					$fieldValue = $fieldModel->getDefaultFieldValue();
 				}
 				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time') {
+				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
                 if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
