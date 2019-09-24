@@ -22,7 +22,7 @@ class Documents_Detail_View extends Vtiger_Detail_View {
 	 * @return <boolean> true/false
 	 */
 	public function isAjaxEnabled($recordModel) {
-		return false;
+		return true;
 	}
 
 	/**
