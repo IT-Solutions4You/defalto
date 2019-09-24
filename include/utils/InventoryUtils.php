@@ -972,7 +972,7 @@ function getInventorySHTaxPercent($id, $taxname)
 	global $log, $adb;
 	$log->debug("Entering into function getInventorySHTaxPercent($id, $taxname)");
 
-    $taxName = Vtiger_Util_Helper::validateStringForSql($taxName);
+    $taxname = Vtiger_Util_Helper::validateStringForSql($taxname);
 	$res = $adb->pquery("select $taxname from vtiger_inventoryshippingrel where id= ?", array($id));
 	$taxpercentage = $adb->query_result($res,0,$taxname);
 

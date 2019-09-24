@@ -1096,7 +1096,6 @@ class CRMEntity {
 	 */
 	function checkIfCustomTableExists($tablename) {
 		global $adb;
-        $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
 		$query = "select * from " . $adb->sql_escape_string($tablename);
 		$result = $this->db->pquery($query, array());
 		$testrow = $this->db->num_fields($result);
