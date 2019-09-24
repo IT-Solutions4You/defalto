@@ -147,6 +147,13 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
             }
+            if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
+                $fieldInfo = $fieldModel->getFieldInfo();
+                $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+                if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                    $fieldValue = null;
+                }
+            }
             // End
             if ($fieldName === $request->get('field')) {
 				$fieldValue = $request->get('value');
