@@ -56,9 +56,16 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 				}
 
 				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time') {
+				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
+                if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
+                    $fieldInfo = $fieldModel->getFieldInfo();
+                    $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+                    if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                        $fieldValue = null;
+                    }
+                }
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
@@ -81,9 +88,16 @@ class SalesOrder_SaveAjax_Action extends Inventory_SaveAjax_Action {
 					$fieldValue = $fieldModel->getDefaultFieldValue();
 				}
 				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time') {
+				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
+                if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
+                    $fieldInfo = $fieldModel->getFieldInfo();
+                    $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+                    if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                        $fieldValue = null;
+                    }
+                }
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
