@@ -623,6 +623,7 @@ class EnhancedQueryGenerator extends QueryGenerator {
 		foreach ($this->conditionals as $index => $conditionInfo) {
 			$parentReferenceField = '';
 			$baseFieldName = $fieldName = $conditionInfo['name'];
+			$parentReferenceField = $referenceModule = '';
 			$field = $moduleFieldList[$fieldName];
 
 			// if its a reference field then we need to add the fieldname to table name
