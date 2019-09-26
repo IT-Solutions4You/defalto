@@ -1250,4 +1250,24 @@ class Vtiger_Util_Helper {
 		}
 		return $encryptedFileName;
 	}
+    
+    public static function validateFieldValue($fieldValue,$fieldModel){
+        $fieldDataType = $fieldModel->getFieldDataType();
+        $fieldInfo = $fieldModel->getFieldInfo();
+        $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+        if($fieldValue && $fieldDataType == 'picklist'){
+           if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                $fieldValue = null;
+            }
+        }elseif(count($fieldValue) > 0 && $fieldDataType == 'multipicklist'){
+            if(!empty($editablePicklistValues)){
+                foreach($fieldValue as $key => $value){
+                    if(!in_array($value, $editablePicklistValues)){
+                        unset($fieldValue[$key]);
+                    }
+                }
+            }
+        }
+        return $fieldValue;
+    }
 }

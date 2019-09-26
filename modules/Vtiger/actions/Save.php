@@ -158,16 +158,12 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
 			$fieldValue = $request->get($fieldName, null);
 			$fieldDataType = $fieldModel->getFieldDataType();
+            if($fieldValue){
+                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+            }
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 			}
-            if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                $fieldInfo = $fieldModel->getFieldInfo();
-                $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                    $fieldValue = null;
-                }
-            }
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
 					$fieldValue = trim($fieldValue);
