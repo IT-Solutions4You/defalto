@@ -770,9 +770,9 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> $query (by removing all columns)
 	 */
 	function generateCountQuery($query){
-		$from = explode(' from ' , $query, 2);
+        $from = preg_split("/ from /i", $query, 2);
 		//If we select the same field in select and grouping/soring then it will include order by and query failure will happen
-		$fromAndWhereQuery = explode(' order by ', $from[1]);
+        $fromAndWhereQuery = preg_split('/ order by /i', $from[1]);
 		$sql = "SELECT count(*) AS count FROM ".$fromAndWhereQuery[0];
 		return $sql;
 	}
