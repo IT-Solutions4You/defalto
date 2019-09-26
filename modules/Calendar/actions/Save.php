@@ -150,7 +150,15 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
             if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
                 $fieldInfo = $fieldModel->getFieldInfo();
                 $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                if($fieldDataType == 'multipicklist'&& !empty($editablePicklistValues)){
+                    $selectedMultiPick = array();
+                    foreach ($fieldValue as $key => $selectedValue) {
+                        if(in_array($selectedValue, $editablePicklistValues)){
+                            $selectedMultiPick[] = $selectedValue;
+                        }
+                    }
+                    $fieldValue = $selectedMultiPick;
+                }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
                     $fieldValue = null;
                 }
             }

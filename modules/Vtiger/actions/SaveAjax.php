@@ -110,7 +110,15 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
                 if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
                     $fieldInfo = $fieldModel->getFieldInfo();
                     $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                    if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                    if($fieldDataType == 'multipicklist'&& !empty($editablePicklistValues)){
+                        $selectedMultiPick = array();
+                        foreach ($fieldValue as $key => $selectedValue) {
+                            if(in_array($selectedValue, $editablePicklistValues)){
+                                $selectedMultiPick[] = $selectedValue;
+                            }
+                        }
+                        $fieldValue = $selectedMultiPick;
+                    }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
                         $fieldValue = null;
                     }
                 }
@@ -140,9 +148,24 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 					$fieldValue = $fieldModel->getDefaultFieldValue();
 				}
 				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time') {
+				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
+                if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
+                    $fieldInfo = $fieldModel->getFieldInfo();
+                    $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+                    if($fieldDataType == 'multipicklist'){
+                        $selectedMultiPick = array();
+                        foreach ($fieldValue as $key => $selectedValue) {
+                            if(in_array($selectedValue, $editablePicklistValues)){
+                                $selectedMultiPick[] = $selectedValue;
+                            }
+                        }
+                        $fieldValue = $selectedMultiPick;
+                    }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+                        $fieldValue = null;
+                    }
+                }
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
