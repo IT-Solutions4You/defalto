@@ -114,7 +114,7 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	 * @param <String> $value - value which need to be converted to display value
 	 * @return <String> - converted display value
 	 */
-	public function getDisplayValue($value, $recordId = false) {
+	public function getDisplayValue($value, $recordId = false,$recordInstance=false) {
 
 		 if($this->get('uitype') == 32){
 			return Vtiger_Language_Handler::getLanguageLabel($value);

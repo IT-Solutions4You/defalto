@@ -889,7 +889,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @param <String> $where
 	 * @return <String> export query
 	 */
-	public function getExportQuery($where) {
+	public function getExportQuery($where,$query=false) {
 		$focus = CRMEntity::getInstance($this->getName());
 		$query = $focus->create_export_query($where);
 		return $query;
