@@ -46,7 +46,7 @@
                     <input type="hidden" name="returnrelatedModule" value="{$RETURN_RELATED_MODULE}" />
                     <input type="hidden" name="returnpage" value="{$RETURN_PAGE}" />
                     <input type="hidden" name="returnviewname" value="{$RETURN_VIEW_NAME}" />
-                    <input type="hidden" name="returnsearch_params" value='{ZEND_JSON::encode($RETURN_SEARCH_PARAMS)}' />
+                    <input type="hidden" name="returnsearch_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($RETURN_SEARCH_PARAMS))}' />
                     <input type="hidden" name="returnsearch_key" value={$RETURN_SEARCH_KEY} />
                     <input type="hidden" name="returnsearch_value" value={$RETURN_SEARCH_VALUE} />
                     <input type="hidden" name="returnoperator" value={$RETURN_SEARCH_OPERATOR} />

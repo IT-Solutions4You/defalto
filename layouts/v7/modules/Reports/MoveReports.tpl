@@ -19,7 +19,7 @@
 				<input type="hidden" name="selected_ids" value={ZEND_JSON::encode($SELECTED_IDS)} />
 				<input type="hidden" name="excluded_ids" value={ZEND_JSON::encode($EXCLUDED_IDS)} />
 				<input type="hidden" name="viewname" value="{$VIEWNAME}" />
-				<input type="hidden" name="search_params" value='{ZEND_JSON::encode($SEARCH_PARAMS)}' />
+				<input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}' />
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="inputEmail3" class="col-sm-4 control-label">{vtranslate('LBL_FOLDERS_LIST', $MODULE)}<span class="redColor">*</span></label>
