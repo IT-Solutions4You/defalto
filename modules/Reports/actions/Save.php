@@ -30,6 +30,10 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
+        global $log;
+        $log->fatal('Save.php process api');
+        $log->fatal('request is => ');
+        $log->fatal($request);
 		$moduleName = $request->getModule();
 
 		$record = $request->get('record');
@@ -42,7 +46,7 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 		$reporttype = $request->get('reporttype');
 		if(empty($reporttype)) $reporttype='tabular';
 		$reportModel->set('reportname', $request->get('reportname'));
-		$reportModel->set('folderid', $request->get('folderid'));
+		$reportModel->set('folderid', $request->get('reportfolderid'));
 		$reportModel->set('description', $request->get('reports_description'));
 		$reportModel->set('reporttype', $reporttype);
 

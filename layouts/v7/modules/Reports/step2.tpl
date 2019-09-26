@@ -19,7 +19,7 @@
         {if $REPORT_MODEL->get('members')}
             <input type="hidden" name="members" value={ZEND_JSON::encode($REPORT_MODEL->get('members'))} />
         {/if}
-        <input type="hidden" name="folderid" value="{$REPORT_MODEL->get('folderid')}" />
+        <input type="hidden" name="reportfolderid" value="{$REPORT_MODEL->get('reportfolderid')}" />
         <input type="hidden" name="description" value="{$REPORT_MODEL->get('description')}" />
         <input type="hidden" name="primary_module" value="{$PRIMARY_MODULE}" />
         <input type="hidden" name="secondary_modules" value={ZEND_JSON::encode($SECONDARY_MODULES)} />
