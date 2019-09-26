@@ -11,7 +11,7 @@
 -->*}
 {strip}
     <input type="hidden" name="conditions" id="advanced_filter" value='' />
-    <input type="hidden" id="olderConditions" value='{ZEND_JSON::encode($WORKFLOW_MODEL->get('conditions'))}' />
+    <input type="hidden" id="olderConditions" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($WORKFLOW_MODEL->get('conditions')))}' />
     <input type="hidden" name="filtersavedinnew" value="{$WORKFLOW_MODEL->get('filtersavedinnew')}" />
     <div class="editViewHeader">
         <div class='row'>
