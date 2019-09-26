@@ -539,7 +539,7 @@ class Documents extends CRMEntity {
 	/**
 	 * Function to get query for related list in Documents module
 	 */
-	function get_related_list($id, $cur_tab_id, $rel_tab_id) {
+	function get_related_list($id, $cur_tab_id, $rel_tab_id,$actions = false) {
 		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		$other = CRMEntity::getInstance($related_module);
 		vtlib_setup_modulevars('Documents', $this);
