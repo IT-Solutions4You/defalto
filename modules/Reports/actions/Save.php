@@ -30,10 +30,6 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
-        global $log;
-        $log->fatal('Save.php process api');
-        $log->fatal('request is => ');
-        $log->fatal($request);
 		$moduleName = $request->getModule();
 
 		$record = $request->get('record');
