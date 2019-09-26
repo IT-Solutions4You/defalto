@@ -144,23 +144,11 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 			$fieldValue = $request->get($fieldName, null);
             // For custom time fields in Calendar, it was not converting to db insert format(sending as 10:00 AM/PM)
             $fieldDataType = $fieldModel->getFieldDataType();
+            if($fieldValue){
+                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+            }
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-            }
-            if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                $fieldInfo = $fieldModel->getFieldInfo();
-                $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                if($fieldDataType == 'multipicklist'&& !empty($editablePicklistValues)){
-                    $selectedMultiPick = array();
-                    foreach ($fieldValue as $key => $selectedValue) {
-                        if(in_array($selectedValue, $editablePicklistValues)){
-                            $selectedMultiPick[] = $selectedValue;
-                        }
-                    }
-                    $fieldValue = $selectedMultiPick;
-                }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                    $fieldValue = null;
-                }
             }
             // End
             if ($fieldName === $request->get('field')) {

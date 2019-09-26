@@ -102,26 +102,13 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				}else if($fieldName === $request->get('field')){
 					$fieldValue = $request->get('value');
 				}
-
+                if($fieldValue){
+                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+                }
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
-                if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                    $fieldInfo = $fieldModel->getFieldInfo();
-                    $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                    if($fieldDataType == 'multipicklist'&& !empty($editablePicklistValues)){
-                        $selectedMultiPick = array();
-                        foreach ($fieldValue as $key => $selectedValue) {
-                            if(in_array($selectedValue, $editablePicklistValues)){
-                                $selectedMultiPick[] = $selectedValue;
-                            }
-                        }
-                        $fieldValue = $selectedMultiPick;
-                    }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                        $fieldValue = null;
-                    }
-                }
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
@@ -147,25 +134,13 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				} else {
 					$fieldValue = $fieldModel->getDefaultFieldValue();
 				}
+                if($fieldValue){
+                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+                }
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
-                if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                    $fieldInfo = $fieldModel->getFieldInfo();
-                    $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                    if($fieldDataType == 'multipicklist'){
-                        $selectedMultiPick = array();
-                        foreach ($fieldValue as $key => $selectedValue) {
-                            if(in_array($selectedValue, $editablePicklistValues)){
-                                $selectedMultiPick[] = $selectedValue;
-                            }
-                        }
-                        $fieldValue = $selectedMultiPick;
-                    }else if( $fieldDataType != 'multipicklist' && !empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                        $fieldValue = null;
-                    }
-                }
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
