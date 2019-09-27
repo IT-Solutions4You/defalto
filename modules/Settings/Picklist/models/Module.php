@@ -97,7 +97,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 			$tableName = $row['tablename'];
 			$columnName = $row['columnname'];
             if($fieldModel && $fieldModel->getFieldDataType() == 'multipicklist') {
-                $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , "|##| '.$oldValue.' |##|", "|##| '.$newValue.' |##|"))');
+                $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , "|##| '.$oldValue.' |##|", "|##| '.$newValue.' |##|"))', array());
             } else {
                 $query = 'UPDATE ' . $tableName . ' SET ' . $columnName . '=? WHERE ' . $columnName . '=?';
 			    $db->pquery($query, array($newValue, $oldValue));
@@ -204,7 +204,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 
 			if($fieldModel && $fieldModel->getFieldDataType() == 'multipicklist') {
                 foreach($pickListValues as $key => $multipicklistValue) {
-                    $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , " |##| '.$multipicklistValue.' |##| ", CASE WHEN INSTR(CONCAT(" |##| " ,CONCAT('.$columnName.', " |##| ")), " |##| '.$replaceValue.' |##| ") > 0 THEN " |##| " ELSE " |##| '.$replaceValue.' |##| " END))');
+                    $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , " |##| '.$multipicklistValue.' |##| ", CASE WHEN INSTR(CONCAT(" |##| " ,CONCAT('.$columnName.', " |##| ")), " |##| '.$replaceValue.' |##| ") > 0 THEN " |##| " ELSE " |##| '.$replaceValue.' |##| " END))', array());
                 }
             } else {
                 $query = 'UPDATE '.$tableName.' SET '.$columnName.'=? WHERE '.$columnName.' IN ('.  generateQuestionMarks($pickListValues).')';
