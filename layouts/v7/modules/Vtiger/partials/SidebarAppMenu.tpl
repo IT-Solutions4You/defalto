@@ -40,7 +40,8 @@
 								{break}
 							{/if}
 						{/foreach}
-						<div class="menu-item app-item dropdown-toggle app-item-color-{$APP_NAME}" data-app-name="{$APP_NAME}" id="{$APP_NAME}_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-default-url="{$FIRST_MENU_MODEL->getDefaultUrl()}&app={$APP_NAME}">
+						{* Fix for Responsive Layout Menu - Changed data-default-url to # *}
+						<div class="menu-item app-item dropdown-toggle app-item-color-{$APP_NAME}" data-app-name="{$APP_NAME}" id="{$APP_NAME}_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-default-url="#">
 							<div class="menu-items-wrapper app-menu-items-wrapper">
 								<span class="app-icon-list fa {$APP_IMAGE_MAP.$APP_NAME}"></span>
 								<span class="app-name textOverflowEllipsis"> {vtranslate("LBL_$APP_NAME")}</span>
@@ -92,7 +93,7 @@
 			{/if}
 			{if $USER_MODEL->isAdminUser()}
 				<div class="dropdown app-modules-dropdown-container dropdown-compact">
-					<div class="menu-item app-item dropdown-toggle app-item-misc" data-app-name="TOOLS" id="TOOLS_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-default-url="{if $USER_MODEL->isAdminUser()}index.php?module=Vtiger&parent=Settings&view=Index{else}index.php?module=Users&view=Settings{/if}">
+					<div class="menu-item app-item dropdown-toggle app-item-misc" data-app-name="TOOLS" id="TOOLS_modules_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" data-default-url="#">
 						<div class="menu-items-wrapper app-menu-items-wrapper">
 							<span class="app-icon-list fa fa-cog"></span>
 							<span class="app-name textOverflowEllipsis"> {vtranslate('LBL_SETTINGS', 'Settings:Vtiger')}</span>

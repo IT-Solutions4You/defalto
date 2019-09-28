@@ -109,10 +109,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 							if(saveRecipientPref) {
 								var params = form.serializeFormData();
 								emailEditInstance.showComposeEmailForm(params).then(function(response) {
-								jQuery(document).on('shown.bs.modal', function() {
-									if (typeof cb === 'function') cb(response);
+									jQuery(document).on('shown.bs.modal', function() {
+										if (typeof cb === 'function') cb(response);
+									});
 								});
-							});
 							}else {
 								app.helper.hideProgress();
 								app.helper.showModal(data);
@@ -276,22 +276,22 @@ Vtiger.Class('Vtiger_Index_Js', {
 	showReminderPopup : function(record) {
 		var notifyParams = {
 			'title' : record.activitytype + ' - ' +
-					'<a target="_blank" href="index.php?module=Calendar&view=Detail&record='+record.id+'">'+record.subject+'</a>&nbsp;&nbsp;'+
-					'<i id="reminder-postpone-'+record.id+'" title="'+app.vtranslate('JS_POSTPONE')+'" class="cursorPointer fa fa-clock-o"></i>',
+				'<a target="_blank" href="index.php?module=Calendar&view=Detail&record='+record.id+'">'+record.subject+'</a>&nbsp;&nbsp;'+
+				'<i id="reminder-postpone-'+record.id+'" title="'+app.vtranslate('JS_POSTPONE')+'" class="cursorPointer fa fa-clock-o"></i>',
 			'message' : '<div class="col-sm-12">'+
-							'<div class="row">'+
-								'<div class="col-sm-12 font13px">'+
-									app.vtranslate('JS_START_DATE_TIME') + ' : ' + record.date_start+
-								'</div>'+
-								'<div class="col-sm-12 font13px">'+
-									app.vtranslate('JS_END_DATE_TIME') + ' : ' + record.due_date+
-								'</div>'+
-							'</div>'+
-						'</div>'
+				'<div class="row">'+
+				'<div class="col-sm-12 font13px">'+
+				app.vtranslate('JS_START_DATE_TIME') + ' : ' + record.date_start+
+				'</div>'+
+				'<div class="col-sm-12 font13px">'+
+				app.vtranslate('JS_END_DATE_TIME') + ' : ' + record.due_date+
+				'</div>'+
+				'</div>'+
+				'</div>'
 		};
 		var settings = {
-			'element' : 'body', 
-			'type' : 'danger', 
+			'element' : 'body',
+			'type' : 'danger',
 			'delay' : 0
 		};
 
@@ -311,7 +311,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	}
 
 }, {
-	 _SearchIntiatedEventName : 'VT_SEARCH_INTIATED',
+	_SearchIntiatedEventName : 'VT_SEARCH_INTIATED',
 	usernames : [],
 	userList : {},
 	autoFillElement : false,
@@ -337,10 +337,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 			app.request.post({data: params});
 			if(jQuery('.sidebar-essentials').hasClass('hide')) {
 				jQuery('.essentials-toggle-marker').removeClass('fa-chevron-left')
-						.addClass('fa-chevron-right');
+					.addClass('fa-chevron-right');
 			} else {
 				jQuery('.essentials-toggle-marker').removeClass('fa-chevron-right')
-						.addClass('fa-chevron-left');
+					.addClass('fa-chevron-left');
 			}
 			app.event.trigger("Vtiger.Post.MenuToggle");
 		});
@@ -391,18 +391,18 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	addBodyScroll: function () {
 		app.helper.showVerticalScroll(
-				$("body"),
-				{
-					setHeight: $(window).height() - 92,
-					theme: "inset-dark",
-					alwaysShowScrollbar: 2,
-					autoExpandScrollbar: true,
-					live: "on",
-					setTop: 0,
-					scrollInertia: 70,
-					mouseWheel:{ preventDefault: true }
+			$("body"),
+			{
+				setHeight: $(window).height() - 92,
+				theme: "inset-dark",
+				alwaysShowScrollbar: 2,
+				autoExpandScrollbar: true,
+				live: "on",
+				setTop: 0,
+				scrollInertia: 70,
+				mouseWheel:{ preventDefault: true }
 
-				}
+			}
 		);
 	},
 	registerEventForTaskManagement : function(){
@@ -499,8 +499,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 					var parentModule=app.getModuleName();
 					var viewname=app.view();
 					if((quickCreateModuleName == parentModule) && (viewname=="List")){
-							var listinstance = app.controller();
-							listinstance.loadListViewRecords(); 
+						var listinstance = app.controller();
+						listinstance.loadListViewRecords();
 					}
 				};
 			}
@@ -516,7 +516,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 					},
 					backdrop : 'static',
 					keyboard : false
-					}
+				}
 
 				app.helper.showModal(data, callbackparams);
 				var form = jQuery('form[name="QuickCreate"]');
@@ -665,7 +665,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 			appMenu.appendTo('#page');
 			appMenu.css({
 				'top' : appNav.offset().top + appNav.height(),
-				'left' : 0
+				'left' : 0,
+				//Fix for Responsive layout Sub Menu in mobile devices
+				'width' : '50%',
+				'max-width' : '230px'
 			});
 			if(typeof type === 'undefined') {
 				type = appMenu.is(':hidden') ? 'show' : 'hide';
@@ -698,11 +701,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 			var dropdownContainer = jQuery(e.currentTarget);
 			jQuery('.dropdown').removeClass('open');
 			if(dropdownContainer.length) {
+				//Fix for Responsive layout Sub Menu in mobile devices
+				var appModulesDropdown = dropdownContainer.find('.app-modules-dropdown');
 				if(dropdownContainer.hasClass('dropdown-compact')) {
-					dropdownContainer.find('.app-modules-dropdown').css('top', dropdownContainer.position().top - 8);
+					appModulesDropdown.css('top', dropdownContainer.position().top - 8);
 				} else {
-					dropdownContainer.find('.app-modules-dropdown').css('top', '');
+					appModulesDropdown.css('top', '');
 				}
+				appModulesDropdown.css('left', appModulesDropdown.parent().width() - 8);
 				dropdownContainer.addClass('open').find('.app-item').addClass('active-app-item');
 			}
 		}, function(e) {
@@ -716,10 +722,13 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 		});
 
-		jQuery('.app-item').on('click', function() {
+		//Fix for Responsive layout Sub Menu in mobile devices
+		jQuery('.app-item').on('click', function(e) {
 			var url = jQuery(this).data('defaultUrl');
-			if(url) {
+			if(url && url!=='#') {
 				window.location.href = url;
+			} else {
+				e.stopPropagation();
 			}
 		});
 
@@ -803,15 +812,15 @@ Vtiger.Class('Vtiger_Index_Js', {
 						var reponseDataList = new Array();
 						var serverDataFormat = data;
 						if(serverDataFormat.length <= 0) {
-								jQuery(inputElement).val('');
-								serverDataFormat = new Array({
-										'label' : 'No Results Found',
-										'type'	: 'no results'
-								});
+							jQuery(inputElement).val('');
+							serverDataFormat = new Array({
+								'label' : 'No Results Found',
+								'type'	: 'no results'
+							});
 						}
 						for(var id in serverDataFormat){
-								var responseData = serverDataFormat[id];
-								reponseDataList.push(responseData);
+							var responseData = serverDataFormat[id];
+							reponseDataList.push(responseData);
 						}
 						response(reponseDataList);
 					});
@@ -828,7 +837,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 				var selectedItemData = ui.item;
 				//To stop selection if no results is selected
 				if(typeof selectedItemData.type != 'undefined' && selectedItemData.type=="no results"){
-						return false;
+					return false;
 				}
 				var element = jQuery(this);
 				var parent = element.closest('td');
@@ -908,14 +917,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 			var element = jQuery(e.currentTarget);
 			var closestTD = thisInstance.getParentElement(element).next();
 			var popupReferenceModule = element.val();
-			var referenceModuleElement = jQuery('input[name="popupReferenceModule"]', closestTD).length ? 
-			jQuery('input[name="popupReferenceModule"]', closestTD) : jQuery('input.popupReferenceModule', closestTD);
+			var referenceModuleElement = jQuery('input[name="popupReferenceModule"]', closestTD).length ?
+				jQuery('input[name="popupReferenceModule"]', closestTD) : jQuery('input.popupReferenceModule', closestTD);
 			var prevSelectedReferenceModule = referenceModuleElement.val();
 			referenceModuleElement.val(popupReferenceModule);
 
 			//If Reference module is changed then we should clear the previous value
 			if(prevSelectedReferenceModule != popupReferenceModule) {
-					closestTD.find('.clearReferenceSelection').trigger('click');
+				closestTD.find('.clearReferenceSelection').trigger('click');
 			}
 		});
 	},
@@ -932,7 +941,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 		var isMultiple = false;
 		if(params.multi_select) {
-				isMultiple = true;
+			isMultiple = true;
 		}
 
 		var sourceFieldElement = jQuery('input[class="sourceField"]',parentElem);
@@ -941,7 +950,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 		sourceFieldElement.trigger(prePopupOpenEvent);
 
 		if(prePopupOpenEvent.isDefaultPrevented()) {
-				return ;
+			return ;
 		}
 		var popupInstance = Vtiger_Popup_Js.getInstance();
 
@@ -959,7 +968,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 //						referenceModule = value.module;
 //					}
 //					if(parentElem.find('[name="popupReferenceModule"]').val() != referenceModule) continue;
-//					
+//
 					var data = {
 						'name' : value.name,
 						'id' : key
@@ -1013,40 +1022,40 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @returns {undefined}
 	 */
 	registerFileChangeEvent: function () {
-		 var thisInstance = this;
-					var container = jQuery('body');
-			Vtiger_Index_Js.files = '';
-			container.on('change', 'input[name="filename[]"],input[name="imagename[]"]', function(e){
-				if(e.target.type == "text") return false;
+		var thisInstance = this;
+		var container = jQuery('body');
+		Vtiger_Index_Js.files = '';
+		container.on('change', 'input[name="filename[]"],input[name="imagename[]"]', function(e){
+			if(e.target.type == "text") return false;
 
-				var files_uploaded=[];
-				var fileSize = 0;
-				jQuery.each(e.target.files,function(key,element){
-					files_uploaded[key] = element;
-					fileSize += Number(element['size']);
-				});
+			var files_uploaded=[];
+			var fileSize = 0;
+			jQuery.each(e.target.files,function(key,element){
+				files_uploaded[key] = element;
+				fileSize += Number(element['size']);
+			});
 
 
-				Vtiger_Index_Js.files = files_uploaded;
-				var element = container.find('input[name="filename[]"],input[name="imagename[]"]');
-				//ignore all other types than file 
-				if(element.attr('type') != 'file'){
-						return ;
-				}
-				var uploadFileSizeHolder = element.closest('.fileUploadContainer').find('.uploadedFileSize');
-				var maxFileSize = thisInstance.getMaxiumFileUploadingSize(container);
-				if(fileSize > maxFileSize) {
-					alert(app.vtranslate('JS_EXCEEDS_MAX_UPLOAD_SIZE'));
-					var removeFileLinks = jQuery('.MultiFile-remove');
-					jQuery(removeFileLinks[removeFileLinks.length - 1]).click();
+			Vtiger_Index_Js.files = files_uploaded;
+			var element = container.find('input[name="filename[]"],input[name="imagename[]"]');
+			//ignore all other types than file
+			if(element.attr('type') != 'file'){
+				return ;
+			}
+			var uploadFileSizeHolder = element.closest('.fileUploadContainer').find('.uploadedFileSize');
+			var maxFileSize = thisInstance.getMaxiumFileUploadingSize(container);
+			if(fileSize > maxFileSize) {
+				alert(app.vtranslate('JS_EXCEEDS_MAX_UPLOAD_SIZE'));
+				var removeFileLinks = jQuery('.MultiFile-remove');
+				jQuery(removeFileLinks[removeFileLinks.length - 1]).click();
+			} else {
+				if(container.length > 1){
+					jQuery('div.fieldsContainer').find('form#I_form').find('input[name="filename"]').css('width','80px');
+					jQuery('div.fieldsContainer').find('form#W_form').find('input[name="filename"]').css('width','80px');
 				} else {
-					if(container.length > 1){
-						jQuery('div.fieldsContainer').find('form#I_form').find('input[name="filename"]').css('width','80px');
-						jQuery('div.fieldsContainer').find('form#W_form').find('input[name="filename"]').css('width','80px');
-					} else {
-						container.find('input[name="filename[]"]').css('width','80px');
-					}
+					container.find('input[name="filename[]"]').css('width','80px');
 				}
+			}
 		});
 	},
 
@@ -1087,18 +1096,18 @@ Vtiger.Class('Vtiger_Index_Js', {
 		var sourceModule = app.getModuleName();
 		var editTaskContainer = jQuery('[name="editTask"]');
 		if(editTaskContainer.length > 0){
-				sourceModule = editTaskContainer.find('#sourceModule').val();
+			sourceModule = editTaskContainer.find('#sourceModule').val();
 		}
 		var quickCreateConatiner = jQuery('[name="QuickCreate"]');
 		if(quickCreateConatiner.length!=0){
-				sourceModule = quickCreateConatiner.find('input[name="module"]').val();
+			sourceModule = quickCreateConatiner.find('input[name="module"]').val();
 		}
 		var searchResultContainer = jQuery('#searchResults-container');
 		if(searchResultContainer.length) {
 			sourceModule = jQuery('select#searchModuleList').val();
 		}
-		var popupReferenceModuleElement = jQuery('input[name="popupReferenceModule"]',container).length ? 
-		jQuery('input[name="popupReferenceModule"]',container) : jQuery('input.popupReferenceModule',container);
+		var popupReferenceModuleElement = jQuery('input[name="popupReferenceModule"]',container).length ?
+			jQuery('input[name="popupReferenceModule"]',container) : jQuery('input.popupReferenceModule',container);
 		var popupReferenceModule = popupReferenceModuleElement.val();
 		var sourceFieldElement = jQuery('input[class="sourceField"]',container);
 		if(!sourceFieldElement.length) {
@@ -1190,8 +1199,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Function to get referenced module name
 	 */
 	getReferencedModuleName : function(parentElement) {
-		var referenceModuleElement = jQuery('input[name="popupReferenceModule"]',parentElement).length ? 
-		jQuery('input[name="popupReferenceModule"]',parentElement) : jQuery('input.popupReferenceModule',parentElement);
+		var referenceModuleElement = jQuery('input[name="popupReferenceModule"]',parentElement).length ?
+			jQuery('input[name="popupReferenceModule"]',parentElement) : jQuery('input.popupReferenceModule',parentElement);
 		return referenceModuleElement.val();
 	},
 
@@ -1229,13 +1238,13 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	/**
-	* Function to get reference search params
-	*/
+	 * Function to get reference search params
+	 */
 	getReferenceSearchParams : function(element){
 		var tdElement = this.getParentElement(element);
 		var params = {};
-		var referenceModuleElement = jQuery('input[name="popupReferenceModule"]',tdElement).length ? 
-		jQuery('input[name="popupReferenceModule"]',tdElement) : jQuery('input.popupReferenceModule',tdElement);
+		var referenceModuleElement = jQuery('input[name="popupReferenceModule"]',tdElement).length ?
+			jQuery('input[name="popupReferenceModule"]',tdElement) : jQuery('input.popupReferenceModule',tdElement);
 		var searchModule = referenceModuleElement.val();
 		params.search_module = searchModule;
 		return params;
@@ -1285,8 +1294,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 		var parent = element.closest('td');
 		// added to support from all views which may not be table format
 		if(parent.length === 0) {
-			parent = element.closest('.td').length ? 
-			element.closest('.td') : element.closest('.fieldValue');
+			parent = element.closest('.td').length ?
+				element.closest('.td') : element.closest('.fieldValue');
 		}
 		return parent;
 	},
@@ -1375,7 +1384,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 			params['navigation'] = 'false';
 		}
 		else{
-		params['navigation'] = 'true';
+			params['navigation'] = 'true';
 		}
 
 		if (templateId) {
@@ -1488,9 +1497,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 				//perform show preview only after 500ms in list view to support double click edit action
 				if (!currentTarget.data('preview-timer') && typeof href != 'undefined') {
 					currentTarget.data('preview-timer', setTimeout(function () {
-						 var data = app.convertUrlToDataParams(href);
-						 self.showQuickPreviewForId(data.record, data.module, app.getAppName(),'',true);
-						 currentTarget.data('preview-timer',null);
+						var data = app.convertUrlToDataParams(href);
+						self.showQuickPreviewForId(data.record, data.module, app.getAppName(),'',true);
+						currentTarget.data('preview-timer',null);
 					}, 500));
 				}
 			} else {
@@ -1501,7 +1510,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 		if(view === 'List') {
 			/*
-			* when reference display value is double clicked in list view, 
+			* when reference display value is double clicked in list view,
 			* should initiate inline edit instead of showing preview
 			*/
 			jQuery('body').on('dblclick', '.js-reference-display-value', function(e) {
@@ -1559,35 +1568,35 @@ Vtiger.Class('Vtiger_Index_Js', {
 		var completedValues = [];
 		for(var index in autoFillData){
 			var value = autoFillData[index];
-			var referenceContainer = thisInstance.getRelatedFieldElements(container, value); 
+			var referenceContainer = thisInstance.getRelatedFieldElements(container, value);
 			jQuery.each(data, function(datakey, datavalue){
 				for(var name in datavalue){
 					if(typeof datavalue[name] == 'object'){
 						var key = name;
 						var dataList = {
-								'name': datavalue[key].name,
-								'id' : datavalue[key].id
+							'name': datavalue[key].name,
+							'id' : datavalue[key].id
 						}
 
 						if(value.module == datavalue[key].module){
-								var autoFillElement = thisInstance.autoFillElement;
-								var autoFillData = value;
-								var popupReferenceModuleElement = autoFillElement.parent().parent().find('[name=popupReferenceModule]').length ? 
-										autoFillElement.parent().parent().find('[name=popupReferenceModule]') : autoFillElement.parent().parent().find('.popupReferenceModule');
-								var module = popupReferenceModuleElement.val();
-								var elementName = autoFillElement.attr('name');
-								var selectedName = container.find('#'+elementName+'_display').val();
-								var message = app.vtranslate('JS_OVERWRITE_AUTOFILL_MSG1')+' '+app.vtranslate('SINGLE_'+autoFillData.module)+" "+app.vtranslate('JS_OVERWRITE_AUTOFILL_MSG2')+" "+app.vtranslate('SINGLE_'+module)+' ('+selectedName+') '+app.vtranslate('SINGLE_'+autoFillData.module)+" ?";
-								var parentId = container.find('[name='+autoFillData.fieldname+']').val();
+							var autoFillElement = thisInstance.autoFillElement;
+							var autoFillData = value;
+							var popupReferenceModuleElement = autoFillElement.parent().parent().find('[name=popupReferenceModule]').length ?
+								autoFillElement.parent().parent().find('[name=popupReferenceModule]') : autoFillElement.parent().parent().find('.popupReferenceModule');
+							var module = popupReferenceModuleElement.val();
+							var elementName = autoFillElement.attr('name');
+							var selectedName = container.find('#'+elementName+'_display').val();
+							var message = app.vtranslate('JS_OVERWRITE_AUTOFILL_MSG1')+' '+app.vtranslate('SINGLE_'+autoFillData.module)+" "+app.vtranslate('JS_OVERWRITE_AUTOFILL_MSG2')+" "+app.vtranslate('SINGLE_'+module)+' ('+selectedName+') '+app.vtranslate('SINGLE_'+autoFillData.module)+" ?";
+							var parentId = container.find('[name='+autoFillData.fieldname+']').val();
 
-								if(parentId != dataList.id && parentId) {
-										if(jQuery.inArray(datavalue[key].module, completedValues) === -1) {
-											completedValues.push(datavalue[key].module);
-											thisInstance.confirmAndFillDetails(referenceContainer[key], dataList, message);
-										}		 
-								} else {
-										thisInstance.setReferenceFieldValue(referenceContainer[key], dataList);
+							if(parentId != dataList.id && parentId) {
+								if(jQuery.inArray(datavalue[key].module, completedValues) === -1) {
+									completedValues.push(datavalue[key].module);
+									thisInstance.confirmAndFillDetails(referenceContainer[key], dataList, message);
 								}
+							} else {
+								thisInstance.setReferenceFieldValue(referenceContainer[key], dataList);
+							}
 						}
 					}
 				}
@@ -1598,11 +1607,11 @@ Vtiger.Class('Vtiger_Index_Js', {
 	confirmAndFillDetails : function(container, data, message) {
 		var thisInstance = this;
 		app.helper.showConfirmationBox({'message' : message}).then(
-				function(e) {
-						thisInstance.setReferenceFieldValue(container, data);
-				},
-				function(error, err){
-				}
+			function(e) {
+				thisInstance.setReferenceFieldValue(container, data);
+			},
+			function(error, err){
+			}
 		);
 	},
 
@@ -1630,7 +1639,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 		var module;
 		if(!resultData.module) {
 			var autoFillElement = this.autoFillElement;
-			var popupReferenceModuleElement = autoFillElement.parent().parent().find('[name=popupReferenceModule]').length ? 
+			var popupReferenceModuleElement = autoFillElement.parent().parent().find('[name=popupReferenceModule]').length ?
 				autoFillElement.parent().parent().find('[name=popupReferenceModule]') : autoFillElement.parent().parent().find('.popupReferenceModule');
 			module = popupReferenceModuleElement.val();
 		}else {
@@ -1640,11 +1649,11 @@ Vtiger.Class('Vtiger_Index_Js', {
 			return;
 
 		var params = {
-				module: module,
-				action: 'RelationAjax',
-				mode: 'getRelatedRecordInfo',
-				id: resultData.id
-			};
+			module: module,
+			action: 'RelationAjax',
+			mode: 'getRelatedRecordInfo',
+			id: resultData.id
+		};
 
 		app.request.post({'data' : params}).then(function(err, data){
 			if(err == null){
