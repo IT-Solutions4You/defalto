@@ -3321,7 +3321,7 @@ th {
   font-size: 20px;
   font-weight: bold;
   line-height: 18px;
-  opacity: .2;
+  opacity: 0.2;
 }
 #settingsShortCutsContainer .col-lg-3.moduleBlock:hover .unpin {
   display: inline-block;
@@ -6891,19 +6891,19 @@ a.btnReport:hover {
   box-sizing: border-box;
 }
 .column.l1 {
-  width: 4.166666666667%;
+  width: 4.16666667%;
 }
 .column.l2 {
-  width: 8.333333333333%;
+  width: 8.33333333%;
 }
 .column.l3 {
   width: 12.5%;
 }
 .column.l5 {
-  width: 20.83333333333%;
+  width: 20.83333333%;
 }
 .column.l8 {
-  width: 33.33333333333%;
+  width: 33.33333333%;
 }
 .column.l9 {
   width: 37.5%;
@@ -7523,6 +7523,18 @@ input:focus:-ms-input-placeholder {
 .moduleIcon .custom-module {
   font-weight: bold;
 }
+.margin0 {
+  margin: 0;
+}
+.border0 {
+  border: 0;
+}
+.padding0 {
+  padding: 0;
+}
+.rounded0 {
+  border-radius: 0;
+}
 .modules-menu ul li.active a {
   border-left: 3px solid #EF5E29;
   opacity: 1;
@@ -7732,19 +7744,19 @@ a.btnReport:hover {
   box-sizing: border-box;
 }
 .column.l1 {
-  width: 4.166666666667%;
+  width: 4.16666667%;
 }
 .column.l2 {
-  width: 8.333333333333%;
+  width: 8.33333333%;
 }
 .column.l3 {
   width: 12.5%;
 }
 .column.l5 {
-  width: 20.83333333333%;
+  width: 20.83333333%;
 }
 .column.l8 {
-  width: 33.33333333333%;
+  width: 33.33333333%;
 }
 .column.l9 {
   width: 37.5%;
