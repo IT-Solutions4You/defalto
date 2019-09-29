@@ -491,7 +491,27 @@ Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
         var pickListValuesArrayFlip = {};
         for(var key in pickListValues){
             var pickListValue = pickListValues[key];
+            var translatedValues = new Array();
+            var selectedValues = selectedOption.split(",");
             pickListValuesArrayFlip[pickListValue] = key;
+            if(selectedValues.length > 1){
+                for(var index in selectedValues){
+                    var selectedValue = selectedValues[index];
+                    if(selectedValue == key){
+                        translatedValues.push(pickListValue);
+                    } else {
+                        //if condition is startswith, endswith, contains, doesnot contains should be retain the selected value in the picklist
+                        translatedValues.push(selectedValue);
+                    }
+                }
+            }else{
+                if(selectedOption == key){
+                        selectedOption = pickListValue;
+                }
+            }
+        }
+        if(selectedValues.length > 1){
+            selectedOption = translatedValues.join(",");
         }
         var html = '<input type="hidden" class="inputElement select2" name="'+ this.getName() +'" id="'+ this.getName() +'">';
         var selectContainer = jQuery(html).val(selectedOption);
