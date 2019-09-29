@@ -8,9 +8,9 @@
 *************************************************************************************}
 
 {strip}
-	<div class="col-sm-10 col-xs-10 padding0 module-action-bar clearfix coloredBorderTop">
+	<div class="col-sm-11 col-xs-10 padding0 module-action-bar clearfix coloredBorderTop">
 		<div class="module-action-content clearfix {$MODULE}-module-action-content">
-			<div class="col-lg-7 col-md-7 col-sm-11 col-xs-11 padding0 module-breadcrumb module-breadcrumb-{$smarty.request.view} transitionsAllHalfSecond">
+			<div class="col-lg-7 col-md-6 col-sm-5 col-xs-11 padding0 module-breadcrumb module-breadcrumb-{$smarty.request.view} transitionsAllHalfSecond">
 				{assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
 				{if $MODULE_MODEL->getDefaultViewName() neq 'List'}
 					{assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
@@ -48,7 +48,7 @@
 					<p class="current-filter-name filter-name pull-left"><span class="fa fa-angle-right pull-left" aria-hidden="true"></span><a title="{$RECORD->get('label')}">&nbsp;&nbsp;{$RECORD->get('label')} &nbsp;&nbsp;</a></p>
 				{/if}
 			</div>
-			<div class="col-lg-5 col-md-5 col-sm-1 col-xs-1 padding0 pull-right">
+			<div class="col-lg-5 col-md-6 col-sm-7 col-xs-1 padding0 pull-right">
 				<div id="appnav" class="navbar-right">
 					<nav class="navbar navbar-inverse border0">
 						<div class="container-fluid">
