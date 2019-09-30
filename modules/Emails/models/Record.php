@@ -65,6 +65,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			}
 		}
 
+        $allEligibleEmails = array();
 		$toEmailInfo = array_map("unserialize", array_unique(array_map("serialize", array_map("array_unique", $toEmailInfo))));
 		$toFieldData = array_diff(explode(',', $this->get('saved_toid')), $emailsInfo);
 		$toEmailsData = array();
@@ -78,7 +79,28 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		// Merge Users module merge tags based on current user.
 		$mergedDescription = getMergedDescription($this->get('description'), $currentUserModel->getId(), 'Users');
 		$mergedSubject = getMergedDescription($this->get('subject'),$currentUserModel->getId(), 'Users');
-		foreach($toEmailInfo as $id => $emails) {
+        
+        // push all emails to one single array
+		foreach($toEmailInfo as $selectedId => $selectedEmails) {
+            
+            // Pushing all ids to one single array
+            if($selectedId){
+                array_push($selectedIds,$selectedId);
+            }
+            
+            // If selected emails is not an array, then make it as array
+            if(!is_array($selectedEmails)){
+                $selectedEmails = array($selectedEmails);
+            }
+            
+            // For selectedEmails check and push to emails array
+            foreach($selectedEmails as $selectedEmail){
+                if(trim($selectedEmail)){
+                    array_push($emails, $selectedEmail);
+                }
+            }
+        }
+        
 			$inReplyToMessageId = ''; 
 			$generatedMessageId = '';
 			$mailer->reinitialize();
@@ -127,56 +149,65 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$logo = true;
 			}
 
-			foreach($emails as $email) {
-				$mailer->Body = $description;
-				if ($parentModule) {
-					$mailer->Body = $this->convertUrlsToTrackUrls($mailer->Body, $id);;
-					$mailer->Body .= $this->getTrackImageDetails($id, $this->isEmailTrackEnabled($parentModule));
-				}
-				//Checking whether user requested to add signature or not
-				if($this->get('signature') == 'Yes'){
-					$mailer->Signature = $currentUserModel->get('signature');
-					if($mailer->Signature != '') {
-						$mailer->Body.= '<br><br>'.decode_html($mailer->Signature);
-					}
-				}
-				$mailer->Subject = decode_html(strip_tags($subject));
+            // Adding all recipients in mail
+            foreach($emails as $email) {
+                array_push($allEligibleEmails,$email);
+                $mailer->AddAddress($email);
+            }
+            $mailer->Body = $description;
+            if ($parentModule) {
+                $mailer->Body = $this->convertUrlsToTrackUrls($mailer->Body, $id);;
+                $mailer->Body .= $this->getTrackImageDetails($id, $this->isEmailTrackEnabled($parentModule));
+            }
+            //Checking whether user requested to add signature or not
+            if($this->get('signature') == 'Yes'){
+                $mailer->Signature = $currentUserModel->get('signature');
+                if($mailer->Signature != '') {
+                    $mailer->Body.= '<br><br>'.decode_html($mailer->Signature);
+                }
+            }
+            $mailer->Subject = decode_html(strip_tags($subject));
 
-				$plainBody = decode_emptyspace_html($description);
-				$plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
-				$plainBody .= "\n\n".$currentUserModel->get('signature');
-				$plainBody = utf8_encode(strip_tags($plainBody));
-				$plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
-				$plainBody = $this->convertUrlsToTrackUrls($plainBody, $id,'plain');
-				$mailer->AltBody = $plainBody;
-				$mailer->AddAddress($email);
+            $plainBody = decode_emptyspace_html($description);
+            $plainBody = preg_replace(array("/<p>/i","/<br>/i","/<br \/>/i"),array("\n","\n","\n"),$plainBody);
+            $plainBody .= "\n\n".$currentUserModel->get('signature');
+            $plainBody = utf8_encode(strip_tags($plainBody));
+            $plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
+            $plainBody = $this->convertUrlsToTrackUrls($plainBody, $id,'plain');
+            $mailer->AltBody = $plainBody;
+            $mailer->AddAddress($email);
 
-				//Adding attachments to mail
-				if(is_array($attachments)) {
-					foreach($attachments as $attachment) {
-						$fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['attachment'];
-						if(is_file($fileNameWithPath)) {
-							$mailer->AddAttachment($fileNameWithPath, $attachment['attachment']);
-						}
-					}
-				}
-				if ($logo) {
-					$companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
-					$companyLogoDetails = $companyDetails->getLogo();
-					//While sending email template and which has '$logo$' then it should replace with company logo
-					$mailer->AddEmbeddedImage($companyLogoDetails->get('imagepath'), 'companyLogo', 'attachment', 'base64', 'image/jpg');
-				}
+            //Adding attachments to mail
+            if(is_array($attachments)) {
+                foreach($attachments as $attachment) {
+                    $fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['attachment'];
+                    if(is_file($fileNameWithPath)) {
+                        $mailer->AddAttachment($fileNameWithPath, $attachment['attachment']);
+                    }
+                }
+            }
+            if ($logo) {
+                $companyDetails = Vtiger_CompanyDetails_Model::getInstanceById();
+                $companyLogoDetails = $companyDetails->getLogo();
+                //While sending email template and which has '$logo$' then it should replace with company logo
+                $mailer->AddEmbeddedImage($companyLogoDetails->get('imagepath'), 'companyLogo', 'attachment', 'base64', 'image/jpg');
+            }
 
-				$ccs = array_filter(explode(',',$this->get('ccmail')));
-				$bccs = array_filter(explode(',',$this->get('bccmail')));
+            $ccs = array_filter(explode(',',$this->get('ccmail')));
+            $bccs = array_filter(explode(',',$this->get('bccmail')));
 
-				if(!empty($ccs)) {
-					foreach($ccs as $cc) $mailer->AddCC($cc);
-				}
-				if(!empty($bccs)) {
-					foreach($bccs as $bcc) $mailer->AddBCC($bcc);
-				}
-			}
+            if(!empty($ccs)) {
+                foreach($ccs as $cc) {
+                    array_push($allEligibleEmails,$cc);
+                    $mailer->AddCC($cc);
+                }
+            }
+            if(!empty($bccs)) {
+                foreach($bccs as $bcc) {
+                    array_push($allEligibleEmails,$bcc);
+                    $mailer->AddBCC($bcc);
+                }
+            }
 			// to convert external css to inline css
 			$mailer->Body = Emails_Mailer_Model::convertCssToInline($mailer->Body);	
 			//To convert image url to valid
@@ -210,7 +241,6 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 					imap_append($connector->mBox, $connector->mBoxUrl.$folderName, $message, "\\Seen");
 				}
 			}
-		}
 		return $status;
 	}
 
