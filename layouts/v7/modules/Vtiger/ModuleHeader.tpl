@@ -55,7 +55,7 @@
 						<div class="container-fluid">
 							<div class="navbar-header">
 								<button type="button" class="navbar-toggle collapsed margin0" data-toggle="collapse" data-target="#appnavcontent" aria-expanded="false">
-									<i class="fa fa-plus"></i>
+									<i class="fa fa-ellipsis-v"></i>
 								</button>
 							</div>
 
