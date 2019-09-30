@@ -262,7 +262,7 @@ body {
   height: 100%;
   width: 100%;
   color: #AAAAAA;
-  margin-top: 4px;
+  margin: 4px;
   padding: 0px 10px;
   text-decoration: none;
   vertical-align: top;
@@ -1442,6 +1442,7 @@ ul.unstyled {
   width: 100%;
   border: 1px solid #ddd;
   margin-top: 10px;
+  overflow: scroll;
 }
 .listview-table {
   margin-bottom: 0;
@@ -1481,6 +1482,7 @@ ul.unstyled {
   vertical-align: middle;
   width: 100%;
   display: inline-block;
+  word-break: normal;
 }
 .listViewEntries .relatedListEntryValues .value {
   vertical-align: middle;
