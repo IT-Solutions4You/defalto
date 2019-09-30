@@ -11,10 +11,10 @@
 	{include file="modules/Vtiger/Header.tpl"}
 
 	{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
-	<nav class="navbar navbar-default navbar-fixed-top app-fixed-navbar">
+	<nav class="navbar navbar-inverse navbar-fixed-top app-fixed-navbar">
 		<div class="container-fluid global-nav">
 			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-4 app-navigator-container">
+				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-8 app-navigator-container">
 					<div class="row">
 						<div id="appnavigator" class="col-sm-2 col-xs-2 cursorPointer app-switcher-container" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
 							<div class="row app-navigator">
@@ -30,14 +30,22 @@
 						</div>  
 					</div>
 				</div>
-				<div class="search-links-container col-md-3 col-lg-3 hidden-sm">
-					<div class="search-link hidden-xs">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+						<i class="fa fa-ellipsis-h"></i>
+					</button>
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#search-links-container" aria-expanded="false">
+						<i class="fa fa-search"></i>
+					</button>
+				</div>
+				<div id="search-links-container" class="search-links-container col-md-3 col-lg-3 collapse navbar-collapse">
+					<div class="search-link">
 						<span class="fa fa-search" aria-hidden="true"></span>
 						<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
 						<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
 					</div>
 				</div>
-				<div id="navbar" class="col-sm-6 col-md-3 col-lg-3 collapse navbar-collapse navbar-right global-actions">
+				<div id="navbar" class="col-sm-6 col-md-3 col-lg-3 col-xs-12 collapse navbar-collapse navbar-right global-actions">
 					<ul class="nav navbar-nav">
 						<li>
 							<div class="dropdown">
@@ -140,8 +148,8 @@
 							<li><div><a href="#" class="taskManagement vicon vicon-task" title="{vtranslate('Tasks','Vtiger')}" aria-hidden="true"></a></div></li>
 						{/if}
 						<li class="dropdown">
-							<div style="margin-top: 15px;">
-								<a href="#" class="userName dropdown-toggle" data-toggle="dropdown" role="button">
+							<div>
+								<a href="#" class="userName dropdown-toggle pull-right" data-toggle="dropdown" role="button">
 									<span class="fa fa-user" aria-hidden="true" title="{$USER_MODEL->get('first_name')} {$USER_MODEL->get('last_name')}
 										  ({$USER_MODEL->get('user_name')})"></span>
 									<span class="link-text-xs-only hidden-lg hidden-md hidden-sm">{$USER_MODEL->getName()}</span>
@@ -170,7 +178,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="logout-footer clearfix">
+									<div id="logout-footer" class="logout-footer clearfix">
 										<hr style="margin: 10px 0 !important">
 										<div class="">
 											<span class="pull-left">
