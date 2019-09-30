@@ -90,12 +90,18 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 			$db->pquery($query, array($newValue, $id));
 		}
 
+		$moduleInstance = Vtiger_Module_Model::getInstance($moduleName);
+        $fieldModel = Vtiger_Field_Model::getInstance($pickListFieldName, $moduleInstance);
 		for ($i = 0; $i < $num_rows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$tableName = $row['tablename'];
 			$columnName = $row['columnname'];
-			$query = 'UPDATE ' . $tableName . ' SET ' . $columnName . '=? WHERE ' . $columnName . '=?';
-			$db->pquery($query, array($newValue, $oldValue));
+            if($fieldModel && $fieldModel->getFieldDataType() == 'multipicklist') {
+                $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , "|##| '.$oldValue.' |##|", "|##| '.$newValue.' |##|"))', array());
+            } else {
+                $query = 'UPDATE ' . $tableName . ' SET ' . $columnName . '=? WHERE ' . $columnName . '=?';
+			    $db->pquery($query, array($newValue, $oldValue));
+            }
 		}
 
 		$query = "UPDATE vtiger_field SET defaultvalue=? WHERE defaultvalue=? AND columnname=?";
@@ -196,10 +202,16 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 			$tableName = $row['tablename'];
 			$columnName = $row['columnname'];
 
-			$query = 'UPDATE '.$tableName.' SET '.$columnName.'=? WHERE '.$columnName.' IN ('.  generateQuestionMarks($pickListValues).')';
-			$params = array($replaceValue);
-			array_push($params, $pickListValues);
-			$db->pquery($query, $params);
+			if($fieldModel && $fieldModel->getFieldDataType() == 'multipicklist') {
+                foreach($pickListValues as $key => $multipicklistValue) {
+                    $db->pquery('UPDATE '.$tableName.' SET '.$columnName.' = TRIM(BOTH " |##| " FROM REPLACE(CONCAT(" |##| ",CONCAT('.$columnName.', " |##| ")) , " |##| '.$multipicklistValue.' |##| ", CASE WHEN INSTR(CONCAT(" |##| " ,CONCAT('.$columnName.', " |##| ")), " |##| '.$replaceValue.' |##| ") > 0 THEN " |##| " ELSE " |##| '.$replaceValue.' |##| " END))', array());
+                }
+            } else {
+                $query = 'UPDATE '.$tableName.' SET '.$columnName.'=? WHERE '.$columnName.' IN ('.  generateQuestionMarks($pickListValues).')';
+                $params = array($replaceValue);
+                array_push($params, $pickListValues);
+                $db->pquery($query, $params);
+            }
 		}
 
 		$query = 'UPDATE vtiger_field SET defaultvalue=? WHERE defaultvalue IN ('. generateQuestionMarks($pickListValues) .') AND columnname=?';
