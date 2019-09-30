@@ -16,8 +16,6 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 	}
 
 	public function process(Vtiger_Request $request) {
-        ini_set('error_reporting', '6135');
-        ini_set('display_errors', 'on');
 		$mode = $request->getMode();
 		if(!empty($mode) && $this->isMethodExposed($mode)) {
 			$this->invokeExposedMethod($mode, $request);
