@@ -5071,7 +5071,9 @@ hr {
 }
 .related-tabs.row .nav > li {
   padding: 0 10px;
-  margin: 0 2px;
+  margin: 0 2px 3px 2px;
+  width: 90px;
+  text-align: center;
 }
 .massEditTabs.nav > li {
   padding: 0 10px;
@@ -5112,6 +5114,7 @@ TN-34230 .row .nav > li > a:hover {
 .contents.tabbable .nav-tabs > li.active:focus {
   border: none;
   border-bottom: 3px solid #555;
+  margin-bottom: 0;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
