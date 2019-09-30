@@ -51,6 +51,7 @@
 			<div class="col-lg-5 col-md-6 col-sm-7 col-xs-1 padding0 pull-right">
 				<div id="appnav" class="navbar-right">
 					<nav class="navbar navbar-inverse border0">
+						{if $MODULE_BASIC_ACTIONS|@count gt 0}
 						<div class="container-fluid">
 							<div class="navbar-header">
 								<button type="button" class="navbar-toggle collapsed margin0" data-toggle="collapse" data-target="#appnavcontent" aria-expanded="false">
@@ -105,6 +106,7 @@
 
 							</div><!-- /.navbar-collapse -->
 						</div><!-- /.container-fluid -->
+						{/if}
 					</nav>
 				</div>
 			</div>
