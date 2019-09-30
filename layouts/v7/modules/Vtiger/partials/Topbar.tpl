@@ -30,11 +30,11 @@
 						</div>  
 					</div>
 				</div>
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-						<i class="fa fa-ellipsis-h"></i>
+				<div class="navbar-header paddingTop5">
+					<button type="button" class="navbar-toggle collapsed border0" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+						<i class="fa fa-th"></i>
 					</button>
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#search-links-container" aria-expanded="false">
+					<button type="button" class="navbar-toggle collapsed border0" data-toggle="collapse" data-target="#search-links-container" aria-expanded="false">
 						<i class="fa fa-search"></i>
 					</button>
 				</div>
