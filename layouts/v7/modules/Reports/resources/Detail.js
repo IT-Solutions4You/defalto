@@ -62,7 +62,7 @@ Vtiger_Detail_Js("Reports_Detail_Js",{},{
 				function(error,data){
 					app.helper.hideProgress();
 					thisInstance.getContentHolder().find('#reportContentsDiv').html(data);
-                                        if(currentMode == 'save') jQuery('.reportActionButtons').addClass('hide');
+                                        jQuery('.reportActionButtons').addClass('hide');
 //					app.helper.showHorizontalScroll(jQuery('#reportDetails'));
 
 					// To get total records count
