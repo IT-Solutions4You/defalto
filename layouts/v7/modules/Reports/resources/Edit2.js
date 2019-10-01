@@ -189,7 +189,7 @@ Reports_Edit_Js("Reports_Edit2_Js",{},{
 	 */
 	arrangeSelectChoicesInOrder : function() {
 		var selectElement = this.getReportsColumnsList();
-		var chosenElement = jQuery('#s2id_reportsColumnsList');
+		var chosenElement = app.getSelect2ElementFromSelect(selectElement);
 		var choicesContainer = chosenElement.find('ul.select2-choices');
 		var choicesList = choicesContainer.find('li.select2-search-choice');
 
@@ -204,7 +204,9 @@ Reports_Edit_Js("Reports_Edit2_Js",{},{
 		}
 		for(var index=selectedOrderKeys.length ; index > 0 ; index--) {
 			var selectedValue = selectedOrder[selectedOrderKeys[index-1]];
-			var option = selectedOptions.filter('[value="'+selectedValue+'"]');
+			//We should consider value as string 
+			var colonEscapedValue = selectedValue.replace(":", "\\:");
+			var option = selectedOptions.filter('[value="'+colonEscapedValue+'"]'); 
 			choicesList.each(function(choiceListIndex,element){
 				var liElement = jQuery(element);
 				if(liElement.find('div').html() == option.html()){
@@ -302,12 +304,12 @@ Reports_Edit_Js("Reports_Edit2_Js",{},{
 		//If the container is reloading, containers cache should be reset
 		this.reportsColumnsList = false;
 		this.selectedFields = false;
-		this.arrangeSelectChoicesInOrder();
 		this.registerLineItemCalculationLimit();
 		this.registerLineItemCalculationLimitOnLoad();
 		vtUtils.applyFieldElementsView(container);
 		this.registerSelect2ElementForReportColumns();
-          this.makeColumnListSortable();
+                this.arrangeSelectChoicesInOrder();
+                this.makeColumnListSortable();
 	}
 });
 
