@@ -3214,8 +3214,11 @@ class ReportRun extends CRMEntity {
 						} else {
 							$convert_price = false;
 						}
+						$originalValue = trim(str_replace(' ', '_', $value));
 						$value = trim($key);
-						$arraykey = $value . '_SUM';
+                        $originalkey = $value . '_SUM';
+						$originalValueKey = $originalValue.'_SUM';
+						$arraykey = $this->replaceSpecialChar($value) . '_SUM';
 						if (isset($keyhdr[$arraykey])) {
 							if ($convert_price) {
 								if ($operation == 'ExcelExport') {
@@ -3236,12 +3239,14 @@ class ReportRun extends CRMEntity {
 									}
 								}
 							}
-							$totalpdf[$rowcount][$arraykey] = $conv_value;
+							$totalpdf[$rowcount][$originalValueKey] = $conv_value;
 						} else {
-							$totalpdf[$rowcount][$arraykey] = '';
+							$totalpdf[$rowcount][$originalValueKey] = '';
 						}
 
-						$arraykey = $value . '_AVG';
+						$originalkey = $value . '_AVG';
+						$originalValueKey = $originalValue.'_AVG';
+						$arraykey = $this->replaceSpecialChar($value) . '_AVG';
 						if (isset($keyhdr[$arraykey])) {
 							if ($convert_price) {
 								if ($operation == 'ExcelExport') {
@@ -3262,12 +3267,14 @@ class ReportRun extends CRMEntity {
 									}
 								}
 							}
-							$totalpdf[$rowcount][$arraykey] = $conv_value;
+							$totalpdf[$rowcount][$originalValueKey] = $conv_value;
 						} else {
-							$totalpdf[$rowcount][$arraykey] = '';
+							$totalpdf[$rowcount][$originalValueKey] = '';
 						}
 
-						$arraykey = $value . '_MIN';
+						$originalkey = $value . '_MIN';
+						$originalValueKey = $originalValue.'_MIN';
+                        $arraykey = $this->replaceSpecialChar($value) . '_MIN';
 						if (isset($keyhdr[$arraykey])) {
 							if ($convert_price) {
 								if ($operation == 'ExcelExport') {
@@ -3288,12 +3295,14 @@ class ReportRun extends CRMEntity {
 									}
 								}
 							}
-							$totalpdf[$rowcount][$arraykey] = $conv_value;
+							$totalpdf[$rowcount][$originalValueKey] = $conv_value;
 						} else {
-							$totalpdf[$rowcount][$arraykey] = '';
+							$totalpdf[$rowcount][$originalValueKey] = '';
 						}
 
-						$arraykey = $value . '_MAX';
+						$originalkey = $value . '_MAX';
+						$originalValueKey = $originalValue.'_MAX';
+						$arraykey = $this->replaceSpecialChar($value) . '_MAX';
 						if (isset($keyhdr[$arraykey])) {
 							if ($convert_price) {
 								if ($operation == 'ExcelExport') {
@@ -3314,9 +3323,9 @@ class ReportRun extends CRMEntity {
 									}
 								}
 							}
-							$totalpdf[$rowcount][$arraykey] = $conv_value;
+							$totalpdf[$rowcount][$originalValueKey] = $conv_value;
 						} else {
-							$totalpdf[$rowcount][$arraykey] = '';
+							$totalpdf[$rowcount][$originalValueKey] = '';
 						}
 						$rowcount++;
 					}

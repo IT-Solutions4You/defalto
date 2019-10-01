@@ -864,7 +864,7 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 	$adb->pquery('INSERT INTO vtiger_inventorychargesrel VALUES (?, ?)', array($focus->id, Zend_Json::encode($chargesInfo)));
 
 	$updatequery .= " s_h_percent=?";
-	array_push($updateparams, $shipping_handling_charge);
+	array_push($updateparams, vtlib_purify($_REQUEST['s_h_percent']));
 
 	//$id_array = Array('PurchaseOrder'=>'purchaseorderid','SalesOrder'=>'salesorderid','Quotes'=>'quoteid','Invoice'=>'invoiceid');
 	//Added where condition to which entity we want to update these values

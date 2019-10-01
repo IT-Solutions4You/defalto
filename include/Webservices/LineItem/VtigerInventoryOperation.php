@@ -336,7 +336,9 @@ class VtigerInventoryOperation extends VtigerModuleOperation {
 				unset($_REQUEST['charges'][1]['taxes'][$shTaxId]);
 				if(isset($element['hdnS_H_Percent']) && $element['hdnS_H_Percent'] != 0 && $element['hdnS_H_Amount'] != 0) {
 					$_REQUEST['charges'][1]['taxes'][$shTaxId] = $element['hdnS_H_Percent'];
-					$_REQUEST['s_h_percent'] = ($element['hdnS_H_Amount'] * $element['hdnS_H_Percent'])/100;
+                    $_REQUEST['s_h_percent'] = ($element['hdnS_H_Percent']/$element['hdnS_H_Amount'])*100;
+                    $_REQUEST['charges'][$firstActiveCharge]['taxes'][$shTaxId] = $_REQUEST['s_h_percent'];
+					$element['hdnS_H_Percent'] = $_REQUEST['s_h_percent'];
 					break;
 				} else {
 					$shTaxValue = 0;
