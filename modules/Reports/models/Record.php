@@ -578,16 +578,16 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$db->pquery('INSERT INTO vtiger_reportsharing(reportid, shareid, setype) VALUES (?,?,?)',
 					array($reportId, $sharingInfo[$i]['id'], $sharingInfo[$i]['type']));
 		}
+        
+        //On every report save delete information from below tables and insert new to avoid 
+        // confusion in updating
+        $db->pquery('DELETE FROM vtiger_report_shareusers WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharegroups WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharerole WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharers WHERE reportid=?',array($reportId));
 		
 		$members = $this->get('members',array());
 		if(!empty($members)) {
-			//On every report save delete information from below tables and insert new to avoid 
-			// confusion in updating
-			$db->pquery('DELETE FROM vtiger_report_shareusers WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharegroups WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharerole WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharers WHERE reportid=?',array($reportId));
-
 			$noOfMembers = count($members);
 			for ($i = 0; $i < $noOfMembers; ++$i) {
 				$id = $members[$i];
