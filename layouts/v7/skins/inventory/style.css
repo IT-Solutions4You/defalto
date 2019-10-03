@@ -7548,6 +7548,39 @@ input:focus:-ms-input-placeholder {
 .rounded0 {
   border-radius: 0;
 }
+@media all and (min-width: 0px) and (max-width: 600px) {
+  .detailview-table > tbody > tr > td,
+  .detailview-table > tbody > tr > th,
+  .detailview-table > tfoot > tr > td,
+  .detailview-table > tfoot > tr > th,
+  .detailview-table > thead > tr > td,
+  .detailview-table > thead > tr > th {
+    display: block;
+    min-width: 100%!important;
+  }
+  .detailview-table > thead > tr > th {
+    display: none;
+  }
+  .editElement div {
+    float: left;
+  }
+  #detailView td.fieldValue .edit {
+    width: 100%;
+    float: none !important;
+    display: inline-block;
+  }
+  #detailView td.fieldLabel {
+    padding-top: 20px;
+  }
+  #detailView td.fieldValue {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+  }
+  #detailView td.fieldValue > span:first-child {
+    border: 0;
+    border-bottom: 1px dashed #aaa;
+  }
+}
 .modules-menu ul li.active a {
   border-left: 3px solid #F1C40F;
   opacity: 1;
