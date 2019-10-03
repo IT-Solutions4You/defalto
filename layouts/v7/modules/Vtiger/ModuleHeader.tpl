@@ -53,7 +53,7 @@
 					<nav class="navbar navbar-inverse border0">
 						{if $MODULE_BASIC_ACTIONS|@count gt 0}
 						<div class="container-fluid">
-							<div class="navbar-header">
+							<div class="navbar-header bg-white marginTop5px">
 								<button type="button" class="navbar-toggle collapsed margin0" data-toggle="collapse" data-target="#appnavcontent" aria-expanded="false">
 									<i class="fa fa-ellipsis-v"></i>
 								</button>

@@ -122,9 +122,9 @@ body {
     padding-right: 0;
     position: absolute;
     width: 100%;
-    height: 42px;
+    height: 43px;
     /*        border-top:1px solid #ddd;*/
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
   }
   .app-nav .module-action-bar .module-action-content {
     background: #FBFBFB;
@@ -161,7 +161,6 @@ body {
   .main-container .content-area {
     width: 100%;
     padding-left: 283px;
-    padding-top: 15px;
     min-height: 768px;
   }
   .main-container .settingsPageDiv {
@@ -392,9 +391,9 @@ body {
 }
 .app-nav .app-indicator-icon-container {
   top: 0px;
-  height: 42px;
+  height: 43px;
   text-align: center;
-  line-height: 42px;
+  line-height: 43px;
   /*    background-color: #2c3b49;*/
   color: #ffffff;
   /*border-bottom: 1px solid #272B46;*/
@@ -6023,6 +6022,7 @@ div.tooltip-inner {
 .detailview-header-block {
   background: white;
   padding: 15px;
+  padding-top: 25px;
 }
 .detailViewContainer .content-area,
 .editViewPageDiv .content-area,
@@ -7548,6 +7548,9 @@ input:focus:-ms-input-placeholder {
 .rounded0 {
   border-radius: 0;
 }
+.bg-white {
+  background: #FFFFFF;
+}
 @media all and (min-width: 0px) and (max-width: 600px) {
   .detailview-table > tbody > tr > td,
   .detailview-table > tbody > tr > th,
@@ -7579,5 +7582,11 @@ input:focus:-ms-input-placeholder {
   #detailView td.fieldValue > span:first-child {
     border: 0;
     border-bottom: 1px dashed #aaa;
+  }
+  .search-link {
+    border: 0;
+  }
+  #page > nav.navbar {
+    border-bottom: 1px solid #eee;
   }
 }
