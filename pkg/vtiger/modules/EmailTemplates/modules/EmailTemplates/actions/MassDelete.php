@@ -45,12 +45,20 @@ class EmailTemplates_MassDelete_Action extends Vtiger_Mass_Action {
 			$recordIds = $this->getRecordsListFromRequest($request, $recordModel);
 			foreach($recordIds as $recordId) {
 				$recordModel = EmailTemplates_Record_Model::getInstanceById($recordId);
-				$recordModel->delete();
+				if($recordModel->isSystemTemplate()) {
+                    $systemTemplate = true;
+                } else {
+                    $recordModel->delete();
+                }
 			}
 		}
 		
 		$response = new Vtiger_Response();
-		$response->setResult(array('module'=>$moduleName));
+		if($systemTemplate) {
+			 $response->setError('502', vtranslate('LBL_NO_PERMISSIONS_TO_DELETE_SYSTEM_TEMPLATE', $moduleName));
+        } else {
+			$response->setResult(array('module'=>$moduleName));
+		}
 		$response->emit();
 	}
 	
