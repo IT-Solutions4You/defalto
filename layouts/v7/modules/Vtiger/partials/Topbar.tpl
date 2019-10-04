@@ -30,7 +30,7 @@
 						</div>  
 					</div>
 				</div>
-				<div class="search-links-container col-md-3 col-lg-3 hidden-sm">
+				<div class="search-links-container col-md-3 col-lg-3 col-sm-3">
 					<div class="search-link hidden-xs">
 						<span class="fa fa-search" aria-hidden="true"></span>
 						<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
