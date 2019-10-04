@@ -910,8 +910,17 @@ class CRMEntity {
 				}
 			}
 		}
+        
+        //adding tags for vtws_retieve
+        $tagsList = Vtiger_Tag_Model::getAllAccessible($current_user->id, $module, $record);
+        $tags = array();
+        foreach($tagsList as $tag) {
+            $tags[] = $tag->getName();
+        }
+        $this->column_fields['tags'] = (count($tags) > 0) ? implode(',',$tags) : '';
 
 		$this->column_fields['record_id'] = $record;
+        $this->id = $record;
 		$this->column_fields['record_module'] = $module;
 		$this->column_fields->startTracking();
 	}
