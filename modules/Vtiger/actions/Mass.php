@@ -53,13 +53,8 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
         if(empty($searchParams) || !is_array($searchParams)){
             $searchParams = array();
         }
-		$masterSearchParams = $request->get('master_search_params');
-        if (!$masterSearchParams || !is_array($masterSearchParams)) {
-            $masterSearchParams = array();
-        }
         
         $searchAndTagParams = array_merge($searchParams, $tagParams);
-        $searchAndTagParams = array_merge($masterSearchParams, $searchAndTagParams);
         
 		$customViewModel = CustomView_Record_Model::getInstanceById($cvId);
 		if($customViewModel) {

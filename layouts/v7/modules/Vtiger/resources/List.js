@@ -1437,7 +1437,6 @@ Vtiger.Class("Vtiger_List_Js", {
             var container = self.getListViewContainer();
             params.tag_params = JSON.stringify(self.getListTagParams());
             params.tag = container.find('[name="tag"]').val();
-            params.master_search_params = container.find('[name="masterSearchParams"]').val();
             return params;
 	},
 	registerCheckBoxClickEvent: function () {
