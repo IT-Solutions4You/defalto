@@ -273,6 +273,27 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$cvId = $request->get('viewname');
 		$selectedIds = $request->get('selected_ids');
 		$excludedIds = $request->get('excluded_ids');
+        $tagParams = $request->get('tag_params');
+		$tag = $request->get('tag');
+		$listViewSessionKey = $moduleName.'_'.$cvId;
+
+		if(!empty($tag)) {
+			$listViewSessionKey .='_'.$tag;
+		}
+
+		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+		if(!empty($tag) && empty($tagParams)){
+			$tagParams = $orderParams['tag_params'];
+		}
+
+		if(empty($tagParams)){
+			$tagParams = array();
+		}
+        
+        if(!is_array($tagParams))
+        {
+            $tagParams = array($tagParams);
+        }
 
 		if(!empty($selectedIds) && $selectedIds != 'all') {
 			if(!empty($selectedIds) && count($selectedIds) > 0) {
@@ -280,6 +301,11 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 			}
 		}
 
+        $searchParams = $request->get('search_params');
+		if(empty($searchParams) && !is_array($searchParams)){
+			$searchParams = array();
+		}
+        $searchAndTagParams = array_merge($searchParams, $tagParams);
 		$sourceRecord = $request->get('sourceRecord');
 		$sourceModule = $request->get('sourceModule');
 		if ($sourceRecord && $sourceModule) {
@@ -297,7 +323,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 				$customViewModel->set('search_key', $searchKey);
 				$customViewModel->set('search_value', $searchValue);
 			}
-			$customViewModel->set('search_params', $request->get('search_params'));
+			$customViewModel->set('search_params', $searchAndTagParams);
 			return $customViewModel->getRecordIds($excludedIds);
 		}
 		return array();

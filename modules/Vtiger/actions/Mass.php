@@ -32,7 +32,30 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
 				return $selectedIds;
 			}
 		}
+        $tagParams = $request->get('tag_params');
+        $tag = $request->get('tag');
+        $listViewSessionKey = $module.'_'.$cvId;
 
+        if(!empty($tag)) {
+            $listViewSessionKey .='_'.$tag;
+        }
+
+        $orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+        if(!empty($tag) && empty($tagParams)){
+            $tagParams = $orderParams['tag_params'];
+        }
+
+        if(empty($tagParams)){
+            $tagParams = array();
+        }
+        
+        $searchParams = $request->get('search_params');
+        if(empty($searchParams) || !is_array($searchParams)){
+            $searchParams = array();
+        }
+        
+        $searchAndTagParams = array_merge($searchParams, $tagParams);
+        
 		$customViewModel = CustomView_Record_Model::getInstanceById($cvId);
 		if($customViewModel) {
             $searchKey = $request->get('search_key');
@@ -53,7 +76,7 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
 				$customViewModel->set('folder_value', $request->get('folder_value'));
 			}
 
-			$customViewModel->set('search_params',$request->get('search_params'));
+			$customViewModel->set('search_params',$searchAndTagParams);
 			return $customViewModel->getRecordIds($excludedIds,$module);
 		}
 	}
