@@ -164,25 +164,29 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		}
 
 		//Start Date and Time values
-		$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
-		$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
-		list($startDate, $startTime) = explode(' ', $startDateTime);
+        if($request->get('date_start') && $request->get('time_start')) {
+            $startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
+            $startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
+            list($startDate, $startTime) = explode(' ', $startDateTime);
 
-		$recordModel->set('date_start', $startDate);
-		$recordModel->set('time_start', $startTime);
+            $recordModel->set('date_start', $startDate);
+            $recordModel->set('time_start', $startTime);
+        }
 
 		//End Date and Time values
-		$endTime = $request->get('time_end');
-		$endDate = Vtiger_Date_UIType::getDBInsertedValue($request->get('due_date'));
+        if($request->get('due_date')) {
+            $endTime = $request->get('time_end');
+            $endDate = Vtiger_Date_UIType::getDBInsertedValue($request->get('due_date'));
 
-		if ($endTime) {
-			$endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
-			$endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
-			list($endDate, $endTime) = explode(' ', $endDateTime);
-		}
+            if ($endTime) {
+                $endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
+                $endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
+                list($endDate, $endTime) = explode(' ', $endDateTime);
+            }
 
-		$recordModel->set('time_end', $endTime);
-		$recordModel->set('due_date', $endDate);
+            $recordModel->set('time_end', $endTime);
+            $recordModel->set('due_date', $endDate);
+        }
 
 		$activityType = $request->get('activitytype');
 		if(empty($activityType)) {
