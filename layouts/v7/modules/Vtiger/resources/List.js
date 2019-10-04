@@ -119,7 +119,7 @@ Vtiger.Class("Vtiger_List_Js", {
 		var listSelectParams = listInstance.getListSelectAllParams();
 		if (listSelectParams) {
 			app.helper.showProgress();
-			app.request.get({'url': massActionUrl}).then(
+			app.request.get({'url': massActionUrl,'data': listSelectParams}).then(
 					function (error, data) {
 						app.helper.hideProgress();
 						if (data) {
@@ -1430,11 +1430,15 @@ Vtiger.Class("Vtiger_List_Js", {
 		recordSelectTracker.clearList();
 	},
 	getListSelectAllParams: function (jsonDecode) {
-		var self = this;
-		var recordSelectTrackerInstance = self.getRecordSelectTrackerInstance();
-		var params = recordSelectTrackerInstance.getSelectedAndExcludedIds(jsonDecode);
-		params.search_params = JSON.stringify(self.getListSearchParams());
-		return params;
+            var self = this;
+            var recordSelectTrackerInstance = self.getRecordSelectTrackerInstance();
+            var params = recordSelectTrackerInstance.getSelectedAndExcludedIds(jsonDecode);
+            params.search_params = JSON.stringify(self.getListSearchParams());
+            var container = self.getListViewContainer();
+            params.tag_params = JSON.stringify(self.getListTagParams());
+            params.tag = container.find('[name="tag"]').val();
+            params.master_search_params = container.find('[name="masterSearchParams"]').val();
+            return params;
 	},
 	registerCheckBoxClickEvent: function () {
 		var self = this;
