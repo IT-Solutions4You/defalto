@@ -12,7 +12,7 @@
     {foreach key=index item=jsModel from=$SCRIPTS}
         <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
     {/foreach}
-    
+
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form class="form-horizontal recordEditView" id="QuickCreate" name="QuickCreate" method="post" action="index.php">
@@ -56,7 +56,7 @@
                                         {assign var=COUNTER value=$COUNTER+1}
                                     {/if}
                                     <td class='fieldLabel col-lg-2'>
-                                        {if $isReferenceField neq "reference"}<label class="muted pull-right">{/if}
+                                        {if $isReferenceField neq "reference"}<label class="muted">{/if}
                                             {if $isReferenceField eq "reference"}
                                                 {if $referenceListCount > 1}
                                                     {assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
@@ -72,7 +72,7 @@
                                                         </select>
                                                     </span>
                                                 {else}
-                                                    <label class="muted pull-right">{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
+                                                    <label class="muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
                                                 {/if}
                                             {else if $FIELD_MODEL->get('uitype') eq '83'}
 												{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) COUNTER=$COUNTER MODULE=$MODULE PULL_RIGHT=true}

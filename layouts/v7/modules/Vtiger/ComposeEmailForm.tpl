@@ -43,7 +43,7 @@
                     <div class="row toEmailField">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_TO',$MODULE)}&nbsp;<span class="redColor">*</span></span>
+                                <span class="">{vtranslate('LBL_TO',$MODULE)}&nbsp;<span class="redColor">*</span></span>
                             </div>
                             <div class="col-lg-6">
                                 {if !empty($TO)}
@@ -52,7 +52,7 @@
                                 <input id="emailField" style="width:100%" name="toEmail" type="text" class="autoComplete sourceField select2" data-rule-required="true" data-rule-multiEmails="true" value="{$TO_EMAILS}" placeholder="{vtranslate('LBL_TYPE_AND_SEARCH',$MODULE)}">
                             </div>
                             <div class="col-lg-4 input-group">
-                                <select style="width: 140px;" class="select2 emailModulesList pull-right">
+                                <select style="width: 140px;" class="select2 emailModulesList">
                                     {foreach item=MODULE_NAME from=$RELATED_MODULES}
                                         <option value="{$MODULE_NAME}" {if $MODULE_NAME eq $FIELD_MODULE} selected {/if}>{vtranslate($MODULE_NAME,$MODULE_NAME)}</option>
 							 {/foreach}
@@ -71,7 +71,7 @@
                     <div class="row {if empty($CC)} hide {/if} ccContainer">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_CC',$MODULE)}</span>
+                                <span class="">{vtranslate('LBL_CC',$MODULE)}</span>
                             </div>
                             <div class="col-lg-6">
                                 <input type="text" name="cc" data-rule-multiEmails="true" value="{if !empty($CC)}{$CC}{/if}"/>
@@ -83,7 +83,7 @@
                     <div class="row {if empty($BCC)} hide {/if} bccContainer">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_BCC',$MODULE)}</span>
+                                <span class="">{vtranslate('LBL_BCC',$MODULE)}</span>
                             </div>
                             <div class="col-lg-6">
                                 <input type="text" name="bcc" data-rule-multiEmails="true" value="{if !empty($BCC)}{$BCC}{/if}"/>
@@ -107,7 +107,7 @@
                     <div class="row subjectField">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_SUBJECT',$MODULE)}&nbsp;<span class="redColor">*</span></span>
+                                <span class="">{vtranslate('LBL_SUBJECT',$MODULE)}&nbsp;<span class="redColor">*</span></span>
                             </div>
                             <div class="col-lg-6">
                                 <input type="text" name="subject" value="{$SUBJECT}" data-rule-required="true" id="subject" spellcheck="true" class="inputElement"/>
@@ -119,7 +119,7 @@
                     <div class="row attachment">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_ATTACHMENT',$MODULE)}</span>
+                                <span class="">{vtranslate('LBL_ATTACHMENT',$MODULE)}</span>
                             </div>
                             <div class="col-lg-9">
                                 <div class="row">
@@ -130,7 +130,7 @@
                                         <button type="button" class="btn btn-small btn-default" id="browseCrm" data-url="{$DOCUMENTS_URL}" title="{vtranslate('LBL_BROWSE_CRM',$MODULE)}">{vtranslate('LBL_BROWSE_CRM',$MODULE)}</button>
                                     </div>
                                     <div class="col-lg-4 insertTemplate">
-                                        <button id="selectEmailTemplate" class="btn btn-success pull-right" data-url="module=EmailTemplates&view=Popup">{vtranslate('LBL_SELECT_EMAIL_TEMPLATE',$MODULE)}</button>
+                                        <button id="selectEmailTemplate" class="btn btn-success" data-url="module=EmailTemplates&view=Popup">{vtranslate('LBL_SELECT_EMAIL_TEMPLATE',$MODULE)}</button>
                                     </div>
                                 </div>
                                 <div id="attachments">
@@ -156,7 +156,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
-                                <span class="pull-right">{vtranslate('LBL_INCLUDE_SIGNATURE',$MODULE)}</span>
+                                <span class="">{vtranslate('LBL_INCLUDE_SIGNATURE',$MODULE)}</span>
                             </div>
                             <div class="item col-lg-9">
                                 <input class="" type="checkbox" name="signature" value="Yes" checked="checked" id="signature">

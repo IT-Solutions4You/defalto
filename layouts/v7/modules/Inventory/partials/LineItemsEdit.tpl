@@ -75,12 +75,12 @@
 	{if $BLOCK_FIELDS|@count gt 0}
 		<div class='fieldBlockContainer'>
 			<div class="row">
-				<div class="col-lg-5 col-md-5 col-sm-5">
+				<div class="col-sm-3">
+					<h4 class='fieldBlockHeader' style="margin-top:5px;">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
+				</div>
+				<div class="col-sm-9 well">
 					<div class="row">
-						<div class="col-lg-4 col-md-4 col-sm-4">
-							<h4 class='fieldBlockHeader' style="margin-top:5px;">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
-						</div>
-						<div class="col-lg-8 col-md-8 col-sm-8" style="top: 3px;">
+						<div class="col-sm-4">
 							{if $LINEITEM_FIELDS['region_id'] && $LINEITEM_FIELDS['region_id']->isEditable()}
 								<span class="pull-right">
 									<i class="fa fa-info-circle"></i>&nbsp;
@@ -92,54 +92,54 @@
 										{/foreach}
 									</select>
 									<input type="hidden" id="prevRegionId" value="{$RECORD->get('region_id')}" />
-									&nbsp;&nbsp;<a class="fa fa-wrench" href="index.php?module=Vtiger&parent=Settings&view=TaxIndex" target="_blank" style="vertical-align:middle;"></a>
-								</span>
+									<a class="fa fa-wrench hidden-xs" href="index.php?module=Vtiger&parent=Settings&view=TaxIndex" target="_blank" style="vertical-align:middle;"></a>
+										</span>
 							{/if}
 						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3" style="top: 3px;">
-					<center>
-						<i class="fa fa-info-circle"></i>&nbsp;
-						<label>{vtranslate('LBL_CURRENCY',$MODULE)}</label>&nbsp;
-						{assign var=SELECTED_CURRENCY value=$CURRENCINFO}
-						{* Lookup the currency information if not yet set - create mode *}
-						{if $SELECTED_CURRENCY eq ''}
-							{assign var=USER_CURRENCY_ID value=$USER_MODEL->get('currency_id')}
-							{foreach item=currency_details from=$CURRENCIES}
-								{if $currency_details.curid eq $USER_CURRENCY_ID}
-									{assign var=SELECTED_CURRENCY value=$currency_details}
+						<div class="col-sm-4">
+							<div class="pull-right">
+								<i class="fa fa-info-circle"></i>&nbsp;
+								<label>{vtranslate('LBL_CURRENCY',$MODULE)}</label>&nbsp;
+								{assign var=SELECTED_CURRENCY value=$CURRENCINFO}
+								{* Lookup the currency information if not yet set - create mode *}
+								{if $SELECTED_CURRENCY eq ''}
+									{assign var=USER_CURRENCY_ID value=$USER_MODEL->get('currency_id')}
+									{foreach item=currency_details from=$CURRENCIES}
+										{if $currency_details.curid eq $USER_CURRENCY_ID}
+											{assign var=SELECTED_CURRENCY value=$currency_details}
+										{/if}
+									{/foreach}
 								{/if}
-							{/foreach}
-						{/if}
 
-						<select class="select2" id="currency_id" name="currency_id" style="width: 150px;">
-							{foreach item=currency_details key=count from=$CURRENCIES}
-								<option value="{$currency_details.curid}" class="textShadowNone" data-conversion-rate="{$currency_details.conversionrate}" {if $SELECTED_CURRENCY.currency_id eq $currency_details.curid} selected {/if}>
-									{$currency_details.currencylabel|@getTranslatedCurrencyString} ({$currency_details.currencysymbol})
-								</option>
-							{/foreach}
-						</select>
+								<select class="select2" id="currency_id" name="currency_id" style="width: 150px;">
+									{foreach item=currency_details key=count from=$CURRENCIES}
+										<option value="{$currency_details.curid}" class="textShadowNone" data-conversion-rate="{$currency_details.conversionrate}" {if $SELECTED_CURRENCY.currency_id eq $currency_details.curid} selected {/if}>
+											{$currency_details.currencylabel|@getTranslatedCurrencyString} ({$currency_details.currencysymbol})
+										</option>
+									{/foreach}
+								</select>
 
-						{assign var="RECORD_CURRENCY_RATE" value=$RECORD_STRUCTURE_MODEL->getRecord()->get('conversion_rate')}
-						{if $RECORD_CURRENCY_RATE eq ''}
-							{assign var="RECORD_CURRENCY_RATE" value=$SELECTED_CURRENCY.conversionrate}
-						{/if}
-						<input type="hidden" name="conversion_rate" id="conversion_rate" value="{$RECORD_CURRENCY_RATE}" />
-						<input type="hidden" value="{$SELECTED_CURRENCY.currency_id}" id="prev_selected_currency_id" />
-						<!-- TODO : To get default currency in even better way than depending on first element -->
-						<input type="hidden" id="default_currency_id" value="{$CURRENCIES.0.curid}" />
-						<input type="hidden" value="{$SELECTED_CURRENCY.currency_id}" id="selectedCurrencyId" />
-					</center>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-4" style="top: 3px;">
-					<div style="float: right;">
-						<i class="fa fa-info-circle"></i>&nbsp;
-						<label>{vtranslate('LBL_TAX_MODE',$MODULE)}</label>&nbsp;
-						<select class="select2 lineItemTax" id="taxtype" name="taxtype" style="width: 150px;">
-							<option value="individual" {if $IS_INDIVIDUAL_TAX_TYPE}selected{/if}>{vtranslate('LBL_INDIVIDUAL', $MODULE)}</option>
-							<option value="group" {if $IS_GROUP_TAX_TYPE}selected{/if}>{vtranslate('LBL_GROUP', $MODULE)}</option>
-						</select>
+								{assign var="RECORD_CURRENCY_RATE" value=$RECORD_STRUCTURE_MODEL->getRecord()->get('conversion_rate')}
+								{if $RECORD_CURRENCY_RATE eq ''}
+									{assign var="RECORD_CURRENCY_RATE" value=$SELECTED_CURRENCY.conversionrate}
+								{/if}
+								<input type="hidden" name="conversion_rate" id="conversion_rate" value="{$RECORD_CURRENCY_RATE}" />
+								<input type="hidden" value="{$SELECTED_CURRENCY.currency_id}" id="prev_selected_currency_id" />
+								<!-- TODO : To get default currency in even better way than depending on first element -->
+								<input type="hidden" id="default_currency_id" value="{$CURRENCIES.0.curid}" />
+								<input type="hidden" value="{$SELECTED_CURRENCY.currency_id}" id="selectedCurrencyId" />
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="pull-right">
+								<i class="fa fa-info-circle"></i>&nbsp;
+								<label>{vtranslate('LBL_TAX_MODE',$MODULE)}</label>&nbsp;
+								<select class="select2 lineItemTax" id="taxtype" name="taxtype" style="width: 150px;">
+									<option value="individual" {if $IS_INDIVIDUAL_TAX_TYPE}selected{/if}>{vtranslate('LBL_INDIVIDUAL', $MODULE)}</option>
+									<option value="group" {if $IS_GROUP_TAX_TYPE}selected{/if}>{vtranslate('LBL_GROUP', $MODULE)}</option>
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

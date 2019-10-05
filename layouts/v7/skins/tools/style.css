@@ -7552,6 +7552,24 @@ input:focus:-ms-input-placeholder {
   background: #FFFFFF;
 }
 @media all and (min-width: 0px) and (max-width: 600px) {
+  table.summary-table > tbody > tr > td,
+  table.summary-table > tbody > tr > th,
+  table.summary-table > tfoot > tr > td,
+  table.summary-table > tfoot > tr > th,
+  table.summary-table > thead > tr > td,
+  table.summary-table > thead > tr > th,
+  .quickCreateContent > table.table > tbody > tr > td,
+  .quickCreateContent > table.table > tbody > tr > th,
+  .quickCreateContent > table.table > tfoot > tr > td,
+  .quickCreateContent > table.table > tfoot > tr > th,
+  .quickCreateContent > table.table > thead > tr > td,
+  .quickCreateContent > table.table > thead > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
   .detailview-table > tbody > tr > td,
   .detailview-table > tbody > tr > th,
   .detailview-table > tfoot > tr > td,
@@ -7561,6 +7579,9 @@ input:focus:-ms-input-placeholder {
     display: block;
     min-width: 100%!important;
   }
+  table.summary-table > thead > tr > th,
+  .quickCreateContent > table.table > thead > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
   .detailview-table > thead > tr > th {
     display: none;
   }
@@ -7571,6 +7592,13 @@ input:focus:-ms-input-placeholder {
     width: 100%;
     float: none !important;
     display: inline-block;
+  }
+  table.summary-table td.fieldValue .inputElement,
+  .quickCreateContent > table.table td.fieldValue .inputElement,
+  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .inputElement,
+  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .input-group {
+    width: 100%;
+    float: none !important;
   }
   #detailView td.fieldLabel {
     padding-top: 20px;
@@ -7588,5 +7616,38 @@ input:focus:-ms-input-placeholder {
   }
   #page > nav.navbar {
     border-bottom: 1px solid #eee;
+  }
+  .modal-overlay-footer {
+    border-left: 0;
+  }
+  .app-footer {
+    font-size: 11px;
+  }
+  body {
+    font-size: 13px;
+  }
+  .overlay-container-60 {
+    margin-left: 0px ;
+  }
+  .overlayPageContent {
+    padding-bottom: 0;
+  }
+  .overlayPageContent.fade {
+    overflow: scroll;
+  }
+  .overlayDetail .modal-content {
+    position: relative;
+  }
+  .mCSB_inside > .mCSB_container {
+    margin-right: 0;
+  }
+  #mCSB_9_scrollbar_vertical {
+    display: none;
+  }
+  .lineItemInputBox {
+    width: 100%;
+  }
+  #comment1 {
+    border-left-color: #ccc;
   }
 }
