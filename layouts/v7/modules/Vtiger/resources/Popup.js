@@ -210,8 +210,8 @@ jQuery.Class("Vtiger_Popup_Js",{
             var listViewTable = listViewPageDiv.find('.listViewEntriesTable');
             var searchParams = new Array();
             var currentSearchParams = new Array();
-            if(jQuery('#currentSearchParams').val())
-                currentSearchParams = JSON.parse(jQuery('#currentSearchParams').val());
+            if(jQuery('#currentSearchParams', listViewPageDiv).val())
+                currentSearchParams = JSON.parse(jQuery('#currentSearchParams', listViewPageDiv).val());
                 listViewTable.find('.listSearchContributor').each(function(index,domElement){
                     var searchInfo = new Array();
                     var searchContributorElement = jQuery(domElement);
