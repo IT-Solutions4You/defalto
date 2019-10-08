@@ -553,3 +553,73 @@ Vtiger_Multipicklist_Field_Js('Workflows_Multipicklist_Field_Js', {}, {
 		return selectContainer;
 	}
 });
+
+Vtiger_Reference_Field_Js("Workflows_Reference_Field_Js",{},{
+    getUi : function(){
+        var referenceModules = this.getReferenceModules();
+        var value = this.getValue();
+        var html = '<div class="referencefield-wrapper';
+        if(value){
+            html += ' selected';
+        }
+        html += '">';
+        html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
+        html += '<div class="input-group">'; 
+        html += '<input class="sourceField" name="'+this.getName()+'" type="hidden" value="'+value+'"/>';
+        html += '<span class="clearReferenceSelectionWrapper"><input class="autoComplete inputElement ui-autocomplete-input textOverflowEllipsis" type="text" data-fieldtype="reference" data-fieldmodule="'+this.get('workflow_field_modulename')+'" name="'+this.getName()+'_display" placeholder="Type to Search"';
+        var reset = false;
+        if(value){
+            html += ' value="'+value+'" disabled="disabled"';
+            reset = true;
+        }
+        html += '/>';
+        
+        if(reset){
+            html += '<a href="#" class="clearReferenceSelection"><i class="fa fa-close p-l-8"></i></a>';
+        }else {
+            html += '<a href="#" class="clearReferenceSelection hide"><i class="fa fa-close p-l-8"></i></a>';
+        }
+        html += '</span>';
+		html += '<div class="referenceLoadingWrapper hide"><svg class="referenceSpinner"><circle cx="20" cy="20" r="8"></circle><circle class="small" cx="20" cy="20" r="5"></circle></svg></div>';
+        //popup search element
+        html += '<span class="input-group-addon relatedPopup cursorPointer textAlignCenter" title="Select">';
+        html += '<i class="fa fa-search p-l-8"></i>';
+        html += '</span>';
+        
+        html += '</div>';
+        html += '</div>'; 
+        return this.addValidationToElement(html);
+    }
+});
+
+Workflows_Reference_Field_Js("Workflows_Multireference_Field_Js",{},{});
+
+Workflows_Field_Js('Workflows_Integer_Field_Js',{},{
+	getUi : function() {
+            console.log('get ui on integer field');
+		if(this.getName() === 'profile_rating') {
+			//Special handling for profile_rating field to show dropdown instead of input box as its integer field.
+			var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
+			var pickListValues = {1 : 1, 2 : 2, 3 : 3, 4 : 4, 5 : 5};
+			var selectedOption = parseInt(this.getValue());
+			html += '<option value="">Select an Option</option>';
+			for(var option in pickListValues) {
+				html += '<option value="'+option+'" ';
+				if(option == selectedOption) {
+					html += ' selected ';
+				}
+				html += '>'+option+'</option>';
+			}
+			html +='</select>';
+			var selectContainer = jQuery(html);
+			this.addValidationToElement(selectContainer);
+			return selectContainer;
+		} else {
+            var value = app.htmlDecode(this.getValue());
+            value = value.replace(/"/g, "&quot;");
+            var html = '<input value="'+value+'" type="text" class="getPopupUi inputElement" name="'+ this.getName() +'"  /><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+            return this.addValidationToElement(jQuery(html));
+		}
+	}
+});
+
