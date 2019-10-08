@@ -57,10 +57,14 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 					} elseif ($fieldModel->getFieldDataType() === 'date') {
 						$fieldValue = DateTimeField::convertToDBFormat($fieldValue);
 					} elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {
-						$ids = vtws_getIdComponents($fieldValue);
-						if (count($ids) === 1) {
-							$fieldValue = vtws_getWebserviceEntityId(getSalesEntityType($fieldValue), $fieldValue);
-						}
+						if($fieldModel->get('uitype') == 77){
+                            $fieldValue = vtws_getWebserviceEntityId(vtws_getOwnerType($fieldValue), $fieldValue);
+                        } else {
+                            $ids = vtws_getIdComponents($fieldValue);
+                            if (count($ids) === 1) {
+                                $fieldValue = vtws_getWebserviceEntityId(getSalesEntityType($fieldValue), $fieldValue);
+                            }
+                        }
 					}
 					$entityValues['entities'][$module][$fieldName] = $fieldValue;
 				}
