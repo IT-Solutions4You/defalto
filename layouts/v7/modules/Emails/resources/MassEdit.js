@@ -912,10 +912,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 					jQuery('#emailTemplateWarning').addClass('hide');
 				}
 			});
-			var params = {
-				setHeight:(jQuery(window).height() - container.find('.modal-header').height() - container.find('.modal-footer').height() - 100)+'px'
-			};
-			app.helper.showVerticalScroll(container.find('.modal-body'), params);
 		}
 	}
 });
