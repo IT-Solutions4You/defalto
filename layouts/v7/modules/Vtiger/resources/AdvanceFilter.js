@@ -217,8 +217,6 @@ jQuery.Class("Vtiger_AdvanceFilter_Js",{
 		var fieldSelected = fieldSelect.find('option:selected');
 		var fieldSpecificType = this.getFieldSpecificType(fieldSelected)
 		var conditionList = this.getConditionListFromType(fieldSpecificType);
-                console.log('Condition list is => ');
-                console.log(conditionList);
 
 		var fieldInfo = fieldSelected.data('fieldinfo');
 		if(typeof fieldInfo != 'undefined') {
