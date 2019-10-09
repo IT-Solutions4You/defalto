@@ -15,7 +15,7 @@
         <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
     </span>
     {/if}
-    {if $LISTVIEW_ENTRY->get('starred') eq 'Yes'}
+    {if $LISTVIEW_ENTRY->get('starred') eq vtranslate('LBL_YES', $MODULE)}
         {assign var=STARRED value=true}
     {else}
         {assign var=STARRED value=false}
