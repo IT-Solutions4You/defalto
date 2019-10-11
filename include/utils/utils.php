@@ -2322,33 +2322,6 @@ function lower_array(&$string){
 	$string = strtolower(trim($string));
 }
 
-/* PHP 7 support */
-function php7_compat_split($delim, $str, $ignore_case=false) {
-	$splits = array();
-	while ($str) {
-		$pos = $ignore_case ? stripos($str, $delim) : strpos($str, $delim);
-		if ($pos !== false) {
-			$splits[] = substr($str, 0, $pos);
-			$str = substr($str, $pos + strlen($delim));
-		} else {
-			$splits[] = $str;
-			$str = false;
-		}
-	}
-	return $splits;
-}
-
-if (!function_exists('split'))  { function split($delim, $str)  {return php7_compat_split($delim, $str); } }
-if (!function_exists('spliti')) { function spliti($delim, $str) {return php7_compat_split($delim, $str, true);}}
-
-function php7_compat_ereg($pattern, $str, $ignore_case=false) {
-	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
-	return preg_match($regex, $str);
-}
-
-if (!function_exists('ereg')) { function ereg($pattern, $str) { return php7_compat_ereg($pattern, $str); } }
-if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_compat_ereg($pattern, $str, true); } }
-
 if (!function_exists('get_magic_quotes_runtime')) { function get_magic_quotes_runtime() { return false; } }
 if (!function_exists('set_magic_quotes_runtime')) { function set_magic_quotes_runtime($flag) {} }
 
