@@ -71,7 +71,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 		$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
 		foreach ($emailSupportedModulesList as $module) {
 			if ($module != 'Users' && $module != 'ModComments') {
-                    $activeModules[] = "'".$module."'";
+                    $activeModules[] = $module;
                     $activeModuleModel = Vtiger_Module_Model::getInstance($module);
                     $moduleEmailFields = $activeModuleModel->getFieldsByType('email');
 					foreach ($moduleEmailFields as $fieldName => $fieldModel) {
@@ -83,7 +83,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 				}
 
 			if ($moduleName) {
-                $activeModules = array("'".$moduleName."'");
+                $activeModules = array($moduleName);
             }
             
             $query = "SELECT vtiger_emailslookup.crmid, vtiger_emailslookup.setype, vtiger_emailslookup.value, 
