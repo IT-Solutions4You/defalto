@@ -287,9 +287,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 			},
 
 		}).on("change", function (selectedData) {
-                    console.log('Data added to to email field');
-                    console.log('selectedData is => ');
-                    console.log(selectedData);
 			var addedElement = selectedData.added;
 			if (typeof addedElement != 'undefined') {
 				var data = {
@@ -299,7 +296,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 				}
 				thisInstance.addToEmails(data);
 				if (typeof addedElement.recordId != 'undefined') {
-                                    console.log('1st if loop to add to email address');
 					thisInstance.addToEmailAddressData(data);
 					thisInstance.appendToSelectedIds(addedElement.recordId);
 				}
