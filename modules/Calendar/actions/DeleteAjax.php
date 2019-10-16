@@ -31,9 +31,9 @@ class Calendar_DeleteAjax_Action extends Vtiger_DeleteAjax_Action {
 			$activityModulesList = array('Calendar', 'Events');
 			$recordEntityName = getSalesEntityType($record);
 
-			if (!in_array($recordEntityName, $activityModulesList) || !in_array($sourceModule, $activityModulesList)) {
+			if ((!empty($recordEntityName) && !in_array($recordEntityName, $activityModulesList)) || (!empty($sourceModule) && !in_array($sourceModule, $activityModulesList))) {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-			}
+		}
 		}
 		return true;
 	}
