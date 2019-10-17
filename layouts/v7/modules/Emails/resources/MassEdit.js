@@ -222,7 +222,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 			jQuery(e.currentTarget).hide();
 		});
 	},
-
+        
 	/**
 	 * Function which will handle the reference auto complete event registrations
 	 * @params - container <jQuery> - element in which auto complete fields needs to be searched
@@ -242,7 +242,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 				'dataType' : 'json',
 				'data' : function(term,page){
 					 var data = {};
-					 data['searchValue'] = encodeURIComponent(term);
+					 data['searchValue'] = term;
 					 return data;
 				},
 				'results' : function(data){
@@ -280,10 +280,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 				if(lastResults.length == 0) {
 					return { id: term, text: term };
 				}
-			},
-			escapeMarkup: function(m) {
-				// Do not escape HTML in the select options text
-				return m;
 			},
 
 		}).on("change", function (selectedData) {
