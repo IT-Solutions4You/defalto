@@ -1690,7 +1690,7 @@ class Users extends CRMEntity {
 		$moduleName = $obj->module;
 		$createdRecords = array();
 
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
 		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
 		$result = $adb->pquery($sql, array(Import_Data_Action::$IMPORT_RECORD_NONE));
 		$numberOfRecords = $adb->num_rows($result);
