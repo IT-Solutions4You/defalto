@@ -494,18 +494,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 				params = {};
 			}
 			if (typeof params.callbackFunction === 'undefined') {
-                            console.log('params callback undefined');
 				params.callbackFunction = function(data, err) {
 					//fix for Refresh list view after Quick create
 					var parentModule=app.getModuleName();
 					var viewname=app.view();
-					if((quickCreateModuleName == parentModule) && (viewname=="List")){
+					if(((quickCreateModuleName == parentModule) || (quickCreateModuleName == 'Events' && parentModule == 'Calendar')) && (viewname=="List")){
                                             var listinstance = app.controller();
                                             listinstance.loadListViewRecords(); 
-					}else if(quickCreateModuleName == 'Events' && parentModule == 'Calendar'  && (viewname=="List")){
-                                            var listinstance = app.controller();
-                                            listinstance.loadListViewRecords(); 
-                                        }
+					}
 				};
 			}
 			app.helper.showProgress();
