@@ -193,7 +193,16 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 			$output[] = DataTransform::sanitizeDataWithColumn($row,$meta);
 		}
 		
-		return $output;
+		$newOutput = array();
+        if(count($output)) {
+            //Added check if tags was requested or not
+            if(stripos($mysql_query, $meta->getEntityBaseTable().'.tags') !== false) $tags = Vtiger_Tag_Model::getAllAccessibleTags(array_keys($output));
+            foreach($output as $id => $row1) {
+                if(!empty($tags[$id])) $output[$id]['tags'] = $tags[$id];
+                $newOutput[] = $output[$id];
+            }
+        }
+		return $newOutput;
 	}
 	
 	public function describe($elementType){
