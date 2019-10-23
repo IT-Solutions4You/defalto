@@ -19,7 +19,6 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			$moduleParameter = 'source_module';
 		}
 		$record = $request->get('record');
-		// Child class permission check support - DragDropAjax 
 		$recordId = $request->get('id');
 		if (!$record) {
 			$recordParameter = '';

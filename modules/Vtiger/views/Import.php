@@ -247,7 +247,7 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 		$ownerId = $request->get('foruser');
 
 		$user = Users_Record_Model::getCurrentUserModel();
-		$dbTableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($user));
+		$dbTableName = Import_Utils_Helper::getDbTableName($user);
 
 		if(!$user->isAdminUser() && $user->id != $ownerId) {
 			$viewer->assign('MESSAGE', vtranslate('LBL_PERMISSION_DENIED'));

@@ -596,7 +596,6 @@ Workflows_Reference_Field_Js("Workflows_Multireference_Field_Js",{},{});
 
 Workflows_Field_Js('Workflows_Integer_Field_Js',{},{
 	getUi : function() {
-            console.log('get ui on integer field');
 		if(this.getName() === 'profile_rating') {
 			//Special handling for profile_rating field to show dropdown instead of input box as its integer field.
 			var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';

@@ -550,7 +550,6 @@ class Emails extends CRMEntity {
 			$module = getTabname($tabId);
 		}
 		$query = $this->getNonAdminAccessQuery($module, $user, $parentRole, $userGroups);
-        $tableName = Vtiger_Util_Helper::validateStringForSql($tableName);
 		$query = "create temporary table IF NOT EXISTS $tableName(id int(11) primary key, shared int(1) default 0) ignore ".$query;
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery($query, array());
