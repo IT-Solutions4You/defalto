@@ -583,6 +583,13 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				$this->fieldInfo['picklistColors'] = $picklistColors;
 			}
 		}
+        
+        if($fieldDataType == "documentsFolder"){
+            $documentFolders = $this->getDocumentFolders();
+            if(!empty($documentFolders)) {
+                $this->fieldInfo['documentFolders'] = $documentFolders;
+            }
+        }
 
 		if($fieldDataType === 'currencyList'){
 		   $currencyList = $this->getCurrencyList();
