@@ -797,9 +797,6 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> - Entity Display Name for the record
 	 */
 	public function getDisplayName() {
-        global $log;
-        $log->fatal('getDisplayName api => ');
-        $log->fatal($this->getData());
 		return getFullNameFromArray($this->getModuleName(),$this->getData());
 	}
 
