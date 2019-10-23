@@ -157,9 +157,6 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
 			$fieldValue = $request->get($fieldName, null);
 			$fieldDataType = $fieldModel->getFieldDataType();
-            if($fieldValue){
-                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
-            }
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 			}
