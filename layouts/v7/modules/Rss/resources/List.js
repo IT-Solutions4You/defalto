@@ -321,7 +321,8 @@ Vtiger_List_Js("Rss_List_Js",{},{
         var container = this.getListViewContainer();
         this.registerRssAddButtonClickEvent();
         this.registerRssUrlClickEvent();
-        this.registerFeedClickEvent(container);
+        //Avoiding this call file_get_contents is not fetching data successfully.
+        //this.registerFeedClickEvent(container);
         this.registerMakeDefaultClickEvent(container);
         this.setFeedContainerHeight(container);
     }
