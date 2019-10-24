@@ -23,7 +23,7 @@ Vtiger_Detail_Js("Contacts_Detail_Js", {}, {
 		var element = jQuery('[name="portal"]', form);
 		var response = element.is(':checked');
 		var primaryEmailField = jQuery('[data-name="email"]');
-		var primaryEmailValue = primaryEmailField["0"].attributes["data-value"].value;
+		if(primaryEmailField.length > 0) var primaryEmailValue = primaryEmailField["0"].attributes["data-value"].value;
 		if (response) {
 			if (primaryEmailField.length == 0) {
 				app.helper.showErrorNotification({message: app.vtranslate('JS_PRIMARY_EMAIL_FIELD_DOES_NOT_EXISTS')});
