@@ -68,6 +68,7 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
     public function getQuery() {
 		$listQuery = parent::getQuery();
 		$searchKey = $this->get('search_key');
+        $db = PearDatabase::getInstance();
 
 		if(!empty($searchKey)) {
 			$listQueryComponents = explode(" WHERE vtiger_users.status='Active' AND", $listQuery);
@@ -78,10 +79,11 @@ class Users_ListView_Model extends Vtiger_ListView_Model {
 		// Impose non-admin restrictions.
 		$user = vglobal('current_user');
 		if(!is_admin($user)){
-			$listQuery .= " AND vtiger_users.id = {$user->id}";
+			$listQuery .= " AND vtiger_users.id = ?";
+            $param[] = $user->id;
 			//TODO: Consider user based on Role-heirarchy 
 		}
-		return $listQuery;
+		return $db->convert2Sql($listQuery, $param);
     }
 
 	/**

@@ -1167,8 +1167,6 @@ function insertIntoRecurringTable(& $recurObj)
 			$tabId = getTabid("Calendar");
 			$eventTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_events'.$scope;
 			$taskTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_task'.$scope;
-            $eventTempTable = Vtiger_Util_Helper::validateStringForSql($eventTempTable);
-            $taskTempTable = Vtiger_Util_Helper::validateStringForSql($taskTempTable);
 			$query = " ($eventTempTable.shared IS NOT NULL OR $taskTempTable.shared IS NOT NULL) ";
 		}
 		return $query;

@@ -283,7 +283,7 @@ class Settings_Roles_Record_Model extends Settings_Vtiger_Record_Model {
 	 */
 	public function save() {
 		$db = PearDatabase::getInstance();
-		$roleId = Vtiger_Util_Helper::validateStringForSql($this->getId());
+		$roleId = $this->getId();
 		$mode = 'edit';
 
 		if(empty($roleId)) {

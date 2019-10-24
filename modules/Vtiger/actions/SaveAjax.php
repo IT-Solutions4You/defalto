@@ -102,9 +102,6 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				}else if($fieldName === $request->get('field')){
 					$fieldValue = $request->get('value');
 				}
-                if($fieldValue){
-                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
-                }
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);

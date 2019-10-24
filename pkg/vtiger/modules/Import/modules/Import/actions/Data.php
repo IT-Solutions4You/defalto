@@ -196,7 +196,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 		$createdRecords = array();
 		$entityData = array();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+		$tableName = Import_Utils_Helper::getDbTableName($this->user);
         $params = array();
 		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
         array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
@@ -825,7 +825,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 	public function getImportStatusCount() {
 		$adb = PearDatabase::getInstance();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+		$tableName = Import_Utils_Helper::getDbTableName($this->user);
 
 		$focus = CRMEntity::getInstance($this->module);
 		if ($focus && method_exists($focus, 'getGroupQuery')) {

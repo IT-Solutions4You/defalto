@@ -498,9 +498,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 					//fix for Refresh list view after Quick create
 					var parentModule=app.getModuleName();
 					var viewname=app.view();
-					if((quickCreateModuleName == parentModule) && (viewname=="List")){
-							var listinstance = app.controller();
-							listinstance.loadListViewRecords(); 
+					if(((quickCreateModuleName == parentModule) || (quickCreateModuleName == 'Events' && parentModule == 'Calendar')) && (viewname=="List")){
+                                            var listinstance = app.controller();
+                                            listinstance.loadListViewRecords(); 
 					}
 				};
 			}

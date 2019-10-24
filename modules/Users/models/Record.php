@@ -738,8 +738,8 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$noOfUsers = $db->num_rows($result);
 		$users = array();
 		if($noOfUsers > 0) {
-			$focus = new Users();
 			for($i=0; $i<$noOfUsers; ++$i) {
+                $focus = new Users();
 				$userId = $db->query_result($result, $i, 'id');
 				$focus->id = $userId;
 				$focus->retrieve_entity_info($userId, 'Users');
