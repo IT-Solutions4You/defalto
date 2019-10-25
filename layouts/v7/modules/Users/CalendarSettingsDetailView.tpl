@@ -72,7 +72,7 @@
                                         <td class="fieldValue {$WIDTHTYPE}">
                                             <div id="imageContainer" width="300" height="200">
                                                 {foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-                                                    {if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
+                                                    {if !empty($IMAGE_INFO.url)}
                                                         <img src="{$IMAGE_INFO.url}" width="300" height="200">
                                                     {/if}
                                                 {/foreach}
