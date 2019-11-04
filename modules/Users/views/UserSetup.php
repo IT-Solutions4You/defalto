@@ -14,7 +14,7 @@ class Users_UserSetup_View extends Vtiger_Index_View {
 		return array();
 	}
     
-    public function preProcess(Vtiger_Request $request) {
+    public function preProcess(Vtiger_Request $request, $display=true) {
 		return true;
 	}
 
