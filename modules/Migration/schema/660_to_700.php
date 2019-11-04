@@ -1226,7 +1226,7 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$modules = array();
-	$ignoreModules = array('SMSNotifier', 'ModComments');
+	$ignoreModules = array('SMSNotifier', 'ModComments', 'PBXManager');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	while ($row = $db->fetchByAssoc($result)) {
 		$modules[] = $row['name'];

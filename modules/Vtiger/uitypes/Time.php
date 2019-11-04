@@ -23,7 +23,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 * @param <String> time
 	 * @return <String> time
 	 */
-	public static function getDisplayTimeValue($time) {
+	public static function getDisplayTimeValue($time, $record=false, $recordInstance=false) {
 		$date = new DateTimeField($time);
 		return $date->getDisplayTime();
 	}

@@ -95,7 +95,7 @@ if (defined('VTIGER_UPGRADE')) {
             $customTableName = $customTable[0];
             $customTableId = $customTable[1];
             $customTableColumns = $db->getColumnNames($customTableName);
-            if (in_array($fieldName, $customTableColumns)) {
+            if (!empty($customTableColumns) && in_array($fieldName, $customTableColumns)) {
                 $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
                 $db->pquery("UPDATE vtiger_field SET tablename=? WHERE fieldid=?", array($baseTableName, $fieldModel->id));
                 $db->pquery("ALTER TABLE $baseTableName ADD COLUMN $fieldName VARCHAR(1)", array());

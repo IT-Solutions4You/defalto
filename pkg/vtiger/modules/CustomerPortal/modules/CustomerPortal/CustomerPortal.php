@@ -33,12 +33,12 @@ class CustomerPortal {
 				$tabId = $adb->query_result($tabIdResult, 0, 'tabid');
 				if($tabId) {
 					++$i;
-					$adb->query("INSERT INTO vtiger_customerportal_tabs (tabid,visible,sequence) VALUES (?, ?, ?)", array($tabId,1,$i));
-					$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array($tabId,'showrelatedinfo',1));
+					$adb->pquery("INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?, ?, ?)", array($tabId,1,$i));
+					$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array($tabId,'showrelatedinfo',1));
 				}
 			}
 
-			$adb->query("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array(0,'userid',1));
+			$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array(0,'userid',1));
 			$adb->pquery("INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)", array(0,'defaultassignee',1));
 
 			// Mark the module as Standard module
