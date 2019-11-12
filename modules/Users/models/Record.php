@@ -399,13 +399,16 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
 			//decode_html - added to handle UTF-8 characters in file names
 			$imageOriginalName = urlencode(decode_html($imageName));
+            if($url) {
+                $url = $site_URL.$url;
+            }
 
 			$imageDetails[] = array(
 					'id' => $imageId,
 					'orgname' => $imageOriginalName,
 					'path' => $imagePath.$imageId,
 					'name' => $imageName,
-                    'url'  => $site_URL.$url
+                    'url'  => $url
 			);
 		}
 		return $imageDetails;
