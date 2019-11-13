@@ -95,7 +95,7 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 		$reportFolderModel = Reports_Folder_Model::getInstance();
 		$reportFolderModel->set('folderid', $this->get('folderid'));
 
-		$orderBy = $this->get('orderby');
+		$orderBy = $this->getForSql('orderby');
 		if (!empty($orderBy) && $orderBy === 'smownerid') {
 			$fieldModel = Vtiger_Field_Model::getInstance('assigned_user_id', $moduleModel);
 			if ($fieldModel->getFieldDataType() == 'owner') {
@@ -104,7 +104,7 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 		}
 		if(!empty($orderBy)) {
 			$reportFolderModel->set('orderby', $orderBy);
-			$reportFolderModel->set('sortby', $this->get('sortorder'));
+			$reportFolderModel->set('sortby', $this->getForSql('sortorder'));
 		}
 
 		$reportFolderModel->set('search_params', $this->get('search_params'));

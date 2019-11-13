@@ -62,8 +62,8 @@ class Import_ListView_Model extends Vtiger_ListView_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => 'c'));
 		}
 
-		$orderBy = $this->get('orderby');
-		$sortOrder = $this->get('sortorder');
+		$orderBy = $this->getForSql('orderby');
+		$sortOrder = $this->getForSql('sortorder');
 		if(!empty($orderBy)) {
 			$queryGenerator = $this->get('query_generator');
 			$fieldModels = $queryGenerator->getModuleFields();
