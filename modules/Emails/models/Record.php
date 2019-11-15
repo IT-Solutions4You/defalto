@@ -180,9 +180,9 @@ class Emails_Record_Model extends Vtiger_Record_Model {
             //Adding attachments to mail
             if(is_array($attachments)) {
                 foreach($attachments as $attachment) {
-                    $fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['attachment'];
+                    $fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['storedname'];
                     if(is_file($fileNameWithPath)) {
-                        $mailer->AddAttachment($fileNameWithPath, $attachment['attachment']);
+                        $mailer->AddAttachment($fileNameWithPath, $attachment['storedname']);
                     }
                 }
             }
@@ -277,9 +277,10 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			for($i=0; $i<$numOfRows; $i++) {
 				$attachmentsList[$i]['fileid'] = $db->query_result($attachmentRes, $i, 'attachmentsid');
 				$attachmentsList[$i]['attachment'] = decode_html($db->query_result($attachmentRes, $i, 'name'));
+                $attachmentsList[$i]['storedname'] = decode_html($db->query_result($attachmentRes, $i, 'storedname'));
 				$path = $db->query_result($attachmentRes, $i, 'path');
 				$attachmentsList[$i]['path'] = $path;
-				$attachmentsList[$i]['size'] = filesize($path.$attachmentsList[$i]['fileid'].'_'.$attachmentsList[$i]['attachment']);
+				$attachmentsList[$i]['size'] = filesize($path.$attachmentsList[$i]['fileid'].'_'.$attachmentsList[$i]['storedname']);
 				$attachmentsList[$i]['type'] = $db->query_result($attachmentRes, $i, 'type');
 				$attachmentsList[$i]['cid'] = $db->query_result($attachmentRes, $i, 'cid');
 			}
@@ -329,6 +330,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$documentsList[$i]['path'] = $db->query_result($documentRes, $i, 'path');
 				$documentsList[$i]['fileid'] = $db->query_result($documentRes, $i, 'attachmentsid');
 				$documentsList[$i]['attachment'] = decode_html($db->query_result($documentRes, $i, 'name'));
+                $documentsList[$i]['storedname'] = decode_html($db->query_result($documentRes, $i, 'storedname'));
 				$documentsList[$i]['type'] = $db->query_result($documentRes, $i, 'type');
 			}
 		}
