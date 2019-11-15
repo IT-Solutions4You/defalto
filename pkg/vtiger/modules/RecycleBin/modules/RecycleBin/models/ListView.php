@@ -48,8 +48,8 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		$queryGenerator = $this->get('query_generator');
 		$listViewContoller = $this->get('listview_controller');
 
-		$orderBy = $this->get('orderby');
-		$sortOrder = $this->get('sortorder');
+		$orderBy = $this->getForSql('orderby');
+		$sortOrder = $this->getForSql('sortorder');
 
 		$searchParams = $this->get('search_params');
 		if(empty($searchParams)) {
