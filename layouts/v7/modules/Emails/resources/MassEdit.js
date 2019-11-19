@@ -367,7 +367,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 						var emailInfo = {
 							'recordId' : key,
 							'id' : emailId,
-							'text' : toEmailNamesList[key][i].label+' <b>('+emailId+')</b>'
+							'text' : toEmailNamesList[key][i].label+' ('+emailId+')'
 						}
 						preloadData.push(emailInfo);
 						if (jQuery.inArray(emailId, toFieldValues) != -1) {
@@ -586,7 +586,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 		var emailInfo = {
 			'recordId' : object.id,
 			'id' : object.emailid,
-			'text' : object.name+' <b>('+object.emailid+')</b>'
+			'text' : object.name+' ('+object.emailid+')'
 		}
 		preloadData.push(emailInfo);
 		thisInstance.setPreloadData(preloadData);
