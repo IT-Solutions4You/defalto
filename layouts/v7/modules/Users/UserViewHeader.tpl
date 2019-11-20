@@ -18,7 +18,7 @@
                     <div class="col-md-5 recordImage" style="height: 50px;width: 50px;">
                         {assign var=NOIMAGE value=0}
                         {foreach key=ITER item=IMAGE_INFO from=$RECORD->getImageDetails()}
-                            {if !empty($IMAGE_INFO.url) && !empty($IMAGE_INFO.orgname)}
+                            {if !empty($IMAGE_INFO.url)}
                                 <img height="100%" width="100%" src="{$IMAGE_INFO.url}" alt="{$IMAGE_INFO.orgname}" title="{$IMAGE_INFO.orgname}" data-image-id="{$IMAGE_INFO.id}">
                             {else}
                                 {assign var=NOIMAGE value=1}
