@@ -42,9 +42,9 @@ class Emails extends CRMEntity {
 		'Related to' => Array('seactivityrel' => 'parent_id'),
 		'Date Sent' => Array('activity' => 'date_start'),
 		'Time Sent' => Array('activity' => 'time_start'),
-		'Assigned To' => Array('crmentity', 'smownerid'),
-		'Access Count' => Array('email_track', 'access_count'),
-		'Click Count' => Array('email_track','click_count'),
+		'Assigned To' => Array('crmentity' => 'smownerid'),
+		'Access Count' => Array('email_track' => 'access_count'),
+		'Click Count' => Array('email_track' => 'click_count'),
 	);
 	var $list_fields_name = Array(
 		'Subject' => 'subject',
