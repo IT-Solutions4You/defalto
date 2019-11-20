@@ -49,8 +49,8 @@
 
 		{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
 			<div class="row" style="margin-top:5px;">
-				{if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
-					<span class="col-lg-6" name="existingImages"><img src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" data-image-id="{$IMAGE_INFO.id}" width="400" height="250" ></span>
+				{if !empty($IMAGE_INFO.url)}
+					<span class="col-lg-6" name="existingImages"><img src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" width="400" height="250" ></span>
 					<span class="col-lg-3">
 						<span class="row">
 							<span class="col-lg-11">[{$IMAGE_INFO.name}]</span>
