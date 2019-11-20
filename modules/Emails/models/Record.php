@@ -95,6 +95,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
             
             // For selectedEmails check and push to emails array
             foreach($selectedEmails as $selectedEmail){
+                $emails=array();
                 if(trim($selectedEmail)){
                     array_push($emails, $selectedEmail);
                 }
