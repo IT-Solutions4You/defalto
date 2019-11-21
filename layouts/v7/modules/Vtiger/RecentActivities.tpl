@@ -31,15 +31,15 @@
                                     </time>
                                     {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                     {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
-                                    {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].path eq ''}
+                                    {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                         <div class="update_icon bg-info">
                                             <i class='update_image vicon-vtigeruser'></i>
                                         </div>
                                     {else}
                                         {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-                                            {if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
+                                            {if !empty($IMAGE_INFO.url)}
                                                 <div class="update_icon">
-                                                    <img class="update_image" src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" >
+                                                    <img class="update_image" src="{$IMAGE_INFO.url}" >
                                                 </div>
                                             {/if}
                                         {/foreach}
@@ -59,15 +59,15 @@
                                     </time>
                                     {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                     {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
-                                    {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].path eq ''}
+                                    {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                         <div class="update_icon bg-info">
                                             <i class='update_image vicon-vtigeruser'></i>
                                         </div>
                                     {else}
                                         {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-                                            {if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
+                                            {if !empty($IMAGE_INFO.url)}
                                                 <div class="update_icon">
-                                                    <img class="update_image" src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" >
+                                                    <img class="update_image" src="{$IMAGE_INFO.url}" >
                                                 </div>
                                             {/if}
                                         {/foreach}
