@@ -40,7 +40,7 @@ window.app = (function () {
 					if (!data['success'] && data['error']['message']) {
 						aDeferred.resolve(new VtError(data['error']));
 						return;
-					} else if (data['result']) {
+					} else if (data['result'] && data['result'] !== null) {
 						data = data['result'];
 					}
 				}
@@ -73,7 +73,7 @@ window.app = (function () {
 						if (!response['success'] && response['error']['message']) {
 									aDeferred.resolve(new VtError(response['error']));
 							return;
-						} else if (response['result']) {
+						} else if (response['result'] && response['result'] !== null) {
 							response = response['result'];
 						}
 					}
