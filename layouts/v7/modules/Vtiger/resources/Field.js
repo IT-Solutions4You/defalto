@@ -636,7 +636,7 @@ Vtiger_Field_Js('Vtiger_Email_Field_Js',{},{
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi : function() {
-		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-email="true" data-rule-illegal="true"/>';
+		var html = '<input class="getPopupUi inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-email="true" data-rule-illegal="true"/>';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
 		this.addValidationToElement(html);
 		return jQuery(html);
