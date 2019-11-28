@@ -68,7 +68,7 @@ class Reports_Detail_View extends Vtiger_Index_View {
         $modulesList = array($primaryModule);
         if(!empty($secondaryModules)){
             if(stripos($secondaryModules, ':') >= 0){
-                $secmodules = split(':', $secondaryModules);
+                $secmodules = explode(':', $secondaryModules);
                 $modulesList = array_merge($modulesList, $secmodules);
             }else{
                 array_push($modulesList, $secondaryModules);
