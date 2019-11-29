@@ -190,7 +190,7 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row["crmid"])){
 				continue;
 			}
-			$output[] = DataTransform::sanitizeDataWithColumn($row,$meta);
+			$output[$row["crmid"]] = DataTransform::sanitizeDataWithColumn($row,$meta);
 		}
 		
 		$newOutput = array();
