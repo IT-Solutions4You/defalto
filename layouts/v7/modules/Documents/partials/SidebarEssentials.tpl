@@ -102,10 +102,10 @@
            <div class="menu-scroller scrollContainer" style="position:relative; top:0; left:0;">                     
             <div class="list-menu-content">
                 <div class="list-group">
-                    <ul id="folders-list" class="lists-menu">
-                    {foreach item="FOLDER" from=$FOLDERS}
+                    <ul class="lists-menu">
+                    {foreach item="FOLDER" from=$FOLDERS  name="folderView"}
                          {assign var=FOLDERNAME value={vtranslate($FOLDER->get('foldername'), $MODULE)}} 
-                        <li style="font-size:12px;" class='documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()} active{/if}'>
+                        <li style="font-size:12px;" class='documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()} active{/if} {if $smarty.foreach.folderView.iteration gt 10} filterHidden hide{/if}'>
                             <a class="filterName" href="javascript:void(0);" data-filter-id="{$FOLDER->get('folderid')}" data-folder-name="{$FOLDER->get('foldername')}" title="{$FOLDERNAME}">
                                 <i class="fa {if $FOLDER_VALUE eq $FOLDER->getName()}fa-folder-open{else}fa-folder{/if}"></i> 
                                 <span class="foldername">{if {$FOLDERNAME|strlen > 40} } {$FOLDERNAME|substr:0:40|@escape:'html'}..{else}{$FOLDERNAME|@escape:'html'}{/if}</span>
@@ -131,6 +131,13 @@
                         </center></h6>    
                     </li>
                     </ul>
+		<div class='clearfix'> 
+                	<a class="toggleFilterSize" data-more-text="Show more" data-less-text="Show less"> 
+	                       	{if $smarty.foreach.folderView.iteration gt 10}
+        	                	{vtranslate('LBL_SHOW_MORE',Vtiger)}
+				{/if}
+			</a>
+                </div>
                  </div>
             </div></div>
             
