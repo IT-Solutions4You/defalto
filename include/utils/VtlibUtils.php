@@ -712,16 +712,24 @@ function vtlib_purify($input, $ignore=false) {
  * @param <String> $value
  * @return <String>
  */
-function purifyHtmlEventAttributes($value){
+function purifyHtmlEventAttributes($value,$replaceAll = false){
 	$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|".
-						"onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
-						"onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
-						"ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
-						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
-	if(preg_match("/\s*(".$htmlEventAttributes.")\s*=/i", $value)) {
-		$value = str_replace("=", "&equals;", $value);
-	}
-	return $value;
+                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
+                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
+                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
+						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|".
+						"onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow";
+    
+    // remove malicious html attributes with its value.
+    if ($replaceAll) {
+        $regex = '\s*=\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
+    } else {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
+            $value = str_replace("=", "&equals;", $value);
+        }
+    }
+    return $value;
 }
 
 /**
