@@ -160,6 +160,11 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 			}
+            if($fieldName == 'notecontent' && $fieldValue !== null){
+                $fieldValue = $request->getRaw($fieldName);
+                $processedContent = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $fieldValue);
+                $fieldValue = to_html(purifyHtmlEventAttributes($processedContent,TRUE));
+			}
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
 					$fieldValue = trim($fieldValue);

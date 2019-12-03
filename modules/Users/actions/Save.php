@@ -76,6 +76,11 @@ class Users_Save_Action extends Vtiger_Save_Action {
 			if ($fieldName == 'roleid' && !($currentUserModel->isAdminUser())) {
 				$fieldValue = null;
 			}
+            if($fieldName == 'signature' && $fieldValue !== null){
+                $fieldValue = $request->getRaw($fieldName);
+                $processedContent = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $fieldValue);
+                $fieldValue = to_html(purifyHtmlEventAttributes($processedContent,TRUE));
+			}
 
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
