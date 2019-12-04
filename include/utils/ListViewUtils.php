@@ -675,9 +675,9 @@ function decode_html($str) {
 	global $default_charset;
 	// Direct Popup action or Ajax Popup action should be treated the same.
 	if ((isset($_REQUEST['action']) && $_REQUEST['action'] == 'Popup') || (isset($_REQUEST['file']) && $_REQUEST['file'] == 'Popup'))
-		return purifyHtmlEventAttributes(html_entity_decode($str));
+		return html_entity_decode($str);
 	else
-		return purifyHtmlEventAttributes(html_entity_decode($str, ENT_QUOTES, $default_charset));
+		return html_entity_decode($str, ENT_QUOTES, $default_charset);
 }
 
 function popup_decode_html($str) {
