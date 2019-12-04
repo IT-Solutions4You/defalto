@@ -104,13 +104,6 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 				$recordModel->set($fieldName,$existingRecordModel->get($fieldName));
 			}
 		}
-        if($fieldName == 'signature'){
-            $fieldValue = $request->getRaw($fieldName);
-            $purifiedContent = vtlib_purify(decode_html($fieldValue));
-            // Purify malicious html event attributes
-            $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
-            $recordModel->set($fieldName,$fieldValue);
-        }
 		return $recordModel;
 	}
 
