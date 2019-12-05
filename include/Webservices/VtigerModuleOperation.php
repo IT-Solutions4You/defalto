@@ -188,12 +188,9 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$output = array();
 		for($i=0; $i<$noofrows; $i++){
 			$row = $this->pearDB->fetchByAssoc($result,$i);
-			//NOTE : this permission check is not needed. If module does not have view permission
-            // then vtws_query API is restriction it. Module private check is added in the query itself,
-            // so this looks like additional overhead which can be removed.
-			/*if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row[$tableIdColumn])){
+			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row[$tableIdColumn])){
 				continue;
-			}*/
+			}
 			$output[$row[$tableIdColumn]] = DataTransform::sanitizeDataWithColumn($row,$meta);
 		}
 		
