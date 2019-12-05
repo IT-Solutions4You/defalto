@@ -174,6 +174,7 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$meta = $parser->getObjectMetaData();
 		$this->pearDB->startTransaction();
 		$result = $this->pearDB->pquery($mysql_query, array());
+        $tableIdColumn = $meta->getIdColumn();
 		$error = $this->pearDB->hasFailedTransaction();
 		$this->pearDB->completeTransaction();
 		
@@ -187,10 +188,10 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$output = array();
 		for($i=0; $i<$noofrows; $i++){
 			$row = $this->pearDB->fetchByAssoc($result,$i);
-			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row["crmid"])){
+			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row[$tableIdColumn])){
 				continue;
 			}
-			$output[$row["crmid"]] = DataTransform::sanitizeDataWithColumn($row,$meta);
+			$output[$row[$tableIdColumn]] = DataTransform::sanitizeDataWithColumn($row,$meta);
 		}
 		
 		$newOutput = array();
@@ -200,7 +201,7 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
             foreach($output as $id => $row1) {
                 if(!empty($tags[$id])) $output[$id]['tags'] = $tags[$id];
                 $newOutput[] = $output[$id];
-            }
+	}
         }
 		return $newOutput;
 	}
