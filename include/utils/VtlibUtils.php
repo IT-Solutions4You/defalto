@@ -698,10 +698,6 @@ function vtlib_purify($input, $ignore=false) {
 				}
 			} else { // Simple type
 				$value = $__htmlpurifier_instance->purify($input);
-                global $log;
-                $log->fatal('else loop call to purifyHtmlEventAttributes');
-                $log->fatal('$value passed => ');
-                $log->fatal($value);
 				$value = purifyHtmlEventAttributes($value);
 			}
 		}
@@ -725,23 +721,14 @@ function purifyHtmlEventAttributes($value,$replaceAll = false){
 						"onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow";
     
     // remove malicious html attributes with its value.
-    global $log;
-    $log->fatal('$replaceAll value is => ');
-    $log->fatal($replaceAll);
-    $log->fatal('$value => ');
-    $log->fatal($value);
     if ($replaceAll) {
-        $log->fatal('if loop');
         $regex = '\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
         $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
     } else {
-        $log->fatal('else loop');
         if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)/i", $value)) {
             $value = str_replace("=", "&equals;", $value);
         }
     }
-    $log->fatal('Final value => ');
-    $log->fatal($value);
     return $value;
 }
 

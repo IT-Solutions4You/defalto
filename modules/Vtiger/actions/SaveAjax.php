@@ -144,7 +144,8 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
-                if($fieldName == 'notecontent' && $fieldValue !== null){
+                $ckeditorFields = array('commentcontent', 'notecontent', 'signature');
+                if((in_array($fieldName, $ckeditorFields)) && $fieldValue !== null){
                     $purifiedContent = vtlib_purify(decode_html($fieldValue));
                     // Purify malicious html event attributes
                     $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
