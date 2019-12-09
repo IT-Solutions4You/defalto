@@ -453,6 +453,7 @@ jQuery.Class("Vtiger_Helper_Js",{
             aDeferred.resolve();
         })
 		$('.myModal').modal('hide'); 
+                $('.myModal').data('bs.modal',null); // clear any options previously set
         return aDeferred.promise();
     },
 
