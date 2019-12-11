@@ -204,28 +204,28 @@ $selectcolumns = Array(
 	Array('vtiger_contactdetails:lastname:Contacts_Last_Name:lastname:V',
 		'vtiger_contactdetails:email:Contacts_Email:email:E',
 		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
+		'vtiger_email_track:access_count:Emails_Access_Count:access_count:I'),
 	Array('vtiger_account:accountname:Accounts_Account_Name:accountname:V',
 		'vtiger_account:phone:Accounts_Phone:phone:V',
 		'vtiger_account:email1:Accounts_Email:email1:E',
 		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
+		'vtiger_email_track:access_count:Emails_Access_Count:access_count:I'),
 	Array('vtiger_leaddetails:lastname:Leads_Last_Name:lastname:V',
 		'vtiger_leaddetails:company:Leads_Company:company:V',
 		'vtiger_leaddetails:email:Leads_Email:email:E',
 		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
+		'vtiger_email_track:access_count:Emails_Access_Count:access_count:I'),
 	Array('vtiger_vendor:vendorname:Vendors_Vendor_Name:vendorname:V',
 		'vtiger_vendor:glacct:Vendors_GL_Account:glacct:V',
 		'vtiger_vendor:email:Vendors_Email:email:E',
 		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
+		'vtiger_email_track:access_count:Emails_Access_Count:access_count:I'),
 );
 
 $advfilters = Array(
 	Array(
 		Array(
-			'columnname' => 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V',
+			'columnname' => 'vtiger_email_track:access_count:Emails_Access_Count:access_count:I',
 			'comparator' => 'n',
 			'value' => ''
 		)
