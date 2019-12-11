@@ -42,7 +42,4 @@ if (defined('VTIGER_UPGRADE')) {
         createUserSharingPrivilegesfile($userId);
         echo "User privilege and sharing privilege files recreated for user id :: $userId.<br>";
     }
-
-    Vtiger_Cache::flushAllData();
-    echo "Cache cleared <br>";
 }
