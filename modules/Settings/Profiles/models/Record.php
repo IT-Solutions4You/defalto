@@ -607,9 +607,6 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 						$db->pquery($utilityInsertQuery, array());
 					}
 				}
-			} elseif ($this->isRestrictedModule($moduleModel->getName())) {
-				//To check the module is restricted or not(Emails, Webmails)
-				$actionEnabled = true;
 			}
 		} else {
 			$actionEnabled = true;
@@ -797,15 +794,6 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 			return false;
 		}
     }
-
-	/**
-	 * Function to check whether module is restricted for to show actions and field access
-	 * @param <String> $moduleName
-	 * @return <boolean> true/false
-	 */
-	public function isRestrictedModule($moduleName) {
-		return in_array($moduleName, array('Emails'));
-	}
 
 	/**
 	 * Function recalculate the sharing rules
