@@ -114,7 +114,6 @@
 				{foreach from=$PROFILE_MODULES key=TABID item=PROFILE_MODULE}
 					{assign var=MODULE_NAME value=$PROFILE_MODULE->getName()}
 					{if $MODULE_NAME neq 'Events'}
-						{assign var=IS_RESTRICTED_MODULE value=$RECORD_MODEL->isRestrictedModule($MODULE_NAME)}
 						<tr>
 							<td class="verticalAlignMiddleImp">
 								<input class="modulesCheckBox" type="checkbox" name="permissions[{$TABID}][is_permitted]" data-value="{$TABID}" data-module-state="" {if $RECORD_MODEL->hasModulePermission($PROFILE_MODULE)}checked="true"{else} data-module-unchecked="true" {/if}> {$PROFILE_MODULE->get('label')|vtranslate:$PROFILE_MODULE->getName()}
@@ -124,7 +123,7 @@
 								<td class="textAlignCenter verticalAlignMiddleImp">
 									{assign var="ACTION_MODEL" value=$ALL_BASIC_ACTIONS[$ORDERID]}
 									{assign var=ACTION_ID value=$ACTION_MODEL->get('actionid')}
-									{if !$IS_RESTRICTED_MODULE && $ACTION_MODEL->isModuleEnabled($PROFILE_MODULE)}
+									{if $ACTION_MODEL->isModuleEnabled($PROFILE_MODULE)}
 										<input class="action{$ACTION_ID}CheckBox" type="checkbox" name="permissions[{$TABID}][actions][{$ACTION_ID}]" data-action-state="{$ACTION_MODEL->getName()}" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTION_MODEL)}checked="true"{elseif empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {else} data-action{$ACTION_ID}-unchecked="true"{/if}></td>
 									{/if}
 								</td>
