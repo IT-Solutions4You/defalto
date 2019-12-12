@@ -81,7 +81,7 @@ class Settings_LayoutEditor_Block_Action extends Settings_Vtiger_Index_Action {
         $blockId = $request->get('blockid');
         $checkIfFieldsExists = Vtiger_Block_Model::checkFieldsExists($blockId);
         if($checkIfFieldsExists) {
-            $response->setError('502','Fields exists for the block');
+            $response->setError('502','Fields exist for the block');
             $response->emit();
             return;
         }
