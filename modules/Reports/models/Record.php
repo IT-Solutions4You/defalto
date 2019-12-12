@@ -1041,12 +1041,17 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$tranformedStandardFilter['comparator'] = 'bw';
 
 			$fields = explode(':',$standardFilter['columnname']);
-
+            $standardReports = array('Last Month Activities', 'This Month Activities');
 			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' ||($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')){
-				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
-				$date[] = $standardFilter['startdate'].' 00:00:00';
-				$date[] = $standardFilter['enddate'].' 00:00:00';
-				$tranformedStandardFilter['value'] =  implode(',',$date);
+                if(in_array($this->get('reportname'), $standardReports)){
+                    $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $tranformedStandardFilter['comparator'] = $standardFilter['type'];
+                }else{
+                    $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $date[] = $standardFilter['startdate'].' 00:00:00';
+                    $date[] = $standardFilter['enddate'].' 00:00:00';
+                    $tranformedStandardFilter['value'] =  implode(',',$date);
+                }
 			} else{
 				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:D";
 				$tranformedStandardFilter['value'] = $standardFilter['startdate'].','.$standardFilter['enddate'];
