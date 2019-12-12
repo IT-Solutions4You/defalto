@@ -1047,7 +1047,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
                     $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
                     $tranformedStandardFilter['comparator'] = $standardFilter['type'];
                 }else{
-                    $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
                     $date[] = $standardFilter['startdate'].' 00:00:00';
                     $date[] = $standardFilter['enddate'].' 00:00:00';
                     $tranformedStandardFilter['value'] =  implode(',',$date);

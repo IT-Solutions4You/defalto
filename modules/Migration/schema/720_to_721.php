@@ -12,7 +12,7 @@ if (defined('VTIGER_UPGRADE')) {
 	global $current_user, $adb;
 	$db = PearDatabase::getInstance();
 
-    //Profile privilege supported for Emails Module
+    //Profile privileges supported for Emails Module
 	$actions = array('Save', 'EditView', 'Delete', 'DetailView', 'CreateView');
     $emailsTabId = getTabid('Emails');
 
