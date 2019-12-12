@@ -46,5 +46,5 @@ if (defined('VTIGER_UPGRADE')) {
     
     //Default Email reports access count column update from varchar to integer
     $db->pquery('UPDATE vtiger_selectcolumn set columnname = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
-    $db->pquery('UPDATE vtiger_relcriteria set columnname = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
+    $db->pquery('UPDATE vtiger_relcriteria set columnname = ? AND comparator = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'ny', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
 }
