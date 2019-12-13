@@ -572,11 +572,11 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 					$i = 0;
 					$count = count($actionsIdsList);
                     $params = array();
-					$actionsInsertQuery .= 'INSERT INTO vtiger_profile2standardpermissions(profileid, tabid, operation, permissions) VALUES ';
+					$actionsInsertQuery = 'INSERT INTO vtiger_profile2standardpermissions(profileid, tabid, operation, permissions) VALUES ';
 					foreach ($actionsIdsList as $actionId => $permission) {
 						$actionEnabled = true;
 						$permissionValue = $this->tranformInputPermissionValue($permission);
-						$actionsInsertQuery .= "(?, ?, ?, ?)";
+						$actionsInsertQuery .= '(?, ?, ?, ?)';
                         array_push($params, $profileId, $tabId, $actionId, $permissionValue);
 
 						if ($i !== $count-1) {
@@ -585,17 +585,17 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 						$i++;
 					}
 					if ($actionsIdsList) {
-						$db->pquery($actionsInsertQuery, array());
+						$db->pquery($actionsInsertQuery, $params);
 					}
 
 					//Utility permissions
 					$i = 0;
 					$count = count($utilityIdsList);
                     $params = array();
-					$utilityInsertQuery .= 'INSERT INTO vtiger_profile2utility(profileid, tabid, activityid, permission) VALUES ';
+					$utilityInsertQuery = 'INSERT INTO vtiger_profile2utility(profileid, tabid, activityid, permission) VALUES ';
 					foreach($utilityIdsList as $actionId => $permission) {
 						$permissionValue = $this->tranformInputPermissionValue($permission);
-						$utilityInsertQuery .= "(?, ?, ?, ?)";
+						$utilityInsertQuery .= '(?, ?, ?, ?)';
                         array_push($params, $profileId, $tabId, $actionId, $permissionValue);
 
 						if ($i !== $count-1) {
@@ -604,7 +604,7 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 						$i++;
 					}
 					if ($utilityIdsList) {
-						$db->pquery($utilityInsertQuery, array());
+						$db->pquery($utilityInsertQuery, $params);
 					}
 				}
 			}
