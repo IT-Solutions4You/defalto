@@ -13,7 +13,7 @@ if (defined('VTIGER_UPGRADE')) {
 	$db = PearDatabase::getInstance();
 
     //Profile privileges supported for Emails Module
-	$actions = array('Save', 'EditView', 'Delete', 'DetailView', 'CreateView');
+	$actions = array('Save', 'EditView', 'Delete', 'DetailView');
     $emailsTabId = getTabid('Emails');
 
     $actionIds = array();
@@ -31,9 +31,11 @@ if (defined('VTIGER_UPGRADE')) {
         }
         echo "Emails permission for profile id :: $profileId inserted into vtiger_profile2standardpermissions table.<br>";
     }
-
+    echo 'All profiles permissions updated to Email Module';
+    
     $db->pquery("UPDATE vtiger_tab SET ownedby = ? WHERE tabid = ?", array(0, $emailsTabId));
     echo "ownedby value updated to 0 for Emails in vtiger_tab table.<br>";
+    
     vimport('~modules/Users/CreateUserPrivilegeFile.php');
     $usersResult = $db->pquery("SELECT id FROM vtiger_users", array());
     $usersCount = $db->num_rows($usersResult);
@@ -46,5 +48,6 @@ if (defined('VTIGER_UPGRADE')) {
     
     //Default Email reports access count column update from varchar to integer
     $db->pquery('UPDATE vtiger_selectcolumn set columnname = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
-    $db->pquery('UPDATE vtiger_relcriteria set columnname = ? AND comparator = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'ny', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
+    $db->pquery('UPDATE vtiger_relcriteria set columnname = ?, comparator = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'ny', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
+    echo 'Email access count field data type updated to Int';
 }
