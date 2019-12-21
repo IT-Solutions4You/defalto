@@ -10,8 +10,8 @@
 $languageStrings = array(
 	'Faq'                          => 'FAQ'                         , 
 	'SINGLE_Faq'                   => 'Faq'                         , 
-	'LBL_RECORDS_LIST'             => 'FAQs List'                   , 
-	'LBL_ADD_RECORD'               => 'Add FAQ'                     , 
+	'LBL_RECORDS_LIST'             => 'Lsta FAQ'                   , 
+	'LBL_ADD_RECORD'               => 'Aggungi FAQ'                     , 
 	'LBL_FAQ_INFORMATION'          => 'Informazione Faq'            , 
 	'LBL_COMMENT_INFORMATION'      => 'Informazioni Commento'       , 
 	'Question'                     => 'Domanda'                     , 

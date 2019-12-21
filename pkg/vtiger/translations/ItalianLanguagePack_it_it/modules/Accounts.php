@@ -21,7 +21,7 @@ $languageStrings = array(
 	'Ticker Symbol'                => 'Simbolo Ticker'              , 
 	'Member Of'                    => 'Membro di'                   , 
 	'Employees'                    => 'Impiegati'                   , 
-	'Ownership'                    => 'Propriet&agrave;'            , 
+	'Ownership'                    => 'Proprietà'            , 
 	'SIC Code'                     => 'Codice SIC'                  , 
 	'Other Email'                  => 'Altra Email'                 , 
 	'Analyst'                      => 'Analista'                    , 
@@ -35,7 +35,7 @@ $languageStrings = array(
         'Type'                         => 'Tipo'                        , 
 	'LBL_START_DATE'               => 'Data Inizio'                 , 
 	'LBL_END_DATE'                 => 'Data Fine'                   , 
-	'LBL_DUPLICATES_EXIST'         => 'Nome azienda gi&agrave; esistente', 
+	'LBL_DUPLICATES_EXIST'         => 'Nome azienda già esistente', 
 	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copia Indirizzo spedizione'       , // TODO: Review
 	'LBL_COPY_BILLING_ADDRESS'     => 'Copia indirizzo di fatturazione'        , // TODO: Review
     'LBL_IMAGE_INFORMATION' => 'Immagine Profilo',
@@ -48,9 +48,9 @@ $languageStrings = array(
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Sei sicuro che vuoi cancellarla?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Cancellando questa Azienda, cancellerai anche le sue oppertunit&agrave; e preventivi. Sei sicuro di volercancellare questa Azienda?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Cancellando questa Azienda, cancellerai anche le sue oppertunit&agrave; e preventivi. Sei sicuro di volercancellare questa Azienda?', 
+	'LBL_DELETE_CONFIRMATION'      => 'Cancellando questa Azienda, cancellerai anche le sue oppertunità e preventivi. Sei sicuro di volercancellare questa Azienda?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Cancellando questa Azienda, cancellerai anche le sue oppertunità e preventivi. Sei sicuro di volercancellare questa Azienda?', 
 
-  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Nome dell&#39;Azienda gi&agrave; esistente.Vuoi creare un record duplicato?',
+  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Nome dell\'Azienda già esistente. Vuoi creare un record duplicato?',
 
 );
