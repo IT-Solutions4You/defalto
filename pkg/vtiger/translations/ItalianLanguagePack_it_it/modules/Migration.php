@@ -8,12 +8,12 @@
  * All Rights Reserved.
  *************************************************************************************/
 $languageStrings = array(
-	'LBL_VTIGER_MIGRATION' => 'Benvenuti in materia di migrazione Vtiger',
-	'LBL_MIGRATION_COMPLETED' => 'Migrazione Completato',
+	'LBL_VTIGER_MIGRATION' => 'Benvenuti in migrazione Vtiger',
+	'LBL_MIGRATION_COMPLETED' => 'Migrazione Completata',
 	'LBL_MIGRATION_WIZARD' => 'Migrazione guidata',
-	'LBL_PRIDE_BEING_ASSOCIATED' => 'Siamo orgogliosi di essere associati con voi.',
-	'LBL_TALK_TO_US_AT_FORUMS' => 'Hai delle domande? Trova aiuto su Vtiger <a href="http://forums.vtiger.com" target="_blank"> Discussioni </a><br>',
-	'LBL_DISCUSS_WITH_US_AT_BLOGS' => 'Per saperne di più su Vtiger seguici nostra <a href="http://blogs.vtiger.com" target="_blank">Blog</a>',
+	'LBL_PRIDE_BEING_ASSOCIATED' => 'Siamo orgogliosi di essere associati a voi.',
+	'LBL_TALK_TO_US_AT_FORUMS' => 'Hai delle domande? Trova aiuto su Vtiger <a href="http://forums.vtiger.com" target="_blank"> Forum </a><br>',
+	'LBL_DISCUSS_WITH_US_AT_BLOGS' => 'Per saperne di più su Vtiger seguici sul <a href="http://blogs.vtiger.com" target="_blank">Blog</a>',
 	'LBL_CRM_DOCUMENTATION' => 'Vtiger6 Aiuto - <a href="http://wiki.vtiger.com/vtiger6" target="_blank">Documentaion</a> , <a href="http://www.youtube.com/vtiger" target="_blank">Video</a> <BR>',
 	'LBL_THANKS' => 'Grazie per aver utilizzato <b>vtiger CRM</b>',
 	'LBL_WE_AIM_TO_BE_BEST' => 'Miriamo ad essere - semplicemente il migliore',

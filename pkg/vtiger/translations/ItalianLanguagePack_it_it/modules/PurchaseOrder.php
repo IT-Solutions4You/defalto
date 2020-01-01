@@ -11,35 +11,33 @@ $languageStrings = array(
     'PurchaseOrder'                => 'Ordini d\'acquisto'          , 
 	'SINGLE_PurchaseOrder'         => 'Ordini d\'acquisto'          , 
 	'LBL_EXPORT_TO_PDF'            => 'Esporta in PDF'              , 
-	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
+	'LBL_SEND_MAIL_PDF'            => 'Invia Email con PDF'         , 
 	'LBL_ADD_RECORD'               => 'Add Purchase Order'          , 
 	'LBL_RECORDS_LIST'             => 'Lista Ordini Acquisto'       , 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Indirizzo Copy spedizione'       , // TODO: Review
-	'LBL_COPY_BILLING_ADDRESS'     => 'Copia indirizzo di fatturazione'        , // TODO: Review
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copia Indirizzo di spedizione'       ,  
+	'LBL_COPY_BILLING_ADDRESS'     => 'Copia indirizzo di fatturazione'        , 
 	'LBL_PO_INFORMATION'           => 'Informazione Ordine di Acquisto ', 
 	'PurchaseOrder No'             => 'Numero Ordine di Acquisto'   , 
 	'Requisition No'               => 'Numero Richiesta'            , 
 	'Tracking Number'              => 'Numero Tracking'             , 
 	'Sales Commission'             => 'Commissioni Vendita'         , 
-	'LBL_PAID'                     => 'Paid'                        , // TODO: Review
-	'LBL_BALANCE'                  => 'Balance'                     , // TODO: Review
+	'LBL_PAID'                     => 'Pagato'                        ,  
+	'LBL_BALANCE'                  => 'Saldo'                     ,  S
 	'Received Shipment'            => 'Spedizione Ricevuta'         ,
         'LBL_LIST_PRICE'               => 'Prezzo di listino',
         'List Price'                   => 'Prezzo di listino',
-    'LBL_COPY_COMPANY_ADDRESS' => 'Copia Company Indirizzo',
-    'LBL_COPY_ACCOUNT_ADDRESS' => 'Copia Organizzazione Indirizzo',
-	
-	'LBL_COPY_ACCOUNT_ADDRESS' => 'Copy Organization Address',
-	'LBL_SELECT_ADDRESS_OPTION' => 'Selezionare Indirizzo per copiare',
+    'LBL_COPY_COMPANY_ADDRESS' => 'Copia Indirizzo Azienda',
+    'LBL_COPY_ACCOUNT_ADDRESS' => 'Copia Indirizzo Organizzazione',  //TO review, Company vs Organization
+	'LBL_SELECT_ADDRESS_OPTION' => 'Selezionare Indirizzo da copiare',
 	'LBL_BILLING_ADDRESS' => 'Indirizzo di fatturazione',
-	'LBL_COMPANY_ADDRESS' => 'Azienda Indirizzo',
-	'LBL_ACCOUNT_ADDRESS' => 'Organizzazione Indirizzo',
-	'LBL_VENDOR_ADDRESS' => 'Venditore Indirizzo',
-	'LBL_CONTACT_ADDRESS' => 'Contatto Indirizzo',
+	'LBL_COMPANY_ADDRESS' => 'Indirizzo Azienda',
+	'LBL_ACCOUNT_ADDRESS' => 'Indirizzo Organizzazione',
+	'LBL_VENDOR_ADDRESS' => 'Indirizzo Venditore',
+	'LBL_CONTACT_ADDRESS' => 'Indirizzo Contatto',
 
   'LBL_THIS' => 'Questo',
-  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema.si prega di rimuovere o sostituire questo elemento',
-  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema,si prega di rimuovere questa riga di elementi',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema. Si prega di rimuovere o sostituire questo elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema, si prega di rimuovere questa riga di elementi',
 
 );
 

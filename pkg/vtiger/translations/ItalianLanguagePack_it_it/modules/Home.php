@@ -25,7 +25,7 @@ $languageStrings = array(
 
   'LBL_SAVE_ORDER' => 'Salvare L\'Ordine',
   'LBL_ADD_NEW_DASHBOARD' => 'Aggiungere un nuovo pannello',
-	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Massimo 30 caratteri sono consentiti per il nome cruscotto.',
+	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Sono consentiti Massimo 30 caratteri per il nome del cruscotto.',
 );
 
 $jsLanguageStrings = array(
