@@ -72,4 +72,8 @@ if (defined('VTIGER_UPGRADE')) {
             echo "<br>".$module.' Reference module added';
         }
     }
+    
+    //#1184 => Register field delete event handler
+    $em = new VTEventsManager($db);
+    $em->registerHandler('vtiger.field.afterdelete', 'modules/Vtiger/handlers/FieldEventHandler.php', 'FieldEventHandler');
 }
