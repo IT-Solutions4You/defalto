@@ -50,4 +50,26 @@ if (defined('VTIGER_UPGRADE')) {
     $db->pquery('UPDATE vtiger_selectcolumn set columnname = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
     $db->pquery('UPDATE vtiger_relcriteria set columnname = ?, comparator = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'ny', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
     echo 'Email access count field data type updated to Int';
+    
+    //References module added to Calendar parent_id field to link activites to parent record
+    $calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
+    $fieldModel = $calendarModuleModel->getField('parent_id');
+    $fieldId = $fieldModel->getId();
+    $query = "SELECT * FROM vtiger_ws_fieldtype WHERE uitype=?";
+    $result = $db->pquery($query,array($fieldModel->get('uitype')));
+    $fieldTypeId = $db->query_result($result,0,'fieldtypeid');
+
+    $qResult = $db->pquery('SELECT type FROM vtiger_ws_referencetype WHERE fieldtypeid = ?', array($fieldTypeId));
+    $existingModules = array();
+    for($i=0;$i<$db->num_rows($qResult);$i++) {
+        $existingModules[] = $db->query_result($qResult, $i ,'type');
+    }
+
+    $newModules = array('Invoice','Quotes','PurchaseOrder','SalesOrder');
+    foreach($newModules as $module) {
+        if(!in_array($module, $existingModules)) {
+            $db->pquery('INSERT INTO vtiger_ws_referencetype VALUES (?,?)', array($fieldTypeId, $module));
+            echo "<br>".$module.' Reference module added';
+        }
+    }
 }
