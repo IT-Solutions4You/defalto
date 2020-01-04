@@ -32,7 +32,7 @@ $languageStrings = array(
 	'LBL_BILLING_ADDRESS' => 'Indirizzo di fatturazione',
 	'LBL_COMPANY_ADDRESS' => 'Indirizzo Azienda',
 	'LBL_ACCOUNT_ADDRESS' => 'Indirizzo Organizzazione',
-	'LBL_VENDOR_ADDRESS' => 'Indirizzo Venditore',
+	'LBL_VENDOR_ADDRESS' => 'Indirizzo Fornitore',
 	'LBL_CONTACT_ADDRESS' => 'Indirizzo Contatto',
 
   'LBL_THIS' => 'Questo',
@@ -46,11 +46,11 @@ $jsLanguageStrings = array(
     'JS_ORGANIZATION_NOT_FOUND_MESSAGE'=> "Si prega di selezionare una organizzazione prima di copiare l'indirizzo",
 	'JS_ACCOUNT_NOT_FOUND' => 'Organizzazione vuoto!!',
 	'JS_ACCOUNT_NOT_FOUND_MESSAGE' =>  "Seleziona una organizzazione prima di copiare l'indirizzo",
-	'JS_VENDOR_NOT_FOUND' => 'Venditore vuoto', 
+	'JS_VENDOR_NOT_FOUND' => 'Fornitore vuoto', 
 	'JS_VENDOR_NOT_FOUND_MESSAGE' => "Si prega di selezionare un fornitore prima di copiare l'indirizzo",
 	'JS_CONTACT_NOT_FOUND' => 'Contatto vuoto', 
 	'JS_CONTACT_NOT_FOUND_MESSAGE' =>  "Si prega di selezionare un contatto prima di copiare l'indirizzo",
 
-  'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Si prega di rimuovere la voce che viene eliminato',
+  'JS_PLEASE_REMOVE_LINE_ITEM_THAT_IS_DELETED' => 'Si prega di rimuovere la riga di prodotto che viene eliminata',
 
 );
