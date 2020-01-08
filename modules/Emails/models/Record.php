@@ -183,7 +183,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
                 foreach($attachments as $attachment) {
                     $fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['storedname'];
                     if(is_file($fileNameWithPath)) {
-                        $mailer->AddAttachment($fileNameWithPath, $attachment['storedname']);
+                        $mailer->AddAttachment($fileNameWithPath, $attachment['attachment']);
                     }
                 }
             }
