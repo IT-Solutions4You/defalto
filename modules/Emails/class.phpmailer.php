@@ -656,6 +656,8 @@ class PHPMailer
      */
     public function __construct($exceptions = null)
     {
+        global $default_charset;
+        $this->CharSet = $default_charset;
         if ($exceptions !== null) {
             $this->exceptions = (boolean)$exceptions;
         }
