@@ -1792,11 +1792,17 @@ function getValidDBInsertDateValue($value) {
 		$x = strpos($value, $delimiter);
 		if($x === false) continue;
 		else{
-			$value=str_replace($delimiter, '-', $value);
+			if (false !== strpos($value, '-')) {
+				$value = str_replace($delimiter, '-', $value);
+			}
 			break;
 		}
 	}
-	list($y,$m,$d) = explode('-',$value);
+	if (false === strpos($value, '-')) {
+		list($y, $m, $d) = explode('.', $value);
+	} else {
+		list($y, $m, $d) = explode('-', $value);
+	}
 	if(strlen($y) == 1) $y = '0'.$y;
 	if(strlen($m) == 1) $m = '0'.$m;
 	if(strlen($d) == 1) $d = '0'.$d;

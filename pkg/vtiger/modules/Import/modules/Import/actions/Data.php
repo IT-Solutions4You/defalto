@@ -710,9 +710,11 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					}
 
 					$userDateFormat = $current_user->column_fields['date_format'];
-					if ($userDateFormat == 'dd-mm-yyyy') {
+					if ('dd.mm.yyyy' === $userDateFormat) {
+						$dateFormat = 'd.m.Y';
+					} else if ('dd-mm-yyyy' === $userDateFormat) {
 						$dateFormat = 'd-m-Y';
-					} else if ($userDateFormat == 'mm-dd-yyyy') {
+					} else if ('mm-dd-yyyy' === $userDateFormat) {
 						$dateFormat = 'm-d-Y';
 					} else {
 						$dateFormat = 'Y-m-d';
