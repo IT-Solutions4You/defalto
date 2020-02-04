@@ -76,4 +76,6 @@ if (defined('VTIGER_UPGRADE')) {
     //#1184 => Register field delete event handler
     $em = new VTEventsManager($db);
     $em->registerHandler('vtiger.field.afterdelete', 'modules/Vtiger/handlers/FieldEventHandler.php', 'FieldEventHandler');
+
+    $db->pquery('INSERT INTO vtiger_date_format (date_format, sortorderid, presence) VALUES (?, ?, ?)', ['dd.mm.yyyy', 3, 1]);
 }

@@ -56,12 +56,26 @@ jQuery.Class("Vtiger_Helper_Js",{
 		var timeComponent = dateTimeComponents[1];
         var seconds = '00';
 
-		var splittedDate = dateComponent.split("-");
+		var splittedDate = '';
+		var splittedDateFormat = '';
+
+		if (dateFormat.indexOf('-') !== -1) {
+			splittedDate = dateComponent.split('-');
+		} else {
+			splittedDate = dateComponent.split('.');
+		}
+
 		if (splittedDate.length > 3) {
             var errorMsg = app.vtranslate("JS_INVALID_DATE");
             throw errorMsg;
         }
-		var splittedDateFormat = dateFormat.split("-");
+
+		if (dateFormat.indexOf('-') !== -1) {
+			splittedDateFormat = dateFormat.split('-');
+		} else {
+			splittedDateFormat = dateFormat.split('.');
+		}
+
 		var year = splittedDate[splittedDateFormat.indexOf("yyyy")];
 		var month = splittedDate[splittedDateFormat.indexOf("mm")];
 		var date = splittedDate[splittedDateFormat.indexOf("dd")];
