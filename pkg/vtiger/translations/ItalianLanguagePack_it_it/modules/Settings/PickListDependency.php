@@ -8,20 +8,20 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Add Picklist Dependency'     , // TODO: Review
-	'LBL_PICKLIST_DEPENDENCY'      => 'Picklist Dependency'         , // TODO: Review
-	'LBL_SELECT_MODULE'            => 'Module'                      , // TODO: Review
-	'LBL_SOURCE_FIELD'             => 'Source Field'                , // TODO: Review
-	'LBL_TARGET_FIELD'             => 'Target Field'                , // TODO: Review
-	'LBL_SELECT_FIELD'             => 'Select field'                , // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_INFO' => 'Click on the respective cell to change the mapping for picklist values of target field', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_1' => 'Only mapped picklist values of the Source field will be shown below (except for first time)', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_2' => 'If you want to see or change the mapping for the other picklist values of Source field, <br/>
-										then you can select the values by clicking on <b>\'Select Source values\'</b> button on the right side', // TODO: Review
-	'LBL_CONFIGURE_DEPENDENCY_HELP_3' => 'Selected values of the Target field values, are highlighted as', // TODO: Review
-	'LBL_SELECT_SOURCE_VALUES'     => 'Select Source Values'        , // TODO: Review
-	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Select Source Picklist Values', // TODO: Review
-	'LBL_ERR_CYCLIC_DEPENDENCY'    => 'This dependency setup is not allowed as it ends up in some cyclic dependency', // TODO: Review
+	'LBL_ADD_RECORD'               => 'Aggiungi dipendenza menu'     , // TODO: Review
+	'LBL_PICKLIST_DEPENDENCY'      => 'Dipendenza menu a tendina'         , // TODO: Review
+	'LBL_SELECT_MODULE'            => 'Modulo'                      , // TODO: Review
+	'LBL_SOURCE_FIELD'             => 'Origine campo'                , // TODO: Review
+	'LBL_TARGET_FIELD'             => 'Campo destinazione'                , // TODO: Review
+	'LBL_SELECT_FIELD'             => 'Seleziona campo'                , // TODO: Review
+	'LBL_CONFIGURE_DEPENDENCY_INFO' => 'Clicca sulla rispettiva cella per cambiare i valori del menu del campo destinazione', // TODO: Review
+	'LBL_CONFIGURE_DEPENDENCY_HELP_1' => 'Solo i valori mappati dell\'origine saranno mostrati qui di seguito (ad eccetto della prima volta)', // TODO: Review
+	'LBL_CONFIGURE_DEPENDENCY_HELP_2' => 'Se vuoi vedere o cambiare la mappatura per gli altri valori del campo di origine, 
+	puoi selezionarli cliccando sul pulsante <b> Seleziona valori di origine</b> a destra', // TODO: Review
+	'LBL_CONFIGURE_DEPENDENCY_HELP_3' => 'I valori selezionati del campo destinazione sono evidenziati come', // TODO: Review
+	'LBL_SELECT_SOURCE_VALUES'     => 'Seleziona valori di origine'        , // TODO: Review
+	'LBL_SELECT_SOURCE_PICKLIST_VALUES' => 'Seleziona valori di origine dei menu a tendina', // TODO: Review
+	'LBL_ERR_CYCLIC_DEPENDENCY'    => 'Questa dipendenza non è permessa, perchè creerebbe una dipendenza circolare', // TODO: Review
 	'LBL_SELECT_ALL_VALUES' => 'Seleziona tutto',
 	'LBL_UNSELECT_ALL_VALUES' => 'Deseleziona tutto',
     'LBL_CYCLIC_DEPENDENCY_ERROR' => 'Potrebbe finire in ridondanza ciclico come campo %s è già configurato per il campo %s',
@@ -30,10 +30,10 @@ $languageStrings = array(
 
 );
 $jsLanguageStrings = array(
-	'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Are you sure you want to delete this picklist dependency?', // TODO: Review
-	'JS_DEPENDENCY_DELETED_SUEESSFULLY' => 'Dependency deleted successfully', // TODO: Review
-	'JS_PICKLIST_DEPENDENCY_SAVED' => 'Picklist Dependency Saved'   , // TODO: Review
-	'JS_DEPENDENCY_ATLEAST_ONE_VALUE' => 'You need to select atleast one value for', // TODO: Review
-	'JS_SOURCE_AND_TARGET_FIELDS_SHOULD_NOT_BE_SAME' => 'Source field and Target field should not be same', // TODO: Review
-	'JS_SELECT_SOME_VALUE'         => 'Select some value'           , // TODO: Review
+	'JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE' => 'Sei sicuro che vuoi cancellare questa  dipendenza di menu a tendina?', // TODO: Review
+	'JS_DEPENDENCY_DELETED_SUEESSFULLY' => 'Dipendenza cancellata con successo', // TODO: Review
+	'JS_PICKLIST_DEPENDENCY_SAVED' => 'Dipendenza menu salvata'   , // TODO: Review
+	'JS_DEPENDENCY_ATLEAST_ONE_VALUE' => 'Devi selezionare almeno un valore per', // TODO: Review
+	'JS_SOURCE_AND_TARGET_FIELDS_SHOULD_NOT_BE_SAME' => 'I campi origine e destinazione non devono essere lo stesso campo', // TODO: Review
+	'JS_SELECT_SOME_VALUE'         => 'Seleziona qualche valore'           , // TODO: Review
 );
