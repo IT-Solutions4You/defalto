@@ -1798,8 +1798,10 @@ function getValidDBInsertDateValue($value) {
 			break;
 		}
 	}
-	if (false === strpos($value, '-')) {
+	if (false !== strpos($value, '.')) {
 		list($y, $m, $d) = explode('.', $value);
+	} else if (false !== strpos($value, '/')) {
+		list($y, $m, $d) = explode('/', $value);
 	} else {
 		list($y, $m, $d) = explode('-', $value);
 	}

@@ -86,8 +86,10 @@ class DateTimeField {
 
         $format = $current_user->date_format;
         if (empty($format)) {
-            if (false === strpos($date, '-')) {
-                $format = 'dd.mm.yyyy';
+            if (false !== strpos($date, '.')) {
+				$format = 'dd.mm.yyyy';
+			} else if (false !== strpos($date, '/')) {
+				$format = 'dd/mm/yyyy';
             } else {
                 $format = 'dd-mm-yyyy';
             }
@@ -108,8 +110,10 @@ class DateTimeField {
         $dbDate = '';
 
         if (empty($format)) {
-            if (false === strpos($date, '-')) {
-                $format = 'dd.mm.yyyy';
+            if (false !== strpos($date, '.')) {
+				$format = 'dd.mm.yyyy';
+			} else if (false !== strpos($date, '/')) {
+				$format = 'dd/mm/yyyy';
             } else {
                 $format = 'dd-mm-yyyy';
             }
@@ -118,7 +122,22 @@ class DateTimeField {
         switch ($format) {
             case 'dd.mm.yyyy':
                 list($d, $m, $y) = explode('.', $date);
-                break;
+				break;
+			case 'mm.dd.yyyy':
+                list($m, $d, $y) = explode('.', $date);
+				break;
+			case 'yyyy.mm.dd':
+                list($y, $m, $d) = explode('.', $date);
+				break;
+			case 'dd/mm/yyyy':
+				list($d, $m, $y) = explode('/', $date);
+				break;
+			case 'mm/dd/yyyy':
+				list($m, $d, $y) = explode('/', $date);
+				break;
+			case 'yyyy/mm/dd':
+				list($y, $m, $d) = explode('/', $date);
+				break;
             case 'dd-mm-yyyy':
                 list($d, $m, $y) = explode('-', $date);
                 break;
@@ -183,6 +202,21 @@ class DateTimeField {
         switch ($format) {
             case 'dd.mm.yyyy':
                 $date[0] = $d . '.' . $m . '.' . $y;
+				break;
+			case 'mm.dd.yyyy':
+                $date[0] = $m . '.' . $d . '.' . $y;
+				break;
+			case 'yyyy.mm.dd':
+                $date[0] = $y . '.' . $m . '.' . $d;
+				break;
+			case 'dd/mm/yyyy':
+                $date[0] = $d . '/' . $m . '/' . $y;
+				break;
+			case 'mm/dd/yyyy':
+                $date[0] = $m . '/' . $d . '/' . $y;
+				break;
+			case 'yyyy/mm/dd':
+                $date[0] = $y . '/' . $m . '/' . $d;
                 break;
             case 'dd-mm-yyyy':
                 $date[0] = $d . '-' . $m . '-' . $y;

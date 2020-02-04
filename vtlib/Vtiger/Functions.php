@@ -33,6 +33,21 @@ class Vtiger_Functions {
         switch ($currentUser->get('date_format')) {
             case 'dd.mm.yyyy':
                 $datePopupFormat = '%d.%m.%Y';
+				break;
+			case 'mm.dd.yyyy':
+                $datePopupFormat = '%m.%d.%Y';
+				break;
+			case 'yyyy.mm.dd':
+                $datePopupFormat = '%Y.%m.%d';
+				break;
+			case 'dd/mm/yyyy':
+                $datePopupFormat = '%d/%m/%Y';
+				break;
+			case 'mm/dd/yyyy':
+                $datePopupFormat = '%m/%d/%Y';
+				break;
+			case 'yyyy/mm/dd':
+                $datePopupFormat = '%Y/%m/%d';
                 break;
             case 'dd-mm-yyyy':
                 $datePopupFormat = '%d-%m-%Y';

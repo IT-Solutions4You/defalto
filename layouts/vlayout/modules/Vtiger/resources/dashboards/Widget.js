@@ -86,6 +86,16 @@ jQuery.Class('Vtiger_Widget_Js',{
 	convertToDateRangePicketFormat : function(userDateFormat) {
 		if ('dd.mm.yyyy' === userDateFormat) {
 			return 'dd.MM.yyyy';
+		} else if ('mm.dd.yyyy' === userDateFormat) {
+			return 'MM.dd.yyyy'
+		} else if ('yyyy.mm.dd' === userDateFormat) {
+			return 'yyyy.MM.dd';
+		} else if ('dd/mm/yyyy' === userDateFormat) {
+			return 'dd/MM/yyyy';
+		} else if ('mm/dd/yyyy' === userDateFormat) {
+			return 'MM/dd/yyyy'
+		} else if ('yyyy/mm/dd' === userDateFormat) {
+			return 'yyyy/MM/dd';
 		} else if ('yyyy-mm-dd' === userDateFormat) {
 			return 'yyyy-MM-dd';
 		} else if ('mm-dd-yyyy' === userDateFormat) {

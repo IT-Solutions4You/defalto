@@ -90,10 +90,12 @@ jQuery.Class("Vtiger_Helper_Js",{
         var splittedDate = '';
         var splittedDateFormat = '';
 
-        if (dateFormat.indexOf('-') !== -1) {
-            splittedDate = dateComponent.split('-');
-        } else {
+        if (dateFormat.indexOf('.') !== -1) {
             splittedDate = dateComponent.split('.');
+        } else if (dateFormat.indexOf('/') !== -1) {
+            splittedDate = dateComponent.split('/');
+        } else {
+            splittedDate = dateComponent.split('-');
         }
 
         if(splittedDate.length > 3) {
@@ -101,10 +103,12 @@ jQuery.Class("Vtiger_Helper_Js",{
             throw errorMsg;
         }
 
-        if (dateFormat.indexOf('-') !== -1) {
-            splittedDateFormat = dateFormat.split('-');
-        } else {
+        if (dateFormat.indexOf('.') !== -1) {
             splittedDateFormat = dateFormat.split('.');
+        } else if (dateFormat.indexOf('/') !== -1) {
+            splittedDateFormat = dateFormat.split('/');
+        } else {
+            splittedDateFormat = dateFormat.split('-');
         }
 
 		var year = splittedDate[splittedDateFormat.indexOf("yyyy")];

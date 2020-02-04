@@ -538,6 +538,16 @@ var app = {
 	convertToDatePickerFormat: function (dateFormat) {
 		if ('dd.mm.yyyy' === dateFormat) {
 			return 'd.m.Y';
+		} else if ('mm.dd.yyyy' === dateFormat) {
+			return 'm.d.Y';
+		} else if ('yyyy.mm.dd' === dateFormat) {
+			return 'Y.m.d';
+		} else if ('dd/mm/yyyy' === dateFormat) {
+			return 'd/m/Y';
+		} else if ('mm/dd/yyyy' === dateFormat) {
+			return 'm/d/Y';
+		} else if ('yyyy/mm/dd' === dateFormat) {
+			return 'Y/m/d';
 		} else if ('yyyy-mm-dd' === dateFormat) {
 			return 'Y-m-d';
 		} else if ('mm-dd-yyyy' === dateFormat) {
