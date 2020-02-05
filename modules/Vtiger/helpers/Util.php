@@ -1257,13 +1257,13 @@ class Vtiger_Util_Helper {
         $fieldInfo = $fieldModel->getFieldInfo();
         $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
         if($fieldValue && $fieldDataType == 'picklist'){
-           if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+           if(!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])){
                 $fieldValue = null;
             }
         }elseif(count($fieldValue) > 0 && $fieldDataType == 'multipicklist'){
             if(!empty($editablePicklistValues)){
                 foreach($fieldValue as $key => $value){
-                    if(!in_array($value, $editablePicklistValues)){
+                    if(!isset($editablePicklistValues[$fieldValue])){
                         unset($fieldValue[$key]);
                     }
                 }
