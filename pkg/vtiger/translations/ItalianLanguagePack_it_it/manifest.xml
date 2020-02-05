@@ -4,7 +4,7 @@
 	<name>Italian</name>
 	<label>IT Italian</label>
 	<prefix>it_it</prefix>
-	<version>5.1.1</version>
+	<version>6.1.1</version>
 	<dependencies>
 		<vtiger_version>6.0.0rc</vtiger_version>
 		<vtiger_max_version>7.*</vtiger_max_version>
@@ -18,9 +18,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
  * the specific language governing rights and limitations under the License.
  ********************************************************************************
- *  Language     : Italiano
+ *  Language     : Italiano9
  *  Version      : 5.1
- *  Author       : traduttori di vtiger italia info@vtiger-italia.net
+ *  Author       : traduttori di vtiger italia info@vtiger-italia.net, Massimiliano Vessi (maxint@tiscali.it)
  ********************************************************************************
 ]]></inline>
 	</license>
