@@ -189,7 +189,7 @@ $languageStrings = array(
     
     'Report Type' => 'Report Type',
     'tabular' => 'Tabular',
-    'summary' => 'Summary',
+    'summary' => 'Tabular',
     'pivot' => 'Pivot',
     'chart' => 'Chart',
     'LBL_REPORTS_MOVED_SUCCESSFULLY'=>'Reports Moved Successfully.',
