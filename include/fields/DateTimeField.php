@@ -370,14 +370,25 @@ class DateTimeField {
 			$user = $current_user;
 		}
 
-		if($user->date_format == 'mm-dd-yyyy') {
+		$y = false;
+		$m = false;
+		$d = false;
+		$time = false;
+
+		if($user->date_format) {
 			list($date, $time) = explode(' ', $value);
 			if(!empty($date)) {
-				list($m, $d, $y) = explode('-', $date);
-				if(strlen($m) < 3) {
-					$time = ' '.$time;
-					$value = "$y-$m-$d".rtrim($time);
+				switch ($user->date_format) {
+					case 'mm.dd.yyyy': list($m, $d, $y) = explode('.', $date); break;
+					case 'dd.mm.yyyy': list($d, $m, $y) = explode('.', $date); break;
+					case 'dd/mm/yyyy': list($d, $m, $y) = explode('/', $date); break;
+					case 'mm/dd/yyyy': list($d, $m, $y) = explode('/', $date); break;
+					case 'mm-dd-yyyy': list($m, $d, $y) = explode('-', $date); break;
+					case 'dd-mm-yyyy': list($d, $m, $y) = explode('-', $date); break;
 				}
+			}
+			if ($y) {
+				$value = "$y-$m-$d ".rtrim($time);
 			}
 		}
 		return $value;
