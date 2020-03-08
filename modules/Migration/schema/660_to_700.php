@@ -2203,6 +2203,9 @@ if(defined('VTIGER_UPGRADE')) {
 					$referenceTable = $baseTableName;
 					$referenceColumn = $baseTableIndex;
 
+                    if($baseTableName == 'vtiger_activity'){
+                        array_push($moduleName, "Emails");
+                    }
 					if ($tableName == 'vtiger_producttaxrel' || $tableName == 'vtiger_inventoryproductrel') {
 						$referenceTable = 'vtiger_crmentity';
 						$referenceColumn = 'crmid';
@@ -2215,7 +2218,7 @@ if(defined('VTIGER_UPGRADE')) {
 					}
 				}
 			}
-			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype=?)", array($moduleName));
+			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype in ". generateQuestionMarks($moduleName).")", array($moduleName));
 		}
 	}
 
