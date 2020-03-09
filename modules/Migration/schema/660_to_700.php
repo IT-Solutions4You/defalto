@@ -2215,7 +2215,10 @@ if(defined('VTIGER_UPGRADE')) {
 					}
 				}
 			}
-			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype=?)", array($moduleName));
+            if($baseTableName == 'vtiger_activity'){
+                array_push($moduleName, "Emails");
+            }
+			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype in ". generateQuestionMarks($moduleName).")", array($moduleName));
 		}
 	}
 
