@@ -198,7 +198,10 @@ Vtiger.Class('Documents_Index_Js', {
 			container.find('.fileDetails').text(fileName + ' (' + fileSize + ')');
 			var fileParts = fileName.split('.');
 			var fileType = fileParts[fileParts.length - 1];
-			container.find('[name="notes_title"]').val(fileName.replace('.'+fileType, ''));
+			let notesTitle = container.find('[name="notes_title"]').val();
+                        if (!notesTitle.trim()) {
+                            container.find('[name="notes_title"]').val(fileName.replace('.' + fileType, ''));
+                        }
 		}
 	},
 
