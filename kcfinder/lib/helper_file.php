@@ -196,7 +196,17 @@ class file {
                 ? "$fdir/" . basename($file)
                 : basename($file));
     }
-
+    
+    static function sanitizeFileName($filename){
+        $sanitizedFilename = vtlib_purify($filename);
+        $sanitizedFilename = str_replace('/', "", $sanitizedFilename);
+        $sanitizedFilename = str_replace('"', "", $sanitizedFilename);
+        $sanitizedFilename = str_replace("'", "", $sanitizedFilename);
+        $sanitizedFilename = str_replace(' ', "", $sanitizedFilename);
+        $sanitizedFilename = str_replace('=', "", $sanitizedFilename);
+        $sanitizedFilename = str_replace('<', "", $sanitizedFilename);
+        $sanitizedFilename = str_replace('>', "", $sanitizedFilename);
+        return $sanitizedFilename;
+    }
 }
-
 ?>
