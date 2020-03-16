@@ -1786,40 +1786,9 @@ function isRecordExists($recordId) {
 function getValidDBInsertDateValue($value) {
 	global $log;
 	$log->debug("Entering getValidDBInsertDateValue(".$value.") method ...");
-	$value = trim($value);
-	$delim = array('/','.');
-	foreach ($delim as $delimiter){
-		$x = strpos($value, $delimiter);
-		if($x === false) continue;
-		else{
-			if (false !== strpos($value, '-')) {
-				$value = str_replace($delimiter, '-', $value);
-			}
-			break;
-		}
-	}
-	if (false !== strpos($value, '.')) {
-		list($y, $m, $d) = explode('.', $value);
-	} else if (false !== strpos($value, '/')) {
-		list($y, $m, $d) = explode('/', $value);
-	} else {
-		list($y, $m, $d) = explode('-', $value);
-	}
-	if(strlen($y) == 1) $y = '0'.$y;
-	if(strlen($m) == 1) $m = '0'.$m;
-	if(strlen($d) == 1) $d = '0'.$d;
-	$value = implode('-', array($y,$m,$d));
-
-	if(strlen($y)<4){
-		$insert_date = DateTimeField::convertToDBFormat($value);
-	} else {
-		$insert_date = $value;
-	}
-
-	if (preg_match("/^[0-9]{2,4}[-][0-1]{1,2}?[0-9]{1,2}[-][0-3]{1,2}?[0-9]{1,2}$/", $insert_date) == 0) {
-		return '';
-	}
-
+	
+    $insert_date = DateTimeField::convertToDBFormat($value);
+	
 	$log->debug("Exiting getValidDBInsertDateValue method ...");
 	return $insert_date;
 		}

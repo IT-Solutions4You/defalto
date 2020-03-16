@@ -945,7 +945,7 @@ class CRMEntity {
 			$em->triggerEvent("vtiger.entity.beforesave.modifiable", $entityData);
 			$em->triggerEvent("vtiger.entity.beforesave", $entityData);
 			$em->triggerEvent("vtiger.entity.beforesave.final", $entityData);
-		}
+        }
 		//Event triggering code ends
 
 		//GS Save entity being called with the modulename as parameter
