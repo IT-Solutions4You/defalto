@@ -79,4 +79,7 @@ if (defined('VTIGER_UPGRADE')) {
 
     $db->pquery('INSERT INTO vtiger_date_format (date_format, sortorderid, presence) VALUES (?, ?, ?)', ['dd.mm.yyyy', 3, 1]);
     $db->pquery('INSERT INTO vtiger_date_format (date_format, sortorderid, presence) VALUES (?, ?, ?)', ['dd/mm/yyyy', 4, 1]);
+    
+    //#1248 => updated vtiger_systems.server_password to TEXT
+    $db->pquery('ALTER TABLE vtiger_systems MODIFY server_password text', array());
 }
