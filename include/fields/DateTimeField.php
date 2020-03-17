@@ -83,8 +83,10 @@ class DateTimeField {
         if (empty($user)) {
             $user = $current_user;
         }
-
-        $format = $current_user->date_format;
+        if (preg_match("/^[0-9]{2,4}[-][0-1]{1,2}?[0-9]{1,2}[-][0-3]{1,2}?[0-9]{1,2}$/", $date) == 1) {
+            return $date;
+        }
+        $format = $user->date_format;
         if (empty($format)) {
             if (false !== strpos($date, '.')) {
 				$format = 'dd.mm.yyyy';
