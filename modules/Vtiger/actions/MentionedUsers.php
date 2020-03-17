@@ -20,6 +20,7 @@ class Vtiger_MentionedUsers_Action extends Vtiger_Action_Controller {
 	}
 	
     public function process(Vtiger_Request $request) {
+        $mentionedUsers = [];
         $commentId = $request->get('crmid');
         $commentRecord = Vtiger_Record_Model::getInstanceById($commentId, Vtiger_Module_Model::getInstance('ModComments'));
         $commentOwnerId = $commentRecord->get('creator');
