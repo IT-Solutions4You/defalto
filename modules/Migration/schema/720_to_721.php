@@ -82,4 +82,14 @@ if (defined('VTIGER_UPGRADE')) {
     
     //#1248 => updated vtiger_systems.server_password to TEXT
     $db->pquery('ALTER TABLE vtiger_systems MODIFY server_password text', array());
+    
+    $defaultEventTemplates = array('ToDo Reminder', 'Activity Reminder', 'Invite Users');
+    $updateEventParams = array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users');
+    $db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN ('. generateQuestionMarks($defaultEventTemplates).')', $updateEventParams);
+    
+    $defaultContactTemplates = array('Support end notification before a month', 'Support end notification before a week', 'Send Portal login details to customer', 'Thanks Note', 'Customer Login Details', 'Target Crossed!', 'Follow Up', 'Address Change', 'Accept Order', 'Goods received acknowledgement', 'Acceptance Proposal', 'Pending Invoices', 'Announcement for Release');
+    $updateContactParams = array('Contacts','Support end notification before a month', 'Support end notification before a week', 'Send Portal login details to customer', 'Thanks Note', 'Customer Login Details', 'Target Crossed!', 'Follow Up', 'Address Change', 'Accept Order', 'Goods received acknowledgement', 'Acceptance Proposal', 'Pending Invoices', 'Announcement for Release');
+    $db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN ('. generateQuestionMarks($defaultContactTemplates).')', $updateContactParams);
+    
+    echo 'Email templates default moduleName updated';
 }
