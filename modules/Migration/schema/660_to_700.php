@@ -432,8 +432,6 @@ if(defined('VTIGER_UPGRADE')) {
 	if (!in_array('module', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_emailtemplates ADD COLUMN module VARCHAR(100)', array());
 	}
-	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN (?,?,?) AND module IS NULL', array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users'));
-	$db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE module IS NULL', array('Contacts'));
 
 	$moduleName = 'Calendar';
 	$reminderTemplateResult = $db->pquery('SELECT 1 FROM vtiger_emailtemplates WHERE subject=? AND systemtemplate=?', array('Reminder', '1'));
@@ -2215,10 +2213,11 @@ if(defined('VTIGER_UPGRADE')) {
 					}
 				}
 			}
+            $deleteQueryParams = array($moduleName);
             if($baseTableName == 'vtiger_activity'){
-                array_push($moduleName, "Emails");
+                array_push($deleteQueryParams, "Emails");
             }
-			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype in ". generateQuestionMarks($moduleName).")", array($moduleName));
+			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype in (". generateQuestionMarks($deleteQueryParams)."))", $deleteQueryParams);
 		}
 	}
 
