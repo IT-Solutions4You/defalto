@@ -1276,14 +1276,14 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			if($moduleName === "Calendar"){
 				$basicLinks[] = array(
 					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => 'fa-plus'
-				);
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_ADD_EVENT',
 					'linkurl' => $this->getCreateEventRecordUrl(),
+					'linkicon' => 'fa-plus'
+				);
+                $basicLinks[] = array(
+					'linktype' => 'BASIC',
+					'linklabel' => 'LBL_ADD_TASK',
+					'linkurl' => $this->getCreateTaskRecordUrl(),
 					'linkicon' => 'fa-plus'
 				);
 			} else {
