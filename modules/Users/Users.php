@@ -860,7 +860,7 @@ class Users extends CRMEntity {
 				if($current_user->id == $this->id) {
 					$_SESSION['vtiger_authenticated_user_theme'] = $fldvalue;
 				}
-			} elseif($uitype == 32) {
+			} elseif($uitype == 32 && $fieldname == 'language') {
 				$languageList = Vtiger_Language::getAll();
 				$languageList = array_keys($languageList);
 				if(!in_array($fldvalue, $languageList) || $fldvalue == '') {

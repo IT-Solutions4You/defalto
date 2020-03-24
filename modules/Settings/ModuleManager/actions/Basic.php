@@ -36,7 +36,7 @@ class Settings_ModuleManager_Basic_Action extends Settings_Vtiger_IndexAjax_View
 		}else{
 			$moduleManagerModel->disableModule($moduleName);
 		}
-
+        Vtiger_Cache::delete('UserPicklistDetails','defaultlandingpage');
 		$response = new Vtiger_Response();
 		$response->emit();
 	}
