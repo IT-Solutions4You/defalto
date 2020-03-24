@@ -119,9 +119,6 @@ $list_max_entries_per_page = '20';
 // history_max_viewed default value = 5
 $history_max_viewed = '5';
 
-// default_module default value = Home
-$default_module = 'Home';
-
 // default_action default value = index
 $default_action = 'index';
 

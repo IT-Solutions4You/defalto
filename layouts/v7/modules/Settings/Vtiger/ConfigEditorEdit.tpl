@@ -35,7 +35,7 @@
 
 										<select class="select2-container inputElement select2 col-lg-11" name="{$FIELD_NAME}" >
 											{foreach key=optionName item=optionLabel from=$MODEL->getPicklistValues($FIELD_NAME)}
-												{if $FIELD_NAME != 'default_module' && $FIELD_NAME != 'default_reply_to'}
+												{if $FIELD_NAME != 'default_reply_to'}
 													<option {if $optionLabel == $FIELD_DATA[$FIELD_NAME]} selected {/if}>{vtranslate($optionLabel, $QUALIFIED_MODULE)}</option>
 												{else if $FIELD_NAME == 'default_reply_to'}
 													<option value="{$optionName}" {if $optionName == $FIELD_DATA[$FIELD_NAME]} selected {/if}>{vtranslate($optionName)}</option>
