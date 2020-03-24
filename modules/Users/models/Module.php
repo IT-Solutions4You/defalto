@@ -240,19 +240,11 @@ class Users_Module_Model extends Vtiger_Module_Model {
 	 * @param Vtiger_Record_Model $recordModel
 	 */
 	public function saveRecord(Vtiger_Record_Model $recordModel) {
-        global $log;
-        $log->fatal('ModuleSAve record api');
 		$moduleName = $this->get('name');
 		$focus = CRMEntity::getInstance($moduleName);
-        $log->fatal('focus class => ');
-        $log->fatal(get_class($focus));
 		$fields = $focus->column_fields;
-        $log->fatal('column fields => ');
-        $log->fatal($fields);
 		foreach ($fields as $fieldName => $fieldValue) {
 			$fieldValue = $recordModel->get($fieldName);
-            $log->fatal('recordModel field value => '. $fieldName);
-            $log->fatal($recordModel->get($fieldName));
 			if (is_array($fieldValue)) {
 				$focus->column_fields[$fieldName] = $fieldValue;
 			} else if ($fieldValue !== null) {
