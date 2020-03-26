@@ -175,5 +175,8 @@ if(isset($default_timezone) && function_exists('date_default_timezone_set')) {
 //Set the default layout 
 $default_layout = 'v7';
 
+//Maximiun scheduled workflows default value set to 10
+$max_scheduled_workflows = 10;
+
 include_once 'config.security.php';
 ?>

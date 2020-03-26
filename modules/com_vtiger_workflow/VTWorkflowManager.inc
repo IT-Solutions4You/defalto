@@ -111,7 +111,8 @@ class VTWorkflowManager{
 	 * @return int
 	 */
 	function getMaxAllowedScheduledWorkflows() {
-		return 10;
+        global $max_scheduled_workflows;
+		return $max_scheduled_workflows;
 	}
 
 	function getWorkflowsForModule($moduleName){
