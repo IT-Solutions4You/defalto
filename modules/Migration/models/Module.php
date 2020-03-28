@@ -21,8 +21,12 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 		return $currentVersion;
 	}
 	
-	public static function getInstance() {
-		return new self();
+    /**
+	 * Static Function to get the instance of Vtiger Module Model for the given id or name
+	 * @param mixed id or name of the module
+	 */
+	public static function getInstance($value) {
+		return new self($value);
 	}
 	
 	public function getAllowedMigrationVersions(){
@@ -41,6 +45,7 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 			array('710' => '7.1.0'),
             array('711' => '7.1.1'),
             array('720' => '7.2.0'),
+            array('721' => '7.2.1'),
 		);
 		return $versions;
 	}

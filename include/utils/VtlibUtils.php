@@ -158,6 +158,8 @@ function vtlib_toggleModuleAccess($modules, $enable_disable) {
 	} else if($enable_disable === false) {
 		$enable_disable = 1;
 		$event_type = Vtiger_Module::EVENT_MODULE_DISABLED;
+        //Update default landing page to dashboard if module is disabled.
+        $adb->pquery('UPDATE vtiger_users SET defaultlandingpage = ? WHERE defaultlandingpage IN(' . generateQuestionMarks($modules) . ')', array_merge(array('Home'), $modules));
 	}
 
 	$checkResult = $adb->pquery('SELECT name FROM vtiger_tab WHERE name IN ('. generateQuestionMarks($modules) .')', array($modules));
@@ -712,16 +714,24 @@ function vtlib_purify($input, $ignore=false) {
  * @param <String> $value
  * @return <String>
  */
-function purifyHtmlEventAttributes($value){
+function purifyHtmlEventAttributes($value,$replaceAll = false){
 	$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|".
-						"onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
-						"onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
-						"ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
-						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
-	if(preg_match("/\s*(".$htmlEventAttributes.")\s*=/i", $value)) {
-		$value = str_replace("=", "&equals;", $value);
-	}
-	return $value;
+                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
+                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
+                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
+						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|".
+						"onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow";
+    
+    // remove malicious html attributes with its value.
+    if ($replaceAll) {
+        $regex = '\s*=\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
+    } else {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
+            $value = str_replace("=", "&equals;", $value);
+        }
+    }
+    return $value;
 }
 
 /**
@@ -827,4 +837,23 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 	return $success;
 }
 
+/**
+ * PHP7 support for split function
+ * split : Case sensitive.
+ */
+if (!function_exists('split')) {
+    function split($pattern, $string, $limit = null) {
+        $regex = '/' . preg_replace('/\//', '\\/', $pattern) . '/';
+        return preg_split($regex, $string, $limit);
+    }
+
+}
+
+function php7_compat_ereg($pattern, $str, $ignore_case=false) {
+	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
+	return preg_match($regex, $str);
+}
+
+if (!function_exists('ereg')) { function ereg($pattern, $str) { return php7_compat_ereg($pattern, $str); } }
+if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_compat_ereg($pattern, $str, true); } }
 ?>

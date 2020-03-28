@@ -19,7 +19,6 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			$moduleParameter = 'source_module';
 		}
 		$record = $request->get('record');
-		// Child class permission check support - DragDropAjax 
 		$recordId = $request->get('id');
 		if (!$record) {
 			$recordParameter = '';
@@ -161,13 +160,6 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 			}
-            if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                $fieldInfo = $fieldModel->getFieldInfo();
-                $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                    $fieldValue = null;
-                }
-            }
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
 					$fieldValue = trim($fieldValue);

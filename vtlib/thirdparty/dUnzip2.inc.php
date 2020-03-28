@@ -87,12 +87,16 @@ class dUnzip2{
 	var $dirSignatureE= "\x50\x4b\x05\x06"; // end of central dir signature
 	
 	// Public
-	Function dUnzip2($fileName){
+	Function __construct($fileName){
 		$this->fileName       = $fileName;
 		$this->compressedList = 
 		$this->centralDirList = 
 		$this->endOfCentral   = Array();
 	}
+    function ensureFh(){
+        if(!$this->fh)
+			$this->fh = fopen($this->fileName, "r");
+    }
 	
 	Function getList($stopOnFile=false){
 		if(sizeof($this->compressedList)){
@@ -101,17 +105,16 @@ class dUnzip2{
 		}
 		
 		// Open file, and set file handler
-		$fh = fopen($this->fileName, "r");
-		$this->fh = $fh;
-		if(!$fh){
+		$this->ensureFh();
+		if(!$this->fh){
 			$this->debugMsg(2, "Failed to load file.");
 			return false;
 		}
 		
 		$this->debugMsg(1, "Loading list from 'End of Central Dir' index list...");
-		if(!$this->_loadFileListByEOF($fh, $stopOnFile)){
+		if(!$this->_loadFileListByEOF($this->fh, $stopOnFile)){
 			$this->debugMsg(1, "Failed! Trying to load list looking for signatures...");
-			if(!$this->_loadFileListBySignatures($fh, $stopOnFile)){
+			if(!$this->_loadFileListBySignatures($this->fh, $stopOnFile)){
 				$this->debugMsg(1, "Failed! Could not find any valid header.");
 				$this->debugMsg(2, "ZIP File is corrupted or empty");
 				return false;
@@ -323,7 +326,7 @@ class dUnzip2{
 				echo "<b style='color: #F00'>dUnzip2:</b> $string<br>";
 	}
 
-	Function _loadFileListByEOF(&$fh, $stopOnFile=false){
+	Function _loadFileListByEOF($fh, $stopOnFile=false){
 		// Check if there's a valid Central Dir signature.
 		// Let's consider a file comment smaller than 1024 characters...
 		// Actually, it length can be 65536.. But we're not going to support it.
@@ -433,7 +436,7 @@ class dUnzip2{
 		}
 		return false;
 	}
-	Function _loadFileListBySignatures(&$fh, $stopOnFile=false){
+	Function _loadFileListBySignatures($fh, $stopOnFile=false){
 		fseek($fh, 0);
 		
 		$return = false;
@@ -457,7 +460,7 @@ class dUnzip2{
 		
 		return $return;
 	}
-	Function _getFileHeaderInformation(&$fh, $startOffset=false){
+	Function _getFileHeaderInformation($fh, $startOffset=false){
 		if($startOffset !== false)
 			fseek($fh, $startOffset);
 		

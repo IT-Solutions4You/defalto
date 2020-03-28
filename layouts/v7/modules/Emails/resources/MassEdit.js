@@ -222,7 +222,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 			jQuery(e.currentTarget).hide();
 		});
 	},
-
+        
 	/**
 	 * Function which will handle the reference auto complete event registrations
 	 * @params - container <jQuery> - element in which auto complete fields needs to be searched
@@ -280,10 +280,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 				if(lastResults.length == 0) {
 					return { id: term, text: term };
 				}
-			},
-			escapeMarkup: function(m) {
-				// Do not escape HTML in the select options text
-				return m;
 			},
 
 		}).on("change", function (selectedData) {
@@ -371,7 +367,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 						var emailInfo = {
 							'recordId' : key,
 							'id' : emailId,
-							'text' : toEmailNamesList[key][i].label+' <b>('+emailId+')</b>'
+							'text' : toEmailNamesList[key][i].label+' ('+emailId+')'
 						}
 						preloadData.push(emailInfo);
 						if (jQuery.inArray(emailId, toFieldValues) != -1) {
@@ -590,7 +586,7 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 		var emailInfo = {
 			'recordId' : object.id,
 			'id' : object.emailid,
-			'text' : object.name+' <b>('+object.emailid+')</b>'
+			'text' : object.name+' ('+object.emailid+')'
 		}
 		preloadData.push(emailInfo);
 		thisInstance.setPreloadData(preloadData);
@@ -912,10 +908,6 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 					jQuery('#emailTemplateWarning').addClass('hide');
 				}
 			});
-			var params = {
-				setHeight:(jQuery(window).height() - container.find('.modal-header').height() - container.find('.modal-footer').height() - 100)+'px'
-			};
-			app.helper.showVerticalScroll(container.find('.modal-body'), params);
 		}
 	}
 });

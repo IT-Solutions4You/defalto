@@ -10,8 +10,8 @@
 $languageStrings = array(
 	'Campaigns'                    => 'Campagne'                    , 
 	'SINGLE_Campaigns'             => 'Campagna'                    , 
-	'LBL_ADD_RECORD'               => 'Add Campaign'                , 
-	'LBL_RECORDS_LIST'             => 'Campaigns List'              , 
+	'LBL_ADD_RECORD'               => 'Aggiungi Campagna'                , 
+	'LBL_RECORDS_LIST'             => 'Lista Campaigne'              , 
 	'LBL_CAMPAIGN_INFORMATION'     => 'Informazioni Campagna'       , 
 	'LBL_EXPECTATIONS_AND_ACTUALS' => 'Previsti &amp; Effettivi'    , 
 	'Campaign Name'                => 'Nome Campagna'               , 
@@ -35,7 +35,7 @@ $languageStrings = array(
 	'Actual ROI'                   => 'ROI Effettivo'               , 
 	'Webinar'                      => 'Webinar'                     , 
 	'Referral Program'             => 'Programma di Riferimento'    , 
-	'Advertisement'                => 'Pubblicit&agrave;'           , 
+	'Advertisement'                => 'Pubblicità'           , 
 	'Banner Ads'                   => 'Banner'                      , 
 	'Direct Mail'                  => 'Mail Diretta'                , 
 	'Telemarketing'                => 'Telemarketing'               , 
@@ -49,9 +49,9 @@ $languageStrings = array(
 	'Average'                      => 'Medio'                       , 
 	'Poor'                         => 'Scarso'                      , 
 	'--None--'                     => '--Nessuno--'                 , 
-	'Contacted - Successful'       => 'Contacted - Successful'      , 
-	'Contacted - Unsuccessful'     => 'Contacted - Unsuccessful'    , 
-	'Contacted - Never Contact Again' => 'Contacted - Never Contact Again', 
+	'Contacted - Successful'       => 'Contattati - Con Successo'      , 
+	'Contacted - Unsuccessful'     => 'Contattati - Senza Successo'    , 
+	'Contacted - Never Contact Again' => 'Contattati - Non contattare più', 
 );
 
 $jsLanguageStrings = array(

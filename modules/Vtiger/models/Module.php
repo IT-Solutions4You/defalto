@@ -889,8 +889,10 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @param <String> $where
 	 * @return <String> export query
 	 */
-	public function getExportQuery($where) {
-		$focus = CRMEntity::getInstance($this->getName());
+	public function getExportQuery($focus, $where) {
+		if(!$focus) {
+			$focus = CRMEntity::getInstance($this->getName());
+        }
 		$query = $focus->create_export_query($where);
 		return $query;
 	}
@@ -1274,14 +1276,14 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			if($moduleName === "Calendar"){
 				$basicLinks[] = array(
 					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => 'fa-plus'
-				);
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_ADD_EVENT',
 					'linkurl' => $this->getCreateEventRecordUrl(),
+					'linkicon' => 'fa-plus'
+				);
+                $basicLinks[] = array(
+					'linktype' => 'BASIC',
+					'linklabel' => 'LBL_ADD_TASK',
+					'linkurl' => $this->getCreateTaskRecordUrl(),
 					'linkicon' => 'fa-plus'
 				);
 			} else {
@@ -1466,14 +1468,11 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array of Vtiger_Record_Model>
 	 */
 	public function searchRecord($searchValue, $parentId=false, $parentModule=false, $relatedModule=false) {
-        global $log;
-        $log->fatal('search record api is triggered => ');
 			$searchFields = array('crmid','label','setype');
 		if(!empty($searchValue) && empty($parentId) && empty($parentModule)) {
 			$matchingRecords = Vtiger_Record_Model::getSearchResult($searchValue, $this->getName());
 		} else if($parentId && $parentModule) {
 			$db = PearDatabase::getInstance();
-            $log->fatal('call getSearchRecordsQuery api');
 			$result = $db->pquery($this->getSearchRecordsQuery($searchValue,$searchFields, $parentId, $parentModule), array());
 			$noOfRows = $db->num_rows($result);
 

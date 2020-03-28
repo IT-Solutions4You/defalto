@@ -410,7 +410,7 @@ class CurrencyField {
     
 	public static function convertToDollar($amount, $conversionRate) {
 		if ($conversionRate == 0) return 0;
-		return $amount / $conversionRate;
+		return (float)$amount / (float)$conversionRate;
 	}
 	
 	public static function convertFromDollar($amount, $conversionRate) {

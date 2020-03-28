@@ -102,7 +102,7 @@ class Import_FileReader_Reader {
 	public function createTable() {
 		$db = PearDatabase::getInstance();
 
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+		$tableName = Import_Utils_Helper::getDbTableName($this->user);
 		$fieldMapping = $this->request->get('field_mapping');
 
 		$moduleFields = $this->moduleModel->getFields();

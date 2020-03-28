@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-lg-3 control-label textAlignLeft">{vtranslate('LBL_REPORT_FOLDER',$MODULE)}<span class="redColor">*</span></label>
                     <div class="col-lg-4">
-                        <select class="select2 col-lg-12 inputElement" name="folderid" data-rule-required="true">
+                        <select class="select2 col-lg-12 inputElement" name="reportfolderid" data-rule-required="true">
                             {foreach item=REPORT_FOLDER from=$REPORT_FOLDERS}
                                 <option value="{$REPORT_FOLDER->getId()}" 
                                         {if $REPORT_FOLDER->getId() eq $REPORT_MODEL->get('folderid')}

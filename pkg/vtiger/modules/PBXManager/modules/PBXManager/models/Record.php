@@ -14,7 +14,7 @@ class PBXManager_Record_Model extends Vtiger_Record_Model{
     const lookuptableName = 'vtiger_pbxmanager_phonelookup';
     const entitytableName = 'vtiger_crmentity';
     
-    static function getCleanInstance(){
+    static function getCleanInstance($moduleName = ''){
         return new self;
     }
     
@@ -26,7 +26,7 @@ class PBXManager_Record_Model extends Vtiger_Record_Model{
         $db = PearDatabase::getInstance();
         $query = 'SELECT * FROM '.self::moduletableName.' AS module_table INNER JOIN '.self::entitytableName.' AS entity_table  WHERE module_table.callstatus IN(?,?) AND module_table.direction=? AND module_table.pbxmanagerid=entity_table.crmid AND entity_table.deleted=0';
         $result = $db->pquery($query,array('ringing','in-progress','inbound'));
-        $recordModels = array();
+        $recordModels = $recordIds = array();
         $rowCount =  $db->num_rows($result);
         for($i=0; $i<$rowCount; $i++) {
             $rowData = $db->query_result_rowdata($result, $i);
@@ -114,7 +114,7 @@ class PBXManager_Record_Model extends Vtiger_Record_Model{
         return true;
     }
     
-    public static function getInstanceById($phonecallsid){
+    public static function getInstanceById($phonecallsid, $module=null){
         $db = PearDatabase::getInstance();
         $record = new self();
         $query = 'SELECT * FROM '.self::moduletableName.' WHERE pbxmanagerid=?';

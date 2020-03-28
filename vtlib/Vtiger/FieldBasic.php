@@ -211,7 +211,7 @@ class Vtiger_FieldBasic {
 	 * @internal TODO
 	 */
 	function __update() {
-		self::log("Updating Field $this->name ... DONE");
+		self::log("Make use of Vtiger_Field_Model => __update() api.");
 	}
 
 	/**

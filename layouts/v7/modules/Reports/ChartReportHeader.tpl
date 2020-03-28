@@ -17,7 +17,7 @@
                     <input type="hidden" name="action" value="ChartSave" />
                     <input type="hidden" name="recordId" id="recordId" value="{$RECORD}" />
                     <input type="hidden" name="reportname" value="{$REPORT_MODEL->get('reportname')}" />
-                    <input type="hidden" name="folderid" value="{$REPORT_MODEL->get('folderid')}" />
+                    <input type="hidden" name="reportfolderid" value="{$REPORT_MODEL->get('reportfolderid')}" />
                     <input type="hidden" name="reports_description" value="{$REPORT_MODEL->get('reports_description')}" />
                     <input type="hidden" name="primary_module" value="{$PRIMARY_MODULE}" />
                     <input type="hidden" name="secondary_modules" value={ZEND_JSON::encode($SECONDARY_MODULES)} />

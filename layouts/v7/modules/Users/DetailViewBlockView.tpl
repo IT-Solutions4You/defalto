@@ -65,7 +65,7 @@
 										<td class="fieldValue {$WIDTHTYPE}">
 											<div id="imageContainer" width="300" height="200">
 												{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-													{if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
+													{if !empty($IMAGE_INFO.url)}
 														<img src="{$IMAGE_INFO.url}" width="300" height="200">
 													{/if}
 												{/foreach}
@@ -107,7 +107,11 @@
 											{/if}
 
 											<span class="value textOverflowEllipsis" data-field-type="{$FIELD_MODEL->getFieldDataType()}" {if $FIELD_MODEL->get('uitype') eq '19' or $FIELD_MODEL->get('uitype') eq '20' or $FIELD_MODEL->get('uitype') eq '21'} style="white-space:normal;" {/if} {if $fieldDataType eq 'email'}title='{$FIELD_MODEL->get('fieldvalue')}'{/if} >
+                                                                                            {if $FIELD_MODEL->getName() neq 'defaultlandingpage'}
 												{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                                                                            {else}
+                                                                                                {vtranslate($FIELD_MODEL->get('fieldvalue'),$FIELD_MODEL->get('fieldvalue'))}
+                                                                                            {/if}
 											</span>
 											{if $IS_AJAX_ENABLED && $FIELD_MODEL->isEditable() eq 'true' && $FIELD_MODEL->isAjaxEditable() eq 'true'}
 												<span class="hide edit pull-left">

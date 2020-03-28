@@ -163,8 +163,8 @@
 													<i class='vicon-vtigeruser' style="font-size:90px"></i>
 												{else}
 													{foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-														{if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
-															<img src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" width="100px" height="100px">
+														{if !empty($IMAGE_INFO.url)}
+															<img src="{$IMAGE_INFO.url}" width="100px" height="100px">
 														{/if}
 													{/foreach}
 												{/if}

@@ -578,16 +578,16 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$db->pquery('INSERT INTO vtiger_reportsharing(reportid, shareid, setype) VALUES (?,?,?)',
 					array($reportId, $sharingInfo[$i]['id'], $sharingInfo[$i]['type']));
 		}
+        
+        //On every report save delete information from below tables and insert new to avoid 
+        // confusion in updating
+        $db->pquery('DELETE FROM vtiger_report_shareusers WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharegroups WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharerole WHERE reportid=?',array($reportId));
+        $db->pquery('DELETE FROM vtiger_report_sharers WHERE reportid=?',array($reportId));
 		
 		$members = $this->get('members',array());
 		if(!empty($members)) {
-			//On every report save delete information from below tables and insert new to avoid 
-			// confusion in updating
-			$db->pquery('DELETE FROM vtiger_report_shareusers WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharegroups WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharerole WHERE reportid=?',array($reportId));
-			$db->pquery('DELETE FROM vtiger_report_sharers WHERE reportid=?',array($reportId));
-
 			$noOfMembers = count($members);
 			for ($i = 0; $i < $noOfMembers; ++$i) {
 				$id = $members[$i];
@@ -770,9 +770,9 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> $query (by removing all columns)
 	 */
 	function generateCountQuery($query){
-		$from = explode(' from ' , $query, 2);
+        $from = preg_split("/ from /i", $query, 2);
 		//If we select the same field in select and grouping/soring then it will include order by and query failure will happen
-		$fromAndWhereQuery = explode(' order by ', $from[1]);
+        $fromAndWhereQuery = preg_split('/ order by /i', $from[1]);
 		$sql = "SELECT count(*) AS count FROM ".$fromAndWhereQuery[0];
 		return $sql;
 	}
@@ -1041,12 +1041,17 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$tranformedStandardFilter['comparator'] = 'bw';
 
 			$fields = explode(':',$standardFilter['columnname']);
-
+            $standardReports = array('Last Month Activities', 'This Month Activities');
 			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' ||($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')){
-				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
-				$date[] = $standardFilter['startdate'].' 00:00:00';
-				$date[] = $standardFilter['enddate'].' 00:00:00';
-				$tranformedStandardFilter['value'] =  implode(',',$date);
+                if(in_array($this->get('reportname'), $standardReports)){
+                    $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $tranformedStandardFilter['comparator'] = $standardFilter['type'];
+                }else{
+                    $tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $date[] = $standardFilter['startdate'].' 00:00:00';
+                    $date[] = $standardFilter['enddate'].' 00:00:00';
+                    $tranformedStandardFilter['value'] =  implode(',',$date);
+                }
 			} else{
 				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:D";
 				$tranformedStandardFilter['value'] = $standardFilter['startdate'].','.$standardFilter['enddate'];

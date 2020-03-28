@@ -326,7 +326,6 @@ class Vtiger_Util_Helper {
 		}
 		$db = PearDatabase::getInstance();
 
-        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$primaryKey = Vtiger_Util_Helper::getPickListId($fieldName);
 		$query = 'SELECT '.$primaryKey.', '.$fieldName.' FROM vtiger_'.$fieldName.' order by sortorderid';
 		$values = array();
@@ -362,7 +361,6 @@ class Vtiger_Util_Helper {
 		}
 		$db = PearDatabase::getInstance();
 
-        $fieldName = Vtiger_Util_Helper::validateStringForSql($fieldName);
 		$query = "SELECT $fieldName
 				  FROM vtiger_$fieldName
 					  INNER JOIN vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldName.picklist_valueid
@@ -610,12 +608,12 @@ class Vtiger_Util_Helper {
 				   //Request will be having in terms of AM and PM but the database will be having in 24 hr format so converting
 					//Database format
 
-					if($fieldInfo->getFieldDataType() == "time") {
+					if($fieldInfo && $fieldInfo->getFieldDataType() == "time") {
 						$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 					}
 
 					$specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-					if($fieldName == 'date_start' || $fieldName == 'due_date' || $fieldInfo->getFieldDataType() == "datetime" && !in_array($operator, $specialDateTimeConditions) ) {
+					if($fieldName == 'date_start' || $fieldName == 'due_date' || ($fieldInfo && $fieldInfo->getFieldDataType() == "datetime") && !in_array($operator, $specialDateTimeConditions) ) {
 						$dateValues = explode(',', $fieldValue);
 						//Indicate whether it is fist date in the between condition
 						$isFirstDate = true;
@@ -635,7 +633,10 @@ class Vtiger_Util_Helper {
 						$fieldValue = implode(',',$dateValues);
 					}
 
-				   $advFilterFieldInfoFormat['columnname'] = $fieldInfo->getCustomViewColumnName();
+                    if ($fieldInfo) {
+                        $columnName = $fieldInfo->getCustomViewColumnName();
+                    }
+				   $advFilterFieldInfoFormat['columnname'] = $columnName;
 				   $advFilterFieldInfoFormat['comparator'] = $operator;
 				   $advFilterFieldInfoFormat['value'] = $fieldValue;
 				   $advFilterFieldInfoFormat['column_condition'] = $groupConditionGlue;
@@ -1250,4 +1251,24 @@ class Vtiger_Util_Helper {
 		}
 		return $encryptedFileName;
 	}
+    
+    public static function validateFieldValue($fieldValue,$fieldModel){
+        $fieldDataType = $fieldModel->getFieldDataType();
+        $fieldInfo = $fieldModel->getFieldInfo();
+        $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+        if($fieldValue && $fieldDataType == 'picklist'){
+           if(!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])){
+                $fieldValue = null;
+            }
+        }elseif(count($fieldValue) > 0 && $fieldDataType == 'multipicklist'){
+            if(!empty($editablePicklistValues)){
+                foreach($fieldValue as $key => $value){
+                    if(!isset($editablePicklistValues[$fieldValue])){
+                        unset($fieldValue[$key]);
+                    }
+                }
+            }
+        }
+        return $fieldValue;
+    }
 }

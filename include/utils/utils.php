@@ -1786,32 +1786,9 @@ function isRecordExists($recordId) {
 function getValidDBInsertDateValue($value) {
 	global $log;
 	$log->debug("Entering getValidDBInsertDateValue(".$value.") method ...");
-	$value = trim($value);
-	$delim = array('/','.');
-	foreach ($delim as $delimiter){
-		$x = strpos($value, $delimiter);
-		if($x === false) continue;
-		else{
-			$value=str_replace($delimiter, '-', $value);
-			break;
-		}
-	}
-	list($y,$m,$d) = explode('-',$value);
-	if(strlen($y) == 1) $y = '0'.$y;
-	if(strlen($m) == 1) $m = '0'.$m;
-	if(strlen($d) == 1) $d = '0'.$d;
-	$value = implode('-', array($y,$m,$d));
-
-	if(strlen($y)<4){
-		$insert_date = DateTimeField::convertToDBFormat($value);
-	} else {
-		$insert_date = $value;
-	}
-
-	if (preg_match("/^[0-9]{2,4}[-][0-1]{1,2}?[0-9]{1,2}[-][0-3]{1,2}?[0-9]{1,2}$/", $insert_date) == 0) {
-		return '';
-	}
-
+	
+    $insert_date = DateTimeField::convertToDBFormat($value);
+	
 	$log->debug("Exiting getValidDBInsertDateValue method ...");
 	return $insert_date;
 		}
@@ -2321,33 +2298,6 @@ function getCompanyDetails() {
 function lower_array(&$string){
 	$string = strtolower(trim($string));
 }
-
-/* PHP 7 support */
-function php7_compat_split($delim, $str, $ignore_case=false) {
-	$splits = array();
-	while ($str) {
-		$pos = $ignore_case ? stripos($str, $delim) : strpos($str, $delim);
-		if ($pos !== false) {
-			$splits[] = substr($str, 0, $pos);
-			$str = substr($str, $pos + strlen($delim));
-		} else {
-			$splits[] = $str;
-			$str = false;
-		}
-	}
-	return $splits;
-}
-
-if (!function_exists('split'))  { function split($delim, $str)  {return php7_compat_split($delim, $str); } }
-if (!function_exists('spliti')) { function spliti($delim, $str) {return php7_compat_split($delim, $str, true);}}
-
-function php7_compat_ereg($pattern, $str, $ignore_case=false) {
-	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
-	return preg_match($regex, $str);
-}
-
-if (!function_exists('ereg')) { function ereg($pattern, $str) { return php7_compat_ereg($pattern, $str); } }
-if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_compat_ereg($pattern, $str, true); } }
 
 if (!function_exists('get_magic_quotes_runtime')) { function get_magic_quotes_runtime() { return false; } }
 if (!function_exists('set_magic_quotes_runtime')) { function set_magic_quotes_runtime($flag) {} }

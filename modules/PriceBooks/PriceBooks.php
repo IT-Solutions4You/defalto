@@ -347,7 +347,7 @@ class PriceBooks extends CRMEntity {
         $moduleSubject = 'bookname';
 
         $params = array();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
 		$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = ? GROUP BY ?';
         array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
         array_push($params, $moduleSubject);

@@ -196,7 +196,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 		$createdRecords = array();
 		$entityData = array();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+		$tableName = Import_Utils_Helper::getDbTableName($this->user);
         $params = array();
 		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
         array_push($params, Import_Data_Action::$IMPORT_RECORD_NONE);
@@ -710,9 +710,21 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					}
 
 					$userDateFormat = $current_user->column_fields['date_format'];
-					if ($userDateFormat == 'dd-mm-yyyy') {
+					if ('dd.mm.yyyy' === $userDateFormat) {
+						$dateFormat = 'd.m.Y';
+					} else if ('mm.dd.yyyy' === $userDateFormat) {
+						$dateFormat = 'm.d.Y';
+					} else if ('yyyy.mm.dd' === $userDateFormat) {
+						$dateFormat = 'Y.m.d';
+					} else if ('dd/mm/yyyy' === $userDateFormat) {
+						$dateFormat = 'd/m/Y';
+					} else if ('mm/dd/yyyy' === $userDateFormat) {
+						$dateFormat = 'm/d/Y';
+					} else if ('yyyy/mm/dd' === $userDateFormat) {
+						$dateFormat = 'Y/m/d';
+					} else if ('dd-mm-yyyy' === $userDateFormat) {
 						$dateFormat = 'd-m-Y';
-					} else if ($userDateFormat == 'mm-dd-yyyy') {
+					} else if ('mm-dd-yyyy' === $userDateFormat) {
 						$dateFormat = 'm-d-Y';
 					} else {
 						$dateFormat = 'Y-m-d';
@@ -825,7 +837,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 	public function getImportStatusCount() {
 		$adb = PearDatabase::getInstance();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($this->user));
+		$tableName = Import_Utils_Helper::getDbTableName($this->user);
 
 		$focus = CRMEntity::getInstance($this->module);
 		if ($focus && method_exists($focus, 'getGroupQuery')) {

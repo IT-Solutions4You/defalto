@@ -746,6 +746,7 @@ function insertIntoRecurringTable(& $recurObj)
 				$params = array($activity_id);
 			}
 		} else {
+			if ( $recurid === '' || !$recurid ) { $recurid = 0; }
 			$query = "INSERT INTO ".$this->reminder_table." VALUES (?,?,?,?)";
 			$params = array($activity_id, $reminder_time, 0, $recurid);
 		}
@@ -1046,7 +1047,7 @@ function insertIntoRecurringTable(& $recurObj)
 		}
 		//if secondary modules custom reference field is selected
         $query .= parent::getReportsUiType10Query($secmodule, $queryPlanner);
-        
+
 		return $query;
 	}
 
@@ -1166,8 +1167,6 @@ function insertIntoRecurringTable(& $recurObj)
 			$tabId = getTabid("Calendar");
 			$eventTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_events'.$scope;
 			$taskTempTable = 'vt_tmp_u'.$userModel->id.'_t'.$tabId.'_task'.$scope;
-            $eventTempTable = Vtiger_Util_Helper::validateStringForSql($eventTempTable);
-            $taskTempTable = Vtiger_Util_Helper::validateStringForSql($taskTempTable);
 			$query = " ($eventTempTable.shared IS NOT NULL OR $taskTempTable.shared IS NOT NULL) ";
 		}
 		return $query;

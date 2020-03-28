@@ -66,8 +66,14 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	 * Static Function to get the instance of Vtiger Module Model for all the modules
 	 * @return <Array> - List of Vtiger Module Model or sub class instances
 	 */
-	public static function getAll() {
-		 return parent::getAll(array(0,1), self::getNonVisibleModulesList());
+	public static function getAll($presence = array(), $restrictedModulesList = array(),$sequenced = false) {
+        if(empty($presence)){
+            $presence = array(0,1);
+        }
+        if(empty($restrictedModulesList)){
+            $restrictedModulesList = self::getNonVisibleModulesList();
+        }
+		 return parent::getAll($presence, $restrictedModulesList);
 	}
 
 	/**

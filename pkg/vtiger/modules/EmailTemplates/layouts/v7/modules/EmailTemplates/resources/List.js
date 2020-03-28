@@ -222,40 +222,6 @@ Vtiger_List_Js("EmailTemplates_List_Js", {
         });
     },
     
-    /**
-     * Function to prompt before deleting the template
-     */
-    registerPromptTemplateDeleteEvent: function () {
-        var thisInstance = this;
-        jQuery('#listViewContent').on('click', '.fa-trash', function (e) {
-            var templateId = jQuery(e.currentTarget).attr('data-value');
-            var message = app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE');
-            app.helper.showConfirmationBox({message: message}).then(function(e){
-                thisInstance.registerTemplateDeleteEvent(templateId);
-            }, function (error, err) {
-                // if error occurred
-            });
-        });
-    },
-    
-    /**
-     * Function to delete the template 
-     */
-    registerTemplateDeleteEvent: function (templateId) {
-        var params = {
-            'module': "EmailTemplates",
-            'action': "Delete",
-            'record': templateId,
-            'ajaxDelete': true,
-        };
-        app.request.post({data:params}).then(function (error,data) {
-            if (data) {
-                window.location.href = data;
-            }
-         });
-    },
-    
-    
      loadListViewRecords : function(urlParams) {
         var self = this;
         var aDeferred = jQuery.Deferred();
@@ -276,7 +242,7 @@ Vtiger_List_Js("EmailTemplates_List_Js", {
             app.helper.hideProgress();
             self.markSelectedIdsCheckboxes();
             self.registerDynamicListHeaders();
-            
+            self.registerDeleteRecordClickEvent();
             self.registerDynamicDropdownPosition();
             self.registerDropdownPosition();//for every ajax request more-drop down in listview
         });
@@ -330,7 +296,6 @@ Vtiger_List_Js("EmailTemplates_List_Js", {
         this.registerAccordionClickEvent();
         this.registerViewType();
         this.registerThumbnailHoverActionEvent();
-        this.registerPromptTemplateDeleteEvent();
         this.registerTemplateDuplicationEvent();
         this.registerTemplateEditEvent();
         this.registerPreviewTemplateEvent();

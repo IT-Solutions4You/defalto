@@ -399,13 +399,16 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
 			//decode_html - added to handle UTF-8 characters in file names
 			$imageOriginalName = urlencode(decode_html($imageName));
+            if($url) {
+                $url = $site_URL.$url;
+            }
 
 			$imageDetails[] = array(
 					'id' => $imageId,
 					'orgname' => $imageOriginalName,
 					'path' => $imagePath.$imageId,
 					'name' => $imageName,
-                    'url'  => $site_URL.$url
+                    'url'  => $url
 			);
 		}
 		return $imageDetails;
@@ -738,8 +741,8 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$noOfUsers = $db->num_rows($result);
 		$users = array();
 		if($noOfUsers > 0) {
-			$focus = new Users();
 			for($i=0; $i<$noOfUsers; ++$i) {
+                $focus = new Users();
 				$userId = $db->query_result($result, $i, 'id');
 				$focus->id = $userId;
 				$focus->retrieve_entity_info($userId, 'Users');

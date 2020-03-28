@@ -21,7 +21,7 @@ class Portal_Module_Model extends Vtiger_Module_Model {
 		return $links;
 	}
     
-    public function saveRecord($recordId, $bookmarkName, $bookmarkUrl) {
+    public function saveRecord($recordId, $bookmarkName = false, $bookmarkUrl = false) {
         $db = PearDatabase::getInstance();
         if(empty($recordId)) {
             $portalId = $db->getUniqueID('vtiger_portal');

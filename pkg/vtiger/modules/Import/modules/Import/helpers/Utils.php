@@ -121,7 +121,7 @@ class Import_Utils_Helper {
 
 	public static function isUserImportBlocked($user) {
 		$adb = PearDatabase::getInstance();
-		$tableName = Vtiger_Util_Helper::validateStringForSql(self::getDbTableName($user));
+		$tableName = self::getDbTableName($user);
 
 		if(Vtiger_Utils::CheckTable($tableName)) {
 			$result = $adb->pquery('SELECT 1 FROM '.$tableName.' WHERE status = ?',  array(Import_Data_Action::$IMPORT_RECORD_NONE));

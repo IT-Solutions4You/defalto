@@ -24,7 +24,7 @@
                     <input type="hidden" name="operator" value="{$OPERATOR}" />
                     <input type="hidden" name="search_value" value="{$ALPHABET_VALUE}" />
                     {if $SEARCH_PARAMS}
-                        <input type="hidden" name="search_params" value='{ZEND_JSON::encode($SEARCH_PARAMS)}' />
+                        <input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}' />
                     {/if}
                     <input type="hidden" name="fieldModule" value={$SOURCE_MODULE} />
                        <input type="hidden" name="to" value='{ZEND_JSON::encode($TO)}' />

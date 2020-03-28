@@ -10,7 +10,7 @@
 $languageStrings = array(
 	'Accounts'                     => 'Aziende'                     , 
 	'SINGLE_Accounts'              => 'Azienda'                     , 
-	'LBL_ADD_RECORD'               => 'Add Organization'            , 
+	'LBL_ADD_RECORD'               => 'Aggiungi Azienda'            , 
 	'LBL_RECORDS_LIST'             => 'Lista Aziende'               , 
 	'LBL_ACCOUNT_INFORMATION'      => 'Informazioni Azienda'        , 
 	'LBL_SHOW_ACCOUNT_HIERARCHY'   => 'Mostra gerarchia Aziende'    , 
@@ -21,7 +21,7 @@ $languageStrings = array(
 	'Ticker Symbol'                => 'Simbolo Ticker'              , 
 	'Member Of'                    => 'Membro di'                   , 
 	'Employees'                    => 'Impiegati'                   , 
-	'Ownership'                    => 'Propriet&agrave;'            , 
+	'Ownership'                    => 'Proprietà'            , 
 	'SIC Code'                     => 'Codice SIC'                  , 
 	'Other Email'                  => 'Altra Email'                 , 
 	'Analyst'                      => 'Analista'                    , 
@@ -35,11 +35,11 @@ $languageStrings = array(
         'Type'                         => 'Tipo'                        , 
 	'LBL_START_DATE'               => 'Data Inizio'                 , 
 	'LBL_END_DATE'                 => 'Data Fine'                   , 
-	'LBL_DUPLICATES_EXIST'         => 'Organization Name already exists', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Indirizzo Copy spedizione'       , // TODO: Review
+	'LBL_DUPLICATES_EXIST'         => 'Nome azienda già esistente', 
+	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copia Indirizzo spedizione'       , // TODO: Review
 	'LBL_COPY_BILLING_ADDRESS'     => 'Copia indirizzo di fatturazione'        , // TODO: Review
-    'LBL_IMAGE_INFORMATION' => 'Picture Profile',
-    'Organization Image' => 'Organizzazione Immagine',
+    'LBL_IMAGE_INFORMATION' => 'Immagine Profilo',
+    'Organization Image' => 'Immagine Azienda',
 
   'Other Phone' => 'Telefono Secondario',
   'Phone' => 'Telefono Principale',
@@ -47,10 +47,10 @@ $languageStrings = array(
 
 );
 $jsLanguageStrings = array(
-	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Are you sure you want to Delete?', 
-	'LBL_DELETE_CONFIRMATION'      => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
-	'LBL_MASS_DELETE_CONFIRMATION' => 'Deleting this Organization will remove its related Opportunities & Quotes. Are you sure you want to delete this Organization?', 
+	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Sei sicuro che vuoi cancellarla?', 
+	'LBL_DELETE_CONFIRMATION'      => 'Cancellando questa Azienda, cancellerai anche le sue oppertunità e preventivi. Sei sicuro di volercancellare questa Azienda?', 
+	'LBL_MASS_DELETE_CONFIRMATION' => 'Cancellando questa Azienda, cancellerai anche le sue oppertunità e preventivi. Sei sicuro di volercancellare questa Azienda?', 
 
-  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Organizzazione Nome Esiste già.Vuoi creare un record duplicato?',
+  'JS_DUPLICATE_CREATION_CONFIRMATION' => 'Nome dell\'Azienda già esistente. Vuoi creare un record duplicato?',
 
 );

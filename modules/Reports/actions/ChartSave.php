@@ -21,7 +21,7 @@ class Reports_ChartSave_Action extends Reports_Save_Action {
 		}
 
 		$reportModel->set('reportname', $request->get('reportname'));
-		$reportModel->set('folderid', $request->get('folderid'));
+		$reportModel->set('folderid', $request->get('reportfolderid'));
 		$reportModel->set('description', $request->get('reports_description'));
 		$reportModel->set('members', $request->get('members'));
 

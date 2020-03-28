@@ -436,6 +436,16 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$recordModel = Vtiger_Record_Model::getInstanceById($parentRecordId);
 		$viewer = $this->getViewer($request);
 		$viewer->assign('SOURCE',$recordModel->get('source'));
+        $recentActivities = ModTracker_Record_Model::getUpdates($parentRecordId, $pagingModel,$moduleName);
+
+        $totalCount = ModTracker_Record_Model::getTotalRecordCount($parentRecordId);
+        $pageLimit = $pagingModel->getPageLimit();
+        $pageCount = ceil((int) $totalCount / (int) $pageLimit);
+        if($pageCount - $pagingModel->getCurrentPage() == 0) {
+            $pagingModel->set('nextPageExists', false);
+        } else {
+            $pagingModel->set('nextPageExists', true);
+        }
 		$viewer->assign('RECENT_ACTIVITIES', $recentActivities);
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('PAGING_MODEL', $pagingModel);

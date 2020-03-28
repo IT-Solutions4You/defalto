@@ -860,7 +860,7 @@ class Users extends CRMEntity {
 				if($current_user->id == $this->id) {
 					$_SESSION['vtiger_authenticated_user_theme'] = $fldvalue;
 				}
-			} elseif($uitype == 32) {
+			} elseif($uitype == 32 && $fieldname == 'language') {
 				$languageList = Vtiger_Language::getAll();
 				$languageList = array_keys($languageList);
 				if(!in_array($fldvalue, $languageList) || $fldvalue == '') {
@@ -1690,7 +1690,7 @@ class Users extends CRMEntity {
 		$moduleName = $obj->module;
 		$createdRecords = array();
 
-		$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+		$tableName = Import_Utils_Helper::getDbTableName($obj->user);
 		$sql = 'SELECT * FROM '.$tableName.' WHERE status = ?';
 		$result = $adb->pquery($sql, array(Import_Data_Action::$IMPORT_RECORD_NONE));
 		$numberOfRecords = $adb->num_rows($result);

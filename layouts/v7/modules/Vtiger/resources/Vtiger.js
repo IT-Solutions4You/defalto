@@ -498,7 +498,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 					//fix for Refresh list view after Quick create
 					var parentModule=app.getModuleName();
 					var viewname=app.view();
-					if((quickCreateModuleName == parentModule) && (viewname=="List")){
+					if(((quickCreateModuleName == parentModule) || (quickCreateModuleName == 'Events' && parentModule == 'Calendar')) && (viewname=="List")){
 						var listinstance = app.controller();
 						listinstance.loadListViewRecords();
 					}
@@ -521,7 +521,12 @@ Vtiger.Class('Vtiger_Index_Js', {
 				app.helper.showModal(data, callbackparams);
 				var form = jQuery('form[name="QuickCreate"]');
 				var moduleName = form.find('[name="module"]').val();
-				app.helper.showVerticalScroll(jQuery('form[name="QuickCreate"] .modal-body'), {'autoHideScrollbar': true});
+				var Options= {
+					scrollInertia: 200,
+					autoHideScrollbar: true,
+					setHeight:(jQuery(window).height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-header').height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-footer').height()- 135),
+				}
+				app.helper.showVerticalScroll(jQuery('form[name="QuickCreate"] .modal-body'), Options);
 
 				var targetInstance = thisInstance;
 				var moduleInstance = Vtiger_Edit_Js.getInstanceByModuleName(moduleName);

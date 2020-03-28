@@ -40,7 +40,7 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 	 * @param <Integer> crmid of record
 	 * @return <String>
 	 */
-	public function getDisplayValue($value) {
+	public function getDisplayValue($value, $record=false, $recordInstance=false) {
 		$referenceModule = $this->getReferenceModule($value);
 		if($referenceModule && !empty($value)) {
 			$referenceModuleName = $referenceModule->get('name');
@@ -54,7 +54,7 @@ class Vtiger_Reference_UIType extends Vtiger_Base_UIType {
 				$fieldModel = $this->get('field');
 				$entityNames = getEntityName($referenceModuleName, array($value));
 				$linkValue = "<a href='index.php?module=$referenceModuleName&view=".$referenceModule->getDetailViewName()."&record=$value'
-							title='".vtranslate($fieldModel->get('label'), $referenceModuleName).":". $entityNames[$value] ."' "
+							title='".vtranslate($referenceModuleName, $referenceModuleName).":". $entityNames[$value] ."' "
 							. "data-original-title='".vtranslate($referenceModuleName, $referenceModuleName)."'>$entityNames[$value]</a>";
 				return $linkValue;
 			}

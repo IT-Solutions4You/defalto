@@ -13,7 +13,7 @@ class Vtiger_FindDuplicates_View extends Vtiger_List_View {
 	function preProcess(Vtiger_Request $request, $display = true) {
 		$viewer = $this->getViewer ($request);
 		$this->initializeListViewContents($request, $viewer);
-		parent::preProcess($request, $display);
+        parent::preProcess($request, $display);
 	}
 
 	public function preProcessTplName(Vtiger_Request $request) {
@@ -80,10 +80,13 @@ class Vtiger_FindDuplicates_View extends Vtiger_List_View {
 		if(empty($pageNumber)){
 			$pageNumber = '1';
 		}
-		$pagingModel = new Vtiger_Paging_Model();
-		$pagingModel->set('page', $pageNumber);
-		$pageLimit = $pagingModel->getPageLimit();
-
+        if (!$this->pagingModel) {
+            $pagingModel = new Vtiger_Paging_Model();
+            $this->pagingModel = $pagingModel;
+        } else {
+            $pagingModel = $this->pagingModel;
+        }
+        $pagingModel->set('page', $pageNumber);
 		$duplicateSearchFields = $request->get('fields');
 		$dataModelInstance = Vtiger_FindDuplicate_Model::getInstance($module);
 		$dataModelInstance->set('fields', $duplicateSearchFields);
@@ -104,19 +107,9 @@ class Vtiger_FindDuplicates_View extends Vtiger_List_View {
 			$this->rows = $dataModelInstance->getRecordCount();
 			$viewer->assign('TOTAL_COUNT', $this->rows);
 		}
-
-		$rowCount = 0;
-		foreach($this->listViewEntries as $group) {
-			foreach($group as $row) {
-				$rowCount++;
-			}
-		}
-		//for calculating the page range
-		for($i=0; $i<$rowCount; $i++) $dummyListEntries[] = $i;
-		$pagingModel->calculatePageRange($dummyListEntries);
-
+        
 		$viewer->assign('IGNORE_EMPTY', $ignoreEmpty);
-		$viewer->assign('LISTVIEW_ENTRIES_COUNT', $rowCount);
+		$viewer->assign('LISTVIEW_ENTRIES_COUNT', $pagingModel->recordCount);
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
 		$viewer->assign('PAGING_MODEL', $pagingModel);

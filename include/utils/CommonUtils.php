@@ -32,8 +32,8 @@ function is_admin($user) {
 	return Vtiger_Functions::userIsAdministrator($user);
 }
 
-function parse_calendardate($local_format) {
-	return Vtiger_Functions::currentUserJSDateFormat($local_format);
+function parse_calendardate() {
+	return Vtiger_Functions::currentUserJSDateFormat();
 }
 
 function from_html($string, $encode = true) {

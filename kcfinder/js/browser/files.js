@@ -137,14 +137,14 @@ browser.selectFile = function(file, e) {
                 $('#fileinfo').html(files.length + ' ' + this.label("selected files") + ' (' + size + ')');
             else {
                 var data = $(files[0]).data();
-                $('#fileinfo').html(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
+                $('#fileinfo').text(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
             }
         }
     } else {
         var data = file.data();
         $('.file').removeClass('selected');
         file.addClass('selected');
-        $('#fileinfo').html(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
+        $('#fileinfo').text(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
     }
 };
 
@@ -378,7 +378,7 @@ browser.menuFile = function(file, e) {
         html += '<div class="menu">';
         $('.file').removeClass('selected');
         file.addClass('selected');
-        $('#fileinfo').html(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
+        $('#fileinfo').text(data.name + ' (' + this.humanSize(data.size) + ', ' + data.date + ')');
         if (this.opener.callBack || this.opener.callBackMultiple) {
             html += '<a href="kcact:pick">' + this.label("Select") + '</a>';
             if (data.thumb) html +=

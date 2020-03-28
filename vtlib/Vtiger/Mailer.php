@@ -27,8 +27,10 @@ class Vtiger_Mailer extends PHPMailer {
 	 * Constructor
 	 */
 	function __construct() {
+		global $default_charset;
 		parent::__construct();
 		$this->initialize();
+		$this->CharSet = $default_charset;
 	}
 
 	/**

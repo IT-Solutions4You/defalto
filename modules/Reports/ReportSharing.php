@@ -32,7 +32,7 @@ $report_std_filter->assign("MOD", $mod_strings);
 $report_std_filter->assign("APP", $app_strings);
 $report_std_filter->assign("IMAGE_PATH",$image_path);
 $report_std_filter->assign("DATEFORMAT",$current_user->date_format);
-$report_std_filter->assign("JS_DATEFORMAT",parse_calendardate($app_strings['NTC_DATE_FORMAT']));
+$report_std_filter->assign('JS_DATEFORMAT', parse_calendardate());
 
 $roleid = $current_user->column_fields['roleid'];
 $user_array = getAllUserName();

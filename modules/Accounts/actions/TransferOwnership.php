@@ -79,18 +79,40 @@ class Accounts_TransferOwnership_Action extends Vtiger_Action_Controller {
 			}
 		}
 
+        $tagParams = $request->get('tag_params');
+		$tag = $request->get('tag');
+		$listViewSessionKey = $module.'_'.$cvId;
+
+		if(!empty($tag)) {
+			$listViewSessionKey .='_'.$tag;
+		}
+
+		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
+		if(!empty($tag) && empty($tagParams)){
+			$tagParams = $orderParams['tag_params'];
+		}
+
+		if(empty($tagParams)){
+			$tagParams = array();
+		}
+        
+		$searchParams = $request->get('search_params');
+		if(empty($searchParams) && !is_array($searchParams)){
+			$searchParams = array();
+		}
+		$searchAndTagParams = array_merge($searchParams, $tagParams);
+
 		if($selectedIds == 'all'){
 			$customViewModel = CustomView_Record_Model::getInstanceById($cvId);
 			if($customViewModel) {
 				$operator = $request->get('operator');
-				$searchParams = $request->get('search_params');
 				if (!empty($operator)) {
 					$customViewModel->set('operator', $operator);
 					$customViewModel->set('search_key', $request->get('search_key'));
 					$customViewModel->set('search_value', $request->get('search_value'));
 				}
-				if (!empty($searchParams)) {
-					$customViewModel->set('search_params', $searchParams);
+				if (!empty($searchAndTagParams)) {
+					$customViewModel->set('search_params', $searchAndTagParams);
 				}
 				return $customViewModel->getRecordIds($excludedIds, $module);
 			}

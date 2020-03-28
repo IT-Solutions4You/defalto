@@ -125,6 +125,9 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		var returnFormData = true;
 		var message = '';
 		jQuery.each(portalModules, function (index, element) {
+                    if(!jQuery(element).find('.enabledModules').is(':checked')){
+                        return;
+                    }
 			var mandatoryFields = [];
 			var list = element.attributes;
 			var moduleName = list['data-module'].value;

@@ -71,7 +71,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 		$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
 		foreach ($emailSupportedModulesList as $module) {
 			if ($module != 'Users' && $module != 'ModComments') {
-                    $activeModules[] = "'".$module."'";
+                    $activeModules[] = $module;
                     $activeModuleModel = Vtiger_Module_Model::getInstance($module);
                     $moduleEmailFields = $activeModuleModel->getFieldsByType('email');
 					foreach ($moduleEmailFields as $fieldName => $fieldModel) {
@@ -83,7 +83,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 				}
 
 			if ($moduleName) {
-                $activeModules = array("'".$moduleName."'");
+                $activeModules = array($moduleName);
             }
             
             $query = "SELECT vtiger_emailslookup.crmid, vtiger_emailslookup.setype, vtiger_emailslookup.value, 
@@ -112,7 +112,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 					}
 				}
 			$emailsResult[vtranslate($row['setype'], $row['setype'])][$row['crmid']][] = array('value' => $row['value'],
-																								'label' => decode_html($row['label']).' <b>('.$row['value'].')</b>',
+																								'label' => decode_html($row['label']).' ('.$row['value'].')',
 																								'name' => decode_html($row['label']),);
             }
             
@@ -154,7 +154,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
                                                     $emailsResult[vtranslate($moduleName, $moduleName)][$row[$moduleInstance->table_index]][]
                                                                             = array('value'	=> $emailFieldValue,
 																					'name'	=> $recordLabel,
-																					'label'	=> $recordLabel . ' <b>('.$emailFieldValue.')</b>');
+																					'label'	=> $recordLabel . ' ('.$emailFieldValue.')');
 
                                             }
                                     }

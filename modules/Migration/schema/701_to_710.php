@@ -81,23 +81,30 @@ if (defined('VTIGER_UPGRADE')) {
 
 	//START::Tag fields are pointed to cf table for the modules Assets, Services etc..
 	$fieldName = 'tags';
-	$moduleModels = Vtiger_Module_Model::getAll();
-	foreach ($moduleModels as $moduleModel) {
-		$baseTableId = $moduleModel->basetableid;
-		if ($baseTableId) {
-			$baseTableName = $moduleModel->basetable;
-			$customTableName = $baseTableName.'cf';
-			$customTableColumns = $db->getColumnNames($customTableName);
-			if (in_array($fieldName, $customTableColumns)) {
-				$fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
-				$db->pquery("UPDATE vtiger_field SET tablename=? WHERE fieldid=?", array($baseTableName, $fieldModel->id));
-				$db->pquery("ALTER TABLE $baseTableName ADD COLUMN $fieldName VARCHAR(1)", array());
+    $moduleModels = Vtiger_Module_Model::getAll();
+    $restrictedModules = array('Dashboard', 'Home', 'Rss', 'Portal', 'Webmails', 'Import');
+    foreach ($moduleModels as $moduleModel) {
+        if(in_array($moduleModel->getName(), $restrictedModules)) {
+            continue;
+        }
+        $moduleClass = CRMEntity::getInstance($moduleModel->getName());
+        $baseTableId = $moduleClass->table_index;
+        if ($baseTableId) {
+            $baseTableName = $moduleClass->table_name;
+            $customTable = $moduleClass->customFieldTable;
+            $customTableName = $customTable[0];
+            $customTableId = $customTable[1];
+            $customTableColumns = $db->getColumnNames($customTableName);
+            if (!empty($customTableColumns) && in_array($fieldName, $customTableColumns)) {
+                $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+                $db->pquery("UPDATE vtiger_field SET tablename=? WHERE fieldid=?", array($baseTableName, $fieldModel->id));
+                $db->pquery("ALTER TABLE $baseTableName ADD COLUMN $fieldName VARCHAR(1)", array());
 
-				$db->pquery("UPDATE $baseTableName, $customTableName SET $baseTableName.tags=$customTableName.tags WHERE $baseTableName.$baseTableId=$customTableName.$baseTableId", array());
-				$db->pquery("ALTER TABLE $customTableName DROP COLUMN $fieldName", array());
-			}
-		}
-	}
+                $db->pquery("UPDATE $baseTableName, $customTableName SET $baseTableName.tags=$customTableName.tags WHERE $baseTableName.$baseTableId=$customTableName.$customTableId", array());
+                $db->pquery("ALTER TABLE $customTableName DROP COLUMN $fieldName", array());
+            }
+        }
+    }
 	echo '<br>Succecssfully generalized tag fields<br>';
 	//END::Tag fields are pointed to cf table for the modules Assets, Services etc..
 

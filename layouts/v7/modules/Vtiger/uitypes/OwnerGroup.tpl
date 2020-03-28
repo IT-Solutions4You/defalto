@@ -10,7 +10,7 @@
 {strip}
 	{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
-	{assign var=ALL_ACTIVEGROUP_LIST value=$USER_MODEL->getAccessibleGroups()}
+	{assign var=ALL_ACTIVEGROUP_LIST value=$FIELD_INFO['picklistvalues'][vtranslate('LBL_GROUPS')]}
 	{assign var=ASSIGNED_GROUP_ID value=$FIELD_MODEL->get('name')}
 	{assign var=CURRENT_USER_ID value=$USER_MODEL->get('id')}
 	{assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}

@@ -144,15 +144,11 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 			$fieldValue = $request->get($fieldName, null);
             // For custom time fields in Calendar, it was not converting to db insert format(sending as 10:00 AM/PM)
             $fieldDataType = $fieldModel->getFieldDataType();
+            if($fieldValue){
+                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+            }
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-            }
-            if(($fieldDataType == 'picklist' || $fieldDataType == 'multipicklist' || $fieldDataType == 'multiowner') && $fieldValue !== null){
-                $fieldInfo = $fieldModel->getFieldInfo();
-                $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
-                if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
-                    $fieldValue = null;
-                }
             }
             // End
             if ($fieldName === $request->get('field')) {
@@ -168,25 +164,29 @@ class Calendar_Save_Action extends Vtiger_Save_Action {
 		}
 
 		//Start Date and Time values
-		$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
-		$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
-		list($startDate, $startTime) = explode(' ', $startDateTime);
+        if($request->get('date_start') && $request->get('time_start')) {
+            $startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
+            $startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
+            list($startDate, $startTime) = explode(' ', $startDateTime);
 
-		$recordModel->set('date_start', $startDate);
-		$recordModel->set('time_start', $startTime);
+            $recordModel->set('date_start', $startDate);
+            $recordModel->set('time_start', $startTime);
+        }
 
 		//End Date and Time values
-		$endTime = $request->get('time_end');
-		$endDate = Vtiger_Date_UIType::getDBInsertedValue($request->get('due_date'));
+        if($request->get('due_date')) {
+            $endTime = $request->get('time_end');
+            $endDate = Vtiger_Date_UIType::getDBInsertedValue($request->get('due_date'));
 
-		if ($endTime) {
-			$endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
-			$endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
-			list($endDate, $endTime) = explode(' ', $endDateTime);
-		}
+            if ($endTime) {
+                $endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($endTime);
+                $endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
+                list($endDate, $endTime) = explode(' ', $endDateTime);
+            }
 
-		$recordModel->set('time_end', $endTime);
-		$recordModel->set('due_date', $endDate);
+            $recordModel->set('time_end', $endTime);
+            $recordModel->set('due_date', $endDate);
+        }
 
 		$activityType = $request->get('activitytype');
 		if(empty($activityType)) {

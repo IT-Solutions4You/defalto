@@ -215,9 +215,8 @@ Vtiger_List_Js("Rss_List_Js",{},{
         var thisInstance = this;
         jQuery('#page').on('click', '#deleteButton', function(e){
             var elem = jQuery(e.currentTarget);
-            var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
-            var parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
-            thisInstance.deleteRecord(parent);
+            var feedContainer = elem.closest('.feedContainer');
+            thisInstance.deleteRecord(feedContainer);
         })
     },
     
@@ -322,7 +321,8 @@ Vtiger_List_Js("Rss_List_Js",{},{
         var container = this.getListViewContainer();
         this.registerRssAddButtonClickEvent();
         this.registerRssUrlClickEvent();
-        this.registerFeedClickEvent(container);
+        //Avoiding this call as file_get_contents is not fetching data successfully.
+        //this.registerFeedClickEvent(container);
         this.registerMakeDefaultClickEvent(container);
         this.setFeedContainerHeight(container);
     }

@@ -66,6 +66,7 @@ class EmailTemplate {
 	public function process($params) {
 		$module = $this->module;
 		$recordId = $this->recordId;
+        $variableList = array();
 		$variableList = $this->getTemplateVariableListForModule($module);
 		$handler = vtws_getModuleHandlerFromName($module, $this->user);
 		$meta = $handler->getMeta();

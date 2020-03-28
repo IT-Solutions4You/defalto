@@ -289,6 +289,48 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	}
 });
 
+Vtiger_Field_Js('Vtiger_Documentsfolder_Field_Js',{},{
+
+	/**
+	 * Function to get the pick list values
+	 * @return <object> key value pair of options
+	 */
+	getPickListValues : function() {
+		return this.get('documentFolders');
+	},
+
+	/**
+	 * Function to get the ui
+	 * @return - select element and chosen element
+	 */
+	getUi : function() {
+		//added class inlinewidth
+		var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
+		var pickListValues = this.getPickListValues();
+		var selectedOption = app.htmlDecode(this.getValue());
+
+		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
+			html += '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>';
+		}
+
+		var data = this.getData();
+
+		var fieldName = this.getName();
+		for(var option in pickListValues) {
+			html += '<option value="'+option+'" ';
+			if(option == selectedOption) {
+				html += ' selected ';
+			}
+			html += '>'+pickListValues[option]+'</option>';
+		}
+		html +='</select>';
+
+		var selectContainer = jQuery(html);
+		this.addValidationToElement(selectContainer);
+		return selectContainer;
+	}
+});
+
 Vtiger_Field_Js('Vtiger_Currencylist_Field_Js',{},{
 
 	/**
@@ -594,7 +636,7 @@ Vtiger_Field_Js('Vtiger_Email_Field_Js',{},{
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi : function() {
-		var html = '<input class="inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-email="true" data-rule-illegal="true"/>';
+		var html = '<input class="getPopupUi inputElement" type="text" name="'+ this.getName() +'" data-label="'+this.get('label')+'" data-rule-email="true" data-rule-illegal="true"/>';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
 		this.addValidationToElement(html);
 		return jQuery(html);

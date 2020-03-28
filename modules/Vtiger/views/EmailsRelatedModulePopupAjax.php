@@ -22,19 +22,20 @@ class Vtiger_EmailsRelatedModulePopupAjax_View extends Vtiger_EmailsRelatedModul
 	}
 
 	function postProcess(Vtiger_Request $request) {
-		return true;
+            return true;
 	}
 
 	function process (Vtiger_Request $request) {
-		$mode = $request->get('mode');
+            $mode = $request->get('mode');
 		if(!empty($mode)) {
-			$this->invokeExposedMethod($mode, $request);
+                    $this->invokeExposedMethod($mode, $request);
 			return;
 		}
 		$viewer = $this->getViewer ($request);
-		$moduleName = $request->getModule();
+                $moduleName = $request->getModule();
 
-		$this->initializeListViewContents($request, $viewer);
+                $viewer->assign('MODULE_NAME',$moduleName);
+                $this->initializeListViewContents($request, $viewer);
 
 		echo $viewer->view('PopupContents.tpl', $moduleName, true);
 	}

@@ -251,7 +251,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 					}
 					$result['recurringRecords'] = true;
 				} else {
-					$oldStartDateTime = '';
+                    $oldStartDateTime = array();
 					$oldStartDateTime[] = $record->get('date_start');
 					$oldStartDateTime[] = $record->get('time_start');
 					$oldStartDateTime = implode(' ', $oldStartDateTime);
@@ -260,7 +260,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 					$record->set('date_start',$parts[0]);
 					$record->set('time_start',$parts[1]);
 
-					$oldEndDateTime = '';
+					$oldEndDateTime = array();
 					$oldEndDateTime[] = $record->get('due_date');
 					$oldEndDateTime[] = $record->get('time_end');
 					$oldEndDateTime = implode(' ',$oldEndDateTime);

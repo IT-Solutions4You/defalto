@@ -864,7 +864,7 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 	$adb->pquery('INSERT INTO vtiger_inventorychargesrel VALUES (?, ?)', array($focus->id, Zend_Json::encode($chargesInfo)));
 
 	$updatequery .= " s_h_percent=?";
-	array_push($updateparams, $shipping_handling_charge);
+	array_push($updateparams, vtlib_purify($_REQUEST['s_h_percent']));
 
 	//$id_array = Array('PurchaseOrder'=>'purchaseorderid','SalesOrder'=>'salesorderid','Quotes'=>'quoteid','Invoice'=>'invoiceid');
 	//Added where condition to which entity we want to update these values
@@ -972,7 +972,7 @@ function getInventorySHTaxPercent($id, $taxname)
 	global $log, $adb;
 	$log->debug("Entering into function getInventorySHTaxPercent($id, $taxname)");
 
-    $taxname = Vtiger_Util_Helper::validateStringForSql($taxname);
+    $taxname = $taxname;
 	$res = $adb->pquery("select $taxname from vtiger_inventoryshippingrel where id= ?", array($id));
 	$taxpercentage = $adb->query_result($res,0,$taxname);
 
@@ -1313,7 +1313,7 @@ function createRecords($obj) {
 	$focus = CRMEntity::getInstance($moduleName);
 
     $params = array();
-	$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+	$tableName = Import_Utils_Helper::getDbTableName($obj->user);
 	$sql = 'SELECT * FROM ' . $tableName . ' WHERE status = ? GROUP BY subject';
     $params[] = Import_Data_Action::$IMPORT_RECORD_NONE;
 	if($obj->batchImport) {
@@ -1522,7 +1522,7 @@ function importRecord($obj, $inventoryFieldData, $lineItemDetails) {
 
 function getImportStatusCount($obj) {
 	global $adb;
-	$tableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($obj->user));
+	$tableName = Import_Utils_Helper::getDbTableName($obj->user);
 	$result = $adb->pquery('SELECT status FROM '.$tableName. ' GROUP BY subject', array());
 
 	$statusCount = array('TOTAL' => 0, 'IMPORTED' => 0, 'FAILED' => 0, 'PENDING' => 0,
@@ -1565,7 +1565,7 @@ function undoLastImport($obj, $user) {
 	$owner->id = $ownerId;
 	$owner->retrieve_entity_info($ownerId, 'Users');
 	
-	$dbTableName = Vtiger_Util_Helper::validateStringForSql(Import_Utils_Helper::getDbTableName($owner));
+	$dbTableName = Import_Utils_Helper::getDbTableName($owner);
 	
 	if(!is_admin($user) && $user->id != $owner->id) {
 		$viewer = new Vtiger_Viewer();
