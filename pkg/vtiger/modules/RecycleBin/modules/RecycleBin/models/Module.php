@@ -149,6 +149,9 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 
 		$query = 'DELETE FROM vtiger_relatedlists_rb WHERE entityid in('.generateQuestionMarks($recordIds).')';
 		$db->pquery($query, array($recordIds));
+        
+        // Delete related mod comments
+		$this->deleteRelatedComments($recordIds);
 
 		// TODO - Remove records from module tables and other related stores.
 		$query = 'DELETE FROM vtiger_modtracker_basic WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
@@ -243,5 +246,14 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function isQuickSearchEnabled() {
 		return true;
+	}
+    
+    public function deleteRelatedComments($recordIds) {
+		$db = PearDatabase::getInstance();
+		$query = 'DELETE vtiger_crmentity.* FROM vtiger_crmentity '
+				. 'INNER JOIN vtiger_modcomments ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid '
+				. 'WHERE vtiger_modcomments.related_to in(' . generateQuestionMarks($recordIds) . ')';
+
+		$db->pquery($query, array($recordIds));
 	}
 }
