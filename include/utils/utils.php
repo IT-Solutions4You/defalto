@@ -1786,9 +1786,32 @@ function isRecordExists($recordId) {
 function getValidDBInsertDateValue($value) {
 	global $log;
 	$log->debug("Entering getValidDBInsertDateValue(".$value.") method ...");
-	
-    $insert_date = DateTimeField::convertToDBFormat($value);
-	
+	$value = trim($value);
+	$delim = array('/','.');
+	foreach ($delim as $delimiter){
+		$x = strpos($value, $delimiter);
+		if($x === false) continue;
+		else{
+			$value=str_replace($delimiter, '-', $value);
+			break;
+		}
+	}
+	list($y,$m,$d) = explode('-',$value);
+	if(strlen($y) == 1) $y = '0'.$y;
+	if(strlen($m) == 1) $m = '0'.$m;
+	if(strlen($d) == 1) $d = '0'.$d;
+	$value = implode('-', array($y,$m,$d));
+
+	if(strlen($y)<4){
+		$insert_date = DateTimeField::convertToDBFormat($value);
+	} else {
+		$insert_date = $value;
+	}
+
+	if (preg_match("/^[0-9]{2,4}[-][0-1]{1,2}?[0-9]{1,2}[-][0-3]{1,2}?[0-9]{1,2}$/", $insert_date) == 0) {
+		return '';
+	}
+
 	$log->debug("Exiting getValidDBInsertDateValue method ...");
 	return $insert_date;
 		}
@@ -1796,7 +1819,8 @@ function getValidDBInsertDateValue($value) {
 function getValidDBInsertDateTimeValue($value) {
 	$value = trim($value);
 	$valueList = explode(' ',$value);
-	if(count($valueList) == 2) {
+    //checking array count = 3 if datatime format is 12hr.
+	if(count($valueList) == 2 || count($valueList) == 3) {
 		$dbDateValue = getValidDBInsertDateValue($valueList[0]);
 		$dbTimeValue = $valueList[1];
 		if(!empty($dbTimeValue) && strpos($dbTimeValue, ':') === false) {

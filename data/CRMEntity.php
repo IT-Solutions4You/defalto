@@ -522,7 +522,7 @@ class CRMEntity {
 				} elseif ($uitype == 5 || $uitype == 6 || $uitype == 23) {
 					//Added to avoid function call getDBInsertDateValue in ajax save
 					if (isset($current_user->date_format) && !$ajaxSave) {
-						$fldvalue = getValidDBInsertDateValue($this->column_fields[$fieldname]);
+						$fldvalue = getValidDBInsertDateTimeValue($this->column_fields[$fieldname]);
 					} else {
 						$fldvalue = $this->column_fields[$fieldname];
 					}
