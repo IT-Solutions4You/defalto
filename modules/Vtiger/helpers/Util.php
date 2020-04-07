@@ -1158,12 +1158,20 @@ class Vtiger_Util_Helper {
 									}
 									break;
 			case 'picklist'		:	$pickListDetails = $fieldModel->getPicklistValues();
+                                    if($defaultValue){ 
+                                        $value = $defaultValue; 
+                                        break; 
+                                    } 
 									foreach ($pickListDetails as $key => $value) {
 										$value = $key;
 										break;
 									}
 									break;
 			case 'multipicklist':	$pickListDetails = $fieldModel->getPicklistValues();
+                                    if($defaultValue){ 
+                                        $value = $defaultValue; 
+                                        break; 
+                                    }
 									foreach ($pickListDetails as $key => $value) {
 										$value = $key;
 										break;

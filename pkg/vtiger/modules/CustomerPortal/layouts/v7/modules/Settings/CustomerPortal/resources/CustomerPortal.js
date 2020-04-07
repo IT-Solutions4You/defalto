@@ -141,6 +141,7 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 					});
 
 					var fieldInfo = jQuery('input[name="selectedFields_'+moduleName+'"]').val();
+                                        //Removed mandatory fields checkingRinde
 					if (fieldInfo != 'null') {
 						selectedFields[moduleName] = fieldInfo;
 					}
