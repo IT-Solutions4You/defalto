@@ -29,14 +29,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 				record: recordId,
 				attachmentid: attachmentId
 			};
-			var modalParams = {
-				cb: function (modalContainer) {
-					modalContainer.find('.viewer').zoomer();
-				},
-				'ignoreScroll' : true
-			};
 			app.request.post({data: params}).then(function (err, res) {
-				app.helper.showModal(res, modalParams);
+				app.helper.showModal(res);
 			});
 		}
 	},
