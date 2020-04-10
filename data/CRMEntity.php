@@ -1605,7 +1605,7 @@ class CRMEntity {
 					while ($recordinfo = $adb->fetch_array($records)) {
 						$value = "$prefix" . "$cur_id";
 						$adb->pquery("UPDATE $fld_table SET $fld_column = ? WHERE $this->table_index = ?", Array($value, $recordinfo['recordid']));
-						$cur_id += 1;
+						$cur_id = $this->getSequnceNumber($cur_id);
 						$returninfo['updatedrecords'] = $returninfo['updatedrecords'] + 1;
 					}
 					if ($old_cur_id != $cur_id) {
@@ -1618,6 +1618,15 @@ class CRMEntity {
 		}
 		return $returninfo;
 	}
+    
+    function getSequnceNumber($curid){
+        $strip = strlen($curid) - strlen($curid + 1);
+        if ($strip < 0)
+                $strip = 0;
+        $temp = str_repeat("0", $strip);
+        $req_no = $temp . ($curid + 1);
+        return $req_no;
+    }
 
 	/* Generic function to get attachments in the related list of a given module */
 
