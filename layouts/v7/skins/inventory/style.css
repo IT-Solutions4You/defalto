@@ -86,6 +86,7 @@ body {
 }
 .global-nav .global-actions {
   padding-right: 15px;
+  height: 42px !important;
 }
 .app-nav {
   position: relative;
@@ -122,9 +123,9 @@ body {
     padding-right: 0;
     position: absolute;
     width: 100%;
-    height: 43px;
+    height: 42px;
     /*        border-top:1px solid #ddd;*/
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ddd;
   }
   .app-nav .module-action-bar .module-action-content {
     background: #FBFBFB;
@@ -161,6 +162,7 @@ body {
   .main-container .content-area {
     width: 100%;
     padding-left: 283px;
+    padding-top: 15px;
     min-height: 768px;
   }
   .main-container .settingsPageDiv {
@@ -233,13 +235,7 @@ body {
     padding-top:5px;
 }*/
 .global-nav .navbar-nav > li div a {
-  padding: 13px;
-}
-#navbar > ul > li > div > div > a {
-  float: left;
-}
-#navbar > ul > li > div > a {
-  float: left;
+  padding: 15px;
 }
 .global-nav > ul {
   margin-right: 20px;
@@ -261,7 +257,7 @@ body {
   height: 100%;
   width: 100%;
   color: #AAAAAA;
-  margin: 4px;
+  margin-top: 4px;
   padding: 0px 10px;
   text-decoration: none;
   vertical-align: top;
@@ -391,9 +387,9 @@ body {
 }
 .app-nav .app-indicator-icon-container {
   top: 0px;
-  height: 43px;
+  height: 42px;
   text-align: center;
-  line-height: 43px;
+  line-height: 42px;
   /*    background-color: #2c3b49;*/
   color: #ffffff;
   /*border-bottom: 1px solid #272B46;*/
@@ -768,9 +764,6 @@ a.menu-item:hover {
 .logout-footer hr {
   margin: 10px 0;
 }
-#logout-footer > div > span > a {
-  float: none;
-}
 .app-home {
   background: #C5EFF7;
 }
@@ -796,7 +789,7 @@ a.menu-item:hover {
 /******** View styles (List/Edit/Detail..) *******/
 /*************************************************/
 .viewContent .content-area {
-  padding-left: 3%;
+  padding-left: 50px;
 }
 .viewContent .content-area.full-width {
   padding-left: 15px;
@@ -1441,7 +1434,6 @@ ul.unstyled {
   width: 100%;
   border: 1px solid #ddd;
   margin-top: 10px;
-  overflow: scroll;
 }
 .listview-table {
   margin-bottom: 0;
@@ -1481,7 +1473,6 @@ ul.unstyled {
   vertical-align: middle;
   width: 100%;
   display: inline-block;
-  word-break: normal;
 }
 .listViewEntries .relatedListEntryValues .value {
   vertical-align: middle;
@@ -1733,7 +1724,7 @@ input[type=checkbox]:checked {
   padding-top: 5px;
 }
 .detailViewButtoncontainer button.btn {
-  margin: 1px !important;
+  margin: 0px 1px !important;
 }
 .detailview-header .recordBasicInfo > .info-row {
   margin-bottom: 4px;
@@ -3330,7 +3321,7 @@ th {
   font-size: 20px;
   font-weight: bold;
   line-height: 18px;
-  opacity: 0.2;
+  opacity: .2;
 }
 #settingsShortCutsContainer .col-lg-3.moduleBlock:hover .unpin {
   display: inline-block;
@@ -5070,9 +5061,7 @@ hr {
 }
 .related-tabs.row .nav > li {
   padding: 0 10px;
-  margin: 0 2px 3px 2px;
-  width: 90px;
-  text-align: center;
+  margin: 0 2px;
 }
 .massEditTabs.nav > li {
   padding: 0 10px;
@@ -5113,7 +5102,6 @@ TN-34230 .row .nav > li > a:hover {
 .contents.tabbable .nav-tabs > li.active:focus {
   border: none;
   border-bottom: 3px solid #555;
-  margin-bottom: 0;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -6022,7 +6010,6 @@ div.tooltip-inner {
 .detailview-header-block {
   background: white;
   padding: 15px;
-  padding-top: 25px;
 }
 .detailViewContainer .content-area,
 .editViewPageDiv .content-area,
@@ -6904,19 +6891,19 @@ a.btnReport:hover {
   box-sizing: border-box;
 }
 .column.l1 {
-  width: 4.16666667%;
+  width: 4.166666666667%;
 }
 .column.l2 {
-  width: 8.33333333%;
+  width: 8.333333333333%;
 }
 .column.l3 {
   width: 12.5%;
 }
 .column.l5 {
-  width: 20.83333333%;
+  width: 20.83333333333%;
 }
 .column.l8 {
-  width: 33.33333333%;
+  width: 33.33333333333%;
 }
 .column.l9 {
   width: 37.5%;
@@ -7535,121 +7522,6 @@ input:focus:-ms-input-placeholder {
 }
 .moduleIcon .custom-module {
   font-weight: bold;
-}
-.margin0 {
-  margin: 0;
-}
-.border0 {
-  border: 0;
-}
-.padding0 {
-  padding: 0;
-}
-.rounded0 {
-  border-radius: 0;
-}
-.bg-white {
-  background: #FFFFFF;
-}
-@media all and (min-width: 0px) and (max-width: 600px) {
-  table.summary-table > tbody > tr > td,
-  table.summary-table > tbody > tr > th,
-  table.summary-table > tfoot > tr > td,
-  table.summary-table > tfoot > tr > th,
-  table.summary-table > thead > tr > td,
-  table.summary-table > thead > tr > th,
-  .quickCreateContent > table.table > tbody > tr > td,
-  .quickCreateContent > table.table > tbody > tr > th,
-  .quickCreateContent > table.table > tfoot > tr > td,
-  .quickCreateContent > table.table > tfoot > tr > th,
-  .quickCreateContent > table.table > thead > tr > td,
-  .quickCreateContent > table.table > thead > tr > th,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > td,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > th,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > td,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > th,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > td,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
-  .detailview-table > tbody > tr > td,
-  .detailview-table > tbody > tr > th,
-  .detailview-table > tfoot > tr > td,
-  .detailview-table > tfoot > tr > th,
-  .detailview-table > thead > tr > td,
-  .detailview-table > thead > tr > th {
-    display: block;
-    min-width: 100%!important;
-  }
-  table.summary-table > thead > tr > th,
-  .quickCreateContent > table.table > thead > tr > th,
-  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
-  .detailview-table > thead > tr > th {
-    display: none;
-  }
-  .editElement div {
-    float: left;
-  }
-  #detailView td.fieldValue .edit {
-    width: 100%;
-    float: none !important;
-    display: inline-block;
-  }
-  table.summary-table td.fieldValue .inputElement,
-  .quickCreateContent > table.table td.fieldValue .inputElement,
-  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .inputElement,
-  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .input-group {
-    width: 100%;
-    float: none !important;
-  }
-  #detailView td.fieldLabel {
-    padding-top: 20px;
-  }
-  #detailView td.fieldValue {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 20px;
-  }
-  #detailView td.fieldValue > span:first-child {
-    border: 0;
-    border-bottom: 1px dashed #aaa;
-  }
-  .search-link {
-    border: 0;
-  }
-  #page > nav.navbar {
-    border-bottom: 1px solid #eee;
-  }
-  .modal-overlay-footer {
-    border-left: 0;
-  }
-  .app-footer {
-    font-size: 11px;
-  }
-  body {
-    font-size: 13px;
-  }
-  .overlay-container-60 {
-    margin-left: 0px ;
-  }
-  .overlayPageContent {
-    padding-bottom: 0;
-  }
-  .overlayPageContent.fade {
-    overflow: scroll;
-  }
-  .overlayDetail .modal-content {
-    position: relative;
-  }
-  .mCSB_inside > .mCSB_container {
-    margin-right: 0;
-  }
-  #mCSB_9_scrollbar_vertical {
-    display: none;
-  }
-  .lineItemInputBox {
-    width: 100%;
-  }
-  #comment1 {
-    border-left-color: #ccc;
-  }
 }
 .modules-menu ul li.active a {
   border-left: 3px solid #F1C40F;
