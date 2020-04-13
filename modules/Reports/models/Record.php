@@ -308,8 +308,6 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$queryObj = Reports::getReportSharingQuery($queryObj,$reportType);
 			$sql = $queryObj->query. ' AND vtiger_report.reportid = '.$this->getId();
 			$params = $queryObj->queryParams;
-            echo "<pre>";
-            print_r($db->convert2Sql($sql,$params));
 			$result = $db->pquery($sql,$params);
 			return $db->num_rows($result) > 0 ? true:false;
 	}
