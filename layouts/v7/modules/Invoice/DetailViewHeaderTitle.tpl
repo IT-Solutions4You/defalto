@@ -12,7 +12,7 @@
 {strip}
     <div class="col-sm-6">
         <div class="record-header clearfix">
-            <div class="hidden-sm hidden-xs recordImage bginvoice app-{$SELECTED_MENU_CATEGORY}">  
+            <div class="recordImage bginvoice app-{$SELECTED_MENU_CATEGORY}">
                 {assign var=IMAGE_DETAILS value=$RECORD->getImageDetails()}
                 {foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
                     {if !empty($IMAGE_INFO.url)}
