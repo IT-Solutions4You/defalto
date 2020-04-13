@@ -724,10 +724,11 @@ function purifyHtmlEventAttributes($value,$replaceAll = false){
     
     // remove malicious html attributes with its value.
     if ($replaceAll) {
-        $regex = '\s*=\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        //Handled to address multiple html entity encoding for '=' character
+        $regex = '\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
         $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
     } else {
-        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)/i", $value)) {
             $value = str_replace("=", "&equals;", $value);
         }
     }

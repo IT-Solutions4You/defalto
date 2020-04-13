@@ -160,6 +160,12 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 			if($fieldDataType == 'time' && $fieldValue !== null){
 				$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 			}
+            $ckeditorFields = array('commentcontent', 'notecontent');
+            if((in_array($fieldName, $ckeditorFields)) && $fieldValue !== null){
+                $purifiedContent = vtlib_purify(decode_html($fieldValue));
+                // Purify malicious html event attributes
+                $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
+			}
 			if($fieldValue !== null) {
 				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
 					$fieldValue = trim($fieldValue);
