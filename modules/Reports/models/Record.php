@@ -275,6 +275,9 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	function isRecordHasViewAccess($reportType){
 		$db = PearDatabase::getInstance();
 		$current_user = vglobal('current_user');
+        if(strtolower($current_user->is_admin) == "on") {
+            return true;
+        }
 			$params = array();
 			$sql = ' SELECT vtiger_report.reportid,vtiger_report.reportname FROM vtiger_report ';
 			require('user_privileges/user_privileges_'.$current_user->id.'.php');
@@ -305,6 +308,8 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$queryObj = Reports::getReportSharingQuery($queryObj,$reportType);
 			$sql = $queryObj->query. ' AND vtiger_report.reportid = '.$this->getId();
 			$params = $queryObj->queryParams;
+            echo "<pre>";
+            print_r($db->convert2Sql($sql,$params));
 			$result = $db->pquery($sql,$params);
 			return $db->num_rows($result) > 0 ? true:false;
 	}
