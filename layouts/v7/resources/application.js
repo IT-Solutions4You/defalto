@@ -206,7 +206,7 @@ window.app = (function () {
 			for (var index = 0; index < queryParameters.length; index++) {
 				var queryParam = queryParameters[index];
 				var queryParamComponents = queryParam.split('=');
-                                if (queryParamComponents[0] in params) params[queryParamComponents[0]] += '&' + queryParamComponents[0] + '=' + queryParamComponents[1];
+                if (queryParamComponents[0] in params) params[queryParamComponents[0]] += '&' + queryParamComponents[0] + '=' + queryParamComponents[1];
 				else params[queryParamComponents[0]] = queryParamComponents[1];
 			}
 			return params;
