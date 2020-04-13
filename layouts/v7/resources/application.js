@@ -104,9 +104,12 @@ window.app = (function () {
 			return aDeferred.promise();
 		},
 		this.post = function (params) {
+                    console.log('Post hit is => ');
 			var aDeferred = jQuery.Deferred();
 			params.type = 'POST';
 			//caller has send only url so we need to break it to data 
+                        console.log(typeof params.data);
+                        console.log(params.data);
 			if (typeof params.data == 'undefined') {
 				params.data = app.convertUrlToDataParams(params.url);
 				delete params.url;
@@ -206,7 +209,7 @@ window.app = (function () {
 			for (var index = 0; index < queryParameters.length; index++) {
 				var queryParam = queryParameters[index];
 				var queryParamComponents = queryParam.split('=');
-                if (queryParamComponents[0] in params) params[queryParamComponents[0]] += '&' + queryParamComponents[0] + '=' + queryParamComponents[1];
+                                if (queryParamComponents[0] in params) params[queryParamComponents[0]] += '&' + queryParamComponents[0] + '=' + queryParamComponents[1];
 				else params[queryParamComponents[0]] = queryParamComponents[1];
 			}
 			return params;
