@@ -137,4 +137,12 @@ if (defined('VTIGER_UPGRADE')) {
         createUserSharingPrivilegesfile($userId);
     }
     echo "Re-calculated user privilege and sharing privileges files";
+    
+    //Adding beforeRelate and afterRelate event handlers
+    $em = new VTEventsManager($db);
+	$em->registerHandler('vtiger.entity.beforerelate', 'modules/Vtiger/handlers/RelateEntitesHandler.php', 'RelateEntitesHandler');
+	echo '<br>Succecssfully added before relate handler<br>';
+    
+    $em->registerHandler('vtiger.entity.afterrelate', 'modules/Vtiger/handlers/RelateEntitesHandler.php', 'RelateEntitesHandler');
+	echo '<br>Succecssfully added before relate handler<br>';
 }

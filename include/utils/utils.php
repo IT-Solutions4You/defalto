@@ -1632,11 +1632,18 @@ function DeleteEntity($module,$return_module,$focus,$record,$return_id) {
  * Function to related two records of different entity types
   */
 function relateEntities($focus, $sourceModule, $sourceRecordId, $destinationModule, $destinationRecordIds) {
+    $db = PearDatabase::getInstance();
+    $em = new VTEventsManager($db);
+    $data = array('sourceModule'=>$sourceModule, 'sourceRecordId'=>$sourceRecordId,
+                  'destinationModule'=>$destinationModule,'destinationRecordIds'=>$destinationRecordIds);
+    $em->triggerEvent("vtiger.entity.beforerelate", $data);
 	if(!is_array($destinationRecordIds)) $destinationRecordIds = Array($destinationRecordIds);
 	foreach($destinationRecordIds as $destinationRecordId) {
 		$focus->save_related_module($sourceModule, $sourceRecordId, $destinationModule, $destinationRecordId);
 		$focus->trackLinkedInfo($sourceModule, $sourceRecordId, $destinationModule, $destinationRecordId);
 	}
+    
+    $em->triggerEvent("vtiger.entity.afterrelate", $data);
 }
 
 /**
