@@ -13,10 +13,16 @@
 		
 		public $code;
 		public $message;
-		
-		function WebServiceException($errCode,$msg){
+		function __construct($errCode,$msg)
+		{
 			$this->code = $errCode;
 			$this->message = $msg;
+		}
+		function WebServiceException($errCode,$msg){
+			// PHP4-style constructor.
+			// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+			// In that case, call the new-style constructor to keep compatibility.
+			self::__construct($errCode,$msg);
 		}
 		
 	}

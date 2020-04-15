@@ -14,42 +14,42 @@ class VTWS_PreserveGlobal{
 	
 	static function preserveGlobal($name,$value){
 		//$name store the name of the global.
-		global $$name;
+		global ${$name};
 		//To not push null value . Ideally we should not push null value for any name
 		//But current user null is dangerous so we are checking for only current user
-        if(!empty($$name) || $name != 'current_user') {
+        if(!empty(${$name}) || $name != 'current_user') {
 			if(!is_array(VTWS_PreserveGlobal::$globalData[$name])){
 				VTWS_PreserveGlobal::$globalData[$name] = array();		
 			}
 			
-			VTWS_PreserveGlobal::$globalData[$name][] = $$name;
+			VTWS_PreserveGlobal::$globalData[$name][] = ${$name};
 		}
 
-		$$name = $value;
-		return $$name;
+		${$name} = $value;
+		return ${$name};
 	}
 	
 	static function restore($name){
 		//$name store the name of the global.
-		global $$name;
+		global ${$name};
 		
 		if(is_array(VTWS_PreserveGlobal::$globalData[$name]) && count(VTWS_PreserveGlobal::$globalData[$name]) > 0){
-			$$name = array_pop(VTWS_PreserveGlobal::$globalData[$name]);
+			${$name} = array_pop(VTWS_PreserveGlobal::$globalData[$name]);
 		}
-		$$name;
+		${$name};
 	}
 	
 	static function getGlobal($name){
-		global $$name;
-		return VTWS_PreserveGlobal::preserveGlobal($name,$$name);
+		global ${$name};
+		return VTWS_PreserveGlobal::preserveGlobal($name,${$name});
 	}
 	
 	static function flush(){
 		foreach (VTWS_PreserveGlobal::$globalData as $name => $detail) {
 			//$name store the name of the global.
-			global $$name;
+			global ${$name};
 			if(is_array(VTWS_PreserveGlobal::$globalData[$name]) && count(VTWS_PreserveGlobal::$globalData[$name]) > 0) {
-				$$name = array_pop(VTWS_PreserveGlobal::$globalData[$name]);
+				${$name} = array_pop(VTWS_PreserveGlobal::$globalData[$name]);
 			}
 		}
 	}

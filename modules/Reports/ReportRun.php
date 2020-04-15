@@ -325,15 +325,18 @@ class ReportRun extends CRMEntity {
 	 *  To ensure single-instance is present for $reportid
 	 *  as we optimize using ReportRunPlanner and setup temporary tables.
 	 */
+        function __construct($reportid) {
+            $oReport = new Reports($reportid);
+            $this->reportid = $reportid;
+            $this->primarymodule = $oReport->primodule;
+            $this->secondarymodule = $oReport->secmodule;
+            $this->reporttype = $oReport->reporttype;
+            $this->reportname = $oReport->reportname;
+            $this->queryPlanner = new ReportRunQueryPlanner();
+            $this->queryPlanner->reportRun = $this;
+        }
 	function ReportRun($reportid) {
-		$oReport = new Reports($reportid);
-		$this->reportid = $reportid;
-		$this->primarymodule = $oReport->primodule;
-		$this->secondarymodule = $oReport->secmodule;
-		$this->reporttype = $oReport->reporttype;
-		$this->reportname = $oReport->reportname;
-		$this->queryPlanner = new ReportRunQueryPlanner();
-		$this->queryPlanner->reportRun = $this;
+            self::__construct($reportid);
 	}
 
 	public static function getInstance($reportid) {

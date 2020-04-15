@@ -21,11 +21,18 @@ abstract class WebserviceEntityOperation{
 	
 	protected static $metaCache = array();
 	
-	protected function WebserviceEntityOperation($webserviceObject,$user,$adb,$log){
+	protected function __construct($webserviceObject,$user,$adb,$log)
+	{
 		$this->user = $user;
 		$this->log = $log;
 		$this->webserviceObject = $webserviceObject;
 		$this->pearDB = $adb;
+	}
+	protected function WebserviceEntityOperation($webserviceObject,$user,$adb,$log){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($webserviceObject,$user,$adb,$log);
 	}
 	
 	public function create($elementType,$element){

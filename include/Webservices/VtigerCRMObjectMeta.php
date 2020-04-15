@@ -21,7 +21,8 @@ class VtigerCRMObjectMeta extends EntityMeta {
 	private $hasDeleteAccess;
 	private $assignUsers;
 	
-	function VtigerCRMObjectMeta($webserviceObject,$user){
+	function __construct($webserviceObject,$user)
+	{
 		
 		parent::__construct($webserviceObject,$user);
 		
@@ -49,6 +50,12 @@ class VtigerCRMObjectMeta extends EntityMeta {
 			$this->defaultTableList = array();
 		}
 		$this->tabId = null;
+	}
+	function VtigerCRMObjectMeta($webserviceObject,$user){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($webserviceObject,$user);
 	}
 
 	/**

@@ -13,10 +13,17 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 	protected $isEntity = true;
 	protected $partialDescribeFields = null;
 	
-	public function VtigerModuleOperation($webserviceObject,$user,$adb,$log){
+	public function __construct($webserviceObject,$user,$adb,$log)
+	{
 		parent::__construct($webserviceObject,$user,$adb,$log);
 		$this->meta = $this->getMetaInstance();
 		$this->tabId = $this->meta->getTabId();
+	}
+	public function VtigerModuleOperation($webserviceObject,$user,$adb,$log){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($webserviceObject,$user,$adb,$log);
 	}
 	
 	protected function getMetaInstance(){

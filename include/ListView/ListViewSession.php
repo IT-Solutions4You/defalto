@@ -25,15 +25,21 @@ class ListViewSession {
  * Portions created by vtigerCRM are Copyright (C) vtigerCRM.
  * All Rights Reserved.
 */
-
-	function ListViewSession()
-	{
-		global $log,$currentModule;
+	function __construct()
+    {
+        global $log,$currentModule;
 		$log->debug("Entering ListViewSession() method ...");
 
 		$this->module = $currentModule;
 		$this->sortby = 'ASC';
 		$this->start =1;
+    }
+	function ListViewSession()
+	{
+		// PHP4-style constructor.
+        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+        // In that case, call the new-style constructor to keep compatibility.
+        self::__construct();
 	}
 
 	function getCurrentPage($currentModule,$viewId){

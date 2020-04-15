@@ -156,7 +156,7 @@ class PEAR
     // }}}
 
     // {{{ constructor
-
+	
     /**
      * Constructor.  Registers this object in
      * $_PEAR_destructor_object_list for destructor emulation if a
@@ -167,7 +167,7 @@ class PEAR
      * @access public
      * @return void
      */
-    function PEAR($error_class = null)
+	function __construct($error_class = null)
     {
         $classname = strtolower(get_class($this));
         if ($this->_debug) {
@@ -190,6 +190,13 @@ class PEAR
                 $classname = get_parent_class($classname);
             }
         }
+    }
+    function PEAR($error_class = null)
+    {
+        // PHP4-style constructor.
+        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+        // In that case, call the new-style constructor to keep compatibility.
+        self::__construct($error_class);
     }
 
     // }}}
@@ -842,7 +849,7 @@ class PEAR_Error
      * @access public
      *
      */
-    function PEAR_Error($message = 'unknown error', $code = null,
+    function __construct($message = 'unknown error', $code = null,
                         $mode = null, $options = null, $userinfo = null)
     {
         if ($mode === null) {
@@ -899,6 +906,15 @@ class PEAR_Error
             trigger_error("PEAR_ERROR_EXCEPTION is obsolete, use class PEAR_Exception for exceptions", E_USER_WARNING);
             eval('$e = new Exception($this->message, $this->code);throw($e);');
         }
+    }
+    function PEAR_Error($message = 'unknown error', $code = null,
+                        $mode = null, $options = null, $userinfo = null)
+    {
+		// PHP4-style constructor.
+        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+        // In that case, call the new-style constructor to keep compatibility.
+        self::__construct($message, $code,$mode, $options, $userinfo);
+        
     }
 
     // }}}

@@ -144,11 +144,13 @@ class Contacts extends CRMEntity {
 		'Emails' => array('table_name' => 'vtiger_seactivityrel', 'table_index' => 'crmid', 'rel_index' => 'activityid'),
         'Vendors' => array('table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'),
 	);
-
+        function __construct() {
+            $this->log = LoggerManager::getLogger('contact');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Contacts');
+        }       
 	function Contacts() {
-		$this->log = LoggerManager::getLogger('contact');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Contacts');
+            self::__construct();
 	}
 
 	// Mike Crowe Mod --------------------------------------------------------Default ordering for us

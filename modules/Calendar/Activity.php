@@ -103,11 +103,14 @@ class Activity extends CRMEntity {
 	var $default_sort_order = 'ASC';
 
 	//var $groupTable = Array('vtiger_activitygrouprelation','activityid');
-
+        function __construct()
+        {
+            $this->log = LoggerManager::getLogger('Calendar');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Calendar');
+        }
 	function Activity() {
-		$this->log = LoggerManager::getLogger('Calendar');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Calendar');
+            self::__construct();
 	}
 
 	function save_module($module)

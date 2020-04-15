@@ -13,7 +13,8 @@ class VtigerCRMActorMeta extends EntityMeta {
 	protected static $fieldTypeMapping = array();
 	protected static $referenceTypeMapping = array();
 	
-	function VtigerCRMActorMeta($tableName,$webserviceObject,$adb,$user){
+	function __construct($tableName,$webserviceObject,$adb,$user)
+	{
 		parent::__construct($webserviceObject,$user);
 		$this->baseTable = $tableName;
 		$this->idColumn = null;
@@ -22,6 +23,12 @@ class VtigerCRMActorMeta extends EntityMeta {
 		$this->tableList = array($this->baseTable);
 		$this->tableIndexList = null;
 		$this->defaultTableList = array();
+	}
+	function VtigerCRMActorMeta($tableName,$webserviceObject,$adb,$user){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($tableName,$webserviceObject,$adb,$user);
 	}
     
     public function getIdColumn() {

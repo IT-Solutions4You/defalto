@@ -30,15 +30,15 @@ class VtigerConfig {
 
 	static function get($key, $defvalue='') {
 		if (self::has($key)) {
-			global $$key;
-			return $$key;
+			global ${$key};
+			return ${$key};
 		}
 		return $defvalue;
 	}
 
 	static function has($key) {
-		global $$key;
-		return (isset($$key));
+		global ${$key};
+		return (isset(${$key}));
 	}
 
 	static function getOD($key, $defvalue='') {
