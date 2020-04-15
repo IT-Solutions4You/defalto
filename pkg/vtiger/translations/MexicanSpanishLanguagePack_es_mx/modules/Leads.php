@@ -13,12 +13,12 @@ $languageStrings = array(
 	'LBL_RECORDS_LIST'             => 'Lista de Prospectos'         , 
 	'LBL_ADD_RECORD'               => 'Agregar Prospecto'           , 
 	'LBL_LEAD_INFORMATION'         => 'Información del Prospecto'   , 
-	'Lead No'                      => 'Núm. de Prospecto'             , 
+	'Lead No'                      => 'Id Prospecto'             , 
 	'Company'                      => 'Empresa'                     , 
 	'Designation'                  => 'Puesto'                      , 
 	'Website'                      => 'Página Web'                 , 
 	'Industry'                     => 'Actividad'                   , 
-	'Lead Status'                  => 'Estado del Prospecto'        , 
+	'Lead Status'                  => 'Estado'        , 
 	'No Of Employees'              => 'Número de empleados'        , 
 	'--None--'                     => '-----'                       , 
 	'Mr.'                          => 'Sr.'                         , 
@@ -47,9 +47,9 @@ $languageStrings = array(
     'Lead Image' => 'Imagen del Prospecto',
 	
 
-  'Phone' => 'Teléfono principal',
-  'Secondary Email' => 'Correo electrónico secundario',
-  'Email' => 'Correo electrónico principal',
+  'Phone' => 'Tel. principal',
+  'Secondary Email' => 'Correo adicional',
+  'Email' => 'Correo',
 
 );
 $jsLanguageStrings = array(

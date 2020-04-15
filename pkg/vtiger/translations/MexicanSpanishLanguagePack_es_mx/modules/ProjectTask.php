@@ -18,7 +18,7 @@ $languageStrings = array(
 	
 	//Field Labels
 	'Project Task Name' => 'Nombre de la Tarea de proyecto',
-    'Project Task No' => 'Núm. de la Tarea de proyecto',
+    'Project Task No' => 'Id Tarea de proyecto',
     'Project Task Number' => 'Número de la Tarea de proyecto',
 	'Status' => 'Estado',
 	'Priority' => 'Prioridad',
