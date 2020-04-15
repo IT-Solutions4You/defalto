@@ -11,21 +11,21 @@ $languageStrings = array(
 	'ALVT'                         => 'Cuentas más importantes'         , 
 	'PLVT'                         => 'Oportunidades más importantes'   , 
 	'QLTQ'                         => 'Cotizaciones más importantes'    , 
-	'CVLVT'                        => 'Medidas clave'               , 
+	'CVLVT'                        => 'Métricas clave'               , 
 	'HLT'                          => 'Casos más importantes'      , 
 	'GRT'                          => 'Asignación de grupo'        , 
-	'OLTSO'                        => 'Órdenes de venta más importantes', 
+	'OLTSO'                        => 'Pedidos más importantes', 
 	'ILTI'                         => 'Facturas más importantes'        , 
-	'HDB'                          => 'Tablero de inicio'         , 
+	'HDB'                          => 'Tablero principal'         , 
 	'OLTPO'                        => 'Órdenes de compra más importantes', 
 	'LTFAQ'                        => 'FAQs recientes'              , 
 	'UA'                           => 'Eventos próximos'           , 
 	'PA'                           => 'Eventos pendientes'          , 
-        'Home'                         => 'Tablero'                     ,
+    'Home'                         => 'Tablero'                     ,
 
   'LBL_SAVE_ORDER' => 'Guardar orden',
-  'LBL_ADD_NEW_DASHBOARD' => 'Añadir nuevo Tablero',
-	'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Se permiten máximo 30 caracteres para el Tablero',
+  'LBL_ADD_NEW_DASHBOARD' => 'Agregar nuevo Tablero',
+  'LBL_MAX_CHARACTERS_ALLOWED_DASHBOARD' => 'Se permiten máximo 30 caracteres para el nombre del Tablero',
 );
 
 $jsLanguageStrings = array(

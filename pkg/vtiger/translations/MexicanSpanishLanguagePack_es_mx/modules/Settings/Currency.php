@@ -8,15 +8,15 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Añadir moneda'                , 
+	'LBL_ADD_RECORD'               => 'Agregar moneda'                , 
 	'LBL_EDIT_CURRENCY'            => 'Editar moneda'               , 
-	'LBL_ADD_NEW_CURRENCY'         => 'Añadir nueva moneda'            , 
+	'LBL_ADD_NEW_CURRENCY'         => 'Agregar nueva moneda'            , 
 	'LBL_CURRENCY_NAME'            => 'Nombre de moneda'               , 
-	'LBL_CURRENCY_CODE'            => 'Código de moneda'               , 
+	'LBL_CURRENCY_CODE'            => 'Código'               , 
 	'LBL_CURRENCY_SYMBOL'          => 'Símbolo'                      , 
 	'LBL_CONVERSION_RATE'          => 'Tasa de conversión'             , 
 	'LBL_ENTER_CONVERSION_RATE'    => 'Ingresar tasa de conversión'       , 
-	'LBL_CURRENCY_STATUS_DESC'     => 'Activar la casilla de verificación para que que la moneda quede activa', 
+	'LBL_CURRENCY_STATUS_DESC'     => 'Activar la casilla para que que la moneda quede activada', 
 	'LBL_TRANSFER_CURRENCY'        => 'Transferir moneda'           , 
 	'LBL_CURRENT_CURRENCY'         => 'Moneda actual'            , 
 	'Albania, Leke'                => 'Albania, Lek albanés'               , 
@@ -149,6 +149,10 @@ $languageStrings = array(
 	'Malawi, kwacha'               => 'Malawi, Kwacha'              , 
 	'Tunisian, Dinar'              => 'Tunez, Dinar'             , 
 	'Moroccan, Dirham'             => 'Marruecos, Dirham'            , 
+    
+    'Currency Name' => 'Moneda',
+    'Currency Code' => 'Código',
+    'Symbol' => 'Símbolo',
 );
 $jsLanguageStrings = array(
 	'JS_CURRENCY_DETAILS_SAVED'    => 'Detalles de la moneda guardados'      , 
