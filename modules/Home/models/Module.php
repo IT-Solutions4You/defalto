@@ -214,10 +214,8 @@ class Home_Module_Model extends Vtiger_Module_Model {
 
 		$params = array();
 		if($user != 'all' && $user != '') {
-			if($user === $currentUser->id) {
 				$query .= " AND vtiger_crmentity.smownerid = ?";
 				$params[] = $user;
-			}
 		}
 
 		$query .= " ORDER BY date_start, time_start LIMIT ?, ?";
