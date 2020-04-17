@@ -43,6 +43,7 @@ $languageStrings = array(
 	'LBL_RELATED_PRODUCTS'         => 'Productos relacionados'            ,
     'Related To'                   => 'Cuenta'   ,
     'Type'                         => 'Tipo'                        , 
+    'Potentials Won' => 'Oportunidades ganadas',
     
     //Convert Potentials
     'LBL_CONVERT_POTENTIAL' => 'Convertir Oportunidades',

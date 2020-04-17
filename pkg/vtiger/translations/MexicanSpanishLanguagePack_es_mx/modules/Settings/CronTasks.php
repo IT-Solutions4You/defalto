@@ -8,16 +8,17 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'CronTasks'                    => 'Planificador'                   , 
+	'CronTasks'                    => 'Cron Jobs'                   , 
 	'Id'                           => 'Id'                          , 
 	'Cron Job'                     => 'Cron Job'                    , 
 	'Frequency'                    => 'Frecuencia'                   , 
 	'Status'                       => 'Estatus'                      , 
-	'Last Start'                   => 'Último scan empezó'           , 
-	'Last End'                     => 'Último scan terminó'             , 
-	'Sequence'                     => 'Secuencia'                    , 
+	'Last Start'                   => 'Última ejecución empezó'           , 
+	'Last End'                     => 'Última ejecución terminó'             , 
+	'Sequence'                     => 'Orden'                    , 
 	'LBL_COMPLETED'                => 'Terminado'                   , 
-	'LBL_RUNNING'                  => 'Trabajando'                     , 
+	'LBL_RUNNING'                  => 'Procesando...'                     , 
 	'LBL_ACTIVE'                   => 'Activo'                      , 
 	'LBL_INACTIVE'                 => 'Inactivo'                   , 
+    'Frequency(H:M)' => 'Frecuencia (hh:mm)',
 );

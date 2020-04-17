@@ -29,6 +29,8 @@ $languageStrings = array(
 	'Sent'                         => 'Enviada'                     , 
 	'Credit Invoice'               => 'A crédito'                  , 
 	'Paid'                         => 'Pagada'                      ,
+    'Pending Sales Orders' => 'Pedidos pendientes',
+    'All' => 'Todos',
     
     
     //Facturacion Recurrente

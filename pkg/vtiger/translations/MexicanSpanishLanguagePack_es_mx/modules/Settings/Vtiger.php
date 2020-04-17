@@ -325,6 +325,8 @@ $languageStrings = array(
   'LBL_XERO' => 'Xero',
   'LBL_TALLY' => 'Tally',
   'LBL_SHOPPINGCART' => 'Carrito de compra',
+    'My Preferences'               => 'Mi Perfil', 
+    'Calendar Settings' => 'Config. de calendario',
 
 );
 $jsLanguageStrings = array(
