@@ -1614,96 +1614,124 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	public function getRelatedModuleRecordIds(Vtiger_Request $request, $recordIds = array(), $nonAdminCheck = false) {
 		$db = PearDatabase::getInstance();
 		$relationIds = $request->get('related_modules');
-		if(empty($relationIds))  return array();
-
+        if(empty($relationIds))  return array();
+        
 		$focus = CRMEntity::getInstance($this->getName());
 		$relatedModuleMapping = $focus->related_module_table_index;
-
-		$relationFieldMapping = array();
-		$queryParams = array($this->getId());
-		foreach($relationIds as $reltionId) {
-			array_push($queryParams,$reltionId);
-		}
-		$query = "SELECT relationfieldid,related_tabid
-					FROM vtiger_relatedlists
-					WHERE vtiger_relatedlists.tabid=? AND relation_id IN (".generateQuestionMarks($relationIds).")";
-
-
-		$relationRes = $db->pquery($query,$queryParams);
-
-		$num_rows = $db->num_rows($relationRes);
-		for($i=0 ;$i<$num_rows; $i++) {
-			$relatedTabId = $db->query_result($relationRes,$i,'related_tabid');
-			$relationfieldid = $db->query_result($relationRes,$i,'relationfieldid');
-			$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedTabId);
-			$relationFieldMapping[] = array('relatedModuleName'=>$relatedModuleModel->getName(),'relationfieldid'=>$relationfieldid);
-		}
-
+        
+        $relationFieldMapping = array();
+        $queryParams = array($this->getId());
+        foreach($relationIds as $reltionId) {
+            array_push($queryParams,$reltionId);
+        }
+        $query = "SELECT relationfieldid,related_tabid
+                    FROM vtiger_relatedlists
+                    WHERE vtiger_relatedlists.tabid=? AND relation_id IN (".generateQuestionMarks($relationIds).")";
+        
+        
+        $relationRes = $db->pquery($query,$queryParams);
+        
+        $num_rows = $db->num_rows($relationRes);
+        for($i=0 ;$i<$num_rows; $i++) {
+            $relatedTabId = $db->query_result($relationRes,$i,'related_tabid');
+            $relationfieldid = $db->query_result($relationRes,$i,'relationfieldid');
+            $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedTabId);
+            $relationFieldMapping[] = array('relatedModuleName'=>$relatedModuleModel->getName(),'relationfieldid'=>$relationfieldid);
+        }
+        
 		$relatedIds = array();
 		if(!empty($relationFieldMapping)) {
-			foreach ($relationFieldMapping as $mappingDetails){
+            foreach ($relationFieldMapping as $mappingDetails){
 			//for ($i=0; $i<count($relatedModules); $i++) {
 				$params = array();
 				$module = $mappingDetails['relatedModuleName'];
-				$relationFieldId = $mappingDetails['relationfieldid'];
-				$sql = "SELECT vtiger_crmentity.crmid FROM vtiger_crmentity";
-
-				if($nonAdminCheck) {
-					if(empty($relatedModuleFocus)) $relatedModuleFocus = CRMEntity::getInstance($module);
-					$user = Users_Record_Model::getCurrentUserModel();
-					$relationAccessQuery = $relatedModuleFocus->getNonAdminAccessControlQuery($module, $user);
-					$sql .= ' '.$relationAccessQuery;
-				}
-
-				if(empty($relationFieldId)){
-					$tablename = $relatedModuleMapping[$module]['table_name'];
-					$tabIndex = $relatedModuleMapping[$module]['table_index'];
-					$relIndex = $relatedModuleMapping[$module]['rel_index'];
-
-					//Fallback to vtiger_crmentityrel if both focus and relationfieldid is empty
-					if(empty($tablename)) {
-						$tablename = 'vtiger_crmentityrel';
-						$tabIndex = 'crmid';
+                $relationFieldId = $mappingDetails['relationfieldid'];
+                $sql = "SELECT vtiger_crmentity.crmid FROM vtiger_crmentity";
+                
+                
+                if(empty($relationFieldId)){
+                    $tablename = $relatedModuleMapping[$module]['table_name'];
+                    $tabIndex = $relatedModuleMapping[$module]['table_index'];
+                    $relIndex = $relatedModuleMapping[$module]['rel_index'];
+					//To show related records comments in documents, should get related document records from vtiger_senotesrel.
+					if(empty($tablename) && $this->getName() == 'Documents') {
+						$tablename = 'vtiger_senotesrel';
+						$tabIndex =	'crmid';
+						$relIndex = 'notesid';
+					//To show related Document comments in current module
+					} else if (empty($tablename) && $module == 'Documents') {
+						$tablename = 'vtiger_senotesrel';
+						$tabIndex =	'notesid';
 						$relIndex = 'crmid';
-					}
-					//END
-
-					if($tablename == 'vtiger_crmentityrel'){
-						$sql .= " INNER JOIN $tablename ON ($tablename.relcrmid = vtiger_crmentity.crmid OR $tablename.crmid = vtiger_crmentity.crmid)
-							WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).")) OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds)."))";
-						foreach ($recordIds as $key => $recordId) {
+					} else if(empty($tablename)) {
+						//Fallback to vtiger_crmentityrel if both focus and relationfieldid is empty
+                        $tablename = 'vtiger_crmentityrel';
+                        $tabIndex = 'crmid';
+                        $relIndex = 'crmid';
+                    } 
+                    //END
+                    
+                    if($tablename == 'vtiger_crmentityrel'){    
+                        $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
+                        $sql .= " INNER JOIN $tablename ON ($tablename.relcrmid = vtiger_crmentity.crmid OR $tablename.crmid = vtiger_crmentity.crmid)
+                            WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).")) OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds)."))";
+							foreach ($recordIds as $key => $recordId) {
 							array_push($params, $recordId);
+							}
+                    } else if($module == "Contacts" && $this->getName() == "Potentials"){
+                        $tablename = 'vtiger_contpotentialrel';
+                        $tabIndex = 'contactid';
+                        $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
+                        $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid 
+                        WHERE $tablename.potentialid IN (".  generateQuestionMarks($recordIds).")";
+                    } else {
+                        if(in_array($tablename,array('vtiger_senotesrel'))){
+                             $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
+                        }
+                        $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
+                            WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
+                    }
+                }else{
+                    $fieldModel = Vtiger_Field_Model::getInstance($relationFieldId);
+                    $relatedModuleFocus = CRMEntity::getInstance($module);
+                    $tablename = $fieldModel->get('table');
+                    $relIndex = $fieldModel->get('column');
+                    if($tablename == $relatedModuleFocus->table_name){
+						if($this->getName() == "Contacts" && $module == "Potentials"){
+							$tablename = 'vtiger_contpotentialrel';
+							$tabIndex = 'potentialid';
+							$sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
+                            WHERE $tablename.contactid IN (".  generateQuestionMarks($recordIds).")";
+						}else{
+							$tabIndex = $relatedModuleFocus->table_index;
+							$sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
+                            WHERE $tablename.$relIndex IN (" . generateQuestionMarks($recordIds) . ")";
 						}
-					} else {
-						$sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
-							WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
-					}
-				}else{
-					$fieldModel = Vtiger_Field_Model::getInstance($relationFieldId);
-					$relatedModuleFocus = CRMEntity::getInstance($module);
-					$tablename = $fieldModel->get('table');
-					$relIndex = $fieldModel->get('column');
-					if($tablename == $relatedModuleFocus->table_name){
-						$tabIndex = $relatedModuleFocus->table_index;
-						$sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
-							WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
-					}else{
-						$modulePrimaryTableName = $relatedModuleFocus->table_name;
-						$modulePrimaryTableIndex = $relatedModuleFocus->table_index;
-						$tabIndex = $relatedModuleFocus->tab_name_index[$tablename];
-						$sql .= " INNER JOIN $modulePrimaryTableName ON $modulePrimaryTableName.$modulePrimaryTableIndex = vtiger_crmentity.crmid
-							INNER JOIN $tablename ON $tablename.$tabIndex = $modulePrimaryTableName.$modulePrimaryTableIndex 
-							WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
-					}
-				}
-
-				$sql .=' AND vtiger_crmentity.deleted = 0';
+                        
+                    }else{
+                        $modulePrimaryTableName = $relatedModuleFocus->table_name;
+                        $modulePrimaryTableIndex = $relatedModuleFocus->table_index;
+                        $tabIndex = $relatedModuleFocus->tab_name_index[$tablename];
+                        $sql .= " INNER JOIN $modulePrimaryTableName ON $modulePrimaryTableName.$modulePrimaryTableIndex = vtiger_crmentity.crmid
+                            INNER JOIN $tablename ON $tablename.$tabIndex = $modulePrimaryTableName.$modulePrimaryTableIndex 
+                            WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
+                    }
+                }
+				if($nonAdminCheck) {
+					$sqlComponents = explode(" WHERE ",$sql);
+                    if(empty($relatedModuleFocus)) $relatedModuleFocus = CRMEntity::getInstance($module);
+                    $user = Users_Record_Model::getCurrentUserModel();
+                    $relationAccessQuery = $relatedModuleFocus->getNonAdminAccessControlQuery($module, $user);
+					$sql = $sqlComponents[0].$relationAccessQuery." WHERE ".$sqlComponents[1];
+                }
+				
+                $sql .=' AND vtiger_crmentity.deleted = 0';
 				foreach ($recordIds as $key => $recordId) {
 					array_push($params, $recordId);
 				}
 
 				$result1 = $db->pquery($sql, $params);
-				$num_rows = $db->num_rows($result1);
+				$num_rows = $db->num_rows($result1); //should give doc crmid.
 				for($j=0; $j<$num_rows; $j++){
 					$relatedIds[] = $db->query_result($result1, $j, 'crmid');
 				}
