@@ -21,7 +21,7 @@ $languageStrings = array(
 	'Purchase Order'               => 'Orden de compra'             , 
 	'Sales Commission'             => 'Comisión sobre ventas'      , 
 	'Invoice No'                   => 'Nº Factura'                 , 
-	'LBL_RECEIVED'                 => 'Recibida'                    , 
+	'LBL_RECEIVED'                 => 'Recibido'                    , 
 	'LBL_BALANCE'                  => 'Saldo'                     , 
 	'Sent'                         => 'Enviada'                     , 
 	'Credit Invoice'               => 'A crédito'                  , 
@@ -33,6 +33,8 @@ $languageStrings = array(
 	'LBL_NOT_A_BUNDLE' => 'No es un paquete',
 	'LBL_SUB_PRODUCTS'	=> 'Subproductos',
 	'LBL_ACTION'	=> 'Acción',
+    'Open Invoices' => 'Facturas abiertas',
+    'Paid Invoices' => 'Facturas pagadas',
 
   'LBL_THIS' => 'Este',
   'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'Se ha eliminado del sistema. Por favor elimine o reemplace este artículo',

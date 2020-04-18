@@ -52,6 +52,9 @@ $languageStrings = array(
     'Support Start Date'           => 'Fecha inicio de soporte'     ,
     'Support End Date'             => 'Fecha fin de soporte',
 	'LBL_TRANSACTIONS' => 'Transacciones',
+    'Todays Birthday' => 'Con cumpleaños hoy',
+    'Contacts Address' => 'Dirección del Contacto',
+    'All' => 'Todos',
     
   'Email' => 'Correo',
   'Secondary Email' => 'Correo adicional',

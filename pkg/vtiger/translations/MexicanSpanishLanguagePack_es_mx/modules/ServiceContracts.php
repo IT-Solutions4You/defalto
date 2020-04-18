@@ -16,8 +16,8 @@ $languageStrings = array(
 	'Contract No'                  => 'Número de Contrato'         , 
 	'Start Date'                   => 'Fecha de inicio'                , 
 	'End Date'                     => 'Fecha de finalización'                   , 
-	'Tracking Unit'                => 'Unidad de seguimiento'       , 
-	'Total Units'                  => 'Total de unidades'              , 
+	'Tracking Unit'                => 'Unidad base'       , 
+	'Total Units'                  => 'Unidades totales'              , 
 	'Used Units'                   => 'Unidades consumidas'         , 
 	'Progress'                     => 'Progreso (en %)'             , 
 	'Planned Duration'             => 'Duración estimada (días)'  , 
@@ -28,7 +28,7 @@ $languageStrings = array(
 	'Days'                         => 'Días',
 	'Incidents'                    => 'Incidentes',
 	'Normal'                       => 'Normal',
-	'Support'                      => 'Apoyo',
+	'Support'                      => 'Soporte técnico',
 	'Administrative'               => 'Administrativo',
 	'Undefined'                    => 'Indefinido',
 	'In Planning'                  => 'En planificación',
@@ -39,6 +39,7 @@ $languageStrings = array(
 	'High'                         => 'Alto',
 	'Services'                     => 'Servicios',
 	'In Progress'                  => 'En progreso',
+    'Due date' => 'Fecha de expiración',
 
   'Service Contracts' => 'Contratos de servicio',
 
