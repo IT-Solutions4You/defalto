@@ -368,7 +368,7 @@ class WorkFlowScheduler {
                 break;
             
            case 'less than days later' :
-                $days = $condition['value']-1;
+                $days = $condition['value']+1;
 				if($fieldType[0] == 'D'){
 					$value = date('Y-m-d').','.date('Y-m-d', strtotime('+'.$days.' days'));
 				}else if($fieldType[0] == 'DT'){
