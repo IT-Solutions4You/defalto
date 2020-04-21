@@ -367,14 +367,27 @@ class WorkFlowScheduler {
                 $value = date('Y-m-d', strtotime('-1 days'));
                 break;
             
-            case 'less than days later' :
+           case 'less than days later' :
                 $days = $condition['value']+1;
-				$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+				if($fieldType[0] == 'D'){
+					$value = date('Y-m-d').','.date('Y-m-d', strtotime('+'.$days.' days'));
+				}else if($fieldType[0] == 'DT'){
+					$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+					$startDate = date('Y-m-d').' '.'00:00:00';
+					$endDate = date('Y-m-d',strtotime('+'.$days.' days')).' '.'23:59:59';
+					$value = $startDate.','.$endDate;
+				}else{
+					$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+				}
                 break;
-            
+				
             case 'more than days later' :
-                $days = $condition['value']-1;
-				$value = date('Y-m-d', strtotime('+'.$days.' days'));
+				$days = $condition['value']-1;
+				if($fieldType[0] == 'DT'){
+					$value = date('Y-m-d', strtotime('+'.$days.' days')).' '.'23:59:59';
+				}else{
+					$value = date('Y-m-d', strtotime('+'.$days.' days'));
+				}
                 break;
 		}
 		@date_default_timezone_set($default_timezone);
