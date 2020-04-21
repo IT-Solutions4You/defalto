@@ -233,11 +233,30 @@ class Vtiger_Language_Handler {
 }
 
 function vtranslate($key, $moduleName = '') {
-	$args = func_get_args();
+	$unformattedArgs = func_get_args();
+	if(count($unformattedArgs) > 2){ 
+		// slice an array by taking first 2 values into another array.
+		$formattedArgs = array_slice($unformattedArgs,0,2);
+		// Make third value as empty
+		$formattedArgs['2'] = '';
+		$sliced_part = array_slice($unformattedArgs,2);
+		foreach ($sliced_part as $key => $value) {
+			array_push($formattedArgs,$value);
+		}
+		$args = $formattedArgs;
+	} else {
+		$args = $unformattedArgs;
+	}
 	$formattedString = call_user_func_array(array('Vtiger_Language_Handler', 'getTranslatedString'), $args);
-	array_shift($args);
-	array_shift($args);
-	if (is_array($args) && !empty($args)) {
+
+    if(count($unformattedArgs) > 2){
+		// Remove first three values from an array (key,modulename,languagecode)
+		array_shift($args); array_shift($args);array_shift($args);
+	} else {
+		// Remove first two values from an array (key,modulename)
+		array_shift($args); array_shift($args);
+	}
+	if(is_array($args) && !empty($args)) {
 		$formattedString = call_user_func_array('vsprintf', array($formattedString, $args));
 	}
 	return $formattedString;

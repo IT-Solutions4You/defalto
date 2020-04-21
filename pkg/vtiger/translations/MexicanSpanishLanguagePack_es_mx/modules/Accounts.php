@@ -40,6 +40,8 @@ $languageStrings = array(
 	'LBL_COPY_BILLING_ADDRESS'     => 'Copiar desde dirección de facturación'        , 
     'LBL_IMAGE_INFORMATION' => 'Foto de perfil',
     'Organization Image' => 'Imagen de la Cuenta',
+    'Prospect Accounts' => 'Cuentas Prospecto',
+    'New This Week' => 'Nuvas de la semana',
 
   'Other Phone' => 'Tel. adicional',
   'Phone' => 'Tel. principal',
