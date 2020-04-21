@@ -266,6 +266,7 @@ body {
   text-decoration: none;
   vertical-align: top;
   border: 1px solid #DDDDDD;
+  border-width: thin;
 }
 .search-link .adv-search {
   margin-top: 9px;
@@ -861,6 +862,7 @@ a {
   border-radius: 1px;
   box-shadow: none;
   border: 1px solid #cccccc;
+  border-width: thin;
 }
 input[type="text"].inputElement,
 input[type="password"].inputElement {
@@ -869,9 +871,10 @@ input[type="password"].inputElement {
 .select2-container-multi .select2-choices {
   min-height: 28px;
   border-radius: 1px;
-  border-color: #aaa;
+  border-color: #ccc;
   position: initial;
   z-index: 3;
+  border-width: thin;
 }
 .select2-container-multi .select2-choices .select2-search-field input {
   height: 29px;
@@ -887,6 +890,7 @@ input[type="password"].inputElement {
 .inputElement.select2-container .select2-choice {
   border-radius: 0 2px 2px 0;
   height: 28px;
+  border-width: thin;
 }
 .inputElement.select2-container {
   border: 0;
@@ -1442,6 +1446,7 @@ ul.unstyled {
   border: 1px solid #ddd;
   margin-top: 10px;
   overflow: scroll;
+  border-width: thin;
 }
 .listview-table {
   margin-bottom: 0;
@@ -1464,7 +1469,7 @@ ul.unstyled {
 .listview-table > tbody > tr > td,
 .listview-table > tfoot > tr > td {
   vertical-align: middle;
-  padding: 3px;
+  padding: 8px 3px;
 }
 .listview-table > tbody > tr > td .value,
 .listview-table > tfoot > tr > td .value {
@@ -1779,7 +1784,7 @@ th {
   color: inherit;
 }
 #detailView td.fieldValue .edit {
-  width: 90%;
+  width: 100%;
 }
 .overlayDetailHeader .recordBasicInfo .fieldLabel .action,
 .detailview-header .recordBasicInfo .fieldLabel .action {
@@ -1818,16 +1823,6 @@ th {
 .overlayDetailHeader button.btn {
   margin: 0px 1px !important;
 }
-.referencefield-wrapper .createReferenceRecord {
-  float: left;
-  margin-left: 5px;
-  margin-top: 3px;
-  border: 1px solid #DDDDDD;
-  padding: 3px 7px;
-  text-align: center;
-  color: #666;
-  background: #F3F3F3;
-}
 .input-save-wrap {
   float: left;
   display: table-cell;
@@ -1845,6 +1840,8 @@ th {
 }
 .referencefield-wrapper {
   display: table-cell;
+  width: 80%;
+  max-width: 325px;
 }
 .record-header {
   min-height: 80px;
@@ -2027,7 +2024,7 @@ th {
   border: 0 !important;
 }
 #overlayPage {
-  top: 43px;
+  top: 86px;
   position: fixed;
   width: 100%;
   z-index: 1030;
@@ -2257,7 +2254,7 @@ th {
 }
 .noCommentsMsgContainer,
 .quick-preview-modal .noContent {
-  border: 1px solid #CCC;
+  border: 1px solid #eee;
 }
 .summaryWidgetContainer .recordImage .name {
   display: table-cell;
@@ -2376,7 +2373,8 @@ th {
 }
 .fieldBlockContainer .inputElement {
   height: 30px;
-  width: 200px;
+  width: 100%;
+  max-width: 325px;
 }
 .editViewContents .input.form-control:focus,
 .editViewContents .input.form-control:hover,
@@ -2388,7 +2386,6 @@ th {
   width: 100%;
 }
 .editViewContents .input-group {
-  width: 208px;
   float: left;
 }
 .editViewContents .fieldLabel {
@@ -6121,7 +6118,7 @@ div.tooltip-inner {
   border-left: 0;
 }
 .editViewContents .fieldValue .referencefield-wrapper {
-  width: 300px;
+  width: 100%;
   display: inline-block;
 }
 .input-group-addon {
@@ -6137,11 +6134,13 @@ div.tooltip-inner {
 }
 .listViewEntries .input-group,
 .referencefield-wrapper .input-group {
-  min-width: 120px;
+  width: 100%;
+  max-width: 325px;
 }
 .summaryViewEntries .inputElement.form-control,
 .detailview-table .inputElement.form-control {
-  width: 70%;
+  width: 80%;
+  max-width: 300px;
 }
 .detailview-table input[type="checkbox"] {
   width: 13px !important;
@@ -6149,7 +6148,8 @@ div.tooltip-inner {
 }
 .detailview-table .input-group-addon + .inputElement.form-control,
 .detailview-table .inputElement.form-control.input-medium {
-  width: 100%;
+  min-width: 80%;
+  max-width: 300px;
 }
 .summaryViewEntries .referencefield-wrapper .inputElement,
 .detailview-table .referencefield-wrapper .inputElement,
@@ -6692,7 +6692,7 @@ li.select2-search-choice div {
   padding: 3px;
 }
 .floatThead-table {
-  border-left: 1px solid #DDDDDD;
+  background: #fbfbfb;
 }
 .main-container-Documents .module-nav,
 .main-container-Reports .module-nav {
@@ -7560,7 +7560,20 @@ body .fc {
 .nav-tabs {
   border-bottom: 0;
 }
-@media all and (min-width: 0px) and (max-width: 600px) {
+.commentcontent {
+  border: 1px solid #ddd;
+}
+.editViewHeader {
+  padding-top: 20px;
+}
+.listview-table > thead > tr > th {
+  border-bottom: 0;
+  font-size: 13px;
+}
+.floatThead-floatContainer {
+  margin-left: 1px;
+}
+@media all and (min-width: 0px) and (max-width: 830px) {
   table.summary-table > tbody > tr > td,
   table.summary-table > tbody > tr > th,
   table.summary-table > tfoot > tr > td,
@@ -7658,6 +7671,16 @@ body .fc {
   }
   #comment1 {
     border-left-color: #ccc;
+  }
+  .editViewContents .fieldLabel {
+    padding-top: 20px;
+  }
+  .quickCreateContent .fieldLabel {
+    padding-top: 20px;
+  }
+  .floatThead-floatContainer {
+    margin-left: 1px;
+    padding-top: 1px;
   }
 }
 .modules-menu ul li.active a {
