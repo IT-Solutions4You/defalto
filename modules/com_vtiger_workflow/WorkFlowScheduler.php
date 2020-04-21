@@ -383,9 +383,7 @@ class WorkFlowScheduler {
 				
             case 'more than days later' :
 				$days = $condition['value']-1;
-				if($fieldType[0] == 'D'){
-					$value = date('Y-m-d', strtotime('+'.$days.' days'));
-				}else if($fieldType[0] == 'DT'){
+				if($fieldType[0] == 'DT'){
 					$value = date('Y-m-d', strtotime('+'.$days.' days')).' '.'23:59:59';
 				}else{
 					$value = date('Y-m-d', strtotime('+'.$days.' days'));
