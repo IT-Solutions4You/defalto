@@ -391,7 +391,10 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('ALL_USER_TAGS', $this->allUserTags);
 		$viewer->assign('ALL_CUSTOMVIEW_MODEL', CustomView_Record_Model::getAllFilterByModule($moduleName));
 		$viewer->assign('CURRENT_TAG',$tag);
-		$viewer->assign('SELECTED_MENU_CATEGORY', 'MARKETING');
+		$appName = $request->get('app');
+		if(!empty($appName)){
+			$viewer->assign('SELECTED_MENU_CATEGORY',$appName);
+		}
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			if(!$this->listViewCount){
 				$this->listViewCount = $listViewModel->getListViewCount();
