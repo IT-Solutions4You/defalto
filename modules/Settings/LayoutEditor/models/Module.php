@@ -233,13 +233,12 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 							   break;
 			   Case 'Currency' :
 							   $fieldLength = $params['fieldLength'];
-							   $decimal = $params['decimal'];
-							   $uitype = 71;
-							   $dbfldlength = $fieldLength + $decimal + 1;
-							   $decimal = $decimal + 3;
-							   $type="NUMERIC(".$dbfldlength.",".$decimal.")"; //adodb type
-							   $uichekdata='N~O';
-							   break;
+                               $decimal = $params['decimal'];
+                               $uitype = 71;
+                               $dbfldlength = $fieldLength + $decimal;
+                               $type="NUMERIC(".$dbfldlength.",".$decimal.")"; //adodb type
+                               $uichekdata='N~O';
+                               break;
 			   Case 'Date' :
 							   $uichekdata='D~O';
 							   $uitype = 5;
