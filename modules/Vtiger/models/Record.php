@@ -687,7 +687,8 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 	function getCommentEnabledRelatedEntityIds($modulename, $recordId) {
 		$user = Users_Record_Model::getCurrentUserModel();
 		$relatedModuleRecordIds = array();
-		$restrictedFieldnames = array('modifiedby', 'created_user_id', 'assigned_user_id');
+        //User fields are restricted types
+		$restrictedFieldUITypes = array(52, 53);
 		$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $modulename);
 		$moduleInstance = Vtiger_Module_Model::getInstance($modulename);
 		$referenceFieldsModels = $moduleInstance->getFieldsByType('reference');
@@ -695,10 +696,11 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		$directrelatedModuleRecordIds = array();
 
 		foreach ($referenceFieldsModels as $referenceFieldsModel) {
+            $relmoduleFieldUIType = $referenceFieldsModel->get('uitype');
 			$relmoduleFieldname = $referenceFieldsModel->get('name');
 			$relModuleFieldValue = $recordModel->get($relmoduleFieldname);
-
-			if (!empty($relModuleFieldValue) && !in_array($relmoduleFieldname, $restrictedFieldnames) && isRecordExists($relModuleFieldValue)) {
+            
+			if (!empty($relModuleFieldValue) && !in_array($relmoduleFieldUIType, $restrictedFieldUITypes) && isRecordExists($relModuleFieldValue)) {
 				$relModuleRecordModel = Vtiger_Record_Model::getInstanceById($relModuleFieldValue);
 				$relmodule = $relModuleRecordModel->getModuleName();
 
@@ -715,7 +717,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 				}
 			}
 		}
-
+        
 		$moduleModel = Vtiger_Module_Model::getInstance($modulename);
 		$relatedModuleModels = Vtiger_Relation_Model::getAllRelations($moduleModel, false);
 		$commentEnabledModules = array();
