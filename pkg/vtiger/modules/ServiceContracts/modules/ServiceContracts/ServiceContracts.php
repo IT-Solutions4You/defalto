@@ -532,11 +532,11 @@ class ServiceContracts extends CRMEntity {
 		$totalUnits = decimalFormat($this->column_fields['total_units']);
 
 		$contractStatus = $this->column_fields['contract_status'];
+        
+        $checkServiceContractExistence = $this->db->pquery('SELECT if (EXISTS (select vsc.servicecontractsid from vtiger_servicecontracts  vsc WHERE vsc.servicecontractsid = ?), 1, 0) AS exist_sc', array($this->id));
+        $ServiceContractExistFlag = isset($checkServiceContractExistence->fields['exist_sc']) ? $checkServiceContractExistence->fields['exist_sc'] : "1";
 
-		$myServiceContractExistADO = $this->db->pquery('SELECT if (EXISTS (select vsc.servicecontractsid from vtiger_servicecontracts  vsc WHERE vsc.servicecontractsid = ?), 1, 0) AS ex', array($this->id));
-		$ServiceContractExistFlag = isset($myServiceContractExistADO->fields['ex']) ? $myServiceContractExistADO->fields['ex'] : "1";
-
-		// Update the End date if the status is Complete or if the Used Units reaches/exceeds Total Units
+        // Update the End date if the status is Complete or if the Used Units reaches/exceeds Total Units
 		// We need to do this first to make sure Actual duration is computed properly
 		if($contractStatus == 'Complete' || (!empty($usedUnits) && !empty($totalUnits) && $usedUnits >= $totalUnits)) {
 			if(empty($endDate)) {
