@@ -21,7 +21,7 @@
 								<span class="app-icon fa fa-bars"></span>
 							</div>
 						</div>
-						<div class="logo-container col-lg-9 col-md-9 col-sm-9 col-xs-9">
+						<div class="logo-container col-sm-3 col-xs-9">
 							<div class="row">
 								<a href="index.php" class="company-logo">
 									<img src="{$COMPANY_LOGO->get('imagepath')}" alt="{$COMPANY_LOGO->get('alt')}"/>
@@ -38,14 +38,16 @@
 						<i class="fa fa-search"></i>
 					</button>
 				</div>
-				<div id="search-links-container" class="search-links-container col-md-3 col-lg-3 collapse navbar-collapse">
-					<div class="search-link">
-						<span class="fa fa-search" aria-hidden="true"></span>
-						<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
-						<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
+				<div class="col-sm-3">
+					<div id="search-links-container" class="search-links-container collapse navbar-collapse">
+						<div class="search-link">
+							<span class="fa fa-search" aria-hidden="true"></span>
+							<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
+							<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
+						</div>
 					</div>
 				</div>
-				<div id="navbar" class="col-sm-6 col-md-3 col-lg-3 col-xs-12 collapse navbar-collapse navbar-right global-actions">
+				<div id="navbar" class="col-sm-6 col-xs-12 collapse navbar-collapse navbar-right global-actions">
 					<ul class="nav navbar-nav">
 						<li>
 							<div class="dropdown pull-left">
