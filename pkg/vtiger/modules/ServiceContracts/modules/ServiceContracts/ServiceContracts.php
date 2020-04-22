@@ -533,6 +533,9 @@ class ServiceContracts extends CRMEntity {
 
 		$contractStatus = $this->column_fields['contract_status'];
 
+		$myServiceContractExistADO = $this->db->pquery('SELECT if (EXISTS (select vsc.servicecontractsid from vtiger_servicecontracts  vsc WHERE vsc.servicecontractsid = ?), 1, 0) AS ex', array($this->id));
+		$ServiceContractExistFlag = isset($myServiceContractExistADO->fields['ex']) ? $myServiceContractExistADO->fields['ex'] : "1";
+
 		// Update the End date if the status is Complete or if the Used Units reaches/exceeds Total Units
 		// We need to do this first to make sure Actual duration is computed properly
 		if($contractStatus == 'Complete' || (!empty($usedUnits) && !empty($totalUnits) && $usedUnits >= $totalUnits)) {
@@ -542,7 +545,9 @@ class ServiceContracts extends CRMEntity {
 			}
 		} else {
 			$endDate = null;
-			$this->db->pquery('UPDATE vtiger_servicecontracts SET end_date=? WHERE servicecontractsid = ?', array(null, $this->id));
+			if ( $ServiceContractExistFlag !== "0") {
+				$this->db->pquery('UPDATE vtiger_servicecontracts SET end_date=? WHERE servicecontractsid = ?', array(null, $this->id));
+			}
 		}
 
 		// Calculate the Planned Duration based on Due date and Start date. (in days)
@@ -575,7 +580,9 @@ class ServiceContracts extends CRMEntity {
 		if(count($updateCols) > 0) {
 			$updateQuery = 'UPDATE vtiger_servicecontracts SET '. implode(",", $updateCols) .' WHERE servicecontractsid = ?';
 			array_push($updateParams, $this->id);
-			$this->db->pquery($updateQuery, $updateParams);
+			if ( $ServiceContractExistFlag !== "0") {
+				$this->db->pquery($updateQuery, $updateParams);
+			}
 		}
 	}
 
