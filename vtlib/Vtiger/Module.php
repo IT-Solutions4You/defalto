@@ -15,6 +15,11 @@ include_once('vtlib/Vtiger/ModuleBasic.php');
  * @package vtlib
  */
 class Vtiger_Module extends Vtiger_ModuleBasic {
+    
+    const ONE_TO_ONE = '1:1';
+	const ONE_TO_MANY = '1:N';
+	const MANY_TO_ONE = 'N:1';
+	const MANY_TO_MANY = 'N:N';
 
 	/**
 	 * Function to get the Module/Tab id
@@ -79,13 +84,22 @@ class Vtiger_Module extends Vtiger_ModuleBasic {
 		$useactions_text = $actions;
 		if(is_array($actions)) $useactions_text = implode(',', $actions);
 		$useactions_text = strtoupper($useactions_text);
-
+        if($fieldId != null){
+            //Default relation type if relation fieldid is set
+            $relationType = Vtiger_Module::ONE_TO_MANY;
+        } else  {
+            //Default relation type if relation fieldid is not set
+            $relationType = Vtiger_Module::MANY_TO_MANY;
+        }
 		// Add column to vtiger_relatedlists to save extended actions
 		Vtiger_Utils::AddColumn('vtiger_relatedlists', 'actions', 'VARCHAR(50)');
-
-		$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence,actions,relationfieldid) VALUES(?,?,?,?,?,?,?,?,?)",
-			Array($relation_id,$this->id,$moduleInstance->id,$function_name,$sequence,$label,$presence,$useactions_text,$fieldId));
-
+		$adb->pquery("INSERT INTO vtiger_relatedlists(relation_id,tabid,related_tabid,name,sequence,label,presence,actions,relationfieldid,relationtype) VALUES(?,?,?,?,?,?,?,?,?,?)",
+			Array($relation_id,$this->id,$moduleInstance->id,$function_name,$sequence,$label,$presence,$useactions_text,$fieldId,$relationType));
+        
+        if(method_exists($this,'set')) {
+            $this->set('relation_id', $relation_id);
+        }
+        
 		self::log("Setting relation with $moduleInstance->name [$useactions_text] ... DONE");
 	}
 
