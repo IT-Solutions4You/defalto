@@ -133,6 +133,16 @@ class Vtiger_Language_Handler {
 				self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
 			}
 		}
+		// add custom translation for module from language/custom/$language/$module.php file
+		$qualifiedCustomName = 'languages.custom.'.$language.'.'.$module;
+        $file = Vtiger_Loader::resolveNameToPath($qualifiedCustomName);
+
+        $languageStrings = $jsLanguageStrings = array();
+		if(file_exists($file)){
+            require $file;
+            self::$languageContainer[$language][$module]['languageStrings'] = array_merge(self::$languageContainer[$language][$module]['languageStrings'],$languageStrings);
+            self::$languageContainer[$language][$module]['jsLanguageStrings'] = array_merge(self::$languageContainer[$language][$module]['jsLanguageStrings'],$jsLanguageStrings);
+        } 
 		$return = array();
 		if(isset(self::$languageContainer[$language][$module])){
 			$return = self::$languageContainer[$language][$module];
