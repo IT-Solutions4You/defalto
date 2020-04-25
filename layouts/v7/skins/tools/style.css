@@ -95,7 +95,8 @@ body > .mCSB_inside > .mCSB_container {
   background: #FBFBFB;
   margin-bottom: 0;
   padding: 4px 0;
-  border-top: 1px solid #DDDDDD;
+  border-top: 1px solid #ccc;
+  border-width: thin;
 }
 .main-container {
   position: relative;
@@ -125,8 +126,6 @@ body > .mCSB_inside > .mCSB_container {
     position: absolute;
     width: 100%;
     height: 43px;
-    /*        border-top:1px solid #ddd;*/
-    border-bottom: 1px solid #eee;
   }
   .app-nav .module-action-bar .module-action-content {
     background: #FBFBFB;
@@ -393,12 +392,10 @@ body > .mCSB_inside > .mCSB_container {
 }
 .app-nav .app-indicator-icon-container {
   top: 0px;
-  height: 43px;
+  height: 42px;
   text-align: center;
-  line-height: 43px;
-  /*    background-color: #2c3b49;*/
+  line-height: 42px;
   color: #ffffff;
-  /*border-bottom: 1px solid #272B46;*/
 }
 .app-nav .app-indicator-icon-container .app-indicator-icon {
   font-size: 24px;
@@ -1355,6 +1352,7 @@ ul.unstyled {
   border-radius: 0px;
   font-weight: 100;
   cursor: pointer;
+  border-width: thin;
 }
 .btn:hover {
   cursor: pointer;
@@ -1370,6 +1368,7 @@ ul.unstyled {
   border: 1px solid #ddd;
   color: #666;
   background: #fff;
+  border-width: thin;
 }
 .module-buttons:hover,
 .module-buttons:focus,
@@ -1997,16 +1996,17 @@ th {
 }
 .detailViewContainer .block {
   background: #FFFFFF;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding-left: 15px;
   padding-right: 15px;
+  border-width: thin;
 }
 .detailViewContainer .block hr {
   margin: 10px 0;
 }
 .editViewContainer .block {
   background: #FFFFFF;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -2198,10 +2198,11 @@ th {
 .editViewContents .fieldBlockContainer,
 .summaryView {
   position: relative;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding: 15px;
   margin-bottom: 10px;
   background: #FFFFFF;
+  border-width: thin;
 }
 .summaryView .fieldLabel {
   padding-left: 0px;
@@ -2231,10 +2232,11 @@ th {
 }
 .summaryWidgetContainer {
   position: relative;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding: 15px;
   margin-bottom: 10px;
   background: #FFFFFF;
+  border-width: thin;
 }
 .summaryWidgetContainer .widget_header {
   margin-bottom: 6px;
@@ -2243,8 +2245,7 @@ th {
   font-size: 16px;
 }
 .summaryWidgetContainer .commentTitle {
-  padding-left: 15px;
-  padding-right: 15px;
+  margin-bottom: 25px;
 }
 .summaryWidgetContainer .creatorName {
   color: blue;
@@ -2254,7 +2255,7 @@ th {
 }
 .summaryWidgetContainer .commentContainer {
   background: white;
-  border-color: #F3F3F3;
+  border-color: #eee;
 }
 .summaryWidgetContainer .commentContainertextarea {
   width: 100%;
@@ -2263,6 +2264,7 @@ th {
 .noCommentsMsgContainer,
 .quick-preview-modal .noContent {
   border: 1px solid #eee;
+  border-width: thin;
 }
 .summaryWidgetContainer .recordImage .name {
   display: table-cell;
@@ -5093,6 +5095,7 @@ hr {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -o-box-sizing: border-box;
+  margin-bottom: 1px;
 }
 .row .nav > li > a:hover {
   border-bottom-color: #555;
@@ -6028,6 +6031,8 @@ div.tooltip-inner {
   background: white;
   padding: 15px;
   padding-top: 25px;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .detailViewContainer .content-area,
 .editViewPageDiv .content-area,
@@ -6043,13 +6048,15 @@ div.tooltip-inner {
   padding: 15px;
 }
 .detailview-content .details.row .relatedHeader {
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .detailview-content .details.row .relatedContents {
   background: white;
   padding: 0;
   margin-top: 0;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .related-tabs.row {
   background: #FFFFFF;
@@ -6058,7 +6065,7 @@ div.tooltip-inner {
 .detailViewContainer .commentContainer .commentTitle.row,
 .detailViewContainer .commentContainer .showcomments {
   background: #FFFFFF;
-  border-color: #F3F3F3;
+  border-color: #eee;
 }
 .detailViewTwitterImage {
   position: absolute;
@@ -6130,7 +6137,8 @@ div.tooltip-inner {
   display: inline-block;
 }
 .input-group-addon {
-  line-height: 1.4;
+  line-height: 1.5;
+  border-width: thin;
 }
 .input-group {
   float: left;
@@ -7570,6 +7578,8 @@ body .fc {
 }
 .commentcontent {
   border: 1px solid #ddd;
+  border-width: thin;
+  background: #fcfcfc;
 }
 .editViewHeader {
   padding-top: 20px;
@@ -7580,6 +7590,14 @@ body .fc {
 }
 .floatThead-floatContainer {
   margin-left: 1px;
+}
+.navbar {
+  border: 1px solid #eee;
+  border-width: thin;
+}
+#appnav .navbar {
+  border: 0;
+  background: none;
 }
 @media all and (min-width: 0px) and (max-width: 830px) {
   table.summary-table > tbody > tr > td,
@@ -7692,6 +7710,12 @@ body .fc {
   }
   .listViewPageDiv #table-content {
     overflow: scroll !important;
+  }
+  #appnavcontent {
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    border-width: thin;
+    padding: 30px;
   }
 }
 /*# sourceMappingURL=style.css.map */
