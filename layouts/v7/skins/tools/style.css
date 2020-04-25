@@ -49,31 +49,30 @@ a:active {
 /************ Layout **************/
 /**********************************/
 html {
-  height: 100%;
-  overflow-y: auto;
-}
-body {
-  width: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
-}
-body > .mCSB_inside > .mCSB_container {
-  margin-right: 15px;
-}
-#page {
+  overflow-y: auto;
   min-height: 100%;
-  padding-top: 84px;
-}
-.select2-container .select2-choice {
-  font-family: 'OpenSans-Regular', sans-serif;
 }
 body {
+  margin: 0;
+  padding: 0;
   font-family: 'OpenSans-Regular', sans-serif;
   font-size: 12px;
   font-weight: normal;
   font-style: normal;
   font-kerning: normal;
+  height: inherit;
+}
+body > .mCSB_inside > .mCSB_container {
+  margin-right: 15px;
+}
+#page {
+  padding-top: 84px;
+  height: inherit;
+}
+.select2-container .select2-choice {
+  font-family: 'OpenSans-Regular', sans-serif;
 }
 .app-fixed-navbar {
   background: #fff;
@@ -100,13 +99,16 @@ body {
 }
 .main-container {
   position: relative;
-  min-height: 100%;
+  min-height: calc(100vh - 110px);
 }
 .main-container:before,
 .main-container:after {
   content: " ";
   display: block;
   clear: both;
+}
+.main-container .row {
+  min-height: inherit;
 }
 @media (min-width: 992px) {
   .global-nav .logo-container {
@@ -157,14 +159,13 @@ body {
     min-height: 100%;
     background: #FFFFFF;
     border-right: 1px solid #DDDDDD;
+    overflow: auto;
   }
   .main-container .content-area {
     width: 100%;
     padding-left: 283px;
-    min-height: 768px;
   }
   .main-container .settingsPageDiv {
-    min-height: 768px;
     padding-left: 230px;
   }
   .main-container .settingsNav {
@@ -796,6 +797,9 @@ a.menu-item:hover {
 /*************************************************/
 /******** View styles (List/Edit/Detail..) *******/
 /*************************************************/
+.viewContent {
+  height: inherit;
+}
 .viewContent .content-area {
   padding-left: 3%;
 }
@@ -1986,6 +1990,10 @@ th {
 .overlayDetailHeader .recordImage [class^="vicon-"],
 .quickPreviewModuleHeader .recordImage [class^="vicon-"] {
   font-size: 35px;
+}
+.detailViewContainer {
+  background: #f9f9f9;
+  min-height: inherit;
 }
 .detailViewContainer .block {
   background: #FFFFFF;
@@ -7649,7 +7657,7 @@ body .fc {
     font-size: 13px;
   }
   .overlay-container-60 {
-    margin-left: 0px ;
+    margin-left: 0 ;
   }
   .overlayPageContent {
     padding-bottom: 0;
@@ -7681,6 +7689,9 @@ body .fc {
   .floatThead-floatContainer {
     margin-left: 1px;
     padding-top: 1px;
+  }
+  .listViewPageDiv #table-content {
+    overflow: scroll !important;
   }
 }
 /*# sourceMappingURL=style.css.map */
