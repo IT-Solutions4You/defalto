@@ -159,6 +159,7 @@ body > .mCSB_inside > .mCSB_container {
     background: #FFFFFF;
     border-right: 1px solid #DDDDDD;
     overflow: auto;
+    border-width: thin;
   }
   .main-container .content-area {
     width: 100%;
