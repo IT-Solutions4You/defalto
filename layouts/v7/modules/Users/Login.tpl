@@ -63,7 +63,7 @@
 			width: 50%;
 		}
 		#page {
-			padding-top: 6%;
+			padding-top: 86px;
 		}
 		.widgetHeight {
 			height: 410px;
