@@ -485,7 +485,7 @@ Vtiger_Owner_Field_Js('Workflows_Ownergroup_Field_Js',{},{
 	}
 });
 
-Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
+AdvanceFilter_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
 
     getUi : function(){
         var selectedOption = app.htmlDecode(this.getValue());
