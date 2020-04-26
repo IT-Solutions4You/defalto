@@ -203,7 +203,7 @@
 	</style>
 
 	<span class="app-nav"></span>
-	<div class="container-fluid main-container">
+	<div class="container-fluid loginPageContainer">
 		<div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
 			<div class="loginDiv widgetHeight">
 				<img class="img-responsive user-logo" src="layouts/v7/resources/Images/vtiger.png">

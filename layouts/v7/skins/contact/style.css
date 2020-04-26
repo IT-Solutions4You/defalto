@@ -100,7 +100,7 @@ body > .mCSB_inside > .mCSB_container {
 }
 .main-container {
   position: relative;
-  min-height: calc(100vh - 110px);
+  min-height: calc(100vh - 108px);
 }
 .main-container:before,
 .main-container:after {
@@ -7599,7 +7599,8 @@ body .fc {
   border: 0;
   background: none;
 }
-.dashBoardContainer {
+.dashBoardContainer,
+.loginPageContainer {
   min-height: calc(100vh - 110px);
 }
 @media all and (min-width: 0px) and (max-width: 830px) {
