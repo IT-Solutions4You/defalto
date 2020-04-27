@@ -25,7 +25,7 @@
 					</div>
 				</div>
 				<div class='row'>
-					<div class="col-xs-6 pull-right paddingTop5 paddingLeft0">
+					<div class="col-xs-6 pull-right paddingTop10 paddingLeft0">
 						<div style="text-align: right;">
 							{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
 								<div class="" style="margin: 7px 0;">
@@ -39,7 +39,7 @@
 						</div>
 					</div>
 					{if $FIELD_MODEL->getProfileReadWritePermission()}
-						<div class="col-xs-6 paddingTop5 pull-left">
+						<div class="col-xs-6 paddingTop10 pull-left">
 								{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE_NAME) MODULE="ModComments"}
 						</div>
 					{/if}

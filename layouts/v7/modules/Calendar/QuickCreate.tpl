@@ -11,8 +11,8 @@
 	{foreach key=index item=jsModel from=$SCRIPTS}
 		<script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 	{/foreach}
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content" style='width: 525px;left:23%;'>
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
 			<form class="form-horizontal recordEditView" id="QuickCreate" name="QuickCreate" method="post" action="index.php">
 				{if $MODE eq 'edit' && !empty($RECORD_ID)}
 					{assign var=HEADER_TITLE value={vtranslate('LBL_EDITING', $MODULE)}|cat:" "|cat:{vtranslate('SINGLE_'|cat:$MODULE, $MODULE)}}
@@ -83,25 +83,25 @@
 								</div>
 							</div>
 						</div>
-
-						<table class="massEditTable table no-border">
-							<tr>
-								{foreach key=FIELD_NAME item=FIELD_MODEL from=$RECORD_STRUCTURE name=blockfields}
+						<div class="container-fluid paddingTop15">
+							<table class="massEditTable table no-border">
+								<tr>
+									{foreach key=FIELD_NAME item=FIELD_MODEL from=$RECORD_STRUCTURE name=blockfields}
 									{if $FIELD_NAME eq 'subject' || $FIELD_NAME eq 'date_start' || $FIELD_NAME eq 'due_date'}
-									</tr>{continue}
+								</tr>{continue}
 								{/if}
 								{assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
 								{assign var="referenceList" value=$FIELD_MODEL->getReferenceList()}
 								{assign var="referenceListCount" value=count($referenceList)}
 								{if $FIELD_MODEL->get('uitype') eq "19"}
-									{if $COUNTER eq '1'}
-										<td></td><td></td></tr><tr>
-											{assign var=COUNTER value=0}
-										{/if}
+								{if $COUNTER eq '1'}
+								<td></td><td></td></tr><tr>
+									{assign var=COUNTER value=0}
+									{/if}
 									{/if}
 								</tr><tr>
 									<td class='fieldLabel col-lg-3'>
-										{if $isReferenceField neq "reference"}<label class="muted pull-right">{/if}
+										{if $isReferenceField neq "reference"}<label class="muted">{/if}
 											{if $isReferenceField eq "reference"}
 												{if $referenceListCount > 1}
 													{assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
@@ -109,7 +109,7 @@
 													{if !empty($REFERENCED_MODULE_STRUCT)}
 														{assign var="REFERENCED_MODULE_NAME" value=$REFERENCED_MODULE_STRUCT->get('name')}
 													{/if}
-													<span class="pull-right">
+													<span class="">
 														<select style="width: 150px;" class="select2 referenceModulesList">
 															{foreach key=index item=value from=$referenceList}
 																<option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
@@ -117,7 +117,7 @@
 														</select>
 													</span>
 												{else}
-													<label class="muted pull-right">{vtranslate($FIELD_MODEL->get('label'), $MODULE)} &nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
+													<label class="muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE)} &nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
 												{/if}
 											{else}
 												{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}
@@ -127,9 +127,10 @@
 									<td class="fieldValue col-lg-9" {if $FIELD_MODEL->get('uitype') eq '19'} colspan="3" {assign var=COUNTER value=$COUNTER+1} {/if}>
 										{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
 									</td>
-								{/foreach}
-							</tr>
-						</table>
+									{/foreach}
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">

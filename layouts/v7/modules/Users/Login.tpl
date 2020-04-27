@@ -15,7 +15,6 @@
 			background-position: center;
 			background-size: cover;
 			width: 100%;
-			height: 96%;
 			background-repeat: no-repeat;
 		}
 		hr {
@@ -64,7 +63,7 @@
 			width: 50%;
 		}
 		#page {
-			padding-top: 6%;
+			padding-top: 86px;
 		}
 		.widgetHeight {
 			height: 410px;
@@ -204,7 +203,7 @@
 	</style>
 
 	<span class="app-nav"></span>
-	<div class="col-lg-12">
+	<div class="container-fluid loginPageContainer">
 		<div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
 			<div class="loginDiv widgetHeight">
 				<img class="img-responsive user-logo" src="layouts/v7/resources/Images/vtiger.png">

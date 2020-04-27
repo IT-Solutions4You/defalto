@@ -50,7 +50,7 @@
 			</div>
 			<div class="col-lg-5 col-md-6 col-sm-7 col-xs-1 padding0 pull-right">
 				<div id="appnav" class="navbar-right">
-					<nav class="navbar navbar-inverse border0">
+					<nav class="navbar navbar-inverse border0 margin0">
 						{if $MODULE_BASIC_ACTIONS|@count gt 0}
 						<div class="container-fluid">
 							<div class="navbar-header bg-white marginTop5px">
