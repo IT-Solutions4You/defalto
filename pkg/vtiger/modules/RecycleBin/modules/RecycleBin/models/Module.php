@@ -260,7 +260,6 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
     
     /**
 	 * Function to remove emails related to given records
-	 * NOTE : Still need to confirm
 	 * @param type $recordIds
 	 */
 	public function deleteRelatedEmails($recordIds) {
