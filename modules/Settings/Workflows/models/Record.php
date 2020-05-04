@@ -503,7 +503,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				if($fieldLabel == '_VT_add_comment') {
 					$fieldLabel = 'Comment';
 				}
-				$conditionList[$conditionGroup][] = $fieldLabel.' '.vtranslate($operation, $moduleName).' '.vtranslate($value, $moduleName);
+				$conditionList[$conditionGroup][] = $fieldLabel.' '.vtranslate($operation, 'Settings:Workflows', $value);
 			}
 		}
 
