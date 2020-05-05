@@ -211,5 +211,18 @@ if (defined('VTIGER_UPGRADE')) {
         $portalLoginTemplateRecord->save();
         $portalLoginTemplateId = $portalLoginTemplateRecord->getId();
         echo "Customer portal login template created.<br>";
+        
+        //#1278 - registered new webservice api
+		$operationName = 'files_retrieve';
+		$handler_path = 'include/Webservices/FileRetrieve.php';
+		$handler_method = 'vtws_file_retrieve';
+		$operation_type = 'GET';
+
+		$result = $db->pquery("SELECT 1 FROM vtiger_ws_operation WHERE name = ?", array($operationName));
+		if(!$db->num_rows($result)) {
+		    $operationId = vtws_addWebserviceOperation($operationName, $handler_path, $handler_method, $operation_type);
+		    vtws_addWebserviceOperationParam($operationId, 'id', 'string', 1);
+		}
+		//4537596 - END
     }
 }
