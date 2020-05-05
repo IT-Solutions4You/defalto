@@ -299,6 +299,34 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$moduleFields = $this->meta->getModuleFields();
 		return $this->getDescribeFieldArray($moduleFields[$fieldName]);
 	}
+    
+    /**
+     * Function to get the file content
+     * @param type $id
+     * @return type
+     * @throws WebServiceException
+     */
+    public function file_retrieve($crmid, $elementType, $attachmentId=false){
+		$ids = vtws_getIdComponents($crmid);
+		$crmid = $ids[1];
+        $recordModel = Vtiger_Record_Model::getInstanceById($crmid, $elementType);
+        if($attachmentId) {
+            $attachmentDetails = $recordModel->getFileDetails($attachmentId);
+        } else {
+            $attachmentDetails = $recordModel->getFileDetails();
+        }
+        $fileDetails = array();
+        if (!empty ($attachmentDetails)) {
+            if(is_array(current(($attachmentDetails)))) {
+                foreach ($attachmentDetails as $key => $attachment) {
+                    $fileDetails[$key] = vtws_filedetails($attachment);
+                }
+            } else if(is_array($attachmentDetails)){
+                $fileDetails[] = vtws_filedetails($attachmentDetails);
+            }
+        }
+        return $fileDetails;
+	}
 	
 }
 ?>

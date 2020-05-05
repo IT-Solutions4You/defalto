@@ -1285,4 +1285,36 @@ function vtws_isDuplicatesAllowed($webserviceObject){
 	return $allowed;
 }
 
+function vtws_filedetails($fileData){
+    $fileDetails = array();
+    if(!empty($fileData)) {
+        $fileName = $fileData['name'];
+        $fileType = $fileData['type'];
+        $fileName = html_entity_decode($fileName, ENT_QUOTES, vglobal('default_charset'));
+        $filenamewithpath = $fileData['path'].'_'.$fileData['encName'];
+        $filesize = filesize($filenamewithpath);
+        $fileDetails['fileid'] = $fileData['attachmentsid'];
+        $fileDetails['filename'] = $fileName;
+        $fileDetails['filetype'] = $fileType;
+        $fileDetails['filesize'] = $filesize;
+        $fileDetails['filecontents'] = base64_encode(file_get_contents($filenamewithpath));
+    }
+    return $fileDetails;
+}
+
+function vtws_getAttachmentRecordId($attachmentId) {
+    $db = PearDatabase::getInstance();
+    $crmid = false;
+    if(!empty($attachmentId)) {
+        $query = "SELECT vtiger_seattachmentsrel.crmid FROM vtiger_seattachmentsrel "
+                . "INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_seattachmentsrel.crmid"
+                . " WHERE vtiger_seattachmentsrel.attachmentsid = ? AND vtiger_crmentity.deleted = ?";
+        $result = $db->pquery($query, array($attachmentId, 0));
+        
+        if ($db->num_rows($result) > 0) {
+            $crmid = $db->query_result($result, 0, 'crmid');
+        }
+    }
+    return $crmid;
+}
 ?>
