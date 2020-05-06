@@ -268,9 +268,15 @@ class Vtiger_Field_Model extends Vtiger_Field {
             $fieldPickListValues = array();
             $picklistValues = Vtiger_Util_Helper::getPickListValues($fieldName);
             
-            foreach($picklistValues as $value) {
-                $fieldPickListValues[$value] = vtranslate($value,$this->getModuleName());
-			}
+            foreach ($picklistValues as $value) {
+                if (!is_numeric($value)) {
+                    $addValue = vtranslate($value, $this->getModuleName());
+                } else {
+                    $addValue = $value;
+                }
+                $fieldPickListValues[$value] = $addValue;
+            }
+            
             return $fieldPickListValues;
 		}
 		return null;
