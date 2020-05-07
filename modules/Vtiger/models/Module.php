@@ -1252,6 +1252,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					$params[] = $id;
 				}
 				if($subordinateUsers) {
+                    array_push($subordinateUsers, $currentUserModel->getId());
 					$ownerSql =  ' smownerid IN ('. implode(',' , $subordinateUsers) .')';
 				} else {
 					$ownerSql =  ' smownerid = '.$currentUserModel->getId();
