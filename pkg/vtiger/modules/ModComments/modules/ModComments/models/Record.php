@@ -118,14 +118,14 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 			if (!empty($customer)) {
 				$recordModel = Vtiger_Record_Model::getInstanceById($customer);
 				$imageDetails = $recordModel->getImageDetails();
-				if (!empty($imageDetails[0]['url'])) {
-					return $imageDetails[0]['url'];
+				if(!empty($imageDetails)) {
+					return $imageDetails[0]['path'].'_'.$imageDetails[0]['name'];
 				} else
 					return vimage_path('CustomerPortal.png');
 			} else {
-				$imageDetails = $commentor->getImageDetails();
-				if (!empty($imageDetails[0]['url'])) {
-					return $imageDetails[0]['url'];
+				$imagePath = $commentor->getImageDetails();
+				if (!empty($imagePath[0]['name'])) {
+					return $imagePath[0]['path'] . '_' . $imagePath[0]['name'];
 				}
 			}
 		} elseif ($isMailConverterType) {
