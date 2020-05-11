@@ -26,6 +26,20 @@
 					{/if}
 				{/if}
 				<a title="{vtranslate($MODULE, $MODULE)}" href='{$DEFAULT_FILTER_URL}&app={$SELECTED_MENU_CATEGORY}'><h4 class="module-title pull-left textOverflowEllipsis text-uppercase">&nbsp;{vtranslate($MODULE, $MODULE)}&nbsp;</h4></a>
+                                {if $smarty.session.lvs.$MODULE.viewname}
+					{assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
+				{/if}
+				{if $VIEWID}
+					{foreach item=FILTER_TYPES from=$CUSTOM_VIEWS}
+						{foreach item=FILTERS from=$FILTER_TYPES}
+							{if $FILTERS->get('cvid') eq $VIEWID}
+								{assign var=CVNAME value=$FILTERS->get('viewname')}
+								{break}
+							{/if}
+						{/foreach}
+					{/foreach}
+					<p  class="current-filter-name filter-name pull-left cursorPointer" title="{$CVNAME}">&nbsp;<span class="fa fa-angle-right pull-left" aria-hidden="true"></span><a  href='{$MODULE_MODEL->getListViewUrl()}&viewname={$VIEWID}'>&nbsp;{$CVNAME}&nbsp;</a> </p>
+				{/if}
 				{assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
 				{if $RECORD and $smarty.request.view eq 'Edit'}
 					<p class="current-filter-name filter-name pull-left "><span class="fa fa-angle-right pull-left" aria-hidden="true"></span><a title="{$RECORD->get('label')}">&nbsp;{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}&nbsp;</a></p>
