@@ -23,7 +23,7 @@ class Vtiger_Ownergroup_UIType extends Vtiger_Owner_UIType {
 	 * @param <Object> $value
 	 * @return <Object>
 	 */
-	public function getDisplayValue($value) {
+	public function getDisplayValue($value, $record=false, $recordInstance=false) {
 		$recordModel = new Settings_Groups_Record_Model();
 		$recordModel->set('groupid', $value);
 		$detailViewUrl = $recordModel->getDetailViewUrl();
