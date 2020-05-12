@@ -41,6 +41,25 @@ class Calendar_FilterRecordStructure_Model extends Vtiger_FilterRecordStructure_
 			}
 		}
 
+        $eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
+        $eventsStructureModel = Vtiger_RecordStructure_Model::getInstanceForModule($eventsModuleModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER);
+        $blockModelList = $eventsStructureModel->getModule()->getBlocks();
+        foreach ($blockModelList as $blockLabel => $blockModel) {
+            $fieldModelList = $blockModel->getFields();
+            if ($fieldModelList) {
+                $values[vtranslate($blockLabel, 'Events')] = array();
+                foreach ($fieldModelList as $fieldName => $fieldModel) {
+                    if ($fieldModel->isViewableInFilterView()) {
+                        $newFieldModel = clone $fieldModel;
+                        if ($recordExists) {
+                            $newFieldModel->set('fieldvalue', $recordModel->get($fieldName));
+                        }
+                        $values[vtranslate($blockLabel, 'Events')][$fieldName] = $newFieldModel;
+                    }
+                }
+            }
+        }
+
 		//All the reference fields should also be sent
 		$fields = $moduleModel->getFieldsByType(array('reference'));
 		foreach ($fields as $parentFieldName => $field) {
