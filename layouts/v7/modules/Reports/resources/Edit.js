@@ -157,6 +157,24 @@ Vtiger_Edit_Js("Reports_Edit_Js",{
 	},
 	registerPageLeaveEvents : function() {
 	},
+        registerOnlyAllUsersInSharedList : function(){
+            var self = this;
+            jQuery('#memberList').on('change',function(e){
+                var element = jQuery(e.currentTarget);
+                if(self.isAllUsersSelected()){
+                    element.find('option').not('[value="All::Users"]').prop('disabled',true);
+                    element.select2('val',['All::Users']);
+                    element.select2('close');
+                }else{
+                    element.find('option').removeProp('disabled');
+                }
+            });
+        },
+
+        isAllUsersSelected : function() {
+            var memberList = jQuery('#memberList').val();
+            return (memberList != null && (memberList.indexOf('All::Users') != -1)) ? true : false
+        },
 	registerEvents : function(){
 		this._super();
 		var statusToProceed = this.proceedRegisterEvents();
@@ -166,6 +184,7 @@ Vtiger_Edit_Js("Reports_Edit_Js",{
 		var form = this.currentInstance.getContainer();
 		this.registerFormSubmitEvent(form);
 		this.registerBackStepClickEvent();
+                this.registerOnlyAllUsersInSharedList();
 	}
 });
 

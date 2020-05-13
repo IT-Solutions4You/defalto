@@ -104,10 +104,18 @@
                     <label class='col-lg-3 control-label textAlignLeft'>{vtranslate('LBL_SHARE_REPORT',$MODULE)}</label>
                     <div class='col-lg-4'>
                         <select id="memberList" class="col-lg-12 select2-container select2 members " multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}">
+                            <optgroup label="{vtranslate('LBL_ALL',$MODULE)}">
+                                    <option value="All::Users" data-member-type="{vtranslate('LBL_ALL',$MODULE)}" 
+                                                    {if ($REPORT_MODEL->get('sharingtype') == 'Public')} selected="selected"{/if}>
+                                            {vtranslate('LBL_ALL_USERS',$MODULE)}
+                                    </option>
+                            </optgroup>
                             {foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
                                 <optgroup label="{$GROUP_LABEL}">
                                     {foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
-                                        <option value="{$MEMBER->getId()}"  data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
+                                        {if $GROUP_LABEL neq 'Users' || $MEMBER->getId() neq 'Users:'|cat:$CURRENT_USER->getId()}
+                                            <option value="{$MEMBER->getId()}"  data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
+                                        {/if}
                                     {/foreach}
                                 </optgroup>
                             {/foreach}
