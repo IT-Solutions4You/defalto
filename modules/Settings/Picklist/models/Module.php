@@ -510,7 +510,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 					$picklistNameRaw = $db->query_result($result, $i, $fieldName);
 					$picklistName = decode_html($picklistNameRaw);
 					// show color only for accesable picklist values
-					if($isRoleBasedPicklist && !isset($accessablePicklistValues[$picklistNameRaw])) {
+					if($isRoleBasedPicklist && !isset($accessablePicklistValues[$picklistName	])) {
 						$color = '';
 					}
 					if(!empty($color)) {

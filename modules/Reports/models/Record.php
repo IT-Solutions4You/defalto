@@ -445,12 +445,15 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 
 		$reportId = $this->getId();
 
-		//When members variable is not empty, it means record shared with other users, so
-		//sharing type of a report should be private
-		$sharingType = 'Public';
+		//Newly created records are always as Private, only shared users can see report
+		$sharingType = 'Private';
+		
 		$members = $this->get('members',array());
-		if(!empty($members)){
-			$sharingType = 'Private';
+		
+		if($members && count($members) == 1){
+			if($members[0] == 'All::Users'){
+				$sharingType = 'Public';
+			}
 		}
 
 		if(empty($reportId)) {
