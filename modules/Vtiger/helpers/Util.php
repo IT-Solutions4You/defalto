@@ -1239,7 +1239,7 @@ class Vtiger_Util_Helper {
 
 	public static function convertSpaceToHyphen($string) {
 		if (!empty($string)) {
-			return str_replace(" ", "-", $string);
+			return str_replace(" ", "-", decode_html($string));
 		}
 	}
 
