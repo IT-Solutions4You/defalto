@@ -225,4 +225,9 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 		//4537596 - END
     }
+    
+    //image uitype added for webservice fieldtype
+    $sql = 'INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES (?,?)';
+    $params = array('69', 'image');
+    $db->pquery($sql, $params);
 }
