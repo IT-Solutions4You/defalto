@@ -227,7 +227,7 @@ if (defined('VTIGER_UPGRADE')) {
     }
     
     //image uitype added for webservice fieldtype
-    $sql = 'insert into vtiger_ws_fieldtype(uitype,fieldtype) values (?,?)';
+    $sql = 'INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES (?,?)';
     $params = array('69', 'image');
     $db->pquery($sql, $params);
 }
