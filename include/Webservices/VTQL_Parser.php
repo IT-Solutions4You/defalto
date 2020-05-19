@@ -1160,9 +1160,9 @@ $this->out['select'] = $this->yystack[$this->yyidx + -7]->minor;
 if($this->yystack[$this->yyidx + -5]->minor){
 $this->out['from'] = $this->yystack[$this->yyidx + -5]->minor ;
 }
-if(SEMI){
-$this->out['semi_colon'] = SEMI;
-}
+//if(SEMI){
+//$this->out['semi_colon'] = SEMI;
+//}
 if($this->out['select']){
 $this->buildSelectStmt($this->out);
 }
@@ -1234,7 +1234,7 @@ $this->out['where_condition']['column_values'][sizeof($this->out['where_conditio
 #line 1240 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservices\VTQL_parser.php"
 #line 82 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservices\VTQL_parser.y"
     function yy_r17(){
-$length = sizeof($this->out['where_condition']['column_values']);
+$length = ($this->out['where_condition']['column_values'])? sizeof($this->out['where_condition']['column_values']):0;
 $pos = $length - 1;
 if($pos < 0){
 $pos = 0;
