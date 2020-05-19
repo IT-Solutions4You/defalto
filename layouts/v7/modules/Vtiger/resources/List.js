@@ -2336,7 +2336,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				selectedFieldsList.on('click', '.removeField', function (e) {
 					var selectedFieldsEles = selectedFieldsList.find('.item');
 					if (selectedFieldsEles.length <= 1) {
-						app.helper.showErrorNotification({message: app.vtranslate('Atleast one field should be selected')});
+						app.helper.showErrorNotification({message: app.vtranslate('JS_ATLEAST_SELECT_ONE_FIELD')});
 						return false;
 					}
 					var ele = jQuery(e.currentTarget);
