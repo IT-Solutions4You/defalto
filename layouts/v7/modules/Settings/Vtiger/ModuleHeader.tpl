@@ -133,7 +133,7 @@
 								{/if}
 							</li>
 						{/foreach}
-						{if $LISTVIEW_LINKS['LISTVIEWSETTING']|@count gt 0}
+						{if !empty($LISTVIEW_LINKS['LISTVIEWSETTING']) && ($LISTVIEW_LINKS['LISTVIEWSETTING']|@count gt 0)}
 							{if empty($QUALIFIEDMODULE)} 
 								{assign var=QUALIFIEDMODULE value=$MODULE}
 							{/if}
@@ -159,7 +159,7 @@
 						{/if}
 
 						{assign var=RESTRICTED_MODULE_LIST value=['Users', 'EmailTemplates']}
-						{if $LISTVIEW_LINKS['LISTVIEWBASIC']|@count gt 0 and !in_array($MODULE, $RESTRICTED_MODULE_LIST)}
+						{if !empty($LISTVIEW_LINKS['LISTVIEWBASIC']) and ($LISTVIEW_LINKS['LISTVIEWBASIC']|@count gt 0) and (!in_array($MODULE, $RESTRICTED_MODULE_LIST))}
 							{if empty($QUALIFIED_MODULE)} 
 								{assign var=QUALIFIED_MODULE value='Settings:'|cat:$MODULE}
 							{/if}
