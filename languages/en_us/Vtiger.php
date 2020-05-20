@@ -1937,5 +1937,5 @@ $jsLanguageStrings = array(
 	'LBL_LIST_DELETE_CONFIRMATION' => 'Are you sure you want to delete?',
 	'JS_WIDGET_RESIZING_WAIT_MSG' => 'Widget contents will load after resizing.',
     'JS_COPIED_SUCCESSFULLY' => 'Copied successfully',
-    'JS_ATLEAST_SELECT_ONE_FIELD' => 'Atleast one field should be selected',
+    'JS_ATLEAST_SELECT_ONE_FIELD' => 'At least one field should be selected',
 );
