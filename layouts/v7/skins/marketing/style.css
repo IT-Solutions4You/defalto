@@ -1420,6 +1420,7 @@ ul.unstyled {
 .listview-actions-container {
   position: relative;
   background: #fff;
+  padding-top: 10px;
 }
 .listview-pagination i {
   font-size: 20px;
