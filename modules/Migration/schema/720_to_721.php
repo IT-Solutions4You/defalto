@@ -230,4 +230,17 @@ if (defined('VTIGER_UPGRADE')) {
     $sql = 'INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES (?,?)';
     $params = array('69', 'image');
     $db->pquery($sql, $params);
+    
+    $moduleInstance = Vtiger_Module_Model::getInstance('SalesOrder');
+    $fieldInstance = Vtiger_Field_Model::getInstance('payment_duration', $moduleInstance);
+    $fieldInstance->setPicklistValues(array('Net 01 day', 'Net 05 days', 'Net 07 days', 'Net 10 days', 'Net 15 days'));
+    
+    $paymentList = array('Net 01 day' => '1', 'Net 05 days' => '2', 'Net 07 days' => '3', 'Net 10 days' => '4', 'Net 15 days' => '5',
+                         'Net 30 days' => '6', 'Net 45 days' => '7', 'Net 60 days' => '8');
+    $query = 'UPDATE vtiger_payment_duration SET sortorderid = CASE payment_duration';
+    foreach ($paymentList as $label => $sortOrderId) {
+        $query .= " WHEN '$label' THEN $sortOrderId ";
+    }
+    $query .= ' ELSE sortorderid END';
+    $db->pquery($query, array());
 }
