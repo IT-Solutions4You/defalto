@@ -302,7 +302,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		// Constructing the grid based on window width
 		var cols = this.getgridColumns();
 		$(".mainContainer").css('min-width', "500px");
-		var col_width = (cols === 1)?(Math.floor(($(".mainContainer").width()-41)/cols) - (2*widgetMargin)):(Math.floor(($(window).width()-41)/cols) - (2*widgetMargin));
+		var col_width = (Math.floor(($(window).width()-30)/cols) - (2*widgetMargin));
 
 
 		Vtiger_DashBoard_Js.gridster = this.getContainer().gridster({

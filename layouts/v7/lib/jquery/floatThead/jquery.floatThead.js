@@ -326,6 +326,7 @@
       $floatContainer.css({
         position: useAbsolutePositioning ? 'absolute' : 'fixed',
         marginTop: 0,
+        marginLeft: 1,
         top:  useAbsolutePositioning ? 0 : 'auto',
         zIndex: opts.zIndex
       });
@@ -361,7 +362,7 @@
       function setFloatWidth(){
         var tw = tableWidth($table, $fthCells, true);
         var width = $scrollContainer.width() || tw;
-        var floatContainerWidth = $scrollContainer.css("overflow-y") != 'hidden' ? width - scrollbarOffset.vertical : width;
+        var floatContainerWidth = $scrollContainer.css("overflow-y") != 'hidden' ? width - scrollbarOffset.vertical - 1: width;
         $floatContainer.width(floatContainerWidth);
         if(locked){
           var percent = 100 * tw / (floatContainerWidth);
