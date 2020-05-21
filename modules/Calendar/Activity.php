@@ -572,7 +572,7 @@ function insertIntoRecurringTable(& $recurObj)
 	 * @param string $criteria - query string
 	 * returns  activity records in array format($list) or null value
 		 */
-	function get_full_list($criteria) {
+	function get_full_list($criteria='', $where='') { 
 		global $log;
 		$log->debug("Entering get_full_list(".$criteria.") method ...");
 		$query = "select vtiger_crmentity.crmid,vtiger_crmentity.smownerid,vtiger_crmentity.setype, vtiger_activity.*,
