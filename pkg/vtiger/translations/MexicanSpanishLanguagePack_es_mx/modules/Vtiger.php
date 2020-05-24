@@ -827,9 +827,9 @@ $languageStrings = array(
 	'LBL_SYSTEM' =>'Sistema',
 	'LBL_PREVIEW' => 'Preestreno',
 	'LBL_UNLINKED' => 'Sin liga',
-	'Any' => 'Ninguna',
+	'Any' => 'Alguna',
 	'LBL_NA' => '-NA-',
-	'LBL_DISABLED' => 'Discapacitado',
+	'LBL_DISABLED' => 'Deshabilitado',
 	'LBL_SHOW_MAP'=>'Ver mapa',
 
   'LBL_LINKED' => 'Vinculado',
