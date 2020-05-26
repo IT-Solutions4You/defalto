@@ -12,39 +12,66 @@
 require_once('include/utils/utils.php');
 
 class RecurringInvoiceHandler extends VTEventHandler {
-	public function handleEvent($handlerType, $entityData){
-		global $log, $adb;
-		$moduleName = $entityData->getModuleName();
-		if ($moduleName == 'SalesOrder') {
-			$soId = $entityData->getId();
-			$data = $entityData->getData();
-			if($data['enable_recurring'] == 'on' || $data['enable_recurring'] == 1) {
-				$frequency = $data['recurring_frequency'];
-				$startPeriod = getValidDBInsertDateValue($data['start_period']);
-				$endPeriod = getValidDBInsertDateValue($data['end_period']);
-				$paymentDuration = $data['payment_duration'];
-				$invoiceStatus = $data['invoicestatus'];
-				if (isset($frequency) && $frequency != '' && $frequency != '--None--') {
-					$check_query = "SELECT * FROM vtiger_invoice_recurring_info WHERE salesorderid=?";
-					$check_res = $adb->pquery($check_query, array($soId));
-					$noofrows = $adb->num_rows($check_res);
-					if ($noofrows > 0) {
-						$row = $adb->query_result_rowdata($check_res, 0);
-						$query = "UPDATE vtiger_invoice_recurring_info SET recurring_frequency=?, start_period=?, end_period=?, payment_duration=?, invoice_status=? WHERE salesorderid=?";
-						$params = array($frequency,$startPeriod,$endPeriod,$paymentDuration,$invoiceStatus,$soId);
-					} else {
-						$query = "INSERT INTO vtiger_invoice_recurring_info VALUES (?,?,?,?,?,?,?)";
-						$params = array($soId,$frequency,$startPeriod,$endPeriod,$startPeriod,$paymentDuration,$invoiceStatus);
-					}
-					$adb->pquery($query, $params);
-				}
-			} else {
-				$query = "DELETE FROM vtiger_invoice_recurring_info WHERE salesorderid = ?";
-				$adb->pquery($query, array($soId));	
-			}
+	
+	private $entityData;
+	
+	public function handleEvent($handlerType, $entityData) {
+		$this->entityData = $entityData;
+	
+		if ($this->isSalesOrderModule()) {
+			$this->handleRecurringInvoiceGeneration();
 		}
 	}
-} 
-
-
-?>
+	
+	private function handleRecurringInvoiceGeneration() {
+		if ($this->isRecurringInvoiceEnabled()) {
+			if (empty($this->getNextInvoiceDate()) || $this->isStartDateAfterNextInvoiceDate()) {
+				$this->setNextInvoiceDateEqualsToStartDate();
+			}
+		} else {
+			$this->deleteRecurringInvoiceData();
+		}
+	}
+	
+	private function isStartDateAfterNextInvoiceDate()
+	{
+		$startPeriod = new DateTime($this->getStartDate());
+		$nextInvoiceDate = new DateTime($this->getNextInvoiceDate());
+		
+		return $startPeriod > $nextInvoiceDate;
+	}
+	
+	private function isSalesOrderModule() {
+		return $this->entityData->getModuleName() == 'SalesOrder';
+	}
+	
+	private function getStartDate()
+	{
+		$data = $this->entityData->getData();
+		return DateTimeField::convertToDBFormat($data['start_period']);
+	}
+	
+	private function getNextInvoiceDate() {
+		$data = $this->entityData->getData();
+		return $data['last_recurring_date'];
+	}
+	
+	private function isRecurringInvoiceEnabled() {
+		$data = $this->entityData->getData();
+		return !empty($data['enable_recurring']);
+	}
+	
+	private function setNextInvoiceDateEqualsToStartDate()
+	{
+		$db = PearDatabase::getInstance();
+		$query = "UPDATE vtiger_invoice_recurring_info SET last_recurring_date = start_period WHERE salesorderid = ?";
+		$db->pquery($query, [$this->entityData->getId()]);
+	}
+	
+	private function deleteRecurringInvoiceData()
+	{
+		$db = PearDatabase::getInstance();
+		$query = "DELETE FROM vtiger_invoice_recurring_info WHERE salesorderid = ?";
+		$db->pquery($query, [$this->entityData->getId()]);	
+	}
+}

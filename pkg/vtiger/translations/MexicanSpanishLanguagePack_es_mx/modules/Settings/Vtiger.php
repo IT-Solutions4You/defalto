@@ -147,7 +147,7 @@ $languageStrings = array(
 	'LBL_CHARGE_FORMAT' => 'Formato de cargo',
 	'LBL_FLAT' => 'Fijo',
 	'LBL_DIRECT_PRICE' => 'Precio de',
-	'LBL_PERCENT' => 'Por ciento',
+	'LBL_PERCENT' => 'Porciento',
 	'LBL_CHARGE_TYPE' => 'Tipo de cargo',
 	'LBL_CHARGE_VALUE' => 'Valor de cargo',
 	'LBL_ENTER_CHARGE_NAME' => 'Introduzca el nombre del cargo',
@@ -327,6 +327,8 @@ $languageStrings = array(
   'LBL_SHOPPINGCART' => 'Carrito de compra',
     'My Preferences'               => 'Mi Perfil', 
     'Calendar Settings' => 'Config. de calendario',
+    'Module' => 'Módulo',
+    'Conditions' => 'Condiciones',
 
 );
 $jsLanguageStrings = array(
