@@ -265,8 +265,7 @@ if (defined('VTIGER_UPGRADE')) {
         $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
         if($moduleModel){
             $moduleModel->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
-
+            print("Email related list added to $moduleName");
         }   
     }
-    print('Email related list added for Tickets and Opportunities module');
 }
