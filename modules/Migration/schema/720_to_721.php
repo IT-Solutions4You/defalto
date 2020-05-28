@@ -260,14 +260,13 @@ if (defined('VTIGER_UPGRADE')) {
     $block->addField($field);
     
     //Adding related list between Emails and Potentials
-    $potentialsModule = Vtiger_Module_Model::getInstance('Potentials');
-    if($potentialsModule){
-        $potentialsModule->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
+    $emailRelatedModules = array('Potentials', 'HelpDesk');
+    foreach ($emailRelatedModules as $key => $moduleName) {
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if($moduleModel){
+            $moduleModel->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
 
-    }   
-    $helpDeskModule = Vtiger_Module_Model::getInstance('HelpDesk');
-    if($helpDeskModule){
-            $helpDeskModule->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
+        }   
     }
     print('Email related list added for Tickets and Opportunities module');
 }
