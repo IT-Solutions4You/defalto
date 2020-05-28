@@ -258,4 +258,16 @@ if (defined('VTIGER_UPGRADE')) {
     
     $block = Vtiger_Block::getInstance('Recurring Invoice Information', $moduleInstance);
     $block->addField($field);
+    
+    //Adding related list between Emails and Potentials
+    $potentialsModule = Vtiger_Module_Model::getInstance('Potentials');
+    if($potentialsModule){
+        $potentialsModule->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
+
+    }   
+    $helpDeskModule = Vtiger_Module_Model::getInstance('HelpDesk');
+    if($helpDeskModule){
+            $helpDeskModule->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
+    }
+    print('Email related list added for Tickets and Opportunities module');
 }
