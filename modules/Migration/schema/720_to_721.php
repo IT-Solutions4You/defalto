@@ -258,4 +258,14 @@ if (defined('VTIGER_UPGRADE')) {
     
     $block = Vtiger_Block::getInstance('Recurring Invoice Information', $moduleInstance);
     $block->addField($field);
+    
+    //Adding related list between Emails and Potentials
+    $emailRelatedModules = array('Potentials', 'HelpDesk');
+    foreach ($emailRelatedModules as $key => $moduleName) {
+        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+        if($moduleModel){
+            $moduleModel->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
+            print("Email related list added to $moduleName");
+        }   
+    }
 }
