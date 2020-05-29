@@ -160,8 +160,23 @@
 						$webserviceObject = VtigerWebserviceObject::fromName($adb,"Users");
 						$userId = vtws_getId($webserviceObject->getEntityId(),$userDetails->id);
 						$vtigerVersion = vtws_getVtigerVersion();
-						$resp = array("sessionName"=>$this->sessionManager->getSessionId(),"userId"=>$userId,"version"=>$API_VERSION,"vtigerVersion"=>$vtigerVersion);
-						return $resp;
+                        $userInfo = array(
+                            'username' => $userDetails->user_name,
+                            'first_name' => $userDetails->first_name,
+                            'last_name' => $userDetails->last_name,
+                            'email' => $userDetails->email1,
+                            'time_zone' => $userDetails->time_zone,
+                            'hour_format' => $userDetails->hour_format,
+                            'date_format' => $userDetails->date_format,
+                            'is_admin' => $userDetails->is_admin,
+                            'call_duration' => $userDetails->callduration,
+                            'other_event_duration' => $userDetails->othereventduration,
+                            'sessionName'=>$this->sessionManager->getSessionId(),
+                            'userId'=>$userId,
+                            'version'=>$API_VERSION,
+                            'vtigerVersion'=>$vtigerVersion
+                        );
+						return $userInfo;
 					}
 				}
 			} catch (DuplicateException $e) {
