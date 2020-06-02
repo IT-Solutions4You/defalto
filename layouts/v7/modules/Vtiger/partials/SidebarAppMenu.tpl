@@ -32,7 +32,7 @@
 			{assign var=APP_LIST value=Vtiger_MenuStructure_Model::getAppMenuList()}
 			{foreach item=APP_NAME from=$APP_LIST}
 				{if $APP_NAME eq 'ANALYTICS'} {continue}{/if}
-				{if count($APP_GROUPED_MENU.$APP_NAME) gt 0}
+				{if !empty($APP_GROUPED_MENU.$APP_NAME)}
 					<div class="dropdown app-modules-dropdown-container">
 						{foreach item=APP_MENU_MODEL from=$APP_GROUPED_MENU.$APP_NAME}
 							{assign var=FIRST_MENU_MODEL value=$APP_MENU_MODEL}
