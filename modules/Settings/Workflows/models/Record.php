@@ -468,11 +468,11 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 					$fieldDataType = $fieldModel->getFieldDataType();
 				}
 				if($value == 'true:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '1')) {
-					$value = 'LBL_ENABLED';
-				}
+                    $value = vtranslate('LBL_ENABLED', $moduleName);
+                }
 				if($value == 'false:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '0')) {
-					$value = 'LBL_DISABLED';
-				}
+					$value = vtranslate('LBL_DISABLED', $moduleName);
+                }
 				if ($fieldModel && (($fieldModel->column === 'smownerid') || (($fieldModel->column === 'smgroupid')))) {
 					if (vtws_getOwnerType($value) == 'Users') {
 						$value = getUserFullName($value);
