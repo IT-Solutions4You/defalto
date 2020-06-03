@@ -1185,7 +1185,7 @@ $this->out['column_list'][] = 'count(*)';
 #line 1191 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservices\VTQL_parser.php"
 #line 30 "e:\workspace\nonadmin\pkg\vtiger\extensions\Webservices\VTQL_parser.y"
     function yy_r7(){
-if(!in_array("*", $this->out["column_list"]) && !in_array("count(*)", array_map(strtolower, $this->out["column_list"]))){
+if(!in_array("*", $this->out["column_list"]) && !in_array("count(*)", array_map(strtolower($this->out["column_list"])))){
 if(!in_array("id",$this->out["column_list"])){
 	$this->out["column_list"][] = "id";
 }
@@ -1332,7 +1332,7 @@ $fieldcol = $meta->getFieldColumnMapping();
 $columns = array();
 if(in_array('*', $this->out['column_list'])){
 $columns = array_values($fieldcol);
-}elseif( !in_array('count(*)', array_map(strtolower, $this->out['column_list']))){
+}elseif( !in_array('count(*)', array_map(strtolower($this->out['column_list'])))){
 foreach($this->out['column_list'] as $ind=>$field){
 $columns[] = $fieldcol[$field];
 }
