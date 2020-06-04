@@ -78,3 +78,5 @@
         <div class="searchResults">
         </div>
 </div>
+{/strip}
+
