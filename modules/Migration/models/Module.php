@@ -25,7 +25,7 @@ class Migration_Module_Model extends Vtiger_Module_Model {
 	 * Static Function to get the instance of Vtiger Module Model for the given id or name
 	 * @param mixed id or name of the module
 	 */
-	public static function getInstance($value) {
+	public static function getInstance($value=null) {
 		return new self($value);
 	}
 	
