@@ -267,7 +267,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 					$resultDateTime = $this->changeDateTime($oldEndDateTime,$dayDelta,$minuteDelta,$secondsDelta);
 					$parts = explode(' ',$resultDateTime);
 					$record->set('due_date',$parts[0]);
-					if(activitytype != 'Task') {
+					if($activitytype != 'Task') {
 						$record->set('time_end',$parts[1]);
 					}
 
