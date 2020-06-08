@@ -1827,7 +1827,7 @@ function getValidDBInsertDateTimeValue($value) {
 	$value = trim($value);
 	$valueList = explode(' ',$value);
     //checking array count = 3 if datatime format is 12hr.
-	if(count($valueList) == 2 || count($valueList) == 3) {
+	if(is_array($valueList) && (count($valueList) == 2 || count($valueList) == 3)) {
 		$dbDateValue = getValidDBInsertDateValue($valueList[0]);
 		$dbTimeValue = $valueList[1];
 		if(!empty($dbTimeValue) && strpos($dbTimeValue, ':') === false) {
@@ -1843,7 +1843,7 @@ function getValidDBInsertDateTimeValue($value) {
 		} catch (Exception $ex) {
 			return '';
 		}
-	} elseif(count($valueList == 1)) {
+	} elseif(is_array($valueList) && count($valueList) == 1) {
 		return getValidDBInsertDateValue($value);
 	}
 }
