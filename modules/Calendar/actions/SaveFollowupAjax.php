@@ -101,9 +101,7 @@ class Calendar_SaveFollowupAjax_Action extends Calendar_SaveAjax_Action {
         }
         else{
             //checking if the event can be marked as Held (status validation)
-            $startDateTime[] = $recordModel->get('date_start');
-            $startDateTime[] = $recordModel->get('time_start');
-            $startDateTime = implode(' ',$startDateTime);
+            $startDateTime = $this->getFormattedDateTime($recordModel->get('date_start'), $recordModel->get('time_start'));
             $startDateTime = new DateTime($startDateTime);
             $currentDateTime = date("Y-m-d H:i:s");
             $currentDateTime = new DateTime($currentDateTime);
