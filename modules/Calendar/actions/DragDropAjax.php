@@ -71,7 +71,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 						$startDateTime = new DateTime($startDateTime);
 
 						$recordModel->set('due_date',$parts[0]);
-						if(activitytype != 'Task') {
+						if($activityType != 'Task') {
 							$recordModel->set('time_end',$parts[1]);
 						}
 
@@ -91,7 +91,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 					$resultDateTime = $this->changeDateTime($oldDateTime,$dayDelta,$minuteDelta,$secondsDelta);
 					$parts = explode(' ',$resultDateTime);
 					$record->set('due_date',$parts[0]);
-					if(activitytype != 'Task') {
+					if($activityType != 'Task') {
 						$record->set('time_end',$parts[1]);
 					}
 
@@ -206,7 +206,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 						$startDateTime = new DateTime($startDateTime);
 
 						$recordModel->set('date_start', $parts[0]);
-						if (activitytype != 'Task')
+						if ($activityType != 'Task')
 							$recordModel->set('time_start', $parts[1]);
 
                         $endDateTime = $this->getFormattedDateTime($recordModel->get('due_date'), $recordModel->get('time_end'));
@@ -215,7 +215,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 						$endDateParts = explode(' ', $formatEndDate);
 						$endDateTime = new DateTime($endDateTime);
 						$recordModel->set('due_date', $endDateParts[0]);
-						if (activitytype != 'Task')
+						if ($activityType != 'Task')
 							$recordModel->set('time_end', $endDateParts[1]);
 
 						$this->setRecurrenceInfo($recordModel);
@@ -233,7 +233,7 @@ class Calendar_DragDropAjax_Action extends Calendar_SaveAjax_Action {
 					$resultDateTime = $this->changeDateTime($oldEndDateTime,$dayDelta,$minuteDelta,$secondsDelta);
 					$parts = explode(' ',$resultDateTime);
 					$record->set('due_date',$parts[0]);
-					if(activitytype != 'Task') {
+					if($activityType != 'Task') {
 						$record->set('time_end',$parts[1]);
 					}
 
