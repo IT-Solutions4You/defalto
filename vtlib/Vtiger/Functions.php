@@ -1553,7 +1553,7 @@ class Vtiger_Functions {
         $fileId = $imageId;
         $fileName = $imageName;
 		if ($fileId) {
-			$publicUrl = "public.php?fid=$fileId&key=".$fileName;
+			$publicUrl = "public.php?fid=$fileId&key=".md5($fileName);
 		}
 		return $publicUrl;
 	}
