@@ -21,8 +21,8 @@ class Vtiger_ShowFile_Helper {
 
 		$query = "SELECT vtiger_attachments.* FROM vtiger_attachments
 					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_attachments.attachmentsid
-					WHERE vtiger_attachments.attachmentsid=? AND vtiger_attachments.name=? LIMIT 1";
-		$result = $db->pquery($query, array($fid, $encFileName));
+					WHERE vtiger_attachments.attachmentsid=? LIMIT 1";
+		$result = $db->pquery($query, array($fid));
 		if ($result && $db->num_rows($result)) {
 			$resultData	= $db->fetch_array($result);
 			$fileId		= $resultData['attachmentsid'];
@@ -30,7 +30,7 @@ class Vtiger_ShowFile_Helper {
 			$fileName	= $resultData['name'];
             $storedFileName = $resultData['storedname'];
 			$fileType	= $resultData['type'];
-			$sanitizedFileName = sanitizeUploadFileName($fileName, $upload_badext);
+			$sanitizedFileName = decode_html(sanitizeUploadFileName($fileName, $upload_badext));
 
 			/**
 			 * While saving the document applying decode_html to save in DB, but this is not happening for the images
@@ -52,7 +52,7 @@ class Vtiger_ShowFile_Helper {
                     }
                 }
                 if ($isFileExist) {
-                    Vtiger_ShowFile_Helper::show($finalFilePath,$fileType);
+                    Vtiger_ShowFile_Helper::show($finalFilePath,$fileType, $sanitizedFileName);
                 }
             }
 		}
@@ -63,11 +63,15 @@ class Vtiger_ShowFile_Helper {
 	 * @param type $finalFilePath - the proper image folder path
 	 * @param type $fileType - image file type
 	 */
-	static function show($finalFilePath, $fileType) {
+	static function show($finalFilePath, $fileType, $sanitizedFileName=false) {
 		$handle = fopen($finalFilePath, "rb");
 		$contents = fread($handle, filesize($finalFilePath));
 		fclose($handle);
 
+        //added since other than image files we need file names, other wise it downloads with public.php extension which is treated as dangerous
+		if($sanitizedFileName) {
+			header("Content-Disposition: attachment; filename=\"$sanitizedFileName\"");
+		}
 		header("Content-Type: $fileType;charset=UTF-8");
 		echo $contents;
 	}
