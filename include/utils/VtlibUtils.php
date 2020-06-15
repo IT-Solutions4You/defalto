@@ -724,11 +724,19 @@ function purifyHtmlEventAttributes($value,$replaceAll = false){
     
     // remove malicious html attributes with its value.
     if ($replaceAll) {
-        //Handled to address multiple html entity encoding for '=' character
-        $regex = '\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        $regex = '\s*[=&%#]\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
         $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
+		
+		/**
+		* #131224556::if anchor tag having 'javascript:' string then remove the tag contents.
+		* Right now, we fixed this for anchor tag as we don't see any other such things right now.  
+		* All other event attributes are already handled above. Need to update this if any thing new found
+		*/
+		$javaScriptRegex = '/<a [^>]*(j[\s]?a[\s]?v[\s]?a[\s]?s[\s]?c[\s]?r[\s]?i[\s]?p[\s]?t[\s]*[=&%#:])[^>]*?>/i';
+		$value = preg_replace($javaScriptRegex,'<a>',$value);
+			
     } else {
-        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)/i", $value)) {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
             $value = str_replace("=", "&equals;", $value);
         }
     }
