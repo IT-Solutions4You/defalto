@@ -715,20 +715,32 @@ function vtlib_purify($input, $ignore=false) {
  * @return <String>
  */
 function purifyHtmlEventAttributes($value,$replaceAll = false){
-	$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|".
-                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
-                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
-                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
-						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|".
-						"onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow";
+	$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|onresize|onauxclick|oncancel|oncanplay|oncanplaythrough|".
+                        "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onclose|oncuechange|ondurationchange|onemptied|onended|".
+                        "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragexit|onformdata|onloadeddata|onloadedmetadata|".
+                        "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|onmouseenter|onmouseleave|onpause|onplay|onplaying|".
+						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|onprogress|onratechange|onsecuritypolicyviolation|".
+						"onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow|onreadystatechange|onseeked|onslotchange|".
+						"onseeking|onstalled|onsubmit|onsuspend|ontimeupdate|ontoggle|onvolumechange|onwaiting|onwebkitanimationend|onstorage|".
+						"onwebkitanimationiteration|onwebkitanimationstart|onwebkittransitionend|onafterprint|onbeforeprint|onbeforeunload|".
+						"onhashchange|onlanguagechange|onmessage|onmessageerror|onoffline|ononline|onpagehide|onpageshow|onpopstate|onunload".
+						"onrejectionhandled|onunhandledrejection|onloadend";
     
     // remove malicious html attributes with its value.
     if ($replaceAll) {
-        //Handled to address multiple html entity encoding for '=' character
-        $regex = '\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        $regex = '\s*[=&%#]\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
         $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
+		
+		/**
+		* If anchor tag having 'javascript:' string then remove the tag contents.
+		* Right now, we fixed this for anchor tag as we don't see any other such things right now.  
+		* All other event attributes are already handled above. Need to update this if any thing new found
+		*/
+		$javaScriptRegex = '/<a [^>]*(j[\s]?a[\s]?v[\s]?a[\s]?s[\s]?c[\s]?r[\s]?i[\s]?p[\s]?t[\s]*[=&%#:])[^>]*?>/i';
+		$value = preg_replace($javaScriptRegex,'<a>',$value);
+			
     } else {
-        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*(=|&#61;|&amp;#61;|&amp;#x26;#61;|&#x26;#61;)/i", $value)) {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
             $value = str_replace("=", "&equals;", $value);
         }
     }
