@@ -621,14 +621,22 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	public function trackClicks($parentId) {
 		$db = PearDatabase::getInstance();
 		$recordId = $this->getId();
+		$currentDateTime = date('Y-m-d H:i:s');
+		
+		$db->pquery("INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)", array($parentId, $recordId, date('Y-m-d'),$currentDateTime ));
 
-		$db->pquery("INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)", array($parentId, $recordId, date('Y-m-d'), date('Y-m-d H:i:s')));
-
-		$result = $db->pquery("SELECT 1 FROM vtiger_email_track WHERE crmid = ? AND mailid = ?", array($parentId, $recordId));
-		if ($db->num_rows($result) > 0) {
-			$db->pquery("UPDATE vtiger_email_track SET click_count = click_count+1 WHERE crmid = ? AND mailid = ?", array($parentId, $recordId));
+		$result = $db->pquery("SELECT access_count,click_count FROM vtiger_email_track WHERE crmid = ? AND mailid = ?", array($parentId, $recordId));
+		$accessCount = $db->query_result($result,0,'access_count');
+		if ($db->num_rows($result)>0) {
+			$updatedAccessCount = $accessCount;
+			
+			//If click is unique (i.e first click on mail), then also increase open count to 1
+			if($accessCount == 0)
+				$updatedAccessCount = $accessCount+1;
+			
+			$db->pquery("UPDATE vtiger_email_track SET click_count = click_count+1,access_count=? WHERE crmid = ? AND mailid = ?", array($updatedAccessCount, $parentId, $recordId));
 		} else {
-			$db->pquery("INSERT INTO vtiger_email_track(crmid, mailid, click_count) values(?, ?, ?)", array($parentId, $recordId, 1));
+			$db->pquery("INSERT INTO vtiger_email_track(crmid, mailid, access_count,click_count) values(?, ?, ?,?)", array($parentId, $recordId, 1,1));
 		}
 	}
 
@@ -694,16 +702,15 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		return $content;
 	}
 
-	public function getTrackUrlForClicks($parentId, $redirectUrl = false) {
-		$siteURL = vglobal('site_URL');
-		$applicationKey = vglobal('application_unique_key');
-		$recordId = $this->getId();
-		$trackURL = "$siteURL/modules/Emails/actions/TrackAccess.php?record=$recordId&parentId=$parentId&applicationKey=$applicationKey&method=click";
-		if ($redirectUrl) {
-			$encodedRedirUrl = rawurlencode($redirectUrl);
-			$trackURL .= "&redirectUrl=$encodedRedirUrl";
-		}
-		return $trackURL;
+	public function getTrackUrlForClicks($parentId, $redirectUrl = false, $linkName = false) {
+                $params = array();
+                $recordId = $this->getId();
+		if($redirectUrl) $params['redirectUrl'] = $redirectUrl;
+                if($linkName) $params['linkName'] = $linkName;
+                $params['record'] = $recordId;
+                $params['parentId'] = $parentId;
+                $params['method'] = 'click';
+                return Vtiger_Functions::generateTrackingURL($params);
 	}
 
 	/**
@@ -787,5 +794,22 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		}
 
 		return $replyTo;
+	}
+        
+        
+        /**
+	 * Function to check if email is opened within 1 hour.
+	 * @param <Integer> $parentId Parent record id
+	 * @return <Boolean> Returns TRUE if opened within 1 hr else FALSE.
+	 */
+	function isEmailOpenedRecently($parentId) {
+		$db = PearDatabase::getInstance();
+		$lastOpenTime = date('Y-m-d H:i:s', strtotime("-1 hours"));
+		
+		$result = $db->pquery("SELECT 1 FROM vtiger_email_access WHERE crmid = ? AND mailid = ? AND accesstime > ?", array($parentId, $this->getId(), $lastOpenTime));
+		if($db->num_rows($result)) {
+			return true;
+		}
+		return false;
 	}
 }
