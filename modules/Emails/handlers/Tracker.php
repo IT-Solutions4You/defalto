@@ -36,7 +36,7 @@ class Emails_Tracker_Handler {
 
         if ($parentId && $recordId) {
             $db = PearDatabase::getInstance();
-            /* PT83128::currently,To track emails we insert a hidden image whose source will be tracking URL.
+            /* Currently,To track emails we insert a hidden image whose source will be tracking URL.
              * When email client loads that image, email open will be tracked. But some email client doesn't load images by default and email open will not be tracked.
              * If that email has some link and user clicks on that, link click will be tracked but email will still show as not read which is not correct.
              * If any link is clicked on the email and that is getting tracked, we need to check if the email is marked as Open or not and if not we need to mark it as Open on click action.             
