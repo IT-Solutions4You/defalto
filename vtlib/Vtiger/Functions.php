@@ -1180,11 +1180,14 @@ class Vtiger_Functions {
 	 * @return string returns track image contents
 	 */
 	static function getTrackImageContent($recordId, $parentId) {
-		$siteURL = vglobal('site_URL');
-		$applicationKey = vglobal('application_unique_key');
-		$trackURL = "$siteURL/modules/Emails/actions/TrackAccess.php?record=$recordId&parentId=$parentId&applicationKey=$applicationKey";
-		$imageDetails = "<img src='$trackURL' alt='' width='1' height='1'>";
-		return $imageDetails;
+            $params = array();
+            $params['record'] = $recordId;
+            $params['parentId'] = $parentId;
+            $params['method'] = 'open';
+
+            $trackURL = Vtiger_Functions::generateTrackingURL($params);
+            $imageDetails = "<img src='$trackURL' alt='' width='1' height='1'>";
+            return $imageDetails;
 	}
 
 	/**
@@ -1578,5 +1581,16 @@ class Vtiger_Functions {
             }
         }
         return $attachmentIds;
+    }
+    
+    static function generateTrackingURL($params = []){
+        $options = array(
+            'handler_path' => 'modules/Emails/handlers/Tracker.php',
+            'handler_class' => 'Emails_Tracker_Handler',
+            'handler_function' => 'process',
+            'handler_data' => $params
+        );
+
+        return Vtiger_ShortURL_Helper::generateURL($options);
     }
 }
