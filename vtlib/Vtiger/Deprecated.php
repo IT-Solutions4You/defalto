@@ -438,8 +438,15 @@ class Vtiger_Deprecated {
 		$filePathParts = explode('/', $relativeFilePath);
 
 		if (stripos($realfilepath, $rootdirpath) !== 0 || in_array($filePathParts[0], $unsafeDirectories)) {
-			die('Sorry! Attempt to access restricted file. - '.$filepath);
-		}
+			$a = debug_backtrace();
+                        $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
+                        $backtrace .= "FileAccessForInclusion - \n";
+                        foreach ($a as $b) {
+                            $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
+                        }
+                        Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+                        die('Sorry! Attempt to access restricted file.');
+                }
 	}
 
 	/** Function to check the file deletion within the deletable (safe) directories*/
@@ -467,7 +474,14 @@ class Vtiger_Deprecated {
 		$filePathParts = explode('/', $relativeFilePath);
 
 		if (stripos($realfilepath, $rootdirpath) !== 0 || !in_array($filePathParts[0], $safeDirectories)) {
-			die('Sorry! Attempt to access restricted file. - '.$filepath);
+                    $a = debug_backtrace();
+                    $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
+                    $backtrace .= "FileAccessForDeletion - \n";
+                    foreach ($a as $b) {
+                        $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
+                    }
+                    Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+		    die('Sorry! Attempt to access restricted file.');
 		}
 
 	}
@@ -475,7 +489,14 @@ class Vtiger_Deprecated {
 	/** Function to check the file access is made within web root directory. */
 	static function checkFileAccess($filepath) {
 		if (!self::isFileAccessible($filepath)) {
-			die('Sorry! Attempt to access restricted file. - '.$filepath);
+                    $a = debug_backtrace();
+                    $backtrace = 'Traced on '.date('Y-m-d H:i:s')."\n";
+                    $backtrace .= "FileAccess - \n";
+                    foreach ($a as $b) {
+                        $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
+                    }
+                    Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
+                    die('Sorry! Attempt to access restricted file.');
 		}
 	}
 
