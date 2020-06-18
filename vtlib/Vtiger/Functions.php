@@ -662,18 +662,26 @@ class Vtiger_Functions {
 		//metadata check
 		$shortTagSupported = ini_get('short_open_tag') ? true : false;
 		if ($saveimage == 'true') {
-			$exifdata = exif_read_data($file_details['tmp_name']);
-			if ($exifdata && !self::validateImageMetadata($exifdata, $shortTagSupported)) {
-				$saveimage = 'false';
-			}
+                    $tmpFileName = $file_details['tmp_name'];
+                    if($file_details['type'] == 'image/jpeg' || $file_details['type'] == 'image/tiff') {
+                        $exifdata = @exif_read_data($file_details['tmp_name']);
+                        if($exifdata && !self::validateImageMetadata($exifdata, $shortTagSupported)) {
+                            $saveimage = 'false';
+                        }
+                        //remove sensitive information(like,GPS or camera information) from the image
+                        if(($saveimage == 'true' ) && ($file_details['type'] == 'image/jpeg' ) && extension_loaded('gd') && function_exists('gd_info')) {
+                            $img = imagecreatefromjpeg($tmpFileName);
+                            imagejpeg ($img, $tmpFileName);
+                        }
+                    }
 		}
 
 		// Check for php code injection
 		if ($saveimage == 'true') {
-			$imageContents = file_get_contents($file_details['tmp_name']);
-			if (stripos($imageContents, $shortTagSupported ? "<?" : "<?php") !== false) { // suspicious dynamic content.
-				$saveimage = 'false';
-			}
+                    $imageContents = file_get_contents($file_details['tmp_name']);
+                    if (stripos($imageContents, $shortTagSupported ? "<?" : "<?php") !== false) { // suspicious dynamic content.
+                        $saveimage = 'false';
+                    }
 		}
 		return $saveimage;
 	}
