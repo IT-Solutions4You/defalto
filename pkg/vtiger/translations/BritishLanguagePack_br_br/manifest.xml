@@ -4,7 +4,7 @@
 	<name>British English</name>
 	<label>British English</label>
 	<prefix>en_gb</prefix>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<dependencies>
 		<vtiger_version>6.1.0</vtiger_version>
 		<vtiger_max_version>7.*</vtiger_max_version>
@@ -20,7 +20,7 @@
   * All Rights Reserved.
  ********************************************************************************
  *  Language     : British English
- *  Version      : 1.0.0
+ *  Version      : 1.0.1
  *  Author       : Alan Lord. Libertus Solutions - http://www.libertus.co.uk
  ********************************************************************************
 ]]></inline>
