@@ -268,4 +268,27 @@ if (defined('VTIGER_UPGRADE')) {
             print("Email related list added to $moduleName");
         }   
     }
+    
+    //Remove unwanted Files
+    global $root_directory;
+    $filesPath = array(
+            "layouts/v7/modules/Mobile/simple/resources/libs/md-icons/README.md",
+            "layouts/v7/modules/Mobile/simple/resources/libs/md-icons/preview.html",
+            "/layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/demo.html",
+            "/layouts/v7/lib/vt-icons/demo.html",
+            "/layouts/v7/lib/jquery/daterangepicker/index.html",
+            "/layouts/v7/lib/jquery/jquery-ui-1.11.3.custom/index.html",
+            "/layouts/v7/lib/jquery/timepicker/index.html",
+            "/libraries/bootstrap/js/tests",
+            "/libraries/jquery/colorpicker/index.html",
+            "/libraries/jquery/jquery-ui/third-party/jQuery-UI-Date-Range-Picker/index.html",
+            "/libraries/jquery/timepicker/index.html",
+    );
+    foreach ($filesPath as $path){
+            $fileName = "$root_directory"."$path";
+            if (file_exists($fileName)) {
+                    shell_exec("rm -rf $fileName");
+            }
+    }
+    echo "unwanted files..cleared.<br>";
 }
