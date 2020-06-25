@@ -45,9 +45,20 @@ class uploader {
 
         // INPUT INIT
         $input = new input();
-        $this->get = &$input->get;
-        $this->post = &$input->post;
-        $this->cookie = &$input->cookie;
+        $inputGet = &$input->get ;
+        foreach ($inputGet as $key => $value) {
+            $this->get[$key] = vtlib_purify($value);
+        }
+         
+        $inputPost= &$input->post;
+        foreach ($inputPost as $key => $value) {
+            $this->post[$key] = vtlib_purify($value);
+        }
+         
+        $inputCookie= &$input->cookie;
+        foreach ($inputCookie as $key => $value) {
+            $this->cookie[$key] = vtlib_purify($value);
+        }
 
         // LINKING UPLOADED FILE
         if (count($_FILES))
