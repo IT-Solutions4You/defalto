@@ -188,14 +188,14 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			Vtiger_ListView_Model::setSortParamsSession($tagSessionKey, $tag);
 		}
 
+                if(empty($cvId)) {
+			$customView = new CustomView();
+			$cvId = $customView->getViewId($moduleName);
+		}
+                
 		$listViewSessionKey = $moduleName.'_'.$cvId;
 		if(!empty($tag)) {
 			$listViewSessionKey .='_'.$tag;
-		}
-
-		if(empty($cvId)) {
-			$customView = new CustomView();
-			$cvId = $customView->getViewId($moduleName);
 		}
 
 		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
@@ -213,11 +213,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		if(empty($listHeaders)) {
 			$listHeaders = $orderParams['list_headers'];
 		}
-
-		 if(!empty($tag) && empty($tagParams)){
-			$tagParams = $orderParams['tag_params'];
-		}
-
+                
 		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
 			if($orderParams) {
 				$pageNumber = $orderParams['page'];
@@ -302,9 +298,9 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$tagParams = array();
 		}
 
-		$searchAndTagParams = array_merge($searchParams, $tagParams);
+		$searchParams = array_merge($searchParams, $tagParams);
 
-		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
+		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
 		$listViewModel->set('search_params',$transformedSearchParams);
 
 
@@ -415,7 +411,6 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
-		$viewer->assign('TAG_DETAILS', $tagParams);
 		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
 		$viewer->assign('STAR_FILTER_MODE',$starFilterMode);
 		$viewer->assign('VIEWID', $cvId);
