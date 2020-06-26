@@ -57,7 +57,7 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 			$fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
 		}
                 if ($recordModel->get('filename')) {
-                    $downloadUrl =  $recordModel->getDownloadFileURL();
+                    $downloadUrl =  $recordModel->getDownloadFileURL($attachmentId);
                     $trimmedFileName = $fileDetails[0]['trimmedFileName'];
                 }
 
