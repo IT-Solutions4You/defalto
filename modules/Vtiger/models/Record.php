@@ -741,5 +741,14 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 
 		return array_merge($relatedModuleRecordIds, $directrelatedModuleRecordIds, $indirectrelatedModuleRecordIds);
 	}
+        
+        function getDownloadFileURL() {
+            $fileDetails = $this->getFileDetails();
+            if (!empty($fileDetails)) {
+                    return 'index.php?module='. $this->getModuleName() .'&action=DownloadFile&record='. $this->getId() .'&fileid='. $fileDetails['attachmentsid'].'&name='. $fileDetails['name'];
+            } else {
+                    return $this->get('filename');
+            }
+	}
 
 }
