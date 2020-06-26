@@ -214,6 +214,11 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$listHeaders = $orderParams['list_headers'];
 		}
                 
+                
+		if(!empty($tag) && empty($tagParams)){
+                    $tagParams = $orderParams['tag_params'];
+		}
+                
 		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
 			if($orderParams) {
 				$pageNumber = $orderParams['page'];
@@ -222,6 +227,9 @@ class Vtiger_List_View extends Vtiger_Index_View {
 				$searchKey = $orderParams['search_key'];
 				$searchValue = $orderParams['search_value'];
 				$operator = $orderParams['operator'];
+                                if(empty($tagParams)){
+					$tagParams = $orderParams['tag_params'];
+				}
 				if(empty($searchParams)) {
 					$searchParams = $orderParams['search_params']; 
 				}
@@ -298,9 +306,9 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$tagParams = array();
 		}
 
-		$searchParams = array_merge($searchParams, $tagParams);
+		$searchAndTagParams = array_merge($searchParams, $tagParams);
 
-		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
+		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
 		$listViewModel->set('search_params',$transformedSearchParams);
 
 
@@ -411,6 +419,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
+                $viewer->assign('TAG_DETAILS', $tagParams);
 		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
 		$viewer->assign('STAR_FILTER_MODE',$starFilterMode);
 		$viewer->assign('VIEWID', $cvId);
