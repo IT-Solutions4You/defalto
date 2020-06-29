@@ -188,14 +188,14 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			Vtiger_ListView_Model::setSortParamsSession($tagSessionKey, $tag);
 		}
 
+                if(empty($cvId)) {
+			$customView = new CustomView();
+			$cvId = $customView->getViewId($moduleName);
+		}
+                
 		$listViewSessionKey = $moduleName.'_'.$cvId;
 		if(!empty($tag)) {
 			$listViewSessionKey .='_'.$tag;
-		}
-
-		if(empty($cvId)) {
-			$customView = new CustomView();
-			$cvId = $customView->getViewId($moduleName);
 		}
 
 		$orderParams = Vtiger_ListView_Model::getSortParamsSession($listViewSessionKey);
@@ -213,11 +213,12 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		if(empty($listHeaders)) {
 			$listHeaders = $orderParams['list_headers'];
 		}
-
-		 if(!empty($tag) && empty($tagParams)){
-			$tagParams = $orderParams['tag_params'];
+                
+                
+		if(!empty($tag) && empty($tagParams)){
+                    $tagParams = $orderParams['tag_params'];
 		}
-
+                
 		if(empty($orderBy) && empty($searchValue) && empty($pageNumber)) {
 			if($orderParams) {
 				$pageNumber = $orderParams['page'];
@@ -226,6 +227,9 @@ class Vtiger_List_View extends Vtiger_Index_View {
 				$searchKey = $orderParams['search_key'];
 				$searchValue = $orderParams['search_value'];
 				$operator = $orderParams['operator'];
+                                if(empty($tagParams)){
+					$tagParams = $orderParams['tag_params'];
+				}
 				if(empty($searchParams)) {
 					$searchParams = $orderParams['search_params']; 
 				}
@@ -415,7 +419,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
-		$viewer->assign('TAG_DETAILS', $tagParams);
+                $viewer->assign('TAG_DETAILS', $tagParams);
 		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
 		$viewer->assign('STAR_FILTER_MODE',$starFilterMode);
 		$viewer->assign('VIEWID', $cvId);
