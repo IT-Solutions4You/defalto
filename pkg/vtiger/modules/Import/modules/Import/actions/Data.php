@@ -904,11 +904,10 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			$vtigerMailer->AddAddress($userEmail, $userName);
 			$vtigerMailer->Subject = $emailSubject;
 			$vtigerMailer->Body    = $emailData;
-			$vtigerMailer->Send();
+			$vtigerMailer->Send(true);
 
 			$importDataController->finishImport();
 		}
-		Vtiger_Mailer::dispatchQueue(null);
 	}
 
 	public function getNumberOfRecordsToImport($user){
