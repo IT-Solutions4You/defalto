@@ -48,15 +48,12 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 			}
 		}
 
-		$path = $fileDetails['path'].$fileDetails['attachmentsid'].'_'.$storedFileName;
 		$type = $fileDetails['type'];
 		$contents = $fileContent;
 		$filename = $fileDetails['name'];
 		$parts = explode('.', $filename);
 		if ($recordModel->get('filename')) {
-			$fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
-		}
-                if ($recordModel->get('filename')) {
+                    $fileDetails = $recordModel->getFileNameAndDownloadURL($recordId, $attachmentId);
                     $downloadUrl =  $recordModel->getDownloadFileURL($attachmentId);
                     $trimmedFileName = $fileDetails[0]['trimmedFileName'];
                 }
@@ -85,7 +82,6 @@ class ModComments_FilePreview_View extends Vtiger_IndexAjax_View {
 			$viewer->assign('FILE_PREVIEW_NOT_SUPPORTED', 'yes');
 
 		$viewer->assign('DOWNLOAD_URL', $downloadUrl);
-		$viewer->assign('FILE_PATH', $path);
 		$viewer->assign('TRIMMED_FILE_NAME', $trimmedFileName);
 		$viewer->assign('FILE_NAME', $filename);
 		$viewer->assign('FILE_EXTN', $extn);
