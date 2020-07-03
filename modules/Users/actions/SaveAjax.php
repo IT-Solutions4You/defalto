@@ -91,9 +91,9 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
                 
                 $fieldModelList = $recordModel->getModule()->getFields();
-                $validatedFielNames = array('is_admin', 'is_owner', 'roleid', 'signature');
+                $validationFields = array('is_admin', 'is_owner', 'roleid', 'signature');
                 foreach ($fieldModelList as $fieldName => $fieldModel) {
-                    if(in_array($fieldName, $validatedFielNames)){
+                    if(in_array($fieldName, $validationFields)){
                         if ($request->has($fieldName)) {
                             $fieldValue = $request->get($fieldName, null);
                         } else {
