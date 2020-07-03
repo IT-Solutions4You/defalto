@@ -284,13 +284,13 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 				$deleteValueList[] = ' ( roleid = "'.$roleId.'" AND '.'picklistvalueid = "'.$pickListValueId.'") ';
 			}
 		}
-		$query = 'INSERT IGNORE INTO vtiger_role2picklist (roleid,picklistvalueid,picklistid) VALUES '. generateQuestionMarks($insertValueList);
-		$result = $db->pquery($query, $insertValueList);
+		$query = 'INSERT IGNORE INTO vtiger_role2picklist (roleid,picklistvalueid,picklistid) VALUES '. implode(",", $insertValueList);
+		$result = $db->pquery($query, array());
 
-		$deleteQuery = 'DELETE FROM vtiger_role2picklist WHERE '.implode(' OR ',$deleteValueList);
-
-		$result = $db->pquery($deleteQuery,array());
-
+                if(!empty($deleteValueList)){
+                    $deleteQuery = 'DELETE FROM vtiger_role2picklist WHERE '.implode(' OR ',$deleteValueList);
+                    $result = $db->pquery($deleteQuery,array());
+                }
 		//retaining to older value
 		$db->dieOnError = $dieOnErrorOldValue;
 
