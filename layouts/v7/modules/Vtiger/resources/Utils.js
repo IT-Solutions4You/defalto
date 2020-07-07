@@ -366,6 +366,14 @@ var vtUtils = {
         jQuery(function () {
             jQuery('[data-toggle="tooltip"]').tooltip(options);
         });
+    },
+    
+    stripTags : function(string,allowed) {
+        //https://stackoverflow.com/questions/5601903/jquery-almost-equivalent-of-phps-strip-tags#answer-46483672
+        allowed = (((allowed || '') + '').toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+        var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+        return string.replace(tags, function ($0, $1) {
+            return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+        });
     }
-
 }

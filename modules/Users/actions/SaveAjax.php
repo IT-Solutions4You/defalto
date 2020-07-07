@@ -88,9 +88,41 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 	 */
 	public function getRecordModelFromRequest(Vtiger_Request $request) {
 		$recordModel = parent::getRecordModelFromRequest($request);
-		$fieldName = $request->get('field');
-
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+                
+                $fieldModelList = $recordModel->getModule()->getFields();
+                $validationFields = array('is_admin', 'is_owner', 'roleid', 'signature');
+                foreach ($fieldModelList as $fieldName => $fieldModel) {
+                    if(in_array($fieldName, $validationFields)){
+                        if ($request->has($fieldName)) {
+                            $fieldValue = $request->get($fieldName, null);
+                        } else {
+                            $fieldValue = $fieldModel->getDefaultFieldValue();
+                         }
+                        if($fieldValue){
+                            $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
+                        }
+                        if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$fieldValue)) {
+                            $fieldValue = 'off';
+                        }
+                        //to not update is_owner from ui
+                        if ($fieldName == 'is_owner' || $fieldName == 'roleid') {
+                            $fieldValue = $this->getOwnerRoleValue($request, $fieldName);
+                        }
+                        if ($fieldName == 'signature' && $fieldValue !== null) {
+                            $purifiedContent = vtlib_purify(decode_html($fieldValue));
+                            // Purify malicious html event attributes
+                            $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent), true);
+                        }
+                        if ($fieldValue !== null) {
+                            if (!is_array($fieldValue)) {
+                                $fieldValue = trim($fieldValue);
+                            }
+                            $recordModel->set($fieldName, $fieldValue);
+                        }
+                    }
+                }
+                $fieldName = $request->get('field');
 		if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$request->get('value'))) {
 			$recordModel->set($fieldName, 'off');
 		} else if($fieldName === 'is_admin' && $currentUserModel->isAdminUser()) {
@@ -100,18 +132,22 @@ class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 		}
 			
 		if($fieldName == "is_owner" || $fieldName == "roleid") {
-			$recordId = $request->get('record');
-			$moduleName = $request->getModule();
-			if(!empty($recordId)) {
-				$existingRecordModel =  Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
-				$recordModel->set($fieldName,$existingRecordModel->get($fieldName));
-			}
+			$fieldValue = $this->getOwnerRoleValue($request, $fieldName);
+                        $recordModel->set($fieldName,$fieldValue);
 		}
 		return $recordModel;
 	}
 
 
-	public function userExists(Vtiger_Request $request){
+        public function getOwnerRoleValue(Vtiger_Request $request, $fieldName) {
+            $recordId = $request->get('record');
+            $moduleName = $request->getModule();
+            if(!empty($recordId)) {
+                    $existingRecordModel =  Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+                    return $existingRecordModel->get($fieldName);
+            }
+        }
+        public function userExists(Vtiger_Request $request){
 		$module = $request->getModule();
 		$userName = $request->get('user_name');
 		$status = Users_Record_Model::isUserExists($userName);

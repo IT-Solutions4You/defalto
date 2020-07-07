@@ -281,6 +281,11 @@ jQuery.Class("Emails_MassEdit_Js",{},{
 					return { id: term, text: term };
 				}
 			},
+                        escapeMarkup: function(m) {
+                            // Do not escape HTML in the select options text
+                            m = vtUtils.stripTags(String(m),'<i><b>');
+                            return m;
+ 			}
 
 		}).on("change", function (selectedData) {
 			var addedElement = selectedData.added;

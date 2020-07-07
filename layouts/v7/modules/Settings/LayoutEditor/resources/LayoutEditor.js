@@ -537,6 +537,12 @@ Vtiger.Class('Settings_LayoutEditor_Js', {
 
 			for (var i in fieldOptions) {
 				var fieldValue = fieldOptions[i];
+                                var specialChars = /[<\>\"\,\[\]\{\}]/; 
+                                if (specialChars.test(fieldValue)) { 
+                                    var message = app.vtranslate('JS_SPECIAL_CHARACTERS') + " < > \" , [ ] { } " + app.vtranslate('JS_NOT_ALLOWED'); 
+                                    vtUtils.showValidationMessage(element, message, {container:data}); 
+                                    return false; 
+                                }
 				var fieldValueOption = defaultOptions.filter('[value="'+fieldValue+'"]');
 				if (fieldValueOption.length <= 0) {
 					newOptions += ' <option value="'+fieldValue+'">'+fieldValue+'</option> ';
