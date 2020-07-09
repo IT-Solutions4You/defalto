@@ -12,7 +12,6 @@ class Vtiger_SaveStar_Action extends Vtiger_Mass_Action {
 	var $followRecordIds = Array();
 	
 	public function requiresPermission(\Vtiger_Request $request) {
-		$permissions = parent::requiresPermission($request);
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		return $permissions;
 	}
