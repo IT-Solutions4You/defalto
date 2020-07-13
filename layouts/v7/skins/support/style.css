@@ -3848,6 +3848,7 @@ th {
 }
 .calendarview {
   width: 100%;
+  padding-top: 15px;
 }
 .calendar-sidebar-tabs {
   font-size: 14px;
@@ -7593,7 +7594,7 @@ body .fc {
   margin-left: 1px;
 }
 .navbar {
-  border: 1px solid #eee;
+  border: 0;
   border-width: thin;
 }
 #appnav .navbar {
