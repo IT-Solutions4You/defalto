@@ -42,7 +42,7 @@ class ListViewSession {
         self::__construct();
 	}
 
-	function getCurrentPage($currentModule,$viewId){
+	public static function getCurrentPage($currentModule,$viewId){
 		if(!empty($_SESSION['lvs'][$currentModule][$viewId]['start'])){
 			return $_SESSION['lvs'][$currentModule][$viewId]['start'];
 		}
@@ -61,7 +61,7 @@ class ListViewSession {
 		return $start;
 	}
 
-	function getListViewNavigation($currentRecordId){
+	public static function getListViewNavigation($currentRecordId){
 		global $currentModule,$current_user,$adb,$log,$list_max_entries_per_page;
 		Zend_Json::$useBuiltinEncoderDecoder = true;
 		$reUseData = false;
@@ -212,7 +212,7 @@ class ListViewSession {
 		return $start;
 	}
 
-	function setSessionQuery($currentModule,$query,$viewid){
+	public static function setSessionQuery($currentModule,$query,$viewid){
 		if(isset($_SESSION[$currentModule.'_listquery'])){
 			if($_SESSION[$currentModule.'_listquery'] != $query){
 				unset($_SESSION[$currentModule.'_DetailView_Navigation'.$viewid]);
