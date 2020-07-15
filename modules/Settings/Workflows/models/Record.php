@@ -154,11 +154,12 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		return $links;
 	}
 
-	public static function getInstance($workflowId) {
-		$db = PearDatabase::getInstance();
-		$wm = new VTWorkflowManager($db);
-		$wf = $wm->retrieve($workflowId);
-		return self::getInstanceFromWorkflowObject($wf);
+	public static function getInstance() {
+            list($workflowId) = func_get_args();
+            $db = PearDatabase::getInstance();
+            $wm = new VTWorkflowManager($db);
+            $wf = $wm->retrieve($workflowId);
+            return self::getInstanceFromWorkflowObject($wf);
 	}
 
 	public static function getCleanInstance($moduleName) {

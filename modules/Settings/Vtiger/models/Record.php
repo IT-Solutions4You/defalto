@@ -20,7 +20,8 @@ abstract class Settings_Vtiger_Record_Model extends Vtiger_Base_Model {
 	 * Function to get the instance of Settings module model
 	 * @return Settings_Vtiger_Module_Model instance
 	 */
-	 public static function getInstance($name='Settings:Vtiger') {
+	 public static function getInstance() {
+                $name='Settings:Vtiger';
 		$modelClassName  = Vtiger_Loader::getComponentClassName('Model', 'Record', $name);
 		 return new $modelClassName();
 	 }

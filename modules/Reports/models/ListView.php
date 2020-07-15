@@ -17,7 +17,7 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 	 * Function to get the list of listview links for the module
 	 * @return <Array> - Associate array of Link Type to List of Vtiger_Link_Model instances
 	 */
-	public function getListViewLinks() {
+	public function getListViewLinks($linkParams = false) {
 		$moduleModel = $this->getModule();
 		$links = Vtiger_Link_Model::getAllByType($moduleModel->getId(), array('LISTVIEWBASIC'));
 		return $links;
@@ -28,7 +28,7 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 	 * @param <Array> $linkParams
 	 * @return <Array> - Associative array of Link type to List of  Vtiger_Link_Model instances for Mass Actions
 	 */
-	public function getListViewMassActions() {
+	public function getListViewMassActions($linkParams = false) {
 		$currentUserModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
 		$massActionLinks = array();
@@ -73,7 +73,8 @@ class Reports_ListView_Model extends Vtiger_ListView_Model {
 	 * Function to get the list view header
 	 * @return <Array> - List of Vtiger_Field_Model instances
 	 */
-	public function getListViewHeaders($folderId) {
+	public function getListViewHeaders() {
+            list($folderId) = func_get_args();
 		$headers = array(
 			'reportname' => array('label' => 'LBL_REPORT_NAME', 'type' => 'string'),
 			'description' => array('label' => 'LBL_DESCRIPTION', 'type' => 'string'),
