@@ -79,6 +79,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		// Merge Users module merge tags based on current user.
 		$mergedDescription = getMergedDescription($this->get('description'), $currentUserModel->getId(), 'Users');
 		$mergedSubject = getMergedDescription($this->get('subject'),$currentUserModel->getId(), 'Users');
+                $selectedIds = array();
         
         // push all emails to one single array
 		foreach($toEmailInfo as $selectedId => $selectedEmails) {

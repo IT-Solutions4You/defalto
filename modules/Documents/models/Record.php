@@ -18,7 +18,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		return Vtiger_Util_Helper::getRecordName($this->getId());
 	}
 
-	function getDownloadFileURL() {
+	function getDownloadFileURL($attachmentId = false) {
 		if ($this->get('filelocationtype') == 'I') {
 			$fileDetails = $this->getFileDetails();
 			return 'index.php?module='. $this->getModuleName() .'&action=DownloadFile&record='. $this->getId() .'&fileid='. $fileDetails['attachmentsid'].'&name='. $fileDetails['name'];
@@ -52,7 +52,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		return $returnValue;
 	}
 
-	function getFileDetails() {
+	function getFileDetails($attachmentId = false) {
 		$db = PearDatabase::getInstance();
 		$fileDetails = array();
 
@@ -66,7 +66,7 @@ class Documents_Record_Model extends Vtiger_Record_Model {
 		return $fileDetails;
 	}
 
-	function downloadFile() {
+	function downloadFile($attachmentId = false) {
 		$fileDetails = $this->getFileDetails();
 		$fileContent = false;
 
