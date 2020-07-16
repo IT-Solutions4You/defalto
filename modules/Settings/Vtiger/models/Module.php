@@ -105,7 +105,10 @@ class Settings_Vtiger_Module_Model extends Vtiger_Base_Model {
 	 * @return Settings_Vtiger_Module_Model instance
 	 */
 	public static function getInstance() {
-            $name='Settings:Vtiger';
+            list($name) = func_get_args();
+            if(empty($name)){
+                $name='Settings:Vtiger';
+            }
             $modelClassName = Vtiger_Loader::getComponentClassName('Model', 'Module', $name);
             return new $modelClassName();
 	}
