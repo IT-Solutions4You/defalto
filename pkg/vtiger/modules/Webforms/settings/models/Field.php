@@ -93,7 +93,7 @@ class Settings_Webforms_Field_Model extends Vtiger_Field_Model {
 		return parent::getDisplayValue($value);
 	}
     
-	public function getPermissions($accessmode = false) {
+	public function getPermissions($accessmode = 'readonly') {
 		return true;
 	}
     
