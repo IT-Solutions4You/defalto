@@ -1204,9 +1204,15 @@ Vtiger.Class("Vtiger_List_Js", {
 			editInstance.registerBasicEvents(container);
 			var form_original_data = $("#massEdit").serialize();
 			$('#massEdit').on('submit', function (event) {
-				thisInstance.saveMassedit(event, form_original_data, isOwnerChanged);
+				thisInstance.saveMassEdit(event, form_original_data, isOwnerChanged);
 				isOwnerChanged = false;
 			});
+			
+			//automatically select fields for mass edit when updated
+			$('#massEdit :input').change(function() {
+				$(this).closest('tr').find("input[id^=include_in_mass_edit_" + $(this).attr('name') + "]").prop( "checked", true );
+			});
+			
 			app.helper.registerLeavePageWithoutSubmit($("#massEdit"));
 			app.helper.registerModalDismissWithoutSubmit($("#massEdit"));
 		});
@@ -1356,32 +1362,46 @@ Vtiger.Class("Vtiger_List_Js", {
         });
     },
     
-	saveMassedit: function (event, form_original_data, isOwnerChanged) {
+	saveMassEdit: function (event, form_original_data, isOwnerChanged) {
 		event.preventDefault();
 		var form = $('#massEdit');
 		var form_new_data = form.serialize();
+		var changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
+		
 		app.helper.showProgress();
-		if (form_new_data !== form_original_data || isOwnerChanged) {
+		if (changedFields.length > 0 || isOwnerChanged) {
 			var originalData = app.convertUrlToDataParams(form_original_data);
 			var newData = app.convertUrlToDataParams(form_new_data);
 
-			for (var key in originalData) {
-				if ((form.find('[name="' + key + '"]').is("select")
-						|| form.find('[name="' + key + '"]').is("input[type='checkbox']"))
-						&& (originalData[key] == newData[key])) {
-					delete newData[key];
-				}
-			}
-
-			if (!newData['assigned_user_id'] && isOwnerChanged) {
-				newData['assigned_user_id'] = originalData['assigned_user_id'];
-			}
-
 			var form_update_data = '';
-			for (var key in newData) {
-				form_update_data += key + '=' + newData[key] + '&';
+			if (!newData['assigned_user_id'] && isOwnerChanged) {
+				form_update_data += 'assigned_user_id=' + originalData['assigned_user_id'] + '&';
 			}
-			form_update_data = form_update_data.slice(0, -1);
+
+			//add url params for hidden fields needed for the save request
+			var hiddenFields = form.find("input[type=hidden]");
+			hiddenFields.each(function(i, obj){
+				key = $(this).attr("name");
+				
+				if (typeof newData[key] !== 'undefined') {
+					form_update_data += key + '=' + newData[key] + '&';
+				}
+			});
+			
+			//add url params for fields that will be updated
+			changedFields.each(function(i, obj){
+				var key = $(this).data("update-field");
+				var value = newData[key];
+				form_update_data += key + '=';
+				
+				if (typeof value !== 'undefined') {
+					form_update_data += newData[key];
+				}
+				form_update_data += '&';
+			});
+			
+			form_update_data = form_update_data.slice(0, -1);//remove last &
+			
 			app.request.post({data: form_update_data}).then(function (err, data) {
 				app.helper.hideProgress();
 				if (data) {
@@ -1398,6 +1418,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.helper.showAlertBox({'message': app.vtranslate('NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT')});
 		}
 	},
+	
 	markSelectedIdsCheckboxes: function () {
 		var self = this;
 
@@ -2509,7 +2530,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			self.registerFloatingThead();
 		});
 	},
-
+	
 	registerEvents: function () {
 		var thisInstance = this;
 		this._super();

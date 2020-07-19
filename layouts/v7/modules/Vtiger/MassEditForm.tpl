@@ -10,6 +10,7 @@
  ********************************************************************************/
 -->*}
 {strip}
+{assign var="MASS_EDITION_MODE" value=true}
 <div id="massEditContainer" class='fc-overlay-modal modal-content'>
     <form class="form-horizontal" id="massEdit" name="MassEdit" method="post" action="index.php">
         <input type="hidden" name="module" value="{$MODULE}" />

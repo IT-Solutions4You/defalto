@@ -21,7 +21,6 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 		try {
 			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
 			$moduleName = $request->getModule();
-			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 			$recordModels = $this->getRecordModelsFromRequest($request);
 			$allRecordSave= true;
 			foreach($recordModels as $recordId => $recordModel) {
@@ -46,46 +45,40 @@ class Vtiger_MassSave_Action extends Vtiger_Mass_Action {
 	}
 
 	/**
-	 * Function to get the record model based on the request parameters
+	 * Function to get the updated record models
 	 * @param Vtiger_Request $request
-	 * @return Vtiger_Record_Model or Module specific Record Model instance
+	 * @return array of Vtiger_Record_Model
 	 */
-	function getRecordModelsFromRequest(Vtiger_Request $request) {
-
-		$moduleName = $request->getModule();
-		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+	protected function getRecordModelsFromRequest(Vtiger_Request $request) {
 		$recordIds = $this->getRecordsListFromRequest($request);
 		$recordModels = array();
 
-		$fieldModelList = $moduleModel->getFields();
 		foreach($recordIds as $recordId) {
-			$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleModel);
-			$recordModel->set('id', $recordId);
-			$recordModel->set('mode', 'edit');
-
-			foreach ($fieldModelList as $fieldName => $fieldModel) {
+			$recordModels[$recordId] = $this->getUpdatedRecord($request, $recordId);
+		}
+		
+		return $recordModels;
+	}
+	
+	private function getUpdatedRecord(Vtiger_Request $request, $recordId) {
+		$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+		$recordModel->set('mode', 'edit');
+		$fieldModelList = $recordModel->getModule()->getFields();
+		
+		foreach ($fieldModelList as $fieldName => $fieldModel) {
+			if ($request->has($fieldName)) {
 				$fieldValue = $request->get($fieldName, null);
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if($fieldDataType == 'time'){
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
-				if(isset($fieldValue) && $fieldValue != null) {
-					if(!is_array($fieldValue)) {
-						$fieldValue = trim($fieldValue);
-					}
-					$recordModel->set($fieldName, $fieldValue);
-				} else {
-					$uiType = $fieldModel->get('uitype');
-					if($uiType == 70) {
-						$recordModel->set($fieldName, $recordModel->get($fieldName));
-					}  else {
-						$uiTypeModel = $fieldModel->getUITypeModel();
-						$recordModel->set($fieldName, $uiTypeModel->getUserRequestValue($recordModel->get($fieldName)));
-					}
+				
+				if (!is_array($fieldValue)) {
+					$fieldValue = trim($fieldValue);
 				}
+				$recordModel->set($fieldName, $fieldValue);
 			}
-			$recordModels[$recordId] = $recordModel;
 		}
-		return $recordModels;
+		return $recordModel;
 	}
 }

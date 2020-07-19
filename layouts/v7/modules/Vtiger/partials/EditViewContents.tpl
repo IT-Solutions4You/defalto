@@ -46,6 +46,9 @@
 										{assign var=COUNTER value=$COUNTER+1}
 									{/if}
 									<td class="fieldLabel alignMiddle">
+										{if $MASS_EDITION_MODE}
+											<input class="inputElement" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">&nbsp;
+										{/if}
 										{if $isReferenceField eq "reference"}
 											{if $refrenceListCount > 1}
 												{assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
