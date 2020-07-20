@@ -112,7 +112,7 @@ class CRMEntity {
 		}
 
 		// added to support files transformation for file upload fields like uitype 69, 
-		if(count($_FILES)) {
+		if(!empty($_FILES) && count($_FILES)) {
 			$_FILES = Vtiger_Util_Helper::transformUploadedFiles($_FILES, true);
 		}
 
