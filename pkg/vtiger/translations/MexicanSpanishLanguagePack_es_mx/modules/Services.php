@@ -30,4 +30,14 @@ $languageStrings = array(
 	'Usage Unit'                   => 'Unidades de consumo'         , 
 	'Tax Class'                    => 'Tipo de impuesto'               , 
 	'Website'                      => 'Página Web'                 , 
+    'All'                          => 'Todos',
+    'Hours' => 'Horas',
+    'Days' => 'Días',
+    'Incidents' => 'Incidentes',
+    'Support' => 'Soporte técnico',
+    'Installation' => 'Instalación',
+    'Migration' => 'Migración',
+    'Customization' => 'Adecuación a la medida',
+    'Training' => 'Capacitación',
+    
 );

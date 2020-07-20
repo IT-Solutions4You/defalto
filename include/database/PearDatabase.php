@@ -961,10 +961,12 @@ class PearDatabase{
 		$this->checkConnection();
 		$adoflds = $this->database->MetaColumns($tablename);
 		$i=0;
-		foreach($adoflds as $fld) {
-		    $colNames[$i] = $fld->name;
-		    $i++;
-		}
+        if(!empty($adoflds)){
+            foreach($adoflds as $fld) {
+                $colNames[$i] = $fld->name;
+                $i++;
+            }
+        }
 		return $colNames;
     }
 

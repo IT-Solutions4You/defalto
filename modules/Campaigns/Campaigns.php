@@ -68,12 +68,14 @@ class Campaigns extends CRMEntity {
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'campaignname';
-
+        function __construct() {
+            $this->log =LoggerManager::getLogger('campaign');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Campaigns');
+        }   
 	function Campaigns()
 	{
-		$this->log =LoggerManager::getLogger('campaign');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Campaigns');
+            self::__construct();	
 	}
 
 	/** Function to handle module specific operations when saving a entity
@@ -171,7 +173,7 @@ class Campaigns extends CRMEntity {
 
 		if($return_value == null)
 			$return_value = Array();
-		else if($is_CampaignStatusAllowed) {
+		else if($is_CampaignStatusAllowed && is_array($return_value['header'])) {
 			$statusPos = count($return_value['header']) - 2; // Last column is for Actions, exclude that. Also the index starts from 0, so reduce one more count.
 			$return_value = $this->add_status_popup($return_value, $statusPos, 'Accounts');
 		}

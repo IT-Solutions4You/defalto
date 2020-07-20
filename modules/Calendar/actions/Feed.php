@@ -53,19 +53,6 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	public function _process($request) {
 		try {
-			foreach ($request as $k => $v) {
-				if ($k == 'conditions' || $k == 'mapping') continue;
-				
-				if ($k == 'fieldname' && $v) {
-					$vp = explode(',', $v);
-					$v  = array();
-					foreach ($vp as $p) $v[] = $this->valForSql($p);
-					$request[$k] = implode(',', $v);
-				} else {
-					$request[$k] = $this->valForSql($v);
-				}
-			}
-
 			$start = $request['start'];
 			$end = $request['end'];
 			$type = $request['type'];

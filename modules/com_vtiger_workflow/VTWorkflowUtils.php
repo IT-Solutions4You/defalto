@@ -119,7 +119,7 @@ class VTWorkflowUtils {
 	 * @params :: $modulename - name of the module
 	 */
 
-	function checkModuleWorkflow($modulename) {
+	public static function checkModuleWorkflow($modulename) {
 		$result = true;
 		if (in_array($modulename, array('Emails', 'Faq', 'PBXManager', 'Users')) || !getTabid($modulename)) {
 			$result = false;

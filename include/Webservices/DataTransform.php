@@ -52,6 +52,7 @@
 
 			$newRow = DataTransform::sanitizeReferences($newRow,$meta);
 			$newRow = DataTransform::sanitizeOwnerFields($newRow,$meta,$t);
+            $newRow = DataTransform::sanitizeFileFieldsForIds($newRow, $meta);
 			$newRow = DataTransform::sanitizeFields($newRow,$meta);
 			return $newRow;
 		}
@@ -255,6 +256,37 @@
 			}
 			return $row;
 		}
+        
+        /**
+         * Function to attach the image/file ids in retrieve/query operations
+         * @param type $row
+         * @param type $meta
+         * @return <array>
+         */
+        static function sanitizeFileFieldsForIds($row, $meta) {
+            $moduleFields = $meta->getModuleFields();
+            $supportedUITypes = array(61, 69, 28); //file and image uitypes
+            $attachmentIds = array();
+            foreach ($moduleFields as $fieldName => $fieldObj) {
+                if (in_array($fieldObj->getUIType(), $supportedUITypes)) {
+                    //while doing retrieve operation we have record_id and on query operation we have id.
+                    $id = $row['record_id'] ? $row['record_id'] : $row['id'];
+                    $ids = Vtiger_Functions::getAttachmentIds($id, $meta->getEntityId());
+                if($ids) {
+                        foreach($ids as $id){
+                            array_push($attachmentIds, $id);
+                        }
+                    }
+                    break;
+                }
+            }
+
+            if (!empty($attachmentIds)){
+                $row['imageattachmentids'] = implode(',', $attachmentIds);
+            }
+
+            return $row;
+        }
 
 		function sanitizeDateFieldsForInsert($row,$meta){
 			global $current_user;

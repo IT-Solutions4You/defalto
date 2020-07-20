@@ -144,11 +144,13 @@ class Contacts extends CRMEntity {
 		'Emails' => array('table_name' => 'vtiger_seactivityrel', 'table_index' => 'crmid', 'rel_index' => 'activityid'),
         'Vendors' => array('table_name' => 'vtiger_vendorcontactrel', 'table_index' => 'vendorid', 'rel_index' => 'contactid'),
 	);
-
+        function __construct() {
+            $this->log = LoggerManager::getLogger('contact');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Contacts');
+        }       
 	function Contacts() {
-		$this->log = LoggerManager::getLogger('contact');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Contacts');
+            self::__construct();
 	}
 
 	// Mike Crowe Mod --------------------------------------------------------Default ordering for us
@@ -1534,13 +1536,6 @@ function get_contactsforol($user_name)
 		$contents = str_replace('$URL$',$portalURL,$contents);
 		$contents = str_replace('$support_team$',getTranslatedString('Support Team', $moduleName),$contents);
 		$contents = str_replace('$logo$','<img src="cid:logo" />',$contents);
-
-		//Company Details
-		$contents = str_replace('$address$',$companyDetails['address'],$contents);
-		$contents = str_replace('$companyname$',$companyDetails['companyname'],$contents);
-		$contents = str_replace('$phone$',$companyDetails['phone'],$contents);
-		$contents = str_replace('$companywebsite$',$companyDetails['website'],$contents);
-		$contents = str_replace('$supportemail$',$HELPDESK_SUPPORT_EMAIL_ID,$contents);
 
 		if($type == "LoginDetails") {
 			$temp=$contents;

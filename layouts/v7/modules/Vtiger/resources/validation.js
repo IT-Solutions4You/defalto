@@ -714,7 +714,7 @@ jQuery.validator.addMethod("RepeatMonthDate", function(value, element, params) {
 jQuery.validator.addMethod("reference_required", function (value, element, params) {
 	var referenceValue = jQuery(element).parent().parent().find('input.sourceField').val();
 	if (isNaN(referenceValue)) {
-		referenceValue = jQuery(element).parent().parent().find('input.sourceField').attr('value');
+		referenceValue = jQuery(element).parent().parent().find('input.sourceField').data('value');
 	}
 	if (referenceValue && parseInt(referenceValue) > 0) {
 		return true;

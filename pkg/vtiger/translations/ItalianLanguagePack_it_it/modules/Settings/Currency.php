@@ -8,17 +8,17 @@
  * All Rights Reserved.
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Add Currency'                , // TODO: Review
-	'LBL_EDIT_CURRENCY'            => 'Edit Currency'               , // TODO: Review
-	'LBL_ADD_NEW_CURRENCY'         => 'Add New Currency'            , // TODO: Review
-	'LBL_CURRENCY_NAME'            => 'Currency Name'               , // TODO: Review
-	'LBL_CURRENCY_CODE'            => 'Currency Code'               , // TODO: Review
-	'LBL_CURRENCY_SYMBOL'          => 'Symbol'                      , // TODO: Review
-	'LBL_CONVERSION_RATE'          => 'Conversion Rate'             , // TODO: Review
-	'LBL_ENTER_CONVERSION_RATE'    => 'Enter Conversion Rate'       , // TODO: Review
-	'LBL_CURRENCY_STATUS_DESC'     => 'Enable checkbox to make currency Active', // TODO: Review
-	'LBL_TRANSFER_CURRENCY'        => 'Transfer Currency'           , // TODO: Review
-	'LBL_CURRENT_CURRENCY'         => 'Current Currency'            , // TODO: Review
+	'LBL_ADD_RECORD'               => 'Aggiungi Valuta'                , // TODO: Review
+	'LBL_EDIT_CURRENCY'            => 'Modifica Valuat'               , // TODO: Review
+	'LBL_ADD_NEW_CURRENCY'         => 'Aggiungi nuova Valuta'            , // TODO: Review
+	'LBL_CURRENCY_NAME'            => 'Nome Valuta'               , // TODO: Review
+	'LBL_CURRENCY_CODE'            => 'Codice Valuta'               , // TODO: Review
+	'LBL_CURRENCY_SYMBOL'          => 'Simbolo'                      , // TODO: Review
+	'LBL_CONVERSION_RATE'          => 'Tasso di conversione'             , // TODO: Review
+	'LBL_ENTER_CONVERSION_RATE'    => 'Inserisci tasso di conversione'       , // TODO: Review
+	'LBL_CURRENCY_STATUS_DESC'     => 'Abilita casella di controllo per attivare la valuta', // TODO: Review
+	'LBL_TRANSFER_CURRENCY'        => 'Trasferisci Valuta'           , // TODO: Review
+	'LBL_CURRENT_CURRENCY'         => 'Valuta Corrente'            , // TODO: Review
 	'Albania, Leke'                => 'Albania, Leke'               , // TODO: Review
 	'Argentina, Pesos'             => 'Argentina, Pesos'            , // TODO: Review
 	'Aruba, Guilders'              => 'Aruba, Guilders'             , // TODO: Review
@@ -151,6 +151,6 @@ $languageStrings = array(
 	'Moroccan, Dirham'             => 'Moroccan, Dirham'            , // TODO: Review
 );
 $jsLanguageStrings = array(
-	'JS_CURRENCY_DETAILS_SAVED'    => 'Currency Details Saved'      , // TODO: Review
-	'JS_CURRENCY_DELETED_SUEESSFULLY' => 'Currency Deleted Successfully', // TODO: Review
+	'JS_CURRENCY_DETAILS_SAVED'    => 'Dettagli Valuta Salvati'      , // TODO: Review
+	'JS_CURRENCY_DELETED_SUEESSFULLY' => 'Valuta cancella con successo', // TODO: Review
 );

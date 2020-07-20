@@ -94,23 +94,6 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 	 * @return <Array> list of module names
 	 */
 	public function getPicklistValues($fieldName) {
-		if ($fieldName === 'default_module') {
-			$db = PearDatabase::getInstance();
-
-			$presence = array(0);
-			$restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
-			$query = 'SELECT name, tablabel FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
-
-			$result = $db->pquery($query, array($presence, '1', $restrictedModules));
-			$numOfRows = $db->num_rows($result);
-
-			$moduleData = array('Home' => 'Home');
-			for ($i = 0; $i < $numOfRows; $i++) {
-				$row = $db->query_result_rowdata($result, $i);
-				$moduleData[$db->query_result($result, $i, 'name')] = $db->query_result($result, $i, 'tablabel');
-			}
-			return $moduleData;
-		}
 		return array('true', 'false');
 	}
 
@@ -123,7 +106,6 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 			'HELPDESK_SUPPORT_EMAIL_ID'		=> array('label' => 'LBL_HELPDESK_SUPPORT_EMAILID',			'fieldType' => 'input'),
 			'HELPDESK_SUPPORT_NAME'			=> array('label' => 'LBL_HELPDESK_SUPPORT_NAME',			'fieldType' => 'input'),
 			'upload_maxsize'				=> array('label' => 'LBL_MAX_UPLOAD_SIZE',					'fieldType' => 'input'),
-			'default_module'				=> array('label' => 'LBL_DEFAULT_MODULE',					'fieldType' => 'picklist'),
 			'listview_max_textlength'		=> array('label' => 'LBL_MAX_TEXT_LENGTH_IN_LISTVIEW',		'fieldType' => 'input'),
 			'list_max_entries_per_page'		=> array('label' => 'LBL_MAX_ENTRIES_PER_PAGE_IN_LISTVIEW',	'fieldType' => 'input')
 		);
@@ -171,8 +153,6 @@ class Settings_Vtiger_ConfigModule_Model extends Settings_Vtiger_Module_Model {
 			return "LBL_INVALID_EMAILID";
 		} else if(array_key_exists('HELPDESK_SUPPORT_NAME',$updatedFields) && preg_match ('/[\'";?><]/', $updatedFields['HELPDESK_SUPPORT_NAME'])) {
 			return "LBL_INVALID_SUPPORT_NAME";
-		} else if(array_key_exists('default_module',$updatedFields) && !preg_match ('/[a-zA-z0-9]/', $updatedFields['default_module'])) {
-			return "LBL_INVALID_MODULE";
 		} else if((array_key_exists('upload_maxsize',$updatedFields) && !filter_var(ltrim($updatedFields['upload_maxsize'],'0'), FILTER_VALIDATE_INT))
 				|| (array_key_exists('list_max_entries_per_page',$updatedFields) &&  !filter_var(ltrim($updatedFields['list_max_entries_per_page'], '0'), FILTER_VALIDATE_INT))
 				|| (array_key_exists('listview_max_textlength',$updatedFields) && !filter_var(ltrim($updatedFields['listview_max_textlength'], '0'), FILTER_VALIDATE_INT))) {

@@ -215,8 +215,22 @@ class WorkFlowScheduler {
 				if($operation == 'has changed from') continue;
 
 				$value = $condition['value'];
+                
+                $fieldname = $condition['fieldname'];
+				preg_match('/(\w+) : \((\w+)\) (\w+)/', $condition['fieldname'], $matches);
+				if (count($matches) != 0) {
+					list($full, $referenceField, $referenceModule, $fieldname) = $matches;
+				}
+				if($referenceField) {
+					$moduleName = $referenceModule;
+				} else {
+					$moduleName = $queryGenerator->getModule();
+				}
+				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+				$fieldModel = $moduleModel->getField($fieldname);
+                
 				if(in_array($operation, $this->_specialDateTimeOperator())) {
-					$value = $this->_parseValueForDate($condition);
+					$value = $this->_parseValueForDate($condition, $fieldModel);
 				}
 				$columnCondition = $condition['joincondition'];
 				$groupId = $condition['groupid'];
@@ -294,7 +308,7 @@ class WorkFlowScheduler {
 	 * @param <Array> $condition
 	 * @return <String>
 	 */
-	function _parseValueForDate($condition) {
+	function _parseValueForDate($condition,$fieldModel = false) {
 		$value = $condition['value'];
 		$operation = $condition['operation'];
 
@@ -303,6 +317,11 @@ class WorkFlowScheduler {
 		$admin = Users::getActiveAdminUser();
 		$adminTimeZone = $admin->time_zone;
 		@date_default_timezone_set($adminTimeZone);
+        $fieldType = array();
+		if($fieldModel){
+			$dataType = $fieldModel->get('typeofdata');
+			$fieldType = explode('~',$dataType);
+		}
 
 		switch($operation) {
 			case 'less than days ago' :		//between current date and (currentdate - givenValue)
@@ -367,14 +386,27 @@ class WorkFlowScheduler {
                 $value = date('Y-m-d', strtotime('-1 days'));
                 break;
             
-            case 'less than days later' :
+           case 'less than days later' :
                 $days = $condition['value']+1;
-				$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+				if($fieldType[0] == 'D'){
+					$value = date('Y-m-d').','.date('Y-m-d', strtotime('+'.$days.' days'));
+				}else if($fieldType[0] == 'DT'){
+					$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+					$startDate = date('Y-m-d').' '.'00:00:00';
+					$endDate = date('Y-m-d',strtotime('+'.$days.' days')).' '.'23:59:59';
+					$value = $startDate.','.$endDate;
+				}else{
+					$value = date('Y-m-d', strtotime('-1 day')).','.date('Y-m-d', strtotime('+'.$days.' days'));
+				}
                 break;
-            
+				
             case 'more than days later' :
-                $days = $condition['value']-1;
-				$value = date('Y-m-d', strtotime('+'.$days.' days'));
+				$days = $condition['value']-1;
+				if($fieldType[0] == 'DT'){
+					$value = date('Y-m-d', strtotime('+'.$days.' days')).' '.'23:59:59';
+				}else{
+					$value = date('Y-m-d', strtotime('+'.$days.' days'));
+				}
                 break;
 		}
 		@date_default_timezone_set($default_timezone);

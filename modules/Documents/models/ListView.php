@@ -173,8 +173,8 @@ class Documents_ListView_Model extends Vtiger_ListView_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
         
-        $orderBy = $this->get('orderby');
-		$sortOrder = $this->get('sortorder');
+        $orderBy = $this->getForSql('orderby');
+		$sortOrder = $this->getForSql('sortorder');
 
         if(!empty($orderBy)){
 			$queryGenerator = $this->get('query_generator');

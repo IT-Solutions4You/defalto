@@ -11,11 +11,11 @@ $languageStrings = array(
     'Quotes'                       => 'Preventivo'                  , 
 	'SINGLE_Quotes'                => 'Preventivo'                  , 
 	'LBL_EXPORT_TO_PDF'            => 'Esporta in PDF'              , 
-	'LBL_SEND_MAIL_PDF'            => 'Send Email with PDF'         , // TODO: Review
-	'LBL_ADD_RECORD'               => 'Add Quote'                   , 
+	'LBL_SEND_MAIL_PDF'            => 'Invia Email con PDF'         , 
+	'LBL_ADD_RECORD'               => 'Aggiungi Preventivo'                   , 
 	'LBL_RECORDS_LIST'             => 'Lista Preventivi'            , 
 	'LBL_QUOTE_INFORMATION'        => 'Informazioni Preventivo'     , 
-	'Quote No'                     => 'No. Preventivo'              , 
+	'Quote No'                     => 'N. Preventivo'              , 
 	'Quote Stage'                  => 'Stadio Preventivo'           , 
 	'Valid Till'                   => 'Valido fino a'               , 
 	'Inventory Manager'            => 'Responsabile inventario'     , 
@@ -24,7 +24,7 @@ $languageStrings = array(
     'Related To'                   => 'Relativi a'                  ,
 
   'LBL_THIS' => 'Questo',
-  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema.si prega di rimuovere o sostituire questo elemento',
-  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema,si prega di rimuovere questa riga di elementi',
+  'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'viene eliminato dal sistema. Si prega di rimuovere o sostituire questo elemento',
+  'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Questo elemento viene eliminato dal sistema, si prega di rimuovere questa riga di elementi',
 
 );

@@ -41,7 +41,7 @@
 			<div class="col-md-4">
 				<div class="search-link hidden-xs" style="margin-top: 0px;">
 					<span aria-hidden="true" class="fa fa-search"></span>
-					<input class="searchWorkflows" type="text" type="text" value="{$SEARCH_VALUE}" placeholder="{vtranslate('LBL_WORKFLOW_SEARCH', $QUALIFIED_MODULE)}">
+					<input class="searchWorkflows" type="text" value="{decode_html($SEARCH_VALUE)|htmlentities}" placeholder="{vtranslate('LBL_WORKFLOW_SEARCH', $QUALIFIED_MODULE)}">
 				</div> 
 			</div>
 			<div class="col-md-3">

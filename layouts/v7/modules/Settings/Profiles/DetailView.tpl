@@ -91,7 +91,6 @@
 								</thead>
 								<tbody>
 									{foreach from=$RECORD_MODEL->getModulePermissions() key=TABID item=PROFILE_MODULE}
-										{assign var=IS_RESTRICTED_MODULE value=$RECORD_MODEL->isRestrictedModule($PROFILE_MODULE->getName())}
 										<tr>
 											{assign var=MODULE_PERMISSION value=$RECORD_MODEL->hasModulePermission($PROFILE_MODULE)}
 											<td data-module-name='{$PROFILE_MODULE->getName()}' data-module-status='{$MODULE_PERMISSION}'>
@@ -102,7 +101,7 @@
 												{assign var="ACTION_MODEL" value=$ALL_BASIC_ACTIONS[$ACTION_ID]}
 												{assign var=MODULE_ACTION_PERMISSION value=$RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTION_MODEL)}
 												<td data-action-state='{$ACTION_MODEL->getName()}' data-moduleaction-status='{$MODULE_ACTION_PERMISSION}' style="text-align: center;">
-													{if !$IS_RESTRICTED_MODULE && $ACTION_MODEL->isModuleEnabled($PROFILE_MODULE)}
+													{if $ACTION_MODEL->isModuleEnabled($PROFILE_MODULE)}
 														<img src="{if $MODULE_ACTION_PERMISSION}{$ENABLE_IMAGE_PATH}{else}{$DISABLE_IMAGE_PATH}{/if}" />
 													{/if}
 												</td>

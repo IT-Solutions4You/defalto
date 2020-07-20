@@ -63,12 +63,20 @@
 				</thead>
 				<tbody class="overflow-y">
 					{if $MODULE_MODEL->isQuickSearchEnabled() && !$SEARCH_MODE_RESULTS}
-						<tr class="searchRow">
-							<th class="inline-search-btn">
-								<div class="table-actions">
-									<button class="btn btn-success btn-sm" data-trigger="listSearch">{vtranslate("LBL_SEARCH",$MODULE)}</button>
-								</div>
-							</th>
+						<tr class="searchRow listViewSearchContainer">
+                                                    <th class="user-inline-search-btn">
+                                                        <div class="table-actions">
+                                                                {assign var=HIDE_CLEAR_SEARCH value=false}
+                                                                {if count($SEARCH_DETAILS) eq 0 || (is_array($SEARCH_DETAILS[0]) && count($SEARCH_DETAILS[0]) eq 0 && count($SEARCH_DETAILS) eq 1)}
+                                                                        {assign var=HIDE_CLEAR_SEARCH value=true}
+                                                                {/if}
+                                                                <button class="btn btn-sm btn-success {if !$HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="listSearch">
+                                                                    <i class="fa fa-search"></i> &nbsp;
+                                                                    <span class="s2-btn-text">{vtranslate("LBL_SEARCH",$MODULE)}</span>
+                                                                </button>
+                                                                <button class="searchAndClearButton btn btn-danger btn-sm {if $HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="clearListSearch"><i class="fa fa-close"></i>&nbsp;{vtranslate("LBL_CLEAR",$MODULE)}</button>
+                                                        </div>
+                                                    </th>
 							{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 								{if $LISTVIEW_HEADER->getName() eq 'last_name' or $LISTVIEW_HEADER->getName() eq 'email1' or $LISTVIEW_HEADER->getName() eq 'status'}
 									{continue}
@@ -97,7 +105,7 @@
 												<div style="margin-left: -13px;">
 													{assign var=IMAGE_DETAILS value=$LISTVIEW_ENTRY->getImageDetails()}
 													{foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-														{if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
+														{if !empty($IMAGE_INFO.url)}
 															<div class='col-lg-2'>
 																<img height="25px" width="25px" src="{$IMAGE_INFO.url}">
 															</div>

@@ -17,7 +17,6 @@
 	<tbody>
 	{foreach item=FIELD_MODEL key=FIELD_NAME from=$SUMMARY_RECORD_STRUCTURE['SUMMARY_FIELDS']}
         {assign var=fieldDataType value=$FIELD_MODEL->getFieldDataType()}
-		{if $FIELD_MODEL->get('name') neq 'modifiedtime' && $FIELD_MODEL->get('name') neq 'createdtime'}
 			<tr class="summaryViewEntries">
 				<td class="fieldLabel" >
                         <label class="muted textOverflowEllipsis" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
@@ -29,7 +28,7 @@
                         </label>
                     </td>
 				<td class="fieldValue">
-                    <div class="row">
+                    <div class="">
                         {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get("fieldvalue"))}"}                  
                         <span class="value textOverflowEllipsis" title="{strip_tags($DISPLAY_VALUE)}"  {if $FIELD_MODEL->get('uitype') eq '19' or $FIELD_MODEL->get('uitype') eq '20' or $FIELD_MODEL->get('uitype') eq '21'}style="word-wrap: break-word;"{/if}>
                             {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
@@ -47,7 +46,6 @@
                     </div>
 				</td>
 			</tr>
-		{/if}
 	{/foreach}
 	</tbody>
 </table>

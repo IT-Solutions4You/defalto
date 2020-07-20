@@ -13,10 +13,17 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 	protected $isEntity = true;
 	protected $partialDescribeFields = null;
 	
-	public function VtigerModuleOperation($webserviceObject,$user,$adb,$log){
+	public function __construct($webserviceObject,$user,$adb,$log)
+	{
 		parent::__construct($webserviceObject,$user,$adb,$log);
 		$this->meta = $this->getMetaInstance();
 		$this->tabId = $this->meta->getTabId();
+	}
+	public function VtigerModuleOperation($webserviceObject,$user,$adb,$log){
+		// PHP4-style constructor.
+		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+		// In that case, call the new-style constructor to keep compatibility.
+		self::__construct($webserviceObject,$user,$adb,$log);
 	}
 	
 	protected function getMetaInstance(){
@@ -174,6 +181,7 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$meta = $parser->getObjectMetaData();
 		$this->pearDB->startTransaction();
 		$result = $this->pearDB->pquery($mysql_query, array());
+        $tableIdColumn = $meta->getIdColumn();
 		$error = $this->pearDB->hasFailedTransaction();
 		$this->pearDB->completeTransaction();
 		
@@ -187,10 +195,10 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 		$output = array();
 		for($i=0; $i<$noofrows; $i++){
 			$row = $this->pearDB->fetchByAssoc($result,$i);
-			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row["crmid"])){
+			if(!$meta->hasPermission(EntityMeta::$RETRIEVE,$row[$tableIdColumn])){
 				continue;
 			}
-			$output[] = DataTransform::sanitizeDataWithColumn($row,$meta);
+			$output[$row[$tableIdColumn]] = DataTransform::sanitizeDataWithColumn($row,$meta);
 		}
 		
 		$newOutput = array();
@@ -200,7 +208,7 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
             foreach($output as $id => $row1) {
                 if(!empty($tags[$id])) $output[$id]['tags'] = $tags[$id];
                 $newOutput[] = $output[$id];
-            }
+	}
         }
 		return $newOutput;
 	}
@@ -290,6 +298,34 @@ class VtigerModuleOperation extends WebserviceEntityOperation {
 	function getField($fieldName){
 		$moduleFields = $this->meta->getModuleFields();
 		return $this->getDescribeFieldArray($moduleFields[$fieldName]);
+	}
+    
+    /**
+     * Function to get the file content
+     * @param type $id
+     * @return type
+     * @throws WebServiceException
+     */
+    public function file_retrieve($crmid, $elementType, $attachmentId=false){
+		$ids = vtws_getIdComponents($crmid);
+		$crmid = $ids[1];
+        $recordModel = Vtiger_Record_Model::getInstanceById($crmid, $elementType);
+        if($attachmentId) {
+            $attachmentDetails = $recordModel->getFileDetails($attachmentId);
+        } else {
+            $attachmentDetails = $recordModel->getFileDetails();
+        }
+        $fileDetails = array();
+        if (!empty ($attachmentDetails)) {
+            if(is_array(current(($attachmentDetails)))) {
+                foreach ($attachmentDetails as $key => $attachment) {
+                    $fileDetails[$key] = vtws_filedetails($attachment);
+                }
+            } else if(is_array($attachmentDetails)){
+                $fileDetails[] = vtws_filedetails($attachmentDetails);
+            }
+        }
+        return $fileDetails;
 	}
 	
 }

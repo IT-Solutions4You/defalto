@@ -39,55 +39,59 @@ class vt_DateTime
 	 * @param array  $timearr - collection of string
 	 * @param string $check   - check string
 	 */
+        function __construct(&$timearr,$check)
+        {
+            if (! isset( $timearr) || count($timearr) == 0 )
+            {
+                    $this->setDateTime(null);
+            }
+            else if ( isset( $timearr['ts']))
+            {
+                    $this->setDateTime($timearr['ts']);
+            }
+            else
+            {
+                if(isset($timearr['hour']) && $timearr['hour'] !== '')
+                {
+                        $this->hour = $timearr['hour'];
+                }
+                if(isset($timearr['min']) && $timearr['min'] !== '')
+                {
+                        $this->minute = $timearr['min'];
+                }
+                if(isset($timearr['sec']) && $timearr['sec']  !== '')
+                {
+                        $this->second = $timearr['sec'];
+                }
+                if(isset($timearr['day']) && $timearr['day'] !== '')
+                {
+                        $this->day = $timearr['day'];
+                }
+                if(isset($timearr['week']) && $timearr['week'] !== '')
+                {
+                        $this->week = $timearr['week'];
+                }
+                if(isset($timearr['month']) && $timearr['month'] !== '')
+                {
+                        $this->month = $timearr['month'];
+                }
+                if(isset($timearr['year']) && $timearr['year'] >= 1970)
+                {
+                        $this->year = $timearr['year'];
+                }
+                else
+                {
+                        return null;
+                }
+            }
+            if ($check)
+            {
+                    $this->getDateTime();
+            }
+        }
 	function vt_DateTime(&$timearr,$check)
 	{
-		if (! isset( $timearr) || count($timearr) == 0 )
-		{
-			$this->setDateTime(null);
-		}
-		else if ( isset( $timearr['ts']))
-		{
-			$this->setDateTime($time['ts']);
-		}
-		else
-		{
-			if(isset($timearr['hour']) && $timearr['hour'] !== '')
-			{
-				$this->hour = $timearr['hour'];
-			}
-			if(isset($timearr['min']) && $timearr['min'] !== '')
-			{
-				$this->minute = $timearr['min'];
-			}
-			if(isset($timearr['sec']) && $timearr['sec']  !== '')
-			{
-				$this->second = $timearr['sec'];
-			}
-			if(isset($timearr['day']) && $timearr['day'] !== '')
-			{
-				$this->day = $timearr['day'];
-			}
-			if(isset($timearr['week']) && $timearr['week'] !== '')
-			{
-				$this->week = $timearr['week'];
-			}
-			if(isset($timearr['month']) && $timearr['month'] !== '')
-			{
-				$this->month = $timearr['month'];
-			}
-			if(isset($timearr['year']) && $timearr['year'] >= 1970)
-			{
-				$this->year = $timearr['year'];
-			}
-			else
-			{
-				return null;
-			}
-		}
-		if ($check)
-		{
-			$this->getDateTime();
-		}
+            self::__construct($timearr,$check);
 	}
 
 	/**

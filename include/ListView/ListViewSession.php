@@ -25,18 +25,24 @@ class ListViewSession {
  * Portions created by vtigerCRM are Copyright (C) vtigerCRM.
  * All Rights Reserved.
 */
-
-	function ListViewSession()
-	{
-		global $log,$currentModule;
+	function __construct()
+    {
+        global $log,$currentModule;
 		$log->debug("Entering ListViewSession() method ...");
 
 		$this->module = $currentModule;
 		$this->sortby = 'ASC';
 		$this->start =1;
+    }
+	function ListViewSession()
+	{
+		// PHP4-style constructor.
+        // This will NOT be invoked, unless a sub-class that extends `foo` calls it.
+        // In that case, call the new-style constructor to keep compatibility.
+        self::__construct();
 	}
 
-	function getCurrentPage($currentModule,$viewId){
+	public static function getCurrentPage($currentModule,$viewId){
 		if(!empty($_SESSION['lvs'][$currentModule][$viewId]['start'])){
 			return $_SESSION['lvs'][$currentModule][$viewId]['start'];
 		}
@@ -55,7 +61,7 @@ class ListViewSession {
 		return $start;
 	}
 
-	function getListViewNavigation($currentRecordId){
+	public static function getListViewNavigation($currentRecordId){
 		global $currentModule,$current_user,$adb,$log,$list_max_entries_per_page;
 		Zend_Json::$useBuiltinEncoderDecoder = true;
 		$reUseData = false;
@@ -206,7 +212,7 @@ class ListViewSession {
 		return $start;
 	}
 
-	function setSessionQuery($currentModule,$query,$viewid){
+	public static function setSessionQuery($currentModule,$query,$viewid){
 		if(isset($_SESSION[$currentModule.'_listquery'])){
 			if($_SESSION[$currentModule.'_listquery'] != $query){
 				unset($_SESSION[$currentModule.'_DetailView_Navigation'.$viewid]);

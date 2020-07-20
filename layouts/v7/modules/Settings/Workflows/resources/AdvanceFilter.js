@@ -22,10 +22,16 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js',{},{
     getFieldSpecificType : function(fieldSelected) {
         var fieldInfo = fieldSelected.data('fieldinfo');
         var type = fieldInfo.type;
-        var workflowModule = jQuery('#advanceFilterContainer').find('[name="module_name"]').val();
+        var workflowModule = jQuery('[name="module_name"]').val();
+        var calendarModules = ["Calendar", "Events"];
         if(workflowModule == 'Calendar') {
             if(fieldInfo.name == 'due_date') {
                 type = 'date';
+            }
+        }
+        if(calendarModules.includes(workflowModule)){
+            if(fieldInfo.name == 'reminder_time'){
+                type = 'integer';
             }
         }
         return type;
@@ -479,7 +485,7 @@ Vtiger_Owner_Field_Js('Workflows_Ownergroup_Field_Js',{},{
 	}
 });
 
-Vtiger_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
+AdvanceFilter_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
 
     getUi : function(){
         var selectedOption = app.htmlDecode(this.getValue());

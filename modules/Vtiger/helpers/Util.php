@@ -608,12 +608,12 @@ class Vtiger_Util_Helper {
 				   //Request will be having in terms of AM and PM but the database will be having in 24 hr format so converting
 					//Database format
 
-					if($fieldInfo->getFieldDataType() == "time") {
+					if($fieldInfo && $fieldInfo->getFieldDataType() == "time") {
 						$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 					}
 
 					$specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
-					if($fieldName == 'date_start' || $fieldName == 'due_date' || $fieldInfo->getFieldDataType() == "datetime" && !in_array($operator, $specialDateTimeConditions) ) {
+					if($fieldName == 'date_start' || $fieldName == 'due_date' || ($fieldInfo && $fieldInfo->getFieldDataType() == "datetime") && !in_array($operator, $specialDateTimeConditions) ) {
 						$dateValues = explode(',', $fieldValue);
 						//Indicate whether it is fist date in the between condition
 						$isFirstDate = true;
@@ -633,7 +633,10 @@ class Vtiger_Util_Helper {
 						$fieldValue = implode(',',$dateValues);
 					}
 
-				   $advFilterFieldInfoFormat['columnname'] = $fieldInfo->getCustomViewColumnName();
+                    if ($fieldInfo) {
+                        $columnName = $fieldInfo->getCustomViewColumnName();
+                    }
+				   $advFilterFieldInfoFormat['columnname'] = $columnName;
 				   $advFilterFieldInfoFormat['comparator'] = $operator;
 				   $advFilterFieldInfoFormat['value'] = $fieldValue;
 				   $advFilterFieldInfoFormat['column_condition'] = $groupConditionGlue;
@@ -1155,12 +1158,20 @@ class Vtiger_Util_Helper {
 									}
 									break;
 			case 'picklist'		:	$pickListDetails = $fieldModel->getPicklistValues();
+                                    if($defaultValue){ 
+                                        $value = $defaultValue; 
+                                        break; 
+                                    } 
 									foreach ($pickListDetails as $key => $value) {
 										$value = $key;
 										break;
 									}
 									break;
 			case 'multipicklist':	$pickListDetails = $fieldModel->getPicklistValues();
+                                    if($defaultValue){ 
+                                        $value = $defaultValue; 
+                                        break; 
+                                    }
 									foreach ($pickListDetails as $key => $value) {
 										$value = $key;
 										break;
@@ -1228,7 +1239,7 @@ class Vtiger_Util_Helper {
 
 	public static function convertSpaceToHyphen($string) {
 		if (!empty($string)) {
-			return str_replace(" ", "-", $string);
+			return str_replace(" ", "-", decode_html($string));
 		}
 	}
 
@@ -1254,13 +1265,13 @@ class Vtiger_Util_Helper {
         $fieldInfo = $fieldModel->getFieldInfo();
         $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
         if($fieldValue && $fieldDataType == 'picklist'){
-           if(!empty($editablePicklistValues) && !in_array($fieldValue, $editablePicklistValues)){
+           if(!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])){
                 $fieldValue = null;
             }
-        }elseif(count($fieldValue) > 0 && $fieldDataType == 'multipicklist'){
+        }elseif(!empty($fieldValue) && $fieldDataType == 'multipicklist'){
             if(!empty($editablePicklistValues)){
                 foreach($fieldValue as $key => $value){
-                    if(!in_array($value, $editablePicklistValues)){
+                    if(!isset($editablePicklistValues[$fieldValue])){
                         unset($fieldValue[$key]);
                     }
                 }

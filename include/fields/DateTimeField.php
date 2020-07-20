@@ -68,15 +68,18 @@ class DateTimeField {
     public function getFullcalenderDateTimevalue ($user = null) {
 		return $this->getDisplayDate($user) . ' ' . $this->getFullcalenderTime($user);
 	}
-	/**
-	 *
-	 * @global Users $current_user
-	 * @param type $date
-	 * @param Users $user
-	 * @return type
-	 */
-	public static function convertToDBFormat($date, $user = null) {
-		global $current_user;
+
+    /**
+     *
+     * @param string $date
+     * @param Users  $user
+     *
+     * @return string
+     * @global Users $current_user
+     */
+    public static function convertToDBFormat($date, $user = null)
+    {
+        global $current_user;
 		if(empty($user)) {
 			$user = $current_user;
 		}
@@ -87,21 +90,23 @@ class DateTimeField {
 		}
 
 		return self::__convertToDBFormat($date, $format);
-	}
+    }
 
-	/**
-	 *
-	 * @param type $date
-	 * @param string $format
-	 * @return string
-	 */
-	public static function __convertToDBFormat($date, $format) {
-
-		if ($format == '') {
+    /**
+     *
+     * @param string $date
+     * @param string $format
+     *
+     * @return string
+     */
+    public static function __convertToDBFormat($date, $format)
+    {
+        if ($format == '') {
 			$format = 'dd-mm-yyyy';
 		}
 		$dbDate = '';
-		if ($format == 'dd-mm-yyyy') {
+        $dateFormats = ['dd-mm-yyyy', 'dd/mm/yyyy', 'dd.mm.yyyy'];
+		if (in_array($format, $dateFormats)) {
 			list($d, $m, $y) = explode('-', $date);
 		} elseif ($format == 'mm-dd-yyyy') {
 			list($m, $d, $y) = explode('-', $date);
@@ -115,7 +120,7 @@ class DateTimeField {
 			$dbDate = $y . '-' . $m . '-' . $d;
 		}
 		return $dbDate;
-	}
+    }
 
 	/**
 	 *
@@ -148,30 +153,56 @@ class DateTimeField {
 		return self::__convertToUserFormat($date, $format);
 	}
 
-	/**
-	 *
-	 * @param type $date
-	 * @param type $format
-	 * @return type
-	 */
-	public static function __convertToUserFormat($date, $format) {
-		$date = self::convertToInternalFormat($date);
-		list($y, $m, $d) = explode('-', $date[0]);
+    /**
+     *
+     * @param type $date
+     * @param type $format
+     *
+     * @return string
+     */
+    public static function __convertToUserFormat($date, $format)
+    {
+        $date = self::convertToInternalFormat($date);
+        list($y, $m, $d) = explode('-', $date[0]);
 
-		if ($format == 'dd-mm-yyyy') {
-			$date[0] = $d . '-' . $m . '-' . $y;
-		} elseif ($format == 'mm-dd-yyyy') {
-			$date[0] = $m . '-' . $d . '-' . $y;
-		} elseif ($format == 'yyyy-mm-dd') {
-			$date[0] = $y . '-' . $m . '-' . $d;
-		}
-		if ($date[1] != '') {
-			$userDate = $date[0] . ' ' . $date[1];
-		} else {
-			$userDate = $date[0];
-		}
-		return $userDate;
-	}
+        switch ($format) {
+            case 'dd.mm.yyyy':
+                $date[0] = $d . '.' . $m . '.' . $y;
+				break;
+			case 'mm.dd.yyyy':
+                $date[0] = $m . '.' . $d . '.' . $y;
+				break;
+			case 'yyyy.mm.dd':
+                $date[0] = $y . '.' . $m . '.' . $d;
+				break;
+			case 'dd/mm/yyyy':
+                $date[0] = $d . '/' . $m . '/' . $y;
+				break;
+			case 'mm/dd/yyyy':
+                $date[0] = $m . '/' . $d . '/' . $y;
+				break;
+			case 'yyyy/mm/dd':
+                $date[0] = $y . '/' . $m . '/' . $d;
+                break;
+            case 'dd-mm-yyyy':
+                $date[0] = $d . '-' . $m . '-' . $y;
+                break;
+            case 'mm-dd-yyyy':
+                $date[0] = $m . '-' . $d . '-' . $y;
+                break;
+            case 'yyyy-mm-dd':
+                $date[0] = $y . '-' . $m . '-' . $d;
+                break;
+        }
+
+        if ($date[1] != '') {
+            $userDate = $date[0] . ' ' . $date[1];
+        } else {
+            $userDate = $date[0];
+        }
+
+        return $userDate;
+    }
 
 	/**
 	 *
@@ -305,14 +336,25 @@ class DateTimeField {
 			$user = $current_user;
 		}
 
-		if($user->date_format == 'mm-dd-yyyy') {
+		$y = false;
+		$m = false;
+		$d = false;
+		$time = false;
+
+		if($user->date_format) {
 			list($date, $time) = explode(' ', $value);
 			if(!empty($date)) {
-				list($m, $d, $y) = explode('-', $date);
-				if(strlen($m) < 3) {
-					$time = ' '.$time;
-					$value = "$y-$m-$d".rtrim($time);
+				switch ($user->date_format) {
+					case 'mm.dd.yyyy': list($m, $d, $y) = explode('.', $date); break;
+					case 'dd.mm.yyyy': list($d, $m, $y) = explode('.', $date); break;
+					case 'dd/mm/yyyy': list($d, $m, $y) = explode('/', $date); break;
+					case 'mm/dd/yyyy': list($d, $m, $y) = explode('/', $date); break;
+					case 'mm-dd-yyyy': list($m, $d, $y) = explode('-', $date); break;
+					case 'dd-mm-yyyy': list($d, $m, $y) = explode('-', $date); break;
 				}
+			}
+			if ($y) {
+				$value = "$y-$m-$d ".rtrim($time);
 			}
 		}
 		return $value;

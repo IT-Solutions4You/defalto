@@ -131,7 +131,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	 * @param <String> $module
 	 * @return <Reports_Record_Model>
 	 */
-	public static function getInstanceById($recordId) {
+	public static function getInstanceById($recordId, $module=null) {
 		$db = PearDatabase::getInstance();
 
 		$self = new self();
@@ -275,6 +275,9 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	function isRecordHasViewAccess($reportType){
 		$db = PearDatabase::getInstance();
 		$current_user = vglobal('current_user');
+        if(strtolower($current_user->is_admin) == "on") {
+            return true;
+        }
 			$params = array();
 			$sql = ' SELECT vtiger_report.reportid,vtiger_report.reportname FROM vtiger_report ';
 			require('user_privileges/user_privileges_'.$current_user->id.'.php');
@@ -442,12 +445,15 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 
 		$reportId = $this->getId();
 
-		//When members variable is not empty, it means record shared with other users, so
-		//sharing type of a report should be private
-		$sharingType = 'Public';
+		//Newly created records are always as Private, only shared users can see report
+		$sharingType = 'Private';
+		
 		$members = $this->get('members',array());
-		if(!empty($members)){
-			$sharingType = 'Private';
+		
+		if($members && count($members) == 1){
+			if($members[0] == 'All::Users'){
+				$sharingType = 'Public';
+			}
 		}
 
 		if(empty($reportId)) {
@@ -1041,12 +1047,17 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$tranformedStandardFilter['comparator'] = 'bw';
 
 			$fields = explode(':',$standardFilter['columnname']);
-
+            $standardReports = array('Last Month Activities', 'This Month Activities');
 			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' ||($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')){
-				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
-				$date[] = $standardFilter['startdate'].' 00:00:00';
-				$date[] = $standardFilter['enddate'].' 00:00:00';
-				$tranformedStandardFilter['value'] =  implode(',',$date);
+                if(in_array($this->get('reportname'), $standardReports)){
+                    $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $tranformedStandardFilter['comparator'] = $standardFilter['type'];
+                }else{
+                    $tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
+                    $date[] = $standardFilter['startdate'].' 00:00:00';
+                    $date[] = $standardFilter['enddate'].' 00:00:00';
+                    $tranformedStandardFilter['value'] =  implode(',',$date);
+                }
 			} else{
 				$tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:D";
 				$tranformedStandardFilter['value'] = $standardFilter['startdate'].','.$standardFilter['enddate'];

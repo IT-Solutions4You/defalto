@@ -19,9 +19,7 @@
             <div>
                 <input class="search-list" type="text" placeholder="Search for List">
             </div>
-            <div class="menu-scroller mCustomScrollBox" data-mcs-theme="dark">
-                <div class="mCustomScrollBox mCS-light-2 mCSB_inside" tabindex="0">
-                    <div class="mCSB_container" style="position:relative; top:0; left:0;">
+            <div class="menu-scroller scrollContainer" style="position:relative; top:0; left:0;">
                         <div class="list-menu-content">
                                 {if $CUSTOM_VIEWS && count($CUSTOM_VIEWS) > 0}
                                     {foreach key=GROUP_LABEL item=GROUP_CUSTOM_VIEWS from=$CUSTOM_VIEWS}
@@ -36,12 +34,12 @@
                                                 {vtranslate('LBL_SHARED_LIST',$MODULE)}
                                             {/if}
                                         </h6>
-										<input type="hidden" name="allCvId" value="{CustomView_Record_Model::getAllFilterByModule($MODULE)->get('cvid')}" />
+                                        <input type="hidden" name="allCvId" value="{CustomView_Record_Model::getAllFilterByModule($MODULE)->get('cvid')}" />
                                         <ul class="lists-menu">
                                         {foreach item="CUSTOM_VIEW" from=$GROUP_CUSTOM_VIEWS name="customView"}
                                             <li style="font-size:12px;" class='listViewFilter {if $VIEWID eq $CUSTOM_VIEW->getId() && ($CURRENT_TAG eq '') && !$FOLDER_VALUE} active{/if} {if $smarty.foreach.customView.iteration gt 5} filterHidden hide{/if} '>
                                                 {assign var=VIEWNAME value={vtranslate($CUSTOM_VIEW->get('viewname'), $MODULE)}} 
-                                                <a class="filterName" href="javascript:;" data-filter-id="{$CUSTOM_VIEW->getId()}">{if {$VIEWNAME|strlen > 40} } {$VIEWNAME|substr:0:40|@escape:'html'}..{else}{$VIEWNAME|@escape:'html'}{/if}</a> 
+                                                <a class="filterName" href="javascript:;" data-filter-id="{$CUSTOM_VIEW->getId()}">{if {$VIEWNAME|strlen} > 40 } {$VIEWNAME|substr:0:40|@escape:'html'}..{else}{$VIEWNAME|@escape:'html'}{/if}</a> 
                                                     <div class=" pull-right">
                                                         <span class="js-popover-container">
                                                     <span class="fa fa-angle-down" rel="popover" data-toggle="popover" aria-expanded="true" 
@@ -91,13 +89,7 @@
                                     <h6 class="lists-header"><center> {vtranslate('LBL_NO')} {vtranslate('Lists')} {vtranslate('LBL_FOUND')} ... </center></h6>
                                 </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-                                
-            <div class="list-menu-content">
-                <div class="list-group">
-                    <div class="sidebar-header clearfix">
+            </div><div class="sidebar-header clearfix">
                         <h5 class="pull-left">{vtranslate('LBL_FOLDERS',$MODULE)}</h5>
                         <button id="createFolder" class="btn btn-default pull-right sidebar-btn">
                             <span class="fa fa-plus" aria-hidden="true"></span>
@@ -107,43 +99,47 @@
                     <div>
                         <input class="search-folders" type="text" placeholder="Search for Folders">
                     </div>
-                    <div class="menu-scroller mCustomScrollBox" data-mcs-theme="dark">
-                        <div class="mCustomScrollBox mCS-light-2 mCSB_inside" tabindex="0">
-                            <div class="mCSB_container" style="position:relative; top:0; left:0;">
-                                <ul id="folders-list" class="lists-menu">
-                                {foreach item="FOLDER" from=$FOLDERS}
-                                     {assign var=FOLDERNAME value={vtranslate($FOLDER->get('foldername'), $MODULE)}} 
-                                    <li style="font-size:12px;" class='documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()} active{/if}'>
-                                        <a class="filterName" href="javascript:void(0);" data-filter-id="{$FOLDER->get('folderid')}" data-folder-name="{$FOLDER->get('foldername')}" title="{$FOLDERNAME}">
-                                            <i class="fa {if $FOLDER_VALUE eq $FOLDER->getName()}fa-folder-open{else}fa-folder{/if}"></i> 
-                                            <span class="foldername">{if {$FOLDERNAME|strlen > 40} } {$FOLDERNAME|substr:0:40|@escape:'html'}..{else}{$FOLDERNAME|@escape:'html'}{/if}</span>
-                                        </a>
-                                        {if $FOLDER->getName() neq 'Default' && $FOLDER->getName() neq 'Google Drive' && $FOLDER->getName() neq 'Dropbox'}
-                                            <div class="dropdown pull-right">
-                                                <span class="fa fa-caret-down dropdown-toggle" data-toggle="dropdown" aria-expanded="true"></span>
-                                                <ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">
-                                                    <li class="editFolder " data-folder-id="{$FOLDER->get('folderid')}">
-                                                        <a role="menuitem" ><i class="fa fa-pencil-square-o"></i>&nbsp;Edit</a>
-                                                    </li>
-                                                    <li class="deleteFolder " data-deletable="{!$FOLDER->hasDocuments()}" data-folder-id="{$FOLDER->get('folderid')}">
-                                                        <a role="menuitem" ><i class="fa fa-trash"></i>&nbsp;Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        {/if}
-                                    </li>
-                                {/foreach}
-                                <li class="noFolderText" style="display: none;">
-                                    <h6 class="lists-header"><center> 
-                                        {vtranslate('LBL_NO')} {vtranslate('LBL_FOLDERS', $MODULE)} {vtranslate('LBL_FOUND')} ... 
-                                    </center></h6>    
-                                </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+           <div class="menu-scroller scrollContainer" style="position:relative; top:0; left:0;">                     
+            <div class="list-menu-content">
+                <div class="list-group">
+                    <ul id="folders-list"  class="lists-menu">
+                    {foreach item="FOLDER" from=$FOLDERS  name="folderView"}
+                         {assign var=FOLDERNAME value={vtranslate($FOLDER->get('foldername'), $MODULE)}} 
+                        <li style="font-size:12px;" class='documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()} active{/if} {if $smarty.foreach.folderView.iteration gt 5} filterHidden hide{/if}'>
+                            <a class="filterName" href="javascript:void(0);" data-filter-id="{$FOLDER->get('folderid')}" data-folder-name="{$FOLDER->get('foldername')}" title="{$FOLDERNAME}">
+                                <i class="fa {if $FOLDER_VALUE eq $FOLDER->getName()}fa-folder-open{else}fa-folder{/if}"></i> 
+                                <span class="foldername">{if {$FOLDERNAME|strlen} > 40 } {$FOLDERNAME|substr:0:40|@escape:'html'}..{else}{$FOLDERNAME|@escape:'html'}{/if}</span>
+                            </a>
+                            {if $FOLDER->getName() neq 'Default' && $FOLDER->getName() neq 'Google Drive' && $FOLDER->getName() neq 'Dropbox'}
+                                <div class="dropdown pull-right">
+                                    <span class="fa fa-caret-down dropdown-toggle" data-toggle="dropdown" aria-expanded="true"></span>
+                                    <ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">
+                                        <li class="editFolder " data-folder-id="{$FOLDER->get('folderid')}">
+                                            <a role="menuitem" ><i class="fa fa-pencil-square-o"></i>&nbsp;Edit</a>
+                                        </li>
+                                        <li class="deleteFolder " data-deletable="{!$FOLDER->hasDocuments()}" data-folder-id="{$FOLDER->get('folderid')}">
+                                            <a role="menuitem" ><i class="fa fa-trash"></i>&nbsp;Delete</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {/if}
+                        </li>
+                    {/foreach}
+                    <li class="noFolderText" style="display: none;">
+                        <h6 class="lists-header"><center> 
+                            {vtranslate('LBL_NO')} {vtranslate('LBL_FOLDERS', $MODULE)} {vtranslate('LBL_FOUND')} ... 
+                        </center></h6>    
+                    </li>
+                    </ul>
+		<div class='clearfix'> 
+                	<a class="toggleFilterSize" data-more-text="Show more" data-less-text="Show less"> 
+	                       	{if $smarty.foreach.folderView.iteration gt 5}
+        	                	{vtranslate('LBL_SHOW_MORE',Vtiger)}
+				{/if}
+			</a>
+                </div>
                  </div>
-            </div>
+            </div></div>
             
         </div>
     </div>
@@ -153,9 +149,7 @@
                 {vtranslate('LBL_TAGS', $MODULE)}
             </h4>
             <hr>
-            <div class="menu-scroller mCustomScrollBox">
-                <div class="mCustomScrollBox mCS-light-2 mCSB_inside" tabindex="0">
-                    <div class="mCSB_container" style="position:relative; top:0; left:0;">
+            <div class="menu-scroller scrollContainer" style="position:relative; top:0; left:0;">
                         <div class="list-menu-content">
                             <div id="listViewTagContainer" class="multiLevelTagList" 
                             {if $ALL_CUSTOMVIEW_MODEL} data-view-id="{$ALL_CUSTOMVIEW_MODEL->getId()}" {/if}
@@ -214,9 +208,9 @@
                                 </button>
                             </div>
                         </div>
-                   </div>
-               </div>
             </div>
         </div>
      </div>
 </div>
+
+

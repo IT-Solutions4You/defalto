@@ -12,14 +12,15 @@
 {strip}
 	<div class="">
 	{assign var=ASSIGNED_USER_ID value=$FIELD_MODEL->get('name')}
-	{assign var=ALL_ACTIVEUSER_LIST value=$USER_MODEL->getAccessibleUsers()}
+        {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
+	{assign var=ALL_ACTIVEUSER_LIST value=$FIELD_INFO['picklistvalues'][vtranslate('LBL_USERS')]}
 	{assign var=SEARCH_VALUES value=explode(',',$SEARCH_INFO['searchValue'])}
 	{assign var=SEARCH_VALUES value=array_map("trim",$SEARCH_VALUES)}
 
 	{if $FIELD_MODEL->get('uitype') eq '52' || $FIELD_MODEL->get('uitype') eq '77'}
 		{assign var=ALL_ACTIVEGROUP_LIST value=array()}
 	{else}
-		{assign var=ALL_ACTIVEGROUP_LIST value=$USER_MODEL->getAccessibleGroups()}
+		{assign var=ALL_ACTIVEGROUP_LIST value=$FIELD_INFO['picklistvalues'][vtranslate('LBL_GROUPS')]}
 	{/if}
 
 	{assign var=ACCESSIBLE_USER_LIST value=$USER_MODEL->getAccessibleUsersForModule($MODULE)}

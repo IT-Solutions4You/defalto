@@ -18,21 +18,16 @@ class Vtiger_Zip extends dZip {
 	 * Push out the file content for download.
 	 */
 	function forceDownload($zipfileName) {
-		header("Pragma: public");
-		header("Expires: 0");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header("Cache-Control: private",false);
+        header("Pragma: public");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private",false);
 		header("Content-Type: application/zip");
-		header("Content-Disposition: attachment; filename=".basename($zipfileName).";" );
-		//header("Content-Transfer-Encoding: binary");
-
-		// For details on this workaround check here the ticket
-		// http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/5298
-		$disk_file_size = filesize($zipfileName);
-		$zipfilesize = $disk_file_size + ($disk_file_size % 1024);
-		header("Content-Length: ".$zipfilesize);
-		$fileContent = fread(fopen($zipfileName, "rb"), $zipfilesize);
-		echo $fileContent;	
+        header("Content-Disposition: attachment; filename=".basename($zipfileName).";" );
+        $disk_file_size = filesize($zipfileName);
+        header("Content-Length: ".$disk_file_size);
+        $fileContent = fread(fopen($zipfileName, "rb"), $disk_file_size);
+		echo $fileContent;
 	}
 
 	/**

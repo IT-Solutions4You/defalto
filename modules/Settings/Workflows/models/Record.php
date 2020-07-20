@@ -154,11 +154,12 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		return $links;
 	}
 
-	public static function getInstance($workflowId) {
-		$db = PearDatabase::getInstance();
-		$wm = new VTWorkflowManager($db);
-		$wf = $wm->retrieve($workflowId);
-		return self::getInstanceFromWorkflowObject($wf);
+	public static function getInstance() {
+            list($workflowId) = func_get_args();
+            $db = PearDatabase::getInstance();
+            $wm = new VTWorkflowManager($db);
+            $wf = $wm->retrieve($workflowId);
+            return self::getInstanceFromWorkflowObject($wf);
 	}
 
 	public static function getCleanInstance($moduleName) {
@@ -468,11 +469,11 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 					$fieldDataType = $fieldModel->getFieldDataType();
 				}
 				if($value == 'true:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '1')) {
-					$value = 'LBL_ENABLED';
-				}
+                    $value = vtranslate('LBL_ENABLED', $moduleName);
+                }
 				if($value == 'false:boolean' || ($fieldModel && $fieldDataType == 'boolean' && $value == '0')) {
-					$value = 'LBL_DISABLED';
-				}
+					$value = vtranslate('LBL_DISABLED', $moduleName);
+                }
 				if ($fieldModel && (($fieldModel->column === 'smownerid') || (($fieldModel->column === 'smgroupid')))) {
 					if (vtws_getOwnerType($value) == 'Users') {
 						$value = getUserFullName($value);
@@ -503,7 +504,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 				if($fieldLabel == '_VT_add_comment') {
 					$fieldLabel = 'Comment';
 				}
-				$conditionList[$conditionGroup][] = $fieldLabel.' '.vtranslate($operation, $moduleName).' '.vtranslate($value, $moduleName);
+				$conditionList[$conditionGroup][] = $fieldLabel.' '.vtranslate($operation, 'Settings:Workflows', $value);
 			}
 		}
 

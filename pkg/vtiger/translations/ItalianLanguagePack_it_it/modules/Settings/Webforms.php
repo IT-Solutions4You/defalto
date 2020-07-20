@@ -9,57 +9,57 @@
  ************************************************************************************/
 $languageStrings = array(
 	'SINGLE_Settings:Webforms'     => 'Webform'                     , // TODO: Review
-	'WebForm Name'                 => 'Webform Name'                , // TODO: Review
-	'Public Id'                    => 'Public Id'                   , // TODO: Review
-	'Enabled'                      => 'Status'                      , // TODO: Review
-	'Module'                       => 'Module'                      , // TODO: Review
-	'Return Url'                   => 'Return Url'                  , // TODO: Review
+	'WebForm Name'                 => 'Nome Webform'                , // TODO: Review
+	'Public Id'                    => 'Id Pubblico'                   , // TODO: Review
+	'Enabled'                      => 'Stato'                      , // TODO: Review
+	'Module'                       => 'Modulo'                      , // TODO: Review
+	'Return Url'                   => 'Url di ritorno'                  , // TODO: Review
 	'Post Url'                     => 'Post Url'                    , // TODO: Review
     'Captcha Enabled'              => 'Captcha abilitato'           ,
 	'SINGLE_Webforms'              => 'Webform'                     , // TODO: Review
-	'LBL_SHOW_FORM'                => 'Show Form'                   , // TODO: Review
-	'LBL_DUPLICATES_EXIST'         => 'Webform Name already exists' , // TODO: Review
-	'LBL_WEBFORM_INFORMATION'      => 'Webform Information'         , // TODO: Review
-	'LBL_FIELD_INFORMATION'        => 'Field Information'           , // TODO: Review
-	'LBL_FIELD_NAME'               => 'Field Name'                  , // TODO: Review
-	'LBL_OVERRIDE_VALUE'           => 'Override Value'              , // TODO: Review
-	'LBL_MANDATORY'                => 'Mandatory'                   , // TODO: Review
-	'LBL_WEBFORM_REFERENCE_FIELD'  => 'Webforms reference Field'    , // TODO: Review
-	'LBL_SELECT_FIELDS_OF_TARGET_MODULE' => 'Select Fields for Target Module...', // TODO: Review
-	'LBL_ALLOWS_YOU_TO_MANAGE_WEBFORMS' => 'Allows you to manage webforms', // TODO: Review
-	'LBL_ADD_FIELDS'               => 'Add Fields'                  , // TODO: Review
-	'LBL_EMBED_THE_FOLLOWING_FORM_IN_YOUR_WEBSITE' => 'Embed the following form in your website', // TODO: Review
-	'LBL_SELECT_VALUE'             => 'Select Value'                , // TODO: Review
-	'LBL_LABEL'                    => 'label'                       , // TODO: Review
-	'LBL_SAVE_FIELDS_ORDER' => 'Ordine Save campi', 
+	'LBL_SHOW_FORM'                => 'Mostra Form'                   , // TODO: Review
+	'LBL_DUPLICATES_EXIST'         => 'Nome Webform già esiste' , // TODO: Review
+	'LBL_WEBFORM_INFORMATION'      => 'Informazione Webform'         , // TODO: Review
+	'LBL_FIELD_INFORMATION'        => 'Informazione campo'           , // TODO: Review
+	'LBL_FIELD_NAME'               => 'Nome campo'                  , // TODO: Review
+	'LBL_OVERRIDE_VALUE'           => 'Valore Override'              , // TODO: Review
+	'LBL_MANDATORY'                => 'Obbligatorio'                   , // TODO: Review
+	'LBL_WEBFORM_REFERENCE_FIELD'  => 'Campo riferimento Webforms'    , // TODO: Review
+	'LBL_SELECT_FIELDS_OF_TARGET_MODULE' => 'Seleziona i campi per il modulo destinazione...', // TODO: Review
+	'LBL_ALLOWS_YOU_TO_MANAGE_WEBFORMS' => 'Permetti a te di gestire i webforms', // TODO: Review
+	'LBL_ADD_FIELDS'               => 'Aggiungi campi'                  , // TODO: Review
+	'LBL_EMBED_THE_FOLLOWING_FORM_IN_YOUR_WEBSITE' => 'Inserisci i webform seguenti nel tuo sito', // TODO: Review
+	'LBL_SELECT_VALUE'             => 'Seleziona il valore'                , // TODO: Review
+	'LBL_LABEL'                    => 'etichetta'                       , // TODO: Review
+	'LBL_SAVE_FIELDS_ORDER' => 'Salva ordine campi', 
 	'LBL_HIDDEN' => 'Nascosto',
 	'LBL_ENABLE_TARGET_MODULES_FOR_WEBFORM' => 'Abilita moduli target per WebForm',
 	'LBL_ASSIGN_USERS' => 'Assegnazione utente',
     'LBL_ASSIGN_ROUND_ROBIN' => 'Assegna utenti Nel Round Robin',
-    'LBL_ROUNDROBIN_USERS_LIST' => 'Turno Lista Utenti Robin',
+    'LBL_ROUNDROBIN_USERS_LIST' => 'Lista Utenti Round Robin',
 
   'LBL_ADD_RECORD' => 'Aggiungere Webform',
 
 	'LBL_UPLOAD_DOCUMENTS' => 'Carica Documenti',
 	'LBL_ADD_FILE_FIELD' => 'File Upload Campo',
 	'LBL_FIELD_LABEL' => 'Titolo del documento',
-	'LBL_FILE_FIELD_INFO' => 'Per ogni file caricato da web formare un nuovo documento viene creato con il file allegato. Documento Ã¨ legato anche a questa nuova creazione%s.',
-	'LBL_NO_FILE_FIELD' => 'Nessun campo file aggiunti.',
+	'LBL_FILE_FIELD_INFO' => 'Per ogni file caricato da web formare un nuovo documento viene creato con il file allegato. Documento è legato anche a questa nuova creazione %s.',
+	'LBL_NO_FILE_FIELD' => 'Nessun campo file aggiunto.',
 	'LBL_COPY_TO_CLIPBOARD' => 'Copia negli appunti',
 );
 $jsLanguageStrings = array(
-	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform deleted successfully', // TODO: Review
-	'JS_LOADING_TARGET_MODULE_FIELDS' => 'Loadding Target Module Fields', // TODO: Review
-	'JS_SELECT_VALUE'              => 'Select Vlaue'                , // TODO: Review
-	'JS_MANDATORY_FIELDS_WITHOUT_OVERRIDE_VALUE_CANT_BE_HIDDEN' => 'I campi obbligatori senza valori di override smussano essere nascosti',
-	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campi di riferimento cant essere obbligatorio senza valore di override',
+	'JS_WEBFORM_DELETED_SUCCESSFULLY' => 'Webform cancellato con successo', // TODO: Review
+	'JS_LOADING_TARGET_MODULE_FIELDS' => 'Caricamento campi Modulo destinazione', // TODO: Review
+	'JS_SELECT_VALUE'              => 'Seleziona Valore'                , // TODO: Review
+	'JS_MANDATORY_FIELDS_WITHOUT_OVERRIDE_VALUE_CANT_BE_HIDDEN' => 'I campi obbligatori senza valori di override non possono essere nascosti',
+	'JS_REFERENCE_FIELDS_CANT_BE_MANDATORY_WITHOUT_OVERRIDE_VALUE' => 'Campi di riferimento non possono essere obbligatori senza valore di override',
 	'JS_TYPE_TO_SEARCH' => 'Tipo di ricerca',
 	"JS_WEBFORM_WITH_THIS_NAME_ALREADY_EXISTS" => 'Webform con questo nome esiste già',
 
   'JS_SELECT_AN_OPTION' => 'Selezionare un\'Opzione',
   'JS_LABEL' => 'etichetta',
 
-	'JS_MAX_FILE_FIELDS_LIMIT' => 'Massima Ã¨ possibile aggiungere campi del file%s.',
+	'JS_MAX_FILE_FIELDS_LIMIT' => 'Puoi aggiungere la massimo %s campi dei file.',
 	'JS_COPIED_SUCCESSFULLY' => 'Copiato con successo.',
 	'JS_COPY_FAILED' => 'Copia non riuscita. Si prega di copiare manualmente.',
 );

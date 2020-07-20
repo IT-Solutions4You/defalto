@@ -144,7 +144,7 @@ class Vtiger_Viewer extends SmartyBC {
 	public function assign($tpl_var, $value = null, $nocache = false) {
 		// Reject unexpected value assignments.
 		if ($tpl_var == 'SELECTED_MENU_CATEGORY') {
-			if ($val && preg_match("/[^a-zA-Z0-9_-]/", $val, $m)) {
+			if ($value && preg_match("/[^a-zA-Z0-9_-]/", $value, $m)) {
 				return;
 			}
 		}

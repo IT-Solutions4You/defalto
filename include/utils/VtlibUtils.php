@@ -158,6 +158,8 @@ function vtlib_toggleModuleAccess($modules, $enable_disable) {
 	} else if($enable_disable === false) {
 		$enable_disable = 1;
 		$event_type = Vtiger_Module::EVENT_MODULE_DISABLED;
+        //Update default landing page to dashboard if module is disabled.
+        $adb->pquery('UPDATE vtiger_users SET defaultlandingpage = ? WHERE defaultlandingpage IN(' . generateQuestionMarks($modules) . ')', array_merge(array('Home'), $modules));
 	}
 
 	$checkResult = $adb->pquery('SELECT name FROM vtiger_tab WHERE name IN ('. generateQuestionMarks($modules) .')', array($modules));
@@ -657,54 +659,69 @@ $__htmlpurifier_instance = false;
  * @param Boolean $ignore Skip cleaning of the input
  * @return String
  */
-function vtlib_purify($input, $ignore=false) {
-	global $__htmlpurifier_instance, $root_directory, $default_charset;
+function vtlib_purify($input, $ignore = false) {
+    global $__htmlpurifier_instance, $root_directory, $default_charset;
 
-	static $purified_cache = array();
-	$value = $input;
+    static $purified_cache = array();
+    $value = $input;
 
-	if(!is_array($input)) {
-		$md5OfInput = md5($input); 
-		if (array_key_exists($md5OfInput, $purified_cache)) { 
-			$value =  $purified_cache[$md5OfInput]; 
-			//to escape cleaning up again
-			$ignore = true;
-		} 
-	}
-	$use_charset = $default_charset;
-	$use_root_directory = $root_directory;
+    if (!is_array($input)) {
+        $md5OfInput = md5($input);
+        if (array_key_exists($md5OfInput, $purified_cache)) {
+            $value = $purified_cache[$md5OfInput];
+            //to escape cleaning up again
+            $ignore = true;
+        }
+    }
+    $use_charset = $default_charset;
+    $use_root_directory = $root_directory;
 
 
-	if(!$ignore) {
-		// Initialize the instance if it has not yet done
-		if($__htmlpurifier_instance == false) {
-			if(empty($use_charset)) $use_charset = 'UTF-8';
-			if(empty($use_root_directory)) $use_root_directory = dirname(__FILE__) . '/../..';
+    if (!$ignore) {
+        // Initialize the instance if it has not yet done
+        if ($__htmlpurifier_instance == false) {
+            if (empty($use_charset))
+                $use_charset = 'UTF-8';
+            if (empty($use_root_directory))
+                $use_root_directory = dirname(__FILE__) . '/../..';
 
-			include_once ('libraries/htmlpurifier/library/HTMLPurifier.auto.php');
+            $allowedSchemes = array(
+                'http' => true,
+                'https' => true,
+                'mailto' => true,
+                'ftp' => true,
+                'nntp' => true,
+                'news' => true,
+                'data' => true
+            );
 
-			$config = HTMLPurifier_Config::createDefault();
-			$config->set('Core', 'Encoding', $use_charset);
-			$config->set('Cache', 'SerializerPath', "$use_root_directory/test/vtlib");
+            include_once ('libraries/htmlpurifier410/library/HTMLPurifier.auto.php');
 
-			$__htmlpurifier_instance = new HTMLPurifier($config);
-		}
-		if($__htmlpurifier_instance) {
-			// Composite type
-			if (is_array($input)) {
-				$value = array();
-				foreach ($input as $k => $v) {
-					$value[$k] = vtlib_purify($v, $ignore);
-				}
-			} else { // Simple type
-				$value = $__htmlpurifier_instance->purify($input);
-				$value = purifyHtmlEventAttributes($value);
-			}
-		}
-		$purified_cache[$md5OfInput] = $value;
-	}
-	$value = str_replace('&amp;','&',$value);
-	return $value;
+            $config = HTMLPurifier_Config::createDefault();
+            $config->set('Core.Encoding', $use_charset);
+            $config->set('Cache.SerializerPath', "$use_root_directory/test/vtlib");
+            $config->set('CSS.AllowTricky', true);
+            $config->set('URI.AllowedSchemes', $allowedSchemes);
+            $config->set('Attr.EnableID', true);
+
+            $__htmlpurifier_instance = new HTMLPurifier($config);
+        }
+        if ($__htmlpurifier_instance) {
+            // Composite type
+            if (is_array($input)) {
+                $value = array();
+                foreach ($input as $k => $v) {
+                    $value[$k] = vtlib_purify($v, $ignore);
+                }
+            } else { // Simple type
+                $value = $__htmlpurifier_instance->purify($input);
+                $value = purifyHtmlEventAttributes($value, true);
+            }
+        }
+        $purified_cache[$md5OfInput] = $value;
+    }
+    $value = str_replace('&amp;', '&', $value);
+    return $value;
 }
 
 /**
@@ -712,16 +729,36 @@ function vtlib_purify($input, $ignore=false) {
  * @param <String> $value
  * @return <String>
  */
-function purifyHtmlEventAttributes($value){
-	$htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|".
-						"onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|".
-						"onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|".
-						"ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|".
-						"onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste";
-	if(preg_match("/\s*(".$htmlEventAttributes.")\s*=/i", $value)) {
-		$value = str_replace("=", "&equals;", $value);
-	}
-	return $value;
+function purifyHtmlEventAttributes($value, $replaceAll = false) {
+    $htmlEventAttributes = "onerror|onblur|onchange|oncontextmenu|onfocus|oninput|oninvalid|onresize|onauxclick|oncancel|oncanplay|oncanplaythrough|" .
+            "onreset|onsearch|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onclose|oncuechange|ondurationchange|onemptied|onended|" .
+            "onclick|ondblclick|ondrag|ondragend|ondragenter|ondragleave|ondragover|ondragexit|onformdata|onloadeddata|onloadedmetadata|" .
+            "ondragstart|ondrop|onmousedown|onmousemove|onmouseout|onmouseover|onmouseenter|onmouseleave|onpause|onplay|onplaying|" .
+            "onmouseup|onmousewheel|onscroll|onwheel|oncopy|oncut|onpaste|onload|onprogress|onratechange|onsecuritypolicyviolation|" .
+            "onselectionchange|onabort|onselectstart|onstart|onfinish|onloadstart|onshow|onreadystatechange|onseeked|onslotchange|" .
+            "onseeking|onstalled|onsubmit|onsuspend|ontimeupdate|ontoggle|onvolumechange|onwaiting|onwebkitanimationend|onstorage|" .
+            "onwebkitanimationiteration|onwebkitanimationstart|onwebkittransitionend|onafterprint|onbeforeprint|onbeforeunload|" .
+            "onhashchange|onlanguagechange|onmessage|onmessageerror|onoffline|ononline|onpagehide|onpageshow|onpopstate|onunload" .
+            "onrejectionhandled|onunhandledrejection|onloadend";
+
+    // remove malicious html attributes with its value.
+    if ($replaceAll) {
+        $regex = '\s*[=&%#]\s*(?:"[^"]*"[\'"]*|\'[^\']*\'[\'"]*|[^]*[\s\/>])*/i';
+        $value = preg_replace("/\s*(" . $htmlEventAttributes . ")" . $regex, '', $value);
+
+        /**
+         * If anchor tag having 'javascript:' string then remove the tag contents.
+         * Right now, we fixed this for anchor tag as we don't see any other such things right now.  
+         * All other event attributes are already handled above. Need to update this if any thing new found
+         */
+        $javaScriptRegex = '/<a [^>]*(j[\s]?a[\s]?v[\s]?a[\s]?s[\s]?c[\s]?r[\s]?i[\s]?p[\s]?t[\s]*[=&%#:])[^>]*?>/i';
+        $value = preg_replace($javaScriptRegex, '<a>', $value);
+    } else {
+        if (preg_match("/\s*(" . $htmlEventAttributes . ")\s*=/i", $value)) {
+            $value = str_replace("=", "&equals;", $value);
+        }
+    }
+    return $value;
 }
 
 /**

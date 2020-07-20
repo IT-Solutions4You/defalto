@@ -15,7 +15,7 @@ $languageStrings = array(
 	'LBL_VENDOR_INFORMATION'       => 'Información sobre Proveedores:', 
 	'LBL_VENDOR_ADDRESS_INFORMATION' => 'Información sobre la dirección:', 
 	'Vendor Name'                  => 'Proveedor'                   , 
-	'Vendor No'                    => 'Núm. de Proveedor'             , 
+	'Vendor No'                    => 'Id Proveedor'             , 
 	'Website'                      => 'Página Web'                 , 
 	'GL Account'                   => 'Cuenta Contable'             , 
 	'300-Sales-Software'           => '300-Ventas-Software'         , 
@@ -27,10 +27,7 @@ $languageStrings = array(
 	'306-Internet Sales'           => '306-Ventas-Internet'         , 
 	'307-Service-Hardware Labor'   => '307-Instalación de Hardware-Ventas', 
 	'308-Sales-Books'              => '308-Ventas-Libros'           , 
-
-  'Phone' => 'Teléfono principal',
-  'Email' => 'Correo electrónico principal',
-
+    'All' => 'Todos',
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => '¿Seguro que lo quiere borrar?', 

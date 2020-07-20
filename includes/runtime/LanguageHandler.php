@@ -133,6 +133,16 @@ class Vtiger_Language_Handler {
 				self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
 			}
 		}
+		// add custom translation for module from language/custom/$language/$module.php file
+		$qualifiedCustomName = 'languages.custom.'.$language.'.'.$module;
+        $file = Vtiger_Loader::resolveNameToPath($qualifiedCustomName);
+
+        $languageStrings = $jsLanguageStrings = array();
+		if(file_exists($file)){
+            require $file;
+            self::$languageContainer[$language][$module]['languageStrings'] = array_merge(self::$languageContainer[$language][$module]['languageStrings'],$languageStrings);
+            self::$languageContainer[$language][$module]['jsLanguageStrings'] = array_merge(self::$languageContainer[$language][$module]['jsLanguageStrings'],$jsLanguageStrings);
+        } 
 		$return = array();
 		if(isset(self::$languageContainer[$language][$module])){
 			$return = self::$languageContainer[$language][$module];
@@ -233,11 +243,30 @@ class Vtiger_Language_Handler {
 }
 
 function vtranslate($key, $moduleName = '') {
-	$args = func_get_args();
+	$unformattedArgs = func_get_args();
+	if(count($unformattedArgs) > 2){ 
+		// slice an array by taking first 2 values into another array.
+		$formattedArgs = array_slice($unformattedArgs,0,2);
+		// Make third value as empty
+		$formattedArgs['2'] = '';
+		$sliced_part = array_slice($unformattedArgs,2);
+		foreach ($sliced_part as $key => $value) {
+			array_push($formattedArgs,$value);
+		}
+		$args = $formattedArgs;
+	} else {
+		$args = $unformattedArgs;
+	}
 	$formattedString = call_user_func_array(array('Vtiger_Language_Handler', 'getTranslatedString'), $args);
-	array_shift($args);
-	array_shift($args);
-	if (is_array($args) && !empty($args)) {
+
+    if(count($unformattedArgs) > 2){
+		// Remove first three values from an array (key,modulename,languagecode)
+		array_shift($args); array_shift($args);array_shift($args);
+	} else {
+		// Remove first two values from an array (key,modulename)
+		array_shift($args); array_shift($args);
+	}
+	if(is_array($args) && !empty($args)) {
 		$formattedString = call_user_func_array('vsprintf', array($formattedString, $args));
 	}
 	return $formattedString;

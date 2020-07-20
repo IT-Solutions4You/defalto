@@ -70,6 +70,11 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		$existingAttachments = $request->get('attachments',array());
 		if(empty($recordId)) {
 			if(is_array($existingAttachments)) {
+                /**
+				 * When no document is selected from CRM in compose mail form, the $documentIds will be an empty string and not an array
+				 * Since $documentIds is string and here we are trying to array push string it will throw fatal error.
+				 */
+				$documentIds = $documentIds ? $documentIds : array();
 				foreach ($existingAttachments as $index =>  $existingAttachInfo) {
 					$existingAttachInfo['tmp_name'] = $existingAttachInfo['name'];
 					$existingAttachments[$index] = $existingAttachInfo;
@@ -185,6 +190,15 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 			$date_var = date("Y-m-d H:i:s");
 			if(is_array($existingAttachments)) {
 				foreach ($existingAttachments as $index =>  $existingAttachInfo) {
+					/**
+					 * For download or send email filename should not be in encoded format (md5)
+					 * Ex: for PDF: if filename - abc_md5(abc).pdf then raw filename - abc.pdf
+					 * For Normal documents: rawFileName is not exist in the attachments info. So it fallback to normal filename
+					 */
+					$rawFileName = $existingAttachInfo['storedname'];
+					if (!$rawFileName) {
+						$rawFileName = $existingAttachInfo['attachment'];
+					}
 					$file_name = $existingAttachInfo['attachment'];
 					$path = $existingAttachInfo['path'];
 					$fileId = $existingAttachInfo['fileid'];
@@ -196,7 +210,7 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 					}
 					$oldFilePath = $path.'/'.$oldFileName;
 
-					$binFile = sanitizeUploadFileName($file_name, $upload_badext);
+					$binFile = sanitizeUploadFileName($rawFileName, $upload_badext);
 
 					$current_id = $adb->getUniqueID("vtiger_crmentity");
 

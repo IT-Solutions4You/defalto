@@ -106,6 +106,7 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
+                $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
@@ -138,6 +139,7 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
 				}
+                $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
 				if ($fieldValue !== null) {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
@@ -149,4 +151,14 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 
 		return $recordModel;
 	}
+    
+    public function purifyCkeditorField($fieldName, $fieldValue) {
+        $ckeditorFields = array('commentcontent', 'notecontent', 'signature');
+        if((in_array($fieldName, $ckeditorFields)) && $fieldValue !== null){
+            $purifiedContent = vtlib_purify(decode_html($fieldValue));
+            // Purify malicious html event attributes
+            $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
+        }
+        return $fieldValue;
+    }
 }

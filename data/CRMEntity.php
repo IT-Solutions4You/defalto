@@ -112,7 +112,7 @@ class CRMEntity {
 		}
 
 		// added to support files transformation for file upload fields like uitype 69, 
-		if(count($_FILES)) {
+		if(!empty($_FILES) && count($_FILES)) {
 			$_FILES = Vtiger_Util_Helper::transformUploadedFiles($_FILES, true);
 		}
 
@@ -522,7 +522,7 @@ class CRMEntity {
 				} elseif ($uitype == 5 || $uitype == 6 || $uitype == 23) {
 					//Added to avoid function call getDBInsertDateValue in ajax save
 					if (isset($current_user->date_format) && !$ajaxSave) {
-						$fldvalue = getValidDBInsertDateValue($this->column_fields[$fieldname]);
+						$fldvalue = getValidDBInsertDateTimeValue($this->column_fields[$fieldname]);
 					} else {
 						$fldvalue = $this->column_fields[$fieldname];
 					}
@@ -945,7 +945,7 @@ class CRMEntity {
 			$em->triggerEvent("vtiger.entity.beforesave.modifiable", $entityData);
 			$em->triggerEvent("vtiger.entity.beforesave", $entityData);
 			$em->triggerEvent("vtiger.entity.beforesave.final", $entityData);
-		}
+        }
 		//Event triggering code ends
 
 		//GS Save entity being called with the modulename as parameter
@@ -1605,7 +1605,7 @@ class CRMEntity {
 					while ($recordinfo = $adb->fetch_array($records)) {
 						$value = "$prefix" . "$cur_id";
 						$adb->pquery("UPDATE $fld_table SET $fld_column = ? WHERE $this->table_index = ?", Array($value, $recordinfo['recordid']));
-						$cur_id += 1;
+						$cur_id = $this->getSequnceNumber($cur_id);
 						$returninfo['updatedrecords'] = $returninfo['updatedrecords'] + 1;
 					}
 					if ($old_cur_id != $cur_id) {
@@ -1618,6 +1618,15 @@ class CRMEntity {
 		}
 		return $returninfo;
 	}
+    
+    function getSequnceNumber($curid){
+        $strip = strlen($curid) - strlen($curid + 1);
+        if ($strip < 0)
+                $strip = 0;
+        $temp = str_repeat("0", $strip);
+        $req_no = $temp . ($curid + 1);
+        return $req_no;
+    }
 
 	/* Generic function to get attachments in the related list of a given module */
 

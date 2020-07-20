@@ -1258,48 +1258,104 @@ Vtiger.Class("Vtiger_List_Js", {
 			});
 		});
 	},
-	/**
-	 * Function to register the list view row search event
-	 */
-	registerListViewSearch: function () {
-		var listViewPageDiv = this.getListViewContainer();
-		var thisInstance = this;
-		listViewPageDiv.on('click', '[data-trigger="listSearch"]', function (e) {
-			e.preventDefault();
-			var params = {
-				'page': '1'
-			}
-			thisInstance.loadListViewRecords(params).then(
-				function (data) {
-					//To unmark the all the selected ids
-					jQuery('#deSelectAllMsgDiv').trigger('click');
-				},
-				function (textStatus, errorThrown) {
+	prevSearchValues : [],
+
+    /**
+     * Function to register the list view row search event
+     */        
+    registerListViewSearch : function() {
+        var listViewPageDiv = this.getListViewContainer();
+        var thisInstance = this;
+        listViewPageDiv.on('click','[data-trigger="listSearch"]',function(e){
+            e.preventDefault();
+            var params = {
+                'page': '1'
+            }
+            var searchButton = jQuery(this);
+            searchButton.addClass('hide');
+            listViewPageDiv.find('[data-trigger="clearListSearch"]').removeClass('hide');
+            
+            thisInstance.loadListViewRecords(params).then(
+                function(data){
+                    //To unmark the all the selected ids
+                    jQuery('#deSelectAllMsgDiv').trigger('click');
+                },
+
+                function(textStatus, errorThrown){
+                }
+            );
+        });
+        
+        var clearSearchContributor = function(contributor) {
+            if(contributor.is('input')) {
+                contributor.val('');
+            } else if(contributor.is('select')) {
+                contributor.select2("val", "");
+                contributor.val('');
+            } else {
+                console.log("contributor clearing now handled : ", contributor);
+            }
+        };
+        
+        //register clear search event
+        listViewPageDiv.on('click', '[data-trigger="clearListSearch"]', function(e) {
+            e.preventDefault();
+            listViewPageDiv.find('.listSearchContributor:not(".select2-container")').each(function(i, contributor) {
+                contributor = jQuery(contributor);
+                clearSearchContributor(contributor);
+            });
+            var clearButton = jQuery(this);
+            clearButton.addClass('hide');
+            thisInstance.prevSearchValues = [];
+            jQuery('#currentSearchParams').val('');
+            listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide').trigger('click');
+        });
+        
+        
+        //floatThead change event object has undefined keyCode, using keyup instead
+        var listSearchContributorChangeHandler = function(e){
+            var element = jQuery(e.currentTarget);
+            var fieldName = element.attr('name');
+            var searchValue = element.val();
+			if(element.hasClass('select2')){
+				var currentElementContainer = element.closest('.select2_search_div').find('div.listSearchContributor').find('ul');
+				var desireHeight = 150;
+				if(currentElementContainer.height() > desireHeight){
+					currentElementContainer.css({'cssText':'height:'+desireHeight+'px !important;'+'padding:0'});
+				}else if(currentElementContainer.find('.mCSB_container').height() < desireHeight){
+					currentElementContainer.removeAttr('style');
 				}
-			);
-		});
-
-		//floatThead change event object has undefined keyCode, using keyup instead
-		var prevSearchValues = [];
-		listViewPageDiv.on('keyup', '.listSearchContributor', function (e) {
-			var element = jQuery(e.currentTarget);
-			var fieldName = element.attr('name');
-			var searchValue = element.val();
-			if (e.keyCode == 13 && prevSearchValues[fieldName] !== searchValue) {
-				e.preventDefault();
-				var element = jQuery(e.currentTarget);
-				var parentElement = element.closest('tr');
-				var searchTriggerElement = parentElement.find('[data-trigger="listSearch"]');
-				searchTriggerElement.trigger('click');
-				prevSearchValues[fieldName] = searchValue;
+				currentElementContainer.mCustomScrollbar("update");
 			}
-		});
-
-		listViewPageDiv.on('datepicker-change', '.dateField', function (e) {
-			var element = jQuery(e.currentTarget);
-			element.trigger('change');
-		});
-	},
+			
+            if(e.keyCode == 13 && thisInstance.prevSearchValues[fieldName] !== searchValue && !element.hasClass('select2')){
+                e.preventDefault();
+                var element = jQuery(e.currentTarget);
+                var parentElement = element.closest('tr');
+                var searchTriggerElement = parentElement.find('[data-trigger="listSearch"]');
+                searchTriggerElement.trigger('click');
+                thisInstance.prevSearchValues[fieldName] = searchValue;
+            }
+            if(e.keyCode !== 13) {
+                listViewPageDiv.find('[data-trigger="clearListSearch"]').addClass('hide');
+                setTimeout(function(){
+                    listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide');
+                }, 10);
+            }
+        };
+		listViewPageDiv.find('.searchRow div.listSearchContributor.select2').each(function(i,elem){
+           var currentSearchInput = jQuery(elem);
+			app.helper.showVerticalScroll(currentSearchInput.find('ul'),{'height': 150});
+        });
+        listViewPageDiv.on('keyup','.listSearchContributor', listSearchContributorChangeHandler);
+        listViewPageDiv.on('change','select', listSearchContributorChangeHandler);
+        listViewPageDiv.on('datepicker-change', '.dateField', function(e){
+            var element = jQuery(e.currentTarget);
+            element.trigger('change');
+            listSearchContributorChangeHandler(e);
+        });
+    },
+    
 	saveMassedit: function (event, form_original_data, isOwnerChanged) {
 		event.preventDefault();
 		var form = $('#massEdit');
@@ -2336,7 +2392,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				selectedFieldsList.on('click', '.removeField', function (e) {
 					var selectedFieldsEles = selectedFieldsList.find('.item');
 					if (selectedFieldsEles.length <= 1) {
-						app.helper.showErrorNotification({message: app.vtranslate('Atleast one field should be selected')});
+						app.helper.showErrorNotification({message: app.vtranslate('JS_ATLEAST_SELECT_ONE_FIELD')});
 						return false;
 					}
 					var ele = jQuery(e.currentTarget);

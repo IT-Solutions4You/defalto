@@ -74,8 +74,32 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	 * @return <Array> List of picklist values if the field is of type picklist or multipicklist, null otherwise.
 	 */
 	public function getPicklistValues() {
+        $fieldName = $this->getName(); 
 		if($this->get('uitype') == 32) {
-			return Vtiger_Language_Handler::getAllLanguages();
+			 if($fieldName == 'language'){ 
+                return Vtiger_Language_Handler::getAllLanguages(); 
+            } else if($fieldName == 'defaultlandingpage'){
+				$db = PearDatabase::getInstance();
+                    $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+                    $presence = array(0);
+                    $restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
+                    $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
+
+                    $result = $db->pquery($query, array($presence, '1', $restrictedModules));
+                    $numOfRows = $db->num_rows($result);
+
+                    $moduleData = array('Home' => vtranslate('Home','Home'));
+                    for ($i = 0; $i < $numOfRows; $i++) {
+                        $tabId = $db->query_result($result, $i, 'tabid');
+                        // check the module access permission, if user has permission then show it in default module list
+                        if($currentUserPriviligesModel->hasModulePermission($tabId)){
+                            $moduleName = $db->query_result($result, $i, 'name');
+                            $moduleLabel = $db->query_result($result, $i, 'tablabel');
+                            $moduleData[$moduleName] = vtranslate($moduleLabel,$moduleName);
+                        }
+                    }
+                    return $moduleData;
+			}
 		}
 		else if ($this->get('uitype') == '115') {
 			$db = PearDatabase::getInstance();

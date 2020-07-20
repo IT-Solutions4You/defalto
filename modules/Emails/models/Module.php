@@ -112,7 +112,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
 					}
 				}
 			$emailsResult[vtranslate($row['setype'], $row['setype'])][$row['crmid']][] = array('value' => $row['value'],
-																								'label' => decode_html($row['label']).' <b>('.$row['value'].')</b>',
+																								'label' => decode_html($row['label']).' ('.$row['value'].')',
 																								'name' => decode_html($row['label']),);
             }
             
@@ -154,7 +154,7 @@ class Emails_Module_Model extends Vtiger_Module_Model{
                                                     $emailsResult[vtranslate($moduleName, $moduleName)][$row[$moduleInstance->table_index]][]
                                                                             = array('value'	=> $emailFieldValue,
 																					'name'	=> $recordLabel,
-																					'label'	=> $recordLabel . ' <b>('.$emailFieldValue.')</b>');
+																					'label'	=> $recordLabel . ' ('.$emailFieldValue.')');
 
                                             }
                                     }

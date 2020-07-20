@@ -336,6 +336,7 @@ class WebserviceField{
 
 	function getPicklistDetails(){
 		$cache = Vtiger_Cache::getInstance();
+        $fieldName = $this->getFieldName();
 		if($cache->getPicklistDetails($this->getTabId(),$this->getFieldName())){
 			return $cache->getPicklistDetails($this->getTabId(),$this->getFieldName());
 		} else {
@@ -346,7 +347,26 @@ class WebserviceField{
 				foreach ($allRegions as $regionId => $regionDetails) {
 					$picklistDetails[] = array('value' => $regionId, 'label' => $regionDetails['name']);
 				}
-			} else {
+			}elseif ($fieldName == 'defaultlandingpage') {
+                $picklistDetails = array(); 
+                $presence = array(0);
+                $restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
+                $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
+
+                $result = $this->pearDB->pquery($query, array($presence, '1', $restrictedModules));
+                $numOfRows = $this->pearDB->num_rows($result);
+
+                $picklistDetails[] = array('value' => 'Home', 'label' => vtranslate('Home', 'Home'));
+                for ($i = 0; $i < $numOfRows; $i++) {
+                    $moduleName = $this->pearDB->query_result($result, $i, 'name');
+
+                    // check the module access permission, if user has permission then show it in default module list
+                    if (vtlib_isModuleActive($moduleName)) {
+                        $moduleLabel = $this->pearDB->query_result($result, $i, 'tablabel');
+                        $picklistDetails[] = array('value' => $moduleName, 'label' => vtranslate($moduleLabel, $moduleName));
+                    }
+                }
+            } else {
 				$hardCodedPickListNames = array('hdntaxtype','email_flag');
 				$hardCodedPickListValues = array('hdntaxtype'=> array(	array('label' => 'Individual',	'value' => 'individual'),
 																		array('label' => 'Group',		'value' => 'group')),

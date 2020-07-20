@@ -11,17 +11,17 @@
 	{include file="modules/Vtiger/Header.tpl"}
 
 	{assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
-	<nav class="navbar navbar-default navbar-fixed-top app-fixed-navbar">
+	<nav class="navbar navbar-inverse navbar-fixed-top app-fixed-navbar">
 		<div class="container-fluid global-nav">
 			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-3 app-navigator-container">
+				<div class="col-lg-3 col-md-3 col-sm-4 col-xs-8 app-navigator-container">
 					<div class="row">
 						<div id="appnavigator" class="col-sm-2 col-xs-2 cursorPointer app-switcher-container" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
 							<div class="row app-navigator">
 								<span class="app-icon fa fa-bars"></span>
 							</div>
 						</div>
-						<div class="logo-container col-lg-9 col-md-9 col-sm-9 col-xs-9">
+						<div class="logo-container col-sm-3 col-xs-9">
 							<div class="row">
 								<a href="index.php" class="company-logo">
 									<img src="{$COMPANY_LOGO->get('imagepath')}" alt="{$COMPANY_LOGO->get('alt')}"/>
@@ -30,17 +30,27 @@
 						</div>  
 					</div>
 				</div>
-				<div class="search-links-container col-md-3 col-lg-3 col-sm-3">
-					<div class="search-link hidden-xs">
-						<span class="fa fa-search" aria-hidden="true"></span>
-						<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
-						<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
+				<div class="navbar-header paddingTop5">
+					<button type="button" class="navbar-toggle collapsed border0" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+						<i class="fa fa-th"></i>
+					</button>
+					<button type="button" class="navbar-toggle collapsed border0" data-toggle="collapse" data-target="#search-links-container" aria-expanded="false">
+						<i class="fa fa-search"></i>
+					</button>
+				</div>
+				<div class="col-sm-3">
+					<div id="search-links-container" class="search-links-container collapse navbar-collapse">
+						<div class="search-link">
+							<span class="fa fa-search" aria-hidden="true"></span>
+							<input class="keyword-input" type="text" placeholder="{vtranslate('LBL_TYPE_SEARCH')}" value="{$GLOBAL_SEARCH_VALUE}">
+							<span id="adv-search" class="adv-search fa fa-chevron-circle-down pull-right cursorPointer" aria-hidden="true"></span>
+						</div>
 					</div>
 				</div>
-				<div id="navbar" class="col-sm-6 col-md-3 col-lg-3 collapse navbar-collapse navbar-right global-actions">
+				<div id="navbar" class="col-sm-6 col-xs-12 collapse navbar-collapse navbar-right global-actions">
 					<ul class="nav navbar-nav">
 						<li>
-							<div class="dropdown">
+							<div class="dropdown pull-left">
 								<div class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
 									<a href="#" id="menubar_quickCreate" class="qc-button fa fa-plus-circle" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true"></a>
 								</div>
@@ -63,7 +73,7 @@
 															{* Adding two links,Event and Task if module is Calendar *}
 															{if $singularLabel == 'SINGLE_Calendar'}
 																{assign var='singularLabel' value='LBL_TASK'}
-																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if}">
 																	<a id="menubar_quickCreate_Events" class="quickCreateModule" data-name="Events"
 																	   data-url="index.php?module=Events&view=QuickCreateAjax" href="javascript:void(0)">{$moduleModel->getModuleIcon('Event')}<span class="quick-create-module">{vtranslate('LBL_EVENT',$moduleName)}</span></a>
 																</div>
@@ -72,7 +82,7 @@
 																	<br>
 																	<div class="row">
 																{/if}
-																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">{$moduleModel->getModuleIcon('Task')}<span class="quick-create-module">{vtranslate($singularLabel,$moduleName)}</span></a>
 																</div>
@@ -80,7 +90,7 @@
 																	{assign var='count' value=$count+1}
 																{/if}
 															{else if $singularLabel == 'SINGLE_Documents'}
-																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if} dropdown">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if} dropdown">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModuleSubmenu dropdown-toggle" data-name="{$moduleModel->getName()}" data-toggle="dropdown" 
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
 																		{$moduleModel->getModuleIcon()}
@@ -104,7 +114,7 @@
 																	</ul>
 																</div>
 															{else}
-																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4{/if}">
+																<div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if}">
 																	<a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModule" data-name="{$moduleModel->getName()}"
 																	   data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">
 																		{$moduleModel->getModuleIcon()}
@@ -140,8 +150,8 @@
 							<li><div><a href="#" class="taskManagement vicon vicon-task" title="{vtranslate('Tasks','Vtiger')}" aria-hidden="true"></a></div></li>
 						{/if}
 						<li class="dropdown">
-							<div style="margin-top: 15px;">
-								<a href="#" class="userName dropdown-toggle" data-toggle="dropdown" role="button">
+							<div>
+								<a href="#" class="userName dropdown-toggle pull-right" data-toggle="dropdown" role="button">
 									<span class="fa fa-user" aria-hidden="true" title="{$USER_MODEL->get('first_name')} {$USER_MODEL->get('last_name')}
 										  ({$USER_MODEL->get('user_name')})"></span>
 									<span class="link-text-xs-only hidden-lg hidden-md hidden-sm">{$USER_MODEL->getName()}</span>
@@ -155,8 +165,8 @@
 													<i class='vicon-vtigeruser' style="font-size:90px"></i>
 												{else}
 													{foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
-														{if !empty($IMAGE_INFO.path) && !empty({$IMAGE_INFO.orgname})}
-															<img src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" width="100px" height="100px">
+														{if !empty($IMAGE_INFO.url)}
+															<img src="{$IMAGE_INFO.url}" width="100px" height="100px">
 														{/if}
 													{/foreach}
 												{/if}
@@ -170,7 +180,7 @@
 											</div>
 										</div>
 									</div>
-									<div class="logout-footer clearfix">
+									<div id="logout-footer" class="logout-footer clearfix">
 										<hr style="margin: 10px 0 !important">
 										<div class="">
 											<span class="pull-left">

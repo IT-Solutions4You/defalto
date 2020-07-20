@@ -18,8 +18,8 @@
             {assign var=IMAGE_DETAILS value=$MODULE_INSTANCE->getImageDetails()}
 	    {if $IMAGE_DETAILS}
 		    {foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-		        {if !empty($IMAGE_INFO.path)}
-		                <img src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" alt="{$IMAGE_INFO.orgname}" title="{$IMAGE_INFO.orgname}" >
+		        {if !empty($IMAGE_INFO.url)}
+		                <img src="{$IMAGE_INFO.url}" alt="{$IMAGE_INFO.orgname}" title="{$IMAGE_INFO.orgname}" >
 		        {else}
 		                <img src="{vimage_path('summary_Contact.png')}" class="summaryImg"/>
 		        {/if}

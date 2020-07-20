@@ -399,13 +399,16 @@ class Users_Record_Model extends Vtiger_Record_Model {
 
 			//decode_html - added to handle UTF-8 characters in file names
 			$imageOriginalName = urlencode(decode_html($imageName));
+            if($url) {
+                $url = $site_URL.$url;
+            }
 
 			$imageDetails[] = array(
 					'id' => $imageId,
 					'orgname' => $imageOriginalName,
 					'path' => $imagePath.$imageId,
 					'name' => $imageName,
-                    'url'  => $site_URL.$url
+                    'url'  => $url
 			);
 		}
 		return $imageDetails;
@@ -503,13 +506,20 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <Array>
 	 */
 	public function getAccessibleGroups($private="",$module = false) {
+        global $default_charset;
 		//TODO:Remove dependence on $_REQUEST for the module name in the below API
         $accessibleGroups = Vtiger_Cache::get('vtiger-'.$private, 'accessiblegroups');
         if(!$accessibleGroups){
             $accessibleGroups = get_group_array(false, "ACTIVE", "", $private,$module);
             Vtiger_Cache::set('vtiger-'.$private, 'accessiblegroups',$accessibleGroups);
         }
-		return $accessibleGroups;
+        if (!empty($accessibleGroups)) {
+            foreach ($accessibleGroups as $groupId => $groupName) {
+                $accessibleGroups[$groupId] = html_entity_decode($groupName, ENT_QUOTES, $default_charset);
+            }
+        }
+
+        return $accessibleGroups;
 	}
 
 	/**

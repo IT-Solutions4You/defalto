@@ -17,10 +17,13 @@ $languageStrings = array(
 	'Question'                     => 'Pregunta'                    , 
 	'Answer'                       => 'Respuesta'                   , 
 	'Comments'                     => 'Comentarios'                 , 
-	'Faq No'                       => 'Núm. de FAQ'                   , 
+	'Faq No'                       => 'Id FAQ'                   , 
 	'General'                      => 'General'                     , 
 	'Draft'                        => 'Borrador'                    , 
 	'Published'                    => 'Publicada'                   , 
+    'Reviewed'                    => 'Revisada'                   , 
 	'Obsolete'                     => 'Obsoleta'                    , 
 	'LBL_SOLUTION'                 => 'Solución'                   , 
+    'Drafted FAQ' => 'FAQs en borrador',
+    'Published FAQ' => 'FAQs publicadas'
 );

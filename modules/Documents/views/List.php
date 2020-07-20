@@ -24,7 +24,7 @@ class Documents_List_View extends Vtiger_List_View {
 	public function checkPermission(Vtiger_Request $request) {
 		return parent::checkPermission($request);
 	}
-	function preProcess (Vtiger_Request $request) {
+	function preProcess (Vtiger_Request $request, $display=true) {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
 
@@ -180,9 +180,9 @@ class Documents_List_View extends Vtiger_List_View {
 			$tagParams = array();
 		}
 
-		$searchParams = array_merge($searchParams, $tagParams);
+		$searchAndTagParams = array_merge($searchParams, $tagParams);
 
-		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchParams, $listViewModel->getModule());
+		$transformedSearchParams = $this->transferListSearchParamsToFilterCondition($searchAndTagParams, $listViewModel->getModule());
 		$listViewModel->set('search_params',$transformedSearchParams);
 
 
@@ -195,6 +195,15 @@ class Documents_List_View extends Vtiger_List_View {
 				$searchParams[$fieldName] = $fieldSearchInfo;
 			}
 
+		}
+                
+                foreach($tagParams as $fieldListGroup){
+			foreach($fieldListGroup as $fieldSearchInfo){
+				$fieldSearchInfo['searchValue'] = $fieldSearchInfo[2];
+				$fieldSearchInfo['fieldName'] = $fieldName = $fieldSearchInfo[0];
+				$fieldSearchInfo['comparator'] = $fieldSearchInfo[1];
+				$tagParams[$fieldName] = $fieldSearchInfo;
+			}
 		}
 
 		$folderId = $request->get('folder_id');
@@ -280,6 +289,7 @@ class Documents_List_View extends Vtiger_List_View {
 		$viewer->assign('IS_MODULE_EDITABLE', $listViewModel->getModule()->isPermitted('EditView'));
 		$viewer->assign('IS_MODULE_DELETABLE', $listViewModel->getModule()->isPermitted('Delete'));
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
+                $viewer->assign('TAG_DETAILS', $tagParams);
 		$viewer->assign('LIST_VIEW_MODEL', $listViewModel);
 		$viewer->assign('NO_SEARCH_PARAMS_CACHE', $request->get('nolistcache'));
         $viewer->assign('VIEWID', $cvId);

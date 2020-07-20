@@ -115,7 +115,7 @@ require_once("VTWorkflowUtils.php");
 			return_module_language($current_language, 'Calendar'),
 			return_module_language($current_language, $module->name)));
 		$smarty->assign("APP", $app_strings);
-		$smarty->assign("dateFormat", parse_calendardate($app_strings['NTC_DATE_FORMAT']));
+		$smarty->assign('dateFormat', parse_calendardate());
 		$smarty->assign("IMAGE_PATH",$image_path);
 		$smarty->assign("THEME", $theme);
 		$smarty->assign("MODULE_NAME", $module->label);

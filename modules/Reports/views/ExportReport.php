@@ -92,11 +92,13 @@ class Reports_ExportReport_View extends Vtiger_View_Controller {
         $primaryModule = $reportModel->getPrimaryModule();
 		$secondaryModules = $reportModel->getSecondaryModules();
         $modulesList = array($primaryModule);
-        if(stripos($secondaryModules, ':') >= 0){
-            $secmodules = split(':', $secondaryModules);
-            $modulesList = array_merge($modulesList, $secmodules);
-        }else{
-            array_push($modulesList, $secondaryModules);
+        if($secondaryModules){
+            if(stripos($secondaryModules, ':') >= 0){
+                $secmodules = explode(':', $secondaryModules);
+                $modulesList = array_merge($modulesList, $secmodules);
+            }else{
+                array_push($modulesList, $secondaryModules);
+            }
         }
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userPrivilegesModel = Users_Privileges_Model::getInstanceById($currentUser->getId());

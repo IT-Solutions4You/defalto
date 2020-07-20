@@ -49,31 +49,30 @@ a:active {
 /************ Layout **************/
 /**********************************/
 html {
-  height: 100%;
-  overflow-y: auto;
-}
-body {
-  width: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
-}
-body > .mCSB_inside > .mCSB_container {
-  margin-right: 15px;
-}
-#page {
+  overflow-y: auto;
   min-height: 100%;
-  padding-top: 84px;
-}
-.select2-container .select2-choice {
-  font-family: 'OpenSans-Regular', sans-serif;
 }
 body {
+  margin: 0;
+  padding: 0;
   font-family: 'OpenSans-Regular', sans-serif;
   font-size: 12px;
   font-weight: normal;
   font-style: normal;
   font-kerning: normal;
+  height: inherit;
+}
+body > .mCSB_inside > .mCSB_container {
+  margin-right: 15px;
+}
+#page {
+  padding-top: 84px;
+  height: inherit;
+}
+.select2-container .select2-choice {
+  font-family: 'OpenSans-Regular', sans-serif;
 }
 .app-fixed-navbar {
   background: #fff;
@@ -86,7 +85,6 @@ body {
 }
 .global-nav .global-actions {
   padding-right: 15px;
-  height: 42px !important;
 }
 .app-nav {
   position: relative;
@@ -97,17 +95,21 @@ body {
   background: #FBFBFB;
   margin-bottom: 0;
   padding: 4px 0;
-  border-top: 1px solid #DDDDDD;
+  border-top: 1px solid #ccc;
+  border-width: thin;
 }
 .main-container {
   position: relative;
-  min-height: 100%;
+  min-height: calc(100vh - 108px);
 }
 .main-container:before,
 .main-container:after {
   content: " ";
   display: block;
   clear: both;
+}
+.main-container .row {
+  min-height: inherit;
 }
 @media (min-width: 992px) {
   .global-nav .logo-container {
@@ -123,9 +125,7 @@ body {
     padding-right: 0;
     position: absolute;
     width: 100%;
-    height: 42px;
-    /*        border-top:1px solid #ddd;*/
-    border-bottom: 1px solid #ddd;
+    height: 43px;
   }
   .app-nav .module-action-bar .module-action-content {
     background: #FBFBFB;
@@ -138,7 +138,7 @@ body {
   .main-container .module-nav {
     display: inline-block;
     width: 42px;
-    z-index: 10;
+    z-index: 1093;
     position: absolute;
     bottom: 0;
     top: 0;
@@ -158,15 +158,14 @@ body {
     min-height: 100%;
     background: #FFFFFF;
     border-right: 1px solid #DDDDDD;
+    overflow: auto;
+    border-width: thin;
   }
   .main-container .content-area {
     width: 100%;
     padding-left: 283px;
-    padding-top: 15px;
-    min-height: 768px;
   }
   .main-container .settingsPageDiv {
-    min-height: 768px;
     padding-left: 230px;
   }
   .main-container .settingsNav {
@@ -235,7 +234,13 @@ body {
     padding-top:5px;
 }*/
 .global-nav .navbar-nav > li div a {
-  padding: 15px;
+  padding: 13px;
+}
+#navbar > ul > li > div > div > a {
+  float: left;
+}
+#navbar > ul > li > div > a {
+  float: left;
 }
 .global-nav > ul {
   margin-right: 20px;
@@ -257,11 +262,12 @@ body {
   height: 100%;
   width: 100%;
   color: #AAAAAA;
-  margin-top: 4px;
+  margin: 4px;
   padding: 0px 10px;
   text-decoration: none;
   vertical-align: top;
   border: 1px solid #DDDDDD;
+  border-width: thin;
 }
 .search-link .adv-search {
   margin-top: 9px;
@@ -390,9 +396,7 @@ body {
   height: 42px;
   text-align: center;
   line-height: 42px;
-  /*    background-color: #2c3b49;*/
   color: #ffffff;
-  /*border-bottom: 1px solid #272B46;*/
 }
 .app-nav .app-indicator-icon-container .app-indicator-icon {
   font-size: 24px;
@@ -764,6 +768,9 @@ a.menu-item:hover {
 .logout-footer hr {
   margin: 10px 0;
 }
+#logout-footer > div > span > a {
+  float: none;
+}
 .app-home {
   background: #C5EFF7;
 }
@@ -788,8 +795,11 @@ a.menu-item:hover {
 /*************************************************/
 /******** View styles (List/Edit/Detail..) *******/
 /*************************************************/
+.viewContent {
+  height: inherit;
+}
 .viewContent .content-area {
-  padding-left: 50px;
+  padding-left: 3%;
 }
 .viewContent .content-area.full-width {
   padding-left: 15px;
@@ -854,6 +864,7 @@ a {
   border-radius: 1px;
   box-shadow: none;
   border: 1px solid #cccccc;
+  border-width: thin;
 }
 input[type="text"].inputElement,
 input[type="password"].inputElement {
@@ -862,9 +873,10 @@ input[type="password"].inputElement {
 .select2-container-multi .select2-choices {
   min-height: 28px;
   border-radius: 1px;
-  border-color: #aaa;
+  border-color: #ccc;
   position: initial;
   z-index: 3;
+  border-width: thin;
 }
 .select2-container-multi .select2-choices .select2-search-field input {
   height: 29px;
@@ -880,6 +892,7 @@ input[type="password"].inputElement {
 .inputElement.select2-container .select2-choice {
   border-radius: 0 2px 2px 0;
   height: 28px;
+  border-width: thin;
 }
 .inputElement.select2-container {
   border: 0;
@@ -1340,6 +1353,7 @@ ul.unstyled {
   border-radius: 0px;
   font-weight: 100;
   cursor: pointer;
+  border-width: thin;
 }
 .btn:hover {
   cursor: pointer;
@@ -1355,6 +1369,7 @@ ul.unstyled {
   border: 1px solid #ddd;
   color: #666;
   background: #fff;
+  border-width: thin;
 }
 .module-buttons:hover,
 .module-buttons:focus,
@@ -1405,6 +1420,7 @@ ul.unstyled {
 .listview-actions-container {
   position: relative;
   background: #fff;
+  padding-top: 10px;
 }
 .listview-pagination i {
   font-size: 20px;
@@ -1434,6 +1450,8 @@ ul.unstyled {
   width: 100%;
   border: 1px solid #ddd;
   margin-top: 10px;
+  overflow: scroll;
+  border-width: thin;
 }
 .listview-table {
   margin-bottom: 0;
@@ -1456,7 +1474,7 @@ ul.unstyled {
 .listview-table > tbody > tr > td,
 .listview-table > tfoot > tr > td {
   vertical-align: middle;
-  padding: 3px;
+  padding: 8px 3px;
 }
 .listview-table > tbody > tr > td .value,
 .listview-table > tfoot > tr > td .value {
@@ -1473,6 +1491,7 @@ ul.unstyled {
   vertical-align: middle;
   width: 100%;
   display: inline-block;
+  word-break: normal;
 }
 .listViewEntries .relatedListEntryValues .value {
   vertical-align: middle;
@@ -1724,7 +1743,7 @@ input[type=checkbox]:checked {
   padding-top: 5px;
 }
 .detailViewButtoncontainer button.btn {
-  margin: 0px 1px !important;
+  margin: 1px !important;
 }
 .detailview-header .recordBasicInfo > .info-row {
   margin-bottom: 4px;
@@ -1770,7 +1789,7 @@ th {
   color: inherit;
 }
 #detailView td.fieldValue .edit {
-  width: 90%;
+  width: 100%;
 }
 .overlayDetailHeader .recordBasicInfo .fieldLabel .action,
 .detailview-header .recordBasicInfo .fieldLabel .action {
@@ -1809,16 +1828,6 @@ th {
 .overlayDetailHeader button.btn {
   margin: 0px 1px !important;
 }
-.referencefield-wrapper .createReferenceRecord {
-  float: left;
-  margin-left: 5px;
-  margin-top: 3px;
-  border: 1px solid #DDDDDD;
-  padding: 3px 7px;
-  text-align: center;
-  color: #666;
-  background: #F3F3F3;
-}
 .input-save-wrap {
   float: left;
   display: table-cell;
@@ -1827,7 +1836,7 @@ th {
   color: #FFFFFF;
 }
 .summaryView .referencefield-wrapper {
-  max-width: 150px;
+  width: 80%;
   display: table-cell;
 }
 .summaryView .referencefield-wrapper .input-group.time,
@@ -1836,6 +1845,8 @@ th {
 }
 .referencefield-wrapper {
   display: table-cell;
+  width: 80%;
+  max-width: 325px;
 }
 .record-header {
   min-height: 80px;
@@ -1981,18 +1992,23 @@ th {
 .quickPreviewModuleHeader .recordImage [class^="vicon-"] {
   font-size: 35px;
 }
+.detailViewContainer {
+  background: #f9f9f9;
+  min-height: inherit;
+}
 .detailViewContainer .block {
   background: #FFFFFF;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding-left: 15px;
   padding-right: 15px;
+  border-width: thin;
 }
 .detailViewContainer .block hr {
   margin: 10px 0;
 }
 .editViewContainer .block {
   background: #FFFFFF;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -2018,7 +2034,7 @@ th {
   border: 0 !important;
 }
 #overlayPage {
-  top: 43px;
+  top: 86px;
   position: fixed;
   width: 100%;
   z-index: 1030;
@@ -2184,10 +2200,11 @@ th {
 .editViewContents .fieldBlockContainer,
 .summaryView {
   position: relative;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding: 15px;
   margin-bottom: 10px;
   background: #FFFFFF;
+  border-width: thin;
 }
 .summaryView .fieldLabel {
   padding-left: 0px;
@@ -2217,10 +2234,11 @@ th {
 }
 .summaryWidgetContainer {
   position: relative;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
   padding: 15px;
   margin-bottom: 10px;
   background: #FFFFFF;
+  border-width: thin;
 }
 .summaryWidgetContainer .widget_header {
   margin-bottom: 6px;
@@ -2229,8 +2247,7 @@ th {
   font-size: 16px;
 }
 .summaryWidgetContainer .commentTitle {
-  padding-left: 15px;
-  padding-right: 15px;
+  margin-bottom: 25px;
 }
 .summaryWidgetContainer .creatorName {
   color: blue;
@@ -2240,7 +2257,7 @@ th {
 }
 .summaryWidgetContainer .commentContainer {
   background: white;
-  border-color: #F3F3F3;
+  border-color: #eee;
 }
 .summaryWidgetContainer .commentContainertextarea {
   width: 100%;
@@ -2248,7 +2265,8 @@ th {
 }
 .noCommentsMsgContainer,
 .quick-preview-modal .noContent {
-  border: 1px solid #CCC;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .summaryWidgetContainer .recordImage .name {
   display: table-cell;
@@ -2367,7 +2385,8 @@ th {
 }
 .fieldBlockContainer .inputElement {
   height: 30px;
-  width: 200px;
+  width: 100%;
+  max-width: 325px;
 }
 .editViewContents .input.form-control:focus,
 .editViewContents .input.form-control:hover,
@@ -2379,7 +2398,6 @@ th {
   width: 100%;
 }
 .editViewContents .input-group {
-  width: 208px;
   float: left;
 }
 .editViewContents .fieldLabel {
@@ -3321,7 +3339,7 @@ th {
   font-size: 20px;
   font-weight: bold;
   line-height: 18px;
-  opacity: .2;
+  opacity: 0.2;
 }
 #settingsShortCutsContainer .col-lg-3.moduleBlock:hover .unpin {
   display: inline-block;
@@ -3830,6 +3848,7 @@ th {
 }
 .calendarview {
   width: 100%;
+  padding-top: 15px;
 }
 .calendar-sidebar-tabs {
   font-size: 14px;
@@ -4975,7 +4994,7 @@ hr {
   padding: 15px;
   text-align: right;
   border-top: 1px solid #e5e5e5;
-  z-index: 6;
+  z-index: 1090;
 }
 .modal-footer-overwrite-style {
   position: initial;
@@ -5061,7 +5080,9 @@ hr {
 }
 .related-tabs.row .nav > li {
   padding: 0 10px;
-  margin: 0 2px;
+  margin: 0 2px 3px 2px;
+  width: 90px;
+  text-align: center;
 }
 .massEditTabs.nav > li {
   padding: 0 10px;
@@ -5077,6 +5098,7 @@ hr {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -o-box-sizing: border-box;
+  margin-bottom: 1px;
 }
 .row .nav > li > a:hover {
   border-bottom-color: #555;
@@ -5102,6 +5124,7 @@ TN-34230 .row .nav > li > a:hover {
 .contents.tabbable .nav-tabs > li.active:focus {
   border: none;
   border-bottom: 3px solid #555;
+  margin-bottom: 0;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
@@ -6010,6 +6033,9 @@ div.tooltip-inner {
 .detailview-header-block {
   background: white;
   padding: 15px;
+  padding-top: 25px;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .detailViewContainer .content-area,
 .editViewPageDiv .content-area,
@@ -6025,13 +6051,15 @@ div.tooltip-inner {
   padding: 15px;
 }
 .detailview-content .details.row .relatedHeader {
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .detailview-content .details.row .relatedContents {
   background: white;
   padding: 0;
   margin-top: 0;
-  border: 1px solid #F3F3F3;
+  border: 1px solid #eee;
+  border-width: thin;
 }
 .related-tabs.row {
   background: #FFFFFF;
@@ -6040,7 +6068,7 @@ div.tooltip-inner {
 .detailViewContainer .commentContainer .commentTitle.row,
 .detailViewContainer .commentContainer .showcomments {
   background: #FFFFFF;
-  border-color: #F3F3F3;
+  border-color: #eee;
 }
 .detailViewTwitterImage {
   position: absolute;
@@ -6108,11 +6136,12 @@ div.tooltip-inner {
   border-left: 0;
 }
 .editViewContents .fieldValue .referencefield-wrapper {
-  width: 300px;
+  width: 100%;
   display: inline-block;
 }
 .input-group-addon {
-  line-height: 1.4;
+  line-height: 1.5;
+  border-width: thin;
 }
 .input-group {
   float: left;
@@ -6124,11 +6153,13 @@ div.tooltip-inner {
 }
 .listViewEntries .input-group,
 .referencefield-wrapper .input-group {
-  min-width: 120px;
+  width: 100%;
+  max-width: 325px;
 }
 .summaryViewEntries .inputElement.form-control,
 .detailview-table .inputElement.form-control {
-  width: 70%;
+  width: 80%;
+  max-width: 300px;
 }
 .detailview-table input[type="checkbox"] {
   width: 13px !important;
@@ -6136,7 +6167,8 @@ div.tooltip-inner {
 }
 .detailview-table .input-group-addon + .inputElement.form-control,
 .detailview-table .inputElement.form-control.input-medium {
-  width: 100%;
+  min-width: 80%;
+  max-width: 300px;
 }
 .summaryViewEntries .referencefield-wrapper .inputElement,
 .detailview-table .referencefield-wrapper .inputElement,
@@ -6318,7 +6350,6 @@ div.tooltip-inner {
 }
 .dashBoardContainer .tab-pane .dashBoardTabContents ul {
   position: relative;
-  height: 960px;
   width: 1260px;
 }
 .nav-tabs > li {
@@ -6679,7 +6710,7 @@ li.select2-search-choice div {
   padding: 3px;
 }
 .floatThead-table {
-  border-left: 1px solid #DDDDDD;
+  background: #fbfbfb;
 }
 .main-container-Documents .module-nav,
 .main-container-Reports .module-nav {
@@ -6891,19 +6922,19 @@ a.btnReport:hover {
   box-sizing: border-box;
 }
 .column.l1 {
-  width: 4.166666666667%;
+  width: 4.16666667%;
 }
 .column.l2 {
-  width: 8.333333333333%;
+  width: 8.33333333%;
 }
 .column.l3 {
   width: 12.5%;
 }
 .column.l5 {
-  width: 20.83333333333%;
+  width: 20.83333333%;
 }
 .column.l8 {
-  width: 33.33333333333%;
+  width: 33.33333333%;
 }
 .column.l9 {
   width: 37.5%;
@@ -7523,6 +7554,176 @@ input:focus:-ms-input-placeholder {
 .moduleIcon .custom-module {
   font-weight: bold;
 }
+.navbar-fixed-top {
+  z-index: 1095 !important;
+}
+body .fc {
+  overflow: auto;
+}
+.margin0 {
+  margin: 0;
+}
+.border0 {
+  border: 0;
+}
+.padding0 {
+  padding: 0;
+}
+.rounded0 {
+  border-radius: 0;
+}
+.bg-white {
+  background: #FFFFFF;
+}
+.nav-tabs {
+  border-bottom: 0;
+}
+.commentcontent {
+  border: 1px solid #ddd;
+  border-width: thin;
+  background: #fcfcfc;
+}
+.editViewHeader {
+  padding-top: 20px;
+}
+.listview-table > thead > tr > th {
+  border-bottom: 0;
+  font-size: 13px;
+}
+.floatThead-floatContainer {
+  margin-left: 1px;
+}
+.navbar {
+  border: 0;
+  border-width: thin;
+}
+#appnav .navbar {
+  border: 0;
+  background: none;
+}
+.dashBoardContainer,
+.loginPageContainer {
+  min-height: calc(100vh - 110px);
+}
+@media all and (min-width: 0px) and (max-width: 830px) {
+  table.summary-table > tbody > tr > td,
+  table.summary-table > tbody > tr > th,
+  table.summary-table > tfoot > tr > td,
+  table.summary-table > tfoot > tr > th,
+  table.summary-table > thead > tr > td,
+  table.summary-table > thead > tr > th,
+  .quickCreateContent > table.table > tbody > tr > td,
+  .quickCreateContent > table.table > tbody > tr > th,
+  .quickCreateContent > table.table > tfoot > tr > td,
+  .quickCreateContent > table.table > tfoot > tr > th,
+  .quickCreateContent > table.table > thead > tr > td,
+  .quickCreateContent > table.table > thead > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tbody > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > tfoot > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > td,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
+  .detailview-table > tbody > tr > td,
+  .detailview-table > tbody > tr > th,
+  .detailview-table > tfoot > tr > td,
+  .detailview-table > tfoot > tr > th,
+  .detailview-table > thead > tr > td,
+  .detailview-table > thead > tr > th {
+    display: block;
+    min-width: 100%!important;
+  }
+  table.summary-table > thead > tr > th,
+  .quickCreateContent > table.table > thead > tr > th,
+  .fieldBlockContainer > table.table:not(#lineItemResult) > thead > tr > th,
+  .detailview-table > thead > tr > th {
+    display: none;
+  }
+  .editElement div {
+    float: left;
+  }
+  #detailView td.fieldValue .edit {
+    width: 100%;
+    float: none !important;
+    display: inline-block;
+  }
+  table.summary-table td.fieldValue .inputElement,
+  .quickCreateContent > table.table td.fieldValue .inputElement,
+  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .inputElement,
+  .fieldBlockContainer > table.table:not(#lineItemResult) td.fieldValue .input-group {
+    width: 100%;
+    float: none !important;
+  }
+  #detailView td.fieldLabel {
+    padding-top: 20px;
+  }
+  #detailView td.fieldValue {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+  }
+  #detailView td.fieldValue > span:first-child {
+    border: 0;
+    border-bottom: 1px dashed #aaa;
+  }
+  .search-link {
+    border: 0;
+  }
+  #page > nav.navbar {
+    border-bottom: 1px solid #eee;
+  }
+  .modal-overlay-footer {
+    border-left: 0;
+  }
+  .app-footer {
+    font-size: 11px;
+  }
+  body {
+    font-size: 13px;
+  }
+  .overlay-container-60 {
+    margin-left: 0 ;
+  }
+  .overlayPageContent {
+    padding-bottom: 0;
+  }
+  .overlayPageContent.fade {
+    overflow: scroll;
+  }
+  .overlayDetail .modal-content {
+    position: relative;
+  }
+  .mCSB_inside > .mCSB_container {
+    margin-right: 0;
+  }
+  #mCSB_9_scrollbar_vertical {
+    display: none;
+  }
+  .lineItemInputBox {
+    width: 100%;
+  }
+  #comment1 {
+    border-left-color: #ccc;
+  }
+  .editViewContents .fieldLabel {
+    padding-top: 20px;
+  }
+  .quickCreateContent .fieldLabel {
+    padding-top: 20px;
+  }
+  .floatThead-floatContainer {
+    margin-left: 1px;
+    padding-top: 1px;
+  }
+  .listViewPageDiv #table-content {
+    overflow: scroll !important;
+  }
+  #appnavcontent {
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    border-width: thin;
+    padding: 30px;
+  }
+}
 .modules-menu ul li.active a {
   border-left: 3px solid #EF5E29;
   opacity: 1;
@@ -7732,19 +7933,19 @@ a.btnReport:hover {
   box-sizing: border-box;
 }
 .column.l1 {
-  width: 4.166666666667%;
+  width: 4.16666667%;
 }
 .column.l2 {
-  width: 8.333333333333%;
+  width: 8.33333333%;
 }
 .column.l3 {
   width: 12.5%;
 }
 .column.l5 {
-  width: 20.83333333333%;
+  width: 20.83333333%;
 }
 .column.l8 {
-  width: 33.33333333333%;
+  width: 33.33333333%;
 }
 .column.l9 {
   width: 37.5%;
@@ -7789,3 +7990,4 @@ a.btnReport:hover {
   height: 450px;
   overflow: auto;
 }
+/*# sourceMappingURL=style.css.map */

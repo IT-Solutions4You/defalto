@@ -103,11 +103,14 @@ class Activity extends CRMEntity {
 	var $default_sort_order = 'ASC';
 
 	//var $groupTable = Array('vtiger_activitygrouprelation','activityid');
-
+        function __construct()
+        {
+            $this->log = LoggerManager::getLogger('Calendar');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Calendar');
+        }
 	function Activity() {
-		$this->log = LoggerManager::getLogger('Calendar');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Calendar');
+            self::__construct();
 	}
 
 	function save_module($module)
@@ -569,7 +572,7 @@ function insertIntoRecurringTable(& $recurObj)
 	 * @param string $criteria - query string
 	 * returns  activity records in array format($list) or null value
 		 */
-	function get_full_list($criteria) {
+	function get_full_list($criteria='', $where='') { 
 		global $log;
 		$log->debug("Entering get_full_list(".$criteria.") method ...");
 		$query = "select vtiger_crmentity.crmid,vtiger_crmentity.smownerid,vtiger_crmentity.setype, vtiger_activity.*,

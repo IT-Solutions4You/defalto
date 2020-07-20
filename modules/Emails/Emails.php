@@ -42,9 +42,9 @@ class Emails extends CRMEntity {
 		'Related to' => Array('seactivityrel' => 'parent_id'),
 		'Date Sent' => Array('activity' => 'date_start'),
 		'Time Sent' => Array('activity' => 'time_start'),
-		'Assigned To' => Array('crmentity', 'smownerid'),
-		'Access Count' => Array('email_track', 'access_count'),
-		'Click Count' => Array('email_track','click_count'),
+		'Assigned To' => Array('crmentity' => 'smownerid'),
+		'Access Count' => Array('email_track' => 'access_count'),
+		'Click Count' => Array('email_track' => 'click_count'),
 	);
 	var $list_fields_name = Array(
 		'Subject' => 'subject',
@@ -67,13 +67,16 @@ class Emails extends CRMEntity {
 
 	/** This function will set the columnfields for Email module
 	 */
+        function __construct() {
+            $this->log = LoggerManager::getLogger('email');
+            $this->log->debug("Entering Emails() method ...");
+            $this->log = LoggerManager::getLogger('email');
+            $this->db = PearDatabase::getInstance();
+            $this->column_fields = getColumnFields('Emails');
+            $this->log->debug("Exiting Email method ...");
+        }   
 	function Emails() {
-		$this->log = LoggerManager::getLogger('email');
-		$this->log->debug("Entering Emails() method ...");
-		$this->log = LoggerManager::getLogger('email');
-		$this->db = PearDatabase::getInstance();
-		$this->column_fields = getColumnFields('Emails');
-		$this->log->debug("Exiting Email method ...");
+            self::__construct();
 	}
 
 	function save_module($module) {

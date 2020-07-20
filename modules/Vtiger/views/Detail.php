@@ -157,7 +157,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$allUserTags = Vtiger_Tag_Model::getAllUserTags($currentUserModel->getId());
 		$viewer->assign('TAGS_LIST', $tagsList);
 		$viewer->assign('ALL_USER_TAGS', $allUserTags);
-		$viewer->assign('SELECTED_MENU_CATEGORY', 'MARKETING');
+		$appName = $request->get('app');
+		if(!empty($appName)){
+			$viewer->assign('SELECTED_MENU_CATEGORY',$appName);
+		}
 
 		$selectedTabLabel = $request->get('tab_label');
 		$relationId = $request->get('relationId');
@@ -280,7 +283,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		return $headerScriptInstances;
 	}
 
-	function showDetailViewByMode($request) {
+	function showDetailViewByMode(Vtiger_Request $request) {
 		$requestMode = $request->get('requestMode');
 		if($requestMode == 'full') {
 			return $this->showModuleDetailView($request);
@@ -375,7 +378,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	 * Function shows basic detail for the record
 	 * @param <type> $request
 	 */
-	function showModuleBasicView($request) {
+	function showModuleBasicView(Vtiger_Request $request) {
 
 		$recordId = $request->get('record');
 		$moduleName = $request->getModule();

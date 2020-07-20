@@ -23,7 +23,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 * @param <String> time
 	 * @return <String> time
 	 */
-	public static function getDisplayTimeValue($time) {
+	public static function getDisplayTimeValue($time, $record=false, $recordInstance=false) {
 		$date = new DateTimeField($time);
 		return $date->getDisplayTime();
 	}
@@ -90,7 +90,7 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 * @param <Object> $value
 	 * @return $value
 	 */
-	public function getDisplayValue($value) {
+	public function getDisplayValue($value, $record = false, $recordInstance=false) {
 		$userModel = Users_Privileges_Model::getCurrentUserModel();
 		if($userModel->get('hour_format') == '12'){
 			return self::getTimeValueInAMorPM($value);

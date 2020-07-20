@@ -66,6 +66,7 @@ class EmailTemplate {
 	public function process($params) {
 		$module = $this->module;
 		$recordId = $this->recordId;
+        $variableList = array();
 		$variableList = $this->getTemplateVariableListForModule($module);
 		$handler = vtws_getModuleHandlerFromName($module, $this->user);
 		$meta = $handler->getMeta();
@@ -98,7 +99,7 @@ class EmailTemplate {
 		$baseTable = $meta->getEntityBaseTable();
 		$tableList[$baseTable] = $baseTable;
 		
-		if (count($variableList) > 0) {
+		if (!empty($variableList) && (count($variableList) > 0)) {
 			foreach ($variableList as $column) {
 				if (in_array($column, $allColumnList)) {
 					$fieldList[] = array_search($column, $fieldColumnMapping);

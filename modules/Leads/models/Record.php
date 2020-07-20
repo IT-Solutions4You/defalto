@@ -25,7 +25,9 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 	public static function getSearchResult($searchKey, $module=false) {
 		$db = PearDatabase::getInstance();
 
-		$deletedCondition = $this->getModule()->getDeletedRecordCondition();
+        $leadsModuleModel = Vtiger_Module_Model::getInstance('Leads');
+        $deletedCondition = $leadsModuleModel->getDeletedRecordCondition();
+						
 		$query = 'SELECT * FROM vtiger_crmentity
                     INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_crmentity.crmid
                     WHERE label LIKE ? AND '.$deletedCondition;

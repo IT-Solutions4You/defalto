@@ -45,9 +45,20 @@ class uploader {
 
         // INPUT INIT
         $input = new input();
-        $this->get = &$input->get;
-        $this->post = &$input->post;
-        $this->cookie = &$input->cookie;
+        $inputGet = &$input->get ;
+        foreach ($inputGet as $key => $value) {
+            $this->get[$key] = vtlib_purify($value);
+        }
+         
+        $inputPost= &$input->post;
+        foreach ($inputPost as $key => $value) {
+            $this->post[$key] = vtlib_purify($value);
+        }
+         
+        $inputCookie= &$input->cookie;
+        foreach ($inputCookie as $key => $value) {
+            $this->cookie[$key] = vtlib_purify($value);
+        }
 
         // LINKING UPLOADED FILE
         if (count($_FILES))
@@ -86,6 +97,7 @@ class uploader {
         $this->types = &$this->config['types'];
         $firstType = array_keys($this->types);
         $firstType = $firstType[0];
+        $this->get['type'] = "images"; // to allow images upload only
         $this->type = (
             isset($this->get['type']) &&
             isset($this->types[$this->get['type']])
@@ -202,7 +214,8 @@ class uploader {
                 if (!is_dir(path::normalize($dir)))
                     @mkdir(path::normalize($dir), $this->config['dirPerms'], true);
 
-                $target = file::getInexistantFilename("$dir{$file['name']}");
+                $sanitizedFilename = file::sanitizeFileName($file['name']);
+                $target = file::getInexistantFilename("$dir{$sanitizedFilename}");
 
                 if (!@move_uploaded_file($file['tmp_name'], $target) &&
                     !@rename($file['tmp_name'], $target) &&
@@ -289,6 +302,14 @@ class uploader {
         $gd = new gd($file['tmp_name']);
         if (!$gd->init_error && !$this->imageResize($gd, $file['tmp_name']))
             return $this->label("The image is too big and/or cannot be resized.");
+
+        //sanitization as per Vtiger standard
+        $isValidImage = Vtiger_Functions::validateImage($file);
+        if (is_string($isValidImage))
+            $isValidImage = ($isValidImage == 'false') ? false : true;
+        if (!$isValidImage) {
+            return $this->label("Denied file extension.");
+        }
 
         return true;
     }
@@ -448,6 +469,10 @@ class uploader {
         $CKfuncNum = isset($this->opener['CKEditor']['funcNum'])
             ? $this->opener['CKEditor']['funcNum'] : 0;
         if (!$CKfuncNum) $CKfuncNum = 0;
+        if(!is_numeric($CKfuncNum)){
+            $CKfuncNum = 0; // to prevent xss
+        }
+        $url = addcslashes($url, "'");
         header("Content-Type: text/html; charset={$this->charset}");
 
 ?><html>
