@@ -59,7 +59,7 @@ class uploader {
         foreach ($inputCookie as $key => $value) {
             $this->cookie[$key] = vtlib_purify($value);
         }
-
+         
         // LINKING UPLOADED FILE
         if (count($_FILES))
             $this->file = &$_FILES[key($_FILES)];
@@ -97,7 +97,7 @@ class uploader {
         $this->types = &$this->config['types'];
         $firstType = array_keys($this->types);
         $firstType = $firstType[0];
-        $this->get['type'] = "images"; // to allow images upload only
+		$this->get['type'] = "images"; // to allow images upload only
         $this->type = (
             isset($this->get['type']) &&
             isset($this->types[$this->get['type']])
@@ -302,6 +302,14 @@ class uploader {
         $gd = new gd($file['tmp_name']);
         if (!$gd->init_error && !$this->imageResize($gd, $file['tmp_name']))
             return $this->label("The image is too big and/or cannot be resized.");
+		
+		//sanitization as per Vtiger standard
+        $isValidImage = Vtiger_Functions::validateImage($file);
+        if (is_string($isValidImage))
+            $isValidImage = ($isValidImage == 'false') ? false : true;
+        if (!$isValidImage) {
+            return $this->label("Denied file extension.");
+        }
 
         //sanitization as per Vtiger standard
         $isValidImage = Vtiger_Functions::validateImage($file);
@@ -469,7 +477,7 @@ class uploader {
         $CKfuncNum = isset($this->opener['CKEditor']['funcNum'])
             ? $this->opener['CKEditor']['funcNum'] : 0;
         if (!$CKfuncNum) $CKfuncNum = 0;
-        if(!is_numeric($CKfuncNum)){
+		if(!is_numeric($CKfuncNum)){
             $CKfuncNum = 0; // to prevent xss
         }
         $url = addcslashes($url, "'");
