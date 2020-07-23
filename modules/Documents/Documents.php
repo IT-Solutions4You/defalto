@@ -182,6 +182,10 @@ class Documents extends CRMEntity {
 			{
 				$files['original_name'] = vtlib_purify($_REQUEST[$fileindex.'_hidden']);
 				$file_saved = $this->uploadAndSaveFile($id,$module,$files);
+                                if(!$file_saved){
+                                    $log->debug('file upload failed');
+                                    return false;
+                                }
 			}
 		}
 

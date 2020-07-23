@@ -183,6 +183,7 @@ class CRMEntity {
 		if ($attachmentType == 'Image' || ($file_details['size'] && $mimeTypeContents[0] == 'image')) {
 			$save_file = validateImageFile($file_details);
 		}
+                $log->debug("File Validation status in Check1 save_file => $save_file");
 		if ($save_file == 'false') {
 			return false;
 		}
@@ -193,7 +194,7 @@ class CRMEntity {
 		if ($module == 'Contacts' || $module == 'Products') {
 			$save_file = validateImageFile($file_details);
 		}
-
+                $log->debug("File Validation status in Check2 save_file => $save_file");
 		$binFile = sanitizeUploadFileName($file_name, $upload_badext);
 
 		$current_id = $adb->getUniqueID("vtiger_crmentity");
@@ -209,7 +210,7 @@ class CRMEntity {
         $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
 		$upload_status = copy($filetmp_name, $upload_file_path . $current_id . "_" . $encryptFileName);
 		// temporary file will be deleted at the end of request
-
+                $log->debug("Upload status of file => $upload_status");
 		if ($save_file == 'true' && $upload_status == 'true') {
 			if($attachmentType != 'Image' && $this->mode == 'edit') {
 				//Only one Attachment per entity delete previous attachments
@@ -239,9 +240,11 @@ class CRMEntity {
 			$sql3 = 'INSERT INTO vtiger_seattachmentsrel VALUES(?,?)';
 			$params3 = array($id, $current_id);
 			$adb->pquery($sql3, $params3);
+                        $log->debug("File uploaded successfully with id => $current_id");
 			return $current_id;
 		} else {
 			//failed to upload file
+                    $log->debug('File upload failed');
 			return false;
 		}
 	}
