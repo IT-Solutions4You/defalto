@@ -1675,7 +1675,8 @@ class Vtiger_Module_Model extends Vtiger_Module {
                     if($tablename == 'vtiger_crmentityrel'){    
                         $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
                         $sql .= " INNER JOIN $tablename ON ($tablename.relcrmid = vtiger_crmentity.crmid OR $tablename.crmid = vtiger_crmentity.crmid)
-                            WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).")) OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds)."))";
+                                  WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).") AND ($tablename.relmodule = '".$module."')) 
+                                    OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds).") AND ($tablename.module = '".$module."'))";
 							foreach ($recordIds as $key => $recordId) {
 							array_push($params, $recordId);
 							}
