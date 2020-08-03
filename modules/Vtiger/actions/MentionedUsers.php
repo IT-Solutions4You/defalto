@@ -38,8 +38,10 @@ class Vtiger_MentionedUsers_Action extends Vtiger_Action_Controller {
             unset($mentionedUsers[$key]);
         }
         
-        $usersString = '@'.implode(' @', $mentionedUsers);
-        $mentionedUsersData['usersString'] = $usersString.' ';
+        if(!empty($mentionedUsers)){
+            $usersString = '@'.implode(' @', $mentionedUsers);
+            $mentionedUsersData['usersString'] = $usersString.' ';
+        }
         
         $response = new Vtiger_Response();
         $response->setResult($mentionedUsersData);
