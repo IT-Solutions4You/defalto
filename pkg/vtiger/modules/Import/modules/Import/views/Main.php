@@ -134,7 +134,7 @@ class Import_Main_View extends Vtiger_View_Controller{
 		$viewer->view('ImportResult.tpl', 'Import');
 	}
 
-	public function showScheduledStatus($importInfo, $enableCronStatus) {
+	public static function showScheduledStatus($importInfo, $enableCronStatus) {
 		$moduleName = $importInfo['module'];
 		$importId = $importInfo['id'];
 
