@@ -512,7 +512,13 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 	function emailForward($request){
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
-		$this->emailActionsData($request);
+                $this->emailActionsData($request);
+                
+                $parentId = $request->get('parentId');
+                $recordModel = Vtiger_Record_Model::getInstanceById($parentId);
+                $parentModuleName = $recordModel->getModuleName();
+                
+                $viewer->assign('FIELD_MODULE',$parentModuleName);
 		$viewer->assign('TO', '');
 		$viewer->assign('TOMAIL_INFO', array());
 		$viewer->assign('RELATED_LOAD', true);
@@ -561,6 +567,11 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		if($recordModel->get('email_flag') == 'MailManager' || $recordModel->get('email_flag') == 'MAILSCANNER') {
 			$TO = array($recordModel->get('from_email'));
 		}
+                $parentId = $request->get('parentId');
+                $parentIdRecordModel = Vtiger_Record_Model::getInstanceById($parentId);
+                $parentModuleName = $parentIdRecordModel->getModuleName();
+                
+                $viewer->assign('FIELD_MODULE',$parentModuleName);
 		$viewer->assign('TO',$TO);
 		$viewer->assign('TOMAIL_INFO', $toMailInfo);
 		$viewer->assign('TOMAIL_NAMES_LIST', json_encode($toMailNamesList, JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP));
