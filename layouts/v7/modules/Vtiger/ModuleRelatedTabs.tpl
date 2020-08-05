@@ -74,7 +74,7 @@
                                                                             data-module="{$RELATEDMODULENAME}" data-relation-id="{$RELATED_LINK->getId()}" {if $RELATEDMODULENAME eq "ModComments"} title {else} title="{$DETAILVIEWRELATEDLINKLBL}"{/if} {if $RELATEDFIELDNAME}data-relatedfield ="{$RELATEDFIELDNAME}"{/if}>
                                                                             <a href="index.php?{$RELATED_LINK->getUrl()}&tab_label={$RELATED_LINK->getLabel()}&app={$SELECTED_MENU_CATEGORY}" class="textOverflowEllipsis" displaylabel="{$DETAILVIEWRELATEDLINKLBL}" recordsCount="" >
                                                                                     {if $RELATEDMODULENAME eq "ModComments"}
-                                                                                            <i class="fa fa-comment"></i> &nbsp;<span class="tab-label"><strong>{$DETAILVIEWRELATEDLINKLBL}</strong></span>
+                                                                                            <span class="tab-icon"><i class="fa fa-comment" style="font-size: 24px"></i></span>
                                                                                     {else}
                                                                                             <span class="tab-icon">
                                                                                                     {assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}
@@ -105,7 +105,9 @@
                                                                                     data-module="{$RELATEDMODULENAME}" title="" data-relation-id="{$RELATED_LINK->getId()}" {if $RELATEDFIELDNAME}data-relatedfield ="{$RELATEDFIELDNAME}"{/if}>
                                                                                     <a href="index.php?{$RELATED_LINK->getUrl()}&tab_label={$RELATED_LINK->getLabel()}&app={$SELECTED_MENU_CATEGORY}" displaylabel="{$DETAILVIEWRELATEDLINKLBL}" recordsCount="">
                                                                                             {if $RELATEDMODULENAME eq "ModComments"}
-                                                                                                    <i class="fa fa-comment"></i> &nbsp;<span class="tab-label">{$DETAILVIEWRELATEDLINKLBL}</span>
+                                                                                                <span class="tab-icon textOverflowEllipsis">
+                                                                                                    <i class="fa fa-comment"></i> &nbsp;<span class="content">{$DETAILVIEWRELATEDLINKLBL}</span>
+                                                                                                </span>
                                                                                             {else}
                                                                                                     {assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}
                                                                                                     <span class="tab-icon textOverflowEllipsis">
