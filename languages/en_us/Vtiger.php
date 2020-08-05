@@ -1312,6 +1312,7 @@ $languageStrings = array(
 	'LBL_VTIGER6_RETIREMENT_NOTICE' => 'This version will be retired on Feb 15th 2016',
 	'ModTracker' => 'Updates',
 	'LBL_MAIL_SENT_SUCCESSFULLY' => 'Mail Sent Successfully',
+        'LBL_MAIL_SAVED_SUCCESSFULLY' => 'Mail Saved Successfully',
 	'LBL_FAILED_TO_SEND' => 'Failed to Send',
 
 	'LBL_ESSENTIALS' => 'Essentials',

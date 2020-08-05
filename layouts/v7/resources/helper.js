@@ -446,10 +446,10 @@ jQuery.Class("Vtiger_Helper_Js",{
         var cb = params.cb;
         var container = jQuery('.myModal');
 		
-		container.on('hidden.bs.modal',function() {
+        container.one('hidden.bs.modal',function() {
 			container.html('');
 			window.onbeforeunload = null;
-		});
+        });
 		
         if(typeof cb === "function") {
             container.off('shown.bs.modal');
@@ -793,6 +793,13 @@ jQuery.Class("Vtiger_Helper_Js",{
         if(typeof params === "undefined") {
             params = {};
         }
+        
+        // we should hide all existing modal's
+        var hideModals = (typeof params.hideModals !== 'undefined') ? params.hideModals : true;
+        if(hideModals) {
+            this.hideModal();
+        }
+
         var defaultParams = app.helper.defaultModalParams();
         params = jQuery.extend(defaultParams,params);
 
@@ -800,9 +807,16 @@ jQuery.Class("Vtiger_Helper_Js",{
         if(jQuery('#popupModal').length) return;
         var container = jQuery('<div id="popupModal" class="modal"></div>');
 		
-		container.on('hidden.bs.modal',function() {
-			container.html('').remove();
-		});
+	container.on('hidden.bs.modal',function() {
+            /**
+             * if tabindex = -1 then browser will set focus to that element. 
+             * Loading another modal(this has tabindex = -1) on a modal is not moving the focus to new modal.
+             * We can't remove tabindex from the modals in tpl. So, this is a work around(removing index on show and adding on hide).
+             */ 
+            jQuery('#helpPageOverlay').attr('tabindex','-1');
+                container.html('');
+                window.onbeforeunload = null;
+        });
 		
         if(typeof cb === "function") {
             container.off('shown.bs.modal');
