@@ -24,7 +24,7 @@
 	{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
 	<input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" name="{$FIELD_MODEL->getFieldName()}" value="{$FIELD_MODEL->get('fieldvalue')}"
 			class="inputElement {if $FIELD_MODEL->isNameField()}nameField{/if}"
-			{if $SALUTATION_FIELD_MODEL} style="width:120px;" {/if} 
+			{if $SALUTATION_FIELD_MODEL} style="width:244px;" {/if} 
 			{if $FIELD_MODEL->get('uitype') eq '3' || $FIELD_MODEL->get('uitype') eq '4'} readonly {/if} {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} 
 			{if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
 			{if count($FIELD_INFO['validator'])} 
