@@ -10,34 +10,34 @@
 ********************************************************************************/
 -->*}
 {strip}
-	<div class="row" style="width:540px;">
-		<div style="float: left;margin-top: 7px; padding-left:15px;">
+	<div class="row">
+		<div class="col-sm-1">
 			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
 				<input type="hidden" class="recurringEdit" value="true" />
 			{/if}
 			<input type="checkbox" name="recurringcheck" data-field-id= '{$FIELD_MODEL->get('id')}' value="" {if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}checked{/if}/>&nbsp;&nbsp;
 		</div>
-		<div class="" id="repeatUI" style="visibility: {if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}visible{else}collapse{/if};">
-			<div>
-				<span>
-					<span class="alignMiddle">{vtranslate('LBL_REPEATEVENT', $MODULE)}&nbsp;&nbsp;</span>
-					<select class="select2 input-mini" name="repeat_frequency">
-						{for $FREQUENCY = 1 to 14}
-							<option value="{$FREQUENCY}" {if $FREQUENCY eq $RECURRING_INFORMATION['repeat_frequency']}selected{/if}>{$FREQUENCY}</option>
-						{/for}
-					</select>
+		<div id="repeatUI" style="visibility: {if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}visible{else}collapse{/if};" class="col-sm-9">
+			<div class="row">
+				<span class="col-sm-2 padding0px">
+                                    <span class="alignMiddle">{vtranslate('LBL_REPEATEVENT', $MODULE)}&nbsp;&nbsp;</span>
+                                    <select class="select2 input-mini" name="repeat_frequency">
+                                            {for $FREQUENCY = 1 to 14}
+                                                    <option value="{$FREQUENCY}" {if $FREQUENCY eq $RECURRING_INFORMATION['repeat_frequency']}selected{/if}>{$FREQUENCY}</option>
+                                            {/for}
+                                    </select>
 				</span>
-				<span>
+				<span class="col-sm-2 padding0px">
 					<select class="select2 input-medium" style="width:100px;margin-left: 10px;" name="recurringtype" id="recurringType">
 						<option value="Daily" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Daily'} selected {/if}>{vtranslate('LBL_DAYS_TYPE', $MODULE)}</option>
 						<option value="Weekly" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Weekly'} selected {/if}>{vtranslate('LBL_WEEKS_TYPE', $MODULE)}</option>
 						<option value="Monthly" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Monthly'} selected {/if}>{vtranslate('LBL_MONTHS_TYPE', $MODULE)}</option>
 						<option value="Yearly" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Yearly'} selected {/if}>{vtranslate('LBL_YEAR_TYPE', $MODULE)}</option>
 					</select>
+                                        <span class="alignMiddle displayInlineBlock">&nbsp;&nbsp;{vtranslate('LBL_UNTIL', $MODULE)}</span>
 				</span>
-				<span>
-					<span class="alignMiddle displayInlineBlock">&nbsp;&nbsp;{vtranslate('LBL_UNTIL', $MODULE)}</span>
-					<span class="input-group date pull-right inputElement">
+				<span class="col-sm-6 padding0px">
+					<span class="input-group date inputElement">
 						<input type="text" id="calendar_repeat_limit_date" class="dateField input-small form-control" name="calendar_repeat_limit_date" data-date-format="{$USER_MODEL->get('date_format')}" 
 							   value="{if $RECURRING_INFORMATION['recurringcheck'] neq 'Yes'}{$TOMORROWDATE}{elseif $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}{$RECURRING_INFORMATION['recurringenddate']}{/if}" 
 							   data-rule-date="true" data-rule-required="true"/>
