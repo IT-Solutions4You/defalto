@@ -16,14 +16,10 @@ class Vtiger_Text_UIType extends Vtiger_Base_UIType {
 	 * @return <Object>
 	 */
 	public function getDisplayValue($value, $record=false, $recordInstance = false,$removeTags = false) {
-		//This API replaces newlines to html br tags, and spaces with &nbsp;
-		// It should not replace spaces within html tags
-		$value = decode_html(preg_replace('/\r\n|\r|\n|&NewLine;|&amp;NewLine;/','<br>',$value));
-		if($removeTags){
-            $value = strip_tags($value,'<br>');
-        }
-		$value = purifyHtmlEventAttributes($value, true);
-		return $value;
+		if(in_array($this->get('field')->getFieldName(),array('signature','commentcontent'))) {
+			return $value;
+		}
+		return nl2br(purifyHtmlEventAttributes($value, true));
 	}
     
     /**
