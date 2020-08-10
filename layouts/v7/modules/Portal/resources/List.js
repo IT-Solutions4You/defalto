@@ -33,12 +33,11 @@ Vtiger_List_Js("Portal_List_Js", {
         var form = jQuery('#saveBookmark');
         jQuery('#saveBookmark').on('submit', function (e) {
             e.preventDefault();
-            form.find('[type="submit"]').attr('disabled', true);
-            //Added to avoid multiple submit
         });
         var params = {
             submitHandler: function (form) {
                 var form = jQuery(form);
+                form.find('[type="submit"]').attr('disabled', true);
                 var params = form.serializeFormData();
                 app.request.post({data: params}).then(function (error, data) {
                     if (!error) {
