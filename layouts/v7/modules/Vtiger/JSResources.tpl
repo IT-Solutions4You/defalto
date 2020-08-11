@@ -14,6 +14,7 @@
     <script type="text/javascript" src="layouts/v7/lib/jquery/select2/select2.min.js"></script>
     <script type="text/javascript" src="layouts/v7/lib/jquery/jquery.class.min.js"></script>
     <script type="text/javascript" src="layouts/v7/lib/jquery/jquery-ui-1.11.3.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="layouts/v7/lib/todc/js/popper.min.js"></script>
     <script type="text/javascript" src="layouts/v7/lib/todc/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="libraries/jquery/jstorage.min.js"></script>
     <script type="text/javascript" src="layouts/v7/lib/jquery/jquery-validation/jquery.validate.min.js"></script>

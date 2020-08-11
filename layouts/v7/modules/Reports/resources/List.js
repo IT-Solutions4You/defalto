@@ -347,9 +347,8 @@ Vtiger_List_Js("Reports_List_Js",{
                 } else {
                         var message = app.vtranslate('JS_CHART_PINNED_TO_DASHBOARD', 'Reports');
                         app.helper.showSuccessNotification({message:message});
-                        element.removeClass('vicon-pin');
-                        element.addClass('vicon-unpin');
-                        element.removeAttr('data-toggle');
+                        element.find('.action').removeClass('vicon-pin');
+                        element.find('.action').addClass('vicon-unpin');
                         element.attr('title', app.vtranslate('JSLBL_UNPIN_CHART_FROM_DASHBOARD'));
                 }
         });
@@ -362,7 +361,7 @@ Vtiger_List_Js("Reports_List_Js",{
         this.getListViewContainer().on('click','.pinToDashboard',function (e) {
 			var element = jQuery(e.currentTarget);
 			var recordId = jQuery(element).data('recordid');
-			var pinned = element.hasClass('vicon-pin');
+			var pinned = element.find('.action').hasClass('vicon-pin');
 			if(pinned) {
 				if(element.is('[data-toggle]')){
                                     return;
@@ -380,8 +379,8 @@ Vtiger_List_Js("Reports_List_Js",{
 					if(data.unpinned) {
 						var message = app.vtranslate('JS_CHART_REMOVED_FROM_DASHBOARD', 'Reports');
 						app.helper.showSuccessNotification({message:message});
-						element.removeClass('vicon-unpin');
-                                                element.addClass('vicon-pin');
+						element.find('.action').removeClass('vicon-unpin');
+                                                element.find('.action').addClass('vicon-pin');
                                                 if(element.data('dashboardTabCount') > 1) {
                                                     element.attr('data-toggle','dropdown');
                                                 }
