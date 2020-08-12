@@ -10,6 +10,7 @@
 ********************************************************************************/
 -->*}
 {strip}
+    {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	<div class="row">
 		<div class="col-sm-1">
 			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
@@ -28,7 +29,7 @@
                                     </select>
 				</span>
 				<span class="col-sm-2 padding0px">
-					<select class="select2 input-medium" style="width:100px;margin-left: 10px;" name="recurringtype" id="recurringType">
+					<select class="select2 input-medium" style="width:85px;margin-left: 10px;" name="recurringtype" id="recurringType">
 						<option value="Daily" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Daily'} selected {/if}>{vtranslate('LBL_DAYS_TYPE', $MODULE)}</option>
 						<option value="Weekly" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Weekly'} selected {/if}>{vtranslate('LBL_WEEKS_TYPE', $MODULE)}</option>
 						<option value="Monthly" {if $RECURRING_INFORMATION['eventrecurringtype'] eq 'Monthly'} selected {/if}>{vtranslate('LBL_MONTHS_TYPE', $MODULE)}</option>
@@ -38,9 +39,9 @@
 				</span>
 				<span class="col-sm-6 padding0px">
 					<span class="input-group date inputElement">
-						<input type="text" id="calendar_repeat_limit_date" class="dateField input-small form-control" name="calendar_repeat_limit_date" data-date-format="{$USER_MODEL->get('date_format')}" 
+                                            <input type="text" id="calendar_repeat_limit_date" class="dateField input-small form-control" name="calendar_repeat_limit_date" data-date-format="{$USER_MODEL->get('date_format')}" 
 							   value="{if $RECURRING_INFORMATION['recurringcheck'] neq 'Yes'}{$TOMORROWDATE}{elseif $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}{$RECURRING_INFORMATION['recurringenddate']}{/if}" 
-							   data-rule-date="true" data-rule-required="true"/>
+							   data-rule-date="true" data-rule-required="true" data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}/>
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					</span>
 				</span>

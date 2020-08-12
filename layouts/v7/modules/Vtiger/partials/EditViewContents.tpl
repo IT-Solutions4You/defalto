@@ -30,6 +30,7 @@
 							{assign var=COUNTER value=0}
 							{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS name=blockfields}
 								{assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
+                                                                {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 								{assign var="refrenceList" value=$FIELD_MODEL->getReferenceList()}
 								{assign var="refrenceListCount" value=count($refrenceList)}
 								{if $FIELD_MODEL->isEditable() eq true}

@@ -1941,4 +1941,5 @@ $jsLanguageStrings = array(
         'JS_ATLEAST_SELECT_ONE_FIELD' => 'At least one field should be selected',
         'JS_RELATED_ACCOUNT_IS_NOT_AVAILABLE' => 'Related Organization record is not available',
         'JS_RELATED_CONTACT_IS_NOT_AVAILABLE' => 'Related Contact record is not available',
+        'JS_REPEAT_DATE_SHOULD_BE_GREATER_THAN_START_DATE' => 'Repeat date should be greater than or equal to Start Date',
 );
