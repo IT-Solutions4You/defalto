@@ -27,12 +27,72 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
 		$db = PearDatabase::getInstance();
 		$parentModule = $this->getParentRecordModel()->getModule();
 		$relationModule = $this->getRelationModel()->getRelationModuleModel();
+                $relationModuleName = $relationModule->get('name');
 		$relatedColumnFieldMapping = $relationModule->getConfigureRelatedListFields();
 		if(count($relatedColumnFieldMapping) <= 0){
 			$relatedColumnFieldMapping = $relationModule->getRelatedListFields();
 		}
 
 		$query = $this->getRelationQuery();
+                
+                if ($this->get('whereCondition') && is_array($this->get('whereCondition'))) {
+                    $currentUser = Users_Record_Model::getCurrentUserModel();
+                    //EnhancedQueryGenerator is used instead of QueryGenerator since below case was faling 
+                    //AssignTo Empty 
+                    $queryGenerator = new EnhancedQueryGenerator($relationModuleName, $currentUser);
+                    $queryGenerator->setFields(array_values($relatedColumnFieldMapping));
+                    $whereCondition = $this->get('whereCondition');
+                    foreach ($whereCondition as $fieldName => $fieldValue) {
+                        $fieldModel = $relationModule->getField($fieldName);
+                        $fieldType= explode('~',$fieldModel->get('typeofdata'))[0];
+                        $referenceModuleList = $fieldModel->getReferenceList();
+                        if (is_array($fieldValue)) {
+                            $comparator = $fieldValue[1];
+                            $searchValue = $fieldValue[2];
+                            $type = $fieldValue[3];
+                            if ($type == 'time') {
+                                $searchValue = Vtiger_Time_UIType::getTimeValueWithSeconds($searchValue);
+                            } else if($type == 'owner' || ($type == 'reference' && in_array('Users', $referenceModuleList))) {
+                                $searchValue = $fieldValue[2];
+                                if(!$fieldModel->isCustomField()) {
+                                    $userFieldValues = explode(',', $searchValue);
+                                    $userValues = array();
+                                    foreach ($userFieldValues as $key => $value) {
+                                        if(is_numeric($value)) {
+                                            $userValues[$key] = getUserFullName($value);
+                                        } else {
+                                            $userValues[$key] = $value;
+                                        }
+                                    }
+                                    $searchValue = implode(',',$userValues);
+                                }
+                            }
+                            else if ($fieldType == 'DT') {
+                                $dateValues = explode(',', $searchValue);
+                                //Indicate whether it is fist date in the between condition
+                                $isFirstDate = true;
+                                foreach ($dateValues as $key => $dateValue) {
+                                        $dateTimeCompoenents = explode(' ', $dateValue);
+                                        if (empty($dateTimeCompoenents[1])) {
+                                                if ($isFirstDate)
+                                                        $dateTimeCompoenents[1] = '00:00:00';
+                                                else
+                                                        $dateTimeCompoenents[1] = '23:59:59';
+                                        }
+                                        $dateValue = implode(' ', $dateTimeCompoenents);
+                                        $dateValues[$key] = $dateValue;
+                                        $isFirstDate = false;
+                                }
+                                $searchValue = implode(',', $dateValues);
+                            }
+                            //Relation fields column's search fields are missing in related list view.
+                            $query = ($type == 'reference') ? $this->getReferenceFieldJoinClause($query, $relationModuleName, $fieldModel) : $query;
+                            $queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
+                        }
+                    }
+                    $whereQuerySplit = split("WHERE", $queryGenerator->getWhereClause());
+                    $query.=" AND " . $whereQuerySplit[1];
+                }
 
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
