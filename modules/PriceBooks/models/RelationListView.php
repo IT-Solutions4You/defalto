@@ -85,7 +85,7 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
                                 }
                                 $searchValue = implode(',', $dateValues);
                             }
-                            // #3681555-Relation fields column's search fields are missing in related list view.
+                            //Relation fields column's search fields are missing in related list view.
                             $query = ($type == 'reference') ? $this->getReferenceFieldJoinClause($query, $relationModuleName, $fieldModel) : $query;
                             $queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
                         }
