@@ -6145,6 +6145,9 @@ div.tooltip-inner {
   width: 100%;
   display: inline-block;
 }
+.fieldValueWidth80{
+    width:80% !important;
+}
 .input-group-addon {
   line-height: 1.5;
   border-width: thin;
