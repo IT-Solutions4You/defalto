@@ -80,16 +80,24 @@ class DateTimeField {
     public static function convertToDBFormat($date, $user = null)
     {
         global $current_user;
-		if(empty($user)) {
-			$user = $current_user;
-		}
+        if(empty($user)) {
+                $user = $current_user;
+        }
 
-		$format = $current_user->date_format;
-		if(empty($format)) {
-			$format = 'dd-mm-yyyy';
-		}
+        $format = $current_user->date_format;
+        if (empty($format)) {
+            if (false === strpos($date, '-')) {
+                if(false === strpos($date, '.')){
+                    $format = 'dd/mm/yyyy';
+                } else {
+                    $format = 'dd.mm.yyyy';
+                }
+            } else {
+                $format = 'dd-mm-yyyy';
+            }
+        }
 
-		return self::__convertToDBFormat($date, $format);
+        return self::__convertToDBFormat($date, $format);
     }
 
     /**
@@ -101,25 +109,41 @@ class DateTimeField {
      */
     public static function __convertToDBFormat($date, $format)
     {
-        if ($format == '') {
-			$format = 'dd-mm-yyyy';
-		}
-		$dbDate = '';
-        $dateFormats = ['dd-mm-yyyy', 'dd/mm/yyyy', 'dd.mm.yyyy'];
-		if (in_array($format, $dateFormats)) {
-			list($d, $m, $y) = explode('-', $date);
-		} elseif ($format == 'mm-dd-yyyy') {
-			list($m, $d, $y) = explode('-', $date);
-		} elseif ($format == 'yyyy-mm-dd') {
-			list($y, $m, $d) = explode('-', $date);
-		}
+        $dbDate = '';
+        if (empty($format)) {
+            if (false === strpos($date, '-')) {
+                if(false === strpos($date, '.')){
+                    $format = 'dd/mm/yyyy';
+                } else {
+                    $format = 'dd.mm.yyyy';
+                }
+            } else {
+                $format = 'dd-mm-yyyy';
+            }
+        }
+        switch ($format) {
+            case 'dd.mm.yyyy':
+                list($d, $m, $y) = explode('.', $date);
+                break;
+            case 'dd/mm/yyyy':
+                list($d, $m, $y) = explode('/', $date);
+                break;
+            case 'dd-mm-yyyy':
+                list($d, $m, $y) = explode('-', $date);
+                break;
+            case 'mm-dd-yyyy':
+                list($m, $d, $y) = explode('-', $date);
+                break;
+            case 'yyyy-mm-dd':
+                list($y, $m, $d) = explode('-', $date);
+                break;
+        }
 
-		if (!$y && !$m && !$d) {
-			$dbDate = '';
-		} else {
-			$dbDate = $y . '-' . $m . '-' . $d;
-		}
-		return $dbDate;
+        if (!empty($y) && !empty($m) && !empty($d)) {
+            $dbDate = $y . '-' . $m . '-' . $d;
+        }
+
+        return $dbDate;
     }
 
 	/**
