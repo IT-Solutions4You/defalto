@@ -1243,17 +1243,27 @@ class Vtiger_Functions {
 	 * @return boolean Returns true if $value is date else returns false
 	 */
 	static function isDateValue($value) {
-		$valueParts = explode('-', $value);
-		if (count($valueParts) == 3 && (strlen($valueParts[0]) == 4 || strlen($valueParts[1]) == 4 || strlen($valueParts[2]) == 4)) {
-			$time = strtotime($value);
-			if ($time && $time > 0) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+            $value = trim($value);
+            $delim = array('/','.');
+            foreach ($delim as $delimiter){
+                    $x = strpos($value, $delimiter);
+                    if($x === false) continue;
+                    else{
+                            $value=str_replace($delimiter, '-', $value);
+                            break;
+                    }
+            }
+            $valueParts = explode('-', $value);
+            if (count($valueParts) == 3 && (strlen($valueParts[0]) == 4 || strlen($valueParts[1]) == 4 || strlen($valueParts[2]) == 4)) {
+                    $time = strtotime($value);
+                    if ($time && $time > 0) {
+                            return true;
+                    } else {
+                            return false;
+                    }
+            } else {
+                    return false;
+            }
 	}
 
 	/**
