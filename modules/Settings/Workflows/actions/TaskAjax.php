@@ -116,10 +116,13 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 							$result->emit();
 							return;
 						}
-					}
+					}else if($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
+                                            $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
+                                            $fieldMapping[$key] = $mappingInfo;
+                                        }
 				}
 			}
-
+                        $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
 			$taskType = get_class($taskObject);
 			if ($taskType === 'VTCreateEventTask' || $taskType === 'VTCreateTodoTask') {
 				if($taskType === 'VTCreateEventTask') {
