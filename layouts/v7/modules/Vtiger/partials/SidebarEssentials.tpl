@@ -72,7 +72,7 @@
                                                         data-defaulttoggle="{$CUSTOM_VIEW->getToggleDefaultUrl()}" 
                                                         data-default="{$CUSTOM_VIEW->getDuplicateUrl()}" 
                                                         data-isMine="{if $CUSTOM_VIEW->isMine()}true{else}false{/if}" 
-                                                        data-teisadmin="{if $IS_ADMIN}true{else}false{/if}">
+                                                        data-isadmin="{if $IS_ADMIN}true{else}false{/if}">
                                                     </span>
                                                      </span>
                                                 </div>
