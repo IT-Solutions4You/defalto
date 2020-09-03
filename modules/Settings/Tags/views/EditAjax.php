@@ -10,6 +10,10 @@
 
 class Settings_Tags_EditAjax_View extends Settings_Vtiger_IndexAjax_View {
 
+        function checkPermission(Vtiger_Request $request) {
+            return true;
+	}
+        
 	public function process(Vtiger_Request $request) {
 		$viewer = $this->getViewer($request);
 		$qualifiedName = $request->getModule(false);
