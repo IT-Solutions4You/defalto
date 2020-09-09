@@ -215,6 +215,7 @@ $languageStrings = array(
     'Default Activity Type' => 'Tipo de actividad por defecto',
     'Default Record View' => 'Vista de registro por defecto',
     'Left Panel Hide' => 'Ocultar panel izquierdo',
+    'Default Landing Page' => 'Página de acceso por defecto',
     'Row Height' => 'Alto de fila',
 	'LBL_RESTORE_USER_FAILED' => 'Error al restaurar el usuario. Ya existe un usuario del CRM con este nombre de usuario.',
     
@@ -257,7 +258,7 @@ $languageStrings = array(
     'Wednesday' => 'Miércoles',
     'Thursday' => 'Jueves',
     'Friday' => 'Viernes',
-    'Saturyday' => 'Sábado',
+    'Saturday' => 'Sábado',
     
     '1 Minute' => '1 minuto',
     '5 Minutes' => '5 minutos',

@@ -55,7 +55,7 @@ $languageStrings = array(
     'Net 45 days' => '45 días',
     'Net 60 days' => '60 días',
     'Cancel' => 'Cancelada',
-    
+    'Next Invoice Date' => 'Fecha de próxima factura',
 
   'LBL_THIS' => 'Este',
   'LBL_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_OR_REPLACE_THIS_ITEM' => 'Se ha eliminado del sistema. Por favor elimine o reemplace este artículo',
