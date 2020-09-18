@@ -9,7 +9,7 @@
 {* modules/Settings/LayoutEditor/views/Index.php *}
 
 {strip}
-	<div class="container-fluid main-scroll" id="layoutEditorContainer">
+	<div class="container-fluid main-scroll paddingTop15" id="layoutEditorContainer">
 		<input id="selectedModuleName" type="hidden" value="{$SELECTED_MODULE_NAME}" />
 		<input class="selectedTab" type="hidden" value="{$SELECTED_TAB}">
 		<input class="selectedMode" type="hidden" value="{$MODE}">

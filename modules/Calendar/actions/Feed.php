@@ -208,10 +208,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['sourceModule'] = $moduleModel->getName();
 			$item['fieldName'] = $fieldName;
 			$item['conditions'] = '';
-			if(!empty($conditions)) {
-				$item['conditions'] = Zend_Json::encode(Zend_Json::encode($conditions));
-			}
-			$result[] = $item;
+			$item['end'] = date('Y-m-d', strtotime(($item['end'] ?: $item['start']).' +1day'));
+                        if(!empty($conditions)) {
+                            $item['conditions'] = Zend_Json::encode(Zend_Json::encode($conditions));
+                        }
+                        $result[] = $item;
 		}
 	}
 

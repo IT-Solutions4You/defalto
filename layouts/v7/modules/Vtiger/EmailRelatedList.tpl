@@ -81,7 +81,7 @@
                                 </th>
                             {/foreach}
                             <th class="{$WIDTHTYPE}">
-                                <a href="javascript:void(0);" class="noSorting">{vtranslate('LBL_ORIGIN')}</a>
+                                <a href="javascript:void(0);" class="noSorting">{vtranslate('LBL_STATUS')}</a>
                             </th>
                         </tr>
                     </thead>

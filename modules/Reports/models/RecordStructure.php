@@ -18,7 +18,8 @@ class Reports_RecordStructure_Model extends Vtiger_RecordStructure_Model {
 	 * Function to get the values in stuctured format
 	 * @return <array> - values in structure array('block'=>array(fieldinfo));
 	 */
-	public function getStructure($moduleName) {
+	public function getStructure() {
+            list($moduleName) = func_get_args();
 		if (!empty($this->structuredValues[$moduleName])) {
 			return $this->structuredValues[$moduleName];
 		}

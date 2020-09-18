@@ -31,6 +31,27 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 			return parent::showRelatedList($request);
 		}
 
+                $searchParams = $request->get('search_params');
+                if(empty($searchParams)) {
+                    $searchParams = array();
+                }
+                $whereCondition = array();
+                $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
+		$moduleFields = $relatedModuleModel->getFields();
+                foreach($searchParams as $fieldListGroup){
+                    foreach($fieldListGroup as $fieldSearchInfo){
+                        $fieldModel = $moduleFields[$fieldSearchInfo[0]];
+                        $tableName = $fieldModel->get('table');
+                        $column = $fieldModel->get('column');
+                        $whereCondition[$fieldSearchInfo[0]] = array($tableName.'.'.$column, $fieldSearchInfo[1],  $fieldSearchInfo[2],$fieldSearchInfo[3]);
+
+                        $fieldSearchInfoTemp= array();
+                        $fieldSearchInfoTemp['searchValue'] = $fieldSearchInfo[2];
+                        $fieldSearchInfoTemp['fieldName'] = $fieldName = $fieldSearchInfo[0];
+                        $fieldSearchInfoTemp['comparator'] = $fieldSearchInfo[1];
+                        $searchParams[$fieldName] = $fieldSearchInfoTemp;
+                    }
+               }
 		$pagingModel = new Vtiger_Paging_Model();
 		$pagingModel->set('page',$requestedPage);
 
@@ -45,6 +66,8 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 			$nextSortOrder = "ASC";
 			$sortImage = "icon-chevron-up";
 		}
+                if(!empty($whereCondition))
+                    $relationListView->set('whereCondition', $whereCondition);
 		if(!empty($orderBy)) {
 			$relationListView->set('orderby', $orderBy);
 			$relationListView->set('sortorder',$sortOrder);
@@ -114,6 +137,7 @@ class PriceBooks_Detail_View extends Vtiger_Detail_View {
 		$viewer->assign('SORT_IMAGE',$sortImage);
 		$viewer->assign('COLUMN_NAME',$orderBy);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+                $viewer->assign('SEARCH_DETAILS', $searchParams);
 		$viewer->assign('TAB_LABEL', $request->get('tab_label'));
 		
 		return $viewer->view('RelatedList.tpl', $moduleName, 'true');

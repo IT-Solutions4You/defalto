@@ -446,10 +446,10 @@ jQuery.Class("Vtiger_Helper_Js",{
         var cb = params.cb;
         var container = jQuery('.myModal');
 		
-		container.on('hidden.bs.modal',function() {
+        container.on('hidden.bs.modal',function() {
 			container.html('');
 			window.onbeforeunload = null;
-		});
+        });
 		
         if(typeof cb === "function") {
             container.off('shown.bs.modal');
@@ -793,6 +793,7 @@ jQuery.Class("Vtiger_Helper_Js",{
         if(typeof params === "undefined") {
             params = {};
         }
+        
         var defaultParams = app.helper.defaultModalParams();
         params = jQuery.extend(defaultParams,params);
 
@@ -800,7 +801,7 @@ jQuery.Class("Vtiger_Helper_Js",{
         if(jQuery('#popupModal').length) return;
         var container = jQuery('<div id="popupModal" class="modal"></div>');
 		
-		container.on('hidden.bs.modal',function() {
+	container.on('hidden.bs.modal',function() {
 			container.html('').remove();
 		});
 		

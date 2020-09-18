@@ -637,7 +637,7 @@ class Vtiger_Functions {
 	}
 
 	static function validateImage($file_details) {
-		global $app_strings;
+		global $app_strings, $log;
 		$allowedImageFormats = array('jpeg', 'png', 'jpg', 'pjpeg', 'x-png', 'gif', 'bmp');
 
 		$mimeTypesList = array_merge($allowedImageFormats, array('x-ms-bmp'));//bmp another format
@@ -649,6 +649,7 @@ class Vtiger_Functions {
 
 		$saveimage = 'true';
 		if (!in_array($filetype, $allowedImageFormats)) {
+                        $log->debug('file type not matched allowed formats');
 			$saveimage = 'false';
 		}
 
@@ -656,6 +657,7 @@ class Vtiger_Functions {
 		$mimeType = self::mime_content_type($file_details['tmp_name']);
 		$mimeTypeContents = explode('/', $mimeType);
 		if (!$file_details['size'] || strtolower($mimeTypeContents[0]) !== 'image' || !in_array($mimeTypeContents[1], $mimeTypesList)) {
+                    $log->debug('Failed because of size or image not supported types');
 			$saveimage = 'false';
 		}
 
@@ -666,6 +668,7 @@ class Vtiger_Functions {
                     if($file_details['type'] == 'image/jpeg' || $file_details['type'] == 'image/tiff') {
                         $exifdata = @exif_read_data($file_details['tmp_name']);
                         if($exifdata && !self::validateImageMetadata($exifdata, $shortTagSupported)) {
+                            $log->debug('Image metadata validation failed');
                             $saveimage = 'false';
                         }
                         //remove sensitive information(like,GPS or camera information) from the image
@@ -680,6 +683,7 @@ class Vtiger_Functions {
 		if ($saveimage == 'true') {
                     $imageContents = file_get_contents($file_details['tmp_name']);
                     if (stripos($imageContents, $shortTagSupported ? "<?" : "<?php") !== false) { // suspicious dynamic content.
+                        $log->debug('Php injection suspected');
                         $saveimage = 'false';
                     }
 		}
@@ -1239,17 +1243,27 @@ class Vtiger_Functions {
 	 * @return boolean Returns true if $value is date else returns false
 	 */
 	static function isDateValue($value) {
-		$valueParts = explode('-', $value);
-		if (count($valueParts) == 3 && (strlen($valueParts[0]) == 4 || strlen($valueParts[1]) == 4 || strlen($valueParts[2]) == 4)) {
-			$time = strtotime($value);
-			if ($time && $time > 0) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+            $value = trim($value);
+            $delim = array('/','.');
+            foreach ($delim as $delimiter){
+                    $x = strpos($value, $delimiter);
+                    if($x === false) continue;
+                    else{
+                            $value=str_replace($delimiter, '-', $value);
+                            break;
+                    }
+            }
+            $valueParts = explode('-', $value);
+            if (count($valueParts) == 3 && (strlen($valueParts[0]) == 4 || strlen($valueParts[1]) == 4 || strlen($valueParts[2]) == 4)) {
+                    $time = strtotime($value);
+                    if ($time && $time > 0) {
+                            return true;
+                    } else {
+                            return false;
+                    }
+            } else {
+                    return false;
+            }
 	}
 
 	/**

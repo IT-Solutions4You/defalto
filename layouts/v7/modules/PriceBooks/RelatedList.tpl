@@ -20,6 +20,8 @@
 			<input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
 			<input type="hidden" value="{$RELATED_ENTIRES_COUNT}" id="noOfEntries">
 			<input type='hidden' value="{$PAGING->getPageLimit()}" id='pageLimit'>
+                        <input type='hidden' value="{$PAGING->get('page')}" id='pageNumber'>
+                        <input type="hidden" value="{$PAGING->isNextPageExists()}" id="nextPageExist"/>
 			<input type='hidden' value="{$TOTAL_ENTRIES}" id='totalCount'>
 			<input type='hidden' value="{$TAB_LABEL}" id='tab_label' name='tab_label'>
 

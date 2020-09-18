@@ -1312,6 +1312,7 @@ $languageStrings = array(
 	'LBL_VTIGER6_RETIREMENT_NOTICE' => 'This version will be retired on Feb 15th 2016',
 	'ModTracker' => 'Updates',
 	'LBL_MAIL_SENT_SUCCESSFULLY' => 'Mail Sent Successfully',
+        'LBL_MAIL_SAVED_SUCCESSFULLY' => 'Mail Saved Successfully',
 	'LBL_FAILED_TO_SEND' => 'Failed to Send',
 
 	'LBL_ESSENTIALS' => 'Essentials',
@@ -1940,4 +1941,5 @@ $jsLanguageStrings = array(
         'JS_ATLEAST_SELECT_ONE_FIELD' => 'At least one field should be selected',
         'JS_RELATED_ACCOUNT_IS_NOT_AVAILABLE' => 'Related Organization record is not available',
         'JS_RELATED_CONTACT_IS_NOT_AVAILABLE' => 'Related Contact record is not available',
+        'JS_REPEAT_DATE_SHOULD_BE_GREATER_THAN_START_DATE' => 'Repeat date should be greater than or equal to Start Date',
 );

@@ -885,8 +885,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			$importDataController->importData();
 			$importStatusCount = $importDataController->getImportStatusCount();
 			$recordsToImport = $importDataController->getNumberOfRecordsToImport($importDataController->user);
-
-			$emailSubject = 'vtiger CRM - Scheduled Import Report for '.$importDataController->module;
+			$emailSubject = getTranslatedString('LBL_SCHEDULE_IMPORT_SUBJECT', 'Import').' '.$importDataController->module;
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('FOR_MODULE', $importDataController->module);
 			$viewer->assign('INVENTORY_MODULES', getInventoryModules());
@@ -895,9 +894,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 			$importResult = $viewer->view('Import_Result_Details.tpl','Import',true);
 			$importResult = str_replace('align="center"', '', $importResult);
 
-			$emailData = 'vtiger CRM has just completed your import process. <br/><br/>' .
-						$importResult.'<br/><br/>'.
-						'We recommend you to login to the CRM and check few records to confirm that the import has been successful.';
+                        $emailData = getTranslatedString('LBL_IMPORT_COMPLETED', 'Import').' '.$importResult.getTranslatedString('LBL_CHECK_IMPORT_STATUS', 'Import');
 
 			$userName = getFullNameFromArray('Users', $importDataController->user->column_fields);
 			$userEmail = $importDataController->user->email1;

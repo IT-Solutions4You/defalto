@@ -128,7 +128,7 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 				thisInstance.selectedRelatedTabElement.addClass('active');
 				container = jQuery('div.details');
                 container.html(responseData);
-				thisInstance.initializePaginationEvents();
+    				thisInstance.initializePaginationEvents();
                 thisInstance.triggerRelationAdditionalActions();
 				app.event.trigger('post.relatedListLoad.click', container);
                 

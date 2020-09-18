@@ -350,7 +350,7 @@ body > .mCSB_inside > .mCSB_container{
 @media (max-width: 1200px) {
     .app-menu{
         max-height: 100%;
-        overflow-y: auto;
+        overflow-y: visible;
     }
 }
 
@@ -2238,7 +2238,7 @@ strong, b, th{
     top:86px;
     position:fixed;
     width:100%;
-    z-index: 1030;
+    z-index: 1099;
 }
 
 #overlayPage .arrow.show{
@@ -2299,7 +2299,7 @@ strong, b, th{
     right:0px;
     top:0px;
     position:fixed;
-    z-index: 1070;
+    z-index: 1099;
 }
 .overlayHeader .modal-header{
     background: inherit;
@@ -2778,7 +2778,12 @@ strong, b, th{
     -o-transition: all 1s ease;
     transition : all 1s ease;
 }
-
+.advanceFilterContainer .modal-content {
+  height: 100vh;
+}
+.p-xy-8 {
+    padding: 8px !important;
+}
 #advanceSearchHolder {
     max-height : 0px;
     overflow : hidden;
@@ -6887,6 +6892,9 @@ div.tooltip-inner{
     width: 100%;
     display: inline-block;
 }
+.fieldValueWidth80{
+    width:80% !important;
+}
 .input-group-addon{
     line-height: 1.5;
     border-width: thin;
@@ -8658,4 +8666,3 @@ body .fc {
         padding: 30px;
     }
 }
-

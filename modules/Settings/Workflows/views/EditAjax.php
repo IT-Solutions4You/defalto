@@ -11,7 +11,7 @@
 
 class Settings_Workflows_EditAjax_View extends Settings_Workflows_Edit_View {
 
-   public function preProcess(Vtiger_Request $request) {
+   public function preProcess(Vtiger_Request $request, $display=true) {
       return true;
    }
 

@@ -410,7 +410,18 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 									$val[$x] = DateTimeField::convertToDBFormat(
 											trim($temp_val[$x]));
 								} elseif($fieldType == 'datetime') {
-									$val[$x] = $date->getDBInsertDateTimeValue();
+                                                                    if ($advFilterComparator == 'bw'  || $advFilterComparator == 'custom' ) {
+                                                                        $dates = explode(' ', $temp_val[$x]);
+                                                                        if(empty($dates[1])) {			
+                                                                            if ($x == '0') {
+                                                                                $filterValue = trim($temp_val[$x]). ' 00:00:00';
+                                                                            } elseif ($x == '1') {
+                                                                                $filterValue = trim($temp_val[$x]). ' 23:59:59';
+                                                                            }
+                                                                        }
+                                                                        $date = new DateTimeField($filterValue);
+                                                                     }
+                                                                    $val[$x] = $date->getDBInsertDateTimeValue();
 								} else {
 									$val[$x] = $date->getDBInsertTimeValue();
 								}

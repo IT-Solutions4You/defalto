@@ -291,4 +291,10 @@ if (defined('VTIGER_UPGRADE')) {
             }
     }
     echo "unwanted files..cleared.<br>";
+    
+    //update conditions column of vtiger_calendar_default_activitytypes
+    $db->pquery('ALTER TABLE vtiger_calendar_default_activitytypes DROP COLUMN conditions', array());
+    $db->pquery('ALTER TABLE vtiger_calendar_default_activitytypes ADD COLUMN conditions VARCHAR(255) DEFAULT ""', array());
+    
+    echo 'Conditions column in vtiger_calendar_default_activitytypes updated';
 }
