@@ -343,12 +343,12 @@ $languageStrings = array(
 	'LBL_TOMORROW'                 => 'Mañana'                     ,
 	'LBL_LAST_WEEK'                => 'Semana anterior'             ,
 	'LBL_CURRENT_WEEK'             => 'Semana actual'               ,
-	'LBL_NEXT_WEEK'                => 'Semana aiguiente'            ,
+	'LBL_NEXT_WEEK'                => 'Semana siguiente'            ,
 	'LBL_LAST_MONTH'               => 'Mes anterior'                ,
 	'LBL_CURRENT_MONTH'            => 'Mes actual'                  ,
 	'LBL_NEXT_MONTH'               => 'Mes siguiente'               ,
 	'LBL_LAST_7_DAYS'              => 'Últimos 7 Días'            ,
-        'LBL_LAST_14_DAYS'             => 'Últimos 14 Días'            ,
+    'LBL_LAST_14_DAYS'             => 'Últimos 14 Días'            ,
 	'LBL_LAST_30_DAYS'             => 'Últimos 30 Días'           ,
 	'LBL_LAST_60_DAYS'             => 'Últimos 60 Días'           ,
 	'LBL_LAST_90_DAYS'             => 'Últimos 90 Días'           ,
@@ -1087,6 +1087,8 @@ fuera de Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Puede%s para modificar las normas de prevención de duplicados.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Póngase en contacto con el administrador para revisar las reglas sobre duplicados',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicar%s (s):',
+    
+    'LBL_LISTVIEW_JUMP_TO' => 'Saltar a',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Por favor configure el servidor de salida desde la página de configuración ',
