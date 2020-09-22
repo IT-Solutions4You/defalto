@@ -1379,7 +1379,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			}
 
 			//add url params for hidden fields needed for the save request
-			var hiddenFields = form.find("input[type=hidden]");
+			var hiddenFields = form.children("input[type=hidden]");
 			hiddenFields.each(function(i, obj){
 				key = $(this).attr("name");
 				
