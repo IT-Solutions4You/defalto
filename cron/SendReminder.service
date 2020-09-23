@@ -94,7 +94,7 @@ if($adb->num_rows($result) >= 1)
 		$activitymode = ($result_set['activitytype'] == "Task")?"Task":"Events";
 		$parent_type = $result_set['setype'];
 		$activity_sub = $result_set['subject'];
-		$to_addr='';
+		$to_addr= array();
 
 		if($parent_type!='')
 		$parent_content = getParentInfo($parent_type)."\n";
