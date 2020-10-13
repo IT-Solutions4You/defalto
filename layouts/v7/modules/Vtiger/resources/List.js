@@ -1208,10 +1208,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				isOwnerChanged = false;
 			});
 			
-			//automatically select fields for mass edit when updated
-			$('#massEdit :input').change(function() {
-				$(this).closest('tr').find("input[id^=include_in_mass_edit_" + $(this).attr('name') + "]").prop( "checked", true );
-			});
+			thisInstance.registerAutoIncludeFieldsInMassEdit();
 			
 			app.helper.registerLeavePageWithoutSubmit($("#massEdit"));
 			app.helper.registerModalDismissWithoutSubmit($("#massEdit"));
@@ -1362,21 +1359,29 @@ Vtiger.Class("Vtiger_List_Js", {
         });
     },
     
-	saveMassEdit: function (event, form_original_data, isOwnerChanged) {
+    registerAutoIncludeFieldsInMassEdit: function () {
+    	
+    	var autoIncludeFieldsInMassEditCallback = function() {
+			var fieldName = $(this).attr('name');
+			fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
+			
+			$(this).closest('tr').find("input[id=include_in_mass_edit_" + fieldName + "]").prop( "checked", true );
+		};
+		
+		var formInputFields = jQuery('#massEdit :input').not('[id^=include_in_mass_edit_]');
+		formInputFields.on(Vtiger_Edit_Js.referenceSelectionEvent, autoIncludeFieldsInMassEditCallback);
+		formInputFields.change(autoIncludeFieldsInMassEditCallback);
+    },
+    
+	saveMassEdit: function (event) {
 		event.preventDefault();
 		var form = $('#massEdit');
-		var form_new_data = form.serialize();
 		var changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
 		
 		app.helper.showProgress();
-		if (changedFields.length > 0 || isOwnerChanged) {
-			var originalData = app.convertUrlToDataParams(form_original_data);
-			var newData = app.convertUrlToDataParams(form_new_data);
-
-			var form_update_data = '';
-			if (!newData['assigned_user_id'] && isOwnerChanged) {
-				form_update_data += 'assigned_user_id=' + originalData['assigned_user_id'] + '&';
-			}
+		if (changedFields.length > 0) {
+			var newData = app.convertUrlToDataParams(form.serialize());
+			var updateFieldsRequest = '';
 
 			//add url params for hidden fields needed for the save request
 			var hiddenFields = form.children("input[type=hidden]");
@@ -1384,25 +1389,29 @@ Vtiger.Class("Vtiger_List_Js", {
 				key = $(this).attr("name");
 				
 				if (typeof newData[key] !== 'undefined') {
-					form_update_data += key + '=' + newData[key] + '&';
+					updateFieldsRequest += key + '=' + newData[key] + '&';
 				}
 			});
-			
+
 			//add url params for fields that will be updated
 			changedFields.each(function(i, obj){
-				var key = $(this).data("update-field");
-				var value = newData[key];
-				form_update_data += key + '=';
+				var fieldName = $(this).data("update-field");
+				var fieldNameArray = fieldName + encodeURI('[]'); //fieldnames of fields like multipicklist have [] after the fieldname
 				
-				if (typeof value !== 'undefined') {
-					form_update_data += newData[key];
+				var key = fieldName;
+				if (typeof newData[fieldNameArray] !== 'undefined') {
+					key = fieldNameArray;
 				}
-				form_update_data += '&';
+
+				var value = newData[key];
+				updateFieldsRequest += key + '=';
+				if (typeof value !== 'undefined') {
+					updateFieldsRequest += value;
+				}
+				updateFieldsRequest += '&';
 			});
 			
-			form_update_data = form_update_data.slice(0, -1);//remove last &
-			
-			app.request.post({data: form_update_data}).then(function (err, data) {
+			app.request.post({data: updateFieldsRequest}).then(function (err, data) {
 				app.helper.hideProgress();
 				if (data) {
 					jQuery('.vt-notification').remove();
