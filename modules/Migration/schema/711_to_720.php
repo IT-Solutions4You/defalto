@@ -18,4 +18,7 @@ if (defined('VTIGER_UPGRADE')) {
     if(!in_array($columnName,$columns)) {
         $db->pquery('ALTER TABLE vtiger_attachments ADD COLUMN storedname varchar(255) NULL AFTER path', array());
     }
+    
+    //Update existing package modules
+    Install_Utils_Model::installModules();
 }
