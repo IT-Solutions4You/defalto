@@ -24,6 +24,7 @@ class VTWorkflowManager{
 
 	function __construct($adb){
 		$this->adb = $adb;
+                $this->setMaxAllowedScheduledWorkflows();
 	}
 
 	function save($workflow){
@@ -105,13 +106,24 @@ class VTWorkflowManager{
 		$result = $adb->pquery($query, $params);
 		return $adb->query_result($result, 0, 'count');
 	}
+        
+        /**
+         * Function to set max allowed scheduled workflow count as per global defaults
+         */
+        function setMaxAllowedScheduledWorkflows(){
+            global $max_scheduled_workflows;
+            if(!empty($max_scheduled_workflows)){
+                vglobal('max_scheduled_workflows', $max_scheduled_workflows);
+            }else{
+                vglobal('max_scheduled_workflows', 10);
+            }
+        }
 
 	/**
 	 * Function returns the maximum allowed scheduled workflows
 	 * @return int
 	 */
 	function getMaxAllowedScheduledWorkflows() {
-            vglobal('max_scheduled_workflows', 10);
             return vglobal('max_scheduled_workflows');
 	}
 
