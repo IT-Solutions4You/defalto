@@ -135,7 +135,9 @@ var vtUtils = {
                         showShortcuts: true,
                         autoClose : false,
                         duration : 500
-                    });
+                    }).on('datepicker-opened', function(e){
+						vtUtils.addMask(jQuery('.date-picker-wrapper:visible'));
+					}).on('datepicker-closed',vtUtils.removeMask);
                 }else{
                     var elementDateFormat = element.data('dateFormat');
                     if(typeof elementDateFormat !== 'undefined') {
@@ -375,5 +377,18 @@ var vtUtils = {
         return string.replace(tags, function ($0, $1) {
             return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
         });
-    }
+	},
+	
+	addMask: function (container) {
+		if (container.length && jQuery('#vt-mask').length == 0) {
+			var mask = '<div id="vt-mask" class="vt-page-mask" ></div>'
+			container.before(mask);
+		}
+	},
+
+	removeMask: function () {
+		if (jQuery('#vt-mask').length) {
+			jQuery('#vt-mask').remove();
+		}
+	},
 }
