@@ -2679,6 +2679,12 @@ strong, b, th{
     border-left:1px solid #ddd;  
 }
 
+.input-group.inputElement .input-group-addon-right{
+    border:none;
+    border-left:0px;
+    border-right:1px solid #ddd;
+}
+
 .fieldBlockContainer textarea.inputElement{
     height : auto;
 }
@@ -6292,6 +6298,9 @@ hr{
 .width75per{
     width: 75%;
 }
+.width100per{
+    width: 100% !important;
+}
 #_mbox_pwd{
     padding: 3px 8px;
 }
@@ -6896,7 +6905,7 @@ div.tooltip-inner{
     width:80% !important;
 }
 .input-group-addon{
-    line-height: 1.5;
+    line-height: inherit;
     border-width: thin;
 }
 .input-group{
