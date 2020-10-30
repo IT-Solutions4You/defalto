@@ -281,9 +281,17 @@ class CRMEntity {
 
 		$entityFields = Vtiger_Functions::getEntityModuleInfo($module);
         $entityFieldNames  = explode(',', $entityFields['fieldname']);
-        $label = (count($entityFieldNames) > 1) ? 
+        switch ($module) {
+            case 'HelpDesk': $entityFieldNames = array('ticket_title');
+                break;
+            case 'Documents': $entityFieldNames = array('notes_title');
+                break;
+		}
+		
+        $record_label = (count($entityFieldNames) > 1) ? 
                         $this->column_fields[$entityFieldNames[0]].' '.$this->column_fields[$entityFieldNames[1]] : 
                         $this->column_fields[$entityFieldNames[0]];
+        $label = decode_html($record_label);
         $this->column_fields['label'] = $label;
 
 		if ($this->mode == 'edit') {
