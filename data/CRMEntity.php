@@ -288,9 +288,10 @@ class CRMEntity {
                 break;
 		}
 		
-        $record_label = (count($entityFieldNames) > 1) ? 
-                        $this->column_fields[$entityFieldNames[0]].' '.$this->column_fields[$entityFieldNames[1]] : 
-                        $this->column_fields[$entityFieldNames[0]];
+		$record_label = '';
+		foreach($entityFieldNames as $entityFieldName) {
+			$record_label .= $this->column_fields[$entityFieldName]." ";
+		}
         $label = decode_html($record_label);
         $this->column_fields['label'] = $label;
 
