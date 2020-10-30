@@ -1182,9 +1182,9 @@ class CustomView extends CRMEntity {
 						if ($this->customviewmodule == 'Calendar' && ($columns[1] == 'date_start' || $columns[1] == 'due_date')) {
 							$tableColumnSql = '';
 							if ($columns[1] == 'date_start') {
-								$tableColumnSql = "CAST((CONCAT(date_start,' ',time_start)) AS DATETIME)";
+								$tableColumnSql = "(CONCAT(date_start,' ',time_start))";
 							} else {
-								$tableColumnSql = "CAST((CONCAT(due_date,' ',time_end)) AS DATETIME)";
+								$tableColumnSql = "(CONCAT(due_date,' ',time_end))";
 							}
 						} else {
 							$tableColumnSql = $columns[0] . "." . $columns[1];
