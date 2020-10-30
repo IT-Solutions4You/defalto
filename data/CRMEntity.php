@@ -278,6 +278,14 @@ class CRMEntity {
 		if ($module == 'Events') {
 			$module = 'Calendar';
 		}
+
+		$entityFields = Vtiger_Functions::getEntityModuleInfo($module);
+        $entityFieldNames  = explode(',', $entityFields['fieldname']);
+        $label = (count($entityFieldNames) > 1) ? 
+                        $this->column_fields[$entityFieldNames[0]].' '.$this->column_fields[$entityFieldNames[1]] : 
+                        $this->column_fields[$entityFieldNames[0]];
+        $this->column_fields['label'] = $label;
+
 		if ($this->mode == 'edit') {
 			$description_val = from_html($this->column_fields['description'], ($insertion_mode == 'edit') ? true : false);
 
@@ -291,8 +299,8 @@ class CRMEntity {
 
 			$acl = Vtiger_AccessControl::loadUserPrivileges($current_user->id);
 			if ($acl->is_admin == true || $acl->profileGlobalPermission[1] == 0 || $acl->profileGlobalPermission[2] == 0 || $this->isWorkFlowFieldUpdate) {
-				$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?,modifiedby=?,description=?, modifiedtime=? where crmid=?";
-				$params = array($ownerid, $groupid, $current_user->id, $description_val, $adb->formatDate($date_var, true), $this->id);
+				$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?,modifiedby=?,description=?, modifiedtime=?";
+				$params = array($ownerid, $groupid, $current_user->id, $description_val, $adb->formatDate($date_var, true));
 			} else {
 				$profileList = getCurrentUserProfileList();
 				$perm_qry = "SELECT columnname FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid = vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid = vtiger_field.fieldid WHERE vtiger_field.tabid = ? AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0 AND vtiger_profile2field.profileid IN (" . generateQuestionMarks($profileList) . ") AND vtiger_def_org_field.visible = 0 and vtiger_field.tablename='vtiger_crmentity' and vtiger_field.displaytype in (1,3) and vtiger_field.presence in (0,2);";
@@ -302,13 +310,22 @@ class CRMEntity {
 					$columname[] = $adb->query_result($perm_result, $i, "columnname");
 				}
 				if (is_array($columname) && in_array("description", $columname)) {
-					$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?, modifiedby=?,description=?, modifiedtime=? where crmid=?";
-					$params = array($ownerid, $groupid, $current_user->id, $description_val, $adb->formatDate($date_var, true), $this->id);
+					$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?, modifiedby=?,description=?, modifiedtime=?";
+					$params = array($ownerid, $groupid, $current_user->id, $description_val, $adb->formatDate($date_var, true));
 				} else {
-					$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?,modifiedby=?, modifiedtime=? where crmid=?";
-					$params = array($ownerid, $groupid, $current_user->id, $adb->formatDate($date_var, true), $this->id);
+					$sql = "update vtiger_crmentity set smownerid=?, smgroupid=?,modifiedby=?, modifiedtime=?";
+					$params = array($ownerid, $groupid, $current_user->id, $adb->formatDate($date_var, true));
 				}
 			}
+
+			if($label) {
+				$sql .= ", label = ? ";
+				array_push($params, trim($label));
+			}
+
+			$sql .= " where crmid=?";
+			array_push($params,$this->id);
+
 			$adb->pquery($sql, $params);
 			$this->column_fields['modifiedtime'] =  $modified_date_var;
 			$this->column_fields['modifiedby'] = $current_user->id;
@@ -339,8 +356,19 @@ class CRMEntity {
 			}
 
 			$description_val = from_html($this->column_fields['description'], ($insertion_mode == 'edit') ? true : false);
-			$sql = "insert into vtiger_crmentity (crmid,smcreatorid,smownerid,smgroupid,setype,description,modifiedby,createdtime,modifiedtime,source) values(?,?,?,?,?,?,?,?,?,?)";
-			$params = array($current_id, $current_user->id, $ownerid, $groupid, $module, $description_val, $current_user->id, $created_date_var, $modified_date_var,$source);
+			$params = array("crmid" => $current_id, "smcreatorid" => $current_user->id, "smownerid" => $ownerid, 
+							"smgroupid" => $groupid, "setype" => $module, "description" => $description_val,
+							"modifiedby" => $current_user->id, "createdtime" => $created_date_var, 
+							"modifiedtime" => $modified_date_var, "source" => $source);
+
+			if($label) {
+				$params['label'] = trim($label);
+			}
+
+			$insert_columns = array_keys($params);
+			$insert_data = array_values($params);
+			$sql = "insert into vtiger_crmentity (".implode(",",$insert_columns).") values(".generateQuestionMarks($insert_data).")";
+
 			$adb->pquery($sql, $params);
 
 			$this->column_fields['createdtime'] = $created_date_var;
