@@ -46,8 +46,6 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * Function sends mail
 	 */
 	public function send($addToQueue = false) {
-            global $log;
-            $log->fatal('sending out email here');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$rootDirectory = vglobal('root_directory');
 
