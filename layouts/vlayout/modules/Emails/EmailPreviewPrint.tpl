@@ -20,7 +20,7 @@
 		{assign var="TO_EMAIL" value=$TO_EMAILS|replace:'[':''}
 		{assign var="TO_EMAIL_VALUE" value=$TO_EMAIL|replace:'&quot;':''}
 		<span style="position:absolute;right:6%;top:3%;font-family:'Lucida Grande';font-size:15px">
-			{$USER_MODEL->get('last_name')} {$USER_MODEL->get('first_name')} &lt;{$USER_MODEL->get('email1')}&gt;
+			{$USER_MODEL->get('userlabel')} &lt;{$USER_MODEL->get('email1')}&gt;
 		</span><hr/>
 		<span style="font-family:'Lucida Grande';font-size:15px">
 			{$RECORD->get('subject')}

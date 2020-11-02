@@ -152,7 +152,7 @@
 						<li class="dropdown">
 							<div>
 								<a href="#" class="userName dropdown-toggle pull-right" data-toggle="dropdown" role="button">
-									<span class="fa fa-user" aria-hidden="true" title="{$USER_MODEL->get('first_name')} {$USER_MODEL->get('last_name')}
+									<span class="fa fa-user" aria-hidden="true" title="{$USER_MODEL->get('userlabel')}
 										  ({$USER_MODEL->get('user_name')})"></span>
 									<span class="link-text-xs-only hidden-lg hidden-md hidden-sm">{$USER_MODEL->getName()}</span>
 								</a>

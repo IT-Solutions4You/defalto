@@ -209,7 +209,7 @@ class CustomView extends CRMEntity {
 		if ($markselected == false)
 			$selected = '';
 
-		$ssql = "select vtiger_customview.*, vtiger_users.first_name,vtiger_users.last_name from vtiger_customview inner join vtiger_tab on vtiger_tab.name = vtiger_customview.entitytype
+		$ssql = "select vtiger_customview.*, vtiger_users.first_name,vtiger_users.last_name,vtiger_users.userlabel from vtiger_customview inner join vtiger_tab on vtiger_tab.name = vtiger_customview.entitytype
 					left join vtiger_users on vtiger_customview.userid = vtiger_users.id ";
 		$ssql .= " where vtiger_tab.tabid=?";
 		$sparams = array($tabid);
@@ -230,7 +230,7 @@ class CustomView extends CRMEntity {
 			if ($cvrow['status'] == CV_STATUS_DEFAULT || $cvrow['userid'] == $current_user->id) {
 				$disp_viewname = $viewname;
 			} else {
-				$userName = getFullNameFromArray('Users', $cvrow);
+				$userName = $cvrow['userlabel'];
 				$disp_viewname = $viewname . " [" . $userName . "] ";
 			}
 
