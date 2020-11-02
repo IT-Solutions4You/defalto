@@ -23,6 +23,7 @@
 				<div class="list-menu-content">
 						{assign var="CUSTOM_VIEW_NAMES" value=array()}
                         {if $CUSTOM_VIEWS && count($CUSTOM_VIEWS) > 0}
+                            {assign var="IS_ADMIN" value=$CURRENT_USER_MODEL->isAdminUser()} <!-- Libertus Mod -->
                             {foreach key=GROUP_LABEL item=GROUP_CUSTOM_VIEWS from=$CUSTOM_VIEWS}
                             {if $GROUP_LABEL neq 'Mine' && $GROUP_LABEL neq 'Shared'}
                                 {continue}
@@ -40,7 +41,7 @@
 								{assign var=count value=0}
 								{assign var=LISTVIEW_URL value=$MODULE_MODEL->getListViewUrl()}
                                 {foreach item="CUSTOM_VIEW" from=$GROUP_CUSTOM_VIEWS name="customView"}
-                                    {assign var=IS_DEFAULT value=$CUSTOM_VIEW->isDefault()}
+                                    {assign var="IS_DEFAULT" value=$CUSTOM_VIEW->isDefault()}
 									{assign var="CUSTOME_VIEW_RECORD_MODEL" value=CustomView_Record_Model::getInstanceById($CUSTOM_VIEW->getId())}
 									{assign var="MEMBERS" value=$CUSTOME_VIEW_RECORD_MODEL->getMembers()}
 									{assign var="LIST_STATUS" value=$CUSTOME_VIEW_RECORD_MODEL->get('status')}
@@ -56,12 +57,22 @@
                                             <div class="pull-right">
                                                 <span class="js-popover-container" style="cursor:pointer;">
                                                     <span  class="fa fa-angle-down" rel="popover" data-toggle="popover" aria-expanded="true" 
-                                                {if $CUSTOM_VIEW->isMine() and $CUSTOM_VIEW->get('viewname') neq 'All'}
-                                                            data-deletable="{if $CUSTOM_VIEW->isDeletable()}true{else}false{/if}" data-editable="{if $CUSTOM_VIEW->isEditable()}true{else}false{/if}" 
-                                                            {if $CUSTOM_VIEW->isEditable()} data-editurl="{$CUSTOM_VIEW->getEditUrl()}{/if}" {if $CUSTOM_VIEW->isDeletable()} {if $SHARED_MEMBER_COUNT eq 1 or $LIST_STATUS eq 3} data-shared="1"{/if} data-deleteurl="{$CUSTOM_VIEW->getDeleteUrl()}"{/if}
-                                                           {/if}
-                                                          toggleClass="fa {if $IS_DEFAULT}fa-check-square-o{else}fa-square-o{/if}" data-filter-id="{$CUSTOM_VIEW->getId()}" 
-                                                          data-is-default="{$IS_DEFAULT}" data-defaulttoggle="{$CUSTOM_VIEW->getToggleDefaultUrl()}" data-default="{$CUSTOM_VIEW->getDuplicateUrl()}" data-isMine="{if $CUSTOM_VIEW->isMine()}true{else}false{/if}">
+                                                        {if ($CUSTOM_VIEW->isMine() || $IS_ADMIN) && $CUSTOM_VIEW->get('viewname') neq 'All'}
+                                                            data-deletable="{if $CUSTOM_VIEW->isDeletable()}true{else}false{/if}" 
+                                                            data-editable="{if $CUSTOM_VIEW->isEditable()}true{else}false{/if}" 
+                                                            {if $CUSTOM_VIEW->isEditable()} data-editurl="{$CUSTOM_VIEW->getEditUrl()}{/if}" 
+                                                            {if $CUSTOM_VIEW->isDeletable()} 
+                                                                {if $SHARED_MEMBER_COUNT eq 1 or $LIST_STATUS eq 3} data-shared="1"{/if} 
+                                                                data-deleteurl="{$CUSTOM_VIEW->getDeleteUrl()}"
+                                                            {/if}
+                                                        {/if}
+                                                        toggleClass="fa {if $IS_DEFAULT}fa-check-square-o{else}fa-square-o{/if}" 
+                                                        data-filter-id="{$CUSTOM_VIEW->getId()}" 
+                                                        data-is-default="{$IS_DEFAULT}" 
+                                                        data-defaulttoggle="{$CUSTOM_VIEW->getToggleDefaultUrl()}" 
+                                                        data-default="{$CUSTOM_VIEW->getDuplicateUrl()}" 
+                                                        data-isMine="{if $CUSTOM_VIEW->isMine()}true{else}false{/if}" 
+                                                        data-isadmin="{if $IS_ADMIN}true{else}false{/if}">
                                                     </span>
                                                      </span>
                                                 </div>

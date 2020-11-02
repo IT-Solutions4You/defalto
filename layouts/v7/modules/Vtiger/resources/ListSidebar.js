@@ -168,23 +168,33 @@ Vtiger.Class('Vtiger_ListSidebar_Js',{},{
             toggleEle.attr('data-is-default', jQuery(ele).data('is-default'));
             toggleEle.attr('data-filter-id', jQuery(ele).data('filter-id'));
             contentEle.find('.toggleDefault i').attr('class', jQuery(ele).attr('toggleClass'));
-             editEle.attr('data-id', jQuery(ele).data('id'));
+            editEle.attr('data-id', jQuery(ele).data('id'));
             deleteEle.attr('data-id', jQuery(ele).data('id'));
             
-            if(jQuery(ele).data('ismine') === false){
+            // Libertus Mod - data-isadmin also added to SideBarEssentials.tpl
+            if((jQuery(ele).data('ismine') === false) && (jQuery(ele).data('isadmin') === false)) {
                 contentEle.find('.editFilter').css("display", "none");
                 contentEle.find('.deleteFilter').css("display","none");
             }
-            if (!jQuery(ele).data('editable')) {
-                contentEle.find('.editFilter').remove();
+
+            if (!jQuery(ele).data('deletable')) {
+                contentEle.find('.deleteFilter').remove(); // This propogates to the next iteration of the each() method; removing the entire li
             } else {
+                if(contentEle.find('li').hasClass('deleteFilter') === false) {
+                    contentEle.find('ul').prepend(deleteEle); // Add back if missing
+                }
+                contentEle.find('.deleteFilter').removeClass('disabled');
+            }
+
+            if (!jQuery(ele).data('editable')) {
+                contentEle.find('.editFilter').remove(); // This propogates to the next iteration of the each() method; removing the entire li
+            } else {
+                if(contentEle.find('li').hasClass('editFilter') === false) {
+                    contentEle.find('ul').prepend(editEle); // Add back if missing
+                }
                 contentEle.find('.editFilter').removeClass('disabled');
             }
-            if (!jQuery(ele).data('deletable')) {
-                contentEle.find('.deleteFilter').remove();
-            } else {
-                contentEle.find('.deleteFilter').removeClass('disabled');
-            } 
+
             var options = {
                 html: true,
                 placement: 'left',

@@ -182,7 +182,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
             //Adding attachments to mail
             if(is_array($attachments)) {
                 foreach($attachments as $attachment) {
-                    $fileNameWithPath = $rootDirectory.$attachment['path'].$attachment['fileid']."_".$attachment['storedname'];
+                    $fileNameWithPath = $rootDirectory.$attachment['filenamewithpath'];
                     if(is_file($fileNameWithPath)) {
                         $mailer->AddAttachment($fileNameWithPath, $attachment['attachment']);
                     }
@@ -277,12 +277,24 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		$attachmentsList = array();
 		if($numOfRows) {
 			for($i=0; $i<$numOfRows; $i++) {
-				$attachmentsList[$i]['fileid'] = $db->query_result($attachmentRes, $i, 'attachmentsid');
-				$attachmentsList[$i]['attachment'] = decode_html($db->query_result($attachmentRes, $i, 'name'));
-                $attachmentsList[$i]['storedname'] = decode_html($db->query_result($attachmentRes, $i, 'storedname'));
-				$path = $db->query_result($attachmentRes, $i, 'path');
+                                $attachmentId = $db->query_result($attachmentRes, $i, 'attachmentsid');
+                                $rawFileName = $db->query_result($attachmentRes, $i, 'name');
+                                $storedName = $db->query_result($attachmentRes, $i, 'storedname');
+                                $path = $db->query_result($attachmentRes, $i, 'path');
+                                if($storedName) { 
+                                    $filename = $storedName;
+                                } else {
+                                    $filename = $rawFileName;
+                                }
+                                $attachmentsList[$i]['attachment'] = decode_html($rawFileName);
+                                $attachmentsList[$i]['fileid'] = $attachmentId;
+                                $attachmentsList[$i]['storedname'] = decode_html($storedName);
 				$attachmentsList[$i]['path'] = $path;
-				$attachmentsList[$i]['size'] = filesize($path.$attachmentsList[$i]['fileid'].'_'.$attachmentsList[$i]['storedname']);
+                                $saved_filename = $attachmentId."_".$filename;
+                                $filenamewithpath = $path.$saved_filename;
+                                $filesize = filesize($filenamewithpath);
+                                $attachmentsList[$i]['filenamewithpath'] = $filenamewithpath;
+				$attachmentsList[$i]['size'] = $filesize;
 				$attachmentsList[$i]['type'] = $db->query_result($attachmentRes, $i, 'type');
 				$attachmentsList[$i]['cid'] = $db->query_result($attachmentRes, $i, 'cid');
 			}
