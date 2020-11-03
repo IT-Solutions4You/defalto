@@ -544,6 +544,23 @@ class Vtiger_Deprecated {
 	}
 
 	static function getSqlForNameInDisplayFormat($input, $module, $glue = ' ') {
+		if ($module == 'Users') {
+			if (is_string($input)) {
+				$input = array($input);
+			}
+
+			$tableName = '';
+			foreach ($input as $fieldTableColumn) {
+				if ($fieldTableColumn) {
+					list($tableName, $columnName) = explode('.', $fieldTableColumn);
+					break;
+				}
+			}
+			if ($tableName) {
+				return "$tableName.userlabel";
+			}
+		}
+
 		$entity_field_info = Vtiger_Functions::getEntityModuleInfoFieldsFormatted($module);
 		$fieldsName = $entity_field_info['fieldname'];
 		if(is_array($fieldsName)) {

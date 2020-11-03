@@ -896,7 +896,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
                         $emailData = getTranslatedString('LBL_IMPORT_COMPLETED', 'Import').' '.$importResult.getTranslatedString('LBL_CHECK_IMPORT_STATUS', 'Import');
 
-			$userName = getFullNameFromArray('Users', $importDataController->user->column_fields);
+			$userName = $importDataController->user->column_fields['userlabel'];
 			$userEmail = $importDataController->user->email1;
 			$vtigerMailer->AddAddress($userEmail, $userName);
 			$vtigerMailer->Subject = $emailSubject;
