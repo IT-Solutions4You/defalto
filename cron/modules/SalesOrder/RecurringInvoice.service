@@ -159,6 +159,7 @@ function getRecurringDate($recurringDate, $recurringFrequency) {
 
 		case 'monthly'		:	$m = $m + 1;			break;
 		case 'quarterly'	:	$m = $m + 3;			break;
+		case 'every 4 months':	$m = $m + 4;			break;
 		case 'half-yearly'	:	$m = $m + 6;			break;
 		case 'yearly'		:	$y = $y + 1;			break;
 
@@ -185,4 +186,3 @@ function getRecurringDate($recurringDate, $recurringFrequency) {
 
 	return array('validDate' => $validNextRecurringDate, 'nextRecurringDate' => $nextRecurringDate);
 }
-?>
