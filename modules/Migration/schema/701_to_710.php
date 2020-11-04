@@ -426,8 +426,5 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
 
-	//Update existing package modules
-	Install_Utils_Model::installModules();
-
 	echo '<br>Succecssfully vtiger version updated to <b>7.1.0</b><br>';
 }

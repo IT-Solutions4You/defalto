@@ -2225,9 +2225,6 @@ if(defined('VTIGER_UPGRADE')) {
 		rename('modules/Vtiger/resources', 'modules/Vtiger/resources_650');
 	}
 
-	//Update existing package modules
-	Install_Utils_Model::installModules();
-
 	//recalculate user files to finish
 	RecalculateSharingRules();
 
