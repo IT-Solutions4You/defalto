@@ -372,7 +372,7 @@ class DateTimeField {
 					case 'mm.dd.yyyy': list($m, $d, $y) = explode('.', $date); break;
 					case 'dd.mm.yyyy': list($d, $m, $y) = explode('.', $date); break;
 					case 'dd/mm/yyyy': list($d, $m, $y) = explode('/', $date); break;
-					case 'mm/dd/yyyy': list($d, $m, $y) = explode('/', $date); break;
+					case 'mm/dd/yyyy': list($m, $d, $y) = explode('/', $date); break;
 					case 'mm-dd-yyyy': list($m, $d, $y) = explode('-', $date); break;
 					case 'dd-mm-yyyy': list($d, $m, $y) = explode('-', $date); break;
 				}
