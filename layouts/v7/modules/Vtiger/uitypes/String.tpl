@@ -16,7 +16,7 @@
 	{if (!$FIELD_NAME)}
 		{assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
 	{/if}
-	<input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" data-fieldname="{$FIELD_NAME}" data-fieldtype="string" class="inputElement {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_NAME}" value="{$FIELD_MODEL->get('fieldvalue')}"
+	<input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" data-fieldname="{$FIELD_NAME}" data-fieldtype="string" class="inputElement {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_NAME}" value="{decode_html($FIELD_MODEL->get('fieldvalue'))|htmlentities}"
 		{if $FIELD_MODEL->get('uitype') eq '3' || $FIELD_MODEL->get('uitype') eq '4'|| $FIELD_MODEL->isReadOnly()}
 			{if $FIELD_MODEL->get('uitype') neq '106'}
 				readonly

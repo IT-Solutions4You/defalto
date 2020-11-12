@@ -19,7 +19,7 @@
 					<div class="col-lg-12">
 						<div class="media">
 							<div class="media-left title" id="{$COMMENT->getId()}">
-								{assign var=CREATOR_NAME value=$COMMENT->getCommentedByName()}
+								{assign var=CREATOR_NAME value={decode_html($COMMENT->getCommentedByName())}}
 								<div class="col-lg-2 recordImage commentInfoHeader" style ="width:50px; height:50px; font-size: 30px;" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}" data-relatedto = "{$COMMENT->get('related_to')}">
 									{assign var=IMAGE_PATH value=$COMMENT->getImagePath()}
 									{if !empty($IMAGE_PATH)}
