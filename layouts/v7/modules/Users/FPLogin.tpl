@@ -12,7 +12,7 @@
 {*<DIV>TEMPLATE: layout/modules/Users/FPLogin.tpl</DIV>*}
 
 {if $ERROR}
-	Error, please retry setting the password!!
+	{$MESSAGE}
 {else}
 	<h4>Loading .... </h4>
 	<form class="form-horizontal" name="login" id="login" method="post" action="../../../index.php?module=Users&action=Login">
