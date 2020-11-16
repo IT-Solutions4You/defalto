@@ -43,13 +43,19 @@ class Users_ForgotPassword_Action {
 			$userId = getUserId_Ol($userName);
 			$user = Users::getActiveAdminUser();
 			$wsUserId = vtws_getWebserviceEntityId('Users', $userId);
-			vtws_changePassword($wsUserId, '', $newPassword, $confirmPassword, $user);
+                        try{
+                            vtws_changePassword($wsUserId, '', $newPassword, $confirmPassword, $user);
+                        } catch (Exception $e){
+                            $viewer->assign('ERROR', true);
+                            $viewer->assign('MESSAGE', html_entity_decode($e->getMessage()));
+                        }
 		} else {
 			$viewer->assign('ERROR', true);
+                        $viewer->assign('MESSAGE', 'Error, please retry setting the password!!');
 		}
-		$shortURLModel->delete();
-		$viewer->assign('USERNAME', $userName);
-		$viewer->assign('PASSWORD', $newPassword);
+                    $shortURLModel->delete();
+                    $viewer->assign('USERNAME', $userName);
+                    $viewer->assign('PASSWORD', $newPassword);
 		$viewer->view('FPLogin.tpl', 'Users');
 	}
 

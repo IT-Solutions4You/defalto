@@ -73,7 +73,7 @@ jQuery.Class('Install_Index_Js', {}, {
 		});
 
 		jQuery('input[name="password"]').on('blur', function (e) {
-			var retypePassword = jQuery('input[name="retype_password"]');
+                        var retypePassword = jQuery('input[name="retype_password"]');
 			if (retypePassword.val() != '' && retypePassword.val() !== jQuery(e.currentTarget).val()) {
 				jQuery('#passwordError').html('Please re-enter passwords.  The \"Password\" and \"Re-type password\" values do not match.');
 			} else {
@@ -114,6 +114,13 @@ jQuery.Class('Install_Index_Js', {}, {
 				error = true;
 			}
 
+                        var passwordField = jQuery('input[name="password"]');
+                        if(passwordField.val() != ''){
+                            if(!vtUtils.isPasswordStrong(passwordField.val())) {
+                                    error = true;
+                                    var passwordNotStrong = true;
+                            }
+                        }
 			var emailField = jQuery('input[name="admin_email"]');
 			var regex = /^[_/a-zA-Z0-9*]+([!"#$%&'()*+,./:;<=>?\^_`{|}~-]?[a-zA-Z0-9/_/-])*@[a-zA-Z0-9]+([\_\-\.]?[a-zA-Z0-9]+)*\.([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)?$/;
 			if (!regex.test(emailField.val()) && emailField.val() != '') {
@@ -133,7 +140,16 @@ jQuery.Class('Install_Index_Js', {}, {
 							'Warning! Invalid email address.' +
 							'</div>' +
 							'</div>';
-				} else {
+				} else if(passwordNotStrong){
+                                        content = '<div class="col-sm-12">' +
+							'<div class="alert errorMessageContent">' +
+							'<button class="close" data-dismiss="alert" type="button">x</button>' +
+							'To keep your data safe, we suggest that you use a strong password <br>'+
+                                                        '<ul> <li>Password should be at least 8 characters long </li> <li>Include at least one number </li><li>Include at least one lowercase alphabet </li> <li>Include at least one uppercase alphabet </li>'+
+                                                        '<li>Include at least one special character in the password </li> </ul>' +
+							'</div>' +
+							'</div>';
+                                }else {
 					content = '<div class="col-sm-12">' +
 							'<div class="alert errorMessageContent">' +
 							'<button class="close" data-dismiss="alert" type="button">x</button>' +
