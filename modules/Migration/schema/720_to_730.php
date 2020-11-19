@@ -297,4 +297,7 @@ if (defined('VTIGER_UPGRADE')) {
     $db->pquery('ALTER TABLE vtiger_calendar_default_activitytypes ADD COLUMN conditions VARCHAR(255) DEFAULT ""', array());
     
     echo 'Conditions column in vtiger_calendar_default_activitytypes updated';
+    
+    //Update existing package modules
+    Install_Utils_Model::installModules();
 }
