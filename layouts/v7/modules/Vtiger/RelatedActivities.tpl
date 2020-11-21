@@ -113,8 +113,8 @@
 														<input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}' />
 													{/if}
 												</span>
-											</div>
-										{/if}
+                                                                                        {/if}
+                                                                                    </div>
 									{/if}
 								</div>
 							</div>
