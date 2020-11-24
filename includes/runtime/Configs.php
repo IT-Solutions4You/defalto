@@ -41,4 +41,21 @@
 
         return $connector;
     }
+    
+    /**
+     * Function to fetch the value for given key
+     */
+    public function getValidationRegex($key, $default = '') {
+        global $validation_regex;
+        
+        $value = '';
+        if(isset($validation_regex[$key])) {
+            $value = $validation_regex[$key];
+        }
+
+        if(empty($value) && !empty($default)) {
+            $value = $default;
+        }
+        return $value;
+    }
  }

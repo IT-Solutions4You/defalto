@@ -75,7 +75,9 @@ function vtws_changePassword($id, $oldPassword, $newPassword, $confirmPassword, 
 }
 
 function isPasswordStrong($new_password){
-    if (preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/i', $new_password) == 1) {
+    $runtime_configs = Vtiger_Runtime_Configs::getInstance();
+    $password_regex = $runtime_configs->getValidationRegex('password_regex');
+    if (preg_match('/'.$password_regex.'/i', $new_password) == 1) {
             return true;
     }
     return false;

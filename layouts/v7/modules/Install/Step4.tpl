@@ -28,6 +28,7 @@
 			<div class="row hide" id="errorMessage"></div>
 			<div class="row">
 				<div class="col-sm-6">
+                                    <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)} />
 					<table class="config-table input-table">
 						<thead>
 							<tr><th colspan="2">{vtranslate('LBL_DATABASE_INFORMATION', 'Install')}</th></tr>
