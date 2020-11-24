@@ -20,4 +20,4 @@ $max_mailboxes = 3;
 $runtime_connectors = array();
 
 //Password Regex for validation
-$password_regex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})';
+$validation_regex = array('password_regex' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');

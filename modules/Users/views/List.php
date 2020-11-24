@@ -169,7 +169,7 @@ class Users_List_View extends Settings_Vtiger_List_View {
 		$viewer->assign('SEARCH_DETAILS', $searchParams);
                 
                 $runtime_configs = Vtiger_Runtime_Configs::getInstance();
-                $password_regex = $runtime_configs->get('password_regex');
+                $password_regex = $runtime_configs->getValidationRegex('password_regex');
                 $viewer->assign('PWD_REGEX', $password_regex);
 	}
 

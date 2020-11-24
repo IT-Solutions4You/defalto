@@ -152,7 +152,7 @@ Class Users_PreferenceEdit_View extends Vtiger_Edit_View {
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
                 
                 $runtime_configs = Vtiger_Runtime_Configs::getInstance();
-                $password_regex = $runtime_configs->get('password_regex');
+                $password_regex = $runtime_configs->getValidationRegex('password_regex');
                 $viewer->assign('PWD_REGEX', $password_regex);
 
 		parent::process($request);

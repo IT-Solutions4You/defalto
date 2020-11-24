@@ -113,7 +113,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		$viewer->assign('ADMIN_EMAIL', $defaultParameters['admin_email']);
                 
                 $runtime_configs = Vtiger_Runtime_Configs::getInstance();
-                $password_regex = $runtime_configs->get('password_regex');
+                $password_regex = $runtime_configs->getValidationRegex('password_regex');
                 $viewer->assign('PWD_REGEX', $password_regex);
 
 		$viewer->view('Step4.tpl', $moduleName);
