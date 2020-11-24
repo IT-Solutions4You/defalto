@@ -10,3 +10,14 @@
 
 //Maximum number of Mailboxes in mail converter
 $max_mailboxes = 3;
+
+/**
+ * Configure runtime connectors to customization in core files.
+ * Ex: Sessions are currently handled by PHP default session handler. 
+ *     This can be customized using runtime connector hook and avoid core file modifications.
+ *     array('session' => 'Vtiger_CustomSession_Handler')
+ */
+$runtime_connectors = array();
+
+//Password Regex for validation
+$validation_regex = array('password_regex' => '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');

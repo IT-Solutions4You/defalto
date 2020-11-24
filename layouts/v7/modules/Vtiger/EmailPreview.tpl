@@ -146,7 +146,7 @@
 							</div>
 						</div>
 					</div>
-					<textarea style="display:none;" id="iframeDescription">{$RECORD->get('description')}</textarea>
+					<textarea style="display:none;" id="iframeDescription">{decode_html($RECORD->get('description'))}</textarea>
 					<div class="row email-info-row">
 						<div class="col-lg-2" style="padding-right:10px;">
 							<div class="pull-right">{vtranslate('LBL_DESCRIPTION',$MODULE)}</div>

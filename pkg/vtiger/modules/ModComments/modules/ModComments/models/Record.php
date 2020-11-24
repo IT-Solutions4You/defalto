@@ -412,14 +412,27 @@ class ModComments_Record_Model extends Vtiger_Record_Model {
 		$attachmentsList = array();
 		if($numOfRows) {
 			for($i=0; $i<$numOfRows; $i++) {
-				$attachmentsList[$i]['fileid'] = $db->query_result($attachmentRes, $i, 'attachmentsid');
-				$attachmentsList[$i]['attachment'] = decode_html($db->query_result($attachmentRes, $i, 'name'));
-				$path = $db->query_result($attachmentRes, $i, 'path');
+                                $attachmentId = $db->query_result($attachmentRes, $i, 'attachmentsid');
+                                $rawFileName = $db->query_result($attachmentRes, $i, 'name');
+                                $storedName = $db->query_result($attachmentRes, $i, 'storedname');
+                                $path = $db->query_result($attachmentRes, $i, 'path');
+                                if($storedName) { 
+                                    $filename = $storedName;
+                                } else {
+                                    $filename = $rawFileName;
+                                }
+                                $attachmentsList[$i]['attachment'] = decode_html($rawFileName);
+                                $attachmentsList[$i]['fileid'] = $attachmentId;
+                                $attachmentsList[$i]['storedname'] = decode_html($storedName);
 				$attachmentsList[$i]['path'] = $path;
-				$attachmentsList[$i]['size'] = filesize($path.$attachmentsList[$i]['fileid'].'_'.$attachmentsList[$i]['attachment']);
+                                $saved_filename = $attachmentId."_".$filename;
+                                $filenamewithpath = $path.$saved_filename;
+                                $filesize = filesize($filenamewithpath);
+                                $attachmentsList[$i]['filenamewithpath'] = $filenamewithpath;
+				$attachmentsList[$i]['size'] = $filesize;
 				$attachmentsList[$i]['type'] = $db->query_result($attachmentRes, $i, 'type');
 				$attachmentsList[$i]['cid'] = $db->query_result($attachmentRes, $i, 'cid');
-			}
+                        }
 		}
 		return $attachmentsList;
 	}

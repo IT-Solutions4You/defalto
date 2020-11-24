@@ -225,12 +225,11 @@ function generateIcsAttachment($record) {
     $fileName = str_replace(' ', '_', decode_html($record['subject']));
     $assignedUserId = $record['user_id'];
     $userModel = Users_Record_Model::getInstanceById($assignedUserId, 'Users');
-    $firstName = $userModel->entity->column_fields['first_name'];
-    $lastName = $userModel->entity->column_fields['last_name'];
+    $userLabel = $userModel->entity->column_fields['userlabel'];
     $email = $userModel->entity->column_fields['email1'];
     $fp = fopen('test/upload/'.$fileName.'.ics', "w");
     fwrite($fp, "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\n");
-    fwrite($fp, "ORGANIZER;CN=".$firstName." ".$lastName.":MAILTO:".$email."\n");
+    fwrite($fp, "ORGANIZER;CN=".$userLabel.":MAILTO:".$email."\n");
     fwrite($fp, "DTSTART:".date('Ymd\THis\Z', strtotime($record['st_date_time']))."\n");
     fwrite($fp, "DTEND:".date('Ymd\THis\Z', strtotime($record['end_date_time']))."\n");
     fwrite($fp, "DTSTAMP:".date('Ymd\THis\Z')."\n");

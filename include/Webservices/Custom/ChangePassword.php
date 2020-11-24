@@ -41,30 +41,45 @@ function vtws_changePassword($id, $oldPassword, $newPassword, $confirmPassword, 
 							WebServiceErrorCode::$INVALIDOLDPASSWORD));
 			}
 		}
-		if(strcmp($newPassword, $confirmPassword) === 0) {
-			$db = PearDatabase::getInstance();
-			$db->dieOnError = true;
-			$db->startTransaction();
-			$success = $newUser->change_password($oldPassword, $newPassword, false);
-			$error = $db->hasFailedTransaction();
-			$db->completeTransaction();
-			if($error) {
-				throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 
-					vtws_getWebserviceTranslatedString('LBL_'.
-							WebServiceErrorCode::$DATABASEQUERYERROR));
-			}
-			if(!$success) {
-				throw new WebServiceException(WebServiceErrorCode::$CHANGEPASSWORDFAILURE, 
-					vtws_getWebserviceTranslatedString('LBL_'.
-							WebServiceErrorCode::$CHANGEPASSWORDFAILURE));
-			}
-		} else {
-			throw new WebServiceException(WebServiceErrorCode::$CHANGEPASSWORDFAILURE, 
-					vtws_getWebserviceTranslatedString('LBL_'.
-							WebServiceErrorCode::$CHANGEPASSWORDFAILURE));
-		}
+                if(isPasswordStrong($newPassword)) {
+                    if(strcmp($newPassword, $confirmPassword) === 0) {
+                            $db = PearDatabase::getInstance();
+                            $db->dieOnError = true;
+                            $db->startTransaction();
+                            $success = $newUser->change_password($oldPassword, $newPassword, false);
+                            $error = $db->hasFailedTransaction();
+                            $db->completeTransaction();
+                            if($error) {
+                                    throw new WebServiceException(WebServiceErrorCode::$DATABASEQUERYERROR, 
+                                            vtws_getWebserviceTranslatedString('LBL_'.
+                                                            WebServiceErrorCode::$DATABASEQUERYERROR));
+                            }
+                            if(!$success) {
+                                    throw new WebServiceException(WebServiceErrorCode::$CHANGEPASSWORDFAILURE, 
+                                            vtws_getWebserviceTranslatedString('LBL_'.
+                                                            WebServiceErrorCode::$CHANGEPASSWORDFAILURE));
+                            }
+                    } else {
+                            throw new WebServiceException(WebServiceErrorCode::$CHANGEPASSWORDFAILURE, 
+                                            vtws_getWebserviceTranslatedString('LBL_'.
+                                                            WebServiceErrorCode::$CHANGEPASSWORDFAILURE));
+                    }
+                } else {
+                    throw new WebServiceException(WebServiceErrorCode::$CHANGEPASSWORDFAILURE, 
+                                            vtws_getWebserviceTranslatedString('LBL_'.
+                                                            WebServiceErrorCode::$PASSWORDNOTSTRONG));
+                }
 		VTWS_PreserveGlobal::flush();
 		return array('message' => 'Changed password successfully');
 	}
+}
+
+function isPasswordStrong($new_password){
+    $runtime_configs = Vtiger_Runtime_Configs::getInstance();
+    $password_regex = $runtime_configs->getValidationRegex('password_regex');
+    if (preg_match('/'.$password_regex.'/i', $new_password) == 1) {
+            return true;
+    }
+    return false;
 }
 ?>

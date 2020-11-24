@@ -17,19 +17,24 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 	 */
 	registerRecordPreSaveEvent : function(form){
 		var thisInstance = this;
+		if(typeof form == 'undefined') {
+			var form = this.getForm();
+		}
 		app.event.on(Vtiger_Edit_Js.recordPresaveEvent, function(e, data) {
+                        var editForm = thisInstance.getForm();
+                        editForm.find('.saveButton').attr('disabled',true);
 			var userName = jQuery('input[name="user_name"]').val();
 			var newPassword = jQuery('input[name="user_password"]').val();
 			var confirmPassword = jQuery('input[name="confirm_password"]').val();
 			var record = jQuery('input[name="record"]').val();
-            var firstName = jQuery('input[name="first_name"]').val();
-            var lastName = jQuery('input[name="last_name"]').val();
-            var specialChars = /[<\>\"\,]/;
-            if((specialChars.test(firstName)) || (specialChars.test(lastName))) {
-                app.helper.showErrorNotification({message :app.vtranslate('JS_COMMA_NOT_ALLOWED_USERS')});
-                e.preventDefault();
-                return false;
-            }
+                        var firstName = jQuery('input[name="first_name"]').val();
+                        var lastName = jQuery('input[name="last_name"]').val();
+                        var specialChars = /[<\>\"\,]/;
+                        if((specialChars.test(firstName)) || (specialChars.test(lastName))) {
+                            app.helper.showErrorNotification({message :app.vtranslate('JS_COMMA_NOT_ALLOWED_USERS')});
+                            e.preventDefault();
+                            return false;
+                        }
 			var firstName = jQuery('input[name="first_name"]').val();
 			var lastName = jQuery('input[name="last_name"]').val();
 			if((firstName.indexOf(',') !== -1) || (lastName.indexOf(',') !== -1)) {
@@ -38,10 +43,16 @@ Vtiger_Edit_Js("Users_Edit_Js",{},{
 				return false;
 			}
 			if(record == ''){
-				if(newPassword != confirmPassword){
-                    app.helper.showErrorNotification({message :app.vtranslate('JS_REENTER_PASSWORDS')});
-					e.preventDefault();
-				}
+                            if(!vtUtils.isPasswordStrong(newPassword)) {
+                                app.helper.showErrorNotification({message :app.vtranslate('JS_PASSWORD_NOT_STRONG')});
+                                editForm.find('.saveButton').removeAttr('disabled');
+                                e.preventDefault();
+                                return false;
+                            }
+                            if(newPassword != confirmPassword){
+                                app.helper.showErrorNotification({message :app.vtranslate('JS_REENTER_PASSWORDS')});
+                                e.preventDefault();
+                            }
 
                 if(!(userName in thisInstance.duplicateCheckCache)) {
                     e.preventDefault();

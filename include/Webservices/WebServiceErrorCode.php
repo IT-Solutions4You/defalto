@@ -42,6 +42,7 @@
         public static $POTENTIAL_RELATED_UPDATE_FAILED = "POTENTIAL_RELATEDLIST_UPDATE_FAILED";
         public static $FAILED_TO_CREATE = "FAILED_TO_CREATE";
 		public static $INACTIVECURRENCY = "CURRENCY_INACTIVE";
+                public static $PASSWORDNOTSTRONG = "PASSWORD_NOT_STRONG";
 	}
 	
 ?>

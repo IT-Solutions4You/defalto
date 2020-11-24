@@ -17,7 +17,7 @@
                 <div class="recentCommentsBody row">
                     <br>
                     {foreach key=index item=COMMENT from=$COMMENTS}
-                        {assign var=CREATOR_NAME value=$COMMENT->getCommentedByName()}
+                        {assign var=CREATOR_NAME value={decode_html($COMMENT->getCommentedByName())}}
                         <div class="commentDetails">
                             <div class="singleComment">
                                 {assign var=PARENT_COMMENT_MODEL value=$COMMENT->getParentCommentModel()}

@@ -799,7 +799,7 @@ class QueryGenerator {
 						$startDateValue = explode(' ', $values[0]);
 						$endDateValue = explode(' ', $values[1]);
 						if(count($startDateValue) == 2 && count($endDateValue) == 2) {
-							$fieldSql .= " CAST(CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) AS DATETIME) $valueSql";
+							$fieldSql .= " CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) $valueSql";
 						} else {
 							$fieldSql .= "$dateFieldColumnName $valueSql";
 						}
@@ -809,7 +809,7 @@ class QueryGenerator {
 						}
 						$values = explode(' ', $value);
 						if(count($values) == 2) {
-								$fieldSql .= "$fieldGlue CAST(CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) AS DATETIME) $valueSql ";
+								$fieldSql .= "$fieldGlue CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) $valueSql ";
 						} else {
 								$fieldSql .= "$fieldGlue $dateFieldColumnName $valueSql";
 						}

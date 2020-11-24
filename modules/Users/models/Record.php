@@ -275,7 +275,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		if($subordinateRoleUsers) {
 			foreach($subordinateRoleUsers as $role=>$users) {
 				foreach($users as $user) {
-					$subordinateUsers[$user] = $privilegesModel->get('first_name').' '.$privilegesModel->get('last_name');
+					$subordinateUsers[$user] = $privilegesModel->get('userlabel');
 				}
 			}
 		}
@@ -458,7 +458,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$currentUserRoleModel = Settings_Roles_Record_Model::getInstanceById($this->getRole());
 		$childernRoles = $currentUserRoleModel->getAllChildren();
 		$users = $this->getAllUsersOnRoles($childernRoles);
-        $currentUserDetail = array($this->getId() => $this->get('first_name').' '.$this->get('last_name'));
+        $currentUserDetail = array($this->getId() => $this->get('userlabel'));
         $users = $currentUserDetail + $users;
         return $users;
 	}
@@ -488,14 +488,12 @@ class Users_Record_Model extends Vtiger_Record_Model {
 			for($i=0; $i<$noOfUsers; ++$i) {
 				$userIds[] = $db->query_result($result, $i, 'userid');
 			}
-			$query = 'SELECT id, first_name, last_name FROM vtiger_users WHERE status = ? AND id IN ('.  generateQuestionMarks($userIds).')';
+			$query = 'SELECT id, userlabel FROM vtiger_users WHERE status = ? AND id IN ('.  generateQuestionMarks($userIds).')';
 			$result = $db->pquery($query, array('ACTIVE', $userIds));
 			$noOfUsers = $db->num_rows($result);
 			for($j=0; $j<$noOfUsers; ++$j) {
 				$userId = $db->query_result($result, $j,'id');
-				$firstName = $db->query_result($result, $j, 'first_name');
-				$lastName = $db->query_result($result, $j, 'last_name');
-				$subUsers[$userId] = $firstName .' '.$lastName;
+				$subUsers[$userId] = $db->query_result($result, $j, 'userlabel');
 			}
 		}
 		return $subUsers;
@@ -807,7 +805,12 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @return <String> - Entity Display Name for the record
 	 */
 	public function getDisplayName() {
-		return getFullNameFromArray($this->getModuleName(),$this->getData());
+		$userLabel = $this->get('userlabel');
+
+		if (!$userLabel) {
+			$userLabel = getFullNameFromArray($this->getModuleName(),$this->getData());
+		}
+		return $userLabel;
 	}
 
 	/**

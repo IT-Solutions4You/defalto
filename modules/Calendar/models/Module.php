@@ -305,11 +305,11 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		if($currentUser->isAdminUser()) {
-			$query = "SELECT first_name,last_name, id AS userid
+			$query = "SELECT userlabel, id AS userid
 					FROM vtiger_users WHERE status='Active' AND (user_name != 'admin' OR is_owner = 1) AND id <> ?";
 			$result = $db->pquery($query, array($id));
 		} else {
-			$query = "SELECT vtiger_users.first_name,vtiger_users.last_name, vtiger_users.id AS userid
+			$query = "SELECT vtiger_users.userlabel, vtiger_users.id AS userid
 				FROM vtiger_sharedcalendar RIGHT JOIN vtiger_users ON vtiger_sharedcalendar.userid=vtiger_users.id AND vtiger_users.status= 'Active'
 				WHERE vtiger_sharedcalendar.sharedid=? OR (vtiger_users.status='Active' AND vtiger_users.calendarsharedtype='public' AND vtiger_users.id <> ?)";
 			$result = $db->pquery($query, array($id, $id));
@@ -319,7 +319,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		$userIds = Array();
 		for($i=0; $i<$rows; $i++){
 			$id = $db->query_result($result,$i,'userid');
-			$userName = $db->query_result($result,$i,'first_name').' '.$db->query_result($result,$i,'last_name');
+			$userName = $db->query_result($result,$i,'userlabel');
 			$userIds[$id] =$userName;
 		}
 

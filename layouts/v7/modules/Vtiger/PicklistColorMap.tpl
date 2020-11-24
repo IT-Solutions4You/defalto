@@ -16,7 +16,7 @@
             {/if}
             {assign var=PICKLIST_COLOR_MAP value=Settings_Picklist_Module_Model::getPicklistColorMap($FIELD_NAME, true)}
             {foreach item=PICKLIST_COLOR key=PICKLIST_VALUE from=$PICKLIST_COLOR_MAP}
-                {assign var=PICKLIST_TEXT_COLOR value=decode_html(Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR))}
+                {assign var=PICKLIST_TEXT_COLOR value= decode_html(Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR))}
                 {assign var=CONVERTED_PICKLIST_VALUE value=Vtiger_Util_Helper::convertSpaceToHyphen($PICKLIST_VALUE)}
                     .picklist-{$FIELD_MODEL->getId()}-{Vtiger_Util_Helper::escapeCssSpecialCharacters($CONVERTED_PICKLIST_VALUE)} {
                         background-color: {$PICKLIST_COLOR};
