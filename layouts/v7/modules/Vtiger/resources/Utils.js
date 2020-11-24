@@ -401,8 +401,12 @@ var vtUtils = {
             * (?=.*[!@#\$%\^&\*])	The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict
             * (?=.{8,})			The string must be eight characters or longer
             */
-            var strongPasswordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-            var isStrong = strongPasswordRegex.test(password)? true : false; 
-            return isStrong;
+           var password_regex = jQuery('[name="pwd_regex"]').val();
+           if((typeof password_regex != 'undefined') && (password_regex != '')){
+                var strongPasswordRegex = new RegExp(password_regex);
+                var isStrong = strongPasswordRegex.test(password)? true : false; 
+                return isStrong;
+           }
+           return false;
     },
 }

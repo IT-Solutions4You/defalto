@@ -9,6 +9,7 @@
 
 {strip}
 	<input type=hidden name="timeFormatOptions" data-value='{$DAY_STARTS}' />
+        <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)} />
 	{foreach key=BLOCK_LABEL_KEY item=FIELD_MODEL_LIST from=$RECORD_STRUCTURE}
 		{if $BLOCK_LABEL_KEY neq 'LBL_CALENDAR_SETTINGS'}
 			{assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}

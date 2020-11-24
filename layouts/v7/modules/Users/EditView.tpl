@@ -40,6 +40,7 @@
                     <input type="hidden" name="defaultCallDuration" value="{$USER_MODEL->get('callduration')}" />
                     <input type="hidden" name="defaultOtherEventDuration" value="{$USER_MODEL->get('othereventduration')}" />
                     <input type="hidden" name="isPreference" value="{$IS_PREFERENCE}" />
+                    <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)} />
                     {if $IS_RELATION_OPERATION }
                         <input type="hidden" name="sourceModule" value="{$SOURCE_MODULE}" />
                         <input type="hidden" name="sourceRecord" value="{$SOURCE_RECORD}" />

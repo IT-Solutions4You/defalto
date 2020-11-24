@@ -18,3 +18,6 @@ $max_mailboxes = 3;
  *     array('session' => 'Vtiger_CustomSession_Handler')
  */
 $runtime_connectors = array();
+
+//Password Regex for validation
+$password_regex = '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})';
