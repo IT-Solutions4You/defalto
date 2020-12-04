@@ -1258,7 +1258,7 @@ class QueryGenerator {
 		if(is_string($value)) {
 			$value = trim($value);
 		} elseif(is_array($value)) {
-			$value = array_map(trim, $value);
+			$value = array_map('trim', $value);
 		}
 		return array('name'=>$fieldname,'value'=>$value,'operator'=>$operator);
 	}
