@@ -2657,8 +2657,6 @@ class CRMEntity {
 		$entityfields = getEntityField($module);
 		$querycolumnnames = implode(',', $lookupcolumns);
 		$entitycolumnnames = $entityfields['fieldname'];
-                $log->fatal('$entitycolumnnames');
-                $log->fatal($entitycolumnnames);
                 if(!empty($querycolumnnames)){
                     $query .= ", $querycolumnnames";
                 }
