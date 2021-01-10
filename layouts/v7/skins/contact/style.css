@@ -2385,8 +2385,7 @@ th {
 }
 .fieldBlockContainer .inputElement {
   height: 30px;
-  width: 100%;
-  max-width: 325px;
+  width: 200px;
 }
 .editViewContents .input.form-control:focus,
 .editViewContents .input.form-control:hover,
