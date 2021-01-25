@@ -34,8 +34,8 @@ require_once("config.php");
 	$API_VERSION = "0.22";
 
 	global $seclog,$log;
-	$seclog =& LoggerManager::getLogger('SECURITY');
-	$log =& LoggerManager::getLogger('webservice');
+	$seclog = Logger::getLogger('SECURITY');
+	$log = Logger::getLogger('webservice');
 
 	function getRequestParamsArrayForOperation($operation){
 		global $operationInput;

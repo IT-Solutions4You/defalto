@@ -1,38 +1,41 @@
 <?php
 /**
- * log4php is a PHP port of the log4j java logging package.
- * 
- * <p>This framework is based on log4j (see {@link http://jakarta.apache.org/log4j log4j} for details).</p>
- * <p>Design, strategies and part of the methods documentation are developed by log4j team 
- * (Ceki Gülcü as log4j project founder and 
- * {@link http://jakarta.apache.org/log4j/docs/contributors.html contributors}).</p>
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- * <p>PHP port, extensions and modifications by VxR. All rights reserved.<br>
- * For more information, please see {@link http://www.vxr.it/log4php/}.</p>
+ *	   http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>This software is published under the terms of the LGPL License
- * a copy of which has been included with this distribution in the LICENSE file.</p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @package log4php
+ */
+
+/**
+ * Array for fast space padding
+ * Used by {@link LoggerPatternConverter::spacePad()}.	
  * 
  * @package log4php
  * @subpackage helpers
  */
 
-/**
- * @ignore 
- */
 if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
 
-/**
- */
-require_once(LOG4PHP_DIR . '/LoggerLog.php');
+$GLOBALS['log4php.LoggerPatternConverter.spaces'] = array(
+	" ", // 1 space
+	"  ", // 2 spaces
+	"    ", // 4 spaces
+	"        ", // 8 spaces
+	"                ", // 16 spaces
+	"                                " ); // 32 spaces
 
-/**
- * Array for fast space padding
- * Used by {@link LoggerPatternConverter::spacePad()}.  
- */
-$GLOBALS['log4php.LoggerPatternConverter.spaces'] = array(" ", "  ", "    ", "        ", //1,2,4,8 spaces
-			    "                ", // 16 spaces
-			    "                                " ); // 32 spaces
 
 /**
  * LoggerPatternConverter is an abstract class that provides the formatting 
@@ -42,8 +45,7 @@ $GLOBALS['log4php.LoggerPatternConverter.spaces'] = array(" ", "  ", "    ", "  
  * individual PatternConverters. Each of which is responsible for
  * converting a logging event in a converter specific manner.</p>
  * 
- * @author VxR <vxr@vxr.it>
- * @version $Revision: 1.13 $
+ * @version $Revision: 822445 $
  * @package log4php
  * @subpackage helpers
  * @abstract
@@ -51,101 +53,91 @@ $GLOBALS['log4php.LoggerPatternConverter.spaces'] = array(" ", "  ", "    ", "  
  */
 class LoggerPatternConverter {
 
-    /**
-     * @var LoggerPatternConverter next converter in converter chain
-     */
-    var $next = null;
-    
-    var $min = -1;
-    var $max = 0x7FFFFFFF;
-    var $leftAlign = false;
+	/**
+	 * @var LoggerPatternConverter next converter in converter chain
+	 */
+	public $next = null;
+	
+	public $min = -1;
+	public $max = 0x7FFFFFFF;
+	public $leftAlign = false;
 
-    /**
-     * Constructor 
-     *
-     * @param LoggerFormattingInfo $fi
-     */
-    function LoggerPatternConverter($fi = null) 
-    {  
-        if ($fi !== null) {
-            $this->min = $fi->min;
-            $this->max = $fi->max;
-            $this->leftAlign = $fi->leftAlign;
-        }
-    }
+	/**
+	 * Constructor 
+	 *
+	 * @param LoggerFormattingInfo $fi
+	 */
+	public function __construct($fi = null) {  
+		if($fi !== null) {
+			$this->min = $fi->min;
+			$this->max = $fi->max;
+			$this->leftAlign = $fi->leftAlign;
+		}
+	}
   
-    /**
-     * Derived pattern converters must override this method in order to
-     * convert conversion specifiers in the correct way.
-     *
-     * @param LoggerLoggingEvent $event
-     */
-    function convert($event) {}
+	/**
+	 * Derived pattern converters must override this method in order to
+	 * convert conversion specifiers in the correct way.
+	 *
+	 * @param LoggerLoggingEvent $event
+	 */
+	public function convert($event) {}
 
-    /**
-     * A template method for formatting in a converter specific way.
-     *
-     * @param string &$sbuf string buffer
-     * @param LoggerLoggingEvent $e
-     */
-    function format(&$sbuf, $e)
-    {
-        LoggerLog::debug("LoggerPatternConverter::format() sbuf='$sbuf'");    
-    
-        $s = $this->convert($e);
-        
-        LoggerLog::debug("LoggerPatternConverter::format() converted event is '$s'");    
-        
-    
-        if($s == null or empty($s)) {
-            if(0 < $this->min)
-                $this->spacePad($sbuf, $this->min);
-            return;
-        }
-        
-        $len = strlen($s);
-    
-        if($len > $this->max) {
-            $sbuf .= substr($s , 0, ($len - $this->max));
-        } elseif($len < $this->min) {
-            if($this->leftAlign) {	
-                $sbuf .= $s;
-                $this->spacePad($sbuf, ($this->min - $len));
-            } else {
-                $this->spacePad($sbuf, ($this->min - $len));
-                $sbuf .= $s;
-            }
-        } else {
-            $sbuf .= $s;
-        }
-    }	
+	/**
+	 * A template method for formatting in a converter specific way.
+	 *
+	 * @param string &$sbuf string buffer
+	 * @param LoggerLoggingEvent $e
+	 */
+	public function format(&$sbuf, $e) {
+		$s = $this->convert($e);
+		
+		if($s == null or empty($s)) {
+			if(0 < $this->min) {
+				$this->spacePad($sbuf, $this->min);
+			}
+			return;
+		}
+		
+		$len = strlen($s);
+	
+		if($len > $this->max) {
+			$sbuf .= substr($s , 0, ($len - $this->max));
+		} else if($len < $this->min) {
+			if($this->leftAlign) {		
+				$sbuf .= $s;
+				$this->spacePad($sbuf, ($this->min - $len));
+			} else {
+				$this->spacePad($sbuf, ($this->min - $len));
+				$sbuf .= $s;
+			}
+		} else {
+			$sbuf .= $s;
+		}
+	}	
 
+	/**
+	 * Fast space padding method.
+	 *
+	 * @param string	$sbuf	   string buffer
+	 * @param integer	$length	   pad length
+	 *
+	 * @todo reimplement using PHP string functions
+	 */
+	public function spacePad($sbuf, $length) {
+		while($length >= 32) {
+		  $sbuf .= $GLOBALS['log4php.LoggerPatternConverter.spaces'][5];
+		  $length -= 32;
+		}
+		
+		for($i = 4; $i >= 0; $i--) {	
+			if(($length & (1<<$i)) != 0) {
+				$sbuf .= $GLOBALS['log4php.LoggerPatternConverter.spaces'][$i];
+			}
+		}
 
-    /**
-     * Fast space padding method.
-     *
-     * @param string    &$sbuf     string buffer
-     * @param integer   $length    pad length
-     *
-     * @todo reimplement using PHP string functions
-     */
-    function spacePad(&$sbuf, $length)
-    {
-        LoggerLog::debug("LoggerPatternConverter::spacePad() sbuf='$sbuf' len='$length'");        
-    
-        while($length >= 32) {
-          $sbuf .= $GLOBALS['log4php.LoggerPatternConverter.spaces'][5];
-          $length -= 32;
-        }
-        
-        for($i = 4; $i >= 0; $i--) {	
-            if(($length & (1<<$i)) != 0) {
-    	        $sbuf .= $GLOBALS['log4php.LoggerPatternConverter.spaces'][$i];
-            }
-        }
-
-        // $sbuf = str_pad($sbuf, $length);
-    }
+		// $sbuf = str_pad($sbuf, $length);
+	}
 }
 
 // ---------------------------------------------------------------------

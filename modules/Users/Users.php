@@ -133,7 +133,7 @@ class Users extends CRMEntity {
 	 *
 	 */
         function __construct() {
-            $this->log = LoggerManager::getLogger('user');
+            $this->log = Logger::getLogger('user');
             $this->log->debug("Entering Users() method ...");
             $this->db = PearDatabase::getInstance();
             $this->DEFAULT_PASSWORD_CRYPT_TYPE = (version_compare(PHP_VERSION, '5.3.0') >= 0)? 'PHP5.3MD5': 'MD5';
