@@ -59,7 +59,7 @@ if (!isset($GLOBALS['_transient']['static']['nusoap_base'])) {
 
 $GLOBALS['_transient']['static']['nusoap_base']->globalDebugLevel = 9;
 global $soap_log;
-$soap_log = LoggerManager::getLogger('SOAP');
+$soap_log = Logger::getLogger('SOAP');
 /**
 *
 * nusoap_base

@@ -1,46 +1,42 @@
 <?php
 /**
- * log4php is a PHP port of the log4j java logging package.
- * 
- * <p>This framework is based on log4j (see {@link http://jakarta.apache.org/log4j log4j} for details).</p>
- * <p>Design, strategies and part of the methods documentation are developed by log4j team 
- * (Ceki Gülcü as log4j project founder and 
- * {@link http://jakarta.apache.org/log4j/docs/contributors.html contributors}).</p>
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * <p>PHP port, extensions and modifications by VxR. All rights reserved.<br>
- * For more information, please see {@link http://www.vxr.it/log4php/}.</p>
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * <p>This software is published under the terms of the LGPL License
- * a copy of which has been included with this distribution in the LICENSE file.</p>
- * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  * @package log4php
- * @subpackage layouts
  */
-
-/**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
- 
-/**
- */
-require_once(LOG4PHP_DIR . '/helpers/LoggerPatternParser.php');
-require_once(LOG4PHP_DIR . '/LoggerLayout.php');
-require_once(LOG4PHP_DIR . '/LoggerLog.php');
-
-/**
- * Default conversion Pattern
- */
-define('LOG4PHP_LOGGER_PATTERN_LAYOUT_DEFAULT_CONVERSION_PATTERN', '%m%n');
-
-define('LOG4PHP_LOGGER_PATTERN_LAYOUT_TTCC_CONVERSION_PATTERN',    '%r [%t] %p %c %x - %m%n');
 
 /**
  * A flexible layout configurable with pattern string.
+ *
+ * <p>Example:</p>
  * 
- * <p>The goal of this class is to {@link format()} a {@link LoggerLoggingEvent} and return the results as a string.
- * The results depend on the conversion pattern. 
- * The conversion pattern is closely related to the conversion pattern of the printf function in C.
+ * {@example ../../examples/php/layout_pattern.php 19}<br>
+ * 
+ * <p>with the following properties file:</p>
+ * 
+ * {@example ../../examples/resources/layout_pattern.properties 18}<br>
+ * 
+ * <p>would print the following:</p>
+ * 
+ * <pre>
+ * 2009-09-09 00:27:35,787 [INFO] root: Hello World! (at src/examples/php/layout_pattern.php line 6)
+ * 2009-09-09 00:27:35,787 [DEBUG] root: Second line (at src/examples/php/layout_pattern.php line 7)
+ * </pre>
+ *
+ * <p>The conversion pattern is closely related to the conversion pattern of the printf function in C.
  * A conversion pattern is composed of literal text and format control expressions called conversion specifiers.
  * You are free to insert any literal text within the conversion pattern.</p> 
  *
@@ -49,23 +45,6 @@ define('LOG4PHP_LOGGER_PATTERN_LAYOUT_TTCC_CONVERSION_PATTERN',    '%r [%t] %p %
  * 
  * <p>The conversion character specifies the type of data, e.g. category, priority, date, thread name. 
  * The format modifiers control such things as field width, padding, left and right justification.</p>
- * 
- * The following is a simple example.
- * 
- * <p>Let the conversion pattern be "%-5p [%t]: %m%n" and assume that the log4php environment 
- * was set to use a LoggerPatternLayout.</p> 
- * 
- * Then the statements
- * <code> 
- *  $root =& LoggerManager::getRoot();
- *  $root->debug("Message 1");
- *  $root->warn("Message 2");
- * </code>
- * would yield the output 
- * <pre>
- *  DEBUG [main]: Message 1
- *  WARN  [main]: Message 2
- * </pre>
  * 
  * <p>Note that there is no explicit separator between text and conversion specifiers.</p>
  * 
@@ -150,111 +129,91 @@ define('LOG4PHP_LOGGER_PATTERN_LAYOUT_TTCC_CONVERSION_PATTERN',    '%r [%t] %p %
  *                                                                However, if category name is longer than 30 chars, 
  *                                                                then truncate from the beginning.  
  * </pre>
- *
- * @author VxR <vxr@vxr.it>
- * @version $Revision: 1.7 $
+ * 
+ * @version $Revision: 883108 $
  * @package log4php
  * @subpackage layouts
  * @since 0.3 
  */
-class LoggerPatternLayout extends LoggerLayout {
+class LoggerLayoutPattern extends LoggerLayout {
+	/** Default conversion Pattern */
+	const DEFAULT_CONVERSION_PATTERN = '%m%n';
 
-  /**
-   * @var string output buffer appended to when format() is invoked
-   */
-  var $sbuf;
+	/** Default conversion TTCC Pattern */
+	const TTCC_CONVERSION_PATTERN = '%r [%t] %p %c %x - %m%n';
 
-  /**
-   * @var string
-   */
-  var $pattern;
+	/** The pattern. 
+	 * @var string */
+	private $pattern;
 
-  /**
-   * @var LoggerPatternConverter head chain
-   */   
-  var $head;
+	/** Head of a chain of Converters.
+	 * @var LoggerPatternConverter */
+	private $head;
 
-  var $timezone;
+	private $timezone;
 
+	/**
+	 * Constructs a PatternLayout using the 
+	 * {@link DEFAULT_LAYOUT_PATTERN}.
+	 * The default pattern just produces the application supplied message.
+	 */
+	public function __construct($pattern = null) {
+		if ($pattern === null) {
+			$this->pattern = self :: DEFAULT_CONVERSION_PATTERN;
+		} else {
+			$this->pattern = $pattern;
+		}
+	}
+
+	/**
+	 * Set the <b>ConversionPattern</b> option. This is the string which
+	 * controls formatting and consists of a mix of literal content and
+	 * conversion specifiers.
+	 */
+	public function setConversionPattern($conversionPattern) {
+		$this->pattern = $conversionPattern;
+		$patternParser = new LoggerPatternParser($this->pattern);
+		$this->head = $patternParser->parse();
+	}
+
+	/**
+	 * Produces a formatted string as specified by the conversion pattern.
+	 *
+	 * @param LoggerLoggingEvent $event
+	 * @return string
+	 */
+	public function format(LoggerLoggingEvent $event) {
+		$sbuf = '';
+		$c = $this->head;
+		while ($c !== null) {
+			$c->format($sbuf, $event);
+			$c = $c->next;
+		}
+		return $sbuf;
+	}
+	
     /**
-     * Constructs a PatternLayout using the 
-     * {@link LOG4PHP_LOGGER_PATTERN_LAYOUT_DEFAULT_LAYOUT_PATTERN}.
-     * The default pattern just produces the application supplied message.
+     * Returns an array with the formatted elements.
+     * 
+     * This method is mainly used for the prepared statements of {@see LoggerAppenderPDO}.
+     * 
+     * It requires {@link $this->pattern} to be a comma separated string of patterns like
+     * e.g. <code>%d,%c,%p,%m,%t,%F,%L</code>.
+     * 
+     * @return array(string)   An array of the converted elements i.e. timestamp, message, filename etc.
      */
-    function LoggerPatternLayout($pattern = null)
-    {
-        if ($pattern === null) {    
-            $this->LoggerPatternLayout(LOG4PHP_LOGGER_PATTERN_LAYOUT_DEFAULT_CONVERSION_PATTERN);
-        } else {
-            $this->pattern = $pattern;
-        }                
-    }
-    
-    /**
-     * Set the <b>ConversionPattern</b> option. This is the string which
-     * controls formatting and consists of a mix of literal content and
-     * conversion specifiers.
-     */
-    function setConversionPattern($conversionPattern)
-    {
-        $this->pattern = $conversionPattern;
-        $patternParser = $this->createPatternParser($this->pattern);
-        $this->head = $patternParser->parse();
-    }
-    
-    /**
-     * @return string Returns the value of the <b>ConversionPattern</b> option.
-     */
-    function getConversionPattern()
-    {
-        return $this->pattern;
-    }
-    
-    /**
-     * Does not do anything as options become effective
-     */
-    function activateOptions()
-    {
-        // nothing to do.
-    }
-    
-    function ignoresThrowable() 
-    { 
-        return true; 
-    }
-    
-    /**
-     * Returns LoggerPatternParser used to parse the conversion string. Subclasses
-     * may override this to return a subclass of PatternParser which recognize
-     * custom conversion characters.
-     *
-     * @param string $pattern
-     * @return LoggerPatternParser
-     */
-    function createPatternParser($pattern)
-    {
-        return new LoggerPatternParser($pattern);
-    }
-    
-    /**
-     * Produces a formatted string as specified by the conversion pattern.
-     *
-     * @param LoggerLoggingEvent $event
-     * @return string
-     */
-    function format($event)
-    {
-        LoggerLog::debug("LoggerPatternLayout::format()");    
-    
-        // Reset working stringbuffer
-        $this->sbuf = '';
+    public function formatToArray(LoggerLoggingEvent $event) {
+        $results = array();
         $c = $this->head;
-        while($c !== null) {
-            $c->format($this->sbuf, $event);
+        while ($c !== null) {
+            if ( ! $c instanceOf LoggerLiteralPatternConverter) {
+                $sbuf = null;
+                $c->format($sbuf, $event);
+                $results[] = $sbuf;
+            }
             $c = $c->next;
         }
-        return $this->sbuf;
-    }
-    
+        return $results;
+    }      
+	
 }
-?>
