@@ -18,8 +18,6 @@
  * @package log4php
  */
 
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
 /**
  * Log every events as a separate email.
  * 
@@ -49,7 +47,7 @@ if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
  *      Tue Sep  8 21:51:04 2009,120 [5485] FATAL root - Some critical message!
  * </pre>
  *
- * @version $Revision: 883108 $
+ * @version $Revision: 1137177 $
  * @package log4php
  * @subpackage appenders
  */
@@ -80,11 +78,6 @@ class LoggerAppenderMailEvent extends LoggerAppender {
 	 */
 	private $to = null;
 	
-	/**
-	 * @access private
-	 */
-	protected $requiresLayout = true;
-
 	/** @var indiciates if this appender should run in dry mode */
 	private $dry = false;
 	
@@ -98,23 +91,23 @@ class LoggerAppenderMailEvent extends LoggerAppender {
 	}
 
 	public function __destruct() {
-       $this->close();
-   	}
-   	
+		$this->close();
+	}
+	
 	public function activateOptions() {
-	    if (empty($this->layout)) {
-	        throw new LoggerException("LoggerAppenderMailEvent requires layout!");
-	    }
-	    if (empty($this->to)) {
-            throw new LoggerException("LoggerAppenderMailEvent was initialized with empty 'from' ($this->from) or 'to' ($this->to) Adress!");
-        }
-        
-        $sendmail_from = ini_get('sendmail_from');
-        if (empty($this->from) and empty($sendmail_from)) {
-            throw new LoggerException("LoggerAppenderMailEvent requires 'from' or on win32 at least the ini variable sendmail_from!");
-        }
-        
-        $this->closed = false;
+		if (empty($this->layout)) {
+			throw new LoggerException("LoggerAppenderMailEvent requires layout!");
+		}
+		if (empty($this->to)) {
+			throw new LoggerException("LoggerAppenderMailEvent was initialized with empty 'from' ($this->from) or 'to' ($this->to) Adress!");
+		}
+		
+		$sendmail_from = ini_get('sendmail_from');
+		if (empty($this->from) and empty($sendmail_from)) {
+			throw new LoggerException("LoggerAppenderMailEvent requires 'from' or on win32 at least the ini variable sendmail_from!");
+		}
+		
+		$this->closed = false;
 	}
 	
 	public function close() {
@@ -163,20 +156,12 @@ class LoggerAppenderMailEvent extends LoggerAppender {
 		$addHeader = empty($this->from) ? '' : "From: {$this->from}\r\n";
 		
 		if(!$this->dry) {
-			$result = mail($this->to, $this->subject, 
-				$this->layout->getHeader() . $this->layout->format($event) . $this->layout->getFooter($event), 
-				$addHeader);			
-		    if ($result === false) {
-		        // The error message is only printed to stderr as warning. Any idea how to get it?
-		        throw new LoggerException("Error sending mail to '".$this->to."'!");
-		    }
+			$result = mail($this->to, $this->subject, $this->layout->getHeader() . $this->layout->format($event) . $this->layout->getFooter($event), $addHeader);			
 		} else {
-		    echo "DRY MODE OF MAIL APP.: Send mail to: ".$this->to." with additional headers '".trim($addHeader)."' and content: ".$this->layout->format($event);
+			echo "DRY MODE OF MAIL APP.: Send mail to: ".$this->to." with additional headers '".trim($addHeader)."' and content: ".$this->layout->format($event);
 		}
 			
 		ini_set('SMTP', $prevSmtpHost);
 		ini_set('smtp_port', $prevSmtpPort);
 	}
 }
-
-?>

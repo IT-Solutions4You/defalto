@@ -21,8 +21,9 @@
 /**
  * LoggerConfiguratorPhp class
  *
- * This class allows configuration of log4php through an external file that 
- * deliver a PHP array in return.
+ * This class allows configuration of log4php through a PHP array or an external file that
+ * returns a PHP array. If you use the PHP array option, you can simply give an array instead
+ * of an URL parameter.
  *
  * An example for this configurator is:
  *
@@ -43,12 +44,22 @@ class LoggerConfiguratorPhp implements LoggerConfigurator {
 	}
 	
 	private function doConfigure($url, LoggerHierarchy $hierarchy) {
-		
-		$config = require $url;
+		if (!is_array($url)) {
+ 			$config = require $url;
+ 		} else {
+ 			$config = $url;
+ 		}
 		
 		// set threshold
 		if(isset($config['threshold'])) {
 			$hierarchy->setThreshold(LoggerOptionConverter::toLevel($config['threshold'], LoggerLevel::getLevelAll()));
+		}
+
+		// add renderes
+		if (isset($config['renderers'])) {
+			foreach ($config['renderers'] as $renderedClass => $renderingClass) {
+				$hierarchy->getRendererMap()->addRenderer($renderedClass, $renderingClass);
+			}
 		}
 		
 		// parse and create appenders
@@ -58,12 +69,15 @@ class LoggerConfiguratorPhp implements LoggerConfigurator {
 				
 				$appender = LoggerAppenderPool::getAppenderFromPool($appenderName, $appenderProperties['class']);
 				
+				// unset so that the property wont be drawn up again
+				unset($appenderProperties['class']);
+				
 				if($appender->requiresLayout()) {
 					
 					if(isset($appenderProperties['layout'])) {
 						
 						if(isset($appenderProperties['layout']['class']) and !empty($appenderProperties['layout']['class'])) {
-							$layoutClass = $appenderProperties['layout']['class'];							
+							$layoutClass = $appenderProperties['layout']['class'];
 						} else {
 							$layoutClass = 'LoggerLayoutSimple';
 						}
@@ -73,18 +87,29 @@ class LoggerConfiguratorPhp implements LoggerConfigurator {
 							$layout = LoggerReflectionUtils::createObject('LoggerLayoutSimple');
 						}
 						
+						if(isset($appenderProperties['file']) && method_exists($appender, 'setFileName')) { 
+ 						    $appender->setFile($appenderProperties['file'], true); 
+						}
+						
 						if($layout instanceof LoggerLayoutPattern) {
 							$layout->setConversionPattern($appenderProperties['layout']['conversionPattern']);
 						}
 						
 						$appender->setLayout($layout);
 						
+						// unset so that the property wont be drawn up again
+						unset($appenderProperties['layout']);
 					} else {
 						// TODO: throw exception?
 					}
 					
 				}
-				
+				// set remaining properties and activate appender
+				$setter = new LoggerReflectionUtils($appender);
+				foreach ($appenderProperties as $key => $val) {
+					$setter->setProperty($key, $val);
+ 				}
+				$setter->activate();
 			}
 			
 		}

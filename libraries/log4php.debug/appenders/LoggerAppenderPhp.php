@@ -19,13 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-require_once(LOG4PHP_DIR . '/LoggerLevel.php');
-
-/**
  * Log events using php {@link PHP_MANUAL#trigger_error} function and a {@link LoggerLayoutTTCC} default layout.
  *
  * This appender has no configurable parameters.
@@ -41,7 +34,7 @@ require_once(LOG4PHP_DIR . '/LoggerLevel.php');
  * 
  * {@example ../../examples/resources/appender_php.properties 18}
  *
- * @version $Revision: 883108 $
+ * @version $Revision: 1062665 $
  * @package log4php
  * @subpackage appenders
  */ 
@@ -49,12 +42,11 @@ class LoggerAppenderPhp extends LoggerAppender {
 
 	public function __construct($name = '') {
 		parent::__construct($name);
-		$this->requiresLayout = true;
 	}
 	
 	public function __destruct() {
-       $this->close();
-   	}
+		$this->close();
+	}
 	
 	public function activateOptions() {
 		$this->closed = false;
@@ -77,4 +69,3 @@ class LoggerAppenderPhp extends LoggerAppender {
 		}
 	}
 }
-?>

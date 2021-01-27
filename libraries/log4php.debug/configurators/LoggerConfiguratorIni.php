@@ -57,7 +57,7 @@
  *
  * {@example ../../examples/resources/appender_dailyfile.properties 18}
  *
- * @version $Revision: 883104 $
+ * @version $Revision: 1071033 $
  * @package log4php
  * @subpackage configurators
  * @since 0.5
@@ -283,10 +283,14 @@ class LoggerConfiguratorIni implements LoggerConfigurator {
 	 */
 	public function configure(LoggerHierarchy $hierarchy, $url = '') {
 		$properties = @parse_ini_file($url);
-		if ($properties === false || count($properties) == 0) {
+		if ($properties === false) {
 			$error = error_get_last();
-		    throw new LoggerException("LoggerConfiguratorIni: ".$error['message']);
+			throw new LoggerException("LoggerConfiguratorIni: Error parsing configuration file: ".$error['message']);
 		}
+		if  (count($properties) == 0) {
+			trigger_error("LoggerConfiguratorIni: Configuration file is empty.", E_USER_WARNING);
+		}
+		
 		return $this->doConfigureProperties($properties, $hierarchy);
 	}
 
@@ -362,12 +366,8 @@ class LoggerConfiguratorIni implements LoggerConfigurator {
 	 */
 	private function parseAdditivityForLogger($props, Logger $cat, $loggerName) {
 		$value = LoggerOptionConverter::findAndSubst(self::ADDITIVITY_PREFIX . $loggerName, $props);
-		
-		// touch additivity only if necessary
-		if(!empty($value)) {
-			$additivity = LoggerOptionConverter::toBoolean($value, true);
-			$cat->setAdditivity($additivity);
-		}
+		$additivity = LoggerOptionConverter::toBoolean($value, true);
+		$cat->setAdditivity($additivity);
 	}
 
 	/**
@@ -453,11 +453,11 @@ class LoggerConfiguratorIni implements LoggerConfigurator {
 				}
 			}
 			
-			LoggerReflectionUtils::setPropertiesByObject($layout, $props, $layoutPrefix . ".");				  
+			LoggerReflectionUtils::setPropertiesByObject($layout, $props, $layoutPrefix . ".");
 			$appender->setLayout($layout);
 			
 		}
 		LoggerReflectionUtils::setPropertiesByObject($appender, $props, $prefix . ".");
-		return $appender;		 
+		return $appender;
 	}
 }

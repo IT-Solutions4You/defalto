@@ -19,19 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__)); 
-
-/**
- */
-//require_once(LOG4PHP_DIR . '/LoggerLog.php');
-require_once(LOG4PHP_DIR . '/LoggerLevel.php');
-require_once(LOG4PHP_DIR . '/LoggerRoot.php');
-require_once(LOG4PHP_DIR . '/renderers/LoggerRendererMap.php');
-//require_once(LOG4PHP_DIR . '/LoggerDefaultCategoryFactory.php');
-
-/**
  * This class is specialized in retrieving loggers by name and also maintaining 
  * the logger hierarchy. The logger hierarchy is dealing with the several Log-Levels
  * Logger can have. From log4j website:
@@ -57,7 +44,7 @@ require_once(LOG4PHP_DIR . '/renderers/LoggerRendererMap.php');
  * to the provision node. Other descendants of the same ancestor add
  * themselves to the previously created provision node.</p>
  *
- * @version $Revision: 822448 $
+ * @version $Revision: 1059292 $
  * @package log4php
  */
  /*
@@ -98,7 +85,7 @@ class LoggerHierarchy {
 	public function clear() {
 		$this->ht = array();
 	}
-	  
+	
 	/**
 	 * Check if the named logger exists in the hierarchy.
 	 * @param string $name
@@ -120,7 +107,7 @@ class LoggerHierarchy {
 	 * Return a new logger instance named as the first parameter using the default factory.
 	 * 
 	 * @param string $name logger name
-	 * @param LoggerFactory $factory a {@link LoggerFactory} instance or null	  
+	 * @param LoggerFactory $factory a {@link LoggerFactory} instance or null
 	 * @return Logger
 	 */
 	public function getLogger($name) {
@@ -218,6 +205,7 @@ class LoggerHierarchy {
 			$loggers[$i]->removeAllAppenders();
 		}
 		$this->rendererMap->clear();
+		LoggerAppenderPool::clear();
 	}
 	
 	/**
@@ -248,7 +236,7 @@ class LoggerHierarchy {
 	public function shutdown() {
 		$this->root->removeAllAppenders();
 		$cats = $this->getCurrentLoggers();
-		$enumCats = count($cats);		  
+		$enumCats = count($cats);
 		if($enumCats > 0) {
 			for($i = 0; $i < $enumCats; $i++) {
 				$cats[$i]->removeAllAppenders();
@@ -256,4 +244,3 @@ class LoggerHierarchy {
 		}
 	}
 } 
-?>

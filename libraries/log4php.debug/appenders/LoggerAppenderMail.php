@@ -19,11 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
- 
-/**
  * Appends log events to mail using php function {@link PHP_MANUAL#mail}.
  *
  * The appender sends all log events at once after the request has been
@@ -53,7 +48,7 @@ if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
  *      Tue Sep  8 21:51:06 2009,120 [5485] FATAL root - Some more critical message!
  * </pre>
 
- * @version $Revision: 883108 $
+ * @version $Revision: 1062665 $
  * @package log4php
  * @subpackage appenders
  */
@@ -81,12 +76,11 @@ class LoggerAppenderMail extends LoggerAppender {
 	 */
 	public function __construct($name = '') {
 		parent::__construct($name);
-		$this->requiresLayout = true;
 	}
 
 	public function __destruct() {
-       $this->close();
-   	}
+		$this->close();
+	}
 
 	public function activateOptions() {
 		$this->closed = false;
@@ -134,4 +128,3 @@ class LoggerAppenderMail extends LoggerAppender {
 		}
 	}
 }
-?>

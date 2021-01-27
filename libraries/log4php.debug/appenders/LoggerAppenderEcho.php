@@ -19,14 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
- 
-/**
- */
-
-/**
  * LoggerAppenderEcho uses {@link PHP_MANUAL#echo echo} function to output events. 
  * 
  * <p>This appender requires a layout.</p>	
@@ -44,7 +36,7 @@ if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
  *    Tue Sep  8 22:44:55 2009,812 [6783] DEBUG appender_echo - Hello World!
  * </pre>
  *
- * @version $Revision: 883108 $
+ * @version $Revision: 1062665 $
  * @package log4php
  * @subpackage appenders
  */
@@ -52,16 +44,21 @@ class LoggerAppenderEcho extends LoggerAppender {
 	/** boolean used internally to mark first append */
 	private $firstAppend = true;
 	
+	/** 
+	 * If set to true, a <br /> element will be inserted before each line
+	 * break in the logged message. Default value is false. @var boolean 
+	 */
+	private $htmlLineBreaks = false;
+
 	public function __construct($name = '') {
-	    parent::__construct($name);
-	    $this->requiresLayout = true;
-	    $this->firstAppend = true;
+		parent::__construct($name);
+		$this->firstAppend = true;
 	}
 	
 	public function __destruct() {
-       $this->close();
-   	}
-   	
+		$this->close();
+	}
+
 	public function activateOptions() {
 		$this->closed = false;
 	}
@@ -72,7 +69,7 @@ class LoggerAppenderEcho extends LoggerAppender {
 				echo $this->layout->getFooter();
 			}
 		}
-		$this->closed = true;	 
+		$this->closed = true;
 	}
 
 	public function append(LoggerLoggingEvent $event) {
@@ -81,9 +78,21 @@ class LoggerAppenderEcho extends LoggerAppender {
 				echo $this->layout->getHeader();
 				$this->firstAppend = false;
 			}
-			echo $this->layout->format($event);
+			$text = $this->layout->format($event);
+			
+			if ($this->htmlLineBreaks) {
+				$text = nl2br($text);
+			}
+			echo $text;
 		} 
+	}
+	
+	public function setHtmlLineBreaks($value) {
+		$this->htmlLineBreaks = LoggerOptionConverter::toBoolean($value, false);
+	}
+
+	public function getHtmlLineBreaks() {
+		return $this->htmlLineBreaks;
 	}
 }
 
-?>

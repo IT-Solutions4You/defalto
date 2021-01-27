@@ -57,7 +57,7 @@
  * @author Simon Kitching
  * @author based on the org.apache.log4j.varia.LevelRangeFilte Java code by Ceki G&uuml;lc&uuml; 
  *
- * @version $Revision: 883108 $
+ * @version $Revision: 1059292 $
  * @package log4php
  * @subpackage filters
  * @since 0.6
@@ -91,7 +91,7 @@ class LoggerFilterLevelRange extends LoggerFilter {
 	 */
 	public function setLevelMin($l) {
 		if($l instanceof LoggerLevel) {
-		    $this->levelMin = $l;
+			$this->levelMin = $l;
 		} else {
 			$this->levelMin = LoggerOptionConverter::toLevel($l, null);
 		}
@@ -102,7 +102,7 @@ class LoggerFilterLevelRange extends LoggerFilter {
 	 */
 	public function setLevelMax($l) {
 		if($l instanceof LoggerLevel) {
-		    $this->levelMax = $l;
+			$this->levelMax = $l;
 		} else {
 			$this->levelMax = LoggerOptionConverter::toLevel($l, null);
 		}

@@ -19,16 +19,9 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-require_once(LOG4PHP_DIR . '/LoggerLevel.php');
-
-/**
  * A convenience class to convert property values to specific types.
  *
- * @version $Revision: 822464 $ 
+ * @version $Revision: 1059292 $ 
  * @package log4php
  * @subpackage helpers
  * @static
@@ -41,21 +34,21 @@ class LoggerOptionConverter {
 	const DELIM_START_LEN = 2;
 	const DELIM_STOP_LEN = 1;
 
-   /**
-	* Read a predefined var.
-	*
-	* It returns a value referenced by <var>$key</var> using this search criteria:
-	* - if <var>$key</var> is a constant then return it. Else
-	* - if <var>$key</var> is set in <var>$_ENV</var> then return it. Else
-	* - return <var>$def</var>. 
-	*
-	* @param string $key The key to search for.
-	* @param string $def The default value to return.
-	* @return string	the string value of the system property, or the default
-	*					value if there is no property with that key.
-	*
-	* @static
-	*/
+	/**
+	 * Read a predefined var.
+	 *
+	 * It returns a value referenced by <var>$key</var> using this search criteria:
+	 * - if <var>$key</var> is a constant then return it. Else
+	 * - if <var>$key</var> is set in <var>$_ENV</var> then return it. Else
+	 * - return <var>$def</var>. 
+	 *
+	 * @param string $key The key to search for.
+	 * @param string $def The default value to return.
+	 * @return string	the string value of the system property, or the default
+	 *					value if there is no property with that key.
+	 *
+	 * @static
+	 */
 	public static function getSystemProperty($key, $def) {
 		if(defined($key)) {
 			return (string)constant($key);
@@ -83,20 +76,19 @@ class LoggerOptionConverter {
 	 * @static
 	 */
 	public static function toBoolean($value, $default=true) {
-	    if (is_null($value)) {
+		if (is_null($value)) {
 			return $default;
-	    } elseif (is_string($value)) {
-		$trimmedVal = strtolower(trim($value));
-	
-            if("1" == $trimmedVal or "true" == $trimmedVal or "yes" == $trimmedVal or "on" == $trimmedVal) {
-			return true;
-            } else if ("" == $trimmedVal or "0" == $trimmedVal or "false" == $trimmedVal or "no" == $trimmedVal or "off" == $trimmedVal) {
-			return false;
-		}
+		} elseif (is_string($value)) {
+			$trimmedVal = strtolower(trim($value));
+			if("1" == $trimmedVal or "true" == $trimmedVal or "yes" == $trimmedVal or "on" == $trimmedVal) {
+				return true;
+			} else if ("" == $trimmedVal or "0" == $trimmedVal or "false" == $trimmedVal or "no" == $trimmedVal or "off" == $trimmedVal) {
+				return false;
+			}
 		} elseif (is_bool($value)) {
-		    return $value;
+			return $value;
 		} elseif (is_int($value)) {
-		    return !($value == 0); // true is everything but 0 like in C 
+			return !($value == 0); // true is everything but 0 like in C 
 		}
 		
 		trigger_error("Could not convert ".var_export($value,1)." to boolean!", E_USER_WARNING);
@@ -224,26 +216,26 @@ class LoggerOptionConverter {
 	public static function findAndSubst($key, $props) {
 		$value = @$props[$key];
 
-        // If coming from the LoggerConfiguratorIni, some options were
-        // already mangled by parse_ini_file:
-        //
-        // not specified      => never reaches this code
-        // ""|off|false|null  => string(0) ""
-        // "1"|on|true        => string(1) "1"
-        // "true"             => string(4) "true"
-        // "false"            => string(5) "false"
-        // 
-        // As the integer 1 and the boolean true are therefore indistinguable
-        // it's up to the setter how to deal with it, they can not be cast
-        // into a boolean here. {@see toBoolean}
-        // Even an empty value has to be given to the setter as it has been
-        // explicitly set by the user and is different from an option which
-        // has not been specified and therefore keeps its default value.
-        //
+		// If coming from the LoggerConfiguratorIni, some options were
+		// already mangled by parse_ini_file:
+		//
+		// not specified      => never reaches this code
+		// ""|off|false|null  => string(0) ""
+		// "1"|on|true        => string(1) "1"
+		// "true"             => string(4) "true"
+		// "false"            => string(5) "false"
+		// 
+		// As the integer 1 and the boolean true are therefore indistinguable
+		// it's up to the setter how to deal with it, they can not be cast
+		// into a boolean here. {@see toBoolean}
+		// Even an empty value has to be given to the setter as it has been
+		// explicitly set by the user and is different from an option which
+		// has not been specified and therefore keeps its default value.
+		//
 		// if(!empty($value)) {
 			return LoggerOptionConverter::substVars($value, $props);
 		// }
-    }
+	}
 
 	/**
 	 * Perform variable substitution in string <var>$val</var> from the
@@ -254,7 +246,7 @@ class LoggerOptionConverter {
 	 * <p>For example, if the "MY_CONSTANT" contains "value", then
 	 * the call
 	 * <code>
-	 * $s = LoggerOptionConverter::substituteVars("Value of key is ${MY_CONSTANT}.");
+	 * $s = LoggerOptionConverter::substVars("Value of key is ${MY_CONSTANT}.");
 	 * </code>
 	 * will set the variable <i>$s</i> to "Value of key is value.".</p>
 	 * 
@@ -271,8 +263,6 @@ class LoggerOptionConverter {
 	 * 
 	 * <p>A warn is thrown if <var>$val</var> contains a start delimeter "${" 
 	 * which is not balanced by a stop delimeter "}" and an empty string is returned.</p>
-	 * 
-	 * @author Avy Sharell
 	 * 
 	 * @param string $val The string on which variable substitution is performed.
 	 * @param array $props
@@ -302,7 +292,7 @@ class LoggerOptionConverter {
 					// LoggerOptionConverter::substVars() has no closing brace. Opening brace
 					return '';
 				} else {
-					$j += self::START_LEN;
+					$j += self::DELIM_START_LEN;
 					$key = substr($val, $j, $k - $j);
 					// first try in System properties
 					$replacement = LoggerOptionConverter::getSystemProperty($key, null);
@@ -327,4 +317,3 @@ class LoggerOptionConverter {
 	}
 
 }
-?>

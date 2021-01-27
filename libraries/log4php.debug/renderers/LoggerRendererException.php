@@ -19,42 +19,23 @@
  */
 
 /**
- * A NullAppender merely exists, it never outputs a message to any device.	
+ * Exception renderer
  *
- * This appender has no configurable parameters.
- * 
- * An example:
- * 
- * {@example ../../examples/php/appender_null.php 19}
- * 
- * {@example ../../examples/resources/appender_null.properties 18}
- * 
- * @version $Revision: 1059292 $
  * @package log4php
- * @subpackage appenders
+ * @subpackage renderers
+ * @since 2.1
  */
-class LoggerAppenderNull extends LoggerAppender {
+class LoggerRendererException implements LoggerRendererObject {
 
-	protected $requiresLayout = false;
-	
-	public function __destruct() {
-		$this->close();
-	}
-	
-	public function activateOptions() {
-		$this->closed = false;
-	}
-	
-	public function close() {
-		$this->closed = true;
-	}
-	
-	/**
-	 * Do nothing. 
-	 * 
-	 * @param LoggerLoggingEvent $event
-	 */
-	public function append(LoggerLoggingEvent $event) {
+	public function render($o) {
+		$strRep  = 'Throwable('.get_class($o).'): '.$o->getMessage().' in '.$o->getFile().' on line '.$o->getLine();
+		$strRep .= PHP_EOL.$o->getTraceAsString();
+		
+		if (method_exists($o, 'getPrevious') && $o->getPrevious() !== null) {
+			$strRep .= PHP_EOL.'Caused by: '.$this->render($o->getPrevious());
+		}
+		
+		return $strRep;		
 	}
 }
-
+?>

@@ -19,36 +19,13 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-if (!defined('LOG4PHP_LINE_SEP')) {
-    if (substr(php_uname(), 0, 7) == "Windows") {
-        /**
-         * @ignore
-         */
-        define('LOG4PHP_LINE_SEP', "\r\n");
-    } else {
-        /**
-         * @ignore
-         */
-        define('LOG4PHP_LINE_SEP', "\n");
-    }
-}
- 
-/**
- */
-require_once(LOG4PHP_DIR . '/helpers/LoggerFormattingInfo.php');
-require_once(LOG4PHP_DIR . '/helpers/LoggerPatternConverter.php');
-/**
  * Most of the work of the {@link LoggerPatternLayout} class 
  * is delegated to the {@link LoggerPatternParser} class.
  * 
  * <p>It is this class that parses conversion patterns and creates
  * a chained list of {@link LoggerPatternConverter} converters.</p>
  * 
- * @version $Revision: 822445 $ 
+ * @version $Revision: 948675 $ 
  * @package log4php
  * @subpackage helpers
  *
@@ -268,7 +245,7 @@ class LoggerPatternParser {
 				$this->currentLiteral = '';
 				break;
 			case 'C':
-				$pc = new LoggerClassNamePatternConverter($this->formattingInfo, $this->extractPrecisionOption());
+				$pc = new LoggerClassNamePatternConverter($this->formattingInfo, self::CLASS_LOCATION_CONVERTER);
 				$this->currentLiteral = '';
 				break;
 			case 'd':
@@ -362,4 +339,3 @@ class LoggerPatternParser {
 	}
 }
 
-?>
