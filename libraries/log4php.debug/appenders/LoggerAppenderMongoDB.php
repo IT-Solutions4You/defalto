@@ -52,6 +52,9 @@ class LoggerAppenderMongoDB extends LoggerAppender {
 	/** Default value for {@link $collectionName} */
 	const DEFAULT_COLLECTION_NAME = 'logs';
 	
+	/** Default value for {@link $timeout} */
+	const DEFAULT_TIMEOUT_VALUE = 3000;
+	
 	// ******************************************
 	// ** Configurable parameters              **
 	// ******************************************
@@ -73,6 +76,9 @@ class LoggerAppenderMongoDB extends LoggerAppender {
 	
 	/** Password used to connect to the database. */
 	protected $password;
+	
+	/** Timeout value used when connecting to the database (in milliseconds). */
+	protected $timeout;
 	
 	// ******************************************
 	// ** Member variables                     **
@@ -105,6 +111,7 @@ class LoggerAppenderMongoDB extends LoggerAppender {
 		$this->port = self::DEFAULT_MONGO_PORT;
 		$this->databaseName = self::DEFAULT_DB_NAME;
 		$this->collectionName = self::DEFAULT_COLLECTION_NAME;
+		$this->timeout = self::DEFAULT_TIMEOUT_VALUE;
 	}
 	
 	/**
@@ -116,7 +123,7 @@ class LoggerAppenderMongoDB extends LoggerAppender {
 	 */
 	public function activateOptions() {
 		try {
-			$this->connection = new Mongo(sprintf('%s:%d', $this->host, $this->port));
+			$this->connection = new Mongo(sprintf('%s:%d', $this->host, $this->port), array("timeout" => $this->timeout));
 			$db	= $this->connection->selectDB($this->databaseName);
 			if ($this->userName !== null && $this->password !== null) {
 				$authResult = $db->authenticate($this->userName, $this->password);
@@ -279,6 +286,15 @@ class LoggerAppenderMongoDB extends LoggerAppender {
 		return $this->password;
 	}
 	
+	/** Sets the value of {@link $timeout} parameter. */
+	public function setTimeout($timeout) {
+		$this->setPositiveInteger('timeout', $timeout);
+	}
+
+	/** Returns the value of {@link $timeout} parameter. */
+	public function getTimeout() {
+		return $this->timeout;
+	}
 	/** 
 	 * Returns the mongodb connection.
 	 * @return Mongo

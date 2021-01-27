@@ -7,7 +7,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *	7 http://www.apache.org/licenses/LICENSE-2.0
+ *		http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,7 +21,7 @@
 /**
  * Abstract class that defines output logs strategies.
  *
- * @version $Revision: 1213712 $
+ * @version $Revision: 1240469 $
  * @package log4php
  */
 abstract class LoggerAppender extends LoggerConfigurable {
