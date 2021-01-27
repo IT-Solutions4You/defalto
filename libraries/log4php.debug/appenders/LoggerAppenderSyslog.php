@@ -67,7 +67,7 @@
  *
  * {@example ../../examples/resources/appender_syslog.properties 18}
  *
- * @version $Revision: 1213283 $
+ * @version $Revision: 1230527 $
  * @package log4php
  * @subpackage appenders
  */ 
@@ -128,16 +128,6 @@ class LoggerAppenderSyslog extends LoggerAppender {
 	 * @var int
 	 */
 	private $intOption;
-	
-	/** Maps log4php levels to equivalent syslog priorities. */
-	private $levelMap = array(
-		LoggerLevel::TRACE => LOG_DEBUG,
-		LoggerLevel::DEBUG => LOG_DEBUG,
-		LoggerLevel::INFO  => LOG_INFO,
-		LoggerLevel::WARN  => LOG_WARNING,
-		LoggerLevel::ERROR => LOG_ERR,
-		LoggerLevel::FATAL => LOG_ALERT,
-	);
 
 	/**
 	 * Sets the {@link $ident}.
@@ -268,14 +258,7 @@ class LoggerAppenderSyslog extends LoggerAppender {
 		if($this->overridePriority) {
 			return $this->intPriority;
 		}
-		
-		$int = $level->toInt();
-		
-		if (isset($this->levelMap[$int])) {
-			return $this->levelMap[$int];
-		} else {
-			return LOG_DEBUG;
-		}
+		return $level->getSyslogEquivalent();
 	}
 	
 	/** Parses a syslog option string and returns the correspodning int value. */
