@@ -36,32 +36,19 @@
  *    Tue Sep  8 22:44:55 2009,812 [6783] DEBUG appender_echo - Hello World!
  * </pre>
  *
- * @version $Revision: 1062665 $
+ * @version $Revision: 1213283 $
  * @package log4php
  * @subpackage appenders
  */
 class LoggerAppenderEcho extends LoggerAppender {
 	/** boolean used internally to mark first append */
-	private $firstAppend = true;
+	protected $firstAppend = true;
 	
 	/** 
 	 * If set to true, a <br /> element will be inserted before each line
 	 * break in the logged message. Default value is false. @var boolean 
 	 */
-	private $htmlLineBreaks = false;
-
-	public function __construct($name = '') {
-		parent::__construct($name);
-		$this->firstAppend = true;
-	}
-	
-	public function __destruct() {
-		$this->close();
-	}
-
-	public function activateOptions() {
-		$this->closed = false;
-	}
+	protected $htmlLineBreaks = false;
 	
 	public function close() {
 		if($this->closed != true) {
@@ -88,7 +75,7 @@ class LoggerAppenderEcho extends LoggerAppender {
 	}
 	
 	public function setHtmlLineBreaks($value) {
-		$this->htmlLineBreaks = LoggerOptionConverter::toBoolean($value, false);
+		$this->setBoolean('htmlLineBreaks', $value);
 	}
 
 	public function getHtmlLineBreaks() {

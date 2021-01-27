@@ -27,7 +27,7 @@
  * <p>The <i>LoggerLevel</i> class may be subclassed to define a larger
  * level set.</p>
  *
- * @version $Revision: 1059292 $
+ * @version $Revision: 1212319 $
  * @package log4php
  * @since 0.5
  */
@@ -94,7 +94,6 @@ class LoggerLevel {
 	
 	/**
 	 * Returns an Off Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelOff() {
@@ -106,7 +105,6 @@ class LoggerLevel {
 
 	/**
 	 * Returns a Fatal Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelFatal() {
@@ -118,7 +116,6 @@ class LoggerLevel {
 	
 	/**
 	 * Returns an Error Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelError() {
@@ -130,7 +127,6 @@ class LoggerLevel {
 	
 	/**
 	 * Returns a Warn Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelWarn() {
@@ -142,7 +138,6 @@ class LoggerLevel {
 
 	/**
 	 * Returns an Info Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelInfo() {
@@ -154,7 +149,6 @@ class LoggerLevel {
 
 	/**
 	 * Returns a Debug Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelDebug() {
@@ -166,7 +160,6 @@ class LoggerLevel {
 	
 	/**
 	 * Returns a Trace Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelTrace() {
@@ -178,7 +171,6 @@ class LoggerLevel {
 
 	/**
 	 * Returns an All Level
-	 * @static
 	 * @return LoggerLevel
 	 */
 	public static function getLevelAll() {
@@ -190,7 +182,6 @@ class LoggerLevel {
 	
 	/**
 	 * Return the syslog equivalent of this priority as an integer.
-	 * @final
 	 * @return integer
 	 */
 	public function getSyslogEquivalent() {
@@ -237,41 +228,37 @@ class LoggerLevel {
 	}
 
 	/**
-	 * Convert the string passed as argument to a level. If the
-	 * conversion fails, then this method returns a DEBUG Level.
+	 * Convert the input argument to a level. If the conversion fails, then 
+	 * this method returns the provided default level.
 	 *
-	 * @param mixed $arg
-	 * @param LoggerLevel $default
-	 * @static 
+	 * @param mixed $arg The value to convert to level.
+	 * @param LoggerLevel $default Value to return if conversion is not possible.
+	 * @return LoggerLevel 
 	 */
 	public static function toLevel($arg, $defaultLevel = null) {
-		if($defaultLevel === null) {
-			return self::toLevel($arg, self::getLevelDebug());
+		if(is_int($arg)) {
+			switch($arg) {
+				case self::ALL:	return self::getLevelAll();
+				case self::TRACE: return self::getLevelTrace();
+				case self::DEBUG: return self::getLevelDebug();
+				case self::INFO: return self::getLevelInfo();
+				case self::WARN: return self::getLevelWarn();
+				case self::ERROR: return self::getLevelError();
+				case self::FATAL: return self::getLevelFatal();
+				case self::OFF:	return self::getLevelOff();
+				default: return $defaultLevel;
+			}
 		} else {
-			if(is_int($arg)) {
-				switch($arg) {
-					case self::ALL:	return self::getLevelAll();
-					case self::TRACE: return self::getLevelTrace();
-					case self::DEBUG: return self::getLevelDebug();
-					case self::INFO: return self::getLevelInfo();
-					case self::WARN: return self::getLevelWarn();
-					case self::ERROR: return self::getLevelError();
-					case self::FATAL: return self::getLevelFatal();
-					case self::OFF:	return self::getLevelOff();
-					default: return $defaultLevel;
-				}
-			} else {
-				switch(strtoupper($arg)) {
-					case 'ALL':	return self::getLevelAll();
-					case 'TRACE': return self::getLevelTrace();
-					case 'DEBUG': return self::getLevelDebug();
-					case 'INFO': return self::getLevelInfo();
-					case 'WARN': return self::getLevelWarn();
-					case 'ERROR': return self::getLevelError();
-					case 'FATAL': return self::getLevelFatal();
-					case 'OFF':	return self::getLevelOff();
-					default: return $defaultLevel;
-				}
+			switch(strtoupper($arg)) {
+				case 'ALL':	return self::getLevelAll();
+				case 'TRACE': return self::getLevelTrace();
+				case 'DEBUG': return self::getLevelDebug();
+				case 'INFO': return self::getLevelInfo();
+				case 'WARN': return self::getLevelWarn();
+				case 'ERROR': return self::getLevelError();
+				case 'FATAL': return self::getLevelFatal();
+				case 'OFF':	return self::getLevelOff();
+				default: return $defaultLevel;
 			}
 		}
 	}

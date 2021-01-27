@@ -21,7 +21,7 @@
 /**
  * The internal representation of logging event.
  *
- * @version $Revision: 1059292 $
+ * @version $Revision: 1212773 $
  * @package log4php
  */
 class LoggerLoggingEvent {
@@ -272,6 +272,14 @@ class LoggerLoggingEvent {
 	public function getMDC($key) {
 		return LoggerMDC::get($key);
 	}
+	
+	/**
+	 * Returns the entire MDC context.
+	 * @return array
+	 */
+	public function getMDCMap () {
+		return LoggerMDC::getMap();
+	}
 
 	/**
 	 * Render message.
@@ -297,9 +305,7 @@ class LoggerLoggingEvent {
 	/**
 	 * Returns the time when the application started, in seconds
 	 * elapsed since 01.01.1970 plus microseconds if available.
-	 *
 	 * @return float
-	 * @static
 	 */
 	public static function getStartTime() {
 		if(!isset(self::$startTime)) {

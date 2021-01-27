@@ -37,7 +37,7 @@
  * 
  * {@example ../../examples/resources/appender_console.properties 18}
  * 
- * @version $Revision: 1062667 $
+ * @version $Revision: 1213283 $
  * @package log4php
  * @subpackage appenders
  */
@@ -51,17 +51,13 @@ class LoggerAppenderConsole extends LoggerAppender {
 	 * Default is STDOUT
 	 * @var string
 	 */
-	private $target = self::STDOUT;
+	protected $target = self::STDOUT;
 	
 	/**
 	 * @var mixed the resource used to open stdout/stderr
 	 */
 	protected $fp = null;
 
-	public function __destruct() {
-		$this->close();
-	}
-	
 	/**
 	 * Set console target.
 	 * @param mixed $value a constant or a string
@@ -72,7 +68,14 @@ class LoggerAppenderConsole extends LoggerAppender {
 			$this->target = self::STDOUT;
 		} elseif ($v == self::STDERR || strtoupper($v) == 'STDERR') {
 			$this->target = self::STDERR;
+		} else {
+			$value = var_export($value);
+			$this->warn("Invalid value given for 'target' property: [$value]. Property not set.");
 		}
+	}
+
+	public function getTarget() {
+		return $this->target;
 	}
 
 	public function activateOptions() {
@@ -83,9 +86,6 @@ class LoggerAppenderConsole extends LoggerAppender {
 		$this->closed = (bool)is_resource($this->fp) === false;
 	}
 	
-	/**
-	 * @see LoggerAppender::close()
-	 */
 	public function close() {
 		if($this->closed != true) {
 			if (is_resource($this->fp) && $this->layout !== null) {

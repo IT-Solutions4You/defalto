@@ -36,7 +36,7 @@
  * 
  * {@example ../../examples/resources/appender_file.properties 18}
  * 
- * @version $Revision: 1062665 $
+ * @version $Revision: 1213663 $
  * @package log4php
  * @subpackage appenders
  */
@@ -45,7 +45,7 @@ class LoggerAppenderFile extends LoggerAppender {
 	/**
 	 * @var boolean if {@link $file} exists, appends events.
 	 */
-	private $append = true;
+	protected $append = true;
 	
 	/**
 	 * @var string the file name used to append events
@@ -57,17 +57,15 @@ class LoggerAppenderFile extends LoggerAppender {
 	 */
 	protected $fp = false;
 	
-	public function __construct($name = '') {
-		parent::__construct($name);
-	}
-
-	public function __destruct() {
-		$this->close();
-	}
-	
 	public function activateOptions() {
 		$fileName = $this->getFile();
 
+		if (empty($fileName)) {
+			$this->warn("Required parameter 'fileName' not set. Closing appender.");
+			$this->closed = true;
+			return;
+		}
+		
 		if(!is_file($fileName)) {
 			$dir = dirname($fileName);
 			if(!is_dir($dir)) {
@@ -122,7 +120,7 @@ class LoggerAppenderFile extends LoggerAppender {
 	 * @param string $file
 	 */
 	public function setFile($file) {
-		$this->file = $file;
+		$this->setString('file', $file);
 	}
 	
 	/**
@@ -139,8 +137,8 @@ class LoggerAppenderFile extends LoggerAppender {
 		return $this->append;
 	}
 
-	public function setAppend($flag) {
-		$this->append = LoggerOptionConverter::toBoolean($flag, true);
+	public function setAppend($append) {
+		$this->setBoolean('append', $append);
 	}
 
 	/**
