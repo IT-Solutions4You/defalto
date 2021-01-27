@@ -16,15 +16,6 @@
  * limitations under the License.
  *
  * @package log4php
- * @subpackage helpers
- */
-
-/**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
- 
-/**
  */
 
 /**
@@ -49,7 +40,7 @@ class LoggerFormattingInfo {
 	public function reset() {
 		$this->min = -1;
 		$this->max = 0x7FFFFFFF;
-		$this->leftAlign = false;	  
+		$this->leftAlign = false;
 	}
 
 	public function dump() {

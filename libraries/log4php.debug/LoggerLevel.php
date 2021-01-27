@@ -19,15 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
- 
-/**
- */
-//require_once(LOG4PHP_DIR . '/LoggerLog.php');
-
-/**
  * Defines the minimum set of levels recognized by the system, that is
  * <i>OFF</i>, <i>FATAL</i>, <i>ERROR</i>,
  * <i>WARN</i>, <i>INFO</i>, <i>DEBUG</i> and
@@ -36,7 +27,7 @@ if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__));
  * <p>The <i>LoggerLevel</i> class may be subclassed to define a larger
  * level set.</p>
  *
- * @version $Revision: 884719 $
+ * @version $Revision: 1059292 $
  * @package log4php
  * @since 0.5
  */
@@ -48,6 +39,7 @@ class LoggerLevel {
 	const WARN = 30000;
 	const INFO = 20000;
 	const DEBUG = 10000;
+	const TRACE = 5000;
 	const ALL = -2147483647;
 
 	/**
@@ -55,17 +47,17 @@ class LoggerLevel {
 	 * @var integer
 	 */
 	private $level;
-  
-  	/**
-   	 * Contains a list of instantiated levels 
-   	 */
-  	private static $levelMap;
-  	
+	
+	/**
+	 * Contains a list of instantiated levels 
+	 */
+	private static $levelMap;
+
 	/**
 	 * @var string
 	 */
 	private $levelStr;
-  
+
 	/**
 	 * @var integer
 	 */
@@ -93,7 +85,7 @@ class LoggerLevel {
 	public function equals($o) {
 		if($o instanceof LoggerLevel) {
 			if($this->level == $o->level) {
-			    return true;
+				return true;
 			}
 		} else {
 			return false;
@@ -171,6 +163,18 @@ class LoggerLevel {
 		}
 		return self::$levelMap[LoggerLevel::DEBUG];
 	}
+	
+	/**
+	 * Returns a Trace Level
+	 * @static
+	 * @return LoggerLevel
+	 */
+	public static function getLevelTrace() {
+		if(!isset(self::$levelMap[LoggerLevel::TRACE])) {
+			self::$levelMap[LoggerLevel::TRACE] = new LoggerLevel(LoggerLevel::TRACE, 'TRACE', 7);
+		}
+		return self::$levelMap[LoggerLevel::TRACE];
+	}	
 
 	/**
 	 * Returns an All Level
@@ -196,7 +200,7 @@ class LoggerLevel {
 	/**
 	 * Returns <i>true</i> if this level has a higher or equal
 	 * level than the level passed as argument, <i>false</i>
-	 * otherwise.  
+	 * otherwise.
 	 * 
 	 * <p>You should think twice before overriding the default
 	 * implementation of <i>isGreaterOrEqual</i> method.
@@ -209,12 +213,19 @@ class LoggerLevel {
 	}
 
 	/**
-	 * Returns the string representation of this priority.
+	 * Returns the string representation of this level.
 	 * @return string
-	 * @final
 	 */
 	public function toString() {
 		return $this->levelStr;
+	}
+	
+	/**
+	 * Returns the string representation of this level.
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->toString();
 	}
 
 	/**
@@ -240,6 +251,7 @@ class LoggerLevel {
 			if(is_int($arg)) {
 				switch($arg) {
 					case self::ALL:	return self::getLevelAll();
+					case self::TRACE: return self::getLevelTrace();
 					case self::DEBUG: return self::getLevelDebug();
 					case self::INFO: return self::getLevelInfo();
 					case self::WARN: return self::getLevelWarn();
@@ -251,6 +263,7 @@ class LoggerLevel {
 			} else {
 				switch(strtoupper($arg)) {
 					case 'ALL':	return self::getLevelAll();
+					case 'TRACE': return self::getLevelTrace();
 					case 'DEBUG': return self::getLevelDebug();
 					case 'INFO': return self::getLevelInfo();
 					case 'WARN': return self::getLevelWarn();
@@ -263,4 +276,3 @@ class LoggerLevel {
 		}
 	}
 }
-?>

@@ -19,11 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__)); 
-
-/**
  * Extend this abstract class to create your own log layout format.
  *	
  * @version $Revision: 822415 $
@@ -73,4 +68,3 @@ abstract class LoggerLayout {
 		return null;
 	}
 }
-?>

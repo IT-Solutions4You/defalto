@@ -19,13 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-require_once(LOG4PHP_DIR . '/LoggerLevel.php');
-
-/**
  * Log events using php {@link PHP_MANUAL#syslog} function.
  *
  * This appender can be configured by changing the following attributes:
@@ -47,6 +40,7 @@ require_once(LOG4PHP_DIR . '/LoggerLevel.php');
  * - <b>ERROR > level >= WARN</b> to LOG_WARNING
  * - <b>WARN  > level >= INFO</b> to LOG_INFO
  * - <b>INFO  > level >= DEBUG</b> to LOG_DEBUG
+ * - <b>DEBUG > level >= TRACE</b> to LOG_DEBUG
  *
  * An example:
  *
@@ -54,7 +48,7 @@ require_once(LOG4PHP_DIR . '/LoggerLevel.php');
  *
  * {@example ../../examples/resources/appender_syslog.properties 18}
  *
- * @version $Revision: 883108 $
+ * @version $Revision: 1062665 $
  * @package log4php
  * @subpackage appenders
  */ 
@@ -95,7 +89,7 @@ class LoggerAppenderSyslog extends LoggerAppender {
 	 * If it is necessary to define logging priority in the .properties-file,
 	 * set this variable to "true".
 	 *
-	 * @var const int  value indicating whether the priority of the message is defined in the .properties-file
+	 * @var const int value indicating whether the priority of the message is defined in the .properties-file
 	 *				   (or properties-array)
 	 */
 	private $_overridePriority;
@@ -105,14 +99,13 @@ class LoggerAppenderSyslog extends LoggerAppender {
 
 	public function __construct($name = '') {
 		parent::__construct($name);
-		$this->requiresLayout = true;
 	}
 
 	public function __destruct() {
-       $this->close();
-   	}
-   	
-   	public function setDry($dry) {
+		$this->close();
+	}
+	
+	public function setDry($dry) {
 		$this->dry = $dry;
 	}
 	
@@ -151,7 +144,7 @@ class LoggerAppenderSyslog extends LoggerAppender {
 	 * @param bool Override priority
 	 */
 	public function setOverridePriority($overridePriority) {
-		$this->_overridePriority = $overridePriority;							
+		$this->_overridePriority = $overridePriority;
 	} 
 	
 	/**
@@ -161,8 +154,8 @@ class LoggerAppenderSyslog extends LoggerAppender {
 	 *
 	 * @param string	$option
 	 */
-	public function setOption($option) {	  
-		$this->_option = $option;		
+	public function setOption($option) {
+		$this->_option = $option;
 	}
 	
 	public function activateOptions() {
@@ -209,12 +202,13 @@ class LoggerAppenderSyslog extends LoggerAppender {
 					syslog(LOG_INFO, $message);
 				} else if ($level->isGreaterOrEqual(LoggerLevel::getLevelDebug())) {
 					syslog(LOG_DEBUG, $message);
+				} else if ($level->isGreaterOrEqual(LoggerLevel::getLevelTrace())) {
+					syslog(LOG_DEBUG, $message);	// No trace level in syslog
 				}
 			}
 			closelog();
 		} else {
-		      echo "DRY MODE OF SYSLOG APPENDER: ".$message;
+			echo "DRY MODE OF SYSLOG APPENDER: ".$message;
 		}
 	}
 }
-?>

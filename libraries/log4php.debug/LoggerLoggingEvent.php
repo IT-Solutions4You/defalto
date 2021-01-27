@@ -21,7 +21,7 @@
 /**
  * The internal representation of logging event.
  *
- * @version $Revision: 832662 $
+ * @version $Revision: 1059292 $
  * @package log4php
  */
 class LoggerLoggingEvent {
@@ -111,6 +111,11 @@ class LoggerLoggingEvent {
 	private $locationInfo = null;
 	
 	/**
+	 * @var LoggerThrowableInformation log4php internal representation of throwable
+	 */
+	private $throwableInfo = null;
+	
+	/**
 	* Instantiate a LoggingEvent from the supplied parameters.
 	*
 	* <p>Except {@link $timeStamp} all the other fields of
@@ -121,8 +126,9 @@ class LoggerLoggingEvent {
 	* @param LoggerLevel $priority The level of this event.
 	* @param mixed $message The message of this event.
 	* @param integer $timeStamp the timestamp of this logging event.
+	* @param Exception $throwable The throwable associated with logging event
 	*/
-	public function __construct($fqcn, $logger, $priority, $message, $timeStamp = null) {
+	public function __construct($fqcn, $logger, $priority, $message, $timeStamp = null, Exception $throwable = null) {
 		$this->fqcn = $fqcn;
 		if($logger instanceof Logger) {
 			$this->logger = $logger;
@@ -142,8 +148,20 @@ class LoggerLoggingEvent {
 				$this->timeStamp = floatval(time());
 			}
 		}
+		
+		if ($throwable !== null && $throwable instanceof Exception) {
+			$this->throwableInfo = new LoggerThrowableInformation($throwable);
+		}
 	}
 
+	/**
+	 * Returns the full qualified classname.
+	 * TODO: PHP does contain namespaces in 5.3. Those should be returned too, 
+	 */
+	 public function getFullQualifiedClassname() {
+		 return $this->fqcn;
+	 }
+	 
 	/**
 	 * Set the location information for this logging event. The collected
 	 * information is cached for future use.
@@ -241,7 +259,7 @@ class LoggerLoggingEvent {
 	public function getNDC() {
 		if($this->ndcLookupRequired) {
 			$this->ndcLookupRequired = false;
-			$this->ndc = implode(' ', LoggerNDC::get());
+			$this->ndc = LoggerNDC::get();
 		}
 		return $this->ndc;
 	}
@@ -264,10 +282,10 @@ class LoggerLoggingEvent {
 			if(is_string($this->message)) {
 					$this->renderedMessage = $this->message;
 			} else {
-			    // $this->logger might be null or an instance of Logger or RootLogger
-			    // But in contrast to log4j, in log4php there is only have one LoggerHierarchy so there is
-			    // no need figure out which one is $this->logger part of.
-			    // TODO: Logger::getHierarchy() is marked @deprecated!
+				// $this->logger might be null or an instance of Logger or RootLogger
+				// But in contrast to log4j, in log4php there is only have one LoggerHierarchy so there is
+				// no need figure out which one is $this->logger part of.
+				// TODO: Logger::getHierarchy() is marked @deprecated!
 				$repository = Logger::getHierarchy();
 				$rendererMap = $repository->getRendererMap();
 				$this->renderedMessage= $rendererMap->findAndRender($this->message);
@@ -307,10 +325,10 @@ class LoggerLoggingEvent {
 	 * @return the time after event starttime when this event has occured
 	 */
 	public function getTime() {
-        $eventTime = (float)$this->getTimeStamp();
-        $eventStartTime = (float)LoggerLoggingEvent::getStartTime();
-        return number_format(($eventTime - $eventStartTime) * 1000, 0, '', '');
-    }
+		$eventTime = (float)$this->getTimeStamp();
+		$eventStartTime = (float)LoggerLoggingEvent::getStartTime();
+		return number_format(($eventTime - $eventStartTime) * 1000, 0, '', '');
+	}
 	
 	/**
 	 * @return mixed
@@ -323,10 +341,10 @@ class LoggerLoggingEvent {
 	}
 
 	/**
-	 * @return mixed null
+	 * @return mixed LoggerThrowableInformation
 	 */
 	public function getThrowableInformation() {
-		return null;
+		return $this->throwableInfo;
 	}
 	
 	/**

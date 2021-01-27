@@ -68,4 +68,3 @@ class LoggerRoot extends Logger {
 	}
 
 }
-?>

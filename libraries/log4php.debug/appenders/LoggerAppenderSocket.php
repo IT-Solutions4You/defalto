@@ -19,17 +19,6 @@
  */
 
 /**
- * @ignore 
- */
-if (!defined('LOG4PHP_DIR')) define('LOG4PHP_DIR', dirname(__FILE__) . '/..');
-
-define('LOG4PHP_LOGGER_APPENDER_SOCKET_DEFAULT_PORT',       4446);
-define('LOG4PHP_LOGGER_APPENDER_SOCKET_DEFAULT_TIMEOUT',    30);
-
-require_once(LOG4PHP_DIR . '/helpers/LoggerOptionConverter.php');
-require_once(LOG4PHP_DIR . '/LoggerLayout.php');
-
-/**
  * Serialize events and send them to a network socket.
  *
  * This appender can be configured by changing the following attributes:
@@ -51,15 +40,19 @@ require_once(LOG4PHP_DIR . '/LoggerLayout.php');
  * 
  * {@example ../../examples/resources/appender_socket.properties 18}
  * 
- * @version $Revision: 883108 $
+ * @version $Revision: 1062667 $
  * @package log4php
  * @subpackage appenders
  */ 
 class LoggerAppenderSocket extends LoggerAppender {
 
 	/**
+	 * This appender does not require a layout.
+	 */
+	protected $requiresLayout = false;
+	
+	/**
 	 * @var mixed socket connection resource
-	 * @access private
 	 */
 	private $sp = false;
 	
@@ -98,7 +91,6 @@ class LoggerAppenderSocket extends LoggerAppender {
 
 	/**
 	 * @var LoggerXmlLayout
-	 * @access private
 	 */
 	private $xmlLayout = null;
 	
@@ -106,9 +98,9 @@ class LoggerAppenderSocket extends LoggerAppender {
 	private $dry = false;
 	
 	public function __destruct() {
-       $this->close();
-   	}
-   	
+		$this->close();
+	}
+	
 	/**
 	 * Create a socket connection using defined parameters
 	 */
@@ -116,7 +108,7 @@ class LoggerAppenderSocket extends LoggerAppender {
 		if(!$this->dry) {
 			$this->sp = @fsockopen($this->getRemoteHost(), $this->getPort(), $errno, $errstr, $this->getTimeout());
 			if ($this->sp === false) {
-			    throw new LoggerException("Could not open socket to ".$this->getRemoteHost().":".$this->getPort().": $errstr ($errno)");
+				throw new LoggerException("Could not open socket to ".$this->getRemoteHost().":".$this->getPort().": $errstr ($errno)");
 			}
 		}
 		if($this->getUseXml()) {
@@ -129,7 +121,7 @@ class LoggerAppenderSocket extends LoggerAppender {
 				$this->xmlLayout->activateOptions();
 			}			 
 		}
-        $this->closed = false;
+		$this->closed = false;
 	}
 	
 	public function close() {
@@ -252,22 +244,20 @@ class LoggerAppenderSocket extends LoggerAppender {
 				if(!$this->dry) {
 					fwrite($this->sp, $sEvent, strlen($sEvent));
 				} else {
-				    echo "DRY MODE OF SOCKET APPENDER: ".$sEvent;
+					echo "DRY MODE OF SOCKET APPENDER: ".$sEvent;
 				}
 			} else {
 				if(!$this->dry) {
 					fwrite($this->sp, $this->xmlLayout->format($event));
 				} else {
-				    echo "DRY MODE OF SOCKET APPENDER: ".$this->xmlLayout->format($event);
+					echo "DRY MODE OF SOCKET APPENDER: ".$this->xmlLayout->format($event);
 				}
-			}			 
+			}
 
 			// not sure about it...
 			if(!$this->dry) {
 				fflush($this->sp);
 			}
-		} 
+		}
 	}
 }
-
-?>

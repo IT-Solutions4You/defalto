@@ -40,7 +40,7 @@
  * 
  * {@example ../../examples/resources/filter_levelmatch.xml 18}
  * 
- * @version $Revision: 883108 $
+ * @version $Revision: 1059292 $
  * @package log4php
  * @subpackage filters
  * @since 0.6
@@ -71,7 +71,7 @@ class LoggerFilterLevelMatch extends LoggerFilter {
 	 */
 	public function setLevelToMatch($l) {
 		if($l instanceof LoggerLevel) {
-		    $this->levelToMatch = $l;
+			$this->levelToMatch = $l;
 		} else {
 			$this->levelToMatch = LoggerOptionConverter::toLevel($l, null);
 		}

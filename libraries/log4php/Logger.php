@@ -10,13 +10,6 @@
 
 /** Classes to avoid logging */
 
-class LoggerManager {
-	static function getlogger($name = 'ROOT') {
-		$configinfo = LoggerPropertyConfigurator::getInstance()->getConfigInfo($name);
-		return new Logger($name, $configinfo);
-	}
-}
-
 /**
  * Core logging class.
  */
@@ -100,6 +93,11 @@ class Logger {
 	
 	function isDebugEnabled() {
 		return $this->isLevelEnabled('DEBUG');
+	}
+        
+        static function getlogger($name = 'ROOT') {
+		$configinfo = LoggerPropertyConfigurator::getInstance()->getConfigInfo($name);
+		return new Logger($name, $configinfo);
 	}
 }
 
