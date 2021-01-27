@@ -130,7 +130,7 @@
  *                                                                then truncate from the beginning.  
  * </pre>
  * 
- * @version $Revision: 1059292 $
+ * @version $Revision: 1213283 $
  * @package log4php
  * @subpackage layouts
  * @since 0.3 
@@ -140,30 +140,16 @@ class LoggerLayoutPattern extends LoggerLayout {
 	const DEFAULT_CONVERSION_PATTERN = '%m%n';
 
 	/** Default conversion TTCC Pattern */
-	const TTCC_CONVERSION_PATTERN = '%r [%t] %p %c %x - %m%n';
+	const TTCC_CONVERSION_PATTERN = '%d [%t] %p %c %x - %m%n';
 
-	/** The pattern. 
-	 * @var string */
-	private $pattern;
+	/** The conversion pattern. */ 
+	protected $pattern = self::DEFAULT_CONVERSION_PATTERN;
 
-	/** Head of a chain of Converters.
-	 * @var LoggerPatternConverter */
-	private $head;
-
-	private $timezone;
-
-	/**
-	 * Constructs a PatternLayout using the 
-	 * {@link DEFAULT_LAYOUT_PATTERN}.
-	 * The default pattern just produces the application supplied message.
+	/** 
+	 * Head of a chain of Converters.
+	 * @var LoggerPatternConverter 
 	 */
-	public function __construct($pattern = null) {
-		if ($pattern === null) {
-			$this->setConversionPattern(self::DEFAULT_CONVERSION_PATTERN);
-		} else {
-			$this->pattern = $pattern;
-		}
-	}
+	private $head;
 
 	/**
 	 * Set the <b>ConversionPattern</b> option. This is the string which

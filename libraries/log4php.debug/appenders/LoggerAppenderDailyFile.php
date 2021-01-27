@@ -46,7 +46,7 @@
  *
  * The above will create a file like: daily_20090908.log
  *
- * @version $Revision: 1059522 $
+ * @version $Revision: 1213283 $
  * @package log4php
  * @subpackage appenders
  */
@@ -57,18 +57,14 @@ class LoggerAppenderDailyFile extends LoggerAppenderFile {
 	 * It follows the {@link PHP_MANUAL#date()} formatting rules and <b>should always be set before {@link $file} param</b>.
 	 * @var string
 	 */
-	public $datePattern = "Ymd";
-	
-	public function __destruct() {
-		parent::__destruct();
-	}
+	protected $datePattern = "Ymd";
 	
 	/**
 	 * Sets date format for the file name.
 	 * @param string $datePattern a regular date() string format
 	 */
 	public function setDatePattern($datePattern) {
-		$this->datePattern = $datePattern;
+		$this->setString('datePattern', $datePattern);
 	}
 	
 	/**
@@ -78,15 +74,37 @@ class LoggerAppenderDailyFile extends LoggerAppenderFile {
 		return $this->datePattern;
 	}
 	
-	/**
-	 * Similar to the parent method, but replaces "%s" in the file name with 
-	 * the current date in format specified by $datePattern. 
-	 *
-	 * @see LoggerAppenderFile::setFile()
-	 */
-	public function setFile($file) {
+	/** 
+	 * Similar to parent method, but but replaces "%s" in the file name with 
+	 * the current date in format specified by the 'datePattern' parameter.
+	 */ 
+	public function activateOptions() {
+		$fileName = $this->getFile();
 		$date = date($this->getDatePattern());
-		$file = sprintf($file, $date);
-		parent::setFile(sprintf($file, $date));
+		$fileName = sprintf($fileName, $date);
+		
+		if(!is_file($fileName)) {
+			$dir = dirname($fileName);
+			if(!is_dir($dir)) {
+				mkdir($dir, 0777, true);
+			}
+		}
+	
+		$this->fp = fopen($fileName, ($this->getAppend()? 'a':'w'));
+		if($this->fp) {
+			if(flock($this->fp, LOCK_EX)) {
+				if($this->getAppend()) {
+					fseek($this->fp, 0, SEEK_END);
+				}
+				fwrite($this->fp, $this->layout->getHeader());
+				flock($this->fp, LOCK_UN);
+				$this->closed = false;
+			} else {
+				// TODO: should we take some action in this case?
+				$this->closed = true;
+			}
+		} else {
+			$this->closed = true;
+		}
 	}
 }
