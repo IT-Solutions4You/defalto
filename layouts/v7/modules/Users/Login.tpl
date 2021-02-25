@@ -78,6 +78,7 @@
 		}
 		.marketingDiv {
 			color: #303030;
+                        height: 510px !important;
 		}
 		.separatorDiv {
 			background-color: #7C7C7C;
@@ -176,6 +177,9 @@
 			overflow: hidden;
 			background: transparent;
 		}
+                .mCSB_container{
+                    height: inherit;
+                }
 
 		//Animations
 		@keyframes inputHighlighter {
@@ -403,7 +407,7 @@
 				jQuery('.bx-prev, .bx-next, .bx-pager-item').live('click',function(){ slider.startAuto(); });
 				jQuery('.bx-wrapper .bx-viewport').css('background-color', 'transparent');
 				jQuery('.bx-wrapper .bxslider li').css('text-align', 'left');
-				jQuery('.bx-wrapper .bx-pager').css('bottom', '-15px');
+				jQuery('.bx-wrapper .bx-pager').css('bottom', '-40px');
 
 				var params = {
 					theme		: 'dark-thick',
