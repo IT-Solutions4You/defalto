@@ -8,7 +8,7 @@
  * All Rights Reserved.
  ********************************************************************************/
 
-	require_once("config.php");
+require_once("config.php");
     /**
     * URL Verfication - Required to overcome Apache mis-configuration and leading to shared setup mode.
     */
@@ -34,8 +34,8 @@
 	$API_VERSION = "0.22";
 
 	global $seclog,$log;
-	$seclog =& LoggerManager::getLogger('SECURITY');
-	$log =& LoggerManager::getLogger('webservice');
+	$seclog = Logger::getLogger('SECURITY');
+	$log = Logger::getLogger('webservice');
 
 	function getRequestParamsArrayForOperation($operation){
 		global $operationInput;
@@ -90,7 +90,7 @@
 				// Workaround fix for PHP 5.3.x: $_REQUEST doesn't have PHPSESSID
 				if(isset($_REQUEST['PHPSESSID'])) {
 					$sessionId = vtws_getParameter($_REQUEST,"PHPSESSID");
-				} else {
+				} else if(isset($_COOKIE['PHPSESSID'])) {  //if not set its creating new session
 					// NOTE: Need to evaluate for possible security issues
 					$sessionId = vtws_getParameter($_COOKIE,'PHPSESSID');
 				}

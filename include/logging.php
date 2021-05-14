@@ -22,18 +22,20 @@ require_once('config.php');
 // Performance Optimization: Configure the log folder
 @include_once('config.performance.php');
 global $PERFORMANCE_CONFIG;
-if(isset($PERFORMANCE_CONFIG) && isset($PERFORMANCE_CONFIG['LOG4PHP_DEBUG']) && $PERFORMANCE_CONFIG['LOG4PHP_DEBUG']) {
-	define('LOG4PHP_DIR', 'libraries/log4php.debug');
-} else {
-	define('LOG4PHP_DIR', 'libraries/log4php');
-}
-// END
+
 define('LOG4PHP_DEFAULT_INIT_OVERRIDE', true);
 
-require_once(LOG4PHP_DIR.'/LoggerManager.php');
-require_once(LOG4PHP_DIR.'/LoggerPropertyConfigurator.php');
+if(isset($PERFORMANCE_CONFIG) && isset($PERFORMANCE_CONFIG['LOG4PHP_DEBUG']) && $PERFORMANCE_CONFIG['LOG4PHP_DEBUG']) {
+	define('LOG4PHP_DIR', 'libraries/log4php.debug');
+        require_once(LOG4PHP_DIR.'/Logger.php');
+        Logger::configure('log4php.properties');
+} else {
+	define('LOG4PHP_DIR', 'libraries/log4php');
+        require_once(LOG4PHP_DIR.'/Logger.php');
+        require_once(LOG4PHP_DIR.'/LoggerPropertyConfigurator.php');
 
-$config = new LoggerPropertyConfigurator();
-$config->configure('log4php.properties');
-
+        $config = new LoggerPropertyConfigurator();
+        $config->configure('log4php.properties');
+}
+// END
 ?>

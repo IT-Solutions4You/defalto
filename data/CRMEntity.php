@@ -2653,12 +2653,18 @@ class CRMEntity {
 			}
 		}
 
+                $query = "select crmid as id ";
 		$entityfields = getEntityField($module);
 		$querycolumnnames = implode(',', $lookupcolumns);
 		$entitycolumnnames = $entityfields['fieldname'];
-		$query = "select crmid as id, $querycolumnnames, $entitycolumnnames as name ";
+                if(!empty($querycolumnnames)){
+                    $query .= ", $querycolumnnames";
+                }
+                if(!empty($entitycolumnnames)){
+                    $query .= ", $entitycolumnnames as name ";
+                }
 		$query .= " FROM $this->table_name ";
-		$query .=" INNER JOIN vtiger_crmentity ON $this->table_name.$this->table_index = vtiger_crmentity.crmid AND deleted = 0 ";
+		$query .= " INNER JOIN vtiger_crmentity ON $this->table_name.$this->table_index = vtiger_crmentity.crmid AND deleted = 0 ";
 
 		//remove the base table
 		$LookupTable = array_unique($lookuptables);

@@ -69,7 +69,7 @@ class Campaigns extends CRMEntity {
 	// For Alphabetical search
 	var $def_basicsearch_col = 'campaignname';
         function __construct() {
-            $this->log =LoggerManager::getLogger('campaign');
+            $this->log =Logger::getLogger('campaign');
             $this->db = PearDatabase::getInstance();
             $this->column_fields = getColumnFields('Campaigns');
         }   
