@@ -2050,8 +2050,31 @@ class CRMEntity {
 				$parmodule = $adb->query_result($parentRecords, $i, 'module');
 				$adb->pquery("UPDATE vtiger_crmentityrel SET relcrmid=? WHERE crmid=? AND module=? AND relcrmid=? AND relmodule=?", array($entityId, $parcrmid, $parmodule, $transferId, $module));
 			}
-			$adb->pquery("UPDATE vtiger_modcomments SET related_to = ? WHERE related_to = ?", array($entityId, $transferId));
 		}
+		
+		//lookup anything in vtiger_fieldmodulerel table where relmodule = this module
+        $sql = "SELECT fieldid FROM vtiger_fieldmodulerel WHERE relmodule = ?";
+        $query = $adb->pquery($sql, [$module]);
+        $numRows = $adb->num_rows($query);
+        //this gives a list of related fields that relate to this module
+        for ($i = 0; $i < $numRows; $i++) {
+            $field = $adb->query_result($query, $i, 'fieldid');
+            //then for each field lookup the tablename and columnname
+            $sql2 = "SELECT * FROM vtiger_field WHERE fieldid = ?";
+            $query2 = $adb->pquery($sql2, [$field]);
+            $numRows2 = $adb->num_rows($query2);
+            for ($j = 0; $j < $numRows2; $j++) {
+                $table = $adb->query_result($query2, $j, 'tablename');
+                $column = $adb->query_result($query2, $j, 'columnname');
+
+                //loop through and update any entry in those table/columns that points to the old ID and update to point to the new ID
+                foreach ($transferEntityIds as $transferId) {
+                    $sql3 = "UPDATE $table SET $column = ? WHERE $column = ?";
+                    $query3 = $adb->pquery($sql3, [$entityId, $transferId]);
+                }
+            }
+        }
+        
 		$log->debug("Exiting transferRelatedRecords...");
 	}
 
