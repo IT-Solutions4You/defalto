@@ -1804,7 +1804,12 @@ function getValidDBInsertDateValue($value) {
 			break;
 		}
 	}
-	list($y,$m,$d) = explode('-',$value);
+	global $current_user;
+	$formate=$current_user->date_format;
+	list($d,$m,$y) = explode('-',$value);
+	if(strlen($d) == 4 || $formate == 'mm-dd-yyyy'){
+		list($y,$m,$d)=explode('-',$value);
+	}
 	if(strlen($y) == 1) $y = '0'.$y;
 	if(strlen($m) == 1) $m = '0'.$m;
 	if(strlen($d) == 1) $d = '0'.$d;
