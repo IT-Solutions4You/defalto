@@ -30,7 +30,7 @@
 							{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
 								<div class="" style="margin: 7px 0;">
 									<label>
-										<input type="checkbox" id="is_private" style="margin:2px 0px -2px 0px">&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}
+										<input type="checkbox" id="is_private" style="margin:2px 0px -2px 0px" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}
 									</label>&nbsp;&nbsp;
 									<i class="fa fa-question-circle cursorPointer" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_INFO')}"></i>&nbsp;&nbsp;
 								</div>
@@ -107,8 +107,18 @@
 												{/if}
 												<span class="commentTime text-muted cursorDefault">
 													<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</small>
-												</span>
-
+												</span>&nbsp;&nbsp;
+												
+												{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
+													<span>
+														{if $COMMENT->get('is_private')}
+															<i class="fa fa-lock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+														{else}
+															<i class="fa fa-unlock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+														{/if}
+													</span>
+												{/if}
+												
 												<div class="commentInfoContentBlock">
 													{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
 													{if $COMMENT_CONTENT}
@@ -213,7 +223,7 @@
 			{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" id="is_private">&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}&nbsp;&nbsp;
+						<input type="checkbox" id="is_private" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}&nbsp;&nbsp;
 					</label>
 				</div>
 			{/if}
