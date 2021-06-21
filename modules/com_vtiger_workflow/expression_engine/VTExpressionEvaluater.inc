@@ -70,6 +70,41 @@ function __vt_gt($arr) {
 function __vt_concat($arr){
 	return implode($arr);
 }
+
+function __vt_substring($arr){
+unset($string);unset($start);unset($end);
+    if (count($arr) == 3) {
+        $string = $arr[0];
+        $start = $arr[1];
+        $end = $arr[2];
+    } elseif (count($arr) == 2){
+        $string = $arr[0];
+        $start = $arr[1];
+        $end = strlen($string);
+    }elseif (count($arr) == 1){
+        $string = $arr[0];
+        $start = 0;
+        $end = strlen($string);
+    }else{return '';}
+    return mb_substr($string,$start,$end);
+}
+
+
+
+function __vt_preg_replace_str_only($arr){
+    unset($pattern);unset($replacement);unset($subject);
+    if (count($arr) == 3 && is_string($arr[0]) && is_string($arr[1]) && is_string($arr[2])) {
+        $pattern = $arr[0];
+
+
+        $replacement = $arr[1];
+
+        $subject = $arr[2];
+    } else{return '';}
+    return preg_replace($pattern,$replacement,$subject);
+}
+
+
 /* Date difference between (input times) or (current time and input time)
  *
  * @param Array $a $a[0] - Input time1, $a[1] - Input time2
@@ -283,6 +318,8 @@ class VTFieldExpressionEvaluater{
 				'>' => '__vt_gt',
 		);
 		$this->functions = array(
+		        'substring'=>'__vt_substring',
+				'preg_replace_str_only'=>'__vt_preg_replace_str_only',
 				'concat'=>'__vt_concat',
 				'time_diff' => '__vt_time_diff',
 				'time_diffdays' => '__vt_time_diffdays',
