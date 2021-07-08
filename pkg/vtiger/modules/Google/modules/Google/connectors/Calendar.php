@@ -152,7 +152,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             $query['updatedMin'] = $this->googleFormat(Google_Utils_Helper::getSyncTime('Calendar', $user));
             //shows deleted by default
         }
-        
+        $query['updatedMin'] = date("Y-m-d", strtotime("first day of previous month"));
         $calendarId = Google_Utils_Helper::getSelectedCalendarForUser($user);
         if(!isset($this->calendars)) {
             $this->calendars = $this->pullCalendars(true);
