@@ -7757,4 +7757,13 @@ body .fc {
     z-index: 10001;
     background-color: #fff;
  }
+ .fieldBlockContainer .inputElement.textAreaElement {
+    max-width:none;
+    width: 100%;
+}
+
+.detailview-table textarea.inputElement.form-control {
+    max-width:none;
+    width: 90%;
+}
 /*# sourceMappingURL=style.css.map */
