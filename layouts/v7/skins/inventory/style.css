@@ -1497,6 +1497,7 @@ ul.unstyled {
   vertical-align: middle;
   width: 80%;
   display: inline-block;
+  max-width: 300px;
 }
 .floatThead-table {
   background: #fff;
@@ -1845,7 +1846,6 @@ th {
 }
 .referencefield-wrapper {
   display: table-cell;
-  width: 80%;
   max-width: 325px;
 }
 .record-header {
@@ -2421,6 +2421,11 @@ th {
 .input-group.inputElement .input-group-addon {
   border: none;
   border-left: 1px solid #ddd;
+}
+.input-group.inputElement .input-group-addon-right{
+    border:none;
+    border-left:0px;
+    border-right:1px solid #ddd;
 }
 .fieldBlockContainer textarea.inputElement {
   height: auto;
@@ -5590,6 +5595,9 @@ TN-34230 .row .nav > li > a:hover {
 .width75per {
   width: 75%;
 }
+.width100per{
+    width: 100% !important;
+}
 #_mbox_pwd {
   padding: 3px 8px;
 }
@@ -6141,14 +6149,13 @@ div.tooltip-inner {
   border-left: 0;
 }
 .editViewContents .fieldValue .referencefield-wrapper {
-  width: 100%;
   display: inline-block;
 }
 .fieldValueWidth80{
     width:80% !important;
 }
 .input-group-addon {
-  line-height: 1.5;
+  line-height: inherit;
   border-width: thin;
 }
 .input-group {
@@ -6166,7 +6173,6 @@ div.tooltip-inner {
 }
 .summaryViewEntries .inputElement.form-control,
 .detailview-table .inputElement.form-control {
-  width: 80%;
   max-width: 300px;
 }
 .detailview-table input[type="checkbox"] {
@@ -7736,4 +7742,19 @@ body .fc {
   border-left: 3px solid #F1C40F;
   opacity: 1;
 }
+#vt-mask{
+    border: 0;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    width: auto;
+    opacity: 0;
+    z-index: 10001;
+    background-color: #fff;
+ }
 /*# sourceMappingURL=style.css.map */
