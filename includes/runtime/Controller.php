@@ -210,6 +210,9 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		$viewer->assign('PARENT_MODULE', '');
 		$viewer->assign('EXTENSION_MODULE', '');
 
+		$viewer->assign('NOTIFIER_URL', '');
+		$viewer->assign('GLOBAL_SEARCH_VALUE', '');
+		$_REQUEST["view"] = isset($_REQUEST["view"])? $_REQUEST["view"] : "";
 
 		if ($request->getModule() != 'Install') {
 			$userCurrencyInfo = getCurrencySymbolandCRate($currentUser->get('currency_id'));

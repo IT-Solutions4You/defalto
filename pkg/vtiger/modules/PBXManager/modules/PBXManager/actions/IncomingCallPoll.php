@@ -60,6 +60,7 @@ class PBXManager_IncomingCallPoll_Action extends Vtiger_Action_Controller{
         $response = new Vtiger_Response();
         $user = Users_Record_Model::getCurrentUserModel();
         
+        $calls = array();
         $recordModels = $recordModel->searchIncomingCall();
         // To check whether user have permission on caller record
         if($recordModels){

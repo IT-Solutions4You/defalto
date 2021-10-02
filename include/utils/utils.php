@@ -558,7 +558,7 @@ function getActionid($action)
 	if(file_exists('tabdata.php') && (filesize('tabdata.php') != 0))
 	{
 		include('tabdata.php');
-		$actionid= $action_id_array[$action];
+		$actionid= isset($action_id_array[$action])? $action_id_array[$action] : 0;
 	}
 	else
 	{

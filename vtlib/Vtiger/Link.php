@@ -52,7 +52,7 @@ class Vtiger_Link {
 		$this->handler_path	=isset($valuemap['handler_path']) ? $valuemap['handler_path'] : null;
 		$this->handler_class=isset($valuemap['handler_class']) ? $valuemap['handler_class'] : null;
 		$this->handler		=isset($valuemap['handler']) ? $valuemap['handler'] : null;
-		$this->parent_link	=$valuemap['parent_link'];
+		$this->parent_link	= isset($valuemap['parent_link']) ? $valuemap['parent_link'] : null;
 	}
 
 	/**

@@ -174,7 +174,7 @@ class Vtiger_Functions {
 
 		if ($name && !isset(self::$moduleNameIdCache[$name])) {$reload = true;}
 		else if ($id && !isset(self::$moduleIdNameCache[$id])) {$reload = true;}
-		else {
+		else if ($name) {
 			if (!$id) $id = self::$moduleNameIdCache[$name]['tabid'];
 			if (!isset(self::$moduleIdDataCache[$id])) { $reload = true; }
 		}

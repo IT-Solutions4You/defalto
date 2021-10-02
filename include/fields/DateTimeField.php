@@ -219,7 +219,7 @@ class DateTimeField {
                 break;
         }
 
-        if ($date[1] != '') {
+        if (count($date) > 1 && $date[1] != '') {
             $userDate = $date[0] . ' ' . $date[1];
         } else {
             $userDate = $date[0];
@@ -307,7 +307,7 @@ class DateTimeField {
 		$log->debug("Entering getDisplayDate(" . $this->datetime . ") method ...");
 
 		$date_value = explode(' ',$this->datetime);
-		if ($date_value[1] != '') {
+		if (count($date_value) > 1 && $date_value[1] != '') {
 			$date = self::convertToUserTimeZone($this->datetime, $user);
 			$date_value = $date->format('Y-m-d');
 		}

@@ -13,6 +13,8 @@
 		<br><div class="dashboardBanner"></div>
 		<div class="dashBoardTabContents clearfix">
 			<div class="gridster_{$TABID}">
+				{assign var="ROWCOUNT" value=0}
+				{assign var="COLCOUNT" value=0}
 				<ul>
 					{assign var=COLUMNS value=2}
 					{assign var=ROW value=1}
