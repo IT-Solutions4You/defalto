@@ -1389,7 +1389,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array> list of field models <Vtiger_Field_Model>
 	 */
 	public function getSummaryViewFieldsList() {
-		if (!$this->summaryFields) {
+		if (!isset($this->summaryFields) || !$this->summaryFields) {
 			$summaryFields = array();
 			$fields = $this->getFields();
 			foreach ($fields as $fieldName => $fieldModel) {
@@ -1407,7 +1407,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array> list of field models <Vtiger_Field_Model>
 	 */
 	public function getHeaderViewFieldsList() {
-		if (!$this->headerFields) {
+		if (!isset($this->headerFields) || !$this->headerFields) {
 			$headerFields = array();
 			$fields = $this->getFields();
 			foreach ($fields as $fieldName => $fieldModel) {
@@ -1425,7 +1425,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array> list of field models <Vtiger_Field_Model>
 	 */
 	public function getHeaderAndSummaryViewFieldsList() {
-		if(!$this->relationListViewFields) {
+		if(!isset($this->relationListViewFields) || !$this->relationListViewFields) {
 			$summaryViewFields = $this->getSummaryViewFieldsList();
 			$headerViewFields = $this->getHeaderViewFieldsList();
 			$allRelationListViewFields = array_merge($headerViewFields,$summaryViewFields);

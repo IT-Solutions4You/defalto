@@ -75,14 +75,14 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	}
 
 	public function getModule() {
-		if(!$this->module) {
+		if(!isset($this->module) || !$this->module) {
 			$moduleObj = $this->block->module;
 			if(empty($moduleObj)) {
 				return false;
 			}
 			$this->module = Vtiger_Module_Model::getInstanceFromModuleObject($moduleObj);
 		}
-		return $this->module;
+		return isset($this->module) ? $this->module : null;
 	}
 
 	public function setModule($moduleInstance) {
@@ -95,7 +95,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <String> - converted display value
 	 */
 	public function getDisplayValue($value, $record=false, $recordInstance = false) {
-		if(!$this->uitype_instance) {
+		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
 			$this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
 		}
 		$uiTypeInstance = $this->uitype_instance;
@@ -144,7 +144,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <String> Data type of the field
 	 */
 	public function getFieldDataType() {
-		if(!$this->fieldDataType) {
+		if(!isset($this->fieldDataType) || !$this->fieldDataType) {
 			$uiType = $this->get('uitype');
 			if($uiType == '69') {
 				$fieldDataType = 'image';
@@ -172,7 +172,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			}
 			$this->fieldDataType = $fieldDataType;
 		}
-		return $this->fieldDataType;
+		return isset($this->fieldDataType) ? $this->fieldDataType : null;
 	}
 
 	/**
@@ -398,7 +398,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isQuickCreateEnabled() {
 		$moduleModel = $this->getModule();
 		$quickCreate = $this->get('quickcreate');
-		if(($quickCreate == self::QUICKCREATE_MANDATORY || $quickCreate == self::QUICKCREATE_ENABLED
+		if($moduleModel && ($quickCreate == self::QUICKCREATE_MANDATORY || $quickCreate == self::QUICKCREATE_ENABLED
 				|| $this->isMandatory()) && $this->get('uitype') != 69) {
 			//isQuickCreateSupported will not be there for settings
 			if(method_exists($moduleModel,'isQuickCreateSupported') && $moduleModel->isQuickCreateSupported()) {
@@ -949,7 +949,10 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 			foreach($fieldObjects as $fieldObject){
 				$fieldModelObject= self::getInstanceFromFieldObject($fieldObject);
-				$fieldModelList[$fieldModelObject->get('block')->id][] = $fieldModelObject;
+				$block = $fieldModelObject->get('block');
+				if ($block) {
+					$fieldModelList[$block->id][] = $fieldModelObject;
+				}
 				Vtiger_Cache::set('field-'.$moduleModel->getId(),$fieldModelObject->getId(),$fieldModelObject);
 				Vtiger_Cache::set('field-'.$moduleModel->getId(),$fieldModelObject->getName(),$fieldModelObject);
 			}
@@ -1062,7 +1065,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			case 'start_period'			:	$funcName = array('name' => 'lessThanDependentField', 'params' => array('end_period'));
 											break;
 		}
-		if ($funcName) {
+		if (isset($funcName) && $funcName) {
 			array_push($validator, $funcName);
 		}
 		return $validator;
@@ -1074,7 +1077,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <String> - converted display value
 	 */
 	public function getEditViewDisplayValue($value) {
-		if(!$this->uitype_instance) {
+		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
 			$this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
 		}
 		$uiTypeInstance = $this->uitype_instance;

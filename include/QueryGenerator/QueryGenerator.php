@@ -1195,7 +1195,7 @@ class QueryGenerator {
 
 	public function fixDateTimeValue($name, $value, $first = true) {
 		$moduleFields = $this->getModuleFields();
-		$field = $moduleFields[$name];
+		$field = isset($moduleFieldList) ? $moduleFields[$name] : null;
 		$type = $field ? $field->getFieldDataType() : false;
 		if($type == 'datetime') {
 			if(strrpos($value, ' ') === false) {

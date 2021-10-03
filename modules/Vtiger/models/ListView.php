@@ -144,7 +144,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$headerFields = $listViewContoller->getListViewHeaderFields();
 		foreach($headerFields as $fieldName => $webserviceField) {
 			if($webserviceField && !in_array($webserviceField->getPresence(), array(0,2))) continue;
-			if($webserviceField && $webserviceField->parentReferenceField && !in_array($webserviceField->parentReferenceField->getPresence(), array(0,2))){
+			if($webserviceField && isset($webserviceField->parentReferenceField) && !in_array($webserviceField->parentReferenceField->getPresence(), array(0,2))){
 				continue;
 			}
 			if($webserviceField->getDisplayType() == '6') continue;
@@ -534,7 +534,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 	}
 
 	public function getSortParamsSession($key) {
-		return $_SESSION[$key];
+		return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 			}
 
 	public function setSortParamsSession($key, $params) {

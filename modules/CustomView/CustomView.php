@@ -92,9 +92,9 @@ class CustomView extends CRMEntity {
 	 */
 	function getViewId($module) {
 		global $adb, $current_user;
-		$now_action = vtlib_purify($_REQUEST['action']);
+		$now_action = vtlib_purify(isset($_REQUEST['action']) ? $_REQUEST['action'] : '');
 		if(!$now_action) {
-			$now_action = vtlib_purify($_REQUEST['view']);
+			$now_action = vtlib_purify(isset($_REQUEST['view']) ? $_REQUEST['view'] : '');
 		}
 		if (empty($_REQUEST['viewname'])) {
 			if (isset($_SESSION['lvs'][$module]["viewname"]) && $_SESSION['lvs'][$module]["viewname"] != '') {
@@ -938,7 +938,7 @@ class CustomView extends CRMEntity {
 
 					$advFilterColumn = $criteria['columnname'];
 					$advFilterComparator = $criteria['comparator'];
-					$advFilterColumnCondition = $criteria['column_condition'];
+					$advFilterColumnCondition = isset($criteria['column_condition'])? $criteria['column_condition'] : null;
 
 					$columnInfo = explode(":", $advFilterColumn);
 					$fieldName = $columnInfo[2];
@@ -946,6 +946,7 @@ class CustomView extends CRMEntity {
 					$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 					preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 
+					$referenceParentField = null;
 					if (count($matches) != 0) {
 						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
 					}
@@ -1937,7 +1938,7 @@ class CustomView extends CRMEntity {
 			if (trim($block_label) == '') {
 				$block_info[$pre_block_label] = $block_info[$pre_block_label] . "," . $block_result['block'];
 			} else {
-				$lan_block_label = $current_mod_strings[$block_label];
+				$lan_block_label = isset($current_mod_strings[$block_label])? $current_mod_strings[$block_label] : $block_label;
 				if (isset($block_info[$lan_block_label]) && $block_info[$lan_block_label] != '') {
 					$block_info[$lan_block_label] = $block_info[$lan_block_label] . "," . $block_result['block'];
 				} else {
