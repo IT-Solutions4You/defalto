@@ -391,7 +391,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 	 * @return <Array>
 	 */
 	public function getCharges() {
-		if (!$this->chargesAndItsTaxes) {
+		if (!isset($this->chargesAndItsTaxes) || !$this->chargesAndItsTaxes) {
 			$this->chargesAndItsTaxes = array();
 			$recordId = $this->getId();
 			if ($recordId) {

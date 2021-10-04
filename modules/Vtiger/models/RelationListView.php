@@ -47,7 +47,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$parentRecordModule = $this->getParentRecordModel();
 		$parentModule = $parentRecordModule->getModule();
 
-		$createViewUrl = $relatedModel->getCreateRecordUrl().'&returnmode=showRelatedList&returntab_label='.$this->tab_label.
+		$createViewUrl = $relatedModel->getCreateRecordUrl().'&returnmode=showRelatedList&returntab_label='. (isset($this->tab_label)? $this->tab_label:"").
 							'&returnrecord='.$parentRecordModule->getId().'&returnmodule='.$parentModule->getName().
 							'&returnview=Detail&returnrelatedModuleName='.$this->getRelatedModuleModel()->getName().
 							'&returnrelationId='.$relationModel->getId();
@@ -420,7 +420,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		$nameFields = $relatedModuleModel->getNameFields();
 		foreach($nameFields as $fieldName){
-			if(!$headerFields[$fieldName]) {
+			if(!isset($headerFields[$fieldName]) || !$headerFields[$fieldName]) {
 				$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
 			}
 		}

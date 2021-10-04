@@ -32,6 +32,7 @@ class CRMEntity {
 
 	var $ownedby;
 	var $recordSource = 'CRM';
+	var $mode;
 
 	/**
 	 * Detect if we are in bulk save mode, where some features can be turned-off
@@ -131,7 +132,8 @@ class CRMEntity {
 		$this->db->completeTransaction();
 
 		// vtlib customization: Hook provide to enable generic module relation.
-		if ($_REQUEST['createmode'] == 'link' && !$_REQUEST['__linkcreated']) {
+		if ( (isset($_REQUEST['createmode']) && $_REQUEST['createmode'] == 'link') && 
+			!isset($_REQUEST['__linkcreated'])) {
 			$_REQUEST['__linkcreated'] = true;
 			$for_module = vtlib_purify($_REQUEST['return_module']);
 			$for_crmid = vtlib_purify($_REQUEST['return_id']);
@@ -364,7 +366,7 @@ class CRMEntity {
 				$source = strtoupper($this->recordSource);
 			}
 
-			$description_val = from_html($this->column_fields['description'], ($insertion_mode == 'edit') ? true : false);
+			$description_val = from_html($this->column_fields['description'], ($this->mode == 'edit') ? true : false);
 			$params = array("crmid" => $current_id, "smcreatorid" => $current_user->id, "smownerid" => $ownerid, 
 							"smgroupid" => $groupid, "setype" => $module, "description" => $description_val,
 							"modifiedby" => $current_user->id, "createdtime" => $created_date_var, 
@@ -520,9 +522,11 @@ class CRMEntity {
 			$datatype = $typeofdata_array[0];
 
 			$ajaxSave = false;
-			if (($_REQUEST['file'] == 'DetailViewAjax' && $_REQUEST['ajxaction'] == 'DETAILVIEW'
-						&& isset($_REQUEST["fldName"]) && $_REQUEST["fldName"] != $fieldname)
-					|| ($_REQUEST['action'] == 'MassEditSave' && !isset($_REQUEST[$fieldname."_mass_edit_check"]))) {
+			if ( (isset($_REQUEST['file']) && $_REQUEST['file'] == 'DetailViewAjax') && 
+				(isset($_REQUEST['ajaxaction']) && $_REQUEST['ajxaction'] == 'DETAILVIEW') && 
+				(isset($_REQUEST["fldName"]) && $_REQUEST["fldName"] != $fieldname) || 
+				((isset($_REQUEST['action']) && $_REQUEST['action'] == 'MassEditSave') && 
+				!isset($_REQUEST[$fieldname."_mass_edit_check"]))) {
 				$ajaxSave = true;
 			}
 
@@ -678,6 +682,7 @@ class CRMEntity {
 				}elseif ($uitype == 61 && count($_FILES)) {
 					if($module == "ModComments") {
 						$UPLOADED_FILES = $_FILES[$fieldname];
+						$uploadedFileNames = array();
 						foreach($UPLOADED_FILES as $fileIndex => $file) {
 							if($file['error'] == 0 && $file['name'] != '' && $file['size'] > 0) {
 								if($_REQUEST[$fileindex.'_hidden'] != '') {

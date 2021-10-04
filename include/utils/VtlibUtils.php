@@ -504,7 +504,7 @@ function __vtlib_get_modulevar_value($module, $varname) {
 			return '';
 		}
 		$focus = CRMEntity::getInstance($module);
-		$customFieldTable = $focus->customFieldTable;
+		$customFieldTable = isset($focus->customFieldTable) ? $focus->customFieldTable: null;
 		if (!empty($customFieldTable)) {
 			$returnValue = array();
 			$returnValue['related_tables'][$customFieldTable[0]] = array($customFieldTable[1], $focus->table_name, $focus->table_index);

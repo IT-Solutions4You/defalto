@@ -621,7 +621,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		if(count($relatedListFields)>0) {
 			$nameFields = $this->getNameFields();
 			foreach($nameFields as $fieldName){
-				if(!$relatedListFields[$fieldName]) {
+				if(!isset($relatedListFields[$fieldName]) || !$relatedListFields[$fieldName]) {
 					$fieldModel = $this->getField($fieldName);
 					$relatedListFields[$fieldModel->get('column')] = $fieldModel->get('name');
 				}

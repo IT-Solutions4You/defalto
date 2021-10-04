@@ -1263,7 +1263,7 @@ class Vtiger_Util_Helper {
     public static function validateFieldValue($fieldValue,$fieldModel){
         $fieldDataType = $fieldModel->getFieldDataType();
         $fieldInfo = $fieldModel->getFieldInfo();
-        $editablePicklistValues = $fieldInfo['editablepicklistvalues'];
+        $editablePicklistValues = isset($fieldInfo['editablepicklistvalues'])? $fieldInfo['editablepicklistvalues'] : null;
         if($fieldValue && $fieldDataType == 'picklist'){
            if(!empty($editablePicklistValues) && !isset($editablePicklistValues[$fieldValue])){
                 $fieldValue = null;

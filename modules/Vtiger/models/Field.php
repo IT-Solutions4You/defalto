@@ -1136,7 +1136,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return type
 	 */
 	public function getDBInsertValue($value) {
-		if(!$this->uitype_instance) {
+		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
 			$this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
 		}
 		$uiTypeInstance = $this->uitype_instance;

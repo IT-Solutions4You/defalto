@@ -120,7 +120,7 @@ class Vtiger_Functions {
 				self::$currencyInfoCache[$row['id']] = $row;
 			}
 		}
-		return self::$currencyInfoCache[$currencyid];
+		return isset(self::$currencyInfoCache[$currencyid])? self::$currencyInfoCache[$currencyid] : null;
 	}
 
 	static function getCurrencyName($currencyid, $show_symbol = true) {
@@ -134,8 +134,8 @@ class Vtiger_Functions {
 	static function getCurrencySymbolandRate($currencyid) {
 		$currencyInfo = self::getCurrencyInfo($currencyid);
 		$currencyRateSymbol = array(
-			'rate' => $currencyInfo['conversion_rate'],
-			'symbol'=>$currencyInfo['currency_symbol']
+			'rate' => $currencyInfo ? $currencyInfo['conversion_rate'] : 0,
+			'symbol'=>$currencyInfo ? $currencyInfo['currency_symbol'] : ""
 		);
 		return $currencyRateSymbol;
 	}
