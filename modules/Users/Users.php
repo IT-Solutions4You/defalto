@@ -393,7 +393,7 @@ class Users extends CRMEntity {
 
 		// Get the fields for the user
 		$query = "SELECT * from $this->table_name where user_name=?";
-		$result = $this->db->requireSingleResult($query, array($usr_name), false);
+		$result = $this->db->requirePsSingleResult($query, array($usr_name), false);
 
 		$row = $this->db->fetchByAssoc($result);
 		$this->column_fields = $row;
