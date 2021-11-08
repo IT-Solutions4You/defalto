@@ -54,15 +54,20 @@ $adb->pquery('ALTER TABLE `vtiger_mailscanner_actions`
 	
 	function executeMethod($moduleName, $methodName,$params){
 		$adb = $this->adb;
-		
+		$moduleNameModel=Vtiger_Module_Model::getInstance($moduleName);
+		if($moduleNameModel){
+		if($moduleNameModel->isActive()){		
 		$result = $adb->pquery("select function_path, function_name from vtiger_mailscanner_entitymethod where module_name=? and method_name=?", array($moduleName, $methodName));
 		if($adb->num_rows($result)!=0){
 			$data = $adb->raw_query_result_rowdata($result, 0);
 			$functionPath = $data['function_path'];
 			$functionName = $data['function_name'];
+			if(file_exists($functionPath)){
 			require_once($functionPath);
-			$functionName($params);
+			$functionName($params);}
 		}
+		}
+	}
 	}
 	
 	function methodsForModule($moduleName){
