@@ -100,8 +100,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
                 if(trim($selectedEmail)){
                     array_push($emails, $selectedEmail);
                 }
-            }
-        }
+      //      }
+      //  }
         
 			$inReplyToMessageId = ''; 
 			$generatedMessageId = '';
@@ -127,8 +127,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 						$inReplyToMessageId = $generatedMessageId;
 					}
 					// Apply merge for non-Users module merge tags.
-					$description = getMergedDescription($mergedDescriptionWithHyperLinkConversion, $id, $parentModule);
-					$subject = getMergedDescription($mergedSubject, $id, $parentModule);
+					$description = getMergedDescription($mergedDescriptionWithHyperLinkConversion, $selectedId, $parentModule);
+					$subject = getMergedDescription($mergedSubject, $selectedId, $parentModule);
 				} else {
 					// Re-merge the description for user tags based on actual user.
 					$description = getMergedDescription($mergedDescriptionWithHyperLinkConversion, $id, 'Users');
@@ -177,7 +177,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
             $plainBody = Emails_Mailer_Model::convertToAscii($plainBody);
             $plainBody = $this->convertUrlsToTrackUrls($plainBody, $id,'plain');
             $mailer->AltBody = $plainBody;
-            $mailer->AddAddress($email);
+     //       $mailer->AddAddress($email);
 
             //Adding attachments to mail
             if(is_array($attachments)) {
@@ -243,6 +243,8 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 					imap_append($connector->mBox, $connector->mBoxUrl.$folderName, $message, "\\Seen");
 				}
 			}
+		}
+	}
 		return $status;
 	}
 
