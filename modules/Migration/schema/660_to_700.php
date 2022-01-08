@@ -735,24 +735,22 @@ if(defined('VTIGER_UPGRADE')) {
 	//To change the convert lead webserice operation parameters which was wrong earliear 
 	require_once 'include/Webservices/Utils.php';
 	$convertLeadOperationQueryRes = $db->pquery('SELECT operationid FROM vtiger_ws_operation WHERE name=?', array('convertlead'));
-	if (!$db->num_rows($convertLeadOperationQueryRes)) {
+	if ($db->num_rows($convertLeadOperationQueryRes)) {
 		$operationId = $db->query_result($convertLeadOperationQueryRes, '0', 'operationid');
 		$deleteParameterQuery = $db->pquery('DELETE FROM vtiger_ws_operation_parameters WHERE operationid=?', array($operationId));
 		vtws_addWebserviceOperationParam($operationId, 'element', 'encoded', 1);
 	}
 
 	//Start : Change fieldLabel of description field to Description - Project module.
-	$fieldId = getFieldid(getTabid('Project'), 'description');
-	$fieldModel = Vtiger_Field_Model::getInstance($fieldId);
+
+	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('Project'));
 	$fieldModel->set('label', 'Description');
 	$fieldModel->__update();
 
 	$db->pquery('ALTER TABLE vtiger_mail_accounts MODIFY mail_password TEXT', array());
 
 	//making priority as mandatory field in Tickets.
-	$module = 'HelpDesk';
-	$fieldModel = Vtiger_Functions::getModuleFieldInfo(getTabid($module), 'ticketpriorities');
-	$fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldModel['fieldid']);
+	$fieldInstance = Vtiger_Field_Model::getInstance('ticketpriorities', Vtiger_Module_Model::getInstance('HelpDesk'));
 	$fieldInstance->set('typeofdata', 'V~M');
 	$fieldInstance->save();
 
@@ -858,10 +856,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery($query, array());
 
 	//Enable mass edit for portal field under Contacts
-	$moduleContacts = 'Contacts';
-	$contactsFieldModel = Vtiger_Functions::getModuleFieldInfo(getTabid($moduleContacts), 'portal');
-	$contactsFieldId = $contactsFieldModel['fieldid'];
-	$contactsFieldInstance = Settings_LayoutEditor_Field_Model::getInstance($contactsFieldId);
+	$contactsFieldInstance = Vtiger_Field_Model::getInstance('portal', Vtiger_Module_Model::getInstance('Contacts'));
 	$contactsFieldInstance->set('masseditable', '1');
 	$contactsFieldInstance->save();
 	//Customer portal changes end
@@ -1028,8 +1023,7 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	//Start : Inactivate update_log field from ticket module
-	$fieldId = getFieldid(getTabid('HelpDesk'), 'update_log');
-	$fieldModel = Vtiger_Field_Model::getInstance($fieldId);
+	$fieldModel = Vtiger_Field_Model::getInstance('update_log', Vtiger_Module_Model::getInstance('HelpDesk'));
 	if ($fieldModel) {
 		$fieldModel->set('presence', 1);
 		$fieldModel->__update();
@@ -1049,8 +1043,7 @@ if(defined('VTIGER_UPGRADE')) {
 	//End
 
 	//Start : Change fieldLabel of description field to Description - ProjectMilestone module.
-	$fieldId = getFieldid(getTabid('ProjectMilestone'), 'description');
-	$fieldModel = Vtiger_Field_Model::getInstance($fieldId);
+	$fieldModel = Vtiger_Field_Model::getInstance('description', Vtiger_Module_Model::getInstance('ProjectMilestone'));
 	if ($fieldModel) {
 		$fieldModel->set('label', 'Description');
 		$fieldModel->__update();
@@ -1102,8 +1095,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery($updateCreateEditStatusQuery, array(1, 0, getTabid('Documents')));
 	$db->pquery($updateCreateEditStatusQuery, array(0, 1, getTabid('Assets')));
 
-	$accessCountFieldId = getFieldid(getTabid('Emails'), 'access_count');
-	$accessCountFieldModel = Vtiger_Field_Model::getInstance($accessCountFieldId);
+	$accessCountFieldModel = Vtiger_Field_Model::getInstance('access_count', Vtiger_Module_Model::getInstance('Emails'));
 	if ($accessCountFieldModel) {
 		$accessCountFieldModel->set('typeofdata', 'I~O');
 		$accessCountFieldModel->__update();
