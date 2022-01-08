@@ -994,7 +994,7 @@ class ADODB_DataDict {
 	This function changes/adds new fields to your table. You don't
 	have to know if the col is new or not. It will check on its own.
 	*/
-	function changeTableSQL($tablename, $flds, $tableoptions = false, $dropOldFlds=false)
+	function changeTableSQL($tablename, $flds, $tableoptions = false, $dropOldFlds=false, $forceAlter = false) /* Vtiger Fix for constraint impl - forceAlter */
 	{
 	global $ADODB_FETCH_MODE;
 
@@ -1011,7 +1011,7 @@ class ADODB_DataDict {
 		if (isset($savem)) $this->connection->setFetchMode($savem);
 		$ADODB_FETCH_MODE = $save;
 
-		if ( empty($cols)) {
+		if ( $forceAlter == false && empty($cols)) { /* Vtiger Fix for constraint impl */
 			return $this->createTableSQL($tablename, $flds, $tableoptions);
 		}
 
@@ -1084,6 +1084,39 @@ class ADODB_DataDict {
 			    if ( !isset($lines[$id]) )
 					$sql[] = $alter . $this->dropCol . ' ' . $v->name;
 		}
-		return $sql;
+
+		/* Vtiger Fix for constraint impl -- start */
+		if($forceAlter == false) {
+			return $sql;
+		}
+
+		$sqlarray = array();
+		$alter .= implode(",\n", $sql);
+		if (sizeof($pkey)>0) {
+			$alter .= ",\n PRIMARY KEY (";
+			$alter .= implode(", ",$pkey).")";
+		}
+		
+		if (isset($tableoptions['CONSTRAINTS'])) {
+			$alter .= "\n".$tableoptions['CONSTRAINTS'];
+		}
+
+		if (isset($tableoptions[$this->upperName.'_CONSTRAINTS'])) {
+			$alter .= "\n".$tableoptions[$this->upperName.'_CONSTRAINTS'];
+		}
+
+		if (isset($tableoptions[$this->upperName])) {
+			$alter .= $tableoptions[$this->upperName];
+		}
+		$sqlarray[] = $alter;
+		
+		$taboptions = $this->_Options($tableoptions);
+		$tsql = $this->_Triggers($this->TableName($tablename),$taboptions);
+		foreach($tsql as $s) {
+			$sqlarray[] = $s;
+		}
+		/* Vtiger Fix for constraint impl -- end */
+
+		return $sqlarray;
 	}
 } // class

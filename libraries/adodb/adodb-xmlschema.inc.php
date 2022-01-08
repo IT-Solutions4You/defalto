@@ -248,6 +248,7 @@ class dbTable extends dbObject {
 	* @access private
 	*/
 	var $drop_field = array();
+	var $alter; /* Vtiger Fix for constraint impl */
 
 	/**
 	* Iniitializes a new table object.
@@ -258,6 +259,10 @@ class dbTable extends dbObject {
 	function __construct( &$parent, $attributes = NULL ) {
 		$this->parent = $parent;
 		$this->name = $this->prefix($attributes['NAME']);
+		/* Vtiger Fix for constraint impl */
+		if(isset($attributes['ALTER'])) {
+			$this->alter = $attributes['ALTER'];
+		}
 	}
 
 	/**
@@ -332,12 +337,12 @@ class dbTable extends dbObject {
 				if( isset( $this->current_field ) ) {
 					$this->addFieldOpt( $this->current_field, $this->currentElement, $cdata );
 				} else {
-					$this->addTableOpt( $cdata );
+					$this->addTableOpt( $cdata, 'CONSTRAINTS' ); /* Vtiger Fix for constraint impl */
 				}
 				break;
 			// Table option
 			case 'OPT':
-				$this->addTableOpt( $cdata );
+				$this->addTableOpt( $cdata, 'mysql' ); /* Vtiger Fix for constraint impl */
 				break;
 			default:
 
@@ -471,9 +476,13 @@ class dbTable extends dbObject {
 	* @param string $opt Table option
 	* @return array Options
 	*/
-	function addTableOpt( $opt ) {
-		if(isset($this->currentPlatform)) {
-			$this->opts[$this->parent->db->databaseType] = $opt;
+	function addTableOpt( $opt, $key = NULL) { /* Vtiger Fix for constraint impl */
+		if ($key) {
+			$this->opts[$key] = $opt;
+		} else {
+			if(isset($this->currentPlatform)) {
+				$this->opts[$this->parent->db->databaseType] = $opt;
+			}
 		}
 		return $this->opts;
 	}
@@ -556,7 +565,7 @@ class dbTable extends dbObject {
 			}
 		}
 
-		if( empty( $legacy_fields ) ) {
+		if( empty( $legacy_fields ) && !isset($this->alter)) { /* Vtiger Fix for constraint impl */
 			// Create the new table
 			$sql[] = $xmls->dict->CreateTableSQL( $this->name, $fldarray, $this->opts );
 			logMsg( end( $sql ), 'Generated CreateTableSQL' );
@@ -567,7 +576,7 @@ class dbTable extends dbObject {
 				// Use ChangeTableSQL
 				case 'ALTER':
 					logMsg( 'Generated ChangeTableSQL (ALTERing table)' );
-					$sql[] = $xmls->dict->ChangeTableSQL( $this->name, $fldarray, $this->opts );
+					$sql[] = $xmls->dict->ChangeTableSQL( $this->name, $fldarray, $this->opts, false, $this->alter ); /* Vtiger Fix for constraint impl */
 					break;
 				case 'REPLACE':
 					logMsg( 'Doing upgrade REPLACE (testing)' );
