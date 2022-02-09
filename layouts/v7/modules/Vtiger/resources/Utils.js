@@ -143,12 +143,15 @@ var vtUtils = {
                     if(typeof elementDateFormat !== 'undefined') {
                         userDateFormat = elementDateFormat;
                     }
+			let thelang= jQuery('body').data('language');
+                  	 thelang=thelang.substring(0, 2);
 					var defaultPickerParams = {
                         autoclose: true,
                         todayBtn: "linked",
                         format: userDateFormat,
                         todayHighlight: true,
-						clearBtn : true
+						clearBtn : true,
+			language :thelang
                     };
 					jQuery.extend(defaultPickerParams, params);
                     element.datepicker(defaultPickerParams);
