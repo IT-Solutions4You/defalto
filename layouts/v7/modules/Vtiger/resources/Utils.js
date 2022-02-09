@@ -23,7 +23,7 @@ var vtUtils = {
 		if(data != null) {
 			params = jQuery.extend(data,params);
 		}
-
+    if(jQuery('#minilistWizardContainer').length){params.maximumSelectionSize=4};
         // Fix to eliminate flicker happening on list view load
         var ele = jQuery(selectElement);
         if(ele.hasClass("listSearchContributor")){
