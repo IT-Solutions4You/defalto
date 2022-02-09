@@ -25,6 +25,11 @@ class Inventory_TaxRecord_Model extends Vtiger_Base_Model {
 		return $this->get('taxlabel');
 	}
 
+
+	public function getSelectedDefaultTaxMode() {
+		return '';
+	}
+
 	public function getTax() {
 		return $this->get('percentage');
 	}
