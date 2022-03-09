@@ -317,8 +317,13 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		$params = array("%$searchKey%");
 
 		if($module !== false) {
-			$query .= ' AND setype = ?';
-			$params[] = $module;
+			if (is_array($module)) {
+				$query .= ' AND setype IN (' . trim(str_repeat("?,", count($module)), ',') .  ')';
+				$params = array_merge($params, $module);
+			} else {
+				$query .= ' AND setype = ?';
+				$params[] = $module;
+			}
 		}
 		//Remove the ordering for now to improve the speed
 		//$query .= ' ORDER BY createdtime DESC';
