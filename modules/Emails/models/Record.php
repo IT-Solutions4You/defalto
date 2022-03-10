@@ -348,6 +348,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 				$documentsList[$i]['attachment'] = decode_html($db->query_result($documentRes, $i, 'name'));
                 $documentsList[$i]['storedname'] = decode_html($db->query_result($documentRes, $i, 'storedname'));
 				$documentsList[$i]['type'] = $db->query_result($documentRes, $i, 'type');
+				$documentsList[$i]['filenamewithpath'] = $documentsList[$i]['path'].$documentsList[$i]['fileid'].'_'.$documentsList[$i]['storedname'];
 			}
 		}
 		return $documentsList;
