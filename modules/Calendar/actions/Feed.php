@@ -93,23 +93,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
 		//+angelo
-		if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$start)){}else{
-			$dateTimeFieldInstance = new DateTimeField($start);
-			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-			$dateTimeComponents = explode(' ',$userDateTimeString);
-			$dateComponent = $dateTimeComponents[0];
-			//Converting the date format in to Y-m-d.since full calendar expects in the same format
-			$start = $dateComponent;
-			}
-			if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$end)){}else{
-			$dateTimeFieldInstance = new DateTimeField($end);
-			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-			$dateTimeComponents = explode(' ',$userDateTimeString);
-			$dateComponent = $dateTimeComponents[0];
-			$end = $dateComponent;
-			}
-			
-			//-angelo
+		$start = DateTimeField::__convertToDBFormat($start);
+		$end = DateTimeField::__convertToDBFormat($end);
+		//-angelo
 		$moduleModel = Vtiger_Module_Model::getInstance($type);
 		$nameFields = $moduleModel->getNameFields();
 		foreach($nameFields as $i => $nameField) {
@@ -420,23 +406,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$query.= " ((date_start >= ? AND due_date < ? ) OR ( due_date >= ? ))";
 
 		//+angelo
-		if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$start)){}else{
-			$dateTimeFieldInstance = new DateTimeField($start);
-			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-			$dateTimeComponents = explode(' ',$userDateTimeString);
-			$dateComponent = $dateTimeComponents[0];
-			//Converting the date format in to Y-m-d.since full calendar expects in the same format
-			$start = $dateComponent;
-			}
-			if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$end)){}else{
-			$dateTimeFieldInstance = new DateTimeField($end);
-			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue();
-			$dateTimeComponents = explode(' ',$userDateTimeString);
-			$dateComponent = $dateTimeComponents[0];
-			$end = $dateComponent;
-			}
-			
-			//-angelo
+		$start = DateTimeField::__convertToDBFormat($start);
+		$end = DateTimeField::__convertToDBFormat($end);
+		//-angelo
 		$params=array($start,$end,$start);
 		$userIds = $userAndGroupIds;
 		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userIds).")";
