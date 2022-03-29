@@ -158,11 +158,12 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 
 	function getViewer(Vtiger_Request $request) {
 		if(!$this->viewer) {
-			global $vtiger_current_version, $vtiger_display_version, $onlyV7Instance, $current_user;
+			global $vtiger_current_version, $vtiger_display_version, $onlyV7Instance, $current_user, $maxListFieldsSelectionSize;
 			$viewer = new Vtiger_Viewer();
 			$viewer->assign('APPTITLE', getTranslatedString('APPTITLE'));
 			$viewer->assign('VTIGER_VERSION', $vtiger_current_version);
 			$viewer->assign('VTIGER_DISPLAY_VERSION', $vtiger_display_version);
+			$viewer->assign('MAX_LISTFIELDS_SELECTION_SIZE', isset($maxListFieldsSelectionSize)? max(3, $maxListFieldsSelectionSize) : 15);
             $viewer->assign('ONLY_V7_INSTANCE', $onlyV7Instance);
 			$this->viewer = $viewer;
 

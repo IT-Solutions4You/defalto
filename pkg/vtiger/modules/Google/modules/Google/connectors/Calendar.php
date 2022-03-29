@@ -142,7 +142,10 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             $this->client->setAccessToken($this->apiConnection->getAccessToken());
             $this->service = new Google_Service_Calendar($this->client);
         }
-
+        $query = array(
+            'maxResults' => $this->maxResults,
+            'singleEvents' => true,
+        );
         
         if (Google_Utils_Helper::getSyncTime('Calendar', $user)) {
             $query['updatedMin'] = $this->googleFormat(Google_Utils_Helper::getSyncTime('Calendar', $user));

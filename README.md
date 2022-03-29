@@ -13,7 +13,7 @@ If contribution has any patented code, or commercial code, then please communica
 
 https://www.vtiger.com/vtiger-public-license/
 
-To register for an account, please contact info @ vtiger.com, you will need this to file issues and/or fix the code
+To register for an account, please contact community @ vtiger.com, you will need this to file issues and/or fix the code
 Once you have an account, you can [browse the code](https://code.vtiger.com/vtiger/vtigercrm/tree/master),
 [see if your issue is already reported](https://code.vtiger.com/vtiger/vtigercrm/issues) and if you have a new problem
 to report you can [create an issue](https://code.vtiger.com/vtiger/vtigercrm/issues/new?issue)

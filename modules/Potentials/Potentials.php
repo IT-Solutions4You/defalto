@@ -586,7 +586,7 @@ class Potentials extends CRMEntity {
 			left outer join vtiger_potential on vtiger_potential.potentialid=vtiger_salesorder.potentialid
 			left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
             LEFT JOIN vtiger_salesordercf ON vtiger_salesordercf.salesorderid = vtiger_salesorder.salesorderid
-            LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.start_period = vtiger_salesorder.salesorderid
+            LEFT JOIN vtiger_invoice_recurring_info ON vtiger_invoice_recurring_info.salesorderid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_sobillads ON vtiger_sobillads.sobilladdressid = vtiger_salesorder.salesorderid
 			LEFT JOIN vtiger_soshipads ON vtiger_soshipads.soshipaddressid = vtiger_salesorder.salesorderid
 			left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
