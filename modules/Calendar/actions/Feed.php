@@ -92,6 +92,10 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	}
 
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
+		//+angelo
+		$start = DateTimeField::__convertToDBFormat($start);
+		$end = DateTimeField::__convertToDBFormat($end);
+		//-angelo
 		$moduleModel = Vtiger_Module_Model::getInstance($type);
 		$nameFields = $moduleModel->getNameFields();
 		foreach($nameFields as $i => $nameField) {
@@ -400,6 +404,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		if($hideCompleted)
 			$query.= "vtiger_activity.status != 'Completed' AND ";
 		$query.= " ((date_start >= ? AND due_date < ? ) OR ( due_date >= ? ))";
+
+		//+angelo
+		$start = DateTimeField::__convertToDBFormat($start);
+		$end = DateTimeField::__convertToDBFormat($end);
+		//-angelo
 		$params=array($start,$end,$start);
 		$userIds = $userAndGroupIds;
 		$query.= " AND vtiger_crmentity.smownerid IN (".generateQuestionMarks($userIds).")";
