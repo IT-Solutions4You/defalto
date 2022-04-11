@@ -666,9 +666,9 @@ function vtlib_purify($input, $ignore = false) {
     $value = $input;
 
     if (!is_array($input)) {
-        $md5OfInput = md5($input);
-        if (array_key_exists($md5OfInput, $purified_cache)) {
-            $value = $purified_cache[$md5OfInput];
+        $encryptInput = hash('sha256',$input);
+        if (array_key_exists($encryptInput, $purified_cache)) {
+            $value = $purified_cache[$encryptInput];
             //to escape cleaning up again
             $ignore = true;
         }
@@ -718,7 +718,7 @@ function vtlib_purify($input, $ignore = false) {
                 $value = purifyHtmlEventAttributes($value, true);
             }
         }
-        $purified_cache[$md5OfInput] = $value;
+        $purified_cache[$encryptInput] = $value;
     }
     $value = str_replace('&amp;', '&', $value);
     return $value;
