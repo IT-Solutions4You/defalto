@@ -31,7 +31,7 @@ class Users_ForgotPassword_Handler {
 		$currentTime = time();
 		if($expiryTime > $currentTime) {
 			$secretToken = uniqid();
-			$secretHash = md5($userName.$secretToken);
+			$secretHash = hash('sha256',$userName.$secretToken);
 			$options = array(
 				'handler_path' => 'modules/Users/handlers/ForgotPassword.php',
 				'handler_class' => 'Users_ForgotPassword_Handler',

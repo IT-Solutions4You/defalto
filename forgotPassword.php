@@ -34,7 +34,7 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
 				'username' => $username,
 				'email' => $email,
 				'time' => $time,
-				'hash' => md5($username.$time)
+				'hash' => hash('sha256',$username.$time)
 			)
 		);
 		$trackURL = Vtiger_ShortURL_Helper::generateURL($options);
