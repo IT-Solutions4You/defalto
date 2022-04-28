@@ -1550,7 +1550,7 @@ class Vtiger_Functions {
         switch ($type) {
             case 'id' : $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
                 break;
-            case 'email' : $ok = (!filter_var($value, FILTER_VALIDATE_EMAIL)) ? false : $ok;
+            case 'email' : $ok = self::validateTypeEmail($value);
                 break;
             case 'idlist' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
                 break;
@@ -1565,6 +1565,16 @@ class Vtiger_Functions {
                 break;
         }
         return $ok;
+    }
+
+    public static function validateTypeEmail(string $value):bool {
+      $ok = TRUE;
+      $mailaddresses = explode(',', $value);
+
+      foreach($mailaddresses as $mailaddress){
+        if(!filter_var($mailaddress, FILTER_VALIDATE_EMAIL)) $ok = FALSE;
+      }
+      return $ok;
     }
 
     /**
@@ -1582,12 +1592,12 @@ class Vtiger_Functions {
 		}
 		return $publicUrl;
 	}
-    
+
     /**
      * Function to get the attachmentsid to given crmid
      * @param type $crmid
      * @param type $webaservice entity id
-     * @return <Array> 
+     * @return <Array>
      */
     static function getAttachmentIds($crmid, $WsEntityId) {
         $adb = PearDatabase::getInstance();
@@ -1604,7 +1614,7 @@ class Vtiger_Functions {
         }
         return $attachmentIds;
     }
-    
+
     static function generateTrackingURL($params = []){
         $options = array(
             'handler_path' => 'modules/Emails/handlers/Tracker.php',
