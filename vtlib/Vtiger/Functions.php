@@ -662,7 +662,8 @@ class Vtiger_Functions {
 		}
 
 		//metadata check
-		$shortTagSupported = ini_get('short_open_tag') ? true : false;
+		$shortTag = strtolower(ini_get('short_open_tag'));
+		$shortTagSupported = ($shortTag == '1' || $shortTag == 'on') ? TRUE : FALSE;
 		if ($saveimage == 'true') {
                     $tmpFileName = $file_details['tmp_name'];
                     if($file_details['type'] == 'image/jpeg' || $file_details['type'] == 'image/tiff') {
@@ -1582,12 +1583,12 @@ class Vtiger_Functions {
 		}
 		return $publicUrl;
 	}
-    
+
     /**
      * Function to get the attachmentsid to given crmid
      * @param type $crmid
      * @param type $webaservice entity id
-     * @return <Array> 
+     * @return <Array>
      */
     static function getAttachmentIds($crmid, $WsEntityId) {
         $adb = PearDatabase::getInstance();
@@ -1604,7 +1605,7 @@ class Vtiger_Functions {
         }
         return $attachmentIds;
     }
-    
+
     static function generateTrackingURL($params = []){
         $options = array(
             'handler_path' => 'modules/Emails/handlers/Tracker.php',
