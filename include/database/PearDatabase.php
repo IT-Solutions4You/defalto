@@ -141,14 +141,20 @@ class PearDatabase{
 		return 	$this->dbType. "://".$this->userName.":".$this->userPassword."@". $this->dbHostName . "/". $this->dbName;
     }
 
-    function startTransaction() {
+	function startTransaction() {
+		/* Restore php_mysql based behavior */
+		if (true) { $this->database->Execute('SET AUTOCOMMIT=1'); return; }
+
 	    if($this->isPostgres()) return;
 		$this->checkConnection();
 		$this->println("TRANS Started");
 		$this->database->StartTrans();
     }
 
-    function completeTransaction() {
+	function completeTransaction() {
+		/* Restore php_mysql based behaviour */	
+		if (true) return;
+
 	    if($this->isPostgres()) return;
 		if($this->database->HasFailedTrans()) $this->println("TRANS  Rolled Back");
 		else $this->println("TRANS  Commited");
