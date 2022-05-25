@@ -1638,6 +1638,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 			defaultView: userDefaultActivityView,
 			slotLabelFormat: userDefaultTimeFormat,
 			timeFormat: userDefaultTimeFormat,
+			minTime: thisInstance.getUserPrefered('start_hour')+':00',//angelo
 			events: [],
 			monthNames: [
 				app.vtranslate('LBL_JANUARY'),
