@@ -1,0 +1,15 @@
+{
+  "require": {
+    "ext-mbstring": "*",
+    "ext-mysqli": "*",
+    "ext-simplexml": "*",
+    "ext-xml": "*"
+  },
+  "config": {
+    "bin-dir": "bin",
+    "discard-changes": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
