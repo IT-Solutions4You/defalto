@@ -1551,7 +1551,7 @@ class Vtiger_Functions {
         switch ($type) {
             case 'id' : $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
                 break;
-            case 'email' : $ok = (!filter_var($value, FILTER_VALIDATE_EMAIL)) ? false : $ok;
+            case 'email' : $ok = self::validateTypeEmail($value);
                 break;
             case 'idlist' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
                 break;
@@ -1566,6 +1566,16 @@ class Vtiger_Functions {
                 break;
         }
         return $ok;
+    }
+
+    public static function validateTypeEmail(string $value):bool {
+      $ok = TRUE;
+      $mailaddresses = explode(',', $value);
+
+      foreach($mailaddresses as $mailaddress){
+        if(!filter_var($mailaddress, FILTER_VALIDATE_EMAIL)) $ok = FALSE;
+      }
+      return $ok;
     }
 
     /**
