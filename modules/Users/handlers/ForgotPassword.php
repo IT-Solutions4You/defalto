@@ -27,7 +27,7 @@ class Users_ForgotPassword_Handler {
 		$viewer->assign('USERNAME', $userName);
 		$changePasswordTrackUrl = $site_URL."/modules/Users/actions/ForgotPassword.php";
 
-		$expiryTime = (int)$request->get('time')+(24*60*60);
+		$expiryTime = (int)$request->get('time')+(60*60);
 		$currentTime = time();
 		if($expiryTime > $currentTime) {
 			$secretToken = uniqid();
