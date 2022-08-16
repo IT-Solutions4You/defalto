@@ -133,9 +133,7 @@ class Emails_Mailer_Model extends Vtiger_Mailer {
 	}
 
 	public static function getProcessedContent($content) {
-		// remove script tags from whole html content
-		$processedContent = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
-        $processedContent = purifyHtmlEventAttributes($processedContent,TRUE);
+		$processedContent = purifyHtmlEventAttributes($content,TRUE);
 		return $processedContent;
 	}
 
