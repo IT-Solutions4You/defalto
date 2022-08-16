@@ -120,6 +120,8 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 				}
 				$netPrice = $totalAfterDiscount + $taxTotal;
 				$relatedProducts[$i]['netPrice'.$i] = number_format($netPrice, $numOfCurrencyDecimalPlaces, '.', '');
+                
+                $preTaxTotal+=$totalAfterDiscount;
 			}
 
 			if ($relatedProducts[$i]['entityType'.$i] == 'Products') {
@@ -127,11 +129,13 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			}
 		}
 
-		//Updating Pre tax total
-		$preTaxTotal = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
-						+ (float)$relatedProducts[1]['final_details']['shipping_handling_charge']
-						- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
-
+        //Updating Pre tax total if not calculated from individual taxtype
+        if (!$preTaxTotal) {
+    		$preTaxTotal = (float)$relatedProducts[1]['final_details']['hdnSubTotal']
+    						+ (float)$relatedProducts[1]['final_details']['shipping_handling_charge']
+    						- (float)$relatedProducts[1]['final_details']['discountTotal_final'];
+        }
+        
 		$relatedProducts[1]['final_details']['preTaxTotal'] = number_format($preTaxTotal, $numOfCurrencyDecimalPlaces,'.','');
 		
 		//Updating Total After Discount
