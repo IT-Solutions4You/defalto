@@ -271,65 +271,6 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 	}
 
 	/**
-	 * Function to get URL for Export the record as PDF
-	 * @return <type>
-	 */
-	public function getExportPDFUrl() {
-		return "index.php?module=".$this->getModuleName()."&action=ExportPDF&record=".$this->getId();
-	}
-
-	/**
-	  * Function to get the send email pdf url
-	  * @return <string>
-	  */
-	public function getSendEmailPDFUrl() {
-		return 'module='.$this->getModuleName().'&view=SendEmail&mode=composeMailData&record='.$this->getId();
-	}
-
-	/**
-	 * Function to get this record and details as PDF
-	 */
-	public function getPDF() {
-		$recordId = $this->getId();
-		$moduleName = $this->getModuleName();
-
-		$controllerClassName = "Vtiger_". $moduleName ."PDFController";
-
-		$controller = new $controllerClassName($moduleName);
-		$controller->loadRecord($recordId);
-
-		$fileName = $moduleName.'_'.getModuleSequenceNumber($moduleName, $recordId);
-		$controller->Output($fileName.'.pdf', 'D');
-	}
-
-	/**
-	 * Function to get the pdf file name . This will conver the invoice in to pdf and saves the file
-	 * @return <String>
-	 *
-	 */
-	public function getPDFFileName() {
-		$moduleName = $this->getModuleName();
-		if ($moduleName == 'Quotes') {
-			vimport("~~/modules/$moduleName/QuotePDFController.php");
-			$controllerClassName = "Vtiger_QuotePDFController";
-		} else {
-			vimport("~~/modules/$moduleName/$moduleName" . "PDFController.php");
-			$controllerClassName = "Vtiger_" . $moduleName . "PDFController";
-		}
-
-		$recordId = $this->getId();
-		$controller = new $controllerClassName($moduleName);
-		$controller->loadRecord($recordId);
-
-		$sequenceNo = getModuleSequenceNumber($moduleName,$recordId);
-		$translatedName = vtranslate($moduleName, $moduleName);
-		$filePath = "storage/$translatedName"."_".$sequenceNo.".pdf";
-		//added file name to make it work in IE, also forces the download giving the user the option to save
-		$controller->Output($filePath,'F');
-		return $filePath;
-	}
-
-	/**
 	 * Function to get related line items of parent record
 	 * @param <Vtiger_Record_Model> $parentRecordModel
 	 * @return <Array>
