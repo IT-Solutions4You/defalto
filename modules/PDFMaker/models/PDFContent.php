@@ -1250,10 +1250,12 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
     }
 
+    public static function getSiteUrl() {
+        return rtrim(vglobal('site_URL'), '/') . '/';
+    }
+
     private function replaceUserCompanyFields()
     {
-        $r = 'root_directory';
-        $root_dir = vglobal($r);
         $current_user = Users_Record_Model::getCurrentUserModel();
 
         $Settings_Vtiger_CompanyDetails_Model = Settings_Vtiger_CompanyDetails_Model::getInstance();
@@ -1271,7 +1273,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
             }
 
             if ($coll == 'logo') {
-                $value = '<img src="' . $root_dir . LOGO_PATH . $Settings_Vtiger_CompanyDetails_Model->get('logoname') . '">';
+                $value = '<img src="' . self::getSiteUrl() . LOGO_PATH . $Settings_Vtiger_CompanyDetails_Model->get('logoname') . '">';
             } else {
                 $value = $Settings_Vtiger_CompanyDetails_Model->get($field_name);
             }

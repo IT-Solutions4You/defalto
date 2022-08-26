@@ -45,11 +45,11 @@
             {********************************************* Settings DIV *************************************************}
             <div>
                 <div class="row" >
-                    <div class="left-block col-xs-4">
+                    <div class="left-block col-xs-3">
                         <div>
                             <div class="tab-content layoutContent themeTableColor overflowVisible">
                                 <div class="tab-pane active" id="pdfContentEdit">
-                                    <div class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
+                                    <div class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
                                         {********************************************* PROPERTIES DIV*************************************************}
                                         <div id="properties_div">
                                             <br>
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="pdfContentOther">
-                                    <div class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
+                                    <div class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
                                         <br>
                                         {********************************************* Company and User information DIV *************************************************}
                                         <div class="form-group">
@@ -217,7 +217,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="pdfContentLabels">
-                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
                                         {********************************************* Labels *************************************************}
                                         <div id="labels_div">
                                             <br>
@@ -255,7 +255,7 @@
                                     </dic>
                                 </div>
                                 <div class="tab-pane" id="pdfContentProducts">
-                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
                                         {*********************************************Products bloc DIV*************************************************}
                                         <div id="products_div">
                                             <br>
@@ -344,7 +344,7 @@
                                     </dic>
                                 </div>
                                 <div class="tab-pane" id="pdfContentHeaderFooter">
-                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
                                         {********************************************* Header/Footer *************************************************}
                                         <div id="headerfooter_div">
                                             <br>
@@ -547,6 +547,7 @@
 
                    {************************************** END OF TABS BLOCK *************************************}
                     <div class="middle-block col-xs-8">
+                        <br>
                         <div id="ContentEditorTabs">
                             <ul class="nav nav-pills">
                                 <li class="active" data-type="body">
@@ -560,6 +561,7 @@
                                 </li>
                             </ul>
                         </div>
+                        <br>
                         {*********************************************BODY DIV*************************************************}
                         <div class="tab-content ">
                             <div class="tab-pane active" id="body_div2">
@@ -574,11 +576,12 @@
                                 <textarea name="footer_body" id="footer_body" style="width:90%;height:200px" class="small">{$FOOTER}</textarea>
                             </div>
                         </div>
+                        <br>
                         <script type="text/javascript">
                             {literal} jQuery(document).ready(function(){
-                                CKEDITOR.replace('body', {height: '1000'});
-                                CKEDITOR.replace('header_body', {height: '1000'});
-                                CKEDITOR.replace('footer_body', {height: '1000'});
+                                CKEDITOR.replace('body', {height: '70vh'});
+                                CKEDITOR.replace('header_body', {height: '70vh'});
+                                CKEDITOR.replace('footer_body', {height: '70vh'});
                             }){/literal}
                         </script>
                     </div>

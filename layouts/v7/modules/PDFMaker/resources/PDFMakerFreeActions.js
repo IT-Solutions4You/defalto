@@ -41,24 +41,13 @@ jQuery.Class("PDFMaker_FreeActions_Js",{
 
         return params;
     },
-    getModalNewHeight: function (modalContainer){
-        return jQuery(window).height() - modalContainer.find('.modal-header').height() - modalContainer.find('.modal-footer').height() - 100;
-    },
-    setMaxModalHeight : function (modalContainer,modaltype){
+    setMaxModalHeight: function (modalContainer, modalType) {
+        app.helper.showVerticalScroll(modalContainer.find('.modal-body'), {
+            setHeight: '85vh',
+        });
 
-        var new_height = this.getModalNewHeight(modalContainer);
-
-        var params1 = {
-            setHeight:new_height+'px'
-        };
-
-        app.helper.showVerticalScroll(modalContainer.find('.modal-body'), params1);
-
-        if (modaltype == 'iframe'){
-            var params2 = {
-                setHeight:(new_height-35)+'px'
-            };
-            app.helper.showVerticalScroll(modalContainer.find(modaltype), params2);
+        if ('iframe' === modalType) {
+            modalContainer.find(modalType).height('81vh');
         }
     },
     checkIfAny: function (modalContainer){

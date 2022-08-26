@@ -38,9 +38,7 @@ class PDFMaker_List_View extends Vtiger_Index_View
             $viewer->assign('MODULE', $moduleName);
 
             if (!$permission) {
-                $viewer->assign('MESSAGE', 'LBL_PERMISSION_DENIED');
-                $viewer->view('OperationNotPermitted.tpl', $moduleName);
-                exit;
+                throw new AppException('LBL_PERMISSION_DENIED');
             }
 
             $linkParams = array('MODULE' => $moduleName, 'ACTION' => $request->get('view'));
@@ -78,23 +76,7 @@ class PDFMaker_List_View extends Vtiger_Index_View
         $viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
         $viewer->assign('URL', vglobal('site_URL'));
 
-        if (is_dir('modules/PDFMaker/resources/mpdf')) {
-            $this->invokeExposedMethod('getList', $request);
-        } else {
-            $mb_string_exists = function_exists('mb_get_info');
-
-            if ($mb_string_exists === false) {
-                $viewer->assign('MB_STRING_EXISTS', 'false');
-            } else {
-                $viewer->assign('MB_STRING_EXISTS', 'true');
-            }
-
-            $viewer->assign('STEP', '1');
-            $viewer->assign('CURRENT_STEP', '1');
-            $viewer->assign('TOTAL_STEPS', '3');
-
-            $viewer->view('Install.tpl', 'PDFMaker');
-        }
+        $this->invokeExposedMethod('getList', $request);
     }
 
     public function getList(Vtiger_Request $request)

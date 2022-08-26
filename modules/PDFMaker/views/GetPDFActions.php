@@ -45,12 +45,7 @@ class PDFMaker_GetPDFActions_View extends Vtiger_BasicAjax_View
 
                     require('user_privileges/user_privileges_' . $current_user->id . '.php');
 
-                    if (is_dir('modules/PDFMaker/resources/mpdf')) {
-                        $viewer->assign('ENABLE_PDFMAKER', 'true');
-                    } else {
-                        $viewer->assign('ENABLE_PDFMAKER', 'false');
-                    }
-
+                    $viewer->assign('ENABLE_PDFMAKER', 'true');
                     $viewer->assign('PDFMAKER_MOD', return_module_language($currentLanguage, 'PDFMaker'));
                     $viewer->assign('CURRENT_LANGUAGE', $currentLanguage);
                     $viewer->assign('IS_ADMIN', is_admin($current_user));
