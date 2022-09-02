@@ -30,8 +30,8 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $this->name = 'PDFMaker';
         $this->id = getTabId($this->name);
 
-        $_SESSION['KCFINDER']['uploadURL'] = 'test/upload';
-        $_SESSION['KCFINDER']['uploadDir'] = '../test/upload';
+        $_SESSION['KCFINDER']['uploadURL'] = rtrim(vglobal('site_URL'), '/') . '/test/upload';
+        $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
     }
 
     public function GetPageFormats()

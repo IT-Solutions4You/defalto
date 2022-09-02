@@ -86,19 +86,26 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
     },
     InsertIntoTemplate: function(element,islabel){
 
-        var selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type');
+        let selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type'),
+            selectField = document.getElementById(element).value,
+            oEditor,
+            CKEditorInstance = new Vtiger_CkEditor_Js(),
+            insert_value = '';
 
-        selectField = document.getElementById(element).value;
-        if (selectedTab2 == "body")
-            var oEditor = CKEDITOR.instances.body;
-        else if (selectedTab2 == "header")
-            var oEditor = CKEDITOR.instances.header_body;
-        else if (selectedTab2 == "footer")
-            var oEditor = CKEDITOR.instances.footer_body;
+        switch (selectedTab2) {
+            case 'header':
+                selectedTab2 = 'header_body';
+                break;
+            case 'footer':
+                selectedTab2 = 'footer_body';
+        }
+
+        oEditor = CKEditorInstance.load(selectedTab2);
 
         if (islabel){
-            insert_value = selectField;
-            if (element == "relatedmodulefields") {
+            let insert_value = selectField;
+
+            if ('relatedmodulefields' === element) {
                 insert_value = 'R_' + insert_value;
             }
 
@@ -276,8 +283,17 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
         PDFMaker_EditFreeJs.fill_module_lang_array(moduleName);
         PDFMaker_EditFreeJs.fill_module_product_fields_array(moduleName);
     },
+    registerCKEditor: function() {
+        const ckeditorInstance = new Vtiger_CkEditor_Js();
 
+        ckeditorInstance.loadCkEditor($('#body'), {height: '70vh'});
+        ckeditorInstance.loadCkEditor($('#header_body'), {height: '70vh'});
+        ckeditorInstance.loadCkEditor($('#footer_body'), {height: '70vh'});
+    },
     registerEvents: function(){
+        this.registerAppTriggerEvent();
+        this.registerCKEditor();
+
         var editViewForm = this.getForm();
         var statusToProceed = this.proceedRegisterEvents();
         if(!statusToProceed){

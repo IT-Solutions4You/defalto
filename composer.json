@@ -1,10 +1,52 @@
 {
   "require": {
+    "ext-gd": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",
     "ext-simplexml": "*",
-    "ext-xml": "*"
+    "ext-xml": "*",
+    "ckeditor/ckeditor": "*",
+    "kcfinder/kcfinder": "*",
+    "mpdf/mpdf": "*",
+    "myclabs/deep-copy": "^1.7",
+    "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
+    "php-http/message-factory": "^1.0",
+    "psr/http-message": "^1.0",
+    "psr/log": "^1.0 || ^2.0",
+    "setasign/fpdi": "^2.1"
   },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "mpdf/mpdf",
+        "source": {
+          "url": "https://github.com/IT-Solutions4You/mpdf.git",
+          "type": "git",
+          "reference": "development"
+        },
+        "autoload": {
+          "classmap": ["/src"]
+        },
+        "version": "1"
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "kcfinder/kcfinder",
+        "source": {
+          "url": "https://github.com/IT-Solutions4You/kcfinder.git",
+          "type": "git",
+          "reference": "master"
+        },
+        "autoload": {
+          "classmap": ["/"]
+        },
+        "version": "1"
+      }
+    }
+  ],
   "config": {
     "bin-dir": "bin",
     "discard-changes": true,

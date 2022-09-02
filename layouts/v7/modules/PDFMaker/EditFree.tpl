@@ -43,13 +43,13 @@
         </ul>
         <div >
             {********************************************* Settings DIV *************************************************}
-            <div>
-                <div class="row" >
-                    <div class="left-block col-xs-3">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="left-block col-xs-4">
                         <div>
                             <div class="tab-content layoutContent themeTableColor overflowVisible">
                                 <div class="tab-pane active" id="pdfContentEdit">
-                                    <div class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
+                                    <div class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
                                         {********************************************* PROPERTIES DIV*************************************************}
                                         <div id="properties_div">
                                             <br>
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="pdfContentOther">
-                                    <div class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
+                                    <div class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
                                         <br>
                                         {********************************************* Company and User information DIV *************************************************}
                                         <div class="form-group">
@@ -217,7 +217,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="pdfContentLabels">
-                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
                                         {********************************************* Labels *************************************************}
                                         <div id="labels_div">
                                             <br>
@@ -255,7 +255,7 @@
                                     </dic>
                                 </div>
                                 <div class="tab-pane" id="pdfContentProducts">
-                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
                                         {*********************************************Products bloc DIV*************************************************}
                                         <div id="products_div">
                                             <br>
@@ -344,7 +344,7 @@
                                     </dic>
                                 </div>
                                 <div class="tab-pane" id="pdfContentHeaderFooter">
-                                    <dic class="edit-template-content col-lg-3" style="position:fixed;z-index:1000;">
+                                    <dic class="edit-template-content col-lg-4" style="position:fixed;z-index:1000;">
                                         {********************************************* Header/Footer *************************************************}
                                         <div id="headerfooter_div">
                                             <br>
@@ -577,19 +577,10 @@
                             </div>
                         </div>
                         <br>
-                        <script type="text/javascript">
-                            {literal} jQuery(document).ready(function(){
-                                CKEDITOR.replace('body', {height: '70vh'});
-                                CKEDITOR.replace('header_body', {height: '70vh'});
-                                CKEDITOR.replace('footer_body', {height: '70vh'});
-                            }){/literal}
-                        </script>
                     </div>
                 </div>
             </div>
         </div>
-        {*literal} <script type="text/javascript" src="modules/PDFMaker/fck_config.js"></script>{/literal*}
-
         <div class="modal-overlay-footer row-fluid">
             <div class="textAlignCenter ">
                 <button class="btn" type="submit" onclick="document.EditView.redirect.value = 'false';" ><strong>{vtranslate('LBL_APPLY',$MODULE)}</strong></button>&nbsp;&nbsp;
