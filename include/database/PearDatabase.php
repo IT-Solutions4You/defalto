@@ -811,6 +811,12 @@ class PearDatabase{
 		    $this->println("ADODB Connect : DBType not specified");
 		    return;
 		}
+
+		// Backward compatible mode for adodb library.
+		if ($this->dbType == 'mysqli') {
+			mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
+		}
+
 		$this->database = ADONewConnection($this->dbType);
 	
 		// Setting client flag for Import csv to database(LOAD DATA LOCAL INFILE.....)
