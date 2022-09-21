@@ -366,7 +366,7 @@ class DateTimeField {
 		$time = false;
 
 		/* If date-value is other than yyyy-mm-dd */
-		if(strpos("-", $value) ==3 && $user->date_format) {
+		if(strpos($value, "-") < 4 && $user->date_format) {
 			list($date, $time) = explode(' ', $value);
 			if(!empty($date)) {
 				switch ($user->date_format) {
