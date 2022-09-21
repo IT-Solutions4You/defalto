@@ -1568,7 +1568,7 @@ class Vtiger_Functions {
         return $ok;
     }
 
-    public static function validateTypeEmail(string $value):bool {
+    public static function validateTypeEmail(string $value) {
       $ok = TRUE;
       $mailaddresses = explode(',', $value);
 
