@@ -229,7 +229,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @param <date> $date Google Date
      * @return <date> Vtiger date Format
      */
-    public function vtigerFormat($date) {
+    public static function vtigerFormat($date) {
         list($date, $timestring) = explode('T', $date);
         list($time, $tz) = explode('.', $timestring);
 

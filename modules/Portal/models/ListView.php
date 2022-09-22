@@ -98,7 +98,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
         return $result;
     }
     
-    public function getRecordCount() {
+    public static function getRecordCount() {
         $db = PearDatabase::getInstance();
         $listQuery = $this->getQuery();
         $queryParts = explode('FROM', $listQuery);

@@ -49,7 +49,7 @@ class ListViewSession {
 		return 1;
 	}
 
-	function getRequestStartPage(){
+	public static function getRequestStartPage(){
 		$start = $_REQUEST['start'];
 		if(!is_numeric($start)){
 			$start = 1;
@@ -182,7 +182,7 @@ class ListViewSession {
 		return $recordNavigationInfo;
 	}
 
-	function getRequestCurrentPage($currentModule, $query, $viewid, $queryMode = false) {
+	static function getRequestCurrentPage($currentModule, $query, $viewid, $queryMode = false) {
 		global $list_max_entries_per_page, $adb;
 		$start = 1;
 		if(isset($_REQUEST['query']) && $_REQUEST['query'] == 'true'&& $_REQUEST['start']!="last"){
@@ -221,7 +221,7 @@ class ListViewSession {
 		$_SESSION[$currentModule.'_listquery'] = $query;
 	}
 
-	function hasViewChanged($currentModule) {
+	static function hasViewChanged($currentModule) {
 		if(empty($_SESSION['lvs'][$currentModule]['viewname'])) return true;
 		if(empty($_REQUEST['viewname'])) return false;
 		if($_REQUEST['viewname'] != $_SESSION['lvs'][$currentModule]['viewname']) return true;

@@ -701,7 +701,7 @@ class Vtiger_Util_Helper {
 	* @return returns default value for data type if match case found
 	* else returns empty string
 	*/
-   function getDefaultMandatoryValue($dataType) {
+   static function getDefaultMandatoryValue($dataType) {
 	   $value;
 	   switch ($dataType) {
 		   case 'date':

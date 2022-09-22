@@ -55,7 +55,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 	 * @return <array> - array of link models in the format as below
 	 *                   array('linktype'=>list of link models);
 	 */
-	public function getDetailViewLinks($linkParams) {
+	public static function getDetailViewLinks($linkParams) {
 		$linkTypes = array('DETAILVIEWBASIC','DETAILVIEW');
 		$moduleModel = $this->getModule();
 		$recordModel = $this->getRecord();

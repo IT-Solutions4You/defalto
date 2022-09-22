@@ -33,7 +33,7 @@ class VTWSEntityType{
 		$this->description = $describeResult;
 	}
 	
-	function usingGlobalCurrentUser($entityTypeName){
+	static function usingGlobalCurrentUser($entityTypeName){
 		global $current_user;
 		return new VTWSEntityType($entityTypeName, $current_user);
 		

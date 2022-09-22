@@ -218,7 +218,7 @@ class PBXManager_Record_Model extends Vtiger_Record_Model{
     }    
     
     // Because, User is not related to crmentity 
-    public function buildSearchQueryWithUIType($uitype, $value, $module){
+    public static function buildSearchQueryWithUIType($uitype, $value, $module){
         if (empty($value)) {
             return false;
         }

@@ -38,11 +38,11 @@ class Settings_PBXManager_Module_Model extends Settings_Vtiger_Module_Model{
 	 * Function to get the Module Name
 	 * @return string
 	 */
-    public function getModuleName(){
+    public static function getModuleName(){
         return "PBXManager";
     }
     
-     public function getParentName() {
+     public static function getParentName() {
         return parent::getParentName();
     }
     
