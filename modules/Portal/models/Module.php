@@ -21,7 +21,7 @@ class Portal_Module_Model extends Vtiger_Module_Model {
 		return $links;
 	}
     
-    public static function saveRecord($recordId, $bookmarkName = false, $bookmarkUrl = false) {
+    public static function savePortalRecord($recordId, $bookmarkName = false, $bookmarkUrl = false) {
         $db = PearDatabase::getInstance();
         if(empty($recordId)) {
             $portalId = $db->getUniqueID('vtiger_portal');
@@ -37,7 +37,7 @@ class Portal_Module_Model extends Vtiger_Module_Model {
         return true;
     }
     
-    public static function getRecord($recordId) {
+    public static function getPortalRecord($recordId) {
         $db = PearDatabase::getInstance();
         
         $result = $db->pquery('SELECT portalname, portalurl FROM vtiger_portal WHERE portalid = ?', array($recordId));
@@ -48,7 +48,7 @@ class Portal_Module_Model extends Vtiger_Module_Model {
         return $data;
     }
     
-    public static function deleteRecord($recordId) {
+    public static function deletePortalRecord($recordId) {
         $db = PearDatabase::getInstance();
         $db->pquery('DELETE FROM vtiger_portal WHERE portalid = ?', array($recordId));
     }
