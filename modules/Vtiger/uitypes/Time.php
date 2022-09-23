@@ -90,12 +90,20 @@ class Vtiger_Time_UIType extends Vtiger_Base_UIType {
 	 * @param <Object> $value
 	 * @return $value
 	 */
-	public static function getDisplayValue($value, $record = false, $recordInstance=false) {
+	public function getDisplayValue($value, $record = false, $recordInstance=false) {
 		$userModel = Users_Privileges_Model::getCurrentUserModel();
 		if($userModel->get('hour_format') == '12'){
 			return self::getTimeValueInAMorPM($value);
 		}
 		return $value;
+	}
+
+	/**
+	 * Helper static function.
+	 */
+	public static function getDisplayValueUserFormat($value, $record = false, $recordInstance = false) {
+		$instance = new static();
+		return $instance->getDisplayValue($value, $record, $recordInstance);
 	}
 
 	/**
