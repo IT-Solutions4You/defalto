@@ -58,7 +58,10 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
     public function save(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
         $fieldId = $request->get('fieldid');
-        $fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId);
+        $sourceModule = $request->get('sourceModule');
+
+        $moduleInstance = Vtiger_Module_Model::getInstance($sourceModule);
+        $fieldInstance = Settings_LayoutEditor_Field_Model::getInstance($fieldId, $moduleInstance);
         
         $fieldLabel = $fieldInstance->get('label');
         $mandatory = $request->get('mandatory',null);
