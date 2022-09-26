@@ -93,8 +93,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 	protected function pullDetails($start, $end, &$result, $type, $fieldName, $color = null, $textColor = 'white', $conditions = '') {
 		//+angelo
-		$start = DateTimeField::__convertToDBFormat($start);
-		$end = DateTimeField::__convertToDBFormat($end);
+		$start = DateTimeField::convertToDBFormat($start);
+		$end = DateTimeField::convertToDBFormat($end);
 		//-angelo
 		$moduleModel = Vtiger_Module_Model::getInstance($type);
 		$nameFields = $moduleModel->getNameFields();
