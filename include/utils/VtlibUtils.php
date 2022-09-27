@@ -720,7 +720,10 @@ function vtlib_purify($input, $ignore = false) {
         }
         $purified_cache[$encryptInput] = $value;
     }
-    $value = str_replace('&amp;', '&', $value);
+
+	if ($value && !is_array($value)) {
+		$value = str_replace('&amp;', '&', $value);
+	}
     return $value;
 }
 

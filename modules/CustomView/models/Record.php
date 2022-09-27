@@ -457,7 +457,8 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 			$db->pquery('DELETE FROM vtiger_cv2group WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2role WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2rs WHERE cvid=?',array($cvId));
-			$members = $this->get('members',array());
+			$members = $this->get('members');
+			if (!$members) $members = array();
 
 			$noOfMembers = count($members);
 			for ($i = 0; $i < $noOfMembers; ++$i) {
