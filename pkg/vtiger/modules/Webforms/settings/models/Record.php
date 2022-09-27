@@ -239,7 +239,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 	 * @return <String> id
 	 */
 	public function generatePublicId() {
-		return md5(microtime(true) + $this->getName());
+		return md5(sprintf("%f%s", microtime(true), $this->getName()));
 	}
 
 	/**
