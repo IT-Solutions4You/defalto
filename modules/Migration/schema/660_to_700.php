@@ -221,7 +221,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$moduleInstance = Vtiger_Module::getInstance($moduleName);
 		$blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS', $moduleInstance);
 
-		for($i=0; $i<count($itemFieldsName); $i++) {
+		for($i=0; $i<php7_count($itemFieldsName); $i++) {
 			$fieldName = $itemFieldsName[$i];
 
 			if ($moduleName === 'PurchaseOrder' && $fieldName !== 'image') {
@@ -634,7 +634,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$commentIds[] = $row['modcommentsid'];
 		}
 
-		if (count($commentIds) > 0) {
+		if (php7_count($commentIds) > 0) {
 			$db->pquery('UPDATE vtiger_modcomments SET is_private = 0 WHERE modcommentsid IN ('.generateQuestionMarks($commentIds).')', $commentIds);
 		}
 
@@ -1461,7 +1461,7 @@ if(defined('VTIGER_UPGRADE')) {
 	for ($i=0; $i<$rows; $i++) {
 		$deletablePicklists[] = $db->query_result($deletedPicklistResult, $i, 'picklistid');
 	}
-	if (count($deletablePicklists)) {
+	if (php7_count($deletablePicklists)) {
 		$db->pquery('DELETE FROM vtiger_role2picklist WHERE picklistid IN ('.generateQuestionMarks($deletablePicklists).')', array($deletablePicklists));
 	}
 

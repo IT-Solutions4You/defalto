@@ -318,7 +318,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 
 		if($module !== false) {
 			if (is_array($module)) {
-				$query .= ' AND setype IN (' . trim(str_repeat("?,", count($module)), ',') .  ')';
+				$query .= ' AND setype IN (' . trim(str_repeat("?,", php7_count($module)), ',') .  ')';
 				$params = array_merge($params, $module);
 			} else {
 				$query .= ' AND setype = ?';

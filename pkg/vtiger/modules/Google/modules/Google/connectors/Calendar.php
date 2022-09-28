@@ -87,9 +87,9 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                 }
                 $attendees = $googleRecord->getAttendees();
                 $entity['contactidlist'] = '';
-                if(count($attendees)) {
+                if(php7_count($attendees)) {
                     $contactIds = $this->emailLookUp($attendees);
-                    if(count($contactIds)) {
+                    if(php7_count($contactIds)) {
                         $entity['contactidlist'] = implode(';', $contactIds);
                     }
                 }
@@ -180,7 +180,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if($feed->getNextPageToken()) $this->totalRecords = $this->maxResults + 1;
         }
         
-        if (count($calendarRecords) > 0) {
+        if (php7_count($calendarRecords) > 0) {
             $maxModifiedTime = date('Y-m-d H:i:s', strtotime(Google_Contacts_Model::vtigerFormat(end($calendarRecords)->getUpdated())) + 1);
         }
 
@@ -200,20 +200,20 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             $googleRecords[$calendar->getId()] = $recordModel;
             $googleEventIds[] = $calendar->getId();
         }
-        $this->createdRecords = count($googleRecords);
+        $this->createdRecords = php7_count($googleRecords);
         if (isset($maxModifiedTime)) {
             Google_Utils_Helper::updateSyncTime('Calendar', $maxModifiedTime, $user);
         } else {
             Google_Utils_Helper::updateSyncTime('Calendar', false, $user);
         }
-        if(count($googleEventIds)) {
+        if(php7_count($googleEventIds)) {
             $this->putGoogleEventCalendarMap($googleEventIds, $calendarId, $user);
         }
         return $googleRecords;
     }
 
     protected function putGoogleEventCalendarMap($event_ids, $calendar_id, $user) {
-        if(is_array($event_ids) && count($event_ids)) {
+        if(is_array($event_ids) && php7_count($event_ids)) {
             $db = PearDatabase::getInstance();
             $user_id = $user->getId();
             $sql = 'INSERT INTO vtiger_google_event_calendar_mapping (event_id, calendar_id, user_id) VALUES ';
@@ -296,7 +296,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                 continue;
             }
         }
-        if(count($newEventIds)) {
+        if(php7_count($newEventIds)) {
             $this->putGoogleEventCalendarMap($newEventIds, $calendarId, $user);
         }
         return $records;

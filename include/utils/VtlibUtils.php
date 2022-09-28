@@ -960,4 +960,9 @@ if (!function_exists('get_magic_quotes_gpc')) {
 	}
 }
 
+function php7_count($value) {
+	// PHP 8.x does not like count(null)
+	return is_null($value) ? 0 : count($value);
+}
+
 ?>

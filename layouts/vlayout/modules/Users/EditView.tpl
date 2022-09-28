@@ -51,7 +51,7 @@
 				{foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS name=blockfields}
 					{assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
 					{assign var="refrenceList" value=$FIELD_MODEL->getReferenceList()}
-					{assign var="refrenceListCount" value=count($refrenceList)}
+					{assign var="refrenceListCount" value=php7_count($refrenceList)}
 					{if $COUNTER eq 2}
 						</tr><tr>
 						{assign var=COUNTER value=1}

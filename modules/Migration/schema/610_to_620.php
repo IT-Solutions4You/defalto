@@ -91,7 +91,7 @@ if(Vtiger_Utils::CheckTable('vtiger_wsapp_sync_state')) {
 
 $appIds = array();
 
-if(count($syncTrackerIds)) {
+if(php7_count($syncTrackerIds)) {
 
     $sql = 'SELECT appid FROM vtiger_wsapp WHERE appkey IN (' . generateQuestionMarks($syncTrackerIds) . ')';
     $result = Migration_Index_View::ExecuteQuery($sql,$syncTrackerIds);
@@ -107,7 +107,7 @@ if(count($syncTrackerIds)) {
 
 //$appIds - list of all Calendarsync appids
 
-if(count($appIds)) {
+if(php7_count($appIds)) {
 
     $sql = 'SELECT id,clientid FROM vtiger_wsapp_recordmapping WHERE appid IN (' . generateQuestionMarks($appIds) . ')';
     $result = Migration_Index_View::ExecuteQuery($sql,$appIds);

@@ -379,7 +379,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 
 		$documentIds = array_unique($this->get('documentids'));
 
-		$count = count($documentIds);
+		$count = php7_count($documentIds);
 		for ($i=0; $i<$count; $i++) {
 			$db->pquery("INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?, ?)", array($record, $documentIds[$i]));
 		}
@@ -393,7 +393,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		$db = PearDatabase::getInstance();
 		$query = 'DELETE FROM vtiger_senotesrel where crmid=?';
 		$params = array($this->getId());
-		if(count($idList) > 0) {
+		if(php7_count($idList) > 0) {
 			$query .= 'AND notesid IN ('.generateQuestionMarks($idList).')';
 			$params = array_merge($params,$idList);
 		}
@@ -407,7 +407,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	public function deleteAttachment($emailAttachmentDetails = array()) {
 		$db = PearDatabase::getInstance();
 
-		if(count($emailAttachmentDetails) <= 0) {
+		if(php7_count($emailAttachmentDetails) <= 0) {
 			return;
 		}
 		$attachmentIdList = array();
@@ -435,7 +435,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 			}
 		}
 		if (!empty ($documentIds)) {
-			$count = count($documentIds);
+			$count = php7_count($documentIds);
 			for ($i=0; $i<$count; $i++) {
 				try {
 					$documentRecordModel = Vtiger_Record_Model::getInstanceById($documentIds[$i], 'Documents');

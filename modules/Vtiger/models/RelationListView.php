@@ -254,7 +254,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$relationModule = $this->getRelationModel()->getRelationModuleModel();
 		$relationModuleName = $relationModule->get('name');
 		$relatedColumnFields = $relationModule->getConfigureRelatedListFields();
-		if(count($relatedColumnFields) <= 0){
+		if(php7_count($relatedColumnFields) <= 0){
 			$relatedColumnFields = $relationModule->getRelatedListFields();
 		}
 
@@ -392,7 +392,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			$pagingModel->set('nextPageExists', false);
 		}
 		//setting related list view count before unsetting permission denied records - to make sure paging should not fail
-		$pagingModel->set('_relatedlistcount', count($relatedRecordList));
+		$pagingModel->set('_relatedlistcount', php7_count($relatedRecordList));
 		foreach($recordsToUnset as $record) {
 			unset($relatedRecordList[$record]);
 		}
@@ -407,7 +407,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$summaryFieldsList = $relatedModuleModel->getHeaderAndSummaryViewFieldsList();
 
 		$headerFields = array();
-		if(count($summaryFieldsList) > 0) {
+		if(php7_count($summaryFieldsList) > 0) {
 			foreach($summaryFieldsList as $fieldName => $fieldModel) {
 				$headerFields[$fieldName] = $fieldModel;
 			}
@@ -517,7 +517,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$position = stripos($relationQuery,' from ');
 		if ($position) {
 			$split = preg_split('/ FROM /i', $relationQuery);
-			$splitCount = count($split);
+			$splitCount = php7_count($split);
 			if($relatedModuleName == 'Calendar') {
 				$relationQuery = 'SELECT DISTINCT vtiger_crmentity.crmid, vtiger_activity.activitytype ';
 			} else {
@@ -562,7 +562,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$condition = '';
 
 		$whereCondition = $this->get("whereCondition");
-		$count = count($whereCondition);
+		$count = php7_count($whereCondition);
 		if ($count > 1) {
 			$appendAndCondition = true;
 		}

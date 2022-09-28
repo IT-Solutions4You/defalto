@@ -36,7 +36,7 @@ class DateTimeField {
 		global $log;
 		$log->debug("Entering getDBInsertDateValue(" . $this->datetime . ") method ...");
 		$value = explode(' ', $this->datetime);
-		if (count($value) == 2) {
+		if (php7_count($value) == 2) {
 			$value[0] = self::convertToUserFormat($value[0]);
 		}
 
@@ -219,7 +219,7 @@ class DateTimeField {
                 break;
         }
 
-        if (count($date) > 1 && $date[1] != '') {
+        if (php7_count($date) > 1 && $date[1] != '') {
             $userDate = $date[0] . ' ' . $date[1];
         } else {
             $userDate = $date[0];
@@ -307,7 +307,7 @@ class DateTimeField {
 		$log->debug("Entering getDisplayDate(" . $this->datetime . ") method ...");
 
 		$date_value = explode(' ',$this->datetime);
-		if (count($date_value) > 1 && $date_value[1] != '') {
+		if (php7_count($date_value) > 1 && $date_value[1] != '') {
 			$date = self::convertToUserTimeZone($this->datetime, $user);
 			$date_value = $date->format('Y-m-d');
 		}

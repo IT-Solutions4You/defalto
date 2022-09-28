@@ -40,7 +40,7 @@
 				</option>
 			{/foreach}
 		</optgroup>
-		{if count($ALL_ACTIVEGROUP_LIST) gt 0}
+		{if php7_count($ALL_ACTIVEGROUP_LIST) gt 0}
 		<optgroup label="{vtranslate('LBL_GROUPS')}">
 			{foreach key=OWNER_ID item=OWNER_NAME from=$ALL_ACTIVEGROUP_LIST}
 				<option {if $OWNER_NAME|in_array:$TASK_FILTERS['assigned_user_id']}selected{/if} value="{$OWNER_NAME}" data-picklistvalue= '{$OWNER_NAME}' {if in_array(trim($OWNER_NAME),$SEARCH_VALUES)} selected {/if}

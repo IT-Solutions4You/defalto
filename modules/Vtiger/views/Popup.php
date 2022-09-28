@@ -170,7 +170,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 			$this->listViewHeaders = $listViewModel->getHeaders();
 
 			$models = $listViewModel->getEntries($pagingModel);
-			$noOfEntries = count($models);
+			$noOfEntries = php7_count($models);
 			foreach ($models as $recordId => $recordModel) {
 				foreach ($this->listViewHeaders as $fieldName => $fieldModel) {
 					$recordModel->set($fieldName, $recordModel->getDisplayValue($fieldName));
@@ -178,7 +178,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 				$models[$recordId] = $recordModel;
 			}
 			$this->listViewEntries = $models;
-			if(count($this->listViewEntries) > 0 ){
+			if(php7_count($this->listViewEntries) > 0 ){
 				$parent_related_records = true;
 			}
 		}else{
@@ -228,7 +228,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 					}
 		}
 
-		$noOfEntries = count($this->listViewEntries);
+		$noOfEntries = php7_count($this->listViewEntries);
 
 		if(empty($sortOrder)){
 			$sortOrder = "ASC";

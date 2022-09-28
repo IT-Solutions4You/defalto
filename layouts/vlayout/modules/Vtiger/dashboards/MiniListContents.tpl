@@ -35,7 +35,7 @@
 	</div>
 	{/foreach}
 
-	{if count($MINILIST_WIDGET_RECORDS) >= $MINILIST_WIDGET_MODEL->getRecordLimit()}
+	{if php7_count($MINILIST_WIDGET_RECORDS) >= $MINILIST_WIDGET_MODEL->getRecordLimit()}
 	<div class="row-fluid" style="padding:5px;padding-bottom:10px;">
 		<a class="pull-right" href="index.php?module={$MINILIST_WIDGET_MODEL->getTargetModule()}&view=List&mode=showListViewRecords&viewname={$WIDGET->get('filterid')}">{vtranslate('LBL_MORE')}</a>
 	</div>

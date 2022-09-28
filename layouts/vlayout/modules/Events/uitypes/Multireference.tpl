@@ -12,7 +12,7 @@
 {strip}
 {assign var=FIELD_NAME value=$FIELD_MODEL->get('name')}
 {assign var="REFERENCE_LIST" value=$FIELD_MODEL->getReferenceList()}
-{assign var="REFERENCE_LIST_COUNT" value=count($REFERENCE_LIST)}
+{assign var="REFERENCE_LIST_COUNT" value=php7_count($REFERENCE_LIST)}
 {assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
 {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 {if {$REFERENCE_LIST_COUNT} eq 1}

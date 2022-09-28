@@ -263,7 +263,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function getReferenceList($hideDisabledModules = true, $presenceZero = true) {
 		$webserviceField = $this->getWebserviceFieldObject();
 		$referenceList = $webserviceField->getReferenceList($hideDisabledModules);
-		if($presenceZero && is_array($referenceList) && count($referenceList) > 0) {
+		if($presenceZero && is_array($referenceList) && php7_count($referenceList) > 0) {
 			foreach($referenceList as $key => $referenceModule) {
 				$moduleModel = Vtiger_Module_Model::getInstance($referenceModule);
 				if($moduleModel && $moduleModel->get('presence') != self::PRESENCE_ALWAYS_VISIBLE) {
@@ -338,7 +338,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
-		if(count($matches) > 0) {
+		if(php7_count($matches) > 0) {
 			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
 			$fieldName = $referenceFieldName;
 		}
@@ -375,7 +375,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
-		if(count($matches) > 0) {
+		if(php7_count($matches) > 0) {
 			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
 			$fieldName = $referenceFieldName;
 		}
@@ -1266,7 +1266,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		$profilelist = $privileges->get('profiles');
 		$visiblePresenceList = trim(implode(',', self::getVisiblePresenceCodesList()), ',');
 
-				if (count($profilelist) > 0) {
+				if (php7_count($profilelist) > 0) {
 					if ($accessmode == 'readonly') {
 						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0  AND vtiger_profile2field.profileid in (" . generateQuestionMarks($profilelist) . ") AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
 					} else {
@@ -1466,7 +1466,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 			$fieldName = $this->getName();
 
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
-			if (count($matches) > 0) {
+			if (php7_count($matches) > 0) {
 				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
 				$fieldName = $referenceFieldName;
 			}
@@ -1476,7 +1476,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 				$picklistValues = $this->getPicklistValues();
 				$tableName = "vtiger_$fieldName";
 				if (Vtiger_Utils::CheckTable($tableName)) {
-					if (is_array($picklistValues) && count($picklistValues)) {
+					if (is_array($picklistValues) && php7_count($picklistValues)) {
 						$result = $db->pquery("SELECT $fieldName, color FROM $tableName WHERE $fieldName IN (".generateQuestionMarks($picklistValues).")", array_keys($picklistValues));
 						while ($row = $db->fetch_row($result)) {
 							$picklistColors[$row[$fieldName]] = $row['color'];
