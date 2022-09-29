@@ -62,7 +62,7 @@ class EmailTemplates_MassDelete_Action extends Vtiger_Mass_Action {
 		$response->emit();
 	}
 	
-	public function getRecordsListFromRequest(Vtiger_Request $request, $recordModel) {
+	public function getRecordsListFromRequest(Vtiger_Request $request, $recordModel = false) {
 		$selectedIds = $request->get('selected_ids');
 		$excludedIds = $request->get('excluded_ids');
 		

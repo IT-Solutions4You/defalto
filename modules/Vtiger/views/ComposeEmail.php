@@ -269,7 +269,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		return;
 	}
 
-	public function getRecordsListFromRequest(Vtiger_Request $request) {
+	public function getRecordsListFromRequest(Vtiger_Request $request, $model = false) {
 		$cvId = $request->get('viewname');
 		$selectedIds = $request->get('selected_ids');
 		$excludedIds = $request->get('excluded_ids');

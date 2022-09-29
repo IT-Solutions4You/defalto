@@ -17,7 +17,7 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
         return $permissions;
 	}
 	
-	protected function getRecordsListFromRequest(Vtiger_Request $request) {
+	protected function getRecordsListFromRequest(Vtiger_Request $request, $model = false) {
 		$cvId = $request->get('viewname');
 		$module = $request->get('module');
 		if(!empty($cvId) && $cvId=="undefined"){
