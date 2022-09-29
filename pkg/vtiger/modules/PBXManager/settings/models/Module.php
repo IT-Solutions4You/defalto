@@ -42,14 +42,14 @@ class Settings_PBXManager_Module_Model extends Settings_Vtiger_Module_Model{
         return "PBXManager";
     }
     
-     public static function getParentName() {
+     public function getParentName() {
         return parent::getParentName();
     }
     
     public function getModule($raw=true) {
 		$moduleName = Settings_PBXManager_Module_Model::getModuleName();
 		if(!$raw) {
-			$parentModule = Settings_PBXManager_Module_Model::getParentName();
+			$parentModule = $this->getParentName();
 			if(!empty($parentModule)) {
 				$moduleName = $parentModule.':'.$moduleName;
 			}
