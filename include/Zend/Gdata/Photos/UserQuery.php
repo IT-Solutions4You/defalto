@@ -71,7 +71,7 @@ class Zend_Gdata_Photos_UserQuery extends Zend_Gdata_Query
     /**
      * Create a new Query object with default values.
      */
-    public function __construct()
+    public function __construct($url = null)
     {
         parent::__construct();
     }

@@ -13,7 +13,7 @@ include_once 'includes/runtime/Viewer.php';
 class Mobile_UI_Viewer extends Vtiger_Viewer{
 
 	private $parameters = array();
-	function assign($key, $value) {
+	function assign($key, $value, $nocache = false) {
 		$this->parameters[$key] = $value;
 	}
 
