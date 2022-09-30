@@ -163,7 +163,7 @@ class Webforms_Model {
 
 	function generatePublicId($name) {
 		global $adb, $log;
-		$uid = md5(microtime(true) + $name);
+		$uid = md5(sprintf("%f%s", microtime(true), $name));
 		return $uid;
 	}
 
