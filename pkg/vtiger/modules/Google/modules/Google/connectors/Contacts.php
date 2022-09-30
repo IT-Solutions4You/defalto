@@ -825,7 +825,7 @@ Class Google_Contacts_Connector extends WSAPP_TargetConnector {
 	 * @param <array> $vtContacts 
 	 * @return <array> tranformed vtiger Records
 	 */
-	public function transformToTargetRecord($vtContacts) {
+	public function transformToTargetRecord($vtContacts, $user = false) {
 		$records = array();
 		foreach ($vtContacts as $vtContact) {
 			$recordModel = Google_Contacts_Model::getInstanceFromValues(array('entity' => $vtContact));

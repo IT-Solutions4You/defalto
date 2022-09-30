@@ -307,7 +307,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
      * @param <array> $vtEvents 
      * @return <array> tranformed vtiger Records
      */
-    public function transformToTargetRecord($vtEvents, $user) {
+    public function transformToTargetRecord($vtEvents, $user = false) {
         $records = array();
         foreach ($vtEvents as $vtEvent) {
             $newEvent = new Google_Service_Calendar_Event();

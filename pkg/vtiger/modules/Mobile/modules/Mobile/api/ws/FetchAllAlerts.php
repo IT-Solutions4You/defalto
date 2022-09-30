@@ -23,7 +23,7 @@ class Mobile_WS_FetchAllAlerts extends Mobile_WS_Controller {
 		return $response;
 	}
 	
-	function getAlertDetails() {
+	function getAlertDetails($alertid=false) {
 		$alertModels = Mobile_WS_AlertModel::models();
 		
 		$alerts = array();
