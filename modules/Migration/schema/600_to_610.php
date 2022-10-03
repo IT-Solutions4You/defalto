@@ -1257,7 +1257,7 @@ if(!defined('INSTALLATION_MODE')) {
         $recordModel->set('gateway', $qualifiedModuleName);
 
         $connector = new PBXManager_PBXManager_Connector;
-        foreach ($connector->getSettingsParameters() as $field => $type) {
+        foreach (PBXManager_PBXManager_Connector::getSettingsParameters() as $field => $type) {
             $fieldValue = "";
             if ($field == "webappurl") {
                 $fieldValue = "http://" . $server . ":";
