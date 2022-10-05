@@ -74,7 +74,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
         
         $startSequence = ($page - 1) * $pageLimit + 1;
         $endSequence = $startSequence + php7_count($record) - 1;
-        $recordCount = Portal_ListView_Model::getRecordCount();
+        $recordCount = $this->getRecordCount();
         
         $pageCount = intval($recordCount / $pageLimit);
         if(($recordCount % $pageLimit) != 0)
@@ -98,7 +98,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
         return $result;
     }
     
-    public static function getRecordCount() {
+    public function getRecordCount() {
         $db = PearDatabase::getInstance();
         $listQuery = $this->getQuery();
         $queryParts = explode('FROM', $listQuery);
