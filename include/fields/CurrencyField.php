@@ -363,7 +363,7 @@ class CurrencyField {
 		}
 		//$value = round($value, $this->maxNumberOfDecimals);
 
-        return $value;
+        return (float)$value;
     }
 
     /**
