@@ -653,14 +653,14 @@ class Leads extends CRMEntity {
 		$list_buttons = Array();
 
 		if(isPermitted('Leads','Delete','') == 'yes') {
-			$list_buttons['del'] =	$app_strings[LBL_MASS_DELETE];
+			$list_buttons['del'] =	$app_strings["LBL_MASS_DELETE"];
 		}
 		if(isPermitted('Leads','EditView','') == 'yes') {
-			$list_buttons['mass_edit'] = $app_strings[LBL_MASS_EDIT];
-			$list_buttons['c_owner'] = $app_strings[LBL_CHANGE_OWNER];
+			$list_buttons['mass_edit'] = $app_strings["LBL_MASS_EDIT"];
+			$list_buttons['c_owner'] = $app_strings["LBL_CHANGE_OWNER"];
 		}
 		if(isPermitted('Emails','EditView','') == 'yes')
-			$list_buttons['s_mail'] = $app_strings[LBL_SEND_MAIL_BUTTON];
+			$list_buttons['s_mail'] = $app_strings["LBL_SEND_MAIL_BUTTON"];
 
 		// end of mailer export
 		return $list_buttons;

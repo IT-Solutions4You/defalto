@@ -277,21 +277,21 @@ class Contacts extends CRMEntity {
               {
                   $contact = Array();
 
-		  $contact[lastname] = in_array("lastname",$permitted_field_lists) ? $row[lastname] : "";
-		  $contact[firstname] = in_array("firstname",$permitted_field_lists)? $row[firstname] : "";
-		  $contact[email] = in_array("email",$permitted_field_lists) ? $row[email] : "";
+		  $contact["lastname"] = in_array("lastname",$permitted_field_lists) ? $row["lastname"] : "";
+		  $contact["firstname"] = in_array("firstname",$permitted_field_lists)? $row["firstname"] : "";
+		  $contact["email"] = in_array("email",$permitted_field_lists) ? $row["email"] : "";
 
 
                   if(in_array("accountid",$permitted_field_lists))
                   {
-                      $contact[accountname] = $row[accountname];
-                      $contact[account_id] = $row[accountid];
+                      $contact["accountname"] = $row["accountname"];
+                      $contact["account_id"] = $row["accountid"];
                   }else
 		  {
-                      $contact[accountname] = "";
-                      $contact[account_id] = "";
+                      $contact["accountname"] = "";
+                      $contact["account_id"] = "";
 		  }
-                  $contact[contactid] =  $row[contactid];
+                  $contact["contactid"] =  $row["contactid"];
                   $list[] = $contact;
               }
           }
@@ -1573,14 +1573,14 @@ function get_contactsforol($user_name)
 		$list_buttons = Array();
 
 		if(isPermitted('Contacts','Delete','') == 'yes') {
-			$list_buttons['del'] = $app_strings[LBL_MASS_DELETE];
+			$list_buttons['del'] = $app_strings["LBL_MASS_DELETE"];
 		}
 		if(isPermitted('Contacts','EditView','') == 'yes') {
-			$list_buttons['mass_edit'] = $app_strings[LBL_MASS_EDIT];
-			$list_buttons['c_owner'] = $app_strings[LBL_CHANGE_OWNER];
+			$list_buttons['mass_edit'] = $app_strings["LBL_MASS_EDIT"];
+			$list_buttons['c_owner'] = $app_strings["LBL_CHANGE_OWNER"];
 		}
 		if(isPermitted('Emails','EditView','') == 'yes'){
-			$list_buttons['s_mail'] = $app_strings[LBL_SEND_MAIL_BUTTON];
+			$list_buttons['s_mail'] = $app_strings["LBL_SEND_MAIL_BUTTON"];
 		}
 		return $list_buttons;
 	}

@@ -705,7 +705,7 @@ function insertIntoRecurringTable(& $recurObj)
 					}
 				}
 
-				$task[contact_name] = return_name($row, 'cfn', 'cln');
+				$task["contact_name"] = return_name($row, 'cfn', 'cln');
 
 					$list[] = $task;
 				}
