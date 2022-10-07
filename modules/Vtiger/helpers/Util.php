@@ -1217,7 +1217,7 @@ class Vtiger_Util_Helper {
 												if (isset($source) && !empty($source)) {
 													$element['source'] = $source;
 												}
-												if (!function_exists(vtws_create)) {
+												if (!function_exists("vtws_create")) {
 													include_once 'include/Webservices/Create.php';
 												}
 												$entity = vtws_create($referenceModule, $element, $user);
