@@ -135,7 +135,7 @@ class PickListHandler extends VTEventHandler {
 			require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
 			require_once 'modules/com_vtiger_workflow/tasks/'.$className.'.inc';
 			$unserializeTask = unserialize($task);
-			if(array_key_exists("field_value_mapping",$unserializeTask)) {
+			if(property_exists($unserializeTask, "field_value_mapping")) {
 				$fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
 				if (!empty($fieldMapping)) {
 					foreach ($fieldMapping as $key => $condition) {
@@ -171,7 +171,7 @@ class PickListHandler extends VTEventHandler {
 						$pickListFieldName = 'priority';
 					}
 				}
-				if(array_key_exists($pickListFieldName, $unserializeTask)){
+				if(property_exists($unserializeTask,$pickListFieldName)){
 					$value = $unserializeTask->$pickListFieldName;
 					$explodedValueArray = explode(',', $value);
 					$arrayKey = array_search($oldValue, $explodedValueArray);
@@ -291,7 +291,7 @@ class PickListHandler extends VTEventHandler {
 				require_once("modules/com_vtiger_workflow/VTTaskManager.inc");
 				require_once 'modules/com_vtiger_workflow/tasks/' . $className . '.inc';
 				$unserializeTask = unserialize($task);
-				if (array_key_exists("field_value_mapping", $unserializeTask)) {
+				if (property_exists($unserializeTask, "field_value_mapping")) {
 					$fieldMapping = Zend_Json::decode($unserializeTask->field_value_mapping);
 					if (!empty($fieldMapping)) {
 						foreach ($fieldMapping as $key => $condition) {
@@ -329,7 +329,7 @@ class PickListHandler extends VTEventHandler {
 							$pickListFieldName = 'priority';
 						}
 					}
-					if (array_key_exists($pickListFieldName, $unserializeTask)) {
+					if (property_exists($unserializeTask,$pickListFieldName)) {
 						$value = $unserializeTask->$pickListFieldName;
 						$explodedValueArray = explode(',', $value);
 						foreach ($valueToDelete as $value) {
