@@ -751,7 +751,7 @@ class Users extends CRMEntity {
 	function insertIntoEntityTable($table_name, $module, $fileid='') {
 		global $log;
 		$log->info("function insertIntoEntityTable ".$module.' vtiger_table name ' .$table_name);
-		global $adb, $current_user;
+		global $adb, $current_user, $app_strings;
 		$insertion_mode = $this->mode;
 		//Checkin whether an entry is already is present in the vtiger_table to update
 		if($insertion_mode == 'edit') {
@@ -824,7 +824,7 @@ class Users extends CRMEntity {
 					}
 
 				}elseif($uitype == 15) {
-					if($this->column_fields[$fieldname] == $app_strings['LBL_NOT_ACCESSIBLE']) {
+					if($app_strings && $this->column_fields[$fieldname] == $app_strings['LBL_NOT_ACCESSIBLE']) {
 						//If the value in the request is Not Accessible for a picklist, the existing value will be replaced instead of Not Accessible value.
 						$sql="select $columname from  $table_name where ".$this->tab_name_index[$table_name]."=?";
 						$res = $adb->pquery($sql,array($this->id));
@@ -1325,11 +1325,12 @@ class Users extends CRMEntity {
 		global $log,$adb;
 		$log->debug("Entering in function saveHomeOrder($id)");
 
+		$save_array = array();
 		 if($this->mode == 'edit')
 		 {
 			 for($i = 0;$i < php7_count($this->homeorder_array);$i++)
 			 {
-				 if($_REQUEST[$this->homeorder_array[$i]] != '')
+				 if(isset($_REQUEST[$this->homeorder_array[$i]]) && $_REQUEST[$this->homeorder_array[$i]] != '')
 				 {
 					$save_array[] = $this->homeorder_array[$i];
 					$qry=" update vtiger_homestuff,vtiger_homedefault set vtiger_homestuff.visible=0 where vtiger_homestuff.stuffid=vtiger_homedefault.stuffid and vtiger_homestuff.userid=? and vtiger_homedefault.hometype=?";//To show the default Homestuff on the the Home Page
@@ -1341,7 +1342,7 @@ class Users extends CRMEntity {
 					$result=$adb->pquery($qry, array($id, $this->homeorder_array[$i]));
 				}
 			}
-			if($save_array !="")
+			if($save_array)
 				$homeorder = implode(',',$save_array);
 		}
 		 else

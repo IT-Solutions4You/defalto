@@ -342,7 +342,7 @@ class Vtiger_Deprecated {
 
 	static function SaveTagCloudView($id = "") {
 		global $adb;
-		$tag_cloud_status = $_REQUEST['tagcloudview'];
+		$tag_cloud_status = isset($_REQUEST['tagcloudview']) ? $_REQUEST['tagcloudview'] : false;
 		if ($tag_cloud_status == "true") {
 			$tag_cloud_view = 0;
 		} else {
