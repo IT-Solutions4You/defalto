@@ -2793,9 +2793,12 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
             e.preventDefault();
             var element = jQuery(e.currentTarget);
             var popOverEle = element.closest('.popover');
-			var validate = popOverEle.find('input').valid();
-			if (!validate) {
-				popOverEle.find('.input-error').val(0).valid();
+			var popOverInput = popOverEle.find('input');
+			if (popOverInput.length) {
+				var validate = popOverInput.valid();
+				if (!validate) {
+					popOverEle.find('.input-error').val(0).valid();
+				}
 			}
 			popOverEle.css('opacity',0).css('z-index','-1');
 
