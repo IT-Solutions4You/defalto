@@ -44,6 +44,7 @@ class Portal_ListView_Model extends Vtiger_ListView_Model {
         }
         $pagingModel->calculatePageRange($listViewEntries);
         $index = 0;
+        $listViewRecordModels = array();
 		foreach($listViewEntries as $recordId => $record) {
 			$rawData = $db->query_result_rowdata($listResult, $index++);
 			$record['id'] = $recordId;
