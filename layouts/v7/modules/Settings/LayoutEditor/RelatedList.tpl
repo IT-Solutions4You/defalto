@@ -178,11 +178,7 @@
 							</div>
 							<div class="col-sm-4" style="margin-top: 4px;">
 								<div class="pull-right">
-									{if $MODULE_MODEL->get('relationtype') eq '1:N' and $MODULE_MODEL->getRelationModuleName() neq 'Calendar'}
-										<img src="{vimage_path('1-N.png')}" width="100" height="50" />
-									{else}
-										<img src="{vimage_path('N-N.png')}" width="100" height="50" />
-									{/if}
+									<img src="{vimage_path('N-N.png')}" width="100" height="50" />
 								</div>
 							</div>
 							<div class="col-sm-1 deleteButton" style="padding-right: 0px;" data-relation="1">
