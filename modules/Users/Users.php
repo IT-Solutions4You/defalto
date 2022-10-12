@@ -1128,7 +1128,7 @@ class Users extends CRMEntity {
 		// Added for Reminder Popup support
 		$this->resetReminderInterval($prev_reminder_interval);
 		//Creating the Privileges Flat File
-		if(isset($this->column_fields['roleid'])) {
+		if(isset($this->column_fields['roleid']) && !empty($this->column_fields['roleid'])) {
 			updateUser2RoleMapping($this->column_fields['roleid'],$this->id);
 		}
 
