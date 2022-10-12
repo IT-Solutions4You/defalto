@@ -869,6 +869,7 @@ $log->debug("Entering getProfileGlobalPermission(".$profileid.") method ...");
   $result = $adb->pquery($sql, array($profileid));
   $num_rows = $adb->num_rows($result);
 
+  $copy = array();
   for($i=0; $i<$num_rows; $i++)
   {
 	$act_id = $adb->query_result($result,$i,"globalactionid");
