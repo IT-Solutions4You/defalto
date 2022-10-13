@@ -406,8 +406,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$query.= " ((date_start >= ? AND due_date < ? ) OR ( due_date >= ? ))";
 
 		//+angelo
-		$start = DateTimeField::__convertToDBFormat($start);
-		$end = DateTimeField::__convertToDBFormat($end);
+		$start = DateTimeField::__convertToDBFormat($start, $user->get('date_format'));
+		$end = DateTimeField::__convertToDBFormat($end, $user->get('date_format'));
 		//-angelo
 		$params=array($start,$end,$start);
 		$userIds = $userAndGroupIds;
