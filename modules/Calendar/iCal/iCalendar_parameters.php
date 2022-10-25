@@ -1,7 +1,7 @@
 <?php // $Id: iCalendar_parameters.php,v 1.7 2005/07/21 23:17:21 defacer Exp $
 
 class iCalendar_parameter {
-    function static multiple_values_allowed($parameter) {
+    static function multiple_values_allowed($parameter) {
         switch($parameter) {
             case 'DELEGATED-FROM':
             case 'DELEGATED-TO':
@@ -12,7 +12,7 @@ class iCalendar_parameter {
         }
     }
 
-    function static default_value($parameter) {
+    static function default_value($parameter) {
         switch($parameter) {
             case 'CUTYPE':   return 'INDIVIDUAL';
             case 'FBTYPE':   return 'BUSY';
@@ -25,7 +25,7 @@ class iCalendar_parameter {
         }
     }
 
-    function static is_valid_value(&$parent_property, $parameter, $value) {
+    static function is_valid_value(&$parent_property, $parameter, $value) {
         switch($parameter) {
             // These must all be a URI
             case 'ALTREP':
