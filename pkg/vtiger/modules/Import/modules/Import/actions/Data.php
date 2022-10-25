@@ -555,7 +555,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 					} else {
 						$fieldValueDetails = $fieldValue;
 					}
-					if (php7_count($fieldValueDetails) > 1) {
+					if (is_array($fieldValueDetails) && php7_count($fieldValueDetails) > 1) {
 						$referenceModuleName = trim($fieldValueDetails[0]);
 						if (php7_count($fieldValueDetails) == 2) {
 							$entityLabel = trim($fieldValueDetails[1]);
