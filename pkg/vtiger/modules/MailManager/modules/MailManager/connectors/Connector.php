@@ -195,7 +195,7 @@ class MailManager_Connector_Connector {
 	 * @param $options imap_status flags like SA_UNSEEN, SA_MESSAGES etc
 	 */
 	public function updateFolder($folder, $options) {
-		$mailbox = $this->convertCharacterEncoding($folder->name($this->mBoxUrl), "UTF7-IMAP","ISO_8859-1"); //Encode folder name
+		$mailbox = $this->convertCharacterEncoding($folder->name($this->mBoxUrl), "UTF7-IMAP","ISO-8859-1"); //Encode folder name
 		$result = @imap_status($this->mBox, $mailbox, $options);
 		if ($result) {
 			if (isset($result->unseen)) $folder->setUnreadCount($result->unseen);
