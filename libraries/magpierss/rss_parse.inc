@@ -91,7 +91,7 @@ class MagpieRSS {
      *                                  source encoding. (caveat emptor)
      *
      */
-    function MagpieRSS ($source, $output_encoding='UTF-8', 
+    function __construct ($source, $output_encoding='UTF-8', 
                         $input_encoding=null, $detect_encoding=true) 
     {   
         # if PHP xml isn't compiled in, die
@@ -106,7 +106,7 @@ class MagpieRSS {
                 $output_encoding, $input_encoding, $detect_encoding);
         
         
-        if (!is_resource($parser)) {
+        if (!is_object($parser)) {
             $this->error( "Failed to create an instance of PHP's XML parser. " .
                           "http://www.php.net/manual/en/ref.xml.php",
                           E_USER_ERROR );
@@ -449,7 +449,7 @@ class MagpieRSS {
     *
     */
     function create_parser($source, $out_enc, $in_enc, $detect) {
-        if ( substr(phpversion(),0,1) == 5) {
+        if ( substr(phpversion(),0,1) >= 5) {
             $parser = $this->php5_create_parser($in_enc, $detect);
         }
         else {
