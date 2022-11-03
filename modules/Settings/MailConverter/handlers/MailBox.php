@@ -92,8 +92,8 @@ class Vtiger_MailBox {
 		}
 
 		if(!$imap) {
-			$connectString = '{'. "$mailboxsettings[server]:$mailboxsettings[port]/$mailboxsettings[protocol]/$mailboxsettings[ssltype]/$mailboxsettings[sslmethod]" .$mailboxsettings[readonly] ."}";
-			$connectStringShort = '{'. "$mailboxsettings[server]/$mailboxsettings[protocol]:$mailboxsettings[port]" .$mailboxsettings[readonly] ."}";
+			$connectString = '{'. $mailboxsettings['server'].':'.$mailboxsettings['port'].'/'.$mailboxsettings['protocol'].'/'.$mailboxsettings['ssltype'].'/'.$mailboxsettings['sslmethod'] .$mailboxsettings['readonly'] ."}";
+			$connectStringShort = '{'. $mailboxsettings['server'].'/'.$mailboxsettings['protocol'].':'.$mailboxsettings['port'] .$mailboxsettings['readonly'] ."}";
 
 			$this->log("Trying to connect using $connectString$folder", true);
 			if(!$imap = @imap_open("$connectString$folder", $mailboxsettings["username"], $mailboxsettings["password"])) {
