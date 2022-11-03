@@ -530,7 +530,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 		$selectedCharges = $this->getCharges();
 		$conversionRateInfo = getCurrencySymbolandCRate($this->get('currency_id'));
 		foreach ($selectedCharges as $chargeId => $chargeInfo) {
-			$selectedCharges[$chargeId]['value'] = (float)$chargeInfo['value'] / (float)$conversionRateInfo['rate'];
+			$selectedCharges[$chargeId]['value'] = empty($conversionRateInfo['rate']) ? 0 : (float)$chargeInfo['value'] / (float)$conversionRateInfo['rate'];
 		}
 
 		foreach (Inventory_TaxRegion_Model::getAllTaxRegions() as $regionId => $regionModel) {

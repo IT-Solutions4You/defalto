@@ -46,7 +46,7 @@
 	{assign var="listPriceValues" value=Products_Record_Model::getListPriceValues($productId)}
 	{if $MODULE eq 'PurchaseOrder'}
 		{assign var="listPriceValues" value=array()}
-		{assign var="purchaseCost" value="{if $data.$purchaseCost}{((float)$data.$purchaseCost) / ((float)$data.$qty * {$RECORD_CURRENCY_RATE})}{else}0{/if}"}
+		{assign var="purchaseCost" value="{if $data.$purchaseCost && $RECORD_CURRENCY_RATE}{((float)$data.$purchaseCost) / ((float)$data.$qty * (float){$RECORD_CURRENCY_RATE})}{else}0{/if}"}
 		{foreach item=currency_details from=$CURRENCIES}
 			{append var='listPriceValues' value=$currency_details.conversionrate * $purchaseCost index=$currency_details.currency_id}
 		{/foreach}
