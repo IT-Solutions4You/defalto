@@ -1037,6 +1037,10 @@ class QueryGenerator {
 				$sql[] = sprintf("IS NOT NULL AND %s != ''", $this->getSQLColumn($field->getFieldName(), $field));
 				continue;
 			}
+			if ($operator == 'k') {
+				$sql[] = sprintf("IS NULL OR %s NOT LIKE '%%%s%%'", $this->getSQLColumn($field->getFieldName(), $field), $value);
+				continue;
+			}
 			if((strtolower(trim($value)) == 'null') ||
 					(trim($value) == '' && !$this->isStringType($field->getFieldDataType())) &&
 							($operator == 'e' || $operator == 'n')) {
@@ -1124,9 +1128,6 @@ class QueryGenerator {
 					$value = "%$value";
 					break;
 				case 'c': $sqlOperator = "LIKE";
-					$value = "%$value%";
-					break;
-				case 'k': $sqlOperator = "NOT LIKE";
 					$value = "%$value%";
 					break;
 				case 'l': $sqlOperator = "<";
