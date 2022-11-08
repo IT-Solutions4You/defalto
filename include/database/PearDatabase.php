@@ -399,7 +399,7 @@ class PearDatabase{
     {
 	//if(dbType=="oci8") return 'empty_blob()';
 	//else return 'null';
-	if (is_string) return 'null';
+	if ($is_string) return 'null';
 	return null;
     }
 
@@ -557,7 +557,7 @@ class PearDatabase{
 
     function sql_quote($data) {
 		if (is_array($data)) {
-			switch($data['type']) {
+			switch($cur = $data['type']) {
 			case 'text':
 			case 'numeric':
 			case 'integer':

@@ -518,6 +518,8 @@ function getListQuery($module, $where = '') {
  */
 
 function setSessionVar($lv_array, $noofrows, $max_ent, $module = '', $related = '') {
+	global $currentModule;
+	
 	$start = '';
 	if ($noofrows >= 1) {
 		$lv_array['start'] = 1;

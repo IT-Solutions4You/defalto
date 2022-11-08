@@ -1184,6 +1184,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <Array>
 	 */
 	public function getCurrencyList() {
+		$currencies = array();
 		$db = PearDatabase::getInstance();
 				// Not a good approach to get all the fields if not required(May leads to Performance issue)
 		$result = $db->pquery('SELECT id, currency_name FROM vtiger_currency_info WHERE currency_status = ? AND deleted=0', array('Active'));
@@ -1398,6 +1399,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		foreach ($referenceList as $referenceModuleName) {
 			$autoFillData = $moduleModel->getAutoFillModuleAndField($referenceModuleName);
 			if($autoFillData) {
+				$newautoFillData = array();
 				foreach($autoFillData as $data) {
 					// To get the parent autofill reference field name of reference field
 					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
