@@ -925,7 +925,7 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 				$linkURL = ($linkURL) ? $linkURL : '';
 				$fieldSequence = $db->query_result($fieldSeqResult, 0, 'sequence');
 
-				$db->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active, pinned) VALUES(?,?,?,?,?,?,?,?,?)', array($fieldId, $blockId, $entryName, '', $entryName, $linkURL, $fieldSequence++, 0, 0));
+				$db->pquery('INSERT INTO vtiger_settings_field(fieldid, blockid, name, iconpath, description, linkto, sequence, active, pinned) VALUES(?,?,?,?,?,?,?,?,?)', array($fieldId, $blockId, $linkName, '', $linkName, $linkURL, $fieldSequence++, 0, 0));
 			}
 		} else {
 			$success = false;
