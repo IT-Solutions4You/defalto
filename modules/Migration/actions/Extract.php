@@ -10,6 +10,9 @@
 
 class Migration_Extract_Action extends Vtiger_Action_Controller {
 
+	public function loginRequired() {
+		return false;
+	}
 	public function process(Vtiger_Request $request) {
 		global $root_directory, $log;
 		@session_start();
@@ -30,6 +33,7 @@ class Migration_Extract_Action extends Vtiger_Action_Controller {
 
 					$userid = $user->retrieve_user_id($userName);
 					$_SESSION['authenticated_user_id'] = $userid;
+					$_SESSION['app_unique_key'] = vglobal('application_unique_key');
 
 					header('Location: index.php?module=Migration&view=Index&mode=step1');
 				} else {
