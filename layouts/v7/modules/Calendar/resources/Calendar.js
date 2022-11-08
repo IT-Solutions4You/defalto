@@ -789,11 +789,11 @@ Vtiger.Class("Calendar_Calendar_Js", {
 
 			thisInstance.checkDuplicateFeed(moduleName, fieldName, selectedColor, conditions).then(
 					function (result) {
+						thisInstance.saveFeedSettings(modalContainer);
+					},
+					function (result) {
 						app.helper.showErrorNotification({'message': result['message']});
 						currentTarget.removeAttr('disabled');
-					},
-					function () {
-						thisInstance.saveFeedSettings(modalContainer);
 					});
 		});
 	},
