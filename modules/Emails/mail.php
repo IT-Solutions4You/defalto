@@ -100,7 +100,7 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 
 	if($mail_status != 1)
 	{
-		$mail_error = getMailError($mail,$mail_status,$mailto);
+        $mail_error = getMailError($mail, $mail_status, $to_email);
 	}
 	else
 	{
