@@ -41,7 +41,7 @@ class VTWorkflowManager{
 			$workflowId = $adb->getUniqueID("com_vtiger_workflows");
 			$workflow->id = $workflowId;
 			$wf=$workflow;
-			if($wf->filtersavedinnew == null) $wf->filtersavedinnew = 5;
+			if(!isset($wf->filtersavedinnew) || $wf->filtersavedinnew == null) $wf->filtersavedinnew = 5;
 
 			$result=$adb->getColumnNames("com_vtiger_workflows");
 			if(in_array("type",$result)) {

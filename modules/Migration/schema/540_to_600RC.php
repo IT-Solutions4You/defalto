@@ -261,7 +261,7 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_pricebookproductrel MODIF
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN listprice decimal(27,5)", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN discount_amount decimal(27,5)", array());
 
-$currencyField = new CurrencyField($value);
+$currencyField = new CurrencyField(null);
 $result = $adb->pquery("SELECT fieldname,tablename,columnname FROM vtiger_field WHERE uitype IN (?,?)",array('71','72'));
 $count = $adb->num_rows($result);
 for($i=0;$i<$count;$i++) {
@@ -496,7 +496,7 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_pricebookproductrel MODIF
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN listprice decimal(27,8)", array());
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_inventoryproductrel MODIFY COLUMN discount_amount decimal(27,8)", array());
 
-$currencyField = new CurrencyField($value);
+$currencyField = new CurrencyField(null);
 $result = Migration_Index_View::ExecuteQuery("SELECT tablename,columnname FROM vtiger_field WHERE uitype IN (?,?)",array('71','72'));
 $count = $adb->num_rows($result);
 for($i=0;$i<$count;$i++) {
@@ -1333,7 +1333,9 @@ $skipFields = array(98,115,116,31,32);
 foreach ($moduleFields as $fieldName => $webserviceField) {
 	if($webserviceField->getFieldDataType() == 'string' || $webserviceField->getFieldDataType() == 'email' || $webserviceField->getFieldDataType() == 'phone') {
 		if(!in_array($webserviceField->getUitype(), $skipFields) && $fieldName != 'asterisk_extension'){
-			$userAccessbleFields[$webserviceField->getFieldId()] .= $fieldName;
+			if (isset($userAccessbleFields[$webserviceField->getFieldId()])) {
+				$userAccessbleFields[$webserviceField->getFieldId()] .= $fieldName;
+			}
 		}
 	}
 }

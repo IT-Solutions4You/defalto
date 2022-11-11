@@ -116,9 +116,9 @@ class Vtiger_Link {
 			$params = Array($uniqueid, $tabid, $type, $label, $url, $iconpath, intval($sequence));
 			if(!empty($handlerInfo)) {
 				$sql .= (', handler_path, handler_class, handler');
-				$params[] = $handlerInfo['path'];
-				$params[] = $handlerInfo['class'];
-				$params[] = $handlerInfo['method'];
+				$params[] = isset($handlerInfo['path']) ? $handlerInfo['path'] : null;
+				$params[] = isset($handlerInfo['class'])? $handlerInfo['class'] : null;
+				$params[] = isset($handlerInfo['method'])? $handlerInfo['method'] : null;
 			}
 			if(!empty($parentLink)) {
 				$sql .= ',parent_link';

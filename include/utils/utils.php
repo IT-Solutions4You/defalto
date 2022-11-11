@@ -2016,16 +2016,14 @@ function getEmailRelatedModules() {
 //Get the User selected NumberOfCurrencyDecimals
 function getCurrencyDecimalPlaces($user = null) {
     global $current_user;
+
+	$currency_decimal_places = 2;
     if (!empty($user)) {
         $currency_decimal_places = $user->no_of_currency_decimals;
-    } else {
+    } else if ($current_user) {
         $currency_decimal_places = $current_user->no_of_currency_decimals;
     }
-    if (isset($currency_decimal_places)) {
-        return $currency_decimal_places;
-    } else {
-        return 2;
-    }
+    return $currency_decimal_places;
 }
 
 function getInventoryModules() {

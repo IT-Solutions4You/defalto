@@ -873,7 +873,7 @@ class Users extends CRMEntity {
 						$fldvalue = $themeList[0];
 					}
 				}
-				if($current_user->id == $this->id) {
+				if($current_user && $current_user->id == $this->id) {
 					$_SESSION['vtiger_authenticated_user_theme'] = $fldvalue;
 				}
 			} elseif($uitype == 32 && $fieldname == 'language') {
@@ -887,7 +887,7 @@ class Users extends CRMEntity {
 						$fldvalue = $languageList[0];
 					}
 				}
-				if($current_user->id == $this->id) {
+				if($current_user && $current_user->id == $this->id) {
 					$_SESSION['authenticated_user_language'] = $fldvalue;
 				}
 			}
@@ -994,7 +994,8 @@ class Users extends CRMEntity {
 			$currency_result = $adb->pquery($currency_query, array());
 		}
 		$currency_array = array("$"=>"&#36;","&euro;"=>"&#8364;","&pound;"=>"&#163;","&yen;"=>"&#165;");
-		$ui_curr = $currency_array[$adb->query_result($currency_result,0,"currency_symbol")];
+		$currency_symbol = $adb->query_result($currency_result,0,"currency_symbol");
+		$ui_curr = isset($currency_array[$currency_symbol])? $currency_array[$currency_symbol] : "";
 		if($ui_curr == "")
 			$ui_curr = $adb->query_result($currency_result,0,"currency_symbol");
 		$this->column_fields["currency_name"]= $this->currency_name = $adb->query_result($currency_result,0,"currency_name");
@@ -1172,7 +1173,7 @@ class Users extends CRMEntity {
 	function getDefaultHomeModuleVisibility($home_string,$inVal) {
 		$homeModComptVisibility= 1;
 		if($inVal == 'postinstall') {
-			if($_REQUEST[$home_string] != '') {
+			if(isset($_REQUEST[$home_string]) && $_REQUEST[$home_string] != '') {
 				$homeModComptVisibility = 0;
 			} else if(in_array($home_string, $this->default_widgets)){
 				$homeModComptVisibility = 0;

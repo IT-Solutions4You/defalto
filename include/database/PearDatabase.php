@@ -690,7 +690,7 @@ class PearDatabase{
 		//$this->println($rowdata);
 		//Commented strip_selected_tags and added to_html function for HTML tags vulnerability
 		if($col == 'fieldlabel') $coldata = $rowdata[$col];
-		else $coldata = to_html($rowdata[$col]);
+		else $coldata = isset($rowdata[$col]) ? to_html($rowdata[$col]) : null;
 		return $coldata;
     }
 

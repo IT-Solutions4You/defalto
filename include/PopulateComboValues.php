@@ -32,7 +32,6 @@ class PopulateComboValues
 	{
 		global $log;
         $tableName = Vtiger_Util_Helper::validateStringForSql($tableName);
-		$log->debug("Entering insertComboValues(".$values.", ".$tableName.") method ...");
 		global $adb;
 		//inserting the value in the vtiger_picklistvalues_seq for the getting uniqueID for each picklist values...
 		$i=0;
@@ -137,7 +136,6 @@ class PopulateComboValues
 	function insertNonPicklistValues($values, $tableName)
 	{
 		global $log;
-		$log->debug("Entering insertNonPicklistValues(".$values.", ".$tableName.") method ...");
 		global $adb;
 		$i=0;
 		foreach ($values as $val => $cal)

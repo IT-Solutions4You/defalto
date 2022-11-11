@@ -116,7 +116,7 @@ $unWanted=array(
  "modules/FieldFormulas/functional.js"
 );
 
-for($i=0;$i<=php7_count($unWanted);$i++){
+for($i=0, $len=php7_count($unWanted);$i<=$len;$i++){
     if(file_exists($unWanted[$i])){
         unlink($unWanted[$i]);
     }

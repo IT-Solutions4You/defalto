@@ -88,10 +88,11 @@ if (defined('VTIGER_UPGRADE')) {
             continue;
         }
         $moduleClass = CRMEntity::getInstance($moduleModel->getName());
-        $baseTableId = $moduleClass->table_index;
+        $baseTableId = isset($moduleClass->table_index)? $moduleClass->table_index : null;
         if ($baseTableId) {
             $baseTableName = $moduleClass->table_name;
-            $customTable = $moduleClass->customFieldTable;
+            $customTable = isset($moduleClass->customFieldTable)? $moduleClass->customFieldTable : null;
+			if (!$customTable) continue;
             $customTableName = $customTable[0];
             $customTableId = $customTable[1];
             $customTableColumns = $db->getColumnNames($customTableName);
