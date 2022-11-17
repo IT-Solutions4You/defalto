@@ -25,15 +25,16 @@ class Migration_Extract_Action extends Vtiger_Action_Controller {
 			$zip = new ZipArchive();
 			$fileName = 'vtiger7.zip';
 			if ($zip->open($fileName)) {
-				for ($i = 0; $i < $zip->numFiles; $i++) {
-					$log->fatal('Filename: '.$zip->getNameIndex($i).'<br />');
-				}
 				if ($zip->extractTo($root_directory)) {
 					$zip->close();
 
 					$userid = $user->retrieve_user_id($userName);
 					$_SESSION['authenticated_user_id'] = $userid;
 					$_SESSION['app_unique_key'] = vglobal('application_unique_key');
+
+					/* Give time for PHP runtime to pickup new changes after zip 
+					 * for files that are include/require once previously */
+					sleep(5);
 
 					header('Location: index.php?module=Migration&view=Index&mode=step1');
 				} else {
