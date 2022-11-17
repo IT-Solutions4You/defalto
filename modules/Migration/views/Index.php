@@ -110,7 +110,7 @@ class Migration_Index_View extends Vtiger_View_Controller {
 
 		$patchCount  = php7_count($migrateVersions);
 
-		define('VTIGER_UPGRADE', true);
+		define('VTIGER_UPGRADE', $getDBVersion);
 
 		for($i=0; $i<$patchCount; $i++){
 			$filename =  "modules/Migration/schema/".$migrateVersions[$i]."_to_".$migrateVersions[$i+1].".php";
