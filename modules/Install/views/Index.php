@@ -203,6 +203,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 			Install_InitSchema_Model::upgrade();
 
+			Install_Utils_Model::registerUser($request->get("myname"), $request->get("myemail"), $request->get("industry"));
+
 			$viewer = $this->getViewer($request);
 			$viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);
 			$viewer->assign('APPUNIQUEKEY', $this->retrieveConfiguredAppUniqueKey());
