@@ -87,7 +87,7 @@
 							</tr>
 							<tr>
 								<td colspan="2">
-								This information will not be shared. Vtiger will use the email address for sending a monthly newsletter and any product updates. <br>
+								This information will not be shared. Vtiger will use the email address for sending a monthly newsletter and any product updates.
 								Industry will be used to understand use cases and further improve the product.
 								</td>
 							</tr>
