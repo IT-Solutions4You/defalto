@@ -14,7 +14,7 @@
 					PRIMARY KEY (`templateid`),
 					KEY `emailtemplates_foldernamd_templatename_subject_idx` (`foldername`,`templatename`,`subject`
 				) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
-			]]></sql>
+            ]]></sql>
 		</table>
 		<table>
 			<name>vtiger_emailtemplates_seq</name>

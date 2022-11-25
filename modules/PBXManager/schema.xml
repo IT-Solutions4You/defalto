@@ -21,7 +21,7 @@
   PRIMARY KEY (`pbxmanagerid`),
   KEY `index_sourceuuid` (`sourceuuid`),
   KEY `index_pbxmanager_id` (`pbxmanagerid`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8]]></sql>
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8]]></sql>
 		</table>
 		<table>
 			<name>vtiger_pbxmanagercf</name>
@@ -37,7 +37,7 @@
   `gateway` varchar(20) DEFAULT NULL,
   `parameters` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8]]></sql>
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8]]></sql>
 		</table>
 		<table>
 			<name>vtiger_pbxmanager_phonelookup</name>

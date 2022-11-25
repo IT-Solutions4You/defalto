@@ -92,7 +92,9 @@ class Settings_Webforms_ModuleField_Model extends Vtiger_Field_Model {
 		}
 		$pickListValues = array();
 		$pickListValues[""] = vtranslate("LBL_SELECT_OPTION", 'Settings:Webforms');
-		return ($pickListValues + parent::getEditablePicklistValues());
+
+		$editableValues = parent::getEditablePicklistValues();
+		return array_merge($pickListValues, $editableValues ? $editableValues : array());
 	}
 
 	/**
