@@ -52,7 +52,10 @@ class Zend_Gdata_YouTube_Extension_MediaContent extends Zend_Gdata_Media_Extensi
     protected $_format = null;
 
 
-    function __construct() {
+    function __construct($url =null, $fileSize =null, $type =null, $medium =null, 
+        $isDefault =null, $expression =null, $bitrate =null, $framerate =null, $samplingrate =null, 
+        $channels =null, $duration =null, $height =null, $width =null, $lang =null) 
+    {
         $this->registerAllNamespaces(Zend_Gdata_YouTube::$namespaces);
         parent::__construct();
     }

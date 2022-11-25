@@ -46,7 +46,7 @@ class Vtiger_PDF_TCPDF extends TCPDF {
 				$words = explode(" ",$block);
 
 				$cw = 0;
-				for ($i = 0;$i < count($words);$i++) {
+				for ($i = 0;$i < php7_count($words);$i++) {
 					if ($i != 0) $cw += $spacesize;
 
 					$wordwidth = $this->GetStringWidth($words[$i]);
@@ -65,7 +65,7 @@ class Vtiger_PDF_TCPDF extends TCPDF {
 		return ($lines * ($this->FontSize * $this->cell_height_ratio)) + 2;
 	}
 
-	function SetFont($family, $style='', $size='') {
+	function SetFont($family, $style='', $size=0, $fontfile='') {
 		if($family == '') {
 			$family = $this->FontFamily;
 		}

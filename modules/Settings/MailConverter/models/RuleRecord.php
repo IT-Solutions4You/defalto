@@ -272,7 +272,7 @@ class Settings_MailConverter_RuleRecord_Model extends Settings_Vtiger_Record_Mod
 
         return $methodNames;
     }
-	public function getAssignedTo($scannerId, $ruleId) {
+	public static function getAssignedTo($scannerId, $ruleId) {
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery("SELECT assigned_to FROM vtiger_mailscanner_rules WHERE scannerid = ? AND ruleid = ?", array($scannerId, $ruleId));
 		$id = $db->query_result($result, 0, 'assigned_to');

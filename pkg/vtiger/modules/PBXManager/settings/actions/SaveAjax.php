@@ -23,7 +23,7 @@ class Settings_PBXManager_SaveAjax_Action extends Vtiger_SaveAjax_Action {
         }
         
         $connector = new PBXManager_PBXManager_Connector;
-        foreach ($connector->getSettingsParameters() as $field => $type) {
+        foreach (PBXManager_PBXManager_Connector::getSettingsParameters() as $field => $type) {
                 $recordModel->set($field, $request->get($field));
         }
         

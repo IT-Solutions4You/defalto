@@ -789,11 +789,11 @@ Vtiger.Class("Calendar_Calendar_Js", {
 
 			thisInstance.checkDuplicateFeed(moduleName, fieldName, selectedColor, conditions).then(
 					function (result) {
+						thisInstance.saveFeedSettings(modalContainer);
+					},
+					function (result) {
 						app.helper.showErrorNotification({'message': result['message']});
 						currentTarget.removeAttr('disabled');
-					},
-					function () {
-						thisInstance.saveFeedSettings(modalContainer);
 					});
 		});
 	},
@@ -1638,6 +1638,7 @@ Vtiger.Class("Calendar_Calendar_Js", {
 			defaultView: userDefaultActivityView,
 			slotLabelFormat: userDefaultTimeFormat,
 			timeFormat: userDefaultTimeFormat,
+			minTime: thisInstance.getUserPrefered('start_hour')+':00',//angelo
 			events: [],
 			monthNames: [
 				app.vtranslate('LBL_JANUARY'),

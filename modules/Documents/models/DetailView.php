@@ -24,7 +24,7 @@ class Documents_DetailView_Model extends Vtiger_DetailView_Model {
         if($recordModel->get('filestatus') && $recordModel->get('filename')) {
             $previewAvailable = true;
             if($recordModel->get('filelocationtype') === 'I'){
-                if(!count($recordModel->getFileDetails()))
+                if(!php7_count($recordModel->getFileDetails()))
                     $previewAvailable = false;
             }
             if($previewAvailable){
@@ -40,7 +40,7 @@ class Documents_DetailView_Model extends Vtiger_DetailView_Model {
             }
 		}
 
-		if ($recordModel->get('filestatus') && $recordModel->get('filename') && $recordModel->get('filelocationtype') === 'I' && count($recordModel->getFileDetails())) {
+		if ($recordModel->get('filestatus') && $recordModel->get('filename') && $recordModel->get('filelocationtype') === 'I' && php7_count($recordModel->getFileDetails())) {
 			$basicActionLink = array(
 					'linktype' => 'DETAILVIEW',
 					'linklabel' => 'LBL_DOWNLOAD_FILE',
@@ -67,7 +67,7 @@ class Documents_DetailView_Model extends Vtiger_DetailView_Model {
 				$basicActionLink = array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' => 'LBL_EMAIL_FILE_AS_ATTACHMENT',
-						'linkurl' => "javascript:Documents_Detail_Js.triggerSendEmail('". ZEND_JSON::encode(array($recordModel->getId())) ."')",
+						'linkurl' => "javascript:Documents_Detail_Js.triggerSendEmail('". json_encode(array($recordModel->getId())) ."')",
 						'linkicon' => ''
 				);
 				$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);

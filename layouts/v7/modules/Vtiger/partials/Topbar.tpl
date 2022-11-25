@@ -61,11 +61,11 @@
 									<hr/>
 									<li id="quickCreateModules" style="padding: 0 5px;">
 										<div class="col-lg-12" style="padding-bottom:15px;">
+											{assign var='count' value=0}
 											{foreach key=moduleName item=moduleModel from=$QUICK_CREATE_MODULES}
 												{if $moduleModel->isPermitted('CreateView') || $moduleModel->isPermitted('EditView')}
 													{assign var='quickCreateModule' value=$moduleModel->isQuickCreateSupported()}
 													{assign var='singularLabel' value=$moduleModel->getSingularLabelKey()}
-													{assign var='count' value=0}
 													{assign var=hideDiv value={!$moduleModel->isPermitted('CreateView') && $moduleModel->isPermitted('EditView')}}
 													{if $quickCreateModule == '1'}
 														{if $count % 3 == 0}

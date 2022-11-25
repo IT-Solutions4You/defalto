@@ -61,7 +61,7 @@ class Appointment
 	  * @returns $list :: Type Array
 	 */
 	
-	function readAppointment($userid, &$from_datetime, &$to_datetime, $view)
+	static function readAppointment($userid, &$from_datetime, &$to_datetime, $view)
 	{
 		global $current_user,$adb;
 		require('user_privileges/user_privileges_'.$current_user->id.'.php');
@@ -312,7 +312,7 @@ function getRoleBasesdPickList($fldname,$exist_val)
 				$roleid=$current_user->roleid;
 				$roleids = Array();
 				$subrole = getRoleSubordinates($roleid);
-				if(count($subrole)> 0)
+				if(php7_count($subrole)> 0)
 				$roleids = $subrole;
 				array_push($roleids, $roleid);
 

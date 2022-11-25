@@ -63,7 +63,7 @@ class WebserviceField{
 		$typeOfData = isset($row['typeofdata'])? $row['typeofdata'] : null;
 		$this->typeOfData = $typeOfData;
 		$typeOfData = explode("~",$typeOfData);
-		$this->mandatory = (count($typeOfData) > 1 && $typeOfData[1] == 'M')? true: false;
+		$this->mandatory = (php7_count($typeOfData) > 1 && $typeOfData[1] == 'M')? true: false;
 		if($this->uitype == 4){
 			$this->mandatory = false;
 		}

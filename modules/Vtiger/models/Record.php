@@ -212,7 +212,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		if($fieldName == "time_start" && $this->getModule()->getName() == "Emails"){
 			$date = new DateTime();
 			$dateTime = new DateTimeField($date->format('Y-m-d').' '.$this->get($fieldName));
-			$value = Vtiger_Time_UIType::getDisplayValue($dateTime->getDisplayTime());
+			$value = Vtiger_Time_UIType::getDisplayValueUserFormat($dateTime->getDisplayTime());
 			$this->set($fieldName, $value);
 			return $value;
 		}else if($fieldName == "date_start" && $this->getModule()->getName() == "Emails"){
@@ -318,7 +318,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 
 		if($module !== false) {
 			if (is_array($module)) {
-				$query .= ' AND setype IN (' . trim(str_repeat("?,", count($module)), ',') .  ')';
+				$query .= ' AND setype IN (' . trim(str_repeat("?,", php7_count($module)), ',') .  ')';
 				$params = array_merge($params, $module);
 			} else {
 				$query .= ' AND setype = ?';

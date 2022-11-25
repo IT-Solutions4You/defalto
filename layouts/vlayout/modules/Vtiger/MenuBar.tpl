@@ -12,7 +12,7 @@
 {strip}
 	{assign var="topMenus" value=$MENU_STRUCTURE->getTop()}
 	{assign var="moreMenus" value=$MENU_STRUCTURE->getMore()}
-	{assign var=NUMBER_OF_PARENT_TABS value = count(array_keys($moreMenus))}
+	{assign var=NUMBER_OF_PARENT_TABS value = php7_count(array_keys($moreMenus))}
 
 	<div class="navbar" id="topMenus" style="overflow: hidden;height:40px;">
 		<div class="navbar-inner" id="nav-inner">

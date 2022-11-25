@@ -86,7 +86,7 @@
                                 </td>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
-                                <td class="listViewEntryValue textOverflowEllipsis {$WIDTHTYPE}" title="{$RECORD_DATA[$LISTVIEW_HEADERNAME]}">
+                                <td class="listViewEntryValue textOverflowEllipsis {$WIDTHTYPE}">
                                     {if $LISTVIEW_HEADER->get('uitype') eq '72' || $LISTVIEW_HEADER->get('uitype') eq '71'}
                                         {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('currencySymbol')}
                                         {if $LISTVIEW_HEADER->get('uitype') eq '71'}

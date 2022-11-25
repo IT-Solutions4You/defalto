@@ -75,7 +75,7 @@ class Zend_Gdata_Docs_Query extends Zend_Gdata_Query
     /**
      * Constructs a new instance of a Zend_Gdata_Docs_Query object.
      */
-    public function __construct()
+    public function __construct($url = null)
     {
         parent::__construct();
     }

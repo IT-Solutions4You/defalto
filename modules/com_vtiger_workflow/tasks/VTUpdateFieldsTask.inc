@@ -43,7 +43,7 @@ class VTUpdateFieldsTask extends VTTask {
 		}
 
 		$referenceFieldFocus = array();
-		if (!empty($fieldValueMapping) && count($fieldValueMapping) > 0) {
+		if (!empty($fieldValueMapping) && php7_count($fieldValueMapping) > 0) {
 			require_once('data/CRMEntity.php');
 			$focus = CRMEntity::getInstance($moduleName);
 			$focus->id = $recordId;
@@ -69,7 +69,7 @@ class VTUpdateFieldsTask extends VTTask {
 				$fieldValueType = $fieldInfo['valuetype'];
 				$fieldValue = trim($fieldInfo['value']);
 				preg_match('/\((\w+) : \((\w+)\) (\w+)\)/',$fieldName,$matches);
-				if(count($matches) > 0){
+				if(php7_count($matches) > 0){
 					//reference field update
 					$referenceField = $matches[1];
 					$referencedModule = $matches[2];
@@ -103,7 +103,7 @@ class VTUpdateFieldsTask extends VTTask {
 				if ($fieldValueType == 'fieldname') {
 					$fieldDataType = $fieldInstance->getFieldDataType();
 					preg_match('/\((\w+) : \((\w+)\) (\w+)\)/',$fieldValue,$matches1);
-					if(count($matches1) > 0){
+					if(php7_count($matches1) > 0){
 						$referenceField = $matches1[1];
 						$referencedModule = $matches1[2];
 						$referencedFieldName = $matches1[3];
@@ -184,10 +184,10 @@ class VTUpdateFieldsTask extends VTTask {
 						if(!empty($fieldValue)) {
 							if(!empty($rightOperandFieldInstance)){
 								$referenceList = $rightOperandFieldInstance->getReferenceList();
-								if((count($referenceList) == 1) && $referenceList[0] == "Users") {
+								if((php7_count($referenceList) == 1) && $referenceList[0] == "Users") {
 									$userRecordLabels = Vtiger_Functions::getOwnerRecordLabels($fieldValue);
 									$fieldValue = $userRecordLabels[$fieldValue];
-								}elseif((count($referenceList) == 1) && $referenceList[0] == "Currency"){
+								}elseif((php7_count($referenceList) == 1) && $referenceList[0] == "Currency"){
 									$fieldValue = getCurrencyName($fieldValue);
 								}elseif($rightOperandFieldInstance->getFieldName()=="roleid"){
 									$fieldValue = getRoleName($fieldValue);
@@ -281,7 +281,7 @@ class VTUpdateFieldsTask extends VTTask {
 					}
 
 				$moduleFocus->column_fields[$fieldName] = $fieldValue;
-				if (count($matches) > 0) {
+				if (php7_count($matches) > 0) {
 					$wsReferenceRecordId = vtws_getWebserviceEntityId($referencedModule, $referenceRecordId);
 					$referenceRecordEntity = VTEntityCache::getCachedEntity($wsReferenceRecordId);
 					if (empty($referenceRecordEntity)) {
@@ -319,7 +319,7 @@ class VTUpdateFieldsTask extends VTTask {
 			//permission or not.
 			$focus->isWorkFlowFieldUpdate = true;
 			$changedFields = $focus->column_fields->getChanged();
-			if(count($changedFields) > 0){
+			if(php7_count($changedFields) > 0){
 				// save only if any field is changed
 				$focus->saveentity($moduleName);
 			}
@@ -381,7 +381,7 @@ class VTUpdateFieldsTask extends VTTask {
 	 */
 	public function calculateProductUnitPrice($fieldValue) {
 		$currency_details = getAllCurrencies('all');
-		for($i=0;$i<count($currency_details);$i++)  {
+		for($i=0;$i<php7_count($currency_details);$i++)  {
 			$curid = $currency_details[$i]['curid'];
 			$cur_checkname = 'cur_' . $curid . '_check';
 			$cur_valuename = 'curname' . $curid;

@@ -221,7 +221,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$moduleInstance = Vtiger_Module::getInstance($moduleName);
 		$blockInstance = Vtiger_Block::getInstance('LBL_ITEM_DETAILS', $moduleInstance);
 
-		for($i=0; $i<count($itemFieldsName); $i++) {
+		for($i=0; $i<php7_count($itemFieldsName); $i++) {
 			$fieldName = $itemFieldsName[$i];
 
 			if ($moduleName === 'PurchaseOrder' && $fieldName !== 'image') {
@@ -344,7 +344,7 @@ if(defined('VTIGER_UPGRADE')) {
 		$primaryModuleName = $primaryModuleInstance->getName();
 		$relatedModuleName = $relatedModuleInstance->getName();
 
-		$relatedModulesIgnored = $ignoreRelationFieldMapping[$primaryModuleName];
+		//$relatedModulesIgnored = $ignoreRelationFieldMapping[$primaryModuleName];
 		if (in_array($relatedModuleName, $ignoreRelationFieldMapping)) {
 			continue;
 		}
@@ -634,7 +634,7 @@ if(defined('VTIGER_UPGRADE')) {
 			$commentIds[] = $row['modcommentsid'];
 		}
 
-		if (count($commentIds) > 0) {
+		if (php7_count($commentIds) > 0) {
 			$db->pquery('UPDATE vtiger_modcomments SET is_private = 0 WHERE modcommentsid IN ('.generateQuestionMarks($commentIds).')', $commentIds);
 		}
 
@@ -1461,7 +1461,7 @@ if(defined('VTIGER_UPGRADE')) {
 	for ($i=0; $i<$rows; $i++) {
 		$deletablePicklists[] = $db->query_result($deletedPicklistResult, $i, 'picklistid');
 	}
-	if (count($deletablePicklists)) {
+	if (php7_count($deletablePicklists)) {
 		$db->pquery('DELETE FROM vtiger_role2picklist WHERE picklistid IN ('.generateQuestionMarks($deletablePicklists).')', array($deletablePicklists));
 	}
 
@@ -1672,7 +1672,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$menuGroupedByParent = $menuStructure->regroupMenuByParent($menuGroupedByParent);
 	foreach ($menuGroupedByParent as $app => $appModules) {
 		$modules = array();
-		if ($appsList[$app]) {
+		if (isset($appsList[$app]) && $appsList[$app]) {
 			$modules = $appsList[$app];
 		}
 		foreach ($appModules as $moduleName => $moduleModel) {
@@ -1805,7 +1805,7 @@ if(defined('VTIGER_UPGRADE')) {
 		foreach ($fieldMap as $values) {
 			$potentialfid = getFieldid($potentialTab, $values[0]);
 			$projectfid = getFieldid($projectTab, $values[1]);
-			$editable = $values[4];
+			$editable = isset($values[4])? $values[4] : 1;
 			$db->pquery($mapSql, array($potentialfid, $projectfid, $editable));
 		}
 	}
@@ -2183,7 +2183,7 @@ if(defined('VTIGER_UPGRADE')) {
 			unset($relatedTables['vtiger_crmentity']);
 
 			if (is_array($relatedTables)) {
-				if ($skippedTables[$moduleName]) {
+				if (isset($skippedTables[$moduleName]) && $skippedTables[$moduleName]) {
 					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTables[$moduleName]));
 				}
 				if ($skippedTablesForAll) {

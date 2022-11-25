@@ -47,7 +47,7 @@ class Zend_Gdata_Health_Extension_Ccr extends Zend_Gdata_App_Extension_Element
      * @param DOMElement $element (optional) DOMElement from which this
      *          object should be constructed.
      */
-    public function __construct($element = null)
+    public function __construct($element = null, $ns = null)
     {
         throw new Zend_Exception(
             'Google Health API has been discontinued by Google and was removed'

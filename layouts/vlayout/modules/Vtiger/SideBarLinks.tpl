@@ -14,7 +14,7 @@
 	{foreach item=SIDEBARLINK from=$QUICK_LINKS['SIDEBARLINK']}
         {assign var=SIDE_LINK_URL value=decode_html($SIDEBARLINK->getUrl())}
 		{assign var="EXPLODED_PARSE_URL" value=explode('?',$SIDE_LINK_URL)}
-		{assign var="COUNT_OF_EXPLODED_URL" value=count($EXPLODED_PARSE_URL)}
+		{assign var="COUNT_OF_EXPLODED_URL" value=php7_count($EXPLODED_PARSE_URL)}
 		{if $COUNT_OF_EXPLODED_URL gt 1}
 			{assign var="EXPLODED_URL" value=$EXPLODED_PARSE_URL[$COUNT_OF_EXPLODED_URL-1]}
 		{/if}

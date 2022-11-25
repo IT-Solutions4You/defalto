@@ -148,9 +148,18 @@
 			try{
 				$operation = strtolower($this->operationName);
 				if(!$this->preLogin){
-					$params[] = $user;
+					$params["user"] = $user;
 					return call_user_func_array($this->handlerMethod,$params);
 				}else{
+
+					/* PHP 8.x fix to match target handler arguments (named parameter) */
+					if ($this->handlerMethod == "vtws_login") {
+						if (isset($params["accessKey"])) {
+							$params["pwd"] = $params["accessKey"];
+							unset($params["accessKey"]);
+						}
+					}
+
 					$userDetails = call_user_func_array($this->handlerMethod,$params);
 					if(is_array($userDetails)){
 						return $userDetails;

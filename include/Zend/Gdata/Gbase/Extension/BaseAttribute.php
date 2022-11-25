@@ -43,7 +43,7 @@ class Zend_Gdata_Gbase_Extension_BaseAttribute extends Zend_Gdata_App_Extension_
      * @param string $text (optional) The text value of the Base attribute
      * @param string $text (optional) The type of the Base attribute
      */
-    public function __construct($name = null, $text = null, $type = null)
+    public function __construct($name = null, $text = null, $type = null, $other = null)
     {
         throw new Zend_Exception(
             'Google Base API has been discontinued by Google and was removed'

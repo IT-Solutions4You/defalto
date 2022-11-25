@@ -178,6 +178,16 @@ jQuery.Class('Install_Index_Js', {}, {
 
 	registerEventForStep6: function () {
 		jQuery('input[name="step7"]').on('click', function () {
+			var username = jQuery('input[name="myname"]').val();
+			if (username.length < 1) {
+				alert('Please enter your name.');
+				return;
+			}
+			var email = jQuery('input[name="myemail"]').val();
+			if (email.length < 1) {
+				alert('Please enter your email.');
+				return;
+			}
 			var industry = jQuery('select[name="industry"]').val();
 			if (industry.length < 1) {
 				alert('Please select appropriate industry option.');
