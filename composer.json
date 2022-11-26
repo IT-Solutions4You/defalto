@@ -7,7 +7,8 @@
     "ext-xml": "*",
     "adodb/adodb-php": "5.*",
     "ezyang/htmlpurifier": "4.*",
-    "michelf/php-markdown": "1.*"
+    "michelf/php-markdown": "1.*",
+    "smarty/smarty": "3.1.39"
   },
   "config": {
     "bin-dir": "bin",
