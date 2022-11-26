@@ -165,7 +165,7 @@ class Vtiger_Utils {
 		$adb->dieOnError = false;
 
 		$tablename = Vtiger_Utils::SQLEscape($tablename);
-		$tablecheck = $adb->pquery("SHOW TABLES LIKE ?", array($tablename));
+		$tablecheck = $adb->pquery("SHOW TABLES LIKE '" . $tablename . "'");
 
 		$tablePresent = true;
 		if(empty($tablecheck) || $adb->num_rows($tablecheck) === 0)
