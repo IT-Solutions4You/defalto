@@ -6,7 +6,8 @@
     "ext-simplexml": "*",
     "ext-xml": "*",
     "adodb/adodb-php": "5.*",
-    "ezyang/htmlpurifier": "4.*"
+    "ezyang/htmlpurifier": "4.*",
+    "michelf/php-markdown": "1.*"
   },
   "config": {
     "bin-dir": "bin",
