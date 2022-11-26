@@ -5,7 +5,8 @@
     "ext-mysqli": "*",
     "ext-simplexml": "*",
     "ext-xml": "*",
-    "adodb/adodb-php": "5.*"
+    "adodb/adodb-php": "5.*",
+    "ezyang/htmlpurifier": "4.*"
   },
   "config": {
     "bin-dir": "bin",
