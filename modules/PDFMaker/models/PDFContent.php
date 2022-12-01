@@ -214,12 +214,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $this->convertRelatedModule();
         $this->replaceFieldsToContent(self::$module, self::$focus);
         $this->convertInventoryModules();
-
-        if ($this->focus->column_fields['assigned_user_id'] == '') {
-            $result = self::$db->pquery('SELECT smownerid FROM vtiger_crmentity WHERE crmid = ?', array(self::$focus->id));
-            $this->focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'smownerid');
-        }
-
+        $this->retrieveAssignedUserId();
         $this->handleRowbreak();
         $this->replaceUserCompanyFields();
 
@@ -238,6 +233,15 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         list($PDF_content['header'], $PDF_content['body'], $PDF_content['footer']) = explode(self::$section_sep, self::$content);
 
         return $PDF_content;
+    }
+
+    public function retrieveAssignedUserId()
+    {
+        if (self::$focus->column_fields['assigned_user_id'] == '') {
+            $result = self::$db->pquery('SELECT smownerid FROM vtiger_crmentity WHERE crmid = ?', array(self::$focus->id));
+
+            self::$focus->column_fields['assigned_user_id'] = self::$db->query_result($result, 0, 'smownerid');
+        }
     }
 
     private function convertEntityImages()
@@ -550,7 +554,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         if ($is_related === false) {
             $vattable = '';
 
-            if (count($Products['TOTAL']['VATBLOCK']) > 0) {
+            if (php7_count($Products['TOTAL']['VATBLOCK']) > 0) {
                 $vattable = "<table border='1' style='border-collapse:collapse;' cellpadding='3'>";
                 $vattable .= "<tr>
                                 <td nowrap align='center'>" . vtranslate('Name') . "</td>
@@ -585,7 +589,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 $VExploded = explode('#VATBLOCK_START#', self::$content);
                 $VExplodedPdf[] = $VExploded[0];
 
-                for ($iterator = 1; $iterator < count($VExploded); $iterator++) {
+                for ($iterator = 1; $iterator < php7_count($VExploded); $iterator++) {
                     $VSubExploded = explode('#VATBLOCK_END#', $VExploded[$iterator]);
 
                     foreach ($VSubExploded as $Vpart) {
@@ -597,7 +601,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                     $VExplodedPdf[$Vhighestpartid] = '';
                 }
 
-                if (count($Products['TOTAL']['VATBLOCK']) > 0) {
+                if (php7_count($Products['TOTAL']['VATBLOCK']) > 0) {
                     foreach ($Products['TOTAL']['VATBLOCK'] as $keyW => $valueW) {
                         foreach ($VProductParts as $productpartid => $productparttext) {
                             if ($valueW['netto'] != 0) {
@@ -727,7 +731,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 $Details['P'][$i]['PS_CRMID'] = $psid;
                 $Details['P'][$i]['PS_NO'] = $PData['hdnProductcode' . $sequence];
 
-                if (count($PData['subprod_qty_list' . $sequence]) > 0) {
+                if (php7_count($PData['subprod_qty_list' . $sequence]) > 0) {
                     foreach ($PData['subprod_qty_list' . $sequence] as $sid => $SData) {
                         $sname = $SData['name'];
 
@@ -826,7 +830,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                     $Tax_Values = array();
                     $VatPercent = array();
 
-                    for ($tax_count = 0; $tax_count < count($tax_details); $tax_count++) {
+                    for ($tax_count = 0; $tax_count < php7_count($tax_details); $tax_count++) {
                         $tax_name = $tax_details[$tax_count]['taxname'];
                         $tax_label = $tax_details[$tax_count]['taxlabel'];
                         $lineItemId = $this->getItemIdBySequence($i, $focus->id);
@@ -849,7 +853,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                         }
                     }
 
-                    if (count($Tax_Values) > 0) {
+                    if (php7_count($Tax_Values) > 0) {
                         $tax_avg_value = array_sum($Tax_Values);
                     }
 
@@ -904,7 +908,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         $total_vat_percent = 0;
 
         if ($taxtype !== 'individual') {
-            if (count($finalDetails['taxes']) > 0) {
+            if (php7_count($finalDetails['taxes']) > 0) {
                 foreach ($finalDetails['taxes'] as $TAX) {
                     $tax_name = $TAX['taxname'];
                     $Vat_Block[$tax_name]['label'] = $TAX['taxlabel'];
@@ -1004,7 +1008,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                     $breakline_type = '';
 
-                    if (count($breaklines) > 0) {
+                    if (php7_count($breaklines) > 0) {
                         if ($tableTag !== false) {
                             $breakline_type = '</table>' . self::$pagebreak . $tableTag['tag'];
 
@@ -1027,7 +1031,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                     $Exploded = explode('#PRODUCTBLOC_' . $block_type . 'START#', self::$content);
                     $ExplodedPdf[] = $Exploded[0];
 
-                    for ($iterator = 1; $iterator < count($Exploded); $iterator++) {
+                    for ($iterator = 1; $iterator < php7_count($Exploded); $iterator++) {
                         $SubExploded = explode('#PRODUCTBLOC_' . $block_type . 'END#', $Exploded[$iterator]);
 
                         foreach ($SubExploded as $part) {
@@ -1222,17 +1226,17 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                         $partsArr = explode(self::$rowbreak, $tmpPb->innertext);
 
-                        for ($i = 0; $i < (count($partsArr) - 1); $i++) {
+                        for ($i = 0; $i < (php7_count($partsArr) - 1); $i++) {
                             $tmpPb->innertext = $partsArr[$i];
                             $addition = '<tr>';
 
-                            for ($j = 0; $j < count($prev_sibling_styles); $j++) {
+                            for ($j = 0; $j < php7_count($prev_sibling_styles); $j++) {
                                 $addition .= '<td ' . $prev_sibling_styles[$j] . '>&nbsp;</td>';
                             }
 
                             $addition .= '<td style="' . $tmpPb->getAttribute('style') . '">' . $partsArr[$i + 1] . '</td>';
 
-                            for ($j = 0; $j < count($next_sibling_styles); $j++) {
+                            for ($j = 0; $j < php7_count($next_sibling_styles); $j++) {
                                 $addition .= '<td ' . $next_sibling_styles[$j] . '>&nbsp;</td>';
                             }
 
@@ -1241,7 +1245,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                             $tmpPb->parent()->outertext = $tmpPb->parent()->outertext . $addition;
                         }
 
-                        $toSkip = count($partsArr) - 2;
+                        $toSkip = php7_count($partsArr) - 2;
                     }
                 }
             }
