@@ -61,7 +61,8 @@ class Vtiger_Session {
 	 * Is key defined in session?
 	 */
 	static function has($key) {
-		return HTTP_Session2::is_set($key);
+		$val = static::get($key, null);
+		return $val === null;
 	}
 
 	/**

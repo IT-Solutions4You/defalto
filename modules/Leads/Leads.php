@@ -501,7 +501,7 @@ class Leads extends CRMEntity {
 			$profileList = getCurrentUserProfileList();
 			$sql1 = "select vtiger_field.fieldid,fieldlabel from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where vtiger_field.tabid=7 and vtiger_field.displaytype in (1,2,3,4) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
 			$params1 = array();
-			if (count($profileList) > 0) {
+			if (php7_count($profileList) > 0) {
 				$sql1 .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")  group by fieldid";
 				array_push($params1, $profileList);
 			}
@@ -653,14 +653,14 @@ class Leads extends CRMEntity {
 		$list_buttons = Array();
 
 		if(isPermitted('Leads','Delete','') == 'yes') {
-			$list_buttons['del'] =	$app_strings[LBL_MASS_DELETE];
+			$list_buttons['del'] =	$app_strings["LBL_MASS_DELETE"];
 		}
 		if(isPermitted('Leads','EditView','') == 'yes') {
-			$list_buttons['mass_edit'] = $app_strings[LBL_MASS_EDIT];
-			$list_buttons['c_owner'] = $app_strings[LBL_CHANGE_OWNER];
+			$list_buttons['mass_edit'] = $app_strings["LBL_MASS_EDIT"];
+			$list_buttons['c_owner'] = $app_strings["LBL_CHANGE_OWNER"];
 		}
 		if(isPermitted('Emails','EditView','') == 'yes')
-			$list_buttons['s_mail'] = $app_strings[LBL_SEND_MAIL_BUTTON];
+			$list_buttons['s_mail'] = $app_strings["LBL_SEND_MAIL_BUTTON"];
 
 		// end of mailer export
 		return $list_buttons;
@@ -731,7 +731,7 @@ class Leads extends CRMEntity {
 		foreach($tableColumns as $tableColumn){
 			$tableInfo = explode('.', $tableColumn);
 			$duplicateCheckClause .= " ifnull($tableColumn,'null') = ifnull(temp.$tableInfo[1],'null')";
-			if (count($tableColumns) != $i++) $duplicateCheckClause .= " AND ";
+			if (php7_count($tableColumns) != $i++) $duplicateCheckClause .= " AND ";
 		}
 
 		$query = $selectClause . $fromClause .

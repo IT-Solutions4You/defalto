@@ -581,7 +581,7 @@ class Vtiger_MailScannerAction {
 		$name = $mailrecord->_fromname;
 		if(!empty($name)) {
 			$nameParts = explode(' ', $name);
-			if(count($nameParts) > 1) {
+			if(php7_count($nameParts) > 1) {
 				$firstName = $nameParts[0];
 				unset($nameParts[0]);
 				$lastName = implode(' ', $nameParts);

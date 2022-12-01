@@ -32,7 +32,7 @@ class Mobile_WS_AlertDetailsWithMessage extends Mobile_WS_FetchAllAlerts {
 		return $response;
 	}
 	
-	function getAlertDetails($alertid) {
+	function getAlertDetails($alertid=false) {
 		
 		$alertModel = Mobile_WS_AlertModel::modelWithId($alertid);
 		

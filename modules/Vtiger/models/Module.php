@@ -612,13 +612,13 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	public function getConfigureRelatedListFields(){
 		$showRelatedFieldModel = $this->getHeaderAndSummaryViewFieldsList();
 		$relatedListFields = array();
-		if(count($showRelatedFieldModel) > 0) {
+		if(php7_count($showRelatedFieldModel) > 0) {
 			foreach ($showRelatedFieldModel as $key => $field) {
 				$relatedListFields[$field->get('column')] = $field->get('name');
 			}
 		}
 
-		if(count($relatedListFields)>0) {
+		if(php7_count($relatedListFields)>0) {
 			$nameFields = $this->getNameFields();
 			foreach($nameFields as $fieldName){
 				if(!isset($relatedListFields[$fieldName]) || !$relatedListFields[$fieldName]) {
@@ -1523,7 +1523,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			$relatedListFields['filestatus'] = 'filestatus';
 		}
 
-		if(count($relatedListFields) > 0) {
+		if(php7_count($relatedListFields) > 0) {
 			$currentUser = Users_Record_Model::getCurrentUserModel();
 			$queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
 			$queryGenerator->setFields($relatedListFields);
@@ -1783,7 +1783,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	public function getPopupViewFieldsList(){
 		$summaryFieldsList = $this->getHeaderAndSummaryViewFieldsList();
 
-		if(count($summaryFieldsList) > 0){
+		if(php7_count($summaryFieldsList) > 0){
 			 $popupFields = array_keys($summaryFieldsList);
 		}else{
 			$popupFields = array_values($this->getRelatedListFields());

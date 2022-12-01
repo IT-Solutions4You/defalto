@@ -17,7 +17,7 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
         return $permissions;
 	}
 	
-	protected function getRecordsListFromRequest(Vtiger_Request $request) {
+	protected function getRecordsListFromRequest(Vtiger_Request $request, $model = false) {
 		$cvId = $request->get('viewname');
 		$module = $request->get('module');
 		if(!empty($cvId) && $cvId=="undefined"){
@@ -28,7 +28,7 @@ abstract class Vtiger_Mass_Action extends Vtiger_Action_Controller {
 		$excludedIds = $request->get('excluded_ids');
 
 		if(!empty($selectedIds) && $selectedIds != 'all') {
-			if(!empty($selectedIds) && count($selectedIds) > 0) {
+			if(!empty($selectedIds) && php7_count($selectedIds) > 0) {
 				return $selectedIds;
 			}
 		}

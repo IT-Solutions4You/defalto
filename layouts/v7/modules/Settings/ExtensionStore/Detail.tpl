@@ -119,7 +119,7 @@
 									<div class="pull-left">
 										<span data-score="{$ON_RATINGS}" class="rating" data-readonly="true"></span>
 										<div>out of 5</div>
-										<div>({count($CUSTOMER_REVIEWS)} Reviews)</div>
+										<div>({php7_count($CUSTOMER_REVIEWS)} Reviews)</div>
 									</div>
 								</div>
 								{if ($REGISTRATION_STATUS) and ($PASSWORD_STATUS)}

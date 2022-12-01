@@ -57,7 +57,7 @@ class Zend_Gdata_Spreadsheets_DocumentQuery extends Zend_Gdata_Query
     /**
      * Constructs a new Zend_Gdata_Spreadsheets_DocumentQuery object.
      */
-    public function __construct()
+    public function __construct($url = null)
     {
         parent::__construct();
     }

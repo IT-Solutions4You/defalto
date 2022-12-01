@@ -34,7 +34,7 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
 				'username' => $username,
 				'email' => $email,
 				'time' => $time,
-				'hash' => md5($username.$time)
+				'hash' => hash('sha256',$username.$time)
 			)
 		);
 		$trackURL = Vtiger_ShortURL_Helper::generateURL($options);
@@ -42,7 +42,7 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['emailId'])) {
 						You recently requested a password reset for your VtigerCRM Open source Account.<br> 
 						To create a new password, click on the link <a target="_blank" href='.$trackURL.'>here</a>. 
 						<br><br> 
-						This request was made on '.date("Y-m-d H:i:s").' and will expire in next 24 hours.<br><br> 
+						This request was made on '.date("Y-m-d H:i:s").' and will expire in next 1 hour.<br><br> 
 						Regards,<br> 
 						VtigerCRM Open source Support Team.<br>';
 

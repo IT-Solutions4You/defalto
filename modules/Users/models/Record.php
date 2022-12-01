@@ -737,7 +737,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		return false;
 	}
 	
-	public function getActiveAdminUsers() {
+	public static function getActiveAdminUsers() {
 		$db = PearDatabase::getInstance();
 
 		$sql = 'SELECT id FROM vtiger_users WHERE status=? AND is_admin=?';
@@ -778,7 +778,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @param User Ids of user to be deleted and user
 	 * to whom records should be assigned
 	 */
-	public function deleteUserPermanently($userId, $newOwnerId) {
+	public static function deleteUserPermanently($userId, $newOwnerId) {
 		$db = PearDatabase::getInstance();
 
 		$sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";

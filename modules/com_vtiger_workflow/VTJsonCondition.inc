@@ -31,7 +31,7 @@ class VTJsonCondition {
 					$conditionGroup = 0;
 				}
 				preg_match('/(\w+) : \((\w+)\) (\w+)/', $cond['fieldname'], $matches);
-				if (count($matches) == 0) {
+				if (php7_count($matches) == 0) {
 					if ($cond['fieldname'] == '_VT_add_comment' && $cond['isEvaluated']) {
 						$expressionResults[$conditionGroup][$i]['result'] = $cond['isEvaluated'];
 					} else {
@@ -199,7 +199,7 @@ class VTJsonCondition {
 			$date = new DateTimeField($fieldValue);
 			$fieldValue = $date->getDisplayDateTimeValue();
 			$valueArray = explode(' ', $value);
-			if(count($valueArray) == 1) {
+			if(php7_count($valueArray) == 1) {
 				$fieldValueArray = explode(' ', $fieldValue);
 				$fieldValue = getValidDBInsertDateValue($fieldValueArray[0]);
 			}

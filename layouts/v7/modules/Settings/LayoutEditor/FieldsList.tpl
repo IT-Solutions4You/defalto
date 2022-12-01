@@ -247,7 +247,7 @@
 										</li>
 									{/if}
 								{/foreach}
-								{if count($FIELDS_LIST)%2 eq 0 }
+								{if php7_count($FIELDS_LIST)%2 eq 0 }
 									{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
 										<li class="row dummyRow">
 											<span class="dragUiText col-sm-8">
@@ -420,7 +420,7 @@
 										</li>
 									{/if}
 								{/foreach}
-								{if count($FIELDS_LIST)%2 neq 0 }
+								{if php7_count($FIELDS_LIST)%2 neq 0 }
 									{if $BLOCK_MODEL->isAddCustomFieldEnabled()}
 										<li class="row dummyRow">
 											<span class="dragUiText col-sm-8">

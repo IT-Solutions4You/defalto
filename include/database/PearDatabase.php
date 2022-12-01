@@ -143,7 +143,10 @@ class PearDatabase{
 
 	function startTransaction() {
 		/* Restore php_mysql based behavior */
-		if (true) { $this->database->Execute('SET AUTOCOMMIT=1'); return; }
+		if (true) { 
+			if ($this->database) $this->database->Execute('SET AUTOCOMMIT=1'); 
+			return; 
+		}
 
 	    if($this->isPostgres()) return;
 		$this->checkConnection();
@@ -396,7 +399,7 @@ class PearDatabase{
     {
 	//if(dbType=="oci8") return 'empty_blob()';
 	//else return 'null';
-	if (is_string) return 'null';
+	if ($is_string) return 'null';
 	return null;
     }
 
@@ -554,7 +557,7 @@ class PearDatabase{
 
     function sql_quote($data) {
 		if (is_array($data)) {
-			switch($data['type']) {
+			switch($cur = $data['type']) {
 			case 'text':
 			case 'numeric':
 			case 'integer':
@@ -687,7 +690,7 @@ class PearDatabase{
 		//$this->println($rowdata);
 		//Commented strip_selected_tags and added to_html function for HTML tags vulnerability
 		if($col == 'fieldlabel') $coldata = $rowdata[$col];
-		else $coldata = to_html($rowdata[$col]);
+		else $coldata = isset($rowdata[$col]) ? to_html($rowdata[$col]) : null;
 		return $coldata;
     }
 
@@ -811,6 +814,12 @@ class PearDatabase{
 		    $this->println("ADODB Connect : DBType not specified");
 		    return;
 		}
+
+		// Backward compatible mode for adodb library.
+		if ($this->dbType == 'mysqli') {
+			mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
+		}
+
 		$this->database = ADONewConnection($this->dbType);
 	
 		// Setting client flag for Import csv to database(LOAD DATA LOCAL INFILE.....)

@@ -31,7 +31,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 	protected function checkFileUriInRelocatedMouldesFolder($fileuri) {
 		$parts = explode('?', $fileuri);
 		$filename = $parts[0];
-		if (count($parts) > 1) $query = $parts[1];
+		if (php7_count($parts) > 1) $query = $parts[1];
 
 		// prefix the base lookup folder (relocated file).
 		if (strpos($filename, 'modules') === 0) {

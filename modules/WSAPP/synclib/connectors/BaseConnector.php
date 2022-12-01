@@ -17,11 +17,11 @@ abstract class WSAPP_BaseConnector {
 		
 	}
 	
-	public function pull(){
+	public function pull(WSAPP_SyncStateModel $state){
 		return false;
 	}
 
-	public function push(){
+	public function push($records, $state){
 		return false;
 	}
 
@@ -38,7 +38,7 @@ abstract class WSAPP_BaseConnector {
 	function getSyncState(){
 		return new WSAPP_SyncStateModel();
 	}
-	function updateSyncState(){
+	function updateSyncState(WSAPP_SyncStateModel $state){
 
 	}
 

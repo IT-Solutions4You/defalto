@@ -27,11 +27,11 @@ class Users_ForgotPassword_Handler {
 		$viewer->assign('USERNAME', $userName);
 		$changePasswordTrackUrl = $site_URL."/modules/Users/actions/ForgotPassword.php";
 
-		$expiryTime = (int)$request->get('time')+(24*60*60);
+		$expiryTime = (int)$request->get('time')+(60*60);
 		$currentTime = time();
 		if($expiryTime > $currentTime) {
 			$secretToken = uniqid();
-			$secretHash = md5($userName.$secretToken);
+			$secretHash = hash('sha256',$userName.$secretToken);
 			$options = array(
 				'handler_path' => 'modules/Users/handlers/ForgotPassword.php',
 				'handler_class' => 'Users_ForgotPassword_Handler',

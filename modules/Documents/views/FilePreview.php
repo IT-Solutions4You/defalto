@@ -12,7 +12,7 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View {
 
 	public function requiresPermission(Vtiger_Request $request){
 		$permissions = parent::requiresPermission($request);
-		
+
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView',  'record_parameter' => 'record');
 		return $permissions;
 	}
@@ -66,8 +66,8 @@ class Documents_FilePreview_View extends Vtiger_IndexAjax_View {
 		}
 		//support for plain/text document
 		$extn = 'txt';
-		if(count($parts) > 1){
-			$extn = end($parts);
+		if(php7_count($parts) > 1){
+		  $extn = strtolower(end($parts));
 		}
 		$viewer = $this->getViewer($request);
 		$viewer->assign('MODULE_NAME',$moduleName);

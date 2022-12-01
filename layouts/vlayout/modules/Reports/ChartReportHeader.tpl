@@ -98,7 +98,7 @@
 						</div>
 						<br>
 						<div class='row-fluid'>
-							{assign var=filterConditionNotExists value=(count($SELECTED_ADVANCED_FILTER_FIELDS[1]['columns']) eq 0 and count($SELECTED_ADVANCED_FILTER_FIELDS[2]['columns']) eq 0)}
+							{assign var=filterConditionNotExists value=(php7_count($SELECTED_ADVANCED_FILTER_FIELDS[1]['columns']) eq 0 and php7_count($SELECTED_ADVANCED_FILTER_FIELDS[2]['columns']) eq 0)}
 							<button class="btn" name="modify_condition" data-val="{$filterConditionNotExists}">
 								<strong>{vtranslate('LBL_MODIFY_CONDITION', $MODULE)}</strong>&nbsp;&nbsp;
 								<i class="{if $filterConditionNotExists eq true} icon-chevron-right {else} icon-chevron-down {/if}"></i>

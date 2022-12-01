@@ -42,10 +42,10 @@ class InvoiceHandler extends VTEventHandler {
             $wsrecord = vtws_retrieve($wsid,$current_user);
             if ($oldCurrency != $newCurrency && $oldCurrency != '') {
               if($oldConversionRate != ''){ 
-                $wsrecord['received'] = floatval(($wsrecord['received']/$oldConversionRate) * $wsrecord['conversion_rate']);
+                $wsrecord['received'] = floatval(((float)$wsrecord['received']/$oldConversionRate) * (float)$wsrecord['conversion_rate']);
               }  
             }
-            $wsrecord['balance'] = floatval($wsrecord['hdnGrandTotal'] - $wsrecord['received']);
+            $wsrecord['balance'] = floatval((float)$wsrecord['hdnGrandTotal'] - (float)$wsrecord['received']);
             if ($wsrecord['balance'] == 0) {
                 $wsrecord['invoicestatus'] = 'Paid';
             }

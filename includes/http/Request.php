@@ -57,13 +57,7 @@ class Vtiger_Request {
 			}
 		}
 		if($isJSON) {
-			$oldValue = Zend_Json::$useBuiltinEncoderDecoder;
-			Zend_Json::$useBuiltinEncoderDecoder = false;
-			$decodeValue = Zend_Json::decode($value);
-			if(isset($decodeValue)) {
-				$value = $decodeValue;
-			}
-			Zend_Json::$useBuiltinEncoderDecoder  = $oldValue;
+			$value = json_decode($value, true);
 		}
 
         //Handled for null because vtlib_purify returns empty string

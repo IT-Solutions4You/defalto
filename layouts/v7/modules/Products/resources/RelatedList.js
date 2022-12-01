@@ -92,6 +92,8 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
         params['related_module'] = relatedModuleName;
         params['mode'] = 'updateQuantity';
         params['relatedRecords'] = JSON.stringify(idList);
+        params['record'] = sourceRecordId;
+        params['relatedModule'] = relatedModuleName;
         app.request.post({data: params}).then(function(responseData) {
             aDeferred.resolve(responseData);
         });
@@ -146,7 +148,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
 		var thisInstance = this;
 		var sourceModuleName = thisInstance.parentModuleName;
 		var relatedModuleName = thisInstance.relatedModulename;
-		
+
 		if (sourceModuleName == relatedModuleName) {
 			var bundleCostInfo = jQuery('.bundleCostInfo', thisInstance.relatedContentContainer);
 			return this._super().then(function() {
@@ -155,7 +157,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
 		}
 		return this._super();
 	},
-	
+
 	/**
 	 * Function to handle next page navigation
 	 */
@@ -171,7 +173,7 @@ PriceBooks_RelatedList_Js("Products_RelatedList_Js", {}, {
 		}
 		return this._super();
 	},
-	
+
 	/**
 	 * Function to handle page jump in related list
 	 */

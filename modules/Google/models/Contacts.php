@@ -120,7 +120,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
     function getUserDefineFieldsValues() {
         $fieldValues = array();
         $userDefinedFields = $this->data['entity']['gContact$userDefinedField'];
-        if(is_array($userDefinedFields) && count($userDefinedFields)) {
+        if(is_array($userDefinedFields) && php7_count($userDefinedFields)) {
             foreach($userDefinedFields as $userDefinedField) {
                 $fieldName = $userDefinedField['key'];
                 $fieldValues[$fieldName] = $userDefinedField['value'];
@@ -229,7 +229,7 @@ class Google_Contacts_Model extends WSAPP_SyncRecordModel {
      * @param <date> $date Google Date
      * @return <date> Vtiger date Format
      */
-    public function vtigerFormat($date) {
+    public static function vtigerFormat($date) {
         list($date, $timestring) = explode('T', $date);
         list($time, $tz) = explode('.', $timestring);
 
