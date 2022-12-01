@@ -1,126 +1,63 @@
 <?php
-/**
- * This file is part of the IT-Solutions4You CRM Software.
- *
- * (c) IT-Solutions4You s.r.o [info@its4you.sk]
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+
+/* * *******************************************************************************
+ * The content of this file is subject to the PDF Maker Free license.
+ * ("License"); You may not use this file except in compliance with the License
+ * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
+ * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
+ * All Rights Reserved.
+ * ****************************************************************************** */
 
 class PDFMaker
 {
     public $log;
     public $db;
-    public $name = 'PDFMaker';
+    public $list_fields_name = [];
+    public $list_fields = [];
+    public $related_tables = [];
+    public $registerCustomLinks = [
+        ['PDFMaker', 'HEADERSCRIPT', 'PDFMakerFreeActionsJS', 'layouts/$LAYOUT$/modules/PDFMaker/resources/PDFMakerFreeActions.js'],
+        ['Quotes', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker', 'module=PDFMaker&view=GetPDFActions&record=$RECORD$'],
+        ['SalesOrder', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker', 'module=PDFMaker&view=GetPDFActions&record=$RECORD$'],
+        ['PurchaseOrder', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker', 'module=PDFMaker&view=GetPDFActions&record=$RECORD$'],
+        ['Invoice', 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker', 'module=PDFMaker&view=GetPDFActions&record=$RECORD$'],
+    ];
+    public $moduleName = 'PDFMaker';
+    /**
+     * @var mixed|null
+     */
     public $id;
-    public $basicModules;
-    public $pageFormats;
 
-    // constructor of PDFMaker class
-
-    function __construct()
+    public function __construct()
     {
         global $log;
 
         $this->log = $log;
         $this->db = PearDatabase::getInstance();
-
-        // array of modules that are allowed for basic version type
-        $this->basicModules = array('20', '21', '22', '23');
-        $this->id = getTabId($this->name);
+        $this->name = $this->moduleName;
+        $this->id = getTabId($this->moduleName);
     }
 
-
-    function vtlib_handler($modulename, $event_type)
+    public function vtlib_handler($modulename, $event_type)
     {
         switch ($event_type) {
             case 'module.postinstall':
                 $this->executeSql();
+                $this->addCustomLinks();
                 break;
+            case 'module.disabled':
             case 'module.preupdate':
-                $res = @$this->db->pquery('SHOW COLUMNS FROM vtiger_pdfmaker_settings', array());
-                $is_there = false;
-
-                if ($res) {
-                    while ($row = $this->db->fetchByAssoc($res)) {
-                        if ($row['field'] == 'is_portal') {
-                            $is_there = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!$is_there) {
-                    $this->db->pquery(
-                        "ALTER TABLE `vtiger_pdfmaker_settings` ADD `is_portal` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `file_name`",
-                        array()
-                    );
-                }
-
-                $res = @$this->db->pquery('SHOW COLUMNS FROM vtiger_pdfmaker_settings', array());
-                $is_there = false;
-
-                if ($res) {
-                    while ($row = $this->db->fetchByAssoc($res)) {
-                        if ($row['field'] == 'is_listview') {
-                            $is_there = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!$is_there) {
-                    $this->db->pquery(
-                        "ALTER TABLE `vtiger_pdfmaker_settings` ADD `is_listview` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `is_portal`",
-                        array()
-                    );
-                }
-
+                $this->preUpdate();
+                $this->deleteCustomLinks();
                 break;
+            case 'module.enabled':
             case 'module.postupdate':
-                $this->db->pquery(
-                    'UPDATE vtiger_links SET linkurl = ?  WHERE linklabel = ? AND linktype = ? AND linkurl = ?',
-                    array('layouts/v7/modules/PDFMaker/resources/PDFMakerFreeActions.js', 'PDFMakerJS', 'HEADERSCRIPT', 'modules/PDFMaker/PDFMakerActions.js')
-                );
-                $this->db->pquery(
-                    'DELETE FROM vtiger_links WHERE linklabel = ? AND linktype = ? AND linkurl LIKE ?',
-                    array('PDF Export', 'LISTVIEWBASIC', '%getPDFListViewPopup2%')
-                );
-                $this->db->pquery(
-                    'DELETE FROM vtiger_links  WHERE linklabel = ? AND linktype = ? AND linkurl = ? ',
-                    array('PDFMaker', 'DETAILVIEWWIDGET', 'module=PDFMaker&action=PDFMakerAjax&file=getPDFActions&record=$RECORD$')
-                );
-
-                $res = $this->db->pquery(
-                    'SELECT * FROM vtiger_profile2standardpermissions WHERE tabid=(SELECT tabid FROM vtiger_tab WHERE name = ?)',
-                    array('PDFMaker')
-                );
-
-                if ($this->db->num_rows($res) > 0) {
-                    $res = $this->db->pquery(
-                        'SELECT * FROM vtiger_pdfmaker_profilespermissions',
-                        array()
-                    );
-
-                    if ($this->db->num_rows($res) == 0) {
-                        $this->db->pquery('INSERT INTO vtiger_pdfmaker_profilespermissions SELECT profileid, operation, permissions FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)', array('PDFMaker'));
-                    }
-
-                    $this->db->pquery(
-                        'DELETE FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)',
-                        array('PDFMaker')
-                    );
-                }
-
-                $this->DeleteAllRefLinks();
-
+                $this->postUpdate();
+                $this->addCustomLinks();
                 break;
             case 'module.preuninstall':
                 $this->removeLinks();
-                break;
-            case 'module.enabled':
-
+                $this->deleteCustomLinks();
                 break;
         }
     }
@@ -258,70 +195,96 @@ class PDFMaker
         );
 
         $this->db->pquery($settingsSql, $settingsData4);
-        $seqUpdate = "UPDATE vtiger_pdfmaker_seq SET id='4' WHERE id='0'";
-        $this->db->pquery($seqUpdate, array());
-
-        $this->AddLinks('Quotes');
-        $this->AddLinks('SalesOrder');
-        $this->AddLinks('PurchaseOrder');
-        $this->AddLinks('Invoice');
-
+        $this->db->pquery('UPDATE vtiger_pdfmaker_seq SET id=? WHERE id=?', array('4', '0'));
         $this->db->pquery('INSERT INTO vtiger_pdfmaker_releases (version, date, updated) VALUES(?, NOW(), 1)', array(PDFMaker_Version_Helper::$version));
     }
 
-    public function AddLinks($modulename)
+    public function addCustomLinks()
     {
-        require_once('vtlib/Vtiger/Module.php');
+        $this->updateCustomLinks();
+    }
 
-        $link_module = Vtiger_Module::getInstance($modulename);
-        //$link_module->addLink('DETAILVIEWWIDGET', 'PDFMaker', 'module=PDFMaker&action=PDFMakerAjax&file=getPDFActions&record=$RECORD$');
-        $link_module->addLink('DETAILVIEWSIDEBARWIDGET', 'PDFMaker', 'module=PDFMaker&view=GetPDFActions&record=$RECORD$');
+    public function updateCustomLinks($register = true)
+    {
+        foreach ($this->registerCustomLinks as $customLink) {
+            list($moduleName, $type, $label, $url, $icon, $sequence, $handler) = array_pad($customLink, 7, null);
+            $module = Vtiger_Module::getInstance($moduleName);
+            $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
 
-        if ($modulename != 'Events') {
-            $link_module->addLink('LISTVIEWMASSACTION', 'PDF Export', 'javascript:PDFMaker_Actions_Js.getPDFListViewPopup2(this,\'$MODULE$\');');
-        }
+            if ($module) {
+                $module->deleteLink($type, $label);
 
-        // remove non-standardly created links (difference in linkicon column makes the links twice when updating from previous version)
-        global $adb;
-        $tabid = getTabId($modulename);
-        $res = $adb->pquery('SELECT * FROM vtiger_links WHERE tabid=? AND linktype=? AND linklabel=? AND linkurl=? ORDER BY linkid DESC', array($tabid, 'DETAILVIEWWIDGET', 'PDFMaker', 'module=PDFMaker&action=PDFMakerAjax&file=getPDFActions&record=$RECORD$'));
-        $i = 0;
-
-        while ($row = $adb->fetchByAssoc($res)) {
-            $i++;
-
-            if ($i > 1) {
-                $adb->pquery('DELETE FROM vtiger_links WHERE linkid=?', array($row['linkid']));
+                if ($register) {
+                    $module->addLink($type, $label, $url, $icon, $sequence, $handler);
+                }
             }
-        }
-
-        $res = $adb->pquery('SELECT * FROM vtiger_links WHERE tabid=? AND linktype=? AND linklabel=? AND linkurl=? ORDER BY linkid DESC', array($tabid, 'LISTVIEWMASSACTION', 'PDF Export', 'javascript:getPDFListViewPopup2(this,\'$MODULE$\');'));
-        $i = 0;
-
-        while ($row = $adb->fetchByAssoc($res)) {
-            $i++;
-
-            if ($i > 1) {
-                $adb->pquery('DELETE FROM vtiger_links WHERE linkid=?', array($row['linkid']));
-            }
-        }
-
-        if ($modulename == 'Calendar') {
-            $this->AddLinks('Events');
         }
     }
 
-    public function DeleteAllRefLinks()
+    public function preUpdate()
+    {
+        $res = @$this->db->pquery("SHOW COLUMNS FROM vtiger_pdfmaker_settings", array());
+        $is_there = false;
+        if ($res) {
+            while ($row = $this->db->fetchByAssoc($res)) {
+                if ($row['field'] == 'is_portal') {
+                    $is_there = true;
+                    break;
+                }
+            }
+        }
+        if (!$is_there) {
+            $this->db->pquery("ALTER TABLE `vtiger_pdfmaker_settings` ADD `is_portal` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `file_name`", array());
+        }
+        $res = @$this->db->pquery("SHOW COLUMNS FROM vtiger_pdfmaker_settings", array());
+        $is_there = false;
+        if ($res) {
+            while ($row = $this->db->fetchByAssoc($res)) {
+                if ($row['field'] == 'is_listview') {
+                    $is_there = true;
+                    break;
+                }
+            }
+        }
+        if (!$is_there) {
+            $this->db->pquery("ALTER TABLE `vtiger_pdfmaker_settings` ADD `is_listview` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `is_portal`", array());
+        }
+    }
+
+    public function deleteCustomLinks()
+    {
+        $this->updateCustomLinks(false);
+    }
+
+    public function postUpdate()
+    {
+        $this->db->pquery('DELETE FROM vtiger_links WHERE linklabel = ? AND linktype = ? AND linkurl = ?', array('PDFMakerJS', 'HEADERSCRIPT', 'modules/PDFMaker/PDFMakerActions.js'));
+        $this->db->pquery('DELETE FROM vtiger_links WHERE linklabel = ? AND linktype = ? AND linkurl LIKE ?', array('PDF Export', 'LISTVIEWBASIC', '%getPDFListViewPopup2%'));
+        $this->db->pquery('DELETE FROM vtiger_links  WHERE linklabel = ? AND linktype = ? AND linkurl = ?', array('PDFMaker', 'DETAILVIEWWIDGET', 'module=PDFMaker&action=PDFMakerAjax&file=getPDFActions&record=$RECORD$'));
+
+        $res = $this->db->pquery("SELECT * FROM vtiger_profile2standardpermissions WHERE tabid=(SELECT tabid FROM vtiger_tab WHERE name = ?)", array('PDFMaker'));
+        if ($this->db->num_rows($res) > 0) {
+            $res = $this->db->pquery("SELECT * FROM vtiger_pdfmaker_profilespermissions", array());
+            if ($this->db->num_rows($res) == 0) {
+                $this->db->pquery("INSERT INTO vtiger_pdfmaker_profilespermissions SELECT profileid, operation, permissions FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)", array('PDFMaker'));
+            }
+            $this->db->pquery("DELETE FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)", array('PDFMaker'));
+        }
+
+        $this->deleteAllRefLinks();
+    }
+
+    public function deleteAllRefLinks()
     {
         require_once('vtlib/Vtiger/Link.php');
 
-        $link_res = $this->db->pquery('SELECT tabid FROM vtiger_tab WHERE isentitytype = ?', array('1'));
+        $link_res = $this->db->pquery("SELECT tabid FROM vtiger_tab WHERE isentitytype = ?", array('1'));
 
         while ($link_row = $this->db->fetchByAssoc($link_res)) {
-            Vtiger_Link::deleteLink($link_row['tabid'], 'DETAILVIEWWIDGET', 'PDFMaker');
-            Vtiger_Link::deleteLink($link_row['tabid'], 'DETAILVIEWSIDEBARWIDGET', 'PDFMaker');
-            Vtiger_Link::deleteLink($link_row['tabid'], 'LISTVIEWMASSACTION', 'PDF Export', 'javascript:getPDFListViewPopup2(this,\'$MODULE$\');');
-            Vtiger_Link::deleteLink($link_row['tabid'], 'LISTVIEWMASSACTION', 'PDF Export', 'javascript:PDFMaker_Actions_Js.getPDFListViewPopup2(this,\'$MODULE$\');');
+            Vtiger_Link::deleteLink($link_row["tabid"], "DETAILVIEWWIDGET", "PDFMaker");
+            Vtiger_Link::deleteLink($link_row["tabid"], "DETAILVIEWSIDEBARWIDGET", "PDFMaker");
+            Vtiger_Link::deleteLink($link_row["tabid"], "LISTVIEWMASSACTION", "PDF Export", 'javascript:getPDFListViewPopup2(this,\'$MODULE$\');');
+            Vtiger_Link::deleteLink($link_row["tabid"], "LISTVIEWMASSACTION", "PDF Export", "javascript:PDFMaker_Actions_Js.getPDFListViewPopup2(this,'$" . "MODULE$');");
         }
     }
 
@@ -329,18 +292,8 @@ class PDFMaker
     {
         require_once('vtlib/Vtiger/Link.php');
 
-        $tabid = getTabId('PDFMaker');
-        Vtiger_Link::deleteAll($tabid);
-        $this->DeleteAllRefLinks();
-    }
+        Vtiger_Link::deleteAll(getTabId('PDFMaker'));
 
-    public function GetPageFormats()
-    {
-        return $this->pageFormats;
-    }
-
-    public function GetBasicModules()
-    {
-        return $this->basicModules;
+        $this->deleteAllRefLinks();
     }
 }
