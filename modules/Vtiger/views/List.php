@@ -444,7 +444,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$currentCVSelectedFields = array();
 			foreach ($allCustomViews as $cat => $views) {
 				foreach ($views as $viewModel) {
-					if ($viewModel->getId() === $viewer->get_template_vars('VIEWID')) {
+					if ($viewModel->getId() === $viewer->getTemplateVars('VIEWID')) {
 						$currentCVSelectedFields = $viewModel->getSelectedFields();
 						$viewer->assign('CURRENT_CV_MODEL', $viewModel);
 						break;

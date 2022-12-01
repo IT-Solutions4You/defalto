@@ -8,7 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Vtiger_Viewer extends SmartyBC {
+class Vtiger_Viewer extends Smarty {
 
 	const DEFAULTLAYOUT = 'v7';
 	const DEFAULTTHEME  = 'softed';
