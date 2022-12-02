@@ -23,8 +23,8 @@ class PDFMaker_MPDF_Model extends \Mpdf\Mpdf
     public $useGraphs;
     public $showStats;
 
-    public function __construct() {
-        parent::__construct();
+    public function __construct(array $config = [], $container = null) {
+        parent::__construct($config, $container);
 
         require 'MPDFConfig.php';
     }

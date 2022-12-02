@@ -46,8 +46,7 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
 
     public function convertVatBlock($content)
     {
-        $simple_html_dom_file = $this->getSimpleHtmlDomFile();
-        require_once($simple_html_dom_file);
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html($content);
 
         if (is_array($html->find('td'))) {
@@ -64,11 +63,6 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
         }
 
         return $content;
-    }
-
-    public function getSimpleHtmlDomFile()
-    {
-        return 'include/simplehtmldom/simple_html_dom.php';
     }
 
     public function getUserValue($name, $data)
@@ -169,10 +163,8 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
     {
         $i = 'site_URL';
         $surl = vglobal($i);
-        $simple_html_dom_file = $this->getSimpleHtmlDomFile();
 
-        require_once($simple_html_dom_file);
-
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html($content);
 
         if (is_array($html->find('img'))) {

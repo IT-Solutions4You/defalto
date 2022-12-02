@@ -111,10 +111,9 @@ class PDFMaker_checkGenerate_Model extends Vtiger_Module_Model
         $surl = vglobal($e);
         $http = 'http://';
 
-        $simple_html_dom_file = $this->getSimpleHtmlDomFile();
-        require_once($simple_html_dom_file);
-
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html($content);
+
         if (is_array($html->find('img'))) {
             foreach ($html->find('img') as $img) {
                 if (strpos($img->src, $http) === false) {
@@ -127,10 +126,5 @@ class PDFMaker_checkGenerate_Model extends Vtiger_Module_Model
         } else {
             return $content;
         }
-    }
-
-    private function getSimpleHtmlDomFile()
-    {
-        return 'include/simplehtmldom/simple_html_dom.php';
     }
 }

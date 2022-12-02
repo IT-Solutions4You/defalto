@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 include_once 'vtlib/Vtiger/Mailer.php';
-include_once 'include/simplehtmldom/simple_html_dom.php';
+include_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
 include_once 'libraries/InStyle/InStyle.php';
 include_once 'libraries/ToAscii/ToAscii.php';
 include_once 'include/database/PearDatabase.php';

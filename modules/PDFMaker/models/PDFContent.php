@@ -151,10 +151,6 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
     {
         self::$execution_time_start = microtime(true);
 
-        $simple_html_dom_file = $this->getSimpleHtmlDomFile();
-
-        require_once($simple_html_dom_file);
-
         $v = 'vtiger_current_version';
         $vcv = vglobal($v);
         $ir = 'img_root_directory';
@@ -195,6 +191,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
         self::$content = html_entity_decode(self::$content, ENT_QUOTES, self::$def_charset);
 
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html(self::$content);
 
         if (is_array($html->find('div[style^=page-break-after]'))) {
@@ -728,6 +725,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                 }
 
                 $psdescription = $Details['P'][$i][strtoupper($entitytype) . '_DESCRIPTION'];
+
+                $Details['P'][$i]['RECORD_ID'] = $psid;
                 $Details['P'][$i]['PS_CRMID'] = $psid;
                 $Details['P'][$i]['PS_NO'] = $PData['hdnProductcode' . $sequence];
 
@@ -1008,7 +1007,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                     $breakline_type = '';
 
-                    if (php7_count($breaklines) > 0) {
+                    if (php7_count($breaklines)) {
                         if ($tableTag !== false) {
                             $breakline_type = '</table>' . self::$pagebreak . $tableTag['tag'];
 
@@ -1051,8 +1050,9 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
                             foreach ($ProductParts as $productpartid => $productparttext) {
                                 $breakline = '';
+                                $breakLineId = $Product_Details['RECORD_ID'] . '_' . $Product_Details['PRODUCTSEQUENCE'];
 
-                                if ($breakline_type != '' && $block_type == '' && isset($breaklines[$Product_Details['RECORD_ID'] . '_' . $Product_Details['PRODUCTSEQUENCE']])) {
+                                if (!empty($breakline_type) && isset($breaklines[$breakLineId])) {
                                     $breakline = $breakline_type;
                                 }
 
@@ -1066,7 +1066,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                             }
                         }
                     }
-
+                    
                     self::$content = implode('', $ExplodedPdf);
                 }
             }
@@ -1078,10 +1078,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function convertProductBlock($block_type = '')
     {
-        $simple_html_dom_file = $this->getSimpleHtmlDomFile();
-
-        require_once($simple_html_dom_file);
-
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html(self::$content);
         $tableDOM = false;
 
@@ -1190,6 +1187,7 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
 
     private function handleRowbreak()
     {
+        PDFMaker_PDFContent_Model::includeSimpleHtmlDom();
         $html = str_get_html(self::$content);
         $toSkip = 0;
 
@@ -1460,5 +1458,10 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
         }
 
         return '';
+    }
+
+    public static function includeSimpleHtmlDom()
+    {
+        require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
     }
 }
