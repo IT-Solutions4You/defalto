@@ -58,7 +58,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $mod_strings_array = Vtiger_Language_Handler::getModuleStringsFromFile(self::$language, self::$module);
         self::$mod_strings = $mod_strings_array['languageStrings'];
 
-        $this->EMAILMaker = new EmailMaker_EmailMaker_Model();
+        $this->EMAILMaker = new EMAILMaker_EMAILMaker_Model();
 
         self::$type = 'professional';
 

@@ -90,23 +90,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
     public static function getSimpleHtmlDomFile()
     {
-
-        if (!class_exists('simple_html_dom_node')) {
-            $pdfmaker_simple_html_dom = "modules/PDFMaker/resources/simple_html_dom/simple_html_dom.php";
-            $emailmaker_simple_html_dom = "modules/EMAILMaker/resources/simple_html_dom/simple_html_dom.php";
-
-            if (file_exists($pdfmaker_simple_html_dom)) {
-                $file = $pdfmaker_simple_html_dom;
-            } elseif (file_exists($emailmaker_simple_html_dom)) {
-                $file = $emailmaker_simple_html_dom;
-            } else {
-                $file = "include/simplehtmldom/simple_html_dom.php";
-            }
-        }
-
-        if (!empty($file)) {
-            require_once $file;
-        }
+        require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
     }
 
     public function GetPageFormats()

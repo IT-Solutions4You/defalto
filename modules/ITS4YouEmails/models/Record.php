@@ -20,19 +20,6 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $logo = false;
     public $emailNames = [];
 
-    public static function includeNewLibraries()
-    {
-        require_once 'modules/ITS4YouLibrary/PHPMailer/src/Exception.php';
-        require_once 'modules/ITS4YouLibrary/PHPMailer/src/PHPMailer.php';
-        require_once 'modules/ITS4YouLibrary/PHPMailer/src/SMTP.php';
-    }
-
-    public static function includeOldLibraries()
-    {
-        require_once 'modules/Emails/class.smtp.php';
-        require_once 'modules/Emails/class.phpmailer.php';
-    }
-
     /**
      * @return string
      * @throws Exception

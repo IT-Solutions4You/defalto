@@ -37,10 +37,10 @@
             {if !vtlib_isModuleActive('ITS4YouEmails')}
                 <br>
                 <div class="displayInlineBlock alert alert-danger">{vtranslate('LBL_INSTALL_ITS4YOUEMAIL', $MODULE)}</div>
-            {/if}
-            {if !is_file('modules/ITS4YouLibrary/PHPMailer/src/PHPMailer.php')}
-                <br>
-                <div class="displayInlineBlock alert alert-danger">{vtranslate('LBL_INSTALL_PHPMAILER', $MODULE)}</div>
+                {if !ITS4YouEmails_Module_Model::isPHPMailerInstalled()}
+                    <br>
+                    <div class="displayInlineBlock alert alert-danger">{vtranslate('LBL_INSTALL_PHPMAILER', $MODULE)}</div>
+                {/if}
             {/if}
         </div>
 

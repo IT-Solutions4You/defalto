@@ -30,10 +30,11 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
     {
         $mode = $request->getMode();
         if (!empty($mode)) {
-            echo $this->invokeExposedMethod($mode, $request);
+            $this->invokeExposedMethod($mode, $request);
             return;
         }
-        echo $this->showModuleDetailView($request);
+
+        $this->showModuleDetailView($request);
     }
 
     public function showModuleDetailView(Vtiger_Request $request)
@@ -214,6 +215,11 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         if ($display) {
             $this->preProcessDisplay($request);
         }
+    }
+
+    public function preProcessTplName(Vtiger_Request $request)
+    {
+        return 'DetailViewPreProcess.tpl';
     }
 
     public function showRelatedList(Vtiger_Request $request)

@@ -3,7 +3,8 @@
     "ext-mbstring": "*",
     "ext-mysqli": "*",
     "ext-simplexml": "*",
-    "ext-xml": "*"
+    "ext-xml": "*",
+    "phpmailer/phpmailer": "*"
   },
   "config": {
     "bin-dir": "bin",

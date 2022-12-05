@@ -7,9 +7,11 @@
  * All Rights Reserved.
  ********************************************************************************/
 
-ITS4YouEmails_Record_Model::includeNewLibraries();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-class ITS4YouEmails_Mailer_Model extends \ITS4You\PHPMailer\PHPMailer
+class ITS4YouEmails_Mailer_Model extends PHPMailer
 {
     public $debug = false;
     public $embedImages;

@@ -276,27 +276,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         return $this->profilesPermissions;
     }
 
-    /*
-    public function getSideBarLinks($linkParams) {
-
-        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
-        $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
-
-        $quickLinks = array(
-            array(
-                'linktype' => 'SIDEBARLINK',
-                'linklabel' => 'LBL_RECORDS_LIST',
-                'linkurl' => $this->getDefaultUrl(),
-                'linkicon' => '',
-            ),
-        );
-        foreach($quickLinks as $quickLink) {
-            $links['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
-        }
-        return $links;
-    }
-    */
-
     /**
      * Function to get Settings links
      * @return <Array>
@@ -338,29 +317,11 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
             $settingsLinks[] = array(
                 'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_MODULE_REQUIREMENTS',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&parent=Settings&view=Requirements&mode=Module&sourceModule=EMAILMaker',
-                'linkicon' => ''
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_LICENSE',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&view=License&parent=Settings&sourceModule=EMAILMaker',
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
                 'linklabel' => 'LBL_UPGRADE',
                 'linkurl' => 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1',
             );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_UNINSTALL',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&view=Uninstall&parent=Settings&sourceModule=EMAILMaker',
-            );
         }
+
         return $settingsLinks;
     }
 
