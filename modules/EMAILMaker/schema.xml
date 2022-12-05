@@ -1,0 +1,445 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_emakertemplates</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates` (
+          `foldername` varchar(100) DEFAULT NULL,
+          `templatename` varchar(100) DEFAULT NULL,
+          `subject` varchar(255) DEFAULT NULL,
+          `description` longtext,
+          `body` longtext,
+          `deleted` int(1) NOT NULL DEFAULT '0',
+          `templateid` int(19) NOT NULL AUTO_INCREMENT,
+          `module` varchar(255) DEFAULT NULL,
+          `owner` int(11) NOT NULL DEFAULT '1',
+          `sharingtype` char(7) NOT NULL DEFAULT 'public',
+          `category` varchar(255) DEFAULT NULL,
+          `is_listview` tinyint(1) NOT NULL DEFAULT '0',
+          `is_theme` int(1) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`templateid`),
+          KEY `emakertemplates_foldernamd_templatename_subject_idx` (`foldername`,`templatename`,`subject`),
+          KEY `deleted` (`deleted`),
+          KEY `is_listview` (`is_listview`),
+          KEY `is_theme` (`is_theme`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=0 ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_seq</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_seq` (
+          `id` int(11) NOT NULL
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_attch</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_attch` (
+          `attid` int(11) NOT NULL auto_increment,
+          `esentid` int(11) NOT NULL,
+          `filename` varchar(255) NOT NULL,
+          `file_desc` varchar(255) NOT NULL,
+          `type` varchar(255) NOT NULL,
+          PRIMARY KEY  (`attid`),
+          KEY `attid` (`attid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_emails</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_emails` (
+          `emailid` int(11) NOT NULL AUTO_INCREMENT,
+          `esentid` int(11) NOT NULL,
+          `pid` int(11) DEFAULT NULL,
+          `email` varchar(255) NOT NULL,
+          `email_address` varchar(250) DEFAULT NULL,
+          `cc` longtext,
+          `bcc` longtext,
+          `status` int(2) NOT NULL DEFAULT '0',
+          `parent_id` int(11) DEFAULT NULL,
+          `error` text,
+          `cc_ids` text,
+          `bcc_ids` text,
+          `email_send_date` datetime DEFAULT NULL,
+          `deleted` int(11) DEFAULT '0',
+          PRIMARY KEY (`emailid`),
+          KEY `esentid` (`esentid`),
+          KEY `pid` (`pid`),
+          KEY `status` (`status`),
+          KEY `deleted` (`deleted`),
+          KEY `parent_id` (`parent_id`),
+          KEY `esentid_2` (`esentid`,`status`,`deleted`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=0]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_sent</name>
+			<sql><![CDATA[
+        CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_sent` (
+          `esentid` int(11) NOT NULL AUTO_INCREMENT,
+          `from_name` varchar(255) DEFAULT NULL,
+          `from_email` varchar(255) DEFAULT NULL,
+          `subject` varchar(255) DEFAULT NULL,
+          `body` longtext,
+          `type` int(5) NOT NULL,
+          `pdf_template_ids` varchar(255) DEFAULT NULL,
+          `pdf_language` varchar(255) DEFAULT NULL,
+          `total_emails` int(11) DEFAULT '0',
+          `userid` int(11) NOT NULL,
+          `attachments` int(2) DEFAULT '0',
+          `att_documents` text,
+          `send_date` datetime DEFAULT NULL,
+          `drip_group` int(11) DEFAULT NULL,
+          `drip_delay` decimal(11,0) DEFAULT NULL,
+          `total_sent_emails` decimal(11,0) DEFAULT '0',
+          `saved_drip_delay` decimal(11,0) DEFAULT NULL,
+          `related_to` int(11) DEFAULT NULL,
+          `ids_for_pdf` text,
+          `pmodule` varchar(255) DEFAULT NULL,
+          `language` varchar(255) DEFAULT NULL,
+          PRIMARY KEY (`esentid`),
+          KEY `userid` (`userid`),
+          KEY `related_to` (`related_to`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=0 ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_settings</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_settings` (
+          `decimals` tinyint(2) NOT NULL,
+          `decimal_point` char(2) NOT NULL,
+          `thousands_separator` char(2) NOT NULL,
+          `phpmailer_version` VARCHAR( 50 ) NULL DEFAULT 'emailmaker'
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblocks</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblocks` (
+          `relblockid` int(11) NOT NULL,
+          `name` varchar(255) NOT NULL,
+          `module` varchar(255) NOT NULL,
+          `secmodule` varchar(255) NOT NULL,
+          `block` longtext NOT NULL,
+          `deleted` TINYINT NOT NULL DEFAULT '0',
+          PRIMARY KEY  (`relblockid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblocks_seq</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblocks_seq` (
+          `id` int(11) NOT NULL
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblockcol</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblockcol` (
+          `colid` int(19) NOT NULL,
+          `relblockid` int(19) NOT NULL,
+          `columnname` varchar(250) NOT NULL,
+          `sortorder` varchar(250) NOT NULL,
+          `sortsequence` tinyint(4) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`relblockid`,`colid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblockcriteria</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblockcriteria` (
+          `relblockid` int(11) NOT NULL,
+          `colid` int(11) NOT NULL,
+          `columnname` varchar(250) NOT NULL,
+          `comparator` varchar(250) NOT NULL,
+          `value` varchar(250) NOT NULL,
+          `groupid` int(11) NOT NULL,
+          `column_condition` varchar(250) NOT NULL,
+          PRIMARY KEY  (`relblockid`,`colid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblockcriteria_g</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblockcriteria_g` (
+          `groupid` int(11) NOT NULL,
+          `relblockid` int(11) NOT NULL,
+          `group_condition` varchar(250) default NULL,
+          `condition_expression` text,
+          PRIMARY KEY  (`groupid`,`relblockid`)
+        ) ENGINE=InnoDB ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblockdatefilter</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblockdatefilter` (
+          `datefilterid` int(11) NOT NULL,
+          `datecolumnname` varchar(250) NOT NULL,
+          `datefilter` varchar(250) NOT NULL,
+          `startdate` date NOT NULL,
+          `enddate` date NOT NULL,
+          PRIMARY KEY  (`datefilterid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_productbloc_tpl</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_productbloc_tpl` (
+          `id` int(11) NOT NULL auto_increment,
+          `name` varchar(255) NOT NULL,
+          `body` longtext NOT NULL,
+          PRIMARY KEY  (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=0]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_ignorepicklistvalues</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_ignorepicklistvalues` (
+          `value` varchar(100) NOT NULL,
+          PRIMARY KEY  (`value`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_license</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_license` (
+          `version_type` varchar(255) NOT NULL,
+          `license_key` varchar(255) NOT NULL,
+          `license_info` text,
+          `license_due_date` date NULL,
+          UNIQUE KEY `version_type` (`version_type`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_version</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_version` (
+          `version` varchar(50) NOT NULL,
+          `license` varchar(255) NOT NULL,
+          UNIQUE KEY `version` (`version`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_profilespermissions</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_profilespermissions` (
+          `profileid` int(11) NOT NULL,
+          `operation` int(11) NOT NULL,
+          `permissions` int(1) NOT NULL,
+          PRIMARY KEY  (`profileid`,`operation`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_picklists</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_picklists` (
+          `tabid` int(11) NOT NULL,
+          `count` decimal(10,0) DEFAULT NULL,
+          KEY `tabid` (`tabid`),
+          KEY `count` (`count`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_sharing</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_sharing` (
+            `templateid` INT( 11 ) NOT NULL ,
+            `shareid` VARCHAR( 10 ) NOT NULL,
+            `setype` VARCHAR( 200 ) NOT NULL ,
+            PRIMARY KEY ( `templateid` , `shareid`,  `setype`)
+            ) ENGINE = InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_default_from</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_default_from` (
+              `templateid` int(11) NOT NULL,
+              `userid` int(11) NOT NULL,
+              `fieldname` varchar(255) COLLATE utf8_bin NOT NULL,
+              UNIQUE KEY `templateid` (`templateid`,`userid`)
+            ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drips</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drips` (
+          `dripid` int(11) NOT NULL,
+          `dripname` varchar(255) NOT NULL,
+          `description` text,
+          `module` varchar(255) NOT NULL,
+          `owner` int(11) NOT NULL,
+          `sharingtype` varchar(7) NOT NULL,
+          `deleted` int(5) NOT NULL,
+          PRIMARY KEY (`dripid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drips_seq</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drips_seq` (
+          `id` int(11) NOT NULL
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drip_groups</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drip_groups` (
+          `drip_group_id` int(11) NOT NULL,
+          `drip_group_name` varchar(255) NOT NULL,
+          `drip_group_save_date` datetime NOT NULL,
+          PRIMARY KEY (`drip_group_id`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drip_groups_seq</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drip_groups_seq` (
+          `id` int(11) NOT NULL,
+          PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_delay</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_delay` (
+              `delay_active` int(2) NOT NULL DEFAULT '0',
+              PRIMARY KEY (`delay_active`)
+            ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drip_tpls</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drip_tpls` (
+          `driptplid` int(11) NOT NULL,
+          `dripid` int(11) NOT NULL,
+          `templateid` int(11) NOT NULL,
+          `delay` int(11) NOT NULL,
+          `deleted` int(2) NOT NULL,
+          PRIMARY KEY (`driptplid`),
+          KEY `templateid` (`templateid`),
+          KEY `dripid` (`dripid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_drip_tpls_seq</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_drip_tpls_seq` (
+          `id` int(11) NOT NULL
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_sharing_drip</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_sharing_drip` (
+          `dripid` int(11) NOT NULL,
+          `shareid` varchar(10) COLLATE utf8_bin NOT NULL,
+          `setype` varchar(200) COLLATE utf8_bin NOT NULL,
+          PRIMARY KEY (`dripid`,`shareid`,`setype`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_documents</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_documents` (
+          `templateid` int(11) NOT NULL,
+          `documentid` int(11) NOT NULL,
+          UNIQUE KEY `templateid_2` (`templateid`,`documentid`),
+          KEY `templateid` (`templateid`),
+          KEY `documentid` (`documentid`)
+        ) ENGINE=InnoDB]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_userstatus</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_userstatus` (
+            `templateid` INT NOT NULL ,
+            `userid` INT NOT NULL ,
+            `is_active` TINYINT( 1 ) NOT NULL ,
+            `is_default` TINYINT( 1 ) NOT NULL ,
+            `sequence` INT( 6 ) NOT NULL DEFAULT '1',
+            PRIMARY KEY ( `templateid` , `userid` )
+        ) ENGINE = InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_label_keys</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_label_keys` (
+                `label_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+                `label_key` VARCHAR( 128 ) NOT NULL ,
+                UNIQUE (`label_key`)
+        ) ENGINE = InnoDB;
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_label_vals</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_label_vals` (
+                `label_id` INT NOT NULL ,
+                `lang_id` INT NOT NULL ,
+                `label_value` VARCHAR( 1024 ) NOT NULL ,
+                PRIMARY KEY ( `label_id` , `lang_id` )
+        ) ENGINE = InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_images</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_images` (
+                `crmid` int(11) NOT NULL,
+                `productid` int(11) NOT NULL,
+                `sequence` int(11) NOT NULL,
+                `attachmentid` int(11) NOT NULL,
+                `width` int(11) DEFAULT NULL,
+                `height` int(11) DEFAULT NULL,
+                PRIMARY KEY (`crmid`,`productid`,`sequence`)
+        ) ENGINE=InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_relblocksortcol</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_relblocksortcol` (
+          `sortcolid` int(19) NOT NULL,
+          `relblockid` int(19) NOT NULL,
+          `columnname` varchar(250) DEFAULT '',
+          `sortorder` varchar(250) DEFAULT 'Asc',
+          PRIMARY KEY (`sortcolid`,`relblockid`),
+          KEY `fk_1_vtiger_emakertemplates_relblocksortcol` (`relblockid`)
+        ) ENGINE=InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_me</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_me` (
+                  `meid` int(11) NOT NULL AUTO_INCREMENT,
+                  `description` longtext,
+                  `templateid` int(11) NOT NULL,
+                  `listid` int(11) NOT NULL,
+                  `start_of` datetime NOT NULL,
+                  `status` varchar(200) NOT NULL,
+                  `userid` int(11) NOT NULL,
+                  `from_name` varchar(255) NOT NULL,
+                  `from_email` varchar(255) NOT NULL,
+                  `deleted` int(2) NOT NULL,
+                  `esentid` int(11) DEFAULT NULL,
+                  `unsubscribes` int(11) DEFAULT '0',
+                  `total_entries` int(11) DEFAULT '0',
+                  `max_limit` int(11) DEFAULT NULL,
+                  `me_subject` varchar(255) NOT NULL,
+                  `language` varchar(50) DEFAULT NULL,
+                  `email_fieldname` varchar(255) DEFAULT NULL,
+                  PRIMARY KEY (`meid`),
+                  KEY `templateid` (`templateid`),
+                  KEY `listid` (`listid`),
+                  KEY `start_of` (`start_of`),
+                  KEY `status` (`status`),
+                  KEY `userid` (`userid`),
+                  KEY `deleted` (`deleted`),
+                  KEY `esentid` (`esentid`),
+                  KEY `unsubscribes` (`unsubscribes`),
+                  KEY `total_entries` (`total_entries`),
+                  KEY `max_limit` (`max_limit`)
+                ) ENGINE=InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_contents</name>
+			<sql><![CDATA[
+                CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_contents` (
+              `contentid` int(11) NOT NULL AUTO_INCREMENT,
+              `activityid` int(11) NOT NULL,
+              `emailid` int(11) NOT NULL,
+              `content` longtext NOT NULL,
+              PRIMARY KEY (`contentid`),
+              KEY `activityid` (`activityid`),
+              KEY `emailid` (`emailid`)
+            ) ENGINE=InnoDB
+            ]]></sql>
+		</table>
+		<table>
+			<name>vtiger_emakertemplates_displayed</name>
+			<sql><![CDATA[CREATE TABLE IF NOT EXISTS `vtiger_emakertemplates_displayed` (
+                  `templateid` int(11) NOT NULL,
+                  `displayed` int(11) NOT NULL,
+                  `conditions` longtext NOT NULL,
+                  PRIMARY KEY (`templateid`),
+                  KEY `displayed` (`displayed`)
+                ) ENGINE=InnoDB
+            ]]></sql>
+		</table>
+	</tables>
+</schema>
