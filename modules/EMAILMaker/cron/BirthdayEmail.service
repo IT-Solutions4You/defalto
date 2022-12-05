@@ -1,0 +1,237 @@
+<?php
+/*********************************************************************************
+ * The content of this file is subject to the EMAIL Maker license.
+ * ("License"); You may not use this file except in compliance with the License
+ * The Initial Developer of the Original Code is IT-Solutions4You s.r.o.
+ * Portions created by IT-Solutions4You s.r.o. are Copyright(C) IT-Solutions4You s.r.o.
+ * All Rights Reserved.
+ ********************************************************************************/
+ 
+$previousBulkSaveMode = $VTIGER_BULK_SAVE_MODE;
+$VTIGER_BULK_SAVE_MODE = true;
+
+vimport('~~includes/Loader.php');  
+vimport('~~includes/runtime/Controller.php');  
+vimport('~~includes/runtime/BaseModel.php');          
+vimport('~~includes/runtime/Globals.php');  
+vimport('~~include/utils/utils.php');  
+vimport('~~include/logging.php');  
+vimport('~~include/database/PearDatabase.php');  
+vimport('~~modules/Emails/Emails.php');  
+vimport('~~modules/EMAILMaker/EMAILMaker.php');  
+vimport('~~vtlib/Vtiger/Mailer.php');  
+vimport('~~modules/EMAILMaker/models/EMAILMaker.php');  
+vimport('~~modules/EMAILMaker/models/EMAILContent.php');  
+
+class EMAILMaker_BirthdayEmail {    
+    var $EMAILMaker = false;     
+    public function process(){
+        require_once('includes/Loader.php');
+        require_once('includes/runtime/Controller.php');
+        require_once('includes/runtime/BaseModel.php');
+        require_once('includes/runtime/Globals.php');
+        require_once('include/utils/utils.php');
+        require_once('include/logging.php');
+        require_once('include/database/PearDatabase.php');
+        require_once('modules/Emails/Emails.php');
+        require_once('modules/EMAILMaker/EMAILMaker.php');
+        include_once('vtlib/Vtiger/Mailer.php');
+        require_once('modules/EMAILMaker/models/EMAILMaker.php');
+        require_once('modules/EMAILMaker/models/EMAILContent.php');
+
+        $this->EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        
+        $adb = PearDatabase::getInstance();
+        $default_charset = vglobal("default_charset");
+        $salt = vglobal("site_URL");
+        $default_language = vglobal("default_language");
+        $default_theme = vglobal("default_theme");
+        
+        $from_name = $from_address = $cc = $bcc = "";
+
+        $Contacts = array();
+        $actual_month = date("m");
+        $actual_day = date("d");
+
+        $result_s = $adb->pquery("SELECT * FROM vtiger_emakertemplates_settings",array());
+        $phpmailer_version  = $adb->query_result($result_s,0,"phpmailer_version");
+
+        $sql = "SELECT vtiger_contactsubdetails.birthday, vtiger_contactdetails.* FROM vtiger_contactdetails 
+                INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
+                INNER JOIN vtiger_contactsubdetails ON vtiger_contactsubdetails.contactsubscriptionid = vtiger_contactdetails.contactid  
+                WHERE vtiger_contactdetails.emailoptout = '0' AND vtiger_crmentity.deleted = '0' AND MONTH(birthday) = '".$actual_month."' AND DAY(birthday) = '".$actual_day."' ";
+        $result = $adb->query($sql);
+        while($row = $adb->fetchByAssoc($result)) {
+            $email = $row['email'];
+
+            if ($email == "") $email = $row['otheremail'];
+            if ($email == "") $email = $row['secondaryemail'];
+
+            $fullname = trim($row['firstname']." ".$row['lastname']);
+
+            if ($email != "") $Contacts[$row['contactid']] = array("fullname"=>$fullname,"email"=>$email);
+        }
+
+        if (count($Contacts) > 0) {
+            
+            $sql2 = "SELECT df.fieldname AS default_from, vtiger_emakertemplates.* FROM vtiger_emakertemplates "
+                  . "INNER JOIN vtiger_emakertemplates_userstatus AS us ON us.templateid = vtiger_emakertemplates.templateid AND us.userid = vtiger_emakertemplates.owner "
+                  . "LEFT JOIN vtiger_emakertemplates_default_from AS df ON df.templateid = vtiger_emakertemplates.templateid AND df.userid = vtiger_emakertemplates.owner " 
+                  . "WHERE vtiger_emakertemplates.templatename = 'BIRTHDAY_EMAIL_CRON' AND us.is_active = '1'";
+            $result2 = $adb->query($sql2);
+            $num_rows2 = $adb->num_rows($result2);
+
+            if ($num_rows2 > 0) {
+                $templateid = $adb->query_result($result2,0,"templateid");
+                $default_from = $adb->query_result($result2,0,"default_from");
+                $load_subject = $adb->query_result($result2,0,"subject");
+                $load_body = $adb->query_result($result2,0,"body");
+                $owner_user_id = $adb->query_result($result2,0,"owner");
+
+                $current_user = CRMEntity::getInstance('Users');
+                $current_user->retrieveCurrentUserInfoFromFile($owner_user_id);
+                    
+                $_SESSION["authenticated_user_id"] = $owner_user_id;
+
+                if(!empty($current_user->theme)) {
+                        $theme = $current_user->theme;
+                } else {
+                        $theme = $default_theme;
+                }
+
+                $_SESSION['vtiger_authenticated_user_theme'] = $theme;
+
+                if(!empty($current_user->language)) {
+                        $current_language = $current_user->language;
+                } else {
+                        $current_language = $default_language;
+                }
+
+                $_SESSION['authenticated_user_language'] = $current_language;
+
+                $from_name = "";
+                $result2 = $adb->pquery("select * from vtiger_organizationdetails where organizationname != ''", array());
+
+                while($row2 = $adb->fetchByAssoc($result2)) {
+                    $from_name = $row2['organizationname'];
+                }
+
+                $result_a = $adb->pquery("select * from vtiger_systems where from_email_field != ? AND server_type = ?", array('','email'));
+                $replyToEmail = $from_address = $adb->query_result($result_a,0,"from_email_field"); 
+
+                if ($default_from != "" && $default_from != "0_organization_email") {
+                    list($c,$email_field) = explode("_",$default_from,2);
+                    $from_name = trim($current_user->first_name." ".$current_user->last_name);
+                    if (isset($current_user->column_fields[$email_field])) {
+                        $replyToEmail = $current_user->column_fields[$email_field];
+                        if (empty($from_address)) $from_address = $replyToEmail;
+                    }
+                }    
+
+                if (empty($from_address)) {
+                    $from_address = $current_user->column_fields['email1'];
+                    if (empty($replyToEmail)) $replyToEmail = $from_address;
+                }    
+                
+                $Attachments = array();
+                $sql_ad = "SELECT vtiger_seattachmentsrel.attachmentsid FROM vtiger_notes 
+                          INNER JOIN vtiger_crmentity 
+                             ON vtiger_crmentity.crmid = vtiger_notes.notesid
+                          INNER JOIN vtiger_seattachmentsrel 
+                             ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid   
+                          INNER JOIN vtiger_emakertemplates_documents 
+                             ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
+                          WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
+                $result_ad = $adb->pquery($sql_ad, array($templateid));
+                $num_rows_ad = $adb->num_rows($result_ad);  
+                if($num_rows_ad > 0) {
+                    while($row_ad = $adb->fetchByAssoc($result_ad)) {
+                            $Attachments[] = $row_ad['attachmentsid'];
+                    }
+                }
+
+                foreach ($Contacts AS $cid => $cdata){                    
+                    $focus = CRMEntity::getInstance("Emails");
+                    $focus->filename = $focus->parent_id = $focus->parent_type = "";
+                    $focus->column_fields["assigned_user_id"]=$current_user->id;
+                    $focus->column_fields["activitytype"]="Emails";
+                    $focus->column_fields["date_start"] = date('Y-m-d');
+                    $focus->column_fields["time_start"] = gmdate("H:i:s");
+                    
+                    $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance("Contacts", $cid, $current_language, $cid, "Contacts");
+                    $EMAILContentModel->setSubject($load_subject);
+                    $EMAILContentModel->setBody($load_body);
+                    $EMAILContentModel->getContent();
+
+                    $subject = $EMAILContentModel->getSubject();
+                    $subject = html_entity_decode($subject, ENT_QUOTES, $default_charset);
+                    
+                    $body = $EMAILContentModel->getBody();
+                    $preview_body = $EMAILContentModel->getPreview();
+                    $Email_Images = $EMAILContentModel->getEmailImages();
+
+                    $pos = strpos($body, '$logo$');
+                    if ($pos !== false){
+                            $body =str_replace('$logo$','<img src="cid:logo" />',$body);
+                            $logo=1;
+                    } 
+                    
+                    $focus->column_fields["parent_id"] = $cid;
+                    $focus->column_fields["subject"] = $subject;
+                    $focus->column_fields["description"] = $preview_body;
+                    $saved_toid = $cdata["fullname"]."<".$cdata["email"].">"; 
+                    $focus->column_fields["saved_toid"] = $saved_toid;
+                    $focus->column_fields["ccmail"] = $cc;
+                    $focus->column_fields["bccmail"] = "";
+                    $focus->save("Emails");
+
+                    if (count($Attachments) > 0) {    
+                        foreach ($Attachments AS $att_id) {
+                            $sql_se='replace into vtiger_seattachmentsrel (crmid, attachmentsid) values (?,?)';
+                            $adb->pquery($sql_se, array($focus->id, $att_id));
+                        }
+                    }
+
+                    $body .= $this->EMAILMaker->getTrackImageDetails($cid, $emailid);
+                    $mail_status = $this->send_mail($cdata["email"],$from_name,$from_address,$replyToEmail,$subject,$body,$cc,$bcc,$focus->id,$logo,$Email_Images,$phpmailer_version);
+                    
+                    if ($mail_status){
+                        $adb->pquery("UPDATE vtiger_emaildetails SET email_flag = 'SENT' WHERE emailid = ?",array($focus->id)); 
+                    }
+                    unset($focus); 
+                }
+            }
+        }
+    }    
+    function send_mail($emailadd,$from_name,$from_email,$replyToEmail,$subject,$body,$cc,$bcc,$parent_id,$logo,$Email_Images,$phpmailer_version){
+     
+        $mailer = new Vtiger_Mailer();
+        $mailer->IsHTML(true);
+        $mailer->ConfigSenderInfo($from_email, $from_name, $replyToEmail);
+        $mailer->Subject = $subject;
+        $mailer->Body = $body;
+        $mailer->AddAddress($emailadd);
+        $mailer = $this->EMAILMaker->addAllAttachments($mailer,$parent_id);
+
+        if (count($Email_Images) > 0){
+            foreach ($Email_Images AS $cid => $cdata){
+                $mailer->AddEmbeddedImage($cdata["path"], $cid, $cdata["name"]);
+            }    
+        }  
+        
+        if($logo ==1) $mail->AddEmbeddedImage('themes/images/logo_mail.jpg', 'logo', 'logo.jpg',"base64","image/jpg");
+
+        $ccs = empty($cc_string)? array() : explode(',', $cc_string);
+        $bccs= empty($bcc_string)?array() : explode(',', $bcc_string);
+
+        foreach($ccs as $cc) $mailer->AddCC($cc);
+        foreach($bccs as $bcc)$mailer->AddBCC($bcc);
+
+        return $mailer->Send(true);
+    }
+}
+
+$EMAILMaker_BirthdayEmail = new EMAILMaker_BirthdayEmail();
+$EMAILMaker_BirthdayEmail->process();
+
+$VTIGER_BULK_SAVE_MODE = $previousBulkSaveMode;
