@@ -8,8 +8,22 @@
     "adodb/adodb-php": "5.*",
     "ezyang/htmlpurifier": "4.*",
     "michelf/php-markdown": "1.*",
-    "smarty/smarty": "4.*"
+    "smarty/smarty": "4.*",
+    "fullcalendar/fullcalendar": "*"
   },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "fullcalendar/fullcalendar",
+        "version": "5.11.3",
+        "dist": {
+          "url": "https://github.com/fullcalendar/fullcalendar/releases/download/v5.11.3/fullcalendar-5.11.3.zip",
+          "type": "zip"
+        }
+      }
+    }
+  ],
   "config": {
     "bin-dir": "bin",
     "discard-changes": true,
