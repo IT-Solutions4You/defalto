@@ -14,6 +14,7 @@
     "ezyang/htmlpurifier": "4.*",
     "kcfinder/kcfinder": "*",
     "michelf/php-markdown": "1.*",
+    "fullcalendar/fullcalendar": "*",
     "monolog/monolog": "^3.5",
     "mpdf/mpdf": "*",
     "myclabs/deep-copy": "^1.7",
@@ -78,6 +79,17 @@
           "classmap": ["/"]
         },
         "version": "1"
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "fullcalendar/fullcalendar",
+        "version": "5.11.3",
+        "dist": {
+          "url": "https://github.com/fullcalendar/fullcalendar/releases/download/v5.11.3/fullcalendar-5.11.3.zip",
+          "type": "zip"
+        }
       }
     }
   ],
