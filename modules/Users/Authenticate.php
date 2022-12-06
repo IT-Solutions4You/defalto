@@ -65,8 +65,8 @@ if($focus->is_authenticated()) {
 	//Enabled session variable for KCFINDER
 	$_SESSION['KCFINDER'] = array();
 	$_SESSION['KCFINDER']['disabled'] = false;
-	$_SESSION['KCFINDER']['uploadURL'] = "test/upload";
-	$_SESSION['KCFINDER']['uploadDir'] = "/test/upload";
+    $_SESSION['KCFINDER']['uploadURL'] = '../../../test/upload';
+    $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
 	$deniedExts = implode(" ", $upload_badext);
 	$_SESSION['KCFINDER']['deniedExts'] = $deniedExts;
 

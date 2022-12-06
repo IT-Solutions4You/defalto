@@ -12,22 +12,6 @@ Vtiger_Detail_Js("Inventory_Detail_Js", {
         var thisInstance = app.controller();
         thisInstance.showRecordPreview(recordId);
     },
-    
-    sendEmailPDFClickHandler: function(url) {
-        var params = app.convertUrlToDataParams(url);
-        
-        app.helper.showProgress();
-                app.request.post({data:params}).then(function(err,response){
-                    var callback = function() {
-                        var emailEditInstance = new Emails_MassEdit_Js();
-                        emailEditInstance.registerEvents();                      
-                    };
-                    var data = {};
-                    data['cb'] = callback;
-                    app.helper.hideProgress();
-                    app.helper.showModal(response,data);
-                });
-    },
 },
 {
     showRecordPreview: function(recordId, templateId) {
