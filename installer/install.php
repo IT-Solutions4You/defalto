@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 class ITS4YouDownload
 {
@@ -15,20 +23,22 @@ class ITS4YouDownload
     public const START = 'Start installation';
     public const SUCCESS = 'File extract successfully';
     public const ERROR = 'File not opened';
-    public $url = '';
-    public $dir = '/';
-    public $redirect = 'index.php';
-    public $progress = '';
-    public $progressMax = 5;
-    public $progressNum = 0;
+    public string $url = '';
+    public string $dir = '/';
+    public string $redirect = 'index.php';
+    public string $progress = '';
+    public int $progressMax = 5;
+    public int $progressNum = 0;
 
     /**
      * @param string $url
      * @param string $dir
+     * @param string $redirect
+     *
      * @return ITS4YouDownload
      * @throws Exception
      */
-    public static function zip($url, $dir = DIRECTORY_SEPARATOR, $redirect = 'index.php')
+    public static function zip(string $url, string $dir = DIRECTORY_SEPARATOR, string $redirect = 'index.php'): ITS4YouDownload
     {
         if (!session_id()) {
             session_start();
@@ -67,12 +77,20 @@ class ITS4YouDownload
         }
     }
 
-    public function is($value)
+    /**
+     * @param string $value
+     *
+     * @return bool
+     */
+    public function is(string $value): bool
     {
         return $this->progress === $value;
     }
 
-    public function isRedirect()
+    /**
+     * @return bool
+     */
+    public function isRedirect(): bool
     {
         return !empty($_REQUEST['progress']) && 'redirect' === $_REQUEST['progress'];
     }
@@ -85,21 +103,33 @@ class ITS4YouDownload
         header('location:' . $this->redirect);
     }
 
-    public function getZipFileName()
+    /**
+     * @return string
+     */
+    public function getZipFileName(): string
     {
         return $this->getFileName() . '.zip';
     }
 
-    public function getFileName()
+    /**
+     * @return string
+     */
+    public function getFileName(): string
     {
         return basename(__FILE__, '.php');
     }
 
-    public function getPHPFileName()
+    /**
+     * @return string
+     */
+    public function getPHPFileName(): string
     {
         return $this->getFileName() . '.php';
     }
 
+    /**
+     * @throws Exception
+     */
     public function start()
     {
         self::log(self::START);
@@ -107,14 +137,22 @@ class ITS4YouDownload
     }
 
     /**
-     * @throws Exception
+     * @param string $value
+     *
+     * @return void
      */
-    public static function log($value)
+    public static function log(string $value)
     {
         $_SESSION['messages'][] = '[' . date('Y-m-d H:i:s') . ']: ' . print_r($value, true);
     }
 
-    public function setProgress($value, $number)
+    /**
+     * @param string $value
+     * @param int    $number
+     *
+     * @return void
+     */
+    public function setProgress(string $value, int $number)
     {
         $this->progress = $_SESSION['progress'] = $value;
         $this->progressNum = $number * 20;
@@ -146,7 +184,7 @@ class ITS4YouDownload
     /**
      * @return string
      */
-    public function getZipFile()
+    public function getZipFile(): string
     {
         return __DIR__ . DIRECTORY_SEPARATOR . $this->getZipFileName();
     }
@@ -175,9 +213,9 @@ class ITS4YouDownload
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
@@ -214,12 +252,18 @@ class ITS4YouDownload
         $this->setProgress('', 5);
     }
 
-    public function getMessages()
+    /**
+     * @return string
+     */
+    public function getMessages(): string
     {
         return implode('<br>', $_SESSION['messages']);
     }
 
-    public function getRedirectUrl()
+    /**
+     * @return string
+     */
+    public function getRedirectUrl(): string
     {
         return $this->getPHPFileName() . '?progress=redirect';
     }
