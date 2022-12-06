@@ -14,8 +14,8 @@
  ********************************************************************************/
 
 require_once 'include/logging.php';
-include_once 'libraries/adodb/adodb.inc.php';
-require_once 'libraries/adodb/adodb-xmlschema.inc.php';
+include_once 'vendor/adodb/adodb-php/adodb.inc.php';
+require_once 'vendor/adodb/adodb-php/adodb-xmlschema.inc.php';
 
 $log = Logger::getLogger('VT');
 $logsqltm = Logger::getLogger('SQLTIME');
