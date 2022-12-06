@@ -15,7 +15,7 @@ class Inventory_SendEmail_View extends Vtiger_ComposeEmail_View {
 	 * This will handle the case of attaching the invoice pdf as attachment
 	 * @param Vtiger_Request $request 
 	 */
-	public function composeMailData(Vtiger_Request $request) {
+	public function composeMailData($request) {
 		parent::composeMailData($request);
 		$viewer = $this->getViewer($request);
 		$inventoryRecordId = $request->get('record');
@@ -24,7 +24,7 @@ class Inventory_SendEmail_View extends Vtiger_ComposeEmail_View {
 
         $fileComponents = explode('/', $pdfFileName);
 
-        $fileName = $fileComponents[count($fileComponents)-1];
+        $fileName = $fileComponents[php7_count($fileComponents)-1];
         //remove the fileName
         array_pop($fileComponents);
 
@@ -79,7 +79,7 @@ class Inventory_SendEmail_View extends Vtiger_ComposeEmail_View {
 				}
 			}
 			$emailFields = $referenceModuleModel->getFieldsByType('email');
-			if(count($emailFields) <= 0) {
+			if(php7_count($emailFields) <= 0) {
 				continue;
 			}
 

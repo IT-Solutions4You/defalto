@@ -390,7 +390,7 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		
 		$heirarchyUsers = get_user_array(false,"ACTIVE",$this->user->id);
 		$groupUsers = vtws_getUsersInTheSameGroup($this->user->id);
-		$this->assignUsers = $heirarchyUsers+$groupUsers;
+		$this->assignUsers = array_merge($heirarchyUsers, $groupUsers);
 		$this->assign = true;
 	}
 	
@@ -406,7 +406,7 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		}else{
 			$profileList = getCurrentUserProfileList();
 			
-			if (count($profileList) > 0) {
+			if (php7_count($profileList) > 0) {
 				$sql = "SELECT vtiger_field.*, vtiger_profile2field.readonly
 						FROM vtiger_field
 						INNER JOIN vtiger_profile2field

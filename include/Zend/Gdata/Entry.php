@@ -45,7 +45,7 @@ class Zend_Gdata_Entry extends Zend_Gdata_App_MediaEntry
 
     protected $_entryClassName = 'Zend_Gdata_Entry';
 
-    public function __construct($element = null)
+    public function __construct($element = null, $mediaSource = null)
     {
         $this->registerAllNamespaces(Zend_Gdata::$namespaces);
         parent::__construct($element);

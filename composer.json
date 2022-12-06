@@ -1,9 +1,14 @@
 {
   "require": {
+    "php" : "^7.4 || ^8.0",
     "ext-mbstring": "*",
     "ext-mysqli": "*",
     "ext-simplexml": "*",
-    "ext-xml": "*"
+    "ext-xml": "*",
+    "adodb/adodb-php": "5.*",
+    "ezyang/htmlpurifier": "4.*",
+    "michelf/php-markdown": "1.*",
+    "smarty/smarty": "4.*"
   },
   "config": {
     "bin-dir": "bin",

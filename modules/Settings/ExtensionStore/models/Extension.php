@@ -9,7 +9,6 @@
  * ***********************************************************************************/
 
 vimport('~~/vtlib/Vtiger/Package.php');
-vimport('~/libraries/PHPMarkdown/Michelf/Markdown.inc.php');
 
 class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 
@@ -18,7 +17,7 @@ class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 	protected $siteURL = null;
 	var $fileName;
 
-	public function __construct() {
+	public function __construct($values = array()) {
 		parent::__construct();
 		$this->EXTENSIONSTORE_LOOKUP_URL = 'https://marketplace.vtiger.com/api';
 		global $site_URL;

@@ -426,6 +426,11 @@ class Install_Utils_Model {
 
 		//Checking for database connection parameters
 		if($db_type) {
+			// Backward compatible mode for adodb library.
+			if ($db_type == 'mysqli') {
+				mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
+			}
+			
 			$conn = NewADOConnection($db_type);
 			$db_type_status = true;
 			if(@$conn->Connect($db_hostname,$db_username,$db_password)) {
@@ -480,7 +485,7 @@ class Install_Utils_Model {
 			$error_msg_info = getTranslatedString('MSG_LIST_REASONS', 'Install').':<br>
 					-  '.getTranslatedString('MSG_DB_PARAMETERS_INVALID', 'Install').'
 					-  '.getTranslatedString('MSG_DB_USER_NOT_AUTHORIZED', 'Install');
-		} elseif(self::isMySQL($db_type) && $mysql_server_version < 4.1) {
+		} elseif(self::isMySQL($db_type) && version_compare($mysql_server_version,4.1,'<')) {
 			$error_msg = $mysql_server_version.' -> '.getTranslatedString('ERR_INVALID_MYSQL_VERSION', 'Install');
 		} elseif(!$db_sqlmode_support) {
 			$error_msg = getTranslatedString('ERR_DB_SQLMODE_NOTFRIENDLY', 'Install');
@@ -514,7 +519,7 @@ class Install_Utils_Model {
 			if ($handle = opendir($moduleFolder)) {
 				while (false !== ($file = readdir($handle))) {
 					$packageNameParts = explode(".",$file);
-					if($packageNameParts[count($packageNameParts)-1] != 'zip'){
+					if($packageNameParts[php7_count($packageNameParts)-1] != 'zip'){
 						continue;
 					}
 					array_pop($packageNameParts);
@@ -536,5 +541,14 @@ class Install_Utils_Model {
 				closedir($handle);
 			}
 		}
+	}
+
+	/* 
+	 * Register installed user detail to inform about product updates and news.
+	 */
+	public static function registerUser($name, $email, $industry) {
+		require_once 'vtlib/Vtiger/Net/Client.php';
+		$client = new Vtiger_Net_Client("https://stats.vtiger.com/register.php");
+		@$client->doPost(array("name" => $name, "email" => $email, "industry" => $industry), 5);
 	}
 }

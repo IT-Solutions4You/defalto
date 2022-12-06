@@ -56,7 +56,7 @@
 							</span>
 							<span class="span5 moduleName {if !$MODULE_ACTIVE}dull {/if}"><h4>{vtranslate($MODULE_NAME, $MODULE_NAME)}</h4></span>
                             {assign var=SETTINGS_LINKS value=$MODULE_MODEL->getSettingLinks()}
-							{if !in_array($MODULE_NAME, $RESTRICTED_MODULES_LIST) && (count($SETTINGS_LINKS) > 0)}
+							{if !in_array($MODULE_NAME, $RESTRICTED_MODULES_LIST) && (php7_count($SETTINGS_LINKS) > 0)}
 								<span class="span3">
 									<span class="btn-group pull-right actions {if !$MODULE_ACTIVE}hide{/if}">
 										<button class="btn dropdown-toggle" data-toggle="dropdown">

@@ -1,5 +1,5 @@
 <?php
-/*+**********************************************************************************
+/***********************************************************************************
  * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
  * The Original Code is:  vtiger CRM Open Source
@@ -7,37 +7,40 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-include_once 'libraries/HTTP_Session/Session.php';
 
-class Mobile_API_Session {
+/**
+ * Portions created by IT-Solutions4You s.r.o. are Copyright (C) IT-Solutions4You s.r.o.
+ */
+class Mobile_API_Session
+{
+    public static function destroy()
+    {
+        Vtiger_Session::destroy();
+    }
 
-	function __construct() {
-	}
+    public static function init($sessionId = false)
+    {
+        if (empty($sessionId)) {
+            Vtiger_Session::start(null, null);
+            $sessionId = Vtiger_Session::id();
+        } else {
+            Vtiger_Session::start(null, $sessionId);
+        }
 
-	static function destroy($sessionid = false) {
-		HTTP_Session::destroy($sessionid);
-	}
+        if (Vtiger_Session::isIdle() || Vtiger_Session::isExpired()) {
+            return false;
+        }
 
-	static function init($sessionid = false) {
-		if(empty($sessionid)) {
-			HTTP_Session::start(null, null);
-			$sessionid = HTTP_Session::id();
-		} else {
-			HTTP_Session::start(null, $sessionid);
-		}
+        return $sessionId;
+    }
 
-		if(HTTP_Session::isIdle() || HTTP_Session::isExpired()) {
-			return false;
-		}
-		return $sessionid;
-	}
+    public static function get($key, $defaultValue = '')
+    {
+        return Vtiger_Session::get($key, $defaultValue);
+    }
 
-	static function get($key, $defvalue = '') {
-		return HTTP_Session::get($key, $defvalue);
-	}
-
-	static function set($key, $value) {
-		HTTP_Session::set($key, $value);
-	}
-
+    public static function set($key, $value): void
+    {
+        Vtiger_Session::set($key, $value);
+    }
 }

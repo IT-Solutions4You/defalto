@@ -11,9 +11,9 @@
 -->*}
 {strip}
 {assign var="totalCount" value=0}
-{assign var="totalModulesSearched" value=count($MATCHING_RECORDS)}
+{assign var="totalModulesSearched" value=php7_count($MATCHING_RECORDS)}
 {foreach key=module item=searchRecords from=$MATCHING_RECORDS}
-    {assign var=modulesCount value=count($searchRecords)}
+    {assign var=modulesCount value=php7_count($searchRecords)}
     {assign var="totalCount" value=$totalCount+$modulesCount}
 {/foreach}
 <div class="globalSearchResults" style="max-width: 280px;">
@@ -42,7 +42,7 @@
 				</div>
 			{/if}
 		{foreach key=module item=searchRecords from=$MATCHING_RECORDS name=matchingRecords}
-			{assign var="modulesCount" value=count($searchRecords)}
+			{assign var="modulesCount" value=php7_count($searchRecords)}
 			<label class="clearfix">
 				<strong>{vtranslate($module)}&nbsp;({$modulesCount})</strong>
 				{if {$smarty.foreach.matchingRecords.index+1} eq 1}

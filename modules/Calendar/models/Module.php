@@ -492,7 +492,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		return $moduleFieldsList;
 	}
 
-	function getCalendarViewTypesToAdd($userId) {
+	static function getCalendarViewTypesToAdd($userId) {
 		$calendarViewTypes = self::getCalendarViewTypes($userId);
 		$moduleViewTypes = self::getDateFieldModulesList();
 
@@ -500,7 +500,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		if(is_array($visibleList)) {
 			foreach($visibleList as $list) {
 				$fieldsListArray = $moduleViewTypes[$list['module']];
-				if(count($fieldsListArray) == 1) {
+				if(php7_count($fieldsListArray) == 1) {
 					if($list['module'] !== 'Events') {
 						unset($fieldsListArray[$list['fieldname']]);
 					}
@@ -515,7 +515,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		return $moduleViewTypes;
 	}
 
-	function getVisibleCalendarViewTypes($userId) {
+	static function getVisibleCalendarViewTypes($userId) {
 		$db = PearDatabase::getInstance();
 
 		$query = "SELECT * FROM vtiger_calendar_user_activitytypes 
@@ -557,7 +557,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 *  Function to check duplicate activity view while adding
 	 * @return <boolean>
 	 */
-	public function checkDuplicateView(Vtiger_Request $request) {
+	public static function checkDuplicateView(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
 		$viewmodule = $request->get('viewmodule');
@@ -582,7 +582,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	/**
 	 *  Function to delete calendar view
 	 */
-	public function deleteCalendarView(Vtiger_Request $request) {
+	public static function deleteCalendarView(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
 		$viewmodule = $request->get('viewmodule');
@@ -614,7 +614,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 *  Function to add calendar view
 	 * @return <string>
 	 */
-	public function addCalendarView(Vtiger_Request $request) {
+	public static function addCalendarView(Vtiger_Request $request) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userId = $currentUser->getId();
 		$viewmodule = $request->get('viewmodule');
@@ -660,7 +660,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 *  Function to get all calendar view conditions
 	 * @return <string>
 	 */
-	public function getCalendarViewConditions() {
+	public static function getCalendarViewConditions() {
 		$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
 		$eventTypePicklistValues = $eventsModuleModel->getField('activitytype')->getPicklistValues();
 		$eventsModuleConditions = array();
@@ -714,7 +714,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 * @param type $currentUserId
 	 * @param type $sharedIds
 	 */
-	public function getSharedType($currentUserId){
+	public static function getSharedType($currentUserId){
 		$db = PearDatabase::getInstance();
 
 		$query = "SELECT calendarsharedtype FROM vtiger_users WHERE id=?";
@@ -839,7 +839,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			}
 		}
 
-		if(count($tasks[$priority]) > $pageLimit){
+		if(php7_count($tasks[$priority]) > $pageLimit){
 			array_pop($tasks[$priority]);
 			$pagingModel->set('nextPageExists', true);
 		}else{

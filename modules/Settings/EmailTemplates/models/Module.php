@@ -25,7 +25,7 @@ class Settings_EmailTemplates_Module_Model extends Settings_Vtiger_Module_Model 
 	 * Function returns all the Email Template Models
 	 * @return <Array of EmailTemplates_Record_Model>
 	 */
-	function getAll() {
+	static function getAll() {
 		$db = PearDatabase::getInstance();
 		$result = $db->pquery('SELECT * FROM vtiger_emailtemplates WHERE deleted = 0', array());
 

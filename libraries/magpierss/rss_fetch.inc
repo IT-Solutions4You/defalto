@@ -82,6 +82,7 @@ require_once( MAGPIE_EXTLIB . 'Snoopy.class.inc');
 \*=======================================================================*/
 
 define('MAGPIE_VERSION', '0.72');
+define('MAGPIE_CACHE_ON', false); /* Fix: XML_Parser cannot be serialized */
 
 $MAGPIE_ERROR = "";
 
@@ -265,17 +266,16 @@ function magpie_error ($errormsg="") {
     Output:     an HTTP response object (see Snoopy.class.inc)  
 \*=======================================================================*/
 function _fetch_remote_file ($url, $headers = "" ) {
-    // Snoopy is an HTTP client in PHP
-    $client = new Snoopy();
-    $client->agent = MAGPIE_USER_AGENT;
-    $client->read_timeout = MAGPIE_FETCH_TIME_OUT;
-    $client->use_gzip = MAGPIE_USE_GZIP;
-    if (is_array($headers) ) {
-        $client->rawheaders = $headers;
-    }
-    
-    $client->fetch($url);
-    return $client;
+
+    require_once 'vtlib/Vtiger/Net/Client.php';
+
+    $client = new Vtiger_Net_Client($url);
+    if (is_array($headers)) $client->setHeaders($headers);
+    $content = $client->doGet(null, MAGPIE_FETCH_TIME_OUT);
+    $res = new stdClass;
+    $res->status = $client->client->getResponseCode();
+    $res->results = $content;
+    return $res;
 
 }
 

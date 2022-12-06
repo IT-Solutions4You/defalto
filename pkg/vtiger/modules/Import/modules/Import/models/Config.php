@@ -10,7 +10,7 @@
 
 class Import_Config_Model extends Vtiger_Base_Model {
 
-	function __construct() {
+	function __construct($values = array()) {
 		$ImportConfig = array(
 			'importTypes' => array(
 								'csv' => array('reader' => 'Import_CSVReader_Reader', 'classpath' => 'modules/Import/readers/CSVReader.php'),

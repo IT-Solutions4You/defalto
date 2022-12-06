@@ -8,9 +8,7 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-vimport ('~/libraries/Smarty/libs/SmartyBC.class.php');
-
-class Vtiger_Viewer extends SmartyBC {
+class Vtiger_Viewer extends Smarty {
 
 	const DEFAULTLAYOUT = 'v7';
 	const DEFAULTTHEME  = 'softed';
@@ -121,7 +119,7 @@ class Vtiger_Viewer extends SmartyBC {
 			// Fall back lookup on actual module, in case where parent module doesn't contain actual module within in (directory structure)
 			if(strpos($moduleName, '/') > 0) {
 				$moduleHierarchyParts = explode('/', $moduleName);
-				$actualModuleName = $moduleHierarchyParts[count($moduleHierarchyParts)-1];
+				$actualModuleName = $moduleHierarchyParts[php7_count($moduleHierarchyParts)-1];
 				$baseModuleName = $moduleHierarchyParts[0];
 				$fallBackOrder = array (
 					"$actualModuleName",

@@ -51,7 +51,7 @@ class Vtiger_LayoutExport extends Vtiger_Package {
      * @param String Zipfilename to use
      * @param Boolean True for sending the output as download
      */
-    function export($layoutName, $todir='', $zipfilename='', $directDownload=false) {
+    function export($layoutName, $todir='', $zipfilename='', $directDownload=false, $extra=false) {
             $this->__initExport($layoutName);
 
             // Call layout export function

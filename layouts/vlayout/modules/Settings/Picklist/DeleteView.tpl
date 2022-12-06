@@ -31,7 +31,7 @@
 							<option {if in_array($PICKLIST_VALUE,$FIELD_VALUES)} selected="" {/if} value="{$PICKLIST_VALUE_KEY}">{vtranslate($PICKLIST_VALUE,$SOURCE_MODULE)}</option>
 						{/foreach}	
 					</select>	
-					<input id="pickListValuesCount" type="hidden" value="{count($SELECTED_PICKLISTFIELD_EDITABLE_VALUES)}" />
+					<input id="pickListValuesCount" type="hidden" value="{php7_count($SELECTED_PICKLISTFIELD_EDITABLE_VALUES)}" />
 				</div><br>
 				<div class="control-label">{vtranslate('LBL_REPLACE_IT_WITH',$QUALIFIED_MODULE)}</div>
 				<div class="controls">

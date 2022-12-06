@@ -73,15 +73,15 @@ function __vt_concat($arr){
 
 function __vt_substring($arr){
 unset($string);unset($start);unset($end);
-    if (count($arr) == 3) {
+    if (php7_count($arr) == 3) {
         $string = $arr[0];
         $start = $arr[1];
         $end = $arr[2];
-    } elseif (count($arr) == 2){
+    } elseif (php7_count($arr) == 2){
         $string = $arr[0];
         $start = $arr[1];
         $end = strlen($string);
-    }elseif (count($arr) == 1){
+    }elseif (php7_count($arr) == 1){
         $string = $arr[0];
         $start = 0;
         $end = strlen($string);
@@ -93,7 +93,7 @@ unset($string);unset($start);unset($end);
 
 function __vt_preg_replace_str_only($arr){
     unset($pattern);unset($replacement);unset($subject);
-    if (count($arr) == 3 && is_string($arr[0]) && is_string($arr[1]) && is_string($arr[2])) {
+    if (php7_count($arr) == 3 && is_string($arr[0]) && is_string($arr[1]) && is_string($arr[2])) {
         $pattern = $arr[0];
 
 
@@ -117,7 +117,7 @@ function __vt_time_diff($arr) {
 	$defaultTimezone = vglobal('default_timezone');
 	date_default_timezone_set($defaultTimezone);
 	$time_operand1 = $time_operand2 = 0;
-	if(count($arr) > 1) {
+	if(php7_count($arr) > 1) {
 			$time_operand1 = $time1 = $arr[0];
 			$time_operand2 = $time2 = $arr[1];
 
@@ -189,7 +189,7 @@ function __vt_time_diff($arr) {
  */
 function __vt_time_diffdays($arr) {
 	//Two Input timediffdays
-	if(count($arr)>1){
+	if(php7_count($arr)>1){
 		$operand1 = explode(' ',trim($arr[0]));
 		$operand2 = explode(' ',trim($arr[1]));
 		//If both inputs are datetime 
@@ -224,7 +224,7 @@ function __vt_time_diffdays($arr) {
 
 function __vt_add_days($arr) {
 
-	if (count($arr) > 1) {
+	if (php7_count($arr) > 1) {
 		$baseDate = $arr[0];
 		$noOfDays = $arr[1];
 	} else {
@@ -241,7 +241,7 @@ function __vt_add_days($arr) {
 
 function __vt_sub_days($arr) {
 
-	if (count($arr) > 1) {
+	if (php7_count($arr) > 1) {
 		$baseDate = $arr[0];
 		$noOfDays = $arr[1];
 	} else {
@@ -271,7 +271,7 @@ function __vt_get_date($arr) {
 }
 
 function __vt_add_time($arr) {
-	if(count($arr) > 1) {
+	if(php7_count($arr) > 1) {
 		$baseTime = $arr[0];
 		$minutes = $arr[1];
 	} else {
@@ -283,7 +283,7 @@ function __vt_add_time($arr) {
 }
 
 function __vt_sub_time($arr) {
-	if(count($arr) > 1) {
+	if(php7_count($arr) > 1) {
 		$baseTime = $arr[0];
 		$minutes = $arr[1];
 	} else {
@@ -371,7 +371,7 @@ class VTFieldExpressionEvaluater{
 			//if the field is reference fields field name 
 			// format (account_id : (Accounts) phone)
 			preg_match('/\((\w+) : \((\w+)\) (\w+)\)/',$fieldName,$matches);
-			if(count($matches) > 0){
+			if(php7_count($matches) > 0){
 				//reference field update
 				$referenceField = $matches[1];
 				$referencedModule = $matches[2];
@@ -396,7 +396,7 @@ class VTFieldExpressionEvaluater{
 						$referenceRecordId = $referenceRecordIdComponents[1];
 						if(!empty($referenceRecordId)) {
 							$referenceList = $referenceFieldInstance->getReferenceList();
-							if((count($referenceList) == 1) && $referenceList[0] == "Users") {
+							if((php7_count($referenceList) == 1) && $referenceList[0] == "Users") {
 								$userRecordLabels = Vtiger_Functions::getOwnerRecordLabels($referenceRecordId);
 								return $userRecordLabels[$referenceRecordId];
 							}
@@ -430,7 +430,7 @@ class VTFieldExpressionEvaluater{
 				$referenceRecordId = $referenceRecordIdComponents[1];
 				if(!empty($referenceRecordId)) {
 					$referenceList = $fieldInstance->getReferenceList();
-					if((count($referenceList) == 1) && $referenceList[0] == "Users") {
+					if((php7_count($referenceList) == 1) && $referenceList[0] == "Users") {
 						$userRecordLabels = Vtiger_Functions::getOwnerRecordLabels($referenceRecordId);
 						return $userRecordLabels[$referenceRecordId];
 					}

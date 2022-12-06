@@ -73,7 +73,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 		}
 
 		$viewer = $this->getViewer($request);
-		$viewer->assign('DATA_COUNT', count($jsonData));
+		$viewer->assign('DATA_COUNT', php7_count($jsonData));
 		$viewer->assign('JSON_DATA', $finalJsonData);
 
 		$mailStatus = $request->get('mailStatus');

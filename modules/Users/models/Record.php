@@ -423,11 +423,11 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		$currentUserRoleModel = Settings_Roles_Record_Model::getInstanceById($this->getRole());
 		$accessibleUser = Vtiger_Cache::get('vtiger-'.$this->getRole().'-'.$currentUserRoleModel->get('allowassignedrecordsto'), 'accessibleusers');
         if(empty($accessibleUser)) {
-			if($currentUserRoleModel->get('allowassignedrecordsto') === '1' || $private == 'Public') {
+			if((int)$currentUserRoleModel->get('allowassignedrecordsto') === 1 || $private === 'Public') {
 				$accessibleUser = get_user_array(false, "ACTIVE", "", $private,$module);
-			} else if($currentUserRoleModel->get('allowassignedrecordsto') === '2'){
+			} else if((int)$currentUserRoleModel->get('allowassignedrecordsto') === 2){
 				$accessibleUser = $this->getSameLevelUsersWithSubordinates();
-			} else if($currentUserRoleModel->get('allowassignedrecordsto') === '3') {
+			} else if((int)$currentUserRoleModel->get('allowassignedrecordsto') === 3) {
 				$accessibleUser = $this->getRoleBasedSubordinateUsers();
 			}
 			Vtiger_Cache::set('vtiger-'.$this->getRole().'-'.$currentUserRoleModel->get('allowassignedrecordsto'), 'accessibleusers',$accessibleUser);
@@ -737,7 +737,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		return false;
 	}
 	
-	public function getActiveAdminUsers() {
+	public static function getActiveAdminUsers() {
 		$db = PearDatabase::getInstance();
 
 		$sql = 'SELECT id FROM vtiger_users WHERE status=? AND is_admin=?';
@@ -778,7 +778,7 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	 * @param User Ids of user to be deleted and user
 	 * to whom records should be assigned
 	 */
-	public function deleteUserPermanently($userId, $newOwnerId) {
+	public static function deleteUserPermanently($userId, $newOwnerId) {
 		$db = PearDatabase::getInstance();
 
 		$sql = "UPDATE vtiger_crmentity SET smcreatorid=?,smownerid=?,modifiedtime=? WHERE smcreatorid=? AND setype=?";

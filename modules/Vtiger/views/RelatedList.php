@@ -87,7 +87,7 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 		$header = $relationListView->getHeaders();
 		$noOfEntries = $pagingModel->get('_relatedlistcount');
 		if(!$noOfEntries) {
-			$noOfEntries = count($models);
+			$noOfEntries = php7_count($models);
 		}
 		$relationModel = $relationListView->getRelationModel();
 		$relatedModuleModel = $relationModel->getRelationModuleModel();

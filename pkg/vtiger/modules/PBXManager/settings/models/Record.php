@@ -71,9 +71,7 @@ class Settings_PBXManager_Record_Model extends Settings_Vtiger_Record_Model {
 		$db = PearDatabase::getInstance();
 		$parameters = array();
 		$selectedGateway = $this->get('gateway');
-                $connector = new PBXManager_PBXManager_Connector;
-
-                foreach ($connector->getSettingsParameters() as $field => $type) {
+                foreach (PBXManager_PBXManager_Connector::getSettingsParameters() as $field => $type) {
                         $parameters[$field] = $this->get($field);
                 }
                 $this->set('parameters', Zend_Json::encode($parameters));

@@ -14,6 +14,8 @@ if(defined('INSTALLATION_MODE')) {
 		// Set of task to be taken care while specifically in installation mode.
 }
 
+$db = PearDatabase::getInstance();
+
 //Handle migration for http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7552--senotesrel
 $seDeleteQuery="DELETE from vtiger_senotesrel WHERE crmid NOT IN(select crmid from vtiger_crmentity)";
 Migration_Index_View::ExecuteQuery($seDeleteQuery,array());
@@ -28,27 +30,27 @@ Migration_Index_View::ExecuteQuery($updateQuery,array());
 //registering handlers for Google sync 
 require_once 'includes/main/WebUI.php';
 require_once 'modules/WSAPP/Utils.php'; 
-require_once 'modules/Google/connectors/Config.php';
-wsapp_RegisterHandler('Google_vtigerHandler', 'Google_Vtiger_Handler', 'modules/Google/handlers/Vtiger.php'); 
-wsapp_RegisterHandler('Google_vtigerSyncHandler', 'Google_VtigerSync_Handler', 'modules/Google/handlers/VtigerSync.php'); 
+if (file_exists("modules/Google")) {
+    require_once 'modules/Google/connectors/Config.php';
+    wsapp_RegisterHandler('Google_vtigerHandler', 'Google_Vtiger_Handler', 'modules/Google/handlers/Vtiger.php'); 
+    wsapp_RegisterHandler('Google_vtigerSyncHandler', 'Google_VtigerSync_Handler', 'modules/Google/handlers/VtigerSync.php'); 
 
-//updating Google Sync Handler names 
-$db = PearDatabase::getInstance();
-$names = array('Vtiger_GoogleContacts', 'Vtiger_GoogleCalendar'); 
-$result = $db->pquery("SELECT stateencodedvalues FROM vtiger_wsapp_sync_state WHERE name IN (".  generateQuestionMarks($names).")", array($names)); 
-$resultRows = $db->num_rows($result); 
-$appKey = array(); 
-for($i=0; $i<$resultRows; $i++) { 
-        $stateValuesJson = $db->query_result($result, $i, 'stateencodedvalues'); 
-        $stateValues = Zend_Json::decode(decode_html($stateValuesJson)); 
-        $appKey[] = $stateValues['synctrackerid']; 
-}
+    //updating Google Sync Handler names 
+    $names = array('Vtiger_GoogleContacts', 'Vtiger_GoogleCalendar'); 
+    $result = $db->pquery("SELECT stateencodedvalues FROM vtiger_wsapp_sync_state WHERE name IN (".  generateQuestionMarks($names).")", array($names)); 
+    $resultRows = $db->num_rows($result); 
+    $appKey = array(); 
+    for($i=0; $i<$resultRows; $i++) { 
+            $stateValuesJson = $db->query_result($result, $i, 'stateencodedvalues'); 
+            $stateValues = Zend_Json::decode(decode_html($stateValuesJson)); 
+            $appKey[] = $stateValues['synctrackerid']; 
+    }
 
-if(!empty($appKey)) { 
-    $sql = 'UPDATE vtiger_wsapp SET name = ? WHERE appkey IN ('.  generateQuestionMarks($appKey).')'; 
-    $res = Migration_Index_View::ExecuteQuery($sql, array('Google_vtigerSyncHandler', $appKey)); 
-}
-        
+    if(!empty($appKey)) { 
+        $sql = 'UPDATE vtiger_wsapp SET name = ? WHERE appkey IN ('.  generateQuestionMarks($appKey).')'; 
+        $res = Migration_Index_View::ExecuteQuery($sql, array('Google_vtigerSyncHandler', $appKey)); 
+    }
+}        
 //Ends 141
 
 //Google Calendar sync changes
@@ -89,7 +91,7 @@ if(Vtiger_Utils::CheckTable('vtiger_wsapp_sync_state')) {
 
 $appIds = array();
 
-if(count($syncTrackerIds)) {
+if(php7_count($syncTrackerIds)) {
 
     $sql = 'SELECT appid FROM vtiger_wsapp WHERE appkey IN (' . generateQuestionMarks($syncTrackerIds) . ')';
     $result = Migration_Index_View::ExecuteQuery($sql,$syncTrackerIds);
@@ -105,7 +107,7 @@ if(count($syncTrackerIds)) {
 
 //$appIds - list of all Calendarsync appids
 
-if(count($appIds)) {
+if(php7_count($appIds)) {
 
     $sql = 'SELECT id,clientid FROM vtiger_wsapp_recordmapping WHERE appid IN (' . generateQuestionMarks($appIds) . ')';
     $result = Migration_Index_View::ExecuteQuery($sql,$appIds);
