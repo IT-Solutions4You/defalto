@@ -282,35 +282,28 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'table' => 'vtiger_crmentity',
                     'filter' => 1,
                 ),
-                'date_start' => array(
-                    'column' => 'date_start',
+                'datetime_start' => array(
+                    'column' => 'datetime_start',
                     'label' => 'Start Date & Time',
                     'uitype' => 6,
-                    'typeofdata' => 'DT~M~time_start',
-                    'columntype' => 'date',
+                    'typeofdata' => 'DT~M',
+                    'columntype' => 'datetime',
                     'filter' => 1,
                 ),
-                'time_start' => array(
-                    'column' => 'time_start',
-                    'label' => 'Time Start',
-                    'uitype' => 2,
-                    'typeofdata' => 'T~M',
-                    'columntype' => 'VARCHAR(50)',
-                ),
-                'date_end' => array(
-                    'column' => 'date_end',
+                'datetime_end' => array(
+                    'column' => 'datetime_end',
                     'label' => 'End Date & Time',
                     'uitype' => 6,
                     'typeofdata' => 'DT~M~time_end',
-                    'columntype' => 'date',
+                    'columntype' => 'datetime',
                     'filter' => 1,
                 ),
-                'time_end' => array(
-                    'column' => 'time_end',
-                    'label' => 'Time End',
-                    'uitype' => 2,
-                    'typeofdata' => 'T~M',
-                    'columntype' => 'VARCHAR(50)',
+                'is_all_day' => array(
+                    'column' => 'is_all_day',
+                    'label' => 'Is All Day',
+                    'uitype' => 56,
+                    'typeofdata' => 'C~O',
+                    'columntype' => 'VARCHAR(3)',
                 ),
                 'calendar_status' => array(
                     'column' => 'status',
@@ -319,7 +312,8 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'typeofdata' => 'V~M',
                     'picklist_values' => [
                         'Planned',
-                        'Held',
+                        'Completed',
+                        'Cancelled',
                     ],
                     'columntype' => 'VARCHAR(200)',
                     'filter' => 1,
@@ -348,6 +342,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         'Call',
                         'Meeting',
                         'Email',
+                        'Reminder',
                     ],
                     'columntype' => 'VARCHAR(200)',
                 ),
@@ -368,7 +363,6 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'uitype' => 56,
                     'typeofdata' => 'C~O',
                     'columntype' => 'VARCHAR(3)',
-
                 ),
                 'duration_hours' => array(
                     'column' => 'duration_hours',
