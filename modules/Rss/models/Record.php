@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 require_once('libraries/magpierss/rss_fetch.inc');
-require_once('include/simplehtmldom/simple_html_dom.php');
+require_once('vendor/simplehtmldom/simplehtmldom/simple_html_dom.php');
 
 // for rss caching 
 define('MAGPIE_CACHE_DIR', '/tmp/magpie_cache');
