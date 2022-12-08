@@ -10,7 +10,10 @@
 
 class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 {
-    public function getModuleBasicLinks()
+    /**
+     * @return array
+     */
+    public function getModuleBasicLinks(): array
     {
         $basicLinks = [
             [

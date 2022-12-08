@@ -391,6 +391,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
             'LBL_REMINDER_INFORMATION' => [
                 'reminder_time' => array(
                     'column' => 'reminder_time',
+                    'table' => 'its4you_remindme',
                     'label' => 'Send Reminder',
                     'uitype' => 30,
                     'typeofdata' => 'I~O',
@@ -404,6 +405,12 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'uitype' => 16,
                     'typeofdata' => 'O~O',
                     'columntype' => 'VARCHAR(200)',
+                    'picklist_values' => [
+                        'Daily',
+                        'Weekly',
+                        'Monthly',
+                        'Yearly',
+                    ],
                 ),
             ],
             'LBL_REFERENCE_INFORMATION' => [
