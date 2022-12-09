@@ -1160,8 +1160,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 	/**
 	 * Function to retrieve display value in edit view
-	 * @param <String> $value - value which need to be converted to display value
-	 * @return <String> - converted display value
+	 * @param mixed $value - value which need to be converted to display value
+	 * @return mixed - converted display value
 	 */
 	public function getEditViewDisplayValue($value) {
 		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
@@ -1493,4 +1493,22 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isUniqueField() {
 		return $this->isunique;
 	}
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTableFullWidth(): bool
+    {
+        $fieldName = $this->getName();
+
+        if ('description' === $fieldName ||
+            in_array((int)$this->get('uitype'), [19, 69]) ||
+            in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

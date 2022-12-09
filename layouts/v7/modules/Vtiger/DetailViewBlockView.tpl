@@ -101,7 +101,7 @@
 											{/if}
 										</span>
 									</td>
-									<td class="fieldValue {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldValue_{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->get('uitype') eq '19' or $fieldDataType eq 'reminder' or $fieldDataType eq 'recurrence'} colspan="3" {assign var=COUNTER value=$COUNTER+1} {/if}>
+									<td class="fieldValue {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldValue_{$FIELD_MODEL->getName()}" {if $FIELD_MODEL->isTableFullWidth()} colspan="3" {assign var=COUNTER value=$COUNTER+1} {/if}>
 										{assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
 										{if $fieldDataType eq 'multipicklist'}
 											{assign var=FIELD_DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}

@@ -13,7 +13,54 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
 
         this._super();
         this.registerDateTimeField(container);
+        this.registerAllDayField(container);
         this.registerReminderField(container);
+        this.registerRecurringField(container);
+    },
+    registerAllDayField: function (container) {
+        this.registerAllDayHandlers(container);
+    },
+    registerRecurringField: function (container) {
+        this.registerChangeRecurringType(container);
+        this.registerRecurrenceFieldCheckBox(container);
+    },
+    registerChangeRecurringType: function (container) {
+        const self = this;
+
+        container.on('change', '#recurringType', function (e) {
+            const currentTarget = $(e.currentTarget),
+                recurringType = currentTarget.val();
+
+            self.changeRecurringTypesUIStyles(recurringType);
+        });
+    },
+    registerRecurrenceFieldCheckBox: function (container) {
+        container.on('change', 'input[name="recurringcheck"]', function (e) {
+            const element = jQuery(e.currentTarget),
+                repeatUI = jQuery('#repeatUI');
+
+            if (element.is(':checked')) {
+                repeatUI.css('visibility', 'visible');
+            } else {
+                repeatUI.css('visibility', 'collapse');
+            }
+        });
+    },
+    changeRecurringTypesUIStyles: function (recurringType) {
+        const self = this,
+            week = $('#repeatWeekUI'),
+            month = $('#repeatMonthUI');
+
+        if ('Daily' === recurringType || 'Yearly' === recurringType) {
+            week.removeClass('show').addClass('hide');
+            month.removeClass('show').addClass('hide');
+        } else if ('Weekly' === recurringType) {
+            week.removeClass('hide').addClass('show');
+            month.removeClass('show').addClass('hide');
+        } else if ('Monthly' === recurringType) {
+            week.removeClass('show').addClass('hide');
+            month.removeClass('hide').addClass('show');
+        }
     },
     retrieveDateTimeValues(container) {
         const self = this;
@@ -21,8 +68,6 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         container.find('.dateTimeField').each(function () {
             const dateTimeContainer = $(this),
                 dateTime = dateTimeContainer.find('.datetime input').val();
-
-            console.log(self.getFormattedDate(dateTime), self.getFormattedTime(dateTime));
 
             dateTimeContainer.find('.date input').val(self.getFormattedDate(dateTime));
             dateTimeContainer.find('.time input').val(self.getFormattedTime(dateTime));
@@ -160,6 +205,5 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
     registerDateTimeField: function (container) {
         this.retrieveDateTimeValues(container);
         this.registerDateTimeHandlers(container);
-        this.registerAllDayHandlers(container);
     },
 });
