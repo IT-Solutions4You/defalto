@@ -67,6 +67,14 @@ class ITS4YouCalendar extends CRMEntity
         'Description' => 'description',
     );
 
+    /**
+     * @var array
+     * [name, handler, frequency, module, sequence, description]
+     */
+    public array $registerCron = array(
+        ['ITS4YouCalendarReminder', 'modules/ITS4YouCalendar/cron/Reminder.service', 900, 'ITS4YouCalendar', 0, ''],
+    );
+
     public function __construct()
     {
         global $log;
@@ -102,6 +110,7 @@ class ITS4YouCalendar extends CRMEntity
     public function addCustomLinks()
     {
         $this->installTables();
+        $this->updateCron();
     }
 
     /**
@@ -110,12 +119,22 @@ class ITS4YouCalendar extends CRMEntity
     public function installTables()
     {
         $this->db->query(
-            'CREATE TABLE `its4you_remindme` (
-          `its4you_remindme_id` int(11) NOT NULL,
+            'CREATE TABLE IF NOT EXISTS `its4you_remindme` (
+          `its4you_remindme_id` int(11) AUTO_INCREMENT,
           `record_id` int(11) NOT NULL,
           `reminder_time` int(11) NOT NULL,
           `reminder_sent` int(2) NOT NULL,
-          `recuring_id` int(19) NOT NULL
+          `recuring_id` int(19) NOT NULL,
+          PRIMARY KEY (its4you_remindme_id)
+        ) ENGINE=InnoDB'
+        );
+        $this->db->query(
+            'CREATE TABLE `its4you_remindme_popup` (
+          `its4you_remindme_id` int(19) AUTO_INCREMENT,
+          `record_id` int(19) NOT NULL,
+          `datetime_start` datetime NOT NULL,
+          `status` int(2) NOT NULL,
+          PRIMARY KEY (its4you_remindme_id)
         ) ENGINE=InnoDB'
         );
     }
@@ -125,6 +144,22 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function deleteCustomLinks()
     {
+        $this->updateCron(false);
+    }
+
+    public function updateCron($register = true)
+    {
+        $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
+
+        foreach ($this->registerCron as $cronInfo) {
+            list($name, $handler, $frequency, $module, $sequence, $description) = $cronInfo;
+
+            Vtiger_Cron::deregister($name);
+
+            if ($register) {
+                Vtiger_Cron::register($name, $handler, $frequency, $module, 1, $sequence, $description);
+            }
+        }
     }
 
 
@@ -133,5 +168,8 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function save_module()
     {
+        $dateTimeStart = $this->column_fields['datetime_start'];
+
+        ITS4YouCalendar_Reminder_Model::saveRecord($this->id, $dateTimeStart);
     }
 }

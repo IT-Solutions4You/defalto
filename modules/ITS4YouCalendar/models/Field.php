@@ -32,14 +32,18 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
             return 'reminder';
         }
 
+        if ('recurring_type' === $this->getName()) {
+            return 'recurrence';
+        }
+
         return parent::getFieldDataType();
     }
 
     /**
-     * @param $value
-     * @return string
+     * @param mixed $value
+     * @return mixed
      */
-    public function getEditViewDisplayValue($value): string
+    public function getEditViewDisplayValue($value)
     {
         if (empty($value)) {
             $fieldName = $this->getName();
