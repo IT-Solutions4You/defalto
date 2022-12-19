@@ -22,7 +22,7 @@ $output = new Output(
     $isDebug ? OutputInterface::VERBOSITY_DEBUG : OutputInterface::VERBOSITY_NORMAL
 );
 
-$input = new ArrayInput(['command' => 'update']);
+$input = new ArrayInput(['command' => 'update', '--no-dev' => true]);
 $application = new Application();
 $application->setAutoExit(false);
 $application->run($input, $output);
