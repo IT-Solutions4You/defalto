@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 
-require_once 'include/Migration/MigrationUtils.php';
+require_once 'include/Migration/MigrationsTrait.php';
 
 abstract class AbstractMigrations
 {
+    use MigrationsTrait;
+
     public PearDatabase $db;
 
     protected string $wrongClassName = 'Missing class name: ITS4YouMigration_';
@@ -33,25 +35,5 @@ abstract class AbstractMigrations
      */
     public function migrate(string $fileName): void
     {
-    }
-
-    /**
-     * @param $message
-     *
-     * @return void
-     */
-    protected function makeAborting($message = null): void
-    {
-        MigrationUtils::makeAborting($message);
-    }
-
-    /**
-     * @param $message
-     *
-     * @return void
-     */
-    protected function showMsg($message = null): void
-    {
-        MigrationUtils::showMsg($message);
     }
 }

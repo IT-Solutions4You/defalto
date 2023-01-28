@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-class MigrationUtils
+trait MigrationsTrait
 {
     /**
      * @param $message
      *
      * @return void
      */
-    public static function makeAborting($message = null): void
+    public function makeAborting($message = null): void
     {
-        self::showMsg($message);
-        self::showMsg('ABORTING!');
+        $this->showMsg($message);
+        $this->showMsg('ABORTING!');
         exit;
     }
 
@@ -27,7 +27,7 @@ class MigrationUtils
      *
      * @return void
      */
-    public static function showMsg($message = null): void
+    public function showMsg($message = null): void
     {
         if (!is_null($message)) {
             echo '____>>> ' . $message;
