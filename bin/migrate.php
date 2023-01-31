@@ -13,6 +13,7 @@ if (PHP_SAPI != 'cli') {
 }
 
 require_once('config.php');
+require_once 'vendor/autoload.php';
 include_once 'includes/main/WebUI.php';
 
 set_include_path($root_directory);

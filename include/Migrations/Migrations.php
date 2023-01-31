@@ -18,7 +18,7 @@ class Migrations
     protected PearDatabase $db;
     protected MigrationsDatabaseWrapper $migrationsDatabaseWrapper;
     protected string $command;
-    protected string $commandType;
+    protected string $commandType = '';
     protected string $migrationPath = 'schema/migrations/';
     protected array $migrationCommands = ['list', 'migrate', 'create', 'help'];
     protected string $helpMsg = '
@@ -148,6 +148,10 @@ class Migrations
         if (('create' === $arg[1]) && in_array($arg[3], ['-c', '--c'])) {
             $this->migrationPath .= 'customer/';
         }
+
+        if (isset($arg[2])) {
+            $this->commandType = $arg[2];
+        }
     }
 
     /**
@@ -160,8 +164,8 @@ class Migrations
                 $this->listUpdates();
                 break;
             case 'migrate':
-                $this->run();
                 $this->loadClasses();
+                $this->run();
                 break;
             case 'create':
                 $this->createMigrationFile();
