@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-require_once 'include/Migration/MigrationsTrait.php';
-require_once 'include/Migration/MigrationsDatabaseWrapper.php';
+require_once 'include/Migrations/MigrationsTrait.php';
+require_once 'include/Migrations/MigrationsDatabaseWrapper.php';
 
-class DatabaseMigrations
+class Migrations
 {
     use MigrationsTrait;
 
@@ -19,7 +19,7 @@ class DatabaseMigrations
     protected MigrationsDatabaseWrapper $migrationsDatabaseWrapper;
     protected string $command;
     protected string $commandType;
-    protected string $migrationPath = 'schema/its4youmigrations/';
+    protected string $migrationPath = 'schema/migrations/';
     protected array $migrationCommands = ['list', 'migrate', 'create', 'help'];
     protected string $helpMsg = '
             Specify command of migration! 
@@ -43,7 +43,7 @@ class DatabaseMigrations
 
         require_once('include/utils/utils.php');
         require_once('include/logging.php');
-        require_once('include/Migration/AbstractMigrations.php');
+        require_once('include/Migrations/AbstractMigrations.php');
 
         require_once('modules/com_vtiger_workflow/include.inc');
         require_once('modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
@@ -83,15 +83,49 @@ class DatabaseMigrations
     }
 
     /**
-     * Check migration table and run migration scripts
+     * Run migration scripts
      *
      * @return void
      */
     public function run(): void
     {
-        $this->migrationsDatabaseWrapper->checkMigrationTable();
+        $filesToRun = $this->loadMigrationFiles();
 
-        $this->runMigrations();
+        if (empty($filesToRun)) {
+            $this->showMsg('No files available to migrate');
+        }
+
+        //for command '--y' and '-y'
+        $optCommand = $this->commandType;
+
+        if (!in_array($optCommand, ['-y', '--y'])) {
+            $this->showMsg((is_countable($filesToRun) ? count($filesToRun) : 0) . ' migration-file(s) will be upgraded');
+
+            $this->showMsg('Do you want to RUN these files?' . "\n" . 'Type "yes" to continue: ');
+            $line = fgets(STDIN);
+
+            if (trim($line) !== 'yes') {
+                $this->makeAborting();
+            }
+
+            $this->showMsg('continuing...');
+        }
+
+        $done = 1;
+        $this->db->setDieOnError(true);
+
+        foreach ($filesToRun as $strFileName) {
+            $this->showMsg('Start - ' . $strFileName . ' ... [' . $done . '/' . (is_countable($filesToRun) ? count($filesToRun) : 0) . ']');
+            $this->markMigration($strFileName);
+            $this->migrate($strFileName);
+            $this->showMsg('Done - ' . $strFileName . ' ... [' . $done . '/' . (is_countable($filesToRun) ? count($filesToRun) : 0) . ']');
+            $done++;
+        }
+
+        $this->db->setDieOnError(false);
+
+        $done_display = $done - 1;
+        $this->showMsg(PHP_EOL . 'Migrations done: ' . $done_display . file(s) . PHP_EOL);
     }
 
     /**
@@ -139,52 +173,6 @@ class DatabaseMigrations
     }
 
     /**
-     * Run migrations
-     *
-     * @return void
-     */
-    protected function runMigrations(): void
-    {
-        $filesToRun = $this->loadMigrationFiles();
-
-        if (empty($filesToRun)) {
-            $this->showMsg('No files available to migrate');
-        }
-
-        //for command '--y' and '-y'
-        $optCommand = $this->commandType;
-
-        if (!in_array($optCommand, ['-y', '--y'])) {
-            $this->showMsg((is_countable($filesToRun) ? count($filesToRun) : 0) . ' migration-file(s) will be upgraded');
-
-            $this->showMsg('Do you want to RUN these files?' . "\n" . 'Type "yes" to continue: ');
-            $line = fgets(STDIN);
-
-            if (trim($line) !== 'yes') {
-                $this->makeAborting();
-            }
-
-            $this->showMsg('continuing...');
-        }
-
-        $done = 1;
-        $this->db->setDieOnError(true);
-
-        foreach ($filesToRun as $strFileName) {
-            $this->showMsg('Start - ' . $strFileName . ' ... [' . $done . '/' . (is_countable($filesToRun) ? count($filesToRun) : 0) . ']');
-            $this->markMigration($strFileName);
-            $this->migrate($strFileName);
-            $this->showMsg('Done - ' . $strFileName . ' ... [' . $done . '/' . (is_countable($filesToRun) ? count($filesToRun) : 0) . ']');
-            $done++;
-        }
-
-        $this->db->setDieOnError(false);
-
-        $done_display = $done - 1;
-        $this->showMsg(PHP_EOL . 'Migrations done: ' . $done_display . file(s) . PHP_EOL);
-    }
-
-    /**
      * Load migration Files
      *
      * @return array of migration files which have to run in migration
@@ -228,7 +216,7 @@ class DatabaseMigrations
                 if (preg_match('/.php/', basename($filePath))) {
                     require_once($filePath);
 
-                    if (class_exists('ITS4YouMigration_' . substr(basename($filePath), 0, -4))) {
+                    if (class_exists('Migration_' . substr(basename($filePath), 0, -4))) {
                         $allMigrationFilesArray[] = $filePath;
                     }
                 }
@@ -297,7 +285,7 @@ class DatabaseMigrations
             $processMigration = false;
         }
 
-        $migrationClassName = 'ITS4YouMigration_' . str_replace('.php', '', basename($strFileName));
+        $migrationClassName = 'Migration_' . str_replace('.php', '', basename($strFileName));
         require_once $fullFilePath;
 
         if (!class_exists($migrationClassName)) {
@@ -308,7 +296,7 @@ class DatabaseMigrations
         $migrationObj = new $migrationClassName();
 
         if (!is_subclass_of($migrationObj, 'AbstractMigrations')) {
-            $this->showMsg('The class ' . $migrationClassName . ' is not extended from ITS4YouMigrationParent!');
+            $this->showMsg('The class ' . $migrationClassName . ' is not extended from AbstractMigrations!');
             $processMigration = false;
         }
 
@@ -393,8 +381,8 @@ class DatabaseMigrations
  * file that was distributed with this source code.
  */
 
-if (!class_exists('ITS4YouMigration_$migrationName')) {
-    class ITS4YouMigration_$migrationName extends ITS4YouMigrationParent
+if (!class_exists('Migration_$migrationName')) {
+    class Migration_$migrationName extends AbstractMigrations
     {
         /**
          * @param string $" . "strFileName

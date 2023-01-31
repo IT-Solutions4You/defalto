@@ -17,6 +17,6 @@ include_once 'includes/main/WebUI.php';
 
 set_include_path($root_directory);
 
-require_once('include/Migration/DatabaseMigrations.php');
+require_once('include/Migrations/Migrations.php');
 
-$migrationObj = new DatabaseMigrations($argv);
+$migrationObj = new Migrations($argv);

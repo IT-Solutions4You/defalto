@@ -16,24 +16,7 @@ class MigrationsDatabaseWrapper
     public function __construct()
     {
         $this->db = PearDatabase::getInstance();
-    }
-
-    /**
-     * method to check if migration table exists
-     *
-     * @return void
-     */
-    public function checkMigrationTable(): void
-    {
-        $this->db->pquery(
-            'CREATE TABLE IF NOT EXISTS ' . $this->migrationsTableName . ' (
-                                `migration_name` varchar(255) NOT NULL,
-                                `migration_createdtime` datetime NOT NULL,
-                                `migration_status` int(11) DEFAULT "0" COMMENT "0-created,1-finished,2-inprogress",
-                              PRIMARY KEY (`migration_name`)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;',
-            []
-        );
+        $this->checkMigrationTable();
     }
 
     /**
@@ -65,7 +48,26 @@ class MigrationsDatabaseWrapper
     public function markMigration(string $fileName, int $migrationStatus = 0): void
     {
         if ($fileName != '') {
-            $this->db->pquery('REPLACE INTO its4you_migrations (migration_name,migration_createdtime,migration_status) VALUES (?,now(),?)', [$fileName, $migrationStatus]);
+            $this->db->pquery('REPLACE INTO ' . $this->migrationsTableName . ' (migration_name,migration_createdtime,migration_status) VALUES (?,now(),?)',
+                [$fileName, $migrationStatus]);
         }
+    }
+
+    /**
+     * method to check if migration table exists
+     *
+     * @return void
+     */
+    protected function checkMigrationTable(): void
+    {
+        $this->db->pquery(
+            'CREATE TABLE IF NOT EXISTS ' . $this->migrationsTableName . ' (
+                                `migration_name` varchar(255) NOT NULL,
+                                `migration_createdtime` datetime NOT NULL,
+                                `migration_status` int(11) DEFAULT "0" COMMENT "0-created,1-finished,2-inprogress",
+                              PRIMARY KEY (`migration_name`)
+                            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;',
+            []
+        );
     }
 }

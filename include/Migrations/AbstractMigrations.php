@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-require_once 'include/Migration/MigrationsTrait.php';
+require_once 'include/Migrations/MigrationsTrait.php';
 
 abstract class AbstractMigrations
 {
@@ -16,19 +16,14 @@ abstract class AbstractMigrations
 
     public PearDatabase $db;
 
-    protected string $wrongClassName = 'Missing class name: ITS4YouMigration_';
+    protected string $wrongClassName = 'Missing class name: Migration_';
 
-    /**
-     * ITS4YouMigrationParent constructor.
-     */
     public function __construct()
     {
         $this->db = PearDatabase::getInstance();
     }
 
     /**
-     * method to run migration scripts
-     *
      * @param string $fileName
      *
      * @return void
