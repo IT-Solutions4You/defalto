@@ -19,5 +19,6 @@ include_once 'includes/main/WebUI.php';
 set_include_path($root_directory);
 
 require_once('include/Migrations/Migrations.php');
-
-$migrationObj = new Migrations($argv);
+$migrationObj = new Migrations();
+$migrationObj->setArguments($argv);
+$migrationObj->run();

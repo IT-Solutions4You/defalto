@@ -83,7 +83,12 @@ class Install_InitSchema_Model {
 				$oldVersion = $newVersion;
 			}
 		}
-	}
+
+        require_once('include/Migrations/Migrations.php');
+        $migrationObj = new Migrations();
+        $migrationObj->setArguments(['InitSchema.php', 'migrate', '-y']);
+        $migrationObj->run();
+    }
 
 	/**
 	 * Function creates default user's Role, Profiles

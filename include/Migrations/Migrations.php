@@ -32,15 +32,8 @@ class Migrations
             e.g.: php bin/migrate.php create --c #. to create migration file in /customer migrations folder
             to display help see: php bin/migrate.php help';
 
-    /**
-     * @param array $arg - Array of arguments passed to script
-     */
-    public function __construct($arg)
+    public function __construct()
     {
-        if (!is_array($arg) || empty($arg)) {
-            $this->makeAborting($this->helpMsg);
-        }
-
         require_once('include/utils/utils.php');
         require_once('include/logging.php');
         require_once('include/Migrations/AbstractMigrations.php');
@@ -51,14 +44,40 @@ class Migrations
 
         $this->db = PearDatabase::getInstance();
         $this->migrationsDatabaseWrapper = new MigrationsDatabaseWrapper();
+    }
 
-        if (is_countable($arg) && count($arg) > 0) {
-            try {
-                $this->parseArg($arg);
-                $this->handleMigration();
-            } catch (Exception $objEx) {
-                $this->makeAborting('Migration does not work!');
+    public function setArguments(array $arguments): void
+    {
+        try {
+            $this->parseArg($arguments);
+        } catch (Exception $objEx) {
+            $this->makeAborting('Migration does not work!');
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function run(): void
+    {
+        try {
+            switch ($this->command) {
+                case 'list':
+                    $this->listUpdates();
+                    break;
+                case 'migrate':
+                    $this->loadClasses();
+                    $this->runMigrations();
+                    break;
+                case 'create':
+                    $this->createMigrationFile();
+                    break;
+                case 'help':
+                    $this->makeAborting($this->helpMsg);
+                    break;
             }
+        } catch (Exception $objEx) {
+            $this->makeAborting('Migration does not work!');
         }
     }
 
@@ -87,7 +106,7 @@ class Migrations
      *
      * @return void
      */
-    public function run(): void
+    public function runMigrations(): void
     {
         $filesToRun = $this->loadMigrationFiles();
 
@@ -151,28 +170,6 @@ class Migrations
 
         if (isset($arg[2])) {
             $this->commandType = $arg[2];
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function handleMigration(): void
-    {
-        switch ($this->command) {
-            case 'list':
-                $this->listUpdates();
-                break;
-            case 'migrate':
-                $this->loadClasses();
-                $this->run();
-                break;
-            case 'create':
-                $this->createMigrationFile();
-                break;
-            case 'help':
-                $this->makeAborting($this->helpMsg);
-                break;
         }
     }
 
