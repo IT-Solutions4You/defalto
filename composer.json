@@ -22,8 +22,9 @@
     "psr/log": "^1.0 || ^2.0",
     "setasign/fpdi": "^2.1",
     "simplehtmldom/simplehtmldom": "*",
-    "smarty/smarty": "4.*"
-    "fullcalendar/fullcalendar": "*"
+    "smarty/smarty": "4.*",
+    "fullcalendar/fullcalendar": "*",
+    "phpmailer/phpmailer": "*"
   },
   "repositories": [
     {

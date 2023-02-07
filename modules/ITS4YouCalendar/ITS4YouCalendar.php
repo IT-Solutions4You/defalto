@@ -137,6 +137,13 @@ class ITS4YouCalendar extends CRMEntity
           PRIMARY KEY (its4you_remindme_id)
         ) ENGINE=InnoDB'
         );
+        $this->db->query(
+            'CREATE TABLE `its4you_invited_users` (
+              `invited_users_id` int(11) NOT NULL,
+              `user_id` int(11) NOT NULL,
+              `record_id` int(11) NOT NULL
+            ) ENGINE=InnoDB'
+        );
     }
 
     /**
@@ -168,8 +175,15 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function save_module()
     {
+        $recordId = $this->id;
         $dateTimeStart = $this->column_fields['datetime_start'];
 
         ITS4YouCalendar_Reminder_Model::saveRecord($this->id, $dateTimeStart);
+
+        $invitedUsers = [
+            $this->column_fields['assigned_user_id']
+        ];
+
+        ITS4YouCalendar_Reminder_Model::saveInvitedUsers($recordId, $invitedUsers);
     }
 }
