@@ -123,7 +123,7 @@ class Migrations
             $this->showMsg('Do you want to RUN these files?' . "\n" . 'Type "yes" to continue: ');
             $line = fgets(STDIN);
 
-            if (trim($line) !== 'yes') {
+            if ('yes' !== trim($line)) {
                 $this->makeAborting();
             }
 

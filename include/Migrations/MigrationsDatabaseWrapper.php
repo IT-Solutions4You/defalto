@@ -27,13 +27,10 @@ class MigrationsDatabaseWrapper
     public function loadRunFiles(): array
     {
         $result = $this->db->pquery('SELECT migration_name FROM ' . $this->migrationsTableName . ' WHERE migration_status = ?', [1]);
-        $num_rows = $this->db->num_rows($result);
         $allRunFiles = [];
 
-        if ($num_rows > 0) {
-            while ($migrationRow = $this->db->fetchByAssoc($result)) {
-                $allRunFiles[] = $migrationRow['migration_name'];
-            }
+        while ($migrationRow = $this->db->fetchByAssoc($result)) {
+            $allRunFiles[] = $migrationRow['migration_name'];
         }
 
         return $allRunFiles;
@@ -47,7 +44,7 @@ class MigrationsDatabaseWrapper
      */
     public function markMigration(string $fileName, int $migrationStatus = 0): void
     {
-        if ($fileName != '') {
+        if ('' !== $fileName) {
             $this->db->pquery('REPLACE INTO ' . $this->migrationsTableName . ' (migration_name,migration_createdtime,migration_status) VALUES (?,now(),?)',
                 [$fileName, $migrationStatus]);
         }
