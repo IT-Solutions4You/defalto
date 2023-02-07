@@ -78,13 +78,28 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         this.registerChangeReminderValue(container);
     },
     registerChangeReminderValue: function (container) {
+        const self = this;
+
+        container.on('click', '#js-reminder-checkbox', function () {
+            self.updateReminderValue();
+        });
+
         container.on('change', '#js-reminder-controls select', function () {
+            self.updateReminderValue();
+        });
+    },
+    updateReminderValue: function () {
+        let value = 0;
+
+        if ($('#js-reminder-checkbox').is(':checked')) {
             const days = parseInt($('#js-reminder-days').val()) * 24 * 60,
                 hours = parseInt($('#js-reminder-hours').val()) * 60,
                 minutes = parseInt($('#js-reminder-minutes').val());
 
-            $('#js-reminder-value').val(days + hours + minutes);
-        });
+            value = days + hours + minutes;
+        }
+
+        $('#js-reminder-value').val(value);
     },
     registerDateTimeHandlers: function (container) {
         this.registerDateTimeUpdateFieldValue(container);
