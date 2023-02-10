@@ -21,12 +21,15 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
             $currentTime = time();
             $date = date('Y-m-d', strtotime("+$activityReminder seconds", $currentTime));
             $time = date('H:i:s', strtotime("+$activityReminder seconds", $currentTime));
-            $reminderActivitiesResult = 'SELECT record_id FROM its4you_remindme_popup
-								INNER JOIN vtiger_crmentity ON its4you_remindme_popup.record_id = vtiger_crmentity.crmid
-								WHERE its4you_remindme_popup.status = 0
-								AND vtiger_crmentity.smownerid = ? AND vtiger_crmentity.deleted = 0
-								AND its4you_remindme_popup.datetime_start <= ?
-								LIMIT 20';
+            $reminderActivitiesResult = 'SELECT its4you_remindme_popup.record_id FROM its4you_remindme_popup 
+                INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = its4you_remindme_popup.record_id 
+                INNER JOIN its4you_remindme ON its4you_remindme.record_id = its4you_remindme_popup.record_id 
+				WHERE its4you_remindme_popup.status = 0 
+                AND vtiger_crmentity.deleted = 0 
+				AND its4you_remindme.reminder_time > 0 
+                AND vtiger_crmentity.smownerid = ? 
+				AND its4you_remindme_popup.datetime_start <= ? 
+				LIMIT 20';
             $result = $db->pquery($reminderActivitiesResult, array($currentUserModel->getId(), $date . ' ' . $time));
 
             while ($row = $db->fetchByAssoc($result)) {
@@ -108,7 +111,6 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
        its4you_calendar.datetime_start AS calendar_datetime,
        its4you_remindme.reminder_time,
        its4you_remindme.reminder_sent,
-       its4you_remindme.recurring_id,
        its4you_remindme_popup.datetime_start AS remind_datetime
         FROM its4you_calendar
 		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=its4you_calendar.its4you_calendar_id
