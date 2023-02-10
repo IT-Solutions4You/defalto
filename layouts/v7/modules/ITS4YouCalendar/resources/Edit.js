@@ -17,6 +17,83 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         this.registerReminderField(container);
         this.registerRecurringField(container);
     },
+    registerBasicEvents : function(container) {
+        this._super(container);
+        this.registerRecordPreSaveEvent(container);
+    },
+    registerRecordPreSaveEvent : function(form) {
+        const self = this;
+
+        if('undefined' === typeof form) {
+            form = this.getForm();
+        }
+
+        const InitialFormData = form.serialize();
+
+        app.event.one(Vtiger_Edit_Js.recordPresaveEvent,function(e) {
+            self.registerRecurringEditOptions(e,form,InitialFormData);
+            self.resetRecurringDetailsIfDisabled(form);
+        });
+    },
+    resetRecurringDetailsIfDisabled: function (form) {
+        if (!form.find('input[name="recurringcheck"]').is(':checked')) {
+            jQuery('#recurringType').append('<option value="--None--">None</option>').val('--None--');
+        }
+    },
+    registerRecurringEditOptions: function (e, form, InitialFormData) {
+        let currentFormData = form.serialize(),
+            editViewContainer = form.closest('.editViewPageDiv').length,
+            recurringEdit = form.find('.recurringEdit').length,
+            recurringEditMode = form.find('[name="recurringEditMode"]'),
+            recurringCheck = form.find('input[name="recurringcheck"]').is(':checked');
+
+        if (editViewContainer && InitialFormData === currentFormData && recurringEdit) {
+            recurringEditMode.val('current');
+        } else if (editViewContainer && recurringCheck && recurringEdit && InitialFormData !== currentFormData) {
+            e.preventDefault();
+
+            let recurringEventsUpdateModal = form.find('.recurringRecordUpdate'),
+                clonedContainer = recurringEventsUpdateModal.clone(true, true),
+                callback = function (data) {
+                    let modalContainer = data.find('.recurringRecordUpdate');
+                    modalContainer.removeClass('hide');
+                    modalContainer.on('click', '.onlyThisEvent', function () {
+                        recurringEditMode.val('current');
+                        app.helper.hideModal();
+                        form.vtValidate({
+                            submitHandler: function () {
+                                return true;
+                            }
+                        });
+                        form.submit();
+                    });
+                    modalContainer.on('click', '.futureEvents', function () {
+                        recurringEditMode.val('future');
+                        app.helper.hideModal();
+                        form.vtValidate({
+                            submitHandler: function () {
+                                return true;
+                            }
+                        });
+                        form.submit();
+                    });
+                    modalContainer.on('click', '.allEvents', function () {
+                        recurringEditMode.val('all');
+                        app.helper.hideModal();
+                        form.vtValidate({
+                            submitHandler: function () {
+                                return true;
+                            }
+                        });
+                        form.submit();
+                    });
+                };
+
+            app.helper.showModal(clonedContainer, {
+                'cb': callback
+            });
+        }
+    },
     registerAllDayField: function (container) {
         this.registerAllDayHandlers(container);
     },

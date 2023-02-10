@@ -129,7 +129,7 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE `its4you_remindme_popup` (
+            'CREATE TABLE IF NOT EXISTS `its4you_remindme_popup` (
           `its4you_remindme_id` int(19) AUTO_INCREMENT,
           `record_id` int(19) NOT NULL,
           `datetime_start` datetime NOT NULL,
@@ -138,12 +138,64 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE `its4you_invited_users` (
+            'CREATE TABLE IF NOT EXISTS `its4you_invited_users` (
               `invited_users_id` int(11) NOT NULL,
               `user_id` int(11) NOT NULL,
               `record_id` int(11) NOT NULL
             ) ENGINE=InnoDB'
         );
+        $this->db->query(
+            'CREATE TABLE IF NOT EXISTS `its4you_recurring` (
+          `recurring_id` int(19) NOT NULL,
+          `record_id` int(19) NOT NULL,
+          `recurring_date` date NOT NULL,
+          `recurring_end_date` date NOT NULL,
+          `recurring_type` varchar(30) NOT NULL,
+          `recurring_frequency` int(19) NOT NULL,
+          `recurring_info` varchar(50) NOT NULL,
+           UNIQUE (recurring_id)
+        ) ENGINE=InnoDB'
+        );
+        $this->db->query(
+            "CREATE TABLE IF NOT EXISTS `its4you_recurring_rel` (
+            `record_id` int(11) NOT NULL COMMENT 'first recurrence record',      
+            `recurrence_id` int(11) NOT NULL COMMENT 'other or first recurrence record',
+          UNIQUE (recurrence_id)
+        ) ENGINE=InnoDB"
+        );
+
+        /** Database references to crmentity
+        $this->db->query(
+            'ALTER TABLE `its4you_recurring` 
+            ADD CONSTRAINT `its4you_recurring_record_id` 
+            FOREIGN KEY (`record_id`) 
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_remindme`
+            ADD CONSTRAINT `its4you_remindme_record_id`
+            FOREIGN KEY (`record_id`)
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_remindme_popup`
+            ADD CONSTRAINT `its4you_remindme_popup_record_id`
+            FOREIGN KEY (`record_id`)
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_recurring_rel` 
+            ADD CONSTRAINT `its4you_recurring_rel_record_id` 
+            FOREIGN KEY (`record_id`) 
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_recurring_rel` 
+            ADD CONSTRAINT `its4you_recurring_rel_recurrence_id` 
+            FOREIGN KEY (`recurrence_id`) 
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+         */
     }
 
     /**
@@ -175,15 +227,56 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function save_module()
     {
+        $this->insertIntoReminder();
+        $this->insertIntoInvitedUsers();
+
+        $this->insertIntoRecurring();
+    }
+
+    public function insertIntoReminder()
+    {
         $recordId = $this->id;
         $dateTimeStart = $this->column_fields['datetime_start'];
 
-        ITS4YouCalendar_Reminder_Model::saveRecord($this->id, $dateTimeStart);
+        ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart);
+    }
 
+    public function insertIntoInvitedUsers()
+    {
+        $recordId = $this->id;
         $invitedUsers = [
             $this->column_fields['assigned_user_id']
         ];
 
         ITS4YouCalendar_Reminder_Model::saveInvitedUsers($recordId, $invitedUsers);
+    }
+
+    public function insertIntoRecurring()
+    {
+        $recurringObject = Vtiger_Functions::getRecurringObjValue();
+        $recordId = $this->id;
+
+        if ($recurringObject) {
+            $recurringEndDate = null;
+            $startDate = $recurringObject->startdate->get_DB_formatted_date();
+            $type = $recurringObject->getRecurringType();
+            $frequency = $recurringObject->getRecurringFrequency();
+            $info = $recurringObject->getDBRecurringInfoString();
+
+            if (!empty($recurringObject->recurringenddate)) {
+                $recurringEndDate = $recurringObject->recurringenddate->get_DB_formatted_date();
+            }
+
+            $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
+            $recurrence->set('recurring_date', $startDate);
+            $recurrence->set('recurring_end_date', $recurringEndDate);
+            $recurrence->set('recurring_type', $type);
+            $recurrence->set('recurring_frequency', $frequency);
+            $recurrence->set('recurring_info', $info);
+            $recurrence->save();
+        } else {
+            $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
+            $recurrence->delete();
+        }
     }
 }
