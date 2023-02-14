@@ -164,59 +164,50 @@ class ITS4YouCalendar extends CRMEntity
           UNIQUE (recurrence_id)
         ) ENGINE=InnoDB"
         );
-
         /** Database references to crmentity
-        $this->db->query(
-            'ALTER TABLE `its4you_recurring` 
-            ADD CONSTRAINT `its4you_recurring_record_id` 
-            FOREIGN KEY (`record_id`) 
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_invited_users`
-            ADD CONSTRAINT `its4you_invited_users_record_id`
-            FOREIGN KEY (`record_id`)
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_invited_users`
-            ADD CONSTRAINT `its4you_invited_users_user_id`
-            FOREIGN KEY (`user_id`)
-            REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_remindme`
-            ADD CONSTRAINT `its4you_remindme_record_id`
-            FOREIGN KEY (`record_id`)
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_remindme_popup`
-            ADD CONSTRAINT `its4you_remindme_popup_record_id`
-            FOREIGN KEY (`record_id`)
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_recurring_rel` 
-            ADD CONSTRAINT `its4you_recurring_rel_record_id` 
-            FOREIGN KEY (`record_id`) 
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
-        $this->db->query(
-            'ALTER TABLE `its4you_recurring_rel` 
-            ADD CONSTRAINT `its4you_recurring_rel_recurrence_id` 
-            FOREIGN KEY (`recurrence_id`) 
-            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-        );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_recurring`
+         * ADD CONSTRAINT `its4you_recurring_record_id`
+         * FOREIGN KEY (`record_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_invited_users`
+         * ADD CONSTRAINT `its4you_invited_users_record_id`
+         * FOREIGN KEY (`record_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_invited_users`
+         * ADD CONSTRAINT `its4you_invited_users_user_id`
+         * FOREIGN KEY (`user_id`)
+         * REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_remindme`
+         * ADD CONSTRAINT `its4you_remindme_record_id`
+         * FOREIGN KEY (`record_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_remindme_popup`
+         * ADD CONSTRAINT `its4you_remindme_popup_record_id`
+         * FOREIGN KEY (`record_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_recurring_rel`
+         * ADD CONSTRAINT `its4you_recurring_rel_record_id`
+         * FOREIGN KEY (`record_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
+         * $this->db->query(
+         * 'ALTER TABLE `its4you_recurring_rel`
+         * ADD CONSTRAINT `its4you_recurring_rel_recurrence_id`
+         * FOREIGN KEY (`recurrence_id`)
+         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+         * );
          */
-    }
-
-    /**
-     * @return void
-     */
-    public function deleteCustomLinks()
-    {
-        $this->updateCron(false);
     }
 
     public function updateCron($register = true)
@@ -234,6 +225,13 @@ class ITS4YouCalendar extends CRMEntity
         }
     }
 
+    /**
+     * @return void
+     */
+    public function deleteCustomLinks()
+    {
+        $this->updateCron(false);
+    }
 
     /**
      * @return void

@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 {
     /**

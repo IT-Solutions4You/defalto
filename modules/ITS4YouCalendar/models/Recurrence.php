@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
 {
     public PearDatabase $adb;
