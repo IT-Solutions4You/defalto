@@ -164,6 +164,16 @@ class ITS4YouCalendar extends CRMEntity
           UNIQUE (recurrence_id)
         ) ENGINE=InnoDB"
         );
+        $this->db->query(
+            'CREATE TABLE IF NOT EXISTS `its4you_sharing_users` (
+            `crmid` INT(19) NOT NULL,
+            `userid` INT(19) NOT NULL,
+            `type` INT(1) NOT NULL,
+            INDEX `crmid` (`crmid`) USING BTREE,
+            INDEX `userid` (`userid`) USING BTREE,
+            INDEX `crmid_2` (`crmid`, `userid`) USING BTREE
+        ) ENGINE=InnoDB'
+        );
         /** Database references to crmentity
          * $this->db->query(
          * 'ALTER TABLE `its4you_recurring`
@@ -260,9 +270,15 @@ class ITS4YouCalendar extends CRMEntity
         $invitedUsersModel->setUsers($invitedUsers);
         $invitedUsersModel->deleteUsers();
 
+        $sharingUsers = ITS4YouCalendar_SharingUsers_Model::getInstance($recordId);
+        $sharingUsers->setUsers($invitedUsers);
+        $sharingUsers->deleteUsers();
+
         if (!empty($invitedUsers)) {
             $invitedUsersModel->saveUsers();
             $invitedUsersModel->sendInvitation();
+
+            $sharingUsers->saveUsers();
         }
     }
 
