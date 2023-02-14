@@ -36,6 +36,10 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
             return 'recurrence';
         }
 
+        if ('invite_users' === $this->getName()) {
+            return 'InviteUsers';
+        }
+
         return parent::getFieldDataType();
     }
 

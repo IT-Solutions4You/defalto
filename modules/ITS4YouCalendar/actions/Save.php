@@ -23,12 +23,13 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
      */
     public function saveRecord($request): object
     {
+        $request->set('invite_users', implode(';', (array)$request->get('invite_users')));
         $this->retrieveDatabaseRecurrence($request);
 
         $recordModel = $this->getRecordModelFromRequest($request);
         $recordModel->save();
-        $this->savedRecordId = $recordModel->getId();
 
+        $this->savedRecordId = $recordModel->getId();
         $this->saveRepeatEvents($recordModel);
 
         return $recordModel;
@@ -59,10 +60,13 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
         list($_REQUEST['due_date'], $_REQUEST['time_end']) = explode(' ', $focus->column_fields['datetime_end_date']);
 
         $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
-        $recurringDataChanged = ITS4YouCalendar_RepeatRecords_Model::checkRecurringDataChanged($recurrenceObject, $this->recurrenceDatabaseObject);
 
-        if (ITS4YouCalendar_RepeatRecords_Model::validate($focus->column_fields) || ($recurringDataChanged && empty($recurrenceObject))) {
-            ITS4YouCalendar_RepeatRecords_Model::repeatFromRequest($focus, $this->recurrenceDatabaseObject);
+        if ($recurrenceObject) {
+            $recurringDataChanged = ITS4YouCalendar_RepeatRecords_Model::checkRecurringDataChanged($recurrenceObject, $this->recurrenceDatabaseObject);
+
+            if (ITS4YouCalendar_RepeatRecords_Model::validate($focus->column_fields) || ($recurringDataChanged && empty($recurrenceObject))) {
+                ITS4YouCalendar_RepeatRecords_Model::repeatFromRequest($focus, $this->recurrenceDatabaseObject);
+            }
         }
     }
 }

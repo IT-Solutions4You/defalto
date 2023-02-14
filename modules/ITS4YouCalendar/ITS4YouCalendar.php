@@ -138,10 +138,11 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_invited_users` (
-              `invited_users_id` int(11) NOT NULL,
-              `user_id` int(11) NOT NULL,
-              `record_id` int(11) NOT NULL
+            'CREATE TABLE `its4you_invited_users` (
+            `invited_users_id` int(11) NOT NULL,
+            `user_id` int(11) NOT NULL,
+            `record_id` int(11) NOT NULL,
+            `status` varchar(50) DEFAULT NULL
             ) ENGINE=InnoDB'
         );
         $this->db->query(
@@ -170,6 +171,18 @@ class ITS4YouCalendar extends CRMEntity
             ADD CONSTRAINT `its4you_recurring_record_id` 
             FOREIGN KEY (`record_id`) 
             REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_invited_users`
+            ADD CONSTRAINT `its4you_invited_users_record_id`
+            FOREIGN KEY (`record_id`)
+            REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
+        );
+        $this->db->query(
+            'ALTER TABLE `its4you_invited_users`
+            ADD CONSTRAINT `its4you_invited_users_user_id`
+            FOREIGN KEY (`user_id`)
+            REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION'
         );
         $this->db->query(
             'ALTER TABLE `its4you_remindme`
@@ -229,7 +242,6 @@ class ITS4YouCalendar extends CRMEntity
     {
         $this->insertIntoReminder();
         $this->insertIntoInvitedUsers();
-
         $this->insertIntoRecurring();
     }
 
@@ -244,11 +256,16 @@ class ITS4YouCalendar extends CRMEntity
     public function insertIntoInvitedUsers()
     {
         $recordId = $this->id;
-        $invitedUsers = [
-            $this->column_fields['assigned_user_id']
-        ];
+        $invitedUsers = explode(';', $this->column_fields['invite_users']);
 
-        ITS4YouCalendar_Reminder_Model::saveInvitedUsers($recordId, $invitedUsers);
+        $invitedUsersModel = ITS4YouCalendar_InvitedUsers_Model::getInstance($recordId);
+        $invitedUsersModel->setUsers($invitedUsers);
+        $invitedUsersModel->deleteUsers();
+
+        if (!empty($invitedUsers)) {
+            $invitedUsersModel->saveUsers();
+            $invitedUsersModel->sendInvitation();
+        }
     }
 
     public function insertIntoRecurring()

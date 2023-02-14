@@ -9,6 +9,8 @@
  */
 
 $languageStrings = array(
+    'SINGLE_ITS4YouCalendar' => 'Calendar',
+    'ITS4YouCalendar' => 'Calendar',
     'LBL_HOLD_FOLLOWUP_ON' => 'Hold Followup on',
     'LBL_CREATE_FOLLOWUP_EVENT' => 'Create Follow Up Event',
     'LBL_RECURRENCE_INFORMATION' => 'Recurrence Details',
@@ -167,6 +169,7 @@ $languageStrings = array(
     'LBL_NOVEMBER' => 'November',
     'LBL_DECEMBER' => 'December',
     'LBL_CLICK_HERE_TO_VIEW' => 'Click here to view',
+    'LBL_REFERENCE_INFORMATION' => 'Reference Information',
 );
 
 $jsLanguageStrings = array(
