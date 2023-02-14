@@ -1,10 +1,17 @@
 <?php
-
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
 {
     public PearDatabase $adb;
-    public $startDateField = 'datetime_start';
-    public $endDateField = 'datetime_end';
+    public string $startDateField = 'datetime_start';
+    public string $endDateField = 'datetime_end';
 
     public static function getAccessibleUsers()
     {
@@ -117,14 +124,6 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
         unlink($attachment);
     }
 
-    public function retrieveUserFocus($userId)
-    {
-        $focus = CRMEntity::getInstance('Users');
-        $focus->retrieve_entity_info($userId, 'Users');
-
-        $this->set('user_focus', $focus);
-    }
-
     public function generateIcsAttachment()
     {
         $recordModel = $this->getRecordModel();
@@ -178,50 +177,15 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
         return '';
     }
 
-    public function getSubject()
+    /**
+     * @throws Exception
+     */
+    public function retrieveUserFocus($userId)
     {
-        $recordModel = $this->getRecordModel();
-        $moduleName = $recordModel->getModuleName();
+        $focus = CRMEntity::getInstance('Users');
+        $focus->retrieve_entity_info($userId, 'Users');
 
-        if ('edit' === $recordModel->get('mode')) {
-            $subject = vtranslate('LBL_UPDATED_INVITATION', $moduleName) . ' : ';
-        } else {
-            $subject = vtranslate('LBL_INVITATION', $moduleName) . ' : ';
-        }
-
-        $subject .= $recordModel->getName();
-
-        return $subject;
-    }
-
-    public function getBody()
-    {
-        return $this->getTemplateBody();
-    }
-
-    public function getTemplateBody(): string
-    {
-        $recordModel = $this->getRecordModel();
-        $result = $this->adb->pquery(
-            'SELECT templateid AS template_id FROM vtiger_emakertemplates WHERE subject=? AND module=?',
-            ['Invitation', $recordModel->getModuleName()]
-        );
-
-        if ($this->adb->num_rows($result)) {
-            $userFocus = $this->get('user_focus');
-            $templateId = $this->adb->query_result($result, 0, 'template_id');
-            $templateLanguage = $userFocus->column_fields['language'];
-
-            $this->set('template_id', $templateId);
-            $this->set('template_language', $templateLanguage);
-
-            $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $templateLanguage, $recordModel->getModuleName(), $recordModel->getId(), $userFocus->column_fields['id'], 'Users');
-            $EMAILContentModel->getContent();
-
-            return $EMAILContentModel->getBody();
-        }
-
-        return '';
+        $this->set('user_focus', $focus);
     }
 
     /**
@@ -250,5 +214,51 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
     public function retrieveRecordModel()
     {
         $this->set('record_model', Vtiger_Record_Model::getInstanceById($this->getRecord()));
+    }
+
+    public function getSubject()
+    {
+        $recordModel = $this->getRecordModel();
+        $moduleName = $recordModel->getModuleName();
+
+        if ('edit' === $recordModel->get('mode')) {
+            $subject = vtranslate('LBL_UPDATED_INVITATION', $moduleName) . ' : ';
+        } else {
+            $subject = vtranslate('LBL_INVITATION', $moduleName) . ' : ';
+        }
+
+        $subject .= $recordModel->getName();
+
+        return $subject;
+    }
+
+    public function getBody(): string
+    {
+        return $this->getTemplateBody();
+    }
+
+    public function getTemplateBody(): string
+    {
+        $recordModel = $this->getRecordModel();
+        $result = $this->adb->pquery(
+            'SELECT templateid AS template_id FROM vtiger_emakertemplates WHERE subject=? AND module=?',
+            ['Invitation', $recordModel->getModuleName()]
+        );
+
+        if ($this->adb->num_rows($result)) {
+            $userFocus = $this->get('user_focus');
+            $templateId = $this->adb->query_result($result, 0, 'template_id');
+            $templateLanguage = $userFocus->column_fields['language'];
+
+            $this->set('template_id', $templateId);
+            $this->set('template_language', $templateLanguage);
+
+            $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $templateLanguage, $recordModel->getModuleName(), $recordModel->getId(), $userFocus->column_fields['id'], 'Users');
+            $EMAILContentModel->getContent();
+
+            return $EMAILContentModel->getBody();
+        }
+
+        return '';
     }
 }
