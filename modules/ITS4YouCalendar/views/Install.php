@@ -503,6 +503,15 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'table' => 'vtiger_crmentity',
                 ),
             ],
+            'LBL_INVITE_USER_BLOCK' => [
+                'invite_users' => array(
+                    'label' => 'Invite Users',
+                    'columntype' => 'VARCHAR(255)',
+                    'uitype' => 1,
+                    'typeofdata' => 'V~O',
+                    'summaryfield' => 0,
+                ),
+            ],
         ];
     }
 

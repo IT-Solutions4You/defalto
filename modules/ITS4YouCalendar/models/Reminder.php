@@ -41,16 +41,6 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
         return $recordModels;
     }
 
-    public static function saveInvitedUsers($recordId, $userIds)
-    {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('DELETE FROM its4you_invited_users WHERE record_id=?', [$recordId]);
-
-        foreach ($userIds as $userId) {
-            $adb->pquery('INSERT INTO its4you_invited_users (record_id, user_id) VALUES (?,?)', [$recordId, $userId]);
-        }
-    }
-
     /**
      * @param int $record_id
      * @param int $status
@@ -190,21 +180,10 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     public function retrieveInvitedUsers()
     {
         $recordId = $this->get('record_id');
-        $adb = PearDatabase::getInstance();
-        $query = 'SELECT vtiger_users.email1 as email, its4you_invited_users.user_id 
-            FROM its4you_invited_users 
-            INNER JOIN vtiger_users ON vtiger_users.id=its4you_invited_users.user_id 
-            WHERE its4you_invited_users.record_id =? AND vtiger_users.deleted=? AND vtiger_users.status=?';
-        $user_result = $adb->pquery($query, array($recordId, 0, 'Active'));
-        $invitedUsers = [];
+        $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($recordId);
+        $invitedUsers->retrieveUsers();
 
-        if ($adb->num_rows($user_result) >= 1) {
-            while ($row = $adb->fetch_array($user_result)) {
-                $invitedUsers[$row['user_id']] = $row['email'];
-            }
-        }
-
-        $this->set('invited_users', $invitedUsers);
+        $this->set('invited_users', $invitedUsers->getUsersInfo());
     }
 
     /**
