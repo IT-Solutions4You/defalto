@@ -16,22 +16,23 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         this.registerAllDayField(container);
         this.registerReminderField(container);
         this.registerRecurringField(container);
+        this.registerMultiReference(container);
     },
-    registerBasicEvents : function(container) {
+    registerBasicEvents: function (container) {
         this._super(container);
         this.registerRecordPreSaveEvent(container);
     },
-    registerRecordPreSaveEvent : function(form) {
+    registerRecordPreSaveEvent: function (form) {
         const self = this;
 
-        if('undefined' === typeof form) {
+        if ('undefined' === typeof form) {
             form = this.getForm();
         }
 
         const InitialFormData = form.serialize();
 
-        app.event.one(Vtiger_Edit_Js.recordPresaveEvent,function(e) {
-            self.registerRecurringEditOptions(e,form,InitialFormData);
+        app.event.one(Vtiger_Edit_Js.recordPresaveEvent, function (e) {
+            self.registerRecurringEditOptions(e, form, InitialFormData);
             self.resetRecurringDetailsIfDisabled(form);
         });
     },
@@ -298,4 +299,113 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         this.retrieveDateTimeValues(container);
         this.registerDateTimeHandlers(container);
     },
+    registerMultiReference: function (container) {
+        const self = this;
+
+        $('.multi-reference-field', container).each(function (index, element) {
+            let referenceContainer = $(element),
+                referenceModule = referenceContainer.find('[name="popupReferenceModule"]').val(),
+                referenceSource = referenceContainer.find('.sourceField'),
+                selectElement = referenceContainer.find('.select2');
+
+            self.registerMultiReferenceSelect(referenceModule, selectElement);
+            self.registerMultiReferenceQuickCreateEvent(referenceSource, selectElement)
+            self.registerMultiReferenceSelectionEvent(referenceSource, selectElement);
+            self.retrieveMultiReferenceData(referenceSource, selectElement);
+            self.registerMultiReferenceChange(referenceSource, selectElement);
+        });
+    },
+    registerMultiReferenceSelect: function (referenceModule, selectElement) {
+        let self = this;
+
+        selectElement.select2(self.getMultiSelectConfig(referenceModule));
+    },
+    registerMultiReferenceChange: function (referenceSource, selectElement) {
+        selectElement.on('change', function () {
+            let data = selectElement.select2('data'),
+                ids = [];
+
+            $.each(data, function (index, value) {
+                ids.push(value.id);
+            })
+
+            referenceSource.val(ids.join(';'))
+        });
+    },
+    getMultiSelectConfig: function (referenceModule) {
+        return {
+            tags: true,
+            multiple: true,
+            ajax: {
+                'url': 'index.php?module=' + referenceModule + '&action=BasicAjax&search_module=' + referenceModule,
+                'dataType': 'json',
+                'data': function (term, page) {
+                    return {
+                        'search_value': term
+                    };
+                },
+                'results': function (data) {
+                    data.results = data.result;
+
+                    for (let index in data.results) {
+
+                        let resultData = data.result[index];
+                        resultData.text = resultData.label;
+                    }
+
+                    return data
+                },
+                transport: function (params) {
+                    return jQuery.ajax(params);
+                }
+            },
+        };
+    },
+    retrieveMultiReferenceData: function (referenceSource, selectElement) {
+        let data = [],
+            displayValue = referenceSource.data('displayvalue');
+
+        if (displayValue && 'object' === typeof displayValue) {
+            $.each(displayValue, function (referenceId, referenceLabel) {
+                data.push({
+                    id: referenceId,
+                    text: referenceLabel,
+                });
+            });
+        }
+
+        selectElement.select2('data', data);
+    },
+    registerMultiReferenceQuickCreateEvent: function (referenceSource, selectElement) {
+        referenceSource.on(Vtiger_Edit_Js.postReferenceQuickCreateSave, function (event, result) {
+            if ('object' === typeof result['data']) {
+                let updateData = selectElement.select2('data');
+
+                updateData.push({
+                    id: result['data']['_recordId'],
+                    text: result['data']['_recordLabel'],
+                })
+
+                selectElement.select2('data', updateData);
+                selectElement.trigger('change');
+            }
+        });
+    },
+    registerMultiReferenceSelectionEvent: function (referenceSource, selectElement) {
+        referenceSource.on(Vtiger_Edit_Js.postReferenceSelectionEvent, function (event, result) {
+            if ('object' === typeof result['data']) {
+                let updateData = selectElement.select2('data');
+
+                $.each(result['data'], function (referenceId, referenceData) {
+                    updateData.push({
+                        id: referenceId,
+                        text: referenceData.name,
+                    })
+                });
+
+                selectElement.select2('data', updateData);
+                selectElement.trigger('change');
+            }
+        });
+    }
 });

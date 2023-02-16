@@ -251,6 +251,21 @@ class ITS4YouCalendar extends CRMEntity
         $this->insertIntoReminder();
         $this->insertIntoInvitedUsers();
         $this->insertIntoRecurring();
+
+        $this->saveMultiReference('contact_id', 'Contacts');
+    }
+
+    public function saveMultiReference($fieldName, $relatedModule)
+    {
+        $recordId = $this->id;
+        $recordModule = $this->moduleName;
+        $relatedRecords = explode(';', $this->column_fields[$fieldName]);
+
+        PearDatabase::getInstance()->pquery('DELETE FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $relatedModule]);
+
+        if (!empty($relatedRecords)) {
+            $this->save_related_module($recordModule, $recordId, $relatedModule, $relatedRecords);
+        }
     }
 
     public function insertIntoReminder()
