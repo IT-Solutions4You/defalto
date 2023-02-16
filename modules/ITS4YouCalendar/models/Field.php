@@ -7,7 +7,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
 {
     /**
@@ -32,12 +31,13 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
             return 'reminder';
         }
 
-        if ('recurring_type' === $this->getName()) {
-            return 'recurrence';
-        }
-
-        if ('invite_users' === $this->getName()) {
-            return 'InviteUsers';
+        switch($this->getName()) {
+            case 'recurring_type':
+                return 'recurrence';
+            case 'invite_users':
+                return 'InviteUsers';
+            case 'contact_id':
+                return 'MultiReference';
         }
 
         return parent::getFieldDataType();
