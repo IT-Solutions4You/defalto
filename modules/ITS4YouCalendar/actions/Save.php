@@ -52,20 +52,20 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
      */
     public function saveRepeatEvents(object $recordModel)
     {
-        $focus = $recordModel->getEntity();
-        $focus->column_fields['recurringEditMode'] = $_REQUEST['recurringEditMode'];
-        $focus->column_fields['recurring_type'] = $focus->column_fields['recurringtype'] = $_REQUEST['recurringtype'];
+        $recordModel->set('recurringEditMode', $_REQUEST['recurringEditMode']);
+        $recordModel->set('recurring_type', $_REQUEST['recurringtype']);
+        $recordModel->set('recurringtype', $_REQUEST['recurringtype']);
 
-        list($_REQUEST['date_start'], $_REQUEST['time_start']) = explode(' ', $focus->column_fields['datetime_start_date']);
-        list($_REQUEST['due_date'], $_REQUEST['time_end']) = explode(' ', $focus->column_fields['datetime_end_date']);
+        list($_REQUEST['date_start'], $_REQUEST['time_start']) = explode(' ', $recordModel->get('datetime_start'));
+        list($_REQUEST['due_date'], $_REQUEST['time_end']) = explode(' ', $recordModel->get('datetime_end'));
 
         $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
 
         if ($recurrenceObject) {
             $recurringDataChanged = ITS4YouCalendar_RepeatRecords_Model::checkRecurringDataChanged($recurrenceObject, $this->recurrenceDatabaseObject);
 
-            if (ITS4YouCalendar_RepeatRecords_Model::validate($focus->column_fields) || ($recurringDataChanged && empty($recurrenceObject))) {
-                ITS4YouCalendar_RepeatRecords_Model::repeatFromRequest($focus, $this->recurrenceDatabaseObject);
+            if (ITS4YouCalendar_RepeatRecords_Model::validate($recordModel->getData()) || ($recurringDataChanged && empty($recurrenceObject))) {
+                ITS4YouCalendar_RepeatRecords_Model::repeatFromRequest($recordModel, $this->recurrenceDatabaseObject);
             }
         }
     }
