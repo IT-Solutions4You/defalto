@@ -15,9 +15,12 @@ class ITS4YouCalendar_Edit_View extends Vtiger_Edit_View {
      */
     public function process(Vtiger_Request $request)
     {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
+
         $viewer = $this->getViewer($request);
         $viewer->assign('RECURRING_INFORMATION', ITS4YouCalendar_Recurrence_Model::getRecurrenceInformation($request));
-        $viewer->assign('TOMORROWDATE', date('Y-m-d', strtotime('+1 day')));
+        $viewer->assign('TOMORROWDATE', DateTimeField::convertToUserFormat(date('Y-m-d', strtotime('+1 day'))));
 
         parent::process($request);
     }

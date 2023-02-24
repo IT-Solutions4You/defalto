@@ -10,15 +10,45 @@
 
 class ITS4YouCalendar extends CRMEntity
 {
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var array|TrackableObject
+     */
     public $column_fields;
+    /**
+     * @var Logger
+     */
     public $log;
+    /**
+     * @var PearDatabase
+     */
     public $db;
+    /**
+     * @var string
+     */
     public string $moduleName = 'ITS4YouCalendar';
+    /**
+     * @var string
+     */
     public string $parentName = 'Tools';
+    /**
+     * @var string
+     */
     public string $moduleLabel = 'Calendar 4 You';
+    /**
+     * @var string
+     */
     public string $table_name = 'its4you_calendar';
+    /**
+     * @var string
+     */
     public string $table_index = 'its4you_calendar_id';
+    /**
+     * @var string
+     */
     public string $entity_table = 'vtiger_crmentity';
 
     /**
@@ -75,6 +105,9 @@ class ITS4YouCalendar extends CRMEntity
         ['ITS4YouCalendarReminder', 'modules/ITS4YouCalendar/cron/Reminder.service', 900, 'ITS4YouCalendar', 0, ''],
     );
 
+    /**
+     *
+     */
     public function __construct()
     {
         global $log;
@@ -138,7 +171,7 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE `its4you_invited_users` (
+            'CREATE TABLE IF NOT EXISTS `its4you_invited_users` (
             `invited_users_id` int(11) NOT NULL,
             `user_id` int(11) NOT NULL,
             `record_id` int(11) NOT NULL,
@@ -172,6 +205,24 @@ class ITS4YouCalendar extends CRMEntity
             INDEX `crmid` (`crmid`) USING BTREE,
             INDEX `userid` (`userid`) USING BTREE,
             INDEX `crmid_2` (`crmid`, `userid`) USING BTREE
+        ) ENGINE=InnoDB'
+        );
+        $this->db->query(
+            'CREATE TABLE `its4you_calendar_user_types` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `default_id` int(11) DEFAULT NULL,
+          `user_id` int(11) DEFAULT NULL,
+          `color` varchar(8) DEFAULT NULL,
+          `visible` int(1) DEFAULT NULL
+        ) ENGINE=InnoDB'
+        );
+        $this->db->query(
+            'CREATE TABLE `its4you_calendar_default_types` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `module` varchar(50) DEFAULT NULL,
+          `fields` varchar(200) DEFAULT NULL,
+          `default_color` varchar(8) DEFAULT NULL,
+          `is_default` int(1) DEFAULT NULL
         ) ENGINE=InnoDB'
         );
         /** Database references to crmentity
@@ -220,6 +271,10 @@ class ITS4YouCalendar extends CRMEntity
          */
     }
 
+    /**
+     * @param $register
+     * @return void
+     */
     public function updateCron($register = true)
     {
         $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
@@ -255,6 +310,11 @@ class ITS4YouCalendar extends CRMEntity
         $this->saveMultiReference('contact_id', 'Contacts');
     }
 
+    /**
+     * @param $fieldName
+     * @param $relatedModule
+     * @return void
+     */
     public function saveMultiReference($fieldName, $relatedModule)
     {
         $recordId = $this->id;
@@ -268,6 +328,9 @@ class ITS4YouCalendar extends CRMEntity
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertIntoReminder()
     {
         $recordId = $this->id;
@@ -276,6 +339,10 @@ class ITS4YouCalendar extends CRMEntity
         ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart);
     }
 
+    /**
+     * @return void
+     * @throws phpmailerException
+     */
     public function insertIntoInvitedUsers()
     {
         $recordId = $this->id;
@@ -297,6 +364,9 @@ class ITS4YouCalendar extends CRMEntity
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertIntoRecurring()
     {
         $recurringObject = Vtiger_Functions::getRecurringObjValue();

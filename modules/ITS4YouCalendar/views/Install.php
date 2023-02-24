@@ -36,6 +36,10 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
     {
     }
 
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
     public function process(Vtiger_Request $request)
     {
         error_reporting(E_ALL);
@@ -272,14 +276,12 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'filter' => 1,
                     'entity_identifier' => 1,
                 ),
-                'assigned_user_id' => array(
-                    'column' => 'smownerid',
-                    'label' => 'Assigned To',
-                    'uitype' => 53,
-                    'typeofdata' => 'V~M',
-                    'summaryfield' => 1,
-                    'table' => 'vtiger_crmentity',
-                    'filter' => 1,
+                'location' => array(
+                    'column' => 'location',
+                    'label' => 'Location',
+                    'uitype' => 1,
+                    'typeofdata' => 'V~O',
+                    'columntype' => 'VARCHAR(150)',
                 ),
                 'datetime_start' => array(
                     'column' => 'datetime_start',
@@ -345,47 +347,6 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     ],
                     'columntype' => 'VARCHAR(200)',
                 ),
-                'calendar_visibility' => array(
-                    'column' => 'visibility',
-                    'label' => 'Visibility',
-                    'uitype' => 16,
-                    'typeofdata' => 'V~O',
-                    'picklist_values' => [
-                        'Private',
-                        'Public',
-                    ],
-                    'columntype' => 'VARCHAR(50)',
-                ),
-                'send_notification' => array(
-                    'column' => 'send_notification',
-                    'label' => 'Send Notification',
-                    'uitype' => 56,
-                    'typeofdata' => 'C~O',
-                    'columntype' => 'VARCHAR(3)',
-                ),
-                'duration_hours' => array(
-                    'column' => 'duration_hours',
-                    'label' => 'Duration',
-                    'displaytype' => 3,
-                    'uitype' => 63,
-                    'typeofdata' => 'T~O',
-                    'columntype' => 'VARCHAR(200)',
-                ),
-                'duration_minutes' => array(
-                    'column' => 'duration_minutes',
-                    'label' => 'Duration Minutes',
-                    'displaytype' => 3,
-                    'uitype' => 16,
-                    'typeofdata' => 'T~O',
-                    'columntype' => 'VARCHAR(200)',
-                ),
-                'location' => array(
-                    'column' => 'location',
-                    'label' => 'Location',
-                    'uitype' => 1,
-                    'typeofdata' => 'V~O',
-                    'columntype' => 'VARCHAR(150)',
-                ),
             ],
             'LBL_REMINDER_INFORMATION' => [
                 'reminder_time' => array(
@@ -448,6 +409,28 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                 ),
             ],
             'LBL_CUSTOM_INFORMATION' => [
+
+            ],
+            'LBL_DESCRIPTION_INFORMATION' => [
+                'description' => array(
+                    'label' => 'Description',
+                    'columntype' => 'text',
+                    'uitype' => 19,
+                    'typeofdata' => 'V~O',
+                    'summaryfield' => 0,
+                    'table' => 'vtiger_crmentity',
+                ),
+            ],
+            'LBL_INVITE_USER_BLOCK' => [
+                'invite_users' => array(
+                    'label' => 'Invite Users',
+                    'columntype' => 'VARCHAR(255)',
+                    'uitype' => 1,
+                    'typeofdata' => 'V~O',
+                    'summaryfield' => 0,
+                ),
+            ],
+            'LBL_SYSTEM_INFO' => [
                 'its4you_calendar_no' => array(
                     'label' => 'Calendar No',
                     'uitype' => 4,
@@ -491,24 +474,40 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
                 ),
-            ],
-            'LBL_DESCRIPTION_INFORMATION' => [
-                'description' => array(
-                    'label' => 'Description',
-                    'columntype' => 'text',
-                    'uitype' => 19,
-                    'typeofdata' => 'V~O',
-                    'summaryfield' => 0,
-                    'table' => 'vtiger_crmentity',
+                'duration_hours' => array(
+                    'column' => 'duration_hours',
+                    'label' => 'Duration',
+                    'displaytype' => 3,
+                    'uitype' => 63,
+                    'typeofdata' => 'T~O',
+                    'columntype' => 'VARCHAR(200)',
                 ),
-            ],
-            'LBL_INVITE_USER_BLOCK' => [
-                'invite_users' => array(
-                    'label' => 'Invite Users',
-                    'columntype' => 'VARCHAR(255)',
-                    'uitype' => 1,
+                'calendar_visibility' => array(
+                    'column' => 'visibility',
+                    'label' => 'Visibility',
+                    'uitype' => 16,
                     'typeofdata' => 'V~O',
-                    'summaryfield' => 0,
+                    'picklist_values' => [
+                        'Private',
+                        'Public',
+                    ],
+                    'columntype' => 'VARCHAR(50)',
+                ),
+                'send_notification' => array(
+                    'column' => 'send_notification',
+                    'label' => 'Send Notification',
+                    'uitype' => 56,
+                    'typeofdata' => 'C~O',
+                    'columntype' => 'VARCHAR(3)',
+                ),
+                'assigned_user_id' => array(
+                    'column' => 'smownerid',
+                    'label' => 'Assigned To',
+                    'uitype' => 53,
+                    'typeofdata' => 'V~M',
+                    'summaryfield' => 1,
+                    'table' => 'vtiger_crmentity',
+                    'filter' => 1,
                 ),
             ],
         ];

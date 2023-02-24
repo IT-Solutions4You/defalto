@@ -25,4 +25,16 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 
         return array_merge($basicLinks, parent::getModuleBasicLinks());
     }
+
+    /**
+     * @return array
+     */
+    public function getUsersAndGroups(): array
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $users = (array)$currentUser->getAccessibleUsers();
+        $groups = (array)$currentUser->getAccessibleGroups();
+
+        return $users + $groups;
+    }
 }

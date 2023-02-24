@@ -24,7 +24,8 @@
     "simplehtmldom/simplehtmldom": "*",
     "smarty/smarty": "4.*",
     "fullcalendar/fullcalendar": "*",
-    "phpmailer/phpmailer": "*"
+    "phpmailer/phpmailer": "*",
+    "ext-json": "*"
   },
   "repositories": [
     {
