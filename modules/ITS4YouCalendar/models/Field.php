@@ -42,28 +42,4 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
 
         return parent::getFieldDataType();
     }
-
-    /**
-     * @param mixed $value
-     * @return mixed
-     */
-    public function getEditViewDisplayValue($value)
-    {
-        if (empty($value)) {
-            $fieldName = $this->getName();
-
-            switch ($fieldName) {
-                case 'datetime_start':
-                    $value = date('Y-m-d H:i:s');
-                    break;
-                case'datetime_end':
-                    $currentUser = Users_Record_Model::getCurrentUserModel();
-                    $minutes = $currentUser->get('callduration');
-                    $value = date('Y-m-d H:i:s', strtotime("+$minutes minutes"));
-                    break;
-            }
-        }
-
-        return parent::getEditViewDisplayValue($value);
-    }
 }

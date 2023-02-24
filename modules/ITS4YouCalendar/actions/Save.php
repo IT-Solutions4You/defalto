@@ -10,6 +10,9 @@
 
 class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
 {
+    /**
+     * @var
+     */
     public $savedRecordId;
 
     /**
@@ -26,7 +29,9 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
         $request->set('invite_users', implode(';', (array)$request->get('invite_users')));
         $this->retrieveDatabaseRecurrence($request);
 
+        /** @var ITS4YouCalendar_Record_Model $recordModel */
         $recordModel = $this->getRecordModelFromRequest($request);
+        $recordModel->retrieveDurationHours();
         $recordModel->save();
 
         $this->savedRecordId = $recordModel->getId();

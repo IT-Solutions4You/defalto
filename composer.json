@@ -29,7 +29,8 @@
     "components/font-awesome": "*",
     "twbs/bootstrap": "*",
     "select2/select2": "*",
-    "apalfrey/select2-bootstrap-5-theme": "*"
+    "apalfrey/select2-bootstrap-5-theme": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",
