@@ -1,11 +1,11 @@
-{*/**
+{**
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- */*}
+ *}
 {strip}
     <div class="modal-dialog modelContainer modal-lg">
         {include file='ModalHeader.tpl'|vtemplate_path:$MODULE TITLE=vtranslate('LBL_EDIT_EVENT_TYPE_TITLE', $QUALIFIED_MODULE)}
