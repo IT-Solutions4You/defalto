@@ -1,3 +1,11 @@
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 .p-2 {
     padding: .5rem !important;
 }
@@ -39,4 +47,36 @@
 }
 .va-middle {
     vertical-align: middle;
+}
+.va-top {
+    vertical-align: top;
+}
+.eventDetail {
+    z-index: 1000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 20px #000;
+    display: none;
+}
+.fc-daygrid-event:hover .eventDetail {
+    display: block;
+}
+.popover-name {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.calendar-popover-container {
+    border-radius: 5px;
+}
+.bg-default {
+    background: #e4e4e4;
+}
+.close-popover-container {
+    position: absolute;
+    right: 10px;
+    top: 5px;
 }

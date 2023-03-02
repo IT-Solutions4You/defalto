@@ -7,7 +7,17 @@
  * file that was distributed with this source code.
  */
 
-Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
+/** @var ITS4YouCalendar_Calendar_Js */
+Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
+    instance: false,
+    getInstance: function () {
+        if (!this.instance) {
+            this.instance = new ITS4YouCalendar_Calendar_Js();
+        }
+
+        return this.instance;
+    }
+}, {
     eventIds: [],
     events: [],
     displayEvents: [],
@@ -18,6 +28,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
         this.registerFieldsChange();
         this.registerEditEvents();
         this.registerMassSelect();
+        this.registerPopoverClose();
     },
     startDate: '',
     endDate: '',
@@ -43,14 +54,24 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
                 expandRows: false,
                 dayMaxEventRows: true,
                 eventTimeFormat: {
+                    year: 'numeric',
+                    month: 'long',
                     hour: 'numeric',
+                    day: 'numeric',
                     minute: '2-digit',
                     meridiem: is24HourFormat ? false : 'short',
                     hour12: !is24HourFormat,
                 },
+                slotLabelFormat:
+                    {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        meridiem: is24HourFormat ? false : 'short',
+                        hour12: !is24HourFormat,
+                    },
                 views: {
                     dayGridMonth: {
-                        dayMaxEventRows: 4
+                        dayMaxEventRows: 4,
                     },
                     timeGridWeek: {
                         dayMaxEventRows: 4
@@ -58,6 +79,9 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
                     timeGridDay: {
                         dayMaxEventRows: 4
                     }
+                },
+                eventDidMount: function (info) {
+                    self.registerEventDidMount(info);
                 },
                 events: function (date, successCallback, failureCallback) {
                     self.setDate(date.start, date.end);
@@ -76,6 +100,66 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
 
         self.calendar = new FullCalendar.Calendar(calendarElement, calendarConfig);
         self.calendar.render();
+    },
+    popoverTemplate: '<div class="popover" style="width:400px; max-width: 80vw; z-index: 2000;"><div class="arrow"></div><div style="padding: 0;" class="popover-content"></div></div>',
+    popoverContents: [],
+    retrievePopoverContent: function (recordId, eventType) {
+        let aDeferred = jQuery.Deferred(),
+            self = this,
+            params = {
+                module: app.getModuleName(),
+                view: 'Calendar',
+                mode: 'PopoverContainer',
+                recordId: recordId,
+                eventTypeId: eventType,
+            },
+            record;
+
+        if (self.popoverContents[recordId]) {
+            record = self.popoverContents[recordId];
+
+            aDeferred.resolve(record)
+        } else {
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    self.popoverContents[recordId] = data;
+
+                    aDeferred.resolve(record)
+                }
+            });
+        }
+
+        return aDeferred.promise();
+    },
+    popoverElement: null,
+    registerEventDidMount: function (info) {
+        let self = this,
+            element = $(info.el),
+            publicId = info['event']['_def']['publicId'].split('x'),
+            eventType = publicId[0],
+            recordId = publicId[1];
+
+        self.retrievePopoverContent(recordId, eventType).then(function () {
+            element.popover({
+                content: self.popoverContents[recordId],
+                html: true,
+                animation: true,
+                template: self.popoverTemplate,
+                trigger: 'hover',
+                container: 'body',
+                placement: 'auto',
+            }).on('show.bs.popover', function (event) {
+                $('[rel=popover]').not(event.target).popover("destroy");
+                $('.popover').remove();
+            }).on('hide.bs.popover', function (event) {
+                event.preventDefault();
+
+                if (!$('.popover:hover').length && self.popoverElement) {
+                    element.popover('hide');
+                    $('.popover').remove();
+                }
+            });
+        });
     },
     setCalendarEvents: function (values) {
         const self = this;
@@ -251,11 +335,33 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
 
                         app.helper.showSuccessNotification({message: data['message']})
                     } else {
-                        app.helper.showSuccessNotification({message: data['message']})
+                        app.helper.showErrorNotification({message: data['message']})
                     }
                 }
             })
         });
+    },
+    deleteEvent: function (record, module) {
+        const self = this;
+
+        app.helper.showConfirmationBox({message: app.vtranslate('JS_DELETE_QUESTION')}).then(function () {
+            const params = {
+                module: module,
+                action: 'Delete',
+                ajaxDelete: true,
+                record: record,
+            };
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error && data) {
+                    $('.eventRecordId' + record).remove();
+
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_DELETE_SUCCESS')})
+                } else {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_DELETE_ERROR')})
+                }
+            })
+        })
     },
     registerEditEventColorPicker: function (form) {
         let colorElement = form.find('#event_type_color'),
@@ -357,14 +463,14 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
             });
         });
     },
-    registerMassSelect: function() {
+    registerMassSelect: function () {
         const self = this;
 
         self.retrieveMassSelect();
 
-        $('.eventTypeContainer').on('click', '.massSelectEventType', function() {
+        $('.eventTypeContainer').on('click', '.massSelectEventType', function () {
             let checkboxes = $('.fieldEventType');
-            if($(this).is(':checked')) {
+            if ($(this).is(':checked')) {
                 checkboxes.attr('checked', 'checked');
             } else {
                 checkboxes.removeAttr('checked');
@@ -388,5 +494,26 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {}, {
         } else {
             massSelect.removeAttr('checked');
         }
+    },
+    registerPopoverClose: function () {
+        const self = this;
+
+        $(document).on('mouseleave', '.popover', function () {
+            $(this).remove();
+
+            if (self.openedPopover) {
+                self.openedPopover.popover('hide')
+                self.openedPopover = null;
+            }
+        });
+
+        $(document).on('click', '.close-popover-container', function () {
+            $(this).closest('.popover').remove();
+
+            if (self.openedPopover) {
+                self.openedPopover.popover('hide')
+                self.openedPopover = null;
+            }
+        });
     },
 });

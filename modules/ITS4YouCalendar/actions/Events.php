@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -18,6 +19,7 @@ class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
         $this->exposeMethod('Range');
         $this->exposeMethod('EditEventType');
         $this->exposeMethod('DeleteEventType');
+        $this->exposeMethod('EventInfo');
     }
 
     /**

@@ -186,6 +186,7 @@ $languageStrings = array(
     'LBL_CREATED_EVENT_TYPE' => 'Event type created successfully',
     'LBL_UPDATE_EVENT_TYPE' => 'Event type updated successfully',
     'LBL_DELETE_SUCCESS' => 'Event type delete successfully',
+    'LBL_LIST' => 'List',
 );
 
 $jsLanguageStrings = array(
@@ -255,4 +256,7 @@ $jsLanguageStrings = array(
     'JS_DETAILS' => 'More&nbsp;Details',
     'JS_CHECK_START_AND_END_DATE' => 'End Date & Time should be greater than or equal to Start Date & Time',
     'JS_CHECK_START_AND_END_DATE_SHOULD_BE_GREATER' => 'End Date & Time should be greater than Start Date & Time',
+    'JS_DELETE_QUESTION' => 'Are you sure, you want to delete this record?',
+    'JS_DELETE_SUCCESS' => 'Record is deleted successfully',
+    'JS_DELETE_ERROR' => 'Record is not deleted',
 );
