@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -109,6 +110,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         $visibleEventTypes = (array)$filter['event_types'];
         $events = [];
 
+        /** @var ITS4YouCalendar_Events_Model $instance */
         foreach (self::getEventTypes() as $instance) {
             if (!$instance->isEmptyId()) {
                 $visible = !in_array($instance->getId(), $visibleEventTypes) ? 0 : 1;
@@ -315,6 +317,14 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @return bool
+     */
+    public function isVisible(): bool
+    {
+        return boolval($this->get('visible'));
+    }
+
+    /**
      * @return array
      * @throws Exception
      */
@@ -348,10 +358,11 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
                 'title' => decode_html($listViewRecord->getName()),
                 'start' => $startDate,
                 'end' => $startDate,
-                'url' => $listViewRecord->getDetailViewUrl(),
+                'url' => $this->getDetailLink(),
                 'backgroundColor' => $this->getBackgroundColor(),
                 'borderColor' => $this->getBackgroundColor(),
                 'color' => $this->getTextColor(),
+                'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $listViewRecord->getId()
             ];
 
             if (!empty($endField)) {
@@ -500,6 +511,23 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @return string
      */
+    public function getDetailLink()
+    {
+        /** @var Vtiger_Record_Model $recordModel */
+        $recordModel = $this->get('record_model');
+
+        if ($this->isEmpty('app_names')) {
+            $this->set('app_names', $recordModel->getModule()->getAppName());
+        }
+
+        $appName = array_key_first($this->get('app_names'));
+
+        return 'javascript:Vtiger_Index_Js.getInstance().showQuickPreviewForId(' . $recordModel->getId() . ',\'' . $recordModel->getModuleName() . '\', \'' . $appName . '\')';
+    }
+
+    /**
+     * @return string
+     */
     public function getBackgroundColor()
     {
         $recordModel = $this->getRecordModel();
@@ -591,14 +619,6 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         );
 
         return boolval($this->adb->num_rows($result));
-    }
-
-    /**
-     * @return bool
-     */
-    public function isVisible(): bool
-    {
-        return boolval($this->get('visible'));
     }
 
     /**

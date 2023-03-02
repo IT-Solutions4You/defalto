@@ -18,6 +18,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         parent::__construct();
         $this->exposeMethod('Calendar');
         $this->exposeMethod('EditEventType');
+        $this->exposeMethod('PopoverContainer');
     }
 
     /**
@@ -33,7 +34,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $eventTypeModules = array_keys($eventTypeFields);
         $eventTypeRecord = ITS4YouCalendar_Events_Model::getInstance($recordId);
 
-        if($eventTypeRecord->isEmptyId()) {
+        if ($eventTypeRecord->isEmptyId()) {
             $selectedModule = $eventTypeModules[0];
         } else {
             $selectedModule = $eventTypeRecord->getModule();
@@ -125,5 +126,49 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         );
 
         return array_merge($headerCssInstances, $this->checkAndConvertCssStyles($cssFileNames));
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function PopoverContainer(Vtiger_Request $request)
+    {
+        $recordId = (int)$request->get('recordId');
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $moduleModel = $recordModel->getModule();
+
+        $headerFields = $moduleModel->getHeaderAndSummaryViewFieldsList();
+        $headerValues = [];
+
+        /** @var Vtiger_Field_Model $headerField */
+        foreach ($headerFields as $headerField) {
+            $headerValues[$headerField->get('label')] = $recordModel->getDisplayValue($headerField->getName());
+        }
+
+        $eventTypeId = (int)$request->get('eventTypeId');
+        $eventType = ITS4YouCalendar_Events_Model::getInstance($eventTypeId);
+        $eventType->setRecordModel($recordModel);
+
+        $dateFields = [];
+
+        foreach ($eventType->get('fields') as $fieldName) {
+            $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($recordModel->get($fieldName));
+        }
+
+        $dateFields = implode(' - ', $dateFields);
+        $qualifiedModule = $request->getModule(false);
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('HEADER_VALUES', $headerValues);
+        $viewer->assign('RECORD_ID', $recordId);
+        $viewer->assign('RECORD_MODEL', $recordModel);
+        $viewer->assign('DATE_FIELDS', $dateFields);
+        $viewer->assign('MODULE_MODEL', $moduleModel);
+        $viewer->assign('QUALIFIED_MODULE', $qualifiedModule);
+        $viewer->assign('EVENT_TYPE', $eventType);
+        $viewer->assign('EVENT_TYPE_DETAIL_LINK', $eventType->getDetailLink());
+        $viewer->view('PopoverContainer.tpl', $qualifiedModule);
     }
 }
