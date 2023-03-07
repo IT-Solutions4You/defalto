@@ -29,7 +29,7 @@ if (!class_exists('Migration_20230306215154')) {
                     continue;
                 }
 
-                $field = Settings_LayoutEditor_Field_Model::getInstance($row['fieldname'], $moduleInstance);
+                $field = Vtiger_Field::getInstance($row['fieldname'], $moduleInstance);
 
                 if (!$field) {
                     continue;
