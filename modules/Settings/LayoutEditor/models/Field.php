@@ -32,7 +32,7 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 		$select_columnname = $tablename.":".$columnname .":".$fld_module. "_" . str_replace(" ","_",$oldfieldlabel).":".$fieldname.":".$fieldtype[0];
 		$reportsummary_column = $tablename.":".$columnname.":".str_replace(" ","_",$oldfieldlabel);
 
-		$dbquery = 'alter table '. $adb->sql_escape_string($focus->customFieldTable[0]).' drop column '. $adb->sql_escape_string($columnname);
+		$dbquery = 'alter table '. $adb->sql_escape_string($this->parentField->table).' drop column '. $adb->sql_escape_string($columnname);
 		$adb->pquery($dbquery, array());
 
 
