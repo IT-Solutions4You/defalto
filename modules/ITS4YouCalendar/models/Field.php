@@ -27,13 +27,11 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
      */
     public function getFieldDataType(): string
     {
-        if (30 === (int)$this->get('uitype')) {
-            return 'reminder';
-        }
-
-        switch($this->getName()) {
+        switch ($this->getName()) {
             case 'recurring_type':
                 return 'recurrence';
+            case 'reminder_time':
+                return 'reminder';
             case 'invite_users':
                 return 'InviteUsers';
             case 'contact_id':
@@ -41,5 +39,19 @@ class ITS4YouCalendar_Field_Model extends Vtiger_Field_Model
         }
 
         return parent::getFieldDataType();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isQuickCreateEnabled(): bool
+    {
+        switch ($this->getName()) {
+            case 'recurring_type':
+            case 'reminder_time':
+                return false;
+        }
+
+        return parent::isQuickCreateEnabled();
     }
 }

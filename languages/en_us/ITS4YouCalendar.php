@@ -187,6 +187,9 @@ $languageStrings = array(
     'LBL_UPDATE_EVENT_TYPE' => 'Event type updated successfully',
     'LBL_DELETE_SUCCESS' => 'Event type delete successfully',
     'LBL_LIST' => 'List',
+    'LBL_MARK_AS_DONE' => 'Mark as Done',
+    'LBL_DETAIL_OVERLAY' => 'Detail',
+    'LBL_EDIT_OVERLAY' => 'Edit',
 );
 
 $jsLanguageStrings = array(
@@ -259,4 +262,7 @@ $jsLanguageStrings = array(
     'JS_DELETE_QUESTION' => 'Are you sure, you want to delete this record?',
     'JS_DELETE_SUCCESS' => 'Record is deleted successfully',
     'JS_DELETE_ERROR' => 'Record is not deleted',
+    'JS_MARK_AS_DONE_SUCCESS' => 'Record marked as complete',
+    'JS_MARK_AS_DONE_ERROR' => 'Record has not been marked as complete',
+    'JS_MARK_AS_DONE_QUESTION' => 'Are you sure you want to mark the record as done?',
 );
