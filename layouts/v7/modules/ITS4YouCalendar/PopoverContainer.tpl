@@ -45,13 +45,19 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-10 text-right">
-                    <a href="{$EVENT_TYPE_DETAIL_LINK}" class="me-3">
+                    {if !$EVENT_TYPE->isMarkAsDone()}
+                        <a href="javascript:ITS4YouCalendar_Calendar_Js.markAsDone({$RECORD_MODEL->getId()},'{$RECORD_MODEL->getModuleName()}','{$EVENT_TYPE->getMarkAsDoneField()}','{$EVENT_TYPE->getMarkAsDoneValue()}');"
+                           class="markAsDoneAction{$RECORD_MODEL->getId()} me-3" title="{vtranslate('LBL_MARK_AS_DONE', $QUALIFIED_MODULE)}">
+                            <i class="fa fa-check"></i>
+                        </a>
+                    {/if}
+                    <a href="{$RECORD_MODEL->getDetailViewUrl()}" class="me-3 showDetailOverlay" title="{vtranslate('LBL_DETAIL_OVERLAY', $QUALIFIED_MODULE)}">
                         <i class="fa fa-eye"></i>
                     </a>
-                    <a href="{$RECORD_MODEL->getEditViewUrl()}" class="me-3">
+                    <a href="{$RECORD_MODEL->getEditViewUrl()}" class="me-3 showEditOverlay" title="{vtranslate('LBL_EDIT_OVERLAY', $QUALIFIED_MODULE)}">
                         <i class="fa fa-pencil"></i>
                     </a>
-                    <a href="javascript:ITS4YouCalendar_Calendar_Js.getInstance().deleteEvent({$RECORD_MODEL->getId()},'{$RECORD_MODEL->getModuleName()}')" class="me-3">
+                    <a href="javascript:ITS4YouCalendar_Calendar_Js.deleteEvent({$RECORD_MODEL->getId()},'{$RECORD_MODEL->getModuleName()}')" class="me-3" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}">
                         <i class="fa fa-trash"></i>
                     </a>
                 </div>

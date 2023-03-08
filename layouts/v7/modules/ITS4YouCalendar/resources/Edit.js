@@ -6,21 +6,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
+/** @var ITS4YouCalendar_Edit_Js */
 Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
-    registerEvents: function () {
-        const container = $('#EditView');
-
-        this._super();
+    calendarConfig: {
+        call_duration: 30,
+        other_duration: 60,
+    },
+    registerBasicEvents: function (container) {
+        this._super(container);
+        this.registerCalendarData();
         this.registerDateTimeField(container);
         this.registerAllDayField(container);
         this.registerReminderField(container);
         this.registerRecurringField(container);
         this.registerMultiReference(container);
-    },
-    registerBasicEvents: function (container) {
-        this._super(container);
         this.registerRecordPreSaveEvent(container);
+    },
+    registerCalendarData: function () {
+        const self = this,
+            params = {
+                module: 'ITS4YouCalendar',
+                action: 'Calendar',
+                mode: 'Info',
+            };
+
+        app.request.post({data: params}).then(function (error, data) {
+            if (!error && data['info']) {
+                self.calendarConfig = data['info'];
+            }
+        });
     },
     registerRecordPreSaveEvent: function (form) {
         const self = this;
@@ -198,11 +212,17 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
         });
     },
     registerDateTimeStartChange: function (container) {
+        const self = this;
+
         container.on('change', '[name="datetime_start"]', function () {
-            let minutesToAdd = container.find('input[name="defaultOtherEventDuration"]').val();
+            let minutesToAdd = self.calendarConfig['other_duration'];
 
             if (container.find('[name="calendar_type"]').val() === 'Call') {
-                minutesToAdd = container.find('input[name="defaultCallDuration"]').val();
+                minutesToAdd = self.calendarConfig['call_duration'];
+            }
+
+            if (container.find('[name="is_all_day"]').is(':checked')) {
+                minutesToAdd = 1439;
             }
 
             let m = moment($(this).val());
@@ -269,8 +289,7 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
                 startTimeParent.addClass('hide');
                 endTimeParent.addClass('hide');
 
-                startTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change')
-                endTime.val(self.getFormattedTime('01-01-2001 23:59')).trigger('change')
+                startTime.val(self.getFormattedTime('01-01-2001 00:00')).trigger('change');
             } else {
                 startTimeParent.removeClass('hide');
                 endTimeParent.removeClass('hide');
@@ -407,5 +426,5 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
                 selectElement.trigger('change');
             }
         });
-    }
+    },
 });

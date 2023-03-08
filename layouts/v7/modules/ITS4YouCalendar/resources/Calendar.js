@@ -16,12 +16,67 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         }
 
         return this.instance;
-    }
+    },
+    markAsDone: function (record, module, field, value) {
+        const self = this,
+            instance = self.getInstance(),
+            params = {
+                value: value,
+                field: field,
+                record: record,
+                module: module,
+                action: 'SaveAjax',
+            };
+
+        instance.removePopover();
+
+        app.helper.showConfirmationBox({message: app.vtranslate('JS_MARK_AS_DONE_QUESTION')}).then(function () {
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error && data['_recordLabel']) {
+                    $('.markAsDoneAction' + record).remove();
+
+                    instance.popoverContents[record] = null;
+
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_MARK_AS_DONE_SUCCESS')})
+                } else {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_MARK_AS_DONE_ERROR')})
+                }
+            });
+        })
+    },
+    deleteEvent: function (record, module) {
+        app.helper.showConfirmationBox({message: app.vtranslate('JS_DELETE_QUESTION')}).then(function () {
+            const params = {
+                module: module,
+                action: 'Delete',
+                ajaxDelete: true,
+                record: record,
+            };
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error && data) {
+                    $('.eventRecordId' + record).remove();
+
+                    app.helper.showSuccessNotification({message: app.vtranslate('JS_DELETE_SUCCESS')})
+                } else {
+                    app.helper.showErrorNotification({message: app.vtranslate('JS_DELETE_ERROR')})
+                }
+            })
+        })
+    },
 }, {
+    updateEvents: {},
     eventIds: [],
     events: [],
     displayEvents: [],
+    eventsObject: {},
+    eventsData: {},
     calendar: false,
+    startDate: '',
+    endDate: '',
+    popoverTemplate: '<div class="popover" style="width:400px; max-width: 80vw; z-index: 2000;"><div class="arrow"></div><div style="padding: 0;" class="popover-content"></div></div>',
+    popoverContents: [],
+    popoverElement: null,
     registerEvents: function () {
         this._super();
         this.retrieveCalendar();
@@ -29,9 +84,10 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         this.registerEditEvents();
         this.registerMassSelect();
         this.registerPopoverClose();
+        this.registerPopoverDetailView();
+        this.registerPopoverEditView();
+        this.registerPopoverEditSave();
     },
-    startDate: '',
-    endDate: '',
     setDate: function (start, end) {
         this.startDate = this.convertDateToString(start);
         this.endDate = this.convertDateToString(end);
@@ -54,10 +110,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 expandRows: false,
                 dayMaxEventRows: true,
                 eventTimeFormat: {
-                    year: 'numeric',
-                    month: 'long',
                     hour: 'numeric',
-                    day: 'numeric',
                     minute: '2-digit',
                     meridiem: is24HourFormat ? false : 'short',
                     hour12: !is24HourFormat,
@@ -101,8 +154,6 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         self.calendar = new FullCalendar.Calendar(calendarElement, calendarConfig);
         self.calendar.render();
     },
-    popoverTemplate: '<div class="popover" style="width:400px; max-width: 80vw; z-index: 2000;"><div class="arrow"></div><div style="padding: 0;" class="popover-content"></div></div>',
-    popoverContents: [],
     retrievePopoverContent: function (recordId, eventType) {
         let aDeferred = jQuery.Deferred(),
             self = this,
@@ -131,7 +182,6 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
 
         return aDeferred.promise();
     },
-    popoverElement: null,
     registerEventDidMount: function (info) {
         let self = this,
             element = $(info.el),
@@ -139,27 +189,41 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             eventType = publicId[0],
             recordId = publicId[1];
 
-        self.retrievePopoverContent(recordId, eventType).then(function () {
-            element.popover({
-                content: self.popoverContents[recordId],
-                html: true,
-                animation: true,
-                template: self.popoverTemplate,
-                trigger: 'hover',
-                container: 'body',
-                placement: 'auto',
-            }).on('show.bs.popover', function (event) {
-                $('[rel=popover]').not(event.target).popover("destroy");
-                $('.popover').remove();
-            }).on('hide.bs.popover', function (event) {
-                event.preventDefault();
+        element.popover({
+            content: function () {
+                self.retrievePopoverContent(recordId, eventType).then(function () {
+                    $('.replacePopoverContents' + recordId).replaceWith(self.popoverContents[recordId]);
+                });
 
-                if (!$('.popover:hover').length && self.popoverElement) {
-                    element.popover('hide');
-                    $('.popover').remove();
+                if (self.popoverContents[recordId]) {
+                    return self.popoverContents[recordId];
+                } else {
+                    return '<div class="p-2 replacePopoverContents' + recordId + '">' + app.vtranslate('JS_LOADING') + '...</div>';
                 }
-            });
+            },
+            html: true,
+            animation: true,
+            template: self.popoverTemplate,
+            trigger: 'hover',
+            container: 'body',
+            placement: 'bottom auto',
+            delay: {show: 500}
+        }).on('show.bs.popover', function (event) {
+            $('[rel=popover]').not(event.target).popover("destroy");
+            self.removePopover();
+        }).on('hide.bs.popover', function (event) {
+            event.preventDefault();
+
+            setTimeout(function () {
+                if (!$('.popover:hover').length && self.popoverElement) {
+                    $(event.target).popover('hide');
+                    self.removePopover();
+                }
+            }, 1000);
         });
+    },
+    removePopover: function () {
+        $('.popover').remove();
     },
     setCalendarEvents: function (values) {
         const self = this;
@@ -170,10 +234,10 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             let eventId = value.id;
 
             self.displayEvents.push(eventId);
+            self.eventsData[eventId] = value;
 
-            if (-1 === self.eventIds.indexOf(eventId)) {
-                self.eventIds.push(eventId);
-                self.calendar.addEvent(value);
+            if (!self.eventsObject[eventId]) {
+                self.eventsObject[eventId] = self.calendar.addEvent(self.eventsData[eventId]);
             }
         });
     },
@@ -341,28 +405,6 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             })
         });
     },
-    deleteEvent: function (record, module) {
-        const self = this;
-
-        app.helper.showConfirmationBox({message: app.vtranslate('JS_DELETE_QUESTION')}).then(function () {
-            const params = {
-                module: module,
-                action: 'Delete',
-                ajaxDelete: true,
-                record: record,
-            };
-
-            app.request.post({data: params}).then(function (error, data) {
-                if (!error && data) {
-                    $('.eventRecordId' + record).remove();
-
-                    app.helper.showSuccessNotification({message: app.vtranslate('JS_DELETE_SUCCESS')})
-                } else {
-                    app.helper.showErrorNotification({message: app.vtranslate('JS_DELETE_ERROR')})
-                }
-            })
-        })
-    },
     registerEditEventColorPicker: function (form) {
         let colorElement = form.find('#event_type_color'),
             colorSelectElement = form.find('.event_type_color_select'),
@@ -514,6 +556,144 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 self.openedPopover.popover('hide')
                 self.openedPopover = null;
             }
+        });
+    },
+    registerPopoverDetailView: function () {
+        const self = this;
+
+        $(document).on('click', '.showDetailOverlay', function (e) {
+            e.preventDefault();
+
+            const link = jQuery(this),
+                recordUrl = link.attr('href'),
+                recordData = app.convertUrlToDataParams(recordUrl),
+                params = recordData;
+
+            self.updateEvents[recordData['record']] = recordData
+
+            params['mode'] = 'showDetailViewByMode';
+            params['requestMode'] = 'full';
+            params['displayMode'] = 'overlay';
+
+            app.helper.showProgress();
+            app.request.get({data: params}).then(function (err, response) {
+                app.helper.hideProgress();
+                app.helper.loadPageContentOverlay(response, {
+                    'backdrop': 'static', 'keyboard': false
+                }).then(function (container) {
+                    let detailJS = Vtiger_Detail_Js.getInstanceByModuleName(params.module);
+                    detailJS.showScroll(jQuery('.overlayDetail .modal-body'));
+                    detailJS.setModuleName(params.module);
+                    detailJS.setOverlayDetailMode(true);
+                    detailJS.setContentHolder(container.find('.overlayDetail'));
+                    detailJS.setDetailViewContainer(container.find('.overlayDetail'));
+                    detailJS.registerOverlayEditEvent();
+                    detailJS.registerBasicEvents();
+                    detailJS.registerClickEvent();
+                    detailJS.registerHeaderAjaxEditEvents(container.find('.overlayDetailHeader'));
+
+                    app.event.trigger('post.overlay.load', 0, params);
+
+                    container.find('form#detailView').on('submit', function (e) {
+                        e.preventDefault();
+                    });
+                });
+            });
+        });
+    },
+    registerPopoverEditSave: function () {
+        const self = this;
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            let isSaveAction = ('string' === typeof settings['data'] && 0 <= settings['data'].indexOf('action=SaveAjax')) ||
+                ('object' === typeof settings['data'] && 'Save' === settings['data'].get('action'));
+
+            if (isSaveAction) {
+                $.each(self.calendar.getEvents(), function (index, event) {
+                    let publicId = event['_def']['publicId'],
+                        eventTypeInfo = publicId.split('x'),
+                        eventTypeId = eventTypeInfo[0],
+                        recordId = eventTypeInfo[1];
+
+                    if (self.updateEvents[recordId]) {
+                        const params = {
+                            module: 'ITS4YouCalendar',
+                            action: 'Events',
+                            mode: 'EventInfo',
+                            record_id: recordId,
+                            event_type_id: eventTypeId,
+                        }
+
+                        app.request.post({data: params}).then(function (error, data) {
+                            if (!error && data['info']) {
+                                let info = data['info'];
+
+                                event.setProp('title', info['title']);
+                                event.setStart(info['start']);
+                                event.setEnd(info['end']);
+                            }
+                        });
+                    }
+                })
+
+                self.updateEvents = {};
+            }
+        });
+    },
+    registerPopoverEditView: function () {
+        const self = this;
+
+        $(document).on('click', '.showEditOverlay', function (e) {
+            e.preventDefault();
+
+            const link = $(this),
+                recordUrl = link.attr('href'),
+                recordData = app.convertUrlToDataParams(recordUrl),
+                params = {
+                    module: 'ITS4YouCalendar',
+                    action: 'Calendar',
+                    mode: 'UIMeta',
+                    related_module: recordData['module'],
+                };
+
+            self.updateEvents[recordData['record']] = recordData
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    let detailView = Vtiger_Detail_Js.getInstance();
+
+                    window.related_uimeta = (function () {
+                        let fieldInfo = data['ui_meta'];
+
+                        return {
+                            field: {
+                                get: function (name, property) {
+                                    if (name && property === undefined) {
+                                        return fieldInfo[name];
+                                    }
+                                    if (name && property) {
+                                        return fieldInfo[name][property]
+                                    }
+                                },
+                                isMandatory: function (name) {
+                                    if (fieldInfo[name]) {
+                                        return fieldInfo[name].mandatory;
+                                    }
+                                    return false;
+                                },
+                                getType: function (name) {
+                                    if (fieldInfo[name]) {
+                                        return fieldInfo[name].type
+                                    }
+                                    return false;
+                                }
+                            }
+                        };
+                    })();
+
+                    detailView.showOverlayEditView(recordUrl);
+                }
+            });
         });
     },
 });

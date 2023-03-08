@@ -37,6 +37,30 @@ class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
     }
 
     /**
+     * @throws Exception
+     */
+    public function EventInfo(Vtiger_Request $request)
+    {
+        $recordId = (int)$request->get('record_id');
+        $eventTypeId = (int)$request->get('event_type_id');
+
+        $eventType = ITS4YouCalendar_Events_Model::getInstance($eventTypeId);
+
+        if (empty($eventTypeId)) {
+            $eventType->retrieveCalendarData();
+        }
+
+        $eventType->setRecordModel(Vtiger_Record_Model::getInstanceById($recordId));
+
+        $response = new Vtiger_Response();
+        $response->setResult([
+            'info' => $eventType->getRecord(),
+            'success' => true,
+        ]);
+        $response->emit();
+    }
+
+    /**
      * @param Vtiger_Request $request
      * @return void
      */

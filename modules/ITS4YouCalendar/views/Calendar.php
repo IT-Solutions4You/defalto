@@ -28,7 +28,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
     public function EditEventType(Vtiger_Request $request)
     {
         $module = $request->getModule();
-        $recordId = intval($request->get('record'));
+        $recordId = (int)$request->get('record');
 
         $eventTypeFields = ITS4YouCalendar_Events_Model::getEventFields();
         $eventTypeModules = array_keys($eventTypeFields);
@@ -103,6 +103,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $jsFileNames = array(
             '~vendor/fullcalendar/fullcalendar/lib/main.min.js',
             '~/libraries/jquery/colorpicker/js/colorpicker.js',
+            'modules.Vtiger.resources.Detail',
             "modules.$moduleName.resources.Calendar",
         );
 
@@ -122,6 +123,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $cssFileNames = array(
             '~vendor/fullcalendar/fullcalendar/lib/main.min.css',
             '~/libraries/jquery/colorpicker/css/colorpicker.css',
+            'modules.Vtiger.resources.Detail',
             "layouts.$layout.modules.$moduleName.resources.Calendar",
         );
 
@@ -138,30 +140,21 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $recordId = (int)$request->get('recordId');
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
         $moduleModel = $recordModel->getModule();
-
-        $headerFields = $moduleModel->getHeaderAndSummaryViewFieldsList();
-        $headerValues = [];
-
-        /** @var Vtiger_Field_Model $headerField */
-        foreach ($headerFields as $headerField) {
-            $headerValues[$headerField->get('label')] = $recordModel->getDisplayValue($headerField->getName());
-        }
-
         $eventTypeId = (int)$request->get('eventTypeId');
         $eventType = ITS4YouCalendar_Events_Model::getInstance($eventTypeId);
-        $eventType->setRecordModel($recordModel);
 
-        $dateFields = [];
-
-        foreach ($eventType->get('fields') as $fieldName) {
-            $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($recordModel->get($fieldName));
+        if(empty($eventTypeId)) {
+            $eventType->retrieveCalendarData();
         }
 
-        $dateFields = implode(' - ', $dateFields);
+        $eventType->setRecordModel($recordModel);
+
+        $dateFields = $eventType->getFormattedDates();
+        $popoverValues = $eventType->getPopoverValues();
         $qualifiedModule = $request->getModule(false);
 
         $viewer = $this->getViewer($request);
-        $viewer->assign('HEADER_VALUES', $headerValues);
+        $viewer->assign('HEADER_VALUES', $popoverValues);
         $viewer->assign('RECORD_ID', $recordId);
         $viewer->assign('RECORD_MODEL', $recordModel);
         $viewer->assign('DATE_FIELDS', $dateFields);

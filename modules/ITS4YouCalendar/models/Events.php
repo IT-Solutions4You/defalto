@@ -13,6 +13,22 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @var array
      */
+    public static array $popoverDisabledFields = [
+        'ITS4YouCalendar' => [
+            'datetime_start',
+            'datetime_end',
+            'subject',
+        ],
+    ];
+    public static array $popoverMarkAsDone = [
+        'ITS4YouCalendar' => [
+            'calendar_status' => ['Completed', 'Cancelled',],
+        ],
+    ];
+
+    /**
+     * @var array
+     */
     public static array $eventTypes = [];
     /**
      * @var array
@@ -52,7 +68,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @var object
      */
-    public object $listViewModel;
+    public Vtiger_ListView_Model $listViewModel;
     /**
      * @var array
      */
@@ -144,14 +160,22 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         $filter = $request->get('filter');
 
         if (!empty($filter['calendar_type'])) {
-            self::$eventTypes[] = [
-                'id' => 0,
-                'module' => 'ITS4YouCalendar',
-                'fields' => ['datetime_start', 'datetime_end'],
-                'color' => '#08f',
-                'visible' => 1,
-            ];
+            self::$eventTypes[] = self::getEventTypeCalendarData();
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getEventTypeCalendarData()
+    {
+        return [
+            'id' => 0,
+            'module' => 'ITS4YouCalendar',
+            'fields' => ['datetime_start', 'datetime_end'],
+            'color' => '#08f',
+            'visible' => 1,
+        ];
     }
 
     /**
@@ -267,7 +291,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
      */
     public function getId(): int
     {
-        return intval($this->get('id'));
+        return (int)$this->get('id');
     }
 
     /**
@@ -321,7 +345,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
      */
     public function isVisible(): bool
     {
-        return boolval($this->get('visible'));
+        return (bool)$this->get('visible');
     }
 
     /**
@@ -333,8 +357,6 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         $pagingModel = new Vtiger_Paging_Model();
         $pagingModel->set('page', 1);
 
-        list($startField, $endField) = $this->get('fields');
-
         $this->retrieveListViewModel();
         $this->retrieveDateConditions();
         $this->retrieveFilterConditions();
@@ -344,47 +366,62 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
 
         /** @var Vtiger_Record_Model $listViewRecord */
         foreach ($listViewRecords as $listViewRecord) {
-            $this->setRecordModel($listViewRecord);
+            $this->setRecordModel(Vtiger_Record_Model::getInstanceById($listViewRecord->getId()));
+            $data = $this->getRecord();
 
-            $startDateValue = $listViewRecord->get($startField);
-
-            if (empty($startDateValue)) {
-                continue;
+            if (!empty($data)) {
+                $records[] = $data;
             }
-
-            $startDate = $this->getDate($listViewRecord->get($startField));
-            $record = [
-                'id' => $this->get('id') . 'x' . $listViewRecord->getId(),
-                'title' => decode_html($listViewRecord->getName()),
-                'start' => $startDate,
-                'end' => $startDate,
-                'url' => $this->getDetailLink(),
-                'backgroundColor' => $this->getBackgroundColor(),
-                'borderColor' => $this->getBackgroundColor(),
-                'color' => $this->getTextColor(),
-                'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $listViewRecord->getId()
-            ];
-
-            if (!empty($endField)) {
-                $endDate = $this->getDate($listViewRecord->get($endField));
-
-                list($endDateDate, $endDateTime) = explode(' ', $endDate);
-
-                if (empty($endDateTime)) {
-                    $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
-                } else {
-                    $record['end'] = $endDate;
-                }
-
-                if ('Yes' === $listViewRecord->get('is_all_day')) {
-                    $record['allDay'] = 1;
-                }
-            }
-
-            $records[] = $record;
         }
 
         return $records;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getRecord(): array
+    {
+        list($startField, $endField) = $this->get('fields');
+
+        $recordModel = $this->getRecordModel();
+        $startDateValue = $recordModel->get($startField);
+
+        if (empty($startDateValue)) {
+            return [];
+        }
+
+        $startDate = $this->getDate($recordModel->get($startField));
+        $record = [
+            'id' => $this->get('id') . 'x' . $recordModel->getId(),
+            'title' => decode_html($recordModel->getName()),
+            'start' => $startDate,
+            'end' => $startDate,
+            'url' => $this->getDetailLink(),
+            'backgroundColor' => $this->getBackgroundColor(),
+            'borderColor' => $this->getBackgroundColor(),
+            'color' => $this->getTextColor(),
+            'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId()
+        ];
+
+        if (!empty($endField)) {
+            $endDate = $this->getDate($recordModel->get($endField));
+
+            list($endDateDate, $endDateTime) = explode(' ', $endDate);
+
+            if (empty($endDateTime)) {
+                $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
+            } else {
+                $record['end'] = $endDate;
+            }
+
+            if (1 === (int)$recordModel->get('is_all_day')) {
+                $record['allDay'] = 1;
+            }
+        }
+
+        return $record;
     }
 
     /**
@@ -476,7 +513,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     public function getDate($value)
     {
         $dateInfo = explode(' ', $value);
-        $date = new DateTime($value);
+        $date = DateTimeField::convertToUserTimeZone($value);
 
         if (!empty($dateInfo[1])) {
             return $date->format('Y-m-d H:i:s');
@@ -609,6 +646,120 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @return string
+     */
+    public function getFormattedDates(): string
+    {
+        $dateFields = [];
+        $timeFields = [];
+        $recordModel = $this->getRecordModel();
+        $userModel = Users_Privileges_Model::getCurrentUserModel();
+
+        foreach ($this->get('fields') as $fieldName) {
+            $fieldDateTime = $recordModel->get($fieldName);
+
+            if (2 === php7_count(explode(' ', $fieldDateTime))) {
+                $timeValue = DateTimeField::convertToUserTimeZone($fieldDateTime)->format('H:i');
+
+                if (12 === (int)$userModel->get('hour_format')) {
+                    $timeValue = Vtiger_Time_UIType::getTimeValueInAMorPM($timeValue);
+                }
+
+                $timeFields[] = $timeValue;
+            }
+
+            $dateFields[] = Vtiger_Util_Helper::formatDateIntoStrings($fieldDateTime);
+        }
+
+        return implode(' - ', array_unique($dateFields)) . ' • ' . implode(' - ', array_unique($timeFields));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getPopoverValues(): array
+    {
+        /** @var Vtiger_Record_Model $recordModel */
+        $recordModel = $this->getRecordModel();
+        $moduleModel = $recordModel->getModule();
+        $moduleName = $recordModel->getModuleName();
+        $fields = $moduleModel->getHeaderAndSummaryViewFieldsList();
+        $values = [];
+
+        /** @var Vtiger_Field_Model $field */
+        foreach ($fields as $field) {
+            if ($this->isPopoverDisabledField($field->getName(), $moduleName)) {
+                continue;
+            }
+
+            $values[$field->get('label')] = $recordModel->getDisplayValue($field->getName());
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param string $fieldName
+     * @param string $moduleName
+     * @return bool
+     */
+    public function isPopoverDisabledField(string $fieldName, string $moduleName): bool
+    {
+        return isset(self::$popoverDisabledFields[$moduleName]) && in_array($fieldName, self::$popoverDisabledFields[$moduleName]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMarkAsDone(): bool
+    {
+        $recordModel = $this->getRecordModel();
+        $moduleName = $recordModel->getModuleName();
+
+        if (isset(self::$popoverMarkAsDone[$moduleName])) {
+            $values = self::$popoverMarkAsDone[$moduleName];
+            $fieldName = array_keys($values)[0];
+            $fieldValues = $values[$fieldName];
+
+            if (!in_array($recordModel->get($fieldName), $fieldValues)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMarkAsDoneField(): string
+    {
+        $recordModel = $this->getRecordModel();
+        $moduleName = $recordModel->getModuleName();
+
+        return (string)array_keys((array)self::$popoverMarkAsDone[$moduleName])[0];
+    }
+
+    /**
+     * @return string
+     */
+    public function getMarkAsDoneValue(): string
+    {
+        $recordModel = $this->getRecordModel();
+        $moduleName = $recordModel->getModuleName();
+
+        return (string)array_values((array)self::$popoverMarkAsDone[$moduleName])[0][0];
+    }
+
+    /**
+     * @return void
+     */
+    public function retrieveCalendarData()
+    {
+        $this->setData(self::getEventTypeCalendarData());
+    }
+
+    /**
      * @return bool
      */
     public function isDuplicate(): bool
@@ -618,7 +769,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             [$this->get('module'), json_encode($this->get('fields'))]
         );
 
-        return boolval($this->adb->num_rows($result));
+        return (bool)$this->adb->num_rows($result);
     }
 
     /**
