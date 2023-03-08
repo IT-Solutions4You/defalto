@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_Detail_Js */
 Vtiger.Class("Vtiger_Detail_Js",{
 
 	detailInstance : false,
@@ -293,48 +293,57 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			return this.overlayMode;
 		},
 
-		registerRelatedRecordSave: function(){
-			var thisInstance = this;
-			app.event.on('post.overLayEditView.loaded',function(e, container){
-				jQuery('#EditView').vtValidate({
-					submitHandler : function(form){
-						window.onbeforeunload = null;
-						var e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
-						app.event.trigger(e);
-						if(e.isDefaultPrevented()) {
-							return false;
-						}
-						var formData = new FormData(form);
-						var postParams = {
+	registerRelatedRecordSave: function () {
+		let self = this;
+
+		app.event.on('post.overLayEditView.loaded', function (e, container) {
+			let editViewElement = jQuery('#EditView')
+
+			editViewElement.vtValidate({
+				submitHandler: function (form) {
+					window.onbeforeunload = null;
+					let e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
+					app.event.trigger(e);
+					if (e.isDefaultPrevented()) {
+						return false;
+					}
+					let formData = new FormData(form),
+						postParams = {
 							data: formData,
 							contentType: false,
 							processData: false
 						};
-						app.helper.showProgress();
-						app.request.post(postParams).then(function(err,data){
-							app.helper.hideProgress();
-							if (err === null) {
-								jQuery('.vt-notification').remove();
-								app.helper.hidePageContentOverlay();
-								var relatedModuleName = formData.module;
-								if(relatedModuleName == 'Events') {
-									relatedModuleName = 'Calendar';
-								}
-								var relatedController = thisInstance.getRelatedController(relatedModuleName);
-								relatedController.loadRelatedList();
-							} else {
-								app.event.trigger('post.save.failed', err);
+					app.helper.showProgress();
+					app.request.post(postParams).then(function (err, data) {
+						app.helper.hideProgress();
+						if (err === null) {
+							jQuery('.vt-notification').remove();
+							app.helper.hidePageContentOverlay();
+
+							let relatedModuleName = formData.module;
+
+							if ('Events' === relatedModuleName) {
+								relatedModuleName = 'Calendar';
 							}
+
+							let relatedController = self.getRelatedController(relatedModuleName);
+
+							if (relatedController) {
+								relatedController.loadRelatedList();
+							}
+						} else {
+							app.event.trigger('post.save.failed', err);
+						}
 					});
 					return false;
-					}
-				});
-
-				jQuery('#EditView').find('.saveButton').on('click', function(e){
-					window.onbeforeunload = null;
-				});
+				}
 			});
-		},
+
+			editViewElement.find('.saveButton').on('click', function (e) {
+				window.onbeforeunload = null;
+			});
+		});
+	},
 
 	referenceFieldNames : {
 		'Accounts' : 'parent_id',
@@ -2596,12 +2605,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 
-	showOverlayEditView: function(recordUrl) {
-		var self = this;
-			var params = app.convertUrlToDataParams(recordUrl);
-			params['displayMode'] = 'overlay';
-		var postData = self.getDefaultParams();
-		for (var key in postData) {
+	showOverlayEditView: function (recordUrl) {
+		let self = this;
+		let params = app.convertUrlToDataParams(recordUrl);
+		params['displayMode'] = 'overlay';
+		let postData = self.getDefaultParams();
+		for (let key in postData) {
 			if (postData[key]) {
 				if (key == 'relatedModule') {
 					params['returnrelatedModuleName'] = postData[key];
@@ -2614,26 +2623,26 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		}
 		params['returnrecord'] = jQuery('[name="record_id"]').val();
-			app.helper.showProgress();
-		app.request.get({data: params}).then(function(err, response) {
-				app.helper.hideProgress();
-				var overlayParams = {'backdrop': 'static', 'keyboard': false};
-				app.helper.loadPageContentOverlay(response, overlayParams).then(function(container) {
-				var height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80;
+		app.helper.showProgress();
+		app.request.get({data: params}).then(function (err, response) {
+			app.helper.hideProgress();
+			let overlayParams = {'backdrop': 'static', 'keyboard': false};
+			app.helper.loadPageContentOverlay(response, overlayParams).then(function (container) {
+				let height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80;
 
-					var scrollParams = {
-						setHeight: height,
-						alwaysShowScrollbar: 2,
-						autoExpandScrollbar: true,
-						setTop: 0,
-							scrollInertia: 70
-					}
-					app.helper.showVerticalScroll(jQuery('.editViewContents'), scrollParams);
-					self.registerOverlayEditEvents(params.module, container);
-					self.registerRelatedRecordSave();
-					app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
-				});
+				let scrollParams = {
+					setHeight: height,
+					alwaysShowScrollbar: 2,
+					autoExpandScrollbar: true,
+					setTop: 0,
+					scrollInertia: 70
+				}
+				app.helper.showVerticalScroll(jQuery('.editViewContents'), scrollParams);
+				self.registerOverlayEditEvents(params.module, container);
+				self.registerRelatedRecordSave();
+				app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
 			});
+		});
 	},
 	registerOverlayEditEvent: function() {
 		var self = this;
