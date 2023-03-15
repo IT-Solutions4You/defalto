@@ -34,5 +34,12 @@ class Vtiger_Recurrence_UIType extends Vtiger_Date_UIType {
 	public function getEditViewDisplayValue($value) {
 		return $this->getDisplayValue($value);
 	}
-    
+
+    /**
+     * @return string
+     */
+    public function getTomorrowDate(): string
+    {
+        return DateTimeField::convertToUserFormat(date('Y-m-d', strtotime('+1 day')));
+    }
 }
