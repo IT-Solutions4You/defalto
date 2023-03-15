@@ -10,7 +10,8 @@
 ********************************************************************************/
 -->*}
 {strip}
-    {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
+    {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
+    {assign var=TOMORROW_DATE value=$FIELD_MODEL->getUITypeModel()->getTomorrowDate()}
 	<div class="row">
 		<div class="col-sm-1">
 			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
@@ -40,7 +41,7 @@
 				<span class="col-sm-6 padding0px">
 					<span class="input-group date inputElement">
                                             <input type="text" id="calendar_repeat_limit_date" class="dateField input-small form-control" name="calendar_repeat_limit_date" data-date-format="{$USER_MODEL->get('date_format')}" 
-							   value="{if $RECURRING_INFORMATION['recurringcheck'] neq 'Yes'}{$TOMORROWDATE}{elseif $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}{$RECURRING_INFORMATION['recurringenddate']}{/if}" 
+							   value="{if $RECURRING_INFORMATION['recurringcheck'] neq 'Yes'}{$TOMORROW_DATE}{elseif $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}{$RECURRING_INFORMATION['recurringenddate']}{/if}"
 							   data-rule-date="true" data-rule-required="true" data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}' {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}/>
 						<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					</span>
