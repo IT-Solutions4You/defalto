@@ -190,6 +190,8 @@ $languageStrings = array(
     'LBL_MARK_AS_DONE' => 'Mark as Done',
     'LBL_DETAIL_OVERLAY' => 'Detail',
     'LBL_EDIT_OVERLAY' => 'Edit',
+    'LBL_ERROR_SAVE_DATES' => 'Dates update error',
+    'LBL_SUCCESS_SAVE_DATES' => 'Dates update successfully',
 );
 
 $jsLanguageStrings = array(
@@ -265,4 +267,5 @@ $jsLanguageStrings = array(
     'JS_MARK_AS_DONE_SUCCESS' => 'Record marked as complete',
     'JS_MARK_AS_DONE_ERROR' => 'Record has not been marked as complete',
     'JS_MARK_AS_DONE_QUESTION' => 'Are you sure you want to mark the record as done?',
+    'JS_DRAG_EDIT_CONFIRMATION' => 'Do you want to update dates',
 );

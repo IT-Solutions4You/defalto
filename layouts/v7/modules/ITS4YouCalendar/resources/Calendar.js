@@ -45,6 +45,8 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         })
     },
     deleteEvent: function (record, module) {
+        const self = this;
+
         app.helper.showConfirmationBox({message: app.vtranslate('JS_DELETE_QUESTION')}).then(function () {
             const params = {
                 module: module,
@@ -55,7 +57,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
 
             app.request.post({data: params}).then(function (error, data) {
                 if (!error && data) {
-                    $('.eventRecordId' + record).remove();
+                    $('.fc-daygrid-event[href*="record=' + record + '"]').parent().remove();
 
                     app.helper.showSuccessNotification({message: app.vtranslate('JS_DELETE_SUCCESS')})
                 } else {
@@ -87,16 +89,19 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         this.registerPopoverDetailView();
         this.registerPopoverEditView();
         this.registerPopoverEditSave();
+        this.registerQuickEditSave();
     },
     setDate: function (start, end) {
-        this.startDate = this.convertDateToString(start);
-        this.endDate = this.convertDateToString(end);
+        this.startDate = this.convertToDateString(start);
+        this.endDate = this.convertToDateString(end);
     },
     retrieveCalendar: function () {
         const self = this,
             is24HourFormat = 24 === parseInt($('#hour_format').val()),
             calendarElement = document.getElementById('calendar'),
             calendarConfig = {
+                editable: true,
+                selectable: true,
                 timeZone: $('#timezone').val(),
                 firstDay: $('#day_of_week').val(),
                 height: 'calc(100vh - 160px)',
@@ -149,10 +154,128 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                         eventDisplay: 'none',
                     });
                 },
+                select: function (info) {
+                    self.showQuickEdit(info);
+                },
+                eventResize: function (info) {
+                    self.saveEventResizeAndDrop(info);
+                },
+                eventDrop: function (info) {
+                    self.saveEventResizeAndDrop(info);
+                },
             };
 
         self.calendar = new FullCalendar.Calendar(calendarElement, calendarConfig);
         self.calendar.render();
+    },
+    saveEventResizeAndDrop: function (info) {
+        const self = this,
+            defaultValues = info.event['_def'],
+            recordInfo = defaultValues['publicId'].split('x');
+
+        if (parseInt(recordInfo[0])) {
+            info.revert();
+        } else {
+            let isAllDay = defaultValues['allDay'],
+                startDateObject = info.event.start,
+                endDateObject = info.event.end ? info.event.end : info.event.start,
+                startDate = self.convertToDateString(startDateObject),
+                endDate = self.convertToDateString(endDateObject);
+
+            if (isAllDay) {
+                startDate += ' 00:00';
+                endDate += ' 23:59';
+
+            } else {
+                startDate += ' ' + self.convertToTimeString(startDateObject);
+                endDate += ' ' + self.convertToTimeString(endDateObject);
+            }
+
+            if (startDate === endDate) {
+                let endMoment = moment(endDate);
+                endMoment.add(1, 'hours');
+
+                endDate = endMoment.format('YYYY-MM-DD HH:mm');
+            }
+
+            app.helper.showConfirmationBox({message: app.vtranslate('JS_DRAG_EDIT_CONFIRMATION')}).then(function () {
+                const params = {
+                    module: 'ITS4YouCalendar',
+                    action: 'Calendar',
+                    mode: 'UpdateDates',
+                    record: recordInfo[1],
+                    is_all_day: isAllDay ? 'Yes' : 'No',
+                    start_date: startDate,
+                    end_date: endDate
+                };
+
+                app.request.post({data: params}).then(function (error, data) {
+                    if (!error && data['success']) {
+                        app.helper.showSuccessNotification({message: data['message']});
+                    } else {
+                        info.revert();
+                    }
+                });
+            }, function () {
+                info.revert();
+            });
+        }
+    },
+    convertToTimeString: function (date) {
+        const self = this;
+
+        return self.addZeroBefore(date.getUTCHours()) + ':' + self.addZeroBefore(date.getUTCMinutes());
+    },
+    addZeroBefore: function (number) {
+        return (number < 10 ? '0' : '') + number;
+    },
+    showQuickEdit: function (info) {
+        const startDateString = info.startStr,
+            endDateString = info.endStr,
+            quickCreateNode = jQuery('#quickCreateModules').find('[data-name="ITS4YouCalendar"]'),
+            quickCreateParams = {
+                'noCache': false,
+            };
+
+        if (quickCreateNode.length <= 0) {
+            app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
+        }
+
+        app.event.one('post.QuickCreateForm.show', function (event, form) {
+            if (info.allDay) {
+                let startDate = moment(startDateString),
+                    endDate = moment(endDateString);
+
+                endDate.subtract(1, 'days');
+
+                form.find('[name="datetime_start_date"]').val(startDate.format(vtUtils.getMomentDateFormat())).trigger('change');
+                form.find('[name="datetime_end_date"]').val(endDate.format(vtUtils.getMomentDateFormat())).trigger('change');
+            } else {
+                let startDate = moment(startDateString),
+                    endDate = moment(endDateString);
+
+                form.find('[name="datetime_start_date"]').val(startDate.format(vtUtils.getMomentDateFormat())).trigger('change');
+                form.find('[name="datetime_start_time"]').val(startDate.format(vtUtils.getMomentTimeFormat())).trigger('change');
+
+                form.find('[name="datetime_end_date"]').val(endDate.format(vtUtils.getMomentDateFormat())).trigger('change');
+                form.find('[name="datetime_end_time"]').val(endDate.format(vtUtils.getMomentTimeFormat())).trigger('change');
+            }
+        });
+
+        quickCreateNode.trigger('click', quickCreateParams);
+    },
+    registerQuickEditSave: function () {
+        const self = this;
+
+        app.event.on('post.QuickCreateForm.save', function (e, data, formData) {
+            let recordId = data['_recordId'];
+
+            self.getEventInfo(recordId, 0).then(function (error, data) {
+                if (!error && data['info']) {
+                    self.setCalendarEvent(data['info'])
+                }
+            });
+        });
     },
     retrievePopoverContent: function (recordId, eventType) {
         let aDeferred = jQuery.Deferred(),
@@ -231,21 +354,31 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         self.displayEvents = [];
 
         jQuery.each(values, function (index, value) {
-            let eventId = value.id;
-
-            self.displayEvents.push(eventId);
-            self.eventsData[eventId] = value;
-
-            if (!self.eventsObject[eventId]) {
-                self.eventsObject[eventId] = self.calendar.addEvent(self.eventsData[eventId]);
-            }
+            self.setCalendarEvent(value);
         });
+    },
+    setCalendarEvent: function (value) {
+        let self = this,
+            eventId = value.id;
+
+        self.displayEvents.push(eventId);
+        self.eventsData[eventId] = value;
+
+        if (!self.eventsObject[eventId]) {
+            self.eventsObject[eventId] = self.calendar.addEvent(self.eventsData[eventId]);
+        }
+    },
+    getCalendarEvents: function () {
+        return this.calendar.getEvents();
+    },
+    getCalendarEventId: function (event) {
+        return event['_def']['publicId'];
     },
     updateEventsVisibility: function () {
         const self = this;
 
-        $.each(self.calendar.getEvents(), function (index, event) {
-            let eventId = event['_def']['publicId'];
+        $.each(self.getCalendarEvents(), function (index, event) {
+            let eventId = self.getCalendarEventId(event);
 
             if (-1 === self.displayEvents.indexOf(eventId)) {
                 event.setProp('display', 'none');
@@ -271,7 +404,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
 
         self.retrieveCalendarEvents(params);
     },
-    convertDateToString: function (date, separator = '-', format = 'year-month-day') {
+    convertToDateString: function (date, separator = '-', format = 'year-month-day') {
         let data = {
             day: date.getDate(),
             month: date.getMonth() + 1,
@@ -609,28 +742,23 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 ('object' === typeof settings['data'] && 'Save' === settings['data'].get('action'));
 
             if (isSaveAction) {
-                $.each(self.calendar.getEvents(), function (index, event) {
+                $.each(self.getCalendarEvents(), function (index, event) {
                     let publicId = event['_def']['publicId'],
                         eventTypeInfo = publicId.split('x'),
                         eventTypeId = eventTypeInfo[0],
                         recordId = eventTypeInfo[1];
 
                     if (self.updateEvents[recordId]) {
-                        const params = {
-                            module: 'ITS4YouCalendar',
-                            action: 'Events',
-                            mode: 'EventInfo',
-                            record_id: recordId,
-                            event_type_id: eventTypeId,
-                        }
-
-                        app.request.post({data: params}).then(function (error, data) {
+                        self.getEventInfo(recordId, eventTypeId).then(function (error, data) {
                             if (!error && data['info']) {
                                 let info = data['info'];
 
-                                event.setProp('title', info['title']);
                                 event.setStart(info['start']);
                                 event.setEnd(info['end']);
+                                event.setProp('title', info['title']);
+                                event.setProp('backgroundColor', info['backgroundColor']);
+                                event.setProp('borderColor', info['borderColor']);
+                                event.setProp('textColor', info['color']);
                             }
                         });
                     }
@@ -639,6 +767,17 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 self.updateEvents = {};
             }
         });
+    },
+    getEventInfo: function (recordId, eventTypeId) {
+        const params = {
+            module: 'ITS4YouCalendar',
+            action: 'Events',
+            mode: 'EventInfo',
+            record_id: recordId,
+            event_type_id: eventTypeId,
+        }
+
+        return app.request.post({data: params});
     },
     registerPopoverEditView: function () {
         const self = this;
