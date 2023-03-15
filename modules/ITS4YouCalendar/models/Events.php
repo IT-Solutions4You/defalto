@@ -20,6 +20,9 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             'subject',
         ],
     ];
+    /**
+     * @var array
+     */
     public static array $popoverMarkAsDone = [
         'ITS4YouCalendar' => [
             'calendar_status' => ['Completed', 'Cancelled',],
@@ -378,53 +381,6 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @return array
-     * @throws Exception
-     */
-    public function getRecord(): array
-    {
-        list($startField, $endField) = $this->get('fields');
-
-        $recordModel = $this->getRecordModel();
-        $startDateValue = $recordModel->get($startField);
-
-        if (empty($startDateValue)) {
-            return [];
-        }
-
-        $startDate = $this->getDate($recordModel->get($startField));
-        $record = [
-            'id' => $this->get('id') . 'x' . $recordModel->getId(),
-            'title' => decode_html($recordModel->getName()),
-            'start' => $startDate,
-            'end' => $startDate,
-            'url' => $this->getDetailLink(),
-            'backgroundColor' => $this->getBackgroundColor(),
-            'borderColor' => $this->getBackgroundColor(),
-            'color' => $this->getTextColor(),
-            'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId()
-        ];
-
-        if (!empty($endField)) {
-            $endDate = $this->getDate($recordModel->get($endField));
-
-            list($endDateDate, $endDateTime) = explode(' ', $endDate);
-
-            if (empty($endDateTime)) {
-                $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
-            } else {
-                $record['end'] = $endDate;
-            }
-
-            if (1 === (int)$recordModel->get('is_all_day')) {
-                $record['allDay'] = 1;
-            }
-        }
-
-        return $record;
-    }
-
-    /**
      * @return void
      */
     public function retrieveListViewModel()
@@ -506,6 +462,61 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @return array
+     * @throws Exception
+     */
+    public function getRecord(): array
+    {
+        list($startField, $endField) = $this->get('fields');
+
+        $recordModel = $this->getRecordModel();
+        $startDateValue = $recordModel->get($startField);
+
+        if (empty($startDateValue)) {
+            return [];
+        }
+
+        $startDate = $this->getDate($recordModel->get($startField));
+        $record = [
+            'id' => $this->get('id') . 'x' . $recordModel->getId(),
+            'title' => decode_html($recordModel->getName()),
+            'start' => $startDate,
+            'end' => $startDate,
+            'url' => $recordModel->getDetailViewUrl(),
+            'backgroundColor' => $this->getBackgroundColor(),
+            'borderColor' => $this->getBackgroundColor(),
+            'color' => $this->getTextColor(),
+            'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId()
+        ];
+
+        if (!empty($endField)) {
+            $endDate = $this->getDate($recordModel->get($endField));
+
+            list($endDateDate, $endDateTime) = explode(' ', $endDate);
+
+            if (empty($endDateTime)) {
+                $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
+            } else {
+                $record['end'] = $endDate;
+            }
+
+            if (1 === (int)$recordModel->get('is_all_day')) {
+                $record['allDay'] = 1;
+            }
+        }
+
+        return $record;
+    }
+
+    /**
+     * @return object|Vtiger_Record_Model
+     */
+    public function getRecordModel()
+    {
+        return $this->get('record_model');
+    }
+
+    /**
      * @param $value
      * @return string
      * @throws Exception
@@ -548,24 +559,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @return string
      */
-    public function getDetailLink()
-    {
-        /** @var Vtiger_Record_Model $recordModel */
-        $recordModel = $this->get('record_model');
-
-        if ($this->isEmpty('app_names')) {
-            $this->set('app_names', $recordModel->getModule()->getAppName());
-        }
-
-        $appName = array_key_first($this->get('app_names'));
-
-        return 'javascript:Vtiger_Index_Js.getInstance().showQuickPreviewForId(' . $recordModel->getId() . ',\'' . $recordModel->getModuleName() . '\', \'' . $appName . '\')';
-    }
-
-    /**
-     * @return string
-     */
-    public function getBackgroundColor()
+    public function getBackgroundColor(): string
     {
         $recordModel = $this->getRecordModel();
 
@@ -574,14 +568,6 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         }
 
         return $this->get('color');
-    }
-
-    /**
-     * @return object|Vtiger_Record_Model
-     */
-    public function getRecordModel()
-    {
-        return $this->get('record_model');
     }
 
     /**
@@ -643,6 +629,23 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         }
 
         return array_filter($eventFieldsInfo);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDetailLink()
+    {
+        /** @var Vtiger_Record_Model $recordModel */
+        $recordModel = $this->get('record_model');
+
+        if ($this->isEmpty('app_names')) {
+            $this->set('app_names', $recordModel->getModule()->getAppName());
+        }
+
+        $appName = array_key_first($this->get('app_names'));
+
+        return 'javascript:Vtiger_Index_Js.getInstance().showQuickPreviewForId(' . $recordModel->getId() . ',\'' . $recordModel->getModuleName() . '\', \'' . $appName . '\')';
     }
 
     /**
