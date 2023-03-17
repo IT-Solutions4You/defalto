@@ -19,7 +19,6 @@ if (!class_exists('Migration_20230317082542')) {
             $module = Vtiger_Module::getInstance('Accounts');
 
             if ($module) {
-
                 $block = Vtiger_Block::getAllForModule($module)[0];
 
                 if ($block) {
