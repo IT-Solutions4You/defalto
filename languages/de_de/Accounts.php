@@ -45,10 +45,8 @@ $languageStrings = array(
 	'Phone' => 'Primäre Telefon',
 	'Email' => 'Primäre E-Mail',
 
-	'LBL_END_DATE'                 => 'Enddatum'                   , 
-	'LBL_DUPLICATES_EXIST'         => 'Organisation existiert bereits', 
-	'LBL_COPY_SHIPPING_ADDRESS'    => 'Kopiere Lieferadresse'       , 
-	'LBL_COPY_BILLING_ADDRESS'     => 'Kopiere Rechnungsadresse'        , 
+    'Company Reg. No.' => 'Reg ID Nr.',
+    'VAT ID' => 'USt-IdNr.',
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Möchten Sie diese Organisation jetzt entfernen?', 
