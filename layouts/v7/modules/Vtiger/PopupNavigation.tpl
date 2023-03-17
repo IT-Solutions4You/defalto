@@ -16,6 +16,9 @@
         {else}
             &nbsp;
         {/if}
+        {if $RELATED_PARENT_MODULE}
+            <button class="clearRelatedParent btn btn-danger"><strong>{vtranslate('LBL_CLEAR_RELATED_PARENT', $MODULE)}</strong></button>
+        {/if}
     </div>
     <div class="col-md-10">
         {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}

@@ -1393,6 +1393,7 @@ $languageStrings = array(
 	'LBL_RELATED_MODULES_PERMISSION_DENIED' => 'Related modules permission is denied',
 	'LBL_RECORD_PERMISSION_DENIED' => 'Record permissions denied',
 	'LBL_MASS_SELECT' => 'Mass Select',
+    'LBL_CLEAR_RELATED_PARENT' => 'Clear Related Parent',
 );
 
 $jsLanguageStrings = array(

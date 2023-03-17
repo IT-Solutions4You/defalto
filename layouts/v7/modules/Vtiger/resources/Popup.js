@@ -978,7 +978,19 @@ jQuery.Class("Vtiger_Popup_Js",{
 		this.registerEventForSelectAllInCurrentPage();
 		this.registerSelectButton();
 		this.registerEventForCheckboxChange();
-	}
+		this.registerClearRelatedParent();
+	},
+	registerClearRelatedParent: function() {
+		let popupContainer = this.getPopupPageContainer();
+
+		popupContainer.on('click', '.clearRelatedParent', function() {
+			popupContainer.find('#relatedParentModule').val('');
+			popupContainer.find('#relatedParentId').val('');
+			popupContainer.find('[data-trigger="PopupListSearch"]').trigger('click');
+		});
+
+		console.log(popupContainer);
+	},
 });
         
 jQuery(document).ready(function() {
