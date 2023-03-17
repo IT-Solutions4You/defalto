@@ -427,4 +427,20 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
             }
         });
     },
+    getPopUpParams: function (container) {
+        let params = this._super(container),
+            form = container.closest('form'),
+            accountId = null;
+
+        if ('parent_id' === params['src_field'] || 'contact_id' === params['src_field']) {
+            accountId = form.find('[name="account_id"]').val();
+        }
+
+        if (accountId) {
+            params['related_parent_id'] = accountId;
+            params['related_parent_module'] = 'Accounts';
+        }
+
+        return params;
+    },
 });

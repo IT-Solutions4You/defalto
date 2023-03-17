@@ -308,6 +308,29 @@ class ITS4YouCalendar extends CRMEntity
         $this->insertIntoRecurring();
 
         $this->saveMultiReference('contact_id', 'Contacts');
+        $this->createRelationFromMultiReference('contact_id');
+        $this->createRelationFromReference('parent_id');
+        $this->createRelationFromReference('account_id');
+    }
+
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function createRelationFromMultiReference(string $name)
+    {
+        $relatedRecords = explode(';', $this->column_fields[$name]);
+
+        foreach ($relatedRecords as $relatedRecord) {
+            $this->createRelationFromRecord($relatedRecord);
+        }
+    }
+
+    public function createRelationFromReference(string $name)
+    {
+        $recordId = intval($this->column_fields[$name]);
+
+        $this->createRelationFromRecord($recordId);
     }
 
     /**
