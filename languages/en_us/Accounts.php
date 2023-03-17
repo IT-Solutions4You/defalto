@@ -54,6 +54,9 @@ $languageStrings = array(
 	'LBL_COPY_BILLING_ADDRESS' => 'Copy Billing Address',
 	'LBL_IMAGE_INFORMATION' => 'Profile Picture',
 	'Organization Image' => 'Organization Image',
+
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 
 $jsLanguageStrings = array(

@@ -54,6 +54,9 @@ $languageStrings = array(
 	'LBL_COPY_SHIPPING_ADDRESS' => 'Copiar Endereço Entrega',
 	'LBL_IMAGE_INFORMATION' => 'Imagem Perfil',
 	'Organization Image' => 'Imagem Organização',
+
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 
 $jsLanguageStrings = array(

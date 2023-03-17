@@ -54,6 +54,9 @@ $languageStrings = array(
 	'LBL_COPY_BILLING_ADDRESS' => 'نسخص عنوان الدفع',
     'LBL_IMAGE_INFORMATION' => 'الصورة الشخصية',
     'Organization Image' => 'تنظيم صورة',
+
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 
 $jsLanguageStrings = array(

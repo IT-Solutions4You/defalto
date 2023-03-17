@@ -45,6 +45,8 @@ $languageStrings = array(
 	'Phone' => 'Téléphone Principal',
 	'Email' => 'E-Mail Principale',
 
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Voulez-vous réellement supprimer ce compte ?', 
