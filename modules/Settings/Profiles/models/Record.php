@@ -863,24 +863,11 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 				}
 			}
             
-			//Added user fields into vtiger_profile2field and vtiger_def_org_field
+			//Added user fields into vtiger_profile2field
 			//We are using this field information in Email Templates.
 			foreach ($userAccessbleFields as $fieldId => $fieldName) {
 				$insertQuery = 'INSERT INTO vtiger_profile2field VALUES(?,?,?,?,?)';
 				$db->pquery($insertQuery, array($profileId, $tabId, $fieldId,  Settings_Profiles_Module_Model::FIELD_ACTIVE, Settings_Profiles_Module_Model::FIELD_READWRITE));
-			}
-			
-			$sql = 'SELECT fieldid FROM vtiger_def_org_field WHERE tabid = ?';
-			$result1 = $db->pquery($sql, array($tabId));
-			$def_org_fields = array();
-			for($j=0; $j<$db->num_rows($result1); $j++) {
-				array_push($def_org_fields, $db->query_result($result1, $j, 'fieldid'));
-			}
-			foreach ($userAccessbleFields as $fieldId => $fieldName) {
-				if(!in_array($fieldId, $def_org_fields)){
-					$insertQuery = 'INSERT INTO vtiger_def_org_field VALUES(?,?,?,?)';
-					$db->pquery($insertQuery, array($tabId,$fieldId,0,0));
-				}
 			}
 		}
 	}

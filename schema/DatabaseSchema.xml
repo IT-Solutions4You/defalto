@@ -2781,28 +2781,6 @@
 		</data>
 	</table>
 
-	<table name="vtiger_def_org_field">
-		<field name="tabid" type="I" size="10" />
-		<field name="fieldid" type="I" size="19">
-			<key />
-		</field>
-		<field name="visible" type="I" size="19" />
-		<field name="readonly" type="I" size="19" />
-
-		<index name="def_org_field_tabid_fieldid_idx">
-			<col>tabid</col>
-			<col>fieldid</col>
-		</index>
-		<index name="def_org_field_tabid_idx">
-			<col>tabid</col>
-		</index>
-		<index name="def_org_field_visible_fieldid_idx">
-			<col>visible</col>
-			<col>fieldid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_profile2utility">
 		<field name="profileid" type="I" size="11">
 			<key />

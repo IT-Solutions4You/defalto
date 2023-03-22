@@ -872,8 +872,6 @@ class Install_InitSchema_Model {
         insertProfile2field($profileId2);
         insertProfile2field($profileId3);
         insertProfile2field($profileId4);
-
-		insert_def_org_field();
 	}
 
 	/**
