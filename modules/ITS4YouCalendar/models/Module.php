@@ -75,6 +75,11 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
             'linklabel' => 'LBL_CALENDAR_SETTINGS',
             'linkurl' => 'index.php?module=Users&parent=Settings&view=Calendar&record=' . $currentUser->getId(),
         );
+        $settingsLinks[] = array(
+            'linktype' => 'LISTVIEWSETTING',
+            'linklabel' => 'LBL_INTEGRATION',
+            'linkurl' => 'index.php?module=ITS4YouCalendar&parent=Settings&view=Integration',
+        );
 
         return array_merge($settingsLinks, parent::getSettingLinks());
     }

@@ -144,6 +144,22 @@ class ITS4YouCalendar extends CRMEntity
     {
         $this->installTables();
         $this->updateCron();
+        $this->updateParentIdModules();
+    }
+
+    public function updateParentIdModules()
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
+        $fieldModel = Vtiger_Field_Model::getInstance('parent_id', $moduleModel);
+
+        if ($fieldModel && empty($fieldModel->getReferenceList())) {
+            $integrationModels = Settings_ITS4YouCalendar_Integration_Model::getModules();
+
+            foreach ($integrationModels as $integrationModel) {
+                $integrationModel->setField();
+                $integrationModel->setRelation();
+            }
+        }
     }
 
     /**
@@ -208,7 +224,7 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE `its4you_calendar_user_types` (
+            'CREATE TABLE IF NOT EXISTS `its4you_calendar_user_types` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
           `default_id` int(11) DEFAULT NULL,
           `user_id` int(11) DEFAULT NULL,
@@ -217,7 +233,7 @@ class ITS4YouCalendar extends CRMEntity
         ) ENGINE=InnoDB'
         );
         $this->db->query(
-            'CREATE TABLE `its4you_calendar_default_types` (
+            'CREATE TABLE IF NOT EXISTS  `its4you_calendar_default_types` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
           `module` varchar(50) DEFAULT NULL,
           `fields` varchar(200) DEFAULT NULL,
@@ -332,6 +348,24 @@ class ITS4YouCalendar extends CRMEntity
 
         $this->createRelationFromRecord($recordId);
     }
+
+    public function createRelationFromRecord(int $recordId)
+    {
+        if (!empty($recordId)) {
+            $module = Vtiger_Module_Model::getInstance($this->moduleName);
+            $parentModuleName = getSalesEntityType($recordId);
+            $parentModule = Vtiger_Module_Model::getInstance($parentModuleName);
+
+            if ($parentModule) {
+                $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
+
+                if ($relationModel) {
+                    $relationModel->addRelation($recordId, $this->id);
+                }
+            }
+        }
+    }
+
 
     /**
      * @param $fieldName

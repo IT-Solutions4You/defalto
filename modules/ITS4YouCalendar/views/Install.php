@@ -74,7 +74,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
             self::logError('Dynamic created label');
 
             $label = str_replace('ITS', '', $name);
-            $label = str_replace('4You', '', $name);
+            $label = str_replace('4You', '', $label);
         }
 
         if (empty($cfTable)) {
@@ -90,40 +90,48 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
         }
 
         $crmVersion = Vtiger_Version::current();
-        $deleteModule = Vtiger_Module::getInstance($name);
+        $moduleInstance = Vtiger_Module::getInstance($name);
 
-        if (!empty($deleteModule->basetable)) {
-            self::logError('Drop tables');
+        if ($_REQUEST['delete']) {
+            if (!empty($moduleInstance->basetable)) {
+                self::logError('Drop tables');
 
-            $dropTables = [
-                $deleteModule->basetable,
-                $deleteModule->basetable . '_seq',
-                $cfTable,
-                $cfTable . '_seq',
-                $groupRelTable,
-                $groupRelTable . '_seq',
-            ];
+                $dropTables = [
+                    $moduleInstance->basetable,
+                    $moduleInstance->basetable . '_seq',
+                    $cfTable,
+                    $cfTable . '_seq',
+                    $groupRelTable,
+                    $groupRelTable . '_seq',
+                ];
 
-            $adb->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$name]);
+                $adb->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$name]);
 
-            foreach ($dropTables as $dropTable) {
-                $adb->pquery('DROP TABLE IF EXISTS ' . $dropTable);
+                foreach ($dropTables as $dropTable) {
+                    $adb->pquery('DROP TABLE IF EXISTS ' . $dropTable);
+                }
+            }
+
+            if ($moduleInstance) {
+                $adb->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($name)]);
+                $adb->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($name)]);
+                $adb->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($name), getTabid($name)]);
+
+                $moduleInstance->delete();
+
+                self::logError('Delete module');
+                die('Delete module');
             }
         }
 
-        if ($deleteModule) {
-            $adb->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($name)]);
-            $adb->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($name)]);
-            $adb->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($name), getTabid($name)]);
+        if(!$moduleInstance) {
+            $moduleInstance = new Vtiger_Module();
 
-            $deleteModule->delete();
-            self::logError('Delete module');
-            die('Delete module');
+            self::logSuccess('Module creating');
+        } else {
+            self::logSuccess('Module Updating');
         }
 
-        self::logSuccess('Module creating');
-
-        $moduleInstance = new Vtiger_Module();
         $moduleInstance->name = $name;
         $moduleInstance->parent = $parent;
         $moduleInstance->label = $label;
@@ -174,9 +182,14 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
             foreach ($blocks as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
 
-                $newBlock = new Vtiger_Block();
-                $newBlock->label = $block;
-                $moduleInstance->addBlock($newBlock);
+                $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
+
+                if(!$blockInstance) {
+                    $blockInstance = new Vtiger_Block();
+                    $blockInstance->label = $block;
+
+                    $moduleInstance->addBlock($blockInstance);
+                }
 
                 foreach ($fields as $fieldName => $fieldParams) {
                     self::logSuccess('Field create: ' . $fieldName);
@@ -184,7 +197,12 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     $relatedModules = array();
                     $picklistValues = array();
 
-                    $fieldInstance = new Vtiger_Field();
+                    $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
+
+                    if(!$fieldInstance) {
+                        $fieldInstance = new Vtiger_Field();
+                    }
+
                     $fieldInstance->name = $fieldName;
                     $fieldInstance->column = $fieldName;
                     $fieldInstance->table = $baseTable;
@@ -201,7 +219,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         }
                     }
 
-                    $newBlock->addField($fieldInstance);
+                    $blockInstance->addField($fieldInstance);
 
                     if (!empty($picklistValues)) {
                         $adb->query('DROP TABLE IF EXISTS vtiger_' . $fieldName);
@@ -338,12 +356,12 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'column' => 'type',
                     'label' => 'Type',
                     'uitype' => 15,
-                    'typeofdata' => 'V~O',
+                    'typeofdata' => 'V~M',
                     'picklist_values' => [
-                        'Call',
-                        'Meeting',
-                        'Email',
-                        'Reminder',
+                        ['Call', '#3B71CA'],
+                        ['Meeting', '#9FA6B2'],
+                        ['Email', '#14A44D'],
+                        ['Reminder', '#E4A11B'],
                     ],
                     'columntype' => 'VARCHAR(200)',
                 ),
@@ -379,12 +397,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'label' => 'Related To',
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
-                    'related_modules' => [
-                        'Campaigns',
-                        'HelpDesk',
-                        'Leads',
-                        'Potentials',
-                    ],
+                    'related_modules' => [],
                     'columntype' => 'INT(11)',
                 ),
                 'contact_id' => array(

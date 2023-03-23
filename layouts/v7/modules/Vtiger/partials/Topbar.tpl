@@ -139,16 +139,13 @@
 							</div>
 						</li>
 						{assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
-						{assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Calendar')}
+						{assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
 						{if $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
-							<li><div><a href="index.php?module=Calendar&view={$CALENDAR_MODULE_MODEL->getDefaultViewName()}" class="fa fa-calendar" title="{vtranslate('Calendar','Calendar')}" aria-hidden="true"></a></div></li>
+							<li><div><a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="fa fa-calendar" title="{vtranslate($CALENDAR_MODULE_MODEL->get('label'),$CALENDAR_MODULE_MODEL->getName())}" aria-hidden="true"></a></div></li>
 						{/if}
 						{assign var=REPORTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
 						{if $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
 							<li><div><a href="index.php?module=Reports&view=List" class="fa fa-bar-chart" title="{vtranslate('Reports','Reports')}" aria-hidden="true"></a></div></li>
-						{/if}
-						{if $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
-							<li><div><a href="#" class="taskManagement vicon vicon-task" title="{vtranslate('Tasks','Vtiger')}" aria-hidden="true"></a></div></li>
 						{/if}
 						<li class="dropdown">
 							<div>
