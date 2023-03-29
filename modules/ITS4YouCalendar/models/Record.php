@@ -16,4 +16,28 @@ class ITS4YouCalendar_Record_Model extends Vtiger_Record_Model
 
         $this->set('duration_hours', ($datetimeEndTime - $datetimeStartTime) / 60 / 60);
     }
+
+    /**
+     * @return string
+     */
+    public function getActivityTypeIcon(): string
+    {
+        $calendarType = strtolower($this->get('calendar_type'));
+
+        if ('email' === $calendarType) {
+            return 'fa fa-envelope fa-lg';
+        }
+
+        return 'vicon-' . $calendarType;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecurringEnabled(): bool
+    {
+        $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord(intval($this->getId()));
+
+        return $recurrence && $recurrence->isExists();
+    }
 }

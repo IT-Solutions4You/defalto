@@ -359,6 +359,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     {
         $pagingModel = new Vtiger_Paging_Model();
         $pagingModel->set('page', 1);
+        $pagingModel->set('limit', 1000);
 
         $this->retrieveListViewModel();
         $this->retrieveDateConditions();
