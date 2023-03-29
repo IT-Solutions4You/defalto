@@ -338,7 +338,7 @@ class ITS4YouCalendar extends CRMEntity
         $relatedRecords = explode(';', $this->column_fields[$name]);
 
         foreach ($relatedRecords as $relatedRecord) {
-            $this->createRelationFromRecord($relatedRecord);
+            $this->createRelationFromRecord(intval($relatedRecord));
         }
     }
 
