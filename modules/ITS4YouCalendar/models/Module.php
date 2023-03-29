@@ -83,4 +83,26 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 
         return array_merge($settingsLinks, parent::getSettingLinks());
     }
+
+    /**
+     * @return int
+     */
+    public function getTodayRecordsCount(): int
+    {
+        $moduleName = $this->getName();
+        $listModel = Vtiger_ListView_Model::getInstance($moduleName);
+
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        $today = date('Y-m-d');
+
+        /** @var QueryGenerator $queryGenerator */
+        $queryGenerator = $listModel->get('query_generator');
+
+        $queryGenerator->startGroup('');
+        $queryGenerator->addCondition('datetime_start', $today . ',' . $tomorrow, 'bw', 'OR');
+        $queryGenerator->addCondition('datetime_end', $today . ',' . $tomorrow, 'bw', 'OR');
+        $queryGenerator->endGroup();
+
+        return intval($listModel->getListViewCount());
+    }
 }

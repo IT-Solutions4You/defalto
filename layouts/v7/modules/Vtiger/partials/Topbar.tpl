@@ -141,7 +141,13 @@
 						{assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
 						{assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
 						{if $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
-							<li><div><a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="fa fa-calendar" title="{vtranslate($CALENDAR_MODULE_MODEL->get('label'),$CALENDAR_MODULE_MODEL->getName())}" aria-hidden="true"></a></div></li>
+							<li>
+								<div>
+									<a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="fa fa-calendar" title="{vtranslate($CALENDAR_MODULE_MODEL->get('label'),$CALENDAR_MODULE_MODEL->getName())}" aria-hidden="true">
+										<div class="badge">{$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}</div>
+									</a>
+								</div>
+							</li>
 						{/if}
 						{assign var=REPORTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
 						{if $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
