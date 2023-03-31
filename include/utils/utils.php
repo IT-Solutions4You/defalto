@@ -673,27 +673,6 @@ function insertProfile2field($profileid)
 	$log->debug("Exiting insertProfile2field method ...");
 }
 
-/** Function to insert into default org field
-       */
-
-function insert_def_org_field()
-{
-	global $log;
-	$log->debug("Entering insert_def_org_field() method ...");
-	global $adb;
-	$adb->database->SetFetchMode(ADODB_FETCH_ASSOC);
-	$fld_result = $adb->pquery("select * from vtiger_field where generatedtype=1 and displaytype in (1,2,3) and vtiger_field.presence in (0,2) and tabid != 29", array());
-        $num_rows = $adb->num_rows($fld_result);
-        for($i=0; $i<$num_rows; $i++)
-        {
-                 $tab_id = $adb->query_result($fld_result,$i,'tabid');
-                 $field_id = $adb->query_result($fld_result,$i,'fieldid');
-				 $params = array($tab_id, $field_id, 0, 0);
-                 $adb->pquery("insert into vtiger_def_org_field values (?,?,?,?)", $params);
-	}
-	$log->debug("Exiting insert_def_org_field() method ...");
-}
-
 /** Function to update product quantity
   * @param $product_id -- product id :: Type integer
   * @param $upd_qty -- quantity :: Type integer

@@ -42,10 +42,9 @@
 				$sql = "SELECT distinct(vtiger_field.tabid) as tabid FROM vtiger_field LEFT JOIN vtiger_ws_fieldtype ON ".
 				"vtiger_field.uitype=vtiger_ws_fieldtype.uitype
 				 INNER JOIN vtiger_profile2field ON vtiger_field.fieldid = vtiger_profile2field.fieldid
-				 INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid = vtiger_field.fieldid
 				 INNER JOIN vtiger_role2profile ON vtiger_profile2field.profileid = vtiger_role2profile.profileid
 				 INNER JOIN vtiger_user2role ON vtiger_user2role.roleid = vtiger_role2profile.roleid
-				 where vtiger_profile2field.visible=0 and vtiger_def_org_field.visible = 0
+				 where vtiger_profile2field.visible=0 
 				 and vtiger_field.presence in (0,2)
 				 and vtiger_user2role.userid=? and fieldtype in (".
 				generateQuestionMarks($fieldTypeList).')';
