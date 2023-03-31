@@ -449,8 +449,41 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         }
 
         if (!empty($filter['users_groups'])) {
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => 'assigned_user_id', 'search_text' => implode(',', $filter['users_groups']), 'operator' => 'c'));
+            $selectedUsers = $filter['users_groups'];
+            $searchUsers = [];
+
+            foreach ($selectedUsers as $selectedUser) {
+                list($type, $name) = explode('::::', $selectedUser);
+
+                if ('UsersByGroups' === $type) {
+                    $searchUsers = array_merge($searchUsers, $this->getGroupUserNames($name));
+                } else {
+                    $searchUsers[] = $name;
+                }
+            }
+
+            $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => 'assigned_user_id', 'search_text' => implode(',', $searchUsers), 'operator' => 'c'));
         }
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    public function getGroupUserNames(string $name): array
+    {
+        $group = Settings_Groups_Record_Model::getInstance($name);
+        $userNames = [];
+
+        if ($group) {
+            $users = $group->getUsersList();
+
+            foreach ($users as $user) {
+                $userNames[] = $user->getName();
+            }
+        }
+
+        return $userNames;
     }
 
     /**

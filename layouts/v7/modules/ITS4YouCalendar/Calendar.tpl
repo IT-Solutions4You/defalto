@@ -17,9 +17,17 @@
                         <div>
                             <b>{vtranslate('LBL_USERS_GROUP_TITLE', $QUALIFIED_MODULE)}</b>
                         </div>
+                        {assign var=USERS_GROUPS_SELECTED value=$CURRENT_USER->getName()}
                         <select name="field_users_groups" class="fieldUsersGroups select2 inputElement" multiple="multiple">
-                            {foreach from=$USERS_GROUPS_VALUES item=USERS_GROUPS_VALUE key=USERS_GROUPS_KEY}
-                                <option value="{$USERS_GROUPS_VALUE}" {if $USERS_GROUPS_KEY eq $CURRENT_USER->getId()}selected="selected"{/if}>{$USERS_GROUPS_VALUE}</option>
+                            <optgroup label="">
+                                <option value=""></option>
+                            </optgroup>
+                            {foreach from=$USERS_GROUPS_VALUES item=USERS_GROUPS_RECORDS key=USERS_GROUP_TYPE}
+                                <optgroup label="{vtranslate($USERS_GROUP_TYPE, $QUALIFIED_MODULE)}">
+                                    {foreach from=$USERS_GROUPS_RECORDS item=USERS_GROUPS_VALUE key=USERS_GROUPS_KEY}
+                                        <option value="{$USERS_GROUP_TYPE}::::{$USERS_GROUPS_KEY}" {if $USERS_GROUPS_KEY eq $USERS_GROUPS_SELECTED}selected="selected"{/if}>{$USERS_GROUPS_VALUE}</option>
+                                    {/foreach}
+                                </optgroup>
                             {/foreach}
                         </select>
                     </div>
