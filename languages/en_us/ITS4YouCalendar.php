@@ -192,6 +192,8 @@ $languageStrings = array(
     'LBL_EDIT_OVERLAY' => 'Edit',
     'LBL_ERROR_SAVE_DATES' => 'Dates update error',
     'LBL_SUCCESS_SAVE_DATES' => 'Dates update successfully',
+    'LBL_USERS_BY_GROUP' => 'Users by ',
+    'UsersByGroups' => 'Users by group',
 );
 
 $jsLanguageStrings = array(

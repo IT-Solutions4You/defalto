@@ -55,11 +55,27 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
      */
     public function getUsersAndGroups(): array
     {
+        $usersAndGroups = [];
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $users = (array)$currentUser->getAccessibleUsers();
+
+        foreach ($users as $userId => $userName) {
+            $usersAndGroups['Users'][$userName] = $userName;
+        }
+
         $groups = (array)$currentUser->getAccessibleGroups();
 
-        return $users + $groups;
+        foreach($groups as $groupId => $groupName) {
+            $usersAndGroups['Groups'][$groupName] = $groupName;
+        }
+
+        $groups = (array)$currentUser->getAccessibleGroups();
+
+        foreach($groups as $groupId => $groupName) {
+            $usersAndGroups['UsersByGroups'][$groupName] = vtranslate('LBL_USERS_BY_GROUP', 'ITS4YouCalendar') . $groupName;
+        }
+
+        return array_filter($usersAndGroups);
     }
 
     /**
