@@ -12,7 +12,7 @@ class Install_Utils_Model {
 
     /**
      * variable has all the files and folder that should be writable
-     * @var <Array>
+     * @var array
      */
     public static $writableFilesAndFolders = array(
         'Configuration File' => './config.inc.php',
@@ -41,12 +41,13 @@ class Install_Utils_Model {
         'Contact Image Directory' => './test/contact/',
         'Logo Directory' => './test/logo/',
         'Logs Directory' => './logs/',
+        'Composer packages Directory' => './vendor/',
     );
 
     /**
-	 * Function returns all the files and folder that are not writable
-	 * @return <Array>
-	 */
+     * Function returns all the files and folder that are not writable
+     * @return array
+     */
 	public static function getFailedPermissionsFiles() {
 		$writableFilesAndFolders = self::$writableFilesAndFolders;
 		$failedPermissions = array();
@@ -67,20 +68,12 @@ class Install_Utils_Model {
     {
         $directiveValues = array();
 
-        if (ini_get('safe_mode') == '1' || stripos(ini_get('safe_mode'), 'On') > -1) {
-            $directiveValues['safe_mode'] = 'On';
-        }
-
         if (ini_get('display_errors') == '1' || stripos(ini_get('display_errors'), 'On') > -1) {
             $directiveValues['display_errors'] = 'On';
         }
 
         if (ini_get('file_uploads') != '1' || stripos(ini_get('file_uploads'), 'Off') > -1) {
             $directiveValues['file_uploads'] = 'Off';
-        }
-
-        if (ini_get('register_globals') == '1' || stripos(ini_get('register_globals'), 'On') > -1) {
-            $directiveValues['register_globals'] = 'On';
         }
 
         if (ini_get(('output_buffering') < '4096' && ini_get('output_buffering') != '0') || stripos(ini_get('output_buffering'), 'Off') > -1) {
@@ -157,33 +150,26 @@ class Install_Utils_Model {
 
     /**
 	 * Returns the recommended php settings for vtigerCRM
-	 * @return type
-	 */
-	public static function getRecommendedDirectives(){
-            if(version_compare(PHP_VERSION, '5.5.0') >= 0){
-                self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
-            }
-	    else if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
-			self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED';
-		}
-		return self::$recommendedDirectives;
-	}
+	 * @return array
+     */
+    public static function getRecommendedDirectives()
+    {
+        self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
 
-	/**
-	 * Function checks for vtigerCRM installation prerequisites
-	 * @return <Array>
-	 */
+        return self::$recommendedDirectives;
+    }
+
+    /**
+     * Function checks for vtigerCRM installation prerequisites
+     * @return array
+     */
 	public static function getSystemPreInstallParameters() {
 		$preInstallConfig = array();
 		// Name => array( System Value, Recommended value, supported or not(true/false) );
-		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0+, 7.0', (version_compare(phpversion(), '5.4.0', '>=')));
+		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '7.4.x, 8.x', (version_compare(phpversion(), '7.4.0', '>=')));
 		//$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
 		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
-
-		if ($preInstallConfig['LBL_PHP_VERSION'] >= '5.5.0') {
-			$preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
-		}
-
+        $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
 		$preInstallConfig['LBL_OPEN_SSL']		= array(extension_loaded('openssl'), true, extension_loaded('openssl'));
 		$preInstallConfig['LBL_CURL']			= array(extension_loaded('curl'), true, extension_loaded('curl'));
 		$preInstallConfig['LBL_IMAP_SUPPORT']	= array(extension_loaded('imap'), true, (extension_loaded('imap') == true));
@@ -200,16 +186,15 @@ class Install_Utils_Model {
 		}
 
 		$preInstallConfig['LBL_GD_LIBRARY']		= array((extension_loaded('gd') || $gnInstalled), true, (extension_loaded('gd') || $gnInstalled));
-		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
 		$preInstallConfig['LBL_SIMPLEXML']		= array(function_exists('simplexml_load_file'), true, (function_exists('simplexml_load_file')));
 
 		return $preInstallConfig;
 	}
-	
-	/**
-	 * Function that provides default configuration based on installer setup
-	 * @return <Array>
-	 */
+
+    /**
+     * Function that provides default configuration based on installer setup
+     * @return string[]
+     */
 	public static function getDefaultPreInstallParameters() {
 		include 'config.db.php';
 		
@@ -322,22 +307,21 @@ class Install_Utils_Model {
 
 		}';
 
-	/**
-	 * Returns list of currencies
-	 * @return <Array>
-	 */
+    /**
+     * Returns list of currencies
+     * @return mixed
+     */
 	public static function getCurrencyList() {
 		require_once 'modules/Utilities/Currencies.php';
 		return $currencies;
 	}
 
-
-	/**
-	 * Returns an array with the list of languages which are available in source
-	 * Note: the DB has not been initialized at this point, so we have to look at
-	 * the contents of the `languages/` directory.
-	 * @return <Array>
-	 */
+    /**
+     * Returns an array with the list of languages which are available in source
+     * Note: the DB has not been initialized at this point, so we have to look at
+     * the contents of the `languages/` directory.
+     * @return array
+     */
 	public static function getLanguageList() {
 		$languageFolder = 'languages/';
 		$handle = opendir($languageFolder);
@@ -426,11 +410,8 @@ class Install_Utils_Model {
 
 		//Checking for database connection parameters
 		if($db_type) {
-			// Backward compatible mode for adodb library.
-			if ($db_type == 'mysqli') {
-				mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
-			}
-			
+            mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
+
 			$conn = NewADOConnection($db_type);
 			$db_type_status = true;
 			if(@$conn->Connect($db_hostname,$db_username,$db_password)) {
