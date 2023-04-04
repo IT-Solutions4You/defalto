@@ -2002,7 +2002,7 @@ function getCurrencyDecimalPlaces($user = null) {
     } else if ($current_user) {
         $currency_decimal_places = $current_user->no_of_currency_decimals;
     }
-    return $currency_decimal_places;
+    return (int)$currency_decimal_places;
 }
 
 function getInventoryModules() {
