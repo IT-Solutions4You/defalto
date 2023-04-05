@@ -91,10 +91,6 @@ function stripslashes_recursive($value)
 {
     return is_array($value) ? array_map('stripslashes_recursive', $value) : stripslashes($value);
 }
-
-if (get_magic_quotes_gpc()) {
-    $_REQUEST = stripslashes_recursive($_REQUEST);
-}
 /** END **/
 
 if (!defined('MOBILE_INDEX_CONTROLLER_AVOID_TRIGGER')) {

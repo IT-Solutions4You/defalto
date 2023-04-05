@@ -18,14 +18,10 @@ class Vtiger_Request {
 	/**
 	 * Default constructor
 	 */
-	function __construct($values, $rawvalues = array(), $stripifgpc=true) {
+	function __construct($values, $rawvalues = array()) {
         	Vtiger_Functions::validateRequestParameters($values);
 		$this->valuemap = $values;
 		$this->rawvaluemap = $rawvalues;
-		if ($stripifgpc && !empty($this->valuemap) && get_magic_quotes_gpc()) {
-			$this->valuemap = $this->stripslashes_recursive($this->valuemap);
-            $this->rawvaluemap = $this->stripslashes_recursive($this->rawvaluemap);
-		}
 	}
 
 	/**

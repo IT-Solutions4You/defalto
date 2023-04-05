@@ -621,8 +621,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 	 * @access private
 	 */
 	function import_Block($modulenode, $moduleInstance, $blocknode) {
-		$blocklabel = $blocknode->label;
-
+		$blocklabel = (string)$blocknode->label;
 		$blockInstance = new Vtiger_Block();
 		$blockInstance->label = $blocklabel;
 		$moduleInstance->addBlock($blockInstance);
@@ -647,32 +646,32 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 	 */
 	function import_Field($blocknode, $blockInstance, $moduleInstance, $fieldnode) {
 		$fieldInstance = new Vtiger_Field();
-		$fieldInstance->name		 = $fieldnode->fieldname;
-		$fieldInstance->label		 = $fieldnode->fieldlabel;
-		$fieldInstance->table		 = $fieldnode->tablename;
-		$fieldInstance->column		 = $fieldnode->columnname;
-		$fieldInstance->uitype		 = $fieldnode->uitype;
-		$fieldInstance->generatedtype= $fieldnode->generatedtype;
-		$fieldInstance->readonly	 = $fieldnode->readonly;
-		$fieldInstance->presence	 = $fieldnode->presence;
-		$fieldInstance->defaultvalue = $fieldnode->defaultvalue;
-		$fieldInstance->maximumlength= $fieldnode->maximumlength;
-		$fieldInstance->sequence	 = $fieldnode->sequence;
-		$fieldInstance->quickcreate	 = $fieldnode->quickcreate;
-		$fieldInstance->quicksequence= $fieldnode->quickcreatesequence;
-		$fieldInstance->typeofdata	 = $fieldnode->typeofdata;
-		$fieldInstance->displaytype	 = $fieldnode->displaytype;
-		$fieldInstance->info_type	 = $fieldnode->info_type;
-		$fieldInstance->summaryfield = $fieldnode->summaryfield;
+		$fieldInstance->name		 = (string)$fieldnode->fieldname;
+		$fieldInstance->label		 = (string)$fieldnode->fieldlabel;
+		$fieldInstance->table		 = (string)$fieldnode->tablename;
+		$fieldInstance->column		 = (string)$fieldnode->columnname;
+		$fieldInstance->uitype		 = (int)$fieldnode->uitype;
+		$fieldInstance->generatedtype= (int)$fieldnode->generatedtype;
+		$fieldInstance->readonly	 = (int)$fieldnode->readonly;
+		$fieldInstance->presence	 = (int)$fieldnode->presence;
+		$fieldInstance->defaultvalue = (string)$fieldnode->defaultvalue;
+		$fieldInstance->maximumlength= (int)$fieldnode->maximumlength;
+		$fieldInstance->sequence	 = (int)$fieldnode->sequence;
+		$fieldInstance->quickcreate	 = (int)$fieldnode->quickcreate;
+		$fieldInstance->quicksequence= (int)$fieldnode->quickcreatesequence;
+		$fieldInstance->typeofdata	 = (string)$fieldnode->typeofdata;
+		$fieldInstance->displaytype	 = (int)$fieldnode->displaytype;
+		$fieldInstance->info_type	 = (string)$fieldnode->info_type;
+		$fieldInstance->summaryfield = (int)$fieldnode->summaryfield;
 
 		if(!empty($fieldnode->helpinfo))
-			$fieldInstance->helpinfo = $fieldnode->helpinfo;
+			$fieldInstance->helpinfo = (string)$fieldnode->helpinfo;
 
 		if(isset($fieldnode->masseditable))
-			$fieldInstance->masseditable = $fieldnode->masseditable;
+			$fieldInstance->masseditable = (int)$fieldnode->masseditable;
 
 		if(isset($fieldnode->columntype) && !empty($fieldnode->columntype))
-			$fieldInstance->columntype = $fieldnode->columntype;
+			$fieldInstance->columntype = (string)$fieldnode->columntype;
 
 		$blockInstance->addField($fieldInstance);
 
@@ -687,7 +686,7 @@ class Vtiger_PackageImport extends Vtiger_PackageExport {
 		if(!empty($fieldnode->picklistvalues) && !empty($fieldnode->picklistvalues->picklistvalue)) {
 			$picklistvalues = Array();
 			foreach($fieldnode->picklistvalues->picklistvalue as $picklistvaluenode) {
-				$picklistvalues[] = $picklistvaluenode;
+				$picklistvalues[] = (string)$picklistvaluenode;
 			}
 			$fieldInstance->setPicklistValues( $picklistvalues );
 		}
