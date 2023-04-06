@@ -48,10 +48,6 @@ if(!defined('MOBILE_API_CONTROLLER_AVOID_TRIGGER')) {
 
 	$clientRequestValuesRaw = array();
 
-	if (get_magic_quotes_gpc()) {
-	    $clientRequestValues = stripslashes_recursive($clientRequestValues);
-	}
-
 	require_once dirname(__FILE__) . '/api.v1.php';
 	$targetController = Mobile_APIV1_Controller::getInstance();
 	$targetController->process(new Mobile_API_Request($clientRequestValues, $clientRequestValuesRaw));

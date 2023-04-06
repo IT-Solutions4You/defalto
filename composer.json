@@ -26,7 +26,8 @@
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",
-    "rector/rector": "0.15.*"
+    "rector/rector": "0.15.*",
+    "tracy/tracy": "v2.9.7"
   },
   "repositories": [
     {

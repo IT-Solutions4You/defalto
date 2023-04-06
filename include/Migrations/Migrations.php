@@ -144,7 +144,7 @@ class Migrations
         $this->db->setDieOnError(false);
 
         $done_display = $done - 1;
-        $this->showMsg(PHP_EOL . 'Migrations done: ' . $done_display . file(s) . PHP_EOL);
+        $this->showMsg(PHP_EOL . 'Migrations done: ' . $done_display . ' file(s)' . PHP_EOL);
     }
 
     /**
