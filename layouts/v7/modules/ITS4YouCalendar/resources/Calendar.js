@@ -739,7 +739,8 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
 
         $(document).ajaxComplete(function (event, xhr, settings) {
             let isSaveAction = ('string' === typeof settings['data'] && 0 <= settings['data'].indexOf('action=SaveAjax')) ||
-                ('object' === typeof settings['data'] && 'Save' === settings['data'].get('action'));
+                ('object' === typeof settings['data'] && 'Save' === settings['data'].get('action')) ||
+                ('object' === typeof settings['data'] && 'SaveOverlay' === settings['data'].get('action'));
 
             if (isSaveAction) {
                 $.each(self.getCalendarEvents(), function (index, event) {
@@ -833,6 +834,11 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                     detailView.showOverlayEditView(recordUrl);
                 }
             });
+        });
+
+        app.event.on('post.overLayEditView.loaded', function(event, element) {
+            element.find('input[type="hidden"][name*="return"]').remove();
+            element.find('input[type="hidden"][name="action"]').val('SaveOverlay');
         });
     },
 });

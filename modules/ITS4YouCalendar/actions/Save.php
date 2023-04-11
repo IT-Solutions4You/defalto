@@ -35,7 +35,7 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
         $recordModel->save();
 
         $this->savedRecordId = $recordModel->getId();
-        $this->saveRepeatEvents($recordModel);
+        $this->saveRepeatEvents();
 
         return $recordModel;
     }
@@ -52,17 +52,25 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
     }
 
     /**
-     * @param object $recordModel
      * @return void
      */
-    public function saveRepeatEvents(object $recordModel)
+    public function saveRepeatEvents()
     {
+        if (empty($this->savedRecordId)) {
+            return;
+        }
+
+        $recordId = $this->savedRecordId;
+        $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+        $recordModel->set('mode', 'edit');
         $recordModel->set('recurringEditMode', $_REQUEST['recurringEditMode']);
         $recordModel->set('recurring_type', $_REQUEST['recurringtype']);
         $recordModel->set('recurringtype', $_REQUEST['recurringtype']);
 
-        list($_REQUEST['date_start'], $_REQUEST['time_start']) = explode(' ', $recordModel->get('datetime_start'));
-        list($_REQUEST['due_date'], $_REQUEST['time_end']) = explode(' ', $recordModel->get('datetime_end'));
+        $_REQUEST['date_start'] = $_REQUEST['datetime_start_date'];
+        $_REQUEST['time_start'] = $_REQUEST['datetime_start_time'];
+        $_REQUEST['date_end'] = $_REQUEST['datetime_end_date'];
+        $_REQUEST['time_end'] = $_REQUEST['datetime_end_time'];
 
         $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
 
