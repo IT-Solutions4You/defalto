@@ -426,30 +426,17 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function insertIntoRecurring()
     {
+        if (!in_array($_REQUEST['action'], ['Save', 'SaveOverlay'])) {
+            return;
+        }
+
         $recurringObject = Vtiger_Functions::getRecurringObjValue();
-        $recordId = $this->id;
+        $recordId = (int)$this->id;
 
         if ($recurringObject) {
-            $recurringEndDate = null;
-            $startDate = $recurringObject->startdate->get_DB_formatted_date();
-            $type = $recurringObject->getRecurringType();
-            $frequency = $recurringObject->getRecurringFrequency();
-            $info = $recurringObject->getDBRecurringInfoString();
-
-            if (!empty($recurringObject->recurringenddate)) {
-                $recurringEndDate = $recurringObject->recurringenddate->get_DB_formatted_date();
-            }
-
-            $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
-            $recurrence->set('recurring_date', $startDate);
-            $recurrence->set('recurring_end_date', $recurringEndDate);
-            $recurrence->set('recurring_type', $type);
-            $recurrence->set('recurring_frequency', $frequency);
-            $recurrence->set('recurring_info', $info);
-            $recurrence->save();
+            ITS4YouCalendar_Recurrence_Model::saveRecurring($recordId, $recurringObject);
         } else {
-            $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
-            $recurrence->delete();
+            ITS4YouCalendar_Recurrence_Model::deleteRecurring($recordId);
         }
     }
 }

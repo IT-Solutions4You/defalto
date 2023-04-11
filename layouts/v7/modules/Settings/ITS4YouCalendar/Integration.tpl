@@ -1,3 +1,11 @@
+{**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *}
 <div class="padding20">
     <h4>{vtranslate('ITS4YouCalendar', $QUALIFIED_MODULE)} {vtranslate('LBL_INTEGRATION', $QUALIFIED_MODULE)}</h4>
     <hr>

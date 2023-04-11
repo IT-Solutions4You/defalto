@@ -45,8 +45,8 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
 
         const InitialFormData = form.serialize();
 
-        app.event.one(Vtiger_Edit_Js.recordPresaveEvent, function (e) {
-            self.registerRecurringEditOptions(e, form, InitialFormData);
+        app.event.one(Vtiger_Edit_Js.recordPresaveEvent, function (event) {
+            self.registerRecurringEditOptions(event, form, InitialFormData);
             self.resetRecurringDetailsIfDisabled(form);
         });
     },
@@ -55,17 +55,16 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
             jQuery('#recurringType').append('<option value="--None--">None</option>').val('--None--');
         }
     },
-    registerRecurringEditOptions: function (e, form, InitialFormData) {
+    registerRecurringEditOptions: function (event, form, InitialFormData) {
         let currentFormData = form.serialize(),
-            editViewContainer = form.closest('.editViewPageDiv').length,
-            recurringEdit = form.find('.recurringEdit').length,
             recurringEditMode = form.find('[name="recurringEditMode"]'),
-            recurringCheck = form.find('input[name="recurringcheck"]').is(':checked');
+            isRecurringEdit = recurringEditMode.length,
+            isRecurringCheck = form.find('input[name="recurringcheck"]').is(':checked');
 
-        if (editViewContainer && InitialFormData === currentFormData && recurringEdit) {
+        if (isRecurringEdit && InitialFormData === currentFormData) {
             recurringEditMode.val('current');
-        } else if (editViewContainer && recurringCheck && recurringEdit && InitialFormData !== currentFormData) {
-            e.preventDefault();
+        } else if (isRecurringCheck && InitialFormData !== currentFormData) {
+            event.preventDefault();
 
             let recurringEventsUpdateModal = form.find('.recurringRecordUpdate'),
                 clonedContainer = recurringEventsUpdateModal.clone(true, true),
@@ -75,31 +74,16 @@ Vtiger_Edit_Js('ITS4YouCalendar_Edit_Js', {}, {
                     modalContainer.on('click', '.onlyThisEvent', function () {
                         recurringEditMode.val('current');
                         app.helper.hideModal();
-                        form.vtValidate({
-                            submitHandler: function () {
-                                return true;
-                            }
-                        });
                         form.submit();
                     });
                     modalContainer.on('click', '.futureEvents', function () {
                         recurringEditMode.val('future');
                         app.helper.hideModal();
-                        form.vtValidate({
-                            submitHandler: function () {
-                                return true;
-                            }
-                        });
                         form.submit();
                     });
                     modalContainer.on('click', '.allEvents', function () {
                         recurringEditMode.val('all');
                         app.helper.hideModal();
-                        form.vtValidate({
-                            submitHandler: function () {
-                                return true;
-                            }
-                        });
                         form.submit();
                     });
                 };

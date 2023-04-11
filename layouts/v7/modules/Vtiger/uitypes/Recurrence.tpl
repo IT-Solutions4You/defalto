@@ -14,6 +14,7 @@
     {assign var=TOMORROW_DATE value=$FIELD_MODEL->getUITypeModel()->getTomorrowDate()}
 	<div class="row">
 		<div class="col-sm-1">
+			<input type="hidden" name="recurringEditMode" value="" />
 			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
 				<input type="hidden" class="recurringEdit" value="true" />
 			{/if}
@@ -104,4 +105,5 @@
 			</div>
 		</div>
 	</div>
+	{include file=vtemplate_path('RecurringEditView.tpl',$MODULE_NAME)}
 {/strip}

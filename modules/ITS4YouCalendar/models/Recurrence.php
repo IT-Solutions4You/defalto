@@ -30,6 +30,43 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         ];
     }
 
+    /**
+     * @param int $relatedRecordId
+     * @param string $recurringEditMode
+     * @return array
+     */
+    public static function getRecurringRecordsByType($relatedRecordId, $recurringEditMode)
+    {
+        $recordList = array();
+        $recordIdList = [$relatedRecordId];
+
+        if (!empty($recurringEditMode) && $recurringEditMode != 'current') {
+            $recurringRecordsList = self::getRecurringRecordsList($relatedRecordId);
+            $childRecords = [];
+
+            foreach ($recurringRecordsList as $children) {
+                $childRecords = $children;
+            }
+
+            if ('future' === $recurringEditMode) {
+                $parentKey = array_keys($childRecords, $relatedRecordId);
+                $childRecords = array_slice($childRecords, $parentKey[0]);
+            }
+
+            foreach ($childRecords as $recordId) {
+                $recordList[] = $recordId;
+            }
+
+            $recordIdList = array_slice($recordIdList, $relatedRecordId);
+        }
+
+        foreach ($recordList as $record) {
+            $recordIdList[] = $record;
+        }
+
+        return $recordIdList;
+    }
+
     public static function getRecurrenceInformation($request): array
     {
         $recordId = $request->get('record');
@@ -174,12 +211,19 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         );
     }
 
+    public function deleteRelations()
+    {
+        $this->adb->pquery(
+            'DELETE FROM its4you_recurring_rel WHERE record_id=?',
+            [$this->get('record_id')]
+        );
+    }
+
     public function save()
     {
         $tableIndex = $this->tableIndex;
         $table = $this->table;
         $params = [
-            'record_id' => $this->get('record_id'),
             'recurring_date' => $this->get('recurring_date'),
             'recurring_end_date' => $this->get('recurring_end_date'),
             'recurring_type' => $this->get('recurring_type'),
@@ -189,14 +233,44 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
 
         if ($this->isEmpty($tableIndex)) {
             $params[$tableIndex] = $this->adb->getUniqueID($table);
+            $params['record_id'] = $this->get('record_id');
+
             $columns = implode(',', array_keys($params));
             $query = sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, $columns, generateQuestionMarks($params));
         } else {
             $columns = implode('=?,', array_keys($params));
-            $params[$tableIndex] = $this->get($tableIndex);
             $query = sprintf('UPDATE %s SET %s=? WHERE %s=?', $table, $columns, $tableIndex);
+
+            $params[$tableIndex] = $this->get($tableIndex);
         }
 
         $this->adb->pquery($query, $params);
+    }
+
+    public static function saveRecurring(int $recordId, RecurringType $recurrenceObject)
+    {
+        $recurringEndDate = null;
+        $startDate = $recurrenceObject->startdate->get_DB_formatted_date();
+        $type = $recurrenceObject->getRecurringType();
+        $frequency = $recurrenceObject->getRecurringFrequency();
+        $info = $recurrenceObject->getDBRecurringInfoString();
+
+        if (!empty($recurrenceObject->recurringenddate)) {
+            $recurringEndDate = $recurrenceObject->recurringenddate->get_DB_formatted_date();
+        }
+
+        $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
+        $recurrence->set('recurring_date', $startDate);
+        $recurrence->set('recurring_end_date', $recurringEndDate);
+        $recurrence->set('recurring_type', $type);
+        $recurrence->set('recurring_frequency', $frequency);
+        $recurrence->set('recurring_info', $info);
+        $recurrence->save();
+    }
+
+    public static function deleteRecurring(int $recordId)
+    {
+        $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
+        $recurrence->delete();
     }
 }
