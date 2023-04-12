@@ -194,6 +194,7 @@ $languageStrings = array(
     'LBL_SUCCESS_SAVE_DATES' => 'Dates update successfully',
     'LBL_USERS_BY_GROUP' => 'Users by ',
     'UsersByGroups' => 'Users by group',
+    'LBL_SHOW_ALL' => 'Show all',
 );
 
 $jsLanguageStrings = array(
