@@ -60,22 +60,98 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         $users = (array)$currentUser->getAccessibleUsers();
 
         foreach ($users as $userId => $userName) {
+            if(empty($userName)) {
+                continue;
+            }
+
             $usersAndGroups['Users'][$userName] = $userName;
         }
 
         $groups = (array)$currentUser->getAccessibleGroups();
 
         foreach($groups as $groupId => $groupName) {
+            if(empty($groupName)) {
+                continue;
+            }
+
             $usersAndGroups['Groups'][$groupName] = $groupName;
-        }
-
-        $groups = (array)$currentUser->getAccessibleGroups();
-
-        foreach($groups as $groupId => $groupName) {
             $usersAndGroups['UsersByGroups'][$groupName] = vtranslate('LBL_USERS_BY_GROUP', 'ITS4YouCalendar') . $groupName;
         }
 
         return array_filter($usersAndGroups);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsersAndGroupsInfo(): array
+    {
+        $images = [];
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $users = (array)$currentUser->getAccessibleUsers();
+
+        foreach ($users as $userId => $userName) {
+            if(empty($userName)) {
+                continue;
+            }
+
+            $recordModel = Users_Record_Model::getInstanceById($userId, 'Users');
+            $imageDetails = $recordModel->getImageDetails();
+            $userBackground = $this->getUserGroupBackground($userName);
+            $images['Users::::' . $userName][$userId] = [
+                'name' => $userName,
+                'icon' => 'fa fa-user',
+                'image' => $imageDetails[0]['url'],
+                'label' => mb_strtoupper(mb_substr($userName, 0, 2)),
+                'background' => $userBackground,
+                'color' => Settings_Picklist_Module_Model::getTextColor($userBackground),
+            ];
+        }
+
+        $groups = (array)$currentUser->getAccessibleGroups();
+
+        foreach ($groups as $groupId => $groupName) {
+            if(empty($groupName)) {
+                continue;
+            }
+
+            $groupRecordModel = Settings_Groups_Record_Model::getInstance($groupId);
+            $groupBackground = $this->getUserGroupBackground($groupName);
+            $images['Groups::::' . $groupName][$groupId] = [
+                'name' => $groupName,
+                'icon' => 'fa fa-group',
+                'label' => mb_strtoupper(mb_substr($groupName, 0, 2)),
+                'background' => $groupBackground,
+                'color' => Settings_Picklist_Module_Model::getTextColor($groupBackground),
+            ];
+
+            $usersRecordModel = $groupRecordModel->getUsersList();
+
+            /** @var Users_Record_Model $userRecordModel */
+            foreach ($usersRecordModel as $recordModel) {
+                $imageDetails = $recordModel->getImageDetails();
+                $userName = $recordModel->getName();
+                $userBackground = $this->getUserGroupBackground($userName);
+                $images['UsersByGroups::::' . $groupName][$recordModel->getId()] = [
+                    'name' => $userName,
+                    'image' => $imageDetails[0]['url'],
+                    'icon' => 'fa fa-user',
+                    'label' => mb_strtoupper(mb_substr($userName, 0, 2)),
+                    'background' => $userBackground,
+                    'color' => Settings_Picklist_Module_Model::getTextColor($userBackground),
+                ];
+            }
+        }
+
+        return $images;
+    }
+
+    public function getUserGroupBackground(string $value): string
+    {
+        $code = dechex(crc32($value));
+
+        return '#' . mb_substr($code, 0, 6);
     }
 
     /**

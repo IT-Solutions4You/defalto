@@ -88,6 +88,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $viewer->assign('TYPE_COLORS', $typeField->getPicklistColors());
         $viewer->assign('EVENT_TYPES', ITS4YouCalendar_Events_Model::getEventTypes());
         $viewer->assign('USERS_GROUPS_VALUES', $moduleModel->getUsersAndGroups());
+        $viewer->assign('USERS_GROUPS_INFO', $moduleModel->getUsersAndGroupsInfo());
 
         $viewer->view('Calendar.tpl', $module);
     }

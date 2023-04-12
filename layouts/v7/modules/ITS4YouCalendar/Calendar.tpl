@@ -13,7 +13,6 @@
             <div class="col-lg-2">
                 <form method="post" id="CalendarFilter">
                     <div class="usersGroupsContainer">
-                        <br>
                         <div>
                             <b>{vtranslate('LBL_USERS_GROUP_TITLE', $QUALIFIED_MODULE)}</b>
                         </div>
@@ -79,12 +78,20 @@
                 </form>
             </div>
             <div class="col-lg-10">
+                <textarea id="users_and_groups_images" class="hide" >{json_encode($USERS_GROUPS_INFO)}</textarea>
                 <input type="hidden" id="day_of_week" value="{ITS4YouCalendar_Events_Model::getDayOfWeekId($CURRENT_USER->get('dayoftheweek'))}">
                 <input type="hidden" id="calendar_view" value="{ITS4YouCalendar_Events_Model::getInitialView($CURRENT_USER->get('activity_view'))}">
                 <input type="hidden" id="start_hour" value="{$CURRENT_USER->get('start_hour')}">
                 <input type="hidden" id="timezone" value="{$CURRENT_USER->get('timezone')}">
                 <input type="hidden" id="hour_format" value="{$CURRENT_USER->get('hour_format')}">
                 <input type="hidden" id="date_format" value="{$CURRENT_USER->get('date_format')}">
+                <div id="selected_user_and_groups_images">
+                    <div class="selected_user_and_groups_visible"></div>
+                    <div class="selected_user_and_groups_toggle">
+                        <div class="selected_image selected_image_text"><span></span></div>
+                    </div>
+                    <div class="selected_user_and_groups_hidden hide"></div>
+                </div>
                 <div id="calendar"></div>
             </div>
         </div>

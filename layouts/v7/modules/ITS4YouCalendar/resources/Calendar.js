@@ -90,6 +90,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         this.registerPopoverEditView();
         this.registerPopoverEditSave();
         this.registerQuickEditSave();
+        this.registerSelectedUserImages();
     },
     setDate: function (start, end) {
         this.startDate = this.convertToDateString(start);
@@ -104,7 +105,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 selectable: true,
                 timeZone: $('#timezone').val(),
                 firstDay: $('#day_of_week').val(),
-                height: 'calc(100vh - 160px)',
+                height: 'calc(100vh - 200px)',
                 initialView: $('#calendar_view').val(),
                 headerToolbar: {
                     left: 'prev,next today',
@@ -840,5 +841,75 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             element.find('input[type="hidden"][name*="return"]').remove();
             element.find('input[type="hidden"][name="action"]').val('SaveOverlay');
         });
+    },
+    registerSelectedUserImages: function () {
+        const self = this,
+            selectElement = $('[name="field_users_groups"]'),
+            plusElement = $('.selected_user_and_groups_toggle'),
+            hiddenElement = $('.selected_user_and_groups_hidden');
+
+        self.updateSelectedUserImages(selectElement);
+
+        selectElement.on('change', function () {
+            self.updateSelectedUserImages($(this));
+        });
+
+        plusElement.on('click', function () {
+            plusElement.addClass('hide');
+            hiddenElement.removeClass('hide')
+        });
+    },
+    getSelectedUserImages: function (element) {
+        let selectedUsers = element.val(),
+            images = JSON.parse($('#users_and_groups_images').val()),
+            selectUsers = {};
+
+        $.each(selectedUsers, function (selectIndex, selectValue) {
+            if (images[selectValue]) {
+                $.each(images[selectValue], function (index, selectImages) {
+                    selectUsers[selectImages['name']] = selectImages;
+                });
+            }
+        });
+
+        return selectUsers;
+    },
+    updateSelectedUserImages: function (element) {
+        let self = this,
+            visibleElement = $('.selected_user_and_groups_visible'),
+            hiddenElement = $('.selected_user_and_groups_hidden'),
+            imagesPlusElement = $('.selected_user_and_groups_toggle'),
+            selectUsers = self.getSelectedUserImages(element);
+
+        visibleElement.html('');
+        hiddenElement.html('');
+
+        let appendElement = null,
+            index = 0;
+
+        $.each(selectUsers, function (userName, imageInfo) {
+            if (index < 5) {
+                appendElement = visibleElement;
+                imagesPlusElement.addClass('hide');
+            } else {
+                appendElement = hiddenElement;
+
+                if (hiddenElement.is('.hide')) {
+                    imagesPlusElement.removeClass('hide');
+                }
+            }
+
+            if (imageInfo['image']) {
+                appendElement.append('<div class="selected_image selected_image_img" title="' + imageInfo['name'] + '" style="background: ' + imageInfo['background'] + '; color: ' + imageInfo['color'] + ';"><img src="' + imageInfo['image'] + '" /></div>');
+            } else {
+                appendElement.append('<div class="selected_image selected_image_text" title="' + imageInfo['name'] + '" style="background: ' + imageInfo['background'] + '; color: ' + imageInfo['color'] + ';"><span>' + imageInfo['label'] + '</span></div>');
+            }
+
+            index++;
+        });
+
+        let plusNumber = index - 5;
+
+        imagesPlusElement.find('span').text('+' + plusNumber);
     },
 });
