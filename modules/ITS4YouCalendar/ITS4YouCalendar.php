@@ -145,6 +145,7 @@ class ITS4YouCalendar extends CRMEntity
         $this->installTables();
         $this->updateCron();
         $this->updateParentIdModules();
+        $this->updateWorkflow();
     }
 
     public function updateParentIdModules()
@@ -312,6 +313,7 @@ class ITS4YouCalendar extends CRMEntity
     public function deleteCustomLinks()
     {
         $this->updateCron(false);
+        $this->updateWorkflow(false);
     }
 
     /**
@@ -437,6 +439,55 @@ class ITS4YouCalendar extends CRMEntity
             ITS4YouCalendar_Recurrence_Model::saveRecurring($recordId, $recurringObject);
         } else {
             ITS4YouCalendar_Recurrence_Model::deleteRecurring($recordId);
+        }
+    }
+
+    public function updateWorkflow($register = true)
+    {
+        vimport('~~modules/com_vtiger_workflow/include.inc');
+        vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
+        vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
+        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
+
+        $name = 'VTCalendarTask';
+        $label = 'Create Calendar Record';
+        $taskType = array(
+            'name' => $name,
+            'label' => $label,
+            'classname' => $name,
+            'classpath' => '',
+            'templatepath' => '',
+            'modules' => [
+                'include' => [],
+                'exclude' => []
+            ],
+            'sourcemodule' => $this->moduleName
+        );
+        $files = array(
+            'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
+            'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
+        );
+
+        foreach ($files as $fromFile => $toFile) {
+            $fromFile = sprintf($fromFile, $name);
+            $toFile = sprintf($toFile, $name);
+
+            if (empty($taskType['classpath'])) {
+                $taskType['classpath'] = $toFile;
+            } elseif (empty($taskType['templatepath'])) {
+                $taskType['templatepath'] = $toFile;
+            }
+
+            $copied = copy($fromFile, $toFile);
+        }
+
+        $this->db->pquery(
+            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
+            array($name)
+        );
+
+        if ($copied && $register) {
+            VTTaskType::registerTaskType($taskType);
         }
     }
 }
