@@ -73,6 +73,10 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
     public function saveUsers()
     {
         foreach ($this->getUsers() as $userId) {
+            if (empty($userId)) {
+                continue;
+            }
+
             $this->adb->pquery('INSERT INTO its4you_invited_users (record_id, user_id) VALUES (?,?)', [$this->get('record_id'), $userId]);
         }
     }

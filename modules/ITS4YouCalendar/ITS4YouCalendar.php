@@ -146,21 +146,7 @@ class ITS4YouCalendar extends CRMEntity
         $this->updateCron();
         $this->updateParentIdModules();
         $this->updateWorkflow();
-    }
-
-    public function updateParentIdModules()
-    {
-        $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
-        $fieldModel = Vtiger_Field_Model::getInstance('parent_id', $moduleModel);
-
-        if ($fieldModel && empty($fieldModel->getReferenceList())) {
-            $integrationModels = Settings_ITS4YouCalendar_Integration_Model::getModules();
-
-            foreach ($integrationModels as $integrationModel) {
-                $integrationModel->setField();
-                $integrationModel->setRelation();
-            }
-        }
+        $this->updateFilters();
     }
 
     /**
@@ -307,6 +293,118 @@ class ITS4YouCalendar extends CRMEntity
         }
     }
 
+    public function updateParentIdModules()
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
+        $fieldModel = Vtiger_Field_Model::getInstance('parent_id', $moduleModel);
+
+        if ($fieldModel && empty($fieldModel->getReferenceList())) {
+            $integrationModels = Settings_ITS4YouCalendar_Integration_Model::getModules();
+
+            foreach ($integrationModels as $integrationModel) {
+                $integrationModel->setField();
+                $integrationModel->setRelation();
+            }
+        }
+    }
+
+    public function updateWorkflow($register = true)
+    {
+        vimport('~~modules/com_vtiger_workflow/include.inc');
+        vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
+        vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
+        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
+
+        $name = 'VTCalendarTask';
+        $label = 'Create Calendar Record';
+        $taskType = array(
+            'name' => $name,
+            'label' => $label,
+            'classname' => $name,
+            'classpath' => '',
+            'templatepath' => '',
+            'modules' => [
+                'include' => [],
+                'exclude' => []
+            ],
+            'sourcemodule' => $this->moduleName
+        );
+        $files = array(
+            'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
+            'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
+        );
+
+        foreach ($files as $fromFile => $toFile) {
+            $fromFile = sprintf($fromFile, $name);
+            $toFile = sprintf($toFile, $name);
+
+            if (empty($taskType['classpath'])) {
+                $taskType['classpath'] = $toFile;
+            } elseif (empty($taskType['templatepath'])) {
+                $taskType['templatepath'] = $toFile;
+            }
+
+            $copied = copy($fromFile, $toFile);
+        }
+
+        $this->db->pquery(
+            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
+            array($name)
+        );
+
+        if ($copied && $register) {
+            VTTaskType::registerTaskType($taskType);
+        }
+    }
+
+    public function updateFilters()
+    {
+        $filter = Vtiger_Filter::getInstance('Today');
+
+        if (!$filter) {
+            $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
+
+            $filter = new Vtiger_Filter();
+            $filter->name = 'Today';
+            $filter->save($moduleModel);
+
+            $fields = ['subject', 'datetime_start', 'datetime_end', 'calendar_status', 'calendar_type', 'assigned_user_id'];
+
+            foreach ($fields as $sequence => $field) {
+                $fieldInstance = $moduleModel->getField($field);
+
+                if ($fieldInstance) {
+                    $filter->addField($fieldInstance, $sequence);
+                }
+            }
+
+            $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+            $tomorrow->modify('+1439 minutes');
+            $tomorrow = $tomorrow->format('Y-m-d H:i:s');
+            $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+            $today = $today->format('Y-m-d H:i:s');
+            $groupId = 2;
+            $rules = [
+                ['its4you_calendar:datetime_start:datetime_start:ITS4YouCalendar_Start_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, 'or'],
+                ['its4you_calendar:datetime_end:datetime_end:ITS4YouCalendar_End_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, ''],
+            ];
+
+
+            $adb = PearDatabase::getInstance();
+            $adb->pquery(
+                'INSERT INTO vtiger_cvadvfilter_grouping(groupid,cvid,group_condition,condition_expression) VALUES (?,?,?,?)',
+                [$groupId, $filter->id, null, implode(' or ', array_keys($rules))]
+            );
+
+            foreach ($rules as $index => $rule) {
+                $adb->pquery(
+                    'INSERT INTO vtiger_cvadvfilter(cvid, columnindex, columnname, comparator, value, groupid, column_condition) VALUES(?,?,?,?,?,?,?)',
+                    [$filter->id, $index, $rule[0], $rule[1], $rule[2], $rule[3], $rule[4]]
+                );
+            }
+        }
+    }
+
     /**
      * @return void
      */
@@ -329,62 +427,6 @@ class ITS4YouCalendar extends CRMEntity
         $this->createRelationFromMultiReference('contact_id');
         $this->createRelationFromReference('parent_id');
         $this->createRelationFromReference('account_id');
-    }
-
-    /**
-     * @param string $name
-     * @return void
-     */
-    public function createRelationFromMultiReference(string $name)
-    {
-        $relatedRecords = explode(';', $this->column_fields[$name]);
-
-        foreach ($relatedRecords as $relatedRecord) {
-            $this->createRelationFromRecord(intval($relatedRecord));
-        }
-    }
-
-    public function createRelationFromReference(string $name)
-    {
-        $recordId = intval($this->column_fields[$name]);
-
-        $this->createRelationFromRecord($recordId);
-    }
-
-    public function createRelationFromRecord(int $recordId)
-    {
-        if (!empty($recordId)) {
-            $module = Vtiger_Module_Model::getInstance($this->moduleName);
-            $parentModuleName = getSalesEntityType($recordId);
-            $parentModule = Vtiger_Module_Model::getInstance($parentModuleName);
-
-            if ($parentModule) {
-                $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
-
-                if ($relationModel) {
-                    $relationModel->addRelation($recordId, $this->id);
-                }
-            }
-        }
-    }
-
-
-    /**
-     * @param $fieldName
-     * @param $relatedModule
-     * @return void
-     */
-    public function saveMultiReference($fieldName, $relatedModule)
-    {
-        $recordId = $this->id;
-        $recordModule = $this->moduleName;
-        $relatedRecords = explode(';', $this->column_fields[$fieldName]);
-
-        PearDatabase::getInstance()->pquery('DELETE FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $relatedModule]);
-
-        if (!empty($relatedRecords)) {
-            $this->save_related_module($recordModule, $recordId, $relatedModule, $relatedRecords);
-        }
     }
 
     /**
@@ -442,52 +484,58 @@ class ITS4YouCalendar extends CRMEntity
         }
     }
 
-    public function updateWorkflow($register = true)
+    /**
+     * @param $fieldName
+     * @param $relatedModule
+     * @return void
+     */
+    public function saveMultiReference($fieldName, $relatedModule)
     {
-        vimport('~~modules/com_vtiger_workflow/include.inc');
-        vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
-        vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
-        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
+        $recordId = $this->id;
+        $recordModule = $this->moduleName;
+        $relatedRecords = explode(';', $this->column_fields[$fieldName]);
 
-        $name = 'VTCalendarTask';
-        $label = 'Create Calendar Record';
-        $taskType = array(
-            'name' => $name,
-            'label' => $label,
-            'classname' => $name,
-            'classpath' => '',
-            'templatepath' => '',
-            'modules' => [
-                'include' => [],
-                'exclude' => []
-            ],
-            'sourcemodule' => $this->moduleName
-        );
-        $files = array(
-            'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
-            'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
-        );
+        PearDatabase::getInstance()->pquery('DELETE FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $relatedModule]);
 
-        foreach ($files as $fromFile => $toFile) {
-            $fromFile = sprintf($fromFile, $name);
-            $toFile = sprintf($toFile, $name);
+        if (!empty($relatedRecords)) {
+            $this->save_related_module($recordModule, $recordId, $relatedModule, $relatedRecords);
+        }
+    }
 
-            if (empty($taskType['classpath'])) {
-                $taskType['classpath'] = $toFile;
-            } elseif (empty($taskType['templatepath'])) {
-                $taskType['templatepath'] = $toFile;
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function createRelationFromMultiReference(string $name)
+    {
+        $relatedRecords = explode(';', $this->column_fields[$name]);
+
+        foreach ($relatedRecords as $relatedRecord) {
+            $this->createRelationFromRecord(intval($relatedRecord));
+        }
+    }
+
+    public function createRelationFromRecord(int $recordId)
+    {
+        if (!empty($recordId)) {
+            $module = Vtiger_Module_Model::getInstance($this->moduleName);
+            $parentModuleName = getSalesEntityType($recordId);
+            $parentModule = Vtiger_Module_Model::getInstance($parentModuleName);
+
+            if ($parentModule) {
+                $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
+
+                if ($relationModel) {
+                    $relationModel->addRelation($recordId, $this->id);
+                }
             }
-
-            $copied = copy($fromFile, $toFile);
         }
+    }
 
-        $this->db->pquery(
-            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
-            array($name)
-        );
+    public function createRelationFromReference(string $name)
+    {
+        $recordId = intval($this->column_fields[$name]);
 
-        if ($copied && $register) {
-            VTTaskType::registerTaskType($taskType);
-        }
+        $this->createRelationFromRecord($recordId);
     }
 }

@@ -221,6 +221,14 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
 
                     $blockInstance->addField($fieldInstance);
 
+                    $params = [
+                        'block' => $fieldInstance->getBlockId(),
+                        'presence' => $fieldInstance->presence,
+                        'displaytype' => $fieldInstance->displaytype,
+                    ];
+                    $sql = sprintf('UPDATE vtiger_field SET %s=? WHERE fieldid=?', implode('=?,', array_keys($params)));
+                    $adb->pquery($sql, [$params, $fieldInstance->id]);
+
                     if (!empty($picklistValues)) {
                         $adb->query('DROP TABLE IF EXISTS vtiger_' . $fieldName);
                         $adb->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
@@ -293,6 +301,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'summaryfield' => 1,
                     'filter' => 1,
                     'entity_identifier' => 1,
+                    'masseditable' => 1,
                 ),
                 'location' => array(
                     'column' => 'location',
@@ -300,10 +309,11 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
                     'columntype' => 'VARCHAR(150)',
+                    'masseditable' => 1,
                 ),
                 'datetime_start' => array(
                     'column' => 'datetime_start',
-                    'label' => 'Start Date & Time',
+                    'label' => 'Start Datetime',
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
@@ -311,9 +321,9 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                 ),
                 'datetime_end' => array(
                     'column' => 'datetime_end',
-                    'label' => 'End Date & Time',
+                    'label' => 'End Datetime',
                     'uitype' => 6,
-                    'typeofdata' => 'DT~M~time_end',
+                    'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
                     'filter' => 1,
                 ),
@@ -336,6 +346,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     ],
                     'columntype' => 'VARCHAR(200)',
                     'filter' => 1,
+                    'masseditable' => 1,
 
                 ),
                 'calendar_priority' => array(
@@ -350,6 +361,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     ],
                     'columntype' => 'VARCHAR(200)',
                     'filter' => 1,
+                    'masseditable' => 1,
 
                 ),
                 'calendar_type' => array(
@@ -364,6 +376,35 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         ['Reminder', '#E4A11B'],
                     ],
                     'columntype' => 'VARCHAR(200)',
+                    'masseditable' => 1,
+                ),
+                'calendar_visibility' => array(
+                    'column' => 'visibility',
+                    'label' => 'Visibility',
+                    'uitype' => 16,
+                    'typeofdata' => 'V~O',
+                    'picklist_values' => [
+                        'Private',
+                        'Public',
+                    ],
+                    'columntype' => 'VARCHAR(50)',
+                ),
+                'send_notification' => array(
+                    'column' => 'send_notification',
+                    'label' => 'Send Notification',
+                    'uitype' => 56,
+                    'typeofdata' => 'C~O',
+                    'columntype' => 'VARCHAR(3)',
+                ),
+                'assigned_user_id' => array(
+                    'column' => 'smownerid',
+                    'label' => 'Assigned To',
+                    'uitype' => 53,
+                    'typeofdata' => 'V~M',
+                    'summaryfield' => 1,
+                    'table' => 'vtiger_crmentity',
+                    'filter' => 1,
+                    'masseditable' => 1,
                 ),
             ],
             'LBL_REMINDER_INFORMATION' => [
@@ -490,37 +531,11 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                 'duration_hours' => array(
                     'column' => 'duration_hours',
                     'label' => 'Duration',
-                    'displaytype' => 3,
+                    'displaytype' => 2,
+                    'presence' => 2,
                     'uitype' => 63,
                     'typeofdata' => 'T~O',
                     'columntype' => 'VARCHAR(200)',
-                ),
-                'calendar_visibility' => array(
-                    'column' => 'visibility',
-                    'label' => 'Visibility',
-                    'uitype' => 16,
-                    'typeofdata' => 'V~O',
-                    'picklist_values' => [
-                        'Private',
-                        'Public',
-                    ],
-                    'columntype' => 'VARCHAR(50)',
-                ),
-                'send_notification' => array(
-                    'column' => 'send_notification',
-                    'label' => 'Send Notification',
-                    'uitype' => 56,
-                    'typeofdata' => 'C~O',
-                    'columntype' => 'VARCHAR(3)',
-                ),
-                'assigned_user_id' => array(
-                    'column' => 'smownerid',
-                    'label' => 'Assigned To',
-                    'uitype' => 53,
-                    'typeofdata' => 'V~M',
-                    'summaryfield' => 1,
-                    'table' => 'vtiger_crmentity',
-                    'filter' => 1,
                 ),
             ],
         ];

@@ -24,6 +24,21 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         }
     }
 
+    public static function updateTodayFilterDates($filter): bool
+    {
+        if (!$filter && 'Today' !== trim($filter->name)) {
+            return false;
+        }
+
+        $date = self::getTodayDates();
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_start%']);
+        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_end%']);
+
+        return true;
+    }
+
     /**
      * @return array
      */
@@ -60,7 +75,7 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         $users = (array)$currentUser->getAccessibleUsers();
 
         foreach ($users as $userId => $userName) {
-            if(empty($userName)) {
+            if (empty($userName)) {
                 continue;
             }
 
@@ -69,8 +84,8 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 
         $groups = (array)$currentUser->getAccessibleGroups();
 
-        foreach($groups as $groupId => $groupName) {
-            if(empty($groupName)) {
+        foreach ($groups as $groupId => $groupName) {
+            if (empty($groupName)) {
                 continue;
             }
 
@@ -92,7 +107,7 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         $users = (array)$currentUser->getAccessibleUsers();
 
         foreach ($users as $userId => $userName) {
-            if(empty($userName)) {
+            if (empty($userName)) {
                 continue;
             }
 
@@ -112,7 +127,7 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         $groups = (array)$currentUser->getAccessibleGroups();
 
         foreach ($groups as $groupId => $groupName) {
-            if(empty($groupName)) {
+            if (empty($groupName)) {
                 continue;
             }
 
@@ -182,19 +197,44 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
     public function getTodayRecordsCount(): int
     {
         $moduleName = $this->getName();
-        $listModel = Vtiger_ListView_Model::getInstance($moduleName);
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $queryGenerator = new EnhancedQueryGenerator($moduleName, $currentUser);
 
-        $tomorrow = date('Y-m-d', strtotime('+1 day'));
-        $today = date('Y-m-d');
+        /** @var Vtiger_ListView_Model $listModel */
+        $listModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
+        $listModel->set('query_generator', $queryGenerator);
 
+
+        $date = self::getTodayDates();
         /** @var QueryGenerator $queryGenerator */
         $queryGenerator = $listModel->get('query_generator');
 
         $queryGenerator->startGroup('');
-        $queryGenerator->addCondition('datetime_start', $today . ',' . $tomorrow, 'bw', 'OR');
-        $queryGenerator->addCondition('datetime_end', $today . ',' . $tomorrow, 'bw', 'OR');
+        $queryGenerator->addCondition('datetime_start', $date, 'bw', 'OR');
+        $queryGenerator->addCondition('datetime_end', $date, 'bw', 'OR');
         $queryGenerator->endGroup();
 
         return intval($listModel->getListViewCount());
+    }
+
+    public static function getTodayDates()
+    {
+        $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+        $tomorrow->modify('+1439 minutes');
+        $tomorrow = $tomorrow->format('Y-m-d H:i:s');
+        $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+        $today = $today->format('Y-m-d H:i:s');
+
+        return $today . ',' . $tomorrow;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconUrl(): string
+    {
+        $filter = Vtiger_Filter::getInstance('Today', $this);
+
+        return $filter ? 'index.php?module=ITS4YouCalendar&view=List&viewname=' . $filter->id : $this->getDefaultUrl();
     }
 }

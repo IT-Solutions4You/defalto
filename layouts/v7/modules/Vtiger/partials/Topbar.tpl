@@ -143,8 +143,9 @@
 						{if $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
 							<li>
 								<div>
-									<a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="fa fa-calendar" title="{vtranslate($CALENDAR_MODULE_MODEL->get('label'),$CALENDAR_MODULE_MODEL->getName())}" aria-hidden="true">
-										<div class="badge">{$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}</div>
+									<a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="fa fa-calendar" title="{vtranslate($CALENDAR_MODULE_MODEL->get('label'),$CALENDAR_MODULE_MODEL->getName())}" aria-hidden="true">
+										{assign var=TODAY_RECORDS_COUNT value=$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}
+										{if $TODAY_RECORDS_COUNT}<div class="badge">{$TODAY_RECORDS_COUNT}</div>{/if}
 									</a>
 								</div>
 							</li>
