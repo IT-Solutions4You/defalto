@@ -71,7 +71,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @var object
      */
-    public Vtiger_ListView_Model $listViewModel;
+    public object $listViewModel;
     /**
      * @var array
      */
@@ -386,7 +386,24 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
      */
     public function retrieveListViewModel()
     {
-        $this->listViewModel = Vtiger_ListView_Model::getInstance($this->getModule(), 0, $this->getListFields());
+        $db = PearDatabase::getInstance();
+        $module = $this->getModule();
+        $user = Users_Record_Model::getCurrentUserModel();
+
+        $queryGenerator = new EnhancedQueryGenerator($module, $user);
+        $queryGenerator->setFields($this->getListFields());
+
+        $moduleSpecificControllerPath = 'modules/'.$module.'/controllers/ListViewController.php';
+
+        if(file_exists($moduleSpecificControllerPath)) {
+            include_once $moduleSpecificControllerPath;
+            $moduleSpecificControllerClassName = $module.'ListViewController';
+            $controller = new $moduleSpecificControllerClassName($db, $user, $queryGenerator);
+        } else {
+            $controller = new ListViewController($db, $user, $queryGenerator);
+        }
+
+        $this->listViewModel = Vtiger_ListView_Model::getCleanInstance($module)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
     }
 
     /**
@@ -409,6 +426,8 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             $fields[] = 'is_all_day';
         }
 
+        $fields[] = 'id';
+
         return $fields;
     }
 
@@ -430,11 +449,23 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
 
         list($startField, $endField) = $fields;
 
-        $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => $startField, 'search_text' => $betweenValue, 'operator' => 'bw'));
+        /** @var EnhancedQueryGenerator $queryGenerator */
+        $queryGenerator = $this->listViewModel->get('query_generator');
+
+        $queryGenerator->startGroup('');
+        $queryGenerator->addCondition($startField, $betweenValue, 'bw', $queryGenerator::$OR);
 
         if (!empty($endField)) {
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => $endField, 'search_text' => $betweenValue, 'operator' => 'bw'));
+            $queryGenerator->addCondition($endField, $betweenValue, 'bw', $queryGenerator::$OR);
+
+            $queryGenerator->startGroup($queryGenerator::$OR);
+            $queryGenerator->addCondition($startField, $this->get('start_date'), 'l');
+            $queryGenerator->addConditionGlue($queryGenerator::$AND);
+            $queryGenerator->addCondition($endField, $this->get('end_date'), 'g');
+            $queryGenerator->endGroup('');
         }
+
+        $queryGenerator->endGroup();
     }
 
     /**
