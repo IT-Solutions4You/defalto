@@ -195,6 +195,7 @@ $languageStrings = array(
     'LBL_USERS_BY_GROUP' => 'Users by ',
     'UsersByGroups' => 'Users by group',
     'LBL_SHOW_ALL' => 'Show all',
+    'LBL_INTEGRATION' => 'Integration',
 );
 
 $jsLanguageStrings = array(
