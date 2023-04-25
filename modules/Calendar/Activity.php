@@ -1055,18 +1055,26 @@ function insertIntoRecurringTable(& $recurObj)
 	}
 
 	public function getNonAdminAccessControlQuery($module, $user,$scope='') {
+		$is_admin = null;
+		$profileGlobalPermission = [];
+		$defaultOrgSharingPermission = [];
+		$current_user_groups = null;
+		$current_user_parent_role_seq = null;
 		require('user_privileges/user_privileges_'.$user->id.'.php');
 		require('user_privileges/sharing_privileges_'.$user->id.'.php');
 		$query = ' ';
 		$tabId = getTabid($module);
+
 		if($is_admin==false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
 				== 1) {
+
+			$query .= $this->getSharingAccessControlQuery($user, $scope, $current_user_groups);
 			$sharedTabId = null;
 			//For Events
 			$tableName = 'vt_tmp_u'.$user->id.'_t'.$tabId.'_events';
 			$this->setupTemporaryTableForEvents($tableName, $sharedTabId, $user,
 				$current_user_parent_role_seq, $current_user_groups);
-			$query = " LEFT JOIN $tableName $tableName$scope ON ($tableName$scope.id = ".
+			$query .= " LEFT JOIN $tableName $tableName$scope ON ($tableName$scope.id = ".
 				"vtiger_crmentity$scope.smownerid AND vtiger_activity.activitytype NOT IN ('Emails', 'Task')) ";
 
 			//For Task

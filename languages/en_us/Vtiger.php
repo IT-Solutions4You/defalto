@@ -1393,6 +1393,16 @@ $languageStrings = array(
 	'LBL_RELATED_MODULES_PERMISSION_DENIED' => 'Related modules permission is denied',
 	'LBL_RECORD_PERMISSION_DENIED' => 'Record permissions denied',
 	'LBL_MASS_SELECT' => 'Mass Select',
+
+    'LBL_SHARING_RECORD' => 'Sharing',
+    'LBL_SHARING_EDIT_MEMBERS' => 'Edit sharing members',
+    'LBL_SHARING_VIEW_MEMBERS' => 'View sharing members',
+    'LBL_EDIT_SHARING_RECORD' => 'Edit sharing record',
+
+    'Groups' => 'Groups',
+    'Roles' => 'Roles',
+    'RoleAndSubordinates' => 'Role And Subordinates',
+    'MultiCompany4you' => 'Multi Company',
 );
 
 $jsLanguageStrings = array(
