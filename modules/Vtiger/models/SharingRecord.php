@@ -13,6 +13,7 @@ require_once 'include/events/include.inc';
 class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
 {
     private $isShared;
+
     /**
      * Function to get the Id
      * @return <Number> record Id
@@ -61,6 +62,12 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         return '?module=' . $module . '&view=Detail&record=' . $record . '&mode=DetailSharingRecord&tab_label=LBL_SHARING_RECORD';
     }
 
+    /**
+     * @param $value
+     * @param $id
+     *
+     * @return string|void
+     */
     public function getRecordDetailViewUrl($value, $id)
     {
         if ('Users' === $value ) {
@@ -93,6 +100,11 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         return $this->members;
     }
 
+    /**
+     * @param $record
+     *
+     * @return array
+     */
     public static function getAllSharing($record)
     {
         $db = PearDatabase::getInstance();
@@ -166,6 +178,11 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         $this->setShared();
     }
 
+    /**
+     * @param $member
+     * @param $record
+     * @param $type
+     */
     private function memberSave($member, $record, $type)
     {
         $db = PearDatabase::getInstance();
@@ -204,7 +221,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
                     $db->pquery('INSERT INTO its4you_sharing_rolessubroles (crmid, roleid, type ) VALUES (?,?,?)', [$record, $memberId, $type]);
                 }
 
-                if ($memberType === "MultiCompany4you") {
+                if ('MultiCompany4you' === $memberType) {
                     $db->pquery('INSERT INTO its4you_sharing_multicompany (crmid, companyid, type ) VALUES (?,?,?)', [$record, $memberId, $type]);
                 }
             }
@@ -234,14 +251,14 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
     {
         $db = PearDatabase::getInstance();
         $role = new self();
-        $Users = [1 => [], 2 => []];
+        $users = [1 => [], 2 => []];
         $sql = 'SELECT its4you_sharing_users.type, vtiger_users.id, vtiger_users.last_name, vtiger_users.first_name FROM vtiger_users
                 INNER JOIN its4you_sharing_users ON its4you_sharing_users.userid = vtiger_users.id
                 WHERE its4you_sharing_users.crmid = ?';
         $result = $db->pquery($sql, [$recordId]);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $Users[$row['type']]['Users'][$row['id']] = getFullNameFromArray('Users', $row);
+            $users[$row['type']]['Users'][$row['id']] = getFullNameFromArray('Users', $row);
         }
 
         $sql = 'SELECT its4you_sharing_groups.type, vtiger_groups.groupid, vtiger_groups.groupname FROM vtiger_groups
@@ -250,7 +267,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         $result = $db->pquery($sql, [$recordId]);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $Users[$row['type']]['Groups'][$row['groupid']] = $row['groupname'];
+            $users[$row['type']]['Groups'][$row['groupid']] = $row['groupname'];
         }
 
         $sql = 'SELECT its4you_sharing_roles.type, vtiger_role.roleid, vtiger_role.rolename FROM vtiger_role
@@ -259,7 +276,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         $result = $db->pquery($sql, [$recordId]);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $Users[$row['type']]['Roles'][$row['roleid']] = $row['rolename'];
+            $users[$row['type']]['Roles'][$row['roleid']] = $row['rolename'];
         }
 
         $sql = 'SELECT its4you_sharing_rolessubroles.type, vtiger_role.roleid, vtiger_role.rolename FROM vtiger_role
@@ -268,7 +285,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
         $result = $db->pquery($sql, [$recordId]);
 
         while ($row = $db->fetchByAssoc($result)) {
-            $Users[$row['type']]['RoleAndSubordinates'][$row['roleid']] = $row['rolename'];
+            $users[$row['type']]['RoleAndSubordinates'][$row['roleid']] = $row['rolename'];
         }
 
         if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
@@ -279,14 +296,20 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             $result = $db->pquery($sql, [$recordId]);
 
             while ($row = $db->fetchByAssoc($result)) {
-                $Users[$row['type']]['MultiCompany4you'][$row['companyid']] = $row['companyname'];
+                $users[$row['type']]['MultiCompany4you'][$row['companyid']] = $row['companyname'];
             }
         }
-        $role->setData($Users);
+        $role->setData($users);
 
         return $role;
     }
 
+    /**
+     * @param $recordId
+     *
+     * @return array|int|mixed|string|string[]|null
+     * @throws Exception
+     */
     public function getRecordName($recordId)
     {
         $db = PearDatabase::getInstance();

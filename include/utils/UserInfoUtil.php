@@ -321,28 +321,27 @@ function isPermitted($module,$actionname,$record_id='')
 
         $sharingPermission = 'no';
 
-        if ($record_id != '') {
-            //require('user_privileges/user_privileges_' . $current_user->id . '.php');
+        if ('' != $record_id) {
             $result = $adb->pquery(
                 'SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?',
                 [$current_user->id]
             );
-            $parentrole = $adb->query_result($result, 0, 'parentrole');
-            $Parentrole = explode("::", $parentrole);
+            $parentRole = $adb->query_result($result, 0, 'parentrole');
+            $parentRoleArr = explode('::', $parentRole);
 
-            foreach ($Parentrole as $key => $value) {
-                $Parentrole[$key] = "'" . $value . "'";
+            foreach ($parentRoleArr as $key => $value) {
+                $parentRoleArr[$key] = '\'' . $value . '\'';
             }
 
-            $parentrole = implode(",", $Parentrole);
+            $parentRole = implode(',', $parentRoleArr);
 
             $query = 'SELECT crmid,type FROM its4you_sharing_users WHERE userid=? AND crmid = ?';
-            $Param = [$current_user->id, $record_id];
+            $params = [$current_user->id, $record_id];
 
             if (($current_user_groups === null ? 0 : count($current_user_groups)) > 0) {
                 $query .= ' UNION 
 							SELECT crmid,type FROM its4you_sharing_groups WHERE groupid in (' . implode(',', $current_user_groups) . ') AND crmid = ?';
-                $Param[] = $record_id;
+                $params[] = $record_id;
             }
 
             $companyId = [];
@@ -357,26 +356,27 @@ function isPermitted($module,$actionname,$record_id='')
 					  UNION
 					  SELECT crmid,type FROM its4you_sharing_rolessubroles
 					  INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
-					  WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentrole . ')
+					  WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
 					  AND vtiger_role.parentrole LIKE CONCAT(\'%\', its4you_sharing_rolessubroles.roleid, \'%\') AND crmid = ?
 					  ';
-            array_push($Param, $current_user->id, $record_id, $record_id);
+            array_push($params, $current_user->id, $record_id, $record_id);
 
             if (!empty($companyId)) {
                 $query .= ' UNION
 							SELECT crmid,type FROM its4you_sharing_multicompany WHERE companyid in(' . implode(',', $companyId) . ')
 							AND crmid = ?
 					 	';
-                $Param[] = $record_id;
+                $params[] = $record_id;
             }
 
-            $result = $adb->pquery($query, $Param);
+            $result = $adb->pquery($query, $params);
 
-            if ($adb->num_rows($result) > 0) {
+            if ($adb->num_rows($result)) {
                 $i = 0;
 
                 while ($type = $adb->query_result($result, $i, 'type')) {
                     $i++;
+
                     if (4 == $actionid) {
                         $sharingPermission = 'yes';
                     } elseif (2 == $type && (1 == $actionid || 0 == $actionid)) {
@@ -645,7 +645,13 @@ function isPermitted($module,$actionname,$record_id='')
 
 }
 
-function returnPermission($permission, $sharingPermission = 'no')
+/**
+ * @param string $permission
+ * @param string $sharingPermission
+ *
+ * @return string
+ */
+function returnPermission(string $permission, string $sharingPermission = 'no'): string
 {
     return $sharingPermission === 'yes' ? 'yes' : $permission;
 }

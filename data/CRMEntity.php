@@ -2880,7 +2880,8 @@ class CRMEntity {
      * @return string
      * @throws Exception
      */
-    function getSharingAccessControlQuery($user, $scope = '', $current_user_groups): string {
+    function getSharingAccessControlQuery($user, $scope = '', $current_user_groups): string
+    {
         $db = PearDatabase::getInstance();
         $result = $db->pquery('SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?', [$user->id]);
         $parentRole = $db->query_result($result, 0, 'parentrole');
