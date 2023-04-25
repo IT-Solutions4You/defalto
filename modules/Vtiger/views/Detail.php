@@ -24,6 +24,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('getActivities');
 		$this->exposeMethod('showRelatedRecords');
+        $this->exposeMethod('DetailSharingRecord');
 	}
 
 	public function requiresPermission(Vtiger_Request $request){
@@ -656,4 +657,23 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		return $headerCssInstances;
 	}
 
+    /**
+     * @param Vtiger_Request $request
+     */
+    public function DetailSharingRecord(Vtiger_Request $request)
+    {
+        $recordId = $request->get('record');
+        $moduleName = $request->getModule();
+
+        $recordModel = Vtiger_SharingRecord_Model::getInstance($recordId);
+
+        $viewer = $this->getViewer($request);
+
+        $viewer->assign('RECORD_MODEL', $recordModel);
+        $viewer->assign('RECORD_ID', $recordId);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        $viewer->view('DetailSharingRecord.tpl', $moduleName);
+    }
 }

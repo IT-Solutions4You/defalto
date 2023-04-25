@@ -1766,15 +1766,15 @@ class CRMEntity {
 	}
 
 	function __timediff($d1, $d2) {
-		list($t1_1, $t1_2) = explode(' ', $d1);
-		list($t1_y, $t1_m, $t1_d) = explode('-', $t1_1);
-		list($t1_h, $t1_i, $t1_s) = explode(':', $t1_2);
+		[$t1_1, $t1_2] = explode(' ', $d1);
+		[$t1_y, $t1_m, $t1_d] = explode('-', $t1_1);
+		[$t1_h, $t1_i, $t1_s] = explode(':', $t1_2);
 
 		$t1 = mktime($t1_h, $t1_i, $t1_s, $t1_m, $t1_d, $t1_y);
 
-		list($t2_1, $t2_2) = explode(' ', $d2);
-		list($t2_y, $t2_m, $t2_d) = explode('-', $t2_1);
-		list($t2_h, $t2_i, $t2_s) = explode(':', $t2_2);
+		[$t2_1, $t2_2] = explode(' ', $d2);
+		[$t2_y, $t2_m, $t2_d] = explode('-', $t2_1);
+		[$t2_h, $t2_i, $t2_s] = explode(':', $t2_2);
 
 		$t2 = mktime($t2_h, $t2_i, $t2_s, $t2_m, $t2_d, $t2_y);
 
@@ -2832,35 +2832,98 @@ class CRMEntity {
 	 * @return String Access control Query for the user.
 	 */
 	function getNonAdminAccessControlQuery($module, $user, $scope = '') {
+        $is_admin = null;
+        $profileGlobalPermission = [];
+        $defaultOrgSharingPermission = [];
+        $current_user_groups = null;
+        $current_user_parent_role_seq = null;
 		require('user_privileges/user_privileges_' . $user->id . '.php');
 		require('user_privileges/sharing_privileges_' . $user->id . '.php');
 		$query = ' ';
 		$tabId = getTabid($module);
+
 		if ($is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
 				== 1 && $defaultOrgSharingPermission[$tabId] == 3) {
+
+            $query .= $this->getSharingAccessControlQuery($user, $scope, $current_user_groups);
 			$tableName = 'vt_tmp_u' . $user->id;
 			$sharingRuleInfoVariable = $module . '_share_read_permission';
 			$sharingRuleInfo = $$sharingRuleInfoVariable;
 			$sharedTabId = null;
-			if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
+
+            if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
 					php7_count($sharingRuleInfo['GROUP']) > 0)) {
 				$tableName = $tableName . '_t' . $tabId;
 				$sharedTabId = $tabId;
 			} elseif ($module == 'Calendar' || !empty($scope)) {
 				$tableName .= '_t' . $tabId;
 			}
+
 			$this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
 			// for secondary module we should join the records even if record is not there(primary module without related record)
 				if($scope == ''){
-					$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid ";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
+							"vtiger_crmentity$scope.smownerid OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
 				}else{
-					$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
+							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
 				}
 			}
 		return $query;
 	}
+
+    /**
+     * @param        $user
+     * @param string $scope
+     * @param        $current_user_groups
+     *
+     * @return string
+     * @throws Exception
+     */
+    function getSharingAccessControlQuery($user, $scope = '', $current_user_groups): string
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?', [$user->id]);
+        $parentRole = $db->query_result($result, 0, 'parentrole');
+        $parentRoleArr = explode('::', $parentRole);
+
+        foreach ($parentRoleArr as $key => $value) {
+            $parentRoleArr[$key] = '\'' . $value . '\'';
+        }
+
+        $parentRole = implode(',', $parentRoleArr);
+        $companyId = [];
+
+        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
+            $companyId = array_keys(MultiCompany4you_Module_Model::getCompaniesList());
+        }
+
+        $query = ' LEFT JOIN (
+                    SELECT crmid FROM its4you_sharing_users WHERE userid=' . $user->id;
+
+        if (0 < ($current_user_groups === null ? 0 : count($current_user_groups))) {
+            $query .= ' UNION 
+                SELECT crmid FROM its4you_sharing_groups where groupid in (' . implode(',', $current_user_groups) . ') ';
+        }
+
+        $query .= ' UNION
+        SELECT crmid FROM its4you_sharing_roles
+            INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid AND userid=' . $user->id . '
+        UNION
+        SELECT crmid FROM its4you_sharing_rolessubroles
+        INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
+        WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
+        AND vtiger_role.parentrole LIKE CONCAT("%", its4you_sharing_rolessubroles.roleid, "%")';
+
+        if (!empty($companyId)) {
+            $query .= 'UNION
+            SELECT crmid FROM its4you_sharing_multicompany WHERE companyid IN (' . implode(',', $companyId) . ')';
+        }
+
+        $query .= ') AS its4you_sharing' . $scope . ' ON its4you_sharing' . $scope . '.crmid = vtiger_crmentity.crmid ';
+
+        return $query;
+    }
 
 	public function listQueryNonAdminChange($query, $scope = '') {
 		//make the module base table as left hand side table for the joins,

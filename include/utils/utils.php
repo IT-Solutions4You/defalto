@@ -2584,4 +2584,36 @@ function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
 	return $message;
 }
 
+function show()
+{
+	$input_args = func_get_args();
+	if (!empty($input_args)) {
+		foreach ($input_args as $input) {
+			if (is_array($input)) {
+				echo '<table border="1">';
+				echo '<tr><th>Key</th><th>Value</th></tr>';
+				foreach ($input as $key => $value) {
+					echo "<tr><td>$key</td><td>";
+					show($value);
+					echo "</td></tr>";
+				}
+				echo "</table>";
+			} elseif (is_resource($input) || is_object($input)) {
+				echo "<pre>";
+				print_r($input);
+				echo "</pre>";
+			} elseif (is_bool($input)) {
+				if ($input) {
+					echo "<i>true</i>";
+				} else {
+					echo "<i>false</i>";
+				}
+				echo "<br />";
+			} else {
+				echo $input . "<br />";
+			}
+		}
+	}
+}
+
 ?>

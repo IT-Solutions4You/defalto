@@ -64,7 +64,7 @@
 						</div>
 						{if $MODULE_MODEL->isFilterColumnEnabled()}
 							<div id="listColumnFilterContainer">
-								<div class="listColumnFilter {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isCvEditable())}disabled{/if}"  
+								<div class="listColumnFilter {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isCvEditable())}disabled{/if}"
 									 {if $CURRENT_CV_MODEL->isCvEditable()}
 										 title="{vtranslate('LBL_CLICK_HERE_TO_MANAGE_LIST_COLUMNS',$MODULE)}"
 									 {else}

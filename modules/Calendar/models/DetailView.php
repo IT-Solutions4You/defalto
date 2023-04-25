@@ -36,6 +36,14 @@ class Calendar_DetailView_Model extends Vtiger_DetailView_Model {
 					'linkicon' => ''
 			);
 		}
+
+        $relatedLinks[] = [
+            'linktype'  => 'DETAILVIEWTAB',
+            'linklabel' => 'LBL_SHARING_RECORD',
+            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=DetailSharingRecord',
+            'linkicon'  => ''
+        ];
+
 		return $relatedLinks;
 	}
 }

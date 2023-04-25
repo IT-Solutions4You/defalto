@@ -180,6 +180,12 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			);
 		}
 
+        $relatedLinks[] = [
+            'linktype'  => 'DETAILVIEWTAB',
+            'linklabel' => 'LBL_SHARING_RECORD',
+            'linkurl'   => $recordModel->getDetailViewUrl() . '&mode=DetailSharingRecord',
+            'linkicon'  => ''
+        ];
 
 		$relationModels = $parentModuleModel->getRelations();
 
