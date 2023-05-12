@@ -649,7 +649,8 @@ class Project extends CRMEntity {
 		
 		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('ADD', $actions) && isPermitted($relModuleName,1, '') == 'yes') {
 				$button .= "<input title='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."' accessyKey='F' class='crmbutton small create' onclick='fnvshobj(this,\"sendmail_cont\");sendmail(\"$currentModule\",$recordId);' type='button' name='button' value='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."'></td>";
 			}
@@ -704,4 +705,3 @@ class Project extends CRMEntity {
 		return $projectTasks;
 	}
 }
-?>
