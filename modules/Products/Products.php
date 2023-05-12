@@ -327,10 +327,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -384,10 +386,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -441,10 +445,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -501,10 +507,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -565,10 +573,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions && getFieldVisibilityPermission($related_module, $current_user->id, 'product_id','readwrite') == '0') {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -634,10 +644,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -710,10 +722,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -783,10 +797,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -860,10 +876,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -925,7 +943,8 @@ class Products extends CRMEntity {
 
 		$button = '';
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes' && isPermitted($currentModule,'EditView',$id) == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_TO'). " ". getTranslatedString($related_module) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"AddProductToPriceBooks\";this.form.module.value=\"$currentModule\"' type='submit' name='button'" .
@@ -1006,10 +1025,12 @@ class Products extends CRMEntity {
 		$button = '';
 
 		if($actions && $this->ismember_check() === 0) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input type='hidden' name='createmode' id='createmode' value='link' />".
 					"<input title='".getTranslatedString('LBL_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
@@ -1360,6 +1381,4 @@ class Products extends CRMEntity {
 			}
 		}
 	}
-
 }
-?>

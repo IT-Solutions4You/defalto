@@ -314,7 +314,8 @@ class PurchaseOrder extends CRMEntity {
 		$button .= '<input type="hidden" name="activity_mode">';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				if(getFieldVisibilityPermission('Calendar',$current_user->id,'parent_id', 'readwrite') == '0') {
 					$button .= "<input title='".getTranslatedString('LBL_NEW'). " ". getTranslatedString('LBL_TODO', $related_module) ."' class='crmbutton small create'" .
@@ -621,5 +622,3 @@ class PurchaseOrder extends CRMEntity {
 		return getInventoryImportableMandatoryFeilds($this->moduleName);
 	}
 }
-
-?>

@@ -2616,4 +2616,20 @@ function show()
 	}
 }
 
-?>
+/**
+ * @param $input
+ *
+ * @return array
+ */
+function sanitizeRelatedListsActions($input): array
+{
+	if (is_array($input)) {
+		return $input;
+	}
+
+	if (is_string($input)) {
+		return explode(',', strtoupper($input));
+	}
+
+	return [];
+}
