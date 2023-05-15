@@ -123,6 +123,12 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function vtlib_handler($moduleName, $eventType)
     {
+        require_once 'include/utils/utils.php';
+        require_once 'vtlib/Vtiger/Module.php';
+        require_once 'vtlib/Vtiger/Cron.php';
+        require_once 'modules/ModComments/ModComments.php';
+        require_once 'modules/ModTracker/ModTracker.php';
+
         switch ($eventType) {
             case 'module.postinstall':
             case 'module.enabled':
@@ -143,10 +149,131 @@ class ITS4YouCalendar extends CRMEntity
     public function addCustomLinks()
     {
         $this->installTables();
+        $this->installFields();
+        $this->insertEmailTemplates();
         $this->updateCron();
         $this->updateParentIdModules();
         $this->updateWorkflow();
         $this->updateFilters();
+        $this->updateIcons();
+        $this->updatePicklists();
+
+        ITS4YouCalendar_Migration_Model::getInstance()->migrate();
+        
+        ModComments::addWidgetTo([$this->moduleName]);
+        ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+    }
+
+    public function installFields()
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance('Users');
+        $block = Vtiger_Block_Model::getInstance('LBL_CALENDAR_SETTINGS', $moduleModel);
+
+        $fieldName = 'week_days';
+        $field = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+
+        if (!$field) {
+            $field = new Vtiger_Field();
+            $field->column = $fieldName;
+            $field->name = $fieldName;
+            $field->table = 'vtiger_users';
+            $field->label = 'Week days';
+            $field->uitype = 33;
+            $field->save($block);
+            $field->setPicklistValues([
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday',
+            ]);
+
+            $this->db->pquery(
+                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
+                ['Monday |##| Tuesday |##| Wednesday |##| Thursday |##| Friday', '']
+            );
+        }
+
+        $fieldName = 'slot_duration';
+        $field = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
+
+        if (!$field) {
+            $field = new Vtiger_Field();
+            $field->column = $fieldName;
+            $field->name = $fieldName;
+            $field->table = 'vtiger_users';
+            $field->label = 'Slot duration';
+            $field->uitype = 15;
+            $field->save($block);
+            $field->setPicklistValues([
+                '30 minutes',
+                '15 minutes',
+            ]);
+            $this->db->pquery(
+                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
+                ['30 minutes', '']
+            );
+        }
+    }
+
+    public function updatePicklists()
+    {
+        $this->db->pquery('DELETE FROM vtiger_defaultcalendarview WHERE defaultcalendarview IN (?)', ['SharedCalendar']);
+        $this->db->pquery('DELETE FROM vtiger_activity_view WHERE activity_view IN (?,?)', ['This Year', 'Agenda']);
+        $this->db->pquery('UPDATE vtiger_calendar_type SET presence=? WHERE calendar_type IN (?,?,?,?)', ['0', 'Call', 'Meeting', 'Email', 'Reminder']);
+    }
+
+    public function insertEmailTemplates()
+    {
+        if (method_exists('EMAILMaker_Record_Model', 'saveTemplate')) {
+            $templates = [
+                [
+                    'templatename' => 'Reminder',
+                    'module' => $this->moduleName,
+                    'description' => 'Reminder',
+                    'subject' => 'Reminder',
+                    'body' => 'Reminder',
+                    'owner' => Users::getActiveAdminId(),
+                    'sharingtype' => 'public',
+                    'category' => 'system',
+                    'is_listview' => 0,
+                ],
+                [
+                    'templatename' => 'Invitation',
+                    'module' => $this->moduleName,
+                    'description' => 'Invitation',
+                    'subject' => 'Invitation',
+                    'body' => 'Invitation',
+                    'owner' => Users::getActiveAdminId(),
+                    'sharingtype' => 'public',
+                    'category' => 'system',
+                    'is_listview' => 0,
+                ]
+            ];
+
+            $adb = PearDatabase::getInstance();
+
+            foreach ($templates as $template) {
+                $result = $adb->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE subject=? AND deleted=? AND module=?', [$template['subject'], '0', $this->moduleName]);
+
+                if (!$adb->num_rows($result)) {
+                    EMAILMaker_Record_Model::saveTemplate($template, 0);
+                }
+            }
+        }
+    }
+
+    public function updateIcons()
+    {
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $from = sprintf('layouts/%s/modules/%s/%s.png', $layout, $this->moduleName, $this->moduleName);
+        $to = sprintf('layouts/%s/skins/images/%s.png', $layout, $this->moduleName);
+
+        if (is_file($from) && !is_file($to)) {
+            copy($from, $to);
+        }
     }
 
     /**
@@ -156,12 +283,11 @@ class ITS4YouCalendar extends CRMEntity
     {
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS `its4you_remindme` (
-          `its4you_remindme_id` int(11) AUTO_INCREMENT,
           `record_id` int(11) NOT NULL,
           `reminder_time` int(11) NOT NULL,
           `reminder_sent` int(2) NOT NULL,
           `recuring_id` int(19) NOT NULL,
-          PRIMARY KEY (its4you_remindme_id)
+          PRIMARY KEY (record_id)
         ) ENGINE=InnoDB'
         );
         $this->db->query(
@@ -183,14 +309,13 @@ class ITS4YouCalendar extends CRMEntity
         );
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS `its4you_recurring` (
-          `recurring_id` int(19) NOT NULL,
+          `recurring_id` int(19) AUTO_INCREMENT,
           `record_id` int(19) NOT NULL,
           `recurring_date` date NOT NULL,
           `recurring_end_date` date NOT NULL,
           `recurring_type` varchar(30) NOT NULL,
           `recurring_frequency` int(19) NOT NULL,
-          `recurring_info` varchar(50) NOT NULL,
-           UNIQUE (recurring_id)
+          `recurring_info` varchar(50) NOT NULL
         ) ENGINE=InnoDB'
         );
         $this->db->query(
@@ -412,6 +537,9 @@ class ITS4YouCalendar extends CRMEntity
     {
         $this->updateCron(false);
         $this->updateWorkflow(false);
+
+        ModComments::removeWidgetFrom([$this->moduleName]);
+        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
     }
 
     /**
@@ -436,8 +564,9 @@ class ITS4YouCalendar extends CRMEntity
     {
         $recordId = $this->id;
         $dateTimeStart = $this->column_fields['datetime_start'];
+        $dateTimeStart = DateTimeField::convertToDBTimeZone($dateTimeStart);
 
-        ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart);
+        ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart->format('Y-m-d H:i:s'));
     }
 
     /**

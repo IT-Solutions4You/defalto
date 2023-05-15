@@ -445,11 +445,11 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'column' => 'contact_id',
                     'label' => 'Contact Name',
                     'uitype' => 57,
-                    'typeofdata' => 'I~O',
+                    'typeofdata' => 'V~O',
                     'related_modules' => [
                         'Contacts'
                     ],
-                    'columntype' => 'INT(11)',
+                    'columntype' => 'VARCHAR(255)',
                 ),
                 'account_id' => array(
                     'column' => 'account_id',

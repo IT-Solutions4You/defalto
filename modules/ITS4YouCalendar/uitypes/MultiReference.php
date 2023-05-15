@@ -48,7 +48,7 @@ class ITS4YouCalendar_MultiReference_UIType extends Vtiger_Reference_UIType
     public function retrieveReference($value, $record)
     {
         if (!empty($record) && !empty($value)) {
-            $this->referenceModule = Vtiger_Functions::getCRMRecordType($value);
+            $this->referenceModule = Vtiger_Functions::getCRMRecordType((int)$value);
             $this->retrieveRecords($record);
         }
     }

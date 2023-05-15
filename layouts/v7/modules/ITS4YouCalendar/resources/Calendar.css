@@ -88,6 +88,7 @@
 
 .calendar-popover-container {
     border-radius: 5px;
+    z-index: 20000;
 }
 
 .bg-default {
@@ -100,17 +101,48 @@
     top: 5px;
 }
 
+#selected_user_and_groups_images {
+    margin-bottom: 1em;
+}
+
 #selected_user_and_groups_images .selected_image {
     vertical-align: top;
     display: inline-block;
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 5px solid #fff;
-    color: #222;
-    background: #ddd;
-    overflow: hidden;
+    border: 5px solid #444;
+    color: #444;
+    background: #fff;
     margin-right: -10px;
+    position: relative;
+}
+
+#selected_user_and_groups_images .selected_remove {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    background: #ddd;
+    text-align: center;
+    display: none;
+}
+
+#selected_user_and_groups_images .selected_image:hover .selected_remove {
+    display: inline-block;
+}
+
+#selected_user_and_groups_images .remove_selected {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ff0000;
+    padding: 5px;
+    border-radius: 50%;
 }
 
 #selected_user_and_groups_images .selected_image_img {
@@ -120,6 +152,7 @@
 #selected_user_and_groups_images .selected_image_img img {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
 }
 
 #selected_user_and_groups_images .selected_image_fa {
@@ -132,7 +165,7 @@
     height: 30px;
 }
 
-.selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden {
+.selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden, .selected_user_and_groups_actions {
     display: inline-block;
     cursor: pointer;
 }
@@ -149,4 +182,25 @@
 
 #selected_user_and_groups_images .selected_image_text span {
     line-height: 40px;
+}
+.fc-h-event {
+    margin: 1px;
+}
+.eventTypeRecord .fc-event-main-frame::before {
+    display: inline;
+    content: "\f133";
+    margin: 2px;
+    font: normal normal normal 12px FontAwesome;
+}
+.eventTypeMeeting .fc-event-main-frame::before {
+    content: "\f0c0";
+}
+.eventTypeCall .fc-event-main-frame::before {
+    content: "\f095";
+}
+.eventTypeEmail .fc-event-main-frame::before {
+    content: "\f0e0";
+}
+.eventTypeReminder .fc-event-main-frame::before {
+    content: "\f0f3";
 }
