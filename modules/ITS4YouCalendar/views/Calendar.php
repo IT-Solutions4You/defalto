@@ -19,6 +19,7 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $this->exposeMethod('Calendar');
         $this->exposeMethod('EditEventType');
         $this->exposeMethod('PopoverContainer');
+        $this->exposeMethod('UsersGroupsModal');
     }
 
     /**
@@ -87,8 +88,8 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $viewer->assign('FIELD_TYPE_VALUES', $typeField->getPicklistValues());
         $viewer->assign('TYPE_COLORS', $typeField->getPicklistColors());
         $viewer->assign('EVENT_TYPES', ITS4YouCalendar_Events_Model::getEventTypes());
-        $viewer->assign('USERS_GROUPS_VALUES', $moduleModel->getUsersAndGroups());
         $viewer->assign('USERS_GROUPS_INFO', $moduleModel->getUsersAndGroupsInfo());
+        $viewer->assign('HIDE_DAYS', $moduleModel->getHideDays());
 
         $viewer->view('Calendar.tpl', $module);
     }
@@ -164,5 +165,21 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $viewer->assign('EVENT_TYPE', $eventType);
         $viewer->assign('EVENT_TYPE_DETAIL_LINK', $eventType->getDetailLink());
         $viewer->view('PopoverContainer.tpl', $qualifiedModule);
+    }
+
+    public function UsersGroupsModal(Vtiger_Request $request)
+    {
+        $module = $request->getModule();
+        /** @var ITS4YouCalendar_Module_Model $moduleModel */
+        $moduleModel = Vtiger_Module_Model::getInstance($module);
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('QUALIFIED_MODULE', $request->getModule(false));
+        $viewer->assign('MODULE', $request->getModule());
+        $viewer->assign('CURRENT_USER', Users_Record_Model::getCurrentUserModel());
+        $viewer->assign('USERS_GROUPS_VALUES', $moduleModel->getUsersAndGroups());
+        $viewer->assign('USERS_GROUPS_SELECTED', $request->get('selected'));
+
+        $viewer->view('UsersGroupsModal.tpl', $module);
     }
 }

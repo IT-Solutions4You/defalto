@@ -14,12 +14,12 @@
 	{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	{if $FIELD_MODEL->getFieldName() eq 'defaulteventstatus'}
-		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('Events')}
-		{assign var=EVENTSTATUS_FIELD_MODEL value=$EVENT_MODULE->getField('eventstatus')}
+		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
+		{assign var=EVENTSTATUS_FIELD_MODEL value=$EVENT_MODULE->getField('calendar_status')}
 		{assign var=PICKLIST_VALUES value=$EVENTSTATUS_FIELD_MODEL->getPicklistValues()}
-	{else if $FIELD_MODEL->getFieldName() eq 'defaultactivitytype'}
-		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('Events')}
-		{assign var=ACTIVITYTYPE_FIELD_MODEL value=$EVENT_MODULE->getField('activitytype')}
+	{elseif $FIELD_MODEL->getFieldName() eq 'defaultactivitytype'}
+		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
+		{assign var=ACTIVITYTYPE_FIELD_MODEL value=$EVENT_MODULE->getField('calendar_type')}
 		{assign var=PICKLIST_VALUES value=$ACTIVITYTYPE_FIELD_MODEL->getPicklistValues()}
 	{/if}
 

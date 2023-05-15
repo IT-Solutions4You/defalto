@@ -10,6 +10,7 @@
  */
 class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
 {
+    public bool $useUserColors = false;
     /**
      * @var array
      */
@@ -480,7 +481,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         }
 
         if (!empty($filter['users_groups'])) {
-            $selectedUsers = $filter['users_groups'];
+            $selectedUsers = (array)$filter['users_groups'];
             $searchUsers = [];
 
             foreach ($selectedUsers as $selectedUser) {
@@ -493,6 +494,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
                 }
             }
 
+            $this->useUserColors = 1 < count($selectedUsers);
             $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => 'assigned_user_id', 'search_text' => implode(',', $searchUsers), 'operator' => 'c'));
         }
     }
@@ -551,7 +553,8 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             'backgroundColor' => $this->getBackgroundColor(),
             'borderColor' => $this->getBackgroundColor(),
             'color' => $this->getTextColor(),
-            'eventClassNames' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId()
+            'className' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId() . ' eventType' . preg_replace('/([^\w+\d+])+/','', $recordModel->get('calendar_type')),
+            'eventDisplay' => 'list-item',
         ];
 
         if (!empty($endField)) {
@@ -628,8 +631,14 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     {
         $recordModel = $this->getRecordModel();
 
-        if ($recordModel && $this->isCalendar()) {
-            return $this->getFieldColor('calendar_type', $recordModel->get('calendar_type'));
+        if ($recordModel) {
+            if ($this->useUserColors) {
+
+                return ITS4YouCalendar_Module_Model::getUserGroupBackground($recordModel->get('assigned_user_id'));
+            } elseif ($this->isCalendar()) {
+
+                return $this->getFieldColor('calendar_type', $recordModel->get('calendar_type'));
+            }
         }
 
         return $this->get('color');

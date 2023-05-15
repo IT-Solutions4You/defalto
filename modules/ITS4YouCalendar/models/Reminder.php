@@ -94,7 +94,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     public static function runCron()
     {
         $adb = PearDatabase::getInstance();
-        $query = "SELECT vtiger_crmentity.crmid AS record_id, 
+        $query = 'SELECT vtiger_crmentity.crmid AS record_id, 
        vtiger_crmentity.description, 
        vtiger_crmentity.smownerid AS owner_id, 
        its4you_calendar.datetime_start AS calendar_datetime,
@@ -105,13 +105,13 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
 		INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=its4you_calendar.its4you_calendar_id
 		INNER JOIN its4you_remindme ON its4you_remindme.record_id=its4you_calendar.its4you_calendar_id
 		INNER JOIN its4you_remindme_popup ON its4you_remindme_popup.record_id=its4you_calendar.its4you_calendar_id
-		WHERE DATE_FORMAT(its4you_calendar.datetime_start,'%Y-%m-%d, %H:%i:%s') >= ? 
+		WHERE its4you_calendar.datetime_start >= CURRENT_TIMESTAMP 
 		  AND vtiger_crmentity.crmid != 0 
-		  AND (its4you_calendar.status is NULL OR its4you_calendar.status NOT IN ('Held','Cancelled'))
 		  AND its4you_remindme.reminder_sent = 0 
 		  AND its4you_remindme.reminder_time != 0
-		GROUP BY its4you_calendar.its4you_calendar_id";
-        $result = $adb->pquery($query, array(date('Y-m-d H:i:s')));
+		  AND (its4you_calendar.status is NULL OR its4you_calendar.status NOT IN (?,?))
+		GROUP BY its4you_calendar.its4you_calendar_id';
+        $result = $adb->pquery($query, ['Held','Cancelled']);
 
         if ($adb->num_rows($result)) {
             $reminderFrequency = self::getReminderFrequency();
@@ -158,9 +158,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     public function isSendingReady()
     {
         $reminderTime = $this->get('reminder_time') * 60;
-        $currentTime = self::getTime(null);
-        $activityTime = self::getTime($this->get('sending_datetime'));
-        $differenceOfActivityTimeAndCurrentTime = ($activityTime - $currentTime);
+        $differenceOfActivityTimeAndCurrentTime = (strtotime($this->get('sending_datetime')) - time());
 
         return ($differenceOfActivityTimeAndCurrentTime > 0)
             && (($differenceOfActivityTimeAndCurrentTime <= $reminderTime) || ($differenceOfActivityTimeAndCurrentTime <= $this->get('sending_frequency')));

@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-2">
-                    <div class="popover-image text-center">{$MODULE_MODEL->getModuleIcon()}</div>
+                    <div class="popover-image text-center">{$MODULE_MODEL->getModuleIcon($RECORD_MODEL->get('calendar_type'))}</div>
                 </div>
                 <div class="col-lg-10">
                     <div class="popover-name">{$RECORD_MODEL->getName()}</div>

@@ -134,14 +134,18 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 
 			$moduleFields = $moduleModel->getFields();
+
 			foreach($moduleFields as $fieldName => $fieldModel){
 				$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
 			}
-			$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
-			$eventFields = array('defaulteventstatus' => 'eventstatus', 'defaultactivitytype' => 'activitytype');
-			foreach($eventFields as $userField => $eventField) {
-				$fieldsInfo[$userField]['picklistvalues'] = $eventsModuleModel->getField($eventField)->getPicklistValues();
+
+			$calendarModuleModel = Vtiger_Module_Model::getInstance('ITS4YouCalendar');
+			$eventFields = array('defaulteventstatus' => 'calendar_status', 'defaultactivitytype' => 'calendar_type');
+
+            foreach($eventFields as $userField => $eventField) {
+				$fieldsInfo[$userField]['picklistvalues'] = $calendarModuleModel->getField($eventField)->getPicklistValues();
 			}
+
 			$viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
 			$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($request);

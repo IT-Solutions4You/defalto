@@ -76,7 +76,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     calendar: false,
     startDate: '',
     endDate: '',
-    popoverTemplate: '<div class="popover" style="width:400px; max-width: 80vw; z-index: 2000;"><div class="arrow"></div><div style="padding: 0;" class="popover-content"></div></div>',
+    popoverTemplate: '<div class="popover" style="width:400px; max-width: 80vw; z-index: 10000;"><div class="arrow"></div><div style="padding: 0;" class="popover-content"></div></div>',
     popoverContents: [],
     popoverElement: null,
     registerEvents: function () {
@@ -90,7 +90,9 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         this.registerPopoverEditView();
         this.registerPopoverEditSave();
         this.registerQuickEditSave();
+        this.registerSelectUsers();
         this.registerSelectedUserImages();
+        this.registerCloseUsersGroupsButton();
     },
     setDate: function (start, end) {
         this.startDate = this.convertToDateString(start);
@@ -99,6 +101,8 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     retrieveCalendar: function () {
         const self = this,
             is24HourFormat = 24 === parseInt($('#hour_format').val()),
+            hideDays = JSON.parse($('#hide_days').val()),
+            slotDuration = self.getSlotDuration(),
             calendarElement = document.getElementById('calendar'),
             calendarConfig = {
                 editable: true,
@@ -107,6 +111,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 firstDay: $('#day_of_week').val(),
                 height: 'calc(100vh - 200px)',
                 initialView: $('#calendar_view').val(),
+                eventDisplay: 'block',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -115,25 +120,53 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 scrollTime: $('#start_hour').val() + ':00',
                 expandRows: false,
                 dayMaxEventRows: true,
+                slotDuration: slotDuration['slotDuration'],
+                slotLabelInterval: slotDuration['slotLabelInterval'],
+                slotLabelFormat: function (info) {
+                    let minute = info.date.minute,
+                        hour = info.date.hour,
+                        am_pm = '';
+
+                    if (15 === minute || 45 === minute) {
+                        return '';
+                    }
+
+                    if (!is24HourFormat) {
+                        if (12 < hour) {
+                            hour -= 10;
+                            am_pm = ' PM';
+                        } else {
+                            am_pm = ' AM';
+                        }
+                    }
+
+                    if (10 > minute) {
+                        minute = '0' + minute;
+                    }
+
+                    if (10 > hour) {
+                        hour = '0' + hour;
+                    }
+
+                    return hour + ':' + minute + am_pm;
+                },
+                moreLinkContent: function (args) {
+                    return app.vtranslate('More');
+                },
                 eventTimeFormat: {
                     hour: 'numeric',
                     minute: '2-digit',
                     meridiem: is24HourFormat ? false : 'short',
                     hour12: !is24HourFormat,
                 },
-                slotLabelFormat:
-                    {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        meridiem: is24HourFormat ? false : 'short',
-                        hour12: !is24HourFormat,
-                    },
                 views: {
                     dayGridMonth: {
                         dayMaxEventRows: 4,
+                        hiddenDays: hideDays,
                     },
                     timeGridWeek: {
-                        dayMaxEventRows: 4
+                        dayMaxEventRows: 4,
+                        hiddenDays: hideDays,
                     },
                     timeGridDay: {
                         dayMaxEventRows: 4
@@ -368,6 +401,14 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         if (!self.eventsObject[eventId]) {
             self.eventsObject[eventId] = self.calendar.addEvent(self.eventsData[eventId]);
         }
+
+        if (self.eventsObject[eventId]) {
+            let event = self.eventsObject[eventId];
+
+            event.setProp('borderColor', value['borderColor'])
+            event.setProp('color', value['backgroundColor']);
+            event.setProp('textColor', value['color']);
+        }
     },
     getCalendarEvents: function () {
         return this.calendar.getEvents();
@@ -384,7 +425,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             if (-1 === self.displayEvents.indexOf(eventId)) {
                 event.setProp('display', 'none');
             } else {
-                event.setProp('display', 'auto');
+                event.setProp('display', 'block');
             }
         });
     },
@@ -398,12 +439,24 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 end: self.endDate,
                 filter: {
                     'calendar_type': self.getCalendarType(),
-                    'users_groups': $('[name="field_users_groups"]').select2('val'),
+                    'users_groups': self.getUsersAndGroups(),
                     'event_types': self.getEventType(),
                 }
             };
 
         self.retrieveCalendarEvents(params);
+    },
+    getUsersAndGroups: function () {
+        let select = $('[name="field_users_groups"]'),
+            value = select.val(),
+            valueSelected = $('[name="users_groups_selected"]').val();
+
+        if (!value || !value.length) {
+            select.append('<option selected="selected" value="' + valueSelected + '">' + valueSelected + '</option>');
+            value = select.val();
+        }
+
+        return value;
     },
     convertToDateString: function (date, separator = '-', format = 'year-month-day') {
         let data = {
@@ -642,10 +695,21 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     registerMassSelect: function () {
         const self = this;
 
-        self.retrieveMassSelect();
+        self.registerMassSelectClick('.massSelectEventType', '.fieldEventType');
+        self.registerMassSelectClick('.massSelectCalendarType', '.fieldCalendarType');
+    },
+    registerMassSelectClick: function (massSelect, fieldType) {
+        const self = this;
 
-        $('.eventTypeContainer').on('click', '.massSelectEventType', function () {
-            let checkboxes = $('.fieldEventType');
+        self.retrieveMassSelect(massSelect, fieldType);
+
+        $(fieldType).on('change', function () {
+            self.retrieveMassSelect(massSelect, fieldType);
+        });
+
+        $(massSelect).on('click', function () {
+            let checkboxes = $(fieldType);
+
             if ($(this).is(':checked')) {
                 checkboxes.attr('checked', 'checked');
             } else {
@@ -653,22 +717,23 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             }
 
             self.retrieveEventsRange();
+            self.retrieveMassSelect(massSelect, fieldType);
         });
     },
-    retrieveMassSelect: function () {
-        let checked = true,
-            massSelect = $('.massSelectEventType');
+    retrieveMassSelect: function (massSelect, fieldType) {
+        let checked = 0,
+            length = $(fieldType).length;
 
-        $('.fieldEventType').each(function () {
-            if (!$(this).is(':checked')) {
-                checked = false;
+        $(fieldType).each(function () {
+            if ($(this).is(':checked')) {
+                checked += 1;
             }
         });
 
-        if (checked) {
-            massSelect.attr('checked', 'checked');
+        if (length === checked) {
+            $(massSelect).attr('checked', 'checked');
         } else {
-            massSelect.removeAttr('checked');
+            $(massSelect).removeAttr('checked');
         }
     },
     registerPopoverClose: function () {
@@ -758,8 +823,8 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                                 event.setStart(info['start']);
                                 event.setEnd(info['end']);
                                 event.setProp('title', info['title']);
-                                event.setProp('backgroundColor', info['backgroundColor']);
-                                event.setProp('borderColor', info['borderColor']);
+                                event.setProp('borderColor', info['borderColor'])
+                                event.setProp('color', info['backgroundColor']);
                                 event.setProp('textColor', info['color']);
                             }
                         });
@@ -837,7 +902,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             });
         });
 
-        app.event.on('post.overLayEditView.loaded', function(event, element) {
+        app.event.on('post.overLayEditView.loaded', function (event, element) {
             element.find('input[type="hidden"][name*="return"]').remove();
             element.find('input[type="hidden"][name="action"]').val('SaveOverlay');
         });
@@ -859,15 +924,63 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             hiddenElement.removeClass('hide')
         });
     },
+    registerSelectUsers: function () {
+        const self = this;
+
+        $('.selected_user_and_groups_actions').on('click', '.select_users_and_groups', function () {
+            const params = {
+                module: app.getModuleName(),
+                view: 'Calendar',
+                mode: 'UsersGroupsModal',
+                selected: self.getUsersAndGroups(),
+            };
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (!error) {
+                    app.helper.showModal(data, {
+                        'cb': function () {
+                            self.registerSelectUsersGroupsButton();
+                        }
+                    });
+                }
+            })
+        })
+    },
+    registerSelectUsersGroupsButton: function () {
+        $('.selectUsersGroups').on('click', function () {
+            let values = $('[name="field_users_groups_modal"]').val(),
+                field = $('.fieldUsersGroups');
+
+            field.html('');
+
+            $.each(values, function (valueKey, valueData) {
+                field.append('<option selected="selected" value="' + valueData + '">' + valueData + '</option>');
+            });
+
+            field.trigger('change');
+
+            app.helper.hideModal();
+        });
+    },
+    registerCloseUsersGroupsButton: function () {
+        $('#selected_user_and_groups_images').on('click', '[data-remove-user]', function () {
+            let element = $('.fieldUsersGroups'),
+                value = $(this).data('remove-user');
+
+            element.find('option[value="' + value + '"]').remove();
+            element.trigger('change');
+        });
+    },
     getSelectedUserImages: function (element) {
-        let selectedUsers = element.val(),
+        let self = this,
+            selectedUsers = self.getUsersAndGroups(),
             images = JSON.parse($('#users_and_groups_images').val()),
             selectUsers = {};
 
         $.each(selectedUsers, function (selectIndex, selectValue) {
             if (images[selectValue]) {
                 $.each(images[selectValue], function (index, selectImages) {
-                    selectUsers[selectImages['name']] = selectImages;
+                    selectUsers[selectImages['id']] = selectImages;
                 });
             }
         });
@@ -900,9 +1013,9 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             }
 
             if (imageInfo['image']) {
-                appendElement.append('<div class="selected_image selected_image_img" title="' + imageInfo['name'] + '" style="background: ' + imageInfo['background'] + '; color: ' + imageInfo['color'] + ';"><img src="' + imageInfo['image'] + '" /></div>');
+                appendElement.append('<div class="selected_image selected_image_img" title="' + imageInfo['name'] + '" style="border-color: ' + imageInfo['border'] + ';"><div class="selected_remove" data-remove-user="' + imageInfo['id'] + '"><i class="fa fa-close"></i></div><img src="' + imageInfo['image'] + '" /></div>');
             } else {
-                appendElement.append('<div class="selected_image selected_image_text" title="' + imageInfo['name'] + '" style="background: ' + imageInfo['background'] + '; color: ' + imageInfo['color'] + ';"><span>' + imageInfo['label'] + '</span></div>');
+                appendElement.append('<div class="selected_image selected_image_text" title="' + imageInfo['name'] + '" style="border-color: ' + imageInfo['border'] + ';"><div class="selected_remove" data-remove-user="' + imageInfo['id'] + '"><i class="fa fa-close"></i></div><span>' + imageInfo['label'] + '</span></div>');
             }
 
             index++;
@@ -912,4 +1025,18 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
 
         imagesPlusElement.find('span').text('+' + plusNumber);
     },
+    getSlotDuration: function () {
+        let value = $('#slot_duration').val(),
+            slotDuration = {
+                'slotDuration': '00:30:00',
+                'slotLabelInterval': 30,
+            }
+
+        if ('15 minutes' === value) {
+            slotDuration['slotDuration'] = '00:15:00';
+            slotDuration['slotLabelInterval'] = 15;
+        }
+
+        return slotDuration;
+    }
 });
