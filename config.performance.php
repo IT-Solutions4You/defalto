@@ -21,7 +21,7 @@ $PERFORMANCE_CONFIG = Array(
 	'DB_DEFAULT_CHARSET_UTF8' => true,
 
 	// Turn-off default sorting in ListView, could eat up time as data grows
-	'LISTVIEW_DEFAULT_SORTING' => false,
+	'LISTVIEW_DEFAULT_SORTING' => true,
 	
 	// Compute list view record count while loading listview everytime.
 	// Recommended value false
