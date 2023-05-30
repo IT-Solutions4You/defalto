@@ -1403,6 +1403,8 @@ $languageStrings = array(
     'Roles' => 'Roles',
     'RoleAndSubordinates' => 'Role And Subordinates',
     'MultiCompany4you' => 'Multi Company',
+
+    'LBL_FILTER_SORTING' => 'Filter sorting',
 );
 
 $jsLanguageStrings = array(

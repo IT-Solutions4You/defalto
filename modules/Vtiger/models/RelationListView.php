@@ -344,10 +344,10 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
                     $sortOrder = $moduleFocus->default_sort_order;
                     $query .= ' ORDER BY ' . $qualifiedOrderBy . ' ' . $sortOrder;
                 } else {
-                    $query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
+                    $query .= ' ORDER BY vtiger_crmentity.createdtime DESC';
                 }
             } else {
-                $query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
+                $query .= ' ORDER BY vtiger_crmentity.createdtime DESC';
             }
         }
 

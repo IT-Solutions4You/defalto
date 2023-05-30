@@ -369,7 +369,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					$fieldName = $columnInfo[2];
 					preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 					if (php7_count($matches) != 0) {
-						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+						[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 					}
 					if($referenceParentField) {
 						$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
@@ -452,7 +452,24 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				$db->pquery($advGroupSql, $advGroupParams);
 			}
 		}
-		if($this->has('sharelist') && !$partial) {
+
+        if ($this->has('sortcolumnname') && $this->has('sortorder')) {
+            $db->pquery('DELETE FROM its4you_cvorderby WHERE cvid = ?', [$cvId]);
+
+            $sortColumnName = $this->get('sortcolumnname');
+            if (!empty($sortColumnName)) {
+                $sortOrder = $this->get('sortorder');
+
+                if (empty($sortOrder)) {
+                    $sortOrder = 'ASC';
+                }
+
+                $sortSql = 'INSERT INTO its4you_cvorderby (cvid, orderby, sortorder) VALUES (?,?,?)';
+                $db->pquery($sortSql, [$cvId, $sortColumnName, $sortOrder]);
+            }
+        }
+
+        if($this->has('sharelist') && !$partial) {
 			$db->pquery('DELETE FROM vtiger_cv2users WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2group WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2role WHERE cvid=?',array($cvId));
@@ -639,7 +656,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				$moduleName = $moduleModel->get('name');
 				preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 				if (php7_count($matches) != 0) {
-					list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+					[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 				}
 				if ($referenceParentField) {
 					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
@@ -1288,4 +1305,24 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		}
 		return $instance;
 	}
+
+    /**
+     * @return array
+     */
+    public function fetchOrderBy(): array
+    {
+        $db = PearDatabase::getInstance();
+        $return = [];
+
+        if ($this->getId()) {
+            $sql = 'SELECT orderby, sortorder FROM its4you_cvorderby WHERE cvid = ?';
+            $result = $db->pquery($sql, [$this->getId()]);
+
+            if ($db->num_rows($result)) {
+                $return = $db->fetchByAssoc($result);
+            }
+        }
+
+        return $return;
+    }
 }
