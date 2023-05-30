@@ -111,9 +111,15 @@
 							<div class="col-lg-2 col-md-2 col-sm-2"></div>
 						</div>
 						<div>
-							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)} :</label>
+							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)}:</label>
 							<div class="filterElements well filterConditionContainer filterConditionsDiv">
 								{include file='AdvanceFilter.tpl'|@vtemplate_path}
+							</div>
+						</div>
+						<div>
+							<label class="filterHeaders">{vtranslate('LBL_FILTER_SORTING', $MODULE)}: </label>
+							<div class="well">
+								{include file='SortBy.tpl'|@vtemplate_path:$MODULE}
 							</div>
 						</div>
 						<div class="checkbox">

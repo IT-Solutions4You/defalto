@@ -90,8 +90,8 @@ class HelpDesk extends CRMEntity {
 	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'update_log','ticketpriorities','ticketstatus');
 
      //Added these variables which are used as default order by and sortorder in ListView
-        var $default_order_by = 'title';
-        var $default_sort_order = 'DESC';
+    var $default_order_by = 'crmid';
+    var $default_sort_order = 'DESC';
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'ticket_title';
