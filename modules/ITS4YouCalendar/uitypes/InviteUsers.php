@@ -25,14 +25,14 @@ class ITS4YouCalendar_InviteUsers_UIType extends Vtiger_Base_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
-        if ($record) {
-            $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($record);
-            $invitedUsers->retrieveUsers();
-
-            return implode(', ', array_intersect_key($invitedUsers::getAccessibleUsers(), $invitedUsers->getUsersInfo()));
+        if (empty($record)) {
+            return '';
         }
 
-        return '';
+        $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($record);
+        $invitedUsers->retrieveUsers();
+
+        return implode(', ', array_intersect_key($invitedUsers::getAccessibleUsers(), $invitedUsers->getUsersInfo()));
     }
 
     public function getAccessibleUsers()
@@ -47,13 +47,13 @@ class ITS4YouCalendar_InviteUsers_UIType extends Vtiger_Base_UIType
 
     public function getInvitedUsers($record): array
     {
-        if (!empty($record)) {
-            $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($record);
-            $invitedUsers->retrieveUsers();
-
-            return $invitedUsers->getUsers();
+        if (empty($record)) {
+            return [];
         }
 
-        return [];
+        $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($record);
+        $invitedUsers->retrieveUsers();
+
+        return $invitedUsers->getUsers();
     }
 }

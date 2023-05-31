@@ -116,24 +116,23 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
         $recurringModel = self::getInstanceByRecord($recordId);
 
-        if ($recurringModel->isExists()) {
-            list($date_start, $time_start) = explode(' ', $recordModel->get('datetime_start'));
-            list($date_end, $time_end) = explode(' ', $recordModel->get('datetime_end'));
-
-            return RecurringType::fromDBRequest([
-                'date_start' => $date_start,
-                'time_start' => $time_start,
-                'due_date' => $date_end,
-                'time_end' => $time_end,
-                'recurringtype' => $recurringModel->get('recurring_type'),
-                'recurringfreq' => $recurringModel->get('recurring_frequency'),
-                'recurringenddate' => $recurringModel->get('recurring_end_date'),
-                'recurringinfo' => $recurringModel->get('recurring_info'),
-            ]);
+        if (!$recurringModel->isExists()) {
+            return false;
         }
 
+        [$date_start, $time_start] = explode(' ', $recordModel->get('datetime_start'));
+        [$date_end, $time_end] = explode(' ', $recordModel->get('datetime_end'));
 
-        return false;
+        return RecurringType::fromDBRequest([
+            'date_start' => $date_start,
+            'time_start' => $time_start,
+            'due_date' => $date_end,
+            'time_end' => $time_end,
+            'recurringtype' => $recurringModel->get('recurring_type'),
+            'recurringfreq' => $recurringModel->get('recurring_frequency'),
+            'recurringenddate' => $recurringModel->get('recurring_end_date'),
+            'recurringinfo' => $recurringModel->get('recurring_info'),
+        ]);
     }
 
     /**
