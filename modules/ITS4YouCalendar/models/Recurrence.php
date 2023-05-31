@@ -16,10 +16,10 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
     public static function getRecurringRecordsList($recordId): array
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)', array($recordId, $recordId));
+        $result = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)', [$recordId, $recordId]);
         $numberOfRows = $adb->num_rows($result);
         $parentRecurringId = $adb->query_result($result, 0, 'record_id');
-        $childRecords = array();
+        $childRecords = [];
 
         for ($i = 0; $i < $numberOfRows; $i++) {
             $childRecords[] = $adb->query_result($result, $i, 'recurrence_id');
@@ -37,7 +37,7 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
      */
     public static function getRecurringRecordsByType($relatedRecordId, $recurringEditMode)
     {
-        $recordList = array();
+        $recordList = [];
         $recordIdList = [$relatedRecordId];
 
         if (!empty($recurringEditMode) && $recurringEditMode != 'current') {

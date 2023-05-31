@@ -477,7 +477,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         $filter = $this->get('filter');
 
         if ($this->isCalendar() && !empty($filter['calendar_type'])) {
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => 'calendar_type', 'search_text' => implode(',', $filter['calendar_type']), 'operator' => 'e'));
+            $this->listViewModel->get('query_generator')->addUserSearchConditions(['search_field' => 'calendar_type', 'search_text' => implode(',', $filter['calendar_type']), 'operator' => 'e']);
         }
 
         if (!empty($filter['users_groups'])) {
@@ -495,7 +495,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             }
 
             $this->useUserColors = 1 < count($selectedUsers);
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(array('search_field' => 'assigned_user_id', 'search_text' => implode(',', $searchUsers), 'operator' => 'c'));
+            $this->listViewModel->get('query_generator')->addUserSearchConditions(['search_field' => 'assigned_user_id', 'search_text' => implode(',', $searchUsers), 'operator' => 'c']);
         }
     }
 

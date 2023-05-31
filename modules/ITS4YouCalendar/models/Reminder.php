@@ -14,7 +14,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
         $db = PearDatabase::getInstance();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $activityReminder = $currentUserModel->getCurrentUserActivityReminderInSeconds();
-        $recordModels = array();
+        $recordModels = [];
 
         if ($activityReminder != '') {
             $currentTime = time();
@@ -29,7 +29,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
                 AND vtiger_crmentity.smownerid = ? 
 				AND its4you_remindme_popup.datetime_start <= ? 
 				LIMIT 20';
-            $result = $db->pquery($reminderActivitiesResult, array($currentUserModel->getId(), $date . ' ' . $time));
+            $result = $db->pquery($reminderActivitiesResult, [$currentUserModel->getId(), $date . ' ' . $time]);
 
             while ($row = $db->fetchByAssoc($result)) {
                 $recordId = $row['record_id'];
@@ -49,7 +49,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     {
         PearDatabase::getInstance()->pquery(
             'UPDATE its4you_remindme_popup set status = ? where record_id = ?',
-            array($status, $record_id)
+            [$status, $record_id]
         );
     }
 
@@ -141,7 +141,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     public static function getReminderFrequency(): int
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = "SendReminder" AND handler_file = "cron/SendReminder.service"', array());
+        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = ? AND handler_file = ?', ['SendReminder', 'cron/SendReminder.service']);
 
         return (int)$adb->query_result($result, 0, 'frequency');
     }
@@ -315,7 +315,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
         $recordId = $this->get('record_id');
         $adb = PearDatabase::getInstance();
         $query = 'UPDATE its4you_remindme SET reminder_sent=? WHERE record_id=?';
-        $params = array(1, $recordId);
+        $params = [1, $recordId];
 
         if (!$this->isEmpty('recurring_id')) {
             $query .= ' AND recurring_id =?';
@@ -329,7 +329,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     {
         $adb = PearDatabase::getInstance();
         $query = 'SELECT * FROM vtiger_cntactivityrel WHERE activityid=?';
-        $result = $adb->pquery($query, array($recordId));
+        $result = $adb->pquery($query, [$recordId]);
         $contactNames = [];
 
         if ($adb->num_rows($result)) {

@@ -209,8 +209,8 @@ class VTCalendarTask extends VTTask
         }
 
         if (!empty($this->assigned_to)) {
-            $userExists = $adb->pquery('SELECT 1 FROM vtiger_users WHERE id = ? AND status = ?', array($this->assigned_to, 'Active'));
-            $groupExist = $adb->pquery('SELECT 1 FROM vtiger_groups WHERE groupid = ?', array($this->assigned_to));
+            $userExists = $adb->pquery('SELECT 1 FROM vtiger_users WHERE id = ? AND status = ?', [$this->assigned_to, 'Active']);
+            $groupExist = $adb->pquery('SELECT 1 FROM vtiger_groups WHERE groupid = ?', [$this->assigned_to]);
 
             if ($adb->num_rows($userExists)) {
                 $assignedUserId = vtws_getWebserviceEntityId('Users', $this->assigned_to);

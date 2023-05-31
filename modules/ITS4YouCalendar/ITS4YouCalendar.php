@@ -54,56 +54,56 @@ class ITS4YouCalendar extends CRMEntity
     /**
      * @var array
      */
-    public array $customFieldTable = array(
+    public array $customFieldTable = [
         'its4you_calendarcf',
         'its4you_calendar_id',
-    );
+    ];
 
     /**
      * @var array
      */
-    public array $tab_name = array(
+    public array $tab_name = [
         'vtiger_crmentity',
         'its4you_calendar',
         'its4you_calendarcf',
         'its4you_remindme',
-    );
+    ];
 
     /**
      * @var array
      */
-    public array $tab_name_index = array(
+    public array $tab_name_index = [
         'vtiger_crmentity' => 'crmid',
         'its4you_calendar' => 'its4you_calendar_id',
         'its4you_calendarcf' => 'its4you_calendar_id',
         'its4you_remindme' => 'record_id',
-    );
+    ];
 
     /**
      * @var array
      */
-    public array $list_fields = array(
-        'Subject' => array('its4you_calendar' => 'subject'),
-        'Assigned To' => array('vtiger_crmentity' => 'smownerid'),
-        'Description' => array('vtiger_crmentity' => 'description'),
-    );
+    public array $list_fields = [
+        'Subject' => ['its4you_calendar' => 'subject'],
+        'Assigned To' => ['vtiger_crmentity' => 'smownerid'],
+        'Description' => ['vtiger_crmentity' => 'description'],
+    ];
 
     /**
      * @var array
      */
-    public array $list_fields_name = array(
+    public array $list_fields_name = [
         'Subject' => 'subject',
         'Assigned To' => 'assigned_user_id',
         'Description' => 'description',
-    );
+    ];
 
     /**
      * @var array
      * [name, handler, frequency, module, sequence, description]
      */
-    public array $registerCron = array(
+    public array $registerCron = [
         ['ITS4YouCalendarReminder', 'modules/ITS4YouCalendar/cron/Reminder.service', 900, 'ITS4YouCalendar', 0, ''],
-    );
+    ];
 
     /**
      *
@@ -442,7 +442,7 @@ class ITS4YouCalendar extends CRMEntity
 
         $name = 'VTCalendarTask';
         $label = 'Create Calendar Record';
-        $taskType = array(
+        $taskType = [
             'name' => $name,
             'label' => $label,
             'classname' => $name,
@@ -453,11 +453,11 @@ class ITS4YouCalendar extends CRMEntity
                 'exclude' => []
             ],
             'sourcemodule' => $this->moduleName
-        );
-        $files = array(
+        ];
+        $files = [
             'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
             'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
-        );
+        ];
 
         foreach ($files as $fromFile => $toFile) {
             $fromFile = sprintf($fromFile, $name);
@@ -474,7 +474,7 @@ class ITS4YouCalendar extends CRMEntity
 
         $this->db->pquery(
             'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
-            array($name)
+            [$name]
         );
 
         if ($copied && $register) {

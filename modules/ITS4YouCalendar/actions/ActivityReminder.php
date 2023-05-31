@@ -66,7 +66,7 @@ class ITS4YouCalendar_ActivityReminder_Action extends Vtiger_Action_Controller
     public function getReminders(Vtiger_Request $request)
     {
         $recordModels = ITS4YouCalendar_Reminder_Model::getPopupRecords();
-        $records = array();
+        $records = [];
 
         /**
          * @var Vtiger_Record_Model $record

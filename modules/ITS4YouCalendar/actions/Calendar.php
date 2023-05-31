@@ -47,7 +47,7 @@ class ITS4YouCalendar_Calendar_Action extends Vtiger_Action_Controller
     {
         $moduleModel = Vtiger_Module_Model::getInstance($request->get('related_module'));
         $moduleFields = $moduleModel->getFields();
-        $fieldsInfo = array();
+        $fieldsInfo = [];
 
         foreach ($moduleFields as $fieldName => $fieldModel) {
             $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();

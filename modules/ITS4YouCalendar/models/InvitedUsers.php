@@ -30,7 +30,7 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
             FROM its4you_invited_users 
             INNER JOIN vtiger_users ON vtiger_users.id=its4you_invited_users.user_id 
             WHERE its4you_invited_users.record_id =? AND vtiger_users.deleted=? AND vtiger_users.status=?';
-        $user_result = $this->adb->pquery($query, array($recordId, 0, 'Active'));
+        $user_result = $this->adb->pquery($query, [$recordId, 0, 'Active']);
         $invitedUsers = [];
 
         if ($this->adb->num_rows($user_result)) {
