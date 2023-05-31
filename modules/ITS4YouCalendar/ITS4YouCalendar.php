@@ -572,6 +572,7 @@ class ITS4YouCalendar extends CRMEntity
     /**
      * @return void
      * @throws phpmailerException
+     * @throws Exception
      */
     public function insertIntoInvitedUsers()
     {
