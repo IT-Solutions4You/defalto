@@ -269,9 +269,6 @@ class PearDatabase{
 			$this->database->Execute($setnameSql);
 			$this->logSqlTiming($sql_start_time, microtime(true), $setnameSql);
 		}
-
-		// Ensure sql_mode is friendly
-		$this->database->Execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
 	}
 
 	/**
@@ -851,6 +848,9 @@ class PearDatabase{
 			if($this->isdb_default_utf8_charset) {
 				$this->executeSetNamesUTF8SQL(true);
 			}
+
+			// Ensure sql_mode is friendly
+			$this->database->Execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
 		}
 	}
 
