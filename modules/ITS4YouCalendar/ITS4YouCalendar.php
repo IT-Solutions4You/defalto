@@ -11,21 +11,52 @@
 class ITS4YouCalendar extends CRMEntity
 {
     /**
+     * @var array|TrackableObject
+     */
+    public $column_fields;
+    /**
+     * @var array
+     */
+    public array $customFieldTable = [
+        'its4you_calendarcf',
+        'its4you_calendar_id',
+    ];
+    /**
+     * @var PearDatabase
+     */
+    public $db;
+    /**
+     * @var string
+     */
+    public string $entity_table = 'vtiger_crmentity';
+    /**
      * @var
      */
     public $id;
     /**
-     * @var array|TrackableObject
+     * @var array
      */
-    public $column_fields;
+    public array $list_fields = [
+        'Subject' => ['its4you_calendar' => 'subject'],
+        'Assigned To' => ['vtiger_crmentity' => 'smownerid'],
+        'Description' => ['vtiger_crmentity' => 'description'],
+    ];
+    /**
+     * @var array
+     */
+    public array $list_fields_name = [
+        'Subject' => 'subject',
+        'Assigned To' => 'assigned_user_id',
+        'Description' => 'description',
+    ];
     /**
      * @var Logger
      */
     public $log;
     /**
-     * @var PearDatabase
+     * @var string
      */
-    public $db;
+    public string $moduleLabel = 'Calendar 4 You';
     /**
      * @var string
      */
@@ -34,30 +65,6 @@ class ITS4YouCalendar extends CRMEntity
      * @var string
      */
     public string $parentName = 'Tools';
-    /**
-     * @var string
-     */
-    public string $moduleLabel = 'Calendar 4 You';
-    /**
-     * @var string
-     */
-    public string $table_name = 'its4you_calendar';
-    /**
-     * @var string
-     */
-    public string $table_index = 'its4you_calendar_id';
-    /**
-     * @var string
-     */
-    public string $entity_table = 'vtiger_crmentity';
-
-    /**
-     * @var array
-     */
-    public array $customFieldTable = [
-        'its4you_calendarcf',
-        'its4you_calendar_id',
-    ];
 
     /**
      * @var array
@@ -68,7 +75,6 @@ class ITS4YouCalendar extends CRMEntity
         'its4you_calendarcf',
         'its4you_remindme',
     ];
-
     /**
      * @var array
      */
@@ -78,495 +84,50 @@ class ITS4YouCalendar extends CRMEntity
         'its4you_calendarcf' => 'its4you_calendar_id',
         'its4you_remindme' => 'record_id',
     ];
-
     /**
-     * @var array
+     * @var string
      */
-    public array $list_fields = [
-        'Subject' => ['its4you_calendar' => 'subject'],
-        'Assigned To' => ['vtiger_crmentity' => 'smownerid'],
-        'Description' => ['vtiger_crmentity' => 'description'],
-    ];
-
+    public string $table_index = 'its4you_calendar_id';
     /**
-     * @var array
+     * @var string
      */
-    public array $list_fields_name = [
-        'Subject' => 'subject',
-        'Assigned To' => 'assigned_user_id',
-        'Description' => 'description',
-    ];
+    public string $table_name = 'its4you_calendar';
 
     /**
-     * @var array
-     * [name, handler, frequency, module, sequence, description]
-     */
-    public array $registerCron = [
-        ['ITS4YouCalendarReminder', 'modules/ITS4YouCalendar/cron/Reminder.service', 900, 'ITS4YouCalendar', 0, ''],
-    ];
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        global $log;
-        $this->column_fields = getColumnFields(get_class($this));
-        $this->db = PearDatabase::getInstance();
-        $this->log = $log;
-    }
-
-    /**
-     * @param string $moduleName
-     * @param string $eventType
+     * @param string $name
      * @return void
      */
-    public function vtlib_handler($moduleName, $eventType)
+    protected function createRelationFromMultiReference(string $name)
     {
-        require_once 'include/utils/utils.php';
-        require_once 'vtlib/Vtiger/Module.php';
-        require_once 'vtlib/Vtiger/Cron.php';
-        require_once 'modules/ModComments/ModComments.php';
-        require_once 'modules/ModTracker/ModTracker.php';
+        $relatedRecords = explode(';', $this->column_fields[$name]);
 
-        switch ($eventType) {
-            case 'module.postinstall':
-            case 'module.enabled':
-            case 'module.postupdate':
-                $this->addCustomLinks();
-                break;
-            case 'module.disabled':
-            case 'module.preuninstall':
-            case 'module.preupdate':
-                $this->deleteCustomLinks();
-                break;
+        foreach ($relatedRecords as $relatedRecord) {
+            $this->createRelationFromRecord(intval($relatedRecord));
         }
     }
 
-    /**
-     * @return void
-     */
-    public function addCustomLinks()
+    protected function createRelationFromRecord(int $recordId)
     {
-        $this->installTables();
-        $this->installFields();
-        $this->insertEmailTemplates();
-        $this->updateCron();
-        $this->updateParentIdModules();
-        $this->updateWorkflow();
-        $this->updateFilters();
-        $this->updateIcons();
-        $this->updatePicklists();
+        if (!empty($recordId)) {
+            $module = Vtiger_Module_Model::getInstance($this->moduleName);
+            $parentModuleName = getSalesEntityType($recordId);
+            $parentModule = Vtiger_Module_Model::getInstance($parentModuleName);
 
-        ITS4YouCalendar_Migration_Model::getInstance()->migrate();
-        
-        ModComments::addWidgetTo([$this->moduleName]);
-        ModTracker::enableTrackingForModule(getTabid($this->moduleName));
-    }
+            if ($parentModule) {
+                $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
 
-    public function installFields()
-    {
-        $moduleModel = Vtiger_Module_Model::getInstance('Users');
-        $block = Vtiger_Block_Model::getInstance('LBL_CALENDAR_SETTINGS', $moduleModel);
-
-        $fieldName = 'week_days';
-        $field = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
-
-        if (!$field) {
-            $field = new Vtiger_Field();
-            $field->column = $fieldName;
-            $field->name = $fieldName;
-            $field->table = 'vtiger_users';
-            $field->label = 'Week days';
-            $field->uitype = 33;
-            $field->save($block);
-            $field->setPicklistValues([
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday',
-            ]);
-
-            $this->db->pquery(
-                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
-                ['Monday |##| Tuesday |##| Wednesday |##| Thursday |##| Friday', '']
-            );
-        }
-
-        $fieldName = 'slot_duration';
-        $field = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
-
-        if (!$field) {
-            $field = new Vtiger_Field();
-            $field->column = $fieldName;
-            $field->name = $fieldName;
-            $field->table = 'vtiger_users';
-            $field->label = 'Slot duration';
-            $field->uitype = 15;
-            $field->save($block);
-            $field->setPicklistValues([
-                '30 minutes',
-                '15 minutes',
-            ]);
-            $this->db->pquery(
-                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
-                ['30 minutes', '']
-            );
-        }
-    }
-
-    public function updatePicklists()
-    {
-        $this->db->pquery('DELETE FROM vtiger_defaultcalendarview WHERE defaultcalendarview IN (?)', ['SharedCalendar']);
-        $this->db->pquery('DELETE FROM vtiger_activity_view WHERE activity_view IN (?,?)', ['This Year', 'Agenda']);
-        $this->db->pquery('UPDATE vtiger_calendar_type SET presence=? WHERE calendar_type IN (?,?,?,?)', ['0', 'Call', 'Meeting', 'Email', 'Reminder']);
-    }
-
-    public function insertEmailTemplates()
-    {
-        if (method_exists('EMAILMaker_Record_Model', 'saveTemplate')) {
-            $templates = [
-                [
-                    'templatename' => 'Reminder',
-                    'module' => $this->moduleName,
-                    'description' => 'Reminder',
-                    'subject' => 'Reminder',
-                    'body' => 'Reminder',
-                    'owner' => Users::getActiveAdminId(),
-                    'sharingtype' => 'public',
-                    'category' => 'system',
-                    'is_listview' => 0,
-                ],
-                [
-                    'templatename' => 'Invitation',
-                    'module' => $this->moduleName,
-                    'description' => 'Invitation',
-                    'subject' => 'Invitation',
-                    'body' => 'Invitation',
-                    'owner' => Users::getActiveAdminId(),
-                    'sharingtype' => 'public',
-                    'category' => 'system',
-                    'is_listview' => 0,
-                ]
-            ];
-
-            $adb = PearDatabase::getInstance();
-
-            foreach ($templates as $template) {
-                $result = $adb->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE subject=? AND deleted=? AND module=?', [$template['subject'], '0', $this->moduleName]);
-
-                if (!$adb->num_rows($result)) {
-                    EMAILMaker_Record_Model::saveTemplate($template, 0);
+                if ($relationModel) {
+                    $relationModel->addRelation($recordId, $this->id);
                 }
             }
         }
     }
 
-    public function updateIcons()
+    protected function createRelationFromReference(string $name)
     {
-        $layout = Vtiger_Viewer::getDefaultLayoutName();
-        $from = sprintf('layouts/%s/modules/%s/%s.png', $layout, $this->moduleName, $this->moduleName);
-        $to = sprintf('layouts/%s/skins/images/%s.png', $layout, $this->moduleName);
+        $recordId = intval($this->column_fields[$name]);
 
-        if (is_file($from) && !is_file($to)) {
-            copy($from, $to);
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function installTables()
-    {
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_remindme` (
-          `record_id` int(11) NOT NULL,
-          `reminder_time` int(11) NOT NULL,
-          `reminder_sent` int(2) NOT NULL,
-          `recuring_id` int(19) NOT NULL,
-          PRIMARY KEY (record_id)
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_remindme_popup` (
-          `its4you_remindme_id` int(19) AUTO_INCREMENT,
-          `record_id` int(19) NOT NULL,
-          `datetime_start` datetime NOT NULL,
-          `status` int(2) NOT NULL,
-          PRIMARY KEY (its4you_remindme_id)
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_invited_users` (
-            `invited_users_id` int(11) NOT NULL,
-            `user_id` int(11) NOT NULL,
-            `record_id` int(11) NOT NULL,
-            `status` varchar(50) DEFAULT NULL
-            ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_recurring` (
-          `recurring_id` int(19) AUTO_INCREMENT,
-          `record_id` int(19) NOT NULL,
-          `recurring_date` date NOT NULL,
-          `recurring_end_date` date NOT NULL,
-          `recurring_type` varchar(30) NOT NULL,
-          `recurring_frequency` int(19) NOT NULL,
-          `recurring_info` varchar(50) NOT NULL
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS `its4you_recurring_rel` (
-            `record_id` int(11) NOT NULL COMMENT 'first recurrence record',      
-            `recurrence_id` int(11) NOT NULL COMMENT 'other or first recurrence record',
-          UNIQUE (recurrence_id)
-        ) ENGINE=InnoDB"
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_sharing_users` (
-            `crmid` INT(19) NOT NULL,
-            `userid` INT(19) NOT NULL,
-            `type` INT(1) NOT NULL,
-            INDEX `crmid` (`crmid`) USING BTREE,
-            INDEX `userid` (`userid`) USING BTREE,
-            INDEX `crmid_2` (`crmid`, `userid`) USING BTREE
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_calendar_user_types` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `default_id` int(11) DEFAULT NULL,
-          `user_id` int(11) DEFAULT NULL,
-          `color` varchar(8) DEFAULT NULL,
-          `visible` int(1) DEFAULT NULL
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS  `its4you_calendar_default_types` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `module` varchar(50) DEFAULT NULL,
-          `fields` varchar(200) DEFAULT NULL,
-          `default_color` varchar(8) DEFAULT NULL,
-          `is_default` int(1) DEFAULT NULL
-        ) ENGINE=InnoDB'
-        );
-        /** Database references to crmentity
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring`
-         * ADD CONSTRAINT `its4you_recurring_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_invited_users`
-         * ADD CONSTRAINT `its4you_invited_users_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_invited_users`
-         * ADD CONSTRAINT `its4you_invited_users_user_id`
-         * FOREIGN KEY (`user_id`)
-         * REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_remindme`
-         * ADD CONSTRAINT `its4you_remindme_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_remindme_popup`
-         * ADD CONSTRAINT `its4you_remindme_popup_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring_rel`
-         * ADD CONSTRAINT `its4you_recurring_rel_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring_rel`
-         * ADD CONSTRAINT `its4you_recurring_rel_recurrence_id`
-         * FOREIGN KEY (`recurrence_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         */
-    }
-
-    /**
-     * @param $register
-     * @return void
-     */
-    public function updateCron($register = true)
-    {
-        $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
-
-        foreach ($this->registerCron as $cronInfo) {
-            list($name, $handler, $frequency, $module, $sequence, $description) = $cronInfo;
-
-            Vtiger_Cron::deregister($name);
-
-            if ($register) {
-                Vtiger_Cron::register($name, $handler, $frequency, $module, 1, $sequence, $description);
-            }
-        }
-    }
-
-    public function updateParentIdModules()
-    {
-        $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
-        $fieldModel = Vtiger_Field_Model::getInstance('parent_id', $moduleModel);
-
-        if ($fieldModel && empty($fieldModel->getReferenceList())) {
-            $integrationModels = Settings_ITS4YouCalendar_Integration_Model::getModules();
-
-            foreach ($integrationModels as $integrationModel) {
-                $integrationModel->setField();
-                $integrationModel->setRelation();
-            }
-        }
-    }
-
-    public function updateWorkflow($register = true)
-    {
-        vimport('~~modules/com_vtiger_workflow/include.inc');
-        vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
-        vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
-        vimport('~~modules/com_vtiger_workflow/VTTaskManager.inc');
-
-        $name = 'VTCalendarTask';
-        $label = 'Create Calendar Record';
-        $taskType = [
-            'name' => $name,
-            'label' => $label,
-            'classname' => $name,
-            'classpath' => '',
-            'templatepath' => '',
-            'modules' => [
-                'include' => [],
-                'exclude' => []
-            ],
-            'sourcemodule' => $this->moduleName
-        ];
-        $files = [
-            'modules/' . $this->moduleName . '/workflows/%s.inc' => 'modules/com_vtiger_workflow/tasks/%s.inc',
-            'layouts/v7/modules/' . $this->moduleName . '/workflows/%s.tpl' => 'layouts/v7/modules/Settings/Workflows/Tasks/%s.tpl',
-        ];
-
-        foreach ($files as $fromFile => $toFile) {
-            $fromFile = sprintf($fromFile, $name);
-            $toFile = sprintf($toFile, $name);
-
-            if (empty($taskType['classpath'])) {
-                $taskType['classpath'] = $toFile;
-            } elseif (empty($taskType['templatepath'])) {
-                $taskType['templatepath'] = $toFile;
-            }
-
-            $copied = copy($fromFile, $toFile);
-        }
-
-        $this->db->pquery(
-            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
-            [$name]
-        );
-
-        if ($copied && $register) {
-            VTTaskType::registerTaskType($taskType);
-        }
-    }
-
-    public function updateFilters()
-    {
-        $filter = Vtiger_Filter::getInstance('Today');
-
-        if (!$filter) {
-            $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
-
-            $filter = new Vtiger_Filter();
-            $filter->name = 'Today';
-            $filter->save($moduleModel);
-
-            $fields = ['subject', 'datetime_start', 'datetime_end', 'calendar_status', 'calendar_type', 'assigned_user_id'];
-
-            foreach ($fields as $sequence => $field) {
-                $fieldInstance = $moduleModel->getField($field);
-
-                if ($fieldInstance) {
-                    $filter->addField($fieldInstance, $sequence);
-                }
-            }
-
-            $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-            $tomorrow->modify('+1439 minutes');
-            $tomorrow = $tomorrow->format('Y-m-d H:i:s');
-            $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-            $today = $today->format('Y-m-d H:i:s');
-            $groupId = 2;
-            $rules = [
-                ['its4you_calendar:datetime_start:datetime_start:ITS4YouCalendar_Start_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, 'or'],
-                ['its4you_calendar:datetime_end:datetime_end:ITS4YouCalendar_End_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, ''],
-            ];
-
-
-            $adb = PearDatabase::getInstance();
-            $adb->pquery(
-                'INSERT INTO vtiger_cvadvfilter_grouping(groupid,cvid,group_condition,condition_expression) VALUES (?,?,?,?)',
-                [$groupId, $filter->id, null, implode(' or ', array_keys($rules))]
-            );
-
-            foreach ($rules as $index => $rule) {
-                $adb->pquery(
-                    'INSERT INTO vtiger_cvadvfilter(cvid, columnindex, columnname, comparator, value, groupid, column_condition) VALUES(?,?,?,?,?,?,?)',
-                    [$filter->id, $index, $rule[0], $rule[1], $rule[2], $rule[3], $rule[4]]
-                );
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function deleteCustomLinks()
-    {
-        $this->updateCron(false);
-        $this->updateWorkflow(false);
-
-        ModComments::removeWidgetFrom([$this->moduleName]);
-        ModTracker::disableTrackingForModule(getTabid($this->moduleName));
-    }
-
-    /**
-     * @return void
-     */
-    public function save_module()
-    {
-        $this->insertIntoReminder();
-        $this->insertIntoInvitedUsers();
-        $this->insertIntoRecurring();
-
-        $this->saveMultiReference('contact_id', 'Contacts');
-        $this->createRelationFromMultiReference('contact_id');
-        $this->createRelationFromReference('parent_id');
-        $this->createRelationFromReference('account_id');
-    }
-
-    /**
-     * @return void
-     */
-    public function insertIntoReminder()
-    {
-        $recordId = $this->id;
-        $dateTimeStart = $this->column_fields['datetime_start'];
-        $dateTimeStart = DateTimeField::convertToDBTimeZone($dateTimeStart);
-
-        ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart->format('Y-m-d H:i:s'));
+        $this->createRelationFromRecord($recordId);
     }
 
     /**
@@ -574,7 +135,7 @@ class ITS4YouCalendar extends CRMEntity
      * @throws phpmailerException
      * @throws Exception
      */
-    public function insertIntoInvitedUsers()
+    protected function insertIntoInvitedUsers()
     {
         $recordId = $this->id;
         $invitedUsers = explode(';', $this->column_fields['invite_users']);
@@ -598,7 +159,7 @@ class ITS4YouCalendar extends CRMEntity
     /**
      * @return void
      */
-    public function insertIntoRecurring()
+    protected function insertIntoRecurring()
     {
         if (!in_array($_REQUEST['action'], ['Save', 'SaveOverlay'])) {
             return;
@@ -615,11 +176,23 @@ class ITS4YouCalendar extends CRMEntity
     }
 
     /**
+     * @return void
+     */
+    protected function insertIntoReminder()
+    {
+        $recordId = $this->id;
+        $dateTimeStart = $this->column_fields['datetime_start'];
+        $dateTimeStart = DateTimeField::convertToDBTimeZone($dateTimeStart);
+
+        ITS4YouCalendar_Reminder_Model::saveRecord($recordId, $dateTimeStart->format('Y-m-d H:i:s'));
+    }
+
+    /**
      * @param $fieldName
      * @param $relatedModule
      * @return void
      */
-    public function saveMultiReference($fieldName, $relatedModule)
+    protected function saveMultiReference($fieldName, $relatedModule)
     {
         $recordId = $this->id;
         $recordModule = $this->moduleName;
@@ -633,39 +206,39 @@ class ITS4YouCalendar extends CRMEntity
     }
 
     /**
-     * @param string $name
+     * @return void
+     * @throws Exception
+     */
+    public function save_module()
+    {
+        $this->insertIntoReminder();
+        $this->insertIntoInvitedUsers();
+        $this->insertIntoRecurring();
+
+        $this->saveMultiReference('contact_id', 'Contacts');
+        $this->createRelationFromMultiReference('contact_id');
+        $this->createRelationFromReference('parent_id');
+        $this->createRelationFromReference('account_id');
+    }
+
+    /**
+     * @param string $moduleName
+     * @param string $eventType
      * @return void
      */
-    public function createRelationFromMultiReference(string $name)
+    public function vtlib_handler(string $moduleName, string $eventType)
     {
-        $relatedRecords = explode(';', $this->column_fields[$name]);
-
-        foreach ($relatedRecords as $relatedRecord) {
-            $this->createRelationFromRecord(intval($relatedRecord));
-        }
+        ITS4YouCalendar_Install_Model::getInstance($eventType, $moduleName)->install();
     }
 
-    public function createRelationFromRecord(int $recordId)
+    /**
+     *
+     */
+    public function __construct()
     {
-        if (!empty($recordId)) {
-            $module = Vtiger_Module_Model::getInstance($this->moduleName);
-            $parentModuleName = getSalesEntityType($recordId);
-            $parentModule = Vtiger_Module_Model::getInstance($parentModuleName);
-
-            if ($parentModule) {
-                $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
-
-                if ($relationModel) {
-                    $relationModel->addRelation($recordId, $this->id);
-                }
-            }
-        }
-    }
-
-    public function createRelationFromReference(string $name)
-    {
-        $recordId = intval($this->column_fields[$name]);
-
-        $this->createRelationFromRecord($recordId);
+        global $log;
+        $this->column_fields = getColumnFields(get_class($this));
+        $this->db = PearDatabase::getInstance();
+        $this->log = $log;
     }
 }
