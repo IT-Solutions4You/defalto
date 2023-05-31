@@ -1554,13 +1554,12 @@ class Vtiger_Functions {
      *
      * @return bool
      */
-    public static function validateRequestParameter($type, $value)
+    public static function validateRequestParameter(string $type, $value): bool
     {
         $ok = true;
 
         switch ($type) {
             case 'id' :
-            case 'record' :
                 $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
                 break;
             case 'email' :
