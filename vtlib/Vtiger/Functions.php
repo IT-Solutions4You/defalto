@@ -1514,26 +1514,32 @@ class Vtiger_Functions {
 
     /**
      * Request parameters and it's type.
-     * @var type
+     * @var string[]
      */
-    protected static $type = array(
-	'record' => 'id',
-	'src_record' => 'id',
-	'parent_id' => 'id',
-        '_mfrom' => 'email',
-        '_mto' => 'email',
+    protected static array $type = [
+        'record'        => 'id',
+        'src_record'    => 'id',
+        'parent_id'     => 'id',
+        '_mfrom'        => 'email',
+        '_mto'          => 'email',
         'sequencesList' => 'idlist',
-        'search_value' => 'keyword',
-    );
+        'search_value'  => 'keyword',
+        'module'        => 'string',
+        'view'          => 'string',
+        'action'        => 'string',
+    ];
 
     /**
      * Function to validate request parameters.
-     * @param type $request
+     *
+     * @param array $request
+     *
      * @throws Exception - Bad Request
      */
-    public static function validateRequestParameters($request) {
+    public static function validateRequestParameters($request)
+    {
         foreach (self::$type as $param => $type) {
-            if ( isset($request[$param])&& $request[$param] && !self::validateRequestParameter($type, $request[$param])) {
+            if (isset($request[$param]) && $request[$param] && !self::validateRequestParameter($type, $request[$param])) {
                 http_response_code(400);
                 throw new Exception('Bad Request');
             }
@@ -1542,29 +1548,41 @@ class Vtiger_Functions {
 
     /**
      * Function to validate request parameter by it's type.
-     * @param  <String> type   - Type of paramter.
-     * @param  <String> $value - Which needs to be validated.
-     * @return <Boolean>
+     *
+     * @param string $type  - Type of paramter.
+     * @param mixed  $value - Which needs to be validated.
+     *
+     * @return bool
      */
-    public static function validateRequestParameter($type, $value) {
+    public static function validateRequestParameter($type, $value)
+    {
         $ok = true;
+
         switch ($type) {
-            case 'id' : $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
+            case 'id' :
+            case 'record' :
+                $ok = (preg_match('/[^0-9xH]/', $value)) ? false : $ok;
                 break;
-            case 'email' : $ok = self::validateTypeEmail($value);
+            case 'email' :
+                $ok = self::validateTypeEmail($value);
                 break;
-            case 'idlist' : $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
+            case 'idlist' :
+                $ok = (preg_match('/[a-zA-Z]/', $value)) ? false : $ok;
+                break;
+            case 'string' :
+                $ok = $value == strip_tags($value);
                 break;
             case 'keyword':
-                $blackList = array('UNION', '--', 'SELECT ', 'SELECT*', '%', 'NULL', 'HEX');
+                $blackList = ['UNION', '--', 'SELECT ', 'SELECT*', '%', 'NULL', 'HEX'];
+
                 foreach ($blackList as $keyword) {
                     if (stripos($value, $keyword) !== false) {
                         $ok = false;
                         break;
                     }
                 }
-                break;
         }
+
         return $ok;
     }
 
