@@ -96,23 +96,23 @@ class ITS4YouCalendar_RepeatRecords_Model
         $vtEntityDelta = new VTEntityDelta();
         $delta = $vtEntityDelta->getEntityDelta($parentModule, $parentId, true);
 
-        $skip_focus_fields = array('mode', 'record_id', 'createdtime', 'modifiedtime', 'id');
+        $skip_focus_fields = ['mode', 'record_id', 'createdtime', 'modifiedtime', 'id'];
 
         if ('edit' === $parentRecordModel->get('mode')) {
             $childQuery = 'SELECT * FROM its4you_recurring_rel WHERE record_id=?';
-            $childResult = $adb->pquery($childQuery, array($parentId));
+            $childResult = $adb->pquery($childQuery, [$parentId]);
             $parentRecurringId = $parentId;
 
             if (!$adb->num_rows($childResult)) {
-                $queryResult = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE recurrence_id=?', array($parentId));
+                $queryResult = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE recurrence_id=?', [$parentId]);
 
                 if ($adb->num_rows($queryResult)) {
                     $parentRecurringId = $adb->query_result($queryResult, 0, 'record_id');
-                    $childResult = $adb->pquery($childQuery, array($parentRecurringId));
+                    $childResult = $adb->pquery($childQuery, [$parentRecurringId]);
 
                     if ('all' === $recurrenceMode) {
                         $parentModel = Vtiger_Record_Model::getInstanceById($parentId);
-                        $parentResult = $adb->pquery('SELECT 1 FROM its4you_recurring_rel WHERE recurrence_id=?', array($parentRecurringId));
+                        $parentResult = $adb->pquery('SELECT 1 FROM its4you_recurring_rel WHERE recurrence_id=?', [$parentRecurringId]);
 
                         if ($adb->num_rows($parentResult)) {
                             $parentModel = Vtiger_Record_Model::getInstanceById($parentRecurringId);
@@ -130,8 +130,8 @@ class ITS4YouCalendar_RepeatRecords_Model
                 }
             }
 
-            $childResult = $adb->pquery($childQuery, array($parentRecurringId));
-            $childRecords = array();
+            $childResult = $adb->pquery($childQuery, [$parentRecurringId]);
+            $childRecords = [];
 
             while ($row = $adb->fetchByAssoc($childResult)) {
                 $childRecords[] = $row['recurrence_id'];
@@ -142,7 +142,7 @@ class ITS4YouCalendar_RepeatRecords_Model
                 $childRecords = array_slice($childRecords, $parentKey[0]);
             }
 
-            $updatedRecords = array();
+            $updatedRecords = [];
 
             if (self::$recurringTypeChanged && 'future' === $recurrenceMode) {
                 foreach ($childRecords as $childRecordId) {
@@ -219,7 +219,7 @@ class ITS4YouCalendar_RepeatRecords_Model
                         $recordModel->save();
                     }
                 } elseif (self::$recurringDataChanged) {
-                    $datesList = array();
+                    $datesList = [];
                     $datesList[] = $databaseStartDate;
 
                     self::createRecurringEvents($parentRecordModel, $recurrenceObject, $datesList, $parentRecurringId);
@@ -270,7 +270,7 @@ class ITS4YouCalendar_RepeatRecords_Model
         }
 
         $parentModule = $parentRecordModel->getModuleName();
-        $skip_focus_fields = array('record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted');
+        $skip_focus_fields = ['record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted'];
 
         $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
         list($parentDatabaseStartDate, $parentDatabaseStartTime) = explode(' ', $parentDatabaseStartDateTime);

@@ -44,7 +44,7 @@ class ITS4YouCalendar_DeleteAjax_Action extends Vtiger_DeleteAjax_Action
         $cvId = $request->get('viewname');
         deleteRecordFromDetailViewNavigationRecords($recordId, $cvId, $moduleName);
         $response = new Vtiger_Response();
-        $response->setResult(array('viewname' => $cvId, 'module' => $moduleName, 'deletedRecords' => $deletedRecords));
+        $response->setResult(['viewname' => $cvId, 'module' => $moduleName, 'deletedRecords' => $deletedRecords]);
         $response->emit();
     }
 }

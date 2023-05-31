@@ -102,12 +102,12 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
-        $jsFileNames = array(
+        $jsFileNames = [
             '~vendor/fullcalendar/fullcalendar/lib/main.min.js',
             '~/libraries/jquery/colorpicker/js/colorpicker.js',
             'modules.Vtiger.resources.Detail',
             "modules.$moduleName.resources.Calendar",
-        );
+        ];
 
         return array_merge($headerScriptInstances, $this->checkAndConvertJsScripts($jsFileNames));
     }
@@ -122,12 +122,12 @@ class ITS4YouCalendar_Calendar_View extends Vtiger_Index_View
         $headerCssInstances = parent::getHeaderCss($request);
         $moduleName = $request->getModule();
         $layout = Vtiger_Viewer::getLayoutName();
-        $cssFileNames = array(
+        $cssFileNames = [
             '~vendor/fullcalendar/fullcalendar/lib/main.min.css',
             '~/libraries/jquery/colorpicker/css/colorpicker.css',
             'modules.Vtiger.resources.Detail',
             "layouts.$layout.modules.$moduleName.resources.Calendar",
-        );
+        ];
 
         return array_merge($headerCssInstances, $this->checkAndConvertCssStyles($cssFileNames));
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -124,7 +125,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
             }
         }
 
-        if(!$moduleInstance) {
+        if (!$moduleInstance) {
             $moduleInstance = new Vtiger_Module();
 
             self::logSuccess('Module creating');
@@ -168,14 +169,14 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                 $taxResult = $adb->pquery('SELECT * FROM vtiger_inventorytaxinfo');
 
                 while ($row = $adb->fetchByAssoc($taxResult)) {
-                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = array(
+                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = [
                         'table' => 'vtiger_inventoryproductrel',
                         'label' => $row['taxlabel'],
                         'uitype' => 83,
                         'typeofdata' => 'V~O',
                         'displaytype' => 5,
                         'masseditable' => 0,
-                    );
+                    ];
                 }
             }
 
@@ -184,7 +185,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
 
                 $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 
-                if(!$blockInstance) {
+                if (!$blockInstance) {
                     $blockInstance = new Vtiger_Block();
                     $blockInstance->label = $block;
 
@@ -194,12 +195,12 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                 foreach ($fields as $fieldName => $fieldParams) {
                     self::logSuccess('Field create: ' . $fieldName);
 
-                    $relatedModules = array();
-                    $picklistValues = array();
+                    $relatedModules = [];
+                    $picklistValues = [];
 
                     $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
 
-                    if(!$fieldInstance) {
+                    if (!$fieldInstance) {
                         $fieldInstance = new Vtiger_Field();
                     }
 
@@ -293,7 +294,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
     {
         return [
             'LBL_BASIC_INFORMATION' => [
-                'subject' => array(
+                'subject' => [
                     'label' => 'Subject',
                     'columntype' => 'VARCHAR(255)',
                     'uitype' => 2,
@@ -302,39 +303,39 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'filter' => 1,
                     'entity_identifier' => 1,
                     'masseditable' => 1,
-                ),
-                'location' => array(
+                ],
+                'location' => [
                     'column' => 'location',
                     'label' => 'Location',
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
                     'columntype' => 'VARCHAR(150)',
                     'masseditable' => 1,
-                ),
-                'datetime_start' => array(
+                ],
+                'datetime_start' => [
                     'column' => 'datetime_start',
                     'label' => 'Start Datetime',
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
                     'filter' => 1,
-                ),
-                'datetime_end' => array(
+                ],
+                'datetime_end' => [
                     'column' => 'datetime_end',
                     'label' => 'End Datetime',
                     'uitype' => 6,
                     'typeofdata' => 'DT~M',
                     'columntype' => 'datetime',
                     'filter' => 1,
-                ),
-                'is_all_day' => array(
+                ],
+                'is_all_day' => [
                     'column' => 'is_all_day',
                     'label' => 'Is All Day',
                     'uitype' => 56,
                     'typeofdata' => 'C~O',
                     'columntype' => 'VARCHAR(3)',
-                ),
-                'calendar_status' => array(
+                ],
+                'calendar_status' => [
                     'column' => 'status',
                     'label' => 'Status',
                     'uitype' => 15,
@@ -348,8 +349,8 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'filter' => 1,
                     'masseditable' => 1,
 
-                ),
-                'calendar_priority' => array(
+                ],
+                'calendar_priority' => [
                     'column' => 'priority',
                     'label' => 'Priority',
                     'uitype' => 15,
@@ -363,8 +364,8 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'filter' => 1,
                     'masseditable' => 1,
 
-                ),
-                'calendar_type' => array(
+                ],
+                'calendar_type' => [
                     'column' => 'type',
                     'label' => 'Type',
                     'uitype' => 15,
@@ -377,8 +378,8 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     ],
                     'columntype' => 'VARCHAR(200)',
                     'masseditable' => 1,
-                ),
-                'calendar_visibility' => array(
+                ],
+                'calendar_visibility' => [
                     'column' => 'visibility',
                     'label' => 'Visibility',
                     'uitype' => 16,
@@ -388,15 +389,15 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         'Public',
                     ],
                     'columntype' => 'VARCHAR(50)',
-                ),
-                'send_notification' => array(
+                ],
+                'send_notification' => [
                     'column' => 'send_notification',
                     'label' => 'Send Notification',
                     'uitype' => 56,
                     'typeofdata' => 'C~O',
                     'columntype' => 'VARCHAR(3)',
-                ),
-                'assigned_user_id' => array(
+                ],
+                'assigned_user_id' => [
                     'column' => 'smownerid',
                     'label' => 'Assigned To',
                     'uitype' => 53,
@@ -405,20 +406,20 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'table' => 'vtiger_crmentity',
                     'filter' => 1,
                     'masseditable' => 1,
-                ),
+                ],
             ],
             'LBL_REMINDER_INFORMATION' => [
-                'reminder_time' => array(
+                'reminder_time' => [
                     'column' => 'reminder_time',
                     'table' => 'its4you_remindme',
                     'label' => 'Send Reminder',
                     'uitype' => 30,
                     'typeofdata' => 'I~O',
                     'columntype' => 'VARCHAR(150)',
-                ),
+                ],
             ],
             'LBL_RECURENCE_INFORMATION' => [
-                'recurring_type' => array(
+                'recurring_type' => [
                     'column' => 'recurring_type',
                     'label' => 'Recurrence',
                     'uitype' => 16,
@@ -430,28 +431,28 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         'Monthly',
                         'Yearly',
                     ],
-                ),
+                ],
             ],
             'LBL_REFERENCE_INFORMATION' => [
-                'parent_id' => array(
+                'parent_id' => [
                     'column' => 'parent_id',
                     'label' => 'Related To',
                     'uitype' => 10,
                     'typeofdata' => 'I~O',
                     'related_modules' => [],
                     'columntype' => 'INT(11)',
-                ),
-                'contact_id' => array(
+                ],
+                'contact_id' => [
                     'column' => 'contact_id',
                     'label' => 'Contact Name',
                     'uitype' => 57,
                     'typeofdata' => 'V~O',
                     'related_modules' => [
-                        'Contacts'
+                        'Contacts',
                     ],
                     'columntype' => 'VARCHAR(255)',
-                ),
-                'account_id' => array(
+                ],
+                'account_id' => [
                     'column' => 'account_id',
                     'label' => 'Account Name',
                     'uitype' => 10,
@@ -460,75 +461,75 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                         'Accounts',
                     ],
                     'columntype' => 'INT(11)',
-                ),
+                ],
             ],
             'LBL_CUSTOM_INFORMATION' => [
 
             ],
             'LBL_DESCRIPTION_INFORMATION' => [
-                'description' => array(
+                'description' => [
                     'label' => 'Description',
                     'columntype' => 'text',
                     'uitype' => 19,
                     'typeofdata' => 'V~O',
                     'summaryfield' => 0,
                     'table' => 'vtiger_crmentity',
-                ),
+                ],
             ],
             'LBL_INVITE_USER_BLOCK' => [
-                'invite_users' => array(
+                'invite_users' => [
                     'label' => 'Invite Users',
                     'columntype' => 'VARCHAR(255)',
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
                     'summaryfield' => 0,
-                ),
+                ],
             ],
             'LBL_SYSTEM_INFO' => [
-                'its4you_calendar_no' => array(
+                'its4you_calendar_no' => [
                     'label' => 'Calendar No',
                     'uitype' => 4,
                     'typeofdata' => 'V~O',
-                ),
-                'source' => array(
+                ],
+                'source' => [
                     'label' => 'Source',
                     'uitype' => 1,
                     'typeofdata' => 'V~O',
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
                     'summaryfield' => 1,
-                ),
-                'creator' => array(
+                ],
+                'creator' => [
                     'column' => 'smcreatorid',
                     'label' => 'Creator',
                     'uitype' => 52,
                     'typeofdata' => 'V~O',
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
-                ),
-                'createdtime' => array(
+                ],
+                'createdtime' => [
                     'label' => 'Created Time',
                     'uitype' => 70,
                     'typeofdata' => 'DT~O',
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
                     'headerfield' => 1,
-                ),
-                'modifiedby' => array(
+                ],
+                'modifiedby' => [
                     'label' => 'Last Modified By',
                     'uitype' => 52,
                     'typeofdata' => 'V~O',
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
-                ),
-                'modifiedtime' => array(
+                ],
+                'modifiedtime' => [
                     'label' => 'Modified Time',
                     'uitype' => 70,
                     'typeofdata' => 'DT~O',
                     'displaytype' => 2,
                     'table' => 'vtiger_crmentity',
-                ),
-                'duration_hours' => array(
+                ],
+                'duration_hours' => [
                     'column' => 'duration_hours',
                     'label' => 'Duration',
                     'displaytype' => 2,
@@ -536,7 +537,7 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
                     'uitype' => 63,
                     'typeofdata' => 'T~O',
                     'columntype' => 'VARCHAR(200)',
-                ),
+                ],
             ],
         ];
     }
