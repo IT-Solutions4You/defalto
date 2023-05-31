@@ -265,7 +265,7 @@ function isPermitted($module,$actionname,$record_id='')
     $profileGlobalPermission = [];
     $profileActionPermission = [];
     $defaultOrgSharingPermission = [];
-    $sharingPermission = null;
+    $sharingPermission = 'no';
 	global $log;
 	$log->debug("Entering isPermitted(".$module.",".$actionname.",".$record_id.") method ...");
 
@@ -318,8 +318,6 @@ function isPermitted($module,$actionname,$record_id='')
 			$log->debug("Exiting isPermitted method ...");
 			return $permission;
 		}
-
-        $sharingPermission = 'no';
 
         if ('' != $record_id) {
             $result = $adb->pquery(
