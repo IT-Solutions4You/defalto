@@ -1,7 +1,7 @@
 <div class="row conditionRow">
     <div class="col-lg-6 col-md-6 col-sm-6">
         <select class="select2 col-lg-8" name="sortcolumnname">
-            <option value="none">{vtranslate('LBL_SELECT_FIELD',$MODULE)}</option>
+            <option value="">{vtranslate('LBL_SELECT_FIELD',$MODULE)}</option>
             {foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$SORT_RECORD_STRUCTURE}
                 <optgroup label='{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}'>
                 {foreach item=FIELD_MODEL from=$BLOCK_FIELDS}
