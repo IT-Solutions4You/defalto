@@ -454,7 +454,7 @@ class CRMEntity {
 						WHERE vtiger_field.tabid = ?
 						AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0
 						AND vtiger_profile2field.profileid IN (" . generateQuestionMarks($profileList) . ")
-						AND and vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
+						AND vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
 
 					$params = array($tabid, $profileList, $table_name);
 				} else {
