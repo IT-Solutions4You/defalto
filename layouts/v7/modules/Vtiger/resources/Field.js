@@ -233,57 +233,74 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	},
 
 	/**
+	 * Function to get all pick list values
+	 * @return <object> key value options pair
+	 */
+	getAllPickListValues : function() {
+		return this.get('picklistvalues');
+	},
+
+	/**
 	 * Function to get the ui
 	 * @return - select element and chosen element
 	 */
-	getUi : function() {
+	getUi: function () {
 		//added class inlinewidth
-		var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
-		var pickListValues = this.getPickListValues();
-		var selectedOption = app.htmlDecode(this.getValue());
+		let html = '<select class="select2 inputElement inlinewidth" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">';
+		const pickListValues = this.getPickListValues();
+		const allPickListValues = this.getAllPickListValues();
+		const selectedOption = app.htmlDecode(this.getValue());
+		let selectedOptionfound = false;
+		const data = this.getData();
+		const picklistColors = data['picklistColors'];
+		const fieldName = this.getName();
 
-		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
-			html += '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>';
+		if (typeof pickListValues[' '] === 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
+			html += '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
 		}
 
-		var data = this.getData();
-		var picklistColors = data['picklistColors'];
-
-		var fieldName = this.getName();
-		for(var option in pickListValues) {
-			html += '<option value="'+option+'" ';
+		for (let option in pickListValues) {
+			html += '<option value="' + option + '" ';
 
 			if (picklistColors) {
-				var className = '';
+				let className = '';
 				if (picklistColors[option]) {
-					className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-					html += 'class="'+className+'"';
+					className = 'picklistColor_' + fieldName + '_' + option.replace(' ', '_');
+					html += 'class="' + className + '"';
 				}
 			}
 
-			if(option == selectedOption) {
+			if (option === selectedOption) {
 				html += ' selected ';
+				selectedOptionfound = true;
 			}
-			html += '>'+pickListValues[option]+'</option>';
+			html += '>' + pickListValues[option] + '</option>';
 		}
-		html +='</select>';
+
+		if (!selectedOptionfound && allPickListValues[selectedOption] !== undefined) {
+			html += '<option value="' + selectedOption + '" selected>' + allPickListValues[selectedOption] + '</option>';
+		}
+
+		html += '</select>';
 
 		if (picklistColors) {
-			html +='<style type="text/css">';
-			for(option in picklistColors) {
-				var picklistColor = picklistColors[option];
+			html += '<style type="text/css">';
+
+			for (let option in picklistColors) {
+				const picklistColor = picklistColors[option];
 				if (picklistColor) {
-					className = '.picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-					html += className+'{background-color: '+picklistColor+' !important;}';
+					className = '.picklistColor_' + fieldName + '_' + option.replace(' ', '_');
+					html += className + '{background-color: ' + picklistColor + ' !important;}';
 
 					className = className + '.select2-highlighted';
-					html += className+'{white: #ffffff !important; background-color: #337ab7 !important;}';
+					html += className + '{white: #ffffff !important; background-color: #337ab7 !important;}';
 				}
 			}
-			html +='<\style>';
+
+			html += '</style>';
 		}
 
-		var selectContainer = jQuery(html);
+		const selectContainer = jQuery(html);
 		this.addValidationToElement(selectContainer);
 		return selectContainer;
 	}
