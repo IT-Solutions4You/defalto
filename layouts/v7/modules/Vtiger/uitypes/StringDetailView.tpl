@@ -31,14 +31,14 @@
     {if ($FIELD_MODEL->get('uitype') eq '72') && ($FIELD_MODEL->getName() eq 'unit_price')}
         {assign var=CURRENCY_SYMBOL value=$BASE_CURRENCY_SYMBOL}
     {else if $FIELD_MODEL->get('uitype') eq '71'}
-        {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($CURRENT_USER_MODEL->get('currency_id'))}
+        {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($RECORD->fetchCurrencyId())}
         {assign var=CURRENCY_SYMBOL value=$CURRENCY_INFO['symbol']}
+        {assign var=TITLE_CURRENCY_INFO value=getCurrencySymbolandCRate($CURRENT_USER_MODEL->get('currency_id'))}
+        {assign var=TITLE_CURRENCY_SYMBOL value=$TITLE_CURRENCY_INFO['symbol']}
     {/if}
-    {if $SYMBOL_PLACEMENT eq '$1.0'}
-        {$CURRENCY_SYMBOL}&nbsp;<span class="currencyValue">{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}</span>
-    {else}
-        <span class="currencyValue">{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}</span>&nbsp;{$CURRENCY_SYMBOL}
-    {/if}
+    {if $SYMBOL_PLACEMENT eq '$1.0'}{$CURRENCY_SYMBOL}&nbsp;{/if}
+    <span class="currencyValue" title="{if $SYMBOL_PLACEMENT eq '$1.0'}{$TITLE_CURRENCY_SYMBOL}&nbsp;{/if}{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}{if $SYMBOL_PLACEMENT neq '$1.0'}&nbsp;{$TITLE_CURRENCY_SYMBOL}{/if}">{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), true)}</span>
+    {if $SYMBOL_PLACEMENT neq '$1.0'}&nbsp;{$CURRENCY_SYMBOL}{/if}
 {else if  $FIELD_MODEL->get('name') eq 'signature'}
 	{decode_html($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD))}
 {else}

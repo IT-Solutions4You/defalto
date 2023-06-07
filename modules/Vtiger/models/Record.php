@@ -759,4 +759,23 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
             }
 	}
 
+    /**
+     * @return int
+     */
+    public function fetchCurrencyId(): int
+    {
+        $db = PearDatabase::getInstance();
+        $id = $this->getId();
+        $seType = getSalesEntityType($id);
+        $focus = CRMEntity::getInstance($seType);
+        $result = $db->pquery('SELECT currency_id FROM ' . $focus->table_name . ' WHERE ' . $focus->table_index . ' = ?', [$id]);
+
+        if (!$db->num_rows($result)) {
+            return 1;
+        }
+
+        $row = $db->fetchByAssoc($result);
+
+        return (int)$row['currency_id'];
+    }
 }
