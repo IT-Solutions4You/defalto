@@ -255,7 +255,11 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
         } elseif (empty($orderBy) && empty($sortOrder) && $moduleName != "Users") {
             $orderBy = ' ORDER BY vtiger_crmentity.createdtime DESC';
             $cvModel = CustomView_Record_Model::getInstanceById($viewid);
-            $cvOrderBy = $cvModel->fetchOrderBy();
+            $cvOrderBy = false;
+
+            if ($cvModel) {
+                $cvOrderBy = $cvModel->fetchOrderBy();
+            }
 
             if ($cvOrderBy) {
                 $orderBy = ' ORDER BY ' . implode(' ', $cvOrderBy);
