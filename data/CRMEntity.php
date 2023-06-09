@@ -129,6 +129,15 @@ class CRMEntity {
 		//Calling the Module specific save code
 		$this->save_module($module);
 
+        if ($insertion_mode !== 'edit') {
+            if (in_array('currency_id', $this->db->getColumnNames($this->table_name))) {
+                $currencyField = new CurrencyField(0);
+                $currencyField->initialize();
+                $this->db->pquery('UPDATE ' . $this->table_name . ' SET currency_id = ?, conversion_rate = ? WHERE ' . $this->table_index . ' = ?',
+                    [$currencyField->currencyId, $currencyField->conversionRate, $this->id]);
+            }
+        }
+
 		$this->db->completeTransaction();
 
 		// vtlib customization: Hook provide to enable generic module relation.
@@ -612,11 +621,8 @@ class CRMEntity {
 						}
 					}
 					// END
-				} elseif ($uitype == 72 && !$ajaxSave) {
-					// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
+				} elseif (($uitype == 72 || $uitype == 71) && !$ajaxSave) {
 					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], null, true);
-				} elseif ($uitype == 71 && !$ajaxSave) {
-					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname]);
 				} elseif ($uitype == 69) {
 					$fldvalue = $this->column_fields[$fieldname];
 					if(php7_count($_FILES)) {
