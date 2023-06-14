@@ -156,6 +156,12 @@ class Vtiger_PackageExport {
 		if(is_dir("layouts/v7/modules/Settings/$module"))
 			$zip->copyDirectoryFromDisk("layouts/v7/modules/Settings/$module", "layouts/v7/modules/Settings/$module");
 
+        if(is_dir("layouts/d1/modules/$module"))
+            $zip->copyDirectoryFromDisk("layouts/d1/modules/$module", "layouts/d1/modules/$module");
+
+        if(is_dir("layouts/d1/modules/Settings/$module"))
+            $zip->copyDirectoryFromDisk("layouts/d1/modules/Settings/$module", "layouts/d1/modules/Settings/$module");
+
 		//Copy language files
 		$this->__copyLanguageFiles($zip, $module);
 
