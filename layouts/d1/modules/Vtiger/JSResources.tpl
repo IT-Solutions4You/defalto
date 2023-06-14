@@ -48,17 +48,17 @@
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/Vtiger.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Calendar/resources/TaskManagement.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Import/resources/Import.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Emails/resources/EmailPreview.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Vtiger/resources/Base.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Google/resources/Settings.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Vtiger/resources/CkEditor.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Documents/resources/Documents.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Emails/resources/EmailPreview.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/Base.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Google/resources/Settings.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/CkEditor.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Documents/resources/Documents.js')}"></script>
    
     {foreach key=index item=jsModel from=$SCRIPTS}
         <script type="{$jsModel->getType()}" src="{vresource_url($jsModel->getSrc())}"></script>
     {/foreach}
 
-    <script type="text/javascript" src="{vresource_url('layouts/v7/resources/v7_client_compat.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('layouts/d1/resources/v7_client_compat.js')}"></script>
     <!-- Added in the end since it should be after less file loaded -->
     <script type="text/javascript" src="{vresource_url('libraries/bootstrap/js/less.min.js')}"></script>
 
