@@ -22,7 +22,9 @@
     "psr/log": "^1.0 || ^2.0",
     "setasign/fpdi": "^2.1",
     "simplehtmldom/simplehtmldom": "*",
-    "smarty/smarty": "4.*"
+    "smarty/smarty": "4.*",
+    "components/font-awesome": "*",
+    "twbs/bootstrap": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",
