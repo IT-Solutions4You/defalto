@@ -43,7 +43,7 @@
     footer:
       "<div class='modal-footer'></div>",
     closeButton:
-      "<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",
+      "<button type='button' class='pull-right py-3 bootbox-close-button btn-close' data-bs-dismiss='modal' aria-hidden='true'></button>",
     form:
       "<form class='bootbox-form'></form>",
     inputs: {

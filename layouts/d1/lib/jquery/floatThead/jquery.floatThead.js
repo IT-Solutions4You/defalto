@@ -326,7 +326,7 @@
       $floatContainer.css({
         position: useAbsolutePositioning ? 'absolute' : 'fixed',
         marginTop: 0,
-        marginLeft: 1,
+        marginLeft: 0,
         top:  useAbsolutePositioning ? 0 : 'auto',
         zIndex: opts.zIndex
       });
