@@ -9,10 +9,10 @@
 {strip}
 <!--LIST VIEW RECORD ACTIONS-->
 
-<div class="table-actions">
+<div class="table-actions d-flex">
     {if !$SEARCH_MODE_RESULTS}
-    <span class="input" >
-        <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
+    <span class="input form-check" >
+        <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
     </span>
     {/if}
     {if $LISTVIEW_ENTRY->get('starred') eq vtranslate('LBL_YES', $MODULE)}
@@ -21,18 +21,19 @@
         {assign var=STARRED value=false}
     {/if}
     {if $QUICK_PREVIEW_ENABLED eq 'true'}
-		<span>
+		<span class="mx-2">
 			<a class="quickView fa fa-eye icon action" data-app="{$SELECTED_MENU_CATEGORY}" title="{vtranslate('LBL_QUICK_VIEW', $MODULE)}"></a>
 		</span>
     {/if}
 	{if $MODULE_MODEL->isStarredEnabled()}
-		<span>
+		<span class="mx-2">
 			<a class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
 		</span>
 	{/if}
-    <span class="more dropdown action">
-        <span href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-ellipsis-v icon"></i></span>
+    <span class="more dropdown action mx-2">
+        <span href="javascript:;" data-bs-toggle="dropdown">
+            <i class="fa fa-ellipsis icon"></i>
+        </span>
         <ul class="dropdown-menu">
             <li><a data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{vtranslate('LBL_DETAILS', $MODULE)}</a></li>
 			{if $RECORD_ACTIONS}

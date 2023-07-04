@@ -1142,32 +1142,39 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 	 * @param <String> $moduleName
 	 * @return <Array> - Associative array of Status label to an array of Vtiger_CustomView_Record models
 	 */
-	public static function getAllByGroup($moduleName='', $listMode = true) {
-		$customViews = self::getAll($moduleName);
-		$groupedCustomViews = array();
-		$groupedCustomViews['Mine'] = array();
-		$groupedCustomViews['Shared'] = array();
-		foreach ($customViews as $index => $customView) {
-			if($customView->isMine() && ($customView->get('viewname') != 'All' || !$listMode)) {
-				$groupedCustomViews['Mine'][] = $customView;
-			} elseif($customView->isPublic()) {
-				$groupedCustomViews['Public'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			} elseif($customView->isPending()) {
-				$groupedCustomViews['Pending'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			} else {
-				$groupedCustomViews['Others'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			}
-		}
-		if(empty($groupedCustomViews['Shared'])) {
-			unset($groupedCustomViews['Shared']);
-		}
-		return $groupedCustomViews;
-	}
+    public static function getAllByGroup($moduleName = '', $listMode = true)
+    {
+        $customViews = self::getAll($moduleName);
+        $groupedCustomViews = array();
+        $groupedCustomViews['Default'] = array();
+        $groupedCustomViews['Mine'] = array();
+        $groupedCustomViews['Shared'] = array();
 
-	/**
+        foreach ($customViews as $index => $customView) {
+            if ('All' === $customView->get('viewname')) {
+                $groupedCustomViews['Default'][] = $customView;
+            } elseif ($customView->isMine() && ($customView->get('viewname') != 'All' || !$listMode)) {
+                $groupedCustomViews['Mine'][] = $customView;
+            } elseif ($customView->isPublic()) {
+                $groupedCustomViews['Public'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            } elseif ($customView->isPending()) {
+                $groupedCustomViews['Pending'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            } else {
+                $groupedCustomViews['Others'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            }
+        }
+
+        if (empty($groupedCustomViews['Shared'])) {
+            unset($groupedCustomViews['Shared']);
+        }
+
+        return $groupedCustomViews;
+    }
+
+    /**
 	 * Function to get Clean instance of this record
 	 * @return self
 	 */

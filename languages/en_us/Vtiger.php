@@ -1405,6 +1405,8 @@ $languageStrings = array(
     'MultiCompany4you' => 'Multi Company',
 
     'LBL_FILTER_SORTING' => 'Filter sorting',
+    'LBL_PREV_LIST' => 'Prev',
+    'LBL_NEXT_LIST' => 'Next',
 );
 
 $jsLanguageStrings = array(

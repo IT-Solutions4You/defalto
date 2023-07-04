@@ -6,7 +6,7 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-
+{strip}
 {include file="modules/Vtiger/partials/Topbar.tpl"}
 
 <div class="container-fluid app-nav">
@@ -22,15 +22,18 @@
 	<div class="modal-dialog">
 	</div>
 </div>  
-<div class="main-container main-container-{$MODULE}">
-		{assign var=LEFTPANELHIDE value=$CURRENT_USER_MODEL->get('leftpanelhide')}
-		<div id="modnavigator" class="module-nav">
-			<div class="hidden-xs hidden-sm mod-switcher-container">
-				{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
+<div class="container-fluid main-container main-container-{$MODULE}">
+	<div class="row">
+		<div class="col-lg-auto p-0">
+			<div id="modnavigator" class="module-nav px-3 d-none d-lg-block">
+				<div class="hidden-xs hidden-sm mod-switcher-container">
+					{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
+				</div>
 			</div>
 		</div>
-		<div id="sidebar-essentials" class="sidebar-essentials {if $LEFTPANELHIDE eq '1'} hide {/if}">
-			{include file="partials/SidebarEssentials.tpl"|vtemplate_path:$MODULE}
-		</div>
-		<div class="listViewPageDiv content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}" id="listViewContent">
-
+		<div class="col-lg px-0 bg-white my-4 mx-lg-4 py-2 rounded overflow-hidden">
+			<div class="py-2 px-3">
+				{include file="ModuleLinks.tpl"|vtemplate_path:$MODULE}
+			</div>
+			<div id="listViewContent" class="listViewPageDiv content-area">
+{/strip}

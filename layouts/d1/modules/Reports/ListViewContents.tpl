@@ -59,7 +59,7 @@
 								<th {if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY} nowrap="nowrap" {/if}>
 									<a href="#" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER_KEY}">
 										{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}
-											<i class="fa fa-sort {$FASORT_IMAGE}"></i>
+											<i class="fa {$FASORT_IMAGE}"></i>
 										{else}
 											<i class="fa fa-sort customsort"></i>
 										{/if}

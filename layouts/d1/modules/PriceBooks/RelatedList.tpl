@@ -38,7 +38,7 @@
 									<th nowrap {if $HEADER_FIELD@last} {/if}>
 										<a href="javascript:void(0);" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}
 											{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
-												<i class="fa fa-sort {$FASORT_IMAGE}"></i>
+												<i class="fa {$FASORT_IMAGE}"></i>
 											{else}
 												<i class="fa fa-sort customsort"></i>
 											{/if}

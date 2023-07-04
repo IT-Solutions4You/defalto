@@ -49,14 +49,14 @@
 							<div class="row">
 								<div class="col-lg-10">
 									<h5>{vtranslate('LBL_AVAILABLE_FIELDS', $MODULE)}</h5>
-									<input type="text" class="inputElement searchAvailFields" placeholder="{vtranslate('LBL_SEARCH_FIELDS', $QUALIFIED_MODULE)}" />
+									<input type="text" class="inputElement searchAvailFields form-control" placeholder="{vtranslate('LBL_SEARCH_FIELDS', $QUALIFIED_MODULE)}" />
 									<div class="panel-group avialFieldsListContainer" id="accordion">
 										<div class="panel panel-default" id="avialFieldsList">
 											{foreach item=BLOCK_FIELDS key=BLOCK_LABEL from=$RECORD_STRUCTURE name=availFieldsLoop}
 												{assign var=RAND_ID value=10|mt_rand:1000}
 												<div class="instafilta-section">
 													<div id="{$RAND_ID}_accordion" class="availFieldBlock" role="tab">
-														<a class="fieldLabel" data-toggle="collapse" data-parent="#accordion" href="#{$RAND_ID}">
+														<a class="fieldLabel" data-bs-toggle="collapse" data-parent="#accordion" href="#{$RAND_ID}">
 															<i class="fa fa-caret-right"></i><span>{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}</span>
 														</a>
 													</div>

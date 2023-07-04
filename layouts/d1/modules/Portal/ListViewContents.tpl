@@ -52,7 +52,7 @@
 				<th>
 					<a href="#" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq 'portalname'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="portalname">
 						{if $COLUMN_NAME eq 'portalname'}
-							<i class="fa fa-sort {$FASORT_IMAGE}"></i>
+							<i class="fa {$FASORT_IMAGE}"></i>
 						{else}
 							<i class="fa fa-sort customsort"></i>
 						{/if}
@@ -66,7 +66,7 @@
 					<a href="#" class="listViewContentHeaderValues"
 					   data-nextsortorderval="{if $COLUMN_NAME eq 'portalurl'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="portalurl">
 						{if $COLUMN_NAME eq 'portalurl'}
-							<i class="fa fa-sort {$FASORT_IMAGE}"></i>
+							<i class="fa {$FASORT_IMAGE}"></i>
 						{else}
 							<i class="fa fa-sort customsort"></i>
 						{/if}
@@ -80,7 +80,7 @@
 					<a href="#" class="listViewContentHeaderValues"
 					   data-nextsortorderval="{if $COLUMN_NAME eq 'createdtime'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="createdtime">
 						{if $COLUMN_NAME eq 'createdtime'}
-							<i class="fa fa-sort {$FASORT_IMAGE}"></i>
+							<i class="fa {$FASORT_IMAGE}"></i>
 						{else}
 							<i class="fa fa-sort customsort"></i>
 						{/if}

@@ -124,24 +124,27 @@ jQuery.Class("Vtiger_CustomView_Js",{
 		});
 
 		return aDeferred.promise();
-	}, 
+	},
 
-	showCreateFilter : function(data){
-		var self = this;
+	showCreateFilter: function (data) {
+		const self = this;
+
 		self.reIntialize();
-		app.helper.loadPageContentOverlay(data).then(function(data){
-			data.find('.data').css('height','100%');
-			var Options= {
-			autoExpandScrollbar: true,
-			scrollInertia: 200,
-			autoHideScrollbar: true,
 
-			mouseWheel: {
-				enable: true,
-				preventDefault: true,
-				scrollAmount: 50
-			}
-		};
+		app.helper.loadPageContentOverlay(data, {show:true}).then(function (data) {
+			data.find('.data').css('height', '100%');
+
+			let Options = {
+				autoExpandScrollbar: true,
+				scrollInertia: 200,
+				autoHideScrollbar: true,
+
+				mouseWheel: {
+					enable: true,
+					preventDefault: true,
+					scrollAmount: 50
+				}
+			};
 			app.helper.showVerticalScroll(jQuery('.customview-content '), Options);
 			self.advanceFilterInstance = new Vtiger_AdvanceFilter_Js(data.find('.filterConditionsDiv'));
 			self.registerFilterCreateEvents();
@@ -294,15 +297,6 @@ jQuery.Class("Vtiger_CustomView_Js",{
 					app.request.post({'url':params.url}).then(function(){
 						app.helper.hideProgress();
 						target.trigger('post.DeletedFilter');
-						// moduleFiltersId is Default All Filter Id
-						var moduleFiltersId = jQuery('.module-filters input[name=allCvId]').val();
-							jQuery(".listViewFilter ").find('.filterName').each(function(key, ele){
-								var filterId = jQuery(ele).data('filter-id');
-								if(filterId == moduleFiltersId){
-									jQuery(ele).trigger('click');
-									return false;
-								}
-							});
 					});
 				},
 				function(){

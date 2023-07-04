@@ -10,9 +10,9 @@
 {strip}
 	{assign var=SELECTED_FIELDS value=$CUSTOMVIEW_MODEL->getSelectedFields()}
 	{assign var=MODULE_FIELDS value=$MODULE_MODEL->getFields()}
-	<div id="filterContainer" style="height:100%">
-		<form id="CustomView" style="height:100%">
-			<div class="modal-content" style="height:100%">
+	<div id="filterContainer" class="h-100">
+		<form id="CustomView" class="h-100">
+			<div class="modal-content h-100 border-0" >
 				<div class="overlayHeader">
 					{if $RECORD_ID}
 						{assign var="TITLE" value={vtranslate('LBL_EDIT_CUSTOM',$MODULE)}}
@@ -21,8 +21,8 @@
 					{/if}
 					{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
 				</div>
-				<div class="modal-body" style="height:100%">
-					<div class="customview-content row" style="height:90%">
+				<div class="modal-body h-100 p-3">
+					<div class="customview-content row h-100">
 						<input type=hidden name="record" id="record" value="{$RECORD_ID}" />
 						<input type="hidden" name="module" value="{$MODULE}" />
 						<input type="hidden" name="action" value="Save" />
@@ -34,23 +34,23 @@
 							<input type="hidden" name="status" value="{$CUSTOMVIEW_MODEL->get('status')}" />
 						{/if}
 						<input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}' />
-						<div class="form-group">
+						<div class="form-group p-2">
 							<label>{vtranslate('LBL_VIEW_NAME',$MODULE)}&nbsp;<span class="redColor">*</span> </label>
 							<div class="row">
 								<div class="col-lg-5 col-md-5 col-sm-5">
 									<input class="form-control" type="text" data-record-id="{$RECORD_ID}" id="viewname" name="viewname" value="{$CUSTOMVIEW_MODEL->get('viewname')}" data-rule-required="true" data-rule-maxsize="100" data-rule-check-filter-duplicate='{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($CUSTOM_VIEWS_LIST))}'>
 								</div>
 								<div class="col-lg-5 col-md-5 col-sm-5">
-									<label class="checkbox-inline">
+									<label class="checkbox-inline p-2">
 										<input type="checkbox" name="setdefault" value="1" {if $CUSTOMVIEW_MODEL->isDefault()} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SET_AS_DEFAULT',$MODULE)}
 									</label>
-									<label class="checkbox-inline">
+									<label class="checkbox-inline p-2">
 										<input id="setmetrics" name="setmetrics" type="checkbox" value="1" {if $CUSTOMVIEW_MODEL->get('setmetrics') eq '1'} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_LIST_IN_METRICS',$MODULE)}</label>
 									</label>
 								</div>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group p-2">
 							<label>
 								{vtranslate('LBL_CHOOSE_COLUMNS',$MODULE)} ({vtranslate('LBL_MAX_NUMBER_FILTER_COLUMNS')})
 							</label>
@@ -110,54 +110,54 @@
 							</div>
 							<div class="col-lg-2 col-md-2 col-sm-2"></div>
 						</div>
-						<div>
+						<div class="form-group p-2">
 							<label class="filterHeaders">{vtranslate('LBL_CHOOSE_FILTER_CONDITIONS', $MODULE)}:</label>
 							<div class="filterElements well filterConditionContainer filterConditionsDiv">
 								{include file='AdvanceFilter.tpl'|@vtemplate_path}
 							</div>
 						</div>
-						<div>
+						<div class="form-group p-2">
 							<label class="filterHeaders">{vtranslate('LBL_FILTER_SORTING', $MODULE)}: </label>
 							<div class="well">
 								{include file='SortBy.tpl'|@vtemplate_path:$MODULE}
 							</div>
 						</div>
-						<div class="checkbox">
-							<label>
-								<input type="hidden" name="sharelist" value="0" />
-								<input type="checkbox" data-toogle-members="true" name="sharelist" value="1" {if $LIST_SHARED} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SHARE_THIS_LIST',$MODULE)}
-							</label>
-						</div>
-						<select id="memberList" class="col-lg-7 col-md-7 col-sm-7 select2 members op0{if $LIST_SHARED} fadeInx{/if}" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}" style="margin-bottom: 10px;" data-rule-required="{if $LIST_SHARED}true{else}false{/if}">
-							<optgroup label="{vtranslate('LBL_ALL',$MODULE)}">
-								<option value="All::Users" data-member-type="{vtranslate('LBL_ALL',$MODULE)}" 
-										{if ($CUSTOMVIEW_MODEL->get('status') == $CV_PUBLIC_VALUE)} selected="selected"{/if}>
-									{vtranslate('LBL_ALL_USERS',$MODULE)}
-								</option>
-							</optgroup>
-							{foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
-								{assign var=TRANS_GROUP_LABEL value=$GROUP_LABEL}
-								{if $GROUP_LABEL eq 'RoleAndSubordinates'}
-									{assign var=TRANS_GROUP_LABEL value='LBL_ROLEANDSUBORDINATE'}
-								{/if}
-								{assign var=TRANS_GROUP_LABEL value={vtranslate($TRANS_GROUP_LABEL)}}
-								<optgroup label="{$TRANS_GROUP_LABEL}">
-									{foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
-										<option value="{$MEMBER->getId()}" data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
-									{/foreach}
+						<div class="form-group p-2">
+							<div class="checkbox">
+								<label>
+									<input type="hidden" name="sharelist" value="0" />
+									<input type="checkbox" data-toogle-members="true" name="sharelist" value="1" {if $LIST_SHARED} checked="checked"{/if}> &nbsp;&nbsp;{vtranslate('LBL_SHARE_THIS_LIST',$MODULE)}
+								</label>
+							</div>
+							<select id="memberList" class="col-lg-7 col-md-7 col-sm-7 select2 members op0{if $LIST_SHARED} fadeInx{/if}" multiple="true" name="members[]" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $MODULE)}" style="margin-bottom: 10px;" data-rule-required="{if $LIST_SHARED}true{else}false{/if}">
+								<optgroup label="{vtranslate('LBL_ALL',$MODULE)}">
+									<option value="All::Users" data-member-type="{vtranslate('LBL_ALL',$MODULE)}"
+											{if ($CUSTOMVIEW_MODEL->get('status') == $CV_PUBLIC_VALUE)} selected="selected"{/if}>
+										{vtranslate('LBL_ALL_USERS',$MODULE)}
+									</option>
 								</optgroup>
-							{/foreach}
-						</select>
-						<input type="hidden" name="status" id="allUsersStatusValue" value=""
-							data-public="{$CV_PUBLIC_VALUE}" data-private="{$CV_PRIVATE_VALUE}"/>
-
+								{foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
+									{assign var=TRANS_GROUP_LABEL value=$GROUP_LABEL}
+									{if $GROUP_LABEL eq 'RoleAndSubordinates'}
+										{assign var=TRANS_GROUP_LABEL value='LBL_ROLEANDSUBORDINATE'}
+									{/if}
+									{assign var=TRANS_GROUP_LABEL value={vtranslate($TRANS_GROUP_LABEL)}}
+									<optgroup label="{$TRANS_GROUP_LABEL}">
+										{foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
+											<option value="{$MEMBER->getId()}" data-member-type="{$GROUP_LABEL}" {if isset($SELECTED_MEMBERS_GROUP[$GROUP_LABEL][$MEMBER->getId()])}selected="true"{/if}>{$MEMBER->getName()}</option>
+										{/foreach}
+									</optgroup>
+								{/foreach}
+							</select>
+							<input type="hidden" name="status" id="allUsersStatusValue" value="" data-public="{$CV_PUBLIC_VALUE}" data-private="{$CV_PRIVATE_VALUE}"/>
+						</div>
 					</div>
 				</div>
-				<div class='modal-overlay-footer clearfix border1px'>
-					<div class="row clearfix">
-						<div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
+				<div class='modal-overlay-footer border-top border-1 container-fluid p-3'>
+					<div class="row">
+						<div class='col text-center'>
 							<button type='submit' class='btn btn-success saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-							<a class='cancelLink' href="javascript:void(0);" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+							<a class='cancelLink' href="javascript:void(0);" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 						</div>
 					</div>
 				</div>

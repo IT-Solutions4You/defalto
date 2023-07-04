@@ -293,7 +293,7 @@ class EmailTemplates_List_View extends Vtiger_Index_View {
 					"~layouts/v7/lib/jquery/sadropdown.js",
 					"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/floatThead/jquery.floatThead.js",
 					"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/js/perfect-scrollbar.jquery.js",
-					"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
+					"~layouts/d1/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
 				);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
