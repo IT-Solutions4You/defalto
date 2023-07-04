@@ -309,19 +309,19 @@ jQuery.Class("Vtiger_Helper_Js",{
     },
 
     loadPageOverlay : function(data, params) {
-        var overlayPage = jQuery('#overlayPage');
-        var aDeferred = new jQuery.Deferred();
+        let overlayPage = jQuery('#overlayPage'),
+            aDeferred = new jQuery.Deferred();
+
         if(typeof params == "undefined") {
             params = {};
         }
         
-        var defaultParams = this.defaultModalParams();
+        let defaultParams = this.defaultModalParams();
         params = jQuery.extend(defaultParams,params);
-        var max_height = (jQuery(window).height()) - ($('.global-nav').height());
-        
-        $('#overlayPage').one('shown.bs.modal',function(){
-            if(!params.hasOwnProperty('ignoreScroll') && params['ignoreScroll'] != true) {
-                var scrollParams = {
+
+        overlayPage.one('shown.bs.modal',function(){
+            if(!params.hasOwnProperty('ignoreScroll') && params['ignoreScroll'] !== true) {
+                let scrollParams = {
                     height: '',
                     railVisible:true,
                     alwaysVisible:true,
@@ -329,26 +329,20 @@ jQuery.Class("Vtiger_Helper_Js",{
                 };
                 app.helper.showVerticalScroll(overlayPage.find('.modal-body'), scrollParams);
             }
+
             aDeferred.resolve(overlayPage.find('.data'));
         });
-        
-        $('#overlayPage').one('hidden.bs.modal',function(){    
+
+        overlayPage.one('hidden.bs.modal',function(){
             // Added to hide custom arrow added for taskmanagement
             overlayPage.find('.arrow').removeClass("show");
             overlayPage.find('.data').html('');
             $('#overlayPage');
         });
-        
-        jQuery(window).one('resize',function(){
-            var max_height = (jQuery(window).height()) - ($('.global-nav').height()) - 60;
-            $('#overlayPage').
-            css('max-height',max_height).find('.data').css('max-height',max_height);
-        });
-        
+
         overlayPage.find('.data').html(data);
-        $('#overlayPage').
-            css('max-height',max_height).find('.modal-body').css('max-height',max_height);
-        overlayPage.modal(params);
+        overlayPage.modal('show');
+
         return aDeferred.promise();
     },
 
@@ -356,45 +350,58 @@ jQuery.Class("Vtiger_Helper_Js",{
         $('#overlayPage').modal('hide');
     },
 
-    loadPageContentOverlay : function(data, params) {
-        var aDeferred = new jQuery.Deferred();
-        var defaultParams = this.defaultModalParams();
-        params = jQuery.extend(defaultParams,params);
-        
-        var overlayPageContent = $('#overlayPageContent');
-        
-        if(jQuery(".content-area").length && jQuery(".content-area").hasClass('full-width')|| (jQuery('.settingsgroup').length === 0 && jQuery('#modules-menu').length === 0)){
-           overlayPageContent.addClass('full-width');
+    loadPageContentOverlay: function (data, params) {
+        let aDeferred = new jQuery.Deferred(),
+            defaultParams = this.defaultModalParams();
+
+        params = jQuery.extend(defaultParams, params);
+
+        let overlayPageContent = $('#overlayPageContent'),
+            contentArea = jQuery(".content-area"),
+            settingsGroup = jQuery('.settingsgroup'),
+            moduleMenu = jQuery('#modules-menu');
+
+        if (contentArea.length && contentArea.hasClass('full-width') || (settingsGroup.length === 0 && moduleMenu.length === 0)) {
+            overlayPageContent.addClass('full-width');
         }
-        var alreadyShown = false;
-        if(overlayPageContent.hasClass('in')) {
+
+        let alreadyShown = false;
+
+        if (overlayPageContent.hasClass('in')) {
             alreadyShown = true;
         }
-        overlayPageContent.one('shown.bs.modal',function(){
+
+        overlayPageContent.one('shown.bs.modal', function () {
             aDeferred.resolve($('#overlayPageContent'));
         });
-               
-        overlayPageContent.one('hidden.bs.modal',function(){
+
+        overlayPageContent.one('hidden.bs.modal', function () {
             overlayPageContent.find('.data').html('');
         })
-        
+
         overlayPageContent.find('.data').html(data);
         vtUtils.applyFieldElementsView(overlayPageContent);
+
         overlayPageContent.modal(params);
-        if(alreadyShown) {
+        overlayPageContent.modal('show');
+
+        if (alreadyShown) {
             aDeferred.resolve(jQuery('#overlayPageContent'));
         }
+
         return aDeferred.promise();
     },
 
     hidePageContentOverlay : function() {
-        var aDeferred = new jQuery.Deferred();
-        var overlayPageContent = $('#overlayPageContent');
+        let aDeferred = new jQuery.Deferred(),
+            overlayPageContent = $('#overlayPageContent');
+
         overlayPageContent.one('hidden.bs.modal', function() {
             overlayPageContent.find('.data').html('');
             aDeferred.resolve();
-        })
-        $('#overlayPageContent').modal('hide');
+        });
+        overlayPageContent.modal('hide');
+
         return aDeferred.promise();
     },
 
@@ -437,14 +444,16 @@ jQuery.Class("Vtiger_Helper_Js",{
     showModal : function(content,params) {
         // we should hide all existing modal's
         this.hideModal();
+
         if(typeof params === "undefined") {
             params = {};
         }
-        var defaultParams = this.defaultModalParams();
+
+        let defaultParams = this.defaultModalParams();
         params = jQuery.extend(defaultParams,params);
 
-        var cb = params.cb;
-        var container = jQuery('.myModal');
+        let cb = params.cb,
+            container = jQuery('#myModal');
 		
         container.on('hidden.bs.modal',function() {
 			container.html('');
@@ -460,7 +469,10 @@ jQuery.Class("Vtiger_Helper_Js",{
         }
 
         container.html(content).modal(params);
+        container.modal('show');
+
         vtUtils.applyFieldElementsView(container);
+
         return container;
     },
 
@@ -477,14 +489,14 @@ jQuery.Class("Vtiger_Helper_Js",{
 
     showInfoMessage : function(message) {
         $('#messageBar').html('<div class="alert alert-info">\n\
-                                    <a href="#" class="close" data-dismiss="alert">&times;</a>\n\
+                                    <a href="#" class="close btn-close" data-dismiss="alert">&times;</a>\n\
                                     <strong>'+message+'</strong>\n\
                                 </div>');
     },
 
     showErrorMessage : function(message) {
         $('#messageBar').html('<div class="alert alert-danger">\n\
-                                    <a href="#" class="close" data-dismiss="alert">&times;</a>\n\
+                                    <a href="#" class="close btn-close" data-dismiss="alert">&times;</a>\n\
                                     <strong>'+message+'</strong>\n\
                                 </div>');
     },
@@ -536,7 +548,7 @@ jQuery.Class("Vtiger_Helper_Js",{
                     'z_index' : 10003,
                     'template' : '<div data-notify="container" class="col-xs-11 col-sm-3 vt-notification vt-notification-{0}" role="alert">' +
                                     '<div class="notificationHeader">'+
-                                        '<button type="button" aria-hidden="true" class="close pull-right" data-notify="dismiss">×</button>' +
+                                        '<button type="button" aria-hidden="true" class="close btn-close pull-right" data-notify="dismiss"></button>' +
                                         '<span data-notify="icon"></span> ' +
                                         '<span data-notify="title">{1}</span> ' +
                                     '</div>'+
@@ -788,24 +800,26 @@ jQuery.Class("Vtiger_Helper_Js",{
         var winHeight= jQuery(window).height()-50;
         return winHeight;
     },
-    
-    showPopup : function(content,params) {
-        if(typeof params === "undefined") {
+
+    showPopup: function (content, params) {
+        if (typeof params === "undefined") {
             params = {};
         }
-        
-        var defaultParams = app.helper.defaultModalParams();
-        params = jQuery.extend(defaultParams,params);
 
-        var cb = params.cb;
-        if(jQuery('#popupModal').length) return;
-        var container = jQuery('<div id="popupModal" class="modal"></div>');
-		
-	container.on('hidden.bs.modal',function() {
-			container.html('').remove();
-		});
-		
-        if(typeof cb === "function") {
+        let defaultParams = app.helper.defaultModalParams();
+        params = jQuery.extend(defaultParams, params);
+
+        let cb = params.cb;
+
+        if (jQuery('#popupModal').length) return;
+
+        let container = jQuery('<div id="popupModal" class="modal"></div>');
+
+        container.on('hidden.bs.modal', function () {
+            container.html('').remove();
+        });
+
+        if (typeof cb === "function") {
             container.off('shown.bs.modal');
             //This event is fired when the modal has been made visible to the user
             container.on('shown.bs.modal', function () {
@@ -814,7 +828,10 @@ jQuery.Class("Vtiger_Helper_Js",{
         }
 
         container.html(content).modal(params);
+        container.html(content).modal('show');
+
         vtUtils.applyFieldElementsView(container);
+
         return container;
     },
     
@@ -1002,32 +1019,43 @@ jQuery.Class("Vtiger_Helper_Js",{
 		);
 		return aDeferred.promise();
 	},
-	
-	registerLeavePageWithoutSubmit: function(form) {
-		var initialFormData = form.serialize();
-		window.onbeforeunload = function(e) {
-			if (initialFormData != form.serialize() && form.data('submit') != "true") {
-				return app.vtranslate("JS_CHANGES_WILL_BE_LOST");
-	}
-		};
-	},
-	
-	registerModalDismissWithoutSubmit: function(form) {
-		var initialFormData = form.serialize();
-		jQuery('.modal .close,.modal .cancelLink').click(function(e) {
-			if (initialFormData != form.serialize() && form.data('submit') != "true") {
-				app.helper.showConfirmationBox({'message' : app.vtranslate("JS_CHANGES_WILL_BE_LOST") +' '+ app.vtranslate('JS_WISH_TO_PROCEED')}).then(function(){
-					window.onbeforeunload = null;
-					if(form.closest('#overlayPageContent').length > 0) {
-						app.helper.hidePageContentOverlay();
-					}else {
-						app.helper.hideModal();
-					}
-				});
-				return false;
-			}
-		});
-	},
+
+    registerLeavePageWithoutSubmit: function (form) {
+        const initialFormData = form.serialize();
+
+        window.onbeforeunload = function (e) {
+            if (initialFormData != form.serialize() && form.data('submit') != "true") {
+                return app.vtranslate("JS_CHANGES_WILL_BE_LOST");
+            }
+        };
+    },
+
+    registerModalDismissWithoutSubmit: function (form) {
+        const initialFormData = form.serialize();
+
+        jQuery('.modal [data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
+        jQuery('.modal').on('click', '.close, .btn-close, .cancelLink', function (e) {
+            if (initialFormData !== form.serialize() && form.data('submit') !== "true") {
+                app.helper.showConfirmationBox({'message': app.vtranslate("JS_CHANGES_WILL_BE_LOST") + ' ' + app.vtranslate('JS_WISH_TO_PROCEED')}).then(function () {
+                    window.onbeforeunload = null;
+
+                    if (form.closest('#overlayPageContent').length > 0) {
+                        app.helper.hidePageContentOverlay();
+                    } else {
+                        app.helper.hideModal();
+                    }
+                });
+
+                return false;
+            } else {
+                if (form.closest('#overlayPageContent').length > 0) {
+                    app.helper.hidePageContentOverlay();
+                } else {
+                    app.helper.hideModal();
+                }
+            }
+        });
+    },
 	
     getDropDownmenuParent: function ($this) {
         var selector = $this.attr('data-target');

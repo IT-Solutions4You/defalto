@@ -9,16 +9,14 @@
 {* modules/Vtiger/views/BasicAjax.php *}
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-<div id="searchResults-container">
+<div id="searchResults-container" class="advancedFilterSearchResults">
     <div class="container-fluid">
-        <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-            <div class="col-lg-6">
-                <span style="font-size: 24px;"><strong> {vtranslate('LBL_SEARCH_RESULTS', $MODULE)} </strong></span>
+        <div class="row">
+            <div class="col-lg">
+                <h4 class="m-0 fw-bold">{vtranslate('LBL_SEARCH_RESULTS', $MODULE)}</h4>
             </div>
-            <div class="col-lg-6">
-                <div class="pull-right">
-                    <a class="btn btn-default module-buttons" href="javascript:void(0);" id="showFilter">{vtranslate('LBL_SAVE_MODIFY_FILTER',$MODULE)}</a>
-                </div>
+            <div class="col-lg-auto">
+                <a class="btn btn-light module-buttons" href="javascript:void(0);" id="showFilter">{vtranslate('LBL_SAVE_MODIFY_FILTER',$MODULE)}</a>
             </div>
         </div>
         <div class="row moduleResults-container">

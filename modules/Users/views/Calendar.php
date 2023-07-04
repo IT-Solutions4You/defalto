@@ -227,7 +227,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 			'modules.'.$moduleName.'.resources.Calendar',
 			'modules.'.$moduleName.'.resources.PreferenceEdit',
              'modules.Settings.Vtiger.resources.Index',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
+			"~layouts/d1/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

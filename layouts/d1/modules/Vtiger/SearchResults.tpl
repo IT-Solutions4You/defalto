@@ -10,18 +10,21 @@
 {strip}
 	<script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/List.js')}"></script>
 	<script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/SearchList.js')}"></script>
-	<div id="searchResults-container" class="modal-body" style="padding:0!important">
-		<div class="col-lg-12 clearfix">
-			<div class="pull-right overlay-close">
-				<button type="button" class="close" aria-label="Close" data-target="#overlayPage" data-dismiss="modal">
-					<span aria-hidden="true" class="fa fa-close"></span>
-				</button>
+	<div id="searchResults-container" class="container-fluid">
+		<div class="searchHeader row py-2 border-bottom border-1">
+			<div class="col"></div>
+			<div class="col-auto ms-auto">
+				<div class="overlay-close">
+					<button type="button" class="btn btn-light border-light-subtle border-1 border" aria-label="Close" data-bs-dismiss="modal">
+						<i class="fa fa-xmark"></i>
+					</button>
+				</div>
 			</div>
 		</div>
-		<div class="searchResults">
+		<div class="searchResults row">
 			<input type="hidden" value="{$SEARCH_VALUE|escape:"html"}" id="searchValue">
-			<div class="scrollableSearchContent">
-				<div class="container-fluid moduleResults-container">
+			<div class="scrollableSearchContent p-0">
+				<div class="container-fluid moduleResults-container py-3">
 					<input type="hidden" name="groupStart" value="{$GROUP_START}" class="groupStart"/>
 					{assign var=NORECORDS value=false}
 					{foreach key=MODULE item=LISTVIEW_MODEL from=$MATCHING_RECORDS}

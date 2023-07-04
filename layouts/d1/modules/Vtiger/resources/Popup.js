@@ -6,6 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+/** @var Vtiger_Popup_Js */
 jQuery.Class("Vtiger_Popup_Js",{
 
     getInstance: function(module){
@@ -398,23 +399,26 @@ jQuery.Class("Vtiger_Popup_Js",{
         }
         app.helper.hidePopup();
     },
-    
-    showPopup : function(params,eventToTrigger,callback) {
-        // we should hide all existing popup's
-        app.helper.hidePopup();
-        app.helper.showProgress();
-        app.request.post({"data":params}).then(function(err,data) {
-            app.helper.hideProgress();
-            if(err === null) {
-                var options = {};
-                if(typeof callback != 'undefined') {
-                    options.cb = callback;
-                }
-                app.helper.showPopup(data,options);
-                app.event.trigger("post.Popup.Load",{"eventToTrigger":eventToTrigger, 'module':params.module});
-            }
-        });
-    },
+
+	showPopup: function (params, eventToTrigger, callback) {
+		// we should hide all existing popup's
+		app.helper.hidePopup();
+		app.helper.showProgress();
+		app.request.post({"data": params}).then(function (err, data) {
+			app.helper.hideProgress();
+
+			if (err === null) {
+				let options = {};
+
+				if (typeof callback != 'undefined') {
+					options.cb = callback;
+				}
+
+				app.helper.showPopup(data, options);
+				app.event.trigger("post.Popup.Load", {"eventToTrigger": eventToTrigger, 'module': params.module});
+			}
+		});
+	},
     
     getListViewEntries: function(e){
         e.preventDefault();

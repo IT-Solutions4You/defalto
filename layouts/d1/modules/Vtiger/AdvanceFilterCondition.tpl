@@ -134,7 +134,7 @@
 		</select>
 	</div>
 	<div class="col-lg-4 col-md-4 col-sm-4  fieldUiHolder">
-		<input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class=" inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}" />
+		<input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="form-control inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}" />
 	</div>
 	<span class="hide">
 		<!-- TODO : see if you need to respect CONDITION_INFO condition or / and  -->
@@ -144,7 +144,9 @@
 		<input type="hidden" name="column_condition" value="{$CONDITION}" />
 	</span>
 	 <div class="col-lg-1 col-md-1 col-sm-1">
-		<i class="deleteCondition glyphicon glyphicon-trash cursorPointer" title="{vtranslate('LBL_DELETE', $MODULE)}"></i>
+		<span class="deleteCondition cursorPointer" title="{vtranslate('LBL_DELETE', $MODULE)}">
+			<i class="fa fa-trash"></i>
+		</span>
 	</div>
 </div>
 {/strip}

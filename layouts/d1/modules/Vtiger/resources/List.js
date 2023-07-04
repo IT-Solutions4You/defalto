@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_List_Js */
 Vtiger.Class("Vtiger_List_Js", {
 	listInstance: false,
 	filterClick: false,
@@ -466,6 +466,7 @@ Vtiger.Class("Vtiger_List_Js", {
 		self.markSelectedIdsCheckboxes();
 		self.registerDynamicListHeaders();
 		self.registerPostLoadListViewActions();
+		self.registerCustomViewsSelect();
 	},
 	placeListContents: function (contents) {
 		var container = this.getListViewContainer();
@@ -959,7 +960,7 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 	},
 	/**
-	 * Function to get value from Edited field 
+	 * Function to get value from Edited field
 	 * @param {type} fieldElement
 	 * @param {type} inputElement
 	 * @return value
@@ -1118,7 +1119,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			}
 
 			var currentTrElement = jQuery(e.currentTarget);
-			// added to unset the time out set for <a> tags 
+			// added to unset the time out set for <a> tags
 			var rows = currentTrElement.find('a');
 			rows.each(function (i, elem) {
 				if (jQuery(elem).data('timer')) {
@@ -1207,9 +1208,9 @@ Vtiger.Class("Vtiger_List_Js", {
 				thisInstance.saveMassEdit(event, form_original_data, isOwnerChanged);
 				isOwnerChanged = false;
 			});
-			
+
 			thisInstance.registerAutoIncludeFieldsInMassEdit();
-			
+
 			app.helper.registerLeavePageWithoutSubmit($("#massEdit"));
 			app.helper.registerModalDismissWithoutSubmit($("#massEdit"));
 		});
@@ -1265,7 +1266,7 @@ Vtiger.Class("Vtiger_List_Js", {
 
     /**
      * Function to register the list view row search event
-     */        
+     */
     registerListViewSearch : function() {
         var listViewPageDiv = this.getListViewContainer();
         var thisInstance = this;
@@ -1277,7 +1278,7 @@ Vtiger.Class("Vtiger_List_Js", {
             var searchButton = jQuery(this);
             searchButton.addClass('hide');
             listViewPageDiv.find('[data-trigger="clearListSearch"]').removeClass('hide');
-            
+
             thisInstance.loadListViewRecords(params).then(
                 function(data){
                     //To unmark the all the selected ids
@@ -1288,7 +1289,7 @@ Vtiger.Class("Vtiger_List_Js", {
                 }
             );
         });
-        
+
         var clearSearchContributor = function(contributor) {
             if(contributor.is('input')) {
                 contributor.val('');
@@ -1299,7 +1300,7 @@ Vtiger.Class("Vtiger_List_Js", {
                 console.log("contributor clearing now handled : ", contributor);
             }
         };
-        
+
         //register clear search event
         listViewPageDiv.on('click', '[data-trigger="clearListSearch"]', function(e) {
             e.preventDefault();
@@ -1313,8 +1314,8 @@ Vtiger.Class("Vtiger_List_Js", {
             jQuery('#currentSearchParams').val('');
             listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide').trigger('click');
         });
-        
-        
+
+
         //floatThead change event object has undefined keyCode, using keyup instead
         var listSearchContributorChangeHandler = function(e){
             var element = jQuery(e.currentTarget);
@@ -1330,7 +1331,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				}
 				currentElementContainer.mCustomScrollbar("update");
 			}
-			
+
             if(e.keyCode == 13 && thisInstance.prevSearchValues[fieldName] !== searchValue && !element.hasClass('select2')){
                 e.preventDefault();
                 var element = jQuery(e.currentTarget);
@@ -1358,26 +1359,26 @@ Vtiger.Class("Vtiger_List_Js", {
             listSearchContributorChangeHandler(e);
         });
     },
-    
+
     registerAutoIncludeFieldsInMassEdit: function () {
-    	
+
     	var autoIncludeFieldsInMassEditCallback = function() {
 			var fieldName = $(this).attr('name');
 			fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
-			
+
 			$(this).closest('tr').find("input[id=include_in_mass_edit_" + fieldName + "]").prop( "checked", true );
 		};
-		
+
 		var formInputFields = jQuery('#massEdit :input').not('[id^=include_in_mass_edit_]');
 		formInputFields.on(Vtiger_Edit_Js.referenceSelectionEvent, autoIncludeFieldsInMassEditCallback);
 		formInputFields.change(autoIncludeFieldsInMassEditCallback);
     },
-    
+
 	saveMassEdit: function (event) {
 		event.preventDefault();
 		var form = $('#massEdit');
 		var changedFields = form.find("input[id^=include_in_mass_edit_]:checked");
-		
+
 		app.helper.showProgress();
 		if (changedFields.length > 0) {
 			var newData = app.convertUrlToDataParams(form.serialize());
@@ -1387,7 +1388,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			var hiddenFields = form.children("input[type=hidden]");
 			hiddenFields.each(function(i, obj){
 				key = $(this).attr("name");
-				
+
 				if (typeof newData[key] !== 'undefined') {
 					updateFieldsRequest += key + '=' + newData[key] + '&';
 				}
@@ -1397,7 +1398,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			changedFields.each(function(i, obj){
 				var fieldName = $(this).data("update-field");
 				var fieldNameArray = fieldName + encodeURI('[]'); //fieldnames of fields like multipicklist have [] after the fieldname
-				
+
 				var key = fieldName;
 				if (typeof newData[fieldNameArray] !== 'undefined') {
 					key = fieldNameArray;
@@ -1410,7 +1411,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				}
 				updateFieldsRequest += '&';
 			});
-			
+
 			app.request.post({data: updateFieldsRequest}).then(function (err, data) {
 				app.helper.hideProgress();
 				if (data) {
@@ -1427,20 +1428,17 @@ Vtiger.Class("Vtiger_List_Js", {
 			app.helper.showAlertBox({'message': app.vtranslate('NONE_OF_THE_FIELD_VALUES_ARE_CHANGED_IN_MASS_EDIT')});
 		}
 	},
-	
+
 	markSelectedIdsCheckboxes: function () {
-		var self = this;
-
-		var recordSelectTrackerObj = self.getRecordSelectTrackerInstance();
-		var selectAllMode = recordSelectTrackerObj.getSelectAllMode();
-
-		var excludedIds = recordSelectTrackerObj.getExcludedIds();
-		var excludedIdsAreEmpty = self.checkIdsAreEmpty(excludedIds);
-		var selectedIds = recordSelectTrackerObj.getSelectedIds();
-
-		var currentViewId = self.getCurrentCvId();
-		var recordTackerCvId = recordSelectTrackerObj.getCvid();
-		var rows = jQuery('tr.listViewEntries');
+		let self = this,
+			recordSelectTrackerObj = self.getRecordSelectTrackerInstance(),
+			selectAllMode = recordSelectTrackerObj.getSelectAllMode(),
+			excludedIds = recordSelectTrackerObj.getExcludedIds(),
+			excludedIdsAreEmpty = self.checkIdsAreEmpty(excludedIds),
+			selectedIds = recordSelectTrackerObj.getSelectedIds(),
+			currentViewId = self.getCurrentCvId(),
+			recordTackerCvId = recordSelectTrackerObj.getCvid(),
+			rows = jQuery('tr.listViewEntries');
 
 		if (selectAllMode == true) {
 			jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').addClass('show');
@@ -1450,19 +1448,20 @@ Vtiger.Class("Vtiger_List_Js", {
 			} else if (this.isUnStarFilterMode()) {
 				rows = this.getUnStarRecordRows();
 			}
+
 			if (excludedIdsAreEmpty) {
 				rows.each(function (i, elem) {
 					jQuery(elem).find(".listViewEntriesCheckBox").prop('checked', true);
 				});
-			}
-			else {
+			} else {
 				rows.each(function (i, elem) {
-					var rowId = $(elem).data('id');
+					let rowId = $(elem).data('id');
 					jQuery(elem).find('.listViewEntriesCheckBox').prop('checked', true);
 
-					for (var j = 0; j < excludedIds.length; j++) {
-						var excludedRecordIdValue = excludedIds[j];
-						if (excludedRecordIdValue == rowId) {
+					for (let j = 0; j < excludedIds.length; j++) {
+						let excludedRecordIdValue = excludedIds[j];
+
+						if (excludedRecordIdValue === rowId) {
 							jQuery('.listViewEntriesCheckBox[value="' + excludedRecordIdValue + '"]').prop('checked', false);
 							jQuery(".listViewEntriesMainCheckBox").prop('checked', false);
 						}
@@ -1470,22 +1469,28 @@ Vtiger.Class("Vtiger_List_Js", {
 				});
 			}
 		} else {
-			var isEmpty = self.checkIdsAreEmpty(selectedIds);
+			let isEmpty = self.checkIdsAreEmpty(selectedIds);
+
 			if (!isEmpty) {
 				rows.each(function (i, elem) {
-					var rowId = $(elem).data('id');
-					for (var j = 0; j < selectedIds.length; j++) {
-						var selectedRecordIdValue = selectedIds[j];
-						if (selectedRecordIdValue == rowId) {
+					let rowId = $(elem).data('id');
+					for (let j = 0; j < selectedIds.length; j++) {
+						let selectedRecordIdValue = selectedIds[j];
+
+						if (selectedRecordIdValue === rowId) {
 							jQuery('.listViewEntriesCheckBox[value="' + selectedRecordIdValue + '"]').prop('checked', true);
 						}
 					}
 				});
-				var listViewPageDiv = self.getListViewContainer();
-				if (listViewPageDiv.find('.listViewEntriesCheckBox').not(":checked").length == 0) {
-					listViewPageDiv.find('.listViewEntriesMainCheckBox').prop("checked", true)
+
+				let listViewPageDiv = self.getListViewContainer();
+
+				if (0 === listViewPageDiv.find('.listViewEntriesCheckBox').not(':checked').length) {
+					listViewPageDiv.find('.listViewEntriesMainCheckBox').prop('checked', true);
+					listViewPageDiv.find('.listViewEntriesMainCheckBox').attr('checked', true);
 				} else {
-					listViewPageDiv.find('.listViewEntriesMainCheckBox').prop("checked", false)
+					listViewPageDiv.find('.listViewEntriesMainCheckBox').prop('checked', false);
+					listViewPageDiv.find('.listViewEntriesMainCheckBox').attr('checked', false);
 				}
 			}
 		}
@@ -1577,24 +1582,31 @@ Vtiger.Class("Vtiger_List_Js", {
 		return excludedIds;
 	},
 	getSelectAllMode: function () {
-		var recordTracker = this.getRecordSelectTrackerInstance();
+		let recordTracker = this.getRecordSelectTrackerInstance();
+
 		return recordTracker.getSelectAllMode();
 	},
+	getDeSelectAllMsgDiv: function () {
+		return jQuery("#deSelectAllMsgDiv");
+	},
+	getSelectAllMsgDiv: function () {
+		return jQuery("#selectAllMsgDiv");
+	},
 	showSelectAllMsgDiv: function () {
-		jQuery("#deSelectAllMsgDiv").closest('div.messageContainer').removeClass('show');
-		jQuery("#deSelectAllMsgDiv").closest('div.messageContainer').addClass('hide');
-		jQuery("#selectAllMsgDiv").closest('div.messageContainer').addClass("show");
+		this.getDeSelectAllMsgDiv().closest('div.messageContainer').removeClass('show');
+		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('hide');
+		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("show");
 	},
 	showDeSelectAllMsgDiv: function () {
-		jQuery('#selectAllMsgDiv').closest('div.messageContainer').removeClass("show");
-		jQuery('#selectAllMsgDiv').closest('div.messageContainer').addClass("hide");
-		jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').addClass('show');
+		this.getSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
+		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
+		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('show');
 	},
 	deSelectAllWithNoMessage: function () {
-		jQuery('#selectAllMsgDiv').closest('div.messageContainer').removeClass("show");
-		jQuery('#selectAllMsgDiv').closest('div.messageContainer').addClass("hide");
-		jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').removeClass("show");
-		jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').addClass("hide");
+		this.getSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
+		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
+		this.getDeSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
+		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
 	},
 	showSelectAll: function () {
 		var self = this;
@@ -1624,6 +1636,7 @@ Vtiger.Class("Vtiger_List_Js", {
 					row.trigger('Post.ListRow.Checked', {"id": row.data('id')});
 					self.registerPostLoadListViewActions();
 				});
+
 				if (self.getSelectAllMode() == true) {
 					self.markSelectedIdsCheckboxes();
 				} else {
@@ -1778,7 +1791,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				 if(params.value == 1){
                     app.helper.showSuccessNotification({'message':(app.vtranslate('JS_FOLLOWING')) +' '+ selectedRecordCount +' '+ app.vtranslate(params.module)});
                 } else {
-					app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOWING') +' '+ selectedRecordCount +' '+ app.vtranslate(params.module)}); 
+					app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOWING') +' '+ selectedRecordCount +' '+ app.vtranslate(params.module)});
                 }
 			});
 		})
@@ -2320,18 +2333,27 @@ Vtiger.Class("Vtiger_List_Js", {
 		self.registerDropdownPosition();
 
 	},
+	getListViewActionContainer: function() {
+		return jQuery('.listViewActionsContainer')
+	},
 	enableListViewActions: function () {
-		jQuery('.btn-group.listViewActionsContainer').find('button').removeAttr('disabled');
-		jQuery('.btn-group.listViewActionsContainer').find('li').removeClass('hide');
+		const self = this;
+
+		self.getListViewActionContainer().find('button').removeAttr('disabled');
+		self.getListViewActionContainer().find('li').removeClass('hide');
 	},
 	disableListViewActions: function () {
-		jQuery('.btn-group.listViewActionsContainer').find('button').attr('disabled', "disabled");
-		jQuery('.btn-group.listViewActionsContainer').find('.dropdown-toggle').removeAttr("disabled");
-		jQuery('.btn-group.listViewActionsContainer').find('li').addClass('hide');
-		var selectFreeRecords = jQuery('.btn-group.listViewActionsContainer').find('li.selectFreeRecords');
+		const self = this;
+
+		self.getListViewActionContainer().find('button').attr('disabled', "disabled");
+		self.getListViewActionContainer().find('.dropdown-toggle').removeAttr("disabled");
+		self.getListViewActionContainer().find('li').addClass('hide');
+
+		let selectFreeRecords = this.getListViewActionContainer().find('li.selectFreeRecords');
 		selectFreeRecords.removeClass('hide');
-		if (selectFreeRecords.length == 0) {
-			jQuery('.btn-group.listViewActionsContainer').find('.dropdown-toggle').attr('disabled', "disabled");
+
+		if (selectFreeRecords.length === 0) {
+			self.getListViewActionContainer().find('.dropdown-toggle').attr('disabled', "disabled");
 		}
 	},
 	/*
@@ -2540,42 +2562,46 @@ Vtiger.Class("Vtiger_List_Js", {
 			self.registerFloatingThead();
 		});
 	},
-	
+
 	registerEvents: function () {
-		var thisInstance = this;
-		this._super();
-		this.registerListViewSort();
-		this.registerRemoveListViewSort();
-		this.registerRowClickEvent();
-		this.registerRowDoubleClickEvent();
-		this.registerListViewBasicActions();
-		this.registerListViewSearch();
-		this.registerDeleteRecordClickEvent();
-		this.registerCheckBoxClickEvent();
-		this.registerSelectAllClickEvent();
-		this.registerDeSelectAllClickEvent();
-		this.registerListViewMainCheckBoxClickEvent();
-		this.registerStarToggle();
-		this.registerStarUnstarFilter();
-		this.registerDynamicListHeaders();
-		this.registerEditLink();
-		this.registerEmailFieldClickEvent();
-		this.registerPhoneFieldClickEvent();
-		this.registerDynamicDropdownPosition();
-		this.registerDropdownPosition();
-		this.registerConfigureColumnsEvents();
-		var recordSelectTrackerObj = this.getRecordSelectTrackerInstance();
+		const self = this;
+
+		self._super();
+		self.registerListViewSort();
+		self.registerRemoveListViewSort();
+		self.registerRowClickEvent();
+		self.registerRowDoubleClickEvent();
+		self.registerListViewBasicActions();
+		self.registerListViewSearch();
+		self.registerDeleteRecordClickEvent();
+		self.registerCheckBoxClickEvent();
+		self.registerSelectAllClickEvent();
+		self.registerDeSelectAllClickEvent();
+		self.registerListViewMainCheckBoxClickEvent();
+		self.registerStarToggle();
+		self.registerStarUnstarFilter();
+		self.registerDynamicListHeaders();
+		self.registerEditLink();
+		self.registerEmailFieldClickEvent();
+		self.registerPhoneFieldClickEvent();
+		self.registerDynamicDropdownPosition();
+		self.registerDropdownPosition();
+		self.registerConfigureColumnsEvents();
+
+		let recordSelectTrackerObj = self.getRecordSelectTrackerInstance();
 		recordSelectTrackerObj.registerEvents();
 
-		this.registerPostListLoadListener();
-		this.registerPostLoadListViewActions();
+		self.registerPostListLoadListener();
+		self.registerPostLoadListViewActions();
 
 		app.event.on('post.listViewMassEditSave', function () {
-			var urlParams = {};
-			thisInstance.loadListViewRecords(urlParams);
-			thisInstance.clearList();
+			let urlParams = {};
+
+			self.loadListViewRecords(urlParams);
+			self.clearList();
 		});
-		this.registerEventToShowQuickPreview();
+
+		self.registerEventToShowQuickPreview();
 		//reference fields quick preview handled in Vtiger.js
 //        this.registerEventToHandleStickyHeadOnWindowScroll();
 //        if(jQuery('#listViewContent').find('table.listview-table').length){
@@ -2586,23 +2612,136 @@ Vtiger.Class("Vtiger_List_Js", {
 //                app.helper.dynamicListViewHorizontalScroll();
 //            }
 //        }
-//      
+//
 		//floatTHead, some timeout so correct height can be caught for computations
 		setTimeout(function () {
-			thisInstance.registerFloatingThead();
+			self.registerFloatingThead();
 		}, 10);
 
 		app.event.on('Vtiger.Post.MenuToggle', function () {
-			thisInstance.reflowList();
+			self.reflowList();
 		});
 
-		this.registerDynamicDropdownPosition();
-		this.registerHeaderReflowOnListSearchSelections();
-
-		this.registerDropdownPosition();
+		self.registerDynamicDropdownPosition();
+		self.registerHeaderReflowOnListSearchSelections();
+		self.registerDropdownPosition();
 		//For Pagination
-		thisInstance.initializePaginationEvents();
+		self.initializePaginationEvents();
 		//END
+		self.registerCustomViewsSelect();
+		self.registerCustomViewsEvents();
+	},
+	updateCustomViewsButtons: function (container) {
+		let self = this,
+			filterData = self.getCustomViewsData(container.find('#custom_views')),
+			actionsElement = container.find('.customViewsActions'),
+			deleteFilter = actionsElement.find('.deleteFilter'),
+			editFilter = actionsElement.find('.editFilter'),
+			duplicateFilter = actionsElement.find('.duplicateFilter'),
+			toggleDefault = actionsElement.find('.toggleDefault'),
+			toggleDefaultIcon = toggleDefault.find('i'),
+			currentFilterName = $('.current-filter-name');
+
+		editFilter.attr('data-url', filterData['editurl']);
+		editFilter.attr('data-id', filterData['id']);
+
+		deleteFilter.attr('data-url', filterData['deleteurl']);
+		deleteFilter.attr('data-id', filterData['id']);
+
+		duplicateFilter.attr('data-url', filterData['default']);
+
+		toggleDefault.attr('data-url', filterData['defaulttoggle']);
+		toggleDefault.attr('data-is-default', filterData['is-default']);
+		toggleDefault.attr('data-filter-id', filterData['filter-id']);
+
+		if (filterData['deletable'] && filterData['deleteurl']) {
+			deleteFilter.removeClass('hide');
+		} else {
+			deleteFilter.addClass('hide');
+		}
+
+		if (filterData['editable'] && filterData['editurl']) {
+			editFilter.removeClass('hide');
+		} else {
+			editFilter.addClass('hide');
+		}
+
+		if (1 === parseInt(filterData['isDefault'])) {
+			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-check-icon'));
+		} else {
+			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-uncheck-icon'));
+		}
+
+		currentFilterName.text(filterData['filterName']);
+	},
+	getCustomViewsData: function (selectElement) {
+		let filterId = selectElement.select2('val'),
+			filterElement = $('[data-filter-id="' + filterId + '"]');
+
+		return filterElement.data();
+	},
+	registerCustomViewsEvents: function () {
+		const self = this,
+			container = self.getListViewContainer();
+
+		container.on('change', '#custom_views', function (e) {
+			let selectElement = $(e.currentTarget),
+				filterData = self.getCustomViewsData(selectElement);
+
+			self.resetData();
+			self.filterClick = true;
+			self.loadFilter(filterData['filterId'], {'page': ''});
+			self.updateCustomViewsButtons(container, filterData);
+		});
+
+		container.on('click', 'li.createFilter', function (e) {
+			let element = jQuery(e.currentTarget);
+			element.trigger('post.CreateFilter.click', {'url': element.data('url')});
+		});
+
+		container.on('click', 'li.editFilter,li.duplicateFilter', function (e) {
+			let element = jQuery(e.currentTarget);
+			if (typeof element.data('url') == "undefined") return;
+			element.trigger('post.CreateFilter.click', {'url': element.data('url')});
+		});
+
+		container.on('click', 'li.deleteFilter', function (e) {
+			let element = jQuery(e.currentTarget);
+			if (typeof element.data('url') == "undefined") return;
+			element.trigger('post.DeleteFilter.click', {'url': element.data('url')});
+		});
+
+		container.on('click','li.toggleDefault',function(e){
+			let element = jQuery(e.currentTarget);
+			element.trigger('post.ToggleDefault.click',{'url':element.data('url')});
+		});
+
+		container.on('post.ToggleDefault.saved', function (e, params) {
+			let element = jQuery(e.target),
+				icon = element.find('i');
+
+			if ('1' === params['isdefault']) {
+				icon.attr('class', icon.attr('data-check-icon'))
+			} else {
+				icon.attr('class', icon.attr('data-uncheck-icon'))
+			}
+		});
+
+		container.on('post.DeletedFilter', function (e) {
+			let selectElement = container.find('#custom_views'),
+				allCvId = jQuery('[name="allCvId"]').val();
+
+			selectElement.select2('val', allCvId);
+		});
+
+	},
+	registerCustomViewsSelect: function () {
+		const self = this,
+			container = self.getListViewContainer();
+
+		app.showSelect2ElementView(container.find('#custom_views'));
+
+		self.updateCustomViewsButtons(container);
 	},
 	registerHeaderReflowOnListSearchSelections: function () {
 		var listViewContentDiv = this.getListViewContainer();
@@ -2619,26 +2758,29 @@ Vtiger.Class("Vtiger_List_Js", {
 			container = "#page";
 		}
 		jQuery('.table-actions').on('click', '.dropdown', function (e) {
-			var containerTarget = jQuery(this).closest(container);
-			var content = jQuery(this).closest(".dropdown");
-			var dropdown = jQuery(e.currentTarget);
-			if (dropdown.find('[data-toggle]').length <= 0) {
+			let containerTarget = jQuery(this).closest(container),
+				content = jQuery(this).closest(".dropdown"),
+				dropdown = jQuery(e.currentTarget);
+
+			if (dropdown.find('.table-actions-toggle').length <= 0) {
 				return;
 			}
-			var dropdown_menu = dropdown.find('.dropdown-menu');
 
-			var dropdownStyle = dropdown_menu.find('li a');
+			let dropdown_menu = dropdown.find('.dropdown-menu'),
+				dropdownStyle = dropdown_menu.find('li a');
+
 			dropdownStyle.css('padding', "0 6px", 'important');
 
-			var fixed_dropdown_menu = dropdown_menu.clone(true);
+			let fixed_dropdown_menu = dropdown_menu.clone(true);
 			fixed_dropdown_menu.data('original-menu', dropdown_menu);
 			dropdown_menu.css('position', 'relative');
 			dropdown_menu.css('display', 'none');
-			var currtargetTop;
-			var currtargetLeft;
-			var dropdownBottom;
-			var ftop = 'auto';
-			var fbottom = 'auto';
+
+			let currtargetTop,
+				currtargetLeft,
+				dropdownBottom,
+				ftop = 'auto',
+				fbottom = 'auto';
 
 			if (container === "#page") {
 				currtargetTop = dropdown.offset().top + dropdown.height();
@@ -2646,15 +2788,17 @@ Vtiger.Class("Vtiger_List_Js", {
 				dropdownBottom = jQuery(window).height() - currtargetTop + dropdown.height();
 
 			}
-			var windowBottom = jQuery(window).height() - dropdown.offset().top;
+
+			let windowBottom = jQuery(window).height() - dropdown.offset().top;
+
 			if (windowBottom < 250) {
 				ftop = 'auto';
 				fbottom = dropdownBottom + 'px';
-			}
-			else {
+			} else {
 				ftop = currtargetTop + 'px';
 				fbottom = "auto";
 			}
+
 			fixed_dropdown_menu.css({
 				'display': 'block',
 				'position': 'absolute',
@@ -2664,17 +2808,18 @@ Vtiger.Class("Vtiger_List_Js", {
 			}).appendTo(containerTarget);
 
 			$('#table-content').scroll(function () {
-				var tTop;
-				var cBottom = $('#table-content').height() - content.position().top;
-				var tBottom;
+				let tTop,
+					cBottom = $('#table-content').height() - content.position().top,
+					tBottom;
+
 				if (cBottom < 250) {
 					tTop = "auto";
 					tBottom = dropdown.height();
-				}
-				else {
+				} else {
 					tTop = dropdown.height();
 					tBottom = "auto";
 				}
+
 				if (content.hasClass('open')) {
 					fixed_dropdown_menu.css({
 						'display': 'block',
@@ -2684,8 +2829,7 @@ Vtiger.Class("Vtiger_List_Js", {
 						'left': 0,
 						'z-index': 100
 					}).appendTo(content);
-				}
-				else {
+				} else {
 					dropdown_menu.css('display', 'none');
 				}
 			});
@@ -2696,10 +2840,12 @@ Vtiger.Class("Vtiger_List_Js", {
 				jQuery('.listViewEntries').removeClass('dropDownOpen');
 			});
 		});
+
 		jQuery('.listViewEntries').mouseleave(function (e) {
-			var currentDropDown = jQuery(e.currentTarget).find('.dropdown');
+			let currentDropDown = jQuery(e.currentTarget).find('.dropdown');
+
 			setTimeout(function () {
-				if (jQuery('.dropdown-menu:hover').length == 0) {
+				if (jQuery('.dropdown-menu:hover').length === 0) {
 					if (currentDropDown.hasClass('open')) {
 						jQuery(e.currentTarget).find('.dropdown').trigger('click');
 					}

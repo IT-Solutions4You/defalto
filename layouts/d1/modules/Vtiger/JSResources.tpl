@@ -11,11 +11,12 @@
 -->*}
 {strip}
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/purl.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/select2/select2.min.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('vendor/select2/select2/dist/js/select2.full.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery.class.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery-ui-1.12.0.custom/jquery-ui.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/popper.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/bootstrap.min.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('libraries/jquery/jstorage.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery-validation/jquery.validate.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery.slimscroll.min.js')}"></script>
@@ -53,9 +54,9 @@
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Google/resources/Settings.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/CkEditor.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Documents/resources/Documents.js')}"></script>
-   
-    {foreach key=index item=jsModel from=$SCRIPTS}
-        <script type="{$jsModel->getType()}" src="{vresource_url($jsModel->getSrc())}"></script>
+
+    {foreach item=SCRIPT_MODEL from=$SCRIPTS}
+        <script type="{$SCRIPT_MODEL->getType()}" src="{vresource_url($SCRIPT_MODEL->getSrc())}"></script>
     {/foreach}
 
     <script type="text/javascript" src="{vresource_url('layouts/d1/resources/v7_client_compat.js')}"></script>

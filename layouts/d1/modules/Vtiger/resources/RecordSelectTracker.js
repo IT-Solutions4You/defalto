@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_RecordSelectTracker_Js */
 jQuery.Class("Vtiger_RecordSelectTracker_Js",{
     getInstance : function(){
         var recordSelectTrackerObj = new Vtiger_RecordSelectTracker_Js;

@@ -14,13 +14,17 @@
         <link rel="SHORTCUT ICON" href="layouts/d1/skins/images/favicon.ico">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+		{*
 		<link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/todc/css/bootstrap.min.css")}'>
 		<link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/todc/css/docs.min.css")}'>
 		<link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/todc/css/todc-bootstrap.min.css")}'>
-		<link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/font-awesome/css/font-awesome.min.css")}'>
-        <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/jquery/select2/select2.css")}'>
-        <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/select2-bootstrap/select2-bootstrap.css")}'>
+		*}
+		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap/dist/css/bootstrap.min.css')}'>
+
+		<link type='text/css' rel='stylesheet' href='{vresource_url('layouts/d1/lib/font-awesome/css/font-awesome.min.css')}'>
+		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/components/font-awesome/css/all.min.css')}'>
+        <link type='text/css' rel='stylesheet' href='{vresource_url('vendor/select2/select2/dist/css/select2.min.css')}'>
+        <link type='text/css' rel='stylesheet' href='{vresource_url('vendor/apalfrey/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css')}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url("libraries/bootstrap/js/eternicode-bootstrap-datepicker/css/datepicker3.css")}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/jquery/jquery-ui-1.12.0.custom/jquery-ui.css")}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/vt-icons/style.css")}'>
@@ -67,7 +71,7 @@
 	 {assign var=CURRENT_USER_MODEL value=Users_Record_Model::getCurrentUserModel()}
 	<body data-skinpath="{Vtiger_Theme::getBaseThemePath()}" data-language="{$LANGUAGE}" data-user-decimalseparator="{$CURRENT_USER_MODEL->get('currency_decimal_separator')}" data-user-dateformat="{$CURRENT_USER_MODEL->get('date_format')}"
           data-user-groupingseparator="{$CURRENT_USER_MODEL->get('currency_grouping_separator')}" data-user-numberofdecimals="{$CURRENT_USER_MODEL->get('no_of_currency_decimals')}" data-user-hourformat="{$CURRENT_USER_MODEL->get('hour_format')}"
-          data-user-calendar-reminder-interval="{$CURRENT_USER_MODEL->getCurrentUserActivityReminderInSeconds()}">
+          data-user-calendar-reminder-interval="{$CURRENT_USER_MODEL->getCurrentUserActivityReminderInSeconds()}" class="bg-body-secondary">
             <input type="hidden" id="start_day" value="{$CURRENT_USER_MODEL->get('dayoftheweek')}" /> 
 		<div id="page">
             <div id="pjaxContainer" class="hide noprint"></div>

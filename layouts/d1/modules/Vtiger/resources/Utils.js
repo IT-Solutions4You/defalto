@@ -14,69 +14,102 @@ var vtUtils = {
     /**
 	 * Function which will show the select2 element for select boxes . This will use select2 library
 	 */
-	showSelect2ElementView : function(selectElement, params) {
-		if(typeof params == 'undefined') {
-			params = {};
-		}
+    showSelect2ElementView: function (selectElement, params) {
+        if (typeof params == 'undefined') {
+            params = {};
+        }
 
-		var data = selectElement.data();
-		if(data != null) {
-			params = jQuery.extend(data,params);
-		}
-    if(jQuery('#minilistWizardContainer').length){params.maximumSelectionSize=4};
+        let data = selectElement.data();
+
+        if (data != null) {
+            params = jQuery.extend(data, params);
+        }
+
+        if (jQuery('#minilistWizardContainer').length) {
+            params.maximumSelectionSize = 4
+        }
+
         // Fix to eliminate flicker happening on list view load
-        var ele = jQuery(selectElement);
-        if(ele.hasClass("listSearchContributor")){
+        let ele = jQuery(selectElement);
+
+        if (ele.hasClass("listSearchContributor")) {
             ele.closest(".select2_search_div").find(".select2_input_element").remove();
             ele.show();
         }
 
-		// Sort DOM nodes alphabetically in select box.
-		if (typeof params['customSortOptGroup'] != 'undefined' && params['customSortOptGroup']) {
-			jQuery('optgroup', selectElement).each(function(){
-				var optgroup = jQuery(this);
-				var options  = optgroup.children().toArray().sort(function(a, b){
-					var aText = jQuery(a).text();
-					var bText = jQuery(b).text();
-					return aText < bText ? 1 : -1;
-				});
-				jQuery.each(options, function(i, v){
-					optgroup.prepend(v);
-				});
-			});
-			delete params['customSortOptGroup'];
-		}
+        // Sort DOM nodes alphabetically in select box.
+        if (typeof params['customSortOptGroup'] !== 'undefined' && params['customSortOptGroup']) {
+            jQuery('optgroup', selectElement).each(function () {
+                var optgroup = jQuery(this);
+                var options = optgroup.children().toArray().sort(function (a, b) {
+                    var aText = jQuery(a).text();
+                    var bText = jQuery(b).text();
+                    return aText < bText ? 1 : -1;
+                });
+                jQuery.each(options, function (i, v) {
+                    optgroup.prepend(v);
+                });
+            });
+            delete params['customSortOptGroup'];
+        }
 
-		//formatSelectionTooBig param is not defined even it has the maximumSelectionSize,
-		//then we should send our custom function for formatSelectionTooBig
-		if(typeof params.maximumSelectionSize != "undefined" && typeof params.formatSelectionTooBig == "undefined") {
-			var limit = params.maximumSelectionSize;
-			//custom function which will return the maximum selection size exceeds message.
-			var formatSelectionExceeds = function(limit) {
-					return app.vtranslate('JS_YOU_CAN_SELECT_ONLY')+' '+limit+' '+app.vtranslate('JS_ITEMS');
-			}
-			params.formatSelectionTooBig = formatSelectionExceeds;
-		}
-        if(selectElement.attr('multiple') != 'undefined' && typeof params.closeOnSelect == 'undefined') {
+        //formatSelectionTooBig param is not defined even it has the maximumSelectionSize,
+        //then we should send our custom function for formatSelectionTooBig
+        if (typeof params.maximumSelectionSize != "undefined" && typeof params.formatSelectionTooBig == "undefined") {
+            let limit = params.maximumSelectionSize;
+            //custom function which will return the maximum selection size exceeds message.
+            params.formatSelectionTooBig = function (limit) {
+                return app.vtranslate('JS_YOU_CAN_SELECT_ONLY') + ' ' + limit + ' ' + app.vtranslate('JS_ITEMS');
+            };
+        }
+
+        if (selectElement.attr('multiple') !== 'undefined' && typeof params.closeOnSelect == 'undefined') {
             params.closeOnSelect = false;
-		}
-        selectElement.select2(params)
-					 .on("open", function(e) {
-						 var element = jQuery(e.currentTarget);
-						 var instance = element.data('select2');
-						 instance.dropdown.css('z-index',1000002);
-					 }).on("select2-open", function(e) {
-						 var element = jQuery(e.currentTarget);
-						 var instance = element.data('select2');
-						 instance.dropdown.css('z-index',1000002);
-					 });
+        }
+
+        if (selectElement.attr('multiple') !== 'undefined' && typeof params.selectOnClose == 'undefined') {
+            params.selectOnClose = false;
+        }
+
+        if(selectElement.parents('.modal').length) {
+            params.dropdownParent = selectElement.parents('.modal');
+        }
+
+        if(!params.width) {
+            params.width = 'auto';
+        }
+
+        params.theme = 'bootstrap-5';
+
+        selectElement.select2(params).on('select2:opening', function (e) {
+            if (selectElement.data('unselect')) {
+                e.preventDefault();
+
+                selectElement.data('unselect', false);
+            }
+        }).on('select2:unselect', function (e) {
+            selectElement.data('unselect', true);
+        }).on('open', function (e) {
+            let element = jQuery(e.currentTarget),
+                instance = element.data('select2');
+
+            instance.dropdown.css('z-index', 1000002);
+        }).on('select2-open', function (e) {
+            let element = jQuery(e.currentTarget),
+                instance = element.data('select2');
+
+            instance.dropdown.css('z-index', 1000002);
+        });
+
         //validator should not validate select2 text inputs
-        selectElement.select2("container").find('input.select2-input').addClass('ignore-validation');
-		if(typeof params.maximumSelectionSize != "undefined") {
-			vtUtils.registerChangeEventForMultiSelect(selectElement,params);
-		}
-		return selectElement;
-	},
+        $('.select2-search input').addClass('ignore-validation');
+
+        if (typeof params.maximumSelectionSize != "undefined") {
+            vtUtils.registerChangeEventForMultiSelect(selectElement, params);
+        }
+
+        return selectElement;
+    },
 
     /**
 	 * Function to check the maximum selection size of multiselect and update the results

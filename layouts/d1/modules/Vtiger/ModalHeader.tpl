@@ -11,15 +11,7 @@
 -->*}
 {strip}
     <div class="modal-header">
-        <div class="clearfix">
-            <div class="pull-right " >
-                <button type="button" class="close" aria-label="Close" data-dismiss="modal">
-                    <span aria-hidden="true" class='fa fa-close'></span>
-                </button>
-            </div>
-            <h4 class="pull-left">
-                {$TITLE}
-            </h4>
-        </div>
+        <h5 class="modal-title">{$TITLE}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
 {/strip}    

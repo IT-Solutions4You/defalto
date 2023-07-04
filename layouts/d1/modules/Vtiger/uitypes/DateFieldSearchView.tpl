@@ -13,6 +13,6 @@
     {assign var="FIELD_INFO" value=Zend_Json::encode($FIELD_MODEL->getFieldInfo())}
     {assign var="dateFormat" value=$USER_MODEL->get('date_format')}
     <div class="row-fluid">
-        <input type="text" name="{$FIELD_MODEL->get('name')}" class="listSearchContributor inputElement dateField" data-date-format="{$dateFormat}" data-calendar-type="range" value="{$SEARCH_INFO['searchValue']}" data-fieldinfo='{$FIELD_INFO|escape}'  data-field-type="{$FIELD_MODEL->getFieldDataType()}"/>
+        <input type="text" name="{$FIELD_MODEL->get('name')}" class="listSearchContributor form-control inputElement dateField" data-date-format="{$dateFormat}" data-calendar-type="range" value="{$SEARCH_INFO['searchValue']}" data-fieldinfo='{$FIELD_INFO|escape}'  data-field-type="{$FIELD_MODEL->getFieldDataType()}"/>
     </div>
 {/strip}

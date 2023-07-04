@@ -15,17 +15,22 @@
 	</p>
 </footer>
 </div>
-<div id='overlayPage'>
-	<!-- arrow is added to point arrow to the clicked element (Ex:- TaskManagement), 
-	any one can use this by adding "show" class to it -->
-	<div class='arrow'></div>
-	<div class='data'>
+<div id='overlayPage' class="modal fade">
+	<div class="modal-dialog modal-fullscreen">
+		<div class="modal-content">
+			<!-- arrow is added to point arrow to the clicked element (Ex:- TaskManagement),
+			any one can use this by adding "show" class to it -->
+			<div class='arrow'></div>
+			<div class='data'></div>
+		</div>
 	</div>
 </div>
 <div id='helpPageOverlay'></div>
 <div id="js_strings" class="hide noprint">{Zend_Json::encode($LANGUAGE_STRINGS)}</div>
 <div id="maxListFieldsSelectionSize" class="hide noprint">{$MAX_LISTFIELDS_SELECTION_SIZE}</div>
-<div class="modal myModal fade"></div>
+<div id="myModal" class="modal myModal fade">
+	<div class="modal-dialog"></div>
+</div>
 {include file='JSResources.tpl'|@vtemplate_path}
 </body>
 

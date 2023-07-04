@@ -10,14 +10,14 @@
 -->*}
 
 {strip}
-    <div class="col-md-2">
+    <div class="col-md">
         {if $MULTI_SELECT}
             {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-default" disabled="disabled"><strong>{vtranslate('LBL_ADD', $MODULE)}</strong></button>{/if}
         {else}
             &nbsp;
         {/if}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-auto">
         {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
         {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
     </div>

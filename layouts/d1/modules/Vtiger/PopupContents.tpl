@@ -38,7 +38,7 @@
             {/if}
             {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
             <div class="popupEntriesTableContainer {if $MODULE eq 'EmailTemplates'} emailTemplatesPopupTableContainer{/if}">
-                <table class="listview-table table-bordered listViewEntriesTable">
+                <table class="listview-table table table-bordered listViewEntriesTable">
                 <thead>
                     <tr class="listViewHeaders">
                         {if $MULTI_SELECT}
@@ -52,7 +52,7 @@
                         <th class="{$WIDTHTYPE}">
                             <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues {if $LISTVIEW_HEADER->get('name') eq 'listprice'} noSorting {/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
                                 {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
-                                    <i class="fa fa-sort {$FASORT_IMAGE}"></i>
+                                    <i class="fa {$FASORT_IMAGE}"></i>
                                 {else}
                                     <i class="fa fa-sort customsort"></i>
                                 {/if}
@@ -70,7 +70,7 @@
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             <td>
                             {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                            {assign var=SEARCH_DETAILS_FIELD_INFO value=array('searchValue' => '', 'comparator' => '')}
+                            {assign var=SEARCH_DETAILS_FIELD_INFO value=['searchValue' => '', 'comparator' => '']}
                             {if isset($SEARCH_DETAILS[$LISTVIEW_HEADER->getName()])}
                                 {assign var=SEARCH_DETAILS_FIELD_INFO value=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()]}
                             {/if}
@@ -101,18 +101,18 @@
                     <td class="listViewEntryValue value textOverflowEllipsis {$WIDTHTYPE}" title="{$RECORD_DATA_LISTVIEW_HEADERNAME}">
                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-                        {else if $LISTVIEW_HEADER->get('uitype') eq '72'}
+                        {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}
                             {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
                             {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
                                 {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
                             {else}
                                 {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                             {/if}
-                        {else if $LISTVIEW_HEADERNAME eq 'listprice'}
+                        {elseif $LISTVIEW_HEADERNAME eq 'listprice'}
                             {CurrencyField::convertToUserFormat($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), null, true, true)}
-                        {else if $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
+                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
-                        {else if $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
+                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                             {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
                             {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
                             {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_RAW_PICKLIST_VALUES}

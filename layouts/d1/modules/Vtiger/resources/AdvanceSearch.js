@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_AdvanceSearch_Js */
 Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 
 	//cache will store the search data
@@ -69,13 +69,14 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	 * @return : deferred promise
 	 */
 	getAdvanceSearch : function() {
-		var aDeferred = jQuery.Deferred();
-		var moduleName = app.getModuleName();
-		var searchModule = this.getSearchModule();
+		let aDeferred = jQuery.Deferred(),
+			moduleName = app.getModuleName(),
+			searchModule = this.getSearchModule();
 
 		//Exists in the cache
 		if(searchModule in Vtiger_AdvanceSearch_Js.cache) {
 			aDeferred.resolve(Vtiger_AdvanceSearch_Js.cache[searchModule]);
+
 			return aDeferred.promise();
 		}
         
@@ -84,7 +85,7 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
             moduleName = 'Vtiger';
         }
         
-        var searchableModulesParams = {
+        let searchableModulesParams = {
 			"module":moduleName,
 			"view"	: "BasicAjax",
 			"mode"	: "showAdvancedSearch",
@@ -92,28 +93,28 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
         };
         
         app.helper.showProgress();
-		app.request.post({data:searchableModulesParams}).then(
-			function(err, data){
-                app.helper.hideProgress();
-				//add to cache
-				Vtiger_AdvanceSearch_Js.cache[searchModule] = data;
-				aDeferred.resolve(data);
-			},
-			function(error,err){
-				aDeferred.reject(error);
-			}
-		);
+		app.request.post({data: searchableModulesParams}).then(function (err, data) {
+			app.helper.hideProgress();
+			//add to cache
+			Vtiger_AdvanceSearch_Js.cache[searchModule] = data;
+			aDeferred.resolve(data);
+		}, function (error, err) {
+			aDeferred.reject(error);
+		});
+
 		return aDeferred.promise();
 	},
     
     showAdvanceSearch : function (data) {
-        var aDeferred = jQuery.Deferred();
-        if(jQuery('#advanceSearchHolder').length >0) {
-            jQuery('#advanceSearchHolder').removeClass('slideDown');
+        let aDeferred = jQuery.Deferred(),
+			advanceSearchHolder = jQuery('#advanceSearchHolder');
+
+        if(advanceSearchHolder.length >0) {
+			advanceSearchHolder.removeClass('slideDown');
             data = jQuery(data).find('#advanceSearchHolder').html();
-            jQuery('#advanceSearchHolder').html(data).addClass('slideDown');
+			advanceSearchHolder.html(data).addClass('slideDown');
         }else{
-            app.helper.loadPageOverlay(data).then(function(container){
+            app.helper.loadPageOverlay(data, {ignoreScroll: true}).then(function(container){
                 jQuery('#advanceSearchHolder').addClass('slideDown');
             });
         }
@@ -124,26 +125,24 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	/**
 	 * Function which intializes search
 	 */
-	initiateSearch : function() {
-        var aDeferred = jQuery.Deferred();
-		var thisInstance = this;
-		this.getAdvanceSearch().then(
-			function(data){
-                thisInstance.showAdvanceSearch(data).then(function(){
-                    thisInstance.setContainer(jQuery('#advanceSearchContainer'));
-                    vtUtils.showSelect2ElementView(thisInstance.getContainer().find('select.select2'));
-                    thisInstance.registerEvents();
-                    thisInstance.advanceFilter = new Vtiger_SearchAdvanceFilter_Js(jQuery('.filterContainer'));
-                    app.helper.showVerticalScroll(jQuery('#searchResults-container'),{'setHeight' : app.helper.getViewHeight()});
-                    aDeferred.resolve();
-                })
-                
-			},
-			function(error) {
-                aDeferred.reject();
-			}
-		)
-        return aDeferred.promise();
+	initiateSearch: function () {
+		let aDeferred = jQuery.Deferred(),
+			self = this;
+
+		this.getAdvanceSearch().then(function (data) {
+			self.showAdvanceSearch(data).then(function () {
+				self.setContainer(jQuery('#advanceSearchContainer'));
+				vtUtils.showSelect2ElementView(self.getContainer().find('select.select2'));
+				self.registerEvents();
+				self.advanceFilter = new Vtiger_SearchAdvanceFilter_Js(jQuery('.filterContainer'));
+				aDeferred.resolve();
+			})
+
+		}, function (error) {
+			aDeferred.reject();
+		});
+
+		return aDeferred.promise();
 	},
     
     getNameFields : function() {
@@ -152,31 +151,37 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
     },
     
     selectBasicSearchValue : function() {
-      var value = jQuery('.keyword-input').val();
+      let value = jQuery('.keyword-input').val();
       if(value.length > 0 ) {
-          var form = this.getFilterForm();
-          var labelFieldList = this.getNameFields();
+		  let form = this.getFilterForm(),
+			  labelFieldList = this.getNameFields();
+
           if(typeof labelFieldList == 'undefined' || labelFieldList.length == 0) {
               return;
           }
-          var anyConditionContainer = form.find('.anyConditionContainer');
-          for(var index in labelFieldList){
-            var labelFieldName = labelFieldList[index];
-            if(index !=0 ) {
+
+          let anyConditionContainer = form.find('.anyConditionContainer');
+
+          for(let index in labelFieldList){
+            let labelFieldName = labelFieldList[index];
+
+            if(0 !== index) {
                 //By default one condition exits , only if you have multiple label fields you have add one more condition
                 anyConditionContainer.find('.addCondition').find('button').trigger('click');
             }
-            var conditionRow = anyConditionContainer.find('.conditionList').find('.conditionRow:last');
-            var fieldSelectElemnt = conditionRow.find('select[name="columnname"]');
+
+            let conditionRow = anyConditionContainer.find('.conditionList').find('.conditionRow:last'),
+				fieldSelectElemnt = conditionRow.find('select[name="columnname"]');
+
             fieldSelectElemnt.find('option[data-field-name="'+ labelFieldName +'"]').attr('selected','selected');
             fieldSelectElemnt.trigger('change').trigger('liszt:updated');
 
-            var comparatorSelectElemnt = conditionRow.find('select[name="comparator"]');
+            let comparatorSelectElemnt = conditionRow.find('select[name="comparator"]');
             //select the contains value
             comparatorSelectElemnt.find('option[value="c"]').attr('selected','selected');
             comparatorSelectElemnt.trigger('liszt:updated');
 
-            var valueElement = conditionRow.find('[name="'+labelFieldName+'"]');
+            let valueElement = conditionRow.find('[name="'+labelFieldName+'"]');
             valueElement.val(value);
           }
           
@@ -186,28 +191,33 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	/**
 	 * Function which invokes search
 	 */
-	search : function() {
-		var conditionValues = this.advanceFilter.getValues();
-		var module = this.getSearchModule();
+	search: function () {
+		let conditionValues = this.advanceFilter.getValues(),
+			params = {
+				module: this.getSearchModule()
+			},
+			searchParams = new Array();
 
-		var params = {};
-		params.module = module;
-        var searchParams = new Array();
-        for(var index in conditionValues) {
-            var conditionSpecificValues = conditionValues[index]['columns'];
-            var conditionSpecificParams = new Array();
-            for(var i in conditionSpecificValues) {
-                var params1 = new Array();
-                var fieldName = conditionSpecificValues[i]['columnname'].split(":")[2];
-                params1.push(fieldName);
-                params1.push(conditionSpecificValues[i]['comparator']);
-                params1.push(conditionSpecificValues[i]['value']);
-                conditionSpecificParams.push(params1);
-            }
-            searchParams.push(conditionSpecificParams);
-        }
+		for (var index in conditionValues) {
+			let conditionSpecificValues = conditionValues[index]['columns'],
+				conditionSpecificParams = new Array();
+
+			for (var i in conditionSpecificValues) {
+				let params1 = new Array(),
+					fieldName = conditionSpecificValues[i]['columnname'].split(":")[2];
+
+				params1.push(fieldName);
+				params1.push(conditionSpecificValues[i]['comparator']);
+				params1.push(conditionSpecificValues[i]['value']);
+				conditionSpecificParams.push(params1);
+			}
+
+			searchParams.push(conditionSpecificParams);
+		}
+
 		params.search_params = JSON.stringify(searchParams);
-        params.nolistcache = 1;
+		params.nolistcache = 1;
+
 		return this._search(params);
 	},
 
@@ -294,17 +304,20 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	/**
 	 * Function which will perform search and other operaions
 	 */
-	performSearch : function() {
-        var self = this;
-		this.search().then(function(data){
-            if(jQuery('#searchResults-container').find('.searchResults').length > 0)  {
-                jQuery('#searchResults-container').find('.searchResults').html(data);
-            }else{
-                jQuery('#advanceSearchContainer').append(data);
-            }
-            self.initiateListInstance(jQuery('.searchResults'));
-            self.registerShowFiler();
-            self.hideSearch();
+	performSearch: function () {
+		let self = this;
+
+		this.search().then(function (data) {
+			let searchResultContainer = jQuery('#searchResults-container');
+
+			if (searchResultContainer.find('.searchResults').length > 0) {
+				searchResultContainer.find('.searchResults').html(data);
+			} else {
+				searchResultContainer.append(data);
+			}
+			self.initiateListInstance(jQuery('.searchResults'));
+			self.registerShowFiler();
+			self.hideSearch();
 		});
 	},
 
@@ -312,45 +325,52 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	 * Function which will perform the validation for the advance filter fields
 	 * @return : deferred promise - resolves if validation succeded if not failure
 	 */
-	performValidation : function() {
-		var thisInstance = this;
-		this.formValidationDeferred = jQuery.Deferred();
-        thisInstance.formValidationDeferred.resolve();
-		
-		var controlForm = this.getFilterForm();
-		var validationDone = function(form, status){
-			if(status) {
-				thisInstance.formValidationDeferred.resolve();
-			}else{
-				thisInstance.formValidationDeferred.reject();
-			}
-		}
+	performValidation: function () {
+		let self = this;
+
+		self.formValidationDeferred = jQuery.Deferred();
+		self.formValidationDeferred.resolve();
+
+		let controlForm = self.getFilterForm(),
+			validationDone = function (form, status) {
+				if (status) {
+					self.formValidationDeferred.resolve();
+				} else {
+					self.formValidationDeferred.reject();
+				}
+			};
+
 		//To perform validation registration only once
-		if(!this.filterValidationRegistered){
-			this.filterValidationRegistered = true;
+		if (!self.filterValidationRegistered) {
+			self.filterValidationRegistered = true;
+
 			controlForm.validationEngine({
-				'onValidationComplete' : validationDone
+				'onValidationComplete': validationDone
 			});
 		}
 		//This will trigger the validation
 		controlForm.submit();
-		return this.formValidationDeferred.promise();
+
+		return self.formValidationDeferred.promise();
 	},
-    
-    advanceSearchTriggerIntiatorHandler  : function () {
-        var self = this;
-        if(this.isSearchShown()){
-            this.hideSearch();
-            return;
-        }
-        if(this.isSearchHidden()) {
-            this.showSearch();
-            return;
-        }
-        this.initiateSearch().then(function() {
-            self.selectBasicSearchValue();
-        });
-    },
+
+	advanceSearchTriggerIntiatorHandler: function () {
+		const self = this;
+
+		if (self.isSearchShown()) {
+			self.hideSearch();
+			return;
+		}
+
+		if (self.isSearchHidden()) {
+			self.showSearch();
+			return;
+		}
+
+		self.initiateSearch().then(function () {
+			self.selectBasicSearchValue();
+		});
+	},
     
     /**
 	 * Function which will register the show filer invocation
@@ -366,50 +386,48 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 	 * Function which will register events
 	 */
 	registerEvents : function() {
-		var thisInstance = this;
-		var container = this.getContainer();
+		let self = this,
+			container = this.getContainer();
         
 		container.on('change','#searchModuleList', function(e){
-			var selectElement = jQuery(e.currentTarget);
-			var selectedModuleName = selectElement.val();
+			let selectElement = jQuery(e.currentTarget),
+				selectedModuleName = selectElement.val();
 
-			thisInstance.setSearchModule(selectedModuleName);
+			self.setSearchModule(selectedModuleName);
 
-			thisInstance.initiateSearch().then(function(){
-                thisInstance.selectBasicSearchValue();
+			self.initiateSearch().then(function(){
+				self.selectBasicSearchValue();
             });
 		});
 
 		jQuery('#advanceSearchButton').on('click', function(e){
-			var searchModule = thisInstance.getSearchModule();
+			let searchModule = self.getSearchModule();
                //If no module is selected
 			if(searchModule.length <= 0) {
-				app.getChosenElementFromSelect(jQuery('#searchModuleList'))
-						.validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error','topRight',true)
+				app.getChosenElementFromSelect(jQuery('#searchModuleList')).validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error','topRight',true)
 				return;
 			}
-			thisInstance.performValidation().then(
-				function(){
-					 thisInstance.performSearch();
-				},
-				function(){
+			self.performValidation().then(function () {
+				self.performSearch();
+			}, function () {
 
-				}
-			);
+			});
 		});
 
 		jQuery('#advanceIntiateSave').on('click', function(e){
-			var currentElement = jQuery(e.currentTarget);
+			let currentElement = jQuery(e.currentTarget);
 			currentElement.addClass('hide');
-			var actionsContainer = currentElement.closest('.actions');
+			let actionsContainer = currentElement.closest('.actions');
+
 			jQuery('input[name="viewname"]',actionsContainer).removeClass('hide').addClass('slideRight');
 			jQuery('#advanceSave').removeClass('hide');
 		});
 
 		jQuery('#advanceSave').on('click',function(e){
-			var actionsContainer = jQuery(e.currentTarget).closest('.actions');
-			var filterNameField = jQuery('input[name="viewname"]',actionsContainer);
-			var value = filterNameField.val();
+			let actionsContainer = jQuery(e.currentTarget).closest('.actions'),
+				filterNameField = jQuery('input[name="viewname"]',actionsContainer),
+				value = filterNameField.val();
+
 			if(value.length <= 0) {
                 vtUtils.showValidationMessage(filterNameField, app.vtranslate('JS_REQUIRED_FIELD'), {
                     position: {
@@ -421,27 +439,26 @@ Vtiger_BasicSearch_Js("Vtiger_AdvanceSearch_Js",{
 				return;
 			}
 
-			var searchModule = thisInstance.getSearchModule();
+			let searchModule = self.getSearchModule();
 			//If no module is selected
 			if(searchModule.length <= 0) {
-				app.getChosenElementFromSelect(jQuery('#searchModuleList'))
-						.validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error','topRight',true)
+				app.getChosenElementFromSelect(jQuery('#searchModuleList')).validationEngine('showPrompt', app.vtranslate('JS_SELECT_MODULE'), 'error','topRight',true)
 				return;
 			}
 
-			thisInstance.performValidation().then(function(){
-				var params = {};
+			self.performValidation().then(function(){
+				let params = {};
 				params.viewname = value;
-				thisInstance.saveAndViewFilter(params);
+				self.saveAndViewFilter(params);
 			});
 		});
 
 		//DO nothing on submit of filter form
-		this.getFilterForm().on('submit',function(e){
+		self.getFilterForm().on('submit',function(e){
 			e.preventDefault();
 		})
 
 		//To set the search module with the currently selected values.
-		this.setSearchModule(jQuery('#searchModuleList').val());
+		self.setSearchModule(jQuery('#searchModuleList').val());
 	}
 })

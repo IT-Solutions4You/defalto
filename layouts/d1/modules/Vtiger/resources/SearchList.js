@@ -6,18 +6,20 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_SearchList_Js */
 Vtiger.Class("Vtiger_SearchList_Js", {
 	intializeListInstances: function (container) {
 		container.find('.listViewPageDiv').each(function (index, domEle) {
-			var container = jQuery(domEle);
-			var moduleListInstance = new Vtiger_ModuleList_Js();
+			let container = jQuery(domEle),
+				moduleListInstance = new Vtiger_ModuleList_Js();
+
 			moduleListInstance.setModuleName(container.find('[name="search_module"]').val()).setListViewContainer(container);
 			moduleListInstance.registerEvents();
 		});
 	}
 },{});
 
+/** @var Vtiger_ModuleList_Js */
 Vtiger_List_Js("Vtiger_ModuleList_Js", {}, {
 	searchModule: false,
 	addComponents: function () {

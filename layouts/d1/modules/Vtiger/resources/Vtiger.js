@@ -361,7 +361,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 	registerEvents: function() {
 		this.registerMenuToggle();
 		this.registerGlobalSearch();
-		this.registerAppTriggerEvent();
 		this.registerModuleQtips();
 		this.registerListEssentialsToggleEvent();
 		this.registerAdvanceSeachIntiator();
@@ -478,59 +477,66 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Function to register Quick Create Event
 	 * @returns {undefined}
 	 */
-	registerQuickCreateEvent : function (){
-		var thisInstance = this;
-		jQuery("#quickCreateModules").on("click",".quickCreateModule",function(e,params){
-			var quickCreateElem = jQuery(e.currentTarget);
-			var quickCreateUrl = quickCreateElem.data('url');
-			var quickCreateModuleName = quickCreateElem.data('name');
+	registerQuickCreateEvent : function () {
+		const self = this;
+
+		jQuery("#quickCreateModules").on("click", ".quickCreateModule", function (e, params) {
+			let quickCreateElem = jQuery(e.currentTarget),
+				quickCreateUrl = quickCreateElem.data('url'),
+				quickCreateModuleName = quickCreateElem.data('name');
+
 			if (typeof params === 'undefined') {
 				params = {};
 			}
+
 			if (typeof params.callbackFunction === 'undefined') {
-				params.callbackFunction = function(data, err) {
+				params.callbackFunction = function (data, err) {
 					//fix for Refresh list view after Quick create
-					var parentModule=app.getModuleName();
-					var viewname=app.view();
-					if(((quickCreateModuleName == parentModule) || (quickCreateModuleName == 'Events' && parentModule == 'Calendar')) && (viewname=="List")){
-						var listinstance = app.controller();
-						listinstance.loadListViewRecords();
+					let parentModule = app.getModuleName(),
+						viewname = app.view();
+
+					if (((quickCreateModuleName === parentModule) || (quickCreateModuleName === 'Events' && parentModule === 'Calendar')) && (viewname === 'List')) {
+						app.controller().loadListViewRecords();
 					}
 				};
 			}
+
 			app.helper.showProgress();
-			thisInstance.getQuickCreateForm(quickCreateUrl,quickCreateModuleName,params).then(function(data){
+			self.getQuickCreateForm(quickCreateUrl, quickCreateModuleName, params).then(function (data) {
 				app.helper.hideProgress();
-				var callbackparams = {
-					'cb' : function (container){
-						thisInstance.registerPostReferenceEvent(container);
-						app.event.trigger('post.QuickCreateForm.show',form);
+				let callbackparams = {
+					'cb': function (container) {
+						self.registerPostReferenceEvent(container);
+						app.event.trigger('post.QuickCreateForm.show', form);
 						app.helper.registerLeavePageWithoutSubmit(form);
 						app.helper.registerModalDismissWithoutSubmit(form);
 					},
-					backdrop : 'static',
-					keyboard : false
+					backdrop: 'static',
+					keyboard: false
 				}
 
 				app.helper.showModal(data, callbackparams);
-				var form = jQuery('form[name="QuickCreate"]');
-				var moduleName = form.find('[name="module"]').val();
-				var Options= {
-					scrollInertia: 200,
-					autoHideScrollbar: true,
-					setHeight:(jQuery(window).height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-header').height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-footer').height()- 135),
-				}
+
+				let form = jQuery('form[name="QuickCreate"]'),
+					moduleName = form.find('[name="module"]').val(),
+					Options = {
+						scrollInertia: 200,
+						autoHideScrollbar: true,
+						setHeight: (jQuery(window).height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-header').height() - jQuery('form[name="QuickCreate"] .modal-body').find('.modal-footer').height() - 135),
+					}
+
 				app.helper.showVerticalScroll(jQuery('form[name="QuickCreate"] .modal-body'), Options);
 
-				var targetInstance = thisInstance;
-				var moduleInstance = Vtiger_Edit_Js.getInstanceByModuleName(moduleName);
-				if(typeof(moduleInstance.quickCreateSave) === 'function'){
+				let targetInstance = self,
+					moduleInstance = Vtiger_Edit_Js.getInstanceByModuleName(moduleName);
+
+				if (typeof (moduleInstance.quickCreateSave) === 'function') {
 					targetInstance = moduleInstance;
 					targetInstance.registerBasicEvents(form);
 				}
 
 				vtUtils.applyFieldElementsView(form);
-				targetInstance.quickCreateSave(form,params);
+				targetInstance.quickCreateSave(form, params);
 			});
 		});
 	},
@@ -657,129 +663,24 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	registerAppTriggerEvent : function() {
-		jQuery('.app-menu').removeClass('hide');
-		var toggleAppMenu = function(type) {
-			var appMenu = jQuery('.app-menu');
-			var appNav = jQuery('.app-nav');
-			appMenu.appendTo('#page');
-			appMenu.css({
-				'top' : appNav.offset().top + appNav.height(),
-				'left' : 0,
-				//Fix for Responsive layout Sub Menu in mobile devices
-				'width' : '50%',
-				'max-width' : '230px'
-			});
-			if(typeof type === 'undefined') {
-				type = appMenu.is(':hidden') ? 'show' : 'hide';
-			}
-			if(type == 'show') {
-				appMenu.show(200, function() {});
-			} else {
-				appMenu.hide(200, function() {});
-			}
-		};
-
-		jQuery('.app-trigger, .app-icon, .app-navigator').on('click',function(e){
-			e.stopPropagation();
-			toggleAppMenu();
-		});
-
-		jQuery('html').on('click', function() {
-			toggleAppMenu('hide');
-		});
-
-		jQuery(document).keyup(function (e) {
-			if (e.keyCode == 27) {
-				if(!jQuery('.app-menu').is(':hidden')) {
-					toggleAppMenu('hide');
-				}
-			}
-		});
-
-		jQuery('.app-modules-dropdown-container').hover(function(e) {
-			var dropdownContainer = jQuery(e.currentTarget);
-			jQuery('.dropdown').removeClass('open');
-			if(dropdownContainer.length) {
-				//Fix for Responsive layout Sub Menu in mobile devices
-				var appModulesDropdown = dropdownContainer.find('.app-modules-dropdown');
-				if(dropdownContainer.hasClass('dropdown-compact')) {
-					appModulesDropdown.css('top', dropdownContainer.position().top - 8);
-				} else {
-					appModulesDropdown.css('top', '');
-				}
-				appModulesDropdown.css('left', appModulesDropdown.parent().width() - 8);
-				dropdownContainer.addClass('open').find('.app-item').addClass('active-app-item');
-			}
-		}, function(e) {
-			var dropdownContainer = jQuery(e.currentTarget);
-			dropdownContainer.find('.app-item').removeClass('active-app-item');
-			setTimeout(function() {
-				if(dropdownContainer.find('.app-modules-dropdown').length && !dropdownContainer.find('.app-modules-dropdown').is(':hover') && !dropdownContainer.is(':hover')) {
-					dropdownContainer.removeClass('open');
-				}
-			}, 500);
-
-		});
-
-		//Fix for Responsive layout Sub Menu in mobile devices
-		jQuery('.app-item').on('click', function(e) {
-			var url = jQuery(this).data('defaultUrl');
-			if(url && url!=='#') {
-				window.location.href = url;
-			} else {
-				e.stopPropagation();
-			}
-		});
-
-		jQuery(window).resize(function() {
-			jQuery(".app-modules-dropdown").mCustomScrollbar("destroy");
-			app.helper.showVerticalScroll(jQuery(".app-modules-dropdown").not('.dropdown-modules-compact'), {
-				setHeight: $(window).height(),
-				autoExpandScrollbar: true
-			});
-			jQuery('.dropdown-modules-compact').each(function() {
-				var element = jQuery(this);
-				var heightPer = parseFloat(element.data('height'));
-				app.helper.showVerticalScroll(element, {
-					setHeight: $(window).height()*heightPer - 3,
-					autoExpandScrollbar: true,
-					scrollbarPosition: 'outside'
-				});
-			});
-		});
-		app.helper.showVerticalScroll(jQuery(".app-modules-dropdown").not('.dropdown-modules-compact'), {
-			setHeight: $(window).height(),
-			autoExpandScrollbar: true,
-			scrollbarPosition: 'outside'
-		});
-		jQuery('.dropdown-modules-compact').each(function() {
-			var element = jQuery(this);
-			var heightPer = parseFloat(element.data('height'));
-			app.helper.showVerticalScroll(element, {
-				setHeight: $(window).height()*heightPer - 3,
-				autoExpandScrollbar: true,
-				scrollbarPosition: 'outside'
-			});
-		});
+		console.log('Remove function registerAppTriggerEvent');
 	},
+	registerGlobalSearch: function () {
+		const self = this;
+		jQuery('.search-link .keyword-input').on('keypress', function (e) {
+			if (e.which === 13) {
+				let element = jQuery(e.currentTarget),
+					data = {};
 
-	registerGlobalSearch : function() {
-		var thisInstance = this;
-		jQuery('.search-link .keyword-input').on('keypress',function(e){
-			if(e.which == 13) {
-
-				var element = jQuery(e.currentTarget);
-				var searchValue = element.val();
-				var data = {};
-				data['searchValue'] = searchValue;
-				element.trigger(thisInstance._SearchIntiatedEventName,data);
+				data['searchValue'] = element.val();
+				element.trigger(self._SearchIntiatedEventName, data);
 			}
 		});
 	},
 
-	registerAdvanceSeachIntiator : function () {
-		jQuery('#adv-search').on('click',function(e){
-			var advanceSearchInstance = new Vtiger_AdvanceSearch_Js();
+	registerAdvanceSeachIntiator: function () {
+		jQuery('#adv-search').on('click', function (e) {
+			let advanceSearchInstance = new Vtiger_AdvanceSearch_Js();
 			advanceSearchInstance.advanceSearchTriggerIntiatorHandler();
 //			advanceSearchInstance.initiateSearch().then(function() {
 //				advanceSearchInstance.selectBasicSearchValue();
@@ -932,50 +833,52 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Function to open popup list modal
 	 */
 	openPopUp : function(e) {
-		var thisInstance = this;
-		var parentElem = thisInstance.getParentElement(jQuery(e.target));
+		let thisInstance = this,
+			parentElem = thisInstance.getParentElement(jQuery(e.target)),
+			params = this.getPopUpParams(parentElem);
 
-		var params = this.getPopUpParams(parentElem);
 		params.view = 'Popup';
 
-		var isMultiple = false;
+		let isMultiple = false;
+
 		if(params.multi_select) {
 			isMultiple = true;
 		}
 
-		var sourceFieldElement = jQuery('input[class="sourceField"]',parentElem);
+		let sourceFieldElement = jQuery('input[class="sourceField"]',parentElem),
+			prePopupOpenEvent = jQuery.Event(Vtiger_Edit_Js.preReferencePopUpOpenEvent);
 
-		var prePopupOpenEvent = jQuery.Event(Vtiger_Edit_Js.preReferencePopUpOpenEvent);
 		sourceFieldElement.trigger(prePopupOpenEvent);
 
 		if(prePopupOpenEvent.isDefaultPrevented()) {
 			return ;
 		}
-		var popupInstance = Vtiger_Popup_Js.getInstance();
+
+		let popupInstance = Vtiger_Popup_Js.getInstance();
 
 		app.event.off(Vtiger_Edit_Js.popupSelectionEvent);
 		app.event.one(Vtiger_Edit_Js.popupSelectionEvent,function(e,data) {
-			var responseData = JSON.parse(data);
-			var dataList = new Array();
+			let responseData = JSON.parse(data),
+				dataList = new Array();
+
 			jQuery.each(responseData, function(key, value){
-				var counter = 0;
-				for(var valuekey in value){
+				let counter = 0;
+
+				for(let valuekey in value){
 					if(valuekey == 'name') continue;
 					if(typeof valuekey == 'object') continue;
-//					var referenceModule = value[valuekey].module;
-//					if(typeof referenceModule == "undefined") {
-//						referenceModule = value.module;
-//					}
-//					if(parentElem.find('[name="popupReferenceModule"]').val() != referenceModule) continue;
-//
-					var data = {
+
+					let data = {
 						'name' : value.name,
 						'id' : key
 					}
-					if(valuekey == 'info') {
+
+					if(valuekey === 'info') {
 						data['name'] = value.name;
 					}
+
 					dataList.push(data);
+
 					if(!isMultiple && counter === 0) {
 						counter++;
 						thisInstance.setReferenceFieldValue(parentElem, data);
@@ -986,8 +889,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 			if(isMultiple) {
 				sourceFieldElement.trigger(Vtiger_Edit_Js.refrenceMultiSelectionEvent,{'data':dataList});
 			}
+
 			sourceFieldElement.trigger(Vtiger_Edit_Js.postReferenceSelectionEvent,{'data':responseData});
 		});
+
 		popupInstance.showPopup(params,Vtiger_Edit_Js.popupSelectionEvent,function() {});
 	},
 
