@@ -331,7 +331,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 			}
 
 			if ($dataType === 'currency' && $fieldDefaultValue != null) {
-				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue);
+				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue, null, true);
 			}
 
 			if ($dataType === 'double') {
