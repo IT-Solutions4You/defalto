@@ -1220,7 +1220,7 @@ function getAccessPickListValues($module)
 		$fieldvalues = Array();
 		if (!empty($roleids) && (php7_count($roleids) > 1))
 	{
-			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"". implode($roleids,"\",\"") ."\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
+			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"". implode('","', $roleids) ."\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
 	}
 	else
 	{

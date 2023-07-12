@@ -410,10 +410,10 @@ class CRMEntity {
 		global $adb;
 		$insertion_mode = $this->mode;
         $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
-        
+        $tablekey = $this->tab_name_index[$table_name];
+
 		//Checkin whether an entry is already is present in the vtiger_table to update
 		if ($insertion_mode == 'edit') {
-			$tablekey = $this->tab_name_index[$table_name];
 			// Make selection on the primary key of the module table to check.
 			$check_query = "select $tablekey from $table_name where $tablekey=?";
 			$check_params = array($this->id);
