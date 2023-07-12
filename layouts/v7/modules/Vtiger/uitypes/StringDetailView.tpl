@@ -16,7 +16,7 @@
     <span {if !empty($PICKLIST_COLOR)} class="picklist-color" style="background-color: {$PICKLIST_COLOR}; line-height:15px; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}>
         {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD)}
     </span>
-{else if $FIELD_MODEL->getFieldDataType() eq 'multipicklist' and $MODULE neq 'Users'}
+{elseif $FIELD_MODEL->getFieldDataType() eq 'multipicklist' and $MODULE neq 'Users'}
     {assign var=PICKLIST_DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD)}
     {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$FIELD_MODEL->get('fieldvalue'))}
     {assign var=MULTI_PICKLIST_VALUES value=explode(',',$PICKLIST_DISPLAY_VALUE)}
@@ -25,7 +25,7 @@
         <span class="picklist-color" {if !empty($PICKLIST_COLOR)} style="background-color: {$PICKLIST_COLOR}; color: {Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)};" {/if}> {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])} </span>
         {if $MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX+1] neq ''},{/if}
     {/foreach} 
-{else if $FIELD_MODEL->getFieldDataType() eq 'currency'}
+{elseif $FIELD_MODEL->getFieldDataType() eq 'currency'}
     {assign var=CURRENT_USER_MODEL value=Users_Record_Model::getCurrentUserModel()}
     {assign var=SYMBOL_PLACEMENT value=$CURRENT_USER_MODEL->get('currency_symbol_placement')}
     {if ($FIELD_MODEL->get('uitype') eq '72') && ($FIELD_MODEL->getName() eq 'unit_price')}
@@ -39,7 +39,7 @@
     {if $SYMBOL_PLACEMENT eq '$1.0'}{$CURRENCY_SYMBOL}&nbsp;{/if}
     <span class="currencyValue" title="{if $SYMBOL_PLACEMENT eq '$1.0'}{$TITLE_CURRENCY_SYMBOL}&nbsp;{/if}{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}{if $SYMBOL_PLACEMENT neq '$1.0'}&nbsp;{$TITLE_CURRENCY_SYMBOL}{/if}">{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), true)}</span>
     {if $SYMBOL_PLACEMENT neq '$1.0'}&nbsp;{$CURRENCY_SYMBOL}{/if}
-{else if  $FIELD_MODEL->get('name') eq 'signature'}
+{elseif  $FIELD_MODEL->get('name') eq 'signature'}
 	{decode_html($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD))}
 {else}
     {$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), $RECORD->getId(), $RECORD)}
