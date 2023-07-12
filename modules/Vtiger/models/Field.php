@@ -520,8 +520,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isAjaxEditable() {
 	    $ajaxRestrictedFields = array(
 	        self::UITYPE_RECORD_NO, 
-	        self::UITYPE_CURRENCY_AMOUNT, 
-	        self::UITYPE_ATTACHMENT, 
+            self::UITYPE_LINEITEMS_CURRENCY_AMOUNT,
+            self::UITYPE_ATTACHMENT,
 	        self::UITYPE_DOWNLOAD_TYPE,
 	        self::UITYPE_FILENAME
 	    );
