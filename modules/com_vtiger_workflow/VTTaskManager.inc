@@ -322,5 +322,3 @@ class VTTaskType {
 		return $taskDetails;
 	}
 }
-
-?>
