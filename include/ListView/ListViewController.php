@@ -391,13 +391,19 @@ class ListViewController {
 							}
 							$value = CurrencyField::convertToUserFormat($value, null, true);
 							$row['currencySymbol'] = $currencySymbol;
-//							$value = CurrencyField::appendCurrencySymbol($currencyValue, $currencySymbol);
 						} else {
-							if (!empty($value)) {
-								$value = CurrencyField::convertToUserFormat($value);
-								$userCurrencyInfo = getCurrencySymbolandCRate($this->user->currency_id);
-								$row['userCurrencySymbol'] = $userCurrencyInfo['symbol'];
-							}
+                            if (!empty($value)) {
+                                $value = CurrencyField::convertToUserFormat($value, null, true);
+                                $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
+                                $currencyId = $recordModel->fetchCurrencyId();
+
+                                if (!$currencyId) {
+                                    $currencyId = $this->user->currency_id;
+                                }
+
+                                $userCurrencyInfo = getCurrencySymbolandCRate($currencyId);
+                                $row['userCurrencySymbol'] = $userCurrencyInfo['symbol'];
+                            }
 						}
 					}
 				} elseif ($fieldDataType == 'double') {

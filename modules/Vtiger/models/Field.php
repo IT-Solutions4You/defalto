@@ -339,7 +339,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 		if(php7_count($matches) > 0) {
-			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+			[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 			$fieldName = $referenceFieldName;
 		}
 
@@ -376,7 +376,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 		if(php7_count($matches) > 0) {
-			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+			[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 			$fieldName = $referenceFieldName;
 		}
 
@@ -404,7 +404,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <Boolean> - true/false
 	 */
 	public function isMandatory() {
-		list($type,$mandatory)= explode('~',$this->get('typeofdata'));
+		[$type,$mandatory]= explode('~',$this->get('typeofdata'));
 		return $mandatory=='M' ? true:false;
 	}
 
@@ -1163,16 +1163,19 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @param <String> $value - value which need to be converted to display value
 	 * @return <String> - converted display value
 	 */
-	public function getEditViewDisplayValue($value) {
-		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
-			$this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
-		}
-		$uiTypeInstance = $this->uitype_instance;
-		return $uiTypeInstance->getEditViewDisplayValue($value);
-	}
+	public function getEditViewDisplayValue($value, $additionalParameter = null)
+    {
+        if (!isset($this->uitype_instance) || !$this->uitype_instance) {
+            $this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
+        }
 
-	/**
-	 * Function to retieve types of file locations in Documents Edit
+        $uiTypeInstance = $this->uitype_instance;
+
+        return $uiTypeInstance->getEditViewDisplayValue($value, $additionalParameter);
+    }
+
+    /**
+     * Function to retieve types of file locations in Documents Edit
 	 * @return <array> - List of file location types
 	 */
 	public function getFileLocationType() {
@@ -1469,7 +1472,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 			if (php7_count($matches) > 0) {
-				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 				$fieldName = $referenceFieldName;
 			}
 

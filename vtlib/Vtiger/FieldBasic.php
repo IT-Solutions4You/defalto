@@ -182,6 +182,18 @@ class Vtiger_FieldBasic {
 
 		if (!empty($this->columntype)) {
 			Vtiger_Utils::AddColumn($this->table, $this->column, $this->columntype);
+
+			if (71 == $this->uitype) {
+				$entityTableResult = $adb->pquery('SELECT tablename FROM vtiger_entityname WHERE tabid = ?', [$this->getModuleId()]);
+
+				if ($entityTableResult) {
+					$entityTableRow = $adb->fetchByAssoc($entityTableResult);
+					$entityTable = $entityTableRow['tablename'];
+
+					Vtiger_Utils::AddColumn($entityTable, 'currency_id', 'INT(19)');
+					Vtiger_Utils::AddColumn($entityTable, 'conversion_rate', 'DECIMAL(10,3)');
+				}
+			}
 		}
 
 		if (!$this->label) {

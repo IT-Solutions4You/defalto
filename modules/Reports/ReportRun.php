@@ -1619,11 +1619,11 @@ class ReportRun extends CRMEntity {
 
 				if ($fieldType == 'currency') {
 					// Some of the currency fields like Unit Price, Total, Sub-total etc of Inventory modules, do not need currency conversion
-					if ($field->getUIType() == '72') {
+					//if ($field->getUIType() == '72') {
 						$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value, null, true);
-					} else {
+					/*} else {
 						$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value);
-					}
+					}*/
 				}
 
 				$specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();

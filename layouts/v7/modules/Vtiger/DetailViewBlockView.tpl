@@ -105,6 +105,8 @@
 										{assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
 										{if $fieldDataType eq 'multipicklist'}
 											{assign var=FIELD_DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}
+										{elseif $fieldDataType eq 'currency'}
+											{assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'), true))}
 										{else}
 											{assign var=FIELD_DISPLAY_VALUE value=Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}
 										{/if}

@@ -663,7 +663,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 				} else {
 					if (!empty($fieldValue)) {
 						$fieldValue = CurrencyField::convertToUserFormat($fieldValue, $current_user, true);
-						$fieldData[$fieldName] = CurrencyField::convertToDBFormat($fieldValue, $current_user, false);
+						$fieldData[$fieldName] = $fieldValue;
 					}
 				}
 			} else if($fieldDataType == 'boolean') {
