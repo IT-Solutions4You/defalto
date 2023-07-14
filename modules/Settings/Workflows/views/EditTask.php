@@ -197,6 +197,23 @@ class Settings_Workflows_EditTask_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('EMAIL_FIELD_OPTION', $emailFieldoptions);
 		$viewer->assign('FROM_EMAIL_FIELD_OPTION', $fromEmailFieldOptions);
 		$viewer->assign('ALL_FIELD_OPTIONS',$allFieldoptions);
+
+        $memberGroups = Settings_Groups_Member_Model::getAll(false);
+
+        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
+            $allCompany = MultiCompany4you_Module_Model::getCompaniesList('all');
+            $viewer->assign('MULTICOMPANY4YOU', 1);
+
+            foreach ($allCompany as $companyId => $company) {
+                $type = 'MultiCompany4you';
+                $qualifiedId = $type . ':' . $companyId;
+                $member = new Vtiger_Base_Model();
+                $memberGroups['MultiCompany4you'][$qualifiedId] = $member->set('id', $qualifiedId)->set('name', $company['companyname']);
+            }
+        }
+
+        $viewer->assign('MEMBER_GROUPS', $memberGroups);
+
 		$viewer->view('EditTask.tpl', $qualifiedModuleName);
 	}
 }
