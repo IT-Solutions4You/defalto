@@ -214,6 +214,21 @@ class Settings_Workflows_EditTask_View extends Settings_Vtiger_Index_View {
 
         $viewer->assign('MEMBER_GROUPS', $memberGroups);
 
+        if ('AddSharing' === $taskType || 'RemoveSharing' === $taskType) {
+            $memberViewList = $memberEditList = [];
+
+            if (is_array($taskObject->memberViewList)) {
+                $memberViewList = array_flip($taskObject->memberViewList);
+            }
+
+            if (is_array($taskObject->memberEditList)) {
+                $memberEditList = array_flip($taskObject->memberEditList);
+            }
+
+            $viewer->assign('memberViewList', $memberViewList);
+            $viewer->assign('memberEditList', $memberEditList);
+        }
+
 		$viewer->view('EditTask.tpl', $qualifiedModuleName);
 	}
 }
