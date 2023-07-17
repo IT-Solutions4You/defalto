@@ -26,8 +26,8 @@ class Vtiger_EditSharingRecord_View extends Vtiger_Edit_View
         $recordName = $recordModel->getRecordName($record);
         $memberGroups = Settings_Groups_Member_Model::getAll(false);
 
-        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
-            $allCompany = MultiCompany4you_Module_Model::getCompaniesList('all');
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+            $allCompany = ITS4YouMultiCompany_Module_Model::getCompaniesList('all');
             $viewer->assign('MULTICOMPANY4YOU', 1);
 
             foreach ($allCompany as $companyId => $company) {

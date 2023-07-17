@@ -2904,8 +2904,8 @@ class CRMEntity {
         $parentRole = implode(',', $parentRoleArr);
         $companyId = [];
 
-        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
-            $companyId = array_keys(MultiCompany4you_Module_Model::getCompaniesList());
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+            $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
         }
 
         $query = ' LEFT JOIN (

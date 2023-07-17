@@ -87,7 +87,7 @@
                                     <li class="Roles padding5per textAlignCenter"><strong>{vtranslate('LBL_ROLES', $MODULE)}</strong></li>
                                     <li class="RoleAndSubordinates padding5per textAlignCenter"><strong>{vtranslate('LBL_ROLEANDSUBORDINATE', $MODULE)}</strong></li>
                                     {if 1 eq $MULTICOMPANY4YOU}
-                                        <li class="MultiCompany4you padding5per textAlignCenter"><strong>{vtranslate('MultiCompany4you', 'MultiCompany4you')}</strong></li>
+                                        <li class="MultiCompany4you padding5per textAlignCenter"><strong>{vtranslate('ITS4YouMultiCompany', 'ITS4YouMultiCompany')}</strong></li>
                                     {/if}
                                 </ul>
                             </span>

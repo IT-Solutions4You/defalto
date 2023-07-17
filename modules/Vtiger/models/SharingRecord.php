@@ -83,7 +83,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             return '?module=Roles&parent=Settings&view=Edit&record=' . $id;
         }
         if ( 'MultiCompany4you' === $value) {
-            return '?module=MultiCompany4you&view=Detail&companyid=' . $id;
+            return '?module=ITS4YouMultiCompany&view=Detail&companyid=' . $id;
         }
     }
 
@@ -146,7 +146,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             $members[$row['type']]['RoleAndSubordinates']['RoleAndSubordinates:' . $row['roleid']] = $row['rolename'];
         }
 
-        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
             $sql = 'SELECT its4you_sharing_multicompany.type, its4you_sharing_multicompany.companyid, its4you_multicompany4you.companyname 
                 FROM its4you_sharing_multicompany
                 INNER JOIN its4you_multicompany4you ON its4you_multicompany4you.companyid=its4you_sharing_multicompany.companyid
@@ -237,7 +237,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             $isShared = 1;
         }
 
-        $db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
+        //$db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
     }
 
     /**
@@ -288,7 +288,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             $users[$row['type']]['RoleAndSubordinates'][$row['roleid']] = $row['rolename'];
         }
 
-        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
             $sql = 'SELECT its4you_sharing_multicompany.type, its4you_sharing_multicompany.companyid, its4you_multicompany4you.companyname 
                 FROM its4you_sharing_multicompany
                 INNER JOIN its4you_multicompany4you ON its4you_multicompany4you.companyid=its4you_sharing_multicompany.companyid
