@@ -22,7 +22,7 @@
                                         <div class="col-lg-6 col-md-6 col-sm-6">
                                             <select id="memberViewList" class="select2 inputElement" multiple="true" name="memberViewList[]" data-rule-required="" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $QUALIFIED_MODULE)}" >
                                                 {foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
-                                                    <optgroup label="{vtranslate({$GROUP_LABEL}, $QUALIFIED_MODULE)} {$GROUP_LABEL}" class="{$GROUP_LABEL}">
+                                                    <optgroup label="{vtranslate($GROUP_LABEL, $QUALIFIED_MODULE)} {$GROUP_LABEL}" class="{$GROUP_LABEL}">
                                                         {foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
                                                             <option value="{$MEMBER->getId()}" data-member-type="{$GROUP_LABEL}" {if isset($memberViewList[$MEMBER->getId()])} selected="true"{/if}>{trim($MEMBER->getName())}</option>
                                                         {/foreach}
@@ -46,7 +46,7 @@
                                         <div class="col-lg-6 col-md-6 col-sm-6">
                                             <select id="memberEditList" class="select2 inputElement" multiple="true" name="memberEditList[]" data-rule-required="" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $QUALIFIED_MODULE)}" >
                                                 {foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
-                                                    <optgroup label="{vtranslate({$GROUP_LABEL}, $QUALIFIED_MODULE)}" class="{$GROUP_LABEL}">
+                                                    <optgroup label="{vtranslate($GROUP_LABEL, $QUALIFIED_MODULE)}" class="{$GROUP_LABEL}">
                                                         {foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
                                                             <option value="{$MEMBER->getId()}" data-member-type="{$GROUP_LABEL}" {if isset($memberEditList[$MEMBER->getId()])} selected="true"{/if}>{trim($MEMBER->getName())}</option>
                                                         {/foreach}
