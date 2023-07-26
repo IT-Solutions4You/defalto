@@ -12,6 +12,9 @@ class RemoveSharing extends VTTask
 {
     public $executeImmediately = true;
 
+    public $memberViewList = [];
+    public $memberEditList = [];
+
     public function getFieldNames()
     {
         return ['memberViewList', 'memberEditList'];
