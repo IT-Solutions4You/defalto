@@ -53,8 +53,8 @@
         <form name='list' id='listedit' action='' onsubmit="return false;">
             <table id="listview-table" class="table listview-table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
                 <thead>
-                <tr class="listViewContentHeader bg-body-secondary text-body-secondary border-transparent">
-                    <th class="ps-3">
+                <tr class="listViewContentHeader bg-body-secondary text-secondary border-transparent">
+                    <th class="ps-3 text-secondary">
                         {if !$SEARCH_MODE_RESULTS}
                             <div class="table-actions d-flex">
                                 <div class="table-actions-dropdown">
@@ -96,7 +96,7 @@
                             {assign var=NO_SORTING value=0}
                         {/if}
                         <th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if}>
-                            <a href="#" class="{if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if} data-field-id='{$LISTVIEW_HEADER->getId()}'>
+                            <a href="#" class="text-secondary {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if} data-field-id='{$LISTVIEW_HEADER->getId()}'>
                                 {if !$NO_SORTING}
                                     {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
@@ -117,11 +117,11 @@
                     <tr class="searchRow listViewSearchContainer">
                         <th class="inline-search-btn ps-3">
                             <div class="table-actions">
-                                <button class="btn btn-sm px-0 {if php7_count($SEARCH_DETAILS) gt 0}hide{/if}" data-trigger="listSearch">
+                                <button class="btn btn-sm text-secondary px-0 {if php7_count($SEARCH_DETAILS) gt 0}hide{/if}" data-trigger="listSearch">
                                     <i class="fa fa-search"></i>
                                     <span class="s2-btn-text d-none">{vtranslate("LBL_SEARCH",$MODULE)}</span>
                                 </button>
-                                <button class="searchAndClearButton t-btn-sm btn px-0 {if php7_count($SEARCH_DETAILS) eq 0}hide{/if}" data-trigger="clearListSearch">
+                                <button class="searchAndClearButton t-btn-sm btn text-secondary px-0 {if php7_count($SEARCH_DETAILS) eq 0}hide{/if}" data-trigger="clearListSearch">
                                     <i class="fa fa-close"></i>
                                     <span class="d-none">{vtranslate("LBL_CLEAR",$MODULE)}</span>
                                 </button>
@@ -151,7 +151,7 @@
                         {assign var=DATA_URL value=$RELATED_TO->getDetailViewUrl()}
                     {/if}
                     <tr class="listViewEntries" data-id='{$DATA_ID}' data-recordUrl='{$DATA_URL}&app={$SELECTED_MENU_CATEGORY}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}" {if $MODULE eq 'Calendar'}data-recurring-enabled='{$LISTVIEW_ENTRY->isRecurringEnabled()}'{/if}>
-                        <td class="listViewRecordActions ps-3">
+                        <td class="listViewRecordActions ps-3 text-secondary">
                             {include file="ListViewRecordActions.tpl"|vtemplate_path:$MODULE}
                         </td>
                         {if ($LISTVIEW_ENTRY->get('document_source') eq 'Google Drive' && $IS_GOOGLE_DRIVE_ENABLED) || ($LISTVIEW_ENTRY->get('document_source') eq 'Dropbox' && $IS_DROPBOX_ENABLED)}
@@ -168,13 +168,11 @@
 							<span class="fieldValue">
 								<span class="value">
 									{if ($LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4') and $MODULE_MODEL->isListViewNameFieldNavigationEnabled() eq true }
-                                        <a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-
-
-{if $MODULE eq 'Products' &&$LISTVIEW_ENTRY->isBundle()}
-                                        &nbsp;-&nbsp;
-                                        <i class="mute">{vtranslate('LBL_PRODUCT_BUNDLE', $MODULE)}</i>
-                                    {/if}
+                                        <a class="fw-bold" href="{$LISTVIEW_ENTRY->getDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
+                                        {if $MODULE eq 'Products' && $LISTVIEW_ENTRY->isBundle()}
+                                            &nbsp;-&nbsp;
+                                            <i class="mute">{vtranslate('LBL_PRODUCT_BUNDLE', $MODULE)}</i>
+                                        {/if}
 									{elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
 										{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 									{else}
@@ -241,19 +239,11 @@
                 {if $LISTVIEW_ENTRIES_COUNT eq '0'}
                     <tr class="emptyRecordsDiv">
                         {assign var=COLSPAN_WIDTH value={php7_count($LISTVIEW_HEADERS)}+1}
-                        <td colspan="{$COLSPAN_WIDTH}">
-                            <div class="emptyRecordsContent">
-                                {assign var=SINGLE_MODULE value="SINGLE_$MODULE"}
-                                {vtranslate('LBL_NO')} {vtranslate($MODULE, $MODULE)} {vtranslate('LBL_FOUND')}.
+                        <td colspan="{$COLSPAN_WIDTH}" class="fs-3 border-bottom-0">
+                            <div class="emptyRecordsContent text-center h-50">
+                                {vtranslate('LBL_RECORDS_NOT_FOUND', $MODULE)}.
                                 {if $IS_CREATE_PERMITTED}
-                                    <a style="color:blue" href="{$MODULE_MODEL->getCreateRecordUrl()}"> {vtranslate('LBL_CREATE')}</a>
-                                    {if Users_Privileges_Model::isPermitted($MODULE, 'Import') && $LIST_VIEW_MODEL->isImportEnabled()}
-                                        {vtranslate('LBL_OR', $MODULE)}
-                                        <a style="color:blue" href="#" onclick="return Vtiger_Import_Js.triggerImportAction()">{vtranslate('LBL_IMPORT', $MODULE)}</a>
-                                        {vtranslate($MODULE, $MODULE)}
-                                    {else}
-                                        {vtranslate($SINGLE_MODULE, $MODULE)}
-                                    {/if}
+                                    {vtranslate('LBL_CREATE_OR_IMPORT_RECORDS', $MODULE)}
                                 {/if}
                             </div>
                         </td>

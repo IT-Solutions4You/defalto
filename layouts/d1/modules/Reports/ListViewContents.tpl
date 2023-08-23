@@ -57,7 +57,7 @@
 							{assign var="LISTVIEW_HEADERS" value=$LISTVIEW_MODEL->getListViewHeadersForVtiger7({$VIEWNAME})}
 							{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 								<th {if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY} nowrap="nowrap" {/if}>
-									<a href="#" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER_KEY}">
+									<a href="#" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER_KEY}">
 										{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}
 											<i class="fa {$FASORT_IMAGE}"></i>
 										{else}

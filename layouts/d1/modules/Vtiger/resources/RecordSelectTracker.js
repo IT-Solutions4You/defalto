@@ -7,108 +7,105 @@
  * All Rights Reserved.
  *************************************************************************************/
 /** @var Vtiger_RecordSelectTracker_Js */
-jQuery.Class("Vtiger_RecordSelectTracker_Js",{
-    getInstance : function(){
-        var recordSelectTrackerObj = new Vtiger_RecordSelectTracker_Js;
-        return recordSelectTrackerObj;
+jQuery.Class("Vtiger_RecordSelectTracker_Js", {
+        getInstance: function () {
+            return new Vtiger_RecordSelectTracker_Js;
+        },
     },
-},
-{    
-    selectedIds : [],
-    selectAllMode: false,
-    excludedIds : [],
-    cvId : '',
-    
-    setCvId : function (cvid){
-       this.cvId = cvid;
-    },
-    
-    registerRowCheckListener : function(){
-        var thisInstance = this;
-        jQuery(document).on('Post.ListRow.Checked', 'tr.listViewEntries',function(e,args){ 
-            if(thisInstance.selectAllMode){
-                thisInstance.excludedIds.splice( $.inArray(args.id, thisInstance.excludedIds), 1 );
+    {
+        selectedIds: [],
+        selectAllMode: false,
+        excludedIds: [],
+        cvId: '',
+
+        setCvId: function (cvid) {
+            this.cvId = cvid;
+        },
+
+        registerRowCheckListener: function () {
+            var thisInstance = this;
+            jQuery(document).on('Post.ListRow.Checked', 'tr.listViewEntries', function (e, args) {
+                if (thisInstance.selectAllMode) {
+                    thisInstance.excludedIds.splice($.inArray(args.id, thisInstance.excludedIds), 1);
+                } else {
+                    if (jQuery.inArray(args.id, thisInstance.selectedIds) === -1) {
+                        thisInstance.selectedIds.push(args.id);
+                    }
+                }
+            });
+            jQuery(document).on('Post.ListRow.UnChecked', 'tr.listViewEntries', function (e, args) {
+                if (thisInstance.selectAllMode) {
+                    if (jQuery.inArray(args.id, thisInstance.excludedIds) === -1) {
+                        thisInstance.excludedIds.push(args.id);
+                    }
+                } else {
+                    thisInstance.selectedIds.splice($.inArray(args.id, thisInstance.selectedIds), 1);
+                }
+            });
+        },
+
+        registerListSelectAllListener: function () {
+            var thisInstance = this;
+            jQuery(document).on('Post.ListSelectAll', function (e, args) {
+                thisInstance.selectedIds = [];
+                thisInstance.selectAllMode = args.mode;
+                thisInstance.cvId = args.cvId;
+            });
+            jQuery(document).on('Post.ListDeSelectAll', function (e, args) {
+                thisInstance.selectAllMode = args.mode;
+                thisInstance.clearList();
+            });
+        },
+
+        getSelectedAndExcludedIds: function (jsonDecode) {
+            var selectedIds = this.getSelectedIds();
+            if (selectedIds == undefined || selectedIds == null || selectedIds.length == 0) {
+                return false;
             }
-            else{
-                if(jQuery.inArray(args.id, thisInstance.selectedIds) == -1){
-                    thisInstance.selectedIds.push(args.id);
-                }
+            if (this.selectAllMode != true && jsonDecode) {
+                selectedIds = JSON.stringify(selectedIds)
             }
-        });
-        jQuery(document).on('Post.ListRow.UnChecked', 'tr.listViewEntries',function(e,args){          
-            if(thisInstance.selectAllMode){
-                if(jQuery.inArray(args.id, thisInstance.excludedIds) == -1){
-                    thisInstance.excludedIds.push(args.id);
-                }
+            var params = {
+                'selected_ids': selectedIds,
+                'excluded_ids': this.getExcludedIds(jsonDecode),
+                'viewname': this.getCvid()
             }
-            else{
-                thisInstance.selectedIds.splice( $.inArray(args.id, thisInstance.selectedIds),1);
+            return params;
+        },
+
+        getSelectedIds: function () {
+            if (this.selectAllMode === true) {
+                return 'all';
             }
-        });
-    },
-    
-    registerListSelectAllListener: function(){
-        var thisInstance = this;
-        jQuery(document).on('Post.ListSelectAll',function(e,args){
-            thisInstance.selectedIds = [];
-            thisInstance.selectAllMode = args.mode;
-            thisInstance.cvId = args.cvId;
-        });   
-        jQuery(document).on('Post.ListDeSelectAll',function(e,args){
-            thisInstance.selectAllMode = args.mode;
-            thisInstance.clearList();
-        }); 
-    },
-    
-            getSelectedAndExcludedIds: function(jsonDecode) {
-                var selectedIds = this.getSelectedIds();
-                if (selectedIds == undefined || selectedIds == null || selectedIds.length == 0) {
-                    return false;
-                }
-                if (this.selectAllMode != true && jsonDecode) {
-                    selectedIds = JSON.stringify(selectedIds)
-                }
-                var params = {
-                    'selected_ids': selectedIds,
-                    'excluded_ids': this.getExcludedIds(jsonDecode),
-                    'viewname': this.getCvid()
-                }
-                return params;
-            },
-    
-    getSelectedIds : function(){
-        if (this.selectAllMode == true) {
-            return  'all';
-        }
-        return this.selectedIds;
-    },
-    
-    getCvid : function(){
-        return this.cvId;
-    },
-    
-    getExcludedIds : function(jsonDecode){
-        if(jsonDecode){
-            return JSON.stringify(this.excludedIds)
-        }
-        return this.excludedIds;
-    },
-    
-    getSelectAllMode: function(){
-        return this.selectAllMode;
-    },
-    
-    clearList : function(){
-        this.selectedIds = []; 
-        this.excludedIds = [];
-        this.selectAllMode = false;
-        this.cvId = '';
-        
-    },
-    
-    registerEvents : function() {
-        this.registerRowCheckListener();
-        this.registerListSelectAllListener();
-        
-    },
-});
+            return this.selectedIds;
+        },
+
+        getCvid: function () {
+            return this.cvId;
+        },
+
+        getExcludedIds: function (jsonDecode) {
+            if (jsonDecode) {
+                return JSON.stringify(this.excludedIds)
+            }
+            return this.excludedIds;
+        },
+
+        getSelectAllMode: function () {
+            return this.selectAllMode;
+        },
+
+        clearList: function () {
+            this.selectedIds = [];
+            this.excludedIds = [];
+            this.selectAllMode = false;
+            this.cvId = '';
+
+        },
+
+        registerEvents: function () {
+            this.registerRowCheckListener();
+            this.registerListSelectAllListener();
+
+        },
+    });

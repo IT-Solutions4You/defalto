@@ -20,7 +20,7 @@
                         </div>
                     {/if}
                     <div class="col-lg-1">
-                        <button data-dismiss="modal" class="close pull-right" title="close"> 
+                        <button data-bs-dismiss="modal" class="close pull-right" title="close">
                             <span aria-hidden="true" class='fa fa-close'></span></button>
                     </div>
                 </div>

@@ -340,7 +340,7 @@
                     {assign var=BUTTON_LABEL value={vtranslate('LBL_SAVE', $MODULE)}}
                 {/if}
                 <button id="save_syncsetting" class="btn btn-success" name="saveButton"><strong>{vtranslate('LBL_SAVE', $MODULENAME)}</strong></button>
-                <a href="#" class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                <a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
             </center>
 	</div>
     </div>

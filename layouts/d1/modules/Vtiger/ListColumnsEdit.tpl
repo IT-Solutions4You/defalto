@@ -87,7 +87,7 @@
 				</div>
 				<div class="modal-footer ">
 					<button class="btn btn-success" type="submit" name="saveButton"><strong>{vtranslate('LBL_UPDATE_LIST')}</strong></button>
-					<a href="#" class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+					<a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 				</div>
 			</form>
 		</div>

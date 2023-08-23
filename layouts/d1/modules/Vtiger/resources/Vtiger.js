@@ -1310,7 +1310,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 				cb: function () {
 					thisInstance.registerChangeTemplateEvent(jQuery('#helpPageOverlay'), recordId);
 					thisInstance.registerNavigationEvents(jQuery('#helpPageOverlay'));
-				}
+				},
+				backdrop: false,
 			};
 			jQuery('#helpPageOverlay').css({"width": "870px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white'});
 			app.helper.loadHelpPageOverlay(response, params);
@@ -1346,24 +1347,17 @@ Vtiger.Class('Vtiger_Index_Js', {
 		app.helper.showProgress();
 		app.request.get({data: params}).then(function (err, response) {
 			app.helper.hideProgress();
-			jQuery('#helpPageOverlay').css({"width": "550px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white'});
-			var callBack = function(container){
-				self.registerMoreRecentUpdatesClickEvent(container,recordId);
+			jQuery('#helpPageOverlay').css({"width": "500px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white', 'margin-left': 'auto'});
+			let callBack = function (container) {
+				self.registerMoreRecentUpdatesClickEvent(container, recordId);
 				//Register Navigation Events
 				self.registerNavigationEvents(container);
 			};
+
 			app.helper.loadHelpPageOverlay(response, {
-				'cb' : callBack
+				'cb': callBack,
+				backdrop: false,
 			});
-			var params = {
-				setHeight: "100%",
-				alwaysShowScrollbar: 2,
-				autoExpandScrollbar: true,
-				setTop: 0,
-				scrollInertia: 70,
-				mouseWheel: {preventDefault: true}
-			};
-			app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), params);
 		});
 	},
 

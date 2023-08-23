@@ -4441,8 +4441,6 @@ form[name="notification_settings"] .select2-choice {
   border-color: #3cb878;
 }
 .tag .tagLabel {
-  margin-right: 8px;
-  margin-left: 5px;
   max-width: 80px;
   vertical-align: bottom;
 }

@@ -62,7 +62,7 @@
 					<div class="col-sm-9 col-xs-9">
 						<div class="pull-right">
 							<div class="pull-right cancelLinkContainer" style="margin-top:5px;">
-								<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+								<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 							</div>
 							<button class="btn btn-success saveButton" type="submit" name="saveButton" style="padding: 5px 12px;"><strong>{vtranslate('LBL_SAVE', $MODULE)}</strong></button>
 						</div>
@@ -103,7 +103,7 @@
 			<div class="row-fluid">
 				<div class="pull-right">
 					<div class="pull-right cancelLinkContainer" style="margin-top:5px;">
-						<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+						<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 					</div>
 					<button class="btn btn-success updateBtn">{vtranslate('Update', $MODULE)}</button>
 				</div>
@@ -181,7 +181,7 @@
 					<span class="col-sm-6">
 						<div class="pull-right">
 							<div class="pull-right cancelLinkContainer" style="margin-top:5px;">
-								<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+								<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 							</div>
 							<button class="btn btn-success" name="saveButton"><strong>{vtranslate('LBL_REGISTER', $QUALIFIED_MODULE)}</strong></button>
 						</div>
@@ -246,7 +246,7 @@
 					<span class="col-sm-4">
 						<div class="pull-right">
 							<div class="pull-right cancelLinkContainer" style="margin-top:5px;">
-								<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+								<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 							</div>
 							<button class="btn btn-success" name="saveButton" type="submit"><strong>{vtranslate('LBL_LOGIN', $QUALIFIED_MODULE)}</strong></button>
 						</div>
@@ -282,7 +282,7 @@
 				<div class="row-fluid">
 					<div class="pull-right">
 						<div class="pull-right cancelLinkContainer" style="margin-top:5px;">
-							<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+							<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 						</div>
 						<button class="btn btn-success okBtn" type="submit" style="padding: 5px 12px;">{vtranslate('LBL_OK', $QUALIFIED_MODULE)}</button>
 					</div>

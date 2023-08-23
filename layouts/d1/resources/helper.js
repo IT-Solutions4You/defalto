@@ -346,8 +346,11 @@ jQuery.Class("Vtiger_Helper_Js",{
         return aDeferred.promise();
     },
 
-    hidePageOverlay : function() {
-        $('#overlayPage').modal('hide');
+    hidePageOverlay: function () {
+        let overlayPage = $('#overlayPage');
+
+        overlayPage.modal('hide');
+        overlayPage.unbind();
     },
 
     loadPageContentOverlay: function (data, params) {
@@ -392,52 +395,63 @@ jQuery.Class("Vtiger_Helper_Js",{
         return aDeferred.promise();
     },
 
-    hidePageContentOverlay : function() {
+    hidePageContentOverlay: function () {
         let aDeferred = new jQuery.Deferred(),
             overlayPageContent = $('#overlayPageContent');
 
-        overlayPageContent.one('hidden.bs.modal', function() {
+        overlayPageContent.one('hidden.bs.modal', function () {
             overlayPageContent.find('.data').html('');
             aDeferred.resolve();
         });
         overlayPageContent.modal('hide');
+        overlayPageContent.unbind();
 
         return aDeferred.promise();
     },
+    loadHelpPageOverlay: function (data, params) {
+        let aDeferred = new jQuery.Deferred(),
+            defaultParams = this.defaultModalParams();
 
-    loadHelpPageOverlay : function(data, params) {
-        var aDeferred = new jQuery.Deferred();
-        var defaultParams = this.defaultModalParams();
-        
-        params = jQuery.extend(defaultParams,params);
-        var helpOverlayPageContent = jQuery('#helpPageOverlay');
-        
+        params = jQuery.extend(defaultParams, params);
+
+        let helpOverlayPageContent = jQuery('#helpPageOverlay');
+
         //first hide helpoverlay if already shown
-        if(helpOverlayPageContent.hasClass('in')) {
+        if (helpOverlayPageContent.hasClass('in')) {
             this.hideHelpPageOverlay();
         }
-        
-        var cb = params.cb;
-        if(typeof cb != "function") {
-            cb = function(){};
+
+        let cb = params.cb;
+
+        if (typeof cb != 'function') {
+            cb = function () {
+            };
         }
+
         helpOverlayPageContent.one('shown.bs.modal', function () {
             aDeferred.resolve(helpOverlayPageContent);
         });
-        $('#helpPageOverlay').html(data).modal(params);
+        helpOverlayPageContent.html(data).modal(params);
+        helpOverlayPageContent.modal('show');
+
         vtUtils.applyFieldElementsView(helpOverlayPageContent);
+
         cb(helpOverlayPageContent);
+
         return aDeferred.promise();
     },
-    
-    hideHelpPageOverlay : function() {
-        var aDeferred = new jQuery.Deferred();
-        var overlayPageContent = $('#helpPageOverlay');
-        overlayPageContent.one('hidden.bs.modal', function(){
+
+    hideHelpPageOverlay: function () {
+        let aDeferred = new jQuery.Deferred(),
+            overlayPageContent = $('#helpPageOverlay');
+
+        overlayPageContent.one('hidden.bs.modal', function () {
             overlayPageContent.find('.data').html('');
             aDeferred.resolve();
         })
-        $('#helpPageOverlay').modal('hide'); 
+        overlayPageContent.modal('hide');
+        overlayPageContent.unbind();
+
         return aDeferred.promise();
     },
 

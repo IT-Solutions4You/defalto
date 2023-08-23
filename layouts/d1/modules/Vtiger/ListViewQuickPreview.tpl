@@ -9,12 +9,12 @@
 *
 ********************************************************************************/
 -->*}
-<div class = "quickPreview">
+<div class="quickPreview modal-dialog m-0">
     <input type="hidden" name="sourceModuleName" id="sourceModuleName" value="{$MODULE_NAME}" />
     <input type="hidden" id = "nextRecordId" value ="{$NEXT_RECORD_ID}">
     <input type="hidden" id = "previousRecordId" value ="{$PREVIOUS_RECORD_ID}">
 
-    <div class='quick-preview-modal modal-content'>
+    <div class='quick-preview-modal modal-content border-0'>
         <div class='modal-body'>
             <div class = "quickPreviewModuleHeader row">
                 <div class = "col-lg-10">
@@ -22,23 +22,23 @@
                         {include file="ListViewQuickPreviewHeaderTitle.tpl"|vtemplate_path:$MODULE_NAME MODULE_MODEL=$MODULE_MODEL RECORD=$RECORD}
                     </div>
                 </div>
-                <div class = "col-lg-2 pull-right">
-                    <button class="close" aria-hidden="true" data-dismiss="modal" type="button" title="{vtranslate('LBL_CLOSE')}">x</button>
+                <div class="col-lg-2 text-end">
+                    <button class="btn-close" aria-hidden="true" data-bs-dismiss="modal" type="button" title="{vtranslate('LBL_CLOSE')}"></button>
                 </div>
             </div>
 
             <div class="quickPreviewActions clearfix">
                 <div class="btn-group pull-left">
-                    <button class="btn btn-success btn-xs" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">
+                    <button class="btn btn-success" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">
                        {vtranslate('LBL_VIEW_DETAILS', $MODULE_NAME)} 
                     </button>
                 </div>
                 {if $NAVIGATION}
                     <div class="btn-group pull-right">
-                        <button class="btn btn-default btn-xs" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
+                        <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
                             <i class="fa fa-chevron-left"></i>
                         </button>
-                        <button class="btn btn-default btn-xs" id="quickPreviewNextRecordButton" data-record="{$NEXT_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
+                        <button class="btn btn-outline-secondary" id="quickPreviewNextRecordButton" data-record="{$NEXT_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
                             <i class="fa fa-chevron-right"></i>
                         </button>
                     </div>

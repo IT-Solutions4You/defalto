@@ -1313,6 +1313,34 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		return $instance;
 	}
 
+    public static function getDefaultFilterByModule($module)
+    {
+        $instance = Vtiger_Cache::get('DefaultCustomViewInstance', $module);
+
+        if (!$instance) {
+            $db = PearDatabase::getInstance();
+            $query = "SELECT cvid FROM vtiger_customview WHERE setdefault=? AND entitytype=? AND userid=?";
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+            $result = $db->pquery($query, array(1, $module, $currentUser->getId()));
+            $viewId = $db->query_result($result, 0, 'cvid');
+
+            if (!$viewId) {
+                $customView = new CustomView($module);
+                $viewId = $customView->getViewId($module);
+            }
+
+            if ($viewId) {
+                $instance = self::getInstanceById($viewId);
+            } else {
+                $instance = self::getAllFilterByModule($module);
+            }
+
+            Vtiger_Cache::set('DefaultCustomViewInstance', $module, $instance);
+        }
+
+        return $instance;
+    }
+
     /**
      * @return array
      */

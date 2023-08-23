@@ -36,10 +36,10 @@
                                         {vtranslate('LBL_SELECT_FROM_AVAIL_TAG', $MODULE)}
                                     </label>
                                     <div class="dropdown">
-                                        <input class="form-control currentTagSelector dropdown-toggle" data-toggle="dropdown" placeholder="{vtranslate('LBL_SELECT_EXISTING_TAG',$MODULE)}" />
-                                        <div class="dropdown-menu currentTagMenu">
+                                        <input class="form-control currentTagSelector dropdown-toggle" data-bs-toggle="dropdown" placeholder="{vtranslate('LBL_SELECT_EXISTING_TAG',$MODULE)}" />
+                                        <div class="dropdown-menu w-100 currentTagMenu">
                                             <div class="scrollable" style="max-height:300px">
-                                                <ul style="padding-left:0px;">
+                                                <ul>
                                                 {foreach item=TAG_MODEL from=$ALL_USER_TAGS}
                                                     {if array_key_exists($TAG_MODEL->getId(), $TAGS_LIST)}
                                                         {continue}
@@ -88,9 +88,8 @@
                                         <div class="pull-right"></div>
                                     </div>
                                 </div>
-                                            
                                 <div class="form-group">
-                                    <div class=" vt-default-callout vt-info-callout tagInfoblock">
+                                    <div class="p-3 vt-default-callout vt-info-callout tagInfoblock">
                                         <h5 class="vt-callout-header">
                                         <span class="fa fa-info-circle"></span>&nbsp; Info </h5>
                                         <div>{vtranslate('LBL_TAG_SEPARATOR_DESC', $MODULE)}</div><br>

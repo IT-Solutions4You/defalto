@@ -276,7 +276,7 @@ Vtiger.Class('Vtiger_ListSidebar_Js',{},{
     },
     registerEvents : function() {
         this.registerFilters();
-        this.registerTagClick();
+//      this.registerTagClick();
         this.registerPopOverContent();
 //        var listInstance = new Vtiger_List_Js();
 //        listInstance.registerDynamicDropdownPosition("lists-menu", "list-menu-content");

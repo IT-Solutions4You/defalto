@@ -25,7 +25,7 @@
             {/if}
         {/foreach}
         <div class="row">
-            <div class="col-md-auto pb-2">
+            <div class="col-lg-auto pb-2">
                 <div class="listViewActionsContainer" role="group" aria-label="...">
                     {if $editAction}
                         <button type="button" class="btn btn-outline-secondary me-1" id={$MODULE}_listView_massAction_{$editAction->getLabel()}
@@ -122,7 +122,7 @@
             <div class="col-lg-4 mx-auto pb-2">
                 {include file="ListViewCustomViews.tpl"|vtemplate_path:$MODULE}
             </div>
-            <div class="col-md-auto pb-2">
+            <div class="col-lg-auto pb-2 text-end">
                 {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                 {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
             </div>
@@ -147,17 +147,19 @@
                         {if $DEFAULT_FILTER_ID}
                             {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrl()|cat:"&viewname="|cat:$DEFAULT_FILTER_ID|cat:"&app="|cat:$SELECTED_MENU_CATEGORY}
                         {/if}
-                        {if $CVNAME neq 'All'}
-                            <div class="py-2">{vtranslate('LBL_DISPLAYING_RESULTS',$MODULE)} {vtranslate('LBL_FROM',$MODULE)} <b>{$CVNAME}</b>. <a style="color:blue" href='{$DEFAULT_FILTER_URL}'>{vtranslate('LBL_SEARCH_IN',$MODULE)} {vtranslate('All',$MODULE)} {vtranslate($MODULE, $MODULE)}</a></div>
-                        {/if}
                     {/if}
                 {/if}
-                <div class="hide messageContainer py-2" style="height:30px;">
-                    <center><a href="#" id="selectAllMsgDiv">{vtranslate('LBL_SELECT_ALL',$MODULE)}&nbsp;{vtranslate($MODULE ,$MODULE)}&nbsp;(<span id="totalRecordsCount" value=""></span>)</a></center>
+                <div class="hide messageContainer py-2">
+                    <div class="text-center"><a href="#" id="selectAllMsgDiv" class="fs-5 text-primary">{vtranslate('LBL_SELECT_ALL',$MODULE)}&nbsp;{vtranslate($MODULE ,$MODULE)}&nbsp;(<span id="totalRecordsCount" value=""></span>)</a></div>
                 </div>
-                <div class="hide messageContainer py-2" style="height:30px;">
-                    <center><a href="#" id="deSelectAllMsgDiv">{vtranslate('LBL_DESELECT_ALL_RECORDS',$MODULE)}</a></center>
+                <div class="hide messageContainer py-2">
+                    <div class="text-center"><a href="#" id="deSelectAllMsgDiv" class="fs-5 text-primary">{vtranslate('LBL_DESELECT_ALL_RECORDS',$MODULE)}</a></div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col pb-2">
+                {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
             </div>
         </div>
     </div>

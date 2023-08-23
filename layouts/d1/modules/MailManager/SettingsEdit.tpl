@@ -124,7 +124,7 @@
                         <button class="btn btn-danger" id="deleteMailboxBtn"><strong>{vtranslate('LBL_DELETE_Mailbox',$MODULE)}</strong></button>
                     {/if}
                     <button class="btn btn-success" id="saveMailboxBtn" type="submit" name="saveButton"><strong>{vtranslate('LBL_SAVE',$MODULE)}</strong></button>
-                    <a href="#" class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                    <a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                 </div>
             </form>
         </div>

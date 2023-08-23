@@ -52,7 +52,7 @@
     </div>
     <div class='modal-footer overlayFooter'>
         <footer>
-            <center><button class='btn-primary btn-lg undoDoneButton' data-dismiss="modal" onclick="Vtiger_Import_Js.finishUndoOperation();">{vtranslate('LBL_DONE_BUTTON', $MODULE)}</button></center>
+            <center><button class='btn-primary btn-lg undoDoneButton' data-bs-dismiss="modal" onclick="Vtiger_Import_Js.finishUndoOperation();">{vtranslate('LBL_DONE_BUTTON', $MODULE)}</button></center>
         </footer>
     </div>
 </div>

@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class = "col-lg-2 pull-right">
+                <div class = "optionData">
                     <button class="close" aria-hidden="true" data-dismiss="modal" type="button" title="{vtranslate('LBL_CLOSE')}">x</button>
                 </div>
             </div>

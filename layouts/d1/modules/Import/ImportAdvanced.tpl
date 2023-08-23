@@ -65,7 +65,7 @@
                         <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
                         <button type="submit" name="import" id="importButton" class="btn btn-success btn-lg" onclick="return Vtiger_Import_Js.sanitizeAndSubmit()"
                                 >{'LBL_IMPORT_BUTTON_LABEL'|@vtranslate:$MODULE}</button>
-                        &nbsp;&nbsp;&nbsp;<a class='cancelLink' data-dismiss="modal" href="#">{vtranslate('LBL_CANCEL', $MODULE)}</a></div>
+                        &nbsp;&nbsp;&nbsp;<a class='cancelLink' data-bs-dismiss="modal" href="#">{vtranslate('LBL_CANCEL', $MODULE)}</a></div>
                 </div>
             </div>
         </form>

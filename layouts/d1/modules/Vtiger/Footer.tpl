@@ -25,7 +25,11 @@
 		</div>
 	</div>
 </div>
-<div id='helpPageOverlay'></div>
+<div id='helpPageOverlay' class="modal fade">
+	<div class="modal-dialog">
+		<div class="data"></div>
+	</div>
+</div>
 <div id="js_strings" class="hide noprint">{Zend_Json::encode($LANGUAGE_STRINGS)}</div>
 <div id="maxListFieldsSelectionSize" class="hide noprint">{$MAX_LISTFIELDS_SELECTION_SIZE}</div>
 <div id="myModal" class="modal myModal fade">

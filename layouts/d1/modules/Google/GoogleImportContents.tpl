@@ -51,7 +51,7 @@
                     <button class="btn addButton btn-success syncNow" type="button" id="saveSettingsAndImport"><span aria-hidden="true" class="fa fa-download"></span>&nbsp; {vtranslate('LBL_SAVE_AND_IMPORT', $MODULENAME)}</button>
                     &nbsp;&nbsp;&nbsp;
                     {/if}
-                    <a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULENAME)}</a>
+                    <a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULENAME)}</a>
                 </div>
             </div>
         </div> 

@@ -46,9 +46,9 @@
 								{else}
 									<th class="nowrap">
 									{if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
-										<a href="javascript:void(0);" class="noSorting">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}</a>
+										<a href="javascript:void(0);" class="noSorting text-secondary">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}</a>
 									{else}
-										<a href="javascript:void(0);" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
+										<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
 											{if $FASORT_IMAGE && $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 												<i class="fa {$FASORT_IMAGE}"></i>
 											{else}

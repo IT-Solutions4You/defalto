@@ -603,7 +603,7 @@
 				</div>
 				<div class="modal-footer">
 					<div class="pull-right cancelLinkContainer">
-						<a class="cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
+						<a class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $QUALIFIED_MODULE)}</a>
 					</div>
 					<button class="btn btn-success" type="submit" name="reactivateButton">
 						<strong>{vtranslate('LBL_REACTIVATE', $QUALIFIED_MODULE)}</strong>

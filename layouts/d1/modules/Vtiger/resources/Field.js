@@ -199,7 +199,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 		html += '">';
 		html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
 		html += '<div class="input-group ">'
-		html += '<input class="autoComplete inputElement sourceField" type="search" data-fieldtype="reference" name="'+this.getName()+'"';
+		html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="'+this.getName()+'"';
 		var reset = false;
 		if(value){
 			html += ' value="'+value+'" disabled="disabled"';
@@ -208,9 +208,9 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 		html += '/>';
 
 		if(reset){
-			html += '<a href="#" class="clearReferenceSelection"> X </a>';
+			html += '<a href="#" class="input-group-text clearReferenceSelection"> X </a>';
 		}else {
-			html += '<a href="#" class="clearReferenceSelection hide"> X </a>';
+			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';
 		}
 		//popup search element
 		html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="'+referenceModules[0]+'">';

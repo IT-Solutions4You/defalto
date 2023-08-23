@@ -31,7 +31,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg px-0 bg-white my-4 mx-lg-4 py-2 rounded overflow-hidden">
+		<div class="col-lg px-0 bg-white my-lg-4 mx-lg-4 py-2 rounded overflow-hidden">
 			<div class="py-2 px-3">
 				{include file="ModuleLinks.tpl"|vtemplate_path:$MODULE}
 			</div>

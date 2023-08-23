@@ -213,15 +213,14 @@ Vtiger.Class("Vtiger_List_Js", {
 		return false;
 	},
 	triggerAddTag: function () {
-		var listInstance = app.controller();
-		var listInstance = app.controller();
-		var listSelectParams = listInstance.getListSelectAllParams(true);
+		let listInstance = app.controller(),
+			listSelectParams = listInstance.getListSelectAllParams(true);
+
 		if (listSelectParams) {
 			listInstance.showAllTags(jQuery('.main-container'));
 		} else {
 			listInstance.noRecordSelectedAlert();
 		}
-
 	},
 	triggerRemoveTag: function (tagId) {
 		var listInstance = app.controller();
@@ -1267,98 +1266,100 @@ Vtiger.Class("Vtiger_List_Js", {
     /**
      * Function to register the list view row search event
      */
-    registerListViewSearch : function() {
-        var listViewPageDiv = this.getListViewContainer();
-        var thisInstance = this;
-        listViewPageDiv.on('click','[data-trigger="listSearch"]',function(e){
-            e.preventDefault();
-            var params = {
-                'page': '1'
-            }
-            var searchButton = jQuery(this);
-            searchButton.addClass('hide');
-            listViewPageDiv.find('[data-trigger="clearListSearch"]').removeClass('hide');
+	registerListViewSearch: function () {
+		let listViewPageDiv = this.getListViewContainer(),
+			thisInstance = this;
 
-            thisInstance.loadListViewRecords(params).then(
-                function(data){
-                    //To unmark the all the selected ids
-                    jQuery('#deSelectAllMsgDiv').trigger('click');
-                },
+		listViewPageDiv.on('click', '[data-trigger="listSearch"]', function (e) {
+			e.preventDefault();
+			let params = {
+					'page': '1'
+				},
+				searchButton = jQuery(this);
 
-                function(textStatus, errorThrown){
-                }
-            );
-        });
+			searchButton.addClass('hide');
+			listViewPageDiv.find('[data-trigger="clearListSearch"]').removeClass('hide');
 
-        var clearSearchContributor = function(contributor) {
-            if(contributor.is('input')) {
-                contributor.val('');
-            } else if(contributor.is('select')) {
-                contributor.select2("val", "");
-                contributor.val('');
-            } else {
-                console.log("contributor clearing now handled : ", contributor);
-            }
-        };
+			thisInstance.loadListViewRecords(params).then(
+				function (data) {
+					//To unmark the all the selected ids
+					thisInstance.getDeSelectAllMsgDiv().trigger('click');
+				},
 
-        //register clear search event
-        listViewPageDiv.on('click', '[data-trigger="clearListSearch"]', function(e) {
-            e.preventDefault();
-            listViewPageDiv.find('.listSearchContributor:not(".select2-container")').each(function(i, contributor) {
-                contributor = jQuery(contributor);
-                clearSearchContributor(contributor);
-            });
-            var clearButton = jQuery(this);
-            clearButton.addClass('hide');
-            thisInstance.prevSearchValues = [];
-            jQuery('#currentSearchParams').val('');
-            listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide').trigger('click');
-        });
+				function (textStatus, errorThrown) {
+				}
+			);
+		});
+
+		var clearSearchContributor = function (contributor) {
+			if (contributor.is('input')) {
+				contributor.val('');
+			} else if (contributor.is('select')) {
+				contributor.select2("val", "");
+				contributor.val('');
+			} else {
+				console.log("contributor clearing now handled : ", contributor);
+			}
+		};
+
+		//register clear search event
+		listViewPageDiv.on('click', '[data-trigger="clearListSearch"]', function (e) {
+			e.preventDefault();
+			listViewPageDiv.find('.listSearchContributor:not(".select2-container")').each(function (i, contributor) {
+				contributor = jQuery(contributor);
+				clearSearchContributor(contributor);
+			});
+			var clearButton = jQuery(this);
+			clearButton.addClass('hide');
+			thisInstance.prevSearchValues = [];
+			jQuery('#currentSearchParams').val('');
+			listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide').trigger('click');
+		});
 
 
-        //floatThead change event object has undefined keyCode, using keyup instead
-        var listSearchContributorChangeHandler = function(e){
-            var element = jQuery(e.currentTarget);
-            var fieldName = element.attr('name');
-            var searchValue = element.val();
-			if(element.hasClass('select2')){
+		//floatThead change event object has undefined keyCode, using keyup instead
+		var listSearchContributorChangeHandler = function (e) {
+			var element = jQuery(e.currentTarget);
+			var fieldName = element.attr('name');
+			var searchValue = element.val();
+			if (element.hasClass('select2')) {
 				var currentElementContainer = element.closest('.select2_search_div').find('div.listSearchContributor').find('ul');
 				var desireHeight = 150;
-				if(currentElementContainer.height() > desireHeight){
-					currentElementContainer.css({'cssText':'height:'+desireHeight+'px !important;'+'padding:0'});
-				}else if(currentElementContainer.find('.mCSB_container').height() < desireHeight){
+				if (currentElementContainer.height() > desireHeight) {
+					currentElementContainer.css({'cssText': 'height:' + desireHeight + 'px !important;' + 'padding:0'});
+				} else if (currentElementContainer.find('.mCSB_container').height() < desireHeight) {
 					currentElementContainer.removeAttr('style');
 				}
 				currentElementContainer.mCustomScrollbar("update");
 			}
 
-            if(e.keyCode == 13 && thisInstance.prevSearchValues[fieldName] !== searchValue && !element.hasClass('select2')){
-                e.preventDefault();
-                var element = jQuery(e.currentTarget);
-                var parentElement = element.closest('tr');
-                var searchTriggerElement = parentElement.find('[data-trigger="listSearch"]');
-                searchTriggerElement.trigger('click');
-                thisInstance.prevSearchValues[fieldName] = searchValue;
-            }
-            if(e.keyCode !== 13) {
-                listViewPageDiv.find('[data-trigger="clearListSearch"]').addClass('hide');
-                setTimeout(function(){
-                    listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide');
-                }, 10);
-            }
-        };
-		listViewPageDiv.find('.searchRow div.listSearchContributor.select2').each(function(i,elem){
-           var currentSearchInput = jQuery(elem);
-			app.helper.showVerticalScroll(currentSearchInput.find('ul'),{'height': 150});
-        });
-        listViewPageDiv.on('keyup','.listSearchContributor', listSearchContributorChangeHandler);
-        listViewPageDiv.on('change','select', listSearchContributorChangeHandler);
-        listViewPageDiv.on('datepicker-change', '.dateField', function(e){
-            var element = jQuery(e.currentTarget);
-            element.trigger('change');
-            listSearchContributorChangeHandler(e);
-        });
-    },
+			if (e.keyCode == 13 && thisInstance.prevSearchValues[fieldName] !== searchValue && !element.hasClass('select2')) {
+				e.preventDefault();
+				var element = jQuery(e.currentTarget);
+				var parentElement = element.closest('tr');
+				var searchTriggerElement = parentElement.find('[data-trigger="listSearch"]');
+				searchTriggerElement.trigger('click');
+				thisInstance.prevSearchValues[fieldName] = searchValue;
+			}
+			if (e.keyCode !== 13) {
+				listViewPageDiv.find('[data-trigger="clearListSearch"]').addClass('hide');
+				setTimeout(function () {
+					listViewPageDiv.find('[data-trigger="listSearch"]').removeClass('hide');
+				}, 10);
+			}
+		};
+		listViewPageDiv.find('.searchRow div.listSearchContributor.select2').each(function (i, elem) {
+			var currentSearchInput = jQuery(elem);
+			app.helper.showVerticalScroll(currentSearchInput.find('ul'), {'height': 150});
+		});
+		listViewPageDiv.on('keyup', '.listSearchContributor', listSearchContributorChangeHandler);
+		listViewPageDiv.on('change', 'select', listSearchContributorChangeHandler);
+		listViewPageDiv.on('datepicker-change', '.dateField', function (e) {
+			var element = jQuery(e.currentTarget);
+			element.trigger('change');
+			listSearchContributorChangeHandler(e);
+		});
+	},
 
     registerAutoIncludeFieldsInMassEdit: function () {
 
@@ -1441,7 +1442,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			rows = jQuery('tr.listViewEntries');
 
 		if (selectAllMode == true) {
-			jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').addClass('show');
+			self.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('show');
 			//jQuery(".listViewEntriesMainCheckBox").prop('checked', true);
 			if (this.isStarFilterMode()) {
 				rows = this.getStarRecordRows();
@@ -1587,30 +1588,43 @@ Vtiger.Class("Vtiger_List_Js", {
 		return recordTracker.getSelectAllMode();
 	},
 	getDeSelectAllMsgDiv: function () {
-		return jQuery("#deSelectAllMsgDiv");
+		return jQuery('#deSelectAllMsgDiv');
 	},
 	getSelectAllMsgDiv: function () {
-		return jQuery("#selectAllMsgDiv");
+		return jQuery('#selectAllMsgDiv');
 	},
 	showSelectAllMsgDiv: function () {
-		this.getDeSelectAllMsgDiv().closest('div.messageContainer').removeClass('show');
-		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('hide');
-		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("show");
+		let selectMessage = this.getSelectAllMsgDiv().closest('div.messageContainer'),
+			deSelectMessage = this.getDeSelectAllMsgDiv().closest('div.messageContainer');
+
+		deSelectMessage.removeClass('show');
+		deSelectMessage.addClass('hide');
+		selectMessage.removeClass('hide');
+		selectMessage.addClass('show');
 	},
 	showDeSelectAllMsgDiv: function () {
-		this.getSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
-		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
-		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('show');
+		let selectMessage = this.getSelectAllMsgDiv().closest('div.messageContainer'),
+			deSelectMessage = this.getDeSelectAllMsgDiv().closest('div.messageContainer');
+
+		selectMessage.removeClass('show');
+		selectMessage.addClass('hide');
+		deSelectMessage.removeClass('hide');
+		deSelectMessage.addClass('show');
 	},
 	deSelectAllWithNoMessage: function () {
-		this.getSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
-		this.getSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
-		this.getDeSelectAllMsgDiv().closest('div.messageContainer').removeClass("show");
-		this.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass("hide");
+		let selectMessage = this.getSelectAllMsgDiv().closest('div.messageContainer'),
+			deSelectMessage = this.getDeSelectAllMsgDiv().closest('div.messageContainer');
+
+		selectMessage.removeClass('show');
+		selectMessage.addClass('hide');
+		deSelectMessage.removeClass('show');
+		deSelectMessage.addClass('hide');
 	},
 	showSelectAll: function () {
-		var self = this;
+		let self = this;
+
 		app.helper.showProgress();
+
 		self.getRecordsCount().then(function (res) {
 			self.showSelectAllMsgDiv();
 			jQuery('#totalRecordsCount').text(res['count']);
@@ -1637,7 +1651,7 @@ Vtiger.Class("Vtiger_List_Js", {
 					self.registerPostLoadListViewActions();
 				});
 
-				if (self.getSelectAllMode() == true) {
+				if (self.getSelectAllMode() === true) {
 					self.markSelectedIdsCheckboxes();
 				} else {
 					// If it is not select all mode then only do this
@@ -1645,7 +1659,7 @@ Vtiger.Class("Vtiger_List_Js", {
 				}
 			}
 			else {
-				if (self.getSelectAllMode() == true) {
+				if (self.getSelectAllMode() === true) {
 					self.showDeSelectAllMsgDiv();
 				}
 				else {
@@ -1661,21 +1675,22 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 	},
 	registerSelectAllClickEvent: function () {
-		var self = this;
-		var listViewPageDiv = this.getListViewContainer();
+		let self = this,
+			listViewPageDiv = this.getListViewContainer();
+
 		listViewPageDiv.on('click', '#selectAllMsgDiv', function (e) {
 			self.showDeSelectAllMsgDiv();
-			var cvId = self.getCurrentCvId();
-			listViewPageDiv.trigger('Post.ListSelectAll', {"mode": true, "cvId": cvId});
+			listViewPageDiv.trigger('Post.ListSelectAll', {'mode': true, 'cvId': self.getCurrentCvId()});
 		});
 		self.markSelectedIdsCheckboxes();
 	},
 	registerDeSelectAllClickEvent: function () {
-		var self = this;
-		var listViewPageDiv = this.getListViewContainer();
+		let self = this,
+			listViewPageDiv = self.getListViewContainer();
+
 		listViewPageDiv.on('click', '#deSelectAllMsgDiv', function (e) {
-			jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').removeClass('show');
-			jQuery('#deSelectAllMsgDiv').closest('div.messageContainer').addClass("hide");
+			self.getDeSelectAllMsgDiv().closest('div.messageContainer').removeClass('show');
+			self.getDeSelectAllMsgDiv().closest('div.messageContainer').addClass('hide');
 			listViewPageDiv.trigger('Post.ListDeSelectAll', {"mode": false});
 			self.registerPostLoadListViewActions();
 			jQuery('.listViewEntriesMainCheckBox').prop('checked', false);
@@ -1685,28 +1700,32 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 	},
 	getRecordsCount: function () {
-		var aDeferred = jQuery.Deferred();
-		var self = this;
-		var cvId = self.getCurrentCvId();
-		var module = this.getModuleName();
-		var parent = app.getParentModuleName();
-		var defaultParams = this.getDefaultParams();
+		let aDeferred = jQuery.Deferred(),
+			self = this,
+			cvId = self.getCurrentCvId(),
+			module = this.getModuleName(),
+			parent = app.getParentModuleName(),
+			defaultParams = this.getDefaultParams(),
+			postData = {
+				module: module,
+				parent: parent,
+				view: 'ListAjax',
+				viewname: cvId,
+				mode: 'getRecordsCount'
+			};
 
-		var postData = {
-			"module": module,
-			"parent": parent,
-			"view": "ListAjax",
-			"viewname": cvId,
-			"mode": "getRecordsCount"
-		};
 		postData = jQuery.extend(defaultParams, postData);
-		var params = {};
-		params.data = postData;
+
+		let params = {
+			data: postData
+		};
+
 		app.request.get(params).then(
-				function (err, response) {
-					aDeferred.resolve(response);
-				}
+			function (err, response) {
+				aDeferred.resolve(response);
+			}
 		);
+
 		return aDeferred.promise();
 	},
 	transferOwnershipSave: function (form) {
@@ -2195,21 +2214,24 @@ Vtiger.Class("Vtiger_List_Js", {
 		return tagElement
 	},
 	addTagToList: function (tagElement) {
-		var container = jQuery('#listViewTagContainer');
-		var tagsListCount = parseInt(container.data('listTagCount'));
-		if (container.find('>.tag').length < tagsListCount) {
+		let container = jQuery('#listViewTagContainer'),
+			tagsListCount = parseInt(container.data('listTagCount'));
+
+		if (container.find('.tag').length < tagsListCount) {
 			container.append(tagElement);
 		} else {
 			container.find('.moreListTags').append(tagElement);
 		}
-		var moreTagTriggerEle = container.find('.moreTagCount');
-		var moreTagCount = parseInt(moreTagTriggerEle.text());
+
+		let moreTagTriggerEle = container.find('.moreTagCount'),
+			moreTagCount = parseInt(moreTagTriggerEle.text());
+
 		moreTagCount++;
 		moreTagTriggerEle.text(moreTagCount);
+
 		if (moreTagTriggerEle.hasClass('hide') && moreTagCount > 0 && (!container.find('.moreListTags').hasClass('hide'))) {
 			moreTagTriggerEle.removeClass('hide');
 		}
-
 	},
 	checkAndAddTagsToList: function (tagEleList) {
 		var self = this;
@@ -2226,35 +2248,39 @@ Vtiger.Class("Vtiger_List_Js", {
 
 	},
 	addToExistingTagSelector: function (tagEle) {
-		var showAllTagContainer = jQuery('.showAllTagContainer');
-		var existingTagMenu = showAllTagContainer.find('.currentTagMenu');
+		let showAllTagContainer = jQuery('.showAllTagContainer'),
+			existingTagMenu = showAllTagContainer.find('.currentTagMenu');
+
 		if (existingTagMenu.find('.tag[data-id="' + tagEle.data('id') + '"]').length <= 0) {
-			var clonedTagEle = tagEle;
+			let clonedTagEle = tagEle;
 			clonedTagEle.find('.editTag').remove();
-			var dummyTagListElement = existingTagMenu.find('.dummyExistingTagElement').clone(true).removeClass('dummyExistingTagElement');
+
+			let dummyTagListElement = existingTagMenu.find('.dummyExistingTagElement').clone(true).removeClass('dummyExistingTagElement');
 			dummyTagListElement.find('.tag').replaceWith(clonedTagEle);
 			dummyTagListElement.removeClass('hide').appendTo(existingTagMenu.find('ul'));
 		}
 	},
 	showAllTags: function (container) {
-		var self = this;
-		var recordParams = {};
-		var cvId = this.getCurrentCvId();
-		recordParams.viewname = cvId;
+		let self = this,
+			recordParams = {};
+
+		recordParams.viewname = this.getCurrentCvId();
 		recordParams.search_params = JSON.stringify(this.getListSearchParams());
 		recordParams = jQuery.extend(recordParams, this.getListSelectAllParams(false));
 
 		app.event.one('post.MassTag.save', function (e, modalContainerClone, data) {
-			var newlySelectedTags = modalContainerClone.find('.currentTag .tag');
+			let newlySelectedTags = modalContainerClone.find('.currentTag .tag');
 			self.checkAndAddTagsToList(newlySelectedTags);
-			var newlyAddedTags = data['new'];
-			for (var tagId in newlyAddedTags) {
-				var newTagParams = newlyAddedTags[tagId];
+			let newlyAddedTags = data['new'];
+
+			for (let tagId in newlyAddedTags) {
+				let newTagParams = newlyAddedTags[tagId];
 				newTagParams.id = tagId;
-				var newTagEle = self.constructTagElement(newTagParams);
+				let newTagEle = self.constructTagElement(newTagParams);
 				self.addTagToList(newTagEle.clone(true));
 				self.addToExistingTagSelector(newTagEle.clone(true));
 			}
+
 			app.helper.showSuccessNotification({"message": ''});
 		});
 
@@ -2587,6 +2613,7 @@ Vtiger.Class("Vtiger_List_Js", {
 		self.registerDynamicDropdownPosition();
 		self.registerDropdownPosition();
 		self.registerConfigureColumnsEvents();
+		self.registerTagClick();
 
 		let recordSelectTrackerObj = self.getRecordSelectTrackerInstance();
 		recordSelectTrackerObj.registerEvents();
@@ -2668,17 +2695,24 @@ Vtiger.Class("Vtiger_List_Js", {
 
 		if (1 === parseInt(filterData['isDefault'])) {
 			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-check-icon'));
+			toggleDefault.data('isDefault', 1);
 		} else {
 			toggleDefaultIcon.attr('class', toggleDefaultIcon.attr('data-uncheck-icon'));
+			toggleDefault.data('isDefault', 0);
 		}
 
 		currentFilterName.text(filterData['filterName']);
 	},
 	getCustomViewsData: function (selectElement) {
-		let filterId = selectElement.select2('val'),
-			filterElement = $('[data-filter-id="' + filterId + '"]');
+		let filterId = selectElement.select2('val');
 
-		return filterElement.data();
+		return this.getFilterData(filterId);
+	},
+	getFilterElement: function (filterId) {
+		return $('[data-filter-id="' + filterId + '"]');
+	},
+	getFilterData: function (filterId) {
+		return this.getFilterElement(filterId).data();
 	},
 	registerCustomViewsEvents: function () {
 		const self = this,
@@ -2717,12 +2751,14 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 
 		container.on('post.ToggleDefault.saved', function (e, params) {
-			let element = jQuery(e.target),
-				icon = element.find('i');
+			let target = $(e.target),
+				icon = target.find('i');
 
-			if ('1' === params['isdefault']) {
+			if (1 === parseInt(params['isdefault'])) {
+				target.data('isDefault', 1);
 				icon.attr('class', icon.attr('data-check-icon'))
 			} else {
+				target.data('isDefault', 0);
 				icon.attr('class', icon.attr('data-uncheck-icon'))
 			}
 		});
@@ -2932,5 +2968,63 @@ Vtiger.Class("Vtiger_List_Js", {
 		}
 
 		return count;
-	}
+	},
+	getTagsContainer: function() {
+		return jQuery('#listViewTagContainer');
+	},
+	unMarkAllTags: function () {
+		this.getTagsContainer().find('.tag').removeClass('active');
+	},
+	registerTagClick: function () {
+		let self = this,
+			container = self.getListViewContainer();
+
+		container.on('click', '#listViewTagContainer .tag', function (e) {
+			let eventTriggerSourceElement = jQuery(e.target);
+			//if edit icon is clicked then we dont have to load the tag
+			if (eventTriggerSourceElement.is('.editTag')) {
+				return;
+			}
+
+			let element = jQuery(e.currentTarget),
+				tagId = element.data('id'),
+				viewId = element.data('cvId'),
+				isActive = element.is('.active');
+
+			self.unMarkAllTags();
+
+			let params = {};
+			params.search_params = '';
+			params.page = '';
+
+			if (isActive || !viewId || !tagId) {
+				element.removeClass('active');
+			} else {
+				element.addClass('active');
+
+				let listSearchParams = [];
+				listSearchParams[0] = [];
+
+				let tagSearchParams = [];
+				tagSearchParams.push('tags');
+				tagSearchParams.push('e');
+				tagSearchParams.push(tagId);
+				listSearchParams[0].push(tagSearchParams);
+
+				params.tag_params = JSON.stringify(listSearchParams);
+				params.tag = tagId;
+			}
+
+			self.loadListView(viewId, params);
+		});
+
+		container.on('click', '.moreTags', function (e) {
+			container.find('.moreListTags').removeClass('hide');
+			jQuery(e.currentTarget).addClass('hide');
+		});
+	},
+	loadListView: function (viewId, params) {
+		this.resetData();
+		this.loadFilter(viewId, params);
+	},
 });

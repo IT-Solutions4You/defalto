@@ -279,7 +279,8 @@ jQuery.Class("Vtiger_CustomView_Js",{
 	},
 
 	registerEvents : function() {
-		var self = this;
+		const self = this;
+
 		jQuery(document).on('post.CreateFilter.click',function(e,params){
 			self.doOperation(params.url).then(function(data){
 				self.showCreateFilter(data);
@@ -290,7 +291,8 @@ jQuery.Class("Vtiger_CustomView_Js",{
 		});
 
 		jQuery(document).on('post.DeleteFilter.click',function(e,params){
-			var target = jQuery(e.target);
+			let target = jQuery(e.target);
+
 			app.helper.showConfirmationBox({'message': app.vtranslate('LBL_LIST_DELETE_CONFIRMATION')}).then(
 				function(){
 					app.helper.showProgress();
@@ -304,21 +306,22 @@ jQuery.Class("Vtiger_CustomView_Js",{
 			);
 		});
 
-		jQuery(document).on('post.ToggleDefault.click',function(e,params){
-			var target = jQuery(e.target);
-			var url = target.data('url');
-			var currentValue = target.data('isDefault');
-			var params = {};
-			params.url = url;
+		jQuery(document).on('post.ToggleDefault.click', function (e, params) {
+			let target = jQuery(e.target),
+				currentValue = target.data('isDefault');
+
 			params.data = {};
-			if(currentValue) {
+			params.url = target.data('url');
+
+			if (currentValue) {
 				params.data.setdefault = '0';
-			}else{
+			} else {
 				params.data.setdefault = '1';
 			}
-			app.request.post(params).then(function(error,data){
-				target.trigger('post.ToggleDefault.saved',data);
-			})
+
+			app.request.post(params).then(function (error, data) {
+				target.trigger('post.ToggleDefault.saved', data);
+			});
 		});
 	}
 });
