@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_Detail_Js */
 Vtiger.Class("Vtiger_Detail_Js",{
 
 	detailInstance : false,
@@ -685,22 +685,28 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				});
 			});
 	},
+	isRollUpComments: function () {
+		return 1 === parseInt(this.getRollUpComments().attr('rollup-status'))
+	},
+	getRollUpComments: function () {
+		return jQuery('#rollupcomments');
+	},
+	registerRollupCommentsSwitchEvent: function () {
+		let self = this,
+			commentsRelatedContainer = jQuery('.commentsRelatedContainer');
 
-	registerRollupCommentsSwitchEvent : function() {
-		var self = this;
-		var commentsRelatedContainer = jQuery('.commentsRelatedContainer');
-		if(jQuery('#rollupcomments').length > 0 && commentsRelatedContainer.length) {
+		if (self.getRollUpComments().length > 0 && commentsRelatedContainer.length) {
 			app.helper.hideProgress();
-			commentsRelatedContainer.off('switchChange.bootstrapSwitch')
-			.on('switchChange.bootstrapSwitch','#rollupcomments', function(e){
+
+			commentsRelatedContainer.off('change').on('change', '#rollupcomments', function (e) {
 				app.helper.showProgress();
 				self.toggleRollupComments(e);
 			});
-			if(jQuery('#rollupcomments').attr('rollup-status') == 1) {
-				jQuery('#rollupcomments').bootstrapSwitch('state', true, true);
 
-			}else{
-				jQuery('#rollupcomments').bootstrapSwitch('state', false, true);
+			if (self.isRollUpComments()) {
+				self.setRollUpComments(true);
+			} else {
+				self.setRollUpComments(false);
 			}
 		}
 	},
@@ -1046,12 +1052,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	registerAjaxEditEvent : function(){
 		var thisInstance = this;
 		var detailContentsHolder = this.getContentHolder();
-		detailContentsHolder.on('click','table.detailview-table td.fieldValue .editAction', function(e) {
-			var editedLength = jQuery('table.detailview-table td.fieldValue .ajaxEdited').length;
+		detailContentsHolder.on('click','.detailview-table .fieldValue .editAction', function(e) {
+			var editedLength = jQuery('table.detailview-table .fieldValue .ajaxEdited').length;
 			if(editedLength === 0) { 
 				var selection = window.getSelection().toString(); 
 				if(selection.length == 0) {
-					var currentTdElement = jQuery(e.currentTarget).closest('td');
+					var currentTdElement = jQuery(e.currentTarget).closest('.fieldValue');
 					thisInstance.ajaxEditHandling(currentTdElement);
 				}
 			}
@@ -1164,13 +1170,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var fieldModel = fieldObject.getUiTypeModel();
 
 			var ele = jQuery('<div class="input-group editElement"></div>');
-			var actionButtons = '<span class="pointerCursorOnHover input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
-			actionButtons += '<span class="pointerCursorOnHover input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa fa-close"></i></span>';
-			//wrapping action buttons with class called input-save-wrap
-			var inlineSaveWrap=jQuery('<div class="input-save-wrap"></div>');
-			inlineSaveWrap.append(actionButtons);
+			var actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
+			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
-			ele.append(fieldModel.getUi()).append(inlineSaveWrap);
+			ele.append(fieldModel.getUi()).append(actionButtons);
 			ele.find('.inputElement').addClass('form-control');
 			editElement.append(ele);
 		}
@@ -1231,11 +1234,17 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		return sourcePicklistFieldName;
 	},
 
-	getInlineWrapper : function(element) {
-		var wrapperElement = element.closest('td');
-		if(!wrapperElement.length) {
+	getInlineWrapper: function (element) {
+		let wrapperElement = element.closest('td');
+
+		if (!wrapperElement.length) {
 			wrapperElement = element.closest('.td');
 		}
+
+		if (!wrapperElement.length) {
+			wrapperElement = element.closest('.fieldValue');
+		}
+
 		return wrapperElement;
 	},
 
@@ -1720,10 +1729,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		/**
 		 * Function to handle the ajax edit for summary view fields
 		 */
-		summaryViewContainer.on('click','table.summary-table td.fieldValue .editAction', function(e){
+		summaryViewContainer.on('click','.summary-table .fieldValue .editAction', function(e){
 			var currentTarget = jQuery(e.currentTarget);
 			currentTarget.hide();
-			var currentTdElement = currentTarget.closest('td.fieldValue');
+			var currentTdElement = currentTarget.closest('.fieldValue');
 			self.ajaxEditHandling(currentTdElement);
 		});
 
@@ -2136,7 +2145,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var currentTarget = jQuery(e.currentTarget);
 		var commentContentBlock = currentTarget.closest('.commentInfoContentBlock');
 		var commentContentInfo = commentContentBlock.find('.commentInfoContent');
-		var toggleElement = jQuery('<div><a class="pull-right toggleComment" style="color: blue;"><small></small></a><div>');
+		var toggleElement = jQuery('<div><a class="pull-right toggleComment text-secondary"><small></small></a><div>');
 		var fullComment = vtUtils.linkifyStr(commentContentInfo.data('fullcomment'));
 
 		if (currentTarget.hasClass('showMore')) {
@@ -2191,46 +2200,62 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				contents.html(data);
 				vtUtils.enableTooltips();
 				self.registerRollupCommentsSwitchEvent();
-				jQuery('#rollupcomments').bootstrapSwitch('state', rollupstatus, true);
+				self.setRollUpComments(rollupstatus);
 			});
 		}
 	},
+	setRollUpComments: function (value) {
+		let self = this,
+			rollUpComments = self.getRollUpComments();
 
+		if (value) {
+			rollUpComments.attr('checked', 'checked');
+			rollUpComments.prop('checked', 'checked');
+		} else {
+			rollUpComments.removeAttr('checked');
+			rollUpComments.removeProp('checked');
+		}
+	},
 	registerScrollForRollupEvents : function() {
 		var relatedController = this.getRelatedController();
 		if(relatedController)
 			relatedController.registerScrollForRollupComments();
 	},
 
-	registerStarToggle : function() {
-		var self = this;
-		jQuery('#starToggle').on('click',function(e){
-			var element = jQuery(e.currentTarget);
-			if(element.hasClass('processing')) return;
+	registerStarToggle: function () {
+		let self = this;
+
+		jQuery('#starToggle').on('click', function (e) {
+			let element = jQuery(e.currentTarget);
+
+			if (element.hasClass('processing')) return;
 			element.addClass('processing');
-			var record = self.getRecordId();
-			var params = {};
+
+			let record = self.getRecordId(),
+				params = {};
+
 			params.module = app.getModuleName();
 			params.action = 'SaveStar';
 			params.record = record;
-			if(element.hasClass('active')) {
+
+			if (element.hasClass('markStarActive')) {
 				params.value = 0;
-			}else {
+			} else {
 				params.value = 1;
 			}
 
-			element.toggleClass('active');
+			element.toggleClass('markStarActive');
 
-
-			app.request.post({data:params}).then(function(err,data){
+			app.request.post({data: params}).then(function (err, data) {
 				element.removeClass('processing');
 			})
-			if(element.hasClass('active')){
-				app.helper.showSuccessNotification({'message':app.vtranslate('JS_FOLLOW_RECORD')});
+
+			if (element.hasClass('markStarActive')) {
+				app.helper.showSuccessNotification({'message': app.vtranslate('JS_FOLLOW_RECORD')});
 			} else {
-				app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOW_RECORD')});
+				app.helper.showSuccessNotification({'message': app.vtranslate('JS_UNFOLLOW_RECORD')});
 			}
-	  });
+		});
 	},
 
 	saveTag : function(callerParams) {
@@ -2400,15 +2425,19 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 	},
 
-	registerTagSearch : function() {
-		jQuery('#tag-search').instaFilta({
-		  targets : '#addTagContainer .existingTag .tag-item',
-		  sections : '#addTagContainer .existingTag',
-		  hideEmptySections : true,
-		  beginsWith : false, 
-		  caseSensitive : false, 
-		  typeDelay : 0
-		});
+	registerTagSearch: function () {
+		let tagSearch = jQuery('#tag-search')
+
+		if (tagSearch.length) {
+			tagSearch.instaFilta({
+				targets: '#addTagContainer .existingTag .tag-item',
+				sections: '#addTagContainer .existingTag',
+				hideEmptySections: true,
+				beginsWith: false,
+				caseSensitive: false,
+				typeDelay: 0
+			});
+		}
 	},
 
 	postTagDeleteActions : function(deletedTagClone) {
@@ -2522,7 +2551,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			})
 		});
 
-		jQuery('#addTagTriggerer').on('click', function(e){
+		tagContainer.on('click', '#addTagTriggerer', function(e){
 			app.event.trigger('Request.MassTag.show',tagContainer, {'record' : self.getRecordId()});
 		});
 	},
@@ -2754,8 +2783,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			commentActionsBlock.find('.viewThreadBlock').show();
 		});
 		detailContentsHolder.on('click','.detailViewThread',function(e){
-			var recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel);
-			var commentId = jQuery(e.currentTarget).closest('.singleComment').find('.commentInfoHeader').data('commentid');
+			let recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel),
+				commentId = jQuery(e.currentTarget).closest('.singleComment').find('.commentInfoHeader').data('commentid');
+
 			recentCommentsTab.trigger('click',{'commentid':commentId});
 		});
 		this.registerStarToggle();
@@ -2968,38 +2998,34 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			vtUtils.applyFieldElementsView(widgetContainer);
 
 			//For Rollup Comments
-			if(jQuery('#rollupcomments').length > 0 && widgetContainer.data('name') == 'ModComments') {
-				widgetContainer.off('switchChange.bootstrapSwitch').on('switchChange.bootstrapSwitch', '#rollupcomments', function(e){
+			if(self.getRollUpComments().length > 0 && widgetContainer.data('name') == 'ModComments') {
+				widgetContainer.off('change').on('change', '#rollupcomments', function(e){
 					app.helper.showProgress();
 					self.toggleRollupComments(e);
 				});
 
-				if(jQuery('#rollupcomments').attr('rollup-status') == 1) {
-					jQuery('#rollupcomments').bootstrapSwitch('state', true, true);
-
-				}else{
-					jQuery('#rollupcomments').bootstrapSwitch('state', false, true);
+				if (self.isRollUpComments()) {
+					self.setRollUpComments(true);
+				} else {
+					self.setRollUpComments(false);
 				}
-
 			}
 			var vtigerInstance = Vtiger_Index_Js.getInstance();
 			vtUtils.enableTooltips();
 			//END
 		});		
 		//For Rollup Comments
-		if(jQuery('#rollupcomments').length > 0) {
-			detailContentsHolder.on('switchChange.bootstrapSwitch', '#rollupcomments', function(e){
+		if(self.getRollUpComments().length > 0) {
+			detailContentsHolder.on('change', '#rollupcomments', function(e){
 				app.helper.showProgress();
 				self.toggleRollupComments(e);
 			});
 
-			if(jQuery('#rollupcomments').attr('rollup-status') == 1) {
-				jQuery('#rollupcomments').bootstrapSwitch('state', true, true);
-
-			}else{
-				jQuery('#rollupcomments').bootstrapSwitch('state', false, true);
+			if (self.isRollUpComments()) {
+				self.setRollUpComments(true);
+			} else {
+				self.setRollUpComments(false);
 			}
-
 		}
 		//END
 

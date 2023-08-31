@@ -23,8 +23,8 @@
                         {/if}
                         {if $PROCEED}
                             {if $RECENT_ACTIVITY->isCreate()}
-                                <li>
-                                    <time class="update_time cursorDefault">
+                                <li class="row">
+                                    <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
                                         <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RECENT_ACTIVITY->getParent()->get('createdtime'))}">
                                             {Vtiger_Util_Helper::formatDateDiffInStrings($RECENT_ACTIVITY->getParent()->get('createdtime'))}
                                         </small>
@@ -32,27 +32,28 @@
                                     {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                     {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                     {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
-                                        <div class="update_icon bg-info">
-                                            <i class='update_image vicon-vtigeruser'></i>
+                                        <div class="col-auto update_icon bg-info">
+                                            <i class='rounded-circle update_image vicon-vtigeruser'></i>
                                         </div>
                                     {else}
                                         {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                             {if !empty($IMAGE_INFO.url)}
-                                                <div class="update_icon">
-                                                    <img class="update_image" src="{$IMAGE_INFO.url}" >
+                                                <div class="col-auto update_icon">
+                                                    <img class="rounded-circle update_image" src="{$IMAGE_INFO.url}" >
                                                 </div>
                                             {/if}
                                         {/foreach}
                                     {/if}
-                                    <div class="update_info">
-                                        <h5>
-                                            <span class="field-name">{$RECENT_ACTIVITY->getModifiedBy()->getName()}</span> {vtranslate('LBL_CREATED', $MODULE_NAME)}
+                                    <div class="col-7 update_info py-2">
+                                        <h5 class="fw-bold">
+                                            <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getName()}</span>
+                                            <span>{vtranslate('LBL_CREATED', $MODULE_NAME)}</span>
                                         </h5>
                                     </div>
                                 </li>
-                            {else if $RECENT_ACTIVITY->isUpdate()}
-                                <li>
-                                    <time class="update_time cursorDefault">
+                            {elseif $RECENT_ACTIVITY->isUpdate()}
+                                <li class="row">
+                                    <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
                                         <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RECENT_ACTIVITY->getActivityTime())}">
                                             {Vtiger_Util_Helper::formatDateDiffInStrings($RECENT_ACTIVITY->getActivityTime())}
                                         </small>
@@ -60,43 +61,48 @@
                                     {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                     {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                     {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
-                                        <div class="update_icon bg-info">
-                                            <i class='update_image vicon-vtigeruser'></i>
+                                        <div class="col-auto update_icon bg-info">
+                                            <i class='rounded-circle update_image vicon-vtigeruser'></i>
                                         </div>
                                     {else}
                                         {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                             {if !empty($IMAGE_INFO.url)}
-                                                <div class="update_icon">
-                                                    <img class="update_image" src="{$IMAGE_INFO.url}" >
+                                                <div class="col-auto update_icon">
+                                                    <img class="rounded-circle update_image" src="{$IMAGE_INFO.url}" >
                                                 </div>
                                             {/if}
                                         {/foreach}
                                     {/if}
-                                    <div class="update_info">
+                                    <div class="col-7 update_info py-2">
                                         <div> 
-                                            <h5>
-                                                <span class="field-name">{$RECENT_ACTIVITY->getModifiedBy()->getDisplayName()} </span> {vtranslate('LBL_UPDATED', $MODULE_NAME)}
+                                            <h5 class="fw-bold">
+                                                <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getDisplayName()}</span>
+                                                <span>{vtranslate('LBL_UPDATED', $MODULE_NAME)}</span>
                                             </h5>
                                         </div>
                                         {foreach item=FIELDMODEL from=$RECENT_ACTIVITY->getFieldInstances()}
                                             {if $FIELDMODEL && $FIELDMODEL->getFieldInstance() && $FIELDMODEL->getFieldInstance()->isViewable() && $FIELDMODEL->getFieldInstance()->getDisplayType() neq '5'}
                                                 <div class='font-x-small updateInfoContainer textOverflowEllipsis'>
-                                                    <div class='update-name'><span class="field-name">{vtranslate($FIELDMODEL->getName(),$MODULE_NAME)}</span>
+                                                    <div class='update-name'>
+                                                        <span class="field-name text-primary">{vtranslate($FIELDMODEL->getName(),$MODULE_NAME)}</span>
                                                         {if $FIELDMODEL->get('prevalue') neq '' && $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && ($FIELDMODEL->get('postvalue') eq '0' || $FIELDMODEL->get('prevalue') eq '0'))}
                                                             <span> &nbsp;{vtranslate('LBL_CHANGED')}</span>
                                                         </div>
-                                                        <div class='update-from'><span class="field-name">{vtranslate('LBL_FROM')}</span>&nbsp;
+                                                        <div class='update-from'>
+                                                            <span class="field-name text-primary me-2">{vtranslate('LBL_FROM')}</span>
                                                             <em style="white-space:pre-line;" title="{strip_tags({Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))})}">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))}</em>
                                                         </div>
-                                                    {else if $FIELDMODEL->get('postvalue') eq '' || ($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
+                                                    {elseif $FIELDMODEL->get('postvalue') eq '' || ($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
                                                         &nbsp;(<del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('prevalue'))))}</del> ) {vtranslate('LBL_IS_REMOVED')}</div>
-                                                    {else if $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
+                                                    {elseif $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
                                                     &nbsp;{vtranslate('LBL_UPDATED')}</div>
                                                 {else}
                                                 &nbsp;{vtranslate('LBL_CHANGED')}</div>
                                             {/if}
                                             {if $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELDMODEL->get('postvalue') eq '0')}
-                                                <div class="update-to"><span class="field-name">{vtranslate('LBL_TO')}</span>&nbsp;<em style="white-space:pre-line;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('postvalue'))))}</em>
+                                                <div class="update-to">
+                                                    <span class="field-name text-primary me-2">{vtranslate('LBL_TO')}</span>
+                                                    <em style="white-space:pre-line;">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELDMODEL->getDisplayValue(decode_html($FIELDMODEL->get('postvalue'))))}</em>
                                                 </div>
                                             {/if}
                                             </div>
@@ -104,28 +110,29 @@
                                     {/foreach}
                                     </div>
                                 </li>
-
-                            {else if ($RECENT_ACTIVITY->isRelationLink() || $RECENT_ACTIVITY->isRelationUnLink())}
+                            {elseif ($RECENT_ACTIVITY->isRelationLink() || $RECENT_ACTIVITY->isRelationUnLink())}
                                 {assign var=RELATED_MODULE value= $RELATION->getLinkedRecord()->getModuleName()}
-                                <li>
-                                    <time class="update_time cursorDefault">
+                                <li class="row">
+                                    <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
                                         <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RELATION->get('changedon'))}">
                                             {Vtiger_Util_Helper::formatDateDiffInStrings($RELATION->get('changedon'))} </small>
                                     </time>
-									<div class="update_icon bg-info-{$RELATED_MODULE|strtolower}">
-										{if {$RELATED_MODULE|strtolower eq 'modcomments'}}
-											{assign var="VICON_MODULES" value="vicon-chat"}
-											<i class="update_image {$VICON_MODULES}"></i>
-										{else}
-											<span class="update_image">{Vtiger_Module_Model::getModuleIconPath($RELATED_MODULE)}</span>
-										{/if}
+                                    <div class="col-auto">
+                                        <div class="rounded-circle lh-base update_icon text-white text-center align-items-center bg-info-{$RELATED_MODULE|strtolower}" style="width: 42px; height: 42px; line-height: 42px;">
+                                            {if {$RELATED_MODULE|strtolower eq 'modcomments'}}
+                                                {assign var="VICON_MODULES" value="vicon-chat"}
+                                                <i class="rounded-circle update_image {$VICON_MODULES}"></i>
+                                            {else}
+                                                <span class="rounded-circle update_image">{Vtiger_Module_Model::getModuleIconPath($RELATED_MODULE)}</span>
+                                            {/if}
+                                        </div>
 									</div>
-                                    <div class="update_info">
-                                        <h5>
+                                    <div class="col-7 update_info py-2">
+                                        <h5 class="fw-bold">
                                             {assign var=RELATION value=$RECENT_ACTIVITY->getRelationInstance()}
-                                           <span class="field-name">
-                                                {vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
-                                            </span>&nbsp; 
+                                            <span class="field-name text-primary me-2">
+                                               {vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
+                                            </span>
                                             <span>
                                                 {if $RECENT_ACTIVITY->isRelationLink()}
                                                     {vtranslate('LBL_LINKED', $MODULE_NAME)}
@@ -150,23 +157,30 @@
                                                         {$RELATION->getLinkedRecord()->getName()}
                                                     {else}
                                                         {assign var=DETAILVIEW_URL value=$RELATION->getRecordDetailViewUrl()}
-                                                        {if $DETAILVIEW_URL}<a {if stripos($DETAILVIEW_URL, 'javascript:') === 0}onclick{else}href{/if}='{$DETAILVIEW_URL}'>{/if}
-                                                            <strong>{$RELATION->getLinkedRecord()->getName()}</strong>
-                                                            {if $DETAILVIEW_URL}</a>{/if}
+                                                        {if $DETAILVIEW_URL}
+                                                            <a {if stripos($DETAILVIEW_URL, 'javascript:') === 0}onclick{else}href{/if}='{$DETAILVIEW_URL}'>
+                                                        {/if}
+                                                        <span>{$RELATION->getLinkedRecord()->getName()}</span>
+                                                        {if $DETAILVIEW_URL}
+                                                            </a>
                                                         {/if}
                                                     {/if}
+                                                {/if}
                                             </span>
                                         </div>
                                     </div>
                                 </li>
-                            {else if $RECENT_ACTIVITY->isRestore()}
+                            {elseif $RECENT_ACTIVITY->isRestore()}
                             {/if}
                         {/if}
                     {/foreach}
                     {if $PAGING_MODEL->isNextPageExists()}
-                        <li id='more_button'>
-                            <div class='update_icon' id="moreLink">
-                                <button type="button" class="btn btn-success moreRecentUpdates">{vtranslate('LBL_MORE',$MODULE_NAME)}..</button>
+                        <li id="more_button" class="row">
+                            <div class="col-3"></div>
+                            <div class="col-auto py-2">
+                                <div class="update_icon" id="moreLink">
+                                    <button type="button" class="btn btn-primary moreRecentUpdates">{vtranslate('LBL_MORE',$MODULE_NAME)}..</button>
+                                </div>
                             </div>
                         </li>
                     {/if}

@@ -76,8 +76,7 @@
 									</label>
 								</td>
 								<td class="fieldValue col-lg-4" colspan="3">
-									<input type="text" class="inputElement {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_MODEL->getFieldName()}"
-									value="{$FIELD_MODEL->get('fieldvalue')}" data-rule-required="true" data-rule-url="true"/>
+									<input type="text" class="form-control {if $FIELD_MODEL->isNameField()}nameField{/if}" name="{$FIELD_MODEL->getFieldName()}" value="{$FIELD_MODEL->get('fieldvalue')}" data-rule-required="true" data-rule-url="true"/>
 								</td>
 							{/if}
 						</tr>

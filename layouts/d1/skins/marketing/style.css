@@ -19,40 +19,39 @@
   --bs-primary-color: rgb(var(--bs-primary-rgb));
 }
 .btn-primary {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: var(--bs-primary-color);
-  --bs-btn-border-color: var(--bs-primary-color);
+  --bs-btn-color: #5e81f4;
+  --bs-btn-bg: #eff3fe;
+  --bs-btn-border-color: #eff3fe;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #475eab;
   --bs-btn-hover-border-color: #475eab;
   --bs-btn-focus-shadow-rgb: 49,132,253;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #475eab;
-  --bs-btn-active-border-color: #0a53be;
+  --bs-btn-active-bg: #5e81f4;
+  --bs-btn-active-border-color: #5e81f4;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: var(--bs-primary-color);
   --bs-btn-disabled-border-color: var(--bs-primary-color);
 }
 .btn-outline-primary {
-  --bs-btn-color: var(--bs-primary-color);
-  --bs-btn-border-color: var(--bs-primary-color);
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--bs-primary-color);
-  --bs-btn-hover-border-color: var(--bs-primary-color);
   --bs-btn-focus-shadow-rgb: 13,110,253;
-  --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: var(--bs-primary-color);
-  --bs-btn-active-border-color: var(--bs-primary-color);
+  --bs-btn-active-color: #5e81f4;
+  --bs-btn-active-bg: #fff;
+  --bs-btn-active-border-color: #5e81f4;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-  --bs-btn-disabled-color: var(--bs-primary-color);
-  --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: var(--bs-primary-color);
+  --bs-btn-disabled-color: #8181a5;
+  --bs-btn-disabled-bg: #fff;
+  --bs-btn-disabled-border-color: #8181a5;
   --bs-gradient: none;
-}
-.btn-outline-secondary {
-  --bs-btn-border-color: #8181A5;
+  --bs-btn-border-color: #ECECF2;
   --bs-btn-color: #8181A5;
+  --bs-btn-hover-color: #1c1d21;
+  --bs-btn-hover-bg: #fff;
+  --bs-btn-hover-border-color: #9ab0f8;
+}
+.nav-pills .nav-link.active {
+  --bs-nav-pills-link-active-bg: #eff3fe
 }
 .form-check-input:checked {
   background-color: var(--bs-primary-color);
@@ -123,7 +122,7 @@ html {
   min-height: 100%;
 }
 body {
-  --bs-body-font-family: Lato, sans-serif;
+  --bs-body-font-family: Lato;
   margin: 0;
   padding: 0;
   height: inherit;
@@ -201,10 +200,8 @@ body {
   .app-nav .module-action-bar .module-action-content .navbar-right {
     margin-right: 0;
   }
-  .main-container .module-nav {
+  .main-container .moduleNavigatorContainer {
     width: var(--menu-width);
-    background: var(--menu-bg);
-    height: var(--main-height);
   }
   .main-container .sidebar-essentials {
     z-index: 1;
@@ -370,15 +367,6 @@ body {
 /** App Nav Styles */
 .active-app-title {
   white-space: nowrap;
-}
-.module-title {
-  font-family: Lato, sans-serif;
-  color: #596875;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: var(--header-max-width);
-  text-overflow: ellipsis;
-  font-size: var(--header-font-size);
 }
 .app-navigator-container {
   width: var(--menu-width);
@@ -715,15 +703,6 @@ a.menu-item:hover {
 /*************************************************/
 /******** View styles (List/Edit/Detail..) *******/
 /*************************************************/
-.viewContent {
-  height: inherit;
-}
-.viewContent .content-area {
-  padding-left: 3%;
-}
-.viewContent .content-area.full-width {
-  padding-left: 15px;
-}
 .listViewPageDiv.content-area.full-width,
 .CalendarViewPageDiv.content-area.full-width,
 .editViewPageDiv.content-area.full-width,
@@ -1223,12 +1202,6 @@ ul.unstyled {
 .fa.pull-left {
   margin-right: 0;
 }
-.current-filter-name a {
-  max-width: 15rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
 .listViewContentHeaderValues:hover .customsort {
   opacity: 1;
 }
@@ -1450,19 +1423,6 @@ input[type=checkbox]:checked {
 /**********************************
 **********Detail View Styles**********
 **********************************/
-.detailViewButtoncontainer {
-  padding-top: 5px;
-}
-.detailViewButtoncontainer button.btn {
-  margin: 1px !important;
-}
-.detailview-header .recordBasicInfo > .info-row {
-  margin-bottom: 4px;
-}
-.detailview-header .recordBasicInfo > .info-row .socialLinks {
-  height: 20px;
-  display: inline-block;
-}
 .main-container .detailViewModNavigator.module-nav,
 .detailViewModNavigator .mod-switcher-container,
 .detailViewModNavigator .modules-menu {
@@ -1486,12 +1446,12 @@ th {
 .detailview-table .fieldValue {
   width: 30%;
 }
-#detailView td.fieldValue .action {
+#detailView .fieldValue .action {
   display: none;
   position: absolute;
   margin-left: 10px;
 }
-#detailView td.fieldValue:hover .action {
+#detailView .fieldValue:hover .action {
   display: inline-block;
 }
 #detailView td.fieldValue:hover .action a {
@@ -1504,8 +1464,6 @@ th {
 .overlayDetailHeader .recordBasicInfo .fieldLabel .action,
 .detailview-header .recordBasicInfo .fieldLabel .action {
   display: none;
-  position: absolute;
-  margin-left: 10px;
 }
 .overlayDetailHeader .recordBasicInfo .fieldLabel:hover .action,
 .detailview-header .recordBasicInfo .fieldLabel:hover .action {
@@ -1560,33 +1518,6 @@ th {
   float: left;
   display: inline-block;
   position: absolute;
-}
-.record-header .recordBasicInfo {
-  float: left;
-  display: inline-block;
-  padding-left: 90px;
-  width: 100%;
-}
-.record-header .recordBasicInfo .info-row,
-.record-header .recordBasicInfo h4,
-.record-header .recordBasicInfo a,
-.record-header .recordBasicInfo .fieldLabel {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.record-header .recordBasicInfo h4 {
-  height: 25px;
-  margin: 0;
-}
-.detailViewContainer .recordImage,
-.overlayDetailHeader .recordImage,
-.quickPreviewModuleHeader .recordImage {
-  display: table;
-  height: 80px;
-  width: 80px;
-  padding: 0;
 }
 .detailViewContainer .recordImage .name,
 .overlayDetailHeader .recordImage .name,
@@ -1696,10 +1627,6 @@ th {
 .overlayDetailHeader .recordImage [class^="vicon-"],
 .quickPreviewModuleHeader .recordImage [class^="vicon-"] {
   font-size: 35px;
-}
-.detailViewContainer {
-  background: #f9f9f9;
-  min-height: inherit;
 }
 .detailViewContainer .block {
   background: #FFFFFF;
@@ -1819,9 +1746,6 @@ th {
   margin-left: 285px;
   text-align: left;
 }
-.commentTextArea {
-  padding-bottom: 7px;
-}
 .saveButton {
   font-size: 14px;
   color: white;
@@ -1839,9 +1763,6 @@ th {
 .cancel-x-small {
   font-size: 12px;
 }
-.detailview-content {
-  padding-bottom: 30px;
-}
 .detailview-content .commentsRelatedContainer .commentTitle {
   border: 1px solid #CCC;
   padding: 20px;
@@ -1854,36 +1775,6 @@ th {
 .detailview-content .commentsRelatedContainer .commentTextArea {
   padding-bottom: 10px;
 }
-.numberCircle {
-  background: none repeat scroll 0 0 #8e44ad;
-  border-radius: 2px;
-  color: white;
-  display: inline-block;
-  font-size: 10px;
-  min-height: 19px;
-  min-width: 19px;
-  padding: 2px;
-  text-align: center;
-  vertical-align: baseline;
-  margin-top: 2px;
-}
-.related-tabs {
-  position: relative;
-}
-.related-tabs ul {
-  padding-left: 10px;
-  width: 100%;
-}
-.related-tabs .tab-icon {
-  max-width: 85%;
-  display: inline-block;
-  vertical-align: middle;
-}
-.related-tabs .tab-label {
-  display: inline-block;
-  height: 26px;
-  line-height: 25px;
-}
 /**********************************
 **********Summary View Styles******
 **********************************/
@@ -1891,63 +1782,19 @@ th {
   width: 100%;
   table-layout: fixed;
 }
-.editViewContents .fieldBlockContainer,
-.summaryView {
-  position: relative;
-  border: 1px solid #eee;
-  padding: 15px;
-  margin-bottom: 10px;
-  background: #FFFFFF;
-  border-width: thin;
-}
-.summaryView .fieldLabel {
-  padding-left: 0px;
-  padding-right: 30px;
-}
-.summaryView .summaryViewHeader,
-.summaryWidgetContainer .widget_header {
-  margin-bottom: 8px;
-  margin-top: 0;
-}
 .summaryView .summaryViewHeader h4,
 .summaryWidgetContainer .widget_header h4 {
   margin-top: 0;
   margin-bottom: 0;
 }
-.summaryWidgetContainer .widget_contents {
-  margin-top: 12px;
-}
 .summaryView .summaryViewFields {
   line-height: 2;
-}
-.summaryViewFields .inputElement {
-  max-height: 30px;
 }
 .summaryViewFields .inputElement.input-xxlarge {
   max-height: 200px;
 }
-.summaryWidgetContainer {
-  position: relative;
-  border: 1px solid #eee;
-  padding: 15px;
-  margin-bottom: 10px;
-  background: #FFFFFF;
-  border-width: thin;
-}
-.summaryWidgetContainer .widget_header {
-  margin-bottom: 6px;
-}
 .summaryWidgetContainer .toggleButton {
   font-size: 16px;
-}
-.summaryWidgetContainer .commentTitle {
-  margin-bottom: 25px;
-}
-.summaryWidgetContainer .creatorName {
-  color: blue;
-}
-.summaryWidgetContainer .recentCommentsHeader {
-  margin-bottom: 10px;
 }
 .summaryWidgetContainer .commentContainer {
   background: white;
@@ -1961,30 +1808,6 @@ th {
 .quick-preview-modal .noContent {
   border: 1px solid #eee;
   border-width: thin;
-}
-.summaryWidgetContainer .recordImage .name {
-  display: table-cell;
-  margin: 0 auto;
-  position: relative;
-  text-align: center;
-  vertical-align: middle;
-}
-.summaryWidgetContainer .recordImage .name span {
-  color: #fff;
-  display: inline-block;
-  font-size: 30px;
-  line-height: 50px;
-  text-shadow: 1px 0 2px #999;
-}
-.commentsList .recordImage,
-.summaryWidgetContainer .recordImage {
-  background: none repeat scroll 0 0 orange;
-  border: 1px solid #ccc;
-  display: table;
-  overflow-y: hidden;
-  height: 50px;
-  padding: 0;
-  width: 50px;
 }
 .summaryWidgetContainer .activityEntries .module-icon {
   line-height: 28px;
@@ -2008,35 +1831,6 @@ th {
 .summaryWidgetContainer .summaryViewEntries:hover .summaryViewEdit {
   opacity: 1;
   cursor: pointer;
-}
-.details.row > form .social-media-toggle {
-  position: absolute;
-  right: -15px;
-  display: inline-block;
-  width: 500px;
-  border-left: 0px;
-}
-.details.row > form .social-media-widget {
-  border-left: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  height: 100%;
-  background: white;
-}
-.details.row > form div[class*="col-"].resizable-summary-view {
-  padding-left: 0;
-  padding-right: 0px;
-}
-.details.row > form > div[class*="col-"],
-.details.row > form .resizable-summary-view div[class*="col-"] {
-  padding-right: 0;
-  padding: 0px 5px;
-}
-.details.row > form > div[class*="col-"]:first-child,
-.details.row > form .left-block {
-  padding-left: 0 !important;
-}
-.details.row > form > div[class*="col-"]:last-child {
-  padding-right: 0;
 }
 .summaryWidgetContainer .noContent {
   padding: 10px;
@@ -2587,8 +2381,8 @@ th {
 .importBlockContainer {
   color: #596875;
 }
-/******************************************* 
-************* Social Buttons *************** 
+/*******************************************
+************* Social Buttons ***************
 ********************************************/
 .btn-block + .btn-block {
   margin-top: 5px;
@@ -2617,17 +2411,9 @@ th {
   text-align: center;
   border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
-/******************************************* 
-************* Updates Timeline *************** 
+/*******************************************
+************* Updates Timeline ***************
 ********************************************/
-.recentActivitiesContainer .history {
-  margin: 0 auto;
-  padding: 20px 20px 1px;
-  max-width: 100%;
-  overflow-x: visible;
-  -webkit-transition: opacity 0.2s ease-out;
-  transition: opacity 0.2s ease-out;
-}
 .updates_timeline {
   padding-top: 20px;
   position: relative;
@@ -2635,88 +2421,13 @@ th {
   padding: 0;
   list-style: none;
 }
-/* The line */
-.updates_timeline:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  display: block;
-  width: 4px;
-  background: #f9f9f9;
-  left: 19%;
-}
-.updates_timeline > li {
-  position: static;
-  top: 0;
-  display: block;
-  position: relative;
-  min-height: 40px;
-  z-index: 2;
-}
-/* Left Content(Time) */
-.updates_timeline > li .update_time {
-  position: absolute;
-  margin: 0;
-  width: 14%;
-  background-color: transparent;
-  padding: 5px;
-  text-align: right;
-  color: #999;
-  font-size: 15px;
-  font-style: italic;
-}
-/* Right content(Update info) */
-.updates_timeline > li .update_info {
-  padding: 10px 10px 1px;
-  display: block;
-  margin: 0 0 -47px 24%;
-  line-height: 1.4;
-  position: relative;
-  top: -45px;
-}
-.updates_timeline > li .update_info > h3 {
-  font-size: 1.1em;
-  margin-left: -3%;
-}
-/* The icons  */
-.updates_timeline > li .update_icon {
-  position: relative;
-  border-radius: 50%;
-  text-align: center;
-  top: 0;
-  left: 20%;
-  width: 35px;
-  height: 35px;
-  margin: 0 0 0 -27px;
-  color: #fff;
-  line-height: 35px;
-}
-/* More Button */
-.updates_timeline #more_button .update_icon {
-  position: relative;
-  border-radius: 0;
-  box-shadow: none;
-  background: #fff;
-  text-align: center;
-  top: 0;
-  margin: 0 0 0 -55px;
-  color: #fff;
-  width: 100px;
-}
-.updates_timeline #more_button .update_icon .moreRecentUpdates {
-  background: var(--menu-bg);
-  border-radius: 15%;
-}
 .updates_timeline .update_icon img {
-  height: 42px;
-  width: 42px;
-  border-radius: 50%;
-  position: absolute;
-  left: -4px;
+  height: 3rem;
+  width: 3rem;
 }
 .updates_timeline .update_icon .update_image {
-  line-height: 1.5;
+  line-height: 3rem;
+  width: 3rem;
 }
 .bg-info {
   background-color: orange;
@@ -2800,8 +2511,8 @@ th {
   vertical-align: super;
   font-size: 13px;
 }
-/******************************************* 
-************* Task Management ************** 
+/*******************************************
+************* Task Management **************
 ********************************************/
 #taskManagementContainer .data-body {
   margin-bottom: 50px;
@@ -2882,8 +2593,8 @@ th {
 #taskManagementContainer .mCustomScrollbar .mCSB_inside > .mCSB_container {
   margin-right: 13px;
 }
-/******************************************* 
-************* Settings Page ************** 
+/*******************************************
+************* Settings Page **************
 ********************************************/
 .settingsPageDiv.content-area {
   margin-right: 0;
@@ -3154,7 +2865,7 @@ th {
 th {
   padding: 6px;
 }
-/******************************************* 
+/*******************************************
 ********** CustomerPortal styles start ********
 ********************************************/
 .cp-tabs .enabledModules {
@@ -3368,64 +3079,11 @@ th {
 .quickPreviewSummary .summaryViewEntries .fieldValue .value {
   width: 80%;
 }
-.quickPreview .updates_timeline > li .update_time {
-  display: inline-block;
-  text-align: center;
-  padding-right: 0;
-}
-.quickPreview .updates_timeline > li .update_time small {
-  font-size: 79%;
-  display: inline-block;
-  width: 40px;
-  margin-top: 1px;
-  line-height: 12px;
-}
-.quickPreview .updates_timeline > li .update_info {
-  font-size: 12px;
-  margin: 0 0 -40px 24%;
-  padding: 2% 3%;
-}
-.quickPreview .updates_timeline > li .update_info > h5 {
-  margin-left: 0;
-  font-size: 110%;
-  margin-top: 15px;
-}
-.updates_timeline > li .update_info h5 {
-  font-family: sans-serif;
-}
-.updates_timeline > li .update_info h5 .field-name {
-  color: #2b879e;
-}
-.updates_timeline > li .update_info > .updateInfoContainer .update-from,
-.updates_timeline > li .update_info > .updateInfoContainer .update-to {
-  max-width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.updates_timeline > li .update_info > .updateInfoContainer {
-  margin-left: 15px;
-  margin-bottom: 5px;
-  padding-bottom: 5px;
-}
-.updates_timeline > li .update_info > .updateInfoContainer .field-name {
-  color: #2b879e;
-}
-.updates_timeline > li .update_info > .updateInfoContainer .update-name {
-  font-family: sans-serif;
-  margin-bottom: 2px;
-}
-.updates_timeline > li .update_info > .updateInfoContainer em {
-  color: black;
-}
 .quickPreview .updates_timeline {
   list-style: outside none none;
   margin: 25px 0 25px;
   padding: 0;
   position: relative;
-}
-.quickPreview .updates_timeline > li .update_icon {
-  display: inline-block;
 }
 .quickPreview .updates_timeline:before {
   background: #e5e5e5;
@@ -3450,7 +3108,7 @@ th {
 .quickPreview .recentActivitiesContainer .history {
   padding: 0;
 }
-/******************************************* 
+/*******************************************
 ********** Calendar view styles ************
 ********************************************/
 .calendar-sidebar {
@@ -3610,7 +3268,7 @@ th {
   display: inline-block;
   text-align: center;
 }
-/******************************************* 
+/*******************************************
 ********** Calendar view styles end ********
 
 ********** Documents Module styles *********
@@ -3674,7 +3332,7 @@ tr.file > td.fileOwnerData {
   width: 100px;
   white-space: pre-wrap;
 }
-/******************************************* 
+/*******************************************
 ********** Documents Module styles end *****
 ********************************************/
 .engagementsContainer .engagements_content {
@@ -3734,7 +3392,7 @@ tr.file > td.fileOwnerData {
   font-size: 15px;
   padding: 1% 0;
 }
-/******************************************* 
+/*******************************************
 ********** Mailroom view styles start ********
 ********************************************/
 .mailroomBanner {
@@ -4126,19 +3784,11 @@ form[name="notification_settings"] .select2-choice {
 .mentionMessageHeader .MultiFile-remove {
   color: #FFFFFF;
 }
-/******************************************* 
+/*******************************************
 ********** Mailroom view styles end ********
 ********************************************/
 .detailview-header {
   margin-bottom: 10px;
-}
-.tagContainer .tag-contents {
-  display: inline-block;
-  border-right: 1px solid #DDDDDD;
-  padding-right: 8px;
-}
-.tagContainer #addTagContainer {
-  display: inline-block;
 }
 .tag .tagLabel {
   max-width: 80px;
@@ -4197,7 +3847,7 @@ form[name="notification_settings"] .select2-choice {
   max-width: 80px;
   vertical-align: bottom;
 }
-/******************************************* 
+/*******************************************
 ********** Groups view styles ********
 ********************************************/
 #s2id_memberList li > div,
@@ -4293,10 +3943,10 @@ form[name="notification_settings"] .select2-choice {
   margin: 0px;
   color: #444444;
 }
-/******************************************* 
+/*******************************************
 ********** Groups view styles  ends********
 ********************************************/
-/******************************************* 
+/*******************************************
 ********** Picklist Css ********
 ********************************************/
 .pickListValue {
@@ -4313,7 +3963,7 @@ form[name="notification_settings"] .select2-choice {
   padding: 2px 1px !important;
   line-height: 15px;
 }
-/******************************************* 
+/*******************************************
 ************* Dashboard Styles *************
 ********************************************/
 li.dashboardWidget {
@@ -4448,7 +4098,7 @@ li.dashboardWidget {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/******************************************* 
+/*******************************************
 ********** Picklist DependencyGraph ********
 ********************************************/
 #dependencyGraph .tableHeading {
@@ -4476,7 +4126,7 @@ li.dashboardWidget {
 #dependencyGraph .dependencyMapping .pickListDependencyTable .selectedCell {
   background: #a9cbf5;
 }
-/******************************************* 
+/*******************************************
 ********** Rewriting select2 for consistency********
 ********************************************/
 .select2-container .select2-choice {
@@ -4608,27 +4258,6 @@ hr {
   left: -126px;
   position: relative;
 }
-.related-tabs .dropdown-menu {
-  max-height: 300px;
-  padding-left: 0;
-}
-.related-tabs .dropdown-menu > .mCustomScrollBox > .mCSB_container {
-  margin-right: 0;
-  padding: 4px 6px;
-}
-.related-tabs .dropdown-menu > .mCustomScrollBox > .mCSB_container > li > a {
-  display: block;
-  padding: 3px 5px;
-  clear: both;
-  font-weight: 400;
-  line-height: 1.42857143;
-  color: #333;
-  white-space: nowrap;
-}
-.related-tabs .dropdown-menu > .mCustomScrollBox > .mCSB_container span i {
-  font-size: 15px;
-  vertical-align: middle;
-}
 .panel-collapse ul li a:hover {
   background: #596875;
   opacity: 1;
@@ -4645,45 +4274,14 @@ hr {
 .calendar-sidebar .calendar-sidebar-tabs.padding {
   padding-left: 20px !important;
 }
-.related-tabs.row .nav > li {
-  padding: 0 10px;
-  margin: 0 2px 3px 2px;
-  width: 90px;
-  text-align: center;
-}
 .massEditTabs.nav > li {
   padding: 0 10px;
   margin: 0 4px;
 }
-.row .nav > li > a,
-.row .nav > li > a:hover {
-  padding: 10px 3px;
-  border: none;
-  vertical-align: bottom;
-  display: inline-block;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  margin-bottom: 1px;
-}
-.row .nav > li > a:hover {
-  border-bottom-color: #555;
-}
-/*.row ul{
-    padding:0;
-}*/
-TN-34230 .row .nav > li > a:hover {
-  border-bottom-color: #555;
-  background: none;
-}
-.related-tabs .nav-tabs > li.active,
 .dashBoardContainer .nav-tabs > li.active,
 .contents.tabbable .nav-tabs > li.active,
-.related-tabs .nav-tabs > li:hover,
 .dashBoardContainer .nav-tabs > li:hover,
 .contents.tabbable .nav-tabs > li:hover,
-.related-tabs .nav-tabs > li.active:focus,
 .dashBoardContainer .nav-tabs > li.active:focus,
 .contents.tabbable .nav-tabs > li.active:focus {
   border: none;
@@ -4696,18 +4294,11 @@ TN-34230 .row .nav > li > a:hover {
 .nav-tabs > li > a {
   border: 0;
 }
-.nav > li > a:hover,
-.nav > li > a:focus {
-  background-color: #FFFFFF;
-}
 .fa-pencil,
 .fa-times {
   cursor: pointer;
 }
-.commentAttachmentName {
-  font-size: 11px;
-}
-/******************************************* 
+/*******************************************
 ********** Layout Editor ********
 ********************************************/
 .marginBottom10px {
@@ -4861,7 +4452,7 @@ TN-34230 .row .nav > li > a:hover {
   margin-left: 5px;
   word-break: break-all;
 }
-/******************************************* 
+/*******************************************
 ************** Tax Management **************
 ********************************************/
 #TaxCalculationsContainer .table tr:first-child,
@@ -4903,7 +4494,7 @@ TN-34230 .row .nav > li > a:hover {
   max-height: 500px;
   overflow-y: auto;
 }
-/******************************************* 
+/*******************************************
 ********** Workflows ********
 ********************************************/
 #workflow_edit .editViewBody {
@@ -5110,7 +4701,7 @@ TN-34230 .row .nav > li > a:hover {
   width: 100%;
   overflow-x: auto;
 }
-/******************************************* 
+/*******************************************
 *************** Mail Manager ***************
 ********************************************/
 #mm_searchButton {
@@ -5390,12 +4981,6 @@ TN-34230 .row .nav > li > a:hover {
 .width40per {
   width: 40%;
 }
-/****** Mail Manager Ends ******/
-.quickCreateContent .massEditTable textarea,
-.addCommentBlock .commentTextArea textarea {
-  resize: vertical;
-  padding: 6px;
-}
 .table.detailview-table.no-border .ajaxEdited .input-group-addon {
   width: auto;
 }
@@ -5544,7 +5129,7 @@ TN-34230 .row .nav > li > a:hover {
 div.tooltip-inner {
   max-width: 400px;
 }
-/******************************************* 
+/*******************************************
 ********** Menu Editor ********
 ********************************************/
 .sortable.appContainer.ui-sortable {
@@ -5594,26 +5179,6 @@ div.tooltip-inner {
   overflow-y: auto;
   max-height: 525px;
 }
-.detailview-header-block {
-  background: white;
-  padding: 15px;
-  padding-top: 25px;
-  border: 1px solid #eee;
-  border-width: thin;
-}
-.detailViewContainer .content-area,
-.editViewPageDiv .content-area,
-.editViewPageDiv.content-area,
-.editViewPageDiv .reports-content-area {
-  background: #f9f9f9;
-}
-.detailViewContainer .HistoryContainer,
-.detailViewContainer .recentActivitiesContainer,
-.related-tabs.row .details.row,
-.detailview-content .details.row .relatedHeader {
-  background: #FFFFFF;
-  padding: 15px;
-}
 .detailview-content .details.row .relatedHeader {
   border: 1px solid #eee;
   border-width: thin;
@@ -5624,10 +5189,6 @@ div.tooltip-inner {
   margin-top: 0;
   border: 1px solid #eee;
   border-width: thin;
-}
-.related-tabs.row {
-  background: #FFFFFF;
-  margin-top: 10px;
 }
 .detailViewContainer .commentContainer .commentTitle.row,
 .detailViewContainer .commentContainer .showcomments {
@@ -5864,19 +5425,16 @@ div.tooltip-inner {
 .markStar .unfollowMessage {
   display: none;
 }
-.markStar .active {
-  color: #FFC600;
-}
 .markStar:hover .unfollowMessage {
   display: block;
 }
 .markStar:hover .followMessage {
   display: none;
 }
-.markStar.active .starredStatus {
+.markStar.markStarActive .starredStatus {
   display: block;
 }
-.markStar.active .unstarredStatus {
+.markStar.markStarActive .unstarredStatus {
   display: none;
 }
 .markStar .starredStatus {
@@ -6014,9 +5572,6 @@ div.tooltip-inner {
 }
 .verticalAlignMiddle {
   vertical-align: middle;
-}
-#detailView .block h4 {
-  height: 20px;
 }
 .dashBoardTabMenu {
   padding-top: 0px;
@@ -7000,7 +6555,6 @@ input:focus:-ms-input-placeholder {
   color: #FFFFFF;
   background-color: #777;
 }
-.related-tabs .custom-module,
 #relatedmenuList .custom-module {
   border-radius: 4px;
   color: #FFFFFF;
@@ -7037,11 +6591,6 @@ body .fc {
 }
 .nav-tabs {
   border-bottom: 0;
-}
-.commentcontent {
-  border: 1px solid #ddd;
-  border-width: thin;
-  background: #fcfcfc;
 }
 .editViewHeader {
   padding-top: 20px;

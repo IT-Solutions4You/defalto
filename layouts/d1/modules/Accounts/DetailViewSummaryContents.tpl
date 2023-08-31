@@ -6,11 +6,4 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 *************************************************************************************}
-
-{strip}
-	<form id="detailView" class="clearfix" method="POST" style="position: relative">
-		<div class="col-lg-12 resizable-summary-view">
-			{include file='SummaryViewWidgets.tpl'|vtemplate_path:$MODULE_NAME}
-		</div>
-	</form>
-{/strip}
+{include file='DetailViewSummaryContents.tpl'|vtemplate_path:'Vtiger'}

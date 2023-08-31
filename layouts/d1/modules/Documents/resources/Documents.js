@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-
+/** @var Documents_Index_Js */
 Vtiger.Class('Documents_Index_Js', {
 
 	fileObj : false,
@@ -78,13 +78,13 @@ Vtiger.Class('Documents_Index_Js', {
 		relatedList.loadRelatedList();
 	},
 
-	isDocumentsSummaryWidgetAvailable : function() {
-		return jQuery('.widgetContainer_documents').length;
+	isDocumentsSummaryWidgetAvailable: function () {
+		return jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]').length;
 	},
 
-	reloadSummaryWidget : function() {
-		var detailInstance = Vtiger_Detail_Js.getInstance();
-		detailInstance.loadWidget(jQuery('.widgetContainer_documents'));
+	reloadSummaryWidget: function () {
+		let detailInstance = Vtiger_Detail_Js.getInstance();
+		detailInstance.loadWidget(jQuery('.widgetContainer_documents, .summaryWidgetContainer [data-name="Documents"]'));
 	},
 
 	reloadList : function() {
@@ -149,22 +149,23 @@ Vtiger.Class('Documents_Index_Js', {
 			extraData['notes_title'] = container.find('form').find('[name="notes_title"]').val();
 		}
 
-		this._upload(container.find('form'),extraData).then(function(data) {
+		this._upload(container.find('form'), extraData).then(function (data) {
+			let form = container.find('form'),
+				folderId = form.find('[name="folderid"]').val();
+
 			app.helper.showSuccessNotification({
-				'message' : app.vtranslate('JS_UPLOAD_SUCCESSFUL')
+				'message': app.vtranslate('JS_UPLOAD_SUCCESSFUL')
 			});
 			app.helper.hideModal();
 			self.reloadList();
-			var form = container.find('form');
-			var folderid = form.find('[name="folderid"]').val();
-			app.event.trigger('post.documents.save', {'folderid' : folderid});
+			app.event.trigger('post.documents.save', {'folderid': folderId});
 
 			//reference create handling
-			if(Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
+			if (Documents_Index_Js.referenceCreateMode === true && Documents_Index_Js.referenceFieldName !== '') {
 				self.postQuickCreateSave(data);
 			}
-		}, function(e) {
-			app.helper.showErrorNotification({'message' : app.vtranslate('JS_UPLOAD_FAILED')});
+		}, function (e) {
+			app.helper.showErrorNotification({'message': app.vtranslate('JS_UPLOAD_FAILED')});
 		});
 	},
 
@@ -324,36 +325,42 @@ Vtiger.Class('Documents_Index_Js', {
 	},
 
 	registerUploadDocumentEvents : function(container) {
-		var self = this;
+		let self = this;
+
 		container.find('form').vtValidate({
 			'submitHandler' : function() {
 				self.uploadFileToVtiger(container);
 				return false;
 			}
 		});
+
 		self.registerQuickCreateEvents(container);
-		this.registerFileHandlingEvents(container);
+		self.registerFileHandlingEvents(container);
 	},
 
-	showUploadToVtigerModal : function(parentId,relatedModule) {
-		var self = this;
-		var url = 'index.php?module=Documents&view=QuickCreateAjax&service=Vtiger&operation=UploadToVtiger&type=I';
-		if(typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
-			url += '&relationOperation=true&sourceModule='+relatedModule+'&sourceRecord='+parentId;
+	showUploadToVtigerModal: function (parentId, relatedModule) {
+		let self = this,
+			url = 'index.php?module=Documents&view=QuickCreateAjax&service=Vtiger&operation=UploadToVtiger&type=I';
+
+		if (typeof parentId !== 'undefined' && typeof relatedModule !== 'undefined') {
+			url += '&relationOperation=true&sourceModule=' + relatedModule + '&sourceRecord=' + parentId;
 		}
-		var relationField = jQuery('div.related-tabs').find('li').filter('.active').data('relatedfield');
+
+		let relationField = jQuery('div.related-tabs').find('li').filter('.active').data('relatedfield');
+
 		if (relationField && parentId) {
-			url += '&'+relationField+"="+parentId;
-		}		
+			url += '&' + relationField + "=" + parentId;
+		}
+
 		app.helper.showProgress();
-		app.request.get({'url':url}).then(function(e,resp) {
+		app.request.get({'url': url}).then(function (error, response) {
 			app.helper.hideProgress();
-			if(!e) {
-				app.helper.showModal(resp, {
-					'cb' : function(modalContainer) {
+
+			if (!error) {
+				app.helper.showModal(response, {
+					'cb': function (modalContainer) {
 						self.registerUploadDocumentEvents(modalContainer);
 						self.applyScrollToModal(modalContainer);
-						self.registerQuickCreateEvents(modalContainer);
 					}
 				});
 			}

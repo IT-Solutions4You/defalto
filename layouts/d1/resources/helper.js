@@ -490,14 +490,17 @@ jQuery.Class("Vtiger_Helper_Js",{
         return container;
     },
 
-    hideModal : function(){
-		var aDeferred = new jQuery.Deferred();
-		var container = jQuery('.myModal');
-        container.one('hidden.bs.modal', function(){
+    hideModal: function () {
+        let aDeferred = new jQuery.Deferred(),
+            container = jQuery('#myModal');
+
+        container.one('hidden.bs.modal', function () {
             aDeferred.resolve();
-        })
-		$('.myModal').modal('hide'); 
-                $('.myModal').data('bs.modal',null); // clear any options previously set
+        });
+        container.modal('hide');
+        container.data('bs.modal', null); // clear any options previously set
+        container.unbind();
+
         return aDeferred.promise();
     },
 

@@ -111,6 +111,8 @@ class ModComments_Module_Model extends Vtiger_Module_Model{
 		return false;
 	}
 
+	public function getModuleIcon($height = '')
+	{
+		return sprintf('<i style="font-size: %s" class="fa-solid fa-comment"></i>', $height);
+	}
 }
-
-?>

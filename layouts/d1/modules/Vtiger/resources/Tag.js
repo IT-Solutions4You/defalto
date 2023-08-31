@@ -173,15 +173,19 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
 
                     app.helper.showScroll(currentTagHolder, {alwaysVisible: false});
 
-                    modalContainer.find('.currentTagSelector').instaFilta({
-                        targets: '.currentTagMenu  li',
-                        sections: '.currentTagMenu ul',
-                        scope: modalContainer,
-                        hideEmptySections: true,
-                        beginsWith: false,
-                        caseSensitive: false,
-                        typeDelay: 0
-                    });
+                    let currentTagSelector = modalContainer.find('.currentTagSelector');
+
+                    if (currentTagSelector.length) {
+                        currentTagSelector.instaFilta({
+                            targets: '.currentTagMenu  li',
+                            sections: '.currentTagMenu ul',
+                            scope: modalContainer,
+                            hideEmptySections: true,
+                            beginsWith: false,
+                            caseSensitive: false,
+                            typeDelay: 0
+                        });
+                    }
 
                     let tagInputEle = modalContainer.find('input[name="createNewTag"]'),
                         form = modalContainer.find('form');
@@ -275,7 +279,7 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
 
             editTagContainer.removeClass('hide');
 
-            let container = element.closest('#listViewTagContainer'),
+            let container = element.closest('.tagContainer'),
                 placement = 'bottom',
                 config = {
                     'content': editTagContainer,

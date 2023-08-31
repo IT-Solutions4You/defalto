@@ -256,35 +256,36 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	}
 
 
-	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $jsFileNames = array(
+            'modules.Vtiger.resources.Detail',
+            "modules.$moduleName.resources.Detail",
+            'modules.Vtiger.resources.RelatedList',
+            "modules.$moduleName.resources.RelatedList",
+            'libraries.jquery.jquery_windowmsg',
+            "libraries.jquery.ckeditor.ckeditor",
+            "libraries.jquery.ckeditor.adapters.jquery",
+            "modules.Emails.resources.MassEdit",
+            "modules.Vtiger.resources.CkEditor",
+            "~/libraries/jquery/twitter-text-js/twitter-text.js",
+            "libraries.jquery.multiplefileupload.jquery_MultiFile",
+            '~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
+            '~/libraries/jquery.bxslider/jquery.bxslider.min.js',
+            '~layouts/' . $layout . '/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js',
+            'modules.Vtiger.resources.Tag',
+            'modules.Google.resources.Map',
+        );
 
-		$jsFileNames = array(
-			'modules.Vtiger.resources.Detail',
-			"modules.$moduleName.resources.Detail",
-			'modules.Vtiger.resources.RelatedList',
-			"modules.$moduleName.resources.RelatedList",
-			'libraries.jquery.jquery_windowmsg',
-			"libraries.jquery.ckeditor.ckeditor",
-			"libraries.jquery.ckeditor.adapters.jquery",
-			"modules.Emails.resources.MassEdit",
-			"modules.Vtiger.resources.CkEditor",
-			"~/libraries/jquery/twitter-text-js/twitter-text.js",
-			"libraries.jquery.multiplefileupload.jquery_MultiFile",
-			'~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
-			'~/libraries/jquery.bxslider/jquery.bxslider.min.js',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js",
-			'modules.Vtiger.resources.Tag',
-			'modules.Google.resources.Map'
-		);
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+        return $headerScriptInstances;
+    }
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
-
-	function showDetailViewByMode(Vtiger_Request $request) {
+    function showDetailViewByMode(Vtiger_Request $request) {
 		$requestMode = $request->get('requestMode');
 		if($requestMode == 'full') {
 			return $this->showModuleDetailView($request);

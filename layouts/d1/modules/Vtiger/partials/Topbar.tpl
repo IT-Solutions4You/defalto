@@ -12,7 +12,7 @@
 {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <nav class="fixed-top app-fixed-navbar bg-body-secondary">
     <div class="container-fluid global-nav">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-auto px-3 py-2 app-navigator-container">
                 <div id="appnavigator" class="app-switcher-container cursorPointer" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
                     <div class="app-navigator mx-auto dt-menu-button">
@@ -20,8 +20,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-auto ms-4 px-0 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$smarty.request.view}">
-                <div class="h-100 d-flex align-items-center fs-4">
+            <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$smarty.request.view}">
+                <div class="w-100 text-truncate text-nowrap fs-4 px-xs-3 ps-lg-3">
                     {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
                     {if $MODULE_MODEL->getDefaultViewName() neq 'List'}
                         {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
@@ -34,25 +34,18 @@
                             {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrlWithAllFilter()}
                         {/if}
                     {/if}
-                    <a class="module-title fs-3" title="{vtranslate($MODULE, $MODULE)}" href='{$DEFAULT_FILTER_URL}&app={$SELECTED_MENU_CATEGORY}'>
-                        {vtranslate($MODULE, $MODULE)}
-                    </a>
+                    {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                    {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
+                    {assign var=CUSTOM_VIEW_URL value=implode('', [$DEFAULT_FILTER_URL,'&app=',$SELECTED_MENU_CATEGORY])}
                     {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
                         {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
                     {/if}
                     {if isset($VIEWID) && $VIEWID}
-                        {foreach item=FILTER_TYPES from=$CUSTOM_VIEWS}
-                            {foreach item=FILTERS from=$FILTER_TYPES}
-                                {if $FILTERS->get('cvid') eq $VIEWID}
-                                    {assign var=CVNAME value=$FILTERS->get('viewname')}
-                                    {break}
-                                {/if}
-                            {/foreach}
-                        {/foreach}
-                        <span class="current-filter-slash d-inline px-2">/</span>
-                        <a class="current-filter-name filter-name cursorPointer" title="{$CVNAME}" href='{$MODULE_MODEL->getListViewUrl()}&viewname={$VIEWID}&app={$SELECTED_MENU_CATEGORY}'>{$CVNAME}</a>
+                        {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
                     {/if}
-                    {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                    <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>
+                        {$SINGLE_MODULE_LABEL}
+                    </a>
                     {if isset($RECORD) && $RECORD and $smarty.request.view eq 'Edit'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>

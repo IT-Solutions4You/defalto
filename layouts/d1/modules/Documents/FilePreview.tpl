@@ -10,19 +10,12 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="filePreview container-fluid">
-                <div class="modal-header row">
-                    <div class="filename {if $FILE_PREVIEW_NOT_SUPPORTED neq 'yes'} col-lg-8 {else} col-lg-11 {/if}">
-                        <h3 style="margin-top:0px;"><b>{$FILE_NAME}</b></h3>
-                    </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">{$FILE_NAME}</h5>
                     {if $FILE_PREVIEW_NOT_SUPPORTED neq 'yes'}
-                        <div class="col-lg-3">
-                            <a class="btn btn-default btn-small pull-right" href="{$DOWNLOAD_URL}">{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}</a>
-                        </div>
+                        <a class="btn btn-primary ms-auto" href="{$DOWNLOAD_URL}">{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}</a>
                     {/if}
-                    <div class="col-lg-1">
-                        <button data-bs-dismiss="modal" class="close pull-right" title="close">
-                            <span aria-hidden="true" class='fa fa-close'></span></button>
-                    </div>
+                    <button data-bs-dismiss="modal" class="ms-3 btn-close" title="close"></button>
                 </div>
                 <div class="modal-body row" style="height:550px;">
                     {if $FILE_PREVIEW_NOT_SUPPORTED eq 'yes'}
@@ -48,13 +41,13 @@
                                     {htmlentities($FILE_CONTENTS)}
                                 </pre>
                             </div>
-                        {else if $OPENDOCUMENT_FILE_TYPE eq 'yes'}
+                        {elseif $OPENDOCUMENT_FILE_TYPE eq 'yes'}
                             <iframe id="viewer" src="libraries/jquery/Viewer.js/#../../../{$DOWNLOAD_URL}" width="100%" height="100%" allowfullscreen webkitallowfullscreen></iframe>
-                        {else if $PDF_FILE_TYPE eq 'yes'}
+                        {elseif $PDF_FILE_TYPE eq 'yes'}
                             <iframe id='viewer' src="libraries/jquery/pdfjs/web/viewer.html?file={$SITE_URL}/{$DOWNLOAD_URL|escape:'url'}" height="100%" width="100%"></iframe>
-                        {else if $IMAGE_FILE_TYPE eq 'yes'}
+                        {elseif $IMAGE_FILE_TYPE eq 'yes'}
                             <div style="overflow:auto;height:100%;width:100%;float:left;background-image: url({$DOWNLOAD_URL});background-color: #EEEEEE;background-position: center 25%;background-repeat: no-repeat;display: block; background-size: contain;"></div>
-                        {else if $AUDIO_FILE_TYPE eq 'yes'}
+                        {elseif $AUDIO_FILE_TYPE eq 'yes'}
                             <div style="overflow:auto;height:100%;width:100%;float:left;background-color: #EEEEEE;background-position: center 25%;background-repeat: no-repeat;display: block;text-align: center;">
                                 <div style="display: inline-block;margin-top : 10%;">
                                     <audio controls>
@@ -62,7 +55,7 @@
                                     </audio>
                                 </div>
                             </div>
-                        {else if $VIDEO_FILE_TYPE eq 'yes'}
+                        {elseif $VIDEO_FILE_TYPE eq 'yes'}
                             <div style="overflow:auto;height:100%;">
                                 <link href="libraries/jquery/video-js/video-js.css" rel="stylesheet">
                                 <script src="libraries/jquery/video-js/video.js"></script>

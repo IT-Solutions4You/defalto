@@ -371,8 +371,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 		this.registerFileChangeEvent();
 		this.registerMultiUpload();
 		this.registerHoverEventOnAttachment();
-		//this.addBodyScroll();
-		this.modulesMenuScrollbar();
 		this.modulesMenuClearIconTitle();
 		Vtiger_Index_Js.registerActivityReminder();
 		//reference preview event registeration
@@ -987,9 +985,9 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 */
 	registerHoverEventOnAttachment: function () {
 		jQuery('body').on('mouseover', '.filePreview', function (e) {
-			jQuery(e.currentTarget).closest('div').find('a[name="downloadfile"] i').removeClass('hide').css('display','block');
+			jQuery(e.currentTarget).closest('div').find('a[name="downloadfile"]').removeClass('hide').css('display','block');
 		}).on('mouseout', '.filePreview', function (e) {
-			jQuery(e.currentTarget).closest('div').find('a[name="downloadfile"] i').addClass('hide');
+			jQuery(e.currentTarget).closest('div').find('a[name="downloadfile"]').addClass('hide');
 		});
 	},
 	/*

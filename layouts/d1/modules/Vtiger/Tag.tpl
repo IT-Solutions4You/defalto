@@ -7,14 +7,14 @@
  * All Rights Reserved.
  ************************************************************************************}
  {strip}
- <div class="tag btn mt-2 me-1 lh-base {if $ACTIVE eq true}btn-primary{else}text-primary bg-primary bg-opacity-10{/if}" title="{$TAG_MODEL->getName()}" data-cv-id="{$ALL_CUSTOM_VIEW_ID}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_MODEL->getId()}">
+ <div class="tag btn mb-1 me-1 lh-base {if 'Detail' eq $VIEW}text-secondary bg-secondary bg-opacity-10{elseif $ACTIVE eq true}btn-primary active{else}text-primary bg-primary bg-opacity-10{/if}" title="{$TAG_MODEL->getName()}" data-cv-id="{$ALL_CUSTOM_VIEW_ID}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_MODEL->getId()}">
     <i class="activeToggleIcon fa fa-tag"></i>
     <span class="tagLabel mx-2 display-inline-block textOverflowEllipsis" title="{$TAG_MODEL->getName()}">{$TAG_MODEL->getName()}</span>
     {if !$NO_EDIT}
         <i class="editTag fa fa-pencil"></i>
     {/if}
     {if !$NO_DELETE}
-        <i class="deleteTag fa fa-times"></i>
+        <i class="deleteTag fa fa-times ms-2"></i>
     {/if}
 </div>
 {/strip}

@@ -6,9 +6,14 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************}
-{* modules/Vtiger/views/Detail.php *}
-
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
-	{include file="DetailViewFullContents.tpl"|vtemplate_path:$MODULE}
+	<form id="detailView" class="clearfix" method="POST">
+		<div class="resizable-summary-view">
+			<div class="container-fluid">
+				<div class="row">
+					{include file='SummaryViewWidgets.tpl'|vtemplate_path:$MODULE_NAME}
+				</div>
+			</div>
+		</div>
+	</form>
 {/strip}
