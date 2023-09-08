@@ -2019,8 +2019,7 @@ Vtiger.Class("Vtiger_List_Js", {
 	},
 	registerMoreRecentUpdatesClickEvent: function (container, recordId) {
 		container.find('.moreRecentUpdates').on('click', function () {
-			var recentUpdateURL = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + app.getModuleName() + "&record=" + recordId + "&tab_label=LBL_UPDATES";
-			window.location.href = recentUpdateURL;
+			window.location.href = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + app.getModuleName() + "&record=" + recordId + "&tab_label=LBL_UPDATES";
 		});
 	},
 	registerNextRecordClickEvent: function (container) {

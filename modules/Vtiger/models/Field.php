@@ -1493,4 +1493,30 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isUniqueField() {
 		return $this->isunique;
 	}
+
+    public function isTableFullWidth(): bool
+    {
+        $fieldName = $this->getName();
+
+        if ('description' === $fieldName ||
+            in_array((int)$this->get('uitype'), [19, 69]) ||
+            in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isTableHalfWidth(): bool
+    {
+        $blockId = $this->getBlockId();
+        $blockInstance = Vtiger_Block_Model::getInstance($blockId, $this->getModuleInstance());
+
+        if ($blockInstance && 'LBL_ADDRESS_INFORMATION' === $blockInstance->get('label')) {
+            return true;
+        }
+
+        return false;
+    }
 }

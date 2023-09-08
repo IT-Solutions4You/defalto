@@ -1231,10 +1231,10 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 
 	registerMoreRecentUpdatesClickEvent: function (container, recordId) {
-		var moduleName = container.find('#sourceModuleName').val();
+		let moduleName = container.find('#sourceModuleName').val();
+
 		container.find('.moreRecentUpdates').on('click', function () {
-			var recentUpdateURL = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + moduleName + "&record=" + recordId + "&tab_label=LBL_UPDATES";
-			window.location.href = recentUpdateURL;
+			window.location.href = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + moduleName + "&record=" + recordId + "&tab_label=LBL_UPDATES";
 		});
 	},
 

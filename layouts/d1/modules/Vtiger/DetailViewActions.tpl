@@ -49,7 +49,7 @@
                     </button>
                 {/foreach}
             </div>
-            <div class="btn-group ms-auto me-2">
+            <div class="btn-group ms-auto">
                 {if !empty($DETAILVIEW_LINKS['DETAILVIEW']) && ($DETAILVIEW_LINKS['DETAILVIEW']|@count gt 0)}
                     <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
                         {vtranslate('LBL_MORE', $MODULE_NAME)}&nbsp;&nbsp;<i class="caret"></i>

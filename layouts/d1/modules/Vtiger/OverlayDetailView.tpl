@@ -6,7 +6,7 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-
+{strip}
 {foreach key=index item=jsModel from=$SCRIPTS}
     <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 {/foreach}
@@ -44,34 +44,31 @@
     </script>
 {/if}
 
-<div class='fc-overlay-modal overlayDetail'>
-    <div class = "modal-content">
-        <div class="overlayDetailHeader col-lg-12 col-md-12 col-sm-12" style="z-index:1;">
-            <div class="col-lg-10 col-md-10 col-sm-10" style = "padding-left:0px;">
-                {include file="DetailViewHeaderTitle.tpl"|vtemplate_path:$MODULE_NAME MODULE_MODEL=$MODULE_MODEL RECORD=$RECORD}
-            </div>
-            <div class = "col-lg-2 col-md-2 col-sm-2">
-                <div class="clearfix">
-                    <div class = "btn-group">
-                        <button class="btn btn-default fullDetailsButton" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">{vtranslate('LBL_DETAILS',$MODULE_NAME)}</button>
-						{foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWBASIC']}
-							{if $DETAIL_VIEW_BASIC_LINK && $DETAIL_VIEW_BASIC_LINK->getLabel() == 'LBL_EDIT'}
-								<button class="btn btn-default editRelatedRecord" value = "{$RECORD->getEditViewUrl()}">{vtranslate('LBL_EDIT',$MODULE_NAME)}</button>
-							{/if}
-						{/foreach}
-                    </div> 
-                    <div class="pull-right " >
-                        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
-                            <span aria-hidden="true" class='fa fa-close'></span>
-                        </button>
+<div class="fc-overlay-modal overlayDetail">
+    <div class="modal-content border-0">
+        <div class="overlayDetailHeader modal-header border-bottom">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-2 order-lg-2 text-end">
+                        <button class="btn btn-primary fullDetailsButton me-2" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">{vtranslate('LBL_DETAILS',$MODULE_NAME)}</button>
+                        {foreach item=DETAIL_VIEW_BASIC_LINK from=$DETAILVIEW_LINKS['DETAILVIEWBASIC']}
+                            {if $DETAIL_VIEW_BASIC_LINK && $DETAIL_VIEW_BASIC_LINK->getLabel() == 'LBL_EDIT'}
+                                <button class="btn btn-primary editRelatedRecord me-2" value="{$RECORD->getEditViewUrl()}">{vtranslate('LBL_EDIT',$MODULE_NAME)}</button>
+                            {/if}
+                        {/foreach}
+                        <button type="button" class="btn btn-close ms-4" aria-label="Close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="col-lg-10 order-lg-1">
+                        {include file="DetailViewHeaderTitle.tpl"|vtemplate_path:$MODULE_NAME MODULE_MODEL=$MODULE_MODEL RECORD=$RECORD IS_OVERLAY=true}
                     </div>
                 </div>
             </div>
         </div>
-        <div class='modal-body'>
-            <div class = "detailViewContainer">      
-                {include file='DetailViewFullContents.tpl'|@vtemplate_path:$MODULE_NAME RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE_NAME=$MODULE_NAME}
+        <div class="overlayDetailBody modal-body overflow-auto bg-body-secondary">
+            <div class="detailViewContainer">
+                {include file='DetailViewFullContents.tpl'|vtemplate_path:$MODULE_NAME RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE_NAME=$MODULE_NAME}
             </div>
         </div>
     </div>
 </div>
+{/strip}

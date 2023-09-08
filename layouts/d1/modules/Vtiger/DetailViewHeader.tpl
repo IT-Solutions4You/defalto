@@ -11,11 +11,9 @@
 -->*}
 {strip}
     <div class="detailview-header-block p-3 bg-white rounded">
-        <div class="detailview-header container-fluid">
-            <div class="row">
-                {include file='DetailViewHeaderTitle.tpl'|vtemplate_path:$MODULE}
-                {include file='DetailViewActions.tpl'|vtemplate_path:$MODULE}
-            </div>
+        <div class="detailview-header">
+            {include file='DetailViewHeaderTitle.tpl'|vtemplate_path:$MODULE}
+            {include file='DetailViewActions.tpl'|vtemplate_path:$MODULE}
         </div>
     </div>
 {/strip}

@@ -15,23 +15,29 @@ jQuery.Class("Vtiger_Field_Js",{
 	 * @param moduleName module for which Instance should be created
 	 * @return Instance of field class
 	 */
-	getInstance : function(data,moduleName){
-		if(typeof moduleName == 'undefined'){
-			var moduleName = app.getModuleName();
+	getInstance: function (data, moduleName) {
+		if (typeof moduleName == 'undefined') {
+			moduleName = app.getModuleName();
 		}
-		var moduleField = moduleName+"_Field_Js";
-		var moduleFieldObj = window[moduleField];
-		if (typeof moduleFieldObj != 'undefined'){
-			 var fieldClass = moduleFieldObj;
-		}else{
-			var fieldClass = Vtiger_Field_Js;
-		}
-		var fieldObj = new fieldClass();
 
-		if(typeof data == 'undefined'){
+		let moduleField = moduleName + "_Field_Js",
+			moduleFieldObj = window[moduleField],
+			fieldClass
+
+		if (typeof moduleFieldObj != 'undefined') {
+			fieldClass = moduleFieldObj;
+		} else {
+			fieldClass = Vtiger_Field_Js;
+		}
+
+		let fieldObj = new fieldClass();
+
+		if (typeof data == 'undefined') {
 			data = {};
 		}
+
 		fieldObj.setData(data);
+
 		return fieldObj;
 	}
 },{
@@ -187,41 +193,46 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 		return this.get('referencemodules');
 	},
 
-	getUi : function(){
-		var referenceModules = this.getReferenceModules();
-		var value = this.getValue();
-		var html = '<div class="';
-		if(value){
+	getUi: function () {
+		let referenceModules = this.getReferenceModules(),
+			value = this.getValue(),
+			html = '<div class="ReferenceField ';
+
+		if (value) {
 			html += ' selected';
 		} else {
 			html += '"';
 		}
+
 		html += '">';
-		html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
+		html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
 		html += '<div class="input-group ">'
-		html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="'+this.getName()+'"';
-		var reset = false;
-		if(value){
-			html += ' value="'+value+'" disabled="disabled"';
+		html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
+
+		let reset = false;
+
+		if (value) {
+			html += ' value="' + value + '" disabled="disabled"';
 			reset = true;
 		}
+
 		html += '/>';
 
-		if(reset){
+		if (reset) {
 			html += '<a href="#" class="input-group-text clearReferenceSelection"> X </a>';
-		}else {
+		} else {
 			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';
 		}
 		//popup search element
-		html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="'+referenceModules[0]+'">';
+		html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
 		html += '<i class="fa fa-search"></i>';
 		html += '</span>';
 
 		html += '</div>';
 		html += '</div>';
+
 		return this.addValidationToElement(html);
 	}
-
 });
 
 /** @var Vtiger_Picklist_Field_Js */
@@ -249,14 +260,14 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	 */
 	getUi: function () {
 		//added class inlinewidth
-		let html = '<select class="select2 inputElement inlinewidth" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">';
-		const pickListValues = this.getPickListValues();
-		const allPickListValues = this.getAllPickListValues();
-		const selectedOption = app.htmlDecode(this.getValue());
-		let selectedOptionfound = false;
-		const data = this.getData();
-		const picklistColors = data['picklistColors'];
-		const fieldName = this.getName();
+		let html = '<select class="PicklistField select2 inputElement inlinewidth" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+			pickListValues = this.getPickListValues(),
+			allPickListValues = this.getAllPickListValues(),
+			selectedOption = app.htmlDecode(this.getValue()),
+			selectedOptionfound = false,
+			data = this.getData(),
+			picklistColors = data['picklistColors'],
+			fieldName = this.getName();
 
 		if (typeof pickListValues[' '] === 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
 			html += '<option value="">' + app.vtranslate('JS_SELECT_OPTION') + '</option>';
@@ -277,6 +288,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 				html += ' selected ';
 				selectedOptionfound = true;
 			}
+
 			html += '>' + pickListValues[option] + '</option>';
 		}
 
@@ -305,6 +317,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 
 		const selectContainer = jQuery(html);
 		this.addValidationToElement(selectContainer);
+
 		return selectContainer;
 	}
 });
@@ -326,28 +339,33 @@ Vtiger_Field_Js('Vtiger_Documentsfolder_Field_Js',{},{
 	 */
 	getUi : function() {
 		//added class inlinewidth
-		var html = '<select class="select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
-		var pickListValues = this.getPickListValues();
-		var selectedOption = app.htmlDecode(this.getValue());
+		let html = '<select class="DocumentsFolderField select2 inputElement inlinewidth" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+			pickListValues = this.getPickListValues(),
+			selectedOption = app.htmlDecode(this.getValue());
 
-		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] != 'Select an Option') {
+		if(typeof pickListValues[' '] == 'undefined' || pickListValues[' '].length <= 0 || pickListValues[' '] !== 'Select an Option') {
 			html += '<option value="">'+app.vtranslate('JS_SELECT_OPTION')+'</option>';
 		}
 
-		var data = this.getData();
+		let data = this.getData(),
+			fieldName = this.getName();
 
-		var fieldName = this.getName();
 		for(var option in pickListValues) {
 			html += '<option value="'+option+'" ';
+
 			if(option == selectedOption) {
 				html += ' selected ';
 			}
+
 			html += '>'+pickListValues[option]+'</option>';
 		}
+
 		html +='</select>';
 
-		var selectContainer = jQuery(html);
+		let selectContainer = jQuery(html);
+
 		this.addValidationToElement(selectContainer);
+
 		return selectContainer;
 	}
 });
@@ -368,14 +386,14 @@ Vtiger_Field_Js('Vtiger_Currencylist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi: function () {
-		let html = '<select class="select2 inputElement form-control" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+		let html = '<select class="CurrencyListField select2 inputElement form-control" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			currencyLists = this.getCurrencyList(),
 			selectedOption = app.htmlDecode(this.getValue());
 
 		for (let option in currencyLists) {
 			html += '<option value="' + option + '" ';
 
-			if (option == selectedOption) {
+			if (option === selectedOption) {
 				html += ' selected ';
 			}
 
@@ -415,47 +433,55 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi : function() {
-		var html = '<select class="select2 inputElement" multiple name="'+ this.getName() +'[]" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
-		var pickListValues = this.getPickListValues();
-		var selectedOption = app.htmlDecode(this.getValue());
-		var selectedOptionsArray = this.getSelectedOptions(selectedOption);
+		let html = '<select class="MultiPicklistField select2 inputElement" multiple name="'+ this.getName() +'[]" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+			pickListValues = this.getPickListValues(),
+			selectedOption = app.htmlDecode(this.getValue()),
+			selectedOptionsArray = this.getSelectedOptions(selectedOption),
+			data = this.getData(),
+			picklistColors = data['picklistColors'],
+			fieldName = this.getName(),
+			option
 
-		var data = this.getData();
-		var picklistColors = data['picklistColors'];
-
-		var fieldName = this.getName();
-		for(var option in pickListValues) {
-			html += '<option value="'+option+'" ';
+		for (option in pickListValues) {
+			html += '<option value="' + option + '" ';
 
 			if (picklistColors) {
-				var className = '';
+				let className = '';
+
 				if (picklistColors[option]) {
-					className = 'picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-					html += 'class="'+className+'"';
+					className = 'picklistColor_' + fieldName + '_' + option.replace(' ', '_');
+					html += 'class="' + className + '"';
 				}
 			}
 
-			if(jQuery.inArray(option,selectedOptionsArray) != -1){
+			if (jQuery.inArray(option, selectedOptionsArray) !== -1) {
 				html += ' selected ';
 			}
-			html += '>'+pickListValues[option]+'</option>';
+
+			html += '>' + pickListValues[option] + '</option>';
 		}
+
 		html +='</select>';
 
 		if (picklistColors) {
-			html +='<style type="text/css">';
-			for(option in picklistColors) {
-				var picklistColor = picklistColors[option];
+			html += '<style type="text/css">';
+
+			for (option in picklistColors) {
+				let picklistColor = picklistColors[option];
+
 				if (picklistColor) {
-					className = '.picklistColor_'+fieldName+'_'+option.replace(' ', '_');
-					html += className+'{background-color: '+picklistColor+' !important;}';
+					className = '.picklistColor_' + fieldName + '_' + option.replace(' ', '_');
+					html += className + '{background-color: ' + picklistColor + ' !important;}';
 				}
 			}
-			html +='<\style>';
+
+			html += '<\style>';
 		}
 
-		var selectContainer = jQuery(html);
+		let selectContainer = jQuery(html);
+
 		this.addValidationToElement(selectContainer);
+
 		return selectContainer;
 	}
 });
@@ -480,11 +506,14 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js',{},{
 	 * @return - checkbox element
 	 */
 	getUi : function() {
-		var	html = '<input type="hidden" name="'+this.getName() +'" value="0"/><input class="inputElement" type="checkbox" name="'+ this.getName() +'" ';
+		let	html = '<div class="input-group-text"><input type="hidden" name="'+this.getName() +'" value="0"/><input class="BooleanField inputElement form-check-input m-0" type="checkbox" name="'+ this.getName() +'" ';
+
 		if(this.isChecked()) {
 			html += 'checked';
 		}
-		html += ' />'
+
+		html += ' /></div>';
+
 		return this.addValidationToElement(html);
 	}
 });
@@ -505,7 +534,7 @@ Vtiger_Field_Js('Vtiger_Date_Field_Js',{},{
 	 */
 	getUi: function () {
 		//wrappig with another div for consistency
-		let html = '<div class=""><div class="input-group date">' +
+		let html = '<div class="DateField"><div class="input-group date">' +
 				'<input class="inputElement dateField form-control" type="text" data-rule-date="true" data-format="' + this.getDateFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
 				'<span class="input-group-addon input-group-text"><i class="fa fa-calendar"></i></span>' +
 				'</div></div>',
@@ -527,7 +556,7 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 
 	getUi: function () {
 		//wrappig with another div for consistency
-		let html = '<div class=""><div class="input-group">' +
+		let html = '<div class="CurrencyField"><div class="input-group">' +
 				'<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
 				'<input class="inputElement form-control" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
 				'</div></div>',
@@ -544,15 +573,17 @@ Vtiger_Field_Js('Vtiger_Owner_Field_Js',{},{
 	 * Function to get the picklist values
 	 */
 	getPickListValues : function() {
-            var pickListValues = this.get('editablepicklistvalues');
-            if (pickListValues == ''){
+            let pickListValues = this.get('editablepicklistvalues');
+
+            if (pickListValues === ''){
                 pickListValues = this.get('picklistvalues');
             }
+
             return pickListValues;
 	},
 
 	getUi : function() {
-		var html = '<select class="select2 inputElement" multiple name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
+		var html = '<select class="OwnerField select2 inputElement" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
 		var pickListValues = this.getPickListValues();
 		var selectedOption = this.getValue();
 		for(var optGroup in pickListValues){
@@ -595,10 +626,10 @@ Vtiger_Field_Js('Vtiger_Time_Field_Js',{},{
 	 * @return - input text field
 	 */
 	getUi: function () {
-		let html = '<div class="">' + '<div class="input-group time">' +
+		let html = '<div class="TimeField"><div class="input-group time">' +
 				'<input class="timepicker-default form-control inputElement" type="text" data-format="' + this.getTimeFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
 				'<span class="input-group-addon input-group-text"><i class="fa fa-clock-o"></i></span>' +
-				'</div>' + '</div>',
+				'</div></div>',
 			element = jQuery(html);
 
 		return this.addValidationToElement(element);
@@ -613,8 +644,9 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 	 * @return - input text field
 	 */
 	getUi : function() {
-		var html = '<textarea class="input-xxlarge form-control inputElement" name="'+ this.getName() +'" value="'+ this.getValue() + '" >'+ this.getValue() + '</textarea>';
-		var element = jQuery(html);
+		let html = '<textarea class="TextField input-xxlarge form-control inputElement" name="'+ this.getName() +'" value="'+ this.getValue() + '" >'+ this.getValue() + '</textarea>',
+			element = jQuery(html);
+
 		return this.addValidationToElement(element);
 	}
 });
@@ -627,11 +659,12 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * @return - input percentage field
 	 */
 	getUi : function() {
-		var html = '<div class="input-group percentage-input-group">'+
+		let html = '<div class="PercentageField input-group percentage-input-group">'+
 						'<input type="text" class="form-control inputElement percentage-input-element" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
 						'<span class="input-group-addon">%</span>'+
-					'</div>';
-		var element = jQuery(html);
+					'</div>',
+			element = jQuery(html);
+
 		return this.addValidationToElement(element);
 	}
 });
@@ -652,19 +685,25 @@ Vtiger_Field_Js('Vtiger_Recurrence_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi : function() {
-		var html = '<select class="select2 inputElement" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
-		var pickListValues = this.getPickListValues();
-		var selectedOption = app.htmlDecode(this.getValue());
-		for(var option in pickListValues) {
+		let html = '<select class="RecurrenceField select2 inputElement" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+			pickListValues = this.getPickListValues(),
+			selectedOption = app.htmlDecode(this.getValue()),
+			option;
+
+		for(option in pickListValues) {
 			html += '<option value="'+option+'" ';
-			if(option == selectedOption) {
+
+			if(option === selectedOption) {
 				html += ' selected ';
 			}
+
 			html += '>'+pickListValues[option]+'</option>';
 		}
+
 		html +='</select>';
-		var selectContainer = jQuery(html);
+		let selectContainer = jQuery(html);
 		this.addValidationToElement(selectContainer);
+
 		return selectContainer;
 	}
 });
@@ -677,7 +716,7 @@ Vtiger_Field_Js('Vtiger_Email_Field_Js', {}, {
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi: function () {
-		let html = '<input class="getPopupUi form-control inputElement" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-email="true" data-rule-illegal="true"/>';
+		let html = '<input class="EmailField getPopupUi form-control inputElement" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-email="true" data-rule-illegal="true"/>';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
 
 		this.addValidationToElement(html);
@@ -694,7 +733,8 @@ Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
 	getUi : function() {
-		var html = '';
+		let html = '';
+
 		return jQuery(html);
 	}
 });
@@ -702,8 +742,9 @@ Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
 /** @var Vtiger_Integer_Field_Js */
 Vtiger_Field_Js('Vtiger_Integer_Field_Js', {}, {
 	getUi: function () {
-		let html = '<input class="form-control inputElement" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
+		let html = '<input class="IntegerField form-control inputElement" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
+
 		return this.addValidationToElement(html);
 	}
 });

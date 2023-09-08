@@ -368,12 +368,6 @@ jQuery.Class("Vtiger_Helper_Js",{
             overlayPageContent.addClass('full-width');
         }
 
-        let alreadyShown = false;
-
-        if (overlayPageContent.hasClass('in')) {
-            alreadyShown = true;
-        }
-
         overlayPageContent.one('shown.bs.modal', function () {
             aDeferred.resolve($('#overlayPageContent'));
         });
@@ -388,7 +382,7 @@ jQuery.Class("Vtiger_Helper_Js",{
         overlayPageContent.modal(params);
         overlayPageContent.modal('show');
 
-        if (alreadyShown) {
+        if (overlayPageContent.hasClass('in') || overlayPageContent.hasClass('show')) {
             aDeferred.resolve(jQuery('#overlayPageContent'));
         }
 

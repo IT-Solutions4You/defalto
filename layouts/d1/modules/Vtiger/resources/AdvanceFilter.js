@@ -694,7 +694,7 @@ Vtiger_Currencylist_Field_Js('AdvanceFilter_Currencylist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi: function () {
-		let html = '<select class="select2 inputElement form-control" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+		let html = '<select class="CurrencyListField select2 inputElement form-control" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			currencyLists = this.getCurrencyList(),
 			selectedOption = app.htmlDecode(this.getValue());
 
@@ -756,7 +756,7 @@ Vtiger_Picklist_Field_Js('AdvanceFilter_Picklist_Field_Js',{},{
 		let comparatorSelectedOptionVal = this.get('comparatorElementVal');
 
 		if (comparatorSelectedOptionVal === 'e' || comparatorSelectedOptionVal === 'n') {
-			let html = '<select class="select2 inputElement form-control" multiple name="' + this.getName() + '[]">' + this.getOptions() + '</select>';
+			let html = '<select class="PicklistField select2 inputElement form-control" multiple name="' + this.getName() + '[]">' + this.getOptions() + '</select>';
 
 			let selectContainer = jQuery(html);
 
@@ -876,9 +876,9 @@ Vtiger_Owner_Field_Js('AdvanceFilter_Owner_Field_Js',{},{
 			html = '';
 
 		if (comparatorSelectedOptionVal === 'e' || comparatorSelectedOptionVal === 'n') {
-			html = '<select class="select2 inputElement form-control row-fluid" multiple name="' + this.getName() + '[]">' + this.getOptions() + '</select>';
+			html = '<select class="OwnerField select2 inputElement form-control row-fluid" multiple name="' + this.getName() + '[]">' + this.getOptions() + '</select>';
 		} else {
-			html = '<select class="row-fluid col-lg-12 select2" data-tags="true" data-multiple="true" multiple type="hidden"  name="' + this.getName() + '">' + this.getOptions() + '</select>';
+			html = '<select class="OwnerField row-fluid col-lg-12 select2" data-tags="true" data-multiple="true" multiple type="hidden"  name="' + this.getName() + '">' + this.getOptions() + '</select>';
 		}
 
 		let selectContainer = jQuery(html);
@@ -893,7 +893,7 @@ Vtiger_Owner_Field_Js('AdvanceFilter_Owner_Field_Js',{},{
 /** @var Vtiger_Ownergroup_Field_Js */
 Vtiger_Owner_Field_Js('Vtiger_Ownergroup_Field_Js',{},{
 	getUi: function () {
-		let html = '<select class="select2 inputElement form-control" name="' + this.getName() + '" multiple id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+		let html = '<select class="OwnerGroupField select2 inputElement form-control" name="' + this.getName() + '" multiple id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			pickListValues = this.getPickListValues(),
 			selectedOption = this.getValue(),
 			selectedOptionsArray = selectedOption.split(',');

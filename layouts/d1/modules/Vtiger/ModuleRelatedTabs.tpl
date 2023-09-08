@@ -7,7 +7,7 @@
 * All Rights Reserved.
 *************************************************************************************}
 {strip}
-    <div class='related-tabs col-lg-3 col-xl-2 order-2'>
+    <div class='related-tabs col-lg-3 col-xl-2 order-2 pt-3'>
         <div class="bg-white rounded h-100 px-3">
             <ul class="nav nav-pills flex-column py-3">
                 {foreach item=RELATED_LINK from=$DETAILVIEW_LINKS['DETAILVIEWTAB']}

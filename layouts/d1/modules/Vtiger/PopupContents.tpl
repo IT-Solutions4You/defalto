@@ -28,7 +28,7 @@
                 &nbsp;
             </div>
         </div>
-        <div class="popupEntriesDiv relatedContents">
+        <div class="popupEntriesDiv relatedContents rounded">
             <input type="hidden" value="{$ORDER_BY}" id="orderBy">
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
             {if $SOURCE_MODULE eq "Emails"}
@@ -37,52 +37,53 @@
                 {/if}
             {/if}
             {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
-            <div class="popupEntriesTableContainer {if $MODULE eq 'EmailTemplates'} emailTemplatesPopupTableContainer{/if}">
-                <table class="listview-table table table-bordered listViewEntriesTable">
-                <thead>
-                    <tr class="listViewHeaders">
-                        {if $MULTI_SELECT}
-                            <th class="{$WIDTHTYPE}">
-                                <input type="checkbox"  class="selectAllInCurrentPage" />
-                            </th>
-                        {elseif $MODULE neq 'EmailTemplates'}
-                            <th class="{$WIDTHTYPE}">&nbsp;</th>
-                        {/if}
-                        {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                        <th class="{$WIDTHTYPE}">
-                            <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues {if $LISTVIEW_HEADER->get('name') eq 'listprice'} noSorting {/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
-                                {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
-                                    <i class="fa {$FASORT_IMAGE}"></i>
-                                {else}
-                                    <i class="fa fa-sort customsort"></i>
-                                {/if}
-                                &nbsp;{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}&nbsp;
-                            </a>
-                        </th>
-                        {/foreach}
-                    </tr>
-                </thead>
+            <div class="popupEntriesTableContainer {if $MODULE eq 'EmailTemplates'}emailTemplatesPopupTableContainer{/if}">
+                <table class="listview-table table table-borderless listViewEntriesTable">
+                    <thead>
+                        <tr class="listViewHeaders bg-body-secondary">
+                            {if $MULTI_SELECT}
+                                <th class="{$WIDTHTYPE}">
+                                    <input type="checkbox" class="selectAllInCurrentPage" />
+                                </th>
+                            {elseif $MODULE neq 'EmailTemplates'}
+                                <th class="{$WIDTHTYPE}">&nbsp;</th>
+                            {/if}
+                            {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
+                                <th class="{$WIDTHTYPE}">
+                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues {if $LISTVIEW_HEADER->get('name') eq 'listprice'} noSorting {/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+                                        {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
+                                            <i class="fa {$FASORT_IMAGE}"></i>
+                                        {else}
+                                            <i class="fa fa-sort customsort"></i>
+                                        {/if}
+                                        <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}</span>
+                                    </a>
+                                </th>
+                            {/foreach}
+                        </tr>
+                    </thead>
                 {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
-                    <tr class="searchRow">
+                    <tr class="searchRow border-bottom">
                         <td class="textAlignCenter">
-                            <button class="btn btn-success" data-trigger="PopupListSearch">{vtranslate('LBL_SEARCH', $MODULE )}</button>
+                            <button class="btn text-secondary" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </td>
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-                            <td>
-                            {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                            {assign var=SEARCH_DETAILS_FIELD_INFO value=['searchValue' => '', 'comparator' => '']}
-                            {if isset($SEARCH_DETAILS[$LISTVIEW_HEADER->getName()])}
-                                {assign var=SEARCH_DETAILS_FIELD_INFO value=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()]}
-                            {/if}
-                            {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME)
-                            FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS_FIELD_INFO USER_MODEL=$CURRENT_USER_MODEL}
+                            <td class="text-secondary">
+                                {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
+                                {assign var=SEARCH_DETAILS_FIELD_INFO value=['searchValue' => '', 'comparator' => '']}
+                                {if isset($SEARCH_DETAILS[$LISTVIEW_HEADER->getName()])}
+                                    {assign var=SEARCH_DETAILS_FIELD_INFO value=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()]}
+                                {/if}
+                                {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS_FIELD_INFO USER_MODEL=$CURRENT_USER_MODEL}
                             </td>
                         {/foreach}
                     </tr>
                 {/if}
                 {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
                     {assign var="RECORD_DATA" value=$LISTVIEW_ENTRY->getRawData()}
-                    <tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}" {if $MODULE eq 'EmailTemplates'} data-name="{$RECORD_DATA['subject']}" data-info="{$LISTVIEW_ENTRY->get('body')}" {else} data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}' {/if}
+                    <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}" {if $MODULE eq 'EmailTemplates'} data-name="{$RECORD_DATA['subject']}" data-info="{$LISTVIEW_ENTRY->get('body')}" {else} data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}' {/if}
                     {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                     {if $MULTI_SELECT}
                         <td class="{$WIDTHTYPE}">

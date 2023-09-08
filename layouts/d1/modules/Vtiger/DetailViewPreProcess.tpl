@@ -16,7 +16,7 @@
     </div>
     </nav>
          <div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
-            <div class="data">
+            <div class="data h-100">
             </div>
             <div class="modal-dialog">
             </div>
@@ -27,7 +27,7 @@
             <div class="detailViewContainer viewContent col p-0">
                 <div class="content-area container-fluid px-0 pb-lg-4 px-lg-4">
                     {include file='DetailViewHeader.tpl'|vtemplate_path:$MODULE}
-                    <div class="detailview-content row pt-3">
+                    <div class="detailview-content row">
                         <input id="recordId" type="hidden" value="{$RECORD->getId()}" />
                         {include file="ModuleRelatedTabs.tpl"|vtemplate_path:$MODULE}
                         <div class="details col-lg-9 col-xl-10 order-1 px-0">

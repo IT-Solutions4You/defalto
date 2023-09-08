@@ -48,13 +48,18 @@
 		{if $MODULE eq 'Products'}<div id="MultiFile1_wrap_list" class="MultiFile-list"></div>{/if}
 
 		{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-			<div class="row" style="margin-top:5px;">
+			<div class="row mt-2">
 				{if !empty($IMAGE_INFO.url)}
 					<span class="col-lg-6" name="existingImages"><img src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" width="400" height="250" ></span>
-					<span class="col-lg-3">
+					<span class="col-lg-6">
 						<span class="row">
-							<span class="col-lg-11">[{$IMAGE_INFO.name}]</span>
-							<span class="col-lg-1"><input type="button" id="file_{$ITER}" value="{vtranslate('LBL_DELETE','Vtiger')}" class="imageDelete"></span>
+							<span class="col-lg">[{$IMAGE_INFO.name}]</span>
+							<span class="col-lg">
+								<button type="button" id="file_{$ITER}" class="btn btn-sm btn-secondary imageDelete">
+									<i class="fa fa-trash me-2"></i>
+									<span>{vtranslate('LBL_DELETE','Vtiger')}</span>
+								</button>
+							</span>
 						</span>
 					</span>
 				{/if}

@@ -8,30 +8,28 @@
 *************************************************************************************}
 
 {strip}
-	<div class="col-12">
-		<div class="clearfix record-header">
-			<div class="recordBasicInfo">
-				<div class="row">
-					<div class="col-lg-auto">
-						<span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
-							{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
-								{assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
-								{if $FIELD_MODEL->getPermissions()}
-									<span class="{$NAME_FIELD}">{trim($RECORD->get($NAME_FIELD))}</span>
-									&nbsp;
-								{/if}
-							{/foreach}
-						</span>
-					</div>
-					<div class="col-auto">
-						{include file='DetailViewTagList.tpl'|vtemplate_path:$MODULE}
-					</div>
-					<div class="col">
-						{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$MODULE}
-					</div>
+	<div class="record-header">
+		<div class="recordBasicInfo">
+			{if !$IS_OVERLAY}
+				<div class="pull-right">
+					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$MODULE}
 				</div>
-				{include file='DetailViewHeaderFieldsView.tpl'|vtemplate_path:$MODULE}
+			{/if}
+			<div class="recordHeaderTitle">
+				<span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
+					{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
+						{assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
+						{if $FIELD_MODEL->getPermissions()}
+							<span class="{$NAME_FIELD}">{trim($RECORD->get($NAME_FIELD))}</span>
+							&nbsp;
+						{/if}
+					{/foreach}
+				</span>
+				{if !$IS_OVERLAY}
+					{include file='DetailViewTagList.tpl'|vtemplate_path:$MODULE}
+				{/if}
 			</div>
+			{include file='DetailViewHeaderFieldsView.tpl'|vtemplate_path:$MODULE}
 		</div>
 	</div>
 {/strip}

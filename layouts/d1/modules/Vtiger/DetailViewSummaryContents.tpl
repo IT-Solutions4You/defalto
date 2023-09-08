@@ -7,7 +7,7 @@
  * All Rights Reserved.
  ************************************************************************************}
 {strip}
-	<form id="detailView" class="clearfix" method="POST">
+	<form id="detailView" class="clearfix mt-3" method="POST">
 		<div class="resizable-summary-view">
 			<div class="container-fluid">
 				<div class="row">

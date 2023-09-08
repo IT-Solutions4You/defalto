@@ -10,39 +10,5 @@
 ********************************************************************************/
 -->*}
 {strip}
-    <div class="col-sm-6 col-lg-6 col-md-6">
-        <div class="record-header clearfix">
-            <div class="recordImage bghelpdesk app-{$SELECTED_MENU_CATEGORY}">
-				<div class="name"><span><strong>{$MODULE_MODEL->getModuleIcon()}</strong></span></div>
-            </div>
-            <div class="recordBasicInfo">
-                <div class="info-row">
-                    <h4>
-                        <span class="recordLabel pushDown" title="{$RECORD->getName()}">
-                            {foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
-                                {assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
-                                {if $FIELD_MODEL->getPermissions()}
-                                    <span class="{$NAME_FIELD}">{$RECORD->get($NAME_FIELD)}</span>&nbsp;
-                                {/if}
-                            {/foreach}
-                        </span>
-                    </h4>
-                </div>
-                {include file="DetailViewHeaderFieldsView.tpl"|vtemplate_path:$MODULE}
-                {*
-                {assign var=PRIORITY value=$RECORD->get('ticketpriorities')}
-                {if !empty($PRIORITY)}
-                    <div class="info-row row">
-                         {assign var=FIELD_MODEL value=$MODULE_MODEL->getField('ticketpriorities')}
-                         <div class="col-lg-7 fieldLabel">
-                        <span class="muted" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {$RECORD->get('ticketpriorities')}"> 
-                        {$RECORD->getDisplayValue('ticketpriorities')}
-                         </span>
-                         </div>
-                    </div>
-                {/if}
-                *}
-            </div>
-        </div>
-    </div>
+    {include file="DetailViewHeaderTitle.tpl"|vtemplate_path:'Vtiger'}
 {/strip}

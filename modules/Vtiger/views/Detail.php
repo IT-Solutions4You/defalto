@@ -331,7 +331,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 			$detailViewLinkParams = array('MODULE'=>$moduleName, 'RECORD'=>$recordId);
 			$detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
 			$viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
-			return $viewer->view('OverlayDetailView.tpl', $moduleName);
+
+			return $viewer->view('OverlayDetailView.tpl', $moduleName, true);
 		} else {
 			return $viewer->view('DetailViewFullContents.tpl', $moduleName, true);
 		}

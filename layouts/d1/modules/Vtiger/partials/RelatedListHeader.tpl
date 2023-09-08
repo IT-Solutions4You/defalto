@@ -8,10 +8,10 @@
 *************************************************************************************}
 
 {strip}
-	<div class="relatedHeader">
-		<div class="btn-toolbar row">
-			<div class="col-lg-6 col-md-6 col-sm-6 btn-toolbar">
-				 {foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
+	<div class="relatedHeader p-3">
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6">
+				{foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
 					<div class="btn-group">
 						{assign var=DROPDOWNS value=$RELATED_LINK->get('linkdropdowns')}
 						{if !empty($DROPDOWNS) && (php7_count($DROPDOWNS) gt 0)}
@@ -33,7 +33,7 @@
 								{assign var=RELATED_MODULE_NAME value='Calendar'}
 							{/if}
 							{if $IS_SELECT_BUTTON || $IS_CREATE_PERMITTED}
-								<button type="button" module="{$RELATED_MODULE_NAME}" class="btn btn-default
+								<button type="button" module="{$RELATED_MODULE_NAME}" class="btn btn-outline-primary
 									{if $IS_SELECT_BUTTON eq true} selectRelation{else} addButton" name="addButton{/if}"
 									{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}" {/if}
 									{if ($RELATED_LINK->isPageLoadLink())}
@@ -45,16 +45,17 @@
 						{/if}
 					</div>
 				{/foreach}
-				&nbsp;
 			</div>
-			{assign var=CLASS_VIEW_ACTION value='relatedViewActions'}
-			{assign var=CLASS_VIEW_PAGING_INPUT value='relatedViewPagingInput'}
-			{assign var=CLASS_VIEW_PAGING_INPUT_SUBMIT value='relatedViewPagingInputSubmit'}
-			{assign var=CLASS_VIEW_BASIC_ACTION value='relatedViewBasicAction'}
-			{assign var=PAGING_MODEL value=$PAGING}
-			{assign var=RECORD_COUNT value=$RELATED_RECORDS|@count}
-			{assign var=PAGE_NUMBER value=$PAGING->get('page')}
-			{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+			<div class="col-lg-6 text-end">
+				{assign var=CLASS_VIEW_ACTION value='relatedViewActions'}
+				{assign var=CLASS_VIEW_PAGING_INPUT value='relatedViewPagingInput'}
+				{assign var=CLASS_VIEW_PAGING_INPUT_SUBMIT value='relatedViewPagingInputSubmit'}
+				{assign var=CLASS_VIEW_BASIC_ACTION value='relatedViewBasicAction'}
+				{assign var=PAGING_MODEL value=$PAGING}
+				{assign var=RECORD_COUNT value=$RELATED_RECORDS|@count}
+				{assign var=PAGE_NUMBER value=$PAGING->get('page')}
+				{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+			</div>
 		</div>
 	</div>
 {/strip}

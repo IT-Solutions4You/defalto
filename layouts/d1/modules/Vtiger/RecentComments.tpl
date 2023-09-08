@@ -24,7 +24,7 @@
 						</div>
 					</div>
 					<div class="col-auto">
-						<button class="btn btn-primary active detailViewSaveComment" type="button" data-mode="add">{vtranslate('LBL_POST', $MODULE_NAME)}</button>
+						<button class="btn btn-primary active detailViewSaveComment px-5" type="button" data-mode="add">{vtranslate('LBL_POST', $MODULE_NAME)}</button>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -34,11 +34,11 @@
 						</div>
 					{/if}
 					<div class="col-lg-6">
-						<div style="text-align: right;">
+						<div class="text-end">
 							{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
 								<div class="" style="margin: 7px 0;">
 									<label>
-										<input type="checkbox" id="is_private" style="margin:2px 0px -2px 0px" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}
+										<input type="checkbox" id="is_private" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}
 									</label>&nbsp;&nbsp;
 									<i class="fa fa-question-circle cursorPointer" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_INFO')}"></i>&nbsp;&nbsp;
 								</div>
@@ -95,9 +95,9 @@
 												{assign var=SINGULR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
 												{assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
 												<span class="text-secondary wordbreak me-2">
-													{vtranslate('LBL_ON','Vtiger')}&nbsp;
-													{vtranslate($SINGULR_MODULE,$COMMENT->get('module'))}&nbsp;
-													<a href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
+													<span class="me-2">{vtranslate('LBL_ON','Vtiger')}</span>
+													<span class="me-2">{vtranslate($SINGULR_MODULE,$COMMENT->get('module'))}</span>
+													<a class="fw-bold" href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
 														{$ENTITY_NAME[$COMMENT->get('related_to')]}
 													</a>
 												</span>

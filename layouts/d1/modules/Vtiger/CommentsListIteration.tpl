@@ -11,17 +11,16 @@
 -->*}
 {strip}
 {if !empty($CHILD_COMMENTS_MODEL)}
-<ul class="unstyled">
-	{foreach item=COMMENT from=$CHILD_COMMENTS_MODEL}
-		<li class="commentDetails" {if $COMMENT->get('is_private')}style="background: #fff9ea;"{/if}>
-            {include file='CommentThreadList.tpl'|@vtemplate_path COMMENT=$COMMENT}
-            {assign var=CHILD_COMMENTS value=$COMMENT->getChildComments()}
-            {if !empty($CHILD_COMMENTS)}
-                {include file='CommentsListIteration.tpl'|@vtemplate_path CHILD_COMMENTS_MODEL=$COMMENT->getChildComments()}
-            {/if}
-            </li>
-		<br>
-	{/foreach}
-</ul>
+	<ul class="unstyled">
+		{foreach item=COMMENT from=$CHILD_COMMENTS_MODEL}
+			<li class="commentDetails" {if $COMMENT->get('is_private')}style="background: #fff9ea;"{/if}>
+				{include file='CommentThreadList.tpl'|@vtemplate_path COMMENT=$COMMENT}
+				{assign var=CHILD_COMMENTS value=$COMMENT->getChildComments()}
+				{if !empty($CHILD_COMMENTS)}
+					{include file='CommentsListIteration.tpl'|@vtemplate_path CHILD_COMMENTS_MODEL=$COMMENT->getChildComments()}
+				{/if}
+			</li>
+		{/foreach}
+	</ul>
 {/if}
 {/strip}

@@ -1169,12 +1169,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var fieldObject = Vtiger_Field_Js.getInstance(fieldInfo);
 			var fieldModel = fieldObject.getUiTypeModel();
 
-			var ele = jQuery('<div class="input-group editElement"></div>');
+			var ele = jQuery('<div class="input-group editElement w-100"></div>');
 			var actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
 			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
 			ele.append(fieldModel.getUi()).append(actionButtons);
-			ele.find('.inputElement').addClass('form-control');
+			ele.find('.inputElement');
 			editElement.append(ele);
 		}
 
@@ -1601,48 +1601,51 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		return aDeferred.promise();
 	},
 
-	registerBlockAnimationEvent : function(){
-		var detailContentsHolder = this.getContentHolder();
-		detailContentsHolder.on('click','.blockToggle',function(e){
-			var currentTarget =  jQuery(e.currentTarget);
-			var blockId = currentTarget.data('id');
-			var closestBlock = currentTarget.parents('.block');
-			var bodyContents = closestBlock.find('.blockData table tbody');
-			var data = currentTarget.data();
-			var module = app.getModuleName();
-			var hideHandler = function() {
-				bodyContents.hide('slow');
-				app.storage.set(module+'.'+blockId, 0);
-			}
-			var showHandler = function() {
-				bodyContents.removeClass('hide').show();
-				app.storage.set(module+'.'+blockId, 1);
-			}
-			if(data.mode == 'show'){
+	registerBlockAnimationEvent: function () {
+		let detailContentsHolder = this.getContentHolder();
+
+		detailContentsHolder.on('click', '.blockToggle', function (e) {
+			let currentTarget = jQuery(e.currentTarget),
+				blockId = currentTarget.data('id'),
+				closestBlock = currentTarget.parents('.block'),
+				bodyContents = closestBlock.find('.blockData'),
+				data = currentTarget.data(),
+				module = app.getModuleName(),
+				hideHandler = function () {
+					bodyContents.hide();
+					app.storage.set(module + '.' + blockId, 0);
+				},
+				showHandler = function () {
+					bodyContents.removeClass('hide').show();
+					app.storage.set(module + '.' + blockId, 1);
+				};
+
+			if (data.mode == 'show') {
 				hideHandler();
 				currentTarget.hide();
 				closestBlock.find("[data-mode='hide']").removeClass('hide').show();
-			}else{
+			} else {
 				showHandler();
 				currentTarget.hide();
 				closestBlock.find("[data-mode='show']").removeClass('hide').show();
 			}
 		});
-
 	},
 
-	registerBlockStatusCheckOnLoad : function(){
-		var blocks = this.getContentHolder().find('.block');
-		var module = app.getModuleName();
-		blocks.each(function(index,block){
-			var currentBlock = jQuery(block);
-			var headerAnimationElement = currentBlock.find('.blockToggle').not('.hide');
-			var bodyContents = currentBlock.find('.blockData table tbody');
-			var blockId = headerAnimationElement.data('id');
-			var cacheKey = module+'.'+blockId;
-			var value = app.storage.get(cacheKey);
-			if(value != null){
-				if(value == 1){
+	registerBlockStatusCheckOnLoad: function () {
+		let blocks = this.getContentHolder().find('.block'),
+			module = app.getModuleName();
+
+		blocks.each(function (index, block) {
+			let currentBlock = jQuery(block),
+				headerAnimationElement = currentBlock.find('.blockToggle').not('.hide'),
+				bodyContents = currentBlock.find('.blockData'),
+				blockId = headerAnimationElement.data('id'),
+				cacheKey = module + '.' + blockId,
+				value = app.storage.get(cacheKey);
+
+			if (value != null) {
+				if (value === 1) {
 					headerAnimationElement.hide();
 					currentBlock.find("[data-mode='show']").removeClass('hide').show();
 					bodyContents.removeClass('hide').show();
@@ -1652,7 +1655,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					bodyContents.hide();
 				}
 			} else {
-				if(bodyContents.hasClass("hide")) {
+				if (bodyContents.hasClass("hide")) {
 					headerAnimationElement.hide();
 					currentBlock.find("[data-mode='hide']").show();
 					bodyContents.hide();
@@ -2581,7 +2584,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						params['displayMode'] = 'overlay';
 						var parentRecordId = app.getRecordId();
 						app.helper.showProgress();
-						app.request.get({data: params}).then(function(err, response) {
+						app.request.post({data: params}).then(function(err, response) {
 							app.helper.hideProgress();
 							var overlayParams = {'backdrop' : 'static', 'keyboard' : false};
 							app.helper.loadPageContentOverlay(response, overlayParams).then(function(container) {
@@ -2625,14 +2628,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 
-	showOverlayEditView: function(recordUrl) {
-		var self = this;
-			var params = app.convertUrlToDataParams(recordUrl);
-			params['displayMode'] = 'overlay';
-		var postData = self.getDefaultParams();
-		for (var key in postData) {
+	showOverlayEditView: function (recordUrl) {
+		let self = this,
+			params = app.convertUrlToDataParams(recordUrl);
+
+		params['displayMode'] = 'overlay';
+
+		let postData = self.getDefaultParams(),
+			key;
+
+		for (key in postData) {
 			if (postData[key]) {
-				if (key == 'relatedModule') {
+				if (key === 'relatedModule') {
 					params['returnrelatedModuleName'] = postData[key];
 				} else {
 					params['return' + key] = postData[key];
@@ -2642,43 +2649,49 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				delete postData[key];
 			}
 		}
-		params['returnrecord'] = jQuery('[name="record_id"]').val();
-			app.helper.showProgress();
-		app.request.get({data: params}).then(function(err, response) {
-				app.helper.hideProgress();
-				var overlayParams = {'backdrop': 'static', 'keyboard': false};
-				app.helper.loadPageContentOverlay(response, overlayParams).then(function(container) {
-				var height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80;
 
-					var scrollParams = {
+		params['returnrecord'] = jQuery('[name="record_id"]').val();
+
+		app.helper.showProgress();
+		app.request.get({data: params}).then(function (err, response) {
+			app.helper.hideProgress();
+			let overlayParams = {'backdrop': 'static', 'keyboard': false};
+
+			app.helper.loadPageContentOverlay(response, overlayParams).then(function (container) {
+				let height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80,
+					scrollParams = {
 						setHeight: height,
 						alwaysShowScrollbar: 2,
 						autoExpandScrollbar: true,
 						setTop: 0,
-							scrollInertia: 70
+						scrollInertia: 70
 					}
-					app.helper.showVerticalScroll(jQuery('.editViewContents'), scrollParams);
-					self.registerOverlayEditEvents(params.module, container);
-					self.registerRelatedRecordSave();
-					app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
-				});
+
+				app.helper.showVerticalScroll(jQuery('.modal-body'), scrollParams);
+				self.registerOverlayEditEvents(params.module, container);
+				self.registerRelatedRecordSave();
+				app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
 			});
+		});
 	},
-	registerOverlayEditEvent: function() {
-		var self = this;
-		jQuery('.editRelatedRecord').on('click', function() {
-			var editUrl = jQuery('.editRelatedRecord').val();
+	registerOverlayEditEvent: function () {
+		let self = this;
+
+		jQuery('.editRelatedRecord').on('click', function () {
+			let editUrl = jQuery('.editRelatedRecord').val();
 			self.showOverlayEditView(editUrl);
-			});
+		});
 	},
 
 	registerRelatedRecordEdit: function(){
-		var self = this;
-		var detailViewContainer = this.getContentHolder();
+		let self = this,
+			detailViewContainer = this.getContentHolder();
+
 		detailViewContainer.on('click', 'a[name="relationEdit"]', function(e) {
 			e.stopImmediatePropagation();
-			var element = jQuery(e.currentTarget);
-			var editUrl = element.data('url');
+			let element = jQuery(e.currentTarget),
+				editUrl = element.data('url');
+
 			self.showOverlayEditView(editUrl);
 		});
 	},
@@ -2805,19 +2818,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 		detailContentsHolder.on('click','.moreRecentUpdates', function() {
 			app.helper.showProgress();
-			var currentPage = jQuery("#updatesCurrentPage").val();
-			var recordId = jQuery("#recordId").val();
-			var nextPage = parseInt(currentPage) + 1;
-			var url = "index.php?module=" + app.getModuleName() + "&view=Detail&record=" + recordId + "&mode=showRecentActivities&page=" 
-					  + nextPage + "&limit=5&tab_label=LBL_UPDATES";
-			var postParams  = app.convertUrlToDataParams(url);
+			let currentPage = jQuery("#updatesCurrentPage").val(),
+				recordId = jQuery("#recordId").val(),
+				nextPage = parseInt(currentPage) + 1,
+				url = 'index.php?module=' + app.getModuleName() + '&view=Detail&record=' + recordId + '&mode=showRecentActivities&page=' + nextPage + '&limit=5&tab_label=LBL_UPDATES',
+				postParams  = app.convertUrlToDataParams(url);
 
 			app.request.post({data:postParams}).then(function(err,data){
-				jQuery("#updatesCurrentPage").remove();
-				jQuery("#moreLink").remove();
-				jQuery("#more_button").remove();
+				jQuery('#updatesCurrentPage').remove();
+				jQuery('#moreLink').remove();
+				jQuery('#more_button').remove();
 				data = jQuery(data).removeClass("recentActivitiesContainer");
-				jQuery('#updates').append(data);
+				jQuery('#updates .history').append($(data).find('.history').html());
 				app.helper.hideProgress();
 			});
 

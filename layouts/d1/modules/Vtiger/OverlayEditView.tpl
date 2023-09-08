@@ -11,13 +11,11 @@
     <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 {/foreach}
 
-<div class='fc-overlay-modal modal-content overlayEdit'>
-    <div class="overlayHeader">
-        {assign var=TITLE value="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}"} 
+<form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
+    <div class="fc-overlay-modal modal-content overlayEdit border-0">
+        {assign var=TITLE value="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}"}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE}
-    </div>
-    <form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
-        <div class='modal-body editViewBody'>
+        <div class="modal-body editViewBody bg-body-secondary overflow-auto">
             <div class="editViewContents">
                 {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
                 {assign var=QUALIFIED_MODULE_NAME value={$MODULE}}
@@ -58,13 +56,9 @@
                 {include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
             </div>
         </div>
-        <div class='modal-footer overlayFooter'>
-            <center>
-                <footer>
-                    <button class="btn btn-success saveButton" type="submit">Save</button>
-                    <a class="cancelLink" data-bs-dismiss="modal" type="reset">Cancel</a>
-                </footer>
-            </center>
+        <div class='modal-footer overlayFooter d-flex justify-content-between'>
+            <a class="btn btn-primary close" data-bs-dismiss="modal" type="reset">Cancel</a>
+            <button class="btn btn-primary active saveButton" type="submit">Save</button>
         </div>
-    </form>
-</div>
+    </div>
+</form>

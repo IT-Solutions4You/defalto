@@ -9,22 +9,25 @@
 
 {strip}
 <form id="headerForm" method="POST">
-    <div class="row align-items-center">
+    <div class="row align-items-center mt-3">
         {assign var=FIELDS_MODELS_LIST value=$MODULE_MODEL->getFields()}
         {foreach item=FIELD_MODEL from=$FIELDS_MODELS_LIST}
             {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}
-            {assign var=FIELD_NAME value={$FIELD_MODEL->getName()}}
+            {assign var=FIELD_NAME value=$FIELD_MODEL->getName()}
             {if $FIELD_MODEL->isHeaderField() && $FIELD_MODEL->isActiveField() && $FIELD_MODEL->isViewable()}
                 {if $ADD_SLASH}
                     <div class="col-auto fs-5 text-secondary d-none d-lg-inline-block">/</div>
                 {/if}
                 {assign var=ADD_SLASH value=true}
-                {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get({$FIELD_NAME}))}
-                <div class="col-lg-auto mt-3 headerAjaxEdit td">
+                {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
+                <div class="col-lg-auto headerAjaxEdit td">
                     <div class="fieldLabel">
+                        <div class="row text-secondary fieldName">
+                            <div class="col-auto">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
+                        </div>
                         <div class="row">
                             {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
-                            <div class="col-auto value {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
+                            <div class="col-auto value fw-semibold {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
                             {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq 'true' && $IS_AJAX_ENABLED eq 'true'}
@@ -41,9 +44,6 @@
                                     </span>
                                 </div>
                             {/if}
-                        </div>
-                        <div class="text-secondary fieldName">
-                            {vtranslate($FIELD_MODEL->get('label'),$MODULE)}
                         </div>
                     </div>
                 </div>

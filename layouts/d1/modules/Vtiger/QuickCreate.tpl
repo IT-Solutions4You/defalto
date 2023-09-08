@@ -64,13 +64,11 @@
                                                     {if !empty($REFERENCED_MODULE_STRUCT)}
                                                         {assign var="REFERENCED_MODULE_NAME" value=$REFERENCED_MODULE_STRUCT->get('name')}
                                                     {/if}
-                                                    <span class="pull-right">
-                                                        <select style="width:150px;" class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
-                                                            {foreach key=index item=value from=$referenceList}
-                                                                <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
-                                                            {/foreach}
-                                                        </select>
-                                                    </span>
+                                                    <select class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
+                                                        {foreach key=index item=value from=$referenceList}
+                                                            <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
+                                                        {/foreach}
+                                                    </select>
                                                 {else}
                                                     <label class="muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
                                                 {/if}
@@ -102,17 +100,23 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <center>
-                        {if $BUTTON_NAME neq null}
-                            {assign var=BUTTON_LABEL value=$BUTTON_NAME}
-                        {else}
-                            {assign var=BUTTON_LABEL value={vtranslate('LBL_SAVE', $MODULE)}}
-                        {/if}
-                        {assign var="EDIT_VIEW_URL" value=$MODULE_MODEL->getCreateRecordUrl()}
-                        <button class="btn btn-default" id="goToFullForm" data-edit-view-url="{$EDIT_VIEW_URL}" type="button"><strong>{vtranslate('LBL_GO_TO_FULL_FORM', $MODULE)}</strong></button>
-                        <button {if $BUTTON_ID neq null} id="{$BUTTON_ID}" {/if} class="btn btn-success" type="submit" name="saveButton"><strong>{$BUTTON_LABEL}</strong></button>
-                        <a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                    </center>
+                    <div class="container-fluid">
+                        <div class="d-flex">
+                            <div class="col-6">
+                                <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                            </div>
+                            <div class="col-6 text-end">
+                                {if $BUTTON_NAME neq null}
+                                    {assign var=BUTTON_LABEL value=$BUTTON_NAME}
+                                {else}
+                                    {assign var=BUTTON_LABEL value={vtranslate('LBL_SAVE', $MODULE)}}
+                                {/if}
+                                {assign var="EDIT_VIEW_URL" value=$MODULE_MODEL->getCreateRecordUrl()}
+                                <button class="btn btn-primary me-2" id="goToFullForm" data-edit-view-url="{$EDIT_VIEW_URL}" type="button"><strong>{vtranslate('LBL_GO_TO_FULL_FORM', $MODULE)}</strong></button>
+                                <button {if $BUTTON_ID neq null} id="{$BUTTON_ID}" {/if} class="btn btn-primary active" type="submit" name="saveButton"><strong>{$BUTTON_LABEL}</strong></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>

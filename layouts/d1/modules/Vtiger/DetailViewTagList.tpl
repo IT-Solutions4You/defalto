@@ -6,22 +6,22 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************}
-<div class="containerDetailViewTagList">
-    <div class="tagContainer">
-        <div class="tag-contents d-inline-block {if empty($TAGS_LIST)}hide{/if}">
-            <div class="detailTagList" data-num-of-tags-to-show="{Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL}">
+<div class="containerDetailViewTagList d-inline">
+    <div class="tagContainer d-inline">
+        <span class="tag-contents {if empty($TAGS_LIST)}hide{/if}">
+            <span class="detailTagList" data-num-of-tags-to-show="{Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL}">
                 {foreach from=$TAGS_LIST item=TAG_MODEL name=tagCounter}
                     {assign var=TAG_LABEL value=$TAG_MODEL->getName()}
                     {include file="Tag.tpl"|vtemplate_path:$MODULE}
                 {/foreach}
-            </div>
-        </div>
-        <div id="addTagContainer" class="d-inline-block">
+            </span>
+        </span>
+        <span id="addTagContainer">
             <a id="addTagTriggerer" class="btn btn-outline-primary mb-1 me-1">
                 <i class="fa fa-plus"></i>
                 {vtranslate('LBL_ADD_NEW_TAG',$MODULE)}
             </a>
-        </div>
+        </span>
         <div class="viewAllTagsContainer hide">
             <div class="modal-dialog">
                 <div class="modal-content">

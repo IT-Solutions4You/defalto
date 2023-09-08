@@ -1,3 +1,16 @@
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Lato/Lato-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/Lato/Lato-Bold.ttf') format('truetype');
+}
 :root {
   --menu-width: 6rem;
   --menu-bg: white;
@@ -6,6 +19,7 @@
   --footer-height: 2rem;
   --header-height: 5rem;
   --main-height: calc(100vh - var(--footer-height) - var(--header-height));
+  --menu-height: var(--main-height);
   --menu-icon-color: rgba(94, 129, 244, 1);
   --menu-icon-background: rgba(94, 129, 244, 0.1);
   --header-font-size: 1.6rem;
@@ -50,6 +64,60 @@
   --bs-btn-hover-bg: #fff;
   --bs-btn-hover-border-color: #9ab0f8;
 }
+.btn-success {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #7CE7AC;
+  --bs-btn-border-color: #7CE7AC;
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #7CE7AC;
+  --bs-btn-hover-border-color: #7CE7AC;
+
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #7CE7AC;
+  --bs-btn-active-border-color: #7CE7AC;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #7CE7AC;
+  --bs-btn-disabled-border-color: #7CE7AC;
+}
+.btn-danger {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #FF808B;
+  --bs-btn-border-color: #FF808B;
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #FF808B;
+  --bs-btn-hover-border-color: #FF808B;
+
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #FF808B;
+  --bs-btn-active-border-color: #FF808B;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #FF808B;
+  --bs-btn-disabled-border-color: #FF808B;
+}
+.btn-alert {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #F4BE5E;
+  --bs-btn-border-color: #F4BE5E;
+
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #F4BE5E;
+  --bs-btn-hover-border-color: #F4BE5E;
+
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #F4BE5E;
+  --bs-btn-active-border-color: #F4BE5E;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #F4BE5E;
+  --bs-btn-disabled-border-color: #F4BE5E;
+}
 .nav-pills .nav-link.active {
   --bs-nav-pills-link-active-bg: #eff3fe
 }
@@ -63,53 +131,11 @@
 .dropdown-menu {
   --bs-dropdown-zindex: 1002;
 }
-
-@font-face {
-  font-family: 'Oswald';
-  src: url('../fonts/Oswald/Oswald-Regular/Oswald-Regular.eot');
-  /* IE9 Compat Modes */
-  src: url('../fonts/Oswald/Oswald-Regular/Oswald-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Oswald/Oswald-Regular/Oswald-Regular.woff') format('woff'), /* Pretty Modern Browsers */ url('../fonts/Oswald/Oswald-Regular/Oswald-Regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Oswald/Oswald-Regular/Oswald-Regular.svg#Oswald') format('svg');
-  /* Legacy iOS */
-  font-weight: normal;
-  font-style: normal;
-  text-rendering: optimizeLegibility;
-}
 *:focus,
 *:active,
 a:focus,
 a:active {
   outline: none;
-}
-@font-face {
-  font-family: 'OpenSans-Regular';
-  src: url('../fonts/OpenSans/Regular/OpenSans-Regular.eot');
-  /* IE9 Compat Modes */
-  src: url('../fonts/OpenSans/Regular/OpenSans-Regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/OpenSans/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/OpenSans/Regular/OpenSans-Regular.woff2') format('woff2'), /* Super Modern Browsers */ url('../fonts/OpenSans/Regular/OpenSans-Regular.woff') format('woff'), /* Pretty Modern Browsers */ url('../fonts/OpenSans/Regular/OpenSans-Regular.svg#svgFontName') format('svg');
-  /* Legacy iOS */
-}
-@font-face {
-  font-family: 'ProximaNova-Regular';
-  src: url('../fonts/ProximanovaWebfont/ProximaNova-Regular.ttf') format('truetype'), url('../fonts/ProximanovaWebfont/ProximaNova-Regular.woff') format('woff'), /* Pretty Modern Browsers */ url('../fonts/ProximanovaWebfont/ProximaNova-Regular.eot?#iefix') format('embedded-opentype');
-  /* IE6-IE8 */
-  /* Safari, Android, iOS */
-  font-style: normal;
-  font-weight: normal;
-  text-rendering: optimizeLegibility;
-}
-@font-face {
-  font-family: 'ProximaNova-Semibold';
-  src: url('../fonts/ProximanovaWebfont/ProximaNova-Semibold.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/ProximanovaWebfont/ProximaNova-Semibold.woff') format('woff'), /* Pretty Modern Browsers */ url('../fonts/ProximanovaWebfont/ProximaNova-Semibold.eot?#iefix') format('embedded-opentype');
-  /* IE6-IE8 */
-  font-style: normal;
-  font-weight: normal;
-  text-rendering: optimizeLegibility;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: normal;
-  src: url('../fonts/Lato/Lato-Regular.ttf') format('truetype');
-  text-rendering: optimizeLegibility;
 }
 /**********************************/
 /************ Layout **************/
@@ -148,9 +174,6 @@ body {
   padding-top: var(--header-height);
   height: inherit;
 }
-.select2-container .select2-choice {
-  font-family: 'OpenSans-Regular', sans-serif;
-}
 .app-fixed-navbar {
   border-bottom: 0;
   margin-bottom: 0;
@@ -168,14 +191,9 @@ body {
   margin-bottom: 0;
 }
 .main-container {
-  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  min-height: var(--main-height);
 }
-.main-container:before,
-.main-container:after {
-  content: " ";
-  display: block;
-  clear: both;
-}
+
 @media (min-width: 992px) {
   .global-nav .logo-container {
     display: inline-block;
@@ -202,6 +220,7 @@ body {
   }
   .main-container .moduleNavigatorContainer {
     width: var(--menu-width);
+    min-height: var(--menu-height);
   }
   .main-container .sidebar-essentials {
     z-index: 1;
@@ -710,7 +729,6 @@ a.menu-item:hover {
   padding-left: var(--menu-width);
 }
 .input-group-addon-save {
-  background: #32A082;
   width: auto;
 }
 .input-group-addon-cancel {
@@ -735,8 +753,6 @@ a.menu-item:hover {
   overflow-x: auto !important;
 }
 .fieldValue .value {
-  max-width: 85%;
-  display: inline-block;
   word-break: break-word;
 }
 .modal-header button.close {
@@ -791,7 +807,7 @@ a {
   vertical-align: middle;
   white-space: nowrap;
 }
-.listViewContentHeader th {
+.listViewContentHeader th, .listViewHeaders th {
   background: transparent;
 }
 #convertLeadContainer .inputElement,
@@ -1428,23 +1444,8 @@ input[type=checkbox]:checked {
 .detailViewModNavigator .modules-menu {
   width: var(--menu-width);
 }
-strong,
-b,
-th {
-  font-family: 'ProximaNova-Semibold', sans-serif;
-  font-weight: normal;
-}
-.detailview-table {
-  table-layout: fixed;
-}
 .detailViewInfo .fieldLabel {
   text-align: right;
-}
-.detailview-table .fieldLabel {
-  width: 20%;
-}
-.detailview-table .fieldValue {
-  width: 30%;
 }
 #detailView .fieldValue .action {
   display: none;
@@ -1493,9 +1494,6 @@ th {
   margin-top: 3%;
   margin-right: 2%;
 }
-.overlayDetailHeader button.btn {
-  margin: 0px 1px !important;
-}
 .input-save-wrap {
   float: left;
   display: table-cell;
@@ -1510,9 +1508,6 @@ th {
 .summaryView .referencefield-wrapper .input-group.time,
 .summaryView .referencefield-wrapper .input-group.date {
   min-width: 120px;
-}
-.record-header {
-  min-height: 80px;
 }
 .record-header .recordImage {
   float: left;
@@ -1628,16 +1623,6 @@ th {
 .quickPreviewModuleHeader .recordImage [class^="vicon-"] {
   font-size: 35px;
 }
-.detailViewContainer .block {
-  background: #FFFFFF;
-  border: 1px solid #eee;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-width: thin;
-}
-.detailViewContainer .block hr {
-  margin: 10px 0;
-}
 .editViewContainer .block {
   background: #FFFFFF;
   border: 1px solid #eee;
@@ -1651,15 +1636,6 @@ th {
   display: inline-block;
   word-break: break-all;
   line-height: 1.5em;
-}
-.fc-overlay-modal {
-  top: auto !important;
-  bottom: 0;
-  right: 0;
-  left: auto;
-  border: 1px solid #DDDDDD;
-  box-shadow: none;
-  background: white;
 }
 .table-borderless tbody td,
 .table-borderless tbody th {
@@ -1707,8 +1683,9 @@ th {
 .overlay-container-300 {
   margin-left: 230px ;
 }
-.overlayPageContent {
-  background: #FFFFFF;
+
+.overlayPageContent .modal-content {
+  height: calc(100vh - var(--header-height));
 }
 .overlayPageContent.fade {
   top: 70vh;
@@ -1732,12 +1709,7 @@ th {
   z-index: 1099;
 }
 .overlayFooter {
-  position: fixed;
-  bottom: 0;
-  background: #eeeeee;
-  width: 100%;
   height: var(--header-height);
-  right: 0;
 }
 .contentsOverLayFooter {
   width: 76%;
@@ -1746,34 +1718,8 @@ th {
   margin-left: 285px;
   text-align: left;
 }
-.saveButton {
-  font-size: 14px;
-  color: white;
-  padding: 7px 25px;
-}
-.cancelLink,
-.popoverCancel {
-  font-size: 14px;
-  padding-left: 10px;
-  color: red;
-}
-.modal-overlay-footer a:hover {
-  color: red;
-}
 .cancel-x-small {
   font-size: 12px;
-}
-.detailview-content .commentsRelatedContainer .commentTitle {
-  border: 1px solid #CCC;
-  padding: 20px;
-}
-.detailview-content .commentsRelatedContainer textarea {
-  width: 100%;
-  height: 73px;
-  resize: none;
-}
-.detailview-content .commentsRelatedContainer .commentTextArea {
-  padding-bottom: 10px;
 }
 /**********************************
 **********Summary View Styles******
@@ -1835,10 +1781,6 @@ th {
 .summaryWidgetContainer .noContent {
   padding: 10px;
 }
-.summaryView .fieldValue .value {
-  max-width: 80%;
-  width: auto !important;
-}
 .caseReplyArea .nav > li {
   padding: 0 10px;
 }
@@ -1879,19 +1821,8 @@ th {
 .editViewContents .fieldBlockContainer .input-group .input-group-addon + input {
   width: 100%;
 }
-.editViewContents .fieldLabel {
-  min-width: 100px;
-  width: 20%;
-  word-break: break-all;
-}
-.editViewContents .fieldValue {
-  width: 30%;
-}
 .editViewContents td.fieldValue[colspan="3"] {
   width: 80%;
-}
-.editViewContents textarea.textAreaElement {
-  width: 88%;
 }
 .editViewContents input[type="checkbox"],
 .editViewContents input[type="radio"] {
@@ -1908,10 +1839,6 @@ th {
   resize: vertical;
   padding-left: 5px;
   padding-top: 5px;
-}
-.fieldBlockHeader {
-  margin-top: 0;
-  color: #596875;
 }
 .referencefield-wrapper .select2-container-multi {
   height: auto !important;
@@ -1939,23 +1866,6 @@ th {
 .textSearchNextPageButton > i {
   font-size: 1.5em;
 }
-#EditView .editViewBody {
-  position: relative;
-  width: auto;
-  margin-top: 15px;
-  margin-bottom: 2%;
-}
-#EditView .editViewBody .editViewContents {
-  margin-bottom: 0px;
-}
-#EditView .editViewFooter {
-  position: fixed;
-  bottom: 0%;
-  width: 100%;
-  background-color: #EEEEEE;
-  z-index: 1000;
-  padding: 7px;
-}
 /**********************************
 **********Advance Search styles**********
 **********************************/
@@ -1974,7 +1884,7 @@ th {
   transition: all 1s ease;
 }
 .p-xy-8 {
-    padding: 8px !important;
+  padding: 8px !important;
 }
 #advanceSearchHolder {
   max-height: 0px;
@@ -2168,26 +2078,6 @@ th {
 .relatedContents .listViewEntries:hover .actions {
   opacity: 1;
 }
-.relatedViewActions #PageJumpDropDown {
-  margin-left: -5px;
-  font-size: 10px;
-  width: 50px;
-}
-.relatedViewBasicAction .relatedViewPagingInput {
-  width: 69px;
-  padding: 0px 5px;
-  vertical-align: middle;
-  height: 22px;
-  margin-top: -2px;
-  font-size: 12px;
-}
-.relatedViewBasicAction .relatedViewPagingInputSubmit {
-  padding: 1px;
-  margin-left: -4px;
-  font-size: 9px;
-  width: 14%;
-  margin-top: -2px;
-}
 .relatedViewActions .btn-group {
   margin-right: 15px;
 }
@@ -2240,9 +2130,6 @@ th {
 .cursorDefault {
   cursor: default;
 }
-.modal-body {
-  background: white;
-}
 .greenColor {
   color: #2ECC71;
 }
@@ -2255,7 +2142,6 @@ th {
   margin: 0;
   padding: 0 20px 0 0;
   display: inline-block;
-  font-family: sans-serif;
   position: relative;
   width: 100%;
 }
@@ -2861,10 +2747,6 @@ th {
   opacity: 1;
   /* background:@ModulemanagerSettingshover; */
 }
-#OutgoingMoretable td,
-th {
-  padding: 6px;
-}
 /*******************************************
 ********** CustomerPortal styles start ********
 ********************************************/
@@ -3049,11 +2931,6 @@ th {
   margin: 5px 0;
   font-size: 15px;
   color: #000000;
-}
-.overlayDetailHeader {
-  padding-left: 0px;
-  padding-bottom: 10px;
-  padding-top: 10px;
 }
 .quickPreviewModuleHeader {
   padding-right: 6px;
@@ -3787,9 +3664,6 @@ form[name="notification_settings"] .select2-choice {
 /*******************************************
 ********** Mailroom view styles end ********
 ********************************************/
-.detailview-header {
-  margin-bottom: 10px;
-}
 .tag .tagLabel {
   max-width: 80px;
   vertical-align: bottom;
@@ -4192,10 +4066,6 @@ hr {
 .input-select-addon {
   background: none;
   border: 0;
-}
-.editViewBody .editViewContents {
-  max-height: 100%;
-  padding-bottom: 50px;
 }
 .help-inline {
   padding: 5px;
@@ -4738,7 +4608,7 @@ hr {
   width: 75%;
 }
 .width100per{
-    width: 100% !important;
+  width: 100% !important;
 }
 #_mbox_pwd {
   padding: 3px 8px;
@@ -5190,11 +5060,6 @@ div.tooltip-inner {
   border: 1px solid #eee;
   border-width: thin;
 }
-.detailViewContainer .commentContainer .commentTitle.row,
-.detailViewContainer .commentContainer .showcomments {
-  background: #FFFFFF;
-  border-color: #eee;
-}
 .detailViewTwitterImage {
   position: absolute;
   top: -60px;
@@ -5241,8 +5106,8 @@ div.tooltip-inner {
 }
 #detailView .detailview-table .input-group.editElement,
 .calendar-timezone .input-group.editElement {
-    width: auto;
-    display: inline-flex;
+  width: auto;
+  display: inline-flex;
 }
 .summaryViewEntries .input-group.editElement {
   width: auto;
@@ -5251,11 +5116,8 @@ div.tooltip-inner {
 .summaryView .summaryViewFields .input-group {
   line-height: 0;
 }
-.editViewContents .fieldValue .referencefield-wrapper {
-  display: inline-block;
-}
 .fieldValueWidth80{
-    width:80% !important;
+  width:80% !important;
 }
 .addCalendarEventContents .input-group {
   float: left;
@@ -5264,10 +5126,6 @@ div.tooltip-inner {
 .summaryViewEntries .inputElement.form-control,
 .detailview-table .inputElement.form-control {
   max-width: 300px;
-}
-.detailview-table input[type="checkbox"] {
-  width: 13px !important;
-  margin-top: 8px;
 }
 .detailview-table .input-group-addon + .inputElement.form-control,
 .detailview-table .inputElement.form-control.input-medium {
@@ -5389,31 +5247,6 @@ div.tooltip-inner {
   left: 10px;
   float: right;
 }
-.overlayDetail .modal-content {
-  position: absolute;
-  height: 100%;
-  padding: 10px;
-  background: #f9f9f9;
-}
-.overlayDetail .overlayDetailHeader {
-  background: white;
-}
-.overlayDetail .modal-body {
-  height: 82%;
-  overflow: auto;
-  background: #f9f9f9;
-  padding-left: 0px;
-  padding-right: 1px;
-}
-.overlayDetail .modal-body .left-block,
-.overlayDetail .modal-body .middle-block {
-  padding-left: 0px;
-  padding-right: 7px;
-}
-.overlayDetail .modal-body .right-block {
-  padding-left: 0px;
-  padding-right: 0px;
-}
 .uploadview-content .inputElement.select2,
 #uploadToDriveContainer .inputElement.select2 {
   width: 170px;
@@ -5521,13 +5354,6 @@ div.tooltip-inner {
   position: absolute;
   height: 100%;
   width: 100%;
-}
-.overlayEdit form .modal-body {
-  padding-left: 10px;
-  padding-right: 0px;
-  background: #f9f9f9;
-  height: 574px;
-  overflow: auto;
 }
 .select2-container.select2-container-multi.select2,
 .editViewPageDiv .select2-container.select2-container-multi.select2 {
@@ -5692,7 +5518,6 @@ li.select2-search-choice div {
 }
 .related-list-actions {
   width: 100px;
-  padding-left: 15px ! important;
 }
 .fa-star.active {
   color: #FFC600;
@@ -6000,9 +5825,6 @@ a.btnReport:hover {
   width: 100%;
   min-width: 800px;
 }
-.popupEntriesTableContainer .listview-table {
-  width: 100%;
-}
 #searchResults-container .moduleResults-container .essentials-toggle {
   display: none;
 }
@@ -6012,9 +5834,6 @@ a.btnReport:hover {
 .MultiFile-wrap {
   display: inline-block;
   margin-right: 3px;
-}
-.commentContainer .detailViewSaveComment {
-  width: 102px;
 }
 .socialContainer .socialBlock {
   padding: 10px 5px;
@@ -6517,7 +6336,6 @@ input:focus:-ms-input-placeholder {
   color: var(--menu-icon-color);
 }
 .menu-item .custom-module {
-  font-family: 'OpenSans-Regular', sans-serif;
   font-size: 12px;
   border-radius: 4px;
   padding: 2px;
@@ -6585,9 +6403,6 @@ body .fc {
 }
 .rounded0 {
   border-radius: 0;
-}
-.bg-white {
-  background: #FFFFFF;
 }
 .nav-tabs {
   border-bottom: 0;
@@ -6705,12 +6520,6 @@ body .fc {
   }
   #comment1 {
     border-left-color: #ccc;
-  }
-  .editViewContents .fieldLabel {
-    padding-top: 20px;
-  }
-  .quickCreateContent .fieldLabel {
-    padding-top: 20px;
   }
   .floatThead-floatContainer {
     margin-left: 1px;
@@ -6984,28 +6793,31 @@ a.btnReport:hover {
   overflow: auto;
 }
 #vt-mask{
-    border: 0;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    display: inline-flex;
-    left: 0;
-    top: 0;
-    min-height: 100%;
-    min-width: 100%;
-    height: auto;
-    width: auto;
-    opacity: 0;
-    z-index: 10001;
-    background-color: #fff;
- }
- .fieldBlockContainer .inputElement.textAreaElement {
-    max-width:none;
-    width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: inline-flex;
+  left: 0;
+  top: 0;
+  min-height: 100%;
+  min-width: 100%;
+  height: auto;
+  width: auto;
+  opacity: 0;
+  z-index: 10001;
+  background-color: #fff;
+}
+.fieldBlockContainer .inputElement.textAreaElement {
+  max-width:none;
+  width: 100%;
 }
 
 .detailview-table textarea.inputElement.form-control {
-    max-width:none;
-    width: 90%;
+  max-width:none;
+  width: 90%;
+}
+.text-break-all {
+  word-break: break-all;
 }
 /*# sourceMappingURL=style.css.map */
