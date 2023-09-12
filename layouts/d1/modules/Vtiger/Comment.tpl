@@ -29,33 +29,35 @@
                 </div>
                 <div class="col">
                     <div class="comment">
-                        <span class="creatorName fw-bold me-2">
-                            {$CREATOR_NAME}
-                        </span>
-                        {if $ROLLUP_STATUS and $COMMENT->get('module') ne $MODULE_NAME}
-                            {assign var=SINGULR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
-                            {assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
-                            <span class="text-secondary">
-                                <span class="me-2">{vtranslate('LBL_ON','Vtiger')}</span>
-                                <span class="me-2">{vtranslate($SINGULR_MODULE, $COMMENT->get('module'))}</span>
-                                <a class="me-2" href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
-                                    {$ENTITY_NAME[$COMMENT->get('related_to')]}
-                                </a>
+                        <div>
+                            <span class="creatorName fw-bold me-2">
+                                {$CREATOR_NAME}
                             </span>
-                        {/if}
-                        <span class="commentTime text-secondary cursorDefault">
-                            <span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
-                        </span>
-                        {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
-                            <span>
-                                {if $COMMENT->get('is_private')}
-                                    <i class="fa fa-lock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
-                                {else}
-                                    <i class="fa fa-unlock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
-                                {/if}
+                            {if $ROLLUP_STATUS and $COMMENT->get('module') ne $MODULE_NAME}
+                                {assign var=SINGULR_MODULE value='SINGLE_'|cat:$COMMENT->get('module')}
+                                {assign var=ENTITY_NAME value=getEntityName($COMMENT->get('module'), array($COMMENT->get('related_to')))}
+                                <span class="text-secondary">
+                                    <span class="me-2">{vtranslate('LBL_ON','Vtiger')}</span>
+                                    <span class="me-2">{vtranslate($SINGULR_MODULE, $COMMENT->get('module'))}</span>
+                                    <a class="me-2" href="index.php?module={$COMMENT->get('module')}&view=Detail&record={$COMMENT->get('related_to')}">
+                                        {$ENTITY_NAME[$COMMENT->get('related_to')]}
+                                    </a>
+                                </span>
+                            {/if}
+                            <span class="commentTime text-secondary cursorDefault">
+                                <span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
                             </span>
-                        {/if}
-                        <div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5">
+                            {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
+                                <span>
+                                    {if $COMMENT->get('is_private')}
+                                        <i class="fa fa-lock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+                                    {else}
+                                        <i class="fa fa-unlock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+                                    {/if}
+                                </span>
+                            {/if}
+                        </div>
+                        <div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
                             <span class="commentInfoContent">
                                 {nl2br($COMMENT->get('commentcontent'))}
                             </span>
@@ -65,13 +67,13 @@
                                 {if !empty($FILE_NAME)}
                                     <div class="row-fluid text-secondary my-2">
                                         <div class="span11 commentAttachmentName">
-                                            <span class="filePreview">
+                                            <span class="filePreview d-flex text-secondary">
                                                 <a onclick="Vtiger_Detail_Js.previewFile(event,{$COMMENT->get('id')},{$FILE_DETAIL['attachmentId']});" data-filename="{$FILE_NAME}" href="javascript:void(0)" name="viewfile">
                                                     <i class="fa fa-paperclip me-2"></i>
                                                     <span title="{$FILE_DETAIL['rawFileName']}" style="line-height:1.5em;">{$FILE_NAME}</span>&nbsp
                                                 </a>&nbsp;
-                                                <a name="downloadfile" href="{$FILE_DETAIL['url']}">
-                                                    <i title="{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}" class="hide fa fa-download alignMiddle"></i>
+                                                <a name="downloadfile" class="hide" href="{$FILE_DETAIL['url']}">
+                                                    <i title="{vtranslate('LBL_DOWNLOAD_FILE',$MODULE_NAME)}" class="fa fa-download alignMiddle"></i>
                                                 </a>
                                             </span>
                                         </div>
@@ -80,23 +82,17 @@
                             {/foreach}
                             {assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
                             {if $COMMENT->getCommentedTime() neq $COMMENT->getModifiedTime()}
-                                <div class="commentEditStatus text-secondary" name="editStatus">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            {assign var=REASON_TO_EDIT value=$COMMENT->get('reasontoedit')}
-                                            {if $REASON_TO_EDIT}
-                                                <small>
-                                                    <span>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)}</span>
-                                                    <span class="me-2">:</span>
-                                                    <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span>
-                                                </small>
-                                            {/if}
-                                        </div>
-                                        <div class="col-lg-6 text-end">
-                                            <small>{vtranslate('LBL_COMMENT',$MODULE_NAME)} {strtolower(vtranslate('LBL_MODIFIED',$MODULE_NAME))}</small>
-                                            <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime ms-2">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small>
-                                        </div>
-                                    </div>
+                                <div class="row commentEditStatus text-secondary" name="editStatus">
+                                    {assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
+                                    {if $REASON_TO_EDIT}
+                                        <span class="text-secondary col-lg-6 text-nowrap">
+                                            <small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small>
+                                        </span>
+                                    {/if}
+                                    <span {if $REASON_TO_EDIT}class="text-end col-6 text-nowrap"{/if}>
+                                        <small class="me-2">{vtranslate('LBL_COMMENT',$MODULE_NAME)} {strtolower(vtranslate('LBL_MODIFIED',$MODULE_NAME))}</small>
+                                        <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small>
+                                    </span>
                                 </div>
                             {/if}
                         </div>

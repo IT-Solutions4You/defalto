@@ -35,7 +35,7 @@
                             <div class="col-lg-9 col-sm-12 col-md-8 ">
                                 <div class="currentTag multiLevelTagList form-control">
                                     {foreach item=TAG_MODEL from=$TAGS_LIST}
-                                        {include file="Tag.tpl"|vtemplate_path:$MODULE }
+                                        {include file=vtemplate_path('Tag.tpl',$MODULE) NO_EDIT=true}
                                     {/foreach}
                                 </div>
                            </div>
@@ -48,7 +48,7 @@
     </div>
     <div id="dummyTagElement" class="hide">
     {assign var=TAG_MODEL value=Vtiger_Tag_Model::getCleanInstance()}
-    {include file="Tag.tpl"|vtemplate_path:$MODULE}
+    {include file=vtemplate_path('Tag.tpl',$MODULE)}
     </div>
     <div>
         <div class="editTagContainer hide" >
@@ -62,7 +62,7 @@
                         <label>
                             <input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
                             <input type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" />
-                            &nbsp; {vtranslate('LBL_SHARE_TAG',$MODULE)}
+                            <span class="ms-2">{vtranslate('LBL_SHARE_TAG',$MODULE)}</span>
                         </label>
                     </div>
                 </div>

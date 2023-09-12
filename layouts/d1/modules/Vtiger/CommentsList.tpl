@@ -43,8 +43,8 @@
 		{/if}
 	</ul>
 {else}
-	<div class="noCommentsMsgContainer" style='padding:20px;'>
-		<p class="textAlignCenter">{vtranslate('LBL_NO_COMMENTS',$MODULE_NAME)}</p>	
+	<div class="noCommentsMsgContainer p-3 my-3">
+		<p class="text-center">{vtranslate('LBL_NO_COMMENTS',$MODULE_NAME)}</p>
 	</div>
 {/if}
 {/strip}

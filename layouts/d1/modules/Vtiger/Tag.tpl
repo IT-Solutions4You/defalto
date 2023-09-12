@@ -11,7 +11,7 @@
     <i class="activeToggleIcon fa fa-tag"></i>
     <span class="tagLabel mx-2 display-inline-block textOverflowEllipsis" title="{$TAG_MODEL->getName()}">{$TAG_MODEL->getName()}</span>
     {if !$NO_EDIT}
-        <i class="editTag fa fa-pencil"></i>
+        <i class="editTag fa fa-pencil me-2"></i>
     {/if}
     {if !$NO_DELETE}
         <i class="deleteTag fa fa-times ms-2"></i>

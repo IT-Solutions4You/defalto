@@ -1189,29 +1189,33 @@ Vtiger.Class("Vtiger_List_Js", {
 		var isOwnerChanged = false;
 		app.event.on('post.listViewMassEdit.loaded', function (e, container) {
 			app.event.trigger('post.listViewInlineEdit.click', container);
-			var offset = container.find('.modal-body .datacontent').offset();
-			var viewPortHeight = $(window).height() - 60;
 
-			var params = {
-				setHeight: (viewPortHeight - offset['top']) + 'px'
-			};
+			let offset = container.find('.modal-body').offset(),
+				viewPortHeight = $(window).height() - 60,
+				params = {
+					setHeight: (viewPortHeight - offset['top']) + 'px'
+				};
 
 			container.find('[name="assigned_user_id"]').on('click', function() {
 				isOwnerChanged = true;
 			});
-			app.helper.showVerticalScroll(container.find('.modal-body .datacontent'), params);
-			var editInstance = Vtiger_Edit_Js.getInstance();
+
+			app.helper.showVerticalScroll(container.find('.modal-body'), params);
+			let editInstance = Vtiger_Edit_Js.getInstance();
 			editInstance.registerBasicEvents(container);
-			var form_original_data = $("#massEdit").serialize();
-			$('#massEdit').on('submit', function (event) {
+
+			let formElement = $("#massEdit"),
+				form_original_data = formElement.serialize();
+
+			formElement.on('submit', function (event) {
 				thisInstance.saveMassEdit(event, form_original_data, isOwnerChanged);
 				isOwnerChanged = false;
 			});
 
 			thisInstance.registerAutoIncludeFieldsInMassEdit();
 
-			app.helper.registerLeavePageWithoutSubmit($("#massEdit"));
-			app.helper.registerModalDismissWithoutSubmit($("#massEdit"));
+			app.helper.registerLeavePageWithoutSubmit(formElement);
+			app.helper.registerModalDismissWithoutSubmit(formElement);
 		});
 
 		app.event.on('post.listViewMassAction.loaded', function (e, container) {
@@ -2766,7 +2770,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			let selectElement = container.find('#custom_views'),
 				allCvId = jQuery('[name="allCvId"]').val();
 
-			selectElement.select2('val', allCvId);
+			selectElement.val(allCvId).trigger('change');
 		});
 
 	},
@@ -2892,18 +2896,25 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 	},
 	getListViewContentHeight: function () {
-		var windowHeight = jQuery(window).height();
-		//list height should be 76% of window height
-		var listViewContentHeight = windowHeight * 0.76103500761035;
-		var listViewTable = jQuery('#listview-table');
+		let windowHeight = jQuery(window).height(),
+			listViewContentHeight = windowHeight * 0.76103500761035,
+			listViewTable = jQuery('#listview-table');
+
 		if (listViewTable.length) {
 			if (!listViewTable.find('tr.emptyRecordsDiv').length) {
-				var listTableHeight = jQuery('#listview-table').height();
+				let listTableHeight = jQuery('#listview-table').height(),
+					listContainer = $('.listViewContainerJs');
+
+				if (listContainer.length) {
+					listTableHeight = listContainer.height() - $('.listViewModuleLinksJs').height() - $('.listViewActionsJs').height();
+				}
+
 				if (listTableHeight < listViewContentHeight) {
 					listViewContentHeight = listTableHeight + 3;
 				}
 			}
 		}
+
 		return listViewContentHeight + 'px';
 	},
 	getListViewContentWidth: function () {

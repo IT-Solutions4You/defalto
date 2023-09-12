@@ -2384,28 +2384,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}});
 	},
 
-	addTagsToSummaryTag : function(tagsList) {
-		var summaryTagList = jQuery('.detailTagList');
-		var numOfTagsToShow = parseInt(summaryTagList.data('numOfTagsToShow'));
-		var numOfTagsToAppend =  numOfTagsToShow - (parseInt(summaryTagList.find('.tag').length));
-		for(var index in tagsList) {
-			if(numOfTagsToAppend <= 0) {
-				break;
-			}
-			var tagInfo = tagsList[index];
-			var tagId = tagInfo.id;
-			if(summaryTagList.find('[data-id="'+ tagId +'"]').length <= 0) {
-				var newTagEle = this.constructTagElement(tagInfo);
-				summaryTagList.find('.moreTags').before(newTagEle);
+	addTagsToSummaryTag: function (tagsList) {
+		let summaryTagList = jQuery('.detailTagList'),
+			index;
+
+		for (index in tagsList) {
+			let tagInfo = tagsList[index],
+				tagId = tagInfo.id;
+
+			if (summaryTagList.find('[data-id="' + tagId + '"]').length <= 0) {
+				let newTagEle = this.constructTagElement(tagInfo);
+				summaryTagList.append(newTagEle);
 				summaryTagList.find('.noTagsPlaceHolder').addClass('hide');
-				numOfTagsToAppend--;
-			} 
+			}
 		}
 
-		if(summaryTagList.find('.tag').length > 0){
+		if (summaryTagList.find('.tag').length > 0) {
 			summaryTagList.closest('.tag-contents').removeClass('hide');
 		}
-
 	},
 
 	removeDeletedTagsFromSummaryTag : function(deletedTags){
@@ -2515,16 +2511,19 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 
 		app.event.on('post.MassTag.save',function(e, modalContainerClone, data){
-			 var moreTagCount = parseInt(data.moreTagCount);
+			 let moreTagCount = parseInt(data.moreTagCount);
+
 			 if(moreTagCount === 0) {
 				 tagContainer.find('.tagMoreCount').closest('.moreTags').addClass('hide');
 			 } else if(moreTagCount > 0){
 				 tagContainer.find('.tagMoreCount').text(data.moreTagCount).closest('.moreTags').removeClass('hide');
 			 }
-			 jQuery('.showAllTagContainer').find('.currentTag').html(modalContainerClone.find('.currentTag').html());
-			 jQuery('.viewAllTagsContainer').find('.currentTag').html(modalContainerClone.find('.currentTag').html());
-			 jQuery('.showAllTagContainer').find('.currentTagMenu').html(modalContainerClone.find('.currentTagMenu').html());
-			 var tagInstance = self.getComponentInstance('Vtiger_Tag_Js');
+
+			 jQuery('.showAllTagContainer .currentTag').html(modalContainerClone.find('.currentTag').html());
+			 jQuery('.viewAllTagsContainer .currentTag').html(modalContainerClone.find('.currentTag').html());
+			 jQuery('.showAllTagContainer .currentTagMenu').html(modalContainerClone.find('.currentTagMenu').html());
+
+			 let tagInstance = self.getComponentInstance('Vtiger_Tag_Js');
 			 tagInstance.addTagsToShowAllTagContianer(data.tags);
 			 self.removeDeletedTagsFromSummaryTag(data.deleted);
 			 self.addTagsToSummaryTag(data.tags);

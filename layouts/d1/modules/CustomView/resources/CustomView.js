@@ -294,14 +294,14 @@ jQuery.Class("Vtiger_CustomView_Js",{
 			let target = jQuery(e.target);
 
 			app.helper.showConfirmationBox({'message': app.vtranslate('LBL_LIST_DELETE_CONFIRMATION')}).then(
-				function(){
+				function () {
 					app.helper.showProgress();
-					app.request.post({'url':params.url}).then(function(){
+					app.request.post({'url': params.url}).then(function () {
 						app.helper.hideProgress();
 						target.trigger('post.DeletedFilter');
 					});
 				},
-				function(){
+				function () {
 				}
 			);
 		});

@@ -15,7 +15,7 @@
     <div class="fc-overlay-modal modal-content overlayEdit border-0">
         {assign var=TITLE value="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}"}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE}
-        <div class="modal-body editViewBody bg-body-secondary overflow-auto">
+        <div class="modal-body editViewBody overflow-auto">
             <div class="editViewContents">
                 {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
                 {assign var=QUALIFIED_MODULE_NAME value={$MODULE}}

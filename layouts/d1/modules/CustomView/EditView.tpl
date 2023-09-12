@@ -12,17 +12,15 @@
 	{assign var=MODULE_FIELDS value=$MODULE_MODEL->getFields()}
 	<div id="filterContainer" class="h-100">
 		<form id="CustomView" class="h-100">
-			<div class="modal-content h-100 border-0" >
-				<div class="overlayHeader">
-					{if $RECORD_ID}
-						{assign var="TITLE" value={vtranslate('LBL_EDIT_CUSTOM',$MODULE)}}
-					{else}
-						{assign var="TITLE" value={vtranslate('LBL_CREATE_LIST',$MODULE)}}
-					{/if}
-					{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
-				</div>
-				<div class="modal-body h-100 p-3">
-					<div class="customview-content row h-100">
+			<div class="modal-content border-0" >
+				{if $RECORD_ID}
+					{assign var="TITLE" value={vtranslate('LBL_EDIT_CUSTOM',$MODULE)}}
+				{else}
+					{assign var="TITLE" value={vtranslate('LBL_CREATE_LIST',$MODULE)}}
+				{/if}
+				{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
+				<div class="modal-body p-3">
+					<div class="customview-content row">
 						<input type=hidden name="record" id="record" value="{$RECORD_ID}" />
 						<input type="hidden" name="module" value="{$MODULE}" />
 						<input type="hidden" name="action" value="Save" />
@@ -153,11 +151,15 @@
 						</div>
 					</div>
 				</div>
-				<div class='modal-overlay-footer border-top border-1 container-fluid p-3'>
-					<div class="row">
-						<div class='col text-center'>
-							<button type='submit' class='btn btn-success saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-							<a class='cancelLink' href="javascript:void(0);" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+				<div class="modal-footer modal-overlay-footer border-top border-1 p-3">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-6">
+								<a class="btn btn-primary cancelLink" href="javascript:void(0);" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+							</div>
+							<div class="col-6 text-end">
+								<button type='submit' class='btn btn-primary active saveButton' id="customViewSubmit">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+							</div>
 						</div>
 					</div>
 				</div>

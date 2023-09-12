@@ -26,11 +26,11 @@
 									{foreach item=FIELD_MODEL from=$SELECTED_FIELDS}
 										{if $FIELD_MODEL and $FIELD_MODEL->getDisplayType() neq '6'}
 											{assign var=FIELD_MODULE_NAME value={$FIELD_MODEL->getModule()->getName()}}
-											<li class="item" data-cv-columnname="{$FIELD_MODEL->getCustomViewColumnName()}" data-columnname="{$FIELD_MODEL->get('column')}" data-field-id='{$FIELD_MODEL->getId()}'>
+											<li class="item py-2" data-cv-columnname="{$FIELD_MODEL->getCustomViewColumnName()}" data-columnname="{$FIELD_MODEL->get('column')}" data-field-id='{$FIELD_MODEL->getId()}'>
 												<span class="dragContainer">
 													<img src="{vimage_path('drag.png')}" class="cursorPointerMove" border="0" title="{vtranslate('LBL_DRAG',$MODULE)}">
 												</span>
-												<span class="fieldLabel">{vtranslate($FIELD_MODEL->get('label'),$FIELD_MODULE_NAME)}</span>
+												<span class="fieldLabel px-2">{vtranslate($FIELD_MODEL->get('label'),$FIELD_MODULE_NAME)}</span>
 												<span class="pull-right removeField"><i class="fa fa-times" title="{vtranslate('LBL_REMOVE',$MODULE)}"></i></span>
 											</li>   
 										{/if}
@@ -46,48 +46,52 @@
 							</div>
 						</div>
 						<div class="col-lg-6 availFiedlsContainer">
-							<div class="row">
-								<div class="col-lg-10">
-									<h5>{vtranslate('LBL_AVAILABLE_FIELDS', $MODULE)}</h5>
-									<input type="text" class="inputElement searchAvailFields form-control" placeholder="{vtranslate('LBL_SEARCH_FIELDS', $QUALIFIED_MODULE)}" />
-									<div class="panel-group avialFieldsListContainer" id="accordion">
-										<div class="panel panel-default" id="avialFieldsList">
-											{foreach item=BLOCK_FIELDS key=BLOCK_LABEL from=$RECORD_STRUCTURE name=availFieldsLoop}
-												{assign var=RAND_ID value=10|mt_rand:1000}
-												<div class="instafilta-section">
-													<div id="{$RAND_ID}_accordion" class="availFieldBlock" role="tab">
-														<a class="fieldLabel" data-bs-toggle="collapse" data-parent="#accordion" href="#{$RAND_ID}">
-															<i class="fa fa-caret-right"></i><span>{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}</span>
-														</a>
-													</div>
-													<div id="{$RAND_ID}" class="panel-collapse collapse">
-														<div class="panel-body">
-															{foreach item=FIELD_MODEL key=FIELD_NAME from=$BLOCK_FIELDS}
-																{assign var=FIELD_MODULE_NAME value={$FIELD_MODEL->getModule()->getName()}}
-																{if $FIELD_MODEL->getDisplayType() eq '6'}
-																	{continue}
-																{/if}
-																<div class="instafilta-target item {if array_key_exists(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}hide{/if}" data-cv-columnname="{$FIELD_MODEL->getCustomViewColumnName()}" data-columnname='{$FIELD_MODEL->get('column')}' data-field-id='{$FIELD_MODEL->getId()}'>
-																	<span class="fieldLabel">{vtranslate($FIELD_MODEL->get('label'),$FIELD_MODULE_NAME)}</span>
-																</div>
-															{/foreach} 
+							<h5>{vtranslate('LBL_AVAILABLE_FIELDS', $MODULE)}</h5>
+							<input type="text" class="inputElement searchAvailFields form-control" placeholder="{vtranslate('LBL_SEARCH_FIELDS', $QUALIFIED_MODULE)}" />
+							<div class="panel-group avialFieldsListContainer" id="accordion">
+								<div class="panel panel-default" id="avialFieldsList">
+									{foreach item=BLOCK_FIELDS key=BLOCK_LABEL from=$RECORD_STRUCTURE name=availFieldsLoop}
+										{assign var=RAND_ID value=10|mt_rand:1000}
+										<div class="instafilta-section">
+											<div id="{$RAND_ID}_accordion" class="availFieldBlock" role="tab">
+												<a class="fieldLabel" data-bs-toggle="collapse" data-parent="#accordion" href="#{$RAND_ID}">
+													<i class="fa fa-caret-right"></i><span>{vtranslate($BLOCK_LABEL, $SOURCE_MODULE)}</span>
+												</a>
+											</div>
+											<div id="{$RAND_ID}" class="panel-collapse collapse">
+												<div class="panel-body">
+													{foreach item=FIELD_MODEL key=FIELD_NAME from=$BLOCK_FIELDS}
+														{assign var=FIELD_MODULE_NAME value={$FIELD_MODEL->getModule()->getName()}}
+														{if $FIELD_MODEL->getDisplayType() eq '6'}
+															{continue}
+														{/if}
+														<div class="instafilta-target item {if array_key_exists(decode_html($FIELD_MODEL->getCustomViewColumnName()), $SELECTED_FIELDS)}hide{/if}" data-cv-columnname="{$FIELD_MODEL->getCustomViewColumnName()}" data-columnname='{$FIELD_MODEL->get('column')}' data-field-id='{$FIELD_MODEL->getId()}'>
+															<span class="fieldLabel">{vtranslate($FIELD_MODEL->get('label'),$FIELD_MODULE_NAME)}</span>
 														</div>
-													</div>
+													{/foreach}
 												</div>
-											{/foreach}
-											<div class="instafilta-target item-dummy hide">
-												<span class="fieldLabel"></span>
 											</div>
 										</div>
+									{/foreach}
+									<div class="instafilta-target item-dummy hide">
+										<span class="fieldLabel"></span>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer ">
-					<button class="btn btn-success" type="submit" name="saveButton"><strong>{vtranslate('LBL_UPDATE_LIST')}</strong></button>
-					<a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+				<div class="modal-footer">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-6">
+								<a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+							</div>
+							<div class="col-6 text-end">
+								<button class="btn btn-primary active" type="submit" name="saveButton">{vtranslate('LBL_UPDATE_LIST')}</button>
+							</div>
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>

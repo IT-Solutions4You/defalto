@@ -39,7 +39,7 @@
                             {$RELATED_RECORD->get('filename')}
                         {/if}
                     </span>
-                    <span class="col-sm-2 text-end text-secondary">
+                    <span class="col-sm-2 text-secondary d-flex justify-content-end">
                         {* Documents list view special actions "view file" and "download file" *}
                         {assign var=RECORD_ID value=$RELATED_RECORD->getId()}
                         {if isPermitted('Documents', 'DetailView', $RECORD_ID) eq 'yes'}

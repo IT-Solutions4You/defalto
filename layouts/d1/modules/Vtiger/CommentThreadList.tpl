@@ -31,13 +31,15 @@
 				</div>
 				<div class="col media-body">
 					<div class="comment">
-						<span class="creatorName fw-bold" >
-							{$CREATOR_NAME}
-						</span>&nbsp;
-						<span class="commentTime text-secondary cursorDefault">
-							<span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
-						</span>
-						<div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5">
+						<div>
+							<span class="creatorName fw-bold" >
+								{$CREATOR_NAME}
+							</span>&nbsp;
+							<span class="commentTime text-secondary cursorDefault">
+								<span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
+							</span>
+						</div>
+						<div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
 							<span class="commentInfoContent">
 								{nl2br($COMMENT->get('commentcontent'))}
 							</span>

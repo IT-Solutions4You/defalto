@@ -26,7 +26,7 @@
                         {foreach item=MODULE_FIELD_MODEL key=MODULE_NAME from=$CONVERT_LEAD_FIELDS}
                             <div class="row">
                                 <div class="col-lg-1"></div>
-                                <div class="col-lg-10 moduleContent" style="border:1px solid #CCC;">
+                                <div class="col-lg-10 moduleContent border-1">
                                     <div class="accordion-group convertLeadModules">
                                         <div class="header accordion-heading">
                                             <div data-parent="#leadAccordion" data-toggle="collapse" class="accordion-toggle moduleSelection" href="#{$MODULE_NAME}_FieldInfo">

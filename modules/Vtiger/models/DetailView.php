@@ -63,20 +63,27 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 		$moduleName = $moduleModel->getName();
 		$recordId = $recordModel->getId();
 
-		$detailViewLink = array();
+        $detailViewLinks = array();
 		$linkModelList = array();
+        $detailViewLinks[] = array(
+            'linktype' => 'DETAILVIEWBASIC',
+            'linklabel' => 'LBL_SHOW_MAP',
+            'linkurl' => sprintf('Vtiger_Index_Js.showMap(this, "%s", "%d");', $moduleName, $recordId),
+            'linkicon' => '<i class="fa fa-map-marker"></i>'
+        );
+
 		if(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
 			$detailViewLinks[] = array(
 					'linktype' => 'DETAILVIEWBASIC',
 					'linklabel' => 'LBL_EDIT',
 					'linkurl' => $recordModel->getEditViewUrl(),
-					'linkicon' => ''
+					'linkicon' => '<i class="fa fa-pencil"></i>'
 			);
-
-			foreach ($detailViewLinks as $detailViewLink) {
-				$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-			}
 		}
+
+        foreach ($detailViewLinks as $detailViewLink) {
+            $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
+        }
 
 		if(Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
 			$deletelinkModel = array(

@@ -26,7 +26,7 @@
                                               {vtranslate('LBL_NO_TAG_EXISTS',$MODULE)}  
                                             </span>
                                             {foreach item=TAG_MODEL from=$TAGS_LIST}
-                                                {include file="Tag.tpl"|vtemplate_path:$MODULE }
+                                                {include file="Tag.tpl"|vtemplate_path:$MODULE NO_EDIT=true}
                                             {/foreach}
                                         </div>
                                     </div>

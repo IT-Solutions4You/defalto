@@ -22,7 +22,7 @@
                                 </li>
                                 <li id="VtigerAction">
                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger',{$PARENT_ID},'{$MODULE_NAME}')">
-                                        <img title="Vtiger" alt="Vtiger" src="layouts/d1/skins//images/Vtiger.png">
+                                        <i class="fa fa-home"></i>
                                         <span class="ms-2">{vtranslate('LBL_TO_SERVICE', 'Documents', {vtranslate('LBL_VTIGER', 'Documents')})}</span>
                                     </a>
                                 </li>
@@ -55,9 +55,10 @@
                     </div>
                 {else}
                     <div class="pull-right">
-                        <button class="btn addButton btn-default btn-sm createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
+                        <button class="btn text-secondary fw-bold addButton createRecord" type="button" data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}">
                             <i class="fa fa-plus"></i>
-                            <span class="ms-2">{vtranslate('LBL_ADD',$MODULE_NAME)|cat:" "|cat:$DETAIL_VIEW_WIDGET->getLabel()}</span>
+                            <span class="mx-2">{vtranslate('LBL_ADD',$MODULE_NAME)}</span>
+                            <span>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</span>
                         </button>
                     </div>
                 {/if}

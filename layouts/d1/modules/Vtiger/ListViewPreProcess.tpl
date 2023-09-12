@@ -25,8 +25,8 @@
 <div class="container-fluid main-container main-container-{$MODULE}">
 	<div class="row">
 		{include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}
-		<div class="col-lg px-0 bg-white mb-lg-4 mx-lg-4 py-2 rounded overflow-hidden">
-			<div class="py-2 px-3">
+		<div class="listViewContainerJs col-lg px-0 bg-white mb-lg-4 mx-lg-4 rounded overflow-hidden">
+			<div class="listViewModuleLinksJs pt-3 px-3">
 				{include file="ModuleLinks.tpl"|vtemplate_path:$MODULE}
 			</div>
 			<div id="listViewContent" class="listViewPageDiv content-area">

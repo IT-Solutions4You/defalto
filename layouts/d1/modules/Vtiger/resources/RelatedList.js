@@ -453,44 +453,59 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 		}
 		return aDeferred.promise();
 	},
-	
-	totalNumOfRecords : function (curEle) {
-		var thisInstance = this;
-		var element = jQuery('.relatedContainer').find('#totalCount');
-		var totalPageNumber = element.text();
-		var pageCount;
-		if(curEle.attr('id') !== 'relatedViewPageJump') curEle.addClass('hide');
 
-		if(totalPageNumber === ""){
-			var totalCountElem = jQuery('.relatedContainer').find('#totalCount');
-			var totalRecordCount = totalCountElem.val();
+	totalNumOfRecords: function (curEle) {
+		let thisInstance = this,
+			element = jQuery('.relatedContainer #totalCount'),
+			totalPageNumber = element.text(),
+			pageCount;
 
-			if(totalRecordCount !== '') {
-				var recordPerPage = jQuery('#pageLimit').val();
-				if(recordPerPage === '0') recordPerPage = 1;
-				pageCount = Math.ceil(totalRecordCount/recordPerPage);
-				if(pageCount === 0){
+		if (curEle.attr('id') !== 'relatedViewPageJump') curEle.addClass('hide');
+
+		if (totalPageNumber === '') {
+			let totalCountElem = jQuery('.relatedContainer #totalCount'),
+				totalRecordCount = totalCountElem.val();
+
+			if (!totalRecordCount) {
+				let recordPerPage = jQuery('#pageLimit').val();
+
+				if (recordPerPage === '0') {
+					recordPerPage = 1;
+				}
+
+				pageCount = Math.ceil(totalRecordCount / recordPerPage);
+
+				if (pageCount === 0) {
 					pageCount = 1;
 				}
+
 				element.text(pageCount);
-				if(curEle.attr('id') !== 'PageJump') {
+
+				if (curEle.attr('id') !== 'PageJump') {
 					thisInstance.showPagingInfo();
 				}
+
 				return;
 			}
 
-			thisInstance.pageJump().then(function(data){
-				var pageCount = data.page;
-				var numOfrecords = data.numberOfRecords;
-				if(numOfrecords === 0) {
+			thisInstance.pageJump().then(function (data) {
+				let pageCount = data.page,
+					numOfrecords = data.numberOfRecords;
+
+				console.log(data);
+
+				if (numOfrecords === 0) {
 					numOfrecords = 1;
 				}
-				if(pageCount === 0){
+
+				if (pageCount === 0) {
 					pageCount = 1;
 				}
+
 				element.text(pageCount);
 				totalCountElem.val();
-				if(curEle.attr('id') !== 'PageJump') {
+
+				if (curEle.attr('id') !== 'PageJump') {
 					thisInstance.showPagingInfo();
 				}
 			});

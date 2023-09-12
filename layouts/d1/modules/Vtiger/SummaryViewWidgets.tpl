@@ -21,7 +21,6 @@
             </div>
         </div>
         {* Module Summary View Ends Here*}
-
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
             {if $smarty.foreach.count.index % 2 == 0}
                 {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}
@@ -30,12 +29,6 @@
     </div>
 
     <div class="right-block col-xl-7">
-        {* Summary View Related Activities Widget*}
-        <div id="relatedActivities">
-            {$RELATED_ACTIVITIES}
-        </div>
-        {* Summary View Related Activities Widget Ends Here*}
-
         {foreach item=DETAIL_VIEW_WIDGET from=$DETAILVIEW_LINKS['DETAILVIEWWIDGET'] name=count}
             {if $smarty.foreach.count.index % 2 != 0}
                 {include file='SummaryViewWidget.tpl'|vtemplate_path:$MODULE_NAME}

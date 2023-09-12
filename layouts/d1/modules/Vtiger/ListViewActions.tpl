@@ -11,7 +11,7 @@
 
 {strip}
     {assign var=LISTVIEW_MASSACTIONS_1 value=array()}
-    <div id="listview-actions" class="listview-actions-container py-2 px-3">
+    <div id="listview-actions" class="listViewActionsJs listview-actions-container py-2 px-3">
         {foreach item=LIST_MASSACTION from=$LISTVIEW_MASSACTIONS name=massActions}
             {if $LIST_MASSACTION->getLabel() eq 'LBL_EDIT'}
                 {assign var=editAction value=$LIST_MASSACTION}

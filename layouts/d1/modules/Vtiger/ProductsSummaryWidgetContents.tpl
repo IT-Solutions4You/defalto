@@ -18,39 +18,31 @@
             {assign var=PRODUCT_UNITPRICE_HEADER value={vtranslate($HEADER->get('label'),$MODULE)}}
         {/if}
     {/foreach}
-    <div class="row">		
-        <span class="col-lg-7">
+    <div class="row py-2">
+        <div class="col-7">
             <strong>{$PRODUCT_NAME_HEADER}</strong>
-        </span>
-        <span class="col-lg-4">
-            <span class="pull-right">
-                <strong>{$PRODUCT_UNITPRICE_HEADER}</strong>
-            </span>
-        </span>
+        </div>
+        <div class="col-5 text-end">
+            <strong>{$PRODUCT_UNITPRICE_HEADER}</strong>
+        </div>
     </div>
     {foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-        <div class="recentActivitiesContainer row">
-            <ul class="unstyled">
-                <li>
-                    <div class="">
-                        <span class="col-lg-7 textOverflowEllipsis">
-                            <a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('productname')}">
-                                {$RELATED_RECORD->getDisplayValue('productname')}
-                            </a>
-                        </span>
-                        <span class="col-lg-4">
-                            <span class="pull-right">{$RELATED_RECORD->getDisplayValue('unit_price')}</span>
-                        </span>
-                    </div>
-                </li>
-            </ul>
+        <div class="recentActivitiesContainer row py-2">
+            <div class="col-7 text-truncate">
+                <a class="w-100 text-nowrap" href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('productname')}">
+                    <span>{$RELATED_RECORD->getDisplayValue('productname')}</span>
+                </a>
+            </div>
+            <div class="col-5 text-end">
+                <span>{$RELATED_RECORD->getDisplayValue('unit_price')}</span>
+            </div>
         </div>
     {/foreach}
     {assign var=NUMBER_OF_RECORDS value=php7_count($RELATED_RECORDS)}
     {if $NUMBER_OF_RECORDS eq 5}
         <div class="row">
-            <div class="pull-right">
-                <a href="javascript:void(0)" class="moreRecentProducts cursorPointer">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+            <div class="col-12 text-end">
+                <a href="javascript:void(0)" class="btn btn-primary moreRecentProducts">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
             </div>
         </div>
     {/if}

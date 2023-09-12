@@ -13,9 +13,9 @@
 <nav class="fixed-top app-fixed-navbar bg-body-secondary">
     <div class="container-fluid global-nav">
         <div class="row align-items-center">
-            <div class="col-auto px-3 py-2 app-navigator-container">
-                <div id="appnavigator" class="app-switcher-container cursorPointer" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
-                    <div class="app-navigator mx-auto dt-menu-button">
+            <div class="col-auto app-navigator-container">
+                <div id="appnavigator" class="app-switcher-container py-2 h-100 cursorPointer d-flex align-items-end justify-content-center" data-bs-toggle="offcanvas" data-bs-target="#app-menu" data-app-class="{if $MODULE eq 'Home' || !$MODULE}fa-dashboard{else}{$APP_IMAGE_MAP[$SELECTED_MENU_CATEGORY]}{/if}">
+                    <div class="app-navigator dt-menu-button rounded">
                         <i class="app-icon dt-menu-icon fa fa-bars"></i>
                     </div>
                 </div>
@@ -23,37 +23,43 @@
             <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$smarty.request.view}">
                 <div class="w-100 text-truncate text-nowrap fs-4 px-xs-3 ps-lg-3">
                     {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
-                    {if $MODULE_MODEL->getDefaultViewName() neq 'List'}
-                        {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
-                    {else}
-                        {assign var=DEFAULT_FILTER_ID value=$MODULE_MODEL->getDefaultCustomFilter()}
-                        {if $DEFAULT_FILTER_ID}
-                            {assign var=CVURL value="&viewname="|cat:$DEFAULT_FILTER_ID}
-                            {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrl()|cat:$CVURL}
+                    {if $MODULE_MODEL}
+                        {if $MODULE_MODEL->getDefaultViewName() neq 'List'}
+                            {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getDefaultUrl()}
                         {else}
-                            {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrlWithAllFilter()}
+                            {assign var=DEFAULT_FILTER_ID value=$MODULE_MODEL->getDefaultCustomFilter()}
+                            {if $DEFAULT_FILTER_ID}
+                                {assign var=CVURL value="&viewname="|cat:$DEFAULT_FILTER_ID}
+                                {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrl()|cat:$CVURL}
+                            {else}
+                                {assign var=DEFAULT_FILTER_URL value=$MODULE_MODEL->getListViewUrlWithAllFilter()}
+                            {/if}
                         {/if}
-                    {/if}
-                    {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
-                    {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
-                    {assign var=CUSTOM_VIEW_URL value=implode('', [$DEFAULT_FILTER_URL,'&app=',$SELECTED_MENU_CATEGORY])}
-                    {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
-                        {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
-                    {/if}
-                    {if isset($VIEWID) && $VIEWID}
-                        {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
+                        {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
+                        {assign var=SINGLE_MODULE_LABEL value=vtranslate($SINGLE_MODULE_NAME, $MODULE)}
+                        {assign var=CUSTOM_VIEW_URL value=implode('', [$DEFAULT_FILTER_URL,'&app=',$SELECTED_MENU_CATEGORY])}
+                        {if isset($smarty.session.lvs) && isset($smarty.session.lvs.$MODULE) && isset($smarty.session.lvs.$MODULE.viewname)}
+                            {assign var=VIEWID value=$smarty.session.lvs.$MODULE.viewname}
+                        {/if}
+                        {if isset($VIEWID) && $VIEWID}
+                            {assign var=CUSTOM_VIEW_URL value=implode('', [$MODULE_MODEL->getListViewUrl(), '&viewname=', $VIEWID, '&app=', $SELECTED_MENU_CATEGORY])}
+                        {/if}
+                    {else}
+                        {assign var=SINGLE_MODULE_NAME value='SINGLE_Settings'}
+                        {assign var=SINGLE_MODULE_LABEL value=vtranslate('SINGLE_Settings', 'Vtiger')}
+                        {assign var=CUSTOM_VIEW_URL value='index.php'}
                     {/if}
                     <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>
                         {$SINGLE_MODULE_LABEL}
                     </a>
-                    {if isset($RECORD) && $RECORD and $smarty.request.view eq 'Edit'}
+                    {if $RECORD and $smarty.request.view eq 'Edit'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
                     {elseif $smarty.request.view eq 'Edit'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
                     {/if}
-                    {if $smarty.request.view eq 'Detail'}
+                    {if $RECORD and $smarty.request.view eq 'Detail'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {/if}
@@ -127,7 +133,7 @@
                                                                 </li>
                                                                 <li id="VtigerAction">
                                                                     <a class="dropdown-item" href="javascript:Documents_Index_Js.uploadTo('Vtiger')">
-                                                                        <img title="Vtiger" alt="Vtiger" src="layouts/d1/skins//images/Vtiger.png">
+                                                                        <i class="fa fa-home"></i>
                                                                         <span class="ps-3">{vtranslate('LBL_TO_SERVICE', $moduleName, {vtranslate('LBL_VTIGER', $moduleName)})}</span>
                                                                     </a>
                                                                 </li>
@@ -179,7 +185,7 @@
                     </li>
                     {assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
                     {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Calendar')}
-                    {if $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
+                    {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         <li class="me-2">
                             <div>
                                 <a href="index.php?module=Calendar&view={$CALENDAR_MODULE_MODEL->getDefaultViewName()}" class="btn btn-outline-secondary" title="{vtranslate('Calendar','Calendar')}" aria-hidden="true">
@@ -189,7 +195,7 @@
                         </li>
                     {/if}
                     {assign var=REPORTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
-                    {if $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
+                    {if $REPORTS_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
                         <li class="me-2">
                             <div>
                                 <a href="index.php?module=Reports&view=List" class="btn btn-light" title="{vtranslate('Reports','Reports')}" aria-hidden="true">
@@ -208,7 +214,7 @@
                                     {else}
                                         {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                             {if !empty($IMAGE_INFO.url)}
-                                                <img src="{$IMAGE_INFO.url}" width="100%" height="100%">
+                                                <img src="{$IMAGE_INFO.url}" width="2.2rem" height="2.2rem">
                                             {/if}
                                         {/foreach}
                                     {/if}
@@ -225,7 +231,7 @@
                                                 {else}
                                                     {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                                         {if !empty($IMAGE_INFO.url)}
-                                                            <img src="{$IMAGE_INFO.url}" width="100%" height="100%">
+                                                            <img src="{$IMAGE_INFO.url}" width="3.8rem" height="3.8rem">
                                                         {/if}
                                                     {/foreach}
                                                 {/if}

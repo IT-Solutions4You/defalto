@@ -10,7 +10,7 @@
  ********************************************************************************/
 -->*}
 {strip}
-	<div class="noCommentsMsgContainer noContent">
+	<div class="noCommentsMsgContainer noContent mt-3">
 		<p class="textAlignCenter"> {vtranslate('LBL_NO_COMMENTS',$MODULE_NAME)}
 		</p>
 	</div>

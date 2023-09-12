@@ -9,56 +9,65 @@
  */
 -->*}
 {strip}
-    <div class="">
-        <form id="detailView" class="form-horizontal" style="padding-top: 20px;" method="POST">
-            <div class="clearfix">
-                <h4 class="pull-left">
-                    {vtranslate('LBL_SHARING_RECORD', $MODULE)}
-                </h4>
-                <span class="btn-group pull-right">
-                    {if Users_Privileges_Model::isPermitted($MODULE, 'EditView', $RECORD_ID )}
-                    <button class="btn" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl($MODULE,$RECORD_ID)}'" type="button">
-                        {vtranslate('LBL_EDIT_SHARING_RECORD', $MODULE)}
-                    </button>
-                    {/if}
-                </span>
-            </div><hr>
-            {assign var="GROUPS" value=$RECORD_MODEL->getData()}
-            {foreach key=KEY item=GROUP from=$GROUPS}
-                <div class="form-group">
-                    <span class="fieldLabel col-lg-3 col-md-3 col-sm-3 ">
-                        {if $KEY==1}
-                        <b> {vtranslate('LBL_SHARING_VIEW_MEMBERS', $QUALIFIED_MODULE)}</b>
-                        {else}
-                        <b> {vtranslate('LBL_SHARING_EDIT_MEMBERS', $MODULE)}:</b>
-                        {/if}
-                    </span>
-                    <div class="fieldValue">
-                        {if !empty($GROUP)}
-                        <div class="col-lg-6 col-md-6 col-sm-6 collectiveGroupMembers" style="width:auto;min-width:300px">
-                            <ul class="nav">
-                            {foreach key=GROUP_LABEL item=GROUP_MEMBERS from=$GROUP}
-                                {if !empty($GROUP_MEMBERS)}
-                                    <li class="groupLabel">
-                                            {vtranslate($GROUP_LABEL,$MODULE)}
-                                    </li>
-                                    {foreach key=GROUP_ID item=GROUP_MEMBER_INFO from=$GROUP_MEMBERS}
-                                        <li >
-                                            <a href="{$RECORD_MODEL->getRecordDetailViewUrl($GROUP_LABEL, $GROUP_ID)}">{$GROUP_MEMBER_INFO}</a>
-                                        </li>
-                                    {/foreach}
-                                {/if}
-                            {/foreach}
-                            </ul>
-
+    <div class="container-fluid">
+        <div class="rounded bg-white mt-3 p-3">
+            <form id="detailView" class="form-horizontal" method="POST">
+                <div class="container-fluid border-bottom border-1 pb-3 mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="m-0">
+                                {vtranslate('LBL_SHARING_RECORD', $MODULE)}
+                            </h4>
                         </div>
-                        {/if}
+                        <div class="col-auto text-end">
+                            <span class="btn-group pull-right">
+                                {if Users_Privileges_Model::isPermitted($MODULE, 'EditView', $RECORD_ID )}
+                                <button class="btn btn-outline-primary" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl($MODULE,$RECORD_ID)}'" type="button">
+                                    {vtranslate('LBL_EDIT_SHARING_RECORD', $MODULE)}
+                                </button>
+                                {/if}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            {/foreach}
+                {assign var="GROUPS" value=$RECORD_MODEL->getData()}
+                {foreach key=KEY item=GROUP from=$GROUPS}
+                    <div class="container-fluid my-3">
+                        <div class="row">
+                            <div class="fieldLabel col-lg-3 col-md-3 col-sm-3">
+                                {if $KEY==1}
+                                <h5>{vtranslate('LBL_SHARING_VIEW_MEMBERS', $QUALIFIED_MODULE)}</h5>
+                                {else}
+                                <h5>{vtranslate('LBL_SHARING_EDIT_MEMBERS', $MODULE)}:</h5>
+                                {/if}
+                            </div>
+                            <div class="fieldValue col-lg-9 col-md-9 col-sm-9">
+                                {if !empty($GROUP)}
+                                <div class="collectiveGroupMembers">
+                                    {foreach key=GROUP_LABEL item=GROUP_MEMBERS from=$GROUP}
+                                        {if !empty($GROUP_MEMBERS)}
+                                            <ul class="nav border-1 border p-0 mb-3">
+                                                <li class="nav-item groupLabel bg-body-secondary border-end">
+                                                    <div class="p-2">{vtranslate($GROUP_LABEL,$MODULE)}</div>
+                                                </li>
+                                                {foreach key=GROUP_ID item=GROUP_MEMBER_INFO from=$GROUP_MEMBERS}
+                                                    <li class="nav-item border-end">
+                                                        <a class="d-block p-2" href="{$RECORD_MODEL->getRecordDetailViewUrl($GROUP_LABEL, $GROUP_ID)}">{$GROUP_MEMBER_INFO}</a>
+                                                    </li>
+                                                {/foreach}
+                                            </ul>
+                                        {/if}
+                                    {/foreach}
 
-            
-        </form>
+                                </div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                {/foreach}
+
+
+            </form>
+        </div>
     </div>
-
 {/strip}

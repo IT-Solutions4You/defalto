@@ -19,27 +19,28 @@ Vtiger.Class("Vtiger_Tag_Js",{},{
     init : function() {
         this.editTagContainerCached = jQuery('.editTagContainer');
     },
-    
-    saveTag : function(callerParams) {
-        var aDeferred = jQuery.Deferred();
-        var params = {
-            'module' : app.getModuleName(),
-            'action' : 'TagCloud',
-            'mode'   : 'saveTags'
-            
-        };
-        var params = jQuery.extend(params, callerParams);
+
+    saveTag: function (callerParams) {
+        let aDeferred = jQuery.Deferred(),
+            params = {
+                'module': app.getModuleName(),
+                'action': 'TagCloud',
+                'mode': 'saveTags'
+
+            };
+        params = jQuery.extend(params, callerParams);
+
         app.helper.showProgress();
-        app.request.post({'data': params}).then(
-            function(error, data) {
-                app.helper.hideProgress();
-                if(error == null) {
-                    aDeferred.resolve(data);
-                }else{
-                    aDeferred.reject(error);
-                }
+        app.request.post({'data': params}).then(function (error, data) {
+            app.helper.hideProgress();
+
+            if (!error) {
+                aDeferred.resolve(data);
+            } else {
+                aDeferred.reject(error);
             }
-        );
+        });
+
         return aDeferred.promise();
     },
     

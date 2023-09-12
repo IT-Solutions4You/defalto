@@ -224,7 +224,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';
 		}
 		//popup search element
-		html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
+		html += '<span class="input-group-addon input-group-text rounded-0 relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
 		html += '<i class="fa fa-search"></i>';
 		html += '</span>';
 
@@ -536,7 +536,7 @@ Vtiger_Field_Js('Vtiger_Date_Field_Js',{},{
 		//wrappig with another div for consistency
 		let html = '<div class="DateField"><div class="input-group date">' +
 				'<input class="inputElement dateField form-control" type="text" data-rule-date="true" data-format="' + this.getDateFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
-				'<span class="input-group-addon input-group-text"><i class="fa fa-calendar"></i></span>' +
+				'<span class="input-group-addon input-group-text rounded-0"><i class="fa fa-calendar"></i></span>' +
 				'</div></div>',
 			element = jQuery(html);
 
@@ -659,10 +659,10 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * @return - input percentage field
 	 */
 	getUi : function() {
-		let html = '<div class="PercentageField input-group percentage-input-group">'+
+		let html = '<div class="PercentageField"><div class="input-group percentage-input-group flex-nowrap">'+
 						'<input type="text" class="form-control inputElement percentage-input-element" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
-						'<span class="input-group-addon">%</span>'+
-					'</div>',
+						'<span class="input-group-addon input-group-text rounded-0">%</span>'+
+					'</div></div>',
 			element = jQuery(html);
 
 		return this.addValidationToElement(element);

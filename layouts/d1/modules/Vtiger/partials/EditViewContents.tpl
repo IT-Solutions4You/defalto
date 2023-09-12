@@ -15,14 +15,14 @@
 
 	<div name='editContent'>
 		{if $DUPLICATE_RECORDS}
-			<div class="fieldBlockContainer bg-white rounded mb-3 duplicationMessageContainer">
+			<div class="fieldBlockContainer bg-white mb-3 rounded duplicationMessageContainer">
 				<div class="duplicationMessageHeader"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></div>
 				<div>{getDuplicatesPreventionMessage($MODULE, $DUPLICATE_RECORDS)}</div>
 			</div>
 		{/if}
 		{foreach key=BLOCK_LABEL item=BLOCK_FIELDS from=$RECORD_STRUCTURE name=blockIterator}
 			{if $BLOCK_FIELDS|php7_count gt 0}
-				<div class="fieldBlockContainer bg-white rounded mb-3 {if 1 neq $smarty.foreach.blockIterator.iteration}{/if}" data-block="{$BLOCK_LABEL}">
+				<div class="fieldBlockContainer mb-3 border-top {if 1 neq $smarty.foreach.blockIterator.iteration}{/if}" data-block="{$BLOCK_LABEL}">
 					<h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate($BLOCK_LABEL, $MODULE)}</h4>
 					<div class="container-fluid py-3">
 						<div class="row">
@@ -37,7 +37,7 @@
 											<div class="row">
 												<div class="fieldLabel {if $FIELD_MODEL->isTableFullWidth()}col-lg-2{else}col-lg-4{/if}">
 													{if $MASS_EDITION_MODE}
-														<input class="inputElement" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">
+														<input class="inputElement me-2" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">
 													{/if}
 													{if $isReferenceField eq "reference"}
 														{if $refrenceListCount > 1}

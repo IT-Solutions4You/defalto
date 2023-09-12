@@ -6,9 +6,6 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************}
-{* modules/Vtiger/views/Detail.php *}
-
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
     <form id="detailView" class="container-fluid" method="POST">
         {include file='DetailViewBlockView.tpl'|@vtemplate_path:$MODULE_NAME RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE_NAME=$MODULE_NAME}

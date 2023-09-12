@@ -22,6 +22,6 @@
 				data-specific-rules="{ZEND_JSON::encode($FIELD_INFO["validator"])}"
 			{/if}
 			/>
-		<span class="input-group-addon">%</span>
+		<span class="input-group-addon input-group-text">%</span>
 	</div>
 {/strip}

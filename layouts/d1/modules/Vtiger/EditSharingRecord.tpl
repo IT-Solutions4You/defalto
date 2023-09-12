@@ -9,23 +9,20 @@
  */
  *}
 {strip}
-<div class="editViewPageDiv">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="editViewPageDiv container-fluid h-main py-3">
+    <div class="bg-white rounded p-3">
         <div class="editViewContainer">
             <form name="EditSharingRecord" action="index.php" method="post" id="EditView" class="form-horizontal">
                 <input type="hidden" name="module" value="{$MODULE}">
                 <input type="hidden" name="action" value="SaveSharingRecord">
                 <input type="hidden" name="record" value="{$RECORD_ID}">
-
-                <h4>
+                <h4 class="mb-3 pb-3 border-bottom">
                     {vtranslate('LBL_EDITING', $MODULE)} {vtranslate('LBL_SHARING_RECORD', $QUALIFIED_MODULE)} - {$RECORD_NAME}
                 </h4>
-                <hr>
-                <br>
-                <div class="editViewBody">
+                <div class="editViewBody container-fluid">
                     <div class="form-group row">
-                        <span class="col-lg-9 col-md-9 col-sm-9">
-                            <div class="row-fluid">
+                        <div class="col-lg-9 col-md-9 col-sm-9">
+                            <div class="container-fluid mb-3">
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-md-3 col-sm-3 fieldLabel control-label">
                                         {vtranslate('LBL_SHARING_VIEW_MEMBERS', $MODULE)}
@@ -50,10 +47,8 @@
                                     </div>
                                 </div>
                             </div>
-                                    <br/>&nbsp<br/>
-                            <div class="row-fluid">
-                                <span class="span2">
-                                    <div class="form-group row">
+                            <div class="container-fluid mb-3">
+                                <div class="form-group row">
                                     <label class="col-lg-3 col-md-3 col-sm-3 fieldLabel control-label">
                                         {vtranslate('LBL_SHARING_EDIT_MEMBERS', $MODULE)}
                                     </label>
@@ -61,7 +56,7 @@
                                         <div class="row">
                                             {assign var="GROUP_MEMBERS" value=$RECORD_MODEL->getMembers()}
                                             <div class="col-lg-6 col-md-6 col-sm-6">
-                                                <select id="memberEditList" class="select2 inputElement" multiple="true" name="memberEditList[]" data-rule-required="" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $QUALIFIED_MODULE)}" >
+                                                <select id="memberEditList" class="select2 inputElement" multiple="true" name="memberEditList[]" data-rule-required="" data-placeholder="{vtranslate('LBL_ADD_USERS_ROLES', $QUALIFIED_MODULE)}">
                                                     {foreach from=$MEMBER_GROUPS key=GROUP_LABEL item=ALL_GROUP_MEMBERS}
                                                         <optgroup label="{vtranslate({$GROUP_LABEL}, $QUALIFIED_MODULE)}" class="{$GROUP_LABEL}">
                                                             {foreach from=$ALL_GROUP_MEMBERS item=MEMBER}
@@ -76,10 +71,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                </span>
                             </div>
-                        </span>
-                        <span class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="container-fluid">
+                                <div class="form-group row">
+                                    <div class="col-lg-3">
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <div class="row">
+                                            <div class="col-6 d-flex justify-content-between">
+                                                <a class="btn btn-primary cancelLink" data-bs-dismiss="modal" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                                <button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
                             <span class="pull-right groupMembersColors">
                                 <ul class="liStyleNone">
                                     <li class="Users padding5per textAlignCenter"><strong>{vtranslate('LBL_USERS', $MODULE)}</strong></li>
@@ -91,14 +99,6 @@
                                     {/if}
                                 </ul>
                             </span>
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-overlay-footer clearfix">
-                    <div class="row clearfix">
-                        <div class="textAlignCenter col-lg-12 col-md-12 col-sm-12 ">
-                            <button type="submit" class="btn btn-success saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-                            <a class="cancelLink" data-bs-dismiss="modal" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                         </div>
                     </div>
                 </div>

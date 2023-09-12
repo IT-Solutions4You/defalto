@@ -8,12 +8,13 @@
 ************************************************************************************}
 
 {strip}
+    {assign var=IMAGE_SIZE value='style="width: 3.5rem; height: 3.5rem;"'}
     <div class="recentActivitiesContainer container-fluid" id="updates">
-        <div class="history rounded bg-white mt-3 p-3">
+        <div class="history rounded bg-white mt-3 py-3">
             <div class="history-data">
                 <input type="hidden" id="updatesCurrentPage" value="{$PAGING_MODEL->get('page')}"/>
                 {if !empty($RECENT_ACTIVITIES)}
-                    <ul class="updates_timeline">
+                    <ul class="updates_timeline p-0">
                         {foreach item=RECENT_ACTIVITY from=$RECENT_ACTIVITIES}
                             {assign var=PROCEED value= TRUE}
                             {if ($RECENT_ACTIVITY->isRelationLink()) or ($RECENT_ACTIVITY->isRelationUnLink())}
@@ -34,13 +35,13 @@
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                         {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                             <div class="col-auto update_icon bg-info">
-                                                <i class='rounded-circle update_image vicon-vtigeruser'></i>
+                                                <i class="rounded-circle update_image vicon-vtigeruser" {$IMAGE_SIZE}></i>
                                             </div>
                                         {else}
                                             {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                                 {if !empty($IMAGE_INFO.url)}
                                                     <div class="col-auto update_icon">
-                                                        <img class="rounded-circle update_image" src="{$IMAGE_INFO.url}" >
+                                                        <img class="rounded-circle update_image" {$IMAGE_SIZE} src="{$IMAGE_INFO.url}" >
                                                     </div>
                                                 {/if}
                                             {/foreach}
@@ -63,13 +64,13 @@
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                         {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
                                             <div class="col-auto update_icon bg-info">
-                                                <i class='rounded-circle update_image vicon-vtigeruser'></i>
+                                                <i class="rounded-circle update_image vicon-vtigeruser" {$IMAGE_SIZE}></i>
                                             </div>
                                         {else}
                                             {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                                 {if !empty($IMAGE_INFO.url)}
                                                     <div class="col-auto update_icon">
-                                                        <img class="rounded-circle update_image" src="{$IMAGE_INFO.url}" >
+                                                        <img class="rounded-circle update_image" {$IMAGE_SIZE} src="{$IMAGE_INFO.url}" >
                                                     </div>
                                                 {/if}
                                             {/foreach}
@@ -129,13 +130,15 @@
                                                 {Vtiger_Util_Helper::formatDateDiffInStrings($RELATION->get('changedon'))} </small>
                                         </time>
                                         <div class="col-auto">
-                                            <div class="rounded-circle lh-base update_icon text-white text-center align-items-center bg-info-{$RELATED_MODULE|strtolower}" style="width: 42px; height: 42px; line-height: 42px;">
-                                                {if {$RELATED_MODULE|strtolower eq 'modcomments'}}
-                                                    {assign var="VICON_MODULES" value="vicon-chat"}
-                                                    <i class="rounded-circle update_image {$VICON_MODULES}"></i>
-                                                {else}
-                                                    <span class="rounded-circle update_image">{Vtiger_Module_Model::getModuleIconPath($RELATED_MODULE)}</span>
-                                                {/if}
+                                            <div class="rounded-circle lh-base update_icon text-white bg-secondary" {$IMAGE_SIZE}>
+                                                <div class="rounded-circle h-100 w-100 d-flex justify-content-center align-items-center bg-info-{$RELATED_MODULE|strtolower}">
+                                                    {if {$RELATED_MODULE|strtolower eq 'modcomments'}}
+                                                        {assign var="VICON_MODULES" value="vicon-chat"}
+                                                        <i class="update_image {$VICON_MODULES}"></i>
+                                                    {else}
+                                                        <span class="update_image">{Vtiger_Module_Model::getModuleIconPath($RELATED_MODULE)}</span>
+                                                    {/if}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-7 update_info py-2">

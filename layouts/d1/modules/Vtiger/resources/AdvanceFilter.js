@@ -743,10 +743,12 @@ Vtiger_Picklist_Field_Js('AdvanceFilter_Picklist_Field_Js',{},{
 		$.each(selectedOptions, function (key, value) {
 			let option = element.find('option[value="' + value + '"]');
 
-			if (option.length) {
-				option.attr('selected', 'selected');
-			} else {
-				element.append('<option value="' + value + '" selected="selected">' + value + '</option>');
+			if (value) {
+				if (option.length) {
+					option.attr('selected', 'selected');
+				} else {
+					element.append('<option value="' + value + '" selected="selected">' + value + '</option>');
+				}
 			}
 		});
 

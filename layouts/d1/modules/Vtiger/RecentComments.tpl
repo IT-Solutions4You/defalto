@@ -50,9 +50,9 @@
 			</div>
 		{/if}
 	</div>
-	<div class="recentCommentsHeader row">
+	<div class="recentCommentsHeader row py-3">
 		{if $MODULE_NAME ne 'Leads'}
-			<div class="commentHeader text-end col-auto ms-auto p-3">
+			<div class="commentHeader text-end col-auto ms-auto px-3">
 				<div class="form-check form-switch form-check-reverse">
 					<label class="form-check-label" for="rollupcomments">
 						<span class="me-2">{vtranslate('LBL_ROLL_UP',$QUALIFIED_MODULE)}</span>
@@ -117,7 +117,7 @@
 										</div>
 										<div class="media-body">
 											<div class="comment">
-												<div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5">
+												<div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
 													{assign var=COMMENT_CONTENT value={nl2br($COMMENT->get('commentcontent'))}}
 													{if $COMMENT_CONTENT}
 														{assign var=DISPLAYNAME value={decode_html($COMMENT_CONTENT)}}
@@ -152,11 +152,11 @@
 														<div class="row commentEditStatus text-secondary" name="editStatus">
 															{assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
 															{if $REASON_TO_EDIT}
-																<span class="text-secondary col-6">
+																<span class="text-secondary col-lg-6 text-nowrap">
 																	<small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small>
 																</span>
 															{/if}
-															<span {if $REASON_TO_EDIT}class="text-end col-6"{/if}>
+															<span {if $REASON_TO_EDIT}class="text-end col-6 text-nowrap"{/if}>
 																<small class="me-2">{vtranslate('LBL_COMMENT',$MODULE_NAME)} {strtolower(vtranslate('LBL_MODIFIED',$MODULE_NAME))}</small>
 																<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getModifiedTime())}" class="commentModifiedTime">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getModifiedTime())}</small>
 															</span>

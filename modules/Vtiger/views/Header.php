@@ -189,7 +189,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 		$headerCssInstances = parent::getHeaderCss($request);
 		$headerCss = Vtiger_Link_Model::getAllByType(Vtiger_Link::IGNORE_MODULE, array('HEADERCSS'));
         $selectedThemeCssPath = Vtiger_Theme::getStylePath();
-        
+
         if(!empty($selectedThemeCssPath)) {
             //TODO : check the filename whether it is less or css and add relative less
             $isLessType = (strpos($selectedThemeCssPath, ".less") !== false)? true:false;
@@ -207,6 +207,7 @@ abstract class Vtiger_Header_View extends Vtiger_View_Controller {
 				}
 			}
 		}
+
 		return $headerCssInstances;
 	}
 

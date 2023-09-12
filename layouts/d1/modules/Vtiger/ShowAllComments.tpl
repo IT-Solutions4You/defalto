@@ -44,9 +44,9 @@
 			</div>
 		{/if}
 		<div class="showcomments container-fluid">
-			<div class="recentCommentsHeader row">
+			<div class="recentCommentsHeader row py-3">
 				{if $MODULE_NAME ne 'Leads'}
-					<div class="commentHeader text-end col-auto ms-auto p-3">
+					<div class="commentHeader text-end col-auto ms-auto px-3">
 						<div class="form-check form-switch form-check-reverse">
 							<label for="rollupcomments" class="form-check-label">
 								<span class="me-2">{vtranslate('LBL_ROLL_UP',$QUALIFIED_MODULE)} &nbsp;</span>
