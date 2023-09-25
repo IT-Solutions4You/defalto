@@ -2699,11 +2699,15 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		return jQuery('.details');
 	},
 
-	registerClickEvent: function() {
-			this.getContentHolder().on('click', '.inventoryLineItemDetails', function(e) {
-				jQuery('.inventoryLineItemDetails').popover({html: true}).show();
-			});
-		},
+	registerClickEvent: function () {
+		this.getContentHolder().on('click', '.inventoryLineItemDetails', function (e) {
+			let popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]')
+
+			for (const popoverEl of popoverElements) {
+				new bootstrap.Popover(popoverEl)
+			}
+		});
+	},
 	showScroll: function(container) {
 		var params = {
 			setHeight: container.height,
@@ -2871,7 +2875,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 						commentHtml.then(function(data){
 							var html;
 							if(jQuery(data).hasClass('privateComment')) {
-								html = '<ul class="unstyled"><li class="commentDetails" style="background: #fff9ea;">'+data+'</li></ul>';
+								html = '<ul class="unstyled"><li class="commentDetails privateComment">'+data+'</li></ul>';
 							} else {
 								html = '<ul class="unstyled"><li class="commentDetails">'+data+'</li></ul>';
 							}
@@ -2927,24 +2931,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		});
 
-		detailContentsHolder.on('click','.editComment', function(e){
+		detailContentsHolder.on('click', '.editComment', function (e) {
 			self.removeCommentBlockIfExists();
-			var currentTarget = jQuery(e.currentTarget);
-			var commentInfoBlock = currentTarget.closest('.singleComment');
-			var commentInfoContent = commentInfoBlock.find('.commentInfoContent');
-			var commentReason = commentInfoBlock.find('[name="editReason"]');
-			var editCommentBlock = self.getEditCommentBlock();
-			var fullComment = commentInfoContent.data('fullcomment');
+			let currentTarget = jQuery(e.currentTarget),
+				commentInfoBlock = currentTarget.closest('.singleComment'),
+				commentInfoContent = commentInfoBlock.find('.commentInfoContent'),
+				commentReason = commentInfoBlock.find('[name="editReason"]'),
+				editCommentBlock = self.getEditCommentBlock(),
+				fullComment = commentInfoContent.data('fullcomment');
+
 			if (fullComment) {
 				fullComment = app.helper.getDecodedValue(fullComment);
 			} else {
 				fullComment = commentInfoContent.text();
 			}
-			editCommentBlock.find('.commentcontent').text(fullComment);
+
+			editCommentBlock.find('.commentcontent').text(fullComment.trim());
 			editCommentBlock.find('[name="reasonToEdit"]').val(commentReason.text());
 			editCommentBlock.find('[name="is_private"]').val(commentInfoBlock.find('[name="is_private"]').val());
-			/*commentInfoContent.hide();
-			commentInfoBlock.find('.commentActionsContainer').hide();*/
 			editCommentBlock.appendTo(commentInfoBlock).show();
 		});
 

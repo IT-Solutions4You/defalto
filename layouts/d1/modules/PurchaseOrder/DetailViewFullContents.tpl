@@ -9,5 +9,4 @@
 *
  ********************************************************************************/
 -->*}
-
 {include file='DetailViewFullContents.tpl'|@vtemplate_path:'Inventory' RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE_NAME=$MODULE_NAME}

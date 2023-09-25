@@ -15,13 +15,15 @@
 					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$MODULE}
 				</div>
 			{/if}
+			<div class="pull-left">
+				{include file='DetailViewHeaderImage.tpl'|vtemplate_path:$MODULE}
+			</div>
 			<div class="recordHeaderTitle">
 				<span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
 					{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
 						{assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
 						{if $FIELD_MODEL->getPermissions()}
-							<span class="{$NAME_FIELD}">{trim($RECORD->get($NAME_FIELD))}</span>
-							&nbsp;
+							<span class="me-2 {$NAME_FIELD}">{trim($RECORD->get($NAME_FIELD))}</span>
 						{/if}
 					{/foreach}
 				</span>

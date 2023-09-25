@@ -97,29 +97,30 @@ Vtiger_Detail_Js("Leads_Detail_Js", {
      * @param: data used to show the model, currentElement.
      */
     displayConvertLeadModel: function (data, buttonElement) {
-        var instance = this;
-        var errorElement = jQuery(data).find('#convertLeadError');
-        if (errorElement.length != '0') {
+        let instance = this,
+            errorElement = jQuery(data).find('#convertLeadError');
 
-        } else {
-            var callBackFunction = function (data) {
-                var editViewObj = Vtiger_Edit_Js.getInstance();
-                jQuery(data).find('.fieldInfo').collapse({
-                    'parent': '#leadAccordion',
-                    'toggle': false
-                });
-                app.helper.showVerticalScroll(jQuery(data).find('#leadAccordion'), {'setHeight': '350px'});
-                editViewObj.registerBasicEvents(data);
-                var checkBoxElements = instance.getConvertLeadModules();
+        if (!errorElement.length) {
+            let callBackFunction = function (data) {
+                let editViewObject = Vtiger_Edit_Js.getInstance();
+
+                app.helper.showVerticalScroll(jQuery(data).find('#leadAccordion'), {'setHeight': '60vh'});
+
+                editViewObject.registerBasicEvents(data);
+
+                let checkBoxElements = instance.getConvertLeadModules();
+
                 jQuery.each(checkBoxElements, function (index, element) {
                     instance.checkingModuleSelection(element);
                 });
+
                 instance.registerForReferenceField();
                 instance.registerForDisableCheckEvent();
                 instance.registerConvertLeadEvents();
                 instance.registerConvertLeadSubmit();
             }
-            app.helper.showModal(data, {"cb": callBackFunction});
+
+            app.helper.showModal(data, {'cb': callBackFunction});
         }
     },
     /*
@@ -127,9 +128,10 @@ Vtiger_Detail_Js("Leads_Detail_Js", {
      * to disable or enable all the elements with in the block
      */
     checkingModuleSelection: function (element) {
-        var instance = this;
-        var module = jQuery(element).val();
-        var moduleBlock = jQuery(element).closest('.accordion-group').find('#' + module + '_FieldInfo');
+        let instance = this,
+            module = jQuery(element).val(),
+            moduleBlock = jQuery(element).closest('.accordion-group').find('#' + module + '_FieldInfo');
+
         if (jQuery(element).is(':checked')) {
             instance.removeDisableAttr(moduleBlock);
         } else {

@@ -49,6 +49,24 @@
   --bs-btn-disabled-border-color: var(--bs-primary-color);
 }
 .btn-outline-primary {
+  --bs-btn-border-color: #5e81f4;
+  --bs-btn-color: #5e81f4;
+  --bs-gradient: none;
+
+  --bs-btn-active-color: #5e81f4;
+  --bs-btn-active-bg: #fff;
+  --bs-btn-active-border-color: #5e81f4;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+
+  --bs-btn-disabled-color: #8181a5;
+  --bs-btn-disabled-bg: #fff;
+  --bs-btn-disabled-border-color: #8181a5;
+
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #fff;
+  --bs-btn-hover-border-color: #475eab;
+}
+.btn-outline-secondary {
   --bs-btn-focus-shadow-rgb: 13,110,253;
   --bs-btn-active-color: #5e81f4;
   --bs-btn-active-bg: #fff;
@@ -63,6 +81,9 @@
   --bs-btn-hover-color: #1c1d21;
   --bs-btn-hover-bg: #fff;
   --bs-btn-hover-border-color: #9ab0f8;
+}
+.border-secondary {
+
 }
 .btn-success {
   --bs-btn-color: #fff;
@@ -321,7 +342,6 @@ body {
   vertical-align: top;
 }
 .search-link {
-  color: #AAAAAA;
   text-decoration: none;
   vertical-align: top;
 }
@@ -409,7 +429,7 @@ body {
   width: var(--menu-width);
   height: var(--header-height);
 }
-.app-indicator-icon-container .app-indicator-icon {
+.app-indicator-icon-container .app-indicator-icon, .bg-menu-icon {
   background: var(--menu-icon-background);
 }
 .app-indicator-icon-container .app-indicator-icon i {
@@ -469,7 +489,6 @@ body {
 }
 .app-menu {
   width: 100vw;
-  max-width: 1200px;
   max-height: 100vh;
   position: fixed;
   border: 0;
@@ -592,7 +611,7 @@ a.menu-item:hover {
   opacity: 0.2;
 }
 .app-menu .app-list {
-  max-height: 60vh;
+  max-height: calc(100vh - var(--header-height));
   overflow: auto;
 }
 .app-menu .app-list-divider {
@@ -1339,21 +1358,6 @@ input[type=checkbox]:checked {
 .edited {
   box-shadow: 0px 0px 2px 2px #CCCCCC;
 }
-.listview-pagejump {
-  text-align: center;
-  padding-bottom: 3px;
-}
-.listViewPagingInput {
-  width: 70px;
-  padding: 0px 5px;
-  vertical-align: middle;
-}
-#pageToJumpSubmit {
-  padding: 1px;
-  margin-left: -5px;
-  font-size: 10px;
-  width: 50px;
-}
 .listview-table-norecords {
   margin-bottom: 0;
   border-top: 0;
@@ -1776,14 +1780,6 @@ input[type=checkbox]:checked {
 .fieldValue {
   color: #222;
 }
-.importBlockContainer {
-  border: 1px solid #FBFBFB;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 5px;
-  background: #FBFBFB;
-  border-color: #FBFBFB;
-}
 .editViewContents .input.form-control:focus,
 .editViewContents .input.form-control:hover,
 .editViewContents .input.form-control:active {
@@ -1795,11 +1791,6 @@ input[type=checkbox]:checked {
 }
 .editViewContents td.fieldValue[colspan="3"] {
   width: 80%;
-}
-.editViewContents input[type="checkbox"],
-.editViewContents input[type="radio"] {
-  width: 15px;
-  height: 15px;
 }
 .fieldBlockContainer textarea.inputElement {
   height: auto;
@@ -2341,22 +2332,6 @@ input[type=checkbox]:checked {
 }
 .bg-info-custom-mod {
   background-color: #CCCC99;
-}
-.alert-static {
-  border-color: #eeeeee;
-  white-space: nowrap;
-  vertical-align: super;
-  padding-bottom: 0px;
-}
-.alert-static .icon {
-  font-size: medium;
-  color: #1B809E;
-  margin-left: 8px;
-  vertical-align: top;
-}
-.alert-static .message {
-  vertical-align: super;
-  font-size: 13px;
 }
 /*******************************************
 ************* Task Management **************
@@ -3825,12 +3800,6 @@ li.dashboardWidget {
   vertical-align: middle;
   margin-top: -1px;
 }
-.importview-content,
-.customview-content {
-  overflow-x: hidden;
-  overflow-y: auto;
-  max-height: 70vh;
-}
 .dashboardWidgetHeader .userList .select2 {
   width: 100% !important;
 }
@@ -4007,9 +3976,6 @@ hr {
 }
 .ui-slider .ui-slider-handle {
   z-index: 0;
-}
-.modal-overlay-footer {
-  border-left: var(--menu-width) solid var(--menu-bg);
 }
 #mass_action_add_comment textarea {
   max-width: 100%;
@@ -4410,8 +4376,8 @@ hr {
   min-width: 100px;
 }
 .lineItemPopover {
-  max-width: 600px;
-  width: 350px !important;
+  max-width: 60rem;
+  width: 30rem !important;
 }
 .span1 {
   width: 100px;
@@ -4466,11 +4432,6 @@ hr {
 }
 [name="existingImages"] > img {
   max-width: 100%;
-}
-.lineitemTableContainer,
-.lineItemTableDiv {
-  width: 100%;
-  overflow-x: auto;
 }
 /*******************************************
 *************** Mail Manager ***************
@@ -4754,10 +4715,6 @@ hr {
 }
 .table.detailview-table.no-border .ajaxEdited .input-group-addon {
   width: auto;
-}
-.input-group .form-control,
-.select2-container-multi .select2-choices {
-  z-index: 1;
 }
 /****** Customer Portal Settings ******/
 .nav .nav-stacks .cp-nav-header-wrapper > li.disabled > a:hover {
@@ -5071,10 +5028,6 @@ div.tooltip-inner {
 }
 .discountTotal {
   margin-top: 10px;
-}
-#lineItemTab .lineItemRow .listPrice {
-  float: left;
-  margin-right: 5px;
 }
 /***** Oursites Changes *****/
 .portal-table .table-actions {
@@ -6724,4 +6677,19 @@ a.btnReport:hover {
 
 .multiLevelTagList .editTag {
   display: none !important;
+}
+.w-15 {
+  width: 15%;
+}
+.w-10 {
+  width: 10%;
+}
+.w-30 {
+  width: 30%;
+}
+.w-20 {
+  width: 20%;
+}
+.w-40 {
+  width: 40%;
 }

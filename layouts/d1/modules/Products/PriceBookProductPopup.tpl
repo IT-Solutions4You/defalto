@@ -6,9 +6,6 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************}
-{* modules/Products/views/PriceBookProductPopup.php *}
-
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
 	<script type="text/javascript" src="{vresource_url('layouts/d1/modules/PriceBooks/resources/PriceBooksPopup.js')}"></script>
     <div class="modal-dialog modal-lg">
@@ -33,22 +30,26 @@
                         {if !empty($POPUP_CLASS_NAME)}
                             <input type="hidden" id="popUpClassName" value="{$POPUP_CLASS_NAME}"/>
                         {/if}
-                            <div id="popupContents" class="">
-                                {include file='PriceBookProductPopupContents.tpl'|@vtemplate_path:$PARENT_MODULE}
-                            </div>
+                        <div id="popupContents">
+                            {include file='PriceBookProductPopupContents.tpl'|@vtemplate_path:$PARENT_MODULE}
+                        </div>
                     </div>
                 </div>
-                <div class = "modal-footer">
+                <div class="modal-footer">
                     {if $LISTVIEW_ENTRIES_COUNT neq '0'}
-                        <center>
-                            <footer>
-                                <button class="btn btn-success addProducts" type="submit">
-                                    <i class="fa fa-plus"></i>&nbsp;&nbsp;
-                                    <strong>{vtranslate('LBL_ADD_TO_PRICEBOOKS', $MODULE)}</strong>
-                                </button>
-                                <a class="cancelLink" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                            </footer>
-                        </center>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-6 text-end">
+                                    <a class="cancelLink btn btn-primary" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-primary active addProducts" type="submit">
+                                        <i class="fa fa-plus"></i>
+                                        <strong class="ms-2">{vtranslate('LBL_ADD_TO_PRICEBOOKS', $MODULE)}</strong>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     {/if}
                 </div>
             </form>

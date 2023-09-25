@@ -96,17 +96,6 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
                     });
         });
         thisInstance.registerPopover();
-        detailContentsHolder.on('click', '.totalCostCalculationInfo', function(e) {
-            var element = jQuery(e.currentTarget);
-            element.popover({
-                'html': true,
-                'container':'body',
-                'placement': 'top',
-            }).data('bs.popover').tip().addClass('productBundlePopover');
-            element.one('shown.bs.popover',function(){
-                app.helper.showVerticalScroll(jQuery('.productBundlePopover .popover-content'));
-            });
-        });
     },
     /**
      * Function to register event for select button click on pricebooks in Products related list
@@ -161,9 +150,15 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
             relatedController.triggerRelationAdditionalActions();
         });
     },
-    registerPopover: function() {
-        if (jQuery('.totalCostCalculationInfo').length !== 0) {
-            jQuery('.totalCostCalculationInfo').popover({html: true, container: 'body', placement: 'top'}).data('bs.popover').tip().addClass('productBundlePopover');
+    registerPopover: function () {
+        let element = jQuery('.totalCostCalculationInfo');
+
+        if (element.length) {
+            let popover = new bootstrap.Popover(element, {html: true, container: 'body', placement: 'top', customClass: 'productBundlePopover'});
+
+            element.one('shown.bs.popover',function(){
+                app.helper.showVerticalScroll(jQuery('.productBundlePopover .popover-content'));
+            });
         }
     },
     registerBasicEvents: function(){
@@ -173,23 +168,27 @@ PriceBooks_Detail_Js("Products_Detail_Js", {
     /**
      * Function to register events
      */
-    registerEvents: function() {
-        var self = this;
-        app.event.on("post.RecordList.click", function(event, data) {
-            var responseData = JSON.parse(data);
+    registerEvents: function () {
+        let self = this;
+
+        app.event.on("post.RecordList.click", function (event, data) {
+            let responseData = JSON.parse(data);
             app.helper.hideModal();
-            var relatedController = self.getRelatedController();
+            let relatedController = self.getRelatedController();
             relatedController.addRelations(responseData).then(self.loadRelatedList());
         });
+
         this._super();
         this.registerEventForSelectOptionToShowBundleInInventory();
         this.registerEventForChangeTotalCost();
-        app.event.on("post.relatedListLoad.click", function() {
+
+        app.event.on("post.relatedListLoad.click", function () {
             self.registerPopover();
             self.registerEventForImageGraphics();
         });
-        app.event.on("popover.click.event", function(e) {
+
+        app.event.on("popover.click.event", function (e) {
             self.registerPopover();
         });
-            }
-        });
+    }
+});

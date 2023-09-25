@@ -30,30 +30,34 @@
                     {vtranslate('LBL_OF', $MODULE)}&nbsp;?
                 </span>
             </button>
-            <button type="button" id="PreviousPageButton" class="btn btn-outline-primary me-1" {if !$PAGING_MODEL->isPrevPageExists()} disabled {/if}>
+            <button type="button" id="PreviousPageButton" class="btn btn-outline-secondary me-1" {if !$PAGING_MODEL->isPrevPageExists()} disabled {/if}>
                 <i class="fa-solid fa-angle-left"></i>
                 <span class="ms-2">{vtranslate('LBL_PREV_LIST', $QUALIFIED_MODULE)}</span>
             </button>
             {if $SHOWPAGEJUMP}
-                <button type="button" id="PageJump" data-bs-toggle="dropdown" class="btn btn-outline-primary me-1">
+                <button type="button" id="PageJump" data-bs-toggle="dropdown" class="btn btn-outline-secondary me-1">
                     <i class="fa fa-ellipsis-h icon" title="{vtranslate('LBL_LISTVIEW_PAGE_JUMP',$QUALIFIED_MODULE)}"></i>
                 </button>
                 <ul class="{$CLASS_VIEW_BASIC_ACTION} dropdown-menu dropdown-menu-end" id="PageJumpDropDown">
                     <li>
                         <div class="listview-pagenum px-2 mb-2 text-center">
-                            <span>{vtranslate('LBL_PAGE',$moduleName)}</span>&nbsp;
-                            <strong><span>{$PAGE_NUMBER}</span></strong>&nbsp;
-                            <span>{vtranslate('LBL_OF',$moduleName)}</span>&nbsp;
-                            <strong><span id="totalPageCount"></span></strong>
+                            <span class="me-2">{vtranslate('LBL_PAGE',$moduleName)}</span>
+                            <strong class="me-2">
+                                <span>{$PAGE_NUMBER}</span>
+                            </strong>
+                            <span class="me-2">{vtranslate('LBL_OF',$moduleName)}</span>
+                            <strong>
+                                <span id="totalPageCount"></span>
+                            </strong>
                         </div>
                         <div class="listview-pagejump input-group p-0 px-2">
-                            <input type="text" id="pageToJump" placeholder="{vtranslate('LBL_LISTVIEW_JUMP_TO',$moduleName)}" class="form-control text-center {$CLASS_VIEW_PAGING_INPUT}"/>&nbsp;
+                            <input type="text" id="pageToJump" placeholder="{vtranslate('LBL_LISTVIEW_JUMP_TO',$moduleName)}" class="form-control text-center {$CLASS_VIEW_PAGING_INPUT}"/>
                             <button type="button" id="pageToJumpSubmit" class="btn btn-success text-center {$CLASS_VIEW_PAGING_INPUT_SUBMIT}">{'GO'}</button>
                         </div>
                     </li>
                 </ul>
             {/if}
-            <button type="button" id="NextPageButton" class="btn btn-outline-primary" {if !$PAGING_MODEL->isNextPageExists()}disabled{/if}>
+            <button type="button" id="NextPageButton" class="btn btn-outline-secondary" {if !$PAGING_MODEL->isNextPageExists()}disabled{/if}>
                 <span class="me-2">{vtranslate('LBL_NEXT_LIST', $QUALIFIED_MODULE)}</span>
                 <i class="fa-solid fa-angle-right"></i>
             </button>

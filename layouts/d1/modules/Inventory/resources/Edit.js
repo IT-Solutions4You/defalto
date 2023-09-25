@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Inventory_Edit_Js */
 Vtiger_Edit_Js("Inventory_Edit_Js", {
     
     zeroDiscountType : 'zero' ,
@@ -16,17 +16,22 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 	individualTaxType : 'individual',
 	groupTaxType :  'group',
     
-    lineItemPopOverTemplate : '<div class="popover lineItemPopover" role="tooltip"><div class="arrow"></div>\n\
-                                <h3 class="popover-title"></h3>\n\
-								<div class="popover-content"></div>\n\
-									<div class="modal-footer lineItemPopupModalFooter">\n\
-										<center>\n\
-										<button class="btn btn-success popoverButton" type="button"><strong>'+app.vtranslate('JS_LBL_SAVE')+'</strong></button>\n\
-										<a href="#" class="popoverCancel" type="reset">'+app.vtranslate('JS_LBL_CANCEL')+'</a>\n\
-										</center>\n\
-									</div>\n\
-                                </div>'
-    
+    lineItemPopOverTemplate : '<div class="popover lineItemPopover border-1" role="tooltip">\n\
+		<h3 class="popover-header p-3 m-0 border-bottom"></h3>\n\
+		<div class="popover-body popover-content"></div>\n\
+		<div class="modal-footer lineItemPopupModalFooter p-3">\n\
+			<div class="container-fluid p-0">\n\
+				<div class="row">\n\
+					<div class="col-6 text-end">\n\
+						<a href="#" class="btn btn-outline-primary popoverCancel" type="reset">'+app.vtranslate('JS_LBL_CANCEL')+'</a>\n\
+					</div>\n\
+					<div class="col-6 text-start">\n\
+						<a class="btn btn-primary active popoverButton" type="button"><strong>'+app.vtranslate('JS_LBL_SAVE')+'</strong></a>\n\
+					</div>\n\
+				</div>\n\
+			</div>\n\
+		</div>\n\
+	</div>'
 }, {
     
     //Will have the mapping of address fields based on the modules
@@ -560,11 +565,10 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		return this;
 	},
 
-	getNetTotal : function() {
-		var netTotal = this.netTotalEle.text();
-        if(netTotal)
-            return parseFloat(netTotal);
-        return 0;
+	getNetTotal: function () {
+		let netTotal = this.netTotalEle.text();
+
+		return netTotal ? parseFloat(netTotal) : 0;
 	},
 
 	/**
@@ -575,11 +579,10 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		return this;
 	},
 
-	getFinalDiscountTotal : function() {
-        var discountTotal = this.finalDiscountTotalEle.text();
-		if(discountTotal)
-			return parseFloat(discountTotal);
-		return 0;
+	getFinalDiscountTotal: function () {
+		let discountTotal = this.finalDiscountTotalEle.text();
+
+		return discountTotal ? parseFloat(discountTotal) : 0;
 	},
 
 	setGroupTaxTotal : function(groupTaxTotalValue) {
@@ -1314,20 +1317,21 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 	},
     
     calculateDeductTaxes : function() {
-		var self = this;
-		var netTotal = this.getNetTotal();
-        var finalDiscountValue = this.getFinalDiscountTotal();
-        var amount = parseFloat(netTotal-finalDiscountValue).toFixed(this.numOfCurrencyDecimals);
+		let self = this,
+			netTotal = this.getNetTotal(),
+			finalDiscountValue = this.getFinalDiscountTotal(),
+			amount = (netTotal - finalDiscountValue).toFixed(this.numOfCurrencyDecimals),
+			deductTaxesTotalAmount = 0;
 
-		var deductTaxesTotalAmount = 0;
 		this.dedutTaxesContainer.find('.deductTaxPercentage').each(function(index, domElement){
-				var value = 0;
-			var element = jQuery(domElement);
+			let value = 0,
+				element = jQuery(domElement);
+
 			if(!isNaN(element.val())) {
 				value = Math.abs(amount * element.val())/100;
 			}
 
-			value = parseFloat(value).toFixed(self.numOfCurrencyDecimals);
+			value = value.toFixed(self.numOfCurrencyDecimals);
 			element.closest('tr').find('.deductTaxValue').val(value);
 			deductTaxesTotalAmount = parseFloat(deductTaxesTotalAmount) + parseFloat(value);
 		});
@@ -1478,45 +1482,53 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		this.lineItemRowCalculations(lineItemRow);
 		this.lineItemToTalResultCalculations();
 	},
-    
-    getTaxDiv: function(taxObj,parentRow){
-		var rowNumber = jQuery('input.rowNumber',parentRow).val();
-		var loopIterator = 1;
-		var taxDiv =
-				'<div class="taxUI hide" id="tax_div'+rowNumber+'">'+
-                     '<p class="popover_title hide"> Set Tax for : <span class="variable"></span></p>';
-			if(!jQuery.isEmptyObject(taxObj)){
-				taxDiv +=
-					'<div class="individualTaxDiv">'+
-						'<table width="100%" border="0" cellpadding="5" cellspacing="0" class="table table-nobordered popupTable" id="tax_table'+rowNumber+'">';
 
-				for(var taxName in taxObj){
-					var taxInfo = taxObj[taxName];
-					taxDiv +=
-							'<tr>'+
-								'<td>  '+taxInfo.taxlabel+'</td>'+
-								'<td style="text-align: right;">'+
-									'<input type="text" name="'+taxName+'_percentage'+rowNumber+'" data-rule-positive=true data-rule-inventory_percentage=true  id="'+taxName+'_percentage'+rowNumber+'" value="'+taxInfo.taxpercentage+'" class="taxPercentage" data-compound-on='+taxInfo.compoundOn+' data-regions-list="'+taxInfo.regionsList+'">&nbsp;%'+
-								'</td>'+
-								'<td style="text-align: right; padding-right: 10px;">'+
-									'<input type="text" name="popup_tax_row'+rowNumber+'" class="cursorPointer span1 taxTotal taxTotal'+taxInfo.taxid+'" value="0.0" readonly>'+
-								'</td>'+
-							'</tr>';
-					loopIterator++;
-				}
+	getTaxDiv: function (taxObj, parentRow) {
+		let rowNumber = jQuery('input.rowNumber', parentRow).val(),
+			loopIterator = 1,
+			taxDiv =
+				'<div class="taxUI hide" id="tax_div' + rowNumber + '">' +
+				'<p class="popover_title hide"> Set Tax for : <span class="variable"></span></p>';
+
+		$('.taxUI', parentRow).remove();
+		$('.individualTaxForm', parentRow).remove();
+
+		if (!jQuery.isEmptyObject(taxObj)) {
+			taxDiv +=
+				'<div class="individualTaxDiv">' +
+				'<table width="100%" border="0" cellpadding="5" cellspacing="0" class="table table-nobordered popupTable" id="tax_table' + rowNumber + '">';
+
+			for (let taxName in taxObj) {
+				let taxInfo = taxObj[taxName];
 				taxDiv +=
-						'</table>'+
-					'</div>';
-			} else {
-				taxDiv +=
-					'<div class="textAlignCenter">'+
-						'<span>'+app.vtranslate('JS_NO_TAXES_EXISTS')+'</span>'+
-					'</div>';
+					'<tr>' +
+					'<td>  ' + taxInfo.taxlabel + '</td>' +
+					'<td class="text-end">' +
+					'<div class="input-group">' +
+					'<input type="text" name="' + taxName + '_percentage' + rowNumber + '" data-rule-positive=true data-rule-inventory_percentage=true  id="' + taxName + '_percentage' + rowNumber + '" value="' + taxInfo.taxpercentage + '" class="taxPercentage form-control" data-compound-on=' + taxInfo.compoundOn + ' data-regions-list="' + taxInfo.regionsList + '">' +
+					'<span class="input-group-text">%</span>' +
+					'</div>' +
+					'</td>' +
+					'<td class="text-end">' +
+					'<input type="text" name="popup_tax_row' + rowNumber + '" class="cursorPointer form-control taxTotal taxTotal' + taxInfo.taxid + '" value="0.0" readonly>' +
+					'</td>' +
+					'</tr>';
+				loopIterator++;
 			}
+			taxDiv +=
+				'</table>' +
+				'</div>';
+		} else {
+			taxDiv +=
+				'<div class="textAlignCenter">' +
+				'<span>' + app.vtranslate('JS_NO_TAXES_EXISTS') + '</span>' +
+				'</div>';
+		}
 
-			taxDiv += '</div>';
+		taxDiv += '</div>';
+
 		return jQuery(taxDiv);
-    },
+	},
     
     mapResultsToFields: function(parentRow,responseData){
 		var lineItemNameElment = jQuery('input.productName',parentRow);
@@ -1552,7 +1564,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 			jQuery('input.listPrice',parentRow).data('baseCurrencyId', recordData.baseCurrencyId);
 			jQuery('textarea.lineItemCommentBox',parentRow).val(description);
 			var taxUI = this.getTaxDiv(taxes,parentRow);
-            jQuery('.taxDivContainer',parentRow).html(taxUI);
+			jQuery('.individualTaxContainer', parentRow).after(taxUI);
 
 			//Take tax percentage according to tax-region, if region is selected.
 			var selectedRegionId = this.regionElement.val();
@@ -1762,99 +1774,111 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
             app.event.one('post.LineItemPriceBookSelect.click', postPriceBookPopupHandler);
 		});
 	 },
-     
-     registerLineItemTaxShowEvent : function() {
-		var self = this;
-		
-		this.lineItemsHolder.on('click','.individualTax',function(e){
-			var element = jQuery(e.currentTarget);
-			var response = self.isProductSelected(element);
-			if(response == false){
+
+	registerLineItemTaxShowEvent: function () {
+		const self = this;
+
+		self.lineItemsHolder.on('click', '.individualTax', function (e) {
+			let element = jQuery(e.currentTarget),
+				response = self.isProductSelected(element);
+
+			if (response == false) {
 				return;
 			}
-			element.popover('destroy');
-			var lineItemRow = self.getClosestLineItemRow(element);
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
 
-			var callBackFunction = function(element, data) {
+			let lineItemRow = self.getClosestLineItemRow(element);
 
-				data.on('focusout', '.taxPercentage', function(e) {
-					var currentTaxElement = jQuery(e.currentTarget);
+			self.hidePopovers();
+
+			let callBackFunction = function (element, data) {
+
+				data.on('focusout', '.taxPercentage', function (e) {
+					let currentTaxElement = jQuery(e.currentTarget);
+
 					if (currentTaxElement.valid()) {
-						var taxIdAttr = currentTaxElement.attr('id');
-						var taxElement = lineItemRow.find('.taxUI').find('#'+taxIdAttr);
+						let taxIdAttr = currentTaxElement.attr('id'),
+							taxElement = lineItemRow.find('.taxUI').find('#' + taxIdAttr);
+
 						taxElement.val(currentTaxElement.val());
 						self.calculateTaxForLineItem(lineItemRow);
-						var taxTotalValue = taxElement.closest('tr').find('.taxTotal').val();
+
+						let taxTotalValue = taxElement.closest('tr').find('.taxTotal').val();
 						currentTaxElement.closest('tr').find('.taxTotal').val(taxTotalValue);
 					}
 				});
 
-				data.find('.popoverButton').on('click', function(e){
-					var validate = data.find('input').valid();
-					if (validate) {
-						element.popover('destroy');
+				data.find('.popoverButton').on('click', function (e) {
+					let inputs = data.find('input');
+
+					if(!inputs.length) {
+						self.hidePopover(element.next('.popover'))
+					} else if (inputs.valid()) {
+						self.hidePopover(element.next('.popover'))
 						self.taxPercentageChangeActions(lineItemRow);
 					}
 				});
 
-				data.find('.popoverCancel').on('click', function(e) {
+				data.find('.popoverCancel').on('click', function (e) {
 					self.getForm().find("div[id^=qtip-]").qtip('destroy');
-					element.popover('destroy');
+					self.hidePopover(element.next('.popover'))
 				});
 			};
 
-			var parentElem = jQuery(e.currentTarget).closest('td');
+			let parentElem = jQuery(e.currentTarget).closest('td'),
+				taxUI = parentElem.find('div.taxUI').removeClass('hide').addClass('show');
 
-			var taxUI = parentElem.find('div.taxUI').clone(true, true).removeClass('hide').addClass('show');
-			taxUI.find('div.individualTaxDiv').removeClass('hide').addClass('show');
-            var popOverTitle = taxUI.find('.popover_title').find('.variable').text(self.getTotalAfterDiscount(lineItemRow)).closest('.popover_title').text();
-			var template = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate);
-            template.addClass('individualTaxForm');
-            element.popover({
-                'content' : taxUI,
-                'html' : true,
-                'placement' : 'top',
-                'animation' : true,
-                'title' : popOverTitle,
-                'trigger' : 'manual',
-                'template' : template,
-                'container' : self.lineItemsHolder
-                
-            });
-            element.one('shown.bs.popover', function(e) {
-				callBackFunction(element, jQuery('.individualTaxForm'));
-				if(element.next('.popover').find('.popover-content').height() > 300) {
-					app.helper.showScroll(element.next('.popover').find('.popover-content'), {'height': '300px'});
-				}
-            })
-            element.popover('toggle');
+			taxUI.find('div.individualTaxDiv').removeClass('hide');
 
+			let popOverTitle = taxUI.find('.popover_title').find('.variable').text(self.getTotalAfterDiscount(lineItemRow)).closest('.popover_title').text(),
+				popoverId = '#' + element.attr('aria-describedby'),
+				popoverElement = $(popoverId);
+
+			if (!popoverElement.length) {
+				self.getPopover(element, {
+					content: taxUI,
+					title: popOverTitle,
+					customClass: 'individualTaxForm',
+					show: true,
+				});
+
+				element.one('shown.bs.popover', function (e) {
+					callBackFunction(element, jQuery('.individualTaxForm', element.parent()));
+
+					if (element.next('.popover').find('.popover-content').height() > 300) {
+						app.helper.showScroll(element.next('.popover').find('.popover-content'), {'height': '300px'});
+					}
+				});
+			} else {
+				self.togglePopover(popoverElement);
+			}
 		});
-	 },
-     
-     registerTaxTypeChange : function() {
-		var self = this;
-		
-		this.taxTypeElement.on('change', function(e){
-			if(self.isIndividualTaxMode()) {
-				jQuery('#group_tax_row').addClass('hide');
-				self.lineItemsHolder.find('tr.'+self.lineItemDetectingClass).each(function(index,domElement){
-					var lineItemRow = jQuery(domElement);
-					lineItemRow.find('.individualTaxContainer,.productTaxTotal').removeClass('hide');
+	},
+
+	registerTaxTypeChange: function () {
+		const self = this;
+
+		self.taxTypeElement.on('change', function (e) {
+			if (self.isIndividualTaxMode()) {
+				jQuery('#group_tax_row').addClass('opacity-0');
+				self.lineItemsHolder.find('tr.' + self.lineItemDetectingClass).each(function (index, domElement) {
+					let lineItemRow = jQuery(domElement);
+
+					lineItemRow.find('.individualTaxContainer,.productTaxTotal').removeClass('opacity-0');
 					self.lineItemRowCalculations(lineItemRow);
 				});
-			}else{
-				jQuery('#group_tax_row').removeClass('hide');
-				self.lineItemsHolder.find('tr.'+ self.lineItemDetectingClass).each(function(index,domElement){
-					var lineItemRow = jQuery(domElement);
-					lineItemRow.find('.individualTaxContainer,.productTaxTotal').addClass('hide');
+			} else {
+				jQuery('#group_tax_row').removeClass('opacity-0');
+				self.lineItemsHolder.find('tr.' + self.lineItemDetectingClass).each(function (index, domElement) {
+					let lineItemRow = jQuery(domElement);
+
+					lineItemRow.find('.individualTaxContainer,.productTaxTotal').addClass('opacity-0');
 					self.calculateLineItemNetPrice(lineItemRow);
 				});
 			}
+
 			self.lineItemToTalResultCalculations();
 		});
-	 },
+	},
      
      registerCurrencyChangeEvent : function() {
 		var self = this;
@@ -1903,172 +1927,154 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 			self.prevSelectedCurrencyConversionRate = false;
 		});
 	 },
-     
-     registerLineItemDiscountShowEvent : function() {
-		var self = this;
-		
-		this.lineItemsHolder.on('click', '.individualDiscount', function(e){
-			var element = jQuery(e.currentTarget);
-			var response = self.isProductSelected(element);
-			if(response == false){
+
+	registerLineItemDiscountShowEvent: function () {
+		const self = this;
+
+		self.lineItemsHolder.on('click', '.individualDiscount', function (e) {
+			let element = jQuery(e.currentTarget),
+				response = self.isProductSelected(element);
+
+			if (response == false) {
 				return;
 			}
-			element.popover('destroy');
-            var lineItemRow = self.getClosestLineItemRow(element);
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-            
-			var callBackFunction = function(element, data) {
-				var triggerDiscountChangeEvent = function(discountDiv) {
-					var selectedDiscountType = discountDiv.find('input.discounts').filter(':checked');
-					var discountType = selectedDiscountType.data('discountType');
 
-					var rowAmountField = jQuery('input.discount_amount', discountDiv);
-					var rowPercentageField = jQuery('input.discount_percentage', discountDiv);
+			let lineItemRow = self.getClosestLineItemRow(element);
+
+			self.hidePopovers();
+
+			let callBackFunction = function (element, data) {
+				let triggerDiscountChangeEvent = function (discountDiv) {
+					let selectedDiscountType = discountDiv.find('input.discounts').filter(':checked'),
+						discountType = selectedDiscountType.data('discountType'),
+						rowAmountField = jQuery('input.discount_amount', discountDiv),
+						rowPercentageField = jQuery('input.discount_percentage', discountDiv);
 
 					rowAmountField.hide();
 					rowPercentageField.hide();
-                    if (discountType == Inventory_Edit_Js.percentageDiscountType) {
-                    	rowPercentageField.show().removeClass('hide').focus();
-					} else if (discountType == Inventory_Edit_Js.directAmountDiscountType) {
-                    	rowAmountField.show().removeClass('hide').focus();
+
+					if (discountType === Inventory_Edit_Js.percentageDiscountType) {
+						rowPercentageField.show().removeClass('hide').focus();
+					} else if (discountType === Inventory_Edit_Js.directAmountDiscountType) {
+						rowAmountField.show().removeClass('hide').focus();
 					}
 				};
 
-				var discountDiv = jQuery('div.discountUI', data);
+				let discountDiv = jQuery('div.discountUI', data);
+
 				triggerDiscountChangeEvent(discountDiv);
 
-				data.on('change', '.discounts', function(e) {
-                    var ele = jQuery(e.currentTarget);
-					var discountDiv = ele.closest('div.discountUI');
-					triggerDiscountChangeEvent(discountDiv);
+				data.on('change', '.discounts', function (e) {
+					let ele = jQuery(e.currentTarget),
+						discountDiv = ele.closest('div.discountUI');
 
+					triggerDiscountChangeEvent(discountDiv);
 				});
 
-				data.find('.popoverButton').on('click', function(e){
-					var validate = data.find('input').valid();
-					if (validate) {
-						//if the element is not hidden then we need to handle the focus out
-						//	if (!app.isHidden(saveButtonElement)) {
-						//	var globalModal = saveButtonElement.closest('#globalmodal');
-						//	var discountDiv = globalModal.find('div.discountUI');
-						var selectedDiscountType = discountDiv.find('input.discounts').filter(':checked');
-						var discountType = selectedDiscountType.data('discountType');
-						var discountRow = selectedDiscountType.closest('tr');
+				data.find('.popoverButton').on('click', function (e) {
+					let validate = data.find('input').valid();
 
-						var discountValue = discountRow.find('.discountVal').val();
+					if (validate) {
+						let selectedDiscountType = discountDiv.find('input.discounts').filter(':checked'),
+							discountType = selectedDiscountType.data('discountType'),
+							discountRow = selectedDiscountType.closest('tr'),
+							discountValue = discountRow.find('.discountVal').val();
+
 						if (discountValue == "" || isNaN(discountValue) || discountValue < 0) {
 							discountValue = 0;
 						}
 
-						var discountDivId = discountDiv.attr('id');
-						var oldDiscountDiv = jQuery('#' + discountDivId, lineItemRow);
+						let discountDivId = discountDiv.attr('id'),
+							oldDiscountDiv = jQuery('#' + discountDivId, lineItemRow),
+							discountTypes = oldDiscountDiv.find('input.discounts');
 
-						var discountTypes = oldDiscountDiv.find('input.discounts');
-						jQuery.each(discountTypes, function(index, type) {
-							var type = jQuery(type);
+						jQuery.each(discountTypes, function (index, type) {
+							type = jQuery(type);
+
 							type.prop('checked', false);
 						});
-						jQuery.each(discountTypes, function(index, type) {
-							var type = jQuery(type);
-							var discountTypeOfType = type.data('discountType');
-							if (discountTypeOfType == discountType) {
+						jQuery.each(discountTypes, function (index, type) {
+							type = jQuery(type);
+
+							let discountTypeOfType = type.data('discountType');
+
+							if (discountTypeOfType === discountType) {
 								type.prop('checked', true);
 							}
 						});
 
-						if (discountType == Inventory_Edit_Js.percentageDiscountType) {
+						if (discountType === Inventory_Edit_Js.percentageDiscountType) {
 							jQuery('input.discount_percentage', oldDiscountDiv).val(discountValue);
-						} else if (discountType == Inventory_Edit_Js.directAmountDiscountType) {
+						} else if (discountType === Inventory_Edit_Js.directAmountDiscountType) {
 							jQuery('input.discount_amount', oldDiscountDiv).val(discountValue);
 						}
-						element.popover('destroy');
+
+						self.hidePopover(element.next('.popover'));
 						self.lineItemDiscountChangeActions(lineItemRow);
-//						}
 					}
 				});
 
-				data.find('.popoverCancel').on('click', function(e) {
+				data.find('.popoverCancel').on('click', function (e) {
 					self.getForm().find("div[id^=qtip-]").qtip('destroy');
-					element.popover('destroy');
+					self.hidePopover(element.next('.popover'));
 				});
-            }
+			}
 
-			var parentElem = jQuery(e.currentTarget).closest('td');
+			let discountUiId = element.parent().find('.discountUI').attr('id'),
+				discountUI = $('#' + discountUiId).removeClass('hide'),
+				popoverId = '#' + element.attr('aria-describedby'),
+				popoverElement = $(popoverId);
 
-			var discountUI = parentElem.find('div.discountUI').clone(true, true).removeClass('hide').addClass('show');
-            var template = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate);
-            template.addClass('discountForm');
-            var productTotal = self.getLineItemTotal(lineItemRow);
-            var popOverTitle = discountUI.find('.popover_title').find('.variable').text(productTotal).closest('.popover_title').text();
-			element.popover({
-                'content' : discountUI,
-                'html' : true,
-                'placement' : 'top',
-                'animation' : true,
-                'title' : popOverTitle,
-                'trigger' : 'manual',
-                'template' : template,
-                'container' : self.lineItemsHolder
-                
-            });
-            element.one('shown.bs.popover', function(e) {
-				callBackFunction(element, jQuery('.discountForm'));
-				if(element.next('.popover').find('.popover-content').height() > 300) {
-					app.helper.showScroll(element.next('.popover').find('.popover-content'), {'height': '300px'});
-				}
-            })
-            element.popover('toggle');
+
+			if (!popoverElement.length) {
+				self.getPopover(element, {
+					show: true,
+					content: discountUI,
+					customClass: 'discountForm',
+				})
+
+				element.one('shown.bs.popover', function (e) {
+					callBackFunction(element, $('.discountForm', element.parent()));
+
+					if (element.next('.popover').find('.popover-content').height() > 300) {
+						app.helper.showScroll(element.next('.popover').find('.popover-content'), {'height': '300px'});
+					}
+				});
+			}
+
+			self.togglePopover(popoverElement);
 		});
 	},
-    
-    registerFinalDiscountShowEvent : function(){
-        var self = this;
-		var finalDiscountUI = jQuery('#finalDiscountUI').clone(true,true).removeClass('hide');
-        jQuery('#finalDiscountUI').remove();
 
-        var popOverTemplate = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate).css('opacity',0).css('z-index','-1');
-        this.finalDiscountEle.popover({
-			'content' : finalDiscountUI,
-			'html' : true,
-			'placement' : 'left',
-			'animation' : true,
-			'title' : 'Discount',
-			'trigger' : 'manual',
-			'template' : popOverTemplate
-                
-		});
-		this.finalDiscountEle.on('shown.bs.popover', function(){
-			if(jQuery(this.finalDiscountEle).next('.popover').find('.popover-content').height() > 300) {
-				app.helper.showScroll(jQuery(this.finalDiscountEle).next('.popover').find('.popover-content'), {'height': '300px'});
+	registerFinalDiscountShowEvent: function () {
+		let self = this,
+			finalDiscountTrigger = self.finalDiscountEle,
+			finalDiscountUI = self.finalDiscountUIEle.detach().removeClass('hide'),
+			popover = self.getPopover(finalDiscountTrigger, {
+				'content': finalDiscountUI,
+			}),
+			popoverId = '#' + finalDiscountTrigger.attr('aria-describedby'),
+			popoverElement = $(popoverId);
+
+		self.finalDiscountEle.on('shown.bs.popover', function () {
+			if (jQuery(self.finalDiscountEle).next('.popover').find('.popover-content').height() > 300) {
+				app.helper.showScroll(jQuery(self.finalDiscountEle).next('.popover').find('.popover-content'), {'height': '300px'});
 			}
-			var finalDiscountUI = jQuery('#finalDiscountUI');
-			var finalDiscountPopOver = finalDiscountUI.closest('.popover');
-			finalDiscountPopOver.find('.popoverButton').on('click', function(e){
-				var validate = finalDiscountUI.find('input').valid();
-				if(validate) {
-					finalDiscountUI.closest('.popover').css('opacity',0).css('z-index','-1');
+
+			let finalDiscountUI = jQuery('#finalDiscountUI'),
+				finalDiscountPopOver = finalDiscountUI.closest('.popover');
+
+			finalDiscountPopOver.find('.popoverButton').on('click', function (e) {
+				let inputs = finalDiscountUI.find('input');
+
+				if (!inputs.length) {
+					self.hidePopover(popoverElement);
+				} else if (inputs.valid()) {
+					self.hidePopover(popoverElement);
 					self.finalDiscountChangeActions();
 				}
 			});
-       });
-       this.finalDiscountEle.popover('show');
-       var popOverId = this.finalDiscountEle.attr('aria-describedby');
-       var popOverEle = jQuery('#'+popOverId);
-       
-       //update local cache element
-       this.finalDiscountUIEle = jQuery('#finalDiscountUI');
-       
-       this.finalDiscountEle.on('click', function(e){
-		   self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-
-          if(popOverEle.css('opacity') == '0') {
-              self.finalDiscountEle.popover('show');
-              popOverEle.find('.popover-title').text(popOverEle.find('.popover_title').text());
-              popOverEle.css('opacity',1).css('z-index','');
-          }else{
-              popOverEle.css('opacity',0).css('z-index','-1');
-          }
-       });
+		});
 	},
     
     registerFinalDiscountChangeEvent : function() {
@@ -2097,55 +2103,75 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
             }
 		});
 	},
-    
-    registerChargeBlockShowEvent : function(){
-        var self = this;
-		var chargesTrigger = jQuery('#charges');
-		var chargesUI = this.chargesContainer.removeClass('hide');
+	getLineItemPopOverTemplate: function () {
+		let element = $(Inventory_Edit_Js.lineItemPopOverTemplate);
 
-        var popOverTemplate = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate).css('opacity',0).css('z-index','-1');
-        chargesTrigger.popover({
-                'content' : chargesUI,
-                'html' : true,
-                'placement' : 'left',
-                'animation' : true,
-                'title' : chargesTrigger.text(),
-                'trigger' : 'manual',
-                'template' : popOverTemplate
-                
-        });
+		element.css({opacity: 0, visibility: 'hidden', 'z-index': -1});
 
-		chargesTrigger.on('shown.bs.popover', function(){
-			if(chargesTrigger.next('.popover').find('.popover-content').height() > 300) {
+		return element;
+	},
+	getPopover: function (popoverTrigger, params = {}) {
+		let self = this,
+			popOverTemplate = self.getLineItemPopOverTemplate(),
+			popoverParams = jQuery.extend({
+				'html': true,
+				'placement': 'left',
+				'animation': true,
+				'title': popoverTrigger.find('strong').text(),
+				'trigger': 'manual',
+				'container': popoverTrigger.parent(),
+				'template': popOverTemplate[0].outerHTML,
+			}, params),
+			popover = new bootstrap.Popover(popoverTrigger, popoverParams);
+
+		popover.show();
+
+		self.registerPopoverClick(popover, popoverTrigger, popoverParams);
+
+		return popover;
+	},
+	getPopoverElement: function (popoverTrigger) {
+		return $('#' + popoverTrigger.attr('aria-describedby'));
+	},
+	registerPopoverClick: function (popover, popoverTrigger, popoverParams) {
+		const self = this,
+			popoverElement = self.getPopoverElement(popoverTrigger);
+
+		if (true !== popoverParams['show']) {
+			self.hidePopover(popoverElement);
+		}
+
+		popoverTrigger.on('click', function (e) {
+			self.hidePopovers();
+			self.togglePopover(popoverElement);
+		});
+	},
+	registerChargeBlockShowEvent: function () {
+		let self = this,
+			chargesTrigger = jQuery('#charges'),
+			chargesUI = self.chargesContainer.removeClass('hide'),
+			popover = self.getPopover(chargesTrigger, {
+				'content': chargesUI,
+			});
+
+		chargesTrigger.on('shown.bs.popover', function () {
+			if (chargesTrigger.next('.popover').find('.popover-content').height() > 300) {
 				app.helper.showScroll(chargesTrigger.next('.popover').find('.popover-content'), {'height': '300px'});
 			}
-			var chargesForm = jQuery('#chargesBlock').closest('.lineItemPopover');
 
-			chargesForm.find('.popoverButton').on('click', function(e){
-				var validate = chargesForm.find('input').valid();
-				if (validate) {
-					chargesForm.closest('.popover').css('opacity',0).css('z-index','-1');
+			let chargesForm = jQuery('#chargesBlock').closest('.lineItemPopover');
+
+			chargesForm.find('.popoverButton').on('click', function (e) {
+				let inputs = chargesForm.find('input');
+
+				if (!inputs.length) {
+					self.hidePopover(chargesForm.closest('.popover'));
+				} else if (inputs.valid()) {
+					self.hidePopover(chargesForm.closest('.popover'));
 					self.calculateCharges();
 				}
 			});
 		});
-
-        chargesTrigger.popover('show');
-        var popOverId = chargesTrigger.attr('aria-describedby');
-        var popOverEle = jQuery('#'+popOverId);
-
-        chargesTrigger.on('click', function(e){
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-
-           if(popOverEle.css('opacity') == '0') {
-               chargesTrigger.popover('show');
-               popOverEle.css('opacity',1).css('z-index','');
-           }else{
-			   chargesTrigger.popover('hide');
-               popOverEle.css('opacity',0).css('z-index','-1');
-           }
-        });
-
 	},
     
     registerChargeBlockChangeEvent : function(){
@@ -2161,55 +2187,34 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
         
 		this.calculateCharges();
 	},
-    
-    registerGroupTaxShowEvent : function() {
-        var self = this;
-        var finalTaxTriggerer = jQuery('#finalTax');
-        var finalTaxUI = jQuery('#group_tax_row').find('.finalTaxUI').removeClass('hide');
-		        
-        var popOverTemplate = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate).css('opacity',0).css('z-index','-1');
-        finalTaxTriggerer.popover({
-                'content' : finalTaxUI,
-                'html' : true,
-                'placement' : 'left',
-                'animation' : true,
-                'title' : finalTaxUI.find('.popover_title').val(),
-                'trigger' : 'manual',
-                'template' : popOverTemplate
-                
-        });
 
-		finalTaxTriggerer.on('shown.bs.popover', function(){
-			var finalTaxForm = jQuery('#group_tax_row').find('.finalTaxUI').closest('.lineItemPopover');
-			if(finalTaxTriggerer.next('.popover').find('.popover-content').height() > 300) {
-				app.helper.showScroll(finalTaxTriggerer.next('.popover').find('.popover-content'), {'height': '300px'});
+	registerGroupTaxShowEvent: function () {
+		let self = this,
+			finalTaxTrigger = jQuery('#finalTax'),
+			finalTaxUI = jQuery('#group_tax_row .finalTaxUI').removeClass('hide'),
+			popover = self.getPopover(finalTaxTrigger, {
+				'content': finalTaxUI,
+			});
+
+		finalTaxTrigger.on('shown.bs.popover', function () {
+			let finalTaxForm = jQuery('#group_tax_row .finalTaxUI').closest('.lineItemPopover');
+
+			if (finalTaxTrigger.next('.popover').find('.popover-content').height() > 300) {
+				app.helper.showScroll(finalTaxTrigger.next('.popover').find('.popover-content'), {'height': '300px'});
 			}
 
-			finalTaxForm.find('.popoverButton').on('click', function(e){
-				var validate = finalTaxForm.find('input').valid();
-				if (validate) {
-					finalTaxForm.closest('.popover').css('opacity',0).css('z-index','-1');
+			finalTaxForm.find('.popoverButton').on('click', function (e) {
+				let inputs = finalTaxForm.find('input');
+
+				if (!inputs.length) {
+					self.hidePopover(finalTaxForm.closest('.popover'));
+				} else if (inputs.valid()) {
+					self.hidePopover(finalTaxForm.closest('.popover'));
 					self.calculateGroupTax();
-                    self.calculateGrandTotal();
+					self.calculateGrandTotal();
 				}
 			});
 		});
-
-        finalTaxTriggerer.popover('show');
-        var popOverId = finalTaxTriggerer.attr('aria-describedby');
-        var popOverEle = jQuery('#'+popOverId);
-
-        finalTaxTriggerer.on('click', function(e){
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-
-			if(popOverEle.css('opacity') == '0') {
-				finalTaxTriggerer.popover('show');
-				popOverEle.css('opacity',1).css('z-index','');
-			} else {
-				finalTaxTriggerer.popover('hide');
-				popOverEle.css('opacity',0).css('z-index','-1');
-			}
-        });
 	},
 
 	registerGroupTaxChangeEvent : function() {
@@ -2224,57 +2229,39 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		});
         
 	},
-    
-    registerChargeTaxesShowEvent : function(){
-        var self = this;
-		var chargeTaxTriggerer = jQuery('#chargeTaxes');
-        var chargeTaxesUI =  this.chargeTaxesContainer.removeClass('hide');
-        
-        var popOverTemplate = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate).css('opacity',0).css('z-index','-1');
-        chargeTaxTriggerer.popover({
-                'content' : chargeTaxesUI,
-                'html' : true,
-                'placement' : 'left',
-                'animation' : true,
-                'title' : 'Discount',
-                'trigger' : 'manual',
-                'template' : popOverTemplate
-                
-        });
 
-		chargeTaxTriggerer.on('shown.bs.popover', function(){
-			if(chargeTaxTriggerer.next('.popover').find('.popover-content').height() > 300) {
-				app.helper.showScroll(chargeTaxTriggerer.next('.popover').find('.popover-content'), {'height': '300px'});
+	registerChargeTaxesShowEvent: function () {
+		let self = this,
+			chargeTaxTrigger = jQuery('#chargeTaxes'),
+			chargeTaxesUI = this.chargeTaxesContainer.removeClass('hide'),
+			popover = self.getPopover(chargeTaxTrigger, {
+				'content': chargeTaxesUI,
+			});
+
+		chargeTaxTrigger.on('shown.bs.popover', function () {
+			if (chargeTaxTrigger.next('.popover').find('.popover-content').height() > 300) {
+				app.helper.showScroll(chargeTaxTrigger.next('.popover').find('.popover-content'), {'height': '10em'});
 			}
-			var chargesTaxForm = self.chargeTaxesContainer.closest('.lineItemPopover');
 
-			chargesTaxForm.find('.popoverButton').on('click', function(e){
-				var validate = chargesTaxForm.find('input').valid();
-				if (validate) {
-					chargesTaxForm.closest('.popover').css('opacity',0).css('z-index','-1');
+			let chargesTaxForm = self.chargeTaxesContainer.closest('.lineItemPopover');
+
+			chargesTaxForm.find('.popoverButton').on('click', function (e) {
+				let inputs = chargesTaxForm.find('input');
+
+				if (!inputs.length) {
+					self.hidePopover(chargesTaxForm.closest('.popover'));
+				} else if (inputs.valid()) {
+					self.hidePopover(chargesTaxForm.closest('.popover'));
 					self.calculateChargeTaxes();
 				}
 			});
 		});
-
-        chargeTaxTriggerer.popover('show');
-        var popOverId = chargeTaxTriggerer.attr('aria-describedby');
-        var popOverEle = jQuery('#'+popOverId);
-
-        chargeTaxTriggerer.on('click', function(e){
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-
-			if(popOverEle.css('opacity') == '0') {
-				chargeTaxTriggerer.popover('show');
-				popOverEle.find('.popover-title').text(popOverEle.find('.popover_title').text());
-				popOverEle.css('opacity',1).css('z-index','');
-			} else {
-				chargeTaxTriggerer.popover('hide');
-				popOverEle.css('opacity',0).css('z-index','-1');
-			}
-        });
 	},
+	hidePopovers: function () {
+		const self = this;
 
+		self.hidePopover(self.getForm().find('.popover'));
+	},
 	registerChargeTaxesChangeEvent : function(){
 		var self = this;
         
@@ -2286,56 +2273,49 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 
 		this.calculateChargeTaxes();
     },
-    
-    registerDeductTaxesShowEvent : function(){
-        var self = this;
-		var deductTaxesTriggerer = jQuery('#deductTaxes');
-        var deductTaxForm = this.dedutTaxesContainer.removeClass('hide');
-        
-        var popOverTemplate = jQuery(Inventory_Edit_Js.lineItemPopOverTemplate).css('opacity',0).css('z-index','-1');
-        deductTaxesTriggerer.popover({
-                'content' : deductTaxForm,
-                'html' : true,
-                'placement' : 'left',
-                'animation' : true,
-                'title' : deductTaxesTriggerer.text(),
-                'trigger' : 'manual',
-                'template' : popOverTemplate
-                
-        });
 
-		deductTaxesTriggerer.on('shown.bs.popover', function(){
-			if(deductTaxesTriggerer.next('.popover').find('.popover-content').height() > 300) {
-				app.helper.showScroll(deductTaxesTriggerer.next('.popover').find('.popover-content'), {'height': '300px'});
+	registerDeductTaxesShowEvent: function () {
+		let self = this,
+			deductTaxesTrigger = jQuery('#deductTaxes'),
+			deductTaxForm = this.dedutTaxesContainer.removeClass('hide'),
+			popover = self.getPopover(deductTaxesTrigger, {
+				'content': deductTaxForm,
+			});
+
+		deductTaxesTrigger.on('shown.bs.popover', function () {
+			if (deductTaxesTrigger.next('.popover').find('.popover-content').height() > 300) {
+				app.helper.showScroll(deductTaxesTrigger.next('.popover').find('.popover-content'), {'height': '300px'});
 			}
-			var deductTaxForm = self.dedutTaxesContainer.closest('.lineItemPopover');
 
-			deductTaxForm.find('.popoverButton').on('click', function(e){
-				var validate = deductTaxForm.find('input').valid();
-				if (validate) {
-					deductTaxForm.closest('.popover').css('opacity',0).css('z-index','-1');
+			let deductTaxForm = self.dedutTaxesContainer.closest('.lineItemPopover');
+
+			deductTaxForm.find('.popoverButton').on('click', function (e) {
+				let inputs = deductTaxForm.find('input');
+
+				if (!inputs.length) {
+					self.hidePopover(deductTaxForm.closest('.popover'));
+				} else if (inputs.valid()) {
+					self.hidePopover(deductTaxForm.closest('.popover'));
 					self.calculateDeductTaxes();
 				}
 			});
 		});
-
-        deductTaxesTriggerer.popover('show');
-        var popOverId = deductTaxesTriggerer.attr('aria-describedby');
-        var popOverEle = jQuery('#'+popOverId);
-
-        deductTaxesTriggerer.on('click', function(e){
-			self.getForm().find('.popover.lineItemPopover').css('opacity', 0).css('z-index', '-1');
-
-			if(popOverEle.css('opacity') == '0') {
-				deductTaxesTriggerer.popover('show');
-				popOverEle.css('opacity',1).css('z-index','');
-			} else {
-				deductTaxesTriggerer.popover('hide');
-				popOverEle.css('opacity',0).css('z-index','-1');
-			}
-        });
 	},
+	togglePopover: function (element) {
+		const self = this;
 
+		if (0 === parseFloat(element.css('opacity'))) {
+			self.showPopover(element);
+		} else {
+			self.hidePopover(element);
+		}
+	},
+	showPopover: function (element) {
+		element.css({opacity: 1, visibility: 'visible', 'z-index': ''});
+	},
+	hidePopover: function (element) {
+		element.css({opacity: 0, visibility: 'hidden', 'z-index': -1});
+	},
 	registerDeductTaxesChangeEvent : function(){
 		var self = this;
         

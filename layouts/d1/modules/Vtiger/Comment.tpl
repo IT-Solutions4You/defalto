@@ -45,10 +45,10 @@
                                 </span>
                             {/if}
                             <span class="commentTime text-secondary cursorDefault">
-                                <span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
+                                <span class="me-2" title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
                             </span>
                             {if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
-                                <span>
+                                <span class="text-secondary">
                                     {if $COMMENT->get('is_private')}
                                         <i class="fa fa-lock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
                                     {else}

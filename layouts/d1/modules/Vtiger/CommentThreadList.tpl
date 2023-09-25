@@ -14,10 +14,10 @@
 <div class="commentDiv cursorPointer mb-3">
 	<div class="singleComment">
 		<input type="hidden" name="is_private" value="{$COMMENT->get('is_private')}">
-		<div class="commentInfoHeader" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}">
+		<div class="commentInfoHeader container-fluid" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}">
 			{assign var=PARENT_COMMENT_MODEL value=$COMMENT->getParentCommentModel()}
 			{assign var=CHILD_COMMENTS_MODEL value=$COMMENT->getChildComments()}
-			<div class="row media" {if $COMMENT->get('is_private')}style="background: #fff9ea;"{/if}>
+			<div class="media row">
 				<div class="col-auto p-0 media-left title" id="{$COMMENT->getId()}">
 					{assign var=CREATOR_NAME value=$COMMENT->getCommentedByName()}
 					<div class="col-lg-2 recordImage rounded-circle commentInfoHeader" style="width: 1.8rem; height: 1.8rem;" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}" data-relatedto = "{$COMMENT->get('related_to')}">
@@ -34,15 +34,22 @@
 						<div>
 							<span class="creatorName fw-bold" >
 								{$CREATOR_NAME}
-							</span>&nbsp;
+							</span>
 							<span class="commentTime text-secondary cursorDefault">
 								<span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
 							</span>
+							{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
+								<span class="text-secondary ms-2">
+									{if $COMMENT->get('is_private')}
+										<i class="fa-solid fa-lock text-warning"></i>
+									{else}
+										<i class="fa-solid fa-lock-open"></i>
+									{/if}
+								</span>
+							{/if}
 						</div>
 						<div class="commentInfoContentBlock mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
-							<span class="commentInfoContent">
-								{nl2br($COMMENT->get('commentcontent'))}
-							</span>
+							<span class="commentInfoContent">{nl2br($COMMENT->get('commentcontent'))}</span>
 						</div>
 						<div class="commemntActionsubblock ms-4 my-2">
 							<div class="commentActionsContainer">

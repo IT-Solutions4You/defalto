@@ -17,7 +17,7 @@
             </span>
         </span>
         <span id="addTagContainer">
-            <a id="addTagTriggerer" class="btn btn-outline-primary mb-1 me-1">
+            <a id="addTagTriggerer" class="btn btn-outline-secondary mb-1 me-1">
                 <i class="fa fa-plus"></i>
                 {vtranslate('LBL_ADD_NEW_TAG',$MODULE)}
             </a>

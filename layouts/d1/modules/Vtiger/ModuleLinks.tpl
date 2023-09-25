@@ -2,7 +2,7 @@
     <div id="appnavcontent" class="d-flex" aria-expanded="false">
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}
-                <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-primary addButton module-buttons me-2"
+                <button id="{$MODULE}_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-secondary addButton module-buttons me-2"
                         {if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
                     onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
                         {else}
@@ -12,7 +12,7 @@
                     <span class="ps-2">{vtranslate($BASIC_ACTION->getLabel(), $MODULE)}</span>
                 </button>
             {else}
-                <button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-primary addButton module-buttons  me-2"
+                <button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($BASIC_ACTION->getLabel())}" type="button" class="btn btn-outline-secondary addButton module-buttons  me-2"
                         {if stripos($BASIC_ACTION->getUrl(), 'javascript:')===0}
                     onclick='{$BASIC_ACTION->getUrl()|substr:strlen("javascript:")};'
                         {else}
@@ -25,7 +25,7 @@
         {/foreach}
         {if $MODULE_SETTING_ACTIONS|@count gt 0}
             <div class="dropdown settingsIcon ms-auto">
-                <button type="button" class="btn btn-outline-primary module-buttons dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_SETTINGS', $MODULE)}">
+                <button type="button" class="btn btn-outline-secondary module-buttons dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="{vtranslate('LBL_SETTINGS', $MODULE)}">
                     <span class="fa fa-wrench" aria-hidden="true"></span>
                     <span class="px-2">{vtranslate('LBL_MORE', $MODULE)}</span>
                 </button>

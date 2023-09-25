@@ -51,16 +51,26 @@ Vtiger_Detail_Js("Inventory_Detail_Js", {
         });
 
     },
-    
-    
-    
-    registerEvents: function() {
-		var self = this;
-        this._super();
-        this.getDetailViewContainer().find('.inventoryLineItemDetails').popover({html: true});
-		app.event.on("post.relatedListLoad.click", function() {
-			self.getDetailViewContainer().find('.inventoryLineItemDetails').popover({html: true});
-		});
+
+
+    registerEvents: function () {
+        const self = this;
+
+        self._super();
+
+        let popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]')
+
+        for (const popoverEl of popoverElements) {
+            new bootstrap.Popover(popoverEl)
+        }
+
+        app.event.on('post.relatedListLoad.click', function () {
+            let popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]')
+
+            for (const popoverEl of popoverElements) {
+                new bootstrap.Popover(popoverEl)
+            }
+        });
     },
 
 });

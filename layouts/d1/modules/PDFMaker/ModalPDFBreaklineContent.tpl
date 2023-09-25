@@ -41,7 +41,7 @@
 
 					<h4 class="fieldBlockHeader">{vtranslate('LBL_ITEM_DETAILS', $MODULE_NAME)}</h4>
 
-					<table class="table table-bordered lineItemsTable" style = "margin-top:15px">
+					<table class="table table-bordered lineItemsTable">
 						<thead>
 						<th class="lineItemBlockHeader">
 						</th>

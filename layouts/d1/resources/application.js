@@ -527,14 +527,7 @@ jQuery(function () {
 	}
 	/* To push focus on CKEditor Popup when shown with Bootstrap modal */
 	/* ref https://stackoverflow.com/a/23667151 */
-	jQuery.fn.modal.Constructor.prototype.enforceFocus = function() {
-		modal_this = this
-		jQuery(document).on('focusin.modal', function (e) {
-		if (modal_this.$element[0] !== e.target && !modal_this.$element.has(e.target).length 
-		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_select') 
-		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_textarea')
-		&& !jQuery(e.target.parentNode).hasClass('cke_dialog_ui_input_text')) {
-			modal_this.$element.focus()
-		}
-	})};
+	$(document).on({'show.bs.modal': function () {
+		$(this).removeAttr('tabindex');
+	}}, '.modal');
 });

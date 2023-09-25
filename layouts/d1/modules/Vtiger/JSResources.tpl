@@ -14,8 +14,8 @@
     <script type="text/javascript" src="{vresource_url('vendor/select2/select2/dist/js/select2.full.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery.class.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery-ui-1.12.0.custom/jquery-ui.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/popper.min.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/bootstrap.min.js')}"></script>
+    {* <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/popper.min.js')}"></script> *}
+    {* <script type="text/javascript" src="{vresource_url('layouts/d1/lib/todc/js/bootstrap.min.js')}"></script> *}
     <script type="text/javascript" src="{vresource_url('vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('libraries/jquery/jstorage.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/jquery/jquery-validation/jquery.validate.min.js')}"></script>

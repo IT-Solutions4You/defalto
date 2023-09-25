@@ -24,15 +24,9 @@
         <div class="modal-dialog">
         </div>
     </div>
-	<div class="main-container main-container-{$MODULE}">
-		{assign var=LEFTPANELHIDE value=$CURRENT_USER_MODEL->get('leftpanelhide')}
-		<div id="modnavigator" class="module-nav">
-			<div class="hidden-xs hidden-sm mod-switcher-container">
-				{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
-			</div>
-		</div>
-		<div id="sidebar-essentials" class="sidebar-essentials {if $LEFTPANELHIDE eq '1'} hide {/if}">
-			{include file="partials/SidebarEssentials.tpl"|vtemplate_path:$MODULE}
-		</div>
-		<div class="listViewPageDiv content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}" id="listViewContent">
+	<div class="container-fluid main-container main-container-{$MODULE}">
+		<div class="row">
+			{include file=vtemplate_path('ModuleNavigator.tpl',$MODULE)}
+			<div class="listViewContainerJs col-lg px-0 bg-white mb-lg-4 mx-lg-4 rounded overflow-hidden">
+				<div id="listViewContent" class="listViewPageDiv content-area">
 

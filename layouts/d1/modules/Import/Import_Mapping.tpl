@@ -50,7 +50,7 @@
 							{/foreach}
 						</select>
 					</td>
-					<td name="default_value_container">&nbsp;</td>
+					<td name="default_value_container"></td>
 				</tr>
 			{/foreach}
 		</tbody>

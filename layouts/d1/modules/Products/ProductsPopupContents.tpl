@@ -9,7 +9,7 @@
 
 {strip}
 {include file="PicklistColorMap.tpl"|vtemplate_path:$MODULE}
-<div class="row">
+<div class="row mb-3">
     {include file='PopupNavigation.tpl'|vtemplate_path:$MODULE}
 </div>
 <div class="row">
@@ -24,30 +24,28 @@
         <input type="hidden" id="totalCount" value="{$LISTVIEW_COUNT}" />
         <input type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($SEARCH_DETAILS))}" id="currentSearchParams" />
         <div class="contents-topscroll">
-            <div class="topscroll-div">
-                &nbsp;
-            </div>
+            <div class="topscroll-div"></div>
         </div>
         <div class="popupEntriesDiv relatedContents">
             <input type="hidden" value="{$ORDER_BY}" id="orderBy">
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
             <input type="hidden" value="Products_ProductRelatedProductBundles_Js" id="popUpClassName"/>
             <div class="popupEntriesTableContainer">
-                <table class="listview-table table-bordered listViewEntriesTable">
+                <table class="listview-table table table-borderless listViewEntriesTable">
                     <thead>
-                        <tr class="listViewHeaders">
-                                <th>
-                                    <input type="checkbox"  class="selectAllInCurrentPage" />
-                                </th>
+                        <tr class="listViewHeaders bg-body-secondary">
+                            <th>
+                                <input type="checkbox"  class="selectAllInCurrentPage" />
+                            </th>
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th>
-                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues {if $LISTVIEW_HEADER->get('name') eq 'listprice'} noSorting {/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
                                         {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
                                             <i class="fa {$FASORT_IMAGE}"></i>
                                         {else}
                                             <i class="fa fa-sort customsort"></i>
                                         {/if}
-                                        &nbsp;{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}&nbsp;
+                                        <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}</span>
                                     </a>
                                 </th>
                             {/foreach}
@@ -55,13 +53,14 @@
                         {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
                             <tr class="searchRow">
                                     <th class="textAlignCenter searchBtn">
-                                        <button class="btn btn-success pull-right pull-right" data-trigger="PopupListSearch">{vtranslate('LBL_SEARCH', $MODULE )}</button>
+                                        <button class="btn text-secondary" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     </th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     <th>
                                         {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                                        {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME)
-                                FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$CURRENT_USER_MODEL}
+                                        {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$CURRENT_USER_MODEL}
                                     </th>
                                 {/foreach}
                             </tr>
@@ -71,7 +70,7 @@
                         {assign var="COL_NUMBER" value={$smarty.foreach.popupListView.index}}
                         {assign var="RECORD_DATA" value="{$LISTVIEW_ENTRY->getRawData()}"}
                         {assign var=EDITED_VALUE value=$SELECTED_RECORDS[$LISTVIEW_ENTRY->getId()]}
-                        <tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}" {if $MODULE eq 'EmailTemplates'} data-name="{$RECORD_DATA['subject']}" data-info="{$LISTVIEW_ENTRY->get('body')}" {else} data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}' {/if}
+                        <tr class="listViewEntries border-1 border-top" data-id="{$LISTVIEW_ENTRY->getId()}" {if $MODULE eq 'EmailTemplates'} data-name="{$RECORD_DATA['subject']}" data-info="{$LISTVIEW_ENTRY->get('body')}" {else} data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}' {/if}
                             {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                                 <td>
                                     <input class="entryCheckBox" type="checkbox" {if $EDITED_VALUE}checked{/if}/>
@@ -83,24 +82,24 @@
                                 <td class="listViewEntryValue textOverflowEllipsis">
                                     {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                                         <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-                                    {else if $LISTVIEW_HEADER->get('uitype') eq '72'}
+                                    {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}
                                         {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
                                         {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
                                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
                                         {else}
                                             {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                                         {/if}
-                                    {else if $LISTVIEW_HEADERNAME eq 'listprice'}
+                                    {elseif $LISTVIEW_HEADERNAME eq 'listprice'}
                                         {CurrencyField::convertToUserFormat($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), null, true, true)}
-                                    {else if $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
+                                    {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                         <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
-                                    {else if $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
+                                    {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                                         {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
                                         {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
                                         {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_RAW_PICKLIST_VALUES}
                                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($MULTI_PICKLIST_VALUE))}" {/if}> {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])} </span>
                                         {/foreach}
-                                    {else if $LISTVIEW_HEADER->getName() eq 'qty_per_unit'}
+                                    {elseif $LISTVIEW_HEADER->getName() eq 'qty_per_unit'}
                                         {assign var="ENTRY_VALUE" value=$LISTVIEW_ENTRY->get({$LISTVIEW_HEADERNAME})}
                                         <a class="qtyForDisplay {if $EDITED_VALUE}hide{/if}">{$ENTRY_VALUE}</a>
                                         <div class="{if !$EDITED_VALUE}hide{/if} qtyForEdit">

@@ -94,7 +94,7 @@
                     <li class="me-2">
                         <div class="dropdown">
                             <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
-                                <a href="#" id="menubar_quickCreate" class="btn btn-outline-secondary qc-button" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true">
+                                <a href="#" id="menubar_quickCreate" class="btn border-1 border-secondary text-secondary qc-button" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true">
                                     <i class="fa fa-plus-circle"></i>
                                 </a>
                             </div>
@@ -188,7 +188,7 @@
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         <li class="me-2">
                             <div>
-                                <a href="index.php?module=Calendar&view={$CALENDAR_MODULE_MODEL->getDefaultViewName()}" class="btn btn-outline-secondary" title="{vtranslate('Calendar','Calendar')}" aria-hidden="true">
+                                <a href="index.php?module=Calendar&view={$CALENDAR_MODULE_MODEL->getDefaultViewName()}" class="btn text-secondary border-secondary" title="{vtranslate('Calendar','Calendar')}" aria-hidden="true">
                                     <i class="fa fa-calendar"></i>
                                 </a>
                             </div>

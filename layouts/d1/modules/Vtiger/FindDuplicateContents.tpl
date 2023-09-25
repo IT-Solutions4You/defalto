@@ -12,7 +12,7 @@
 <div>
 	{include file="FindDuplicateHeader.tpl"|vtemplate_path:$MODULE}
 </div>
-<div id="findDuplicateContents" class="container-fluid" style="padding-top:5px;">
+<div id="findDuplicateContents" class="container-fluid">
 	<div class="row">
 		<div class="col-lg-12">
 			<input type="hidden" id="listViewEntriesCount" value="{$LISTVIEW_ENTRIES_COUNT}" />

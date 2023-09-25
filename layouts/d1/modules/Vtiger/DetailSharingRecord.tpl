@@ -22,7 +22,7 @@
                         <div class="col-auto text-end">
                             <span class="btn-group pull-right">
                                 {if Users_Privileges_Model::isPermitted($MODULE, 'EditView', $RECORD_ID )}
-                                <button class="btn btn-outline-primary" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl($MODULE,$RECORD_ID)}'" type="button">
+                                <button class="btn btn-outline-secondary" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl($MODULE,$RECORD_ID)}'" type="button">
                                     {vtranslate('LBL_EDIT_SHARING_RECORD', $MODULE)}
                                 </button>
                                 {/if}

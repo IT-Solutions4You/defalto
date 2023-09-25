@@ -48,7 +48,7 @@
             </div>
             <div class="btn-group ms-auto">
                 {if !empty($DETAILVIEW_LINKS['DETAILVIEW']) && ($DETAILVIEW_LINKS['DETAILVIEW']|@count gt 0)}
-                    <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                         {vtranslate('LBL_MORE', $MODULE_NAME)}&nbsp;&nbsp;<i class="caret"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">

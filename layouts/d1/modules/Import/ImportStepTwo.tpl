@@ -12,7 +12,7 @@
 
 <div class = "importBlockContainer hide" id="importStep2Conatiner">
     <span>
-        <h4>&nbsp;&nbsp;&nbsp;{'LBL_DUPLICATE_RECORD_HANDLING'|@vtranslate:$MODULE}</h4>
+        <h4>{'LBL_DUPLICATE_RECORD_HANDLING'|@vtranslate:$MODULE}</h4>
     </span>
     <hr>
     <table class = "table table-borderless" id="duplicates_merge_configuration">
@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td>
-                <table>
+                <table class="table table-borderless">
                     <tr>
                         <td><b>{'LBL_AVAILABLE_FIELDS'|@vtranslate:$MODULE}</b></td>
                         <td></td>
@@ -39,22 +39,26 @@
                     </tr>
                     <tr>
                         <td>
-                            <select id="available_fields" multiple size="10" name="available_fields" class="txtBox" style="width: 100%">
+                            <select id="available_fields" multiple size="10" name="available_fields" class="txtBox form-control">
                                 {foreach key=_FIELD_NAME item=_FIELD_INFO from=$AVAILABLE_FIELDS}
                                     {if $_FIELD_NAME eq 'tags'} {continue} {/if}
                                     <option value="{$_FIELD_NAME}">{$_FIELD_INFO->getFieldLabelKey()|@vtranslate:$FOR_MODULE}</option>
                                 {/foreach}
                             </select>
                         </td>
-                        <td width="6%">
-                            <div align="center">
-                                <button class="btn btn-default btn-lg" onClick ="return Vtiger_Import_Js.copySelectedOptions('#available_fields', '#selected_merge_fields')"><span class="glyphicon glyphicon-arrow-right"></span></button>
-                                <button class="btn btn-default btn-lg" onClick ="return Vtiger_Import_Js.removeSelectedOptions('#selected_merge_fields')"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                        <td>
+                            <div class="text-center">
+                                <button class="btn btn-default btn-lg" onClick="return Vtiger_Import_Js.copySelectedOptions('#available_fields', '#selected_merge_fields')">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                                <button class="btn btn-default btn-lg" onClick="return Vtiger_Import_Js.removeSelectedOptions('#selected_merge_fields')">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                </button>
                             </div>
                         </td>
                         <td>
-                            <input type="hidden" id="merge_fields" size="10" name="merge_fields" value="" />
-                            <select id="selected_merge_fields" size="10" name="selected_merge_fields" multiple class="txtBox" style="width: 100%">
+                            <input type="hidden" id="merge_fields" size="10" name="merge_fields" value=""/>
+                            <select id="selected_merge_fields" size="10" name="selected_merge_fields" multiple class="txtBox form-control">
                                 {foreach key=_FIELD_NAME item=_FIELD_INFO from=$ENTITY_FIELDS}
                                     <option value="{$_FIELD_NAME}">{$_FIELD_INFO->getFieldLabelKey()|@vtranslate:$FOR_MODULE}</option>
                                 {/foreach}

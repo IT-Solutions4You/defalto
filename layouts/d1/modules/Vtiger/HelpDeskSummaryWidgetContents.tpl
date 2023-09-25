@@ -10,38 +10,51 @@
 ********************************************************************************/
 -->*}
 {strip}
-	{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-		<div class="recentActivitiesContainer">
-			<ul class="unstyled">
-				<li>
-					<div>
-						<div class="textOverflowEllipsis width27em">
-                            {vtranslate('Title', $MODULE)} : 
-                            <span>
-                                <a href="{$RELATED_RECORD->getDetailViewUrl()}" title="{$RELATED_RECORD->getDisplayValue('ticket_title')}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}">
-                                    {$RELATED_RECORD->getDisplayValue('ticket_title')}
-                                </a>
-                            </span>
-						</div>
-						<div>{vtranslate('LBL_TICKET_PRIORITY',$MODULE)} : <strong> {$RELATED_RECORD->getDisplayValue('ticketpriorities')}</strong> </div>
-						{assign var=DESCRIPTION value="{$RELATED_RECORD->getDescriptionValue()}"}
-						{if !empty($DESCRIPTION)}
-							<div class="row">
-								<span class="col-lg-8 textOverflowEllipsis width27em">{vtranslate('LBL_DESCRIPTION',$MODULE)} : {$DESCRIPTION}</span>
-								<span class="col-lg-3"><a href="{$RELATED_RECORD->getDetailViewUrl()}">{vtranslate('LBL_MORE',$MODULE)}</a></span>
-							</div>
-						{/if}
+	<div class="containerHelpDeskSummaryWidgetContents">
+		{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
+			<div class="recentActivitiesContainer container-fluid py-3">
+				<div class="row">
+					<div class="col">
+						<span>{vtranslate('Title', $MODULE)}</span>
+						<span class="mx-2">:</span>
+						<a href="{$RELATED_RECORD->getDetailViewUrl()}" title="{$RELATED_RECORD->getDisplayValue('ticket_title')}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}">
+							<span>{$RELATED_RECORD->getDisplayValue('ticket_title')}</span>
+						</a>
 					</div>
-				</li>
-			</ul>
-		</div>
-	{/foreach}
-	{assign var=NUMBER_OF_RECORDS value=php7_count($RELATED_RECORDS)}
-	{if $NUMBER_OF_RECORDS eq 5}
-		<div class="row">
-			<div class="pull-right">
-				<a class="moreRecentTickets cursorPointer">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+					<div class="row">
+						<div class="col">
+							<span>{vtranslate('LBL_TICKET_PRIORITY',$MODULE)}</span>
+							<span class="mx-2">:</span>
+							<strong> {$RELATED_RECORD->getDisplayValue('ticketpriorities')}</strong>
+						</div>
+					</div>
+					{assign var=DESCRIPTION value="{$RELATED_RECORD->getDescriptionValue()}"}
+					{if !empty($DESCRIPTION)}
+						<div class="row">
+							<div class="col-lg-10">
+								<div class="text-truncate w-100">
+									<span>{vtranslate('LBL_DESCRIPTION',$MODULE)}</span>
+									<span class="mx-2">:</span>
+									<span>{$DESCRIPTION}</span>
+								</div>
+							</div>
+							<div class="col-lg-2">
+								<a href="{$RELATED_RECORD->getDetailViewUrl()}">{vtranslate('LBL_MORE',$MODULE)}</a>
+							</div>
+						</div>
+					{/if}
+				</div>
 			</div>
+		{/foreach}
+		<div class="container-fluid">
+			{assign var=NUMBER_OF_RECORDS value=php7_count($RELATED_RECORDS)}
+			{if $NUMBER_OF_RECORDS eq 5}
+				<div class="row">
+					<div class="col">
+						<a class="moreRecentTickets btn btn-primary">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+					</div>
+				</div>
+			{/if}
 		</div>
-	{/if}
+	</div>
 {/strip}

@@ -19,11 +19,11 @@
 			{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
 			<input type=hidden name="timeFormatOptions" data-value='{$DAY_STARTS}' />
 			<div class="p-3">
-				<div class="textOverflowEllipsis maxWidth50">
-					<span class="btn btn-outline-primary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
+				<div class="text-truncate d-flex align-items-center">
+					<span class="btn btn-outline-secondary blockToggle {if !$IS_HIDDEN}hide{/if}" data-mode="hide" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
 						<i class="fa fa-plus"></i>
 					</span>
-					<span class="btn btn-outline-primary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
+					<span class="btn btn-outline-secondary blockToggle {if $IS_HIDDEN}hide{/if}" data-mode="show" data-id={$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}>
 						<i class="fa fa-minus"></i>
 					</span>
 					<span class="ms-3 fs-4 fw-bold">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</span>

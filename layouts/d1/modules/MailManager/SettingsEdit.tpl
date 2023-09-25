@@ -39,7 +39,7 @@
                                     <label class="pull-right detailViewButtoncontainer"><font color="red">*</font> {vtranslate('LBL_Mail_Server',$MODULE)}</label>
                                 </td>
                                 <td class="fieldValue">
-                                    <input name="_mbox_server" id="_mbox_server" class="inputElement width75per" value="{$MAILBOX->server()}" type="text" placeholder="mail.company.com or 192.168.X.X">
+                                    <input name="_mbox_server" id="_mbox_server" class="inputElement form-control" value="{$MAILBOX->server()}" type="text" placeholder="mail.company.com or 192.168.X.X">
                                 </td>
                             </tr>
                             <tr class="settings_details {if $SERVERNAME eq ''}hide{/if}">
@@ -47,7 +47,7 @@
                                     <label class="pull-right detailViewButtoncontainer"><font color="red">*</font> {vtranslate('LBL_Username',$MODULE)}</label>
                                 </td>
                                 <td class="fieldValue">
-                                    <input name="_mbox_user" class="inputElement width75per" id="_mbox_user" value="{$MAILBOX->username()}" type="text" placeholder="{vtranslate('LBL_Your_Mailbox_Account',$MODULE)}">
+                                    <input name="_mbox_user" class="inputElement form-control" id="_mbox_user" value="{$MAILBOX->username()}" type="text" placeholder="{vtranslate('LBL_Your_Mailbox_Account',$MODULE)}">
                                 </td>
                             </tr>
                             <tr class="settings_details {if $SERVERNAME eq ''}hide{/if}">
@@ -55,7 +55,7 @@
                                     <label class="pull-right detailViewButtoncontainer"><font color="red">*</font> {vtranslate('LBL_Password',$MODULE)}</label>
                                 </td>
                                 <td class="fieldValue">
-                                    <input name="_mbox_pwd" class="inputElement width75per" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
+                                    <input name="_mbox_pwd" class="inputElement form-control" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
                                 </td>
                             </tr>
                             <tr class="additional_settings {if $SERVERNAME neq 'other'}hide{/if}">

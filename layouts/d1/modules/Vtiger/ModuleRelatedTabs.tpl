@@ -17,7 +17,9 @@
                     <li class="tab-item nav-link fs-6 {if $RELATEDLINK_LABEL==$SELECTED_TAB_LABEL}active{/if}" data-url="{$RELATEDLINK_URL}&tab_label={$RELATED_TAB_LABEL}&app={$SELECTED_MENU_CATEGORY}" data-label-key="{$RELATEDLINK_LABEL}" data-link-key="{$RELATED_LINK->get('linkKey')}">
                         <a href="{$RELATEDLINK_URL}&tab_label={$RELATEDLINK_LABEL}&app={$SELECTED_MENU_CATEGORY}" class="textOverflowEllipsis">
                             <div class="row">
-                                <div class="col-1 tab-icon"></div>
+                                <div class="col-1 tab-icon">
+                                    {$RELATED_LINK->get('linkicon')}
+                                </div>
                                 <div class="col tab-label">{vtranslate($RELATEDLINK_LABEL,{$MODULE_NAME})}</div>
                                 <div class="col-2">
                                     <div class="numberCircle badge text-bg-primary hide">0</div>

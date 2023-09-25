@@ -34,9 +34,9 @@
         <input type="hidden" value="Inventory_Popup_Js" id="popUpClassName"/>
         {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
         <div class="bottomscroll-div">
-            <table class="listview-table table-bordered listViewEntriesTable">
+            <table class="table listview-table table-borderless listViewEntriesTable">
                 <thead>
-                    <tr class="listViewHeaders">
+                    <tr class="listViewHeaders bg-body-secondary">
                         {if $MULTI_SELECT}
                             <th class="{$WIDTHTYPE}">
                                 <input type="checkbox"  class="selectAllInCurrentPage" />
@@ -46,13 +46,13 @@
                         {/if}
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             <th class="{$WIDTHTYPE}">
-                                <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
+                                <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
                                     {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
                                     {else}
                                         <i class="fa fa-sort customsort"></i>
                                     {/if}
-                                    &nbsp;{vtranslate($LISTVIEW_HEADER->get('label'), $TARGET_MODULE)}&nbsp;
+                                    <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $TARGET_MODULE)}</span>
                                 </a>
                             </th>
                         {/foreach}
@@ -64,13 +64,14 @@
                 {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
                     <tr class="searchRow">
                         <td class="searchBtn textAlignCenter">
-                            <button class="btn btn-success" data-trigger="PopupListSearch">{vtranslate('LBL_SEARCH', $MODULE )}</button>
+                            <button class="btn text-secondary" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </td>
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             <td>
                                 {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                                {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME)
-                                FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$CURRENT_USER_MODEL}
+                                {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$CURRENT_USER_MODEL}
                             </td>
                         {/foreach}
 						{if $RELATED_MODULE eq 'Products'}
@@ -80,7 +81,7 @@
                 {/if}
                 {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
                     {assign var="RECORD_DATA" value="{$LISTVIEW_ENTRY->getRawData()}"}
-                    <tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}' data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}'
+                    <tr class="listViewEntries border-top" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}' data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}'
                         {if $GETURL neq '' } data-url="{$LISTVIEW_ENTRY->$GETURL()|cat:'&sourceModule='|cat:$SOURCE_MODULE}" {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                         {if $MULTI_SELECT}
                             <td class="{$WIDTHTYPE}">
@@ -107,7 +108,7 @@
                             </td>
                         {/foreach}
 						{if $RELATED_MODULE eq 'Products'}
-							<td class="listViewEntryValue {$WIDTHTYPE}">
+							<td class="listViewEntryValue text-nowrap {$WIDTHTYPE}">
 								{if $LISTVIEW_ENTRY->get('subProducts') eq true}
 									<a class="subproducts"><b>{vtranslate('LBL_SUB_PRODUCTS',$MODULE_NAME)}</b></a>
 									<!--<img class="lineItemPopup cursorPointer alignMiddle" data-popup="ProductsPopup" title="{vtranslate('Products',$MODULE)}" data-module-name="Products" data-field-name="productid" src="{vimage_path('Products.png')}"/>-->

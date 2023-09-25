@@ -22,21 +22,22 @@
                 {assign var=FIELD_MODEL value=$FIELD_MODEL->set('fieldvalue', $RECORD->get($FIELD_NAME))}
                 <div class="col-lg-auto headerAjaxEdit td">
                     <div class="fieldLabel">
-                        <div class="row text-secondary fieldName">
-                            <div class="col-auto">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
+                        <div class="row text-secondary fieldName" style="min-height: 2rem">
+                            <div class="col">{vtranslate($FIELD_MODEL->get('label'),$MODULE)}</div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="min-height: 2rem">
                             {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
-                            <div class="col-auto value fw-semibold {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
-                                {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                            <div class="col value fw-semibold {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
+                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
                             {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq 'true' && $IS_AJAX_ENABLED eq 'true'}
-                                <div class="col-auto d-flex">
-                                    <span class="hide edit">
+                                <div class="col-auto d-flex justify-content-end">
+                                    <span class="hide edit w-100">
+                                        {assign var=HEADER_FIELD_NAME value=$FIELD_MODEL->get('name')}
                                         {if $FIELD_DATA_TYPE eq 'multipicklist'}
-                                            <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}[]' data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue='{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}' data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                            <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}[]" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                         {else}
-                                            <input type="hidden" class="fieldBasicData" data-name='{$FIELD_MODEL->get('name')}' data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue='{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}' data-value="{$FIELD_MODEL->get('fieldvalue')}" />
+                                            <input type="hidden" class="fieldBasicData" data-name="{$HEADER_FIELD_NAME}" data-type="{$FIELD_MODEL->getFieldDataType()}" data-displayvalue="{Vtiger_Util_Helper::toSafeHTML($FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue')))}" data-value="{$FIELD_MODEL->get('fieldvalue')}" />
                                         {/if}
                                     </span>
                                     <span class="action">

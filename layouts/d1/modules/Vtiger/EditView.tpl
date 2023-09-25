@@ -19,14 +19,6 @@
 				<div class="editViewPageDiv viewContent col p-0 rounded bg-white">
 					<div class="content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}">
 						<form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
-							<div class="editViewHeader p-3 rounded bg-white">
-								{assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}
-								{if $RECORD_ID neq ''}
-									<h4 class="editHeader" title="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} {$RECORD_STRUCTURE_MODEL->getRecordName()}">{vtranslate('LBL_EDITING', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)} - {$RECORD_STRUCTURE_MODEL->getRecordName()}</h4>
-								{else}
-									<h4 class="editHeader" >{vtranslate('LBL_CREATING_NEW', $MODULE)} {vtranslate($SINGLE_MODULE_NAME, $MODULE)}</h4>
-								{/if}
-							</div>
 							<div class="editViewBody">
 								<div class="editViewContents">
 									{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
@@ -73,11 +65,11 @@
 							<div class='modal-overlay-footer clearfix fixed-bottom bg-white border-top border-1'>
 								<div class="container-fluid">
 									<div class="row d-flex align-items-center h-header">
-										<div class="col-6">
-											<a class='btn btn-primary cancelLink' href="javascript:history.{if $DUPLICATE_RECORDS}go(-2){else}back(){/if}" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-										</div>
 										<div class="col-6 text-end">
-											<button type='submit' class='btn btn-primary active px-5 saveButton' >{vtranslate('LBL_SAVE', $MODULE)}</button>
+											<a class='btn btn-outline-primary cancelLink px-4' href="javascript:history.{if $DUPLICATE_RECORDS}go(-2){else}back(){/if}" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+										</div>
+										<div class="col-6 text-start">
+											<button type='submit' class='btn btn-primary active px-5 saveButton'>{vtranslate('LBL_SAVE', $MODULE)}</button>
 										</div>
 									</div>
 								</div>

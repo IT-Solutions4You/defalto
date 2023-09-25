@@ -36,14 +36,12 @@
 					<div class="col-lg-6">
 						<div class="text-end">
 							{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
-								<div class="" style="margin: 7px 0;">
-									<label>
-										<input type="checkbox" id="is_private" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}
-									</label>&nbsp;&nbsp;
-									<i class="fa fa-question-circle cursorPointer" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_INFO')}"></i>&nbsp;&nbsp;
-								</div>
+								<label class="form-check form-switch form-check-reverse">
+									<span class="form-check-label me-2">{vtranslate('LBL_INTERNAL_COMMENT')}</span>
+									<i class="fa fa-question-circle cursorPointer" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_INFO')}"></i>
+									<input class="form-check-input" type="checkbox" id="is_private" role="switch" checked="checked">
+								</label>
 							{/if}
-
 						</div>
 					</div>
 				</div>
@@ -65,13 +63,13 @@
 	</div>
 	<div class="commentsBody">
 		{if !empty($COMMENTS)}
-			<div class="recentCommentsBody container-fluid">
+			<div class="recentCommentsBody">
 				{assign var=COMMENTS_COUNT value=php7_count($COMMENTS)}
 				{foreach key=index item=COMMENT from=$COMMENTS}
 					{assign var=CREATOR_NAME value={decode_html($COMMENT->getCommentedByName())}}
 					<div class="commentDetails mb-3">
-						<div class="singleComment container-fluid" {if $COMMENT->get('is_private')}style="background: #fff9ea;"{/if}>
-							<input type="hidden" name='is_private' value="{$COMMENT->get('is_private')}">
+						<div class="singleComment container-fluid">
+							<input type="hidden" name="is_private" value="{$COMMENT->get('is_private')}">
 							{assign var=PARENT_COMMENT_MODEL value=$COMMENT->getParentCommentModel()}
 							{assign var=CHILD_COMMENTS_MODEL value=$COMMENT->getChildComments()}
 							<div class="row">
@@ -106,11 +104,11 @@
 												<span title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateDiffInStrings($COMMENT->getCommentedTime())}</span>
 											</span>
 											{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
-												<span>
+												<span class="text-secondary">
 													{if $COMMENT->get('is_private')}
-														<i class="fa fa-lock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+														<i class="fa fa-lock text-warning" title="{vtranslate('LBL_INTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
 													{else}
-														<i class="fa fa-unlock" data-toggle="tooltip" data-placement="top" data-original-title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
+														<i class="fa fa-unlock" title="{vtranslate('LBL_EXTERNAL_COMMENT_TOOTLTIP',$MODULE)}"></i>
 													{/if}
 												</span>
 											{/if}
@@ -214,20 +212,23 @@
 					<textarea name="commentcontent" class="commentcontent form-control" placeholder="{vtranslate('LBL_ADD_YOUR_COMMENT_HERE', $MODULE_NAME)}" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}"></textarea>
 				</div>
 			</div>
-			{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
-				<div class="col-auto pe-0">
-					<div class="checkbox me-2">
-						<label>
-							<input type="checkbox" id="is_private" checked>&nbsp;&nbsp;{vtranslate('LBL_INTERNAL_COMMENT')}&nbsp;&nbsp;
-						</label>
-					</div>
-				</div>
-			{/if}
 			<div class="col-auto pe-0">
 				<button class="btn btn-primary active detailViewSaveComment" type="button" data-mode="add">{vtranslate('LBL_POST', $MODULE_NAME)}</button>
 			</div>
 			<div class="col-auto">
 				<a href="javascript:void(0);" class="btn btn-danger closeCommentBlock" type="reset">{vtranslate('LBL_CANCEL', $MODULE_NAME)}</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				{if in_array($MODULE_NAME, $PRIVATE_COMMENT_MODULES)}
+					<div class="checkbox mt-2">
+						<label class="form-check form-switch form-check-reverse mb-0">
+							<input type="checkbox" class="form-check-input" id="is_private" checked="checked">
+							<span class="form-check-label">{vtranslate('LBL_INTERNAL_COMMENT')}</span>
+						</label>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>

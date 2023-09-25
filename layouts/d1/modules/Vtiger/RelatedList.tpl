@@ -26,10 +26,13 @@
 
 			{include file="partials/RelatedListHeader.tpl"|vtemplate_path:$RELATED_MODULE_NAME}
 			{if $MODULE eq 'Products' && $RELATED_MODULE_NAME eq 'Products' && $TAB_LABEL === 'Product Bundles' && $RELATED_LIST_LINKS}
-				<div data-module="{$MODULE}" style = "margin-left:20px">
+				<div data-module="{$MODULE}" class="px-3 pb-3">
 					{assign var=IS_VIEWABLE value=$PARENT_RECORD->isBundleViewable()}
 					<input type="hidden" class="isShowBundles" value="{$IS_VIEWABLE}">
-					<label class="showBundlesInInventory checkbox"><input type="checkbox" {if $IS_VIEWABLE}checked{/if} value="{$IS_VIEWABLE}">&nbsp;&nbsp;{vtranslate('LBL_SHOW_BUNDLE_IN_INVENTORY', $MODULE)}</label>
+					<label class="showBundlesInInventory checkbox">
+						<input type="checkbox" {if $IS_VIEWABLE}checked{/if} value="{$IS_VIEWABLE}">
+						<span class="ms-2">{vtranslate('LBL_SHOW_BUNDLE_IN_INVENTORY', $MODULE)}</span>
+					</label>
 				</div>
 			{/if}
 
@@ -38,12 +41,11 @@
 					<table id="listview-table" class="table listview-table table-borderless">
 						<thead>
 							<tr class="listViewHeaders bg-body-secondary">
-								<th style="min-width:100px">
-								</th>
+								<th></th>
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 									{* hide time_start,time_end columns in the list as they are merged with with Start Date and End Date fields *}
 									{if $HEADER_FIELD->get('column') eq 'time_start' or $HEADER_FIELD->get('column') eq 'time_end'}
-										<th class="nowrap" style="width:15px">
+										<th class="nowrap">
 									{else}
 										<th class="nowrap">
 										{if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
@@ -110,13 +112,12 @@
 												{/if}
 											{/if}
 											{if $RELATED_MODULE_NAME eq 'PriceBooks'}
-												<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice cursorPointer" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
+												<a data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice cursorPointer btn text-secondary" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
 													<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
 												</a>
 											{elseif $MODULE eq 'Products' && $RELATED_MODULE_NAME eq 'Products' && $TAB_LABEL === 'Product Bundles' && $RELATED_LIST_LINKS && $PARENT_RECORD->isBundle()}
 												{assign var=quantity value=$RELATED_RECORD->get($RELATION_FIELD->getName())}
-												<a class="quantityEdit" data-url="index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}"
-													onclick ="Products_Detail_Js.triggerEditQuantity('index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}');if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}">
+												<a class="quantityEdit btn text-secondary" data-url="index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}" onclick ="Products_Detail_Js.triggerEditQuantity('index.php?module=Products&view=SubProductQuantityUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentQty={$quantity}');if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}">
 													<i class="fa fa-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"></i>
 												</a>
 											{else}

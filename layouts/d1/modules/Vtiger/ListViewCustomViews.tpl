@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-auto ps-1 pe-0">
                     <div class="dropdown">
-                        <button class="btn btn-outline-primary" data-bs-toggle="dropdown">
+                        <button class="btn btn-outline-secondary" data-bs-toggle="dropdown">
                             <i class="fa-solid fa-ellipsis"></i>
                         </button>
                         <ul class="customViewsActions dropdown-menu dropdown-menu-end">

@@ -15,7 +15,7 @@
 					<div class="btn-group">
 						{assign var=DROPDOWNS value=$RELATED_LINK->get('linkdropdowns')}
 						{if !empty($DROPDOWNS) && (php7_count($DROPDOWNS) gt 0)}
-							<a class="btn dropdown-toggle" href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
+							<a class="btn dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
 								<img title="{$RELATED_LINK->getLabel()}" alt="{$RELATED_LINK->getLabel()}" src="{vimage_path("{$RELATED_LINK->getIcon()}")}">
 							</a>
 							<ul class="dropdown-menu">
@@ -33,14 +33,14 @@
 								{assign var=RELATED_MODULE_NAME value='Calendar'}
 							{/if}
 							{if $IS_SELECT_BUTTON || $IS_CREATE_PERMITTED}
-								<button type="button" module="{$RELATED_MODULE_NAME}" class="btn btn-outline-primary
+								<button type="button" module="{$RELATED_MODULE_NAME}" class="me-2 btn btn-outline-secondary
 									{if $IS_SELECT_BUTTON eq true} selectRelation{else} addButton" name="addButton{/if}"
 									{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}" {/if}
 									{if ($RELATED_LINK->isPageLoadLink())}
 										{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
 										data-url="{$RELATED_LINK->getUrl()}{if $SELECTED_MENU_CATEGORY}&app={$SELECTED_MENU_CATEGORY}{/if}"
 									{/if}
-									>{if $IS_SELECT_BUTTON eq false}<i class="fa fa-plus"></i>&nbsp;{/if}&nbsp;{$RELATED_LINK->getLabel()}</button>
+									>{if $IS_SELECT_BUTTON eq false}<i class="fa fa-plus me-2"></i>{/if}{$RELATED_LINK->getLabel()}</button>
 							{/if}
 						{/if}
 					</div>

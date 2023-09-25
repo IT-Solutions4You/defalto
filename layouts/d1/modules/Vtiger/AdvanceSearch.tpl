@@ -50,14 +50,14 @@
                 <div class="clearfix">
                     <div class="actions text-center d-flex row py-2">
                         <div class="col-lg-6 text-end">
-                            <button class="btn btn-success" id="advanceSearchButton" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} type="submit">{vtranslate('LBL_SEARCH', $MODULE)}</button>
+                            <button class="btn btn-primary active" id="advanceSearchButton" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} type="submit">{vtranslate('LBL_SEARCH', $MODULE)}</button>
                         </div>
                         <div class="col-lg-6 text-start">
                             <div class="row">
                                 {if $SAVE_FILTER_PERMITTED}
-                                    <button class="btn btn-success col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
+                                    <button class="btn btn-primary active col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
                                     <input class="hide col-4 ms-2" type="text" value="" name="viewname"/>
-                                    <button class="btn btn-success hide col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                    <button class="btn btn-primary active hide col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
                                 {/if}
                             </div>
                         </div>

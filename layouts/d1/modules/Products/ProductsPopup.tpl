@@ -37,17 +37,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class = "modal-footer">
+                    <div class="modal-footer">
                         {if $LISTVIEW_ENTRIES_COUNT neq '0'}
-                            <center>
-                                <footer>
-                                    <button class="btn btn-success addProducts" type="submit">
-                                        <i class="fa fa-plus"></i>&nbsp;&nbsp;
-                                        <strong>{vtranslate('LBL_ADD_TO_PRODUCTS',$MODULE)}</strong>
-                                    </button>
-                                    <a class="cancelLink" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                                </footer>
-                            </center>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-6 text-end">
+                                        <a class="btn btn-primary cancelLink" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                    </div>
+                                    <div class="col-6 text-start">
+                                        <button class="btn btn-primary active addProducts me-2" type="submit">
+                                            <i class="fa fa-plus"></i>&nbsp;&nbsp;
+                                            <strong>{vtranslate('LBL_ADD_TO_PRODUCTS',$MODULE)}</strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         {/if}
                     </div>
                 </form>

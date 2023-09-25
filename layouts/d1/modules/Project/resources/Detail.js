@@ -122,49 +122,53 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 	/**
 	* Function to get records according to ticket status
 	*/
-	registerStatusChangeEventForWidget : function(){
-		var thisInstance = this;
-		jQuery('[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]').on('change',function(e){
-            var picklistName = this.name;
-			var statusCondition = {};
-			var params = {};
-			var currentElement = jQuery(e.currentTarget);
-			var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-			var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-			var referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val();
-			var recordId = thisInstance.getRecordId();
-			var module = app.getModuleName();
-			var selectedStatus = currentElement.find('option:selected').val();
-			if(selectedStatus.length > 0 && referenceModuleName == "HelpDesk"){
-                var searchInfo = new Array();
-                searchInfo.push('ticketstatus');
-                searchInfo.push('e');
-                searchInfo.push(selectedStatus);
-                statusCondition['ticketstatus'] = searchInfo;
+	registerStatusChangeEventForWidget: function () {
+		const thisInstance = this;
+
+		jQuery('[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]').on('change', function (e) {
+			let picklistName = this.name,
+				statusCondition = {},
+				params = {},
+				currentElement = jQuery(e.currentTarget),
+				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
+				widgetDataContainer = summaryWidgetContainer.find('.widget_contents'),
+				referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val(),
+				recordId = thisInstance.getRecordId(),
+				module = app.getModuleName(),
+				selectedStatus = currentElement.find('option:selected').val(),
+				searchInfo = null;
+
+			console.log(referenceModuleName);
+
+			if (selectedStatus.length > 0 && referenceModuleName == "HelpDesk") {
+				searchInfo = [];
+				searchInfo.push('ticketstatus');
+				searchInfo.push('e');
+				searchInfo.push(selectedStatus);
+				statusCondition['ticketstatus'] = searchInfo;
 				params['whereCondition'] = JSON.stringify(statusCondition);
-			} else if(referenceModuleName == "ProjectTask" && picklistName == 'projecttaskstatus'){
-				if(selectedStatus.length > 0) {
-                    var searchInfo = new Array();
-                    searchInfo.push('projecttaskstatus');
-                    searchInfo.push('e');
-                    searchInfo.push(selectedStatus);
-                    statusCondition['projecttaskstatus'] = searchInfo;
+			} else if (referenceModuleName == "ProjectTask" && picklistName == 'projecttaskstatus') {
+				if (selectedStatus.length > 0) {
+					searchInfo = [];
+					searchInfo.push('projecttaskstatus');
+					searchInfo.push('e');
+					searchInfo.push(selectedStatus);
+					statusCondition['projecttaskstatus'] = searchInfo;
 					params['whereCondition'] = JSON.stringify(statusCondition);
 				}
 				jQuery('[name="projecttaskprogress"]').val('').select2("val", '');
-			}
-            else if(referenceModuleName == "ProjectTask" && picklistName == 'projecttaskprogress'){
-				if(selectedStatus.length > 0) {
-                    var searchInfo = new Array();
-                    searchInfo.push('projecttaskprogress');
-                    searchInfo.push('e');
-                    searchInfo.push(selectedStatus);
-                    statusCondition['projecttaskprogress'] = searchInfo;
+			} else if (referenceModuleName == "ProjectTask" && picklistName == 'projecttaskprogress') {
+				if (selectedStatus.length > 0) {
+					searchInfo = [];
+					searchInfo.push('projecttaskprogress');
+					searchInfo.push('e');
+					searchInfo.push(selectedStatus);
+					statusCondition['projecttaskprogress'] = searchInfo;
 					params['whereCondition'] = JSON.stringify(statusCondition);
 				}
 				jQuery('[name="projecttaskstatus"]').val('').select2("val", '');
 			}
-			
+
 			params['record'] = recordId;
 			params['view'] = 'Detail';
 			params['module'] = module;
@@ -172,14 +176,15 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 			params['limit'] = widgetDataContainer.find('[name="pageLimit"]').val();
 			params['relatedModule'] = referenceModuleName;
 			params['mode'] = 'showRelatedRecords';
+
 			app.helper.showProgress();
 			app.request.post({data: params}).then(
-				function(error, data) {
-                    app.helper.hideProgress();
+				function (error, data) {
+					app.helper.hideProgress();
 					widgetDataContainer.html(data);
 				}
 			);
-	   })
+		})
 	},
 	
 	/**
@@ -261,39 +266,42 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 	/**
 	 * Function to register events for project tasks widget
 	 */
-	registerEventsForTasksWidget : function(summaryViewContainer) {
-		var thisInstance = this;
-		var tasksWidget = summaryViewContainer.find('.widgetContainer_tasks');
-		tasksWidget.on('click', '.editTaskDetails', function(e) {
-			var currentTarget = jQuery(e.currentTarget);
-			var newValue = currentTarget.text();
-			var element = currentTarget.closest('ul.dropdown-menu');
-			var editElement = element.closest('.dropdown');
-			var oldValue = element.data('oldValue');
-			if(currentTarget.hasClass('emptyOption')) {
+	registerEventsForTasksWidget: function (summaryViewContainer) {
+		const self = this,
+			tasksWidget = summaryViewContainer.find('[data-name="LBL_TASKS"]');
+
+		tasksWidget.on('click', '.editTaskDetails', function (e) {
+			let currentTarget = jQuery(e.currentTarget),
+				newValue = currentTarget.text(),
+				element = currentTarget.closest('ul.dropdown-menu'),
+				editElement = element.closest('.dropdown'),
+				oldValue = element.data('oldValue');
+
+			if (currentTarget.hasClass('emptyOption')) {
 				newValue = '';
 			}
-            vtUtils.hideValidationMessage(editElement);
-			if(element.data('mandatory') && newValue.length <= 0) {
-				var result = app.vtranslate('JS_REQUIRED_FIELD');
-                vtUtils.showValidationMessage(editElement, result);
+
+			vtUtils.hideValidationMessage(editElement);
+
+			if (element.data('mandatory') && newValue.length <= 0) {
+				let result = app.vtranslate('JS_REQUIRED_FIELD');
+				vtUtils.showValidationMessage(editElement, result);
 				return false;
 			}
-			if(oldValue != newValue) {
-				var params = {
-					action : 'SaveAjax',
-					record : element.data('recordid'),
-					field : element.data('fieldname'),
-					value : newValue,
-					module : 'ProjectTask'
+
+			if (oldValue !== newValue) {
+				let params = {
+					action: 'SaveAjax',
+					record: element.data('recordid'),
+					field: element.data('fieldname'),
+					value: newValue,
+					module: 'ProjectTask'
 				};
 				app.helper.showProgress();
-				app.request.post({data: params}).then(
-					function(error, data) {
-                        app.helper.hideProgress();
-						thisInstance.showRelatedRecords(tasksWidget);
-					}
-				);
+				app.request.post({data: params}).then(function (error, data) {
+					app.helper.hideProgress();
+					self.showRelatedRecords(tasksWidget);
+				});
 			}
 		})
 	},

@@ -42,7 +42,7 @@
 										{assign var=DROPDOWNS value=$RELATED_LINK->get('linkdropdowns')}
 										{if php7_count($DROPDOWNS) gt 0}
 											<div class="btn-group">
-												<a class="btn btn-outline-primary dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
+												<a class="btn btn-outline-secondary dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
 													<img title="{$RELATED_LINK->getLabel()}" alt="{$RELATED_LINK->getLabel()}" src="{vimage_path("{$RELATED_LINK->getIcon()}")}">
 												</a>
 												<ul class="dropdown-menu">
@@ -54,7 +54,7 @@
 										{else}
 											{assign var=IS_SEND_EMAIL_BUTTON value={$RELATED_LINK->get('_sendEmail')}}
 											{assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
-											<button type="button" module="{$RELATED_MODULE_NAME}"  class="btn btn-outline-primary addButton btn-default me-2
+											<button type="button" module="{$RELATED_MODULE_NAME}"  class="btn btn-outline-secondary addButton btn-default me-2
 												{if $IS_SELECT_BUTTON eq true} selectRelation {/if} {if $IS_SEND_EMAIL_BUTTON eq true} sendEmail {/if}"
 												{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}"{/if}
 												{if ($RELATED_LINK->isPageLoadLink())}

@@ -12,8 +12,8 @@
 {strip}
     {include file="PicklistColorMap.tpl"|vtemplate_path:$MODULE}
     <div class="row">
-        <div class="col-md-2">
-            {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-default"><strong>{vtranslate('LBL_SELECT', $MODULE)}</strong></button>{/if}
+        <div class="col-md-2 mb-3">
+            {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-outline-secondary"><strong>{vtranslate('LBL_SELECT', $MODULE)}</strong></button>{/if}
         </div>
     </div>
     <div class="row">
@@ -27,9 +27,7 @@
             <input type="hidden" id="nextPageExist" value="{$PAGING_MODEL->isNextPageExists()}" />
             <input type="hidden" id="totalCount" value="{$LISTVIEW_COUNT}" />
             <div class="contents-topscroll">
-                <div class="topscroll-div">
-                    &nbsp;
-                </div>
+                <div class="topscroll-div"></div>
             </div>
             <div class="popupEntriesDiv relatedContents">
                 <input type="hidden" value="{$ORDER_BY}" id="orderBy">
@@ -41,38 +39,39 @@
                 <input type="hidden" value="{Vtiger_Util_Helper::toSafeHTML(Zend_JSON::encode($SEARCH_DETAILS))}" id="currentSearchParams" />
                 {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
                 <div class="popupEntriesTableContainer">
-                    <table class="listview-table table-bordered listViewEntriesTable">
+                    <table class="listview-table table table-borderless listViewEntriesTable">
                         <thead>
-                            <tr class="listViewHeaders">
+                            <tr class="listViewHeaders bg-body-secondary">
                                 <th class="{$WIDTHTYPE}">
                                     <input type="checkbox"  class="selectAllInCurrentPage" />
                                 </th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     <th class="{$WIDTHTYPE}">
-                                        <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
+                                        <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
                                             {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
                                                 <i class="fa {$FASORT_IMAGE}"></i>
                                             {else}
                                                 <i class="fa fa-sort customsort"></i>
                                             {/if}
-                                            &nbsp;{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE_NAME)}&nbsp;
+                                            <span class="ms-2">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE_NAME)}</span>
                                         </a>
                                     </th>
                                 {/foreach}
-                                <th class="listViewHeaderValues noSorting {$WIDTHTYPE}">{vtranslate('LBL_UNIT_PRICE',$MODULE_NAME)}</th>
-                                <th class="listViewHeaderValues noSorting {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE_NAME)}</th>
+                                <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_UNIT_PRICE',$MODULE_NAME)}</th>
+                                <th class="listViewHeaderValues noSorting text-secondary {$WIDTHTYPE}">{vtranslate('LBL_LIST_PRICE',$MODULE_NAME)}</th>
                             </tr>
                         </thead>
                         {if $MODULE_MODEL && $MODULE_MODEL->isQuickSearchEnabled()}
                             <tr class="searchRow">
                                 <td class="searchBtn">
-                                    <button class="btn btn-success" data-trigger="PopupListSearch">{vtranslate('LBL_SEARCH', $MODULE )}</button>
+                                    <button class="btn" data-trigger="PopupListSearch" title="{vtranslate('LBL_SEARCH', $MODULE )}">
+                                        <i class="fa fa-search"></i>
+                                    </button>
                                 </td>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     <td>
                                         {assign var=FIELD_UI_TYPE_MODEL value=$LISTVIEW_HEADER->getUITypeModel()}
-                                        {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME)
-                                                    FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$USER_MODEL}
+                                        {include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$MODULE_NAME) FIELD_MODEL= $LISTVIEW_HEADER SEARCH_INFO=$SEARCH_DETAILS[$LISTVIEW_HEADER->getName()] USER_MODEL=$USER_MODEL}
                                     </td>
                                 {/foreach}
                                 <td></td>
@@ -82,7 +81,7 @@
 
                         {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
                             {assign var="RECORD_DATA" value="{$LISTVIEW_ENTRY->getRawData()}"}
-                            <tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}' data-currency='{$LISTVIEW_ENTRY->get('currency_id')}'
+                            <tr class="listViewEntries border-1 border-top" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}' data-currency='{$LISTVIEW_ENTRY->get('currency_id')}'
                                 {if $GETURL neq '' } data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if} id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                                 <td class="{$WIDTHTYPE}">
                                     <input class="entryCheckBox" type="checkbox" />
