@@ -1508,6 +1508,15 @@ class Vtiger_Field_Model extends Vtiger_Field {
         return false;
     }
 
+    public function isTableCustomWidth(): bool
+    {
+        if (83 === (int)$this->get('uitype')) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function isTableHalfWidth(): bool
     {
         $blockId = $this->getBlockId();
