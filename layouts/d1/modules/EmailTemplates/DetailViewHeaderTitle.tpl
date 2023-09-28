@@ -14,7 +14,7 @@
             <div class="info-row">
                 <h4>
                     <span class="recordLabel pushDown" title="{$RECORD->getName()}">
-                        <span class="templatename">{$RECORD->getName()}</span>&nbsp;
+                        <span class="templatename">{$RECORD->getName()}</span>
                     </span>
                 </h4>
             </div>

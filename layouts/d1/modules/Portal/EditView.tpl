@@ -6,9 +6,6 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{* modules/Portal/views/EditAjax.php *}
-
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -29,7 +26,7 @@
 							<label class="pull-right">{vtranslate('LBL_BOOKMARK_NAME', $MODULE)}&nbsp;<span class="redColor">*</span></label>
 						</div>
 						<div class="col-lg-5">
-							<input type="text" name="bookmarkName" id="bookmarkName" class="col-lg-6 inputElement" {if $RECORD} value="{$BOOKMARK_NAME}" {/if} placeholder="{vtranslate('LBL_ENTER_BOOKMARK_NAME', $MODULE)}" data-rule-required="true"/>
+							<input type="text" name="bookmarkName" id="bookmarkName" class="inputElement form-control" {if $RECORD} value="{$BOOKMARK_NAME}" {/if} placeholder="{vtranslate('LBL_ENTER_BOOKMARK_NAME', $MODULE)}" data-rule-required="true"/>
 						</div>
 						<div class="col-lg-2"></div>
 					</div>
@@ -40,7 +37,7 @@
 							<label class="pull-right">{vtranslate('LBL_BOOKMARK_URL', $MODULE)}&nbsp;<span class="redColor">*</span></label>
 						</div>
 						<div class="col-lg-5">
-							<input type="text" class="inputElement" name="bookmarkUrl" id="bookmarkUrl" {if $RECORD} value="{$BOOKMARK_URL}" {/if} placeholder="{vtranslate('LBL_ENTER_URL', $MODULE)}" data-rule-required="true" data-rule-url="true"/>
+							<input type="text" class="inputElement form-control" name="bookmarkUrl" id="bookmarkUrl" {if $RECORD} value="{$BOOKMARK_URL}" {/if} placeholder="{vtranslate('LBL_ENTER_URL', $MODULE)}" data-rule-required="true" data-rule-url="true"/>
 						</div>
 						<div class="col-lg-2"></div>
 					</div>

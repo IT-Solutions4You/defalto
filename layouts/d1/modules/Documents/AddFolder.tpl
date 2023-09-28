@@ -26,19 +26,19 @@
 		<div class="modal-body">
 			<div class="container-fluid">
 				<div class="form-group">
-					<label class="control-label fieldLabel col-sm-3">
-						<span class="redColor">*</span>
-						{vtranslate('LBL_FOLDER_NAME', $MODULE)}
+					<label class="control-label fieldLabel" for="documentsFolderName">
+						<span class="me-2">{vtranslate('LBL_FOLDER_NAME', $MODULE)}</span>
+						<span class="text-danger">*</span>
 					</label>
-					<div class="controls col-sm-9">
-						<input class="inputElement" id="documentsFolderName" data-rule-required="true" name="foldername" type="text" value="{if $FOLDER_NAME neq null}{$FOLDER_NAME}{/if}"/>
+					<div class="controls">
+						<input class="inputElement form-control" id="documentsFolderName" data-rule-required="true" name="foldername" type="text" value="{if $FOLDER_NAME neq null}{$FOLDER_NAME}{/if}"/>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label fieldLabel col-sm-3">
+				<div class="form-group mt-3">
+					<label class="control-label fieldLabel" for="description">
 						{vtranslate('LBL_FOLDER_DESCRIPTION', $MODULE)}
 					</label>
-					<div class="controls col-sm-9">
+					<div class="controls">
 						<textarea rows="3" class="inputElement form-control" name="folderdesc" id="description" style="resize: vertical;">{if $FOLDER_DESC neq null}{$FOLDER_DESC}{/if}</textarea>
 					</div>
 				</div>

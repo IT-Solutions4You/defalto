@@ -15,14 +15,10 @@
 			<div class="row">
 				<div class="col-lg-7">
 				</div>
-				<div class="col-lg-2" style="padding-top: 14px">
-					<div class="pull-right">
-						<label>
-							{vtranslate('LBL_BOOKMARKS_LIST', $MODULE)}
-						</label>
-					</div>
+				<div class="col-lg-2 text-end">
+					<label>{vtranslate('LBL_BOOKMARKS_LIST', $MODULE)}</label>
 				</div>
-				<div class="col-lg-3" style="padding-top: 10px">
+				<div class="col-lg-3 mb-3">
 					<select class="inputElement select2" id="bookmarksDropdown" name="bookmarksList">
 						{foreach item=RECORD from=$RECORDS_LIST}
 							<option value="{$RECORD['id']}" {if $RECORD['id'] eq $RECORD_ID}selected{/if}>{$RECORD['portalname']}</option>

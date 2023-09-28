@@ -318,12 +318,6 @@ Vtiger_List_Js("RecycleBin_List_Js", {
 	registerEvents: function () {
 		this._super();
 		this.registerRestoreRecordClickEvent();
-		app.helper.showVerticalScroll(jQuery('.list-menu-content'), {
-			setHeight: 500,
-			autoExpandScrollbar: true,
-			scrollInertia: 200,
-			autoHideScrollbar: true
-		});
 
 		// Added to overide default list view siderbar event
 		jQuery('.list-menu-content').on('click', '.listViewFilter', function (e) {

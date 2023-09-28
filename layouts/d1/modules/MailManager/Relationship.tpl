@@ -8,21 +8,21 @@
  ************************************************************************************}
 {strip}
     {if $LINKEDTO}
-        <div class='col-lg-12 padding0px'>
-            <div class="col-lg-7 padding0px recordScroll" >
-                <span class="col-lg-12 padding0px">
-                    <span class="col-lg-1 padding0px">
-                        <input type="radio" name="_mlinkto" value="{$LINKEDTO.record}">
-                    </span>
-                    <span class="col-lg-11 padding0px mmRelatedRecordDesc textOverflowEllipsis" title="{$LINKEDTO.detailviewlink}">
-                        &nbsp;&nbsp;{$LINKEDTO.detailviewlink}&nbsp;&nbsp;({vtranslate($LINKEDTO.module, $moduleName)})
-                    </span>
-                </span>
+        <div class="row">
+            <div class="col-lg-7 recordScroll" >
+                <div class="row">
+                    <div class="col-lg-1">
+                        <input type="radio" name="_mlinkto" value="{$LINKEDTO.record}" class="form-check-input">
+                    </div>
+                    <div class="col-lg-11 mmRelatedRecordDesc textOverflowEllipsis" title="{$LINKEDTO.detailviewlink}">
+                        <span class="me-2">{$LINKEDTO.detailviewlink}</span>
+                        <span>({vtranslate($LINKEDTO.module, $moduleName)})</span>
+                    </div>
+                </div>
             </div>
-            <div class="pull-left col-lg-5 ">
+            <div class="col-lg-5 text-end">
                 {if $LINK_TO_AVAILABLE_ACTIONS|count neq 0}
-                    <select name="_mlinktotype"  id="_mlinktotype" data-action='associate'
-                            style="background: #FFFFFF url('layouts/v7/skins/images/arrowdown.png') no-repeat 95% 40%;">
+                    <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
                         <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
                         {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
                             {if $moduleName eq 'Calendar'}
@@ -45,21 +45,22 @@
                 {assign var="LOOKRECATLEASTONE" value=true}
             {/foreach}
         {/foreach}
-        <div class="col-lg-12 padding0px">
-            <div class="col-lg-7 padding0px recordScroll" >
+        <div class="row">
+            <div class="col-lg-7 recordScroll" >
                 {foreach item=RECORDS key=MODULE from=$LOOKUPS}
                     {foreach item=RECORD from=$RECORDS}
-                        <span class="col-lg-12 padding0px">
-                            <span class="col-lg-1 padding0px">
-                                <input type="radio" name="_mlinkto" value="{$RECORD.id}">
-                            </span>
-                            <span class="textOverflowEllipsis col-lg-11 padding0px mmRelatedRecordDesc ">
-                                &nbsp;&nbsp;
-                                <a target="_blank" href='index.php?module={$MODULE}&view=Detail&record={$RECORD.id}' title="{$RECORD.label}">{$RECORD.label|textlength_check}</a>&nbsp;&nbsp;
-                                {assign var="SINGLE_MODLABEL" value="SINGLE_$MODULE"}
-                                ({vtranslate($SINGLE_MODLABEL, $MODULE)})
-                            </span>
-                        </span>
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <input type="radio" name="_mlinkto" value="{$RECORD.id}" class="form-check-input">
+                            </div>
+                            <div class="col-lg-11 text-truncate mmRelatedRecordDesc">
+                                <a target="_blank" href="index.php?module={$MODULE}&view=Detail&record={$RECORD.id}" title="{$RECORD.label}">
+                                    <span>{$RECORD.label|textlength_check}</span>
+                                    {assign var="SINGLE_MODLABEL" value="SINGLE_$MODULE"}
+                                    <span class="ms-2">({vtranslate($SINGLE_MODLABEL, $MODULE)})</span>
+                                </a>
+                            </div>
+                        </div>
                         <br>
                     {/foreach}
                 {/foreach}
@@ -67,8 +68,7 @@
             <div class="pull-left col-lg-5 ">
                 {if $LOOKRECATLEASTONE}
                     {if $LINK_TO_AVAILABLE_ACTIONS|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action='associate'
-                                style="background: #FFFFFF url('layouts/v7/skins/images/arrowdown.png') no-repeat 95% 40%;">
+                        <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
                             <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
                             {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
                                 {if $moduleName eq 'Calendar'}
@@ -82,8 +82,7 @@
                     {/if}
                 {else}
                     {if $ALLOWED_MODULES|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action='create'
-                                style="background: #FFFFFF url('layouts/v7/skins/images/arrowdown.png') no-repeat 95% 40%;">
+                        <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select">
                             <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
                             {foreach item=moduleName from=$ALLOWED_MODULES}
                                 {if $moduleName eq 'Calendar'}
@@ -100,12 +99,13 @@
         </div>
     {else}
         {if $LINKEDTO eq ""}
-            <div class="col-lg-12 padding0px">
-                <div class="col-lg-7 padding0px recordScroll" >&nbsp;</div>
-                <div class="pull-left col-lg-5">
+            <div class="row">
+                <div class="col-lg-7 recordScroll">
+
+                </div>
+                <div class="col-lg-5">
                     {if $ALLOWED_MODULES|count neq 0}
-                        <select name="_mlinktotype"  id="_mlinktotype" data-action='create'
-                                style="background: #FFFFFF url('layouts/v7/skins/images/arrowdown.png') no-repeat 95% 40%;">
+                        <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select" >
                             <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
                             {foreach item=moduleName from=$ALLOWED_MODULES}
                                 {if $moduleName eq 'Calendar'}

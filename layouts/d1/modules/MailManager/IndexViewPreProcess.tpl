@@ -7,11 +7,11 @@
  * All Rights Reserved.
  ************************************************************************************}
 
-{include file="modules/Vtiger/partials/Topbar.tpl"}
+{include file=vtemplate_path('partials/Topbar.tpl', $MODULE)}
 
 <div class="container-fluid app-nav">
     <div class="row">
-        {include file="modules/MailManager/partials/SidebarHeader.tpl"}
+        {include file="partials/SidebarHeader.tpl"|vtemplate_path:$MODULE}
         {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
     </div>
 </div>
@@ -22,11 +22,8 @@
         <div class="modal-dialog">
         </div>
     </div>
-<div class="main-container main-container-{$MODULE}">
-<div id="modnavigator" class="module-nav">
-    <div class="hidden-xs hidden-sm mod-switcher-container">
-        {include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
-    </div>
-</div>
-
-<div class="listViewPageDiv content-area" id="listViewContent">
+<div class="main-container container-fluid main-container-{$MODULE}">
+    <div class="row h-main">
+        {include file='ModuleSidebar.tpl'|vtemplate_path:$MODULE}
+        <div class="col-lg px-0 bg-white mb-lg-4 mx-lg-4 rounded overflow-hidden mmModuleContainer">
+            <div id="listViewContent" class="listViewPageDiv content-area h-100">

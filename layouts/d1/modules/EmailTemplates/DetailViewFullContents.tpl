@@ -9,9 +9,8 @@
 
 {strip}
 	<input id="recordId" type="hidden" value="{$RECORD->getId()}" />
-	{include file="DetailViewHeader.tpl"|vtemplate_path:$MODULE}
-	<div class="detailview-content container-fluid">
-		<div class="details row">
+	<div class="detailview-content container-fluid pt-3">
+		<div class="details p-3 bg-white rounded">
 			<div class="block">
 				{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
 				<div>
@@ -47,6 +46,4 @@
 			</div>
 		</div>
 	</div>
-</div>
-</div>
 {/strip}

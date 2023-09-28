@@ -61,10 +61,10 @@ class EmailTemplates_List_View extends Vtiger_Index_View {
 		$viewer->assign('REQUEST_INSTANCE', $request);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$orderParams = Vtiger_ListView_Model::getSortParamsSession($moduleName);
-		// TODO : need to remove this when vtiger6 is removed
-		$defaultLayout = Vtiger_Viewer::getDefaultLayoutName();
-		if($orderParams['viewType'] == 'grid' && $defaultLayout == 'v7'){
+
+        $orderParams = Vtiger_ListView_Model::getSortParamsSession($moduleName);
+
+		if($orderParams['viewType'] == 'grid'){
 			$viewer->view('GridViewContents.tpl',$moduleName);
 		} else {
 			$viewer->view('ListViewContents.tpl', $moduleName);

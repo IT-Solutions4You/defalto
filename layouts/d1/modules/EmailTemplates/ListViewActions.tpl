@@ -10,20 +10,20 @@
 -->*}
 {strip}
     {assign var=LISTVIEW_MASSACTIONS_1 value=array()}
-    <div id="listview-actions" class="listview-actions-container">
+    <div id="listview-actions" class="listview-actions-container container-fluid p-3">
         {foreach item=LIST_MASSACTION from=$LISTVIEW_MASSACTIONS name=massActions}
             {if $LIST_MASSACTION->getLabel() eq 'LBL_EDIT'}
                 {assign var=editAction value=$LIST_MASSACTION}
-            {else if $LIST_MASSACTION->getLabel() eq 'LBL_DELETE'}
+            {elseif $LIST_MASSACTION->getLabel() eq 'LBL_DELETE'}
                 {assign var=deleteAction value=$LIST_MASSACTION}
-            {else if $LIST_MASSACTION->getLabel() eq 'LBL_ADD_COMMENT'}
+            {elseif $LIST_MASSACTION->getLabel() eq 'LBL_ADD_COMMENT'}
                 {assign var=commentAction value=$LIST_MASSACTION}
             {else}
                 {$a = array_push($LISTVIEW_MASSACTIONS_1, $LIST_MASSACTION)}
                 {* $a is added as its print the index of the array, need to find a way around it *}
             {/if}
         {/foreach}
-        <div class = "row">
+        <div class="row">
             <div class="btn-toolbar col-md-3" role="group" aria-label="...">
                 <div class="btn-group" role="group" aria-label="...">
                     <button type="button" class="btn btn-default viewType" title="{vtranslate('LBL_LIST_VIEW',$MODULE)}" data-mode="list" {if $VIEWTYPE eq 'list'} disabled="disabled" {/if}><i class="fa fa-th-list"></i></button>
@@ -48,9 +48,6 @@
                         <i class="fa fa-comment"></i>
                     </button>
                 {/if}
-                
-                
-
                 {if php7_count($LISTVIEW_MASSACTIONS_1) gt 0 or $LISTVIEW_LINKS['LISTVIEW']|@count gt 0}
                     <div class="btn-group listViewMassActions" role="group">
                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -130,14 +127,18 @@
                         {/if}
                     {/if}
                 {/if}
-                <div id="selectAllMsgDiv" class="hide" style = "height:30px;">
-                    <center><a href="#">{vtranslate('LBL_SELECT_ALL',$MODULE)}&nbsp;{vtranslate($MODULE ,$MODULE)}&nbsp;(<span id="totalRecordsCount" value=""></span>)</a></center>
+                <div id="selectAllMsgDiv" class="lh-lg text-center hide">
+                    <a href="#">
+                        <span>{vtranslate('LBL_SELECT_ALL',$MODULE)}</span>
+                        <span class="mx-2">{vtranslate($MODULE ,$MODULE)}</span>
+                        <span>(<span id="totalRecordsCount" value=""></span>)</span>
+                    </a>
                 </div>
-                <div id="deSelectAllMsgDiv" class="hide" style = "height:30px;">
-                    <center><a href="#">{vtranslate('LBL_DESELECT_ALL_RECORDS',$MODULE)}</a></center>
+                <div id="deSelectAllMsgDiv" class="lh-lg text-center hide">
+                    <a href="#">{vtranslate('LBL_DESELECT_ALL_RECORDS',$MODULE)}</a>
                 </div>            
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 text-end">
                 {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                 {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
             </div>

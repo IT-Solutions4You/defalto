@@ -138,30 +138,30 @@ Vtiger_List_Js("Documents_List_Js", {
         jQuery('.documentFolder').find('i').removeClass('fa-folder-open')
         .addClass('fa-folder');
     },
-    
-    registerFoldersClickEvent : function() {
-        var self = this;
-        var filters = jQuery('#module-filters');
-        filters.on('click', '.documentFolder',function(e) {
-            var targetElement = jQuery(e.target);
-            if(targetElement.is('.dropdown-toggle') || targetElement.closest('ul').hasClass('dropdown-menu') ) return;
-            var element = jQuery(e.currentTarget);
-            var el = jQuery('a[data-filter-id]',element);
+
+    registerFoldersClickEvent: function () {
+        let self = this,
+            filters = jQuery('#module-filters');
+
+        filters.on('click', '.documentFolder', function (e) {
+            let targetElement = jQuery(e.target);
+
+            if (targetElement.is('[data-bs-toggle]') || targetElement.parents('[data-bs-toggle]').length) {
+                return;
+            }
+
+            let element = jQuery(e.currentTarget), el = jQuery('a[data-filter-id]', element);
+
             self.resetData();
             self.unMarkAllFilters();
             self.unMarkAllTags();
             self.unMarkAllFolders();
             el.closest('li').addClass('active');
             el.closest('li').find('i').removeClass('fa-folder').addClass('fa-folder-open');
-            
+
             self.loadFilter(jQuery('input[name="allCvId"]').val(), {
-                folder_id : 'folderid',
-                folder_value : el.data('folderName')
+                folder_id: 'folderid', folder_value: el.data('folderName')
             });
-            
-			var filtername = jQuery('a[class="filterName"]',element).text();
-			jQuery('.module-action-content').find('.filter-name')
-            .html('&nbsp;&nbsp;<span class="fa fa-chevron-right" aria-hidden="true"></span> ').text(filtername);
         });
     },
     
@@ -172,24 +172,28 @@ Vtiger_List_Js("Documents_List_Js", {
             self.unMarkAllFolders();
         });
     },
-    
+
     addFolderToList : function(folderDetails) {
-        var html = ''+
-        '<li style="font-size:12px;" class="documentFolder">'+
-            '<a class="filterName" href="javascript:void(0);" data-filter-id="'+folderDetails.folderid+'" data-folder-name="'+folderDetails.folderName+'" title="'+folderDetails.folderDesc+'">'+
-                '<i class="fa fa-folder"></i> '+
-                '<span class="foldername">'+folderDetails.folderName+'</span>'+
-            '</a>'+
-            '<div class="dropdown pull-right">'+
-                '<span class="fa fa-caret-down dropdown-toggle" data-toggle="dropdown" aria-expanded="true"></span>'+
-                '<ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">'+
-					'<li class="editFolder " data-folder-id="'+folderDetails.folderid+'">'+
-						'<a role="menuitem" ><i class="fa fa-pencil-square-o"></i>&nbsp;Edit</a>'+
-					'</li>'+
-                    '<li class="deleteFolder" data-deletable="1" data-folder-id="'+folderDetails.folderid+'">'+
-                        '<a role="menuitem"><i class="fa fa-trash"></i>&nbsp;Delete</a>'+
-                    '</li>'+
-                '</ul>'+
+        let html = ''+
+        '<li class="tab-item nav-link fs-6 d-flex justify-content-between documentFolder">' +
+            '<div class="d-flex justify-content-between">' +
+                '<a class="filterName" href="javascript:void(0);" data-filter-id="'+folderDetails.folderid+'" data-folder-name="'+folderDetails.folderName+'" title="'+folderDetails.folderDesc+'">' +
+                    '<i class="fa fa-folder"></i> '+
+                    '<span class="foldername ms-2">'+folderDetails.folderName+'</span>' +
+                '</a>'+
+                '<div class="dropdown">'+
+                    '<div  data-bs-toggle="dropdown" aria-expanded="true">' +
+                        '<i class="fa fa-caret-down"></i>' +
+                    '</div>'+
+                    '<ul class="dropdown-menu dropdown-menu-right vtDropDown" role="menu">' +
+                        '<li class="editFolder " data-folder-id="'+folderDetails.folderid+'">' +
+                            '<a class="dropdown-item" role="menuitem" ><i class="fa fa-pencil-square-o"></i><span class="ms-2">' + app.vtranslate('Edit') + '</span></a>' +
+                        '</li>' +
+                        '<li class="deleteFolder" data-deletable="1" data-folder-id="'+folderDetails.folderid+'">' +
+                            '<a class="dropdown-item" role="menuitem"><i class="fa fa-trash"></i><span class="ms-2">' + app.vtranslate('Delete') + '</span></a>' +
+                        '</li>'+
+                    '</ul>'+
+                '</div>'+
             '</div>'+
         '</li>';
         jQuery('#folders-list').append(html).find('.documentFolder:last').find('.foldername').text(folderDetails.folderName);
@@ -245,16 +249,19 @@ Vtiger_List_Js("Documents_List_Js", {
     },
     
     registerFoldersSearchEvent : function() {
-        var filters = jQuery('#module-filters');
+        let filters = jQuery('#module-filters');
         filters.find('.search-folders').on('keyup', function(e) {
-            var element = jQuery(e.currentTarget);
-            var val = element.val().toLowerCase();
+            let element = jQuery(e.currentTarget),
+                val = element.val().toLowerCase();
+
             jQuery('li.documentFolder', filters).each(function(){
-                var filterEle = jQuery(this);
-                var folderName = filterEle.find('.foldername').text();
+                let filterEle = jQuery(this),
+                    folderName = filterEle.find('.foldername').text();
+
                 folderName = folderName.toLowerCase();
+
                 if(folderName.indexOf(val) === -1){
-                    filterEle.addClass('hide');    
+                    filterEle.addClass('hide');
                 } else {
                     filterEle.removeClass('hide');
                 }

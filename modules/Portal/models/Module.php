@@ -108,4 +108,18 @@ class Portal_Module_Model extends Vtiger_Module_Model {
     function getUtilityActionsNames() {
         return array();
     }
+
+    public function getModuleBasicLinks()
+    {
+        $basicLinks = array();
+        $basicLinks[] = array(
+            'linktype' => 'BASIC',
+            'linklabel' => 'LBL_ADD_BOOKMARK',
+            'linkurl' => 'javascript:Portal_List_Js.editBookmarkAction()',
+            'linkicon' => 'fa-plus',
+            'linkclass' => 'addBookmark',
+        );
+
+        return $basicLinks;
+    }
 }

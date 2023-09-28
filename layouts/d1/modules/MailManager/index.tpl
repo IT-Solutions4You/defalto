@@ -11,20 +11,28 @@
     <input type="hidden" id="isMailBoxExists" value="{if $IS_MAILBOX_EXISTS}1{else}0{/if}">
     {if !$IS_MAILBOX_EXISTS}
         <div class="mmDescription">
-            <center>
+            <div class="text-center">
                 <br><br>
                 <div>{vtranslate('LBL_MODULE_DESCRIPTION', $MODULE)}</div>
                 <br><br><br>
-                <button class="btn btn-success mailbox_setting"><strong>{vtranslate('LBL_CONFIGURE_MAILBOX', $MODULE)}</strong></button>
-            </center>
+                <button class="btn btn-success mailbox_setting">
+                    <strong>{vtranslate('LBL_CONFIGURE_MAILBOX', $MODULE)}</strong>
+                </button>
+            </div>
         </div>
     {else}
-        <div id="mailmanagerContainer" class="clearfix">
+        <div id="mailmanagerContainer" class="py-3 bg-white rounded h-100">
             <input type="hidden" id="refresh_timeout" value="{$MAILBOX->refreshTimeOut()}"/>
-            <div id="mails_container" class='col-lg-5'></div>
-            <div id="mailPreviewContainer" class="col-lg-7">
-                <div class="mmListMainContainer">
-                    <center><strong>{vtranslate('LBL_NO_MAIL_SELECTED_DESC', $MODULE)}</strong></center>
+            <div class="container-fluid h-100">
+                <div class="row h-100">
+                    <div class="col-lg-6 border-end d-flex flex-column" id="mails_container"></div>
+                    <div class="col-lg-6" id="mailPreviewContainer">
+                        <div class="mmListMainContainer">
+                            <div class="text-center">
+                                <strong>{vtranslate('LBL_NO_MAIL_SELECTED_DESC', $MODULE)}</strong>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

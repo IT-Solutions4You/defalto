@@ -278,8 +278,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			params['type'] = type;
 		}
 		app.request.post({"data" : params}).then(function(error, responseData) {
-			container.find('#mails_container').removeClass('col-lg-12');
-			container.find('#mails_container').addClass('col-lg-5');
 			container.find('#mailPreviewContainer').removeClass('hide');
 			container.find('#mails_container').html(responseData);
 			app.helper.hideProgress();
@@ -612,9 +610,9 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerScrollForMailList : function() {
-		var self = this;
+		let self = this;
 		self.getContainer().find('#emailListDiv').mCustomScrollbar({
-			setHeight: 600,
+			setHeight: '70vh',
 			autoExpandScrollbar: true,
 			scrollInertia: 200,
 			autoHideScrollbar: true,
@@ -1001,33 +999,33 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		}
 	},
 
-	showRelatedActions : function() {
-		var self = this;
-		var container = self.getContainer();
-		var from = container.find('#mmFrom').val();
-		var to = container.find('#mmTo').val();
-		var folder = container.find('#mmFolder').val();
-		var msgNo = container.find('#mmMsgNo').val();
-		var msgUid = container.find('#mmMsgUid').val();
+	showRelatedActions: function () {
+		let self = this,
+			container = self.getContainer(),
+			from = container.find('#mmFrom').val(),
+			to = container.find('#mmTo').val(),
+			folder = container.find('#mmFolder').val(),
+			msgNo = container.find('#mmMsgNo').val(),
+			msgUid = container.find('#mmMsgUid').val(),
+			params = {
+				'module': 'MailManager',
+				'view': 'Index',
+				'_operation': 'relation',
+				'_operationarg': 'find',
+				'_mfrom': from,
+				'_mto': to,
+				'_folder': folder,
+				'_msgno': msgNo,
+				'_msguid': msgUid
+			};
 
-		var params = {
-			'module' : 'MailManager',
-			'view' : 'Index',
-			'_operation' : 'relation',
-			'_operationarg' : 'find',
-			'_mfrom' : from,
-			'_mto' : to,
-			'_folder' : folder,
-			'_msgno' : msgNo,
-			'_msguid' : msgUid
-		};
-
-		app.request.post({data : params}).then(function(err, data) {
+		app.request.post({data: params}).then(function (err, data) {
 			container.find('#relationBlock').html(data.ui);
 			self.handleRelationActions();
-			app.helper.showVerticalScroll(container.find('#relationBlock .recordScroll'), {autoHideScrollbar: true});
-			var iframeHeight = jQuery('#mails_container').height() - (200 + jQuery('#mailManagerActions').height());
-			var contentHeight = jQuery('#bodyFrame').contents().find('html').height();
+
+			let iframeHeight = jQuery('#mails_container').height() - (200 + jQuery('#mailManagerActions').height()),
+				contentHeight = jQuery('#bodyFrame').contents().find('html').height();
+
 			if (contentHeight > iframeHeight) {
 				jQuery('#bodyFrame').css({'height': iframeHeight});
 			} else {
@@ -1058,8 +1056,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			params['type'] = type;
 		}
 		app.request.post({"data" : params}).then(function(error, responseData) {
-			container.find('#mails_container').removeClass('col-lg-5');
-			container.find('#mails_container').addClass('col-lg-12');
 			container.find('#mails_container').html(responseData);
 			container.find('#mailPreviewContainer').addClass('hide');
 			app.helper.hideProgress();

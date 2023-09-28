@@ -13,24 +13,20 @@
     <div class='modal-dialog' id="rssAddFormUi">
         <div class="modal-content">
             {assign var=HEADER_TITLE value={vtranslate('LBL_ADD_FEED_SOURCE', $MODULE)}}
-        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
-            <form class="form-horizontal" id="rssAddForm"  method="post" action="index.php" >
+            {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
+            <form class="form-horizontal" id="rssAddForm" method="post" action="index.php">
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="col-lg-4 fieldLabel">
-                                <label>
-                                    {vtranslate('LBL_FEED_SOURCE',$MODULE)}&nbsp;<span class="redColor">*</span>
-                                </label>
-                            </div>
-                            <div class="col-lg-8 fieldValue">
-                                <input class="form-control" type="text" id="feedurl" name="feedurl" data-rule-required="true" data-rule-url="true" value="" placeholder="{vtranslate('LBL_ENTER_FEED_SOURCE',$MODULE)}"/>
-                            </div>
-                        </div>
+                    <div class="fieldLabel mb-3">
+                        <label>
+                            {vtranslate('LBL_FEED_SOURCE',$MODULE)}&nbsp;<span class="redColor">*</span>
+                        </label>
+                    </div>
+                    <div class="fieldValue">
+                        <input class="form-control" type="text" id="feedurl" name="feedurl" data-rule-required="true" data-rule-url="true" value="" placeholder="{vtranslate('LBL_ENTER_FEED_SOURCE',$MODULE)}"/>
                     </div>
                 </div>
-        {include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
-        </form>
+                {include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
+            </form>
+        </div>
     </div>
-  </div>
 {/strip}
