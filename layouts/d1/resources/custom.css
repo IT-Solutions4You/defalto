@@ -481,9 +481,6 @@ body{
 
 
 /** Lists Menu in Side bar */
-.module-filters .sidebar-container{
-    padding:0 12px;
-}
 .module-filters > hr{
     margin: 20px 12px; 
 }
@@ -539,17 +536,6 @@ body{
 }
 .lists-menu > li:hover, .lists-menu > li.active{
     background: #2c3b49;
-}
-.lists-menu > li > a{
-    color: #fff;
-    padding: 3px 5px 5px 0;
-    text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 78%;
-    display: inline-block;
-    vertical-align: middle;
-    white-space: nowrap;
 }
 .lists-menu > li .fa{
     visibility:hidden;

@@ -24,76 +24,89 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 
 },{
 	registerDeleteShortCutEvent : function(shortCutBlock) {
-		var thisInstance = this;
+		let thisInstance = this;
+
 		if(typeof shortCutBlock == 'undefined') {
-			var shortCutBlock = jQuery('.moduleBlock');
-		};
-		shortCutBlock.find('.unpin').on('click',function(e) {
-			var actionEle = jQuery(e.currentTarget);
-			var closestBlock = actionEle.closest('.moduleBlock');
-			var fieldId = actionEle.data('id');
-			var shortcutBlockActionUrl = closestBlock.data('actionurl');
-			var actionUrl = shortcutBlockActionUrl+'&pin=false';
+			shortCutBlock = jQuery('#settingsShortCutsContainer');
+		}
+
+		shortCutBlock.find('.unpin').on('click', function(e) {
+			e.stopPropagation();
+
+			let actionEle = jQuery(e.currentTarget),
+				closestBlock = actionEle.closest('.moduleBlock'),
+				fieldId = actionEle.data('id'),
+				shortcutBlockActionUrl = closestBlock.data('actionurl'),
+				actionUrl = shortcutBlockActionUrl+'&pin=false';
+
 			app.request.post({'url':actionUrl}).then(function(err, data) {
 				if(err === null) {
 					closestBlock.remove();
 					thisInstance.registerSettingShortCutAlignmentEvent();
-					var menuItemId = '#'+fieldId+'_menuItem';
-					var shortCutActionEle = jQuery(menuItemId);
-					var imagePath = shortCutActionEle.data('pinimageurl');
-					shortCutActionEle.attr('src',imagePath).data('action','pin');
+
+					let menuItemId = '#'+fieldId+'_menuItem',
+						shortCutActionEle = jQuery(menuItemId);
+
+					shortCutActionEle.data('action','pin');
+					shortCutActionEle.html('<i class="fa-solid fa-link"></i>')
 					app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_UNPINNED')});
 				}
 			});
-			e.stopPropagation();
 		});
 	},
 
-	registerPinUnpinShortCutEvent : function() {
-		var thisInstance = this;
-		var widget = jQuery('#accordion');
-		widget.on('click','.pinUnpinShortCut',function(e){
-			var shortCutActionEle = jQuery(e.currentTarget);
-			var url = shortCutActionEle.data('actionurl');
-			var shortCutElementActionStatus = shortCutActionEle.data('action');
-			if(shortCutElementActionStatus == 'pin'){
-				var actionUrl = url+'&pin=true';
+	registerPinUnpinShortCutEvent: function () {
+		let thisInstance = this,
+			widget = jQuery('#accordion');
+
+		widget.on('click', '.pinUnpinShortCut', function (e) {
+			let shortCutActionEle = jQuery(e.currentTarget),
+				url = shortCutActionEle.data('actionurl'),
+				shortCutElementActionStatus = shortCutActionEle.data('action'),
+				actionUrl;
+
+			if ('pin' === shortCutElementActionStatus) {
+				actionUrl = url + '&pin=true';
 			} else {
-				actionUrl = url+'&pin=false';
+				actionUrl = url + '&pin=false';
 			}
-			var progressIndicatorElement = jQuery.progressIndicator({
-				'blockInfo' : {
-				'enabled' : true
-				}
-			});
-			app.request.post({'url':actionUrl}).then(function(err, data) {
-				if(data.SUCCESS == 'OK') {
-					if (shortCutElementActionStatus == 'pin') {
-						var imagePath = shortCutActionEle.data('unpinimageurl');
-						var unpinTitle = shortCutActionEle.data('unpintitle');
-						shortCutActionEle.attr('src',imagePath).data('action','unpin').attr('title',unpinTitle);
-						var shortCutsMainContainer = jQuery('#settingsShortCutsContainer').find('.col-lg-12:last-child');
+
+			app.request.post({'url': actionUrl}).then(function (error, data) {
+				if (data['SUCCESS'] === 'OK') {
+					if (shortCutElementActionStatus === 'pin') {
+						let unpinTitle = shortCutActionEle.data('unpintitle');
+
+						shortCutActionEle.data('action', 'unpin').attr('title', unpinTitle);
+						shortCutActionEle.html('<i class="fa-solid fa-link-slash"></i>');
+
+						let shortCutsMainContainer = jQuery('#settingsShortCutsContainer > .row');
+
 						if (shortCutsMainContainer.length > 0) {
-							var url = 'module=Vtiger&parent=Settings&view=IndexAjax&mode=getSettingsShortCutBlock&fieldid='+shortCutActionEle.data('id');
-							app.request.post({url:url}).then(function(err, data){
-								var newBlock = jQuery(data).appendTo(shortCutsMainContainer);
+							let url = 'module=Vtiger&parent=Settings&view=IndexAjax&mode=getSettingsShortCutBlock&fieldid=' + shortCutActionEle.data('id');
+
+							app.request.post({url: url}).then(function (err, data) {
+								let newBlock = jQuery(data).appendTo(shortCutsMainContainer);
 								thisInstance.registerSettingShortCutAlignmentEvent();
 								thisInstance.registerDeleteShortCutEvent(newBlock);
 							});
 						}
-						progressIndicatorElement.progressIndicator({'mode' : 'hide'});
-						app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_PINNED')});
+
+						app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESSFULLY_PINNED')});
 					} else {
-						var imagePath = shortCutActionEle.data('pinimageurl');
-						var pinTitle = shortCutActionEle.data('pintitle');
-						shortCutActionEle.attr('src',imagePath).data('action','pin').attr('title',pinTitle);
-						jQuery('#shortcut_'+shortCutActionEle.data('id')).remove();
+						let pinTitle = shortCutActionEle.data('pintitle');
+
+						shortCutActionEle.data('action', 'pin').attr('title', pinTitle);
+						shortCutActionEle.html('<i class="fa-solid fa-link"></i>');
+
+						jQuery('#shortcut_' + shortCutActionEle.data('id')).remove();
+
 						thisInstance.registerSettingShortCutAlignmentEvent();
-						progressIndicatorElement.progressIndicator({'mode' : 'hide'});
-						app.helper.showSuccessNotification({'message':app.vtranslate('JS_SUCCESSFULLY_UNPINNED')});
+
+						app.helper.showSuccessNotification({'message': app.vtranslate('JS_SUCCESSFULLY_UNPINNED')});
 					}
 				}
 			});
+
 			e.preventDefault();
 		});
 	},
@@ -187,22 +200,32 @@ Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 			}
 	},
 
-	registerFilterSearch : function () {
-		var settings = jQuery('.settingsgroup');
-			jQuery('.search-list').instaFilta({
-				targets: '.menuItemLabel',
-				sections : '.instaSearch',
-				markMatches: true,
-				onFilterComplete: function(matchedItems) {
-					if(jQuery('.search-list').val().length <= 0){
-						jQuery('.instaSearch').find('.widgetContainer').closest('.panel-collapse').filter('.in').removeClass('in');
-						jQuery('.instaSearch').find('.indicator').removeClass('fa-chevron-down').addClass('fa-chevron-right');
-						return;
-					}
-					jQuery('.instaSearch').find('[data-instafilta-hide="false"]').closest('.panel-collapse').filter(':not(.in)').addClass('in').height('');
-					jQuery('.instaSearch').filter(':visible').find('[data-instafilta-hide="false"]').parents('.instaSearch').find('.indicator').removeClass('fa-chevron-right').addClass('fa-chevron-down');
+	registerFilterSearch: function () {
+		let searchContainer = jQuery('.settingsSearch'),
+			searchInput = jQuery('.settingsSearchInput');
+
+		searchInput.instaFilta({
+			targets: '.settingsSearchLabel',
+			sections: '.settingsSearch',
+			markMatches: true,
+			onFilterComplete: function (matchedItems) {
+				$('.settingsSearchTab', searchContainer).removeClass('show');
+				$('.settingsSearchButton', searchContainer).addClass('collapsed');
+				$('.settingsSearchLabel', searchContainer).parents('.settingsSearchTabItem').removeClass('hide');
+
+				if (!searchInput.val().length) {
+					let activeLabel = $('.settingsSearchActiveLabel').parents('.settingsSearch');
+
+					$('.settingsSearchTab', activeLabel).removeClass('collapse');
+					$('.settingsSearchButton', activeLabel).removeClass('collapsed');
+					return;
 				}
-			});
+
+				$('.settingsSearchTab', searchContainer).addClass('show');
+				$('.settingsSearchButton', searchContainer).removeClass('collapsed');
+				$('.settingsSearchLabel', searchContainer).not(':visible').parents('.settingsSearchTabItem').addClass('hide');
+			}
+		});
 	},
 
 	registerEvents: function() {

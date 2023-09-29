@@ -1910,25 +1910,31 @@ Vtiger.Class("Vtiger_List_Js", {
 		return aDeferred.promise();
 	},
 	registerDeleteRecordClickEvent: function () {
-		var thisInstance = this;
-		jQuery('#page').on('click', '.deleteRecordButton', function (e) {
-			var elem = jQuery(e.currentTarget);
-			var parent = elem;
-			var params = {};
+		let thisInstance = this;
 
-			var originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
+		console.log('registerDeleteRecordClickEvent');
+
+		$('#page').on('click', '.deleteRecordButton', function (e) {
+			console.log('registerDeleteRecordClickEvent', 'click');
+
+			let elem = jQuery(e.currentTarget),
+				parent = elem,
+				params = {},
+				originalDropDownMenu = elem.closest('.dropdown-menu').data('original-menu');
+
 			if (originalDropDownMenu && typeof originalDropDownMenu != 'undefined') {
 				parent = app.helper.getDropDownmenuParent(originalDropDownMenu);
 
-				var moduleName = jQuery('#searchModuleList').val();
+				let moduleName = jQuery('#searchModuleList').val();
+
 				if (moduleName && typeof moduleName != 'undefined') {
 					params['module'] = moduleName;
 				}
 			}
 
-			var recordId = parent.closest('tr').data('id');
+			let recordId = parent.closest('tr').data('id');
+
 			thisInstance.deleteRecord(recordId, params);
-//			e.stopPropagation();
 		});
 	},
 	_deleteRecord: function (recordId, extraParams) {
@@ -1963,8 +1969,9 @@ Vtiger.Class("Vtiger_List_Js", {
 			});
 	},
 	deleteRecord: function (recordId, extraParams) {
-		var thisInstance = this;
-		var message = app.vtranslate('LBL_DELETE_CONFIRMATION');
+		let thisInstance = this,
+			message = app.vtranslate('LBL_DELETE_CONFIRMATION');
+
 		app.helper.showConfirmationBox({'message': message}).then(function () {
 			thisInstance._deleteRecord(recordId, extraParams);
 		});
@@ -1995,13 +2002,13 @@ Vtiger.Class("Vtiger_List_Js", {
 		}
 	},
 	showPagingInfo: function () {
-		var thisInstance = this;
-		var listViewContainer = thisInstance.getListViewContainer();
-		var totalNumberOfRecords = jQuery('#totalCount', listViewContainer).val();
-		var pageNumberElement = jQuery('.pageNumbersText', listViewContainer);
-		var pageRange = pageNumberElement.text();
-		var newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + totalNumberOfRecords + "  ";
-		var listViewEntriesCount = parseInt(jQuery('#noOfEntries', listViewContainer).val());
+		let thisInstance = this,
+			listViewContainer = thisInstance.getListViewContainer(),
+			totalNumberOfRecords = jQuery('#totalCount', listViewContainer).val(),
+			pageNumberElement = jQuery('.pageNumbersText', listViewContainer),
+			pageRange = pageNumberElement.text(),
+			newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + totalNumberOfRecords,
+			listViewEntriesCount = parseInt(jQuery('#noOfEntries', listViewContainer).val());
 
 		if (listViewEntriesCount !== 0) {
 			jQuery('.pageNumbersText', listViewContainer).html(newPagingInfo);
@@ -2323,23 +2330,32 @@ Vtiger.Class("Vtiger_List_Js", {
 
 	},
 	registerEditLink: function () {
-		jQuery('#page').on('click', 'a[name="editlink"]', function (e) {
-			var element = jQuery(e.currentTarget);
-			var url = element.data('url');
-			var listInstance = Vtiger_List_Js.getInstance();
-			var postData = listInstance.getDefaultParams();
-			for (var key in postData) {
-				if (postData[key]) {
-					postData['return' + key] = postData[key];
-					delete postData[key];
-				} else {
-					delete postData[key];
-				}
-			}
+		const self = this;
+
+		jQuery('#page').on('click', '.editLink', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			window.location.href = url + '&' + $.param(postData);
+
+			let element = jQuery(e.currentTarget),
+				url = element.data('url');
+
+			self.editRecord(url);
 		});
+	},
+	editRecord: function (url) {
+		let listInstance = Vtiger_List_Js.getInstance(),
+			postData = listInstance.getDefaultParams();
+
+		for (let key in postData) {
+			if (postData[key]) {
+				postData['return' + key] = postData[key];
+				delete postData[key];
+			} else {
+				delete postData[key];
+			}
+		}
+
+		window.location.href = url + '&' + $.param(postData);
 	},
 	registerDynamicDropdownPosition: function (container, relativeto) {
 		if (typeof jQuery.fn.sadropdown === 'function') {
@@ -2671,6 +2687,10 @@ Vtiger.Class("Vtiger_List_Js", {
 			toggleDefault = actionsElement.find('.toggleDefault'),
 			toggleDefaultIcon = toggleDefault.find('i'),
 			currentFilterName = $('.current-filter-name');
+
+		if('undefined' === typeof filterData) {
+			return;
+		}
 
 		editFilter.attr('data-url', filterData['editurl']);
 		editFilter.attr('data-id', filterData['id']);

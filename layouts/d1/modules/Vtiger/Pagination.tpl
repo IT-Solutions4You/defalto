@@ -21,13 +21,11 @@
             <button id="PageNumbers" class="pageNumbers showTotalCountIcon btn">
                 <span class="pageNumbersText">
                     {if $RECORD_COUNT}
-                        {$PAGING_MODEL->getRecordStartRange()}&nbsp;
-                        {vtranslate('LBL_to', $MODULE)}&nbsp;
-                        {$PAGING_MODEL->getRecordEndRange()}&nbsp;
+                        {$PAGING_MODEL->getRecordStartRange()}&nbsp;{vtranslate('LBL_to', $MODULE)}&nbsp;{$PAGING_MODEL->getRecordEndRange()}
                     {/if}
                 </span>
-                <span class="totalNumberOfRecords cursorPointer{if !$RECORD_COUNT} hide{/if}" title="{vtranslate('LBL_SHOW_TOTAL_NUMBER_OF_RECORDS', $MODULE)}">
-                    {vtranslate('LBL_OF', $MODULE)}&nbsp;?
+                <span class="totalNumberOfRecords cursorPointer {if !$RECORD_COUNT}hide{/if}" title="{vtranslate('LBL_SHOW_TOTAL_NUMBER_OF_RECORDS', $MODULE)}">
+                    &nbsp;{vtranslate('LBL_OF', $MODULE)}&nbsp;?
                 </span>
             </button>
             <button type="button" id="PreviousPageButton" class="btn btn-outline-secondary me-1" {if !$PAGING_MODEL->isPrevPageExists()} disabled {/if}>

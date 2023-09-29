@@ -36,7 +36,7 @@
             {if $RECORD_ACTIONS}
                 {if $RECORD_ACTIONS['edit']}
                     <li>
-                        <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()}" name="editlink">{vtranslate('LBL_EDIT', $MODULE)}</a>
+                        <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()}">{vtranslate('LBL_EDIT', $MODULE)}</a>
                     </li>
                 {/if}
 				{if $RECORD_ACTIONS['delete']}

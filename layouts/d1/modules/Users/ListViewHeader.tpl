@@ -8,26 +8,26 @@
 *************************************************************************************}
 
 {strip}
-	<div class="listViewPageDiv" id="listViewContent">
-		<div class="col-sm-12 col-xs-12 full-height">
-                    <input type='hidden' name='pwd_regex' value= {ZEND_json::encode($PWD_REGEX)} />
-			<div id="listview-actions" class="listview-actions-container">
-				<div class = "row">
-					<div class="btn-group col-md-2"></div>
-					<div class='col-md-7' style="padding-top: 5px;text-align: center;">
-						<div class="btn-group userFilter" style="text-align: center;">
-							<button class="btn btn-default btn-primary" id="activeUsers" data-searchvalue="Active">
-								{vtranslate('LBL_ACTIVE_USERS', $MODULE)}
-							</button>
-							<button class="btn btn-default" id="inactiveUsers" data-searchvalue="Inactive">
-								{vtranslate('LBL_INACTIVE_USERS', $MODULE)}
-							</button>
-						</div>
-					</div>
-					<div class="col-md-3">
-						{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
-						{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
-					</div>
-				</div>
-				<div class="list-content">
+<div class="listViewPageDiv" id="listViewContent">
+    <div class="px-4 pb-4">
+        <input type="hidden" name="pwd_regex" value= {ZEND_json::encode($PWD_REGEX)}/>
+        <div id="listview-actions" class="listview-actions-container container-fluid p-0 bg-white rounded h-list">
+            <div class="row p-3">
+                <div class="col-lg"></div>
+                <div class="col-lg">
+                    <div class="btn-group userFilter text-center">
+                        <button class="btn btn-default btn-primary" id="activeUsers" data-searchvalue="Active">
+                            {vtranslate('LBL_ACTIVE_USERS', $MODULE)}
+                        </button>
+                        <button class="btn btn-default" id="inactiveUsers" data-searchvalue="Inactive">
+                            {vtranslate('LBL_INACTIVE_USERS', $MODULE)}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg text-end">
+                    {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
+                    {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+                </div>
+            </div>
+            <div class="list-content">
 {/strip}

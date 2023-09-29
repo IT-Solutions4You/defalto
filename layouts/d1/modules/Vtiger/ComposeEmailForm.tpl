@@ -14,60 +14,60 @@
             <form class="form-horizontal" id="massEmailForm" method="post" action="index.php" enctype="multipart/form-data" name="massEmailForm">
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate('LBL_COMPOSE_EMAIL', $MODULE)}}
                 <div class="modal-body">
-                    <input type="hidden" name="selected_ids" value='{ZEND_JSON::encode($SELECTED_IDS)}' />
-                    <input type="hidden" name="excluded_ids" value='{ZEND_JSON::encode($EXCLUDED_IDS)}' />
-                    <input type="hidden" name="viewname" value="{$VIEWNAME}" />
+                    <input type="hidden" name="selected_ids" value='{ZEND_JSON::encode($SELECTED_IDS)}'/>
+                    <input type="hidden" name="excluded_ids" value='{ZEND_JSON::encode($EXCLUDED_IDS)}'/>
+                    <input type="hidden" name="viewname" value="{$VIEWNAME}"/>
                     <input type="hidden" name="module" value="{$MODULE}"/>
-                    <input type="hidden" name="mode" value="massSave" />
-                    <input type="hidden" name="toemailinfo" value='{ZEND_JSON::encode($TOMAIL_INFO)}' />
-                    <input type="hidden" name="view" value="MassSaveAjax" />
-                    <input type="hidden"  name="to" value='{ZEND_JSON::encode($TO)}' />
-                    <input type="hidden"  name="toMailNamesList" value='{$TOMAIL_NAMES_LIST}'/>
-                    <input type="hidden" id="flag" name="flag" value="" />
-                    <input type="hidden" id="maxUploadSize" value="{$MAX_UPLOAD_SIZE}" />
-                    <input type="hidden" id="documentIds" name="documentids" value="" />
-                    <input type="hidden" name="emailMode" value="{$EMAIL_MODE}" />
-                    <input type="hidden" name="source_module" value="{$SOURCE_MODULE}" />
+                    <input type="hidden" name="mode" value="massSave"/>
+                    <input type="hidden" name="toemailinfo" value='{ZEND_JSON::encode($TOMAIL_INFO)}'/>
+                    <input type="hidden" name="view" value="MassSaveAjax"/>
+                    <input type="hidden" name="to" value='{ZEND_JSON::encode($TO)}'/>
+                    <input type="hidden" name="toMailNamesList" value='{$TOMAIL_NAMES_LIST}'/>
+                    <input type="hidden" id="flag" name="flag" value=""/>
+                    <input type="hidden" id="maxUploadSize" value="{$MAX_UPLOAD_SIZE}"/>
+                    <input type="hidden" id="documentIds" name="documentids" value=""/>
+                    <input type="hidden" name="emailMode" value="{$EMAIL_MODE}"/>
+                    <input type="hidden" name="source_module" value="{$SOURCE_MODULE}"/>
                     {if !empty($PARENT_EMAIL_ID)}
-                        <input type="hidden" name="parent_id" value="{$PARENT_EMAIL_ID}" />
-                        <input type="hidden" name="parent_record_id" value="{$PARENT_RECORD}" />
+                        <input type="hidden" name="parent_id" value="{$PARENT_EMAIL_ID}"/>
+                        <input type="hidden" name="parent_record_id" value="{$PARENT_RECORD}"/>
                     {/if}
                     {if !empty($RECORDID)}
-                        <input type="hidden" name="record" value="{$RECORDID}" />
+                        <input type="hidden" name="record" value="{$RECORDID}"/>
                     {/if}
-                    <input type="hidden" name="search_key" value= "{$SEARCH_KEY}" />
-                    <input type="hidden" name="operator" value="{$OPERATOR}" />
-                    <input type="hidden" name="search_value" value="{$ALPHABET_VALUE}" />
-                    <input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}' />
-                    
-                    <div class="row toEmailField">
-                        <div class="col-lg-12">
+                    <input type="hidden" name="search_key" value="{$SEARCH_KEY}"/>
+                    <input type="hidden" name="operator" value="{$OPERATOR}"/>
+                    <input type="hidden" name="search_value" value="{$ALPHABET_VALUE}"/>
+                    <input type="hidden" name="search_params" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SEARCH_PARAMS))}'/>
+
+                    <div class="toEmailField">
+                        <div class="row">
                             <div class="col-lg-2">
                                 <span class="">{vtranslate('LBL_TO',$MODULE)}&nbsp;<span class="redColor">*</span></span>
                             </div>
-                            <div class="col-lg-6">
-                                {if !empty($TO)}
-                                    {assign var=TO_EMAILS value=","|implode:$TO|htmlentities}
-                                {/if}
-                                <input id="emailField" style="width:100%" name="toEmail" type="text" class="autoComplete sourceField select2" data-rule-required="true" data-rule-multiEmails="true" value="{$TO_EMAILS}" placeholder="{vtranslate('LBL_TYPE_AND_SEARCH',$MODULE)}">
-                            </div>
-                            <div class="col-lg-4 input-group">
-                                <select style="width: 140px;" class="select2 emailModulesList pull-right">
-                                    {foreach item=MODULE_NAME from=$RELATED_MODULES}
-                                        <option value="{$MODULE_NAME}" {if $MODULE_NAME eq $FIELD_MODULE} selected {/if}>{vtranslate($MODULE_NAME,$MODULE_NAME)}</option>
-							 {/foreach}
-                                </select>
-                                <a href="#" class="clearReferenceSelection cursorPointer" name="clearToEmailField"> X </a>
-                                <span class="input-group-addon">
-                                    <span class="selectEmail cursorPointer">
+                            <div class="col-lg-10">
+                                <div class="input-group">
+                                    {if !empty($TO)}
+                                        {assign var=TO_EMAILS value=","|implode:$TO|htmlentities}
+                                    {/if}
+                                    <select id="emailField" multiple data-tags="true" name="toEmail" type="text" class="select2 autoComplete sourceField" data-rule-required="true" data-rule-multiEmails="true" value="{$TO_EMAILS}" placeholder="{vtranslate('LBL_TYPE_AND_SEARCH',$MODULE)}">
+                                        <option value="">Search values</option>
+                                    </select>
+                                    <select class="select2 emailModulesList">
+                                        {foreach item=MODULE_NAME from=$RELATED_MODULES}
+                                            <option value="{$MODULE_NAME}" {if $MODULE_NAME eq $FIELD_MODULE} selected {/if}>{vtranslate($MODULE_NAME,$MODULE_NAME)}</option>
+                                        {/foreach}
+                                    </select>
+                                    <a href="#" class="input-group-text clearReferenceSelection cursorPointer" name="clearToEmailField">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                    <span class="input-group-text selectEmail cursorPointer">
                                         <i class="fa fa-search" title="{vtranslate('LBL_SELECT', $MODULE)}"></i>
                                     </span>
-                                </span>
+                                </div>
                             </div>
-                            </div>
-                                    
                         </div>
-                    
+                    </div>
                     <div class="row {if empty($CC)} hide {/if} ccContainer">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
@@ -91,7 +91,7 @@
                             <div class="col-lg-4"></div>
                         </div>
                     </div>
-                    
+
                     <div class="row {if (!empty($CC)) and (!empty($BCC))} hide {/if} ">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
@@ -103,19 +103,19 @@
                             <div class="col-lg-4"></div>
                         </div>
                     </div>
-                    
+
                     <div class="row subjectField">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
                                 <span class="">{vtranslate('LBL_SUBJECT',$MODULE)}&nbsp;<span class="redColor">*</span></span>
                             </div>
                             <div class="col-lg-6">
-                                <input type="text" name="subject" value="{$SUBJECT}" data-rule-required="true" id="subject" spellcheck="true" class="inputElement"/>
+                                <input type="text" name="subject" value="{$SUBJECT}" data-rule-required="true" id="subject" spellcheck="true" class="inputElement form-control"/>
                             </div>
                             <div class="col-lg-4"></div>
                         </div>
                     </div>
-                            
+
                     <div class="row attachment">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
@@ -141,7 +141,7 @@
                                         {else}
                                             {assign var=FILE_TYPE value="file"}
                                         {/if}
-                                        <div class="MultiFile-label customAttachment" data-file-id="{$ATTACHMENT['fileid']}" data-file-type="{$FILE_TYPE}"  data-file-size="{$ATTACHMENT['size']}" {if $FILE_TYPE eq "document"} data-document-id="{$DOCUMENT_ID}"{/if}>
+                                        <div class="MultiFile-label customAttachment" data-file-id="{$ATTACHMENT['fileid']}" data-file-type="{$FILE_TYPE}" data-file-size="{$ATTACHMENT['size']}" {if $FILE_TYPE eq "document"} data-document-id="{$DOCUMENT_ID}"{/if}>
                                             {if $ATTACHMENT['nondeletable'] neq true}
                                                 <a name="removeAttachment" class="cursorPointer">x </a>
                                             {/if}
@@ -152,7 +152,7 @@
                             </div>
                         </div>
                     </div>
-                                
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="col-lg-2">
@@ -168,22 +168,22 @@
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
                             <p>{vtranslate('LBL_EMAILTEMPLATE_WARNING_CONTENT',$MODULE)}</p>
                         </div>
-                    </div>         
+                    </div>
                     <div class="row templateContent">
                         <div class="col-lg-12">
                             <textarea style="width:390px;height:200px;" id="description" name="description">{$DESCRIPTION}</textarea>
                         </div>
                     </div>
-                    
+
                     {if $RELATED_LOAD eq true}
-                        <input type="hidden" name="related_load" value={$RELATED_LOAD} />
+                        <input type="hidden" name="related_load" value={$RELATED_LOAD}/>
                     {/if}
-                    <input type="hidden" name="attachments" value='{ZEND_JSON::encode($ATTACHMENTS)}' />
+                    <input type="hidden" name="attachments" value='{ZEND_JSON::encode($ATTACHMENTS)}'/>
                     <div id="emailTemplateWarningContent" style="display: none;">
                         {vtranslate('LBL_EMAILTEMPLATE_WARNING_CONTENT',$MODULE)}
                     </div>
                 </div>
-                
+
                 <div class="modal-footer">
                     <div class="pull-right cancelLinkContainer">
                         <a href="#" class="cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>

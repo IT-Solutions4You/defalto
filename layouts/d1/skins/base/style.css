@@ -14,6 +14,8 @@
 :root {
   --menu-width: 6rem;
   --menu-bg: white;
+  --menu-bg-active: #eff3fe;
+  --menu-color-active: #5E81F4;
   --menu-icon-font-size: 1rem;
   --menu-icon-size: 3.5rem;
   --footer-height: 2rem;
@@ -145,6 +147,9 @@
 .h-main {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
+.h-list {
+  min-height: calc(100vh - var(--header-height) - var(--footer-height) - 1.5rem);
+}
 .nav-pills .nav-link {
   --bs-nav-pills-link-active-bg: #eff3fe;
   --bs-nav-pills-link-active-color: var(--bs-primary-color);
@@ -260,12 +265,6 @@ body {
     z-index: 1;
     background: #FFFFFF;
     overflow: auto;
-  }
-  .main-container .settingsPageDiv {
-    padding-left: 230px;
-  }
-  .main-container .settingsNav {
-    height: 100%;
   }
   .app-nav .module-action-bar-full {
     padding-left: 0;
@@ -894,10 +893,6 @@ a {
   left: 0%;
 }
 /** Lists Menu in Side bar */
-.module-filters .settings-sidebar,
-.module-filters .sidebar-container {
-  padding: 0 12px;
-}
 .module-filters .settings-sidebar > hr {
   margin: 20px 12px;
 }
@@ -918,15 +913,6 @@ a {
   line-height: 10px;
   margin-top: 2px;
 }
-.lists-menu-container .toggleFilterSize {
-  cursor: pointer;
-  font-size: 11px;
-  padding-right: 20px;
-  color: #15c;
-}
-.lists-menu-container hr {
-  margin: 5px 0;
-}
 /* mScrollbar customization for lists widget */
 .lists-menu-container .menu-scroller .mCSB_scrollTools {
   width: 13px;
@@ -934,105 +920,6 @@ a {
 .lists-menu-container .menu-scroller .mCSB_inside > .mCSB_container,
 .modules-menu .mCSB_inside > .mCSB_container {
   margin-right: 0;
-}
-.lists-menu-container .menu-scroller .mCSB_scrollTools .mCSB_draggerContainer,
-.modules-menu .mCSB_scrollTools .mCSB_draggerContainer {
-  left: 8px;
-}
-/* Customization ends */
-.lists-menu-container .list-menu-content .more-less-link {
-  color: #fff;
-  /*text-decoration: none;*/
-}
-.lists-menu-container .list-menu-content .sub-header {
-  color: #ddd;
-  font-weight: bold;
-  margin: 20px 0 5px;
-}
-.lists-menu-container .menu-scroller .lists-menu {
-  list-style: none;
-  padding: 0px;
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-.lists-menu > li {
-  margin: 1px 0;
-  padding: 0 5px;
-}
-.lists-menu > li:hover,
-.lists-menu > li.active {
-  background: #F7F7F7;
-}
-.lists-menu > li:hover .js-popover-container,
-.lists-menu > li.active .js-popover-container {
-  display: inline;
-}
-.lists-menu .js-popover-container {
-  display: none;
-}
-.lists-menu > li > a {
-  padding: 3px 5px 5px 0;
-  text-decoration: none;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 85%;
-  display: inline-block;
-  vertical-align: middle;
-  white-space: nowrap;
-  color: #666666;
-}
-.lists-menu > li > .dropdown {
-  margin-left: 1%;
-  margin-top: 3px;
-  width: 14%;
-  text-align: center;
-}
-.lists-menu > li > .pull-right > .js-popover-container > .fa {
-  -webkit-transition-duration: 0.4s;
-  -moz-transition-duration: 0.4s;
-  -o-transition-duration: 0.4s;
-  transition-duration: 0.4s;
-  display: inline-block;
-  -webkit-transition-property: -webkit-transform;
-  -moz-transition-property: -moz-transform;
-  -o-transition-property: -o-transform;
-  transition-property: transform;
-  font-size: 15px;
-  margin-right: 10px;
-  margin-top: 4px;
-}
-.lists-menu > li > .dropdown.open > .fa {
-  color: #24a159 !important;
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-}
-.lists-menu > li .fa.dropdown-toggle {
-  visibility: hidden;
-}
-.lists-menu > li .fa.fa-chevron-circle-down {
-  margin: 6px 2px 0 0;
-  cursor: pointer;
-}
-.lists-menu > li .fa.fa-plus-square-o {
-  vertical-align: middle;
-  cursor: move;
-}
-.lists-menu > li.active .fa,
-.lists-menu > li:hover .fa {
-  visibility: visible;
-}
-.search-folders,
-.search-list {
-  width: 100%;
-  background-color: #FFFFFF;
-  border: 1px solid #DDDDDD;
-  margin: 5px 0 10px;
-  padding: 5px 10px;
-}
-.search-folders:focus,
-.search-list:focus {
-  outline: none;
 }
 .integrations-container > div,
 .common-links-container > div {
@@ -2073,13 +1960,6 @@ input[type=checkbox]:checked {
   margin-bottom: 10px;
   text-align: justify;
 }
-.settings-menu-items a {
-  color: #fff;
-  font-size: 13px;
-}
-.settingsgroup .panel-group {
-  padding-top: 15px;
-}
 .importOverLayHeader {
   background: white;
   color: #596875;
@@ -2161,19 +2041,6 @@ input[type=checkbox]:checked {
 }
 .crumbs li:first-child a .stepNum {
   margin-left: 8px;
-}
-.stepText {
-  white-space: nowrap;
-  overflow: hidden;
-  font-size: 13px;
-  width: 60%;
-  display: inline-block;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-}
-.active .stepText,
-.active .stepNum {
-  color: #FFFFFF;
 }
 .mailBoxEditDiv .crumbs li {
   width: 22%;
@@ -2418,78 +2285,8 @@ input[type=checkbox]:checked {
 /*******************************************
 ************* Settings Page **************
 ********************************************/
-.settingsPageDiv.content-area {
-  margin-right: 0;
-}
-.settingsgroup,
-.settingsgroup .panel-collapse {
-  width: 230px;
-}
-.settingsgroup ul.list-group {
-  list-style-type: none;
-  font-size: 13px;
-  padding: 5px 0;
-}
-.settingsgroup div.settingsgroup-accordion:hover a,
-.settingsgroup div.settingsgroup-accordion a:link,
-.settingsgroup div.settingsgroup-accordion a:active,
-.settingsgroup li:hover a {
-  color: #FFFFFF;
-}
-.settingsgroup div.panel-collapse {
-  background-color: var(--menu-bg);
-}
-.settingsgroup-accordion {
-  color: #FFFFFF;
-  font-size: 14px;
-  cursor: pointer;
-}
-.settingsgroup-accordion a {
-  padding: 10px 20px;
-  display: block;
-}
-.settingsgroup-accordion a i {
-  margin-right: 5px;
-}
-.settingsgroup-accordion a span {
-  text-transform: uppercase;
-}
-.settingsgroup {
-  background: var(--menu-bg);
-  height: 100%;
-}
-.settingsgroup .panel-group .panel {
-  background-color: var(--menu-bg);
-}
 .userDefaultIcon {
-  font-size: 30px;
-}
-.settingsgroup ul li a {
-  padding: 8px 8px 8px 50px;
-  display: block;
-  color: #FFFFFF;
-}
-.settingsIndexPage .settingsSummary {
-  text-align: center;
-  margin-top: 10px;
-}
-.settingsIndexPage .settingsSummary a {
-  display: inline-block;
-  background: #F3F3F4;
-  color: #444444;
-  border-radius: 2px;
-  min-width: 200px;
-  padding: 20px 0 10px;
-  border: 1px solid #DDDDDD;
-}
-.settingsIndexPage .settingsSummary a .summaryText {
-  display: inline-block;
-  margin-top: 20px;
-  font-size: 15px;
-}
-#settingsShortCutsContainer .well {
-  padding: 10px;
-  margin-left: 20px;
+  font-size: 2.2rem;
 }
 #settingsShortCutsContainer .hiden {
   display: none;
@@ -2511,13 +2308,6 @@ input[type=checkbox]:checked {
 }
 #settingsShortCutsContainer .moduleBlock:hover .unpin:hover {
   opacity: 0.8;
-}
-#settingsShortCutsContainer .contentsBackground {
-  background: #FFFFFF;
-  border: 1px solid #DDDDDD;
-}
-#settingsShortCutsContainer .moduleBlock:hover {
-  background: #F3F3F4;
 }
 .companydetailsedit .company-logo-content {
   padding: 10px;
@@ -2545,9 +2335,6 @@ input[type=checkbox]:checked {
   margin-top: 10px;
   margin-left: 10px;
   position: relative;
-}
-.treeView li .toolbar-handle .btn {
-  margin: 0px;
 }
 .treeView li .toolbar-handle a:before {
   background: none repeat scroll 0 0 #DDDDDD;
@@ -3885,9 +3672,6 @@ li.dashboardWidget {
 #dependencyGraph .dependencyMapping .pickListDependencyTable {
   border: 0;
 }
-#dependencyGraph .dependencyMapping .pickListDependencyTable .blockHeader th {
-  background: #F3F3F3;
-}
 #dependencyGraph .dependencyMapping .pickListDependencyTable .selectedCell {
   background: #a9cbf5;
 }
@@ -3949,15 +3733,6 @@ hr {
 .blockHeader .btn-group {
   margin-top: 4px;
 }
-.input-info-addon {
-  display: inline-block;
-  margin: 1px 10px;
-  vertical-align: top;
-}
-.input-select-addon {
-  background: none;
-  border: 0;
-}
 .help-inline {
   padding: 5px;
   display: inline-block;
@@ -3997,16 +3772,6 @@ hr {
 .list-menu-content .pull-right > .dropdown-menu {
   left: -126px;
   position: relative;
-}
-.panel-collapse ul li a:hover {
-  background: #596875;
-  opacity: 1;
-}
-.panel-collapse ul li a:hover a {
-  opacity: 1;
-}
-.panel-collapse ul li a.settingsgroup-menu-color {
-  background-color: #010101;
 }
 .calendar-sidebar-tab {
   padding: 10px;
@@ -4436,11 +4201,6 @@ hr {
 /*******************************************
 *************** Mail Manager ***************
 ********************************************/
-#mm_searchButton {
-  height: 28px;
-  background-color: #FFFFFF;
-  border: 1px solid #CCCCCC;
-}
 .mmDescription {
   height: 300px;
   width: 80%;
@@ -4452,11 +4212,6 @@ hr {
   margin-left: -4%;
   background: #F9F9F9;
   padding: 20px;
-}
-#mails_container {
-  border-right: 2px solid;
-  border-color: #CCCCCC;
-  min-height: 723px;
 }
 .mmListMainContainer {
   color: #888888;
@@ -4480,31 +4235,6 @@ hr {
   padding-top: 7px;
   font-size: 14px;
 }
-.mmMainFolder {
-  padding: 5px 10px;
-}
-.mmOtherFolder {
-  padding: 5px 10px 5px 30px;
-  font-size: 12px;
-}
-.fontSize20px {
-  font-size: 20px;
-}
-.mmUnreadCountBadge {
-  padding: 1px 5px;
-  border-radius: 3px;
-  text-align: center;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.1);
-  background-image: -webkit-linear-gradient(top, #DD4B39 0, #D14836 100%);
-  border: 1px solid #C6322A;
-  background-color: #DD4B39;
-}
-.padding15px {
-  padding: 15px;
-}
-.padding0px {
-  padding: 0px;
-}
 #mainCheckBox {
   margin-top: 8.5px;
   border: 1px solid #AAAAAA;
@@ -4515,69 +4245,8 @@ hr {
 .paddingLeft5px {
   padding-left: 5px;
 }
-.mmActionIcon {
-  border: 1px solid;
-  font-size: 15px;
-  padding: 0px;
-  width: 30px;
-  height: 30px;
-  border-color: #BBBBBB;
-  text-align: center;
-}
-#mmDeleteMail {
-  margin-left: -1px;
-}
-#mmMarkAsRead {
-  border-right: 0px;
-}
-.borderLeft0px {
-  border-left: 0px;
-}
-.marginRight0px {
-  margin-right: 0px;
-}
-.mmSearchContainer {
-  padding: 15px 0px 15px 0px;
-}
-#mailManagerSearchbox {
-  border: 1px solid;
-  border-color: #CCCCCC;
-  border-radius: 0px;
-  border-right: 0px;
-}
-.mmSearchBoxIcon {
-  border: 1px solid #CCCCCC;
-  border-radius: 0;
-  border-left: 0;
-  background-color: transparent;
-}
-#searchType {
-  height: 30px;
-  width: 80px;
-  padding: 3px;
-  border: 1px solid #DDDDDD;
-  border-radius: 0px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-#mmSearchButtonContainer {
-  padding: 15px 0px 0px 0px;
-}
-.mmEmailContainerDiv .mCSB_container {
-  margin-right: 0;
-}
-.mmEmailContainerDiv #mmBody {
-  border: 1px solid #ddd;
-}
-.mailEntry {
-  padding: 5px 5px 5px 0px;
-  border-bottom: 1.5px solid #CCCCCC;
-}
 .font11px {
   font-size: 11px;
-}
-.mmReadEmail {
-  background-color: #EEEEEE;
 }
 .font13px {
   font-size: 13px;
@@ -4585,113 +4254,24 @@ hr {
 .font14px {
   font-size: 14px;
 }
-.mmDateTimeValue {
-  font-size: 9px;
-  color: #999999;
-}
-.mmMailDesc {
-  padding: 5px 0px 0px 0px;
-  max-height: 20px;
-  overflow: hidden;
-  font-size: 11px;
-}
 .noMailsDiv {
   color: #848383;
   font-size: 15px;
   padding-top: 200px;
 }
-#_mlinktotype {
-  height: 25px;
-  border: 1px solid #CCCCCC;
-  padding-left: 5px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-.mmRelatedRecordDesc {
-  color: #666666;
-  padding-top: 1px;
-}
-.moveToFolderDropDown {
-  font-size: 14px;
-  border: 1px solid;
-  width: 50px;
-  height: 30px;
-  padding: 0px 4px;
-  margin-left: 5px;
-  border-color: #BBBBBB;
-  vertical-align: bottom;
-}
-.mmSearchDropDown {
-  margin-top: -30px;
-  margin-left: 66%;
-}
-.mmMoveDropdownFolder {
-  vertical-align: middle;
-  font-size: 15px;
-}
-.mmMoveDropdownArrow {
-  color: #FFFFFF;
-  font-size: 8px;
-  margin-left: -10px;
-}
-.mmMoveDropdownCaret {
-  padding-top: 8px;
-  padding-right: 1px;
-}
-#mmEnvelopeOpenIcon {
-  width: 15px;
-  padding-bottom: 2px;
-}
-.mmSearchContainerOther {
-  padding: 15px 0px 5px 5px;
-}
-.mmModulesMenu {
-  padding: 15px 17px;
-  color: #FFFFFF;
-  font-size: 13px;
-}
 .mailbox_setting {
   font-size: 15px;
 }
-#mail_compose {
-  background-color: #FFFFFF;
-  color: #595553;
-  padding: 10px;
-  font-size: 14px;
-  text-align: center;
-  margin: 20px 0px 20px 0px;
-}
 .highLightMail {
-  background-color: var(--menu-bg);
-}
-.whiteFont {
-  color: #FFFFFF;
-}
-.mmListDateDivSelected {
-  color: #FFFFFF;
-  font-size: 9px;
-}
-.fontBlack {
-  color: #000000;
+  background-color: var(--menu-bg-active);
+  color: var(--menu-color-active);
 }
 .marginTop0px {
   margin-top: 0px;
 }
-.mmFirstNameChar {
-  background: none repeat scroll 0 0 orange;
-  border: 1px solid #CCCCCC;
-  display: table;
-  height: 50px;
-  width: 50px;
-  color: #FFFFFF;
-  font-size: 31px;
-}
 .mmDisplayName {
   font-size: 15px;
   margin-top: 0;
-}
-.displayEmailValues {
-  font-style: italic;
 }
 .mmEmailColor {
   color: #38A7F7;
@@ -4699,16 +4279,6 @@ hr {
 .mmDetailDate {
   font-size: 10px;
   margin-top: 3px;
-}
-.mmDetailAction {
-  border: 1px solid #BBBBBB;
-  padding: 0px 5px;
-  display: inline-block;
-  border-right: 0;
-  line-height: 22px;
-}
-.mmDetailHr {
-  border: 1px solid #BBBBBB;
 }
 .width40per {
   width: 40%;
@@ -5030,24 +4600,9 @@ div.tooltip-inner {
   margin-top: 10px;
 }
 /***** Oursites Changes *****/
-.portal-table .table-actions {
-  width: inherit ! important;
-}
-.portal-table .listViewEntryValue {
-  padding-left: 20px;
-}
-.portal-table > thead > tr:first-child > th,
-.portal-table > tbody > tr:first-child > th {
-  padding: 10px 5px ! important;
-  padding-left: 10px ! important;
-}
-/***** Oursites Changes *****/
 .ExtensionscontentsDiv .content-area {
   padding-left: 15px;
   padding-right: 15px;
-}
-.tagInfo.input-info-addon {
-  vertical-align: middle;
 }
 .relationDelete .vicon-linkopen {
   font-size: 12px;
@@ -5066,11 +4621,6 @@ div.tooltip-inner {
   background-repeat: repeat-x;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#555555', endColorstr='#333333', GradientType=0);
   min-height: 30px;
-}
-.blockHeader th {
-  text-align: center !important;
-  text-align: center;
-  color: #FFFFFF;
 }
 .select2-chosen,
 .select2-choice > span:first-child,
@@ -5268,13 +4818,6 @@ div.tooltip-inner {
 .btn[disabled] {
   opacity: 0.2;
 }
-#settingsMenuSearch {
-  background-color: white;
-  margin-left: 12px;
-  margin-top: 12px;
-  width: 91%;
-  color: black;
-}
 .settingsgroup [data-instafilta-hide="true"] {
   display: none !important;
 }
@@ -5358,12 +4901,6 @@ a.cp-modules:hover {
 .module-name-tooltip {
   padding: 3px;
 }
-.main-container-MailManager .module-nav {
-  width: 230px;
-}
-.main-container-MailManager .listViewPageDiv {
-  padding-left: 230px;
-}
 .listViewPageDiv .ps-scrollbar-x-rail {
   opacity: 1 !important;
 }
@@ -5437,23 +4974,6 @@ li.select2-search-choice div {
 }
 .module-name-tooltip {
   padding: 3px;
-}
-.main-container-Documents .module-nav,
-.main-container-Reports .module-nav {
-  width: 0;
-}
-.main-container-Documents .mod-switcher-container,
-.main-container-Reports .mod-switcher-container {
-  width: 0;
-}
-.main-container-Documents .sidebar-essentials,
-.main-container-Reports .sidebar-essentials {
-  width: 283px;
-  left: 0;
-}
-.main-container-Documents .full-width,
-.main-container-Reports .full-width {
-  padding-left: 0px !important;
 }
 .listViewPageDiv .ps-scrollbar-x-rail {
   opacity: 1 !important;
@@ -6046,9 +5566,6 @@ input:focus:-ms-input-placeholder {
 #OnBoardLayout #OnBoardPageContainer .crumbs li a {
   width: 100%;
 }
-#OnBoardLayout #OnBoardPageContainer .crumbs li .stepText {
-  font-size: 15px;
-}
 #OnBoardLayout #OnBoardPageContainer .crumbs li:after {
   left: 100%;
   top: -30px;
@@ -6261,9 +5778,6 @@ body .fc {
 .nav-tabs {
   border-bottom: 0;
 }
-.editViewHeader {
-  padding-top: 20px;
-}
 .navbar {
   border: 0;
   border-width: thin;
@@ -6373,10 +5887,6 @@ body .fc {
   }
   #comment1 {
     border-left-color: #ccc;
-  }
-  .floatThead-floatContainer {
-    margin-left: 1px;
-    padding-top: 1px;
   }
   .listViewPageDiv #table-content {
     overflow: scroll !important;

@@ -30,10 +30,10 @@
 			<a class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
 		</span>
 	{/if}
-    <span class="more dropdown action mx-2">
-        <span href="javascript:;" data-bs-toggle="dropdown">
+    <div class="more dropdown action mx-2">
+        <div href="javascript:;" data-bs-toggle="dropdown">
             <i class="fa fa-ellipsis icon"></i>
-        </span>
+        </div>
         <ul class="dropdown-menu">
             <li>
                 <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{vtranslate('LBL_DETAILS', $MODULE)}</a>
@@ -41,17 +41,17 @@
 			{if $RECORD_ACTIONS}
 				{if $RECORD_ACTIONS['edit']}
 					<li>
-                        <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()}&app={$SELECTED_MENU_CATEGORY}" name="editlink">{vtranslate('LBL_EDIT', $MODULE)}</a>
+                        <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:app.controller().editRecord('{$LISTVIEW_ENTRY->getEditViewUrl()}&app={$SELECTED_MENU_CATEGORY}')">{vtranslate('LBL_EDIT', $MODULE)}</a>
                     </li>
 				{/if}
 				{if $RECORD_ACTIONS['delete']}
 					<li>
-                        <a data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" class="dropdown-item deleteRecordButton">{vtranslate('LBL_DELETE', $MODULE)}</a>
+                        <a class="dropdown-item" href="javascript:app.controller().deleteRecord({$LISTVIEW_ENTRY->getId()})" data-id="{$LISTVIEW_ENTRY->getId()}" href="#">{vtranslate('LBL_DELETE', $MODULE)}</a>
                     </li>
 				{/if}
 			{/if}
         </ul>
-    </span>
+    </div>
 
     <div class="btn-group inline-save hide">
         <button class="button btn btn-success btn-small save" type="button" name="save"><i class="fa fa-check"></i></button>

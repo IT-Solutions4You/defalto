@@ -32,7 +32,7 @@
         <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/jquery/malihu-custom-scrollbar/jquery.mCustomScrollbar.css")}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/jquery/jquery.qtip.custom/jquery.qtip.css")}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/jquery/daterangepicker/daterangepicker.css")}'>
-        
+
         <input type="hidden" id="inventoryModules" value={ZEND_JSON::encode($INVENTORY_MODULES)}>
 
 		{assign var=THEME_PATH value=Vtiger_Theme::getv7AppStylePath('base')}
@@ -41,7 +41,7 @@
 		{else}
 			<link type="text/css" rel="stylesheet" href="{vresource_url($THEME_PATH)}" media="screen"/>
 		{/if}
-        
+
         {foreach key=index item=cssModel from=$STYLES}
 			<link type="text/css" rel="{$cssModel->getRel()}" href="{vresource_url($cssModel->getHref())}" media="{$cssModel->getMedia()}" />
 		{/foreach}
@@ -62,7 +62,7 @@
             {/if}
             var _USERMETA;
             {if $CURRENT_USER_MODEL}
-               _USERMETA =  { 'id' : "{$CURRENT_USER_MODEL->get('id')}", 'menustatus' : "{$CURRENT_USER_MODEL->get('leftpanelhide')}", 
+               _USERMETA =  { 'id' : "{$CURRENT_USER_MODEL->get('id')}", 'menustatus' : "{$CURRENT_USER_MODEL->get('leftpanelhide')}",
                               'currency' : "{decode_html($USER_CURRENCY_SYMBOL)}", 'currencySymbolPlacement' : "{$CURRENT_USER_MODEL->get('currency_symbol_placement')}",
                           'currencyGroupingPattern' : "{$CURRENT_USER_MODEL->get('currency_grouping_pattern')}", 'truncateTrailingZeros' : "{$CURRENT_USER_MODEL->get('truncate_trailing_zeros')}",'userlabel':"{decode_html($CURRENT_USER_MODEL->get('userlabel'))}",};
             {/if}
@@ -72,7 +72,8 @@
 	<body data-skinpath="{Vtiger_Theme::getBaseThemePath()}" data-language="{$LANGUAGE}" data-user-decimalseparator="{$CURRENT_USER_MODEL->get('currency_decimal_separator')}" data-user-dateformat="{$CURRENT_USER_MODEL->get('date_format')}"
           data-user-groupingseparator="{$CURRENT_USER_MODEL->get('currency_grouping_separator')}" data-user-numberofdecimals="{$CURRENT_USER_MODEL->get('no_of_currency_decimals')}" data-user-hourformat="{$CURRENT_USER_MODEL->get('hour_format')}"
           data-user-calendar-reminder-interval="{$CURRENT_USER_MODEL->getCurrentUserActivityReminderInSeconds()}" class="bg-body-secondary d-flex flex-column">
-            <input type="hidden" id="start_day" value="{$CURRENT_USER_MODEL->get('dayoftheweek')}" /> 
+            <input type="hidden" id="start_day" value="{$CURRENT_USER_MODEL->get('dayoftheweek')}" />
 		<div id="page">
             <div id="pjaxContainer" class="hide noprint"></div>
             <div id="messageBar" class="hide"></div>
+{/strip}

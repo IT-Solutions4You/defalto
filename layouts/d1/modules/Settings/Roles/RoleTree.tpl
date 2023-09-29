@@ -14,17 +14,21 @@
             {if $smarty.request.type == 'Transfer'}
                 {assign var="SOURCE_ROLE_SUBPATTERN" value='::'|cat:$SOURCE_ROLE->getId()}
                 {if strpos($CHILD_ROLE->getParentRoleString(), $SOURCE_ROLE_SUBPATTERN) !== false}
-                    <a style="white-space: nowrap" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-default" disabled data-toggle="tooltip" data-placement="top" ><span class="muted">{$CHILD_ROLE->getName()}</span></a>
+                    <a data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-white text-nowrap" disabled data-toggle="tooltip" data-placement="top" ><span class="muted">{$CHILD_ROLE->getName()}</span></a>
                 {else}
-                    <a style="white-space: nowrap" href="" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-default roleEle" data-toggle="tooltip" data-placement="top" >{$CHILD_ROLE->getName()}</a>
+                    <a href="" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-white text-nowrap roleEle" data-toggle="tooltip" data-placement="top" >{$CHILD_ROLE->getName()}</a>
                 {/if}
             {else}
-                <a style="white-space: nowrap" href="{$CHILD_ROLE->getEditViewUrl()}" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-default draggable droppable" data-toggle="tooltip" data-placement="top" data-animation="true" title="{vtranslate('LBL_CLICK_TO_EDIT_OR_DRAG_TO_MOVE',$QUALIFIED_MODULE)}">{$CHILD_ROLE->getName()}</a>
+                <a href="{$CHILD_ROLE->getEditViewUrl()}" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn bg-body-secondary border text-nowrap draggable droppable" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-animation="true" title="{vtranslate('LBL_CLICK_TO_EDIT_OR_DRAG_TO_MOVE',$QUALIFIED_MODULE)}">{$CHILD_ROLE->getName()}</a>
             {/if}
             {if $smarty.request.view != 'Popup'}
                 <div class="toolbar">
-                    &nbsp;<a href="{$CHILD_ROLE->getCreateChildUrl()}" data-url="{$CHILD_ROLE->getCreateChildUrl()}" title="{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}"><span class="fa fa-plus-circle"></span></a>
-                    &nbsp;<a data-id="{$CHILD_ROLE->getId()}" href="javascript:;" data-url="{$CHILD_ROLE->getDeleteActionUrl()}" data-action="modal" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}"><span class="fa fa-trash"></span></a>
+                    <a class="btn bg-body-secondary border ms-2" href="{$CHILD_ROLE->getCreateChildUrl()}" data-url="{$CHILD_ROLE->getCreateChildUrl()}" title="{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}">
+                        <i class="fa fa-plus-circle"></i>
+                    </a>
+                    <a class="btn bg-body-secondary border ms-2" data-id="{$CHILD_ROLE->getId()}" href="javascript:;" data-url="{$CHILD_ROLE->getDeleteActionUrl()}" data-action="modal" title="{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}">
+                        <i class="fa fa-trash"></i>
+                    </a>
                 </div>
             {/if}
         </div>

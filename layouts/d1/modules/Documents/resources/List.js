@@ -176,7 +176,7 @@ Vtiger_List_Js("Documents_List_Js", {
     addFolderToList : function(folderDetails) {
         let html = ''+
         '<li class="tab-item nav-link fs-6 d-flex justify-content-between documentFolder">' +
-            '<div class="d-flex justify-content-between">' +
+            '<div class="d-flex justify-content-between w-100">' +
                 '<a class="filterName" href="javascript:void(0);" data-filter-id="'+folderDetails.folderid+'" data-folder-name="'+folderDetails.folderName+'" title="'+folderDetails.folderDesc+'">' +
                     '<i class="fa fa-folder"></i> '+
                     '<span class="foldername ms-2">'+folderDetails.folderName+'</span>' +

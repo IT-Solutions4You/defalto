@@ -29,12 +29,12 @@
 	<input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
 	<input type="hidden" value="{$NO_SEARCH_PARAMS_CACHE}" id="noFilterCache" >
 
-	<div id="table-content" class="table-container">
-		<form name='list' id='listedit' action='' onsubmit="return false;">
-			<table id="listview-table" class="table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords {/if} listview-table">
+	<div id="table-content" class="table-container py-3">
+		<form name="list" id="listedit" action="" onsubmit="return false;">
+			<table id="listview-table" class="table table-borderless listview-table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
 				<thead>
-					<tr class="listViewContentHeader">
-						<th>
+					<tr class="listViewContentHeader bg-body-secondary">
+						<th class="text-secondary">
 							{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}
 						</th>
 						{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
@@ -45,38 +45,39 @@
 									{assign var=HEADER_LABEL value=$LISTVIEW_HEADER->get('label')}
 								{/if}
 								<th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if} >
-									<a href="#" class="listViewContentHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+									<a href="#" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
 										{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
 											<i class="fa {$FASORT_IMAGE}"></i>
 										{else}
 											<i class="fa fa-sort customsort"></i>
 										{/if}
-										&nbsp;{vtranslate($HEADER_LABEL, $MODULE)}&nbsp;
+										<span class="ms-2">{vtranslate($HEADER_LABEL, $MODULE)}</span>
 									</a>
 									{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
-										<a href="#" class="removeSorting"><i class="fa fa-remove"></i></a>
+										<a href="#" class="removeSorting text-secondary">
+											<i class="fa fa-remove"></i>
+										</a>
 									{/if}
 								</th>
 							{/if}
 						{/foreach}
 					</tr>
-				</thead>
-				<tbody class="overflow-y">
 					{if $MODULE_MODEL->isQuickSearchEnabled() && !$SEARCH_MODE_RESULTS}
-						<tr class="searchRow listViewSearchContainer">
-                                                    <th class="user-inline-search-btn">
-                                                        <div class="table-actions">
-                                                                {assign var=HIDE_CLEAR_SEARCH value=false}
-                                                                {if php7_count($SEARCH_DETAILS) eq 0 || (is_array($SEARCH_DETAILS[0]) && php7_count($SEARCH_DETAILS[0]) eq 0 && php7_count($SEARCH_DETAILS) eq 1)}
-                                                                        {assign var=HIDE_CLEAR_SEARCH value=true}
-                                                                {/if}
-                                                                <button class="btn btn-sm btn-success {if !$HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="listSearch">
-                                                                    <i class="fa fa-search"></i> &nbsp;
-                                                                    <span class="s2-btn-text">{vtranslate("LBL_SEARCH",$MODULE)}</span>
-                                                                </button>
-                                                                <button class="searchAndClearButton btn btn-danger btn-sm {if $HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="clearListSearch"><i class="fa fa-close"></i>&nbsp;{vtranslate("LBL_CLEAR",$MODULE)}</button>
-                                                        </div>
-                                                    </th>
+						<tr class="searchRow listViewSearchContainer border-bottom">
+							<th class="user-inline-search-btn">
+								<div class="table-actions">
+									{assign var=HIDE_CLEAR_SEARCH value=false}
+									{if php7_count($SEARCH_DETAILS) eq 0 || (is_array($SEARCH_DETAILS[0]) && php7_count($SEARCH_DETAILS[0]) eq 0 && php7_count($SEARCH_DETAILS) eq 1)}
+										{assign var=HIDE_CLEAR_SEARCH value=true}
+									{/if}
+									<button class="btn text-secondary {if !$HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="listSearch" title="{vtranslate("LBL_SEARCH",$MODULE)}">
+										<i class="fa fa-search"></i>
+									</button>
+									<button class="searchAndClearButton btn text-secondary {if $HIDE_CLEAR_SEARCH}hide{/if}" data-trigger="clearListSearch" title="{vtranslate("LBL_CLEAR",$MODULE)}">
+										<i class="fa fa-close"></i>
+									</button>
+								</div>
+							</th>
 							{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 								{if $LISTVIEW_HEADER->getName() eq 'last_name' or $LISTVIEW_HEADER->getName() eq 'email1' or $LISTVIEW_HEADER->getName() eq 'status'}
 									{continue}
@@ -89,8 +90,10 @@
 							{/foreach}
 						</tr>
 					{/if}
+				</thead>
+				<tbody class="overflow-y">
 					{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
-						<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}&parentblock=LBL_USER_MANAGEMENT' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
+						<tr class="listViewEntries border-bottom" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}&parentblock=LBL_USER_MANAGEMENT' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
 							<td class="listViewRecordActions">
 								{include file="ListViewRecordActions.tpl"|vtemplate_path:$MODULE}
 							</td>
@@ -102,25 +105,27 @@
 									<td data-name="{$LISTVIEW_HEADER->get('name')}" data-rawvalue="{$LISTVIEW_ENTRY_RAWVALUE}" data-type="{$LISTVIEW_HEADER->getFieldDataType()}">
 										<span class="fieldValue">
 											<span class="value textOverflowEllipsis">
-												<div style="margin-left: -13px;">
+												<div class="row">
 													{assign var=IMAGE_DETAILS value=$LISTVIEW_ENTRY->getImageDetails()}
 													{foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
 														{if !empty($IMAGE_INFO.url)}
-															<div class='col-lg-2'>
-																<img height="25px" width="25px" src="{$IMAGE_INFO.url}">
+															<div class="col-auto">
+																<img class="rounded-circle" style="width: 2.2rem; height: 2.2rem;" src="{$IMAGE_INFO.url}">
 															</div>
 														{/if}
 													{/foreach}
 													{if $IMAGE_DETAILS[0]['id'] eq null}
-														<div class='col-lg-2'>
+														<div class="col-auto">
 															<i class="fa fa-user userDefaultIcon"></i>
 														</div>
 													{/if}
-													<div class="usersinfo col-lg-9 textOverflowEllipsis" title="{$LISTVIEW_ENTRY->get('last_name')}">
-														<a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)} {$LISTVIEW_ENTRY->get('last_name')}</a>
-													</div>
-													<div class="usersinfo col-lg-9 textOverflowEllipsis">
-														{$LISTVIEW_ENTRY->get('email1')}
+													<div class="col-lg">
+														<div class="usersinfo textOverflowEllipsis" title="{$LISTVIEW_ENTRY->get('last_name')}">
+															<a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)} {$LISTVIEW_ENTRY->get('last_name')}</a>
+														</div>
+														<div class="usersinfo textOverflowEllipsis">
+															{$LISTVIEW_ENTRY->get('email1')}
+														</div>
 													</div>
 												</div>
 											</span>

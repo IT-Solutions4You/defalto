@@ -12,7 +12,7 @@
 	{foreach key=index item=jsModel from=$SCRIPTS}
 		<script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 	{/foreach}
-	<div class="form-group row">
+	<div class="form-group row py-2">
 		<div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
 			<strong>{vtranslate('LBL_COPY_PRIVILEGES_FROM',"Settings:Roles")}</strong>
 		</div>
@@ -38,7 +38,7 @@
 				<label class="control-label">
 					<input type="hidden" name="viewall" value="0" />
 					<label class="control-label">
-						<input class="listViewEntriesCheckBox" type="checkbox" name="viewall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} style="top: -2px;" />
+						<input class="listViewEntriesCheckBox" type="checkbox" name="viewall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if}  />
 						&nbsp;{vtranslate('LBL_VIEW_ALL',$QUALIFIED_MODULE)}&nbsp;
 					</label>
 					<span style="margin-left: 10px">
@@ -49,7 +49,7 @@
 				<label class="control-label">
 					<input type="hidden" name="editall" value="0" />
 					<label class="control-label">
-						<input class="listViewEntriesCheckBox" type="checkbox" name="editall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} style="top: -2px;"/>
+						<input class="listViewEntriesCheckBox" type="checkbox" name="editall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} />
 						&nbsp;{vtranslate('LBL_EDIT_ALL',$QUALIFIED_MODULE)}&nbsp;
 					</label>
 					<span style="margin-left: 15px">
@@ -68,40 +68,44 @@
 			</div>
 	{/if}
 {/if}
-<div class="row col-lg-12 col-md-12 col-sm-12">
-	<div class=" col-lg-10 col-md-10 col-sm-10">
+<div class="row">
+	<div class="col-lg-12">
 		<h5>{vtranslate('LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE',$QUALIFIED_MODULE)}</h5><br>
 	</div>
 </div>
 <div class="row">
-	<div class="col-lg-1 col-md-1 col-sm-1"></div>
-	<div class=" col-lg-10 col-md-10 col-sm-10">
+	<div class="col-lg-12">
 		<table class="table table-bordered profilesEditView">
 			<thead>
 				<tr class="blockHeader">
 					<th width="25%" style="text-align: left !important">
-						<label><input class="verticalAlignMiddle" checked="true" type="checkbox" id="mainModulesCheckBox" style="top: -2px;"/>&nbsp;
-							{vtranslate('LBL_MODULES', $QUALIFIED_MODULE)}
+						<label class="form-check">
+							<input class="form-check-input" checked="true" type="checkbox" id="mainModulesCheckBox"/>
+							<span class="form-check-label">{vtranslate('LBL_MODULES', $QUALIFIED_MODULE)}</span>
 						</label>
 					</th>
-					<th class='textAlignCenter' width="14%">
-						<label><input class="verticalAlignMiddle" type="checkbox" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} id="mainAction4CheckBox" style="top: -2px;" />&nbsp;
-							{'LBL_VIEW_PRVILIGE'|vtranslate:$QUALIFIED_MODULE}
+					<th class="textAlignCenter" width="14%">
+						<label class="form-check">
+							<input class="form-check-input" type="checkbox" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} id="mainAction4CheckBox" />
+							<span class="form-check-label">{'LBL_VIEW_PRVILIGE'|vtranslate:$QUALIFIED_MODULE}</span>
 						</label>
 					</th>
-					<th class='textAlignCenter' width="14%">
-						<label><input class="verticalAlignMiddle" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} type="checkbox" id="mainAction7CheckBox" style="top: -2px;"/>&nbsp;
-							{'LBL_CREATE'|vtranslate:$QUALIFIED_MODULE}
+					<th class="textAlignCenter" width="14%">
+						<label class="form-check">
+							<input class="form-check-input" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} type="checkbox" id="mainAction7CheckBox"/>
+							<span class="form-check-label">{'LBL_CREATE'|vtranslate:$QUALIFIED_MODULE}</span>
 						</label>
 					</th>
-					<th class='textAlignCenter' width="14%">
-						<label><input class="verticalAlignMiddle" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} type="checkbox" id="mainAction1CheckBox" style="top: -2px;" />&nbsp;
-							{'LBL_EDIT'|vtranslate:$QUALIFIED_MODULE}
+					<th class="textAlignCenter" width="14%">
+						<label class="form-check">
+							<input class="form-check-input" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} type="checkbox" id="mainAction1CheckBox"  />
+							<span class="form-check-label">{'LBL_EDIT'|vtranslate:$QUALIFIED_MODULE}</span>
 						</label>
 					</th>
-					<th class='textAlignCenter' width="14%">
-						<label><input class="verticalAlignMiddle" checked="true" type="checkbox" id="mainAction2CheckBox" style="top: -2px;" />&nbsp;
-							{'LBL_DELETE_PRVILIGE'|vtranslate:$QUALIFIED_MODULE}
+					<th class="textAlignCenter" width="14%">
+						<label class="form-check">
+							<input class="form-check-input" checked="true" type="checkbox" id="mainAction2CheckBox"  />
+							<span class="form-check-label">{'LBL_DELETE_PRVILIGE'|vtranslate:$QUALIFIED_MODULE}</span>
 						</label>
 					</th>
 					<th class='textAlignCenter verticalAlignMiddleImp' width="28%;" nowrap="nowrap">
@@ -116,7 +120,10 @@
 					{if $MODULE_NAME neq 'Events'}
 						<tr>
 							<td class="verticalAlignMiddleImp">
-								<input class="modulesCheckBox" type="checkbox" name="permissions[{$TABID}][is_permitted]" data-value="{$TABID}" data-module-state="" {if $RECORD_MODEL->hasModulePermission($PROFILE_MODULE)}checked="true"{else} data-module-unchecked="true" {/if}> {$PROFILE_MODULE->get('label')|vtranslate:$PROFILE_MODULE->getName()}
+								<label class="form-check">
+									<input class="modulesCheckBox form-check-input" type="checkbox" name="permissions[{$TABID}][is_permitted]" data-value="{$TABID}" data-module-state="" {if $RECORD_MODEL->hasModulePermission($PROFILE_MODULE)}checked="true"{else} data-module-unchecked="true" {/if}>
+									<span class="form-check-label">{$PROFILE_MODULE->get('label')|vtranslate:$PROFILE_MODULE->getName()}</span>
+								</label>
 							</td>
 							{assign var="BASIC_ACTION_ORDER" value=array(2,3,0,1)}
 							{foreach from=$BASIC_ACTION_ORDER item=ORDERID}
@@ -124,7 +131,9 @@
 									{assign var="ACTION_MODEL" value=$ALL_BASIC_ACTIONS[$ORDERID]}
 									{assign var=ACTION_ID value=$ACTION_MODEL->get('actionid')}
 									{if $ACTION_MODEL->isModuleEnabled($PROFILE_MODULE)}
-										<input class="action{$ACTION_ID}CheckBox" type="checkbox" name="permissions[{$TABID}][actions][{$ACTION_ID}]" data-action-state="{$ACTION_MODEL->getName()}" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTION_MODEL)}checked="true"{elseif empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {else} data-action{$ACTION_ID}-unchecked="true"{/if}></td>
+										<label class="form-check">
+											<input class="form-check-input action{$ACTION_ID}CheckBox" type="checkbox" name="permissions[{$TABID}][actions][{$ACTION_ID}]" data-action-state="{$ACTION_MODEL->getName()}" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTION_MODEL)}checked="true"{elseif empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {else} data-action{$ACTION_ID}-unchecked="true"{/if}>
+										</label>
 									{/if}
 								</td>
 							{/foreach}
@@ -137,12 +146,14 @@
 							</td>
 						</tr>
 						<tr class="hide">
-							<td colspan="6" class="row" style="padding-left: 5%;padding-right: 5%">
-								<div class="row" data-togglecontent="{$TABID}-fields" style="display: none">
+							<td class="roles-fields p-3" colspan="6">
+								<div data-togglecontent="{$TABID}-fields" style="display: none">
 									{if $PROFILE_MODULE->getFields() && $PROFILE_MODULE->isEntityModule() }
-										<div class="col-sm-12">
-											<label class="pull-left"><strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}{if $MODULE_NAME eq 'Calendar'} {vtranslate('LBL_OF', $MODULE_NAME)} {vtranslate('LBL_TASKS', $MODULE_NAME)}{/if}</strong></label>
-											<div class="pull-right">
+										<div class="d-flex justify-content-between pb-3">
+											<div class="fs-5">
+												<strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}{if $MODULE_NAME eq 'Calendar'} {vtranslate('LBL_OF', $MODULE_NAME)} {vtranslate('LBL_TASKS', $MODULE_NAME)}{/if}</strong>
+											</div>
+											<div class="text-end">
 												<span class="mini-slider-control ui-slider" data-value="0">
 													<a style="margin-top: 3px" class="ui-slider-handle"></a>
 												</span>
@@ -156,9 +167,8 @@
 												</span>
 												<span style="margin: 0 20px;">{vtranslate('LBL_WRITE',$QUALIFIED_MODULE)}</span>
 											</div>
-											<div class="clearfix"></div>
 										</div>
-										<table class="table table-bordered no-border">
+										<table class="table table-borderless">
 											{assign var=COUNTER value=0}
 											{foreach from=$PROFILE_MODULE->getFields() key=FIELD_NAME item=FIELD_MODEL name="fields"}
 												{assign var='FIELD_ID' value=$FIELD_MODEL->getId()}
@@ -193,7 +203,7 @@
 											{assign var=EVENT_MODULE value=$PROFILE_MODULES[16]}
 											{assign var=COUNTER value=0}
 											<label class="pull-left"><strong>{vtranslate('LBL_FIELDS', $QUALIFIED_MODULE)} {vtranslate('LBL_OF', $EVENT_MODULE->getName())} {vtranslate('LBL_EVENTS', $EVENT_MODULE->getName())}</strong></label>
-											<table class="table table-bordered">
+											<table class="table table-borderless">
 												{foreach from=$EVENT_MODULE->getFields() key=FIELD_NAME item=FIELD_MODEL name="fields"}
 													{if $FIELD_MODEL->isActiveField()}
 														{assign var="FIELD_ID" value=$FIELD_MODEL->getId()}
@@ -229,14 +239,12 @@
 								{/if}
 							{/foreach}
 							{if $ALL_UTILITY_ACTIONS_ARRAY}
-								<td colspan="6" class="row" style="padding-left: 5%;padding-right: 5%;">
-									<div class="row" data-togglecontent="{$TABID}-fields" style="display: none">
-										<div class="col-sm-12">
-											<label class="pull-left">
-												<strong>{vtranslate('LBL_TOOLS',$QUALIFIED_MODULE)}</strong>
-											</label>
+								<td colspan="6" class="roles-tools p-3">
+									<div data-togglecontent="{$TABID}-fields" style="display: none">
+										<div class="fs-5 pb-3">
+											<strong>{vtranslate('LBL_TOOLS',$QUALIFIED_MODULE)}</strong>
 										</div>
-										<table class="table table-bordered">
+										<table class="table table-borderless">
 											<tr>
 												{foreach from=$ALL_UTILITY_ACTIONS_ARRAY item=ACTION_MODEL name="actions"}
 													{assign var=ACTIONID value=$ACTION_MODEL->get('actionid')}
@@ -245,7 +253,10 @@
 														{assign var="colspan" value=4-$index}
 														colspan="{$colspan}"
 														{/if}>
-														<input type="checkbox" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} name="permissions[{$TABID}][actions][{$ACTIONID}]" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTIONID)}checked="true"{/if} data-action-name='{$ACTION_MODEL->getName()}' data-action-tool='{$TABID}'> {vtranslate($ACTION_MODEL->getName(), $QUALIFIED_MODULE)}
+														<label class="form-check">
+															<input class="form-check-input" type="checkbox" {if empty($RECORD_ID) && empty($IS_DUPLICATE_RECORD)} checked="true" {/if} name="permissions[{$TABID}][actions][{$ACTIONID}]" {if $RECORD_MODEL->hasModuleActionPermission($PROFILE_MODULE, $ACTIONID)}checked="true"{/if} data-action-name='{$ACTION_MODEL->getName()}' data-action-tool='{$TABID}'>
+															<span class="form-check-label">{vtranslate($ACTION_MODEL->getName(), $QUALIFIED_MODULE)}</span>
+														</label>
 													</td>
 													{if ($smarty.foreach.actions.index+1) % 3 == 0}
 														</tr><tr>

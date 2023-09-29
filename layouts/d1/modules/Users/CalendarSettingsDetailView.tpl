@@ -70,10 +70,10 @@
                                         {/if}
                                         <td class="fieldLabel {$WIDTHTYPE}"><span class="muted">{vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}</span></td>
                                         <td class="fieldValue {$WIDTHTYPE}">
-                                            <div id="imageContainer" width="300" height="200">
+                                            <div id="imageContainer">
                                                 {foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
                                                     {if !empty($IMAGE_INFO.url)}
-                                                        <img src="{$IMAGE_INFO.url}" width="300" height="200">
+                                                        <img class="rounded" src="{$IMAGE_INFO.url}" style="max-width: 10rem; max-height: 10rem">
                                                     {/if}
                                                 {/foreach}
                                             </div>

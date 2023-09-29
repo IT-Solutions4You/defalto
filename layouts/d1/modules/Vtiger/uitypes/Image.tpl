@@ -18,17 +18,24 @@
 	{else}
 		{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 		{assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
-		<div class="fileUploadContainer text-left">
+		{if $FIELD_MODEL->getFieldDataType() eq 'image' || $FIELD_MODEL->getFieldDataType() eq 'file'}
+			{if $MODULE neq 'Products'}
+				<div class="text-danger mb-3">
+					{vtranslate('LBL_NOTE_EXISTING_ATTACHMENTS_WILL_BE_REPLACED', $MODULE)}
+				</div>
+			{/if}
+		{/if}
+		<div class="fileUploadContainer mb-3">
 			<div class="fileUploadBtn btn btn-primary">
-				<span><i class="fa fa-laptop"></i> {vtranslate('LBL_UPLOAD', $MODULE)}</span>
+				<span>
+					<i class="fa fa-laptop"></i>
+					<span class="ms-2">{vtranslate('LBL_UPLOAD', $MODULE)}</span>
+				</span>
 				<input type="file" class="inputElement {if $MODULE eq 'Products'}multi max-6{/if} {if $FIELD_MODEL->get('fieldvalue') and $FIELD_INFO["mandatory"] eq true} ignore-validation {/if}" name="{$FIELD_MODEL->getFieldName()}[]" value="{$FIELD_MODEL->get('fieldvalue')}"
-					{if !empty($SPECIAL_VALIDATOR)}data-validator="{Zend_Json::encode($SPECIAL_VALIDATOR)}"{/if} 
+					{if !empty($SPECIAL_VALIDATOR)} data-validator="{Zend_Json::encode($SPECIAL_VALIDATOR)}" {/if}
 					{if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
-					{if php7_count($FIELD_INFO['validator'])} 
-						data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
-					{/if} />
+					{if php7_count($FIELD_INFO['validator'])} data-specific-rules="{ZEND_JSON::encode($FIELD_INFO["validator"])}" {/if} />
 			</div>
-
 			<div class="uploadedFileDetails {if $IS_EXTERNAL_LOCATION_TYPE}hide{/if}">
 				<div class="uploadedFileSize"></div>
 				<div class="uploadedFileName">
@@ -38,30 +45,23 @@
 				</div>
 			</div>
 		</div>
-		{if $FIELD_MODEL->getFieldDataType() eq 'image' || $FIELD_MODEL->getFieldDataType() eq 'file'}
-			{if $MODULE neq 'Products'}
-                            <div class='redColor'>
-				{vtranslate('LBL_NOTE_EXISTING_ATTACHMENTS_WILL_BE_REPLACED', $MODULE)}
-                            </div>
-                        {/if}
-		{/if}
 		{if $MODULE eq 'Products'}<div id="MultiFile1_wrap_list" class="MultiFile-list"></div>{/if}
 
 		{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-			<div class="row mt-2">
+			<div class="row mb-3">
 				{if !empty($IMAGE_INFO.url)}
-					<span class="col-lg-6" name="existingImages"><img src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" width="400" height="250" ></span>
-					<span class="col-lg-6">
-						<span class="row">
-							<span class="col-lg">[{$IMAGE_INFO.name}]</span>
-							<span class="col-lg">
-								<button type="button" id="file_{$ITER}" class="btn btn-sm btn-secondary imageDelete">
-									<i class="fa fa-trash me-2"></i>
-									<span>{vtranslate('LBL_DELETE','Vtiger')}</span>
-								</button>
-							</span>
-						</span>
-					</span>
+					<div class="col-lg-auto" name="existingImages">
+						<img class="rounded" src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" style="max-width: 10rem; max-height: 10rem;">
+					</div>
+					<div class="col-lg-auto py-3">
+						[{$IMAGE_INFO.name}]
+					</div>
+					<div class="col-lg text-end">
+						<button type="button" id="file_{$ITER}" class="btn btn-secondary imageDelete">
+							<i class="fa fa-trash me-2"></i>
+							<span>{vtranslate('LBL_DELETE','Vtiger')}</span>
+						</button>
+					</div>
 				{/if}
 			</div>
 		{/foreach}

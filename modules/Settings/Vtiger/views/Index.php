@@ -132,6 +132,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 		$headerScriptInstances = parent::getHeaderScripts($request);
 		$moduleName = $request->getModule();
 
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
 		$jsFileNames = array(
 			'modules.Vtiger.resources.Vtiger',
 			'modules.Settings.Vtiger.resources.Vtiger',
@@ -139,7 +140,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 			"modules.Settings.$moduleName.resources.$moduleName",
 			'modules.Settings.Vtiger.resources.Index',
 			"modules.Settings.$moduleName.resources.Index",
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js",
+            "~layouts/$layout/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

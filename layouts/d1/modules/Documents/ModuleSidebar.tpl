@@ -1,5 +1,5 @@
-<div class="col-lg-3 p-0">
-    <div class="bg-white rounded p-3 ms-4">
+<div class="col-lg-2 p-0">
+    <div class="bg-white rounded p-3 ms-4 mb-4">
         <div class="module-filters" id="module-filters">
             <div class="sidebar-container lists-menu-container">
                 <div class="d-flex align-items-center justify-content-between">
@@ -16,7 +16,7 @@
                         <ul id="folders-list" class="nav nav-pills flex-column">
                             {foreach item=FOLDER from=$FOLDERS name=folderView}
                                 {assign var=FOLDERNAME value={vtranslate($FOLDER->get('foldername'), $MODULE)}}
-                                <li class="tab-item nav-link fs-6 documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()}active{/if} {if $smarty.foreach.folderView.iteration gt 5}filterHidden hide{/if}">
+                                <li class="tab-item nav-link fs-6 documentFolder {if $FOLDER_VALUE eq $FOLDER->getName()}active{/if} {if $smarty.foreach.folderView.iteration gt 20}filterHidden hide{/if}">
                                     <div class="d-flex justify-content-between">
                                         <a class="filterName" href="javascript:void(0);" data-filter-id="{$FOLDER->get('folderid')}" data-folder-name="{$FOLDER->get('foldername')}" title="{$FOLDERNAME}">
                                             <i class="fa {if $FOLDER_VALUE eq $FOLDER->getName()}fa-folder-open{else}fa-folder{/if}"></i>
@@ -51,14 +51,14 @@
                                     {vtranslate('LBL_NO')} {vtranslate('LBL_FOLDERS', $MODULE)} {vtranslate('LBL_FOUND')} ...
                                 </h6>
                             </li>
-                            <div class="text-center mt-3">
-                                <a class="btn btn-primary toggleFilterSize" data-more-text="{vtranslate('Show more',Vtiger)}" data-less-text="{vtranslate('Show less',Vtiger)}">
-                                    {if $smarty.foreach.folderView.iteration gt 5}
-                                        {vtranslate('Show more',Vtiger)}
-                                    {/if}
-                                </a>
-                            </div>
                         </ul>
+                        <div class="text-center mt-3">
+                            <a class="btn btn-primary toggleFilterSize" data-more-text="{vtranslate('Show more',Vtiger)}" data-less-text="{vtranslate('Show less',Vtiger)}">
+                                {if $smarty.foreach.folderView.iteration gt 5}
+                                    {vtranslate('Show more',Vtiger)}
+                                {/if}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

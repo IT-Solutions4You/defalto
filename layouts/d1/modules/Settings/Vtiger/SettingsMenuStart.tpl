@@ -55,11 +55,17 @@
         })();
     </script>
 {/if}
-<div class="main-container clearfix">
-		{assign var=LEFTPANELHIDE value=$USER_MODEL->get('leftpanelhide')}
-        <div class="module-nav clearfix settingsNav" id="modnavigator">
-            <div class="hidden-xs hidden-sm height100Per">
+<div class="main-container container-fluid">
+    <div class="row">
+        <div class="col-lg-2 px-0 bg-white rounded-end rounded-bottom-0 mb-4 mb-lg-0">
+            <div class="d-block d-lg-none p-3">
+                <button type="button" class="btn btn-outline-secondary" data-bs-target="#modnavigator" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-gears"></i>
+                    <span class="ms-2">{vtranslate('LBL_SETTINGS_MENU', $QUALIFIED_MODULE)}</span>
+                </button>
+            </div>
+            <div class="module-nav settingsNav collapse d-lg-block" id="modnavigator">
                 {include file="modules/Settings/Vtiger/Sidebar.tpl"}
             </div>
         </div>
-        <div class="settingsPageDiv content-area clearfix">
+        <div class="col-lg px-0">

@@ -44,16 +44,6 @@
                         </div>
                     {/if}
                     {if $USER_MODEL->isAdminUser()}
-                        {if vtlib_isModuleActive('ExtensionStore')}
-                            <div class="menu-item app-item app-item-misc d-inline-block p-1 me-3">
-                                <div class="menu-items-wrapper">
-                                    <a href="index.php?module=ExtensionStore&parent=Settings&view=ExtensionStore">
-                                        <span class="app-icon-list dt-menu-icon fa fa-shopping-cart"></span>
-                                        <span class="app-name ps-2 textOverflowEllipsis"> {vtranslate('LBL_EXTENSION_STORE', 'Settings:Vtiger')}</span>
-                                    </a>
-                                </div>
-                            </div>
-                        {/if}
                         <div class="menu-item app-item app-item-misc d-inline-block p-1 me-3">
                             <div class="menu-items-wrapper">
                                 <a href="?module=Vtiger&parent=Settings&view=Index">

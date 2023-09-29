@@ -1500,7 +1500,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
         if ('description' === $fieldName ||
             in_array((int)$this->get('uitype'), [19, 69]) ||
-            in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
+            in_array($this->getFieldDataType(), ['recurrence', 'reminder']) ||
+            ('Users' === $this->getModuleName() && in_Array($fieldName, ['signature', 'accesskey', 'imagename']))
         ) {
             return true;
         }
