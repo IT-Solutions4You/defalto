@@ -6,61 +6,60 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-{* modules/Settings/Groups/views/Detail.php *}
-
 {strip}
 	<div class="detailViewContainer full-height">
-		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 main-scroll">
-			<div class="detailViewInfo" >
-				<form id="detailView" class="form-horizontal" method="POST">
-					<div class="clearfix">
-						<h4 class="pull-left">
-							{$RECORD_MODEL->get('groupname')}
-						</h4>
-						<div class="btn-group pull-right" >
-							<button class="btn btn-default" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl()}'" type="button">
+		<div class="px-4 pb-4">
+			<div class="detailViewInfo bg-white rounded" >
+				<form id="detailView" class="form-horizontal container-fluid" method="POST">
+					<div class="row py-3 border-bottom">
+						<div class="col">
+							<h4>
+								{$RECORD_MODEL->get('groupname')}
+							</h4>
+						</div>
+						<div class="col-auto">
+							<button class="btn btn-outline-secondary" onclick="window.location.href='{$RECORD_MODEL->getEditViewUrl()}'" type="button">
 								<strong>{vtranslate('LBL_EDIT_RECORD', $MODULE)}</strong>
 							</button>
 						</div>
 					</div>
-					<hr>
-					<div class="form-group">
-						<span class="fieldLabel col-lg-3 col-md-3 col-sm-3">
-							{vtranslate('LBL_GROUP_NAME', $QUALIFIED_MODULE)}&nbsp;<span class="redColor">*</span>
-						</span>
-						<div class="fieldValue">
+					<div class="form-group row py-3">
+						<div class="fieldLabel col-lg-3">
+							{vtranslate('LBL_GROUP_NAME', $QUALIFIED_MODULE)}
+						</div>
+						<div class="fieldValue col-lg">
 							<b>{$RECORD_MODEL->getName()}</b>
 						</div>
 					</div>
-					<div class="form-group">
-						<span class="fieldLabel col-lg-3 col-md-3 col-sm-3">
+					<div class="form-group row py-3">
+						<div class="fieldLabel col-lg-3">
 							{vtranslate('LBL_DESCRIPTION', $QUALIFIED_MODULE)}
-						</span>
-						<div class="fieldValue">
+						</div>
+						<div class="fieldValue col-lg">
 							<b>{$RECORD_MODEL->getDescription()}</b>
 						</div>
 					</div>
-					<div class="form-group ">
-						<span class="fieldLabel col-lg-3 col-md-3 col-sm-3 ">
+					<div class="form-group row py-3">
+						<span class="fieldLabel col-lg-3">
 							{vtranslate('LBL_GROUP_MEMBERS', $QUALIFIED_MODULE)}&nbsp;<span class="redColor">*</span>
 						</span>
-						<div class="fieldValue">
-							<span class="col-lg-6 col-md-6 col-sm-6 collectiveGroupMembers" style="width:auto;min-width:300px">
-								<ul class="nav">
-									{assign var="GROUPS" value=$RECORD_MODEL->getMembers()}
-									{foreach key=GROUP_LABEL item=GROUP_MEMBERS from=$GROUPS}
-										{if !empty($GROUP_MEMBERS)}
-											<li class="groupLabel">
+						<div class="fieldValue col-lg">
+							<span class="col-lg-6 col-md-6 col-sm-6 collectiveGroupMembers groupMembersColors">
+								{assign var="GROUPS" value=$RECORD_MODEL->getMembers()}
+								{foreach key=GROUP_LABEL item=GROUP_MEMBERS from=$GROUPS}
+									{if !empty($GROUP_MEMBERS)}
+										<ul class="nav mb-3">
+											<li class="groupLabel px-3 py-2 me-2 rounded fw-bold {$GROUP_LABEL}">
 												{vtranslate($GROUP_LABEL,$QUALIFIED_MODULE)}
 											</li>
 											{foreach item=GROUP_MEMBER_INFO from=$GROUP_MEMBERS}
-												<li>
+												<li class="px-3 py-2 rounded me-2 {$GROUP_LABEL}">
 													<a href="{$GROUP_MEMBER_INFO->getDetailViewUrl()}">{$GROUP_MEMBER_INFO->get('name')}</a>
 												</li>
 											{/foreach}
-										{/if}
-									{/foreach}
-								</ul>
+										</ul>
+									{/if}
+								{/foreach}
 							</span>
 						</div>
 					</div>
@@ -68,4 +67,4 @@
 			</div>
 		</div>
 	</div>
-{strip}
+{/strip}

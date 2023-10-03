@@ -18,13 +18,13 @@
 				<div class="modal-body">
 					<input type="hidden" name="module" value="{$MODULE}"/>
 					<input type="hidden" name="userid" value="{$USERID}"/>
-					<div name='massEditContent'>
-						<div class="modal-body ">
-							<div class="form-group">
+					<div name="massEditContent">
+						<div>
+							<div class="form-group my-3">
 								{if !$CURRENT_USER_MODEL->isAdminUser()}
-									<label class="control-label fieldLabel col-sm-5">
-										{vtranslate('LBL_OLD_PASSWORD', $MODULE)}&nbsp;
-										<span class="redColor">*</span>
+									<label class="control-label fieldLabel">
+										<span class="me-2">{vtranslate('LBL_OLD_PASSWORD', $MODULE)}</span>
+										<span class="text-danger">*</span>
 									</label>
 									<div class="controls col-sm-6">
 										<input type="password" name="old_password" class="form-control inputElement" data-rule-required="true"/>
@@ -32,23 +32,23 @@
 								{/if}
 							</div>
 
-							<div class="form-group">
-								<label class="control-label fieldLabel col-sm-5">
-									{vtranslate('LBL_NEW_PASSWORD', $MODULE)}&nbsp;
-									<span class="redColor">*</span>
+							<div class="form-group my-3">
+								<label class="control-label fieldLabel">
+									<span class="me-2">{vtranslate('LBL_NEW_PASSWORD', $MODULE)}</span>
+									<span class="text-danger">*</span>
 								</label>
-								<div class="controls col-xs-6">
-									<input type="password" class="form-control inputElement	" name="new_password" data-rule-required="true" autofocus="autofocus"/>
+								<div class="controls">
+									<input type="password" class="form-control inputElement" name="new_password" data-rule-required="true" autofocus="autofocus"/>
 								</div>
 							</div>
 
-							<div class="form-group">
-								<label class="control-label fieldLabel col-sm-5">
-									{vtranslate('LBL_CONFIRM_PASSWORD', $MODULE)}&nbsp;
-									<span class="redColor">*</span>
+							<div class="form-group my-3">
+								<label class="control-label fieldLabel">
+									<span class="me-2">{vtranslate('LBL_CONFIRM_PASSWORD', $MODULE)}</span>
+									<span class="text-danger">*</span>
 								</label>
-								<div class="controls col-xs-6">
-									<input type="password" class="form-control inputElement	" name="confirm_password" data-rule-required="true"/>
+								<div class="controls">
+									<input type="password" class="form-control inputElement" name="confirm_password" data-rule-required="true"/>
 								</div>
 							</div>
 						</div>

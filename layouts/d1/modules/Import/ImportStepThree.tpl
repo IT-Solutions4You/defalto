@@ -15,9 +15,12 @@
 <hr>
 <div id="savedMapsContainer">{include file="Import_Saved_Maps.tpl"|@vtemplate_path:'Import'}</div>
 <div>{include file="Import_Mapping.tpl"|@vtemplate_path:'Import'}</div>
-<div class="form-inline" style="padding-bottom: 10%;">
-    <input type="checkbox" name="save_map" id="save_map">&nbsp;&nbsp;<label for="save_map">{'LBL_SAVE_AS_CUSTOM_MAPPING'|@vtranslate:$MODULE}</label>
-    &nbsp;&nbsp;<input type="text" name="save_map_as" id="save_map_as" class = "form-control">
+<div class="form-inline pb-5">
+    <label for="save_map" class="form-check">
+        <input type="checkbox" class="form-check-input" name="save_map" id="save_map">
+        <span class="ms-2">{'LBL_SAVE_AS_CUSTOM_MAPPING'|@vtranslate:$MODULE}</span>
+    </label>
+    <input type="text" name="save_map_as" id="save_map_as" class="form-control">
 </div>
 {if !$IMPORTABLE_FIELDS}
 	{assign var=IMPORTABLE_FIELDS value=$AVAILABLE_FIELDS}

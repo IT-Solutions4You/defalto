@@ -1541,13 +1541,6 @@ input[type=checkbox]:checked {
   height: calc(100vh - var(--header-height) - 60px);
   overflow: auto;
 }
-.overlay-container-60 {
-  margin-left: var(--menu-width) ;
-}
-.overlay-container-300 {
-  margin-left: 230px ;
-}
-
 .overlayPageContent .modal-content {
   height: calc(100vh - var(--header-height));
 }
@@ -1563,6 +1556,7 @@ input[type=checkbox]:checked {
 .overlayPageContent.fade.show {
   top: var(--header-height);
   width: calc(100vw - var(--menu-width));
+  margin-left: var(--menu-width);
   opacity: 1;
 }
 #helpPageOverlay {
@@ -1978,84 +1972,48 @@ input[type=checkbox]:checked {
 }
 .breadcrumb {
   height: auto;
-  background: #FBFBFB;
 }
 .crumbs {
-  height: 40px;
-  margin: 0;
-  padding: 0 20px 0 0;
-  display: inline-block;
-  position: relative;
-  width: 100%;
+  height: 3rem;
+  list-style: none;
 }
-.crumbs li:after {
-  content: '\0000a0';
+
+.crumbs .step {
+  background: #eff3fe;
+  color: #5e81f4;
+  padding-left: 1.5rem;
+}
+
+.crumbs .step.active {
+  background: #5e81f4;
+  color: #fff;
+  padding-left: 1.5rem;
+}
+
+.stepArrow {
   width: 0;
   height: 0;
-  border-left: 20px solid #ECECEC;
-  border-top: 20px solid transparent;
-  border-bottom: 20px solid transparent;
-  display: inline-block;
-  position: absolute;
-  top: -20px;
-  right: -20px;
+  border-top: 1.5rem solid transparent;
+  border-bottom: 1.5rem solid transparent;
+
+  border-left: 1.5rem solid #eff3fe;
+  margin-left: 1.5rem;
+  margin-right: -1.5rem;
 }
-.crumbs li {
-  height: 0;
-  border-top: 20px solid #ECECEC;
-  border-bottom: 20px solid #ECECEC;
-  border-left: 20px solid transparent;
-  display: inline-block;
-  cursor: pointer;
-  position: relative;
-  width: 18%;
+
+.crumbs .step.active .stepArrow {
+  border-top: 1.5rem solid transparent;
+  border-bottom: 1.5rem solid transparent;
+
+  border-left: 1.5rem solid #5e81f4;
 }
-.crumbs li:first-child {
-  border-top: 20px solid #ECECEC;
-  border-bottom: 20px solid #ECECEC;
-  border-left: 0;
-}
-.crumbs li:hover {
-  height: 0;
-  border-top: 20px solid #FBFBFB;
-  border-bottom: 20px solid #FBFBFB;
-}
-.crumbs li:hover:after {
-  border-left: 20px solid #FBFBFB !important;
-}
-.crumbs li.active {
-  height: 0;
-  border-top: 20px solid #596875;
-  border-bottom: 20px solid #596875;
-}
-.crumbs li.active:after {
-  border-left: 20px solid #596875 !important;
-}
-.crumbs li a {
-  display: block;
-  margin-top: -14px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #666666;
-  text-decoration: none;
-}
-.crumbs li:first-child a .stepNum {
-  margin-left: 8px;
-}
+
 .mailBoxEditDiv .crumbs li {
   width: 22%;
 }
-.stepNum {
-  display: inline-block;
-  padding: 0 5px;
-  overflow: hidden;
-  font-size: 20px;
-  vertical-align: middle;
-  color: #3399ff;
-}
 /* .squaredFour */
 .squaredFour {
-  width: 20px;
+  width: 1.5rem;
   position: relative;
   margin: 20px auto;
 }
@@ -3457,8 +3415,6 @@ form[name="notification_settings"] .select2-choice {
 #s2id_memberViewList .Users,
 .groupMembersColors .Users {
   background-color: #F99984 !important;
-  padding: 5px;
-  margin-bottom: 2px;
   background-image: none;
 }
 #s2id_memberList .Groups,
@@ -3467,8 +3423,6 @@ form[name="notification_settings"] .select2-choice {
 .groupMembersColors .Groups {
   background-color: #ACD5FF !important;
   background-image: none;
-  padding: 5px;
-  margin-bottom: 2px;
 }
 #s2id_memberList .Roles,
 #s2id_memberEditList .Roles,
@@ -3476,8 +3430,6 @@ form[name="notification_settings"] .select2-choice {
 .groupMembersColors .Roles {
   background-color: #FFEC98 !important;
   background-image: none;
-  padding: 5px;
-  margin-bottom: 2px;
 }
 #s2id_memberList .RoleAndSubordinates,
 #s2id_memberEditList .RoleAndSubordinates,
@@ -3485,16 +3437,12 @@ form[name="notification_settings"] .select2-choice {
 .groupMembersColors .RoleAndSubordinates {
   background-color: #C4DEA2 !important;
   background-image: none;
-  padding: 5px;
-  margin-bottom: 2px;
 }
 #s2id_memberList .MultiCompany4you,
 #s2id_memberEditList .MultiCompany4you,
 #s2id_memberViewList .MultiCompany4you,
 .groupMembersColors .MultiCompany4you {
   background-color: #aa78ce !important;
-  padding: 5px;
-  margin-bottom: 2px;
   background-image: none;
 }
 .liStyleNone {
@@ -3683,7 +3631,7 @@ li.dashboardWidget {
   border-radius: 1px;
 }
 .modal {
-  z-index: 1100;
+  z-index: 1051;
 }
 .select2-container .select2-choice {
   height: 28px;
@@ -4607,20 +4555,6 @@ div.tooltip-inner {
 .relationDelete .vicon-linkopen {
   font-size: 12px;
   vertical-align: middle;
-}
-.blockHeader {
-  border-color: #F3F3F4 #F3F3F4 #cbcbcf;
-  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  background-color: #474747;
-  background-image: -moz-linear-gradient(top, #555555, #333333);
-  background-image: -ms-linear-gradient(top, #555555, #333333);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#333333));
-  background-image: -webkit-linear-gradient(top, #555555, #333333);
-  background-image: -o-linear-gradient(top, #555555, #333333);
-  background-image: linear-gradient(top, #555555, #333333);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#555555', endColorstr='#333333', GradientType=0);
-  min-height: 30px;
 }
 .select2-chosen,
 .select2-choice > span:first-child,

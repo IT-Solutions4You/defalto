@@ -10,19 +10,19 @@
 
 {strip}
 	<div class="modal-dialog modelContainer">
-		{assign var=HEADER_TITLE value={vtranslate('LBL_DELETE_PROFILE', $QUALIFIED_MODULE)}|cat:" - "|cat:{$RECORD_MODEL->getName()}}
-		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 		<div class="modal-content">
+			{assign var=HEADER_TITLE value={vtranslate('LBL_DELETE_PROFILE', $QUALIFIED_MODULE)}|cat:" - "|cat:{$RECORD_MODEL->getName()}}
+			{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
 			<form class="form-horizontal" id="DeleteModal" name="AddComment" method="post" action="index.php">
-				<input type="hidden" name="module" value="{$MODULE}" />
-				<input type="hidden" name="parent" value="Settings" />
-				<input type="hidden" name="action" value="Delete" />
-				<input type="hidden" name="record" id="record" value="{$RECORD_MODEL->getId()}" />
+				<input type="hidden" name="module" value="{$MODULE}"/>
+				<input type="hidden" name="parent" value="Settings"/>
+				<input type="hidden" name="action" value="Delete"/>
+				<input type="hidden" name="record" id="record" value="{$RECORD_MODEL->getId()}"/>
 				<div name='massEditContent'>
 					<div class="modal-body">
 						<div class="form-group">
-							<label class="control-label fieldLabel col-sm-5">{vtranslate('LBL_TRANSFER_ROLES_TO_PROFILE',$QUALIFIED_MODULE)}</label>
-							<div class="controls fieldValue col-xs-6">
+							<label class="control-label fieldLabel mb-3">{vtranslate('LBL_TRANSFER_ROLES_TO_PROFILE',$QUALIFIED_MODULE)}</label>
+							<div class="controls fieldValue">
 								<select id="transfer_record" name="transfer_record" class="select2 col-xs-9">
 									<optgroup label="{vtranslate('LBL_PROFILES', $QUALIFIED_MODULE)}">
 										{foreach from=$ALL_RECORDS item=PROFILE_MODEL}

@@ -17,12 +17,12 @@
     </div>
 </div>
 </nav>
- <div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-300' tabindex='-1' role='dialog' aria-hidden='true'>
-        <div class="data">
-        </div>
-        <div class="modal-dialog">
-        </div>
+<div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
+    <div class="data">
     </div>
+    <div class="modal-dialog">
+    </div>
+</div>
 {if $FIELDS_INFO neq null}
     <script type="text/javascript">
         var users_settings_uimeta = (function() {
@@ -55,10 +55,10 @@
     </script>
 {/if}
 <div class="main-container clearfix">
-        <div class="module-nav clearfix" id="modnavigator">
-            <div class="hidden-xs hidden-sm">
-                {include file="modules/Users/UsersSidebar.tpl"}
-            </div>
+    <div class="module-nav clearfix" id="modnavigator">
+        <div class="hidden-xs hidden-sm">
+            {include file="modules/Users/UsersSidebar.tpl"}
         </div>
-        <div class="usersSettingsPageDiv row">
-            <div class="col-sm-12 col-xs-12 ">
+    </div>
+    <div class="usersSettingsPageDiv row">
+        <div class="col-sm-12 col-xs-12 ">

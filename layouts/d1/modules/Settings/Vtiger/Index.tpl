@@ -9,8 +9,8 @@
  ********************************************************************************/
 -->*}
 {strip}
-    <div class="settingsIndexPage px-4">
-        <div class="p-3 bg-white rounded">
+    <div class="settingsIndexPage px-4 pb-4">
+        <div class="p-3 bg-white rounded h-list">
             <div>
                 <h4>{vtranslate('LBL_SUMMARY',$MODULE)}</h4>
             </div>

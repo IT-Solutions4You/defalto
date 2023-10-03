@@ -12,15 +12,14 @@
 
 {strip}
 <div class="listViewPageDiv " id="sharingAccessContainer">
-    <div class="col-sm-12 col-xs-12">
-        <form name="EditSharingAccess" action="index.php" method="post" class="form-horizontal" id="EditSharingAccess">
+    <div class="px-4 pb-4">
+        <form name="EditSharingAccess" action="index.php" method="post" class="form-horizontal py-3 bg-white rounded" id="EditSharingAccess">
             <input type="hidden" name="module" value="SharingAccess" />
             <input type="hidden" name="action" value="SaveAjax" />
             <input type="hidden" name="parent" value="Settings" />
             <input type="hidden" class="dependentModules" value='{ZEND_JSON::encode($DEPENDENT_MODULES)}' />
-            <br>
             <div class="contents">
-                <table class="table table-bordered table-condensed sharingAccessDetails marginBottom50px">
+                <table class="table table-borderless table-condensed sharingAccessDetails">
                     <colgroup>
                         <col width="20%">
                         <col width="15%">
@@ -30,55 +29,30 @@
                         <col width="20%">
                     </colgroup>
                     <thead>
-                        <tr class="blockHeader">
-                            <th>
+                        <tr class="">
+                            <th class="text-secondary bg-body-secondary">
                                 {vtranslate('LBL_MODULE', $QUALIFIED_MODULE)}
                             </th>
                             {foreach from=$ALL_ACTIONS key=ACTION_ID item=ACTION_MODEL}
-                                <th>
+                                <th class="text-secondary bg-body-secondary">
                                     {$ACTION_MODEL->getName()|vtranslate:$QUALIFIED_MODULE}
                                 </th>
                             {/foreach}
-                            <th nowrap="nowrap">{'LBL_ADVANCED_SHARING_RULES'|vtranslate:$QUALIFIED_MODULE}</th>
+                            <th class="text-secondary bg-body-secondary" nowrap="nowrap">{'LBL_ADVANCED_SHARING_RULES'|vtranslate:$QUALIFIED_MODULE}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-module-name="Calendar">
-                            <td>{'SINGLE_Calendar'|vtranslate:'Calendar'}</td>
-                            <td class="">
-                                <center><div><input type="radio" disabled="disabled" /></div></center>
-                            </td>
-                            <td class="">
-                                <center><div><input type="radio" disabled="disabled" /></div></center>
-                            </td>
-                            <td class="">
-                                <center><div><input type="radio" disabled="disabled" /></div></center>
-                            </td>
-                            <td class="">
-                                <center><div><input type="radio" checked="true" disabled="disabled" /></div></center>
-                            </td>
-                            <td>
-                                <div class="row">
-                                    <span class="col-sm-4">&nbsp;</span>
-                                    <span class="col-sm-4">
-                                        <button type="button" class="btn btn-sm btn-default vtButton arrowDown row-fluid" disabled="disabled" style="padding-right: 20px; padding-left: 20px;">
-                                            <i class="fa fa-chevron-down"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
                         {foreach from=$ALL_MODULES key=TABID item=MODULE_MODEL}
-                            <tr data-module-name="{$MODULE_MODEL->get('name')}">
+                            <tr data-module-name="{$MODULE_MODEL->get('name')}" class="border-top border-bottom">
                                 <td>
                                     {$MODULE_MODEL->get('label')|vtranslate:$MODULE_MODEL->getName()}
                                 </td>
                                 {foreach from=$ALL_ACTIONS key=ACTION_ID item=ACTION_MODEL}
                                 <td class="">
                                     {if $ACTION_MODEL->isModuleEnabled($MODULE_MODEL)}
-                                    <center>
-                                        <div><input type="radio" name="permissions[{$TABID}]" data-action-state="{$ACTION_MODEL->getName()}" value="{$ACTION_ID}"{if $MODULE_MODEL->getPermissionValue() eq $ACTION_ID}checked="true"{/if}></div>
-                                    </center>
+                                    <div class="text-center">
+                                        <input type="radio" name="permissions[{$TABID}]" data-action-state="{$ACTION_MODEL->getName()}" value="{$ACTION_ID}"{if $MODULE_MODEL->getPermissionValue() eq $ACTION_ID}checked="true"{/if}>
+                                    </div>
                                     {/if}
                                 </td>
                                 {/foreach}

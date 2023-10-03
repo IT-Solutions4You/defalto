@@ -224,14 +224,14 @@
                                 <div class="container-fluid border-bottom p-4">
                                     <div class="row text-nowrap">
                                         <div class="col-auto">
-                                            <div class="profile-img-container p-0">
+                                            <div class="profile-img-container p-0" style="width: 3.8rem; height: 3.8rem;">
                                                 {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                                 {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].path eq ''}
                                                     <i class='vicon-vtigeruser'></i>
                                                 {else}
                                                     {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
                                                         {if !empty($IMAGE_INFO.url)}
-                                                            <img src="{$IMAGE_INFO.url}" width="3.8rem" height="3.8rem">
+                                                            <img src="{$IMAGE_INFO.url}" height="100%" width="100%">
                                                         {/if}
                                                     {/foreach}
                                                 {/if}

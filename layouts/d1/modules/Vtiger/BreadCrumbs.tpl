@@ -8,16 +8,17 @@
 *************************************************************************************}
 
 <div id="{$BREADCRUMB_ID}" class="breadcrumb">
-	<ul class="crumbs">
+	<ul class="crumbs p-0 m-0 d-flex">
 		{assign var=ZINDEX value=9}
 		{foreach key=CRUMBID item=STEPTEXT from=$BREADCRUMB_LABELS name=breadcrumbLabels}
 			{assign var=INDEX value=$smarty.foreach.breadcrumbLabels.index}
 			{assign var=INDEX value=$INDEX+1}
 			<li class="step {if $smarty.foreach.breadcrumbLabels.first} first {$FIRSTBREADCRUMB} {else} {$ADDTIONALCLASS} {/if} {if $smarty.foreach.breadcrumbLabels.last} last {/if} {if $ACTIVESTEP eq $INDEX}active{/if}"
 				id="{$CRUMBID}" data-value="{$INDEX}" style="z-index:{$ZINDEX}">
-				<a href="#">
-					<span class="stepNum">{$INDEX}</span>
-					<span class="stepText" title="{vtranslate($STEPTEXT,$MODULE)}">{vtranslate($STEPTEXT,$MODULE)}</span>
+				<a href="#" class="d-flex align-items-center">
+					<span class="fw-bold stepNum px-3 fs-5">{$INDEX}.</span>
+					<span class="stepText fs-6" title="{vtranslate($STEPTEXT,$MODULE)}">{vtranslate($STEPTEXT,$MODULE)}</span>
+					<span class="stepArrow"></span>
 				</a>
 			</li>
 			{assign var=ZINDEX value=$ZINDEX-1}

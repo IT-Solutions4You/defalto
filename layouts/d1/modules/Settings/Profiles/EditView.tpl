@@ -10,8 +10,8 @@
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="editViewPageDiv">
-    <div class="col-sm-12 col-xs-12 main-scroll">
-        <form class="form-horizontal" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
+    <div class="main-scroll px-4 pb-4">
+        <form class="form-horizontal p-3 bg-white rounded" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
             <div class="editViewHeader">
                 {if $RECORD_MODEL->getId()}
                     <h4>
@@ -37,36 +37,41 @@
                         <input type="hidden" name="editall" value="0"/>
                     </div>
 
-                    <div name="editContent">
-                        <div class="row form-group">
+                    <div name="editContent" class="container-fluid">
+                        <div class="row form-group mb-3">
                             <div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
                                 <label>
-                                    <strong>{vtranslate('LBL_PROFILE_NAME', $QUALIFIED_MODULE)}</strong>&nbsp;<span class="redColor">*</span>:
+                                    <strong>{vtranslate('LBL_PROFILE_NAME', $QUALIFIED_MODULE)}</strong>
+                                    <span class="text-danger ms-2">*</span>
                                 </label>
                             </div>
                             <div class="fieldValue col-lg-6 col-md-6 col-sm-6">
-                                <input type="text" class="inputElement" name="profilename" id="profilename" value="{$RECORD_MODEL->getName()}" data-rule-required="true"/>
+                                <input type="text" class="inputElement form-control" name="profilename" id="profilename" value="{$RECORD_MODEL->getName()}" data-rule-required="true"/>
                             </div>
                         </div>
-
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
                                 <label>
-                                    <strong>{vtranslate('LBL_DESCRIPTION', $QUALIFIED_MODULE)}&nbsp;:&nbsp;</strong>
-                                </label></div>
+                                    <strong>{vtranslate('LBL_DESCRIPTION', $QUALIFIED_MODULE)}</strong>
+                                </label>
+                            </div>
                             <div class="fieldValue col-lg-6 col-md-6 col-sm-6">
-                                <textarea name="description" class="inputElement" id="description" style="height:50px; resize: vertical;padding:5px 8px;">{$RECORD_MODEL->getDescription()}</textarea>
+                                <textarea name="description" class="inputElement form-control" id="description" style="height:50px; resize: vertical;padding:5px 8px;">{$RECORD_MODEL->getDescription()}</textarea>
                             </div>
                         </div>
                         {include file='EditViewContents.tpl'|vtemplate_path:$QUALIFIED_MODULE}
                     </div>
                 </div>
             </div>
-            <div class='modal-overlay-footer clearfix'>
-                <div class="row clearfix">
-                    <div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                        <button type='submit' class='btn btn-success saveButton'>{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-                        <a class='cancelLink' data-dismiss="modal" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+            <div class="modal-overlay-footer modal-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6 text-end">
+                            <a class="cancelLink btn btn-primary" data-dismiss="modal" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                        </div>
                     </div>
                 </div>
             </div>

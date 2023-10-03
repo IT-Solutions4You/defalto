@@ -16,7 +16,7 @@
     </div>
 </div>
 </nav>
-     <div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
+     <div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
         <div class="data">
         </div>
         <div class="modal-dialog">

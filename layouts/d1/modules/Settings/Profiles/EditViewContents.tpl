@@ -37,24 +37,24 @@
 			<div class="col-lg-6 col-md-6 col-sm-6">
 				<label class="control-label">
 					<input type="hidden" name="viewall" value="0" />
-					<label class="control-label">
-						<input class="listViewEntriesCheckBox" type="checkbox" name="viewall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if}  />
-						&nbsp;{vtranslate('LBL_VIEW_ALL',$QUALIFIED_MODULE)}&nbsp;
+					<label class="control-label form-check">
+						<input class="listViewEntriesCheckBox form-check-input" type="checkbox" name="viewall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if}  />
+						<span class="mx-2">{vtranslate('LBL_VIEW_ALL',$QUALIFIED_MODULE)}</span>
+						<span>
+							<i class="fa fa-info-circle" title="{vtranslate('LBL_VIEW_ALL_DESC',$QUALIFIED_MODULE)}"></i>
+						</span>
 					</label>
-					<span style="margin-left: 10px">
-						<i class="fa fa-info-circle" title="{vtranslate('LBL_VIEW_ALL_DESC',$QUALIFIED_MODULE)}"></i>
-					</span>
 				</label>
 				<br>
 				<label class="control-label">
 					<input type="hidden" name="editall" value="0" />
-					<label class="control-label">
-						<input class="listViewEntriesCheckBox" type="checkbox" name="editall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} />
-						&nbsp;{vtranslate('LBL_EDIT_ALL',$QUALIFIED_MODULE)}&nbsp;
+					<label class="control-label form-check">
+						<input class="listViewEntriesCheckBox form-check-input" type="checkbox" name="editall" {if $RECORD_MODEL->hasGlobalReadPermission()}checked="true"{/if} />
+						<span class="mx-2">{vtranslate('LBL_EDIT_ALL',$QUALIFIED_MODULE)}</span>
+						<span>
+							<i class="fa fa-info-circle" title="{vtranslate('LBL_EDIT_ALL_DESC',$QUALIFIED_MODULE)}"></i>
+						</span>
 					</label>
-					<span style="margin-left: 15px">
-						<i class="fa fa-info-circle" title="{vtranslate('LBL_EDIT_ALL_DESC',$QUALIFIED_MODULE)}"></i>
-					</span>
 				</label>
 				<br><br>
 			</div>

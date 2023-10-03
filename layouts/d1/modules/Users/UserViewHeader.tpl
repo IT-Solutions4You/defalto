@@ -17,7 +17,7 @@
                 <div class="col-lg">
                     <div class="row">
                         <div class="col-auto">
-                            <div class="recordImage" style="height: 50px;width: 50px;">
+                            <div class="recordImage d-flex align-items-center justify-content-center rounded" style="height: 3rem;width: 3rem;">
                                 {assign var=NOIMAGE value=0}
                                 {foreach key=ITER item=IMAGE_INFO from=$RECORD->getImageDetails()}
                                     {if !empty($IMAGE_INFO.url)}
@@ -27,10 +27,10 @@
                                     {/if}
                                 {/foreach}
                                 {if $NOIMAGE eq 1}
-                                    <div class="name rounded">
-                                            <span style="font-size:24px;">
-                                                <strong> {$RECORD->getName()|substr:0:2} </strong>
-                                            </span>
+                                    <div class="name">
+                                        <span style="font-size:2rem;">
+                                            <strong>{$RECORD->getName()|substr:0:2}</strong>
+                                        </span>
                                     </div>
                                 {/if}
                             </div>
