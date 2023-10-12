@@ -26,7 +26,11 @@ var vtUtils = {
         }
 
         if (jQuery('#minilistWizardContainer').length) {
-            params.maximumSelectionSize = 4
+            params.maximumSelectionLength = 4
+        }
+
+        if (params['maximumSelectionSize']) {
+            params.maximumSelectionLength = params['maximumSelectionSize']
         }
 
         // Fix to eliminate flicker happening on list view load
@@ -101,6 +105,10 @@ var vtUtils = {
             instance.dropdown.css('z-index', 1000002);
         });
 
+        selectElement.each(function () {
+            $(this).next().attr('id', 's2id_' + $(this).attr('id'));
+        });
+
         //validator should not validate select2 text inputs
         $('.select2-search input').addClass('ignore-validation');
 
@@ -116,20 +124,17 @@ var vtUtils = {
 	 * @params <object> multiSelectElement
 	 * @params <object> select2 params
 	 */
-	registerChangeEventForMultiSelect :  function(selectElement,params) {
-		if(typeof selectElement == 'undefined') {
-			return;
-		}
+    registerChangeEventForMultiSelect: function (selectElement, params) {
+        if (typeof selectElement == 'undefined') {
+            return;
+        }
 
-		var limit = params.maximumSelectionSize;
-		selectElement.on('change',function(e){
-			var instance = jQuery(e.currentTarget).data('select2');
-			var data = instance.data();
-			if (jQuery.isArray(data) && data.length >= limit ) {
-				instance.updateResults();
+        selectElement.on("select2:select", function (e) {
+            if ($(this).select2("data").length >= params.maximumSelectionSize) {
+                $(this).select2("close");
             }
-		});
-	},
+        });
+    },
 
     /**
      * Function register datepicker for dateField elements

@@ -8,9 +8,9 @@
 *************************************************************************************}
 
 {strip}
-	<div class="container-fluid" id="importModules">
-		<div>
-			<div class="row">
+	<div class="px-4 pb-4" id="importModules">
+		<div class="bg-white rounded p-3">
+			<div>
 				<div id="vtlib_modulemanager_import_div">
 					{if $MODULEIMPORT_FAILED neq ''}
 						<div class="col-lg-2"></div>
@@ -83,19 +83,28 @@
 					{/if}
 				</div>
 			</div>
-		</div>
-		<div class="modal-overlay-footer clearfix">
-			<div class="row clearfix">
-				<div class="textAlignCenter col-lg-12 col-md-12 col-sm-12">
-					{if $MODULEIMPORT_FAILED neq ''}
-						<button class="btn btn-success finishButton" type="submit"><strong>{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}</strong></button>
-					{else if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
-						<button class="btn btn-success updateModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</button>
-					{else}
-						<button class="btn btn-success importModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}><strong>{vtranslate('LBL_IMPORT_NOW', $QUALIFIED_MODULE)}</strong></button>
-					{/if}
-					&nbsp;&nbsp;
-					<a class="cancelLink" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+			<div class="modal-overlay-footer modal-footer">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-6 text-end">
+							<a class="cancelLink btn btn-primary" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+						</div>
+						<div class="col-6">
+							{if $MODULEIMPORT_FAILED neq ''}
+								<button class="btn btn-primary active finishButton" type="submit">
+									<strong>{vtranslate('LBL_FINISH', $QUALIFIED_MODULE)}</strong>
+								</button>
+							{elseif $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
+								<button class="btn btn-primary active updateModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>
+									<span>{vtranslate('LBL_UPDATE_NOW', $QUALIFIED_MODULE)}</span>
+								</button>
+							{else}
+								<button class="btn btn-primary active importModule" name="saveButton" {if $need_license_agreement eq 'true'} disabled {/if}>
+									<strong>{vtranslate('LBL_IMPORT_NOW', $QUALIFIED_MODULE)}</strong>
+								</button>
+							{/if}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

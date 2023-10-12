@@ -10,7 +10,7 @@
 
 {strip}
     <div class="listViewPageDiv px-4 pb-4" id="listViewContent">
-        <div class="h-list p-3 bg-white rounded">
+        <div class="p-3 bg-white rounded">
             <br>
             <div class="clearfix treeView">
                 <ul>

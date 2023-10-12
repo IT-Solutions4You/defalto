@@ -12,7 +12,7 @@
    {foreach item=RECORD_LINK from=$LISTVIEW_ENTRY->getRecordLinks()}
       {assign var="RECORD_LINK_URL" value=$RECORD_LINK->getUrl()}
          <span>
-            <a {if stripos($RECORD_LINK_URL, 'javascript:')===0}onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};"{else}href='{$RECORD_LINK_URL}' {/if}>
+            <a class="btn text-secondary" {if stripos($RECORD_LINK_URL, 'javascript:')===0}onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};" {else}href="{$RECORD_LINK_URL}" {/if}>
                <i class="{$RECORD_LINK->getIcon()}" title="{vtranslate($RECORD_LINK->getLabel(), $QUALIFIED_MODULE)}"></i>
             </a>
          </span>

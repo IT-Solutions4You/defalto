@@ -262,16 +262,17 @@ Vtiger_Field_Js('Workflows_Field_Js',{},{
 	 * return <String or Jquery> it can return either plain html or jquery object
 	 */
     getUi : function() {
-        var html = '<input type="text" class="getPopupUi inputElement" name="'+ this.getName() +'"  /><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+        let html = '<input type="text" class="WorkflowField getPopupUi inputElement form-control" name="'+ this.getName() +'"  /><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         html = jQuery(html);
         html.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
+
         return this.addValidationToElement(html);
     }
 });
 
 Workflows_Field_Js('Workflows_Text_Field_Js', {}, {
     getUi : function() {
-        var html = '<textarea class="getPopupUi textarea inputElement" name="'+this.getName()+'" value="">'+this.getValue()+'</textarea>'+
+        var html = '<textarea class="WorkflowTextField getPopupUi textarea inputElement form-control" name="'+this.getName()+'" value="">'+this.getValue()+'</textarea>'+
         '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
         html = jQuery(html);
         return this.addValidationToElement(html);
@@ -289,34 +290,42 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js',{},{
 
     /**
 	 * Function to get the ui
-	 * @return - input text field
+	 * @return string|object input text field
 	 */
-    getUi : function() {
-        var comparatorSelectedOptionVal = this.get('comparatorElementVal');
-        var dateSpecificConditions = this.get('dateSpecificConditions');
-        if(comparatorSelectedOptionVal.length > 0) {
-            if(comparatorSelectedOptionVal == 'between' || comparatorSelectedOptionVal == 'custom'){
-                var html = '<div class="date"><input class="dateField inputElement" style="width:auto;" data-calendar-type="range" name="'+ this.getName() +'" data-date-format="'+ this.getDateFormat() +'" type="text" ReadOnly="true" value="'+  this.getValue() + '"></div>';
-                var element = jQuery(html);
+    getUi: function () {
+        let comparatorSelectedOptionVal = this.get('comparatorElementVal'),
+            dateSpecificConditions = this.get('dateSpecificConditions'),
+            html,
+            element;
+
+        if (comparatorSelectedOptionVal.length > 0) {
+            if (comparatorSelectedOptionVal == 'between' || comparatorSelectedOptionVal == 'custom') {
+                html = '<div class="date"><input class="dateField inputElement form-control" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" ReadOnly="true" value="' + this.getValue() + '"></div>';
+                element = jQuery(html);
+
                 return this.addValidationToElement(element);
-            } else if(this._specialDateComparator(comparatorSelectedOptionVal)) {
-                var html = '<input name="'+ this.getName() +'" type="text" value="'+this.getValue()+'" data-validation-engine="validate[funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-validator="[{"name":"PositiveNumber"}]">\n\
-							<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+            } else if (this._specialDateComparator(comparatorSelectedOptionVal)) {
+                html = '<input class="inputElement form-control" name="' + this.getName() + '" type="text" value="' + this.getValue() + '" data-validation-engine="validate[funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-validator="[{"name":"PositiveNumber"}]">\n\
+							<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
+
                 return jQuery(html);
             } else if (comparatorSelectedOptionVal in dateSpecificConditions) {
-                var startValue = dateSpecificConditions[comparatorSelectedOptionVal]['startdate'];
-                var endValue = dateSpecificConditions[comparatorSelectedOptionVal]['enddate'];
-                var html = '<input name="'+ this.getName() +'"  type="text" ReadOnly="true" value="'+  startValue +','+ endValue +'">'
+                let startValue = dateSpecificConditions[comparatorSelectedOptionVal]['startdate'],
+                    endValue = dateSpecificConditions[comparatorSelectedOptionVal]['enddate'];
+
+                html = '<input class="WorkflowDateField form-control" name="' + this.getName() + '"  type="text" ReadOnly="true" value="' + startValue + ',' + endValue + '">'
+
                 return jQuery(html);
-            } else if(comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
-            //show nothing
-            }else {
+            } else if (comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
+                //show nothing
+            } else {
                 return this._super();
             }
         } else {
-            var html = '<input type="text" class="getPopupUi date inputElement" name="'+ this.getName() +'"  data-date-format="'+ this.getDateFormat() +'"  value="'+  this.getValue() + '" />'+ 
-            '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />' 
-            var element = jQuery(html); 
+            html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
+            element = jQuery(html);
+
             return this.addValidationToElement(element);
         }
     },
@@ -332,54 +341,55 @@ Vtiger_Date_Field_Js('Workflows_Date_Field_Js',{},{
     }
 });
 
-Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js',{},{
+Vtiger_Date_Field_Js('Workflows_Datetime_Field_Js', {}, {
     /**
-	 * Function to get the user date format
-	 */
-    getDateFormat : function(){
+     * Function to get the user date format
+     */
+    getDateFormat: function () {
         return this.get('date-format');
     },
 
     /**
-	 * Function to get the ui
-	 * @return - input text field
-	 */
-    getUi : function() {
-        var comparatorSelectedOptionVal = this.get('comparatorElementVal');
-        if(this._specialDateTimeComparator(comparatorSelectedOptionVal)) {
-            var html = '<input name="'+ this.getName() +'" class="inputElement" type="text" value="'+this.getValue()+'" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
-            var element = jQuery(html);
-        } else if(comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
-        // show nothing
+     * Function to get the ui
+     * @return - input text field
+     */
+    getUi: function () {
+        let comparatorSelectedOptionVal = this.get('comparatorElementVal'),
+            html,
+            element;
+
+        if (this._specialDateTimeComparator(comparatorSelectedOptionVal)) {
+            html = '<input name="' + this.getName() + '" class="inputElement form-control" type="text" value="' + this.getValue() + '" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
+            element = jQuery(html);
+        } else if (comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
+            // show nothing
         } else {
-            var html = '<input type="text" class="getPopupUi datetime inputElement" name="'+ this.getName() +'"  data-date-format="'+ this.getDateFormat() +'"  value="'+  this.getValue() + '" />'+
-            '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />'
-            var element = jQuery(html);
+            html = '<input type="text" class="getPopupUi datetime inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />'
+            element = jQuery(html);
         }
+
         return element;
     },
 
-    _specialDateTimeComparator : function(comp) {
-        var specialComparators = ['less than hours before', 'less than hours later', 'more than hours later', 'more than hours before', 'less than days ago', 'less than days later', 'more than days ago', 'more than days later', 'days ago', 'days later'];
-        for(var index in specialComparators) {
-            if(comp == specialComparators[index]) {
+    _specialDateTimeComparator: function (comp) {
+        let specialComparators = ['less than hours before', 'less than hours later', 'more than hours later', 'more than hours before', 'less than days ago', 'less than days later', 'more than days ago', 'more than days later', 'days ago', 'days later'];
+
+        for (let index in specialComparators) {
+            if (comp === specialComparators[index]) {
                 return true;
             }
         }
+
         return false;
     }
-
 });
 
-Vtiger_Currency_Field_Js('Workflows_Currency_Field_Js',{},{
-
-    getUi : function() {
-        var html = '<input type="text" class="getPopupUi marginLeftZero currency inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '"  />'+
-        '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
-        var element = jQuery(html);
+Vtiger_Currency_Field_Js('Workflows_Currency_Field_Js', {}, {
+    getUi: function () {
+        let html = '<input type="text" class="WorkflowCurrencyField getPopupUi marginLeftZero currency inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '"  />' + '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />', element = jQuery(html);
         return this.addValidationToElement(element);
     }
-
 });
 
 Vtiger_Time_Field_Js('Workflows_Time_Field_Js',{},{
@@ -402,10 +412,10 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * Function to get the ui
 	 * @return - input percentage field
 	 */
-    getUi : function() {
-        var html = '<input type="text" class="getPopupUi percent inputElement" name="'+ this.getName() +'" value="'+  this.getValue() + '" />'+
-        '<input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
-        var element = jQuery(html);
+    getUi: function () {
+        let html = '<input type="text" class="getPopupUi percent inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />',
+            element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
@@ -485,45 +495,14 @@ Vtiger_Owner_Field_Js('Workflows_Ownergroup_Field_Js',{},{
 	}
 });
 
-AdvanceFilter_Picklist_Field_Js('Workflows_Picklist_Field_Js',{},{
+AdvanceFilter_Picklist_Field_Js('Workflows_Picklist_Field_Js', {}, {
+    getUi: function () {
+        let html = '<select type="hidden" data-close-on-select="true" data-placeholder="' + app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION') + '" class="inputElement select2 form-select" name="' + this.getName() + '" id="' + this.getName() + '">' + this.getOptions() +  '</select>',
+            selectContainer = jQuery(html);
 
-    getUi : function(){
-        var selectedOption = app.htmlDecode(this.getValue());
-        var pickListValues = this.getPickListValues();
-        var tagsArray = new Array();
-        jQuery.map( pickListValues, function(val, i) {
-            tagsArray.push(val);
-        });
-        var pickListValuesArrayFlip = {};
-        for(var key in pickListValues){
-            var pickListValue = pickListValues[key];
-            var translatedValues = new Array();
-            var selectedValues = selectedOption.split(",");
-            pickListValuesArrayFlip[pickListValue] = key;
-            if(selectedValues.length > 1){
-                for(var index in selectedValues){
-                    var selectedValue = selectedValues[index];
-                    if(selectedValue == key){
-                        translatedValues.push(pickListValue);
-                    } else {
-                        //if condition is startswith, endswith, contains, doesnot contains should be retain the selected value in the picklist
-                        translatedValues.push(selectedValue);
-                    }
-                }
-            }else{
-                if(selectedOption == key){
-                        selectedOption = pickListValue;
-                }
-            }
-        }
-        if(selectedValues.length > 1){
-            selectedOption = translatedValues.join(",");
-        }
-        var html = '<input type="hidden" class="inputElement select2" name="'+ this.getName() +'" id="'+ this.getName() +'">';
-        var selectContainer = jQuery(html).val(selectedOption);
-        selectContainer.data('tags', tagsArray).data('picklistvalues', pickListValuesArrayFlip).data('maximumSelectionSize', 1);
-        selectContainer.data('placeholder', app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION')).data('closeOnSelect', true);
+        this.setSelected(selectContainer);
         this.addValidationToElement(selectContainer);
+
         return selectContainer;
     }
 });
@@ -620,9 +599,11 @@ Workflows_Field_Js('Workflows_Integer_Field_Js',{},{
 			this.addValidationToElement(selectContainer);
 			return selectContainer;
 		} else {
-            var value = app.htmlDecode(this.getValue());
+            let value = app.htmlDecode(this.getValue());
             value = value.replace(/"/g, "&quot;");
-            var html = '<input value="'+value+'" type="text" class="getPopupUi inputElement" name="'+ this.getName() +'"  /><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+
+            let html = '<input value="'+value+'" type="text" class="WorkflowIntegerField getPopupUi inputElement form-control" name="'+ this.getName() +'"  /><input type="hidden" name="valuetype" value="'+this.get('workflow_valuetype')+'" />';
+
             return this.addValidationToElement(jQuery(html));
 		}
 	}

@@ -10,8 +10,8 @@
 -->*}
 
 {strip}
-   <div class="listViewPageDiv" id="listViewContent">
-      <div class="col-sm-12 col-xs-12 ">
+   <div class="listViewPageDiv px-4 pb-4" id="listViewContent">
+      <div class="bg-white rounded">
          <div id="listview-actions" class="listview-actions-container">
-            <div class="list-content row workflowListContainer" id="list-content">
-            {/strip}
+            <div class="list-content workflowListContainer" id="list-content">
+{/strip}

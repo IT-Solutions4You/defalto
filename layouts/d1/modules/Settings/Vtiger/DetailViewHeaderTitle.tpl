@@ -10,14 +10,6 @@
 {strip}
 	<div class="record-header">
 		<div class="recordBasicInfo">
-			{if !$IS_OVERLAY}
-				<div class="pull-right">
-					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$QUALIFIED_MODULE}
-				</div>
-			{/if}
-			<div class="pull-left">
-				{include file='DetailViewHeaderImage.tpl'|vtemplate_path:$QUALIFIED_MODULE}
-			</div>
 			<div class="recordHeaderTitle">
 				<span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
 					{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
@@ -27,11 +19,7 @@
 						{/if}
 					{/foreach}
 				</span>
-				{if !$IS_OVERLAY}
-					{include file='DetailViewTagList.tpl'|vtemplate_path:$QUALIFIED_MODULE}
-				{/if}
 			</div>
-			{include file='DetailViewHeaderFieldsView.tpl'|vtemplate_path:$QUALIFIED_MODULE}
 		</div>
 	</div>
 {/strip}

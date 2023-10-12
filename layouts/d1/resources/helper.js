@@ -527,15 +527,18 @@ jQuery.Class("Vtiger_Helper_Js",{
          messageBar.addClass('hide');
     },
 
-    getSelect2FromSelect : function(selectEle){
-        if(typeof selectEle == "undefined") {
+    getSelect2FromSelect: function (selectEle) {
+        if (typeof selectEle == "undefined") {
             return jQuery({});
         }
-        var select2 = selectEle.data('select2');
-        if(typeof select2 == "undefined") {
+
+        let select2 = selectEle.data('select2');
+
+        if (typeof select2 == "undefined") {
             return jQuery({});
         }
-        return jQuery('#'+select2.containerId);
+
+        return jQuery('#' + select2.containerId);
     },
     
      /* 

@@ -143,7 +143,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
             } else {
                value = '';
             }
-            var clonedDateElement = '<input type="text" style="width: 30%;" class="dateField fieldValue inputElement" value="' + value + '" data-date-format="' + dataFormat + '" data-input="true" >'
+            var clonedDateElement = '<input type="text" class="dateField fieldValue inputElement form-control" value="' + value + '" data-date-format="' + dataFormat + '" data-input="true" >'
             clonedPopupUi.find('.fieldValueContainer div').prepend(clonedDateElement);
          } else if (fieldValueElement.hasClass('time')) {
             clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
@@ -833,25 +833,33 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
     * Function which will register field change event
     */
    registerFieldChange: function () {
-      var thisInstance = this;
-      jQuery('#saveTask').on('change', 'select[name="fieldname"]', function (e) {
-         var selectedElement = jQuery(e.currentTarget);
-         if (selectedElement.val() != 'none') {
-            var conditionRow = selectedElement.closest('.conditionRow');
-            var moduleNameElement = conditionRow.find('[name="modulename"]');
-            if (moduleNameElement.length > 0) {
-               var selectedOptionFieldInfo = selectedElement.find('option:selected').data('fieldinfo');
-               var type = selectedOptionFieldInfo.type;
-               if (type == 'picklist' || type == 'multipicklist') {
-                  var moduleName = jQuery('#createEntityModule').val();
-                  moduleNameElement.find('option[value="' + moduleName + '"]').attr('selected', true);
-                  moduleNameElement.trigger('change');
-                  moduleNameElement.select2("disable");
+       let thisInstance = this;
+
+       jQuery('#saveTask').on('change', 'select[name="fieldname"]', function (e) {
+           let selectedElement = jQuery(e.currentTarget);
+
+           if (selectedElement.val() != 'none') {
+               let conditionRow = selectedElement.closest('.conditionRow'),
+                   moduleNameElement = conditionRow.find('[name="modulename"]');
+
+               if (moduleNameElement.length > 0) {
+                   let selectedOptionFieldInfo = selectedElement.find('option:selected').data('fieldinfo'),
+                       type = selectedOptionFieldInfo.type;
+
+                   if (type == 'picklist' || type == 'multipicklist') {
+                       let moduleName = jQuery('#createEntityModule').val();
+
+                       if (moduleNameElement.is('select').length) {
+                           moduleNameElement.find('option[value="' + moduleName + '"]').attr('selected', true);
+                           moduleNameElement.trigger('change');
+                           moduleNameElement.select2("disable");
+                       }
+                   }
                }
-            }
-            thisInstance.loadFieldSpecificUi(selectedElement);
-         }
-      });
+
+               thisInstance.loadFieldSpecificUi(selectedElement);
+           }
+       });
    },
    getModuleName: function () {
       return app.getModuleName();

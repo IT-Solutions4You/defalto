@@ -43,7 +43,7 @@
     footer:
       "<div class='modal-footer'></div>",
     closeButton:
-      "<button type='button' class='mt-0 bootbox-close-button btn-close' data-bs-dismiss='modal' aria-hidden='true'></button>",
+      "<button type='button' class='mt-0 bootbox-close-button btn btn-close float-end' data-bs-dismiss='modal' aria-hidden='true'></button>",
     form:
       "<form class='bootbox-form'></form>",
     inputs: {

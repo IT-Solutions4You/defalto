@@ -76,7 +76,7 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 		}
 		
 		webFormTargetFieldStructure+=	'<div class="pull-right actions">'+
-										'<span class="actionImages"><a class="removeTargetModuleField"><i class="icon-remove-sign"></i></a></span></div></td></tr>';
+										'<span class="actionImages"><a class="removeTargetModuleField"><i class="fa-solid fa-xmark"></i></a></span></div></td></tr>';
 
         targetFieldsTable.append(webFormTargetFieldStructure);
         var fieldUIContainer = targetFieldsTable.find('[data-name="fieldUI_'+selectedOptionName+'"]');
@@ -94,47 +94,50 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	 * Function to register event for onchange event for 
 	 * select2 element fro adding and removing fields
 	 */
-	registerOnChangeEventForSelect2 : function(){
-		var thisInstance = this;
-		var editViewForm = this.getForm();
-		var fieldsTable = this.getSourceModuleFieldTable();
-		jQuery('#fieldsList').on('change',function(e){
-			var element = jQuery(e.currentTarget);
-			//To handle the options that are removed from select2
-			if(typeof e.removed != "undefined"){
-				var removedFieldObject = e.removed;
-				var removedFieldName = removedFieldObject.id; 
-				var removedFieldLabel = removedFieldObject.text; 
-				var selectedFieldOption = editViewForm.find('option[value="'+removedFieldName+'"]');
-				var fieldMandatoryStatus = selectedFieldOption.data('mandatory');
-				//To handle the mandatory option that are removed using backspace from select2
-				if(fieldMandatoryStatus){
-					var existingOptions = element.select2("data");
-					var params = {
-						'id' : removedFieldName,
-						'text' : removedFieldLabel
+	registerOnChangeEventForSelect2: function () {
+		let thisInstance = this,
+			editViewForm = this.getForm(),
+			fieldsTable = this.getSourceModuleFieldTable();
+
+		$('#fieldsList').on('select2:unselect', function (e) {
+			let element = $(e.currentTarget),
+				removedFieldObject = e.params.data,
+				removedFieldName = removedFieldObject.id,
+				removedFieldLabel = removedFieldObject.text,
+				selectedFieldOption = editViewForm.find('option[value="' + removedFieldName + '"]'),
+				fieldMandatoryStatus = selectedFieldOption.data('mandatory');
+
+			//To handle the mandatory option that are removed using backspace from select2
+			if (fieldMandatoryStatus) {
+				let existingOptions = element.select2("data"),
+					params = {
+						'id': removedFieldName,
+						'text': removedFieldLabel
 					}
-					existingOptions.push(params);
-					//By setting data attribute select2 mandatory options are added back to select2
-					element.select2("data",existingOptions);
-					thisInstance.triggerLockMandatoryFieldOptions();
-				} else {
-					//Remove the row with respect to option that are removed from select2
-					var selectedFieldInfo = selectedFieldOption.data('fieldInfo');
-					var removeRowName = selectedFieldInfo.name;
-					fieldsTable.find('tr[data-name="'+removeRowName+'"]').find('.removeTargetModuleField').trigger('click');
-					if(element.val().length == 1){
-						jQuery('#saveFieldsOrder').attr('disabled',true);
-					}
+				existingOptions.push(params);
+				//By setting data attribute select2 mandatory options are added back to select2
+				element.select2("data", existingOptions);
+				thisInstance.triggerLockMandatoryFieldOptions();
+			} else {
+				//Remove the row with respect to option that are removed from select2
+				let selectedFieldInfo = selectedFieldOption.data('fieldInfo'),
+					removeRowName = selectedFieldInfo.name;
+
+				fieldsTable.find('tr[data-name="' + removeRowName + '"]').find('.removeTargetModuleField').trigger('click');
+
+				if (element.val().length == 1) {
+					jQuery('#saveFieldsOrder').attr('disabled', true);
 				}
-			} else if(typeof e.added != "undefined"){
-				//To add the row according to option that is selected from select2
-				var addedFieldObject = e.added;
-				var addedFieldName = addedFieldObject.id;
-				thisInstance.displaySelectedField(addedFieldName);
-				thisInstance.registerEventToHandleOnChangeOfOverrideValue();
 			}
-		})
+		}).on('select2:select', function (e) {
+			//To handle the options that are removed from select2
+			//To add the row according to option that is selected from select2
+			let addedFieldObject = e.params.data,
+				addedFieldName = addedFieldObject.id;
+
+			thisInstance.displaySelectedField(addedFieldName);
+			thisInstance.registerEventToHandleOnChangeOfOverrideValue();
+		});
 	},
 	
 	/**
@@ -201,20 +204,24 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	 * Function to handle target module remove field action
 	 */
 	registerEventForRemoveTargetModuleField : function(){
-		var thisInstance = this;
-		var sourceModuleContainer = this.getSourceModuleFieldTable();
+		let thisInstance = this,
+			sourceModuleContainer = this.getSourceModuleFieldTable();
+
 		sourceModuleContainer.on('click','.removeTargetModuleField',function(e){
-			var element = jQuery(e.currentTarget);
-			var containerRow = element.closest('tr');
-			var removedFieldLabel = containerRow.find('td.fieldLabel').text();
-			var selectElement = sourceModuleContainer.find('#fieldsList');
+			let element = jQuery(e.currentTarget),
+				containerRow = element.closest('tr'),
+				removedFieldLabel = containerRow.find('td.fieldLabel').text(),
+				selectElement = sourceModuleContainer.find('#fieldsList');
 			//x click removes element in select2 automatically (2 actions below is not required)
 			//var select2Element = vtUtils.showSelect2ElementView(selectElement);
 			//select2Element.find('li.select2-search-choice').find('div:contains('+removedFieldLabel+')').closest('li').remove();
 			selectElement.find('option:contains('+removedFieldLabel+')').removeAttr('selected');
-			if(selectElement.val().length == 1){
+
+			if(selectElement.val().length === 1){
 				jQuery('#saveFieldsOrder').attr('disabled',true);
 			}
+
+			selectElement.trigger('change');
 			thisInstance.triggerLockMandatoryFieldOptions();
 			containerRow.remove();
 		})
@@ -224,9 +231,11 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	 * Function to lock mandatory option in select2
 	 */
 	lockMandatoryOptionInSelect2 : function(mandatoryFieldLabel){
-		var sourceModuleContainer = this.getSourceModuleFieldTable();
-		var fieldsListSelect2Element = sourceModuleContainer.find('#s2id_fieldsList');
-		fieldsListSelect2Element.find('.select2-search-choice div:contains("'+mandatoryFieldLabel+'")').closest('li').find('a').remove();
+		let sourceModuleContainer = this.getSourceModuleFieldTable(),
+			fieldsListSelect2Element = sourceModuleContainer.find('#s2id_fieldsList');
+
+		fieldsListSelect2Element.find('.select2-selection__choice:contains("'+mandatoryFieldLabel+'")').find('span').remove();
+		fieldsListSelect2Element.find('.select2-results__option:contains("'+mandatoryFieldLabel+'")').remove();
 	},
 	
 	/**
@@ -305,6 +314,7 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	registerBasicEvents : function(){
         var editViewForm = this.getForm();
 		vtUtils.applyFieldElementsView(editViewForm);
+
 		this.registerOnChangeEventForSelect2();
 		this.registerEventForRemoveTargetModuleField();
 		this.registerEventForMarkRequiredField();
@@ -339,7 +349,7 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 			var fieldIndex = jQuery('#fileFieldNextIndex').val();
 			var html = '<tr>\n\
 							<td style="vertical-align: middle;">\n\
-								<input type="text" class="inputElement nameField" name="file_field['+fieldIndex+'][fieldlabel]" data-rule-required="true">\n\
+								<input type="text" class="inputElement form-control nameField" name="file_field['+fieldIndex+'][fieldlabel]" data-rule-required="true">\n\
 							</td>\n\
 							<td class="textAlignCenter" style="vertical-align: middle;">\n\
 								<input type="checkbox" name="file_field['+fieldIndex+'][required]" value="1">\n\
@@ -404,21 +414,56 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	/**
 	 * Function to regiser the event to make the menu items list sortable
 	 */
-	makeMenuItemsListSortable : function() {
-		var selectElement = jQuery('#fieldsList');
-		var select2Element = app.helper.getSelect2FromSelect(selectElement);
+	makeMenuItemsListSortable: function () {
 		//TODO : peform the selection operation in context this might break if you have multi select element in menu editor
 		//The sorting is only available when Select2 is attached to a hidden input field.
-		var select2ChoiceElement = select2Element.find('ul.select2-choices');
-		select2ChoiceElement.sortable({
-			'containment': select2ChoiceElement,
-			start: function() {  },
-			update: function() { 
+		let selectElement = jQuery('#fieldsList'),
+			selectParent = selectElement.parent(),
+			select2ChoiceElement = selectElement.next().find('ul.select2-selection__rendered');
 
-			//If arragments of fileds is completed save field order button should be enabled
-			 if(selectElement.val().length > 1){
-				 jQuery('#saveFieldsOrder').attr('disabled',false);
-			 }
+		orderSortedValues = function () {
+			selectParent.find("ul.select2-selection__rendered").children("li[title]").each(function (i, obj) {
+				let element = selectElement.children('option').filter(function () {
+					return $(this).html() == obj.title
+				});
+
+				moveElementToEndOfParent(element)
+			});
+		};
+
+		moveElementToEndOfParent = function (element) {
+			element.parent().append(element.detach());
+		};
+
+		let selectedFieldNames = JSON.parse($('#fieldsListSelected').val())
+
+		if (selectedFieldNames) {
+			$.each(selectedFieldNames, function (index, id) {
+				let element = selectElement.children("option[value=" + id + "]");
+
+				moveElementToEndOfParent(element);
+			});
+
+			$(this).trigger("change");
+		}
+
+		selectElement.on("select2:select", function (evt) {
+			let id = evt.params.data.id,
+				element = $(this).children("option[value=" + id + "]");
+
+			moveElementToEndOfParent(element);
+
+			$(this).trigger("change");
+		});
+
+		select2ChoiceElement.sortable({
+			update: function () {
+				//If arrangements of fields is completed save field order button should be enabled
+				if (selectElement.val().length > 1) {
+					jQuery('#saveFieldsOrder').attr('disabled', false);
+
+					orderSortedValues();
+				}
 			}
 		});
 	},
@@ -426,24 +471,25 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	/**
 	 * Function to save fields order in a webform
 	 */
-	registerEventForFieldsSaveOrder : function(){
-		var thisInstance = this;
-		jQuery('#saveFieldsOrder').on('click',function(e, updateRows){
-			if(typeof updateRows == "undefined"){
+	registerEventForFieldsSaveOrder: function () {
+		let thisInstance = this;
+
+		jQuery('#saveFieldsOrder').on('click', function (e, updateRows) {
+			if (typeof updateRows == "undefined") {
 				updateRows = true;
 			}
-			var element = jQuery(e.currentTarget);
-			var selectElement = jQuery('#fieldsList');
-			var orderedSelect2Options = selectElement.select2("data");
-			var i = 1;
-			for(var j = 0;j < orderedSelect2Options.length;j++){
-				var chosenOption = orderedSelect2Options[j];
-				var chosenValue = chosenOption.id;
-				jQuery('tr[data-name="selectedFieldsData['+chosenValue+'][defaultvalue]"]').find('.sequenceNumber').val(i++);
-			}
-			if(updateRows){
+
+			let element = jQuery(e.currentTarget),
+				selectElement = jQuery('#fieldsList'),
+				orderedSelect2Options = selectElement.select2('data');
+
+			$.each(orderedSelect2Options, function (index, data) {
+				jQuery('tr[data-name="selectedFieldsData[' + data.id + '][defaultvalue]"]').find('.sequenceNumber').val(index + 1);
+			});
+
+			if (updateRows) {
 				thisInstance.arrangeFieldRowsInSequence();
-				element.attr("disabled",true);
+				element.attr("disabled", true);
 			}
 		})
 	},
@@ -452,14 +498,13 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 	 * Function to arrange field rows according to selected sequence
 	 */
 	arrangeFieldRowsInSequence : function() {
-		var selectElement = jQuery('#fieldsList');
-		var orderedSelect2Options = selectElement.select2("data");
-			
-		//Arrange field rows according to selected sequence
-		var totalFieldsSelected = orderedSelect2Options.length;
-		var selectedFieldRows = jQuery('tr.listViewEntries');
-		for(var index=totalFieldsSelected;index>0;index--){
-			var rowInSequence = jQuery('[class="sequenceNumber"][value="'+index+'"]',selectedFieldRows).closest('tr');
+		let selectElement = jQuery('#fieldsList'),
+			orderedSelect2Options = selectElement.select2("data"),
+			totalFieldsSelected = orderedSelect2Options.length,
+			selectedFieldRows = jQuery('tr.listViewEntries');
+
+		for(let index=totalFieldsSelected;index>0;index--){
+			let rowInSequence = jQuery('[class="sequenceNumber"][value="'+index+'"]',selectedFieldRows).closest('tr');
 			rowInSequence.insertAfter(jQuery('[name="targetModuleFields"]').find('[name="fieldHeaders"]'));
 		}
 	},

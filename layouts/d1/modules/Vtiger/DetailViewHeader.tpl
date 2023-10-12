@@ -12,8 +12,8 @@
 {strip}
     <div class="detailview-header-block p-3 bg-white rounded">
         <div class="detailview-header">
-            {include file='DetailViewHeaderTitle.tpl'|vtemplate_path:$MODULE}
-            {include file='DetailViewActions.tpl'|vtemplate_path:$MODULE}
+            {include file='DetailViewHeaderTitle.tpl'|vtemplate_path:$QUALIFIED_MODULE}
+            {include file='DetailViewActions.tpl'|vtemplate_path:$QUALIFIED_MODULE}
         </div>
     </div>
 {/strip}

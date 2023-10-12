@@ -10,7 +10,7 @@
 ********************************************************************************/
 -->*}
 {strip}
-<div class="popupUi modal-dialog modal-md hide" data-backdrop="false">
+<div class="popupUi modal-dialog modal-lg hide" data-backdrop="false">
     <div class="modal-content">
         {assign var=HEADER_TITLE value={vtranslate('LBL_SET_VALUE',$QUALIFIED_MODULE)}}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
@@ -58,7 +58,7 @@
             </div><br>
             <div class="row fieldValueContainer">
                 <div class="col-sm-12">
-                    <textarea data-textarea="true" class="fieldValue inputElement hide" style="height: inherit;"></textarea>
+                    <textarea data-textarea="true" class="fieldValue inputElement form-control hide" style="height: inherit;"></textarea>
                 </div>
             </div><br>
             <div id="rawtext_help" class="alert alert-info helpmessagebox hide">

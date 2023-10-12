@@ -13,16 +13,11 @@
     <input type="hidden" name="conditions" id="advanced_filter" value='' />
     <input type="hidden" id="olderConditions" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($WORKFLOW_MODEL->get('conditions')))}' />
     <input type="hidden" name="filtersavedinnew" value="{$WORKFLOW_MODEL->get('filtersavedinnew')}" />
-    <div class="editViewHeader">
-        <div class='row'>
-           <div class="col-lg-12 col-md-12 col-lg-pull-0">
-              <h4>{vtranslate('LBL_WORKFLOW_CONDITION', $QUALIFIED_MODULE)}</h4>
-           </div>
-        </div>
+    <div class="editViewHeader border-bottom">
+        <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_WORKFLOW_CONDITION', $QUALIFIED_MODULE)}</h4>
     </div>
-    <hr style="margin-top: 0px !important;">
     <div class="editViewBody">
-       <div class="editViewContents" style="padding-bottom: 0px;">
+       <div class="editViewContents">
           <div class="form-group">
              <div class="col-sm-12">
                  {if $IS_FILTER_SAVED_NEW == false}
@@ -30,13 +25,19 @@
 						{vtranslate('LBL_CREATED_IN_OLD_LOOK_CANNOT_BE_EDITED',$QUALIFIED_MODULE)}
 					</div>
 					<div class="row">
-						<span class="col-sm-6"><input type="radio" name="conditionstype" class="alignMiddle" checked=""/>&nbsp;&nbsp;<span class="alignMiddle">{vtranslate('LBL_USE_EXISTING_CONDITIONS',$QUALIFIED_MODULE)}</span></span>
-						<span class="col-sm-6"><input type="radio" id="enableAdvanceFilters" name="conditionstype" class="alignMiddle recreate"/>&nbsp;&nbsp;<span class="alignMiddle">{vtranslate('LBL_RECREATE_CONDITIONS',$QUALIFIED_MODULE)}</span></span>
-					</div><br>
+						<div class="col-sm-6">
+                            <input type="radio" name="conditionstype" checked=""/>
+                            <span class="ms-2">{vtranslate('LBL_USE_EXISTING_CONDITIONS',$QUALIFIED_MODULE)}</span>
+                        </div>
+						<div class="col-sm-6">
+                            <input type="radio" id="enableAdvanceFilters" name="conditionstype" class="recreate"/>
+                            <span class="ms-2">{vtranslate('LBL_RECREATE_CONDITIONS',$QUALIFIED_MODULE)}</span>
+                        </div>
+					</div>
 				{/if}
-                 <div id="advanceFilterContainer"  class="conditionsContainer {if $IS_FILTER_SAVED_NEW == false} zeroOpacity {/if}">
+                 <div id="advanceFilterContainer"  class="conditionsContainer p-3 {if $IS_FILTER_SAVED_NEW == false} zeroOpacity opacity-0 {/if}">
                      <div class="col-sm-12">
-                         <div class="table table-bordered" style="padding: 5%">
+                         <div class="table table-bordered">
                              {include file='AdvanceFilter.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE}
                          </div>
                      </div>
@@ -46,29 +47,25 @@
           </div>
        </div>
     </div>        
-    <div class="editViewHeader">
-        <div class='row'>
-           <div class="col-lg-12 col-md-12 col-lg-pull-0">
-              <h4>{vtranslate('LBL_WORKFLOW_ACTIONS', $QUALIFIED_MODULE)}</h4>
-            </div>
-        </div>
+    <div class="editViewHeader border-bottom">
+      <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_WORKFLOW_ACTIONS', $QUALIFIED_MODULE)}</h4>
     </div>
-    <hr style="margin-top: 0px !important;">
-    <div class="editViewBody" id="workflow_action" style="padding-bottom: 15px;">
-        <div style="padding-left: 15px;">
-            <div class="btn-group">
-               <button class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="true">
-                  <strong>{vtranslate('LBL_ADD_TASK',$QUALIFIED_MODULE)}</strong>&nbsp;&nbsp;
-                  <span class="caret"></span>
+    <div class="editViewBody pb-3" id="workflow_action">
+        <div class="p-3">
+            <div class="btn-group dropdown">
+               <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="true">
+                  <strong>{vtranslate('LBL_ADD_TASK',$QUALIFIED_MODULE)}</strong>
                </button>
                <ul class="dropdown-menu" role="menu">
                     {foreach from=$TASK_TYPES item=TASK_TYPE}
-                        <li><a class="cursorPointer" data-url="index.php{$TASK_TYPE->getV7EditViewUrl()}&for_workflow={$RECORD}">{vtranslate($TASK_TYPE->get('label'),$QUALIFIED_MODULE)}</a></li>
+                        <li>
+                            <a class="dropdown-item" data-url="index.php{$TASK_TYPE->getV7EditViewUrl()}&for_workflow={$RECORD}">{vtranslate($TASK_TYPE->get('label'),$QUALIFIED_MODULE)}</a>
+                        </li>
                     {/foreach}
                </ul>
             </div>
         </div>
-        <div id="taskListContainer" style="min-height: 250px;">
+        <div id="taskListContainer">
            {include file='TasksList.tpl'|@vtemplate_path:$QUALIFIED_MODULE}	
         </div>
     </div>

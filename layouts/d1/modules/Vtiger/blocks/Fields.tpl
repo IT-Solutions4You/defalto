@@ -1,5 +1,5 @@
 {strip}
-    <div class="container-fluid py-3">
+    <div class="container-fluid py-3 px-4">
         <div class="row">
             {foreach key=FIELD_NAME item=FIELD_MODEL from=$BLOCK_FIELDS name=blockfields}
                 {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}

@@ -13,9 +13,9 @@
 <input type="hidden" value="{if $TASK_ID}{$TASK_OBJECT->reference_field}{else}{$REFERENCE_FIELD_NAME}{/if}" name='reference_field' id='reference_field' />
 <div class="conditionsContainer" id="save_fieldvaluemapping">
 	{if $RELATED_MODULE_MODEL_NAME neq '' && getTabid($RELATED_MODULE_MODEL_NAME)}
-		<div>
-			<button type="button" class="btn btn-default" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
-		</div><br>
+		<div class="my-3">
+			<button type="button" class="btn btn-outline-secondary" id="addFieldBtn">{vtranslate('LBL_ADD_FIELD',$QUALIFIED_MODULE)}</button>
+		</div>
 		{assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($TASK_OBJECT->entity_type)}
 		{assign var=FIELD_VALUE_MAPPING value=ZEND_JSON::decode($TASK_OBJECT->field_value_mapping)}
 		{foreach from=$FIELD_VALUE_MAPPING item=FIELD_MAP}
@@ -24,8 +24,8 @@
 				{continue}
 			{/if}
 			{assign var=SELECTED_FIELD_MODEL_FIELD_TYPE value=$SELECTED_FIELD_MODEL->getFieldDataType()}
-			<div class="row conditionRow form-group">
-				<span class="col-lg-4">
+			<div class="row conditionRow my-3">
+				<div class="col-lg-3">
 					<select name="fieldname" class="select2" style="min-width: 250px" {if $SELECTED_FIELD_MODEL->isMandatory() || ($DISABLE_ROW eq 'true') } disabled="" {/if} >
 						<option value="none"></option>
 						{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
@@ -35,21 +35,23 @@
 							</option>	
 						{/foreach}
 					</select>
-				</span>
-				<span>
+				</div>
+				<div class="col-lg-3">
 					<input name="modulename" type="hidden"
-						{if $FIELD_MAP['modulename'] eq $SOURCE_MODULE} value="{$SOURCE_MODULE}" {/if}
-						{if $FIELD_MAP['modulename'] eq $RELATED_MODULE_MODEL_NAME} value="{$RELATED_MODULE_MODEL_NAME}" {/if} 
+							{if $FIELD_MAP['modulename'] eq $SOURCE_MODULE} value="{$SOURCE_MODULE}" {/if}
+							{if $FIELD_MAP['modulename'] eq $RELATED_MODULE_MODEL_NAME} value="{$RELATED_MODULE_MODEL_NAME}" {/if}
 					/>
-				</span>
-				<span class="fieldUiHolder col-lg-4">
-					<input type="text" class="getPopupUi inputElement" {if ($DISABLE_ROW eq 'true')} disabled=""{/if} readonly="" name="fieldValue" value="{$FIELD_MAP['value']}" />
+				</div>
+				<div class="fieldUiHolder col-lg-4">
+					<input type="text" class="getPopupUi inputElement form-control" {if ($DISABLE_ROW eq 'true')} disabled=""{/if} readonly="" name="fieldValue" value="{$FIELD_MAP['value']}" />
 					<input type="hidden" name="valuetype" value="{$FIELD_MAP['valuetype']}" />
-				</span>
+				</div>
 				{if $MANDATORY_FIELD neq true}
-					<span class="cursorPointer col-lg-1">
-						<i class="alignMiddle deleteCondition fa fa-trash"></i>
-					</span>
+					<div class="cursorPointer col-lg-auto">
+						<div class="deleteCondition btn btn-outline-secondary">
+							<i class="fa fa-trash"></i>
+						</div>
+					</div>
 				{/if}
 			</div>
 		{/foreach}
@@ -95,8 +97,8 @@
 	{/if}
 </div><br>
 {if $RELATED_MODULE_MODEL}
-	<div class="row form-group basicAddFieldContainer hide">
-		<span class="col-lg-4">
+	<div class="row my-3 basicAddFieldContainer hide">
+		<div class="col-lg-3">
 			<select name="fieldname" style="min-width: 250px">
 				<option value="none">{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}</option>
 				{foreach from=$RELATED_MODULE_MODEL->getFields() item=FIELD_MODEL}
@@ -108,16 +110,18 @@
 					{/if}
 				{/foreach}
 			</select>
-		</span>
-		<span>
+		</div>
+		<div class="col-lg-3">
 			<input type="hidden" name="modulename" value="{$SOURCE_MODULE}" />
-		</span>
-		<span class="fieldUiHolder col-lg-4">
-			<input type="text" class="inputElement" readonly="" name="fieldValue" value="" />
+		</div>
+		<div class="fieldUiHolder col-lg-4">
+			<input type="text" class="inputElement form-control" readonly="" name="fieldValue" value="" />
 			<input type="hidden" name="valuetype" value="rawtext" />
-		</span>
-		<span class="cursorPointer col-lg-1">
-			<i class="alignMiddle deleteCondition fa fa-trash"></i>
-		</span>
+		</div>
+		<div class="cursorPointer col-lg-auto">
+			<div class="btn btn-outline-secondary deleteCondition">
+				<i class="fa fa-trash"></i>
+			</div>
+		</div>
 	</div>
 {/if}

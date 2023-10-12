@@ -20,12 +20,10 @@
 					</div>
 				</div>
 			{else}
-				<div class="relatedListContainer" style="margin-top:20px;">
+				<div class="relatedListContainer container-fluid">
 					<div class="row">
 						<div class="col-sm-5" id="ONE_ONE_AND_MANY_ONE_RELATIONSHIP">
-							<div style="padding-bottom:15px;">
-								<h6>{vtranslate('ONE_ONE_AND_MANY_ONE_RELATIONSHIP',$QUALIFIED_MODULE)}</h6>
-							</div>
+							<div class="mb-3">{vtranslate('ONE_ONE_AND_MANY_ONE_RELATIONSHIP',$QUALIFIED_MODULE)}</div>
 							<div style="list-style: none;">
 								{if php7_count($RELATION_FIELDS) eq 0}
 									<div class="well" style="height:72px;opacity:0.6;text-align:center;padding-top: 30px;"> 
@@ -60,14 +58,7 @@
 							</div>
 						</div>
 						<div class="col-sm-7" id="ONE_MANY_RELATIONSHIP">
-							<div class="row"  style="padding-bottom:15px;">
-								<span class="col-sm-6">
-									<h6>{vtranslate('ONE_MANY_RELATIONSHIP',$QUALIFIED_MODULE)}</h6>
-								</span>
-								<span class="col-sm-5">
-									&nbsp;
-								</span>
-							</div>
+							<div class="mb-3">{vtranslate('ONE_MANY_RELATIONSHIP',$QUALIFIED_MODULE)}</div>
 							<div class="row">
 								{if php7_count($RELATED_MODULES) eq 0}
 									<div class="well" style="height:72px;opacity:0.6;text-align:center;padding-top: 30px;"> 
@@ -103,10 +94,8 @@
 																	{/if}
 																</div>
 															</div>
-															<div class="col-sm-1 deleteButton" style="padding-right: 0px;" data-relation="1">
-																<div class="pull-right">
-																	<button class="close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}">x</button>
-																</div>
+															<div class="col-sm-1 deleteButton" data-relation="1">
+																<button class="btn btn-close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}"></button>
 															</div>
 														</div>
 													</li>
@@ -115,24 +104,27 @@
 										</ul>
 									</div>
 									<div class="col-sm-6">
-										<div>
-											<div class="pull-right" style="margin-bottom:20px;">
-												<span class="col-sm-6" style="width:100%">
-													<img src="{vimage_path('Square.png')}" />&nbsp;&nbsp;&nbsp;
-													{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}
-												</span>
-												<span class="col-sm-6" style="width:100%">
-													<img src="{vimage_path('Circle.png')}" />&nbsp;&nbsp;&nbsp;
-													{vtranslate('LBL_RELATED_MODULE',$QUALIFIED_MODULE)}
-												</span>
+										<div class="p-3">
+											<div>
+												<img src="{vimage_path('Square.png')}" />&nbsp;&nbsp;&nbsp;
+												{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}
+											</div>
+											<div>
+												<img src="{vimage_path('Circle.png')}" />&nbsp;&nbsp;&nbsp;
+												{vtranslate('LBL_RELATED_MODULE',$QUALIFIED_MODULE)}
 											</div>
 										</div>
-										<div class="relationListInfoWrapper">
-											<div class="col-sm-10 relationListInfo" style="margin-left: 40px;">
+										<div class="relationListInfoWrapper p-3">
+											<div class="relationListInfo">
 												{if php7_count($RELATED_MODULES) neq 0}
-													<div style="margin: 5px 0px;">
-														<div class="relatedListInfoHeader"><i class="fa fa-info-circle"></i>&nbsp;{vtranslate('LBL_INFO', $QUALIFIED_MODULE)}</div><br>
-														<div>{vtranslate('LBL_RELATED_LIST_INFO', $QUALIFIED_MODULE)}.</div><br>
+													<div class="p-3">
+														<div class="relatedListInfoHeader">
+															<i class="fa fa-info-circle"></i>
+															<span class="ms-2">{vtranslate('LBL_INFO', $QUALIFIED_MODULE)}</span>
+														</div>
+														<br>
+														<div>{vtranslate('LBL_RELATED_LIST_INFO', $QUALIFIED_MODULE)}.</div>
+														<br>
 													</div>
 												{/if}
 											</div>
@@ -181,10 +173,8 @@
 									<img src="{vimage_path('N-N.png')}" width="100" height="50" />
 								</div>
 							</div>
-							<div class="col-sm-1 deleteButton" style="padding-right: 0px;" data-relation="1">
-								<div class="pull-right">
-									<button class="close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}">x</button>
-								</div>
+							<div class="col-sm-1 deleteButton" data-relation="1">
+								<button class="btn btn-close" data-dismiss="modal" title="{vtranslate('LBL_CLOSE')}"></button>
 							</div>
 						</div>
 					</li>

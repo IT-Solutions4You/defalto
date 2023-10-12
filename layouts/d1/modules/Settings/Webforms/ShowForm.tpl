@@ -18,12 +18,12 @@
 				<span class="pull-right">
 					<a href="" id="webformCopyClipboard">
 						<i class="fa fa-clipboard" aria-hidden="true"></i>
-						{vtranslate('LBL_COPY_TO_CLIPBOARD', $QUALIFIED_MODULE)}
+						<span class="ms-2">{vtranslate('LBL_COPY_TO_CLIPBOARD', $QUALIFIED_MODULE)}</span>
 					</a>
 				</span>
 			</div>
 			<input type="hidden" class="allowedAllFilesSize" value="{$ALLOWED_ALL_FILES_SIZE}">
-			<textarea id="showFormContent" class="input-xxlarge" style="min-height:400px;width: 100%" readonly></textarea>
+			<textarea id="showFormContent" class="form-control" style="min-height:400px;width: 100%" readonly></textarea>
 
 			<code>
 				<pre>
@@ -55,21 +55,21 @@
 											{else}
 												{assign var=PICKLIST_DATA_LABEL value=$FIELD_MODEL->get('name')}
 											{/if}
-										{else if ($DATA_TYPE eq "salutation") or ($DATA_TYPE eq "string") or ($DATA_TYPE eq "time") or ($DATA_TYPE eq "currency") or ($DATA_TYPE eq "url") or ($DATA_TYPE eq "phone")}
+										{elseif ($DATA_TYPE eq "salutation") or ($DATA_TYPE eq "string") or ($DATA_TYPE eq "time") or ($DATA_TYPE eq "currency") or ($DATA_TYPE eq "url") or ($DATA_TYPE eq "phone")}
 											{assign var=TYPE value="text"}
-										{else if ($DATA_TYPE eq "text")}
+										{elseif ($DATA_TYPE eq "text")}
 											{assign var=TYPE value="text"}
 											<textarea name="{urlencode($FIELD_MODEL->getFieldName())}" {if $FIELD_MODEL->get('required') eq 1} required{/if} 
 													{if $FIELD_MODEL->get('hidden') eq 1} hidden{/if} >{$FIELD_MODEL->get('fieldvalue')}</textarea>
-										{else if ($DATA_TYPE eq "email")}
+										{elseif ($DATA_TYPE eq "email")}
 											{assign var=TYPE value="email"}
-										{else if ($DATA_TYPE eq "image")}
+										{elseif ($DATA_TYPE eq "image")}
 											{assign var=TYPE value="image"}
-										{else if (($DATA_TYPE eq "integer") or ($DATA_TYPE eq "double"))}
+										{elseif (($DATA_TYPE eq "integer") or ($DATA_TYPE eq "double"))}
 											{assign var=TYPE value="number"}
-										{else if ($DATA_TYPE eq "boolean")}
+										{elseif ($DATA_TYPE eq "boolean")}
 											{assign var=TYPE value="checkbox"}
-										{else if ($DATA_TYPE eq "date")}
+										{elseif ($DATA_TYPE eq "date")}
 											{assign var=TYPE value="date"}
 										{/if}
 										{if $HIDDEN_STATUS eq 1}
@@ -83,7 +83,7 @@
 												{/foreach}
 											</select>
 
-										{else if $DATA_TYPE eq 'multipicklist'}
+										{elseif $DATA_TYPE eq 'multipicklist'}
 											{assign var="FIELD_VALUE_LIST" value=explode(' |##| ',$FIELD_MODEL->get('fieldvalue'))}
 											<select name="{$PICKLIST_NAME}[]" data-label="{$PICKLIST_DATA_LABEL}" {if $FIELD_MODEL->get('required') eq 1} required{/if} multiple style="width: 60%;" {if $FIELD_MODEL->get('hidden') eq 1} hidden{/if}>
 												{foreach item=PICKLIST_VALUE from=$PICKLIST_VALUES}
@@ -96,7 +96,7 @@
 											<input type="{$TYPE}" value="{$FIELD_MODEL->getEditViewDisplayValue($EXPLODED_FIELD_VALUES[1])}" readonly= />
 										{elseif $DATA_TYPE eq "image"}
 											<input type="file" name="{urlencode($FIELD_MODEL->getFieldName())}[]" data-label="{$FIELD_MODEL->get('neutralizedFieldName')}" {if $FIELD_MODEL->get('hidden') eq 1} hidden{/if} {if $FIELD_MODEL->get('required') eq 1} required{/if}/>
-										{else if $DATA_TYPE eq "boolean"}
+										{elseif $DATA_TYPE eq "boolean"}
 											<input type="hidden" name="{urlencode($FIELD_MODEL->getFieldName())}" data-label="{$FIELD_MODEL->get('neutralizedFieldName')}" value=0 />
 											{if ($HIDDEN_STATUS eq 1) and ($FIELD_MODEL->get('fieldvalue') eq "on")}
 												<input type="hidden" name="{urlencode($FIELD_MODEL->getFieldName())}" data-label="{$FIELD_MODEL->get('neutralizedFieldName')}" value=1 checked />

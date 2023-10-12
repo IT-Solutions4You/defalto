@@ -68,7 +68,7 @@
                 {include file="modules/Settings/Vtiger/Sidebar.tpl"}
             </div>
         </div>
-        <div class="col-lg px-0">
+        <div class="col-lg px-0 h-main">
             <div class="px-4 pb-3">
                 <div class="bg-white rounded p-3">
                     {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}

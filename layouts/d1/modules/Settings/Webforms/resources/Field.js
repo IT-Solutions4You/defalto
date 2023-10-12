@@ -162,47 +162,50 @@ Vtiger_Field_Js('Webforms_Reference_Field_Js',{},{
 	 * Function to get the ui
 	 * @return - input text field
 	 */
-	getUi : function() {
-		var referenceModules = this.getReferenceModules();
-        var value = this.getValue();
-		var fieldName = this.getName();
-        var html = '<div class="referencefield-wrapper';
-        if(value){
-            html += 'selected';
-        } else {
-            html += '"';
-        }
-        html += '">';
-        html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
-        html += '<div class="input-group ">'
-        html += '<input name="'+ fieldName +'" type="hidden" value="'+ value + '" class="sourceField" />';
-        html += '<input id="'+ fieldName +'_display" name="'+ fieldName +'_display" value="'+ value + '" data-fieldname="'+ fieldName +'" data-fieldtype="reference" type="text" class="marginLeftZero autoComplete inputElement referenceFieldDisplay" placeholder="'+app.vtranslate('JS_TYPE_TO_SEARCH')+'"';
-				
-        var reset = false;
-        if(value){
-            html += ' value="'+value+'" disabled="disabled"';
-            reset = true;
-        }
-        html += '/>';
-					
-        if(reset){
-            html += '<a href="#" class="clearReferenceSelection" > x </a>';
-        }else {
-            html += '<a href="#" class="clearReferenceSelection hide"> x </a>';
+	getUi: function () {
+		let referenceModules = this.getReferenceModules(),
+			value = this.getValue(),
+			fieldName = this.getName(),
+			html = '<div class="referencefield-wrapper';
+
+		if (value) {
+			html += 'selected';
+		} else {
+			html += '"';
+		}
+
+		html += '">';
+		html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
+		html += '<div class="input-group">'
+		html += '<input id="' + fieldName + '_display" name="' + fieldName + '_display" value="' + value + '" data-fieldname="' + fieldName + '" data-fieldtype="reference" type="text" class="autoComplete inputElement form-control referenceFieldDisplay" placeholder="' + app.vtranslate('JS_TYPE_TO_SEARCH') + '"';
+
+		let reset = false;
+
+		if (value) {
+			html += ' value="' + value + '" disabled="disabled"';
+			reset = true;
+		}
+
+		html += '/>';
+		html += '<input name="' + fieldName + '" type="hidden" value="' + value + '" class="sourceField" />';
+
+		if (reset) {
+			html += '<a href="#" class="input-group-text clearReferenceSelection" > x </a>';
+		} else {
+			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> x </a>';
+		}
+
+		//popup search element
+		html += '<span class="input-group-text relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
+		html += '<i class="fa fa-search"></i>';
+		html += '</span>';
+		html += '<span class="input-group-text createReferenceRecord cursorPointer">' +
+			'<i class="fa fa-plus"></i>' +
+			'</span>';
+		html += '</div></div>';
+
+		return this.addValidationToElement(html);
 	}
-        //popup search element
-        html += '<span class="input-group-addon relatedPopup cursorPointer" title="'+referenceModules[0]+'">';
-        html += '<i class="fa fa-search"></i>';
-        html += '</span>';
-        
-        html += '</div>';
-        html += '<span class="createReferenceRecord cursorPointer clearfix">'+
-                   '<i class="fa fa-plus"></i>'+
-				'</span>';
-        html += '</div>'; 
-        
-         return this.addValidationToElement(html);
-    }
 });
 
 Vtiger_Field_Js('Webforms_Image_Field_Js',{},{

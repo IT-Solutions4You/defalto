@@ -21,7 +21,7 @@
 	<input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
 
 	<div class="px-4 pb-4 listViewContents">
-		<div id="listview-actions" class="listview-actions-container h-list bg-white rounded container-fluid p-0">
+		<div id="listview-actions" class="listview-actions-container bg-white rounded container-fluid p-0">
 			{if $MODULE neq 'Currency' and $MODULE neq 'PickListDependency' and $MODULE neq 'CronTasks'}
 				<div class="row p-3">
 					<div class="col-md">
