@@ -89,10 +89,6 @@
     --bs-btn-hover-border-color: #9ab0f8;
 }
 
-.border-secondary {
-
-}
-
 .btn-success {
     --bs-btn-color: #fff;
     --bs-btn-bg: #7CE7AC;
@@ -253,7 +249,6 @@ body {
     height: var(--footer-height);
     line-height: var(--footer-height);
     text-align: center;
-    background: var(--menu-bg);
     margin-bottom: 0;
 }
 
@@ -375,7 +370,6 @@ body {
 
 .global-nav .app-navigator-container {
     height: var(--header-height);
-    background: var(--menu-bg);
 }
 
 .global-nav .search-links-container {
@@ -539,7 +533,6 @@ body {
     position: fixed;
     border: 0;
     top: 0 !important;
-    background: var(--menu-bg);
     z-index: 1102;
     display: none;
 }

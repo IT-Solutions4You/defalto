@@ -9,7 +9,7 @@
 {strip}
 {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 {assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
-    <div class="app-menu shadow dropdown-menu p-0" id="app-menu">
+    <div class="app-menu shadow dropdown-menu p-0 bg-body" id="app-menu">
         <div class="container-fluid">
             <div class="row border-bottom border-1">
                 <div class="col-auto py-2 cursorPointer app-switcher-container d-flex align-items-end justify-content-center h-header" data-bs-toggle="offcanvas" data-bs-target="#app-menu">

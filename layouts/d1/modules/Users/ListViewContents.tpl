@@ -29,7 +29,7 @@
 	<input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
 	<input type="hidden" value="{$NO_SEARCH_PARAMS_CACHE}" id="noFilterCache" >
 
-	<div id="table-content" class="table-container py-3">
+	<div id="table-content" class="table-container">
 		<form name="list" id="listedit" action="" onsubmit="return false;">
 			<table id="listview-table" class="table table-borderless listview-table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords{/if}">
 				<thead>
@@ -167,4 +167,5 @@
 	<div id="scroller_wrapper" class="bottom-fixed-scroll">
 		<div id="scroller" class="scroller-div"></div>
 	</div>
+</div>
 {/strip}

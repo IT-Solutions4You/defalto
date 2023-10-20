@@ -81,4 +81,5 @@
         </form>
     </div>
 </div>
+</div>
 {/strip}

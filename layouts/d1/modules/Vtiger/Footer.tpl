@@ -6,15 +6,14 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-
-<footer class="app-footer">
+</div>
+<footer class="app-footer bg-body">
 	<p>
 		Powered by vtiger CRM - {$VTIGER_VERSION}&nbsp;&nbsp;© 2004 - {date('Y')}&nbsp;&nbsp;
 		<a href="//www.vtiger.com" target="_blank">Vtiger</a>&nbsp;|&nbsp;
 		<a href="https://www.vtiger.com/privacy-policy" target="_blank">Privacy Policy</a>
 	</p>
 </footer>
-</div>
 <div id='overlayPage' class="modal fade">
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content">
@@ -37,5 +36,4 @@
 </div>
 {include file='JSResources.tpl'|@vtemplate_path}
 </body>
-
 </html>

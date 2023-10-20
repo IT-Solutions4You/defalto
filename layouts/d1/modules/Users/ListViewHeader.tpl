@@ -11,7 +11,7 @@
 <div class="listViewPageDiv" id="listViewContent">
     <div class="px-4 pb-4">
         <input type="hidden" name="pwd_regex" value= {ZEND_json::encode($PWD_REGEX)}/>
-        <div id="listview-actions" class="listview-actions-container container-fluid p-0 bg-body rounded h-list">
+        <div id="listview-actions" class="listview-actions-container container-fluid p-0 bg-body rounded">
             <div class="row p-3">
                 <div class="col-lg"></div>
                 <div class="col-lg">

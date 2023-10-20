@@ -88,4 +88,7 @@
             </div>
         {/if}
     </div>
-    {/strip}
+</div>
+</div>
+</div>
+{/strip}
