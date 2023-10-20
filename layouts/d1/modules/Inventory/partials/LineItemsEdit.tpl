@@ -492,10 +492,10 @@
 										<tbody>
 											{foreach key=DEDUCTED_TAX_ID item=DEDUCTED_TAX_INFO from=$DEDUCTED_TAXES}
 												<tr>
-													<td class="lineOnTop p-3">{$DEDUCTED_TAX_INFO['taxlabel']}</td>
-													<td class="lineOnTop">
+													<td class="lineOnTop p-3 text-nowrap">{$DEDUCTED_TAX_INFO['taxlabel']}</td>
+													<td class="lineOnTop input-group">
 														<input type="text" class="form-control deductTaxPercentage" name="{$DEDUCTED_TAX_INFO['taxname']}_group_percentage" value="{if $DEDUCTED_TAX_INFO['selected'] || !$RECORD_ID}{$DEDUCTED_TAX_INFO['percentage']}{else}0{/if}" data-rule-positive=true data-rule-inventory_percentage=true/>
-														<span class="ms-2">%</span>
+														<span class="input-group-text">%</span>
 													</td>
 													<td class="lineOnTop text-end">
 														<input type="text" class="form-control deductTaxValue" name="{$DEDUCTED_TAX_INFO['taxname']}_group_amount" size="5" readonly value="{$DEDUCTED_TAX_INFO['amount']}"/>

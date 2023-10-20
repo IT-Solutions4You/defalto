@@ -14,27 +14,37 @@
 
     <div id="editTagContainer" class="hide modal-dialog modelContainer">
         <input type="hidden" name="id" value="" />
-        {assign var="HEADER_TITLE" value={vtranslate('LBL_EDIT_TAG', $QUALIFIED_MODULE)}}
-        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
         <div class="modal-content">
-            <div class="editTagContents col-lg-12 modal-body">
-                <div class='col-lg-4'></div>
-                <div class='col-lg-8'>
-                    <input type="text" name="tagName" class='inputElement' value=""/>
-                    <div class="checkbox">
-                        <label>
-                            <input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
-                            <input type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" style="vertical-align: text-top;"/>
-                            &nbsp; {vtranslate('LBL_SHARE_TAGS',$MODULE)}
-                        </label>
+            {assign var="HEADER_TITLE" value={vtranslate('LBL_EDIT_TAG', $QUALIFIED_MODULE)}}
+            {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
+            <div class="editTagContents modal-body">
+                <div class="row">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg">
+                        <div class="my-3">
+                            <input type="text" name="tagName" class="inputElement form-control" value=""/>
+                        </div>
+                        <div class="checkbox my-3">
+                            <label class="form-check">
+                                <input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
+                                <input class="form-check-input" type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" style="vertical-align: text-top;"/>
+                                <span class="ms-2">{vtranslate('LBL_SHARE_TAGS',$MODULE)}</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer col-lg-12">
-                <center>
-                    <button {if $BUTTON_ID neq null} id="{$BUTTON_ID}" {/if} class="btn btn-success saveTag" type="submit" name="saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>
-                    <a href="#" class="cancelLink cancelSaveTag" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                </center>
+            <div class="modal-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col text-end">
+                            <a href="#" class="btn btn-primary cancelLink cancelSaveTag" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                        </div>
+                        <div class="col">
+                            <button {if $BUTTON_ID neq null} id="{$BUTTON_ID}" {/if} class="btn btn-primary active saveTag" type="submit" name="saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -8,39 +8,43 @@
 ********************************************************************************/
 -->*}
 {strip}
-    <div class="editViewContainer" id="TermsAndConditionsContainer">
-        <div class="col-sm-12 col-lg-12 col-md-12 form-horizontal">
+    <div class="px-4 pb-4 editViewContainer" id="TermsAndConditionsContainer">
+        <div class="rounded bg-body">
             <div class="block">
-                <div>
+                <div class="p-3 border-bottom">
                     <h4>{vtranslate('LBL_TERMS_AND_CONDITIONS', $QUALIFIED_MODULE)}</h4>
                 </div>
-                <hr>
-                <div class="contents row form-group">
-                    <div class="col-lg-offset-1 col-lg-2 col-md-2 col-sm-2 control-label fieldLabel"><label>{vtranslate('LBL_SELECT_MODULE', 'Vtiger')}</label></div>
-                    <div class="fieldValue col-lg-4 col-md-4 col-sm-4 ">
-                        <select class="select2-container select2 inputElement col-sm-6 selectModule">
-                            {foreach item=MODULE_NAME from=$INVENTORY_MODULES}
-                                <option value={$MODULE_NAME}>{vtranslate({$MODULE_NAME}, {$MODULE_NAME})}</option>
-                            {/foreach}
-                        </select>
+                <div class="container-fluid">
+                    <div class="contents form-group row py-3">
+                        <div class="col-lg-4 control-label fieldLabel">
+                            <label>{vtranslate('LBL_SELECT_MODULE', 'Vtiger')}</label>
+                        </div>
+                        <div class="fieldValue col-lg-8">
+                            <select class="select2-container select2 inputElement col-sm-6 selectModule">
+                                {foreach item=MODULE_NAME from=$INVENTORY_MODULES}
+                                    <option value={$MODULE_NAME}>{vtranslate({$MODULE_NAME}, {$MODULE_NAME})}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row py-3">
+                        <div class="col-lg-12">
+                            <textarea class=" TCContent form-control" rows="10" placeholder="{vtranslate('LBL_SPECIFY_TERMS_AND_CONDITIONS', $QUALIFIED_MODULE)}" style="width:100%;" >{$CONDITION_TEXT}</textarea>
+                        </div>
                     </div>
                 </div>
-                <br>
-                <div class="col-lg-offset-1 col-lg-11 col-md-11 col-sm-11">
-                    <textarea class=" TCContent form-control" rows="10" placeholder="{vtranslate('LBL_SPECIFY_TERMS_AND_CONDITIONS', $QUALIFIED_MODULE)}" style="width:100%;" >{$CONDITION_TEXT}</textarea>
-                </div>
-                <div class='clearfix'></div>
-                <br>
             </div>
-        </div><br>
-        <div class='modal-overlay-footer clearfix '>
-            <div class="row clearfix">
-                <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                    <button type='submit' class='btn btn-success saveButton saveTC hide' type="submit" >{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
+            <div class="modal-overlay-footer modal-footer py-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary active saveButton saveTC hide" type="submit" >{vtranslate('LBL_SAVE', $MODULE)}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 {/strip}
 

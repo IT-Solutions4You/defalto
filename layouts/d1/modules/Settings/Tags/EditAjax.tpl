@@ -24,23 +24,22 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<div>
-							<div class="checkbox">
-								<label>
-									<input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
-									<input type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" />
-									&nbsp; {vtranslate('LBL_SHARE_TAGS',$MODULE)}
-								</label>
-							</div>
-							<div class="pull-right"></div>
+						<div class="checkbox my-3">
+							<label class="form-check">
+								<input type="hidden" name="visibility" value="{Vtiger_Tag_Model::PRIVATE_TYPE}"/>
+								<input class="form-check-input" type="checkbox" name="visibility" value="{Vtiger_Tag_Model::PUBLIC_TYPE}" />
+								<span class="ms-2">{vtranslate('LBL_SHARE_TAGS',$MODULE)}</span>
+							</label>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class=" vt-default-callout vt-info-callout tagInfoblock">
-							<h5 class="vt-callout-header">
-							<span class="fa fa-info-circle"></span>&nbsp; Info </h5>
-							<div>{vtranslate('LBL_TAG_SEPARATOR_DESC', $MODULE)}</div><br>
-							<div>{vtranslate('LBL_SHARED_TAGS_ACCESS',$QUALIFIED_MODULE)}</div>
+						<div class="alert alert-info">
+							<h5>
+								<i class="fa fa-info-circle"></i>
+								<span class="ms-2">{vtranslate('Info', $QUALIFIED_MODULE)}</span>
+							</h5>
+							<p>{vtranslate('LBL_TAG_SEPARATOR_DESC', $QUALIFIED_MODULE)}</p>
+							<p>{vtranslate('LBL_SHARED_TAGS_ACCESS',$QUALIFIED_MODULE)}</p>
 						</div>
 					</div>
 				</div>

@@ -111,7 +111,7 @@ Vtiger.Class("Settings_Vtiger_ConfigEditorDetail_Js", {}, {
 			var url = editButton.data('url');
 			thisInstance.loadContents(url).then(
 				function (data) {
-					jQuery('#ConfigEditorDetails').html(data);
+					jQuery('.settingsPageDiv').html(data);
 					vtUtils.showSelect2ElementView(jQuery('#editViewContent').find('.select2-container'));
 					thisInstance.registerEditViewEvents();
 					thisInstance.registerEvents();

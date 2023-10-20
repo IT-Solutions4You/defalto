@@ -68,9 +68,12 @@
                 {include file="modules/Settings/Vtiger/Sidebar.tpl"}
             </div>
         </div>
-        <div class="col-lg px-0 h-main">
-            <div class="px-4 pb-3">
-                <div class="bg-white rounded p-3">
-                    {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}
+        <div class="col-lg px-0 h-main overflow-auto">
+            {if php7_count($MODULE_BASIC_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWBASIC']) or php7_count($MODULE_SETTING_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
+                <div class="px-4 pb-3">
+                    <div class="bg-white rounded p-3">
+                        {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}
+                    </div>
                 </div>
-            </div>
+            {/if}
+            <div class="settingsPageDiv">

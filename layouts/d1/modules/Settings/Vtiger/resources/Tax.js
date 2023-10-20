@@ -120,13 +120,13 @@ Vtiger.Class("Settings_Vtiger_TaxIndex_Js",{
                             var widthHeight = form.find('#widthHeight').val();
                             var taxBracketBlock = jQuery('<tr>\n\
                                 <td class="regionsList '+widthHeight+'">\n\
-                                    <div class="deleteRow close" style="float:left;margin-top:3px">×</div>&nbsp;&nbsp\n\
-                                    <select id="'+taxRegionsCount+'" data-placeholder="'+app.vtranslate('JS_SELECT_REGIONS')+'" name="regions['+taxRegionsCount+'][list]" class="regions select2 inputElement" multiple="" data-rule-required="true" style="width: 90%;">'
+                                    <span class="deleteRow btn-close me-2"></span>\n\
+                                    <span class="col-8 d-inline-block"><select id="'+taxRegionsCount+'" data-placeholder="'+app.vtranslate('JS_SELECT_REGIONS')+'" name="regions['+taxRegionsCount+'][list]" class="regions select2 inputElement" multiple="" data-rule-required="true" style="width: 90%;">'
                                         +form.find('.taxRegionElements').html().toString()+'\n\
-                                    </select>\n\
+                                    </select></span>\n\
                                 </td>\n\
                                 <td class="'+widthHeight+'" style="text-align: center;">\n\
-                                    <input class="inputElement" type="text" name="regions['+taxRegionsCount+'][value]" class="input-medium" value="" data-rule-required="true" data-rule-inventory_percentage="true" />\n\
+                                    <input class="inputElement form-control" type="text" name="regions['+taxRegionsCount+'][value]" class="input-medium" value="" data-rule-required="true" data-rule-inventory_percentage="true" />\n\
                                 </td>\n\
                             </tr>');
 
@@ -300,7 +300,7 @@ Vtiger.Class("Settings_Vtiger_TaxIndex_Js",{
 					<td style="border-left: none;border-right: none;" '+details.row_type+'"><span class="taxType">'+details.taxType+'</span></td>\n\
 					<td style="border-left: none;border-right: none;" '+details.row_type+'"><span class="taxMethod">'+details.method+'</span></td>\n\
 					<td style="border-left: none;border-right: none;" '+details.row_type+'"><span class="taxPercentage">'+details.percentage+'%</span></td>\n\
-					<td style="border-left: none;border-right: none;" '+details.row_type+'"><input class="editTaxStatus" type="checkbox" '+isChecked+' >\n\
+					<td style="border-left: none;border-right: none;" '+details.row_type+'"><input class="editTaxStatus form-check-input" type="checkbox" '+isChecked+' >\n\
 					</td><td style="border-left: none;border-right: none;">\n\
 						<div class="pull-right actions">\n\
 							<a class="editTax cursorPointer" data-url="'+details._editurl+'">\n\
@@ -457,13 +457,13 @@ Vtiger.Class("Settings_Vtiger_TaxIndex_Js",{
 
 						var taxBracketBlock = jQuery('<tr>\n\
 							<td class="regionsList '+widthHeight+'">\n\
-								<span class="deleteRow close" style="float:left;margin-top:3px;">×</span>&nbsp;&nbsp;\n\
-								<select id="'+taxRegionsCount+'" data-placeholder="'+app.vtranslate('JS_SELECT_REGIONS')+'" name="regions['+taxRegionsCount+'][list]" class="select2 regions columns span3" multiple="" data-rule-required="true" style="width:90%;">'
+								<span class="deleteRow btn-close me-2"></span>\n\
+								<span class="col-8 d-inline-block"><select id="'+taxRegionsCount+'" data-placeholder="'+app.vtranslate('JS_SELECT_REGIONS')+'" name="regions['+taxRegionsCount+'][list]" class="select2 regions columns span3" multiple="" data-rule-required="true" style="width:90%;">'
 									+form.find('.taxRegionElements').html().toString()+'\n\
-								</select>\n\
+								</select></span>\n\
 							</td>\n\
 							<td class="'+widthHeight+'" style="text-align: center;">\n\
-								<input class="inputElement valuesList" type="text" name="regions['+taxRegionsCount+'][value]" class="input-medium" value="" data-rule-required="true" data-rule-'+validator+'="true"/>\n\
+								<input class="inputElement form-control valuesList" type="text" name="regions['+taxRegionsCount+'][value]" class="input-medium" value="" data-rule-required="true" data-rule-'+validator+'="true"/>\n\
 							</td>\n\
 						</tr>');
 
@@ -857,16 +857,16 @@ Vtiger.Class("Settings_Vtiger_TaxIndex_Js",{
 		var container = this.getContainer();
 
 		var trElementForRegion =
-				jQuery('<tr class="opacity" data-key-name="'+details.name+'" data-key="'+details.name+'">\n\
+				jQuery('<tr class="opacity border-bottom" data-key-name="'+details.name+'" data-key="'+details.name+'">\n\
 					<td style="border-right:none;border-left:none;;" class="textAlignLeft '+details.row_type+'">\n\
 						<span class="taxRegionName">'+details.name+'</span>\n\
 					</td>\n\
 					<td style="border-right:none;border-left:none" class="'+details.row_type+'">\n\
-						<div class="pull-right actions">\n\
-							<a class="editRegion" data-url="'+details._editurl+'">\n\
+						<div class="text-end actions">\n\
+							<a class="btn editRegion" data-url="'+details._editurl+'">\n\
 								<i class="fa fa-pencil alignMiddle" title="'+app.vtranslate('JS_EDIT')+'"></i>\n\
 							</a>\n\
-							<a class="deleteRegion" data-url="'+details._deleteurl+'">\n\
+							<a class="btn deleteRegion" data-url="'+details._deleteurl+'">\n\
 								<i class="fa fa-trash alignMiddle" title="'+app.vtranslate('JS_DELETE')+'"></i>\n\
 							</a>\n\
 						</div>\n\

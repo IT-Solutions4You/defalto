@@ -16,9 +16,8 @@
 			<li class="step {if $smarty.foreach.breadcrumbLabels.first} first {$FIRSTBREADCRUMB} {else} {$ADDTIONALCLASS} {/if} {if $smarty.foreach.breadcrumbLabels.last} last {/if} {if $ACTIVESTEP eq $INDEX}active{/if}"
 				id="{$CRUMBID}" data-value="{$INDEX}" style="z-index:{$ZINDEX}">
 				<a href="#" class="d-flex align-items-center">
-					<span class="fw-bold stepNum px-3 fs-5">{$INDEX}.</span>
-					<span class="stepText fs-6" title="{vtranslate($STEPTEXT,$MODULE)}">{vtranslate($STEPTEXT,$MODULE)}</span>
-					<span class="stepArrow"></span>
+					<div class="fw-bold stepNum px-3 fs-5">{$INDEX}.</div>
+					<div class="stepText fs-6 text-nowrap" title="{vtranslate($STEPTEXT,$MODULE)}">{vtranslate($STEPTEXT,$MODULE)}</div>
 				</a>
 			</li>
 			{assign var=ZINDEX value=$ZINDEX-1}

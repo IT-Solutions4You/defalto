@@ -10,7 +10,7 @@
 
 {strip}
 	{assign var=TAX_REGION_ID value=$TAX_REGION_MODEL->getId()}
-	<div class="taxRegionContainer modal-dialog modal-xs">
+	<div class="taxRegionContainer modal-dialog modal-lg">
         <div class="modal-content">
             <form id="editTaxRegion" class="form-horizontal">
                 {if $TAX_REGION_ID}
@@ -21,16 +21,12 @@
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
                 <input type="hidden" name="taxRegionId" value="{$TAX_REGION_ID}" />
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="nameBlock">
-                            <div class="col-lg-1"></div>
-                            <div class="col-lg-3">
-                                <label class="pull-right">{vtranslate('LBL_REGION_NAME', $QUALIFIED_MODULE)}</label>
-                            </div>
-                            <div class="col-lg-5">
-                                <input class="inputElement" type="text" name="name" placeholder="{vtranslate('LBL_ENTER_REGION_NAME', $QUALIFIED_MODULE)}" value="{$TAX_REGION_MODEL->getName()}" data-rule-required="true" />
-                            </div>	
-                            <div class="col-lg-3"></div>
+                    <div class="row nameBlock">
+                        <div class="col-lg-3 text-end">
+                            <label>{vtranslate('LBL_REGION_NAME', $QUALIFIED_MODULE)}</label>
+                        </div>
+                        <div class="col-lg-7">
+                            <input class="inputElement form-control" type="text" name="name" placeholder="{vtranslate('LBL_ENTER_REGION_NAME', $QUALIFIED_MODULE)}" value="{$TAX_REGION_MODEL->getName()}" data-rule-required="true" />
                         </div>
                     </div>
                 </div>

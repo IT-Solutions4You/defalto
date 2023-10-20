@@ -29,16 +29,16 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 	/**
 	 * This function used to trigger Edit picklist dependency
 	 */
-	triggerEdit : function(event, module, sourceField, targetField) {
+	triggerEdit: function (event, module, sourceField, targetField) {
 		event.stopPropagation();
 		var instance = Settings_PickListDependency_Js.pickListDependencyInstance;
 		instance.updatedSourceValues = [];
 		instance.showEditView(module, sourceField, targetField).then(
-			function(data){
+			function (data) {
 				var form = jQuery('#pickListDependencyForm');
-				form.find('[name="sourceModule"],[name="sourceField"],[name="targetField"]').select2('disable');
+				form.find('[name="sourceModule"],[name="sourceField"],[name="targetField"]').select2('destroy');
 				var element = form.find('.dependencyMapping');
-                app.helper.showHorizontalScroll(element);
+				app.helper.showHorizontalScroll(element);
 				instance.registerDependencyGraphEvents();
 				instance.registerTargetFieldsClickEvent(jQuery('#dependencyGraph'));
 				instance.registerSubmitEvent();
@@ -117,7 +117,7 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 		app.request.pjax({data: params}).then(
 			function(error, data) {
 				app.helper.hideProgress();
-				var container = jQuery('.settingsPageDiv div');
+				var container = jQuery('.settingsPageDiv');
 				container.html(data);
 				//register all select2 Elements
 				vtUtils.showSelect2ElementView(container.find('select.select2'));
@@ -322,7 +322,7 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 	 */
 	registerListViewEvents : function() {
 		var thisInstance = this;
-		var forModule = jQuery('.settingsPageDiv div').find('.pickListSupportedModules').val();
+		var forModule = jQuery('.settingsPageDiv').find('.pickListSupportedModules').val();
 		thisInstance.listViewForModule = forModule;
 		thisInstance.registerSourceModuleChangeEvent();
 	},
@@ -528,8 +528,9 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 			function(error, data) {
 				app.helper.hideProgress();
 				//replace the new list view contents
-				jQuery('.settingsPageDiv div').html(data);
-				vtUtils.showSelect2ElementView(jQuery('.settingsPageDiv div').find('.pickListSupportedModules'));
+				jQuery('.settingsPageDiv').html(data);
+				vtUtils.showSelect2ElementView(jQuery('.settingsPageDiv').find('.select2'));
+
 				thisInstance.registerListViewEvents();
 			}
 		);
@@ -540,11 +541,12 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 	 */
 	registerSourceModuleChangeEvent : function() {
 		var thisInstance = this;
-		var container = jQuery('.settingsPageDiv div');
+		var container = jQuery('.settingsPageDiv');
 		container.find('.pickListSupportedModules').on('change', function(e) {
 			var currentTarget = jQuery(e.currentTarget);
 			var forModule = currentTarget.val();
-                        thisInstance.loadListViewContents(forModule);
+
+			thisInstance.loadListViewContents(forModule);
 		});
 	},
 	
@@ -575,14 +577,14 @@ Vtiger.Class('Settings_PickListDependency_Js', {
 	 */
 	registerEvents : function() {
 		var thisInstance = this;
-        var container = jQuery('.settingsPageDiv div');
+        var container = jQuery('.settingsPageDiv');
         thisInstance.registerCancelButtonClickEvent(container);
 		var form = jQuery('#pickListDependencyForm');
 		if(form.length > 0) {
 			var element = form.find('.dependencyMapping');
 			app.helper.showHorizontalScroll(element);
 			if(form.find('.editDependency').val() == "true") {
-				form.find('[name="sourceModule"],[name="sourceField"],[name="targetField"]').select2('disable');
+				form.find('[name="sourceModule"],[name="sourceField"],[name="targetField"]').select2('destroy');
 				thisInstance.registerDependencyGraphEvents();
 				thisInstance.registerSubmitEvent();
 			} else {

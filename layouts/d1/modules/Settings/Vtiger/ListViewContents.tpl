@@ -21,22 +21,24 @@
 	<input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
 
 	<div class="px-4 pb-4 listViewContents">
-		<div id="listview-actions" class="listview-actions-container bg-white rounded container-fluid p-0">
+		<div id="listview-actions" class="listview-actions-container bg-body rounded py-3">
 			{if $MODULE neq 'Currency' and $MODULE neq 'PickListDependency' and $MODULE neq 'CronTasks'}
-				<div class="row p-3">
-					<div class="col-md">
-						{if $MODULE eq 'Tags'}
-							<h4>{vtranslate('LBL_MY_TAGS', $QUALIFIED_MODULE)}</h4>
-						{/if}
-					</div>
-					<div class="col-md-auto">
-						{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
-						{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+				<div class="container-fluid">
+					<div class="row p-3">
+						<div class="col-md">
+							{if $MODULE eq 'Tags'}
+								<h4>{vtranslate('LBL_MY_TAGS', $QUALIFIED_MODULE)}</h4>
+							{/if}
+						</div>
+						<div class="col-md-auto">
+							{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
+							{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+						</div>
 					</div>
 				</div>
 			{/if}
-			<div class="list-content row">
-				<div class="col-sm-12 col-xs-12 ">
+			<div class="list-content">
+				<div>
 					<div id="table-content" class="table-container">
 						<table id="listview-table" class="table table-borderless listview-table">
 							{assign var="NAME_FIELDS" value=$MODULE_MODEL->getNameFields()}
@@ -44,12 +46,12 @@
 							<thead>
 								<tr class="listViewContentHeader bg-body-secondary">
 									{if $MODULE eq 'Profiles' or $MODULE eq 'Groups' or $MODULE eq 'Webforms' or $MODULE eq 'Currency' or $MODULE eq 'SMSNotifier'}
-										<th style="width:25%">
+										<th class="text-secondary" style="width:25%">
 											{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}
 										</th>
-									{else if $MODULE neq 'Currency'}
+									{elseif $MODULE neq 'Currency'}
 										{if $SHOW_LISTVIEW_CHECKBOX eq true}
-											<th>
+											<th class="text-secondary">
 												<span class="input">
 													<input class="listViewEntriesMainCheckBox" type="checkbox">
 												</span>
@@ -57,12 +59,12 @@
 										{/if}
 									{/if}
 									{if $MODULE eq 'Tags' or $MODULE eq 'CronTasks' or $LISTVIEW_ACTIONS_ENABLED eq true}
-										<th>
+										<th class="text-secondary">
 											{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}
 										</th>
 									{/if}
 									{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
-										<th nowrap>
+										<th class="text-secondary" nowrap>
 											<a {if !($LISTVIEW_HEADER->has('sort'))} class="listViewHeaderValues cursorPointer" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}" {/if}>{vtranslate($LISTVIEW_HEADER->get('label'), $QUALIFIED_MODULE)}
 												&nbsp;{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}<img class="{$SORT_IMAGE} icon-white">{/if}</a>&nbsp;
 										</th>

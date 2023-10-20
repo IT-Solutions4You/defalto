@@ -24,16 +24,16 @@
         </div>
     </div>
     <br>
-    <div class="row">
+    <div class="row my-3">
         <div class="col-sm-2 col-xs-2">
-            <div class="btn-group">
-                <button class="btn btn-default sourceValues" type="button">{vtranslate('LBL_SELECT_SOURCE_VALUES', $QUALIFIED_MODULE)}</button>
+            <div class="btn-toolbar">
+                <button class="btn btn-outline-secondary sourceValues" type="button">{vtranslate('LBL_SELECT_SOURCE_VALUES', $QUALIFIED_MODULE)}</button>
             </div>
         </div>
         <div class="col-sm-10 col-xs-10">
-            <div class="btn-group">
-                <button class="btn btn-default selectAllValues" type="button">{vtranslate('LBL_SELECT_ALL_VALUES', $QUALIFIED_MODULE)}</button>
-                <button class="btn btn-default unSelectAllValues" type="button">{vtranslate('LBL_UNSELECT_ALL_VALUES', $QUALIFIED_MODULE)}</button>
+            <div class="btn-toolbar">
+                <button class="btn btn-outline-secondary selectAllValues me-2" type="button">{vtranslate('LBL_SELECT_ALL_VALUES', $QUALIFIED_MODULE)}</button>
+                <button class="btn btn-outline-secondary unSelectAllValues" type="button">{vtranslate('LBL_UNSELECT_ALL_VALUES', $QUALIFIED_MODULE)}</button>
             </div>
         </div>
     </div>
@@ -49,34 +49,35 @@
     {assign var=DECODED_MAPPED_SOURCE_PICKLIST_VALUES value=array_map('decode_html', $MAPPED_SOURCE_PICKLIST_VALUES)}
     <input type="hidden" class="allSourceValues" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($SOURCE_PICKLIST_VALUES))}' />
 
-    <div class="row depandencyTable" style="padding-right: 10px;">
-        <div class="col-sm-2 col-xs-2" style="padding-right: 0px;">
-            <table class="listview-table table-bordered table-condensed" style="width: 100%; border-collapse:collapse;">
+    <div class="row depandencyTable">
+        <div class="col-sm-2 col-xs-2 pe-0">
+            <table class="table table-bordered border-dark">
                 <thead>
                     <tr class="blockHeader"><th>{$RECORD_MODEL->getSourceFieldLabel()}</th></tr>
                 </thead>
                 <tbody>
                     {foreach item=TARGET_VALUE from=$TARGET_PICKLIST_VALUES name=targetValuesLoop}
-                        <tr>
-                            {if $smarty.foreach.targetValuesLoop.index eq 0}
-                                <td class="tableHeading" style="border: none;">
+                        {if $smarty.foreach.targetValuesLoop.index eq 0}
+                            <tr>
+                                <th class="tableHeading">
                                     {$RECORD_MODEL->getTargetFieldLabel()}
-                                </td>
+                                </th>
                             </tr>
                         {else}
-                        <td style="border: none;">&nbsp;</td>
-                        </tr>
-                    {/if}
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        {/if}
                 {/foreach}
                 </tbody>
             </table>
         </div>
-        <div class="col-sm-10 col-xs-10 dependencyMapping">
-            <table class="listview-table table-bordered pickListDependencyTable" style="width:auto;">
+        <div class="col-sm-10 col-xs-10 dependencyMapping ps-0 overflow-auto">
+            <table class="table table-bordered border-dark pickListDependencyTable h-100">
                 <thead>
                     <tr class="blockHeader">
                         {foreach key=SOURCE_PICKLIST_VALUE item=TRANSLATED_SOURCE_PICKLIST_VALUE from=$SOURCE_PICKLIST_VALUES}
-                            <th data-source-value="{$SAFEHTML_SOURCE_PICKLIST_VALUES[$SOURCE_PICKLIST_VALUE]}" style="width:160px;
+                            <th data-source-value="{$SAFEHTML_SOURCE_PICKLIST_VALUES[$SOURCE_PICKLIST_VALUE]}" class="text-truncate" style="width:160px;
                                 {if !empty($MAPPED_VALUES) and !in_array($SOURCE_PICKLIST_VALUE, $DECODED_MAPPED_SOURCE_PICKLIST_VALUES)} display: none; {/if}">
                                 {$TRANSLATED_SOURCE_PICKLIST_VALUE}
                             </th>
@@ -93,7 +94,7 @@
                                     {assign var=IS_SELECTED value=true}
                                 {/if}
                                 <td	data-source-value='{$SAFEHTML_SOURCE_PICKLIST_VALUES[$SOURCE_PICKLIST_VALUE]}' data-target-value='{$SAFEHTML_TARGET_PICKLIST_VALUES[$TARGET_VALUE]}'
-                                    class="{if $IS_SELECTED}selectedCell {else}unselectedCell {/if} targetValue picklistValueMapping cursorPointer"
+                                    class="text-truncate targetValue picklistValueMapping cursorPointer {if $IS_SELECTED}selectedCell{else}unselectedCell{/if}"
                                     {if !empty($MAPPED_VALUES) && !in_array($SOURCE_PICKLIST_VALUE, $DECODED_MAPPED_SOURCE_PICKLIST_VALUES)}style="display: none;" {/if}>
                                     {if $IS_SELECTED}
                                         <i class="fa fa-check pull-left"></i>

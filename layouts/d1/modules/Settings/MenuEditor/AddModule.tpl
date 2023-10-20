@@ -12,19 +12,8 @@
 	<div class="modal-dialog modal-lg addModuleContainer">
 		<div class="modal-content">
 			<input id="appname" type="hidden" name="appname" value="{$SELECTED_APP_NAME}" />
-			<div class="modal-header" >
-				<div class="clearfix">
-					<div class="pull-right">
-						<button type="button" class="close" aria-label="Close" data-dismiss="modal" style="color: inherit;">
-							<span aria-hidden="true" class='fa fa-close'></span>
-						</button>
-					</div>
-					<div class="btn-group">
-						{assign var=APP_SELECTED_LABEL value="LBL_SELECT_`$SELECTED_APP_NAME`_MODULES"}
-						<h4 class="pull-left textOverflowEllipsis" style="word-break: break-all;max-width: 95%;">{vtranslate($APP_SELECTED_LABEL, $QUALIFIED_MODULE)}&nbsp;&nbsp;</h4>  
-					</div>
-				</div>
-			</div>
+			{assign var=APP_SELECTED_LABEL value=vtranslate('LBL_SELECT_'|cat:$SELECTED_APP_NAME|cat:'_MODULES', $QUALIFIED_MODULE)}
+			{include file="ModalHeader.tpl"|vtemplate_path:$QUALIFIED_MODULE TITLE=$APP_SELECTED_LABEL}
 			<div class="modal-body form-horizontal">
 				{foreach item=APP_NAME from=$APP_ARRAY}
 					{assign var=HIDDEN_MODULES value=Settings_MenuEditor_Module_Model::getHiddenModulesForApp($APP_NAME)}

@@ -198,7 +198,7 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 	activateNavPills: function () {
 		var thisInstance = this;
 		jQuery('#portalModulesTable li').on('click', function (e) {
-			var previousTab = jQuery("li[class='portalModuleRow cp-tabs ui-sortable-handle active']").data('module');
+			var previousTab = jQuery('li.portalModuleRow.active').data('module');
 			var currentTarget = jQuery(e.currentTarget);
 			var targetModule = jQuery(currentTarget).data('module');
 			if (typeof previousTab == 'undefined') {
@@ -258,12 +258,7 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 							jQuery('#fieldContent_'+previousTab).addClass('hide');
 						}
 
-						vtUtils.showSelect2ElementView(jQuery('#addField_'+targetModule), {
-							_maximumSelectionSize: 7,
-							dropdownCss: {
-								'z-index': 0
-							}
-						});
+						vtUtils.showSelect2ElementView(jQuery('#addField_'+targetModule));
 						thisInstance.updateFieldInfo(targetModule);
 						thisInstance.registerAddFieldAction();
 						thisInstance.registerDeleteField(targetModule);
@@ -307,28 +302,28 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 						if (allowedModules.indexOf(targetModule) >= 0) {
 							if (value['iseditable']) {
 								if (fieldStatusValue > 0) {
-									divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-sm portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
+									divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-outline-secondary portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
 								} else {
-									divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-sm portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
+									divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-outline-secondary portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
 								}
 							} else {
-								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch portal-fields" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-sm portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
+								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch portal-fields" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button type="button" class="btn btn-outline-secondary portal-deletefield" disabled="disabled"><i class="fa fa-times disabled"></i></button></span></div></div></div>';
 							}
 						} else {
 							fieldStatusValue = 0;
-							divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8  portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield" disabled="disabled"><i class="fa fa-times"></i></button></span></div></div></div>';
+							divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8  portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-outline-secondary portal-deletefield" disabled="disabled"><i class="fa fa-times"></i></button></span></div></div></div>';
 						}
 					}
 					else {
 						if (value['iseditable'] && allowedModules.indexOf(targetModule) >= 0) {
 							if (fieldStatusValue) {
-								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
+								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-outline-secondary portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
 							} else {
-								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
+								divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'"></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-outline-secondary portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
 							}
 						} else {
 							fieldStatusValue = 0;
-							divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
+							divElement = '<div id="'+targetModule+'_'+value['fieldname']+'" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+value['fieldname']+'_'+targetModule+'" disabled></div></div><div class="col-sm-8 portal-fieldName-wrapper"><input type="hidden" name="'+targetModule+'_fieldStatus" value="'+fieldStatusValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-outline-secondary portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
 						}
 
 					}
@@ -338,16 +333,17 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		}
 	},
 	registerAddFieldAction: function () {
-		var thisInstance = this;
-		var allowedModules = ['HelpDesk', 'Assets'];
-		var currentModule = jQuery("li.portalModuleRow.active").data('module');
-		jQuery('#addField_'+currentModule).select2({
+		let thisInstance = this,
+			allowedModules = ['HelpDesk', 'Assets'],
+			currentModule = jQuery("li.portalModuleRow.active").data('module');
+
+		jQuery('#addField_' + currentModule).select2({
 			placeholder: app.vtranslate("JS_ADD_FIELD")
 		});
-		jQuery('#addFieldButton_'+currentModule).on('click', function (e) {
+		jQuery('#addFieldButton_' + currentModule).on('click', function (e) {
 			e.preventDefault();
-			var publishFields = jQuery('#addField_'+currentModule).val();
-			var defaultFields = JSON.parse(jQuery('input[name="availableFields_'+currentModule+'"]').val());
+			var publishFields = jQuery('#addField_' + currentModule).val();
+			var defaultFields = JSON.parse(jQuery('input[name="availableFields_' + currentModule + '"]').val());
 			if (publishFields != undefined) {
 				var publishedFields = {};
 				for (var i = 0; i < publishFields.length; i++) {
@@ -359,32 +355,31 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 								sliderValue = value['iseditable'];
 								if (allowedModules.indexOf(currentModule) >= 0) {
 									if (value['iseditable']) {
-										var divElement = '<div id="'+currentModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="'+value['fieldname']+'" id="'+currentModule+'_'+value['fieldname']+'"></div></div><div class="col-sm-8" style="padding-top: 5px; padding-left: 15px; padding-right: 0px;"><input type="hidden" name="'+currentModule+'_fieldStatus" value="'+sliderValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
+										var divElement = '<div id="' + currentModule + '_' + value['fieldname'] + '" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch portal-fields-switchOn" name="' + value['fieldname'] + '" id="' + currentModule + '_' + value['fieldname'] + '"></div></div><div class="col-sm-8"><input type="hidden" name="' + currentModule + '_fieldStatus" value="' + sliderValue + '" id=' + value['fieldname'] + '>' + value['fieldlabel'] + '<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="' + value['fieldlabel'] + '" data-name="' + value['fieldname'] + '"><button class="btn btn-outline-secondary portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
 									} else {
 										sliderValue = 0;
-										var divElement = '<div id="'+currentModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper" style=""><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+currentModule+'_'+value['fieldname']+'" disabled></div></div><div class="col-sm-8" style="padding-top: 5px; padding-left: 15px; padding-right: 0px;"><input type="hidden" name="'+currentModule+'_fieldStatus" value="'+sliderValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'<span class="redColor">*</span></div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
+										var divElement = '<div id="' + currentModule + '_' + value['fieldname'] + '" class="d-flex p-2 border portal-fieldInfo-wrapper" style=""><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="' + value['fieldname'] + '" id="' + currentModule + '_' + value['fieldname'] + '" disabled></div></div><div class="col-sm-8" ><input type="hidden" name="' + currentModule + '_fieldStatus" value="' + sliderValue + '" id=' + value['fieldname'] + '>' + value['fieldlabel'] + '<span class="text-danger ms-2">*</span></div><div class="col-sm-2 text-end"><span class="deleteField" data-label="' + value['fieldlabel'] + '" data-name="' + value['fieldname'] + '"><button class="btn btn-outline-secondary portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
 									}
 								} else {
 									sliderValue = 0;
-									var divElement = '<div id="'+currentModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+currentModule+'_'+value['fieldname']+'" disabled></div></div><div class="col-sm-8" style="padding-top: 5px; padding-left: 15px; padding-right: 0px;"><input type="hidden" name="'+currentModule+'_fieldStatus" value="'+sliderValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
+									var divElement = '<div id="' + currentModule + '_' + value['fieldname'] + '" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="' + value['fieldname'] + '" id="' + currentModule + '_' + value['fieldname'] + '" disabled></div></div><div class="col-sm-8" ><input type="hidden" name="' + currentModule + '_fieldStatus" value="' + sliderValue + '" id=' + value['fieldname'] + '>' + value['fieldlabel'] + '</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="' + value['fieldlabel'] + '" data-name="' + value['fieldname'] + '"><button class="btn btn-outline-secondary portal-deletefield" disabled><i class="fa fa-times"></i></button></span></div></div></div>';
 								}
 							} else {
 								if (value['iseditable'] && allowedModules.indexOf(currentModule) >= 0) {
 									sliderValue = 0;
-									var divElement = '<div id="'+currentModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+currentModule+'_'+value['fieldname']+'" ></div></div><div class="col-sm-8" style="padding-top: 5px; padding-left: 15px; padding-right: 0px;"><input type="hidden" name="'+currentModule+'_fieldStatus" value="'+sliderValue+'" id='+value['fieldname']+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
-								}
-								else {
+									var divElement = '<div id="' + currentModule + '_' + value['fieldname'] + '" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper"><div class="portal-fields-switch" name="' + value['fieldname'] + '" id="' + currentModule + '_' + value['fieldname'] + '" ></div></div><div class="col-sm-8" ><input type="hidden" name="' + currentModule + '_fieldStatus" value="' + sliderValue + '" id=' + value['fieldname'] + '>' + value['fieldlabel'] + '</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="' + value['fieldlabel'] + '" data-name="' + value['fieldname'] + '"><button class="btn btn-outline-secondary portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
+								} else {
 									sliderValue = 0;
-									var divElement = '<div id="'+currentModule+'_'+value['fieldname']+'" class="col-sm-12 portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="'+value['fieldname']+'" id="'+currentModule+'_'+value['fieldname']+'" disabled></div></div><div class="col-sm-8" style="padding-top: 5px; padding-left: 15px; padding-right: 0px;"><input type="hidden" name="'+currentModule+'_fieldStatus" value="'+sliderValue+'" id='+value['fieldname']+'_'+currentModule+'>'+value['fieldlabel']+'</div><div class="col-sm-2 "><span class="pull-right deleteField" data-label="'+value['fieldlabel']+'" data-name="'+value['fieldname']+'"><button class="btn btn-sm portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
+									var divElement = '<div id="' + currentModule + '_' + value['fieldname'] + '" class="d-flex p-2 border portal-fieldInfo-wrapper"><div class="col-sm-2 portal-fieldInfo-sliderWrapper switch-disabled"><div class="portal-fields-switch" name="' + value['fieldname'] + '" id="' + currentModule + '_' + value['fieldname'] + '" disabled></div></div><div class="col-sm-8" ><input type="hidden" name="' + currentModule + '_fieldStatus" value="' + sliderValue + '" id=' + value['fieldname'] + '_' + currentModule + '>' + value['fieldlabel'] + '</div><div class="col-sm-2 text-end"><span class="deleteField" data-label="' + value['fieldlabel'] + '" data-name="' + value['fieldname'] + '"><button class="btn btn-outline-secondary portal-deletefield"><i class="fa fa-times"></i></button></span></div></div></div>';
 								}
 							}
-							jQuery('#fieldRows_'+currentModule).append(divElement);
+							jQuery('#fieldRows_' + currentModule).append(divElement);
 							publishedFields[value['fieldname']] = sliderValue;
 						}
 					});
 				}
-				jQuery("#addField_"+currentModule).select2("val", "");
-				jQuery("#addFieldButton_"+currentModule).attr("disabled", "disabled");
+				jQuery("#addField_" + currentModule).select2("val", "");
+				jQuery("#addFieldButton_" + currentModule).attr("disabled", "disabled");
 				thisInstance.registerUpdateSelectionEvent(publishedFields, currentModule);
 			}
 
@@ -627,12 +622,16 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		if (form === undefined) {
 			form = thisInstance.getForm();
 		}
-		jQuery(form).find('#moduleData_'+targetModule).on('change', function (e) {
-			if (typeof e.val !== 'undefined') {
-				if (e.val.length > 0) {
-					jQuery("#addFieldButton_"+targetModule).removeAttr("disabled");
+		jQuery(form).find('#moduleData_' + targetModule).on('change', function (e) {
+			let values = $('#addField_' + targetModule).val();
+
+			console.log(values);
+
+			if (typeof values !== 'undefined') {
+				if (values.length > 0) {
+					jQuery("#addFieldButton_" + targetModule).removeAttr("disabled");
 				} else {
-					jQuery("#addFieldButton_"+targetModule).attr("disabled", "disabled");
+					jQuery("#addFieldButton_" + targetModule).attr("disabled", "disabled");
 				}
 			}
 		});
@@ -654,12 +653,7 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 		thisInstance.registerFormChangeEvent(form);
 		form.vtValidate();
 		//register all select2 Elements
-		vtUtils.showSelect2ElementView(form.find('select.select2'), {
-			maximumSelectionSize: 7,
-			dropdownCss: {
-				'z-index': 100000
-			}
-		});
+		vtUtils.showSelect2ElementView(form.find('select.select2'));
 		jQuery('#portalAnnouncement[name="announcement"]').bind('keyup', function () {
 			jQuery('#savePortalInfo').trigger('change');
 		});
@@ -675,10 +669,6 @@ Vtiger.Class('Settings_Customer_Portal_Js', {}, {
 
 		vtUtils.showSelect2ElementView(jQuery('#shortcuts'), {
 			placeholder: app.vtranslate("JS_SELECT_SHORTCUT"),
-			_maximumSelectionSize: 7,
-			dropdownCss: {
-				'z-index': 0
-			}
 		});
 	}
 });

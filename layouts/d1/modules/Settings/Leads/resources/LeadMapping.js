@@ -19,7 +19,7 @@ jQuery.Class("Settings_LeadMapping_Js",{
 			function(err, data) {
 				app.helper.hideProgress();
 				if(err === null) {
-					var detailContentsHolder = jQuery('.settingsPageDiv div');
+					var detailContentsHolder = jQuery('.settingsPageDiv');
 					detailContentsHolder.html(data);
 					var leadMappingInstance = new Settings_LeadMapping_Js();
 					leadMappingInstance.registerEventsForEditView();
@@ -167,7 +167,7 @@ jQuery.Class("Settings_LeadMapping_Js",{
 						app.request.post({'data' : detailViewParams}).then(function(err, data){
 							app.helper.hideProgress();
 							if(err === null) {
-								var detailContentsHolder = jQuery('.settingsPageDiv div');
+								var detailContentsHolder = jQuery('.settingsPageDiv');
 								detailContentsHolder.html(data);
 								if(window.hasOwnProperty('Vtiger_List_Js')) {
 									var listInstance = new Vtiger_List_Js();

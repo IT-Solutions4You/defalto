@@ -9,14 +9,14 @@
 {* modules/Settings/Picklist/views/Index.php *}
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
-<div class="listViewPageDiv detailViewContainer " id="listViewContent">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-horizontal" >
-        <br>
-        <div class="detailViewInfo">
-            <div class="row form-group"><div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
-                    <label class="fieldLabel ">{vtranslate('LBL_SELECT_MODULE',$QUALIFIED_MODULE)} </label>
+<div class="listViewPageDiv detailViewContainer px-4 pb-4" id="listViewContent">
+    <div class="bg-body rounded">
+        <div class="detailViewInfo container-fluid py-3">
+            <div class="row form-group">
+                <div class="col-sm-3 control-label fieldLabel text-end">
+                    <label class="fieldLabel ">{vtranslate('LBL_SELECT_MODULE',$QUALIFIED_MODULE)}</label>
                 </div>
-                <div class="fieldValue col-sm-3 col-xs-3">
+                <div class="fieldValue col-sm-3">
                     <select class="select2 inputElement" id="pickListModules" name="pickListModules">
                         <option value="">{vtranslate('LBL_SELECT_OPTION',$QUALIFIED_MODULE)}</option>
                         {foreach item=PICKLIST_MODULE from=$PICKLIST_MODULES}
@@ -26,7 +26,6 @@
                 </div>
             </div>
         </div>
-
         <div id="modulePickListContainer">
             {include file="ModulePickListDetail.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
         </div>

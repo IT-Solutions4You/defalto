@@ -6,9 +6,8 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 ************************************************************************************}
-
-<div class="editViewPageDiv row">
-    <div class="col-sm-12 col-xs-12">
+<div class="editViewPageDiv px-4 pb-4">
+    <div class="rounded bg-body">
         <form class="form-horizontal recordEditView" id="EditView" name="EditView" method="post" action="index.php" enctype="multipart/form-data">
             <div class="editViewBody">
                 <div class="editViewContents">
@@ -52,11 +51,15 @@
                     {include file="partials/CalendarSettingsEditView.tpl"|@vtemplate_path:$MODULE}
                 </div>
             </div>
-            <div class='modal-overlay-footer clearfix'>
-                <div class="row clearfix">
-                    <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                        <button type='submit' class='btn btn-success saveButton' type="submit" >{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-                        <a class='cancelLink'  href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+            <div class="modal-overlay-footer modal-footer py-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col text-end">
+                            <a class="btn btn-primary cancelLink"  href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary active saveButton" type="submit" >{vtranslate('LBL_SAVE', $MODULE)}</button>
+                        </div>
                     </div>
                 </div>
             </div>

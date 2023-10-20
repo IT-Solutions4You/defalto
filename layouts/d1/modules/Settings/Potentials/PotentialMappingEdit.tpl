@@ -9,29 +9,29 @@
 -->*}
 
 {strip}
-    <div class="potentialsFieldMappingEditPageDiv">
-        <div class="col-sm-12 col-xs-12">
+    <div class="potentialsFieldMappingEditPageDiv px-4 pb-4">
+        <div class="rounded bg-body pt-3">
             <div class="editViewContainer ">
                 <form id="potentialsMapping" method="POST">
                     <div class="editViewBody ">
                         <div class="editViewContents table-container" >
                             <input type="hidden" id="restrictedFieldsList" value={ZEND_JSON::encode($RESTRICTED_FIELD_IDS_LIST)} />
-                            <table class="table listview-table-norecords" width="100%" id="convertPotentialMapping">
+                            <table class="table table-borderless listview-table-norecords" width="100%" id="convertPotentialMapping">
                                 <tbody>
                                     <tr>
-										<th width="7%"></th>
-                                        <th width="15%">{vtranslate('LBL_FIELD_LABEL', $QUALIFIED_MODULE)}</th>
-                                        <th width="15%">{vtranslate('LBL_FIELD_TYPE', $QUALIFIED_MODULE)}</th>
-                                        <th width="15%">{vtranslate('LBL_MAPPING_WITH_OTHER_MODULES', $QUALIFIED_MODULE)}</th>
+										<th class="bg-body-secondary" width="7%"></th>
+                                        <th class="bg-body-secondary" width="15%">{vtranslate('LBL_FIELD_LABEL', $QUALIFIED_MODULE)}</th>
+                                        <th class="bg-body-secondary" width="15%">{vtranslate('LBL_FIELD_TYPE', $QUALIFIED_MODULE)}</th>
+                                        <th class="bg-body-secondary" width="15%">{vtranslate('LBL_MAPPING_WITH_OTHER_MODULES', $QUALIFIED_MODULE)}</th>
                                     </tr>
                                     <tr>
-										<th width="7%">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
+										<th class="bg-body-secondary" width="7%">{vtranslate('LBL_ACTIONS', $QUALIFIED_MODULE)}</th>
                                         {foreach key=key item=LABEL from=$MODULE_MODEL->getHeaders()}
-                                            <th width="15%">{vtranslate($LABEL, $LABEL)}</th>
+                                            <th class="bg-body-secondary" width="15%">{vtranslate($LABEL, $LABEL)}</th>
                                         {/foreach}
                                     </tr>
                                     {foreach key=MAPPING_ID item=MAPPING_ARRAY from=$MODULE_MODEL->getMapping()  name="mappingLoop"}
-                                        <tr class="listViewEntries" sequence-number="{$smarty.foreach.mappingLoop.iteration}">
+                                        <tr class="listViewEntries border-bottom" sequence-number="{$smarty.foreach.mappingLoop.iteration}">
 											<td width="7%">
 												{if $MAPPING_ARRAY['editable'] eq 1}
 													{foreach item=LINK_MODEL from=$MODULE_MODEL->getMappingLinks()}
@@ -114,22 +114,25 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="row">
-                                <span class="col-sm-4">
-                                    <button id="addMapping" class="btn btn-default addButton" type="button" style="margin-left: 10px;">
-                                        <i class="fa fa-plus"></i>&nbsp;&nbsp;{vtranslate('LBL_ADD_MAPPING', $QUALIFIED_MODULE)}
-                                    </button>
-                                </span>
+                            <div class="p-3">
+                                <button id="addMapping" class="btn btn-outline-secondary addButton" type="button">
+                                    <i class="fa fa-plus"></i>
+                                    <span class="ms-2">{vtranslate('LBL_ADD_MAPPING', $QUALIFIED_MODULE)}</span>
+                                </button>
                             </div>
 						</div>
                     </div>
-					<div class='modal-overlay-footer clearfix'>
-						<div class="row clearfix">
-							<div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-								<button type='submit' class='btn btn-success saveButton' >{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-								<a class="cancelLink" type="reset" href="{$MODULE_MODEL->getDetailViewUrl()}">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-							</div>
-						</div>
+					<div class="modal-overlay-footer modal-overlay">
+                        <div class="container-fluid py-3">
+                            <div class="row">
+                                <div class="col text-end">
+                                    <a class="btn btn-primary cancelLink" type="reset" href="{$MODULE_MODEL->getDetailViewUrl()}">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary active saveButton" >{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 				</form>
             </div>

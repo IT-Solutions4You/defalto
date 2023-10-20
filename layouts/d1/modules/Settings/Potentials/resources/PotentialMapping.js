@@ -19,7 +19,7 @@ jQuery.Class("Settings_PotentialMapping_Js",{
 			function(err, data) {
 				app.helper.hideProgress();
 				if(err === null) {
-					var detailContentsHolder = jQuery('.settingsPageDiv div');
+					var detailContentsHolder = jQuery('.settingsPageDiv');
 					detailContentsHolder.html(data);
 					var potentialMappingInstance = new Settings_PotentialMapping_Js();
 					potentialMappingInstance.registerEventsForEditView();
@@ -160,7 +160,7 @@ jQuery.Class("Settings_PotentialMapping_Js",{
 							app.helper.hideProgress();
 							
 							if(err === null) {
-								var detailContentsHolder = jQuery('.settingsPageDiv div');
+								var detailContentsHolder = jQuery('.settingsPageDiv');
 								detailContentsHolder.html(data);
 							}
 						});

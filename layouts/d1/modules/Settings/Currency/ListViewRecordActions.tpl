@@ -10,22 +10,21 @@
  ********************************************************************************/
 -->*}
 {strip}
-    <div class="table-actions">      
-            {foreach item=RECORD_LINK from=$LISTVIEW_ENTRY->getRecordLinks()}
-                <span>
-                {assign var="RECORD_LINK_URL" value=$RECORD_LINK->getUrl()}
-                
+    <div class="table-actions">
+        {foreach item=RECORD_LINK from=$LISTVIEW_ENTRY->getRecordLinks()}
+            <span>
+                {assign var=RECORD_LINK_URL value=$RECORD_LINK->getUrl()}
                 {if $RECORD_LINK->getIcon() eq 'icon-pencil' }
-                      <a {if stripos($RECORD_LINK_URL, 'javascript:')===0} title='{vtranslate('LBL_EDIT', $MODULE)}' onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}" {else} href='{$RECORD_LINK_URL}' {/if}>
-                      <i class="fa fa-pencil" ></i>
-                      </a>
+                    <a class="btn" {if stripos($RECORD_LINK_URL, 'javascript:')===0} title='{vtranslate('LBL_EDIT', $MODULE)}' onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}" {else} href='{$RECORD_LINK_URL}' {/if}>
+                        <i class="fa fa-pencil"></i>
+                    </a>
                 {/if}
                 {if  $RECORD_LINK->getIcon() eq 'icon-trash'}
-                    <a {if stripos($RECORD_LINK_URL, 'javascript:')===0} title="{vtranslate('LBL_DELETE', $MODULE)}" onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}" {else} href='{$RECORD_LINK_URL}' {/if}>
-                    <i class="fa fa-trash" ></i>
+                    <a class="btn" {if stripos($RECORD_LINK_URL, 'javascript:')===0} title="{vtranslate('LBL_DELETE', $MODULE)}" onclick="{$RECORD_LINK_URL|substr:strlen("javascript:")};if(event.stopPropagation){ldelim}event.stopPropagation();{rdelim}else{ldelim}event.cancelBubble=true;{rdelim}" {else} href='{$RECORD_LINK_URL}' {/if}>
+                        <i class="fa fa-trash"></i>
                     </a>
                 {/if}
                 </span>
-            {/foreach}
+        {/foreach}
     </div>
 {/strip}

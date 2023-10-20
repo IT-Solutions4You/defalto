@@ -401,9 +401,13 @@ var vtUtils = {
 
 	},
 
-    enableTooltips : function() {
+    enableTooltips: function (querySelector) {
         jQuery(function () {
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            if(!querySelector) {
+                querySelector = '[data-bs-toggle="tooltip"]';
+            }
+
+            const tooltipTriggerList = document.querySelectorAll(querySelector)
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
     },

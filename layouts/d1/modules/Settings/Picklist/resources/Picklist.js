@@ -69,8 +69,10 @@ var Settings_Picklist_Js = {
             
 			var callBackFunction = function(data) {
 				popupShown = false;
-                var select2params = {tags : [], tokenSeparators: [","]};
-                vtUtils.showSelect2ElementView(data.find('[name=newValue]'), select2params);
+
+                vtUtils.showSelect2ElementView(data.find('[name=newValue]'));
+				vtUtils.enableTooltips('.basicCreateView [data-bs-toggle="tooltip"]');
+
                 Settings_Picklist_Js.registerColorPickerEvent(data);
 				Settings_Picklist_Js.registerAddItemSaveEvent(data);
 				Settings_Picklist_Js.regiserSelectRolesEvent(data);
@@ -301,69 +303,79 @@ var Settings_Picklist_Js = {
 		})
 	},
 
-	registerAddItemSaveEvent : function(container) {
-        var thisInstance = this;
-        var form = container.find('[name="addItemForm"]');
-        var params = {
-            submitHandler: function(form) {
-                var specialChars = /[<\>\"\,\[\]\{\}]/;
-				var newValueEle = jQuery('[name="newValue"]', container);
-				var newValues = newValueEle.val();
-				var newValueArray = newValues.split(',');
-				var showValidationParams = {
-						position: {
+	registerAddItemSaveEvent: function (container) {
+		let thisInstance = this,
+			form = container.find('[name="addItemForm"]'),
+			params = {
+				submitHandler: function (form) {
+					let specialChars = /[<\>\"\,\[\]\{\}]/,
+						newValueEle = jQuery('[name="newValue"]', container),
+						newValues = newValueEle.select2('val'),
+						newValueArray = newValues,
+						showValidationParams = {
+							position: {
 								my: 'bottom left',
 								at: 'top left',
-								container : jQuery(form)
-					}};
-				for (var i = 0; i < newValueArray.length; i++) {
-					if (newValueArray[i].trim() == '') {
-						var errorMessage = app.vtranslate('JS_REQUIRED_FIELD');
-                              vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
+								container: jQuery(form)
+							}
+						}, errorMessage;
+					for (let i = 0; i < newValueArray.length; i++) {
+						if (newValueArray[i].trim() == '') {
+							errorMessage = app.vtranslate('JS_REQUIRED_FIELD');
+							vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
+							return false;
+						}
+						if (specialChars.test(newValueArray[i])) {
+							errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " < > \" , [ ] { } " + app.vtranslate('JS_NOT_ALLOWED');
+							vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
+							return false;
+						}
+					}
+
+					if (Settings_Picklist_Js.duplicateItemNameCheck(container)) {
+						errorMessage = app.vtranslate('JS_DUPLICATE_ENTRIES_FOUND_FOR_THE_VALUE');
+						vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
 						return false;
 					}
-					if (specialChars.test(newValueArray[i])) {
-						var errorMessage = app.vtranslate('JS_SPECIAL_CHARACTERS') + " < > \" , [ ] { } " + app.vtranslate('JS_NOT_ALLOWED');
-                              vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);
-						return false;
-					}
+
+					vtUtils.hideValidationMessage(newValueEle);
+
+					let params = jQuery(form).serializeFormData(),
+						newValue = params.newValue;
+
+					params.newValue = jQuery.trim(newValue);
+
+					app.helper.showProgress();
+					app.request.post({data: params}).then(function (error, data) {
+						let newValues = jQuery('[name="newValue"]', container).select2('val'),
+							newValuesArray = newValues;
+
+						for (let i = 0; i < newValuesArray.length; i++) {
+							newValue = jQuery.trim(newValuesArray[i]);
+
+							let newElement = thisInstance.getPickListTemplate(newValue, params.selectedColor),
+								newPickListValueRow = jQuery(newElement).appendTo(jQuery('#pickListValuesTable').find('tbody'));
+
+							newPickListValueRow.attr('data-key', newValue);
+							newPickListValueRow.attr('data-key-id', data['id' + i]);
+						}
+						app.helper.hideModal();
+						app.helper.hideProgress();
+						app.helper.showSuccessNotification({message: app.vtranslate('JS_ITEM_ADDED_SUCCESSFULLY')});
+						//update the new item in the hidden picklist values array
+
+						let pickListValuesEle = jQuery('[name="pickListValues"]'),
+							pickListValuesArray = JSON.parse(pickListValuesEle.val());
+
+						for (let i = 0; i < newValuesArray.length; i++) {
+							pickListValuesArray[data['id' + i]] = newValuesArray[i];
+						}
+
+						pickListValuesEle.val(JSON.stringify(pickListValuesArray));
+					});
 				}
-				if(Settings_Picklist_Js.duplicateItemNameCheck(container)) {
-					var errorMessage = app.vtranslate('JS_DUPLICATE_ENTRIES_FOUND_FOR_THE_VALUE');
-                         vtUtils.showValidationMessage(newValueEle, errorMessage, showValidationParams);  
-					return false;
-				}
-				
-				vtUtils.hideValidationMessage(newValueEle);
-				
-				var params = jQuery(form).serializeFormData();
-				var newValue = params.newValue;
-				params.newValue = jQuery.trim(newValue);
-                app.helper.showProgress();
-				app.request.post({data: params}).then(function(error, data) {
-					var newValues = jQuery('[name="newValue"]',container).val();
-					var newValuesArray = newValues.split(',');
-					for (i = 0; i < newValuesArray.length; i++) {
-						newValue = jQuery.trim(newValuesArray[i]);
-						var newElement = thisInstance.getPickListTemplate(newValue, params.selectedColor);
-						var newPickListValueRow = jQuery(newElement).appendTo(jQuery('#pickListValuesTable').find('tbody'));
-						newPickListValueRow.attr('data-key', newValue);
-						newPickListValueRow.attr('data-key-id', data['id' + i]);
-					}
-					app.helper.hideModal();
-					app.helper.hideProgress();
-					app.helper.showSuccessNotification({message: app.vtranslate('JS_ITEM_ADDED_SUCCESSFULLY')});
-					//update the new item in the hidden picklist values array
-					var pickListValuesEle = jQuery('[name="pickListValues"]');
-					var pickListValuesArray = JSON.parse(pickListValuesEle.val());
-					for (i = 0; i < newValuesArray.length; i++) {
-						pickListValuesArray[data['id' + i]] = newValuesArray[i];
-					}
-					pickListValuesEle.val(JSON.stringify(pickListValuesArray));
-				});
-            }
-        };
-        form.vtValidate(params);
+			};
+		form.vtValidate(params);
 	},
 
 	registerRenameItemSaveEvent : function() {
@@ -569,7 +581,7 @@ var Settings_Picklist_Js = {
         var contrast = app.helper.getColorContrast(color);
         var textColor = (contrast === 'dark') ? 'white' : 'black';
         var actions = jQuery('.picklistActionsTemplate').html();
-        var actionsTemplate = '<span class="pull-right picklistActions" style="margin-top:0px;">' + actions + '</span>';
+        var actionsTemplate = '<span class="pull-right picklistActions">' + actions + '</span>';
         var template = '<tr class="pickListValue cursorPointer">'+
                             '<td class="textOverflowEllipsis fieldPropertyContainer">'+
                                 '<span class="pull-left">' +

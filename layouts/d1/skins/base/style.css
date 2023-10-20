@@ -501,39 +501,6 @@ body {
     color: var(--menu-icon-color);
 }
 
-.app-SALES {
-    background: #3CB878 !important;
-}
-
-.app-MARKETING {
-    background: #EF5E29 !important;
-}
-
-.app-OTHER {
-    background: #56ccc8 !important;
-}
-
-.app-SUPPORT {
-    background: #6297C3 !important;
-}
-
-.app-INVENTORY {
-    background: #F1C40F !important;
-}
-
-.app-PROJECT {
-    background: #8E44AD !important;
-}
-
-.app-TOOLS {
-    background: #EF5E29 !important;
-}
-
-.app-DEFAULT,
-.app-DASHBOARD {
-    background: #56ccc8 !important;
-}
-
 .app-switcher-container .active {
     background-color: #010101 !important;
 }
@@ -1003,11 +970,6 @@ a {
     background: transparent;
 }
 
-#convertLeadContainer .inputElement,
-#editCurrency .inputElement {
-    width: 70%;
-}
-
 .confirm-box-ok {
     margin-right: 5px;
 }
@@ -1168,10 +1130,6 @@ a {
     padding-right: 10%;
 }
 
-.padding20 {
-    padding: 20px;
-}
-
 .overflowVisible {
     overflow: visible !important;
 }
@@ -1224,28 +1182,6 @@ a {
     max-width: 40%;
 }
 
-.radio-group {
-    margin-bottom: 5px;
-}
-
-.radio-group input[type="radio"] {
-    margin-top: 0;
-}
-
-.radio-group .radio-label {
-    vertical-align: top;
-}
-
-.no-border,
-.no-border.table > thead > tr > th,
-.table > tbody > tr > th,
-.no-border.table > tfoot > tr > th,
-.table > thead > tr > td,
-.no-border.table > tbody > tr > td,
-.table > tfoot > tr > td {
-    border: 0px;
-}
-
 .display-inline-block {
     display: inline-block;
 }
@@ -1271,14 +1207,6 @@ a {
 ul.unstyled {
     list-style-type: none;
     padding-left: 0px;
-}
-
-.coloredBorderBottom {
-    border-bottom: 1px solid #EF5E29;
-}
-
-.coloredBorderTop {
-    border-top: 1px solid #EF5E29;
 }
 
 .redColor {
@@ -1584,10 +1512,6 @@ input[type=checkbox]:checked {
 .detailViewModNavigator .mod-switcher-container,
 .detailViewModNavigator .modules-menu {
     width: var(--menu-width);
-}
-
-.detailViewInfo .fieldLabel {
-    text-align: right;
 }
 
 #detailView .fieldValue .action {
@@ -2387,34 +2311,53 @@ input[type=checkbox]:checked {
     background: #eff3fe;
     color: #5e81f4;
     padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
 .crumbs .step.active {
     background: #5e81f4;
     color: #fff;
     padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
-.stepArrow {
+.step {
+    position: relative;
+}
+.step:after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    content: '';
+    display: inline-block;
     width: 0;
     height: 0;
     border-top: 1.5rem solid transparent;
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid #eff3fe;
-    margin-left: 1.5rem;
-    margin-right: -1.5rem;
+    margin-right: -1.49rem;
 }
-
-.crumbs .step.active .stepArrow {
+.step:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
     border-top: 1.5rem solid transparent;
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid #5e81f4;
+    margin-right: -1.51rem;
 }
 
-.mailBoxEditDiv .crumbs li {
-    width: 22%;
+.crumbs .step.active:after {
+    border-top: 1.5rem solid transparent;
+    border-bottom: 1.5rem solid transparent;
+
+    border-left: 1.5rem solid #5e81f4;
 }
 
 /* .squaredFour */
@@ -2466,40 +2409,6 @@ input[type=checkbox]:checked {
 
 .importBlockContainer {
     color: #596875;
-}
-
-/*******************************************
-************* Social Buttons ***************
-********************************************/
-.btn-block + .btn-block {
-    margin-top: 5px;
-}
-
-.btn-google-plus {
-    color: #FFFFFF !important;
-    background-color: #DD4B39;
-    border-color: rgba(0, 0, 0, 0.2);
-}
-
-.btn-social {
-    position: relative;
-    padding-left: 44px;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.btn-social > :first-child {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 32px;
-    line-height: 34px;
-    font-size: 1.6em;
-    text-align: center;
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 /*******************************************
@@ -2748,12 +2657,6 @@ input[type=checkbox]:checked {
 .companyLogo img {
     max-width: 95%;
 }
-
-.editbutton-container {
-    padding-top: 5px;
-    padding-bottom: 10px;
-}
-
 .treeView li {
     border-left: 4px solid #dddddd;
     list-style: none;
@@ -2914,36 +2817,13 @@ input[type=checkbox]:checked {
     padding-left: 40px;
 }
 
-.portal-dashboard {
-    border: 1px solid #EF5E29 !important;
-    border-left: 0px !important;
-    min-height: 500px;
-    padding-left: 15px;
-}
-
 .portal-dashboard > .hrHeader {
     margin-left: 18px;
     width: 94%;
 }
 
-.portal-annoucement-widget-container {
-    border: 1px solid #D7D7D7;
-}
-
-.portal-annoucement-widget {
-    background: #596875;
-    color: #FFFFFF;
-    min-height: 20px;
-    padding: 5px;
-}
-
 .portal-chart-widget-container {
     border: 1px solid #D7D7D7;
-}
-
-.portal-annoucement-widget-container > .portal {
-    min-height: 100px;
-    padding: 10px;
 }
 
 .portal-chart-header {
@@ -2958,54 +2838,8 @@ input[type=checkbox]:checked {
     padding: 10px;
 }
 
-.portal-record-widget-container {
-    border: 1px solid #D7D7D7;
-    margin-bottom: 10px;
-}
-
-.portal-record-widget-content {
-    background: #596875;
-    color: #FFFFFF;
-    min-height: 10px;
-    padding: 4px;
-}
-
 .portal-record-control-container {
     padding: 4px;
-}
-
-.portal-shortcuts-container {
-    border: 1px solid #D7D7D7;
-    width: 285px !important;
-}
-
-.portal-shortcuts-header {
-    background: #596875;
-    color: #FFFFFF;
-    min-height: 20px;
-    padding: 5px;
-}
-
-.portal-shortcuts-content {
-    min-height: 80px;
-    padding: 10px;
-}
-
-.portal-shortcut-list {
-    margin-top: 10px;
-}
-
-.portal-helpdesk-widget-container {
-    border: 1px solid #D7D7D7;
-    margin-bottom: 10px;
-    width: 285px !important;
-}
-
-.portal-helpdesk-widget-header {
-    background: #596875;
-    color: #FFFFFF;
-    min-height: 20px;
-    padding: 5px;
 }
 
 .portal-fields-container {
@@ -3030,16 +2864,6 @@ input[type=checkbox]:checked {
 
 .portal-field-delete {
     margin-left: 45px !important;
-}
-
-.portalModuleRow {
-    border-left: 4px solid #EF5E29 !important;
-}
-
-.portalMenuHeader {
-    border-bottom: 1px solid #EF5E29 !important;
-    border-right: 1px solid #EF5E29 !important;
-    font-size: 22px;
 }
 
 .portalModuleRow .active {
@@ -3076,13 +2900,6 @@ input[type=checkbox]:checked {
 .cp-nav-header-wrapper {
     margin-bottom: 0px;
     border-right-width: 0px ! important;
-}
-
-#dashboardContent {
-    margin-bottom: 15px;
-    margin-top: 8px;
-    margin-left: 15px;
-    margin-right: 15px;
 }
 
 .bgColor {
@@ -4324,13 +4141,6 @@ li.dashboardWidget {
 /*******************************************
 ********** Picklist DependencyGraph ********
 ********************************************/
-#dependencyGraph .tableHeading {
-    text-align: center;
-    padding-top: 30px;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
 #dependencyGraph .depandencyTable .blockHeader {
     background: #F3F3F3;
 }
@@ -4342,10 +4152,6 @@ li.dashboardWidget {
 
 #dependencyGraph .dependencyMapping .mCSB_container {
     margin-bottom: 16px !important;
-}
-
-#dependencyGraph .dependencyMapping .pickListDependencyTable {
-    border: 0;
 }
 
 #dependencyGraph .dependencyMapping .pickListDependencyTable .selectedCell {
@@ -4405,10 +4211,6 @@ li.dashboardWidget {
     border-left-color: #2b9cbd;
 }
 
-hr {
-    margin: 10px 0;
-}
-
 .alert-mini {
     padding: 3px 5px;
     font-size: 10px;
@@ -4422,15 +4224,6 @@ hr {
 
 .blockHeader .btn-group {
     margin-top: 4px;
-}
-
-.help-inline {
-    padding: 5px;
-    display: inline-block;
-    border: 1px solid #ddd;
-    background: #f3f3f3;
-    margin-left: -15px;
-    float: left;
 }
 
 .listViewEntriesCheckBox,
@@ -4479,24 +4272,6 @@ hr {
 
 .calendar-sidebar .calendar-sidebar-tabs.padding {
     padding-left: 20px !important;
-}
-
-.dashBoardContainer .nav-tabs > li.active,
-.contents.tabbable .nav-tabs > li.active,
-.dashBoardContainer .nav-tabs > li:hover,
-.contents.tabbable .nav-tabs > li:hover,
-.dashBoardContainer .nav-tabs > li.active:focus,
-.contents.tabbable .nav-tabs > li.active:focus {
-    border: none;
-    border-bottom: 3px solid #555;
-    margin-bottom: 0;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:hover,
-.nav-tabs > li.active > a:focus,
-.nav-tabs > li > a {
-    border: 0;
 }
 
 .fa-pencil,
@@ -4646,24 +4421,6 @@ hr {
 /*******************************************
 ************** Tax Management **************
 ********************************************/
-#TaxCalculationsContainer .table tr:first-child,
-.taxModalContainer #editTax .table tr:first-child {
-    border-bottom: 1px solid #ccc;
-    background: #F5F5F5;
-}
-
-.taxModalContainer #editTax .inputEle,
-.taxRegionContainer #editTaxRegion .inputEle,
-.chargeModalContainer #editCharge .inputEle {
-    min-height: 30px;
-    min-width: 180px;
-}
-
-.taxModalContainer #editTax .block,
-.chargeModalContainer #editCharge .block {
-    padding-bottom: 20px;
-}
-
 .importMappingTableHeader {
     background: #F0F0F0;
     border: 1px solid #F5F5F5;
@@ -5092,20 +4849,6 @@ hr {
     white-space: nowrap;
 }
 
-.portal-deletefield {
-    background: transparent;
-    border: 1px solid transparent;
-}
-
-.portal-deletefield:active {
-    border: 1px solid transparent;
-}
-
-.portal-deletefield:hover {
-    -webkit-box-shadow: 0 1px 1px transparent;
-    box-shadow: 0 1px 1px transparent;
-}
-
 .portal-fields-switch {
     width: 40px;
     height: 20px;
@@ -5162,23 +4905,8 @@ hr {
     background-color: #8ce196;
 }
 
-.portal-fieldInfo-wrapper {
-    border: 1px solid #e8e8e8;
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
 .portal-fieldInfo-wrapper .switch-disabled {
     opacity: 0.5;
-}
-
-.portal-fieldInfo-sliderWrapper {
-    padding-top: 4px;
-    padding-left: 5px;
-}
-
-.portal-fieldName-wrapper {
-    padding-top: 5px;
 }
 
 .portal-dashboard {
@@ -5202,10 +4930,6 @@ hr {
     margin-top: 4px !important;
 }
 
-.portal-shortcut-list:hover {
-    border-bottom: 3px solid transparent ! important;
-}
-
 /****** Customer Portal Settings ******/
 .label-radio label input[type="radio"] {
     position: relative;
@@ -5224,33 +4948,8 @@ div.tooltip-inner {
 /*******************************************
 ********** Menu Editor ********
 ********************************************/
-.sortable.appContainer.ui-sortable {
-    width: 160px;
-}
-
-.menuEditorItem {
-    padding: 15px 5px;
-    background: #DDDDDD;
-    text-align: center;
-    font-size: 1em;
-    color: #FFFFFF;
-    text-shadow: 0 0 1px #999999;
-    height: 65px;
-    width: 160px;
-    margin-right: 15px;
-}
-
-.fa.whiteIcon {
-    color: #FFFFFF;
-}
-
-.menuEditorItem .fa {
-    font-size: 2em;
-}
 
 .menuEditorModuleItem {
-    background: var(--menu-bg);
-    border-bottom: 1px solid #DDDDDD;
     cursor: move;
 }
 
@@ -5312,31 +5011,6 @@ div.tooltip-inner {
 .detailViewTwitterImage .fa {
     color: #04ABE7;
     margin-top: 10px;
-}
-
-#SLAEditContainer .inputElement,
-#editTagContainer .inputElement {
-    width: 50%;
-}
-
-#SLAEditContainer .select2.inputElement.EmailTemplates,
-#editTagContainer .select2.inputElement.EmailTemplates {
-    width: 90%;
-}
-
-#SLAEditContainer .select2.inputElement,
-#editTagContainer .select2.inputElement {
-    width: 40%;
-}
-
-#SLAEditContainer .select2-container-multi,
-#editTagContainer .select2-container-multi {
-    width: 82%;
-}
-
-#SLAEditContainer td,
-#editTagContainer td {
-    vertical-align: middle;
 }
 
 #BusinessHoursEditContainer .form-control.inputElement {
@@ -5525,11 +5199,6 @@ div.tooltip-inner {
 .dashBoardContainer .tab-pane .dashBoardTabContents ul {
     position: relative;
     width: 1260px;
-}
-
-.nav-tabs > li {
-    border-bottom: 3px solid transparent;
-    margin: 0 2px;
 }
 
 .dashBoardContainer .tabContainer .nav {
@@ -6664,12 +6333,6 @@ input:focus:-ms-input-placeholder {
     padding: 15px 15px 5px 15px;
 }
 
-.row .nav.charttabs > li,
-.nav-tabs > li {
-    border-bottom: 0;
-    margin-bottom: -1px;
-}
-
 #mycalendar .fc-event-container .vicon-meeting {
     font-size: inherit;
 }
@@ -7026,20 +6689,6 @@ body .fc {
     white-space: nowrap;
 }
 
-.portal-deletefield {
-    background: transparent;
-    border: 1px solid transparent;
-}
-
-.portal-deletefield:active {
-    border: 1px solid transparent;
-}
-
-.portal-deletefield:hover {
-    -webkit-box-shadow: 0 1px 1px transparent;
-    box-shadow: 0 1px 1px transparent;
-}
-
 .portal-fields-switch {
     width: 40px;
     height: 20px;
@@ -7100,15 +6749,6 @@ body .fc {
     border: 1px solid #e8e8e8;
     padding-left: 0px;
     padding-right: 0px;
-}
-
-.portal-fieldInfo-sliderWrapper {
-    padding-top: 4px;
-    padding-left: 5px;
-}
-
-.portal-fieldName-wrapper {
-    padding-top: 5px;
 }
 
 .portal-dashboard {
@@ -7354,3 +6994,4 @@ a.btnReport:hover {
 .w-40 {
     width: 40%;
 }
+table { word-break: break-all; }

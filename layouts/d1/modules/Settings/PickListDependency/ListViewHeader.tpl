@@ -10,30 +10,31 @@
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="listViewPageDiv" id="listViewContent">
-    <div class="col-sm-12 col-xs-12 ">
+    <div>
         <div id="listview-actions" class="listview-actions-container">
-            <div class = "row">
-                <div class='col-md-6'>
-                </div>
-                <div class="col-md-6">
+            <div class="px-4 pb-3">
+                <div class="container-fluid bg-body p-3 rounded">
                     <div class="row">
-                        <span class="pull-right listViewActions" style="padding-right: 15px;">
-                            <select class="select2 pickListSupportedModules" name="pickListSupportedModules" style="min-width: 220px;">
-                                <option value="">{vtranslate('LBL_ALL', $QUALIFIED_MODULE)}</option>
-                                {foreach item=MODULE_MODEL from=$PICKLIST_MODULES_LIST}
-                                    {assign var=MODULE_NAME value=$MODULE_MODEL->get('name')}
-                                    <option value="{$MODULE_NAME}" {if $MODULE_NAME eq $FOR_MODULE} selected {/if}>
-                                        {if $MODULE_MODEL->get('label') eq 'Calendar'}
-                                            {vtranslate('LBL_TASK', $MODULE_MODEL->get('label'))}
-                                        {else}
-                                            {vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->get('label'))}
-                                        {/if}
-                                    </option>
-                                {/foreach}
-                            </select>
-                        </span>
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="listViewActions">
+                                <select class="select2 pickListSupportedModules" name="pickListSupportedModules" data-close-on-select="true">
+                                    <option value="">{vtranslate('LBL_ALL', $QUALIFIED_MODULE)}</option>
+                                    {foreach item=MODULE_MODEL from=$PICKLIST_MODULES_LIST}
+                                        {assign var=MODULE_NAME value=$MODULE_MODEL->get('name')}
+                                        <option value="{$MODULE_NAME}" {if $MODULE_NAME eq $FOR_MODULE} selected {/if}>
+                                            {if $MODULE_MODEL->get('label') eq 'Calendar'}
+                                                {vtranslate('LBL_TASK', $MODULE_MODEL->get('label'))}
+                                            {else}
+                                                {vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->get('label'))}
+                                            {/if}
+                                        </option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="list-content row">
+            <div class="list-content">
