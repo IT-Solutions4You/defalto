@@ -8,7 +8,7 @@
 *************************************************************************************}
 {strip}
     <div class="editViewPageDiv px-4 pb-4">
-        <div class="bg-white rounded" id="EditView">
+        <div class="bg-body rounded" id="EditView">
             <form name="EditWorkflow" action="index.php" method="post" id="workflow_edit" class="form-horizontal">
                 {assign var=WORKFLOW_MODEL_OBJ value=$WORKFLOW_MODEL->getWorkflowObject()}
                 <input type="hidden" name="record" value="{$RECORDID}" id="record"/>

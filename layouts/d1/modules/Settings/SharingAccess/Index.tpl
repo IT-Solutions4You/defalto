@@ -13,7 +13,7 @@
 {strip}
 <div class="listViewPageDiv " id="sharingAccessContainer">
     <div class="px-4 pb-4">
-        <form name="EditSharingAccess" action="index.php" method="post" class="form-horizontal py-3 bg-white rounded" id="EditSharingAccess">
+        <form name="EditSharingAccess" action="index.php" method="post" class="form-horizontal py-3 bg-body rounded" id="EditSharingAccess">
             <input type="hidden" name="module" value="SharingAccess" />
             <input type="hidden" name="action" value="SaveAjax" />
             <input type="hidden" name="parent" value="Settings" />

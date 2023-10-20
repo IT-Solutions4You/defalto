@@ -12,7 +12,7 @@
 {strip}
 <div class="detailViewContainer">
     <div class="mx-4 mb-4">
-        <div class="detailViewTitle p-3 bg-white rounded mb-3" id="userPageHeader">
+        <div class="detailViewTitle p-3 bg-body rounded mb-3" id="userPageHeader">
             <div class="row">
                 <div class="col-lg">
                     <div class="row">

@@ -7,7 +7,7 @@
 * All Rights Reserved.
 ************************************************************************************}
 <div class="editViewPageDiv detailViewContainer">
-    <div class="bg-white mx-4 mb-4 rounded">
+    <div class="bg-body mx-4 mb-4 rounded">
         <form class="form-horizontal recordEditView" id="EditView" name="EditView" method="post" action="index.php" enctype="multipart/form-data">
             <div class="editViewHeader p-3 border-bottom">
                 <div class='row'>

@@ -1,4 +1,4 @@
-<div class="containerModuleSidebar col-lg-2 mb-lg-4 ms-lg-4 bg-white rounded p-3">
+<div class="containerModuleSidebar col-lg-2 mb-lg-4 ms-lg-4 bg-body rounded p-3">
     <div class="sidebar-menu sidebar-menu-full">
         <div class="module-filters" id="module-filters">
             <div class="sidebar-container lists-menu-container">

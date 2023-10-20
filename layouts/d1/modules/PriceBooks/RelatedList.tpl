@@ -14,7 +14,7 @@
 		{include file='RelatedList.tpl'|vtemplate_path:'Vtiger'}
 	{else}
 		<div class="relatedContainer container-fluid">
-			<div class="mt-3 bg-white rounded">
+			<div class="mt-3 bg-body rounded">
 				<input type="hidden" name="currentPageNum" value="{$PAGING->getCurrentPage()}"/>
 				<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE_NAME}"/>
 				<input type="hidden" value="{$ORDER_BY}" id="orderBy">

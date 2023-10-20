@@ -72,7 +72,7 @@
     {assign var=FINAL_DETAILS value=$RELATED_PRODUCTS[1]['final_details']}
     <div class="details block mt-3">
         <div class="lineItemTableDiv">
-            <div class="rounded bg-white">
+            <div class="rounded bg-body">
                 <div class="p-3 border-bottom">
                     <div class="text-truncate d-flex align-items-center">
                         <span class="btn btn-outline-secondary">
@@ -112,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-3 p-3 rounded bg-white">
+            <div class="mt-3 p-3 rounded bg-body">
                 <table class="table table-borderless lineItemsTable lh-lg mb-0">
                     <thead>
                         <tr>
@@ -255,7 +255,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="p-3 bg-white rounded mt-3">
+            <div class="p-3 bg-body rounded mt-3">
                 <table class="table table-borderless lineItemsTable lh-lg mb-0">
                     <thead>
                         <tr class="border-bottom">

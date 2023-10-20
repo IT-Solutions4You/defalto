@@ -10,13 +10,13 @@
 {strip}
     <div class="main-container container-fluid">
         <div class="row">
-            <div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-white d-none d-lg-block h-main">
+            <div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-body d-none d-lg-block h-main">
                 <div class="hidden-xs hidden-sm mod-switcher-container">
                     {include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
                 </div>
             </div>
             <div class="col-lg px-0 mb-lg-4 mx-lg-4 overflow-hidden">
-                <div class="editViewPageDiv viewContent col p-0 rounded bg-white">
+                <div class="editViewPageDiv viewContent col p-0 rounded bg-body">
                     <div class="content-area {if $LEFTPANELHIDE eq '1'} full-width {/if}">
                         <form class="form-horizontal recordEditView" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
                             <div class="editViewBody">
@@ -61,7 +61,7 @@
                                     {/if}
                                     {include file="partials/EditViewContents.tpl"|@vtemplate_path:'Inventory'}
                                 </div>
-                                <div class='modal-overlay-footer clearfix fixed-bottom bg-white border-top border-1'>
+                                <div class='modal-overlay-footer clearfix fixed-bottom bg-body border-top border-1'>
                                     <div class="container-fluid">
                                         <div class="row d-flex align-items-center h-header">
                                             <div class="col-6 text-end">

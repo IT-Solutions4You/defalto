@@ -14,9 +14,9 @@
             {if $smarty.request.type == 'Transfer'}
                 {assign var="SOURCE_ROLE_SUBPATTERN" value='::'|cat:$SOURCE_ROLE->getId()}
                 {if strpos($CHILD_ROLE->getParentRoleString(), $SOURCE_ROLE_SUBPATTERN) !== false}
-                    <a data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-white text-nowrap" disabled data-toggle="tooltip" data-placement="top" ><span class="muted">{$CHILD_ROLE->getName()}</span></a>
+                    <a data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-body text-nowrap" disabled data-toggle="tooltip" data-placement="top" ><span class="muted">{$CHILD_ROLE->getName()}</span></a>
                 {else}
-                    <a href="" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-white text-nowrap roleEle" data-toggle="tooltip" data-placement="top" >{$CHILD_ROLE->getName()}</a>
+                    <a href="" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn btn-outline-secondary bg-body text-nowrap roleEle" data-toggle="tooltip" data-placement="top" >{$CHILD_ROLE->getName()}</a>
                 {/if}
             {else}
                 <a href="{$CHILD_ROLE->getEditViewUrl()}" data-url="{$CHILD_ROLE->getEditViewUrl()}" class="btn bg-body-secondary border text-nowrap draggable droppable" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-animation="true" title="{vtranslate('LBL_CLICK_TO_EDIT_OR_DRAG_TO_MOVE',$QUALIFIED_MODULE)}">{$CHILD_ROLE->getName()}</a>

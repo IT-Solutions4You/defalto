@@ -10,7 +10,7 @@
 
 {strip}
 	<div class="px-4 pb-4">
-		<div class="bg-white rounded">
+		<div class="bg-body rounded">
 			<div class="container-fluid main-scroll" id="layoutEditorContainer">
 				<input id="selectedModuleName" type="hidden" value="{$SELECTED_MODULE_NAME}" />
 				<input class="selectedTab" type="hidden" value="{$SELECTED_TAB}">

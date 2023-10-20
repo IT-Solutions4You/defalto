@@ -15,7 +15,7 @@
 
 	<div name='editContent'>
 		{if $DUPLICATE_RECORDS}
-			<div class="fieldBlockContainer bg-white mb-3 rounded duplicationMessageContainer">
+			<div class="fieldBlockContainer bg-body mb-3 rounded duplicationMessageContainer">
 				<div class="duplicationMessageHeader"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></div>
 				<div>{getDuplicatesPreventionMessage($MODULE, $DUPLICATE_RECORDS)}</div>
 			</div>

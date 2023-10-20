@@ -11,7 +11,7 @@
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="editViewPageDiv">
     <div class="main-scroll px-4 pb-4">
-        <form class="form-horizontal p-3 bg-white rounded" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
+        <form class="form-horizontal p-3 bg-body rounded" id="EditView" name="EditProfile" method="post" action="index.php" enctype="multipart/form-data">
             <div class="editViewHeader">
                 {if $RECORD_MODEL->getId()}
                     <h4>

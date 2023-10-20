@@ -11,7 +11,7 @@
 {strip}
 	<div class="editViewPageDiv">
 		<div class="px-4 pb-4">
-			<div class="editViewContainer bg-white rounded p-3">
+			<div class="editViewContainer bg-body rounded p-3">
 				<form name="EditGroup" action="index.php" method="post" id="EditView" class="form-horizontal">
 					<input type="hidden" name="module" value="Groups">
 					<input type="hidden" name="action" value="Save">

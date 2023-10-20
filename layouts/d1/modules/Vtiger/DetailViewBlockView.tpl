@@ -14,7 +14,7 @@
 	{foreach key=BLOCK_LABEL_KEY item=FIELD_MODEL_LIST from=$RECORD_STRUCTURE}
 		{assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}
 		{if $BLOCK eq null or $FIELD_MODEL_LIST|count lte 0}{continue}{/if}
-		<div class="mt-3 bg-white rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
+		<div class="mt-3 bg-body rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
 			{assign var=IS_HIDDEN value=$BLOCK->isHidden()}
 			{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
 			<input type=hidden name="timeFormatOptions" data-value='{$DAY_STARTS}' />

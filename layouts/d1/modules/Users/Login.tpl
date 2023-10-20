@@ -9,7 +9,7 @@
 {strip}
     <div class="container-fluid loginPageContainer h-100">
         <div class="row loginPageBackground">
-            <div class="col-lg-7 bg-white rounded-end">
+            <div class="col-lg-7 bg-body rounded-end">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-center justify-content-center">
                         <div class="col-lg-4">

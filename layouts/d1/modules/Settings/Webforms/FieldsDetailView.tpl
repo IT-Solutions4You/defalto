@@ -10,7 +10,7 @@
 {strip}
 	<div class="listViewEntriesDiv contents-bottomscroll">
 		<div class="bottomscroll-div">
-			<div class="fieldBlockContainer mt-3 bg-white rounded">
+			<div class="fieldBlockContainer mt-3 bg-body rounded">
 				<div class="fieldBlockHeader p-3 border-bottom">
 					<span class="ms-3 fs-4 fw-bold">{vtranslate($SOURCE_MODULE, {$SOURCE_MODULE})} {vtranslate('LBL_FIELD_INFORMATION', {$MODULE_NAME})}</span>
 				</div>
@@ -82,7 +82,7 @@
 	{if Vtiger_Functions::isDocumentsRelated($SOURCE_MODULE) && count($DOCUMENT_FILE_FIELDS)}
 		<div class="listViewEntriesDiv contents-bottomscroll">
 			<div class="bottomscroll-div">
-				<div class="fieldBlockContainer mt-3 bg-white rounded">
+				<div class="fieldBlockContainer mt-3 bg-body rounded">
 					<div class="fieldBlockHeader p-3 border-bottom">
 						<span class="ms-3 fs-4 fw-bold">{vtranslate('LBL_UPLOAD_DOCUMENTS', $MODULE_NAME)}</span>
 					</div>

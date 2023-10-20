@@ -11,7 +11,7 @@
 
 {strip}
    <div class="listViewPageDiv px-4 pb-4" id="listViewContent">
-      <div class="bg-white rounded">
+      <div class="bg-body rounded">
          <div id="listview-actions" class="listview-actions-container">
             <div class="list-content workflowListContainer" id="list-content">
 {/strip}

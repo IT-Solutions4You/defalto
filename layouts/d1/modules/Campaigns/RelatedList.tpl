@@ -13,7 +13,7 @@
 	{if !empty($CUSTOM_VIEWS)}
 		{include file=vtemplate_path('PicklistColorMap.tpl', $MODULE) LISTVIEW_HEADERS=$RELATED_HEADERS}
 		<div class="relatedContainer container-fluid">
-			<div class="mt-3 bg-white rounded">
+			<div class="mt-3 bg-body rounded">
 				{assign var=RELATED_MODULE_NAME value=$RELATED_MODULE->get('name')}
 				{assign var=IS_RELATION_FIELD_ACTIVE value="{if $RELATION_FIELD}{$RELATION_FIELD->isActiveField()}{else}false{/if}"}
 				<input type="hidden" name="emailEnabledModules" value=true />

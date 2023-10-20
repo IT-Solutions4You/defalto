@@ -12,7 +12,7 @@
 {strip}
     <div class="left-block col-xl-5">
         {* Module Summary View*}
-        <div class="summaryView bg-white rounded mb-3">
+        <div class="summaryView bg-body rounded mb-3">
             <div class="summaryViewHeader p-3 border-1 border-bottom">
                 <h4 class="display-inline-block">{vtranslate('LBL_KEY_FIELDS', $MODULE_NAME)}</h4>
             </div>

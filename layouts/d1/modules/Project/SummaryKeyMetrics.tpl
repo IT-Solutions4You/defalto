@@ -1,4 +1,4 @@
-<div class="summaryView bg-white mb-3">
+<div class="summaryView bg-body mb-3">
     <div class="summaryViewHeader border-1 border-bottom p-3">
         <h4 class="display-inline-block">{vtranslate('LBL_KEY_METRICS', $MODULE_NAME)}</h4>
     </div>

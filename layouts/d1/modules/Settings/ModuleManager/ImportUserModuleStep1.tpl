@@ -9,7 +9,7 @@
 
 {strip}
 	<div class="detailViewContainer px-4 pb-4" id="importModules">
-		<div class="rounded bg-white p-3">
+		<div class="rounded bg-body p-3">
 			<div class="widget_header row col-lg-12 col-md-12 col-sm-12">
 				<h4>{vtranslate('LBL_IMPORT_MODULE_FROM_ZIP', $QUALIFIED_MODULE)}</h4>
 			</div>

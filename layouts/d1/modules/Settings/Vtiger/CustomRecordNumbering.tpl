@@ -9,7 +9,7 @@
 
 {strip}
 	<div class="px-4 pb-4">
-		<div class="detailViewContainer bg-white rounded">
+		<div class="detailViewContainer bg-body rounded">
 			<form id="EditView" method="POST">
 				<div class="blockData">
 					<div class="d-flex p-3 border-bottom">

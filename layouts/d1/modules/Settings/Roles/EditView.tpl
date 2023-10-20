@@ -10,7 +10,7 @@
 
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="editViewPageDiv viewContent px-4 pb-4">
-    <div class="bg-white p-3 h-list rounded">
+    <div class="bg-body p-3 h-list rounded">
         <div class="editViewHeader">
             {if $RECORD_MODEL->getId()}
                 <h4>

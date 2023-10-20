@@ -1,5 +1,5 @@
 <div class="col-lg-2 p-0">
-    <div class="bg-white rounded p-3 ms-4 mb-4">
+    <div class="bg-body rounded p-3 ms-4 mb-4">
         <div class="module-filters" id="module-filters">
             <div class="sidebar-container lists-menu-container">
                 <div class="d-flex align-items-center justify-content-between">

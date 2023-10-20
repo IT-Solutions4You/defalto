@@ -9,7 +9,7 @@
 
 {strip}
 	<div class="px-4 pb-4" id="importModules">
-		<div class="bg-white rounded p-3">
+		<div class="bg-body rounded p-3">
 			<div>
 				<div id="vtlib_modulemanager_import_div">
 					{if $MODULEIMPORT_FAILED neq ''}

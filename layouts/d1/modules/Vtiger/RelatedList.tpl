@@ -10,7 +10,7 @@
 	{assign var=RELATED_MODULE_NAME value=$RELATED_MODULE->get('name')}
 	{include file="PicklistColorMap.tpl"|vtemplate_path:$MODULE LISTVIEW_HEADERS=$RELATED_HEADERS}
 	<div class="relatedContainer container-fluid">
-		<div class="rounded bg-white mt-3">
+		<div class="rounded bg-body mt-3">
 			{assign var=IS_RELATION_FIELD_ACTIVE value="{if $RELATION_FIELD}{$RELATION_FIELD->isActiveField()}{else}false{/if}"}
 			<input type="hidden" name="currentPageNum" value="{$PAGING->getCurrentPage()}" />
 			<input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE_NAME}" />

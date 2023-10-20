@@ -1,5 +1,5 @@
 {strip}
-<div class="summaryWidgetContainer bg-white rounded mb-3">
+<div class="summaryWidgetContainer bg-body rounded mb-3">
     <div class="widgetContainer_{$smarty.foreach.count.index}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}">
         <div class="widget_header border-1 border-bottom p-3 clearfix">
             <input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}"/>

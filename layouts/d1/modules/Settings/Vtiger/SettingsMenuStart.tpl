@@ -57,7 +57,7 @@
 {/if}
 <div class="main-container container-fluid">
     <div class="row">
-        <div class="col-lg-2 px-0 bg-white rounded-end rounded-bottom-0 mb-4 mb-lg-0">
+        <div class="col-lg-2 px-0 bg-body rounded-end rounded-bottom-0 mb-4 mb-lg-0">
             <div class="d-block d-lg-none p-3">
                 <button type="button" class="btn btn-outline-secondary" data-bs-target="#modnavigator" data-bs-toggle="collapse">
                     <i class="fa-solid fa-gears"></i>
@@ -71,7 +71,7 @@
         <div class="col-lg px-0 h-main overflow-auto">
             {if php7_count($MODULE_BASIC_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWBASIC']) or php7_count($MODULE_SETTING_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
                 <div class="px-4 pb-3">
-                    <div class="bg-white rounded p-3">
+                    <div class="bg-body rounded p-3">
                         {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}
                     </div>
                 </div>

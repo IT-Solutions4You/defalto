@@ -1,5 +1,5 @@
 {strip}
-    <div class="col-lg-2 p-0 bg-white rounded-end rounded-bottom-0">
+    <div class="col-lg-2 p-0 bg-body rounded-end rounded-bottom-0">
         <div id="modules-menu" class="modules-menu mmModulesMenu p-3">
             <div class="d-flex justify-content-between">
                 <div class="fw-bold text-truncate">{$MAILBOX->username()}</div>

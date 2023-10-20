@@ -11,7 +11,7 @@
 {strip}
 	<div class="listViewPageDiv detailViewContainer" id="moduleManagerContents">
 		<div class="px-4 pb-4">
-			<div id="listview-actions" class="listview-actions-container bg-white rounded">
+			<div id="listview-actions" class="listview-actions-container bg-body rounded">
 				<div class="container-fluid p-3">
 					<div class="row">
 						<h4 class="col-lg">{vtranslate('LBL_MODULE_MANAGER', $QUALIFIED_MODULE)}</h4>

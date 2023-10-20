@@ -10,7 +10,7 @@
 -->*}
 {strip}
     <div class="container-fluid">
-        <div class="rounded bg-white mt-3 p-3">
+        <div class="rounded bg-body mt-3 p-3">
             <form id="detailView" class="form-horizontal" method="POST">
                 <div class="container-fluid border-bottom border-1 pb-3 mb-3">
                     <div class="row">

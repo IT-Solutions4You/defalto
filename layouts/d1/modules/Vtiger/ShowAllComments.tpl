@@ -13,7 +13,7 @@
 	{assign var=IS_CREATABLE value=$COMMENTS_MODULE_MODEL->isPermitted('CreateView')}
 	{assign var=IS_EDITABLE value=$COMMENTS_MODULE_MODEL->isPermitted('EditView')}
 
-	<div class="commentContainer commentsRelatedContainer bg-white rounded p-3">
+	<div class="commentContainer commentsRelatedContainer bg-body rounded p-3">
 		{if $IS_CREATABLE}
 			<div class="commentTitle">
 				<div class="p-3 rounded bg-body-secondary addCommentBlock">

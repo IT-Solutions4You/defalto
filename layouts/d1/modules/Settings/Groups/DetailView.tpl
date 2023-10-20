@@ -9,7 +9,7 @@
 {strip}
 	<div class="detailViewContainer full-height">
 		<div class="px-4 pb-4">
-			<div class="detailViewInfo bg-white rounded" >
+			<div class="detailViewInfo bg-body rounded" >
 				<form id="detailView" class="form-horizontal container-fluid" method="POST">
 					<div class="row py-3 border-bottom">
 						<div class="col">

@@ -14,7 +14,7 @@
         {if $BLOCK_LABEL_KEY neq 'LBL_CALENDAR_SETTINGS'}
             {assign var=BLOCK value=$BLOCK_LIST[$BLOCK_LABEL_KEY]}
             {if $BLOCK eq null or $FIELD_MODEL_LIST|@count lte 0}{continue}{/if}
-            <div class="mb-3 bg-white rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
+            <div class="mb-3 bg-body rounded block block_{$BLOCK_LABEL_KEY}" data-block="{$BLOCK_LABEL_KEY}" data-blockid="{$BLOCK_LIST[$BLOCK_LABEL_KEY]->get('id')}">
                 {assign var=IS_HIDDEN value=$BLOCK->isHidden()}
                 {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
                 <div class="p-3 border-bottom">

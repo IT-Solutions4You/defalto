@@ -10,7 +10,7 @@
 {strip}
 	<div class="main-container container-fluid">
 		<div class="row">
-			<div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-white d-none d-lg-block h-main">
+			<div id="modnavigator" class="module-nav editViewModNavigator col-lg-auto text-center bg-body d-none d-lg-block h-main">
 				<div class="hidden-xs hidden-sm mod-switcher-container">
 					{include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
 				</div>
@@ -32,7 +32,7 @@
 								</div>
 							</div>
 							<div class="editViewBody">
-								<div class="editViewContents mb-5 p-3 bg-white rounded">
+								<div class="editViewContents mb-5 p-3 bg-body rounded">
 									{assign var=QUALIFIED_MODULE_NAME value={$MODULE}}
 									{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
 									{assign var="IS_SYSTEM_TEMPLATE_EDIT" value=false}
@@ -62,7 +62,7 @@
 									{/if}
 									{include file="partials/EditViewContents.tpl"|@vtemplate_path:$MODULE}
 								</div>
-								<div class="modal-overlay-footer modal-footer fixed-bottom bg-white p-3">
+								<div class="modal-overlay-footer modal-footer fixed-bottom bg-body p-3">
 									<div class="container-fluid">
 										<div class="row">
 											<div class="col-6 text-end">

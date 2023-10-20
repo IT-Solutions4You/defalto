@@ -25,5 +25,5 @@
 <div class="main-container container-fluid main-container-{$MODULE}">
     <div class="row h-main">
         {include file='ModuleSidebar.tpl'|vtemplate_path:$MODULE}
-        <div class="col-lg px-0 bg-white mb-lg-4 mx-lg-4 rounded overflow-hidden mmModuleContainer">
+        <div class="col-lg px-0 bg-body mb-lg-4 mx-lg-4 rounded overflow-hidden mmModuleContainer">
             <div id="listViewContent" class="listViewPageDiv content-area h-100">

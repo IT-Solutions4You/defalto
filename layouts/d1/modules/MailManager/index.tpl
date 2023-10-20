@@ -21,7 +21,7 @@
             </div>
         </div>
     {else}
-        <div id="mailmanagerContainer" class="py-3 bg-white rounded h-100">
+        <div id="mailmanagerContainer" class="py-3 bg-body rounded h-100">
             <input type="hidden" id="refresh_timeout" value="{$MAILBOX->refreshTimeOut()}"/>
             <div class="container-fluid h-100">
                 <div class="row h-100">

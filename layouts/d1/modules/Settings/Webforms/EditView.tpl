@@ -8,7 +8,7 @@
 ************************************************************************************}
 {strip}
     <div class="px-4 pb-4">
-        <div class="editViewPageDiv bg-white rounded">
+        <div class="editViewPageDiv bg-body rounded">
             <form class="form-horizontal" id="EditView" name="edit" method="post" action="index.php" enctype="multipart/form-data">
                 <div class="editViewHeader p-3 border-bottom">
                     {assign var=SINGLE_MODULE_NAME value='SINGLE_'|cat:$MODULE}

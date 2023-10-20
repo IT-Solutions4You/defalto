@@ -10,7 +10,7 @@
 {strip}
 	<input id="recordId" type="hidden" value="{$RECORD->getId()}" />
 	<div class="detailview-content container-fluid pt-3">
-		<div class="details p-3 bg-white rounded">
+		<div class="details p-3 bg-body rounded">
 			<div class="block">
 				{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
 				<div>

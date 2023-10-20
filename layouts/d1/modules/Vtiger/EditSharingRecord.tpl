@@ -10,7 +10,7 @@
  *}
 {strip}
 <div class="editViewPageDiv container-fluid h-main py-3">
-    <div class="bg-white rounded p-3">
+    <div class="bg-body rounded p-3">
         <div class="editViewContainer">
             <form name="EditSharingRecord" action="index.php" method="post" id="EditView" class="form-horizontal">
                 <input type="hidden" name="module" value="{$MODULE}">

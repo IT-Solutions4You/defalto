@@ -11,7 +11,7 @@
 -->*}
 {strip}
     <div class="container-fluid pt-3">
-        <div class="bg-white rounded p-3">
+        <div class="bg-body rounded p-3">
             <style>
                 {foreach from=$TASK_STATUS_COLOR item=COLOR key=STATUS}
                     {Project_Record_Model::getGanttStatusCss($STATUS, $COLOR)}
