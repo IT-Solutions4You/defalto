@@ -16,7 +16,7 @@
 				<input type="hidden" name="module" value="{$MODULE}" />
 				<input type="hidden" name="action" value="MassSave" />
 
-				<table class="table no-border">
+				<table class="table table-borderless">
 					<tbody>
 						<tr>
 							<td class="col-lg-1"></td>

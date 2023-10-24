@@ -10,12 +10,12 @@
 {strip}
 	<div class='dashBoardTabContainer'>
 		{include file="dashboards/DashBoardHeader.tpl"|vtemplate_path:$MODULE_NAME DASHBOARDHEADER_TITLE=vtranslate($MODULE, $MODULE)}
-		<br><div class="dashboardBanner"></div>
+		<div class="dashboardBanner"></div>
 		<div class="dashBoardTabContents clearfix">
 			<div class="gridster_{$TABID}">
 				{assign var="ROWCOUNT" value=0}
 				{assign var="COLCOUNT" value=0}
-				<ul>
+				<ul class="p-0 m-3">
 					{assign var=COLUMNS value=2}
 					{assign var=ROW value=1}
 					{foreach from=$WIDGETS item=WIDGET name=count}
@@ -29,14 +29,14 @@
 						{if $WIDGETDOMID}
 							<li id="{$WIDGETDOMID}" {if $smarty.foreach.count.index % $COLUMNS == 0 and $smarty.foreach.count.index != 0} {assign var=ROWCOUNT value=$ROW+1} data-row="{$WIDGET->getPositionRow($ROWCOUNT)}" {else} data-row="{$WIDGET->getPositionRow($ROW)}" {/if}
 								{assign var=COLCOUNT value=($smarty.foreach.count.index % $COLUMNS)+1} data-col="{$WIDGET->getPositionCol($COLCOUNT)}" data-sizex="{$WIDGET->getSizeX()}" data-sizey="{$WIDGET->getSizeY()}" {if $WIDGET->get('position') eq ""} data-position="false"{/if}
-								class="dashboardWidget dashboardWidget_{$smarty.foreach.count.index}" data-url="{$WIDGET->getUrl()}" data-mode="open" data-name="{$WIDGET->getName()}">
+								class="bg-body d-flex flex-column rounded dashboardWidget dashboardWidget_{$smarty.foreach.count.index}" data-url="{$WIDGET->getUrl()}" data-mode="open" data-name="{$WIDGET->getName()}">
 							</li>
 						{else}
 							{assign var=CHARTWIDGETDOMID value=$WIDGET->get('reportid')}
 							{assign var=WIDGETID value=$WIDGET->get('id')}
 							<li id="{$CHARTWIDGETDOMID}-{$WIDGETID}" {if $smarty.foreach.count.index % $COLUMNS == 0 and $smarty.foreach.count.index != 0} {assign var=ROWCOUNT value=$ROW+1} data-row="{$WIDGET->getPositionRow($ROWCOUNT)}" {else} data-row="{$WIDGET->getPositionRow($ROW)}" {/if}
 								{assign var=COLCOUNT value=($smarty.foreach.count.index % $COLUMNS)+1} data-col="{$WIDGET->getPositionCol($COLCOUNT)}" data-sizex="{$WIDGET->getSizeX()}" data-sizey="{$WIDGET->getSizeY()}" {if $WIDGET->get('position') eq ""} data-position="false"{/if}
-								class="dashboardWidget dashboardWidget_{$smarty.foreach.count.index}" data-url="{$WIDGET->getUrl()}" data-mode="open" data-name="ChartReportWidget"> 
+								class="bg-body d-flex flex-column rounded dashboardWidget dashboardWidget_{$smarty.foreach.count.index}" data-url="{$WIDGET->getUrl()}" data-mode="open" data-name="ChartReportWidget">
 							</li>
 						{/if}
 					{/foreach}

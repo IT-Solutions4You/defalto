@@ -12,7 +12,7 @@
 <input type='hidden' name='clickthrough' value="{$CLICK_THROUGH}" />
 
 <br>
-<div class="dashboardWidgetContent">
+<div class="dashboardWidgetContent overflow-auto h-100">
     <input type="hidden" class="yAxisFieldType" value="{$YAXIS_FIELD_TYPE}" />
     <div class='border1px filterConditionContainer' style="padding:30px;">
         <div id='chartcontent' name='chartcontent' style="min-height:400px;" data-mode='Reports'></div>

@@ -7,7 +7,7 @@
  * All Rights Reserved.
  *************************************************************************************}
 {strip}
-<div style='padding:5px'>
+<div class="p-2">
 	<div class="row">
             <div class="dashboard_notebookWidget_view" style="word-break: break-all">
 			<div class="">

@@ -13,20 +13,23 @@
             {assign var=HEADER_TITLE value={vtranslate('LBL_ADD', $MODULE)}|cat:" "|cat:{vtranslate('LBL_NOTEPAD', $MODULE)}}
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
             <form class="form-horizontal" method="POST">
-                <div class="row" style="padding:10px;">
-                    <label class="fieldLabel col-lg-4">
-                        <label class="pull-right">{vtranslate('LBL_NOTEPAD_NAME', $MODULE)}<span class="redColor">*</span> </label>
+                <div class="row py-2">
+                    <label class="fieldLabel col-lg-4 text-end">
+                        <label>
+                            <span>{vtranslate('LBL_NOTEPAD_NAME', $MODULE)}</span>
+                            <span class="ms-2 text-danger">*</span>
+                        </label>
                     </label>
                     <div class="fieldValue col-lg-6">
-                        <input type="text" name="notePadName" class="inputElement" data-rule-required="true" />
+                        <input type="text" name="notePadName" class="inputElement form-control" data-rule-required="true" />
                     </div>
                 </div>
-                <div class="row" style="padding:10px;">
+                <div class="row py-2">
                     <label class="fieldLabel col-lg-4">
                         <label class="pull-right">{vtranslate('LBL_NOTEPAD_CONTENT', $MODULE)}</label>
                     </label>
                     <div class="fieldValue col-lg-6">
-                        <textarea type="text" name="notePadContent" style="min-height: 100px;resize: none;width:100%"></textarea>
+                        <textarea class="form-control" type="text" name="notePadContent"></textarea>
                     </div>
                 </div>
                 

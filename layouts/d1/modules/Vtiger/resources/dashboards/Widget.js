@@ -114,7 +114,6 @@ Vtiger.Class('Vtiger_Widget_Js',{
 	positionNoDataMsg : function() {
 		var container = this.getContainer();
 		var widgetContentsContainer = container.find('.dashboardWidgetContent');
-        widgetContentsContainer.height(container.height()- 50);
 		var noDataMsgHolder = widgetContentsContainer.find('.noDataMsg');
 		noDataMsgHolder.position({
 				'my' : 'center center',
@@ -136,8 +135,6 @@ Vtiger.Class('Vtiger_Widget_Js',{
 		this.registerFilter();
 		this.registerFilterChangeEvent();
 		this.restrictContentDrag();
-        var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
-        widgetContent.css({height: widgetContent.height()-40});
 	},
     
 	postResizeWidget : function() {
@@ -148,7 +145,7 @@ Vtiger.Class('Vtiger_Widget_Js',{
 			//this.positionNoDataMsg();
 		}
         var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
-        widgetContent.css({height: widgetContent.height()-40});
+        widgetContent.css({height: "100%"});
 	},
 
 	postRefreshWidget : function() {
@@ -313,10 +310,11 @@ Vtiger.Class('Vtiger_Widget_Js',{
 Vtiger_Widget_Js('Vtiger_KeyMetrics_Widget_Js', {}, {
     postLoadWidget: function() {
 		this._super();
-		var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
-        var adjustedHeight = this.getContainer().height()-50;
+
+		let widgetContent = jQuery('.dashboardWidgetContent', this.getContainer()),
+			adjustedHeight = '100%';
+
         app.helper.showVerticalScroll(widgetContent,{'setHeight' : adjustedHeight});
-		widgetContent.css({height: widgetContent.height()-40});
 	},
 
 	postResizeWidget: function () {
@@ -341,20 +339,19 @@ Vtiger_Widget_Js('Vtiger_TopPotentials_Widget_Js', {}, {
 
 Vtiger_Widget_Js('Vtiger_History_Widget_Js', {}, {
 
-	postLoadWidget: function() {
+	postLoadWidget: function () {
 		this._super();
 		var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
-        var adjustedHeight = this.getContainer().height()-50;
-        app.helper.showVerticalScroll(widgetContent,{'setHeight' : adjustedHeight});
-		widgetContent.css({height: widgetContent.height()-40});
-        //this.initSelect2Elements(widgetContent);
+		var adjustedHeight = this.getContainer().height() - 110;
+		app.helper.showVerticalScroll(widgetContent, {'setHeight': adjustedHeight});
+		widgetContent.css({height: adjustedHeight});
 		this.registerLoadMore();
 	},
     
     postResizeWidget: function() {
 		var widgetContent = jQuery('.dashboardWidgetContent', this.getContainer());
         var slimScrollDiv = jQuery('.slimScrollDiv', this.getContainer());
-        var adjustedHeight = this.getContainer().height()-100;
+        var adjustedHeight = this.getContainer().height() - 110;
         widgetContent.css({height: adjustedHeight});
         slimScrollDiv.css({height: adjustedHeight});
 	},
@@ -879,13 +876,13 @@ Vtiger_History_Widget_Js('Vtiger_OverdueActivities_Widget_Js', {}, {
                 element.parent().remove();
 				var widgetContent = jQuery('.dashboardWidgetContent', parent);
 				var dashboardWidgetData = parent.find('.dashboardWidgetContent .dashboardWidgetData');
-				var scrollTop = dashboardWidgetData.height() * dashboardWidgetData.length - 100;
+				var scrollTop = dashboardWidgetData.height() * dashboardWidgetData.length - 70;
 				widgetContent.mCustomScrollbar('destroy');
                 parent.find('.dashboardWidgetContent').append(data);
-				
-				var adjustedHeight = parent.height()-100;
+
+				var adjustedHeight = parent.height()-70;
 				app.helper.showVerticalScroll(widgetContent,{'setHeight' : adjustedHeight, 'setTop' : scrollTop+'px'});
-				
+
             });
 		});
 	}

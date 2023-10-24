@@ -12,32 +12,30 @@
 <script type="text/javascript">
 	Vtiger_Pie_Widget_Js('Vtiger_TotalRevenuePerSalesPerson_Widget_Js',{},{});
 </script>
-<div class="dashboardWidgetHeader">
+<div class="dashboardWidgetHeader text-secondary p-2">
 	{include file="dashboards/WidgetHeader.tpl"|@vtemplate_path:$MODULE_NAME SETTING_EXIST=true}
 </div>
-<div class="dashboardWidgetContent">
+<div class="dashboardWidgetContent overflow-auto h-100">
 	{include file="dashboards/DashBoardWidgetContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
-<div class="widgeticons dashBoardWidgetFooter">
-    <div class="filterContainer">
+<div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+    <div class="filterContainer border-top border-bottom bg-body">
         <div class="row">
-            <div class="col-sm-12">
-                <span class="col-lg-4">
-                    <span>
-                        <strong>{vtranslate('Created Time', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}</strong>
-                    </span>
+            <div class="col-lg-4">
+                <span>
+                    <strong>{vtranslate('Created Time', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}</strong>
                 </span>
-                <div class="col-lg-7">
-                    <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="createdtime">
-                        <input type="text" class="input-sm form-control" name="start" style="height:30px;"/>
-                        <span class="input-group-addon">to</span>
-                        <input type="text" class="input-sm form-control" name="end" style="height:30px;"/>
-                    </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="createdtime">
+                    <input type="text" class="inputElement form-control" name="start" />
+                    <span class="input-group-text">to</span>
+                    <input type="text" class="inputElement form-control" name="end" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="footerIcons pull-right">
+    <div class="footerIcons p-2">
         {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME SETTING_EXIST=true}
     </div>
 </div>

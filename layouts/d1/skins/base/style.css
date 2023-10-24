@@ -3980,59 +3980,22 @@ li.dashboardWidget {
     overflow: hidden;
 }
 
-.dashboardWidgetHeader .title {
-    padding-bottom: 10px;
-    font-size: 15px;
-}
-
 .dashboardWidgetHeader:hover {
     cursor: move;
-}
-
-.dashBoardContainer .tabContainer {
-    margin-top: 10px;
 }
 
 .dashBoardContainer .tabContainer ul {
     margin: 0 inherit;
 }
 
-.dashBoardContainer .tabContainer .nav {
-    font-size: 15px;
-    background-color: #F0F0F0;
-}
-
-.dashBoardContainer .tabContainer .tab-content {
-    margin-top: 10px;
-}
-
 .dashBoardContainer .dashBoardTabContents ul li {
-    border: 3px solid #E2E2E4;
-    box-shadow: 1px;
     list-style: none;
-    padding: 15px;
     position: absolute;
 }
 
 .dashboardWidgetContent .entryIcon {
     position: relative;
     top: 5px;
-    padding-right: 10px;
-}
-
-.dashBoardWidgetFooter {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 30px;
-    background: #F7F7F7;
-    font-size: 14px;
-}
-
-.dashBoardWidgetFooter .footerIcons {
-    padding: 8px 15px 0px 0px;
-    color: #CCCCCC;
 }
 
 .dashBoardWidgetFooter .filterContainer {
@@ -4041,10 +4004,7 @@ li.dashboardWidget {
     display: none;
     height: auto;
     width: 100%;
-    background: white;
-    border: 1px solid #CCCCCC;
     bottom: 30px;
-    font-size: 11px;
 }
 
 .dashBoardWidgetFooter .filterContainer .radio-group input {
@@ -4063,29 +4023,16 @@ li.dashboardWidget {
 }
 
 .dashBoardContainer .tabContainer li a .moveTab {
-    margin-left: 10px;
-    display: inline-block;
     opacity: 0.5;
 }
 
-.dashBoardContainer .tabContainer .sortable button {
-    margin-top: 10px;
-}
-
 .dashBoardContainer .tabContainer li a:hover .deleteTab {
-    display: inline-block;
     opacity: 1;
 }
 
 .dashBoardContainer .tabContainer li a .deleteTab:hover {
     cursor: pointer;
 }
-
-#minilistWizardContainer .fieldLabel {
-    position: relative;
-    top: 8px;
-}
-
 .dashBoardContainer .dashBoardWidgetFooter a:active,
 .dashBoardContainer .dashBoardWidgetFooter a:hover {
     color: black;
@@ -4105,10 +4052,6 @@ li.dashboardWidget {
 
 .dashBoardContainer .addDashboardTab i {
     vertical-align: middle;
-}
-
-.moreSettings {
-    padding-right: 18px;
 }
 
 .dashBoardContainer .dashboard_notebookWidget_viewarea {
@@ -5184,19 +5127,9 @@ div.tooltip-inner {
     background: inherit;
 }
 
-.dashBoardContainer .tab-pane {
-    padding: 0 15px;
-    min-height: 100%;
-}
-
 .dashBoardContainer .tab-pane .dashBoardTabContents ul {
     position: relative;
     width: 1260px;
-}
-
-.dashBoardContainer .tabContainer .nav {
-    font-size: 15px;
-    background-color: #FFFFFF;
 }
 
 .popover.lineItemPopover {
@@ -6987,4 +6920,3 @@ a.btnReport:hover {
 .w-40 {
     width: 40%;
 }
-table { word-break: break-all; }

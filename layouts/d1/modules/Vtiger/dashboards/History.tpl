@@ -9,14 +9,16 @@
   *
  ********************************************************************************/
 -->*}
-<div class="dashboardWidgetHeader clearfix">
+<div class="dashboardWidgetHeader p-2 text-secondary">
     <div class="title">
-        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}"><b>&nbsp;&nbsp;{vtranslate($WIDGET->getTitle())}</b></div>
+        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}">
+            <b>{vtranslate($WIDGET->getTitle())}</b>
+        </div>
     </div>
     <div class="userList">
         {assign var=CURRENT_USER_ID value=$CURRENT_USER->getId()}
         {if $ACCESSIBLE_USERS|@count gt 1}
-            <select class="select2 widgetFilter col-lg-3 reloadOnChange" name="type">
+            <select class="select2 widgetFilter col-lg-3 reloadOnChange" name="type" data-close-on-select="true">
                 <option value="all"  selected>{vtranslate('All', $MODULE_NAME)}</option>
                 {foreach key=USER_ID from=$ACCESSIBLE_USERS item=USER_NAME}
                     <option value="{$USER_ID}">
@@ -33,12 +35,11 @@
         {/if}
     </div>
 </div>
-<div class="dashboardWidgetContent" style="padding-top:15px;">
+<div class="dashboardWidgetContent">
 	{include file="dashboards/HistoryContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
-
-<div class="widgeticons dashBoardWidgetFooter">
-    <div class="filterContainer boxSizingBorderBox">
+<div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+    <div class="filterContainer boxSizingBorderBox bg-body">
         <div class="row" style="margin-bottom: 10px;">
             <div class="col-sm-12">
                 <div class="col-lg-4">
@@ -61,23 +62,21 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
-                <span class="col-lg-4">
-                        <span>
-                            <strong>{vtranslate('LBL_SELECT_DATE_RANGE', $MODULE_NAME)}</strong>
-                        </span>
-                </span>
-                <span class="col-lg-7">
-                    <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="modifiedtime">
-                        <input type="text" class="input-sm form-control" name="start" style="height:30px;"/>
-                        <span class="input-group-addon">to</span>
-                        <input type="text" class="input-sm form-control" name="end" style="height:30px;"/>
-                    </div>
+            <div class="col-lg-4">
+                <span>
+                    <strong>{vtranslate('LBL_SELECT_DATE_RANGE', $MODULE_NAME)}</strong>
                 </span>
             </div>
+            <span class="col-lg-8">
+                <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="modifiedtime">
+                    <input type="text" class="input-sm form-control" name="start" style="height:30px;"/>
+                    <span class="input-group-addon">to</span>
+                    <input type="text" class="input-sm form-control" name="end" style="height:30px;"/>
+                </div>
+            </span>
         </div>
     </div>
-    <div class="footerIcons pull-right">
+    <div class="footerIcons p-2">
         {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME SETTING_EXIST=true}
     </div>
 </div>

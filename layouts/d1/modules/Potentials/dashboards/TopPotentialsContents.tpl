@@ -9,30 +9,29 @@
   *
  ********************************************************************************/
 -->*}
-<div style='padding:5px'>
+<div>
 {if php7_count($MODELS) > 0}
-	<div>
-        <div class='row'>
-            <div class='col-lg-4'>
+	<div class="container-fluid">
+        <div class="row p-2 bg-body-secondary text-secondary">
+            <div class="col-lg-4">
                 <b>{vtranslate('Potential Name', $MODULE_NAME)}</b>
             </div>
-            <div class='col-lg-4'>
+            <div class="col-lg-4">
                 <b>{vtranslate('Amount', $MODULE_NAME)}</b>
             </div>
-            <div class='col-lg-4'>
+            <div class="col-lg-4">
                 <b>{vtranslate('Related To', $MODULE_NAME)}</b>
             </div>
         </div>
-		<hr>
 		{foreach item=MODEL from=$MODELS}
-		<div class='row'>
-			<div class='col-lg-4'>
+		<div class="row border-bottom p-2">
+			<div class="col-lg-4">
 				<a href="{$MODEL->getDetailViewUrl()}">{$MODEL->getName()}</a>
 			</div>
-			<div class='col-lg-4'>
+			<div class="col-lg-4">
 				{CurrencyField::appendCurrencySymbol($MODEL->getDisplayValue('amount'), $USER_CURRENCY_SYMBOL)}
 			</div>
-			<div class='col-lg-4'>
+			<div class="col-lg-4">
 				{$MODEL->getDisplayValue('related_to')}
 			</div>
 		</div>

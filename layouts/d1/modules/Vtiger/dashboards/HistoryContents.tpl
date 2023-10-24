@@ -6,8 +6,7 @@
 * Portions created by vtiger are Copyright (C) vtiger.
 * All Rights Reserved.
 *************************************************************************************}
-
-<div style='padding:5px;'>
+<div class="px-3 py-2">
 	{if $HISTORIES neq false}
 		{foreach key=$index item=HISTORY from=$HISTORIES}
 			{assign var=MODELNAME value=get_class($HISTORY)}
@@ -26,25 +25,26 @@
 					{/if}
 				{/if}
 				{if $PROCEED}
-					<div class="row entry clearfix">
-						<div class='col-lg-1 pull-left'>
+					<div class="row entry">
+						<div class="col-lg-auto">
 							{assign var=VT_ICON value=$MOD_NAME}
 							{if $MOD_NAME eq "Events"}
 								{assign var="TRANSLATED_MODULE_NAME" value="Calendar"}
 								{assign var=VT_ICON value="Calendar"}
-							{else if $MOD_NAME eq "Calendar"}
+							{elseif $MOD_NAME eq "Calendar"}
 								{assign var=VT_ICON value="Task"}
 							{/if}
-							<span>{$HISTORY->getParent()->getModule()->getModuleIcon($VT_ICON)}</span>&nbsp;&nbsp;
+							<span>{$HISTORY->getParent()->getModule()->getModuleIcon($VT_ICON)}</span>
 						</div>
-						<div class="col-lg-10 pull-left">
+						<div class="col-lg">
 							{assign var=DETAILVIEW_URL value=$PARENT->getDetailViewUrl()}
 							{if $HISTORY->isUpdate()}
 								{assign var=FIELDS value=$HISTORY->getFieldInstances()}
 								<div>
-									<div><b>{$USER->getName()}</b> {vtranslate('LBL_UPDATED')} <a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0}
-																								  onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
-											{$PARENT->getName()}</a>
+									<div>
+										<b>{$USER->getName()}</b>
+										<span class="me-2">{vtranslate('LBL_UPDATED')}</span>
+										<a class="cursorPointer me-2" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>{$PARENT->getName()}</a>
 									</div>
 									{foreach from=$FIELDS key=INDEX item=FIELD}
 										{if $INDEX lt 2}
@@ -52,15 +52,17 @@
 												<div>
 													<i>{vtranslate($FIELD->getName(), $FIELD->getModuleName())}</i>
 													{if $FIELD->get('prevalue') neq '' && $FIELD->get('postvalue') neq '' && !($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && ($FIELD->get('postvalue') eq '0' || $FIELD->get('prevalue') eq '0'))}
-														&nbsp;{vtranslate('LBL_FROM')} <b>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</b>
-													{else if $FIELD->get('postvalue') eq '' || ($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELD->get('postvalue') eq '0')}
-														&nbsp; <b> {vtranslate('LBL_DELETED')} </b> ( <del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</del> )
+														<span class="me-2">{vtranslate('LBL_FROM')}</span>
+														<b class="me-2">{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</b>
+													{elseif $FIELD->get('postvalue') eq '' || ($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELD->get('postvalue') eq '0')}
+														<b class="me-2">{vtranslate('LBL_DELETED')}</b>(<del>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('prevalue'))))}</del>)
 													{else}
-														&nbsp;{vtranslate('LBL_CHANGED')}
+														<span class="me-2">{vtranslate('LBL_CHANGED')}</span>
 													{/if}
 													{if $FIELD->get('postvalue') neq '' && !($FIELD->getFieldInstance()->getFieldDataType() eq 'reference' && $FIELD->get('postvalue') eq '0')}
-														{vtranslate('LBL_TO')} <b>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('postvalue'))))}</b>
-													{/if}    
+														<span class="me-2">{vtranslate('LBL_TO')}</span>
+														<b>{Vtiger_Util_Helper::toVtiger6SafeHTML($FIELD->getDisplayValue(decode_html($FIELD->get('postvalue'))))}</b>
+													{/if}
 												</div>
 											{/if}
 										{else}
@@ -69,12 +71,13 @@
 										{/if}
 									{/foreach}
 								</div>
-							{else if $HISTORY->isCreate()}
+							{elseif $HISTORY->isCreate()}
 								<div>
-									<b>{$USER->getName()}</b> {vtranslate('LBL_ADDED')} 
+									<b class="me-2">{$USER->getName()}</b>
+									<span class="me-2">{vtranslate('LBL_ADDED')}</span>
 									<a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>{$PARENT->getName()}</a>
 								</div>
-							{else if ($HISTORY->isRelationLink() || $HISTORY->isRelationUnLink())}
+							{elseif ($HISTORY->isRelationLink() || $HISTORY->isRelationUnLink())}
 								{assign var=RELATION value=$HISTORY->getRelationInstance()}
 								{assign var=LINKED_RECORD_DETAIL_URL value=$RELATION->getLinkedRecord()->getDetailViewUrl()}
 								{assign var=PARENT_DETAIL_URL value=$RELATION->getParent()->getParent()->getDetailViewUrl()}
@@ -92,7 +95,7 @@
 									{else}
 										{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
 									{/if}
-								{else if $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
+								{elseif $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
 									<i>"{$RELATION->getLinkedRecord()->getName()}"</i>
 								{else}
 									<a class="cursorPointer" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}'
@@ -101,35 +104,43 @@
 							   onclick='{$PARENT_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$PARENT_DETAIL_URL}"' {/if}>
 									{$RELATION->getParent()->getParent()->getName()}</a>
 							</div>
-						{else if $HISTORY->isRestore()}
+						{elseif $HISTORY->isRestore()}
 							<div>
 								<b>{$USER->getName()}</b> {vtranslate('LBL_RESTORED')} <a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0}
 																						  onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
 									{$PARENT->getName()}</a>
 							</div>
-						{else if $HISTORY->isDelete()}
+						{elseif $HISTORY->isDelete()}
 							<div>
-								<b>{$USER->getName()}</b> {vtranslate('LBL_DELETED')} 
+								<b>{$USER->getName()}</b> {vtranslate('LBL_DELETED')}
 								<strong> {$PARENT->getName()}</strong>
 							</div>
 						{/if}
+						{if $TIME}
+							<p class="text-end muted">
+								<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$TIME")}</small>
+							</p>
+						{/if}
 					</div>
-					{if $TIME}<p class="pull-right muted" style="padding-right:10px;"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$TIME")}</small></p>{/if}
 				</div>
 			{/if}
-			{else if $MODELNAME == 'ModComments_Record_Model'}
+			{elseif $MODELNAME == 'ModComments_Record_Model'}
 				<div class="row">
-					<div class="col-lg-1 pull-left">
-						<span><i class="vicon-chat entryIcon" title={$TRANSLATED_MODULE_NAME}></i></span>
+					<div class="col-lg-auto">
+						<span>
+							<i class="vicon-chat entryIcon" title={$TRANSLATED_MODULE_NAME}></i>
+						</span>
 					</div>
-					<div class="col-lg-10 pull-left" style="margin-top:5px;">
+					<div class="col-lg">
 						{assign var=COMMENT_TIME value=$HISTORY->getCommentedTime()}
 						<div>
 							<b>{$HISTORY->getCommentedByName()}</b> {vtranslate('LBL_COMMENTED')} {vtranslate('LBL_ON')} <a class="textOverflowEllipsis" href="{$HISTORY->getParentRecordModel()->getDetailViewUrl()}">{$HISTORY->getParentRecordModel()->getName()}</a>
 						</div>
-						<div><i>"{nl2br($HISTORY->get('commentcontent'))}"</i></div>
+						<div>
+							<i>"{nl2br($HISTORY->get('commentcontent'))}"</i>
+						</div>
+						<p class="muted text-end"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$COMMENT_TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$COMMENT_TIME")}</small></p>
 					</div>
-					<p class="pull-right muted" style="padding-right:10px;"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$COMMENT_TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$COMMENT_TIME")}</small></p>
 				</div>
 			{/if}
 		{/foreach}

@@ -23,7 +23,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		// After adding widget, we should remove that widget from Add Widget drop down menu from active tab
 		var activeTabId = Vtiger_DashBoard_Js.currentInstance.getActiveTabId();
 		jQuery('a[data-name="'+name+'"]',"#tab_"+activeTabId).parent().hide();
-		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
+		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
 		widgetContainer.data('url', url);
 		var width = element.data('width');
 		var height = element.data('height');
@@ -136,7 +136,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			url += '&filterid='+filterid+'&data=' + JSON.stringify(data);
 			var linkId = element.data('linkid');
 			var name = element.data('name');
-			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
+			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
 			widgetContainer.data('url', url);
 			var width = element.data('width');
 			var height = element.data('height');
@@ -183,7 +183,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 								url += '&widgetid='+widgetId;
 
 								var name = element.data('name');
-								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
+								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
 								widgetContainer.data('url', url);
 								var width = element.data('width');
 								var height = element.data('height');
@@ -553,26 +553,22 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			if(widgetContainer.find('input[name="clickthrough"]').length){
 				clickThrough = widgetContainer.find('input[name="clickthrough"]').val();
 			}
-			var fullscreenview = '<div class="fullscreencontents modal-dialog modal-lg">\n\
+			var fullscreenview = '<div class="fullscreencontents modal-dialog modal-xl">\n\
 									<div class="modal-content">\n\
 									<div class="modal-header backgroundColor">\n\
-										<div class="clearfix">\n\
-											<div class="pull-right">\n\
-												<button data-dismiss="modal" class="close" title="'+app.vtranslate('JS_CLOSE')+'"><span aria-hidden="true" class="fa fa-close"></span></button>\n\
-											</div>\n\
-											<h4 class="pull-left">'+widgetTitle+'</h4>\n\
-										</div>\n\
+										<h4>'+widgetTitle+'</h4>\n\
+										<button data-bs-dismiss="modal" class="btn btn-close" title="'+app.vtranslate('JS_CLOSE')+'"></button>\n\
 									</div>\n\
 									<div class="modal-body" style="overflow:auto;">\n\
-										<ul style="list-style: none;"><li id="fullscreenpreview" class="dashboardWidget fullscreenview" data-name="'+widgetName+'">\n\
-											<div class="dashboardWidgetContent" style="min-height:500px;width:100%;min-width:600px; margin: 0 auto" data-displaymode="fullscreen">';
+										<ul style="list-style: none;" class="p-0 m-3"><li id="fullscreenpreview" class="dashboardWidget fullscreenview" data-name="'+widgetName+'">\n\
+											<div class="dashboardWidgetContent overflow-auto h-100" style="min-height:500px;width:100%;min-width:600px; margin: 0 auto" data-displaymode="fullscreen">';
 						if(chartType != ''){
 							fullscreenview += ' <input type="hidden" value="'+chartType+'" name="charttype">\n\
 												<input type="hidden" value="'+clickThrough+'" name="clickthrough">\n\
 												<div id="chartDiv" name="chartcontent" style="width:100%;height:100%" data-mode="preview"></div> \n\
 												<input class="widgetData" type="hidden" value="" name="data">';
 						} else {
-							fullscreenview += ' <div class="dashboardWidgetContent" style="width:100%;height:100%" data-displaymode="fullscreen">\n\
+							fullscreenview += ' <div class="dashboardWidgetContent overflow-auto h-100" style="width:100%;height:100%" data-displaymode="fullscreen">\n\
 													<div id="chartDiv" class="widgetChartContainer" style="width:100%;height:100%"></div>\n\
 														<input class="widgetData" type="hidden" value="" name="data">';
 						}
@@ -722,14 +718,14 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 										var tabid = data["tabid"];
 										var tabname = data["tabname"];
 										var tabEle = '<li class="dashboardTab" data-tabid="'+tabid+'" data-tabname="'+tabname+'">';
-										tabEle += '<a data-toggle="tab" href="#tab_'+tabid+'">\n\
-														<div>\n\
-															<span class="name textOverflowEllipsis" value="'+tabname+'" style="width:10%">\n\
+										tabEle += '<a class="nav-link" data-bs-toggle="tab" href="#tab_'+tabid+'">\n\
+														<div class="d-flex align-items-center">\n\
+															<span class="name text-truncate" value="'+tabname+'">\n\
 															<strong>'+tabname+'</strong>\n\
 															</span>\n\
-															<span class="editTabName hide"><input type="text" name="tabName"></span>\n\
-															<i class="fa fa-close deleteTab"></i>\n\
-															<i class="fa fa-bars moveTab hide"></i>\n\
+															<span class="editTabName hide"><input class="form-control d-inline" type="text" name="tabName"></span>\n\
+															<i class="fa fa-close deleteTab ms-2"></i>\n\
+															<i class="fa fa-bars moveTab ms-2 hide"></i>\n\
 														</div>\n\
 														</a>';
 										tabEle += '</li>';
@@ -922,6 +918,8 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 	registerRearrangeTabsEvent : function(){
 		var dashBoardContainer = this.getDashboardContainer();
 
+		dashBoardContainer.find('.moveTab').addClass('hide');
+
 		// on click of Rearrange button
 		dashBoardContainer.on("click",'ul.moreDashBoards .reArrangeTabs',function(e){
 			var currentEle = jQuery(e.currentTarget);
@@ -932,6 +930,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 
 			currentEle.addClass("hide");
 			dashBoardContainer.find(".deleteTab").addClass("hide");
+
 			dashBoardContainer.find(".moveTab").removeClass("hide");
 			dashBoardContainer.find(".updateSequence").removeClass("hide");
 

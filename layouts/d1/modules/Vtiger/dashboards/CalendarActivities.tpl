@@ -10,16 +10,18 @@
 ********************************************************************************/
 -->*}
 
-<div class="dashboardWidgetHeader clearfix">
+<div class="dashboardWidgetHeader p-2 text-secondary">
     {if $SHARED_USERS|@count gt 0 || $SHARED_GROUPS|@count gt 0}
         {assign var="usersList" value="1"}
     {/if}
     <div class="title">
-        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}"><b>{if !$usersList}{vtranslate('LBL_MY',$MODULE_NAME)}&nbsp;{/if}{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}</b></div>
+        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}">
+            <b>{if !$usersList}{vtranslate('LBL_MY',$MODULE_NAME)}&nbsp;{/if}{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}</b>
+        </div>
     </div>
     {if $usersList}
         <div class="userList">
-            <select class="select2 widgetFilter" name="type">
+            <select class="select2 widgetFilter" name="type" data-close-on-select="true">
                 <option value="{$CURRENTUSER->getId()}" selected>{vtranslate('LBL_MINE',$MODULE_NAME)}</option>
                 {foreach key=USER_ID from=$SHARED_USERS item=USER_NAME}
                     <option value="{$USER_ID}">{$USER_NAME}</option>
@@ -32,11 +34,11 @@
         </div>
     {/if}
 </div>
-<div name="history" class="dashboardWidgetContent" style="padding-top:15px;">
+<div name="history" class="dashboardWidgetContent overflow-auto">
     {include file="dashboards/CalendarActivitiesContents.tpl"|@vtemplate_path:$MODULE_NAME WIDGET=$WIDGET}
 </div>
-<div class="widgeticons dashBoardWidgetFooter">
-    <div class="footerIcons pull-right">
+<div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+    <div class="footerIcons p-2">
         {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME}
     </div>
 </div>

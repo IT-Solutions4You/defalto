@@ -7,12 +7,12 @@
  * All Rights Reserved.
  *************************************************************************************}
 {strip}
-<div>
-	{foreach item=KEYMETRIC from=$KEYMETRICS}
-	<div style="padding-bottom:6px;">
-		<span class="pull-right">{$KEYMETRIC.count}</span>
-		<a href="?module={$KEYMETRIC.module}&view=List&viewname={$KEYMETRIC.id}">{$KEYMETRIC.name}</a>
-	</div>	
-	{/foreach}
-</div>
+    <div class="p-2">
+        {foreach item=KEYMETRIC from=$KEYMETRICS}
+            <div class="pb-2">
+                <span class="pull-right">{$KEYMETRIC.count}</span>
+                <a href="?module={$KEYMETRIC.module}&view=List&viewname={$KEYMETRIC.id}">{$KEYMETRIC.name}</a>
+            </div>
+        {/foreach}
+    </div>
 {/strip}

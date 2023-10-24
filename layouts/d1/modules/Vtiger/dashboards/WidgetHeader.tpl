@@ -17,7 +17,9 @@
         <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
     {/foreach}
         
-    <div class="title clearfix">
-        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}" style="width: 25em;"><b>{vtranslate($WIDGET->getTitle(), $MODULE_NAME)|@escape:'html'}</b></div>
+    <div class="title">
+        <div class="dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}">
+            <b>{vtranslate($WIDGET->getTitle(), $MODULE_NAME)|@escape:'html'}</b>
+        </div>
     </div>
 {/strip}

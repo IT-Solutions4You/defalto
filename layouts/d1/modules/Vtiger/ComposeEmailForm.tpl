@@ -123,7 +123,8 @@
                             </div>
                             <div class="col-lg-9">
                                 <div class="row">
-                                    <div class="col-lg-4 browse">
+                                    <div class="col-lg-4">
+
                                         <input type="file" {if $FILE_ATTACHED}class="removeNoFileChosen"{/if} id="multiFile" name="file[]"/>&nbsp;
                                     </div>
                                     <div class="col-lg-4 brownseInCrm">

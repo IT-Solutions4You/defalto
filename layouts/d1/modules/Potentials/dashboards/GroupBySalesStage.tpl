@@ -19,13 +19,12 @@
 	<script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 {/foreach}
 
-<div class="dashboardWidgetHeader">
-    <div class="title clearfix">
+<div class="dashboardWidgetHeader text-secondary p-2">
+    <div class="title">
         <div class="col-lg-4 dashboardTitle" title="{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}"><b>{vtranslate($WIDGET->getTitle(), $MODULE_NAME)}</b></div>
-        
         <div class="userList col-lg-5">
             <div>
-                <select class="widgetFilter select2" id="owner" name="owner" style='width:30%;margin-bottom:0px'>
+                <select class="widgetFilter select2 form-select" id="owner" name="owner" data-close-on-select="true" style="width:30%;">
                     <option value="{$CURRENTUSER->getId()}" >{vtranslate('LBL_MINE')}</option>
                     <option value="all">{vtranslate('LBL_ALL')}</option>
                     {assign var=ALL_ACTIVEUSER_LIST value=$CURRENTUSER->getAccessibleUsers()}
@@ -52,27 +51,27 @@
 
     </div>
 </div>
-<div class="dashboardWidgetContent">
+<div class="dashboardWidgetContent overflow-auto h-100">
 	{include file="dashboards/DashBoardWidgetContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
-<div class="widgeticons dashBoardWidgetFooter">
-    <div class="filterContainer">
+<div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+    <div class="filterContainer border-top border-bottom bg-body">
 		<div class="row">
 			<span class="col-lg-5">
-				<span class="pull-right">
+				<span>
 					{vtranslate('Expected Close Date', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}
 				</span>
 			</span>
-			<span class="col-lg-7">
+			<span class="col-lg-8">
                 <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="expectedclosedate">
-                    <input type="text" class="input-sm form-control" name="start" style="height:30px;"/>
-                    <span class="input-group-addon">to</span>
-                    <input type="text" class="input-sm form-control" name="end" style="height:30px;"/>
+                    <input type="text" class="inputElement form-control" name="start" style="height:30px;"/>
+                    <span class="input-group-text">to</span>
+                    <input type="text" class="inputElement form-control" name="end" style="height:30px;"/>
                 </div>
 			</span>
 		</div>
 	</div>
-    <div class="footerIcons pull-right">
+    <div class="footerIcons p-2">
         {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME SETTING_EXIST=true}
     </div>
 </div>

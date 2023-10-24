@@ -7,16 +7,16 @@
  * All Rights Reserved.
  *************************************************************************************}
 {strip}
-	<div class="dashboardWidgetHeader">
+	<div class="dashboardWidgetHeader text-secondary p-2">
 		{include file="dashboards/WidgetHeader.tpl"|@vtemplate_path:$MODULE_NAME}
 	</div>
 
-	<div class="dashboardWidgetContent" style='padding:5px'>
+	<div class="dashboardWidgetContent overflow-auto h-100">
 		{include file="dashboards/TagCloudContents.tpl"|@vtemplate_path:$MODULE_NAME}
 	</div>
         
-    <div class="widgeticons dashBoardWidgetFooter">
-        <div class="footerIcons pull-right">
+    <div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+        <div class="footerIcons p-2">
             {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME}
         </div>
     </div>
