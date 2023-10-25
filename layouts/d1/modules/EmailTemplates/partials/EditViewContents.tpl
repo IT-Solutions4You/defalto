@@ -43,7 +43,7 @@
                     <tr>
                         <td class="fieldLabel {$WIDTHTYPE}">{vtranslate('LBL_SELECT_FIELD_TYPE', $MODULE)}&nbsp;<span class="redColor">*</span></td>
                         <td class="fieldValue {$WIDTHTYPE}">
-                            <div class="filterContainer border-top border-bottom bg-body">
+                            <div class="filterContainer border-top border-bottom bg-body container-fluid">
                                 <input type=hidden name="moduleFields" data-value='{Vtiger_Functions::jsonEncode($ALL_FIELDS)}' />
                                 <div class="col-sm-6 col-xs-6 conditionRow">
                                     <select class="inputElement select2" name="modulename" data-rule-required="true">

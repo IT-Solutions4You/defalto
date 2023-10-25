@@ -9,8 +9,6 @@
 *
 ********************************************************************************/
 -->*}
-
-
-<div id="quickPreviewHeader">
+<div id="quickPreviewHeader" class="bg-body-secondary text-secondary px-3 py-2 mb-3">
     <div class="title">{$TITLE}</div>
 </div>

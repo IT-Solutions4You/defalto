@@ -55,20 +55,19 @@
 	{include file="dashboards/DashBoardWidgetContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
 <div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
-    <div class="filterContainer border-top border-bottom bg-body">
-		<div class="row">
-			<span class="col-lg-5">
-				<span>
-					{vtranslate('Expected Close Date', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}
-				</span>
-			</span>
-			<span class="col-lg-8">
+    <div class="filterContainer border-top border-bottom bg-body container-fluid">
+		<div class="row py-2">
+			<div class="col-lg-4">
+				<span class="me-2">{vtranslate('Expected Close Date', $MODULE_NAME)}</span>
+                <span>{vtranslate('LBL_BETWEEN', $MODULE_NAME)}</span>
+			</div>
+			<div class="col-lg-8">
                 <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="expectedclosedate">
-                    <input type="text" class="inputElement form-control" name="start" style="height:30px;"/>
+                    <input type="text" class="inputElement form-control" name="start"/>
                     <span class="input-group-text">to</span>
-                    <input type="text" class="inputElement form-control" name="end" style="height:30px;"/>
+                    <input type="text" class="inputElement form-control" name="end"/>
                 </div>
-			</span>
+			</div>
 		</div>
 	</div>
     <div class="footerIcons p-2">

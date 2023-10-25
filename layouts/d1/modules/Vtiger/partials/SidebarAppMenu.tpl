@@ -70,12 +70,12 @@
                     <div class="container-fluid">
                         <div class="row">
                             {if $USER_PRIVILEGES_MODEL->hasModulePermission($DASHBOARD_MODULE_MODEL->getId())}
-                                <div class="col-lg-12 p-0 menu-item app-item " data-default-url="{$HOME_MODULE_MODEL->getDefaultUrl()}">
+                                <a class="col-lg-12 p-0 menu-item app-item" href="{$HOME_MODULE_MODEL->getDefaultUrl()}">
                                     <div class="menu-items-link rounded p-3 mb-3 text-secondary">
                                         <span class="app-icon-list dt-menu-icon fa fa-dashboard"></span>
                                         <span class="app-name ms-3 textOverflowEllipsis">{vtranslate('LBL_DASHBOARD',$MODULE)}</span>
                                     </div>
-                                </div>
+                                </a>
                             {/if}
                         </div>
                     </div>

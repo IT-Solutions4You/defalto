@@ -39,13 +39,13 @@
 							{/if}
 							{if $FIELD_MODEL->get('uitype') eq "83"}
 								{foreach item=tax key=count from=$TAXCLASS_DETAILS}
-									<div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
-										<div class="container-fluid h-100">
+									<div id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-6">
+										<div class="h-100">
 											<div class="row py-2 border-bottom border-light-subtle h-100">
-												<div class="col-6 fieldLabel {$WIDTHTYPE}">
+												<div class="col-4 fieldLabel {$WIDTHTYPE}">
 													<span class='muted'>{vtranslate($tax.taxlabel, $MODULE)}(%)</span>
 												</div>
-												<div class="col-6 fieldValue fw-semibold {$WIDTHTYPE}">
+												<div class="col-8 fieldValue fw-semibold {$WIDTHTYPE}">
 													<span class="value textOverflowEllipsis" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
 														{if $tax.check_value eq 1}
 															{$tax.percentage}
@@ -59,29 +59,29 @@
 									</div>
 								{/foreach}
 							{elseif $FIELD_MODEL->get('uitype') eq "69" || $FIELD_MODEL->get('uitype') eq "105"}
-								<div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
-									<div class="container-fluid h-100">
+								<div  id="{$MODULE}_{$VIEW}_{$FIELD_MODEL->getName()}" class="py-2 col-lg-12">
+									<div class="h-100">
 										<div class="row py-2 border-bottom border-light-subtle h-100">
-											<div class="col-lg-6 fieldLabel {$WIDTHTYPE}">
-												<span class="muted">{vtranslate({$FIELD_MODEL->get('label')},{$MODULE_NAME})}</span>
+											<div class="col-lg-2 fieldLabel {$WIDTHTYPE}">
+												<span class="muted">{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}</span>
 											</div>
-											<div class="col-lg-6 fieldValue fw-semibold {$WIDTHTYPE}">
-												<ul id="imageContainer">
-													{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
-														{if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
-															<li><img src="{$IMAGE_INFO.url}" title="{$IMAGE_INFO.orgname}" width="400" height="300" /></li>
-														{/if}
-													{/foreach}
-												</ul>
+											<div class="col-lg-10 fieldValue fw-semibold {$WIDTHTYPE}">
+												{foreach key=ITER item=IMAGE_INFO from=$IMAGE_DETAILS}
+													{if !empty($IMAGE_INFO.url) && !empty({$IMAGE_INFO.orgname})}
+														<div class="d-inline-block pb-2 pe-2">
+															<img class="rounded" src="{$IMAGE_INFO.url}" title="{$IMAGE_INFO.orgname}" style="max-height: 15rem;" />
+														</div>
+													{/if}
+												{/foreach}
 											</div>
 										</div>
 									</div>
 								</div>
 							{else}
-								<div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
-									<div class="container-fluid h-100">
+								<div id="{$MODULE}_{$VIEW}_field_{$FIELD_MODEL->getName()}" class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
+									<div class="h-100">
 										<div class="row py-2 border-bottom border-light-subtle h-100">
-											<div class="fieldLabel textOverflowEllipsis {if $FIELD_MODEL->isTableFullWidth()}col-lg-2{else}col-lg-6{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}">
+											<div class="fieldLabel text-truncate {if $FIELD_MODEL->isTableFullWidth()}col-lg-2{else}col-lg-4{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldLabel_{$FIELD_MODEL->getName()}">
 												<span class="muted">
 													{if $MODULE_NAME eq 'Documents' && $FIELD_MODEL->get('label') eq "File Name" && $RECORD->get('filelocationtype') eq 'E'}
 														{vtranslate("LBL_FILE_URL",{$MODULE_NAME})}
@@ -93,7 +93,7 @@
 													{/if}
 												</span>
 											</div>
-											<div class="fieldValue fw-semibold {if $FIELD_MODEL->isTableFullWidth()}col-lg-10{else}col-lg-6{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldValue_{$FIELD_MODEL->getName()}">
+											<div class="fieldValue fw-semibold {if $FIELD_MODEL->isTableFullWidth()}col-lg-10{else}col-lg-8{/if} {$WIDTHTYPE}" id="{$MODULE_NAME}_detailView_fieldValue_{$FIELD_MODEL->getName()}">
 												{assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
 												{if $fieldDataType eq 'multipicklist'}
 													{assign var=FIELD_DISPLAY_VALUE value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}

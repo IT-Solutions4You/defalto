@@ -11,19 +11,20 @@
 	<div class="record-header">
 		<div class="recordBasicInfo">
 			{if !$IS_OVERLAY}
-				<div class="pull-right">
+				<div class="float-end">
 					{include file='DetailViewHeaderPagination.tpl'|vtemplate_path:$QUALIFIED_MODULE}
 				</div>
 			{/if}
-			<div class="pull-left">
+			<div class="float-start">
 				{include file='DetailViewHeaderImage.tpl'|vtemplate_path:$QUALIFIED_MODULE}
 			</div>
 			<div class="recordHeaderTitle">
 				<span class="fs-3 recordLabel pushDown" title="{$RECORD->getName()}">
 					{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}
 						{assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
-						{if $FIELD_MODEL->getPermissions()}
-							<span class="me-2 {$NAME_FIELD}">{trim($RECORD->get($NAME_FIELD))}</span>
+						{assign var=FIELD_VALUE value=trim($RECORD->get($NAME_FIELD))}
+						{if $FIELD_MODEL->getPermissions() && $FIELD_VALUE}
+							<span class="me-2 {$NAME_FIELD}">{$FIELD_VALUE}</span>
 						{/if}
 					{/foreach}
 				</span>

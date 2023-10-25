@@ -39,29 +39,31 @@
 	{include file="dashboards/HistoryContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
 <div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
-    <div class="filterContainer boxSizingBorderBox bg-body">
-        <div class="row" style="margin-bottom: 10px;">
-            <div class="col-sm-12">
-                <div class="col-lg-4">
-                    <span><strong>{vtranslate('LBL_SHOW', $MODULE_NAME)}</strong></span>
-                </div>
-                <div class="col-lg-7">
-                        {if $COMMENTS_MODULE_MODEL->isPermitted('DetailView')}
-                            <label class="radio-group cursorPointer">
-                                <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer" value="comments" /> {vtranslate('LBL_COMMENTS', $MODULE_NAME)}
-                            </label><br>
-                        {/if}
-                        <label class="radio-group cursorPointer">
-                            <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer" value="updates" /> 
-                            <span>{vtranslate('LBL_UPDATES', $MODULE_NAME)}</span>
-                        </label><br>
-                        <label class="radio-group cursorPointer">
-                            <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer" value="all" checked="" /> {vtranslate('LBL_BOTH', $MODULE_NAME)}
-                        </label>
-                </div>
+    <div class="filterContainer boxSizingBorderBox bg-body border-top border-bottom container-fluid">
+        <div class="row py-2">
+            <div class="col-lg-4">
+                <span>
+                    <strong>{vtranslate('LBL_SHOW', $MODULE_NAME)}</strong>
+                </span>
+            </div>
+            <div class="col-lg-7">
+                {if $COMMENTS_MODULE_MODEL->isPermitted('DetailView')}
+                    <label class="radio-group cursorPointer form-check">
+                        <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer form-check-input" value="comments" />
+                        <span class="ms-2">{vtranslate('LBL_COMMENTS', $MODULE_NAME)}</span>
+                    </label>
+                {/if}
+                <label class="radio-group cursorPointer form-check">
+                    <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer form-check-input" value="updates" />
+                    <span class="ms-2">{vtranslate('LBL_UPDATES', $MODULE_NAME)}</span>
+                </label>
+                <label class="radio-group cursorPointer form-check">
+                    <input type="radio" name="historyType" class="widgetFilter reloadOnChange cursorPointer form-check-input" value="all" checked="" />
+                    <span class="ms-2">{vtranslate('LBL_BOTH', $MODULE_NAME)}</span>
+                </label>
             </div>
         </div>
-        <div class="row">
+        <div class="row py-2">
             <div class="col-lg-4">
                 <span>
                     <strong>{vtranslate('LBL_SELECT_DATE_RANGE', $MODULE_NAME)}</strong>
@@ -69,9 +71,9 @@
             </div>
             <span class="col-lg-8">
                 <div class="input-daterange input-group dateRange widgetFilter" id="datepicker" name="modifiedtime">
-                    <input type="text" class="input-sm form-control" name="start" style="height:30px;"/>
-                    <span class="input-group-addon">to</span>
-                    <input type="text" class="input-sm form-control" name="end" style="height:30px;"/>
+                    <input type="text" class="inputElement form-control" name="start"/>
+                    <span class="input-group-text">to</span>
+                    <input type="text" class="inputElement form-control" name="end"/>
                 </div>
             </span>
         </div>

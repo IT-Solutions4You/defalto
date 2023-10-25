@@ -19,8 +19,8 @@
 	{include file="dashboards/DashBoardWidgetContents.tpl"|@vtemplate_path:$MODULE_NAME}
 </div>
 <div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
-    <div class="filterContainer border-top border-bottom bg-body">
-        <div class="row">
+    <div class="filterContainer border-top border-bottom bg-body container-fluid">
+        <div class="row py-2">
             <div class="col-lg-4">
                 <span>
                     <strong>{vtranslate('Created Time', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}</strong>

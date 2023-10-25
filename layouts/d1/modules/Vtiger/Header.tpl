@@ -8,7 +8,7 @@
  ************************************************************************************}
 {strip}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 	<head>
 		<title>{vtranslate($PAGETITLE, $QUALIFIED_MODULE)}</title>
         <link rel="SHORTCUT ICON" href="layouts/d1/skins/images/favicon.ico">

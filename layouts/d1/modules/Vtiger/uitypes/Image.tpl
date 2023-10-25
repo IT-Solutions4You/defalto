@@ -51,7 +51,7 @@
 			<div class="row mb-3">
 				{if !empty($IMAGE_INFO.url)}
 					<div class="col-lg-auto" name="existingImages">
-						<img class="rounded" src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" style="max-width: 10rem; max-height: 10rem;">
+						<img class="rounded" src="{$IMAGE_INFO.url}" data-image-id="{$IMAGE_INFO.id}" style="max-height: 15rem;">
 					</div>
 					<div class="col-lg-auto py-3">
 						[{$IMAGE_INFO.name}]

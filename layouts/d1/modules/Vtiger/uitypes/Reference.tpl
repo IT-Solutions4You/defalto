@@ -37,17 +37,22 @@
         {assign var="displayId" value=$FIELD_VALUE}
         <div class="input-group rounded-start">
             <input id="{$FIELD_NAME}_display" name="{$FIELD_MODEL->getFieldName()}_display" data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="reference" type="text"
-                   class="marginLeftZero autoComplete inputElement form-control"
-                   value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}"
-                   placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
-                   {if $displayId neq 0}disabled="disabled"{/if}
-                    {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" data-rule-reference_required="true" {/if}
-                    {if php7_count($FIELD_INFO['validator'])}
-                        data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
-                    {/if}
+               class="marginLeftZero autoComplete inputElement form-control"
+               value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}"
+               placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
+               {if !empty($FIELD_VALUE)}
+                   disabled="disabled"
+               {/if}
+                {if $FIELD_INFO["mandatory"] eq true}
+                    data-rule-required="true"
+                    data-rule-reference_required="true"
+                {/if}
+                {if php7_count($FIELD_INFO['validator'])}
+                    data-specific-rules='{ZEND_JSON::encode($FIELD_INFO["validator"])}'
+                {/if}
             />
             <input name="{$FIELD_MODEL->getFieldName()}" type="hidden" value="{$FIELD_VALUE}" class="sourceField" data-displayvalue='{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}' {if $AUTOFILL_VALUE} data-autofill={Zend_Json::encode($AUTOFILL_VALUE)} {/if}/>
-            <a href="#" class="clearReferenceSelection input-group-text {if $FIELD_VALUE eq 0}hide{/if}">
+            <a href="#" class="clearReferenceSelection input-group-text {if empty($FIELD_VALUE)}hide{/if}">
                 <i class="fa fa-xmark"></i>
             </a>
             <span class="input-group-addon relatedPopup cursorPointer input-group-text" title="{vtranslate('LBL_SELECT', $MODULE)}">

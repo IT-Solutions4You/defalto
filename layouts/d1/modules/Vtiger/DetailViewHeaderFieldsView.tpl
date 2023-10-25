@@ -9,7 +9,7 @@
 
 {strip}
 <form id="headerForm" method="POST">
-    <div class="row align-items-center mt-3">
+    <div class="row align-items-center pt-3">
         {assign var=FIELDS_MODELS_LIST value=$MODULE_MODEL->getFields()}
         {foreach item=FIELD_MODEL from=$FIELDS_MODELS_LIST}
             {assign var=FIELD_DATA_TYPE value=$FIELD_MODEL->getFieldDataType()}

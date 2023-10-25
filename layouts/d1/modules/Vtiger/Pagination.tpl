@@ -50,7 +50,7 @@
                         </div>
                         <div class="listview-pagejump input-group p-0 px-2">
                             <input type="text" id="pageToJump" placeholder="{vtranslate('LBL_LISTVIEW_JUMP_TO',$moduleName)}" class="form-control text-center {$CLASS_VIEW_PAGING_INPUT}"/>
-                            <button type="button" id="pageToJumpSubmit" class="btn btn-success text-center {$CLASS_VIEW_PAGING_INPUT_SUBMIT}">{'GO'}</button>
+                            <button type="button" id="pageToJumpSubmit" class="btn btn-primary text-center {$CLASS_VIEW_PAGING_INPUT_SUBMIT}">{'GO'}</button>
                         </div>
                     </li>
                 </ul>

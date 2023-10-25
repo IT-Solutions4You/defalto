@@ -10,65 +10,66 @@
 ********************************************************************************/
 -->*}
 <div class="quickPreview modal-dialog m-0">
-    <input type="hidden" name="sourceModuleName" id="sourceModuleName" value="{$MODULE_NAME}" />
-    <input type="hidden" id = "nextRecordId" value ="{$NEXT_RECORD_ID}">
-    <input type="hidden" id = "previousRecordId" value ="{$PREVIOUS_RECORD_ID}">
+    <input type="hidden" name="sourceModuleName" id="sourceModuleName" value="{$MODULE_NAME}"/>
+    <input type="hidden" id="nextRecordId" value="{$NEXT_RECORD_ID}">
+    <input type="hidden" id="previousRecordId" value="{$PREVIOUS_RECORD_ID}">
 
-    <div class='quick-preview-modal modal-content border-0'>
-        <div class='modal-body'>
-            <div class = "quickPreviewModuleHeader row">
-                <div class = "col-lg-10">
-                    <div class="row qp-heading">
-                        {include file="ListViewQuickPreviewHeaderTitle.tpl"|vtemplate_path:$MODULE_NAME MODULE_MODEL=$MODULE_MODEL RECORD=$RECORD}
+    <div class="quick-preview-modal modal-content border-0">
+        <div class="modal-body p-0">
+            <div class="container-fluid px-3">
+                <div class="quickPreviewModuleHeader row py-2">
+                    <div class="col-lg-10">
+                        <div class="row qp-heading">
+                            {include file="ListViewQuickPreviewHeaderTitle.tpl"|vtemplate_path:$MODULE_NAME MODULE_MODEL=$MODULE_MODEL RECORD=$RECORD IS_OVERLAY=true}
+                        </div>
+                    </div>
+                    <div class="col-lg-2 text-end">
+                        <button class="btn-close" aria-hidden="true" data-bs-dismiss="modal" type="button" title="{vtranslate('LBL_CLOSE')}"></button>
                     </div>
                 </div>
-                <div class="col-lg-2 text-end">
-                    <button class="btn-close" aria-hidden="true" data-bs-dismiss="modal" type="button" title="{vtranslate('LBL_CLOSE')}"></button>
-                </div>
-            </div>
-
-            <div class="quickPreviewActions clearfix">
-                <div class="btn-group pull-left">
-                    <button class="btn btn-success" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">
-                       {vtranslate('LBL_VIEW_DETAILS', $MODULE_NAME)} 
-                    </button>
-                </div>
-                {if $NAVIGATION}
-                    <div class="btn-group pull-right">
-                        <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
-                            <i class="fa fa-chevron-left"></i>
-                        </button>
-                        <button class="btn btn-outline-secondary" id="quickPreviewNextRecordButton" data-record="{$NEXT_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
-                            <i class="fa fa-chevron-right"></i>
-                        </button>
+                <div class="quickPreviewActions row py-2">
+                    <div class="col">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="window.location.href = '{$RECORD->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}'">
+                                {vtranslate('LBL_VIEW_DETAILS', $MODULE_NAME)}
+                            </button>
+                        </div>
                     </div>
-                {/if}
-
-            </div>
-            <div class = "quickPreviewSummary">
-                <table class="summary-table no-border" style="width:100%;">
-                    <tbody>
+                    {if $NAVIGATION}
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary" id="quickPreviewPreviousRecordButton" data-record="{$PREVIOUS_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($PREVIOUS_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$PREVIOUS_RECORD_ID})"*}{/if} >
+                                    <i class="fa fa-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" id="quickPreviewNextRecordButton" data-record="{$NEXT_RECORD_ID}" data-app="{$SELECTED_MENU_CATEGORY}" {if empty($NEXT_RECORD_ID)} disabled="disabled" {*{else} onclick="Vtiger_List_Js.triggerPreviewForRecord({$NEXT_RECORD_ID})"*}{/if}>
+                                    <i class="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+                <div class="quickPreviewSummary row py-2">
+                    <div class="summary-table">
                         {foreach item=FIELD_MODEL key=FIELD_NAME from=$SUMMARY_RECORD_STRUCTURE['SUMMARY_FIELDS']}
                             {if $FIELD_MODEL->get('name') neq 'modifiedtime' && $FIELD_MODEL->get('name') neq 'createdtime'}
-                                <tr class="summaryViewEntries">
-                                    <td class="fieldLabel col-lg-5" ><label class="muted">{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}</label></td>
-                                    <td class="fieldValue col-lg-7">
-                                        <div class="row">
-                                            <span class="value textOverflowEllipsis" {if $FIELD_MODEL->get('uitype') eq '19' or $FIELD_MODEL->get('uitype') eq '20' or $FIELD_MODEL->get('uitype') eq '21'}style="word-wrap: break-word;"{/if}>
-                                                {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <div class="summaryViewEntries row py-1">
+                                    <div class="fieldLabel col-lg-5">
+                                        <label class="muted">{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}</label>
+                                    </div>
+                                    <div class="fieldValue col-lg-7">
+                                        <span class="value text-truncate" {if $FIELD_MODEL->get('uitype') eq '19' or $FIELD_MODEL->get('uitype') eq '20' or $FIELD_MODEL->get('uitype') eq '21'}style="word-wrap: break-word;"{/if}>
+                                            {include file=$FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName()|@vtemplate_path:$MODULE_NAME FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
+                                        </span>
+                                    </div>
+                                </div>
                             {/if}
                         {/foreach}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </div>
-
             <div class="engagementsContainer">
-				{include file="ListViewQuickPreviewSectionHeader.tpl"|vtemplate_path:$MODULE_NAME TITLE="{vtranslate('LBL_UPDATES',$MODULE_NAME)}"}
-				{include file="RecentActivities.tpl"|vtemplate_path:$MODULE_NAME}
+                {include file="ListViewQuickPreviewSectionHeader.tpl"|vtemplate_path:$MODULE_NAME TITLE="{vtranslate('LBL_UPDATES',$MODULE_NAME)}"}
+                {include file="RecentActivities.tpl"|vtemplate_path:$MODULE_NAME}
             </div>
 
             <br>

@@ -46,7 +46,7 @@
                 <input type='hidden' name='data' value='{Vtiger_Functions::jsonEncode($DATA)}' />
                 <input type='hidden' name='clickthrough' value="{$CLICK_THROUGH}" />
                 <br>
-                <div style="margin:0px 20px;">
+                <div>
                     <div class='border1px' style="padding:30px;">
                         <div id='chartcontent' name='chartcontent' style="min-height:400px;" data-mode='Reports'></div>
                         <br>
@@ -60,9 +60,9 @@
 </div>
 {if $CHART_TYPE eq 'pieChart'}
     {assign var=CLASS_NAME value='Report_Piechart_Js'}
-{else if $CHART_TYPE eq 'verticalbarChart'}
+{elseif $CHART_TYPE eq 'verticalbarChart'}
     {assign var=CLASS_NAME value='Report_Verticalbarchart_Js'}
-{else if $CHART_TYPE eq 'horizontalbarChart'}
+{elseif $CHART_TYPE eq 'horizontalbarChart'}
     {assign var=CLASS_NAME value='Report_Horizontalbarchart_Js'}
 {else}
     {assign var=CLASS_NAME value='Report_Linechart_Js'}

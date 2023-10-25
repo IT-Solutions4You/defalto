@@ -2329,21 +2329,7 @@ input[type=checkbox]:checked {
     border-bottom: 1.5rem solid transparent;
 
     border-left: 1.5rem solid #eff3fe;
-    margin-right: -1.49rem;
-}
-.step:before {
-    position: absolute;
-    top: 0;
-    right: 0;
-    content: '';
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border-top: 1.5rem solid transparent;
-    border-bottom: 1.5rem solid transparent;
-
-    border-left: 1.5rem solid #5e81f4;
-    margin-right: -1.51rem;
+    margin-right: -1.48rem;
 }
 
 .crumbs .step.active:after {
@@ -2916,33 +2902,12 @@ input[type=checkbox]:checked {
     width: 100%;
 }
 
-.quick-preview-modal .quickPreviewActions {
-    padding: 10px 0px 15px 0px;
-}
-
-#quickPreviewHeader .title {
-    background: #f5f5f5;
-    padding: 6px 10px;
-    margin: 5px 0;
-    font-size: 15px;
-    color: #000000;
-}
-
-.quickPreviewModuleHeader {
-    padding-right: 6px;
-}
-
 .quickPreviewModuleHeader .qp-heading > div {
     width: 100%;
 }
 
-.quickPreviewSummary {
-    margin-bottom: 10px;
-}
-
 .quickPreviewSummary .summaryViewEntries .fieldLabel,
 .quickPreviewSummary .summaryViewEntries .fieldValue {
-    padding-bottom: 4px;
     white-space: nowrap;
 }
 
@@ -2975,14 +2940,6 @@ input[type=checkbox]:checked {
 .commentsList p,
 .recentComments .noCommentsMsgContainer p {
     margin-bottom: 0;
-}
-
-.quickPreviewComments .recentComments .commentDetails {
-    margin-bottom: 25px;
-}
-
-.quickPreviewComments .recentComments .commentDetails .comment {
-    line-height: 15px;
 }
 
 .quickPreviewComments .summaryWidgetContainer {
@@ -4000,7 +3957,6 @@ li.dashboardWidget {
 
 .dashBoardWidgetFooter .filterContainer {
     position: absolute;
-    padding: 10px 7px;
     display: none;
     height: auto;
     width: 100%;

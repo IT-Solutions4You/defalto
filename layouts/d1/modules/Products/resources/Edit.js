@@ -436,7 +436,6 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 		}
 	},
 	registerTaxEvents : function(container) {
-		app.helper.showScroll(jQuery('.regionsList'), {'height':'100px'});
 		container.on('change','.taxes', function(e){
 			var element = jQuery(e.currentTarget);
 			var taxIdSelector = element.data('taxName');

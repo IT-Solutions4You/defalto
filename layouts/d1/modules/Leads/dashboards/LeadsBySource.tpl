@@ -21,8 +21,8 @@
 </div>
 
 <div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
-    <div class="filterContainer border-top border-bottom bg-body">
-        <div class="row">
+    <div class="filterContainer border-top border-bottom bg-body container-fluid">
+        <div class="row p-2 py-2">
             <div class="col-lg-4">
                 <span>
                     <strong>{vtranslate('Created Time', $MODULE_NAME)} &nbsp; {vtranslate('LBL_BETWEEN', $MODULE_NAME)}</strong>
@@ -36,8 +36,7 @@
                 </div>
             </div>
         </div>
-        <br>
-        <div class="row">
+        <div class="row p-2 py-2">
             <div class="col-lg-4">
                 <span>
                     <strong>{vtranslate('Assigned To', $MODULE_NAME)}</strong>

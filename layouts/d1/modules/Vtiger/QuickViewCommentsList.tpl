@@ -12,50 +12,52 @@
 {assign var="COMMENT_TEXTAREA_DEFAULT_ROWS" value="2"}
 <div class = "summaryWidgetContainer">
     <div class="recentComments">
-        <div class="commentsBody container-fluid" style = "height:100%">
+        <div class="commentsBody">
             {if !empty($COMMENTS)}
-                <div class="recentCommentsBody row">
-                    <br>
+                <div class="recentCommentsBody">
                     {foreach key=index item=COMMENT from=$COMMENTS}
                         {assign var=CREATOR_NAME value={decode_html($COMMENT->getCommentedByName())}}
                         <div class="commentDetails">
                             <div class="singleComment">
                                 {assign var=PARENT_COMMENT_MODEL value=$COMMENT->getParentCommentModel()}
                                 {assign var=CHILD_COMMENTS_MODEL value=$COMMENT->getChildComments()}
-                                <div class="container-fluid">
+                                <div class="container-fluid py-2">
                                     <div class="row">
-                                         <div class="col-lg-2 recordImage commentInfoHeader" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}" data-relatedto = "{$COMMENT->get('related_to')}">
-                                            {assign var=IMAGE_PATH value=$COMMENT->getImagePath()}
+                                        <div class="col-auto">
+                                            <div class="recordImage commentInfoHeader rounded-circle bg-primary text-white overflow-hidden text-center" data-commentid="{$COMMENT->getId()}" data-parentcommentid="{$COMMENT->get('parent_comments')}" data-relatedto="{$COMMENT->get('related_to')}" style="height: 1.8rem; width: 1.8rem;">
+                                                {assign var=IMAGE_PATH value=$COMMENT->getImagePath()}
                                                 {if !empty($IMAGE_PATH)}
-                                                    <img src="{$IMAGE_PATH}" width="100%" height="100%" align="left">
+                                                    <img src="{$IMAGE_PATH}" height="100%" width="100%">
                                                 {else}
-                                                    <div class="name"><span><strong> {$CREATOR_NAME|substr:0:2} </strong></span></div>
+                                                    <strong class="py-2">{$CREATOR_NAME|substr:0:2}</strong>
                                                 {/if}
+                                            </div>
                                         </div>
-                                        <div class="comment col-lg-10">
-                                            <span class="creatorName">
-                                                {$CREATOR_NAME}
-                                            </span>&nbsp;&nbsp;
+                                        <div class="col-auto p-0">
+                                            <span class="creatorName">{$CREATOR_NAME}</span>
+                                        </div>
+                                        <div class="col-auto commentActionsContainer">
+                                            <span class="commentTime muted">
+                                                <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateAndDateDiffInString($COMMENT->getCommentedTime())}</small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="ms-5">
+                                        <div class="comment mt-1 px-4 py-2 bg-body-secondary rounded-end-5 rounded-bottom-5 d-inline-block">
                                             <div class="">
                                                 <span class="commentInfoContent">
                                                     {nl2br($COMMENT->get('commentcontent'))}
                                                 </span>
                                             </div>
-                                            <br>
-                                            <div class="commentActionsContainer">      
-                                                <span class="commentTime pull-right">
-                                                    <p class="muted"><small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($COMMENT->getCommentedTime())}">{Vtiger_Util_Helper::formatDateAndDateDiffInString($COMMENT->getCommentedTime())}</small></p>
-                                                </span>
-                                            </div>
-                                            <div style="margin-top:5px;">
+                                            <div>
 												{assign var="FILE_DETAILS" value=$COMMENT->getFileNameAndDownloadURL()}
                                                 {foreach key=index item=FILE_DETAIL from=$FILE_DETAILS}
                                                     {assign var="FILE_NAME" value=$FILE_DETAIL['trimmedFileName']}
                                                     {if !empty($FILE_NAME)}
-                                                        <a onclick="Vtiger_List_Js.previewFile(event,{$COMMENT->get('id')},{$FILE_DETAIL['attachmentId']});" data-filename="{$FILE_NAME}" href="javascript:void(0)" name="viewfile">
-                                                            <span title="{$FILE_DETAILS['rawFileName']}" style="line-height:1.5em;">{$FILE_NAME}</span>&nbsp
+                                                        <a class="d-block mt-1 text-secondary" onclick="Vtiger_List_Js.previewFile(event,{$COMMENT->get('id')},{$FILE_DETAIL['attachmentId']});" data-filename="{$FILE_NAME}" href="javascript:void(0)" name="viewfile">
+                                                            <i class="fa fa-paperclip me-2"></i>
+                                                            <span title="{$FILE_DETAILS['rawFileName']}">{$FILE_NAME}</span>
                                                         </a>
-                                                        <br>
                                                     {/if}
                                                 {/foreach}
                                             </div>

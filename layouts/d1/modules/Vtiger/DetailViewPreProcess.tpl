@@ -22,9 +22,9 @@
             </div>
         </div>
     <div class="container-fluid main-container">
-        <div class="row flex-nowrap">
+        <div class="row">
             {include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}
-            <div class="detailViewContainer viewContent col p-0">
+            <div class="detailViewContainer viewContent col p-0 overflow-auto">
                 <div class="content-area container-fluid px-0 pb-lg-4 px-lg-4">
                     {include file='DetailViewHeader.tpl'|vtemplate_path:$MODULE}
                     <div class="detailview-content row">

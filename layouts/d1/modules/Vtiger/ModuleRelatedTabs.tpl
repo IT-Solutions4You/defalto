@@ -20,7 +20,7 @@
                                 <div class="col-1 tab-icon">
                                     {$RELATED_LINK->get('linkicon')}
                                 </div>
-                                <div class="col tab-label">{vtranslate($RELATEDLINK_LABEL,{$MODULE_NAME})}</div>
+                                <div class="col tab-label text-truncate">{vtranslate($RELATEDLINK_LABEL,{$MODULE_NAME})}</div>
                                 <div class="col-2">
                                     <div class="numberCircle badge text-bg-primary hide">0</div>
                                 </div>
@@ -42,7 +42,7 @@
                                         {assign var=RELATED_MODULE_MODEL value=Vtiger_Module_Model::getInstance($RELATEDMODULENAME)}
                                         {$RELATED_MODULE_MODEL->getModuleIcon('1rem')}
                                     </div>
-                                    <div class="col tab-label">{$RELATED_LINK->getLabel()}</div>
+                                    <div class="col tab-label text-truncate">{$RELATED_LINK->getLabel()}</div>
                                     <div class="col-2">
                                         <div class="numberCircle badge text-bg-primary hide">0</div>
                                     </div>
