@@ -90,7 +90,7 @@
                                         {/if}
                                     </div>
                                     <div class="row" style="padding-top:10px;">
-                                        <div class="col-sm-3 textOverflowEllipsis" title="{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}">
+                                        <div class="col-sm-3 text-truncate" title="{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}">
                                             <img src="{vimage_path('Square.png')}" />
                                             &nbsp;&nbsp;
                                             {vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}

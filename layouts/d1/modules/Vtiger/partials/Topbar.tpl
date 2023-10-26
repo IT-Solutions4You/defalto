@@ -240,7 +240,7 @@
                                         <div class="col">
                                             <div class="profile-container">
                                                 <div class="profile-name lh-base fw-bold fs-5">{$USER_MODEL->get('first_name')} {$USER_MODEL->get('last_name')}</div>
-                                                <div class="profile-username lh-base fs-5 textOverflowEllipsis text-secondary" title='{$USER_MODEL->get('user_name')}'>{$USER_MODEL->get('email1')}</div>
+                                                <div class="profile-username lh-base fs-5 text-truncate text-secondary" title='{$USER_MODEL->get('user_name')}'>{$USER_MODEL->get('email1')}</div>
                                             </div>
                                         </div>
                                     </div>

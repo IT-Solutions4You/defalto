@@ -36,7 +36,7 @@
 												{if $MAPPING_ARRAY['editable'] eq 1}
 													{foreach item=LINK_MODEL from=$MODULE_MODEL->getMappingLinks()}
 														<div class="table-actions">
-															<span class="actionImages">
+															<span class="actionImages btn-group">
 																<i title="{vtranslate($LINK_MODEL->getLabel(), $MODULE)}" class="fa fa-trash deleteMapping"></i>
 															</span>
 														</div>
@@ -76,7 +76,7 @@
 										<td width="7%">
 											{foreach item=LINK_MODEL from=$MODULE_MODEL->getMappingLinks()}
 												<div class="table-actions">
-													<span class="actionImages">
+													<span class="actionImages btn-group">
 														<i title="{vtranslate($LINK_MODEL->getLabel(), $MODULE)}" class="fa fa-trash deleteMapping"></i>
 													</span>
 												</div>

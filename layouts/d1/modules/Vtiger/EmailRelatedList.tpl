@@ -120,14 +120,14 @@
                                     {vtranslate($EMAIL_FLAG)}
                                 </span>
                                 <div class="pull-right actions">
-                                    <span class="actionImages">
-                                            <a name="emailsDetailView" data-id='{$RELATED_RECORD->getId()}'><i title="{vtranslate('LBL_SHOW_COMPLETE_DETAILS', $MODULE)}" class="fa fa-bars"></i></a>&nbsp;&nbsp;
-                                            {if $RELATED_RECORD->getEmailFlag() eq 'SAVED'}
+                                    <span class="actionImages btn-group">
+                                        <a name="emailsDetailView" data-id='{$RELATED_RECORD->getId()}'><i title="{vtranslate('LBL_SHOW_COMPLETE_DETAILS', $MODULE)}" class="fa fa-bars"></i></a>&nbsp;&nbsp;
+                                        {if $RELATED_RECORD->getEmailFlag() eq 'SAVED'}
                                             <a name="emailsEditView"><i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i></a>	&nbsp;&nbsp;
-                                            {/if}
-                                            {if $IS_DELETABLE}
+                                        {/if}
+                                        {if $IS_DELETABLE}
                                             <a class="relationDelete"><i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i></a>
-                                            {/if}
+                                        {/if}
                                     </span>
                                 </div>
                             </td>

@@ -35,7 +35,7 @@
 								<th></th>
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 									<th nowrap {if $HEADER_FIELD@last} {/if}>
-										<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">
+										<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('name')}">
 											{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 												<i class="fa {$FASORT_IMAGE}"></i>
 											{else}
@@ -73,7 +73,7 @@
 								{assign var=BASE_CURRENCY_DETAILS value=$RELATED_RECORD->getBaseCurrencyDetails()}
 								<tr class="listViewEntries border-1 border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 									<td style="width:100px">
-										<span class="actionImages">
+										<span class="actionImages btn-group">
 											{if (!empty($RELATED_HEADERS['listprice']) || !empty($RELATED_HEADERS['unit_price']))}
 												{if !empty($RELATED_HEADERS['listprice'])}
 													{assign var="LISTPRICE" value=$RELATED_RECORD->get('listprice')}

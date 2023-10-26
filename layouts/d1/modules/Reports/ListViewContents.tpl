@@ -57,7 +57,7 @@
 							{assign var="LISTVIEW_HEADERS" value=$LISTVIEW_MODEL->getListViewHeadersForVtiger7({$VIEWNAME})}
 							{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 								<th {if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY} nowrap="nowrap" {/if}>
-									<a href="#" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER_KEY}">
+									<a href="#" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER_KEY}">
 										{if $COLUMN_NAME eq $LISTVIEW_HEADER_KEY}
 											<i class="fa {$FASORT_IMAGE}"></i>
 										{else}
@@ -124,7 +124,7 @@
 									{assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 									<td class="listViewEntryValue" data-name="{$LISTVIEW_HEADERNAME}" title="{$LISTVIEW_ENTRY_RAWVALUE}" data-rawvalue="{$LISTVIEW_ENTRY_RAWVALUE}" data-field-type="">
 										<span class="fieldValue">
-											<span class="value textOverflowEllipsis">
+											<span class="value text-truncate">
 												{if $LISTVIEW_HEADERNAME eq 'reporttype'}
 													{if $LISTVIEW_ENTRY_VALUE eq 'summary' || $LISTVIEW_ENTRY_VALUE eq 'tabular'}
 														<center title="{vtranslate('LBL_DETAIL_REPORT', $MODULE)}"><span class='vicon-detailreport' style="font-size:17px;"></span></center>

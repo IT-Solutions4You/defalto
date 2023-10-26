@@ -27,12 +27,12 @@
             {assign var=DOWNLOAD_LOCATION_TYPE value=$RELATED_RECORD->get('filelocationtype')}
             <div class="container-fluid recentActivitiesContainer my-3">
                 <div class="row" id="documentRelatedRecord">
-                    <span class="col-sm-5 textOverflowEllipsis">
+                    <span class="col-sm-5 text-truncate">
                         <a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('notes_title')}">
                             {$RELATED_RECORD->getDisplayValue('notes_title')}
                         </a>
                     </span>
-                    <span class="col-sm-5 textOverflowEllipsis" id="DownloadableLink">
+                    <span class="col-sm-5 text-truncate" id="DownloadableLink">
                         {if $DOWNLOAD_STATUS eq 1}
                             {$RELATED_RECORD->getDisplayValue('filename', $RELATED_RECORD->getId(), $RELATED_RECORD)}
                         {else}

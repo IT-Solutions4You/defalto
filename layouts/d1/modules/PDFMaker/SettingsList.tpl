@@ -22,7 +22,7 @@
             {assign var="IS_LINK_MODULE_NAME" value=in_array($CURRENT_MODULE_NAME,$PARSE_URL)}
             <div class="{if $LINK_LIST_VIEW} selectedMenuItem selectedListItem{/if}" style='padding-left:10px;border-top:0px;padding-bottom: 5px'>
                 <div class="row-fluid menuItem"  data-actionurl="">
-                    <a href="{$SIDE_LINK_URL}" data-id="{$MODULE}_settingsBar_link_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($SIDEBARLINK->getLabel())}" class="textOverflowEllipsis span9 menuItemLabel" data-menu-item="true" >{vtranslate($SIDEBARLINK->getLabel(), $MODULE)}</a>
+                    <a href="{$SIDE_LINK_URL}" data-id="{$MODULE}_settingsBar_link_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($SIDEBARLINK->getLabel())}" class="text-truncate span9 menuItemLabel" data-menu-item="true" >{vtranslate($SIDEBARLINK->getLabel(), $MODULE)}</a>
                     <div class="clearfix"></div>
                 </div>
             </div>

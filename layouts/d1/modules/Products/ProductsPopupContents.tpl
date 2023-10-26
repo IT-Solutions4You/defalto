@@ -39,7 +39,7 @@
                             </th>
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th>
-                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary text-nowrap {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
                                         {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
                                             <i class="fa {$FASORT_IMAGE}"></i>
                                         {else}
@@ -79,7 +79,7 @@
                                 {assign var="ROW_NUMBER" value={$smarty.foreach.listViewEntry.index}}
                                 {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                                 {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-                                <td class="listViewEntryValue textOverflowEllipsis">
+                                <td class="listViewEntryValue text-truncate">
                                     {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                                         <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                                     {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}

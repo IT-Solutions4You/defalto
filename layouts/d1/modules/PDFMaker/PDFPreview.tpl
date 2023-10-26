@@ -12,7 +12,7 @@
             <div class="filePreview container-fluid">
                 <div class="modal-header row">
                     <div class="filename col-lg-8">
-                        <h4 class="textOverflowEllipsis maxWidth50" title="{vtranslate('LBL_PREVIEW',$MODULE)}"><b>{vtranslate('LBL_PREVIEW',$MODULE)}</b></h4>
+                        <h4 class="text-truncate maxWidth50" title="{vtranslate('LBL_PREVIEW',$MODULE)}"><b>{vtranslate('LBL_PREVIEW',$MODULE)}</b></h4>
                     </div>
                     <div class="col-lg-1 pull-right">
                         <button type="button" class="close" aria-label="Close" data-dismiss="modal">

@@ -134,7 +134,7 @@
 					<div class="col-lg">
 						{assign var=COMMENT_TIME value=$HISTORY->getCommentedTime()}
 						<div>
-							<b>{$HISTORY->getCommentedByName()}</b> {vtranslate('LBL_COMMENTED')} {vtranslate('LBL_ON')} <a class="textOverflowEllipsis" href="{$HISTORY->getParentRecordModel()->getDetailViewUrl()}">{$HISTORY->getParentRecordModel()->getName()}</a>
+							<b>{$HISTORY->getCommentedByName()}</b> {vtranslate('LBL_COMMENTED')} {vtranslate('LBL_ON')} <a class="text-truncate" href="{$HISTORY->getParentRecordModel()->getDetailViewUrl()}">{$HISTORY->getParentRecordModel()->getName()}</a>
 						</div>
 						<div>
 							<i>"{nl2br($HISTORY->get('commentcontent'))}"</i>

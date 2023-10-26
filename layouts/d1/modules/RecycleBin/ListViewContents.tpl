@@ -43,7 +43,7 @@
                         </th>
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             <th>
-                                <a href="#" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+                                <a href="#" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
                                     {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
                                     {else}

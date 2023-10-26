@@ -19,7 +19,7 @@
         {assign var=fieldDataType value=$FIELD_MODEL->getFieldDataType()}
 			<div class="summaryViewEntries row">
 				<div class="col-lg-4 fieldLabel" >
-                    <label class="muted textOverflowEllipsis" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
+                    <label class="muted text-truncate" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}">
                         {vtranslate($FIELD_MODEL->get('label'),$MODULE_NAME)}
                         {if $FIELD_MODEL->get('uitype') eq '71' || $FIELD_MODEL->get('uitype') eq '72'}
                         {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($USER_MODEL->get('currency_id'))}

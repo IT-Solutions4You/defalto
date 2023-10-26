@@ -76,7 +76,7 @@ Settings_Vtiger_Edit_Js('Settings_Webforms_Edit_Js', {}, {
 		}
 		
 		webFormTargetFieldStructure+=	'<div class="pull-right actions">'+
-										'<span class="actionImages"><a class="removeTargetModuleField"><i class="fa-solid fa-xmark"></i></a></span></div></td></tr>';
+										'<span class="actionImages btn-group"><a class="removeTargetModuleField"><i class="fa-solid fa-xmark"></i></a></span></div></td></tr>';
 
         targetFieldsTable.append(webFormTargetFieldStructure);
         var fieldUIContainer = targetFieldsTable.find('[data-name="fieldUI_'+selectedOptionName+'"]');

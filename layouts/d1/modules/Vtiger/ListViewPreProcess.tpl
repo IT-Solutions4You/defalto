@@ -27,7 +27,7 @@
 		{include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}
 		{include file='ModuleSidebar.tpl'|vtemplate_path:$MODULE}
 		<div class="listViewContainerJs col-lg px-0 bg-body mb-lg-4 mx-lg-4 rounded overflow-hidden">
-			<div class="listViewModuleLinksJs pt-3 px-3">
+			<div class="listViewModuleLinksJs">
 				{include file="ModuleLinks.tpl"|vtemplate_path:$MODULE}
 			</div>
 			<div id="listViewContent" class="listViewPageDiv content-area">

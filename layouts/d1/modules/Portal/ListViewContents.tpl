@@ -20,7 +20,7 @@
 <input type="hidden" id="noOfEntries" value="{$NO_OF_ENTRIES}"/>
 <input type="hidden" value="{$COLUMN_NAME}" name="orderBy">
 <input type="hidden" value="{$SORT_ORDER}" name="sortOrder">
-<div id="listview-actions" class="listViewActionsJs listview-actions-container py-2 px-3">
+<div id="listview-actions" class="listViewActionsJs listview-actions-container px-3">
     <div class="row">
         <div class="col-lg-auto listViewActionsContainer">
             <button type="button" class="btn btn-outline-secondary" id="{$MODULE}_listview_massAction" onclick="Portal_List_Js.massDeleteRecords()" disabled="disabled">
@@ -64,7 +64,7 @@
                     </div>
                 </th>
                 <th>
-                    <a href="#" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq 'portalname'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="portalname">
+                    <a href="#" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq 'portalname'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="portalname">
                         {if $COLUMN_NAME eq 'portalname'}
                             <i class="fa {$FASORT_IMAGE}"></i>
                         {else}
@@ -77,7 +77,7 @@
                     {/if}
                 </th>
                 <th>
-                    <a href="#" class="listViewContentHeaderValues text-secondary"
+                    <a href="#" class="listViewContentHeaderValues text-secondary text-nowrap"
                        data-nextsortorderval="{if $COLUMN_NAME eq 'portalurl'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="portalurl">
                         {if $COLUMN_NAME eq 'portalurl'}
                             <i class="fa {$FASORT_IMAGE}"></i>
@@ -91,7 +91,7 @@
                     {/if}
                 </th>
                 <th>
-                    <a href="#" class="listViewContentHeaderValues text-secondary"
+                    <a href="#" class="listViewContentHeaderValues text-secondary text-nowrap"
                        data-nextsortorderval="{if $COLUMN_NAME eq 'createdtime'}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="createdtime">
                         {if $COLUMN_NAME eq 'createdtime'}
                             <i class="fa {$FASORT_IMAGE}"></i>

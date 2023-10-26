@@ -20,8 +20,8 @@
                 <thead>
                 <tr class="listViewContentHeader">
                     <th></th>
-                    <th nowrap="nowrap"><a href="#" data-columnname="module" data-nextsortorderval="{$module_dir}" class="listViewContentHeaderValues">&nbsp;{vtranslate("LBL_MODULENAMES",$MODULE)}&nbsp;</a></th>
-                    <th nowrap="nowrap"><a href="#" data-columnname="description" data-nextsortorderval="{$description_dir}" class="listViewContentHeaderValues">{vtranslate("LBL_DESCRIPTION",$MODULE)}&nbsp;</a></th>
+                    <th nowrap="nowrap"><a href="#" data-columnname="module" data-nextsortorderval="{$module_dir}" class="listViewContentHeaderValues text-nowrap">&nbsp;{vtranslate("LBL_MODULENAMES",$MODULE)}&nbsp;</a></th>
+                    <th nowrap="nowrap"><a href="#" data-columnname="description" data-nextsortorderval="{$description_dir}" class="listViewContentHeaderValues text-nowrap">{vtranslate("LBL_DESCRIPTION",$MODULE)}&nbsp;</a></th>
                 </tr>
                 </thead>
                 <tbody>

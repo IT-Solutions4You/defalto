@@ -27,7 +27,7 @@
                             <div class="menu-items-wrapper">
                                 <a href="index.php?module=Documents&view=List">
                                     <span class="app-icon-list dt-menu-icon">{$DOCUMENTS_MODULE_MODEL->getModuleIcon()}</span>
-                                    <span class="app-name ms-2 textOverflowEllipsis"> {vtranslate('Documents')}</span>
+                                    <span class="app-name ms-2 text-truncate"> {vtranslate('Documents')}</span>
                                 </a>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                             <div class="menu-items-wrapper">
                                 <a href="index.php?module=MailManager&view=List">
                                     <span class="app-icon-list dt-menu-icon">{$MAILMANAGER_MODULE_MODEL->getModuleIcon()}</span>
-                                    <span class="app-name ps-2 textOverflowEllipsis"> {vtranslate('MailManager')}</span>
+                                    <span class="app-name ps-2 text-truncate"> {vtranslate('MailManager')}</span>
                                 </a>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                             <div class="menu-items-wrapper">
                                 <a href="?module=Vtiger&parent=Settings&view=Index">
                                     <span class="fa fa-cog module-icon dt-menu-icon"></span>
-                                    <span class="module-name ps-2 textOverflowEllipsis"> {vtranslate('LBL_CRM_SETTINGS','Vtiger')}</span>
+                                    <span class="module-name ps-2 text-truncate"> {vtranslate('LBL_CRM_SETTINGS','Vtiger')}</span>
                                 </a>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                             <div class="menu-items-wrapper">
                                 <a href="?module=Users&parent=Settings&view=List">
                                     <span class="fa fa-user module-icon dt-menu-icon"></span>
-                                    <span class="module-name ms-2 textOverflowEllipsis"> {vtranslate('LBL_MANAGE_USERS','Vtiger')}</span>
+                                    <span class="module-name ms-2 text-truncate"> {vtranslate('LBL_MANAGE_USERS','Vtiger')}</span>
                                 </a>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                                 <a class="col-lg-12 p-0 menu-item app-item" href="{$HOME_MODULE_MODEL->getDefaultUrl()}">
                                     <div class="menu-items-link rounded p-3 mb-3 text-secondary">
                                         <span class="app-icon-list dt-menu-icon fa fa-dashboard"></span>
-                                        <span class="app-name ms-3 textOverflowEllipsis">{vtranslate('LBL_DASHBOARD',$MODULE)}</span>
+                                        <span class="app-name ms-3 text-truncate">{vtranslate('LBL_DASHBOARD',$MODULE)}</span>
                                     </div>
                                 </a>
                             {/if}
@@ -97,7 +97,7 @@
                             <div class="menu-item" data-app-name="{$APP_NAME}" id="{$APP_NAME}_modules_dropdownMenu" aria-haspopup="true" aria-expanded="true" data-default-url="#">
                                 <div class="menu-items-wrapper app-menu-items-wrapper mb-3 p-3 text-truncate fw-bold rounded {if $IS_SELECTED_CATEGORY}bg-menu-icon{else}text-secondary{/if}">
                                     <span class="app-icon-list dt-menu-icon fa {$APP_IMAGE_MAP[$APP_NAME]} {if $IS_SELECTED_CATEGORY}text-primary{/if}"></span>
-                                    <span class="app-name ms-3 textOverflowEllipsis">{vtranslate("LBL_$APP_NAME")}</span>
+                                    <span class="app-name ms-3 text-truncate">{vtranslate("LBL_$APP_NAME")}</span>
                                 </div>
                                 <div class="container-fluid" aria-labelledby="{$APP_NAME}_modules_dropdownMenu">
                                     <div class="row">
@@ -107,7 +107,7 @@
                                             <div class="col-lg-12 p-0">
                                                 <a class="menu-items-link rounded d-block mb-2 p-3 text-truncate fw-bold {if !$IS_SELECTED_MODULE}text-secondary{/if}" href="{$moduleModel->getDefaultUrl()}&app={$APP_NAME}" title="{$translatedModuleLabel}">
                                                     <span class="dt-menu-icon module-icon {if $IS_SELECTED_MODULE}text-primary{/if}">{$moduleModel->getModuleIcon()}</span>
-                                                    <span class="ms-3 module-name textOverflowEllipsis">{$translatedModuleLabel}</span>
+                                                    <span class="ms-3 module-name text-truncate">{$translatedModuleLabel}</span>
                                                 </a>
                                             </div>
                                         {/foreach}

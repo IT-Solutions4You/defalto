@@ -33,11 +33,11 @@
                                 <table class="summary-table no-border">
                                     <tbody>
                                     <tr class="summaryViewEntries">
-                                        <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_DESCRIPTION','PDFMaker')}</label></td>
+                                        <td class="fieldLabel"><label class="muted text-truncate">{vtranslate('LBL_DESCRIPTION','PDFMaker')}</label></td>
                                         <td class="fieldValue" valign=top>{$DESCRIPTION}</td>
                                     </tr>
                                     <tr class="summaryViewEntries">
-                                        <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_MODULENAMES','PDFMaker')}</label></td>
+                                        <td class="fieldLabel"><label class="muted text-truncate">{vtranslate('LBL_MODULENAMES','PDFMaker')}</label></td>
                                         <td class="fieldValue" valign=top>{$MODULENAME}</td>
                                     </tr>
                                     </tbody>

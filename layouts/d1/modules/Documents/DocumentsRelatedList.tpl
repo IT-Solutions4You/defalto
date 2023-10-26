@@ -119,7 +119,7 @@
                                         {if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
                                             <a href="javascript:void(0);" class="noSorting text-secondary">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}</a>
                                         {else}
-                                            <a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
+                                            <a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
                                                 {if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
                                                     <i class="fa {$FASORT_IMAGE}"></i>
                                                 {else}
@@ -167,7 +167,7 @@
                                     data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
                                 {/if}>
                                 <td>
-                                    <div class="actionImages d-flex">
+                                    <span class="actionImages btn-group">
                                         <a class="btn btn-sm text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}">
                                             <i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i>
                                         </a>
@@ -188,7 +188,7 @@
                                                 <i title="{vtranslate('LBL_DOWNLOAD_FILE', $RELATED_MODULE_NAME)}" class="fa fa-download alignMiddle"></i>
                                             </a>
                                         {/if}
-                                    </div>
+                                    </span>
                                 </td>
                                 {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
                                     {assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
@@ -203,7 +203,7 @@
                                         {if $RELATED_MODULE->get('name') eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
                                             <div style="text-align: center;">{$RELATED_RECORD->get($RELATED_HEADERNAME)}</div>
                                         {else}
-                                            <span class="value textOverflowEllipsis">
+                                            <span class="value text-truncate">
                                                 {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
                                                     <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
                                                 {elseif $RELATED_HEADERNAME eq 'access_count'}

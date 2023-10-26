@@ -26,7 +26,7 @@
 		{foreach item=RECORD from=$MINILIST_WIDGET_RECORDS}
 			<div class="row miniListContent p-2 border-bottom">
 				{foreach item=FIELD key=NAME from=$HEADER_FIELDS name="minilistWidgetModelRowHeaders"}
-					<div class="col-lg-{$SPANSIZE} textOverflowEllipsis" title="{strip_tags($RECORD->get($NAME))}" style="padding-right: 5px;">
+					<div class="col-lg-{$SPANSIZE} text-truncate" title="{strip_tags($RECORD->get($NAME))}" style="padding-right: 5px;">
 					   {if $FIELD->get('uitype') eq '71' || ($FIELD->get('uitype') eq '72' && $FIELD->getName() eq 'unit_price')}
 							{assign var=CURRENCY_ID value=$USER_MODEL->get('currency_id')}
 							{if $FIELD->get('uitype') eq '72' && $NAME eq 'unit_price'}

@@ -39,7 +39,7 @@
 										{/if}
 										{assign var=TO_EMAILS value=","|implode:$TO}
 										<span class="row-fluid">
-											<span class="col-sm-10 paddingLeft0"><p class="textOverflowEllipsis">{$TO_EMAILS}</p></span>
+											<span class="col-sm-10 paddingLeft0"><p class="text-truncate">{$TO_EMAILS}</p></span>
 											{if $TO|@count > 1}
 												<span class="col-sm-2">
 													<a href="#" data-toggle="dropdown" style="text-transform: lowercase;">{vtranslate('LBL_MORE',$MODULE)}</a>

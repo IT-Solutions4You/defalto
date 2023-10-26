@@ -59,7 +59,7 @@
                                 {assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_ALL_VALUES}
                                 {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
                                     <tr class="pickListValue border-bottom" data-key-id="{$PICKLIST_KEY}" data-key="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}" data-deletable="{if !in_array($PICKLIST_VALUE, $NON_DELETABLE_VALUES)}true{else}false{/if}">
-                                        <td class="textOverflowEllipsis fieldPropertyContainer">
+                                        <td class="text-truncate fieldPropertyContainer">
                                             <span class="pull-left"><img class="cursorDrag alignMiddle" src="{vimage_path('drag.png')}"/> &nbsp;&nbsp;
                                                 <span class="picklist-color picklist-{$SELECTED_PICKLIST_FIELDMODEL->getId()}-{$PICKLIST_KEY}"> {vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)} </span>
                                             </span>

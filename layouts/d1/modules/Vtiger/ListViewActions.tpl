@@ -8,10 +8,9 @@
 * All Rights Reserved.
 ************************************************************************************/
 -->*}
-
 {strip}
     {assign var=LISTVIEW_MASSACTIONS_1 value=array()}
-    <div id="listview-actions" class="listViewActionsJs listview-actions-container py-2 px-3">
+    <div id="listview-actions" class="listViewActionsJs listview-actions-container px-3">
         {foreach item=LIST_MASSACTION from=$LISTVIEW_MASSACTIONS name=massActions}
             {if $LIST_MASSACTION->getLabel() eq 'LBL_EDIT'}
                 {assign var=editAction value=$LIST_MASSACTION}
@@ -25,7 +24,7 @@
             {/if}
         {/foreach}
         <div class="row">
-            <div class="col-lg-auto pb-2">
+            <div class="col-lg-auto pb-3">
                 <div class="listViewActionsContainer" role="group" aria-label="...">
                     {if $editAction}
                         <button type="button" class="btn btn-outline-secondary me-1" id={$MODULE}_listView_massAction_{$editAction->getLabel()}
@@ -119,10 +118,10 @@
                     {/if}
                 </div>
             </div>
-            <div class="col-lg-4 mx-auto pb-2">
+            <div class="col-lg-4 mx-auto pb-3">
                 {include file="ListViewCustomViews.tpl"|vtemplate_path:$MODULE}
             </div>
-            <div class="col-lg-auto pb-2 text-end">
+            <div class="col-lg-auto pb-3">
                 {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                 {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
             </div>
@@ -158,7 +157,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col pb-2">
+            <div class="col pb-3">
                 {include file='ListViewTags.tpl'|vtemplate_path:$MODULE}
             </div>
         </div>

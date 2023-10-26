@@ -46,7 +46,7 @@
 													<span class='muted'>{vtranslate($tax.taxlabel, $MODULE)}(%)</span>
 												</div>
 												<div class="col-8 fieldValue fw-semibold {$WIDTHTYPE}">
-													<span class="value textOverflowEllipsis" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
+													<span class="value text-truncate" data-field-type="{$FIELD_MODEL->getFieldDataType()}">
 														{if $tax.check_value eq 1}
 															{$tax.percentage}
 														{else}

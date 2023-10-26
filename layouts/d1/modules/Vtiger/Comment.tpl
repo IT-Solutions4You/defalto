@@ -86,7 +86,7 @@
                                     {assign var="REASON_TO_EDIT" value=$COMMENT->get('reasontoedit')}
                                     {if $REASON_TO_EDIT}
                                         <span class="text-secondary col-lg-6 text-nowrap">
-                                            <small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="textOverflowEllipsis">{nl2br($REASON_TO_EDIT)}</span></small>
+                                            <small>{vtranslate('LBL_EDIT_REASON',$MODULE_NAME)} : <span name="editReason" class="text-truncate">{nl2br($REASON_TO_EDIT)}</span></small>
                                         </span>
                                     {/if}
                                     <span {if $REASON_TO_EDIT}class="text-end col-6 text-nowrap"{/if}>

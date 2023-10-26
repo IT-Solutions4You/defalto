@@ -637,7 +637,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			moreTabElement.addClass('active');
 			var moreElementTitle = moreTabElement.find('a').attr('displaylabel')
 			moreTabElement.attr('title',moreElementTitle);
-			moreTabElement.find('.tab-icon').removeClass('textOverflowEllipsis');
+			moreTabElement.find('.tab-icon').removeClass('text-truncate');
 			jQuery('.related-tab-more-element').before(moreTabElement);
 			self.loadSelectedTabContents(moreTabElement, urlAttributes);
 			self.registerQtipevent(moreTabElement);

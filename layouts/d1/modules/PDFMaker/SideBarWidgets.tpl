@@ -15,7 +15,7 @@
                      data-toggle="collapse" data-parent="#quickWidgets" data-label="{$SIDEBARWIDGET->getLabel()}"
                      data-widget-url="{$SIDEBARWIDGET->getUrl()}" >
                     <span class="pull-left"><img class="imageElement" data-rightimage="{vimage_path('rightArrowWhite.png')}" data-downimage="{vimage_path('downArrowWhite.png')}" src="{vimage_path('rightArrowWhite.png')}" /></span>
-                    <h5 class="title widgetTextOverflowEllipsis pull-right" title="{vtranslate($SIDEBARWIDGET->getLabel(), $MODULE)}">{vtranslate($SIDEBARWIDGET->getLabel(), $MODULE)}</h5>
+                    <h5 class="title widgettext-truncate pull-right" title="{vtranslate($SIDEBARWIDGET->getLabel(), $MODULE)}">{vtranslate($SIDEBARWIDGET->getLabel(), $MODULE)}</h5>
                     <div class="loadingImg hide pull-right">
                         <div class="loadingWidgetMsg"><strong>{vtranslate('LBL_LOADING_WIDGET', $MODULE)}</strong></div>
                     </div>
@@ -31,7 +31,7 @@
                  data-toggle="collapse" data-parent="#quickWidgets" data-label="{vtranslate('Tools', $MODULE)}"
                  data-widget-url="module=PDFMaker&view=TemplateTools&templateid={$smarty.request.templateid}&from_view={$smarty.request.view}&from_templateid={$smarty.request.templateid}" >
                 <span class="pull-left"><img class="imageElement" data-rightimage="{vimage_path('rightArrowWhite.png')}" data-downimage="{vimage_path('downArrowWhite.png')}" src="{vimage_path('rightArrowWhite.png')}" /></span>
-                <h5 class="title widgetTextOverflowEllipsis pull-right" title="{vtranslate('Tools', $MODULE)}">{vtranslate('Tools', $MODULE)}</h5>
+                <h5 class="title widgettext-truncate pull-right" title="{vtranslate('Tools', $MODULE)}">{vtranslate('Tools', $MODULE)}</h5>
                 <div class="loadingImg hide pull-right">
                     <div class="loadingWidgetMsg"><strong>{vtranslate('LBL_LOADING_WIDGET', $MODULE)}</strong></div>
                 </div>

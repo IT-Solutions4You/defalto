@@ -1,5 +1,5 @@
 {if $MODULE_BASIC_ACTIONS|@count gt 0}
-    <div id="appnavcontent" class="d-flex" aria-expanded="false">
+    <div id="appnavcontent" class="d-flex p-3" aria-expanded="false">
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() eq 'LBL_ADD_RECORD'}
                 <div class="dropdown">

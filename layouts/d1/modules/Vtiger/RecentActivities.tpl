@@ -84,7 +84,7 @@
                                             </div>
                                             {foreach item=FIELDMODEL from=$RECENT_ACTIVITY->getFieldInstances()}
                                                 {if $FIELDMODEL && $FIELDMODEL->getFieldInstance() && $FIELDMODEL->getFieldInstance()->isViewable() && $FIELDMODEL->getFieldInstance()->getDisplayType() neq '5'}
-                                                    <div class='font-x-small updateInfoContainer textOverflowEllipsis'>
+                                                    <div class='font-x-small updateInfoContainer text-truncate'>
                                                         {assign var=FIELDMODEL_LABEL value=vtranslate($FIELDMODEL->getName(),$MODULE_NAME)}
                                                         {if $FIELDMODEL->get('prevalue') neq '' && $FIELDMODEL->get('postvalue') neq '' && !($FIELDMODEL->getFieldInstance()->getFieldDataType() eq 'reference' && ($FIELDMODEL->get('postvalue') eq '0' || $FIELDMODEL->get('prevalue') eq '0'))}
                                                             <div class='update-name'>
@@ -155,7 +155,7 @@
                                                     {/if}
                                                 </span>
                                             </h5>
-                                            <div class='font-x-small updateInfoContainer textOverflowEllipsis'>
+                                            <div class='font-x-small updateInfoContainer text-truncate'>
                                                 <span>
                                                     {if $RELATION->getLinkedRecord()->getModuleName() eq 'Calendar'}
                                                         {if isPermitted('Calendar', 'DetailView', $RELATION->getLinkedRecord()->getId()) eq 'yes'}

@@ -50,7 +50,7 @@
                 <tr class="listViewContentHeader bg-body-secondary text-secondary border-transparent">
                     <th class="ps-3 text-secondary">
                         {if !$SEARCH_MODE_RESULTS}
-                            <div class="table-actions d-flex">
+                            <div class="table-actions d-flex align-items-center">
                                 <div class="table-actions-dropdown">
 									<span class="input table-actions-toggle form-check" title="{vtranslate('LBL_CLICK_HERE_TO_SELECT_ALL_RECORDS',$MODULE)}">
 										<input class="listViewEntriesMainCheckBox form-check-input" type="checkbox">
@@ -58,7 +58,7 @@
                                 </div>
                                 {if $MODULE_MODEL->isFilterColumnEnabled()}
                                     <div id="listColumnFilterContainer">
-                                        <div class="listColumnFilter mx-2 {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isCvEditable())}disabled{/if}"
+                                        <div class="listColumnFilter btn btn-sm text-secondary {if $CURRENT_CV_MODEL and !($CURRENT_CV_MODEL->isCvEditable())}disabled{/if}"
                                                 {if $CURRENT_CV_MODEL->isCvEditable()}
                                                     title="{vtranslate('LBL_CLICK_HERE_TO_MANAGE_LIST_COLUMNS',$MODULE)}"
                                                 {else}
@@ -72,9 +72,8 @@
                                                         title="{vtranslate('LBL_SHARED_LIST_OWNER_MESSAGE',$MODULE, getUserFullName($CURRENT_CV_USER_ID))}"
                                                     {/if}
                                                 {/if}
-                                                {if $MODULE eq 'Documents'}style="width: 10%;"{/if}
                                              data-bs-toggle="tooltip" data-placement="bottom" data-container="body">
-                                            <i class="fa fa-th-large lh-base"></i>
+                                            <i class="fa fa-th-large"></i>
                                         </div>
                                     </div>
                                 {/if}
@@ -90,7 +89,7 @@
                             {assign var=NO_SORTING value=0}
                         {/if}
                         <th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if}>
-                            <a href="#" class="text-secondary {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if} data-field-id='{$LISTVIEW_HEADER->getId()}'>
+                            <a href="#" class="text-secondary text-nowrap {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if} data-field-id='{$LISTVIEW_HEADER->getId()}'>
                                 {if !$NO_SORTING}
                                     {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                         <i class="fa {$FASORT_IMAGE}"></i>
@@ -109,13 +108,13 @@
 
                 {if $MODULE_MODEL->isQuickSearchEnabled() && !$SEARCH_MODE_RESULTS}
                     <tr class="searchRow listViewSearchContainer">
-                        <th class="inline-search-btn ps-3">
+                        <th class="inline-search-btn">
                             <div class="table-actions">
-                                <button class="btn btn-sm text-secondary px-0 {if php7_count($SEARCH_DETAILS) gt 0}hide{/if}" data-trigger="listSearch">
+                                <button class="btn text-secondary {if php7_count($SEARCH_DETAILS) gt 0}hide{/if}" data-trigger="listSearch">
                                     <i class="fa fa-search"></i>
                                     <span class="s2-btn-text d-none">{vtranslate("LBL_SEARCH",$MODULE)}</span>
                                 </button>
-                                <button class="searchAndClearButton t-btn-sm btn text-secondary px-0 {if php7_count($SEARCH_DETAILS) eq 0}hide{/if}" data-trigger="clearListSearch">
+                                <button class="searchAndClearButton btn text-secondary {if php7_count($SEARCH_DETAILS) eq 0}hide{/if}" data-trigger="clearListSearch">
                                     <i class="fa fa-close"></i>
                                     <span class="d-none">{vtranslate("LBL_CLEAR",$MODULE)}</span>
                                 </button>
@@ -159,69 +158,68 @@
                             {/if}
                             {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                             <td class="listViewEntryValue" data-name="{$LISTVIEW_HEADER->get('name')}" title="{$LISTVIEW_ENTRY->getTitle($LISTVIEW_HEADER)}" data-rawvalue="{$LISTVIEW_ENTRY_RAWVALUE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}">
-							<span class="fieldValue">
-								<span class="value">
-									{if ($LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4') and $MODULE_MODEL->isListViewNameFieldNavigationEnabled() eq true }
-                                        <a class="fw-bold" href="{$LISTVIEW_ENTRY->getDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-                                        {if $MODULE eq 'Products' && $LISTVIEW_ENTRY->isBundle()}
-                                            &nbsp;-&nbsp;
-                                            <i class="mute">{vtranslate('LBL_PRODUCT_BUNDLE', $MODULE)}</i>
-                                        {/if}
-									{elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
-										{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-									{else}
-										{if $LISTVIEW_HEADER->get('uitype') eq '72'}
-                                        {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
-                                        {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
-                                            {$LISTVIEW_ENTRY_VALUE}{$LISTVIEW_ENTRY->get('currencySymbol')}
+                                <span class="fieldValue">
+                                    <span class="value text-truncate">
+                                        {if ($LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4') and $MODULE_MODEL->isListViewNameFieldNavigationEnabled() eq true }
+                                            <a class="fw-bold" href="{$LISTVIEW_ENTRY->getDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
+                                            {if $MODULE eq 'Products' && $LISTVIEW_ENTRY->isBundle()}
+                                                <span class="mx-2">-</span><i class="mute">{vtranslate('LBL_PRODUCT_BUNDLE', $MODULE)}</i>
+                                            {/if}
+                                        {elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
+                                            {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                                         {else}
-                                            {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY_VALUE}
-                                        {/if}
-                                    {elseif $LISTVIEW_HEADER->get('uitype') eq '71'}
-                                        {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('userCurrencySymbol')}
-                                        {if $LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME) neq NULL}
-                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_SYMBOL)}
-                                        {/if}
-                                    {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
-                                        {if $LISTVIEW_ENTRY->get('activitytype') eq 'Task'}
-                                            {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                        {else}
-                                            {if $LISTVIEW_HEADER->getName() eq 'taskstatus'}
-                                                {assign var="EVENT_STATUS_FIELD_MODEL" value=Vtiger_Field_Model::getInstance('eventstatus', Vtiger_Module_Model::getInstance('Events'))}
-                                                {if $EVENT_STATUS_FIELD_MODEL}
-                                                    {assign var=PICKLIST_FIELD_ID value={$EVENT_STATUS_FIELD_MODEL->getId()}}
+                                            {if $LISTVIEW_HEADER->get('uitype') eq '72'}
+                                            {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
+                                            {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
+                                                {$LISTVIEW_ENTRY_VALUE}{$LISTVIEW_ENTRY->get('currencySymbol')}
+                                            {else}
+                                                {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY_VALUE}
+                                            {/if}
+                                        {elseif $LISTVIEW_HEADER->get('uitype') eq '71'}
+                                            {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('userCurrencySymbol')}
+                                            {if $LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME) neq NULL}
+                                                {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_SYMBOL)}
+                                            {/if}
+                                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
+                                            {if $LISTVIEW_ENTRY->get('activitytype') eq 'Task'}
+                                                {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
+                                            {else}
+                                                {if $LISTVIEW_HEADER->getName() eq 'taskstatus'}
+                                                    {assign var="EVENT_STATUS_FIELD_MODEL" value=Vtiger_Field_Model::getInstance('eventstatus', Vtiger_Module_Model::getInstance('Events'))}
+                                                    {if $EVENT_STATUS_FIELD_MODEL}
+                                                        {assign var=PICKLIST_FIELD_ID value={$EVENT_STATUS_FIELD_MODEL->getId()}}
+                                                    {else}
+                                                        {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
+                                                    {/if}
                                                 {else}
                                                     {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                                 {/if}
-                                            {else}
-                                                {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                             {/if}
+                                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
+
+
+                                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
+                                                {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
+                                                {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
+                                                {assign var=ALL_MULTI_PICKLIST_VALUES value=array_flip($LISTVIEW_HEADER->getPicklistValues())}
+                                                {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_PICKLIST_VALUES}
+                                                <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($ALL_MULTI_PICKLIST_VALUES[trim($MULTI_PICKLIST_VALUE)]))}"{/if} >
+                                                        {if trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX]) eq vtranslate('LBL_NOT_ACCESSIBLE', $MODULE)}
+                                                            <font color="red">
+                                                            {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
+                                                            </font>
+                                                        {else}
+                                                            {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
+                                                        {/if}
+                                                    {if !empty($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX + 1])},{/if}
+                                                    </span>
+                                            {/foreach}
+                                        {else}
+                                            {$LISTVIEW_ENTRY_VALUE}
                                         {/if}
-                                        <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
-
-
-{elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
-											{assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
-											{assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
-											{assign var=ALL_MULTI_PICKLIST_VALUES value=array_flip($LISTVIEW_HEADER->getPicklistValues())}
-											{foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_PICKLIST_VALUES}
-                                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($ALL_MULTI_PICKLIST_VALUES[trim($MULTI_PICKLIST_VALUE)]))}"{/if} >
-													{if trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX]) eq vtranslate('LBL_NOT_ACCESSIBLE', $MODULE)}
-                                                        <font color="red">
-														{trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])} 
-														</font>
-                                                    {else}
-                                                        {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])}
-                                                    {/if}
-                                                {if !empty($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX + 1])},{/if}
-												</span>
-                                        {/foreach}
-                                    {else}
-                                        {$LISTVIEW_ENTRY_VALUE}
-                                    {/if}
-                                    {/if}
-								</span>
-							</span>
+                                        {/if}
+                                    </span>
+                                </span>
                                 {if $LISTVIEW_HEADER->isEditable() eq 'true' && $LISTVIEW_HEADER->isAjaxEditable() eq 'true'}
                                     <span class="hide edit">
 								</span>

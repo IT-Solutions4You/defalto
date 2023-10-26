@@ -551,7 +551,7 @@ Vtiger_Reference_Field_Js("Workflows_Reference_Field_Js",{},{
         html += '<input name="popupReferenceModule" type="hidden" value="'+referenceModules[0]+'"/>';
         html += '<div class="input-group">'; 
         html += '<input class="sourceField" name="'+this.getName()+'" type="hidden" value="'+value+'"/>';
-        html += '<span class="clearReferenceSelectionWrapper"><input class="autoComplete inputElement ui-autocomplete-input textOverflowEllipsis" type="text" data-fieldtype="reference" data-fieldmodule="'+this.get('workflow_field_modulename')+'" name="'+this.getName()+'_display" placeholder="Type to Search"';
+        html += '<span class="clearReferenceSelectionWrapper"><input class="autoComplete inputElement ui-autocomplete-input text-truncate" type="text" data-fieldtype="reference" data-fieldmodule="'+this.get('workflow_field_modulename')+'" name="'+this.getName()+'_display" placeholder="Type to Search"';
         var reset = false;
         if(value){
             html += ' value="'+value+'" disabled="disabled"';

@@ -9,7 +9,7 @@
 {strip}
 <!--LIST VIEW RECORD ACTIONS-->
 
-<div class="table-actions d-flex">
+<div class="table-actions d-flex align-items-center">
     {if !$SEARCH_MODE_RESULTS}
     <span class="input form-check" >
         <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
@@ -21,17 +21,17 @@
         {assign var=STARRED value=false}
     {/if}
     {if $QUICK_PREVIEW_ENABLED eq 'true'}
-		<span class="mx-2">
+		<span class="btn btn-sm text-secondary">
 			<a class="quickView fa fa-eye icon action" data-app="{$SELECTED_MENU_CATEGORY}" title="{vtranslate('LBL_QUICK_VIEW', $MODULE)}"></a>
 		</span>
     {/if}
 	{if $MODULE_MODEL->isStarredEnabled()}
-		<span class="mx-2">
+		<span class="btn btn-sm text-secondary">
 			<a class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
 		</span>
 	{/if}
-    <div class="more dropdown action mx-2">
-        <div href="javascript:;" data-bs-toggle="dropdown">
+    <div class="more dropdown action">
+        <div class="btn btn-sm text-secondary" data-bs-toggle="dropdown">
             <i class="fa fa-ellipsis icon"></i>
         </div>
         <ul class="dropdown-menu">

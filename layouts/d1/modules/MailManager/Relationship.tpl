@@ -14,7 +14,7 @@
                     <div class="col-lg-1">
                         <input type="radio" name="_mlinkto" value="{$LINKEDTO.record}" class="form-check-input">
                     </div>
-                    <div class="col-lg-11 mmRelatedRecordDesc textOverflowEllipsis" title="{$LINKEDTO.detailviewlink}">
+                    <div class="col-lg-11 mmRelatedRecordDesc text-truncate" title="{$LINKEDTO.detailviewlink}">
                         <span class="me-2">{$LINKEDTO.detailviewlink}</span>
                         <span>({vtranslate($LINKEDTO.module, $moduleName)})</span>
                     </div>

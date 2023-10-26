@@ -39,7 +39,7 @@
 											 data-module="{$REFERENCE_MODULE}">
 											<div class="row" style="margin-bottom: 5px;">
 												<div class="col-sm-5" style="margin-top:5px;">
-													<div class="textOverflowEllipsis" style="font-size:15px;" title="{vtranslate($RELATION_FIELD->get('label'),$SELECTED_MODULE_NAME)}">{vtranslate($RELATION_FIELD->get('label'),$SELECTED_MODULE_NAME)}</div>
+													<div class="text-truncate" style="font-size:15px;" title="{vtranslate($RELATION_FIELD->get('label'),$SELECTED_MODULE_NAME)}">{vtranslate($RELATION_FIELD->get('label'),$SELECTED_MODULE_NAME)}</div>
 													<span class="referenceModule">{vtranslate($REFERENCE_MODULE,$REFERENCE_MODULE)}</span>
 												</div>
 												<div class="col-sm-5" style="margin-top: 5px;">
@@ -80,7 +80,7 @@
 																<img class="cursorPointerMove" src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$QUALIFIED_MODULE)}"/>&nbsp;&nbsp;
 															</span>
 															<div class="col-sm-5" style="margin-top:4px;">
-																<div class="textOverflowEllipsis">
+																<div class="text-truncate">
 																	<span class="moduleLabel" style="font-size:15px;" title="{vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}">{vtranslate($MODULE_MODEL->get('label'), $MODULE_MODEL->getRelationModuleName())}</span>
 																</div>
 																<span class="moduletranslatedLabel">{vtranslate($MODULE_MODEL->getRelationModuleName(),$MODULE_MODEL->getRelationModuleName())}</span>
@@ -163,7 +163,7 @@
 								<img class="cursorPointerMove" src="{vimage_path('drag.png')}" title="{vtranslate('LBL_DRAG',$QUALIFIED_MODULE)}"/>&nbsp;&nbsp;
 							</span>
 							<div class="col-sm-5" style="margin-top:4px;">
-								<div class="textOverflowEllipsis">
+								<div class="text-truncate">
 									<span class="moduleLabel" style="font-size:15px;"></span>
 								</div>
 								<span class="moduletranslatedLabel"></span>

@@ -117,7 +117,11 @@
                                     {/if}
                                     {if !$FIELD_MODEL->isMandatory(true)}
                                         <div class="pull-right actions">
-                                            <span class="actionImages"><a class="removeTargetModuleField" href="javascript:void(0);"><i class="fa-solid fa-xmark"></i></a></span>
+                                            <span class="actionImages btn-group">
+                                                <a class="removeTargetModuleField" href="javascript:void(0);">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     {/if}
                                 </td>

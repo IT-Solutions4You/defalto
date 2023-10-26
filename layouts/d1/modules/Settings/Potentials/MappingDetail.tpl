@@ -39,9 +39,9 @@
                                 {if $MAPPING['editable'] eq 1}
                                     {foreach item=LINK_MODEL from=$MODULE_MODEL->getMappingLinks()}
                                         <div class="table-actions">
-                                                <span class="actionImages">
-                                                    <a onclick={$LINK_MODEL->getUrl()}><i title="{vtranslate($LINK_MODEL->getLabel(), $MODULE)}" class="fa fa-trash alignMiddle"></i></a>
-                                                </span>
+                                            <span class="actionImages btn-group">
+                                                <a onclick={$LINK_MODEL->getUrl()}><i title="{vtranslate($LINK_MODEL->getLabel(), $MODULE)}" class="fa fa-trash alignMiddle"></i></a>
+                                            </span>
                                         </div>
                                     {/foreach}
                                 {/if}

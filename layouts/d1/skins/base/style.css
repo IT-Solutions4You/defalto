@@ -954,11 +954,6 @@ a {
     min-width: 100px;
 }
 
-.listViewContentHeaderValues {
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
 .listViewContentHeader th, .listViewHeaders th {
     background: transparent;
 }
@@ -1206,12 +1201,6 @@ ul.unstyled {
     color: red;
 }
 
-.textOverflowEllipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .textStrike {
     text-decoration: line-through;
 }
@@ -1323,7 +1312,6 @@ ul.unstyled {
 
 .listViewEntries .relatedListEntryValues .value {
     vertical-align: middle;
-    width: 80%;
     display: inline-block;
     max-width: 300px;
 }
@@ -1370,11 +1358,6 @@ input[type=checkbox]:checked {
 
 .listview-table tr td .input .checkbox {
     margin-right: 10px;
-}
-
-.listview-table .fa-star-o,
-.listview-table .fa-star {
-    font-size: 16px;
 }
 
 .input-error {
@@ -3178,7 +3161,8 @@ input[type=checkbox]:checked {
 }
 
 .selectedFolder {
-    background-color: #A9CBF5;
+    background-color: var(--bs-primary-color);
+    color: white !important;
     font-weight: bold;
 }
 

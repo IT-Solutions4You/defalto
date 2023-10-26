@@ -1,4 +1,4 @@
-<div id="appnavcontent" class="d-flex" aria-expanded="false">
+<div id="appnavcontent" class="d-flex p-3" aria-expanded="false">
     {if php7_count($MODULE_BASIC_ACTIONS)}
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}
             {if $BASIC_ACTION->getLabel() == 'LBL_IMPORT'}

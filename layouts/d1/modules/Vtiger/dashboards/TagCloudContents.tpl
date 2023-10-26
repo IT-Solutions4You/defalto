@@ -12,7 +12,7 @@
 		{foreach item=TAG_MODEL key=TAG_ID from=$TAGS}
 			{assign var=TAG_LABEL value=$TAG_MODEL->getName()}
 			<span class="tag" title="{$TAG_LABEL}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_ID}">
-				<span class="tagName display-inline-block textOverflowEllipsis cursorPointer" data-tagid="{$TAG_ID}">{$TAG_LABEL}</span>
+				<span class="tagName display-inline-block text-truncate cursorPointer" data-tagid="{$TAG_ID}">{$TAG_LABEL}</span>
 			</span>
 		{/foreach}
 	</div>

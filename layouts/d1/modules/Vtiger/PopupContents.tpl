@@ -50,7 +50,7 @@
                             {/if}
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th class="{$WIDTHTYPE}">
-                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
+                                    <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary text-nowrap {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
                                         {if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}
                                             <i class="fa {$FASORT_IMAGE}"></i>
                                         {else}
@@ -99,7 +99,7 @@
                     {if isset($RECORD_DATA[$LISTVIEW_HEADERNAME])}
                         {assign var=RECORD_DATA_LISTVIEW_HEADERNAME value=$RECORD_DATA[$LISTVIEW_HEADERNAME]}
                     {/if}
-                    <td class="listViewEntryValue value textOverflowEllipsis {$WIDTHTYPE}" title="{$RECORD_DATA_LISTVIEW_HEADERNAME}">
+                    <td class="listViewEntryValue value text-truncate {$WIDTHTYPE}" title="{$RECORD_DATA_LISTVIEW_HEADERNAME}">
                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                         {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}

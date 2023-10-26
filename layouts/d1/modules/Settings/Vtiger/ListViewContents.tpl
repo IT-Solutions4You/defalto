@@ -82,7 +82,7 @@
 										{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 											{assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
 											{assign var=LAST_COLUMN value=$LISTVIEW_HEADER@last}
-											<td class="listViewEntryValue textOverflowEllipsis {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
+											<td class="listViewEntryValue text-truncate {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
 												{$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}
 												{if $LAST_COLUMN && $LISTVIEW_ENTRY->getRecordLinks()}
 													</td>

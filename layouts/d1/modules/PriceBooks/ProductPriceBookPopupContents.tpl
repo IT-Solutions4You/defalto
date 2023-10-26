@@ -47,7 +47,7 @@
                                 </th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     <th class="{$WIDTHTYPE}">
-                                        <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
+                                        <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">
                                             {if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
                                                 <i class="fa {$FASORT_IMAGE}"></i>
                                             {else}
@@ -88,7 +88,7 @@
                                 </td>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
-                                    <td class="listViewEntryValue textOverflowEllipsis {$WIDTHTYPE}">
+                                    <td class="listViewEntryValue text-truncate {$WIDTHTYPE}">
                                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                                         {else}

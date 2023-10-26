@@ -28,7 +28,7 @@
 		</div>
 		{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 			<div class="recentActivitiesContainer row my-3">
-				<div class="col-lg-8 textOverflowEllipsis">
+				<div class="col-lg-8 text-truncate">
 					<a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('projectmilestonename')}">{$RELATED_RECORD->getDisplayValue('projectmilestonename')}</a>
 				</div>
 				<div class="col-lg-4 horizontalLeftSpacingForSummaryWidgetContents text-end">

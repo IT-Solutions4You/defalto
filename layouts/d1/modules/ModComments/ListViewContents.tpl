@@ -70,7 +70,7 @@
                                 {assign var=NO_SORTING value=0}
                             {/if}
                             <th {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')} nowrap="nowrap" {/if}>
-                                <a href="#" class="{if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if}>
+                                <a href="#" class="text-nowrap {if $NO_SORTING}noSorting{else}listViewContentHeaderValues{/if}" {if !$NO_SORTING}data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}"{/if}>
                                     {if !$NO_SORTING}
                                         {if $COLUMN_NAME eq $LISTVIEW_HEADER->get('name')}
                                             <i class="fa {$FASORT_IMAGE}"></i>
@@ -123,7 +123,7 @@
                                 {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                                 <td class="listViewEntryValue" data-name="{$LISTVIEW_HEADER->get('name')}" title="{$LISTVIEW_ENTRY->getTitle($LISTVIEW_HEADER)}" data-rawvalue="{$LISTVIEW_ENTRY_RAWVALUE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}">
                                     <span class="fieldValue">
-                                        <span class="value textOverflowEllipsis">
+                                        <span class="value text-truncate">
                                             {if $LISTVIEW_HEADER->get('uitype') eq '72'}
                                                 {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
                                                 {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}

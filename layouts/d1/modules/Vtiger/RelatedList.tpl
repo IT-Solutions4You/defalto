@@ -51,7 +51,7 @@
 										{if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
 											<a href="javascript:void(0);" class="noSorting text-secondary">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}</a>
 										{else}
-											<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
+											<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
 												{if $FASORT_IMAGE && $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 													<i class="fa {$FASORT_IMAGE}"></i>
 												{else}
@@ -104,7 +104,7 @@
 									data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
 								{/if}>
 								<td class="related-list-actions text-secondary">
-									<span class="actionImages">
+									<span class="actionImages btn-group">
 										{if $IS_EDITABLE && $RELATED_RECORD->isEditable()}
 											{if $RELATED_MODULE_NAME eq 'PriceBooks' AND (!empty($RELATED_HEADERS['listprice']) || !empty($RELATED_HEADERS['unit_price']))}
 												{if !empty($RELATED_HEADERS['listprice'])}
@@ -135,7 +135,7 @@
 									{assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
 									{assign var=RELATED_LIST_VALUE value=$RELATED_RECORD->get($RELATED_HEADERNAME)}
 									<td class="relatedListEntryValues" title="{strip_tags($RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME))}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
-										<span class="value textOverflowEllipsis">
+										<span class="value text-truncate">
 											{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'document_source'}
 												<center>{$RELATED_RECORD->get($RELATED_HEADERNAME)}</center>
 												{else}
@@ -187,7 +187,7 @@
 													{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
 													{* Documents list view special actions "view file" and "download file" *}
 													{if $RELATED_MODULE_NAME eq 'Documents' && $RELATED_HEADERNAME eq 'filename' && isPermitted($RELATED_MODULE_NAME, 'DetailView', $RELATED_RECORD->getId()) eq 'yes'}
-														<span class="actionImages">
+														<span class="actionImages btn-group">
 															{assign var=RECORD_ID value=$RELATED_RECORD->getId()}
 															{assign var="DOCUMENT_RECORD_MODEL" value=Vtiger_Record_Model::getInstanceById($RECORD_ID)}
 															{if $DOCUMENT_RECORD_MODEL->get('filename') && $DOCUMENT_RECORD_MODEL->get('filestatus')}

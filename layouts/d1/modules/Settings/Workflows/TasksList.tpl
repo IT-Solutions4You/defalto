@@ -22,7 +22,7 @@
 					<tr class="listViewEntries border-bottom">
 						<td>
                             <div class="actions">
-								<span class="actionImages">
+								<span class="actionImages btn-group">
 									<a class="btn text-secondary" data-url="{$TASK->getEditViewUrl()}">
 										<i class="fa fa-pencil alignMiddle" title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}"></i>
                                     </a>
@@ -46,10 +46,10 @@
                 <tr class="listViewEntries hide taskTemplate">
                     <td>
                         <div class="pull-left actions">
-                            <span class="actionImages">
+                            <span class="actionImages btn-group">
                                 <a class="editTask">
                                     <i class="fa fa-pencil alignMiddle" ></i>
-                                </a>&nbsp;&nbsp;
+                                </a>
                                 <a class="deleteTaskTemplate">
                                     <i class="fa fa-trash alignMiddle"></i>
                                 </a>

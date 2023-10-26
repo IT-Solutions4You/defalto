@@ -21,12 +21,12 @@
         {assign var=STARRED value=false}
     {/if}
 	{if $MODULE_MODEL->isStarredEnabled()}
-		<span class="mx-2">
-			<a class="text-secondary markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
+		<span class="btn btn-sm text-secondary">
+			<a class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
 		</span>
 	{/if}
-    <div class="more dropdown action mx-2">
-        <div data-bs-toggle="dropdown">
+    <div class="more dropdown action">
+        <div class="btn btn-sm text-secondary" data-bs-toggle="dropdown">
             <i class="fa fa-ellipsis-h icon"></i>
         </div>
         <ul class="dropdown-menu">

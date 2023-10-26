@@ -126,7 +126,7 @@
 									</th>
 									{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 										<th class="nowrap">
-											<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
+											<a href="javascript:void(0);" class="listViewContentHeaderValues text-secondary text-nowrap" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">
 												{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}
 													<i class="fa {$FASORT_IMAGE}"></i>
 												{else}
@@ -141,7 +141,7 @@
 										</th>
 									{/foreach}
 									<th class="nowrap">
-										<a href="javascript:void(0);" class="listViewContentHeaderValues noSorting text-secondary">{vtranslate('Status', $RELATED_MODULE_NAME)}</a>
+										<a href="javascript:void(0);" class="listViewContentHeaderValues noSorting text-secondary text-nowrap">{vtranslate('Status', $RELATED_MODULE_NAME)}</a>
 									</th>
 								</tr>
 								<tr class="searchRow">
@@ -170,7 +170,7 @@
 										<input type="checkbox" value="{$RELATED_RECORD->getId()}" class="listViewEntriesCheckBox"/>
 									</td>
 									<td>
-										<span class="actionImages d-flex">
+										<span class="actionImages btn-group">
 											<a class="btn text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}" href="javascript:void(0)">
 												<i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i>
 											</a>
@@ -185,7 +185,7 @@
 										{assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
 										{assign var=RELATED_LIST_VALUE value=$RELATED_RECORD->get($RELATED_HEADERNAME)}
 										<td class="{$WIDTHTYPE} relatedListEntryValues" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
-											<span class="value textOverflowEllipsis">
+											<span class="value text-truncate">
 												{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
 													<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 												{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
