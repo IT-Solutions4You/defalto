@@ -8,11 +8,14 @@
 ************************************************************************************}
 </div>
 <footer class="app-footer bg-body">
-	<p>
-		Powered by vtiger CRM - {$VTIGER_VERSION}&nbsp;&nbsp;© 2004 - {date('Y')}&nbsp;&nbsp;
-		<a href="//www.vtiger.com" target="_blank">Vtiger</a>&nbsp;|&nbsp;
-		<a href="https://www.vtiger.com/privacy-policy" target="_blank">Privacy Policy</a>
-	</p>
+	<div class="h-footer d-flex justify-content-center align-items-center">
+		<div>
+			<span class="me-2">Powered by vtiger CRM - {$VTIGER_VERSION} © 2004 - {date('Y')}</span>
+			<a href="//www.vtiger.com" target="_blank">Vtiger</a>
+			<span class="mx-2">|</span>
+			<a href="https://www.vtiger.com/privacy-policy" target="_blank">Privacy Policy</a>
+		</div>
+	</div>
 </footer>
 <div id='overlayPage' class="modal fade">
 	<div class="modal-dialog modal-fullscreen">

@@ -10,20 +10,14 @@
 {strip}
 	<div class="col-lg-6 col-md-6 col-sm-6">
 		<div class="record-header clearfix">
-			{if !$MODULE}
-				{assign var=MODULE value=$MODULE_NAME}
-			{/if}
-			<div class="hidden-sm hidden-xs recordImage bg_{$MODULE} app-{$SELECTED_MENU_CATEGORY}">
-				<div class="name">
-					<span><strong><i class="vicon-{strtolower($MODULE)}"></i></strong></span>
-				</div>  
-			</div>
-
 			<div class="recordBasicInfo">
 				<div class="info-row">
 					<h4>
-						<span class="modulename_label">{vtranslate('LBL_MODULENAMES',$MODULE)}:</span>
-						&nbsp;{vtranslate($RECORD->get('module'),$RECORD->get('module'))}
+						{if !$MODULE}
+							{assign var=MODULE value=$MODULE_NAME}
+						{/if}
+						<span class="modulename_label me-2">{vtranslate('LBL_MODULENAMES',$MODULE)}:</span>
+						<span>{vtranslate($RECORD->get('module'),$RECORD->get('module'))}</span>
 					</h4>
 				</div>
 			</div>

@@ -15,12 +15,12 @@
         </div>
     </div>
     </nav>
-         <div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
-            <div class="data h-100">
-            </div>
-            <div class="modal-dialog">
-            </div>
+     <div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
+        <div class="data h-100">
         </div>
+        <div class="modal-dialog">
+        </div>
+    </div>
     <div class="container-fluid main-container">
         <div class="row">
             {include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}

@@ -84,25 +84,24 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
             thisInstance.InsertIntoTemplate(selectedType,true);
         });
     },
-    InsertIntoTemplate: function(element,islabel){
+    getSelectedEditor : function() {
 
         let selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type'),
-            selectField = document.getElementById(element).value,
+            oEditorName = 'body';
+
+        if (selectedTab2 === "header" || selectedTab2 === "footer")
+            oEditorName = selectedTab2 + '_body';
+
+        return CKEDITOR.instances[oEditorName];
+    },
+    InsertIntoTemplate: function (element, islabel) {
+        let selectField = document.getElementById(element).value,
             oEditor,
-            CKEditorInstance = new Vtiger_CkEditor_Js(),
             insert_value = '';
 
-        switch (selectedTab2) {
-            case 'header':
-                selectedTab2 = 'header_body';
-                break;
-            case 'footer':
-                selectedTab2 = 'footer_body';
-        }
+        oEditor = this.getSelectedEditor();
 
-        oEditor = CKEditorInstance.load(selectedTab2);
-
-        if (islabel){
+        if (islabel) {
             let insert_value = selectField;
 
             if ('relatedmodulefields' === element) {
@@ -112,8 +111,8 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
             oEditor.insertHtml('%' + insert_value + '%');
         } else {
 
-            if (element != 'header_var' && element != 'footer_var' && element != 'hmodulefields' && element != 'fmodulefields' && element != 'dateval'){
-                if (selectField != ''){
+            if (element != 'header_var' && element != 'footer_var' && element != 'hmodulefields' && element != 'fmodulefields' && element != 'dateval') {
+                if (selectField != '') {
                     if (selectField == 'ORGANIZATION_STAMP_SIGNATURE')
                         insert_value = jQuery('#company_stamp_signature_content').html();
                     else if (selectField == 'COMPANY_LOGO')
@@ -140,8 +139,8 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
                 }
 
             } else {
-                if (selectField != ''){
-                    if (element == 'hmodulefields' || element == 'fmodulefields'){
+                if (selectField != '') {
+                    if (element == 'hmodulefields' || element == 'fmodulefields') {
                         oEditor.insertHtml('$' + selectField + '$');
                     } else {
                         oEditor.insertHtml(selectField);
@@ -227,7 +226,8 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
             });
 
             ModuleFieldsElement.select2("destroy");
-            ModuleFieldsElement.select2();
+
+            vtUtils.showSelect2ElementView(ModuleFieldsElement);
 
             if (selectname == "modulefields") {                        
 
@@ -243,8 +243,9 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
                 });
 
                 RelatedModuleSourceElement.select2("destroy");
-                RelatedModuleSourceElement.select2();
-                RelatedModuleSourceElement.trigger('change');
+
+                vtUtils.showSelect2ElementView(RelatedModuleSourceElement);
+
                 thisInstance.updateFields(response,"filename_fields");
             } 
         }
@@ -286,9 +287,9 @@ Vtiger_Edit_Js("PDFMaker_EditFree_Js",{
     registerCKEditor: function() {
         const ckeditorInstance = new Vtiger_CkEditor_Js();
 
-        ckeditorInstance.loadCkEditor($('#body'), {height: '70vh'});
-        ckeditorInstance.loadCkEditor($('#header_body'), {height: '70vh'});
-        ckeditorInstance.loadCkEditor($('#footer_body'), {height: '70vh'});
+        ckeditorInstance.loadCkEditor($('#body'), {height: '65vh'});
+        ckeditorInstance.loadCkEditor($('#header_body'), {height: '65vh'});
+        ckeditorInstance.loadCkEditor($('#footer_body'), {height: '65vh'});
     },
     registerEvents: function(){
         this.registerAppTriggerEvent();
@@ -526,7 +527,7 @@ if (typeof(PDFMaker_EditFreeJs) == 'undefined'){
             selObj = document.getElementById('pdf_format');
 
             if (selObj.value == 'Custom'){
-                document.getElementById('custom_format_table').style.display = 'table';
+                document.getElementById('custom_format_table').style.display = 'block';
             } else {
                 document.getElementById('custom_format_table').style.display = 'none';
             }

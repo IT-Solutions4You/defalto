@@ -8,7 +8,6 @@
 ************************************************************************************}
 {strip}
 {include file=vtemplate_path('partials/Topbar.tpl', $MODULE)}
-
 <div class="container-fluid app-nav">
 	<div class="row">
 		{include file="partials/SidebarHeader.tpl"|vtemplate_path:$MODULE}
