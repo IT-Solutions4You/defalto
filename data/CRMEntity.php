@@ -129,6 +129,15 @@ class CRMEntity {
 		//Calling the Module specific save code
 		$this->save_module($module);
 
+        if ($insertion_mode !== 'edit') {
+            if (in_array('currency_id', $this->db->getColumnNames($this->table_name))) {
+                $currencyField = new CurrencyField(0);
+                $currencyField->initialize();
+                $this->db->pquery('UPDATE ' . $this->table_name . ' SET currency_id = ?, conversion_rate = ? WHERE ' . $this->table_index . ' = ?',
+                    [$currencyField->currencyId, $currencyField->conversionRate, $this->id]);
+            }
+        }
+
 		$this->db->completeTransaction();
 
 		// vtlib customization: Hook provide to enable generic module relation.
@@ -410,10 +419,10 @@ class CRMEntity {
 		global $adb;
 		$insertion_mode = $this->mode;
         $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
-        
+        $tablekey = $this->tab_name_index[$table_name];
+
 		//Checkin whether an entry is already is present in the vtiger_table to update
 		if ($insertion_mode == 'edit') {
-			$tablekey = $this->tab_name_index[$table_name];
 			// Make selection on the primary key of the module table to check.
 			$check_query = "select $tablekey from $table_name where $tablekey=?";
 			$check_params = array($this->id);
@@ -612,11 +621,8 @@ class CRMEntity {
 						}
 					}
 					// END
-				} elseif ($uitype == 72 && !$ajaxSave) {
-					// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
+				} elseif (($uitype == 72 || $uitype == 71) && !$ajaxSave) {
 					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], null, true);
-				} elseif ($uitype == 71 && !$ajaxSave) {
-					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname]);
 				} elseif ($uitype == 69) {
 					$fldvalue = $this->column_fields[$fieldname];
 					if(php7_count($_FILES)) {
@@ -2898,8 +2904,8 @@ class CRMEntity {
         $parentRole = implode(',', $parentRoleArr);
         $companyId = [];
 
-        if (false !== Vtiger_Module_Model::getInstance('MultiCompany4you') && false !== Vtiger_Module_Model::getInstance('MultiCompany4you')->isActive()) {
-            $companyId = array_keys(MultiCompany4you_Module_Model::getCompaniesList());
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+            $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
         }
 
         $query = ' LEFT JOIN (

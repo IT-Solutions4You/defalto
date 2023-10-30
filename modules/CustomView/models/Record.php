@@ -388,12 +388,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					$fieldType = $fieldModel->getFieldDataType();
 
 					if($fieldType == 'currency') {
-						if($fieldModel->get('uitype') == '72') {
+						//if($fieldModel->get('uitype') == '72') {
 							// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
 							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue, null, true);
-						} else {
+						/*} else {
 							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue);
-						}
+						}*/
 					}
 
 					$temp_val = explode(",",$advFitlerValue);

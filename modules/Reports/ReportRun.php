@@ -1619,11 +1619,11 @@ class ReportRun extends CRMEntity {
 
 				if ($fieldType == 'currency') {
 					// Some of the currency fields like Unit Price, Total, Sub-total etc of Inventory modules, do not need currency conversion
-					if ($field->getUIType() == '72') {
+					//if ($field->getUIType() == '72') {
 						$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value, null, true);
-					} else {
+					/*} else {
 						$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value);
-					}
+					}*/
 				}
 
 				$specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
@@ -4184,7 +4184,7 @@ class ReportRun extends CRMEntity {
 			$keyvalue = getTabModuleName($tabid) . "_" . $fieldlabel1;
 			$fieldvalues = Array();
 			if (php7_count($roleids) > 1) {
-				$mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"" . implode($roleids, "\",\"") . "\") and picklistid in (select picklistid from vtiger_$fieldname)"; // order by sortid asc - not requried
+				$mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"" . implode('","', $roleids) . "\") and picklistid in (select picklistid from vtiger_$fieldname)"; // order by sortid asc - not requried
 			} else {
 				$mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='" . $roleid . "' and picklistid in (select picklistid from vtiger_$fieldname)"; // order by sortid asc - not requried
 			}

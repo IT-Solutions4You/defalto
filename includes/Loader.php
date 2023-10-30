@@ -117,7 +117,7 @@ class Vtiger_Loader {
 			$moduleHierarchyParts = explode(':', $moduleName);
 			$moduleDir = str_replace(':', '.', $moduleName);
 			$moduleClassPath = str_replace(':', '_', $moduleName);
-			$actualModule = $moduleHierarchyParts[php7_count($moduleHierarchyParts)-1];
+			$actualModule = $moduleHierarchyParts[count($moduleHierarchyParts)-1];
 			$secondFallBackModuleDir= $secondFallBackModuleClassPath =  $actualModule;
 			$modules = array('Users');
 			if($actualModule != 'Users') {
@@ -171,7 +171,7 @@ class Vtiger_Loader {
 	 */
 	public static function autoLoad($className) {
 		$parts = explode('_', $className);
-		$noOfParts = php7_count($parts);
+		$noOfParts = count($parts);
 		if($noOfParts > 2) {
 			$filePath = 'modules.';
 			// Append modules and sub modules names to the path
