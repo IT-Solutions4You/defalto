@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	<div class="">
 	{assign var=ASSIGNED_USER_ID value=$FIELD_MODEL->get('name')}
         {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}

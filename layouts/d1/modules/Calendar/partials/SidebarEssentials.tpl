@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{if $smarty.get.view eq 'Calendar' OR $smarty.get.view eq 'SharedCalendar'}
+*}
+{if $smarty.get.view eq 'Calendar' OR $smarty.get.view eq 'SharedCalendar'}
 <div class="sidebar-menu">
     <div class="module-filters" id="module-filters">
         <div class="sidebar-container lists-menu-container">

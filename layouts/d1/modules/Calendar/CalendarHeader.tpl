@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	<input type="hidden" name="is_record_creation_allowed" id="is_record_creation_allowed" value="{$IS_CREATE_PERMITTED}">
 	<div class="col-sm-12 col-xs-12 module-action-bar clearfix">
 		<div class="module-action-content clearfix coloredBorderTop">

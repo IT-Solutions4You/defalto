@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	<div class="modal-dialog modelContainer">
 		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE={vtranslate('LBL_CHANGE_OWNER', $MODULE)}}
 		<div class="modal-content">

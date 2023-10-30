@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	<div class="fc-overlay-modal modal-content">
 		<div class="overlayHeader">
 			{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE="{'LBL_IMPORT'|@vtranslate:$MODULE} {$FOR_MODULE|@vtranslate:$MODULE} - {'LBL_RESULT'|@vtranslate:$MODULE}"}

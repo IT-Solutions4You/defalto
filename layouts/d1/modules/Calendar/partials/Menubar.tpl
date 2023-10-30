@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{assign var="topMenus" value=$MENU_STRUCTURE->getTop()}
+*}
+{assign var="topMenus" value=$MENU_STRUCTURE->getTop()}
 {assign var="moreMenus" value=$MENU_STRUCTURE->getMore()}
 
 <div id="modules-menu" class="modules-menu">

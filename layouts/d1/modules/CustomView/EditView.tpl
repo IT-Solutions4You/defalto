@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	{assign var=SELECTED_FIELDS value=$CUSTOMVIEW_MODEL->getSelectedFields()}
 	{assign var=MODULE_FIELDS value=$MODULE_MODEL->getFields()}
 	<div id="filterContainer" class="h-100">

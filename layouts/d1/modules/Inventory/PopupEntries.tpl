@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{* modules/Inventory/views/SubProductsPopup.php *}
+*}
+{* modules/Inventory/views/SubProductsPopup.php *}
 
 {strip}
     <input type='hidden' id='pageNumber' value="{$PAGE_NUMBER}">

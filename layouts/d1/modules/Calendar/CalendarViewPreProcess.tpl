@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{include file="modules/Vtiger/partials/Topbar.tpl"}
+*}
+{include file="modules/Vtiger/partials/Topbar.tpl"}
 {strip}
 <div class="container-fluid app-nav">
 	<div class="row">

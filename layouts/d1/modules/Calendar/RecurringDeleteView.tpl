@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 <!--Confirmation modal for updating Recurring Events-->
 {assign var=MODULE value="Calendar"}
 <div class="modal-dialog modelContainer modal-content" style='min-width:350px;'>

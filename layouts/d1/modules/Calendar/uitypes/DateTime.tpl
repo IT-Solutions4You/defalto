@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 {if $FIELD_MODEL->getName() == 'date_start'}
 	{assign var=DATE_FIELD value=$FIELD_MODEL}
 	{assign var=MODULE_MODEL value=$RECORD_STRUCTURE_MODEL->getModule()}

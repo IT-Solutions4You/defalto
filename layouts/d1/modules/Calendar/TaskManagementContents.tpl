@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 	{assign var=MODULE_MODEL value= Vtiger_Module_Model::getInstance($MODULE)}
 	{assign var=SELECTED_PICKLIST_FIELDMODEL value= Vtiger_Field_Model::getInstance('taskstatus', $MODULE_MODEL)}
 	{assign var=PICKLIST_COLOR_MAP value= Settings_Picklist_Module_Model::getPicklistColorMap($SELECTED_PICKLIST_FIELDMODEL->getName())}

@@ -3,7 +3,8 @@
 * Portions created by vtiger are Copyright (c) vtiger.
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*}{strip}
+*}
+{strip}
 {assign var=SHARED_USER_INFO value= Zend_Json::encode($SHAREDUSERS_INFO)}
 {assign var=CURRENT_USER_ID value= $CURRENTUSER_MODEL->getId()}
 <input type="hidden" id="sharedUsersInfo" value= {Zend_Json::encode($SHAREDUSERS_INFO)} />
