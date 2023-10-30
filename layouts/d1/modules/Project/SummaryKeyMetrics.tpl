@@ -1,3 +1,9 @@
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 <div class="summaryView bg-body mb-3">
     <div class="summaryViewHeader border-1 border-bottom p-3">
         <h4 class="display-inline-block">{vtranslate('LBL_KEY_METRICS', $MODULE_NAME)}</h4>

@@ -1,3 +1,11 @@
+{**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*}
 {strip}
 <div class="listViewTagsTemplate">
     <div id="listViewTagContainer" class="tagContainer multiLevelTagList overflow-x-auto text-nowrap" {if $ALL_CUSTOMVIEW_MODEL} data-view-id="{$ALL_CUSTOMVIEW_MODEL->getId()}" {/if} data-list-tag-count="{Vtiger_Tag_Model::NUM_OF_TAGS_LIST}">

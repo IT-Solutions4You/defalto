@@ -1,16 +1,12 @@
-{*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************}
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {* modules/Settings/Vtiger/views/Index.php *}
-
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {include file="modules/Vtiger/partials/Topbar.tpl"}
-
 <div class="container-fluid app-nav">
     <div class="row">
         {include file="modules/Settings/Vtiger/SidebarHeader.tpl"}
@@ -71,7 +67,7 @@
         <div class="col-lg px-0 h-main overflow-auto">
             {if php7_count($MODULE_BASIC_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWBASIC']) or php7_count($MODULE_SETTING_ACTIONS) or php7_count($LISTVIEW_LINKS['LISTVIEWSETTING'])}
                 <div class="px-4 pb-3">
-                    <div class="bg-body rounded p-3">
+                    <div class="bg-body rounded">
                         {include file='ModuleLinks.tpl'|vtemplate_path:$QUALIFIED_MODULE}
                     </div>
                 </div>

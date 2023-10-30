@@ -1,13 +1,9 @@
-{*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************}
-{* modules/Documents/views/MoveDocuments.php *}
-{strip}
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}{strip}
     <form class="modal-dialog modelContainer modal-content form-horizontal contentsBackground" id="moveDocuments" method="post" action="index.php">
         {assign var=HEADER_TITLE value={vtranslate('LBL_SELECT_A_FOLDER_TO_MOVE', $MODULE)}}
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}

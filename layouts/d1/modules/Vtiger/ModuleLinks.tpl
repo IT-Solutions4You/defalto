@@ -1,3 +1,11 @@
+{**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*}
 <div id="appnavcontent" class="d-flex p-3" aria-expanded="false">
     {if php7_count($MODULE_BASIC_ACTIONS)}
         {foreach item=BASIC_ACTION from=$MODULE_BASIC_ACTIONS}

@@ -1,12 +1,11 @@
-{* /**
+{**
  * This file is part of the IT-Solutions4You CRM Software.
  *
  * (c) IT-Solutions4You s.r.o [info@its4you.sk]
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- */ */
-*}
+ *}
 {if $ENABLE_PDFMAKER eq 'true'}
 
     <input type="hidden" name="email_function" id="email_function" value="{$EMAIL_FUNCTION}"/>

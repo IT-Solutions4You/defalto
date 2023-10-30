@@ -1,12 +1,9 @@
-{*+**********************************************************************************
-* The contents of this file are subject to the vtiger CRM Public License Version 1.1
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is: vtiger CRM Open Source
+{**
 * The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*************************************************************************************}
-
+*}
 {strip}
 	<div style="min-height: 600px;">
 		<table border="0" cellpadding="5" cellspacing="0" width="100%" style="margin-top: 100px;">
@@ -34,4 +31,4 @@
 		</table>
 		{include file="CardSetupModals.tpl"|@vtemplate_path:$QUALIFIED_MODULE QUALIFIED_MODULE=$QUALIFIED_MODULE}
 	</div>
-{strip}
+{/strip}

@@ -1,11 +1,9 @@
-{*<!--
-/*+****************************************************************************
-* The contents of this file are subject to the vtiger CRM Commercial License
-* ("License"); You may not use this file except in compliance with the License
-* The Initial Developer of the Code is vtiger.
-* All Rights Reserved. Copyright (C) vtiger.
-*******************************************************************************/
--->*}
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 
 {strip}
 	{if $FIELD_MODEL->isDefaultValueOptionDisabled() neq "true"}

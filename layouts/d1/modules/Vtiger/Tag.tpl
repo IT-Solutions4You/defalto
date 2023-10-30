@@ -1,11 +1,9 @@
-{*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************}
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {strip}
     <div class="tag btn me-1 lh-base {if 'Detail' eq $VIEW}text-secondary bg-secondary bg-opacity-10{elseif $ACTIVE eq true}btn-primary active{else}text-primary bg-primary bg-opacity-10{/if}" title="{$TAG_MODEL->getName()}" data-cv-id="{$ALL_CUSTOM_VIEW_ID}" data-type="{$TAG_MODEL->getType()}" data-id="{$TAG_MODEL->getId()}">
         <i class="activeToggleIcon fa fa-tag"></i>

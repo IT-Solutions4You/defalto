@@ -1,3 +1,9 @@
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {strip}
     <div class="col-lg-2 p-0 bg-body rounded-end rounded-bottom-0">
         <div id="modules-menu" class="modules-menu mmModulesMenu p-3">

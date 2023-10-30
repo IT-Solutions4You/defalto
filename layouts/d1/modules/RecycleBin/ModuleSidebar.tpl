@@ -1,3 +1,9 @@
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 <div class="containerModuleSidebar col-lg-2 mb-lg-4 ms-lg-4 bg-body rounded p-3">
     <div class="sidebar-menu sidebar-menu-full">
         <div class="module-filters" id="module-filters">

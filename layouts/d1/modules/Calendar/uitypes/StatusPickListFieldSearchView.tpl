@@ -1,13 +1,9 @@
-{*+**********************************************************************************
-* The contents of this file are subject to the vtiger CRM Public License Version 1.1
-* ("License"); You may not use this file except in compliance with the License
-* The Original Code is: vtiger CRM Open Source
+{**
 * The Initial Developer of the Original Code is vtiger.
-* Portions created by vtiger are Copyright (C) vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
-*************************************************************************************}
-
-{strip}
+*}{strip}
 	{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 	{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
 	{assign var=FIELD_INFO value=Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($FIELD_INFO))}

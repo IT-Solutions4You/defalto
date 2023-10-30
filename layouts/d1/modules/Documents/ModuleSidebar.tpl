@@ -1,4 +1,9 @@
-<div class="col-lg-2 p-0">
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}<div class="col-lg-2 p-0">
     <div class="bg-body rounded p-3 ms-4 mb-4">
         <div class="module-filters" id="module-filters">
             <div class="sidebar-container lists-menu-container">
