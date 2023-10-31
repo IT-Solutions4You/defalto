@@ -1,7 +1,7 @@
 {
   "require": {
     "adodb/adodb-php": "5.*",
-    "apalfrey/select2-bootstrap-5-theme": "*"
+    "apalfrey/select2-bootstrap-5-theme": "*",
     "ckeditor/ckeditor": "*",
     "components/font-awesome": "*",
     "ext-curl": "*",
@@ -20,7 +20,7 @@
     "mpdf/mpdf": "*",
     "myclabs/deep-copy": "^1.7",
     "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
-    "php" : "^7.4 || ^8.0",
+    "php": "^7.4 || ^8.0",
     "php-http/message-factory": "^1.0",
     "phpmailer/phpmailer": "*",
     "psr/http-message": "^1.0",
@@ -29,7 +29,7 @@
     "setasign/fpdi": "^2.1",
     "simplehtmldom/simplehtmldom": "*",
     "smarty/smarty": "4.*",
-    "twbs/bootstrap": "*",
+    "twbs/bootstrap": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",
