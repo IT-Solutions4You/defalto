@@ -12,16 +12,7 @@
 			<link rel="SHORTCUT ICON" href="layouts/d1/skins/images/favicon.ico">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-			{*
-			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/todc/css/bootstrap.min.css'/>
-			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/todc/css/todc-bootstrap.min.css'/>
-			*}
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap/dist/css/bootstrap.min.css')}'>
-
-			{*
-			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/font-awesome/css/font-awesome.min.css'/>
-			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/jquery/select2/select2.css'/>
-			*}
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/components/font-awesome/css/all.min.css')}'>
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/select2/select2/dist/css/select2.min.css')}'>
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/apalfrey/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css')}'>

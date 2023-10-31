@@ -23,7 +23,7 @@
 										<span class="me-2">{vtranslate('LBL_OLD_PASSWORD', $MODULE)}</span>
 										<span class="text-danger">*</span>
 									</label>
-									<div class="controls col-sm-6">
+									<div class="controls">
 										<input type="password" name="old_password" class="form-control inputElement" data-rule-required="true"/>
 									</div>
 								{/if}

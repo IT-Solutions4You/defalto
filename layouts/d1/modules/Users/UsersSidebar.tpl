@@ -7,23 +7,18 @@
 {strip}
 {assign var=SETTINGS_MENU_LIST value=Settings_Vtiger_Module_Model::getSettingsMenuListForNonAdmin()}
 <div class="settingsgroup">
-	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-		<div class="settingsgroup-panel panel panel-default">
+	<div class="panel-group accordion border-0" id="accordion" role="tablist" aria-multiselectable="true">
+		<div class="accordion-item border-0 settingsSearch">
 			{foreach item=BLOCK_MENUS key=BLOCK_NAME from=$SETTINGS_MENU_LIST}
 				{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENUS|@sizeof}
 				{if $NUM_OF_MENU_ITEMS gt 0}
-					<div id="{$BLOCK_NAME}_accordion" class="app-nav" role="tab">
-						<div class="app-settings-accordion">
-							<div class="settingsgroup-accordion">
-								<a data-toggle="collapse" data-parent="#accordion" href="#{$BLOCK_NAME}">
-									<i class="fa {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} fa-angle-down {else} fa-angle-right {/if}"></i>
-									&nbsp;<span>{vtranslate($BLOCK_NAME,$QUALIFIED_MODULE)}</span>
-								</a>
-							</div>
-						</div>
+					<div id="{$BLOCK_NAME}_accordion" class="settingsSearchHeader accordion-header">
+						<button class="settingsSearchButton accordion-button bg-transparent fw-bold p-3 {if $ACTIVE_BLOCK['block'] neq $BLOCK_NAME}collapsed{/if}" type="button" data-bs-toggle="collapse" data-bs-target="#{$BLOCK_NAME}_colapse">
+							{vtranslate($BLOCK_NAME,$QUALIFIED_MODULE)}
+						</button>
 					</div>  
-					<div id="{$BLOCK_NAME}" class="panel-collapse collapse {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME} in {/if}">
-						<ul class="list-group">
+					<div id="{$BLOCK_NAME}_colapse" class="settingsSearchTab border-0 accordion-collapse collapse {if $ACTIVE_BLOCK['block'] eq $BLOCK_NAME}show{/if}">
+						<ul class="nav nav-pills flex-column">
 							{foreach item=URL key=MENU from=$BLOCK_MENUS}
 								{assign var=MENU_URL value='#'}
 								{assign var=MENU_LABEL value=$MENU}
@@ -39,8 +34,13 @@
 								{elseif is_string($URL)}
 									{assign var=MENU_URL value=$URL}
 								{/if}
-
-								<li><a href="{$MENU_URL}" class="menuItemLabel {if $ACTIVE_BLOCK['menu'] eq $MENU} settingsgroup-menu-color {/if}">{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}</a></li>
+								<li class="tab-item nav-link p-3 fs-6 settingsSearchTabItem">
+									<div class="d-flex justify-content-between">
+										<a href="{$MENU_URL}" data-name="{$MENU}" class="settingsSearchLabel {if $ACTIVE_BLOCK['menu'] eq $MENU}settingsSearchActiveLabel fw-bold{/if}">
+											{vtranslate($MENU_LABEL,$QUALIFIED_MODULE)}
+										</a>
+									</div>
+								</li>
 							{/foreach}
 						</ul>
 					</div>

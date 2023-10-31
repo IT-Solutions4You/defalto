@@ -205,7 +205,7 @@
                     <li class="mx-2 me-lg-3">
                         <div class="dropdown">
                             <a href="#" class="userName" data-bs-toggle="dropdown">
-                                <div class="profile-img-container">
+                                <div class="profile-img-container d-flex align-items-center justify-content-center">
                                     {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                     {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].path eq ''}
                                         <i class='vicon-vtigeruser'></i>
@@ -222,7 +222,7 @@
                                 <div class="container-fluid border-bottom p-4">
                                     <div class="row text-nowrap">
                                         <div class="col-auto">
-                                            <div class="profile-img-container p-0" style="width: 3.8rem; height: 3.8rem;">
+                                            <div class="profile-img-container p-0 d-flex align-items-center justify-content-center" style="width: 3.8rem; height: 3.8rem;">
                                                 {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                                 {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].path eq ''}
                                                     <i class='vicon-vtigeruser'></i>
