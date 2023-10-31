@@ -45,9 +45,17 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 				$taskModel->set('tmpTaskId', $taskData['tmpTaskId']);
 				$taskModel->set('active', $taskData['active']);
 				$tmpTaskObject = $taskModel->getTaskObject();
-				foreach ($taskData as $key => $value){
-					$tmpTaskObject->$key = $value;
-				}
+                foreach ($taskData as $key => $value) {
+                    if (substr($key, -2) === '[]') {
+                        $key = substr($key, 0, -2);
+
+                        if (!is_array($value)) {
+                            $value = [$value];
+                        }
+                    }
+
+                    $tmpTaskObject->$key = $value;
+                }
 				$taskModel->setTaskObject($tmpTaskObject);
 			}
 		}
@@ -221,6 +229,38 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('EMAIL_FIELD_OPTION', $emailFieldoptions);
 		$viewer->assign('FROM_EMAIL_FIELD_OPTION', $fromEmailFieldOptions);
 		$viewer->assign('ALL_FIELD_OPTIONS',$allFieldoptions);
-		$viewer->view('EditTask.tpl', $qualifiedModuleName);
+
+        $memberGroups = Settings_Groups_Member_Model::getAll(false);
+
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+            $allCompany = ITS4YouMultiCompany_Module_Model::getCompaniesList('all');
+            $viewer->assign('MULTICOMPANY4YOU', 1);
+
+            foreach ($allCompany as $companyId => $company) {
+                $type = 'MultiCompany4you';
+                $qualifiedId = $type . ':' . $companyId;
+                $member = new Vtiger_Base_Model();
+                $memberGroups['MultiCompany4you'][$qualifiedId] = $member->set('id', $qualifiedId)->set('name', $company['companyname']);
+            }
+        }
+
+        $viewer->assign('MEMBER_GROUPS', $memberGroups);
+
+        if ('AddSharing' === $taskType || 'RemoveSharing' === $taskType) {
+            $memberViewList = $memberEditList = [];
+
+            if (is_array($taskObject->memberViewList)) {
+                $memberViewList = array_flip($taskObject->memberViewList);
+            }
+
+            if (is_array($taskObject->memberEditList)) {
+                $memberEditList = array_flip($taskObject->memberEditList);
+            }
+
+            $viewer->assign('memberViewList', $memberViewList);
+            $viewer->assign('memberEditList', $memberEditList);
+        }
+
+        $viewer->view('EditTask.tpl', $qualifiedModuleName);
 	}
 }

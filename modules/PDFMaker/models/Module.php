@@ -166,7 +166,7 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
             $pdftemplatearray['description'] = $adb->query_result($result, $i, 'description');
             $pdftemplatearray['module'] = vtranslate($currModule, $currModule);
             $pdftemplatearray['filename'] = "<a href=\"index.php?module=PDFMaker&view=DetailFree&templateid=" . $templateid . "\">" . $pdftemplatearray['module'] . "</a>";
-            $pdftemplatearray['edit'] = "<li><a href=\"index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=" . $templateid . "\">" . vtranslate('LBL_EDIT', $module) . "</a></li>";
+            $pdftemplatearray['edit'] = "<li><a class='dropdown-item' href=\"index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=" . $templateid . "\">" . vtranslate('LBL_EDIT', $module) . "</a></li>";
 
             $return_data [] = $pdftemplatearray;
         }

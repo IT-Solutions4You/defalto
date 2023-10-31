@@ -36,4 +36,3 @@ $PERFORMANCE_CONFIG = Array(
 	// show value.
 	'HOME_PAGE_WIDGET_GROUP_SIZE' => 12,
 );
-?>

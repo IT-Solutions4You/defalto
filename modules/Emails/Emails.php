@@ -292,11 +292,12 @@ class Emails extends CRMEntity {
 		$button = '';
 
 		if ($actions) {
-			if (is_string($actions))
-				$actions = explode(',', strtoupper($actions));
+			$actions = sanitizeRelatedListsActions($actions);
+
 			if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
 				$button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "'>&nbsp;";
 			}
+
 			if (in_array('BULKMAIL', $actions) && isPermitted($related_module, 1, '') == 'yes') {
 				$button .= "<input title='" . getTranslatedString('LBL_BULK_MAILS') . "' class='crmbutton small create'" .
 						" onclick='this.form.action.value=\"sendmail\";this.form.module.value=\"$this_module\"' type='submit' name='button'" .
@@ -520,23 +521,32 @@ class Emails extends CRMEntity {
 	}
 
 	public function getNonAdminAccessControlQuery($module, $user, $scope='') {
+		$is_admin = null;
+		$profileGlobalPermission = [];
+		$defaultOrgSharingPermission = [];
+		$current_user_groups = null;
+		$current_user_parent_role_seq = null;
 		require('user_privileges/user_privileges_' . $user->id . '.php');
 		require('user_privileges/sharing_privileges_' . $user->id . '.php');
 		$query = ' ';
 		$tabId = getTabid($module);
+
 		if ($is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
 				== 1 && $defaultOrgSharingPermission[$tabId] == 3) {
+			$query .= $this->getSharingAccessControlQuery($user, $scope, $current_user_groups);
 			$tableName = 'vt_tmp_u' . $user->id;
 			$sharingRuleInfoVariable = $module . '_share_read_permission';
 			$sharingRuleInfo = $sharingRuleInfoVariable;
 			$sharedTabId = null;
+
 			if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
 					php7_count($sharingRuleInfo['GROUP']) > 0)) {
 				$tableName = $tableName . '_t' . $tabId;
 				$sharedTabId = $tabId;
 			}
+
 			$this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
-			$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
+			$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
 					"vtiger_crmentity$scope.smownerid ";
 		}
 		return $query;
@@ -690,5 +700,3 @@ function emails_checkFieldVisiblityPermission($fieldname, $mode='readonly') {
 	$ret = getFieldVisibilityPermission('Emails', $current_user->id, $fieldname, $mode);
 	return $ret;
 }
-
-?>

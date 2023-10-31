@@ -25,7 +25,16 @@
     "smarty/smarty": "4.*",
     "fullcalendar/fullcalendar": "*",
     "phpmailer/phpmailer": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "components/font-awesome": "*",
+    "twbs/bootstrap": "*",
+    "select2/select2": "*",
+    "apalfrey/select2-bootstrap-5-theme": "*"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "1.9.*",
+    "rector/rector": "0.15.*",
+    "tracy/tracy": "v2.9.7"
   },
   "repositories": [
     {

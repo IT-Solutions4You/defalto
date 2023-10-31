@@ -82,9 +82,6 @@ class Vtiger_Profile {
 		global $adb;
 
 		// Allow field access to all
-		$adb->pquery("INSERT INTO vtiger_def_org_field (tabid, fieldid, visible, readonly) VALUES(?,?,?,?)",
-			Array($fieldInstance->getModuleId(), $fieldInstance->id, '0', '0'));
-
 		$profileids = self::getAllIds();
 		foreach($profileids as $profileid) {
 			$adb->pquery("INSERT INTO vtiger_profile2field (profileid, tabid, fieldid, visible, readonly) VALUES(?,?,?,?,?)",
@@ -100,7 +97,6 @@ class Vtiger_Profile {
 	static function deleteForField($fieldInstance) {
 		global $adb;
 
-		$adb->pquery("DELETE FROM vtiger_def_org_field WHERE fieldid=?", Array($fieldInstance->id));
 		$adb->pquery("DELETE FROM vtiger_profile2field WHERE fieldid=?", Array($fieldInstance->id));
 	}
 

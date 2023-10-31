@@ -24,6 +24,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('getActivities');
 		$this->exposeMethod('showRelatedRecords');
+        $this->exposeMethod('DetailSharingRecord');
 	}
 
 	public function requiresPermission(Vtiger_Request $request){
@@ -165,19 +166,17 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$selectedTabLabel = $request->get('tab_label');
 		$relationId = $request->get('relationId');
 
-		if(empty($selectedTabLabel)) {
-			if($currentUserModel->get('default_record_view') === 'Detail') {
-				$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
-			} else{
-				if($moduleModel->isSummaryViewSupported()) {
-					$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_SUMMARY', $moduleName);
-				} else {
-					$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
-				}
-			}
-		}
+        if (empty($selectedTabLabel)) {
+            if ($currentUserModel->get('default_record_view') === 'Detail') {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
+            } elseif ($moduleModel->isSummaryViewSupported()) {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_SUMMARY', $moduleName);
+            } else {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
+            }
+        }
 
-		$viewer->assign('SELECTED_TAB_LABEL', $selectedTabLabel);
+        $viewer->assign('SELECTED_TAB_LABEL', $selectedTabLabel);
 		$viewer->assign('SELECTED_RELATION_ID',$relationId);
 
 		//Vtiger7 - TO show custom view name in Module Header
@@ -193,23 +192,25 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		return 'DetailViewPreProcess.tpl';
 	}
 
-	function process(Vtiger_Request $request) {
-		$mode = $request->getMode();
-		if(!empty($mode)) {
-			echo $this->invokeExposedMethod($mode, $request);
-			return;
-		}
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+        if (!empty($mode)) {
+            echo $this->invokeExposedMethod($mode, $request);
+            return;
+        }
 
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $currentUserModel = Users_Record_Model::getCurrentUserModel();
+        $moduleModel = Vtiger_Module_Model::getInstance($request->getModule());
 
-		if ($currentUserModel->get('default_record_view') === 'Summary') {
-			echo $this->showModuleBasicView($request);
-		} else {
-			echo $this->showModuleDetailView($request);
-		}
-	}
+        if ($currentUserModel->get('default_record_view') === 'Summary' && $moduleModel->isSummaryViewSupported()) {
+            echo $this->showModuleBasicView($request);
+        } else {
+            echo $this->showModuleDetailView($request);
+        }
+    }
 
-	public function postProcess(Vtiger_Request $request) {
+    public function postProcess(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$moduleName = $request->getModule();
 		if($moduleName=="Calendar"){
@@ -230,19 +231,17 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$selectedTabLabel = $request->get('tab_label');
 		$relationId = $request->get('relationId');
 
-		if(empty($selectedTabLabel)) {
-			if($currentUserModel->get('default_record_view') === 'Detail') {
-				$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
-			} else{
-				if($moduleModel->isSummaryViewSupported()) {
-					$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_SUMMARY', $moduleName);
-				} else {
-					$selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
-				}
-			}
-		}
+        if (empty($selectedTabLabel)) {
+            if ($currentUserModel->get('default_record_view') === 'Detail') {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
+            } elseif ($moduleModel->isSummaryViewSupported()) {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_SUMMARY', $moduleName);
+            } else {
+                $selectedTabLabel = vtranslate('SINGLE_' . $moduleName, $moduleName) . ' ' . vtranslate('LBL_DETAILS', $moduleName);
+            }
+        }
 
-		$viewer = $this->getViewer($request);
+        $viewer = $this->getViewer($request);
 
 		$viewer->assign('SELECTED_TAB_LABEL', $selectedTabLabel);
 		$viewer->assign('SELECTED_RELATION_ID',$relationId);
@@ -255,35 +254,36 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	}
 
 
-	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
+        $layout = Vtiger_Viewer::getDefaultLayoutName();
+        $jsFileNames = array(
+            'modules.Vtiger.resources.Detail',
+            "modules.$moduleName.resources.Detail",
+            'modules.Vtiger.resources.RelatedList',
+            "modules.$moduleName.resources.RelatedList",
+            'libraries.jquery.jquery_windowmsg',
+            "libraries.jquery.ckeditor.ckeditor",
+            "libraries.jquery.ckeditor.adapters.jquery",
+            "modules.Emails.resources.MassEdit",
+            "modules.Vtiger.resources.CkEditor",
+            "~/libraries/jquery/twitter-text-js/twitter-text.js",
+            "libraries.jquery.multiplefileupload.jquery_MultiFile",
+            '~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
+            '~/libraries/jquery.bxslider/jquery.bxslider.min.js',
+            '~layouts/' . $layout . '/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js',
+            'modules.Vtiger.resources.Tag',
+            'modules.Google.resources.Map',
+        );
 
-		$jsFileNames = array(
-			'modules.Vtiger.resources.Detail',
-			"modules.$moduleName.resources.Detail",
-			'modules.Vtiger.resources.RelatedList',
-			"modules.$moduleName.resources.RelatedList",
-			'libraries.jquery.jquery_windowmsg',
-			"libraries.jquery.ckeditor.ckeditor",
-			"libraries.jquery.ckeditor.adapters.jquery",
-			"modules.Emails.resources.MassEdit",
-			"modules.Vtiger.resources.CkEditor",
-			"~/libraries/jquery/twitter-text-js/twitter-text.js",
-			"libraries.jquery.multiplefileupload.jquery_MultiFile",
-			'~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
-			'~/libraries/jquery.bxslider/jquery.bxslider.min.js',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.js",
-			'modules.Vtiger.resources.Tag',
-			'modules.Google.resources.Map'
-		);
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
+        return $headerScriptInstances;
+    }
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
-
-	function showDetailViewByMode(Vtiger_Request $request) {
+    function showDetailViewByMode(Vtiger_Request $request) {
 		$requestMode = $request->get('requestMode');
 		if($requestMode == 'full') {
 			return $this->showModuleDetailView($request);
@@ -329,7 +329,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 			$detailViewLinkParams = array('MODULE'=>$moduleName, 'RECORD'=>$recordId);
 			$detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
 			$viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
-			return $viewer->view('OverlayDetailView.tpl', $moduleName);
+
+			return $viewer->view('OverlayDetailView.tpl', $moduleName, true);
 		} else {
 			return $viewer->view('DetailViewFullContents.tpl', $moduleName, true);
 		}
@@ -351,7 +352,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 			$this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
 		}
 		$recordModel = $this->record->getRecord();
-		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
+		$recordStructure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
 
 		$moduleModel = $recordModel->getModule();
 		$viewer = $this->getViewer($request);
@@ -361,7 +362,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
-		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
+		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('RELATED_ACTIVITIES', $this->getActivities($request));
 
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
@@ -400,14 +401,14 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
 		$viewer->assign('MODULE_NAME', $moduleName);
 
-		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
-		$structuredValues = $recordStrucure->getStructure();
+		$recordStructure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
 
 		$moduleModel = $recordModel->getModule();
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-		$viewer->assign('RECORD_STRUCTURE', $structuredValues);
+		$viewer->assign('RECORD_STRUCTURE', $recordStructure->getStructure());
 		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
-		echo $viewer->view('DetailViewSummaryContents.tpl', $moduleName, true);
+
+		return $viewer->view('DetailViewSummaryContents.tpl', $moduleName, true);
 	}
 
 	/**
@@ -692,4 +693,23 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		return $headerCssInstances;
 	}
 
+    /**
+     * @param Vtiger_Request $request
+     */
+    public function DetailSharingRecord(Vtiger_Request $request)
+    {
+        $recordId = $request->get('record');
+        $moduleName = $request->getModule();
+
+        $recordModel = Vtiger_SharingRecord_Model::getInstance($recordId);
+
+        $viewer = $this->getViewer($request);
+
+        $viewer->assign('RECORD_MODEL', $recordModel);
+        $viewer->assign('RECORD_ID', $recordId);
+        $viewer->assign('MODULE', $moduleName);
+        $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
+
+        $viewer->view('DetailSharingRecord.tpl', $moduleName);
+    }
 }

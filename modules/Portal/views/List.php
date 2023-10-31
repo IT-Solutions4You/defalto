@@ -122,7 +122,6 @@ class Portal_List_View extends Vtiger_Index_View {
 		$viewer->assign('PAGING_INFO', $listViewModel->calculatePageRange($listviewEntries, $pagingModel));
 		$viewer->assign('FASORT_IMAGE',$faSortImage);
 		$viewer->assign('PAGING_MODEL', $pagingModel);
-		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('PAGE_NUMBER', $pagingModel->get('page'));
 		$viewer->assign('NO_OF_ENTRIES', count($listviewEntries));
 	}

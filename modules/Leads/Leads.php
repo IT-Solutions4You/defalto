@@ -179,7 +179,8 @@ class Leads extends CRMEntity {
 		$button .= '<input type="hidden" name="activity_mode">';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				if(getFieldVisibilityPermission('Calendar',$current_user->id,'parent_id', 'readwrite') == '0') {
 					$button .= "<input title='".getTranslatedString('LBL_NEW'). " ". getTranslatedString('LBL_TODO', $related_module) ."' class='crmbutton small create'" .
@@ -243,11 +244,13 @@ class Leads extends CRMEntity {
 
 		$button = '';
 		if($actions && getFieldVisibilityPermission($related_module, $current_user->id, 'account_id','readwrite') == '0') {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
-			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
+
+            if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
 					" value='". getTranslatedString('LBL_ADD_NEW'). " " . getTranslatedString($singular_modname) ."'>&nbsp;";
@@ -304,7 +307,8 @@ class Leads extends CRMEntity {
 		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
@@ -360,11 +364,13 @@ class Leads extends CRMEntity {
 		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
-			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
+
+            if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singular_modname)."' accessyKey='F' class='crmbutton small create' onclick='fnvshobj(this,\"sendmail_cont\");sendmail(\"$this_module\",$id);' type='button' name='button' value='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singular_modname)."'></td>";
 			}
 		}
@@ -448,11 +454,13 @@ class Leads extends CRMEntity {
 		$button = '';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('SELECT', $actions) && isPermitted($related_module,4, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_SELECT')." ". getTranslatedString($related_module). "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='". getTranslatedString('LBL_SELECT'). " " . getTranslatedString($related_module) ."'>&nbsp;";
 			}
-			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
+
+            if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				$button .= "<input title='".getTranslatedString('LBL_ADD_NEW'). " ". getTranslatedString($singular_modname) ."' class='crmbutton small create'" .
 					" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
 					" value='". getTranslatedString('LBL_ADD_NEW'). " " . getTranslatedString($singular_modname) ."'>&nbsp;";
@@ -499,7 +507,7 @@ class Leads extends CRMEntity {
 		}else
 		{
 			$profileList = getCurrentUserProfileList();
-			$sql1 = "select vtiger_field.fieldid,fieldlabel from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where vtiger_field.tabid=7 and vtiger_field.displaytype in (1,2,3,4) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
+			$sql1 = "select vtiger_field.fieldid,fieldlabel from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid where vtiger_field.tabid=7 and vtiger_field.displaytype in (1,2,3,4) and vtiger_profile2field.visible=0 and vtiger_field.presence in (0,2)";
 			$params1 = array();
 			if (php7_count($profileList) > 0) {
 				$sql1 .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")  group by fieldid";
@@ -758,5 +766,3 @@ class Leads extends CRMEntity {
 		}
 	}
 }
-
-?>

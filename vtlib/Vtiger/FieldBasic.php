@@ -182,6 +182,18 @@ class Vtiger_FieldBasic {
 
 		if (!empty($this->columntype)) {
 			Vtiger_Utils::AddColumn($this->table, $this->column, $this->columntype);
+
+			if (71 == $this->uitype) {
+				$entityTableResult = $adb->pquery('SELECT tablename FROM vtiger_entityname WHERE tabid = ?', [$this->getModuleId()]);
+
+				if ($entityTableResult) {
+					$entityTableRow = $adb->fetchByAssoc($entityTableResult);
+					$entityTable = $entityTableRow['tablename'];
+
+					Vtiger_Utils::AddColumn($entityTable, 'currency_id', 'INT(19)');
+					Vtiger_Utils::AddColumn($entityTable, 'conversion_rate', 'DECIMAL(10,3)');
+				}
+			}
 		}
 
 		if (!$this->label) {
@@ -278,12 +290,52 @@ class Vtiger_FieldBasic {
 
 	/**
 	 * Delete this field instance
+	 *
+	 * @param $checkUsage
+	 *
+	 * @return void
 	 */
-	function delete() {
+	public function delete($checkUsage = false): void
+	{
+		if ($checkUsage && $this->checkUsage()) {
+			return;
+		}
+
 		$this->__delete();
 
 		// Clearing cache
 		Vtiger_Cache::flushModuleandBlockFieldsCache($this->getModuleInstance(), $this->getBlockId());
+	}
+
+	/**
+	 * Checks whether the field has been used (only on non-deleted entities). If it was used or if the control can not be executed, returns true.
+	 *
+	 * @return bool
+	 */
+	protected function checkUsage(): bool
+	{
+		$return = true;
+		$db = PearDatabase::getInstance();
+
+		if (!$this->table || !$this->name) {
+			return true;
+		}
+
+		$moduleInstance = $this->getModuleInstance();
+		$module = CRMEntity::getInstance($moduleInstance->name);
+
+		$sql = 'SELECT ' . $this->name . '
+				FROM ' . $this->table . '
+					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = ' . $this->table . '.' . $module->tab_name_index[$this->table] . ' AND vtiger_crmentity.deleted = 0
+				WHERE ' . $this->name . '<>""
+					AND ' . $this->name . ' IS NOT NULL';
+		$res = $db->query($sql);
+
+		if (!$db->num_rows($res)) {
+			$return = false;
+		}
+
+		return $return;
 	}
 
 	/**

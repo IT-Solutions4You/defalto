@@ -1085,6 +1085,8 @@ $languageStrings = array(
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'You can %s to modify duplicate prevention rules.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Contact your administrator for revising the duplicate rules',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplicate %s(s) :',
+
+    'LBL_FILTER_SORTING' => 'Filter sorting',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page',

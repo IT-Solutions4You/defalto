@@ -259,6 +259,13 @@ function getRoleName($roleid)
  */
 function isPermitted($module,$actionname,$record_id='')
 {
+    $is_admin = null;
+    $current_user_groups = null;
+    $profileTabsPermission = [];
+    $profileGlobalPermission = [];
+    $profileActionPermission = [];
+    $defaultOrgSharingPermission = [];
+    $sharingPermission = 'no';
 	global $log;
 	$log->debug("Entering isPermitted(".$module.",".$actionname.",".$record_id.") method ...");
 
@@ -312,20 +319,81 @@ function isPermitted($module,$actionname,$record_id='')
 			return $permission;
 		}
 
+        if ('' != $record_id) {
+            $result = $adb->pquery(
+                'SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?',
+                [$current_user->id]
+            );
+            $parentRole = $adb->query_result($result, 0, 'parentrole');
+            $parentRoleArr = explode('::', $parentRole);
+
+            foreach ($parentRoleArr as $key => $value) {
+                $parentRoleArr[$key] = '\'' . $value . '\'';
+            }
+
+            $parentRole = implode(',', $parentRoleArr);
+
+            $query = 'SELECT crmid,type FROM its4you_sharing_users WHERE userid=? AND crmid = ?';
+            $params = [$current_user->id, $record_id];
+
+            if (($current_user_groups === null ? 0 : count($current_user_groups)) > 0) {
+                $query .= ' UNION 
+							SELECT crmid,type FROM its4you_sharing_groups WHERE groupid in (' . implode(',', $current_user_groups) . ') AND crmid = ?';
+                $params[] = $record_id;
+            }
+
+            $companyId = [];
+
+            if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+                $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
+            }
+
+            $query .= ' UNION
+					  SELECT crmid,type FROM its4you_sharing_roles
+						  INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid AND userid= ? AND crmid = ?
+					  UNION
+					  SELECT crmid,type FROM its4you_sharing_rolessubroles
+					  INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
+					  WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
+					  AND vtiger_role.parentrole LIKE CONCAT(\'%\', its4you_sharing_rolessubroles.roleid, \'%\') AND crmid = ?
+					  ';
+            array_push($params, $current_user->id, $record_id, $record_id);
+
+            if (!empty($companyId)) {
+                $query .= ' UNION
+							SELECT crmid,type FROM its4you_sharing_multicompany WHERE companyid in(' . implode(',', $companyId) . ')
+							AND crmid = ?
+					 	';
+                $params[] = $record_id;
+            }
+
+            $result = $adb->pquery($query, $params);
+
+            if ($adb->num_rows($result)) {
+                $i = 0;
+
+                while ($type = $adb->query_result($result, $i, 'type')) {
+                    $i++;
+
+                    if (4 == $actionid) {
+                        $sharingPermission = 'yes';
+                    } elseif (2 == $type && (1 == $actionid || 0 == $actionid)) {
+                        $sharingPermission = 'yes';
+                    }
+                }
+            }
+        }
+
 		//If no actionid, then allow action is vtiger_tab permission is available
-		if($actionid === '')
-		{
-			if($profileTabsPermission[$tabid] ==0)
-				{
-						$permission = "yes";
-				$log->debug("Exiting isPermitted method ...");
-				}
-			else
-			{
+		if($actionid === '') {
+			if($profileTabsPermission[$tabid] ==0) {
+                $permission = "yes";
+                $log->debug("Exiting isPermitted method ...");
+            } else {
 				$permission ="no";
 			}
-					return $permission;
 
+            return returnPermission($permission, $sharingPermission);
 		}
 
 		$action = getActionname($actionid);
@@ -336,7 +404,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);
 
 			}
 		}
@@ -347,7 +415,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 
 			}
 		}
@@ -356,21 +424,21 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			$permission = "no";
 			$log->debug("Exiting isPermitted method ...");
-			return $permission;
+			return returnPermission($permission, $sharingPermission);;
 		}
 		//Checking for Action Permission
 		if(strlen($profileActionPermission[$tabid][$actionid]) <  1 && $profileActionPermission[$tabid][$actionid] == '')
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return $permission;
+			return returnPermission($permission, $sharingPermission);;
 		}
 
 		if($profileActionPermission[$tabid][$actionid] != 0 && $profileActionPermission[$tabid][$actionid] != '')
 		{
 			$permission = "no";
 			$log->debug("Exiting isPermitted method ...");
-			return $permission;
+			return returnPermission($permission, $sharingPermission);;
 
 		}
 		//Checking and returning true if recorid is null
@@ -378,7 +446,7 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return $permission;
+			return returnPermission($permission, $sharingPermission);;
 		}
 
 		//If modules is Products,Vendors,Faq,PriceBook then no sharing
@@ -388,7 +456,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 		}
 
@@ -416,7 +484,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			//Checking if the Record Owner is the Subordinate User
 			foreach($subordinate_roles_users as $roleid=>$userids)
@@ -433,7 +501,7 @@ function isPermitted($module,$actionname,$record_id='')
 						}
 					}
 					$log->debug("Exiting isPermitted method ...");
-					return $permission;
+					return returnPermission($permission, $sharingPermission);;
 				}
 
 			}
@@ -447,7 +515,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission='yes';
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 		}
 
@@ -473,19 +541,19 @@ function isPermitted($module,$actionname,$record_id='')
 					$permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
 				}
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			elseif($actionid == 2)
 			{
 				$permission = "no";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			else
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 		}
 		elseif($others_permission_id == 1)
@@ -494,20 +562,20 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "no";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			else
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 		}
 		elseif($others_permission_id == 2)
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return $permission;
+			return returnPermission($permission, $sharingPermission);;
 		}
 		elseif($others_permission_id == 3)
 		{
@@ -535,7 +603,7 @@ function isPermitted($module,$actionname,$record_id='')
 					$permission = isReadPermittedBySharing($module,$tabid,$actionid,$record_id);
 				}
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			elseif($actionid ==0 || $actionid ==1)
 			{
@@ -548,7 +616,7 @@ function isPermitted($module,$actionname,$record_id='')
 					$permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
 				}
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 			elseif($actionid ==2)
 			{
@@ -559,7 +627,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return $permission;
+				return returnPermission($permission, $sharingPermission);;
 			}
 		}
 		else
@@ -571,8 +639,19 @@ function isPermitted($module,$actionname,$record_id='')
 	}
 
 	$log->debug("Exiting isPermitted method ...");
-	return $permission;
+	return returnPermission($permission, $sharingPermission);;
 
+}
+
+/**
+ * @param string $permission
+ * @param string $sharingPermission
+ *
+ * @return string
+ */
+function returnPermission(string $permission, string $sharingPermission = 'no'): string
+{
+    return $sharingPermission === 'yes' ? 'yes' : $permission;
 }
 
 /** Function to check if the currently logged in user has Read Access due to Sharing for the specified record
@@ -2057,17 +2136,17 @@ function getFieldVisibilityPermission($fld_module, $userid, $fieldname, $accessm
 
 			if (php7_count($profilelist) > 0) {
 			if($accessmode == 'readonly') {
-				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0  AND vtiger_profile2field.profileid in (". generateQuestionMarks($profilelist) .") AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
+				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.profileid in (". generateQuestionMarks($profilelist) .") AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
 				} else {
-				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_def_org_field.visible=0  AND vtiger_profile2field.profileid in (". generateQuestionMarks($profilelist) .") AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
+				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_profile2field.profileid in (". generateQuestionMarks($profilelist) .") AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
 				}
 				$params = array($tabid, $profilelist, $fieldname);
 
 			} else {
 			if($accessmode == 'readonly') {
-				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0  AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
+				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
 				} else {
-				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_def_org_field.visible=0  AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
+				$query="SELECT vtiger_profile2field.visible FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_field.fieldname= ? and vtiger_field.presence in (0,2) GROUP BY vtiger_field.fieldid";
 				}
 				$params = array($tabid, $fieldname);
 			}
@@ -2128,7 +2207,7 @@ function getPermittedModuleNames()
 	{
 		foreach($tab_seq_array as $tabid=>$seq_value)
 		{
-			if($seq_value === 0 && $profileTabsPermission[$tabid] === 0)
+			if($seq_value === 0 && isset($profileTabsPermission[$tabid]) && $profileTabsPermission[$tabid] === 0)
 			{
 				$permittedModules[]=getTabModuleName($tabid);
 			}
@@ -2167,7 +2246,7 @@ function getPermittedModuleIdList() {
 	if($is_admin == false && $profileGlobalPermission[1] == 1 &&
 			$profileGlobalPermission[2] == 1) {
 		foreach($tab_seq_array as $tabid=>$seq_value) {
-			if($seq_value === 0 && $profileTabsPermission[$tabid] === 0) {
+			if($seq_value === 0 && isset($profileTabsPermission[$tabid]) && $profileTabsPermission[$tabid] === 0) {
 				$permittedModules[]=($tabid);
 			}
 		}

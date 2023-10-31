@@ -673,27 +673,6 @@ function insertProfile2field($profileid)
 	$log->debug("Exiting insertProfile2field method ...");
 }
 
-/** Function to insert into default org field
-       */
-
-function insert_def_org_field()
-{
-	global $log;
-	$log->debug("Entering insert_def_org_field() method ...");
-	global $adb;
-	$adb->database->SetFetchMode(ADODB_FETCH_ASSOC);
-	$fld_result = $adb->pquery("select * from vtiger_field where generatedtype=1 and displaytype in (1,2,3) and vtiger_field.presence in (0,2) and tabid != 29", array());
-        $num_rows = $adb->num_rows($fld_result);
-        for($i=0; $i<$num_rows; $i++)
-        {
-                 $tab_id = $adb->query_result($fld_result,$i,'tabid');
-                 $field_id = $adb->query_result($fld_result,$i,'fieldid');
-				 $params = array($tab_id, $field_id, 0, 0);
-                 $adb->pquery("insert into vtiger_def_org_field values (?,?,?,?)", $params);
-	}
-	$log->debug("Exiting insert_def_org_field() method ...");
-}
-
 /** Function to update product quantity
   * @param $product_id -- product id :: Type integer
   * @param $upd_qty -- quantity :: Type integer
@@ -1241,7 +1220,7 @@ function getAccessPickListValues($module)
 		$fieldvalues = Array();
 		if (!empty($roleids) && (php7_count($roleids) > 1))
 	{
-			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"". implode($roleids,"\",\"") ."\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
+			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"". implode('","', $roleids) ."\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
 	}
 	else
 	{
@@ -2023,7 +2002,7 @@ function getCurrencyDecimalPlaces($user = null) {
     } else if ($current_user) {
         $currency_decimal_places = $current_user->no_of_currency_decimals;
     }
-    return $currency_decimal_places;
+    return (int)$currency_decimal_places;
 }
 
 function getInventoryModules() {
@@ -2605,4 +2584,52 @@ function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
 	return $message;
 }
 
-?>
+function show()
+{
+	$input_args = func_get_args();
+	if (!empty($input_args)) {
+		foreach ($input_args as $input) {
+			if (is_array($input)) {
+				echo '<table border="1">';
+				echo '<tr><th>Key</th><th>Value</th></tr>';
+				foreach ($input as $key => $value) {
+					echo "<tr><td>$key</td><td>";
+					show($value);
+					echo "</td></tr>";
+				}
+				echo "</table>";
+			} elseif (is_resource($input) || is_object($input)) {
+				echo "<pre>";
+				print_r($input);
+				echo "</pre>";
+			} elseif (is_bool($input)) {
+				if ($input) {
+					echo "<i>true</i>";
+				} else {
+					echo "<i>false</i>";
+				}
+				echo "<br />";
+			} else {
+				echo $input . "<br />";
+			}
+		}
+	}
+}
+
+/**
+ * @param $input
+ *
+ * @return array
+ */
+function sanitizeRelatedListsActions($input): array
+{
+	if (is_array($input)) {
+		return $input;
+	}
+
+	if (is_string($input)) {
+		return explode(',', strtoupper($input));
+	}
+
+	return [];
+}

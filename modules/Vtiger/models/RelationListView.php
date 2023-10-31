@@ -320,7 +320,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			} elseif($orderByFieldModuleModel && $orderByFieldModuleModel->isOwnerField()) {
 				 $query .= ' ORDER BY COALESCE(vtiger_users.userlabel,vtiger_groups.groupname) '.$sortOrder;
 			} else{
-				// Qualify the the column name with table to remove ambugity
+				// Qualify the column name with table to remove ambiguity
 				$qualifiedOrderBy = $orderBy;
 				$orderByField = $relationModule->getFieldByColumn($orderBy);
 				if ($orderByField) {
@@ -331,9 +331,25 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				}
 				$query = "$query ORDER BY $qualifiedOrderBy $sortOrder";
 			}
-		} else if(empty($orderBy) && empty($sortOrder) && $relationModuleName != "Users") {
-			$query .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
-		}
+        } elseif (empty($orderBy) && empty($sortOrder) && $relationModuleName !== "Users") {
+            if (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
+                $moduleFocus = CRMEntity::getInstance($relationModuleName);
+                $orderBy = $moduleFocus->default_order_by;
+                $qualifiedOrderBy = $orderBy;
+                $moduleModel = Vtiger_Module_Model::getInstance($relationModuleName);
+                $orderByField = $moduleModel->getFieldByColumn($orderBy);
+
+                if ($orderByField) {
+                    $qualifiedOrderBy = $moduleModel->getOrderBySql($qualifiedOrderBy);
+                    $sortOrder = $moduleFocus->default_sort_order;
+                    $query .= ' ORDER BY ' . $qualifiedOrderBy . ' ' . $sortOrder;
+                } else {
+                    $query .= ' ORDER BY vtiger_crmentity.createdtime DESC';
+                }
+            } else {
+                $query .= ' ORDER BY vtiger_crmentity.createdtime DESC';
+            }
+        }
 
 		$limitQuery = $query .' LIMIT '.$startIndex.','.$pageLimit;
 		$result = $db->pquery($limitQuery, array());

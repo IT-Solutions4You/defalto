@@ -1085,6 +1085,8 @@ außerhalb Vtiger.',
 	'LBL_DUPLICATION_FAILURE_FOR_ADMIN' => 'Sie können%s doppelte Verhütungsvorschriften ändern.',
 	'LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN' => 'Kontaktieren Sie Ihren Administrator für die Überarbeitung der doppelten Regeln',
 	'LBL_DUPLICATE_RECORD_LISTS' => 'Duplizieren%s (e):',
+
+    'LBL_FILTER_SORTING' => 'Listesortierung',
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Please configure your outgoing server settings from the settings page', 

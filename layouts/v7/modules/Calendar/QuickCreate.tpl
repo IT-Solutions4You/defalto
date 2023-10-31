@@ -39,6 +39,7 @@
 
 					{assign var="RECORD_STRUCTURE_MODEL" value=$QUICK_CREATE_CONTENTS[$MODULE]['recordStructureModel']}
 					{assign var="RECORD_STRUCTURE" value=$QUICK_CREATE_CONTENTS[$MODULE]['recordStructure']}
+					{assign var="BLOCK_FIELDS" value=$QUICK_CREATE_CONTENTS[$MODULE]['recordStructure']} {* Dependency in Time UiType template *}
 					{assign var="MODULE_MODEL" value=$QUICK_CREATE_CONTENTS[$MODULE]['moduleModel']}
 
 					<div class="quickCreateContent calendarQuickCreateContent" style="padding-top:2%;margin-top:5px;">

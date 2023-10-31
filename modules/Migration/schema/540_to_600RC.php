@@ -1361,21 +1361,6 @@ for($i=0; $i<$adb->num_rows($result); $i++) {
 	}
 }
 
-//Added user field in vtiger_def_org_field table
-$sql = 'SELECT fieldid FROM vtiger_def_org_field WHERE tabid = ?';
-$result1 = $adb->pquery($sql, array($tabId));
-$def_org_fields = array();
-$defRows = $adb->num_rows($result1);
-for($j=0; $j<$defRows; $j++) {
-	array_push($def_org_fields, $adb->query_result($result1, $j, 'fieldid'));
-}
-foreach ($userAccessbleFields as $fieldId => $fieldName) {
-	if(!in_array($fieldId, $def_org_fields)){
-		$insertQuery = 'INSERT INTO vtiger_def_org_field(tabid,fieldid,visible,readonly) VALUES(?,?,?,?)';
-		Migration_Index_View::ExecuteQuery($insertQuery, array($tabId,$fieldId,0,0));
-	}
-}
-
 //need to recreate user_privileges files as lot of user fields are added in this script and user_priviliges files are not updated
 require_once('modules/Users/CreateUserPrivilegeFile.php');
 createUserPrivilegesfile('1');

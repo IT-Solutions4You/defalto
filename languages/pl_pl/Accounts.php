@@ -58,6 +58,8 @@ $languageStrings = array(
   'Phone' => 'Podstawowy Telefon',
   'Email' => 'Podstawowy Adres E-Mail',
 
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 
 $jsLanguageStrings = array(

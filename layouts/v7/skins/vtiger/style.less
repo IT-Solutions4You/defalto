@@ -5203,6 +5203,8 @@ form[name="notification_settings"] .select2-choice {
 ********** Groups view styles ********
 ********************************************/
 #s2id_memberList li > div,
+#s2id_memberEditList li > div,
+#s2id_memberViewList li > div,
 .groupMembersColors li > div {
     margin-left: 10px;
 
@@ -5211,6 +5213,8 @@ form[name="notification_settings"] .select2-choice {
     text-shadow: 1px 0px 2px @white;
 }
 #s2id_memberList .Users,
+#s2id_memberEditList .Users,
+#s2id_memberViewList .Users,
 .groupMembersColors .Users {
     background-color: @groupMembersColorsUsers !important;
     padding: 5px;
@@ -5219,6 +5223,8 @@ form[name="notification_settings"] .select2-choice {
 }
 
 #s2id_memberList .Groups,
+#s2id_memberEditList .Groups,
+#s2id_memberViewList .Groups,
 .groupMembersColors .Groups {
     background-color: @groupMembersColorsGroups !important;
     background-image: none;
@@ -5227,6 +5233,8 @@ form[name="notification_settings"] .select2-choice {
 }
 
 #s2id_memberList .Roles,
+#s2id_memberEditList .Roles,
+#s2id_memberViewList .Roles,
 .groupMembersColors .Roles {
     background-color: @groupMembersColorsRoles !important;
     background-image: none;
@@ -5235,13 +5243,23 @@ form[name="notification_settings"] .select2-choice {
 }
 
 #s2id_memberList .RoleAndSubordinates,
+#s2id_memberEditList .RoleAndSubordinates,
+#s2id_memberViewList .RoleAndSubordinates,
 .groupMembersColors .RoleAndSubordinates {
     background-color: @groupMembersColorsRoleAndSubordinates !important;
     background-image: none;
     padding: 5px;
     margin-bottom: 2px;
 }
-
+#s2id_memberList .MultiCompany4you,
+#s2id_memberEditList .MultiCompany4you,
+#s2id_memberViewList .MultiCompany4you,
+.groupMembersColors .MultiCompany4you {
+    background-color: #aa78ce !important;
+    padding: 5px;
+    margin-bottom: 2px;
+    background-image: none;
+}
 .liStyleNone {
     list-style: none outside none;
     padding-left:0;

@@ -29,9 +29,8 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 	protected function applyInstallFriendlyEnv() {
 		// config.inc.php - will not be ready to control this yet.
-		version_compare(PHP_VERSION, '5.5.0') <= 0 ? error_reporting(E_ERROR & ~E_NOTICE & ~E_DEPRECATED) : error_reporting(E_ERROR & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);  // Production
-		//version_compare(PHP_VERSION, '7.0.0') >= 0 ? error_reporting(E_WARNING & ~E_NOTICE) : error_reporting(E_WARNING & ~E_NOTICE & ~E_DEPRECATED  & E_ERROR & ~E_STRICT); // Debug
-		set_time_limit(0); // override limits on execution time to allow install to finish
+		error_reporting(E_ERROR & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);  // Production
+		set_time_limit(0); // override limits on execution time to allow installation process to finish
 	}
 
 	public function preProcess(Vtiger_Request $request, $display = true) {
@@ -141,8 +140,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 		}
 		$authKey = $_SESSION['config_file_info']['authentication_key'] = md5(microtime());
 
-		//PHP 5.5+ mysqli is favourable.
-		$dbConnection = Install_Utils_Model::checkDbConnection(function_exists('mysqli_connect')?'mysqli':'mysql', $request->get('db_hostname'),
+		$dbConnection = Install_Utils_Model::checkDbConnection('mysqli', $request->get('db_hostname'),
 			$request->get('db_username'), $request->get('db_password'), $request->get('db_name'),
 			$createDataBase, true, $rootUser, $rootPassword);
 
@@ -178,7 +176,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 	}
 
 	public function Step7(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
+        $moduleName = $request->getModule();
 		$webuiInstance = new Vtiger_WebUI();
 		$isInstalled = $webuiInstance->isInstalled();
 		if(!$isInstalled){
@@ -203,7 +201,7 @@ class Install_Index_view extends Vtiger_View_Controller {
 
 			Install_InitSchema_Model::upgrade();
 
-			Install_Utils_Model::registerUser($request->get("myname"), $request->get("myemail"), $request->get("industry"));
+			//Install_Utils_Model::registerUser($request->get("myname"), $request->get("myemail"), $request->get("industry"));
 
 			$viewer = $this->getViewer($request);
 			$viewer->assign('PASSWORD', $_SESSION['config_file_info']['password']);

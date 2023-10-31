@@ -86,7 +86,27 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CV_PUBLIC_VALUE', CustomView_Record_Model::CV_STATUS_PUBLIC);
 		$viewer->assign('MODULE_MODEL',$moduleModel);
 
-		$allCustomViews = CustomView_Record_Model::getAllByGroup($moduleName);
+        $sortRecordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
+        $sortRecordStructure = $sortRecordStructureInstance->getStructure();
+
+        // for Inventory module we should now allow item details block
+        if (in_array($moduleName, getInventoryModules())) {
+            $itemsBlock = 'LBL_ITEM_DETAILS';
+            unset($sortRecordStructure[$itemsBlock]);
+        }
+
+        $viewer->assign('SORT_RECORD_STRUCTURE', $sortRecordStructure);
+        $orderBy = $customViewModel->fetchOrderBy();
+
+        if (!empty($orderBy)) {
+            $viewer->assign('ORDER_BY', $orderBy['orderby']);
+            $viewer->assign('SORT_ORDER', $orderBy['sortorder']);
+        } else {
+            $viewer->assign('ORDER_BY', '');
+            $viewer->assign('SORT_ORDER', '');
+        }
+
+        $allCustomViews = CustomView_Record_Model::getAllByGroup($moduleName);
 		$allViewNames = array();
 		foreach ($allCustomViews as $views) {
 			foreach ($views as $view) {

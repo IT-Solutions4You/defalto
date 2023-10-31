@@ -1942,20 +1942,20 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return $this->isPermitted('EditView');
 	}
 
-	public function getModuleIcon() {
+	public function getModuleIcon($height = '') {
 		$moduleName = $this->getName();
 		$lowerModuleName = strtolower($moduleName);
 		$title = vtranslate($moduleName, $moduleName);
 
-		$moduleIcon = "<i class='vicon-$lowerModuleName' title='$title'></i>";
-		if ($this->source == 'custom') {
-			$moduleShortName = mb_substr(trim($title), 0, 2);
-			$moduleIcon = "<span class='custom-module' title='$title'>$moduleShortName</span>";
-		}
+		$moduleIcon = "<i style='font-size: $height' class='vicon-$lowerModuleName' title='$title'></i>";
+
+        if ($this->source == 'custom') {
+            $moduleIcon = "<i style='font-size: $height' class='fa-solid fa-puzzle-piece'></i>";
+        }
 
 		$imageFilePath = 'layouts/'.Vtiger_Viewer::getLayoutName()."/modules/$moduleName/$moduleName.png";
 		if (file_exists($imageFilePath)) {
-			$moduleIcon = "<img src='$imageFilePath' title='$title'/>";
+			$moduleIcon = "<img height='$height' src='$imageFilePath' title='$title'/>";
 		}
 
 		return $moduleIcon;

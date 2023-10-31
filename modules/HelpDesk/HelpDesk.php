@@ -90,8 +90,8 @@ class HelpDesk extends CRMEntity {
 	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'update_log','ticketpriorities','ticketstatus');
 
      //Added these variables which are used as default order by and sortorder in ListView
-        var $default_order_by = 'title';
-        var $default_sort_order = 'DESC';
+    var $default_order_by = 'crmid';
+    var $default_sort_order = 'DESC';
 
 	// For Alphabetical search
 	var $def_basicsearch_col = 'ticket_title';
@@ -224,7 +224,8 @@ class HelpDesk extends CRMEntity {
 		$button .= '<input type="hidden" name="activity_mode">';
 
 		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
 				if(getFieldVisibilityPermission('Calendar',$current_user->id,'parent_id', 'readwrite') == '0') {
 					$button .= "<input title='".getTranslatedString('LBL_NEW'). " ". getTranslatedString('LBL_TODO', $related_module) ."' class='crmbutton small create'" .
@@ -356,7 +357,7 @@ class HelpDesk extends CRMEntity {
 		}else
 		{
 			$profileList = getCurrentUserProfileList();
-			$sql1 = "select vtiger_field.fieldid,fieldlabel from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where vtiger_field.tabid=13 and vtiger_field.block <> 30 and vtiger_field.uitype <> '61' and vtiger_field.displaytype in (1,2,3,4) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
+			$sql1 = "select vtiger_field.fieldid,fieldlabel from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid where vtiger_field.tabid=13 and vtiger_field.block <> 30 and vtiger_field.uitype <> '61' and vtiger_field.displaytype in (1,2,3,4) and vtiger_profile2field.visible=0 and vtiger_field.presence in (0,2)";
 			$params1 = array();
 			if (php7_count($profileList) > 0) {
 				$sql1 .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")  group by fieldid";
@@ -816,5 +817,3 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 		return $return_value;
 	}
 }
-
-?>
