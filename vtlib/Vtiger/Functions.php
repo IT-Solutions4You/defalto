@@ -1244,7 +1244,6 @@ class Vtiger_Functions {
 	 * @return boolean Returns true if $value is date else returns false
 	 */
 	static function isDateValue($value) {
-
             $value = trim($value);
             $delim = array('/','.');
             foreach ($delim as $delimiter){

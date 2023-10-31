@@ -29,9 +29,12 @@ class Vtiger_CompanyDetails_Model extends Vtiger_Base_Model {
 		return $logoModel;
 	}
 
+    /**
+     * @return string
+     */
     public function getName()
     {
-        return $this->get('organizationname');
+        return (string)$this->get('organizationname');
     }
 
     /**

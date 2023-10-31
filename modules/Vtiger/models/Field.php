@@ -1497,11 +1497,15 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		return $this->isunique;
 	}
 
-  public function isTableFullWidth(): bool
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTableFullWidth(): bool
     {
         $fieldName = $this->getName();
 
-        if (in_array($fieldName, ['description','signature', 'accesskey', 'imagename']) ||
+        if (in_array($fieldName, ['description', 'signature', 'accesskey', 'imagename']) ||
             in_array((int)$this->get('uitype'), [19, 69]) ||
             in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
         ) {
@@ -1511,6 +1515,10 @@ class Vtiger_Field_Model extends Vtiger_Field {
         return false;
     }
 
+    /**
+     * @return bool
+     * @throws Exception
+     */
     public function isTableCustomWidth(): bool
     {
         if (83 === (int)$this->get('uitype')) {
@@ -1520,6 +1528,9 @@ class Vtiger_Field_Model extends Vtiger_Field {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function isTableHalfWidth(): bool
     {
         $blockId = $this->getBlockId();

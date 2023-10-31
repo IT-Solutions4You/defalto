@@ -109,7 +109,10 @@ class Portal_Module_Model extends Vtiger_Module_Model {
         return array();
     }
 
-    public function getModuleBasicLinks()
+    /**
+     * @return array
+     */
+    public function getModuleBasicLinks(): array
     {
         $basicLinks = array();
         $basicLinks[] = array(

@@ -1313,7 +1313,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		return $instance;
 	}
 
-    public static function getDefaultFilterByModule($module)
+    /**
+     * @param string $module
+     * @return self
+     * @throws Exception
+     */
+    public static function getDefaultFilterByModule(string $module): self
     {
         $instance = Vtiger_Cache::get('DefaultCustomViewInstance', $module);
 
