@@ -1397,6 +1397,8 @@ $languageStrings = array(
     'LBL_SHARING_RECORD' => 'Sharing',
     'LBL_SHARING_EDIT_MEMBERS' => 'Edit sharing members',
     'LBL_SHARING_VIEW_MEMBERS' => 'View sharing members',
+    'LBL_STOP_SHARING_EDIT' => 'Stop sharing (edit) with',
+    'LBL_STOP_SHARING_VIEW' => 'Stop sharing (view) with',
     'LBL_EDIT_SHARING_RECORD' => 'Edit sharing record',
 
     'Groups' => 'Groups',

@@ -45,9 +45,17 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 				$taskModel->set('tmpTaskId', $taskData['tmpTaskId']);
 				$taskModel->set('active', $taskData['active']);
 				$tmpTaskObject = $taskModel->getTaskObject();
-				foreach ($taskData as $key => $value){
-					$tmpTaskObject->$key = $value;
-				}
+                foreach ($taskData as $key => $value) {
+                    if (substr($key, -2) === '[]') {
+                        $key = substr($key, 0, -2);
+
+                        if (!is_array($value)) {
+                            $value = [$value];
+                        }
+                    }
+
+                    $tmpTaskObject->$key = $value;
+                }
 				$taskModel->setTaskObject($tmpTaskObject);
 			}
 		}
@@ -237,6 +245,21 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
         }
 
         $viewer->assign('MEMBER_GROUPS', $memberGroups);
+
+        if ('AddSharing' === $taskType || 'RemoveSharing' === $taskType) {
+            $memberViewList = $memberEditList = [];
+
+            if (is_array($taskObject->memberViewList)) {
+                $memberViewList = array_flip($taskObject->memberViewList);
+            }
+
+            if (is_array($taskObject->memberEditList)) {
+                $memberEditList = array_flip($taskObject->memberEditList);
+            }
+
+            $viewer->assign('memberViewList', $memberViewList);
+            $viewer->assign('memberEditList', $memberEditList);
+        }
 
         $viewer->view('EditTask.tpl', $qualifiedModuleName);
 	}

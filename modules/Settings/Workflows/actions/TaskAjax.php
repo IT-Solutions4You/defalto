@@ -92,8 +92,20 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 						$getRawFields = array('field_value_mapping', 'content', 'fromEmail');
 			foreach($fieldNames as $fieldName){
 				if(in_array($fieldName, $getRawFields)) {
-					$taskObject->$fieldName = $request->getRaw($fieldName);
-				} else {
+                    $taskObject->$fieldName = $request->getRaw($fieldName);
+                } elseif (($request->get('taskType') === 'AddSharing' || $request->get('taskType') === 'RemoveSharing') && ($fieldName === 'memberViewList' || $fieldName === 'memberEditList')) {
+                    if ($request->has($fieldName . '[]')) {
+                        $value = $request->get($fieldName . '[]');
+                    } else {
+                        $value = $request->get($fieldName);
+                    }
+
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $taskObject->$fieldName = $value;
+                } else {
 					$taskObject->$fieldName = $request->get($fieldName);
 				}
 				if ($fieldName == 'calendar_repeat_limit_date') {

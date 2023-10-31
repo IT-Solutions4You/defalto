@@ -15,7 +15,7 @@
                         <div class="row-fluid">
                             <div class="form-group row">
                                 <label class="col-lg-3 col-md-3 col-sm-3 fieldLabel control-label">
-                                    {vtranslate('LBL_SHARING_VIEW_MEMBERS', $MODULE)}
+                                    {vtranslate('LBL_STOP_SHARING_VIEW', $MODULE)}
                                 </label>
                                 <div class="fieldValue col-lg-9 col-md-9 col-sm-9" id="ViewList" name="ViewList">
                                     <div class="row">
@@ -39,7 +39,7 @@
                             <span class="span2">
                                 <div class="form-group row">
                                 <label class="col-lg-3 col-md-3 col-sm-3 fieldLabel control-label">
-                                    {vtranslate('LBL_SHARING_EDIT_MEMBERS', $MODULE)}
+                                    {vtranslate('LBL_STOP_SHARING_EDIT', $MODULE)}
                                 </label>
                                 <div class="fieldValue col-lg-9 col-md-9 col-sm-9" id="EditList" name="EditList">
                                     <div class="row">
