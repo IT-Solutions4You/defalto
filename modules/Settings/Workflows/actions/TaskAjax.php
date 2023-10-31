@@ -116,25 +116,27 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 			require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
 
 			$fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
-			if (is_array($fieldMapping)) {
-				foreach ($fieldMapping as $key => $mappingInfo) {
-					if ($mappingInfo['valuetype'] == 'expression') {
-						try {
-							$parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($mappingInfo['value'])));
-							$expression = $parser->expression();
-						} catch (Exception $e) {
-							$result = new Vtiger_Response();
-							$result->setError($mappingInfo);
-							$result->emit();
-							return;
-						}
-					}else if($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
-                                            $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
-                                            $fieldMapping[$key] = $mappingInfo;
-                                        }
-				}
-			}
-                        $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
+
+            if (is_array($fieldMapping)) {
+                foreach ($fieldMapping as $key => $mappingInfo) {
+                    if ($mappingInfo['valuetype'] == 'expression') {
+                        try {
+                            $parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($mappingInfo['value'])));
+                            $expression = $parser->expression();
+                        } catch (Exception $e) {
+                            $result = new Vtiger_Response();
+                            $result->setError($mappingInfo);
+                            $result->emit();
+                            return;
+                        }
+                    } elseif ($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
+                        $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
+                        $fieldMapping[$key] = $mappingInfo;
+                    }
+                }
+            }
+
+            $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
 			$taskType = get_class($taskObject);
 			if ($taskType === 'VTCreateEventTask' || $taskType === 'VTCreateTodoTask') {
 				if($taskType === 'VTCreateEventTask') {

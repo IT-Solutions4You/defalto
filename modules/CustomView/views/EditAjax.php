@@ -101,6 +101,9 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
         if (!empty($orderBy)) {
             $viewer->assign('ORDER_BY', $orderBy['orderby']);
             $viewer->assign('SORT_ORDER', $orderBy['sortorder']);
+        } else {
+            $viewer->assign('ORDER_BY', '');
+            $viewer->assign('SORT_ORDER', '');
         }
 
         $allCustomViews = CustomView_Record_Model::getAllByGroup($moduleName);

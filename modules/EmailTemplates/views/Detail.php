@@ -87,7 +87,7 @@ class EmailTemplates_Detail_View extends Vtiger_Index_View {
 			'modules.Vtiger.resources.Detail',
 			'modules.EmailTemplates.resources.Detail',
 			'modules.Settings.Vtiger.resources.Index',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
+			"~layouts/d1/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
 
 		);
 

@@ -14,26 +14,36 @@ class Settings_Leads_Field_Model extends Vtiger_Field_Model {
 	 * Function to get field data type
 	 * @return <String> data type
 	 */
-	public function getFieldDataType() {
-		$fieldDataType = '';
-		$uitype = $this->get('uitype');
-		if ($uitype == '9') {
-			$fieldDataType = 'percent';
-		}
+    public function getFieldDataType()
+    {
+        $fieldDataType = '';
+        $uitype = $this->get('uitype');
 
-		if (!$fieldDataType) {
-			$webserviceField = $this->getWebserviceFieldObject();
-			$fieldDataType = $webserviceField->getFieldDataType();
-			switch($fieldDataType) {
-				case 'text' : $fieldDataType = 'textArea'; break;
-				case 'boolean' : $fieldDataType = 'checkBox'; break;
-			    case 'multipicklist' : $fieldDataType = 'multiSelectCombo'; break;
-			}
-		}
-		return $fieldDataType;
-	}
+        if ($uitype == '9') {
+            $fieldDataType = 'percent';
+        }
 
-	/**
+        if (!$fieldDataType) {
+            $webserviceField = $this->getWebserviceFieldObject();
+            $fieldDataType = $webserviceField->getFieldDataType();
+            
+            switch ($fieldDataType) {
+                case 'text' :
+                    $fieldDataType = 'textArea';
+                    break;
+                case 'boolean' :
+                    $fieldDataType = 'checkBox';
+                    break;
+                case 'multipicklist' :
+                    $fieldDataType = 'multiSelectCombo';
+                    break;
+            }
+        }
+
+        return $fieldDataType;
+    }
+
+    /**
 	 * Function to get clean instance
 	 * @return <Settings_Leads_Field_Model>
 	 */

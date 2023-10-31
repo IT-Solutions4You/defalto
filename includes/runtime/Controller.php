@@ -317,7 +317,10 @@ abstract class Vtiger_View_Controller extends Vtiger_Action_Controller {
 		} else {
 			$fileName = "~libraries/jquery/posabsolute-jQuery-Validation-Engine/js/languages/jquery.validationEngine-$languageHandlerShortName.js";
 		}
-		$jsFileNames = array($fileName);
+		$jsFileNames = array(
+            '~libraries/jquery/posabsolute-jQuery-Validation-Engine/js/jquery.validationEngine.js',
+            $fileName,
+        );
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
 		$headerScriptInstances = array_merge($jsScriptInstances,$headerScriptInstances);
 		return $headerScriptInstances;

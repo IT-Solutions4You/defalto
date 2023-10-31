@@ -95,7 +95,7 @@ class Project_DetailView_Model extends Vtiger_DetailView_Model {
 			'linktype' => 'DETAILVIEWTAB',
 			'linklabel' => vtranslate('LBL_CHART', $moduleName),
 			'linkurl' => $recordModel->getDetailViewUrl().'&mode=showChart',
-			'linkicon' => ''
+			'linkicon' => '<i class="fa-solid fa-chart-gantt"></i>'
 			);
 
 		return $relatedLinks;
