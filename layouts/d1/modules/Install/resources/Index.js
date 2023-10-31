@@ -28,9 +28,6 @@ jQuery.Class('Install_Index_Js', {}, {
 	},
 
 	registerEventForStep4: function () {
-		jQuery('input[type="text"]').css('width', '210px');
-		jQuery('input[type="password"]').css('width', '210px');
-
 		jQuery('input[name="create_db"]').on('click', function () {
 			var userName = jQuery('#root_user');
 			var password = jQuery('#root_password');
@@ -133,15 +130,15 @@ jQuery.Class('Install_Index_Js', {}, {
 				var content;
 				if (invalidEmailAddress) {
 					content = '<div class="col-sm-12">' +
-							'<div class="alert errorMessageContent">' +
-							'<button class="close" data-dismiss="alert" type="button">x</button>' +
+							'<div class="alert alert-danger errorMessageContent">' +
+							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
 							'Warning! Invalid email address.' +
 							'</div>' +
 							'</div>';
 				} else if(passwordNotStrong){
                                         content = '<div class="col-sm-12">' +
-							'<div class="alert errorMessageContent">' +
-							'<button class="close" data-dismiss="alert" type="button">x</button>' +
+							'<div class="alert alert-danger errorMessageContent">' +
+							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
 							'To keep your data safe, we suggest that you use a strong password <br>'+
                                                         '<ul> <li>Password should be at least 8 characters long </li> <li>Include at least one number </li><li>Include at least one lowercase alphabet </li> <li>Include at least one uppercase alphabet </li>'+
                                                         '<li>Include at least one special character in the password </li> </ul>' +
@@ -149,8 +146,8 @@ jQuery.Class('Install_Index_Js', {}, {
 							'</div>';
                                 }else {
 					content = '<div class="col-sm-12">' +
-							'<div class="alert errorMessageContent">' +
-							'<button class="close" data-dismiss="alert" type="button">x</button>' +
+							'<div class="alert alert-danger errorMessageContent">' +
+							'<button class="btn btn-close" data-bs-dismiss="alert" type="button"></button>' +
 							'Warning! Required fields missing values.' +
 							'</div>' +
 							'</div>';
@@ -191,7 +188,8 @@ jQuery.Class('Install_Index_Js', {}, {
 				alert('Please select appropriate industry option.');
 			} else {
 				jQuery('#progressIndicator').removeClass('hide').addClass('show');
-				jQuery('form[name="step6"]').submit().hide();
+				jQuery('form[name="step6"]').submit();
+				jQuery('#formContainer').addClass('hide');
 			}
 		});
 	},

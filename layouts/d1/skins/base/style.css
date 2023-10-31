@@ -6864,3 +6864,7 @@ a.btnReport:hover {
 .w-40 {
     width: 40%;
 }
+
+.hide {
+    display: none;
+}

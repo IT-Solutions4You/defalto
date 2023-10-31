@@ -4,12 +4,10 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
-<center>{'LBL_LOADING_PLEASE_WAIT'|vtranslate}...</center>
-
 <form class="form-horizontal" name="step7" method="post" action="index.php?module=Users&action=Login">
-	{*<img src="//stats.vtiger.com/stats.php?uid={$APPUNIQUEKEY}&v={$CURRENT_VERSION}&type=I&industry={$INDUSTRY|urlencode}" alt='' title='' border=0 width='1px' height='1px'>*}
 	<input type=hidden name="username" value="admin" >
 	<input type=hidden name="password" value="{$PASSWORD}" >
+	<div class="text-center">{'LBL_LOADING_PLEASE_WAIT'|vtranslate}...</div>
 </form>
 <script type="text/javascript">
 	jQuery(document).ready(function(){

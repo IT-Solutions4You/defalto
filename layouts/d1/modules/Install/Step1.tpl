@@ -4,50 +4,40 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
-<div class="row main-container">
+<div class="main-container container h-main px-4 py-3">
 	<div class="inner-container">
-		<div class="row">
-			<div class="col-sm-10">
-				<h4>{vtranslate('LBL_WELCOME', 'Install')}</h4>
-			</div>
-			<div class="col-sm-2">
-				<a href="https://wiki.vtiger.com/vtiger6/" target="_blank" class="pull-right">
-					<img src="{'help.png'|vimage_path}" alt="Help-Icon"/>
-				</a>
-			</div>
-		</div>
-		<hr>
-
-		<form class="form-horizontal" name="step1" method="post" action="index.php">
+		<form class="bg-body rounded" name="step1" method="post" action="index.php">
 			<input type=hidden name="module" value="Install" />
 			<input type=hidden name="view" value="Index" />
 			<input type=hidden name="mode" value="Step2" />
-			<div class="row">
-				<div class="col-sm-4 welcome-image">
-					<img src="{'wizard_screen.png'|vimage_path}" alt="Vtiger Logo"/>
-				</div>
-				<div class="col-sm-8">
-					<div class="welcome-div">
-						<h3>{vtranslate('LBL_WELCOME_TO_VTIGER7_SETUP_WIZARD', 'Install')}</h3>
-						{vtranslate('LBL_VTIGER7_SETUP_WIZARD_DESCRIPTION','Install')}
+			{include file='StepHeader.tpl'|@vtemplate_path:'Install'}
+			<div class="container-fluid p-3">
+				<div class="row">
+					<div class="col-sm-4 welcome-image">
+						<img src="{'wizard_screen.png'|vimage_path}" alt="Vtiger Logo"/>
 					</div>
-					{if $LANGUAGES|@count > 1}
-						<div>
-							<span>{vtranslate('LBL_CHOOSE_LANGUAGE', 'Install')}
-								<select name="lang" id="lang">
-									{foreach key=header item=language from=$LANGUAGES}
-										<option value="{$header}" {if $header eq $CURRENT_LANGUAGE}selected{/if}>{vtranslate("$language",'Install')}</option>
-									{/foreach}
-								</select>
-							</span>
+					<div class="col-sm-8">
+						<div class="welcome-div">
+							<h3>{vtranslate('LBL_WELCOME_TO_VTIGER7_SETUP_WIZARD', 'Install')}</h3>
+							{vtranslate('LBL_VTIGER7_SETUP_WIZARD_DESCRIPTION','Install')}
 						</div>
-					{/if}
+						{if $LANGUAGES|@count > 1}
+							<div class="row my-3">
+								<div class="col-auto">{vtranslate('LBL_CHOOSE_LANGUAGE', 'Install')}</div>
+								<div class="col-3">
+									<select class="form-select" name="lang" id="lang">
+										{foreach key=header item=language from=$LANGUAGES}
+											<option value="{$header}" {if $header eq $CURRENT_LANGUAGE}selected{/if}>{vtranslate("$language",'Install')}</option>
+										{/foreach}
+									</select>
+								</div>
+							</div>
+						{/if}
+					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="button-container col-sm-12">
-					<input type="submit" class="btn btn-large btn-primary pull-right" value="{vtranslate('LBL_INSTALL_BUTTON','Install')}"/>
-				</div>
+			<div class="p-3 button-container text-end">
+				<input type="submit" class="btn btn-primary active" value="{vtranslate('LBL_INSTALL_BUTTON','Install')}"/>
 			</div>
 		</form>
 	</div>

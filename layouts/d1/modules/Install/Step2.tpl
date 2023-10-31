@@ -4,26 +4,14 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
-<div class="row main-container">
+<div class="main-container container py-3 px-4">
 	<div class="inner-container">
-		<div class="row">
-			<div class="col-sm-10">
-				<h4>{vtranslate('LBL_WELCOME', 'Install')}</h4>
-			</div>
-			<div class="col-sm-2">
-				<a href="https://wiki.vtiger.com/vtiger6/" target="_blank" class="pull-right">
-					<img src="{'help.png'|vimage_path}" alt="Help-Icon"/>
-				</a>
-			</div>
-		</div>
-		<hr>
-
-		<form class="form-horizontal" name="step2" method="get" action="index.php">
+		<form class="bg-body rounded" name="step2" method="get" action="index.php">
 			<input type=hidden name="module" value="Install" />
 			<input type=hidden name="view" value="Index" />
 			<input type=hidden name="mode" value="Step3" />
-
-			<div class="license">
+			{include file='StepHeader.tpl'|@vtemplate_path:'Install'}
+			<div class="license overflow-auto p-3 border m-3" style="max-height: 50vh;" >
 				<div class="lic-scroll">
 					<p>PLEASE READ THE FOLLOWING LICENSE AGREEMENT CAREFULLY. ANY USE OF SOFTWARE DOWNLOADED OR ORDERED FROM VTIGER IS PERMITTED ONLY UNDER LICENSE WITH VTIGER. 
 						BY DOWNLOADING THIS SOFTWARE YOU AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE AGREEMENT. 
@@ -218,13 +206,9 @@
 					<br><br>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="button-container">
-						<input name="back" type="button" class="btn btn-default" value="{vtranslate('LBL_DISAGREE', 'Install')}"/>
-						<input id="agree" type="submit" class="btn btn-large btn-primary" value="{vtranslate('LBL_I_AGREE', 'Install')}"/>
-					</div>
-				</div>
+			<div class="button-container text-end p-3">
+				<input name="back" type="button" class="btn btn-primary me-2" value="{vtranslate('LBL_DISAGREE', 'Install')}"/>
+				<input id="agree" type="submit" class="btn btn-primary active" value="{vtranslate('LBL_I_AGREE', 'Install')}"/>
 			</div>
 		</form>
 	</div>
