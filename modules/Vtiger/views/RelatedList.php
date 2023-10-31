@@ -113,20 +113,21 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 			$viewer->assign('SELECTED_MENU_CATEGORY',$appName);
 		}
 
-		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
-			$totalCount = $relationListView->getRelatedEntriesCount();
-			$pageLimit = $pagingModel->getPageLimit();
-			$pageCount = ceil((int) $totalCount / (int) $pageLimit);
+        if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
+            $totalCount = $relationListView->getRelatedEntriesCount();
+            $pageLimit = $pagingModel->getPageLimit();
+            $pageCount = ceil((int)$totalCount / (int)$pageLimit);
 
-			if($pageCount == 0){
-				$pageCount = 1;
-			}
-			$viewer->assign('PAGE_COUNT', $pageCount);
-			$viewer->assign('TOTAL_ENTRIES', $totalCount);
-			$viewer->assign('PERFORMANCE', true);
-		}
+            if ($pageCount == 0) {
+                $pageCount = 1;
+            }
 
-		$viewer->assign('MODULE', $moduleName);
+            $viewer->assign('PAGE_COUNT', $pageCount);
+            $viewer->assign('TOTAL_ENTRIES', $totalCount);
+            $viewer->assign('PERFORMANCE', true);
+        }
+
+        $viewer->assign('MODULE', $moduleName);
 		$viewer->assign('PAGING', $pagingModel);
 
 		$viewer->assign('ORDER_BY',$orderBy);

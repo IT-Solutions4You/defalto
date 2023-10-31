@@ -1405,6 +1405,10 @@ $languageStrings = array(
     'MultiCompany4you' => 'Multi Company',
 
     'LBL_FILTER_SORTING' => 'Filter sorting',
+    'LBL_PREV_LIST' => 'Prev',
+    'LBL_NEXT_LIST' => 'Next',
+    'LBL_RECORDS_NOT_FOUND' => 'Records not found',
+    'LBL_CREATE_OR_IMPORT_RECORDS' => 'Create or import records',
 );
 
 $jsLanguageStrings = array(

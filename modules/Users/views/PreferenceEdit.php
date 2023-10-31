@@ -169,7 +169,7 @@ Class Users_PreferenceEdit_View extends Vtiger_Edit_View {
 			'modules.'.$moduleName.'.resources.PreferenceEdit',
 			"modules.Vtiger.resources.CkEditor",
 			'modules.Settings.Vtiger.resources.Index',
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
+			"~layouts/d1/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js"
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

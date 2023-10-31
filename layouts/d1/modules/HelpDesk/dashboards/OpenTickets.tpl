@@ -1,0 +1,38 @@
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
+<div class="dashboardWidgetHeader text-secondary p-2">
+	{include file="dashboards/WidgetHeader.tpl"|@vtemplate_path:$MODULE_NAME}
+</div>
+<div class="dashboardWidgetContent overflow-auto h-100">
+	{include file="dashboards/DashBoardWidgetContents.tpl"|@vtemplate_path:$MODULE_NAME}
+</div>
+<div class="dashBoardWidgetFooter widgeticons bg-body mt-auto">
+    <div class="footerIcons p-2">
+        {include file="dashboards/DashboardFooterIcons.tpl"|@vtemplate_path:$MODULE_NAME}
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	Vtiger_Pie_Widget_Js('Vtiger_OpenTickets_Widget_Js',{},{
+		/**
+		 * Function which will give chart related Data
+		 */
+		generateData : function() {
+			var container = this.getContainer();
+			var jData = container.find('.widgetData').val();
+			var data = JSON.parse(jData);
+			var chartData = [];
+			for(var index in data) {
+				var row = data[index];
+				var rowData = [row.name, parseInt(row.count), row.id];
+				chartData.push(rowData);
+			}
+			return {literal}{'chartData':chartData}{/literal};
+		}
+	});
+</script>
