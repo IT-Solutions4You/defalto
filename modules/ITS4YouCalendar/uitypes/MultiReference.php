@@ -11,21 +11,13 @@
 class ITS4YouCalendar_MultiReference_UIType extends Vtiger_Reference_UIType
 {
     /**
-     * @var array
-     */
-    public array $referenceRecords = [];
-    /**
      * @var string
      */
     public string $referenceModule = '';
-
     /**
-     * @return string
+     * @var array
      */
-    public function getTemplateName(): string
-    {
-        return 'uitypes/MultiReference.tpl';
-    }
+    public array $referenceRecords = [];
 
     /**
      * @param mixed $value
@@ -35,41 +27,25 @@ class ITS4YouCalendar_MultiReference_UIType extends Vtiger_Reference_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false): string
     {
-        $this->retrieveReference($value, $record);
+        $this->retrieveReference($record);
 
         return $this->getReferenceNames();
     }
 
     /**
-     * @param mixed $value
-     * @param mixed $record
-     * @return void
+     * @return string
      */
-    public function retrieveReference($value, $record)
+    public function getReferenceData(): string
     {
-        if (!empty($record) && !empty($value)) {
-            $this->referenceModule = Vtiger_Functions::getCRMRecordType((int)$value);
-            $this->retrieveRecords($record);
-        }
+        return json_encode(Vtiger_Functions::getCRMRecordLabels($this->referenceModule, $this->referenceRecords));
     }
 
     /**
-     * @param int $recordId
-     * @return void
+     * @return string
      */
-    public function retrieveRecords($recordId)
+    public function getReferenceIds(): string
     {
-        if (!empty($this->referenceRecords)) {
-            return;
-        }
-
-        $recordModule = Vtiger_Functions::getCRMRecordType($recordId);
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $this->referenceModule]);
-
-        while ($row = $adb->fetchByAssoc($result)) {
-            $this->referenceRecords[] = $row['relcrmid'];
-        }
+        return implode(';', $this->referenceRecords);
     }
 
     /**
@@ -90,16 +66,63 @@ class ITS4YouCalendar_MultiReference_UIType extends Vtiger_Reference_UIType
     /**
      * @return string
      */
-    public function getReferenceIds(): string
+    public function getReferenceOptions()
     {
-        return implode(';', $this->referenceRecords);
+        $recordNames = [];
+
+        foreach ($this->referenceRecords as $referenceRecord) {
+            $relatedRecord = Vtiger_Record_Model::getInstanceById($referenceRecord);
+            $recordNames[] = sprintf('<option value="%s" selected="selected">%s</option>', $relatedRecord->getId(), $relatedRecord->getName());
+        }
+
+        return implode('', $recordNames);
     }
 
     /**
      * @return string
      */
-    public function getReferenceData(): string
+    public function getTemplateName(): string
     {
-        return json_encode(Vtiger_Functions::getCRMRecordLabels($this->referenceModule, $this->referenceRecords));
+        return 'uitypes/MultiReference.tpl';
+    }
+
+    /**
+     * @param int $recordId
+     * @return void
+     */
+    public function retrieveRecords($recordId)
+    {
+        if (!empty($this->referenceRecords)) {
+            return;
+        }
+
+        $recordModule = Vtiger_Functions::getCRMRecordType($recordId);
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $this->referenceModule]);
+
+        while ($row = $adb->fetchByAssoc($result)) {
+            $this->referenceRecords[] = $row['relcrmid'];
+        }
+
+        $this->referenceRecords = array_unique(array_filter($this->referenceRecords));
+    }
+
+    /**
+     * @param mixed $value
+     * @param mixed $record
+     * @return void
+     */
+    public function retrieveReference($record)
+    {
+        $field = $this->get('field');
+        $referenceModules = $field ? $field->getReferenceList() : [];
+
+        foreach ($referenceModules as $referenceModule) {
+            $this->referenceModule = $referenceModule;
+
+            if (!empty($record) && !empty($referenceModule)) {
+                $this->retrieveRecords($record);
+            }
+        }
     }
 }

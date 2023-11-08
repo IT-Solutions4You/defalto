@@ -88,7 +88,7 @@
             </div>
             <div id="navbar" class="global-actions collapse navbar navbar-expand col-lg-auto d-lg-block px-2 py-0 bg-body-secondary">
                 <div class="h-100 d-flex align-items-center">
-                    <ul class="nav navbar-nav ms-auto">
+                    <ul class="nav navbar-nav ms-auto align-items-center">
                     <li class="me-2">
                         <div class="dropdown">
                             <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
@@ -182,11 +182,11 @@
                         </div>
                     </li>
                     {assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
-                    {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Calendar')}
+                    {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         <li class="me-2">
                             <div>
-                                <a href="index.php?module=Calendar&view={$CALENDAR_MODULE_MODEL->getDefaultViewName()}" class="btn text-secondary border-secondary" title="{vtranslate('Calendar','Calendar')}" aria-hidden="true">
+                                <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn text-secondary border-secondary" title="{vtranslate('ITS4YouCalendar','ITS4YouCalendar')}" aria-hidden="true">
                                     <i class="fa fa-calendar"></i>
                                 </a>
                             </div>

@@ -15,40 +15,16 @@ require_once 'modules/com_vtiger_workflow/VTSimpleTemplate.inc';
 
 class VTCalendarTask extends VTTask
 {
-    public $executeImmediately = true;
-    public string $subject = '';
-    public string $description = '';
+    public string $assigned_to = '';
     public string $calendar_status = '';
     public string $calendar_type = '';
-    public string $assigned_to = '';
-    public string $start_time = '';
-    public string $start_days = '';
-    public string $start_direction = '';
-    public string $start_field = '';
-    public string $end_time = '';
+    public string $description = '';
     public string $end_days = '';
     public string $end_direction = '';
     public string $end_field = '';
-    public string $is_all_day = '';
-    public string $moduleName = 'ITS4YouCalendar';
-    public string $sourceModuleName = '';
+    public string $end_time = '';
     public $entityData;
-    public array $ignoredFieldNames = [
-        'subject',
-        'description',
-        'calendar_status',
-        'calendar_type',
-        'assigned_user_id',
-        'is_all_day',
-        'datetime_start',
-        'datetime_end',
-        'invite_users',
-        'parent_id',
-        'account_id',
-        'contact_id',
-        'recurring_type',
-        'reminder_time',
-    ];
+    public $executeImmediately = true;
     public array $fieldNames = [
         'subject',
         'description',
@@ -65,110 +41,30 @@ class VTCalendarTask extends VTTask
         'end_direction',
         'is_all_day',
     ];
-
-    /**
-     * @return array
-     */
-    public function getFieldNames(): array
-    {
-        $this->fieldNames = array_merge($this->fieldNames, $this->getOtherFieldNames());
-
-        return $this->fieldNames;
-    }
-
-    public function getOtherFieldNames(): array
-    {
-        $otherFields = [];
-        $fields = $this->getModuleModel()->getFields();
-
-        /** @var Vtiger_Field_Model $field */
-        foreach ($fields as $field) {
-            if ($this->isOtherField($field)) {
-                $otherFields[] = $field->getName();
-            }
-        }
-
-        return $otherFields;
-    }
-
-    public function getModuleModel()
-    {
-        return Vtiger_Module_Model::getInstance($this->moduleName);
-    }
-
-    public function isOtherField($field): bool
-    {
-        return !(in_array($field->getName(), $this->ignoredFieldNames) || !$field->isActiveField() || !$field->isEditable() || !$field->isMandatory());
-    }
-
-    public function getStatusValues()
-    {
-        $field = $this->getModuleModel()->getField('calendar_status');
-
-        return $field->getPicklistValues();
-    }
-
-    public function getPriorityValues()
-    {
-        $field = $this->getModuleModel()->getField('calendar_priority');
-
-        return $field->getPicklistValues();
-    }
-
-    public function getTypeValues()
-    {
-        $field = $this->getModuleModel()->getField('calendar_type');
-
-        return $field->getPicklistValues();
-    }
-
-    public function getDirectionValues()
-    {
-        return [
-            'before' => vtranslate('Before', $this->moduleName),
-            'after' => vtranslate('After', $this->moduleName),
-        ];
-    }
-
-    public function getDateTimeValues()
-    {
-        $fields = $this->getSourceModuleModel()->getFieldsByType(['date', 'datetime']);
-        $values = [];
-
-        foreach ($fields as $field) {
-            $values[$field->getName()] = vtranslate($field->label, $this->getSourceModule());
-        }
-
-        return $values;
-    }
-
-    public function getSourceModuleModel()
-    {
-        return Vtiger_Module_Model::getInstance($this->getSourceModule());
-    }
-
-    public function getSourceModule(): string
-    {
-        return $this->sourceModuleName;
-    }
-
-    public function setSourceModule($module)
-    {
-        $this->sourceModuleName = $module;
-    }
-
-    public function getAssignedToValues(): array
-    {
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-
-        return [
-            'Special Options' => [
-                'copyParentOwner' => vtranslate('Parent Record Owner', $this->moduleName),
-            ],
-            'Users' => array_filter($currentUser->getAccessibleUsers()),
-            'Groups' => array_filter($currentUser->getAccessibleGroups()),
-        ];
-    }
+    public array $ignoredFieldNames = [
+        'subject',
+        'description',
+        'calendar_status',
+        'calendar_type',
+        'assigned_user_id',
+        'is_all_day',
+        'datetime_start',
+        'datetime_end',
+        'invite_users',
+        'parent_id',
+        'account_id',
+        'contact_id',
+        'recurring_type',
+        'reminder_time',
+    ];
+    public string $is_all_day = '';
+    public string $moduleName = 'ITS4YouCalendar';
+    public string $sourceModuleName = '';
+    public string $start_days = '';
+    public string $start_direction = '';
+    public string $start_field = '';
+    public string $start_time = '';
+    public string $subject = '';
 
     /**
      * @param VTWorkflowEntity $entityData
@@ -199,6 +95,15 @@ class VTCalendarTask extends VTTask
         return 'Success';
     }
 
+    public function get($name)
+    {
+        if (!empty($this->$name)) {
+            return $this->$name;
+        }
+
+        return null;
+    }
+
     public function getAssignedTo()
     {
         $adb = PearDatabase::getInstance();
@@ -226,13 +131,17 @@ class VTCalendarTask extends VTTask
         return $userId;
     }
 
-    public function get($name)
+    public function getAssignedToValues(): array
     {
-        if (!empty($this->$name)) {
-            return $this->$name;
-        }
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        return null;
+        return [
+            'Special Options' => [
+                'copyParentOwner' => vtranslate('Parent Record Owner', $this->moduleName),
+            ],
+            'Users' => array_filter($currentUser->getAccessibleUsers()),
+            'Groups' => array_filter($currentUser->getAccessibleGroups()),
+        ];
     }
 
     public function getDateTime($isStart)
@@ -259,6 +168,56 @@ class VTCalendarTask extends VTTask
         return date('Y-m-d', strtotime(trim($date . $plusDays))) . ' ' . Vtiger_Time_UIType::getTimeValueWithSeconds($time);
     }
 
+    public function getDateTimeValues()
+    {
+        $fields = $this->getSourceModuleModel()->getFieldsByType(['date', 'datetime']);
+        $values = [];
+
+        foreach ($fields as $field) {
+            $values[$field->getName()] = vtranslate($field->label, $this->getSourceModule());
+        }
+
+        return $values;
+    }
+
+    public function getDirectionValues()
+    {
+        return [
+            'before' => vtranslate('Before', $this->moduleName),
+            'after' => vtranslate('After', $this->moduleName),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFieldNames(): array
+    {
+        $this->fieldNames = array_merge($this->fieldNames, $this->getOtherFieldNames());
+
+        return $this->fieldNames;
+    }
+
+    public function getModuleModel()
+    {
+        return Vtiger_Module_Model::getInstance($this->moduleName);
+    }
+
+    public function getOtherFieldNames(): array
+    {
+        $otherFields = [];
+        $fields = $this->getModuleModel()->getFields();
+
+        /** @var Vtiger_Field_Model $field */
+        foreach ($fields as $field) {
+            if ($this->isOtherField($field)) {
+                $otherFields[] = $field->getName();
+            }
+        }
+
+        return $otherFields;
+    }
+
     public function getOtherFields(): array
     {
         $otherFields = [];
@@ -274,6 +233,13 @@ class VTCalendarTask extends VTTask
         return $otherFields;
     }
 
+    public function getPriorityValues()
+    {
+        $field = $this->getModuleModel()->getField('calendar_priority');
+
+        return $field->getPicklistValues();
+    }
+
     public function getRelationField(): string
     {
         switch ($this->entityData->getModuleName()) {
@@ -284,5 +250,39 @@ class VTCalendarTask extends VTTask
         }
 
         return 'parent_id';
+    }
+
+    public function getSourceModule(): string
+    {
+        return $this->sourceModuleName;
+    }
+
+    public function getSourceModuleModel()
+    {
+        return Vtiger_Module_Model::getInstance($this->getSourceModule());
+    }
+
+    public function getStatusValues()
+    {
+        $field = $this->getModuleModel()->getField('calendar_status');
+
+        return $field->getPicklistValues();
+    }
+
+    public function getTypeValues()
+    {
+        $field = $this->getModuleModel()->getField('calendar_type');
+
+        return $field->getPicklistValues();
+    }
+
+    public function isOtherField($field): bool
+    {
+        return !(in_array($field->getName(), $this->ignoredFieldNames) || !$field->isActiveField() || !$field->isEditable() || !$field->isMandatory());
+    }
+
+    public function setSourceModule($module)
+    {
+        $this->sourceModuleName = $module;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -7,7 +8,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class ITS4YouCalendar_Edit_View extends Vtiger_Edit_View {
+class ITS4YouCalendar_Edit_View extends Vtiger_Edit_View
+{
 
     /**
      * @param Vtiger_Request $request

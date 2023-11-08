@@ -12,6 +12,11 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
 {
     public PearDatabase $adb;
 
+    public function deleteUsers()
+    {
+        $this->adb->pquery('DELETE FROM its4you_invited_users WHERE record_id=?', [$this->get('record_id')]);
+    }
+
     public static function getAccessibleUsers()
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -20,6 +25,51 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
         unset($users[$currentUser->getId()]);
 
         return $users;
+    }
+
+    /**
+     * @param int $recordId
+     * @return static
+     */
+    public static function getInstance(int $recordId): self
+    {
+        $instance = new self();
+        $instance->adb = PearDatabase::getInstance();
+        $instance->setRecord($recordId);
+        $instance->retrieveRecordModel();
+
+        return $instance;
+    }
+
+    public function getRecord(): int
+    {
+        return (int)$this->get('record_id');
+    }
+
+    /**
+     * @return Vtiger_Record_Model
+     */
+    public function getRecordModel(): Vtiger_Record_Model
+    {
+        return $this->get('record_model');
+    }
+
+    public function getUsers(): array
+    {
+        return (array)$this->get('invite_users');
+    }
+
+    /**
+     * @return array
+     */
+    public function getUsersInfo(): array
+    {
+        return (array)$this->get('invite_users_info');
+    }
+
+    public function retrieveRecordModel()
+    {
+        $this->set('record_model', Vtiger_Record_Model::getInstanceById($this->getRecord()));
     }
 
     public function retrieveUsers()
@@ -42,9 +92,33 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
         $this->setUsersInfo($invitedUsers);
     }
 
-    public function getRecord(): int
+    public function saveUsers()
     {
-        return (int)$this->get('record_id');
+        foreach ($this->getUsers() as $userId) {
+            if (empty($userId)) {
+                continue;
+            }
+
+            $this->adb->pquery('INSERT INTO its4you_invited_users (record_id, user_id) VALUES (?,?)', [$this->get('record_id'), $userId]);
+        }
+    }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function sendInvitation()
+    {
+        ITS4YouCalendar_InvitationEmail_Model::getInstance($this)->send();
+    }
+
+    /**
+     * @param int $value
+     * @return void
+     */
+    public function setRecord(int $value)
+    {
+        $this->set('record_id', $value);
     }
 
     public function setUsers(array $value)
@@ -59,80 +133,6 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
     public function setUsersInfo(array $value)
     {
         $this->set('invite_users_info', $value);
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsersInfo(): array
-    {
-        return (array)$this->get('invite_users_info');
-    }
-
-    public function saveUsers()
-    {
-        foreach ($this->getUsers() as $userId) {
-            if (empty($userId)) {
-                continue;
-            }
-
-            $this->adb->pquery('INSERT INTO its4you_invited_users (record_id, user_id) VALUES (?,?)', [$this->get('record_id'), $userId]);
-        }
-    }
-
-    public function getUsers(): array
-    {
-        return (array)$this->get('invite_users');
-    }
-
-    public function deleteUsers()
-    {
-        $this->adb->pquery('DELETE FROM its4you_invited_users WHERE record_id=?', [$this->get('record_id')]);
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    public function sendInvitation()
-    {
-        ITS4YouCalendar_InvitationEmail_Model::getInstance($this)->send();
-    }
-
-    /**
-     * @param int $recordId
-     * @return static
-     */
-    public static function getInstance(int $recordId): self
-    {
-        $instance = new self();
-        $instance->adb = PearDatabase::getInstance();
-        $instance->setRecord($recordId);
-        $instance->retrieveRecordModel();
-
-        return $instance;
-    }
-
-    /**
-     * @param int $value
-     * @return void
-     */
-    public function setRecord(int $value)
-    {
-        $this->set('record_id', $value);
-    }
-
-    public function retrieveRecordModel()
-    {
-        $this->set('record_model', Vtiger_Record_Model::getInstanceById($this->getRecord()));
-    }
-
-    /**
-     * @return Vtiger_Record_Model
-     */
-    public function getRecordModel(): Vtiger_Record_Model
-    {
-        return $this->get('record_model');
     }
 
 }

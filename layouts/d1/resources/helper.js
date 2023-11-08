@@ -861,7 +861,7 @@ jQuery.Class("Vtiger_Helper_Js",{
             customParams = {};
         }
 		var params = {
-			module : 'Calendar',
+			module : 'Vtiger',
 			view : 'RecurringDeleteCheck'
 		};
 		jQuery.extend(params, customParams);

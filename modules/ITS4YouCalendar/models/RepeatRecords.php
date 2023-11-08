@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -9,48 +10,10 @@
  */
 class ITS4YouCalendar_RepeatRecords_Model
 {
-    public static string $dateStartField = 'datetime_start';
     public static string $dateEndField = 'datetime_end';
+    public static string $dateStartField = 'datetime_start';
     public static bool $recurringDataChanged = false;
     public static bool $recurringTypeChanged = false;
-
-    /**
-     * @param object $parentRecordModel
-     * @param object|bool $recurrenceObjectDatabase
-     * @return void
-     */
-    public static function repeatFromRequest(object $parentRecordModel, $recurrenceObjectDatabase = false)
-    {
-        $parentRecordId = $parentRecordModel->getId();
-        $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
-
-        self::$recurringDataChanged = self::checkRecurringDataChanged($recurrenceObject, $recurrenceObjectDatabase);
-
-        if (self::$recurringDataChanged && $recurrenceObjectDatabase && $recurrenceObject->recur_type != $recurrenceObjectDatabase->recur_type) {
-            self::$recurringTypeChanged = true;
-        } else {
-            self::$recurringTypeChanged = false;
-        }
-
-        if(empty($recurrenceObjectDatabase) && self::$recurringDataChanged) {
-            ITS4YouCalendar_Recurrence_Model::saveRelation($parentRecordId, $parentRecordId);
-        }
-
-        if (self::validate($parentRecordModel->getData())) {
-            self::repeat($parentRecordModel, $recurrenceObject);
-        } elseif (empty($recurrenceObject) && self::$recurringDataChanged) {
-            self::delete($parentRecordId);
-        }
-    }
-
-    /**
-     * @param array|TrackableObject $data
-     * @return bool
-     */
-    public static function validate($data): bool
-    {
-        return !empty($data['recurringtype']) && '--None--' !== $data['recurringtype'] && 'current' !== $data['recurringEditMode'];
-    }
 
     /**
      * @param object $recurrenceObjectRequest
@@ -73,6 +36,82 @@ class ITS4YouCalendar_RepeatRecords_Model
         } else {
             return true;
         }
+    }
+
+    /**
+     * @param Vtiger_Record_Model $parentRecordModel
+     * @param object $recurrenceObject
+     * @param array $recurringDates
+     * @param int|bool $parentId
+     * @return void
+     */
+    public static function createRecurringEvents(object $parentRecordModel, object $recurrenceObject, array $recurringDates, $parentId = false)
+    {
+        if (empty($parentId)) {
+            $parentId = $parentRecordModel->getId();
+        }
+
+        $parentModule = $parentRecordModel->getModuleName();
+        $skip_focus_fields = ['record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted'];
+
+        $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
+        list($parentDatabaseStartDate, $parentDatabaseStartTime) = explode(' ', $parentDatabaseStartDateTime);
+
+        $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
+        list($parentDatabaseEndDate, $parentDatabaseEndTime) = explode(' ', $parentDatabaseEndDateTime);
+
+        $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
+
+        foreach ($recurringDates as $index => $databaseStartDate) {
+            if (0 === $index && $parentDatabaseStartDate === $databaseStartDate) {
+                continue;
+            }
+
+            $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
+            $recordModel = Vtiger_Record_Model::getCleanInstance($parentModule);
+
+            foreach ($parentRecordModel->getData() as $key => $value) {
+                if ($key === self::$dateStartField) {
+                    $recordModel->set(self::$dateStartField, self::getUserDateTime($databaseStartDate, $parentDatabaseStartTime));
+                } elseif ($key === self::$dateEndField) {
+                    $recordModel->set(self::$dateEndField, self::getUserDateTime($databaseEndDate, $parentDatabaseEndTime));
+                } elseif (!in_array($key, $skip_focus_fields)) {
+                    $recordModel->set($key, $value);
+                }
+            }
+
+            $recordModel->save();
+            $recordId = intval($recordModel->getId());
+
+            ITS4YouCalendar_Recurrence_Model::saveRelation($parentId, $recordId);
+        }
+    }
+
+    /**
+     * @param int $recordId
+     * @return void
+     */
+    public static function delete(int $recordId)
+    {
+        $recurringRecordsList = ITS4YouCalendar_Recurrence_Model::getRecurringRecordsList($recordId);
+
+        foreach ($recurringRecordsList as $recurrenceIds) {
+            foreach ($recurrenceIds as $recurrenceId) {
+                ITS4YouCalendar_Recurrence_Model::deleteRelation($recurrenceId);
+
+                if (intval($recurrenceId) !== $recordId) {
+                    $recordModel = Vtiger_Record_Model::getInstanceById($recurrenceId);
+                    $recordModel->delete();
+                }
+            }
+        }
+    }
+
+    public static function getUserDateTime($date, $time)
+    {
+        $dateTime = new DateTimeField($date . ' ' . $time);
+
+        return $dateTime->getDisplayDate() . ' ' . $dateTime->getDisplayTime();
     }
 
     /**
@@ -157,7 +196,7 @@ class ITS4YouCalendar_RepeatRecords_Model
             foreach ($recurrenceObject->recurringdates as $databaseStartDate) {
                 $recordId = $childRecords[$dateIndex];
 
-                if(empty($databaseStartDate)) {
+                if (empty($databaseStartDate)) {
                     continue;
                 }
 
@@ -244,6 +283,37 @@ class ITS4YouCalendar_RepeatRecords_Model
     }
 
     /**
+     * @param object $parentRecordModel
+     * @param object|bool $recurrenceObjectDatabase
+     * @return void
+     */
+    public static function repeatFromRequest(object $parentRecordModel, $recurrenceObjectDatabase = false)
+    {
+        $parentRecordId = $parentRecordModel->getId();
+        $recurrenceObject = Vtiger_Functions::getRecurringObjValue();
+
+        self::$recurringDataChanged = self::checkRecurringDataChanged($recurrenceObject, $recurrenceObjectDatabase);
+
+        if (self::$recurringDataChanged && $recurrenceObjectDatabase && $recurrenceObject->recur_type != $recurrenceObjectDatabase->recur_type) {
+            self::$recurringTypeChanged = true;
+        } else {
+            self::$recurringTypeChanged = false;
+        }
+
+        if (empty($recurrenceObjectDatabase) && self::$recurringDataChanged) {
+            if (!ITS4YouCalendar_Recurrence_Model::isRelationExists($parentRecordId, $parentRecordId)) {
+                ITS4YouCalendar_Recurrence_Model::saveRelation($parentRecordId, $parentRecordId);
+            }
+        }
+
+        if (self::validate($parentRecordModel->getData())) {
+            self::repeat($parentRecordModel, $recurrenceObject);
+        } elseif (empty($recurrenceObject) && self::$recurringDataChanged) {
+            self::delete($parentRecordId);
+        }
+    }
+
+    /**
      * @param string $value
      * @param string $newValue
      * @return string
@@ -257,78 +327,11 @@ class ITS4YouCalendar_RepeatRecords_Model
     }
 
     /**
-     * @param Vtiger_Record_Model $parentRecordModel
-     * @param object $recurrenceObject
-     * @param array $recurringDates
-     * @param int|bool $parentId
-     * @return void
+     * @param array|TrackableObject $data
+     * @return bool
      */
-    public static function createRecurringEvents(object $parentRecordModel, object $recurrenceObject, array $recurringDates, $parentId = false)
+    public static function validate($data): bool
     {
-        if (empty($parentId)) {
-            $parentId = $parentRecordModel->getId();
-        }
-
-        $parentModule = $parentRecordModel->getModuleName();
-        $skip_focus_fields = ['record_id', 'createdtime', 'modifiedtime', 'mode', 'id', 'deleted'];
-
-        $parentDatabaseStartDateTime = $parentRecordModel->get(self::$dateStartField);
-        list($parentDatabaseStartDate, $parentDatabaseStartTime) = explode(' ', $parentDatabaseStartDateTime);
-
-        $parentDatabaseEndDateTime = $parentRecordModel->get(self::$dateEndField);
-        list($parentDatabaseEndDate, $parentDatabaseEndTime) = explode(' ', $parentDatabaseEndDateTime);
-
-        $interval = strtotime($parentDatabaseEndDateTime) - strtotime($parentDatabaseStartDateTime);
-
-        foreach ($recurringDates as $index => $databaseStartDate) {
-            if (0 === $index && $parentDatabaseStartDate === $databaseStartDate) {
-                continue;
-            }
-
-            $databaseEndDate = date('Y-m-d', strtotime($databaseStartDate) + $interval);
-            $recordModel = Vtiger_Record_Model::getCleanInstance($parentModule);
-
-            foreach ($parentRecordModel->getData() as $key => $value) {
-                if ($key === self::$dateStartField) {
-                    $recordModel->set(self::$dateStartField, self::getUserDateTime($databaseStartDate, $parentDatabaseStartTime));
-                } elseif ($key === self::$dateEndField) {
-                    $recordModel->set(self::$dateEndField, self::getUserDateTime($databaseEndDate, $parentDatabaseEndTime));
-                } elseif (!in_array($key, $skip_focus_fields)) {
-                    $recordModel->set($key, $value);
-                }
-            }
-
-            $recordModel->save();
-            $recordId = intval($recordModel->getId());
-
-            ITS4YouCalendar_Recurrence_Model::saveRelation($parentId, $recordId);
-        }
-    }
-
-    public static function getUserDateTime($date, $time)
-    {
-        $dateTime = new DateTimeField($date . ' ' . $time);
-
-        return $dateTime->getDisplayDate() . ' ' . $dateTime->getDisplayTime();
-    }
-
-    /**
-     * @param int $recordId
-     * @return void
-     */
-    public static function delete(int $recordId)
-    {
-        $recurringRecordsList = ITS4YouCalendar_Recurrence_Model::getRecurringRecordsList($recordId);
-
-        foreach ($recurringRecordsList as $recurrenceIds) {
-            foreach ($recurrenceIds as $recurrenceId) {
-                ITS4YouCalendar_Recurrence_Model::deleteRelation($recurrenceId);
-
-                if (intval($recurrenceId) !== $recordId) {
-                    $recordModel = Vtiger_Record_Model::getInstanceById($recurrenceId);
-                    $recordModel->delete();
-                }
-            }
-        }
+        return !empty($data['recurringtype']) && '--None--' !== $data['recurringtype'] && 'current' !== $data['recurringEditMode'];
     }
 }

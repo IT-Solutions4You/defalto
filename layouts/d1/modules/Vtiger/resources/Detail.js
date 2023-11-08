@@ -318,8 +318,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								if(relatedModuleName == 'Events') {
 									relatedModuleName = 'Calendar';
 								}
-								var relatedController = thisInstance.getRelatedController(relatedModuleName);
-								relatedController.loadRelatedList();
+								let relatedController = thisInstance.getRelatedController(relatedModuleName);
+
+								if(relatedController) {
+									relatedController.loadRelatedList();
+								}
 							} else {
 								app.event.trigger('post.save.failed', err);
 							}

@@ -11,14 +11,24 @@
 class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
 {
     /**
+     * @var bool|object
+     */
+    public $recurrenceDatabaseObject;
+    /**
      * @var
      */
     public $savedRecordId;
 
     /**
-     * @var bool|object
+     * @param object $request
+     * @return void
      */
-    public $recurrenceDatabaseObject;
+    public function retrieveDatabaseRecurrence(object $request)
+    {
+        if ('edit' === $request->getMode()) {
+            $this->recurrenceDatabaseObject = ITS4YouCalendar_Recurrence_Model::getRecurringObject($request->get('record'));
+        }
+    }
 
     /**
      * @param Vtiger_Request $request
@@ -31,24 +41,12 @@ class ITS4YouCalendar_Save_Action extends Vtiger_Save_Action
 
         /** @var ITS4YouCalendar_Record_Model $recordModel */
         $recordModel = $this->getRecordModelFromRequest($request);
-        $recordModel->retrieveDurationHours();
         $recordModel->save();
 
         $this->savedRecordId = $recordModel->getId();
         $this->saveRepeatEvents();
 
         return $recordModel;
-    }
-
-    /**
-     * @param object $request
-     * @return void
-     */
-    public function retrieveDatabaseRecurrence(object $request)
-    {
-        if ('edit' === $request->getMode()) {
-            $this->recurrenceDatabaseObject = ITS4YouCalendar_Recurrence_Model::getRecurringObject($request->get('record'));
-        }
     }
 
     /**

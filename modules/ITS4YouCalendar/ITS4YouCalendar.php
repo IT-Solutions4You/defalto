@@ -188,6 +188,27 @@ class ITS4YouCalendar extends CRMEntity
     }
 
     /**
+     * This function is for Google Calendar Sync Extension
+     * @return void
+     */
+    public function retrieveAttendees()
+    {
+        if (!empty($this->column_fields['attendees_contact_id'])) {
+            $this->column_fields['contact_id'] = $this->column_fields['attendees_contact_id'];
+        }
+    }
+
+    public function saveDurationHours()
+    {
+        $datetimeEndTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_end']));
+        $datetimeStartTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_start']));
+        $duration = ($datetimeEndTime - $datetimeStartTime) / 60 / 60;
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE its4you_calendar SET duration_hours=? WHERE its4you_calendar_id=?', [$duration, $this->id]);
+    }
+
+    /**
      * @param $fieldName
      * @param $relatedModule
      * @return void
@@ -196,9 +217,10 @@ class ITS4YouCalendar extends CRMEntity
     {
         $recordId = $this->id;
         $recordModule = $this->moduleName;
-        $relatedRecords = explode(';', $this->column_fields[$fieldName]);
+        $relatedRecords = array_filter(explode(';', $this->column_fields[$fieldName]));
 
-        PearDatabase::getInstance()->pquery('DELETE FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $relatedModule]);
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('DELETE FROM vtiger_crmentityrel WHERE crmid=? AND module=? AND relmodule=?', [$recordId, $recordModule, $relatedModule]);
 
         if (!empty($relatedRecords)) {
             $this->save_related_module($recordModule, $recordId, $relatedModule, $relatedRecords);
@@ -211,10 +233,13 @@ class ITS4YouCalendar extends CRMEntity
      */
     public function save_module()
     {
+        $this->retrieveAttendees();
+
         $this->insertIntoReminder();
         $this->insertIntoInvitedUsers();
         $this->insertIntoRecurring();
 
+        $this->saveDurationHours();
         $this->saveMultiReference('contact_id', 'Contacts');
         $this->createRelationFromMultiReference('contact_id');
         $this->createRelationFromReference('parent_id');

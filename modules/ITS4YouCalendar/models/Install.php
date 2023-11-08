@@ -21,6 +21,9 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
     protected string $eventType = '';
     protected string $moduleName = 'ITS4YouCalendar';
 
+    /**
+     * @throws AppException
+     */
     protected function addCustomLinks()
     {
         $this->installTables();
@@ -33,10 +36,47 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         $this->updateIcons();
         $this->updatePicklists();
 
-        ITS4YouCalendar_Migration_Model::getInstance()->migrate();
-
         ModComments::addWidgetTo([$this->moduleName]);
         ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+    }
+
+    protected function createColumn($column, $type): self
+    {
+        if ($this->isEmpty('table')) {
+            throw new AppException('Table is empty for create column');
+        }
+
+        $sql = sprintf('ALTER TABLE %s ADD %s %s NULL', $this->get('table'), $column, $type);
+
+        if (!columnExists($column, $this->get('table'))) {
+            $this->db->query($sql);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @throws AppException
+     */
+    protected function createTable(): self
+    {
+        if ($this->isEmpty('table')) {
+            throw new AppException('Table is empty for create table');
+        }
+
+        if ($this->isEmpty('table_id')) {
+            throw new AppException('Table id is empty for create table');
+        }
+
+        $sql = sprintf(
+            'CREATE TABLE IF NOT EXISTS %s (%s int(11) AUTO_INCREMENT,PRIMARY KEY (%s)) ENGINE=InnoDB',
+            $this->get('table'),
+            $this->get('table_id'),
+            $this->get('table_id')
+        );
+        $this->db->query($sql);
+
+        return $this;
     }
 
     protected function deleteCustomLinks()
@@ -46,6 +86,66 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
 
         ModComments::removeWidgetFrom([$this->moduleName]);
         ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+    }
+
+    public function deleteModule()
+    {
+        $moduleName = $this->moduleName;
+        $moduleInstance = Vtiger_Module::getInstance($moduleName);
+        $moduleFocus = CRMEntity::getInstance($moduleName);
+
+        if ($moduleInstance) {
+            if (!empty($moduleInstance->basetable)) {
+                self::logError('Drop tables');
+
+                $cfTable = $moduleFocus->customFieldTable[0];
+                $dropTables = [
+                    $moduleInstance->basetable,
+                    $moduleInstance->basetable . '_seq',
+                    $cfTable,
+                    $cfTable . '_seq',
+                ];
+
+                self::logSuccess($dropTables);
+
+                foreach ($dropTables as $dropTable) {
+                    $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
+                }
+            }
+
+            self::logError('Delete records, fields, blocks, related lists');
+
+            $this->db->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$moduleName]);
+            $this->db->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($moduleName)]);
+            $this->db->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($moduleName)]);
+            $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($moduleName), getTabid($moduleName)]);
+
+            self::logError('Delete picklist values');
+
+            foreach (self::getBlocks() as $blockName => $blockInfo) {
+                foreach ($blockInfo as $fieldName => $fieldInfo) {
+                    if (!empty($fieldInfo['picklist_values'])) {
+                        self::logError('Delete picklist values: ' . $fieldName);
+
+                        $this->db->query('DROP TABLE IF EXISTS vtiger_' . $fieldName);
+                        $this->db->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
+                    }
+                }
+            }
+
+            self::logError('Delete filter');
+
+            $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
+
+            if ($filter) {
+                $filter->delete();
+            }
+
+            self::logError('Delete module');
+            $moduleInstance->delete();
+
+            die('Delete module');
+        }
     }
 
     /**
@@ -313,6 +413,16 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    public function getTable($table, $tableId): self
+    {
+        $clone = new self();
+        $clone->db = PearDatabase::getInstance();
+        $clone->set('table', $table);
+        $clone->set('table_id', $tableId);
+
+        return $clone;
+    }
+
     protected function insertEmailTemplates()
     {
         if (!method_exists('EMAILMaker_Record_Model', 'saveTemplate')) {
@@ -353,6 +463,9 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @throws AppException
+     */
     public function install()
     {
         require_once 'include/utils/utils.php';
@@ -429,8 +542,12 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         }
     }
 
-    public function installModule($delete = false)
+    public function installModule()
     {
+        $this->installTables();
+
+        self::logSuccess('Install tables');
+
         $moduleName = $this->moduleName;
         /** @var ITS4YouCalendar $moduleFocus */
         $moduleFocus = CRMEntity::getInstance($moduleName);
@@ -477,38 +594,6 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         $crmVersion = Vtiger_Version::current();
         $moduleInstance = Vtiger_Module::getInstance($name);
 
-        if ($delete) {
-            if (!empty($moduleInstance->basetable)) {
-                self::logError('Drop tables');
-
-                $dropTables = [
-                    $moduleInstance->basetable,
-                    $moduleInstance->basetable . '_seq',
-                    $cfTable,
-                    $cfTable . '_seq',
-                    $groupRelTable,
-                    $groupRelTable . '_seq',
-                ];
-
-                $this->db->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$name]);
-
-                foreach ($dropTables as $dropTable) {
-                    $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
-                }
-            }
-
-            if ($moduleInstance) {
-                $this->db->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($name)]);
-                $this->db->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($name)]);
-                $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($name), getTabid($name)]);
-
-                $moduleInstance->delete();
-
-                self::logError('Delete module');
-                die('Delete module');
-            }
-        }
-
         if (!$moduleInstance) {
             $moduleInstance = new Vtiger_Module();
 
@@ -526,6 +611,8 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
         $moduleInstance->isentitytype = $entity;
         $moduleInstance->basetable = $baseTable;
         $moduleInstance->basetableid = $baseTableId;
+        $moduleInstance->customtable = $cfTable;
+        $moduleInstance->grouptable = $groupRelTable;
         $moduleInstance->save();
 
         self::logSuccess('Module created');
@@ -543,11 +630,16 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
 
             Vtiger_Filter::deleteForModule($moduleInstance);
 
-            $newFilter = new Vtiger_Filter();
-            $newFilter->name = 'All';
-            $newFilter->isdefault = true;
             $filterSequence = 0;
-            $moduleInstance->addFilter($newFilter);
+            $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
+
+            if (!$filter) {
+                $filter = new Vtiger_Filter();
+            }
+
+            $filter->name = 'All';
+            $filter->isdefault = true;
+            $filter->save($moduleInstance);
 
             if (isset($blocks['LBL_ITEM_DETAILS'])) {
                 $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
@@ -571,12 +663,17 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
 
                 if (!$blockInstance) {
                     $blockInstance = new Vtiger_Block();
+                }
+
                     $blockInstance->label = $block;
 
                     $moduleInstance->addBlock($blockInstance);
-                }
 
                 foreach ($fields as $fieldName => $fieldParams) {
+                    if (empty($fieldName)) {
+                        continue;
+                    }
+
                     self::logSuccess('Field create: ' . $fieldName);
 
                     $relatedModules = [];
@@ -591,8 +688,6 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
                     $fieldInstance->name = $fieldName;
                     $fieldInstance->column = $fieldName;
                     $fieldInstance->table = $baseTable;
-                    $fieldInstance->masseditable = 0;
-                    $fieldInstance->quickcreate = 0;
 
                     foreach ($fieldParams as $fieldParamName => $fieldParam) {
                         if ('picklist_values' === $fieldParamName) {
@@ -615,13 +710,23 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
                     $this->db->pquery($sql, [$params, $fieldInstance->id]);
 
                     if (!empty($picklistValues)) {
-                        $this->db->query('DROP TABLE IF EXISTS vtiger_' . $fieldName);
-                        $this->db->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
-
                         self::logSuccess('Picklist values create: ' . $fieldName);
                         self::logSuccess($picklistValues);
 
-                        $fieldInstance->setPicklistValues($picklistValues);
+                        $picklistTable = 'vtiger_' . $fieldName;
+                        $currentPicklistValues = [];
+
+                        if (Vtiger_Utils::checkTable($picklistTable)) {
+                            $currentPicklistValues = $fieldInstance->getPicklistValues();
+                        }
+
+                        foreach ($picklistValues as $picklistKey => $picklistValue) {
+                            $picklistName = is_array($picklistValue) ? $picklistValue[0] : $picklistValue;
+
+                            if (!isset($currentPicklistValues[$picklistName])) {
+                                $fieldInstance->setPicklistValues([$picklistKey => $picklistValue]);
+                            }
+                        }
                     }
 
                     if (!empty($relatedModules)) {
@@ -641,7 +746,7 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
                         self::logSuccess('Filter create: ' . $fieldName);
 
                         $filterSequence++;
-                        $newFilter->addField($fieldInstance, $filterSequence);
+                        $filter->addField($fieldInstance, $filterSequence);
                     }
 
                     if (isset($fieldParams['entity_identifier'])) {
@@ -674,81 +779,58 @@ class ITS4YouCalendar_Install_Model extends Vtiger_Base_Model
 
     /**
      * @return void
+     * @throws AppException
      */
     protected function installTables()
     {
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_remindme` (
-          `record_id` int(11) NOT NULL,
-          `reminder_time` int(11) NOT NULL,
-          `reminder_sent` int(2) NOT NULL,
-          `recuring_id` int(19) NOT NULL,
-          PRIMARY KEY (record_id)
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_remindme_popup` (
-          `its4you_remindme_id` int(19) AUTO_INCREMENT,
-          `record_id` int(19) NOT NULL,
-          `datetime_start` datetime NOT NULL,
-          `status` int(2) NOT NULL,
-          PRIMARY KEY (its4you_remindme_id)
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_invited_users` (
-            `invited_users_id` int(11) NOT NULL,
-            `user_id` int(11) NOT NULL,
-            `record_id` int(11) NOT NULL,
-            `status` varchar(50) DEFAULT NULL
-            ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_recurring` (
-          `recurring_id` int(19) AUTO_INCREMENT,
-          `record_id` int(19) NOT NULL,
-          `recurring_date` date NOT NULL,
-          `recurring_end_date` date NOT NULL,
-          `recurring_type` varchar(30) NOT NULL,
-          `recurring_frequency` int(19) NOT NULL,
-          `recurring_info` varchar(50) NOT NULL
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            "CREATE TABLE IF NOT EXISTS `its4you_recurring_rel` (
-            `record_id` int(11) NOT NULL COMMENT 'first recurrence record',      
-            `recurrence_id` int(11) NOT NULL COMMENT 'other or first recurrence record',
-          UNIQUE (recurrence_id)
-        ) ENGINE=InnoDB"
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_sharing_users` (
-            `crmid` INT(19) NOT NULL,
-            `userid` INT(19) NOT NULL,
-            `type` INT(1) NOT NULL,
-            INDEX `crmid` (`crmid`) USING BTREE,
-            INDEX `userid` (`userid`) USING BTREE,
-            INDEX `crmid_2` (`crmid`, `userid`) USING BTREE
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `its4you_calendar_user_types` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `default_id` int(11) DEFAULT NULL,
-          `user_id` int(11) DEFAULT NULL,
-          `color` varchar(8) DEFAULT NULL,
-          `visible` int(1) DEFAULT NULL
-        ) ENGINE=InnoDB'
-        );
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS  `its4you_calendar_default_types` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `module` varchar(50) DEFAULT NULL,
-          `fields` varchar(200) DEFAULT NULL,
-          `default_color` varchar(8) DEFAULT NULL,
-          `is_default` int(1) DEFAULT NULL
-        ) ENGINE=InnoDB'
-        );
+        $this->getTable('its4you_remindme', 'remindme_id')
+            ->createTable()
+            ->createColumn('record_id', 'INT(11)')
+            ->createColumn('reminder_time', 'int(11)')
+            ->createColumn('reminder_sent', 'int(2)')
+            ->createColumn('recurring_id', 'int(19)');
+
+        $this->getTable('its4you_remindme_popup', 'remindme_popup_id')
+            ->createTable()
+            ->createColumn('record_id', 'int(19)')
+            ->createColumn('datetime_start', 'datetime')
+            ->createColumn('status', 'int(2)');
+
+        $this->getTable('its4you_invited_users', 'invited_users_id')
+            ->createTable()
+            ->createColumn('user_id', 'int(11)')
+            ->createColumn('record_id', 'int(11)')
+            ->createColumn('status', 'varchar(50)');
+
+        $this->getTable('its4you_recurring', 'recurring_id')
+            ->createTable()
+            ->createColumn('record_id', 'int(19)')
+            ->createColumn('recurring_date', 'date')
+            ->createColumn('recurring_end_date', 'date')
+            ->createColumn('recurring_type', 'varchar(30)')
+            ->createColumn('recurring_frequency', 'int(19)')
+            ->createColumn('recurring_info', 'varchar(50)');
+
+        $this->getTable('its4you_recurring_rel', 'recurring_rel_id')
+            ->createTable()
+            ->createColumn('record_id', 'int(11)')
+            ->createColumn('recurrence_id', 'int(11)');
+
+        $this->getTable('its4you_calendar_user_types', 'id')
+            ->createTable()
+            ->createColumn('default_id', 'int(11)')
+            ->createColumn('user_id', 'int(11)')
+            ->createColumn('color', 'varchar(8)')
+            ->createColumn('visible', 'int(1)');
+
+        $this->getTable('its4you_calendar_default_types', 'id')
+            ->createTable()
+            ->createColumn('module', 'varchar(50)')
+            ->createColumn('fields', 'varchar(200)')
+            ->createColumn('default_color', 'varchar(8)')
+            ->createColumn('is_default', 'int(1)');
+
+
         /** Database references to crmentity
          * $this->db->query(
          * 'ALTER TABLE `its4you_recurring`

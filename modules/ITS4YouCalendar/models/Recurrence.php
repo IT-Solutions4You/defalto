@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -10,61 +11,59 @@
 class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
 {
     public PearDatabase $adb;
-    public string $tableIndex = 'recurring_id';
     public string $table = 'its4you_recurring';
+    public string $tableIndex = 'recurring_id';
 
-    public static function getRecurringRecordsList($recordId): array
+    public function delete()
     {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)', [$recordId, $recordId]);
-        $numberOfRows = $adb->num_rows($result);
-        $parentRecurringId = $adb->query_result($result, 0, 'record_id');
-        $childRecords = [];
+        $tableIndex = $this->tableIndex;
+        $table = $this->table;
+        $this->adb->pquery(
+            sprintf('DELETE FROM %s WHERE %s=?', $table, $tableIndex),
+            [$this->get($tableIndex)]
+        );
+    }
 
-        for ($i = 0; $i < $numberOfRows; $i++) {
-            $childRecords[] = $adb->query_result($result, $i, 'recurrence_id');
-        }
-
-        return [
-            $parentRecurringId => $childRecords,
-        ];
+    public static function deleteRecurring(int $recordId)
+    {
+        $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
+        $recurrence->delete();
     }
 
     /**
-     * @param int $relatedRecordId
-     * @param string $recurringEditMode
-     * @return array
+     * @param int $recurrenceId - other or first recurrence record
+     * @return void
      */
-    public static function getRecurringRecordsByType($relatedRecordId, $recurringEditMode)
+    public static function deleteRelation(int $recurrenceId)
     {
-        $recordList = [];
-        $recordIdList = [$relatedRecordId];
+        $adb = PearDatabase::getInstance();
+        $adb->pquery(
+            'DELETE FROM its4you_recurring_rel WHERE recurrence_id=?',
+            [$recurrenceId]
+        );
+    }
 
-        if (!empty($recurringEditMode) && $recurringEditMode != 'current') {
-            $recurringRecordsList = self::getRecurringRecordsList($relatedRecordId);
-            $childRecords = [];
+    public function deleteRelations()
+    {
+        $this->adb->pquery(
+            'DELETE FROM its4you_recurring_rel WHERE record_id=?',
+            [$this->get('record_id')]
+        );
+    }
 
-            foreach ($recurringRecordsList as $children) {
-                $childRecords = $children;
-            }
+    /**
+     * @param int $recordId
+     * @return ITS4YouCalendar_Recurrence_Model
+     */
+    public static function getInstanceByRecord(int $recordId): self
+    {
+        $instance = new self();
+        $instance->adb = PearDatabase::getInstance();
+        $instance->set('record_id', $recordId);
+        $instance->retrieveId();
+        $instance->retrieveData();
 
-            if ('future' === $recurringEditMode) {
-                $parentKey = array_keys($childRecords, $relatedRecordId);
-                $childRecords = array_slice($childRecords, $parentKey[0]);
-            }
-
-            foreach ($childRecords as $recordId) {
-                $recordList[] = $recordId;
-            }
-
-            $recordIdList = array_slice($recordIdList, $relatedRecordId);
-        }
-
-        foreach ($recordList as $record) {
-            $recordIdList[] = $record;
-        }
-
-        return $recordIdList;
+        return $instance;
     }
 
     public static function getRecurrenceInformation($request): array
@@ -136,27 +135,81 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int $recordId
-     * @return ITS4YouCalendar_Recurrence_Model
+     * @param int $relatedRecordId
+     * @param string $recurringEditMode
+     * @return array
      */
-    public static function getInstanceByRecord(int $recordId): self
+    public static function getRecurringRecordsByType($relatedRecordId, $recurringEditMode)
     {
-        $instance = new self();
-        $instance->adb = PearDatabase::getInstance();
-        $instance->set('record_id', $recordId);
-        $instance->retrieveId();
-        $instance->retrieveData();
+        $recordList = [];
+        $recordIdList = [$relatedRecordId];
 
-        return $instance;
+        if (!empty($recurringEditMode) && $recurringEditMode != 'current') {
+            $recurringRecordsList = self::getRecurringRecordsList($relatedRecordId);
+            $childRecords = [];
+
+            foreach ($recurringRecordsList as $children) {
+                $childRecords = $children;
+            }
+
+            if ('future' === $recurringEditMode) {
+                $parentKey = array_keys($childRecords, $relatedRecordId);
+                $childRecords = array_slice($childRecords, $parentKey[0]);
+            }
+
+            foreach ($childRecords as $recordId) {
+                $recordList[] = $recordId;
+            }
+
+            $recordIdList = array_slice($recordIdList, $relatedRecordId);
+        }
+
+        foreach ($recordList as $record) {
+            $recordIdList[] = $record;
+        }
+
+        return $recordIdList;
     }
 
-    public function retrieveId()
+    public static function getRecurringRecordsList($recordId): array
     {
-        $result = $this->adb->pquery('SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?', [$this->get('record_id')]);
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT * FROM its4you_recurring_rel WHERE record_id=? OR record_id = (SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?)', [$recordId, $recordId]);
+        $numberOfRows = $adb->num_rows($result);
+        $parentRecurringId = $adb->query_result($result, 0, 'record_id');
+        $childRecords = [];
 
-        if ($this->adb->num_rows($result)) {
-            $this->set('record_id', (int)$this->adb->query_result($result, 0, 'record_id'));
+        for ($i = 0; $i < $numberOfRows; $i++) {
+            $childRecords[] = $adb->query_result($result, $i, 'recurrence_id');
         }
+
+        return [
+            $parentRecurringId => $childRecords,
+        ];
+    }
+
+    public static function hasRelation($recurrenceId): bool
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?',
+            [$recurrenceId]
+        );
+
+        return 0 < $adb->num_rows($result);
+    }
+
+    public function isExists(): bool
+    {
+        return !$this->isEmpty($this->tableIndex);
+    }
+
+    public static function isRelationExists(int $recordId = 0, int $recurrenceId = 0)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT recurrence_id FROM its4you_recurring_rel WHERE record_id=? OR record_id=? OR recurrence_id=? OR recurrence_id=?', [$recordId, $recurrenceId, $recordId, $recurrenceId]);
+
+        return 0 !== (int)$adb->num_rows($result);
     }
 
     public function retrieveData()
@@ -168,54 +221,13 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         }
     }
 
-    public function isExists(): bool
+    public function retrieveId()
     {
-        return !$this->isEmpty($this->tableIndex);
-    }
+        $result = $this->adb->pquery('SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?', [$this->get('record_id')]);
 
-    /**
-     * @param int $recordId - first recurrence record
-     * @param int $recurrenceId - other or first recurrence record
-     * @return void
-     */
-    public static function saveRelation(int $recordId, int $recurrenceId)
-    {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery(
-            'INSERT INTO its4you_recurring_rel (record_id,recurrence_id) VALUES (?,?)',
-            [$recordId, $recurrenceId]
-        );
-    }
-
-    /**
-     * @param int $recurrenceId - other or first recurrence record
-     * @return void
-     */
-    public static function deleteRelation(int $recurrenceId)
-    {
-        $adb = PearDatabase::getInstance();
-        $adb->pquery(
-            'DELETE FROM its4you_recurring_rel WHERE recurrence_id=?',
-            [$recurrenceId]
-        );
-    }
-
-    public function delete()
-    {
-        $tableIndex = $this->tableIndex;
-        $table = $this->table;
-        $this->adb->pquery(
-            sprintf('DELETE FROM %s WHERE %s=?', $table, $tableIndex),
-            [$this->get($tableIndex)]
-        );
-    }
-
-    public function deleteRelations()
-    {
-        $this->adb->pquery(
-            'DELETE FROM its4you_recurring_rel WHERE record_id=?',
-            [$this->get('record_id')]
-        );
+        if ($this->adb->num_rows($result)) {
+            $this->set('record_id', (int)$this->adb->query_result($result, 0, 'record_id'));
+        }
     }
 
     public function save()
@@ -231,11 +243,12 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         ];
 
         if ($this->isEmpty($tableIndex)) {
-            $params[$tableIndex] = $this->adb->getUniqueID($table);
             $params['record_id'] = $this->get('record_id');
 
             $columns = implode(',', array_keys($params));
             $query = sprintf('INSERT INTO %s (%s) VALUES (%s)', $table, $columns, generateQuestionMarks($params));
+
+            $this->set($tableIndex, $this->adb->getLastInsertID($table));
         } else {
             $columns = implode('=?,', array_keys($params));
             $query = sprintf('UPDATE %s SET %s=? WHERE %s=?', $table, $columns, $tableIndex);
@@ -267,9 +280,17 @@ class ITS4YouCalendar_Recurrence_Model extends Vtiger_Base_Model
         $recurrence->save();
     }
 
-    public static function deleteRecurring(int $recordId)
+    /**
+     * @param int $recordId - first recurrence record
+     * @param int $recurrenceId - other or first recurrence record
+     * @return void
+     */
+    public static function saveRelation(int $recordId, int $recurrenceId)
     {
-        $recurrence = ITS4YouCalendar_Recurrence_Model::getInstanceByRecord($recordId);
-        $recurrence->delete();
+        $adb = PearDatabase::getInstance();
+        $adb->pquery(
+            'INSERT INTO its4you_recurring_rel (record_id,recurrence_id) VALUES (?,?)',
+            [$recordId, $recurrenceId]
+        );
     }
 }

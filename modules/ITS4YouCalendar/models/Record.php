@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -9,14 +10,6 @@
  */
 class ITS4YouCalendar_Record_Model extends Vtiger_Record_Model
 {
-    public function retrieveDurationHours()
-    {
-        $datetimeEndTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->get('datetime_end')));
-        $datetimeStartTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->get('datetime_start')));
-
-        $this->set('duration_hours', ($datetimeEndTime - $datetimeStartTime) / 60 / 60);
-    }
-
     /**
      * @return string
      */

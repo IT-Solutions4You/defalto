@@ -4,6 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
+/** @var Vtiger_Index_Js */
 Vtiger.Class('Vtiger_Index_Js', {
 	files: [],
 	hideNC: true,
@@ -228,32 +229,35 @@ Vtiger.Class('Vtiger_Index_Js', {
 	/**
 	 * Function request for reminder popups
 	 */
-	requestReminder : function() {
-		var activityReminder = app.getActivityReminderInterval();
-		if(!activityReminder) {
+	requestReminder: function () {
+		let activityReminder = app.getActivityReminderInterval();
+
+		if (!activityReminder) {
 			return;
 		}
-		var currentTime = new Date().getTime()/1000;
+
+		let currentTime = new Date().getTime() / 1000;
 		//requestReminder function should call after activityreminder popup interval
-		setTimeout(function() {Vtiger_Index_Js.requestReminder()}, activityReminder*1000);
+		setTimeout(function () {
+			Vtiger_Index_Js.requestReminder()
+		}, activityReminder * 1000);
 		app.storage.set('activityReminder', activityReminder);
 		//setting next activity reminder check time
 		app.storage.set('nextActivityReminderCheckTime', currentTime + parseInt(activityReminder));
 
 		app.request.post({
-			'data' : {
-				'module' : 'Calendar',
-				'action' : 'ActivityReminder',
-				'mode' : 'getReminders'
+			'data': {
+				'module': 'ITS4YouCalendar',
+				'action': 'ActivityReminder',
+				'mode': 'getReminders'
 			}
-		}).then(function(e, res) {
-			if(!res.hasOwnProperty('result')) {
-				for(i=0; i< res.length; i++) {
-					var record = res[i];
-					if(typeof record == 'object') {
-						Vtiger_Index_Js.showReminderPopup(record);
+		}).then(function (error, data) {
+			if (!error && data) {
+				$.each(data, function (recordId, recordInfo) {
+					if ('object' === typeof recordInfo) {
+						Vtiger_Index_Js.showReminderPopup(recordInfo);
 					}
-				}
+				});
 			}
 		});
 	},
@@ -261,41 +265,48 @@ Vtiger.Class('Vtiger_Index_Js', {
 	/**
 	 * Function display the Reminder popup
 	 */
-	showReminderPopup : function(record) {
-		var notifyParams = {
-			'title' : record.activitytype + ' - ' +
-				'<a target="_blank" href="index.php?module=Calendar&view=Detail&record='+record.id+'">'+record.subject+'</a>&nbsp;&nbsp;'+
-				'<i id="reminder-postpone-'+record.id+'" title="'+app.vtranslate('JS_POSTPONE')+'" class="cursorPointer fa fa-clock-o"></i>',
-			'message' : '<div class="col-sm-12">'+
-				'<div class="row">'+
-				'<div class="col-sm-12 font13px">'+
-				app.vtranslate('JS_START_DATE_TIME') + ' : ' + record.date_start+
-				'</div>'+
-				'<div class="col-sm-12 font13px">'+
-				app.vtranslate('JS_END_DATE_TIME') + ' : ' + record.due_date+
-				'</div>'+
-				'</div>'+
-				'</div>'
-		};
-		var settings = {
-			'element' : 'body',
-			'type' : 'danger',
-			'delay' : 0
-		};
+	showReminderPopup: function (record) {
+		let headers = '';
+		if ('undefined' !== typeof record['header_fields']) {
+			$(record['header_fields']).each(function (index, element) {
+				headers += '<div class="col-sm-12 font13px">' + element['label'] + ' : ' + record[element['name']] + '</div>';
+			});
+		}
+
+		let notifyParams = {
+				'title': '<a target="_blank" href="index.php?module=' + record['record_module'] + '&view=Detail&record=' + record['record_id'] + '">' + record.label + '</a>&nbsp;&nbsp;' +
+					'<i id="reminder-postpone-' + record.id + '" title="' + app.vtranslate('JS_POSTPONE') + '" class="cursorPointer fa fa-clock-o"></i>',
+				'message': '<div class="col-sm-12">' +
+					'<div class="row">' +
+					headers +
+					'</div>' +
+					'</div>'
+			},
+			settings = {
+				'element': 'body',
+				'type': 'danger',
+				'delay': 0
+			};
 
 		jQuery.notify(notifyParams, settings);
-		jQuery('#reminder-postpone-'+record.id).on('click', function(e) {
-			jQuery(e.currentTarget).closest('.notificationHeader').find('[data-notify="dismiss"]').trigger('click');
+
+		const reminderPostpone = jQuery('#reminder-postpone-' + record.id);
+
+		reminderPostpone.on('click', function (e) {
 			app.request.post({
-				'data' : {
-					'module' : 'Calendar',
-					'action' : 'ActivityReminder',
-					'mode' : 'postpone',
-					'record' : record.id
+				'data': {
+					'module': 'ITS4YouCalendar',
+					'action': 'ActivityReminder',
+					'mode': 'postpone',
+					'record': record.id
 				}
-			}).then(function(e,res) {});
+			}).then(function (error, data) {
+				if (!error && data['success']) {
+					jQuery(e.currentTarget).closest('[data-notify="container"]').find('[data-notify="dismiss"]').trigger('click');
+				}
+			});
 		});
-		jQuery('#reminder-postpone-'+record.id).closest('[data-notify="container"]').draggable({'containment' : 'body'});
+		reminderPostpone.closest('[data-notify="container"]').draggable({'containment': 'body'});
 	}
 
 }, {
