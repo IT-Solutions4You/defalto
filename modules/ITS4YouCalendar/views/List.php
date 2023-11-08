@@ -12,7 +12,7 @@ class ITS4YouCalendar_List_View extends Vtiger_List_View
 {
     public function preProcess(Vtiger_Request $request, $display = true)
     {
-        if(!$request->isEmpty('viewname')) {
+        if (!$request->isEmpty('viewname')) {
             ITS4YouCalendar_Module_Model::updateTodayFilterDates(Vtiger_Filter::getInstance($request->get('viewname')));
         }
 

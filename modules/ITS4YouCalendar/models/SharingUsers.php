@@ -10,8 +10,16 @@
  */
 class ITS4YouCalendar_SharingUsers_Model extends Vtiger_Base_Model
 {
-    public string $table = 'its4you_sharing_users';
     public PearDatabase $adb;
+    public string $table = 'its4you_sharing_users';
+
+    public function deleteUsers()
+    {
+        $query = sprintf('DELETE FROM %s WHERE crmid=?', $this->table);
+        $this->adb->pquery($query, [
+            $this->get('record_id'),
+        ]);
+    }
 
     /**
      * @param int $recordId
@@ -24,21 +32,6 @@ class ITS4YouCalendar_SharingUsers_Model extends Vtiger_Base_Model
         $instance->set('record_id', $recordId);
 
         return $instance;
-    }
-
-    public function setUsers(array $value)
-    {
-        $this->set('users', $value);
-    }
-
-    public function saveUsers()
-    {
-        $userIds = $this->getUsers();
-
-        foreach ($userIds as $userId) {
-            $this->set('user_id', $userId);
-            $this->saveUser();
-        }
     }
 
     public function getUsers(): array
@@ -58,11 +51,18 @@ class ITS4YouCalendar_SharingUsers_Model extends Vtiger_Base_Model
         $this->adb->pquery($query, $params);
     }
 
-    public function deleteUsers()
+    public function saveUsers()
     {
-        $query = sprintf('DELETE FROM %s WHERE crmid=?', $this->table);
-        $this->adb->pquery($query, [
-            $this->get('record_id')
-        ]);
+        $userIds = $this->getUsers();
+
+        foreach ($userIds as $userId) {
+            $this->set('user_id', $userId);
+            $this->saveUser();
+        }
+    }
+
+    public function setUsers(array $value)
+    {
+        $this->set('users', $value);
     }
 }

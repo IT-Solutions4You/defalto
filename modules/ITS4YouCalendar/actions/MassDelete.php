@@ -28,7 +28,7 @@ class ITS4YouCalendar_MassDelete_Action extends Vtiger_MassDelete_Action
         $cvId = $request->get('viewname');
 
         foreach ($recordIds as $recordId) {
-            if (Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
+            if (!empty($recordId) && isRecordExists($recordId) && Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
                 $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleModel);
                 $recordModel->delete();
 

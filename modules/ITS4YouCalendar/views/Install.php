@@ -17,7 +17,11 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
      */
     public function checkPermission(Vtiger_Request $request): void
     {
-        (new Settings_Vtiger_Index_View())->checkPermission($request);
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if (!$currentUser || !$currentUser->isAdminUser()) {
+            throw new AppException('Required admin user');
+        }
     }
 
     /**
@@ -49,8 +53,16 @@ class ITS4YouCalendar_Install_View extends Vtiger_Index_View
         $adb->setDebug(true);
         $adb->setDieOnError(true);
 
-        $delete = $request->get('delete');
+        $mode = $request->get('mode');
 
-        ITS4YouCalendar_Install_Model::getInstance('module.postinstall', 'ITS4YouCalendar')->installModule($delete);
+        if ('migrate' === $mode) {
+            ITS4YouCalendar_Migration_Model::getInstance()->migrate();
+        } elseif ('delete' === $mode) {
+            ITS4YouCalendar_Install_Model::getInstance('module.preuninstall', 'ITS4YouCalendar')->deleteModule();
+        } elseif ('install' === $mode) {
+            ITS4YouCalendar_Install_Model::getInstance('module.postinstall', 'ITS4YouCalendar')->installModule();
+        } else {
+            throw new AppException('Required parameter "mode" in request "migrate, delete, install"');
+        }
     }
 }

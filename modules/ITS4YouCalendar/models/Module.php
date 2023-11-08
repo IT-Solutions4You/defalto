@@ -10,33 +10,80 @@
  */
 class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 {
-    /**
-     * @param Vtiger_Request $request
-     * @return void
-     */
-    public static function retrieveDefaultValuesForEdit(Vtiger_Request $request)
+    /** Calendar Widget: Copy to vtiger Module Model */
+    public function getCalendarEvents($mode, $pagingModel, $user, $recordId = false)
     {
-        if ($request->isEmpty('record')) {
-            $currentUser = Users_Record_Model::getCurrentUserModel();
+        $relatedParentId = $recordId;
+        $relatedParentModule = getSalesEntityType($relatedParentId);
 
-            $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
-            $request->set('calendar_type', $currentUser->get('defaultactivitytype'));
-        }
+        $moduleName = 'ITS4YouCalendar';
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
+        /** @var Vtiger_RelationListView_Model $relationListView */
+        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
+        $relationListView->set('whereCondition', [
+            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
+        ]);
+
+        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
     }
 
-    public static function updateTodayFilterDates($filter): bool
+    public function getDefaultUrl()
     {
-        if (!$filter && 'Today' !== trim($filter->name)) {
-            return false;
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if ($currentUser && 'MyCalendar' === $currentUser->get('defaultcalendarview')) {
+            return 'index.php?module=ITS4YouCalendar&view=Calendar';
         }
 
-        $date = self::getTodayDates();
+        return parent::getDefaultUrl();
+    }
 
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_start%']);
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_end%']);
+    /**
+     * @return array
+     */
+    public function getHideDays(): array
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $weekDays = [
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+            0 => 'Sunday',
+        ];
 
-        return true;
+        if (!$currentUser->isEmpty('week_days')) {
+            $picklistWeekDays = array_filter(explode(' |##| ', $currentUser->get('week_days')));
+        }
+
+        if (empty($picklistWeekDays)) {
+            $picklistWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        }
+
+        $hideWeekDays = array_diff($weekDays, $picklistWeekDays);
+
+        return array_keys($hideWeekDays);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIconUrl(): string
+    {
+        return $this->getDefaultUrl();
+    }
+
+    public function getListViewUrl()
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        if ($currentUser && 'MyCalendar' === $currentUser->get('defaultcalendarview')) {
+            return 'index.php?module=ITS4YouCalendar&view=Calendar';
+        }
+
+        return parent::getListViewUrl();
     }
 
     /**
@@ -65,134 +112,20 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         return array_merge($basicLinks, parent::getModuleBasicLinks());
     }
 
-    /**
-     * @return array
-     */
-    public function getUsersAndGroups(): array
+    public function getModuleIcon($type = '')
     {
-        $usersAndGroups = [];
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $users = (array)$currentUser->getAccessibleUsers();
-
-        foreach ($users as $userId => $userName) {
-            if (empty($userName)) {
-                continue;
-            }
-
-            $usersAndGroups['Users'][$userName] = $userName;
-        }
-
-        $groups = (array)$currentUser->getAccessibleGroups();
-
-        foreach ($groups as $groupId => $groupName) {
-            if (empty($groupName)) {
-                continue;
-            }
-
-            $usersAndGroups['Groups'][$groupName] = $groupName;
-            $usersAndGroups['UsersByGroups'][$groupName] = vtranslate('LBL_USERS_BY_GROUP', 'ITS4YouCalendar') . $groupName;
-        }
-
-        return array_filter($usersAndGroups);
-    }
-
-    /**
-     * @return array
-     */
-    public function getHideDays()
-    {
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $weekDays = [
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            0 => 'Sunday',
+        $icons = [
+            'Meeting' => 'fa-users',
+            'Call' => 'fa-phone',
+            'Email' => 'fa-envelope',
+            'Reminder' => 'fa-bell',
         ];
 
-        if (!$currentUser->isEmpty('week_days')) {
-            $picklistWeekDays = explode(' |##| ', $currentUser->get('week_days'));
-        } else {
-            $picklistWeekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        if (!empty($icons[$type])) {
+            return '<i style="color: #90989c; height: 50px; width: 50px; line-height: 50px; font-size: 23px;" class="fa ' . $icons[$type] . '"></i>';
         }
 
-        $hideWeekDays = array_diff($weekDays, $picklistWeekDays);
-
-        return array_keys($hideWeekDays);
-    }
-
-    /**
-     * @return array
-     */
-    public function getUsersAndGroupsInfo(): array
-    {
-        $images = [];
-
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $users = (array)$currentUser->getAccessibleUsers();
-
-        foreach ($users as $userId => $userName) {
-            if (empty($userName)) {
-                continue;
-            }
-
-            $recordModel = Users_Record_Model::getInstanceById($userId, 'Users');
-            $imageDetails = $recordModel->getImageDetails();
-            $userBackground = self::getUserGroupBackground($userId);
-            $id = 'Users::::' . $userName;
-            $images[$id][$userId] = [
-                'id' => $id,
-                'name' => $userName,
-                'icon' => 'fa fa-user',
-                'image' => $imageDetails[0]['url'],
-                'label' => mb_strtoupper(mb_substr($userName, 0, 2)),
-                'background' => $userBackground,
-                'border' => $userBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($userBackground),
-            ];
-        }
-
-        $groups = (array)$currentUser->getAccessibleGroups();
-
-        foreach ($groups as $groupId => $groupName) {
-            if (empty($groupName)) {
-                continue;
-            }
-
-            $groupBackground = self::getUserGroupBackground($groupId);
-            $id = 'Groups::::' . $groupName;
-            $images[$id][$groupId] = [
-                'id' => $id,
-                'name' => $groupName,
-                'icon' => 'fa fa-group',
-                'label' => mb_strtoupper(mb_substr($groupName, 0, 2)),
-                'background' => $groupBackground,
-                'border' => $groupBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($groupBackground),
-            ];
-            $id = 'UsersByGroups::::' . $groupName;
-            $images[$id][$groupId] = [
-                'id' => $id,
-                'name' => vtranslate('Users by', $this->getName()) . ' ' . $groupName,
-                'icon' => 'fa fa-group',
-                'label' => mb_strtoupper(mb_substr($groupName, 0, 2)),
-                'background' => $groupBackground,
-                'border' => $groupBackground,
-                'color' => Settings_Picklist_Module_Model::getTextColor($groupBackground),
-            ];
-        }
-
-        return $images;
-    }
-
-    public static function getUserGroupBackground(string $value): string
-    {
-        $code = dechex(crc32($value));
-        $color = substr($code, 0, 6);
-
-        return '#' . $color;
+        return parent::getModuleIcon();
     }
 
     /**
@@ -215,6 +148,22 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         ];
 
         return array_merge($settingsLinks, parent::getSettingLinks());
+    }
+
+    public static function getTodayDate(): string
+    {
+        $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+
+        return $today->format('Y-m-d H:i:s');
+    }
+
+    public static function getTodayDates(): string
+    {
+        $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
+        $tomorrow->modify('+1439 minutes');
+        $tomorrow = $tomorrow->format('Y-m-d H:i:s');
+
+        return self::getTodayDate() . ',' . $tomorrow;
     }
 
     /**
@@ -240,47 +189,44 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         $queryGenerator->addCondition('datetime_end', $date, 'bw', 'OR');
         $queryGenerator->endGroup();
 
+        $queryGenerator->addUserSearchConditions(['search_field' => 'assigned_user_id', 'search_text' => decode_html($currentUser->getName()), 'operator' => 'c']);
+
         return intval($listModel->getListViewCount());
     }
 
-    public static function getTodayDates()
+    public function isEventTypesVisible()
     {
-        $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-        $tomorrow->modify('+1439 minutes');
-        $tomorrow = $tomorrow->format('Y-m-d H:i:s');
-        $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-        $today = $today->format('Y-m-d H:i:s');
+        global $ITS4YouCalendar_IsEventTypesVisible;
 
-        return $today . ',' . $tomorrow;
+        return false !== $ITS4YouCalendar_IsEventTypesVisible;
     }
 
     /**
-     * @return string
+     * @param Vtiger_Request $request
+     * @return void
      */
-    public function getIconUrl(): string
+    public static function retrieveDefaultValuesForEdit(Vtiger_Request $request)
     {
-        $currentUser = Users_Record_Model::getCurrentUserModel();
+        if ($request->isEmpty('record')) {
+            $currentUser = Users_Record_Model::getCurrentUserModel();
 
-        if ($currentUser && 'MyCalendar' === $currentUser->get('defaultcalendarview')) {
-            return 'index.php?module=ITS4YouCalendar&view=Calendar';
+            $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
+            $request->set('calendar_type', $currentUser->get('defaultactivitytype'));
         }
-
-        return $this->getDefaultUrl();
     }
 
-    public function getModuleIcon($type = '')
+    public static function updateTodayFilterDates($filter): bool
     {
-        $icons = [
-            'Meeting' => 'fa-users',
-            'Call' => 'fa-phone',
-            'Email' => 'fa-envelope',
-            'Reminder' => 'fa-bell',
-        ];
-
-        if (!empty($icons[$type])) {
-            return '<i style="color: #90989c; height: 50px; width: 50px; line-height: 50px; font-size: 23px;" class="fa ' . $icons[$type] . '"></i>';
+        if (!$filter && 'Today' !== trim($filter->name)) {
+            return false;
         }
 
-        return parent::getModuleIcon();
+        $date = self::getTodayDates();
+
+        $adb = PearDatabase::getInstance();
+        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_start%']);
+        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_end%']);
+
+        return true;
     }
 }

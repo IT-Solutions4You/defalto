@@ -11,56 +11,6 @@
 class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
 {
     /**
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->exposeMethod('Range');
-        $this->exposeMethod('EditEventType');
-        $this->exposeMethod('DeleteEventType');
-        $this->exposeMethod('EventInfo');
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return void
-     * @throws Exception
-     */
-    public function process(Vtiger_Request $request)
-    {
-        $mode = $request->getMode();
-
-        if (!empty($mode) && $this->isMethodExposed($mode)) {
-            $this->invokeExposedMethod($mode, $request);
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function EventInfo(Vtiger_Request $request)
-    {
-        $recordId = (int)$request->get('record_id');
-        $eventTypeId = (int)$request->get('event_type_id');
-
-        $eventType = ITS4YouCalendar_Events_Model::getInstance($eventTypeId);
-
-        if (empty($eventTypeId)) {
-            $eventType->retrieveCalendarData();
-        }
-
-        $eventType->setRecordModel(Vtiger_Record_Model::getInstanceById($recordId));
-
-        $response = new Vtiger_Response();
-        $response->setResult([
-            'info' => $eventType->getRecord(),
-            'success' => true,
-        ]);
-        $response->emit();
-    }
-
-    /**
      * @param Vtiger_Request $request
      * @return void
      */
@@ -80,6 +30,7 @@ class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
     /**
      * @param Vtiger_Request $request
      * @return void
+     * @throws Exception
      */
     public function EditEventType(Vtiger_Request $request)
     {
@@ -124,7 +75,31 @@ class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
         $response->setResult([
             'success' => $success,
             'message' => vtranslate($message, $module),
-            'record' => $recordInfo
+            'record' => $recordInfo,
+        ]);
+        $response->emit();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function EventInfo(Vtiger_Request $request)
+    {
+        $recordId = (int)$request->get('record_id');
+        $eventTypeId = (int)$request->get('event_type_id');
+
+        $eventType = ITS4YouCalendar_Events_Model::getInstance($eventTypeId);
+
+        if (empty($eventTypeId)) {
+            $eventType->retrieveCalendarData();
+        }
+
+        $eventType->setRecordModel(Vtiger_Record_Model::getInstanceById($recordId));
+
+        $response = new Vtiger_Response();
+        $response->setResult([
+            'info' => $eventType->getRecord(),
+            'success' => true,
         ]);
         $response->emit();
     }
@@ -141,5 +116,31 @@ class ITS4YouCalendar_Events_Action extends Vtiger_Action_Controller
             'success' => true,
         ]);
         $response->emit();
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+
+        if (!empty($mode) && $this->isMethodExposed($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+        }
+    }
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->exposeMethod('Range');
+        $this->exposeMethod('EditEventType');
+        $this->exposeMethod('DeleteEventType');
+        $this->exposeMethod('EventInfo');
     }
 }

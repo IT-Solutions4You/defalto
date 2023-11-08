@@ -2042,11 +2042,6 @@ input[type=checkbox]:checked {
     width: 200px;
 }
 
-.btn + input {
-    margin-left: 5px;
-    /*    margin-top : 3px;*/
-}
-
 /**********************************
 **********Extension Store Styles**********
 **********************************/
@@ -6866,5 +6861,5 @@ a.btnReport:hover {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }

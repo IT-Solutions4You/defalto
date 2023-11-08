@@ -1,0 +1,158 @@
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+.eventTypeClone {
+    display: none !important;
+}
+
+.va-middle {
+    vertical-align: middle;
+}
+
+.va-top {
+    vertical-align: top;
+}
+
+.eventDetail {
+    z-index: 1000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 20px #000;
+    display: none;
+}
+
+.fc-daygrid-event:hover .eventDetail {
+    display: block;
+}
+
+.popover-name {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.popoverTemplate {
+    width:400px;
+    max-width: 80vw;
+    z-index: 10000;
+}
+
+.calendar-popover-container {
+    z-index: 20000;
+}
+
+.bg-default {
+    background: #e4e4e4;
+}
+
+#selected_user_and_groups_images {
+    margin-bottom: 1em;
+}
+
+#selected_user_and_groups_images .selected_image {
+    vertical-align: top;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 5px solid #444;
+    color: #444;
+    background: #fff;
+    margin-right: -10px;
+    position: relative;
+}
+
+#selected_user_and_groups_images .selected_remove {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    background: #ddd;
+    text-align: center;
+    display: none;
+}
+
+#selected_user_and_groups_images .selected_image:hover .selected_remove {
+    display: inline-block;
+}
+
+#selected_user_and_groups_images .remove_selected {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ff0000;
+    padding: 5px;
+    border-radius: 50%;
+}
+
+#selected_user_and_groups_images .selected_image_img {
+    padding: 0;
+}
+
+#selected_user_and_groups_images .selected_image_img img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#selected_user_and_groups_images .selected_image_fa {
+    font-size: 20px;
+    text-align: center;
+    padding: 5px 0;
+}
+
+#selected_user_and_groups_images .selected_image_fa i {
+    height: 30px;
+}
+
+.selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden, .selected_user_and_groups_actions {
+    display: inline-block;
+    cursor: pointer;
+}
+.selected_user_and_groups_toggle * {
+    cursor: pointer;
+}
+
+#selected_user_and_groups_images .selected_image_text {
+    font-size: 18px;
+    font-family: sans-serif;
+    text-align: center;
+    font-weight: bold;
+}
+
+#selected_user_and_groups_images .selected_image_text span {
+    line-height: 40px;
+}
+.fc-h-event {
+    margin: 1px;
+}
+.eventTypeRecord .fc-event-main-frame::before {
+    display: inline;
+    content: "\f133";
+    margin: 2px;
+    font: normal normal normal 12px FontAwesome;
+}
+.eventTypeMeeting .fc-event-main-frame::before {
+    content: "\f0c0";
+}
+.eventTypeCall .fc-event-main-frame::before {
+    content: "\f095";
+}
+.eventTypeEmail .fc-event-main-frame::before {
+    content: "\f0e0";
+}
+.eventTypeReminder .fc-event-main-frame::before {
+    content: "\f0f3";
+}

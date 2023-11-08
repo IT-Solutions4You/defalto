@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -9,6 +10,73 @@
  */
 class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
 {
+    public static function getAddressIds($values): array
+    {
+        $ids = [];
+
+        foreach ($values as $id => $value) {
+            $ids[] = $id . '|' . $value . '|Users';
+        }
+
+        return $ids;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getBody(): string
+    {
+        global $site_URL;
+
+        $recordModel = $this->get('record_model');
+        $recordModuleName = $this->get('record_module_name');
+
+        return sprintf(
+            '%s<br/> %s <a href="%s/%s">%s</a>',
+            $this->getTemplateBody(),
+            vtranslate('LBL_CLICK_HERE_TO_VIEW', $recordModuleName),
+            $site_URL,
+            $recordModel->getDetailViewUrl(),
+            vtranslate('LBL_RECORD', $recordModuleName)
+        );
+    }
+
+    public static function getContactsNames($recordId): string
+    {
+        $adb = PearDatabase::getInstance();
+        $query = 'SELECT * FROM vtiger_cntactivityrel WHERE activityid=?';
+        $result = $adb->pquery($query, [$recordId]);
+        $contactNames = [];
+
+        if ($adb->num_rows($result)) {
+            while ($row = $adb->fetchByAssoc($result)) {
+                $contactId = $row['contactid'];
+                $contactName = Vtiger_Util_Helper::getRecordName($contactId);
+
+                $contactNames[] = $contactName;
+            }
+        }
+
+        return implode(', ', $contactNames);
+    }
+
+    /**
+     * @param Vtiger_Record_Model $record
+     * @return array
+     */
+    public static function getHeaders(Vtiger_Record_Model $record): array
+    {
+        $module = $record->getModule();
+        $headerFields = $module->getHeaderViewFieldsList();
+        $headers = [];
+
+        foreach ($headerFields as $headerField) {
+            $headers[] = ['name' => $headerField->getName(), 'label' => vtranslate($headerField->label, $module->getName())];
+        }
+
+        return $headers;
+    }
+
     public static function getPopupRecords()
     {
         $db = PearDatabase::getInstance();
@@ -41,51 +109,107 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int $record_id
-     * @param int $status
-     * @return void
+     * @return int
+     * @throws Exception
      */
-    public static function updateStatus(int $record_id, int $status = 1)
-    {
-        PearDatabase::getInstance()->pquery(
-            'UPDATE its4you_remindme_popup set status = ? where record_id = ?',
-            [$status, $record_id]
-        );
-    }
-
-    /**
-     * @param int $recordId
-     * @param string $dateTimeStart
-     * @return void
-     */
-    public static function saveRecord(int $recordId, string $dateTimeStart)
+    public static function getReminderFrequency(): int
     {
         $adb = PearDatabase::getInstance();
-        $adb->pquery(
-            'DELETE FROM its4you_remindme_popup WHERE record_id=?',
-            [$recordId]
-        );
-        $adb->pquery(
-            'INSERT INTO its4you_remindme_popup (record_id, datetime_start, status) VALUES (?,?,?)',
-            [$recordId, $dateTimeStart, 0]
-        );
+        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = ? AND handler_file = ?', ['SendReminder', 'cron/SendReminder.service']);
+
+        return (int)$adb->query_result($result, 0, 'frequency');
+    }
+
+    public function getSubject()
+    {
+        $subject = $this->get('subject');
+
+        $dateTime = new DateTimeField($this->get('datetime_start'));
+        $dateTimeInOwnerFormat = $dateTime->getDisplayDateTimeValue($this->get('owner_focus'));
+
+        return vtranslate('Reminder', $this->get('record_module_name')) . ': ' . decode_html($subject) . ' @ ' . $dateTimeInOwnerFormat;
     }
 
     /**
-     * @param Vtiger_Record_Model $record
-     * @return array
+     * @return string
+     * @throws Exception
      */
-    public static function getHeaders(Vtiger_Record_Model $record): array
+    public function getTemplateBody(): string
     {
-        $module = $record->getModule();
-        $headerFields = $module->getHeaderViewFieldsList();
-        $headers = [];
+        $adb = PearDatabase::getInstance();
+        $query = 'SELECT templateid AS template_id FROM vtiger_emakertemplates WHERE subject=? AND module=?';
+        $result = $adb->pquery($query, ['Reminder', $this->get('record_module_name')]);
 
-        foreach ($headerFields as $headerField) {
-            $headers[] = ['name' => $headerField->getName(), 'label' => vtranslate($headerField->label, $module->getName())];
+        if ($adb->num_rows($result)) {
+            $templateId = $adb->query_result($result, 0, 'template_id');
+            $templateLanguage = $this->get('user_focus')->column_field['language'];
+
+            $this->set('template_id', $templateId);
+            $this->set('template_language', $templateLanguage);
+
+            $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $templateLanguage, $this->get('record_module_name'), $this->get('record_id'));
+            $EMAILContentModel->getContent();
+
+            return $EMAILContentModel->getBody();
         }
 
-        return $headers;
+        return '';
+    }
+
+    public static function getTime($value)
+    {
+        $date = new DateTimeField($value);
+        $userFormattedString = $date->getDisplayDate();
+        $timeFormattedString = $date->getDisplayTime();
+        $dBFormattedDate = DateTimeField::convertToDBFormat($userFormattedString);
+
+        return strtotime($dBFormattedDate . ' ' . $timeFormattedString);
+    }
+
+    public function isSendingReady()
+    {
+        $reminderTime = $this->get('reminder_time') * 60;
+        $differenceOfActivityTimeAndCurrentTime = (strtotime($this->get('sending_datetime')) - time());
+
+        return ($differenceOfActivityTimeAndCurrentTime > 0)
+            && (($differenceOfActivityTimeAndCurrentTime <= $reminderTime) || ($differenceOfActivityTimeAndCurrentTime <= $this->get('sending_frequency')));
+    }
+
+    public function retrieveInvitedUsers()
+    {
+        $recordId = $this->get('record_id');
+        $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($recordId);
+        $invitedUsers->retrieveUsers();
+
+        $this->set('invited_users', $invitedUsers->getUsersInfo());
+    }
+
+    public function retrieveRecordModel()
+    {
+        $recordModel = Vtiger_Record_Model::getInstanceById($this->get('record_id'));
+        $recordModuleName = $recordModel->getModuleName();
+
+        $this->set('record_model', $recordModel);
+        $this->set('record_module_name', $recordModuleName);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function retrieveUserFocus()
+    {
+        $ownerId = $this->get('owner_id');
+        $invitedUsersList = array_keys((array)$this->get('invited_users'));
+
+        if (!in_array($ownerId, $invitedUsersList)) {
+            $ownerId = $invitedUsersList[0];
+        }
+
+        $ownerFocus = CRMEntity::getInstance('Users');
+        $ownerFocus->retrieve_entity_info($ownerId, 'Users');
+
+        $this->set('owner_id', $ownerId);
+        $this->set('owner_focus', $ownerFocus);
     }
 
     /**
@@ -111,7 +235,7 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
 		  AND its4you_remindme.reminder_time != 0
 		  AND (its4you_calendar.status is NULL OR its4you_calendar.status NOT IN (?,?))
 		GROUP BY its4you_calendar.its4you_calendar_id';
-        $result = $adb->pquery($query, ['Held','Cancelled']);
+        $result = $adb->pquery($query, ['Held', 'Cancelled']);
 
         if ($adb->num_rows($result)) {
             $reminderFrequency = self::getReminderFrequency();
@@ -135,71 +259,21 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @return int
-     * @throws Exception
+     * @param int $recordId
+     * @param string $dateTimeStart
+     * @return void
      */
-    public static function getReminderFrequency(): int
+    public static function saveRecord(int $recordId, string $dateTimeStart)
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT frequency FROM vtiger_cron_task WHERE name = ? AND handler_file = ?', ['SendReminder', 'cron/SendReminder.service']);
-
-        return (int)$adb->query_result($result, 0, 'frequency');
-    }
-
-    public function retrieveRecordModel()
-    {
-        $recordModel = Vtiger_Record_Model::getInstanceById($this->get('record_id'));
-        $recordModuleName = $recordModel->getModuleName();
-
-        $this->set('record_model', $recordModel);
-        $this->set('record_module_name', $recordModuleName);
-    }
-
-    public function isSendingReady()
-    {
-        $reminderTime = $this->get('reminder_time') * 60;
-        $differenceOfActivityTimeAndCurrentTime = (strtotime($this->get('sending_datetime')) - time());
-
-        return ($differenceOfActivityTimeAndCurrentTime > 0)
-            && (($differenceOfActivityTimeAndCurrentTime <= $reminderTime) || ($differenceOfActivityTimeAndCurrentTime <= $this->get('sending_frequency')));
-    }
-
-    public static function getTime($value)
-    {
-        $date = new DateTimeField($value);
-        $userFormattedString = $date->getDisplayDate();
-        $timeFormattedString = $date->getDisplayTime();
-        $dBFormattedDate = DateTimeField::convertToDBFormat($userFormattedString);
-
-        return strtotime($dBFormattedDate . ' ' . $timeFormattedString);
-    }
-
-    public function retrieveInvitedUsers()
-    {
-        $recordId = $this->get('record_id');
-        $invitedUsers = ITS4YouCalendar_InvitedUsers_Model::getInstance($recordId);
-        $invitedUsers->retrieveUsers();
-
-        $this->set('invited_users', $invitedUsers->getUsersInfo());
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function retrieveUserFocus()
-    {
-        $ownerId = $this->get('owner_id');
-        $invitedUsersList = array_keys((array)$this->get('invited_users'));
-
-        if (!in_array($ownerId, $invitedUsersList)) {
-            $ownerId = $invitedUsersList[0];
-        }
-
-        $ownerFocus = CRMEntity::getInstance('Users');
-        $ownerFocus->retrieve_entity_info($ownerId, 'Users');
-
-        $this->set('owner_id', $ownerId);
-        $this->set('owner_focus', $ownerFocus);
+        $adb->pquery(
+            'DELETE FROM its4you_remindme_popup WHERE record_id=?',
+            [$recordId]
+        );
+        $adb->pquery(
+            'INSERT INTO its4you_remindme_popup (record_id, datetime_start, status) VALUES (?,?,?)',
+            [$recordId, $dateTimeStart, 0]
+        );
     }
 
     public function sendEmail()
@@ -240,73 +314,6 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
         $emailRecord->send();
     }
 
-    public function getSubject()
-    {
-        $subject = $this->get('subject');
-
-        $dateTime = new DateTimeField($this->get('datetime_start'));
-        $dateTimeInOwnerFormat = $dateTime->getDisplayDateTimeValue($this->get('owner_focus'));
-
-        return vtranslate('Reminder', $this->get('record_module_name')) . ': ' . decode_html($subject) . ' @ ' . $dateTimeInOwnerFormat;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getBody(): string
-    {
-        global $site_URL;
-
-        $recordModel = $this->get('record_model');
-        $recordModuleName = $this->get('record_module_name');
-
-        return sprintf(
-            '%s<br/> %s <a href="%s/%s">%s</a>',
-            $this->getTemplateBody(),
-            vtranslate('LBL_CLICK_HERE_TO_VIEW', $recordModuleName),
-            $site_URL,
-            $recordModel->getDetailViewUrl(),
-            vtranslate('LBL_RECORD', $recordModuleName)
-        );
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public function getTemplateBody(): string
-    {
-        $adb = PearDatabase::getInstance();
-        $query = 'SELECT templateid AS template_id FROM vtiger_emakertemplates WHERE subject=? AND module=?';
-        $result = $adb->pquery($query, ['Reminder', $this->get('record_module_name')]);
-
-        if ($adb->num_rows($result)) {
-            $templateId = $adb->query_result($result, 0, 'template_id');
-            $templateLanguage = $this->get('user_focus')->column_field['language'];
-
-            $this->set('template_id', $templateId);
-            $this->set('template_language', $templateLanguage);
-
-            $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $templateLanguage, $this->get('record_module_name'), $this->get('record_id'));
-            $EMAILContentModel->getContent();
-
-            return $EMAILContentModel->getBody();
-        }
-
-        return '';
-    }
-
-    public static function getAddressIds($values): array
-    {
-        $ids = [];
-
-        foreach ($values as $id => $value) {
-            $ids[] = $id . '|' . $value . '|Users';
-        }
-
-        return $ids;
-    }
-
     /**
      * @return void
      */
@@ -325,22 +332,16 @@ class ITS4YouCalendar_Reminder_Model extends Vtiger_Base_Model
         $adb->pquery($query, $params);
     }
 
-    public static function getContactsNames($recordId): string
+    /**
+     * @param int $record_id
+     * @param int $status
+     * @return void
+     */
+    public static function updateStatus(int $record_id, int $status = 1)
     {
-        $adb = PearDatabase::getInstance();
-        $query = 'SELECT * FROM vtiger_cntactivityrel WHERE activityid=?';
-        $result = $adb->pquery($query, [$recordId]);
-        $contactNames = [];
-
-        if ($adb->num_rows($result)) {
-            while ($row = $adb->fetchByAssoc($result)) {
-                $contactId = $row['contactid'];
-                $contactName = Vtiger_Util_Helper::getRecordName($contactId);
-
-                $contactNames[] = $contactName;
-            }
-        }
-
-        return implode(', ', $contactNames);
+        PearDatabase::getInstance()->pquery(
+            'UPDATE its4you_remindme_popup set status = ? where record_id = ?',
+            [$status, $record_id]
+        );
     }
 }

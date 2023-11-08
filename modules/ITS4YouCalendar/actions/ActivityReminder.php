@@ -10,55 +10,6 @@
 
 class ITS4YouCalendar_ActivityReminder_Action extends Vtiger_Action_Controller
 {
-    public function __construct()
-    {
-        $this->exposeMethod('getReminders');
-        $this->exposeMethod('postpone');
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return array
-     */
-    public function requiresPermission(Vtiger_Request $request): array
-    {
-        $permissions = parent::requiresPermission($request);
-
-        if (vtlib_isModuleActive($request->getModule())) {
-            $mode = $request->getMode();
-            if (!empty($mode)) {
-                switch ($mode) {
-                    case 'getReminders':
-                        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
-                        break;
-
-                    case 'postpone':
-                        $permissions[] = ['module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record'];
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-        return $permissions;
-    }
-
-    /**
-     * @param Vtiger_Request $request
-     * @return void
-     * @throws Exception
-     */
-    public function process(Vtiger_Request $request)
-    {
-        $mode = $request->getMode();
-
-        if (!empty($mode) && $this->isMethodExposed($mode)) {
-            $this->invokeExposedMethod($mode, $request);
-        }
-    }
-
     /**
      * @param Vtiger_Request $request
      * @return void
@@ -92,5 +43,54 @@ class ITS4YouCalendar_ActivityReminder_Action extends Vtiger_Action_Controller
     public function postpone(Vtiger_Request $request)
     {
         ITS4YouCalendar_Reminder_Model::updateStatus((int)$request->get('record'), 0);
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
+    public function process(Vtiger_Request $request)
+    {
+        $mode = $request->getMode();
+
+        if (!empty($mode) && $this->isMethodExposed($mode)) {
+            $this->invokeExposedMethod($mode, $request);
+        }
+    }
+
+    /**
+     * @param Vtiger_Request $request
+     * @return array
+     */
+    public function requiresPermission(Vtiger_Request $request): array
+    {
+        $permissions = parent::requiresPermission($request);
+
+        if (vtlib_isModuleActive($request->getModule())) {
+            $mode = $request->getMode();
+            if (!empty($mode)) {
+                switch ($mode) {
+                    case 'getReminders':
+                        $permissions[] = ['module_parameter' => 'module', 'action' => 'DetailView'];
+                        break;
+
+                    case 'postpone':
+                        $permissions[] = ['module_parameter' => 'module', 'action' => 'EditView', 'record_parameter' => 'record'];
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return $permissions;
+    }
+
+    public function __construct()
+    {
+        $this->exposeMethod('getReminders');
+        $this->exposeMethod('postpone');
     }
 }
