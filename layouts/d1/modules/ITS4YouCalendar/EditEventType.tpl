@@ -57,9 +57,7 @@
                                 {vtranslate('LBL_COLOR', $QUALIFIED_MODULE)}
                             </div>
                             <div class="col-lg fieldValue">
-                                <input type="text" name="event_type_color" id="event_type_color" class="form-control inputElement" value="{$EVENT_TYPE_RECORD->get('color')}">
-                                <br>
-                                <div class="event_type_color_select"></div>
+                                <input type="color" name="event_type_color" id="event_type_color" class="form-control form-control-color" value="{$EVENT_TYPE_RECORD->get('color')}" required>
                             </div>
                         </div>
                     </div>

@@ -20,11 +20,11 @@ class ITS4YouCalendar_InvitedUsers_Model extends Vtiger_Base_Model
     public static function getAccessibleUsers()
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
-        $users = $currentUser->getAccessibleUsers();
+        $values = $currentUser->getAccessibleUsers() + $currentUser->getAccessibleGroups();
 
-        unset($users[$currentUser->getId()]);
+        unset($values[$currentUser->getId()]);
 
-        return $users;
+        return $values;
     }
 
     /**

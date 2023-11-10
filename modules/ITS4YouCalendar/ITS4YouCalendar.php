@@ -139,6 +139,23 @@ class ITS4YouCalendar extends CRMEntity
     {
         $recordId = $this->id;
         $invitedUsers = explode(';', $this->column_fields['invite_users']);
+        $users = [];
+
+        if (!empty($invitedUsers)) {
+            $groupsModel = ITS4YouCalendar_Groups_Model::getInstance();
+
+            foreach ($invitedUsers as $invitedUser) {
+                if (Settings_Groups_Record_Model::getInstance($invitedUser)) {
+                    $groupUsers = array_keys($groupsModel->getUsersList($invitedUser));
+                } else {
+                    $groupUsers = [$invitedUser];
+                }
+
+                $users = array_merge($users, $groupUsers);
+            }
+        }
+
+        $invitedUsers = $users;
 
         $invitedUsersModel = ITS4YouCalendar_InvitedUsers_Model::getInstance($recordId);
         $invitedUsersModel->setUsers($invitedUsers);

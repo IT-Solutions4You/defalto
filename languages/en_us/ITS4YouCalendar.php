@@ -87,8 +87,8 @@ $languageStrings = array(
     'Not Held' => 'Not Held',
     'Medium' => 'Medium',
     'LBL_CHANGE_OWNER' => 'Change Owner',
-    'LBL_CALENDAR_VIEW' => 'My Calendar',
-    'LBL_SHARED_CALENDAR' => 'Shared Calendar',
+    'LBL_CALENDAR_VIEW' => 'My',
+    'LBL_SHARED_CALENDAR' => 'Shared',
     'LBL_DAY0' => 'Sunday',
     'LBL_DAY1' => 'Monday',
     'LBL_DAY2' => 'Tuesday',
@@ -196,6 +196,9 @@ $languageStrings = array(
     'UsersByGroups' => 'Users by group',
     'LBL_SHOW_ALL' => 'Show all',
     'LBL_INTEGRATION' => 'Integration',
+    'LBL_CALENDARS' => 'Calendars',
+    'LBL_TEAM_CALENDAR' => 'Teams',
+    'LBL_ADD_CALENDAR' => 'Add Calendar',
 );
 
 $jsLanguageStrings = array(

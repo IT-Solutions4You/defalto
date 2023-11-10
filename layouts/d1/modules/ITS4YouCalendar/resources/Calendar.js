@@ -296,7 +296,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     registerEditEventModal: function () {
         const self = this;
 
-        $('.eventTypeContainer').on('click', '.editEventType', function () {
+        $('#CalendarFilter').on('click', '.editEventType', function () {
             const button = $(this),
                 params = {
                     module: app.getModuleName(),
@@ -358,7 +358,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                             eventTypeIdElements = eventTypeElement.find('.eventTypeId');
 
                             eventTypeElement.removeClass('eventTypeClone');
-                            eventTypeElement.find('.eventTypeName').text(eventType['name']);
+                            eventTypeElement.find('.eventTypeName').html(eventType['name']);
                             eventTypeIdElements.val(eventTypeId);
 
                             $('.eventTypeContainer').append(eventTypeElement);
@@ -466,10 +466,9 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     },
     registerFieldsChange: function () {
         const self = this,
-            form = $('#CalendarFilter'),
-            container = $('#CalendarContainer');
+            form = $('#CalendarFilter');
 
-        container.on('change', '#field_users_groups', function () {
+        form.on('change', '#field_users_groups', function () {
             self.retrieveEventsRange();
         });
 
@@ -485,8 +484,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     registerMassSelect: function () {
         const self = this;
 
-        self.registerMassSelectClick('.massSelectEventType', '.fieldEventType');
-        self.registerMassSelectClick('.massSelectCalendarType', '.fieldCalendarType');
+        self.registerMassSelectClick('.massSelectCalendars', '.fieldCalendarsType');
     },
     registerMassSelectClick: function (massSelect, fieldType) {
         const self = this;
@@ -685,20 +683,32 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
     },
     registerSelectUsers: function () {
         const self = this,
-            actionsContainer = $('.selected_user_and_groups_actions'),
             tabsContainer = $('#users_groups_tabs'),
             selectedGroup = self.getGroupSelected();
 
         if (selectedGroup && selectedGroup.length) {
-            let selectedUser = self.getUserSelected();
+            let selectedUser = self.getUserSelected(),
+                selectedGroupLength = selectedGroup.length;
 
-            if (!(1 === selectedGroup.length && selectedGroup[0] === selectedUser[0])) {
-                self.setUsersGroups(selectedGroup);
-                self.setButtonActive(tabsContainer.find('[data-name="' + selectedGroup[0] + '"]'));
+            if (selectedGroupLength) {
+                let firstValue = selectedGroup[0],
+                    firstType = firstValue.split('::::')[0]
+
+                if ('Groups' === firstType) {
+                    tabsContainer.find('select.select_group').val(firstValue);
+
+                    self.setButtonActive(tabsContainer.find('.select_groups'));
+                } else if (1 < selectedGroupLength) {
+                    self.setButtonActive(tabsContainer.find('.select_users'));
+                }
+
+                if (!(1 === selectedGroupLength && selectedGroup[0] === selectedUser[0])) {
+                    self.setUsersGroups(selectedGroup);
+                }
             }
         }
 
-        actionsContainer.on('click', '.select_users_and_groups', function () {
+        tabsContainer.on('click', '.select_users_and_groups', function () {
             const params = {
                 module: app.getModuleName(),
                 view: 'Calendar',
@@ -734,13 +744,20 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         });
 
         tabsContainer.on('click', '.select_group', function () {
-            let buttonElement = $(this),
-                buttonData = buttonElement.data();
+            let element = $(this),
+                data = element.data();
 
-            if (buttonData['values'] && buttonData['values'].length) {
-                self.setUsersGroups(buttonData['values']);
-                self.setButtonActive(buttonElement);
+            if (data['values'] && data['values'].length) {
+                self.setUsersGroups(data['values']);
             }
+        });
+
+        tabsContainer.on('click', '.select_groups', function () {
+            self.setButtonActive($(this));
+
+            let selectValue = tabsContainer.find('select.select_group').val();
+
+            tabsContainer.find('option.select_group[value="' + selectValue + '"]').trigger('click');
         });
     },
     registerSelectUsersGroupsButton: function () {
@@ -827,6 +844,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             ],
             calendarElement = document.getElementById('calendar'),
             calendarConfig = {
+                themeSystem: 'bootstrap5',
                 dayHeaderContent: function (arg) {
                     return dayNamesShort[arg.date.getDay()]
                 },
@@ -840,12 +858,13 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                     'day': app.vtranslate('LBL_DAY'),
                     'listWeek': app.vtranslate('LBL_AGENDA')
                 },
+                weekText: '',
                 allDayText: app.vtranslate('LBL_ALL_DAY'),
                 editable: true,
                 selectable: true,
                 timeZone: $('#timezone').val(),
                 firstDay: $('#day_of_week').val(),
-                height: 'calc(100vh - 250px)',
+                height: '100%',
                 initialView: $('#calendar_view').val(),
                 eventDisplay: 'block',
                 headerToolbar: {
@@ -856,6 +875,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 scrollTime: $('#start_hour').val() + ':00',
                 expandRows: false,
                 dayMaxEventRows: true,
+                weekNumbers: true,
                 slotDuration: slotDuration['slotDuration'],
                 slotLabelInterval: slotDuration['slotLabelInterval'],
                 slotLabelFormat: function (info) {
@@ -1091,8 +1111,24 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
         }
     },
     setButtonActive: function (buttonElement) {
-        $('#users_groups_tabs .fc-button-active').removeClass('fc-button-active');
-        buttonElement.addClass('fc-button-active');
+        let tabsContainer = $('#users_groups_tabs'),
+            groupsActions = tabsContainer.find('.select_groups_actions'),
+            usersActions = tabsContainer.find('.select_users_actions');
+
+        tabsContainer.find('.active').removeClass('active');
+
+        buttonElement.addClass('active');
+
+        groupsActions.addClass('hide');
+        usersActions.addClass('hide');
+
+        if(buttonElement.is('.select_users')) {
+            usersActions.removeClass('hide');
+        }
+
+        if (buttonElement.is('.select_groups')) {
+            groupsActions.removeClass('hide');
+        }
     },
     setCalendarEvent: function (value) {
         let self = this,
@@ -1218,7 +1254,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             index = 0;
 
         $.each(selectUsers, function (userName, imageInfo) {
-            if (index < 10) {
+            if (index < 20) {
                 appendElement = visibleElement;
                 imagesPlusElement.addClass('hide');
             } else {
@@ -1230,9 +1266,9 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             }
 
             if (imageInfo['image']) {
-                appendElement.append('<div class="selected_image selected_image_img" title="' + imageInfo['name'] + '" style="border-color: ' + imageInfo['border'] + ';"><div class="selected_remove" data-remove-user="' + imageInfo['id'] + '"><i class="fa fa-close"></i></div><img src="' + imageInfo['image'] + '" /></div>');
+                appendElement.append('<div class="selected_image selected_image_img py-2 border rounded row mb-2 text-truncate"><div class="col-auto pe-0"><img class="selected_img" src="' + imageInfo['image'] + '" /></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
             } else {
-                appendElement.append('<div class="selected_image selected_image_text" title="' + imageInfo['name'] + '" style="border-color: ' + imageInfo['border'] + ';"><div class="selected_remove" data-remove-user="' + imageInfo['id'] + '"><i class="fa fa-close"></i></div><span>' + imageInfo['label'] + '</span></div>');
+                appendElement.append('<div class="selected_image selected_image_text py-2 border rounded row mb-2"><div class="col-auto pe-0"><i class="selected_i rounded-circle bg-opacity-10 bg-primary text-center fa fa-user"></i></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
             }
 
             index++;
