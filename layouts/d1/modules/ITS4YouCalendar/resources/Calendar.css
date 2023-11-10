@@ -9,6 +9,12 @@
 .eventTypeClone {
     display: none !important;
 }
+.text-inherit {
+    color: inherit !important;
+}
+.h-main-max {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
 
 .va-middle {
     vertical-align: middle;
@@ -58,83 +64,46 @@
 }
 
 #selected_user_and_groups_images .selected_image {
-    vertical-align: top;
-    display: inline-block;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 5px solid #444;
-    color: #444;
-    background: #fff;
-    margin-right: -10px;
-    position: relative;
 }
 
 #selected_user_and_groups_images .selected_remove {
-    position: absolute;
-    right: 0;
-    top: -10px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    font-size: 14px;
-    background: #ddd;
-    text-align: center;
-    display: none;
 }
 
 #selected_user_and_groups_images .selected_image:hover .selected_remove {
-    display: inline-block;
 }
 
 #selected_user_and_groups_images .remove_selected {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #ff0000;
-    padding: 5px;
-    border-radius: 50%;
-}
-
-#selected_user_and_groups_images .selected_image_img {
-    padding: 0;
-}
-
-#selected_user_and_groups_images .selected_image_img img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-#selected_user_and_groups_images .selected_image_fa {
-    font-size: 20px;
-    text-align: center;
-    padding: 5px 0;
-}
-
-#selected_user_and_groups_images .selected_image_fa i {
-    height: 30px;
 }
 
 .selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden, .selected_user_and_groups_actions {
-    display: inline-block;
-    cursor: pointer;
 }
 .selected_user_and_groups_toggle * {
-    cursor: pointer;
 }
 
 #selected_user_and_groups_images .selected_image_text {
-    font-size: 18px;
-    font-family: sans-serif;
-    text-align: center;
-    font-weight: bold;
 }
 
-#selected_user_and_groups_images .selected_image_text span {
-    line-height: 40px;
+#selected_user_and_groups_images .selected_img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
 }
+
+#selected_user_and_groups_images .selected_span {
+    display: inline-block;
+    line-height: 2rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+#selected_user_and_groups_images .selected_i {
+    font-size: 1rem;
+    display: inline-block;
+    line-height: 2rem;
+    height: 2rem;
+    width: 2rem;
+}
+
 .fc-h-event {
     margin: 1px;
 }

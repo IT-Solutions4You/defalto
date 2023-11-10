@@ -29,7 +29,8 @@
     "setasign/fpdi": "^2.1",
     "simplehtmldom/simplehtmldom": "*",
     "smarty/smarty": "4.*",
-    "twbs/bootstrap": "*"
+    "twbs/bootstrap": "*",
+    "twbs/bootstrap-icons": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "1.9.*",

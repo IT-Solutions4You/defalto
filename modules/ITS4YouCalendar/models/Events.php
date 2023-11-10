@@ -13,38 +13,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     /**
      * @var array
      */
-    public static array $defaultEventTypes = [
-        [
-            'module' => 'Potentials',
-            'fields' => ['closingdate'],
-            'color' => '#AA6705',
-        ],
-        [
-            'module' => 'Contacts',
-            'fields' => ['support_end_date'],
-            'color' => '#953B39',
-        ],
-        [
-            'module' => 'Contacts',
-            'fields' => ['birthday'],
-            'color' => '#545252',
-        ],
-        [
-            'module' => 'Invoice',
-            'fields' => ['duedate'],
-            'color' => '#87865D',
-        ],
-        [
-            'module' => 'Project',
-            'fields' => ['startdate', 'targetenddate'],
-            'color' => '#C71585',
-        ],
-        [
-            'module' => 'ProjectTask',
-            'fields' => ['startdate', 'enddate'],
-            'color' => '#3788d8',
-        ],
-    ];
+    public static array $defaultEventTypes = [];
     public static $defaultModule = 'ITS4YouCalendar';
     /**
      * @var array
@@ -54,6 +23,11 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
      * @var array
      */
     public static array $popoverDisabledFields = [
+        'Default' => [
+            'description',
+            'assigned_user_id',
+            'account_id',
+        ],
         'ITS4YouCalendar' => [
             'datetime_start',
             'datetime_end',
@@ -107,12 +81,8 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     {
         $recordModel = $this->getRecordModel();
 
-        if ($recordModel) {
-            if ($this->useUserColors) {
-                return ITS4YouCalendar_UsersGroups_Model::getBackground($recordModel->get('assigned_user_id'));
-            } elseif ($this->isCalendar()) {
-                return $this->getFieldColor('calendar_type', $recordModel->get('calendar_type'));
-            }
+        if ($recordModel && $this->isCalendar()) {
+            return $this->getFieldColor('calendar_type', $recordModel->get('calendar_type'));
         }
 
         return $this->get('color');
@@ -256,6 +226,18 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         return $result;
     }
 
+    public static function getUserStyles()
+    {
+        $hour = date('H:00');
+
+        return sprintf(
+            '.fc-timegrid-slot[data-time*="%s"] { border-top: 2px solid #5e81f4 !important; }' . "\n\r" .
+            '.fc-scrollgrid-shrink[data-time*="%s"] { color: #5e81f4; font-weight: 900; }' . "\n\r",
+            $hour,
+            $hour
+        );
+    }
+
     /**
      * @return array
      */
@@ -270,7 +252,9 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             $instance->setData($eventType);
             $instance->set('id', $eventId);
 
-            $instances[] = $instance;
+            if ($instance->isModuleActive()) {
+                $instances[] = $instance;
+            }
         }
 
         return $instances;
@@ -484,20 +468,20 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     public function getName(): string
     {
         $module = $this->getModule();
-        $name = vtranslate($module, $module) . ' ';
         $moduleModel = Vtiger_Module_Model::getInstance($module);
+        $fields = [];
 
         if ($moduleModel) {
             foreach ($this->get('fields') as $field) {
                 $fieldModel = Vtiger_Field_Model::getInstance($field, $moduleModel);
 
                 if ($fieldModel) {
-                    $name .= $fieldModel->get('label') . ', ';
+                    $fields[] = $fieldModel->get('label');
                 }
             }
         }
 
-        return trim($name, ', ');
+        return implode(' - ', $fields) . '<div class="small">(' . vtranslate($module, $module) . ')</div>';
     }
 
     /**
@@ -687,6 +671,13 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         return true;
     }
 
+    public function isModuleActive(): bool
+    {
+        $moduleName = $this->getModule();
+
+        return getTabid($moduleName) && vtlib_isModuleActive($moduleName);
+    }
+
     /**
      * @param string $fieldName
      * @param string $moduleName
@@ -694,6 +685,10 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
      */
     public function isPopoverDisabledField(string $fieldName, string $moduleName): bool
     {
+        if (in_array($fieldName, self::$popoverDisabledFields['Default'])) {
+            return true;
+        }
+
         return isset(self::$popoverDisabledFields[$moduleName]) && in_array($fieldName, self::$popoverDisabledFields[$moduleName]);
     }
 

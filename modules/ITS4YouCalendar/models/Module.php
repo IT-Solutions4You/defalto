@@ -112,7 +112,7 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         return array_merge($basicLinks, parent::getModuleBasicLinks());
     }
 
-    public function getModuleIcon($type = '')
+    public function getModuleIcon($height = '', $type = '')
     {
         $icons = [
             'Meeting' => 'fa-users',
@@ -122,10 +122,10 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
         ];
 
         if (!empty($icons[$type])) {
-            return '<i style="color: #90989c; height: 50px; width: 50px; line-height: 50px; font-size: 23px;" class="fa ' . $icons[$type] . '"></i>';
+            return sprintf('<i style="font-size: %s;" class="fa %s"></i>', $height, $icons[$type]);
         }
 
-        return parent::getModuleIcon();
+        return sprintf('<i style="font-size: %s" class="fa-solid fa-calendar" title=""></i>', $height);
     }
 
     /**

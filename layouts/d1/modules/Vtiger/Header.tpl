@@ -18,6 +18,7 @@
 		<link type='text/css' rel='stylesheet' href='{vresource_url("layouts/d1/lib/todc/css/todc-bootstrap.min.css")}'>
 		*}
 		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap/dist/css/bootstrap.min.css')}'>
+		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/twbs/bootstrap-icons/font/bootstrap-icons.min.css')}'>
 
 		<link type='text/css' rel='stylesheet' href='{vresource_url('layouts/d1/lib/font-awesome/css/font-awesome.min.css')}'>
 		<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/components/font-awesome/css/all.min.css')}'>

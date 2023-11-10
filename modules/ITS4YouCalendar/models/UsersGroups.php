@@ -156,6 +156,7 @@ class ITS4YouCalendar_UsersGroups_Model extends Vtiger_Base_Model
             }
 
             $tabs['Groups::::' . $groupId] = [
+                'id' => $groupId,
                 'name' => $groupName,
                 'values' => $groupWithUsers,
             ];
