@@ -846,7 +846,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             calendarConfig = {
                 themeSystem: 'bootstrap5',
                 dayHeaderContent: function (arg) {
-                    return dayNamesShort[arg.date.getDay()]
+                    return dayNames[arg.date.getDay()]
                 },
                 titleFormat: function (arg) {
                     return monthNames[arg.date['month']] + ' ' + arg.date['year'];
@@ -870,7 +870,15 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,listRecords'
+                },
+                customButtons: {
+                    listRecords: {
+                        text: app.vtranslate('List'),
+                        click: function() {
+                            window.location = 'index.php?module=ITS4YouCalendar&view=List'
+                        }
+                    },
                 },
                 scrollTime: $('#start_hour').val() + ':00',
                 expandRows: false,
@@ -914,7 +922,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                     },
                     timeGridWeek: {
                         dayHeaderContent: function (arg) {
-                            return dayNamesShort[arg.date.getDay()] + ' ' + arg.date.getDate();
+                            return dayNames[arg.date.getDay()] + ' ' + arg.date.getDate();
                         },
                         titleFormat: function (arg) {
                             arg.endMonth = '';
@@ -923,14 +931,14 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                                 arg.endMonth = monthNames[arg.end.month] + ' ';
                             }
 
-                            return monthNames[arg.start.month] + ' ' + arg.start.day + arg.defaultSeparator + arg.endMonth + arg.end.day + ' ' + arg.date.year;
+                            return arg.start.day + arg.defaultSeparator + arg.endMonth + arg.end.day + ' ' + monthNames[arg.start.month] + ' ' + arg.date.year;
                         },
                         dayMaxEventRows: 4,
                         hiddenDays: hideDays,
                     },
                     timeGridDay: {
                         titleFormat: function (arg) {
-                            return monthNames[arg.date['month']] + ' ' + arg.date.day + ', ' + arg.date['year'];
+                            return arg.date.day + ' ' +monthNames[arg.date['month']] + ' ' + arg.date['year'];
                         },
                         dayMaxEventRows: 4,
                     },
@@ -942,7 +950,7 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
                                 arg.endMonth = monthNames[arg.end.month] + ' ';
                             }
 
-                            return monthNames[arg.start.month] + ' ' + arg.start.day + arg.defaultSeparator + arg.endMonth + arg.end.day + ' ' + arg.date.year;
+                            return arg.start.day + arg.defaultSeparator + arg.endMonth + arg.end.day + ' ' + monthNames[arg.start.month] + ' ' + arg.date.year;
                         },
                         hiddenDays: hideDays,
                     }
