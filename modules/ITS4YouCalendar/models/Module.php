@@ -229,4 +229,15 @@ class ITS4YouCalendar_Module_Model extends Vtiger_Module_Model
 
         return true;
     }
+
+    public static function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
+    {
+        if ('ITS4YouCalendar' === $sourceModule && 'invite_users' === $field) {
+            $search = "its4you_calendar.invite_users = 'replace_invite_users'";
+            $replace = sprintf("its4you_calendar.its4you_calendar_id IN (SELECT record_id FROM its4you_invited_users WHERE user_id='%s')", (int)$record);
+            $listQuery = str_replace($search, $replace, $listQuery);
+        }
+
+        return $listQuery;
+    }
 }

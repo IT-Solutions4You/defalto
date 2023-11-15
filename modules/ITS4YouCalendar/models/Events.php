@@ -27,6 +27,9 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
             'description',
             'assigned_user_id',
             'account_id',
+            'contact_id',
+            'location',
+            'invite_users',
         ],
         'ITS4YouCalendar' => [
             'datetime_start',
@@ -575,6 +578,7 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
         $pagingModel->set('page', 1);
         $pagingModel->set('limit', 1000);
 
+        /** @var Vtiger_ListView_Model $this->listViewModel */
         $this->retrieveListViewModel();
         $this->retrieveDateConditions();
         $this->retrieveFilterConditions();
@@ -817,9 +821,12 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
     public function retrieveFilterConditions()
     {
         $filter = $this->get('filter');
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        /** @var EnhancedQueryGenerator $queryGenerator */
+        $queryGenerator = $this->listViewModel->get('query_generator');
 
         if ($this->isCalendar() && !empty($filter['calendar_type'])) {
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(['search_field' => 'calendar_type', 'search_text' => implode(',', $filter['calendar_type']), 'operator' => 'e']);
+            $queryGenerator->addUserSearchConditions(['search_field' => 'calendar_type', 'search_text' => implode(',', $filter['calendar_type']), 'operator' => 'e']);
         }
 
         if (!empty($filter['users_groups'])) {
@@ -836,8 +843,22 @@ class ITS4YouCalendar_Events_Model extends Vtiger_Base_Model
                 }
             }
 
-            $this->useUserColors = 1 < count($selectedUsers);
-            $this->listViewModel->get('query_generator')->addUserSearchConditions(['search_field' => 'assigned_user_id', 'search_text' => implode(',', $searchUsers), 'operator' => 'c']);
+            if ($queryGenerator->conditionInstanceCount > 0) {
+                $queryGenerator->startGroup($queryGenerator::$AND);
+            } else {
+                $queryGenerator->startGroup('');
+            }
+
+            $queryGenerator->addCondition('assigned_user_id', implode(',', $searchUsers), 'c');
+
+            if ($this->isCalendar() && 1 === count($selectedUsers) && $selectedUsers[0] === decode_html('Users::::' . $currentUser->getName())) {
+                $queryGenerator->addCondition('invite_users', 'replace_invite_users', 'e', $queryGenerator::$OR);
+                $this->listViewModel->set('src_module', 'ITS4YouCalendar');
+                $this->listViewModel->set('src_field', 'invite_users');
+                $this->listViewModel->set('src_record', $currentUser->getId());
+            }
+
+            $queryGenerator->endGroup();
         }
     }
 
