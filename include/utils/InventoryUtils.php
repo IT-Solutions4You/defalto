@@ -1164,10 +1164,10 @@ function getBaseConversionRateForProduct($productid, $mode='edit', $module='Prod
 
 	if ($mode == 'edit') {
 		if ($module == 'Services') {
-			$sql = "select conversion_rate from vtiger_service inner join vtiger_currency_info
+			$sql = "select vtiger_service.conversion_rate from vtiger_service inner join vtiger_currency_info
 					on vtiger_service.currency_id = vtiger_currency_info.id where vtiger_service.serviceid=?";
 		} else {
-			$sql = "select conversion_rate from vtiger_products inner join vtiger_currency_info
+			$sql = "select vtiger_products.conversion_rate from vtiger_products inner join vtiger_currency_info
 					on vtiger_products.currency_id = vtiger_currency_info.id where vtiger_products.productid=?";
 		}
 		$params = array($productid);
