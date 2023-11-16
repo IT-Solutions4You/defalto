@@ -19,6 +19,7 @@ if (!class_exists('Migration_20231115150055')) {
              $this->db->query('ALTER TABLE `vtiger_modtracker_basic` ADD INDEX(`whodid`)');
              $this->db->query('ALTER TABLE `vtiger_modtracker_basic` ADD INDEX(`module`)');
              $this->db->query('ALTER TABLE `vtiger_modtracker_basic` ADD INDEX(`whodid`, `module`)');
+             $this->db->query('ALTER TABLE `vtiger_modtracker_basic` ADD INDEX(`crmid`, `module`)');
 
              $this->db->query('ALTER TABLE `vtiger_shorturls` CHANGE `handler_data` `handler_data` TEXT');
         }
