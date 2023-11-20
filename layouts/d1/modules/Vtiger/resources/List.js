@@ -1910,8 +1910,6 @@ Vtiger.Class("Vtiger_List_Js", {
 	registerDeleteRecordClickEvent: function () {
 		let thisInstance = this;
 
-		console.log('registerDeleteRecordClickEvent');
-
 		$('#page').on('click', '.deleteRecordButton', function (e) {
 			console.log('registerDeleteRecordClickEvent', 'click');
 
