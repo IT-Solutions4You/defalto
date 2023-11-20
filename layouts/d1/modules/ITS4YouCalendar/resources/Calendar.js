@@ -743,7 +743,13 @@ Vtiger_Index_Js('ITS4YouCalendar_Calendar_Js', {
             self.setButtonActive($(this));
         });
 
-        tabsContainer.on('click', '.select_group', function () {
+        tabsContainer.on('change', 'select.select_group', function () {
+            let selectValue = $(this).val();
+
+            tabsContainer.find('option.select_group[value="' + selectValue + '"]').trigger('click');
+        });
+
+        tabsContainer.on('click', 'option.select_group', function () {
             let element = $(this),
                 data = element.data();
 
