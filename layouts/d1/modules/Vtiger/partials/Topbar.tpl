@@ -182,11 +182,11 @@
                         </div>
                     </li>
                     {assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
-                    {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('ITS4YouCalendar')}
+                    {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Appointments')}
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         <li class="me-2">
                             <div>
-                                <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn text-secondary border-secondary" title="{vtranslate('ITS4YouCalendar','ITS4YouCalendar')}" aria-hidden="true">
+                                <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn text-secondary border-secondary" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
                                     <i class="fa fa-calendar"></i>
                                 </a>
                             </div>

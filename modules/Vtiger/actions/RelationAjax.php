@@ -108,7 +108,7 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 
         if (!empty($recurringEditMode) && $recurringEditMode != 'current') {
             foreach ($relatedRecordIdList as $relatedRecordId) {
-                $recurringRecordsList = ITS4YouCalendar_Recurrence_Model::getRecurringRecordsList($relatedRecordId);
+                $recurringRecordsList = Appointments_Recurrence_Model::getRecurringRecordsList($relatedRecordId);
                 $childRecords = [];
 
                 foreach ($recurringRecordsList as $parent => $children) {

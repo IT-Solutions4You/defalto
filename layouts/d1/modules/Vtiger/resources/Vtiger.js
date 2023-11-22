@@ -247,7 +247,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 		app.request.post({
 			'data': {
-				'module': 'ITS4YouCalendar',
+				'module': 'Appointments',
 				'action': 'ActivityReminder',
 				'mode': 'getReminders'
 			}
@@ -295,7 +295,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 		reminderPostpone.on('click', function (e) {
 			app.request.post({
 				'data': {
-					'module': 'ITS4YouCalendar',
+					'module': 'Appointments',
 					'action': 'ActivityReminder',
 					'mode': 'postpone',
 					'record': record.id
