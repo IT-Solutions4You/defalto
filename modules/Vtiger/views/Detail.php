@@ -23,6 +23,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showRelatedList');
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('getActivities');
+		$this->exposeMethod('getEvents');
 		$this->exposeMethod('showRelatedRecords');
         $this->exposeMethod('DetailSharingRecord');
 	}
@@ -607,7 +608,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
      */
     public function getActivities(Vtiger_Request $request)
     {
-        $activitiesModuleName = 'ITS4YouCalendar';
+        $activitiesModuleName = 'Appointments';
         $activitiesModule = Vtiger_Module_Model::getInstance($activitiesModuleName);
         $parentField = $activitiesModule->getField('parent_id');
         $parentModules = array_merge($parentField->getReferenceList(), ['Accounts', 'Contacts']);
@@ -711,5 +712,47 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
         $viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
         $viewer->view('DetailSharingRecord.tpl', $moduleName);
+    }
+
+    public function getEvents(Vtiger_Request $request)
+    {
+        $activitiesModuleName = 'Appointments';
+        $activitiesModule = Vtiger_Module_Model::getInstance($activitiesModuleName);
+        $parentField = $activitiesModule->getField('parent_id');
+        $parentModules = array_merge($parentField->getReferenceList(), ['Accounts', 'Contacts']);
+        $currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
+        if ($currentUserPrivilegesModel->hasModulePermission($activitiesModule->getId()) && in_array($request->getModule(), $parentModules)) {
+            $moduleName = $request->getModule();
+            $recordId = $request->get('record');
+
+            $pageNumber = $request->get('page');
+            if (empty ($pageNumber)) {
+                $pageNumber = 1;
+            }
+            $pagingModel = new Vtiger_Paging_Model();
+            $pagingModel->set('page', $pageNumber);
+            $pagingModel->set('limit', 10);
+
+            if (!$this->record) {
+                $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
+            }
+            $recordModel = $this->record->getRecord();
+            $moduleModel = $recordModel->getModule();
+
+            $relatedActivities = $moduleModel->getCalendarEvents('', $pagingModel, 'all', $recordId);
+
+            $viewer = $this->getViewer($request);
+            $viewer->assign('RECORD', $recordModel);
+            $viewer->assign('MODULE_NAME', $moduleName);
+            $viewer->assign('PAGING_MODEL', $pagingModel);
+            $viewer->assign('PAGE_NUMBER', $pageNumber);
+            $viewer->assign('ACTIVITIES', $relatedActivities);
+            $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
+
+            return $viewer->view('RelatedEvents.tpl', $moduleName, true);
+        }
+
+        return '';
     }
 }

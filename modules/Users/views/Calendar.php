@@ -139,7 +139,7 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 				$fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
 			}
 
-			$calendarModuleModel = Vtiger_Module_Model::getInstance('ITS4YouCalendar');
+			$calendarModuleModel = Vtiger_Module_Model::getInstance('Appointments');
 			$eventFields = array('defaulteventstatus' => 'calendar_status', 'defaultactivitytype' => 'calendar_type');
 
             foreach($eventFields as $userField => $eventField) {
