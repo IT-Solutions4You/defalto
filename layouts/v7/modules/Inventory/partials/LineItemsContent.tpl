@@ -143,7 +143,7 @@
 			<input type="hidden" name="{$margin}" value="{if $data.$margin}{$data.$margin}{else}0{/if}"></span>
 			<span class="margin pull-right" style="display:none">{if $data.$margin}{$data.$margin}{else}0{/if}</span>
 		{/if}
-		{if $MODULE neq 'PurchaseOrder'}
+		{if $MODULE neq 'PurchaseOrder' && $MODULE neq 'Quotes'}
 			<br>
 			<span class="stockAlert redColor {if $data.$qty <= $data.$qtyInStock}hide{/if}" >
 				{vtranslate('LBL_STOCK_NOT_ENOUGH',$MODULE)}
