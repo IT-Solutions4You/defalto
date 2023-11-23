@@ -552,6 +552,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             }
         }
 
+        if ($record['start'] === $record['end']) {
+            $recordModel->set('is_all_day', 1);
+        }
+
         if (1 === (int)$recordModel->get('is_all_day')) {
             $record['allDay'] = 1;
             $record['end'] = date('Y-m-d', strtotime($record['end']) + 86400);
