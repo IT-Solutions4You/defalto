@@ -42,6 +42,17 @@
     {
       "type": "package",
       "package": {
+        "name": "fullcalendar/fullcalendar",
+        "version": "5.11.3",
+        "dist": {
+          "url": "https://github.com/fullcalendar/fullcalendar/releases/download/v5.11.3/fullcalendar-5.11.3.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
         "name": "kcfinder/kcfinder",
         "source": {
           "url": "https://github.com/IT-Solutions4You/kcfinder.git",
