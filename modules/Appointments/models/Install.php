@@ -173,6 +173,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                     'columntype' => 'VARCHAR(150)',
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                    'quickcreate' => 0,
                 ],
                 'datetime_start' => [
                     'column' => 'datetime_start',
@@ -198,6 +199,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                     'uitype' => 56,
                     'typeofdata' => 'C~O',
                     'columntype' => 'VARCHAR(3)',
+                    'quickcreate' => 0,
                 ],
                 'calendar_status' => [
                     'column' => 'status',
