@@ -48,6 +48,7 @@ class Appointments_Events_Action extends Vtiger_Action_Controller
                 $message = 'LBL_DUPLICATE_EVENT_TYPE';
                 $success = false;
             } else {
+                $eventType->retrieveDefaultId();
                 $eventType->save();
 
                 $message = 'LBL_CREATED_EVENT_TYPE';

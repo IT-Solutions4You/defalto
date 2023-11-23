@@ -117,10 +117,12 @@
                             <i class="fa fa-eye"></i>
                             <span class="ms-2">{vtranslate('LBL_DETAIL_OVERLAY', $QUALIFIED_MODULE)}</span>
                         </a>
-                        <a href="{$RECORD_MODEL->getEditViewUrl()}" class="btn text-primary me-2 showEditOverlay">
-                            <i class="fa fa-pencil"></i>
-                            <span class="ms-2">{vtranslate('LBL_EDIT_OVERLAY', $QUALIFIED_MODULE)}</span>
-                        </a>
+                        {if Appointments_Events_Model::isSupportedSaveOverlay($RECORD_MODEL->getModuleName())}
+                            <a href="{$RECORD_MODEL->getEditViewUrl()}" class="btn text-primary me-2 showEditOverlay">
+                                <i class="fa fa-pencil"></i>
+                                <span class="ms-2">{vtranslate('LBL_EDIT_OVERLAY', $QUALIFIED_MODULE)}</span>
+                            </a>
+                        {/if}
                         <a href="javascript:Appointments_Calendar_Js.deleteEvent({$RECORD_MODEL->getId()},'{$RECORD_MODEL->getModuleName()}')" class="btn text-danger me-2">
                             <i class="fa fa-trash"></i>
                             <span class="ms-2">{vtranslate('LBL_DELETE', $QUALIFIED_MODULE)}</span>

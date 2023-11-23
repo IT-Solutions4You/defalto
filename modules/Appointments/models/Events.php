@@ -638,9 +638,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public function isDuplicate(): bool
     {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
         $result = $this->adb->pquery(
-            'SELECT * FROM its4you_calendar_default_types WHERE module=? AND fields=?',
-            [$this->get('module'), json_encode($this->get('fields'))]
+            'SELECT its4you_calendar_default_types.id FROM its4you_calendar_default_types INNER JOIN its4you_calendar_user_types ON its4you_calendar_user_types.default_id=its4you_calendar_default_types.id WHERE module=? AND fields=? AND visible=? AND user_id=?',
+            [$this->get('module'), json_encode($this->get('fields')), 1, $currentUser->getId()]
         );
 
         return (bool)$this->adb->num_rows($result);
@@ -932,5 +933,15 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     public function setRecordModel($value)
     {
         $this->set('record_model', $value);
+    }
+
+    public function retrieveDefaultId()
+    {
+        $result = $this->adb->pquery(
+            'SELECT * FROM its4you_calendar_default_types WHERE module=? AND fields=?',
+            [$this->get('module'), json_encode($this->get('fields'))]
+        );
+
+        $this->set('id', $this->adb->query_result($result, 0, 'id'));
     }
 }
