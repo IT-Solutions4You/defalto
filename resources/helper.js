@@ -295,14 +295,16 @@ jQuery.Class("Vtiger_Helper_Js",{
 	 * Function to confirmation modal for recurring events updation and deletion 
 	 */
 	showConfirmationForRepeatEvents: function (customParams) {
-		var aDeferred = jQuery.Deferred();
-		var params = {
-			module: 'Calendar',
-			view: 'RecurringDeleteCheck'
-		}
+		let aDeferred = jQuery.Deferred(),
+			params = {
+				module: 'Vtiger',
+				view: 'RecurringDeleteCheck'
+			},
+			postData = {};
+
 		jQuery.extend(params, customParams);
-		var postData = {};
-		AppConnector.request(params).then(function (data) {
+
+		app.request(params).then(function (data) {
 			var callBackFunction = function (modalContainer) {
 				modalContainer.on('click', '.onlyThisEvent', function () {
 					postData['recurringEditMode'] = 'current';
@@ -324,7 +326,7 @@ jQuery.Class("Vtiger_Helper_Js",{
 				if (typeof callBackFunction == 'function') {
 					callBackFunction(data);
 				}
-			})	
+			})
 		});
 		return aDeferred.promise();
 	},

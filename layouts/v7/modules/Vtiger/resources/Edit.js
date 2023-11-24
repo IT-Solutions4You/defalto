@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_Edit_Js */
 Vtiger_Index_Js("Vtiger_Edit_Js",{
     
     file : false,

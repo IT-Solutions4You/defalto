@@ -1,0 +1,128 @@
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+.eventTypeClone {
+    display: none !important;
+}
+.text-inherit {
+    color: inherit !important;
+}
+.h-main-max {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+.va-middle {
+    vertical-align: middle;
+}
+
+.va-top {
+    vertical-align: top;
+}
+
+.eventDetail {
+    z-index: 1000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 20px #000;
+    display: none;
+}
+
+.fc-daygrid-event:hover .eventDetail {
+    display: block;
+}
+
+.popoverTemplate {
+    width:400px;
+    max-width: 80vw;
+    z-index: 10000;
+}
+
+.calendar-popover-container {
+    z-index: 20000;
+}
+
+.bg-default {
+    background: #e4e4e4;
+}
+
+#selected_user_and_groups_images {
+    margin-bottom: 1em;
+}
+
+#selected_user_and_groups_images .selected_image {
+}
+
+#selected_user_and_groups_images .selected_remove {
+}
+
+#selected_user_and_groups_images .selected_image:hover .selected_remove {
+}
+
+#selected_user_and_groups_images .remove_selected {
+}
+
+.selected_user_and_groups_visible, .selected_user_and_groups_toggle, .selected_user_and_groups_hidden, .selected_user_and_groups_actions {
+}
+.selected_user_and_groups_toggle * {
+}
+
+#selected_user_and_groups_images .selected_image_text {
+}
+
+#selected_user_and_groups_images .selected_img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}
+
+#selected_user_and_groups_images .selected_span {
+    display: inline-block;
+    line-height: 2rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+#selected_user_and_groups_images .selected_i {
+    font-size: 1rem;
+    display: inline-block;
+    line-height: 2rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+.fc-h-event {
+    margin: 1px;
+}
+.eventTypeRecord .fc-event-main-frame::before {
+    display: inline;
+    content: "\f133";
+    margin: 2px;
+    font: normal normal normal 12px FontAwesome;
+}
+.eventTypeMeeting .fc-event-main-frame::before {
+    content: "\f0c0";
+}
+.eventTypeCall .fc-event-main-frame::before {
+    content: "\f095";
+}
+.eventTypeEmail .fc-event-main-frame::before {
+    content: "\f0e0";
+}
+.eventTypeReminder .fc-event-main-frame::before {
+    content: "\f0f3";
+}
+.descriptionThreeLines {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-line;
+    line-height: 1.6rem !important;
+    max-height: 4.8rem !important;
+}

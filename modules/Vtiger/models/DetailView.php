@@ -259,6 +259,20 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			);
 		}
 
+        $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
+        if($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
+            $createPermission = $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView');
+            $widgets[] = array(
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Appointments',
+                'linkName'	=> $appointmentsInstance->getName(),
+                'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
+                    '&mode=getEvents&page=1&limit=5',
+                'action'	=>	($createPermission == true) ? array('Add') : array(),
+                'actionURL' =>	$appointmentsInstance->getQuickCreateUrl()
+            );
+        }
+
 		$widgetLinks = array();
 		foreach ($widgets as $widgetDetails) {
 			$widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);

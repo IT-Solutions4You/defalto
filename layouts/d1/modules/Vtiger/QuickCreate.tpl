@@ -98,7 +98,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="container-fluid">
-                        <div class="d-flex">
+                        <div class="row">
                             <div class="col-6">
                                 <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                             </div>

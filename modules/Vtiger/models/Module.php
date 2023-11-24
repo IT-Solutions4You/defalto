@@ -1067,119 +1067,23 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @param <String> $recordId - record id
 	 * @return <Array>
 	 */
-	function getCalendarActivities($mode, $pagingModel, $user, $recordId = false) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$db = PearDatabase::getInstance();
+    function getCalendarActivities($mode, $pagingModel, $user, $recordId = false)
+    {
+        $relatedParentId = $recordId;
+        $relatedParentModule = getSalesEntityType($relatedParentId);
 
-		if (!$user) {
-			$user = $currentUser->getId();
-		}
+        $moduleName = 'Appointments';
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
+        /** @var Vtiger_RelationListView_Model $relationListView */
+        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
+        $relationListView->set('whereCondition', [
+            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
+        ]);
 
-		$nowInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue(date('Y-m-d H:i:s'));
-		$nowInDBFormat = Vtiger_Datetime_UIType::getDBDateTimeValue($nowInUserFormat);
-		list($currentDate, $currentTime) = explode(' ', $nowInDBFormat);
+        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
+    }
 
-		$query = "SELECT vtiger_crmentity.crmid, crmentity2.crmid AS parent_id, vtiger_crmentity.smownerid, vtiger_crmentity.setype, vtiger_activity.* FROM vtiger_activity
-					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid
-					INNER JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
-					INNER JOIN vtiger_crmentity AS crmentity2 ON vtiger_seactivityrel.crmid = crmentity2.crmid AND crmentity2.deleted = 0 AND crmentity2.setype = ?
-					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-
-		$query .= Users_Privileges_Model::getNonAdminAccessControlQuery('Calendar');
-
-		$query .= " WHERE vtiger_crmentity.deleted=0
-					AND (vtiger_activity.activitytype NOT IN ('Emails'))
-					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred', 'Cancelled'))
-					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held','Cancelled'))";
-
-		if(!$currentUser->isAdminUser()) {
-			$moduleFocus = CRMEntity::getInstance('Calendar');
-			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
-			if($condition) {
-				$query .= ' AND '.$condition;
-			}
-		}
-
-		$params = array($this->getName());
-
-		if ($recordId) {
-			$query .= " AND vtiger_seactivityrel.crmid = ?";
-			array_push($params, $recordId);
-		} elseif ($mode === 'upcoming') {
-			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date >= '$currentDate' ELSE CONCAT(due_date,' ',time_end) >= '$nowInDBFormat' END";
-		} elseif ($mode === 'overdue') {
-			$query .= " AND CASE WHEN vtiger_activity.activitytype='Task' THEN due_date < '$currentDate' ELSE CONCAT(due_date,' ',time_end) < '$nowInDBFormat' END";
-		}
-
-		if($user != 'all' && $user != '') {
-			$query .= " AND vtiger_crmentity.smownerid = ?";
-			array_push($params, $user);
-		}
-
-		$query .= " ORDER BY date_start, time_start LIMIT ". $pagingModel->getStartIndex() .", ". ($pagingModel->getPageLimit()+1);
-
-
-		$result = $db->pquery($query, $params);
-		$numOfRows = $db->num_rows($result);
-
-		$groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
-		$activities = array();
-		$recordsToUnset = array();
-		for($i=0; $i<$numOfRows; $i++) {
-			$newRow = $db->query_result_rowdata($result, $i);
-			$model = Vtiger_Record_Model::getCleanInstance('Calendar');
-			$ownerId = $newRow['smownerid'];
-			$currentUser = Users_Record_Model::getCurrentUserModel();
-			$visibleFields = array('activitytype','date_start','time_start','due_date','time_end','assigned_user_id','visibility','smownerid','crmid');
-			$visibility = true;
-			if(in_array($ownerId, $groupsIds)) {
-				$visibility = false;
-			} else if($ownerId == $currentUser->getId()){
-				$visibility = false;
-			}
-			if(!$currentUser->isAdminUser() && $newRow['activitytype'] != 'Task' && $newRow['visibility'] == 'Private' && $ownerId && $visibility) {
-				foreach($newRow as $data => $value) {
-					if(in_array($data, $visibleFields) != -1) {
-						unset($newRow[$data]);
-					}
-				}
-				$newRow['subject'] = vtranslate('Busy','Events').'*';
-			}
-			if($newRow['activitytype'] == 'Task') {
-				unset($newRow['visibility']);
-
-				$due_date = $newRow["due_date"];
-				$dayEndTime = "23:59:59";
-				$EndDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($due_date." ".$dayEndTime);
-				$dueDateTimeInDbFormat = explode(' ',$EndDateTime);
-				$dueTimeInDbFormat = $dueDateTimeInDbFormat[1];
-				$newRow['time_end'] = $dueTimeInDbFormat;
-			}
-
-			$model->setData($newRow);
-			$model->setId($newRow['crmid']);
-			$activities[$newRow['crmid']] = $model;
-			if(!$currentUser->isAdminUser() && $newRow['activitytype'] == 'Task' && isToDoPermittedBySharing($newRow['crmid']) == 'no') { 
-				$recordsToUnset[] = $newRow['crmid'];
-			}
-		}
-
-		$pagingModel->calculatePageRange($activities);
-		if($numOfRows > $pagingModel->getPageLimit()){
-			array_pop($activities);
-			$pagingModel->set('nextPageExists', true);
-		} else {
-			$pagingModel->set('nextPageExists', false);
-		}
-		//after setting paging model, unsetting the records which has no permissions
-		foreach($recordsToUnset as $record) {
-			unset($activities[$record]);
-		}
-
-		return $activities;
-	}
-
-	/**
+    /**
 	 * Function to get list of fields which are required while importing records
 	 * @param <String> $module
 	 * @return <Array> list of fields
@@ -2061,4 +1965,20 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		return $moduleModel->getModuleIcon();
 	}
+
+    public function getCalendarEvents($mode, $pagingModel, $user, $recordId = false)
+    {
+        $relatedParentId = $recordId;
+        $relatedParentModule = getSalesEntityType($relatedParentId);
+
+        $moduleName = 'Appointments';
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
+        /** @var Vtiger_RelationListView_Model $relationListView */
+        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
+        $relationListView->set('whereCondition', [
+            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
+        ]);
+
+        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
+    }
 }

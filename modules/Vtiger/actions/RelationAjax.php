@@ -96,54 +96,59 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 	 *		related_module			related module name
 	 *		related_record_list		json encoded of list of related record ids
 	 */
-	function deleteRelation($request) {
-		$sourceModule = $request->getModule();
-		$sourceRecordId = $request->get('src_record');
+    public function deleteRelation($request)
+    {
+        $sourceModule = $request->getModule();
+        $sourceRecordId = $request->get('src_record');
 
-		$relatedModule = $request->get('related_module');
-		$relatedRecordIdList = $request->get('related_record_list');
-		$recurringEditMode = $request->get('recurringEditMode');
-		$relatedRecordList = array();
-		if($relatedModule == 'Calendar' && !empty($recurringEditMode) && $recurringEditMode != 'current') {
-			foreach($relatedRecordIdList as $relatedRecordId) {
-				$recordModel = Vtiger_Record_Model::getCleanInstance($relatedModule);
-				$recordModel->set('id', $relatedRecordId);
-				$recurringRecordsList = $recordModel->getRecurringRecordsList();
-				foreach($recurringRecordsList as $parent => $childs) {
-					$parentRecurringId = $parent;
-					$childRecords = $childs;
-				}
-				if($recurringEditMode == 'future') {
-					$parentKey = array_keys($childRecords, $relatedRecordId);
-					$childRecords = array_slice($childRecords, $parentKey[0]);
-				}
-				foreach($childRecords as $recordId) {
-					$relatedRecordList[] = $recordId;
-				}
-				$relatedRecordIdList = array_slice($relatedRecordIdList, $relatedRecordId);
-			}
-		}
+        $relatedModule = $request->get('related_module');
+        $relatedRecordIdList = $request->get('related_record_list');
+        $recurringEditMode = $request->get('recurringEditMode');
+        $relatedRecordList = array();
 
-		foreach($relatedRecordList as $record) {
-			$relatedRecordIdList[] = $record;
-		}
+        if (!empty($recurringEditMode) && $recurringEditMode != 'current') {
+            foreach ($relatedRecordIdList as $relatedRecordId) {
+                $recurringRecordsList = Appointments_Recurrence_Model::getRecurringRecordsList($relatedRecordId);
+                $childRecords = [];
 
-		//Setting related module as current module to delete the relation
-		vglobal('currentModule', $relatedModule);
+                foreach ($recurringRecordsList as $parent => $children) {
+                    $parentRecurringId = $parent;
+                    $childRecords = $children;
+                }
 
-		$sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
-		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
-		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
-		foreach($relatedRecordIdList as $relatedRecordId) {
-			$response = $relationModel->deleteRelation($sourceRecordId,$relatedRecordId);
-		}
+                if ('future' === $recurringEditMode) {
+                    $parentKey = array_keys($childRecords, $relatedRecordId);
+                    $childRecords = array_slice($childRecords, $parentKey[0]);
+                }
 
-		$response = new Vtiger_Response();
-		$response->setResult(true);
-		$response->emit();
-	}
+                foreach ($childRecords as $recordId) {
+                    $relatedRecordList[] = $recordId;
+                }
 
-	/**
+                $relatedRecordIdList = array_slice($relatedRecordIdList, $relatedRecordId);
+            }
+        }
+
+        foreach ($relatedRecordList as $record) {
+            $relatedRecordIdList[] = $record;
+        }
+
+        //Setting related module as current module to delete the relation
+        vglobal('currentModule', $relatedModule);
+
+        $sourceModuleModel = Vtiger_Module_Model::getInstance($sourceModule);
+        $relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
+        $relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
+        foreach ($relatedRecordIdList as $relatedRecordId) {
+            $response = $relationModel->deleteRelation($sourceRecordId, $relatedRecordId);
+        }
+
+        $response = new Vtiger_Response();
+        $response->setResult(true);
+        $response->emit();
+    }
+
+    /**
 	 * Function to get the page count for reltedlist
 	 * @return total number of pages
 	 */

@@ -621,8 +621,11 @@ class CRMEntity {
 						}
 					}
 					// END
-				} elseif (($uitype == 72 || $uitype == 71) && !$ajaxSave) {
+				} elseif ($uitype == 72 && !$ajaxSave) {
+					// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
 					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], null, true);
+				} elseif ($uitype == 71 && !$ajaxSave) {
+					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname]);
 				} elseif ($uitype == 69) {
 					$fldvalue = $this->column_fields[$fieldname];
 					if(php7_count($_FILES)) {

@@ -1411,6 +1411,7 @@ $languageStrings = array(
     'LBL_NEXT_LIST' => 'Next',
     'LBL_RECORDS_NOT_FOUND' => 'Records not found',
     'LBL_CREATE_OR_IMPORT_RECORDS' => 'Create or import records',
+    'LBL_CLEAR_RELATED_PARENT' => 'Clear Related Parent',
 );
 
 $jsLanguageStrings = array(
