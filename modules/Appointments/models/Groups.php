@@ -10,11 +10,18 @@
  */
 class Appointments_Groups_Model extends Vtiger_Base_Model
 {
+    /**
+     * @return self
+     */
     public static function getInstance()
     {
         return new self();
     }
 
+    /**
+     * @param $groupId
+     * @return array
+     */
     public function getUsersList($groupId)
     {
         $userIdsList = $usersList = array();

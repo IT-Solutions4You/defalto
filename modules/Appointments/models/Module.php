@@ -27,7 +27,10 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return $relationListView ? $relationListView->getEntries($pagingModel) : [];
     }
 
-    public function getDefaultUrl()
+    /**
+     * @return string
+     */
+    public function getDefaultUrl(): string
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
@@ -75,7 +78,10 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return $this->getDefaultUrl();
     }
 
-    public function getListViewUrl()
+    /**
+     * @return string
+     */
+    public function getListViewUrl(): string
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
@@ -112,7 +118,12 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return array_merge($basicLinks, parent::getModuleBasicLinks());
     }
 
-    public function getModuleIcon($height = '', $type = '')
+    /**
+     * @param string|int $height
+     * @param string $type
+     * @return string
+     */
+    public function getModuleIcon($height = '', string $type = ''): string
     {
         $icons = [
             'Meeting' => 'fa-users',
@@ -150,6 +161,9 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return array_merge($settingsLinks, parent::getSettingLinks());
     }
 
+    /**
+     * @return string
+     */
     public static function getTodayDate(): string
     {
         $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
@@ -157,6 +171,9 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return $today->format('Y-m-d H:i:s');
     }
 
+    /**
+     * @return string
+     */
     public static function getTodayDates(): string
     {
         $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
@@ -194,7 +211,10 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return intval($listModel->getListViewCount());
     }
 
-    public function isEventTypesVisible()
+    /**
+     * @return bool
+     */
+    public function isEventTypesVisible(): bool
     {
         global $Appointments_IsEventTypesVisible;
 
@@ -215,6 +235,10 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         }
     }
 
+    /**
+     * @param object|bool $filter
+     * @return bool
+     */
     public static function updateTodayFilterDates($filter): bool
     {
         if (!$filter && 'Today' !== trim($filter->name)) {
@@ -230,7 +254,14 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return true;
     }
 
-    public static function getQueryByModuleField($sourceModule, $field, $record, $listQuery)
+    /**
+     * @param string $sourceModule
+     * @param string $field
+     * @param int|string $record
+     * @param string $listQuery
+     * @return string
+     */
+    public static function getQueryByModuleField(string $sourceModule, string $field, $record, string $listQuery): string
     {
         if ('Appointments' === $sourceModule && 'invite_users' === $field) {
             $search = "its4you_calendar.invite_users = 'replace_invite_users'";

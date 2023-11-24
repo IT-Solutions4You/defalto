@@ -110,6 +110,10 @@ class Appointments_Calendar_View extends Vtiger_Index_View
         $viewer->view('PopoverContainer.tpl', $qualifiedModule);
     }
 
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     */
     public function UsersGroupsModal(Vtiger_Request $request)
     {
         $module = $request->getModule();
@@ -133,7 +137,7 @@ class Appointments_Calendar_View extends Vtiger_Index_View
      * @param Vtiger_Request $request
      * @return array
      */
-    public function getHeaderCss(Vtiger_Request $request)
+    public function getHeaderCss(Vtiger_Request $request): array
     {
         $headerCssInstances = parent::getHeaderCss($request);
         $moduleName = $request->getModule();

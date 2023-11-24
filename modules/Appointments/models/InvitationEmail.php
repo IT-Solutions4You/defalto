@@ -10,11 +10,26 @@
 
 class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
 {
+    /**
+     * @var PearDatabase
+     */
     protected PearDatabase $adb;
+    /**
+     * @var string
+     */
     protected string $endDateField = 'datetime_end';
+    /**
+     * @var Appointments_InvitedUsers_Model
+     */
     protected Appointments_InvitedUsers_Model $invitedUsers;
+    /**
+     * @var string
+     */
     protected string $startDateField = 'datetime_start';
 
+    /**
+     * @return string
+     */
     protected function generateIcsAttachment(): string
     {
         $recordModel = $this->invitedUsers->getRecordModel();
@@ -42,11 +57,19 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
         return $fileName;
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     */
     protected function getBody(): string
     {
         return $this->retrieveTemplateBody();
     }
 
+    /**
+     * @param $inviteUsers
+     * @return self
+     */
     public static function getInstance($inviteUsers): self
     {
         $instance = new self();
@@ -56,6 +79,9 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    /**
+     * @return string
+     */
     protected function getSubject(): string
     {
         $recordModel = $this->invitedUsers->getRecordModel();
@@ -90,11 +116,18 @@ class Appointments_InvitationEmail_Model extends Vtiger_Base_Model
         return '';
     }
 
+    /**
+     * @return object|null
+     */
     protected function getUserFocus()
     {
         return $this->get('user_focus');
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     */
     protected function retrieveTemplateBody(): string
     {
         if (!method_exists('EMAILMaker_EMAILContent_Model', 'getInstanceById')) {

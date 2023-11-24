@@ -14,24 +14,66 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
      * @var null|int
      */
     public int $accountId;
+    /**
+     * @var int
+     */
     public int $calendarId;
+    /**
+     * @var array
+     */
     public array $calendarInfo = [];
+    /**
+     * @var array
+     */
     public array $contactRecords;
+    /**
+     * @var array
+     */
     public array $customParams = [];
+    /**
+     * @var string
+     */
     public string $customSql;
+    /**
+     * @var PearDatabase
+     */
     public PearDatabase $db;
+    /**
+     * @var array
+     */
     public array $entityParams = [];
+    /**
+     * @var string
+     */
     public string $entitySql;
+    /**
+     * @var array
+     */
     public array $inviteUsers;
+    /**
+     * @var array
+     */
     public array $mainParams = [];
+    /**
+     * @var string
+     */
     public string $mainSql;
+    /**
+     * @var string
+     */
     public string $moduleName = 'Appointments';
     /**
      * @var null|int
      */
     public $parentId;
+    /**
+     * @var array
+     */
     public array $recurringCalendarIds = [];
 
+    /**
+     * @return self
+     */
     public static function getInstance(): self
     {
         $self = new self();
@@ -40,6 +82,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         return $self;
     }
 
+    /**
+     * @return void
+     */
     public function insertInvited()
     {
         if (!empty($this->inviteUsers)) {
@@ -49,6 +94,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertRecord()
     {
         $this->db->pquery($this->entitySql, $this->entityParams);
@@ -56,6 +104,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->db->pquery($this->customSql, $this->customParams);
     }
 
+    /**
+     * @return void
+     */
     public function insertRecurring()
     {
         $this->recurringCalendarIds[] = $this->calendarId;
@@ -77,6 +128,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertRecurringRelations()
     {
         if (empty($this->recurringCalendarIds)) {
@@ -98,6 +152,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertRelations()
     {
         if (!empty($this->contactRecords)) {
@@ -106,6 +163,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function insertReminder()
     {
         $result = $this->db->pquery('SELECT * FROM vtiger_activity_reminder WHERE activity_id=?', [$this->calendarId]);
@@ -138,6 +198,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function migrate()
     {
         $this->migratePicklistValues();
@@ -145,6 +208,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->migrateRecords();
     }
 
+    /**
+     * @return void
+     */
     public function migrateCustomFields()
     {
         $modules = [16, 9];
@@ -168,6 +234,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function migratePicklistValues()
     {
         $moduleInstance = Vtiger_Module_Model::getInstance($this->moduleName);
@@ -202,6 +271,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function migrateRecords()
     {
         $result = $this->db->pquery('SELECT * FROM vtiger_crmentity WHERE setype=?', ['Calendar']);
@@ -227,6 +299,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->insertRecurringRelations();
     }
 
+    /**
+     * @return void
+     */
     public function retrieveCustom()
     {
         $customResult = $this->db->pquery('SELECT * FROM vtiger_activitycf WHERE activityid=?', [$this->calendarId]);
@@ -245,6 +320,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->customSql = 'INSERT INTO its4you_calendarcf (' . implode(',', array_keys($this->customParams)) . ') VALUES (' . generateQuestionMarks($this->customParams) . ')';
     }
 
+    /**
+     * @return void
+     */
     public function retrieveEntity()
     {
         $this->entityParams = [
@@ -254,6 +332,9 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->entitySql = 'UPDATE vtiger_crmentity SET setype=? WHERE crmid=?';
     }
 
+    /**
+     * @return void
+     */
     public function retrieveMain()
     {
         $mainResult = $this->db->pquery('SELECT * FROM vtiger_activity WHERE activityid=?', [$this->calendarId]);
@@ -280,6 +361,10 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
         $this->mainSql = 'INSERT INTO its4you_calendar (' . implode(',', array_keys($this->mainParams)) . ') VALUES (' . generateQuestionMarks($this->mainParams) . ')';
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function retrieveRelations()
     {
         $parentResult = $this->db->pquery('SELECT crmid FROM vtiger_seactivityrel WHERE activityid=?', [$this->calendarId]);

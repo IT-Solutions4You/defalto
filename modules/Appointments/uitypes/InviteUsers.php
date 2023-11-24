@@ -10,7 +10,10 @@
  */
 class Appointments_InviteUsers_UIType extends Vtiger_Base_UIType
 {
-    public function getAccessibleUsers()
+    /**
+     * @return array
+     */
+    public function getAccessibleUsers(): array
     {
         return Appointments_InvitedUsers_Model::getAccessibleUsers();
     }

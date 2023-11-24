@@ -10,9 +10,21 @@
  */
 class Appointments_RepeatRecords_Model
 {
+    /**
+     * @var string
+     */
     public static string $dateEndField = 'datetime_end';
+    /**
+     * @var string
+     */
     public static string $dateStartField = 'datetime_start';
+    /**
+     * @var bool
+     */
     public static bool $recurringDataChanged = false;
+    /**
+     * @var bool
+     */
     public static bool $recurringTypeChanged = false;
 
     /**
@@ -107,6 +119,11 @@ class Appointments_RepeatRecords_Model
         }
     }
 
+    /**
+     * @param $date
+     * @param $time
+     * @return string
+     */
     public static function getUserDateTime($date, $time)
     {
         $dateTime = new DateTimeField($date . ' ' . $time);

@@ -10,6 +10,11 @@
 
 class Appointments_List_View extends Vtiger_List_View
 {
+    /**
+     * @param Vtiger_Request $request
+     * @param $display
+     * @return void
+     */
     public function preProcess(Vtiger_Request $request, $display = true)
     {
         if (!$request->isEmpty('viewname')) {

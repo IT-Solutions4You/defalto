@@ -10,7 +10,11 @@
  */
 class Appointments_Reminder_Model extends Vtiger_Base_Model
 {
-    public static function getAddressIds($values): array
+    /**
+     * @param array $values
+     * @return array
+     */
+    public static function getAddressIds(array $values): array
     {
         $ids = [];
 
@@ -41,6 +45,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         );
     }
 
+    /**
+     * @param int|string $recordId
+     * @return string
+     */
     public static function getContactsNames($recordId): string
     {
         $adb = PearDatabase::getInstance();
@@ -77,7 +85,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         return $headers;
     }
 
-    public static function getPopupRecords()
+    /**
+     * @return array
+     */
+    public static function getPopupRecords(): array
     {
         $db = PearDatabase::getInstance();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -120,7 +131,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         return (int)$adb->query_result($result, 0, 'frequency');
     }
 
-    public function getSubject()
+    /**
+     * @return string
+     */
+    public function getSubject(): string
     {
         $subject = $this->get('subject');
 
@@ -156,6 +170,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         return '';
     }
 
+    /**
+     * @param int|string $value
+     * @return false|int
+     */
     public static function getTime($value)
     {
         $date = new DateTimeField($value);
@@ -166,7 +184,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         return strtotime($dBFormattedDate . ' ' . $timeFormattedString);
     }
 
-    public function isSendingReady()
+    /**
+     * @return bool
+     */
+    public function isSendingReady(): bool
     {
         $reminderTime = $this->get('reminder_time') * 60;
         $differenceOfActivityTimeAndCurrentTime = (strtotime($this->get('sending_datetime')) - time());
@@ -175,6 +196,9 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
             && (($differenceOfActivityTimeAndCurrentTime <= $reminderTime) || ($differenceOfActivityTimeAndCurrentTime <= $this->get('sending_frequency')));
     }
 
+    /**
+     * @return void
+     */
     public function retrieveInvitedUsers()
     {
         $recordId = $this->get('record_id');
@@ -184,6 +208,9 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         $this->set('invited_users', $invitedUsers->getUsersInfo());
     }
 
+    /**
+     * @return void
+     */
     public function retrieveRecordModel()
     {
         $recordModel = Vtiger_Record_Model::getInstanceById($this->get('record_id'));
@@ -276,6 +303,10 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
         );
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function sendEmail()
     {
         global $HELPDESK_SUPPORT_EMAIL_ID;

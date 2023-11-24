@@ -10,14 +10,23 @@
  */
 class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
 {
+    /**
+     * @var PearDatabase
+     */
     public PearDatabase $adb;
 
+    /**
+     * @return void
+     */
     public function deleteUsers()
     {
         $this->adb->pquery('DELETE FROM its4you_invited_users WHERE record_id=?', [$this->get('record_id')]);
     }
 
-    public static function getAccessibleUsers()
+    /**
+     * @return array
+     */
+    public static function getAccessibleUsers(): array
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
@@ -38,6 +47,9 @@ class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    /**
+     * @return int
+     */
     public function getRecord(): int
     {
         return (int)$this->get('record_id');
@@ -51,6 +63,9 @@ class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
         return $this->get('record_model');
     }
 
+    /**
+     * @return array
+     */
     public function getUsers(): array
     {
         return (array)$this->get('invite_users');
@@ -64,11 +79,17 @@ class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
         return (array)$this->get('invite_users_info');
     }
 
+    /**
+     * @return void
+     */
     public function retrieveRecordModel()
     {
         $this->set('record_model', Vtiger_Record_Model::getInstanceById($this->getRecord()));
     }
 
+    /**
+     * @return void
+     */
     public function retrieveUsers()
     {
         $recordId = $this->getRecord();
@@ -89,6 +110,9 @@ class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
         $this->setUsersInfo($invitedUsers);
     }
 
+    /**
+     * @return void
+     */
     public function saveUsers()
     {
         foreach ($this->getUsers() as $userId) {
@@ -118,6 +142,10 @@ class Appointments_InvitedUsers_Model extends Vtiger_Base_Model
         $this->set('record_id', $value);
     }
 
+    /**
+     * @param array $value
+     * @return void
+     */
     public function setUsers(array $value)
     {
         $this->set('invite_users', $value);

@@ -44,6 +44,7 @@ class Appointments_Install_View extends Vtiger_Index_View
     /**
      * @param Vtiger_Request $request
      * @return void
+     * @throws AppException
      */
     public function process(Vtiger_Request $request)
     {

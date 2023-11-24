@@ -43,6 +43,10 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
         return array_filter($usersAndGroups);
     }
 
+    /**
+     * @param string $value
+     * @return string
+     */
     public static function getBackground(string $value): string
     {
         $code = dechex(crc32($value));
@@ -51,6 +55,9 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
         return '#' . $color;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function getGroupSelected()
     {
         $values = [];
@@ -62,6 +69,9 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
         return $values;
     }
 
+    /**
+     * @return array
+     */
     public function getInfo(): array
     {
         $images = [];
@@ -125,6 +135,9 @@ class Appointments_UsersGroups_Model extends Vtiger_Base_Model
         return $images;
     }
 
+    /**
+     * @return self
+     */
     public static function getInstance()
     {
         return new self();

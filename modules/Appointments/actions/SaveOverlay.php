@@ -10,6 +10,11 @@
 
 class Appointments_SaveOverlay_Action extends Appointments_Save_Action
 {
+    /**
+     * @param Vtiger_Request $request
+     * @return void
+     * @throws Exception
+     */
     public function process(Vtiger_Request $request)
     {
         try {

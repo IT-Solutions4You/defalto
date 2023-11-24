@@ -106,6 +106,10 @@ class Appointments extends CRMEntity
         }
     }
 
+    /**
+     * @param int $recordId
+     * @return void
+     */
     protected function createRelationFromRecord(int $recordId)
     {
         if (!empty($recordId)) {
@@ -123,6 +127,10 @@ class Appointments extends CRMEntity
         }
     }
 
+    /**
+     * @param string $name
+     * @return void
+     */
     protected function createRelationFromReference(string $name)
     {
         $recordId = intval($this->column_fields[$name]);
@@ -215,6 +223,9 @@ class Appointments extends CRMEntity
         }
     }
 
+    /**
+     * @return void
+     */
     public function saveDurationHours()
     {
         $datetimeEndTime = strtotime(Vtiger_Datetime_UIType::getDBDateTimeValue($this->column_fields['datetime_end']));
@@ -267,6 +278,7 @@ class Appointments extends CRMEntity
      * @param string $moduleName
      * @param string $eventType
      * @return void
+     * @throws AppException
      */
     public function vtlib_handler(string $moduleName, string $eventType)
     {

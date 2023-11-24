@@ -30,6 +30,9 @@ class Appointments_Field_Model extends Vtiger_Field_Model
         return parent::getFieldDataType();
     }
 
+    /**
+     * @return bool|string
+     */
     public function isAjaxEditable()
     {
         switch ($this->getName()) {

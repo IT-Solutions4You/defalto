@@ -14,7 +14,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      * @var array
      */
     public static array $defaultEventTypes = [];
-    public static $defaultModule = 'Appointments';
+    /**
+     * @var string
+     */
+    public static string $defaultModule = 'Appointments';
     /**
      * @var array
      */
@@ -57,6 +60,9 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      * @var object
      */
     public object $listViewModel;
+    /**
+     * @var bool
+     */
     public bool $useUserColors = false;
 
     /**
@@ -148,7 +154,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
     /**
      * @return string
      */
-    public function getDetailLink()
+    public function getDetailLink(): string
     {
         /** @var Vtiger_Record_Model $recordModel */
         $recordModel = $this->get('record_model');
@@ -211,12 +217,19 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         ];
     }
 
-    public static function getEventTypeClass($type)
+    /**
+     * @param string $type
+     * @return string
+     */
+    public static function getEventTypeClass(string $type): string
     {
         return 'eventType' . preg_replace('/([^\w+\d+])+/', '', $type);
     }
 
-    public static function getEventTypeStyles()
+    /**
+     * @return string
+     */
+    public static function getEventTypeStyles(): string
     {
         global $Appointments_Icons;
 
@@ -229,7 +242,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         return $result;
     }
 
-    public static function getUserStyles()
+    /**
+     * @return string
+     */
+    public static function getUserStyles(): string
     {
         $hour = date('H:00');
 
@@ -582,7 +598,6 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         $pagingModel->set('page', 1);
         $pagingModel->set('limit', 1000);
 
-        /** @var Vtiger_ListView_Model $this->listViewModel */
         $this->retrieveListViewModel();
         $this->retrieveDateConditions();
         $this->retrieveFilterConditions();
@@ -680,6 +695,9 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function isModuleActive(): bool
     {
         $moduleName = $this->getModule();
@@ -701,6 +719,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         return isset(self::$popoverDisabledFields[$moduleName]) && in_array($fieldName, self::$popoverDisabledFields[$moduleName]);
     }
 
+    /**
+     * @param $module
+     * @return bool
+     */
     public static function isSupportedSaveOverlay($module): bool
     {
         return class_exists('Vtiger_SaveOverlay_Action') || class_exists(sprintf('%s_SaveOverlay_Action', $module));
@@ -939,6 +961,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         $this->set('record_model', $value);
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function retrieveDefaultId()
     {
         $result = $this->adb->pquery(

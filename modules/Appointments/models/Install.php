@@ -40,6 +40,12 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         ModTracker::enableTrackingForModule(getTabid($this->moduleName));
     }
 
+    /**
+     * @param $column
+     * @param $type
+     * @return $this
+     * @throws AppException
+     */
     protected function createColumn($column, $type): self
     {
         if ($this->isEmpty('table')) {
@@ -79,6 +85,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         return $this;
     }
 
+    /**
+     * @return void
+     */
     protected function deleteCustomLinks()
     {
         $this->updateCron(false);
@@ -88,6 +97,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         ModTracker::disableTrackingForModule(getTabid($this->moduleName));
     }
 
+    /**
+     * @return void
+     */
     public function deleteModule()
     {
         $moduleName = $this->moduleName;
@@ -410,7 +422,12 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         ];
     }
 
-    public static function getInstance($eventType, $moduleName): self
+    /**
+     * @param string $eventType
+     * @param string $moduleName
+     * @return self
+     */
+    public static function getInstance(string $eventType, string $moduleName): self
     {
         $instance = new self();
         $instance->eventType = $eventType;
@@ -420,7 +437,12 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         return $instance;
     }
 
-    public function getTable($table, $tableId): self
+    /**
+     * @param string $table
+     * @param string $tableId
+     * @return self
+     */
+    public function getTable(string $table, string $tableId): self
     {
         $clone = new self();
         $clone->db = PearDatabase::getInstance();
@@ -430,6 +452,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         return $clone;
     }
 
+    /**
+     * @return void
+     */
     protected function insertEmailTemplates()
     {
         if (!method_exists('EMAILMaker_Record_Model', 'saveTemplate')) {
@@ -495,6 +520,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     protected function installFields()
     {
         $moduleModel = Vtiger_Module_Model::getInstance('Users');
@@ -549,6 +577,10 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     * @throws AppException
+     */
     public function installModule()
     {
         $this->installTables();
@@ -921,6 +953,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     protected function updateFilters()
     {
         $filter = Vtiger_Filter::getInstance('Today');
@@ -968,6 +1003,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     protected function updateIcons()
     {
         $layout = Vtiger_Viewer::getDefaultLayoutName();
@@ -979,6 +1017,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     protected function updateParentIdModules()
     {
         $moduleModel = Vtiger_Module_Model::getInstance($this->moduleName);
@@ -994,6 +1035,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     protected function updatePicklists()
     {
         $this->db->pquery('DELETE FROM vtiger_defaultcalendarview WHERE defaultcalendarview IN (?)', ['SharedCalendar']);
@@ -1001,7 +1045,11 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         $this->db->pquery('UPDATE vtiger_calendar_type SET presence=? WHERE calendar_type IN (?,?,?,?)', ['0', 'Call', 'Meeting', 'Email', 'Reminder']);
     }
 
-    protected function updateWorkflow($register = true)
+    /**
+     * @param bool $register
+     * @return void
+     */
+    protected function updateWorkflow(bool $register = true)
     {
         vimport('~~modules/com_vtiger_workflow/include.inc');
         vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');

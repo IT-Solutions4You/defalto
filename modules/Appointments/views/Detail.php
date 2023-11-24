@@ -66,7 +66,11 @@ class Appointments_Detail_View extends Vtiger_Detail_View
         parent::process($request);
     }
 
-    public function isAjaxEnabled($recordModel)
+    /**
+     * @param $recordModel
+     * @return string
+     */
+    public function isAjaxEnabled($recordModel): string
     {
         return 'false';
     }

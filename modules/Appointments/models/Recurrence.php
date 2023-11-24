@@ -10,10 +10,22 @@
  */
 class Appointments_Recurrence_Model extends Vtiger_Base_Model
 {
+    /**
+     * @var PearDatabase
+     */
     public PearDatabase $adb;
+    /**
+     * @var string
+     */
     public string $table = 'its4you_recurring';
+    /**
+     * @var string
+     */
     public string $tableIndex = 'recurring_id';
 
+    /**
+     * @return void
+     */
     public function delete()
     {
         $tableIndex = $this->tableIndex;
@@ -24,6 +36,10 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         );
     }
 
+    /**
+     * @param int $recordId
+     * @return void
+     */
     public static function deleteRecurring(int $recordId)
     {
         $recurrence = Appointments_Recurrence_Model::getInstanceByRecord($recordId);
@@ -43,6 +59,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         );
     }
 
+    /**
+     * @return void
+     */
     public function deleteRelations()
     {
         $this->adb->pquery(
@@ -66,6 +85,10 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    /**
+     * @param $request
+     * @return array
+     */
     public static function getRecurrenceInformation($request): array
     {
         $recordId = $request->get('record');
@@ -106,6 +129,10 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         return $recurringData;
     }
 
+    /**
+     * @param $recordId
+     * @return false|RecurringType
+     */
     public static function getRecurringObject($recordId)
     {
         if (empty($recordId)) {
@@ -138,8 +165,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
      * @param int $relatedRecordId
      * @param string $recurringEditMode
      * @return array
+     * @throws Exception
      */
-    public static function getRecurringRecordsByType($relatedRecordId, $recurringEditMode)
+    public static function getRecurringRecordsByType(int $relatedRecordId, string $recurringEditMode): array
     {
         $recordList = [];
         $recordIdList = [$relatedRecordId];
@@ -171,6 +199,11 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         return $recordIdList;
     }
 
+    /**
+     * @param int|string $recordId
+     * @return array
+     * @throws Exception
+     */
     public static function getRecurringRecordsList($recordId): array
     {
         $adb = PearDatabase::getInstance();
@@ -188,6 +221,10 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         ];
     }
 
+    /**
+     * @param int|string $recurrenceId
+     * @return bool
+     */
     public static function hasRelation($recurrenceId): bool
     {
         $adb = PearDatabase::getInstance();
@@ -199,11 +236,19 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         return 0 < $adb->num_rows($result);
     }
 
+    /**
+     * @return bool
+     */
     public function isExists(): bool
     {
         return !$this->isEmpty($this->tableIndex);
     }
 
+    /**
+     * @param int $recordId
+     * @param int $recurrenceId
+     * @return bool
+     */
     public static function isRelationExists(int $recordId = 0, int $recurrenceId = 0)
     {
         $adb = PearDatabase::getInstance();
@@ -212,6 +257,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         return 0 !== (int)$adb->num_rows($result);
     }
 
+    /**
+     * @return void
+     */
     public function retrieveData()
     {
         $result = $this->adb->pquery('SELECT * FROM its4you_recurring WHERE record_id=?', [$this->get('record_id')]);
@@ -221,6 +269,10 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function retrieveId()
     {
         $result = $this->adb->pquery('SELECT record_id FROM its4you_recurring_rel WHERE recurrence_id=?', [$this->get('record_id')]);
@@ -230,6 +282,9 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @return void
+     */
     public function save()
     {
         $tableIndex = $this->tableIndex;
@@ -259,6 +314,11 @@ class Appointments_Recurrence_Model extends Vtiger_Base_Model
         $this->adb->pquery($query, $params);
     }
 
+    /**
+     * @param int $recordId
+     * @param RecurringType $recurrenceObject
+     * @return void
+     */
     public static function saveRecurring(int $recordId, RecurringType $recurrenceObject)
     {
         $recurringEndDate = null;

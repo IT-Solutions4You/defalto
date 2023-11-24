@@ -10,9 +10,18 @@
  */
 class Appointments_SharingUsers_Model extends Vtiger_Base_Model
 {
+    /**
+     * @var PearDatabase
+     */
     public PearDatabase $adb;
+    /**
+     * @var string
+     */
     public string $table = 'its4you_sharing_users';
 
+    /**
+     * @return void
+     */
     public function deleteUsers()
     {
         $query = sprintf('DELETE FROM %s WHERE crmid=?', $this->table);
@@ -34,11 +43,17 @@ class Appointments_SharingUsers_Model extends Vtiger_Base_Model
         return $instance;
     }
 
+    /**
+     * @return array
+     */
     public function getUsers(): array
     {
         return (array)$this->get('users');
     }
 
+    /**
+     * @return void
+     */
     public function saveUser()
     {
         $params = [
@@ -51,6 +66,9 @@ class Appointments_SharingUsers_Model extends Vtiger_Base_Model
         $this->adb->pquery($query, $params);
     }
 
+    /**
+     * @return void
+     */
     public function saveUsers()
     {
         $userIds = $this->getUsers();
@@ -61,6 +79,10 @@ class Appointments_SharingUsers_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @param array $value
+     * @return void
+     */
     public function setUsers(array $value)
     {
         $this->set('users', $value);
