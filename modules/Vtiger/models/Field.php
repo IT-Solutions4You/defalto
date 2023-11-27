@@ -339,7 +339,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 		if(php7_count($matches) > 0) {
-			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+			[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 			$fieldName = $referenceFieldName;
 		}
 
@@ -376,7 +376,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 		// for reference fields the field name will be in the format of (referencefieldname;(module)fieldname)
 		preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 		if(php7_count($matches) > 0) {
-			list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+			[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 			$fieldName = $referenceFieldName;
 		}
 
@@ -404,7 +404,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @return <Boolean> - true/false
 	 */
 	public function isMandatory() {
-		list($type,$mandatory)= explode('~',$this->get('typeofdata'));
+		[$type,$mandatory]= explode('~',$this->get('typeofdata'));
 		return $mandatory=='M' ? true:false;
 	}
 
@@ -520,8 +520,8 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isAjaxEditable() {
 	    $ajaxRestrictedFields = array(
 	        self::UITYPE_RECORD_NO, 
-	        self::UITYPE_CURRENCY_AMOUNT, 
-	        self::UITYPE_ATTACHMENT, 
+            self::UITYPE_LINEITEMS_CURRENCY_AMOUNT,
+            self::UITYPE_ATTACHMENT,
 	        self::UITYPE_DOWNLOAD_TYPE,
 	        self::UITYPE_FILENAME
 	    );
@@ -1163,16 +1163,19 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	 * @param <String> $value - value which need to be converted to display value
 	 * @return <String> - converted display value
 	 */
-	public function getEditViewDisplayValue($value) {
-		if(!isset($this->uitype_instance) || !$this->uitype_instance) {
-			$this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
-		}
-		$uiTypeInstance = $this->uitype_instance;
-		return $uiTypeInstance->getEditViewDisplayValue($value);
-	}
+	public function getEditViewDisplayValue($value, $additionalParameter = null)
+    {
+        if (!isset($this->uitype_instance) || !$this->uitype_instance) {
+            $this->uitype_instance = Vtiger_Base_UIType::getInstanceFromField($this);
+        }
 
-	/**
-	 * Function to retieve types of file locations in Documents Edit
+        $uiTypeInstance = $this->uitype_instance;
+
+        return $uiTypeInstance->getEditViewDisplayValue($value, $additionalParameter);
+    }
+
+    /**
+     * Function to retieve types of file locations in Documents Edit
 	 * @return <array> - List of file location types
 	 */
 	public function getFileLocationType() {
@@ -1269,16 +1272,16 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 				if (php7_count($profilelist) > 0) {
 					if ($accessmode == 'readonly') {
-						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0  AND vtiger_profile2field.profileid in (" . generateQuestionMarks($profilelist) . ") AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
+						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.profileid in (" . generateQuestionMarks($profilelist) . ") AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
 					} else {
-						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_def_org_field.visible=0  AND vtiger_profile2field.profileid in (" . generateQuestionMarks($profilelist) . ") AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
+						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_profile2field.profileid in (" . generateQuestionMarks($profilelist) . ") AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
 					}
 					$params = array($tabid, $profilelist);
 				} else {
 					if ($accessmode == 'readonly') {
-						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_def_org_field.visible=0  AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
+						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
 					} else {
-						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_def_org_field.visible=0  AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
+						$query = "SELECT vtiger_profile2field.visible,vtiger_field.fieldid FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid=vtiger_field.fieldid WHERE vtiger_field.tabid=? AND vtiger_profile2field.visible=0 AND vtiger_profile2field.readonly=0 AND vtiger_field.presence in ({$visiblePresenceList}) GROUP BY vtiger_field.fieldid";
 					}
 					$params = array($tabid);
 				}
@@ -1469,7 +1472,7 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 			if (php7_count($matches) > 0) {
-				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 				$fieldName = $referenceFieldName;
 			}
 
@@ -1493,4 +1496,50 @@ class Vtiger_Field_Model extends Vtiger_Field {
 	public function isUniqueField() {
 		return $this->isunique;
 	}
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTableFullWidth(): bool
+    {
+        $fieldName = $this->getName();
+
+        if (in_array($fieldName, ['description', 'signature', 'accesskey', 'imagename']) ||
+            in_array((int)$this->get('uitype'), [19, 69]) ||
+            in_array($this->getFieldDataType(), ['recurrence', 'reminder'])
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isTableCustomWidth(): bool
+    {
+        if (83 === (int)$this->get('uitype')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTableHalfWidth(): bool
+    {
+        $blockId = $this->getBlockId();
+        $blockInstance = Vtiger_Block_Model::getInstance($blockId, $this->getModuleInstance());
+
+        if ($blockInstance && 'LBL_ADDRESS_INFORMATION' === $blockInstance->get('label')) {
+            return true;
+        }
+
+        return false;
+    }
 }

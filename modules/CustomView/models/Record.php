@@ -369,7 +369,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					$fieldName = $columnInfo[2];
 					preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 					if (php7_count($matches) != 0) {
-						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+						[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 					}
 					if($referenceParentField) {
 						$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
@@ -388,12 +388,12 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					$fieldType = $fieldModel->getFieldDataType();
 
 					if($fieldType == 'currency') {
-						if($fieldModel->get('uitype') == '72') {
+						//if($fieldModel->get('uitype') == '72') {
 							// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
 							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue, null, true);
-						} else {
+						/*} else {
 							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue);
-						}
+						}*/
 					}
 
 					$temp_val = explode(",",$advFitlerValue);
@@ -452,7 +452,24 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				$db->pquery($advGroupSql, $advGroupParams);
 			}
 		}
-		if($this->has('sharelist') && !$partial) {
+
+        if ($this->has('sortcolumnname') && $this->has('sortorder')) {
+            $db->pquery('DELETE FROM its4you_cvorderby WHERE cvid = ?', [$cvId]);
+
+            $sortColumnName = $this->get('sortcolumnname');
+            if (!empty($sortColumnName)) {
+                $sortOrder = $this->get('sortorder');
+
+                if (empty($sortOrder)) {
+                    $sortOrder = 'ASC';
+                }
+
+                $sortSql = 'INSERT INTO its4you_cvorderby (cvid, orderby, sortorder) VALUES (?,?,?)';
+                $db->pquery($sortSql, [$cvId, $sortColumnName, $sortOrder]);
+            }
+        }
+
+        if($this->has('sharelist') && !$partial) {
 			$db->pquery('DELETE FROM vtiger_cv2users WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2group WHERE cvid=?',array($cvId));
 			$db->pquery('DELETE FROM vtiger_cv2role WHERE cvid=?',array($cvId));
@@ -639,7 +656,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				$moduleName = $moduleModel->get('name');
 				preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 				if (php7_count($matches) != 0) {
-					list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+					[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 				}
 				if ($referenceParentField) {
 					$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
@@ -1125,32 +1142,39 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 	 * @param <String> $moduleName
 	 * @return <Array> - Associative array of Status label to an array of Vtiger_CustomView_Record models
 	 */
-	public static function getAllByGroup($moduleName='', $listMode = true) {
-		$customViews = self::getAll($moduleName);
-		$groupedCustomViews = array();
-		$groupedCustomViews['Mine'] = array();
-		$groupedCustomViews['Shared'] = array();
-		foreach ($customViews as $index => $customView) {
-			if($customView->isMine() && ($customView->get('viewname') != 'All' || !$listMode)) {
-				$groupedCustomViews['Mine'][] = $customView;
-			} elseif($customView->isPublic()) {
-				$groupedCustomViews['Public'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			} elseif($customView->isPending()) {
-				$groupedCustomViews['Pending'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			} else {
-				$groupedCustomViews['Others'][] = $customView;
-				$groupedCustomViews['Shared'][] = $customView;
-			}
-		}
-		if(empty($groupedCustomViews['Shared'])) {
-			unset($groupedCustomViews['Shared']);
-		}
-		return $groupedCustomViews;
-	}
+    public static function getAllByGroup($moduleName = '', $listMode = true)
+    {
+        $customViews = self::getAll($moduleName);
+        $groupedCustomViews = array();
+        $groupedCustomViews['Default'] = array();
+        $groupedCustomViews['Mine'] = array();
+        $groupedCustomViews['Shared'] = array();
 
-	/**
+        foreach ($customViews as $index => $customView) {
+            if ('All' === $customView->get('viewname')) {
+                $groupedCustomViews['Default'][] = $customView;
+            } elseif ($customView->isMine() && ($customView->get('viewname') != 'All' || !$listMode)) {
+                $groupedCustomViews['Mine'][] = $customView;
+            } elseif ($customView->isPublic()) {
+                $groupedCustomViews['Public'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            } elseif ($customView->isPending()) {
+                $groupedCustomViews['Pending'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            } else {
+                $groupedCustomViews['Others'][] = $customView;
+                $groupedCustomViews['Shared'][] = $customView;
+            }
+        }
+
+        if (empty($groupedCustomViews['Shared'])) {
+            unset($groupedCustomViews['Shared']);
+        }
+
+        return $groupedCustomViews;
+    }
+
+    /**
 	 * Function to get Clean instance of this record
 	 * @return self
 	 */
@@ -1288,4 +1312,57 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 		}
 		return $instance;
 	}
+
+    /**
+     * @param string $module
+     * @return self
+     * @throws Exception
+     */
+    public static function getDefaultFilterByModule(string $module): self
+    {
+        $instance = Vtiger_Cache::get('DefaultCustomViewInstance', $module);
+
+        if (!$instance) {
+            $db = PearDatabase::getInstance();
+            $query = "SELECT cvid FROM vtiger_customview WHERE setdefault=? AND entitytype=? AND userid=?";
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+            $result = $db->pquery($query, array(1, $module, $currentUser->getId()));
+            $viewId = $db->query_result($result, 0, 'cvid');
+
+            if (!$viewId) {
+                $customView = new CustomView($module);
+                $viewId = $customView->getViewId($module);
+            }
+
+            if ($viewId) {
+                $instance = self::getInstanceById($viewId);
+            } else {
+                $instance = self::getAllFilterByModule($module);
+            }
+
+            Vtiger_Cache::set('DefaultCustomViewInstance', $module, $instance);
+        }
+
+        return $instance;
+    }
+
+    /**
+     * @return array
+     */
+    public function fetchOrderBy(): array
+    {
+        $db = PearDatabase::getInstance();
+        $return = [];
+
+        if ($this->getId()) {
+            $sql = 'SELECT orderby, sortorder FROM its4you_cvorderby WHERE cvid = ?';
+            $result = $db->pquery($sql, [$this->getId()]);
+
+            if ($db->num_rows($result)) {
+                $return = $db->fetchByAssoc($result);
+            }
+        }
+
+        return $return;
+    }
 }

@@ -128,19 +128,19 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => 'LBL_EDIT',
 						'linkurl' => $this->getEditViewUrl(),
-						'linkicon' => ''
+						'linkicon' => '<i class="fa-solid fa-pencil"></i>'
 				),
 				array(
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => vtranslate('LBL_SHOW_FORM', $moduleModel->getParentName(). ':' .$moduleModel->getName()),
 						'linkurl' => 'javascript:Settings_Webforms_Detail_Js.showForm("'.$this->getId().'")',
-						'linkicon' => 'icon-picture'
+						'linkicon' => '<i class="fa-solid fa-code"></i>'
 				),
 				array(
 						'linktype' => 'DETAILVIEW',
 						'linklabel' => 'LBL_DELETE',
 						'linkurl' => 'javascript:Settings_Webforms_Detail_Js.deleteRecord("'.$this->getDeleteUrl().'")',
-						'linkicon' => ''
+						'linkicon' => '<i class="fa-solid fa-trash"></i>'
 				)
 		);
 
@@ -331,7 +331,7 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 			}
 
 			if ($dataType === 'currency' && $fieldDefaultValue != null) {
-				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue);
+				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue, null, true);
 			}
 
 			if ($dataType === 'double') {

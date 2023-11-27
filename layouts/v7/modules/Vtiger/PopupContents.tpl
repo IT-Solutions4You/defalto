@@ -98,7 +98,7 @@
                     {if isset($RECORD_DATA[$LISTVIEW_HEADERNAME])}
                         {assign var=RECORD_DATA_LISTVIEW_HEADERNAME value=$RECORD_DATA[$LISTVIEW_HEADERNAME]}
                     {/if}
-                    <td class="listViewEntryValue value textOverflowEllipsis {$WIDTHTYPE}" title="$RECORD_DATA_LISTVIEW_HEADERNAME">
+                    <td class="listViewEntryValue value textOverflowEllipsis {$WIDTHTYPE}" title="{$RECORD_DATA_LISTVIEW_HEADERNAME}">
                         {if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
                             <a>{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
                         {else if $LISTVIEW_HEADER->get('uitype') eq '72'}

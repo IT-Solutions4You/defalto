@@ -696,7 +696,7 @@ function vtlib_purify($input, $ignore = false) {
                 'data' => true
             );
 
-            include_once __DIR__ . '/../../libraries/htmlpurifier410/library/HTMLPurifier.auto.php';
+			require_once __DIR__ . '/../../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
             $config = HTMLPurifier_Config::createDefault();
             $config->set('Core.Encoding', $use_charset);
@@ -957,15 +957,7 @@ if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_co
 /**
  * PHP8 support
  */
-if (!function_exists('get_magic_quotes_gpc')) {
-	function get_magic_quotes_gpc() {
-		return false;
-	}
-}
-
 function php7_count($value) {
 	// PHP 8.x does not like count(null) or count(string)
 	return is_null($value) || !is_array($value) ? 0 : count($value);
 }
-
-?>

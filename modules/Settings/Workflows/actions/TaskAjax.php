@@ -92,8 +92,20 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 						$getRawFields = array('field_value_mapping', 'content', 'fromEmail');
 			foreach($fieldNames as $fieldName){
 				if(in_array($fieldName, $getRawFields)) {
-					$taskObject->$fieldName = $request->getRaw($fieldName);
-				} else {
+                    $taskObject->$fieldName = $request->getRaw($fieldName);
+                } elseif (($request->get('taskType') === 'AddSharing' || $request->get('taskType') === 'RemoveSharing') && ($fieldName === 'memberViewList' || $fieldName === 'memberEditList')) {
+                    if ($request->has($fieldName . '[]')) {
+                        $value = $request->get($fieldName . '[]');
+                    } else {
+                        $value = $request->get($fieldName);
+                    }
+
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $taskObject->$fieldName = $value;
+                } else {
 					$taskObject->$fieldName = $request->get($fieldName);
 				}
 				if ($fieldName == 'calendar_repeat_limit_date') {
@@ -104,25 +116,27 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 			require_once 'modules/com_vtiger_workflow/expression_engine/include.inc';
 
 			$fieldMapping = Zend_Json::decode($taskObject->field_value_mapping);
-			if (is_array($fieldMapping)) {
-				foreach ($fieldMapping as $key => $mappingInfo) {
-					if ($mappingInfo['valuetype'] == 'expression') {
-						try {
-							$parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($mappingInfo['value'])));
-							$expression = $parser->expression();
-						} catch (Exception $e) {
-							$result = new Vtiger_Response();
-							$result->setError($mappingInfo);
-							$result->emit();
-							return;
-						}
-					}else if($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
-                                            $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
-                                            $fieldMapping[$key] = $mappingInfo;
-                                        }
-				}
-			}
-                        $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
+
+            if (is_array($fieldMapping)) {
+                foreach ($fieldMapping as $key => $mappingInfo) {
+                    if ($mappingInfo['valuetype'] == 'expression') {
+                        try {
+                            $parser = new VTExpressionParser(new VTExpressionSpaceFilter(new VTExpressionTokenizer($mappingInfo['value'])));
+                            $expression = $parser->expression();
+                        } catch (Exception $e) {
+                            $result = new Vtiger_Response();
+                            $result->setError($mappingInfo);
+                            $result->emit();
+                            return;
+                        }
+                    } elseif ($mappingInfo['valuetype'] == 'rawtext' && Vtiger_Functions::isDateValue($mappingInfo['value'])) {
+                        $mappingInfo['value'] = DateTimeField::convertToDBFormat($mappingInfo['value']);
+                        $fieldMapping[$key] = $mappingInfo;
+                    }
+                }
+            }
+
+            $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
 			$taskType = get_class($taskObject);
 			if ($taskType === 'VTCreateEventTask' || $taskType === 'VTCreateTodoTask') {
 				if($taskType === 'VTCreateEventTask') {

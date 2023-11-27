@@ -8,7 +8,7 @@
  * All Rights Reserved.
  *************************************************************************************/
 vimport('~~/include/Webservices/Custom/ChangePassword.php');
-vimport('~~/include/simplehtmldom/simple_html_dom.php');
+vimport('~~/vendor/simplehtmldom/simplehtmldom/simple_html_dom.php');
 vimport('~~/libraries/InStyle/InStyle.php');
 
 class Users_SaveAjax_Action extends Vtiger_SaveAjax_Action {

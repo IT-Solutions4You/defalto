@@ -1832,10 +1832,14 @@ th.htColHeader,
   background: #f3f3f4;
 }
 #s2id_memberList li > div,
+#s2id_memberEditList li > div,
+#s2id_memberViewList li > div,
 .groupMembersColors li > div {
   margin-left: 10px;
 }
 #s2id_memberList .Users,
+#s2id_memberEditList .Users,
+#s2id_memberViewList .Users,
 .groupMembersColors .Users {
   background-color: #f99984 !important;
   padding: 5px;
@@ -1843,6 +1847,8 @@ th.htColHeader,
   background-image: none;
 }
 #s2id_memberList .Groups,
+#s2id_memberEditList .Groups,
+#s2id_memberViewList .Groups,
 .groupMembersColors .Groups {
   background-color: #acd5ff !important;
   background-image: none;
@@ -1850,6 +1856,8 @@ th.htColHeader,
   margin-bottom: 2px;
 }
 #s2id_memberList .Roles,
+#s2id_memberEditList .Roles,
+#s2id_memberViewList .Roles,
 .groupMembersColors .Roles {
   background-color: #ffec98 !important;
   background-image: none;
@@ -1857,11 +1865,22 @@ th.htColHeader,
   margin-bottom: 2px;
 }
 #s2id_memberList .RoleAndSubordinates,
+#s2id_memberEditList .RoleAndSubordinates,
+#s2id_memberViewList .RoleAndSubordinates,
 .groupMembersColors .RoleAndSubordinates {
   background-color: #c4dea2 !important;
   background-image: none;
   padding: 5px;
   margin-bottom: 2px;
+}
+#s2id_memberList .MultiCompany4you,
+#s2id_memberEditList .MultiCompany4you,
+#s2id_memberViewList .MultiCompany4you,
+.groupMembersColors .MultiCompany4you {
+  background-color: #aa78ce !important;
+  padding: 5px;
+  margin-bottom: 2px;
+  background-image: none;
 }
 .collectiveGroupMembers {
   border: 1px solid #dddddd;

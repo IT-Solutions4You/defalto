@@ -978,7 +978,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 		this.registerEventForSelectAllInCurrentPage();
 		this.registerSelectButton();
 		this.registerEventForCheckboxChange();
-	}
+	},
 });
         
 jQuery(document).ready(function() {

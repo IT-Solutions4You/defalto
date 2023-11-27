@@ -144,7 +144,7 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model {
 
 		$sourceModule = $this->get('sourceModule');
 		if($sourceModule) {
-			$listQuery .= " WHERE module_name = '$sourceModule'";
+			$listQuery .= ' WHERE module_name = ?';
             array_push($params, $sourceModule);
 		}
 		$search_value = $this->get('search_value');

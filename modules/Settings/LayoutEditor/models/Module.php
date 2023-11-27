@@ -202,7 +202,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		}
 
 		if($fieldType == 'Picklist' || $fieldType == 'MultiSelectCombo') {
-			$pickListValues = explode(',',$params['pickListValues']);
+            $pickListValues = !empty($params['pickListValues']) && is_array($params['pickListValues']) ? $params['pickListValues'] : explode(',', $params['pickListValues']);
 			$fieldModel->setPicklistValues($pickListValues);
 		}
 		return $fieldModel;

@@ -438,4 +438,3 @@ class ProjectMilestone extends CRMEntity {
 		return $query;
 	}
 }
-?>

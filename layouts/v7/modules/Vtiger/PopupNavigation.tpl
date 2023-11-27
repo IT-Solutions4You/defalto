@@ -12,7 +12,7 @@
 {strip}
     <div class="col-md-2">
         {if $MULTI_SELECT}
-            {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-default" disabled="disabled"><strong>{vtranslate('LBL_ADD', $MODULE)}</strong></button>{/if}
+            {if !empty($LISTVIEW_ENTRIES)}<button class="select btn btn-default" disabled="disabled"><strong>{vtranslate('LBL_ADD', $MODULE)}</strong></button>&nbsp;{/if}
         {else}
             &nbsp;
         {/if}

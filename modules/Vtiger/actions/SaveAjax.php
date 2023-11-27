@@ -11,7 +11,6 @@
 class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 
 	public function process(Vtiger_Request $request) {
-		$fieldToBeSaved = $request->get('field');
 		$response = new Vtiger_Response();
 		try {
 			vglobal('VTIGER_TIMESTAMP_NO_CHANGE_MODE', $request->get('_timeStampNoChangeMode',false));
@@ -38,7 +37,7 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 						$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId()); 
 					}
 					if ($fieldModel->getFieldDataType() == 'currency') {
-						$displayValue = Vtiger_Currency_UIType::transformDisplayValue($fieldValue);
+						$displayValue = Vtiger_Currency_UIType::transformDisplayValue($fieldValue, null, true);
 					}
 					if(!empty($picklistColorMap)) {
 						$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue, 'colormap' => $picklistColorMap);
@@ -92,6 +91,8 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				$uiType = $fieldModel->get('uitype');
 				if ($uiType == 70) {
 					$fieldValue = $recordModel->get($fieldName);
+                } else if ($uiType == 71 || $uiType == 72) {
+                    $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($recordModel->get($fieldName), true);
 				} else {
 					$fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
 				}

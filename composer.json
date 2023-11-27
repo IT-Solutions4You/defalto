@@ -1,11 +1,101 @@
 {
   "require": {
+    "php": "^7.4 || ^8.0",
+    "ext-curl": "*",
+    "ext-gd": "*",
+    "ext-iconv": "*",
+    "ext-json": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",
+    "ext-openssl": "*",
     "ext-simplexml": "*",
     "ext-xml": "*",
-    "phpmailer/phpmailer": "*"
+    "adodb/adodb-php": "5.*",
+    "apalfrey/select2-bootstrap-5-theme": "*",
+    "ckeditor/ckeditor": "*",
+    "components/font-awesome": "*",
+    "ezyang/htmlpurifier": "4.*",
+    "fullcalendar/fullcalendar": "*",
+    "kcfinder/kcfinder": "*",
+    "michelf/php-markdown": "1.*",
+    "monolog/monolog": "^3.5",
+    "mpdf/mpdf": "*",
+    "myclabs/deep-copy": "^1.7",
+    "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
+    "php-http/message-factory": "^1.0",
+    "phpmailer/phpmailer": "*",
+    "psr/http-message": "^1.0",
+    "psr/log": "^1.0 || ^2.0",
+    "select2/select2": "*",
+    "setasign/fpdi": "^2.1",
+    "simplehtmldom/simplehtmldom": "*",
+    "smarty/smarty": "4.*",
+    "twbs/bootstrap": "*",
+    "twbs/bootstrap-icons": "*"
   },
+  "require-dev": {
+    "phpstan/phpstan": "1.9.*",
+    "rector/rector": "0.15.*",
+    "tracy/tracy": "v2.9.7"
+  },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "fullcalendar/fullcalendar",
+        "version": "5.11.3",
+        "dist": {
+          "url": "https://github.com/fullcalendar/fullcalendar/releases/download/v5.11.3/fullcalendar-5.11.3.zip",
+          "type": "zip"
+        }
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "kcfinder/kcfinder",
+        "source": {
+          "url": "https://github.com/IT-Solutions4You/kcfinder.git",
+          "type": "git",
+          "reference": "master"
+        },
+        "autoload": {
+          "classmap": ["/"]
+        },
+        "version": "1"
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "mpdf/mpdf",
+        "source": {
+          "url": "https://github.com/IT-Solutions4You/mpdf.git",
+          "type": "git",
+          "reference": "development"
+        },
+        "autoload": {
+          "classmap": ["/src"]
+        },
+        "version": "1"
+      }
+    },
+    {
+      "type": "package",
+      "package": {
+        "name": "simplehtmldom/simplehtmldom",
+        "source": {
+          "url": "https://github.com/simplehtmldom/simplehtmldom.git",
+          "type": "git",
+          "reference": "master"
+        },
+        "autoload": {
+          "classmap": ["/"]
+        },
+        "version": "1"
+      }
+    }
+  ],
   "config": {
     "bin-dir": "bin",
     "discard-changes": true,

@@ -165,7 +165,7 @@ class Vtiger_Utils {
 		$adb->dieOnError = false;
 
 		$tablename = Vtiger_Utils::SQLEscape($tablename);
-		$tablecheck = $adb->pquery("SHOW TABLES LIKE ?", array($tablename));
+		$tablecheck = $adb->pquery("SHOW TABLES LIKE '" . $tablename . "'");
 
 		$tablePresent = true;
 		if(empty($tablecheck) || $adb->num_rows($tablecheck) === 0)
@@ -303,7 +303,7 @@ class Vtiger_Utils {
      * @param <boolean> $request flag to enable or disable request in log
      */
     static function ModuleLog($module, $mixed, $extra = array()) {
-        if (ALLOW_MODULE_LOGGING) { 
+		if (defined('ALLOW_MODULE_LOGGING')) {
             global $site_URL;
             $date = date('Y-m-d H:i:s');
             $log = array($site_URL,$module, $date);

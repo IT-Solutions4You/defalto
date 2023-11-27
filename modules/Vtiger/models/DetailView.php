@@ -63,20 +63,30 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 		$moduleName = $moduleModel->getName();
 		$recordId = $recordModel->getId();
 
-		$detailViewLink = array();
+        $detailViewLinks = array();
 		$linkModelList = array();
+
+        if(in_array($moduleName, ['Leads', 'Contacts', 'Accounts'])) {
+            $detailViewLinks[] = array(
+                'linktype' => 'DETAILVIEWBASIC',
+                'linklabel' => 'LBL_SHOW_MAP',
+                'linkurl' => sprintf('Vtiger_Index_Js.showMap(this, "%s", "%d");', $moduleName, $recordId),
+                'linkicon' => '<i class="fa fa-map-marker"></i>'
+            );
+        }
+
 		if(Users_Privileges_Model::isPermitted($moduleName, 'EditView', $recordId)) {
 			$detailViewLinks[] = array(
 					'linktype' => 'DETAILVIEWBASIC',
 					'linklabel' => 'LBL_EDIT',
 					'linkurl' => $recordModel->getEditViewUrl(),
-					'linkicon' => ''
+					'linkicon' => '<i class="fa fa-pencil"></i>'
 			);
-
-			foreach ($detailViewLinks as $detailViewLink) {
-				$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
-			}
 		}
+
+        foreach ($detailViewLinks as $detailViewLink) {
+            $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
+        }
 
 		if(Users_Privileges_Model::isPermitted($moduleName, 'Delete', $recordId)) {
 			$deletelinkModel = array(
@@ -147,59 +157,67 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 	 * Function to get the detail view related links
 	 * @return <array> - list of links parameters
 	 */
-	public function getDetailViewRelatedLinks() {
-		$recordModel = $this->getRecord();
-		$moduleName = $recordModel->getModuleName();
-		$parentModuleModel = $this->getModule();
-		$relatedLinks = array();
+    public function getDetailViewRelatedLinks()
+    {
+        $recordModel = $this->getRecord();
+        $moduleName = $recordModel->getModuleName();
+        $parentModuleModel = $this->getModule();
+        $relatedLinks = array();
 
-		if($parentModuleModel->isSummaryViewSupported()) {
-			$relatedLinks = array(array(
-				'linktype' => 'DETAILVIEWTAB',
-				'linklabel' => vtranslate('LBL_SUMMARY', $moduleName),
-				'linkKey' => 'LBL_RECORD_SUMMARY',
-				'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=summary',
-				'linkicon' => ''
-			));
-		}
-		//link which shows the summary information(generally detail of record)
-		$relatedLinks[] = array(
-				'linktype' => 'DETAILVIEWTAB',
-				'linklabel' => vtranslate('LBL_DETAILS', $moduleName),
-				'linkKey' => 'LBL_RECORD_DETAILS',
-				'linkurl' => $recordModel->getDetailViewUrl().'&mode=showDetailViewByMode&requestMode=full',
-				'linkicon' => ''
-		);
+        if ($parentModuleModel->isSummaryViewSupported()) {
+            $relatedLinks = array(
+                array(
+                    'linktype' => 'DETAILVIEWTAB',
+                    'linklabel' => vtranslate('LBL_SUMMARY', $moduleName),
+                    'linkKey' => 'LBL_RECORD_SUMMARY',
+                    'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=summary',
+                    'linkicon' => '<i class="fa-solid fa-lightbulb"></i>',
+                ),
+            );
+        }
 
-		if($parentModuleModel->isTrackingEnabled()) {
-			$relatedLinks[] = array(
-					'linktype' => 'DETAILVIEWTAB',
-					'linklabel' => 'LBL_UPDATES',
-					'linkurl' => $recordModel->getDetailViewUrl().'&mode=showRecentActivities&page=1',
-					'linkicon' => ''
-			);
-		}
+        $relatedLinks[] = array(
+            'linktype' => 'DETAILVIEWTAB',
+            'linklabel' => vtranslate('LBL_DETAILS', $moduleName),
+            'linkKey' => 'LBL_RECORD_DETAILS',
+            'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showDetailViewByMode&requestMode=full',
+            'linkicon' => '<i class="fa-solid fa-circle-info"></i>',
+        );
 
+        if ($parentModuleModel->isTrackingEnabled()) {
+            $relatedLinks[] = array(
+                'linktype' => 'DETAILVIEWTAB',
+                'linklabel' => 'LBL_UPDATES',
+                'linkurl' => $recordModel->getDetailViewUrl() . '&mode=showRecentActivities&page=1',
+                'linkicon' => '<i class="fa-solid fa-arrows-rotate"></i>',
+            );
+        }
 
-		$relationModels = $parentModuleModel->getRelations();
+        $relatedLinks[] = [
+            'linktype' => 'DETAILVIEWTAB',
+            'linklabel' => 'LBL_SHARING_RECORD',
+            'linkurl' => $recordModel->getDetailViewUrl() . '&mode=DetailSharingRecord',
+            'linkicon' => '<i class="fa-solid fa-share-nodes"></i>',
+        ];
 
-		foreach($relationModels as $relation) {
-			//TODO : Way to get limited information than getting all the information
-			$link = array(
-					'linktype' => 'DETAILVIEWRELATED',
-					'linklabel' => $relation->get('label'),
-					'linkurl' => $relation->getListUrl($recordModel),
-					'linkicon' => '',
-					'relatedModuleName' => $relation->get('relatedModuleName'),
-					'linkid' => $relation->getId()
-			);
-			$relatedLinks[] = $link;
-		}
+        $relationModels = $parentModuleModel->getRelations();
 
-		return $relatedLinks;
-	}
+        foreach ($relationModels as $relation) {
+            $link = array(
+                'linktype' => 'DETAILVIEWRELATED',
+                'linklabel' => $relation->get('label'),
+                'linkurl' => $relation->getListUrl($recordModel),
+                'linkicon' => '',
+                'relatedModuleName' => $relation->get('relatedModuleName'),
+                'linkid' => $relation->getId(),
+            );
+            $relatedLinks[] = $link;
+        }
 
-	/**
+        return $relatedLinks;
+    }
+
+    /**
 	 * Function to get the detail view widgets
 	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
 	 */
@@ -240,6 +258,20 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 					'actionURL' =>	$documentsInstance->getQuickCreateUrl()
 			);
 		}
+
+        $appointmentsInstance = Vtiger_Module_Model::getInstance('Appointments');
+        if($userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'DetailView') && $moduleModel->isModuleRelated('Appointments')) {
+            $createPermission = $userPrivilegesModel->hasModuleActionPermission($appointmentsInstance->getId(), 'CreateView');
+            $widgets[] = array(
+                'linktype' => 'DETAILVIEWWIDGET',
+                'linklabel' => 'Appointments',
+                'linkName'	=> $appointmentsInstance->getName(),
+                'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
+                    '&mode=getEvents&page=1&limit=5',
+                'action'	=>	($createPermission == true) ? array('Add') : array(),
+                'actionURL' =>	$appointmentsInstance->getQuickCreateUrl()
+            );
+        }
 
 		$widgetLinks = array();
 		foreach ($widgets as $widgetDetails) {

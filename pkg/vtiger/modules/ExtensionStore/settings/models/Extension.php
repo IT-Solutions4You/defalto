@@ -9,7 +9,6 @@
  * ***********************************************************************************/
 
 vimport('~~/vtlib/Vtiger/Package.php');
-vimport('~/libraries/PHPMarkdown/Michelf/Markdown.inc.php');
 
 class Settings_ExtensionStore_Extension_Model extends Vtiger_Base_Model {
 

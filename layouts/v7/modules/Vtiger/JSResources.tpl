@@ -35,8 +35,8 @@
     <script type="text/javascript" src="{vresource_url('layouts/v7/lib/jquery/daterangepicker/moment.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/v7/lib/jquery/daterangepicker/jquery.daterangepicker.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/v7/lib/jquery/jquery.timeago.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('libraries/jquery/ckeditor/ckeditor.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('libraries/jquery/ckeditor/adapters/jquery.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('vendor/ckeditor/ckeditor/ckeditor.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('vendor/ckeditor/ckeditor/adapters/jquery.js')}"></script>
 	<script type='text/javascript' src="{vresource_url('layouts/v7/lib/anchorme_js/anchorme.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/v7/modules/Vtiger/resources/Class.js')}"></script>
     <script type='text/javascript' src="{vresource_url('layouts/v7/resources/helper.js')}"></script>

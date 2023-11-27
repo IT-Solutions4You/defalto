@@ -173,7 +173,7 @@ if(isset($default_timezone) && function_exists('date_default_timezone_set')) {
 }
 
 //Set the default layout 
-$default_layout = 'v7';
+$default_layout = 'd1';
 
 //Maximum Listview Fields Selection Size
 $maxListFieldsSelectionSize = 15;

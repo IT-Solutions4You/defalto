@@ -161,9 +161,9 @@ class DateTimeField {
 	/**
 	 *
 	 * @global Users $current_user
-	 * @param type $date
+	 * @param string $date
 	 * @param Users $user
-	 * @return type
+	 * @return string
 	 */
 	public static function convertToUserFormat($date, $user = null) {
 		global $current_user;

@@ -151,7 +151,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			// check if the field is reference field
 			preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 			if(php7_count($matches) > 0) {
-				list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+				[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 				$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
 				$referenceFieldModel = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
 				$referenceFieldModel->set('webserviceField', $webserviceField);
@@ -234,7 +234,15 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$pageLimit = $pagingModel->getPageLimit();
 		$paramArray = array();
 
-		if(!empty($orderBy) && $orderByFieldModel) {
+        $viewid = ListViewSession::getCurrentView($moduleName);
+
+        if(empty($viewid)) {
+            $viewid = $pagingModel->get('viewid');
+        }
+
+        $_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
+
+        if(!empty($orderBy) && $orderByFieldModel) {
 			if($orderBy == 'roleid' && $moduleName == 'Users'){
 				$listQuery .= ' ORDER BY vtiger_role.rolename '.' '. $sortOrder; 
 			} else {
@@ -243,17 +251,32 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 			if ($orderBy == 'first_name' && $moduleName == 'Users') {
 				$listQuery .= ' , last_name '.' '. $sortOrder .' ,  email1 '. ' '. $sortOrder;
-			} 
-		} else if(empty($orderBy) && empty($sortOrder) && $moduleName != "Users"){
-			//List view will be displayed on recently created/modified records
-			$listQuery .= ' ORDER BY vtiger_crmentity.modifiedtime DESC';
-		}
+			}
+        } elseif (empty($orderBy) && empty($sortOrder) && $moduleName != "Users") {
+            $orderBy = ' ORDER BY vtiger_crmentity.createdtime DESC';
+            $cvModel = CustomView_Record_Model::getInstanceById($viewid);
+            $cvOrderBy = false;
 
-		$viewid = ListViewSession::getCurrentView($moduleName);
-		if(empty($viewid)) {
-			$viewid = $pagingModel->get('viewid');
-		}
-		$_SESSION['lvs'][$moduleName][$viewid]['start'] = $pagingModel->get('page');
+            if ($cvModel) {
+                $cvOrderBy = $cvModel->fetchOrderBy();
+            }
+
+            if ($cvOrderBy) {
+                $orderBy = ' ORDER BY ' . implode(' ', $cvOrderBy);
+            } elseif (PerformancePrefs::getBoolean('LISTVIEW_DEFAULT_SORTING', true)) {
+                $orderBy = $moduleFocus->default_order_by;
+                $qualifiedOrderBy = $orderBy;
+                $orderByField = $moduleModel->getFieldByColumn($orderBy);
+
+                if ($orderByField) {
+                    $qualifiedOrderBy = $moduleModel->getOrderBySql($qualifiedOrderBy);
+                    $sortOrder = $moduleFocus->default_sort_order;
+                    $orderBy = ' ORDER BY ' . $qualifiedOrderBy . ' ' . $sortOrder;
+                }
+            }
+
+            $listQuery .= $orderBy;
+        }
 
 		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
 

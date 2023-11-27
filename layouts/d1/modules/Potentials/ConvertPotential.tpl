@@ -1,0 +1,88 @@
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
+{strip}
+   <div class="modal-dialog">
+      <div id="convertPotentialContainer" class='modelContainer modal-content'>
+         {assign var=PROJECT_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Project')}
+         {if !$CONVERT_POTENTIAL_FIELDS['Project']}
+            <input type="hidden" id="convertPotentialErrorTitle" value="{vtranslate('LBL_CONVERT_ERROR_TITLE',$MODULE)}"/>
+            <input id="converPotentialtError" class="convertPotentialError" type="hidden" value="{vtranslate('LBL_CONVERT_POTENTIALS_ERROR',$MODULE)}"/>
+         {else}
+            {assign var=HEADER_TITLE value={vtranslate('LBL_CONVERT_POTENTIAL', $MODULE)}|cat:" "|cat:{$RECORD->getName()}}
+            {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
+            <form class="form-horizontal" id="convertPotentialForm" method="post" action="index.php">
+               <input type="hidden" name="module" value="{$MODULE}"/>
+               <input type="hidden" name="view" value="SaveConvertPotential"/>
+               <input type="hidden" name="record" value="{$RECORD->getId()}"/>
+               <input type="hidden" name="modules" value=''/>
+               <div class="modal-body accordion container-fluid" id="potentialAccordion">
+                  {foreach item=MODULE_FIELD_MODEL key=MODULE_NAME from=$CONVERT_POTENTIAL_FIELDS}
+                     <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 moduleContent border border-1">
+                           <div class="accordion-group convertPotentialModules">
+                              <div class="header accordion-heading">
+                                 <div data-parent="#potentialAccordion" data-toggle="collapse" class="accordion-toggle moduleSelection" href="#{$MODULE_NAME}_FieldInfo">
+                                     <h5 class="m-0 p-3">
+                                         <input id="{$MODULE_NAME}Module" class="convertPotentialModuleSelection alignBottom" data-module="{vtranslate($MODULE_NAME,$MODULE_NAME)}" value="{$MODULE_NAME}" type="checkbox" {if $MODULE_NAME eq 'Project'} checked="" {/if}/>
+                                         {assign var=SINGLE_MODULE_NAME value="SINGLE_$MODULE_NAME"}
+                                         <span class="mx-2">{vtranslate('LBL_CREATE', $MODULE)}</span>
+                                         <span>{vtranslate($SINGLE_MODULE_NAME, $MODULE_NAME)}</span>
+                                     </h5>
+                                 </div>
+                              </div>
+                              <div id="{$MODULE_NAME}_FieldInfo" class="accordion-body collapse fieldInfo {$MODULE_NAME}_FieldInfo {if $CONVERT_POTENTIAL_FIELDS['Project'] && $MODULE_NAME == "Project"} in {/if}">
+                                 {foreach item=FIELD_MODEL from=$MODULE_FIELD_MODEL}
+                                     <div class="row py-3 border-bottom border-1">
+                                         <div class="fieldLabel col-lg-4">
+                                             <label class='muted pull-right'>
+                                                 {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}&nbsp;
+                                                 {if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if} 
+                                             </label>
+                                         </div>
+                                         <div class="fieldValue col-lg-8">
+                                             {include file=$FIELD_MODEL->getUITypeModel()->getTemplateName()|@vtemplate_path}
+                                         </div>
+                                     </div>
+                                     <br>
+                                 {/foreach}
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-lg-1"></div>
+                     </div>
+                     <br>
+                  {/foreach}
+                  <div class="defaultFields">
+                     <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-10 border border-1">
+                           <div class="my-3">
+                              <div class="row">
+                                 {assign var=FIELD_MODEL value=$ASSIGN_TO}
+                                 <div class="fieldLabel col-lg-4">
+                                    <label class='muted pull-right'>
+                                       {vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}&nbsp;
+                                       <span class="redColor">*</span> 
+                                    </label>
+                                 </div>
+                                 <div class="fieldValue col-lg-8">
+                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-lg-1"></div>
+                     </div>
+                  </div>
+               </div>
+               {include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
+            </form>
+         {/if}
+      </div>
+   </div>
+{/strip}

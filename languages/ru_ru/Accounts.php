@@ -45,6 +45,8 @@ $languageStrings = array(
   'Phone' => 'Основной Телефон',
   'Email' => 'Основной Адрес Электронной Почты',
 
+    'Company Reg. No.' => 'Company Reg. No.',
+    'VAT ID' => 'VAT ID',
 );
 $jsLanguageStrings = array(
 	'LBL_RELATED_RECORD_DELETE_CONFIRMATION' => 'Вы уверены, что хотите удалить?',

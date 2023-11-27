@@ -6,7 +6,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
-
+/** @var Vtiger_Detail_Js */
 Vtiger.Class("Vtiger_Detail_Js",{
 
 	detailInstance : false,
@@ -59,48 +59,49 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		self.sendSMS(detailActionUrl,module);
 	},
 
-	 deleteRelatedActivity : function(e) {
-		 var thisInstance = this;
-		  var currentElement = jQuery(e.currentTarget);
-		  var id = currentElement.data('id');
-		var recurringEnabled = currentElement.data('recurringEnabled');
-		var postData = {'related_record_list' : [id]};
-		if(recurringEnabled) {
-			app.helper.showConfirmationForRepeatEvents().then(function(params) {
+	deleteRelatedActivity: function (e) {
+		let thisInstance = this,
+			currentElement = jQuery(e.currentTarget),
+			id = currentElement.data('id'),
+			recurringEnabled = currentElement.data('recurringEnabled'),
+			postData = {'related_record_list': [id]};
+
+		if (recurringEnabled) {
+			app.helper.showConfirmationForRepeatEvents().then(function (params) {
 				jQuery.extend(postData, params);
 				thisInstance.deleteActivityRelation(postData);
-			},
-			function(error, err) {
+			}, function (error, err) {
 			});
 		} else {
-			var message = app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE');
-			app.helper.showConfirmationBox({'message' : message}).then(function(data) {
+			let message = app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE');
+
+			app.helper.showConfirmationBox({'message': message}).then(function (data) {
 				thisInstance.deleteActivityRelation(postData);
-			},
-			function(error,err) {
-			});	
+			}, function (error, err) {
+			});
 		}
 	},
 
-	deleteActivityRelation : function(customParams) {
-		var params = {
-			'module'			: app.getModuleName(),
-			'related_module'	: 'Calendar',
-			'action'			: 'RelationAjax',
-			'mode'				: 'deleteRelation',
-			'src_record'		: jQuery('#recordId').val()
+	deleteActivityRelation: function (customParams) {
+		let params = {
+			'module': app.getModuleName(),
+			'related_module': 'ITS4YouCalendar',
+			'action': 'RelationAjax',
+			'mode': 'deleteRelation',
+			'src_record': jQuery('#recordId').val()
 		};
 		params = jQuery.extend(params, customParams);
 
-		app.request.post({data: params}).then(function(err, data) {
-			if(data) {
+		app.request.post({data: params}).then(function (err, data) {
+			if (data) {
 				params = {
-					'record'	: jQuery('#recordId').val(),
-					'view'		: 'Detail',
-					'module'	: app.getModuleName(),
-					'mode'		: 'getActivities'
+					'record': jQuery('#recordId').val(),
+					'view': 'Detail',
+					'module': app.getModuleName(),
+					'mode': 'getActivities'
 				};
-				app.request.get({data: params}).then(function(err, result) {
+
+				app.request.get({data: params}).then(function (err, result) {
 					jQuery('#relatedActivities').html(result);
 					Vtiger_Detail_Js.getInstance().registerEventForActivityWidget();
 				});
@@ -253,7 +254,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	detailViewDetailTabLabel : 'LBL_RECORD_DETAILS',
 	detailViewHistoryTabLabel : 'LBL_HISTORY',
 	detailViewRecentCommentsTabLabel : 'ModComments',
-	detailViewRecentActivitiesTabLabel : 'Activities',
+	detailViewRecentActivitiesTabLabel : 'ITS4YouCalendar',
 	detailViewRecentDocumentsLabel : 'Documents',
 	widgetPostLoad : 'Vtiger.Widget.PostLoad',
 	_moduleName : false,
@@ -293,48 +294,57 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			return this.overlayMode;
 		},
 
-		registerRelatedRecordSave: function(){
-			var thisInstance = this;
-			app.event.on('post.overLayEditView.loaded',function(e, container){
-				jQuery('#EditView').vtValidate({
-					submitHandler : function(form){
-						window.onbeforeunload = null;
-						var e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
-						app.event.trigger(e);
-						if(e.isDefaultPrevented()) {
-							return false;
-						}
-						var formData = new FormData(form);
-						var postParams = {
+	registerRelatedRecordSave: function () {
+		let self = this;
+
+		app.event.on('post.overLayEditView.loaded', function (e, container) {
+			let editViewElement = jQuery('#EditView')
+
+			editViewElement.vtValidate({
+				submitHandler: function (form) {
+					window.onbeforeunload = null;
+					let e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
+					app.event.trigger(e);
+					if (e.isDefaultPrevented()) {
+						return false;
+					}
+					let formData = new FormData(form),
+						postParams = {
 							data: formData,
 							contentType: false,
 							processData: false
 						};
-						app.helper.showProgress();
-						app.request.post(postParams).then(function(err,data){
-							app.helper.hideProgress();
-							if (err === null) {
-								jQuery('.vt-notification').remove();
-								app.helper.hidePageContentOverlay();
-								var relatedModuleName = formData.module;
-								if(relatedModuleName == 'Events') {
-									relatedModuleName = 'Calendar';
-								}
-								var relatedController = thisInstance.getRelatedController(relatedModuleName);
-								relatedController.loadRelatedList();
-							} else {
-								app.event.trigger('post.save.failed', err);
+					app.helper.showProgress();
+					app.request.post(postParams).then(function (err, data) {
+						app.helper.hideProgress();
+						if (err === null) {
+							jQuery('.vt-notification').remove();
+							app.helper.hidePageContentOverlay();
+
+							let relatedModuleName = formData.module;
+
+							if ('Events' === relatedModuleName) {
+								relatedModuleName = 'Calendar';
 							}
+
+							let relatedController = self.getRelatedController(relatedModuleName);
+
+							if (relatedController) {
+								relatedController.loadRelatedList();
+							}
+						} else {
+							app.event.trigger('post.save.failed', err);
+						}
 					});
 					return false;
-					}
-				});
-
-				jQuery('#EditView').find('.saveButton').on('click', function(e){
-					window.onbeforeunload = null;
-				});
+				}
 			});
-		},
+
+			editViewElement.find('.saveButton').on('click', function (e) {
+				window.onbeforeunload = null;
+			});
+		});
+	},
 
 	referenceFieldNames : {
 		'Accounts' : 'parent_id',
@@ -1658,27 +1668,24 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		 * Register click event for add button in Related Activities widget
 		 */
 		jQuery('.createActivity').on('click', function(e){
-			var currentTarget = jQuery(e.currentTarget);
-			var referenceModuleName;
-			if(currentTarget.hasClass('toDotask')){
-				referenceModuleName = 'Calendar';
-			}else{
-				referenceModuleName = "Events";
-			}
-			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]');
-			var recordId = thisInstance.getRecordId();
-			var module = app.getModuleName();
-			var element = jQuery(e.currentTarget);
+			let currentTarget = jQuery(e.currentTarget),
+				referenceModuleName = 'ITS4YouCalendar',
+				quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]'),
+				recordId = thisInstance.getRecordId(),
+				module = app.getModuleName(),
+				element = jQuery(e.currentTarget);
 
 			if(quickCreateNode.length <= 0) {
 				app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
 			}
-			var fieldName = thisInstance.referenceFieldNames[module];
+
+			let fieldName = thisInstance.referenceFieldNames[module];
+
 			if(typeof fieldName == 'undefined' && module != 'Contacts'){
 				fieldName = 'parent_id';
 			}
 
-			var customParams = {};
+			let customParams = {};
 			customParams[fieldName] = recordId;
 			customParams['parentModule'] = module;
 
@@ -1690,7 +1697,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			});
 
 			app.event.on('post.QuickCreateForm.save',function(event,data){
-				var params = {};
+				let params = {};
 				params['record'] = recordId;
 				params['view'] = 'Detail';
 				params['module'] = module;
@@ -1698,7 +1705,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 				app.request.post({"data":params}).then(
 					function(err,data) {
-						var activitiesWidget = jQuery('#relatedActivities');
+						let activitiesWidget = jQuery('#relatedActivities');
 						activitiesWidget.html(data);
 						vtUtils.applyFieldElementsView(activitiesWidget);
 						thisInstance.registerEventForActivityWidget();
@@ -1706,7 +1713,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				);
 			});
 
-			var QuickCreateParams = {};
+			let QuickCreateParams = {};
 			QuickCreateParams['noCache'] = false;
 			QuickCreateParams['data'] = customParams;
 			quickCreateNode.trigger('click', QuickCreateParams);
@@ -2596,12 +2603,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 
-	showOverlayEditView: function(recordUrl) {
-		var self = this;
-			var params = app.convertUrlToDataParams(recordUrl);
-			params['displayMode'] = 'overlay';
-		var postData = self.getDefaultParams();
-		for (var key in postData) {
+	showOverlayEditView: function (recordUrl) {
+		let self = this;
+		let params = app.convertUrlToDataParams(recordUrl);
+		params['displayMode'] = 'overlay';
+		let postData = self.getDefaultParams();
+		for (let key in postData) {
 			if (postData[key]) {
 				if (key == 'relatedModule') {
 					params['returnrelatedModuleName'] = postData[key];
@@ -2614,26 +2621,26 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			}
 		}
 		params['returnrecord'] = jQuery('[name="record_id"]').val();
-			app.helper.showProgress();
-		app.request.get({data: params}).then(function(err, response) {
-				app.helper.hideProgress();
-				var overlayParams = {'backdrop': 'static', 'keyboard': false};
-				app.helper.loadPageContentOverlay(response, overlayParams).then(function(container) {
-				var height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80;
+		app.helper.showProgress();
+		app.request.get({data: params}).then(function (err, response) {
+			app.helper.hideProgress();
+			let overlayParams = {'backdrop': 'static', 'keyboard': false};
+			app.helper.loadPageContentOverlay(response, overlayParams).then(function (container) {
+				let height = jQuery(window).height() - jQuery('.app-fixed-navbar').height() - jQuery('.overlayFooter').height() - 80;
 
-					var scrollParams = {
-						setHeight: height,
-						alwaysShowScrollbar: 2,
-						autoExpandScrollbar: true,
-						setTop: 0,
-							scrollInertia: 70
-					}
-					app.helper.showVerticalScroll(jQuery('.editViewContents'), scrollParams);
-					self.registerOverlayEditEvents(params.module, container);
-					self.registerRelatedRecordSave();
-					app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
-				});
+				let scrollParams = {
+					setHeight: height,
+					alwaysShowScrollbar: 2,
+					autoExpandScrollbar: true,
+					setTop: 0,
+					scrollInertia: 70
+				}
+				app.helper.showVerticalScroll(jQuery('.editViewContents'), scrollParams);
+				self.registerOverlayEditEvents(params.module, container);
+				self.registerRelatedRecordSave();
+				app.event.trigger('post.overLayEditView.loaded', jQuery('.overlayEdit'));
 			});
+		});
 	},
 	registerOverlayEditEvent: function() {
 		var self = this;

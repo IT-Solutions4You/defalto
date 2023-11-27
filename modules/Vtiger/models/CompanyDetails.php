@@ -30,6 +30,14 @@ class Vtiger_CompanyDetails_Model extends Vtiger_Base_Model {
 	}
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return (string)$this->get('organizationname');
+    }
+
+    /**
      * Function to get the instance of the CompanyDetails model for a given organization id
      * @param <Number> $id
      * @return Vtiger_CompanyDetails_Model instance

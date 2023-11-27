@@ -144,7 +144,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			"modules.Vtiger.resources.CkEditor",
 			//for vtiger7 
 			"modules.Vtiger.resources.MergeRecords",
-			"~layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
+			"~layouts/d1/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/instafilta.min.js",
 			'modules.Vtiger.resources.Tag',
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/floatThead/jquery.floatThead.js",
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/js/perfect-scrollbar.jquery.js"
@@ -444,7 +444,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$currentCVSelectedFields = array();
 			foreach ($allCustomViews as $cat => $views) {
 				foreach ($views as $viewModel) {
-					if ($viewModel->getId() === $viewer->get_template_vars('VIEWID')) {
+					if ((int)$viewModel->getId() === (int)$viewer->getTemplateVars('VIEWID')) {
 						$currentCVSelectedFields = $viewModel->getSelectedFields();
 						$viewer->assign('CURRENT_CV_MODEL', $viewModel);
 						break;

@@ -19,10 +19,21 @@
 	{/if}
 	>
 	{if $FIELD_MODEL->isEmptyPicklistOptionAllowed()}<option value="">{vtranslate('LBL_SELECT_OPTION','Vtiger')}</option>{/if}
+	{assign var=CURRENT_VALUE value=trim(decode_html($FIELD_MODEL->get('fieldvalue')))}
+	{assign var=CURRENT_VALUE_FOUND value=false}
 	{foreach item=PICKLIST_VALUE key=PICKLIST_NAME from=$PICKLIST_VALUES}
 		{assign var=CLASS_NAME value="picklistColor_{$FIELD_MODEL->getFieldName()}_{$PICKLIST_NAME|replace:' ':'_'}"}
-		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if trim(decode_html($FIELD_MODEL->get('fieldvalue'))) eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+		<option value="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_NAME)}" {if isset($PICKLIST_COLORS[$PICKLIST_NAME]) && $PICKLIST_COLORS[$PICKLIST_NAME]}class="{$CLASS_NAME}"{/if} {if $CURRENT_VALUE eq trim($PICKLIST_NAME)} selected {/if}>{$PICKLIST_VALUE}</option>
+		{if $CURRENT_VALUE eq trim($PICKLIST_NAME)}
+			{assign var=CURRENT_VALUE_FOUND value=true}
+		{/if}
 	{/foreach}
+	{if $CURRENT_VALUE_FOUND eq false && $CURRENT_VALUE neq ''}
+		{assign var=ALL_PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
+		{if isset($ALL_PICKLIST_VALUES[$CURRENT_VALUE])}
+		<option value="{$CURRENT_VALUE}" selected>{vtranslate($CURRENT_VALUE, $MODULE)}</option>
+		{/if}
+	{/if}
 </select>
 {if $PICKLIST_COLORS}
 	<style type="text/css">

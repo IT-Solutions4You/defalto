@@ -72,6 +72,12 @@ class CustomView_Save_Action extends Vtiger_Action_Controller {
 		if(!empty($advFilterList)) {
 			$customViewData['advfilterlist'] = $advFilterList;
 		}
+
+        if ($request->has('sortcolumnname') && $request->has('sortorder')) {
+            $customViewData['sortcolumnname'] = $request->get('sortcolumnname');
+            $customViewData['sortorder'] = $request->get('sortorder');
+        }
+
         if($request->has('sharelist')) {
             $customViewData['sharelist'] = $request->get('sharelist');
             if($customViewData['sharelist'] == '1')

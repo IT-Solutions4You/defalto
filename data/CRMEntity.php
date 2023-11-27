@@ -129,6 +129,15 @@ class CRMEntity {
 		//Calling the Module specific save code
 		$this->save_module($module);
 
+        if ($insertion_mode !== 'edit') {
+            if (in_array('currency_id', $this->db->getColumnNames($this->table_name))) {
+                $currencyField = new CurrencyField(0);
+                $currencyField->initialize();
+                $this->db->pquery('UPDATE ' . $this->table_name . ' SET currency_id = ?, conversion_rate = ? WHERE ' . $this->table_index . ' = ?',
+                    [$currencyField->currencyId, $currencyField->conversionRate, $this->id]);
+            }
+        }
+
 		$this->db->completeTransaction();
 
 		// vtlib customization: Hook provide to enable generic module relation.
@@ -314,7 +323,7 @@ class CRMEntity {
 				$params = array($ownerid, $groupid, $current_user->id, $description_val, $adb->formatDate($date_var, true));
 			} else {
 				$profileList = getCurrentUserProfileList();
-				$perm_qry = "SELECT columnname FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid = vtiger_field.fieldid INNER JOIN vtiger_def_org_field ON vtiger_def_org_field.fieldid = vtiger_field.fieldid WHERE vtiger_field.tabid = ? AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0 AND vtiger_profile2field.profileid IN (" . generateQuestionMarks($profileList) . ") AND vtiger_def_org_field.visible = 0 and vtiger_field.tablename='vtiger_crmentity' and vtiger_field.displaytype in (1,3) and vtiger_field.presence in (0,2);";
+				$perm_qry = "SELECT columnname FROM vtiger_field INNER JOIN vtiger_profile2field ON vtiger_profile2field.fieldid = vtiger_field.fieldid WHERE vtiger_field.tabid = ? AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0 AND vtiger_profile2field.profileid IN (" . generateQuestionMarks($profileList) . ") and vtiger_field.tablename='vtiger_crmentity' and vtiger_field.displaytype in (1,3) and vtiger_field.presence in (0,2);";
 				$perm_result = $adb->pquery($perm_qry, array($tabid, $profileList));
 				$perm_rows = $adb->num_rows($perm_result);
 				for ($i = 0; $i < $perm_rows; $i++) {
@@ -410,10 +419,10 @@ class CRMEntity {
 		global $adb;
 		$insertion_mode = $this->mode;
         $table_name = Vtiger_Util_Helper::validateStringForSql($table_name);
-        
+        $tablekey = $this->tab_name_index[$table_name];
+
 		//Checkin whether an entry is already is present in the vtiger_table to update
 		if ($insertion_mode == 'edit') {
-			$tablekey = $this->tab_name_index[$table_name];
 			// Make selection on the primary key of the module table to check.
 			$check_query = "select $tablekey from $table_name where $tablekey=?";
 			$check_params = array($this->id);
@@ -451,23 +460,19 @@ class CRMEntity {
 					$sql = "SELECT vtiger_field.fieldname,vtiger_field.columnname,vtiger_field.uitype,vtiger_field.generatedtype,vtiger_field.typeofdata FROM vtiger_field
 						INNER JOIN vtiger_profile2field
 						ON vtiger_profile2field.fieldid = vtiger_field.fieldid
-						INNER JOIN vtiger_def_org_field
-						ON vtiger_def_org_field.fieldid = vtiger_field.fieldid
 						WHERE vtiger_field.tabid = ?
 						AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0
 						AND vtiger_profile2field.profileid IN (" . generateQuestionMarks($profileList) . ")
-						AND vtiger_def_org_field.visible = 0 and vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
+						AND vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
 
 					$params = array($tabid, $profileList, $table_name);
 				} else {
 					$sql = "SELECT vtiger_field.fieldname,vtiger_field.columnname,vtiger_field.uitype,vtiger_field.generatedtype,vtiger_field.typeofdata FROM vtiger_field
 						INNER JOIN vtiger_profile2field
 						ON vtiger_profile2field.fieldid = vtiger_field.fieldid
-						INNER JOIN vtiger_def_org_field
-						ON vtiger_def_org_field.fieldid = vtiger_field.fieldid
 						WHERE vtiger_field.tabid = ?
 						AND vtiger_profile2field.visible = 0 AND vtiger_profile2field.readonly = 0
-						AND vtiger_def_org_field.visible = 0 and vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
+						AND vtiger_field.tablename=? and vtiger_field.displaytype in (1,3,6) and vtiger_field.presence in (0,2) group by columnname";
 
 					$params = array($tabid, $table_name);
 				}
@@ -1690,13 +1695,15 @@ class CRMEntity {
 
 		$singular_modname = vtlib_toSingular($related_module);
 		$button = '';
-		if ($actions) {
-			if (is_string($actions))
-				$actions = explode(',', strtoupper($actions));
+
+        if ($actions) {
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
 				$button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "' class='crmbutton small edit' type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\" value='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "'>&nbsp;";
 			}
-			if (in_array('ADD', $actions) && isPermitted($related_module, 1, '') == 'yes') {
+
+            if (in_array('ADD', $actions) && isPermitted($related_module, 1, '') == 'yes') {
 				$button .= "<input type='hidden' name='createmode' id='createmode' value='link' />" .
 						"<input title='" . getTranslatedString('LBL_ADD_NEW') . " " . getTranslatedString($singular_modname) . "' class='crmbutton small create'" .
 						" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -1770,15 +1777,15 @@ class CRMEntity {
 	}
 
 	function __timediff($d1, $d2) {
-		list($t1_1, $t1_2) = explode(' ', $d1);
-		list($t1_y, $t1_m, $t1_d) = explode('-', $t1_1);
-		list($t1_h, $t1_i, $t1_s) = explode(':', $t1_2);
+		[$t1_1, $t1_2] = explode(' ', $d1);
+		[$t1_y, $t1_m, $t1_d] = explode('-', $t1_1);
+		[$t1_h, $t1_i, $t1_s] = explode(':', $t1_2);
 
 		$t1 = mktime($t1_h, $t1_i, $t1_s, $t1_m, $t1_d, $t1_y);
 
-		list($t2_1, $t2_2) = explode(' ', $d2);
-		list($t2_y, $t2_m, $t2_d) = explode('-', $t2_1);
-		list($t2_h, $t2_i, $t2_s) = explode(':', $t2_2);
+		[$t2_1, $t2_2] = explode(' ', $d2);
+		[$t2_y, $t2_m, $t2_d] = explode('-', $t2_1);
+		[$t2_h, $t2_i, $t2_s] = explode(':', $t2_2);
 
 		$t2 = mktime($t2_h, $t2_i, $t2_s, $t2_m, $t2_d, $t2_y);
 
@@ -1868,15 +1875,17 @@ class CRMEntity {
 		$singular_modname = 'SINGLE_' . $related_module;
 
 		$button = '';
+
 		if ($actions) {
-			if (is_string($actions))
-				$actions = explode(',', strtoupper($actions));
+            $actions = sanitizeRelatedListsActions($actions);
+
 			if (in_array('SELECT', $actions) && isPermitted($related_module, 4, '') == 'yes') {
 				$button .= "<input title='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module) . "' class='crmbutton small edit' " .
 						" type='button' onclick=\"return window.open('index.php?module=$related_module&return_module=$currentModule&action=Popup&popuptype=detailview&select=enable&form=EditView&form_submit=false&recordid=$id&parenttab=$parenttab','test','width=640,height=602,resizable=0,scrollbars=0');\"" .
 						" value='" . getTranslatedString('LBL_SELECT') . " " . getTranslatedString($related_module, $related_module) . "'>&nbsp;";
 			}
-			if (in_array('ADD', $actions) && isPermitted($related_module, 1, '') == 'yes') {
+
+            if (in_array('ADD', $actions) && isPermitted($related_module, 1, '') == 'yes') {
 				$button .= "<input type='hidden' name='createmode' id='createmode' value='link' />" .
 						"<input title='" . getTranslatedString('LBL_ADD_NEW') . " " . getTranslatedString($singular_modname) . "' class='crmbutton small create'" .
 						" onclick='this.form.action.value=\"EditView\";this.form.module.value=\"$related_module\"' type='submit' name='button'" .
@@ -2836,35 +2845,98 @@ class CRMEntity {
 	 * @return String Access control Query for the user.
 	 */
 	function getNonAdminAccessControlQuery($module, $user, $scope = '') {
+        $is_admin = null;
+        $profileGlobalPermission = [];
+        $defaultOrgSharingPermission = [];
+        $current_user_groups = null;
+        $current_user_parent_role_seq = null;
 		require('user_privileges/user_privileges_' . $user->id . '.php');
 		require('user_privileges/sharing_privileges_' . $user->id . '.php');
 		$query = ' ';
 		$tabId = getTabid($module);
+
 		if ($is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
 				== 1 && $defaultOrgSharingPermission[$tabId] == 3) {
+
+            $query .= $this->getSharingAccessControlQuery($user, $scope, $current_user_groups);
 			$tableName = 'vt_tmp_u' . $user->id;
 			$sharingRuleInfoVariable = $module . '_share_read_permission';
 			$sharingRuleInfo = $$sharingRuleInfoVariable;
 			$sharedTabId = null;
-			if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
+
+            if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
 					php7_count($sharingRuleInfo['GROUP']) > 0)) {
 				$tableName = $tableName . '_t' . $tabId;
 				$sharedTabId = $tabId;
 			} elseif ($module == 'Calendar' || !empty($scope)) {
 				$tableName .= '_t' . $tabId;
 			}
+
 			$this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
 			// for secondary module we should join the records even if record is not there(primary module without related record)
 				if($scope == ''){
-					$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid ";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
+							"vtiger_crmentity$scope.smownerid OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
 				}else{
-					$query = " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
+							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
 				}
 			}
 		return $query;
 	}
+
+    /**
+     * @param        $user
+     * @param string $scope
+     * @param        $current_user_groups
+     *
+     * @return string
+     * @throws Exception
+     */
+    function getSharingAccessControlQuery($user, $scope = '', $current_user_groups): string
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT parentrole FROM vtiger_role INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=vtiger_role.roleid AND userid=?', [$user->id]);
+        $parentRole = $db->query_result($result, 0, 'parentrole');
+        $parentRoleArr = explode('::', $parentRole);
+
+        foreach ($parentRoleArr as $key => $value) {
+            $parentRoleArr[$key] = '\'' . $value . '\'';
+        }
+
+        $parentRole = implode(',', $parentRoleArr);
+        $companyId = [];
+
+        if (false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany') && false !== Vtiger_Module_Model::getInstance('ITS4YouMultiCompany')->isActive()) {
+            $companyId = array_keys(ITS4YouMultiCompany_Module_Model::getCompaniesList());
+        }
+
+        $query = ' LEFT JOIN (
+                    SELECT crmid FROM its4you_sharing_users WHERE userid=' . $user->id;
+
+        if (0 < ($current_user_groups === null ? 0 : count($current_user_groups))) {
+            $query .= ' UNION 
+                SELECT crmid FROM its4you_sharing_groups where groupid in (' . implode(',', $current_user_groups) . ') ';
+        }
+
+        $query .= ' UNION
+        SELECT crmid FROM its4you_sharing_roles
+            INNER JOIN vtiger_user2role ON vtiger_user2role.roleid=its4you_sharing_roles.roleid AND userid=' . $user->id . '
+        UNION
+        SELECT crmid FROM its4you_sharing_rolessubroles
+        INNER JOIN vtiger_role ON vtiger_role.roleid=its4you_sharing_rolessubroles.roleid
+        WHERE its4you_sharing_rolessubroles.roleid IN (' . $parentRole . ')
+        AND vtiger_role.parentrole LIKE CONCAT("%", its4you_sharing_rolessubroles.roleid, "%")';
+
+        if (!empty($companyId)) {
+            $query .= 'UNION
+            SELECT crmid FROM its4you_sharing_multicompany WHERE companyid IN (' . implode(',', $companyId) . ')';
+        }
+
+        $query .= ') AS its4you_sharing' . $scope . ' ON its4you_sharing' . $scope . '.crmid = vtiger_crmentity.crmid ';
+
+        return $query;
+    }
 
 	public function listQueryNonAdminChange($query, $scope = '') {
 		//make the module base table as left hand side table for the joins,

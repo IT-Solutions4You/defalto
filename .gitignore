@@ -1,0 +1,10 @@
+.idea/*
+cache/*
+storage/*
+test/*
+user_privileges/*
+config.inc.php
+tabdata.php
+parent_tabdata.php
+vendor/*
+config.csrf-secret.php

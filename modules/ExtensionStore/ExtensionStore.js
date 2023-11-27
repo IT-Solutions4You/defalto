@@ -110,6 +110,8 @@ jQuery.Class('ExtensionStore_ExtensionStore_Js', {}, {
 	},
 
 	registerEvents: function () {
+		return;
+
 		var thisInstance = this;
 		var moduleName = app.getModuleName();
 

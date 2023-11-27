@@ -14,8 +14,8 @@
  ********************************************************************************/
 
 require_once 'include/logging.php';
-include_once 'libraries/adodb/adodb.inc.php';
-require_once 'libraries/adodb/adodb-xmlschema.inc.php';
+include_once 'vendor/adodb/adodb-php/adodb.inc.php';
+require_once 'vendor/adodb/adodb-php/adodb-xmlschema.inc.php';
 
 $log = Logger::getLogger('VT');
 $logsqltm = Logger::getLogger('SQLTIME');
@@ -114,7 +114,6 @@ class PearDatabase{
 
     function println($msg)
     {
-		require_once('include/logging.php');
 		$log1 = Logger::getLogger('VT');
 		if(is_array($msg)) {
 		    $log1->info("PearDatabse ->".print_r($msg,true));
@@ -848,6 +847,9 @@ class PearDatabase{
 			if($this->isdb_default_utf8_charset) {
 				$this->executeSetNamesUTF8SQL(true);
 			}
+
+			// Ensure sql_mode is friendly
+			$this->database->Execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
 		}
 	}
 
@@ -1118,4 +1120,3 @@ if(empty($adb)) {
 	$adb->connect();
 }
 //$adb->database->setFetchMode(ADODB_FETCH_BOTH);
-?>

@@ -10,35 +10,44 @@
 
 class Install_Utils_Model {
 
-	/**
-	 * variable has all the files and folder that should be writable
-	 * @var <Array>
-	 */
-	public static $writableFilesAndFolders = array (
-		'Configuration File' => './config.inc.php',
-		'Tabdata File' => './tabdata.php',
-		'Parent Tabdata File' => './parent_tabdata.php',
-		'Cache Directory' => './cache/',
-		'Image Cache Directory' => './cache/images/',
-		'Import Cache Directory' => './cache/import/',
-		'Storage Directory' => './storage/',
-		'User Privileges Directory' => './user_privileges/',
-		'Modules Directory' => './modules/',
-		'Cron Modules Directory' => './cron/modules/',
-		'Vtlib Test Directory' => './test/vtlib/',
-		'Vtlib Test HTML Directory' => './test/vtlib/HTML',
-		'Mail Merge Template Directory' => './test/wordtemplatedownload/',
-		'Product Image Directory' => './test/product/',
-		'User Image Directory' => './test/user/',
-		'Contact Image Directory' => './test/contact/',
-		'Logo Directory' => './test/logo/',
-		'Logs Directory' => './logs/',
-	);
+    /**
+     * variable has all the files and folder that should be writable
+     * @var array
+     */
+    public static $writableFilesAndFolders = array(
+        'Configuration File' => './config.inc.php',
+        'Tabdata File' => './tabdata.php',
+        'Parent Tabdata File' => './parent_tabdata.php',
+        'Cache Directory' => './cache/',
+        'Image Cache Directory' => './cache/images/',
+        'Import Cache Directory' => './cache/import/',
+        'Storage Directory' => './storage/',
+        'User Privileges Directory' => './user_privileges/',
+        'User Privileges Default Module View File' => './user_privileges/default_module_view.php',
+        'User Privileges Enable Backup File' => './user_privileges/enable_backup.php',
+        'Modules Directory' => './modules/',
+        'Layouts Directory' => './layouts/',
+        'Language Directory' => './languages/',
+        'Cron Modules Directory' => './cron/modules/',
+        'Cron Language Directory' => './cron/language/',
+        'Test Directory' => './test/',
+        'Test Templates' => './test/templates_c/',
+        'Test Upload' => './test/upload/',
+        'Vtlib Test Directory' => './test/vtlib/',
+        'Vtlib Test HTML Directory' => './test/vtlib/HTML',
+        'Mail Merge Template Directory' => './test/wordtemplatedownload/',
+        'Product Image Directory' => './test/product/',
+        'User Image Directory' => './test/user/',
+        'Contact Image Directory' => './test/contact/',
+        'Logo Directory' => './test/logo/',
+        'Logs Directory' => './logs/',
+        'Composer packages Directory' => './vendor/',
+    );
 
-	/**
-	 * Function returns all the files and folder that are not writable
-	 * @return <Array>
-	 */
+    /**
+     * Function returns all the files and folder that are not writable
+     * @return array
+     */
 	public static function getFailedPermissionsFiles() {
 		$writableFilesAndFolders = self::$writableFilesAndFolders;
 		$failedPermissions = array();
@@ -51,91 +60,116 @@ class Install_Utils_Model {
 		return $failedPermissions;
 	}
 
-	/**
-	 * Function returns the php.ini file settings required for installing vtigerCRM
-	 * @return <Array>
-	 */
-	static function getCurrentDirectiveValue() {
-		$directiveValues = array();
-		if (ini_get('safe_mode') == '1' || stripos(ini_get('safe_mode'), 'On') > -1)
-			$directiveValues['safe_mode'] = 'On';
-		/* if (ini_get('display_errors') != '1' || stripos(ini_get('display_errors'), 'Off') > -1)
-			$directiveValues['display_errors'] = 'Off'; */
-		if (ini_get('display_errors') == '1' || stripos(ini_get('display_errors'), 'On') > -1)
+    /**
+     * Function returns the php.ini file settings required for installing vtigerCRM
+     * @return array
+     */
+    public static function getCurrentDirectiveValue()
+    {
+        $directiveValues = array();
+
+        if (ini_get('display_errors') == '1' || stripos(ini_get('display_errors'), 'On') > -1) {
             $directiveValues['display_errors'] = 'On';
-		if (ini_get('file_uploads') != '1' || stripos(ini_get('file_uploads'), 'Off') > -1)
-			$directiveValues['file_uploads'] = 'Off';
-		if (ini_get('register_globals') == '1' || stripos(ini_get('register_globals'), 'On') > -1)
-			$directiveValues['register_globals'] = 'On';
-		if (ini_get(('output_buffering') < '4096' && ini_get('output_buffering') != '0') || stripos(ini_get('output_buffering'), 'Off') > -1)
-			$directiveValues['output_buffering'] = 'Off';
-		if (ini_get('max_execution_time') != 0)
-			$directiveValues['max_execution_time'] = ini_get('max_execution_time');
-		if (ini_get('memory_limit') < 32)
-			$directiveValues['memory_limit'] = ini_get('memory_limit');
-			$errorReportingValue = E_WARNING & ~E_NOTICE;
-                if(version_compare(PHP_VERSION, '5.5.0') >= 0){
-                    $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT;
-                }
-                else if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
-			$errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED;
-		}
-		if (ini_get('error_reporting') != $errorReportingValue)
-			$directiveValues['error_reporting'] = 'NOT RECOMMENDED';
-		if (ini_get('log_errors') == '1' || stripos(ini_get('log_errors'), 'On') > -1)
-			$directiveValues['log_errors'] = 'On';
-		if (ini_get('short_open_tag') == '1' || stripos(ini_get('short_open_tag'), 'On') > -1)
-			$directiveValues['short_open_tag'] = 'On';
+        }
 
-		return $directiveValues;
-	}
+        if (ini_get('file_uploads') != '1' || stripos(ini_get('file_uploads'), 'Off') > -1) {
+            $directiveValues['file_uploads'] = 'Off';
+        }
 
-	/**
-	 * Variable has the recommended php settings for smooth running of vtigerCRM
-	 * @var <Array>
-	 */
-	public static $recommendedDirectives = array (
-		'safe_mode' => 'Off',
-		'display_errors' => 'Off',
-		'file_uploads' => 'On',
-		'register_globals' => 'On',
-		'output_buffering' => 'On',
-		'max_execution_time' => '0',
-		'memory_limit' => '32',
-		'error_reporting' => 'E_WARNING & ~E_NOTICE',
-		'log_errors' => 'Off',
-		'short_open_tag' => 'Off'
-	);
+        if (ini_get(('output_buffering') < '4096' && ini_get('output_buffering') != '0') || stripos(ini_get('output_buffering'), 'Off') > -1) {
+            $directiveValues['output_buffering'] = 'Off';
+        }
 
-	/**
+        if (ini_get('max_execution_time') < self::$recommendedDirectives['max_execution_time'] && ini_get('max_execution_time') != 0) {
+            $directiveValues['max_execution_time'] = ini_get('max_execution_time');
+        }
+
+        if (ini_get('max_input_time') < self::$recommendedDirectives['max_input_time']) {
+            $directiveValues['max_input_time'] = ini_get('max_input_time');
+        }
+
+        if (ini_get('max_input_vars') < self::$recommendedDirectives['max_input_vars']) {
+            $directiveValues['max_input_vars'] = ini_get('max_input_vars');
+        }
+
+        if (ini_get('memory_limit') < self::$recommendedDirectives['memory_limit']) {
+            $directiveValues['memory_limit'] = ini_get('memory_limit');
+        }
+
+        if (ini_get('post_max_size') < self::$recommendedDirectives['post_max_size']) {
+            $directiveValues['post_max_size'] = ini_get('post_max_size');
+        }
+
+        if (ini_get('upload_max_filesize') < self::$recommendedDirectives['upload_max_filesize']) {
+            $directiveValues['upload_max_filesize'] = ini_get('upload_max_filesize');
+        }
+
+        $errorReportingValue = E_WARNING & ~E_NOTICE;
+
+        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
+            $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT;
+        } elseif (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+            $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED;
+        }
+
+        if (ini_get('error_reporting') != $errorReportingValue) {
+            $directiveValues['error_reporting'] = 'NOT RECOMMENDED';
+        }
+
+        if (ini_get('log_errors') == '1' || stripos(ini_get('log_errors'), 'On') > -1) {
+            $directiveValues['log_errors'] = 'On';
+        }
+
+        if (ini_get('short_open_tag') == '1' || stripos(ini_get('short_open_tag'), 'On') > -1) {
+            $directiveValues['short_open_tag'] = 'On';
+        }
+
+        return $directiveValues;
+    }
+
+    /**
+     * Variable has the recommended php settings for smooth running of vtigerCRM
+     * @var array
+     */
+    public static $recommendedDirectives = array(
+        'safe_mode' => 'Off',
+        'display_errors' => 'Off',
+        'file_uploads' => 'On',
+        'register_globals' => 'On',
+        'output_buffering' => 'On',
+        'max_execution_time' => 600,
+        'max_input_time' => 120,
+        'max_input_vars' => 10000,
+        'memory_limit' => 256,
+        'post_max_size' => 50,
+        'upload_max_filesize' => 5,
+        'error_reporting' => 'E_WARNING & ~E_NOTICE',
+        'log_errors' => 'Off',
+        'short_open_tag' => 'Off'
+    );
+
+    /**
 	 * Returns the recommended php settings for vtigerCRM
-	 * @return type
-	 */
-	public static function getRecommendedDirectives(){
-            if(version_compare(PHP_VERSION, '5.5.0') >= 0){
-                self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
-            }
-	    else if(version_compare(PHP_VERSION, '5.3.0') >= 0) {
-			self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED';
-		}
-		return self::$recommendedDirectives;
-	}
+	 * @return array
+     */
+    public static function getRecommendedDirectives()
+    {
+        self::$recommendedDirectives['error_reporting'] = 'E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT';
 
-	/**
-	 * Function checks for vtigerCRM installation prerequisites
-	 * @return <Array>
-	 */
+        return self::$recommendedDirectives;
+    }
+
+    /**
+     * Function checks for vtigerCRM installation prerequisites
+     * @return array
+     */
 	public static function getSystemPreInstallParameters() {
 		$preInstallConfig = array();
 		// Name => array( System Value, Recommended value, supported or not(true/false) );
-		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '5.4.0+, 7.0', (version_compare(phpversion(), '5.4.0', '>=')));
+		$preInstallConfig['LBL_PHP_VERSION']	= array(phpversion(), '8.1', (version_compare(phpversion(), '8.1.0', '>=')));
 		//$preInstallConfig['LBL_IMAP_SUPPORT']	= array(function_exists('imap_open'), true, (function_exists('imap_open') == true));
 		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
-
-		if ($preInstallConfig['LBL_PHP_VERSION'] >= '5.5.0') {
-			$preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
-		}
-
+        $preInstallConfig['LBL_MYSQLI_CONNECT_SUPPORT'] = array(extension_loaded('mysqli'), true, extension_loaded('mysqli'));
 		$preInstallConfig['LBL_OPEN_SSL']		= array(extension_loaded('openssl'), true, extension_loaded('openssl'));
 		$preInstallConfig['LBL_CURL']			= array(extension_loaded('curl'), true, extension_loaded('curl'));
 		$preInstallConfig['LBL_IMAP_SUPPORT']	= array(extension_loaded('imap'), true, (extension_loaded('imap') == true));
@@ -152,16 +186,15 @@ class Install_Utils_Model {
 		}
 
 		$preInstallConfig['LBL_GD_LIBRARY']		= array((extension_loaded('gd') || $gnInstalled), true, (extension_loaded('gd') || $gnInstalled));
-		$preInstallConfig['LBL_ZLIB_SUPPORT']	= array(function_exists('gzinflate'), true, (function_exists('gzinflate') == true));
 		$preInstallConfig['LBL_SIMPLEXML']		= array(function_exists('simplexml_load_file'), true, (function_exists('simplexml_load_file')));
 
 		return $preInstallConfig;
 	}
-	
-	/**
-	 * Function that provides default configuration based on installer setup
-	 * @return <Array>
-	 */
+
+    /**
+     * Function that provides default configuration based on installer setup
+     * @return string[]
+     */
 	public static function getDefaultPreInstallParameters() {
 		include 'config.db.php';
 		
@@ -274,22 +307,21 @@ class Install_Utils_Model {
 
 		}';
 
-	/**
-	 * Returns list of currencies
-	 * @return <Array>
-	 */
+    /**
+     * Returns list of currencies
+     * @return mixed
+     */
 	public static function getCurrencyList() {
 		require_once 'modules/Utilities/Currencies.php';
 		return $currencies;
 	}
 
-
-	/**
-	 * Returns an array with the list of languages which are available in source
-	 * Note: the DB has not been initialized at this point, so we have to look at
-	 * the contents of the `languages/` directory.
-	 * @return <Array>
-	 */
+    /**
+     * Returns an array with the list of languages which are available in source
+     * Note: the DB has not been initialized at this point, so we have to look at
+     * the contents of the `languages/` directory.
+     * @return array
+     */
 	public static function getLanguageList() {
 		$languageFolder = 'languages/';
 		$handle = opendir($languageFolder);
@@ -378,11 +410,8 @@ class Install_Utils_Model {
 
 		//Checking for database connection parameters
 		if($db_type) {
-			// Backward compatible mode for adodb library.
-			if ($db_type == 'mysqli') {
-				mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
-			}
-			
+            mysqli_report(MYSQLI_REPORT_ALL ^ MYSQLI_REPORT_STRICT);
+
 			$conn = NewADOConnection($db_type);
 			$db_type_status = true;
 			if(@$conn->Connect($db_hostname,$db_username,$db_password)) {

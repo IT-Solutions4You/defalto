@@ -1088,11 +1088,11 @@ class QueryGenerator {
 				}
 			} else if ($field->getFieldDataType() === 'currency') {
 				$uiType = $field->getUIType();
-				if ($uiType == 72) {
+				//if ($uiType == 72) {
 					$value = CurrencyField::convertToDBFormat($value, null, true);
-				} elseif ($uiType == 71) {
+				/*} elseif ($uiType == 71) {
 					$value = CurrencyField::convertToDBFormat($value);
-				}
+				}*/
 			}
 
 			if($field->getFieldName() == 'birthday' && !$this->isRelativeSearchOperators(
