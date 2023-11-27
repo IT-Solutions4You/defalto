@@ -548,6 +548,7 @@ $languageStrings = array(
 	'LBL_LICENSE_MANAGE' => 'Manage licenses', 
 	'LBL_SET_VALUE' => 'Set Value', 
 	'LBL_UNSUBSCRIBE_MANUAL' => 'Unsubscribe manual', 
+	'LBL_LICENSE_USED_BY_OTHER_USERS' => 'License used by other users', 
 );
 
 $jsLanguageStrings = array(

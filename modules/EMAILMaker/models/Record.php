@@ -311,30 +311,20 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
     public static function constructSharingMemberArray($member_array)
     {
-        $groupMemberArray = $roleArray = $roleSubordinateArray = $groupArray = $userArray = array();
+        $groupMemberArray = [];
 
         foreach ($member_array as $member) {
             $memSubArray = explode(':', $member);
+
             switch ($memSubArray[0]) {
-                case "Groups":
-                    $groupArray[] = $memSubArray[1];
+                case 'RoleAndSubordinates':
+                    $groupMemberArray['rs'][] = $memSubArray[1];
                     break;
-                case "Roles":
-                    $roleArray[] = $memSubArray[1];
-                    break;
-                case "RoleAndSubordinates":
-                    $roleSubordinateArray[] = $memSubArray[1];
-                    break;
-                case "Users":
-                    $userArray[] = $memSubArray[1];
+                default:
+                    $groupMemberArray[strtolower($memSubArray[0])][] = $memSubArray[1];
                     break;
             }
         }
-
-        $groupMemberArray['groups'] = $groupArray;
-        $groupMemberArray['roles'] = $roleArray;
-        $groupMemberArray['rs'] = $roleSubordinateArray;
-        $groupMemberArray['users'] = $userArray;
 
         return $groupMemberArray;
     }

@@ -41,39 +41,43 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
         $i = "site_URL";
         $salt = vglobal($i);
 
-        if ($num_rows1 > 0) {
-            $adb->pquery("UPDATE vtiger_emakertemplates_delay SET delay_active = ?", array("1"));
-        } else {
-            $adb->pquery("INSERT INTO vtiger_emakertemplates_delay (delay_active) VALUES  (?)", array());
-        }
 
-        $default_language = vglobal("default_language");
-        $default_theme = vglobal("default_theme");
+        $class = explode('_', get_class($this));
 
-        $from_name = $from_email = $cc = $bcc = "";
+        if (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('SendEmails12')) {
+            if ($num_rows1 > 0) {
+                $adb->pquery("UPDATE vtiger_emakertemplates_delay SET delay_active = ?", array("1"));
+            } else {
+                $adb->pquery("INSERT INTO vtiger_emakertemplates_delay (delay_active) VALUES  (?)", array());
+            }
 
-        $result_s = $adb->pquery("SELECT * FROM vtiger_emakertemplates_settings", array());
-        $phpmailer_version = $adb->query_result($result_s, 0, "phpmailer_version");
+            $default_language = vglobal("default_language");
+            $default_theme = vglobal("default_theme");
 
-        $sql4 = "SELECT me.*, me.me_subject as subject, tpl.body, cv.entitytype AS pmodule, field.tablename AS email_tablename, field.columnname AS email_columname 
+            $from_name = $from_email = $cc = $bcc = "";
+
+            $result_s = $adb->pquery("SELECT * FROM vtiger_emakertemplates_settings", array());
+            $phpmailer_version = $adb->query_result($result_s, 0, "phpmailer_version");
+
+            $sql4 = "SELECT me.*, me.me_subject as subject, tpl.body, cv.entitytype AS pmodule, field.tablename AS email_tablename, field.columnname AS email_columname 
                      FROM vtiger_emakertemplates_me AS me 
                      INNER JOIN vtiger_emakertemplates AS tpl USING(templateid)
                      INNER JOIN vtiger_customview AS cv ON cv.cvid = me.listid
                      INNER JOIN vtiger_tab AS tab ON tab.name = cv.entitytype
                      LEFT JOIN vtiger_field as field ON me.email_fieldname = field.fieldname AND field.tabid = tab.tabid
                      WHERE me.start_of <= now() AND me.status = 'not started' AND me.deleted = '0'";
-        $result4 = $adb->pquery($sql4, array());
-        $num_rows4 = $adb->num_rows($result4);
+            $result4 = $adb->pquery($sql4, array());
+            $num_rows4 = $adb->num_rows($result4);
 
-        if ($num_rows4 > 0) {
-            while ($row = $adb->fetchByAssoc($result4)) {
-                $templateid = $row["templateid"];
+            if ($num_rows4 > 0) {
+                while ($row = $adb->fetchByAssoc($result4)) {
+                    $templateid = $row["templateid"];
 
-                $row["type"] = "2";
-                $row["pdf_template_ids"] = $row["pdf_language"] = "";
+                    $row["type"] = "2";
+                    $row["pdf_template_ids"] = $row["pdf_language"] = "";
 
-                $Attachments = array();
-                $sql10 = "SELECT vtiger_seattachmentsrel.attachmentsid as documentid FROM vtiger_notes 
+                    $Attachments = array();
+                    $sql10 = "SELECT vtiger_seattachmentsrel.attachmentsid as documentid FROM vtiger_notes 
                               INNER JOIN vtiger_crmentity 
                                  ON vtiger_crmentity.crmid = vtiger_notes.notesid
                               INNER JOIN vtiger_seattachmentsrel 
@@ -81,160 +85,165 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
                               INNER JOIN vtiger_emakertemplates_documents 
                                  ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
                               WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
-                $result10 = $adb->pquery($sql10, array($templateid));
-                $num_rows10 = $adb->num_rows($result10);
+                    $result10 = $adb->pquery($sql10, array($templateid));
+                    $num_rows10 = $adb->num_rows($result10);
 
-                if ($num_rows10 > 0) {
-                    $Attachments = array();
+                    if ($num_rows10 > 0) {
+                        $Attachments = array();
 
-                    while ($row10 = $adb->fetchByAssoc($result10)) {
-                        $Attachments[] = $row10["documentid"];
+                        while ($row10 = $adb->fetchByAssoc($result10)) {
+                            $Attachments[] = $row10["documentid"];
+                        }
+
+                        $row["attachments"] = "1";
+                        $row["att_documents"] = implode(",", $Attachments);
+                    } else {
+                        $row["attachments"] = "0";
+                        $row["att_documents"] = "";
                     }
 
-                    $row["attachments"] = "1";
-                    $row["att_documents"] = implode(",", $Attachments);
-                } else {
-                    $row["attachments"] = "0";
-                    $row["att_documents"] = "";
-                }
+                    if ($row["esentid"] == "") {
+                        $sql6 = "INSERT INTO vtiger_emakertemplates_sent (from_name,from_email,subject,body,type,ids_for_pdf,pdf_template_ids,pdf_language,userid,attachments,att_documents,drip_group,saved_drip_delay,drip_delay,total_sent_emails,related_to,pmodule) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                        $adb->pquery($sql6, array($row["from_name"], $row["from_email"], $row["subject"], $row["body"], $row["type"], "", $row["pdf_template_ids"], $row["pdf_language"], $row["userid"], $row["attachments"], $row["att_documents"], "0", "0", "0", "0", "", $row["pmodule"]));
 
-                if ($row["esentid"] == "") {
-                    $sql6 = "INSERT INTO vtiger_emakertemplates_sent (from_name,from_email,subject,body,type,ids_for_pdf,pdf_template_ids,pdf_language,userid,attachments,att_documents,drip_group,saved_drip_delay,drip_delay,total_sent_emails,related_to,pmodule) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                    $adb->pquery($sql6, array($row["from_name"], $row["from_email"], $row["subject"], $row["body"], $row["type"], "", $row["pdf_template_ids"], $row["pdf_language"], $row["userid"], $row["attachments"], $row["att_documents"], "0", "0", "0", "0", "", $row["pmodule"]));
+                        $row["esentid"] = $adb->database->Insert_ID("vtiger_emakertemplates_sent");
 
-                    $row["esentid"] = $adb->database->Insert_ID("vtiger_emakertemplates_sent");
+                        $sql10 = "UPDATE vtiger_emakertemplates_me SET esentid = ? WHERE meid = ?";
+                        $adb->pquery($sql10, array($row["esentid"], $row["meid"]));
+                    }
 
-                    $sql10 = "UPDATE vtiger_emakertemplates_me SET esentid = ? WHERE meid = ?";
-                    $adb->pquery($sql10, array($row["esentid"], $row["meid"]));
-                }
+                    unset($current_user);
 
-                unset($current_user);
+                    $current_user = CRMEntity::getInstance('Users');
+                    $current_user->retrieveCurrentUserInfoFromFile($row['userid']);
 
-                $current_user = CRMEntity::getInstance('Users');
-                $current_user->retrieveCurrentUserInfoFromFile($row['userid']);
+                    if (!$current_user) {
+                        $current_user = Users::getActiveAdminUser();
+                    }
 
-                if (!$current_user) {
-                    $current_user = Users::getActiveAdminUser();
-                }
+                    $_SESSION["authenticated_user_id"] = $current_user->id;
 
-                $_SESSION["authenticated_user_id"] = $current_user->id;
+                    if (!empty($current_user->theme)) {
+                        $theme = $current_user->theme;
+                    } else {
+                        $theme = $default_theme;
+                    }
 
-                if (!empty($current_user->theme)) {
-                    $theme = $current_user->theme;
-                } else {
-                    $theme = $default_theme;
-                }
+                    $_SESSION['vtiger_authenticated_user_theme'] = $theme;
 
-                $_SESSION['vtiger_authenticated_user_theme'] = $theme;
+                    if (!empty($current_user->language)) {
+                        $current_language = $current_user->language;
+                    } else {
+                        $current_language = $default_language;
+                    }
+                    $_SESSION['authenticated_user_language'] = $current_language;
 
-                if (!empty($current_user->language)) {
-                    $current_language = $current_user->language;
-                } else {
-                    $current_language = $default_language;
-                }
-                $_SESSION['authenticated_user_language'] = $current_language;
+                    $queryGenerator = new QueryGenerator($row["pmodule"], $current_user);
+                    $queryGenerator->initForCustomViewById($row["listid"]);
 
-                $queryGenerator = new QueryGenerator($row["pmodule"], $current_user);
-                $queryGenerator->initForCustomViewById($row["listid"]);
+                    if ($row["email_columname"] != "") {
+                        $queryGenerator->addCondition($row["email_columname"], '', 'n', 'AND');
+                    }
 
-                if ($row["email_columname"] != "") {
-                    $queryGenerator->addCondition($row["email_columname"], '', 'n', 'AND');
-                }
+                    $query7 = $queryGenerator->getQuery();
+                    list($sql7a, $sql7b) = explode(" FROM ", $query7);
 
-                $query7 = $queryGenerator->getQuery();
-                list($sql7a, $sql7b) = explode(" FROM ", $query7);
+                    $sql7 = "SELECT vtiger_crmentity.crmid";
 
-                $sql7 = "SELECT vtiger_crmentity.crmid";
+                    if ($row["pmodule"] == "Contacts") {
+                        $sql7 .= ", vtiger_contactdetails.emailoptout";
+                    } elseif ($row["pmodule"] == "Accounts") {
+                        $sql7 .= ", vtiger_account.emailoptout";
+                    } else {
+                        $sql7 .= ", '0' AS emailoptout";
+                    }
 
-                if ($row["pmodule"] == "Contacts") {
-                    $sql7 .= ", vtiger_contactdetails.emailoptout";
-                } elseif ($row["pmodule"] == "Accounts") {
-                    $sql7 .= ", vtiger_account.emailoptout";
-                } else {
-                    $sql7 .= ", '0' AS emailoptout";
-                }
-
-                if ($row["email_columname"] != "") {
-                    $columname = $row["email_tablename"] . "." . $row["email_columname"];
-                    $sql7 .= ", " . $columname;
-                } elseif ($row["pmodule"] == "Contacts") {
-                    $sql7 .= ", vtiger_contactdetails.email, vtiger_contactdetails.otheremail, vtiger_contactdetails.secondaryemail";
-                } elseif ($row["pmodule"] == "Accounts") {
-                    $sql7 .= ", vtiger_account.email1, vtiger_account.email2";
-                } elseif ($row["pmodule"] == "Leads") {
-                    $sql7 .= ", vtiger_leaddetails.email, vtiger_leaddetails.secondaryemail ";
-                } elseif ($row["pmodule"] == "Vendors") {
-                    $sql7 .= ", vtiger_vendor.email ";
-                }
-
-                $sql7 .= " FROM " . $sql7b;
-                $result7 = $adb->pquery($sql7, array());
-                $total_entries = $adb->num_rows($result7);
-
-                $unsubscribes = 0;
-
-                while ($row7 = $adb->fetchByAssoc($result7)) {
-                    $result12 = $adb->pquery("SELECT emailid FROM vtiger_emakertemplates_emails WHERE esentid = ? AND pid = ?", array($row["esentid"], $row7["crmid"]));
-                    $num_rows12 = $adb->num_rows($result12);
-
-                    if (!$num_rows12) {
-                        if ($row["email_columname"] != "") {
-                            $to_email = $row7[$row["email_columname"]];
-                        } else {
-                            $to_email = $this->getMERecipientEmail($row["pmodule"], $row7);
-                        }
-                        $def_charset = vglobal("default_charset");
-                        $to_email = html_entity_decode($to_email, ENT_QUOTES, $def_charset);
-                        if ($row7["emailoptout"] == "1") {
-                            $sql13 = "INSERT INTO vtiger_emakertemplates_emails (esentid,pid,email,cc,bcc,cc_ids,bcc_ids,status,error) VALUES (?,?,?,?,?,?,?,?,?)";
-                            $adb->pquery($sql13, array($row["esentid"], $row7["crmid"], "massemail|" . $to_email, "", "", "", "", "1", "unsubscribes"));
-                            $adb->pquery("UPDATE vtiger_emakertemplates_me SET unsubscribes = unsubscribes + 1 WHERE meid = ?", array($row["meid"]));
-                        } elseif ($to_email != "") {
-                            $sql8 = "INSERT INTO vtiger_emakertemplates_emails (esentid,pid,email,email_address,cc,bcc,cc_ids,bcc_ids,status,parent_id,email_send_date) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-                            $adb->pquery($sql8, array($row["esentid"], $row7["crmid"], "massemail|" . $to_email, $to_email, "", "", "", "", "0", "", ""));
-                            $adb->pquery("UPDATE vtiger_emakertemplates_sent SET total_emails = total_emails + 1 WHERE esentid = ?", array($row["esentid"]));
+                    if ($row["email_columname"] != "") {
+                        $columname = $row["email_tablename"] . "." . $row["email_columname"];
+                        $sql7 .= ", " . $columname;
+                    } else {
+                        if ($row["pmodule"] == "Contacts") {
+                            $sql7 .= ", vtiger_contactdetails.email, vtiger_contactdetails.otheremail, vtiger_contactdetails.secondaryemail";
+                        } elseif ($row["pmodule"] == "Accounts") {
+                            $sql7 .= ", vtiger_account.email1, vtiger_account.email2";
+                        } elseif ($row["pmodule"] == "Leads") {
+                            $sql7 .= ", vtiger_leaddetails.email, vtiger_leaddetails.secondaryemail ";
+                        } elseif ($row["pmodule"] == "Vendors") {
+                            $sql7 .= ", vtiger_vendor.email ";
                         }
                     }
+
+                    $sql7 .= " FROM " . $sql7b;
+                    $result7 = $adb->pquery($sql7, array());
+                    $total_entries = $adb->num_rows($result7);
+
+                    $unsubscribes = 0;
+
+                    while ($row7 = $adb->fetchByAssoc($result7)) {
+                        $result12 = $adb->pquery("SELECT emailid FROM vtiger_emakertemplates_emails WHERE esentid = ? AND pid = ?", array($row["esentid"], $row7["crmid"]));
+                        $num_rows12 = $adb->num_rows($result12);
+
+                        if (!$num_rows12) {
+                            if ($row["email_columname"] != "") {
+                                $to_email = $row7[$row["email_columname"]];
+                            } else {
+                                $to_email = $this->getMERecipientEmail($row["pmodule"], $row7);
+                            }
+                            $def_charset = vglobal("default_charset");
+                            $to_email = html_entity_decode($to_email, ENT_QUOTES, $def_charset);
+                            if ($row7["emailoptout"] == "1") {
+                                $sql13 = "INSERT INTO vtiger_emakertemplates_emails (esentid,pid,email,cc,bcc,cc_ids,bcc_ids,status,error) VALUES (?,?,?,?,?,?,?,?,?)";
+                                $adb->pquery($sql13, array($row["esentid"], $row7["crmid"], "massemail|" . $to_email, "", "", "", "", "1", "unsubscribes"));
+                                $adb->pquery("UPDATE vtiger_emakertemplates_me SET unsubscribes = unsubscribes + 1 WHERE meid = ?", array($row["meid"]));
+                            } else {
+                                if ($to_email != "") {
+                                    $sql8 = "INSERT INTO vtiger_emakertemplates_emails (esentid,pid,email,email_address,cc,bcc,cc_ids,bcc_ids,status,parent_id,email_send_date) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                                    $adb->pquery($sql8, array($row["esentid"], $row7["crmid"], "massemail|" . $to_email, $to_email, "", "", "", "", "0", "", ""));
+                                    $adb->pquery("UPDATE vtiger_emakertemplates_sent SET total_emails = total_emails + 1 WHERE esentid = ?", array($row["esentid"]));
+                                }
+                            }
+                        }
+                    }
+                    $adb->pquery("UPDATE vtiger_emakertemplates_me SET status = 'in progress', total_entries = ? WHERE meid = ?", array($total_entries, $row["meid"]));
                 }
-                $adb->pquery("UPDATE vtiger_emakertemplates_me SET status = 'in progress', total_entries = ? WHERE meid = ?", array($total_entries, $row["meid"]));
             }
-        }
 
-        $sql10 = "SELECT me.meid, me.language, me.max_limit, sent.* FROM vtiger_emakertemplates_me AS me 
+            $sql10 = "SELECT me.meid, me.language, me.max_limit, sent.* FROM vtiger_emakertemplates_me AS me 
                     INNER JOIN vtiger_emakertemplates_sent AS sent 
                         ON me.esentid = sent.esentid
                     INNER JOIN vtiger_emakertemplates_emails AS emails
                         ON sent.esentid = emails.esentid 
                     WHERE me.status = 'in progress' 
                     AND emails.status = '0' AND emails.deleted = '0' GROUP BY me.meid HAVING (max(emails.email_send_date) < date_add(now(),interval -15 minute) OR max(emails.email_send_date) IS NULL )";
-        $result10 = $adb->pquery($sql10, array());
-        $num_rows10 = $adb->num_rows($result10);
+            $result10 = $adb->pquery($sql10, array());
+            $num_rows10 = $adb->num_rows($result10);
 
-        if ($num_rows10 > 0) {
-            $result17 = $adb->pquery("select from_email_field from vtiger_systems where server_type=?", array('email'));
-            $from_email_field = $adb->query_result($result17, 0, 'from_email_field');
+            if ($num_rows10 > 0) {
+                $result17 = $adb->pquery("select from_email_field from vtiger_systems where server_type=?", array('email'));
+                $from_email_field = $adb->query_result($result17, 0, 'from_email_field');
 
-            while ($row = $adb->fetchByAssoc($result10)) {
-                $set_language = $current_language;
-                if ($row["language"] != "") {
-                    $set_language = $row["language"];
+                while ($row = $adb->fetchByAssoc($result10)) {
+                    $set_language = $current_language;
+                    if ($row["language"] != "") {
+                        $set_language = $row["language"];
+                    }
+                    $this->sendEMAILMakerEmails($from_email_field, $current_user, $row, $set_language);
                 }
-                $this->sendEMAILMakerEmails($from_email_field, $current_user, $row, $set_language);
             }
-        }
 
-        $result12 = $adb->pquery("SELECT meid, esentid FROM vtiger_emakertemplates_me WHERE status = ?", array('in progress'));
-        $num_rows12 = $adb->num_rows($result12);
+            $result12 = $adb->pquery("SELECT meid, esentid FROM vtiger_emakertemplates_me WHERE status = ?", array('in progress'));
+            $num_rows12 = $adb->num_rows($result12);
 
-        if ($num_rows12 > 0) {
-            while ($row = $adb->fetchByAssoc($result12)) {
-                $sql13 = "SELECT * FROM vtiger_emakertemplates_emails WHERE status = '0' AND deleted = '0' AND esentid = ?";
-                $result13 = $adb->pquery($sql13, array($row["esentid"]));
-                $num_rows13 = $adb->num_rows($result13);
+            if ($num_rows12 > 0) {
+                while ($row = $adb->fetchByAssoc($result12)) {
+                    $sql13 = "SELECT * FROM vtiger_emakertemplates_emails WHERE status = '0' AND deleted = '0' AND esentid = ?";
+                    $result13 = $adb->pquery($sql13, array($row["esentid"]));
+                    $num_rows13 = $adb->num_rows($result13);
 
-                if ($num_rows13 == 0) {
-                    $sql14 = "UPDATE vtiger_emakertemplates_me SET status = 'finished' WHERE meid = ?";
-                    $adb->pquery($sql14, array($row["meid"]));
+                    if ($num_rows13 == 0) {
+                        $sql14 = "UPDATE vtiger_emakertemplates_me SET status = 'finished' WHERE meid = ?";
+                        $adb->pquery($sql14, array($row["meid"]));
+                    }
                 }
             }
         }
@@ -274,6 +283,7 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
 
     public function sendEMAILMakerEmails($from_email_field, $current_user, $ED, $language)
     {
+
         $email_sending_pause = 0;
         if (class_exists(EMAILMaker_EmailSendingPause_Helper)) {
             $email_sending_pause = EMAILMaker_EmailSendingPause_Helper::getEmailSendingPause();
@@ -360,17 +370,19 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
                             }
                             $user_full_name = getUserFullName($mycrmid);
                             $saved_toid = $user_full_name . "<" . $email_address . ">";
-                        } elseif ($mycrmid != "") {
-                            if ($email_address == "") {
-                                $email_address = $this->EMAILMaker->getEmailToAdressat($mycrmid, $temp, $rmodule);
-                            }
-
-                            $entityNames = getEntityName($rmodule, $mycrmid);
-                            $pname = $entityNames[$mycrmid];
-
-                            $saved_toid = $pname . "<" . $email_address . ">";
                         } else {
-                            $saved_toid = $email_address;
+                            if ($mycrmid != "") {
+                                if ($email_address == "") {
+                                    $email_address = $this->EMAILMaker->getEmailToAdressat($mycrmid, $temp, $rmodule);
+                                }
+
+                                $entityNames = getEntityName($rmodule, $mycrmid);
+                                $pname = $entityNames[$mycrmid];
+
+                                $saved_toid = $pname . "<" . $email_address . ">";
+                            } else {
+                                $saved_toid = $email_address;
+                            }
                         }
                     }
 
@@ -379,7 +391,6 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
                     } else {
                         $formodule = "";
                     }
-
                     $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($formodule, $pid, $language, $mycrmid, $rmodule);
                     $EMAILContentModel->setSubject($load_subject);
                     $EMAILContentModel->setBody($load_body);
@@ -539,7 +550,9 @@ class EMAILMaker_SendEmails_View extends Vtiger_Index_View
                     if ($email_sending_pause > 0) {
                         sleep($email_sending_pause);
                     }
+
                 }
+
             }
         }
     }

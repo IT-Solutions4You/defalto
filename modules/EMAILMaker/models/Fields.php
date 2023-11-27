@@ -691,4 +691,34 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
             'portalpdfurl' => vtranslate('Portal Pdf Url', 'EMAILMaker'),
         );
     }
+
+    public static function getMemberGroups()
+    {
+        if (getTabId('ITS4YouMultiCompany') && vtlib_isModuleActive('ITS4YouMultiCompany')) {
+            $members = Settings_ITS4YouMultiCompany_Member_Model::getAll();
+        } else {
+            $members = Settings_Groups_Member_Model::getAll();
+        }
+
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        $users = $currentUser->getAccessibleUsers('', 'EMAILMaker');
+        self::updateMembersGroups($members, 'Users', $users);
+
+        $groups = $currentUser->getAccessibleGroups('', 'EMAILMaker');
+        self::updateMembersGroups($members, 'Groups', $groups);
+
+        return $members;
+    }
+
+    public static function updateMembersGroups(&$members, $type, $data)
+    {
+        foreach ($members[$type] as $memberId => $memberData) {
+            list($sharingType, $sharingId) = explode(':', $memberId);
+
+            if (empty($data[$sharingId])) {
+                unset($members[$sharingType][$memberId]);
+            }
+        }
+    }
 }

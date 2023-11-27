@@ -28,6 +28,20 @@ require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
 class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 {
+    public static $buttonsAllowedModules = [
+        'Accounts',
+        'Leads',
+        'Contacts',
+        'Vendors',
+        'Quotes',
+        'SalesOrder',
+        'Invoice',
+        'PurchaseOrder',
+    ];
+
+    public static $buttonsIgnoredModules = [
+        'ITS4YouEmailMarketing',
+    ];
     const MULTI_COMPANY = 'ITS4YouMultiCompany';
     public static $metaVariables = array(
         'Current Date' => '(general : (__VtigerMeta__) date) ($_DATE_FORMAT_)',
@@ -90,7 +104,23 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
     public static function getSimpleHtmlDomFile()
     {
-        require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';
+
+        if (!class_exists('simple_html_dom_node')) {
+            $pdfmaker_simple_html_dom = "modules/PDFMaker/resources/simple_html_dom/simple_html_dom.php";
+            $emailmaker_simple_html_dom = "modules/EMAILMaker/resources/simple_html_dom/simple_html_dom.php";
+
+            if (file_exists($pdfmaker_simple_html_dom)) {
+                $file = $pdfmaker_simple_html_dom;
+            } elseif (file_exists($emailmaker_simple_html_dom)) {
+                $file = $emailmaker_simple_html_dom;
+            } else {
+                $file = "include/simplehtmldom/simple_html_dom.php";
+            }
+        }
+
+        if (!empty($file)) {
+            require_once $file;
+        }
     }
 
     public function GetPageFormats()
@@ -180,56 +210,76 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return array("detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result);
     }
 
-    public function CheckSharing($templateid)
+    public function CheckSharing($templateId)
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
-        $result = $this->db->pquery("SELECT owner, sharingtype FROM vtiger_emakertemplates WHERE templateid = ?", array($templateid));
+        $user_id = $current_user->id;
+        $role_id = $current_user->roleid;
+        $result = $this->db->pquery('SELECT owner, sharingtype FROM vtiger_emakertemplates WHERE templateid = ?',
+            array($templateId)
+        );
         $row = $this->db->fetchByAssoc($result);
-        $owner = $row["owner"];
-        $sharingtype = $row["sharingtype"];
+        $owner = $row['owner'];
+        $sharingType = $row['sharingtype'];
         $result = false;
-        if ($owner == $current_user->id) {
+
+        if ($owner == $user_id) {
             $result = true;
         } else {
-            switch ($sharingtype) {
-                case "public":
+            switch ($sharingType) {
+                case 'public':
                     $result = true;
                     break;
-                case "private":
-                    $subordinateUsers = $this->getSubRoleUserIds($current_user->roleid);
+                case 'private':
+                    $subordinateUsers = $this->getSubRoleUserIds($role_id);
+
                     if (!empty($subordinateUsers) && count($subordinateUsers) > 0) {
                         $result = in_array($owner, $subordinateUsers);
                     } else {
                         $result = false;
                     }
                     break;
-                case "share":
-                    $subordinateUsers = $this->getSubRoleUserIds($current_user->roleid);
+                case 'share':
+                    $subordinateUsers = $this->getSubRoleUserIds($role_id);
+
                     if (!empty($subordinateUsers) && count($subordinateUsers) > 0 && in_array($owner, $subordinateUsers)) {
                         $result = true;
                     } else {
-                        $member_array = $this->GetSharingMemberArray($templateid);
-                        if (isset($member_array["users"]) && in_array($current_user->id, $member_array["users"])) {
+                        $member_array = $this->GetSharingMemberArray($templateId);
+
+                        if (isset($member_array['users']) && in_array($user_id, $member_array['users'])) {
                             $result = true;
-                        } elseif (isset($member_array["roles"]) && in_array($current_user->roleid, $member_array["roles"])) {
+                        } elseif (isset($member_array['roles']) && in_array($role_id, $member_array['roles'])) {
                             $result = true;
                         } else {
-                            if (isset($member_array["rs"])) {
-                                foreach ($member_array["rs"] as $roleid) {
-                                    $roleAndsubordinateRoles = getRoleAndSubordinatesRoleIds($roleid);
-                                    if (in_array($current_user->roleid, $roleAndsubordinateRoles)) {
+                            if (isset($member_array['rs'])) {
+                                foreach ($member_array['rs'] as $roleId) {
+                                    $roleAndSubordinateRoles = getRoleAndSubordinatesRoleIds($roleId);
+
+                                    if (in_array($role_id, $roleAndSubordinateRoles)) {
                                         $result = true;
                                         break;
                                     }
                                 }
                             }
-                            if ($result == false && isset($member_array["groups"])) {
-                                $current_user_groups = explode(",", fetchUserGroupids($current_user->id));
-                                $res_array = array_intersect($member_array["groups"], $current_user_groups);
+
+                            if (false === $result && isset($member_array['groups'])) {
+                                $current_user_groups = explode(',', fetchUserGroupids($user_id));
+                                $res_array = array_intersect($member_array['groups'], $current_user_groups);
+
                                 if (!empty($res_array) && count($res_array) > 0) {
                                     $result = true;
                                 } else {
                                     $result = false;
+                                }
+                            }
+
+                            if (false === $result && isset($member_array['companies'])) {
+                                foreach ($member_array['companies'] as $companyId) {
+                                    if (ITS4YouMultiCompany_Record_Model::isRoleInCompany($companyId, $current_user->roleid)) {
+                                        $result = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -237,6 +287,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                     break;
             }
         }
+
         return $result;
     }
 
@@ -251,26 +302,30 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $subRoleUserIds;
     }
 
-    public function GetSharingMemberArray($templateid, $foredit = false)
+    public function GetSharingMemberArray($templateId, $forEdit = false)
     {
-
-        $Types = array(
-            'users' => 'Users',
-            'groups' => 'Groups',
-            'roles' => 'Roles',
+        $types = array(
             'rs' => 'RoleAndSubordinates'
         );
 
-        $result = $this->db->pquery("SELECT shareid, setype FROM vtiger_emakertemplates_sharing WHERE templateid = ? ORDER BY setype ASC", array($templateid));
+        $result = $this->db->pquery(
+            'SELECT shareid, setype FROM vtiger_emakertemplates_sharing WHERE templateid = ? ORDER BY setype ASC',
+            array($templateId)
+        );
         $memberArray = array();
+
         while ($row = $this->db->fetchByAssoc($result)) {
-            $setype = $row["setype"];
-            if ($foredit) {
-                $setype = $Types[$setype];
+            $sharingType = $row['setype'];
+            $sharingId = $row['shareid'];
+            $sharingName = $sharingType;
+
+            if ($forEdit) {
+                $sharingName = $types[$sharingType] ?: ucfirst($sharingType);
             }
 
-            $memberArray[$setype][$Types[$row["setype"]] . ":" . $row["shareid"]] = $row["shareid"];
+            $memberArray[$sharingName][$sharingName . ':' . $sharingId] = $sharingId;
         }
+
         return $memberArray;
     }
 
@@ -663,21 +718,28 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $return_array;
     }
 
+    /**
+     * @return array
+     */
     private function GetStatusArr()
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
-        $status_sql = "SELECT templateid, is_active, is_default, sequence 
-                        FROM vtiger_emakertemplates_userstatus
-                        INNER JOIN vtiger_emakertemplates USING(templateid)
-                        WHERE userid=?";
-        $status_res = $this->db->pquery($status_sql, array($current_user->id));
-        $status_arr = array();
-        while ($status_row = $this->db->fetchByAssoc($status_res)) {
-            $status_arr[$status_row["templateid"]]["is_active"] = $status_row["is_active"];
-            $status_arr[$status_row["templateid"]]["is_default"] = $status_row["is_default"];
-            $status_arr[$status_row["templateid"]]["sequence"] = $status_row["sequence"];
+        $sql = 'SELECT templateid as template_id, is_active, is_default, sequence 
+            FROM vtiger_emakertemplates_userstatus
+            INNER JOIN vtiger_emakertemplates USING(templateid)
+            WHERE userid=?';
+        $result = $this->db->pquery($sql, array($current_user->id));
+        $data = array();
+
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $data[$row['template_id']] = [
+                'is_active' => $row['is_active'],
+                'is_default' => $row['is_default'],
+                'sequence' => $row['sequence'],
+            ];
         }
-        return $status_arr;
+
+        return $data;
     }
 
     private function GetAvailableTemplatesResult($currModule, $forListView = false, $all = false)
@@ -707,12 +769,14 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         $current_user = Users_Record_Model::getCurrentUserModel();
         $result = true;
+
         if (!is_admin($current_user)) {
-            if ($selected_module != "" && isPermitted($selected_module, '') != "yes") {
+            if (!empty($selected_module) && 'yes' !== isPermitted($selected_module, '')) {
                 $result = false;
-            } elseif ($templateid != "" && $this->CheckSharing($templateid) === false) {
+            } elseif (!empty($templateid) && false === $this->CheckSharing($templateid)) {
                 $result = false;
             }
+
             if ($result === false) {
                 $profileGlobalPermission = array();
                 require('user_privileges/user_privileges_' . $current_user->id . '.php');
@@ -722,11 +786,22 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                     $result = true;
                 }
             }
+
             if ($die === true && $result === false) {
                 $this->DieDuePermission();
             }
         }
+
         return $result;
+    }
+
+    public function IsTemplateActive($templateId, $status)
+    {
+        if (!isset($status[$templateId])) {
+            return true;
+        }
+
+        return !empty($status[$templateId]['is_active']);
     }
 
     public function GetAvailableTemplatesArray($currModule, $forListView = false, $recordId = false, $rawData = false, $all = false)
@@ -734,7 +809,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         include_once 'include/Webservices/Retrieve.php';
 
         $return_array = array();
-        $status_arr = $this->GetStatusArr();
+        $status = $this->GetStatusArr();
         $result = $this->GetAvailableTemplatesResult($currModule, $forListView, $all);
         $num_rows = $this->db->num_rows($result);
 
@@ -742,8 +817,10 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $entityCache = new VTEntityCache($current_user);
         $entityData = false;
 
+        $globalTemplates = [];
+
         if ($num_rows > 0) {
-            if ($forListView == false) {
+            if (!$forListView) {
                 if ($recordId) {
                     $wsId = vtws_getWebserviceEntityId($currModule, $recordId);
                     $entityData = $entityCache->forId($wsId);
@@ -751,19 +828,20 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             }
 
             while ($row = $this->db->fetchByAssoc($result)) {
-                $templateid = $row["templateid"];
+                $templateId = $row['templateid'];
 
-                if ($this->CheckTemplatePermissions($currModule, $templateid, false) == false) {
+                if (!$this->CheckTemplatePermissions($currModule, $templateId, false)) {
                     continue;
                 }
 
-                if (isset($status_arr[$templateid]["is_active"]) && $status_arr[$templateid]["is_active"] == "0") {
+                if (!$this->IsTemplateActive($templateId, $status)) {
                     continue;
                 }
 
                 if ($recordId && !$forListView) {
                     $EMAILMaker_Display_Model = new EMAILMaker_Display_Model();
-                    if ($EMAILMaker_Display_Model->CheckDisplayConditions($row, $entityData, $currModule, $entityCache) == false) {
+
+                    if (!$EMAILMaker_Display_Model->CheckDisplayConditions($row, $entityData, $currModule, $entityCache)) {
                         continue;
                     }
                 }
@@ -771,20 +849,31 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                 if ($rawData) {
                     $return_array[] = $row;
                 } else {
-                    $option = array("value" => $templateid, "label" => $row["templatename"], "title" => $row["description"]);
+                    $option = array('value' => $templateId, 'label' => $row['templatename'], 'title' => $row['description']);
 
-                    if ($all && empty($row["category"])) {
+                    if ($all && empty($row['category'])) {
                         $row = $this->updateCategory($row);
                     }
 
-                    if (trim($row["category"]) == "") {
-                        $return_array[0][$templateid] = $option;
+                    if (empty(trim($row['category']))) {
+                        $return_array[0][$templateId] = $option;
                     } else {
-                        $return_array[1][$row["category"]][$templateid] = $option;
+                        $categoryLabel = vtranslate($row['category'], 'EMAILMaker');
+
+                        if ($row['category'] === 'Global') {
+                            $globalTemplates[$categoryLabel][$templateId] = $option;
+                        } else {
+                            $return_array[1][$categoryLabel][$templateId] = $option;
+                        }
                     }
                 }
             }
         }
+
+        if (!empty($globalTemplates)) {
+            $return_array[1] = array_merge($return_array[1], $globalTemplates);
+        }
+
         return $return_array;
     }
 
@@ -794,7 +883,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
      */
     public function updateCategory($data)
     {
-        $data["category"] = !empty($data['module']) ? vtranslate($data['module'], $data['module']) : vtranslate('Global', 'EMAILMaker');
+        $data['category'] = !empty($data['module']) ? $data['module'] : 'Global';
 
         return $data;
     }
@@ -2852,5 +2941,25 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return Emails_Mailer_Model::convertToAscii($plainBody);
     }
 
+    /**
+     * @param string $module
+     * @return bool
+     * @throws Exception
+     */
+    public static function isButtonsAllowedModule($module)
+    {
+        if (in_array($module, self::$buttonsIgnoredModules)) {
+            return false;
+        }
+
+        if (in_array($module, self::$buttonsAllowedModules)) {
+            return true;
+        }
+
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery('SELECT count(*) as count FROM vtiger_emakertemplates WHERE (module = ? OR module = "" OR module IS NULL) AND deleted=? ', [$module, '0']);
+
+        return 0 < $adb->query_result($result, 0, 'count');
+    }
 
 }

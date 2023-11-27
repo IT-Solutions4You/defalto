@@ -19,13 +19,13 @@ class ITS4YouEmails_Tracker_Handler
         global $current_user;
         $current_user = Users::getActiveAdminUser();
 
-        $type = $data['method'];
-        if ($type == 'click') {
-            $this->clickHandler($data);
-        } else {
-            if ($type == 'open') {
+        switch ($data['method']) {
+            case 'click':
+                $this->clickHandler($data);
+                break;
+            case 'open':
                 $this->openHandler($data);
-            }
+                break;
         }
     }
 
@@ -34,7 +34,7 @@ class ITS4YouEmails_Tracker_Handler
         $redirectUrl = rawurldecode($data['redirectUrl']);
         $redirectLinkName = rawurldecode($data['linkName']);
 
-        if ((strpos($_SERVER['HTTP_REFERER'], vglobal('site_URL')) !== false) || (empty($_SERVER['HTTP_REFERER']) && $_REQUEST['fromcrm'])) {
+        if ($this->isTrackingAllowed()) {
             if (!empty($redirectUrl)) {
                 Vtiger_Functions::redirectUrl($redirectUrl);
             }
@@ -47,9 +47,7 @@ class ITS4YouEmails_Tracker_Handler
         if ($recordId && $parentId && isRecordExists($recordId)) {
             /** @var ITS4YouEmails_Record_Model $recordModel */
             $recordModel = ITS4YouEmails_Record_Model::getInstanceById($recordId);
-            $recordModel->set('click_count', intval($recordModel->get('click_count')) + 1);
-            $recordModel->set('mode', 'edit');
-            $recordModel->save();
+            $recordModel->saveClickCount(intval($recordModel->get('click_count')) + 1);
             $recordModel->saveAccess($parentId, $_REQUEST['id']);
         }
 
@@ -58,14 +56,21 @@ class ITS4YouEmails_Tracker_Handler
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function isTrackingAllowed()
+    {
+        return (strpos($_SERVER['HTTP_REFERER'], vglobal('site_URL')) !== false) || (empty($_SERVER['HTTP_REFERER']) && $_REQUEST['fromcrm']);
+    }
+
     protected function openHandler($data = array())
     {
         $recordId = $data['record'];
         $parentId = $data['parentId'];
 
         if ($recordId && $parentId && isRecordExists($recordId)) {
-            if ((strpos($_SERVER['HTTP_REFERER'], vglobal('site_URL')) !== false) || (empty($_SERVER['HTTP_REFERER']) && $_REQUEST['fromcrm'])) {
-                // If a email is opened from CRM then we no need to track but need to be redirected
+            if ($this->isTrackingAllowed()) {
                 Vtiger_ShortURL_Helper::sendTrackerImage();
                 exit;
             }
@@ -73,15 +78,12 @@ class ITS4YouEmails_Tracker_Handler
             /** @var ITS4YouEmails_Record_Model $recordModel */
             $recordModel = ITS4YouEmails_Record_Model::getInstanceById($recordId);
 
-            //If email is opened in last 1 hr, not tracking email open again.
             if ($recordModel->isEmailOpenedRecently($_REQUEST['id'])) {
                 Vtiger_ShortURL_Helper::sendTrackerImage();
                 exit;
             }
 
-            $recordModel->set('access_count', intval($recordModel->get('access_count')) + 1);
-            $recordModel->set('mode', 'edit');
-            $recordModel->save();
+            $recordModel->saveAccessCount(intval($recordModel->get('access_count')) + 1);
             $recordModel->saveAccess($parentId, $_REQUEST['id']);
 
             Vtiger_ShortURL_Helper::sendTrackerImage();

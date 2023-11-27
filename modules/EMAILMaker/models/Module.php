@@ -18,6 +18,32 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     );
     private $profilesPermissions = array();
 
+    public function getLicensePermissions($type = 'List')
+    {
+        if (empty($this->name)) {
+            $this->name = explode('_', get_class($this))[0];
+        }
+        $installer = 'ITS4YouInstaller';
+        $licenseMode = 'Settings_ITS4YouInstaller_License_Model';
+
+        if (vtlib_isModuleActive($installer)) {
+            if (class_exists($licenseMode)) {
+                $permission = new $licenseMode();
+                $result = $permission->permission($this->name, $type);
+
+                $this->licensePermissions['info'] = $result['errors'];
+
+                return $result['success'];
+            } else {
+                $this->licensePermissions['errors'] = 'LBL_INSTALLER_UPDATE';
+            }
+        } else {
+            $this->licensePermissions['errors'] = 'LBL_INSTALLER_NOT_ACTIVE';
+        }
+
+        return false;
+    }
+
     public function getAlphabetSearchField()
     {
         return 'templatename';
@@ -276,6 +302,27 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         return $this->profilesPermissions;
     }
 
+    /*
+    public function getSideBarLinks($linkParams) {
+
+        $linkTypes = array('SIDEBARLINK', 'SIDEBARWIDGET');
+        $links = Vtiger_Link_Model::getAllByType($this->getId(), $linkTypes, $linkParams);
+
+        $quickLinks = array(
+            array(
+                'linktype' => 'SIDEBARLINK',
+                'linklabel' => 'LBL_RECORDS_LIST',
+                'linkurl' => $this->getDefaultUrl(),
+                'linkicon' => '',
+            ),
+        );
+        foreach($quickLinks as $quickLink) {
+            $links['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
+        }
+        return $links;
+    }
+    */
+
     /**
      * Function to get Settings links
      * @return <Array>
@@ -317,11 +364,29 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
             $settingsLinks[] = array(
                 'linktype' => 'LISTVIEWSETTING',
+                'linklabel' => 'LBL_MODULE_REQUIREMENTS',
+                'linkurl' => 'index.php?module=ITS4YouInstaller&parent=Settings&view=Requirements&mode=Module&sourceModule=EMAILMaker',
+                'linkicon' => ''
+            );
+
+            $settingsLinks[] = array(
+                'linktype' => 'LISTVIEWSETTING',
+                'linklabel' => 'LBL_LICENSE',
+                'linkurl' => 'index.php?module=ITS4YouInstaller&view=License&parent=Settings&sourceModule=EMAILMaker',
+            );
+
+            $settingsLinks[] = array(
+                'linktype' => 'LISTVIEWSETTING',
                 'linklabel' => 'LBL_UPGRADE',
                 'linkurl' => 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1',
             );
-        }
 
+            $settingsLinks[] = array(
+                'linktype' => 'LISTVIEWSETTING',
+                'linklabel' => 'LBL_UNINSTALL',
+                'linkurl' => 'index.php?module=ITS4YouInstaller&view=Uninstall&parent=Settings&sourceModule=EMAILMaker',
+            );
+        }
         return $settingsLinks;
     }
 
@@ -750,66 +815,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             $detail_result = $edit_result = $delete_result = $result;
         }
         return array("detail" => $detail_result, "edit" => $edit_result, "delete" => $delete_result);
-    }
-
-    public function CheckSharing($templateid)
-    {
-        $current_user = Users_Record_Model::getCurrentUserModel();
-        $result = $this->db->pquery("SELECT owner, sharingtype FROM vtiger_emakertemplates WHERE templateid = ?", array($templateid));
-        $row = $this->db->fetchByAssoc($result);
-        $owner = $row["owner"];
-        $sharingtype = $row["sharingtype"];
-        $result = false;
-        if ($owner == $current_user->id) {
-            $result = true;
-        } else {
-            switch ($sharingtype) {
-                case "public":
-                    $result = true;
-                    break;
-                case "private":
-                    $subordinateUsers = $this->getSubRoleUserIds($current_user->roleid);
-                    if (!empty($subordinateUsers) && count($subordinateUsers) > 0) {
-                        $result = in_array($owner, $subordinateUsers);
-                    } else {
-                        $result = false;
-                    }
-                    break;
-                case "share":
-                    $subordinateUsers = $this->getSubRoleUserIds($current_user->roleid);
-                    if (!empty($subordinateUsers) && count($subordinateUsers) > 0 && in_array($owner, $subordinateUsers)) {
-                        $result = true;
-                    } else {
-                        $member_array = $this->GetSharingMemberArray($templateid);
-                        if (isset($member_array["users"]) && in_array($current_user->id, $member_array["users"])) {
-                            $result = true;
-                        } elseif (isset($member_array["roles"]) && in_array($current_user->roleid, $member_array["roles"])) {
-                            $result = true;
-                        } else {
-                            if (isset($member_array["rs"])) {
-                                foreach ($member_array["rs"] as $roleid) {
-                                    $roleAndsubordinateRoles = getRoleAndSubordinatesRoleIds($roleid);
-                                    if (in_array($current_user->roleid, $roleAndsubordinateRoles)) {
-                                        $result = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if ($result == false && isset($member_array["groups"])) {
-                                $current_user_groups = explode(",", fetchUserGroupids($current_user->id));
-                                $res_array = array_intersect($member_array["groups"], $current_user_groups);
-                                if (!empty($res_array) && count($res_array) > 0) {
-                                    $result = true;
-                                } else {
-                                    $result = false;
-                                }
-                            }
-                        }
-                    }
-                    break;
-            }
-        }
-        return $result;
     }
 
     private function getSubRoleUserIds($roleid)

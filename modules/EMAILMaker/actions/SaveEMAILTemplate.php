@@ -47,7 +47,8 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
             'owner' => $owner,
             'sharingtype' => $sharingType,
             'category' => $email_category,
-            'is_listview' => $is_listview
+            'is_listview' => $is_listview,
+            'is_theme' => $is_theme,
         );
 
         $dec_point = $request->get('dec_point');

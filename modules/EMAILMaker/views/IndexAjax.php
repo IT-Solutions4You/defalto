@@ -306,10 +306,17 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
         if ($selecttemplates == "true") {
             $forListView = true;
             $pid = false;
-            if ($request->has('selected_ids') && !$request->isEmpty('selected_ids') && $forview == "Detail" && $single_record) {
+
+            if ($request->has('selected_ids') && !$request->isEmpty('selected_ids') && 'Detail' === $forview && $single_record) {
                 $selected_ids = $request->get('selected_ids');
+
                 if (is_numeric($selected_ids)) {
                     $pid = $selected_ids;
+                    $forListView = false;
+                }
+
+                if (is_array($selected_ids) && 1 === count($selected_ids)) {
+                    $pid = $selected_ids[0];
                     $forListView = false;
                 }
             }
@@ -321,16 +328,16 @@ class EMAILMaker_IndexAjax_View extends Vtiger_IndexAjax_View
                 $campaign_templates = $EMAILMaker->GetAvailableTemplatesArray("Campaigns", true);
 
                 if (count((array)$campaign_templates[0]) > 0) {
-                    if (count($templates[0]) > 0) {
-                        $templates[0] = $templates[0] + $campaign_templates[0];
+                    if (count((array)$templates[0]) > 0) {
+                        $templates[0] = array_merge($templates[0], $campaign_templates[0]);
                     } else {
                         $templates[0] = $campaign_templates[0];
                     }
                 }
                 if (count((array)$campaign_templates[1]) > 0) {
 
-                    if (count($templates[1]) > 0) {
-                        $templates[1] = $templates[1] + $campaign_templates[1];
+                    if (count((array)$templates[1]) > 0) {
+                        $templates[1] = array_merge($templates[1], $campaign_templates[1]);
                     } else {
                         $templates[1] = $campaign_templates[1];
                     }

@@ -11,11 +11,14 @@ class EMAILMaker_List_View extends Vtiger_Index_View
 {
 
     protected $listViewLinks = false;
+    protected $isInstalled = false;
 
     public function __construct()
     {
         parent::__construct();
 
+        $class = explode('_', get_class($this));
+        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('List6'));
         $this->exposeMethod('getList');
     }
 
@@ -78,7 +81,11 @@ class EMAILMaker_List_View extends Vtiger_Index_View
      */
     public function process(Vtiger_Request $request)
     {
-        $this->invokeExposedMethod('getList', $request);
+        if (!$this->isInstalled) {
+            (new Settings_ITS4YouInstaller_License_View())->initializeContents($request);
+        } else {
+            $this->invokeExposedMethod('getList', $request);
+        }
     }
 
     /**
@@ -124,14 +131,14 @@ class EMAILMaker_List_View extends Vtiger_Index_View
         $viewer->assign('VERSION_TYPE', 'profesional');
         $viewer->assign('VERSION', EMAILMaker_Version_Helper::$version);
 
-        if ($moduleModel->CheckPermissions('EDIT')) {
+        if ($moduleModel->CheckPermissions('EDIT') && $this->isInstalled) {
             $viewer->assign('EXPORT', 'yes');
         }
-        if ($moduleModel->CheckPermissions('EDIT')) {
+        if ($moduleModel->CheckPermissions('EDIT') && $this->isInstalled) {
             $viewer->assign('EDIT', 'permitted');
             $viewer->assign('IMPORT', 'yes');
         }
-        if ($moduleModel->CheckPermissions('DELETE')) {
+        if ($moduleModel->CheckPermissions('DELETE') && $this->isInstalled) {
             $viewer->assign('DELETE', 'permitted');
         }
 

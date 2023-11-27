@@ -71,6 +71,20 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
         $this->retrieveAttachments($request);
         $this->retrieveFromEmails($request);
         $this->retrieveSMTPRecords($request);
+        $this->retrieveRecordDocumentsUrl($request);
+    }
+
+    public function retrieveRecordDocumentsUrl(Vtiger_Request $request)
+    {
+        $records = $this->getRecordsListFromRequest($request);
+        $recordDocumentsUrl = '';
+
+        if (1 === count((array)$records)) {
+            $recordDocumentsUrl = 'module=ITS4YouEmails&view=Documents&mode=recordDocuments&record=' . $records[0];
+        }
+
+        $viewer = $this->getViewer($request);
+        $viewer->assign('RECORD_DOCUMENTS_URL', $recordDocumentsUrl);
     }
 
     public function getRecordsListFromRequest(Vtiger_Request $request, $model = false)
@@ -151,7 +165,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
     {
         $records = array();
 
-        if (vtlib_isModuleActive('ITS4YouSMTP')) {
+        if (vtlib_isModuleActive('ITS4YouSMTP') && getTabid('ITS4YouSMTP')) {
             /** @var ITS4YouSMTP_Module_Model $moduleModel */
             $moduleModel = Vtiger_Module_Model::getInstance('ITS4YouSMTP');
             $records = $moduleModel->getRecords();
@@ -217,7 +231,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
                 continue;
             }
 
-            if (isRecordExists($fieldValue)) {
+            if (!empty($fieldValue) && isRecordExists($fieldValue)) {
                 $referenceRecordModel = Vtiger_Record_Model::getInstanceById($fieldValue, $referenceModule);
 
                 if ($referenceRecordModel->get('emailoptout')) {

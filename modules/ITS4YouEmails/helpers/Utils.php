@@ -185,4 +185,17 @@ class ITS4YouEmails_Utils_Helper
 
         return $selectedDefaultFrom;
     }
+
+    public static function updateShorUrlData($body)
+    {
+        $regex = '/shorturl[.]php[?]id[=][0-9a-z]*[.][0-9]*/m';
+
+        preg_match_all($regex, $body, $matches, PREG_SET_ORDER, 0);
+
+        foreach ($matches as $match) {
+            $body = str_replace($match[0], $match[0] . '&fromcrm=1', $body);
+        }
+
+        return $body;
+    }
 }

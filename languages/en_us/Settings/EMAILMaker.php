@@ -34,6 +34,7 @@ $languageStrings = array(
 	'LBL_INTEGRATION' => 'Integration', 
 	'LBL_MODULE_REQUIREMENTS' => 'Module Requirements', 
 	'LBL_LICENSE_MANAGE' => 'Manage licenses', 
+	'LBL_LICENSE_USED_BY_OTHER_USERS' => 'License used by other users', 
 );
 
 $jsLanguageStrings = array(

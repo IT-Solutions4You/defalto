@@ -98,16 +98,16 @@ class ITS4YouEmails_Integration_Model extends Vtiger_Base_Model
 
     public function updateRelation($register = true)
     {
-        $relatedModule = 'ITS4YouEmails';
-        $relatedLabel = 'ITS4YouEmails';
+        $relatedModule = $this->getEmailsModel();
         $relatedFunction = 'get_related_list';
         $relatedActions = 'SELECT';
 
+        /** @var Vtiger_Module_Model $module */
         $module = $this->getModuleModel();
-        $module->unsetRelatedList($relatedModule, $relatedLabel, $relatedFunction);
+        $module->unsetRelatedList($relatedModule, '', $relatedFunction);
 
         if($register) {
-            $module->setRelatedList($relatedModule, $relatedLabel, $relatedActions, $relatedFunction);
+            $module->setRelatedList($relatedModule, '', $relatedActions, $relatedFunction);
         }
     }
 }

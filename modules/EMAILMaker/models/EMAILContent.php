@@ -41,6 +41,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $org_colsOLD = array();
     private static $relBlockModules = array();
     public $EMAILMaker = false;
+    protected $isInstalled;
 
     public function __construct()
     {
@@ -58,9 +59,15 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $mod_strings_array = Vtiger_Language_Handler::getModuleStringsFromFile(self::$language, self::$module);
         self::$mod_strings = $mod_strings_array['languageStrings'];
 
-        $this->EMAILMaker = new EMAILMaker_EMAILMaker_Model();
+        $class = explode('_', get_class($this));
+        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('EMAILContent14'));
+        $this->EMAILMaker = new EmailMaker_EmailMaker_Model();
 
-        self::$type = 'professional';
+        if ($this->isInstalled) {
+            self::$type = "professional";
+        } else {
+            self::$type = "invalid";
+        }
 
         $this->getIgnoredPicklistValues();
         self::$rowbreak = "<rowbreak />";

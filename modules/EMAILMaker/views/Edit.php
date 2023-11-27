@@ -10,6 +10,7 @@
 class EMAILMaker_Edit_View extends Vtiger_Index_View
 {
     public $cu_language = "";
+    protected $isInstalled = false;
     private $ModuleFields = array();
     private $All_Related_Modules = array();
 
@@ -17,6 +18,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
     {
         parent::__construct();
 
+        $class = explode('_', get_class($this));
+        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('Edit6'));
         $this->exposeMethod('selectTheme');
     }
 
@@ -25,7 +28,11 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
      */
     public function process(Vtiger_Request $request)
     {
-        $this->getProcess($request);
+        if (!$this->isInstalled) {
+            (new Settings_ITS4YouInstaller_License_View())->initializeContents($request);
+        } else {
+            $this->getProcess($request);
+        }
     }
 
     /**
@@ -106,13 +113,14 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $is_listview = $is_default = '0';
             $is_active = $order = '1';
             $owner = intval($current_user->getId());
+            $sharingMemberArray = array();
 
             if (getTabId(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY) && vtlib_isModuleActive(EMAILMaker_EMAILMaker_Model::MULTI_COMPANY)) {
-                $companyData = ITS4YouMultiCompany_Record_Model::getCompanyByUserId($owner);
+                $companyRecord = ITS4YouMultiCompany_Record_Model::getCompanyByUserId($owner);
 
-                if ($companyData) {
+                if ($companyRecord) {
                     $sharingType = 'share';
-                    $companyId = $companyData->getId();
+                    $companyId = $companyRecord->getId();
                     $sharingMemberArray['Companies'] = array('Companies:' . $companyId => $companyId);
                 } else {
                     $sharingType = 'private';
@@ -120,8 +128,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             } else {
                 $sharingType = 'public';
             }
-
-            $sharingMemberArray = array();
 
             if ($request->has('theme') && !$request->isEmpty('theme')) {
                 $theme = $request->get('theme');
@@ -290,7 +296,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         //Constructing the Role Array
         $viewer->assign('SELECTED_MEMBERS_GROUP', $sharingMemberArray);
-        $viewer->assign('MEMBER_GROUPS', Settings_Groups_Member_Model::getAll());
+        $viewer->assign('MEMBER_GROUPS', EMAILMaker_Fields_Model::getMemberGroups());
         $viewer->assign('DECIMALS', EMAILMaker_Record_Model::getDecimalSettings());
         $viewer->assign('IGNORE_PICKLIST_VALUES', EMAILMaker_Record_Model::getIgnorePicklistValues());
 

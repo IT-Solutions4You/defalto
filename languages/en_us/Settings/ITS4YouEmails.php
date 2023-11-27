@@ -72,6 +72,11 @@ $languageStrings = array(
 	'starred' => 'starred', 
 	'tags' => 'tags', 
 	'Created Time' => 'Date Sent', 
+	'LBL_LICENSE_USED_BY_OTHER_USERS' => 'License used by other users', 
+	'SENT' => 'SENT', 
+	'SAVED' => 'SAVED', 
+	'Marketing Recipient' => 'Marketing Recipient', 
+	'UNSUBSCRIBED' => 'UNSUBSCRIBED', 
 );
 
 $jsLanguageStrings = array(

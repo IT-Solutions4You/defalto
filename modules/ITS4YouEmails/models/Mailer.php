@@ -7,11 +7,9 @@
  * All Rights Reserved.
  ********************************************************************************/
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+ITS4YouEmails_Record_Model::includeNewLibraries();
 
-class ITS4YouEmails_Mailer_Model extends PHPMailer
+class ITS4YouEmails_Mailer_Model extends \ITS4You\PHPMailer\PHPMailer
 {
     public $debug = false;
     public $embedImages;
@@ -42,15 +40,24 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
             $smtpRecord = ITS4YouSMTP_Record_Model::getInstanceByUserId($userId);
 
             if ($smtpRecord) {
-                $this->setMailerType($smtpRecord->get('mailer_type'));
-                $this->setSMTP($smtpRecord->get('server'), $smtpRecord->get('server_username'), $smtpRecord->getDecodedPassword(), !$smtpRecord->isEmpty('smtp_auth'));
-
-                if (!$smtpRecord->isEmpty('from_email_field')) {
-                    $this->setFrom($smtpRecord->get('from_email_field'));
-                }
+                $this->retrieveSMTPData($smtpRecord);
             }
         } else {
             $this->retrieveSMTPVtiger();
+        }
+    }
+
+    public function retrieveSMTPData($smtpRecord)
+    {
+        $this->setMailerType($smtpRecord->get('mailer_type'));
+        $this->setSMTP($smtpRecord->get('server'), $smtpRecord->get('server_username'), $smtpRecord->getDecodedPassword(), !$smtpRecord->isEmpty('smtp_auth'));
+
+        if (!$smtpRecord->isEmpty('from_email_field')) {
+            $this->setFrom($smtpRecord->get('from_email_field'));
+        }
+
+        if (!$smtpRecord->isEmpty('from_name_field')) {
+            $this->FromName = $smtpRecord->get('from_name_field');
         }
     }
 
@@ -85,12 +92,7 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
             $smtpRecord = ITS4YouSMTP_Record_Model::getInstanceBySMTPId($record);
 
             if ($smtpRecord) {
-                $this->setMailerType($smtpRecord->get('mailer_type'));
-                $this->setSMTP($smtpRecord->get('server'), $smtpRecord->get('server_username'), $smtpRecord->getDecodedPassword(), !$smtpRecord->isEmpty('smtp_auth'));
-
-                if (!$smtpRecord->isEmpty('from_email_field')) {
-                    $this->setFrom($smtpRecord->get('from_email_field'));
-                }
+                $this->retrieveSMTPData($smtpRecord);
             }
         } else {
             $this->retrieveSMTPVtiger();

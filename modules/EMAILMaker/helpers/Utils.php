@@ -4,6 +4,6 @@ class EMAILMaker_Utils_Helper
 {
     public static function count($value)
     {
-        return !empty($value) ? count((array)$value) : 0;
+        return !empty($value) && is_array($value) ? count($value) : 0;
     }
 }

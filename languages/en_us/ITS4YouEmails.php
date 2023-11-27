@@ -87,6 +87,15 @@ $languageStrings = array(
 	'LBL_ATTACHMENTS' => 'Attachments', 
 	'LBL_MESSAGE' => 'Message', 
 	'Created Time' => 'Date Sent', 
+	'LBL_LICENSE_USED_BY_OTHER_USERS' => 'License used by other users', 
+	'SENT' => 'SENT', 
+	'SAVED' => 'SAVED', 
+	'Marketing Recipient' => 'Marketing Recipient', 
+	'UNSUBSCRIBED' => 'UNSUBSCRIBED',
+    'LBL_BROWSE_RECORD' => 'Browse related documents',
+    'LBL_TITLE' => 'Title',
+    'LBL_FILENAME' => 'Filename',
+    'LBL_FOLDER' => 'Folder',
 );
 
 $jsLanguageStrings = array(

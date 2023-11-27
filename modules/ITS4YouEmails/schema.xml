@@ -38,6 +38,7 @@
   `lead_id` int(11) DEFAULT NULL,
   `vendor_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `recipient_id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`its4you_emails_id`)
 ) ENGINE=InnoDB]]></sql>
 		</table>

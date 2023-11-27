@@ -44,6 +44,14 @@ class VTEMAILMakerMailTask extends VTTask
      */
     public function doTask($entity)
     {
+        $EMAILMaker = Vtiger_Module_Model::getInstance('EMAILMaker');
+
+        if (!($EMAILMaker->getLicensePermissions('VTEMAILMakerMailTask') === date('VTEMAILMakerMailTask22'))) {
+            return;
+        }
+
+        $this->contents = null;
+
         $current_user = Users_Record_Model::getCurrentUserModel();
         $sendingId = ITS4YouEmails_Utils_Helper::getSendingId();
 
@@ -290,16 +298,22 @@ class VTEMAILMakerMailTask extends VTTask
                 }
             }
 
-            $templateid = $this->template;
+            $templateId = $this->template;
             $language = $this->template_language;
 
             $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
-            $emailtemplateResult = $EMAILMaker->GetDetailViewData($templateid, true);
+            $emailTemplateResult = $EMAILMaker->GetDetailViewData($templateId, true);
+            $emailTemplateBody = $emailTemplateResult['body'];
 
-            $taskContents['subject'] = $emailtemplateResult["subject"];
-            $taskContents['body'] = $emailtemplateResult["body"];
+            if (vtlib_isModuleActive('ITS4YouStyles')) {
+                $stylesModel = new ITS4YouStyles_Module_Model();
+                $emailTemplateBody = $stylesModel->addStyles($emailTemplateBody, $templateId, "EMAILMaker");
+            }
 
-            $attachments = $EMAILMaker->GetAttachmentsData($templateid);
+            $taskContents['subject'] = $emailTemplateResult['subject'];
+            $taskContents['body'] = $emailTemplateBody;
+
+            $attachments = $EMAILMaker->GetAttachmentsData($templateId);
             $taskContents['attachments'] = $attachments;
             $taskContents['language'] = $language;
             $taskContents['luserid'] = isset($_SESSION['authenticated_user_id']) ? $_SESSION['authenticated_user_id'] : '';

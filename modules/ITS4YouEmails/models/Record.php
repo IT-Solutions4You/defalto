@@ -20,6 +20,19 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $logo = false;
     public $emailNames = [];
 
+    public static function includeNewLibraries()
+    {
+        require_once 'modules/ITS4YouLibrary/PHPMailer/src/Exception.php';
+        require_once 'modules/ITS4YouLibrary/PHPMailer/src/PHPMailer.php';
+        require_once 'modules/ITS4YouLibrary/PHPMailer/src/SMTP.php';
+    }
+
+    public static function includeOldLibraries()
+    {
+        require_once 'modules/Emails/class.smtp.php';
+        require_once 'modules/Emails/class.phpmailer.php';
+    }
+
     /**
      * @return string
      * @throws Exception
@@ -72,6 +85,24 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         return nl2br($adb->query_result($result, 0, 'signature'));
     }
 
+    /**
+     * @throws \ITS4You\PHPMailer\Exception
+     */
+    public function sendEmail()
+    {
+        global $ITS4YouEmails_SendingClass;
+
+        $mailer = $this->getMailer();
+
+        if (!empty($ITS4YouEmails_SendingClass) && class_exists($ITS4YouEmails_SendingClass)) {
+            $success = $ITS4YouEmails_SendingClass::send($mailer);
+        } else {
+            $success = $mailer->send();
+        }
+
+        return $success;
+    }
+
     public function send()
     {
         $success = false;
@@ -81,7 +112,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             if (!$this->isEmpty('smtp')) {
                 $mailer->retrieveSMTPById($this->get('smtp'));
             } else {
-                $mailer->retrieveSMTP($this->get('assigned_user_id'));
+                $mailer->retrieveSMTPVtiger();
             }
 
             $mailer->isHTML(true);
@@ -98,7 +129,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $this->retrieveInReplyTo();
             $this->convertImagesToEmbed();
 
-            $success = $mailer->send();
+            $success = $this->sendEmail();
 
             $this->set('subject', $mailer->Subject);
             $this->setBody($mailer->Body);
@@ -259,12 +290,12 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         foreach ($toEmailIds as $toEmailId) {
             list($record, $email, $module) = explode('|', $toEmailId);
 
-            if (!empty($record) && isRecordExists($record)) {
+            if (!empty($module) && !empty($record) && isRecordExists($record)) {
                 $content = getMergedDescription($content, $record, $module);
             }
         }
 
-        if ($relatedTo && $relatedToModule && isRecordExists($relatedTo)) {
+        if (!empty($relatedToModule) && !empty($relatedTo) && isRecordExists($relatedTo)) {
             $content = getMergedDescription($content, $relatedTo, $relatedToModule);
         }
 
@@ -380,6 +411,8 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function convertCssToInline($content)
     {
         if (preg_match('/<style[^>]+>(?<css>[^<]+)<\/style>/s', $content)) {
+            require_once 'libraries/InStyle/InStyle.php';
+
             $inStyle = new InStyle();
             $convertedContent = $inStyle->convert($content);
 
@@ -400,7 +433,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 'handler_function' => 'process',
                 'handler_data' => [
                     'record' => $this->getId(),
-                    'parentId' => $this->get('related_to'),
+                    'parentId' => $this->getRelatedTo(),
                     'method' => 'open',
                 ]
             ]);
@@ -414,6 +447,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function getProcessedAltBody($body)
     {
         $plainBody = decode_html($body);
+        $plainBody = preg_replace('/<\s*style.+?<\s*\/\s*style.*?>/si', '', $plainBody);
         $plainBody = preg_replace(array("/<p>/i", "/<br>/i", "/<br \/>/i"), array("\n", "\n", "\n"), $plainBody);
         $plainBody = strip_tags($plainBody);
         $plainBody = (new ToAscii())->convertToAscii($plainBody, '');
@@ -451,13 +485,22 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function retrieveFromEmail()
     {
         $mailer = $this->getMailer();
-        $fromName = !$this->isEmpty('from_name') ? $this->get('from_name') : $this->getEmailName($this->get('from_email_ids'));
+
+        if (!empty($mailer->FromName)) {
+            $fromName = $mailer->FromName;
+        } elseif (!$this->isEmpty('from_name')) {
+            $fromName = $this->get('from_name');
+        } else {
+            $fromName = $this->getEmailName($this->get('from_email_ids'));
+        }
 
         if (!empty($mailer->From)) {
-            $mailer->setFrom($mailer->From, $fromName);
+            $fromEmail = $mailer->From;
         } else {
-            $mailer->setFrom($this->get('from_email'), $fromName);
+            $fromEmail = $this->get('from_email');
         }
+
+        $mailer->setFrom($fromEmail, $fromName);
     }
 
     /**
@@ -788,6 +831,10 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     public function saveEmailToSentFolder()
     {
+        if (true === $this->get('skip_save_email_to_sent_folder')) {
+            return;
+        }
+
         $mailer = $this->getMailer();
         $mailString = $mailer->getMailString();
         $mailBoxModel = MailManager_Mailbox_Model::activeInstance();
@@ -886,6 +933,24 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $accessId,
             date('Y-m-d H:i:s')
         ]);
+    }
+
+    public function saveAccessCount($value)
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery(
+            'UPDATE its4you_emails SET access_count=? WHERE its4you_emails_id=?',
+            [$value, $this->getId()]
+        );
+    }
+
+    public function saveClickCount($value)
+    {
+        $adb = PearDatabase::getInstance();
+        $adb->pquery(
+            'UPDATE its4you_emails SET click_count=? WHERE its4you_emails_id=?',
+            [$value, $this->getId()]
+        );
     }
 
     public function saveAttachment($filePath, $fileName, $storedName, $ownerId, $fileType = '', $description = '')

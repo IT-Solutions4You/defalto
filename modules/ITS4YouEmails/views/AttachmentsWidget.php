@@ -7,7 +7,7 @@
  * All Rights Reserved.
  ********************************************************************************/
 
-class ITS4YouEmails_AttachmentsWidget_View extends Vtiger_Basic_View
+class ITS4YouEmails_AttachmentsWidget_View extends Vtiger_Detail_View
 {
     public function process(Vtiger_Request $request)
     {

@@ -75,7 +75,7 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
 
         $viewer->assign('PARENTTAB', getParentTab());
         $viewer->assign('DATEFORMAT', $current_user->get('date_format'));
-        $viewer->assign('JS_DATEFORMAT', parse_calendardate());
+        $viewer->assign('JS_DATEFORMAT', Vtiger_Functions::currentUserJSDateFormat(''));
 
         $RelatedBlock = new EMAILMaker_RelatedBlock_Model();
 

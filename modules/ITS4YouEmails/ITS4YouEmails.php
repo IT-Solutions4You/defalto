@@ -86,6 +86,11 @@ class ITS4YouEmails extends CRMEntity
 
     public function save_module()
     {
+        $this->createRelationsFormBlock();
+    }
+
+    public function createRelationsFormBlock()
+    {
         $module = Vtiger_Module_Model::getInstance('ITS4YouEmails');
         $block = Vtiger_Block_Model::getInstance('LBL_RELATED_TO', $module);
 
@@ -137,10 +142,22 @@ class ITS4YouEmails extends CRMEntity
 
 		$this->updateTables();
         $this->updateFields();
+        $this->updatePicklists();
 
         Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
         ModComments::addWidgetTo([$this->moduleName]);
         ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+    }
+
+    public function updatePicklists()
+    {
+        $moduleInstance = Vtiger_Module_Model::getInstance($this->moduleName);
+        $fieldInstance = $moduleInstance->getField('email_flag');
+        $flag = 'UNSUBSCRIBED';
+
+        if ($fieldInstance && !in_array($flag, (array)$fieldInstance->getPicklistValues())) {
+            $fieldInstance->setPicklistValues([$flag]);
+        }
     }
 
     public function updateRelatedListSequence()
@@ -199,14 +216,20 @@ class ITS4YouEmails extends CRMEntity
         }
 
         $this->db->pquery('UPDATE vtiger_field SET headerfield=? WHERE tabid=? AND fieldname IN (?,?)', [1, getTabid($this->moduleName), 'email_flag', 'createdtime']);
+        $this->db->pquery('UPDATE vtiger_field SET uitype=? WHERE tabid=? AND fieldname IN (?)', [16, getTabid($this->moduleName), 'email_flag']);
         $this->db->pquery('UPDATE vtiger_field SET typeofdata=? WHERE tabid=? AND fieldname IN (?,?)', ['I~O', getTabid($this->moduleName), 'access_count', 'click_count']);
+        $this->db->pquery('UPDATE vtiger_field SET displaytype=? WHERE tablename=? AND fieldname=?', [1, 'its4you_emails', 'recipient_id']);
     }
 
     public function updateTables()
 	{
 		$this->db->query('ALTER TABLE `its4you_emails` CHANGE `subject` `subject` VARCHAR(255)');
 		$this->db->query('ALTER TABLE `its4you_emails` CHANGE `body` `body` LONGTEXT');
-	}
+
+        if (!columnExists('recipient_id', 'its4you_emails')) {
+            $this->db->query('ALTER TABLE its4you_emails ADD recipient_id INT(11) NULL');
+        }
+    }
 
     public function updateNumbering()
     {
@@ -339,10 +362,26 @@ class ITS4YouEmails extends CRMEntity
             if ($parentModule) {
                 $relationModel = Vtiger_Relation_Model::getInstance($parentModule, $module);
 
-                if ($relationModel) {
+                if ($relationModel && !$this->isRelationExists($recordId, $this->id)) {
                     $relationModel->addRelation($recordId, $this->id);
                 }
             }
         }
+    }
+
+    /**
+     * @param int $recordId
+     * @param int $relationId
+     * @return bool
+     */
+    public function isRelationExists($recordId, $relationId)
+    {
+        $adb = PearDatabase::getInstance();
+        $result = $adb->pquery(
+            'SELECT crmid FROM vtiger_crmentityrel WHERE crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?',
+            array($recordId, getSalesEntityType($recordId), $relationId, getSalesEntityType($relationId))
+        );
+
+        return $result && $adb->num_rows($result);
     }
 }

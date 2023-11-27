@@ -23,9 +23,11 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
     public $currentUser;
     public $description = '';
     public $subject = '';
+    public $smtp = null;
     public $mailAddresses = array();
     private $from_name;
     private $from_email;
+    private $from_user;
 
     public function __construct()
     {
@@ -90,7 +92,6 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             'email_template_ids' => $request->get('email_template_ids'),
             'email_template_language' => $request->get('email_template_language'),
             'is_merge_templates' => $request->get('is_merge_templates'),
-            'smtp' => $request->get('smtp'),
         );
 
         $emailSentId = $this->saveEmails($sendEmails, $this->mailAddresses);
@@ -121,12 +122,15 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         list($type, $emailValue) = explode("::", addslashes($request->get('from_email')));
 
         if (!empty($emailValue)) {
-            if ('a' === $type) {
+            if ('s' === $type && class_exists('ITS4YouSMTP_Record_Model')) {
+                $this->smtp = $emailValue;
+            } elseif ('a' === $type) {
                 $this->from_name = $emailValue;
                 $this->from_email = ITS4YouEmails_Record_Model::getVtigerFromEmailField();
             } else {
                 $userData = ITS4YouEmails_Record_Model::getUserDataByType($emailValue, $type);
 
+                $this->from_user = $emailValue;
                 $this->from_name = trim($userData['first_name'] . ' ' . $userData['last_name']);
                 $this->from_email = $userData['email'];
             }
@@ -135,6 +139,10 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
         if (empty($this->from_email)) {
             $this->from_email = $this->currentUser->get('email1');
             $this->from_name = trim($this->currentUser->get('first_name') . ' ' . $this->currentUser->get('last_name'));
+        }
+
+        if (empty($this->from_user)) {
+            $this->from_user = $this->currentUser->getId();
         }
     }
 
@@ -287,8 +295,11 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
 
     public function retrieveDescription(Vtiger_Request $request)
     {
+        require_once 'libraries/ToAscii/ToAscii.php';
+        require_once 'include/utils/VtlibUtils.php';
+
         $this->description = $request->getAll()['description'];
-        $this->description = Emails_Mailer_Model::getProcessedContent($this->description);
+        $this->description = purifyHtmlEventAttributes($this->description, true);
 
         if ('Yes' === $request->get('signature')) {
             $signature = $this->currentUser->get('signature');
@@ -430,10 +441,8 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $recordModelEmails->set('sending_id', $sendingId);
                 $recordModelEmails->set('assigned_user_id', $current_user_id);
                 $recordModelEmails->set('from_email', $this->from_email);
-                $recordModelEmails->set('from_email_ids', $current_user_id . '|' . $this->from_email . '|Users');
+                $recordModelEmails->set('from_email_ids', $this->from_user . '|' . $this->from_email . '|Users');
                 $recordModelEmails->set('from_name', $this->from_name);
-                $recordModelEmails->set('reply_email_ids', $current_user_id . '|' . $this->from_email . '|Users');
-                $recordModelEmails->set('reply_email', $this->from_email);
                 $recordModelEmails->set('subject', $sendEmail['subject']);
                 $recordModelEmails->set('body', $sendEmail['description']);
                 $recordModelEmails->set('email_flag', 'SAVED');
@@ -443,7 +452,13 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $recordModelEmails->set('pdf_template_ids', $sendEmail['pdf_template_ids']);
                 $recordModelEmails->set('pdf_template_language', $sendEmail['pdf_template_language']);
                 $recordModelEmails->set('is_merge_templates', $sendEmail['is_merge_templates']);
-                $recordModelEmails->set('smtp', $sendEmail['smtp']);
+
+                if($this->smtp) {
+                    $recordModelEmails->set('smtp', $this->smtp);
+                } else {
+                    $recordModelEmails->set('reply_email_ids', $this->from_user . '|' . $this->from_email . '|Users');
+                    $recordModelEmails->set('reply_email', $this->from_email);
+                }
 
                 $mailCopies = array();
                 $mailAddressIds = array();

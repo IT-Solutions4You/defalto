@@ -10,10 +10,14 @@
 class EMAILMaker_Detail_View extends Vtiger_Index_View
 {
 
+    protected $isInstalled = false;
+
     public function __construct()
     {
         parent::__construct();
 
+        $class = explode('_', get_class($this));
+        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('Detail8'));
         $this->exposeMethod('showDocuments');
         $this->exposeMethod('showDetail');
         $this->exposeMethod('showRelatedList');
@@ -23,18 +27,21 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
     public function process(Vtiger_Request $request)
     {
-        $this->getProcess($request);
+        if (!$this->isInstalled) {
+            (new Settings_ITS4YouInstaller_License_View())->initializeContents($request);
+        } else {
+            $this->getProcess($request);
+        }
     }
 
     public function getProcess(Vtiger_Request $request)
     {
         $mode = $request->getMode();
         if (!empty($mode)) {
-            $this->invokeExposedMethod($mode, $request);
+            echo $this->invokeExposedMethod($mode, $request);
             return;
         }
-
-        $this->showModuleDetailView($request);
+        echo $this->showModuleDetailView($request);
     }
 
     public function showModuleDetailView(Vtiger_Request $request)
@@ -89,6 +96,11 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
 
         $viewer->view('Detail.tpl', 'EMAILMaker');
+    }
+
+    public function preProcessTplName(Vtiger_Request $request)
+    {
+        return (!$this->isInstalled) ? 'IndexViewPreProcess.tpl' : 'DetailViewPreProcess.tpl';
     }
 
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -175,16 +187,15 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
             if ($emailtemplateResult["permissions"]["edit"]) {
                 $viewer->assign("EXPORT", "yes");
             }
-
-            if ($emailtemplateResult["permissions"]["edit"]) {
-                $viewer->assign("EDIT", "permitted");
-                $viewer->assign("IMPORT", "yes");
+            if ($this->isInstalled) {
+                if ($emailtemplateResult["permissions"]["edit"]) {
+                    $viewer->assign("EDIT", "permitted");
+                    $viewer->assign("IMPORT", "yes");
+                }
+                if ($emailtemplateResult["permissions"]["delete"]) {
+                    $viewer->assign("DELETE", "permitted");
+                }
             }
-
-            if ($emailtemplateResult["permissions"]["delete"]) {
-                $viewer->assign("DELETE", "permitted");
-            }
-
 
             if (!$this->record) {
                 $this->record = EMAILMaker_DetailView_Model::getInstance($moduleName, $recordId);
@@ -215,11 +226,6 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
         if ($display) {
             $this->preProcessDisplay($request);
         }
-    }
-
-    public function preProcessTplName(Vtiger_Request $request)
-    {
-        return 'DetailViewPreProcess.tpl';
     }
 
     public function showRelatedList(Vtiger_Request $request)

@@ -14,10 +14,13 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
     {
     }
 
+    protected $isInstalled;
+
     public function __construct()
     {
         parent::__construct();
         $class = explode('_', get_class($this));
+        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('GetEMAILActions17'));
     }
 
     public function process(Vtiger_Request $request)
@@ -63,6 +66,10 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
             $_SESSION["template_languages"] = $template_languages;
         }
 
+        if (!$this->isInstalled) {
+            die("");
+        }
+
         $viewer->assign('TEMPLATE_LANGUAGES', $_SESSION["template_languages"]);
         $viewer->assign('CURRENT_LANGUAGE', $currentLanguage);
         $viewer->assign('IS_ADMIN', is_admin($current_user));
@@ -105,31 +112,19 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
 
         }
 
-        $tpl_name = "GetEMAILActions";
-        if ($request->has('mode') && !$request->isEmpty('mode')) {
-            $mode = $request->get('mode');
-            if ($mode == "getButtons") {
-                $tpl_name = "GetEMAILButtons";
+        $tpl_name = 'GetEMAILActions';
 
-                if (!$this->isButtonsAllowedModule($source_module)) {
+        if ($request->has('mode') && !$request->isEmpty('mode')) {
+            if ('getButtons' === $request->get('mode')) {
+                $tpl_name = 'GetEMAILButtons';
+
+                if (!EMAILMaker_EMAILMaker_Model::isButtonsAllowedModule($source_module)) {
                     die('');
                 }
             }
         }
+
         $viewer->view($tpl_name . ".tpl", 'EMAILMaker');
-    }
-
-    /**
-     * @param $module
-     * @return bool
-     * @throws Exception
-     */
-    public function isButtonsAllowedModule($module)
-    {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT count(*) as count FROM vtiger_emakertemplates WHERE (module = ? OR module = "" OR module IS NULL) AND deleted=? ', [$module, '0']);
-
-        return (0 < $adb->query_result($result, 0, 'count'));
     }
 
     public function getRecordsListFromRequest(Vtiger_Request $request)
