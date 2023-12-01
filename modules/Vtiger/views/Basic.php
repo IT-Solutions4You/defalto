@@ -154,7 +154,6 @@ abstract class Vtiger_Basic_View extends Vtiger_Footer_View {
 			"modules.Vtiger.resources.RecordSelectTracker",
 			"modules.Vtiger.resources.Pagination",
 			"~layouts/v7/modules/Import/resources/Popup.js",
-			"modules.Emails.resources.MassEdit",
 			'modules.Vtiger.resources.EmailsRelatedPopup',
 			"~layouts/v7/lib/jquery/sadropdown.js",
 		);

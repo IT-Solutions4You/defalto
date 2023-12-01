@@ -76,7 +76,6 @@ class Rss_List_View extends Vtiger_Index_View {
 			"modules.$moduleName.resources.List",
 			'modules.CustomView.resources.CustomView',
 			"modules.$moduleName.resources.CustomView",
-			"modules.Emails.resources.MassEdit",
 			"modules.Vtiger.resources.CkEditor",
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/stickyTableHeaders/throttle.js",
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/stickyTableHeaders/jquery.stickyheader.js"

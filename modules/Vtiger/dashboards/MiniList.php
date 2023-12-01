@@ -57,6 +57,6 @@ class Vtiger_MiniList_Dashboard extends Vtiger_IndexAjax_View {
 	}
     
     function getHeaderScripts(Vtiger_Request $request) {
-        return $this->checkAndConvertJsScripts(array('modules.Emails.resources.MassEdit'));
+        return $this->checkAndConvertJsScripts(array());
 	}
 }

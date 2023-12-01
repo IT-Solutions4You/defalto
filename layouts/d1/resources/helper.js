@@ -487,11 +487,11 @@ jQuery.Class("Vtiger_Helper_Js",{
             container = jQuery('#myModal');
 
         container.one('hidden.bs.modal', function () {
+            container.unbind();
             aDeferred.resolve();
         });
         container.modal('hide');
         container.data('bs.modal', null); // clear any options previously set
-        container.unbind();
 
         return aDeferred.promise();
     },

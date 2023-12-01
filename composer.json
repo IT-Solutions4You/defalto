@@ -12,7 +12,7 @@
     "ext-xml": "*",
     "adodb/adodb-php": "5.*",
     "apalfrey/select2-bootstrap-5-theme": "*",
-    "ckeditor/ckeditor": "*",
+    "ckeditor/ckeditor": "4.22.*",
     "components/font-awesome": "*",
     "ezyang/htmlpurifier": "4.*",
     "fullcalendar/fullcalendar": "*",
