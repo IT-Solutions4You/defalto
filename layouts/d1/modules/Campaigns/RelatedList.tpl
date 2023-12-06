@@ -31,35 +31,38 @@
 				<div class="relatedHeader">
 					<div class="container-fluid">
 						<div class="btn-toolbar row py-3">
-							<div class="col-lg-auto btn-toolbar mb-2">
+							<div class="col-lg-auto container-related-list-actions">
 								{foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
 									<div class="btn-group">
 										{assign var=DROPDOWNS value=$RELATED_LINK->get('linkdropdowns')}
-										{if php7_count($DROPDOWNS) gt 0}
-											<div class="btn-group">
-												<a class="btn btn-outline-secondary dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
-													<img title="{$RELATED_LINK->getLabel()}" alt="{$RELATED_LINK->getLabel()}" src="{vimage_path("{$RELATED_LINK->getIcon()}")}">
-												</a>
-												<ul class="dropdown-menu">
-													{foreach item=DROPDOWN from=$DROPDOWNS}
-														<li><a id="{$RELATED_MODULE_NAME}_relatedlistView_add_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DROPDOWN['label'])}" class="{$RELATED_LINK->get('linkclass')}" href='javascript:void(0)' data-documentType="{$DROPDOWN['type']}" data-url="{$DROPDOWN['url']}" data-name="{$RELATED_MODULE_NAME}" data-firsttime="{$DROPDOWN['firsttime']}"><i class="icon-plus"></i>&nbsp;{vtranslate($DROPDOWN['label'], $RELATED_MODULE_NAME)}</a></li>
-													{/foreach}
-												</ul>
-											</div>
+										{if !empty($DROPDOWNS) && (php7_count($DROPDOWNS) gt 0)}
+											<a class="btn dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown" data-hover="dropdown" data-delay="200" data-close-others="false" style="width:20px;height:18px;">
+												<img title="{$RELATED_LINK->getLabel()}" alt="{$RELATED_LINK->getLabel()}" src="{vimage_path("{$RELATED_LINK->getIcon()}")}">
+											</a>
+											<ul class="dropdown-menu">
+												{foreach item=DROPDOWN from=$DROPDOWNS}
+													<li><a id="{$RELATED_MODULE_NAME}_relatedlistView_add_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DROPDOWN['label'])}" class="{$RELATED_LINK->get('linkclass')}" href='javascript:void(0)' data-documentType="{$DROPDOWN['type']}" data-url="{$DROPDOWN['url']}" data-name="{$RELATED_MODULE_NAME}" data-firsttime="{$DROPDOWN['firsttime']}"><i class="icon-plus"></i>&nbsp;{vtranslate($DROPDOWN['label'], $RELATED_MODULE_NAME)}</a></li>
+												{/foreach}
+											</ul>
 										{else}
-											{assign var=IS_SEND_EMAIL_BUTTON value={$RELATED_LINK->get('_sendEmail')}}
 											{assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
-											<button type="button" module="{$RELATED_MODULE_NAME}"  class="btn btn-outline-secondary addButton btn-default me-2
-												{if $IS_SELECT_BUTTON eq true} selectRelation {/if} {if $IS_SEND_EMAIL_BUTTON eq true} sendEmail {/if}"
-												{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}"{/if}
-												{if ($RELATED_LINK->isPageLoadLink())}
-													{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
-													{if $IS_SEND_EMAIL_BUTTON neq true}data-url="{$RELATED_LINK->getUrl()}"{/if}
-												{elseif $IS_SEND_EMAIL_BUTTON eq true}
-													onclick="{$RELATED_LINK->getUrl()}"
-												{/if}
-												{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}name="addButton"{/if}
-												{if $IS_SEND_EMAIL_BUTTON eq true} disabled="disabled" {/if}>{if ($IS_SELECT_BUTTON neq true) && ($IS_SEND_EMAIL_BUTTON neq true)}<i class="fa fa-plus"></i>{/if}&nbsp;&nbsp;{$RELATED_LINK->getLabel()}</button>
+											{* setting button module attribute to Events or Calendar based on link label *}
+											{assign var=LINK_LABEL value={$RELATED_LINK->get('linklabel')}}
+											{if $RELATED_LINK->get('_linklabel') === '_add_event'}
+												{assign var=RELATED_MODULE_NAME value='Events'}
+											{elseif $RELATED_LINK->get('_linklabel') === '_add_task'}
+												{assign var=RELATED_MODULE_NAME value='Calendar'}
+											{/if}
+											{if $IS_SELECT_BUTTON || $IS_CREATE_PERMITTED}
+												<button type="button" module="{$RELATED_MODULE_NAME}" class="me-2 btn btn-outline-secondary
+													{if $IS_SELECT_BUTTON eq true} selectRelation{else} addButton" name="addButton{/if}"
+													{if $IS_SELECT_BUTTON eq true} data-moduleName="{$RELATED_LINK->get('_module')->get('name')}" {/if}
+													{if ($RELATED_LINK->isPageLoadLink())}
+														{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
+														data-url="{$RELATED_LINK->getUrl()}{if $SELECTED_MENU_CATEGORY}&app={$SELECTED_MENU_CATEGORY}{/if}"
+													{/if}
+												>{if $IS_SELECT_BUTTON eq false}<i class="fa fa-plus me-2"></i>{/if}{$RELATED_LINK->getLabel()}</button>
+											{/if}
 										{/if}
 									</div>
 								{/foreach}

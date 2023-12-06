@@ -4307,10 +4307,6 @@ li.dashboardWidget {
     font-size: 16px;
 }
 
-.landingPage {
-    min-height: 600px;
-}
-
 .import-details-container {
     max-height: 500px;
     overflow-y: auto;

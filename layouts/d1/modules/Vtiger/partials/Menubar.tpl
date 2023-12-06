@@ -19,7 +19,7 @@
 	</div>
 	{foreach key=moduleName item=moduleModel from=$SELECTED_CATEGORY_MENU_LIST}
 		{assign var='translatedModuleLabel' value=vtranslate($moduleModel->get('label'),$moduleName )}
-		<div title="{$translatedModuleLabel}" class="module-qtip px-0 py-2 m-0">
+		<div title="{$translatedModuleLabel}" class="px-0 py-2 m-0">
 			<div class="app-module-container rounded {if $MODULE eq $moduleName}active{else}opacity-50{/if}">
 				<a href="{$moduleModel->getDefaultUrl()}&app={$SELECTED_MENU_CATEGORY}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{$translatedModuleLabel}">
 					{$moduleModel->getModuleIcon()}

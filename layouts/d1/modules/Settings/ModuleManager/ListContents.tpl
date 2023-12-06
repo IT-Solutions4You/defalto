@@ -38,12 +38,8 @@
 										<div class="col-1 text-center">
 											<input type="checkbox" value="" class="form-check-input" name="moduleStatus" data-module="{$MODULE_NAME}" data-module-translation="{$MODULE_LABEL}" {if $MODULE_MODEL->isActive()}checked{/if} />
 										</div>
-										<div class="col-1 text-center moduleImage {if !$MODULE_ACTIVE}dull{/if}">
-											{if vimage_path($MODULE_NAME|cat:'.png') != false}
-												<img class="alignMiddle" src="{vimage_path($MODULE_NAME|cat:'.png')}" alt="{$MODULE_LABEL}" title="{$MODULE_LABEL}"/>
-											{else}
-												<img class="alignMiddle" src="{vimage_path('DefaultModule.png')}" alt="{$MODULE_LABEL}" title="{$MODULE_LABEL}"/>
-											{/if}
+										<div class="col-1 text-center moduleImage text-secondary {if !$MODULE_ACTIVE}dull{/if}">
+											{$MODULE_MODEL->getModuleIcon()}
 										</div>
 										<div class="col-7 text-truncate moduleName {if !$MODULE_ACTIVE}dull{/if}">
 											<span class="fs-5 ">{$MODULE_LABEL}</span>
