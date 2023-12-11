@@ -13,7 +13,7 @@
         {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
         <div class="padding15px">
             <div class="widgetContainer_1">
-                <div class="widget_contents" id="popup_notifi_content">
+                <div class="widget_contents p-3" id="popup_notifi_content">
                     {vtranslate('LBL_EMAILS_SENT_RESULT', $MODULE)}
                     <hr>
                     {vtranslate('LBL_TOTAL_EMAILS', $MODULE)}: {$RESULT['total']}

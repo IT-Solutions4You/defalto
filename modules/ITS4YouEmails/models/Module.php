@@ -10,10 +10,11 @@
 class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 {
     public static $mobileIcon = 'mail';
+    public static $phpMailerLibraryPath = 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
 
     public static function isPHPMailerInstalled()
     {
-        return is_file('modules/ITS4YouLibrary/PHPMailer/src/PHPMailer.php');
+        return is_file(self::$phpMailerLibraryPath);
     }
 
     public static function isSendMailConfigured()
@@ -80,14 +81,7 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 
     public function getModuleBasicLinks()
     {
-        return [
-            [
-                'linktype' => 'BASIC',
-                'linklabel' => 'LBL_VTIGER_EMAILS',
-                'linkurl' => $this->getListViewUrl() . '&targetModule=Emails',
-                'linkicon' => 'fa-envelope',
-            ]
-        ];
+        return [];
     }
 
     public function getDatabaseTables()
@@ -112,5 +106,10 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
     public function isStarredEnabled()
     {
         return false;
+    }
+
+    public function getModuleIcon($height = '')
+    {
+        return sprintf('<i style="font-size: %s" class="fa-solid fa-envelope" title=""></i>', $height);
     }
 }

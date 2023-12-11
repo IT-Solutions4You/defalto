@@ -10,7 +10,7 @@
 class ITS4YouEmails_Version_Helper
 {
     public static $version = '0.26';
-    public function getVersion()
+    public static function getVersion()
     {
         return self::$version;
     }

@@ -22,7 +22,7 @@ class ITS4YouEmails_Detail_View extends Vtiger_Detail_View
             $viewer->assign('ATTACHMENTS', $recordModel->getAttachments());
         }
 
-        parent::showModuleBasicView($request);
+        echo parent::showModuleBasicView($request);
     }
 
     public function showModuleDetailView(Vtiger_Request $request)

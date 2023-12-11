@@ -72,6 +72,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
         $this->retrieveFromEmails($request);
         $this->retrieveSMTPRecords($request);
         $this->retrieveRecordDocumentsUrl($request);
+        $this->retrieveDocumentsUrl($request);
     }
 
     public function retrieveRecordDocumentsUrl(Vtiger_Request $request)
@@ -85,6 +86,11 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
 
         $viewer = $this->getViewer($request);
         $viewer->assign('RECORD_DOCUMENTS_URL', $recordDocumentsUrl);
+    }
+    public function retrieveDocumentsUrl(Vtiger_Request $request)
+    {
+        $viewer = $this->getViewer($request);
+        $viewer->assign('DOCUMENTS_URL', 'view=Popup&module=Documents&src_module=ITS4YouEmails&src_field=composeEmail');
     }
 
     public function getRecordsListFromRequest(Vtiger_Request $request, $model = false)

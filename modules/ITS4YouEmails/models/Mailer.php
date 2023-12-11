@@ -7,9 +7,11 @@
  * All Rights Reserved.
  ********************************************************************************/
 
-ITS4YouEmails_Record_Model::includeNewLibraries();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-class ITS4YouEmails_Mailer_Model extends \ITS4You\PHPMailer\PHPMailer
+class ITS4YouEmails_Mailer_Model extends PHPMailer
 {
     public $debug = false;
     public $embedImages;
@@ -277,6 +279,36 @@ class ITS4YouEmails_Mailer_Model extends \ITS4You\PHPMailer\PHPMailer
         if ($db->num_rows($existingResultObject)) {
             $existingResult = json_decode($db->query_result($existingResultObject, 'refids', 0), true);
 
+            if (is_array($existingResult)) {
+                $existingResultValue = array_merge($existingResult, array($messageId));
+                $refIds = json_encode($existingResultValue);
+                $db->pquery(
+                    'UPDATE vtiger_mailscanner_ids SET refids=? WHERE crmid=?',
+                    array($refIds, $crmId)
+                );
+            }
+        } else {
+            $db->pquery(
+                'INSERT INTO vtiger_mailscanner_ids (messageid, crmid) VALUES(?,?)',
+                array($messageId, $crmId)
+            );
+        }
+    }
+
+    public static function generateMessageID(): string
+    {
+        return sprintf("<%s.%s@%s>", base_convert(microtime(), 10, 36), base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36), gethostname());
+    }
+
+    public static function updateMessageIdByCrmId($messageId, $crmId): void
+    {
+        $db = PearDatabase::getInstance();
+        $existingResult = array();
+        $existingResultObject = $db->pquery("SELECT refids FROM vtiger_mailscanner_ids WHERE crmid=? AND refids != 'null'", array($crmId));
+
+        if ($db->num_rows($existingResultObject)) {
+            $existingResult = json_decode($db->query_result($existingResultObject, 'refids', 0), true);
+            // Checking if first parameter is not an array
             if (is_array($existingResult)) {
                 $existingResultValue = array_merge($existingResult, array($messageId));
                 $refIds = json_encode($existingResultValue);

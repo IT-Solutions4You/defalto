@@ -9,7 +9,5 @@
 -->*}
 
 {strip}
-    <br>
-    <div class="small" style="color: rgb(153, 153, 153);text-align: center;">{vtranslate('ITS4YouEmails','ITS4YouEmails')} {ITS4YouEmails_Version_Helper::$version} {vtranslate('COPYRIGHT','ITS4YouEmails')}</div>
     {include file="Footer.tpl"|@vtemplate_path:'Vtiger'}
 {/strip}
