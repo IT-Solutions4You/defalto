@@ -10,9 +10,9 @@
 ********************************************************************************/
 -->*}
 {strip}
-    <div class="main-container clearfix">
-        <div class="editViewPageDiv full-width">
-            <div class="col-sm-12 col-xs-12 ">
+    <div class="main-container p-4">
+        <div class="editViewPageDiv bg-body rounded p-3">
+            <div>
                 <form id="EditView" class="form-horizontal recordEditView" name="EditView" method="post" action="index.php">
                     <input type="hidden" name="record" value="{$RECORDID}" id="record"/>
                     <input type="hidden" name="module" value="{$MODULE}"/>
@@ -20,8 +20,8 @@
                     <input type="hidden" name="mode" value="SaveDisplayConditions"/>
                     <input type="hidden" name="conditions" id="advanced_filter" value=''/>
                     <div class="editViewHeader">
-                        <div class='row'>
-                            <div class="col-lg-12 col-md-12 col-lg-pull-0">
+                        <div>
+                            <div>
                                 {if $RECORD_ID neq ''}
                                     <h4 class="editHeader" title="{vtranslate('LBL_EDITING', $MODULE)} {vtranslate('LBL_CONDITIONS', $MODULE)}">{vtranslate('LBL_EDITING', $MODULE)} {vtranslate('LBL_CONDITIONS', $MODULE)}</h4>
                                 {else}
@@ -35,34 +35,33 @@
                             {if $OLD_CONDITIONS eq "yes"}
                                 <div class="alert alert-info">
                                     {vtranslate('LBL_CREATED_IN_OLD_LOOK_CANNOT_BE_EDITED',$MODULE)}
-
-                                    <br><br><strong>{vtranslate('LBL_OLD_CONDITIONS', $MODULE)}:</strong><br>
+                                    <br>
+                                    <br>
+                                    <strong>{vtranslate('LBL_OLD_CONDITIONS', $MODULE)}:</strong>
+                                    <br>
                                     {include file='DetailDisplayConditions.tpl'|@vtemplate_path:$MODULE}
                                 </div>
                             {/if}
                             <div class="form-group">
-                                <div class="col-sm-12" id="display_condition">
-
+                                <div id="display_condition">
                                     <div class="editViewHeader">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-lg-pull-0">
-
-                                                <h4>{vtranslate('LBL_DISPLAYED',$MODULE)}:
-
+                                        <h5>
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">{vtranslate('LBL_DISPLAYED',$MODULE)}:</div>
+                                                <div class="col-3">
                                                     <select id="displayedValue" name="displayedValue" class="select2">
                                                         <option value="0" {if $EMAIL_TEMPLATE_RESULT.displayed eq "0"}selected{/if}>{vtranslate('LBL_YES',$MODULE)}</option>
                                                         <option value="1" {if $EMAIL_TEMPLATE_RESULT.displayed eq "1"}selected{/if}>{vtranslate('LBL_NO',$MODULE)}</option>
                                                     </select>
-                                                    &nbsp;&nbsp;{vtranslate('LBL_IF',$MODULE)}:
-
-                                                </h4>
+                                                </div>
+                                                <div class="col">{vtranslate('LBL_IF',$MODULE)}:</div>
                                             </div>
-                                        </div>
+                                        </h5>
                                     </div>
 
                                     <div id="advanceFilterContainer" class="conditionsContainer">
                                         <div class="col-sm-12">
-                                            <div class="table table-bordered" style="padding: 5%">
+                                            <div class="table table-bordered py-3">
                                                 {include file='AdvanceFilter.tpl'|@vtemplate_path:$MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE}
                                             </div>
                                         </div>
@@ -73,10 +72,12 @@
                         </div>
                     </div>
                     <div class="modal-overlay-footer clearfix">
-                        <div class="row clearfix">
-                            <div class='textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                                <button type='submit' class='btn btn-success saveButton'>{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
-                                <a class='cancelLink' href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                        <div class="row">
+                            <div class="col text-end">
+                                <a class="btn btn-primary cancelLink" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary active saveButton">{vtranslate('LBL_SAVE', $MODULE)}</button>&nbsp;&nbsp;
                             </div>
                         </div>
                     </div>

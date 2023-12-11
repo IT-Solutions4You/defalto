@@ -59,7 +59,7 @@
                 <br>
                 <div class="row fieldValueContainer">
                     <div class="col-sm-12">
-                        <textarea data-textarea="true" class="fieldValue inputElement hide" style="height: inherit;"></textarea>
+                        <textarea data-textarea="true" class="fieldValue inputElement hide form-control" style="height: inherit;"></textarea>
                     </div>
                 </div>
                 <br>

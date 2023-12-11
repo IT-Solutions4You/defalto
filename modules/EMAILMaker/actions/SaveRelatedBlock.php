@@ -30,6 +30,7 @@ class EMAILMaker_SaveRelatedBlock_Action extends Vtiger_Action_Controller
     public function process(Vtiger_Request $request)
     {
         EMAILMaker_Debugger_Model::GetInstance()->Init();
+
         $adb = PearDatabase::getInstance();
         $rel_module = $request->get('emailmodule');
         $this->relblockid = $request->get('record');
@@ -52,8 +53,10 @@ class EMAILMaker_SaveRelatedBlock_Action extends Vtiger_Action_Controller
         }
         $this->saveAdvancedFilters($advancedFilter);
         $this->saveSortFields($sortFields);
-        echo "<script>window.opener.EMAILMaker_EditJs.refresh_related_blocks_array('" . $this->relblockid . "');
-                      self.close();
+
+        echo "<script>
+                window.opener.EMAILMaker_EditJs.refresh_related_blocks_array('" . $this->relblockid . "');
+                self.close();
               </script>";
     }
 

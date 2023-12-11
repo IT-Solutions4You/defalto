@@ -52,9 +52,9 @@ class EMAILMaker_CustomLabels_View extends EMAILMaker_Index_View
     public function getHeaderScripts(Vtiger_Request $request)
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
-
+        $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = array(
-            'layouts.v7.modules.EMAILMaker.resources.CustomLabels'
+            "layouts.$layout.modules.EMAILMaker.resources.CustomLabels"
         );
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

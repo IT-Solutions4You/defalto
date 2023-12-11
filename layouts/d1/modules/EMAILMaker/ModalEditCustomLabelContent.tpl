@@ -20,29 +20,32 @@
                 <input type="hidden" name="labelid" value="{$LABELID}"/>
                 <input type="hidden" name="langid" value="{$LANGID}"/>
                 <div class="modal-body">
-                    <table class="massEditTable table no-border">
-                        <tr>
-                            <td class="fieldLabel col-lg-2">
-                                <label class="muted pull-right">
-                                    {vtranslate('LBL_KEY', $MODULE)}<span class="redColor">*</span>
-                                </label>
-                            </td>
-                            <td class="fieldValue col-lg-4" colspan="3">
+                    <div class="massEditTable">
+                        <div class="row py-2">
+                            <div class="fieldLabel col-lg-4 text-end text-muted">
+                                <span>{vtranslate('LBL_KEY', $MODULE)}</span>
+                                <span class="text-danger ms-2">*</span>
+                            </div>
+                            <div class="fieldValue col-lg">
                                 {if $LABELID eq ""}
-                                    <div class="input-group"><span class="input-group-addon">C_</span>
-                                    <input type="text" name="LblKey" class="inputElement" placeholder="{vtranslate('LBL_ENTER_KEY', $MODULE)}" value="" data-rule-required="true"/></div>{else}C_{$CUSTOM_LABEL_KEY}{/if}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="fieldLabel col-lg-2">
-                                <label class="muted pull-right">
-                                    {vtranslate('LBL_VALUE', $MODULE)}
-                                </label>
-                            </td>
-                            <td class="fieldValue col-lg-4" colspan="3">
-                                <input type="text" name="LblVal" class="inputElement" placeholder="{vtranslate('LBL_ENTER_CUSTOM_LABEL_VALUE', $MODULE)}" value="{$CUSTOM_LABEL_VALUE}"/></td>
-                        </tr>
-                    </table>
+                                    <div class="input-group">
+                                        <span class="input-group-text">C_</span>
+                                        <input type="text" name="LblKey" class="inputElement form-control" placeholder="{vtranslate('LBL_ENTER_KEY', $MODULE)}" value="" data-rule-required="true"/>
+                                    </div>
+                                {else}
+                                    C_{$CUSTOM_LABEL_KEY}
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="row py-2">
+                            <div class="fieldLabel col-lg-4 text-end text-muted">
+                                <span>{vtranslate('LBL_VALUE', $MODULE)}</span>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input type="text" name="LblVal" class="inputElement form-control" placeholder="{vtranslate('LBL_ENTER_CUSTOM_LABEL_VALUE', $MODULE)}" value="{$CUSTOM_LABEL_VALUE}"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {if $LABELID eq ""}<input type="hidden" class="addCustomLabelView" value="true"/>{/if}
                 {assign var=BUTTON_ID value="js-save-cl"}

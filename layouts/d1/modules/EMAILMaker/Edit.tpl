@@ -8,7 +8,7 @@
 ********************************************************************************/
 -->*}
 {strip}
-    <div class="contents tabbable ui-sortable" style="width: 99%;">
+    <div class="contents tabbable ui-sortable h-main">
         <form class="form-horizontal recordEditView" id="EditView" name="EditView" method="post" action="index.php" enctype="multipart/form-data">
             <input type="hidden" name="module" value="EMAILMaker">
             <input type="hidden" name="parenttab" value="{$PARENTTAB}">
@@ -20,78 +20,75 @@
             <input type="hidden" name="is_theme" value="{if $THEME_MODE eq "true"}1{else}0{/if}">
             <input type="hidden" name="selectedTab" id="selectedTab" value="properties">
             <input type="hidden" name="selectedTab2" id="selectedTab2" value="body">
-            <ul class="nav nav-tabs layoutTabs massEditTabs">
-                <li class="detailviewTab active">
-                    <a data-toggle="tab" href="#pdfContentEdit" aria-expanded="true"><strong>{vtranslate('LBL_PROPERTIES_TAB',$MODULE)}</strong></a>
+            <ul class="nav nav-pills layoutTabs massEditTabs bg-body p-3">
+                <li class="detailviewTab nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#pdfContentEdit" aria-expanded="true"><strong>{vtranslate('LBL_PROPERTIES_TAB',$MODULE)}</strong></a>
                 </li>
-                <li class="detailviewTab">
-                    <a data-toggle="tab" href="#pdfContentOther" aria-expanded="false"><strong>{vtranslate('LBL_OTHER_INFO',$MODULE)}</strong></a>
+                <li class="detailviewTab nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#pdfContentOther" aria-expanded="false"><strong>{vtranslate('LBL_OTHER_INFO',$MODULE)}</strong></a>
                 </li>
-                <li class="detailviewTab">
-                    <a data-toggle="tab" href="#pdfContentLabels" aria-expanded="false"><strong>{vtranslate('LBL_LABELS',$MODULE)}</strong></a>
+                <li class="detailviewTab nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#pdfContentLabels" aria-expanded="false"><strong>{vtranslate('LBL_LABELS',$MODULE)}</strong></a>
                 </li>
                 {if $THEME_MODE neq "true"}
-                    <li class="detailviewTab">
-                        <a data-toggle="tab" href="#pdfContentProducts" aria-expanded="false"><strong>{vtranslate('LBL_ARTICLE',$MODULE)}</strong></a>
+                    <li class="detailviewTab nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#pdfContentProducts" aria-expanded="false"><strong>{vtranslate('LBL_ARTICLE',$MODULE)}</strong></a>
                     </li>
                 {/if}
-                <li class="detailviewTab">
-                    <a data-toggle="tab" href="#editTabSettings" aria-expanded="false"><strong>{vtranslate('LBL_SETTINGS_TAB',$MODULE)}</strong></a>
+                <li class="detailviewTab nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#editTabSettings" aria-expanded="false"><strong>{vtranslate('LBL_SETTINGS_TAB',$MODULE)}</strong></a>
                 </li>
                 {if $THEME_MODE neq "true"}
-                    <li class="detailviewTab">
-                        <a data-toggle="tab" href="#editTabSharing" aria-expanded="false"><strong>{vtranslate('LBL_SHARING_TAB',$MODULE)}</strong></a>
+                    <li class="detailviewTab nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#editTabSharing" aria-expanded="false"><strong>{vtranslate('LBL_SHARING_TAB',$MODULE)}</strong></a>
                     </li>
                 {/if}
             </ul>
             <div>
                 {********************************************* Settings DIV *************************************************}
-                <div>
+                <div class="container-fluid">
                     <div class="row">
-                        <div class="left-block col-xs-4">
-                            <div>
-                                <div class="tab-content layoutContent themeTableColor overflowVisible">
-                                    {include file='tabs/Properties.tpl'|@vtemplate_path:$MODULE}
-                                    {include file='tabs/Other.tpl'|@vtemplate_path:$MODULE}
-                                    {include file='tabs/Labels.tpl'|@vtemplate_path:$MODULE}
-                                    {include file='tabs/ProductBlock.tpl'|@vtemplate_path:$MODULE}
-                                    {include file='tabs/Settings.tpl'|@vtemplate_path:$MODULE}
-                                    {include file='tabs/Sharing.tpl'|@vtemplate_path:$MODULE}
-                                </div>
+                        <div class="left-block col-lg-4">
+                            <div class="tab-content layoutContent rounded bg-body p-3 mt-3">
+                                {include file='tabs/Properties.tpl'|@vtemplate_path:$MODULE}
+                                {include file='tabs/Other.tpl'|@vtemplate_path:$MODULE}
+                                {include file='tabs/Labels.tpl'|@vtemplate_path:$MODULE}
+                                {include file='tabs/ProductBlock.tpl'|@vtemplate_path:$MODULE}
+                                {include file='tabs/Settings.tpl'|@vtemplate_path:$MODULE}
+                                {include file='tabs/Sharing.tpl'|@vtemplate_path:$MODULE}
                             </div>
                         </div>
                         {************************************** END OF TABS BLOCK *************************************}
 
-                        <div class="middle-block col-xs-8">
+                        <div class="middle-block col-lg-8">
+                            <div class="bg-body rounded p-3 my-3">
                             {if $THEME_MODE neq "true"}
                                 {* email subject *}
-                                <div>
-                                    <table class="table no-border">
-                                        <tbody id="properties_div">
-                                        {* pdf module name *}
-                                        <tr>
-                                            <td class="fieldLabel alignMiddle" nowrap="nowrap"><label class="muted pull-right">{vtranslate('LBL_EMAIL_SUBJECT','EMAILMaker')}:&nbsp;</label></td>
-                                            <td class="fieldValue"><input name="subject" id="subject" type="text" value="{$EMAIL_TEMPLATE_RESULT.subject}" class="inputElement nameField" tabindex="1">
-
-                                            </td>
-                                            <td class="fieldValue">
-                                                <select name="subject_fields" id="subject_fields" class="select2 form-control" onchange="EMAILMaker_EditJs.insertFieldIntoSubject(this.value);">
-                                                    <option value="">{vtranslate('LBL_SELECT_MODULE_FIELD','EMAILMaker')}</option>
-                                                    <optgroup label="{vtranslate('LBL_COMMON_EMAILINFO','EMAILMaker')}">
-                                                        {html_options  options=$SUBJECT_FIELDS}
-                                                    </optgroup>
-                                                    {if $TEMPLATEID neq "" || $SELECTMODULE neq ""}
-                                                        {html_options  options=$SELECT_MODULE_FIELD_SUBJECT}
-                                                    {/if}
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                <div id="properties_div">
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3">
+                                            <label class="text-muted" for="subject">{vtranslate('LBL_EMAIL_SUBJECT','EMAILMaker')}:</label>
+                                        </div>
+                                        <div class="col-sm">
+                                            <input name="subject" id="subject" type="text" value="{$EMAIL_TEMPLATE_RESULT.subject}" class="inputElement nameField form-control" tabindex="1">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <select name="subject_fields" id="subject_fields" class="select2 form-control" onchange="EMAILMaker_EditJs.insertFieldIntoSubject(this.value);">
+                                                <option value="">{vtranslate('LBL_SELECT_MODULE_FIELD','EMAILMaker')}</option>
+                                                <optgroup label="{vtranslate('LBL_COMMON_EMAILINFO','EMAILMaker')}">
+                                                    {html_options  options=$SUBJECT_FIELDS}
+                                                </optgroup>
+                                                {if $TEMPLATEID neq "" || $SELECTMODULE neq ""}
+                                                    {html_options  options=$SELECT_MODULE_FIELD_SUBJECT}
+                                                {/if}
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             {/if}
                             {*********************************************BODY DIV*************************************************}
                             <div class="tab-content">
-                                <div class="tab-pane active" id="body_div2" style="margin-bottom: 2em">
+                                <div class="tab-pane active mb-3" id="body_div2">
                                     <textarea name="body" id="body" style="width: 100%; height:700px" class=small tabindex="5">{$EMAIL_TEMPLATE_RESULT.body}</textarea>
                                 </div>
                                 {if $ITS4YOUSTYLE_FILES neq ""}
@@ -128,7 +125,24 @@
                                         {/foreach}
                                     </div>
                                 {/if}
-
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col text-end">
+                                            {if $smarty.request.return_view neq ''}
+                                                <a class="btn btn-primary cancelLink" type="reset" onclick="window.location.href = 'index.php?module={if $smarty.request.return_module neq ''}{$smarty.request.return_module}{else}EMAILMaker{/if}&view={$smarty.request.return_view}{if $smarty.request.templateid neq ""  && $smarty.request.return_view neq "List"}&templateid={$smarty.request.templateid}{/if}';">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                            {else}
+                                                <a class="btn btn-primary cancelLink" type="reset" onclick="window.history.back();">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                            {/if}
+                                        </div>
+                                        <div class="col-auto">
+                                            <button class="btn btn-primary" type="submit" onclick="document.EditView.redirect.value = 'false';"><strong>{vtranslate('LBL_APPLY',$MODULE)}</strong></button>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary active" type="submit">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
                             <script type="text/javascript">
                                 {literal} jQuery(document).ready(function () {{/literal}
@@ -141,24 +155,14 @@
                                     });
                                     {/literal}
                                     {/if}{literal}
-                                    CKEDITOR.replace('body', {height: '1000'});
+                                    CKEDITOR.replace('body', {height: '65vh'});
                                 }){/literal}
                             </script>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-overlay-footer row-fluid">
-                <div class="textAlignCenter ">
-                    <button class="btn" type="submit" onclick="document.EditView.redirect.value = 'false';"><strong>{vtranslate('LBL_APPLY',$MODULE)}</strong></button>&nbsp;&nbsp;
-                    <button class="btn btn-success" type="submit"><strong>{vtranslate('LBL_SAVE', $MODULE)}</strong></button>
-                    {if $smarty.request.return_view neq ''}
-                        <a class="cancelLink" type="reset" onclick="window.location.href = 'index.php?module={if $smarty.request.return_module neq ''}{$smarty.request.return_module}{else}EMAILMaker{/if}&view={$smarty.request.return_view}{if $smarty.request.templateid neq ""  && $smarty.request.return_view neq "List"}&templateid={$smarty.request.templateid}{/if}';">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                    {else}
-                        <a class="cancelLink" type="reset" onclick="window.history.back();">{vtranslate('LBL_CANCEL', $MODULE)}</a>
-                    {/if}
-                </div>
-            </div>
+
             <div class="hide" style="display: none">
                 <div id="div_vat_block_table">{$VATBLOCK_TABLE}</div>
                 <div id="div_charges_block_table">{$CHARGESBLOCK_TABLE}</div>

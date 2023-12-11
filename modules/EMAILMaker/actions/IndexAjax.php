@@ -40,7 +40,6 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
             'ChangeActiveOrDefault',
             'SearchEmails',
             'getModuleFields',
-            'sendExampleMEmail',
             'GetRelatedBlockColumns',
             'SaveDisplayConditions',
             'getSendingMsg',
@@ -520,6 +519,7 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
     public function installExtension(Vtiger_Request $request)
     {
         $extname = $request->get("extname");
+        $layout = Vtiger_Viewer::getLayoutName();
 
         if ($extname == "Workflow") {
             $Errors = array();
@@ -540,10 +540,10 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
                     }
                 }
 
-                $folder_dest2 = "layouts/v7/modules/Settings/Workflows/Tasks/";
+                $folder_dest2 = "layouts/$layout/modules/Settings/Workflows/Tasks/";
                 $dest2 = $folder_dest2 . $name . ".tpl";
 
-                $source2 = "layouts/v7/modules/EMAILMaker/taskforms/" . $name . ".tpl";
+                $source2 = "layouts/$layout/modules/EMAILMaker/taskforms/" . $name . ".tpl";
                 if (!file_exists($dest2)) {
                     if (!copy($source2, $dest2)) {
                         $Errors[] = vtranslate("LBL_PERMISSION_ERROR_PART_1", "EMAILMaker") . ' "' . $source2 . '" ' . vtranslate("LBL_PERMISSION_ERROR_PART_2", "PDFMaker") . ' "' . $folder_dest2 . '" ' . vtranslate("LBL_PERMISSION_ERROR_PART_3", "PDFMaker") . '.';
@@ -551,18 +551,18 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
                 }
             }
             if (count($Errors) > 0) {
-                $error = '<div class="modelContainer">';
+                $error = '<div class="modal-dialog modal-lg modelContainer"><div class="modal-content">';
                 $error .= '<div class="modal-header">';
-                $error .= '<button class="close vtButton" data-dismiss="modal">×</button>';
                 $error .= '<h3 class="redColor">';
                 $error .= vtranslate("LBL_INSTALLATION_FAILED", "EMAILMaker");
                 $error .= '</h3>';
+                $error .= '<button class="btn-close" data-bs-dismiss="modal"></button>';
                 $error .= '</div>';
                 $error .= '<div class="modal-body">';
                 $error .= implode("<br>", $Errors);
                 $error .= "<br><br>" . vtranslate("LBL_CHANGE_PERMISSION", "EMAILMaker");
                 $error .= '</div>';
-                $error .= '</div>';
+                $error .= '</div></div>';
             } else {
                 $EMAILMaker->installWorkflows();
                 $control = $EMAILMakerModel->controlWorkflows();
@@ -741,105 +741,6 @@ class EMAILMaker_IndexAjax_Action extends Vtiger_Action_Controller
 
         $response = new Vtiger_Response();
         $response->setResult(array('success' => true, 'fields' => $SelectModuleFields, 'related_modules' => $RelatedModules, 'subject_fields' => array(vtranslate('LBL_COMMON_EMAILINFO', 'EMAILMaker') => $subject_fields)));
-        $response->emit();
-    }
-
-
-    public function sendExampleMEmail(Vtiger_Request $request)
-    {
-        global $root_directory;
-
-        $moduleName = $request->getModule();
-        $data = $request->get("datap");
-        $emailadd = $data["toemail"];
-
-        $datame = $request->get("datame");
-        $from_address = $datame["from_email"];
-        $from_name = $datame["from_name"];
-        $subject = $datame["subject"];
-        $templateid = $datame["emailtemplateid"];
-        $language = $datame["language"];
-
-        $formodule = $datame["for_module"];
-
-        $mailer = Emails_Mailer_Model::getInstance();
-        $mailer->IsHTML(true);
-
-        $mailer->reinitialize();
-
-        $adb = PearDatabase::getInstance();
-        $result0 = $adb->pquery("select from_email_field from vtiger_systems where server_type=?", array('email'));
-        $from_email_field = $adb->query_result($result0, 0, 'from_email_field');
-
-        $replyToEmail = $from_address;
-        if (isset($from_email_field) && $from_email_field != '') {
-            $from_address = $from_email_field;
-        }
-
-        $mailer->ConfigSenderInfo($from_address, $from_name, $replyToEmail);
-
-        $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateid, $language, $formodule, "0");
-        $EMAILContentModel->setSubject($subject);
-        $EMAILContentModel->getContent(false, false, true);
-
-        $subject = $EMAILContentModel->getSubject();
-        $body = $EMAILContentModel->getBody();
-
-        $mailer->Body = $body;
-        $mailer->Subject = $subject;
-        $mailer->AddAddress($emailadd);
-
-        $sql10 = "SELECT vtiger_attachments.* FROM vtiger_notes 
-                INNER JOIN vtiger_crmentity 
-                    ON vtiger_crmentity.crmid = vtiger_notes.notesid
-                INNER JOIN vtiger_seattachmentsrel 
-                    ON vtiger_seattachmentsrel.crmid = vtiger_notes.notesid  
-                INNER JOIN vtiger_attachments 
-                    ON vtiger_attachments.attachmentsid = vtiger_seattachmentsrel.attachmentsid    
-                INNER JOIN vtiger_emakertemplates_documents 
-                    ON vtiger_emakertemplates_documents.documentid = vtiger_notes.notesid
-                WHERE vtiger_crmentity.deleted = '0' AND vtiger_emakertemplates_documents.templateid = ?";
-        $result10 = $adb->pquery($sql10, array($templateid));
-        $num_rows10 = $adb->num_rows($result10);
-
-        if ($num_rows10 > 0) {
-            for ($i = 0; $i < $num_rows10; $i++) {
-                $row = $adb->query_result_rowdata($result10, $i);
-
-                if (!isset($row['storedname']) || empty($row['storedname'])) {
-                    $row['storedname'] = $row['name'];
-                }
-
-                $fileid = $row['attachmentsid'];
-                $file = decode_html($row['storedname']);
-                $filename = decode_html($row['name']);
-                $filepath = $row['path'];
-                $filewithpath = $root_directory . $filepath . $fileid . "_" . $file;
-                if (is_file($filewithpath)) {
-                    $mailer->AddAttachment($filewithpath, $filename);
-                }
-            }
-        }
-
-        $Email_Images = $EMAILContentModel->getEmailImages();
-        if (count($Email_Images) > 0) {
-            foreach ($Email_Images as $cid => $cdata) {
-                $mailer->AddEmbeddedImage($cdata["path"], $cid, $cdata["name"]);
-            }
-        }
-
-        $status = $mailer->Send(true);
-        $success = true;
-        "";
-        if (!$status) {
-            $mail_status = $mailer->getError();
-            $success = false;
-        } else {
-            $mail_status = vtranslate("LBL_EMAIL_HAS_BEEN_SENT", $moduleName);
-        }
-
-        $response = new Vtiger_Response();
-        $response->setResult(array('success' => $success, 'status' => $mail_status));
         $response->emit();
     }
 

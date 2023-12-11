@@ -92,15 +92,13 @@ class EMAILMaker_EditDisplayConditions_View extends Vtiger_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
-
+        $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = array(
-            'layouts.v7.modules.Vtiger.resources.Edit',
-            "layouts.v7.modules.$moduleName.resources.Edit",
-            "layouts.v7.modules.$moduleName.resources.EditDisplayConditions",
-            "layouts.v7.modules.Vtiger.resources.AdvanceFilter",
-            "layouts.v7.modules.$moduleName.resources.AdvanceFilter",
-            '~libraries/jquery/ckeditor/ckeditor.js',
-            '~/libraries/jquery/bootstrapswitch/js/bootstrap-switch.min.js',
+            "layouts.$layout.modules.Vtiger.resources.Edit",
+            "layouts.$layout.modules.$moduleName.resources.Edit",
+            "layouts.$layout.modules.$moduleName.resources.EditDisplayConditions",
+            "layouts.$layout.modules.Vtiger.resources.AdvanceFilter",
+            "layouts.$layout.modules.$moduleName.resources.AdvanceFilter",
             '~libraries/jquery/jquery.datepick.package-4.1.0/jquery.datepick.js',
         );
 

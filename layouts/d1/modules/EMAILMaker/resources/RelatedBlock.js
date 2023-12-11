@@ -19,70 +19,69 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
         selectedFields: false,
 
         changeSteps: function () {
-            var actual_step = document.getElementById('step').value * 1;
-            var next_step = actual_step + 1;
+            let actualStep = document.getElementById('step').value * 1;
+            let nextStep = actualStep + 1;
 
-            if (next_step == "2") {
+            if (2 === nextStep) {
                 EMAILMaker_RelatedBlockJs.changeSecOptions();
-            } else if (next_step == "6") {
-                var editViewForm = this.getForm();
+            } else if (6 === nextStep) {
+                let editViewForm = this.getForm(),
+                    blockNameElement = jQuery('input[name="blockname"]'),
+                    control = blockNameElement.val();
 
-                var blocknameElement = jQuery('input[name="blockname"]');
-                var control = blocknameElement.val();
-
-                if (control == "") {
-                    vtUtils.showValidationMessage(blocknameElement, app.vtranslate('JS_REQUIRED_FIELD'));
+                if (!control) {
+                    vtUtils.showValidationMessage(blockNameElement, app.vtranslate('JS_REQUIRED_FIELD'));
                     return false;
                 } else {
-                    vtUtils.hideValidationMessage(blocknameElement);
+                    vtUtils.hideValidationMessage(blockNameElement);
                 }
+                
                 editViewForm.submit();
             } else {
-                if (next_step == "3") {
+                if (3 === nextStep) {
                     if (!this.isFormValidate()) return false;
 
-                    var selectedFields = this.getSelectedColumns();
+                    let selectedFields = this.getSelectedColumns();
                     this.getSelectedFields().val(JSON.stringify(selectedFields));
                     this.createRelatedBlockTable();
                 }
 
-                jQuery("#steplabel" + actual_step).removeClass('active');
-                jQuery("#steplabel" + next_step).addClass('active');
-                jQuery("#step" + actual_step).addClass('hide');
-                jQuery("#step" + next_step).removeClass('hide');
+                jQuery("#crumb" + actualStep).removeClass('active');
+                jQuery("#crumb" + nextStep).addClass('active');
+                jQuery("#step" + actualStep).addClass('hide');
+                jQuery("#step" + nextStep).removeClass('hide');
             }
 
             document.getElementById('back_rep').disabled = false;
-            document.getElementById('step').value = next_step;
+            document.getElementById('step').value = nextStep;
         },
         changeStepsback: function (mode) {
-            actual_step = document.getElementById('step').value * 1;
-            last_step = actual_step - 1;
+            let actualStep = document.getElementById('step').value * 1,
+                lastStep = actualStep - 1;
 
-            jQuery("#steplabel" + actual_step).removeClass('active');
-            jQuery("#steplabel" + last_step).addClass('active');
+            jQuery("#crumb" + actualStep).removeClass('active');
+            jQuery("#crumb" + lastStep).addClass('active');
 
-            jQuery("#step" + actual_step).addClass('hide');
-            jQuery("#step" + last_step).removeClass('hide');
+            jQuery("#step" + actualStep).addClass('hide');
+            jQuery("#step" + lastStep).removeClass('hide');
 
-            if ((last_step == 1 && mode == "create") || (last_step == 3 && mode == "edit"))
+            if ((1 === lastStep && 'create' === mode) || (3 === lastStep && 'edit' === mode)) {
                 document.getElementById('back_rep').disabled = true;
+            }
 
-            document.getElementById('step').value = last_step;
+            document.getElementById('step').value = lastStep;
         },
         changeSecOptions: function () {
+            let self = this,
+                primodule = document.NewBlock.primarymodule.value,
+                secmodule = EMAILMaker_RelatedBlockJs.getCheckedValue(document.NewBlock.secondarymodule),
+                saved_secmodule_element = jQuery("#saved_secmodule"),
+                saved_secmodule = saved_secmodule_element.val();
 
-            var primodule = document.NewBlock.primarymodule.value;
-            var secmodule = EMAILMaker_RelatedBlockJs.getCheckedValue(document.NewBlock.secondarymodule);
+            if (saved_secmodule !== secmodule) {
+                saved_secmodule_element.val(secmodule);
 
-            var saved_secmodule = jQuery("#saved_secmodule").val();
-
-            if (saved_secmodule != secmodule) {
-                jQuery("#saved_secmodule").val(secmodule);
-
-                var thisElement = this;
-
-                var params = {
+                let params = {
                     'module': 'EMAILMaker',
                     'action': 'IndexAjax',
                     'mode': 'GetRelatedBlockColumns',
@@ -93,17 +92,19 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
 
                 app.helper.showProgress();
 
-                var ModuleFieldsElements = jQuery('.relatedblockColumns');
+                let ModuleFieldsElements = jQuery('.relatedblockColumns');
 
                 app.request.post({'data': params}).then(
                     function (err, response) {
                         app.helper.hideProgress();
 
+                        ModuleFieldsElements.html('');
                         ModuleFieldsElements.each(function (index, domElement) {
-                            ModuleFieldsElement = jQuery(domElement);
+                            let ModuleFieldsElement = jQuery(domElement);
+
                             jQuery.each(response['fields'], function (i, fields) {
 
-                                var optgroup = jQuery('<optgroup/>');
+                                let optgroup = jQuery('<optgroup/>');
                                 optgroup.attr('label', i);
 
                                 jQuery.each(fields, function (key, field) {
@@ -118,21 +119,23 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
                             });
                         });
 
-                        var relatedblockColumnsListElement = jQuery('#relatedblockColumnsList');
+                        let relatedblockColumnsListElement = jQuery('#relatedblockColumnsList');
                         relatedblockColumnsListElement.select2("destroy");
-                        relatedblockColumnsListElement.select2();
 
-                        thisElement.initialize();
+                        vtUtils.showSelect2ElementView(relatedblockColumnsListElement);
 
-                        jQuery("#steplabel1").removeClass('active');
-                        jQuery("#steplabel2").addClass('active');
+                        self.initialize();
+                        self.makeColumnListSortable();
+
+                        jQuery("#crumb1").removeClass('active');
+                        jQuery("#crumb2").addClass('active');
 
                         jQuery("#step1").addClass('hide');
                         jQuery("#step2").removeClass('hide');
                     }
                 );
 
-                var params2 = {
+                let params2 = {
                     'module': 'EMAILMaker',
                     'view': 'GetRelatedBlockFilters',
                     'secmodule': secmodule,
@@ -147,8 +150,8 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
                 );
             } else {
                 this.initialize();
-                jQuery("#steplabel1").removeClass('active');
-                jQuery("#steplabel2").addClass('active');
+                jQuery("#crumb1").removeClass('active');
+                jQuery("#crumb2").addClass('active');
 
                 jQuery("#step1").addClass('hide');
                 jQuery("#step2").removeClass('hide');
@@ -157,13 +160,13 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
         getCheckedValue: function (radioObj) {
             if (!radioObj)
                 return "";
-            var radioLength = radioObj.length;
+            let radioLength = radioObj.length;
             if (radioLength == undefined)
                 if (radioObj.checked)
                     return radioObj.value;
                 else
                     return "";
-            for (var i = 0; i < radioLength; i++) {
+            for (let i = 0; i < radioLength; i++) {
                 if (radioObj[i].checked) {
                     return radioObj[i].value;
                 }
@@ -171,8 +174,9 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             return "";
         },
         registerSelect2ElementForRelatedBlockColumns: function () {
-            var selectElement = this.getRelatedBlockColumnsList();
-            selectElement.select2();
+            let selectElement = this.getRelatedBlockColumnsList();
+
+            vtUtils.showSelect2ElementView(selectElement);
         },
         getRelatedBlockColumnsList: function () {
             if (this.relatedblockColumnsList == false) {
@@ -186,53 +190,16 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             }
             return this.selectedFields;
         },
-        arrangeSelectChoicesInOrder: function () {
-            var selectElement = this.getRelatedBlockColumnsList();
-            var chosenElement = app.getSelect2ElementFromSelect(selectElement);
-            var choicesContainer = chosenElement.find('ul.select2-choices');
-            var choicesList = choicesContainer.find('li.select2-search-choice');
-
-            var selectedOptions = selectElement.find('option:selected');
-            var selectedOrder = JSON.parse(this.getSelectedFields().val());
-            var selectedOrderKeys = [];
-            for (var key in selectedOrder) {
-                if (selectedOrder.hasOwnProperty(key)) {
-                    selectedOrderKeys.push(key);
-                }
-            }
-            for (var index = selectedOrderKeys.length; index > 0; index--) {
-                var selectedValue = selectedOrder[selectedOrderKeys[index - 1]];
-                var option = selectedOptions.filter('[value="' + selectedValue + '"]');
-                choicesList.each(function (choiceListIndex, element) {
-                    var liElement = jQuery(element);
-                    if (liElement.find('div').html() == option.html()) {
-                        choicesContainer.prepend(liElement);
-                        return false;
-                    }
-                });
-            }
-        },
         makeColumnListSortable: function () {
-            var thisInstance = this;
-            var selectElement = thisInstance.getRelatedBlockColumnsList();
-            var select2Element = app.getSelect2ElementFromSelect(selectElement);
-            //TODO : peform the selection operation in context this might break if you have multi select element in advance filter
-            //The sorting is only available when Select2 is attached to a hidden input field.
-            var chozenChoiceElement = select2Element.find('ul.select2-choices');
-            chozenChoiceElement.sortable({
-                containment: 'parent',
-                start: function () {
-                    thisInstance.getSelectedFields().select2("onSortStart");
-                },
-                update: function () {
-                    thisInstance.getSelectedFields().select2("onSortEnd");
-                }
-            });
+            let selectParent = this.getRelatedBlockColumnsList().parent(),
+                selectSelection = selectParent.find('.select2-selection ul');
+
+            selectSelection.sortable();
         },
         isFormValidate: function () {
-            var fieldElement = this.getRelatedBlockColumnsList();
-            var fieldElementValue = fieldElement.find('option:selected').length;
-            var select2Element = fieldElement.parent().find('.select2-container');
+            let fieldElement = this.getRelatedBlockColumnsList();
+            let fieldElementValue = fieldElement.find('option:selected').length;
+            let select2Element = fieldElement.parent().find('.select2-container');
             if (fieldElementValue == 0) {
                 vtUtils.showValidationMessage(select2Element, app.vtranslate('JS_REQUIRED_FIELD'));
                 return false;
@@ -245,13 +212,13 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             this.relatedblockColumnsList = false;
             this.selectedFields = false;
 
-            var sort_selectbox1 = jQuery('#selectScolrow_1');
-            var sort_selectbox2 = jQuery('#selectScolrow_2');
-            var sort_selectbox3 = jQuery('#selectScolrow_3');
+            let sort_selectbox1 = jQuery('#selectScolrow_1'),
+                sort_selectbox2 = jQuery('#selectScolrow_2'),
+                sort_selectbox3 = jQuery('#selectScolrow_3');
 
-            sort_selectbox1.select2();
-            sort_selectbox2.select2();
-            sort_selectbox3.select2();
+            vtUtils.showSelect2ElementView(sort_selectbox1);
+            vtUtils.showSelect2ElementView(sort_selectbox2);
+            vtUtils.showSelect2ElementView(sort_selectbox3);
         },
         getForm: function () {
             if (this.formElement == false) {
@@ -265,24 +232,24 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
         },
         calculateValues: function () {
             //handled advanced filters saved values.
-            var advfilterlist = this.advanceFilterInstance.getValues();
+            let advfilterlist = this.advanceFilterInstance.getValues();
             jQuery('#advanced_filter').val(JSON.stringify(advfilterlist));
 
-            var selectedSortOrderFields = [];
-            var selectedSortFieldsRows = jQuery('.sortFieldRow');
+            let selectedSortOrderFields = [];
+            let selectedSortFieldsRows = jQuery('.sortFieldRow');
             jQuery.each(selectedSortFieldsRows, function (index, element) {
-                var currentElement = jQuery(element);
-                var field = currentElement.find('select.selectedSortFields').val();
-                var order = currentElement.find('.sortOrder').filter(':checked').val();
+                let currentElement = jQuery(element);
+                let field = currentElement.find('select.selectedSortFields').val();
+                let order = currentElement.find('.sortOrder').filter(':checked').val();
                 //TODO: need to handle sort type for Reports
-                var type = currentElement.find('.sortType').val();
+                let type = currentElement.find('.sortType').val();
                 selectedSortOrderFields.push([field, order, type]);
             });
             jQuery('#selected_sort_fields').val(JSON.stringify(selectedSortOrderFields));
         },
         registerSubmitEvent: function () {
-            var editViewForm = this.getForm();
-            var thisInstance = this;
+            let editViewForm = this.getForm();
+            let thisInstance = this;
             editViewForm.submit(function () {
                 thisInstance.calculateValues();
             });
@@ -290,7 +257,6 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
         registerEvents: function () {
             this.relatedblockColumnsList = false;
             this.selectedFields = false;
-            this.arrangeSelectChoicesInOrder();
             this.makeColumnListSortable();
             this.registerSubmitEvent();
         },
@@ -305,19 +271,19 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
         },
         createRelatedBlockTable: function () {
 
-            var selectedColumns = JSON.parse(this.getSelectedFields().val());
-            var oEditor = CKEDITOR.instances.relatedblock;
+            let selectedColumns = JSON.parse(this.getSelectedFields().val());
+            let oEditor = CKEDITOR.instances['relatedblock'];
 
-            var table = "<table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse;'>";
+            let table = "<table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse;'>";
             //header
             table += "<tr>";
 
-            for (var key in selectedColumns) {
-                tmpArr = selectedColumns[key].split(":");
-                tmpLbl = tmpArr[2];
-                var idx = tmpLbl.indexOf("_");
-                var module = tmpLbl.slice(0, idx).toUpperCase();
-                var label = tmpLbl.slice(idx + 1).replace(/_/g, " ");
+            for (let key in selectedColumns) {
+                let tmpArr = selectedColumns[key].split(":");
+                let tmpLbl = tmpArr[2];
+                let idx = tmpLbl.indexOf("_");
+                let module = tmpLbl.slice(0, idx).toUpperCase();
+                let label = tmpLbl.slice(idx + 1).replace(/_/g, " ");
                 label = label.replace(/@~@/g, "_");          //because of PriceBook listprice field header that contains '_'
                 label = "%R_" + module + "_" + label + "%";
                 table += "<td>";
@@ -333,8 +299,8 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             table += "</tr>";
 
             table += "<tr>";
-            for (var key in selectedColumns) {
-                var coldata = selectedColumns[key].split(":");
+            for (let key in selectedColumns) {
+                let coldata = selectedColumns[key].split(":");
                 table += "<td>";
                 table += "$" + coldata[3] + "$";
                 table += "</td>";
@@ -352,26 +318,24 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             oEditor.setData(table);
         },
         getSelectedColumns: function () {
-            var columnListSelectElement = this.getRelatedBlockColumnsList();
-            var select2Element = app.getSelect2ElementFromSelect(columnListSelectElement);
+            let element = this.getRelatedBlockColumnsList(),
+                parent = element.parent(),
+                data = element.select2('data'),
+                values = [];
 
-            var selectedValuesByOrder = [];
-            var selectedOptions = columnListSelectElement.find('option:selected');
+            if (data) {
+                parent.find('.select2-selection__choice').each(function () {
+                    let choice = $(this);
 
-            var orderedSelect2Options = select2Element.find('li.select2-search-choice').find('div');
-            orderedSelect2Options.each(function (index, element) {
-                var chosenOption = jQuery(element);
-                var choiceElement = chosenOption.closest('.select2-search-choice');
-                var choiceValue = choiceElement.data('select2Data').id;
-                selectedOptions.each(function (optionIndex, domOption) {
-                    var option = jQuery(domOption);
-                    if (option.val() == choiceValue) {
-                        selectedValuesByOrder.push(option.val());
-                        return false;
-                    }
+                    $.each(data, function (index, value) {
+                        if (value.text === choice.attr('title')) {
+                            values.push(value.id);
+                        }
+                    });
                 });
-            });
-            return selectedValuesByOrder;
+            }
+
+            return values;
         }
     }
 }

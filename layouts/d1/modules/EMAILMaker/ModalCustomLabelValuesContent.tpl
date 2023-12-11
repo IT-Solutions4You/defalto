@@ -17,13 +17,13 @@
                         <input type="hidden" name="module" value="{$MODULE}"/>
                         <input type="hidden" name="action" value="SaveCustomLabels"/>
                         <input type="hidden" name="lblkey" value="{$LBLKEY}"/>
-                        <div class="row-fluid">
+                        <div>
                             {foreach name=langvals item=langvalsdata key=modulename from=$LANGVALSARR}
-                                <div class="control-group">
-                                    <label class="muted control-label">{$langvalsdata.label}</label>
-                                    <div class="controls input-append">
+                                <div class="row py-2">
+                                    <div class="col-4 text-muted">{$langvalsdata.label}</div>
+                                    <div class="col">
                                         <input type="hidden" name="LblVal{$langvalsdata.id}" value="yes"/>
-                                        <input type="text" name="LblVal{$langvalsdata.id}Value" class="inputElement" placeholder="{vtranslate('LBL_ENTER_CUSTOM_LABEL_VALUE', $MODULE)}" value="{$langvalsdata.value}"/>
+                                        <input type="text" name="LblVal{$langvalsdata.id}Value" class="inputElement form-control" placeholder="{vtranslate('LBL_ENTER_CUSTOM_LABEL_VALUE', $MODULE)}" value="{$langvalsdata.value}"/>
                                     </div>
                                 </div>
                             {/foreach}

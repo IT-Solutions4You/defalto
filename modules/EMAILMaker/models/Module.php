@@ -10,40 +10,12 @@
 class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 {
     public static $mobileIcon = 'email-edit';
-    public $licensePermissions = array();
     private $profilesActions = array(
         "EDIT" => "EditView",
         "DETAIL" => "DetailView",
         "DELETE" => "Delete",
     );
     private $profilesPermissions = array();
-
-    public function getLicensePermissions($type = 'List')
-    {
-        if (empty($this->name)) {
-            $this->name = explode('_', get_class($this))[0];
-        }
-        $installer = 'ITS4YouInstaller';
-        $licenseMode = 'Settings_ITS4YouInstaller_License_Model';
-
-        if (vtlib_isModuleActive($installer)) {
-            if (class_exists($licenseMode)) {
-                $permission = new $licenseMode();
-                $result = $permission->permission($this->name, $type);
-
-                $this->licensePermissions['info'] = $result['errors'];
-
-                return $result['success'];
-            } else {
-                $this->licensePermissions['errors'] = 'LBL_INSTALLER_UPDATE';
-            }
-        } else {
-            $this->licensePermissions['errors'] = 'LBL_INSTALLER_NOT_ACTIVE';
-        }
-
-        return false;
-    }
-
     public function getAlphabetSearchField()
     {
         return 'templatename';
@@ -361,31 +333,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 'linkurl' => 'index.php?module=' . $this->getName() . '&view=ProductBlocks',
                 'linkicon' => ''
             );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_MODULE_REQUIREMENTS',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&parent=Settings&view=Requirements&mode=Module&sourceModule=EMAILMaker',
-                'linkicon' => ''
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_LICENSE',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&view=License&parent=Settings&sourceModule=EMAILMaker',
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_UPGRADE',
-                'linkurl' => 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1',
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => 'LBL_UNINSTALL',
-                'linkurl' => 'index.php?module=ITS4YouInstaller&view=Uninstall&parent=Settings&sourceModule=EMAILMaker',
-            );
         }
         return $settingsLinks;
     }
@@ -572,7 +519,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             }
             $emailsResult[vtranslate($row['setype'], $row['setype'])][$row['crmid']][] = array(
                 'value' => $row['value'],
-                'label' => decode_html($row['label']) . ' <b>(' . $row['value'] . ')</b>',
+                'label' => decode_html($row['label']) . ' (' . $row['value'] . ')',
                 'name' => decode_html($row['label']),
                 'module' => $row['setype']
             );
@@ -879,5 +826,10 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
     public function getPicklistFields()
     {
         return [];
+    }
+
+    public function getModuleIcon($height = '')
+    {
+        return sprintf('<i style="font-size: %s" class="fa-solid fa-envelope-open-text" title=""></i>', $height);
     }
 }

@@ -247,7 +247,6 @@ Vtiger_Index_Js('EMAILMaker_CustomLabels_Js', {
         });
     },
     registerEvents: function () {
-        this.registerAppTriggerEvent();
         this.registerActions();
         this.updateNoItemFoundTr()
     }

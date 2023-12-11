@@ -329,7 +329,6 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
 
         $jsFileNames = array(
             'modules.Vtiger.resources.List',
-            'modules.Emails.resources.MassEdit',
             'modules.Vtiger.resources.Edit',
             'modules.EMAILMaker.resources.Edit',
             'modules.EMAILMaker.resources.RelatedBlock',

@@ -4562,19 +4562,6 @@ li.dashboardWidget {
 /*******************************************
 *************** Mail Manager ***************
 ********************************************/
-.mmDescription {
-    height: 300px;
-    width: 80%;
-    border: 1.5px solid;
-    border-radius: 2px;
-    border-color: #DDDDDD;
-    font-size: 11pt;
-    margin-top: 55px;
-    margin-left: -4%;
-    background: #F9F9F9;
-    padding: 20px;
-}
-
 .mmListMainContainer {
     color: #888888;
     font-size: 14px;
@@ -4591,16 +4578,6 @@ li.dashboardWidget {
 
 .width100per {
     width: 100% !important;
-}
-
-#_mbox_pwd {
-    padding: 3px 8px;
-}
-
-#mmSettingInfo {
-    padding-left: 7px;
-    padding-top: 7px;
-    font-size: 14px;
 }
 
 #mainCheckBox {

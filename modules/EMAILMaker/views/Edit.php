@@ -10,7 +10,6 @@
 class EMAILMaker_Edit_View extends Vtiger_Index_View
 {
     public $cu_language = "";
-    protected $isInstalled = false;
     private $ModuleFields = array();
     private $All_Related_Modules = array();
 
@@ -18,8 +17,6 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
     {
         parent::__construct();
 
-        $class = explode('_', get_class($this));
-        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('Edit6'));
         $this->exposeMethod('selectTheme');
     }
 
@@ -28,11 +25,7 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
      */
     public function process(Vtiger_Request $request)
     {
-        if (!$this->isInstalled) {
-            (new Settings_ITS4YouInstaller_License_View())->initializeContents($request);
-        } else {
-            $this->getProcess($request);
-        }
+        $this->getProcess($request);
     }
 
     /**

@@ -12,7 +12,7 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
     formElement: false,
 
     getForm: function () {
-        if (this.formElement == false) {
+        if (this.formElement === false) {
             this.setForm(jQuery('#EditView'));
         }
         return this.formElement;
@@ -26,14 +26,9 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
             form = this.getForm();
         }
         form.on(Vtiger_Edit_Js.recordPreSave, function (e, data) {
-            var error = 0;
+            let error = 0;
 
-            if (error == 0) {
-                return true;
-            } else {
-                return false;
-            }
-            e.preventDefault();
+            return error === 0;
         })
     },
     registerBasicEvents: function (container) {
@@ -41,41 +36,42 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
         this.registerButtons();
     },
     registerButtons: function () {
-        var thisInstance = this;
-        var selectElement1 = jQuery('.InsertIntoTemplate');
+        let thisInstance = this,
+            selectElement1 = jQuery('.InsertIntoTemplate');
+
         selectElement1.on('click', function () {
-            var selectedType = jQuery(this).data('type');
+            let selectedType = jQuery(this).data('type');
             thisInstance.InsertIntoTemplate(selectedType, false);
         });
-        var selectElement2 = jQuery('.InsertLIntoTemplate');
+
+        let selectElement2 = jQuery('.InsertLIntoTemplate');
+
         selectElement2.on('click', function () {
-            var selectedType = jQuery(this).data('type');
+            let selectedType = jQuery(this).data('type');
             thisInstance.InsertIntoTemplate(selectedType, true);
         });
     },
     inArray: function (needle, haystack) {
-        var length = haystack.length;
-        for (var i = 0; i < length; i++) {
+        let length = haystack.length;
+
+        for (let i = 0; i < length; i++) {
             if (typeof haystack[i] == 'object') {
                 if (arrayCompare(haystack[i], needle)) return true;
             } else {
                 if (haystack[i] == needle) return true;
             }
         }
+
         return false;
     },
     InsertIntoTemplate: function (element, islabel) {
 
-        var invarray = ['SUBTOTAL', 'TOTALWITHOUTVAT', 'TOTALDISCOUNT', 'TOTALDISCOUNTPERCENT', 'TOTALAFTERDISCOUNT',
-            'VAT', 'VATPERCENT', 'VATBLOCK', 'TOTALWITHVAT', 'ADJUSTMENT', 'TOTAL', 'SHTAXTOTAL', 'SHTAXAMOUNT',
-            'CURRENCYNAME', 'CURRENCYSYMBOL', 'CURRENCYCODE'];
-
-
-        var selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type');
-
-        selectField = document.getElementById(element).value;
-
-        var oEditor = CKEDITOR.instances.body;
+        let invarray = ['SUBTOTAL', 'TOTALWITHOUTVAT', 'TOTALDISCOUNT', 'TOTALDISCOUNTPERCENT', 'TOTALAFTERDISCOUNT',
+                'VAT', 'VATPERCENT', 'VATBLOCK', 'TOTALWITHVAT', 'ADJUSTMENT', 'TOTAL', 'SHTAXTOTAL', 'SHTAXAMOUNT',
+                'CURRENCYNAME', 'CURRENCYSYMBOL', 'CURRENCYCODE'],
+            selectedTab2 = jQuery('#ContentEditorTabs').find('.active').data('type'),
+            selectField = document.getElementById(element).value,
+            oEditor = CKEDITOR.instances.body;
 
         if (islabel) {
             if (element == "modulefields") {
@@ -84,6 +80,7 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
 
             oEditor.insertHtml('%' + selectField + '%');
         } else {
+            let insert_value;
 
             if (element != 'hmodulefields' && element != 'fmodulefields' && element != 'dateval') {
                 if (selectField != '') {
@@ -97,35 +94,35 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
                         insert_value = jQuery('#div_vat_block_table').html();
                     else if (selectField == 'chargesblock')
                         insert_value = jQuery('#div_charges_block_table').html();
-                    else {
-                        if (element == "articelvar" || selectField == "LISTVIEWBLOCK_START" || selectField == "LISTVIEWBLOCK_END")
-                            insert_value = '#' + selectField + '#';
-                        else if (element == "relatedmodulefields")
-                            insert_value = '$r-' + selectField + '$';
-                        else if (element == "productbloctpl" || element == "productbloctpl2")
-                            insert_value = selectField;
-                        else if (element == "global_lang")
-                            insert_value = '%G_' + selectField + '%';
-                        else if (element == "module_lang")
-                            insert_value = '%M_' + selectField + '%';
-                        else if (element == "custom_lang")
-                            insert_value = '%' + selectField + '%';
-                        else if (element == "customfunction") {
-                            var cft = jQuery("#custom_function_type").val();
-                            if (cft == "after")
-                                insert_value = '[CUSTOMFUNCTION_AFTER|' + selectField + '|CUSTOMFUNCTION_AFTER]';
-                            else
-                                insert_value = '[CUSTOMFUNCTION|' + selectField + '|CUSTOMFUNCTION]';
+                    else if (element == "articelvar" || selectField == "LISTVIEWBLOCK_START" || selectField == "LISTVIEWBLOCK_END")
+                        insert_value = '#' + selectField + '#';
+                    else if (element == "relatedmodulefields")
+                        insert_value = '$r-' + selectField + '$';
+                    else if (element == "productbloctpl" || element == "productbloctpl2")
+                        insert_value = selectField;
+                    else if (element == "global_lang")
+                        insert_value = '%G_' + selectField + '%';
+                    else if (element == "module_lang")
+                        insert_value = '%M_' + selectField + '%';
+                    else if (element == "custom_lang")
+                        insert_value = '%' + selectField + '%';
+                    else if (element == "customfunction") {
+                        let cft = jQuery("#custom_function_type").val();
+                        if (cft == "after")
+                            insert_value = '[CUSTOMFUNCTION_AFTER|' + selectField + '|CUSTOMFUNCTION_AFTER]';
+                        else
+                            insert_value = '[CUSTOMFUNCTION|' + selectField + '|CUSTOMFUNCTION]';
 
-                        } else if (element == "modulefields") {
-                            if (this.inArray(selectField, invarray)) {
-                                insert_value = '$' + selectField + '$';
-                            } else {
-                                insert_value = '$s-' + selectField + '$';
-                            }
-                        } else
+                    } else if (element == "modulefields") {
+                        if (this.inArray(selectField, invarray)) {
                             insert_value = '$' + selectField + '$';
+                        } else {
+                            insert_value = '$s-' + selectField + '$';
+                        }
+                    } else {
+                        insert_value = '$' + selectField + '$';
                     }
+
                     oEditor.insertHtml(insert_value);
                 }
             } else {
@@ -140,24 +137,24 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
         }
     },
     registerSelectRecipientModuleOption: function () {
-        var thisInstance = this;
-        var selectElement = jQuery('[name="r_modulename"]');
+        let thisInstance = this;
+        let selectElement = jQuery('[name="r_modulename"]');
         selectElement.on('change', function () {
 
-            var selectedOption = selectElement.find('option:selected');
-            var moduleName = selectedOption.val();
+            let selectedOption = selectElement.find('option:selected');
+            let moduleName = selectedOption.val();
 
             thisInstance.getFields(moduleName, "recipientmodulefields", "");
         });
     },
     registerSelectModuleOption: function () {
-        var thisInstance = this;
-        var selectElement = jQuery('[name="modulename"]');
+        let thisInstance = this;
+        let selectElement = jQuery('[name="modulename"]');
         selectElement.on('change', function () {
             if (selected_module != '') {
                 question = confirm(app.vtranslate("LBL_CHANGE_MODULE_QUESTION"));
                 if (question) {
-                    var oEditor = CKEDITOR.instances.body;
+                    let oEditor = CKEDITOR.instances.body;
                     oEditor.setData("");
                 } else {
                     selectElement.val(selected_module);
@@ -165,8 +162,8 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
                 }
             }
 
-            var selectedOption = selectElement.find('option:selected');
-            var moduleName = selectedOption.val();
+            let selectedOption = selectElement.find('option:selected');
+            let moduleName = selectedOption.val();
 
             thisInstance.getFields(moduleName, "modulefields", "");
 
@@ -189,9 +186,9 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
     },
 
     getFields: function (moduleName, selectname, fieldName) {
-        var thisInstance = this;
+        let thisInstance = this;
 
-        var urlParams = {
+        let urlParams = {
             "module": "EMAILMaker",
             "formodule": moduleName,
             "forfieldname": fieldName,
@@ -237,7 +234,8 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
             });
 
             ModuleFieldsElement.select2('destroy');
-            ModuleFieldsElement.select2();
+
+            vtUtils.showSelect2ElementView(ModuleFieldsElement);
 
             if ('modulefields' === selectName) {
                 const RelatedModuleSourceElement = jQuery('#relatedmodulesorce');
@@ -252,7 +250,9 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
                 });
 
                 RelatedModuleSourceElement.select2('destroy');
-                RelatedModuleSourceElement.select2();
+
+                vtUtils.showSelect2ElementView(RelatedModuleSourceElement);
+
                 RelatedModuleSourceElement.trigger('change');
 
                 self.updateFields(response, 'subject_fields');
@@ -275,7 +275,7 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
     },
     registerCSSStyles: function () {
         jQuery('.CodeMirrorContent').each(function (index, Element) {
-            var StyleElementId = jQuery(Element).attr('id');
+            let StyleElementId = jQuery(Element).attr('id');
             CodeMirror.runMode(document.getElementById(StyleElementId).value, "css",
                 document.getElementById(StyleElementId + "Output"));
         });
@@ -286,16 +286,16 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
      * @returns {undefined}
      */
     registerValidation: function () {
-        var editViewForm = this.getForm();
+        let editViewForm = this.getForm();
         this.formValidatorInstance = editViewForm.vtValidate({
             submitHandler: function () {
 
-                var e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
+                let e = jQuery.Event(Vtiger_Edit_Js.recordPresaveEvent);
                 app.event.trigger(e);
                 if (e.isDefaultPrevented()) {
                     return false;
                 }
-                var error = 0;
+                let error = 0;
 
                 if (error > 0) {
                     return false;
@@ -316,7 +316,6 @@ Vtiger_Edit_Js("EMAILMaker_Edit_Js", {
             return;
         }
 
-        this.registerAppTriggerEvent();
         this.registerBasicEvents(editViewForm);
         this.registerSelectRecipientModuleOption();
         this.registerSelectModuleOption();
@@ -348,8 +347,8 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                 optionTest = false;
             if (!optionTest)
                 return;
-            var box2 = second;
-            var optgroups = box2.childNodes;
+            let box2 = second;
+            let optgroups = box2.childNodes;
             for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
@@ -368,31 +367,31 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                 optionTest = false;
             if (!optionTest)
                 return;
-            var box = first;
-            var number = box.options[box.selectedIndex].value;
+            let box = first;
+            let number = box.options[box.selectedIndex].value;
             if (!number)
                 return;
 
-            var params = {
+            let params = {
                 module: app.getModuleName(),
                 view: 'IndexAjax',
                 source_module: number,
                 mode: 'getModuleConditions'
             }
-            var actionParams = {
+            let actionParams = {
                 "type": "POST",
                 "url": 'index.php',
                 "dataType": "html",
                 "data": params
             };
 
-            var box2 = second;
-            var optgroups = box2.childNodes;
+            let box2 = second;
+            let optgroups = box2.childNodes;
             for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
 
-            var list = all_related_modules[number];
+            let list = all_related_modules[number];
             for (i = 0; i < list.length; i += 2) {
                 objOption = document.createElement("option");
                 objOption.innerHTML = list[i];
@@ -411,12 +410,12 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                 optionTest = false;
             if (!optionTest)
                 return;
-            var box = first;
-            var number = box.options[box.selectedIndex].value;
+            let box = first;
+            let number = box.options[box.selectedIndex].value;
             if (!number)
                 return;
-            var box2 = second;
-            var optgroups = box2.childNodes;
+            let box2 = second;
+            let optgroups = box2.childNodes;
             for (i = optgroups.length - 1; i >= 0; i--) {
                 box2.removeChild(optgroups[i]);
             }
@@ -427,12 +426,12 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                 objOption.value = "";
                 box2.appendChild(objOption);
             } else {
-                var tmpArr = number.split('|', 2);
-                var moduleName = tmpArr[0];
+                let tmpArr = number.split('|', 2);
+                let moduleName = tmpArr[0];
                 number = tmpArr[1];
-                var blocks = module_blocks[moduleName];
+                let blocks = module_blocks[moduleName];
                 for (b = 0; b < blocks.length; b += 2) {
-                    var list = related_module_fields[moduleName + '|' + blocks[b + 1]];
+                    let list = related_module_fields[moduleName + '|' + blocks[b + 1]];
                     if (list.length > 0) {
                         optGroup = document.createElement('optgroup');
                         optGroup.label = blocks[b];
@@ -440,8 +439,8 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                         for (i = 0; i < list.length; i += 2) {
                             objOption = document.createElement("option");
                             objOption.innerHTML = list[i];
-                            var objVal = list[i + 1];
-                            var newObjVal = objVal.replace(moduleName.toUpperCase() + '_', number.toUpperCase() + '_');
+                            let objVal = list[i + 1];
+                            let newObjVal = objVal.replace(moduleName.toUpperCase() + '_', number.toUpperCase() + '_');
                             objOption.value = newObjVal;
                             optGroup.appendChild(objOption);
                         }
@@ -451,28 +450,31 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
         },
         change_acc_info: function (element) {
             jQuery('.au_info_div').css('display', 'none');
+
+            let div_name;
+
             switch (element.value) {
                 case "Assigned":
-                    var div_name = 'user_info_div';
+                    div_name = 'user_info_div';
                     break;
                 case "Logged":
-                    var div_name = 'logged_user_info_div';
+                    div_name = 'logged_user_info_div';
                     break;
                 case "Modifiedby":
-                    var div_name = 'modifiedby_user_info_div';
+                    div_name = 'modifiedby_user_info_div';
                     break;
                 case "Creator":
-                    var div_name = 'smcreator_user_info_div';
+                    div_name = 'smcreator_user_info_div';
                     break;
                 default:
-                    var div_name = 'user_info_div';
+                    div_name = 'user_info_div';
                     break;
             }
             jQuery('#' + div_name).css('display', 'inline');
         },
         ControlNumber: function (elid, final) {
-            var control_number = document.getElementById(elid).value;
-            var re = [];
+            let control_number = document.getElementById(elid).value;
+            let re = [];
             re[1] = new RegExp("^([0-9])");
             re[2] = new RegExp("^[0-9]{1}[.]$");
             re[3] = new RegExp("^[0-9]{1}[.][0-9]{1}$");
@@ -499,12 +501,12 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
 
             document.getElementById(tabname + '_div2').style.display = 'block';
             box = document.getElementById('modulename')
-            var module = box.options[box.selectedIndex].value;
+            let module = box.options[box.selectedIndex].value;
 
         },
         fill_module_lang_array: function (module, selected) {
 
-            var urlParams = {
+            let urlParams = {
                 "module": "EMAILMaker",
                 "handler": "fill_lang",
                 "action": "AjaxRequestHandle",
@@ -513,10 +515,10 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
 
             app.request.post({'data': urlParams}).then(
                 function (err, response) {
-                    var result = response['success'];
+                    let result = response['success'];
 
                     if (result == true) {
-                        var moduleLangElement = jQuery('#module_lang');
+                        let moduleLangElement = jQuery('#module_lang');
 
                         moduleLangElement.empty();
 
@@ -531,48 +533,47 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
                 })
         },
         fill_related_blocks_array: function (module, selected) {
-
-            var urlParams = {
-                "module": "EMAILMaker",
-                "handler": "fill_relblocks",
-                "action": "AjaxRequestHandle",
-                "selmod": module
+            let urlParams = {
+                module: 'EMAILMaker',
+                handler: 'fill_relblocks',
+                action: 'AjaxRequestHandle',
+                selmod: module
             }
 
-            app.request.post({'data': urlParams}).then(
-                function (err, response) {
-                    var result = response['success'];
+            app.request.post({'data': urlParams}).then(function (error, data) {
+                if (!error && data['success']) {
+                    let relatedBlockElement = jQuery('#related_block'),
+                        newKey,
+                        newOption;
 
-                    if (result == true) {
-                        var relatedBlockElement = jQuery('#related_block');
-                        relatedBlockElement.empty();
+                    relatedBlockElement.empty();
 
-                        jQuery.each(response['relblocks'], function (key, blockname) {
+                    jQuery.each(data['relblocks'], function (blockKey, blockName) {
+                        newOption = new Option(blockName, blockKey, false, false);
+                        newKey = blockKey
 
-                            if (selected != undefined && key == selected) {
-                                var is_selected = true;
-                            } else {
-                                var is_selected = false;
-                            }
-                            relatedBlockElement.append(jQuery('<option>', {
-                                value: key,
-                                text: blockname
-                            }).attr("selected", is_selected));
-                        })
+                        relatedBlockElement.append(newOption);
+                    })
+
+                    if(!relatedBlockElement.val()) {
+                        relatedBlockElement.val(newKey);
                     }
-                })
+
+                    relatedBlockElement.trigger('change')
+                }
+            })
         },
         fill_module_product_fields_array: function (module) {
-            var ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=fill_module_product_fields&productmod=' + module;
+            let ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=fill_module_product_fields&productmod=' + module;
             jQuery.ajax(ajax_url).success(function (response) {
 
-                var product_fields = document.getElementById('psfields');
+                let product_fields = document.getElementById('psfields');
                 product_fields.length = 0;
-                var map = response.split('|@|');
-                var keys = map[0].split('||');
-                var values = map[1].split('||');
+                let map = response.split('|@|');
+                let keys = map[0].split('||');
+                let values = map[1].split('||');
                 for (i = 0; i < values.length; i++) {
-                    var item = document.createElement('option');
+                    let item = document.createElement('option');
                     item.text = values[i];
                     item.value = keys[i];
                     try {
@@ -586,50 +587,50 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
             });
         },
         refresh_related_blocks_array: function (selected) {
-            var module = document.getElementById('modulename').value;
+            let module = document.getElementById('modulename').value;
             EMAILMaker_EditJs.fill_related_blocks_array(module, selected);
         },
         InsertRelatedBlock: function () {
-            var relblockid = document.getElementById('related_block').value;
+            let relblockid = document.getElementById('related_block').value;
             if (relblockid == '')
                 return false;
-            var oEditor = CKEDITOR.instances.body;
-            var ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=get_relblock&relblockid=' + relblockid;
+            let oEditor = CKEDITOR.instances.body;
+            let ajax_url = 'index.php?module=EMAILMaker&action=AjaxRequestHandle&handler=get_relblock&relblockid=' + relblockid;
             jQuery.ajax(ajax_url).success(function (response) {
                 oEditor.insertHtml(response);
             }).error(function () {
             });
         },
         EditRelatedBlock: function () {
-            var relblockid = document.getElementById('related_block').value;
+            let relblockid = document.getElementById('related_block').value;
             if (relblockid == '') {
                 alert(app.vtranslate('LBL_SELECT_RELBLOCK'));
                 return false;
             }
 
-            var popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&record=' + relblockid;
+            let popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&record=' + relblockid;
             window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
         },
         CreateRelatedBlock: function () {
-            var email_module = document.getElementById("modulename").value;
+            let email_module = document.getElementById("modulename").value;
             if (email_module == '') {
                 alert(app.vtranslate("LBL_MODULE_ERROR"));
                 return false;
             }
-            var popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&emailmodule=' + email_module;
+            let popup_url = 'index.php?module=EMAILMaker&view=EditRelatedBlock&emailmodule=' + email_module;
             window.open(popup_url, "Editblock", "width=1230,height=700,scrollbars=yes");
         },
         DeleteRelatedBlock: function () {
-            var relblockid = document.getElementById('related_block').value;
-            var result = false;
+            let relblockid = document.getElementById('related_block').value;
+            let result = false;
             if (relblockid == '') {
                 alert(app.vtranslate('LBL_SELECT_RELBLOCK'));
                 return false;
             } else {
-                var message = app.vtranslate('LBL_DELETE_RELBLOCK_CONFIRM') + " " + jQuery("#related_block option:selected").text();
+                let message = app.vtranslate('LBL_DELETE_RELBLOCK_CONFIRM') + " " + jQuery("#related_block option:selected").text();
 
                 app.helper.showConfirmationBox({'message': message}).then(function (e) {
-                    var params = {
+                    let params = {
                         "module": "EMAILMaker",
                         "action": "AjaxRequestHandle",
                         "handler": "delete_relblock",
@@ -657,7 +658,7 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
             }
         },
         CustomFormat: function () {
-            var selObj;
+            let selObj;
             selObj = document.getElementById('pdf_format');
 
             if (selObj.value == 'Custom') {
@@ -667,11 +668,11 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
             }
         },
         isLvTmplClicked: function (source) {
-            var oTrigger = document.getElementById('isListViewTmpl');
-            var oButt = jQuery("#listviewblocktpl_butt");
-            var oDlvChbx = document.getElementById('is_default_dv');
+            let oTrigger = document.getElementById('isListViewTmpl');
+            let oButt = jQuery("#listviewblocktpl_butt");
+            let oDlvChbx = document.getElementById('is_default_dv');
 
-            var listViewblockTPLElement = jQuery("#listviewblocktpl");
+            let listViewblockTPLElement = jQuery("#listviewblocktpl");
 
             listViewblockTPLElement.attr("disabled", !(oTrigger.checked));
             oButt.attr("disabled", !(oTrigger.checked));
@@ -683,8 +684,8 @@ if (typeof (EMAILMaker_EditJs) == 'undefined') {
             oDlvChbx.disabled = oTrigger.checked;
         },
         templateActiveChanged: function (activeElm) {
-            var is_defaultElm1 = document.getElementById('is_default_dv');
-            var is_defaultElm2 = document.getElementById('is_default_lv');
+            let is_defaultElm1 = document.getElementById('is_default_dv');
+            let is_defaultElm2 = document.getElementById('is_default_lv');
 
             if (activeElm.value == '1') {
                 is_defaultElm1.disabled = false;

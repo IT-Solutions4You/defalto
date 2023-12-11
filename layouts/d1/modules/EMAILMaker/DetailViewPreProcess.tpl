@@ -1,39 +1,31 @@
-{*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************}
-{* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
+{**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *}
 {include file="modules/Vtiger/partials/Topbar.tpl"}
-
 <div class="container-fluid app-nav">
     <div class="row">
-        {include file="partials/SidebarHeader.tpl"|vtemplate_path:$MODULE}
-        {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
+        {include file='partials/SidebarHeader.tpl'|vtemplate_path:$MODULE}
+        {include file='ModuleHeader.tpl'|vtemplate_path:$MODULE}
     </div>
 </div>
 </nav>
-<div id='overlayPageContent' class='fade modal overlayPageContent content-area overlay-container-60' tabindex='-1' role='dialog' aria-hidden='true'>
-    <div class="data">
+<div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
+    <div class="data h-100">
     </div>
     <div class="modal-dialog">
     </div>
 </div>
 <div class="container-fluid main-container">
     <div class="row">
-        <div id="modnavigator" class="module-nav detailViewModNavigator clearfix">
-            <div class="hidden-xs hidden-sm mod-switcher-container">
-                {include file="partials/Menubar.tpl"|vtemplate_path:$MODULE}
-            </div>
-        </div>
-        <div class="detailViewContainer viewContent clearfix">
-            <div class="col-sm-12 col-xs-12 content-area">
-                {include file="DetailViewHeader.tpl"|vtemplate_path:$MODULE}
-            </div>
-            <div class="detailview-content container-fluid">
-                <input id="recordId" type="hidden" value="{$RECORD->getId()}"/>
-                {include file="ModuleRelatedTabs.tpl"|vtemplate_path:$MODULE}
-                <div class="details row" style="margin-top:10px;">
+        {include file='ModuleNavigator.tpl'|vtemplate_path:$MODULE}
+        <div class="detailViewContainer viewContent col p-0 overflow-auto">
+            <div class="content-area container-fluid px-0 pb-lg-4 px-lg-4">
+                {include file='DetailViewHeader.tpl'|vtemplate_path:$MODULE}
+                <div class="detailview-content row">
+                    <input id="recordId" type="hidden" value="{$RECORD->getId()}" />
+                    <div class="details col-lg-12 col-xl-12 order-1 px-0">

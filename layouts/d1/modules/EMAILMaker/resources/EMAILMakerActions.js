@@ -140,6 +140,12 @@ jQuery.Class("EMAILMaker_Actions_Js", {
     getListViewPopup: function () {
         this.emailmaker_sendMail();
     },
+    getDetailViewPopup: function () {
+        this.emailmaker_sendMail('', '', '', false);
+    },
+    getRelationViewPopup: function () {
+        this.emailmaker_sendMail('', '', '', true);
+    },
     getMoreParams: function () {
         let forview_val = app.view(),
             params;
@@ -243,7 +249,7 @@ jQuery.Class("EMAILMaker_Actions_Js", {
 
                                     if (templateElement.length > 0) {
                                         if (templateElement.is("select")) {
-                                            templateElement.select2();
+                                            vtUtils.showSelect2ElementView(templateElement);
                                         }
                                     }
 
@@ -251,11 +257,12 @@ jQuery.Class("EMAILMaker_Actions_Js", {
 
                                     if (emailTemplateLanguageElement.length > 0) {
                                         if (emailTemplateLanguageElement.is('select')) {
-                                            emailTemplateLanguageElement.select2();
+                                            vtUtils.showSelect2ElementView(emailTemplateLanguageElement);
                                         }
                                     }
 
-                                    modalContainer.find('.emailFieldSelects').select2();
+                                    vtUtils.showSelect2ElementView(modalContainer.find('.emailFieldSelects'));
+
                                     modalContainer.find('#ccLink').on('click', function () {
                                         self.showOtherEmailsSelect(modalContainer, '');
                                     });
@@ -459,7 +466,8 @@ jQuery.Class("EMAILMaker_Actions_Js", {
     getListInstance: function () {
         var listInstance = window.app.controller();
         return listInstance;
-    }
+    },
+
 }, {
     getLinkKey: function () {
         var link_key = '';
@@ -504,13 +512,11 @@ jQuery.Class("EMAILMaker_Actions_Js", {
     },
 
     addRelatedButtons: function () {
-        if (app.getModuleName() == "Campaigns") {
-            const sendEmailCampaignContainer = jQuery('.sendEmail');
+        if ('Campaigns' === app.getModuleName()) {
+            const sendEmailCampaignContainer = jQuery('.container-related-list-actions');
 
             if (sendEmailCampaignContainer.length > 0) {
-                var newElement = jQuery("<div class='btn-group'></div>");
-                sendEmailCampaignContainer.closest('.btn-toolbar').append(newElement);
-                this.addButtons(newElement, true);
+                this.addButtons(sendEmailCampaignContainer, true);
             }
         }
     },
@@ -555,11 +561,6 @@ jQuery.Class("EMAILMaker_Actions_Js", {
         });
     },
     registerEvents: function () {
-        var detailViewButtonContainerDiv = jQuery('.detailview-header');
-
-        if (detailViewButtonContainerDiv.length) {
-            this.addButtons(detailViewButtonContainerDiv, false);
-        }
         this.addRelatedButtons();
         this.registerRelatedListLoad();
         this.registerAjaxCompleteEvents();

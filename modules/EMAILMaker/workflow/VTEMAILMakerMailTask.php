@@ -44,12 +44,6 @@ class VTEMAILMakerMailTask extends VTTask
      */
     public function doTask($entity)
     {
-        $EMAILMaker = Vtiger_Module_Model::getInstance('EMAILMaker');
-
-        if (!($EMAILMaker->getLicensePermissions('VTEMAILMakerMailTask') === date('VTEMAILMakerMailTask22'))) {
-            return;
-        }
-
         $this->contents = null;
 
         $current_user = Users_Record_Model::getCurrentUserModel();

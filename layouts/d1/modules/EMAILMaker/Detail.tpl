@@ -9,7 +9,7 @@
 -->*}
 {strip}
     <div class="detailview-content container-fluid">
-        <div class="details row">
+        <div class="details">
             <form id="detailView" method="post" action="index.php" name="etemplatedetailview" onsubmit="VtigerJS_DialogBox.block();">
                 <input type="hidden" name="action" value="">
                 <input type="hidden" name="view" value="">
@@ -23,51 +23,55 @@
                 <input type="hidden" name="isDuplicate" value="false">
                 <input type="hidden" name="subjectChanged" value="">
                 <input id="recordId" value="{$TEMPLATEID}" type="hidden">
-                <div class="col-lg-12">
+                <div class="row">
                     <div class="left-block col-lg-4">
-                        <div class="summaryView">
-                            <div class="summaryViewHeader">
-                                <h4 class="display-inline-block">{vtranslate('LBL_TEMPLATE_INFORMATIONS','EMAILMaker')}</h4>
+                        <div class="summaryView rounded bg-body my-3">
+                            <div class="summaryViewHeader p-3 border-bottom">
+                                <h4>{vtranslate('LBL_TEMPLATE_INFORMATIONS','EMAILMaker')}</h4>
                             </div>
                             <div class="summaryViewFields">
                                 <div class="recordDetails">
-                                    <table class="summary-table no-border">
-                                        <tbody>
-                                        <tr class="summaryViewEntries">
-                                            <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_EMAIL_NAME','EMAILMaker')}</label></td>
-                                            <td class="fieldValue">{$TEMPLATENAME}</td>
-                                        </tr>
-                                        <tr class="summaryViewEntries">
-                                            <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_DESCRIPTION','EMAILMaker')}</label></td>
-                                            <td class="fieldValue" valign=top>{$DESCRIPTION}</td>
-                                        </tr>
+                                    <div class="container-fluid p-3">
+                                        <div class="row summaryViewEntries py-2">
+                                            <div class="col-4 fieldLabel">
+                                                <label class="text-truncate text-muted">{vtranslate('LBL_EMAIL_NAME','EMAILMaker')}</label>
+                                            </div>
+                                            <div class="col-lg fieldValue">{$TEMPLATENAME}</div>
+                                        </div>
+                                        <div class="row summaryViewEntries py-2">
+                                            <div class="col-4 fieldLabel">
+                                                <label class="text-truncate text-muted">{vtranslate('LBL_DESCRIPTION','EMAILMaker')}</label>
+                                            </div>
+                                            <div class="col-lg fieldValue" valign=top>{$DESCRIPTION}</div>
+                                        </div>
                                         {if $MODULENAME neq ""}
-                                            <tr class="summaryViewEntries">
-                                                <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_MODULENAMES','EMAILMaker')}</label></td>
-                                                <td class="fieldValue" valign=top>{$MODULENAME}</td>
-                                            </tr>
+                                            <div class="row summaryViewEntries py-2">
+                                                <div class="col-4 fieldLabel">
+                                                    <label class="text-truncate text-muted">{vtranslate('LBL_MODULENAMES','EMAILMaker')}</label>
+                                                </div>
+                                                <div class="col-lg fieldValue" valign=top>{$MODULENAME}</div>
+                                            </div>
                                         {/if}
-                                        <tr class="summaryViewEntries">
-                                            <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('Status')}</label></td>
-                                            <td class="fieldValue" valign=top>{$IS_ACTIVE}</td>
-                                        </tr>
-                                        <tr class="summaryViewEntries">
-                                            <td class="fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_SETASDEFAULT','EMAILMaker')}</label></td>
-                                            <td class="fieldValue" valign=top>{$IS_DEFAULT}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                        <div class="row summaryViewEntries py-2">
+                                            <div class="col-4 fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('Status')}</label></div>
+                                            <div class="col-lg fieldValue" valign=top>{$IS_ACTIVE}</div>
+                                        </div>
+                                        <div class="row summaryViewEntries py-2">
+                                            <div class="col-4 fieldLabel"><label class="muted textOverflowEllipsis">{vtranslate('LBL_SETASDEFAULT','EMAILMaker')}</label></div>
+                                            <div class="col-lg fieldValue" valign=top>{$IS_DEFAULT}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <br>
                         {if $MODULENAME neq ""}
-                            <div class="summaryView">
-                                <div class="summaryViewHeader">
-                                    <h4 class="display-inline-block">{vtranslate('LBL_DISPLAY_TAB',$MODULE)}</h4>
-                                    <div class="pull-right">
-                                        <button type="button" class="btn btn-default editDisplayConditions" data-url="index.php?module=EMAILMaker&view=EditDisplayConditions&record={$TEMPLATEID}">
-                                            &nbsp;{vtranslate('LBL_EDIT',$MODULE)}&nbsp;{vtranslate('LBL_CONDITIONS',$MODULE)}
+                            <div class="summaryView rounded bg-body my-3">
+                                <div class="summaryViewHeader p-3 border-bottom d-flex">
+                                    <h4>{vtranslate('LBL_DISPLAY_TAB',$MODULE)}</h4>
+                                    <div class="ms-auto">
+                                        <button type="button" class="btn btn-outline-secondary editDisplayConditions" data-url="index.php?module=EMAILMaker&view=EditDisplayConditions&record={$TEMPLATEID}">
+                                            <span>{vtranslate('LBL_EDIT',$MODULE)}</span>
+                                            <span class="ms-2">{vtranslate('LBL_CONDITIONS',$MODULE)}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -77,27 +81,25 @@
                                     </div>
                                 </div>
                             </div>
-                            <br>
                         {/if}
                         {if $ISSTYLESACTIVE eq "yes"}
-                            <div class="summaryView">
-                                <div class="summaryViewHeader">
-                                    <h4 class="display-inline-block">{vtranslate('LBL_CSS_STYLE_TAB',$MODULE)}</h4>
-                                    <div class="pull-right">
-                                        <button type="button" class="btn btn-default addButton addStyleContentBtn" data-modulename="ITS4YouStyles">{vtranslate('LBL_ADD')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>&nbsp;&nbsp;
-                                        <button type="button" class="btn btn-default addButton selectTemplateRelation" data-modulename="ITS4YouStyles">&nbsp;{vtranslate('LBL_SELECT')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>
+                            <div class="summaryView rounded bg-body my-3">
+                                <div class="summaryViewHeader p-3 border-bottom d-flex">
+                                    <h4>{vtranslate('LBL_CSS_STYLE_TAB',$MODULE)}</h4>
+                                    <div class="ms-auto">
+                                        <button type="button" class="btn btn-outline-secondary addButton addStyleContentBtn" data-modulename="ITS4YouStyles">{vtranslate('LBL_ADD')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-outline-secondary addButton selectTemplateRelation" data-modulename="ITS4YouStyles">&nbsp;{vtranslate('LBL_SELECT')}&nbsp;{vtranslate('SINGLE_ITS4YouStyles','ITS4YouStyles')}</button>
                                     </div>
                                 </div>
-                                <br>
                                 <div class="summaryWidgetContainer noContent">
                                     {if $STYLES_LIST}
                                         <div id="table-content" class="table-container">
                                             <table id="listview-table" class="table listview-table">
                                                 <thead>
                                                 <tr class="listViewContentHeader">
-                                                    <th style="width:55px;"></th>
-                                                    <th nowrap>{vtranslate('Name','ITS4YouStyles')}</th>
-                                                    <th nowrap>{vtranslate('Priority','ITS4YouStyles')}</th>
+                                                    <th></th>
+                                                    <th>{vtranslate('Name','ITS4YouStyles')}</th>
+                                                    <th>{vtranslate('Priority','ITS4YouStyles')}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody class="overflow-y">
@@ -128,15 +130,17 @@
                             <br>
                         {/if}
                         {if $ISDOCUMENTSACTIVE eq "yes"}
-                            <div class="summaryView">
-                                <div class="summaryViewHeader">
-                                    <h4 class="display-inline-block">{vtranslate('Documents',$MODULE)}</h4>
-                                    <div class="pull-right">
-                                        <button type="button" class="btn btn-default addButton selectTemplateRelation" data-modulename="Documents">&nbsp;{vtranslate('LBL_SELECT')}&nbsp;{vtranslate('SINGLE_Documents','Documents')}</button>
+                            <div class="summaryView rounded bg-body my-3">
+                                <div class="summaryViewHeader p-3 border-bottom d-flex">
+                                    <h4>{vtranslate('Documents',$MODULE)}</h4>
+                                    <div class="ms-auto">
+                                        <button type="button" class="btn btn-outline-secondary addButton selectTemplateRelation" data-modulename="Documents">
+                                            <span>{vtranslate('LBL_SELECT')}</span>
+                                            <span class="ms-2">{vtranslate('SINGLE_Documents','Documents')}</span>
+                                        </button>
                                     </div>
                                 </div>
-                                <br>
-                                <div class="summaryWidgetContainer noContent">
+                                <div class="summaryWidgetContainer noContent p-3">
                                     {if $DOCUMENTS_RECORDS neq ""}
                                         <div id="table-content" class="table-container">
                                             <table id="listview-table" class="table listview-table">
@@ -180,26 +184,27 @@
                         {/if}
                     </div>
                     <div class="middle-block col-lg-8">
-                        <div class="summaryView">
+                        <div class="summaryView rounded bg-body my-3 p-3">
                             <div class="summaryViewFields">
                                 <div class="recordDetails">
                                     <b>{vtranslate('LBL_EMAIL_SUBJECT',$MODULE)}:</b>&nbsp;{$SUBJECT}
                                 </div>
                             </div>
                         </div>
-                        <div id="ContentEditorTabs">
-                            <ul class="nav nav-pills">
-                                <li class="active" data-type="body">
-                                    <a href="#body_div2" aria-expanded="false" style="margin-right: 5px" data-toggle="tab">{vtranslate('LBL_BODY',$MODULE)}</a>
-                                </li>
-                            </ul>
-                        </div>
-                        {*********************************************BODY DIV*************************************************}
-                        <div class="tab-content">
-
-                            <div class="tab-pane active" id="body_div2">
-                                <div id="previewcontent_body" class="hide">{$BODY}</div>
-                                <iframe id="preview_body" class="col-lg-12" style="height:1200px;"></iframe>
+                        <div class="rounded bg-body my-3 p-3">
+                            <div id="ContentEditorTabs">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item" data-type="body">
+                                        <a class="nav-link active" href="#body_div2" aria-expanded="false" data-bs-toggle="tab">{vtranslate('LBL_BODY',$MODULE)}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {*********************************************BODY DIV*************************************************}
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="body_div2">
+                                    <div id="previewcontent_body" class="hide">{$BODY}</div>
+                                    <iframe id="preview_body" class="col-lg-12" style="height:1200px;"></iframe>
+                                </div>
                             </div>
                         </div>
                     </div>

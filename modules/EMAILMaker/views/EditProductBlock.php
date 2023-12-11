@@ -86,11 +86,12 @@ class EMAILMaker_EditProductBlock_View extends EMAILMaker_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
+        $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = array(
             "modules.$moduleName.resources.ckeditor.ckeditor",
             "libraries.jquery.ckeditor.adapters.jquery",
             "libraries.jquery.jquery_windowmsg",
-            "layouts.v7.modules.$moduleName.resources.ProductBlocks"
+            "layouts.$layout.modules.$moduleName.resources.ProductBlocks"
         );
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

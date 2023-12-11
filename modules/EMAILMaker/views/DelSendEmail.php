@@ -9,15 +9,10 @@
 
 class EMAILMaker_SendEmail_View extends Vtiger_Footer_View
 {
-
-    protected $isInstalled = false;
-
     public function __construct()
     {
         parent::__construct();
 
-        $class = explode('_', get_class($this));
-        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('SendEmail11'));
         $this->exposeMethod('composeMailData');
     }
 
@@ -51,14 +46,6 @@ class EMAILMaker_SendEmail_View extends Vtiger_Footer_View
         $moduleName = 'Emails';
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $viewer = $this->getViewer($request);
-
-        if (!$this->isInstalled) {
-            $m = vtranslate("LBL_INVALID_KEY", "EMAILMaker");
-            $viewer->assign('MESSAGE', $m);
-            $viewer->view('OperationNotPermitted.tpl', 'EMAILMaker');
-            exit;
-        }
-
         $single_record = true;
         $adb = PearDatabase::getInstance();
         $current_user = $cu_model = Users_Record_Model::getCurrentUserModel();

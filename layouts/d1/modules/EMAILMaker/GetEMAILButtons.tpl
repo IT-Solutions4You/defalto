@@ -7,13 +7,12 @@
  ********************************************************************************/*}
 {strip}
     {if $ENABLE_EMAILMAKER eq 'true'}
-        <div class="pull-right" id="EMAILMakerContentDiv" style="padding-left: 5px;">
-            <div class="clearfix">
-                <div class="btn-group pull-right">
-                    <button class="btn btn-default selectEMAILTemplates">
-                        <i title="{vtranslate('LBL_SEND_EMAILMAKER_EMAIL','EMAILMaker')}" class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp;{vtranslate('LBL_SEND_EMAILMAKER_EMAIL','EMAILMaker')}
-                    </button>
-                </div>
+        <div class="btn-group ms-2" id="EMAILMakerContentDiv" style="padding-left: 5px;">
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary selectEMAILTemplates">
+                    <i title="{vtranslate('LBL_SEND_EMAILMAKER_EMAIL','EMAILMaker')}" class="fa fa-envelope-o" aria-hidden="true"></i>
+                    <span class="ms-2">{vtranslate('LBL_SEND_EMAILMAKER_EMAIL','EMAILMaker')}</span>
+                </button>
             </div>
         </div>
     {/if}

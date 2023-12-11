@@ -9,27 +9,17 @@
 -->*}
 {strip}
     <div class='fc-overlay-modal'>
-        <div class="modal-content">
-            <div class="overlayHeader">
-                {assign var=TITLE value="{'LBL_IMPORT'|@vtranslate:$MODULE}"}
+        <form enctype="multipart/form-data" name="importBasic" method="POST" action="index.php">
+            <input type="hidden" name="module" value="EMAILMaker">
+            <input type="hidden" name="action" value="Import">
+            <div class="modal-content">
+                {assign var=TITLE value=vtranslate('LBL_EMAILMAKER_IMPORT', $MODULE)}
                 {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
-            </div>
-            <div class='modal-body' style="margin-bottom:100%" id="landingPageDiv">
-                <hr>
-                <div class="landingPage container-fluid importServiceSelectionContainer">
-
-                    <form enctype="multipart/form-data" name="importBasic" method="POST" action="index.php">
-                        <input type="hidden" name="module" value="EMAILMaker">
-                        <input type="hidden" name="action" value="Import">
-
+                <div class="modal-body bg-body-secondary" id="landingPageDiv">
+                    <div class="landingPage container-fluid importServiceSelectionContainer p-3 rounded bg-body">
                         <div class="importBlockContainer show" id="uploadFileContainer">
                             <table class="table table-borderless" cellpadding="30">
-                                                <span>
-                                                        <h4>&nbsp;&nbsp;&nbsp;{'LBL_EMAILMAKER_IMPORT'|@vtranslate:$MODULE}</h4>
-                                                </span>
-                                <hr>
                                 <tr id="file_type_container" style="height:50px">
-                                    <td></td>
                                     <td>{'LBL_SELECT_XML'|@vtranslate:$MODULE}</td>
                                     <td data-import-upload-size="{$IMPORT_UPLOAD_SIZE}" data-import-upload-size-mb="{$IMPORT_UPLOAD_SIZE_MB}">
                                         <div>
@@ -45,17 +35,21 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="modal-overlay-footer border1px clearfix">
-                            <div class="row clearfix">
-                                <div class="textAlignCenter col-lg-12 col-md-12 col-sm-12 ">
-                                    <button type="submit" name="import" id="importButton" class="btn btn-success btn-lg" onclick="return EMAILMaker_List_Js.uploadAndParse()"><strong>{vtranslate('LBL_IMPORT_BUTTON_LABEL','Import')}</strong></button> &nbsp;&nbsp;
-                                    <a class="cancelLink" onclick="Vtiger_Import_Js.loadListRecords();" data-dismiss="modal" href="#">{vtranslate('LBL_CANCEL')}</a>
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col text-end">
+                            <a class="btn btn-primary cancelLink" onclick="Vtiger_Import_Js.loadListRecords();" data-bs-dismiss="modal" href="#">{vtranslate('LBL_CANCEL')}</a>
                         </div>
-                    </form>
+                        <div class="col-auto">
+                            <button type="submit" name="import" id="importButton" class="btn btn-primary active" onclick="return EMAILMaker_List_Js.uploadAndParse()">
+                                <strong>{vtranslate('LBL_IMPORT_BUTTON_LABEL','Import')}</strong>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 {/strip}

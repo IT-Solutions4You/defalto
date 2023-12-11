@@ -9,15 +9,10 @@
 
 class EMAILMaker_Detail_View extends Vtiger_Index_View
 {
-
-    protected $isInstalled = false;
-
     public function __construct()
     {
         parent::__construct();
 
-        $class = explode('_', get_class($this));
-        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('Detail8'));
         $this->exposeMethod('showDocuments');
         $this->exposeMethod('showDetail');
         $this->exposeMethod('showRelatedList');
@@ -27,11 +22,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
     public function process(Vtiger_Request $request)
     {
-        if (!$this->isInstalled) {
-            (new Settings_ITS4YouInstaller_License_View())->initializeContents($request);
-        } else {
-            $this->getProcess($request);
-        }
+        $this->getProcess($request);
     }
 
     public function getProcess(Vtiger_Request $request)
@@ -100,7 +91,7 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
 
     public function preProcessTplName(Vtiger_Request $request)
     {
-        return (!$this->isInstalled) ? 'IndexViewPreProcess.tpl' : 'DetailViewPreProcess.tpl';
+        return 'DetailViewPreProcess.tpl';
     }
 
     public function preProcess(Vtiger_Request $request, $display = true)
@@ -187,14 +178,14 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
             if ($emailtemplateResult["permissions"]["edit"]) {
                 $viewer->assign("EXPORT", "yes");
             }
-            if ($this->isInstalled) {
-                if ($emailtemplateResult["permissions"]["edit"]) {
-                    $viewer->assign("EDIT", "permitted");
-                    $viewer->assign("IMPORT", "yes");
-                }
-                if ($emailtemplateResult["permissions"]["delete"]) {
-                    $viewer->assign("DELETE", "permitted");
-                }
+
+            if ($emailtemplateResult["permissions"]["edit"]) {
+                $viewer->assign("EDIT", "permitted");
+                $viewer->assign("IMPORT", "yes");
+            }
+
+            if ($emailtemplateResult["permissions"]["delete"]) {
+                $viewer->assign("DELETE", "permitted");
             }
 
             if (!$this->record) {
@@ -310,12 +301,12 @@ class EMAILMaker_Detail_View extends Vtiger_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
-
+        $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = array(
-            "layouts.v7.modules.Vtiger.resources.List",
-            "layouts.v7.modules.Vtiger.resources.Detail",
-            "layouts.v7.modules.EMAILMaker.resources.Detail",
-            "layouts.v7.modules.Vtiger.resources.RelatedList"
+            "layouts.$layout.modules.Vtiger.resources.List",
+            "layouts.$layout.modules.Vtiger.resources.Detail",
+            "layouts.$layout.modules.EMAILMaker.resources.Detail",
+            "layouts.$layout.modules.Vtiger.resources.RelatedList"
         );
         if (vtlib_isModuleActive("ITS4YouStyles")) {
             $jsFileNames[] = "modules.ITS4YouStyles.resources.CodeMirror.lib.codemirror";

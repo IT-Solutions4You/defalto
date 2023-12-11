@@ -28,6 +28,7 @@ class EMAILMaker_FilterRecordStructure_Model extends EMAILMaker_RecordStructure_
 
         $baseModuleModel = $moduleModel = $this->getModule();
         $blockModelList = $moduleModel->getBlocks();
+
         foreach ($blockModelList as $blockLabel => $blockModel) {
             $fieldModelList = $blockModel->getFields();
             if (!empty ($fieldModelList)) {

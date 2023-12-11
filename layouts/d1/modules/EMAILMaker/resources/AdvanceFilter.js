@@ -15,17 +15,17 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
     allConditionValidationNeededFieldList: ['double', 'integer'],
     comparatorsWithNoValueBoxMap: ['is empty', 'is not empty'],
     getFieldSpecificType: function (fieldSelected) {
-        var fieldInfo = fieldSelected.data('fieldinfo');
+        let fieldInfo = fieldSelected.data('fieldinfo');
         return fieldInfo.type;
     },
     getModuleName: function () {
         return app.getModuleName();
     },
     addNewCondition: function (conditionGroupElement) {
-        var basicElement = jQuery('.basic', conditionGroupElement);
-        var newRowElement = basicElement.find('.conditionRow').clone(true, true);
+        let basicElement = jQuery('.basic', conditionGroupElement);
+        let newRowElement = basicElement.find('.conditionRow').clone(true, true);
         jQuery('select', newRowElement).addClass('select2');
-        var conditionList = jQuery('.conditionList', conditionGroupElement);
+        let conditionList = jQuery('.conditionList', conditionGroupElement);
         conditionList.append(newRowElement);
         //change in to chosen elements
         vtUtils.showSelect2ElementView(newRowElement.find('select.select2'));
@@ -33,60 +33,67 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
         return this;
     },
     loadConditions: function (fieldSelect) {
-        var row = fieldSelect.closest('div.conditionRow');
-        var conditionSelectElement = row.find('select[name="comparator"]');
-        var conditionSelected = conditionSelectElement.val();
-        var fieldSelected = fieldSelect.find('option:selected');
-        var fieldLabel = fieldSelected.val();
-        var match = fieldLabel.match(/\((\w+)\) (\w+)/);
-        var fieldSpecificType = this.getFieldSpecificType(fieldSelected)
-        var conditionList = this.getConditionListFromType(fieldSpecificType);
+        let row = fieldSelect.closest('div.conditionRow'),
+            conditionSelectElement = row.find('select[name="comparator"]'),
+            conditionSelected = conditionSelectElement.val(),
+            fieldSelected = fieldSelect.find('option:selected'),
+            fieldLabel = fieldSelected.val(),
+            match = fieldLabel.match(/\((\w+)\) (\w+)/),
+            fieldSpecificType = this.getFieldSpecificType(fieldSelected),
+            conditionList = this.getConditionListFromType(fieldSpecificType);
 
         if (typeof conditionList == 'undefined') {
             conditionList = {};
             conditionList['none'] = '';
         }
 
-        var options = '';
-        for (var key in conditionList) {
+        let options = '';
+
+        for (let key in conditionList) {
             if (conditionList.hasOwnProperty(key)) {
-                var conditionValue = conditionList[key];
-                var conditionLabel = this.getConditionLabel(conditionValue);
+                let conditionValue = conditionList[key],
+                    conditionLabel = this.getConditionLabel(conditionValue);
+
                 if (match != null) {
                     if (conditionValue != 'has changed') {
                         options += '<option value="' + conditionValue + '"';
+
                         if (conditionValue == conditionSelected) {
                             options += ' selected="selected" ';
                         }
+
                         options += '>' + conditionLabel + '</option>';
                     }
                 } else {
                     options += '<option value="' + conditionValue + '"';
+
                     if (conditionValue == conditionSelected) {
                         options += ' selected="selected" ';
                     }
+
                     options += '>' + conditionLabel + '</option>';
                 }
             }
         }
         conditionSelectElement.empty().html(options).trigger('change');
         conditionSelectElement.addClass('validate[required]');
+
         return conditionSelectElement;
     },
     getMetricFieldSpecificConditionList: function (conditionList, conditionSelected, match, fieldSelected) {
-        var options = '';
-        var fieldDataInfo = fieldSelected.data('fieldinfo');
-        var fieldModel = Vtiger_Field_Js.getInstance(fieldDataInfo, this.getModuleName());
-        var picklistValues = fieldModel.data.picklistvalues;
-        for (var key in conditionList) {
+        let options = '';
+        let fieldDataInfo = fieldSelected.data('fieldinfo');
+        let fieldModel = Vtiger_Field_Js.getInstance(fieldDataInfo, this.getModuleName());
+        let picklistValues = fieldModel.data.picklistvalues;
+        for (let key in conditionList) {
             if (conditionList.hasOwnProperty(key)) {
-                var conditionValue = conditionList[key];
-                var conditionLabel = this.getConditionLabel(conditionValue);
+                let conditionValue = conditionList[key];
+                let conditionLabel = this.getConditionLabel(conditionValue);
                 if (match != null) {
                     if (conditionValue != 'has changed') {
                         if (conditionValue.indexOf("hours since") != -1) {
-                            for (var key in picklistValues) {
-                                var picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
+                            for (let key in picklistValues) {
+                                let picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
                                 options += '<option value="' + picklistvalue + '"';
                                 if (picklistvalue == conditionSelected) {
                                     options += ' selected="selected" ';
@@ -103,8 +110,8 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
                     }
                 } else {
                     if (conditionValue.indexOf("hours since %s") != -1) {
-                        for (var key in picklistValues) {
-                            var picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
+                        for (let key in picklistValues) {
+                            let picklistvalue = conditionValue.replace(/%s/i, picklistValues[key]);
                             options += '<option value="' + picklistvalue + '"';
                             if (picklistvalue == conditionSelected) {
                                 options += ' selected="selected" ';
@@ -124,78 +131,87 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
         return options;
     },
     getValues: function () {
-        var thisInstance = this;
-        var filterContainer = this.getFilterContainer();
+        let thisInstance = this,
+            filterContainer = this.getFilterContainer(),
+            fieldList = ['columnname', 'comparator', 'value', 'valuetype', 'column_condition'],
+            values = {},
+            columnIndex = 0,
+            conditionGroups = jQuery('.conditionGroup', filterContainer);
 
-        var fieldList = ['columnname', 'comparator', 'value', 'valuetype', 'column_condition'];
-
-        var values = {};
-        var columnIndex = 0;
-        var conditionGroups = jQuery('.conditionGroup', filterContainer);
         conditionGroups.each(function (index, domElement) {
-            var groupElement = jQuery(domElement);
+            let groupElement = jQuery(domElement),
+                conditions = jQuery('.conditionList .conditionRow', groupElement);
 
-            var conditions = jQuery('.conditionList .conditionRow', groupElement);
             if (conditions.length <= 0) {
                 return true;
             }
-            var iterationValues = {};
+
+            let iterationValues = {};
+
             conditions.each(function (i, conditionDomElement) {
-                var rowElement = jQuery(conditionDomElement);
-                var fieldSelectElement = jQuery('[name="columnname"]', rowElement);
-                var valueSelectElement = jQuery('[data-value="value"]', rowElement);
+                let rowElement = jQuery(conditionDomElement),
+                    fieldSelectElement = jQuery('[name="columnname"]', rowElement),
+                    valueSelectElement = jQuery('[data-value="value"]', rowElement);
+
                 if (thisInstance.isEmptyFieldSelected(fieldSelectElement)) {
                     return true;
                 }
-                var fieldDataInfo = fieldSelectElement.find('option:selected').data('fieldinfo');
-                var fieldType = fieldDataInfo.type;
-                var rowValues = {};
-                if (fieldType == 'picklist' || fieldType == 'multipicklist') {
-                    for (var key in fieldList) {
-                        var field = fieldList[key];
-                        if (field == 'value' && valueSelectElement.is('input')) {
-                            var commaSeperatedValues = valueSelectElement.val();
-                            var pickListValues = valueSelectElement.data('picklistvalues');
-                            var valuesArr = commaSeperatedValues.split(',');
-                            var newvaluesArr = [];
+
+                let fieldDataInfo = fieldSelectElement.find('option:selected').data('fieldinfo'),
+                    fieldType = fieldDataInfo.type,
+                    rowValues = {};
+
+                if (fieldType === 'picklist' || fieldType === 'multipicklist') {
+                    for (let key in fieldList) {
+                        let field = fieldList[key];
+
+                        if (field === 'value' && valueSelectElement.is('input')) {
+                            let commaSeperatedValues = valueSelectElement.val(),
+                                pickListValues = valueSelectElement.data('picklistvalues'),
+                                valuesArr = commaSeperatedValues.split(','),
+                                newValuesArr = [];
+
                             for (i = 0; i < valuesArr.length; i++) {
                                 if (typeof pickListValues[valuesArr[i]] != 'undefined') {
-                                    newvaluesArr.push(pickListValues[valuesArr[i]]);
+                                    newValuesArr.push(pickListValues[valuesArr[i]]);
                                 } else {
-                                    newvaluesArr.push(valuesArr[i]);
+                                    newValuesArr.push(valuesArr[i]);
                                 }
                             }
-                            var reconstructedCommaSeperatedValues = newvaluesArr.join(',');
-                            rowValues[field] = reconstructedCommaSeperatedValues;
-                        } else if (field == 'value' && valueSelectElement.is('select') && fieldType == 'picklist') {
+
+                            rowValues[field] = newValuesArr;
+                        } else if (field === 'value' && valueSelectElement.is('select') && fieldType === 'picklist') {
                             rowValues[field] = valueSelectElement.val();
-                        } else if (field == 'value' && valueSelectElement.is('select') && fieldType == 'multipicklist') {
-                            var value = valueSelectElement.val();
-                            if (value == null) {
-                                rowValues[field] = value;
-                            } else {
-                                rowValues[field] = value.join(',');
-                            }
+                        } else if (field === 'value' && valueSelectElement.is('select') && fieldType === 'multipicklist') {
+                            rowValues[field] = valueSelectElement.val();
                         } else {
                             rowValues[field] = jQuery('[name="' + field + '"]', rowElement).val();
                         }
+
+                        if ('value' === field && 'object' === typeof rowValues[field] && rowValues[field]) {
+                            rowValues[field] = rowValues[field].join(',');
+                        }
                     }
                 } else {
-                    for (var key in fieldList) {
-                        var field = fieldList[key];
-                        if (field == 'value') {
-                            if ((fieldType == 'date' || fieldType == 'datetime') && valueSelectElement.length > 0) {
-                                var value = valueSelectElement.val();
-                                var dateFormat = app.getDateFormat();
-                                var dateFormatParts = dateFormat.split("-");
-                                var valueArray = value.split(',');
+                    for (let key in fieldList) {
+                        let field = fieldList[key];
+
+                        if (field === 'value') {
+                            if ((fieldType === 'date' || fieldType === 'datetime') && valueSelectElement.length > 0) {
+                                let value = valueSelectElement.val(),
+                                    dateFormat = app.getDateFormat(),
+                                    dateFormatParts = dateFormat.split("-"),
+                                    valueArray = value.split(',');
+
                                 for (i = 0; i < valueArray.length; i++) {
-                                    var valueParts = valueArray[i].split("-");
-                                    var dateInstance = new Date(valueParts[dateFormatParts.indexOf('yyyy')], parseInt(valueParts[dateFormatParts.indexOf('mm')]) - 1, valueParts[dateFormatParts.indexOf('dd')]);
+                                    let valueParts = valueArray[i].split("-"),
+                                        dateInstance = new Date(valueParts[dateFormatParts.indexOf('yyyy')], parseInt(valueParts[dateFormatParts.indexOf('mm')]) - 1, valueParts[dateFormatParts.indexOf('dd')]);
+
                                     if (!isNaN(dateInstance.getTime())) {
                                         valueArray[i] = app.getDateInVtigerFormat('yyyy-mm-dd', dateInstance);
                                     }
                                 }
+
                                 rowValues[field] = valueArray.join(',');
                             } else {
                                 rowValues[field] = valueSelectElement.val();
@@ -232,8 +248,9 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
 
     },
     getFieldSpecificUi: function (fieldSelectElement) {
-        var fieldSelected = fieldSelectElement.find('option:selected');
-        var fieldInfo = fieldSelected.data('fieldinfo');
+        let fieldSelected = fieldSelectElement.find('option:selected'),
+            fieldInfo = fieldSelected.data('fieldinfo');
+
         if (jQuery.inArray(fieldInfo.comparatorElementVal, this.comparatorsWithNoValueBoxMap) != -1) {
             return jQuery('');
         } else {
@@ -243,25 +260,27 @@ Vtiger_AdvanceFilter_Js('EMAILMaker_AdvanceFilter_Js', {}, {
 });
 Vtiger_Field_Js('EMAILMaker_Field_Js', {}, {
     getUiTypeSpecificHtml: function () {
-        var uiTypeModel = this.getUiTypeModel();
+        let uiTypeModel = this.getUiTypeModel();
+
         return uiTypeModel.getUi();
     },
     getModuleName: function () {
-        var currentModule = app.getModuleName();
-        return currentModule;
+        return app.getModuleName();
     },
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi inputElement" name="' + this.getName() + '"  /><input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
+        let html = '<input type="text" class="getPopupUi inputElement form-control" name="' + this.getName() + '"  /><input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
         html = jQuery(html);
         html.filter('.getPopupUi').val(app.htmlDecode(this.getValue()));
+
         return this.addValidationToElement(html);
     }
 });
 EMAILMaker_Field_Js('EMAILMaker_Text_Field_Js', {}, {
     getUi: function () {
-        var html = '<textarea class="getPopupUi" name="' + this.getName() + '" value="">' + this.getValue() + '</textarea>' +
+        let html = '<textarea class="getPopupUi form-control" name="' + this.getName() + '" value="">' + this.getValue() + '</textarea>' +
             '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
         html = jQuery(html);
+        
         return this.addValidationToElement(html);
     }
 });
@@ -270,37 +289,37 @@ Vtiger_Date_Field_Js('EMAILMaker_Date_Field_Js', {}, {
         return this.get('date-format');
     },
     getUi: function () {
-        var comparatorSelectedOptionVal = this.get('comparatorElementVal');
-        var dateSpecificConditions = this.get('dateSpecificConditions');
+        let comparatorSelectedOptionVal = this.get('comparatorElementVal');
+        let dateSpecificConditions = this.get('dateSpecificConditions');
         if (comparatorSelectedOptionVal.length > 0) {
             if (comparatorSelectedOptionVal == 'between' || comparatorSelectedOptionVal == 'custom') {
-                var html = '<div class="date"><input class="dateField" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" ReadOnly="true" value="' + this.getValue() + '"></div>';
-                var element = jQuery(html);
+                let html = '<div class="date"><input class="dateField" data-calendar-type="range" name="' + this.getName() + '" data-date-format="' + this.getDateFormat() + '" type="text" ReadOnly="true" value="' + this.getValue() + '"></div>';
+                let element = jQuery(html);
                 return this.addValidationToElement(element);
             } else if (this._specialDateComparator(comparatorSelectedOptionVal)) {
-                var html = '<input name="' + this.getName() + '" type="text" value="' + this.getValue() + '" data-validation-engine="validate[funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-validator="[{"name":"PositiveNumber"}]">\n\
+                let html = '<input name="' + this.getName() + '" type="text" value="' + this.getValue() + '" data-validation-engine="validate[funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" data-validator="[{"name":"PositiveNumber"}]">\n\
                                                 <input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
                 return jQuery(html);
             } else if (comparatorSelectedOptionVal in dateSpecificConditions) {
-                var startValue = dateSpecificConditions[comparatorSelectedOptionVal]['startdate'];
-                var endValue = dateSpecificConditions[comparatorSelectedOptionVal]['enddate'];
-                var html = '<input name="' + this.getName() + '"  type="text" ReadOnly="true" value="' + startValue + ',' + endValue + '">'
+                let startValue = dateSpecificConditions[comparatorSelectedOptionVal]['startdate'];
+                let endValue = dateSpecificConditions[comparatorSelectedOptionVal]['enddate'];
+                let html = '<input name="' + this.getName() + '"  type="text" ReadOnly="true" value="' + startValue + ',' + endValue + '">'
                 return jQuery(html);
             } else if (comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
             } else {
                 return this._super();
             }
         } else {
-            var html = '<input type="text" class="getPopupUi date inputElement" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
+            let html = '<input type="text" class="getPopupUi date inputElement form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
                 '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />'
-            var element = jQuery(html);
+            let element = jQuery(html);
             return this.addValidationToElement(element);
         }
     },
 
     _specialDateComparator: function (comp) {
-        var specialComparators = ['less than days ago', 'more than days ago', 'in less than', 'in more than', 'days ago', 'days later', 'less than days later', 'more than days later'];
-        for (var index in specialComparators) {
+        let specialComparators = ['less than days ago', 'more than days ago', 'in less than', 'in more than', 'days ago', 'days later', 'less than days later', 'more than days later'];
+        for (let index in specialComparators) {
             if (comp == specialComparators[index]) {
                 return true;
             }
@@ -314,22 +333,24 @@ Vtiger_Date_Field_Js('EMAILMaker_Datetime_Field_Js', {}, {
         return this.get('date-format');
     },
     getUi: function () {
-        var comparatorSelectedOptionVal = this.get('comparatorElementVal');
+        let comparatorSelectedOptionVal = this.get('comparatorElementVal'),
+            html = '';
+
         if (this._specialDateTimeComparator(comparatorSelectedOptionVal)) {
-            var html = '<input name="' + this.getName() + '" type="text" value="' + this.getValue() + '" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
-            var element = jQuery(html);
+            html = '<input name="' + this.getName() + '" type="text" value="' + this.getValue() + '" data-validator="[{name:PositiveNumber}]"><input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
         } else if (comparatorSelectedOptionVal == 'is today' || comparatorSelectedOptionVal == 'is tomorrow' || comparatorSelectedOptionVal == 'is yesterday') {
+
         } else {
-            var html = '<input type="text" class="getPopupUi date" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
-                '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />'
-            var element = jQuery(html);
+            html = '<input type="text" class="getPopupUi date form-control" name="' + this.getName() + '"  data-date-format="' + this.getDateFormat() + '"  value="' + this.getValue() + '" />' +
+                '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
         }
-        return element;
+
+        return jQuery(html);
     },
 
     _specialDateTimeComparator: function (comp) {
-        var specialComparators = ['less than hours before', 'less than hours later', 'more than hours later', 'more than hours before'];
-        for (var index in specialComparators) {
+        let specialComparators = ['less than hours before', 'less than hours later', 'more than hours later', 'more than hours before'];
+        for (let index in specialComparators) {
             if (comp == specialComparators[index]) {
                 return true;
             }
@@ -340,44 +361,44 @@ Vtiger_Date_Field_Js('EMAILMaker_Datetime_Field_Js', {}, {
 
 Vtiger_Currency_Field_Js('EMAILMaker_Currency_Field_Js', {}, {
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi marginLeftZero inputElement" name="' + this.getName() + '" value="' + this.getValue() + '"  />' +
+        let html = '<input type="text" class="getPopupUi marginLeftZero inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '"  />' +
             '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
-        var element = jQuery(html);
+        let element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
 Vtiger_Time_Field_Js('EMAILMaker_Time_Field_Js', {}, {
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi time inputElement" name="' + this.getName() + '"  value="' + this.getValue() + '" />' +
+        let html = '<input type="text" class="getPopupUi time inputElement form-control" name="' + this.getName() + '"  value="' + this.getValue() + '" />' +
             '<input type="hidden" name="valuetype" value="' + this.get('workflow_valuetype') + '" />';
-        var element = jQuery(html);
+        let element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
 
 Vtiger_Field_Js('Vtiger_Percentage_Field_Js', {}, {
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
+        let html = '<input type="text" class="getPopupUi inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
             '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
-        var element = jQuery(html);
+        let element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
 
 Vtiger_Field_Js('Vtiger_Text_Field_Js', {}, {
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi inputElement" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
+        let html = '<input type="text" class="getPopupUi inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
             '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
-        var element = jQuery(html);
+        let element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
 
 Vtiger_Field_Js('Vtiger_Boolean_Field_Js', {}, {
     getUi: function () {
-        var html = '<input type="text" class="getPopupUi boolean inputElement" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
+        let html = '<input type="text" class="getPopupUi boolean inputElement form-control" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
             '<input type="hidden" name="valuetype" value="' + this.get('emailmaker_valuetype') + '" />';
-        var element = jQuery(html);
+        let element = jQuery(html);
         return this.addValidationToElement(element);
     }
 });
@@ -385,14 +406,14 @@ Vtiger_Field_Js('Vtiger_Boolean_Field_Js', {}, {
 Vtiger_Owner_Field_Js('EMAILMaker_Owner_Field_Js', {}, {
 
     getUi: function () {
-        var html = '<select class="col-lg-12 select2" name="' + this.getName() + '">';
+        let html = '<select class="select2 form-select" name="' + this.getName() + '">';
         html += '<option value="">&nbsp;</option>';
-        var pickListValues = this.getPickListValues();
-        var selectedOption = this.getValue();
-        for (var optGroup in pickListValues) {
+        let pickListValues = this.getPickListValues();
+        let selectedOption = this.getValue();
+        for (let optGroup in pickListValues) {
             html += '<optgroup label="' + optGroup + '">';
-            var optionGroupValues = pickListValues[optGroup];
-            for (var option in optionGroupValues) {
+            let optionGroupValues = pickListValues[optGroup];
+            for (let option in optionGroupValues) {
                 html += '<option value="' + option + '" ';
                 if (option == selectedOption) {
                     html += ' selected ';
@@ -403,51 +424,104 @@ Vtiger_Owner_Field_Js('EMAILMaker_Owner_Field_Js', {}, {
         }
 
         html += '</select>';
-        var selectContainer = jQuery(html);
+        let selectContainer = jQuery(html);
         this.addValidationToElement(selectContainer);
         return selectContainer;
     }
 });
 
 Vtiger_Owner_Field_Js('EMAILMaker_Ownergroup_Field_Js', {}, {
-    getUi: function () {
-        var html = '<select class="select2 inputElement" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">';
-        var pickListValues = this.getPickListValues();
-        var selectedOption = this.getValue();
-        html += '<option value=""></option>';
-        for (var option in pickListValues) {
-            html += '<option value="' + option + '" ';
-            if (option == selectedOption) {
-                html += ' selected ';
+    getOptions: function () {
+        let html = '',
+            pickListValues = this.getPickListValues();
+
+        for (let optGroup in pickListValues) {
+            html += '<optgroup label="' + optGroup + '">'
+            let optionGroupValues = pickListValues[optGroup];
+
+            for (let option in optionGroupValues) {
+                html += '<option value="' + option + '">' + optionGroupValues[option] + '</option>';
             }
-            html += '>' + pickListValues[option] + '</option>';
+
+            html += '</optgroup>'
         }
-        html += '</select>';
-        var selectContainer = jQuery(html);
+
+        return html;
+    },
+    setSelected: function (element) {
+        let selectedOption = app.htmlDecode(this.getValue()),
+            selectedOptions = selectedOption.split(',');
+
+        $.each(selectedOptions, function (key, value) {
+            let option = element.find('option[value="' + value + '"]');
+
+            if (option.length) {
+                option.attr('selected', 'selected');
+            } else {
+                element.append('<option value="' + value + '" selected="selected">' + value + '</option>');
+            }
+        });
+
+        return element;
+    },
+    getUi: function () {
+        let comparatorSelectedOptionVal = this.get('comparatorElementVal'),
+            html = '';
+
+        if (comparatorSelectedOptionVal === 'e' || comparatorSelectedOptionVal === 'n') {
+            html = '<select class="OwnerField select2 inputElement form-select" data-value="value" multiple name="' + this.getName() + '[]">' + this.getOptions() + '</select>';
+        } else {
+            html = '<select class="OwnerField select2 inputElement form-select" data-value="value" data-tags="true" data-multiple="true" multiple type="hidden"  name="' + this.getName() + '">' + this.getOptions() + '</select>';
+        }
+
+        let selectContainer = jQuery(html);
+
+        this.setSelected(selectContainer);
         this.addValidationToElement(selectContainer);
+
         return selectContainer;
     }
 });
 
 Vtiger_Picklist_Field_Js('EMAILMaker_Picklist_Field_Js', {}, {
+    getPickListValues : function() {
+        return this.get('picklistvalues');
+    },
+    getOptions: function () {
+        let html = '',
+            pickListValues = this.getPickListValues();
 
-    getUi: function () {
-        var selectedOption = app.htmlDecode(this.getValue());
-        var pickListValues = this.getPickListValues();
-        var tagsArray = [];
-        jQuery.map(pickListValues, function (val, i) {
-            tagsArray.push(val);
-        });
-        var pickListValuesArrayFlip = {};
-        for (var key in pickListValues) {
-            var pickListValue = pickListValues[key];
-            pickListValuesArrayFlip[pickListValue] = key;
+        for (let picklistKey in pickListValues) {
+            html += '<option value="' + picklistKey + '">' + pickListValues[picklistKey] + '</option>';
         }
-        var html = '<input type="hidden" class="col-lg-12 select2" name="' + this.getName() + '" id="' + this.getName() + '">';
-        var selectContainer = jQuery(html).val(selectedOption);
-        selectContainer.data('tags', tagsArray).data('picklistvalues', pickListValuesArrayFlip).data('maximumSelectionSize', 1);
-        selectContainer.data('placeholder', app.vtranslate('JS_PLEASE_SELECT_ATLEAST_ONE_OPTION')).data('closeOnSelect', true);
+
+        return html;
+    },
+    setSelected: function (element) {
+        let selectedOption = app.htmlDecode(this.getValue()),
+            selectedOptions = selectedOption.split(',');
+
+        $.each(selectedOptions, function (key, value) {
+            let option = element.find('option[value="' + value + '"]');
+
+            if (value) {
+                if (option.length) {
+                    option.attr('selected', 'selected');
+                } else {
+                    element.append('<option value="' + value + '" selected="selected">' + value + '</option>');
+                }
+            }
+        });
+
+        return element;
+    },
+    getUi: function () {
+        let html = '<select class="PicklistField select2 inputElement form-select" data-value="value" multiple data-maximum-selection-length="1" name="' + this.getName() + '[]">' + this.getOptions() + '</select>',
+            selectContainer = jQuery(html);
+
+        this.setSelected(selectContainer);
         this.addValidationToElement(selectContainer);
+
         return selectContainer;
     }
 });

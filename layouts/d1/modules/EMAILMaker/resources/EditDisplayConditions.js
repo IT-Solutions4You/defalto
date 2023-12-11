@@ -49,17 +49,17 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
     },
 
     calculateValues: function () {
-        var advfilterlist = this.advanceFilterInstance.getValues();
+        let advfilterlist = this.advanceFilterInstance.getValues();
         jQuery('#advanced_filter').val(JSON.stringify(advfilterlist));
     },
 
     checkExpressionValidation: function (form) {
-        var params = {
+        let params = {
             'module': app.module(),
             'action': 'ValidateExpression',
             'mode': 'ForEMAILMakerDisplayEdit'
         };
-        var serializeForm = form.serializeFormData();
+        let serializeForm = form.serializeFormData();
         params = jQuery.extend(serializeForm, params);
         app.request.post({'data': params}).then(function (error, data) {
             if (error == null) {
@@ -75,9 +75,9 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
      * Function to register the click event for next button
      */
     registerFormSubmitEvent: function () {
-        var self = this;
-        var form = jQuery('#EditView');
-        var params = {
+        let self = this;
+        let form = jQuery('#EditView');
+        let params = {
             submitHandler: function (form) {
                 if (jQuery('[name="display_trigger"]').val() == '6' && jQuery('#schtypeid').val() == '3') {
                     if (jQuery('#schdayofweek').val().length <= 0) {
@@ -85,7 +85,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
                         return false;
                     }
                 }
-                var form = jQuery(form);
+                form = jQuery(form);
                 self.calculateValues();
                 window.onbeforeunload = null;
                 jQuery(form).find('button.saveButton').attr('disabled', 'disabled');
@@ -99,73 +99,79 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
 
 
     getPopUp: function (container) {
-        var thisInstance = this;
+        let thisInstance = this;
         if (typeof container == 'undefined') {
             container = thisInstance.getContainer();
         }
-        var isPopupShowing = false;
+        let isPopupShowing = false;
         container.on('click', '.getPopupUi', function (e) {
             // Added to prevent multiple clicks event
             if (isPopupShowing) {
                 return false;
             }
-            var fieldValueElement = jQuery(e.currentTarget);
-            var fieldValue = fieldValueElement.val();
-            var fieldUiHolder = fieldValueElement.closest('.fieldUiHolder');
-            var valueType = fieldUiHolder.find('[name="valuetype"]').val();
+            let fieldValueElement = jQuery(e.currentTarget);
+            let fieldValue = fieldValueElement.val();
+            let fieldUiHolder = fieldValueElement.closest('.fieldUiHolder');
+            let valueType = fieldUiHolder.find('[name="valuetype"]').val();
             if (valueType == '' || valueType == 'null') {
                 valueType = 'rawtext';
             }
-            var conditionsContainer = fieldValueElement.closest('.conditionsContainer');
-            var conditionRow = fieldValueElement.closest('.conditionRow');
+            let conditionsContainer = fieldValueElement.closest('.conditionsContainer');
+            let conditionRow = fieldValueElement.closest('.conditionRow');
 
-            var clonedPopupUi = conditionsContainer.find('.popupUi').clone(true, true).removeClass('hide').removeClass('popupUi').addClass('clonedPopupUi');
+            let clonedPopupUi = conditionsContainer.find('.popupUi').clone(true, true).removeClass('hide').removeClass('popupUi').addClass('clonedPopupUi');
             clonedPopupUi.find('select').addClass('select2');
             clonedPopupUi.find('.fieldValue').val(fieldValue);
             clonedPopupUi.find('.fieldValue').removeClass('hide');
 
             if (fieldValueElement.hasClass('date')) {
                 clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
-                var dataFormat = fieldValueElement.data('date-format');
+                let dataFormat = fieldValueElement.data('date-format'),
+                    value;
+
                 if (valueType == 'rawtext') {
-                    var value = fieldValueElement.val();
+                    value = fieldValueElement.val();
                 } else {
                     value = '';
                 }
-                var clonedDateElement = '<input type="text" style="width: 30%;" class="dateField fieldValue inputElement" value="' + value + '" data-date-format="' + dataFormat + '" data-input="true" >'
+                let clonedDateElement = '<input type="text" style="width: 30%;" class="dateField fieldValue inputElement form-control" value="' + value + '" data-date-format="' + dataFormat + '" data-input="true" >'
                 clonedPopupUi.find('.fieldValueContainer div').prepend(clonedDateElement);
             } else if (fieldValueElement.hasClass('time')) {
                 clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
+                let value
+
                 if (valueType == 'rawtext') {
-                    var value = fieldValueElement.val();
+                    value = fieldValueElement.val();
                 } else {
                     value = '';
                 }
-                var clonedTimeElement = '<input type="text" style="width: 30%;" class="timepicker-default fieldValue inputElement" value="' + value + '" data-input="true" >'
+                let clonedTimeElement = '<input type="text" style="width: 30%;" class="timepicker-default fieldValue inputElement form-control" value="' + value + '" data-input="true" >'
                 clonedPopupUi.find('.fieldValueContainer div').prepend(clonedTimeElement);
             } else if (fieldValueElement.hasClass('boolean')) {
                 clonedPopupUi.find('.textType').find('option[value="rawtext"]').attr('data-ui', 'input');
+                let value
+
                 if (valueType == 'rawtext') {
-                    var value = fieldValueElement.val();
+                    value = fieldValueElement.val();
                 } else {
                     value = '';
                 }
-                var clonedBooleanElement = '<input type="checkbox" style="width: 30%;" class="fieldValue inputElement" value="' + value + '" data-input="true" >';
+                let clonedBooleanElement = '<input type="checkbox" style="width: 30%;" class="fieldValue inputElement" value="' + value + '" data-input="true" >';
                 clonedPopupUi.find('.fieldValueContainer div').prepend(clonedBooleanElement);
 
-                var fieldValue = clonedPopupUi.find('.fieldValueContainer input').val();
+                let fieldValue = clonedPopupUi.find('.fieldValueContainer input').val();
                 if (value == 'true:boolean' || value == '') {
                     clonedPopupUi.find('.fieldValueContainer input').attr('checked', 'checked');
                 } else {
                     clonedPopupUi.find('.fieldValueContainer input').removeAttr('checked');
                 }
             }
-            var callBackFunction = function (data) {
+            let callBackFunction = function (data) {
                 isPopupShowing = false;
                 data.find('.clonedPopupUi').removeClass('hide');
-                var moduleNameElement = conditionRow.find('[name="modulename"]');
+                let moduleNameElement = conditionRow.find('[name="modulename"]');
                 if (moduleNameElement.length > 0) {
-                    var moduleName = moduleNameElement.val();
+                    let moduleName = moduleNameElement.val();
                     data.find('.useFieldElement').addClass('hide');
                     jQuery(data.find('[name="' + moduleName + '"]').get(0)).removeClass('hide');
                 }
@@ -196,17 +202,17 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
 
     registerPopUpSaveEvent: function (data, fieldUiHolder) {
         jQuery('[name="saveButton"]', data).on('click', function (e) {
-            var valueType = jQuery('select.textType', data).val();
+            let valueType = jQuery('select.textType', data).val();
 
             fieldUiHolder.find('[name="valuetype"]').val(valueType);
-            var fieldValueElement = fieldUiHolder.find('.getPopupUi');
+            let fieldValueElement = fieldUiHolder.find('.getPopupUi');
             if (valueType != 'rawtext') {
                 fieldValueElement.addClass('ignore-validation');
             } else {
                 fieldValueElement.removeClass('ignore-validation');
             }
-            var fieldType = data.find('.fieldValue').filter(':visible').attr('type');
-            var fieldValue = data.find('.fieldValue').filter(':visible').val();
+            let fieldType = data.find('.fieldValue').filter(':visible').attr('type');
+            let fieldValue = data.find('.fieldValue').filter(':visible').val();
             //For checkbox field type, handling fieldValue
             if (fieldType == 'checkbox') {
                 if (data.find('.fieldValue').filter(':visible').is(':checked')) {
@@ -222,14 +228,14 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
 
     registerSelectOptionEvent: function (data) {
         jQuery('.useField,.useFunction', data).on('change', function (e) {
-            var currentElement = jQuery(e.currentTarget);
-            var newValue = currentElement.val();
-            var oldValue = data.find('.fieldValue').filter(':visible').val();
-            var textType = currentElement.closest('.clonedPopupUi').find('select.textType').val();
+            let currentElement = jQuery(e.currentTarget);
+            let newValue = currentElement.val();
+            let oldValue = data.find('.fieldValue').filter(':visible').val();
+            let textType = currentElement.closest('.clonedPopupUi').find('select.textType').val();
             if (currentElement.hasClass('useField')) {
                 //If it is fieldname mode then we need to allow only one field
                 if (oldValue != '' && textType != 'fieldname') {
-                    var concatenatedValue = oldValue + ' ' + newValue;
+                    let concatenatedValue = oldValue + ' ' + newValue;
                 } else {
                     concatenatedValue = newValue;
                 }
@@ -242,10 +248,10 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
     },
     registerChangeFieldEvent: function (data) {
         jQuery('.textType', data).on('change', function (e) {
-            var valueType = jQuery(e.currentTarget).val();
-            var useFieldContainer = jQuery('.useFieldContainer', data);
-            var useFunctionContainer = jQuery('.useFunctionContainer', data);
-            var uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
+            let valueType = jQuery(e.currentTarget).val();
+            let useFieldContainer = jQuery('.useFieldContainer', data);
+            let useFunctionContainer = jQuery('.useFunctionContainer', data);
+            let uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
             jQuery('.fieldValue', data).hide();
             jQuery('[data-' + uiType + ']', data).show();
             if (valueType == 'fieldname') {
@@ -273,7 +279,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
             jQuery('.textType', data).val(valueType).trigger('change');
         }
         jQuery('#' + valueType + '_help', data).removeClass('hide');
-        var uiType = jQuery('.textType', data).find('option:selected').data('ui');
+        let uiType = jQuery('.textType', data).find('option:selected').data('ui');
         jQuery('.fieldValue', data).hide();
         jQuery('[data-' + uiType + ']', data).show();
     },
@@ -297,9 +303,9 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         return this.checkStartAndEndDate();
     },
     checkStartAndEndDate: function () {
-        var form = jQuery('#saveTask');
-        var params = form.serializeFormData();
-        var result = true;
+        let form = jQuery('#saveTask');
+        let params = form.serializeFormData();
+        let result = true;
         if (params['taskType'] == 'VTCreateEventTask' && params['startDatefield'] == params['endDatefield']) {
             if (params['startDirection'] == params['endDirection']) {
                 if (params['startDays'] > params['endDays'] && params['endDirection'] == 'after') {
@@ -317,16 +323,16 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         return result;
     },
     checkDuplicateFieldsSelected: function () {
-        var selectedFieldNames = jQuery('#save_fieldvaluemapping').find('.conditionRow').find('[name="fieldname"]');
-        var result = true;
-        var failureMessage = app.vtranslate('JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE');
+        let selectedFieldNames = jQuery('#save_fieldvaluemapping').find('.conditionRow').find('[name="fieldname"]');
+        let result = true;
+        let failureMessage = app.vtranslate('JS_SAME_FIELDS_SELECTED_MORE_THAN_ONCE');
         jQuery.each(selectedFieldNames, function (i, ele) {
-            var fieldName = jQuery(ele).attr("value");
-            var taskType = jQuery('#taskType').val();
+            let fieldName = jQuery(ele).attr("value");
+            let taskType = jQuery('#taskType').val();
             if (taskType == "VTUpdateFieldsTask") {
-                var fields = jQuery('[data-emailmaker_columnname="' + fieldName + '"]').not(':hidden');
+                let fields = jQuery('[data-emailmaker_columnname="' + fieldName + '"]').not(':hidden');
             } else {
-                var fields = jQuery('[name="' + fieldName + '"]').not(':hidden');
+                let fields = jQuery('[name="' + fieldName + '"]').not(':hidden');
             }
             if (fields.length > 1) {
                 result = failureMessage;
@@ -341,104 +347,16 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
      * @return : boolean true/false
      */
     isEmptyFieldSelected: function (fieldSelect) {
-        var selectedOption = fieldSelect.find('option:selected');
+        let selectedOption = fieldSelect.find('option:selected');
         //assumption that empty field will be having value none
         if (selectedOption.val() == 'none') {
             return true;
         }
         return false;
     },
-    getValues: function (tasktype) {
-        var thisInstance = this;
-        var conditionsContainer = jQuery('#save_fieldvaluemapping');
-        var fieldListFunctionName = 'get' + tasktype + 'FieldList';
-        if (typeof thisInstance[fieldListFunctionName] != 'undefined') {
-            var fieldList = thisInstance[fieldListFunctionName].apply()
-        }
-
-        var values = [];
-        var conditions = jQuery('.conditionRow', conditionsContainer);
-        conditions.each(function (i, conditionDomElement) {
-            var rowElement = jQuery(conditionDomElement);
-            var fieldSelectElement = jQuery('[name="fieldname"]', rowElement);
-            var valueSelectElement = jQuery('[data-value="value"]', rowElement);
-            //To not send empty fields to server
-            if (thisInstance.isEmptyFieldSelected(fieldSelectElement)) {
-                return true;
-            }
-            var fieldDataInfo = fieldSelectElement.find('option:selected').data('fieldinfo');
-            var fieldType = fieldDataInfo.type;
-            var rowValues = {};
-            if (fieldType == 'owner') {
-                for (var key in fieldList) {
-                    var field = fieldList[key];
-                    if (field == 'value' && valueSelectElement.is('select')) {
-                        rowValues[field] = valueSelectElement.find('option:selected').val();
-                    } else {
-                        rowValues[field] = jQuery('[name="' + field + '"]', rowElement).val();
-                    }
-                }
-            } else if (fieldType == 'picklist' || fieldType == 'multipicklist') {
-                for (var key in fieldList) {
-                    var field = fieldList[key];
-                    if (field == 'value' && valueSelectElement.is('input')) {
-                        var commaSeperatedValues = valueSelectElement.val();
-                        var pickListValues = valueSelectElement.data('picklistvalues');
-                        var valuesArr = commaSeperatedValues.split(',');
-                        var newvaluesArr = [];
-                        for (i = 0; i < valuesArr.length; i++) {
-                            if (typeof pickListValues[valuesArr[i]] != 'undefined') {
-                                newvaluesArr.push(pickListValues[valuesArr[i]]);
-                            } else {
-                                newvaluesArr.push(valuesArr[i]);
-                            }
-                        }
-                        var reconstructedCommaSeperatedValues = newvaluesArr.join(',');
-                        rowValues[field] = reconstructedCommaSeperatedValues;
-                    } else if (field == 'value' && valueSelectElement.is('select') && fieldType == 'picklist') {
-                        rowValues[field] = valueSelectElement.val();
-                    } else if (field == 'value' && valueSelectElement.is('select') && fieldType == 'multipicklist') {
-                        var value = valueSelectElement.val();
-                        if (value == null) {
-                            rowValues[field] = value;
-                        } else {
-                            rowValues[field] = value.join(',');
-                        }
-                    } else {
-                        rowValues[field] = jQuery('[name="' + field + '"]', rowElement).val();
-                    }
-                }
-
-            } else if (fieldType == 'text') {
-                for (var key in fieldList) {
-                    var field = fieldList[key];
-                    if (field == 'value') {
-                        rowValues[field] = rowElement.find('textarea').val();
-                    } else {
-                        rowValues[field] = jQuery('[name="' + field + '"]', rowElement).val();
-                    }
-                }
-            } else {
-                for (var key in fieldList) {
-                    var field = fieldList[key];
-                    if (field == 'value') {
-                        rowValues[field] = valueSelectElement.val();
-                    } else {
-                        rowValues[field] = jQuery('[name="' + field + '"]', rowElement).val();
-                    }
-                }
-            }
-            if (jQuery('[name="valuetype"]', rowElement).val() == 'false' || (jQuery('[name="valuetype"]', rowElement).length == 0)) {
-                rowValues['valuetype'] = 'rawtext';
-            }
-
-            values.push(rowValues);
-        });
-        return values;
-    },
     registerAddFieldEvent: function () {
         jQuery('#addFieldBtn').on('click', function (e) {
-            var newAddFieldContainer = jQuery('.basicAddFieldContainer').clone(true, true).removeClass('basicAddFieldContainer hide').addClass('conditionRow');
+            let newAddFieldContainer = jQuery('.basicAddFieldContainer').clone(true, true).removeClass('basicAddFieldContainer hide').addClass('conditionRow');
             jQuery('select', newAddFieldContainer).addClass('select2');
             jQuery('#save_fieldvaluemapping').append(newAddFieldContainer);
             vtUtils.showSelect2ElementView(newAddFieldContainer.find('.select2'));
@@ -453,17 +371,17 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
      * Function which will register field change event
      */
     registerFieldChange: function () {
-        var thisInstance = this;
+        let thisInstance = this;
         jQuery('#saveTask').on('change', 'select[name="fieldname"]', function (e) {
-            var selectedElement = jQuery(e.currentTarget);
+            let selectedElement = jQuery(e.currentTarget);
             if (selectedElement.val() != 'none') {
-                var conditionRow = selectedElement.closest('.conditionRow');
-                var moduleNameElement = conditionRow.find('[name="modulename"]');
+                let conditionRow = selectedElement.closest('.conditionRow');
+                let moduleNameElement = conditionRow.find('[name="modulename"]');
                 if (moduleNameElement.length > 0) {
-                    var selectedOptionFieldInfo = selectedElement.find('option:selected').data('fieldinfo');
-                    var type = selectedOptionFieldInfo.type;
+                    let selectedOptionFieldInfo = selectedElement.find('option:selected').data('fieldinfo');
+                    let type = selectedOptionFieldInfo.type;
                     if (type == 'picklist' || type == 'multipicklist') {
-                        var moduleName = jQuery('#createEntityModule').val();
+                        let moduleName = jQuery('#createEntityModule').val();
                         moduleNameElement.find('option[value="' + moduleName + '"]').attr('selected', true);
                         moduleNameElement.trigger('change');
                         moduleNameElement.select2("disable");
@@ -477,7 +395,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         return app.getModuleName();
     },
     getFieldValueMapping: function () {
-        var fieldValueMap = this.fieldValueMap;
+        let fieldValueMap = this.fieldValueMap;
         if (fieldValueMap != false) {
             return fieldValueMap;
         } else {
@@ -485,12 +403,12 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         }
     },
     fieldValueReMapping: function () {
-        var object = JSON.parse(jQuery('#fieldValueMapping').val());
-        var fieldValueReMap = {};
+        let object = JSON.parse(jQuery('#fieldValueMapping').val());
+        let fieldValueReMap = {};
 
         jQuery.each(object, function (i, array) {
             fieldValueReMap[array.fieldname] = {};
-            var values = {}
+            let values = {}
             jQuery.each(array, function (key, value) {
                 values[key] = value;
             });
@@ -499,13 +417,13 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         this.fieldValueMap = fieldValueReMap;
     },
     loadFieldSpecificUi: function (fieldSelect) {
-        var selectedOption = fieldSelect.find('option:selected');
-        var row = fieldSelect.closest('div.conditionRow');
-        var fieldUiHolder = row.find('.fieldUiHolder');
-        var fieldInfo = selectedOption.data('fieldinfo');
-        var fieldValueMapping = this.getFieldValueMapping();
-        var fieldValueMappingKey = fieldInfo.name;
-        var taskType = jQuery('#taskType').val();
+        let selectedOption = fieldSelect.find('option:selected');
+        let row = fieldSelect.closest('div.conditionRow');
+        let fieldUiHolder = row.find('.fieldUiHolder');
+        let fieldInfo = selectedOption.data('fieldinfo');
+        let fieldValueMapping = this.getFieldValueMapping();
+        let fieldValueMappingKey = fieldInfo.name;
+        let taskType = jQuery('#taskType').val();
         if (taskType == "VTUpdateFieldsTask") {
             fieldValueMappingKey = fieldInfo.emailmaker_columnname;
         }
@@ -521,15 +439,15 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
             fieldInfo.type = 'string';
         }
 
-        var moduleName = this.getModuleName();
+        let moduleName = this.getModuleName();
 
-        var fieldModel = Vtiger_Field_Js.getInstance(fieldInfo, moduleName);
+        let fieldModel = Vtiger_Field_Js.getInstance(fieldInfo, moduleName);
         this.fieldModelInstance = fieldModel;
-        var fieldSpecificUi = this.getFieldSpecificUi(fieldSelect);
+        let fieldSpecificUi = this.getFieldSpecificUi(fieldSelect);
 
         //remove validation since we dont need validations for all eleements
         // Both filter and find is used since we dont know whether the element is enclosed in some conainer like currency
-        var fieldName = fieldModel.getName();
+        let fieldName = fieldModel.getName();
         if (fieldModel.getType() == 'multipicklist') {
             fieldName = fieldName + "[]";
         }
@@ -539,7 +457,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         fieldSpecificUi.find('[name="valuetype"]').addClass('ignore-validation');
 
         //If the display ValueType is rawtext then only validation should happen
-        var displayValueType = fieldSpecificUi.filter('[name="valuetype"]').val();
+        let displayValueType = fieldSpecificUi.filter('[name="valuetype"]').val();
         if (displayValueType != 'rawtext' && typeof displayValueType != 'undefined') {
             fieldSpecificUi.filter('[name="' + fieldName + '"]').addClass('ignore-validation');
             fieldSpecificUi.find('[name="' + fieldName + '"]').addClass('ignore-validation');
@@ -548,8 +466,8 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
         fieldUiHolder.html(fieldSpecificUi);
 
         if (fieldSpecificUi.is('input.select2')) {
-            var tagElements = fieldSpecificUi.data('tags');
-            var params = {tags: tagElements, tokenSeparators: [","]}
+            let tagElements = fieldSpecificUi.data('tags');
+            let params = {tags: tagElements, tokenSeparators: [","]}
             vtUtils.showSelect2ElementView(fieldSpecificUi, params)
         } else if (fieldSpecificUi.is('select')) {
             if (fieldSpecificUi.hasClass('select2')) {
@@ -558,9 +476,9 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
                 vtUtils.showSelect2ElementView(fieldSpecificUi);
             }
         } else if (fieldSpecificUi.is('input.dateField')) {
-            var calendarType = fieldSpecificUi.data('calendarType');
+            let calendarType = fieldSpecificUi.data('calendarType');
             if (calendarType == 'range') {
-                var customParams = {
+                let customParams = {
                     calendars: 3,
                     mode: 'range',
                     className: 'rangeCalendar',
@@ -581,16 +499,16 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
      * @return : jquery object which represents the ui for the field
      */
     getFieldSpecificUi: function (fieldSelectElement) {
-        var fieldModel = this.fieldModelInstance;
+        let fieldModel = this.fieldModelInstance;
         return jQuery(fieldModel.getUiTypeSpecificHtml())
     },
 
     updateAnnualDates: function (annualDatesEle) {
         annualDatesEle.html('');
-        var annualDatesJSON = jQuery('#hiddenAnnualDates').val();
+        let annualDatesJSON = jQuery('#hiddenAnnualDates').val();
         if (annualDatesJSON) {
-            var hiddenDates = '';
-            var annualDates = JSON.parse(annualDatesJSON);
+            let hiddenDates = '';
+            let annualDates = JSON.parse(annualDatesJSON);
             for (j in annualDates) {
                 hiddenDates += '<option selected value=' + annualDates[j] + '>' + annualDates[j] + '</option>';
             }
@@ -599,7 +517,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
     },
 
     DateToYMD: function (date) {
-        var year, month, day;
+        let year, month, day;
         year = String(date.getFullYear());
         month = String(date.getMonth() + 1);
         if (month.length == 1) {
@@ -613,10 +531,10 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
     },
 
     registerEnableFilterOption: function () {
-        var editViewContainer = this.getEditViewContainer();
+        let editViewContainer = this.getEditViewContainer();
         editViewContainer.on('change', '[name="conditionstype"]', function (e) {
-            var advanceFilterContainer = jQuery('#advanceFilterContainer');
-            var currentRadioButtonElement = jQuery(e.currentTarget);
+            let advanceFilterContainer = jQuery('#advanceFilterContainer');
+            let currentRadioButtonElement = jQuery(e.currentTarget);
             if (currentRadioButtonElement.hasClass('recreate')) {
                 if (currentRadioButtonElement.is(':checked')) {
                     advanceFilterContainer.removeClass('zeroOpacity');
@@ -634,7 +552,7 @@ EMAILMaker_Edit_Js("EMAILMaker_EditDisplayConditions_Js", {}, {
     },
 
     registerEvents: function () {
-        var container = jQuery("#advanceFilterContainer");
+        let container = jQuery("#advanceFilterContainer");
         this.setContainer(container);
         this.registerFormSubmitEvent();
         this.registerEnableFilterOption();
@@ -651,14 +569,14 @@ jQuery.fn.extend({
             if (document.selection) {
                 //For browsers like Internet Explorer
                 this.focus();
-                var sel = document.selection.createRange();
+                let sel = document.selection.createRange();
                 sel.text = myValue;
                 this.focus();
             } else if (this.selectionStart || this.selectionStart == '0') {
                 //For browsers like Firefox and Webkit based
-                var startPos = this.selectionStart;
-                var endPos = this.selectionEnd;
-                var scrollTop = this.scrollTop;
+                let startPos = this.selectionStart;
+                let endPos = this.selectionEnd;
+                let scrollTop = this.scrollTop;
                 this.value = this.value.substring(0, startPos) + myValue + this.value.substring(endPos, this.value.length);
                 this.focus();
                 this.selectionStart = startPos + myValue.length;

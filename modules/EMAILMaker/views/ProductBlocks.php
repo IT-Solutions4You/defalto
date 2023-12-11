@@ -29,9 +29,9 @@ class EMAILMaker_ProductBlocks_View extends EMAILMaker_Index_View
     {
         $headerScriptInstances = parent::getHeaderScripts($request);
         $moduleName = $request->getModule();
-
+        $layout = Vtiger_Viewer::getLayoutName();
         $jsFileNames = array(
-            'layouts.v7.modules.EMAILMaker.resources.ProductBlocks'
+            "layouts.$layout.modules.EMAILMaker.resources.ProductBlocks"
         );
 
         $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);

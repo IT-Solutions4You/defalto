@@ -35,58 +35,56 @@
             <option value="">{$REP.LBL_NONE}</option>{$SECCOLUMNS}</div>
         <div class="bodyContents">
             <div class="contentsDiv">
-                <div class="padding1per">
-                    <div class="row-fluid">
+                <div>
+                    <div>
                         <h3>{vtranslate('LBL_EDIT_RELATED_BLOCK','EMAILMaker')}</h3>
-                        <hr>
-                        <ul class="crumbs marginLeftZero">
+                        <div>
                             {if $MODE eq "edit"}
-                                <li class="first step active" style="z-index:3; float: left;" id="steplabel3"><a><span class="stepNum">1</span><span class="stepText">{vtranslate('LBL_FILTERS','EMAILMaker')}</span></a></li>
-                                <li class="step" style="z-index:2; float: left;" id="steplabel4"><a><span class="stepNum">2</span><span class="stepText">{vtranslate('LBL_SORTING','EMAILMaker')}</span></a></li>
-                                <li class="step last" style="z-index:1; float: left;" id="steplabel5"><a><span class="stepNum">3</span><span class="stepText">{vtranslate('LBL_BLOCK_STYLE','EMAILMaker')}</span></a></li>
+                                {assign var=LABELS value=[3 => vtranslate('LBL_FILTERS','EMAILMaker'), 4 => vtranslate('LBL_SORTING','EMAILMaker'), 5 => vtranslate('LBL_BLOCK_STYLE','EMAILMaker')]}
+                                {include file="BreadCrumbs.tpl"|vtemplate_path:$MODULE BREADCRUMB_ID='navigation_links' ACTIVESTEP=1 BREADCRUMB_LABELS=$LABELS MODULE=$MODULE}
                             {else}
-                                <li class="first step active" style="z-index:10; float: left;" id="steplabel1"><a><span class="stepNum">1</span><span class="stepText">{vtranslate('LBL_RELATIVE_MODULE','EMAILMaker')}</span></a></li>
-                                <li class="step " style="z-index:9; float: left;" id="steplabel2"><a><span class="stepNum">2</span><span class="stepText">{vtranslate('LBL_SELECT_COLUMNS','EMAILMaker')}</span></a></li>
-                                <li class="step " style="z-index:8; float: left;" id="steplabel3"><a><span class="stepNum">3</span><span class="stepText">{vtranslate('LBL_FILTERS','EMAILMaker')}</span></a></li>
-                                <li class="step " style="z-index:7; float: left;" id="steplabel4"><a><span class="stepNum">4</span><span class="stepText">{vtranslate('LBL_SORTING','EMAILMaker')}</span></a></li>
-                                <li class="step last" style="z-index:6; float: left;" id="steplabel5"><a><span class="stepNum">5</span><span class="stepText">{vtranslate('LBL_BLOCK_STYLE','EMAILMaker')}</span></a></li>
+                                {assign var=LABELS value=[1 => vtranslate('LBL_RELATIVE_MODULE','EMAILMaker'), 2=>vtranslate('LBL_SELECT_COLUMNS','EMAILMaker'), 3=>vtranslate('LBL_FILTERS','EMAILMaker'), 4=>vtranslate('LBL_SORTING','EMAILMaker'), 5=>vtranslate('LBL_BLOCK_STYLE','EMAILMaker')]}
+                                {include file="BreadCrumbs.tpl"|vtemplate_path:$MODULE BREADCRUMB_ID='navigation_links' ACTIVESTEP=1 BREADCRUMB_LABELS=$LABELS MODULE=$MODULE}
                             {/if}
-                        </ul>
-                        <br>
+                        </div>
                     </div>
-                    <div style="position: relative;" class="row-fluid">
-                        <div style="min-height: 800px;">
+                    <div style="position: relative;" class="row">
+                        <div>
                             <div class="pushDown2per">
-                                <div class="summaryWidgetContainer">
+                                <div class="summaryWidgetContainer bg-body rounded">
                                     {if $MODE eq "create"}
                                         <!-- STEP 1 -->
                                         <div id="step1" class="{if $STEP neq "1"}hide{/if}">
-
-                                            <div class="widget_header row-fluid">
-                                                <span class="span5 margin0px"><h4>{vtranslate('LBL_RELATIVE_MODULE','EMAILMaker')}</h4></span>
+                                            <div class="widget_header p-3 border-bottom">
+                                                <h4>{vtranslate('LBL_RELATIVE_MODULE','EMAILMaker')}</h4>
                                             </div>
-                                            <div class="widget_contents">
-                                                <table border="0" cellpadding="5" cellspacing="0" width="100%">
-                                                    <tr valign=top>
+                                            <div class="widget_contents p-3">
+                                                <table class="table table-borderless">
+                                                    <tr>
                                                         {if $RELATED_MODULES|@count > 0}
-                                                            <td style="padding-right: 5px;" align="right" nowrap width="25%" align="top"><b>{$REP.LBL_NEW_REP0_HDR2}</b></td>
-                                                            <td style="padding-left: 5px; " align="left" width="75%" valign="top">
+                                                            <td class="w-25"><b>{$REP.LBL_NEW_REP0_HDR2}</b></td>
+                                                            <td>
 
                                                                 {foreach item=relmod name=relmodule from=$RELATED_MODULES}
                                                                     {if $SEC_MODULE eq $relmod}
-                                                                        <div class="marginBottom10px">
-                                                                            <input type='radio' name="secondarymodule" checked value="{$relmod}"/>
-                                                                            {vtranslate($relmod)}
+                                                                        <div class="mb-3">
+                                                                            <label>
+                                                                                <input type="radio" class="form-check-input me-3" name="secondarymodule" checked value="{$relmod}"/>
+                                                                                {vtranslate($relmod)}
+                                                                            </label>
                                                                         </div>
                                                                     {else}
-                                                                        <div class="marginBottom10px"><input type='radio' name="secondarymodule" value="{$relmod}"/>
-                                                                            {vtranslate($relmod)}
+                                                                        <div class="mb-3">
+                                                                            <label>
+                                                                                <input type="radio" class="form-check-input me-3" name="secondarymodule" value="{$relmod}"/>
+                                                                                {vtranslate($relmod)}
+                                                                            </label>
                                                                         </div>
                                                                     {/if}
                                                                 {/foreach}
                                                             </td>
                                                         {else}
-                                                            <td style="padding-right: 5px;" align="left" nowrap width="25%"><b>{$REP.NO_REL_MODULES}</b></td>
+                                                            <td class="w-25"><b>{$REP.NO_REL_MODULES}</b></td>
                                                         {/if}
                                                     </tr>
                                                 </table>
@@ -94,19 +92,16 @@
                                         </div>
                                         <!-- STEP 2 -->
                                         <div id="step2" class="hide">
-                                            <div class="widget_header row-fluid">
-                                                <span class="span5 margin0px"><h4>{vtranslate('LBL_SELECT_COLUMNS','Reports')}&nbsp;<span class="redColor">*</span></h4></span>
+                                            <div class="widget_header p-3 border-bottom">
+                                                <h4>{vtranslate('LBL_SELECT_COLUMNS','Reports')}<span class="text-danger ms-2">*</span></h4>
                                             </div>
-                                            <div class="widget_contents">
-                                                <div class="row-fluid block padding20px">
-                                                    <div class="row-fluid row selectColumns">
-                                                        <select data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS','Reports')}" id="relatedblockColumnsList" name="relatedblockColumnsList[]" data-rule-required="true" class="relatedblockColumns select2 col-sm-11" multiple>
-                                                            {$SECCOLUMNS}
-                                                        </select>
-                                                    </div>
+                                            <div class="widget_contents p-3">
+                                                <div class="relatedBlockColumnsParent">
+                                                    <select data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS','Reports')}" id="relatedblockColumnsList" name="relatedblockColumnsList[]" data-rule-required="true" class="relatedblockColumns select2" multiple style="width: 100%;">
+                                                        {$SECCOLUMNS}
+                                                    </select>
+                                                    <input name="selected_fields" id="seleted_fields" value="{if $SELECTEDCOLUMNS neq ""}{$SELECTEDCOLUMNS}{else}[]{/if}" type="hidden">
                                                 </div>
-                                                <input name="selected_fields" id="seleted_fields" value="{if $SELECTEDCOLUMNS neq ""}{$SELECTEDCOLUMNS}{else}{}{/if}" type="hidden">
-
                                             </div>
                                         </div>
                                     {/if}
@@ -119,11 +114,10 @@
                                     <!-- STEP 4 -->
                                     <div id="step4" class="hide">
                                         <input type="hidden" name="sortColCount" id="sortColCount" value="1"/>
-                                        <div class="widget_header row-fluid">
-                                         <span class="span5 margin0px"><h4>{vtranslate('LBL_SORTING','EMAILMaker')}</h4>
-                                         </span>
+                                        <div class="widget_header p-3 border-bottom">
+                                            <h4>{vtranslate('LBL_SORTING','EMAILMaker')}</h4>
                                         </div>
-                                        <div class="widget_contents">
+                                        <div class="widget_contents p-3">
                                             <div class="well filterConditionContainer filterConditionsDiv">
                                                 <div class="form-group">
                                                     <div class="container-fluid">
@@ -154,32 +148,42 @@
                                     </div>
                                     <!-- STEP 5 -->
                                     <div id="step5" class="hide">
-                                        <div class="widget_header row-fluid">
-                                            <span class="span5 margin0px"><h4>{vtranslate('LBL_BLOCK_STYLE','EMAILMaker')}</h4></span>
+                                        <div class="widget_header p-3 border-bottom">
+                                            <h4>{vtranslate('LBL_BLOCK_STYLE','EMAILMaker')}</h4>
                                         </div>
-                                        <div class="widget_contents">
-                                            <div class="well" style="background: #fff">
-                                                <div class="row-fluid">
-                                                    <div class="form-group">
-                                                        <label class="col-lg-2 control-label textAlignLeft">{vtranslate('Name')}<span class="redColor">*</span></label>
-                                                        <div class="col-lg-6">
-                                                            <input class="inputElement" data-rule-required="true" name="blockname" value="{$BLOCKNAME}">
-                                                        </div>
+                                        <div class="widget_contents p-3">
+                                            <div class="well">
+                                                <div class="row">
+                                                    <label class="col-lg-2 control-label textAlignLeft">{vtranslate('Name')}
+                                                        <span class="text-danger ms-2">*</span>
+                                                    </label>
+                                                    <div class="col-lg-6">
+                                                        <input class="inputElement form-control" data-rule-required="true" name="blockname" value="{$BLOCKNAME}">
                                                     </div>
                                                 </div>
-                                                <div class="row-fluid">
+                                                <div class="mt-3">
                                                     <textarea name="relatedblock" id="relatedblock" style="width:90%;height:500px" class=small tabindex="5">{$RELATEDBLOCK}</textarea>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- BUTTONS -->
-                                    <div class="border1px modal-overlay-footer clearfix">
-                                        <div class="row clearfix">
-                                            <div class="textAlignCenter col-lg-12 col-md-12 col-lg-12 ">
-                                                <button type="button" name="back_rep" id="back_rep" class="btn btn-danger" onclick="return EMAILMaker_RelatedBlockJs.changeStepsback('{$MODE}');" {if $STEP eq "1" || $STEP eq "3"}disabled="disabled"{/if}><strong>{vtranslate('LBL_BACK')}</strong></button>
-                                                &nbsp;<button type="button" name="next" id="next" class="btn btn-success" onclick="return EMAILMaker_RelatedBlockJs.changeSteps('{$MODE}');"><strong>{vtranslate('LBL_NEXT','EMAILMaker')}</strong></button>
-                                                &nbsp;<a name="cancel" class="cursorPointer cancelLink" value="Cancel" href="javscript:;" onClick="self.close();">{vtranslate('LBL_CANCEL')}</a>
+                                    <div class="modal-overlay-footer border-top">
+                                        <div class="container-fluid p-3">
+                                            <div class="row">
+                                                <div class="col text-end">
+                                                    <a name="cancel" class="btn btn-primary cancelLink" value="Cancel" href="javscript:;" onClick="self.close();">{vtranslate('LBL_CANCEL')}</a>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button type="button" name="back_rep" id="back_rep" class="btn btn-primary" onclick="return EMAILMaker_RelatedBlockJs.changeStepsback('{$MODE}');" {if $STEP eq "1" || $STEP eq "3"}disabled="disabled"{/if}>
+                                                        <strong>{vtranslate('LBL_BACK')}</strong>
+                                                    </button>
+                                                </div>
+                                                <div class="col">
+                                                    <button type="button" name="next" id="next" class="btn btn-primary active" onclick="return EMAILMaker_RelatedBlockJs.changeSteps('{$MODE}');">
+                                                        <strong>{vtranslate('LBL_NEXT','EMAILMaker')}</strong>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

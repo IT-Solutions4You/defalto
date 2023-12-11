@@ -37,12 +37,12 @@
                                     {$FIELD_INFO['type'] = 'picklist'}
                                     {assign var=FIELD_TYPE value='picklist'}
                                     {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
-                                {else if $FIELD_NAME eq 'folderid'}
+                                {elseif $FIELD_NAME eq 'folderid'}
                                     {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getDocumentFolders()}
                                     {$FIELD_INFO['type'] = 'picklist'}
                                     {assign var=FIELD_TYPE value='picklist'}
                                     {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
-                                {else if $FIELD_NAME eq 'filename'}
+                                {elseif $FIELD_NAME eq 'filename'}
                                     {$FIELD_INFO['type'] = 'string'}
                                     {assign var=FIELD_TYPE value='string'}
                                 {/if}
@@ -59,29 +59,31 @@
 				</optgroup>
             {/foreach}
 		</select>
-	</span>
-        <span class="conditionComparator col-lg-3 col-md-3 col-sm-3">
-		<select class="{if empty($NOCHOSEN)}select2{/if} col-lg-12" name="comparator" data-placeholder="{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}">
-			 <option value="none">{vtranslate('LBL_NONE',$MODULE)}</option>
-            {assign var=ADVANCE_FILTER_OPTIONS value=$ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE]}
-            {foreach item=ADVANCE_FILTER_OPTION from=$ADVANCE_FILTER_OPTIONS}
-                <option value="{$ADVANCE_FILTER_OPTION}" {if $ADVANCE_FILTER_OPTION eq $CONDITION_INFO['comparator']} selected {/if}>
-					{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}
-				</option>
-            {/foreach}
-		</select>
-	</span>
+		</span>
+			<span class="conditionComparator col-lg-3 col-md-3 col-sm-3">
+			<select class="{if empty($NOCHOSEN)}select2{/if} form-select" name="comparator" data-placeholder="{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}">
+				 <option value="none">{vtranslate('LBL_NONE',$MODULE)}</option>
+				{assign var=ADVANCE_FILTER_OPTIONS value=$ADVANCED_FILTER_OPTIONS_BY_TYPE[$FIELD_TYPE]}
+				{foreach item=ADVANCE_FILTER_OPTION from=$ADVANCE_FILTER_OPTIONS}
+					<option value="{$ADVANCE_FILTER_OPTION}" {if $ADVANCE_FILTER_OPTION eq $CONDITION_INFO['comparator']} selected {/if}>
+						{vtranslate($ADVANCED_FILTER_OPTIONS[$ADVANCE_FILTER_OPTION])}
+					</option>
+				{/foreach}
+			</select>
+		</span>
         <span class="col-lg-4 col-md-4 col-sm-4  fieldUiHolder">
-		<input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}"/>
-	</span>
+			<input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="inputElement form-control" type="text" value="{$CONDITION_INFO['value']|escape}"/>
+		</span>
         <span class="hide">
             {if empty($CONDITION)}
                 {assign var=CONDITION value="and"}
             {/if}
 			<input type="hidden" name="column_condition" value="{$CONDITION}"/>
-	</span>
-        <span class="col-lg-1" style="line-height: 30px;">
-		<i class="deleteCondition glyphicon glyphicon-trash" title="{vtranslate('LBL_DELETE', $MODULE)}"></i>
-	</span>
+		</span>
+        <span class="col-lg-1">
+			<div class="btn btn-outline-secondary deleteCondition" title="{vtranslate('LBL_DELETE', $MODULE)}">
+				<i class="fa fa-trash text-secondary"></i>
+			</div>
+		</span>
     </div>
 {/strip}

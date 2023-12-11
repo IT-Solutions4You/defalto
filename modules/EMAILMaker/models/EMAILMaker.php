@@ -104,23 +104,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
     public static function getSimpleHtmlDomFile()
     {
-
-        if (!class_exists('simple_html_dom_node')) {
-            $pdfmaker_simple_html_dom = "modules/PDFMaker/resources/simple_html_dom/simple_html_dom.php";
-            $emailmaker_simple_html_dom = "modules/EMAILMaker/resources/simple_html_dom/simple_html_dom.php";
-
-            if (file_exists($pdfmaker_simple_html_dom)) {
-                $file = $pdfmaker_simple_html_dom;
-            } elseif (file_exists($emailmaker_simple_html_dom)) {
-                $file = $emailmaker_simple_html_dom;
-            } else {
-                $file = "include/simplehtmldom/simple_html_dom.php";
-            }
-        }
-
-        if (!empty($file)) {
-            require_once $file;
-        }
+        require_once 'vendor/simplehtmldom/simplehtmldom/simple_html_dom.php';;
     }
 
     public function GetPageFormats()
@@ -443,7 +427,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                 $sql .= implode(" AND ", $Search);
             }
         }
-        $sql .= "ORDER BY " . $orderby . " " . $sortorder;
+        $sql .= ' ORDER BY ' . $orderby . ' ' . $sortorder;
 
         $result = $this->db->pquery($sql, $R_Atr);
 
@@ -505,11 +489,11 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
             $pdftemplatearray['edit'] = "";
             if ($Template_Permissions_Data["edit"]) {
-                $emailtemplatearray['edit'] .= "<li><a href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "\">" . vtranslate("LBL_EDIT", $MODULE) . "</a></li>"
-                    . "<li><a href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "&isDuplicate=true\">" . vtranslate("LBL_DUPLICATE", $MODULE) . "</a></li>";
+                $emailtemplatearray['edit'] .= "<li><a class=\"dropdown-item\" href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "\">" . vtranslate("LBL_EDIT", $MODULE) . "</a></li>"
+                    . "<li><a class=\"dropdown-item\" href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "&isDuplicate=true\">" . vtranslate("LBL_DUPLICATE", $MODULE) . "</a></li>";
             }
             if ($Template_Permissions_Data["delete"]) {
-                $emailtemplatearray['edit'] .= "<li><a data-id=\"" . $templateid . "\" href=\"javascript:void(0);\" class=\"deleteRecordButton\">" . vtranslate('LBL_DELETE', $MODULE) . "</a></li>";
+                $emailtemplatearray['edit'] .= "<li><a data-id=\"" . $templateid . "\" href=\"javascript:void(0);\" class=\"deleteRecordButton dropdown-item\">" . vtranslate('LBL_DELETE', $MODULE) . "</a></li>";
             }
 
 
@@ -871,7 +855,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         }
 
         if (!empty($globalTemplates)) {
-            $return_array[1] = array_merge($return_array[1], $globalTemplates);
+            $return_array[1] = array_merge((array)$return_array[1], $globalTemplates);
         }
 
         return $return_array;
@@ -974,7 +958,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
             /** @var $entityModule Vtiger_Module_Model */
             foreach ($entityModules as $entityModule) {
-                if($entityModule->isEntityModule() && $entityModule->isActive()) {
+                if ($entityModule->isEntityModule() && $entityModule->isActive()) {
                     $this->AddLinks($entityModule->getName());
                 }
             }
@@ -982,9 +966,13 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             $link_module = Vtiger_Module::getInstance($modulename);
             $link_module->deleteLink('DETAILVIEWSIDEBARWIDGET', 'EMAILMaker');
             $link_module->deleteLink('LISTVIEWMASSACTION', 'Send Emails with EMAILMaker');
+            $link_module->deleteLink('DETAILVIEWBASIC', 'Send Emails with EMAILMaker');
 
-            $link_module->addLink('DETAILVIEWSIDEBARWIDGET', 'EMAILMaker', 'module=EMAILMaker&view=GetEMAILActions&record=$RECORD$');
-            $link_module->addLink('LISTVIEWMASSACTION', 'Send Emails with EMAILMaker', 'javascript:EMAILMaker_Actions_Js.getListViewPopup(this,\'$MODULE$\');');
+            $link_module->deleteLink('LISTVIEWMASSACTION', 'Send Email');
+            $link_module->deleteLink('DETAILVIEWBASIC', 'Send Email');
+
+            $link_module->addLink('LISTVIEWMASSACTION', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getListViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
+            $link_module->addLink('DETAILVIEWBASIC', 'Send Email', 'javascript:EMAILMaker_Actions_Js.getDetailViewPopup(this,\'$MODULE$\');', '<i class="fa fa-paper-plane" aria-hidden="true"></i>');
         }
     }
 
@@ -1635,11 +1623,11 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             $Email_Theme_Array['description'] = $this->db->query_result($result, $i, 'description');
 
             if ($this->CheckPermissions("EDIT")) {
-                $Email_Theme_Array['edit'] = "<a href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&return_module=EMAILMaker&return_view=List\"><i class=\"fa fa-pencil\" title=\"" . vtranslate("LBL_EDIT") . "\" ></i></a>&nbsp;";
-                $Email_Theme_Array['edit'] .= "<a href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&isDuplicate=true&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate("LBL_DUPLICATE") . "\" class=\"fa fa-clone alignMiddle\"></i></a>&nbsp;";
+                $Email_Theme_Array['edit'] = "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&return_module=EMAILMaker&return_view=List\"><i class=\"fa fa-pencil\" title=\"" . vtranslate("LBL_EDIT") . "\" ></i></a>&nbsp;";
+                $Email_Theme_Array['edit'] .= "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&view=Edit&themeid=" . $templateid . "&mode=EditTheme&isDuplicate=true&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate("LBL_DUPLICATE") . "\" class=\"fa fa-clone alignMiddle\"></i></a>&nbsp;";
             }
             if ($this->CheckPermissions("DELETE")) {
-                $Email_Theme_Array['edit'] .= "<a href=\"index.php?module=EMAILMaker&action=IndexAjax&mode=DeleteTheme&themeid=" . $templateid . "&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate("LBL_DELETE") . "\" class=\"fa fa-trash alignMiddle\"></i></a>";
+                $Email_Theme_Array['edit'] .= "<a class=\"btn text-secondary\" href=\"index.php?module=EMAILMaker&action=IndexAjax&mode=DeleteTheme&themeid=" . $templateid . "&return_module=EMAILMaker&return_view=List\"><i title=\"" . vtranslate("LBL_DELETE") . "\" class=\"fa fa-trash alignMiddle\"></i></a>";
             }
             $Return_Data [] = $Email_Theme_Array;
         }
@@ -2344,9 +2332,12 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         $control = 0;
         $Workflows = $this->GetWorkflowsList();
+        $layout = Vtiger_Viewer::getLayoutName();
+
         foreach ($Workflows as $name) {
-            $dest1 = "modules/com_vtiger_workflow/tasks/" . $name . ".inc";
-            $dest2 = "layouts/v7/modules/Settings/Workflows/Tasks/" . $name . ".tpl";
+            $dest1 = "modules/com_vtiger_workflow/tasks/$name.inc";
+            $dest2 = "layouts/$layout/modules/Settings/Workflows/Tasks/$name.tpl";
+
             if (file_exists($dest1) && file_exists($dest2)) {
                 $result1 = $this->db->pquery("SELECT * FROM com_vtiger_workflow_tasktypes WHERE tasktypename = ?", array($name));
                 if ($this->db->num_rows($result1) > 0) {
@@ -2435,334 +2426,6 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             $listViewRecordModels[] = $record;
         }
         return $listViewRecordModels;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function sendEmails($esentid, $request)
-    {
-
-        $def_charset = vglobal("default_charset");
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        $rootDirectory = vglobal('root_directory');
-        $adb = PearDatabase::getInstance();
-        $message = "";
-
-        $result0 = $adb->pquery("select from_email_field from vtiger_systems where server_type=?", array('email'));
-        $from_email_field = $adb->query_result($result0, 0, 'from_email_field');
-
-        $result = $adb->pquery("SELECT * FROM vtiger_emakertemplates_sent WHERE esentid = ?", array($esentid));
-        $from_name = decode_html(decode_html($adb->query_result($result, 0, "from_name")));
-        $from_address = $adb->query_result($result, 0, "from_email");
-        $type = $adb->query_result($result, 0, "type");
-        $load_subject = $adb->query_result($result, 0, "subject");
-        $load_body = $adb->query_result($result, 0, "body");
-        $total_emails = $adb->query_result($result, 0, "total_emails");
-        $pdf_template_ids = $adb->query_result($result, 0, "pdf_template_ids");
-        $pdf_language = $adb->query_result($result, 0, "pdf_language");
-        $ids_for_pdf = $adb->query_result($result, 0, "ids_for_pdf");
-        $attachments = $adb->query_result($result, 0, "attachments");
-        $att_documents = $adb->query_result($result, 0, "att_documents");
-        $pmodule = $adb->query_result($result, 0, "pmodule");
-        $language = $adb->query_result($result, 0, "language");
-        if ($language == "") {
-            $language = $currentUserModel->get('language');
-        }
-        $correct = "false";
-        $cc = $bcc = $cc_ids = $bcc_ids = "";
-        $all_emails_count = $sent_emails_count = 0;
-        $result2 = $adb->pquery("SELECT * FROM vtiger_emakertemplates_emails WHERE esentid = ? AND status = '0' AND deleted = '0'", array($esentid));
-        $not_emails_sent_num = $adb->num_rows($result2);
-
-        if ($not_emails_sent_num > 0) {
-            if ($type != "2") {
-                for ($i = 0; $i < $not_emails_sent_num; $i++) {
-
-                    $mailer = Emails_Mailer_Model::getInstance();
-                    $mailer->IsHTML(true);
-
-
-                    $Inserted_Emails = array();
-                    $semailid = $adb->query_result($result2, $i, "emailid");
-                    $mailer->reinitialize();
-
-                    $replyToEmail = $from_address;
-                    if (isset($from_email_field) && $from_email_field != '') {
-                        $from_address = $from_email_field;
-                    }
-
-                    $mailer->ConfigSenderInfo($from_address, $from_name, $replyToEmail);
-                    $pid = $adb->query_result($result2, $i, "pid");
-                    if ($pid != "" && $pid != "0") {
-                        $formodule = getSalesEntityType($pid);
-                    } else {
-                        $formodule = "";
-                    }
-                    $myid = $adb->query_result($result2, $i, "email");
-                    $emailadd = $adb->query_result($result2, $i, "email_address");
-
-                    $parent_id = $adb->query_result($result2, $i, "parent_id");
-
-                    if (strpos($myid, "|")) {
-                        list($mycrmid, $temp, $rmodule) = explode("|", $myid, 3);
-                    } else {
-                        list($mycrmid, $temp) = explode("@", $myid, 2);
-                        $rmodule = "";
-                    }
-
-                    if ($emailadd == "" && ($mycrmid == "email" || $mycrmid == "massemail")) {
-                        $emailadd = $temp;
-                    }
-
-                    if ($mycrmid == "email") {
-                        if (!empty($rmodule)) {
-                            $formodule = $rmodule;
-                        }
-                        $mycrmid = $rmodule = "";
-                    } elseif ($mycrmid == "massemail") {
-                        $mycrmid = $pid;
-                        $rmodule = $pmodule;
-                    } else {
-                        if ($rmodule == "") {
-                            if ($temp == "-1") {
-                                $rmodule = "Users";
-                            } else {
-                                $rmodule = getSalesEntityType($mycrmid);
-                            }
-                        }
-                    }
-
-                    if ($emailadd != "") {
-                        $emailadd = html_entity_decode($emailadd, ENT_QUOTES, $def_charset);
-                    }
-
-                    if ($formodule == "" && $mycrmid != "" && $rmodule != "") {
-                        $pid = $mycrmid;
-                        $formodule = $rmodule;
-                    }
-
-                    if (-1 === intval($temp) || 'Users' === $rmodule) {
-                        $ufocus = new Users();
-                        $ufocus->id = $mycrmid;
-                        $ufocus->retrieve_entity_info($mycrmid, 'Users');
-
-                        if (empty($emailadd)) {
-                            $emailadd = $ufocus->column_fields[$temp];
-                            $emailadd = html_entity_decode($emailadd, ENT_QUOTES, $def_charset);
-                        }
-
-                        $saved_toid = $emailadd;
-                    } elseif (!empty($mycrmid)) {
-                        if (empty($emailadd)) {
-                            $emailadd = $this->getEmailFieldToAdressat($mycrmid, $temp, $rmodule);
-                        }
-
-                        $saved_toid = $emailadd;
-                    } else {
-                        $saved_toid = $emailadd;
-                    }
-
-                    $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($formodule, $pid, $language, $mycrmid, $rmodule);
-                    $EMAILContentModel->setSubject($load_subject);
-                    $EMAILContentModel->setBody($load_body);
-                    $EMAILContentModel->getContent(true, !empty($formodule));
-
-                    $subject = $EMAILContentModel->getSubject();
-                    $body = $EMAILContentModel->getBody();
-
-                    $mailer->Body = $body;
-                    $mailer->AltBody = EMAILMaker_EMAILMaker_Model::getPlainBody($body);
-                    $mailer->Subject = $subject;
-
-                    $mailer->AddAddress($emailadd);
-
-                    $EC = array("cc", "bcc");
-                    $cc_ids = $adb->query_result($result2, $i, "cc_ids");
-                    $bcc_ids = $adb->query_result($result2, $i, "bcc_ids");
-
-                    foreach ($EC as $et) {
-
-                        $AddEMails[$et] = array();
-
-                        $ids = $adb->query_result($result2, $i, $et . "_ids");
-                        if ($ids != "") {
-                            $IDs = explode(",", $ids);
-                            foreach ($IDs as $email_crm_id) {
-                                list($emailcrmid, $te, $emodule) = explode("|", trim($email_crm_id), 3);
-
-                                if ($te != "") {
-                                    if (!in_array($te, $AddEMails[$et])) {
-                                        $AddEMails[$et][] = $te;
-                                    }
-
-                                    if ($emailcrmid != "email" && $emailcrmid != "massemail" && is_numeric($emailcrmid) && $emodule != "Users") {
-                                        $mycrmid = $emailcrmid;
-                                        if (!in_array($mycrmid, $Inserted_Emails)) {
-                                            $Inserted_Emails[] = $mycrmid;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    $ccs = $AddEMails["cc"];
-                    $bccs = $AddEMails["bcc"];
-
-                    $cc = implode(",", $ccs);
-                    $bcc = implode(",", $bccs);
-
-                    $focus = CRMEntity::getInstance("Emails");
-
-                    if ($parent_id != "" && $parent_id != "0") {
-                        $focus->retrieve_entity_info($parent_id, "Emails");
-                        $focus->id = $parent_id;
-                        $focus->mode = "edit";
-                    }
-
-                    $focus->column_fields["subject"] = $subject;
-                    $focus->column_fields["description"] = $body;
-                    $focus->column_fields["date_start"] = date(getNewDisplayDate());//This will be converted to db date format in save
-                    $focus->column_fields["time_start"] = date('H:i');
-
-                    if ($rmodule != "Users" && $mycrmid != "") {
-                        $focus->column_fields["parent_id"] = $mycrmid;
-                    }
-
-                    if ($parent_id == "" || $parent_id == "0") {
-                        $focus->filename = $focus->parent_id = $focus->parent_type = "";
-                        $focus->column_fields["assigned_user_id"] = $currentUserModel->id;
-                        $focus->column_fields["activitytype"] = "Emails";
-
-                        $focus->column_fields["saved_toid"] = $saved_toid;
-                        $focus->column_fields["ccmail"] = $cc;
-                        $focus->column_fields["bccmail"] = $bcc;
-                        $focus->save("Emails");
-
-                        if ($mycrmid != "" && $rmodule != "Users" && !in_array($mycrmid, $Inserted_Emails)) {
-                            $Inserted_Emails[] = $mycrmid;
-                        }
-
-                        if (count($Inserted_Emails) > 0) {
-                            foreach ($Inserted_Emails as $eid) {
-                                if ($eid != "email") {
-                                    $adb->pquery('insert into vtiger_seactivityrel values(?,?)', array($eid, $focus->id));
-                                }
-                            }
-                        }
-                        $parent_id = $focus->id;
-                    } else {
-                        $focus->column_fields["saved_toid"] = $saved_toid;
-                        $focus->column_fields["ccmail"] = $cc;
-                        $focus->column_fields["bccmail"] = $bcc;
-                        $focus->save("Emails");
-                    }
-
-                    if ($formodule != "" && $pid != "") {
-                        $adb->pquery('insert into vtiger_crmentityrel (crmid, module, relcrmid, relmodule) values(?,?,?,?)', array($pid, $formodule, $focus->id, 'Emails'));
-                    }
-                    if ($pdf_template_ids != "") {
-                        if ($ids_for_pdf != "") {
-                            $IDs_for_pdf = explode(";", $ids_for_pdf);
-                            if (count($IDs_for_pdf) == 1) {
-                                $IDs_for_pdf = $IDs_for_pdf[0];
-                            }
-                        } else {
-                            $IDs_for_pdf = $pid;
-                        }
-                        $this->savePDFIntoEmail($request, $focus, $IDs_for_pdf, $pdf_template_ids, $pdf_language, $pmodule);
-                    }
-
-                    $mailer = $this->addAllAttachments($mailer, $focus->id);
-                    /*
-                                $pos = strpos($description, '$logo$');
-                                if ($pos !== false){
-                                    $description =str_replace('$logo$','<img src="cid:logo" />',$description);
-                                    $logo = true;
-                                } */
-
-                    if ($att_documents != "") {
-                        $attachments = $this->getAttachmentDetails($att_documents);
-                        if (is_array($attachments)) {
-                            foreach ($attachments as $attachment) {
-                                $fileNameWithPath = $rootDirectory . $attachment['path'] . $attachment['fileid'] . "_" . $attachment['attachment'];
-                                if (is_file($fileNameWithPath)) {
-                                    $mailer->AddAttachment($fileNameWithPath, $attachment['name']);
-                                    $result_att = $adb->pquery("SELECT * FROM vtiger_seattachmentsrel WHERE crmid = ? AND attachmentsid = ?", array($parent_id, $attachment['crmid']));
-                                    $num_rows_att = $adb->num_rows($result_att);
-
-                                    if ($num_rows_att == 0) {
-                                        $adb->pquery("INSERT INTO vtiger_seattachmentsrel (crmid, attachmentsid) VALUES(?, ?)", array($parent_id, $attachment['crmid']));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    /*
-                                    if ($logo){
-                                            $mailer->AddEmbeddedImage(vimage_path('logo_mail.jpg'), 'logo', 'logo.jpg', 'base64', 'image/jpg');
-                                    }
-                    */
-                    $Email_Images = $EMAILContentModel->getEmailImages();
-                    if (count($Email_Images) > 0) {
-                        foreach ($Email_Images as $cid => $cdata) {
-                            $mailer->AddEmbeddedImage($cdata["path"], $cid, $cdata["name"]);
-                        }
-                    }
-
-                    if (!empty($ccs)) {
-                        foreach ($ccs as $cc) {
-                            $mailer->AddCC($cc);
-                        }
-                    }
-                    if (!empty($bccs)) {
-                        foreach ($bccs as $bcc) {
-                            $mailer->AddBCC($bcc);
-                        }
-                    }
-                    if ($temp != "-1") {
-                        if ($mycrmid != "") {
-                            $mailer->Body .= $this->getTrackImageDetails($mycrmid, $parent_id);
-                        }
-                    }
-                    $status = $mailer->Send(true);
-                    if (!$status) {
-                        $mail_status = $mailer->getError();
-                    }
-                    $sql_u = "UPDATE vtiger_emakertemplates_emails SET email_send_date = now(), status = '1', parent_id = ?";
-                    if (!$status) {
-                        $sql_u .= ", error = '" . $mail_status . "'";
-                    }
-                    $sql_u .= " WHERE emailid = ?";
-                    $adb->pquery($sql_u, array($parent_id, $semailid));
-
-                    $message = vtranslate('LBL_EMAIL_INFO', 'EMAILMaker') . " ";
-                    $message .= $emailadd;
-                    if ($status) {
-                        $correct = "true";
-                        $sql_u2 = "UPDATE vtiger_emaildetails SET email_flag = 'SENT' WHERE emailid = ?";
-                        $adb->pquery($sql_u2, array($parent_id));
-                        $sql_u2 = "UPDATE vtiger_emakertemplates_sent SET total_sent_emails = total_sent_emails + 1 WHERE esentid = ?";
-                        $adb->pquery($sql_u2, array($esentid));
-                        $message .= " " . vtranslate('LBL_EMAIL_INFO_YES', 'EMAILMaker');
-                    } else {
-                        $message .= " " . vtranslate('LBL_EMAIL_INFO_NO', 'EMAILMaker');
-                        if ($mail_status != "") {
-                            $message .= " (" . $mail_status . ")";
-                        } else {
-                            $sql_u3 = "UPDATE vtiger_emakertemplates_emails SET error = ? WHERE emailid = ?";
-                            $adb->pquery($sql_u3, array($message, $semailid));
-                        }
-                    }
-
-                    if (class_exists(EMAILMaker_AfterSend_Helper)) {
-                        EMAILMaker_AfterSend_Helper::runAfterSend($parent_id, $status, $mailer);
-                    }
-                }
-            }
-        }
     }
 
     public function getEmailFieldToAdressat($mycrmid, $temp, $pmodule = "")
@@ -2926,19 +2589,6 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $moduleStrings = Vtiger_Language_Handler::getModuleStringsFromFile($currentLanguage, $module);
 
         return $moduleStrings['languageStrings'];
-    }
-
-    /**
-     * @param string $content
-     * @return string
-     */
-    public static function getPlainBody($content)
-    {
-        $plainBody = decode_html($content);
-        $plainBody = preg_replace(array("/<p>/i", "/<br>/i", "/<br \/>/i"), array("\n", "\n", "\n"), $plainBody);
-        $plainBody = strip_tags($plainBody);
-
-        return Emails_Mailer_Model::convertToAscii($plainBody);
     }
 
     /**

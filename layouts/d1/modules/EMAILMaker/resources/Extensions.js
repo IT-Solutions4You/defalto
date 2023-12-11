@@ -7,60 +7,46 @@
  ********************************************************************************/
 Vtiger_Index_Js("EMAILMaker_Extensions_Js", {}, {
     registerActions: function () {
-        var aDeferred = jQuery.Deferred();
+        let aDeferred = jQuery.Deferred();
 
         jQuery('#install_ITS4YouStyles_btn').click(function (e) {
             window.location.href = jQuery(e.currentTarget).data('url');
         });
         jQuery('#install_Workflow_btn').click(function (e) {
-            var extname = jQuery(e.currentTarget).data('extname');
-            var progressIndicatorElement = jQuery.progressIndicator({
-                'position': 'html',
-                'blockInfo': {
-                    'enabled': true
-                }
-            });
-
-            var params = {
+            let extname = jQuery(e.currentTarget).data('extname');
+            let params = {
                 'module': 'EMAILMaker',
                 'action': 'IndexAjax',
                 'mode': 'installExtension',
                 'extname': extname
             };
 
-            app.request.post({'data': params}).then(
-                function (err, response) {
-                    if (err === null) {
-                        var result = response['success'];
-                        progressIndicatorElement.progressIndicator({'mode': 'hide'});
-                        if (result == true) {
-                            jQuery(e.currentTarget).hide();
-                            jQuery('#install_' + extname + '_info').html(response['message']);
-                            jQuery('#install_' + extname + '_info').removeClass('hide');
-                            var params = {
-                                text: response['message'],
-                                type: 'info'
-                            };
-                            Vtiger_Helper_Js.showMessage(params);
+            app.request.post({'data': params}).then(function (error, response) {
+                if (!error) {
+                    if (response['success']) {
+                        jQuery(e.currentTarget).hide();
+                        jQuery('#install_' + extname + '_info').html(response['message']);
+                        jQuery('#install_' + extname + '_info').removeClass('hide');
+
+                        app.helper.showSuccessNotification({message: response['message']});
+                    } else {
+                        let isModal = jQuery(response['message']).find('div');
+
+                        if (isModal.length > 0) {
+                            app.helper.showModal(response['message']);
                         } else {
-                            var ismodal = jQuery(response['message']).find('div');
-                            if (ismodal.length > 0) {
-                                app.showModalWindow(response['message']);
-                            } else {
-                                var params = {
-                                    text: response['message'],
-                                    type: 'error'
-                                };
-                                Vtiger_Helper_Js.showMessage(params);
-                            }
+                            app.helper.showErrorNotification({message: response['message']})
                         }
                     }
-                });
+                }
+            });
         });
+
         jQuery('#showUnsubscribeEmailInstructions').click(function (e) {
             jQuery('#showUnsubscribeEmailInstructions').addClass('hide');
             jQuery('#UnsubscribeEmailInstructionsDiv').removeClass('hide');
         });
+
         jQuery('#hideUnsubscribeEmailInstructions').click(function (e) {
             jQuery('#UnsubscribeEmailInstructionsDiv').addClass('hide');
             jQuery('#showUnsubscribeEmailInstructions').removeClass('hide');
@@ -71,12 +57,12 @@ Vtiger_Index_Js("EMAILMaker_Extensions_Js", {}, {
         this.registerActions();
     },
     showMessage: function (customParams) {
-        var params = {};
+        let params = {};
         params.animation = "show";
         params.type = 'info';
         params.title = app.vtranslate('JS_MESSAGE');
         if (typeof customParams != 'undefined') {
-            var params = jQuery.extend(params, customParams);
+            let params = jQuery.extend(params, customParams);
         }
         Vtiger_Helper_Js.showPnotify(params);
     }

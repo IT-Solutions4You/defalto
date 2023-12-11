@@ -14,13 +14,9 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
     {
     }
 
-    protected $isInstalled;
-
     public function __construct()
     {
         parent::__construct();
-        $class = explode('_', get_class($this));
-        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('GetEMAILActions17'));
     }
 
     public function process(Vtiger_Request $request)
@@ -64,10 +60,6 @@ class EMAILMaker_GetEMAILActions_View extends Vtiger_BasicAjax_View
                 $template_languages[$temp_row["prefix"]] = $temp_row["label"];
             }
             $_SESSION["template_languages"] = $template_languages;
-        }
-
-        if (!$this->isInstalled) {
-            die("");
         }
 
         $viewer->assign('TEMPLATE_LANGUAGES', $_SESSION["template_languages"]);

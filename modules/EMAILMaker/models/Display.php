@@ -705,9 +705,9 @@ class EMAILMaker_Display_Model extends Vtiger_Base_Model
                 if (count($matches) == 0) {
                     $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
                     if ($fieldModel) {
-                        $fieldLabel = vtranslate($fieldModel->get('label'), $moduleName);
+                        $fieldLabel = '<b>' . vtranslate($fieldModel->get('label'), $moduleName) . '</b>';
                     } else {
-                        $fieldLabel = $fieldName;
+                        $fieldLabel = '<b>' . $fieldName . '</b>';
                     }
                 } else {
                     list($full, $referenceField, $referenceModule, $fieldName) = $matches;

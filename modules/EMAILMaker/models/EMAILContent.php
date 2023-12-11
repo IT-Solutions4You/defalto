@@ -41,37 +41,23 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $org_colsOLD = array();
     private static $relBlockModules = array();
     public $EMAILMaker = false;
-    protected $isInstalled;
 
     public function __construct()
     {
-        $i = "site_URL";
-        $salt = vglobal($i);
-        $d = "default_charset";
-        $dc = vglobal($d);
-
         if (!defined('LOGO_PATH')) {
             define("LOGO_PATH", '/test/logo/');
         }
 
         self::$db = PearDatabase::getInstance();
-        self::$def_charset = $dc;
+        self::$def_charset = vglobal('default_charset');
         $mod_strings_array = Vtiger_Language_Handler::getModuleStringsFromFile(self::$language, self::$module);
         self::$mod_strings = $mod_strings_array['languageStrings'];
 
-        $class = explode('_', get_class($this));
-        $this->isInstalled = (Vtiger_Module_Model::getInstance($class[0])->getLicensePermissions($class[1]) === date('EMAILContent14'));
-        $this->EMAILMaker = new EmailMaker_EmailMaker_Model();
-
-        if ($this->isInstalled) {
-            self::$type = "professional";
-        } else {
-            self::$type = "invalid";
-        }
-
+        $this->EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $this->getIgnoredPicklistValues();
+
         self::$rowbreak = "<rowbreak />";
-        self::$site_url = trim($salt, "/");
+        self::$site_url = trim(vglobal('site_URL'), "/");
         self::$inventory_table_array = $this->getInventoryTableArray();
         self::$inventory_id_array = $this->getInventoryIdArray();
         self::$is_inventory_module[self::$module] = $this->isInventoryModule(self::$module);
@@ -260,18 +246,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
      */
     public function getContent($convert_recipient = true, $convert_source = true, $fixImg = false)
     {
-        if ('Calendar' === self::$module) {
-            self::$rep = array();
-        }
-
-        if ('invalid' === self::$type) {
-            $this->setSubject('');
-            $this->setBody('');
-            $this->setPreview('');
-
-            return;
-        }
-
         self::$content = self::$subject . self::$section_sep;
         self::$content .= self::$body;
 
@@ -479,19 +453,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         $structureValues = $this->getRecordStructureValues($module, $record);
 
-        if ('Calendar' === $module) {
-            $this->updateStructureValues($structureValues, 'Events', $record);
-        }
-
         foreach ($structureValues as $blockFields) {
             foreach ($blockFields as $fieldModel) {
                 $fieldName = $fieldModel->get('name');
                 $fieldLabel = $fieldModel->get('label');
                 $fieldDisplayValue = '';
-
-                if ($recordModel && 'Calendar' === $module) {
-                    $this->updateCalendarField($fieldModel, $recordModel);
-                }
 
                 if (!empty($focus->id)) {
                     $fieldDisplayValue = $this->getFieldDisplayValue($fieldModel, $inventoryCurrency);
@@ -520,23 +486,6 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         }
 
         return true;
-    }
-
-    /**
-     * @param Vtiger_Field_Model $field
-     * @param Vtiger_Record_Model $record
-     * @throws Exception
-     */
-    public function updateCalendarField($field, $record)
-    {
-        switch ($field->get('name')) {
-            case 'date_start':
-                $field->set('fieldvalue', $record->get('date_start') . ' ' . $record->get('time_start'));
-                break;
-            case 'due_date':
-                $field->set('fieldvalue', $record->get('due_date') . ' ' . $record->get('time_end'));
-                break;
-        }
     }
 
     /**
@@ -592,7 +541,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $fieldValue = $field->get('fieldvalue');
         $fieldDataType = $field->getFieldDataType();
 
-        switch($fieldDataType) {
+        switch ($fieldDataType) {
             case 'reference':
             case 'owner':
             case 'email':
@@ -620,7 +569,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $fieldDisplayValue = decode_html($field->getDisplayValue($fieldValue));
                 break;
             default:
-                $fieldDisplayValue = $field->getDisplayValue($fieldValue);
+                if (self::$focus && !empty(self::$focus->id)) {
+                    $fieldDisplayValue = $field->getDisplayValue($fieldValue, self::$focus->id);
+                } else {
+                    $fieldDisplayValue = $field->getDisplayValue($fieldValue);
+                }
                 break;
         }
 
@@ -639,19 +592,13 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private function convertRelatedModule()
     {
         $field_inf = "_fieldinfo_cache";
-
         $fieldModRel = $this->GetFieldModuleRel();
         $module_tabid = getTabId(self::$module);
         $Query_Parr = array('3', '64', $module_tabid);
-        $sql = "SELECT fieldid, fieldname, uitype, columnname FROM vtiger_field WHERE (displaytype != ? OR fieldid = ?) AND tabid";
-        if (self::$module == "Calendar") {
-            $Query_Parr[] = getTabId("Events");
-            $sql .= " IN ( ?, ? ) GROUP BY fieldname";
-        } else {
-            $sql .= " = ?";
-        }
+        $sql = 'SELECT fieldid, fieldname, uitype, columnname FROM vtiger_field WHERE (displaytype != ? OR fieldid = ?) AND tabid = ?';
         $result = self::$db->pquery($sql, $Query_Parr);
         $num_rows = self::$db->num_rows($result);
+
         if ($num_rows > 0) {
             while ($row = self::$db->fetch_array($result)) {
                 $columnname = $row["columnname"];
