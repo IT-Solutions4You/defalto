@@ -262,16 +262,16 @@ class VTEMAILMakerMailTask extends VTTask
                 $entityCache->cache[$entityId] = $entity;
             }
 
-            $et = new VTSimpleTemplate($this->recepient);
-            $toEmail = $et->render($entityCache, $entityId);
-
             $toEmails = $this->getRecipientEmails($entityCache, $entityId, $this->recepient);
 
-            $ecct = new VTSimpleTemplate($this->emailcc);
-            $ccEmail = $ecct->render($entityCache, $entityId);
+            $toEmail = (new VTSimpleTemplate($this->recepient))->render($entityCache, $entityId);
+            $toEmail = $this->retrieveSpecialOptions($entity, $toEmail);
 
-            $ebcct = new VTSimpleTemplate($this->emailbcc);
-            $bccEmail = $ebcct->render($entityCache, $entityId);
+            $ccEmail = (new VTSimpleTemplate($this->emailcc))->render($entityCache, $entityId);
+            $ccEmail = $this->retrieveSpecialOptions($entity, $ccEmail);
+
+            $bccEmail = (new VTSimpleTemplate($this->emailbcc))->render($entityCache, $entityId);
+            $bccEmail = $this->retrieveSpecialOptions($entity, $bccEmail);
 
             if (strlen(trim($toEmail, " \t\n,")) == 0 && strlen(trim($ccEmail, " \t\n,")) == 0 && strlen(trim($bccEmail, " \t\n,")) == 0) {
                 $utils->revertUser();
@@ -332,20 +332,20 @@ class VTEMAILMakerMailTask extends VTTask
         $this->cache = $entityCache;
         $this->parent = $this->cache->forId($entityId);
 
-        $Recipients = array();
+        $recipients = array();
+        $emails = explode(',', $to_emails);
 
-        $Emails = explode(",", $to_emails);
+        foreach ($emails as $email) {
+            if (!empty($email)) {
+                $recipientsData = $this->parseEmail($email, $entityCache, $entityId);
 
-        foreach ($Emails as $email) {
-
-            if ($email != "") {
-                $Recipients_data = $this->parseEmail($email, $entityCache, $entityId);
-                if ($Recipients_data) {
-                    $Recipients = array_merge($Recipients_data, $Recipients);
+                if ($recipientsData) {
+                    $recipients = array_merge($recipientsData, $recipients);
                 }
             }
         }
-        return $Recipients;
+
+        return $recipients;
     }
 
     private function parseEmail($to_email, $entityCache, $entityId)
@@ -368,6 +368,10 @@ class VTEMAILMakerMailTask extends VTTask
                         $to_email_module = $this->parent->getModuleName();
                         $to_email = $data[$filename];
                     }
+                } elseif('$parent_role_emails' === $to_email) {
+                    list($userModuleId, $userRecordId) = explode('x', $data['assigned_user_id']);
+
+                    return $this->getParentEmails($userRecordId);
                 } else {
                     $et = new VTSimpleTemplate($to_email);
 
@@ -531,5 +535,56 @@ class VTEMAILMakerMailTask extends VTTask
         }
 
         return $records;
+    }
+
+    public function getSpecialOptions()
+    {
+        return [
+            ',$parent_role_emails' => vtranslate('Parent Role Emails', 'EMAILMaker'),
+        ];
+    }
+
+    public function retrieveSpecialOptions($entity, $emails)
+    {
+        if (strpos($emails, 'parent_role_emails')) {
+            list($moduleId, $userId) = explode('x', $entity->get('assigned_user_id'));
+
+            $parentEmails = $this->getParentEmails($userId);
+            $parentEmailsAddresses = [];
+
+            foreach ($parentEmails as $parentEmail) {
+                $parentEmailsAddresses[] = $parentEmail['email'];
+            }
+
+            $emails = str_replace('$parent_role_emails', implode(',', $parentEmailsAddresses), $emails);
+        }
+
+        return $emails;
+    }
+
+    public array $userEmails = [];
+
+    public function getParentEmails($userId)
+    {
+        if (!empty($this->userEmails[$userId])) {
+            return $this->userEmails[$userId];
+        }
+
+        $userRecordModel = Users_Record_Model::getInstanceById($userId, 'Users');
+        $roleId = $userRecordModel->get('roleid');
+        $parentRoles = getParentRole($roleId);
+        $parentRoleId = $parentRoles[max(array_keys($parentRoles))];
+        $parentRoleUsers = getRoleUsers($parentRoleId);
+        $this->userEmails[$userId] = [];
+
+        foreach ($parentRoleUsers as $parentRoleUserId => $parentRoleUserName) {
+            $this->userEmails[$userId][] = [
+                'id' => $parentRoleUserId,
+                'module' => 'Users',
+                'email' => getUserEmail($parentRoleUserId),
+            ];
+        }
+
+        return $this->userEmails[$userId];
     }
 }
