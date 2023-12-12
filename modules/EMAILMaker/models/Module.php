@@ -451,8 +451,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function getEmailRelatedModules()
     {
-        $userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
         $relatedModules = vtws_listtypes(array('email'), Users_Record_Model::getCurrentUserModel());
         $relatedModules = $relatedModules['types'];
 
@@ -461,13 +460,16 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
                 unset($relatedModules[$key]);
             }
         }
+
         foreach ($relatedModules as $moduleName) {
             $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-            if ($userPrivModel->isAdminUser() || $userPrivModel->hasGlobalReadPermission() || $userPrivModel->hasModulePermission($moduleModel->getId())) {
+            if ($userPrivilegesModel->isAdminUser() || $userPrivilegesModel->hasGlobalReadPermission() || $userPrivilegesModel->hasModulePermission($moduleModel->getId())) {
                 $emailRelatedModules[] = $moduleName;
             }
         }
+
         $emailRelatedModules[] = 'Users';
+
         return $emailRelatedModules;
     }
 

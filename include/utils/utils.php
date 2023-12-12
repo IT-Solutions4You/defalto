@@ -1977,19 +1977,9 @@ function getMinimumCronFrequency() {
 }
 
 //Function returns Email related Modules
-function getEmailRelatedModules() {
-	global $current_user;
-	$handler = vtws_getModuleHandlerFromName('Emails',$current_user);
-	$meta = $handler->getMeta();
-	$moduleFields = $meta->getModuleFields();
-	$fieldModel = $moduleFields['parent_id'];
-	$relatedModules = $fieldModel->getReferenceList();
-	foreach($relatedModules as $key=>$value) {
-		if($value == 'Users') {
-			unset($relatedModules[$key]);
-	}
-}
-	return $relatedModules;
+function getEmailRelatedModules()
+{
+    return (new EMAILMaker_Module_Model())->getEmailRelatedModules();
 }
 
 //Get the User selected NumberOfCurrencyDecimals
@@ -2432,58 +2422,59 @@ function sendMailToUserOnDuplicationPrevention($moduleName, $fieldData, $mailBod
 		}
 	}
 
-	$mailer = Emails_Mailer_Model::getInstance();
-	$mailer->IsHTML(true);
+    $userName = $userModel->getName();
 
-	$emailRecordModel = Emails_Record_Model::getCleanInstance('Emails');
-	$fromEmail = $emailRecordModel->getFromEmailAddress();
-	$replyTo = $emailRecordModel->getReplyToEmail();
-	$userName = $userModel->getName();
-
-	$mailer->ConfigSenderInfo($fromEmail, $userName, $replyTo);
+	$mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+    $mailer->retrieveSMTPVtiger();
+	$mailer->isHTML(true);
+    $mailer->setFrom($mailer::getFromEmailAddress(), $userName);
+    $mailer->addReplyTo($mailer::getReplyToEmail(), $userName);
 	$mailer->Subject = vtranslate('LBL_VTIGER_NOTIFICATION');
 	$body = $mailBody;
-
-	$body .= '<br>';
+    $body .= '<br>';
 	$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 	$fieldModels = $moduleModel->getFields();
-	foreach ($fieldModels as $fieldName => $fieldModel) {
-		if ($fieldModel->isUniqueField() && $fieldModel->isViewable()) {
-			$fieldValue = $fieldData[$fieldName];
 
-			switch($fieldModel->getFieldDataType()) {
-				case 'reference'		:	list($refModuleId, $refRecordId) = vtws_getIdComponents($fieldValue);
-											$fieldValue = Vtiger_Functions::getCRMRecordLabel($refRecordId);
-											break;
-				case 'date'				:
-				case 'datetime'			:
-				case 'currency'			:
-				case 'currencyList'		:
-				case 'documentsFolder'	:
-				case 'multipicklist'	:	if ($fieldValue) {
-												$fieldValue = $fieldModel->getDisplayValue($fieldValue);
-											}
-											break;
-			}
+    foreach ($fieldModels as $fieldName => $fieldModel) {
+        if ($fieldModel->isUniqueField() && $fieldModel->isViewable()) {
+            $fieldValue = $fieldData[$fieldName];
 
-			$fieldLabel = $fieldModel->get('label');
-			$body .= '<br>'.vtranslate($fieldLabel, $moduleName)." : $fieldValue<br>";
-		}
-	}
-	$body .= '<br>';
+            switch ($fieldModel->getFieldDataType()) {
+                case 'reference'        :
+                    list($refModuleId, $refRecordId) = vtws_getIdComponents($fieldValue);
+                    $fieldValue = Vtiger_Functions::getCRMRecordLabel($refRecordId);
+                    break;
+                case 'date'                :
+                case 'datetime'            :
+                case 'currency'            :
+                case 'currencyList'        :
+                case 'documentsFolder'    :
+                case 'multipicklist'    :
+                    if ($fieldValue) {
+                        $fieldValue = $fieldModel->getDisplayValue($fieldValue);
+                    }
+                    break;
+            }
 
-	if ($userModel->isAdminUser()) {
-		$siteURL = vglobal('site_URL');
-		$url = "$siteURL/index.php?parent=Settings&module=LayoutEditor&sourceModule=$moduleName&mode=showDuplicationHandling";
-		$here = '<a href="'.$url.'" target="_blank">'.vtranslate('LBL_CLICK_HERE', $moduleName).'</a>';
-		$body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_ADMIN', $moduleName, $here);
-	} else {
-		$body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN', $moduleName);
-	}
+            $fieldLabel = $fieldModel->get('label');
+            $body .= '<br>' . vtranslate($fieldLabel, $moduleName) . " : $fieldValue<br>";
+        }
+    }
 
-	$mailer->Body = $body;
-	$mailer->AddAddress($userModel->get('email1'), $userName);
-	$mailer->Send(false);
+    $body .= '<br>';
+
+    if ($userModel->isAdminUser()) {
+        $siteURL = vglobal('site_URL');
+        $url = "$siteURL/index.php?parent=Settings&module=LayoutEditor&sourceModule=$moduleName&mode=showDuplicationHandling";
+        $here = '<a href="' . $url . '" target="_blank">' . vtranslate('LBL_CLICK_HERE', $moduleName) . '</a>';
+        $body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_ADMIN', $moduleName, $here);
+    } else {
+        $body .= vtranslate('LBL_DUPLICATION_FAILURE_FOR_NON_ADMIN', $moduleName);
+    }
+
+    $mailer->Body = $body;
+	$mailer->addAddress($userModel->get('email1'), $userName);
+	$mailer->send();
 }
 
 function getDuplicatesPreventionMessage($moduleName, $duplicateRecordsList) {
