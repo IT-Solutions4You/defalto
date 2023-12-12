@@ -79,6 +79,9 @@
                             <select class="inputElement task-fields select2 form-select" data-placeholder={vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}>
                                 <option></option>
                                 {$EMAIL_FIELD_OPTION}
+                                <optgroup label="{vtranslate('LBL_SPECIAL_OPTIONS', $QUALIFIED_MODULE)}">
+                                    {html_options options=$TASK_OBJECT->getSpecialOptions()}
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -91,6 +94,9 @@
                             <select class="inputElement task-fields select2 form-select" data-placeholder="{vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}">
                                 <option></option>
                                 {$EMAIL_FIELD_OPTION}
+                                <optgroup label="{vtranslate('LBL_SPECIAL_OPTIONS', $QUALIFIED_MODULE)}">
+                                    {html_options options=$TASK_OBJECT->getSpecialOptions()}
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -103,6 +109,9 @@
                             <select class="inputElement task-fields select2 form-select" data-placeholder='{vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}'>
                                 <option></option>
                                 {$EMAIL_FIELD_OPTION}
+                                <optgroup label="{vtranslate('LBL_SPECIAL_OPTIONS', $QUALIFIED_MODULE)}">
+                                    {html_options options=$TASK_OBJECT->getSpecialOptions()}
+                                </optgroup>
                             </select>
                         </div>
                     </div>
