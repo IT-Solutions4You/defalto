@@ -14,7 +14,7 @@ Settings_Vtiger_Index_Js("Settings_ITS4YouEmails_Index_Js", {}, {
     },
     registerModuleSearch: function () {
         const container = $('.emailsIntegration'),
-            modules = container.find('td');
+            modules = container.find('.updateModuleTd');
 
         $.each(modules, function () {
             $(this).attr('module-label', $(this).text().trim().toLowerCase());

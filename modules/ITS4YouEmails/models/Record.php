@@ -457,10 +457,14 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     {
         list($record, $email, $module) = explode('|', $emailId);
 
+        $module = trim(decode_html($module));
+
         if ($record && is_numeric($record)) {
             $names = getEntityName($module, [$record]);
 
             return decode_html($names[$record]);
+        } elseif ('email' === $record && $module) {
+            return $module;
         }
 
         return '';
@@ -835,7 +839,9 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
                 $folderName = mb_convert_encoding($folderName, 'UTF7-IMAP', 'UTF-8');
             }
 
-            imap_append($connector->mBox, $connector->mBoxUrl . $folderName, $message, "\\Seen");
+            if ($connector->mBox) {
+                imap_append($connector->mBox, $connector->mBoxUrl . $folderName, $message, "\\Seen");
+            }
         }
     }
 

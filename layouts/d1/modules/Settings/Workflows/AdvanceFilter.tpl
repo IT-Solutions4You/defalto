@@ -15,7 +15,7 @@
     {if empty($ANY_CONDITION_CRITERIA) }
         {assign var=ANY_CONDITION_CRITERIA value=array()}
     {/if}
-    <div class="filterContainer border-top border-bottom bg-body container-fluid">
+    <div class="filterContainer bg-body">
         <input type="hidden" name="date_filters" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($DATE_FILTERS))}'/>
         <input type=hidden name="advanceFilterOpsByFieldType" data-value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($ADVANCED_FILTER_OPTIONS_BY_TYPE))}'/>
         {foreach key=ADVANCE_FILTER_OPTION_KEY item=ADVANCE_FILTER_OPTION from=$ADVANCED_FILTER_OPTIONS}

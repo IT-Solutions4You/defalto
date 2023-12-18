@@ -86,9 +86,9 @@ class MailManager_Connector_Connector {
 		 */
 
 		if($serverName == 'gmail') {
-			$this->mBox = @imap_open($boxUrl, $username, $password);
+			$this->mBox = imap_open($boxUrl, $username, $password);
 		} else {
-			$this->mBox = @imap_open($boxUrl, $username, $password, NULL, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
+			$this->mBox = imap_open($boxUrl, $username, $password, NULL, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
 		}
 
 		$this->isError();

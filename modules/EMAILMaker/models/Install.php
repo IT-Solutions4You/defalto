@@ -36,6 +36,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
      * @var string
      */
     protected string $moduleName = 'EMAILMaker';
+    protected string $parentName = 'Tools';
 
     /**
      * @return void
@@ -69,8 +70,14 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
      */
     public function addCustomLinks(): void
     {
+        $this->insertProductBlocks();
+        $this->insertEmailTemplates();
+
         $this->retrieveCustomLinks();
         $this->updateCustomLinks();
+        $this->updateWorkflows();
+
+        Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
     }
 
     /**
@@ -150,16 +157,12 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
     {
         switch ($this->eventType) {
             case 'module.postinstall':
-                $this->insertProductBlocks();
                 $this->updateCron();
-                $this->updateWorkflows();
                 $this->addCustomLinks();
                 break;
             case 'module.enabled':
             case 'module.postupdate':
-                $this->insertProductBlocks();
                 $this->updateProfilePermissions();
-                $this->updateWorkflows();
                 $this->addCustomLinks();
                 break;
             case 'module.preupdate':
@@ -193,7 +196,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             ->createColumn('sharingtype', 'char(7) NOT NULL DEFAULT \'public\'')
             ->createColumn('category', 'varchar(255) DEFAULT NULL')
             ->createColumn('is_listview', 'tinyint(1) NOT NULL DEFAULT \'0\'')
-            ->createColumn('is_theme', 'int(1) DEFAULT NULL')
+            ->createColumn('is_theme', 'int(1) DEFAULT \'0\'')
             ->createKey('KEY IF NOT EXISTS `emakertemplates_foldernamd_templatename_subject_idx` (`foldername`,`templatename`,`subject`)')
             ->createKey('KEY IF NOT EXISTS `deleted` (`deleted`)')
             ->createKey('KEY IF NOT EXISTS `is_listview` (`is_listview`)')
@@ -460,13 +463,10 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             ->createKey('KEY IF NOT EXISTS `displayed` (`displayed`)');
     }
 
-    /**
-     * @return void
-     */
-    public function retrieveCustomLinks(): void
+    public function getTemplateModules(): array
     {
-        $modules = getEmailRelatedModules();
         $emptyModuleName = false;
+        $modules = [];
         $result = $this->db->pquery('SELECT module FROM vtiger_emakertemplates WHERE deleted=? GROUP BY module', array('0'));
 
         while ($row = $this->db->fetchByAssoc($result)) {
@@ -483,9 +483,28 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             foreach ($entityModules as $entityModule) {
                 $module = $entityModule->getName();
 
-                if (!in_array($module, $modules) && $entityModule->isEntityModule() && $entityModule->isActive()) {
+                if ($entityModule->isEntityModule() && $entityModule->isActive()) {
                     $modules[] = $module;
                 }
+            }
+        }
+
+        return $modules;
+    }
+
+    /**
+     * @return void
+     */
+    public function retrieveCustomLinks(): void
+    {
+        $entityModules = Vtiger_Module_Model::getEntityModules();
+        $modules = [];
+
+        foreach ($entityModules as $entityModule) {
+            $module = $entityModule->getName();
+
+            if ($entityModule->isEntityModule() && $entityModule->isActive()) {
+                $modules[] = $module;
             }
         }
 
@@ -532,6 +551,53 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'DELETE FROM vtiger_profile2standardpermissions WHERE tabid = (SELECT tabid FROM vtiger_tab WHERE name = ?)',
                 array('EMAILMaker')
             );
+        }
+    }
+
+    public function insertEmailTemplates()
+    {
+        $templates = [
+            [
+                'templatename' => 'Reminder',
+                'module' => 'Appointments',
+                'description' => 'Reminder',
+                'subject' => 'Reminder',
+                'body' => 'Reminder',
+                'owner' => Users::getActiveAdminId(),
+                'sharingtype' => 'private',
+                'category' => 'system',
+                'is_listview' => 0,
+            ],
+            [
+                'templatename' => 'Invitation',
+                'module' => 'Appointments',
+                'description' => 'Invitation',
+                'subject' => 'Invitation',
+                'body' => 'Invitation',
+                'owner' => Users::getActiveAdminId(),
+                'sharingtype' => 'private',
+                'category' => 'system',
+                'is_listview' => 0,
+            ],
+            [
+                'templatename' => 'Customer Login Details',
+                'module' => 'Contacts',
+                'description' => 'Customer Portal Login Details',
+                'subject' => 'Customer Portal Login Details',
+                'body' => file_get_contents('modules/EMAILMaker/resources/templates/CustomerLoginDetails.html'),
+                'owner' => Users::getActiveAdminId(),
+                'sharingtype' => 'private',
+                'category' => 'system',
+                'is_listview' => 0,
+            ],
+        ];
+
+        foreach ($templates as $template) {
+            $result = $this->db->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE subject=? AND deleted=? AND module=?', [$template['subject'], '0', $template['module']]);
+
+            if (!$this->db->num_rows($result)) {
+                EMAILMaker_Record_Model::saveTemplate($template, 0);
+            }
         }
     }
 }

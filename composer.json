@@ -4,6 +4,7 @@
     "ext-curl": "*",
     "ext-gd": "*",
     "ext-iconv": "*",
+    "ext-imap": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",

@@ -155,7 +155,8 @@
                                     });
                                     {/literal}
                                     {/if}{literal}
-                                    CKEDITOR.replace('body', {height: '65vh'});
+                                    let ckeditor = new Vtiger_CkEditor_Js();
+                                    ckeditor.loadCkEditor($('#body'), {'height' : '65vh'});
                                 }){/literal}
                             </script>
                         </div>

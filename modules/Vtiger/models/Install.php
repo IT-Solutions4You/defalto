@@ -69,7 +69,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         if (!columnExists($column, $this->get('table'))) {
             $sql = sprintf('ALTER TABLE %s ADD %s %s', $this->get('table'), $column, $type);
         } else {
-            $sql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $this->get('table'), $column, $column, explode(' ', $type)[0]);
+            $sql = sprintf('ALTER TABLE %s CHANGE %s %s %s', $this->get('table'), $column, $column, $type);
         }
 
         $this->db->query($sql);
