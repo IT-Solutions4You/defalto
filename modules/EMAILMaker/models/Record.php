@@ -483,4 +483,13 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
         }
         return $conditionList;
     }
+
+    public static function getTemplateId($params)
+    {
+        $adb = PearDatabase::getInstance();
+        $sql = sprintf('SELECT templateid FROM vtiger_emakertemplates WHERE %s=?', implode('=? AND ', array_keys($params)));
+        $result = $adb->pquery($sql, $params);
+
+        return $adb->query_result($result, 0, 'templateid');
+    }
 }

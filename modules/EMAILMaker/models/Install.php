@@ -556,6 +556,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
 
     public function insertEmailTemplates()
     {
+        $userId = Users::getActiveAdminId();
         $templates = [
             [
                 'templatename' => 'Reminder',
@@ -563,7 +564,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'description' => 'Reminder',
                 'subject' => 'Reminder',
                 'body' => 'Reminder',
-                'owner' => Users::getActiveAdminId(),
+                'owner' => $userId,
                 'sharingtype' => 'private',
                 'category' => 'system',
                 'is_listview' => 0,
@@ -574,7 +575,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'description' => 'Invitation',
                 'subject' => 'Invitation',
                 'body' => 'Invitation',
-                'owner' => Users::getActiveAdminId(),
+                'owner' => $userId,
                 'sharingtype' => 'private',
                 'category' => 'system',
                 'is_listview' => 0,
@@ -585,7 +586,29 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'description' => 'Customer Portal Login Details',
                 'subject' => 'Customer Portal Login Details',
                 'body' => file_get_contents('modules/EMAILMaker/resources/templates/CustomerLoginDetails.html'),
-                'owner' => Users::getActiveAdminId(),
+                'owner' => $userId,
+                'sharingtype' => 'private',
+                'category' => 'system',
+                'is_listview' => 0,
+            ],
+            [
+                'templatename' => 'Support end notification before a month',
+                'module' => 'Contacts',
+                'description' => 'Send Notification mail to customer before a month of support end date',
+                'subject' => 'VtigerCRM Support Notification',
+                'body' => file_get_contents('modules/EMAILMaker/resources/templates/SupportNotificationMonth.html'),
+                'owner' => $userId,
+                'sharingtype' => 'private',
+                'category' => 'system',
+                'is_listview' => 0,
+            ],
+            [
+                'templatename' => 'Support end notification before a week',
+                'module' => 'Contacts',
+                'description' => 'Send Notification mail to customer before a week of support end date',
+                'subject' => 'VtigerCRM Support Notification',
+                'body' => file_get_contents('modules/EMAILMaker/resources/templates/SupportNotificationWeek.html'),
+                'owner' => $userId,
                 'sharingtype' => 'private',
                 'category' => 'system',
                 'is_listview' => 0,
@@ -593,7 +616,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
         ];
 
         foreach ($templates as $template) {
-            $result = $this->db->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE subject=? AND deleted=? AND module=?', [$template['subject'], '0', $template['module']]);
+            $result = $this->db->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE templatename=? AND deleted=? AND module=?', [$template['templatename'], '0', $template['module']]);
 
             if (!$this->db->num_rows($result)) {
                 EMAILMaker_Record_Model::saveTemplate($template, 0);

@@ -1535,13 +1535,12 @@ function get_contactsforol($user_name)
         require_once 'config.inc.php';
         global $PORTAL_URL, $HELPDESK_SUPPORT_EMAIL_ID;
 
-        $adb = PearDatabase::getInstance();
         $moduleName = $entityData->getModuleName();
         $portalURL = vtranslate('Please ', $moduleName) . '<a href="' . $PORTAL_URL . '" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">' . vtranslate('click here', $moduleName) . '</a>';
 
         $language = Vtiger_Language_Handler::getLanguage();
-        $templateResult = $adb->pquery('SELECT templateid FROM vtiger_emakertemplates WHERE templatename=? AND category=?', array('Customer Login Details', 'system'));
-        $templateId = $adb->query_result($templateResult, 0, 'templateid');
+        $params = array('templatename' => 'Customer Login Details', 'category' => 'system');
+        $templateId = EMAILMaker_Record_Model::getTemplateId($params);
         $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $entityData->getId(), $entityData->getId(), $moduleName);
         $contentModel->getContent();
 
