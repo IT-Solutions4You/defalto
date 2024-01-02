@@ -563,7 +563,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'module' => 'Appointments',
                 'description' => 'Reminder',
                 'subject' => 'Reminder',
-                'body' => 'Reminder',
+                'body' => 'This is a reminder notification for the Activity',
                 'owner' => $userId,
                 'sharingtype' => 'private',
                 'category' => 'system',
@@ -619,7 +619,6 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             $result = $this->db->pquery('SELECT * FROM vtiger_emailtemplates');
 
             while ($row = $this->db->fetchByAssoc($result)) {
-                $isSystem = !empty($row['systemtemplate']);
                 $templateName = trim($row['templatename']);
 
                 if (empty($templates[$templateName])) {
@@ -628,10 +627,10 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                         'module' => $row['module'],
                         'description' => $templateName,
                         'subject' => $row['subject'],
-                        'body' => $row['body'],
+                        'body' => decode_html($row['body']),
                         'owner' => $userId,
-                        'sharingtype' => $isSystem ? 'private' : 'public',
-                        'category' => $isSystem ? 'system' : 'email templates',
+                        'sharingtype' => 'private',
+                        'category' => 'email templates',
                         'is_listview' => 0,
                     ];
                 }
