@@ -558,7 +558,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
     {
         $userId = Users::getActiveAdminId();
         $templates = [
-            [
+            'Reminder' => [
                 'templatename' => 'Reminder',
                 'module' => 'Appointments',
                 'description' => 'Reminder',
@@ -569,7 +569,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'category' => 'system',
                 'is_listview' => 0,
             ],
-            [
+            'Invitation' => [
                 'templatename' => 'Invitation',
                 'module' => 'Appointments',
                 'description' => 'Invitation',
@@ -580,7 +580,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'category' => 'system',
                 'is_listview' => 0,
             ],
-            [
+            'Customer Login Details' => [
                 'templatename' => 'Customer Login Details',
                 'module' => 'Contacts',
                 'description' => 'Customer Portal Login Details',
@@ -591,7 +591,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'category' => 'system',
                 'is_listview' => 0,
             ],
-            [
+            'Support end notification before a month' => [
                 'templatename' => 'Support end notification before a month',
                 'module' => 'Contacts',
                 'description' => 'Send Notification mail to customer before a month of support end date',
@@ -602,7 +602,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 'category' => 'system',
                 'is_listview' => 0,
             ],
-            [
+            'Support end notification before a week' => [
                 'templatename' => 'Support end notification before a week',
                 'module' => 'Contacts',
                 'description' => 'Send Notification mail to customer before a week of support end date',
@@ -615,8 +615,39 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             ],
         ];
 
+        if (!empty($this->db->getColumnNames('vtiger_emailtemplates'))) {
+            $result = $this->db->pquery('SELECT * FROM vtiger_emailtemplates');
+
+            while ($row = $this->db->fetchByAssoc($result)) {
+                $isSystem = !empty($row['systemtemplate']);
+                $templateName = trim($row['templatename']);
+
+                if (empty($templates[$templateName])) {
+                    $templates[$templateName] = [
+                        'templatename' => $templateName,
+                        'module' => $row['module'],
+                        'description' => $templateName,
+                        'subject' => $row['subject'],
+                        'body' => $row['body'],
+                        'owner' => $userId,
+                        'sharingtype' => $isSystem ? 'private' : 'public',
+                        'category' => $isSystem ? 'system' : 'email templates',
+                        'is_listview' => 0,
+                    ];
+                }
+            }
+        }
+
         foreach ($templates as $template) {
-            $result = $this->db->pquery('SELECT templatename FROM vtiger_emakertemplates WHERE templatename=? AND deleted=? AND module=?', [$template['templatename'], '0', $template['module']]);
+            $sql = 'SELECT templatename FROM vtiger_emakertemplates WHERE templatename=? AND deleted=?';
+            $params = [$template['templatename'], '0'];
+
+            if (!empty($template['module'])) {
+                $sql .= ' AND module=?';
+                $params[] = $template['module'];
+            }
+
+            $result = $this->db->pquery($sql, $params);
 
             if (!$this->db->num_rows($result)) {
                 EMAILMaker_Record_Model::saveTemplate($template, 0);
