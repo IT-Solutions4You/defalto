@@ -14,7 +14,7 @@
                 <label class="control-label fieldLabel col-sm-3 text-muted">
                     {vtranslate('LBL_DESCRIPTION',$MODULE)}:
                 </label>
-                <div class="controls col-sm">
+                <div class="controls col-sm-9">
                     <input name="description" type="text" value="{$EMAIL_TEMPLATE_RESULT.description}" class="inputElement form-control" tabindex="2">
                 </div>
             </div>
@@ -24,7 +24,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('Category')}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <input type="text" name="email_category" value="{$EMAIL_CATEGORY}" class="inputElement form-control"/>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_DEFAULT_FROM','EMAILMaker')}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <select name="default_from_email" class="select2 form-select">
                             {html_options  options=$DEFAULT_FROM_OPTIONS selected=$SELECTED_DEFAULT_FROM}
                         </select>
@@ -44,7 +44,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_IGNORE_PICKLIST_VALUES',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <input type="text" name="ignore_picklist_values" value="{$IGNORE_PICKLIST_VALUES}" class="inputElement form-control"/>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_STATUS',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <select name="is_active" id="is_active" class="select2 form-control" onchange="EMAILMaker_EditJs.templateActiveChanged(this);">
                             {html_options options=$STATUS selected=$IS_ACTIVE}
                         </select>
@@ -64,7 +64,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_DECIMALS',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <div class="row pb-2">
                             <div class="col text-muted">
                                 <label for="dec_point">{vtranslate('LBL_DEC_POINT',$MODULE)}</label>
@@ -96,7 +96,7 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_SETASDEFAULT',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <div class="row pb-2">
                             <div class="col text-muted">
                                 <label for="is_default_dv">{vtranslate('LBL_FOR_DV',$MODULE)}</label>

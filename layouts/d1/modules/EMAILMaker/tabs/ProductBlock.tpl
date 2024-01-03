@@ -19,7 +19,7 @@
                         </label>
                         <div class="controls col-sm-8">
                             <div class="input-group">
-                                <select name="productbloctpl2" id="productbloctpl2" class="select2 form-control">
+                                <select name="productbloctpl2" id="productbloctpl2" class="select2 form-control" data-width="50%">
                                     {html_options  options=$PRODUCT_BLOC_TPL}
                                 </select>
                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="productbloctpl2" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}">
@@ -35,7 +35,7 @@
                         </label>
                         <div class="controls col-sm-8">
                             <div class="input-group">
-                                <select name="articelvar" id="articelvar" class="select2 form-control">
+                                <select name="articelvar" id="articelvar" class="select2 form-control" data-width="50%">
                                     {html_options  options=$ARTICLE_STRINGS}
                                 </select>
                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="articelvar" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -51,7 +51,7 @@
                         </label>
                         <div class="controls col-sm-8">
                             <div class="input-group">
-                                <select name="psfields" id="psfields" class="select2 form-control">
+                                <select name="psfields" id="psfields" class="select2 form-control" data-width="50%">
                                     {html_options  options=$SELECT_PRODUCT_FIELD}
                                 </select>
                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="psfields" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}">
@@ -67,7 +67,7 @@
                         </label>
                         <div class="controls col-sm-8">
                             <div class="input-group">
-                                <select name="productfields" id="productfields" class="select2 form-control">
+                                <select name="productfields" id="productfields" class="select2 form-control" data-width="50%">
                                     {html_options  options=$PRODUCTS_FIELDS}
                                 </select>
                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="productfields" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}">
@@ -83,7 +83,7 @@
                         </label>
                         <div class="controls col-sm-8">
                             <div class="input-group">
-                                <select name="servicesfields" id="servicesfields" class="select2 form-control">
+                                <select name="servicesfields" id="servicesfields" class="select2 form-control" data-width="50%">
                                     {html_options  options=$SERVICES_FIELDS}
                                 </select>
                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="servicesfields" title="{vtranslate('LBL_INSERT_VARIABLE_TO_TEXT',$MODULE)}">

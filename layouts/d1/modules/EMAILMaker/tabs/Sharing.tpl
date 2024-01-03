@@ -14,7 +14,7 @@
                 <label class="control-label fieldLabel col-sm-3 text-muted">
                     {vtranslate('LBL_TEMPLATE_OWNER',$MODULE)}
                 </label>
-                <div class="controls col-sm">
+                <div class="controls col-sm-9">
                     <select name="template_owner" id="template_owner" class="select2 form-control">
                         {html_options  options=$TEMPLATE_OWNERS selected=$TEMPLATE_OWNER}
                     </select>
@@ -24,7 +24,7 @@
                 <label class="control-label fieldLabel col-sm-3 text-muted">
                     {vtranslate('LBL_SHARING_TAB',$MODULE)}:
                 </label>
-                <div class="controls col-sm">
+                <div class="controls col-sm-9">
                     <select name="sharing" id="sharing" data-toogle-members="true" class="select2 form-control">
                         {html_options options=$SHARINGTYPES selected=$SHARINGTYPE}
                     </select>

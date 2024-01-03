@@ -16,9 +16,9 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_GLOBAL_LANG',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <div class="input-group">
-                            <select name="global_lang" id="global_lang" class="select2 form-control">
+                            <select name="global_lang" id="global_lang" class="select2 form-control" data-width="50%">
                                 {html_options  options=$GLOBAL_LANG_LABELS}
                             </select>
                             <button type="button" class="btn btn-warning InsertIntoTemplate" data-type="global_lang" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -32,9 +32,9 @@
                         <label class="control-label fieldLabel col-sm-3 text-muted">
                             {vtranslate('LBL_MODULE_LANG',$MODULE)}:
                         </label>
-                        <div class="controls col-sm">
+                        <div class="controls col-sm-9">
                             <div class="input-group">
-                                <select name="module_lang" id="module_lang" class="select2 form-control">
+                                <select name="module_lang" id="module_lang" class="select2 form-control" data-width="50%">
                                     {html_options  options=$MODULE_LANG_LABELS}
                                 </select>
                                 <button type="button" class="btn btn-warning InsertIntoTemplate" data-type="module_lang" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -48,9 +48,9 @@
                     <label class="control-label fieldLabel col-sm-3 text-muted">
                         {vtranslate('LBL_CUSTOM_LABELS',$MODULE)}:
                     </label>
-                    <div class="controls col-sm">
+                    <div class="controls col-sm-9">
                         <div class="input-group">
-                            <select name="custom_lang" id="custom_lang" class="select2 form-control">
+                            <select name="custom_lang" id="custom_lang" class="select2 form-control" data-width="50%">
                                 {html_options  options=$CUSTOM_LANG_LABELS}
                             </select>
                             <button type="button" class="btn btn-warning InsertIntoTemplate" data-type="custom_lang" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
