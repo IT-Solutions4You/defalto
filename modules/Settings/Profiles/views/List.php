@@ -15,7 +15,6 @@ class Settings_Profiles_List_View extends Settings_Vtiger_List_View {
 
 		$jsFileNames = array(
 			'modules.Users.resources.List',
-			"modules.Emails.resources.MassEdit",
 			"~layouts/v7/lib/jquery/sadropdown.js",
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/floatThead/jquery.floatThead.js",
 			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/jquery/perfect-scrollbar/js/perfect-scrollbar.jquery.js",

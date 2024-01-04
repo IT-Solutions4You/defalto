@@ -14,7 +14,7 @@
     <div class="editViewBody">
        <div class="editViewContents">
           <div class="form-group">
-             <div class="col-sm-12">
+             <div class="py-3 px-4">
                  {if $IS_FILTER_SAVED_NEW == false}
 					<div class="alert alert-info">
 						{vtranslate('LBL_CREATED_IN_OLD_LOOK_CANNOT_BE_EDITED',$QUALIFIED_MODULE)}
@@ -30,7 +30,7 @@
                         </div>
 					</div>
 				{/if}
-                 <div id="advanceFilterContainer"  class="conditionsContainer p-3 {if $IS_FILTER_SAVED_NEW == false} zeroOpacity opacity-0 {/if}">
+                 <div id="advanceFilterContainer"  class="conditionsContainer {if $IS_FILTER_SAVED_NEW == false} zeroOpacity opacity-0 {/if}">
                      <div class="col-sm-12">
                          <div class="table table-bordered">
                              {include file='AdvanceFilter.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE}

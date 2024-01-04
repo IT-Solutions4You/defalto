@@ -41,26 +41,30 @@
 						</td>
 					<tr>
 				{/foreach}
-                <tr class="listViewEntries hide taskTemplate">
+                <tr class="listViewEntries border-bottom hide taskTemplate">
                     <td>
-                        <div class="pull-left actions">
+                        <div class="actions">
                             <span class="actionImages btn-group">
-                                <a class="editTask">
+                                <a class="editTask btn text-secondary">
                                     <i class="fa fa-pencil alignMiddle" ></i>
                                 </a>
-                                <a class="deleteTaskTemplate">
+                                <a class="deleteTaskTemplate btn text-secondary">
                                     <i class="fa fa-trash alignMiddle"></i>
                                 </a>
                             </span>
-                        </div>&nbsp;&nbsp;
-                        <input style="opacity: 0;" type="checkbox" data-on-color="success" class="tmpTaskStatus" checked="" value="on"/>
+							<input style="opacity: 0;" type="checkbox" data-on-color="success" class="tmpTaskStatus" checked="" value="on"/>
+                        </div>
                     </td>
-                    <td class="listViewEntryValue taskType"></td>
-                    <td><span class="pull-left taskName"></span></td>
+                    <td class="listViewEntryValue taskType">
+
+					</td>
+                    <td>
+						<span class="taskName"></span>
+					</td>
                 </tr>
 				{if empty($TASK_LIST)}
-					<tr>
-						<td class="p-3">
+					<tr class="emptyRecordsDiv border-bottom">
+						<td class="py-5 text-center fs-3" colspan="3">
 							{vtranslate('LBL_NO_TASKS_ADDED',$QUALIFIED_MODULE)}
 						</td>
 					</tr>

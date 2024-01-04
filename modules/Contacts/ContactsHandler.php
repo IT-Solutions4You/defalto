@@ -86,12 +86,18 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 				$contents .= "<br>".$portalURL;
 			}
 			$subject = decode_html(getMergedDescription($subject, $entityId,'Contacts'));
-			send_mail('Contacts', $email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents,'','','','','',true);
+
+			$mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+			$mailer->retrieveSMTPVtiger();
+			$mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
+			$mailer->addAddress($email);
+			$mailer->Subject = $subject;
+			$mailer->Body = $contents;
+			$mailer->isHTML();
+			$mailer->send();
 		}
 	} else {
 		$sql = "UPDATE vtiger_portalinfo SET user_name=?,isactive=0 WHERE id=?";
 		$adb->pquery($sql, array($email, $entityId));
 	}
 }
-
-?>

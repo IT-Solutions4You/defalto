@@ -343,7 +343,6 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 			"libraries.jquery.ckeditor.adapters.jquery",
 			'modules.Vtiger.resources.validator.BaseValidator',
 			'modules.Vtiger.resources.validator.FieldValidator',
-			"modules.Emails.resources.MassEdit",
 			"modules.Emails.resources.EmailPreview",
 			"modules.Vtiger.resources.CkEditor",
 			'modules.Vtiger.resources.Popup',

@@ -5,6 +5,9 @@
 * All Rights Reserved.
 *}
 {strip}
+	{if empty($CRUMB_NAME)}
+		{assign var=CRUMB_NAME value='crumb'}
+	{/if}
 	<div id="{$BREADCRUMB_ID}" class="breadcrumb">
 		<ul class="crumbs p-0 m-0 d-flex">
 			{assign var=ZINDEX value=9}
@@ -12,7 +15,7 @@
 				{assign var=INDEX value=$smarty.foreach.breadcrumbLabels.index}
 				{assign var=INDEX value=$INDEX+1}
 				<li class="step {if $smarty.foreach.breadcrumbLabels.first} first {$FIRSTBREADCRUMB} {else} {$ADDTIONALCLASS} {/if} {if $smarty.foreach.breadcrumbLabels.last} last {/if} {if $ACTIVESTEP eq $INDEX}active{/if}"
-					id="{$CRUMBID}" data-value="{$INDEX}" style="z-index:{$ZINDEX}">
+					id="{$CRUMB_NAME}{$CRUMBID}" data-value="{$INDEX}" style="z-index:{$ZINDEX}">
 					<a href="#" class="h-100 d-flex align-items-center">
 						<div class="fw-bold stepNum px-3 fs-5">{$INDEX}.</div>
 						<div class="stepText fs-6 text-nowrap" title="{vtranslate($STEPTEXT,$MODULE)}">{vtranslate($STEPTEXT,$MODULE)}</div>

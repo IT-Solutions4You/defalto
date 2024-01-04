@@ -9,10 +9,10 @@
 		<input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
 	{/if}
 
-	<div name='editContent'>
+	<div name="editContent">
 		{if $DUPLICATE_RECORDS}
-			<div class="fieldBlockContainer bg-body mb-3 rounded duplicationMessageContainer">
-				<div class="duplicationMessageHeader"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></div>
+			<div class="fieldBlockContainer bg-body rounded-top mb-3 p-3 duplicationMessageContainer">
+				<h4 class="duplicationMessageHeader fw-bold"><b>{vtranslate('LBL_DUPLICATES_DETECTED', $MODULE)}</b></h4>
 				<div>{getDuplicatesPreventionMessage($MODULE, $DUPLICATE_RECORDS)}</div>
 			</div>
 		{/if}

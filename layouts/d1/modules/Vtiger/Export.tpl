@@ -26,60 +26,47 @@
 		{/if}
 		{assign var=TITLE value=vtranslate('LBL_EXPORT_RECORDS',$MODULE)}
 		{include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$TITLE}
-		<div class="modal-body">
-			<div class="datacontent row">
-				<div class="col-lg-3"></div>
-				<div class="col-lg-6">
-					<div class="well exportContents">
-						{if $SOURCE_MODULE eq 'Calendar'}
+		<div class="modal-body bg-body-secondary">
+			<div class="container-fluid rounded bg-body p-3">
+				<div class="datacontent row">
+					<div class="col-lg">
+						<div class="well exportContents">
+							<div>
+								<h4>{vtranslate('LBL_EXPORT_DATA',$MODULE)}</h4>
+							</div>
 							<div class="py-2">
-								<b>{vtranslate('LBL_EXPORT_FORMAT',$MODULE)}</b>
+								<input type="radio" name="mode" value="ExportSelectedRecords" id="group1" {if !empty($SELECTED_IDS)} checked="checked" {else} disabled="disabled"{/if} />
+								<label class="ms-2" for="group1">{vtranslate('LBL_EXPORT_SELECTED_RECORDS',$MODULE)}</label>
+								{if empty($SELECTED_IDS)}
+									<span class="text-danger ms-2">{vtranslate('LBL_NO_RECORD_SELECTED',$MODULE)}</span>
+								{/if}
+								<input type="hidden" class="isSelectedRecords" value="{if $SELECTED_IDS}1{else}0{/if}" >
 							</div>
-							<div class="form-check py-3">
-								<input class="form-check-input" type="radio" name="type" value="csv" id="csv" onchange="Calendar_Edit_Js.handleFileTypeChange();" checked="checked" />
-								<label for="csv">{vtranslate('csv', $MODULE)}</label>
+							<div class="py-2">
+								<input type="radio" name="mode" value="ExportCurrentPage" id="group2" />
+								<label class="ms-2" for="group2">{vtranslate('LBL_EXPORT_DATA_IN_CURRENT_PAGE',$MODULE)}</label>
 							</div>
-							<div class="form-check py-3">
-								<input class="form-check-input" type="radio" name="type" value="ics" id="ics" onchange="Calendar_Edit_Js.handleFileTypeChange();"/>
-								<label for="ics">{vtranslate('ics', $MODULE)}</label>
+							<div class="py-2">
+								<input type="radio" name="mode" value="ExportAllData" id="group3" {if empty($SELECTED_IDS)} checked="checked" {/if} />
+								<label class="ms-2" for="group3">{vtranslate('LBL_EXPORT_ALL_DATA',$MODULE)}</label>
 							</div>
-						{/if}
-						<div class="py-2">
-							<b>{vtranslate('LBL_EXPORT_DATA',$MODULE)}</b>
-						</div>
-						<div class="py-2">
-							<input type="radio" name="mode" value="ExportSelectedRecords" id="group1" {if !empty($SELECTED_IDS)} checked="checked" {else} disabled="disabled"{/if} />
-							<label class="ms-2" for="group1">{vtranslate('LBL_EXPORT_SELECTED_RECORDS',$MODULE)}</label>
-							{if empty($SELECTED_IDS)}
-								<span class="text-danger">{vtranslate('LBL_NO_RECORD_SELECTED',$MODULE)}</span>
+							{if $MULTI_CURRENCY}
+								<div class="py-2">
+									<i class="icon-question-sign" data-bs-toggle="tooltip" title="{vtranslate('LBL_EXPORT_CURRENCY_TOOLTIP_TEXT',$MODULE)}"></i>
+									<strong class="ms-2">{vtranslate('LBL_EXPORT_LINEITEM_CURRENCY',$MODULE)}:</strong>
+								</div>
+								<div class="py-2 form-check">
+									<input class="form-check-input" type="radio" name="selected_currency" value="UserCurrency" checked="checked"/>
+									<span class="ms-2">{vtranslate('LBL_EXPORT_USER_CURRENCY',$MODULE)}</span>
+								</div>
+								<div class="py-2 form-check">
+									<input class="form-check-input" type="radio" name="selected_currency" value="RecordCurrency"/>
+									<span class="ms-2">{vtranslate('LBL_EXPORT_RECORD_CURRENCY',$MODULE)}</span>
+								</div>
 							{/if}
-							<input type="hidden" class="isSelectedRecords" value="{if $SELECTED_IDS}1{else}0{/if}" >
 						</div>
-						<div class="py-2">
-							<input type="radio" name="mode" value="ExportCurrentPage" id="group2" />
-							<label class="ms-2" for="group2">{vtranslate('LBL_EXPORT_DATA_IN_CURRENT_PAGE',$MODULE)}</label>
-						</div>
-						<div class="py-2">
-							<input type="radio" name="mode" value="ExportAllData" id="group3" {if empty($SELECTED_IDS)} checked="checked" {/if} />
-							<label class="ms-2" for="group3">{vtranslate('LBL_EXPORT_ALL_DATA',$MODULE)}</label>
-						</div>
-						{if $MULTI_CURRENCY}
-							<div class="py-2">
-								<i class="icon-question-sign" data-bs-toggle="tooltip" title="{vtranslate('LBL_EXPORT_CURRENCY_TOOLTIP_TEXT',$MODULE)}"></i>
-								<strong class="ms-2">{vtranslate('LBL_EXPORT_LINEITEM_CURRENCY',$MODULE)}:</strong>
-							</div>
-							<div class="py-2 form-check">
-								<input class="form-check-input" type="radio" name="selected_currency" value="UserCurrency" checked="checked"/>
-								<span class="ms-2">{vtranslate('LBL_EXPORT_USER_CURRENCY',$MODULE)}</span>
-							</div>
-							<div class="py-2 form-check">
-								<input class="form-check-input" type="radio" name="selected_currency" value="RecordCurrency"/>
-								<span class="ms-2">{vtranslate('LBL_EXPORT_RECORD_CURRENCY',$MODULE)}</span>
-							</div>
-						{/if}
 					</div>
 				</div>
-				<div class="col-lg-3"></div>
 			</div>
 		</div>
 		<div class="modal-overlay-footer modal-footer">

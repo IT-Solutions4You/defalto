@@ -134,28 +134,29 @@ class FollowRecordHandler extends VTEventHandler {
 		return $changedFieldString;
 	}
 
-	public function sendEmail($toEmailId, $subject, $body, $recordId) {
-		//It will not show in CRM
-		$generatedMessageId = Emails_Mailer_Model::generateMessageID();
-		Emails_Mailer_Model::updateMessageIdByCrmId($generatedMessageId, $recordId);
+    public function sendEmail($toEmailId, $subject, $body, $recordId)
+    {
+        //It will not show in CRM
+        $generatedMessageId = ITS4YouEmails_Mailer_Model::generateMessageID();
+        ITS4YouEmails_Mailer_Model::updateMessageIdByCrmId($generatedMessageId, $recordId);
 
-		$mailer = new Emails_Mailer_Model();
-		$mailer->reinitialize();
-		$mailer->Body = $body;
-		$mailer->Subject = decode_html($subject);
+        $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+        $mailer->retrieveSMTPVtiger();
+        $mailer->Body = $body;
+        $mailer->Subject = decode_html($subject);
 
-		$activeUserModel = $this->getActiveUserModel();
-		$replyTo = decode_html($activeUserModel->email1);
-		$replyToName = decode_html($activeUserModel->first_name.' '.$activeUserModel->last_name);
-		$fromEmail = decode_html($activeUserModel->email1);
+        $activeUserModel = $this->getActiveUserModel();
+        $replyTo = decode_html($activeUserModel->email1);
+        $replyToName = decode_html($activeUserModel->first_name . ' ' . $activeUserModel->last_name);
+        $fromEmail = decode_html($activeUserModel->email1);
 
-		$mailer->ConfigSenderInfo($fromEmail, $replyTo, $replyToName);
-		$mailer->IsHTML();
-		$mailer->AddCustomHeader("In-Reply-To", $generatedMessageId);
-		$mailer->AddAddress($toEmailId);
-
-		$response = $mailer->Send(true);
-	}
+        $mailer->setFrom($fromEmail, $replyToName);
+        $mailer->addReplyTo($replyTo, $replyToName);
+        $mailer->isHTML();
+        $mailer->addCustomHeader('In-Reply-To', $generatedMessageId);
+        $mailer->addAddress($toEmailId);
+        $mailer->send(true);
+    }
 
 	var $activeAdmin = '';
 	public function getActiveUserModel() {

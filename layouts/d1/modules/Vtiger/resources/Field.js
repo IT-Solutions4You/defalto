@@ -384,7 +384,7 @@ Vtiger_Field_Js('Vtiger_Currencylist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi: function () {
-		let html = '<select class="CurrencyListField select2 inputElement form-control" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+		let html = '<select class="CurrencyListField select2 inputElement form-select" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			currencyLists = this.getCurrencyList(),
 			selectedOption = app.htmlDecode(this.getValue());
 
@@ -431,7 +431,7 @@ Vtiger_Field_Js('Vtiger_Multipicklist_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi : function() {
-		let html = '<select class="MultiPicklistField select2 inputElement" multiple name="'+ this.getName() +'[]" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+		let html = '<select class="MultiPicklistField select2 inputElement form-select" multiple name="'+ this.getName() +'[]" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
 			pickListValues = this.getPickListValues(),
 			selectedOption = app.htmlDecode(this.getValue()),
 			selectedOptionsArray = this.getSelectedOptions(selectedOption),
@@ -642,7 +642,7 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 	 * @return - input text field
 	 */
 	getUi : function() {
-		let html = '<textarea class="TextField input-xxlarge form-control inputElement" name="'+ this.getName() +'" value="'+ this.getValue() + '" >'+ this.getValue() + '</textarea>',
+		let html = '<textarea class="TextField form-control inputElement" name="'+ this.getName() +'" value="'+ this.getValue() + '" >'+ this.getValue() + '</textarea>',
 			element = jQuery(html);
 
 		return this.addValidationToElement(element);
@@ -683,7 +683,7 @@ Vtiger_Field_Js('Vtiger_Recurrence_Field_Js',{},{
 	 * @return - select element and chosen element
 	 */
 	getUi : function() {
-		let html = '<select class="RecurrenceField select2 inputElement" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
+		let html = '<select class="RecurrenceField select2 inputElement form-select" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">',
 			pickListValues = this.getPickListValues(),
 			selectedOption = app.htmlDecode(this.getValue()),
 			option;

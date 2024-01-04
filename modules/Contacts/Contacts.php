@@ -1530,43 +1530,41 @@ function get_contactsforol($user_name)
 
 	//added to get mail info for portal user
 	//type argument included when when addin customizable tempalte for sending portal login details
-	public static function getPortalEmailContents($entityData, $password, $type='') {
+    public static function getPortalEmailContents($entityData, $password, $type = '')
+    {
         require_once 'config.inc.php';
-		global $PORTAL_URL, $HELPDESK_SUPPORT_EMAIL_ID;
+        global $PORTAL_URL, $HELPDESK_SUPPORT_EMAIL_ID;
 
-		$adb = PearDatabase::getInstance();
-		$moduleName = $entityData->getModuleName();
+        $moduleName = $entityData->getModuleName();
+        $portalURL = vtranslate('Please ', $moduleName) . '<a href="' . $PORTAL_URL . '" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">' . vtranslate('click here', $moduleName) . '</a>';
 
-		$companyDetails = getCompanyDetails();
+        $language = Vtiger_Language_Handler::getLanguage();
+        $params = array('templatename' => 'Customer Login Details', 'category' => 'system');
+        $templateId = EMAILMaker_Record_Model::getTemplateId($params);
+        $contentModel = EMAILMaker_EMAILContent_Model::getInstanceById($templateId, $language, $moduleName, $entityData->getId(), $entityData->getId(), $moduleName);
+        $contentModel->getContent();
 
-		$portalURL = vtranslate('Please ',$moduleName).'<a href="'.$PORTAL_URL.'" style="font-family:Arial, Helvetica, sans-serif;font-size:13px;">'.  vtranslate('click here', $moduleName).'</a>';
+        $body = decode_html($contentModel->getBody());
+        $contents = $body;
+        $contents = str_replace('$contact_name$', $entityData->get('firstname') . " " . $entityData->get('lastname'), $contents);
+        $contents = str_replace('$login_name$', $entityData->get('email'), $contents);
+        $contents = str_replace('$password$', $password, $contents);
+        $contents = str_replace('$URL$', $portalURL, $contents);
+        $contents = str_replace('$support_team$', getTranslatedString('Support Team', $moduleName), $contents);
+        $contents = str_replace('$logo$', '<img src="cid:logo" />', $contents);
 
-		//here id is hardcoded with 5. it is for support start notification in vtiger_notificationscheduler
-		$query='SELECT vtiger_emailtemplates.subject,vtiger_emailtemplates.body
-					FROM vtiger_notificationscheduler
-						INNER JOIN vtiger_emailtemplates ON vtiger_emailtemplates.templateid=vtiger_notificationscheduler.notificationbody
-					WHERE schedulednotificationid=5';
+        if ('LoginDetails' === $type) {
+            $temp = $contents;
+            $value["subject"] = decode_html($contentModel->getSubject());
+            $value["body"] = $temp;
 
-		$result = $adb->pquery($query, array());
-		$body=decode_html($adb->query_result($result,0,'body'));
-		$contents=$body;
-		$contents = str_replace('$contact_name$',$entityData->get('firstname')." ".$entityData->get('lastname'),$contents);
-		$contents = str_replace('$login_name$',$entityData->get('email'),$contents);
-		$contents = str_replace('$password$',$password,$contents);
-		$contents = str_replace('$URL$',$portalURL,$contents);
-		$contents = str_replace('$support_team$',getTranslatedString('Support Team', $moduleName),$contents);
-		$contents = str_replace('$logo$','<img src="cid:logo" />',$contents);
+            return $value;
+        }
 
-		if($type == "LoginDetails") {
-			$temp=$contents;
-			$value["subject"]=decode_html($adb->query_result($result,0,'subject'));
-			$value["body"]=$temp;
-			return $value;
-		}
-		return $contents;
-	}
+        return $contents;
+    }
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
+    function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
 		$adb = PearDatabase::getInstance();
 
 		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);

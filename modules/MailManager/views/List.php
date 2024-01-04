@@ -28,7 +28,6 @@ class MailManager_List_View extends MailManager_Abstract_View {
 				"libraries.jquery.ckeditor.ckeditor",
 				"libraries.jquery.ckeditor.adapters.jquery",
 				"modules.Vtiger.resources.CkEditor",
-				"modules.Emails.resources.MassEdit",
 				"modules.MailManager.resources.List"
 		);
 

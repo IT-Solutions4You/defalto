@@ -65,8 +65,8 @@ var vtUtils = {
             };
         }
 
-        if (selectElement.attr('multiple') !== 'undefined' && typeof params.closeOnSelect == 'undefined') {
-            params.closeOnSelect = false;
+        if(typeof params.closeOnSelect == 'undefined') {
+            params.closeOnSelect = !selectElement.attr('multiple');
         }
 
         if (selectElement.attr('multiple') !== 'undefined' && typeof params.selectOnClose == 'undefined') {

@@ -8,11 +8,10 @@
     {assign var=IS_MAILBOX_EXISTS value=$MAILBOX->exists()}
     <input type="hidden" id="isMailBoxExists" value="{if $IS_MAILBOX_EXISTS}1{else}0{/if}">
     {if !$IS_MAILBOX_EXISTS}
-        <div class="mmDescription">
-            <div class="text-center">
-                <br><br>
-                <div>{vtranslate('LBL_MODULE_DESCRIPTION', $MODULE)}</div>
-                <br><br><br>
+        <div class="mmDescription container p-4 text-center">
+            <h4 class="mb-4">{vtranslate($MODULE, $MODULE)}</h4>
+            <p class="mb-4 text-start">{vtranslate('LBL_MODULE_DESCRIPTION', $MODULE)}</p>
+            <div>
                 <button class="btn btn-success mailbox_setting">
                     <strong>{vtranslate('LBL_CONFIGURE_MAILBOX', $MODULE)}</strong>
                 </button>

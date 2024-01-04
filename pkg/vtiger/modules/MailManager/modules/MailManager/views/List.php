@@ -20,24 +20,23 @@ class MailManager_List_View extends MailManager_Abstract_View {
 			'search'  =>array('class' => 'MailManager_Search_View'),
 	);
 
-	public function getHeaderScripts(Vtiger_Request $request) {
-		$headerScriptInstances = parent::getHeaderScripts($request);
-		$moduleName = $request->getModule();
+    public function getHeaderScripts(Vtiger_Request $request)
+    {
+        $headerScriptInstances = parent::getHeaderScripts($request);
+        $moduleName = $request->getModule();
+        $jsFileNames = array(
+            "libraries.jquery.ckeditor.ckeditor",
+            "libraries.jquery.ckeditor.adapters.jquery",
+            "modules.Vtiger.resources.CkEditor",
+            "modules.MailManager.resources.List",
+        );
+        $jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
+        $headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
 
-		$jsFileNames = array(
-				"libraries.jquery.ckeditor.ckeditor",
-				"libraries.jquery.ckeditor.adapters.jquery",
-				"modules.Vtiger.resources.CkEditor",
-				"modules.Emails.resources.MassEdit",
-				"modules.MailManager.resources.List"
-		);
+        return $headerScriptInstances;
+    }
 
-		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
-		$headerScriptInstances = array_merge($headerScriptInstances, $jsScriptInstances);
-		return $headerScriptInstances;
-	}
-
-	public function process(Vtiger_Request $request) {
+    public function process(Vtiger_Request $request) {
 		$request = MailManager_Request::getInstance($request);
 
 		if (!$request->has('_operation')) {
