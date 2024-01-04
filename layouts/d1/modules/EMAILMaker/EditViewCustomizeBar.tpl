@@ -1,3 +1,11 @@
+{**
+* This file is part of the IT-Solutions4You CRM Software.
+*
+* (c) IT-Solutions4You s.r.o [info@its4you.sk]
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*}
 <div class="modal-body " style="padding:0px;">
     <ul class="nav nav-pills" style="margin-bottom:0px;">
         <li class="active" id="properties_tab" onclick="EMAILMaker_EditJs.showHideTab('properties');"><a data-toggle="tab" href="javascript:void(0);">{vtranslate('LBL_PROPERTIES_TAB','EMAILMaker')}</a></li>
