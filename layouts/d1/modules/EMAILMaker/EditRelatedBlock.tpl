@@ -9,18 +9,7 @@
 {strip}
     <div class="app-nav"></div>
     <div class="app-menu"></div>
-    <style>
-         #NewBlock {
-             padding: 1rem;
-         }
-         #page {
-             padding: 0;
-         }
-         .selectColumns {
-             margin: 0;
-         }
-    </style>
-    <form id="NewBlock" name="NewBlock" class="form-horizontal" method="POST" ENCTYPE="multipart/form-data" action="index.php">
+    <form id="NewBlock" name="NewBlock" class="form-horizontal p-3" method="POST" ENCTYPE="multipart/form-data" action="index.php">
         <input type="hidden" name="module" value="EMAILMaker">
         <input type="hidden" name="pdfmodule" value="{$REL_MODULE}">
         <input type="hidden" name="primarymodule" value="{$REL_MODULE}">

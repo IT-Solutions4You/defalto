@@ -51,21 +51,21 @@
                                 </td>
                                 <td class="cellText" align="center">
                                     {if $MODE eq "edit"}
-                                        <input type="checkbox" {$profile_arr.EDIT.checked} id="{$profile_arr.EDIT.name}" name="{$profile_arr.EDIT.name}" onclick="other_chk_clicked(this, '{$profile_arr.DETAIL.name}');"/>
+                                        <input type="checkbox" {$profile_arr.EDIT.checked} id="{$profile_arr.EDIT.name}" name="{$profile_arr.EDIT.name}" onclick="EMAILMaker_ProfilesPrivilegies_Js.other_chk_clicked(this, '{$profile_arr.DETAIL.name}');"/>
                                     {else}
                                         <img style="margin-left: 40%" class="alignMiddle" src="{if $profile_arr.EDIT.checked neq ""}{$ENABLE_IMAGE_PATH}{else}{$DISABLE_IMAGE_PATH}{/if}"/>
                                     {/if}
                                 </td>
                                 <td class="cellText" align="center">
                                     {if $MODE eq "edit"}
-                                        <input type="checkbox" {$profile_arr.DETAIL.checked} id="{$profile_arr.DETAIL.name}" name="{$profile_arr.DETAIL.name}" onclick="view_chk_clicked(this, '{$profile_arr.EDIT.name}', '{$profile_arr.DELETE.name}');"/>
+                                        <input type="checkbox" {$profile_arr.DETAIL.checked} id="{$profile_arr.DETAIL.name}" name="{$profile_arr.DETAIL.name}" onclick="EMAILMaker_ProfilesPrivilegies_Js.view_chk_clicked(this, '{$profile_arr.EDIT.name}', '{$profile_arr.DELETE.name}');"/>
                                     {else}
                                         <img style="margin-left: 40%" class="alignMiddle" src="{if $profile_arr.DETAIL.checked neq ""}{$ENABLE_IMAGE_PATH}{else}{$DISABLE_IMAGE_PATH}{/if}"/>
                                     {/if}
                                 </td>
                                 <td class="cellText" align="center">
                                     {if $MODE eq "edit"}
-                                        <input type="checkbox" {$profile_arr.DELETE.checked} id="{$profile_arr.DELETE.name}" name="{$profile_arr.DELETE.name}" onclick="other_chk_clicked(this, '{$profile_arr.DETAIL.name}');"/>
+                                        <input type="checkbox" {$profile_arr.DELETE.checked} id="{$profile_arr.DELETE.name}" name="{$profile_arr.DELETE.name}" onclick="EMAILMaker_ProfilesPrivilegies_Js.other_chk_clicked(this, '{$profile_arr.DETAIL.name}');"/>
                                     {else}
                                         <img style="margin-left: 40%" class="alignMiddle" src="{if $profile_arr.DELETE.checked neq ""}{$ENABLE_IMAGE_PATH}{else}{$DISABLE_IMAGE_PATH}{/if}"/>
                                     {/if}
@@ -89,19 +89,3 @@
         </form>
     </div>
 </div>
-{literal}
-    <script language="javascript" type="text/javascript">
-        function view_chk_clicked(source_chk, edit_chk_id, delete_chk_id) {
-            if (source_chk.checked == false) {
-                document.getElementById(edit_chk_id).checked = false;
-                document.getElementById(delete_chk_id).checked = false;
-            }
-        }
-
-        function other_chk_clicked(source_chk, detail_chk) {
-            if (source_chk.checked == true) {
-                document.getElementById(detail_chk).checked = true;
-            }
-        }
-    </script>
-{/literal}    

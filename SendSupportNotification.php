@@ -41,23 +41,21 @@ $status = '';
 $query="select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 WEEK)";
 $result = $adb->pquery($query, array());
 
-if ($adb->num_rows($result) >= 1) {
-    while ($result_set = $adb->fetch_array($result)) {
-        $content = getcontent_week($result_set['contactid']);
-        $body = $content['body'];
-        $body = str_replace('$logo$', '<img src="cid:logo" />', $body);
-        $subject = $content['subject'];
+while ($result_set = $adb->fetch_array($result)) {
+    $content = getcontent_week($result_set['contactid']);
+    $body = $content['body'];
+    $body = str_replace('$logo$', '<img src="cid:logo" />', $body);
+    $subject = $content['subject'];
 
-        $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
-        $mailer->retrieveSMTPVtiger();
-        $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
-        $mailer->addBCC($HELPDESK_SUPPORT_EMAIL_ID);
-        $mailer->addAddress($result_set['email'], 'Support');
-        $mailer->Subject = $subject;
-        $mailer->Body = $body;
-        $mailer->isHTML();
-        $mailer->send();
-    }
+    $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+    $mailer->retrieveSMTPVtiger();
+    $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
+    $mailer->addBCC($HELPDESK_SUPPORT_EMAIL_ID);
+    $mailer->addAddress($result_set['email'], 'Support');
+    $mailer->Subject = $subject;
+    $mailer->Body = $body;
+    $mailer->isHTML();
+    $mailer->send();
 }
 
 //comment / uncomment this line if you want to hide / show the sent mail status
@@ -68,23 +66,21 @@ $log->debug(" Send Support Notification Before a week - Status: ".$status);
 $query="select vtiger_contactdetails.contactid,vtiger_contactdetails.email,vtiger_contactdetails.firstname,vtiger_contactdetails.lastname,contactid  from vtiger_customerdetails inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_customerdetails.customerid inner join vtiger_contactdetails on vtiger_contactdetails.contactid=vtiger_customerdetails.customerid  where vtiger_crmentity.deleted=0 and support_end_date=DATE_ADD(now(), INTERVAL 1 MONTH)";
 $result = $adb->pquery($query, array());
 
-if ($adb->num_rows($result) >= 1) {
-    while ($result_set = $adb->fetch_array($result)) {
-        $content = getcontent_month($result_set['contactid']);
-        $body = $content['body'];
-        $body = str_replace('$logo$', '<img src="cid:logo" />', $body);
-        $subject = $content['subject'];
+while ($result_set = $adb->fetch_array($result)) {
+    $content = getcontent_month($result_set['contactid']);
+    $body = $content['body'];
+    $body = str_replace('$logo$', '<img src="cid:logo" />', $body);
+    $subject = $content['subject'];
 
-        $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
-        $mailer->retrieveSMTPVtiger();
-        $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
-        $mailer->addBCC($HELPDESK_SUPPORT_EMAIL_ID);
-        $mailer->addAddress($result_set['email'], 'Support');
-        $mailer->Subject = $subject;
-        $mailer->Body = $body;
-        $mailer->isHTML();
-        $mailer->send();
-    }
+    $mailer = ITS4YouEmails_Mailer_Model::getCleanInstance();
+    $mailer->retrieveSMTPVtiger();
+    $mailer->setFrom($HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME);
+    $mailer->addBCC($HELPDESK_SUPPORT_EMAIL_ID);
+    $mailer->addAddress($result_set['email'], 'Support');
+    $mailer->Subject = $subject;
+    $mailer->Body = $body;
+    $mailer->isHTML();
+    $mailer->send();
 }
 
 //comment / uncomment this line if you want to hide / show the sent mail status
