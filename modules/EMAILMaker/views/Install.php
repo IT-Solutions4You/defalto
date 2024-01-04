@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *

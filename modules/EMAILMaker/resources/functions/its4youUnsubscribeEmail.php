@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * This file is part of the IT-Solutions4You CRM Software.
+ *
+ * (c) IT-Solutions4You s.r.o [info@its4you.sk]
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 if (!function_exists('its4you_unsubscribeemail')) {
     function its4you_unsubscribeemail($accounts_crmid, $contacts_crmid, $url_address, $label, $leads_crmid = "")
     {
