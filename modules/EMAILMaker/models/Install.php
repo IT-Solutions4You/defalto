@@ -160,13 +160,20 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
                 $this->addCustomLinks();
                 break;
             case 'module.enabled':
+                $this->updateProfilePermissions();
+                $this->addCustomLinks();
+                $this->updateCron();
+                break;
             case 'module.postupdate':
                 $this->updateProfilePermissions();
                 $this->addCustomLinks();
                 break;
             case 'module.preupdate':
+                $this->deleteCustomLinks();
+                break;
             case 'module.disabled':
                 $this->deleteCustomLinks();
+                $this->updateCron(false);
                 break;
             case 'module.preuninstall':
                 $this->updateCron(false);

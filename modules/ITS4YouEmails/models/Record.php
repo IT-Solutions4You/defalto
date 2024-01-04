@@ -143,7 +143,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     }
 
     /**
-     * @return ITS4YouEmails_Mailer_Model|\ITS4You\PHPMailer\PHPMailer
+     * @return ITS4YouEmails_Mailer_Model
      */
     public function getMailer()
     {

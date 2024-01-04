@@ -356,11 +356,9 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         return $this->profilesPermissions;
     }
 
-    public function GetListviewData($orderby = "templateid", $sortorder = "asc", $formodule = "", $load_body = false, Vtiger_Request $request)
+    public function GetListviewData($orderby = 'templateid', $sortorder = 'asc', $formodule = '', $load_body = false, Vtiger_Request $request = null)
     {
-
-
-        $MODULE = "EMAILMaker";
+        $MODULE = 'EMAILMaker';
         $current_user = Users_Record_Model::getCurrentUserModel();
         $status_sql = "SELECT * FROM vtiger_emakertemplates_userstatus
 		             INNER JOIN vtiger_emakertemplates USING(templateid)
@@ -1211,7 +1209,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                     break;
 
                 default:
-                    continue;
+                    break;
             }
         }
         $result["PRODUCTS_FIELDS"] = $prod_fields;

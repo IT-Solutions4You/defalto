@@ -35,7 +35,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $templatename;
     private static $type;
     private static $section_sep = "&#%ITS%%%@@@%%%ITS%#&";
-    private static $rep;
+    private static $rep = [];
     private static $inventory_table_array = array();
     private static $inventory_id_array = array();
     private static $org_colsOLD = array();
@@ -60,6 +60,11 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         self::$site_url = trim(vglobal('site_URL'), "/");
         self::$inventory_table_array = $this->getInventoryTableArray();
         self::$inventory_id_array = $this->getInventoryIdArray();
+
+        if(empty(self::$is_inventory_module)) {
+            self::$is_inventory_module = [];
+        }
+
         self::$is_inventory_module[self::$module] = $this->isInventoryModule(self::$module);
         self::$org_colsOLD = $this->getOrgOldCols();
     }
@@ -1444,7 +1449,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
         $result = self::$db->pquery("SELECT tandc FROM vtiger_inventory_tandc WHERE type = ?", array("Inventory"));
         $tandc = self::$db->query_result($result, 0, "tandc");
-        self::$rep["$" . "TERMS_AND_CONDITIONS$"] = nl2br($tandc);
+        self::$rep["$" . "TERMS_AND_CONDITIONS$"] = nl2br((string)$tandc);
 
         if ($convert_source) {
             //assigned user fields
