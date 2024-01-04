@@ -149,33 +149,12 @@
                     <div class="row form-group py-2">
                         <div class="col-lg-2">{vtranslate('LBL_SIGNATURE','EMAILMaker')}</div>
                         <div class="col-lg-8">
-                            <input type="checkbox" name="signature" id="signature" class="form-check-input" {if $TASK_OBJECT->signature}checked="checked"{/if}">
+                            <input type="checkbox" name="signature" id="signature" class="form-check-input" {if $TASK_OBJECT->signature}checked="checked"{/if}>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script src="modules/EMAILMaker/workflow/VTEMAILMakerMailTask.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript">
-            Settings_Workflows_Edit_Js.prototype.registerVTEMAILMakerMailTaskEvents = function () {
-                let textAreaElement = jQuery('#content');
-
-                this.registerFillTaskFromEmailFieldEvent();
-                this.registerCcAndBccEvents();
-            };
-
-            Settings_Workflows_Edit_Js.prototype.VTEMAILMakerMailTaskCustomValidation = function () {
-                let result = true,
-                    selectElement1 = jQuery('input[name="recepient"]'),
-                    control1 = selectElement1.val();
-
-                if (!control1) {
-                    jQuery('#detailViewLayoutBtn').trigger('click');
-                    result = app.vtranslate('JS_REQUIRED_FIELD');
-                }
-
-                return result;
-            };
-        </script>
     </div>
 {/strip}

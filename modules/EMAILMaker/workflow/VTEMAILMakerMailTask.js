@@ -9,3 +9,23 @@
 Settings_Workflows_Edit_Js.prototype.preSaveVTEMAILMakerMailTask = function (tasktype) {
 
 }
+
+Settings_Workflows_Edit_Js.prototype.registerVTEMAILMakerMailTaskEvents = function () {
+    let textAreaElement = jQuery('#content');
+
+    this.registerFillTaskFromEmailFieldEvent();
+    this.registerCcAndBccEvents();
+};
+
+Settings_Workflows_Edit_Js.prototype.VTEMAILMakerMailTaskCustomValidation = function () {
+    let result = true,
+        selectElement1 = jQuery('input[name="recepient"]'),
+        control1 = selectElement1.val();
+
+    if (!control1) {
+        jQuery('#detailViewLayoutBtn').trigger('click');
+        result = app.vtranslate('JS_REQUIRED_FIELD');
+    }
+
+    return result;
+};
