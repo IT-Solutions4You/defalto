@@ -258,7 +258,6 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         self::logSuccess('Install tables');
 
         $moduleName = $this->moduleName;
-        /** @var Appointments $moduleFocus */
         $moduleFocus = CRMEntity::getInstance($moduleName);
 
         $entity = in_array(get_parent_class($moduleFocus), ['CRMEntity', 'Vtiger_CRMEntity']);
