@@ -208,7 +208,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
 
         if ($setype != 'Products') {
             $sql = "SELECT CASE WHEN vtiger_products.productid != '' THEN vtiger_products.productname ELSE vtiger_service.servicename END AS productname,
-            vtiger_inventoryproductrel.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.attachmentsid, name, path
+            vtiger_inventoryproductrel.productid, vtiger_inventoryproductrel.sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
           FROM vtiger_inventoryproductrel
           LEFT JOIN vtiger_seattachmentsrel
             ON vtiger_seattachmentsrel.crmid=vtiger_inventoryproductrel.productid
@@ -220,7 +220,7 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
             ON vtiger_service.serviceid=vtiger_inventoryproductrel.productid
           WHERE vtiger_inventoryproductrel.id=? ORDER BY vtiger_inventoryproductrel.sequence_no";
         } else {
-            $sql = "SELECT vtiger_products.productname, vtiger_products.productid, '1' AS sequence_no, vtiger_attachments.attachmentsid, name, path
+            $sql = "SELECT vtiger_products.productname, vtiger_products.productid, '1' AS sequence_no, vtiger_attachments.attachmentsid, name, path, vtiger_attachments.storedname
               FROM vtiger_products
               LEFT JOIN vtiger_seattachmentsrel
                 ON vtiger_seattachmentsrel.crmid=vtiger_products.productid
@@ -260,49 +260,51 @@ class PDFMaker_IndexAjax_View extends Vtiger_Index_View
             $width = '100';
             $height = '';
 
-            foreach ($data as $attid => $images) {
-                if ($attid != '') {
-                    if ($i == 3) {
-                        $prodImg .= '</tr><tr>';
-                    }
-
+            foreach ($data as $attachmentId => $images) {
+                if ($attachmentId != '') {
                     $checked = '';
 
                     if (isset($saved_products[$productid . '_' . $seq])) {
-                        if ($saved_products[$productid . '_' . $seq] == $attid) {
+                        if ($saved_products[$productid . '_' . $seq] == $attachmentId) {
                             $checked = ' checked="checked" ';
                             $noCheck = '';
                             $width = $saved_wh[$productid . '_' . $seq]['width'];
                             $height = $saved_wh[$productid . '_' . $seq]['height'];
                         }
-                    } elseif (!isset($bac_products[$productid . '_' . $seq])) { //$bac_products array is used for default selection of first image  in case no explicit selection has been made
-                        $bac_products[$productid . '_' . $seq] = $attid;
+                    } elseif (!isset($bac_products[$productid . '_' . $seq])) {
+                        $bac_products[$productid . '_' . $seq] = $attachmentId;
                         $checked = ' checked="checked" ';
                         $noCheck = '';
                         $width = '100';
                         $height = '';
                     }
 
-                    $prodImg .= '<td valign="middle"><input type="radio" name="img_' . $productid . '_' . $seq . '" value="' . $attid . '"' . $checked . '/>
-		                 <img align="absmiddle" src="' . $images['path'] . $attid . '_' . $images['name'] . '" alt="' . $images['name'] . '" title="' . $images['name'] . '" style="max-width:50px;max-height:50px;">
-		                 </td>';
+                    $prodImg .= '<label class="py-2 px-3 d-flex align-items-center">
+                            <input type="radio" class="form-check-input ms-1 me-3" name="img_' . $productid . '_' . $seq . '" value="' . $attachmentId . '"' . $checked . '/>
+		                    <img src="' . $images['path'] . $attachmentId . '_' . $images['name'] . '" alt="' . $images['name'] . '" title="' . $images['name'] . '" class="rounded" style="height:50px;">
+		                 </label>';
                     $i++;
                 }
             }
 
-            $imgHTML .= '<tr><td class="detailedViewHeader" style="padding-top:5px;padding-bottom:5px;"><b>' . $productname . '</b>';
+            $imgHTML .= '<div class="detailedViewHeader my-3 border rounded"><h4 class="border-bottom px-3 py-2 m-0">' . $productname . '</h4>';
 
             if ($i > 0) {
-                $imgHTML .= '&nbsp;&nbsp;&nbsp;<input type="text" maxlength="3" name="width_' . $productid . '_' . $seq . '" value="' . $width . '" class="small" style="width:40px">&nbsp;x&nbsp;
-		              <input type="text" maxlength="3" name="height_' . $productid . '_' . $seq . '" value="' . $height . '" class="small" style="width:40px">';
+                $imgHTML .= '<div class="input-group w-50 px-3 py-2">
+                    <span class="input-group-text">'. vtranslate('Width', 'PDFMaker') . '</span>
+                    <input type="text" class="form-control" maxlength="3" name="width_' . $productid . '_' . $seq . '" value="' . $width . '">
+                    <span class="input-group-text">'. vtranslate('Height', 'PDFMaker') . '</span>
+		            <input type="text" class="form-control" maxlength="3" name="height_' . $productid . '_' . $seq . '" value="' . $height . '">
+		            </div>';
             }
 
-            $imgHTML .= '</td></tr>
-		             <tr><td class="dvtCellInfo">';
-            $imgHTML .= '<table cellpadding="0" cellspacing="1"><tr><td><input type="radio" name="img_' . $productid . '_' . $seq . '" value="no_image"' . $noCheck . '/>';
-            $imgHTML .= '<img src="' . $denied_img . '" width="30" align="absmiddle" title="' . $pdf_strings['LBL_NO_IMAGE'] . '" alt="' . $pdf_strings['LBL_NO_IMAGE'] . '"/></td>';
-            $imgHTML .= $prodImg . "</tr></table>
-		            </td></tr>";
+            $imgHTML .= '<div class="dvtCellInfo">';
+            $imgHTML .= '<label class="py-2 px-3 d-flex align-items-center">';
+            $imgHTML .= '<input type="radio" class="form-check-input ms-1 me-3" name="img_' . $productid . '_' . $seq . '" value="no_image"' . $noCheck . '/>';
+            $imgHTML .= '<img src="' . $denied_img . '" style="height:50px;" align="absmiddle" title="' . $pdf_strings['LBL_NO_IMAGE'] . '" alt="' . $pdf_strings['LBL_NO_IMAGE'] . '"/>';
+            $imgHTML .= '</label>';
+            $imgHTML .= $prodImg;
+            $imgHTML .= '</div></div>';
         }
 
         $viewer->assign('IMG_HTML', $imgHTML);

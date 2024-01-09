@@ -271,4 +271,9 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
 
         return implode('&', $A);
     }
+
+    public function getModuleIcon($height = '')
+    {
+        return sprintf('<i class="fa-solid fa-file-pdf" style="font-size: %s"></i>', $height);
+    }
 }

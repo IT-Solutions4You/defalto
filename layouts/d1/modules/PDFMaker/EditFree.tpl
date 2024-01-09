@@ -57,7 +57,7 @@
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
                                                     <input type="hidden" name="modulename" id="modulename" value="{$SELECTMODULE}">
-                                                    <select name="modulefields" id="modulefields" class="select2 form-control">
+                                                    <select name="modulefields" id="modulefields" class="select2 form-select" data-width="50%">
                                                         <option value="">{vtranslate('LBL_SELECT_MODULE_FIELD',$MODULE)}</option>
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="modulefields" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -76,7 +76,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="relatedmodulesorce" id="relatedmodulesorce" class="select2 form-control">
+                                                    <select name="relatedmodulesorce" id="relatedmodulesorce" class="select2 form-select" data-width="50%">
                                                         <option value="">{vtranslate('LBL_SELECT_MODULE',$MODULE)}</option>
                                                         {foreach item=RelMod from=$RELATED_MODULES}
                                                             <option value="{$RelMod.0}" data-module="{$RelMod.3}">{$RelMod.1} ({$RelMod.2})</option>
@@ -91,7 +91,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="relatedmodulefields" id="relatedmodulefields" class="select2 form-control">
+                                                    <select name="relatedmodulefields" id="relatedmodulefields" class="select2 form-select" data-width="50%">
                                                         <option value="">{vtranslate('LBL_SELECT_MODULE_FIELD',$MODULE)}</option>
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="relatedmodulefields" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -115,7 +115,7 @@
                                         </label>
                                         <div class="controls col-sm-9">
                                             <div class="input-group">
-                                                <select name="acc_info_type" id="acc_info_type" class="select2 form-control">
+                                                <select name="acc_info_type" id="acc_info_type" class="select2 form-select" data-width="50%">
                                                     {html_options  options=$CUI_BLOCKS}
                                                 </select>
                                             </div>
@@ -127,7 +127,7 @@
                                             <div>
                                                 <div id="acc_info_div" class="au_info_div" style="display:inline;">
                                                     <div class="input-group">
-                                                        <select name="acc_info" id="acc_info" class="select2 form-control">
+                                                        <select name="acc_info" id="acc_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$ACCOUNTINFORMATIONS}
                                                         </select>
                                                         <button type="button" class="btn btn-success InsertIntoTemplate" data-type="acc_info" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -140,7 +140,7 @@
                                                 </div>
                                                 <div id="user_info_div" class="au_info_div" style="display:none;">
                                                     <div class="input-group">
-                                                        <select name="user_info" id="user_info" class="select2 form-control">
+                                                        <select name="user_info" id="user_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$USERINFORMATIONS['a']}
                                                         </select>
                                                         <button type="button" class="btn btn-success InsertIntoTemplate" data-type="user_info" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -153,7 +153,7 @@
                                                 </div>
                                                 <div id="logged_user_info_div" class="au_info_div" style="display:none;">
                                                     <div class="input-group">
-                                                        <select name="logged_user_info" id="logged_user_info" class="select2 form-control">
+                                                        <select name="logged_user_info" id="logged_user_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$USERINFORMATIONS['l']}
                                                         </select>
                                                         <button type="button" class="btn btn- InsertIntoTemplate" data-type="logged_user_info" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -166,7 +166,7 @@
                                                 </div>
                                                 <div id="modifiedby_user_info_div" class="au_info_div" style="display:none;">
                                                     <div class="input-group">
-                                                        <select name="modifiedby_user_info" id="modifiedby_user_info" class="select2 form-control">
+                                                        <select name="modifiedby_user_info" id="modifiedby_user_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$USERINFORMATIONS['m']}
                                                         </select>
                                                         <button type="button" class="btn btn-success InsertIntoTemplate" data-type="modifiedby_user_info" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -179,7 +179,7 @@
                                                 </div>
                                                 <div id="smcreator_user_info_div" class="au_info_div form-control" style="display:none;">
                                                     <div class="input-group">
-                                                        <select name="smcreator_user_info" id="smcreator_user_info" class="select2 form-control">
+                                                        <select name="smcreator_user_info" id="smcreator_user_info" class="select2 form-select" data-width="50%">
                                                             {html_options  options=$USERINFORMATIONS['c']}
                                                         </select>
                                                         <button type="button" class="btn btn-success InsertIntoTemplate" data-type="smcreator_user_info" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -199,7 +199,7 @@
                                         </label>
                                         <div class="controls col-sm-9">
                                             <div class="input-group">
-                                                <select name="invterandcon" id="invterandcon" class="select2 form-control">
+                                                <select name="invterandcon" id="invterandcon" class="select2 form-select" data-width="50%">
                                                     {html_options  options=$INVENTORYTERMSANDCONDITIONS}
                                                 </select>
                                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="invterandcon" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -214,7 +214,7 @@
                                         </label>
                                         <div class="controls col-sm-9">
                                             <div class="input-group">
-                                                <select name="dateval" id="dateval" class="select2 form-control">
+                                                <select name="dateval" id="dateval" class="select2 form-select" data-width="50%">
                                                     {html_options  options=$DATE_VARS}
                                                 </select>
                                                 <button type="button" class="btn btn-success InsertIntoTemplate" data-type="dateval" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -235,7 +235,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="global_lang" id="global_lang" class="select2 form-control">
+                                                    <select name="global_lang" id="global_lang" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$GLOBAL_LANG_LABELS}
                                                     </select>
                                                     <button type="button" class="btn btn-warning InsertIntoTemplate" data-type="global_lang" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -250,7 +250,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="module_lang" id="module_lang" class="select2 form-control">
+                                                    <select name="module_lang" id="module_lang" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$MODULE_LANG_LABELS}
                                                     </select>
                                                     <button type="button" class="btn btn-warning InsertIntoTemplate" data-type="module_lang" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -272,7 +272,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="productbloctpl2" id="productbloctpl2" class="select2 form-control">
+                                                    <select name="productbloctpl2" id="productbloctpl2" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$PRODUCT_BLOC_TPL}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="productbloctpl2" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -287,7 +287,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="articelvar" id="articelvar" class="select2 form-control">
+                                                    <select name="articelvar" id="articelvar" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$ARTICLE_STRINGS}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="articelvar" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -303,7 +303,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="psfields" id="psfields" class="select2 form-control">
+                                                    <select name="psfields" id="psfields" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$SELECT_PRODUCT_FIELD}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="psfields" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -319,7 +319,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="productfields" id="productfields" class="select2 form-control">
+                                                    <select name="productfields" id="productfields" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$PRODUCTS_FIELDS}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="productfields" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -335,7 +335,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="servicesfields" id="servicesfields" class="select2 form-control">
+                                                    <select name="servicesfields" id="servicesfields" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$SERVICES_FIELDS}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="servicesfields" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -361,7 +361,7 @@
                                             </label>
                                             <div class="controls col-sm-9">
                                                 <div class="input-group">
-                                                    <select name="header_var" id="header_var" class="select2 form-control">
+                                                    <select name="header_var" id="header_var" class="select2 form-select" data-width="50%">
                                                         {html_options  options=$HEAD_FOOT_VARS selected=""}
                                                     </select>
                                                     <button type="button" class="btn btn-success InsertIntoTemplate" data-type="header_var" title="{vtranslate('LBL_INSERT_TO_TEXT',$MODULE)}">
@@ -460,7 +460,7 @@
                                         </label>
                                         <div class="controls col-sm-9">
                                             <div class="input-group">
-                                                <select name="pdf_orientation" id="pdf_orientation" class="select2 form-control">
+                                                <select name="pdf_orientation" id="pdf_orientation" class="select2 form-select" data-width="50%">
                                                     {html_options  options=$ORIENTATIONS selected=$SELECT_ORIENTATION}
                                                 </select>
                                             </div>

@@ -6,37 +6,36 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+/** @var PDFMaker_FreeActions_Js */
+jQuery.Class('PDFMaker_FreeActions_Js', {
+    templatesElements: {},
+    controlModal: function (container) {
+        let aDeferred = jQuery.Deferred();
 
-jQuery.Class("PDFMaker_FreeActions_Js",{
-    templatesElements : {},
-    controlModal : function(container) {
-        var aDeferred = jQuery.Deferred();
         if (container.find('.modal-content').length > 0) {
-            app.helper.hideModal().then(
-                function () {
-                    aDeferred.resolve();
-                }
-            );
+            app.helper.hideModal().then(function () {
+                aDeferred.resolve();
+            });
         } else {
             aDeferred.resolve();
         }
+
         return aDeferred.promise();
     },
-    getPDFSelectLanguage: function(container) {
+    getPDFSelectLanguage: function (container) {
         return container.find('#template_language').val();
     },
-    getDefaultParams: function(viewtype,pdflanguage) {
-
-        var params = {
+    getDefaultParams: function (viewtype, pdfLanguage) {
+        let params = {
             module: 'PDFMaker',
-            source_module : app.getModuleName(),
-            formodule : app.getModuleName(),
+            source_module: app.getModuleName(),
+            formodule: app.getModuleName(),
             view: viewtype,
-            record : app.getRecordId()
+            record: app.getRecordId()
         };
 
-        if (pdflanguage != '') {
-            params['language'] = pdflanguage;
+        if (pdfLanguage) {
+            params['language'] = pdfLanguage;
         }
 
         return params;
@@ -50,70 +49,74 @@ jQuery.Class("PDFMaker_FreeActions_Js",{
             modalContainer.find(modalType).height('81vh');
         }
     },
-    checkIfAny: function (modalContainer){
+    checkIfAny: function (modalContainer) {
+        let j = 0,
+            LineItemCheckboxes = modalContainer.find('.LineItemCheckbox');
 
-        var j = 0;
-        var LineItemCheckboxes = modalContainer.find('.LineItemCheckbox');
-        jQuery.each(LineItemCheckboxes,function(i,e) {
+        jQuery.each(LineItemCheckboxes, function (i, e) {
             if (jQuery(e).is(":checked")) {
                 j++;
             }
         });
-        var settingscheckboxes_el = modalContainer.find('.settingsCheckbox');
-        if (j == 0){
+
+        let settingscheckboxes_el = modalContainer.find('.settingsCheckbox');
+
+        if (0 === j) {
             settingscheckboxes_el.removeAttr('checked');
-            settingscheckboxes_el.attr( "disabled" ,"disabled" );
+            settingscheckboxes_el.attr("disabled", "disabled");
         } else {
             settingscheckboxes_el.removeAttr('disabled');
         }
 
     },
-    showPDFMakerModal : function (modetype) {
-        var self = this;
-        var params = {
+    showPDFMakerModal: function (modeType) {
+        let self = this;
+        let params = {
             module: 'PDFMaker',
-            return_id:  app.getRecordId(),
+            return_id: app.getRecordId(),
             view: 'IndexAjax',
-            mode: modetype
+            mode: modeType
         };
 
         app.helper.showProgress();
-        app.request.get({data:params}).then(function(err,response){
+        app.request.get({data: params}).then(function (err, response) {
 
             app.helper.hideProgress();
             app.helper.showModal(response, {
-                'cb' : function(modalContainer) {
-                    if (modetype == "PDFBreakline") {
-                        modalContainer.find('.LineItemCheckbox').on('click', function(){
+                'cb': function (modalContainer) {
+                    if ('PDFBreakline' === modeType) {
+                        modalContainer.find('.LineItemCheckbox').on('click', function () {
                             self.checkIfAny(modalContainer);
                         });
                     }
 
-                    modalContainer.find('#js-save-button').on('click', function(){
-                        PDFMaker_FreeActions_Js.savePDFMakerModal(modalContainer, modetype);
+                    modalContainer.find('#js-save-button').on('click', function () {
+                        PDFMaker_FreeActions_Js.savePDFMakerModal(modalContainer, modeType);
                     });
                 }
             });
         });
 
     },
-    savePDFMakerModal: function (modalContainer,modetype) {
-        var form = modalContainer.find('#Save' + modetype + 'Form');
-        var params = form.serializeFormData();
+    savePDFMakerModal: function (modalContainer, modeType) {
+        let form = modalContainer.find('#Save' + modeType + 'Form');
+        let params = form.serializeFormData();
+
         app.helper.hideModal();
         app.helper.showProgress();
 
-        app.request.post({"data":params}).then(function (err) {
-            if (err == null) {
+        app.request.post({data: params}).then(function (error) {
+            if (!error) {
                 app.helper.hideProgress();
-                app.helper.showSuccessNotification({"message":''});
+                app.helper.showSuccessNotification({message: ''});
             } else {
-                app.helper.showErrorNotification({"message":''});
+                app.helper.showErrorNotification({message: ''});
             }
         });
     },
-    controlPDFSelectInput : function(container,element) {
-        var fieldVal = element.val();
+    controlPDFSelectInput: function (container, element) {
+        let fieldVal = element.val();
+
         if (fieldVal === null) {
             container.find('.btn-success').attr('disabled', 'disabled');
             container.find('.PDFMakerTemplateAction').hide();
@@ -122,125 +125,100 @@ jQuery.Class("PDFMaker_FreeActions_Js",{
             container.find('.PDFMakerTemplateAction').show();
         }
     },
-    registerPDFSelectInput : function(container) {
-        var self = this;
+    registerPDFSelectInput: function (container) {
+        let self = this;
 
-        jQuery("#use_common_template",container).change(function(){
-            var element = jQuery(this);
+        jQuery('#use_common_template', container).change(function () {
+            let element = jQuery(this);
 
-            self.controlPDFSelectInput(container,element);
+            self.controlPDFSelectInput(container, element);
         });
     },
-    showPDFPreviewModal: function (pdflanguage) {
-        var self = this;
+    showPDFPreviewModal: function (pdfLanguage) {
+        let self = this;
 
-        var params = this.getDefaultParams('IndexAjax',pdflanguage);
+        let params = this.getDefaultParams('IndexAjax', pdfLanguage);
         params['mode'] = 'getPreview';
 
         app.helper.showProgress();
-        app.request.get({data: params}).then(function(err, data) {
+        app.request.get({data: params}).then(function (err, data) {
 
             app.helper.showModal(data, {
-                'cb' : function(modalContainer) {
-                    self.registerPDFPreviewActionsButtons(modalContainer,pdflanguage);
-                    self.setMaxModalHeight(modalContainer,'iframe');
+                'cb': function (modalContainer) {
+                    self.registerPDFPreviewActionsButtons(modalContainer, pdfLanguage);
+                    self.setMaxModalHeight(modalContainer, 'iframe');
                 }
             });
 
             app.helper.hideProgress();
         });
     },
-    registerPDFPreviewActionsButtons: function (modalContainer){
+    registerPDFPreviewActionsButtons: function (modalContainer) {
 
-        modalContainer.find('.downloadButton').on('click', function(e){
+        modalContainer.find('.downloadButton').on('click', function (e) {
             window.location.href = jQuery(e.currentTarget).data('desc');
         });
 
-        modalContainer.find('.printButton').on('click', function(){
-            var PDF = document.getElementById("PDFMakerPreviewContent");
+        modalContainer.find('.printButton').on('click', function () {
+            let PDF = document.getElementById("PDFMakerPreviewContent");
             PDF.focus();
             PDF.contentWindow.print();
         });
     },
 
-    registerPDFActionsButtons: function (container){
+    registerPDFActionsButtons: function (container) {
 
-        var self = this;
+        let self = this;
 
-        container.find('.PDFMakerDownloadPDF').on('click', function(){
-            var pdflanguage = self.getPDFSelectLanguage(container);
+        container.find('.PDFMakerDownloadPDF').on('click', function () {
+            let pdfLanguage = self.getPDFSelectLanguage(container),
+                params = self.getDefaultParams('', pdfLanguage);
 
-            var params = self.getDefaultParams('',pdflanguage);
-            params["action"]  = 'CreatePDFFromTemplate';
-            var paramsUrl = jQuery.param(params);
-            window.location.href = "index.php?" + paramsUrl;
+            params["action"] = 'CreatePDFFromTemplate';
 
+            window.location.href = 'index.php?' + jQuery.param(params);
         });
 
-        container.find('.PDFModalPreview').on('click', function(){
-            var pdflanguage = self.getPDFSelectLanguage(container);
-            self.controlModal(container).then(function() {
-                self.showPDFPreviewModal(pdflanguage);
+        container.find('.PDFModalPreview').on('click', function () {
+            let pdfLanguage = self.getPDFSelectLanguage(container);
+
+            self.controlModal(container).then(function () {
+                self.showPDFPreviewModal(pdfLanguage);
             });
         });
 
-        container.find('.exportListPDF').on('click', function(){
-            var form = container.find('#exportListPDFMakerForm');
+        container.find('.exportListPDF').on('click', function () {
+            let form = container.find('#exportListPDFMakerForm');
             form.submit();
         });
 
-        container.find('.showPDFBreakline').on('click', function(){
+        container.find('.showPDFBreakline').on('click', function () {
             self.showPDFMakerModal('PDFBreakline');
         });
 
-        container.find('.showProductImages').on('click', function(){
+        container.find('.showProductImages').on('click', function () {
             self.showPDFMakerModal('ProductImages');
         });
-
     }
+}, {
+    registerEvents: function () {
+        let linkDiv = $('#PDFMakerContentDiv');
 
-},{
+        linkDiv.find('#template_language').select2();
 
-    registerEvents: function (){
-        var self = this;
-        var recordId = app.getRecordId();
-        var view = app.view();
+        PDFMaker_FreeActions_Js.registerPDFActionsButtons(linkDiv);
+        PDFMaker_FreeActions_Js.registerPDFSelectInput(linkDiv);
 
-        var params = {
-            module: 'PDFMaker',
-            source_module : app.getModuleName(),
-            view : 'GetPDFActions',
-            record: recordId,
-            mode : 'getButtons'
-        };
-
-        var detailViewButtonContainerDiv = jQuery('.detailview-header');
-
-        app.request.post({'data' : params}).then(
-            function(err,response) {
-                
-                if(err === null){
-                    if (response != ""){
-                        detailViewButtonContainerDiv.append(response);
-                        detailViewButtonContainerDiv.find('#template_language').select2();
-
-                        var pdfmakercontent = detailViewButtonContainerDiv.find('#PDFMakerContentDiv');
-                        PDFMaker_FreeActions_Js.registerPDFActionsButtons(pdfmakercontent);
-                        PDFMaker_FreeActions_Js.registerPDFSelectInput(pdfmakercontent);
-                        detailViewButtonContainerDiv.find('.selectPDFTemplates').on('click', function(){
-                            var pdflanguage = PDFMaker_FreeActions_Js.getPDFSelectLanguage(pdfmakercontent);
-                            PDFMaker_FreeActions_Js.showPDFPreviewModal(pdflanguage);
-                        });
-                    }
-                }
-            }
-        );
+        linkDiv.find('.selectPDFTemplates').on('click', function () {
+            let pdfLanguage = PDFMaker_FreeActions_Js.getPDFSelectLanguage(linkDiv);
+            PDFMaker_FreeActions_Js.showPDFPreviewModal(pdfLanguage);
+        });
     }
 });
 
-jQuery(document).ready(function(){
-	if(jQuery.inArray( app.getModuleName(), [ 'Invoice','Quotes','SalesOrder','PurchaseOrder' ] ) !== -1){
-        var instance = new PDFMaker_FreeActions_Js();
+jQuery(document).ready(function () {
+    if (jQuery.inArray(app.getModuleName(), ['Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder']) !== -1) {
+        let instance = new PDFMaker_FreeActions_Js();
         instance.registerEvents();
     }
 });

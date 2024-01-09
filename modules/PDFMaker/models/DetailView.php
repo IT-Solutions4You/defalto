@@ -30,7 +30,7 @@ class PDFMaker_DetailView_Model extends Vtiger_DetailView_Model
             'linktype' => 'DETAILVIEWBASIC',
             'linklabel' => 'LBL_EDIT',
             'linkurl' => $recordModel->getEditViewUrl(),
-            'linkicon' => ''
+            'linkicon' => '<i class="fa fa-pencil"></i>'
         );
         $linkModelList = array();
         $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);

@@ -19,49 +19,22 @@
 					<input type="hidden" name="action" value="SaveAjax" />
 					<input type="hidden" name="mode" value="SavePDFBreakline" />
 					<input type="hidden" name="return_id" value="{$RECORD}" />
-					<h4 class="fieldBlockHeader">{vtranslate('LBL_GLOBAL_SETTINGS', $MODULE_NAME)}</h4>
-					<table class="table no-border">
-						<tr>
-							<td class="" style="width: 1%">
-							<input type="checkbox" class="settingsCheckbox" name="show_header" value="1" {$HEADER_CHECKED}/>
-							</td>
-							<td class="">
-								{vtranslate('LBL_SHOW_HEADER', $MODULE_NAME)}
-							</td>
-						</tr>
-						<tr>
-							<td class="lineItemFieldName" style="width: 1%">
-							<input type="checkbox" class="settingsCheckbox" name="show_subtotal" value="1" {$SUBTOTAL_CHECKED}/>
-							</td>
-							<td class="lineItemFieldName">
-							{vtranslate('LBL_SHOW_SUBTOTAL', $MODULE_NAME)}
-							</td>
-						</tr>
-					</table>
-
-					<h4 class="fieldBlockHeader">{vtranslate('LBL_ITEM_DETAILS', $MODULE_NAME)}</h4>
-
-					<table class="table table-bordered lineItemsTable">
-						<thead>
-						<th class="lineItemBlockHeader">
-						</th>
-						<th class="lineItemBlockHeader">
-                            {vtranslate('LBL_ITEM_NAME', $MODULE_NAME)}
-						</th>
-						</thead>
-						<tbody>
-                        {foreach  item=PRODUCT from=$PRODUCTS}
-							<tr>
-								<td class="lineItemFieldName" style="width: 1%">
-									<input type="checkbox" class="LineItemCheckbox" value="1" name="ItemPageBreak_{$PRODUCT.uid}" {if $PRODUCT.checked eq "yes"}checked{/if}/>
-								</td>
-								<td class="lineItemFieldName">
-									{$PRODUCT.name}
-								</td>
-							</tr>
-    					{/foreach}
-						</tbody>
-					</table>
+					<h4 class="fieldBlockHeader pt-3">{vtranslate('LBL_GLOBAL_SETTINGS', $MODULE_NAME)}</h4>
+					<label class="form-check py-2">
+						<input type="checkbox" class="settingsCheckbox form-check-input" name="show_header" value="1" {$HEADER_CHECKED}/>
+						<span class="form-check-label">{vtranslate('LBL_SHOW_HEADER', $MODULE_NAME)}</span>
+					</label>
+					<label class="form-check py-2">
+						<input type="checkbox" class="settingsCheckbox form-check-input" name="show_subtotal" value="1" {$SUBTOTAL_CHECKED}/>
+						<span class="form-check-label">{vtranslate('LBL_SHOW_SUBTOTAL', $MODULE_NAME)}</span>
+					</label>
+					<h4 class="fieldBlockHeader pt-3">{vtranslate('LBL_ITEM_DETAILS', $MODULE_NAME)}</h4>
+					{foreach item=PRODUCT from=$PRODUCTS}
+						<label class="form-check py-2">
+							<input type="checkbox" class="LineItemCheckbox form-check-input" value="1" name="ItemPageBreak_{$PRODUCT.uid}" {if $PRODUCT.checked eq "yes"}checked{/if}/>
+							<span class="form-check-label">{$PRODUCT.name}</span>
+						</label>
+					{/foreach}
 				</form>
 			</div>
 		</div>

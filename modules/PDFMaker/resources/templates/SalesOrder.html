@@ -1,0 +1,408 @@
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<style type="text/css">@font-face {
+    font-family: SourceSansPro;
+    src: url(SourceSansPro-Regular.ttf);
+    font-family: Ubuntu;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+a {
+    color: #1B9BB8;
+    text-decoration: none;
+}
+
+{
+    color: #555555
+;
+    background: #FFFFFF
+;
+    font-size: 14px
+;
+    font-family: SourceSansPro
+;
+}
+
+#header {
+    padding: 10px 0;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+#logo {
+    float: left;
+    margin: 0px;
+    width: 250px;
+}
+
+#logo img {
+    height: 70px;
+}
+
+#company {
+    float: left;
+    text-align: left;
+    width: 350px;
+}
+
+#details {
+    margin-bottom: 15px;
+    padding-top: 30px;
+}
+
+#client {
+    padding-left: 6px;
+    border-left: 6px solid #1B9BB8;
+    float: left;
+    width: 420px;
+}
+
+#client2 {
+    padding-left: 6px;
+    border-left: 6px solid #BDB9B9;;
+    float: left;
+    width: 420px;
+
+}
+
+#client .to {
+    color: #939598;
+}
+
+#client2 .to {
+    color: black;
+}
+
+h2.name {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 0;
+}
+
+#invoice {
+    float: right;
+    text-align: right;
+}
+
+#invoice2 {
+    float: right;
+    text-align: right;
+
+}
+
+#invoice h1, h1 {
+    float: right;
+    color: #1B9BB8;
+    font-size: 2em;
+    line-height: 2.2em;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+#invoice2 h1, h1 {
+    float: right;
+    color: #1B9BB8;
+    font-size: 2em;
+    line-height: 2.2em;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+#invoice .info {
+    font-size: 0.8em;
+}
+
+#invoice2 .info {
+    font-size: 0.8em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    padding: 10px 10px;
+    background: #EEEEEE;
+    text-align: center;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+table th {
+    white-space: nowrap;
+    font-weight: normal;
+}
+
+table td {
+    text-align: right;
+}
+
+table td h3 {
+    color: #1B9BB8;
+    font-size: 10px;
+    font-weight: normal;
+    margin: 0 0 0.2em 0;
+}
+
+table .no {
+    color: #FFFFFF;
+    font-size: 1.2em;
+    background: #1B9BB8;
+}
+
+table .desc {
+    text-align: left;
+}
+
+table .unit {
+    background: #DDDDDD;
+}
+
+table .qty {
+    text-align: center;
+}
+
+table .total {
+    background: #1B9BB8;
+    color: #FFFFFF;
+}
+
+table td.unit,
+table td.qty,
+table td.total {
+    font-size: 1em;
+}
+
+table tbody tr:last-child td {
+    border: none;
+}
+
+table tfoot td {
+    padding: 10px;
+    font-size: 1.2em;
+    background: #FFFFFF;
+    border-bottom: none;
+    white-space: nowrap;
+    border-top: 1px solid #AAAAAA;
+}
+
+table tfoot .border-none-top {
+    border-top: none;
+}
+
+table tfoot .grand-total {
+    padding: 10px 7px;
+    color: #1B9BB8;
+    font-size: 1.3em;
+    border-top: 1px solid #1B9BB8;
+    font-weight: bold
+}
+
+table tfoot .border-none {
+    border: none;
+}
+
+#pdf_tag {
+    font-size: 1.1em;
+    margin: 30px 0px 15px 0px;
+}
+
+#notices {
+    padding-left: 6px;
+    border-left: 6px solid #1B9BB8;
+}
+
+#notices .notice {
+    font-size: 1.2em;
+}
+
+.footer, .footer td {
+    background-color: #FFFFFF;
+    color: #939598;
+    border: none;
+    border-top: 1px solid #AAAAAA;
+    font-size: 0.9em;
+    padding: 10px 0;
+}
+
+.header, .header td {
+    background-color: #FFFFFF;
+    border: none;
+    border-bottom: 1px solid #AAAAAA;
+    margin: 0px;
+    padding: 0px;
+}
+</style>
+<div id="details">
+    <div id="client2">
+        <p style="color: rgb(0, 0, 0); font-family: Verdana; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;">
+            <span style="font-weight: bold;">$SALESORDER_ACCOUNT_ID$</span>
+        </p>
+        $SALESORDER_BILL_STREET$
+        <br/>
+        $SALESORDER_BILL_CODE$ $SALESORDER_BILL_CITY$
+        <br/>
+        $SALESORDER_BILL_STATE$
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        &nbsp;
+    </div>
+
+    <div id="invoice2">
+        <div class="info">
+            <p style="color: rgb(0, 0, 0); font-family: Verdana; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;">
+                <span style="font-weight: bold;">$COMPANY_NAME$</span>
+            </p>
+
+            <p style="color: rgb(0, 0, 0); font-family: Verdana; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;">$COMPANY_ADDRESS$
+                <br/>
+                $COMPANY_ZIP$ $COMPANY_CITY$
+                <br/>
+                $COMPANY_COUNTRY$
+            </p>
+
+            <p style="color: rgb(0, 0, 0); font-family: Verdana; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;">Telefon $COMPANY_PHONE$
+                <br/>
+                Telefax $COMPANY_FAX$
+                <br/>
+                <br/>
+                $COMPANY_WEBSITE$
+                <br/>
+                <br/>
+                %SALESORDER_DUEDATE%: $SALESORDER_DUEDATE$
+            </p>
+            <br/>
+            &nbsp;
+        </div>
+    </div>
+</div>
+
+<div id="pdf_tag"></div>
+
+<table border="0" color="black" style="font-size:10px;" width="100%">
+    <thead>
+    <tr>
+        <th style="text-align: center;color: white;font-weight: 600;background:#BDB9B9; width:5%"></th>
+        <th style="text-align: left;color: white;font-weight: 600;background:#BDB9B9;width:45%;border-right:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;"><span style="color:#000000;"><strong>%G_Description%</strong></span></span>
+        </th>
+        <th style="text-align: center;color: white;font-weight: 600;background:#BDB9B9;width:15%;border-right:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;"><span style="color:#000000;"><strong>%G_List Price%</strong></span></span>
+        </th>
+        <th style="text-align: center;color: white;font-weight: 600;background:#BDB9B9;width:15%;border-right:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;"><span style="color:#000000;"><strong>%G_Quantity%</strong></span></span>
+        </th>
+        <th style="text-align: center;color: white;font-weight: 600;background:#BDB9B9;width:15%">
+            <span style="font-family:verdana,geneva,sans-serif;"><span style="color:#000000;"><strong>%G_Total%</strong></span></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td colspan="5">
+            <span style="font-family:verdana,geneva,sans-serif;">#PRODUCTBLOC_START#</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="background:#BDB9B9;border-bottom:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;">$PRODUCTPOSITION$</span>
+        </td>
+        <td style="text-align:left; border-bottom:2px solid white;border-right:2px solid white;">
+            <h3>
+                <span style="font-family:verdana,geneva,sans-serif;">$PRODUCTTITLE$</span>
+            </h3>
+            <span style="font-family:verdana,geneva,sans-serif;">$PRODUCTEDITDESCRIPTION$</span>
+        </td>
+        <td style="border-right:2px solid white;border-bottom:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;">$PRODUCTLISTPRICE$ $CURRENCYSYMBOL$</span>
+        </td>
+        <td style="border-right:2px solid white;border-bottom:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;">$PRODUCTQUANTITY$</span>
+        </td>
+        <td style="border-bottom:2px solid white">
+            <span style="font-family:verdana,geneva,sans-serif;"><strong>$PRODUCTSTOTALAFTERDISCOUNT$ $CURRENCYSYMBOL$</strong></span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <span style="font-family:verdana,geneva,sans-serif;">#PRODUCTBLOC_END#</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" style="background:white"></td>
+    </tr>
+    <tr>
+        <td colspan="4" style="background:white; border-bottom:1px solid #BDB9B9">
+            <span style="font-family:verdana,geneva,sans-serif;">%G_Subtotal%</span>
+        </td>
+        <td style="background:#BDB9B9;">
+            <span style="font-family:verdana,geneva,sans-serif;">$TOTALWITHOUTVAT$ $CURRENCYSYMBOL$</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="background:white; border-bottom:1px solid #BDB9B9">
+            <span style="font-family:verdana,geneva,sans-serif;">%G_LBL_DISCOUNT%</span>
+        </td>
+        <td style="background:#BDB9B9;">
+            <span style="font-family:verdana,geneva,sans-serif;">$TOTALDISCOUNT$ $CURRENCYSYMBOL$</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="background:white; border-bottom:1px solid #BDB9B9">
+            <span style="font-family:verdana,geneva,sans-serif;">%G_Total%</span>
+        </td>
+        <td style="background:#BDB9B9;">
+            <span style="font-family:verdana,geneva,sans-serif;">$TOTALAFTERDISCOUNT$ $CURRENCYSYMBOL$</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="background:white; border-bottom:2px solid #BDB9B9">
+            <span style="font-family:verdana,geneva,sans-serif;">%G_Tax% $VATPERCENT$%</span>
+        </td>
+        <td style="background:#BDB9B9;;border-bottom:2px solid #BDB9B9">
+            <span style="font-family:verdana,geneva,sans-serif;">$VAT$ $CURRENCYSYMBOL$</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="background:white;">
+            <strong>&nbsp;&nbsp;&nbsp;&nbsp; %G_LBL_GRAND_TOTAL%</strong>
+        </td>
+        <td style="background:white">
+            <span style="font-family:verdana,geneva,sans-serif;"><span style="font-size:12px;"><strong>$TOTAL$ $CURRENCYSYMBOL$</strong></span></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div id="details">
+    <div id="client2">
+        <span style="font-family:verdana,geneva,sans-serif;">$SALESORDER_TERMS_CONDITIONS$</span>
+    </div>
+
+    <div id="invoice">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <span style="font-family:verdana,geneva,sans-serif;">____________________________</span>
+        <br/>
+        $R_USERS_FIRST_NAME$​ $R_USERS_LAST_NAME$​
+    </div>
+</div>
+</body>
+</html>
