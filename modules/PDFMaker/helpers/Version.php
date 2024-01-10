@@ -10,9 +10,9 @@
 
 class PDFMaker_Version_Helper
 {
-    public static $version = '0.9';
+    public static string $version = '0.9';
 
-    public function getVersion()
+    public static function getVersion()
     {
         return self::$version;
     }

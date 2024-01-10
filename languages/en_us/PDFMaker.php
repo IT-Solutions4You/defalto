@@ -1,5 +1,4 @@
 <?php
-
 /* * *******************************************************************************
  * The content of this file is subject to the PDF Maker Free license.
  * ("License"); You may not use this file except in compliance with the License
@@ -537,6 +536,7 @@ $languageStrings = Array(
     "LBL_DISPLAY_CONDITIONS_NO" => "The template is not displayed for export when",
     "LBL_STYLES"=>"Styles",
     "LBL_INSTALL_STEP_1"=>"Welcome",
+    'SINGLE_PDFMaker' => 'PDFMaker',
 );
 
 $jsLanguageStrings = array(
@@ -557,7 +557,7 @@ $jsLanguageStrings = array(
     "LBL_NONE" => "none",
     "JS_CUSTOM_LABEL_SAVED_SUCCESSFULLY" => "Custom label value saved successfully",
     "JS_CUSTOM_LABEL_VALUES_SAVED_SUCCESSFULLY" => "Custom label values saved successfully",
-    
+
     "LBL_OTHER_VALS" => "Other values",
     "LBL_DEACTIVATE_QUESTION" => "Do you really want to deactivate your license key?",
     "LBL_CHANGE_MODULE_QUESTION" => "Are you sure to change primary module?",
