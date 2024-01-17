@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 vimport('~~/vtlib/Vtiger/Module.php');
 
 /**
@@ -874,7 +872,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 				'linktype' => 'SIDEBARWIDGET',
 				'linklabel' => 'LBL_RECENTLY_MODIFIED',
 				'linkurl' => 'module='.$this->get('name').'&view=IndexAjax&mode=showActiveRecords',
-				'linkicon' => ''
+				'linkicon' => '',
 			),
 		);
 		foreach($quickWidgets as $quickWidget) {
@@ -1183,20 +1181,20 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_ADD_EVENT',
 					'linkurl' => $this->getCreateEventRecordUrl(),
-					'linkicon' => 'fa-plus'
+					'linkicon' => 'fa-plus',
 				);
                 $basicLinks[] = array(
 					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_ADD_TASK',
 					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => 'fa-plus'
+					'linkicon' => 'fa-plus',
 				);
 			} else {
 				$basicLinks[] = array(
 					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_ADD_RECORD',
 					'linkurl' => $this->getCreateRecordUrl(),
-					'linkicon' => 'fa-plus'
+					'linkicon' => 'fa-plus',
 				);
 			}
 			$importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
@@ -1205,11 +1203,26 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					'linktype' => 'BASIC',
 					'linklabel' => 'LBL_IMPORT',
 					'linkurl' => $this->getImportUrl(),
-					'linkicon' => 'fa-download'
+					'linkicon' => 'fa-download',
 				);
 			}
 		}
-		return $basicLinks;
+
+        $links = Vtiger_Link_Model::getAllByType(getTabid($moduleName), ['LISTVIEWBASIC']);
+
+        if (!empty($links)) {
+            /** @var Vtiger_Link_Model $link */
+            foreach ($links['LISTVIEWBASIC'] as $link) {
+                $basicLinks[] = array(
+                    'linktype' => 'BASIC',
+                    'linklabel' => $link->getLabel(),
+                    'linkurl' => $link->getUrl(),
+                    'linkicon' => $link->getIcon(),
+                );
+            }
+        }
+
+        return $basicLinks;
 	}
 
 	/**
@@ -1232,7 +1245,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 						'linktype' => 'LISTVIEWSETTING',
 						'linklabel' => 'LBL_EDIT_FIELDS',
 						'linkurl' => 'index.php?parent=Settings&module=LayoutEditor&sourceModule='.$this->getName(),
-						'linkicon' => $layoutEditorImagePath
+						'linkicon' => $layoutEditorImagePath,
 			);
 
 			if($this->isWorkflowSupported()) {
@@ -1240,7 +1253,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 						'linktype' => 'LISTVIEWSETTING',
 						'linklabel' => 'LBL_EDIT_WORKFLOWS',
 						'linkurl' => 'index.php?parent=Settings&module=Workflows&view=List&sourceModule='.$this->getName(),
-						'linkicon' => $editWorkflowsImagePath
+						'linkicon' => $editWorkflowsImagePath,
 				);
 			}
 
@@ -1248,7 +1261,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 						'linktype' => 'LISTVIEWSETTING',
 						'linklabel' => 'LBL_EDIT_PICKLIST_VALUES',
 						'linkurl' => 'index.php?parent=Settings&module=Picklist&view=Index&source_module='.$this->getName(),
-						'linkicon' => ''
+						'linkicon' => '',
 			);
 
 			if($this->hasSequenceNumberField()) {
@@ -1256,7 +1269,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					'linktype' => 'LISTVIEWSETTING',
 					'linklabel' => 'LBL_MODULE_SEQUENCE_NUMBERING',
 					'linkurl' => 'index.php?parent=Settings&module=Vtiger&view=CustomRecordNumbering&sourceModule='.$this->getName(),
-					'linkicon' => ''
+					'linkicon' => '',
 				);
 			}
 
@@ -1794,7 +1807,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 					'linktype' => 'LISTVIEW',
 					'linklabel' => 'LBL_IMPORT',
 					'linkurl' => $this->getImportUrl(),
-					'linkicon' => ''
+					'linkicon' => '',
 				);
 			}
 		}
