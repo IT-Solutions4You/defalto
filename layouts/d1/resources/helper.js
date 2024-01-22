@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Vtiger_Helper_Js */
 jQuery.Class("Vtiger_Helper_Js",{
 	checkServerConfigResponseCache : '',
 	
@@ -1045,8 +1045,8 @@ jQuery.Class("Vtiger_Helper_Js",{
     registerModalDismissWithoutSubmit: function (form) {
         const initialFormData = form.serialize();
 
-        jQuery('.modal [data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
-        jQuery('.modal').on('click', '.close, .btn-close, .cancelLink', function (e) {
+        form.closest('.modal [data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
+        form.closest('.modal').on('click', '.close, .btn-close, .cancelLink', function (e) {
             if (initialFormData !== form.serialize() && form.data('submit') !== "true") {
                 app.helper.showConfirmationBox({'message': app.vtranslate("JS_CHANGES_WILL_BE_LOST") + ' ' + app.vtranslate('JS_WISH_TO_PROCEED')}).then(function () {
                     window.onbeforeunload = null;

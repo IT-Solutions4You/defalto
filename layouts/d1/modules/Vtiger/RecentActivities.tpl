@@ -7,11 +7,11 @@
 {strip}
     {assign var=IMAGE_SIZE value='style="width: 3.5rem; height: 3.5rem;"'}
     <div class="recentActivitiesContainer container-fluid" id="updates">
-        <div class="history rounded bg-body mt-3 py-3">
+        <div class="history rounded bg-body {if !$IS_AJAX}mt-3 py-3{/if}">
             <div class="history-data">
                 <input type="hidden" id="updatesCurrentPage" value="{$PAGING_MODEL->get('page')}"/>
                 {if !empty($RECENT_ACTIVITIES)}
-                    <ul class="updates_timeline p-0">
+                    <ul class="updates_timeline p-0 m-0">
                         {foreach item=RECENT_ACTIVITY from=$RECENT_ACTIVITIES}
                             {assign var=PROCEED value= TRUE}
                             {if ($RECENT_ACTIVITY->isRelationLink()) or ($RECENT_ACTIVITY->isRelationUnLink())}
@@ -22,8 +22,8 @@
                             {/if}
                             {if $PROCEED}
                                 {if $RECENT_ACTIVITY->isCreate()}
-                                    <li class="row">
-                                        <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
+                                    <li class="row py-2">
+                                        <time class="col-3 update_time cursorDefault text-nowrap text-end">
                                             <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RECENT_ACTIVITY->getParent()->get('createdtime'))}">
                                                 {Vtiger_Util_Helper::formatDateDiffInStrings($RECENT_ACTIVITY->getParent()->get('createdtime'))}
                                             </small>
@@ -43,7 +43,7 @@
                                                 {/if}
                                             {/foreach}
                                         {/if}
-                                        <div class="col-7 update_info py-2">
+                                        <div class="col-7 update_info">
                                             <h5 class="fw-bold">
                                                 <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getName()}</span>
                                                 <span>{vtranslate('LBL_CREATED', $MODULE_NAME)}</span>
@@ -51,8 +51,8 @@
                                         </div>
                                     </li>
                                 {elseif $RECENT_ACTIVITY->isUpdate()}
-                                    <li class="row">
-                                        <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
+                                    <li class="row py-2">
+                                        <time class="col-3 update_time cursorDefault text-nowrap text-end">
                                             <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RECENT_ACTIVITY->getActivityTime())}">
                                                 {Vtiger_Util_Helper::formatDateDiffInStrings($RECENT_ACTIVITY->getActivityTime())}
                                             </small>
@@ -72,7 +72,7 @@
                                                 {/if}
                                             {/foreach}
                                         {/if}
-                                        <div class="col-7 update_info py-2">
+                                        <div class="col-7 update_info">
                                             <div>
                                                 <h5 class="fw-bold">
                                                     <span class="field-name text-primary me-2">{$RECENT_ACTIVITY->getModifiedBy()->getDisplayName()}</span>
@@ -121,8 +121,8 @@
                                     </li>
                                 {elseif ($RECENT_ACTIVITY->isRelationLink() || $RECENT_ACTIVITY->isRelationUnLink())}
                                     {assign var=RELATED_MODULE value= $RELATION->getLinkedRecord()->getModuleName()}
-                                    <li class="row">
-                                        <time class="col-3 update_time cursorDefault text-nowrap text-end py-2">
+                                    <li class="row py-2">
+                                        <time class="col-3 update_time cursorDefault text-nowrap text-end">
                                             <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($RELATION->get('changedon'))}">
                                                 {Vtiger_Util_Helper::formatDateDiffInStrings($RELATION->get('changedon'))} </small>
                                         </time>
@@ -138,7 +138,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-7 update_info py-2">
+                                        <div class="col-7 update_info">
                                             <h5 class="fw-bold">
                                                 {assign var=RELATION value=$RECENT_ACTIVITY->getRelationInstance()}
                                                 <span class="field-name text-primary me-2">
@@ -186,11 +186,11 @@
                             {/if}
                         {/foreach}
                         {if $PAGING_MODEL->isNextPageExists()}
-                            <li id="more_button" class="row">
+                            <li id="more_button" class="row py-2">
                                 <div class="col-3"></div>
-                                <div class="col-auto py-2">
+                                <div class="col-auto">
                                     <div class="update_icon" id="moreLink">
-                                        <button type="button" class="btn btn-primary moreRecentUpdates">{vtranslate('LBL_MORE',$MODULE_NAME)}..</button>
+                                        <a href="index.php?module={$MODULE_NAME}&view=Detail&record={$RECORD_ID}&mode=showRecentActivities&page=1&tab_label={$MODULE_NAME} LBL_UPDATES" class="btn btn-primary moreRecentUpdates">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
                                     </div>
                                 </div>
                             </li>

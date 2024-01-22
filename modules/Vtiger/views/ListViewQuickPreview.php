@@ -54,6 +54,14 @@ class Vtiger_ListViewQuickPreview_View extends Vtiger_Index_View {
 		$recordModel = $this->record->getRecord();
 		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
 		$moduleModel = $recordModel->getModule();
+        $moduleFields = $moduleModel->getFields();
+        $fieldsInfo = [];
+
+        foreach($moduleFields as $fieldName => $fieldModel){
+            $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+        }
+
+        $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('MODULE_MODEL', $moduleModel);

@@ -1787,14 +1787,6 @@ input[type=checkbox]:checked {
     opacity: 1;
 }
 
-#helpPageOverlay {
-    width: 300px;
-    right: 0px;
-    top: 0px;
-    position: fixed;
-    z-index: 1099;
-}
-
 .overlayFooter {
     height: var(--header-height);
 }
@@ -2893,19 +2885,6 @@ input[type=checkbox]:checked {
 
 .quickPreviewSummary .summaryViewEntries .fieldValue .value {
     width: 80%;
-}
-
-.quickPreview .updates_timeline {
-    list-style: outside none none;
-    margin: 25px 0 25px;
-    padding: 0;
-    position: relative;
-}
-
-.quickPreview .updates_timeline:before {
-    background: #e5e5e5;
-    width: 2px;
-    margin-left: -1%;
 }
 
 .summaryWidgetContainer p,

@@ -251,7 +251,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	detailViewDetailTabLabel : 'LBL_RECORD_DETAILS',
 	detailViewHistoryTabLabel : 'LBL_HISTORY',
 	detailViewRecentCommentsTabLabel : 'ModComments',
-	detailViewRecentActivitiesTabLabel : 'Activities',
+	detailViewRecentActivitiesTabLabel : 'Appointments',
 	detailViewRecentDocumentsLabel : 'Documents',
 	widgetPostLoad : 'Vtiger.Widget.PostLoad',
 	_moduleName : false,
@@ -290,7 +290,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		getOverlayDetailMode: function(){
 			return this.overlayMode;
 		},
-
+		quickPreviewMode: false,
+		setQuickPreviewDetailMode: function (option) {
+			this.quickPreviewMode = option;
+		},
+		getQuickPreviewDetailMode: function () {
+			return this.quickPreviewMode;
+		},
 		registerRelatedRecordSave: function(){
 			var thisInstance = this;
 			app.event.on('post.overLayEditView.loaded',function(e, container){
@@ -1070,24 +1076,22 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @param {type} fieldDetailList
 	 * @returns {unresolved}
 	 */
-	saveFieldValues : function (fieldDetailList) {
-		var aDeferred = jQuery.Deferred();
+	saveFieldValues: function (fieldDetailList) {
+		let aDeferred = jQuery.Deferred(),
+			data = {
+				record: this.getRecordId(),
+				module: this.getModuleName(),
+				action: 'SaveAjax',
+			};
 
-		var recordId = this.getRecordId();
-
-		var data = {};
-		if(typeof fieldDetailList != 'undefined'){
-			data = fieldDetailList;
+		if (typeof fieldDetailList != 'undefined') {
+			data = $.extend(data, fieldDetailList);
 		}
 
-		data['record'] = recordId;
-		data['module'] = this.getModuleName();
-		data['action'] = 'SaveAjax';
-
-		app.request.post({data:data}).then(
-			function(err, reponseData){
-				if(err === null){
-					app.helper.showSuccessNotification({"message":app.vtranslate('JS_RECORD_UPDATED')});
+		app.request.post({data: data}).then(
+			function (err, reponseData) {
+				if (err === null) {
+					app.helper.showSuccessNotification({"message": app.vtranslate('JS_RECORD_UPDATED')});
 				}
 				aDeferred.resolve(err, reponseData);
 			}
@@ -1113,65 +1117,68 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	 * @param {type} currentTdElement
 	 * @returns {undefined}
 	 */
-	ajaxEditHandling : function(currentTdElement){
-		var thisInstance = this;
-		var detailViewValue = jQuery('.value',currentTdElement);
-		var editElement = jQuery('.edit',currentTdElement);
-		var fieldBasicData = jQuery('.fieldBasicData', editElement);
-		var fieldName = fieldBasicData.data('name');
-		var fieldType = fieldBasicData.data('type');
-		var value = fieldBasicData.data('displayvalue');
-		var rawValue = fieldBasicData.data('value');
-		var self = this;
-		var fieldElement = jQuery('[name="'+ fieldName +'"]', editElement);
+	ajaxEditHandling: function (currentTdElement) {
+		let thisInstance = this,
+			detailViewValue = jQuery('.value', currentTdElement),
+			editElement = jQuery('.edit', currentTdElement),
+			fieldBasicData = jQuery('.fieldBasicData', editElement),
+			fieldName = fieldBasicData.data('name'),
+			fieldType = fieldBasicData.data('type'),
+			value = fieldBasicData.data('displayvalue'),
+			rawValue = fieldBasicData.data('value'),
+			self = this,
+			fieldElement = jQuery('[name="' + fieldName + '"]', editElement);
 
 		// If Reference field has value, then we are disabling the field by default
-		if(fieldElement.attr('disabled') == 'disabled' && fieldType != 'reference'){
-			return;
-		} 
-
-		if(editElement.length <= 0) {
+		if (fieldElement.attr('disabled') == 'disabled' && fieldType != 'reference') {
 			return;
 		}
 
-		if(editElement.is(':visible')){
+		if (editElement.length <= 0) {
 			return;
 		}
 
-		if(fieldType === 'multipicklist') {
-			var multiPicklistFieldName = fieldName.split('[]');
+		if (editElement.is(':visible')) {
+			return;
+		}
+
+		if (fieldType === 'multipicklist') {
+			let multiPicklistFieldName = fieldName.split('[]');
 			fieldName = multiPicklistFieldName[0];
 		}
 
-		var customHandlingFields = ['owner','ownergroup','picklist','multipicklist','reference','currencyList','text', 'documentsFolder'];
-		if(jQuery.inArray(fieldType, customHandlingFields) !== -1){
+		let customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'currencyList', 'text', 'documentsFolder'];
+
+		if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 			value = rawValue;
 		}
-		if(jQuery('.editElement',editElement).length === 0){
-			var fieldInfo;
-			if(self.getOverlayDetailMode() == true){
+
+		if (jQuery('.editElement', editElement).length === 0) {
+			let fieldInfo;
+
+			if (true === self.getQuickPreviewDetailMode()) {
+				fieldInfo = quick_preview_uimeta.field.get(fieldName);
+			} else if (true === self.getOverlayDetailMode()) {
 				fieldInfo = related_uimeta.field.get(fieldName);
+			} else {
+				fieldInfo = uimeta.field.get(fieldName);
 			}
-			else{
-				 fieldInfo = uimeta.field.get(fieldName);
-			}
-			if(fieldType == "boolean"){
-				if(rawValue == 0){
+
+			if (fieldType == "boolean") {
+				if (rawValue == 0) {
 					fieldInfo['value'] = "No";
-				}
-				else{
+				} else {
 					fieldInfo['value'] = "Yes";
 				}
-			}
-			else{
+			} else {
 				fieldInfo['value'] = value;
 			}
-			
-			var fieldObject = Vtiger_Field_Js.getInstance(fieldInfo);
-			var fieldModel = fieldObject.getUiTypeModel();
 
-			var ele = jQuery('<div class="input-group editElement w-100"></div>');
-			var actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
+			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
+				fieldModel = fieldObject.getUiTypeModel(),
+				ele = jQuery('<div class="input-group editElement w-100"></div>'),
+				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
+
 			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
 			ele.append(fieldModel.getUi()).append(actionButtons);
@@ -1180,12 +1187,13 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		}
 
 		// for reference fields, actual value will be ID but we need to show related name of that ID
-		if(fieldType === 'reference'){
-			if(value !== 0){
-				jQuery('input[name="'+fieldName+'"]',editElement).prop('value',jQuery.trim(detailViewValue.text()));
-				var referenceElement = jQuery('input[name="'+fieldName+'"]',editElement);
-				if(!referenceElement.attr('disabled')) {
-					referenceElement.attr('disabled','disabled');
+		if (fieldType === 'reference') {
+			if (value !== 0) {
+				jQuery('input[name="' + fieldName + '"]', editElement).prop('value', jQuery.trim(detailViewValue.text()));
+				let referenceElement = jQuery('input[name="' + fieldName + '"]', editElement);
+
+				if (!referenceElement.attr('disabled')) {
+					referenceElement.attr('disabled', 'disabled');
 					editElement.find('.clearReferenceSelection').removeClass('hide')
 				}
 			}
@@ -1194,17 +1202,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		detailViewValue.css('display', 'none');
 		editElement.removeClass('hide').show().children().filter('input[type!="hidden"]input[type!="image"],select').filter(':first').focus();
 		vtUtils.applyFieldElementsView(currentTdElement);
-		var contentHolder = this.getDetailViewContainer();
-		var vtigerInstance = Vtiger_Index_Js.getInstance();
+		let contentHolder = this.getDetailViewContainer(),
+			vtigerInstance = Vtiger_Index_Js.getInstance();
+
 		vtigerInstance.registerAutoCompleteFields(contentHolder);
 		vtigerInstance.referenceModulePopupRegisterEvent(contentHolder);
 		editElement.addClass('ajaxEdited');
 		thisInstance.registerSaveOnEnterEvent(editElement);
 		jQuery('.editAction').addClass('hide');
 
-		if(fieldType == 'picklist' || fieldType == 'ownergroup' || fieldType == 'owner') {
+		if (fieldType == 'picklist' || fieldType == 'ownergroup' || fieldType == 'owner') {
 			var sourcePicklistFieldName = thisInstance.getDependentSourcePicklistName(fieldName);
-			if(sourcePicklistFieldName) {
+			if (sourcePicklistFieldName) {
 				thisInstance.handlePickListDependencyMap(sourcePicklistFieldName);
 			}
 		}
@@ -1310,10 +1319,22 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				jQuery('.editAction').removeClass('hide');
 				actionElement.show();
 			}else{
-				var fieldNameValueMap = {};
+				let fieldNameValueMap = {},
+					form = currentTarget.closest('form'),
+					recordElement = form.find('[name="record"]'),
+					moduleElement = form.find('[name="module"]');
+
 				fieldNameValueMap['value'] = fieldValue;
 				fieldNameValueMap['field'] = fieldName;
-				var form = currentTarget.closest('form');
+
+				if (recordElement.length) {
+					fieldNameValueMap['record'] = recordElement.val();
+				}
+
+				if (moduleElement.length) {
+					fieldNameValueMap['module'] = moduleElement.val();
+				}
+
 				var params = {
 					'ignore' : 'span.hide .inputElement,input[type="hidden"]',
 					submitHandler : function(form){
@@ -1726,47 +1747,52 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
-	registerSummaryViewContainerEvents : function(summaryViewContainer){
-		var self = this;
-		this.registerEventForActivityWidget();
-		this.loadWidgets();
+	registerSummaryViewContainerEvents: function (summaryViewContainer) {
+		const self = this;
+
+		self.registerEventForActivityWidget();
+		self.loadWidgets();
 		/**
 		 * Function to handle the ajax edit for summary view fields
 		 */
-		summaryViewContainer.on('click','.summary-table .fieldValue .editAction', function(e){
-			var currentTarget = jQuery(e.currentTarget);
+		summaryViewContainer.on('click', '.summary-table .fieldValue .editAction', function (e) {
+			let currentTarget = jQuery(e.currentTarget),
+				currentTdElement = currentTarget.closest('.fieldValue');
+
 			currentTarget.hide();
-			var currentTdElement = currentTarget.closest('.fieldValue');
 			self.ajaxEditHandling(currentTdElement);
 		});
 
-		jQuery('.createRecord').on('click',function(e){
-			var currentElement = jQuery(e.currentTarget);
-			var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-			var widgetHeaderContainer = summaryWidgetContainer.find('.widget_header');
-			var referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val();
-			var recordId = self.getRecordId();
-			var module = self.getModuleName();
-			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]');
-			var fieldName = self.referenceFieldNames[module];
+		summaryViewContainer.on('click', '.createRecord', function (e) {
+			let currentElement = jQuery(e.currentTarget),
+				form = currentElement.closest('form'),
+				recordElement = form.find('[name=record]'),
+				moduleElement = form.find('[name=module]'),
+				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
+				widgetHeaderContainer = summaryWidgetContainer.find('.widget_header'),
+				referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val(),
+				recordId = recordElement.length ? recordElement.val() : self.getRecordId(),
+				module = moduleElement.length ? moduleElement.val() : self.getModuleName(),
+				quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
+				fieldName = self.referenceFieldNames[module],
+				customParams = {};
 
-			var customParams = {};
 			customParams[fieldName] = recordId;
 
-			if(quickCreateNode.length <= 0) {
+			if (quickCreateNode.length <= 0) {
 				app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
 			}
 
-			app.event.on('post.QuickCreateForm.save',function(event,data){
-				var idList = new Array();
+			app.event.on('post.QuickCreateForm.save', function (event, data) {
+				let idList = new Array();
 				idList.push(data._recordId);
 
-				self.addRelationBetweenRecords(referenceModuleName,idList).then(function(data){
+				self.addRelationBetweenRecords(referenceModuleName, idList).then(function (data) {
 					self.loadWidget(summaryWidgetContainer.find('[class^="widgetContainer_"]'));
 				});
 			});
 
-			var QuickCreateParams = {};
+			let QuickCreateParams = {};
 			QuickCreateParams['data'] = customParams;
 			QuickCreateParams['noCache'] = false;
 			quickCreateNode.trigger('click', QuickCreateParams);
@@ -1775,58 +1801,59 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		/*
 		 * Register the event to edit the status for for related activities
 		 */
-		summaryViewContainer.on('click', '.editStatus', function(e){
-			var currentTarget = jQuery(e.currentTarget);
-			var currentDiv = currentTarget.closest('.activityStatus');
-			var editElement = currentDiv.find('.edit');
-			var detailViewElement = currentDiv.find('.value');
+		summaryViewContainer.on('click', '.editStatus', function (e) {
+			let currentTarget = jQuery(e.currentTarget),
+				currentDiv = currentTarget.closest('.activityStatus'),
+				editElement = currentDiv.find('.edit'),
+				detailViewElement = currentDiv.find('.value');
 
 			currentTarget.hide();
 			detailViewElement.addClass('hide');
-			editElement.removeClass('hide').show(); 
+			editElement.removeClass('hide').show();
 
-			var callbackFunction = function() {
-				var fieldnameElement = jQuery('.fieldname', editElement);
-				var fieldName = fieldnameElement.val();
-				var fieldElement = jQuery('[name="'+ fieldName +'"]', editElement);
-				var previousValue = fieldnameElement.data('prevValue');
-				var ajaxEditNewValue = fieldElement.find('option:selected').val();
-				var translatedValue = fieldElement.find('option:selected').text();
+			let callbackFunction = function () {
+				let fieldnameElement = jQuery('.fieldname', editElement),
+					fieldName = fieldnameElement.val(),
+					fieldElement = jQuery('[name="' + fieldName + '"]', editElement),
+					previousValue = fieldnameElement.data('prevValue'),
+					ajaxEditNewValue = fieldElement.find('option:selected').val(),
+					translatedValue = fieldElement.find('option:selected').text(),
+					select2Element = fieldElement.parent().find('.select2-container');
 
-				var select2Element = fieldElement.parent().find('.select2-container');
-				if(ajaxEditNewValue == '') {
+				if (!ajaxEditNewValue) {
 					vtUtils.showValidationMessage(select2Element, app.vtranslate('JS_REQUIRED_FIELD'));
-					app.helper.addClickOutSideEvent(currentDiv,callbackFunction);
+					app.helper.addClickOutSideEvent(currentDiv, callbackFunction);
 					return;
 				} else {
 					vtUtils.hideValidationMessage(select2Element);
 				}
 
-				if(previousValue == ajaxEditNewValue) {
+				if (previousValue === ajaxEditNewValue) {
 					editElement.addClass('hide');
 					detailViewElement.removeClass('hide');
 					currentTarget.show();
 				} else {
-					var activityDiv = currentDiv.closest('.activityEntries');
-					var activityId = activityDiv.find('.activityId').val();
-					var moduleName = activityDiv.find('.activityModule').val();
-					var activityType = activityDiv.find('.activityType').val();
+					let activityDiv = currentDiv.closest('.activityEntries'),
+						activityId = activityDiv.find('.activityId').val(),
+						moduleName = activityDiv.find('.activityModule').val(),
+						activityType = activityDiv.find('.activityType').val();
 
 					app.helper.showProgress();
 					editElement.addClass('hide');
-					var params = {
-						action : 'SaveAjax',
-						record : activityId,
-						field : fieldName,
-						value : ajaxEditNewValue,
-						module : moduleName,
-						activitytype : activityType,
-						calendarModule : moduleName,
-						origin : 'SummaryWidget'
+
+					let params = {
+						action: 'SaveAjax',
+						record: activityId,
+						field: fieldName,
+						value: ajaxEditNewValue,
+						module: moduleName,
+						activitytype: activityType,
+						calendarModule: moduleName,
+						origin: 'SummaryWidget'
 					};
 
-					app.request.post({"data":params}).then(
-						function(err,data) {
+					app.request.post({"data": params}).then(
+						function (err, data) {
 							app.helper.hideProgress();
 							if (err == null) {
 								jQuery('.vt-notification').remove();
@@ -1840,10 +1867,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								currentTarget.show();
 								fieldElement.select2('val', previousValue);
 							}
-					});
+						});
 				}
 			}
-			app.helper.addClickOutSideEvent(currentDiv,callbackFunction);
+			app.helper.addClickOutSideEvent(currentDiv, callbackFunction);
 		});
 	},
 
@@ -2820,15 +2847,27 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				}
 			}
 		});
-		detailContentsHolder.on('click','.moreRecentUpdates', function() {
+		detailContentsHolder.on('click', '.moreRecentUpdates', function (e) {
 			app.helper.showProgress();
-			let currentPage = jQuery("#updatesCurrentPage").val(),
-				recordId = jQuery("#recordId").val(),
-				nextPage = parseInt(currentPage) + 1,
-				url = 'index.php?module=' + app.getModuleName() + '&view=Detail&record=' + recordId + '&mode=showRecentActivities&page=' + nextPage + '&limit=5&tab_label=LBL_UPDATES',
-				postParams  = app.convertUrlToDataParams(url);
 
-			app.request.post({data:postParams}).then(function(err,data){
+			e.preventDefault();
+
+			let currentPage = jQuery("#updatesCurrentPage").val(),
+				form = $(this).closest('form'),
+				recordElement = form.find('[name=record]'),
+				moduleElement = form.find('[name=module]'),
+				nextPage = parseInt(currentPage) + 1,
+				postParams = {
+					module: moduleElement.length ? moduleElement.val() : app.getModuleName(),
+					view: 'Detail',
+					record: recordElement.length ? recordElement.val() : jQuery("#recordId").val(),
+					mode: 'showRecentActivities',
+					page: nextPage,
+					limit: 5,
+					tab_label: 'LBL_UPDATES',
+				};
+
+			app.request.post({data: postParams}).then(function (err, data) {
 				jQuery('#updatesCurrentPage').remove();
 				jQuery('#moreLink').remove();
 				jQuery('#more_button').remove();
@@ -2836,8 +2875,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				jQuery('#updates .history').append($(data).find('.history').html());
 				app.helper.hideProgress();
 			});
-
 		});
+
 		this.updateRelatedRecordsCount();
 		//RegisterBasicEvents for Related-List overlay's
 		this.registerBasicEvents();
@@ -2991,19 +3030,41 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				});
 		});
 
-		detailContentsHolder.on('click','.moreRecentComments', function(){
-			var recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel);
-			recentCommentsTab.trigger('click');
+		detailContentsHolder.on('click', '.moreRecentRecords', function (e) {
+			let recentData = app.convertUrlToDataParams($(this).attr('href')),
+				recentTab = self.getTabByLabel(recentData['tab_label']);
+
+			if (recentTab) {
+				e.preventDefault();
+				recentTab.trigger('click');
+			}
 		});
 
-		detailContentsHolder.on('click','.moreRecentActivities', function(){
-			var recentActivitiesTab = self.getTabByLabel(self.detailViewRecentActivitiesTabLabel);
-			recentActivitiesTab.trigger('click');
+		detailContentsHolder.on('click','.moreRecentComments', function(e){
+			let recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel);
+
+			if(recentCommentsTab) {
+				e.preventDefault();
+				recentCommentsTab.trigger('click');
+			}
 		});
 
-		detailContentsHolder.on('click', '.moreRecentDocuments', function () {
-			var recentDocumentsTab = self.getTabByLabel(self.detailViewRecentDocumentsLabel);
-			recentDocumentsTab.trigger('click');
+		detailContentsHolder.on('click','.moreRecentActivities', function(e){
+			let recentActivitiesTab = self.getTabByLabel(self.detailViewRecentActivitiesTabLabel);
+
+			if(recentActivitiesTab) {
+				e.preventDefault();
+				recentActivitiesTab.trigger('click');
+			}
+		});
+
+		detailContentsHolder.on('click', '.moreRecentDocuments', function (e) {
+			let recentDocumentsTab = self.getTabByLabel(self.detailViewRecentDocumentsLabel);
+
+			if(recentDocumentsTab) {
+				e.preventDefault();
+				recentDocumentsTab.trigger('click');
+			}
 		});
 
 		detailContentsHolder.off('.toggleComment').on('click', '.toggleComment', function (e) {

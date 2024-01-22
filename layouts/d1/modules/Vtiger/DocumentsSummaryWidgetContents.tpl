@@ -58,9 +58,9 @@
     {assign var=NUMBER_OF_RECORDS value=php7_count($RELATED_RECORDS)}
     {if $NUMBER_OF_RECORDS eq 5}
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <a class="moreRecentDocuments btn btn-primary">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+            <div class="row py-2">
+                <div class="col text-center">
+                    <a target="_blank" href="index.php?{$RELATION_LIST_URL}&tab_label={$ACTIVITIES_MODULE_NAME}" class="moreRecentDocuments btn btn-primary">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
                 </div>
             </div>
         </div>

@@ -6,6 +6,8 @@
 *}
 {strip}
 <form id="headerForm" method="POST">
+    <input type="hidden" name="record" value="{$RECORD->getId()}">
+    <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row align-items-center pt-3">
         {assign var=FIELDS_MODELS_LIST value=$MODULE_MODEL->getFields()}
         {foreach item=FIELD_MODEL from=$FIELDS_MODELS_LIST}

@@ -8,7 +8,7 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-class Vtiger_RecordQuickPreview_View extends Vtiger_Index_View {
+class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View {
 
 	protected $record = false;
 
@@ -32,7 +32,14 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Index_View {
 		$recordModel = $this->record->getRecord();
 		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
 		$moduleModel = $recordModel->getModule();
+        $moduleFields = $moduleModel->getFields();
+        $fieldsInfo = [];
 
+        foreach($moduleFields as $fieldName => $fieldModel){
+            $fieldsInfo[$fieldName] = $fieldModel->getFieldInfo();
+        }
+
+        $viewer->assign('FIELDS_INFO', json_encode($fieldsInfo));
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
@@ -72,10 +79,18 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Index_View {
 		}
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('RECENT_ACTIVITIES', $recentActivities);
+
+        $detailViewLinkParams = array('MODULE'=>$moduleName,'RECORD'=>$recordId);
+        $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
+
+        $viewer->assign('MODULE_SUMMARY', $this->showModuleSummaryView($request));
+        $viewer->assign('DETAILVIEW_LINKS', $detailViewLinks);
+        $viewer->assign('SCRIPTS',$this->getQuickPreviewHeaderScripts($request));
+
 		$viewer->view('ListViewQuickPreview.tpl', $moduleName);
 	}
 
-	public function assignNavigationRecordIds($viewer, $recordId) {
+    public function assignNavigationRecordIds($viewer, $recordId) {
 		//Navigation to next and previous records.
 		$navigationInfo = ListViewSession::getListViewNavigation($recordId);
 		//Intially make the prev and next records as null

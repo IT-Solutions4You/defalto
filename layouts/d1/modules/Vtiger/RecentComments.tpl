@@ -196,9 +196,9 @@
 			{include file="NoComments.tpl"|@vtemplate_path}
 		{/if}
 		{if $PAGING_MODEL->isNextPageExists()}
-			<div class="row">
-				<div class="textAlignCenter">
-					<a href="javascript:void(0)" class="moreRecentComments btn btn-primary">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
+			<div class="row py-2">
+				<div class="col text-center">
+					<a target="_blank" href="index.php?{$RELATION_LIST_URL}&tab_label=ModComments" class="moreRecentComments btn btn-primary">{vtranslate('LBL_SHOW_MORE',$MODULE_NAME)}</a>
 				</div>
 			</div>
 		{/if}
