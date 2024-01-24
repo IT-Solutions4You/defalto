@@ -161,8 +161,8 @@
 												</div>
 												<div class="commentActionsContainer ms-4 my-2">
 													<span>
-														{if $PARENT_COMMENT_MODEL neq false or $CHILD_COMMENTS_MODEL neq null}
-															<a href="javascript:void(0);" class="cursorPointer detailViewThread text-secondary me-3">
+														{if $PARENT_COMMENT_MODEL neq false}
+															<a href="index.php?{$RELATION_LIST_URL}&tab_label=ModComments&commentid={$PARENT_COMMENT_MODEL->getId()}" class="cursorPointer detailViewThread text-secondary me-3">
 																<i class="fa-solid fa-comments"></i>
 																<span class="ms-2">{vtranslate('LBL_VIEW_THREAD',$MODULE_NAME)}</span>
 															</a>

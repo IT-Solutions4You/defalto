@@ -204,7 +204,7 @@ class Vtiger_Kanban_Model extends Vtiger_Base_Model
      */
     public function getFieldValues(): array
     {
-        return $this->picklistValues;
+        return array_map('trim', $this->picklistValues);
     }
 
     /**

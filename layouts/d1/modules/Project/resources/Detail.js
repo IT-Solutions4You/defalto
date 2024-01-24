@@ -4,8 +4,8 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
-Vtiger_Detail_Js("Project_Detail_Js",{
+/** @var Project_Detail_Js */
+Vtiger_Detail_Js('Project_Detail_Js',{
     
 	gantt: false,
     
@@ -121,18 +121,19 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 	* Function to get records according to ticket status
 	*/
 	registerStatusChangeEventForWidget: function () {
-		const thisInstance = this;
+		const self = this;
 
-		jQuery('[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]').on('change', function (e) {
+		self.getDetailViewContainer().on('change', '[name="ticketstatus"],[name="projecttaskstatus"],[name="projecttaskprogress"]', function (e) {
 			let picklistName = this.name,
 				statusCondition = {},
 				params = {},
 				currentElement = jQuery(e.currentTarget),
+				form = currentElement.closest('form'),
 				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
 				widgetDataContainer = summaryWidgetContainer.find('.widget_contents'),
 				referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val(),
-				recordId = thisInstance.getRecordId(),
-				module = app.getModuleName(),
+				recordId = form.find('[name="record"]').val() ?? app.getRecordId(),
+				module = form.find('[name="module"]').val() ?? app.getModuleName(),
 				selectedStatus = currentElement.find('option:selected').val(),
 				searchInfo = null;
 
@@ -308,42 +309,46 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 	 * Function to get the related records list
 	 * summary view widget
 	 */
-	showRelatedRecords : function(summaryWidgetContainer) {
-		var widgetHeaderContainer = summaryWidgetContainer.find('.widget_header');
-		var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-		var referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val();
-		var module = app.getModuleName();
-		var params = {};
-			
-		if(referenceModuleName == 'ProjectTask') {
-			var statusCondition = {};
-			var selectedStatus = jQuery('[name="projecttaskstatus"]', widgetHeaderContainer).val();
-			if(typeof selectedStatus != "undefined" && selectedStatus.length > 0) {
+	showRelatedRecords: function (summaryWidgetContainer) {
+		let self = this,
+			form = summaryWidgetContainer.closest('form'),
+			widgetHeaderContainer = summaryWidgetContainer.find('.widget_header'),
+			widgetDataContainer = summaryWidgetContainer.find('.widget_contents'),
+			referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val(),
+			module = form.find('[name="module"]').val() ?? app.getModuleName(),
+			record = form.find('[name="record"]').val() ?? self.getRecordId(),
+			params = {};
+
+		if (referenceModuleName === 'ProjectTask') {
+			let statusCondition = {},
+				selectedStatus = jQuery('[name="projecttaskstatus"]', widgetHeaderContainer).val();
+
+			if (typeof selectedStatus != "undefined" && selectedStatus.length > 0) {
 				statusCondition['vtiger_projecttask.projecttaskstatus'] = selectedStatus;
 				params['whereCondition'] = statusCondition;
 			}
-			var selectedProgress = jQuery('[name="projecttaskprogress"]', widgetHeaderContainer).val();
-			if(typeof selectedProgress != "undefined" && selectedProgress.length > 0) {
+
+			let selectedProgress = jQuery('[name="projecttaskprogress"]', widgetHeaderContainer).val();
+
+			if (typeof selectedProgress != "undefined" && selectedProgress.length > 0) {
 				statusCondition['vtiger_projecttask.projecttaskprogress'] = selectedProgress;
 				params['whereCondition'] = statusCondition;
 			}
 		}
 
-		params['record'] = this.getRecordId();
+		params['record'] = record;
 		params['view'] = 'Detail';
 		params['module'] = module;
 		params['page'] = widgetDataContainer.find('[name="page"]').val();
 		params['limit'] = widgetDataContainer.find('[name="pageLimit"]').val();
 		params['relatedModule'] = referenceModuleName;
 		params['mode'] = 'showRelatedRecords';
-        
-        app.helper.showProgress();
-		app.request.post({data: params}).then(
-			function(error, data) {
-                app.helper.hideProgress();
-				widgetDataContainer.html(data);
-			}
-		);
+
+		app.helper.showProgress();
+		app.request.post({data: params}).then(function (error, data) {
+			app.helper.hideProgress();
+			widgetDataContainer.html(data);
+		});
 	},
     
     registerGanttChartEvents : function(container) {
@@ -544,20 +549,32 @@ Vtiger_Detail_Js("Project_Detail_Js",{
 		var detailContentsHolder = this.getContentHolder();
 		var thisInstance = this;
 		this._super();
-		
-		detailContentsHolder.on('click','.moreRecentMilestones', function(){
-			var recentMilestonesTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentMileStonesLabel);
-			recentMilestonesTab.trigger('click');
+
+		detailContentsHolder.on('click', '.moreRecentMilestones', function (e) {
+			let recentMilestonesTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentMileStonesLabel);
+
+			if (recentMilestonesTab) {
+				e.preventDefault();
+				recentMilestonesTab.trigger('click');
+			}
 		});
 		
-		detailContentsHolder.on('click','.moreRecentTickets', function(){
-			var recentTicketsTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTicketsTabLabel);
-			recentTicketsTab.trigger('click');
+		detailContentsHolder.on('click','.moreRecentTickets', function(e){
+			let recentTicketsTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTicketsTabLabel);
+
+			if(recentTicketsTab) {
+				e.preventDefault();
+				recentTicketsTab.trigger('click');
+			}
 		});
 		
-		detailContentsHolder.on('click','.moreRecentTasks', function(){
-			var recentTasksTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTasksTabLabel);
-			recentTasksTab.trigger('click');
+		detailContentsHolder.on('click','.moreRecentTasks', function(e){
+			let recentTasksTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTasksTabLabel);
+
+			if(recentTasksTab) {
+				e.preventDefault();
+				recentTasksTab.trigger('click');
+			}
 		});
         
         var detailViewContainer = jQuery('.detailViewContainer');

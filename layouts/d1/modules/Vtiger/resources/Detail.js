@@ -2003,15 +2003,16 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var commentId = commentInfoHeader.data('commentid');
 		var parentCommentId = commentInfoHeader.data('parentcommentid');
 		var commentRelatedTo = commentInfoHeader.data('relatedto');
-		if(!commentRelatedTo) commentRelatedTo = self.getRecordId();
+		if(!commentRelatedTo) commentRelatedTo = form.find('[name="record"]').val() ?? self.getRecordId();
 
-		var postData = {
-			'commentcontent' : 	commentContentValue,
-			'related_to': commentRelatedTo,
-			'module' : 'ModComments',
-			'is_private' : isPrivate
-		}
-		var incrementCount = false;
+		let incrementCount = false,
+			postData = {
+				'commentcontent': commentContentValue,
+				'related_to': commentRelatedTo,
+				'module': 'ModComments',
+				'is_private': isPrivate,
+			};
+
 		if(commentMode == "edit"){
 			postData['record'] = commentId;
 			postData['reasontoedit'] = editCommentReason;
@@ -2021,20 +2022,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		} else if(commentMode == "add"){
 			postData['parent_comments'] = commentId;
 			postData['action'] = 'SaveAjax';
-			postData['filename'] = Vtiger_Index_Js.files,
+			postData['filename'] = Vtiger_Index_Js.files;
 			incrementCount = true;
 		}
-		jQuery.each(postData, function (key, value) {
-			formData.append(key, value);
-		});
-		 postData = { 
-			'url': 'index.php', 
-			'type': 'POST', 
-			'data': formData, 
-			processData: false, 
-			contentType: false 
-		};
-		app.request.post(postData).then(
+
+		app.request.post({data: postData}).then(
 			function(err,data){
 				Vtiger_Index_Js.files = '';
 				jQuery('.MultiFile-remove').trigger('click');
@@ -2830,7 +2822,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			let recentCommentsTab = self.getTabByLabel(self.detailViewRecentCommentsTabLabel),
 				commentId = jQuery(e.currentTarget).closest('.singleComment').find('.commentInfoHeader').data('commentid');
 
-			recentCommentsTab.trigger('click',{'commentid':commentId});
+			if(recentCommentsTab) {
+				e.preventDefault();
+				recentCommentsTab.trigger('click',{'commentid':commentId});
+			}
 		});
 		this.registerStarToggle();
 		this.registerTagEvents();

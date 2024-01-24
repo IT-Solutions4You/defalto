@@ -13,7 +13,7 @@
 		{/if}
 	{/foreach}
 	<div class="container-fluid">
-		<div class="row my-3">
+		<div class="row py-2">
 			<div class="col-lg-8">
 				<strong>{$PROJECTMILESTONE_NAME_HEADER}</strong>
 			</div>
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-			<div class="recentActivitiesContainer row my-3">
+			<div class="recentActivitiesContainer row py-2">
 				<div class="col-lg-8 text-truncate">
 					<a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('projectmilestonename')}">{$RELATED_RECORD->getDisplayValue('projectmilestonename')}</a>
 				</div>
@@ -33,9 +33,9 @@
 		{/foreach}
 		{assign var=NUMBER_OF_RECORDS value=php7_count($RELATED_RECORDS)}
 		{if $NUMBER_OF_RECORDS eq 5}
-			<div class="row my-3">
-				<div class="col">
-					<a class="moreRecentMilestones btn btn-primary">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+			<div class="row py-2">
+				<div class="col text-center">
+					<a target="_blank" href="index.php?{$RELATION_LIST_URL}&tab_label=Project Milestones" class="moreRecentMilestones btn btn-primary">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
 				</div>
 			</div>
 		{/if}

@@ -78,7 +78,7 @@
                         <script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
                     {/foreach}
                     <script type="text/javascript">
-                        let detailInstance = Vtiger_Detail_Js.getInstance();
+                        let detailInstance = Vtiger_Detail_Js.getInstanceByModuleName("{$MODULE_NAME}");
 
                         detailInstance.setQuickPreviewDetailMode(true);
                         detailInstance.registerEvents();

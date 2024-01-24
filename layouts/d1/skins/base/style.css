@@ -6805,3 +6805,9 @@ a.btnReport:hover {
 .hide {
     display: none !important;
 }
+.fs-inherit {
+    font-size: inherit !important;
+}
+.bg-inherit {
+    background: inherit !important;
+}
