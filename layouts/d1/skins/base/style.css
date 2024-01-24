@@ -3876,12 +3876,6 @@ form[name="notification_settings"] .select2-choice {
     opacity: 1;
 }
 
-.picklist-color {
-    display: inline-block;
-    padding: 2px 1px !important;
-    line-height: 15px;
-}
-
 /*******************************************
 ************* Dashboard Styles *************
 ********************************************/

@@ -1360,11 +1360,11 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								if(color) {
 									var contrast = app.helper.getColorContrast(color);
 									var textColor = (contrast === 'dark') ? 'white' : 'black';
-									var picklistHtml = '<span class="picklist-color" style="background-color: ' + color + '; color: '+ textColor + ';">' +
+									var picklistHtml = '<span class="picklist-color py-1 px-2 rounded" style="background-color: ' + color + '; color: '+ textColor + ';">' +
 															postSaveRecordDetails[fieldName].display_value + 
 														'</span>';
 								} else {
-									var picklistHtml = '<span class="picklist-color">' +
+									var picklistHtml = '<span class="picklist-color py-1 px-2 rounded">' +
 															postSaveRecordDetails[fieldName].display_value + 
 														'</span>';
 								}
@@ -1381,12 +1381,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 										var contrast = app.helper.getColorContrast(color);
 										var textColor = (contrast === 'dark') ? 'white' : 'black';
 										picklistHtml = picklistHtml +
-														'<span class="picklist-color" style="background-color: ' + color + '; color: '+ textColor + ';">' +
+														'<span class="picklist-color py-1 px-2 rounded" style="background-color: ' + color + '; color: '+ textColor + ';">' +
 															 picklistValues[i] + 
 														'</span>';
 									} else {
 										picklistHtml = picklistHtml +
-														'<span class="picklist-color">' + 
+														'<span class="picklist-color py-1 px-2 rounded">' +
 															 picklistValues[i] + 
 														'</span>';
 									}

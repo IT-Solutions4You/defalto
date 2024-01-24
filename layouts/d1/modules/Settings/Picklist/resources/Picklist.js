@@ -584,7 +584,7 @@ var Settings_Picklist_Js = {
                             '<td class="text-truncate fieldPropertyContainer">'+
                                 '<span class="pull-left">' +
                                     '<img class="alignMiddle" src="' + dragImagePath + '" />&nbsp;&nbsp;' +
-                                    '<span class="picklist-color" style="background-color: '+ color + ';color: '+ textColor +';">' + value + '</span>' + 
+                                    '<span class="picklist-color py-1 px-2 rounded" style="background-color: '+ color + ';color: '+ textColor +';">' + value + '</span>' +
                                 '</span>' +
                                 actionsTemplate +
                             '</td>'+
