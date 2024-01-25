@@ -6,6 +6,8 @@
 *}
 {strip}
 <form id="headerForm" method="POST">
+    <input type="hidden" name="record" value="{$RECORD->getId()}">
+    <input type="hidden" name="module" value="{$RECORD->getModuleName()}">
     <div class="row align-items-center pt-3">
         {assign var=FIELDS_MODELS_LIST value=$MODULE_MODEL->getFields()}
         {foreach item=FIELD_MODEL from=$FIELDS_MODELS_LIST}
@@ -24,7 +26,7 @@
                         </div>
                         <div class="row" style="min-height: 2rem">
                             {assign var=DISPLAY_VALUE value="{$FIELD_MODEL->getDisplayValue($RECORD->get($FIELD_NAME))}"}
-                            <div class="col value fw-semibold {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
+                            <div class="col value fw-semibold fs-inherit bg-inherit h-100 {$FIELD_NAME}" title="{vtranslate($FIELD_MODEL->get('label'),$MODULE)} : {strip_tags($DISPLAY_VALUE)}">
                                 {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getDetailViewTemplateName(),$MODULE_NAME) FIELD_MODEL=$FIELD_MODEL MODULE=$MODULE_NAME RECORD=$RECORD}
                             </div>
                             {if $FIELD_MODEL->isEditable() eq 'true' && $LIST_PREVIEW neq 'true' && $IS_AJAX_ENABLED eq 'true'}

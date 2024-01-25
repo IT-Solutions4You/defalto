@@ -15,7 +15,7 @@
 		</div>
 	</div>
 </footer>
-<div id='overlayPage' class="modal fade">
+<div id="overlayPage" class="modal fade">
 	<div class="modal-dialog modal-fullscreen">
 		<div class="modal-content">
 			<!-- arrow is added to point arrow to the clicked element (Ex:- TaskManagement),
@@ -25,7 +25,7 @@
 		</div>
 	</div>
 </div>
-<div id='helpPageOverlay' class="modal fade">
+<div id="helpPageOverlay" class="modal fade">
 	<div class="modal-dialog">
 		<div class="data"></div>
 	</div>

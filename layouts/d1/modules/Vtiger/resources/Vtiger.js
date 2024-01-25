@@ -811,22 +811,23 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * @param <jQuery> container
 	 */
 	referenceModulePopupRegisterEvent : function(container) {
-		var thisInstance = this;
+		let self = this;
+
 		container.off('click', '.relatedPopup');
-		container.on("click",'.relatedPopup',function(e) {
-			thisInstance.openPopUp(e);
+		container.on('click','.relatedPopup',function(e) {
+			self.openPopUp(e);
 		});
 		container.on('change','.referenceModulesList',function(e){
-			var element = jQuery(e.currentTarget);
-			var closestTD = thisInstance.getParentElement(element).next();
-			var popupReferenceModule = element.val();
-			var referenceModuleElement = jQuery('input[name="popupReferenceModule"]', closestTD).length ?
-				jQuery('input[name="popupReferenceModule"]', closestTD) : jQuery('input.popupReferenceModule', closestTD);
-			var prevSelectedReferenceModule = referenceModuleElement.val();
+			let element = jQuery(e.currentTarget),
+				closestTD = self.getParentElement(element).next(),
+				popupReferenceModule = element.val(),
+				referenceModuleElement = jQuery('input[name="popupReferenceModule"]', closestTD).length ? jQuery('input[name="popupReferenceModule"]', closestTD) : jQuery('input.popupReferenceModule', closestTD),
+				prevSelectedReferenceModule = referenceModuleElement.val();
+
 			referenceModuleElement.val(popupReferenceModule);
 
 			//If Reference module is changed then we should clear the previous value
-			if(prevSelectedReferenceModule != popupReferenceModule) {
+			if(prevSelectedReferenceModule !== popupReferenceModule) {
 				closestTD.find('.clearReferenceSelection').trigger('click');
 			}
 		});
@@ -1316,7 +1317,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 				},
 				backdrop: false,
 			};
-			jQuery('#helpPageOverlay').css({"width": "870px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white'});
 			app.helper.loadHelpPageOverlay(response, params);
 			var params = {
 				setHeight: "100%",
@@ -1350,7 +1350,6 @@ Vtiger.Class('Vtiger_Index_Js', {
 		app.helper.showProgress();
 		app.request.get({data: params}).then(function (err, response) {
 			app.helper.hideProgress();
-			jQuery('#helpPageOverlay').css({"width": "500px", "box-shadow": "-8px 0 5px -5px lightgrey", 'height': '100vh', 'background': 'white', 'margin-left': 'auto'});
 			let callBack = function (container) {
 				self.registerMoreRecentUpdatesClickEvent(container, recordId);
 				//Register Navigation Events

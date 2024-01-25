@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Vtiger_RelatedList_Js */
 jQuery.Class("Vtiger_RelatedList_Js",{
 	loaded : true,
 	
@@ -365,9 +365,9 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 	registerScrollForRollupComments : function() {
         jQuery(document).scroll(function() {
             if ($(window).scrollTop() + $(window).height() >= $(document).height() - 30
-                && jQuery('div.commentContainer').length > 0 
-                && jQuery('.widgetContainer_comments').length === 0
-                && jQuery('#rollupcomments').attr('rollup-status') > 0) {
+                && jQuery('div.commentContainer').length > 0
+                && jQuery('#rollupcomments').attr('rollup-status') > 0
+				&& jQuery('[data-label-key="ModComments"]').is('.active')) {
 				
                 if(Vtiger_RelatedList_Js.loaded && jQuery('#rollupcomments').attr('hascomments') == 1) {
                     Vtiger_RelatedList_Js.loaded = false;

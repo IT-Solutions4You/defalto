@@ -64,7 +64,7 @@ class Inventory_Detail_View extends Vtiger_Detail_View {
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
 		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStrucure->getStructure());
-		$viewer->assign('RELATED_ACTIVITIES', $this->getActivities($request));
+		$viewer->assign('RELATED_ACTIVITIES', $this->getEvents($request));
 
 		return $viewer->view('ModuleSummaryView.tpl', $moduleName, true);
 	}

@@ -22,7 +22,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showRecentComments');
 		$this->exposeMethod('showRelatedList');
 		$this->exposeMethod('showChildComments');
-		$this->exposeMethod('getActivities');
 		$this->exposeMethod('getEvents');
 		$this->exposeMethod('showRelatedRecords');
         $this->exposeMethod('DetailSharingRecord');
@@ -344,6 +343,19 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		return $jsScriptInstances;	
 	}
 
+    public function getQuickPreviewHeaderScripts(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $jsFileNames = array(
+            "modules.Vtiger.resources.Detail",
+            "modules.$moduleName.resources.Detail",
+            "modules.Vtiger.resources.RelatedList",
+            "modules.$moduleName.resources.RelatedList",
+        );
+
+        return $this->checkAndConvertJsScripts($jsFileNames);
+    }
+
 	function showModuleSummaryView($request) {
 		$recordId = $request->get('record');
 		$moduleName = $request->getModule();
@@ -363,7 +375,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('MODULE_NAME', $moduleName);
 		$viewer->assign('IS_AJAX_ENABLED', $this->isAjaxEnabled($recordModel));
 		$viewer->assign('SUMMARY_RECORD_STRUCTURE', $recordStructure->getStructure());
-		$viewer->assign('RELATED_ACTIVITIES', $this->getActivities($request));
+		$viewer->assign('RELATED_ACTIVITIES', $this->getEvents($request));
 
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		$pagingModel = new Vtiger_Paging_Model();
@@ -465,6 +477,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->_showRecentActivities($request);
 
 		$viewer = $this->getViewer($request);
+        $viewer->assign('IS_AJAX', $request->isAjax());
+
 		echo $viewer->view('RecentActivities.tpl', $moduleName, true);
 	}
 
@@ -496,8 +510,9 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 			$rollupsettings = ModComments_Module_Model::getRollupSettingsForUser($currentUserModel, $moduleName);
 		}
 
+        $parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
+
 		if(isset($rollupsettings['rollup_status']) && $rollupsettings['rollup_status']) {
-			$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
 			$recentComments = $parentRecordModel->getRollupCommentsForModule(0, 6);
 		}else {
 			$recentComments = ModComments_Record_Model::getRecentComments($parentId, $pagingModel);
@@ -526,8 +541,14 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ?
 			$rollupsettings['rollupid'] : 0);
 		$viewer->assign('PARENT_RECORD', $parentId);
+        $viewer->assign('STARTINDEX', 0);
 
-		return $viewer->view('RecentComments.tpl', $moduleName, 'true');
+        if (!empty($parentRecordModel)) {
+            $relationModel = Vtiger_Relation_Model::getInstance($parentRecordModel->getModule(), $modCommentsModel);
+            $viewer->assign('RELATION_LIST_URL', $relationModel->getListUrl($parentRecordModel));
+        }
+
+        return $viewer->view('RecentComments.tpl', $moduleName, 'true');
 	}
 
 	/**
@@ -679,6 +700,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('RELATED_HEADERS', $header);
 		$viewer->assign('RELATED_MODULE' , $relatedModuleName);
 		$viewer->assign('PAGING_MODEL', $pagingModel);
+        $viewer->assign('RELATION_LIST_URL', $relationListView->getRelationModel()->getListUrl($parentRecordModel));
 
 		return $viewer->view('SummaryWidgets.tpl', $moduleName, 'true');
 	}
@@ -737,9 +759,12 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
                 $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
             }
             $recordModel = $this->record->getRecord();
-            $moduleModel = $recordModel->getModule();
-
-            $relatedActivities = $moduleModel->getCalendarEvents('', $pagingModel, 'all', $recordId);
+            /** @var Vtiger_RelationListView_Model $relationListView */
+            $relationListView = Vtiger_RelationListView_Model::getInstance($recordModel, $activitiesModuleName, '');
+            $relationListView->set('whereCondition', [
+                'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
+            ]);
+            $relatedActivities = $relationListView->getEntries($pagingModel) ?? [];
 
             $viewer = $this->getViewer($request);
             $viewer->assign('RECORD', $recordModel);
@@ -748,6 +773,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $viewer->assign('PAGE_NUMBER', $pageNumber);
             $viewer->assign('ACTIVITIES', $relatedActivities);
             $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
+            $viewer->assign('RELATION_LIST_URL', $relationListView->getRelationModel()->getListUrl($recordModel));
 
             return $viewer->view('RelatedEvents.tpl', $moduleName, true);
         }

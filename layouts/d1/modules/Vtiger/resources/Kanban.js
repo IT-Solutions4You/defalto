@@ -9,6 +9,7 @@
 /** @var Vtiger_Kanban_Js */
 Vtiger_Index_Js('Vtiger_Kanban_Js', {}, {
     registerEvents: function () {
+        this._super();
         this.registerContentHeight();
         this.retrieveRecords();
         this.registerDraggable();

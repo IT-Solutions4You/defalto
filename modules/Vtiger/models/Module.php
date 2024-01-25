@@ -1978,20 +1978,4 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		return $moduleModel->getModuleIcon();
 	}
-
-    public function getCalendarEvents($mode, $pagingModel, $user, $recordId = false)
-    {
-        $relatedParentId = $recordId;
-        $relatedParentModule = getSalesEntityType($relatedParentId);
-
-        $moduleName = 'Appointments';
-        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
-        /** @var Vtiger_RelationListView_Model $relationListView */
-        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
-        $relationListView->set('whereCondition', [
-            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
-        ]);
-
-        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
-    }
 }
