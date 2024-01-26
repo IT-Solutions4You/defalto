@@ -9,7 +9,9 @@
 <div class="table-actions d-flex align-items-center">
     {if !$SEARCH_MODE_RESULTS}
     <span class="input form-check" >
+        {assign var=LIST_VIEW_ENTRIE_IS_READONLY value=!Vtiger_Readonly_Model::isPermitted($LISTVIEW_ENTRY->getModuleName(), $LISTVIEW_ENTRY->getId())}
         <input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox form-check-input"/>
+        <input type="hidden" value="{$LIST_VIEW_ENTRIE_IS_READONLY}" class="listViewEntriesIsReadonly"/>
     </span>
     {/if}
     {if $LISTVIEW_ENTRY->get('starred') eq vtranslate('LBL_YES', $MODULE)}
@@ -36,12 +38,12 @@
                 <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getFullDetailViewUrl()}&app={$SELECTED_MENU_CATEGORY}">{vtranslate('LBL_DETAILS', $MODULE)}</a>
             </li>
 			{if $RECORD_ACTIONS}
-				{if $RECORD_ACTIONS['edit']}
+				{if $RECORD_ACTIONS['edit'] && !$LIST_VIEW_ENTRIE_IS_READONLY}
 					<li>
                         <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:app.controller().editRecord('{$LISTVIEW_ENTRY->getEditViewUrl()}&app={$SELECTED_MENU_CATEGORY}')">{vtranslate('LBL_EDIT', $MODULE)}</a>
                     </li>
 				{/if}
-				{if $RECORD_ACTIONS['delete']}
+				{if $RECORD_ACTIONS['delete'] && !$LIST_VIEW_ENTRIE_IS_READONLY}
 					<li>
                         <a class="dropdown-item" href="javascript:app.controller().deleteRecord({$LISTVIEW_ENTRY->getId()})" data-id="{$LISTVIEW_ENTRY->getId()}" href="#">{vtranslate('LBL_DELETE', $MODULE)}</a>
                     </li>

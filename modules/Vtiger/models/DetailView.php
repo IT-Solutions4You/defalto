@@ -1,13 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
-
+ */
 class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 
 	protected $module = false;
@@ -84,6 +81,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			);
 		}
 
+
         foreach ($detailViewLinks as $detailViewLink) {
             $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($detailViewLink);
         }
@@ -93,7 +91,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 					'linktype' => 'DETAILVIEW',
 					'linklabel' => sprintf("%s %s", getTranslatedString('LBL_DELETE', $moduleName), vtranslate('SINGLE_'. $moduleName, $moduleName)),
 					'linkurl' => 'javascript:Vtiger_Detail_Js.deleteRecord("'.$recordModel->getDeleteUrl().'")',
-					'linkicon' => ''
+					'linkicon' => '<i class="fa-solid fa-trash"></i>'
 			);
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($deletelinkModel);
 		}
@@ -103,7 +101,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 						'linktype' => 'DETAILVIEWBASIC',
 						'linklabel' => 'LBL_DUPLICATE',
 						'linkurl' => $recordModel->getDuplicateRecordUrl(),
-						'linkicon' => ''
+						'linkicon' => '<i class="fa-solid fa-copy"></i>'
 				);
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
 		}
@@ -150,7 +148,29 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			}
 		}
 
-		return $linkModelList;
+        if ($currentUserModel->isAdminUser() || $currentUserModel->getId() === $recordModel->get('assigned_user_id')) {
+            if (Vtiger_Readonly_Model::isButtonPermitted($moduleName, $recordId)) {
+                $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues(
+                    [
+                        'linktype' => 'DETAILVIEWBASIC',
+                        'linklabel' => 'LBL_MAKE_EDITABLE',
+                        'linkurl' => $recordModel->getEditableUrl(),
+                        'linkicon' => '<i class="fa-solid fa-eye-low-vision"></i>',
+                    ]
+                );
+            } else {
+                $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues(
+                    [
+                        'linktype' => 'DETAILVIEW',
+                        'linklabel' => 'LBL_MAKE_READONLY',
+                        'linkurl' => $recordModel->getReadonlyUrl(),
+                        'linkicon' => '<i class="fa-solid fa-eye-low-vision"></i>',
+                    ]
+                );
+            }
+        }
+
+        return $linkModelList;
 	}
 
 	/**

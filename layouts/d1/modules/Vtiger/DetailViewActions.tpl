@@ -55,11 +55,18 @@
                             {if $DETAIL_VIEW_LINK->getLabel() eq ""}
                                 <li class="dropdown-item divider"></li>
                             {else}
+                                {assign var=DETAIL_VIEW_LINK_ICON value=$DETAIL_VIEW_LINK->get('linkicon')}
                                 <li class="dropdown-item" id="{$MODULE_NAME}_detailView_moreAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($DETAIL_VIEW_LINK->getLabel())}">
                                     {if $DETAIL_VIEW_LINK->getUrl()|strstr:"javascript"}
-                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}'>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</a>
+                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}'>
+                                            {if $DETAIL_VIEW_LINK_ICON}<span class="me-2 text-secondary">{$DETAIL_VIEW_LINK_ICON}</span>{/if}
+                                            <span>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</span>
+                                        </a>
                                     {else}
-                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}&app={$SELECTED_MENU_CATEGORY}'>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</a>
+                                        <a href='{$DETAIL_VIEW_LINK->getUrl()}&app={$SELECTED_MENU_CATEGORY}'>
+                                            {if $DETAIL_VIEW_LINK_ICON}<span class="me-2 text-secondary">{$DETAIL_VIEW_LINK_ICON}</span>{/if}
+                                            <span>{vtranslate($DETAIL_VIEW_LINK->getLabel(), $MODULE_NAME)}</span>
+                                        </a>
                                     {/if}
                                 </li>
                             {/if}

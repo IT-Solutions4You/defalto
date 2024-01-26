@@ -5,6 +5,7 @@
  * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
  */
+
 $languageStrings = array(
 
 	// Footer
@@ -1413,6 +1414,9 @@ $languageStrings = array(
     'SINGLE_Home' => 'Home',
     'SINGLE_Settings' => 'Settings',
     'LBL_REQUIRE_KANBAN_PRO' => 'Kanban Pro version is required',
+    'LBL_RECORD_READONLY' => 'The record you are trying to edit is readonly.',
+    'LBL_MAKE_EDITABLE' => 'Make Editable',
+    'LBL_MAKE_READONLY' => 'Make Readonly',
 );
 
 $jsLanguageStrings = array(
