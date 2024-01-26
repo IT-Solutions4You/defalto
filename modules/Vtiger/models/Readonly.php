@@ -74,15 +74,12 @@ class Vtiger_Readonly_Model extends Vtiger_Base_Model
     public static function isReadonly(string $module, int $record): bool
     {
         $adb = PearDatabase::getInstance();
-        $sql = 'SELECT readonly FROM vtiger_crmentity WHERE setype=? AND crmid=?';
-        $params = [$module, $record];
-        $result = $adb->pquery($sql, $params);
+        $result = $adb->pquery(
+            'SELECT readonly FROM vtiger_crmentity WHERE setype=? AND crmid=? AND readonly=?',
+            [$module, $record, 1]
+        );
 
-        if ($adb->num_rows($result)) {
-            return 1 === (int)$adb->query_result($result, 0, 'readonly');
-        }
-
-        return false;
+        return boolval($adb->num_rows($result));
     }
 
     /**
