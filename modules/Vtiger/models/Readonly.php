@@ -79,7 +79,7 @@ class Vtiger_Readonly_Model extends Vtiger_Base_Model
             [$module, $record, 1]
         );
 
-        return boolval($adb->num_rows($result));
+        return (bool)$adb->num_rows($result);
     }
 
     /**
