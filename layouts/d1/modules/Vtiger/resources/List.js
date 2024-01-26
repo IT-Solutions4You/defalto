@@ -1111,6 +1111,11 @@ Vtiger.Class("Vtiger_List_Js", {
 
 		// Double click event - ajax edit
 		listViewContentDiv.on('dblclick', '.listViewEntries', function (e) {
+			if (1 === parseInt($(this).find('.listViewEntriesIsReadonly').val())) {
+				app.helper.showErrorNotification({message: app.vtranslate('JS_RECORD_IS_READONLY')});
+				return;
+			}
+
 			if (listViewContentDiv.find('#isExcelEditSupported').val() == 'no') {
 				return;
 			}

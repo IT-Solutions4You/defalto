@@ -1,13 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
-
+ */
 /**
  * Vtiger Entity Record Model Class
  */
@@ -180,6 +177,22 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		$module = $this->getModule();
 		return 'index.php?module='.$this->getModuleName().'&action='.$module->getDeleteActionName().'&record='.$this->getId();
 	}
+
+    /**
+     * @return string
+     */
+    public function getEditableUrl(): string
+    {
+        return 'index.php?module=' . $this->getModuleName() . '&action=Readonly&mode=makeEditable&record=' . $this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getReadonlyUrl(): string
+    {
+        return 'index.php?module=' . $this->getModuleName() . '&action=Readonly&mode=makeReadonly&record=' . $this->getId();
+    }
 
 	/**
 	 * Function to get the name of the module to which the record belongs

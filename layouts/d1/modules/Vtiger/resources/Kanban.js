@@ -89,6 +89,8 @@ Vtiger_Index_Js('Vtiger_Kanban_Js', {}, {
                                 self.updateFieldValuesCount(picklistValue, draggedValue);
                                 self.registerMoreButtonVisibility();
                             }
+                        } else {
+                            app.helper.showErrorNotification({message: error['message']});
                         }
                     });
                 }

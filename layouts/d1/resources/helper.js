@@ -576,29 +576,31 @@ jQuery.Class("Vtiger_Helper_Js",{
             jQuery.notifyDefaults(defaultSettings);
         }
     },
-    
-    showAlertNotification : function(options,settings) {
-        
-        var defaultOptions = {
-            'icon' : 'fa fa-exclamation-triangle',
-            'title' : app.vtranslate('JS_ALERT')
-        }        
-        options = jQuery.extend(defaultOptions,options);
-        jQuery.notify(options,settings);
-    },
-    
-    showErrorNotification : function (options, settings) {
-        var defaultOptions = {
-            'icon' : 'fa fa-exclamation-circle',
-            'title' : app.vtranslate('JS_ERROR')
-        }
 
-        var defaultSettings = {
-            'delay' : this.ERROR_DELAY
+    showAlertNotification: function (options, settings) {
+        let defaultOptions = {
+            'icon': 'fa fa-exclamation-triangle',
+            'title': app.vtranslate('JS_ALERT')
+        }
+        let defaultSettings = {
+            'type': 'warning',
         }
         options = jQuery.extend(defaultOptions, options);
         settings = jQuery.extend(defaultSettings, settings);
-        jQuery.notify(options,settings);
+        jQuery.notify(options, settings);
+    },
+    showErrorNotification: function (options, settings) {
+        let defaultOptions = {
+            'icon': 'fa fa-exclamation-circle',
+            'title': app.vtranslate('JS_ERROR'),
+        }
+        let defaultSettings = {
+            'delay': this.ERROR_DELAY,
+            'type': 'danger',
+        }
+        options = jQuery.extend(defaultOptions, options);
+        settings = jQuery.extend(defaultSettings, settings);
+        jQuery.notify(options, settings);
     },
     
     showSuccessNotification : function(options, settings) {

@@ -1,24 +1,10 @@
 <?php
-/*********************************************************************************
- * The contents of this file are subject to the SugarCRM Public License Version 1.1.2
- * ("License"); You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at http://www.sugarcrm.com/SPL
- * Software distributed under the License is distributed on an  "AS IS"  basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
- * the specific language governing rights and limitations under the License.
- * The Original Code is:  SugarCRM Open Source
- * The Initial Developer of the Original Code is SugarCRM, Inc.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.;
+/**
+ * The Initial Developer of the Original Code is vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- ********************************************************************************/
-/*********************************************************************************
- * $Header: /advent/projects/wesat/vtiger_crm/vtigercrm/data/CRMEntity.php,v 1.16 2005/04/29 04:21:31 mickie Exp $
- * Description:  Defines the base class for all data entities used throughout the
- * application.  The base class including its methods and variables is designed to
- * be overloaded with module-specific methods and variables particular to the
- * module's base entity class.
- ********************************************************************************/
+ */
 
 include_once('config.php');
 require_once('include/logging.php');
@@ -982,7 +968,12 @@ class CRMEntity {
 		global $log,$adb;
 		$log->debug("module name is " . $module_name);
 
-		//Event triggering code
+        //Readonly disable save
+        if (!Vtiger_Readonly_Model::isPermitted((string)$this->column_fields['record_module'], (int)$this->column_fields['record_id'])) {
+            return;
+        }
+
+        //Event triggering code
 		require_once("include/events/include.inc");
 
 		//In Bulk mode stop triggering events
