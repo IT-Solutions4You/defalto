@@ -1416,6 +1416,7 @@ $languageStrings = array(
     'LBL_REQUIRE_KANBAN_PRO' => 'Kanban Pro version is required',
     'LBL_RECORD_READONLY' => 'The record you are trying to edit is readonly.',
     'LBL_MAKE_EDITABLE' => 'Make Editable',
+    'LBL_MAKE_READONLY' => 'Make Readonly',
 );
 
 $jsLanguageStrings = array(
