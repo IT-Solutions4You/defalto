@@ -6,44 +6,59 @@
 */
 Vtiger.Class("Google_Map_Js", {}, {
 
-	showMap : function(container) {
-		var thisInstance = this;
-		container = jQuery(container);
+	showMap: function (container) {
 		app.helper.showProgress();
-		var params = {
-			'module' : 'Google',
-			'action' : 'MapAjax',
-			'mode' : 'getLocation',
-			'recordid' : container.find('#record').val(),
-			'source_module' : container.find('#source_module').val()
-		}
-		app.request.post({"data":params}).then(function(error,response){
-			var result = JSON.parse(response);
+		container = jQuery(container);
+
+		let self = this,
+			params = {
+				'module': 'Google',
+				'action': 'MapAjax',
+				'mode': 'getLocation',
+				'recordid': container.find('#record').val(),
+				'source_module': container.find('#source_module').val()
+			}
+
+		app.request.post({data: params}).then(function (error, response) {
 			app.helper.hideProgress();
-			var address = result.address;
+
+			let result = JSON.parse(response),
+				address = result.address,
+				location = jQuery.trim((address).replace(/\,/g, " "));
+
 			container.find('#record_label').val(result.label);
-			var location = jQuery.trim((address).replace(/\,/g," "));
-			if(location != '' && location != null){
+
+			if (location) {
 				container.find("#address").html(location);
 				container.find('#address').removeClass('hide');
-			}else{
+			} else {
 				app.helper.hidePopup();
-				app.helper.showAlertNotification({message:app.vtranslate('Please add address information to view on map')});
+				app.helper.showAlertNotification({message: app.vtranslate('Please add address information to view on map')});
+
 				return false;
 			}
-			container.find("#mapLink").on('click',function() {
-			   window.open(thisInstance.getQueryString(location));
+
+			container.find("#mapLink").on('click', function () {
+				window.open(self.getQueryString(location));
 			});
-			thisInstance.loadMapScript();
+			self.loadMapScript(location);
 		});
 	},
 
-	loadMapScript : function() {
-			var API_KEY = 'YOUR_MAP_API_KEY'; // CONFIGURE THIS 
+	loadMapScript: function (location) {
+		let self = this,
+			API_KEY = 'YOUR_MAP_API_KEY'; // CONFIGURE THIS
 
-			if (API_KEY == 'YOUR_MAP_API_KEY' && typeof console) console.error("Google Map API Key not configured."); 
+		if ('YOUR_MAP_API_KEY' === API_KEY) {
+			if (typeof console) {
+				console.error("Google Map API Key not configured.");
+			}
 
-			jQuery.getScript("https://maps.google.com/maps/api/js?key=" + API_KEY + "&sensor=true&async=2&callback=initialize", function () {});
+			jQuery('#map_canvas').html('<iframe style="height: 400px; width: 100%" src="' + self.getQueryString(location) + '&height=400&output=embed"></iframe>')
+		} else {
+			jQuery.getScript("https://maps.google.com/maps/api/js?key=" + API_KEY + "&sensor=true&async=2&callback=initialize", function () {
+			});
+		}
 	},
 
 	getQueryString : function (address) {

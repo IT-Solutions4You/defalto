@@ -222,5 +222,12 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
     public function getDefaultSearchField(){
         return "lastname";
     }
-    
+
+    /**
+     * @return bool
+     */
+    public function isShowMapSupported(): bool
+    {
+        return true;
+    }
 }

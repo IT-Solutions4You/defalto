@@ -378,4 +378,12 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 	public function getUtilityActionsNames() {
 		return array('Import', 'Export', 'Merge', 'ConvertLead', 'DuplicatesHandling');
 	}
+
+    /**
+     * @return bool
+     */
+    public function isShowMapSupported(): bool
+    {
+        return true;
+    }
 }

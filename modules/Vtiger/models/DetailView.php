@@ -63,7 +63,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
         $detailViewLinks = array();
 		$linkModelList = array();
 
-        if(in_array($moduleName, ['Leads', 'Contacts', 'Accounts'])) {
+        if($moduleModel->isShowMapSupported()) {
             $detailViewLinks[] = array(
                 'linktype' => 'DETAILVIEWBASIC',
                 'linklabel' => 'LBL_SHOW_MAP',
