@@ -54,7 +54,15 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return true;
 	}
 
-	/**
+    /**
+     * @return bool
+     */
+    public function isShowMapSupported(): bool
+    {
+        return false;
+    }
+
+    /**
 	 * Function to get singluar label key
 	 * @return <String> - Singular module label key
 	 */
