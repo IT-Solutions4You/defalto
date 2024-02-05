@@ -5,19 +5,19 @@
 * All Rights Reserved.
 *}
 {strip}
-    {assign var="FIELD_INFO" value=$FIELD_MODEL->getFieldInfo()}
+    {assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
     {assign var=FIELD_NAME value=$FIELD_MODEL->get('name')}
     {assign var=FIELD_VALUE value=$FIELD_MODEL->get('fieldvalue')}
-    {assign var="REFERENCE_LIST" value=$FIELD_MODEL->getReferenceList()}
-    {assign var="REFERENCE_LIST_COUNT" value=php7_count($REFERENCE_LIST)}
-    {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
-    {assign var="AUTOFILL_VALUE" value=$FIELD_MODEL->getAutoFillValue()}
-    {assign var="QUICKCREATE_RESTRICTED_MODULES" value=Vtiger_Functions::getNonQuickCreateSupportedModules()}
-    <div class="Vtiger_Reference_UIType referencefield-wrapper {if $FIELD_VALUE neq 0} selected {/if}">
-        {if {$REFERENCE_LIST_COUNT} eq 1}
+    {assign var=REFERENCE_LIST value=$FIELD_MODEL->getReferenceList()}
+    {assign var=REFERENCE_LIST_COUNT value=php7_count($REFERENCE_LIST)}
+    {assign var=SPECIAL_VALIDATOR value=$FIELD_MODEL->getValidator()}
+    {assign var=AUTOFILL_VALUE value=$FIELD_MODEL->getAutoFillValue()}
+    {assign var=QUICKCREATE_RESTRICTED_MODULES value=Vtiger_Functions::getNonQuickCreateSupportedModules()}
+    <div class="Vtiger_Reference_UIType referencefield-wrapper {if !empty($FIELD_VALUE)}selected{/if}">
+        {if $REFERENCE_LIST_COUNT eq 1}
             <input name="popupReferenceModule" type="hidden" value="{$REFERENCE_LIST[0]}"/>
         {/if}
-        {if {$REFERENCE_LIST_COUNT} gt 1}
+        {if $REFERENCE_LIST_COUNT gt 1}
             {assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
             {assign var="REFERENCED_MODULE_STRUCT" value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
             {if !empty($REFERENCED_MODULE_STRUCT)}
@@ -29,14 +29,14 @@
                 <input name="popupReferenceModule" type="hidden" value="{$REFERENCE_LIST[0]}"/>
             {/if}
         {/if}
-        {assign var="displayId" value=$FIELD_VALUE}
+        {assign var=displayId value=$FIELD_VALUE}
         <div class="input-group rounded-start">
             <input id="{$FIELD_NAME}_display" name="{$FIELD_MODEL->getFieldName()}_display" data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="reference" type="text"
                class="marginLeftZero autoComplete inputElement form-control"
                value="{$FIELD_MODEL->getEditViewDisplayValue($displayId)}"
                placeholder="{vtranslate('LBL_TYPE_SEARCH',$MODULE)}"
                {if !empty($FIELD_VALUE)}
-                   disabled="disabled"
+                   readonly="readonly"
                {/if}
                 {if $FIELD_INFO["mandatory"] eq true}
                     data-rule-required="true"
