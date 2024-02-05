@@ -136,15 +136,22 @@ class Vtiger_Util_Helper {
 	 * @param <type> $recordId - module recordId
 	 * returns 1 if record exists else 0
 	 */
-	public static function checkRecordExistance($recordId){
-		global $adb;
-		$query = 'Select deleted from vtiger_crmentity where crmid=?';
-		$result = $adb->pquery($query, array($recordId));
+    public static function checkRecordExistance($recordId)
+    {
+        global $adb;
+        $result = $adb->pquery(
+            'SELECT deleted FROM vtiger_crmentity WHERE crmid=?',
+            array($recordId)
+        );
 
-		return $adb->query_result($result, 'deleted');
-	}
+        if (!$adb->num_rows($result)) {
+            return 1;
+        }
 
-	/**
+        return (int)$adb->query_result($result, 'deleted');
+    }
+
+    /**
 	 * Function to parses date into string format
 	 * @param <Date> $date
 	 * @param <Time> $time
