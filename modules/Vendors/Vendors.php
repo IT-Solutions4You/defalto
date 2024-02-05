@@ -526,22 +526,28 @@ class Vendors extends CRMEntity {
 		parent::unlinkDependencies($module, $id);
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
-		$adb = PearDatabase::getInstance();
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    {
+        $adb = PearDatabase::getInstance();
 
-		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
-		foreach($with_crmids as $with_crmid) {
-			if($with_module == 'Contacts')
-				$adb->pquery("insert into vtiger_vendorcontactrel values (?,?)", array($crmid, $with_crmid));
-			elseif($with_module == 'Products')
-				$adb->pquery("update vtiger_products set vendor_id=? where productid=?", array($crmid, $with_crmid));
-			else {
-				parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-			}
-		}
-	}
+        if (!is_array($with_crmids)) {
+            $with_crmids = array($with_crmids);
+        }
 
-	// Function to unlink an entity with given Id from another entity
+        foreach ($with_crmids as $with_crmid) {
+            if ($with_module == 'Contacts') {
+                $adb->pquery('INSERT INTO vtiger_vendorcontactrel VALUES (?,?)', array($crmid, $with_crmid));
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } elseif ($with_module == 'Products') {
+                $adb->pquery('UPDATE vtiger_products SET vendor_id=? WHERE productid=?', array($crmid, $with_crmid));
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } else {
+                parent::save_related_module($module, $crmid, $with_module, $with_crmid);
+            }
+        }
+    }
+
+    // Function to unlink an entity with given Id from another entity
 	function unlinkRelationship($id, $return_module, $return_id) {
 		global $log;
 		if(empty($return_module) || empty($return_id)) return;

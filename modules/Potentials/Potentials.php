@@ -780,25 +780,28 @@ class Potentials extends CRMEntity {
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
-		$adb = PearDatabase::getInstance();
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    {
+        $adb = PearDatabase::getInstance();
 
-		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
-		foreach($with_crmids as $with_crmid) {
-			if($with_module == 'Contacts') { //When we select contact from potential related list
-				$sql = "insert into vtiger_contpotentialrel values (?,?)";
-				$adb->pquery($sql, array($with_crmid, $crmid));
+        if (!is_array($with_crmids)) {
+            $with_crmids = array($with_crmids);
+        }
+        foreach ($with_crmids as $with_crmid) {
+            if ($with_module == 'Contacts') {
+                //When we select contact from potential related list
+                $adb->pquery('INSERT INTO vtiger_contpotentialrel VALUES (?,?)', array($with_crmid, $crmid));
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } elseif ($with_module == 'Products') {
+                //when we select product from potential related list
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($crmid, $with_crmid, 'Potentials', 1));
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } else {
+                parent::save_related_module($module, $crmid, $with_module, $with_crmid);
+            }
+        }
+    }
 
-			} elseif($with_module == 'Products') {//when we select product from potential related list
-				$sql = 'INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)';
-				$adb->pquery($sql, array($crmid, $with_crmid,'Potentials', 1));
-
-			} else {
-				parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-			}
-		}
-	}
-    
     function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
 		global $currentModule;
         $related_module = vtlib_getModuleNameById($rel_tab_id);

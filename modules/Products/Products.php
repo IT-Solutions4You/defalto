@@ -1353,32 +1353,42 @@ class Products extends CRMEntity {
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
-		$adb = PearDatabase::getInstance();
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    {
+        $adb = PearDatabase::getInstance();
+        $qtysList = array();
 
-		$qtysList = array();
-		if ($otherParams && is_array($otherParams['quantities'])) {
-			$qtysList = $otherParams['quantities'];
-		}
+        if ($otherParams && is_array($otherParams['quantities'])) {
+            $qtysList = $otherParams['quantities'];
+        }
 
-		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
-		foreach($with_crmids as $with_crmid) {
-			$qty = 0;
-			if (array_key_exists($with_crmid, $qtysList)) {
-				$qty = (float) $qtysList[$with_crmid];
-			}
-			if (!$qty) {
-				$qty = 1;
-			}
+        if (!is_array($with_crmids)) {
+            $with_crmids = array($with_crmids);
+        }
 
-			if (in_array($with_module, array('Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'))) {
-				$query = $adb->pquery("SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?", array($crmid, $with_crmid));
-				if($adb->num_rows($query) == 0) {
-					$adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($with_crmid, $crmid, $with_module, $qty));
-				}
-			} else {
-				parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-			}
-		}
-	}
+        foreach ($with_crmids as $with_crmid) {
+            $qty = 0;
+
+            if (array_key_exists($with_crmid, $qtysList)) {
+                $qty = (float)$qtysList[$with_crmid];
+            }
+
+            if (!$qty) {
+                $qty = 1;
+            }
+
+            if (in_array($with_module, array('Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'))) {
+                $query = $adb->pquery('SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', array($crmid, $with_crmid));
+
+                if ($adb->num_rows($query)) {
+                    continue;
+                }
+
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($with_crmid, $crmid, $with_module, $qty));
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } else {
+                parent::save_related_module($module, $crmid, $with_module, $with_crmid);
+            }
+        }
+    }
 }

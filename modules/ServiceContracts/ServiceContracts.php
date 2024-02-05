@@ -417,19 +417,23 @@ class ServiceContracts extends CRMEntity {
 	 * NOTE: This function has been added to CRMEntity (base class).
 	 * You can override the behavior by re-defining it here.
 	 */
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    {
+        if (!is_array($with_crmids)) {
+            $with_crmids = array($with_crmids);
+        }
 
-		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
-		foreach($with_crmids as $with_crmid) {
-			parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-			if ($with_module == 'HelpDesk') {
-				$this->updateHelpDeskRelatedTo($crmid,$with_crmid);
-				$this->updateServiceContractState($crmid);
-			}
-		}
-	 }
+        foreach ($with_crmids as $with_crmid) {
+            parent::save_related_module($module, $crmid, $with_module, $with_crmid);
 
-	 // Function to Update the parent_id of HelpDesk with sc_related_to of ServiceContracts if the parent_id is not set.
+            if ($with_module == 'HelpDesk') {
+                $this->updateHelpDeskRelatedTo($crmid, $with_crmid);
+                $this->updateServiceContractState($crmid);
+            }
+        }
+    }
+
+    // Function to Update the parent_id of HelpDesk with sc_related_to of ServiceContracts if the parent_id is not set.
 	 function updateHelpDeskRelatedTo($focusId, $entityIds) {
 
 		if(!is_array($entityIds)) $entityIds = array($entityIds);
