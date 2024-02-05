@@ -31,6 +31,7 @@
     --menu-height: var(--main-height);
     --menu-icon-color: rgba(94, 129, 244, 1);
     --menu-icon-background: rgba(94, 129, 244, 0.1);
+    --overlay-height: calc(100vh - var(--header-height));
     --header-font-size: 1.6rem;
     --header-icon-size: 2.2rem;
     --header-line-height: 2.5rem;
@@ -162,6 +163,10 @@
 
 .h-list {
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - 1.5rem);
+}
+
+.h-overlay {
+    height: var(--overlay-height);
 }
 
 footer, .h-footer {
@@ -1945,11 +1950,6 @@ input[type=checkbox]:checked {
 /**********************************
 **********Advance Search styles**********
 **********************************/
-.advanceFilterContainer .modal-body {
-    overflow: auto;
-    max-height: calc(100vh - 60px - 70px - var(--header-height));
-}
-
 .op0.fadeInx {
     opacity: 1;
 }
@@ -1997,11 +1997,6 @@ input[type=checkbox]:checked {
 
 .filterConditionContainer .anyConditionContainer {
     padding-top: 10px;
-}
-
-.filterConditionContainer .conditionList .deleteCondition {
-    vertical-align: middle;
-    margin-top: 6px;
 }
 
 #advanceSearchContainer #searchContainer {

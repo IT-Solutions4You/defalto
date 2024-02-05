@@ -43,7 +43,7 @@
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE CONDITION_INFO=array() MODULE=$MODULE NOCHOSEN=true}
 			</div>
             <div class="addCondition">
-				<button type="button" class="btn btn-light">
+				<button type="button" class="btn btn-outline-secondary">
 					<i class="fa fa-plus"></i>
 					<span class="ps-2">{vtranslate('LBL_ADD_CONDITION',$MODULE)}</span>
 				</button>
@@ -76,7 +76,7 @@
 				{include file='AdvanceFilterCondition.tpl'|@vtemplate_path:$QUALIFIED_MODULE RECORD_STRUCTURE=$RECORD_STRUCTURE MODULE=$MODULE CONDITION_INFO=array() CONDITION="or" NOCHOSEN=true}
 			</div>
 			<div class="addCondition">
-				<button type="button" class="btn btn-light">
+				<button type="button" class="btn btn-outline-secondary">
 					<i class="fa fa-plus"></i>
 					<span class="ps-2">{vtranslate('LBL_ADD_CONDITION',$MODULE)}</span>
 				</button>
