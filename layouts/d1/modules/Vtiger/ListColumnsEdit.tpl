@@ -28,17 +28,21 @@
 													<img src="{vimage_path('drag.png')}" class="cursorPointerMove" border="0" title="{vtranslate('LBL_DRAG',$MODULE)}">
 												</span>
 												<span class="fieldLabel px-2">{vtranslate($FIELD_MODEL->get('label'),$FIELD_MODULE_NAME)}</span>
-												<span class="pull-right removeField"><i class="fa fa-times" title="{vtranslate('LBL_REMOVE',$MODULE)}"></i></span>
+												<span class="pull-right removeField">
+													<i class="fa fa-times" title="{vtranslate('LBL_REMOVE',$MODULE)}"></i>
+												</span>
 											</li>   
 										{/if}
 									{/foreach}
 								</ul>
-								<li class="item-dummy hide">
+								<li class="py-2 item-dummy hide">
 									<span class="dragContainer">
 										<img src="{vimage_path('drag.png')}" class="cursorPointerMove" border="0" title="{vtranslate('LBL_DRAG',$MODULE)}">
 									</span>
-									<span class="fieldLabel"></span>
-									<span class="pull-right removeField"><i class="fa fa-times"></i></span>
+									<span class="fieldLabel px-2"></span>
+									<span class="pull-right removeField">
+										<i class="fa fa-times"></i>
+									</span>
 								</li>
 							</div>
 						</div>
