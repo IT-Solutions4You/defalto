@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Vtiger_DashBoard_Js */
 Vtiger.Class("Vtiger_DashBoard_Js",{
 
 	gridster : false,

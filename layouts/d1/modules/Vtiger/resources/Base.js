@@ -4,6 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
+/** @var Vtiger_Base_Js */
 Vtiger.Class('Vtiger_Base_Js', {},{
 
     _components : {},
