@@ -965,6 +965,16 @@ jQuery.Class("Vtiger_Popup_Js",{
 		jQuery('#popupContents').find('a.emailField').removeAttr('onclick');
 	},
 
+	registerShowAllRecords: function () {
+		let self = this,
+			container = self.getPopupPageContainer();
+
+		container.on('click', '.showAllRecordsRecords', function () {
+			container.find('#relatedParentId').val('');
+			container.find('[data-trigger="PopupListSearch"]').trigger('click');
+		})
+	},
+
 	registerEvents: function(){
 		this.registerEventForListViewEntryClick();
 		this.registerEventForSearch();
@@ -980,6 +990,8 @@ jQuery.Class("Vtiger_Popup_Js",{
 		this.registerEventForSelectAllInCurrentPage();
 		this.registerSelectButton();
 		this.registerEventForCheckboxChange();
+
+		this.registerShowAllRecords();
 	}
 });
         

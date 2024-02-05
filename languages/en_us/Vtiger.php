@@ -1417,6 +1417,7 @@ $languageStrings = array(
     'LBL_RECORD_READONLY' => 'The record you are trying to edit is readonly.',
     'LBL_MAKE_EDITABLE' => 'Make Editable',
     'LBL_MAKE_READONLY' => 'Make Readonly',
+    'LBL_SHOW_ALL_RECORDS' => 'Show all records'
 );
 
 $jsLanguageStrings = array(
