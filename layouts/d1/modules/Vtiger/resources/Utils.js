@@ -136,66 +136,74 @@ var vtUtils = {
 
     /**
      * Function register datepicker for dateField elements
-     * @param {jQuery} parent
      */
-    registerEventForDateFields : function(parent, params) {
-        var element;
-		if (parent.hasClass('dateField') && !parent.hasClass('ignore-ui-registration')) {
+    registerEventForDateFields: function (parent, params) {
+        let element;
+
+        if (parent.hasClass('dateField') && !parent.hasClass('ignore-ui-registration')) {
             element = parent;
         } else {
             element = jQuery('.dateField:not(ignore-ui-registration)', parent);
         }
 
-		if(typeof params == 'undefined') {
-			params = {};
-		}
+        if (typeof params == 'undefined') {
+            params = {};
+        }
 
-        var parentDateElement = element.parent();
-        jQuery('.input-group-addon',parentDateElement).on('click',function(e){
-            var elem = jQuery(e.currentTarget);
+        let parentDateElement = element.parent(),
+            defaultFirstDay = jQuery('#start_day').val(),
+            defaultFirstDayId = this.weekDaysArray[defaultFirstDay];
+
+        jQuery('.input-group-addon', parentDateElement).on('click', function (e) {
+            let elem = jQuery(e.currentTarget);
             elem.parent().find('.dateField').focus();
         });
 
-        var userDateFormat = app.getDateFormat();
-        var calendarType = element.data('calendarType');
-        if(element.length > 0){
-            jQuery(element).each(function(index, Elem){
+        let userDateFormat = app.getDateFormat(),
+            calendarType = element.data('calendarType');
+
+        if (element.length > 0) {
+            jQuery(element).each(function (index, Elem) {
                 element = jQuery(Elem);
-                 if(calendarType == "range"){
+
+                if ('range' === calendarType) {
                     //Default first day of the week
-                    var defaultFirstDay = jQuery('#start_day').val();
                     element.dateRangePicker({
                         startOfWeek: defaultFirstDay.toLowerCase(),
                         format: userDateFormat.toUpperCase(),
                         separator: ',',
                         showShortcuts: true,
-                        autoClose : false,
-                        duration : 500
-                    }).on('datepicker-opened', function(e){
-						vtUtils.addMask(jQuery('.date-picker-wrapper:visible'));
-					}).on('datepicker-closed',vtUtils.removeMask);
-                }else{
-                    var elementDateFormat = element.data('dateFormat');
-                    if(typeof elementDateFormat !== 'undefined') {
+                        autoClose: false,
+                        duration: 500
+                    }).on('datepicker-opened', function (e) {
+                        vtUtils.addMask(jQuery('.date-picker-wrapper:visible'));
+                    }).on('datepicker-closed', vtUtils.removeMask);
+                } else {
+                    let elementDateFormat = element.data('dateFormat');
+
+                    if (typeof elementDateFormat !== 'undefined') {
                         userDateFormat = elementDateFormat;
                     }
-			let thelang= jQuery('body').data('language');
-                  	 thelang=thelang.substring(0, 2);
-					var defaultPickerParams = {
-                        autoclose: true,
-                        todayBtn: "linked",
-                        format: userDateFormat,
-                        todayHighlight: true,
-						clearBtn : true,
-			language :thelang
-                    };
-					jQuery.extend(defaultPickerParams, params);
+
+                    let thelang = jQuery('body').data('language').substring(0, 2),
+                        defaultPickerParams = {
+                            autoclose: true,
+                            todayBtn: "linked",
+                            format: userDateFormat,
+                            todayHighlight: true,
+                            clearBtn: true,
+                            language: thelang,
+                            firstDay: defaultFirstDayId,
+                            weekStart: defaultFirstDayId,
+                        };
+                    jQuery.extend(defaultPickerParams, params);
+
                     element.datepicker(defaultPickerParams);
 
-					if(element.hasClass('input-daterange')){
-						element = element.find('input');
-					}
-                }   
+                    if (element.hasClass('input-daterange')) {
+                        element = element.find('input');
+                    }
+                }
             });
         }
     },
