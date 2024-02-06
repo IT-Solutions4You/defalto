@@ -18,6 +18,12 @@ if (!class_exists('Migration_20231123094307')) {
          */
         public function migrate(string $strFileName): void
         {
+            global $current_user;
+
+            if (!$current_user) {
+                $current_user = Users::getActiveAdminUser();
+            }
+
             Appointments_Install_Model::getInstance('module.postinstall', 'Appointments')->installModule();
         }
     }
