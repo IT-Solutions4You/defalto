@@ -15,16 +15,19 @@ class Vtiger_Language_Handler {
 
 	//Contains module language translations
 	protected static $languageContainer;
+    protected static $fileExists = array();
+    protected static $userLanguage;
 
-	/**
+    /**
 	 * Functions that gets translated string
 	 * @param <String> $key - string which need to be translated
 	 * @param <String> $module - module scope in which the translation need to be check
 	 * @return <String> - translated string
 	 */
-	public static function getTranslatedString($key, $module = '', $currentLanguage = '') {
-		if (empty($currentLanguage)) {
-			$currentLanguage = self::getLanguage();
+    public static function getTranslatedString($key, $module = '', $currentLanguage = '')
+    {
+        if (empty($currentLanguage)) {
+            $currentLanguage = self::$userLanguage ? self::$userLanguage : self::getLanguage();
 		}
 		//decoding for Start Date & Time and End Date & Time 
 		if (!is_array($key))
@@ -123,27 +126,45 @@ class Vtiger_Language_Handler {
 	 */
 	public static function getModuleStringsFromFile($language, $module='Vtiger'){
 		$module = str_replace(':', '.', $module);
-		if(empty(self::$languageContainer[$language][$module])){
+
+        if (!empty(self::$languageContainer[$language][$module])) {
+            return self::$languageContainer[$language][$module];
+        }
+
+        if(empty(self::$languageContainer[$language][$module])){
 			$qualifiedName = 'languages.'.$language.'.'.$module;
 			$file = Vtiger_Loader::resolveNameToPath($qualifiedName);
 			$languageStrings = $jsLanguageStrings = array();
-			if(file_exists($file)){
-				require $file;
-				self::$languageContainer[$language][$module]['languageStrings'] = $languageStrings;
-				self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
-			}
+
+            if (!self::$fileExists[$file]) {
+                self::$fileExists[$file] = file_exists($file) ? 'yes' : 'no';
+            }
+
+            if (self::$fileExists[$file] === 'yes') {
+                checkFileAccessForInclusion($file);
+                require $file;
+                self::$languageContainer[$language][$module]['languageStrings'] = $languageStrings;
+                self::$languageContainer[$language][$module]['jsLanguageStrings'] = $jsLanguageStrings;
+            }
 		}
 		// add custom translation for module from language/custom/$language/$module.php file
 		$qualifiedCustomName = 'languages.custom.'.$language.'.'.$module;
         $file = Vtiger_Loader::resolveNameToPath($qualifiedCustomName);
 
         $languageStrings = $jsLanguageStrings = array();
-		if(file_exists($file)){
+
+        if (!self::$fileExists[$file]) {
+            self::$fileExists[$file] = file_exists($file) ? 'yes' : 'no';
+        }
+
+        if (self::$fileExists[$file] === 'yes') {
+            checkFileAccessForInclusion($file);
             require $file;
-            self::$languageContainer[$language][$module]['languageStrings'] = array_merge(self::$languageContainer[$language][$module]['languageStrings'],$languageStrings);
-            self::$languageContainer[$language][$module]['jsLanguageStrings'] = array_merge(self::$languageContainer[$language][$module]['jsLanguageStrings'],$jsLanguageStrings);
-        } 
-		$return = array();
+            self::$languageContainer[$language][$module]['languageStrings'] = array_merge(self::$languageContainer[$language][$module]['languageStrings'], $languageStrings);
+            self::$languageContainer[$language][$module]['jsLanguageStrings'] = array_merge(self::$languageContainer[$language][$module]['jsLanguageStrings'], $jsLanguageStrings);
+        }
+
+        $return = array();
 		if(isset(self::$languageContainer[$language][$module])){
 			$return = self::$languageContainer[$language][$module];
 		}
@@ -154,14 +175,24 @@ class Vtiger_Language_Handler {
 	 * Function that returns current language
 	 * @return <String> -
 	 */
-	public static function getLanguage() {
-		$userModel = Users_Record_Model::getCurrentUserModel();
-		$language = '';
-		if (!empty($userModel) && $userModel->has('language')) {
-			$language = $userModel->get('language');
-		}
-		return empty($language) ? vglobal('default_language') : $language;
-	}
+    public static function getLanguage()
+    {
+        if (self::$userLanguage) {
+            return self::$userLanguage;
+        }
+
+        $userModel = Users_Record_Model::getCurrentUserModel();
+        $language = '';
+
+        if (!empty($userModel) && $userModel->has('language')) {
+            $language = $userModel->get('language');
+        }
+
+        $userLang = empty($language) ? vglobal('default_language') : $language;
+        self::$userLanguage = $userLang;
+        return $userLang;
+
+    }
 
 	/**
 	 * Function that returns current language short name
