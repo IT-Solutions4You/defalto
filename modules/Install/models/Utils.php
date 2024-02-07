@@ -104,13 +104,7 @@ class Install_Utils_Model {
             $directiveValues['upload_max_filesize'] = ini_get('upload_max_filesize');
         }
 
-        $errorReportingValue = E_WARNING & ~E_NOTICE;
-
-        if (version_compare(PHP_VERSION, '5.5.0') >= 0) {
-            $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT;
-        } elseif (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED;
-        }
+        $errorReportingValue = E_WARNING & ~E_NOTICE & ~E_DEPRECATED;
 
         if (ini_get('error_reporting') != $errorReportingValue) {
             $directiveValues['error_reporting'] = 'NOT RECOMMENDED';
@@ -420,6 +414,8 @@ class Install_Utils_Model {
 				if(self::isMySQL($db_type)) {
 					$mysql_server_version = self::getMySQLVersion($serverInfo);
 				}
+
+                $conn->Execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
 				$db_sqlmode_support = self::isMySQLSqlModeFriendly($conn);
 				if($create_db && $db_sqlmode_support) {
 					// drop the current database if it exists
@@ -434,7 +430,8 @@ class Install_Utils_Model {
 					$db_creation_failed = true;
 					$createdb_conn = NewADOConnection($db_type);
 					if(@$createdb_conn->Connect($db_hostname, $root_user, $root_password)) {
-						$query = "CREATE DATABASE ".$db_name;
+                        $createdb_conn->Execute("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
+                        $query = "CREATE DATABASE ".$db_name;
 						if($create_utf8_db == 'true') {
 							if(self::isMySQL($db_type))
 								$query .= " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci";
