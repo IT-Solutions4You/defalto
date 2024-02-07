@@ -1,4 +1,6 @@
 {
+  "description": "Defalto CRM",
+  "type": "project",
   "require": {
     "php": "^8.1",
     "ext-curl": "*",
@@ -101,6 +103,15 @@
     "bin-dir": "bin",
     "discard-changes": true,
     "optimize-autoloader": true
+  },
+  "authors": [
+    {
+      "name": "Defalto",
+      "email": "info@its4you.sk"
+    }
+  ],
+  "autoload": {
+    "files": ["includes/Loader.php"]
   },
   "minimum-stability": "stable",
   "prefer-stable": true
