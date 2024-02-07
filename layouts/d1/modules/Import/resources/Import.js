@@ -315,6 +315,7 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
                 return;
             var selectedFieldElement = jQuery('[name=mapped_fields]', affectedRow).get(0);
             var selectedFieldName = jQuery(selectedFieldElement).val();
+            selectedFieldName = app.helper.purifyContent(selectedFieldName);
             var defaultValueContainer = jQuery(jQuery('[name=default_value_container]', affectedRow).get(0));
             var allDefaultValuesContainer = jQuery('#defaultValuesElementsContainer');
             if (defaultValueContainer.children.length > 0) {

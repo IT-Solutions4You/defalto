@@ -48,6 +48,7 @@
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Google/resources/Settings.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/CkEditor.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Documents/resources/Documents.js')}"></script>
+    <script type="text/javascript" src="{vresource_url('libraries/DOMPurify/dist/purify.min.js')}"></script>
 
     {foreach item=SCRIPT_MODEL from=$SCRIPTS}
         <script type="{$SCRIPT_MODEL->getType()}" src="{vresource_url($SCRIPT_MODEL->getSrc())}"></script>

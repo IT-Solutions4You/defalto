@@ -249,27 +249,30 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       });
    },
    registerChangeFieldEvent: function (data) {
-      jQuery('.textType', data).on('change', function (e) {
-         var valueType = jQuery(e.currentTarget).val();
-         var useFieldContainer = jQuery('.useFieldContainer', data);
-         var useFunctionContainer = jQuery('.useFunctionContainer', data);
-         var uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
-         jQuery('.fieldValue', data).hide();
-         jQuery('[data-' + uiType + ']', data).show();
-         if (valueType == 'fieldname') {
-            useFieldContainer.removeClass('hide');
-            useFunctionContainer.addClass('hide');
-         } else if (valueType == 'expression') {
-            useFieldContainer.removeClass('hide');
-            useFunctionContainer.removeClass('hide');
-         } else {
-            useFieldContainer.addClass('hide');
-            useFunctionContainer.addClass('hide');
-         }
-         jQuery('.helpmessagebox', data).addClass('hide');
-         jQuery('#' + valueType + '_help', data).removeClass('hide');
-         data.find('.fieldValue').val('');
-      });
+       jQuery('.textType', data).on('change', function (e) {
+           let valueType = jQuery(e.currentTarget).val();
+           valueType = app.helper.purifyContent(valueType);
+           const useFieldContainer = jQuery('.useFieldContainer', data);
+           const useFunctionContainer = jQuery('.useFunctionContainer', data);
+           const uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
+           jQuery('.fieldValue', data).hide();
+           jQuery('[data-' + uiType + ']', data).show();
+
+           if (valueType === 'fieldname') {
+               useFieldContainer.removeClass('hide');
+               useFunctionContainer.addClass('hide');
+           } else if (valueType === 'expression') {
+               useFieldContainer.removeClass('hide');
+               useFunctionContainer.removeClass('hide');
+           } else {
+               useFieldContainer.addClass('hide');
+               useFunctionContainer.addClass('hide');
+           }
+
+           jQuery('.helpmessagebox', data).addClass('hide');
+           jQuery('#' + valueType + '_help', data).removeClass('hide');
+           data.find('.fieldValue').val('');
+       });
    },
    postShowModalAction: function (data, valueType) {
       if (valueType == 'fieldname') {

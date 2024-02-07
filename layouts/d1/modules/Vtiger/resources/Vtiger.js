@@ -52,6 +52,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 			_controller = new window[emailPreviewClass]();
 			_controller.registerEventsForActionButtons();
 			var descriptionContent = data.find('#iframeDescription').val();
+			descriptionContent = app.helper.purifyContent(descriptionContent);
 			var frameElement = jQuery("#emailPreviewIframe")[0].contentWindow.document;
 			frameElement.open();
 			frameElement.close();
@@ -1238,6 +1239,8 @@ Vtiger.Class('Vtiger_Index_Js', {
 
 	registerMoreRecentUpdatesClickEvent: function (container, recordId) {
 		let moduleName = container.find('#sourceModuleName').val();
+		moduleName = app.helper.purifyContent(moduleName);
+		recordId = app.helper.purifyContent(recordId);
 
 		container.find('.moreRecentUpdates').on('click', function () {
 			window.location.href = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + moduleName + "&record=" + recordId + "&tab_label=LBL_UPDATES";
