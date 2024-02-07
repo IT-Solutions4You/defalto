@@ -26,7 +26,27 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 			}
 		}
-		return true;
+
+        $selectedFields = $request->get('selected_fields');
+
+        if (count($selectedFields)) {
+            foreach ($selectedFields as $field) {
+                [$tablename, $colname, $module_field, $fieldname] = split(":", $field);
+                [$module] = split("_", $module_field, 2);
+                $moduleModel = Vtiger_Module_Model::getInstance($module);
+                $fieldModel = Vtiger_Field_Model::getInstance($fieldname, $moduleModel);
+
+                if ($fieldModel->table !== $tablename) {
+                    throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+                }
+
+                if ($fieldModel->column !== $colname) {
+                    throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+                }
+            }
+        }
+
+        return true;
 	}
 
 	public function process(Vtiger_Request $request) {
