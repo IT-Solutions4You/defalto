@@ -1572,25 +1572,6 @@ class Users extends CRMEntity {
 		}
 	}
 
-	/**
-	* Function to update Config file
-	* @param- $_REQUEST array
-	*/
-	public function updateConfigFile($requestArray) {
-	   if (isset ($requestArray['currency_name'])) {
-		   $currency_name = vtlib_purify($requestArray['currency_name']);
-		   $currency_name = '$currency_name = \''.$currency_name.'\'';
-
-		   //Updating in config inc file
-		   $filename = 'config.inc.php';
-		   if (file_exists($filename)) {
-			   $contents = file_get_contents($filename);
-			   $contents = str_replace('$currency_name = \'USA, Dollars\'', $currency_name, $contents);
-			   file_put_contents($filename, $contents);
-		   }
-	   }
-   }
-
    public function triggerAfterSaveEventHandlers() {
 	   global $adb;
 		require_once("include/events/include.inc");
@@ -2056,4 +2037,3 @@ class Users_CRMSetup {
 		return $packagesList;
 	}
 }
-?>
