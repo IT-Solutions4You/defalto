@@ -2398,7 +2398,7 @@ class CRMEntity {
 							where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') or vtiger_crmentity.smownerid
 					in(select shareduserid from vtiger_tmp_read_user_sharing_per
 						where userid=" . $current_user->id . " and tabid=" . $tabid . ") or (";
-			if (sizeof($current_user_groups) > 0) {
+			if (php7_count($current_user_groups) > 0) {
 				$sec_query .= " vtiger_crmentity.smownerid in (" . implode(",", $current_user_groups) . ") or ";
 			}
 			$sec_query .= " vtiger_crmentity.smownerid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid

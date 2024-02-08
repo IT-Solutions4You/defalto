@@ -1379,7 +1379,7 @@ class QueryGenerator {
 					global $mod_strings;
 					// Get all the keys for the for the Picklist value
 					$mod_keys = array_keys($mod_strings, $value);
-					if(sizeof($mod_keys) >= 1) {
+					if(php7_count($mod_keys) >= 1) {
 						// Iterate on the keys, to get the first key which doesn't start with LBL_      (assuming it is not used in PickList)
 						foreach($mod_keys as $mod_idx=>$mod_key) {
 							$stridx = strpos($mod_key, 'LBL_');

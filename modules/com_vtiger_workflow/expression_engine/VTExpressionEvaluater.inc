@@ -12,7 +12,7 @@ interface VTExpressionEnv{
 }
 
 function __vt_add($arr){
-	if(sizeof($arr)==1){
+	if(php7_count($arr)==1){
 		return $arr[0];
 	}else{
 		if(strlen(substr(strrchr($arr[0], "."), 1))>strlen(substr(strrchr($arr[1], "."), 1))){
@@ -25,7 +25,7 @@ function __vt_add($arr){
 }
 
 function __vt_sub($arr){
-	if(sizeof($arr)==1){
+	if(php7_count($arr)==1){
 		return -$arr[0];
 	}else{
 		if(strlen(substr(strrchr($arr[0], "."), 1))>strlen(substr(strrchr($arr[1], "."), 1))){

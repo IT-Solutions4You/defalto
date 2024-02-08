@@ -66,7 +66,7 @@ class Vtiger_Unzip extends dUnzip2 {
 		if($includeExclude === false) $includeExclude = Array();
 
 		$lista = $this->getList();
-		if(sizeof($lista)) foreach($lista as $fileName=>$trash){
+		if(php7_count($lista)) foreach($lista as $fileName=>$trash){
 			// Should the file be ignored?
 			if($includeExclude['include'] &&
 				!$this->__checkPathInArray($fileName, $includeExclude['include'])) {

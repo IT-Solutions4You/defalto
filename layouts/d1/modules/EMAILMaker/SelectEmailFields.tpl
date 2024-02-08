@@ -114,7 +114,7 @@
                                     </div>
                                 </div>
                             {/if}
-                            {if $TEMPLATE_LANGUAGES|@sizeof > 1}
+                            {if $TEMPLATE_LANGUAGES|@php7_count > 1}
                                 <div class="row py-2">
                                     <div class="col-lg-3 text-end text-secondary">
                                         <span>{vtranslate('LBL_LANGUAGE','EMAILMaker')}:</span>

@@ -612,7 +612,7 @@ class soap_server extends nusoap_base {
 			$this->debug('serializing return value');
 			if($this->wsdl){
 				// weak attempt at supporting multiple output params
-				if(sizeof($this->opData['output']['parts']) > 1){
+				if(php7_count($this->opData['output']['parts']) > 1){
 			    	$opParams = $this->methodreturn;
 			    } else {
 			    	// TODO: is this really necessary?

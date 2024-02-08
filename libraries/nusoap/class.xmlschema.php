@@ -507,7 +507,7 @@ class XMLSchema extends nusoap_base  {
 		$schemaPrefix = $this->getPrefixFromNamespace($this->XMLSchemaVersion);
 		$xml = '';
 		// imports
-		if (sizeof($this->imports) > 0) {
+		if (php7_count($this->imports) > 0) {
 			foreach($this->imports as $ns => $list) {
 				foreach ($list as $ii) {
 					if ($ii['location'] != '') {

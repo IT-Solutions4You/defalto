@@ -10,7 +10,7 @@
 	<div class="panel-group accordion border-0" id="accordion" role="tablist" aria-multiselectable="true">
 		<div class="accordion-item border-0 settingsSearch">
 			{foreach item=BLOCK_MENUS key=BLOCK_NAME from=$SETTINGS_MENU_LIST}
-				{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENUS|@sizeof}
+				{assign var=NUM_OF_MENU_ITEMS value= $BLOCK_MENUS|@php7_count}
 				{if $NUM_OF_MENU_ITEMS gt 0}
 					<div id="{$BLOCK_NAME}_accordion" class="settingsSearchHeader accordion-header">
 						<button class="settingsSearchButton accordion-button bg-transparent fw-bold p-3 {if $ACTIVE_BLOCK['block'] neq $BLOCK_NAME}collapsed{/if}" type="button" data-bs-toggle="collapse" data-bs-target="#{$BLOCK_NAME}_colapse">

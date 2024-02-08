@@ -78,7 +78,7 @@
 		$meta->isUpdateMandatoryFields($element);
 
 		$ownerFields = $meta->getOwnerFields();
-		if(is_array($ownerFields) && sizeof($ownerFields) >0){
+		if(is_array($ownerFields) && php7_count($ownerFields) >0){
 			foreach($ownerFields as $ownerField){
 				if(isset($element[$ownerField]) && $element[$ownerField]!==null && 
 					!$meta->hasAssignPrivilege($element[$ownerField])){

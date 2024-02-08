@@ -185,7 +185,7 @@
 						foreach ($styles as $selector=>$styling) {
 							// this fix is workaround for #58277
 						$selectProperties = explode(' ',$selector);
-						if(sizeof($selectProperties) != 0){
+						if(php7_count($selectProperties) != 0){
 							foreach($selectProperties as $key => $property){
 								if(strpos($property, ".") === false){
 									continue;
@@ -197,7 +197,7 @@
 								if ($array_key !== false || !is_bool($array_key)) {
 									unset($results[$array_key]);
 								}
-								if(sizeof($results) > 1){ //if selector has more than one class of same element
+								if(php7_count($results) > 1){ //if selector has more than one class of same element
 									//returns empty if selector has clases like .class1.class2 .. bug reported - https://sourceforge.net/p/simplehtmldom/bugs/3/
 									$results = '[class='.trim(implode(' ', $results)).']';
 									$selectProperties[$key] = $results;
