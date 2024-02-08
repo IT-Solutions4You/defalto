@@ -9,9 +9,11 @@
  *************************************************************************************/
 
 class Vtiger_Notebook_Dashboard extends Vtiger_IndexAjax_View {
-	
-	public function process(Vtiger_Request $request, $widget=NULL) {
-		$viewer = $this->getViewer($request);
+
+    public function process(Vtiger_Request $request)
+    {
+        $widget = null;
+        $viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();
 		
 		// Initialize Widget to the right-state of information

@@ -31,7 +31,6 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 		if(!empty($componentName)) {
 			$className = Vtiger_Loader::getComponentClassName('Dashboard', $componentName, $moduleName);
 			if(!empty($className)) {
-				$widget = NULL;
 				if(!empty($linkId)) {
 					$widget = new Vtiger_Widget_Model();
 					$widget->set('linkid', $linkId);
@@ -46,7 +45,9 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 					if ($request->has('data')) {
 						$widget->set('data', $request->get('data'));
 					}
-					$widget->add();
+
+                    $widget->add();
+                    $request->set('widgetid', $widget->get('id'));
 				}
 				
 				//Date conversion from user format to database format
