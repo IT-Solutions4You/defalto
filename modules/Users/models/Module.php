@@ -124,25 +124,29 @@ class Users_Module_Model extends Vtiger_Module_Model {
 	* Function to update Base Currency of Product
 	* @param- $_REQUEST array
 	*/
-	public function updateBaseCurrency($currencyName) {
-		$db = PearDatabase::getInstance();
-		$result = $db->pquery('SELECT currency_code, currency_symbol FROM vtiger_currencies WHERE currency_name = ?', array($currencyName));
-		$num_rows = $db->num_rows($result);
-		if ($num_rows > 0) {
-			$currency_code = decode_html($db->query_result($result, 0, 'currency_code'));
-			$currency_symbol = decode_html($db->query_result($result, 0,'currency_symbol'));
-		}
-		$this->updateConfigFile($currencyName);
-		//Updating Database
-		$query = 'UPDATE vtiger_currency_info SET currency_name = ?, currency_code = ?, currency_symbol = ? WHERE id = ?';
-		$params = array($currencyName, $currency_code, $currency_symbol, '1');
-		$db->pquery($query, $params);
+    public function updateBaseCurrency($currencyName)
+    {
+        $db = PearDatabase::getInstance();
+        $result = $db->pquery('SELECT currency_code, currency_symbol, currency_name FROM vtiger_currencies WHERE currency_name = ?', [$currencyName]);
+        $num_rows = $db->num_rows($result);
 
+        if ($num_rows) {
+            $currency_code = decode_html($db->query_result($result, 0, 'currency_code'));
+            $currency_symbol = decode_html($db->query_result($result, 0, 'currency_symbol'));
+            $currencyName = decode_html($db->query_result($result, 0, 'currency_name'));
+        } else {
+            return;
+        }
 
-	}
+        $this->updateConfigFile($currencyName);
+        //Updating Database
+        $query = 'UPDATE vtiger_currency_info SET currency_name = ?, currency_code = ?, currency_symbol = ? WHERE id = ?';
+        $params = [$currencyName, $currency_code, $currency_symbol, '1'];
+        $db->pquery($query, $params);
+    }
 
-	/**
-	* Function to update Config file
+    /**
+     * Function to update Config file
 	* @param- $_REQUEST array
 	*/
 	public function updateConfigFile($currencyName) {
