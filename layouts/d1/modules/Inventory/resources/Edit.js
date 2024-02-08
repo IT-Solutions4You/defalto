@@ -1638,6 +1638,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		params.get_url = 'getProductListPriceURL';
 		params.currency_id = jQuery('#currency_id option:selected').val();
         params.view = 'Popup';
+		params.search_params = '[[["active","e","1"]]]'; /* by default restrict to active books */
         var popupInstance = Vtiger_Popup_Js.getInstance();
         popupInstance.showPopup(params, 'post.LineItemPriceBookSelect.click');
 	},
