@@ -8,8 +8,9 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-chdir(dirname(__FILE__).'/../../');
+chdir(__DIR__ . '/../../');
 
+require_once 'vendor/autoload.php';
 include_once 'includes/Loader.php';
 include_once 'includes/runtime/Globals.php';
 include_once 'include/Webservices/Relation.php';
@@ -42,11 +43,11 @@ include_once 'includes/runtime/Viewer.php';
 include_once 'includes/runtime/Theme.php';
 include_once 'includes/http/Request.php';
 include_once 'libraries/Smarty/libs/sysplugins/smarty_security.php';
-include_once dirname(__FILE__).'/helpers/Request.php';
-include_once dirname(__FILE__).'/helpers/Response.php';
-include_once dirname(__FILE__).'/helpers/Utils.php';
-include_once dirname(__FILE__).'/helpers/SettingsUtils.php';
-include_once dirname(__FILE__).'/apis/AbstractApi.php';
-include_once dirname(__FILE__).'/apis/FetchRecord.php';
-include_once dirname(__FILE__).'/Config.php';
+include_once __DIR__ . '/helpers/Request.php';
+include_once __DIR__ . '/helpers/Response.php';
+include_once __DIR__ . '/helpers/Utils.php';
+include_once __DIR__ . '/helpers/SettingsUtils.php';
+include_once __DIR__ . '/apis/AbstractApi.php';
+include_once __DIR__ . '/apis/FetchRecord.php';
+include_once __DIR__ . '/Config.php';
 
