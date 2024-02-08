@@ -853,7 +853,7 @@ function vtlib_purifyForSql($string, $skipEmpty=true) {
  */
 function vtlib_process_widget($widgetLinkInfo, $context = false) {
 	if (preg_match("/^block:\/\/(.*)/", $widgetLinkInfo->linkurl, $matches)) {
-		list($widgetControllerClass, $widgetControllerClassFile) = explode(':', $matches[1]);
+		[$widgetControllerClass, $widgetControllerClassFile] = explode(':', $matches[1]);
 		if (!class_exists($widgetControllerClass)) {
 			checkFileAccessForInclusion($widgetControllerClassFile);
 			include_once $widgetControllerClassFile;
@@ -955,9 +955,21 @@ if (!function_exists('ereg')) { function ereg($pattern, $str) { return php7_comp
 if (!function_exists('eregi')) { function eregi($pattern, $str) { return php7_compat_ereg($pattern, $str, true); } }
 
 /**
- * PHP8 support
+ * Returns count of elements in $value. Safe for null (0) and uncountable variable types (1).
+ *
+ * @param $value
+ *
+ * @return int
  */
-function php7_count($value) {
-	// PHP 8.x does not like count(null) or count(string)
-	return is_null($value) || !is_array($value) ? 0 : count($value);
+function php7_count($value): int
+{
+    if (is_null($value)) {
+        return 0;
+    }
+
+    if (!is_countable($value)) {
+        return 1;
+    }
+
+    return count($value);
 }
