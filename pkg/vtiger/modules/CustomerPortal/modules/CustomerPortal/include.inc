@@ -10,8 +10,8 @@
 
 chdir(__DIR__ . '/../../');
 
+require_once 'vendorCheck.php';
 require_once 'vendor/autoload.php';
-include_once 'includes/Loader.php';
 include_once 'includes/runtime/Globals.php';
 include_once 'include/Webservices/Relation.php';
 require_once 'include/utils/utils.php';

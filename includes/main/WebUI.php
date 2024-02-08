@@ -11,7 +11,6 @@
 require_once 'include/utils/utils.php';
 require_once 'include/utils/CommonUtils.php';
 
-require_once 'includes/Loader.php';
 vimport ('includes.runtime.EntryPoint');
 
 class Vtiger_WebUI extends Vtiger_EntryPoint {
@@ -35,7 +34,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	}
 
 	/**
-	 * Function to get the instance of the logged in User
+	 * Function to get the instance of the logged-in User
 	 * @return Users object
 	 */
 	function getLogin() {

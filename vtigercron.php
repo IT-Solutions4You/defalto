@@ -11,6 +11,8 @@
 /**
  * Start the cron services configured.
  */
+require_once 'vendorCheck.php';
+require_once 'vendor/autoload.php';
 include_once 'vtlib/Vtiger/Cron.php';
 require_once 'config.inc.php';
 require_once('modules/Emails/mail.php');
@@ -20,7 +22,6 @@ if (file_exists('config_override.php')) {
 }
 
 // Extended inclusions
-require_once 'includes/Loader.php';
 vimport ('includes.runtime.EntryPoint');
 
 $site_URLArray = explode('/',$site_URL);

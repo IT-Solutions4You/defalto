@@ -16,7 +16,6 @@ require_once 'vendorCheck.php';
 require_once 'vendor/autoload.php';
 include_once 'include/Webservices/Relation.php';
 include_once 'vtlib/Vtiger/Module.php';
-include_once dirname(__FILE__) . '/includes/Loader.php';
 vimport ('includes.runtime.EntryPoint');
 
 Vtiger_ShortURL_Helper::handle(vtlib_purify($_REQUEST['id']));
