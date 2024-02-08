@@ -67,7 +67,7 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 				$currentUserPrivilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 				if($currentUserPrivilegeModel->hasModulePermission(getTabid($moduleName)) && !Vtiger_Runtime::isRestricted('modules', $moduleName)){
 					$classInstance = new $className();
-					$classInstance->process($request, $widget);
+					$classInstance->process($request);
 				}else{
 					throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 				}
