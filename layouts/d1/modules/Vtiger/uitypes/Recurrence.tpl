@@ -8,7 +8,7 @@
     {assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
 	<div class="row">
 		<div class="col-sm-1 py-2">
-			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
+			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$REQUEST_INSTANCE.isDuplicate}
 				<input type="hidden" class="recurringEdit" value="true" />
 			{/if}
 			<input type="checkbox" class="form-check-input" name="recurringcheck" data-field-id= '{$FIELD_MODEL->get('id')}' value="" {if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}checked{/if}/>

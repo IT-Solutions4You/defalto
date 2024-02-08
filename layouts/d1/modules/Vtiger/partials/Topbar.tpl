@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$smarty.request.view}">
+            <div class="col-3 col-sm-4 col-md-5 transitionsAllHalfSecond module-breadcrumb module-breadcrumb-{$REQUEST_INSTANCE.view}">
                 <div class="w-100 text-truncate text-nowrap fs-4 px-xs-3 ps-lg-3">
                     {assign var=MODULE_MODEL value=Vtiger_Module_Model::getInstance($MODULE)}
                     {if $MODULE_MODEL}
@@ -50,14 +50,14 @@
                     <a class="module-title fs-3" title="{$SINGLE_MODULE_LABEL}" href='{$CUSTOM_VIEW_URL}'>
                         {$SINGLE_MODULE_LABEL}
                     </a>
-                    {if $RECORD and $smarty.request.view eq 'Edit'}
+                    {if $RECORD and $REQUEST_INSTANCE.view eq 'Edit'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{vtranslate('LBL_EDITING', $MODULE)} : {$RECORD->get('label')}</a>
-                    {elseif $smarty.request.view eq 'Edit'}
+                    {elseif $REQUEST_INSTANCE.view eq 'Edit'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer">{vtranslate('LBL_ADDING_NEW', $MODULE)}</a>
                     {/if}
-                    {if $RECORD and $smarty.request.view eq 'Detail'}
+                    {if $RECORD and $REQUEST_INSTANCE.view eq 'Detail'}
                         <span class="current-filter-slash d-inline px-2">/</span>
                         <a class="current-filter-name filter-name cursorPointer" title="{$RECORD->get('label')}">{$RECORD->get('label')}</a>
                     {/if}

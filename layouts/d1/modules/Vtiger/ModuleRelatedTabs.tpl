@@ -47,7 +47,7 @@
                                 </div>
                             </a>
                         </li>
-                        {if isset($smarty.request.relationId) && $RELATED_LINK->getId() eq $smarty.request.relationId}
+                        {if isset($REQUEST_INSTANCE.relationId) && $RELATED_LINK->getId() eq $REQUEST_INSTANCE.relationId}
                             {assign var=MORE_TAB_ACTIVE value='true'}
                         {/if}
                     {/foreach}

@@ -40,7 +40,7 @@
 
 			<input type="hidden" name="relatedContactInfo" data-value='{json_encode($RELATED_CONTACTS, $smarty.const.JSON_HEX_APOS)}' />
                         <!-- Show the add button only if it is edit view  -->
-                        {if $smarty.request.view eq 'Edit'}
+                        {if $REQUEST_INSTANCE.view eq 'Edit'}
                             <span class="input-group-addon createReferenceRecord cursorPointer clearfix" title="{vtranslate('LBL_CREATE', $MODULE)}">
                                     <i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class="fa fa-plus"></i>
                             </span>

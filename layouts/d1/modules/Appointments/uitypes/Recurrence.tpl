@@ -10,7 +10,7 @@
 	<div class="row">
 		<div class="col-sm-1 py-2">
 			<input type="hidden" class="recurringEditMode" name="recurringEditMode" value="">
-			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$smarty.request.isDuplicate}
+			{if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes' && !$REQUEST_INSTANCE.isDuplicate}
 				<input type="hidden" class="recurringEdit" value="true" />
 			{/if}
 			<input type="checkbox" class="form-check-input" name="recurringcheck" data-field-id= '{$FIELD_MODEL->get('id')}' value="" {if $RECURRING_INFORMATION['recurringcheck'] eq 'Yes'}checked{/if} style="height: 1.3rem; width: 1.3rem;"/>

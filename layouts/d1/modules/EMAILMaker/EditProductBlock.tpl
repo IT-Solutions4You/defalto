@@ -167,7 +167,7 @@
                             <div class="modal-overlay-footer container-fluid pt-3">
                                 <div class="row">
                                     <div class="col text-end">
-                                        {if $smarty.request.applied eq 'true'}
+                                        {if $REQUEST_INSTANCE.applied eq 'true'}
                                             <a class="btn btn-primary cancelLink" type="reset" onclick="window.location.href = 'index.php?action=DetailViewEMAILTemplate&module=EMAILMaker&templateid={$SAVETEMPLATEID}&parenttab=Tools';">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                                         {else}
                                             <a class="btn btn-primary cancelLink" type="reset" onclick="window.history.back();">{vtranslate('LBL_CANCEL', $MODULE)}</a>
