@@ -1009,7 +1009,7 @@ $languageStrings = array(
   'LBL_TAGS' => 'Теги',
   'LBL_SHARE_TAGS' => 'Теги Общественного',
   'LBL_SHARE_TAG' => 'Поделиться Тег',
-  'LBL_TAG_FOR' => 'Бирка для %S',
+  'LBL_TAG_FOR' => 'Бирка для %s',
   'LBL_CURRENT_TAGS' => 'Текущая Теги',
   'LBL_CREATE_NEW_TAG' => 'Создать новый тег',
   'LBL_ADD_TAG' => 'Добавить Метку',
@@ -1064,7 +1064,7 @@ $languageStrings = array(
   'LBL_ROLL_UP' => 'Закатать',
   'LBL_TOUCH_POINTS' => 'Точек соприкосновения',
   'LBL_EMAIL_SUPPORT'            => 'Поддержка По Электронной Почте', 
-  'LBL_NO_ENTITIES_FOUND'        => 'Нет %S не найдена',
+  'LBL_NO_ENTITIES_FOUND'        => 'Нет %s не найдена',
 
   'LBL_DAY' => 'день',
   'LBL_HOUR' => 'час',
