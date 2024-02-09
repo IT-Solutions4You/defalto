@@ -814,20 +814,24 @@ jQuery.Class("Vtiger_Helper_Js",{
         var winHeight= jQuery(window).height()-50;
         return winHeight;
     },
+    retrievePopupContainer: function () {
+        let container = jQuery('#popupModal');
 
+        if (!container.length) {
+            $('body').append($('<div id="popupModal" class="modal popupModal"></div>'))
+        }
+    },
     showPopup: function (content, params) {
+        this.retrievePopupContainer();
+
         if (typeof params === "undefined") {
             params = {};
         }
 
-        let defaultParams = app.helper.defaultModalParams();
-        params = jQuery.extend(defaultParams, params);
+        params = jQuery.extend(app.helper.defaultModalParams(), params);
 
-        let cb = params.cb;
-
-        if (jQuery('#popupModal').length) return;
-
-        let container = jQuery('<div id="popupModal" class="modal"></div>');
+        let cb = params.cb,
+            container = jQuery('#popupModal');
 
         container.on('hidden.bs.modal', function () {
             container.html('').remove();

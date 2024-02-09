@@ -7,23 +7,30 @@
 /** @var Vtiger_Popup_Js */
 jQuery.Class("Vtiger_Popup_Js",{
 
-    getInstance: function(module){
-		if(!module || typeof module == 'undefined') {
-			var module = app.getModuleName();
+	getInstance: function (module) {
+		if (!module || typeof module == 'undefined') {
+			module = app.getModuleName();
 		}
-		var className = jQuery('#popUpClassName').val();
-		if(typeof className != 'undefined'){
-			var moduleClassName = className;
-		}else{
-			var moduleClassName = module+"_Popup_Js";
+
+		let className = jQuery('#popUpClassName').val(),
+			moduleClassName;
+
+		if (typeof className != 'undefined') {
+			moduleClassName = className;
+		} else {
+			moduleClassName = module + "_Popup_Js";
 		}
-		var fallbackClassName = Vtiger_Popup_Js;
-	    if(typeof window[moduleClassName] != 'undefined'){
-			var instance = new window[moduleClassName]();
-		}else{
-			var instance = new fallbackClassName();
+
+		let fallbackClassName = Vtiger_Popup_Js,
+			instance;
+
+		if (typeof window[moduleClassName] != 'undefined') {
+			instance = new window[moduleClassName]();
+		} else {
+			instance = new fallbackClassName();
 		}
-	    return instance;
+
+		return instance;
 	}
 
 },{
@@ -997,13 +1004,13 @@ jQuery.Class("Vtiger_Popup_Js",{
         
 jQuery(document).ready(function() {
 	app.event.on("post.Popup.Load",function(event,params){
-        vtUtils.applyFieldElementsView(jQuery('.myModal'));
+		let popupInstance = Vtiger_Popup_Js.getInstance(params.module),
+			eventToTrigger = params.eventToTrigger;
 
-		var popupInstance = Vtiger_Popup_Js.getInstance(params.module);
-        var eventToTrigger = params.eventToTrigger;
         if(typeof eventToTrigger != "undefined"){
             popupInstance.setEventName(params.eventToTrigger);
         }
+
         popupInstance.registerEvents();
         popupInstance.registerPostPopupLoadEvents();
     });
