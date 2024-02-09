@@ -788,8 +788,8 @@ abstract class BaseRecognizer{
 		if ( $this->state->ruleMemo==null ) {
 			echo("!!!!!!!!! memo array is null for ". getGrammarFileName());
 		}
-		if ( $ruleIndex >= sizeof($this->state->ruleMemo) ) {
-			echo("!!!!!!!!! memo size is ".sizeof($this->state->ruleMemo).", but rule index is ".$ruleIndex);
+		if ( $ruleIndex >= php7_count($this->state->ruleMemo) ) {
+			echo("!!!!!!!!! memo size is ".php7_count($this->state->ruleMemo).", but rule index is ".$ruleIndex);
 		}
 		if ( $this->state->ruleMemo[$ruleIndex]!=null ) {
 			$this->state->ruleMemo[$ruleIndex][$ruleStartIndex] = $stopTokenIndex;
@@ -801,10 +801,10 @@ abstract class BaseRecognizer{
 	 */
 	public function getRuleMemoizationCacheSize() {
 		$n = 0;
-		for ($i = 0; $this->state->ruleMemo!=null && $i < sizeof($this->state->ruleMemo); $i++) {
+		for ($i = 0; $this->state->ruleMemo!=null && $i < php7_count($this->state->ruleMemo); $i++) {
 			$ruleMap = $this->state->ruleMemo[$i];
 			if ( $ruleMap!=null ) {
-				$n += sizeof($ruleMap); // how many input indexes are recorded?
+				$n += php7_count($ruleMap); // how many input indexes are recorded?
 			}
 		}
 		return $n;

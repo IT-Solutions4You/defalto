@@ -117,7 +117,7 @@ class Vtiger_CRMEntity extends CRMEntity {
 						(";
 
 					// Build the query based on the group association of current user.
-					if(sizeof($current_user_groups) > 0) {
+					if(php7_count($current_user_groups) > 0) {
 						$sec_query .= " vtiger_crmentity.smownerid IN (". implode(",", $current_user_groups) .") OR ";
 					}
 					$sec_query .= " vtiger_crmentity.smownerid IN

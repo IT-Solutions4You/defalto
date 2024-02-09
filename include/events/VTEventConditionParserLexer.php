@@ -52,7 +52,7 @@ function VTEventConditionParserLexer_DFA9_static(){
     $arr['special'] = DFA::unpackEncodedString($specialS);
 
 
-    $numStates = sizeof($transitionS);
+    $numStates = php7_count($transitionS);
     $arr['transition'] = array();
     for ($i=0; $i<$numStates; $i++) {
         $arr['transition'][$i] = DFA::unpackEncodedString($transitionS[$i]);

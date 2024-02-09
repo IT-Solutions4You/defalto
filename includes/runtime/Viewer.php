@@ -77,8 +77,13 @@ class Vtiger_Viewer extends Smarty {
 			$this->log("URI: $debugViewerURI, TYPE: " . $_SERVER['REQUEST_METHOD']);
 		}
 	}
-	
-	function safeHtmlFilter($content, $smarty) {
+
+    // Backward compatible to SmartyBC
+    function get_template_vars($name = NULL) {
+        return $this->getTemplateVars($name);
+    }
+
+    function safeHtmlFilter($content, $smarty) {
 		//return htmlspecialchars($content,ENT_QUOTES,UTF-8);
 		// NOTE: to_html is being used as data-extraction depends on this
 		// We shall improve this as it plays role across the product.

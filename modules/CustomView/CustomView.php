@@ -2028,7 +2028,7 @@ class CustomView extends CRMEntity {
 								$temp_result[] = $row['id'];
 							}
 							$user_array = $temp_result;
-							if (sizeof($user_array) > 0) {
+							if (php7_count($user_array) > 0) {
 								if (!in_array($current_user->id, $user_array))
 									$permission = "no";
 								else

@@ -2414,7 +2414,7 @@ class CRMEntity {
 							where vtiger_role.parentrole like '" . $current_user_parent_role_seq . "::%') or vtiger_crmentity.smownerid
 					in(select shareduserid from vtiger_tmp_read_user_sharing_per
 						where userid=" . $current_user->id . " and tabid=" . $tabid . ") or (";
-			if (sizeof($current_user_groups) > 0) {
+			if (php7_count($current_user_groups) > 0) {
 				$sec_query .= " vtiger_crmentity.smownerid in (" . implode(",", $current_user_groups) . ") or ";
 			}
 			$sec_query .= " vtiger_crmentity.smownerid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid
@@ -3232,7 +3232,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 	}
 
 	function offsetExists($key) {
-		return isset($this->storage[$key]);
+		return isset($this->storage[$key]) || array_key_exists($key, $this->storage);
 	}
 
 	function offsetSet($key, $value) {
@@ -3253,7 +3253,7 @@ class TrackableObject implements ArrayAccess, IteratorAggregate {
 	}
 
 	public function offsetGet($key) {
-		return isset($this->storage[$key]) ? $this->storage[$key] : null;
+		return isset($this->storage[$key]) || array_key_exists($key, $this->storage) ? $this->storage[$key] : null;
 	}
 
 	public function getIterator() {

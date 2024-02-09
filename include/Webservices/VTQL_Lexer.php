@@ -12,7 +12,7 @@ incState($lexer);
 }
 function incState($lexer){
 $lexer->current_state++;
-if($lexer->current_state === sizeof($lexer->mandatory_states)){
+if($lexer->current_state === php7_count($lexer->mandatory_states)){
 $lexer->mandatory = false;
 }
 }

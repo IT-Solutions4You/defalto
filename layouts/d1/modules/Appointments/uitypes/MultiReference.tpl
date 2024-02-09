@@ -50,7 +50,7 @@
             <span class="input-group-text relatedPopup cursorPointer" title="{vtranslate('LBL_SELECT', $MODULE)}">
 				<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_select" class="fa fa-search"></i>
 			</span>
-            {if $smarty.request.view eq 'Edit'}
+            {if $REQUEST_INSTANCE.view eq 'Edit'}
                 <span class="input-group-text createReferenceRecord cursorPointer" title="{vtranslate('LBL_CREATE', $MODULE)}">
                    <i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class="fa fa-plus"></i>
                 </span>

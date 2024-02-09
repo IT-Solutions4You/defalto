@@ -8,7 +8,8 @@
  * All Rights Reserved.
  ************************************************************************************/
 
-class Vtiger_Request {
+class Vtiger_Request implements ArrayAccess
+{
 
 	// Datastore
 	private $valuemap;
@@ -24,7 +25,28 @@ class Vtiger_Request {
 		$this->rawvaluemap = $rawvalues;
 	}
 
-	/**
+    public function offsetExists($offset): bool
+    {
+        return $this->has($offset);
+    }
+
+    public function offsetSet($offset, $value): void
+    {
+        $this->set($offset, $value);
+    }
+
+    public function offsetGet($offset): mixed
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetUnset($offset): void
+    {
+        // Ignore
+    }
+
+
+    /**
 	 * Strip the slashes recursively on the values.
 	 */
 	function stripslashes_recursive($value) {

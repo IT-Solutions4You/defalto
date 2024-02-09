@@ -633,7 +633,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 				$picklistValueInLowerCase = strtolower($fieldValue);
 				$allPicklistValuesInLowerCase = array_map('strtolower', $allPicklistValues);
-				if (sizeof($allPicklistValuesInLowerCase) > 0 && sizeof($allPicklistValues) > 0) {
+				if (php7_count($allPicklistValuesInLowerCase) > 0 && php7_count($allPicklistValues) > 0) {
 					$picklistDetails = array_combine($allPicklistValuesInLowerCase, $allPicklistValues);
 				}
 
@@ -1078,7 +1078,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 
 						$fieldValueInLowerCase = strtolower($fieldValue);
 						$picklistValuesInLowerCase = array_map('strtolower', $picklistValues);
-						if (sizeof($picklistValuesInLowerCase)&& sizeof($picklistValues)) {
+						if (php7_count($picklistValuesInLowerCase)&& php7_count($picklistValues)) {
 							$picklistDetails = array_combine($picklistValuesInLowerCase, $picklistValues);
 						}
 

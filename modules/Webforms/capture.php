@@ -8,9 +8,10 @@
  * All Rights Reserved.
  * ********************************************************************************** */
 // Switch the working directory to base
-chdir(dirname(__FILE__) . '/../..');
+chdir(__DIR__ . '/../..');
 
-require_once 'includes/Loader.php';
+require_once 'vendorCheck.php';
+require_once 'vendor/autoload.php';
 require_once 'include/Zend/Json.php';
 require_once 'vtlib/Vtiger/Module.php';
 require_once 'include/utils/VtlibUtils.php';

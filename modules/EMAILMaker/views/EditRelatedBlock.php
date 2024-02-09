@@ -209,7 +209,7 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
                 list($tablename, $colname, $module_field, $fieldname, $single) = split(":", $fieldcolname);
                 require('user_privileges/user_privileges_' . $current_user->getId() . '.php');
                 list($module, $field) = split("_", $module_field);
-                if (sizeof($permitted_fields) == 0 && $is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1) {
+                if (php7_count($permitted_fields) == 0 && $is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1) {
                     $permitted_fields = $this->getaccesfield($module, $primodule, $secmodule);
                 }
                 $querycolumns = $this->getEscapedColumns($selectedfields, $primodule, $secmodule);

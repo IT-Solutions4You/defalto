@@ -5,7 +5,7 @@
 * All Rights Reserved.
 *}
 {strip}
-<input type="hidden" id="currentView" value="{$smarty.request.view}" />
+<input type="hidden" id="currentView" value="{$REQUEST_INSTANCE.view}" />
 <input type="hidden" id="start_day" value="{$CURRENT_USER->get('dayoftheweek')}" />
 <input type="hidden" id="activity_view" value="{$CURRENT_USER->get('activity_view')}" />
 <input type="hidden" id="time_format" value="{$CURRENT_USER->get('hour_format')}" />

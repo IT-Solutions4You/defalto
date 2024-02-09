@@ -389,7 +389,7 @@ class PEAR
         } else {
             array_push($this->_expected_errors, array($code));
         }
-        return sizeof($this->_expected_errors);
+        return php7_count($this->_expected_errors);
     }
 
     // }}}
@@ -533,7 +533,7 @@ class PEAR
             $message     = $message->getMessage();
         }
 
-        if (isset($this) && isset($this->_expected_errors) && sizeof($this->_expected_errors) > 0 && sizeof($exp = end($this->_expected_errors))) {
+        if (isset($this) && isset($this->_expected_errors) && php7_count($this->_expected_errors) > 0 && php7_count($exp = end($this->_expected_errors))) {
             if ($exp[0] == "*" ||
                 (is_int(reset($exp)) && in_array($code, $exp)) ||
                 (is_string(reset($exp)) && in_array($message, $exp))) {
@@ -634,7 +634,7 @@ class PEAR
         $setmode     = $GLOBALS['_PEAR_default_error_mode'];
         $setoptions  = $GLOBALS['_PEAR_default_error_options'];
         array_pop($stack);
-        list($mode, $options) = $stack[sizeof($stack) - 1];
+        list($mode, $options) = $stack[php7_count($stack) - 1];
         array_pop($stack);
         switch ($mode) {
             case PEAR_ERROR_EXCEPTION:
@@ -713,7 +713,7 @@ class PEAR
     {
         $stack = $GLOBALS['_PEAR_error_handler_stack'];
         array_pop($stack);
-        list($mode, $options) = $stack[sizeof($stack) - 1];
+        list($mode, $options) = $stack[php7_count($stack) - 1];
         array_pop($stack);
         if (isset($this) && is_a($this, 'PEAR')) {
             $this->setErrorHandling($mode, $options);
@@ -765,7 +765,7 @@ function _PEAR_call_destructors()
 {
     global $_PEAR_destructor_object_list;
     if (is_array($_PEAR_destructor_object_list) &&
-        sizeof($_PEAR_destructor_object_list))
+        php7_count($_PEAR_destructor_object_list))
     {
         reset($_PEAR_destructor_object_list);
         if (@PEAR::getStaticProperty('PEAR', 'destructlifo')) {

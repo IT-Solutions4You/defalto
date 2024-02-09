@@ -25,11 +25,11 @@
                 </div>
             </div>
         {/foreach}
-        {if $smarty.request.view eq 'List' || $smarty.request.view eq 'Detail'}
+        {if $REQUEST_INSTANCE.view eq 'List' || $REQUEST_INSTANCE.view eq 'Detail'}
         <div class="quickWidget">
             <div class="accordion-heading accordion-toggle quickWidgetHeader" data-target="#{$MODULE}_sideBar_Tools"
                  data-toggle="collapse" data-parent="#quickWidgets" data-label="{vtranslate('Tools', $MODULE)}"
-                 data-widget-url="module=PDFMaker&view=TemplateTools&templateid={$smarty.request.templateid}&from_view={$smarty.request.view}&from_templateid={$smarty.request.templateid}" >
+                 data-widget-url="module=PDFMaker&view=TemplateTools&templateid={$REQUEST_INSTANCE.templateid}&from_view={$REQUEST_INSTANCE.view}&from_templateid={$REQUEST_INSTANCE.templateid}" >
                 <span class="pull-left"><img class="imageElement" data-rightimage="{vimage_path('rightArrowWhite.png')}" data-downimage="{vimage_path('downArrowWhite.png')}" src="{vimage_path('rightArrowWhite.png')}" /></span>
                 <h5 class="title widgettext-truncate pull-right" title="{vtranslate('Tools', $MODULE)}">{vtranslate('Tools', $MODULE)}</h5>
                 <div class="loadingImg hide pull-right">
@@ -37,7 +37,7 @@
                 </div>
                 <div class="clearfix"></div>
             </div>
-            <div class="widgetContainer accordion-body collapse" id="{$MODULE}_sideBar_Tools" data-url="module=PDFMaker&view=TemplateTools&templateid={$smarty.request.templateid}&from_view={$smarty.request.view}&from_templateid={$smarty.request.templateid}">
+            <div class="widgetContainer accordion-body collapse" id="{$MODULE}_sideBar_Tools" data-url="module=PDFMaker&view=TemplateTools&templateid={$REQUEST_INSTANCE.templateid}&from_view={$REQUEST_INSTANCE.view}&from_templateid={$REQUEST_INSTANCE.templateid}">
             </div>
         </div>
         {/if}

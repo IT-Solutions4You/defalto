@@ -8,8 +8,13 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-chdir (dirname(__FILE__) . '/..');
+chdir (__DIR__ . '/..');
 include_once 'vtigerversion.php';
+
+if (file_exists("vendor/autoload.php")) {
+    require_once "vendor/autoload.php";
+}
+
 include_once 'data/CRMEntity.php';
 include_once 'includes/main/WebUI.php';
 

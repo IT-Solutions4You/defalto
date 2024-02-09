@@ -14,8 +14,8 @@
             <input type="hidden" name="templateid" id="templateid" value="{$SAVETEMPLATEID}">
             <input type="hidden" name="action" value="SaveEMAILTemplate">
             <input type="hidden" name="redirect" value="true">
-            <input type="hidden" name="return_module" value="{$smarty.request.return_module}">
-            <input type="hidden" name="return_view" value="{$smarty.request.return_view}">
+            <input type="hidden" name="return_module" value="{$REQUEST_INSTANCE.return_module}">
+            <input type="hidden" name="return_view" value="{$REQUEST_INSTANCE.return_view}">
             <input type="hidden" name="is_theme" value="{if $THEME_MODE eq "true"}1{else}0{/if}">
             <input type="hidden" name="selectedTab" id="selectedTab" value="properties">
             <input type="hidden" name="selectedTab2" id="selectedTab2" value="body">
@@ -127,8 +127,8 @@
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col text-end">
-                                            {if $smarty.request.return_view neq ''}
-                                                <a class="btn btn-primary cancelLink" type="reset" onclick="window.location.href = 'index.php?module={if $smarty.request.return_module neq ''}{$smarty.request.return_module}{else}EMAILMaker{/if}&view={$smarty.request.return_view}{if $smarty.request.templateid neq ""  && $smarty.request.return_view neq "List"}&templateid={$smarty.request.templateid}{/if}';">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                            {if $REQUEST_INSTANCE.return_view neq ''}
+                                                <a class="btn btn-primary cancelLink" type="reset" onclick="window.location.href = 'index.php?module={if $REQUEST_INSTANCE.return_module neq ''}{$REQUEST_INSTANCE.return_module}{else}EMAILMaker{/if}&view={$REQUEST_INSTANCE.return_view}{if $REQUEST_INSTANCE.templateid neq ""  && $REQUEST_INSTANCE.return_view neq "List"}&templateid={$REQUEST_INSTANCE.templateid}{/if}';">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                                             {else}
                                                 <a class="btn btn-primary cancelLink" type="reset" onclick="window.history.back();">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                                             {/if}

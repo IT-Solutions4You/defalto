@@ -71,8 +71,8 @@ $languageStrings = array(
   'LBL_SELECT_FILE_FROM_COMPUTER' => 'Bilgisayarımdan Dosya seç ',
   'LBL_FILE_UPLOAD' => 'Dosya Upload',
   'LBL_LINK_EXTERNAL_DOCUMENT' => 'Bağlantı Harici Belge',
-  'LBL_TO_SERVICE' => '%S için ',
-  'LBL_FROM_SERVICE' => '%S ',
+  'LBL_TO_SERVICE' => '%s için ',
+  'LBL_FROM_SERVICE' => '%s ',
   'LBL_CREATE_NEW' => 'Yeni %s oluşturulamıyor ',
 	'LBL_SELECT_A_FOLDER_TO_MOVE' => 'taşımak için bir klasör seçiniz',
 );

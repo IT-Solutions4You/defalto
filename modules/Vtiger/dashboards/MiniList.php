@@ -10,7 +10,9 @@
 
 class Vtiger_MiniList_Dashboard extends Vtiger_IndexAjax_View {
 
-	public function process(Vtiger_Request $request, $widget=NULL) {
+    public function process(Vtiger_Request $request)
+    {
+        $widget = null;
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$viewer = $this->getViewer($request);
 		$moduleName = $request->getModule();

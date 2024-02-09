@@ -249,27 +249,30 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       });
    },
    registerChangeFieldEvent: function (data) {
-      jQuery('.textType', data).on('change', function (e) {
-         var valueType = jQuery(e.currentTarget).val();
-         var useFieldContainer = jQuery('.useFieldContainer', data);
-         var useFunctionContainer = jQuery('.useFunctionContainer', data);
-         var uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
-         jQuery('.fieldValue', data).hide();
-         jQuery('[data-' + uiType + ']', data).show();
-         if (valueType == 'fieldname') {
-            useFieldContainer.removeClass('hide');
-            useFunctionContainer.addClass('hide');
-         } else if (valueType == 'expression') {
-            useFieldContainer.removeClass('hide');
-            useFunctionContainer.removeClass('hide');
-         } else {
-            useFieldContainer.addClass('hide');
-            useFunctionContainer.addClass('hide');
-         }
-         jQuery('.helpmessagebox', data).addClass('hide');
-         jQuery('#' + valueType + '_help', data).removeClass('hide');
-         data.find('.fieldValue').val('');
-      });
+       jQuery('.textType', data).on('change', function (e) {
+           let valueType = jQuery(e.currentTarget).val();
+           valueType = app.helper.purifyContent(valueType);
+           const useFieldContainer = jQuery('.useFieldContainer', data);
+           const useFunctionContainer = jQuery('.useFunctionContainer', data);
+           const uiType = jQuery(e.currentTarget).find('option:selected').data('ui');
+           jQuery('.fieldValue', data).hide();
+           jQuery('[data-' + uiType + ']', data).show();
+
+           if (valueType === 'fieldname') {
+               useFieldContainer.removeClass('hide');
+               useFunctionContainer.addClass('hide');
+           } else if (valueType === 'expression') {
+               useFieldContainer.removeClass('hide');
+               useFunctionContainer.removeClass('hide');
+           } else {
+               useFieldContainer.addClass('hide');
+               useFunctionContainer.addClass('hide');
+           }
+
+           jQuery('.helpmessagebox', data).addClass('hide');
+           jQuery('#' + valueType + '_help', data).removeClass('hide');
+           data.find('.fieldValue').val('');
+       });
    },
    postShowModalAction: function (data, valueType) {
       if (valueType == 'fieldname') {
@@ -421,6 +424,29 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
          });
       });
    },
+
+    getParams: function (form, taskType) {
+        let preSaveActionFunctionName = 'preSave' + taskType;
+        if (typeof this[preSaveActionFunctionName] !== 'undefined') {
+            this[preSaveActionFunctionName].apply(this, [taskType]);
+        }
+        let params = form.serializeFormData();
+
+        //when using the VTCreateEntityTask
+        //we avoid sending individual fieldmapping inputs as part of the request because
+        //they will be already present as json in the "field_value_mapping" hidden input
+        //and we want to avoid requests conflicts when doing server-side validation of individual fields such as parent_id in HelpDesk module.
+        if (taskType === 'VTCreateEntityTask') {
+            let mappingInputs = jQuery('#save_fieldvaluemapping').find('input.inputElement');
+            mappingInputs.each(function(index) {
+                let fieldName = $(this).attr('name');
+                delete params[fieldName];
+            });
+        }
+
+        return params;
+    },
+
    registerSaveTaskSubmitEvent: function (taskType) {
       var thisInstance = this;
       var form = jQuery('#saveTask');
@@ -430,12 +456,9 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                 // to Prevent submit if already submitted
                 jQuery("button[name='saveButton']", form).attr("disabled","disabled");
                 var record = jQuery('#record').val();
+                const params = thisInstance.getParams(form, taskType);
+
                 if(!record) {
-                    var preSaveActionFunctionName = 'preSave' + taskType;
-                    if (typeof thisInstance[preSaveActionFunctionName] != 'undefined') {
-                       thisInstance[preSaveActionFunctionName].apply(thisInstance, [taskType]);
-                    }
-                    var params = form.serializeFormData();
                     var clonedParams = jQuery.extend({}, params);
                     clonedParams.action ='ValidateExpression';
                     clonedParams.mode ='ForTaskEdit';
@@ -475,12 +498,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                     });
                     
                 } else {
-                   var preSaveActionFunctionName = 'preSave' + taskType;
-                   if (typeof thisInstance[preSaveActionFunctionName] != 'undefined') {
-                      thisInstance[preSaveActionFunctionName].apply(thisInstance, [taskType]);
-                   }
                    form.find('[name="saveButton"]').attr('disabled', 'disabled');
-                   var params = form.serializeFormData();
                    app.helper.showProgress();
                    app.request.post({data:params}).then(function (error, data) {
                         app.helper.hideProgress();

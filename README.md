@@ -1,14 +1,12 @@
-Vtiger CRM
-==========
+# Defalto
 
-Vtiger is a PHP based web application that enables businesses to increase sales wins, marketing ROI, and support satisfaction by providing tools for employees and management work more effectively, capture more data, and derive new actionable insights from across the customer lifecycle.
+Defalto is a PHP based web application that enables businesses to increase sales wins, marketing ROI, and support satisfaction by providing tools for employees and management work more effectively, capture more data, and derive new actionable insights from across the customer lifecycle.
 
-Get involved
-------------
+## Get involved
 
-Development on vtiger is done at https://code.vtiger.com
+Development on Defalto is done at https://github.com/IT-Solutions4You/its4youcrm/
 
-**Note**: Any contributions submitted to Vtiger project should be made available under Vtiger Public License. 
+**Note**: Any contributions submitted to Defalto project should be made available under Vtiger Public License. 
 If contribution has any patented code, or commercial code, then please communicate with Vtiger team before making the contribution.
 
 https://www.vtiger.com/vtiger-public-license/
@@ -39,6 +37,8 @@ you will switch to that branch using the checkout command
 
     git branch fix_projects_on_calendar
     git checkout fix_projects_on_calendar
+
+Before you install, you need to run ```composer update```
 
 Now you can make your changes and commit all changed files with
 

@@ -7,6 +7,7 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
+
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 
@@ -73,9 +74,7 @@ class VTCreateEntityTask extends VTTask {
 				if ($fieldValueType == 'fieldname') {
 					$field = $fieldValue;
 					$module = $referenceModule;
-					if ($referenceModule == $entityType) {
-						$fieldValue = $newEntity->column_fields[$fieldValue];
-					} else if (php7_count($matches) > 0) {
+					if (php7_count($matches) > 0) {
 						$referenceField = $matches[1];
 						$referencedModule = $matches[2];
 						$referencedFieldName = $matches[3];
@@ -83,14 +82,14 @@ class VTCreateEntityTask extends VTTask {
 						$module = $referenceModule;
 						$referenceRecordId = $focus->column_fields[$referenceField];
 						if(empty($referenceRecordId) || isRecordExists($referenceRecordId) === false){
-							//if no value exists for the reference field then we dont have to update
-							//if reference record is deleted then we dont have to update
+							//if no value exists for the reference field then we don't have to update
+							//if reference record is deleted then we don't have to update
 							continue;
 						}
 						$referenceFieldFocus = $this->getReferenceFieldFocus($referencedModule, $referenceField, $referenceRecordId);
 						$fieldValue = $referenceFieldFocus->column_fields[$referencedFieldName];
 					} else {
-						$fieldValue = decode_html($focus->column_fields[$fieldValue]);
+						$fieldValue = decode_html($focus->column_fields[$field]);
 					}
 
 					$moduleModel = Vtiger_Module_Model::getInstance($module);
@@ -238,4 +237,3 @@ class VTCreateEntityTask extends VTTask {
 	}
 
 }
-?>

@@ -73,7 +73,7 @@ class CustomerPortal_FetchRecentRecords extends CustomerPortal_API_Abstract {
 				} else {
 					$queryResult = vtws_query_related($sql, $parentId, CustomerPortal_Utils::getRelatedModuleLabel($module), $current_user, $filterClause);
 				}
-				$num_rows = sizeof($queryResult);
+				$num_rows = php7_count($queryResult);
 				$records = array();
 				$recordIds = array();
 

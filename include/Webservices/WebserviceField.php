@@ -412,7 +412,7 @@ class WebserviceField{
 		}else{
 			$user = VTWS_PreserveGlobal::getGlobal('current_user');
 			$details = getPickListValues($fieldName,$user->roleid);
-			for($i=0;$i<sizeof($details);++$i){
+			for($i=0;$i<php7_count($details);++$i){
 				$elem = array();
 				$picklistValue = decode_html($details[$i]);
 				$elem["label"] = getTranslatedString($picklistValue, $moduleName, $language);

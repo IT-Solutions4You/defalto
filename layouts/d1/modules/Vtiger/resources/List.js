@@ -1983,6 +1983,8 @@ Vtiger.Class("Vtiger_List_Js", {
 		var listViewContainer = thisInstance.getListViewContainer();
 		var totalRecordsElement = listViewContainer.find('#totalCount');
 		var totalNumberOfRecords = totalRecordsElement.val();
+		totalNumberOfRecords = app.helper.purifyContent(totalNumberOfRecords);
+
 		if (thisInstance.totalNumOfRecords_performingAsyncAction) {
 			return;
 		}
@@ -2008,7 +2010,7 @@ Vtiger.Class("Vtiger_List_Js", {
 			totalNumberOfRecords = jQuery('#totalCount', listViewContainer).val(),
 			pageNumberElement = jQuery('.pageNumbersText', listViewContainer),
 			pageRange = pageNumberElement.text(),
-			newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + totalNumberOfRecords,
+			newPagingInfo = pageRange.trim() + " " + app.vtranslate('of') + " " + app.helper.purifyContent(totalNumberOfRecords),
 			listViewEntriesCount = parseInt(jQuery('#noOfEntries', listViewContainer).val());
 
 		if (listViewEntriesCount !== 0) {
@@ -2031,7 +2033,7 @@ Vtiger.Class("Vtiger_List_Js", {
 	},
 	registerMoreRecentUpdatesClickEvent: function (container, recordId) {
 		container.find('.moreRecentUpdates').on('click', function () {
-			window.location.href = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + app.getModuleName() + "&record=" + recordId + "&tab_label=LBL_UPDATES";
+			window.location.href = "index.php?view=Detail&mode=showRecentActivities&page=1&module=" + app.getModuleName() + "&record=" + app.helper.purifyContent(recordId) + "&tab_label=LBL_UPDATES";
 		});
 	},
 	registerNextRecordClickEvent: function (container) {

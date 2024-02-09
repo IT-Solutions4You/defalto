@@ -1499,7 +1499,7 @@ class XMLSchema extends nusoap_base  {
 		$schemaPrefix = $this->getPrefixFromNamespace($this->XMLSchemaVersion);
 		$xml = '';
 		// imports
-		if (sizeof($this->imports) > 0) {
+		if (php7_count($this->imports) > 0) {
 			foreach($this->imports as $ns => $list) {
 				foreach ($list as $ii) {
 					if ($ii['location'] != '') {
@@ -3651,7 +3651,7 @@ class soap_server extends nusoap_base {
 			$this->debug('serializing return value');
 			if($this->wsdl){
 				// weak attempt at supporting multiple output params
-				if(sizeof($this->opData['output']['parts']) > 1){
+				if(php7_count($this->opData['output']['parts']) > 1){
 			    	$opParams = $this->methodreturn;
 			    } else {
 			    	// TODO: is this really necessary?
@@ -4913,7 +4913,7 @@ class wsdl extends nusoap_base {
 		} 
 		$xml .= '>'; 
 		// imports
-		if (sizeof($this->import) > 0) {
+		if (php7_count($this->import) > 0) {
 			foreach($this->import as $ns => $list) {
 				foreach ($list as $ii) {
 					if ($ii['location'] != '') {
@@ -5063,7 +5063,7 @@ class wsdl extends nusoap_base {
 
 		// set input params
 		$xml = '';
-		if (isset($opData[$direction]['parts']) && sizeof($opData[$direction]['parts']) > 0) {
+		if (isset($opData[$direction]['parts']) && php7_count($opData[$direction]['parts']) > 0) {
 			
 			$use = $opData[$direction]['use'];
 			$this->debug('have ' . count($opData[$direction]['parts']) . ' part(s) to serialize');
@@ -5142,7 +5142,7 @@ class wsdl extends nusoap_base {
 		
 		// set input params
 		$xml = '';
-		if (isset($opData[$direction]['parts']) && sizeof($opData[$direction]['parts']) > 0) {
+		if (isset($opData[$direction]['parts']) && php7_count($opData[$direction]['parts']) > 0) {
 			
 			$use = $opData[$direction]['use'];
 			$this->debug("use=$use");
@@ -5419,15 +5419,15 @@ class wsdl extends nusoap_base {
 			if (isset($typeDef['multidimensional'])) {
 				$nv = array();
 				foreach($value as $v) {
-					$cols = ',' . sizeof($v);
+					$cols = ',' . php7_count($v);
 					$nv = array_merge($nv, $v);
 				} 
 				$value = $nv;
 			} else {
 				$cols = '';
 			} 
-			if (is_array($value) && sizeof($value) >= 1) {
-				$rows = sizeof($value);
+			if (is_array($value) && php7_count($value) >= 1) {
+				$rows = php7_count($value);
 				$contents = '';
 				foreach($value as $k => $v) {
 					$this->debug("serializing array element: $k, $v of type: $typeDef[arrayType]");
@@ -5927,7 +5927,7 @@ class soap_parser extends nusoap_base {
 //					$this->responseHeaders = $this->message[$this->root_header]['result'];
 //				}
 				// resolve hrefs/ids
-				if(sizeof($this->multirefs) > 0){
+				if(php7_count($this->multirefs) > 0){
 					foreach($this->multirefs as $id => $hrefs){
 						$this->debug('resolving multirefs for id: '.$id);
 						$idVal = $this->buildVal($this->ids[$id]);
@@ -6715,7 +6715,7 @@ class soapclient2 extends nusoap_base  {
 				if(is_array($return)){
 					// multiple 'out' parameters, which we return wrapped up
 					// in the array
-					if(sizeof($return) > 1){
+					if(php7_count($return) > 1){
 						return $return;
 					}
 					// single 'out' parameter (normally the return value)
@@ -7047,7 +7047,7 @@ class soapclient2 extends nusoap_base  {
 		foreach ($this->operations as $operation => $opData) {
 			if ($operation != '') {
 				// create param string and param comment string
-				if (sizeof($opData['input']['parts']) > 0) {
+				if (php7_count($opData['input']['parts']) > 0) {
 					$paramStr = '';
 					$paramArrayStr = '';
 					$paramCommentStr = '';
@@ -7171,10 +7171,10 @@ class soapclient2 extends nusoap_base  {
 	 * @access   private
 	 */
 	function checkCookies() {
-		if (sizeof($this->cookies) == 0) {
+		if (php7_count($this->cookies) == 0) {
 			return true;
 		}
-		$this->debug('checkCookie: check ' . sizeof($this->cookies) . ' cookies');
+		$this->debug('checkCookie: check ' . php7_count($this->cookies) . ' cookies');
 		$curr_cookies = $this->cookies;
 		$this->cookies = array();
 		foreach ($curr_cookies as $cookie) {
@@ -7192,7 +7192,7 @@ class soapclient2 extends nusoap_base  {
 				$this->cookies[] = $cookie;
 			}
 		}
-		$this->debug('checkCookie: '.sizeof($this->cookies).' cookies left in array');
+		$this->debug('checkCookie: '.php7_count($this->cookies).' cookies left in array');
 		return true;
 	}
 
@@ -7204,15 +7204,15 @@ class soapclient2 extends nusoap_base  {
 	 * @access	private
 	 */
 	function UpdateCookies($cookies) {
-		if (sizeof($this->cookies) == 0) {
+		if (php7_count($this->cookies) == 0) {
 			// no existing cookies: take whatever is new
-			if (sizeof($cookies) > 0) {
+			if (php7_count($cookies) > 0) {
 				$this->debug('Setting new cookie(s)');
 				$this->cookies = $cookies;
 			}
 			return true;
 		}
-		if (sizeof($cookies) == 0) {
+		if (php7_count($cookies) == 0) {
 			// no new cookies: keep what we've got
 			return true;
 		}

@@ -310,7 +310,7 @@ class soapclient2 extends nusoap_base  {
 				if(is_array($return)){
 					// multiple 'out' parameters, which we return wrapped up
 					// in the array
-					if(sizeof($return) > 1){
+					if(php7_count($return) > 1){
 						return $return;
 					}
 					// single 'out' parameter (normally the return value)
@@ -642,7 +642,7 @@ class soapclient2 extends nusoap_base  {
 		foreach ($this->operations as $operation => $opData) {
 			if ($operation != '') {
 				// create param string and param comment string
-				if (sizeof($opData['input']['parts']) > 0) {
+				if (php7_count($opData['input']['parts']) > 0) {
 					$paramStr = '';
 					$paramArrayStr = '';
 					$paramCommentStr = '';
@@ -766,10 +766,10 @@ class soapclient2 extends nusoap_base  {
 	 * @access   private
 	 */
 	function checkCookies() {
-		if (sizeof($this->cookies) == 0) {
+		if (php7_count($this->cookies) == 0) {
 			return true;
 		}
-		$this->debug('checkCookie: check ' . sizeof($this->cookies) . ' cookies');
+		$this->debug('checkCookie: check ' . php7_count($this->cookies) . ' cookies');
 		$curr_cookies = $this->cookies;
 		$this->cookies = array();
 		foreach ($curr_cookies as $cookie) {
@@ -787,7 +787,7 @@ class soapclient2 extends nusoap_base  {
 				$this->cookies[] = $cookie;
 			}
 		}
-		$this->debug('checkCookie: '.sizeof($this->cookies).' cookies left in array');
+		$this->debug('checkCookie: '.php7_count($this->cookies).' cookies left in array');
 		return true;
 	}
 
@@ -799,15 +799,15 @@ class soapclient2 extends nusoap_base  {
 	 * @access	private
 	 */
 	function UpdateCookies($cookies) {
-		if (sizeof($this->cookies) == 0) {
+		if (php7_count($this->cookies) == 0) {
 			// no existing cookies: take whatever is new
-			if (sizeof($cookies) > 0) {
+			if (php7_count($cookies) > 0) {
 				$this->debug('Setting new cookie(s)');
 				$this->cookies = $cookies;
 			}
 			return true;
 		}
-		if (sizeof($cookies) == 0) {
+		if (php7_count($cookies) == 0) {
 			// no new cookies: keep what we've got
 			return true;
 		}

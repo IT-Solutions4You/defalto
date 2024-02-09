@@ -457,7 +457,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
      */
     protected function insertEmailTemplates()
     {
-        if (!method_exists('EMAILMaker_Record_Model', 'saveTemplate')) {
+        if (!method_exists('EMAILMaker_Record_Model', 'saveTemplate') || !Vtiger_Utils::CheckTable('vtiger_emakertemplates')) {
             return;
         }
 

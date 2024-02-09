@@ -118,7 +118,7 @@ class soap_parser extends nusoap_base {
 //					$this->responseHeaders = $this->message[$this->root_header]['result'];
 //				}
 				// resolve hrefs/ids
-				if(sizeof($this->multirefs) > 0){
+				if(php7_count($this->multirefs) > 0){
 					foreach($this->multirefs as $id => $hrefs){
 						$this->debug('resolving multirefs for id: '.$id);
 						$idVal = $this->buildVal($this->ids[$id]);
