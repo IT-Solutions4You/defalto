@@ -1042,14 +1042,18 @@ class Users extends CRMEntity {
 		if(!isset($ownerid) || $ownerid=='')
 			$ownerid = $current_user->id;
 
-		$save_file = 'true';
-		//only images are allowed for these modules
-		if($module == 'Users') {
-			$save_file = validateImageFile($file_details);
-		}
-		if ($save_file == 'false') {
-			return;
-		}
+        $save_file = true;
+
+        //only images are allowed for these modules
+        if ($module == 'Users') {
+            $save_file = validateImageFile($file_details);
+        }
+
+        if (!$save_file) {
+            $log->debug('Skip the save attachment process.');
+
+            return;
+        }
 
 		$file = $file_details['name'];
 		$binFile = sanitizeUploadFileName($file, $upload_badext);
@@ -1067,33 +1071,36 @@ class Users extends CRMEntity {
         $encryptFileName = Vtiger_Util_Helper::getEncryptedFileName($binFile);
 		$upload_status = move_uploaded_file($filetmp_name,$upload_file_path.$current_id."_".$encryptFileName);
 
-		if($save_file == 'true') {
+        if ($upload_status) {
+            $sql1 = 'insert into vtiger_crmentity (crmid,smcreatorid,smownerid,setype,description,createdtime,modifiedtime) values(?,?,?,?,?,?,?)';
+            $params1 = [
+                $current_id,
+                $current_user->id,
+                $ownerid,
+                $module . ' Image',
+                $this->column_fields['description'],
+                $this->db->formatString('vtiger_crmentity', 'createdtime', $date_var),
+                $this->db->formatDate($date_var, true)
+            ];
+            $this->db->pquery($sql1, $params1);
 
-			$sql1 = "insert into vtiger_crmentity (crmid,smcreatorid,smownerid,setype,description,createdtime,modifiedtime) values(?,?,?,?,?,?,?)";
-			$params1 = array($current_id, $current_user->id, $ownerid, $module." Image", $this->column_fields['description'], $this->db->formatString("vtiger_crmentity","createdtime",$date_var), $this->db->formatDate($date_var, true));
-			$this->db->pquery($sql1, $params1);
+            $sql2 = 'insert into vtiger_attachments(attachmentsid, name, description, type, path, storedname) values(?,?,?,?,?,?)';
+            $params2 = [$current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path, $encryptFileName];
+            $this->db->pquery($sql2, $params2);
 
-			$sql2="insert into vtiger_attachments(attachmentsid, name, description, type, path, storedname) values(?,?,?,?,?,?)";
-			$params2 = array($current_id, $filename, $this->column_fields['description'], $filetype, $upload_file_path, $encryptFileName);
-			$result=$this->db->pquery($sql2, $params2);
+            if ($id != '') {
+                $delQuery = 'delete from vtiger_salesmanattachmentsrel where smid = ?';
+                $this->db->pquery($delQuery, [$id]);
+            }
 
-			if($id != '') {
-				$delquery = 'delete from vtiger_salesmanattachmentsrel where smid = ?';
-				$this->db->pquery($delquery, array($id));
-			}
+            $sql3 = 'insert into vtiger_salesmanattachmentsrel values(?,?)';
+            $this->db->pquery($sql3, [$id, $current_id]);
 
-			$sql3='insert into vtiger_salesmanattachmentsrel values(?,?)';
-			$this->db->pquery($sql3, array($id, $current_id));
+            //we should update the imagename in the users table
+            $this->db->pquery('update vtiger_users set imagename=? where id=?', [$filename, $id]);
+        }
 
-			//we should update the imagename in the users table
-			$this->db->pquery("update vtiger_users set imagename=? where id=?", array($filename, $id));
-		}
-		else {
-			$log->debug("Skip the save attachment process.");
-		}
-		$log->debug("Exiting from uploadAndSaveFile($id,$module,$file_details) method.");
-
-		return;
+        $log->debug("Exiting from uploadAndSaveFile($id,$module,$file_details) method.");
 	}
 
 

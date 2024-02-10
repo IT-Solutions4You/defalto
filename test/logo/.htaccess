@@ -1,0 +1,9 @@
+RewriteEngine on
+<FilesMatch ".*">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(gif|jpe?g|png|bmp|PNG|GIF|BMP|jpg|JPG|ico)$">
+   allow from all
+</FilesMatch>
