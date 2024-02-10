@@ -74,8 +74,10 @@ class Vtiger_Request implements ArrayAccess
 				$isJSON = true;
 			}
 		}
-		if($isJSON) {
-			$value = json_decode($value, true);
+
+        if($isJSON) {
+            $decodeValue = json_decode($value, true);
+            $value = json_last_error() ? $value : $decodeValue;
 		}
 
         //Handled for null because vtlib_purify returns empty string

@@ -139,6 +139,10 @@ class CheckDuplicateHandler extends VTEventHandler {
 
 						$fieldValue = $uniqueFieldsData[$fieldName];
 						if (isset($fieldValue)) {
+                            if (is_array($fieldValue)) {
+                                $fieldValue = empty($fieldValue) ? '' : $fieldValue;
+                            }
+
 							array_push($conditions, "$fieldTableName.$fieldColumnName = ?");
 						} else {
 							$fieldValue = '';
