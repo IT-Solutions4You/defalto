@@ -191,7 +191,8 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		if (is_array($defaultValue)) {
 			$defaultValue = implode(' |##| ', $defaultValue);
 		}
-		$fieldModel->set('defaultvalue', $defaultValue);
+
+        $fieldModel->set('defaultvalue', vtlib_purify($defaultValue));
 
 		$blockModel = Vtiger_Block_Model::getInstance($blockId, $this);
 		$blockModel->addField($fieldModel);
