@@ -485,7 +485,7 @@ function vtws_CreateCompanyLogoFile(string $fieldName): mixed
     $fileSize = (int)$_FILES[$fieldName]['size'];
 
     if (!$fileSize) {
-        throw new WebServiceException(WebServiceErrorCode::$INVALIDTOKEN, $fieldName . ' file upload failed');
+        throw new WebServiceException(WebServiceErrorCode::$FAILED_TO_UPDATE, $fieldName . ' file upload failed');
     }
 
     global $root_directory;
@@ -507,7 +507,7 @@ function vtws_CreateCompanyLogoFile(string $fieldName): mixed
         }
     }
 
-    throw new WebServiceException(WebServiceErrorCode::$INVALIDTOKEN, $fieldName . ' wrong file type given for upload');
+    throw new WebServiceException(WebServiceErrorCode::$FAILED_TO_UPDATE, $fieldName . ' wrong file type given for upload');
 }
 
 function vtws_getActorEntityName ($name, $idList) {
