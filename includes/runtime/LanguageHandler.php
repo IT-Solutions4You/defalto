@@ -136,7 +136,7 @@ class Vtiger_Language_Handler {
 			$file = Vtiger_Loader::resolveNameToPath($qualifiedName);
 			$languageStrings = $jsLanguageStrings = array();
 
-            if (!self::$fileExists[$file]) {
+            if (!isset(self::$fileExists[$file])) {
                 self::$fileExists[$file] = file_exists($file) ? 'yes' : 'no';
             }
 
@@ -153,7 +153,7 @@ class Vtiger_Language_Handler {
 
         $languageStrings = $jsLanguageStrings = array();
 
-        if (!self::$fileExists[$file]) {
+        if (!isset(self::$fileExists[$file])) {
             self::$fileExists[$file] = file_exists($file) ? 'yes' : 'no';
         }
 
