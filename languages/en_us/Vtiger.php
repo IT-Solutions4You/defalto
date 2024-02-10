@@ -1417,6 +1417,7 @@ $languageStrings = array(
     'LBL_RECORD_READONLY' => 'The record you are trying to edit is readonly.',
     'LBL_MAKE_EDITABLE' => 'Make Editable',
     'LBL_MAKE_READONLY' => 'Make Readonly',
+    'LBL_DASHBOARD_TAB_INVALID' => 'Invalid Tab Name ',
 );
 
 $jsLanguageStrings = array(
