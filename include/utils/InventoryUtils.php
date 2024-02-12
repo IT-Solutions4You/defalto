@@ -1730,4 +1730,10 @@ function getCompoundTaxesInfoForInventoryRecord($recordId, $moduleName) {
 	return $compoundTaxesInfo;
 }
 
-?>
+function getCurrencyIdForInventoryRecord($recordId, $module)
+{
+    $recordModel = Vtiger_Record_Model::getCleanInstance($module);
+    $recordModel->setId($recordId);
+
+    return $recordModel->fetchCurrencyId();
+}

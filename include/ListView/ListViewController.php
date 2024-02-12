@@ -393,8 +393,7 @@ class ListViewController {
 						} else {
                             if (!empty($value)) {
                                 $value = CurrencyField::convertToUserFormat($value, null, true);
-                                $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-                                $currencyId = $recordModel->fetchCurrencyId();
+                                $currencyId = getCurrencyIdForInventoryRecord($recordId, $module);
 
                                 if (!$currencyId) {
                                     $currencyId = $this->user->currency_id;
