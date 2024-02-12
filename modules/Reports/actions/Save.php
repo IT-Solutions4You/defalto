@@ -15,37 +15,19 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		return $permissions;
 	}
-	
-	public function checkPermission(Vtiger_Request $request) {
-		parent::checkPermission($request);
 
-		$record = $request->get('record');
-		if ($record) {
-			$reportModel = Reports_Record_Model::getCleanInstance($record);
-			if (!$reportModel->isEditable()) {
-				throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-			}
-		}
+    public function checkPermission(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $moduleModel = Reports_Module_Model::getInstance($moduleName);
+        $currentUserPrivileges = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
-        $selectedFields = $request->get('selected_fields');
-        $groupByFields = $request->get('groupbyfield');
-        $fieldsData = [$selectedFields, $groupByFields];
-
-        foreach ($fieldsData as $selectedField) {
-            foreach ($selectedField as $field) {
-                [$tableName, $columnName, $moduleField, $fieldName] = explode(':', $field);
-                [$module] = explode('_', $moduleField, 2);
-                $moduleModel = Vtiger_Module_Model::getInstance($module);
-                $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
-
-                if ($fieldModel->table !== $tableName || $fieldModel->column !== $columnName) {
-                    throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
-                }
-            }
+        if (!$currentUserPrivileges->hasModulePermission($moduleModel->getId())) {
+            throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
         }
 
-        return true;
-	}
+        return parent::checkPermission($request);
+    }
 
 	public function process(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
