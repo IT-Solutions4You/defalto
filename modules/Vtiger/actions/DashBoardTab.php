@@ -38,28 +38,35 @@ class Vtiger_DashBoardTab_Action extends Vtiger_Action_Controller {
 
 	/**
 	 * Function to add Dashboard Tab
+     *
 	 * @param Vtiger_Request $request
 	 */
-	function addTab(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$tabName = $request->getRaw('tabName');
+    function addTab(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $tabName = vtlib_purify($request->getRaw('tabName'));
+        $response = new Vtiger_Response();
+        $response->setEmitType(Vtiger_Response::$EMIT_JSON);
 
-		$dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
-		$tabExist = $dashBoardModel->checkTabExist($tabName);
-		$tabLimitExceeded = $dashBoardModel->checkTabsLimitExceeded();
-		$response = new Vtiger_Response();
-		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
+        if (!empty($tabName)) {
+            $dashBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
+            $tabExist = $dashBoardModel->checkTabExist($tabName);
+            $tabLimitExceeded = $dashBoardModel->checkTabsLimitExceeded();
 
-		if ($tabLimitExceeded) {
-			$response->setError(100, vtranslate('LBL_TABS_LIMIT_EXCEEDED', $moduleName));
-		} else if ($tabExist) {
-			$response->setError(100, vtranslate('LBL_DASHBOARD_TAB_ALREADY_EXIST', $moduleName));
-		} else {
-			$tabData = $dashBoardModel->addTab($tabName);
-			$response->setResult($tabData);
-		}
-		$response->emit();
-	}
+            if ($tabLimitExceeded) {
+                $response->setError(100, vtranslate('LBL_TABS_LIMIT_EXCEEDED', $moduleName));
+            } elseif ($tabExist) {
+                $response->setError(100, vtranslate('LBL_DASHBOARD_TAB_ALREADY_EXIST', $moduleName));
+            } else {
+                $tabData = $dashBoardModel->addTab($tabName);
+                $response->setResult($tabData);
+            }
+        } else {
+            $response->setError(100, vtranslate('LBL_DASHBOARD_TAB_INVALID', $moduleName));
+        }
+
+        $response->emit();
+    }
 
 	/**
 	 * Function to delete Dashboard Tab

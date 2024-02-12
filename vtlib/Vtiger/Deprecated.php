@@ -622,6 +622,6 @@ class Vtiger_Deprecated {
 	static function return_app_list_strings_language($language, $module='Vtiger') {
 		require_once 'includes/runtime/LanguageHandler.php';
 		$strings = Vtiger_Language_Handler::getModuleStringsFromFile($language, $module);
-		return $strings['languageStrings'];
+		return $strings['languageStrings'] ?? [];
 	}
 }

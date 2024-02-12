@@ -27,68 +27,64 @@ class Settings_Vtiger_CompanyDetailsSave_Action extends Settings_Vtiger_Basic_Ac
 		header('Location: ' . $reloadUrl);
 	}
 
-	public function Save(Vtiger_Request $request) {
-		$moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
-		$status = false;
-		if ($request->get('organizationname')) {
-			$saveLogo = $status = true;
-			$logoName = false;
-			if(!empty($_FILES['logo']['name'])) {
-				$logoDetails = $_FILES['logo'];
-				$fileType = explode('/', $logoDetails['type']);
-				$fileType = $fileType[1];
+    /**
+     * @param Vtiger_Request $request
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function Save(Vtiger_Request $request): void
+    {
+        $moduleModel = Settings_Vtiger_CompanyDetails_Model::getInstance();
 
-				if (!$logoDetails['size'] || !in_array($fileType, Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
-					$saveLogo = false;
-				}
+        if (!$request->get('organizationname')) {
+            throw new Exception('LBL_FIELDS_INFO_IS_EMPTY', 103);
+        }
 
-				//mime type check
-				$mimeType = mime_content_type($logoDetails['tmp_name']);
-				$mimeTypeContents = explode('/', $mimeType);
-				if (!$logoDetails['size'] || $mimeTypeContents[0] != 'image' || !in_array($mimeTypeContents[1], Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)) {
-					$saveLogo = false;
-				}
+        $logoName = false;
 
-				// Check for php code injection
-				$imageContents = file_get_contents($logoDetails["tmp_name"]);
-				if (preg_match('/(<\?php?(.*?))/i', $imageContents) == 1) {
-					$saveLogo = false;
-				}
-				if ($saveLogo) {
-					$logoName = ltrim(basename(' '.Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext'))));
-					$moduleModel->saveLogo($logoName);
-				}
-			}else{
-				$saveLogo = true;
-			}
-			$fields = $moduleModel->getFields();
-			foreach ($fields as $fieldName => $fieldType) {
-				$fieldValue = $request->get($fieldName);
-				if ($fieldName === 'logoname') {
-					if (!empty($logoDetails['name']) && $logoName) {
-						$fieldValue = decode_html(ltrim(basename(" " . $logoName)));
-					} else {
-						$fieldValue = decode_html($moduleModel->get($fieldName));
-					}
-				}
-				// In OnBoard company detail page we will not be sending all the details
-				if($request->has($fieldName) || ($fieldName == "logoname")) {
-					$moduleModel->set($fieldName, $fieldValue);
-				}
-			}
-			$moduleModel->save();
-		}
-		if ($saveLogo && $status) {
-			return ;
-		} else if (!$saveLogo) {
-			throw new Exception('LBL_INVALID_IMAGE',103);
-			//$reloadUrl .= '&error=';
-		} else {
-			throw new Exception('LBL_FIELDS_INFO_IS_EMPTY',103);
-			//$reloadUrl = $moduleModel->getEditViewUrl() . '&error=';
-		}
-		return;
-	}
+        if (!empty($_FILES['logo']['name'])) {
+            $logoDetails = $_FILES['logo'];
+            $saveLogo = Vtiger_Functions::validateImage($logoDetails);
+            global $upload_badext;// from config.inc.php
+            $logoName = sanitizeUploadFileName($logoDetails['name'], $upload_badext);
+
+            if ($saveLogo && pathinfo($logoName, PATHINFO_EXTENSION) != 'txt') {
+                $moduleModel->saveLogo($logoName);
+            } else {
+                $saveLogo = false;
+            }
+        } else {
+            $saveLogo = true;
+        }
+
+        if (!$saveLogo) {
+            throw new Exception('LBL_INVALID_IMAGE', 103);
+        }
+
+        $fields = $moduleModel->getFields();
+
+        foreach ($fields as $fieldName => $fieldType) {
+            $fieldValue = $request->get($fieldName);
+
+            if ($fieldName === 'logoname') {
+                if (!empty($logoDetails['name']) && $logoName) {
+                    $fieldValue = decode_html(ltrim(basename(" " . $logoName)));
+                } else {
+                    $fieldValue = decode_html($moduleModel->get($fieldName));
+                }
+            } else {
+                $fieldValue = strip_tags(decode_html($fieldValue));
+            }
+
+            // In OnBoard company detail page we will not be sending all the details
+            if ($request->has($fieldName) || ($fieldName == "logoname")) {
+                $moduleModel->set($fieldName, $fieldValue);
+            }
+        }
+
+        $moduleModel->save();
+    }
 
 	public function validateRequest(Vtiger_Request $request) {
 		$request->validateWriteAccess();

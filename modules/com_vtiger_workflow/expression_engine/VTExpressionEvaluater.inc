@@ -123,8 +123,8 @@ function __vt_time_diff($arr) {
 
 			$trimmedOperand1 = trim($time_operand1);
 			$trimmedOperand2 = trim($time_operand2);
-			list($date1,$time1) = explode(' ', $trimmedOperand1);
-			list($date2,$time2) = explode(' ', $trimmedOperand2);
+			[$date1,$time1] = explode(' ', $trimmedOperand1);
+			[$date2,$time2] = explode(' ', $trimmedOperand2);
 			if(strpos($date1,":")){
 				$time1 = $date1;
 				$date1 = '';
@@ -155,7 +155,7 @@ function __vt_time_diff($arr) {
 
 		$time_operand2 = $arr[0];
 		$trimmedOperand = trim($time_operand2);
-		list($date,$time) = explode(' ', $trimmedOperand);
+		[$date,$time] = explode(' ', $trimmedOperand);
 		if(empty($time)) {
 			$time_operand2 = $time_operand2." 00:00:00";
 		} else {
@@ -341,30 +341,40 @@ class VTFieldExpressionEvaluater{
 		return $this->exec($this->expr);
 	}
 
-	function exec($expr){
-		if($expr instanceof VTExpressionSymbol){
-			return $this->env($expr);
-		}else if($expr instanceof VTExpressionTreeNode){
-			$op = $expr->getName();
-			if($op->value=='if'){
-				$params = $expr->getParams();
-				$cond = $this->exec($params[0]);
-				if($cond){
-					return $this->exec($params[1]);
-				}else{
-					return $this->exec($params[2]);
-				}
-			}else{
-				$params = array_map(array($this, 'exec'), $expr->getParams());
-				$func = $this->operations[$op->value];
-				return $func($params);
-			}
-		}else{
-			return $expr;
-		}
-	}
+    function exec($expr)
+    {
+        if ($expr instanceof VTExpressionSymbol) {
+            return $this->env($expr);
+        }
 
-	function env($sym){
+        if (!$expr instanceof VTExpressionTreeNode) {
+            return $expr;
+        }
+
+        $op = $expr->getName();
+
+        if ($op->value === 'if') {
+            $params = $expr->getParams();
+            $cond = $this->exec($params[0]);
+
+            if ($cond) {
+                return $this->exec($params[1]);
+            }
+
+            return $this->exec($params[2]);
+        }
+
+        $params = array_map([$this, 'exec'], $expr->getParams());
+        $func = $this->operations[$op->value] ?? null;
+
+        if ($func !== null) {
+            return $func($params);
+        }
+
+        return null;
+    }
+
+    function env($sym){
 		if($this->env) {
 			global $current_user;
 			$fieldName = $sym->value;

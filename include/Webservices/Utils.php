@@ -472,30 +472,42 @@ function vtws_getModuleHandlerFromId($id,$user){
 	return $handler;
 }
 
-function vtws_CreateCompanyLogoFile($fieldname) {
-	global $root_directory;
-	$uploaddir = $root_directory ."/test/logo/";
-	$allowedFileTypes = array("jpeg", "png", "jpg", "pjpeg" ,"x-png");
-	$binFile = $_FILES[$fieldname]['name'];
-	$fileType = $_FILES[$fieldname]['type'];
-	$fileSize = $_FILES[$fieldname]['size'];
-	$fileTypeArray = explode("/",$fileType);
-	$fileTypeValue = strtolower($fileTypeArray[1]);
-	if($fileTypeValue == '') {
-		$fileTypeValue = substr($binFile,strrpos($binFile, '.')+1);
-	}
-	if($fileSize != 0) {
-		if(in_array($fileTypeValue, $allowedFileTypes)) {
-			move_uploaded_file($_FILES[$fieldname]["tmp_name"],
-					$uploaddir.$_FILES[$fieldname]["name"]);
-			copy($uploaddir.$_FILES[$fieldname]["name"], $uploaddir.'application.ico');
-			return $binFile;
-		}
-		throw new WebServiceException(WebServiceErrorCode::$INVALIDTOKEN,
-			"$fieldname wrong file type given for upload");
-	}
-	throw new WebServiceException(WebServiceErrorCode::$INVALIDTOKEN,
-			"$fieldname file upload failed");
+/**
+ * This function is used to upload the company logo file. It creates the .ico file as the copy of the uploaded file.
+ *
+ * @param string $fieldName
+ *
+ * @return mixed
+ * @throws WebServiceException
+ */
+function vtws_CreateCompanyLogoFile(string $fieldName): mixed
+{
+    $fileSize = (int)$_FILES[$fieldName]['size'];
+
+    if (!$fileSize) {
+        throw new WebServiceException(WebServiceErrorCode::$FAILED_TO_UPDATE, $fieldName . ' file upload failed');
+    }
+
+    global $root_directory;
+
+    $logoSupportedFormats = array('jpeg', 'jpg', 'png', 'gif', 'pjpeg', 'x-png');
+    $file_type_details = explode('/', $_FILES[$fieldName]['type']);
+    $filetype = $file_type_details['1'];
+
+    if(in_array($filetype, $logoSupportedFormats)) {
+        $uploadDir = $root_directory . '/test/logo/';
+        $binFile = $_FILES[$fieldName]['name'];
+        $saveLogo = validateImageFile($_FILES[$fieldName]);
+
+        if ($saveLogo) {
+            move_uploaded_file($_FILES[$fieldName]['tmp_name'], $uploadDir . $binFile);
+            copy($uploadDir . $binFile, $uploadDir . 'application.ico');
+
+            return $binFile;
+        }
+    }
+
+    throw new WebServiceException(WebServiceErrorCode::$FAILED_TO_UPDATE, $fieldName . ' wrong file type given for upload');
 }
 
 function vtws_getActorEntityName ($name, $idList) {

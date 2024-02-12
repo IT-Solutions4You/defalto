@@ -1794,9 +1794,9 @@ function getValidDBInsertDateValue($value) {
 	}
 	global $current_user;
 	$formate=$current_user->date_format;
-	list($d,$m,$y) = explode('-',$value);
+	[$d,$m,$y] = explode('-',$value);
 	if(strlen($d) == 4 || $formate == 'mm-dd-yyyy'){
-		list($y,$m,$d)=explode('-',$value);
+		[$y,$m,$d]=explode('-',$value);
 	}
 	if(strlen($y) == 1) $y = '0'.$y;
 	if(strlen($m) == 1) $m = '0'.$m;
@@ -1859,30 +1859,36 @@ function _phpset_memorylimit_MB($newvalue) {
  * @param String -- $fileName - File name to be sanitized
  * @return String - Sanitized file name
  */
-function sanitizeUploadFileName($fileName, $badFileExtensions) {
+function sanitizeUploadFileName($fileName, $badFileExtensions)
+{
+    if (!$badFileExtensions) {
+        $badFileExtensions = vglobal('upload_badext');
+    }
 
-	$fileName = preg_replace('/\s+/', '_', $fileName);//replace space with _ in filename
-	$fileName = rtrim($fileName, '\\/<>?*:"<>|');
+    $fileName = preg_replace('/[\s#%&?]+/', '_', $fileName); //replace space,#,%,&,? with _ in filename
+    $fileName = rtrim($fileName, '\\/<>?*:"<>|');
 
-	$fileNameParts = explode(".", $fileName);
-	$countOfFileNameParts = php7_count($fileNameParts);
-	$badExtensionFound = false;
+    $fileNameParts = explode('.', $fileName);
+    $countOfFileNameParts = php7_count($fileNameParts);
+    $badExtensionFound = false;
 
-	for ($i=0;$i<$countOfFileNameParts;++$i) {
-		$partOfFileName = $fileNameParts[$i];
-		if(in_array(strtolower($partOfFileName), $badFileExtensions)) {
-			$badExtensionFound = true;
-			$fileNameParts[$i] = $partOfFileName . 'file';
-	}
-	}
+    for ($i = 0; $i < $countOfFileNameParts; $i++) {
+        $partOfFileName = $fileNameParts[$i];
 
-	$newFileName = implode(".", $fileNameParts);
+        if (in_array(strtolower($partOfFileName), $badFileExtensions)) {
+            $badExtensionFound = true;
+            $fileNameParts[$i] = $partOfFileName . 'file';
+        }
+    }
 
-	if ($badExtensionFound) {
-		$newFileName .= ".txt";
-		}
-	return $newFileName;
-		}
+    $newFileName = implode('.', $fileNameParts);
+
+    if ($badExtensionFound) {
+        $newFileName .= '.txt';
+    }
+
+    return ltrim(basename(' ' . $newFileName));
+}
 
 /** Function to get the tab meta information for a given id
   * @param $tabId -- tab id :: Type integer
@@ -2152,7 +2158,7 @@ function getSelectAllQuery($input,$module) {
 		$query = $oCustomView->getModifiedCvListQuery($viewid,$listquery,$module);
 		$where = '';
 		if($input['query'] == 'true') {
-			list($where, $ustring) = split("#@@#",getWhereCondition($module, $input));
+			[$where, $ustring] = split("#@@#",getWhereCondition($module, $input));
 			if(isset($where) && $where != '') {
 				$query .= " AND " .$where;
 			}
@@ -2450,7 +2456,7 @@ function sendMailToUserOnDuplicationPrevention($moduleName, $fieldData, $mailBod
 
             switch ($fieldModel->getFieldDataType()) {
                 case 'reference'        :
-                    list($refModuleId, $refRecordId) = vtws_getIdComponents($fieldValue);
+                    [$refModuleId, $refRecordId] = vtws_getIdComponents($fieldValue);
                     $fieldValue = Vtiger_Functions::getCRMRecordLabel($refRecordId);
                     break;
                 case 'date'                :

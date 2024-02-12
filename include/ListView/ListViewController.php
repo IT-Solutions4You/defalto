@@ -300,7 +300,6 @@ class ListViewController {
 					} else{
 						$value = textlength_check($value);
 					}
-					$value = $fileicon.$value;
 				} elseif($module == 'Documents' && $fieldName == 'filesize') {
 					$downloadType = $db->query_result($result,$i,'filelocationtype');
 					if($downloadType == 'I') {
