@@ -37,7 +37,8 @@ class Calendar_FetchAgendaEvents_Action extends Vtiger_BasicAjax_Action {
 		if ($hideCompleted) {
 			$query.= "vtiger_activity.eventstatus != 'HELD' AND ";
 		}
-		$query.= " (concat(date_start,'',time_start)) >= ? AND (concat(date_start,'',time_start)) < ?";
+
+        $query .= " (concat(date_start,' ',time_start)) >= ? AND (concat(date_start,' ',time_start)) < ?";
        
 		$params = array($dbStartDateTime, $dbEndDateTime);
 
