@@ -12,7 +12,7 @@
             {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$MODULE}
                 <form id="popupPage" action="javascript:void(0)">
                     <div class="modal-body">
-                        <div id="popupPageContainer" class="contentsDiv paddingTop10 col-sm-12">
+                        <div id="popupPageContainer" class="contentsDiv">
                             <input type="hidden" id="parentModule" value="{$SOURCE_MODULE}"/>
                             <input type="hidden" id="module" value="{$MODULE}"/>
                             <input type="hidden" id="parent" value="{$PARENT_MODULE}"/>
@@ -29,7 +29,7 @@
                             {if !empty($POPUP_CLASS_NAME)}
                                 <input type="hidden" id="popUpClassName" value="{$POPUP_CLASS_NAME}"/>
                             {/if}
-                            <div id="popupContents" class="">
+                            <div id="popupContents">
                                 {include file='ProductsPopupContents.tpl'|vtemplate_path:$MODULE_NAME}
                             </div>
                         </div>

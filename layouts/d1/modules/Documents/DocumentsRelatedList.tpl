@@ -98,13 +98,6 @@
                     {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
                 </div>
             </div>
-            {if $MODULE eq 'Products' && $RELATED_MODULE_NAME eq 'Products' && $TAB_LABEL === 'Product Bundles' && $RELATED_LIST_LINKS}
-                <div class="row-fluid" data-module="{$MODULE}">
-                    {assign var=IS_VIEWABLE value=$PARENT_RECORD->isBundleViewable()}
-                    <input type="hidden" class="isShowBundles" value="{$IS_VIEWABLE}">
-                    <label class="showBundlesInInventory checkbox"><input type="checkbox" {if $IS_VIEWABLE}checked{/if} value="{$IS_VIEWABLE}">&nbsp;&nbsp;{vtranslate('LBL_SHOW_BUNDLE_IN_INVENTORY', $MODULE)}</label>
-                </div>
-            {/if}
             <div class="relatedContents col-lg-12 col-md-12 col-sm-12 table-container">
                 <div class="bottomscroll-div">
                     {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
@@ -227,7 +220,7 @@
                                                         {assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
                                                     {/if}
                                                 {elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
-                                                    <span {if !empty($RELATED_LIST_VALUE)} class="picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}>{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</span>
+                                                    <span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}>{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</span>
                                                 {else}
                                                     {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
                                                 {/if}
