@@ -329,7 +329,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 		$primaryModule = $this->report->primodule;
 		for($i=0; $i<$db->num_rows($result); $i++) {
 			$column = $db->query_result($result, $i, 'columnname');
-			list($tableName, $columnName, $moduleFieldLabel, $fieldName, $type) = split(':', $column);
+			list($tableName, $columnName, $moduleFieldLabel, $fieldName, $type) = explode(':', $column);
 			$fieldLabel  = explode('_', $moduleFieldLabel);
 			$module = $fieldLabel[0];
 			$dbFieldLabel = trim(str_replace(array($module, '_'), " ", $moduleFieldLabel));

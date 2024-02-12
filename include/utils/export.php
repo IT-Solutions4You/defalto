@@ -135,7 +135,7 @@ function export($type){
 	}
 	$params = array();
 
-	list($idstring, $export_data) = split("#@@#",getExportRecordIds($type, $viewid, $_REQUEST));
+	list($idstring, $export_data) = explode('#@@#',getExportRecordIds($type, $viewid, $_REQUEST));
 	
 	if(($search_type == 'withoutsearch' || $search_type == 'includesearch') && $export_data == 'selecteddata'){
 		$idstring = getSelectedRecords($_REQUEST, $type, $idstring, vtlib_purify($_REQUEST['excludedRecords']));

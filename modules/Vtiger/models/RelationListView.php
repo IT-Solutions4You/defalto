@@ -288,9 +288,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 					$queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
 				}
 			}
-			$whereQuerySplit = split("WHERE", $queryGenerator->getWhereClause());
+			$whereQuerySplit = explode('WHERE', $queryGenerator->getWhereClause());
 			if($parentModuleName == 'Accounts' && $relationModuleName == 'Calendar' && (stripos($query, "GROUP BY") !== false)) {
-                            $splitQuery = split('GROUP BY', $query);
+                            $splitQuery = explode('GROUP BY', $query);
                             $query = $splitQuery[0]." AND ".$whereQuerySplit[1].' GROUP BY '.$splitQuery[1];
                         } else {
                             $query.=" AND " . $whereQuerySplit[1];

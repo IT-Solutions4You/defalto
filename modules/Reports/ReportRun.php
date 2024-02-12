@@ -376,8 +376,8 @@ class ReportRun extends CRMEntity {
 		while ($columnslistrow = $adb->fetch_array($result)) {
 			$fieldname = "";
 			$fieldcolname = $columnslistrow["columnname"];
-			list($tablename, $colname, $module_field, $fieldname, $single) = split(":", $fieldcolname);
-			list($module, $field) = split("_", $module_field, 2);
+			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $fieldcolname);
+			list($module, $field) = explode('_', $module_field, 2);
             $selectedModuleFields[$module][] = $fieldname;
 			$inventory_fields = array('serviceid');
 			$inventory_modules = getInventoryModules();
@@ -485,7 +485,7 @@ class ReportRun extends CRMEntity {
 		global $adb;
 		$header_label = $selectedfields[2] = addslashes($selectedfields[2]); // Header label to be displayed in the reports table
 
-		list($module, $field) = split("_", $selectedfields[2]);
+		list($module, $field) = explode('_', $selectedfields[2]);
 		$concatSql = getSqlForNameInDisplayFormat(array('first_name' => $selectedfields[0] . ".first_name", 'last_name' => $selectedfields[0] . ".last_name"), 'Users');
 		$emailTableName = "vtiger_activity";
 		if ($module != $this->primarymodule) {
@@ -526,7 +526,7 @@ class ReportRun extends CRMEntity {
 				$this->queryPlanner->addTable($selectedfields[0] .'tmp'. $module);
 			}
 		} else if ($selectedfields[4] == 'C') {
-			$field_label_data = split("_", $selectedfields[2]);
+			$field_label_data = explode('_', $selectedfields[2]);
 			$module = $field_label_data[0];
 			if ($module != $this->primarymodule) {
 				$columnSQL = "case when (" . $selectedfields[0] . "." . $selectedfields[1] . "='1')then 'yes' else case when (vtiger_crmentity$module.crmid !='') then 'no' else '-' end end AS '" . decode_html($selectedfields[2]) . "'";
@@ -904,7 +904,7 @@ class ReportRun extends CRMEntity {
 				$this->queryPlanner->addTable($secondary->table_name);
 			}
 		}
-		$field = split('#', $field);
+		$field = explode('#', $field);
 		$module = $field[0];
 		$fieldname = trim($field[1]);
 		$tabid = getTabId($module);
@@ -1973,7 +1973,7 @@ class ReportRun extends CRMEntity {
 		$inventoryModules = getInventoryModules();
 		while ($reportsortrow = $adb->fetch_array($result)) {
 			$fieldcolname = $reportsortrow["columnname"];
-			list($tablename, $colname, $module_field, $fieldname, $single) = split(":", $fieldcolname);
+			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $fieldcolname);
 			$sortorder = $reportsortrow["sortorder"];
 
 			if ($sortorder == "Ascending") {
@@ -2015,7 +2015,7 @@ class ReportRun extends CRMEntity {
 					$sqlvalue = $module_field . ' ' . $sortorder;
 				}
 				$grouplist[$fieldcolname] = $sqlvalue;
-				$temp = split("_", $selectedfields[2], 2);
+				$temp = explode('_', $selectedfields[2], 2);
 				$module = $temp[0];
 				if (in_array($module, $inventoryModules) && $fieldname == 'serviceid') {
 					$grouplist[$fieldcolname] = $sqlvalue;
@@ -3061,7 +3061,7 @@ class ReportRun extends CRMEntity {
 		$modules_selected = array();
 		$modules_selected[] = $this->primarymodule;
 		if (!empty($this->secondarymodule)) {
-			$sec_modules = split(":", $this->secondarymodule);
+			$sec_modules = explode(':', $this->secondarymodule);
 			for ($i = 0; $i < php7_count($sec_modules); $i++) {
 				$modules_selected[] = $sec_modules[$i];
 			}
@@ -3694,7 +3694,7 @@ class ReportRun extends CRMEntity {
 				$groupslist = $this->getGroupingList($this->reportid);
 				foreach ($groupslist as $reportFieldName => $reportFieldValue) {
 					$nameParts = explode(":", $reportFieldName);
-					list($groupFieldModuleName, $groupFieldName) = split("_", $nameParts[2], 2);
+					list($groupFieldModuleName, $groupFieldName) = explode('_', $nameParts[2], 2);
 					$groupByFieldNames[] = vtranslate(str_replace('_', ' ', $groupFieldName), $groupFieldModuleName);
 				}
 				if (php7_count($groupByFieldNames) > 0) {
@@ -3972,7 +3972,7 @@ class ReportRun extends CRMEntity {
 				if (CheckColumnPermission($field_tablename, $field_columnname, $premod) != "false") {
 					$field_permitted = true;
 				} else {
-					$mod = split(":", $secmod);
+					$mod = explode(':', $secmod);
 					foreach ($mod as $key) {
 						if (CheckColumnPermission($field_tablename, $field_columnname, $key) != "false") {
 							$field_permitted = true;
@@ -3981,7 +3981,7 @@ class ReportRun extends CRMEntity {
 				}
 
 				//Calculation fields of "Events" module should show in Calendar related report
-				$secondaryModules = split(":", $secmod);
+				$secondaryModules = explode(':', $secmod);
 				if ($field_permitted === false && ($premod === 'Calendar' || in_array('Calendar', $secondaryModules)) && CheckColumnPermission($field_tablename, $field_columnname, "Events") != "false") {
 					$field_permitted = true;
 				}
@@ -4026,7 +4026,7 @@ class ReportRun extends CRMEntity {
 		} else {
 			$field_tablename = $fieldlist[0];
 			$field_columnname = $fieldlist[1];
-			list($module, $fieldName) = split('_', $fieldlist[2], 2);
+			list($module, $fieldName) = explode('_', $fieldlist[2], 2);
 		}
 
 		$field = $field_tablename . "." . $field_columnname;
@@ -4466,7 +4466,7 @@ class ReportRun extends CRMEntity {
 		$num_rows = $adb->num_rows($groupByTimeRes);
 		for ($i = 0; $i < $num_rows; $i++) {
 			$sortColName = $adb->query_result($groupByTimeRes, $i, 'sortcolname');
-			list($tablename, $colname, $module_field, $fieldname, $single) = split(':', $sortColName);
+			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $sortColName);
 			$groupField = $module_field;
 			$groupCriteria = $adb->query_result($groupByTimeRes, $i, 'dategroupbycriteria');
 			if (in_array($groupCriteria, array_keys($this->groupByTimeParent))) {

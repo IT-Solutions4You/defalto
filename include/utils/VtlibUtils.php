@@ -934,18 +934,6 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 	return $success;
 }
 
-/**
- * PHP7 support for split function
- * split : Case sensitive.
- */
-if (!function_exists('split')) {
-    function split($pattern, $string, $limit = null) {
-        $regex = '/' . preg_replace('/\//', '\\/', $pattern) . '/';
-        return preg_split($regex, $string, $limit);
-    }
-
-}
-
 function php7_compat_ereg($pattern, $str, $ignore_case=false) {
 	$regex = '/'. preg_replace('/\//', '\\/', $pattern) .'/' . ($ignore_case ? 'i': '');
 	return preg_match($regex, $str);

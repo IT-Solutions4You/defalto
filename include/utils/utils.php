@@ -2149,7 +2149,7 @@ function getSelectAllQuery($input,$module) {
 		$query = $oCustomView->getModifiedCvListQuery($viewid,$listquery,$module);
 		$where = '';
 		if($input['query'] == 'true') {
-			[$where, $ustring] = split("#@@#",getWhereCondition($module, $input));
+			[$where, $ustring] = explode('#@@#',getWhereCondition($module, $input));
 			if(isset($where) && $where != '') {
 				$query .= " AND " .$where;
 			}

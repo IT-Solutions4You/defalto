@@ -94,7 +94,7 @@ class SMSNotifier_IndiaSms_Provider implements SMSNotifier_ISMSProvider_Model {
 		$httpClient = new Vtiger_Net_Client($serviceURL);
 
 		$response = $httpClient->doGet($params);
-		$responseLines = split("\n", $response);
+		$responseLines = explode("\n", $response);
 
 		$results = array();
 		foreach ($responseLines as $responseLine) {

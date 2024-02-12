@@ -68,7 +68,7 @@ class TextAnywhere implements ISMSProvider {
 	}
 
 	public function query($messageid) {
-		$messageidSplit = split('--', $messageid);
+		$messageidSplit = explode('--', $messageid);
 		$clientMessageReference = trim($messageidSplit[0]);
 		$number = trim($messageidSplit[1]);
 
@@ -170,13 +170,13 @@ class TextAnywhere implements ISMSProvider {
 
 	private function processSendMessageResult($response, $clientMessageReference, $tonumbers) {
 		$results = array();
-		$responseLines = split("\n", $response);
+		$responseLines = explode("\n", $response);
 
 		if (trim($responseLines[0]) === '#1#') {
 			//Successful transaction
-			$numberResults = split(",", $responseLines[1]);
+			$numberResults = explode(',', $responseLines[1]);
 			foreach ($numberResults as $numberResult) {
-				$numberResultSplit = split(":", $numberResult);
+				$numberResultSplit = explode(':', $numberResult);
 				$number = trim($numberResultSplit[0]);
 				$code = trim($numberResultSplit[1]);
 
@@ -220,13 +220,13 @@ class TextAnywhere implements ISMSProvider {
 	private function processQueryMessageResult($response, $number) {
 		$result = array();
 
-		$responseLines = split("\n", $response);
+		$responseLines = explode("\n", $response);
 
 		if (trim($responseLines[0]) === '#1#') {
 			//Successful transaction
-			$numberResults = split(",", $responseLines[1]);
+			$numberResults = explode(',', $responseLines[1]);
 			foreach ($numberResults as $numberResult) {
-				$numberResultSplit = split(":", $numberResult);
+				$numberResultSplit = explode(':', $numberResult);
 				$thisNumber = trim($numberResultSplit[0]);
 				$code = (int) trim($numberResultSplit[1]);
 

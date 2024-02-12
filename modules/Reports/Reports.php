@@ -1380,7 +1380,7 @@ function getEscapedColumns($selectedfields)
 		$result = $adb->pquery($ssql, array($reportid));
 		$permitted_fields = Array();
 
-		$selected_mod = split(":",$this->secmodule);
+		$selected_mod = explode(':',$this->secmodule);
 		array_push($selected_mod,$this->primodule);
 
 		$inventoryModules = getInventoryModules();
@@ -1397,9 +1397,9 @@ function getEscapedColumns($selectedfields)
 				}
 			}
 			if($selmod_field_disabled==false){
-				list($tablename,$colname,$module_field,$fieldname,$single) = split(":",$fieldcolname);
+				list($tablename,$colname,$module_field,$fieldname,$single) = explode(':',$fieldcolname);
 				require('user_privileges/user_privileges_'.$current_user->id.'.php');
-				list($module,$field) = split("_",$module_field);
+				list($module,$field) = explode('_',$module_field);
 				if(php7_count($permitted_fields) == 0 && $is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1)
 				{
 					$permitted_fields = $this->getaccesfield($module);

@@ -130,8 +130,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			}
 		} else {
 			if($fieldName == 'birthday') {
-				$startDateComponents = split('-', $start);
-				$endDateComponents = split('-', $end);
+				$startDateComponents = explode('-', $start);
+				$endDateComponents = explode('-', $end);
 
 				$year = $startDateComponents[0];
 				$db = PearDatabase::getInstance();

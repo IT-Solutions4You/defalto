@@ -33,8 +33,8 @@ class Reports_Save_Action extends Vtiger_Save_Action {
 
         foreach ($fieldsData as $selectedField) {
             foreach ($selectedField as $field) {
-                [$tableName, $columnName, $moduleField, $fieldName] = split(':', $field);
-                [$module] = split('_', $moduleField, 2);
+                [$tableName, $columnName, $moduleField, $fieldName] = explode(':', $field);
+                [$module] = explode('_', $moduleField, 2);
                 $moduleModel = Vtiger_Module_Model::getInstance($module);
                 $fieldModel = Vtiger_Field_Model::getInstance($fieldName, $moduleModel);
 
