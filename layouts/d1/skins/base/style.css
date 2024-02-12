@@ -6136,12 +6136,6 @@ input:focus:-ms-input-placeholder {
     text-align: center;
 }
 
-#composeEmailContainer .modal-body .quickCreateContent,
-#QuickCreate .modal-body .quickCreateContent,
-#create .quickCreateContent {
-    margin-top: 25px;
-}
-
 .settingsgroup-panel .widgetContainer .menuItemLabel .pinUnpinShortCut {
     display: none;
     margin-top: 2px;
