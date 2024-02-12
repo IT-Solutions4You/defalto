@@ -680,7 +680,7 @@ class Vtiger_Functions {
         $allowedImageFormats = Vtiger_Functions::$supportedImageFormats;
 
         // Determine mime-types based on file-content for generic type (Outlook add-on).
-        if ($file_details['type'] == 'application/octet-stream' && function_exists('mime_content_type')) {
+        if ($file_details['type'] === 'application/octet-stream' && function_exists('mime_content_type')) {
             $file_details['type'] = mime_content_type($file_details['tmp_name']);
         }
 
@@ -708,7 +708,7 @@ class Vtiger_Functions {
                 return false;
             }
 
-            if ($file_details['type'] == 'image/jpeg' && extension_loaded('gd') && function_exists('gd_info')) {
+            if ($file_details['type'] === 'image/jpeg' && extension_loaded('gd') && function_exists('gd_info')) {
                 $img = imagecreatefromjpeg($tmpFileName);
                 imagejpeg($img, $tmpFileName);
             }
