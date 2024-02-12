@@ -47,7 +47,7 @@
                 {/if}
             />
             <input name="{$FIELD_MODEL->getFieldName()}" type="hidden" value="{$FIELD_VALUE}" class="sourceField" data-displayvalue='{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}' {if $AUTOFILL_VALUE} data-autofill={Zend_Json::encode($AUTOFILL_VALUE)} {/if}/>
-            <a href="#" class="clearReferenceSelection input-group-text {if empty($FIELD_VALUE)}hide{/if}">
+            <a href="#" class="clearReferenceSelection input-group-text {if empty($FIELD_VALUE) || $FIELD_VALUE lte 0}hide{/if}">
                 <i class="fa fa-xmark"></i>
             </a>
             <span class="input-group-addon relatedPopup cursorPointer input-group-text" title="{vtranslate('LBL_SELECT', $MODULE)}">

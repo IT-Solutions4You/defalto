@@ -14,12 +14,15 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	 * Function to get the Detail View url for the record
 	 * @return <String> - Record Detail View Url
 	 */
-	public function getDetailViewUrl($parentId = false) {
-		if(!$parentId) {
-			list($parentId, $status) = explode('@', reset(array_filter(explode('|', $this->get('parent_id')))));
-		}
-		return 'Javascript:Vtiger_Index_Js.showEmailPreview("'.$this->getId().'","'.$parentId.'")';
-	}
+    public function getDetailViewUrl($parentId = false)
+    {
+        if (!$parentId) {
+            $parentIds = array_filter(explode('|', $this->get('parent_id')));
+            [$parentId, $status] = explode('@', reset($parentIds));
+        }
+
+        return 'Javascript:Vtiger_Index_Js.showEmailPreview("' . $this->getId() . '","' . $parentId . '")';
+    }
 
 	/**
 	 * Function to save an Email
@@ -57,13 +60,14 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		$userName = $currentUserModel->getName();
 
 		// To eliminate the empty value of an array
-		$toEmailInfo = array_filter($this->get('toemailinfo'));
-		$emailsInfo = array();
-		foreach ($toEmailInfo as $id => $emails) {
-			foreach($emails as $key => $value){
-				array_push($emailsInfo, $value);
-			}
-		}
+        $toEmailInfo = $this->get('toemailinfo') ? array_filter($this->get('toemailinfo')) : [];
+        $emailsInfo = [];
+
+        foreach ($toEmailInfo as $id => $emails) {
+            foreach ($emails as $email) {
+                $emailsInfo[] = $email;
+            }
+        }
 
         $allEligibleEmails = array();
 		$toEmailInfo = array_map("unserialize", array_unique(array_map("serialize", array_map("array_unique", $toEmailInfo))));

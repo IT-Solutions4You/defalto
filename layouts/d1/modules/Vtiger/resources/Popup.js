@@ -533,6 +533,7 @@ jQuery.Class("Vtiger_Popup_Js",{
             jQuery('#searchvalue').val("");
             jQuery('#totalPageCount').text("");
 			thisInstance.searchHandler().then(function(data){
+				thisInstance.writeSelectedIds([]);
 				jQuery('#pageNumber').val(1);
 				jQuery('#pageToJump').val(1);
 				thisInstance.updatePagination();
