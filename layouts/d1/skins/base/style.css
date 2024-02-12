@@ -5067,12 +5067,6 @@ div.tooltip-inner {
     left: 50px;
 }
 
-.overlayEdit .modal-content {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-}
-
 .select2-container.select2-container-multi.select2,
 .editViewPageDiv .select2-container.select2-container-multi.select2 {
     height: auto !important;
