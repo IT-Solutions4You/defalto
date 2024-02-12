@@ -523,8 +523,6 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
             }
         })
 
-        console.log(data.find('input[name="pickListValues"]'));
-
         // this will handle the case of updating the default value in edit/create mode of field for picklist value type
         data.find('[name="pickListValues"]').on('change select2:select', function (e) {
             let element = jQuery(e.currentTarget),

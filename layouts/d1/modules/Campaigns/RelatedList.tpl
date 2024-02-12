@@ -118,7 +118,7 @@
 							<thead>
 								<tr class="listViewHeaders bg-body-secondary">
 									<th>
-										<input type="checkbox" id="listViewEntriesMainCheckBox"/>
+										<input type="checkbox" class="form-check-input" id="listViewEntriesMainCheckBox"/>
 									</th>
 									<th>
 									</th>
@@ -165,7 +165,7 @@
 							{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 								<tr class="listViewEntries border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 									<td class="{$WIDTHTYPE}">
-										<input type="checkbox" value="{$RELATED_RECORD->getId()}" class="listViewEntriesCheckBox"/>
+										<input type="checkbox" value="{$RELATED_RECORD->getId()}" class="listViewEntriesCheckBox form-check-input"/>
 									</td>
 									<td>
 										<span class="actionImages btn-group">
