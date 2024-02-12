@@ -16,11 +16,12 @@ class Vtiger_AccessControl {
 		'current_user_groups', 'subordinate_roles', 'parent_roles', 'subordinate_roles_users', 'user_info'
 	);
 
-	protected function __consturct() {
-		$this->privileges = array();
-	}
+    protected function __construct()
+    {
+        $this->privileges = [];
+    }
 
-	protected function loadUserPrivilegesWithId($id) {
+    protected function loadUserPrivilegesWithId($id) {
 		if (!isset($this->privileges[$id])) {
 			checkFileAccessForInclusion('user_privileges/user_privileges_'.$id.'.php');
 			require('user_privileges/user_privileges_'.$id.'.php');
