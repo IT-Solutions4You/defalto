@@ -453,7 +453,8 @@ class PriceBooks extends CRMEntity {
 		unset($fieldData['listprice']); unset($fieldData['relatedto']);
 		$fieldData = $obj->transformForImport($fieldData, $moduleMeta);
 		try{
-			$entityInfo = vtws_create($moduleName, $fieldData, $obj->user);
+            $fieldData['source'] = $obj->recordSource;
+            $entityInfo = vtws_create($moduleName, $fieldData, $obj->user);
 			if($entityInfo && $productList){
 				$this->relatePriceBookWithProduct($entityInfo, $productList);
 			}
