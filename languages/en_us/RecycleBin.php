@@ -11,6 +11,7 @@
 $languageStrings = Array(
     'Recycle Bin'=> 'Recycle Bin' ,
     'RecycleBin' => 'Recycle Bin',
+    'SINGLE_RecycleBin' => 'Recycle Bin',
 	'LBL_SELECT_MODULE' => 'Select Module',
 	'LBL_EMPTY_RECYCLEBIN' => 'Empty Recycle Bin',
 	'LBL_RESTORE' => 'Restore',

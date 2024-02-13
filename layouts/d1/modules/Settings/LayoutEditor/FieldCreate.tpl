@@ -94,7 +94,7 @@
 								<span class="text-danger">*</span>
 							</label>
 							<div class="controls col-lg-6">
-								<select type="text" id="picklistUi" class="select2" name="pickListValues" placeholder="{vtranslate('LBL_ENTER_PICKLIST_VALUES', $QUALIFIED_MODULE)}" data-tags="true" multiple="multiple" data-rule-required="true" data-rule-picklist="true">
+								<select type="text" id="picklistUi" name="pickListValues" placeholder="{vtranslate('LBL_ENTER_PICKLIST_VALUES', $QUALIFIED_MODULE)}" data-tags="true" multiple="multiple" data-rule-required="true" data-rule-picklist="true">
 								</select>
 							</div>
 						</div>

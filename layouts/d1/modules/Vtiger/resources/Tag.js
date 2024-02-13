@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Vtiger_Tag_Js */
 Vtiger.Class("Vtiger_Tag_Js",{},{
     
     editTagTemplate : '<div class="popover" role="tooltip"><div class="arrow"></div>\n\

@@ -31,6 +31,7 @@
     --menu-height: var(--main-height);
     --menu-icon-color: rgba(94, 129, 244, 1);
     --menu-icon-background: rgba(94, 129, 244, 0.1);
+    --overlay-height: calc(100vh - var(--header-height));
     --header-font-size: 1.6rem;
     --header-icon-size: 2.2rem;
     --header-line-height: 2.5rem;
@@ -162,6 +163,10 @@
 
 .h-list {
     min-height: calc(100vh - var(--header-height) - var(--footer-height) - 1.5rem);
+}
+
+.h-overlay {
+    height: var(--overlay-height);
 }
 
 footer, .h-footer {
@@ -1945,11 +1950,6 @@ input[type=checkbox]:checked {
 /**********************************
 **********Advance Search styles**********
 **********************************/
-.advanceFilterContainer .modal-body {
-    overflow: auto;
-    max-height: calc(100vh - 60px - 70px - var(--header-height));
-}
-
 .op0.fadeInx {
     opacity: 1;
 }
@@ -1997,11 +1997,6 @@ input[type=checkbox]:checked {
 
 .filterConditionContainer .anyConditionContainer {
     padding-top: 10px;
-}
-
-.filterConditionContainer .conditionList .deleteCondition {
-    vertical-align: middle;
-    margin-top: 6px;
 }
 
 #advanceSearchContainer #searchContainer {
@@ -4082,12 +4077,6 @@ li.dashboardWidget {
     max-width: 100%;
 }
 
-.smsTextArea {
-    width: 80%;
-    height: 60px;
-    max-width: 100%;
-}
-
 .emailDescription {
     overflow: auto;
     width: 100%;
@@ -4487,12 +4476,6 @@ li.dashboardWidget {
     height: 100%;
 }
 
-.productsBundlePopup .modal-body {
-    height: 500px;
-    overflow-y: auto;
-    padding: 0px 5px 0px 5px;
-}
-
 .productBundles {
     padding-left: 20px;
 }
@@ -4888,12 +4871,6 @@ div.tooltip-inner {
     height: 100%;
 }
 
-.productsBundlePopup .modal-body {
-    height: 500px;
-    overflow-y: auto;
-    padding: 0px 5px 0px 5px;
-}
-
 .productBundles {
     padding-left: 20px;
 }
@@ -5070,12 +5047,6 @@ div.tooltip-inner {
     position: relative;
     top: 50px;
     left: 50px;
-}
-
-.overlayEdit .modal-content {
-    position: absolute;
-    height: 100%;
-    width: 100%;
 }
 
 .select2-container.select2-container-multi.select2,
@@ -6157,12 +6128,6 @@ input:focus:-ms-input-placeholder {
 
 .importServiceSelectionContainer .app-item {
     text-align: center;
-}
-
-#composeEmailContainer .modal-body .quickCreateContent,
-#QuickCreate .modal-body .quickCreateContent,
-#create .quickCreateContent {
-    margin-top: 25px;
 }
 
 .settingsgroup-panel .widgetContainer .menuItemLabel .pinUnpinShortCut {

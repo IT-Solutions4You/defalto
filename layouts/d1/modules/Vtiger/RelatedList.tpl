@@ -27,9 +27,9 @@
 				<div data-module="{$MODULE}" class="px-3 pb-3">
 					{assign var=IS_VIEWABLE value=$PARENT_RECORD->isBundleViewable()}
 					<input type="hidden" class="isShowBundles" value="{$IS_VIEWABLE}">
-					<label class="showBundlesInInventory checkbox">
-						<input type="checkbox" {if $IS_VIEWABLE}checked{/if} value="{$IS_VIEWABLE}">
-						<span class="ms-2">{vtranslate('LBL_SHOW_BUNDLE_IN_INVENTORY', $MODULE)}</span>
+					<label class="showBundlesInInventory checkbox form-check">
+						<input type="checkbox" class="form-check-input" {if $IS_VIEWABLE}checked{/if} value="{$IS_VIEWABLE}">
+						<span class="form-check-label">{vtranslate('LBL_SHOW_BUNDLE_IN_INVENTORY', $MODULE)}</span>
 					</label>
 				</div>
 			{/if}
@@ -180,7 +180,7 @@
 													{else}
 														{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
 													{/if}
-													<span {if !empty($RELATED_LIST_VALUE)} class="picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>
+													<span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>
 												{else}
 													{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
 													{* Documents list view special actions "view file" and "download file" *}

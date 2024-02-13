@@ -509,10 +509,11 @@ var Settings_Picklist_Js = {
 	},
 
 	registerPickListValuesSortableEvent : function() {
-        var thisInstance = this;
-		var tbody = jQuery( "tbody",jQuery('#pickListValuesTable'));
+        let self = this,
+			tbody = jQuery('#pickListValuesTable');
+
 		tbody.sortable({
-			'helper' : function(e,ui){
+			helper : function(e,ui){
 				//while dragging helper elements td element will take width as contents width
 				//so we are explicity saying that it has to be same width so that element will not
 				//look like distrubed
@@ -522,10 +523,10 @@ var Settings_Picklist_Js = {
 				})
 				return ui;
 			},
-			'containment' : tbody,
-			'revert' : true,
+			containment : tbody,
+			revert : true,
 			update: function(e, ui ) {
-                thisInstance.saveSequence();
+				self.saveSequence();
 			}
 		});
 	},
@@ -573,24 +574,27 @@ var Settings_Picklist_Js = {
 			jQuery('#rolesList').trigger('change');
 		});
 	},
-    
+
     getPickListTemplate : function(value, color) {
-        var dragImagePath = jQuery('#dragImagePath').val();
-        var contrast = app.helper.getColorContrast(color);
-        var textColor = (contrast === 'dark') ? 'white' : 'black';
-        var actions = jQuery('.picklistActionsTemplate').html();
-        var actionsTemplate = '<span class="pull-right picklistActions">' + actions + '</span>';
-        var template = '<tr class="pickListValue cursorPointer">'+
-                            '<td class="text-truncate fieldPropertyContainer">'+
-                                '<span class="pull-left">' +
-                                    '<img class="alignMiddle" src="' + dragImagePath + '" />&nbsp;&nbsp;' +
-                                    '<span class="picklist-color py-1 px-2 rounded" style="background-color: '+ color + ';color: '+ textColor +';">' + value + '</span>' +
-                                '</span>' +
-                                actionsTemplate +
-                            '</td>'+
-                        '</tr>';
-                    
-        return template;
+        let contrast = app.helper.getColorContrast(color),
+			textColor = (contrast === 'dark') ? 'white' : 'black',
+			actions = jQuery('.picklistActionsTemplate').html();
+
+		return '<tr class="pickListValue border-bottom">' +
+			'<td class="text-truncate fieldPropertyContainer">' +
+				'<div class="row align-items-center">' +
+					'<div class="col-auto">' +
+						'<span class="cursorDrag btn text-secondary">' +
+							'<i class="fa-solid fa-grip-vertical"></i>' +
+						'</span>' +
+					'</div>' +
+					'<div class="col-auto picklistActions">' + actions + '</div>' +
+					'<div class="col">' +
+						'<span class="py-1 px-2 rounded picklist-color" style="background-color: ' + color + ';color: ' + textColor + ';">' + value + '</span>' +
+					'</div>' +
+				'</div>' +
+			'</td>' +
+		'</tr>';
     },
     
     registerColorPickerEvent : function(container) {

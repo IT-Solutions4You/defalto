@@ -125,17 +125,14 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
 
-		$isRecordExists = Vtiger_Util_Helper::checkRecordExistance($relatedParentId);
+        if (Vtiger_Util_Helper::checkRecordExistance($relatedParentId)) {
+            $relatedParentModule = '';
+            $relatedParentId = '';
+        } else {
+            $relatedParentModule = getSalesEntityType($relatedParentId);
+        }
 
-		if($isRecordExists) {
-			$relatedParentModule = '';
-			$relatedParentId = '';
-		} else if($isRecordExists === NULL) {
-			$relatedParentModule = '';
-			$relatedParentId = '';
-		}
-
-		if(!empty($relatedParentModule) && !empty($relatedParentId)) {
+        if(!empty($relatedParentModule) && !empty($relatedParentId)) {
 			$parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
 			$listViewModel = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, $label,$relationId);
 			$searchModuleModel = $listViewModel->getRelatedModuleModel();

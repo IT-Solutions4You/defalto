@@ -1798,33 +1798,51 @@ class CRMEntity {
 	 * @param String Related module name
 	 * @param mixed Integer or Array of related module record number
 	 */
-	function save_related_module($module, $crmid, $with_module, $with_crmid) {
-		global $adb;
-		if (!is_array($with_crmid))
-			$with_crmid = Array($with_crmid);
-		foreach ($with_crmid as $relcrmid) {
+    public function save_related_module($module, $crmid, $with_module, $with_crmid)
+    {
+        global $adb;
 
-			if ($with_module == 'Documents') {
-				$checkpresence = $adb->pquery("SELECT crmid FROM vtiger_senotesrel WHERE crmid = ? AND notesid = ?", Array($crmid, $relcrmid));
-				// Relation already exists? No need to add again
-				if ($checkpresence && $adb->num_rows($checkpresence))
-					continue;
+        if (!is_array($with_crmid)) {
+            $with_crmid = [$with_crmid];
+        }
 
-				$adb->pquery("INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)", array($crmid, $relcrmid));
-			} else {
-				$checkpresence = $adb->pquery("SELECT crmid FROM vtiger_crmentityrel WHERE
-					crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?", Array($crmid, $module, $relcrmid, $with_module));
-				// Relation already exists? No need to add again
-				if ($checkpresence && $adb->num_rows($checkpresence))
-					continue;
+        foreach ($with_crmid as $relcrmid) {
+            if ($with_module == 'Documents') {
+                $checkpresence = $adb->pquery(
+                    'SELECT crmid FROM vtiger_senotesrel WHERE crmid = ? AND notesid = ?',
+                    [$crmid, $relcrmid]
+                );
+                // Relation already exists? No need to add again
+                if ($checkpresence && $adb->num_rows($checkpresence)) {
+                    continue;
+                }
 
-				$adb->pquery("INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)", Array($crmid, $module, $relcrmid, $with_module));
-			}
-		}
-	}
+                $adb->pquery(
+                    'INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)',
+                    [$crmid, $relcrmid]
+                );
+                $this->setTrackLinkedInfo($crmid, $relcrmid);
+            } else {
+                $checkpresence = $adb->pquery(
+                    'SELECT crmid FROM vtiger_crmentityrel WHERE crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?',
+                    [$crmid, $module, $relcrmid, $with_module]
+                );
+                // Relation already exists? No need to add again
+                if ($checkpresence && $adb->num_rows($checkpresence)) {
+                    continue;
+                }
 
-	/**
-	 * Delete the related module record information. Triggered from updateRelations.php
+                $adb->pquery(
+                    'INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)',
+                    [$crmid, $module, $relcrmid, $with_module]
+                );
+                $this->setTrackLinkedInfo($crmid, $relcrmid);
+            }
+        }
+    }
+
+    /**
+     * Delete the related module record information. Triggered from updateRelations.php
 	 * @param String This module name
 	 * @param Integer This module record number
 	 * @param String Related module name
@@ -2967,22 +2985,36 @@ class CRMEntity {
 	/**
 	 * Function to track when a new record is linked to a given record
 	 */
-	function trackLinkedInfo($module, $crmid, $with_module, $with_crmid) {
-		global $current_user;
-		$adb = PearDatabase::getInstance();
-		$currentTime = date('Y-m-d H:i:s');
+    public function trackLinkedInfo($module, $crmid, $with_module, $with_crmid)
+    {
+        // @Note: We should extend this to event handlers
+        if (!vtlib_isModuleActive('ModTracker') || !$this->isTrackLinkedInfo($crmid, $with_crmid)) {
+            return;
+        }
 
-		$adb->pquery('UPDATE vtiger_crmentity SET modifiedtime = ?, modifiedby = ? WHERE crmid = ?', array($currentTime, $current_user->id, $crmid));
+        // Track the time the relation was added
+        require_once 'modules/ModTracker/ModTracker.php';
+        ModTracker::linkRelation($module, $crmid, $with_module, $with_crmid);
 
-		// @Note: We should extend this to event handlers
-		if(vtlib_isModuleActive('ModTracker')) {
-			// Track the time the relation was added
-			require_once 'modules/ModTracker/ModTracker.php';
-			ModTracker::linkRelation($module, $crmid, $with_module, $with_crmid);
-		}
-	}
+        $this->updateModifiedTime($crmid);
+    }
 
-	/**
+    /**
+     * @param int $recordId
+     * @return void
+     */
+    public function updateModifiedTime(int $recordId)
+    {
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $currentTime = date('Y-m-d H:i:s');
+
+        PearDatabase::getInstance()->pquery(
+            'UPDATE vtiger_crmentity SET modifiedtime = ?, modifiedby = ? WHERE crmid = ?',
+            [$currentTime, $currentUser->id, $recordId]
+        );
+    }
+
+    /**
 	 * Function to get sort order
 	 * return string  $sorder    - sortorder string either 'ASC' or 'DESC'
 	 */
@@ -3173,6 +3205,28 @@ class CRMEntity {
 		}
 		return $query;
 	}
+
+    public array $trackLinkedInfoRecords = [];
+
+    /**
+     * @param int $recordId
+     * @param int $relationId
+     * @return void
+     */
+    public function setTrackLinkedInfo(int $recordId, int $relationId): void
+    {
+        $this->trackLinkedInfoRecords[$recordId][$relationId] = $relationId;
+    }
+
+    /**
+     * @param int $recordId
+     * @param int $relationId
+     * @return bool
+     */
+    public function isTrackLinkedInfo(int $recordId, int $relationId): bool
+    {
+        return isset($this->trackLinkedInfoRecords[$recordId][$relationId]);
+    }
 }
 
 class TrackableObject implements ArrayAccess, IteratorAggregate {

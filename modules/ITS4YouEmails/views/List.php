@@ -22,38 +22,6 @@ class ITS4YouEmails_List_View extends Vtiger_List_View
         parent::preProcess($request, $display);
     }
 
-    public function process(Vtiger_Request $request)
-    {
-        if ($request->isEmpty('viewname') && 'Emails' === $request->get('targetModule')) {
-            $this->showEmails($request);
-            return;
-        }
-
-        parent::process($request);
-    }
-
-    public function showEmails(Vtiger_Request $request) {
-        $request->set('module', 'Emails');
-        $viewer = $this->getViewer($request);
-        $moduleName = $request->getModule();
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        $customView = new CustomView($moduleName);
-        $customViewId = $customView->getViewIdByName('All', $moduleName);
-
-        $request->set('viewname', $customViewId);
-        $this->viewName = $customViewId;
-
-        $this->initializeListViewContents($request, $viewer);
-        $this->assignEmailsCustomViews($request,$viewer);
-        $viewer->assign('VIEW', $request->get('view'));
-        $viewer->assign('MODULE', $moduleName);
-        $viewer->assign('QUALIFIED_MODULE', $moduleName);
-        $viewer->assign('MODULE_MODEL', $moduleModel);
-        $viewer->assign('RECORD_ACTIONS', $this->getRecordActionsFromModule($moduleModel));
-        $viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
-        $viewer->view('EmailsListViewContents.tpl', 'ITS4YouEmails');
-    }
-
     public function initializeListViewContents(Vtiger_Request $request, Vtiger_Viewer $viewer) {
         $moduleName = $request->getModule();
         $cvId = $this->viewName;

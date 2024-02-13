@@ -33,67 +33,49 @@
                     {/if}
                     <input type="hidden" name="action" value="SaveAjax">
                     <div class="quickCreateContent">
-                        <table class="massEditTable table no-border">
-                            <tr>
-                                {assign var=COUNTER value=0}
+                        <div class="massEditTable">
+                            <div class="row">
                                 {foreach key=FIELD_NAME item=FIELD_MODEL from=$RECORD_STRUCTURE name=blockfields}
-                                    {assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
-                                    {assign var="referenceList" value=$FIELD_MODEL->getReferenceList()}
-                                    {assign var="referenceListCount" value=php7_count($referenceList)}
-                                    {if $FIELD_MODEL->get('uitype') eq "19"}
-                                        {if $COUNTER eq '1'}
-                                            <td></td><td></td></tr><tr>
-                                            {assign var=COUNTER value=0}
-                                        {/if}
-                                    {/if}
-                                    {if $COUNTER eq 2}
-                                    </tr><tr>
-                                        {assign var=COUNTER value=1}
+                                    {if $FIELD_MODEL->isTableCustomWidth()}
+                                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
                                     {else}
-                                        {assign var=COUNTER value=$COUNTER+1}
-                                    {/if}
-                                    <td class='fieldLabel col-lg-2'>
-                                        {if $isReferenceField neq "reference"}<label class="muted">{/if}
-                                            {if $isReferenceField eq "reference"}
-                                                {if $referenceListCount > 1}
-                                                    {assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
-                                                    {assign var="REFERENCED_MODULE_STRUCT" value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
-                                                    {if !empty($REFERENCED_MODULE_STRUCT)}
-                                                        {assign var="REFERENCED_MODULE_NAME" value=$REFERENCED_MODULE_STRUCT->get('name')}
-                                                    {/if}
-                                                    <select class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
-                                                        {foreach key=index item=value from=$referenceList}
-                                                            <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
-                                                        {/foreach}
-                                                    </select>
-                                                {else}
-                                                    <label class="muted">{vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}</label>
-                                                {/if}
-                                            {else if $FIELD_MODEL->get('uitype') eq '83'}
-												{include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE) COUNTER=$COUNTER MODULE=$MODULE PULL_RIGHT=true}
-												{if $TAXCLASS_DETAILS}
-                                                    {assign var='taxCount' value=php7_count($TAXCLASS_DETAILS)%2}
-													{if $taxCount eq 0}
-                                                        {if $COUNTER eq 2}
-                                                            {assign var=COUNTER value=1}
+                                        <div class="py-2 {if $FIELD_MODEL->isTableFullWidth()}col-lg-12{else}col-lg-6{/if}">
+                                            {assign var="isReferenceField" value=$FIELD_MODEL->getFieldDataType()}
+                                            {assign var="referenceList" value=$FIELD_MODEL->getReferenceList()}
+                                            {assign var="referenceListCount" value=php7_count($referenceList)}
+                                            <div class="row">
+                                                <div class="fieldLabel col-sm-4">
+                                                    {if $isReferenceField eq "reference"}
+                                                        {if $referenceListCount > 1}
+                                                            {assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
+                                                            {assign var="REFERENCED_MODULE_STRUCT" value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
+                                                            {if !empty($REFERENCED_MODULE_STRUCT)}
+                                                                {assign var="REFERENCED_MODULE_NAME" value=$REFERENCED_MODULE_STRUCT->get('name')}
+                                                            {/if}
+                                                            <select class="select2 referenceModulesList {if $FIELD_MODEL->isMandatory() eq true}reference-mandatory{/if}">
+                                                                {foreach key=index item=value from=$referenceList}
+                                                                    <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
+                                                                {/foreach}
+                                                            </select>
                                                         {else}
-                                                            {assign var=COUNTER value=2}
+                                                            <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE)}</span>
                                                         {/if}
-													{/if}
-												{/if}
-                                            {else}
-                                                {vtranslate($FIELD_MODEL->get('label'), $MODULE)}&nbsp;{if $FIELD_MODEL->isMandatory() eq true} <span class="redColor">*</span> {/if}
-                                            {/if}
-                                            {if $isReferenceField neq "reference"}</label>{/if}
-                                    </td>
-                                    {if $FIELD_MODEL->get('uitype') neq '83'}
-                                        <td class="fieldValue col-lg-4" {if $FIELD_MODEL->get('uitype') eq '19'} colspan="3" {assign var=COUNTER value=$COUNTER+1} {/if}>
-                                            {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
-                                        </td>
+                                                    {else}
+                                                        <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE)}</span>
+                                                    {/if}
+                                                    {if $FIELD_MODEL->isMandatory() eq true}
+                                                        <span class="text-danger ms-2">*</span>
+                                                    {/if}
+                                                </div>
+                                                <div class="fieldValue {if $FIELD_MODEL->isTableFullWidth()}col-sm-10{else}col-sm-8{/if}">
+                                                    {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
+                                                </div>
+                                            </div>
+                                        </div>
                                     {/if}
                                 {/foreach}
-                            </tr>
-                        </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -4,6 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
+/** @var Vtiger_EmailsRelatedModule_Popup_Js */
 Vtiger_Popup_Js("Vtiger_EmailsRelatedModule_Popup_Js",{},{
 	
 	getListViewEntries: function(e){

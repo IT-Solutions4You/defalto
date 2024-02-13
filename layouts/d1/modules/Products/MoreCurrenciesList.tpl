@@ -38,12 +38,14 @@
 										{assign var=base_cur_check value=""}
 									{/if}
 									<td>
-										<div class="row col-lg-12">
-											<div class="col-lg-10 currencyInfo"  style = "padding-left:5px">
-												<span class="pull-left currencyName" >{$price.currencylabel|@getTranslatedCurrencyString} (<span class='currencySymbol'>{$price.currencysymbol}</span>)</span>
+										<div class="row">
+											<div class="col-lg-10 currencyInfo text-start">
+												<span class="currencyName" >{$price.currencylabel|@getTranslatedCurrencyString} (<span class='currencySymbol'>{$price.currencysymbol}</span>)</span>
 											</div>
-											<div class="col-lg-2">
-												<span><input type="checkbox" name="cur_{$price.curid}_check" id="cur_{$price.curid}_check" class="pull-right enableCurrency" {$check_value}></span>
+											<div class="col-lg-2 text-end">
+												<span>
+													<input type="checkbox" name="cur_{$price.curid}_check" id="cur_{$price.curid}_check" class="form-check-input enableCurrency" {$check_value}>
+												</span>
 											</div>
 										</div>
 									</td>

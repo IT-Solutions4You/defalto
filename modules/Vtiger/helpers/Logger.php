@@ -75,6 +75,12 @@ class Logger
     {
         // Logging debug not implemented
     }
+
+    // Placeholder method for logging debug messages
+    public function fatal($message)
+    {
+        // Logging debug not implemented
+    }
 }
 
 // Define a custom log formatter

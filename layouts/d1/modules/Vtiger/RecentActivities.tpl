@@ -7,7 +7,7 @@
 {strip}
     {assign var=IMAGE_SIZE value='style="width: 3.5rem; height: 3.5rem;"'}
     <div class="recentActivitiesContainer container-fluid" id="updates">
-        <div class="history rounded bg-body {if !$IS_AJAX}mt-3 py-3{/if}">
+        <div class="history rounded bg-body mt-3 py-3">
             <div class="history-data">
                 <input type="hidden" id="updatesCurrentPage" value="{$PAGING_MODEL->get('page')}"/>
                 {if !empty($RECENT_ACTIVITIES)}

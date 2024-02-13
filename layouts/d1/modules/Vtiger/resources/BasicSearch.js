@@ -4,8 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
-
+/** @var Vtiger_BasicSearch_Js */
 Vtiger.Class('Vtiger_BasicSearch_Js',{},{
 	//stores the module that need to be searched
 	searchModule : false,

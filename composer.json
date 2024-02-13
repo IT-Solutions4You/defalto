@@ -25,6 +25,7 @@
     "michelf/php-markdown": "1.*",
     "monolog/monolog": "^3.5",
     "mpdf/mpdf": "*",
+    "mpdf/qrcode": "*",
     "myclabs/deep-copy": "^1.7",
     "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
     "php-http/message-factory": "^1.0",

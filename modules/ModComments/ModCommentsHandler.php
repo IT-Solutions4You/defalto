@@ -38,7 +38,8 @@ class ModCommentsHandler extends VTEventHandler {
 				}
 				if($data->isNew()) {
 					// we need to update related to modified and last modified by, whenever a comment is added
-					$focus->trackLinkedInfo($moduleName, $relatedToId, $data->getModuleName(), $data->getId());
+                    $focus->setTrackLinkedInfo($relatedToId, $data->getId());
+                    $focus->trackLinkedInfo($moduleName, $relatedToId, $data->getModuleName(), $data->getId());
 				}
 
 				//if its Internal comment, workflow should not trigger

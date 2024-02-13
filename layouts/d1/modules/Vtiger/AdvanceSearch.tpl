@@ -5,7 +5,7 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div id="searchResults-container" class="advanceFilterContainer">
+    <div id="searchResults-container" class="advanceFilterContainer h-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" data-result="{vtranslate('LBL_SEARCH_RESULTS', $MODULE)}" data-modify="{vtranslate('LBL_SAVE_MODIFY_FILTER', $MODULE)}">
@@ -13,9 +13,9 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div id="advanceSearchHolder" class="mb-4">
-                    <div id="advanceSearchContainer">
+            <div class="modal-body overflow-auto bg-body-secondary">
+                <div id="advanceSearchHolder">
+                    <div id="advanceSearchContainer" class="p-3 rounded bg-body mb-4">
                         <div class="pb-2">{vtranslate('LBL_SEARCH_IN',$MODULE)}</div>
                         <div class="searchModuleComponent">
                             <select class="select2 col-lg-3" id="searchModuleList" data-placeholder="{vtranslate('LBL_SELECT_MODULE')}">
@@ -38,24 +38,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="searchResults mt-4 pt-3 bg-light rounded">
+                <div class="searchResults">
                 </div>
             </div>
-            <div class="modal-overlay-footer clearfix p-0 border-0">
-                <div class="clearfix">
-                    <div class="actions text-center d-flex row py-2">
+            <div class="modal-footer">
+                <div class="container-fluid">
+                    <div class="actions row">
                         <div class="col-lg-6 text-end">
                             <button class="btn btn-primary active" id="advanceSearchButton" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} type="submit">{vtranslate('LBL_SEARCH', $MODULE)}</button>
                         </div>
-                        <div class="col-lg-6 text-start">
-                            <div class="row">
-                                {if $SAVE_FILTER_PERMITTED}
-                                    <button class="btn btn-primary active col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
-                                    <input class="hide col-4 ms-2" type="text" value="" name="viewname"/>
-                                    <button class="btn btn-primary active hide col-auto ms-2" {if $SOURCE_MODULE eq 'Home'} disabled="" {/if} id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
-                                {/if}
+                        {if $SAVE_FILTER_PERMITTED}
+                            <div class="col-auto">
+                                <div class="input-group">
+                                    <button class="btn btn-primary active" {if $SOURCE_MODULE eq 'Home'}disabled="disabled"{/if} id="advanceIntiateSave">{vtranslate('LBL_SAVE_AS_FILTER', $MODULE)}</button>
+                                </div>
+                                <div class="input-group">
+                                    <input class="hide form-control" type="text" value="" name="viewname"/>
+                                    <button class="btn btn-primary active hide" {if $SOURCE_MODULE eq 'Home'}disabled="disabled"{/if} id="advanceSave">{vtranslate('LBL_SAVE', $MODULE)}</button>
+                                </div>
                             </div>
-                        </div>
+                        {/if}
                     </div>
                 </div>
             </div>

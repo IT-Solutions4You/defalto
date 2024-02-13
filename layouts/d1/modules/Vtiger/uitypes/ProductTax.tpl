@@ -20,11 +20,11 @@
                 <div class="col-sm-4 fieldLabel">
                     <div class="d-flex">
                         <div class="taxLabel alignBottom">
-                            <span>{vtranslate($tax.taxlabel, $MODULE)}</span>
-                            <span class="ps-1">(%)</span>
-                        </div>
-                        <div class="ps-2">
-                            <input type="checkbox" name="{$TAX_CHECK_NAME}" id="{$TAX_CHECK_NAME}" class="taxes form-check" data-tax-name={$TAX_TAX_NAME} {$check_value}>
+                            <label>
+                                <span>{vtranslate($tax.taxlabel, $MODULE)}</span>
+                                <span class="ms-1">(%)</span>
+                                <input type="checkbox" name="{$TAX_CHECK_NAME}" id="{$TAX_CHECK_NAME}" class="taxes form-check-input ms-2" data-tax-name={$TAX_TAX_NAME} {$check_value}>
+                            </label>
                         </div>
                     </div>
                 </div>
