@@ -142,7 +142,7 @@ class Vtiger_Util_Helper {
         global $adb;
         $result = $adb->pquery(
             'SELECT deleted FROM vtiger_crmentity WHERE crmid=?',
-            array($recordId)
+            [$recordId]
         );
 
         if (!$adb->num_rows($result)) {
@@ -162,8 +162,8 @@ class Vtiger_Util_Helper {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($date . ' ' . $time);
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours .':'. $minutes;
 		if ($currentUser->get('hour_format') === '12') {
@@ -271,8 +271,8 @@ class Vtiger_Util_Helper {
 			$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 		}
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours .':'. $minutes;
 		if ($currentUser->get('hour_format') === '12') {
@@ -595,7 +595,7 @@ class Vtiger_Util_Helper {
 				   $fieldName = $fieldSearchInfo[0];
 				   preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 					if (php7_count($matches) != 0) {
-						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+						[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 						$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
 						$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
 						$fieldInfo->set('reference_fieldname', $fieldName);
@@ -796,8 +796,8 @@ class Vtiger_Util_Helper {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours.':'.$minutes;
 		if ($currentUser->get('hour_format') === '12') {
