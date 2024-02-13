@@ -131,11 +131,12 @@ class Vtiger_Util_Helper {
 		return false;
 	}
 
-	/**
-	 * Function Checks the existence of the record
-	 * @param <type> $recordId - module recordId
-	 * returns 1 if record exists else 0
-	 */
+    /**
+     * Function Checks the existence of the record
+     * @param int $recordId - module recordId
+     * returns 0 if record exists else 1
+     * @throws Exception
+     */
     public static function checkRecordExistance($recordId)
     {
         global $adb;
