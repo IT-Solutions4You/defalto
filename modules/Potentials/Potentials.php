@@ -780,21 +780,21 @@ class Potentials extends CRMEntity {
 		}
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = PearDatabase::getInstance();
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Contacts') {
                 //When we select contact from potential related list
-                $adb->pquery('INSERT INTO vtiger_contpotentialrel VALUES (?,?)', array($with_crmid, $crmid));
+                $adb->pquery('INSERT INTO vtiger_contpotentialrel VALUES (?,?)', [$with_crmid, $crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Products') {
                 //when we select product from potential related list
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($crmid, $with_crmid, 'Potentials', 1));
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', [$crmid, $with_crmid, 'Potentials', 1]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

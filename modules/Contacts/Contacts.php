@@ -1564,25 +1564,25 @@ function get_contactsforol($user_name)
         return $contents;
     }
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = PearDatabase::getInstance();
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Products') {
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($crmid, $with_crmid, 'Contacts', 1));
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', [$crmid, $with_crmid, 'Contacts', 1]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Campaigns') {
-                $adb->pquery('INSERT INTO vtiger_campaigncontrel VALUES (?,?,1)', array($with_crmid, $crmid));
+                $adb->pquery('INSERT INTO vtiger_campaigncontrel VALUES (?,?,1)', [$with_crmid, $crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Potentials') {
-                $adb->pquery('INSERT INTO vtiger_contpotentialrel VALUES (?,?)', array($crmid, $with_crmid));
+                $adb->pquery('INSERT INTO vtiger_contpotentialrel VALUES (?,?)', [$crmid, $with_crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Vendors') {
-                $adb->pquery('INSERT INTO vtiger_vendorcontactrel VALUES (?,?)', array($with_crmid, $crmid));
+                $adb->pquery('INSERT INTO vtiger_vendorcontactrel VALUES (?,?)', [$with_crmid, $crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

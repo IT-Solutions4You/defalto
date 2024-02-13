@@ -526,20 +526,20 @@ class Vendors extends CRMEntity {
 		parent::unlinkDependencies($module, $id);
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = PearDatabase::getInstance();
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
 
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Contacts') {
-                $adb->pquery('INSERT INTO vtiger_vendorcontactrel VALUES (?,?)', array($crmid, $with_crmid));
+                $adb->pquery('INSERT INTO vtiger_vendorcontactrel VALUES (?,?)', [$crmid, $with_crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Products') {
-                $adb->pquery('UPDATE vtiger_products SET vendor_id=? WHERE productid=?', array($crmid, $with_crmid));
+                $adb->pquery('UPDATE vtiger_products SET vendor_id=? WHERE productid=?', [$crmid, $with_crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

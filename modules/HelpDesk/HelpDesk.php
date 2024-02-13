@@ -133,7 +133,7 @@ class HelpDesk extends CRMEntity {
 		}
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmid, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmid, $otherParams = [])
     {
         parent::save_related_module($module, $crmid, $with_module, $with_crmid);
 

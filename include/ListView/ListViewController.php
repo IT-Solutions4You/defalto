@@ -393,7 +393,7 @@ class ListViewController {
 						} else {
                             if (!empty($value)) {
                                 $value = CurrencyField::convertToUserFormat($value, null, true);
-                                $currencyId = getCurrencyIdForInventoryRecord($recordId, $module);
+                                $currencyId = getCurrencyIdForInventoryRecord((int)$recordId, (string)$module);
 
                                 if (!$currencyId) {
                                     $currencyId = $this->user->currency_id;

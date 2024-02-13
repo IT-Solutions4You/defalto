@@ -1615,16 +1615,16 @@ function relateEntities($focus, $sourceModule, $sourceRecordId, $destinationModu
 {
     $db = PearDatabase::getInstance();
     $em = new VTEventsManager($db);
-    $data = array(
+    $data = [
         'sourceModule' => $sourceModule,
         'sourceRecordId' => $sourceRecordId,
         'destinationModule' => $destinationModule,
         'destinationRecordIds' => $destinationRecordIds,
-    );
+    ];
     $em->triggerEvent("vtiger.entity.beforerelate", $data);
 
     if (!is_array($destinationRecordIds)) {
-        $destinationRecordIds = array($destinationRecordIds);
+        $destinationRecordIds = [$destinationRecordIds];
     }
 
     foreach ($destinationRecordIds as $destinationRecordId) {

@@ -674,20 +674,20 @@ class Leads extends CRMEntity {
 		return $list_buttons;
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = PearDatabase::getInstance();
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
 
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Products') {
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', array($crmid, $with_crmid, $module, 1));
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', [$crmid, $with_crmid, $module, 1]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Campaigns') {
-                $adb->pquery('insert into  vtiger_campaignleadrel values(?,?,1)', array($with_crmid, $crmid));
+                $adb->pquery('insert into  vtiger_campaignleadrel values(?,?,1)', [$with_crmid, $crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

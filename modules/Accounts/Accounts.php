@@ -1429,26 +1429,26 @@ class Accounts extends CRMEntity {
 		}
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = $this->db;
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
 
         foreach ($with_crmids as $with_crmid) {
             if ($with_module == 'Products') {
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($crmid, $with_crmid, $module, 1));
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', [$crmid, $with_crmid, $module, 1]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } elseif ($with_module == 'Campaigns') {
-                $checkResult = $adb->pquery('SELECT 1 FROM vtiger_campaignaccountrel WHERE campaignid = ? AND accountid = ?', array($with_crmid, $crmid));
+                $checkResult = $adb->pquery('SELECT 1 FROM vtiger_campaignaccountrel WHERE campaignid = ? AND accountid = ?', [$with_crmid, $crmid]);
 
-                if ($checkResult && $adb->num_rows($checkResult) > 0) {
+                if ($checkResult && $adb->num_rows($checkResult)) {
                     continue;
                 }
 
-                $adb->pquery('INSERT INTO vtiger_campaignaccountrel VALUES (?,?,1)', array($with_crmid, $crmid));
+                $adb->pquery('INSERT INTO vtiger_campaignaccountrel VALUES (?,?,1)', [$with_crmid, $crmid]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

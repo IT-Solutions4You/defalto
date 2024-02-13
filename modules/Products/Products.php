@@ -1353,17 +1353,17 @@ class Products extends CRMEntity {
 		}
 	}
 
-    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array())
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
     {
         $adb = PearDatabase::getInstance();
-        $qtysList = array();
+        $qtysList = [];
 
         if ($otherParams && is_array($otherParams['quantities'])) {
             $qtysList = $otherParams['quantities'];
         }
 
         if (!is_array($with_crmids)) {
-            $with_crmids = array($with_crmids);
+            $with_crmids = [$with_crmids];
         }
 
         foreach ($with_crmids as $with_crmid) {
@@ -1377,14 +1377,14 @@ class Products extends CRMEntity {
                 $qty = 1;
             }
 
-            if (in_array($with_module, array('Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'))) {
-                $query = $adb->pquery('SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', array($crmid, $with_crmid));
+            if (in_array($with_module, ['Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'])) {
+                $query = $adb->pquery('SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$crmid, $with_crmid]);
 
                 if ($adb->num_rows($query)) {
                     continue;
                 }
 
-                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', array($with_crmid, $crmid, $with_module, $qty));
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES (?,?,?,?)', [$with_crmid, $crmid, $with_module, $qty]);
                 $this->setTrackLinkedInfo($crmid, $with_crmid);
             } else {
                 parent::save_related_module($module, $crmid, $with_module, $with_crmid);

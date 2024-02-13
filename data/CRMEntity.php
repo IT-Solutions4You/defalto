@@ -1801,14 +1801,16 @@ class CRMEntity {
     public function save_related_module($module, $crmid, $with_module, $with_crmid)
     {
         global $adb;
+
         if (!is_array($with_crmid)) {
-            $with_crmid = array($with_crmid);
+            $with_crmid = [$with_crmid];
         }
+
         foreach ($with_crmid as $relcrmid) {
             if ($with_module == 'Documents') {
                 $checkpresence = $adb->pquery(
                     'SELECT crmid FROM vtiger_senotesrel WHERE crmid = ? AND notesid = ?',
-                    array($crmid, $relcrmid)
+                    [$crmid, $relcrmid]
                 );
                 // Relation already exists? No need to add again
                 if ($checkpresence && $adb->num_rows($checkpresence)) {
@@ -1817,13 +1819,13 @@ class CRMEntity {
 
                 $adb->pquery(
                     'INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?,?)',
-                    array($crmid, $relcrmid)
+                    [$crmid, $relcrmid]
                 );
                 $this->setTrackLinkedInfo($crmid, $relcrmid);
             } else {
                 $checkpresence = $adb->pquery(
                     'SELECT crmid FROM vtiger_crmentityrel WHERE crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?',
-                    array($crmid, $module, $relcrmid, $with_module)
+                    [$crmid, $module, $relcrmid, $with_module]
                 );
                 // Relation already exists? No need to add again
                 if ($checkpresence && $adb->num_rows($checkpresence)) {
@@ -1832,7 +1834,7 @@ class CRMEntity {
 
                 $adb->pquery(
                     'INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)',
-                    array($crmid, $module, $relcrmid, $with_module)
+                    [$crmid, $module, $relcrmid, $with_module]
                 );
                 $this->setTrackLinkedInfo($crmid, $relcrmid);
             }
@@ -1840,7 +1842,7 @@ class CRMEntity {
     }
 
     /**
-	 * Delete the related module record information. Triggered from updateRelations.php
+     * Delete the related module record information. Triggered from updateRelations.php
 	 * @param String This module name
 	 * @param Integer This module record number
 	 * @param String Related module name
@@ -2997,6 +2999,10 @@ class CRMEntity {
         $this->updateModifiedTime($crmid);
     }
 
+    /**
+     * @param int $recordId
+     * @return void
+     */
     public function updateModifiedTime(int $recordId)
     {
         $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -3004,7 +3010,7 @@ class CRMEntity {
 
         PearDatabase::getInstance()->pquery(
             'UPDATE vtiger_crmentity SET modifiedtime = ?, modifiedby = ? WHERE crmid = ?',
-            array($currentTime, $currentUser->id, $recordId)
+            [$currentTime, $currentUser->id, $recordId]
         );
     }
 
