@@ -360,10 +360,7 @@ class VTJsonCondition {
 				}
 				return false;
 			case "is not empty":
-				if(empty($fieldValue)) {
-					return false;
-				}
-				return true;
+				return !(empty($fieldValue) && $fieldValue != 0);
 			case "before":
 				if(empty($fieldValue)) {
 					return false;
