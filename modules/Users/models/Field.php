@@ -62,12 +62,11 @@ class Users_Field_Model extends Vtiger_Field_Model {
 	 * Function to check whether field is ajax editable'
 	 * @return <Boolean>
 	 */
-	public function isAjaxEditable() {
-		if(!$this->isEditable() || $this->get('uitype') == 105 || $this->get('uitype') == 106 || $this->get('uitype') == 98 || $this->get('uitype') == 101) {
-			return false;
-		}
-		return true;
-	}
+    public function isAjaxEditable()
+    {
+        return !(!$this->isEditable() || $this->get('uitype') == 105 || $this->get('uitype') == 106 || $this->get('uitype') == 98 || $this->get('uitype') == 101
+            || ($this->get('uitype') == 21 && $this->getName() == 'signature'));
+    }
 
 	/**
 	 * Function to get all the available picklist values for the current field
