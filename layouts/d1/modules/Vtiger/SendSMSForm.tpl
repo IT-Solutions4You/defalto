@@ -45,9 +45,9 @@
                     </div>
                     <br>        
                     <div>
-                        <span id='phoneFormatWarning'> 
-                            <i rel="popover" data-placement="right" id="phoneFormatWarningPop" class="glyphicon glyphicon-info-sign" style="padding-right : 5px; padding-left : 5px" data-original-title="{vtranslate('LBL_WARNING',$MODULE)}" data-trigger="hover" data-content="{vtranslate('LBL_PHONEFORMAT_WARNING_CONTENT',$MODULE)}"></i>
-                            {vtranslate('LBL_PHONE_FORMAT_WARNING', $MODULE)}
+                        <span id="phoneFormatWarning">
+                            <i rel="popover" data-placement="right" id="phoneFormatWarningPop" class="bi bi-info" data-original-title="{vtranslate('LBL_WARNING',$MODULE)}" data-trigger="hover" data-content="{vtranslate('LBL_PHONEFORMAT_WARNING_CONTENT',$MODULE)}"></i>
+                            <span class="ms-2">{vtranslate('LBL_PHONE_FORMAT_WARNING', $MODULE)}</span>
                         </span>
                     </div>
                 </div>
