@@ -42,9 +42,10 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 					$cid = $att['cid'];
 					$attch_name = Vtiger_MailRecord::__mime_decode($att['filename']);
 					$id = $mail->muid();
-					$src = "index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=$id&_atname=".urlencode($attch_name);
-					$body = preg_replace('/cid:'.$cid.'/', $src, $body);
-					$inline_cid[$attch_name] = $cid;
+					$attId = $att['atid'];
+					$src = 'index.php?module=MailManager&view=Index&_operation=mail&_operationarg=attachment_dld&_muid=' . $id . '&_atid=' . $attId . '&_atname=' . urlencode($attch_name);
+					$body = preg_replace('/cid:' . $cid . '/', $src, $body);
+					$inline_cid[$attId] = $cid;
 				}
 			}
 			$viewer->assign('INLINE_ATT', $inline_cid);

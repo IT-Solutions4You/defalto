@@ -276,7 +276,7 @@ class MailManager_Message_Model extends Vtiger_MailRecord  {
 						if(file_exists($saved_filename)) $fileContent = @fread(fopen($saved_filename, "r"), filesize($saved_filename));
 					}
 					if(!empty($atResultRow['cid'])) {
-						$this->_inline_attachments[] = array('filename'=>$atResultRow['aname'], 'cid'=>$atResultRow['cid']);
+						$this->_inline_attachments[] = ['filename' => $atResultRow['aname'], 'cid' => $atResultRow['cid'], 'atid' => $atResultRow['attachid']];
 					}
 					$filePath = $atResultRow['path'].$atResultRow['attachid'].'_'.sanitizeUploadFileName($atResultRow['aname'], vglobal('upload_badext'));
 					$fileSize = $this->convertFileSize(filesize($filePath));
