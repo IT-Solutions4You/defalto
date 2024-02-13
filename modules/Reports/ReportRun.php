@@ -233,7 +233,7 @@ class ReportRunQueryPlanner {
 			foreach ($columnConditions['columns'] as $j => $condition) {
 				$columnName = $condition['columnname'];
 				$columnParts = explode(':', $columnName);
-				list($moduleName, $fieldLabel) = explode('_', $columnParts[2], 2);
+				[$moduleName, $fieldLabel] = explode('_', $columnParts[2], 2);
 				$fieldInfo = getFieldByReportLabel($moduleName, $columnParts[3], 'name');
 				if(!empty($fieldInfo)) {
 					$fieldInstance = WebserviceField::fromArray($db, $fieldInfo);
@@ -376,8 +376,8 @@ class ReportRun extends CRMEntity {
 		while ($columnslistrow = $adb->fetch_array($result)) {
 			$fieldname = "";
 			$fieldcolname = $columnslistrow["columnname"];
-			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $fieldcolname);
-			list($module, $field) = explode('_', $module_field, 2);
+			[$tablename, $colname, $module_field, $fieldname, $single] = explode(':', $fieldcolname);
+			[$module, $field] = explode('_', $module_field, 2);
             $selectedModuleFields[$module][] = $fieldname;
 			$inventory_fields = array('serviceid');
 			$inventory_modules = getInventoryModules();
@@ -485,7 +485,7 @@ class ReportRun extends CRMEntity {
 		global $adb;
 		$header_label = $selectedfields[2] = addslashes($selectedfields[2]); // Header label to be displayed in the reports table
 
-		list($module, $field) = explode('_', $selectedfields[2]);
+		[$module, $field] = explode('_', $selectedfields[2]);
 		$concatSql = getSqlForNameInDisplayFormat(array('first_name' => $selectedfields[0] . ".first_name", 'last_name' => $selectedfields[0] . ".last_name"), 'Users');
 		$emailTableName = "vtiger_activity";
 		if ($module != $this->primarymodule) {
@@ -736,7 +736,7 @@ class ReportRun extends CRMEntity {
 		$columnName = $selectedfields[1];
 		$moduleFieldLabel = $selectedfields[2];
 		$fieldName = $selectedfields[3];
-		list($moduleName, $fieldLabel) = explode('_', $moduleFieldLabel, 2);
+		[$moduleName, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
 		$fieldInfo = getFieldByReportLabel($moduleName, $fieldLabel);
 
 		if ($moduleName == 'ModComments' && $fieldName == 'creator') {
@@ -1030,7 +1030,7 @@ class ReportRun extends CRMEntity {
 
 					$selectedFields = explode(':', $fieldcolname);
 					$moduleFieldLabel = $selectedFields[2];
-					list($moduleName, $fieldLabel) = explode('_', $moduleFieldLabel, 2);
+					[$moduleName, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
 					$emailTableName = '';
 					if ($moduleName == "Emails" && $moduleName != $this->primarymodule && $selectedFields[0] == "vtiger_activity") {
 						$emailTableName = "vtiger_activityEmails";
@@ -1045,11 +1045,11 @@ class ReportRun extends CRMEntity {
 								}
 
 								if ($comparator != 'custom') {
-									list($startDate, $endDate) = $this->getStandarFiltersStartAndEndDate($comparator);
+									[$startDate, $endDate] = $this->getStandarFiltersStartAndEndDate($comparator);
 								} else {
-									list($startDateTime, $endDateTime) = explode(',', $value);
-									list($startDate, $startTime) = explode(' ', $startDateTime);
-									list($endDate, $endTime) = explode(' ', $endDateTime);
+									[$startDateTime, $endDateTime] = explode(',', $value);
+									[$startDate, $startTime] = explode(' ', $startDateTime);
+									[$endDate, $endTime] = explode(' ', $endDateTime);
 								}
 
 								$type = $selectedFields[4];
@@ -1197,7 +1197,7 @@ class ReportRun extends CRMEntity {
 
 						$selectedfields = explode(":", $fieldcolname);
 						$moduleFieldLabel = $selectedfields[2];
-						list($moduleName, $fieldLabel) = explode('_', $moduleFieldLabel, 2);
+						[$moduleName, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
 						$fieldInfo = getFieldByReportLabel($moduleName, $selectedfields[3], 'name');
 						$concatSql = getSqlForNameInDisplayFormat(array('first_name' => $selectedfields[0] . ".first_name", 'last_name' => $selectedfields[0] . ".last_name"), 'Users');
 						// Added to handle the crmentity table name for Primary module
@@ -1372,18 +1372,25 @@ class ReportRun extends CRMEntity {
                                                 else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, trim($value), $datatype);
 							}
 						} else if ($comparator == 'ny') {
-							if ($fieldInfo['uitype'] == '10' || isReferenceUIType($fieldInfo['uitype']))
-								$fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL AND " . $selectedfields[0] . "." . $selectedfields[1] . " != '' AND " . $selectedfields[0] . "." . $selectedfields[1] . "  != '0')";
-							else
-								$fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL AND " . $selectedfields[0] . "." . $selectedfields[1] . " != '')";
+                            if ($fieldInfo['uitype'] == '10' || isReferenceUIType($fieldInfo['uitype'])) {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL AND " . $selectedfields[0] . "." . $selectedfields[1] . " != '' AND " . $selectedfields[0] . "." . $selectedfields[1] . "  != '0')";
+                            } elseif (($fieldInfo['uitype'] == '23' || $fieldInfo['uitype'] == '5' || $fieldInfo['uitype'] == '70' || $fieldInfo['uitype'] == '55')) {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL)";
+                            } else {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL AND " . $selectedfields[0] . "." . $selectedfields[1] . " != '')";
+                            }
 						}elseif ($comparator == 'y' || ($comparator == 'e' && (trim($value) == "NULL" || trim($value) == ''))) {
 							if ($selectedfields[0] == 'vtiger_inventoryproductrel') {
 								$selectedfields[0] = 'vtiger_inventoryproductreltmp' . $moduleName;
 							}
-							if ($fieldInfo['uitype'] == '10' || isReferenceUIType($fieldInfo['uitype']))
-								$fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NULL OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '' OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '0')";
-							else
-								$fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NULL OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '')";
+
+                            if ($fieldInfo['uitype'] == '10' || isReferenceUIType($fieldInfo['uitype'])) {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NULL OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '' OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '0')";
+                            } elseif (($fieldInfo['uitype'] == '23' || $fieldInfo['uitype'] == '5' || $fieldInfo['uitype'] == '70' || $fieldInfo['uitype'] == '55')) {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NULL)";
+                            } else {
+                                $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NULL OR " . $selectedfields[0] . "." . $selectedfields[1] . " = '')";
+                            }
 						} elseif ($selectedfields[0] == 'vtiger_inventoryproductrel') {
 							$selectedfields[0] = $selectedfields[0]. 'tmp';
 							if ($selectedfields[1] == 'productid') {
@@ -1498,10 +1505,10 @@ class ReportRun extends CRMEntity {
 					$selectedfields[0] = "vtiger_crmentity";
 
 				$moduleFieldLabel = $selectedfields[3];
-				list($moduleName, $fieldLabel) = explode('_', $moduleFieldLabel, 2);
+				[$moduleName, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
 				$fieldInfo = getFieldByReportLabel($moduleName, $fieldLabel);
 				$typeOfData = $fieldInfo['typeofdata'];
-				list($type, $typeOtherInfo) = explode('~', $typeOfData, 2);
+				[$type, $typeOtherInfo] = explode('~', $typeOfData, 2);
 
 				if ($datefilter != "custom") {
 					$startenddate = $this->getStandarFiltersStartAndEndDate($datefilter);
@@ -1609,7 +1616,7 @@ class ReportRun extends CRMEntity {
 
 				$moduleFieldLabel = $column_info[2];
 				$fieldName = $column_info[3];
-				list($module, $fieldLabel) = explode('_', $moduleFieldLabel, 2);
+				[$module, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
 				$fieldInfo = getFieldByReportLabel($module, $fieldLabel);
 				$fieldType = null;
 				if (!empty($fieldInfo)) {
@@ -1973,7 +1980,7 @@ class ReportRun extends CRMEntity {
 		$inventoryModules = getInventoryModules();
 		while ($reportsortrow = $adb->fetch_array($result)) {
 			$fieldcolname = $reportsortrow["columnname"];
-			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $fieldcolname);
+			[$tablename, $colname, $module_field, $fieldname, $single] = explode(':', $fieldcolname);
 			$sortorder = $reportsortrow["sortorder"];
 
 			if ($sortorder == "Ascending") {
@@ -1987,11 +1994,11 @@ class ReportRun extends CRMEntity {
 				if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule)
 					$selectedfields[0] = "vtiger_crmentity";
 				if($selectedfields[0] == 'vtiger_inventoryproductrel') {
-					list($moduleName, $field) = explode('_', $selectedfields[2], 2);
+					[$moduleName, $field] = explode('_', $selectedfields[2], 2);
 					$selectedfields[0] = $selectedfields[0].$moduleName;
 				}
 				if($selectedfields[0] == 'vtiger_pricebookproductrel') {
-					list($moduleName, $field) = explode('_', $selectedfields[2], 2);
+					[$moduleName, $field] = explode('_', $selectedfields[2], 2);
 					$selectedfields[0] = $selectedfields[0].'tmp'.$moduleName;
 				}
 
@@ -3103,7 +3110,7 @@ class ReportRun extends CRMEntity {
 				for ($i = 0; $i < $y; $i++) {
 					$field = $adb->field_name($result, $i);
 
-					list($module, $fieldLabel) = explode('_', $field->name, 2);
+					[$module, $fieldLabel] = explode('_', $field->name, 2);
 					$translatedLabel = getTranslatedString($fieldLabel, $module);
 					if ($fieldLabel == $translatedLabel) {
 						$translatedLabel = getTranslatedString(str_replace('_', ' ', $fieldLabel), $module);
@@ -3694,7 +3701,7 @@ class ReportRun extends CRMEntity {
 				$groupslist = $this->getGroupingList($this->reportid);
 				foreach ($groupslist as $reportFieldName => $reportFieldValue) {
 					$nameParts = explode(":", $reportFieldName);
-					list($groupFieldModuleName, $groupFieldName) = explode('_', $nameParts[2], 2);
+					[$groupFieldModuleName, $groupFieldName] = explode('_', $nameParts[2], 2);
 					$groupByFieldNames[] = vtranslate(str_replace('_', ' ', $groupFieldName), $groupFieldModuleName);
 				}
 				if (php7_count($groupByFieldNames) > 0) {
@@ -4026,7 +4033,7 @@ class ReportRun extends CRMEntity {
 		} else {
 			$field_tablename = $fieldlist[0];
 			$field_columnname = $fieldlist[1];
-			list($module, $fieldName) = explode('_', $fieldlist[2], 2);
+			[$module, $fieldName] = explode('_', $fieldlist[2], 2);
 		}
 
 		$field = $field_tablename . "." . $field_columnname;
@@ -4466,7 +4473,7 @@ class ReportRun extends CRMEntity {
 		$num_rows = $adb->num_rows($groupByTimeRes);
 		for ($i = 0; $i < $num_rows; $i++) {
 			$sortColName = $adb->query_result($groupByTimeRes, $i, 'sortcolname');
-			list($tablename, $colname, $module_field, $fieldname, $single) = explode(':', $sortColName);
+			[$tablename, $colname, $module_field, $fieldname, $single] = explode(':', $sortColName);
 			$groupField = $module_field;
 			$groupCriteria = $adb->query_result($groupByTimeRes, $i, 'dategroupbycriteria');
 			if (in_array($groupCriteria, array_keys($this->groupByTimeParent))) {
@@ -4504,8 +4511,8 @@ class ReportRun extends CRMEntity {
 		$inventoryModules = getInventoryModules();
 		if ($adb->num_rows($sortFieldResult) > 0) {
 			$fieldcolname = $adb->query_result($sortFieldResult, 0, 'columnname');
-			list($tablename, $colname, $module_field, $fieldname, $typeOfData) = explode(":", $fieldcolname);
-			list($modulename, $fieldlabel) = explode('_', $module_field, 2);
+			[$tablename, $colname, $module_field, $fieldname, $typeOfData] = explode(":", $fieldcolname);
+			[$modulename, $fieldlabel] = explode('_', $module_field, 2);
 			$groupByField = $module_field;
 			if ($typeOfData == "D") {
 				$groupCriteria = $adb->query_result($sortFieldResult, 0, 'dategroupbycriteria');
