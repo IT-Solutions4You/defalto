@@ -29,7 +29,9 @@ class Potentials_SaveAjax_Action extends Vtiger_SaveAjax_Action {
 			$focus = CRMEntity::getInstance($sourceModule);
 			$destinationModule = $request->get('module');
 			$destinationRecordId = $this->savedRecordId;
-			$focus->trackLinkedInfo($sourceModule, $sourceRecordId, $destinationModule, $destinationRecordId);
+
+            $focus->setTrackLinkedInfo((int)$sourceRecordId, (int)$destinationRecordId);
+            $focus->trackLinkedInfo($sourceModule, $sourceRecordId, $destinationModule, $destinationRecordId);
 		}
 	}
 }

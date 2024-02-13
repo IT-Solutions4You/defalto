@@ -846,9 +846,8 @@ class PDFMaker_PDFContent_Model extends PDFMaker_PDFContentUtils_Model
                             $total_vatsum += $vatsum;
                             $Vat_Block[$tax_name . '-' . $tax_value]['vat'] += $vatsum;
                             $Vat_Block[$tax_name . '-' . $tax_value]['value'] = $tax_value;
-                            array_push($Tax_Values, $tax_value);
-                            array_push($Total_Tax_Values, $tax_value);
-                            array_push($VatPercent, $this->formatNumberToPDF($tax_value));
+                            $Tax_Values[] = $tax_value;
+                            $VatPercent[] = $this->formatNumberToPDF($tax_value);
                         }
                     }
 

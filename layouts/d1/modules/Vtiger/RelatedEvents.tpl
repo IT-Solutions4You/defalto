@@ -17,67 +17,62 @@
                 {assign var=DELETE_PERMITTED value=isPermitted($ACTIVITIES_MODULE_NAME, 'Delete', $ACTIVITY_RECORD->get('crmid'))}
                 <div class="activityEntries border-bottom py-2">
                     <input type="hidden" class="activityId" value="{$ACTIVITY_RECORD->getId()}"/>
-                    <div class='media'>
-                        <div class='row'>
-                            <div class='media-left module-icon col-lg-1 col-md-1 col-sm-1 textAlignCenter'>
+                    <div class="media">
+                        <div class="row">
+                            <div class="media-left module-icon col-lg-1 col-md-1 col-sm-1 textAlignCenter">
                                 <span class='{$ACTIVITY_RECORD->getActivityTypeIcon()}'></span>
                             </div>
-                            <div class='media-body col-lg-7 col-md-7 col-sm-7'>
+                            <div class="media-body col-lg-7 col-md-7 col-sm-7">
                                 <div class="summaryViewEntries">
                                     {if $DETAILVIEW_PERMITTED == 'yes'}
-                                        <a class="me-2" href="{$ACTIVITY_RECORD->getDetailViewUrl()}" title="{$ACTIVITY_RECORD->get('subject')}">{$ACTIVITY_RECORD->get('subject')}</a>
+                                        <a href="{$ACTIVITY_RECORD->getDetailViewUrl()}" title="{$ACTIVITY_RECORD->get('subject')}">{$ACTIVITY_RECORD->get('subject')}</a>
                                     {else}
-                                        <span class="me-2">{$ACTIVITY_RECORD->get('subject')}</span>
+                                        <span>{$ACTIVITY_RECORD->get('subject')}</span>
                                     {/if}
                                     {if $EDITVIEW_PERMITTED == 'yes'}
-                                        <a href="{$ACTIVITY_RECORD->getEditViewUrl()}&sourceModule={$RECORD->getModuleName()}&sourceRecord={$RECORD->getId()}&relationOperation=true" class="fieldValue me-2 text-secondary">
-                                            <i class="summaryViewEdit fa fa-pencil me-2" title="{vtranslate('LBL_EDIT',$ACTIVITIES_MODULE_NAME)}"></i>
+                                        <a href="{$ACTIVITY_RECORD->getEditViewUrl()}&sourceModule={$RECORD->getModuleName()}&sourceRecord={$RECORD->getId()}&relationOperation=true" class="fieldValue ms-3 text-secondary">
+                                            <i class="summaryViewEdit fa fa-pencil" title="{vtranslate('LBL_EDIT',$ACTIVITIES_MODULE_NAME)}"></i>
                                         </a>
                                     {/if}
                                     {if $DELETE_PERMITTED == 'yes'}
-                                        <a onclick="Vtiger_Detail_Js.deleteRelatedActivity(event);" data-id="{$ACTIVITY_RECORD->getId()}" data-recurring-enabled="{$ACTIVITY_RECORD->isRecurringEnabled()}" class="fieldValue me-2 text-secondary">
-                                            <i class="summaryViewEdit fa fa-trash me-2" title="{vtranslate('LBL_DELETE',$ACTIVITIES_MODULE_NAME)}"></i>
+                                        <a onclick="Vtiger_Detail_Js.deleteRelatedActivity(event);" data-id="{$ACTIVITY_RECORD->getId()}" data-recurring-enabled="{$ACTIVITY_RECORD->isRecurringEnabled()}" class="fieldValue ms-3 text-secondary">
+                                            <i class="summaryViewEdit fa fa-trash" title="{vtranslate('LBL_DELETE',$ACTIVITIES_MODULE_NAME)}"></i>
                                         </a>
                                     {/if}
                                 </div>
                                 <span><strong title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($START_DATE)}">{Vtiger_Util_Helper::formatDateIntoStrings($START_DATE)}</strong></span>
                             </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 activityStatus">
+                                <input type="hidden" class="activityModule" value="{$ACTIVITIES_MODULE_NAME}"/>
+                                <input type="hidden" class="activityType" value="{$ACTIVITY_RECORD->get('calendar_type')}"/>
+                                {assign var=FIELD_MODEL value=$ACTIVITY_RECORD->getModule()->getField('calendar_status')}
+                                <style>
+                                    {assign var=PICKLIST_COLOR_MAP value=Settings_Picklist_Module_Model::getPicklistColorMap('calendar_status', true)}
+                                    {foreach item=PICKLIST_COLOR key=PICKLIST_VALUE from=$PICKLIST_COLOR_MAP}
+                                    {assign var=PICKLIST_TEXT_COLOR value=Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)}
+                                    {assign var=CONVERTED_PICKLIST_VALUE value=Vtiger_Util_Helper::convertSpaceToHyphen($PICKLIST_VALUE)}
+                                    .picklist-{$FIELD_MODEL->getId()}-{Vtiger_Util_Helper::escapeCssSpecialCharacters($CONVERTED_PICKLIST_VALUE)} {
+                                        background-color: {$PICKLIST_COLOR};
+                                        color: {$PICKLIST_TEXT_COLOR};
+                                    }
 
-                            <div class='col-lg-4 col-md-4 col-sm-4 activityStatus' style='line-height: 0px;padding-right:30px;'>
-                                <div class="row">
-                                    <input type="hidden" class="activityModule" value="{$ACTIVITIES_MODULE_NAME}"/>
-                                    <input type="hidden" class="activityType" value="{$ACTIVITY_RECORD->get('calendar_type')}"/>
-                                    <div class="pull-right">
-                                        {assign var=FIELD_MODEL value=$ACTIVITY_RECORD->getModule()->getField('calendar_status')}
-                                        <style>
-                                            {assign var=PICKLIST_COLOR_MAP value=Settings_Picklist_Module_Model::getPicklistColorMap('calendar_status', true)}
-                                            {foreach item=PICKLIST_COLOR key=PICKLIST_VALUE from=$PICKLIST_COLOR_MAP}
-                                            {assign var=PICKLIST_TEXT_COLOR value=Settings_Picklist_Module_Model::getTextColor($PICKLIST_COLOR)}
-                                            {assign var=CONVERTED_PICKLIST_VALUE value=Vtiger_Util_Helper::convertSpaceToHyphen($PICKLIST_VALUE)}
-                                            .picklist-{$FIELD_MODEL->getId()}-{Vtiger_Util_Helper::escapeCssSpecialCharacters($CONVERTED_PICKLIST_VALUE)} {
-                                                background-color: {$PICKLIST_COLOR};
-                                                color: {$PICKLIST_TEXT_COLOR};
-                                            }
-
-                                            {/foreach}
-                                        </style>
-                                        <strong><span class="value picklist-color picklist-{$FIELD_MODEL->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($ACTIVITY_RECORD->get('calendar_status'))}">{vtranslate($ACTIVITY_RECORD->get('calendar_status'),$ACTIVITIES_MODULE_NAME)}</span></strong>&nbsp&nbsp;
-                                        {if $EDITVIEW_PERMITTED == 'yes'}
-                                            <span class="editStatus cursorPointer text-secondary">
-                                                <i class="fa fa-pencil" title="{vtranslate('LBL_EDIT',$ACTIVITIES_MODULE_NAME)}"></i>
-                                            </span>
-                                            <span class="edit hide">
-                                                {assign var=FIELD_VALUE value=$FIELD_MODEL->set('fieldvalue', $ACTIVITY_RECORD->get('calendar_status'))}
-                                                {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$ACTIVITIES_MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$ACTIVITIES_MODULE_NAME OCCUPY_COMPLETE_WIDTH='true'}
-                                                {if $FIELD_MODEL->getFieldDataType() eq 'multipicklist'}
-                                                    <input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}[]' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}'/>
-                                                {else}
-                                                    <input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}'/>
-                                                {/if}
-                                            </span>
+                                    {/foreach}
+                                </style>
+                                <span class="py-1 px-2 rounded value picklist-color picklist-{$FIELD_MODEL->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($ACTIVITY_RECORD->get('calendar_status'))}">{vtranslate($ACTIVITY_RECORD->get('calendar_status'),$ACTIVITIES_MODULE_NAME)}</span>
+                                {if $EDITVIEW_PERMITTED == 'yes'}
+                                    <span class="ms-2 editStatus cursorPointer text-secondary">
+                                        <i class="fa fa-pencil" title="{vtranslate('LBL_EDIT',$ACTIVITIES_MODULE_NAME)}"></i>
+                                    </span>
+                                    <span class="edit hide">
+                                        {assign var=FIELD_VALUE value=$FIELD_MODEL->set('fieldvalue', $ACTIVITY_RECORD->get('calendar_status'))}
+                                        {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$ACTIVITIES_MODULE_NAME) FIELD_MODEL=$FIELD_MODEL USER_MODEL=$USER_MODEL MODULE=$ACTIVITIES_MODULE_NAME OCCUPY_COMPLETE_WIDTH='true'}
+                                        {if $FIELD_MODEL->getFieldDataType() eq 'multipicklist'}
+                                            <input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}[]' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}'/>
+                                        {else}
+                                            <input type="hidden" class="fieldname" value='{$FIELD_MODEL->get('name')}' data-prev-value='{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}'/>
                                         {/if}
-                                    </div>
-                                </div>
+                                    </span>
+                                {/if}
                             </div>
                         </div>
                     </div>

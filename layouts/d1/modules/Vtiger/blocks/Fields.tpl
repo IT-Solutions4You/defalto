@@ -20,7 +20,7 @@
                             <div class="row">
                                 <div class="fieldLabel {if $FIELD_MODEL->isTableFullWidth()}col-sm-2{else}col-sm-4{/if}">
                                     {if $MASS_EDITION_MODE}
-                                        <input class="inputElement me-2" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">
+                                        <input class="inputElement me-2 form-check-input" id="include_in_mass_edit_{$FIELD_MODEL->getFieldName()}" data-update-field="{$FIELD_MODEL->getFieldName()}" type="checkbox">
                                     {/if}
                                     {if $isReferenceField eq "reference"}
                                         {if $refrenceListCount > 1}

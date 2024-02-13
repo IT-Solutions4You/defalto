@@ -814,20 +814,24 @@ jQuery.Class("Vtiger_Helper_Js",{
         var winHeight= jQuery(window).height()-50;
         return winHeight;
     },
+    retrievePopupContainer: function () {
+        let container = jQuery('#popupModal');
 
+        if (!container.length) {
+            $('body').append($('<div id="popupModal" class="modal popupModal"></div>'))
+        }
+    },
     showPopup: function (content, params) {
+        this.retrievePopupContainer();
+
         if (typeof params === "undefined") {
             params = {};
         }
 
-        let defaultParams = app.helper.defaultModalParams();
-        params = jQuery.extend(defaultParams, params);
+        params = jQuery.extend(app.helper.defaultModalParams(), params);
 
-        let cb = params.cb;
-
-        if (jQuery('#popupModal').length) return;
-
-        let container = jQuery('<div id="popupModal" class="modal"></div>');
+        let cb = params.cb,
+            container = jQuery('#popupModal');
 
         container.on('hidden.bs.modal', function () {
             container.html('').remove();
@@ -1045,10 +1049,11 @@ jQuery.Class("Vtiger_Helper_Js",{
     },
 
     registerModalDismissWithoutSubmit: function (form) {
-        const initialFormData = form.serialize();
+        const initialFormData = form.serialize(),
+            modalContainer = form.closest('.modal');
 
-        form.closest('.modal [data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
-        form.closest('.modal').on('click', '.close, .btn-close, .cancelLink', function (e) {
+        modalContainer.find('[data-bs-dismiss="modal"]').removeAttr('data-bs-dismiss');
+        modalContainer.on('click', '.close, .btn-close, .cancelLink', function (e) {
             if (initialFormData !== form.serialize() && form.data('submit') !== "true") {
                 app.helper.showConfirmationBox({'message': app.vtranslate("JS_CHANGES_WILL_BE_LOST") + ' ' + app.vtranslate('JS_WISH_TO_PROCEED')}).then(function () {
                     window.onbeforeunload = null;

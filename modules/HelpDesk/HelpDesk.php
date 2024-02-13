@@ -133,16 +133,18 @@ class HelpDesk extends CRMEntity {
 		}
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmid, $otherParams = array()) {
-		parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-		if ($with_module == 'ServiceContracts') {
-			$serviceContract = CRMEntity::getInstance("ServiceContracts");
-	 		$serviceContract->updateHelpDeskRelatedTo($with_crmid,$crmid);
-	 		$serviceContract->updateServiceContractState($with_crmid);
-	 	}
-	}
+    public function save_related_module($module, $crmid, $with_module, $with_crmid, $otherParams = [])
+    {
+        parent::save_related_module($module, $crmid, $with_module, $with_crmid);
 
-	/** Function to insert values in vtiger_ticketcomments  for the specified tablename and  module
+        if ($with_module == 'ServiceContracts') {
+            $serviceContract = CRMEntity::getInstance("ServiceContracts");
+            $serviceContract->updateHelpDeskRelatedTo($with_crmid, $crmid);
+            $serviceContract->updateServiceContractState($with_crmid);
+        }
+    }
+
+    /** Function to insert values in vtiger_ticketcomments  for the specified tablename and  module
   	  * @param $table_name -- table name:: Type varchar
   	  * @param $module -- module:: Type varchar
  	 */

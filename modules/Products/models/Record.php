@@ -528,8 +528,10 @@ class Products_Record_Model extends Vtiger_Record_Model {
 		} else {
 			$db->pquery('INSERT INTO vtiger_pricebookproductrel (pricebookid,productid,listprice,usedcurrency) values(?,?,?,?)',
 					array($relatedRecordId, $this->getId(), $price, $currencyId));
-			$focus = CRMEntity::getInstance($this->getModuleName());
-			$focus->trackLinkedInfo($this->getModuleName(), $this->getId(), "PriceBooks", $relatedRecordId);
+
+            $focus = CRMEntity::getInstance($this->getModuleName());
+            $focus->setTrackLinkedInfo((int)$this->getId(), (int)$relatedRecordId);
+            $focus->trackLinkedInfo($this->getModuleName(), $this->getId(), 'PriceBooks', $relatedRecordId);
 		}
 	}
 

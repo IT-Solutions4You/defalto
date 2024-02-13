@@ -674,25 +674,33 @@ class Leads extends CRMEntity {
 		return $list_buttons;
 	}
 
-	function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = array()) {
-		$adb = PearDatabase::getInstance();
+    public function save_related_module($module, $crmid, $with_module, $with_crmids, $otherParams = [])
+    {
+        $adb = PearDatabase::getInstance();
 
-		if(!is_array($with_crmids)) $with_crmids = Array($with_crmids);
-		foreach($with_crmids as $with_crmid) {
-			if($with_module == 'Products')
-				$adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', array($crmid, $with_crmid, $module, 1));
-			elseif($with_module == 'Campaigns')
-				$adb->pquery("insert into  vtiger_campaignleadrel values(?,?,1)", array($with_crmid, $crmid));
-			else {
-				parent::save_related_module($module, $crmid, $with_module, $with_crmid);
-			}
-		}
-	}
+        if (!is_array($with_crmids)) {
+            $with_crmids = [$with_crmids];
+        }
 
-	function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false, $requiredTables = array()) {
-		if(is_array($tableColumns)) {
-			$tableColumnsString = implode(',', $tableColumns);
-		}
+        foreach ($with_crmids as $with_crmid) {
+            if ($with_module == 'Products') {
+                $adb->pquery('INSERT INTO vtiger_seproductsrel VALUES(?,?,?,?)', [$crmid, $with_crmid, $module, 1]);
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } elseif ($with_module == 'Campaigns') {
+                $adb->pquery('insert into  vtiger_campaignleadrel values(?,?,1)', [$with_crmid, $crmid]);
+                $this->setTrackLinkedInfo($crmid, $with_crmid);
+            } else {
+                parent::save_related_module($module, $crmid, $with_module, $with_crmid);
+            }
+        }
+    }
+
+    public function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false, $requiredTables = [])
+    {
+        if (is_array($tableColumns)) {
+            $tableColumnsString = implode(',', $tableColumns);
+        }
+
 		$selectClause = "SELECT " . $this->table_name . "." . $this->table_index . " AS recordid," . $tableColumnsString;
 
 		// Select Custom Field Table Columns if present

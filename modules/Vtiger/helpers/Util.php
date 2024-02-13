@@ -131,20 +131,28 @@ class Vtiger_Util_Helper {
 		return false;
 	}
 
-	/**
-	 * Function Checks the existence of the record
-	 * @param <type> $recordId - module recordId
-	 * returns 1 if record exists else 0
-	 */
-	public static function checkRecordExistance($recordId){
-		global $adb;
-		$query = 'Select deleted from vtiger_crmentity where crmid=?';
-		$result = $adb->pquery($query, array($recordId));
+    /**
+     * Function Checks the existence of the record
+     * @param int $recordId - module recordId
+     * returns 0 if record exists else 1
+     * @throws Exception
+     */
+    public static function checkRecordExistance($recordId)
+    {
+        global $adb;
+        $result = $adb->pquery(
+            'SELECT deleted FROM vtiger_crmentity WHERE crmid=?',
+            [$recordId]
+        );
 
-		return $adb->query_result($result, 'deleted');
-	}
+        if (!$adb->num_rows($result)) {
+            return 1;
+        }
 
-	/**
+        return (int)$adb->query_result($result, 'deleted');
+    }
+
+    /**
 	 * Function to parses date into string format
 	 * @param <Date> $date
 	 * @param <Time> $time
@@ -154,8 +162,8 @@ class Vtiger_Util_Helper {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($date . ' ' . $time);
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours .':'. $minutes;
 		if ($currentUser->get('hour_format') === '12') {
@@ -263,8 +271,8 @@ class Vtiger_Util_Helper {
 			$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 		}
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours .':'. $minutes;
 		if ($currentUser->get('hour_format') === '12') {
@@ -587,7 +595,7 @@ class Vtiger_Util_Helper {
 				   $fieldName = $fieldSearchInfo[0];
 				   preg_match('/(\w+) ; \((\w+)\) (\w+)/', $fieldName, $matches);
 					if (php7_count($matches) != 0) {
-						list($full, $referenceParentField, $referenceModule, $referenceFieldName) = $matches;
+						[$full, $referenceParentField, $referenceModule, $referenceFieldName] = $matches;
 						$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModule);
 						$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $referenceModuleModel);
 						$fieldInfo->set('reference_fieldname', $fieldName);
@@ -788,8 +796,8 @@ class Vtiger_Util_Helper {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$dateTimeInUserFormat = Vtiger_Datetime_UIType::getDisplayDateTimeValue($dateTime);
 
-		list($dateInUserFormat, $timeInUserFormat) = explode(' ', $dateTimeInUserFormat);
-		list($hours, $minutes, $seconds) = explode(':', $timeInUserFormat);
+		[$dateInUserFormat, $timeInUserFormat] = explode(' ', $dateTimeInUserFormat);
+		[$hours, $minutes, $seconds] = explode(':', $timeInUserFormat);
 
 		$displayTime = $hours.':'.$minutes;
 		if ($currentUser->get('hour_format') === '12') {

@@ -41,7 +41,7 @@
                         <tr class="listViewHeaders bg-body-secondary">
                             {if $MULTI_SELECT}
                                 <th class="{$WIDTHTYPE}">
-                                    <input type="checkbox" class="selectAllInCurrentPage" />
+                                    <input type="checkbox" class="selectAllInCurrentPage form-check-input" />
                                 </th>
                             {elseif $MODULE neq 'EmailTemplates'}
                                 <th class="{$WIDTHTYPE}">&nbsp;</th>
@@ -85,7 +85,7 @@
                     {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                     {if $MULTI_SELECT}
                         <td class="{$WIDTHTYPE}">
-                            <input class="entryCheckBox" type="checkbox" />
+                            <input class="entryCheckBox form-check-input" type="checkbox" />
                         </td>
                     {elseif $MODULE neq 'EmailTemplates'}
                         <td></td>
@@ -110,12 +110,12 @@
                         {elseif $LISTVIEW_HEADERNAME eq 'listprice'}
                             {CurrencyField::convertToUserFormat($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), null, true, true)}
                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
-                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
+                            <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}" {/if}> {$LISTVIEW_ENTRY_VALUE} </span>
                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                             {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}
                             {assign var=MULTI_PICKLIST_VALUES value=explode(',',$LISTVIEW_ENTRY_VALUE)}
                             {foreach item=MULTI_PICKLIST_VALUE key=MULTI_PICKLIST_INDEX from=$MULTI_RAW_PICKLIST_VALUES}
-                                <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($MULTI_PICKLIST_VALUE))}" {/if}> {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])} </span>
+                                <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$LISTVIEW_HEADER->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen(trim($MULTI_PICKLIST_VALUE))}" {/if}> {trim($MULTI_PICKLIST_VALUES[$MULTI_PICKLIST_INDEX])} </span>
                             {/foreach}
                         {else}
                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}

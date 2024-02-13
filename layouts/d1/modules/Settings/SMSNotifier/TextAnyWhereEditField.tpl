@@ -7,7 +7,7 @@
 
 {strip}
 	{include file="ProviderEditFields.tpl"|@vtemplate_path:$QUALIFIED_MODULE_NAME}
-	<div class="alert-info alert col-lg-12">
+	<div class="alert-info alert mt-3">
 		<div>
 			In the Originator field, enter one of the following:<br /><br />
 			1. The 11 characters to be sent with each SMS<br />

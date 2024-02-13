@@ -11,6 +11,11 @@
         {else}
             &nbsp;
         {/if}
+        {if !empty($RELATED_PARENT_ID)}
+            <button type="button" class="btn btn-outline-secondary showAllRecordsRecords">
+                {vtranslate('LBL_SHOW_ALL_RECORDS', $MODULE)}
+            </button>
+        {/if}
     </div>
     <div class="col-md-auto">
         {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}

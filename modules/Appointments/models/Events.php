@@ -552,7 +552,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             'backgroundColor' => $this->getBackgroundColor(),
             'borderColor' => $this->getBackgroundColor(),
             'color' => $this->getTextColor(),
-            'className' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId() . ' ' . self::getEventTypeClass($recordModel->get('calendar_type')),
+            'className' => 'eventTypeRecord eventTypeId' . $this->get('id') . ' eventRecordId' . $recordModel->getId() . ' ' . self::getEventTypeClass((string)$recordModel->get('calendar_type')),
             'eventDisplay' => 'list-item',
         ];
 

@@ -128,7 +128,7 @@
 			{/foreach}
 		</select>
 	</div>
-	<div class="col-lg-4 col-md-4 col-sm-4  fieldUiHolder">
+	<div class="col-lg col-md col-sm fieldUiHolder">
 		<input name="{if $SELECTED_FIELD_MODEL}{$SELECTED_FIELD_MODEL->get('name')}{/if}" data-value="value" class="form-control inputElement col-lg-12" type="text" value="{$CONDITION_INFO['value']|escape}" />
 	</div>
 	<span class="hide">
@@ -138,8 +138,8 @@
 		{/if}
 		<input type="hidden" name="column_condition" value="{$CONDITION}" />
 	</span>
-	 <div class="col-lg-1 col-md-1 col-sm-1">
-		<span class="deleteCondition cursorPointer" title="{vtranslate('LBL_DELETE', $MODULE)}">
+	 <div class="col-lg-auto col-md-auto col-sm-auto text-end">
+		<span class="deleteCondition btn btn-outline-secondary" title="{vtranslate('LBL_DELETE', $MODULE)}">
 			<i class="fa fa-trash"></i>
 		</span>
 	</div>

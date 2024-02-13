@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Vtiger_FindDuplicates_Js */
 Vtiger_List_Js("Vtiger_FindDuplicates_Js",{
     
     massDeleteRecords : function(url) {

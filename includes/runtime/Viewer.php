@@ -217,11 +217,18 @@ function vtemplate_path($templateName, $moduleName='') {
 /**
  * Generated cache friendly resource URL linked with version of Vtiger
  */
-function vresource_url($url) {
+function vresource_url($url)
+{
     global $vtiger_current_version;
+
     if (stripos($url, '://') === false) {
-        $url = $url .'?v='.$vtiger_current_version;
+        $url = $url . '?v=' . $vtiger_current_version;
     }
+
+    if (stripos($url, '$LAYOUT$') !== false) {
+        $url = str_replace('$LAYOUT$', Vtiger_Viewer::getLayoutName(), $url);
+    }
+
     return $url;
 }
 
