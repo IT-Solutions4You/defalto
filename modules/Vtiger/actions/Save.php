@@ -170,6 +170,8 @@ class Vtiger_Save_Action extends Vtiger_Action_Controller {
 				if(!is_array($fieldValue) && $fieldDataType != 'currency') {
 					$fieldValue = trim($fieldValue);
 				}
+
+                $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
 				$recordModel->set($fieldName, $fieldValue);
 			}
 		}
