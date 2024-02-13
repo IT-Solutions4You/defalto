@@ -1221,6 +1221,10 @@ class Vtiger_Module_Model extends Vtiger_Module {
         if (!empty($links)) {
             /** @var Vtiger_Link_Model $link */
             foreach ($links['LISTVIEWBASIC'] as $link) {
+                if (in_array($link->getLabel(), ['Send SMS'])) {
+                    continue;
+                }
+
                 $basicLinks[] = array(
                     'linktype' => 'BASIC',
                     'linklabel' => $link->getLabel(),

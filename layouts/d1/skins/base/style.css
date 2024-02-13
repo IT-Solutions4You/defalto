@@ -4077,12 +4077,6 @@ li.dashboardWidget {
     max-width: 100%;
 }
 
-.smsTextArea {
-    width: 80%;
-    height: 60px;
-    max-width: 100%;
-}
-
 .emailDescription {
     overflow: auto;
     width: 100%;
