@@ -151,7 +151,7 @@ class Vtiger_ListAjax_View extends Vtiger_List_View {
 				$recordModel->setRawData($recordModel->getData());
 
 				foreach ($listViewModel->listViewHeaders as $fieldName => $fieldModel) {
-					$recordModel->set($fieldName, $fieldModel->getDisplayValue($recordModel->get($fieldName)));
+                    $recordModel->set($fieldName, $fieldModel->getDisplayValue($recordModel->get($fieldName), $recordId));
 				}
 				$listViewModel->listViewEntries[$recordId] = $recordModel;
 			}
