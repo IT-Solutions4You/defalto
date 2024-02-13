@@ -381,7 +381,7 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 		$db = PearDatabase::getInstance();
 		$record = $this->getId();
 
-		$documentIds = array_unique($this->get('documentids'));
+        $documentIds = $this->get('documentids') ? array_unique((array) $this->get('documentids')) : array();
 
 		$count = php7_count($documentIds);
 		for ($i=0; $i<$count; $i++) {
