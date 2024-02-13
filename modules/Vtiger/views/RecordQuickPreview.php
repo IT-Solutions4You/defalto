@@ -79,6 +79,7 @@ class Vtiger_RecordQuickPreview_View extends Vtiger_Detail_View {
 		}
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('RECENT_ACTIVITIES', $recentActivities);
+        $viewer->assign('RECORD_ID', $recordId);
 
         $detailViewLinkParams = array('MODULE'=>$moduleName,'RECORD'=>$recordId);
         $detailViewLinks = $this->record->getDetailViewLinks($detailViewLinkParams);
