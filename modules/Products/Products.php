@@ -1367,15 +1367,7 @@ class Products extends CRMEntity {
         }
 
         foreach ($with_crmids as $with_crmid) {
-            $qty = 0;
-
-            if (array_key_exists($with_crmid, $qtysList)) {
-                $qty = (float)$qtysList[$with_crmid];
-            }
-
-            if (!$qty) {
-                $qty = 1;
-            }
+            $qty = !empty((float)$qtysList[$with_crmid]) ? (float)$qtysList[$with_crmid] : 1;
 
             if (in_array($with_module, ['Leads', 'Accounts', 'Contacts', 'Potentials', 'Products'])) {
                 $query = $adb->pquery('SELECT * FROM vtiger_seproductsrel WHERE crmid=? AND productid=?', [$crmid, $with_crmid]);

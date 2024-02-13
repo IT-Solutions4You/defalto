@@ -666,7 +666,7 @@ class Campaigns extends CRMEntity {
                     [$crmid, $with_crmid]
                 );
 
-                if ($checkResult && $adb->num_rows($checkResult) > 0) {
+                if ($checkResult && $adb->num_rows($checkResult)) {
                     continue;
                 }
 
@@ -678,7 +678,7 @@ class Campaigns extends CRMEntity {
                     [$crmid, $with_crmid]
                 );
 
-                if ($checkResult && $adb->num_rows($checkResult) > 0) {
+                if ($checkResult && $adb->num_rows($checkResult)) {
                     continue;
                 }
 
@@ -690,7 +690,7 @@ class Campaigns extends CRMEntity {
                     [$crmid, $with_crmid]
                 );
 
-                if ($checkResult && $adb->num_rows($checkResult) > 0) {
+                if ($checkResult && $adb->num_rows($checkResult)) {
                     continue;
                 }
 

@@ -695,10 +695,12 @@ class Leads extends CRMEntity {
         }
     }
 
-    function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false, $requiredTables = array()) {
-		if(is_array($tableColumns)) {
-			$tableColumnsString = implode(',', $tableColumns);
-		}
+    public function getQueryForDuplicates($module, $tableColumns, $selectedColumns = '', $ignoreEmpty = false, $requiredTables = [])
+    {
+        if (is_array($tableColumns)) {
+            $tableColumnsString = implode(',', $tableColumns);
+        }
+
 		$selectClause = "SELECT " . $this->table_name . "." . $this->table_index . " AS recordid," . $tableColumnsString;
 
 		// Select Custom Field Table Columns if present
