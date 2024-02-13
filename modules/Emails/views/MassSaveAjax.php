@@ -143,8 +143,9 @@ class Emails_MassSaveAjax_View extends Vtiger_Footer_View {
 		$recordModel->set('bccmail', $request->get('bcc'));
 		$recordModel->set('assigned_user_id', $currentUserModel->getId());
 		$recordModel->set('email_flag', $flag);
-		$recordModel->set('documentids', $documentIds);
-		$recordModel->set('signature',$signature);
+        $documentIds = ((!empty($documentIds) && is_array($documentIds)) ? $documentIds : (!empty($documentIds))) ? (array)$documentIds : [];
+        $recordModel->set('documentids', json_encode($documentIds));
+        $recordModel->set('signature', $signature);
 
 		$recordModel->set('toemailinfo', $toMailInfo);
 		foreach($toMailInfo as $recordId=>$emailValueList) {

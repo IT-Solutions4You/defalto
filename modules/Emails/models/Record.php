@@ -377,19 +377,22 @@ class Emails_Record_Model extends Vtiger_Record_Model {
 	/**
 	 * Function to save details of document and email
 	 */
-	public function saveDocumentDetails() {
-		$db = PearDatabase::getInstance();
-		$record = $this->getId();
+    public function saveDocumentDetails()
+    {
+        $documentIds = json_decode($this->get('documentids'), true);
 
-        $documentIds = $this->get('documentids') ? array_unique((array) $this->get('documentids')) : array();
+        if (!empty($documentIds)) {
+            $db = PearDatabase::getInstance();
+            $record = $this->getId();
+            $documentIds = array_unique($documentIds);
 
-		$count = php7_count($documentIds);
-		for ($i=0; $i<$count; $i++) {
-			$db->pquery("INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?, ?)", array($record, $documentIds[$i]));
-		}
-	}
+            foreach ($documentIds as $documentId) {
+                $db->pquery("INSERT INTO vtiger_senotesrel(crmid, notesid) VALUES(?, ?)", [$record, $documentId]);
+            }
+        }
+    }
 
-	/**
+    /**
 	 * Function which will remove all the exising document links with email
 	 * @param <Array> $idList - array of ids
 	 */
