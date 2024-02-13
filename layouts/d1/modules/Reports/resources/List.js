@@ -318,6 +318,7 @@ Vtiger_List_Js("Reports_List_Js",{
                 scrollInertia: 70,
                 mouseWheel: {preventDefault: true}
             };
+			jQuery('.quickPreviewSummary').trigger(Vtiger_Widget_Js.widgetPostLoadEvent);
             app.helper.showVerticalScroll(jQuery('.quickPreview .modal-body'), params);
         });
     },
