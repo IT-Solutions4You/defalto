@@ -101,7 +101,7 @@ class Settings_LayoutEditor_Field_Action extends Settings_Vtiger_Index_Action {
 
         if (!is_null($request->get('fieldDefaultValue', null))) {
             if (is_array($request->get('fieldDefaultValue'))) {
-                $defaultValue = decode_html(implode(', ', $request->get('fieldDefaultValue')));
+                $defaultValue = decode_html(implode(' |##| ', $request->get('fieldDefaultValue')));
             } else {
                 $defaultValue = decode_html($request->get('fieldDefaultValue'));
             }
