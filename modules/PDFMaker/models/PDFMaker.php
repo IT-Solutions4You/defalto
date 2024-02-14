@@ -47,28 +47,23 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
     //ListView data
     public function GetListviewData()
     {
-        $module = 'PDFMaker';
-        $R_Atr = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder');
-        $sql = 'SELECT vtiger_pdfmaker.templateid, vtiger_pdfmaker.description, vtiger_pdfmaker.module
-                FROM vtiger_pdfmaker LEFT JOIN vtiger_pdfmaker_settings USING(templateid) WHERE module IN (?, ?, ?, ?)';
-        $result = $this->db->pquery($sql, $R_Atr);
+        $params = ['Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder'];
+        $sql = 'SELECT vtiger_pdfmaker.templateid, vtiger_pdfmaker.description, vtiger_pdfmaker.module FROM vtiger_pdfmaker LEFT JOIN vtiger_pdfmaker_settings USING(templateid) WHERE module IN (?, ?, ?, ?)';
+        $result = $this->db->pquery($sql, $params);
+        $templates = [];
 
-        $return_data = array();
-        $num_rows = $this->db->num_rows($result);
-
-        for ($i = 0; $i < $num_rows; $i++) {
-            $currModule = $this->db->query_result($result, $i, 'module');
-            $templateid = $this->db->query_result($result, $i, 'templateid');
-
-            $pdftemplatearray = array();
-            $pdftemplatearray['templateid'] = $templateid;
-            $pdftemplatearray['description'] = $this->db->query_result($result, $i, 'description');
-            $pdftemplatearray['module'] = vtranslate($currModule, $currModule);
-            $pdftemplatearray['edit'] = "<li><a href=\"index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=" . $templateid . "\">" . vtranslate('LBL_EDIT', $module) . '</a></li>';
-            $return_data [] = $pdftemplatearray;
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $templateModule = $row['module'];
+            $templateId = $row['templateid'];
+            $templates[] = [
+                'templateid' => $templateId,
+                'description' => $row['description'],
+                'module' => vtranslate($templateModule, $templateModule),
+                'edit_url' => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid="' . $templateId,
+            ];
         }
 
-        return $return_data;
+        return $templates;
     }
 
     //DetailView data
