@@ -440,14 +440,14 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                 continue;
             }
 
-            $templates = [];
+            $templateData = [];
             $suffix = '';
 
             if (isset($status_arr[$templateId])) {
                 if ($status_arr[$templateId]['is_active'] == '0') {
-                    $templates['status'] = 0;
+                    $templateData['status'] = 0;
                 } else {
-                    $templates['status'] = 1;
+                    $templateData['status'] = 1;
 
                     switch ($status_arr[$templateId]['is_default']) {
                         case '1':
@@ -462,47 +462,47 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
                     }
                 }
 
-                $templates['order'] = $status_arr[$templateId]['sequence'];
+                $templateData['order'] = $status_arr[$templateId]['sequence'];
             } else {
-                $templates['status'] = 1;
-                $templates['order'] = 1;
+                $templateData['status'] = 1;
+                $templateData['order'] = 1;
             }
 
             if (!empty($search_status)) {
-                if ($search_status != 'status_' . $templates['status']) {
+                if ($search_status != 'status_' . $templateData['status']) {
                     continue;
                 }
             }
 
-            $templates['status_lbl'] = ($templates['status'] == 1 ? vtranslate('Active', $MODULE) : vtranslate('Inactive', $MODULE));
-            $templates['name'] = $row['templatename'];
-            $templates['templateid'] = $templateId;
-            $templates['description'] = $row['description'];
-            $templates['subject'] = $row['subject'];
-            $templates['is_listview'] = $row['is_listview'];
+            $templateData['status_lbl'] = ($templateData['status'] == 1 ? vtranslate('Active', $MODULE) : vtranslate('Inactive', $MODULE));
+            $templateData['name'] = $row['templatename'];
+            $templateData['templateid'] = $templateId;
+            $templateData['description'] = $row['description'];
+            $templateData['subject'] = $row['subject'];
+            $templateData['is_listview'] = $row['is_listview'];
 
             if ($load_body) {
-                $templates['body'] = $row['body'];
+                $templateData['body'] = $row['body'];
             }
 
-            $templates['module'] = vtranslate($templateModule, $templateModule);
-            $templates['templatename'] = "<a href=\"index.php?module=EMAILMaker&view=Detail&record=" . $templateId . "&return_module=EMAILMaker&return_view=List\">" . $row['templatename'] . $suffix . "</a>";
-            $templates['edit'] = '';
+            $templateData['module'] = vtranslate($templateModule, $templateModule);
+            $templateData['templatename'] = "<a href=\"index.php?module=EMAILMaker&view=Detail&record=" . $templateId . "&return_module=EMAILMaker&return_view=List\">" . $row['templatename'] . $suffix . "</a>";
+            $templateData['edit'] = '';
 
             if ($TemplatePermissionsData['edit']) {
-                $templates['edit_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&record=' . $templateId;
-                $templates['duplicate_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&isDuplicate=true&record=' . $templateId;
+                $templateData['edit_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&record=' . $templateId;
+                $templateData['duplicate_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&isDuplicate=true&record=' . $templateId;
             }
 
             if ($TemplatePermissionsData['delete']) {
-                $templates['delete_id'] = $templateId;
+                $templateData['delete_id'] = $templateId;
             }
 
-            $templates['category'] = $row['category'];
-            $templates['owner'] = getUserFullName($row['owner']);
-            $templates['sharingtype'] = vtranslate(strtoupper($row['sharingtype']) . '_FILTER', $MODULE);
+            $templateData['category'] = $row['category'];
+            $templateData['owner'] = getUserFullName($row['owner']);
+            $templateData['sharingtype'] = vtranslate(strtoupper($row['sharingtype']) . '_FILTER', $MODULE);
 
-            $return_data [] = $templates;
+            $return_data [] = $templateData;
         }
 
         if ($originOrderby == "order") {
