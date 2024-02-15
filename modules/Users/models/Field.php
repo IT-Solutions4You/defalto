@@ -65,7 +65,7 @@ class Users_Field_Model extends Vtiger_Field_Model {
     public function isAjaxEditable()
     {
         return !(!$this->isEditable() || $this->get('uitype') == 105 || $this->get('uitype') == 106 || $this->get('uitype') == 98 || $this->get('uitype') == 101
-            || ($this->get('uitype') == 21 && $this->getName() == 'signature'));
+            || $this->getName() === 'signature');
     }
 
 	/**

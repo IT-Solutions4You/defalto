@@ -804,8 +804,8 @@ class EMAILMakerRelBlockRun extends CRMEntity
         while ($columnsListRow = $adb->fetch_array($result)) {
             $fieldColumn = $columnsListRow['columnname'];
 
-            list($tableName, $columnName, $moduleFieldLabel, $fieldName, $single) = explode(':', $fieldColumn);
-            list($module, $field) = explode('_', $moduleFieldLabel, 2);
+            [$tableName, $columnName, $moduleFieldLabel, $fieldName, $single] = explode(':', $fieldColumn);
+            [$module, $field] = explode('_', $moduleFieldLabel, 2);
 
             $targetTableName = $tableName;
             $inventory_fields = array('serviceid');
