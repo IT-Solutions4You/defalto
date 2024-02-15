@@ -23,6 +23,11 @@ require_once("vtlib/Vtiger/Module.php");
 require_once('modules/Vtiger/helpers/Util.php');
 require_once('include/RelatedListView.php');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 /*
  * Helper class to determine the associative dependency between tables.
  */
@@ -4330,9 +4335,7 @@ class ReportRun extends CRMEntity {
 		global $currentModule, $current_language;
 		$mod_strings = return_module_language($current_language, $currentModule);
 
-		require_once("libraries/PHPExcel/PHPExcel.php");
-
-		$workbook = new PHPExcel();
+		$workbook = new Spreadsheet();
 		$worksheet = $workbook->setActiveSheetIndex(0);
 
 		$reportData = $this->GenerateReport("PDF", $filterlist, false, false, false, 'ExcelExport');
@@ -4340,12 +4343,12 @@ class ReportRun extends CRMEntity {
 		$totalxls = $this->GenerateReport("XLS", $filterlist, false, false, false, 'ExcelExport');
 		$numericTypes = array('currency', 'double', 'integer', 'percentage');
 
-		$header_styles = array(
-			'fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'E1E0F7')),
-				//'font' => array( 'bold' => true )
-		);
+        $header_styles = [
+            'fill' => ['type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'E1E0F7']],
+            //'font' => array( 'bold' => true )
+        ];
 
-		if (isset($arr_val)) {
+        if (isset($arr_val)) {
 			$count = 0;
 			$rowcount = 1;
 			//copy the first value details
@@ -4357,9 +4360,7 @@ class ReportRun extends CRMEntity {
 				}
 				$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, decode_html($key), true);
 				$worksheet->getStyleByColumnAndRow($count, $rowcount)->applyFromArray($header_styles);
-
-				// NOTE Performance overhead: http://stackoverflow.com/questions/9965476/phpexcel-column-size-issues
-				//$worksheet->getColumnDimensionByColumn($count)->setAutoSize(true);
+				$worksheet->getColumnDimensionByColumn($count)->setAutoSize(true);
 
 				$count = $count + 1;
 			}
@@ -4380,9 +4381,9 @@ class ReportRun extends CRMEntity {
 						continue;
 					$value = decode_html($value);
 					if (in_array($dataType, $numericTypes)) {
-						$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, $value, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+						$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, $value, DataType::TYPE_NUMERIC);
 					} else {
-						$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, $value, PHPExcel_Cell_DataType::TYPE_STRING);
+						$worksheet->setCellValueExplicitByColumnAndRow($count, $rowcount, $value, DataType::TYPE_STRING);
 					}
 					$count = $count + 1;
 				}
@@ -4414,18 +4415,18 @@ class ReportRun extends CRMEntity {
 						continue;
 					}
 					$value = decode_html($value);
-					$excelDatatype = PHPExcel_Cell_DataType::TYPE_STRING;
+					$excelDatatype = DataType::TYPE_STRING;
 					if (is_numeric($value)) {
-						$excelDatatype = PHPExcel_Cell_DataType::TYPE_NUMERIC;
+						$excelDatatype = DataType::TYPE_NUMERIC;
 					}
 					$worksheet->setCellValueExplicitByColumnAndRow($count, $key + $rowcount, $value, $excelDatatype);
 					$count = $count + 1;
 				}
 			}
 		}
-		//Reference Article:  http://phpexcel.codeplex.com/discussions/389578
+
 		ob_clean();
-		$workbookWriter = PHPExcel_IOFactory::createWriter($workbook, 'Excel5');
+		$workbookWriter = IOFactory::createWriter($workbook, 'Excel5');
 		$workbookWriter->save($fileName);
 	}
 
