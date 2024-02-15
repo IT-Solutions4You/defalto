@@ -150,28 +150,22 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
     {
         $module = 'PDFMaker';
         $adb = PearDatabase::getInstance();
-        $current_user = Users_Record_Model::getCurrentUserModel();
-
         $result = $this->GetListviewResult();
+        $data = [];
 
-        $return_data = array();
-        $num_rows = $adb->num_rows($result);
-
-        for ($i = 0; $i < $num_rows; $i++) {
-            $currModule = $adb->query_result($result, $i, 'module');
-            $templateid = $adb->query_result($result, $i, 'templateid');
-
-            $pdftemplatearray = array();
-            $pdftemplatearray['templateid'] = $templateid;
-            $pdftemplatearray['description'] = $adb->query_result($result, $i, 'description');
-            $pdftemplatearray['module'] = vtranslate($currModule, $currModule);
-            $pdftemplatearray['filename'] = "<a href=\"index.php?module=PDFMaker&view=DetailFree&templateid=" . $templateid . "\">" . $pdftemplatearray['module'] . "</a>";
-            $pdftemplatearray['edit'] = "<li><a class='dropdown-item' href=\"index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=" . $templateid . "\">" . vtranslate('LBL_EDIT', $module) . "</a></li>";
-
-            $return_data [] = $pdftemplatearray;
+        while ($row = $adb->fetchByAssoc($result)) {
+            $templateModule = $row['module'];
+            $templateId = $row['templateid'];
+            $data[] = [
+                'templateid' => $templateId,
+                'description' => $row['description'],
+                'module' => vtranslate($templateModule, $templateModule),
+                'filename' => sprintf('<a href="index.php?module=PDFMaker&view=DetailFree&templateid=%s">%s</a>', $templateId, $templateModule),
+                'edit_url' => 'index.php?module=PDFMaker&view=EditFree&return_view=List&templateid=' . $templateId,
+            ];
         }
 
-        return $return_data;
+        return $data;
     }
 
     //DetailView data

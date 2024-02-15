@@ -18,28 +18,46 @@
     {else}
         {assign var=STARRED value=false}
     {/if}
-	{if $MODULE_MODEL->isStarredEnabled()}
-		<span class="btn btn-sm text-secondary">
-			<a class="markStar fa icon action {if $STARRED} fa-star active {else} fa-star-o{/if}" title="{if $STARRED} {vtranslate('LBL_STARRED', $MODULE)} {else} {vtranslate('LBL_NOT_STARRED', $MODULE)}{/if}"></a>
-		</span>
-	{/if}
     <div class="more dropdown action">
         <div class="btn btn-sm text-secondary" data-bs-toggle="dropdown">
             <i class="fa fa-ellipsis-h icon"></i>
         </div>
         <ul class="dropdown-menu">
+            {if $MODULE_MODEL->isStarredEnabled()}
+                <li>
+                    <a class="dropdown-item markStar">
+                        <span class="followButton {if $STARRED eq 1}hide{/if}" title="{vtranslate('LBL_NOT_STARRED', $MODULE)}">
+                            <i class="bi bi-bookmark text-secondary"></i>
+                            <span class="ms-2">{vtranslate('LBL_FOLLOW', $MODULE)}</span>
+                        </span>
+                        <span class="unfollowButton {if $STARRED eq 0}hide{/if}" title="{vtranslate('LBL_STARRED', $MODULE)}">
+                            <i class="bi bi-bookmark-fill text-secondary"></i>
+                            <span class="ms-2">{vtranslate('LBL_UNFOLLOW', $MODULE)}</span>
+                        </span>
+                    </a>
+                </li>
+            {/if}
             <li>
-                <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getFullDetailViewUrl()}">{vtranslate('LBL_DETAILS', $MODULE)}</a>
+                <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getFullDetailViewUrl()}">
+                    <i class="fa-solid fa-circle-info text-secondary"></i>
+                    <span class="ms-2">{vtranslate('LBL_DETAILS', $MODULE)}</span>
+                </a>
             </li>
             {if $RECORD_ACTIONS}
                 {if $RECORD_ACTIONS['edit']}
                     <li>
-                        <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" data-url="{$LISTVIEW_ENTRY->getEditViewUrl()}">{vtranslate('LBL_EDIT', $MODULE)}</a>
+                        <a class="dropdown-item editLink" data-id="{$LISTVIEW_ENTRY->getId()}" href="{$LISTVIEW_ENTRY->getEditViewUrl()}">
+                            <i class="fa-solid fa-pencil text-secondary"></i>
+                            <span class="ms-2">{vtranslate('LBL_EDIT', $MODULE)}</span>
+                        </a>
                     </li>
                 {/if}
 				{if $RECORD_ACTIONS['delete']}
                 <li>
-                    <a data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" class="deleteRecordButton dropdown-item">{vtranslate('LBL_DELETE', $MODULE)}</a>
+                    <a data-id="{$LISTVIEW_ENTRY->getId()}" href="javascript:void(0);" class="deleteRecordButton dropdown-item">
+                        <i class="fa-solid fa-trash text-secondary"></i>
+                        <span class="ms-2">{vtranslate('LBL_DELETE', $MODULE)}</span>
+                    </a>
                 </li>
             {/if}
             {/if}
@@ -47,12 +65,18 @@
             {assign var="DOCUMENT_RECORD_MODEL" value=Vtiger_Record_Model::getInstanceById($RECORD_ID)}
             {if $DOCUMENT_RECORD_MODEL->get('filename') && $DOCUMENT_RECORD_MODEL->get('filestatus')}
                 <li>
-                    <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" name="viewfile" href="javascript:void(0)" data-filelocationtype="{$DOCUMENT_RECORD_MODEL->get('filelocationtype')}" data-filename="{$DOCUMENT_RECORD_MODEL->get('filename')}" onclick="Vtiger_Header_Js.previewFile(event)">File Preview</a>
+                    <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" name="viewfile" href="javascript:void(0)" data-filelocationtype="{$DOCUMENT_RECORD_MODEL->get('filelocationtype')}" data-filename="{$DOCUMENT_RECORD_MODEL->get('filename')}" onclick="Vtiger_Header_Js.previewFile(event)">
+                        <i class="fa-solid fa-file text-secondary"></i>
+                        <span class="ms-2">{vtranslate('File Preview', $MODULE)}</span>
+                    </a>
                 </li>
             {/if}
             {if $DOCUMENT_RECORD_MODEL->get('filename') && $DOCUMENT_RECORD_MODEL->get('filestatus') && $DOCUMENT_RECORD_MODEL->get('filelocationtype') eq 'I'}
                 <li>
-                    <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" name="downloadfile" href="{$DOCUMENT_RECORD_MODEL->getDownloadFileURL()}">Download</a>
+                    <a class="dropdown-item" data-id="{$LISTVIEW_ENTRY->getId()}" name="downloadfile" href="{$DOCUMENT_RECORD_MODEL->getDownloadFileURL()}">
+                        <i class="fa-solid fa-download text-secondary"></i>
+                        <span class="ms-2">{vtranslate('Download', $MODULE)}</span>
+                    </a>
                 </li>
             {/if}
         </ul>

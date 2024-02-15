@@ -173,9 +173,35 @@
                                         </span>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" data-id="{$template.templateid}" href="index.php?module={$MODULE}&view=Detail&record={$template.templateid}&app={$SELECTED_MENU_CATEGORY}">{vtranslate('LBL_DETAILS', $MODULE)}</a>
+                                                <a class="dropdown-item" data-id="{$template.templateid}" href="index.php?module={$MODULE}&view=Detail&record={$template.templateid}&app={$SELECTED_MENU_CATEGORY}">
+                                                    <i class="fa-solid fa-circle-info text-secondary"></i>
+                                                    <span class="ms-2">{vtranslate('LBL_DETAILS', $MODULE)}</span>
+                                                </a>
                                             </li>
-                                            {if $VERSION_TYPE neq 'deactivate'}{$template.edit}{/if}
+                                            {if !empty($template['edit_url'])}
+                                                <li>
+                                                    <a class="dropdown-item" href="{$template['edit_url']}">
+                                                        <i class="fa-solid fa-pencil text-secondary"></i>
+                                                        <span class="ms-2">{vtranslate('LBL_EDIT', $MODULE)}</span>
+                                                    </a>
+                                                </li>
+                                            {/if}
+                                            {if !empty($template['duplicate_url'])}
+                                                <li>
+                                                    <a class="dropdown-item" href="{$template['duplicate_url']}">
+                                                        <i class="fa-solid fa-copy text-secondary"></i>
+                                                        <span class="ms-2">{vtranslate('LBL_DUPLICATE', $MODULE)}</span>
+                                                    </a>
+                                                </li>
+                                            {/if}
+                                            {if !empty($template['delete_id'])}
+                                                <li>
+                                                    <a data-id="{$template['delete_id']}" href="javascript:void(0);" class="deleteRecordButton dropdown-item">
+                                                        <i class="fa-solid fa-trash text-secondary"></i>
+                                                        <span class="ms-2">{vtranslate('LBL_DELETE', $MODULE)}</span>
+                                                    </a>
+                                                </li>
+                                            {/if}
                                         </ul>
                                     </span>
                                 </div>
