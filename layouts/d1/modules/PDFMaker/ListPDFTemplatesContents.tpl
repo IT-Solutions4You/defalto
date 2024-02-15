@@ -19,12 +19,12 @@
             <table id="listview-table" class="table {if $LISTVIEW_ENTRIES_COUNT eq '0'}listview-table-norecords {/if} listview-table">
                 <thead>
                     <tr class="listViewContentHeader">
-                        <th></th>
-                        <th nowrap="nowrap">
-                            <a href="#" data-columnname="module" data-nextsortorderval="{$module_dir}" class="listViewContentHeaderValues text-nowrap">{vtranslate("LBL_MODULENAMES",$MODULE)}</a>
+                        <th class="bg-body-secondary"></th>
+                        <th class="bg-body-secondary" nowrap="nowrap">
+                            <a href="#" data-columnname="module" data-nextsortorderval="{$module_dir}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_MODULENAMES",$MODULE)}</a>
                         </th>
-                        <th nowrap="nowrap">
-                            <a href="#" data-columnname="description" data-nextsortorderval="{$description_dir}" class="listViewContentHeaderValues text-nowrap">{vtranslate("LBL_DESCRIPTION",$MODULE)}</a>
+                        <th class="bg-body-secondary" nowrap="nowrap">
+                            <a href="#" data-columnname="description" data-nextsortorderval="{$description_dir}" class="listViewContentHeaderValues text-nowrap text-secondary">{vtranslate("LBL_DESCRIPTION",$MODULE)}</a>
                         </th>
                     </tr>
                 </thead>
@@ -39,9 +39,19 @@
                                     </div>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" data-id="{$template.templateid}" href="index.php?module=PDFMaker&view=DetailFree&templateid={$template.templateid}&app={$SELECTED_MENU_CATEGORY}">{vtranslate('LBL_DETAILS', $MODULE)}</a>
+                                            <a class="dropdown-item" data-id="{$template.templateid}" href="index.php?module=PDFMaker&view=DetailFree&templateid={$template.templateid}&app={$SELECTED_MENU_CATEGORY}">
+                                                <i class="fa-solid fa-circle-info text-secondary"></i>
+                                                <span class="ms-2">{vtranslate('LBL_DETAILS', $MODULE)}</span>
+                                            </a>
                                         </li>
-                                        {$template.edit}
+                                        {if !empty($template['edit_url'])}
+                                            <li>
+                                                <a class="dropdown-item" href="{$template['edit_url']}">
+                                                    <i class="fa-solid fa-pencil text-secondary"></i>
+                                                    <span class="ms-2">{vtranslate('LBL_EDIT', $MODULE)}</span>
+                                                </a>
+                                            </li>
+                                        {/if}
                                     </ul>
                                 </div>
                             </div>

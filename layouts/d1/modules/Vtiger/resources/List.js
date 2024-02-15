@@ -1759,42 +1759,39 @@ Vtiger.Class("Vtiger_List_Js", {
 		}
 	},
 	registerStarToggle: function () {
-		var self = this;
-		var listViewContainer = this.getListViewContainer();
+		let self = this,
+			listViewContainer = this.getListViewContainer();
+
 		listViewContainer.on('click', '.markStar', function (e) {
-			var element = jQuery(e.currentTarget);
+			let element = jQuery(e.currentTarget),
+				followButton = element.find('.followButton'),
+				unfollowButton = element.find('.unfollowButton');
+
 			if (element.hasClass('processing'))
 				return;
-			element.addClass('processing');
 
-			var record = element.closest('tr.listViewEntries').data('id');
-			var params = {};
-			params.module = self.getModuleName();
-			params.action = 'SaveStar';
-			params.record = record;
-			if (element.hasClass('active')) {
-				params.value = 0;
-				element.removeClass('fa-star').addClass('fa-star-o');
-			} else {
-				params.value = 1;
-				element.removeClass('fa-star-o').addClass('fa-star');
-			}
-			element.toggleClass('active');
+			element.addClass('processing');
+			followButton.toggleClass('hide');
+			unfollowButton.toggleClass('hide');
+
+			let record = element.closest('tr.listViewEntries').data('id'),
+				params = {
+					module:self.getModuleName(),
+					action:'SaveStar',
+					record:record,
+					value: unfollowButton.is(':visible') ? 1 : 0,
+				};
+
 			params._timeStampNoChangeMode = true;
-			app.request.post({data: params}).then(function (err, data) {
-				if (data) {
-					if (params.value == 0) {
-						element.attr("title", app.vtranslate('JS_NOT_STARRED'));
-					} else {
-						element.attr("title", app.vtranslate('JS_STARRED'));
-					}
-				}
+
+			app.request.post({data: params}).then(function (error, data) {
 				element.removeClass('processing');
-			})
-			if(element.hasClass('active')){
-				app.helper.showSuccessNotification({'message':app.vtranslate('JS_FOLLOW_RECORD')});
+			});
+
+			if (1 === params.value) {
+				app.helper.showSuccessNotification({'message': app.vtranslate('JS_FOLLOW_RECORD')});
 			} else {
-				app.helper.showSuccessNotification({'message':app.vtranslate('JS_UNFOLLOW_RECORD')});
+				app.helper.showSuccessNotification({'message': app.vtranslate('JS_UNFOLLOW_RECORD')});
 			}
 		});
 	},

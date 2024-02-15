@@ -430,80 +430,79 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
         $result = $this->db->pquery($sql, $R_Atr);
 
         $return_data = array();
-        $num_rows = $this->db->num_rows($result);
 
-        for ($i = 0; $i < $num_rows; $i++) {
-            $currModule = $this->db->query_result($result, $i, 'module');
-            $templateid = $this->db->query_result($result, $i, 'templateid');
+        while ($row = $this->db->fetchByAssoc($result)) {
+            $templateModule = $row['module'];
+            $templateId = $row['templateid'];
+            $TemplatePermissionsData = $this->returnTemplatePermissionsData($templateModule, $templateId);
 
-            $Template_Permissions_Data = $this->returnTemplatePermissionsData($currModule, $templateid);
-            if ($Template_Permissions_Data["detail"] === false) {
+            if ($TemplatePermissionsData['detail'] === false) {
                 continue;
             }
 
-            $emailtemplatearray = array();
-            $suffix = "";
+            $templateData = [];
+            $suffix = '';
 
-            if (isset($status_arr[$templateid])) {
-                if ($status_arr[$templateid]["is_active"] == "0") {
-                    $emailtemplatearray['status'] = 0;
+            if (isset($status_arr[$templateId])) {
+                if ($status_arr[$templateId]['is_active'] == '0') {
+                    $templateData['status'] = 0;
                 } else {
-                    $emailtemplatearray['status'] = 1;
-                    switch ($status_arr[$templateid]["is_default"]) {
-                        case "1":
-                            $suffix = " (" . vtranslate("LBL_DEFAULT_NOPAR", "EMAILMaker") . " " . vtranslate("LBL_FOR_DV", "EMAILMaker") . ")";
+                    $templateData['status'] = 1;
+
+                    switch ($status_arr[$templateId]['is_default']) {
+                        case '1':
+                            $suffix = ' (' . vtranslate('LBL_DEFAULT_NOPAR', $MODULE) . ' ' . vtranslate('LBL_FOR_DV', $MODULE) . ')';
                             break;
-                        case "2":
-                            $suffix = " (" . vtranslate("LBL_DEFAULT_NOPAR", "EMAILMaker") . " " . vtranslate("LBL_FOR_LV", "EMAILMaker") . ")";
+                        case '2':
+                            $suffix = ' (' . vtranslate('LBL_DEFAULT_NOPAR', $MODULE) . ' ' . vtranslate('LBL_FOR_LV', $MODULE) . ')';
                             break;
-                        case "3":
-                            $suffix = " (" . vtranslate("LBL_DEFAULT_NOPAR", "EMAILMaker") . ")";
+                        case '3':
+                            $suffix = ' (' . vtranslate('LBL_DEFAULT_NOPAR', $MODULE) . ')';
                             break;
                     }
                 }
-                $emailtemplatearray['order'] = $status_arr[$templateid]["sequence"];
+
+                $templateData['order'] = $status_arr[$templateId]['sequence'];
             } else {
-                $emailtemplatearray['status'] = 1;
-                $emailtemplatearray['order'] = 1;
+                $templateData['status'] = 1;
+                $templateData['order'] = 1;
             }
 
             if (!empty($search_status)) {
-                if ($search_status != "status_" . $emailtemplatearray['status']) {
+                if ($search_status != 'status_' . $templateData['status']) {
                     continue;
                 }
             }
 
-            $emailtemplatearray['status_lbl'] = ($emailtemplatearray['status'] == 1 ? vtranslate("Active") : vtranslate("Inactive", "EMAILMaker"));
-            $emailtemplatearray['name'] = $this->db->query_result($result, $i, 'templatename');
-            $emailtemplatearray['templateid'] = $templateid;
-            $emailtemplatearray['description'] = $this->db->query_result($result, $i, 'description');
-            $emailtemplatearray['subject'] = $this->db->query_result($result, $i, 'subject');
-            $emailtemplatearray['is_listview'] = $this->db->query_result($result, $i, 'is_listview');
+            $templateData['status_lbl'] = ($templateData['status'] == 1 ? vtranslate('Active', $MODULE) : vtranslate('Inactive', $MODULE));
+            $templateData['name'] = $row['templatename'];
+            $templateData['templateid'] = $templateId;
+            $templateData['description'] = $row['description'];
+            $templateData['subject'] = $row['subject'];
+            $templateData['is_listview'] = $row['is_listview'];
+
             if ($load_body) {
-                $emailtemplatearray['body'] = $this->db->query_result($result, $i, 'body');
-            }
-            $emailtemplatearray['module'] = vtranslate($currModule, $currModule);
-            $emailtemplatearray['templatename'] = "<a href=\"index.php?module=EMAILMaker&view=Detail&record=" . $templateid . "&return_module=EMAILMaker&return_view=List\">" . $this->db->query_result($result, $i, 'templatename') . $suffix . "</a>";
-
-            $pdftemplatearray['edit'] = "";
-            if ($Template_Permissions_Data["edit"]) {
-                $emailtemplatearray['edit'] .= "<li><a class=\"dropdown-item\" href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "\">" . vtranslate("LBL_EDIT", $MODULE) . "</a></li>"
-                    . "<li><a class=\"dropdown-item\" href=\"index.php?module=EMAILMaker&view=Edit&return_view=List&record=" . $templateid . "&isDuplicate=true\">" . vtranslate("LBL_DUPLICATE", $MODULE) . "</a></li>";
-            }
-            if ($Template_Permissions_Data["delete"]) {
-                $emailtemplatearray['edit'] .= "<li><a data-id=\"" . $templateid . "\" href=\"javascript:void(0);\" class=\"deleteRecordButton dropdown-item\">" . vtranslate('LBL_DELETE', $MODULE) . "</a></li>";
+                $templateData['body'] = $row['body'];
             }
 
+            $templateData['module'] = vtranslate($templateModule, $templateModule);
+            $templateData['templatename'] = "<a href=\"index.php?module=EMAILMaker&view=Detail&record=" . $templateId . "&return_module=EMAILMaker&return_view=List\">" . $row['templatename'] . $suffix . "</a>";
+            $templateData['edit'] = '';
 
-            $emailtemplatearray['category'] = $this->db->query_result($result, $i, 'category');
+            if ($TemplatePermissionsData['edit']) {
+                $templateData['edit_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&record=' . $templateId;
+                $templateData['duplicate_url'] = 'index.php?module=EMAILMaker&view=Edit&return_view=List&isDuplicate=true&record=' . $templateId;
+            }
 
-            $owner = $this->db->query_result($result, $i, 'owner');
-            $emailtemplatearray['owner'] = getUserFullName($owner);
-            $sharingtype = $this->db->query_result($result, $i, 'sharingtype');
-            $emailtemplatearray['sharingtype'] = vtranslate(strtoupper($sharingtype) . "_FILTER", 'EMAILMaker');
+            if ($TemplatePermissionsData['delete']) {
+                $templateData['delete_id'] = $templateId;
+            }
 
+            $templateData['category'] = $row['category'];
+            $templateData['owner'] = getUserFullName($row['owner']);
+            $templateData['sharingtype'] = vtranslate(strtoupper($row['sharingtype']) . '_FILTER', $MODULE);
 
-            $return_data [] = $emailtemplatearray;
+            $return_data [] = $templateData;
         }
 
         if ($originOrderby == "order") {
