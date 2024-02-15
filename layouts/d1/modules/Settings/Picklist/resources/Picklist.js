@@ -132,35 +132,38 @@ var Settings_Picklist_Js = {
 		});
 	},
 
-	registerRenameItemEvent : function() {
-		var thisInstance = this;
-        var container = this.getContainer();
-		var popupShown = false;
-		container.on('click', '.renameItem', function(e){
-			if(popupShown) {
+	registerRenameItemEvent: function () {
+		let thisInstance = this,
+			container = this.getContainer(),
+			popupShown = false;
+
+		container.on('click', '.renameItem', function (e) {
+			if (popupShown) {
 				return false;
 			}
-			var selectedListItem = jQuery(e.currentTarget);
-            var params = {
-                module : app.getModuleName(),
-                parent : app.getParentModuleName(),
-                source_module : jQuery('#pickListModules').val(),
-                view : 'IndexAjax',
-                mode : 'showEditView',
-                pickListFieldId : jQuery('#modulePickList').val(),
-                fieldValue	: selectedListItem.closest('tr').data('key'),
-                fieldValueId : selectedListItem.closest('tr').data('key-id')
-            }
+			let selectedListItem = jQuery(e.currentTarget),
+				params = {
+					module: app.getModuleName(),
+					parent: app.getParentModuleName(),
+					source_module: jQuery('#pickListModules').val(),
+					view: 'IndexAjax',
+					mode: 'showEditView',
+					pickListFieldId: jQuery('#modulePickList').val(),
+					fieldValue: selectedListItem.parents('.pickListValue').data('key'),
+					fieldValueId: selectedListItem.parents('.pickListValue').data('key-id')
+				}
 			popupShown = true;
-            app.request.post({data: params}).then(function(error, data){
-                app.helper.showModal(data, {cb: function(){
-					popupShown = false;
-				}});
-                var form = jQuery('#renameItemForm');
-                Settings_Picklist_Js.registerColorPickerEvent(form);
-                thisInstance.registerScrollForNonEditablePicklistValues(form);
-                Settings_Picklist_Js.registerRenameItemSaveEvent();
-            });
+			app.request.post({data: params}).then(function (error, data) {
+				app.helper.showModal(data, {
+					cb: function () {
+						popupShown = false;
+					}
+				});
+				let form = jQuery('#renameItemForm');
+				Settings_Picklist_Js.registerColorPickerEvent(form);
+				thisInstance.registerScrollForNonEditablePicklistValues(form);
+				Settings_Picklist_Js.registerRenameItemSaveEvent();
+			});
 		});
 	},
 	
@@ -186,23 +189,30 @@ var Settings_Picklist_Js = {
 	},
 
 	registerDeleteItemEvent : function() {
-		var thisInstance = this;
-        var container = this.getContainer();
+		let thisInstance = this,
+			container = this.getContainer();
+
 		deletePopupShown = false;
+
 		container.on('click', '.deleteItem', function(e){
 			if(deletePopupShown) {
 				return false;
 			}
-            var element = jQuery(e.currentTarget);
-			var selectedListItemsArray = new Array();
-            var pickListValuesTable = jQuery('#pickListValuesTable');
-            selectedListItemsArray.push(jQuery(element).closest('tr').data('key'));
-			var pickListValues = jQuery('.pickListValue',pickListValuesTable);
-			if(pickListValues.length == 1) {
+
+            let element = jQuery(e.currentTarget),
+				selectedListItemsArray = [],
+				pickListValuesTable = jQuery('#pickListValuesTable');
+
+            selectedListItemsArray.push(jQuery(element).parents('.pickListValue').data('key'));
+
+			let pickListValues = jQuery('.pickListValue',pickListValuesTable);
+
+			if(1 === pickListValues.length) {
 				app.helper.showErrorNotification({message: app.vtranslate('JS_YOU_CANNOT_DELETE_ALL_THE_VALUES')})
 				return;
 			}
-			var params = {
+
+			let params = {
 				module : app.getModuleName(),
 				parent : app.getParentModuleName(),
 				source_module : jQuery('#pickListModules').val(),
@@ -211,6 +221,7 @@ var Settings_Picklist_Js = {
 				pickListFieldId : jQuery('#modulePickList').val(),
 				fieldValue	: JSON.stringify(selectedListItemsArray)
 			}
+
 			deletePopupShown = true;
 			thisInstance.showDeleteItemForm(params);
 		});
@@ -352,10 +363,12 @@ var Settings_Picklist_Js = {
 							newValue = jQuery.trim(newValuesArray[i]);
 
 							let newElement = thisInstance.getPickListTemplate(newValue, params.selectedColor),
-								newPickListValueRow = jQuery(newElement).appendTo(jQuery('#pickListValuesTable').find('tbody'));
+								newPickListValueRow = $(newElement);
 
 							newPickListValueRow.attr('data-key', newValue);
 							newPickListValueRow.attr('data-key-id', data['id' + i]);
+
+							jQuery('#pickListValuesTable .afterPicklistValues').before(newPickListValueRow)
 						}
 						app.helper.hideModal();
 						app.helper.hideProgress();
@@ -580,8 +593,8 @@ var Settings_Picklist_Js = {
 			textColor = (contrast === 'dark') ? 'white' : 'black',
 			actions = jQuery('.picklistActionsTemplate').html();
 
-		return '<tr class="pickListValue border-bottom">' +
-			'<td class="text-truncate fieldPropertyContainer">' +
+		return '<div class="pickListValue border-bottom p-2">' +
+			'<div class="text-truncate fieldPropertyContainer">' +
 				'<div class="row align-items-center">' +
 					'<div class="col-auto">' +
 						'<span class="cursorDrag btn text-secondary">' +
@@ -593,8 +606,8 @@ var Settings_Picklist_Js = {
 						'<span class="py-1 px-2 rounded picklist-color" style="background-color: ' + color + ';color: ' + textColor + ';">' + value + '</span>' +
 					'</div>' +
 				'</div>' +
-			'</td>' +
-		'</tr>';
+			'</div>' +
+		'</div>';
     },
     
     registerColorPickerEvent : function(container) {
