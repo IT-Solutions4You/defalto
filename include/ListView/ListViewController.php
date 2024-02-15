@@ -228,6 +228,8 @@ class ListViewController {
 		}
 
 		$moduleInstance = Vtiger_Module_Model::getInstance("PBXManager");
+        $outgoingCallPermission = false;
+
 		if($moduleInstance && $moduleInstance->isActive()) {
 			$outgoingCallPermission = PBXManager_Server_Model::checkPermissionForOutgoingCall();
 			$clickToCallLabel = vtranslate("LBL_CLICK_TO_CALL");

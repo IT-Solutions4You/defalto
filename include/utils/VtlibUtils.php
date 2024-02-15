@@ -712,7 +712,7 @@ function vtlib_purify($input, $ignore = false) {
             if (is_array($input)) {
                 $value = array();
                 foreach ($input as $k => $v) {
-                    $value[$k] = vtlib_purify($v, $ignore);
+                    $value[$k] = str_replace('&amp;', '&', vtlib_purify($v, $ignore));
                 }
             } else { // Simple type
                 $value = $__htmlpurifier_instance->purify($input);
@@ -724,10 +724,27 @@ function vtlib_purify($input, $ignore = false) {
     	}
 	}
 
-	if ($value && !is_array($value)) {
+	if (is_array($value)) {
+        $value = str_replace_json('&amp;', '&', $value);
+    } else {
 		$value = str_replace('&amp;', '&', $value);
 	}
+
     return $value;
+}
+
+/**
+ * Function to replace values in multidimensional array (str_replace will support only one level of array)
+ *
+ * @param $search
+ * @param $replace
+ * @param $subject
+ *
+ * @return mixed
+ */
+function str_replace_json($search, $replace, $subject)
+{
+    return json_decode(str_replace($search, $replace, json_encode($subject)), true);
 }
 
 /**
@@ -932,18 +949,6 @@ function vtlib_addSettingsLink($linkName, $linkURL, $blockName = false) {
 		}
 	}
 	return $success;
-}
-
-/**
- * PHP7 support for split function
- * split : Case sensitive.
- */
-if (!function_exists('split')) {
-    function split($pattern, $string, $limit = null) {
-        $regex = '/' . preg_replace('/\//', '\\/', $pattern) . '/';
-        return preg_split($regex, $string, $limit);
-    }
-
 }
 
 function php7_compat_ereg($pattern, $str, $ignore_case=false) {

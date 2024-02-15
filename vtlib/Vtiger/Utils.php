@@ -342,8 +342,7 @@ class Vtiger_Utils {
     public static function writeLogFile($logFileName, $log) {
         if ($logFileName && $log) {
             $logFilePath = self::$logFolder . '/' . $logFileName;
-            file_put_contents($logFilePath, print_r($log, true), FILE_APPEND);
+			file_put_contents($logFilePath, print_r($log, true) . PHP_EOL, FILE_APPEND);
         }
     }
 }
-?>

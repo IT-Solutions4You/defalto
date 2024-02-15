@@ -119,7 +119,7 @@ class Products_ListView_Model extends Vtiger_ListView_Model {
 	public function addSubProductsQuery($listQuery){
 		$productId = $this->get('productId');
 
-		$splitQuery = split('WHERE', $listQuery);
+		$splitQuery = explode('WHERE', $listQuery);
 		$splitQuery[0] .= " LEFT JOIN vtiger_seproductsrel ON vtiger_seproductsrel.crmid = vtiger_products.productid AND vtiger_seproductsrel.setype='Products'";
 		$splitQuery[1] .= " AND vtiger_seproductsrel.productid = $productId AND vtiger_products.discontinued = 1";
 

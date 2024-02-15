@@ -64,7 +64,7 @@ function isReferenceUIType($uitype) {
 }
 
 function IsDateField($reportColDetails) {
-	list($tablename, $colname, $module_field, $fieldname, $typeOfData) = split(":", $reportColDetails);
+	list($tablename, $colname, $module_field, $fieldname, $typeOfData) = explode(':', $reportColDetails);
 	if ($typeOfData == "D") {
 		return true;
 	} else {

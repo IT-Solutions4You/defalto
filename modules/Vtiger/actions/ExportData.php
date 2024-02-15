@@ -348,7 +348,10 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 				if ($value && $value != '0000-00-00') {
 					$value = DateTimeField::convertToUserFormat($value);
 				}
-			} elseif($type == 'datetime') {
+            } elseif ($uitype == 14) {
+                $timeUIObj = new Vtiger_Time_UIType();
+                $value = $timeUIObj->getDisplayValue($value);
+            } elseif ($type == 'datetime') {
 				if ($moduleName == 'Calendar' && in_array($fieldName, array('date_start', 'due_date'))) {
 					$timeField = 'time_start';
 					if ($fieldName === 'due_date') {

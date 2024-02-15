@@ -90,7 +90,7 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
                             $queryGenerator->addCondition($fieldName, $searchValue, $comparator, "AND");
                         }
                     }
-                    $whereQuerySplit = split("WHERE", $queryGenerator->getWhereClause());
+                    $whereQuerySplit = explode('WHERE', $queryGenerator->getWhereClause());
                     $query.=" AND " . $whereQuerySplit[1];
                 }
 

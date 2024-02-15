@@ -232,7 +232,6 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
-		$paramArray = array();
 
         $viewid = ListViewSession::getCurrentView($moduleName);
 
@@ -280,11 +279,9 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 
 		ListViewSession::setSessionQuery($moduleName, $listQuery, $viewid);
 
-		$listQuery .= " LIMIT ?, ?";
-		array_push($paramArray, $startIndex);
-		array_push($paramArray, ($pageLimit+1));
-		
-		$listResult = $db->pquery($listQuery, $paramArray);
+        $listQuery .= ' LIMIT ' . $startIndex . ', ' . ($pageLimit + 1);
+
+        $listResult = $db->pquery($listQuery, []);
 
 		$listViewRecordModels = array();
 		$listViewEntries =  $listViewContoller->getListViewRecords($moduleFocus,$moduleName, $listResult);

@@ -337,7 +337,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                 $this->queryPlanner->addTable($secondary->table_name);
             }
         }
-        $field = split('#', $field);
+        $field = explode('#', $field);
         $module = $field[0];
         $fieldname = trim($field[1]);
         $tabid = getTabId($module);
@@ -618,7 +618,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
         );
 
         if (!empty($this->secondarymodule)) {
-            $sec_modules = split(':', $this->secondarymodule);
+            $sec_modules = explode(':', $this->secondarymodule);
             for ($i = 0; $i < count($sec_modules); $i++) {
                 $modules_selected[] = $sec_modules[$i];
             }
@@ -804,8 +804,8 @@ class EMAILMakerRelBlockRun extends CRMEntity
         while ($columnsListRow = $adb->fetch_array($result)) {
             $fieldColumn = $columnsListRow['columnname'];
 
-            list($tableName, $columnName, $moduleFieldLabel, $fieldName, $single) = split(':', $fieldColumn);
-            list($module, $field) = split('_', $moduleFieldLabel, 2);
+            [$tableName, $columnName, $moduleFieldLabel, $fieldName, $single] = explode(':', $fieldColumn);
+            [$module, $field] = explode('_', $moduleFieldLabel, 2);
 
             $targetTableName = $tableName;
             $inventory_fields = array('serviceid');
@@ -866,7 +866,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
 
                 if (empty($queryColumns)) {
                     if ('C' === $single) {
-                        $field_label_data = split('_', $moduleFieldLabel);
+                        $field_label_data = explode('_', $moduleFieldLabel);
                         $module = $field_label_data[0];
 
                         if ($module != $this->primarymodule) {

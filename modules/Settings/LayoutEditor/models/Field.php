@@ -54,7 +54,7 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 		}
 	}
 
-	public static function makeFieldActive($fieldIdsList=array(), $blockId, $moduleName = false) {
+	public static function makeFieldActive($fieldIdsList, $blockId, $moduleName = false) {
 		$db = PearDatabase::getInstance();
 		$maxSequenceQuery = "SELECT MAX(sequence) AS maxsequence FROM vtiger_field WHERE block = ? AND presence IN (0,2) ";
 		$res = $db->pquery($maxSequenceQuery,array($blockId));

@@ -152,7 +152,7 @@ class CheckDuplicateHandler extends VTEventHandler {
 
 						if ($fieldModel->get('uitype') == 72) {
 							array_push($conditions, "$fieldTableName.currency_id = ?");
-							$currencyIdDetails = split('curname', $_REQUEST['base_currency']);
+							$currencyIdDetails = explode('curname', $_REQUEST['base_currency']);
 							$params[] = $currencyIdDetails[1];
 						}
 					}

@@ -26,7 +26,7 @@ class Settings_Vtiger_UpdateCompanyLogo_Action extends Settings_Vtiger_Basic_Act
         if ($saveLogo) {
             $sanitizedFileName = ltrim(basename(' ' . Vtiger_Util_Helper::sanitizeUploadFileName($logoDetails['name'], vglobal('upload_badext'))));
 
-            if (pathinfo($sanitizedFileName, PATHINFO_EXTENSION) != 'txt') {
+            if (pathinfo($sanitizedFileName, PATHINFO_EXTENSION) !== 'txt') {
                 $moduleModel->saveLogo($sanitizedFileName);
                 $moduleModel->set('logoname', $sanitizedFileName);
                 $moduleModel->save();

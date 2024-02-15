@@ -112,6 +112,8 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
 					}
+
+                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
 					$recordModel->set($fieldName, $fieldValue);
 				}
 				$recordModel->set($fieldName, $fieldValue);
@@ -133,9 +135,7 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 				} else {
 					$fieldValue = $fieldModel->getDefaultFieldValue();
 				}
-                if($fieldValue){
-                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue,$fieldModel);
-                }
+
 				$fieldDataType = $fieldModel->getFieldDataType();
 				if ($fieldDataType == 'time' && $fieldValue !== null) {
 					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
@@ -145,6 +145,8 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 					if (!is_array($fieldValue)) {
 						$fieldValue = trim($fieldValue);
 					}
+
+                    $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
 					$recordModel->set($fieldName, $fieldValue);
 				}
 			} 

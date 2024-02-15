@@ -58,7 +58,7 @@ Settings_Vtiger_Edit_Js("Settings_Groups_Edit_Js",{},{
 								form.submit();
 							},
 							function(data, err){
-								app.helper.showErrorNotification({message:app.vtranslate('JS_DUPLICATES_EXIST')});
+								app.helper.showErrorNotification({message: data.message});
 								jQuery('.saveButton').removeAttr('disabled');
 								return false;
 							}

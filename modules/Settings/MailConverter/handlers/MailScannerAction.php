@@ -548,8 +548,10 @@ class Vtiger_MailScannerAction {
 
 		$mimetype = MailAttachmentMIME::detect($saveasfile);
 
-		$adb->pquery("INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, path=?",
-			Array($attachid, $filename, $description, $mimetype, $dirname));
+		$adb->pquery(
+			'INSERT INTO vtiger_attachments SET attachmentsid=?, name=?, description=?, type=?, storedname=?, path=?',
+			[$attachid, $filename, $description, $mimetype, $filename, $dirname]
+		);
 
 		return true;
 	}

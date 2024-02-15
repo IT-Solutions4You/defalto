@@ -686,7 +686,7 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 
 		$sub_prod_str = vtlib_purify($_REQUEST['subproduct_ids'.$i]);
 		if (!empty($sub_prod_str)) {
-			 $sub_prod = split(',', rtrim($sub_prod_str, ','));
+			 $sub_prod = explode(',', rtrim($sub_prod_str, ','));
 			 foreach ($sub_prod as $subProductInfo) {
 				 list($subProductId, $subProductQty) = explode(':', $subProductInfo);
 				 $query = 'INSERT INTO vtiger_inventorysubproductrel VALUES(?, ?, ?, ?)';

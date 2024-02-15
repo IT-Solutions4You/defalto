@@ -8,19 +8,26 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-class Project_Relation_Model extends Vtiger_Relation_Model{
+class Project_Relation_Model extends Vtiger_Relation_Model
+{
 
-	/**
-	 * Function that deletes Project related records information
-	 * @param <Integer> $sourceRecordId - Project Id
-	 * @param <Integer> $relatedRecordId - Related Record Id
-	 */
-	public function deleteRelation($sourceRecordId, $relatedRecordId){
-		$sourceModule = $this->getParentModuleModel();
-		$sourceModuleName = $sourceModule->get('name');
-		$destinationModuleName = $this->getRelationModuleModel()->get('name');
-		$sourceModuleFocus = CRMEntity::getInstance($sourceModuleName);
-        	$sourceModuleFocus->delete_related_module($sourceModuleName, $sourceRecordId, $destinationModuleName, $relatedRecordId);
-		return true;
-	}
+    /**
+     * Function that deletes Project related records information
+     *
+     * @param int $sourceRecordId  - Project Id
+     * @param int $relatedRecordId - Related Record Id
+     *
+     * @throws Exception
+     */
+    public function deleteRelation($sourceRecordId, $relatedRecordId)
+    {
+        $sourceModule = $this->getParentModuleModel();
+        $sourceModuleName = $sourceModule->get('name');
+        $destinationModuleName = $this->getRelationModuleModel()->get('name');
+        $sourceModuleFocus = CRMEntity::getInstance($sourceModuleName);
+        $sourceModuleFocus->delete_related_module($sourceModuleName, $sourceRecordId, $destinationModuleName, $relatedRecordId);
+        $sourceModuleFocus->trackUnLinkedInfo($sourceModuleName, $sourceRecordId, $destinationModuleName, $relatedRecordId);
+
+        return true;
+    }
 }

@@ -192,7 +192,7 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
         $ssql .= " order by vtiger_emakertemplates_relblockcol.colid";
         $result = $adb->pquery($ssql, array($relblockid));
         $permitted_fields = array();
-        $selected_mod = split(":", $secmodule);
+        $selected_mod = explode(":", $secmodule);
         array_push($selected_mod, $primodule);
 
         while ($columnslistrow = $adb->fetch_array($result)) {
@@ -206,9 +206,10 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
                 }
             }
             if ($selmod_field_disabled == false) {
-                list($tablename, $colname, $module_field, $fieldname, $single) = split(":", $fieldcolname);
+                [$tablename, $colname, $module_field, $fieldname, $single] = explode(":", $fieldcolname);
                 require('user_privileges/user_privileges_' . $current_user->getId() . '.php');
-                list($module, $field) = split("_", $module_field);
+                [$module, $field] = explode("_", $module_field);
+
                 if (php7_count($permitted_fields) == 0 && $is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1) {
                     $permitted_fields = $this->getaccesfield($module, $primodule, $secmodule);
                 }

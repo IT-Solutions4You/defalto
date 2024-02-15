@@ -404,7 +404,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	},
 	registerEventForTaskManagement : function(){
 		var globalNav = jQuery('.global-nav');
-		globalNav.on("click",".taskManagement",function(e){
+		globalNav.find('.taskManagement').on('click', function (e) {
 			if(jQuery("#taskManagementContainer").length > 0){
 				app.helper.hidePageOverlay();
 				return false;
