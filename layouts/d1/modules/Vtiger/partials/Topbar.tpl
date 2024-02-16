@@ -92,7 +92,7 @@
                     <li class="me-2">
                         <div class="dropdown">
                             <div data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
-                                <a href="#" id="menubar_quickCreate" class="btn border-1 border-secondary text-secondary qc-button" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true">
+                                <a href="#" id="menubar_quickCreate" class="btn border-1 border-secondary text-secondary qc-button btn-outline-secondary" title="{vtranslate('LBL_QUICK_CREATE',$MODULE)}" aria-hidden="true">
                                     <i class="fa fa-plus-circle"></i>
                                 </a>
                             </div>
@@ -184,13 +184,35 @@
                     {assign var=USER_PRIVILEGES_MODEL value=Users_Privileges_Model::getCurrentUserPrivilegesModel()}
                     {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Appointments')}
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
+                        {assign var=CALENDAR_TODAY_COUNT value=$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}
+                        {assign var=CALENDAR_TODAY_RECORD value=$CALENDAR_MODULE_MODEL->getTodayRecord()}
                         <li class="me-2">
-                            <div>
-                                <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn text-secondary border-secondary" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
-                                    <i class="fa fa-calendar"></i>
-                                </a>
-                            </div>
+                            <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
+                                <i class="fa fa-calendar"></i>
+                                <b class="ms-2">{date('d')}</b>
+                                <small class="ms-1">{vtranslate(date('M'), 'Appointments')}</small>
+                                {if !empty($CALENDAR_TODAY_COUNT)}
+                                    <span class="position-absolute top-0 start-100 translate-middle pe-4">
+                                        <span class="badge rounded-pill bg-primary">{$CALENDAR_TODAY_COUNT}</span>
+                                    </span>
+                                {/if}
+                            </a>
                         </li>
+                        {if $CALENDAR_TODAY_RECORD}
+                            <li>
+                                <a href="{$CALENDAR_TODAY_RECORD->getDetailViewUrl()}" class="btn btn-outline-secondary text-secondary border-secondary" title="{$CALENDAR_TODAY_RECORD->getName()}">
+                                    <div class="text-start">
+                                        <div>
+                                            <i class="{$CALENDAR_TODAY_RECORD->getActivityTypeIcon()}"></i>
+                                            <span class="ms-2">{$CALENDAR_TODAY_RECORD->getTimes()}</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-truncate">{$CALENDAR_TODAY_RECORD->getName()}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {/if}
                     {/if}
                     {assign var=REPORTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
                     {if $REPORTS_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
