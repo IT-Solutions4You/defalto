@@ -1,6 +1,6 @@
 <div id="modal_users_and_groups" class="modal-dialog modal-lg" data-background="static">
     <div class="modal-content">
-        {include file='ModalHeader.tpl'|vtemplate_path:$QUALIFIED_MODULE TITLE=vtranslate('LBL_USERS_GROUP_TITLE', $QUALIFIED_MODULE)}
+        {include file='ModalHeader.tpl'|vtemplate_path:$QUALIFIED_MODULE TITLE=vtranslate('LBL_FILTER', $QUALIFIED_MODULE)}
         <div class="modal-body">
             <div class="container-fluid usersGroupsContainer">
                 <div class="row">

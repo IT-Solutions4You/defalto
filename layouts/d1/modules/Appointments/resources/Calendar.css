@@ -126,3 +126,20 @@
     line-height: 1.6rem !important;
     max-height: 4.8rem !important;
 }
+.fc * {
+    border-color: #eee !important;
+}
+.fc .fc-timegrid-slot {
+    border: 0;
+}
+.fc .fc-timegrid-slot[data-time*=":00:00"] {
+    border-top: 1px solid #eee;
+}
+.fc .fc-daygrid-week-number {
+    background: transparent;
+    font-weight: bold;
+}
+
+#CalendarFilter .row:hover {
+    background: rgba(var(--bs-secondary-bg-rgb),var(--bs-bg-opacity)) !important;
+}

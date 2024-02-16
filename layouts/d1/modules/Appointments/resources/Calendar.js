@@ -345,8 +345,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                         let eventType = data['record'],
                             eventTypeId = eventType['id'],
                             eventTypeCheckBox = $('.fieldEventType[value="' + eventTypeId + '"]'),
-                            background = {background: eventType['background_color'], color: eventType['text_color']},
-                            color = {color: eventType['text_color']},
+                            styles = '--bs-primary-color:' + eventType['background_color'] + ';',
                             eventTypeElement,
                             eventTypeIdElements;
 
@@ -365,8 +364,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                         }
 
                         if (eventTypeElement) {
-                            eventTypeElement.css(background);
-                            eventTypeIdElements.css(color);
+                            eventTypeElement.attr('style', styles);
                             eventTypeElement.find('.fieldEventType').trigger('change');
                         }
 
@@ -910,7 +908,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                         }
                     }
 
-                    return hour + am_pm;
+                    return hour + ':00' + am_pm;
                 },
                 moreLinkContent: function (args) {
                     return app.vtranslate('More');
@@ -1280,9 +1278,9 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
             }
 
             if (imageInfo['image']) {
-                appendElement.append('<div class="selected_image selected_image_img py-2 border rounded row mb-2 text-truncate"><div class="col-auto pe-0"><img class="selected_img" src="' + imageInfo['image'] + '" /></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
+                appendElement.append('<div class="selected_image selected_image_img py-2 rounded row text-truncate align-items-center"><div class="col-auto pe-0"><img class="selected_img" src="' + imageInfo['image'] + '" /></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
             } else {
-                appendElement.append('<div class="selected_image selected_image_text py-2 border rounded row mb-2"><div class="col-auto pe-0"><i class="selected_i rounded-circle bg-opacity-10 bg-primary text-center fa fa-user"></i></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
+                appendElement.append('<div class="selected_image selected_image_text py-2 rounded row align-items-center"><div class="col-auto pe-0"><i class="selected_i rounded-circle bg-opacity-10 bg-primary text-center fa fa-user"></i></div><div class="col selected_name text-truncate">' + imageInfo['name'] + '</div></div>');
             }
 
             index++;
