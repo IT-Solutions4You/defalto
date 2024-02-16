@@ -247,11 +247,11 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public static function getUserStyles(): string
     {
-        $hour = date('H:00');
+        $hour = date('H:00:00');
 
         return sprintf(
-            '.fc-timegrid-slot[data-time*="%s"] { border-top: 2px solid #5e81f4 !important; }' . "\n\r" .
-            '.fc-scrollgrid-shrink[data-time*="%s"] { color: #5e81f4; font-weight: 900; }' . "\n\r",
+            '.fc .fc-timegrid-slot[data-time="%s"] { border-top: 2px solid #5e81f4 !important; }' . "\n\r" .
+            '.fc .fc-scrollgrid-shrink[data-time*="%s"] { color: #5e81f4; font-weight: 900; }' . "\n\r",
             $hour,
             $hour
         );

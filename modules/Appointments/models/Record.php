@@ -25,6 +25,18 @@ class Appointments_Record_Model extends Vtiger_Record_Model
     }
 
     /**
+     * @return string
+     */
+    public function getTimes(): string
+    {
+        $isAllDay = 'Yes' === $this->get('is_all_day');
+        $startDatetime = $this->get('datetime_start');
+        $endDatetime = $this->get('datetime_end');
+
+        return Vtiger_Util_Helper::formatDatesIntoTimesRange($startDatetime, $endDatetime, $isAllDay);
+    }
+
+    /**
      * @return bool
      */
     public function isRecurringEnabled(): bool

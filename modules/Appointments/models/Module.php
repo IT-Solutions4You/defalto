@@ -10,6 +10,8 @@
  */
 class Appointments_Module_Model extends Vtiger_Module_Model
 {
+    public $todayRecordsListModel;
+
     /** Calendar Widget: Copy to vtiger Module Model */
     public function getCalendarEvents($mode, $pagingModel, $user, $recordId = false)
     {
@@ -161,54 +163,84 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return array_merge($settingsLinks, parent::getSettingLinks());
     }
 
-    /**
-     * @return string
-     */
-    public static function getTodayDate(): string
-    {
-        $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
 
-        return $today->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * @return string
-     */
-    public static function getTodayDates(): string
-    {
-        $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-        $tomorrow->modify('+1439 minutes');
-        $tomorrow = $tomorrow->format('Y-m-d H:i:s');
-
-        return self::getTodayDate() . ',' . $tomorrow;
-    }
 
     /**
      * @return int
      */
     public function getTodayRecordsCount(): int
     {
+        $listModel = $this->getTodayRecordsListModel();
+
+        return intval($listModel->getListViewCount());
+    }
+
+    /**
+     * @return Vtiger_ListView_Model
+     */
+    public function getTodayRecordsListModel()
+    {
+        if(!empty($this->todayRecordsListModel)) {
+            return $this->todayRecordsListModel;
+        }
+
         $moduleName = $this->getName();
         $currentUser = Users_Record_Model::getCurrentUserModel();
         $queryGenerator = new EnhancedQueryGenerator($moduleName, $currentUser);
+        $queryGenerator->setFields(['id', 'subject', 'calendar_type', 'datetime_start', 'datetime_end', 'is_all_day']);
 
         /** @var Vtiger_ListView_Model $listModel */
         $listModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
         $listModel->set('query_generator', $queryGenerator);
 
+        $date = Appointments_Dates_Helper::getTodayDatetimesForUser();
+        $currentDate = Appointments_Dates_Helper::getCurrentDatetimeForUser();
 
-        $date = self::getTodayDates();
-        /** @var QueryGenerator $queryGenerator */
+        /**
+         * @var EnhancedQueryGenerator $queryGenerator
+         * Query generator require user dates to convert to database utc
+         */
         $queryGenerator = $listModel->get('query_generator');
-
         $queryGenerator->startGroup('');
-        $queryGenerator->addCondition('datetime_start', $date, 'bw', 'OR');
+        /** Show events with time between start and end date */
+        $queryGenerator->startGroup('');
+        $queryGenerator->addCondition('datetime_start', $date, 'bw', '');
         $queryGenerator->addCondition('datetime_end', $date, 'bw', 'OR');
         $queryGenerator->endGroup();
+        /** Show events with start date less than current time and end date more than current time */
+        $queryGenerator->startGroup($queryGenerator::$OR);
+        $queryGenerator->addCondition('datetime_start', $currentDate, 'l');
+        $queryGenerator->addConditionGlue($queryGenerator::$AND);
+        $queryGenerator->addCondition('datetime_end', $currentDate, 'g');
+        $queryGenerator->endGroup('');
+        $queryGenerator->endGroup('');
 
-        $queryGenerator->addUserSearchConditions(['search_field' => 'assigned_user_id', 'search_text' => decode_html($currentUser->getName()), 'operator' => 'c']);
+        $queryGenerator->addCondition('calendar_status', 'Completed', 'n', 'AND');
+        $queryGenerator->addCondition('calendar_status', 'Cancelled', 'n', 'AND');
+        $queryGenerator->addCondition('assigned_user_id', decode_html($currentUser->getName()), 'c', 'AND');
 
-        return intval($listModel->getListViewCount());
+        $this->todayRecordsListModel = $listModel;
+
+        return $listModel;
+    }
+
+    public function getFirstTodayRecord()
+    {
+        $db = PearDatabase::getInstance();
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        $listModel = $this->getTodayRecordsListModel();
+        $pagingModel = new Vtiger_Paging_Model();
+        $pagingModel->set('limit', 1);
+        $queryGenerator = $listModel->get('query_generator');
+        $controller = new ListViewController($db, $currentUser, $queryGenerator);
+
+        $listModel->set('module', $this);
+        $listModel->set('listview_controller', $controller);
+
+        $records = $listModel->getListViewEntries($pagingModel);
+
+        return !empty($records) ? array_values($records)[0] : false;
     }
 
     /**
@@ -233,25 +265,6 @@ class Appointments_Module_Model extends Vtiger_Module_Model
             $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
             $request->set('calendar_type', $currentUser->get('defaultactivitytype'));
         }
-    }
-
-    /**
-     * @param object|bool $filter
-     * @return bool
-     */
-    public static function updateTodayFilterDates($filter): bool
-    {
-        if (!$filter && 'Today' !== trim($filter->name)) {
-            return false;
-        }
-
-        $date = self::getTodayDates();
-
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_start%']);
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_end%']);
-
-        return true;
     }
 
     /**

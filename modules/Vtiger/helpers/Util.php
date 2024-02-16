@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_Util_Helper {
 	/**
@@ -1287,5 +1285,53 @@ class Vtiger_Util_Helper {
             }
         }
         return $fieldValue;
+    }
+
+    /**
+     * @param string $startDatetime
+     * @param string $endDatetime
+     * @param bool $isAllDay
+     * @return string
+     */
+    public static function formatDatesIntoTimesRange(string $startDatetime, string $endDatetime, bool $isAllDay = false): string
+    {
+        $todayLabel = vtranslate('LBL_TODAY');
+        $todayDate = date('Y-m-d');
+        $startDatetime = DateTimeField::convertToUserTimeZone($startDatetime);
+        $startDatetime = $startDatetime->format('Y-m-d H:i');
+        [$startDate, $startTime] = explode(' ', $startDatetime);
+        $startDateIsToday = $startDate === $todayDate;
+
+        $endDatetime = DateTimeField::convertToUserTimeZone($endDatetime);
+
+        if ($isAllDay) {
+            $endDatetime->modify('-1 days');
+        }
+
+        $endDatetime = $endDatetime->format('Y-m-d H:i');
+        [$endDate, $endTime] = explode(' ', $endDatetime);
+        $endDateIsToday = $endDate === $todayDate;
+
+        $endDateLabel = date('d', strtotime($endDate)) . ' ' . date('M', strtotime($endDate));
+        $startDateLabel = date('d', strtotime($startDate)) . ' ' . date('M', strtotime($startDate));
+
+        if ($isAllDay) {
+            $startTime = $endTime = '';
+
+            if ($startDateIsToday && $endDateIsToday) {
+                return $todayLabel;
+            }
+        } else {
+            if($startDate === $endDate) {
+                $endDateLabel = '';
+            }
+
+            if($startDateIsToday) {
+                $startDateLabel = '';
+            }
+        }
+
+
+        return trim($startDateLabel . ' ' . $startTime) . ' - ' . trim($endDateLabel . ' ' . $endTime);
     }
 }

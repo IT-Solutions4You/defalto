@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Users_Save_Action extends Vtiger_Save_Action {
 
@@ -81,7 +79,12 @@ class Users_Save_Action extends Vtiger_Save_Action {
                 // Purify malicious html event attributes
                 $fieldValue = purifyHtmlEventAttributes(decode_html($purifiedContent),true);
 			}
-			if($fieldValue !== null) {
+
+            if ('week_days' === $fieldName && is_array($fieldValue)) {
+                $fieldValue = implode(' |##| ', $fieldValue);
+            }
+
+            if($fieldValue !== null) {
 				if(!is_array($fieldValue)) {
 					$fieldValue = trim($fieldValue);
 				}

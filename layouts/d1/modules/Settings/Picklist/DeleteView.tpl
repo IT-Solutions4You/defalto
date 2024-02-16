@@ -53,7 +53,7 @@
                         <div class="form-group row">
                             <div class="control-label col-sm-3 col-xs-3">{vtranslate('LBL_NON_EDITABLE_PICKLIST_VALUES',$QUALIFIED_MODULE)}</div>
                             <div class="controls col-sm-4 col-xs-4 nonEditableValuesDiv">
-                                <ul class="nonEditablePicklistValues" style="list-style-type: none;">
+                                <ul class="nonEditablePicklistValues p-0" style="list-style-type: none;">
                                 {foreach from=$SELECTED_PICKLISTFIELD_NON_EDITABLE_VALUES key=NON_EDITABLE_VALUE_KEY item=NON_EDITABLE_VALUE}
                                     <li>{vtranslate($NON_EDITABLE_VALUE,$SOURCE_MODULE)}</li>
                                 {/foreach}

@@ -201,6 +201,7 @@ $languageStrings = array(
     'LBL_CALENDARS' => 'Calendars',
     'LBL_TEAM_CALENDAR' => 'Teams',
     'LBL_ADD_CALENDAR' => 'Add Calendar',
+    'LBL_FILTER' => 'Filter',
 );
 
 $jsLanguageStrings = array(

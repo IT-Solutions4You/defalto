@@ -1419,6 +1419,7 @@ $languageStrings = array(
     'LBL_MAKE_READONLY' => 'Make Readonly',
     'LBL_SHOW_ALL_RECORDS' => 'Show all records',
     'LBL_DASHBOARD_TAB_INVALID' => 'Invalid Tab Name ',
+    'LBL_SETTINGS_MENU' => 'Settings Menu',
 );
 
 $jsLanguageStrings = array(

@@ -72,7 +72,7 @@
                                         </div>
                                     </div>
                                 {/foreach}
-                                <div class="p-2"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
+                                <div class="p-2 afterPicklistValues"><!-- Placeholder role to allow drag-and-drop for last elements --></div>
                                 <span class="picklistActionsTemplate hide">
                                     <a title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}" class="renameItem btn text-secondary">
                                         <i class="fa fa-pencil"></i>

@@ -977,27 +977,29 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                 }
             }
 
-            $tomorrow = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-            $tomorrow->modify('+1439 minutes');
-            $tomorrow = $tomorrow->format('Y-m-d H:i:s');
-            $today = DateTimeField::convertToDBTimeZone(date('Y-m-d'));
-            $today = $today->format('Y-m-d H:i:s');
-            $groupId = 2;
+            $today = date('Y-m-d');
             $rules = [
-                ['its4you_calendar:datetime_start:datetime_start:Appointments_Start_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, 'or'],
-                ['its4you_calendar:datetime_end:datetime_end:Appointments_End_Datetime:DT', 'bw', $today . ',' . $tomorrow, $groupId, ''],
+                [$filter->id, 0, 'its4you_calendar:status:calendar_status:Appointments_Status:V', 'n', 'Completed,Cancelled', 1, ''],
+                [$filter->id, 1, 'its4you_calendar:datetime_start:datetime_start:Appointments_Start_Datetime:DT', 'today', $today, 2, 'or'],
+                [$filter->id, 2, 'its4you_calendar:datetime_end:datetime_end:Appointments_End_Datetime:DT', 'today', $today, 2, ''],
             ];
 
+            $groups = [
+                [1, $filter->id, 'and', ' 0 '],
+                [2, $filter->id, null, ' 1 or 2 '],
+            ];
 
-            $this->db->pquery(
-                'INSERT INTO vtiger_cvadvfilter_grouping(groupid,cvid,group_condition,condition_expression) VALUES (?,?,?,?)',
-                [$groupId, $filter->id, null, implode(' or ', array_keys($rules))]
-            );
+            foreach ($groups as $group) {
+                $this->db->pquery(
+                    'INSERT INTO vtiger_cvadvfilter_grouping(groupid,cvid,group_condition,condition_expression) VALUES (?,?,?,?)',
+                    $group
+                );
+            }
 
-            foreach ($rules as $index => $rule) {
+            foreach ($rules as $rule) {
                 $this->db->pquery(
                     'INSERT INTO vtiger_cvadvfilter(cvid, columnindex, columnname, comparator, value, groupid, column_condition) VALUES(?,?,?,?,?,?,?)',
-                    [$filter->id, $index, $rule[0], $rule[1], $rule[2], $rule[3], $rule[4]]
+                    $rule
                 );
             }
         }
