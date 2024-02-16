@@ -390,10 +390,6 @@ class Vtiger_Functions {
 
 		if (!is_array($ids)) $ids = array($ids);
 
-		if ($module == 'Events') {
-			$module = 'Calendar';
-		}
-
 		if ($module) {
 			$entityDisplay = array();
 

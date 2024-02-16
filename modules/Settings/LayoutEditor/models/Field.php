@@ -127,11 +127,8 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 	 * @return boolean
 	 */
 	public function isMassEditOptionDisabled() {
-		if($this->get('masseditable') == 0 || $this->get('displaytype') != 1 || $this->get('masseditable') == 3 || in_array($this->block->module->name, array('Events', 'Calendar')) || $this->isOptionsRestrictedField()) {
-			return true;
-		}
-		return false;
-	}
+        return $this->get('masseditable') == 0 || $this->get('displaytype') != 1 || $this->get('masseditable') == 3 || $this->isOptionsRestrictedField();
+    }
 
 	/**
 	 * Function which will specify whether the default value option is disabled
@@ -157,21 +154,11 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 	 * @return <Boolean> true/false
 	 */
 	public function isSummaryFieldOptionDisabled() {
-		if (in_array($this->get('displaytype'), array(4, 5)) || in_array($this->block->module->name, array('Events', 'Calendar'))
-				|| ($this->get('uitype') == '83' && $this->getName() == 'taxclass' && in_array($this->block->module->name, array('Products', 'Services')))) {
-			return true;
-		}
-		return false;
-	}
+        return in_array($this->get('displaytype'), [4, 5])
+            || ($this->get('uitype') == '83' && $this->getName() == 'taxclass' && in_array($this->block->module->name, ['Products', 'Services']));
+    }
 
-	public function isHeaderFieldOptionDisabled() {
-		/**
-		 * for Calendar & Events summary Field option is disabled by default
-		 * that shouldn't effect header field
-		 */
-		if (in_array($this->block->module->name, array('Calendar', 'Events'))) {
-			return false;
-		}
+    public function isHeaderFieldOptionDisabled() {
 		return $this->isSummaryFieldOptionDisabled();
 	}
 
@@ -180,9 +167,6 @@ class Settings_LayoutEditor_Field_Model extends Vtiger_Field_Model {
 	 * @return <Boolean> true/false
 	 */
 	public function isEditable() {
-		if (in_array($this->block->module->name, array('Events','Calendar')) && ($this->block->label == 'LBL_INVITE_USER_BLOCK' || $this->getName() == 'reminder_time' || $this->getName() == 'recurringtype')) {
-			return false;
-		}
 		return true;
 	}
 

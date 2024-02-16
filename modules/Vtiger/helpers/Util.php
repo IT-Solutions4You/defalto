@@ -602,11 +602,6 @@ class Vtiger_Util_Helper {
 						$referenceModule = $moduleModel->getName();
 						$referenceFieldName = $fieldName;
 					}
-					//handling events custom fields from calendar
-					if(empty($fieldInfo) && $referenceModule == 'Calendar') {
-						$eventsModuleModel = Vtiger_Module_Model::getInstance('Events');
-						$fieldInfo = Vtiger_Field_Model::getInstance($referenceFieldName, $eventsModuleModel);
-					}
 
 				   $operator = $fieldSearchInfo[1];
 				   $fieldValue = $fieldSearchInfo[2];
@@ -892,13 +887,6 @@ class Vtiger_Util_Helper {
 			}
 		}
 		return $bytestotal;
-	}
-
-	public static function getCalendarReferenceModulesList() {
-		$moduleInstance = Vtiger_Module_Model::getInstance('Calendar');
-		$fieldInstance = Vtiger_Field_Model::getInstance('parent_id', $moduleInstance);
-		$referenceModuleList = $fieldInstance->getReferenceList();
-		return $referenceModuleList;
 	}
 
 	public static function getBrowserInfo() {

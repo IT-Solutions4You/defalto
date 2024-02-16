@@ -2099,8 +2099,8 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
         var relModule = container.find('[name="relatedModule"]').val();
         for (var index in fieldsToEnable) {
             var fieldNameAttr = fieldsToEnable[index];
-            if ((relModule == 'Calendar' || relModule == 'Documents')
-                && fieldNameAttr == 'tabInRelated') {
+
+            if (relModule === 'Documents' && fieldNameAttr === 'tabInRelated') {
                 continue;
             }
 

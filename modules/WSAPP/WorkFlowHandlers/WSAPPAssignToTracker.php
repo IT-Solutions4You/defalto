@@ -36,10 +36,6 @@ class WSAPPAssignToTracker extends VTEventHandler{
 			return;
 		}
 		$wsModuleName = $this->getWsModuleName($moduleName);
-		if($wsModuleName =="Calendar")
-		{
-				$wsModuleName = vtws_getCalendarEntityType($recordId);
-		}
 		$handler = vtws_getModuleHandlerFromName($wsModuleName, $current_user);
 		$meta = $handler->getMeta();
 		$recordWsValues = DataTransform::sanitizeData($recordValues,$meta);
@@ -64,11 +60,6 @@ class WSAPPAssignToTracker extends VTEventHandler{
 
 	function getWsModuleName($workFlowModuleName){
 		//TODO: Handle getting the webservice modulename in a better way
-		$wsModuleName = $workFlowModuleName;
-		if($workFlowModuleName == "Activity")
-			$wsModuleName = "Calendar";
-		return $wsModuleName;
+		return $workFlowModuleName;
 	}
 }
-
-?>

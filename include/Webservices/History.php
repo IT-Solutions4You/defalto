@@ -193,9 +193,6 @@ function vtws_history_entityIdHelper($moduleName, $id) {
 		if (empty($moduleName)) {
 			$moduleName = getSalesEntityType($id);
 		}
-		if($moduleName == 'Calendar') {
-			$moduleName = vtws_getCalendarEntityType($id);
-		}
 
 		$wsEntityIdCache[$moduleName][$id] = vtws_getWebserviceEntityId($moduleName, $id);
 	}

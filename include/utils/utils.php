@@ -428,10 +428,6 @@ function getColumnFields($module)
 		global $adb;
 		$tabid = getTabid($module);
 
-		if ($module == 'Calendar') {
-    		$tabid = array('9','16');
-    	}
-
 		// To overcome invalid module names.
 		if (empty($tabid)) {
 			return array();
@@ -458,20 +454,6 @@ function getColumnFields($module)
         // For consistency get information from cache
 		$cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
 	}
-
-	if($module == 'Calendar') {
-		$cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-		if (!$cachedEventsFields) {
-            getColumnFields('Events');
-            $cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-        }
-        
-		if (!$cachedModuleFields) {
-            $cachedModuleFields = $cachedEventsFields;
-		} else {
-            $cachedModuleFields = array_merge($cachedModuleFields, $cachedEventsFields);
-        }
-    }
 
 	$column_fld = new TrackableObject();
 	if($cachedModuleFields) {
@@ -805,9 +787,6 @@ function getTableNameForField($module,$fieldname)
 	global $adb;
 	$tabid = getTabid($module);
 	//Asha
-	if($module == 'Calendar') {
-		$tabid = array('9','16');
-}
 	$sql = "select tablename from vtiger_field where tabid in (". generateQuestionMarks($tabid) .") and vtiger_field.presence in (0,2) and columnname like ?";
 	$res = $adb->pquery($sql, array($tabid, '%'.$fieldname.'%'));
 
@@ -2152,34 +2131,21 @@ function getSelectAllQuery($input,$module) {
 
 	$viewid = vtlib_purify($input['viewname']);
 
-	if($module == "Calendar") {
-		$listquery = getListQuery($module);
-		$oCustomView = new CustomView($module);
-		$query = $oCustomView->getModifiedCvListQuery($viewid,$listquery,$module);
-		$where = '';
-		if($input['query'] == 'true') {
-			[$where, $ustring] = explode('#@@#',getWhereCondition($module, $input));
-			if(isset($where) && $where != '') {
-				$query .= " AND " .$where;
-			}
-		}
-	} else {
-		$queryGenerator = new QueryGenerator($module, $current_user);
-		$queryGenerator->initForCustomViewById($viewid);
+    $queryGenerator = new QueryGenerator($module, $current_user);
+    $queryGenerator->initForCustomViewById($viewid);
 
-		if($input['query'] == 'true') {
-			$queryGenerator->addUserSearchConditions($input);
-		}
+    if($input['query'] == 'true') {
+        $queryGenerator->addUserSearchConditions($input);
+    }
 
-		$queryGenerator->setFields(array('id'));
-		$query = $queryGenerator->getQuery();
+    $queryGenerator->setFields(array('id'));
+    $query = $queryGenerator->getQuery();
 
-		if($module == 'Documents') {
-			$folderid = vtlib_purify($input['folderidstring']);
-			$folderid = str_replace(';', ',', $folderid);
-			$query .= " AND vtiger_notes.folderid in (".$folderid.")";
-		}
-	}
+    if($module == 'Documents') {
+        $folderid = vtlib_purify($input['folderidstring']);
+        $folderid = str_replace(';', ',', $folderid);
+        $query .= " AND vtiger_notes.folderid in (".$folderid.")";
+    }
 
 	$result = $adb->pquery($query, array());
 	return $result;

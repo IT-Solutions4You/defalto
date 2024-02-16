@@ -32,13 +32,6 @@ class Settings_Workflows_FilterRecordStructure_Model extends Settings_Workflows_
 				$values[$blockLabel] = array();
 				foreach($fieldModelList as $fieldName=>$fieldModel) {
 					if($fieldModel->isViewableInFilterView()) {
-						if (in_array($moduleModel->getName(), array('Calendar', 'Events')) && $fieldModel->getDisplayType() == 3) {
-							/* Restricting the following fields(Event module fields) for "Calendar" module
-							 * time_start, time_end, eventstatus, activitytype,	visibility, duration_hours,
-							 * duration_minutes, reminder_time, recurringtype, notime
-							 */
-							continue;
-						}
 						if(!empty($recordId)) {
 							//Set the fieldModel with the valuetype for the client side.
 							$fieldValueType = $recordModel->getFieldFilterValueType($fieldName);

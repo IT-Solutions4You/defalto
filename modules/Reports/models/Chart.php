@@ -111,10 +111,7 @@ abstract class Base_Chart extends Vtiger_Base_Model{
 		if($moduleName && $fieldName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 			$fieldInstance = $moduleModel->getField($fieldName);
-			if($moduleName == "Calendar" && !$fieldInstance){
-				$moduleModel = Vtiger_Module_Model::getInstance("Events");
-				return $moduleModel->getField($fieldName);
-			}
+
 			return $fieldInstance;
 		}
 		return false;

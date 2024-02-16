@@ -140,7 +140,7 @@
                         {assign var=DATA_ID value=$RELATED_TO->getId()}
                         {assign var=DATA_URL value=$RELATED_TO->getDetailViewUrl()}
                     {/if}
-                    <tr class="listViewEntries" data-id='{$DATA_ID}' data-recordUrl='{$DATA_URL}&app={$SELECTED_MENU_CATEGORY}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}" {if $MODULE eq 'Calendar'}data-recurring-enabled='{$LISTVIEW_ENTRY->isRecurringEnabled()}'{/if}>
+                    <tr class="listViewEntries" data-id='{$DATA_ID}' data-recordUrl='{$DATA_URL}&app={$SELECTED_MENU_CATEGORY}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
                         <td class="listViewRecordActions ps-3 text-secondary">
                             {include file="ListViewRecordActions.tpl"|vtemplate_path:$MODULE}
                         </td>

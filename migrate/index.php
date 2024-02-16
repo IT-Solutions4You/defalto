@@ -26,8 +26,8 @@ if (!$errorMessage) {
 		$skipCheckForModules = array();
 
 		$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
-		$vtigerStandardModules = array('Accounts', 'Assets', 'Calendar', 'Campaigns', 'Contacts', 'CustomerPortal', 
-			'Dashboard', 'Emails', 'EmailTemplates', 'Events', 'ExtensionStore',
+		$vtigerStandardModules = array('Accounts', 'Assets', 'Campaigns', 'Contacts', 'CustomerPortal',
+			'Dashboard', 'Emails', 'EmailTemplates', 'ExtensionStore',
 			'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 
 			'MailManager', 'Mobile', 'ModComments', 'ModTracker',
 			'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 

@@ -119,13 +119,6 @@ class Vtiger_TooltipView_Model extends Vtiger_DetailRecordStructure_Model {
 	 * @return <Vtiger_DetailView_Model>
 	 */
 	public static function getInstance($moduleName,$recordId) {
-       if($moduleName=="Calendar"){
-            $recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-			$activityType = $recordModel->getType();
-            if($activityType=="Events"){
-                $moduleName="Events";
-            }
-        }
 		$modelClassName = Vtiger_Loader::getComponentClassName('Model', 'TooltipView', $moduleName);
 		$instance = new $modelClassName();
 

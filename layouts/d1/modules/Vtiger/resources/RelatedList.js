@@ -203,10 +203,6 @@ jQuery.Class("Vtiger_RelatedList_Js",{
 				for(index=0; index<queryParameters.length; index++) {
 					queryParam = queryParameters[index];
 					queryParamComponents = queryParam.split('=');
-					if(queryParamComponents[0] == 'mode' && queryParamComponents[1] == 'Calendar'){
-						data.find('a[data-tab-name="Task"]').trigger('click');
-                        data.find('[name="calendarModule"]').val('Calendar');
-					}
 				}
 			}
             */
@@ -235,28 +231,9 @@ jQuery.Class("Vtiger_RelatedList_Js",{
         });
         
         app.event.one('post.QuickCreateForm.save',function(event,data){
-            //After adding Event to related list, reverting related module name back to Calendar from Events 
-            if(thisInstance.relatedModulename === 'Events'){
-                thisInstance.relatedModulename = 'Calendar';
-			}
             thisInstance.loadRelatedList().then(function(data){
                 var selectedTabElement = thisInstance.selectedRelatedTabElement;
-                if(thisInstance.relatedModulename == 'Calendar'){
-                    var params = thisInstance.getPageJumpParams();
-                    app.request.post(params).then(function(error, data){
-                        var numberOfRecords = data.numberOfRecords;
-                        // we should only show if there are any related records
-                        var numberEle = selectedTabElement.find('.numberCircle');
-                        numberEle.text(numberOfRecords);
-                        if(numberOfRecords > 0) {
-                            numberEle.removeClass('hide');
-                        }else{
-                            numberEle.addClass('hide');
-                        }
-                    });
-                } else {
-                    thisInstance.updateRelatedRecordsCount(selectedTabElement.data('relation-id'),[1],true);
-                }
+				thisInstance.updateRelatedRecordsCount(selectedTabElement.data('relation-id'),[1],true);
                 aDeferred.resolve(data);
             });
         });

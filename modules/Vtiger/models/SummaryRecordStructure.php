@@ -28,9 +28,6 @@ class Vtiger_SummaryRecordStructure_Model extends Vtiger_DetailRecordStructure_M
 		//field changes. In related tab if summary fields are empty, it is depending of getRelatedListFields(). So added same here.
 		if(empty($summaryFieldsList)) {
 			$fieldModuleModel = $this->getModule();
-			if($fieldModuleModel->getName() == 'Events') {
-				$fieldModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-			}
 			$summaryFieldsListNames = $fieldModuleModel->getRelatedListFields();
 			foreach($summaryFieldsListNames as $summaryFieldsListName) {
 				$summaryFieldsList[$summaryFieldsListName] = $fieldModuleModel->getField($summaryFieldsListName);

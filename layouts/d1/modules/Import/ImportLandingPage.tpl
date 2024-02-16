@@ -37,17 +37,6 @@
                                 </div>
                             </div>
                         </div>
-                    {elseif $FOR_MODULE == 'Calendar'}
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" id="icsImport">
-                            <div class="rounded bg-body-secondary p-4 menu-item app-item">
-                                <div class="pb-4">
-                                    <i class="fa fa-calendar-o fs-3"></i>
-                                </div>
-                                <div>
-                                    <h4>{vtranslate('LBL_ICS_FILE',$MODULE)}</h4>
-                                </div>
-                            </div>
-                        </div>
                     {/if}
                 </div>
             </div>

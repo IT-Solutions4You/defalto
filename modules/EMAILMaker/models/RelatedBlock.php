@@ -103,9 +103,6 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         }
 
         $tabid = getTabid($module);
-        if ($module == 'Calendar') {
-            $tabid = array('9', '16');
-        }
         $params = array($tabid, $block);
         $is_admin = false;
         $profileGlobalPermission = [];
@@ -116,11 +113,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             $sql = "select * from vtiger_field where vtiger_field.tabid in (" . generateQuestionMarks($tabid) . ") and vtiger_field.block in (" . generateQuestionMarks($block) . ") and vtiger_field.displaytype in (1,2,3) and vtiger_field.presence in (0,2) ";
 
             //fix for Ticket #4016
-            if ($module == "Calendar") {
-                $sql .= " group by vtiger_field.fieldlabel order by sequence";
-            } else {
-                $sql .= " order by sequence";
-            }
+            $sql .= " order by sequence";
         } else {
 
             $profileList = getCurrentUserProfileList();
@@ -131,11 +124,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             }
 
             //fix for Ticket #4016
-            if ($module == "Calendar") {
-                $sql .= " group by vtiger_field.fieldid,vtiger_field.fieldlabel order by sequence";
-            } else {
-                $sql .= " group by vtiger_field.fieldid order by sequence";
-            }
+            $sql .= " group by vtiger_field.fieldid order by sequence";
         }
 
         $result = $adb->pquery($sql, $params);
@@ -266,11 +255,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
                 $blockid = $resultrow['blockid'];
                 $blocklabel = $resultrow['blocklabel'];
                 if (!empty($blocklabel)) {
-                    if ($sec_module == 'Calendar' && $blocklabel == 'LBL_CUSTOM_INFORMATION') {
-                        $module_list[$blockid] = vtranslate($blocklabel, $sec_module);
-                    } else {
-                        $module_list[$blockid] = vtranslate($blocklabel, $sec_module);
-                    }
+                    $module_list[$blockid] = vtranslate($blocklabel, $sec_module);
                     $prev_block_label = $blocklabel;
                 } else {
                     $module_list[$blockid] = vtranslate($prev_block_label, $sec_module);

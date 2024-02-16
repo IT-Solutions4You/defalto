@@ -16,7 +16,7 @@ class Users_SaveCalendarSettings_Action extends Users_Save_Action {
 		
 		$recordModel->save();
 		$this->saveCalendarSharing($request);
-		header("Location: index.php?module=Calendar&view=Calendar");
+		header('Location: index.php?module=Appointments&view=Calendar');
 	}
 
 	/**
@@ -30,7 +30,6 @@ class Users_SaveCalendarSettings_Action extends Users_Save_Action {
 
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		$accessibleUsers = $currentUserModel->getAccessibleUsersForModule('Calendar');
 
 		if($sharedType == 'private'){
 			$calendarModuleModel->deleteSharedUsers($currentUserModel->id);

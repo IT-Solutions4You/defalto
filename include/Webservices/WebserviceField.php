@@ -395,7 +395,6 @@ class WebserviceField{
 		$numRows = $this->pearDB->num_rows($result);
 
 		$moduleName = getTabModuleName($this->getTabId());
-		if ($moduleName == 'Events') $moduleName = 'Calendar';
 
 		if($numRows == 0){
 			$sql = "SELECT * FROM vtiger_$fieldName ORDER BY sortorderid";

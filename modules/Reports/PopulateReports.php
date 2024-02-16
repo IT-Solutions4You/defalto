@@ -31,8 +31,6 @@ $reportmodules = Array(Array('primarymodule'=>'Contacts','secondarymodule'=>'Acc
 		       Array('primarymodule'=>'Leads','secondarymodule'=>''),
 		       Array('primarymodule'=>'Potentials','secondarymodule'=>''),
 		       Array('primarymodule'=>'Potentials','secondarymodule'=>''),
-		       Array('primarymodule'=>'Calendar','secondarymodule'=>''),
-		       Array('primarymodule'=>'Calendar','secondarymodule'=>''),
 		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>'Products'),
 		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>''),
   		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>''),

@@ -51,12 +51,23 @@ function vtlib_getModuleNameById($tabid) {
  * Get module names for which sharing access can be controlled.
  * NOTE: Ignore the standard modules which is already handled.
  */
-function vtlib_getModuleNameForSharing() {
-	global $adb;
-	$std_modules = array('Calendar','Leads','Accounts','Contacts','Potentials',
-			'HelpDesk','Campaigns','Quotes','PurchaseOrder','SalesOrder','Invoice','Events');
-	$modulesList = getSharingModuleList($std_modules);
-	return $modulesList;
+function vtlib_getModuleNameForSharing()
+{
+    $std_modules = [
+        'Leads',
+        'Accounts',
+        'Contacts',
+        'Potentials',
+        'HelpDesk',
+        'Campaigns',
+        'Quotes',
+        'PurchaseOrder',
+        'SalesOrder',
+        'Invoice',
+        'Events'
+    ];
+
+    return getSharingModuleList($std_modules);
 }
 
 /**
@@ -273,14 +284,16 @@ function vtlib_getFieldHelpInfo($module) {
 /**
  * Setup mandatory (requried) module variable values in the module class.
  */
-function vtlib_setup_modulevars($module, $focus) {
-	if($module == 'Events') $module='Calendar';
-
-	$checkfor = Array('table_name', 'table_index', 'related_tables', 'popup_fields', 'IsCustomModule');
-	foreach($checkfor as $check) {
-		if(!isset($focus->$check)) $focus->$check = __vtlib_get_modulevar_value($module, $check);
-	}
+function vtlib_setup_modulevars($module, $focus)
+{
+    $checkfor = ['table_name', 'table_index', 'related_tables', 'popup_fields', 'IsCustomModule'];
+    foreach ($checkfor as $check) {
+        if (!isset($focus->$check)) {
+            $focus->$check = __vtlib_get_modulevar_value($module, $check);
+        }
+    }
 }
+
 function __vtlib_get_modulevar_value($module, $varname) {
 	$mod_var_mapping =
 		Array(
@@ -886,14 +899,13 @@ function vtlib_process_widget($widgetLinkInfo, $context = false) {
 	return "";
 }
 
-function vtlib_module_icon($modulename){
-	if($modulename == 'Events'){
-		return "modules/Calendar/Events.png";
-	}
-	if(file_exists("modules/$modulename/$modulename.png")){
-		return "modules/$modulename/$modulename.png";
-	}
-	return "modules/Vtiger/Vtiger.png";
+function vtlib_module_icon($modulename)
+{
+    if (file_exists("modules/$modulename/$modulename.png")) {
+        return "modules/$modulename/$modulename.png";
+    }
+
+    return "modules/Vtiger/Vtiger.png";
 }
 
 function vtlib_mime_content_type($filename) {

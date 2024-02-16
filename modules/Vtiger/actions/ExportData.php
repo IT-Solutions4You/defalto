@@ -46,7 +46,7 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
 		$query = $this->getExportQuery($request);
 		$result = $db->pquery($query, array());
 
-		$redirectedModules = array('Users', 'Calendar');
+		$redirectedModules = array('Users');
 		if($request->getModule() != $moduleName && in_array($moduleName, $redirectedModules) && !$this->moduleCall){
 			$handlerClass = Vtiger_Loader::getComponentClassName('Action', 'ExportData', $moduleName);
 			$handler = new $handlerClass();
@@ -352,13 +352,6 @@ class Vtiger_ExportData_Action extends Vtiger_Mass_Action {
                 $timeUIObj = new Vtiger_Time_UIType();
                 $value = $timeUIObj->getDisplayValue($value);
             } elseif ($type == 'datetime') {
-				if ($moduleName == 'Calendar' && in_array($fieldName, array('date_start', 'due_date'))) {
-					$timeField = 'time_start';
-					if ($fieldName === 'due_date') {
-						$timeField = 'time_end';
-					}
-					$value = $value.' '.$arr[$timeField];
-				}
 				if (trim($value) && $value != '0000-00-00 00:00:00') {
 					$value = Vtiger_Datetime_UIType::getDisplayDateTimeValue($value);
 				}

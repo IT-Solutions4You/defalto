@@ -34,10 +34,6 @@
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
 						<div class="menu-item" style="background: #C5EFF7;" data-url="{$HOME_MODULE_MODEL->getDefaultUrl()}">Home</div>
 					</div>
-					{assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Calendar')}
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
-						<div class="menu-item" style="background:#C8F7C5;" data-url="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}">Calendar</div>
-					</div>
 					{assign var=REPORT_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
 						<div class="menu-item" style="background: #FDE3A7;"data-url="{$REPORT_MODULE_MODEL->getDefaultUrl()}">Reports</div>

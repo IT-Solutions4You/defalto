@@ -55,13 +55,6 @@ class Settings_Workflows_EditTaskRecordStructure_Model extends Settings_Workflow
 						if($fieldModel->getDisplayType() == '6') {
 							continue;
 						}
-						if (in_array($moduleModel->getName(), array('Calendar', 'Events')) && $fieldModel->getDisplayType() == 3) {
-							/* Restricting the following fields(Event module fields) for "Calendar" module
-							 * time_start, time_end, eventstatus, activitytype,	visibility, duration_hours,
-							 * duration_minutes, reminder_time, recurringtype, notime
-							 */
-							continue;
-						}
 						if(!empty($recordId)) {
 							//Set the fieldModel with the valuetype for the client side.
 							$fieldValueType = $recordModel->getFieldFilterValueType($fieldName);
@@ -71,12 +64,8 @@ class Settings_Workflows_EditTaskRecordStructure_Model extends Settings_Workflow
 						}
 
 						switch($fieldModel->getFieldDataType()) {
-							case 'date'		:	if (($moduleName === 'Events' && in_array($fieldName, array('date_start', 'due_date'))) ||
-													($moduleName === 'Calendar' && $fieldName === 'date_start')) {
-													$fieldName = $fieldName .' ($(general : (__VtigerMeta__) usertimezone))';
-												} else {
-													$fieldName = $fieldName .' ($_DATE_FORMAT_)';
-												}
+							case 'date'		:
+                                                $fieldName = $fieldName .' ($_DATE_FORMAT_)';
 												break;
 							case 'datetime'	:	$fieldName = $fieldName .' ($(general : (__VtigerMeta__) usertimezone))';	break;
 							default			:	$fieldName;
@@ -131,12 +120,7 @@ class Settings_Workflows_EditTaskRecordStructure_Model extends Settings_Workflow
 								$label = vtranslate($field->get('label'), $baseModuleModel->getName()) . ' : (' . vtranslate($refModule, $refModule) . ') ' . vtranslate($fieldModel->get('label'), $refModule);
 								$name = "($parentFieldName : ($refModule) $fieldName)";
 								switch ($fieldModel->getFieldDataType()) {
-									case 'date'		:	if (($moduleName === 'Events' && in_array($fieldName, array('date_start', 'due_date'))) ||
-																($moduleName === 'Calendar' && $fieldName === 'date_start')) {
-															$workflowColumnName = $name . ' ($(general : (__VtigerMeta__) usertimezone))';
-														} else {
-															$workflowColumnName = $name . ' ($_DATE_FORMAT_)';
-														}
+									case 'date'		:	$workflowColumnName = $name . ' ($_DATE_FORMAT_)';
 														break;
 									case 'datetime' :	$workflowColumnName = $name . ' ($(general : (__VtigerMeta__) usertimezone))';
 														break;

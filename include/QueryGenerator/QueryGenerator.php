@@ -149,15 +149,7 @@ class QueryGenerator {
 	}
 
 	public function getModuleFields() {
-		$moduleFields = $this->meta->getModuleFields();
-
-		$module = $this->getModule();
-		if($module == 'Calendar') {
-			$eventmoduleMeta = $this->getMeta('Events');
-			$eventModuleFieldList = $eventmoduleMeta->getModuleFields();
-			$moduleFields = array_merge($moduleFields, $eventModuleFieldList);
-		}
-		return $moduleFields;
+		return $this->meta->getModuleFields();
 	}
 
 	public function getConditionalWhere() {
@@ -190,10 +182,6 @@ class QueryGenerator {
 					$this->customViewFields[] = $details[2];
 				}
 			}
-		}
-
-		if($this->module == 'Calendar' && !in_array('activitytype', $this->fields)) {
-			$this->fields[] = 'activitytype';
 		}
 
 		if($this->module == 'Documents') {
@@ -400,26 +388,6 @@ class QueryGenerator {
 		foreach ($this->fields as $field) {
 			$sql = $this->getSQLColumn($field);
 			$columns[] = $sql;
-
-			//To merge date and time fields
-			if($this->meta->getEntityName() == 'Calendar' && ($field == 'date_start' || $field == 'due_date' || $field == 'taskstatus' || $field == 'eventstatus')) {
-				if($field=='date_start') {
-					$timeField = 'time_start';
-					$sql = $this->getSQLColumn($timeField);
-				} else if ($field == 'due_date') {
-					$timeField = 'time_end';
-					$sql = $this->getSQLColumn($timeField);
-				} else if ($field == 'taskstatus' || $field == 'eventstatus') {
-					//In calendar list view, Status value = Planned is not displaying
-					$sql = "CASE WHEN (vtiger_activity.status not like '') THEN vtiger_activity.status ELSE vtiger_activity.eventstatus END AS ";
-					if ( $field == 'taskstatus') {
-						$sql .= "status";
-					} else {
-						$sql .= $field;
-					}
-				}
-				$columns[] = $sql;
-			}
 		}
 		$this->columns = implode(', ',$columns);
 		return $this->columns;
@@ -650,13 +618,6 @@ class QueryGenerator {
 
 				$tableName = $fieldObject->getTableName();
 				if(!in_array($tableName, $referenceFieldTableList)) {
-					if($referenceFieldObject->getFieldName() == 'parent_id' && ($this->getModule() == 'Calendar' || $this->getModule() == 'Events')) {
-						$sql .= ' LEFT JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid ';
-					}
-					//TODO : this will create duplicates, need to find a better way
-					if($referenceFieldObject->getFieldName() == 'contact_id' && ($this->getModule() == 'Calendar' || $this->getModule() == 'Events')) {
-						$sql .= ' LEFT JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid ';
-					}
 					$sql .= " LEFT JOIN ".$tableName.' AS '.$tableName.$conditionInfo['referenceField'].' ON
 							'.$tableName.$conditionInfo['referenceField'].'.'.$tableList[$tableName].'='.
 						$referenceFieldObject->getTableName().'.'.$referenceFieldObject->getColumnName();
@@ -784,36 +745,6 @@ class QueryGenerator {
 						$concatSql = getSqlForNameInDisplayFormat(array('first_name'=>"vtiger_users.first_name",'last_name'=>"vtiger_users.last_name"), 'Users');
 						$fieldSql .= "$fieldGlue (trim($concatSql) $valueSql or "."vtiger_groups.groupname $valueSql)";
 					}
-				} elseif($field->getFieldDataType() == 'date' && ($baseModule == 'Events' || $baseModule == 'Calendar') && ($fieldName == 'date_start' || $fieldName == 'due_date')) {
-					$value = $conditionInfo['value'];
-					$operator = $conditionInfo['operator'];
-					if($fieldName == 'date_start') {
-						$dateFieldColumnName = 'vtiger_activity.date_start';
-						$timeFieldColumnName = 'vtiger_activity.time_start';
-					} else {
-						$dateFieldColumnName = 'vtiger_activity.due_date';
-						$timeFieldColumnName = 'vtiger_activity.time_end';
-					}
-					if($operator == 'bw') {
-						$values = explode(',', $value);
-						$startDateValue = explode(' ', $values[0]);
-						$endDateValue = explode(' ', $values[1]);
-						if(php7_count($startDateValue) == 2 && php7_count($endDateValue) == 2) {
-							$fieldSql .= " CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) $valueSql";
-						} else {
-							$fieldSql .= "$dateFieldColumnName $valueSql";
-						}
-					} else {
-						if(is_array($value)){
-							$value = $value[0];
-						}
-						$values = explode(' ', $value);
-						if(php7_count($values) == 2) {
-								$fieldSql .= "$fieldGlue CONCAT($dateFieldColumnName,' ',$timeFieldColumnName) $valueSql ";
-						} else {
-								$fieldSql .= "$fieldGlue $dateFieldColumnName $valueSql";
-						}
-					}
 				} elseif($field->getFieldDataType() == 'datetime') {
 					$value = $conditionInfo['value'];
 					$operator = strtolower($conditionInfo['operator']);
@@ -836,36 +767,6 @@ class QueryGenerator {
 							$fieldSql .= "$fieldGlue ".$field->getTableName().'.'.$field->getColumnName().' '.$valueSql;
 						}
 					}
-				} else if (($baseModule == 'Events' || $baseModule == 'Calendar') 
-						&& ($field->getColumnName() == 'status' || $field->getColumnName() == 'eventstatus')) {
-					$otherFieldName = 'eventstatus';
-					if($field->getColumnName() == 'eventstatus'){
-						$otherFieldName = 'taskstatus';
-					}
-					$otherField = $moduleFieldList[$otherFieldName];
-
-					$specialCondition = '';
-					$specialConditionForOtherField='';
-					$conditionGlue = ' OR ';
-					if($conditionInfo['operator'] == 'n' || $conditionInfo['operator'] == 'k' || $conditionInfo['operator'] == 'y') {
-					   $conditionGlue = ' AND '; 
-					   if($conditionInfo['operator'] == 'n') {
-						   $specialCondition = ' OR '.$field->getTableName().'.'.$field->getColumnName().' IS NULL ';
-						   if(!empty($otherField))
-						   $specialConditionForOtherField = ' OR '.$otherField->getTableName().'.'.$otherField->getColumnName().' IS NULL ';
-						}
-					}
-
-					$otherFieldValueSql = $valueSql;
-					if($conditionInfo['operator'] == 'ny' && !empty($otherField)){
-						$otherFieldValueSql = "IS NOT NULL AND ".$otherField->getTableName().'.'.$otherField->getColumnName()." != ''";
-					}
-
-					$fieldSql .= "$fieldGlue ((". $field->getTableName().'.'.$field->getColumnName().' '.$valueSql." $specialCondition) ";
-					if(!empty($otherField))
-						$fieldSql .= $conditionGlue .'('.$otherField->getTableName().'.'.$otherField->getColumnName() . ' '. $otherFieldValueSql .' '.$specialConditionForOtherField .'))';
-					else
-						$fieldSql .= ')';
 				}else if (Vtiger_Functions::isUserSpecificFieldTable($field->getTableName(), getTabModuleName($field->getTabId())) && $fieldName == "starred"
 						&& $conditionInfo['value'] != 1) {
 						// since not for all records you will have entry in starred field table. So for disabled (value 0) we need to check both 0 and null
@@ -920,19 +821,6 @@ class QueryGenerator {
 			}
 		}
 
-		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		if(($baseModule == 'Calendar' || $baseModule == 'Events') && !$currentUserModel->isAdminUser()) {
-			$moduleFocus = CRMEntity::getInstance('Calendar');
-			$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
-			if ($condition) {
-				if ($this->conditionInstanceCount > 0) {
-					$sql .= $condition . ' AND ';
-				} else {
-					$sql .= ' AND ' . $condition;
-				}
-			}
-		}
-		
 		// This is needed as there can be condition in different order and there is an assumption in makeGroupSqlReplacements API
 		// that it expects the array in an order and then replaces the sql with its the corresponding place
 		ksort($fieldSqlList);
@@ -1527,4 +1415,3 @@ class QueryGenerator {
 	}
 
 }
-?>

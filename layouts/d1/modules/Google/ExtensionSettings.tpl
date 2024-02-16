@@ -82,7 +82,7 @@
                             </select>
                         </td>
                         <td>
-                            <span>{vtranslate('Calendar', 'Calendar')}</span>
+                            <span>{vtranslate('Calendar', 'Vtiger')}</span>
                         </td>
                         <td>
                             <a id="syncSetting" class="extensionLink" data-sync-module="Calendar">{vtranslate('LBL_VIEW', $MODULE)}</a>

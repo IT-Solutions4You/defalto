@@ -342,9 +342,7 @@ public function getQuery()
             unset($split[0]);
             $listQuery = 'SELECT count(*) AS count ' . implode(' FROM ', $split);
         }
-        if ($this->getModule()->get('name') == 'Calendar') {
-            $listQuery .= ' AND activitytype <> "Emails"';
-        }
+
         $listResult = $db->pquery($listQuery, array());
         return $db->query_result($listResult, 0, 'count');
     }

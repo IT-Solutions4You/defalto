@@ -76,10 +76,6 @@ class EMAILMaker_RecordStructure_Model extends Vtiger_RecordStructure_Model
                 $values[$blockLabel] = array();
                 foreach ($fieldModelList as $fieldName => $fieldModel) {
                     if ($fieldModel->isViewable()) {
-                        if (in_array($moduleModel->getName(), array('Calendar', 'Events')) && $fieldName != 'modifiedby' && $fieldModel->getDisplayType() == 3) {
-
-                            continue;
-                        }
                         if ($fieldModel->getDisplayType() == '6') {
                             continue;
                         }

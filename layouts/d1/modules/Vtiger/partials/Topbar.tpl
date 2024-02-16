@@ -112,7 +112,6 @@
                                                     {if $count % 3 == 0}
                                                         <div class="row">
                                                     {/if}
-                                                    {* Adding two links,Event and Task if module is Calendar *}
                                                     {if $singularLabel == 'SINGLE_Documents'}
                                                         <div class="{if $hideDiv}create_restricted_{$moduleModel->getName()} hide{else}col-lg-4 col-xs-4{/if} dropdown">
                                                             <a id="menubar_quickCreate_{$moduleModel->getName()}" class="quickCreateModuleSubmenu fs-6 text-muted" data-name="{$moduleModel->getName()}" data-bs-toggle="dropdown" data-url="{$moduleModel->getQuickCreateUrl()}" href="javascript:void(0)">

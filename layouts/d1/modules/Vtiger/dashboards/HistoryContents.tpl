@@ -26,12 +26,6 @@
 					<div class="row entry">
 						<div class="col-lg-auto">
 							{assign var=VT_ICON value=$MOD_NAME}
-							{if $MOD_NAME eq "Events"}
-								{assign var="TRANSLATED_MODULE_NAME" value="Calendar"}
-								{assign var=VT_ICON value="Calendar"}
-							{elseif $MOD_NAME eq "Calendar"}
-								{assign var=VT_ICON value="Task"}
-							{/if}
 							<span>{$HISTORY->getParent()->getModule()->getModuleIcon($VT_ICON)}</span>
 						</div>
 						<div class="col-lg">
@@ -86,13 +80,7 @@
 									{else}
 										{vtranslate('LBL_REMOVED', $MODULE_NAME)}
 									{/if}
-									{if $RELATION->getLinkedRecord()->getModuleName() eq 'Calendar'}
-										{if isPermitted('Calendar', 'DetailView', $RELATION->getLinkedRecord()->getId()) eq 'yes'}
-											<a class="cursorPointer" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}'
-											{else} onclick='window.location.href="{$LINKED_RECORD_DETAIL_URL}"' {/if}>{$RELATION->getLinkedRecord()->getName()}</a>
-									{else}
-										{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
-									{/if}
+									{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
 								{elseif $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
 									<i>"{$RELATION->getLinkedRecord()->getName()}"</i>
 								{else}

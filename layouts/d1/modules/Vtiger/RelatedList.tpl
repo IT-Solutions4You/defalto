@@ -92,15 +92,7 @@
 						</thead>
 						{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 							<tr class="listViewEntries border-bottom" data-id='{$RELATED_RECORD->getId()}'
-								{if $RELATED_MODULE_NAME eq 'Calendar'}
-									data-recurring-enabled='{$RELATED_RECORD->isRecurringEnabled()}'
-									{assign var=DETAILVIEWPERMITTED value=isPermitted($RELATED_MODULE_NAME, 'DetailView', $RELATED_RECORD->getId())}
-									{if $DETAILVIEWPERMITTED eq 'yes'}
-										data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
-									{/if}
-								{else}
-									data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
-								{/if}>
+								data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
 								<td class="related-list-actions text-secondary">
 									<span class="actionImages btn-group">
 										{if $IS_EDITABLE && $RELATED_RECORD->isEditable()}
@@ -162,24 +154,7 @@
 														{assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
 													{/if}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
-													{if $RELATED_MODULE_NAME eq 'Calendar' or $RELATED_MODULE_NAME eq 'Events'}
-														{if $RELATED_RECORD->get('activitytype') eq 'Task'}
-															{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
-														{else}
-															{if $HEADER_FIELD->getName() eq 'taskstatus'}
-																{assign var="EVENT_STATUS_FIELD_MODEL" value=Vtiger_Field_Model::getInstance('eventstatus', Vtiger_Module_Model::getInstance('Events'))}
-																{if $EVENT_STATUS_FIELD_MODEL}
-																	{assign var=PICKLIST_FIELD_ID value={$EVENT_STATUS_FIELD_MODEL->getId()}}
-																{else}
-																	{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
-																{/if}
-															{else}
-																{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
-															{/if}
-														{/if}
-													{else}
-														{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
-													{/if}
+													{assign var=PICKLIST_FIELD_ID value={$HEADER_FIELD->getId()}}
 													<span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>
 												{else}
 													{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}

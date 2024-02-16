@@ -67,9 +67,6 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 				}
 				$request->set('createdtime', $dates);
 				
-				if($componentName == 'CalendarActivities' || $componentName == 'OverdueActivities') {
-					$moduleName = 'Calendar';
-				}
 				$currentUserPrivilegeModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 				if($currentUserPrivilegeModel->hasModulePermission(getTabid($moduleName)) && !Vtiger_Runtime::isRestricted('modules', $moduleName)){
 					$classInstance = new $className();

@@ -57,11 +57,7 @@
                                                     data-create-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} {vtranslate('LBL_CREATION', $QUALIFIED_MODULE)}"
                                                     data-update-label="{vtranslate($SINGLE_MODULE, $TARGET_MODULE_NAME)} {vtranslate('LBL_UPDATED', $QUALIFIED_MODULE)}"
                                             >
-                                                {if $MODULE_MODEL->getName() eq 'Calendar'}
-                                                    {vtranslate('LBL_TASK', $MODULE_MODEL->getName())}
-                                                {else}
-                                                    {vtranslate($MODULE_MODEL->getName(), $MODULE_MODEL->getName())}
-                                                {/if}
+                                                {vtranslate($MODULE_MODEL->getName(), $MODULE_MODEL->getName())}
                                             </option>
                                         {/foreach}
                                     </select>

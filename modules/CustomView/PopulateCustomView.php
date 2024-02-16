@@ -84,10 +84,6 @@ $customviews = Array(Array('viewname'=>'All',
 
 		    Array('viewname'=>'All',
                           'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
-                          'cvmodule'=>'Calendar','stdfilterid'=>'','advfilterid'=>''),
-
-		    Array('viewname'=>'All',
-                          'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
                           'cvmodule'=>'Emails','stdfilterid'=>'','advfilterid'=>''),
 
 		    Array('viewname'=>'All',
@@ -644,4 +640,3 @@ function insertCvAdvFilter($CVid,$filters)
 		$adb->pquery('INSERT INTO vtiger_cvadvfilter_grouping VALUES(?,?,?,?)', array(1, $CVid, '', $conditionExpression));
 	}
 }
-?>

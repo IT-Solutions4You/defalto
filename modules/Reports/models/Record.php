@@ -334,11 +334,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$module = $fieldLabel[0];
 			$dbFieldLabel = trim(str_replace(array($module, '_'), " ", $moduleFieldLabel));
 			$translatedFieldLabel = vtranslate($dbFieldLabel, $module);
-			if($module == 'Calendar') {
-				if(CheckFieldPermission($fieldName, $module) == 'true' || CheckFieldPermission($fieldName, 'Events') == 'true') {
-					$selectedColumns[$module.'_'.$translatedFieldLabel] = $column;
-				}
-			} else if($primaryModule == 'PriceBooks' && $fieldName == 'listprice' && in_array($module, array('Products', 'Services'))) {
+			if($primaryModule == 'PriceBooks' && $fieldName == 'listprice' && in_array($module, array('Products', 'Services'))) {
 				// to support pricebooks listprice in reports 
 				$selectedColumns[$module.'_'.$translatedFieldLabel] = $column;
 			} else if(CheckFieldPermission($fieldName, $module) == 'true') {
@@ -929,7 +925,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			if (!empty ($blocks)) {
 				foreach ($blocks as $fieldType => $fieldName) {
 					$fieldDetails = explode(':', $fieldType);
-					if($fieldName == 'Send Reminder' && $primaryModule == 'Calendar') continue;
+
 					if($primaryModule == 'ModComments' && ($fieldName == 'Integer' || $fieldName == 'Is Private')) continue;
 					if ($fieldDetails[4] === "I" || $fieldDetails[4] === "N" || $fieldDetails[4] === "NN") {
 						$calculationFields[$fieldType] = $fieldName;
@@ -962,8 +958,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 						if (!empty($blocks)) {
 							foreach ($blocks as $fieldType => $fieldName) {
 								$fieldDetails = explode(':', $fieldType);
-								if ($fieldName == 'Send Reminder' && $secondaryModule == 'Calendar')
-									continue;
+
 								if($secondaryModule == 'ModComments' && ($fieldName == 'Integer' || $fieldName == 'Is Private'))
 									continue;
 								if ($fieldDetails[4] === "I" || $fieldDetails[4] === "N" || $fieldDetails[4] === "NN") {
@@ -1255,10 +1250,6 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 	function getPrimaryModuleFieldsForAdvancedReporting() {
 		$fields = $this->getPrimaryModuleFields();
 		$primaryModule = $this->getPrimaryModule();
-		if($primaryModule == "Calendar"){
-			$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
-			$eventModuleFieldInstances = $eventModuleModel->getFields();
-		}
 		$primaryModuleModel = Vtiger_Module_Model::getInstance($primaryModule);
 		$primaryModuleFieldInstances = $primaryModuleModel->getFields();
 
@@ -1296,10 +1287,6 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 			$secondaryModuleFieldInstances = array();
 			foreach($secondaryModules as $secondaryModule) {
 				if(!empty($secondaryModule)) {
-					if($secondaryModule == "Calendar"){
-						$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
-						$eventModuleFieldInstances['Events'] = $eventModuleModel->getFields();
-					}
 					$secondaryModuleModel = Vtiger_Module_Model::getInstance($secondaryModule);
 					$secondaryModuleFieldInstances[$secondaryModule] = $secondaryModuleModel->getFields();
 				}

@@ -332,13 +332,8 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model {
 	public function getModuleNameFromLink($linkUrl, $linkLabel) {
 		$urlParts = parse_url($linkUrl);
 		parse_str($urlParts['query'], $params);
-		$module = $params['module'];
 
-		if($linkLabel == 'Overdue Activities' || $linkLabel == 'Upcoming Activities') {
-			$module = 'Calendar';
-		}
-
-		return $module;
+        return $params['module'];
 	}
 
 }

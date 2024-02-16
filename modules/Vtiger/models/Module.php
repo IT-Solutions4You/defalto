@@ -1184,27 +1184,12 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {
-			if($moduleName === "Calendar"){
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_EVENT',
-					'linkurl' => $this->getCreateEventRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-                $basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-			} else {
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $this->getCreateRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-			}
+            $basicLinks[] = array(
+                'linktype' => 'BASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $this->getCreateRecordUrl(),
+                'linkicon' => 'fa-plus',
+            );
 			$importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
 			if($importPermission && $createPermission) {
 				$basicLinks[] = array(
@@ -1464,14 +1449,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
 
 		if ($nonAdminQuery) {
 			$query = appendFromClauseToQuery($query, $nonAdminQuery);
-
-			if($functionName == 'get_activities' && trim($nonAdminQuery)) {
-				$moduleFocus = CRMEntity::getInstance('Calendar');
-				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
-				if($condition) {
-					$query .= ' AND '.$condition;
-				}
-			}
 		}
 
 		return $query;

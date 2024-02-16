@@ -237,22 +237,13 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
         $params = array();
         $where = '';
 
-        if ($module == "Calendar") {
-            $where .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
-            if (count($profileList) > 0) {
-                $where .= " and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ")";
-                array_push($params, $profileList);
-            }
-            $where .= " group by vtiger_field.fieldid order by block,sequence";
-        } else {
-            array_push($params, $primodule, $secmodule);
-            $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
-            if (count($profileList) > 0) {
-                $where .= " and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ")";
-                array_push($params, $profileList);
-            }
-            $where .= " group by vtiger_field.fieldid order by block,sequence";
+        array_push($params, $primodule, $secmodule);
+        $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_field.presence in (0,2)";
+        if (count($profileList) > 0) {
+            $where .= " and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ")";
+            array_push($params, $profileList);
         }
+        $where .= " group by vtiger_field.fieldid order by block,sequence";
 
         $query = "select vtiger_field.fieldname from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where" . $where;
         $result = $adb->pquery($query, $params);
@@ -273,9 +264,6 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
             }
             if ($primarymodule == "Products" || $secondarymodule == "Products") {
                 $querycolumn = "case vtiger_crmentityRelProducts.setype when 'Accounts' then vtiger_accountRelProducts.accountname when 'Leads' then vtiger_leaddetailsRelProducts.lastname when 'Potentials' then vtiger_potentialRelProducts.potentialname End" . " '" . $selectedfields[2] . "', vtiger_crmentityRelProducts.setype 'Entity_type'";
-            }
-            if ($primarymodule == "Calendar" || $secondarymodule == "Calendar") {
-                $querycolumn = "case vtiger_crmentityRelCalendar.setype when 'Accounts' then vtiger_accountRelCalendar.accountname when 'Leads' then vtiger_leaddetailsRelCalendar.lastname when 'Potentials' then vtiger_potentialRelCalendar.potentialname when 'Quotes' then vtiger_quotesRelCalendar.subject when 'PurchaseOrder' then vtiger_purchaseorderRelCalendar.subject when 'Invoice' then vtiger_invoiceRelCalendar.subject End" . " '" . $selectedfields[2] . "', vtiger_crmentityRelCalendar.setype 'Entity_type'";
             }
         }
         return $querycolumn;

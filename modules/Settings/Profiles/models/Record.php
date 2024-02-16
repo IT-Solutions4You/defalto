@@ -415,11 +415,6 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 		$profileName = $this->get('profilename');
 		$description = $this->get('description');
 		$profilePermissions = $this->get('profile_permissions');
-		$calendarModule = Vtiger_Module_Model::getInstance('Calendar');
-		$eventModule = Vtiger_Module_Model::getInstance('Events');
-		$eventFieldsPermissions = $profilePermissions[$eventModule->getId()]['fields'];
-		$profilePermissions[$eventModule->getId()] = $profilePermissions[$calendarModule->getId()];
-		$profilePermissions[$eventModule->getId()]['fields'] = $eventFieldsPermissions;
 
         $isProfileDirectlyRelatedToRole = 0;
 		$isNewProfile = false;
@@ -450,7 +445,7 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 		$db->pquery($sql, $params);
 
 		$allModuleModules = Vtiger_Module_Model::getAll(array(0), Settings_Profiles_Module_Model::getNonVisibleModulesList());
-		$allModuleModules[$eventModule->getId()] = $eventModule;
+
 		if(php7_count($allModuleModules) > 0) {
 			$actionModels = Vtiger_Action_Model::getAll(true);
 			foreach($allModuleModules as $tabId => $moduleModel) {

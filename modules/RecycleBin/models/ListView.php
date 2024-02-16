@@ -149,13 +149,9 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 			}
 		}
 
-		if($this->getModule()->get('name') == 'Calendar'){
-			$listQuery .= ' AND activitytype <> "Emails"';
-		}
-
 		$listResult = $db->pquery($listQuery, array());
-		$listViewCount = $db->query_result($listResult, 0, 'count');
-		return $listViewCount;
+
+        return $db->query_result($listResult, 0, 'count');
 	}
 
 }

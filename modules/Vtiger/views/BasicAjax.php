@@ -76,11 +76,7 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View {
 		$viewer->assign('SEARCHABLE_MODULES', Vtiger_Module_Model::getSearchableModules());
 		$viewer->assign('CUSTOMVIEW_MODEL', $customViewModel);
 		
-		if($moduleName == 'Calendar'){
-			$advanceFilterOpsByFieldType = Calendar_Field_Model::getAdvancedFilterOpsByFieldType();
-		} else{
-			$advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
-		}
+        $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
 		$viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());
 		$viewer->assign('ADVANCED_FILTER_OPTIONS_BY_TYPE', $advanceFilterOpsByFieldType);
         $dateFilters = Vtiger_Field_Model::getDateFilterTypes();
@@ -164,9 +160,7 @@ class Vtiger_BasicAjax_View extends Vtiger_Basic_View {
 						$queryGenerator->addConditionGlue($groupConditionGlue);
 				}
 			}
-            if($moduleName=='Calendar'){
-                $queryGenerator->addCondition('activitytype','Emails','n','AND');
-            }
+
 			$query = $queryGenerator->getQuery();
 			//Remove the ordering for now to improve the speed
 			//$query .= ' ORDER BY createdtime DESC';

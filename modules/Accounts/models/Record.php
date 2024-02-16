@@ -33,24 +33,6 @@ class Accounts_Record_Model extends Vtiger_Record_Model {
 	}
 
 	/**
-	 * Function returns the url for create event
-	 * @return <String>
-	 */
-	function getCreateEventUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateEventRecordUrl().'&parent_id='.$this->getId();
-	}
-
-	/**
-	 * Function returns the url for create todo
-	 * @retun <String>
-	 */
-	function getCreateTaskUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateTaskRecordUrl().'&parent_id='.$this->getId();
-	}
-
-	/**
 	 * Function to check duplicate exists or not
 	 * @return <boolean>
 	 */

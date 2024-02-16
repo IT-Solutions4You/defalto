@@ -42,11 +42,7 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('CURRENTDATE', date('Y-n-j'));
 		$viewer->assign('DATE_FILTERS', Vtiger_Field_Model::getDateFilterTypes());
 
-		if($moduleName == 'Calendar'){
-			$advanceFilterOpsByFieldType = Calendar_Field_Model::getAdvancedFilterOpsByFieldType();
-		} else{
-			$advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
-		}
+        $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
 		$viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());
 		$viewer->assign('ADVANCED_FILTER_OPTIONS_BY_TYPE', $advanceFilterOpsByFieldType);
 		$dateFilters = Vtiger_Field_Model::getDateFilterTypes();
@@ -66,14 +62,6 @@ Class CustomView_EditAjax_View extends Vtiger_IndexAjax_View {
 		}
 		$viewer->assign('RECORD_STRUCTURE', $recordStructure);
 		// Added to show event module custom fields
-		if($moduleName == 'Calendar'){
-			$relatedModuleName = 'Events';
-			$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModuleName);
-			$relatedRecordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($relatedModuleModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_FILTER);
-			$eventBlocksFields = $relatedRecordStructureInstance->getStructure();
-			$viewer->assign('EVENT_RECORD_STRUCTURE_MODEL', $relatedRecordStructureInstance);
-			$viewer->assign('EVENT_RECORD_STRUCTURE', $eventBlocksFields);
-		}
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
 		$viewer->assign('CUSTOMVIEW_MODEL', $customViewModel);

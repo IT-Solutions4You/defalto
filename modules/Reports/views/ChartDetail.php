@@ -75,12 +75,7 @@ class Reports_ChartDetail_View extends Vtiger_Index_View {
 		$viewer->assign('PRIMARY_MODULE_RECORD_STRUCTURE', $primaryModuleRecordStructure);
 		$viewer->assign('SECONDARY_MODULE_RECORD_STRUCTURES', $secondaryModuleRecordStructures);
 
-		$secondaryModuleIsCalendar = strpos($secondaryModules, 'Calendar');
-		if(($primaryModule == 'Calendar') || ($secondaryModuleIsCalendar !== FALSE)){
-			$advanceFilterOpsByFieldType = Calendar_Field_Model::getAdvancedFilterOpsByFieldType();
-		} else{
-			$advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
-		}
+        $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
 		$viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());
 		$viewer->assign('ADVANCED_FILTER_OPTIONS_BY_TYPE', $advanceFilterOpsByFieldType);
 		$dateFilters = Vtiger_Field_Model::getDateFilterTypes();

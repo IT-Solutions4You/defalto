@@ -61,46 +61,11 @@ Class OutlookHandler extends SyncHandler {
     }
 
     private function convertRecordToSyncFormat($module,$record){
-        if($module == 'Events' || $module =='Calendar'){
-            $startTime = $record['start_time'];
-            $endTime = $record['end_time'];
-            $dateFormat = "Y-m-d";
-            $timeFormat = "H:i:s";
-
-            $record['date_start'] = date($dateFormat,strtotime($startTime));
-            $record['time_start'] = date($timeFormat,strtotime($startTime));
-
-            $record['due_date'] = date($dateFormat,strtotime($endTime));
-            // Because there is no end time for Task module
-            if($module == 'Events')
-                $record['time_end'] = date($timeFormat,strtotime($endTime));
-
-            $record['duration_hours'] = date('H',(strtotime($endTime)-strtotime($startTime)));
-            $record['duration_minutes'] = date('i',(strtotime($endTime)-strtotime($startTime)));
-	
-        }
         $record['modifiedtime'] = $record['utclastmodifiedtime'];
         return $record;
     }
 
     private function convertRecordToNativeFormat($module, $record){
-        if($module == 'Events'){
-            $record['start_time'] = $record['date_start']." ".$record['time_start'];
-            $record['end_time'] = $record['due_date']." ".$record['time_end'];
-        } else if($module == 'Calendar') {
-            $dformat = "Y-m-d H:i:s";
-            $record['start_time'] = date($dformat,strtotime($record['date_start']." ".$record['time_start']));
-            $record['end_time'] = date($dformat,strtotime($record['due_date']));
-
-            /**
-             * convert the start time to user time zone as outlook does not take the datetime in utc
-             * Because, in Outlook , there is no time field for Tasks 
-             */
-            $oldDateFormat = $this->user->date_format;
-            $this->user->date_format = 'yyyy-mm-dd';
-            $dateTimeField = new DateTimeField($record['start_time']);
-            $record['start_time'] = $dateTimeField->getDisplayDateTimeValue($this->user);
-        }
         return $record;
     }
     
@@ -132,11 +97,4 @@ Class OutlookHandler extends SyncHandler {
             }
         }
     }
-
-
-
-
-
 }
-
-?>

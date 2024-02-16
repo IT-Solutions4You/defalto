@@ -85,7 +85,7 @@
 															</div>
 															<div class="col-sm-4" style="margin-top: 4px;">
 																<div class="pull-right">
-																	{if $MODULE_MODEL->get('relationtype') eq '1:N' and $MODULE_MODEL->getRelationModuleName() neq 'Calendar'}
+																	{if $MODULE_MODEL->get('relationtype') eq '1:N'}
 																		<img src="{vimage_path('1-N.png')}" width="100" height="50" />
 																	{else}
 																		<img src="{vimage_path('N-N.png')}" width="100" height="50" />

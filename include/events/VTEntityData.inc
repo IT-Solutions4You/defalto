@@ -12,43 +12,62 @@
  * A wrapper around CRMEntity instances
  */
 class VTEntityData{
-	private $isNew = false;
+	public bool $isNew = false;
+	public string $moduleName;
+    public int $entityId;
+    public CRMEntity $focus;
 
-	/**
-	 * Get an entity data object.
-	 *
-	 * @param $adb Pear database instance.
-	 * @param $entityId The id of the entity to load.
-	 * @param $moduleName - module name of the record.
-	 * @return The new entity data object.
-	 */
-	static function fromEntityId($adb, $entityId, $moduleName=''){
-		$obj = new VTEntityData();
+    /**
+     * Get an entity data object.
+     *
+     * @param int    $entityId   id of the entity to load.
+     * @param string $moduleName module name of the record.
+     *
+     * @return VTEntityData new entity data object.
+     * @throws Exception
+     */
+	public static function fromEntityId($entityId, string $moduleName = ''): VTEntityData
+    {
+		$adb = PearDatabase::getInstance();
+        $entityId = (int)$entityId;
+		$obj = new self();
 		$obj->entityId = $entityId;
-		if(empty($moduleName)) {
-			$result = $adb->pquery("select setype from vtiger_crmentity where crmid=?", array($entityId));
-			$setype =  $adb->query_result($result,0,"setype");
 
-			if($setype == 'Calendar') {
-				$setype = vtws_getCalendarEntityType($entityId);
-			}
-			$obj->moduleName = $setype;
-		} else {
-			$setype = $moduleName;
-			$obj->moduleName = $setype;
-		}
+        $seType = self::determineSeType($entityId, $moduleName);
+
+		$obj->moduleName = $seType;
 
 		require_once('data/CRMEntity.php');
-		$focus = CRMEntity::getInstance($setype);
+		$focus = CRMEntity::getInstance($seType);
 
-		$focus->retrieve_entity_info($entityId, $setype);
+		$focus->retrieve_entity_info($entityId, $seType);
 		$focus->id = $entityId;
 		$obj->isNew = false;
 		$obj->focus = $focus;
+
 		return $obj;
 	}
 
-	/**
+    /**
+     * @param int    $entityId
+     * @param string $moduleName
+     *
+     * @return string
+     * @throws Exception
+     */
+    private static function determineSeType(int $entityId, string $moduleName = ''): string
+    {
+        $adb = PearDatabase::getInstance();
+
+        if (!empty($moduleName)) {
+            return $moduleName;
+        }
+
+        $result = $adb->pquery('select setype from vtiger_crmentity where crmid=?', [$entityId]);
+        return $adb->query_result($result, 0, 'setype');
+    }
+
+    /**
 	 * Get an entity data object.
 	 * @param $adb Pear database instance.
 	 * @param $userId The id of the entity to load.
@@ -117,7 +136,7 @@ class VTEntityData{
 	/**
 	 * Get the name of the module represented by the entity data object.
 	 *
-	 * @return The module name.
+	 * @return string module name.
 	 */
 	function getModuleName(){
 		$className =  get_class($this->focus);
@@ -135,12 +154,6 @@ class VTEntityData{
 			$moduleName = $importModuleMapping[$className];
 		}
 
-		if($className == 'Activity') {
-			$id = $this->getId();
-			if($id != null || $id != '') {
-				$moduleName = vtws_getCalendarEntityType($id);
-			}
-		}
 		return $moduleName;
 	}
 
@@ -193,9 +206,7 @@ class VTEntityData{
 			$result = $db->pquery('SELECT setype FROM vtiger_crmentity WHERE crmid=?', array($entityId));
 			$moduleName = $db->query_result($result, 0, 'setype');
 		}
-		if ($moduleName == 'Calendar') {
-			$moduleName = vtws_getCalendarEntityType($entityId);
-		}
+
 		$obj->moduleName = $moduleName;
 
 		require_once('data/CRMEntity.php');
@@ -207,4 +218,3 @@ class VTEntityData{
 		return $obj;
 	}
 }
-?>

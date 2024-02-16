@@ -112,7 +112,6 @@ require_once("VTWorkflowUtils.php");
 		$smarty->assign("USER_DATE", $date->getDisplayDate());
 		$smarty->assign("MOD", array_merge(
 			return_module_language($current_language,'Settings'),
-			return_module_language($current_language, 'Calendar'),
 			return_module_language($current_language, $module->name)));
 		$smarty->assign("APP", $app_strings);
 		$smarty->assign('dateFormat', parse_calendardate());

@@ -34,10 +34,7 @@ class CRMEntity {
 
 	static function getInstance($module) {
 		$modName = $module;
-		if ($module == 'Calendar' || $module == 'Events') {
-			$module = 'Calendar';
-			$modName = 'Activity';
-		}
+
 		// File access security check
 		if (!class_exists($modName)) {
 			checkFileAccessForInclusion("modules/$module/$modName.php");
@@ -273,10 +270,6 @@ class CRMEntity {
 			$ownerid = $current_user->id;
 		}
 
-		if ($module == 'Events') {
-			$module = 'Calendar';
-		}
-
 		$entityFields = Vtiger_Functions::getEntityModuleInfo($module);
         $entityFieldNames  = explode(',', $entityFields['fieldname']);
         switch ($module) {
@@ -427,9 +420,7 @@ class CRMEntity {
 		}
 
 		$tabid = getTabid($module);
-		if ($module == 'Calendar' && $this->column_fields["activitytype"] != null && $this->column_fields["activitytype"] != 'Task') {
-			$tabid = getTabid('Events');
-		}
+
 		if ($insertion_mode == 'edit') {
 			$update = array();
 			$update_params = array();
@@ -833,14 +824,8 @@ class CRMEntity {
 		}
 
 		// Lookup module field cache
-		if($module == 'Calendar' || $module == 'Events') {
-			getColumnFields('Calendar');
-			$cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-			$cachedCalendarFields = VTCacheUtils::lookupFieldInfo_Module('Calendar');
-			$cachedModuleFields = array_merge($cachedEventsFields, $cachedCalendarFields);
-		} else {
-			$cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
-		}
+        $cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
+
 		if ($cachedModuleFields === false) {
 			// Pull fields and cache for further use
 			$tabid = getTabid($module);
@@ -1334,7 +1319,7 @@ class CRMEntity {
 			// Initialize Event trigger cache
 			$em->initTriggerCache();
 
-			$entityData = VTEntityData::fromEntityId($adb, $id);
+			$entityData = VTEntityData::fromEntityId($id);
 
 			$em->triggerEvent("vtiger.entity.beforedelete", $entityData);
 		}
@@ -1498,9 +1483,6 @@ class CRMEntity {
 		$exclude_uitypes = Array();
 
 		$tabid = getTabId($module);
-		if ($module == 'Calendar') {
-			$tabid = array('9', '16');
-		}
 		$sql = "SELECT columnname FROM vtiger_field " .
 				" WHERE (fieldname not like '%\_id' OR fieldname in ('assigned_user_id'))" .
 				" AND tabid in (" . generateQuestionMarks($tabid) . ") and vtiger_field.presence in (0,2)";
@@ -2320,9 +2302,6 @@ class CRMEntity {
 		$matrix = $queryPlanner->newDependencyMatrix();
 
 		$params = array($module);
-		if($module == "Calendar") {
-			array_push($params,"Events");
-		}
 
 		$fields_query = $adb->pquery("SELECT vtiger_field.fieldname,vtiger_field.tablename,vtiger_field.fieldid from vtiger_field INNER JOIN vtiger_tab on vtiger_tab.name IN (".  generateQuestionMarks($params).") WHERE vtiger_tab.tabid=vtiger_field.tabid AND vtiger_field.uitype IN (10) AND vtiger_field.presence IN (0,2)", $params);
 
@@ -2339,16 +2318,10 @@ class CRMEntity {
 					$crmentityRelModuleFieldTable = "vtiger_crmentityRel$module$field_id";
 
 					$crmentityRelModuleFieldTableDeps = array();
-					$calendarFlag = false;
+
 					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
 						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
 						if(vtlib_isModuleActive($rel_mod)) {
-							if($rel_mod == 'Calendar') {
-								$calendarFlag = true;
-							}
-							if($calendarFlag && $rel_mod == 'Events') {
-								continue;
-							}
 							$rel_obj = CRMEntity::getInstance($rel_mod);
 							vtlib_setup_modulevars($rel_mod, $rel_obj);
 
@@ -2365,16 +2338,9 @@ class CRMEntity {
 						$relquery.= " LEFT JOIN vtiger_crmentity AS $crmentityRelModuleFieldTable ON $crmentityRelModuleFieldTable.crmid = $tab_name.$field_name AND vtiger_crmentityRel$module$field_id.deleted=0";
 					}
 
-					$calendarFlag = false;
-					for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
+                    for ($j = 0; $j < $adb->num_rows($ui10_modules_query); $j++) {
 						$rel_mod = $adb->query_result($ui10_modules_query, $j, 'relmodule');
 						if(vtlib_isModuleActive($rel_mod)) {
-							if($rel_mod == 'Calendar') {
-								$calendarFlag = true;
-							}
-							if($calendarFlag && $rel_mod == 'Events') {
-								continue;
-							}
 							$rel_obj = CRMEntity::getInstance($rel_mod);
 							vtlib_setup_modulevars($rel_mod, $rel_obj);
 
@@ -2503,8 +2469,6 @@ class CRMEntity {
 			if($pritablename == 'vtiger_seactivityrel') {
 				if($module == "Emails" || $secmodule == "Emails"){
 					$tmpModule = "Emails";
-				}else{
-					$tmpModule = "Calendar";
 				}
 				$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname
 					AND $tmpname.activityid IN (SELECT crmid FROM vtiger_crmentity WHERE setype='$tmpModule' AND deleted = 0))";
@@ -2527,9 +2491,8 @@ class CRMEntity {
 			} else {
 				$query = " LEFT JOIN $pritablename AS $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname)";
 			}
-			if($secmodule == 'Calendar'){
-				$condition .= " AND $table_name.activitytype != 'Emails'";
-			}else if($secmodule == 'Leads'){
+
+            if($secmodule === 'Leads'){
 				$condition .= " AND $table_name.converted = 0";
 			}
 
@@ -2685,11 +2648,6 @@ class CRMEntity {
 			// We will succeed now due to above function call
 			$cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
 		}
-		if($module == 'Calendar' || $module == 'Events') {
-		   $cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-		   $cachedCalendarFields = VTCacheUtils::lookupFieldInfo_Module('Calendar');
-		   $cachedModuleFields = array_merge($cachedEventsFields, $cachedCalendarFields);
-	   }
 
 		$lookuptables = array();
 		$lookupcolumns = array();
@@ -2878,7 +2836,7 @@ class CRMEntity {
 					php7_count($sharingRuleInfo['GROUP']) > 0)) {
 				$tableName = $tableName . '_t' . $tabId;
 				$sharedTabId = $tabId;
-			} elseif ($module == 'Calendar' || !empty($scope)) {
+			} elseif (!empty($scope)) {
 				$tableName .= '_t' . $tabId;
 			}
 

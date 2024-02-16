@@ -264,23 +264,6 @@ function vtws_runQueryAsTransaction($query,$params,&$result){
 	return !$error;
 }
 
-function vtws_getCalendarEntityType($id){
-	global $adb;
-
-	$sql = "select activitytype from vtiger_activity where activityid=?";
-	$result = $adb->pquery($sql,array($id));
-	$seType = 'Calendar';
-	if($result != null && isset($result)){
-		if($adb->num_rows($result)>0){
-			$activityType = $adb->query_result($result,0,"activitytype");
-			if($activityType !== "Task"){
-				$seType = "Events";
-			}
-		}
-	}
-	return $seType;
-}
-
 /***
  * Get the webservice reference Id given the entity's id and it's type name
  */
@@ -695,66 +678,6 @@ function vtws_getFieldfromFieldId($fieldId, $fieldObjectList){
 	return null;
 }
 
-/**	Function used to get the lead related activities with other entities Account and Contact
- *	@param integer $leadId - lead entity id
- *	@param integer $accountId - related account id
- *	@param integer $contactId -  related contact id
- *	@param integer $relatedId - related entity id to which the records need to be transferred
- */
-function vtws_getRelatedActivities($leadId,$accountId,$contactId,$relatedId) {
-
-	if(empty($leadId) || empty($relatedId) || (empty($accountId) && empty($contactId))){
-		throw new WebServiceException(WebServiceErrorCode::$LEAD_RELATED_UPDATE_FAILED,
-			"Failed to move related Activities/Emails");
-	}
-	global $adb;
-	$sql = "select * from vtiger_seactivityrel where crmid=?";
-	$result = $adb->pquery($sql, array($leadId));
-	if($result === false){
-		return false;
-	}
-	$rowCount = $adb->num_rows($result);
-	for($i=0;$i<$rowCount;++$i) {
-		$activityId=$adb->query_result($result,$i,"activityid");
-
-		$sql ="select setype from vtiger_crmentity where crmid=?";
-		$resultNew = $adb->pquery($sql, array($activityId));
-		if($resultNew === false){
-			return false;
-		}
-		$type=$adb->query_result($resultNew,0,"setype");
-
-		$sql="delete from vtiger_seactivityrel where crmid=?";
-		$resultNew = $adb->pquery($sql, array($leadId));
-		if($resultNew === false){
-			return false;
-		}
-		if($type != "Emails") {
-				if(!empty($accountId)){
-					$sql = "insert into vtiger_seactivityrel(crmid,activityid) values (?,?)";
-					$resultNew = $adb->pquery($sql, array($accountId, $activityId));
-					if($resultNew === false){
-						return false;
-				}
-			}
-				if(!empty($contactId)){
-					$sql="insert into vtiger_cntactivityrel(contactid,activityid) values (?,?)";
-					$resultNew = $adb->pquery($sql, array($contactId, $activityId));
-					if($resultNew === false){
-						return false;
-				}
-			}
-		} else {
-			$sql = "insert into vtiger_seactivityrel(crmid,activityid) values (?,?)";
-			$resultNew = $adb->pquery($sql, array($relatedId, $activityId));
-			if($resultNew === false){
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
 /**
  * Function used to save the lead related Campaigns with Contact
  * @param $leadid - leadid
@@ -1070,9 +993,7 @@ function vtws_transferPotentialRelatedRecords($potentialId, $relatedId, $seType)
 	if (empty($potentialId) || empty($relatedId) || empty($seType)) {
 		throw new WebServiceException(WebServiceErrorCode::$POTENTIAL_RELATED_UPDATE_FAILED, "Failed to move related Records");
 	}
-	if (vtlib_isModuleActive('Calendar')) {
-		vtws_transferRelatedPotentialActivities($potentialId, $relatedId);
-	}
+
 	if (vtlib_isModuleActive('Quotes')) {
 		vtws_transferRelatedPotentialQuotes($potentialId, $relatedId);
 	}
@@ -1083,67 +1004,6 @@ function vtws_transferPotentialRelatedRecords($potentialId, $relatedId, $seType)
 	if (vtlib_isModuleActive('Documents')) {
 		vtws_transferRelatedPotentialDocuments($potentialId, $relatedId);
 	}
-}
-
-/** 	Function used to get the potential related activities and transfer to Project
- * 	@param integer $entityId - potential entity id
- * 	@param integer $relatedId - related entity id to which the records need to be transferred
- */
-function vtws_transferRelatedPotentialActivities($entityId, $relatedId) {
-	global $adb;
-
-	$relatedRecordInstance = Vtiger_Record_Model::getInstanceById($relatedId);
-	$relatedModuleName = $relatedRecordInstance->getModuleName();
-
-	if (empty($entityId) || empty($relatedId)) {
-		throw new WebServiceException(WebServiceErrorCode::$POTENTIAL_RELATED_UPDATE_FAILED, "Failed to move related Activities");
-	}
-
-	$sql = "SELECT * FROM vtiger_crmentityrel 
-			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_crmentityrel.relcrmid 
-			WHERE vtiger_crmentityrel.crmid=? AND vtiger_crmentityrel.relmodule=? AND vtiger_crmentity.setype <> ?";
-	$result = $adb->pquery($sql, array($entityId, 'Calendar', 'Emails'));
-
-	if ($result === false) {
-		return false;
-	}
-	$rowCount = $adb->num_rows($result);
-	for ($i = 0; $i < $rowCount; $i++) {
-		$activityId = $adb->query_result($result, $i, "relcrmid");
-		$activityModuleName = $adb->query_result($result, $i, "relmodule");
-
-		if (!empty($relatedId)) {
-			$sql = "INSERT INTO vtiger_crmentityrel (crmid,module,relcrmid,relmodule) values (?,?,?,?)";
-			$resultNew = $adb->pquery($sql, array($relatedId, $relatedModuleName, $activityId, $activityModuleName));
-			if ($resultNew === false) {
-				return false;
-			}
-		}
-	}
-
-	$sql = 'SELECT activityid,setype FROM vtiger_seactivityrel
-			INNER JOIN vtiger_crmentity on vtiger_crmentity.crmid = vtiger_seactivityrel.activityid
-			WHERE vtiger_seactivityrel.crmid=? AND vtiger_crmentity.setype <> ?';
-	$result = $adb->pquery($sql, array($entityId, 'Emails'));
-	if ($result === false) {
-		return false;
-	}
-	$rowCount = $adb->num_rows($result);
-
-	for ($i = 0; $i < $rowCount; $i++) {
-		$activityId = $adb->query_result($result, $i, "activityid");
-		$activityModuleName = $adb->query_result($result, $i, "setype");
-
-		if (!empty($relatedId)) {
-			$sql = "INSERT INTO vtiger_crmentityrel (crmid,module,relcrmid,relmodule) values (?,?,?,?)";
-			$resultNew = $adb->pquery($sql, array($relatedId, $relatedModuleName, $activityId, $activityModuleName));
-			if ($resultNew === false) {
-				return false;
-			}
-		}
-	}
-
-	return true;
 }
 
 /**

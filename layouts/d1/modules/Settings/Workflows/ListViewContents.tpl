@@ -26,11 +26,7 @@
                             </option>
                             {foreach item=MODULE_MODEL key=TAB_ID from=$SUPPORTED_MODULE_MODELS}
                                 <option {if $SOURCE_MODULE eq $MODULE_MODEL->getName()} selected="" {/if} value="{$MODULE_MODEL->getName()}" data-count='{if $MODULES_COUNT[$TAB_ID]}{$MODULES_COUNT[$TAB_ID]}{else}0{/if}'>
-                                    {if $MODULE_MODEL->getName() eq 'Calendar'}
-                                        {vtranslate('LBL_TASK', $MODULE_MODEL->getName())}&nbsp;{vtranslate('LBL_WORKFLOWS')}
-                                    {else}
-                                        {vtranslate($MODULE_MODEL->getName(),$MODULE_MODEL->getName())}&nbsp;{vtranslate('LBL_WORKFLOWS')}
-                                    {/if}
+                                    {vtranslate($MODULE_MODEL->getName(),$MODULE_MODEL->getName())}&nbsp;{vtranslate('LBL_WORKFLOWS')}
                                 </option>
                             {/foreach}
                         </select>

@@ -447,10 +447,6 @@ class VTEMAILMakerMailTask extends VTTask
 
     public function getTemplates($selected_module)
     {
-        if('Events' === $selected_module) {
-            $selected_module = 'Calendar';
-        }
-
         $orderby = "templateid";
         $dir = "asc";
         $c = "<div class='row-fluid'>";

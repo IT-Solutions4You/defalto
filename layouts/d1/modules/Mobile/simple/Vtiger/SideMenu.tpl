@@ -26,15 +26,6 @@
     </md-toolbar>
 
     <md-list class="sidenav-module-list">
-        <md-list-item ng-click="navigationToggle(); loadList('Events');" md-ink-ripple class="md-1-line">
-            <span style="font-size:14px;" class="vicon-calendar"></span> &nbsp; 
-            <span class="vmodule-name">Events</span>
-        </md-list-item>
-        <md-list-item ng-click="navigationToggle(); loadList('Calendar');" md-ink-ripple class="md-1-line">
-            <span style="font-size:14px;" class="vicon-calendar"></span> &nbsp; 
-            <span class="vmodule-name">Tasks</span>
-        </md-list-item>
-        <md-divider></md-divider>
         <md-list-item ng-click="navigationToggle();loadList(module.name);" class="md-1-line" ng-click="module.label" ng-repeat="module in menus[selectedApp]">
             <span style="font-size: 14px;" class="vicon-{{module.name | lowercase | nospace}}"></span> &nbsp; 
             <span class="vmodule-name">{{module.label}}</span>

@@ -127,11 +127,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 		} else if ('create_wizard' == $this->getOperationArg($request)) {
 			$moduleName = $request->get('_mlinktotype');
-			if(!vtlib_isModuleActive($moduleName) && $moduleName != 'Events') {
-				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
-				return $response;
-			}
-			if($moduleName == 'Events' && !vtlib_isModuleActive('Calendar')) {
+			if(!vtlib_isModuleActive($moduleName)) {
 				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
 				return $response;
 			}
@@ -167,16 +163,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 											$referenceFieldName = 'related_to';
 										}
 										$request->set($referenceFieldName, $request->get('_mlinkto'));
-									}
-									break;
-				case 'Events'	:
-				case 'Calendar' :   if ($parent) {
-										if($linkedto['module'] == 'Contacts') {
-											$referenceFieldName = 'contact_id';
-										} elseif ($linkedto['module'] == 'Accounts') {
-											$referenceFieldName = 'parent_id';
-										}
-										$request->set($referenceFieldName, $parent);
 									}
 									break;
 			}
@@ -236,42 +222,6 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 			}
 
 			switch ($linkModule) {
-				case 'Calendar' :   $activityType = $recordModel->get('activitytype');
-									if (!$activityType) {
-										$activityType = 'Task';
-									}
-									$recordModel->set('activitytype', $activityType);
-
-									//Start Date and Time values
-									$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_start'));
-									$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('date_start')." ".$startTime);
-									list($startDate, $startTime) = explode(' ', $startDateTime);
-
-									$recordModel->set('date_start', $startDate);
-									$recordModel->set('time_start', $startTime);
-
-									//End Date and Time values
-									$endDate = Vtiger_Date_UIType::getDBInsertedValue($request->get('due_date'));
-									if ($activityType != 'Task') {
-										$endTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('time_end'));
-										$endDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('due_date')." ".$endTime);
-										list($endDate, $endTime) = explode(' ', $endDateTime);
-									} else {
-										$endTime = '';
-									}
-									$recordModel->set('time_end', $endTime);
-									$recordModel->set('due_date', $endDate);
-
-									if($parent) {
-										if($linkedto['module'] == 'Contacts') {
-											$recordModel->set('contact_id', $parent);
-										} else {
-											$recordModel->set('parent_id', $parent);
-										}
-									}
-									$recordModel->set('visibility', 'Public');
-									break;
-
 				case 'HelpDesk' :   $from = $mail->from();
 									if ($parent) {
 										if($linkedto['module'] == 'Contacts') {
@@ -298,42 +248,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 				// This condition is added so that emails are not created for Tickets and Todo without Parent,
 				// as there is no way to relate them
-				if(empty($parent) && $linkModule != 'HelpDesk' && $linkModule != 'Calendar') {
+				if(empty($parent) && $linkModule != 'HelpDesk') {
 					$linkedto = MailManager_Relate_Action::associate($mail, $recordModel->getId());
-				}
-
-				if ($linkModule === 'Calendar') {
-					// Handled to save follow up event
-					$followupMode = $request->get('followup');
-
-					//Start Date and Time values
-					$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($request->get('followup_time_start'));
-					$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($request->get('followup_date_start') . " " . $startTime);
-					list($startDate, $startTime) = explode(' ', $startDateTime);
-
-					$subject = $request->get('subject');
-					if($followupMode == 'on' && $startTime != '' && $startDate != '') {
-						$recordModel->set('eventstatus', 'Planned');
-						$recordModel->set('subject', '[Followup] '.$subject);
-						$recordModel->set('date_start', $startDate);
-						$recordModel->set('time_start', $startTime);
-
-						$currentUser = Users_Record_Model::getCurrentUserModel();
-						$activityType = $recordModel->get('activitytype');
-						if($activityType == 'Call') {
-							$minutes = $currentUser->get('callduration');
-						} else {
-							$minutes = $currentUser->get('othereventduration');
-						}
-						$dueDateTime = date('Y-m-d H:i:s', strtotime("$startDateTime+$minutes minutes"));
-						list($startDate, $startTime) = explode(' ', $dueDateTime);
-
-						$recordModel->set('due_date', $startDate);
-						$recordModel->set('time_end', $startTime);
-						$recordModel->set('recurringtype', '');
-						$recordModel->set('mode', 'create');
-						$recordModel->save();
-					}
 				}
 
 				// add attachments to the tickets as Documents
@@ -435,9 +351,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return Array
 	 */
 	public function getCurrentUserMailManagerAllowedModules() {
-		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Calendar', 'Potentials');
+        $moduleListForCreateRecordFromMail = ['Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Potentials'];
 
-		foreach($moduleListForCreateRecordFromMail as $module) {
+        foreach($moduleListForCreateRecordFromMail as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
 			}
@@ -450,9 +366,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return string
 	 */
 	public function linkToAvailableActions() {
-		$moduleListForLinkTo = array('Calendar','HelpDesk','ModComments','Emails','Potentials');
+        $moduleListForLinkTo = ['HelpDesk', 'ModComments', 'Emails', 'Potentials'];
 
-		foreach($moduleListForLinkTo as $module) {
+        foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
 			}

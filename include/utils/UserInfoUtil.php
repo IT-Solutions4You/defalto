@@ -307,10 +307,6 @@ function isPermitted($module,$actionname,$record_id='')
 	$actionid=getActionid($actionname);
 	$checkModule = $module;
 
-	if($checkModule == 'Events'){
-		$checkModule = 'Calendar';
-	}
-
 	if(vtlib_isModuleActive($checkModule)){
 
 		//Checking whether the user is admin
@@ -417,7 +413,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 
 			}
 		}
@@ -426,21 +422,21 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			$permission = "no";
 			$log->debug("Exiting isPermitted method ...");
-			return returnPermission($permission, $sharingPermission);;
+			return returnPermission($permission, $sharingPermission);
 		}
 		//Checking for Action Permission
 		if(strlen($profileActionPermission[$tabid][$actionid]) <  1 && $profileActionPermission[$tabid][$actionid] == '')
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return returnPermission($permission, $sharingPermission);;
+			return returnPermission($permission, $sharingPermission);
 		}
 
 		if($profileActionPermission[$tabid][$actionid] != 0 && $profileActionPermission[$tabid][$actionid] != '')
 		{
 			$permission = "no";
 			$log->debug("Exiting isPermitted method ...");
-			return returnPermission($permission, $sharingPermission);;
+			return returnPermission($permission, $sharingPermission);
 
 		}
 		//Checking and returning true if recorid is null
@@ -448,7 +444,7 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return returnPermission($permission, $sharingPermission);;
+			return returnPermission($permission, $sharingPermission);
 		}
 
 		//If modules is Products,Vendors,Faq,PriceBook then no sharing
@@ -458,7 +454,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 		}
 
@@ -486,7 +482,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			//Checking if the Record Owner is the Subordinate User
 			foreach($subordinate_roles_users as $roleid=>$userids)
@@ -494,16 +490,8 @@ function isPermitted($module,$actionname,$record_id='')
 				if(in_array($recOwnId,$userids))
 				{
 					$permission='yes';
-					if($module == 'Calendar') {
-						$activityType = vtws_getCalendarEntityType($record_id);
-						if($activityType == 'Events') {
-							$permission = isCalendarPermittedBySharing($record_id);
-						} else {
-							$permission = isToDoPermittedBySharing($record_id);
-						}
-					}
 					$log->debug("Exiting isPermitted method ...");
-					return returnPermission($permission, $sharingPermission);;
+					return returnPermission($permission, $sharingPermission);
 				}
 
 			}
@@ -517,7 +505,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission='yes';
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 		}
 
@@ -526,36 +514,21 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			if($actionid == 1 || $actionid == 0)
 			{
-
-				if($module == 'Calendar')
-				{
-					if($recOwnType == 'Users')
-					{
-						$permission = isCalendarPermittedBySharing($record_id);
-					}
-					else
-					{
-						$permission='no';
-					}
-				}
-				else
-				{
-					$permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
-				}
+                $permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			elseif($actionid == 2)
 			{
 				$permission = "no";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			else
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 		}
 		elseif($others_permission_id == 1)
@@ -564,61 +537,35 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "no";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			else
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 		}
 		elseif($others_permission_id == 2)
 		{
 			$permission = "yes";
 			$log->debug("Exiting isPermitted method ...");
-			return returnPermission($permission, $sharingPermission);;
+			return returnPermission($permission, $sharingPermission);
 		}
 		elseif($others_permission_id == 3)
 		{
 
 			if($actionid == 3 || $actionid == 4)
 			{
-				if($module == 'Calendar')
-				{
-					if($recOwnType == 'Users')
-					{
-						$activityType = vtws_getCalendarEntityType($record_id);
-						if($activityType == 'Events') {
-							$permission = isCalendarPermittedBySharing($record_id);
-						} else {
-							$permission = isToDoPermittedBySharing($record_id);
-						}
-					}
-					else
-					{
-						$permission='no';
-					}
-				}
-				else
-				{
-					$permission = isReadPermittedBySharing($module,$tabid,$actionid,$record_id);
-				}
+                $permission = isReadPermittedBySharing($module,$tabid,$actionid,$record_id);
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			elseif($actionid ==0 || $actionid ==1)
 			{
-				if($module == 'Calendar')
-				{
-					$permission='no';
-				}
-				else
-				{
-					$permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
-				}
+                $permission = isReadWritePermittedBySharing($module,$tabid,$actionid,$record_id);
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 			elseif($actionid ==2)
 			{
@@ -629,7 +576,7 @@ function isPermitted($module,$actionname,$record_id='')
 			{
 				$permission = "yes";
 				$log->debug("Exiting isPermitted method ...");
-				return returnPermission($permission, $sharingPermission);;
+				return returnPermission($permission, $sharingPermission);
 			}
 		}
 		else
@@ -641,7 +588,7 @@ function isPermitted($module,$actionname,$record_id='')
 	}
 
 	$log->debug("Exiting isPermitted method ...");
-	return returnPermission($permission, $sharingPermission);;
+	return returnPermission($permission, $sharingPermission);
 
 }
 
@@ -1925,22 +1872,6 @@ function getListViewSecurityParameter($module)
 		$sec_query .= " and vtiger_crmentity.smownerid=".$current_user->id." ";
 
 	}
-	elseif($module == 'Calendar')
-	{
-		require_once('modules/Calendar/CalendarCommon.php');
-		$shared_ids = getSharedCalendarId($current_user->id);
-		if(isset($shared_ids) && $shared_ids != '')
-			$condition = " or (vtiger_crmentity.smownerid in($shared_ids) and vtiger_activity.visibility = 'Public')";
-		else
-			$condition = null;
-		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) $condition or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%')";
-
-		if(php7_count($current_user_groups) > 0)
-		{
-			$sec_query .= " or ((vtiger_groups.groupid in (". implode(",", $current_user_groups) .")))";
-		}
-		$sec_query .= ")";
-	}
 	elseif($module == 'Quotes')
 	{
 		$sec_query .= " and (vtiger_crmentity.smownerid in($current_user->id) or vtiger_crmentity.smownerid in(select vtiger_user2role.userid from vtiger_user2role inner join vtiger_users on vtiger_users.id=vtiger_user2role.userid inner join vtiger_role on vtiger_role.roleid=vtiger_user2role.roleid where vtiger_role.parentrole like '".$current_user_parent_role_seq."::%') or vtiger_crmentity.smownerid in(select shareduserid from vtiger_tmp_read_user_sharing_per where userid=".$current_user->id." and tabid=".$tabid.")";
@@ -2303,9 +2234,6 @@ function getSharingModuleList($eliminateModules=false)
 	if(empty($eliminateModules)) $eliminateModules = Array();
 
 	// Module that needs to be eliminated explicitly
-	if(!in_array('Calendar', $eliminateModules)) $eliminateModules[] = 'Calendar';
-	if(!in_array('Events', $eliminateModules)) $eliminateModules[] = 'Events';
-
 	$query = "SELECT name FROM vtiger_tab WHERE presence=0 AND ownedby = 0 AND isentitytype = 1";
 	$query .= " AND name NOT IN(" . generateQuestionMarks($eliminateModules) . ")";
 

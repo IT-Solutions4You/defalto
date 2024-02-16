@@ -337,28 +337,10 @@ class ListViewController {
 					}
 				}elseif ($fieldDataType == 'picklist') {
 					//not check for permissions for non admin users for status and activity type field
-					if($module == 'Calendar' && ($fieldName == 'taskstatus' || $fieldName == 'eventstatus' || $fieldName == 'activitytype')) {
-						$value = Vtiger_Language_Handler::getTranslatedString($value,$module);
-						$value = textlength_check($value);
-					} else {
-						$value =  Vtiger_Language_Handler::getTranslatedString($value,$module);
-						$value = textlength_check($value);
-					}
+                    $value =  Vtiger_Language_Handler::getTranslatedString($value,$module);
+                    $value = textlength_check($value);
 				}elseif($fieldDataType == 'date' || $fieldDataType == 'datetime') {
 					if($value != '' && $value != '0000-00-00' && $value != 'NULL') {
-						if($module == 'Calendar' &&($fieldName == 'date_start' || $fieldName == 'due_date')) {
-							if($fieldName == 'date_start') {
-								$timeField = 'time_start';
-							}else if($fieldName == 'due_date') {
-								$timeField = 'time_end';
-							}
-							$timeFieldValue = $this->db->query_result($result, $i, $timeField);
-							if(!empty($timeFieldValue)){
-								$value .= ' '. $timeFieldValue;
-								//TO make sure it takes time value as well
-								$fieldDataType = 'datetime';
-							}
-						}
 						if($fieldDataType == 'datetime' && $value != '0000-00-00 00:00:00') {
 							$value = Vtiger_Datetime_UIType::getDateTimeValue($value);
 						} else if($fieldDataType == 'date') {
@@ -370,10 +352,6 @@ class ListViewController {
 					}
 				} elseif($fieldDataType == 'time') {
 					if(!empty($value)){
-						if(($module == 'Calendar') && ($fieldName == 'time_start' || $fieldName == 'time_end')) {
-							$time = new DateTimeField(date('Y-m-d').' '.$value);
-							$value = $time->getDisplayTime();
-						}
 						$userModel = Users_Privileges_Model::getCurrentUserModel();
 						if($userModel->get('hour_format') == '12'){
 							$value = Vtiger_Time_UIType::getTimeValueInAMorPM($value);

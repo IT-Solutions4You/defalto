@@ -149,10 +149,6 @@ class Mobile_WS_FetchRecordWithGrouping extends Mobile_WS_FetchRecord {
                		// Special case handling to pull configured Terms & Conditions given through webservices.
 					else if($field['name'] == 'terms_conditions' && in_array($module, array('Quotes','Invoice', 'SalesOrder', 'PurchaseOrder'))){ 
                         $field['type']['defaultValue'] = $field['value'];
-                    }
-                    //Special case handling to set defaultValue for visibility field in calendar.
-                    else if ($field['name'] == 'visibility' && in_array($module, array('Calendar','Events'))){
-   						$field['type']['defaultValue'] = $field['value']; 
                     } else if($field['type']['name'] != 'reference') {
                         $field['type']['defaultValue'] = $field['default'];
                     }

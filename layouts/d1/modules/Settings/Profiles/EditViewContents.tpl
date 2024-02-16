@@ -148,7 +148,7 @@
 									{if $PROFILE_MODULE->getFields() && $PROFILE_MODULE->isEntityModule() }
 										<div class="d-flex justify-content-between pb-3">
 											<div class="fs-5">
-												<strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}{if $MODULE_NAME eq 'Calendar'} {vtranslate('LBL_OF', $MODULE_NAME)} {vtranslate('LBL_TASKS', $MODULE_NAME)}{/if}</strong>
+												<strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}</strong>
 											</div>
 											<div class="text-end">
 												<span class="mini-slider-control ui-slider" data-value="0">
@@ -196,33 +196,6 @@
 												{/if}
 											{/foreach}
 										</table>
-										{if $MODULE_NAME eq 'Calendar'}
-											{assign var=EVENT_MODULE value=$PROFILE_MODULES[16]}
-											{assign var=COUNTER value=0}
-											<label class="pull-left"><strong>{vtranslate('LBL_FIELDS', $QUALIFIED_MODULE)} {vtranslate('LBL_OF', $EVENT_MODULE->getName())} {vtranslate('LBL_EVENTS', $EVENT_MODULE->getName())}</strong></label>
-											<table class="table table-borderless">
-												{foreach from=$EVENT_MODULE->getFields() key=FIELD_NAME item=FIELD_MODEL name="fields"}
-													{if $FIELD_MODEL->isActiveField()}
-														{assign var="FIELD_ID" value=$FIELD_MODEL->getId()}
-														{if $COUNTER % 3 == 0}
-															<tr>
-															{/if}
-															<td>
-																{assign var="FIELD_LOCKED" value=$RECORD_MODEL->isModuleFieldLocked($EVENT_MODULE, $FIELD_MODEL)}
-																<input type="hidden" name="permissions[16][fields][{$FIELD_ID}]" data-range-input="{$FIELD_ID}" value="{$RECORD_MODEL->getModuleFieldPermissionValue($EVENT_MODULE, $FIELD_MODEL)}" readonly="true">
-																<div class="mini-slider-control editViewMiniSlider pull-left" data-locked="{$FIELD_LOCKED}" data-range="{$FIELD_ID}" data-value="{$RECORD_MODEL->getModuleFieldPermissionValue($EVENT_MODULE, $FIELD_MODEL)}"></div>
-																<div class="pull-left">
-																	{vtranslate($FIELD_MODEL->get('label'), $MODULE_NAME)}&nbsp;{if $FIELD_MODEL->isMandatory()}<span class="redColor">*</span>{/if} 
-																</div>
-															</td>
-															{if $smarty.foreach.fields.last OR ($COUNTER+1) % 3 == 0}
-															</tr>
-														{/if}
-														{assign var=COUNTER value=$COUNTER+1}
-													{/if}
-												{/foreach}
-											</table>
-										{/if}
 									{/if}
 								</div>
 							</td>

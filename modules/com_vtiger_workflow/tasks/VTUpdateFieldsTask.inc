@@ -162,12 +162,8 @@ class VTUpdateFieldsTask extends VTTask {
 					if($fieldDataType == 'currency' && $fieldName == 'unit_price') {
 						$fieldValue = $this->calculateProductUnitPrice($fieldValue);
 					}
-					// for calendar time_start field db value will be in UTC format, we should convert to user format
-					if(trim($fieldInfo['value']) == 'time_start' && $moduleName == 'Calendar' && $fieldDataType == 'time' && !empty($fieldValue)){
-						$date = new DateTime();
-						$dateTime = new DateTimeField($date->format('Y-m-d').' '. $fieldValue);
-						$fieldValue = $dateTime->getDisplayTime();
-					} else if ($fieldDataType == 'time' && !empty($fieldValue)) {
+
+					if ($fieldDataType == 'time' && !empty($fieldValue)) {
 						$fieldValueInstance = $moduleFields[trim($fieldInfo['value'])];
 						if ($fieldValueInstance) {
 							$fieldValueDataType = $fieldValueInstance->getFieldDataType();
@@ -417,5 +413,3 @@ class VTUpdateFieldsTask extends VTTask {
 	}
 
 }
-
-?>

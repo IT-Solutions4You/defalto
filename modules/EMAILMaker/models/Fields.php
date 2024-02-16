@@ -51,14 +51,6 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
             $forfieldname = strtolower($forfieldname . "-" . $module);
         }
 
-
-        if ($module == 'Calendar') {
-            $b++;
-            $SelectModuleFields['Calendar'][vtranslate('Calendar')][$forfieldname . "_CRMID"] = "Record ID";
-
-            $EventModel = Vtiger_Module_Model::getInstance('Events');
-        }
-
         foreach ($Blocks as $block_label => $block_fields) {
             $b++;
 
@@ -87,14 +79,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
                     $fieldModel = Vtiger_Field_Model::getInstance($fieldname, $moduleModel);
 
                     if (!$fieldModel || !$fieldModel->getPermissions('readonly')) {
-                        if ($module == 'Calendar') {
-                            $eventFieldModel = Vtiger_Field_Model::getInstance($fieldname, $EventModel);
-                            if (!$eventFieldModel || !$eventFieldModel->getPermissions('readonly')) {
-                                continue;
-                            }
-                        } else {
-                            continue;
-                        }
+                        continue;
                     }
 
                     if ($module == "ITS4YouMultiCompany" && $forfieldname == "company") {
@@ -119,19 +104,6 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
                     $option_value = nl2br($option_value);
 
-                    if ($module == 'Calendar') {
-                        if ($option_key == 'CALENDAR_ACTIVITYTYPE' || $option_key == 'CALENDAR_DUE_DATE') {
-                            $SelectModuleFields[vtranslate('Calendar')][$option_key] = $option_value;
-                            continue;
-                        } elseif (!isset($Existing_ModuleFields[$option_key])) {
-                            $Existing_ModuleFields[$option_key] = $optgroup_value;
-                        } else {
-                            $SelectModuleFields[vtranslate('Calendar')][$option_key] = $option_value;
-                            $Unset_Module_Fields[] = '"' . $option_value . '","' . $option_key . '"';
-                            unset($SelectModuleFields['Calendar'][$Existing_ModuleFields[$option_key]][$option_key]);
-                            continue;
-                        }
-                    }
                     $Options[] = '"' . $option_value . '","' . $option_key . '"';
                     $SelectModuleFields[$optgroup_value][$option_key] = $option_value;
                 }
@@ -236,9 +208,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
         $adb = PearDatabase::getInstance();
 
-        if ($module == 'Calendar') {
-            $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid IN (9,16) ORDER BY sequence ASC";
-        } elseif ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice") {
+        if ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice") {
             $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid=" . $module_id . " AND blocklabel != 'LBL_DETAILS_BLOCK' AND blocklabel != 'LBL_ITEM_DETAILS' ORDER BY sequence ASC";
         } elseif ($module == "Users") {
             $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_blocks.tabid WHERE vtiger_tab.name = 'Users' AND (blocklabel = 'LBL_USERLOGIN_ROLE' OR blocklabel = 'LBL_ADDRESS_INFORMATION' ) ORDER BY sequence ASC";

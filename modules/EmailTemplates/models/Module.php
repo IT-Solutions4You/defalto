@@ -259,11 +259,6 @@ class EmailTemplates_Module_Model extends Vtiger_Module_Model {
 					WHERE (vtiger_field.uitype = ? AND vtiger_tab.presence = ?) ';
 		$params = array('13',0);
 		// Check whether calendar module is active or not.
-		if(vtlib_isModuleActive("Calendar")){
-			$eventsTabid = getTabid('Events');
-			$query .= ' OR vtiger_tab.tabid IN (?, ?)';
-			array_push($params, $eventsTabid, getTabid('Calendar'));
-		}
 		$result = $db->pquery($query, $params);
 		$num_rows = $db->num_rows($result);
 		$moduleList = array();

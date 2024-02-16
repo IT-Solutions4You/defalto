@@ -284,24 +284,6 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 		return $convertFields;
 	}
 
-	/**
-	 * Function returns the url for create event
-	 * @return <String>
-	 */
-	function getCreateEventUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateEventRecordUrl().'&parent_id='.$this->getId();
-	}
-
-	/**
-	 * Function returns the url for create todo
-	 * @return <String>
-	 */
-	function getCreateTaskUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateTaskRecordUrl().'&parent_id='.$this->getId();
-	}
-    
     /**
 	 * Function to check whether the lead is converted or not
 	 * @return True if the Lead is Converted false otherwise.

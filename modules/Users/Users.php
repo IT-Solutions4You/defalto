@@ -1288,9 +1288,6 @@ class Users extends CRMEntity {
 		$sql="insert into vtiger_homedefault values(".$s6.",'HLT',5,'HelpDesk')";
 		$adb->pquery($sql, array());
 
-		$sql="insert into vtiger_homedefault values(".$s7.",'UA',5,'Calendar')";
-		$adb->pquery($sql,array());
-
 		$sql="insert into vtiger_homedefault values(".$s8.",'GRT',5,'NULL')";
 		$adb->pquery($sql, array());
 
@@ -1305,9 +1302,6 @@ class Users extends CRMEntity {
 
 		$sql="insert into vtiger_homedefault values(".$s12.",'OLTPO',5,'PurchaseOrder')";
 		$adb->pquery($sql, array());
-
-		$sql="insert into vtiger_homedefault values(".$s13.",'PA',5,'Calendar')";
-		$adb->pquery($sql,array());
 
 		$sql="insert into vtiger_homedefault values(".$s14.",'LTFAQ',5,'Faq')";
 		$adb->pquery($sql, array());

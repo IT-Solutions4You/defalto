@@ -9,8 +9,8 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
     Vtiger_Import_Js = {
         triggerImportAction: function(url) {
             var params = Vtiger_Import_Js.getDefaultParams();
-            //Only for contacts and Calendar show landing page.
-            if(params.module != 'Contacts' && params.module != 'Calendar') {
+            //Only for contacts show landing page.
+            if(params.module !== 'Contacts') {
                 Vtiger_Import_Js.showImportActionStepOne();
                 return false;
             }

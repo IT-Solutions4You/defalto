@@ -23,12 +23,7 @@
                     <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
                         <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
                         {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                            {if $moduleName eq 'Calendar'}
-                                <option value="{$moduleName}">{vtranslate("LBL_ADD_CALENDAR", 'MailManager')}</option>
-                                <option value="Events">{vtranslate("LBL_ADD_EVENTS", 'MailManager')}</option>
-                            {else}
-                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                            {/if}
+                            <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
                         {/foreach}
                     </select>
                 {/if}
@@ -69,12 +64,7 @@
                         <select name="_mlinktotype"  id="_mlinktotype" data-action="associate" class="form-select">
                             <option value="">{vtranslate('LBL_ACTIONS',$MODULE)}</option>
                             {foreach item=moduleName from=$LINK_TO_AVAILABLE_ACTIONS}
-                                {if $moduleName eq 'Calendar'}
-                                    <option value="{$moduleName}">{vtranslate("LBL_ADD_CALENDAR", 'MailManager')}</option>
-                                    <option value="Events">{vtranslate("LBL_ADD_EVENTS", 'MailManager')}</option>
-                                {else}
-                                    <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                                {/if}
+                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
                             {/foreach}
                         </select>
                     {/if}
@@ -83,12 +73,7 @@
                         <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select">
                             <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
                             {foreach item=moduleName from=$ALLOWED_MODULES}
-                                {if $moduleName eq 'Calendar'}
-                                    <option value="{$moduleName}">{vtranslate("LBL_ADD_CALENDAR", 'MailManager')}</option>
-                                    <option value="Events">{vtranslate("LBL_ADD_EVENTS", 'MailManager')}</option>
-                                {else}
-                                    <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                                {/if}
+                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
                             {/foreach}
                         </select>
                     {/if}
@@ -106,12 +91,7 @@
                         <select name="_mlinktotype"  id="_mlinktotype" data-action="create" class="form-select" >
                             <option value="">{vtranslate('LBL_ACTIONS','MailManager')}</option>
                             {foreach item=moduleName from=$ALLOWED_MODULES}
-                                {if $moduleName eq 'Calendar'}
-                                    <option value="{$moduleName}">{vtranslate("LBL_ADD_CALENDAR", 'MailManager')}</option>
-                                    <option value="Events">{vtranslate("LBL_ADD_EVENTS", 'MailManager')}</option>
-                                {else}
-                                    <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
-                                {/if}
+                                <option value="{$moduleName}">{vtranslate("LBL_MAILMANAGER_ADD_$moduleName", 'MailManager')}</option>
                             {/foreach}
                         </select>
                     {/if}

@@ -48,7 +48,7 @@
                             </div>                 
                         </md-input-container>
                         <!--*************PICKLIST UI***********************************-->
-                        <md-input-container ng-switch-when="picklist" ng-hide="(field.name == 'activitytype' || field.name == 'eventstatus') && module =='Calendar'">
+                        <md-input-container ng-switch-when="picklist" ng-hide="false">
                             <div class="input-group-addon">
                                 <label ng-if="field.name == 'taskstatus'">Task Status</label>
                                 <label ng-if="field.name == 'eventstatus'">Event Status</label>
@@ -154,7 +154,7 @@
                             </div>
                         </md-input-container>
                         <!--*************Time Field UI***********************************-->
-                        <md-input-container  class="date-input-container" ng-switch-when="time" ng-hide="field.name == 'time_end' && module =='Calendar'">
+                        <md-input-container  class="date-input-container" ng-switch-when="time" ng-hide="false">
                             <div class="input-group-addon">
                                 <label>{{field.label}}</label>
                                 <div layout="row" class="input-group-addon" flex>

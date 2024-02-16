@@ -14,8 +14,6 @@ class Settings_Appointments_Integration_Model extends Vtiger_Base_Model
      * @var array
      */
     public static array $disabledModules = [
-        'Calendar',
-        'Events',
         'Appointments',
         'PBXManager',
         'SMSNotifier',

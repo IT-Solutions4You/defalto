@@ -1323,17 +1323,8 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
             foreach ($focus->column_fields as $cf_key => $cf_value) {
                 $focus->column_fields[$cf_key] = '';
             }
-            if ($module == 'Calendar') {
-                $cal_res = $this->db->pquery("select activitytype from vtiger_activity where activityid=?", array($record));
-                $cal_row = $this->db->fetchByAssoc($cal_res);
-                if ($cal_row['activitytype'] == 'Task') {
-                    $focus->retrieve_entity_info($record, $module);
-                } else {
-                    $focus->retrieve_entity_info($record, 'Events');
-                }
-            } else {
-                $focus->retrieve_entity_info($record, $module);
-            }
+
+            $focus->retrieve_entity_info($record, $module);
             $focus->id = $record;
 
             foreach ($templates as $templateid) {
@@ -2410,11 +2401,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
 
             $module_name = $row['module_name'];
             //To handle translation of calendar to To Do
-            if ($module_name == 'Calendar') {
-                $module_name = vtranslate('LBL_TASK', $module_name);
-            } else {
-                $module_name = vtranslate($module_name, $module_name);
-            }
+            $module_name = vtranslate($module_name, $module_name);
 
             $row['module_name'] = $module_name;
             $row['execution_condition'] = vtranslate($record->executionConditionAsLabel($row['execution_condition']), 'Settings:Workflows');

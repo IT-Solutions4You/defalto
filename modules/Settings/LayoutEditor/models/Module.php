@@ -314,10 +314,6 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 	public function checkFieldExists($fieldLabel) {
 		$db = PearDatabase::getInstance();
 		$tabId = array($this->getId());
-		if($this->getName() == 'Calendar' || $this->getName() == 'Events') {
-			//Check for fiel exists in both calendar and events module
-			$tabId = array('9','16');
-		}
 		$query = 'SELECT 1 FROM vtiger_field WHERE tabid IN ('.  generateQuestionMarks($tabId).') AND fieldlabel=?';
 		$result = $db->pquery($query, array($tabId,$fieldLabel));
 		return ($db->num_rows($result) > 0 ) ? true : false;
@@ -363,16 +359,8 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$numOfRows; $i++) {
 			$moduleName = $db->query_result($result, $i, 'name');
 			$modulesList[$moduleName] = vtranslate($moduleName, $moduleName);
-			//Calendar needs to be shown as TODO so we are translating using Layout editor specific translations
-			if ($moduleName == 'Calendar') {
-				$modulesList[$moduleName] = vtranslate($moduleName, 'Settings:LayoutEditor');
-			}
 		}
-		// If calendar is disabled we should not show events module too
-		// in layout editor
-		if(!array_key_exists('Calendar', $modulesList)) {
-			unset($modulesList['Events']);
-		}
+
 		return $modulesList;
 	}
 
@@ -381,10 +369,6 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 	 * @return <Boolean> true/false
 	 */
 	public function isSortableAllowed() {
-		$moduleName = $this->getName();
-		if (in_array($moduleName, array('Calendar', 'Events'))) {
-			return false;
-		}
 		return true;
 	}
 
@@ -394,16 +378,9 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function isBlockSortableAllowed($blockName) {
 		$moduleName = $this->getName();
-		if (in_array($moduleName, array('Calendar', 'Events'))) {
-			return false;
-		}
 
-		if (($blockName === 'LBL_INVITE_USER_BLOCK')
-				|| (in_array($moduleName, getInventoryModules()) && $blockName === 'LBL_ITEM_DETAILS')) {
-			return false;
-		}
-		return true;
-	}
+        return !(($blockName === 'LBL_INVITE_USER_BLOCK') || (in_array($moduleName, getInventoryModules()) && $blockName === 'LBL_ITEM_DETAILS'));
+    }
 
 	/**
 	 * Function to check fields are sortable for the block
@@ -413,13 +390,12 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 		$moduleName = $this->getName();
 		$blocksEliminatedArray = array('HelpDesk' => array('LBL_TICKET_RESOLUTION', 'LBL_COMMENTS'),
 										'Faq' => array('LBL_COMMENT_INFORMATION'),
-										'Calendar' => array('LBL_TASK_INFORMATION', 'LBL_DESCRIPTION_INFORMATION'),
 										'Invoice' => array('LBL_ITEM_DETAILS'),
 										'Quotes' => array('LBL_ITEM_DETAILS'),
 										'SalesOrder' => array('LBL_ITEM_DETAILS'),
 										'PurchaseOrder' => array('LBL_ITEM_DETAILS'),
-										'Events' => array('LBL_EVENT_INFORMATION', 'LBL_REMINDER_INFORMATION', 'LBL_RECURRENCE_INFORMATION', 'LBL_RELATED_TO', 'LBL_DESCRIPTION_INFORMATION', 'LBL_INVITE_USER_BLOCK'));
-		if (in_array($moduleName, array_merge(getInventoryModules(), array('Calendar', 'Events', 'HelpDesk', 'Faq')))) {
+										);
+		if (in_array($moduleName, array_merge(getInventoryModules(), array('HelpDesk', 'Faq')))) {
 			if(!empty($blocksEliminatedArray[$moduleName])) {
 				if(in_array($blockName, $blocksEliminatedArray[$moduleName])) {
 					return false;
@@ -434,20 +410,6 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 	public function getRelations() {
 		if($this->relations === null) {
 			$this->relations = Vtiger_Relation_Model::getAllRelations($this, false);
-		}
-
-		// Contacts relation-tab is turned into custom block on DetailView.
-		if ($this->getName() == 'Calendar') {
-			$contactsIndex = false;
-			foreach ($this->relations as $index => $model) {
-				if ($model->getRelationModuleName() == 'Contacts') {
-					$contactsIndex = $index;
-					break;
-				}
-			}
-			if ($contactsIndex !== false) {
-				array_splice($this->relations, $contactsIndex, 1);
-			}
 		}
 
 		return $this->relations;

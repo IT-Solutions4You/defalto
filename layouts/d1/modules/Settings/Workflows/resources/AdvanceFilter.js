@@ -18,21 +18,9 @@ Vtiger_AdvanceFilter_Js('Workflows_AdvanceFilter_Js',{},{
     comparatorsWithNoValueBoxMap : ['has changed','is empty','is not empty', 'is added'],
 
     getFieldSpecificType : function(fieldSelected) {
-        var fieldInfo = fieldSelected.data('fieldinfo');
-        var type = fieldInfo.type;
-        var workflowModule = jQuery('[name="module_name"]').val();
-        var calendarModules = ["Calendar", "Events"];
-        if(workflowModule == 'Calendar') {
-            if(fieldInfo.name == 'due_date') {
-                type = 'date';
-            }
-        }
-        if(calendarModules.includes(workflowModule)){
-            if(fieldInfo.name == 'reminder_time'){
-                type = 'integer';
-            }
-        }
-        return type;
+        const fieldInfo = fieldSelected.data('fieldinfo');
+
+        return fieldInfo.type;
     },
 	
     getModuleName : function() {

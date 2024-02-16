@@ -75,9 +75,6 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 	 */
 	public function getRecordModelFromRequest(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
-		if($moduleName == 'Calendar') {
-			$moduleName = $request->get('calendarModule');
-		}
 		$recordId = $request->get('record');
 
 		if(!empty($recordId)) {

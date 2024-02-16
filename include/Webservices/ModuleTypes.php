@@ -34,9 +34,6 @@
 			vtws_preserveGlobal('current_user',$user);
 			//get All the modules the current user is permitted to Access.
 			$allModuleNames = getPermittedModuleNames();
-			if(array_search('Calendar',$allModuleNames) !== false){
-				array_push($allModuleNames,'Events');
-			}
 
 			if(!empty($fieldTypeList)) {
 				$sql = "SELECT distinct(vtiger_field.tabid) as tabid FROM vtiger_field LEFT JOIN vtiger_ws_fieldtype ON ".
@@ -116,9 +113,8 @@
 		
 		$informationArray = array();
 		foreach ($accessibleModules as $module) {
-			$vtigerModule = ($module == 'Events')? 'Calendar':$module;
-			$informationArray[$module] = array('isEntity'=>true,'label'=>getTranslatedString($module,$vtigerModule),
-				'singular'=>getTranslatedString('SINGLE_'.$module,$vtigerModule));
+			$informationArray[$module] = array('isEntity'=>true,'label'=>getTranslatedString($module,$module),
+				'singular'=>getTranslatedString('SINGLE_'.$module,$module));
 		}
 		
 		foreach ($accessibleEntities as $entity) {
@@ -133,5 +129,3 @@
 			'information'=>$informationArray);
 		return $types[$user->id][$fieldTypeString];
 	}
-
-?>
