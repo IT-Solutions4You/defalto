@@ -1532,27 +1532,23 @@ Acknowledgments:
 
 We have used the following software:
 
-1. ExcelReader package to read the xls files. We have taken the utility from the following Web site : 
- http://freshmeat.net/projects/phpexcelreader/
- The product is available as GNU General Public License (GPL).
-
-2. E-mail Client to handle attachments with PHP. We have taken the ideas from the article by Kevin Steffer available at the
+1. E-mail Client to handle attachments with PHP. We have taken the ideas from the article by Kevin Steffer available at the
 http://www.linuxscope.net/articles/mailAttachmentsPHP.html
 
-3. FPDF package to create PDF reports and documents. We have downloaded package from http://www.fpdf.org
+2. FPDF package to create PDF reports and documents. We have downloaded package from http://www.fpdf.org
 
-4. Prototype (Object-Oriented JavaScript framework) package to ease development of dynamic web applications. We have downloaded package from http://prototype.conio.net
+3. Prototype (Object-Oriented JavaScript framework) package to ease development of dynamic web applications. We have downloaded package from http://prototype.conio.net
 
-5. class_http to cache scraped content. We have downloaded package from http://www.troywolf.com/articles/php/class_http/ 
+4. class_http to cache scraped content. We have downloaded package from http://www.troywolf.com/articles/php/class_http/
 
-6.Carousel Slideshow package to display large images as thumbnails. We have downloaded package from http://www.dynamicdrive.com/dynamicindex14/carousel2.htm
+5.Carousel Slideshow package to display large images as thumbnails. We have downloaded package from http://www.dynamicdrive.com/dynamicindex14/carousel2.htm
 
-7. Ajax Popup Chat for enabling instant messaging for vtiger CRM users. We have downloaded package from http://www.os-solution.com/demo/ajaxcsspopupchat/index.php
+6. Ajax Popup Chat for enabling instant messaging for vtiger CRM users. We have downloaded package from http://www.os-solution.com/demo/ajaxcsspopupchat/index.php
 
-8. Image Crossfade Redux for enabling fade effect to images. We have downloaded package from http://slayeroffice.com/code/imageCrossFade/xfade2.html
+7. Image Crossfade Redux for enabling fade effect to images. We have downloaded package from http://slayeroffice.com/code/imageCrossFade/xfade2.html
 
-9. Calculator for enabling calculations in vtiger CRM. We have downloaded package from http://www.hmhd.com/steve
+8. Calculator for enabling calculations in vtiger CRM. We have downloaded package from http://www.hmhd.com/steve
 
-10. TCPDF package to create PDF reports and documents. We have downloaded package from http://tcpdf.sourceforge.net
+9. TCPDF package to create PDF reports and documents. We have downloaded package from http://tcpdf.sourceforge.net
 
 We are grateful to the creators of the respective products for providing such a beautiful utilities.
