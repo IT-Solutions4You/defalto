@@ -185,7 +185,7 @@
                     {assign var=CALENDAR_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Appointments')}
                     {if $CALENDAR_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($CALENDAR_MODULE_MODEL->getId())}
                         {assign var=CALENDAR_TODAY_COUNT value=$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}
-                        {assign var=CALENDAR_TODAY_RECORD value=$CALENDAR_MODULE_MODEL->getTodayRecord()}
+                        {assign var=CALENDAR_TODAY_RECORD value=$CALENDAR_MODULE_MODEL->getFirstTodayRecord()}
                         <li class="me-2">
                             <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
                                 <i class="fa fa-calendar"></i>

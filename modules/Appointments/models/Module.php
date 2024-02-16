@@ -10,6 +10,8 @@
  */
 class Appointments_Module_Model extends Vtiger_Module_Model
 {
+    public $todayRecordsListModel;
+
     /** Calendar Widget: Copy to vtiger Module Model */
     public function getCalendarEvents($mode, $pagingModel, $user, $recordId = false)
     {
@@ -161,37 +163,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return array_merge($settingsLinks, parent::getSettingLinks());
     }
 
-    /**
-     * @return string
-     */
-    public static function getTodayDate(): string
-    {
-        $today = DateTimeField::convertToUserTimeZone(date('Y-m-d'));
 
-        return $today->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * @return string
-     */
-    public static function getTodayDates(): string
-    {
-        $tomorrow = DateTimeField::convertToUserTimeZone(date('Y-m-d'));
-        $tomorrow->modify('+1439 minutes');
-        $tomorrow = $tomorrow->format('Y-m-d H:i:s');
-
-        return self::getTodayDate() . ',' . $tomorrow;
-    }
-
-    /**
-     * @return string
-     */
-    public static function getCurrentDate(): string
-    {
-        $date = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s'));
-
-        return $date->format('Y-m-d H:i:s');
-    }
 
     /**
      * @return int
@@ -203,8 +175,9 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return intval($listModel->getListViewCount());
     }
 
-    public $todayRecordsListModel;
-
+    /**
+     * @return Vtiger_ListView_Model
+     */
     public function getTodayRecordsListModel()
     {
         if(!empty($this->todayRecordsListModel)) {
@@ -220,8 +193,8 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         $listModel = Vtiger_ListView_Model::getCleanInstance($moduleName);
         $listModel->set('query_generator', $queryGenerator);
 
-        $date = self::getTodayDates();
-        $currentDate = self::getCurrentDate();
+        $date = Appointments_Dates_Helper::getTodayDatetimesForUser();
+        $currentDate = Appointments_Dates_Helper::getCurrentDatetimeForUser();
 
         /**
          * @var EnhancedQueryGenerator $queryGenerator
@@ -251,7 +224,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
         return $listModel;
     }
 
-    public function getTodayRecord()
+    public function getFirstTodayRecord()
     {
         $db = PearDatabase::getInstance();
         $currentUser = Users_Record_Model::getCurrentUserModel();
@@ -292,25 +265,6 @@ class Appointments_Module_Model extends Vtiger_Module_Model
             $request->set('calendar_status', $currentUser->get('defaulteventstatus'));
             $request->set('calendar_type', $currentUser->get('defaultactivitytype'));
         }
-    }
-
-    /**
-     * @param object|bool $filter
-     * @return bool
-     */
-    public static function updateTodayFilterDates($filter): bool
-    {
-        if (!$filter && 'Today' !== trim($filter->name)) {
-            return false;
-        }
-
-        $date = self::getTodayDates();
-
-        $adb = PearDatabase::getInstance();
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_start%']);
-        $adb->pquery('UPDATE vtiger_cvadvfilter SET value=? WHERE cvid=? AND columnname LIKE ?', [$date, $filter->id, '%datetime_end%']);
-
-        return true;
     }
 
     /**

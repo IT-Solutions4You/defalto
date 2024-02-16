@@ -24,7 +24,10 @@ class Appointments_Record_Model extends Vtiger_Record_Model
         return 'vicon-' . $calendarType;
     }
 
-    public function getTimes()
+    /**
+     * @return string
+     */
+    public function getTimes(): string
     {
         $isAllDay = 'Yes' === $this->get('is_all_day');
         $startDatetime = $this->get('datetime_start');
