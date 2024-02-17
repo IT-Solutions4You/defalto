@@ -245,23 +245,6 @@ class VTEMAILMakerMailTask extends VTTask
 
             $taskContents['replyTo'] = $replyToEmail;
 
-            if ($entity->getModuleName() === 'Events') {
-                $contactId = $entity->get('contact_id');
-                if ($contactId) {
-                    $contactIds = '';
-                    list($wsId, $recordId) = explode('x', $entityId);
-                    $webserviceObject = VtigerWebserviceObject::fromName($adb, 'Contacts');
-
-                    $result = $adb->pquery('SELECT contactid FROM vtiger_cntactivityrel WHERE activityid = ?', array($recordId));
-                    $numOfRows = $adb->num_rows($result);
-                    for ($i = 0; $i < $numOfRows; $i++) {
-                        $contactIds .= vtws_getId($webserviceObject->getEntityId(), $adb->query_result($result, $i, 'contactid')) . ',';
-                    }
-                }
-                $entity->set('contact_id', trim($contactIds, ','));
-                $entityCache->cache[$entityId] = $entity;
-            }
-
             $toEmails = $this->getRecipientEmails($entityCache, $entityId, $this->recepient);
 
             $toEmail = (new VTSimpleTemplate($this->recepient))->render($entityCache, $entityId);

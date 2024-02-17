@@ -181,10 +181,7 @@ Vtiger.Class('Documents_Index_Js', {
 		var sourceField = tdElement.find('input[class="sourceField"]').attr('name');
 		var fieldElement = tdElement.find('input[name="' + sourceField + '"]');
 		vtigerInstance.autoFillElement = fieldElement;
-		var parentModule = jQuery('.editViewContents [name=module]').val();
-		if (parentModule != "Events") {
-			vtigerInstance.postRefrenceSearch(params, container);
-		}
+		vtigerInstance.postRefrenceSearch(params, container);
 		tdElement.find('input[class="sourceField"]').trigger(Vtiger_Edit_Js.postReferenceQuickCreateSave, {'data': data});
 	},
 

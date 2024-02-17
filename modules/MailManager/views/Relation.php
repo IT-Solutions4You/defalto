@@ -127,7 +127,8 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 		} else if ('create_wizard' == $this->getOperationArg($request)) {
 			$moduleName = $request->get('_mlinktotype');
-			if(!vtlib_isModuleActive($moduleName) && $moduleName != 'Events') {
+
+            if(!vtlib_isModuleActive($moduleName)) {
 				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
 				return $response;
 			}

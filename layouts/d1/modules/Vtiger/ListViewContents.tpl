@@ -178,20 +178,7 @@
                                                 {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_SYMBOL)}
                                             {/if}
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
-                                            {if $LISTVIEW_ENTRY->get('activitytype') eq 'Task'}
-                                                {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                            {else}
-                                                {if $LISTVIEW_HEADER->getName() eq 'taskstatus'}
-                                                    {assign var="EVENT_STATUS_FIELD_MODEL" value=Vtiger_Field_Model::getInstance('eventstatus', Vtiger_Module_Model::getInstance('Events'))}
-                                                    {if $EVENT_STATUS_FIELD_MODEL}
-                                                        {assign var=PICKLIST_FIELD_ID value={$EVENT_STATUS_FIELD_MODEL->getId()}}
-                                                    {else}
-                                                        {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                                    {/if}
-                                                {else}
-                                                    {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
-                                                {/if}
-                                            {/if}
+                                            {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE}</span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'multipicklist'}
                                                 {assign var=MULTI_RAW_PICKLIST_VALUES value=explode('|##|',$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADERNAME))}

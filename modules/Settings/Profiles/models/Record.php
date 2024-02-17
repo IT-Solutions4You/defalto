@@ -330,8 +330,6 @@ class Settings_Profiles_Record_Model extends Settings_Vtiger_Record_Model {
 	public function getModulePermissions() {
 		if(!$this->module_permissions) {
 			$allModules = Vtiger_Module_Model::getAll(array(0), Settings_Profiles_Module_Model::getNonVisibleModulesList());
-			$eventModule = Vtiger_Module_Model::getInstance('Events');
-			$allModules[$eventModule->getId()] = $eventModule;
 			$profileTabPermissions = $this->getProfileTabPermissions();
 			$profileActionPermissions = $this->getProfileActionPermissions();
 			$profileUtilityPermissions = $this->getProfileUtilityPermissions();

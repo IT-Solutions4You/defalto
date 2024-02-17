@@ -17,7 +17,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
     {
         $rel_module_id = getTabid($rel_module);
         $adb = PearDatabase::getInstance();
-        $restricted_modules = array('Emails', 'Events', 'Webmails');
+        $restricted_modules = array('Emails', 'Webmails');
         $Related_Modules = array();
 
         $rsql = "SELECT vtiger_tab.name FROM vtiger_tab 

@@ -86,20 +86,72 @@ if(!defined('INSTALLATION_MODE')) {
 					sourcemodule varchar(255)
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8", array());
 
-	$taskTypes = array();
-	$defaultModules = array('include' => array(), 'exclude'=>array());
-	$createToDoModules = array('include' => array("Leads","Accounts","Potentials","Contacts","HelpDesk","Campaigns","Quotes","PurchaseOrder","SalesOrder","Invoice"), 'exclude'=>array("FAQ", "Events"));
-	$createEventModules = array('include' => array("Leads","Accounts","Potentials","Contacts","HelpDesk","Campaigns"), 'exclude'=>array("FAQ", "Events"));
+    $taskTypes = [];
+    $defaultModules = ['include' => [], 'exclude' => []];
+    $createToDoModules = [
+        'include' => ["Leads", "Accounts", "Potentials", "Contacts", "HelpDesk", "Campaigns", "Quotes", "PurchaseOrder", "SalesOrder", "Invoice"],
+        'exclude' => ["FAQ"]
+    ];
+    $createEventModules = ['include' => ["Leads", "Accounts", "Potentials", "Contacts", "HelpDesk", "Campaigns"], 'exclude' => ["FAQ"]];
 
-	$taskTypes[] = array("name"=>"VTEmailTask", "label"=>"Send Mail", "classname"=>"VTEmailTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTEmailTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTEmailTask.tpl", "modules"=>$defaultModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTEntityMethodTask", "label"=>"Invoke Custom Function", "classname"=>"VTEntityMethodTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTEntityMethodTask.tpl", "modules"=>$defaultModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTCreateTodoTask", "label"=>"Create Todo", "classname"=>"VTCreateTodoTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTCreateTodoTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTCreateTodoTask.tpl", "modules"=>$createToDoModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTCreateEventTask", "label"=>"Create Event", "classname"=>"VTCreateEventTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTCreateEventTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTCreateEventTask.tpl", "modules"=>$createEventModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTUpdateFieldsTask", "label"=>"Update Fields", "classname"=>"VTUpdateFieldsTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTUpdateFieldsTask.tpl", "modules"=>$defaultModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTCreateEntityTask", "label"=>"Create Entity", "classname"=>"VTCreateEntityTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTCreateEntityTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTCreateEntityTask.tpl", "modules"=>$defaultModules, "sourcemodule"=>'');
-	$taskTypes[] = array("name"=>"VTSMSTask", "label"=>"SMS Task", "classname"=>"VTSMSTask", "classpath"=>"modules/com_vtiger_workflow/tasks/VTSMSTask.inc", "templatepath"=>"com_vtiger_workflow/taskforms/VTSMSTask.tpl", "modules"=>$defaultModules, "sourcemodule"=>'SMSNotifier');
+    $taskTypes[] = ["name"         => "VTEmailTask",
+                    "label"        => "Send Mail",
+                    "classname"    => "VTEmailTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTEmailTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTEmailTask.tpl",
+                    "modules"      => $defaultModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTEntityMethodTask",
+                    "label"        => "Invoke Custom Function",
+                    "classname"    => "VTEntityMethodTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTEntityMethodTask.tpl",
+                    "modules"      => $defaultModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTCreateTodoTask",
+                    "label"        => "Create Todo",
+                    "classname"    => "VTCreateTodoTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateTodoTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateTodoTask.tpl",
+                    "modules"      => $createToDoModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTCreateEventTask",
+                    "label"        => "Create Event",
+                    "classname"    => "VTCreateEventTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateEventTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateEventTask.tpl",
+                    "modules"      => $createEventModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTUpdateFieldsTask",
+                    "label"        => "Update Fields",
+                    "classname"    => "VTUpdateFieldsTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTUpdateFieldsTask.tpl",
+                    "modules"      => $defaultModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTCreateEntityTask",
+                    "label"        => "Create Entity",
+                    "classname"    => "VTCreateEntityTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateEntityTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateEntityTask.tpl",
+                    "modules"      => $defaultModules,
+                    "sourcemodule" => ''
+    ];
+    $taskTypes[] = ["name"         => "VTSMSTask",
+                    "label"        => "SMS Task",
+                    "classname"    => "VTSMSTask",
+                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTSMSTask.inc",
+                    "templatepath" => "com_vtiger_workflow/taskforms/VTSMSTask.tpl",
+                    "modules"      => $defaultModules,
+                    "sourcemodule" => 'SMSNotifier'
+    ];
 
-	foreach ($taskTypes as $taskType) {
+    foreach ($taskTypes as $taskType) {
 		VTTaskType::registerTaskType($taskType);
 	}
 }
@@ -864,22 +916,6 @@ if(file_exists('modules/ModTracker/ModTrackerUtils.php')) {
 $operationId = vtws_addWebserviceOperation('retrieve_inventory', 'include/Webservices/LineItem/RetrieveInventory.php', 'vtws_retrieve_inventory', 'GET');
 vtws_addWebserviceOperationParam($operationId, 'id', 'String', 1);
 
-$moduleInstance = Vtiger_Module::getInstance('Events');
-$tabId = getTabid('Events');
-
-// Update/Increment the sequence for the succeeding blocks of Events module, with starting sequence 3
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_blocks SET sequence = sequence+1 WHERE tabid=? AND sequence >= 3',
-											array($tabId));
-
-// Create Recurrence Information block
-$recurrenceBlock = new Vtiger_Block();
-$recurrenceBlock->label = 'LBL_RECURRENCE_INFORMATION';
-$recurrenceBlock->sequence = 3;
-$moduleInstance->addBlock($recurrenceBlock);
-
-$blockId = getBlockId($tabId, 'LBL_RECURRENCE_INFORMATION');
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET block=? WHERE fieldname=? and tabid=?', array($blockId, 'recurringtype', $tabId));
-
 // Update/Increment the sequence for the succeeding blocks of Users module, with starting sequence 2
 $moduleInstance = Vtiger_Module::getInstance('Users');
 $tabId = getTabid('Users');
@@ -953,23 +989,6 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET hour_format = ? WHER
 
 //add user default values
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET dayoftheweek = ?, callduration = ?, othereventduration = ?, start_hour = ? ', array('Sunday', 5, 5, '00:00'));
-
-$moduleInstance = Vtiger_Module::getInstance('Events');
-$tabId = getTabid('Events');
-
-// Update/Increment the sequence for the succeeding blocks of Events module, with starting sequence 4
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_blocks SET sequence = sequence+1 WHERE tabid=? AND sequence >= 4', array($tabId));
-
-// Create Recurrence Information block
-$recurrenceBlock = new Vtiger_Block();
-$recurrenceBlock->label = 'LBL_RELATED_TO';
-$recurrenceBlock->sequence = 4;
-$moduleInstance->addBlock($recurrenceBlock);
-
-$blockId = getBlockId($tabId, 'LBL_RELATED_TO');
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET block=? WHERE fieldname IN (?,?) and tabid=?', array($blockId, 'contact_id','parent_id', $tabId));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET displaytype=1 WHERE fieldname=? and tabid=?',array('recurringtype',$tabId));
 
 // END 2012.12.02
 

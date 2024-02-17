@@ -234,9 +234,7 @@ class QueryGenerator {
 				$this->startGroup('');
 				foreach ($filtercolumns as $index=>$filter) {
 					$nameComponents = explode(':',$filter['columnname']);
-					// For Events "End Date & Time" field datatype should be DT. But, db will give D for due_date field
-					if($nameComponents[2] == 'due_date' && $nameComponents[3] == 'Events_End_Date_&_Time')
-						$nameComponents[4] = 'DT';
+
 					if(empty($nameComponents[2]) && $nameComponents[1] == 'crmid' && $nameComponents[0] == 'vtiger_crmentity') {
 						$name = $this->getSQLColumn('id');
 					} else {

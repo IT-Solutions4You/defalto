@@ -100,10 +100,7 @@ class WorkFlowScheduler {
 						$wsEntityId = vtws_getWebserviceEntityId($moduleName, $recordId);
 						$entityData = $entityCache->forId($wsEntityId);
 						$data = $entityData->getData();
-						//Setting events contact_id values to $_REQUEST object as save_module function of Activity.php depends on $_REQUEST
-						if($moduleName == 'Events') {
-							Vtiger_Functions::setEventsContactIdToRequest($recordId);
-						}
+
 						foreach ($tasks as $task) {
 							if ($task->active) {
 								$delay = 0;

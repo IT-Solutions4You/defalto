@@ -8,15 +8,6 @@
 	{assign var=FIELD_INFO value=$FIELD_MODEL->getFieldInfo()}
 	{assign var=PICKLIST_VALUES value=$FIELD_INFO['picklistvalues']}
 	{assign var="SPECIAL_VALIDATOR" value=$FIELD_MODEL->getValidator()}
-	{if $FIELD_MODEL->getFieldName() eq 'defaulteventstatus'}
-		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('Events')}
-		{assign var=EVENTSTATUS_FIELD_MODEL value=$EVENT_MODULE->getField('eventstatus')}
-		{assign var=PICKLIST_VALUES value=$EVENTSTATUS_FIELD_MODEL->getPicklistValues()}
-	{else if $FIELD_MODEL->getFieldName() eq 'defaultactivitytype'}
-		{assign var=EVENT_MODULE value=Vtiger_Module_Model::getInstance('Events')}
-		{assign var=ACTIVITYTYPE_FIELD_MODEL value=$EVENT_MODULE->getField('activitytype')}
-		{assign var=PICKLIST_VALUES value=$ACTIVITYTYPE_FIELD_MODEL->getPicklistValues()}
-	{/if}
 
 	<select data-fieldname="{$FIELD_MODEL->getFieldName()}" data-fieldtype="picklist" class="inputElement select2 {if $OCCUPY_COMPLETE_WIDTH} row {/if}" type="picklist" name="{$FIELD_MODEL->getFieldName()}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if} data-selected-value='{$FIELD_MODEL->get('fieldvalue')}' 
 			{if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}

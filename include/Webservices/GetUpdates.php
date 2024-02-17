@@ -163,11 +163,6 @@ require_once 'include/Webservices/DescribeObject.php';
 				$params = array_merge($params,$ownerIds);
 			}
 			$fromClause.= ' ) vtiger_ws_sync ON (vtiger_crmentity.crmid = vtiger_ws_sync.crmid)';
-			if ($elementType == 'Events') {
-				// If we have more than one contact attached to Vtiger Event then we are getting duplicates
-				$moduleFocus = CRMEntity::getInstance('Activity');
-				$fromClause .= " GROUP BY $moduleFocus->table_name.$moduleFocus->table_index";
-			}
 			$q = $selectClause." ".$fromClause;
 			$result = $adb->pquery($q, $params);
 			$recordDetails = array();
@@ -268,19 +263,6 @@ require_once 'include/Webservices/DescribeObject.php';
 		return $q;
 	}
 
-function getSyncQueryBaseTable($elementType)
-{
-	return "vtiger_crmentity";
-}
-
-	function getCalendarTypeCondition($elementType){
-		if($elementType == "Events")
-			$activityCondition = "vtiger_activity.activitytype !='Task' and vtiger_activity.activitytype !='Emails'";
-		else
-			$activityCondition = "vtiger_activity.activitytype ='Task'";
-		return $activityCondition;
-	}
-    
     function getSelectClauseFields($module,$moduleMeta,$user){
         $moduleFieldNames = $moduleMeta->getModuleFields();
         $inventoryModules = getInventoryModules();

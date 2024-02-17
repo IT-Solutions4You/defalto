@@ -64,7 +64,6 @@ function vtlib_getModuleNameForSharing()
         'PurchaseOrder',
         'SalesOrder',
         'Invoice',
-        'Events'
     ];
 
     return getSharingModuleList($std_modules);

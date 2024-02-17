@@ -1297,9 +1297,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 				if(is_array($blockFields)) foreach($blockFields as $reportFieldInfo => $fieldLabel) {
 					$fieldInfo = explode(':',$reportFieldInfo);
 					$fieldInstance = $secondaryModuleFieldInstances[$module][$fieldInfo[3]];
-					if(!$fieldInstance && $eventModuleFieldInstances['Events']){
-						$fieldInstance = $eventModuleFieldInstances['Events'][$fieldInfo[3]];
-					}
+
 					if(empty($fieldInstance) || $fieldInfo[0] == 'vtiger_inventoryproductrel'
 							|| $fieldInstance->getFieldDataType() == 'email' || $fieldInstance->getFieldDataType() == 'phone'
 								|| $fieldInstance->getFieldDataType() == 'image' || $fieldInstance->get('uitype') == '4') {

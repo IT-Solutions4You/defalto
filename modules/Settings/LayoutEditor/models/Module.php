@@ -36,20 +36,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 			if(php7_count($blockId) > 0) {
 				$fieldList = Settings_LayoutEditor_Field_Model::getInstanceFromBlockIdList($blockId,$moduleModel);
 			}
-			//To handle special case for invite users
-			if($this->getName() == 'Events') {
-				$blockModel = new Settings_LayoutEditor_Block_Model();
-				$blockModel->set('id','EVENT_INVITE_USER_BLOCK_ID');
-				$blockModel->set('label','LBL_INVITE_USER_BLOCK');
-				$blockModel->set('module', $this);
 
-				$fieldModel = new Settings_LayoutEditor_Field_Model();
-				$fieldModel->set('name','selectedusers');
-				$fieldModel->set('label','LBL_INVITE_USERS');
-				$fieldModel->set('block',$blockModel);
-				$fieldModel->setModule($this);
-				$fieldList[] = $fieldModel;
-			}
 			$this->fields = $fieldList;
 		}
 		return $this->fields;
@@ -75,14 +62,7 @@ class Settings_LayoutEditor_Module_Model extends Vtiger_Module_Model {
 					$blocksList[$block->get('label')] = $block;
 				}
 			}
-			//To handle special case for invite users block
-			if($this->getName() == 'Events') {
-				$blockModel = new Settings_LayoutEditor_Block_Model();
-				$blockModel->set('id','EVENT_INVITE_USER_BLOCK_ID');
-				$blockModel->set('label','LBL_INVITE_USER_BLOCK');
-				$blockModel->set('module', $this);
-				$blocksList['LBL_INVITE_USER_BLOCK'] = $blockModel;
-			}
+
 			$this->blocks = $blocksList;
 		}
 		return $this->blocks;

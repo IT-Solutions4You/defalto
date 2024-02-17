@@ -799,7 +799,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$searchableModules = array();
 		foreach ($entityModules as $tabid => $moduleModel) {
 				$moduleName = $moduleModel->getName();
-				if ($moduleName == 'Users' || $moduleName == 'Emails' || $moduleName == 'Events') continue;
+				if ($moduleName == 'Users' || $moduleName == 'Emails') continue;
 				if($userPrivModel->hasModuleActionPermission($moduleModel->getId(), 'DetailView')) {
 						$searchableModules[$moduleName] = $moduleModel;
 				}

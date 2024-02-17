@@ -996,8 +996,6 @@ while ($rowData = $adb->fetch_array($fieldResult)) {
                 $dateFieldsList[$moduleName][$fieldName] = $fieldName;
         }
 }
-unset($dateFieldsList['Events']['due_date']);
-$dateTimeFieldsList['Events']['due_date'] = 'due_date';
 
 $dateFields = array();
 foreach ($dateFieldsList as $moduleName => $fieldNamesList) {
