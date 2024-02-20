@@ -493,8 +493,6 @@ $languageStrings = array(
 
 	//Dashboard widgets
 	'History' => 'História',
-	'Upcoming Activities' => 'Atividades Programadas',
-	'Overdue Activities' => 'Atividades Atrasadas',
 	'Funnel' => 'Funil',
 	'Potentials by Stage' => 'Oportunidades por Estágio',
 	'Pipelined Amount' => 'Funil de Vendas',

@@ -138,28 +138,6 @@ class Settings_Workflows_TaskAjax_Action extends Settings_Vtiger_IndexAjax_View 
 
             $taskObject->field_value_mapping = Zend_Json::encode($fieldMapping);
 			$taskType = get_class($taskObject);
-			if ($taskType === 'VTCreateEventTask' || $taskType === 'VTCreateTodoTask') {
-				if($taskType === 'VTCreateEventTask') {
-					$module = 'Events';
-				} else {
-					$module = 'Calendar';
-				}
-				$moduleModel = Vtiger_Module_Model::getInstance($module);
-				$fieldsList = $moduleModel->getFields();
-				foreach($fieldsList as $fieldName => $fieldModel) {
-					$fieldValue = $request->get($fieldName);
-					if($fieldModel->get('uitype') == 33) {
-						if(is_array($fieldValue)) {
-							$field_list = implode(' |##| ', $fieldValue);
-						} else {
-							$field_list = $fieldValue;
-						}
-						$taskObject->$fieldName = $field_list;
-					} else {
-						$taskObject->$fieldName = $fieldValue;
-					}
-				}
-			}
 
 			if ($taskType === 'VTCreateEntityTask') {
 				$relationModuleModel = Vtiger_Module_Model::getInstance($taskObject->entity_type);

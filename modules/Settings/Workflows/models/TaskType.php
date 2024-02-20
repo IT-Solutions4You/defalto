@@ -64,13 +64,4 @@ class Settings_Workflows_TaskType_Model extends Vtiger_Base_Model {
 	public static function getInstanceFromTaskTypeObject($taskTypeObject) {
 		return new self($taskTypeObject->data);
 	}
-
-	public function getTaskBaseModule() {
-		$taskTypeName = $this->get('tasktypename');
-		switch($taskTypeName) {
-			case 'VTCreateTodoTask' : return Vtiger_Module_Model::getInstance('Calendar');
-			case 'VTCreateEventTask' : return Vtiger_Module_Model::getInstance('Events');
-		}
-	}
-
 }

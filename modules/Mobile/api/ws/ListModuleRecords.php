@@ -117,7 +117,7 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 		$modifiedRecords = array();
 
 		$response = new Mobile_API_Response();
-		$response->setResult(array('records' =>$modifiedRecords, 'module'=>'Calendar'));
+		$response->setResult(array('records' =>$modifiedRecords, 'module'=>'Appointments'));
 		
 		return $response;
 	}

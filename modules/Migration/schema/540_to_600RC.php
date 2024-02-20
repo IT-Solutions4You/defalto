@@ -110,22 +110,6 @@ if(!defined('INSTALLATION_MODE')) {
                     "modules"      => $defaultModules,
                     "sourcemodule" => ''
     ];
-    $taskTypes[] = ["name"         => "VTCreateTodoTask",
-                    "label"        => "Create Todo",
-                    "classname"    => "VTCreateTodoTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateTodoTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateTodoTask.tpl",
-                    "modules"      => $createToDoModules,
-                    "sourcemodule" => ''
-    ];
-    $taskTypes[] = ["name"         => "VTCreateEventTask",
-                    "label"        => "Create Event",
-                    "classname"    => "VTCreateEventTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateEventTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateEventTask.tpl",
-                    "modules"      => $createEventModules,
-                    "sourcemodule" => ''
-    ];
     $taskTypes[] = ["name"         => "VTUpdateFieldsTask",
                     "label"        => "Update Fields",
                     "classname"    => "VTUpdateFieldsTask",
@@ -574,61 +558,6 @@ Migration_Index_View::ExecuteQuery("delete from com_vtiger_workflowtasks where t
 $workflowManager = new VTWorkflowManager($adb);
 $taskManager = new VTTaskManager($adb);
 
-// Events workflow when Send Notification is checked
-$eventsWorkflow = $workflowManager->newWorkFlow("Events");
-$eventsWorkflow->test = '[{"fieldname":"sendnotification","operation":"is","value":"true:boolean"}]';
-$eventsWorkflow->description = "Workflow for Events when Send Notification is True";
-$eventsWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
-$eventsWorkflow->defaultworkflow = 1;
-$workflowManager->save($eventsWorkflow);
-
-$task = $taskManager->createTask('VTEmailTask', $eventsWorkflow->id);
-$task->active = true;
-$task->summary = 'Send Notification Email to Record Owner';
-$task->recepient = "\$(assigned_user_id : (Users) email1)";
-$task->subject = "Event :  \$subject";
-$task->content = '$(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name) ,<br/>'
-        . '<b>Activity Notification Details:</b><br/>'
-        . 'Subject             : $subject<br/>'
-        . 'Start date and time : $date_start  $time_start ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-        . 'End date and time   : $due_date  $time_end ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-        . 'Status              : $eventstatus <br/>'
-        . 'Priority            : $taskpriority <br/>'
-        . 'Related To          : $(parent_id : (Leads) lastname) $(parent_id : (Leads) firstname) $(parent_id : (Accounts) accountname) '
-                                . '$(parent_id : (Potentials) potentialname) $(parent_id : (HelpDesk) ticket_title)'
-                                . ' $(parent_id : (Campaigns) campaignname) <br/>'
-        . 'Contacts List       : $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname) <br/>'
-        . 'Location            : $location <br/>'
-        . 'Description         : $description';
-$taskManager->saveTask($task);
-
-// Calendar workflow when Send Notification is checked
-$calendarWorkflow = $workflowManager->newWorkFlow("Calendar");
-$calendarWorkflow->test = '[{"fieldname":"sendnotification","operation":"is","value":"true:boolean"}]';
-$calendarWorkflow->description = "Workflow for Calendar Todos when Send Notification is True";
-$calendarWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
-$calendarWorkflow->defaultworkflow = 1;
-$workflowManager->save($calendarWorkflow);
-
-$task = $taskManager->createTask('VTEmailTask', $calendarWorkflow->id);
-$task->active = true;
-$task->summary = 'Send Notification Email to Record Owner';
-$task->recepient = "\$(assigned_user_id : (Users) email1)";
-$task->subject = "Task :  \$subject";
-$task->content = '$(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name) ,<br/>'
-        . '<b>Task Notification Details:</b><br/>'
-        . 'Subject : $subject<br/>'
-        . 'Start date and time : $date_start  $time_start ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-        . 'End date and time   : $due_date ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-        . 'Status              : $taskstatus <br/>'
-        . 'Priority            : $taskpriority <br/>'
-        . 'Related To          : $(parent_id : (Leads) lastname) $(parent_id : (Leads) firstname) $(parent_id : (Accounts) accountname) '
-                                . '$(parent_id : (Potentials) potentialname) $(parent_id : (HelpDesk) ticket_title)'
-                                . ' $(parent_id : (Campaigns) campaignname) <br/>'
-        . 'Contacts List       : $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname) <br/>'
-        . 'Description         : $description';
-$taskManager->saveTask($task);
-
 global $current_user;
 $adb = PearDatabase::getInstance();
 $user = new Users();
@@ -669,15 +598,12 @@ $potentials->addLink('DASHBOARDWIDGET', 'Pipelined Amount', 'index.php?module=Po
 $potentials->addLink('DASHBOARDWIDGET', 'Total Revenue', 'index.php?module=Potentials&view=ShowWidget&name=TotalRevenuePerSalesPerson','', '6');
 $potentials->addLink('DASHBOARDWIDGET', 'Top Potentials', 'index.php?module=Potentials&view=ShowWidget&name=TopPotentials','', '7');
 //$potentials->addLink('DASHBOARDWIDGET', 'Forecast', 'index.php?module=Potentials&view=ShowWidget&name=Forecast','', '8');
-$potentials->addLink('DASHBOARDWIDGET', 'Overdue Activities', 'index.php?module=Potentials&view=ShowWidget&name=OverdueActivities','', '9');
 
 $accounts = Vtiger_Module::getInstance('Accounts');
 $accounts->addLink('DASHBOARDWIDGET', 'History', 'index.php?module=Accounts&view=ShowWidget&name=History','', '1');
-$accounts->addLink('DASHBOARDWIDGET', 'Overdue Activities', 'index.php?module=Accounts&view=ShowWidget&name=OverdueActivities','', '3');
 
 $contacts = Vtiger_Module::getInstance('Contacts');
 $contacts->addLink('DASHBOARDWIDGET', 'History', 'index.php?module=Contacts&view=ShowWidget&name=History','', '1');
-$contacts->addLink('DASHBOARDWIDGET', 'Overdue Activities', 'index.php?module=Contacts&view=ShowWidget&name=OverdueActivities','', '3');
 
 $leads = Vtiger_Module::getInstance('Leads');
 $leads->addLink('DASHBOARDWIDGET', 'History', 'index.php?module=Leads&view=ShowWidget&name=History','', '1');
@@ -685,7 +611,6 @@ $leads->addLink('DASHBOARDWIDGET', 'History', 'index.php?module=Leads&view=ShowW
 $leads->addLink('DASHBOARDWIDGET', 'Leads by Status', 'index.php?module=Leads&view=ShowWidget&name=LeadsByStatus','', '4');
 $leads->addLink('DASHBOARDWIDGET', 'Leads by Source', 'index.php?module=Leads&view=ShowWidget&name=LeadsBySource','', '5');
 $leads->addLink('DASHBOARDWIDGET', 'Leads by Industry', 'index.php?module=Leads&view=ShowWidget&name=LeadsByIndustry','', '6');
-$leads->addLink('DASHBOARDWIDGET', 'Overdue Activities', 'index.php?module=Leads&view=ShowWidget&name=OverdueActivities','', '7');
 
 $helpDesk = Vtiger_Module::getInstance('HelpDesk');
 $helpDesk->addLink('DASHBOARDWIDGET', 'Tickets by Status', 'index.php?module=HelpDesk&view=ShowWidget&name=TicketsByStatus','', '1');
@@ -704,7 +629,6 @@ $home->addLink('DASHBOARDWIDGET', 'Top Potentials', 'index.php?module=Potentials
 $home->addLink('DASHBOARDWIDGET', 'Leads by Status', 'index.php?module=Leads&view=ShowWidget&name=LeadsByStatus','', '10');
 $home->addLink('DASHBOARDWIDGET', 'Leads by Source', 'index.php?module=Leads&view=ShowWidget&name=LeadsBySource','', '11');
 $home->addLink('DASHBOARDWIDGET', 'Leads by Industry', 'index.php?module=Leads&view=ShowWidget&name=LeadsByIndustry','', '12');
-$home->addLink('DASHBOARDWIDGET', 'Overdue Activities', 'index.php?module=Home&view=ShowWidget&name=OverdueActivities','', '13');
 
 $home->addLink('DASHBOARDWIDGET', 'Tickets by Status', 'index.php?module=HelpDesk&view=ShowWidget&name=TicketsByStatus','', '13');
 $home->addLink('DASHBOARDWIDGET', 'Open Tickets', 'index.php?module=HelpDesk&view=ShowWidget&name=OpenTickets','', '14');
@@ -1524,23 +1448,6 @@ foreach ($inventoryModules as $key => $moduleName) {
 }
 
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_invoice_recurring_info ADD PRIMARY KEY (salesorderid)',array());
-
-$result = $adb->pquery('SELECT task_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
-						(SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?, ?))
-						AND summary = ?', array('Calendar', 'Events', 'Send Notification Email to Record Owner'));
-$numOfRows = $adb->num_rows($result);
-require_once 'modules/com_vtiger_workflow/tasks/VTSendNotificationTask.inc';
-for($i=0; $i<$numOfRows; $i++) {
-	$tm = new VTTaskManager($adb);
-	$task = $tm->retrieveTask($adb->query_result($result, $i, 'task_id'));
-
-	$sendNotificationTask = new VTSendNotificationTask();
-	$properties = get_object_vars($task);
-	foreach ($properties as $propertyName => $propertyValue) {
-		$sendNotificationTask->$propertyName = str_replace('$(general : (__VtigerMeta__) dbtimezone)', '$(general : (__VtigerMeta__) usertimezone)', $propertyValue);
-	}
-	$tm->saveTask($sendNotificationTask);
-}
 
 Migration_Index_View::ExecuteQuery('UPDATE vtiger_field SET masseditable = ? where fieldname = ? and tabid = ?',
 			array('1', 'accountname', getTabid('Accounts')));
@@ -2429,28 +2336,6 @@ for ($i = 0; $i < $numOfRows; $i++) {
 }
 $query .= 'ELSE blocklabel END';
 Migration_Index_View::ExecuteQuery($query, array());
-
-$result = $adb->pquery('SELECT task_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
-																	(SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?, ?))
-																	AND task LIKE ?', array('Calendar', 'Events', '%$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)%'));
-$numOfRows = $adb->num_rows($result);
-
-for ($i = 0; $i < $numOfRows; $i++) {
-	$tm = new VTTaskManager($adb);
-	$task = $tm->retrieveTask($adb->query_result($result, $i, 'task_id'));
-
-	$emailTask = new VTEmailTask();
-	$properties = get_object_vars($task);
-	foreach ($properties as $propertyName => $propertyValue) {
-		$propertyValue = str_replace('$date_start  $time_start ( $(general : (__VtigerMeta__) usertimezone) ) ', '$date_start', $propertyValue);
-		$propertyValue = str_replace('$due_date  $time_end ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-		$propertyValue = str_replace('$due_date ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-		$propertyValue = str_replace('$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)', '$contact_id', $propertyValue);
-		$emailTask->$propertyName = $propertyValue;
-	}
-
-	$tm->saveTask($emailTask);
-}
 
 $result = $adb->pquery('SELECT 1 FROM vtiger_currencies WHERE currency_name = ?', array('Ugandan Shilling'));
 if(!$adb->num_rows($result)) {

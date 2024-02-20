@@ -857,34 +857,3 @@ Vtiger_Widget_Js('Vtiger_Notebook_Widget_Js', {
 		);
 	},
 });
-
-Vtiger_History_Widget_Js('Vtiger_OverdueActivities_Widget_Js', {}, {
-
-	registerLoadMore: function() {
-		var thisInstance  = this;
-		var parent = thisInstance.getContainer();
-        parent.off('click', 'a[name="history_more"]'); 
-        parent.on('click','a[name="history_more"]', function(e) {
-			var parent = thisInstance.getContainer();
-            var element = jQuery(e.currentTarget);
-            var type = parent.find("[name='type']").val();
-			var url = element.data('url');
-			var params = url+'&content=true&type='+type;
-            app.request.post({"url":params}).then(function(err,data) {
-                element.parent().remove();
-				var widgetContent = jQuery('.dashboardWidgetContent', parent);
-				var dashboardWidgetData = parent.find('.dashboardWidgetContent .dashboardWidgetData');
-				var scrollTop = dashboardWidgetData.height() * dashboardWidgetData.length - 70;
-				widgetContent.mCustomScrollbar('destroy');
-                parent.find('.dashboardWidgetContent').append(data);
-
-				var adjustedHeight = parent.height()-70;
-				app.helper.showVerticalScroll(widgetContent,{'setHeight' : adjustedHeight, 'setTop' : scrollTop+'px'});
-
-            });
-		});
-	}
-
-});
-
-Vtiger_OverdueActivities_Widget_Js('Vtiger_CalendarActivities_Widget_Js', {}, {});

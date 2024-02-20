@@ -177,6 +177,7 @@ function vtws_convertlead($entityvalues, $user) {
 		$transfered = vtws_convertLeadTransferHandler($leadIdComponents, $entityIds, $entityvalues);
 
 		$relatedIdComponents = vtws_getIdComponents($entityIds[$entityvalues['transferRelatedRecordsTo']]);
+		Appointments_ConvertLead_Helper::convertAppointments((int)$leadIdComponents[1], (int)$accountId, (int)$contactId);
 		vtws_updateConvertLeadStatus($entityIds, $entityvalues['leadId'], $user);
 	} catch (Exception $e) {
 		foreach ($entityIds as $entity => $id) {
@@ -301,5 +302,3 @@ function vtws_updateConvertLeadStatus($entityIds, $leadId, $user) {
 	}
 
 }
-
-?>

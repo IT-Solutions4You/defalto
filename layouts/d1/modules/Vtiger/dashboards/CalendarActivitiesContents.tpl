@@ -36,11 +36,7 @@
 	{foreachelse}
 		{if $PAGING->get('nextPageExists') neq 'true'}
 			<div class="noDataMsg">
-				{if $REQUEST_INSTANCE.name eq 'OverdueActivities'}
-					{vtranslate('LBL_NO_OVERDUE_ACTIVITIES', $MODULE_NAME)}
-				{else}
-					{vtranslate('LBL_NO_SCHEDULED_ACTIVITIES', $MODULE_NAME)}
-				{/if}
+				{vtranslate('LBL_NO_SCHEDULED_ACTIVITIES', $MODULE_NAME)}
 			</div>
 		{/if}
 	{/foreach}

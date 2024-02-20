@@ -9,6 +9,7 @@
 require_once('include/database/PearDatabase.php');
 require_once('include/database/Postgres8.php');
 require_once('include/utils/utils.php');
+require_once('include/utils/VtlibUtils.php');
 require_once('include/utils/GetUserGroups.php');
 include_once('config.php');
 require_once("include/events/include.inc");
@@ -2243,61 +2244,6 @@ function getSharingModuleList($eliminateModules=false)
 	}
 
 	return $sharingModuleArray;
-}
-
-
-function isCalendarPermittedBySharing($recordId)
-{
-	global $adb, $current_user;
-	$permission = 'no';
-	$query = "SELECT vtiger_sharedcalendar.sharedid, vtiger_users.calendarsharedtype FROM vtiger_sharedcalendar RIGHT JOIN vtiger_users ON vtiger_sharedcalendar.userid=vtiger_users.id and status='Active'
-				WHERE vtiger_users.id IN(SELECT smownerid FROM vtiger_activity INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid
-								WHERE activityid=? AND visibility='Public' AND smownerid !=0)";
-	$result=$adb->pquery($query, array($recordId));
-
-	for($i=0; $i< $adb->num_rows($result); $i++ ) {
-		$sharedDetails = $adb->fetch_row($result,$i);
-		$sharedType = $sharedDetails['calendarsharedtype'];
-		if($sharedType == 'public') {
-			$permission = 'yes';
-			break;
-		} else if($sharedType == 'private') {
-			$permission = 'no';
-			break;
-		} else if($current_user->id == $sharedDetails['sharedid']) {
-			$permission = 'yes';
-			break;
-		}
-	}
-
-	return $permission;
-}
-
-function isToDoPermittedBySharing($recordId) {
-	global $current_user;
-	require('user_privileges/user_privileges_'.$current_user->id.'.php');
-	$permission = 'no';
-	$recordOwnerId = end(getRecordOwnerId($recordId));
-	if (vtws_getOwnerType($recordOwnerId) == "Groups" || ($profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] == 0)) {
-		$permission = "Yes";
-	} else {
-		$recordOwnerParentRoleSeq = Vtiger_Cache::get('parentRoleSeq', $recordOwnerId);
-		$recordOwnerModel = Users_Record_Model::getInstanceFromPreferenceFile($recordOwnerId);
-		if (!$recordOwnerParentRoleSeq) {
-			$recordOwnerParentRoleSeq = $recordOwnerModel->getParentRoleSequence();
-			Vtiger_Cache::set('parentRoleSeq', $recordOwnerId, $recordOwnerParentRoleSeq);
-		}
-		$currentUsersModel = Users_Record_Model::getCurrentUserModel();
-		$currentUserRole = $currentUsersModel->getRole();
-		$recordOwnerRole = $recordOwnerModel->getRole();
-		if ($recordOwnerId == $current_user->id) {
-			$permission = 'yes';
-		}
-		if ($currentUserRole !== $recordOwnerRole && strpos($recordOwnerParentRoleSeq, $currentUserRole) !== FALSE) {
-			$permission = 'yes';
-		}
-	}
-	return $permission;
 }
 
 /** Function to check if the field is Active

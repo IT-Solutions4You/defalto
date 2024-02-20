@@ -1065,30 +1065,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return false;
 	}
 
-	/**
-	 * Function returns the Calendar Events for the module
-	 * @param <String> $mode - upcoming/overdue mode
-	 * @param <Vtiger_Paging_Model> $pagingModel - $pagingModel
-	 * @param <String> $user - all/userid
-	 * @param <String> $recordId - record id
-	 * @return <Array>
-	 */
-    function getCalendarActivities($mode, $pagingModel, $user, $recordId = false)
-    {
-        $relatedParentId = $recordId;
-        $relatedParentModule = getSalesEntityType($relatedParentId);
-
-        $moduleName = 'Appointments';
-        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
-        /** @var Vtiger_RelationListView_Model $relationListView */
-        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
-        $relationListView->set('whereCondition', [
-            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
-        ]);
-
-        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
-    }
-
     /**
 	 * Function to get list of fields which are required while importing records
 	 * @param <String> $module

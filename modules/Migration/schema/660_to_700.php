@@ -1061,18 +1061,6 @@ if(defined('VTIGER_UPGRADE')) {
 		Vtiger_Cache::flushModuleCache('Emails');
 	}
 
-	//Adding Create Event and Create Todo workflow tasks for Project module.
-	$taskResult = $db->pquery('SELECT id, modules FROM com_vtiger_workflow_tasktypes WHERE tasktypename IN (?, ?)', array('VTCreateTodoTask', 'VTCreateEventTask'));
-	$taskResultCount = $db->num_rows($taskResult);
-	for ($i=0; $i<$taskResultCount; $i++) {
-		$taskId = $db->query_result($taskResult, $i, 'id');
-		$modules = Zend_Json::decode(decode_html($db->query_result($taskResult, $i, 'modules')));
-		$modules['include'][] = 'Project';
-		$modulesJson = Zend_Json::encode($modules);
-		$db->pquery('UPDATE com_vtiger_workflow_tasktypes SET modules=? WHERE id=?', array($modulesJson, $taskId));
-	}
-	//End
-
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel ADD CONSTRAINT PRIMARY KEY (crmid,attachmentsid)', array());

@@ -96,7 +96,6 @@ $unWanted=array(
  "modules/com_vtiger_workflow/resources/functional.js",
  "modules/com_vtiger_workflow/resources/parallelexecuter.js",
  "modules/com_vtiger_workflow/resources/editworkflowscript.js",
- "modules/com_vtiger_workflow/resources/createtodotaskscript.js",
  "modules/com_vtiger_workflow/resources/fieldexpressionpopup.js",
  "modules/com_vtiger_workflow/resources/workflowlistscript.js",
  "modules/com_vtiger_workflow/resources/fieldvalidator.js",
@@ -107,7 +106,6 @@ $unWanted=array(
  "modules/com_vtiger_workflow/resources/jquery.timepicker.js",
  "modules/com_vtiger_workflow/resources/createentitytaskscript.js",
  "modules/com_vtiger_workflow/resources/edittaskscript.js",
- "modules/com_vtiger_workflow/resources/createeventtaskscript.js",
  "modules/com_vtiger_workflow/resources/emailtaskscript.js",
  "modules/FieldFormulas/editexpressionscript.js",              
  "modules/FieldFormulas/jquery-1.2.6.js",
@@ -694,30 +692,6 @@ echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
 
-//83 starts
-$result = $adb->pquery('SELECT task_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
-                        (SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?, ?))
-                        AND task LIKE ?', array('Calendar', 'Events', '%VTSendNotificationTask%'));
-$numOfRows = $adb->num_rows($result);
-for ($i = 0; $i < $numOfRows; $i++) {
-        $tm = new VTTaskManager($adb);
-        $task = $tm->retrieveTask($adb->query_result($result, $i, 'task_id'));
-
-        $emailTask = new VTEmailTask();
-        $properties = get_object_vars($task);
-        foreach ($properties as $propertyName => $propertyValue) {
-                $propertyValue = str_replace('$date_start  $time_start ( $(general : (__VtigerMeta__) usertimezone) ) ', '$date_start', $propertyValue);
-                $propertyValue = str_replace('$due_date  $time_end ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-                $propertyValue = str_replace('$due_date ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-                $propertyValue = str_replace('$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)', '$contact_id', $propertyValue);
-                $emailTask->$propertyName = $propertyValue;
-        }
-
-        $tm->saveTask($emailTask);
-}
-echo '<br>Successfully Done<br>';
-
-//83 ends
 
 //84 starts
 $query = "ALTER table vtiger_relcriteria modify comparator varchar(20)";

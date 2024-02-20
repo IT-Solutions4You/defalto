@@ -344,7 +344,6 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                     setHeight:(viewPortHeight-jQuery('.app-fixed-navbar').height()-container.find('.modal-header').height())+'px'
                 };
                 app.helper.showVerticalScroll(container.find('.modal-body.editTaskBody'), params);
-				thisInstance.registerVTCreateTodoTaskEvents();
 				var taskType = jQuery('#taskType').val();
 				var functionName = 'register' + taskType + 'Events';
 				if (typeof thisInstance[functionName] != 'undefined') {
@@ -381,7 +380,6 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                     setHeight:(viewPortHeight-jQuery('.app-fixed-navbar').height()-container.find('.modal-header').height())+'px'
                 };
                 app.helper.showVerticalScroll(container.find('.modal-body.editTaskBody'), params);
-                thisInstance.registerVTCreateTodoTaskEvents();
                 var taskType = jQuery('#taskType').val();
                 var functionName = 'register' + taskType + 'Events';
                 if (typeof thisInstance[functionName] != 'undefined') {
@@ -810,9 +808,6 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       this.registerTooltipEventForSignatureField();
       this.registerFillTaskFromEmailFieldEvent();
       this.registerCcAndBccEvents();
-   },
-   registerVTCreateTodoTaskEvents: function () {
-      vtUtils.registerEventForTimeFields(jQuery('#saveTask'));
    },
    registerVTUpdateFieldsTaskEvents: function () {
       var thisInstance = this;

@@ -494,8 +494,6 @@ $languageStrings = array(
 
 	//Dashboard widgets
 	'History' => 'History',
-	'Upcoming Activities' => 'Upcoming Activities',
-	'Overdue Activities' => 'Overdue Activities',
 	'Funnel' => 'Funnel',
 	'Potentials by Stage' => 'Opportunities by Stage',
 	'Pipelined Amount' => 'Sales Pipeline',
