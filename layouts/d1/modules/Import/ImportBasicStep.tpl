@@ -51,7 +51,7 @@
 							<a class="cancelLink btn btn-primary" data-bs-dismiss="modal" href="#">{vtranslate('LBL_CANCEL', $MODULE)}</a>
 						</div>
 						<div class="col-6">
-							<button type="submit" name="import" id="importButton" class="btn btn-primary active" type="button" onclick="return Calendar_Edit_Js.uploadAndParse();">{vtranslate('LBL_IMPORT_BUTTON_LABEL', $MODULE)}</button>
+							<button type="submit" name="import" id="importButton" class="btn btn-primary active" type="button" onclick="return Vtiger_Import_Js.basicUploadAndParse();">{vtranslate('LBL_IMPORT_BUTTON_LABEL', $MODULE)}</button>
 						</div>
 					</div>
 				{else}

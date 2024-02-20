@@ -71,6 +71,27 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return false;
         },
+
+        basicUploadAndParse: function () {
+            if (Vtiger_Import_Js.validateFilePath()) {
+                const form = jQuery("form[name='importBasic']");
+                jQuery('[name="mode"]').val('importResult');
+                const data = new FormData(form[0]);
+                const postParams = {
+                    data: data,
+                    contentType: false,
+                    processData: false
+                };
+                app.helper.showProgress();
+                app.request.post(postParams).then(function (err, response) {
+                    app.helper.loadPageContentOverlay(response);
+                    app.helper.hideProgress();
+                });
+            }
+
+            return false;
+        },
+
         backToLandingPage: function() {
             Vtiger_Import_Js.triggerImportAction();
             return false;
