@@ -94,45 +94,50 @@ if(!defined('INSTALLATION_MODE')) {
     ];
     $createEventModules = ['include' => ["Leads", "Accounts", "Potentials", "Contacts", "HelpDesk", "Campaigns"], 'exclude' => ["FAQ"]];
 
-    $taskTypes[] = ["name"         => "VTEmailTask",
-                    "label"        => "Send Mail",
-                    "classname"    => "VTEmailTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTEmailTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTEmailTask.tpl",
-                    "modules"      => $defaultModules,
-                    "sourcemodule" => ''
+    $taskTypes[] = [
+        'name'         => 'VTEmailTask',
+        'label'        => 'Send Mail',
+        'classname'    => 'VTEmailTask',
+        'classpath'    => 'modules/com_vtiger_workflow/tasks/VTEmailTask.inc',
+        'templatepath' => 'com_vtiger_workflow/taskforms/VTEmailTask.tpl',
+        'modules'      => $defaultModules,
+        'sourcemodule' => ''
     ];
-    $taskTypes[] = ["name"         => "VTEntityMethodTask",
-                    "label"        => "Invoke Custom Function",
-                    "classname"    => "VTEntityMethodTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTEntityMethodTask.tpl",
-                    "modules"      => $defaultModules,
-                    "sourcemodule" => ''
+    $taskTypes[] = [
+        'name'         => 'VTEntityMethodTask',
+        'label'        => 'Invoke Custom Function',
+        'classname'    => 'VTEntityMethodTask',
+        'classpath'    => 'modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc',
+        'templatepath' => 'com_vtiger_workflow/taskforms/VTEntityMethodTask.tpl',
+        'modules'      => $defaultModules,
+        'sourcemodule' => ''
     ];
-    $taskTypes[] = ["name"         => "VTUpdateFieldsTask",
-                    "label"        => "Update Fields",
-                    "classname"    => "VTUpdateFieldsTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTUpdateFieldsTask.tpl",
-                    "modules"      => $defaultModules,
-                    "sourcemodule" => ''
+    $taskTypes[] = [
+        'name'         => 'VTUpdateFieldsTask',
+        'label'        => 'Update Fields',
+        'classname'    => 'VTUpdateFieldsTask',
+        'classpath'    => 'modules/com_vtiger_workflow/tasks/VTUpdateFieldsTask.inc',
+        'templatepath' => 'com_vtiger_workflow/taskforms/VTUpdateFieldsTask.tpl',
+        'modules'      => $defaultModules,
+        'sourcemodule' => ''
     ];
-    $taskTypes[] = ["name"         => "VTCreateEntityTask",
-                    "label"        => "Create Entity",
-                    "classname"    => "VTCreateEntityTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTCreateEntityTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTCreateEntityTask.tpl",
-                    "modules"      => $defaultModules,
-                    "sourcemodule" => ''
+    $taskTypes[] = [
+        'name'         => 'VTCreateEntityTask',
+        'label'        => 'Create Entity',
+        'classname'    => 'VTCreateEntityTask',
+        'classpath'    => 'modules/com_vtiger_workflow/tasks/VTCreateEntityTask.inc',
+        'templatepath' => 'com_vtiger_workflow/taskforms/VTCreateEntityTask.tpl',
+        'modules'      => $defaultModules,
+        'sourcemodule' => ''
     ];
-    $taskTypes[] = ["name"         => "VTSMSTask",
-                    "label"        => "SMS Task",
-                    "classname"    => "VTSMSTask",
-                    "classpath"    => "modules/com_vtiger_workflow/tasks/VTSMSTask.inc",
-                    "templatepath" => "com_vtiger_workflow/taskforms/VTSMSTask.tpl",
-                    "modules"      => $defaultModules,
-                    "sourcemodule" => 'SMSNotifier'
+    $taskTypes[] = [
+        'name'         => 'VTSMSTask',
+        'label'        => 'SMS Task',
+        'classname'    => 'VTSMSTask',
+        'classpath'    => 'modules/com_vtiger_workflow/tasks/VTSMSTask.inc',
+        'templatepath' => 'com_vtiger_workflow/taskforms/VTSMSTask.tpl',
+        'modules'      => $defaultModules,
+        'sourcemodule' => 'SMSNotifier'
     ];
 
     foreach ($taskTypes as $taskType) {

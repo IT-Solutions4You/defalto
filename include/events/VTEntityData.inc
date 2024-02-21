@@ -64,6 +64,7 @@ class VTEntityData{
         }
 
         $result = $adb->pquery('select setype from vtiger_crmentity where crmid=?', [$entityId]);
+
         return $adb->query_result($result, 0, 'setype');
     }
 

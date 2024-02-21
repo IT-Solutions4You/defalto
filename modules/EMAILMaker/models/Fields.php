@@ -208,15 +208,18 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
 
         $adb = PearDatabase::getInstance();
 
-        if ($module == "Quotes" || $module == "Invoice" || $module == "SalesOrder" || $module == "PurchaseOrder" || $module == "Issuecards" || $module == "Receiptcards" || $module == "Creditnote" || $module == "StornoInvoice") {
-            $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid=" . $module_id . " AND blocklabel != 'LBL_DETAILS_BLOCK' AND blocklabel != 'LBL_ITEM_DETAILS' ORDER BY sequence ASC";
-        } elseif ($module == "Users") {
-            $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_blocks.tabid WHERE vtiger_tab.name = 'Users' AND (blocklabel = 'LBL_USERLOGIN_ROLE' OR blocklabel = 'LBL_ADDRESS_INFORMATION' ) ORDER BY sequence ASC";
+        if ($module == 'Quotes' || $module == 'Invoice' || $module == 'SalesOrder' || $module == 'PurchaseOrder' || $module == 'Issuecards' || $module == 'Receiptcards' || $module == 'Creditnote' || $module == 'StornoInvoice') {
+            $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? AND blocklabel != ? AND blocklabel != ? ORDER BY sequence ASC';
+            $params = [$module_id, 'LBL_DETAILS_BLOCK', 'LBL_ITEM_DETAILS'];
+        } elseif ($module == 'Users') {
+            $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_blocks.tabid WHERE vtiger_tab.name = ? AND (blocklabel = ? OR blocklabel = ? ) ORDER BY sequence ASC';
+            $params = ['Users', 'LBL_USERLOGIN_ROLE', 'LBL_ADDRESS_INFORMATION'];
         } else {
-            $sql1 = "SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid=" . $module_id . " ORDER BY sequence ASC";
+            $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid=' . $module_id . ' ORDER BY sequence ASC';
+            $params = [$module_id];
         }
 
-        $res1 = $adb->pquery($sql1, array());
+        $res1 = $adb->pquery($sql1, $params);
         $block_info_arr = array();
         while ($row = $adb->fetch_array($res1)) {
             if ($row['blockid'] == '41' && $row['blocklabel'] == '') {
