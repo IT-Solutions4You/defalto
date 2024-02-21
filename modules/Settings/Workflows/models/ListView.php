@@ -83,11 +83,7 @@ class Settings_Workflows_ListView_Model extends Settings_Vtiger_ListView_Model {
 			$row['raw_module_name'] = $module_name;
 
 			//To handle translation of calendar to To Do
-			if($module_name == 'Calendar'){
-				$module_name = vtranslate('LBL_TASK', $module_name);
-			}else{
-				$module_name = vtranslate($module_name, $module_name);
-			}
+            $module_name = vtranslate($module_name, $module_name);
 
 			$row['module_name'] = $module_name;
 			$row['v7_execution_condition'] = $record->getV7executionConditionAsLabel($row['execution_condition'], $module_name);

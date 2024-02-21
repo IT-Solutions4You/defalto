@@ -42,32 +42,6 @@ class Reports_RecordStructure_Model extends Vtiger_RecordStructure_Model {
 					}
 				}
 			}
-		} else if($moduleName === 'Calendar') { 
-			$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
-			$moduleRecordStructure = array();
-			$calendarRecordStructure = $recordStructureInstance->getStructure();
-			
-			$eventsModel = Vtiger_Module_Model::getInstance('Events');
-			$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($eventsModel);
-			$eventRecordStructure = $recordStructureInstance->getStructure();
-
-			foreach($eventRecordStructure as $blockLabel =>$blockFields){
-				foreach($blockFields as $fieldName=>$fieldModel){
-					if($fieldModel->isCustomField()){
-						$eventCustomFields[$fieldName] = $fieldModel;
-					}
-				}
-			}
-
-			$blockLabel = 'LBL_CUSTOM_INFORMATION';
-			if($eventCustomFields) {
-				if($calendarRecordStructure[$blockLabel]) {
-					$calendarRecordStructure[$blockLabel] = array_merge($calendarRecordStructure[$blockLabel],$eventCustomFields);
-				} else {
-					$calendarRecordStructure[$blockLabel] = $eventCustomFields;
-				}
-			}
-			$moduleRecordStructure = $calendarRecordStructure;
 		} else {
 			$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
 			$moduleRecordStructure = $recordStructureInstance->getStructure();
@@ -115,5 +89,3 @@ class Reports_RecordStructure_Model extends Vtiger_RecordStructure_Model {
 	}
 
 }
-
-?>

@@ -264,22 +264,11 @@ class VTSimpleTemplate{
 		}
 		switch($fieldInstance->getFieldDataType()) {
 
-			case 'date'			:	if (($moduleName === 'Events' && in_array($fieldName, array('date_start', 'due_date'))) ||
-										($moduleName === 'Calendar' && $fieldName === 'date_start')) {
-										if ($fieldName === 'date_start') {
-											$dateTime = $this->parent->get('date_start') .' '. $this->parent->get('time_start');
-										} else {
-											$dateTime = $this->parent->get('due_date') .' '. $this->parent->get('time_end');
-										}
-
-										$fieldValue = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat($dateTime, $ownerObject);
-
-									} else {
+			case 'date'			:
 										if(!empty($fieldValue)) {
 											$dateFieldObj = new DateTimeField($fieldValue);
 											$fieldValue = $dateFieldObj->getDisplayDate($ownerObject);
 										}
-									}
 									break;
 
 			case 'datetime'		:	$fieldValue = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat($fieldValue, $ownerObject);

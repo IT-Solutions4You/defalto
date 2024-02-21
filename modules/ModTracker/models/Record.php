@@ -24,11 +24,6 @@ class ModTracker_Record_Model extends Vtiger_Record_Model {
 	 * @return <array> - list of  ModTracker_Record_Model
 	 */
 	public static function getUpdates($parentRecordId, $pagingModel,$moduleName) {
-		if($moduleName == 'Calendar') {
-			if(getActivityType($parentRecordId) != 'Task') {
-				$moduleName = 'Events';
-			}
-		}
 		$db = PearDatabase::getInstance();
 		$recordInstances = array();
 

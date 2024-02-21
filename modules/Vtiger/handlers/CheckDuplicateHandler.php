@@ -25,17 +25,10 @@ class CheckDuplicateHandler extends VTEventHandler {
 		$fieldValues = $entityData->getData();
 
 		$moduleName = $entityData->getModuleName();
-		if ($moduleName == 'Activity') {
-			$moduleName = ($fieldValues['activitytype'] == 'Task') ? 'Calendar' : 'Events';
-		}
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		if (!$moduleModel->allowDuplicates && !$skipDuplicateCheck) {
 			$fields = $moduleModel->getFields();
-
-			if ($moduleName == 'Events') {
-				$moduleModel = Vtiger_Module_Model::getInstance('Calendar');
-			}
 
 			$baseTableName = $moduleModel->get('basetable');
 			$baseTableId = $moduleModel->get('basetableid');
@@ -47,14 +40,6 @@ class CheckDuplicateHandler extends VTEventHandler {
 			foreach ($fields as $fieldName => $fieldModel) {
 				if ($fieldModel->isUniqueField() && $fieldModel->isEditable()) {
 					$uniqueFields[$fieldName] = $fieldModel;
-
-					if (in_array($moduleName, array('Events', 'Calendar')) && in_array($fieldName, array('date_start', 'due_date'))) {
-						$timeField = 'time_start';
-						if ($fieldName === 'due_date') {
-							$timeField = 'time_end';
-						}
-						$uniqueFields[$timeField] = $fields[$timeField];
-					}
 
 					$fieldTableName = $fieldModel->get('table');
 					if (!in_array($fieldTableName, array($baseTableName, $crmentityTable)) && $tabIndexes && $tabIndexes[$fieldTableName]) {
@@ -103,12 +88,7 @@ class CheckDuplicateHandler extends VTEventHandler {
 
 					$query = "SELECT $crmentityTable.crmid, $crmentityTable.label FROM $crmentityTable INNER JOIN $baseTableName ON $baseTableName.$baseTableId = $crmentityTable.crmid";
 					foreach ($tablesList as $tableName => $tabIndex) {
-						if ($moduleName == 'Calendar' || $moduleName == 'Events') {
-							$query .= " LEFT JOIN $tableName ON $tableName.$tabIndex = $baseTableName.$baseTableId";
-						} else {
-							//INNER JOIN used instead of LEFT JOIN because all fields should be match
 						$query .= " INNER JOIN $tableName ON $tableName.$tabIndex = $baseTableName.$baseTableId";
-						}
 					}
 					$query .= " WHERE $crmentityTable.deleted = ?";
 
@@ -117,25 +97,6 @@ class CheckDuplicateHandler extends VTEventHandler {
 					foreach ($uniqueFields as $fieldName => $fieldModel) {
 						$fieldTableName = $fieldModel->get('table');
 						$fieldColumnName = $fieldModel->get('column');
-
-						// For Calendar Start Date & Time or End Date & Time we need to concat date and time fields to search
-						if (in_array($moduleName, array('Events', 'Calendar')) && in_array($fieldName, array('date_start', 'due_date', 'time_start', 'time_end'))) {
-							if (in_array($fieldName, array('time_start', 'time_end'))) {
-								continue;
-							}
-
-							$dateFieldColumnName = 'date_start';
-							$timeFieldColumnName = 'time_start';
-							if ($fieldName == 'due_date') {
-								$dateFieldColumnName = 'due_date';
-								$timeFieldColumnName = 'time_end';
-							}
-
-							$condition = "CONCAT($fieldTableName.$dateFieldColumnName,' ',$fieldTableName.$timeFieldColumnName) = ?";
-							array_push($conditions, $condition);
-							$params[] = trim(implode(" ", array($uniqueFieldsData[$dateFieldColumnName], $uniqueFieldsData[$timeFieldColumnName])));
-							continue;
-						}
 
 						$fieldValue = $uniqueFieldsData[$fieldName];
 						if (isset($fieldValue)) {
@@ -167,20 +128,12 @@ class CheckDuplicateHandler extends VTEventHandler {
 						$params[] = $recordId;
 					}
 
-					if ($moduleName == 'Events') {
-						$query .= " AND $baseTableName.activitytype NOT IN (?, ?)";
-						array_push($params, 'Task', 'Emails');
-					} else if ($moduleName == 'Calendar') {
-						$query .= " AND $baseTableName.activitytype = ?";
-						array_push($params, 'Task');
-					} else {
-						$query .= " AND $crmentityTable.setype = ?";
-						array_push($params, $moduleName);
+                    $query .= " AND $crmentityTable.setype = ?";
+                    $params[] = $moduleName;
 
-						if ($moduleName == 'Leads' || $moduleName == 'Potentials') {
-							$query .= " AND $baseTableName.converted = 0";
-						}
-					}
+                    if ($moduleName == 'Leads' || $moduleName == 'Potentials') {
+                        $query .= " AND $baseTableName.converted = 0";
+                    }
 					$query .= ' LIMIT 6';
 
 					$result = $db->pquery($query, $params);

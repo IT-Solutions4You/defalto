@@ -20,17 +20,7 @@
                     {if !empty($PICKIST_DEPENDENCY_DATASOURCE)}
                         <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE)}' />
                     {/if}
-                    {if $MODULE eq 'Events'}
-                        <input type="hidden" name="calendarModule" value="Events">
-                        {if !empty($PICKIST_DEPENDENCY_DATASOURCE_EVENT)}
-                            <input type="hidden" name="picklistDependency" value='{Vtiger_Util_Helper::toSafeHTML($PICKIST_DEPENDENCY_DATASOURCE_EVENT)}' />
-                        {/if}
-                    {/if}
-                    {if $MODULE eq 'Events'}
-                        <input type="hidden" name="module" value="Calendar">
-                    {else}
-                        <input type="hidden" name="module" value="{$MODULE}">
-                    {/if}
+                    <input type="hidden" name="module" value="{$MODULE}">
                     <input type="hidden" name="action" value="SaveAjax">
                     <div class="quickCreateContent">
                         <div class="massEditTable">

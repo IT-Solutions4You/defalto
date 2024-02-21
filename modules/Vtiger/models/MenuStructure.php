@@ -138,7 +138,6 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 				'Vendors',
 				'PurchaseOrder',
 				'MailManager',
-				'Calendar',
 				'Documents',
 				'SMSNotifier',
 				'RecycleBin',
@@ -161,7 +160,7 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 	}
 
 	public static function getIgnoredModules() {
-		return array('Calendar', 'Documents', 'MailManager', 'SMSNotifier', 'Reports');
+		return array('Documents', 'MailManager', 'SMSNotifier', 'Reports');
 	}
 
 	function regroupMenuByParent($menuGroupedByParent) {

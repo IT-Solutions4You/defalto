@@ -96,7 +96,6 @@ $unWanted=array(
  "modules/com_vtiger_workflow/resources/functional.js",
  "modules/com_vtiger_workflow/resources/parallelexecuter.js",
  "modules/com_vtiger_workflow/resources/editworkflowscript.js",
- "modules/com_vtiger_workflow/resources/createtodotaskscript.js",
  "modules/com_vtiger_workflow/resources/fieldexpressionpopup.js",
  "modules/com_vtiger_workflow/resources/workflowlistscript.js",
  "modules/com_vtiger_workflow/resources/fieldvalidator.js",
@@ -107,7 +106,6 @@ $unWanted=array(
  "modules/com_vtiger_workflow/resources/jquery.timepicker.js",
  "modules/com_vtiger_workflow/resources/createentitytaskscript.js",
  "modules/com_vtiger_workflow/resources/edittaskscript.js",
- "modules/com_vtiger_workflow/resources/createeventtaskscript.js",
  "modules/com_vtiger_workflow/resources/emailtaskscript.js",
  "modules/FieldFormulas/editexpressionscript.js",              
  "modules/FieldFormulas/jquery-1.2.6.js",
@@ -616,13 +614,6 @@ $adb->query("CREATE TABLE IF NOT EXISTS vtiger_feedback (userid INT(19), dontsho
 
 //75 ends
 
-//76 starts
-$moduleInstance = Vtiger_Module::getInstance('Calendar');
-$fieldInstance = Vtiger_Field::getInstance('activitytype',$moduleInstance);
-
-$fieldInstance->setPicklistValues(array('Mobile Call'));
-//76 ends
-
 //77 starts
 $sql = "ALTER TABLE vtiger_products MODIFY productname VARCHAR( 100 )";
 Migration_Index_View::ExecuteQuery($sql,array());
@@ -701,30 +692,6 @@ echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
 
-//83 starts
-$result = $adb->pquery('SELECT task_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
-                        (SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?, ?))
-                        AND task LIKE ?', array('Calendar', 'Events', '%VTSendNotificationTask%'));
-$numOfRows = $adb->num_rows($result);
-for ($i = 0; $i < $numOfRows; $i++) {
-        $tm = new VTTaskManager($adb);
-        $task = $tm->retrieveTask($adb->query_result($result, $i, 'task_id'));
-
-        $emailTask = new VTEmailTask();
-        $properties = get_object_vars($task);
-        foreach ($properties as $propertyName => $propertyValue) {
-                $propertyValue = str_replace('$date_start  $time_start ( $(general : (__VtigerMeta__) usertimezone) ) ', '$date_start', $propertyValue);
-                $propertyValue = str_replace('$due_date  $time_end ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-                $propertyValue = str_replace('$due_date ( $(general : (__VtigerMeta__) usertimezone) )', '$due_date', $propertyValue);
-                $propertyValue = str_replace('$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)', '$contact_id', $propertyValue);
-                $emailTask->$propertyName = $propertyValue;
-        }
-
-        $tm->saveTask($emailTask);
-}
-echo '<br>Successfully Done<br>';
-
-//83 ends
 
 //84 starts
 $query = "ALTER table vtiger_relcriteria modify comparator varchar(20)";
@@ -1003,8 +970,6 @@ while ($rowData = $adb->fetch_array($fieldResult)) {
                 $dateFieldsList[$moduleName][$fieldName] = $fieldName;
         }
 }
-unset($dateFieldsList['Events']['due_date']);
-$dateTimeFieldsList['Events']['due_date'] = 'due_date';
 
 $dateFields = array();
 foreach ($dateFieldsList as $moduleName => $fieldNamesList) {
@@ -1036,16 +1001,10 @@ foreach ($taskIdsList as $taskId => $taskModuleName) {
                 $propertyValue = str_replace('$(general : (__VtigerMeta__) date)', "(general : (__VtigerMeta__) date) $dateFormat", $propertyValue);
 
                 foreach ($dateFields as $fieldName) {
-                        if ($taskModuleName === 'Events' && $fieldName === 'due_date') {
-                                continue;
-                        }
                         $propertyValue = str_replace("$$fieldName", "$$fieldName $dateFormat", $propertyValue);
                 }
 
                 foreach ($dateTimeFields as $fieldName) {
-                        if ($taskModuleName === 'Calendar' && $fieldName === 'due_date') {
-                                continue;
-                        }
                         $propertyValue = str_replace("$$fieldName", "$$fieldName $timeZone", $propertyValue);
                 }
 
@@ -1159,25 +1118,6 @@ Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_portal ADD createdtime da
 
 $adb->query("CREATE TABLE IF NOT EXISTS vtiger_calendar_default_activitytypes (id INT(19), module VARCHAR(50), fieldname VARCHAR(50), defaultcolor VARCHAR(50));");
 
-$result = Migration_Index_View::ExecuteQuery('SELECT * FROM vtiger_calendar_default_activitytypes', array());
-if ($adb->num_rows($result) <= 0) {
-        $calendarViewTypes = array('Events' => array('Events'=>'#17309A'),
-                                                        'Calendar' => array('Tasks'=>'#3A87AD'),
-                                                        'Potentials' => array('Potentials'=>'#AA6705'),
-                                                        'Contacts' => array('support_end_date'=>'#953B39',
-                                                                                                'birthday'=>'#545252'),
-                                                        'Invoice' => array('Invoice'=>'#87865D'),
-                                                        'Project' => array('Project'=>'#C71585'),
-                                                        'ProjectTask' => array('Project Task'=>'#006400'),
-                                                );
-
-        foreach($calendarViewTypes as $module=>$viewInfo) {
-                foreach($viewInfo as $fieldname=>$color) {
-                        Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_calendar_default_activitytypes (id, module, fieldname, defaultcolor) VALUES (?,?,?,?)', array($adb->getUniqueID('vtiger_calendar_default_activitytypes'), $module, $fieldname, $color));
-                }
-        }
-        echo '<br>Default Calendar view types added to the table.<br>';
-}
 $adb->query("CREATE TABLE IF NOT EXISTS vtiger_calendar_user_activitytypes (id INT(19), defaultid INT(19), userid INT(19), color VARCHAR(50), visible INT(19) default 1);");
 
 $result = Migration_Index_View::ExecuteQuery('SELECT * FROM vtiger_calendar_user_activitytypes', array());
@@ -1195,7 +1135,6 @@ if ($adb->num_rows($result) <= 0) {
                    Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_calendar_user_activitytypes (id, defaultid, userid, color) VALUES (?,?,?,?)', array($adb->getUniqueID('vtiger_calendar_user_activitytypes'), $activityId, $userId, $color));
             }
     }
-    echo '<br>Default Calendar view types added to the table for all existing users';
 }
 
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_field SET quickcreate = ? WHERE tabid = 8 AND (fieldname = ? OR fieldname = ?);", array(0,"filename","filelocationtype"));
@@ -1476,30 +1415,6 @@ $result = $adb->pquery("SHOW COLUMNS FROM vtiger_tab LIKE ?", array('trial'));
 if (!($adb->num_rows($result))) {
     $adb->pquery("ALTER TABLE vtiger_tab ADD trial INT(1) NOT NULL DEFAULT 0",array());
 }
-
-##--http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7635--##
-//Avoid premature deletion of activity related records
-$moduleArray = array('Accounts', 'Leads', 'HelpDesk', 'Campaigns', 'Potentials', 'PurchaseOrder', 'SalesOrder', 'Quotes', 'Invoice');
-$relatedToQuery = "SELECT fieldid FROM vtiger_field WHERE tabid=? AND fieldname=?";
-$calendarInstance = Vtiger_Module::getInstance('Calendar');
-$tabId = $calendarInstance->getId();
-$result = $adb->pquery($relatedToQuery, array($tabId, 'parent_id'));
-$fieldId = $adb->query_result($result,0, 'fieldid');
-$insertQuery = "INSERT INTO vtiger_fieldmodulerel (fieldid,module,relmodule,status,sequence) VALUES(?,?,?,?,?)";
-$relModule = 'Calendar';
-foreach ($moduleArray as $module) {
-    $adb->pquery($insertQuery, array($fieldId, $module, $relModule, NULL, NULL));
-}
-//For contacts the fieldname is contact_id
-$contactsRelatedToQuery = "SELECT fieldid FROM vtiger_field WHERE tabid=? AND fieldname=?";
-$contactsResult = $adb->pquery($contactsRelatedToQuery, array($tabId, 'contact_id'));
-$contactsFieldId = $adb->query_result($contactsResult,0, 'fieldid');
-$insertContactsQuery = "INSERT INTO vtiger_fieldmodulerel (fieldid,module,relmodule,status,sequence) VALUES(?,?,?,?,?)";
-$module = 'Contacts';
-$adb->pquery($insertContactsQuery, array($contactsFieldId, $module, $relModule, NULL, NULL));
-
-##--http://trac.vtiger.com/cgi-bin/trac.cgi/ticket/7635--##
-
 
 //Adding is_owner to existing vtiger users
 

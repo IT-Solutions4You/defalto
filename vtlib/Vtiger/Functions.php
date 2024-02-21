@@ -390,10 +390,6 @@ class Vtiger_Functions {
 
 		if (!is_array($ids)) $ids = array($ids);
 
-		if ($module == 'Events') {
-			$module = 'Calendar';
-		}
-
 		if ($module) {
 			$entityDisplay = array();
 
@@ -977,10 +973,6 @@ class Vtiger_Functions {
 			"vtiger_leaddetails:secondaryemail" => "V",
 			//Documents Related Fields
 			"vtiger_senotesrel:crmid" => "V",
-			//Calendar Related Fields
-			"vtiger_seactivityrel:crmid" => "V",
-			"vtiger_seactivityrel:contactid" => "V",
-			"vtiger_recurringevents:recurringtype" => "V",
 			//HelpDesk Related Fields
 			"vtiger_troubletickets:parent_id" => "V",
 			"vtiger_troubletickets:product_id" => "V",

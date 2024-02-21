@@ -203,9 +203,6 @@ class PriceBooks_ListView_Model extends Vtiger_ListView_Model {
 			}
 		}
 
-		if($this->getModule()->get('name') == 'Calendar'){
-			$listQuery .= ' AND activitytype <> "Emails"';
-		}
 		$listResult = $db->pquery($listQuery, array());
 		return $db->query_result($listResult, 0, 'count');
 	}

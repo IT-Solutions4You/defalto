@@ -845,9 +845,6 @@ function calculateValidationRules(form,params,meta){
 
 				//providing fallback support
 				var moduleName = container.find('[name="module"]').val();
-				if(moduleName === 'Events') {
-					moduleName = 'Calendar';
-				}
 				var moduleSpecificValidatorName = moduleName + '_' + specialValidatorName;
 				if(moduleSpecificValidatorName in jQuery.validator.methods) {
 					specialValidatorName = moduleSpecificValidatorName;

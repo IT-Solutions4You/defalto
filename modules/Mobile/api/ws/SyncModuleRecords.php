@@ -73,20 +73,6 @@ class Mobile_WS_SyncModuleRecords extends Mobile_WS_SaveRecord {
 		 // Determine paging
         $hasNextPage = (php7_count($activeResult) > $FETCH_LIMIT);
 
-        // Special case handling merge Events records
-        if ($module == 'Calendar') {
-            $activeResult2 = vtws_query(str_replace('Calendar', 'Events', $activeQuery), $current_user);
-            if (!empty($activeResult2)) {
-                $activeResult = array_merge($activeResult, $activeResult2);
-                if (!$hasNextPage) {
-                    // If there was not Calendar next-page of records - check with Events
-                    $hasNextPage = (php7_count($activeResult) > $FETCH_LIMIT);
-                }
-            }
-            // Indicator that we fetched both Calendar+Events
-            $FETCH_LIMIT *= 2;
-        }
-
         $nextPage = 0;
         if ($hasNextPage) {
             array_pop($activeResult); // Avoid sending next page record now
@@ -132,15 +118,7 @@ class Mobile_WS_SyncModuleRecords extends Mobile_WS_SaveRecord {
 				}
 			}
 
-			// Since Calendar and Events are merged
-			if ($module == 'Calendar') {
-				$queryDeleted = $adb->pquery("SELECT activityid as crmid, activitytype as setype FROM vtiger_activity
-					INNER JOIN vtiger_crmentity ON vtiger_activity.activityid=vtiger_crmentity.crmid
-					AND vtiger_crmentity.deleted=1 AND vtiger_crmentity.setype=? AND vtiger_crmentity.modifiedtime > ?
-					LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid WHERE 1=1	$andsmowneridequal ",
-				$queryDeletedParameters);
-			} else if ($module == 'Leads') {
+			if ($module == 'Leads') {
 				$queryDeleted = $adb->pquery("SELECT crmid, modifiedtime, setype FROM vtiger_crmentity
 				INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid=vtiger_crmentity.crmid
 				LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
@@ -155,14 +133,6 @@ class Mobile_WS_SyncModuleRecords extends Mobile_WS_SaveRecord {
 
 			while($row = $adb->fetch_array($queryDeleted)) {
 				$recordModule = $row['setype'];
-				if ($module == 'Calendar') {
-					if ($row['setype'] != 'Task' && $row['setype'] != 'Emails') {
-						$recordModule = 'Events';
-					} else {
-						$recordModule = $module;
-					}
-				}
-
 				$resolvedDeletedRecords[] = sprintf("%sx%s", Mobile_WS_Utils::getEntityModuleWSId($recordModule), $row['crmid']);
 				$modifiedTimeInSeconds = strtotime($row['modifiedtime']);
 				if ($maxSyncTime < $modifiedTimeInSeconds) {

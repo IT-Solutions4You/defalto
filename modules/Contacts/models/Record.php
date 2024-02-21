@@ -9,26 +9,6 @@
  *************************************************************************************/
 
 class Contacts_Record_Model extends Vtiger_Record_Model {
-
-	/**
-	 * Function returns the url for create event
-	 * @return <String>
-	 */
-	function getCreateEventUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateEventRecordUrl().'&contact_id='.$this->getId();
-	}
-
-	/**
-	 * Function returns the url for create todo
-	 * @return <String>
-	 */
-	function getCreateTaskUrl() {
-		$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		return $calendarModuleModel->getCreateTaskRecordUrl().'&contact_id='.$this->getId();
-	}
-
-
 	/**
 	 * Function to get List of Fields which are related from Contacts to Inventory Record
 	 * @return <array>

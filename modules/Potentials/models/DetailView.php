@@ -68,24 +68,6 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
 		}
 
-		$CalendarActionLinks[] = array();
-		$CalendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		if($currentUserModel->hasModuleActionPermission($CalendarModuleModel->getId(), 'CreateView')) {
-			$CalendarActionLinks[] = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => 'LBL_ADD_EVENT',
-					'linkurl' => $recordModel->getCreateEventUrl(),
-					'linkicon' => ''
-			);
-
-			$CalendarActionLinks[] = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $recordModel->getCreateTaskUrl(),
-					'linkicon' => ''
-			);
-		}
-
 		if($currentUserModel->hasModuleActionPermission($projectModuleModel->getId(), 'CreateView') && !$recordModel->isPotentialConverted()) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEWBASIC',
@@ -94,10 +76,6 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 				'linkicon' => ''
 			);
 			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-		
-		foreach($CalendarActionLinks as $basicLink) {
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
 		}
 
 		return $linkModelList;

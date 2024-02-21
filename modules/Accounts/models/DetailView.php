@@ -48,24 +48,6 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model {
 			$index++;
 		}
 		
-		$CalendarActionLinks = array();
-		$CalendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-		if($currentUserModel->hasModuleActionPermission($CalendarModuleModel->getId(), 'CreateView')) {
-			$CalendarActionLinks[] = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => 'LBL_ADD_EVENT',
-					'linkurl' => $recordModel->getCreateEventUrl(),
-					'linkicon' => ''
-			);
-
-			$CalendarActionLinks[] = array(
-					'linktype' => 'DETAILVIEW',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $recordModel->getCreateTaskUrl(),
-					'linkicon' => ''
-			);
-		}
-
 		$SMSNotifierModuleModel = Vtiger_Module_Model::getInstance('SMSNotifier');
 		if(!empty($SMSNotifierModuleModel) && $currentUserModel->hasModulePermission($SMSNotifierModuleModel->getId())) {
 			$basicActionLink = array(
@@ -87,10 +69,6 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model {
 				'linkicon' => ''
 			);
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($massActionLink);
-		}
-
-        foreach($CalendarActionLinks as $basicLink) {
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
 		}
 
 		return $linkModelList;

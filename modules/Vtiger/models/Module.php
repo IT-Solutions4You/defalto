@@ -799,7 +799,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$searchableModules = array();
 		foreach ($entityModules as $tabid => $moduleModel) {
 				$moduleName = $moduleModel->getName();
-				if ($moduleName == 'Users' || $moduleName == 'Emails' || $moduleName == 'Events') continue;
+				if ($moduleName == 'Users' || $moduleName == 'Emails') continue;
 				if($userPrivModel->hasModuleActionPermission($moduleModel->getId(), 'DetailView')) {
 						$searchableModules[$moduleName] = $moduleModel;
 				}
@@ -1065,30 +1065,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		return false;
 	}
 
-	/**
-	 * Function returns the Calendar Events for the module
-	 * @param <String> $mode - upcoming/overdue mode
-	 * @param <Vtiger_Paging_Model> $pagingModel - $pagingModel
-	 * @param <String> $user - all/userid
-	 * @param <String> $recordId - record id
-	 * @return <Array>
-	 */
-    function getCalendarActivities($mode, $pagingModel, $user, $recordId = false)
-    {
-        $relatedParentId = $recordId;
-        $relatedParentModule = getSalesEntityType($relatedParentId);
-
-        $moduleName = 'Appointments';
-        $parentRecordModel = Vtiger_Record_Model::getInstanceById($relatedParentId, $relatedParentModule);
-        /** @var Vtiger_RelationListView_Model $relationListView */
-        $relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $moduleName, '');
-        $relationListView->set('whereCondition', [
-            'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
-        ]);
-
-        return $relationListView ? $relationListView->getEntries($pagingModel) : [];
-    }
-
     /**
 	 * Function to get list of fields which are required while importing records
 	 * @param <String> $module
@@ -1184,27 +1160,12 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$moduleName = $this->getName();
 		$basicLinks = array();
 		if($createPermission) {
-			if($moduleName === "Calendar"){
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_EVENT',
-					'linkurl' => $this->getCreateEventRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-                $basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_TASK',
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-			} else {
-				$basicLinks[] = array(
-					'linktype' => 'BASIC',
-					'linklabel' => 'LBL_ADD_RECORD',
-					'linkurl' => $this->getCreateRecordUrl(),
-					'linkicon' => 'fa-plus',
-				);
-			}
+            $basicLinks[] = array(
+                'linktype' => 'BASIC',
+                'linklabel' => 'LBL_ADD_RECORD',
+                'linkurl' => $this->getCreateRecordUrl(),
+                'linkicon' => 'fa-plus',
+            );
 			$importPermission = Users_Privileges_Model::isPermitted($this->getName(), 'Import');
 			if($importPermission && $createPermission) {
 				$basicLinks[] = array(
@@ -1464,14 +1425,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
 
 		if ($nonAdminQuery) {
 			$query = appendFromClauseToQuery($query, $nonAdminQuery);
-
-			if($functionName == 'get_activities' && trim($nonAdminQuery)) {
-				$moduleFocus = CRMEntity::getInstance('Calendar');
-				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
-				if($condition) {
-					$query .= ' AND '.$condition;
-				}
-			}
 		}
 
 		return $query;

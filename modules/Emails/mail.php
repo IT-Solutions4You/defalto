@@ -66,11 +66,10 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 		$from_email = $from_email_field;
 	}
 
-	if($module != "Calendar"){
-		if($useSignature == 'Yes'){
-			$contents = addSignature($contents,$from_name,$from_email);
-		}
+	if($useSignature == 'Yes'){
+		$contents = addSignature($contents,$from_name,$from_email);
 	}
+
 	$mail = new PHPMailer();
 
 	setMailerProperties($mail,$subject,$contents,$from_email,$from_name,trim($to_email,","),$attachment,$emailid,$module,$logo);

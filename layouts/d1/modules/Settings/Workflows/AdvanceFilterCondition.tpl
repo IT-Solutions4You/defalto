@@ -27,10 +27,6 @@
                                         {$FIELD_INFO['value'] = decode_html($CONDITION_INFO['value'])}
                                         selected="selected"
                                     {/if}
-                                    {if ($MODULE_MODEL->get('name') eq 'Events') and ($FIELD_NAME eq 'recurringtype')}
-                                        {assign var=PICKLIST_VALUES value = Calendar_Field_Model::getReccurencePicklistValues()}
-                                        {$FIELD_INFO['picklistvalues'] = $PICKLIST_VALUES}
-                                    {/if}
                                     {if ($MODULE_MODEL->get('name') eq 'Documents') and ($FIELD_NAME eq 'filelocationtype' or $FIELD_NAME eq 'folderid' or $FIELD_NAME eq 'filename')}
                                         {if $FIELD_NAME eq 'filelocationtype'}
                                             {assign var=PICKLIST_VALUES value = $FIELD_MODEL->getFileLocationType()}

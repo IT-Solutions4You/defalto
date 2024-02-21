@@ -79,9 +79,6 @@ class VtigerCRMObjectMeta extends EntityMeta {
 	}
 
 	public function getTabName(){
-		if($this->objectName == 'Events'){
-			return 'Calendar';
-		}
 		return $this->objectName;
 	}
 	
@@ -465,9 +462,6 @@ class VtigerCRMObjectMeta extends EntityMeta {
 			if($result != null && isset($result)){
 				if($adb->num_rows($result)>0){
 					$seType = $adb->query_result($result,0,"setype");
-					if($seType == "Calendar"){
-						$seType = vtws_getCalendarEntityType($id);
-					}
 				}
 			}
 		}
@@ -564,4 +558,3 @@ class VtigerCRMObjectMeta extends EntityMeta {
 	}
 
 }
-?>

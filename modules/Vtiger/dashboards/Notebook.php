@@ -53,17 +53,11 @@ class Vtiger_Notebook_Dashboard extends Vtiger_IndexAjax_View {
 		foreach ($metriclists as $key => $metriclist) {
 			
 			$metricresult = NULL;
-			if($metriclist['module'] == "Calendar") {
-				$listquery = getListQuery($metriclist['module']);
-				$oCustomView = new CustomView($metriclist['module']);
-				$metricsql = $oCustomView->getModifiedCvListQuery($metriclist['id'],$listquery,$metriclist['module']);
-				$metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
-			} else {
-				$queryGenerator = new QueryGenerator($metriclist['module'], $current_user);
-				$queryGenerator->initForCustomViewById($metriclist['id']);
-				$metricsql = $queryGenerator->getQuery();
-				$metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
-			}
+            $queryGenerator = new QueryGenerator($metriclist['module'], $current_user);
+            $queryGenerator->initForCustomViewById($metriclist['id']);
+            $metricsql = $queryGenerator->getQuery();
+            $metricresult = $adb->query(Vtiger_Functions::mkCountQuery($metricsql));
+
 			if($metricresult) {
 					$rowcount = $adb->fetch_array($metricresult);
 					$metriclists[$key]['count'] = $rowcount['count'];

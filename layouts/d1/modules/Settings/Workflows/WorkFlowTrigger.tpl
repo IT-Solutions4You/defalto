@@ -93,13 +93,13 @@
                                 <div class="controls">
                                     {assign var=dayOfWeek value=Zend_Json::decode($WORKFLOW_MODEL_OBJ->schdayofweek)}
                                     <div class="weekDaySelect py-2">
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("7",$dayOfWeek)}ui-selected{/if}" data-value="7"> {vtranslate('LBL_DAY0', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("1",$dayOfWeek)}ui-selected{/if}" data-value="1"> {vtranslate('LBL_DAY1', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("2",$dayOfWeek)}ui-selected{/if}" data-value="2"> {vtranslate('LBL_DAY2', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("3",$dayOfWeek)}ui-selected{/if}" data-value="3"> {vtranslate('LBL_DAY3', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("4",$dayOfWeek)}ui-selected{/if}" data-value="4"> {vtranslate('LBL_DAY4', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("5",$dayOfWeek)}ui-selected{/if}" data-value="5"> {vtranslate('LBL_DAY5', 'Calendar')} </span>
-                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("6",$dayOfWeek)}ui-selected{/if}" data-value="6"> {vtranslate('LBL_DAY6', 'Calendar')} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("7",$dayOfWeek)}ui-selected{/if}" data-value="7"> {vtranslate('LBL_DAY0', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("1",$dayOfWeek)}ui-selected{/if}" data-value="1"> {vtranslate('LBL_DAY1', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("2",$dayOfWeek)}ui-selected{/if}" data-value="2"> {vtranslate('LBL_DAY2', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("3",$dayOfWeek)}ui-selected{/if}" data-value="3"> {vtranslate('LBL_DAY3', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("4",$dayOfWeek)}ui-selected{/if}" data-value="4"> {vtranslate('LBL_DAY4', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("5",$dayOfWeek)}ui-selected{/if}" data-value="5"> {vtranslate('LBL_DAY5', $QUALIFIED_MODULE)} </span>
+                                        <span class="ui-state-default border-0 p-2 rounded me-2 {if is_array($dayOfWeek) && in_array("6",$dayOfWeek)}ui-selected{/if}" data-value="6"> {vtranslate('LBL_DAY6', $QUALIFIED_MODULE)} </span>
                                         <input type="hidden" data-rule-required="true" name='schdayofweek' id='schdayofweek' {if is_array($dayOfWeek)} value="{implode(',',$dayOfWeek)}" {else} value=""{/if}/>
                                     </div>
                                 </div>

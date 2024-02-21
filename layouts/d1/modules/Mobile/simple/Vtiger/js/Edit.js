@@ -24,9 +24,7 @@ mobileapp.controller('VtigerEditController', function ($scope, $api, $mdToast, $
         if(!newrecord && value){
             field.raw = value;
         }
-        if($scope.module == 'Calendar' && field.name == 'activitytype'){
-            field.raw = 'Task';
-        }
+
         switch(field.type.name) {
             case 'date':
                 if(value){

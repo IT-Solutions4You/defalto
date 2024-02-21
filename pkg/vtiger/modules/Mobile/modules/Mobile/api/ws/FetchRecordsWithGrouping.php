@@ -80,30 +80,15 @@ class Mobile_WS_FetchRecordsWithGrouping extends Mobile_WS_FetchRecordWithGroupi
 		$moduleWSID = Mobile_WS_Utils::getEntityModuleWSId($module);
 
 		$alertResult = $adb->pquery($alert->query(), $alert->queryParameters());
-		$alertRecords = array();
-		
-		// For Calendar module there is a need for merging Todo's
-		if ($module == 'Calendar') {
-			$eventsWSID = Mobile_WS_Utils::getEntityModuleWSId('Events');
-			$eventIds = array(); $taskIds = array();			
-			while($resultrow = $adb->fetch_array($alertResult)) {
-				if (isset($resultrow['activitytype']) && $resultrow['activitytype'] == 'Task') {
-					$taskIds[] = "{$moduleWSID}x". $resultrow['crmid'];
-				} else {
-					$eventIds[] = "{$eventsWSID}x". $resultrow['crmid'];
-				}
-			}
-			$alertRecords = $this->fetchRecordsWithId($module, $taskIds, $alert->getUser());
-			if (!empty($eventIds)) {
-				$alertRecords = array_merge($alertRecords, $this->fetchRecordsWithId('Events', $eventIds, $alert->getUser()));
-			}
-		} else {
-			$fetchIds = array();			
-			while($resultrow = $adb->fetch_array($alertResult)) {
-				$fetchIds[] = "{$moduleWSID}x" . $resultrow['crmid'];
-			}
-			$alertRecords = $this->fetchRecordsWithId($module, $fetchIds, $alert->getUser());
-		}
+        $alertRecords = [];
+        $fetchIds = [];
+
+        while($resultrow = $adb->fetch_array($alertResult)) {
+            $fetchIds[] = "{$moduleWSID}x" . $resultrow['crmid'];
+        }
+
+        $alertRecords = $this->fetchRecordsWithId($module, $fetchIds, $alert->getUser());
+
 		return $alertRecords;
 	}
 	

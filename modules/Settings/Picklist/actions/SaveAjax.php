@@ -117,9 +117,6 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
         $oldValue = $request->getRaw('oldValue');
 		$id = $request->getRaw('id');
         
-        if($moduleName == 'Events' && ($pickListFieldName == 'activitytype' || $pickListFieldName == 'eventstatus')) {
-             $this->updateDefaultPicklistValues($pickListFieldName,$oldValue,$newValue);
-        }   
         $moduleModel = new Settings_Picklist_Module_Model();
         $response = new Vtiger_Response();
         try{
@@ -140,13 +137,6 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
         $moduleModel = Settings_Picklist_Module_Model::getInstance($moduleName);
         $pickListDeleteValue = $moduleModel->getActualPicklistValues($valueToDelete,$pickListFieldName);
 
-		if($moduleName == 'Events' && ($pickListFieldName == 'activitytype' || $pickListFieldName == 'eventstatus')) {
-			$db = PearDatabase::getInstance();
-			$primaryKey = Vtiger_Util_Helper::getPickListId($pickListFieldName);
-			$replaceValueQuery = $db->pquery("SELECT $pickListFieldName FROM ".$moduleModel->getPickListTableName($pickListFieldName)." WHERE $primaryKey IN (".generateQuestionMarks($replaceValue).")",array($replaceValue));
-			$actualReplaceValue = decode_html($db->query_result($replaceValueQuery,0,$pickListFieldName));
-			$this->updateDefaultPicklistValues($pickListFieldName,$pickListDeleteValue,$actualReplaceValue);
-        } 
         $response = new Vtiger_Response();
         try{
             $status = $moduleModel->remove($pickListFieldName, $valueToDelete, $replaceValue, $moduleName);
@@ -243,10 +233,6 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
         
         $oldValue = $request->getRaw('oldValue');
 		$id = $request->getRaw('id');
-        
-        if($moduleName == 'Events' && ($pickListFieldName == 'activitytype' || $pickListFieldName == 'eventstatus')) {
-             $this->updateDefaultPicklistValues($pickListFieldName,$oldValue,$newValue);
-        }
         
         $moduleModel = new Settings_Picklist_Module_Model();
         $response = new Vtiger_Response();

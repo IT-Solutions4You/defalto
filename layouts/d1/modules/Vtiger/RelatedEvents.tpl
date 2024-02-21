@@ -34,11 +34,6 @@
                                             <i class="summaryViewEdit fa fa-pencil" title="{vtranslate('LBL_EDIT',$ACTIVITIES_MODULE_NAME)}"></i>
                                         </a>
                                     {/if}
-                                    {if $DELETE_PERMITTED == 'yes'}
-                                        <a onclick="Vtiger_Detail_Js.deleteRelatedActivity(event);" data-id="{$ACTIVITY_RECORD->getId()}" data-recurring-enabled="{$ACTIVITY_RECORD->isRecurringEnabled()}" class="fieldValue ms-3 text-secondary">
-                                            <i class="summaryViewEdit fa fa-trash" title="{vtranslate('LBL_DELETE',$ACTIVITIES_MODULE_NAME)}"></i>
-                                        </a>
-                                    {/if}
                                 </div>
                                 <span><strong title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($START_DATE)}">{Vtiger_Util_Helper::formatDateIntoStrings($START_DATE)}</strong></span>
                             </div>

@@ -272,8 +272,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$updateList = array();
-	$updateList[] = array('module' => 'Events',		'fieldname' => 'Events',			'newfieldname' => array('date_start', 'due_date'));
-	$updateList[] = array('module' => 'Calendar',	'fieldname' => 'Tasks',				'newfieldname' => array('date_start', 'due_date'));
 	$updateList[] = array('module' => 'Contacts',	'fieldname' => 'support_end_date',	'newfieldname' => array('support_end_date'));
 	$updateList[] = array('module' => 'Contacts',	'fieldname' => 'birthday',			'newfieldname' => array('birthday'));
 	$updateList[] = array('module' => 'Potentials',	'fieldname' => 'Potentials',		'newfieldname' => array('closingdate'));
@@ -682,10 +680,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	//Update Calendar time_start as mandatory.
-	$updateQuery = 'UPDATE vtiger_field SET typeofdata=? WHERE fieldname=? AND tabid=?';
-	$db->pquery($updateQuery, array('T~M', 'time_start', getTabid('Calendar')));
-
 	$ignoreModules = array('SMSNotifier', 'ModComments');
 	$result = $db->pquery('SELECT name FROM vtiger_tab WHERE isentitytype=? AND name NOT IN ('.generateQuestionMarks($ignoreModules).')', array(1, $ignoreModules));
 	$modules = array();
@@ -978,41 +972,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('ALTER TABLE vtiger_modentity_num MODIFY semodule VARCHAR(100)', array());
 	$db->pquery('ALTER TABLE vtiger_reportmodules MODIFY primarymodule VARCHAR(100)', array());
 
-	$calendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
-	$ProjectModuleModel = Vtiger_Module_Model::getInstance('Project');
-	$relationModel = Vtiger_Relation_Model::getInstance($ProjectModuleModel, $calendarModuleModel, 'Activities');
-
-	if ($relationModel !== false) {
-		$fieldModel = $calendarModuleModel->getField('parent_id');
-		$fieldId = $fieldModel->getId();
-
-		$projectTabId = getTabid('Project');
-		$calendarTabId = getTabid('Calendar');
-		$result = $db->pquery('SELECT fieldtypeid FROM vtiger_ws_fieldtype WHERE uitype=?', array($fieldModel->get('uitype')));
-		$fieldType = $db->query_result($result, 0, 'fieldtypeid');
-
-		$result = $db->pquery('SELECT 1 FROM vtiger_ws_referencetype WHERE fieldtypeid=? and type=?', array($fieldType, 'Project'));
-		if (!$db->num_rows($result)) {
-			$db->pquery('INSERT INTO vtiger_ws_referencetype(fieldtypeid,type) VALUES(?, ?)', array($fieldType, 'Project'));
-		}
-
-		if (!$relationModel->get('relationfieldid')) {
-			$query = 'UPDATE vtiger_relatedlists SET relationfieldid=? ,name=?, relationtype=? WHERE tabid=? AND related_tabid=?';
-			$db->pquery($query, array($fieldId, 'get_activities', '1:N', $projectTabId, $calendarTabId));
-		}
-
-		//Migrate data from vtiger_crmentityrel to vtiger_seactivityrel
-		$query = 'SELECT 1 FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?';
-		$result = $db->pquery($query, array('Project', 'Calendar'));
-		if ($db->num_rows($result)) {
-			$insertQuery = 'INSERT INTO vtiger_seactivityrel(crmid, activityid) values(?,?)';
-			while($data = $db->fetch_array($result)) {
-				$db->pquery($insertQuery, array($data['crmid'], $data['relcrmid']));
-			}
-			$db->pquery('DELETE FROM vtiger_crmentityrel WHERE module=? AND relmodule= ?', array('Project', 'Calendar'));
-		}
-	}
-
 	$result = $db->pquery('SHOW INDEX FROM vtiger_crmentityrel WHERE key_name=?', array('crmid_idx'));
 	if (!$db->num_rows($result)) {
 		$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX crmid_idx(crmid)', array());
@@ -1101,18 +1060,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$accessCountFieldModel->__update();
 		Vtiger_Cache::flushModuleCache('Emails');
 	}
-
-	//Adding Create Event and Create Todo workflow tasks for Project module.
-	$taskResult = $db->pquery('SELECT id, modules FROM com_vtiger_workflow_tasktypes WHERE tasktypename IN (?, ?)', array('VTCreateTodoTask', 'VTCreateEventTask'));
-	$taskResultCount = $db->num_rows($taskResult);
-	for ($i=0; $i<$taskResultCount; $i++) {
-		$taskId = $db->query_result($taskResult, $i, 'id');
-		$modules = Zend_Json::decode(decode_html($db->query_result($taskResult, $i, 'modules')));
-		$modules['include'][] = 'Project';
-		$modulesJson = Zend_Json::encode($modules);
-		$db->pquery('UPDATE com_vtiger_workflow_tasktypes SET modules=? WHERE id=?', array($modulesJson, $taskId));
-	}
-	//End
 
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
@@ -1513,8 +1460,7 @@ if(defined('VTIGER_UPGRADE')) {
 
 	// For Google Synchronization
 	Vtiger_Link::addLink(getTabid('Contacts'), 'EXTENSIONLINK', 'Google', 'index.php?module=Contacts&view=Extension&extensionModule=Google&extensionView=Index');
-	Vtiger_Link::addLink(getTabid('Calendar'), 'EXTENSIONLINK', 'Google', 'index.php?module=Calendar&view=Extension&extensionModule=Google&extensionView=Index');
-	
+
 	//Add enabled column in vtiger_google_sync_settings
 	$colums = $db->getColumnNames('vtiger_google_sync_settings');
 	if (!in_array('enabled', $colums)) {
@@ -1834,10 +1780,6 @@ if(defined('VTIGER_UPGRADE')) {
 			$blockInstance->addField($field);
 		}
 	}
-
-	$projectInstance = Vtiger_Module::getInstance('Project');
-	$calendarModule = Vtiger_Module::getInstance('Calendar');
-	$projectInstance->setRelatedList($calendarModule, 'Activities', Array('ADD'));
 
 	$quotesModule = Vtiger_Module::getInstance('Quotes');
 	$projectInstance->setRelatedList($quotesModule, 'Quotes', Array('SELECT'));

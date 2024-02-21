@@ -9,8 +9,8 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
     Vtiger_Import_Js = {
         triggerImportAction: function(url) {
             var params = Vtiger_Import_Js.getDefaultParams();
-            //Only for contacts and Calendar show landing page.
-            if(params.module != 'Contacts' && params.module != 'Calendar') {
+            //Only for contacts show landing page.
+            if(params.module !== 'Contacts') {
                 Vtiger_Import_Js.showImportActionStepOne();
                 return false;
             }
@@ -71,6 +71,27 @@ if (typeof (Vtiger_Import_Js) == 'undefined') {
             }
             return false;
         },
+
+        basicUploadAndParse: function () {
+            if (Vtiger_Import_Js.validateFilePath()) {
+                const form = jQuery("form[name='importBasic']");
+                jQuery('[name="mode"]').val('importResult');
+                const data = new FormData(form[0]);
+                const postParams = {
+                    data: data,
+                    contentType: false,
+                    processData: false
+                };
+                app.helper.showProgress();
+                app.request.post(postParams).then(function (err, response) {
+                    app.helper.loadPageContentOverlay(response);
+                    app.helper.hideProgress();
+                });
+            }
+
+            return false;
+        },
+
         backToLandingPage: function() {
             Vtiger_Import_Js.triggerImportAction();
             return false;

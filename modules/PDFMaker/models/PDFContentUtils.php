@@ -580,16 +580,6 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
         }
 
         if (isset($UITypes['datefields']) && in_array($fieldname, $UITypes['datefields'])) {
-            if ($emodule == 'Events' || $emodule == 'Calendar') {
-                if ($fieldname == 'date_start' && $efocus->column_fields['time_start'] != '') {
-                    $curr_time = $efocus->column_fields['time_start'];
-                    $value = $value . ' ' . $curr_time;
-                } elseif ($fieldname == 'due_date' && $efocus->column_fields['time_end'] != '') {
-                    $curr_time = $efocus->column_fields['time_end'];
-                    $value = $value . ' ' . $curr_time;
-                }
-            }
-
             if ($value != '') {
                 $value = getValidDisplayDate($value);
             }

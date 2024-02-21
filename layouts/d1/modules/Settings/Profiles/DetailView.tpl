@@ -116,7 +116,7 @@
 												<div class="row" data-togglecontent="{$TABID}-fields" style="display: none">
 													{if $PROFILE_MODULE->getFields() && $PROFILE_MODULE->isEntityModule()}
 														<div class="col-sm-12">
-															<label class="pull-left"><strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}{if $MODULE_NAME eq 'Calendar'} {vtranslate('LBL_OF', $MODULE_NAME)} {vtranslate('LBL_TASKS', $MODULE_NAME)}{/if}</strong></label>
+															<label class="pull-left"><strong>{vtranslate('LBL_FIELDS',$QUALIFIED_MODULE)}</strong></label>
 															<div class="pull-right">
 																<span class="mini-slider-control ui-slider" data-value="0">
 																	<a style="margin-top: 3px" class="ui-slider-handle"></a>

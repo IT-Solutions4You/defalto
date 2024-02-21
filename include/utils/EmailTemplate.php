@@ -170,43 +170,28 @@ class EmailTemplate {
 						$value = $row->get($fieldColumnMapping[$field]);
 						//Emails are wrapping with hyperlinks, so skipping email fields as well
 						if($fieldModel->isReferenceField() || $fieldModel->isOwnerField() || $fieldModel->get('uitype') == 13) {
-							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
-								/**Getting multi reference record's reference/owner/uitype = 13 values 
-								 * and storing it in a class variable, later we will glue them with comma(,)
-s								 */
-								$this->multiRefValues[$field][] = strip_tags($fieldModel->getDisplayValue($value, $row->get('vt_recordid')));
-							} else {
-								if ($value) {
-									$values[$field] = $value;
-								}
-							}
-						} else if ($this->module == 'Events' && $fieldModel->getFieldDataType() == 'multireference') {
-							//get all the multi reference record ids and implode with comma(,)
-							$this->multiRefIds[] = $value;
-							$values[$field] = implode(',', array_unique($this->multiRefIds));
+                            if ($value) {
+                                $values[$field] = $value;
+                            }
 						} else {
-							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
-								$this->multiRefValues[$field][] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'));
-							} else {
-								//If removetags variable is set to true then remove tags around value
-								if($this->removeTags) {
-									$values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'), false, $this->removeTags);
-								} else {
-									$values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'));
-								}
+                            //If removetags variable is set to true then remove tags around value
+                            if($this->removeTags) {
+                                $values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'), false, $this->removeTags);
+                            } else {
+                                $values[$field] = $fieldModel->getDisplayValue($value, $row->get('vt_recordid'));
+                            }
 
-								$uiType = $fieldModel->get('uitype');
-								if (in_array($uiType, array('71', '72'))) {
-									if ($uiType == '72' && $fieldModel->getName() == 'unit_price') {
-										$currencyId = getProductBaseCurrency($row->get('vt_recordid'), $module);
-									} else if ($uiType == '71') {
-										$currencyId = $this->user->currency_id;
-									}
+                            $uiType = $fieldModel->get('uitype');
+                            if (in_array($uiType, array('71', '72'))) {
+                                if ($uiType == '72' && $fieldModel->getName() == 'unit_price') {
+                                    $currencyId = getProductBaseCurrency($row->get('vt_recordid'), $module);
+                                } else if ($uiType == '71') {
+                                    $currencyId = $this->user->currency_id;
+                                }
 
-									$currencyInfo = getCurrencySymbolandCRate($currencyId);
-									$values[$field] = CurrencyField::appendCurrencySymbol($values[$field], $currencyInfo['symbol']);
-								}
-							}
+                                $currencyInfo = getCurrencySymbolandCRate($currencyId);
+                                $values[$field] = CurrencyField::appendCurrencySymbol($values[$field], $currencyInfo['symbol']);
+                            }
 						}
 					}
 				}
@@ -254,21 +239,13 @@ s								 */
 									$referencedObjectMeta->getEntityId(),
 									$values[$fieldName]));
 						} elseif (strcasecmp($webserviceField->getFieldDataType(), 'picklist') === 0) {
-							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
-								$this->multiRefValues[$fieldName][] = getTranslatedString($values[$fieldName], $module);
-							} else {
-								$values[$fieldName] = getTranslatedString(
-								$values[$fieldName], $module);
-							}
+                            $values[$fieldName] = getTranslatedString(
+                            $values[$fieldName], $module);
 						} elseif (strcasecmp($fieldName, 'salutationtype') === 0 && $webserviceField->getUIType() == '55'){
 							$values[$fieldName] = getTranslatedString(
 									$values[$fieldName], $module);
 						} elseif (strcasecmp($webserviceField->getFieldDataType(), 'datetime') === 0) {
-							if ($referenceColumn == 'contactid' && $this->module == 'Events') {
-								$$this->multiRefValues[$fieldName][] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone;
-							} else {
-								$values[$fieldName] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone;
-							}
+                            $values[$fieldName] = $values[$fieldName] . ' ' . $currentUsersModel->time_zone;
 						}
 					}
 				}
@@ -289,16 +266,8 @@ s								 */
 					foreach ($columnList as $column) {
 						$needle = '$' . strtolower($this->module) . '-' . $parentFieldColumnMapping[$params['field']] . ':' . $column . '$';
 						//mergeing all multi reference fields with their respective values.
-						if ($this->module == 'Events' && $referenceColumn == 'contactid') {
-							$multiRefValues = $this->multiRefValues[array_search($column, $fieldColumnMapping)];
-							if (is_array($multiRefValues)) {
-								$replacer = implode(',', $this->multiRefValues[array_search($column, $fieldColumnMapping)]);
-							} else {
-								$replacer = '';
-							}
-						} else {
-							$replacer = $values[array_search($column, $fieldColumnMapping)];
-						}
+                        $replacer = $values[array_search($column, $fieldColumnMapping)];
+
 						if($this->removeTags){
 							$encodedValue = json_encode($replacer);
 							$replacer = substr($encodedValue, 1, -1);

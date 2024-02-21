@@ -158,19 +158,6 @@ class PickListHandler extends VTEventHandler {
 					$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
 				}
 			} else {
-				if($className == 'VTCreateEventTask') {
-					if($pickListFieldName == 'eventstatus') {
-						$pickListFieldName = 'status';
-					} elseif($pickListFieldName == 'activitytype') {
-						$pickListFieldName = 'eventType';
-					}
-				} elseif($className == 'VTCreateTodoTask'){
-					if($pickListFieldName == 'taskstatus') {
-						$pickListFieldName = 'status';
-					} elseif($pickListFieldName == 'taskpriority') {
-						$pickListFieldName = 'priority';
-					}
-				}
 				if(property_exists($unserializeTask,$pickListFieldName)){
 					$value = $unserializeTask->$pickListFieldName;
 					$explodedValueArray = explode(',', $value);
@@ -316,19 +303,6 @@ class PickListHandler extends VTEventHandler {
 						$db->pquery($query, array($serializeTask, $row['workflow_id'], $row['task_id']));
 					}
 				} else {
-					if ($className == 'VTCreateEventTask') {
-						if ($pickListFieldName == 'eventstatus') {
-							$pickListFieldName = 'status';
-						} elseif ($pickListFieldName == 'activitytype') {
-							$pickListFieldName = 'eventType';
-						}
-					} elseif ($className == 'VTCreateTodoTask') {
-						if ($pickListFieldName == 'taskstatus') {
-							$pickListFieldName = 'status';
-						} elseif ($pickListFieldName == 'taskpriority') {
-							$pickListFieldName = 'priority';
-						}
-					}
 					if (property_exists($unserializeTask,$pickListFieldName)) {
 						$value = $unserializeTask->$pickListFieldName;
 						$explodedValueArray = explode(',', $value);
@@ -350,4 +324,3 @@ class PickListHandler extends VTEventHandler {
 
 	}
 }
-?>

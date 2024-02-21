@@ -63,9 +63,10 @@ class CustomView extends CRMEntity {
             $this->escapemodule[] = "_";
             $this->smownerid = $current_user->id;
             $this->moduleMetaInfo = array();
-            if ($module != "" && $module != 'Calendar') {
-                    $this->meta = $this->getMeta($module, $current_user);
-            }
+
+			if ($module != '') {
+				$this->meta = $this->getMeta($module, $current_user);
+			}
         }   
 	function CustomView($module = "") {
             self::__construct($module);
@@ -290,11 +291,11 @@ class CustomView extends CRMEntity {
 		$tabid = getTabid($module);
 		global $current_user;
 		require('user_privileges/user_privileges_' . $current_user->id . '.php');
-		if (empty($this->meta) && $module != 'Calendar') {
+
+		if (empty($this->meta)) {
 			$this->meta = $this->getMeta($module, $current_user);
 		}
-		if ($tabid == 9)
-			$tabid = "9,16";
+
 		$display_type = " vtiger_field.displaytype in (1,2,3)";
 
 		if ($is_admin == true || $profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] == 0) {
@@ -302,9 +303,6 @@ class CustomView extends CRMEntity {
 			$sql = "select * from vtiger_field ";
 			$sql.= " where vtiger_field.tabid in (" . generateQuestionMarks($tab_ids) . ") and vtiger_field.block in (" . generateQuestionMarks($block_ids) . ") and vtiger_field.presence in (0,2) and";
 			$sql.= $display_type;
-			if ($tabid == 9 || $tabid == 16) {
-				$sql.= " and vtiger_field.fieldname not in('notime','duration_minutes','duration_hours')";
-			}
 			$sql.= " order by sequence";
 			$params = array($tab_ids, $block_ids);
 		} else {
@@ -320,23 +318,15 @@ class CustomView extends CRMEntity {
 				$sql.= "  and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ")";
 				array_push($params, $profileList);
 			}
-			if ($tabid == 9 || $tabid == 16) {
-				$sql.= " and vtiger_field.fieldname not in('notime','duration_minutes','duration_hours')";
-			}
 
 			$sql.= " group by columnname order by sequence";
 		}
-		if ($tabid == '9,16')
-			$tabid = "9";
+
 		$result = $adb->pquery($sql, $params);
 		$noofrows = $adb->num_rows($result);
 		//Added on 14-10-2005 -- added ticket id in list
 		if ($module == 'HelpDesk' && $block == 25) {
 			$module_columnlist['vtiger_crmentity:crmid::HelpDesk_Ticket_ID:I'] = 'Ticket ID';
-		}
-		//Added to include vtiger_activity type in vtiger_activity vtiger_customview list
-		if ($module == 'Calendar' && $block == 19) {
-			$module_columnlist['vtiger_activity:activitytype:activitytype:Calendar_Activity_Type:V'] = 'Activity Type';
 		}
 
 		if ($module == 'SalesOrder' && $block == 63)
@@ -347,9 +337,9 @@ class CustomView extends CRMEntity {
 
 		if ($module == 'Quotes' && $block == 51)
 			$module_columnlist['vtiger_crmentity:crmid::Quotes_Quote_No:I'] = $app_strings['Quote No'];
-		if ($module != 'Calendar') {
-			$moduleFieldList = $this->meta->getModuleFields();
-		}
+
+		$moduleFieldList = $this->meta->getModuleFields();
+
 		for ($i = 0; $i < $noofrows; $i++) {
 			$fieldtablename = $adb->query_result($result, $i, "tablename");
 			$fieldcolname = $adb->query_result($result, $i, "columnname");
@@ -959,10 +949,6 @@ class CustomView extends CRMEntity {
 					//Required if Events module fields are selected for the condition
 					if (!$fieldModel) {
 						$modulename = $moduleModel->get('name');
-						if ($modulename == 'Calendar') {
-							$eventModuleModel = Vtiger_Module_model::getInstance('Events');
-							$fieldModel = $eventModuleModel->getField($fieldName);
-						}
 					}
 
 					if($fieldModel) {
@@ -1086,11 +1072,6 @@ class CustomView extends CRMEntity {
 
 					//Added For getting status for Activities -Jaguar
 					$sqllist_column = $list[0] . "." . $list[1];
-					if ($this->customviewmodule == "Calendar") {
-						if ($list[1] == "status" || $list[1] == "eventstatus") {
-							$sqllist_column = "case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end as activitystatus";
-						}
-					}
 					//Added for assigned to sorting
 					if ($list[1] == "smownerid") {
 						$userNameSql = getSqlForNameInDisplayFormat(array('first_name' =>
@@ -1184,16 +1165,7 @@ class CustomView extends CRMEntity {
 						$endDateTime = "DATE_FORMAT('$endDate', '%m%d')";
 						$stdfiltersql = $tableColumnSql . " BETWEEN " . $startDateTime . " and " . $endDateTime;
 					} else {
-						if ($this->customviewmodule == 'Calendar' && ($columns[1] == 'date_start' || $columns[1] == 'due_date')) {
-							$tableColumnSql = '';
-							if ($columns[1] == 'date_start') {
-								$tableColumnSql = "(CONCAT(date_start,' ',time_start))";
-							} else {
-								$tableColumnSql = "(CONCAT(due_date,' ',time_end))";
-							}
-						} else {
-							$tableColumnSql = $columns[0] . "." . $columns[1];
-						}
+						$tableColumnSql = $columns[0] . "." . $columns[1];
 						$stdfiltersql = $tableColumnSql . " BETWEEN '" . $startDateTime . "' and '" . $endDateTime . "'";
 					}
 				}
@@ -1254,14 +1226,7 @@ class CustomView extends CRMEntity {
 						$advfiltersql = sprintf("(%s.%s IS NULL OR %s.%s = '')", $columns[0], $columns[1], $columns[0], $columns[1]);
 					} else {
 						//Added for getting vtiger_activity Status -Jaguar
-						if ($this->customviewmodule == "Calendar" && ($columns[1] == "status" || $columns[1] == "eventstatus")) {
-							if (getFieldVisibilityPermission("Calendar", $current_user->id, 'taskstatus') == '0') {
-								$advfiltersql = "case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end" . $this->getAdvComparator($comparator, trim($value), $datatype);
-							}
-							else
-								$advfiltersql = "vtiger_activity.eventstatus" . $this->getAdvComparator($comparator, trim($value), $datatype);
-						}
-						elseif ($this->customviewmodule == "Documents" && $columns[1] == 'folderid') {
+						if ($this->customviewmodule == "Documents" && $columns[1] == 'folderid') {
 							$advfiltersql = "vtiger_attachmentsfolder.foldername" . $this->getAdvComparator($comparator, trim($value), $datatype);
 						} elseif ($this->customviewmodule == "Assets") {
 							if ($columns[1] == 'account') {
@@ -1382,13 +1347,7 @@ class CustomView extends CRMEntity {
 				}
 			}
 			//added to fix the ticket
-			if ($this->customviewmodule == "Calendar" && ($fieldname == "status" || $fieldname == "taskstatus" || $fieldname == "eventstatus")) {
-				if (getFieldVisibilityPermission("Calendar", $current_user->id, 'taskstatus') == '0') {
-					$value = " (case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, $value, $datatype);
-				}
-				else
-					$value = " vtiger_activity.eventstatus " . $this->getAdvComparator($comparator, $value, $datatype);
-			} elseif ($comparator == 'e' && (trim($value) == "NULL" || trim($value) == '')) {
+			if ($comparator == 'e' && (trim($value) == "NULL" || trim($value) == '')) {
 				$value = '(' . $tablename . "." . $fieldname . ' IS NULL OR ' . $tablename . "." . $fieldname . ' = \'\')';
 			} else {
 				$value = $tablename . "." . $fieldname . $this->getAdvComparator($comparator, $value, $datatype);
@@ -1813,11 +1772,7 @@ class CustomView extends CRMEntity {
 		if ($viewid != "" && $listquery != "") {
 
 			$listviewquery = substr($listquery, strpos($listquery, 'FROM'), strlen($listquery));
-			if ($module == "Calendar" || $module == "Emails") {
-				$query = "select " . $this->getCvColumnListSQL($viewid) . ", vtiger_activity.activityid, vtiger_activity.activitytype as type, vtiger_activity.priority, case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end as status, vtiger_crmentity.crmid,vtiger_contactdetails.contactid " . $listviewquery;
-				if ($module == "Calendar")
-					$query = str_replace('vtiger_seactivityrel.crmid,', '', $query);
-			}else if ($module == "Documents") {
+			if ($module == "Documents") {
 				$query = "select " . $this->getCvColumnListSQL($viewid) . " ,vtiger_crmentity.crmid,vtiger_notes.* " . $listviewquery;
 			} else if ($module == "Products") {
 				$query = "select " . $this->getCvColumnListSQL($viewid) . " ,vtiger_crmentity.crmid,vtiger_products.* " . $listviewquery;
@@ -1907,10 +1862,6 @@ class CustomView extends CRMEntity {
 		$current_mod_strings = return_specified_module_language($current_language, $module);
 		$block_info = Array();
 		$modules_list = explode(",", $module);
-		if ($module == "Calendar") {
-			$module = "Calendar','Events";
-			$modules_list = array('Calendar', 'Events');
-		}
 
 		// Tabid mapped to the list of block labels to be skipped for that tab.
 		$skipBlocksList = array(
@@ -1924,8 +1875,6 @@ class CustomView extends CRMEntity {
 
 		$sql = 'SELECT DISTINCT block, vtiger_field.tabid, name, blocklabel FROM vtiger_field INNER JOIN vtiger_blocks ON vtiger_blocks.blockid = vtiger_field.block INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_field.tabid WHERE vtiger_tab.name IN (' . generateQuestionMarks($modules_list) . ') AND vtiger_field.presence IN (0,2) ORDER BY block';
 		$result = $adb->pquery($sql, array($modules_list));
-		if ($module == "Calendar','Events")
-			$module = "Calendar";
 
 		$pre_block_label = '';
 		while ($block_result = $adb->fetch_array($result)) {
@@ -2084,5 +2033,3 @@ class CustomView extends CRMEntity {
 	}
 
 }
-
-?>

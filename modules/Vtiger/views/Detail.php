@@ -47,10 +47,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 				case 'showRelatedRecords':
 					$permissions[] = array('module_parameter' => 'relatedModule', 'action' => 'DetailView');
 					break;
-				case 'getActivities':
-					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-					$request->set('custom_module', 'Calendar');
-					break;
 				default:
 					break;
 			}
@@ -63,7 +59,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$recordId = $request->get('record');
 
-		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
+		$nonEntityModules = array('Users', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
 		if ($recordId && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($recordId);
 			if ($recordEntityName !== $moduleName) {
@@ -213,13 +209,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
     public function postProcess(Vtiger_Request $request) {
 		$recordId = $request->get('record');
 		$moduleName = $request->getModule();
-		if($moduleName=="Calendar"){
-			$recordModel = Vtiger_Record_Model::getInstanceById($recordId);
-			$activityType = $recordModel->getType();
-			if($activityType=="Events"){
-				$moduleName="Events";
-			}
-		}
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		if(!$this->record){
@@ -620,52 +609,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		}
 		return $this->isAjaxEnabled;
 	}
-
-    /**
-     * Function to get activities
-     * @param Vtiger_Request $request
-     * @return string|void <List of activity models>
-     */
-    public function getActivities(Vtiger_Request $request)
-    {
-        $activitiesModuleName = 'Appointments';
-        $activitiesModule = Vtiger_Module_Model::getInstance($activitiesModuleName);
-        $parentField = $activitiesModule->getField('parent_id');
-        $parentModules = array_merge($parentField->getReferenceList(), ['Accounts', 'Contacts']);
-        $currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-
-        if ($currentUserPrivilegesModel->hasModulePermission($activitiesModule->getId()) && in_array($request->getModule(), $parentModules)) {
-            $moduleName = $request->getModule();
-            $recordId = $request->get('record');
-
-            $pageNumber = $request->get('page');
-            if (empty ($pageNumber)) {
-                $pageNumber = 1;
-            }
-            $pagingModel = new Vtiger_Paging_Model();
-            $pagingModel->set('page', $pageNumber);
-            $pagingModel->set('limit', 10);
-
-            if (!$this->record) {
-                $this->record = Vtiger_DetailView_Model::getInstance($moduleName, $recordId);
-            }
-            $recordModel = $this->record->getRecord();
-            $moduleModel = $recordModel->getModule();
-
-            $relatedActivities = $moduleModel->getCalendarActivities('', $pagingModel, 'all', $recordId);
-
-            $viewer = $this->getViewer($request);
-            $viewer->assign('RECORD', $recordModel);
-            $viewer->assign('MODULE_NAME', $moduleName);
-            $viewer->assign('PAGING_MODEL', $pagingModel);
-            $viewer->assign('PAGE_NUMBER', $pageNumber);
-            $viewer->assign('ACTIVITIES', $relatedActivities);
-            $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
-
-            return $viewer->view('RelatedActivities.tpl', $moduleName, true);
-        }
-    }
-
 
     /**
 	 * Function returns related records based on related moduleName

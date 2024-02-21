@@ -1335,9 +1335,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				formData = formData.replace('module=', 'xmodule=').replace('action=', 'xaction=');
 				if(requestParams) {
 					requestParams['_operationarg'] = 'create';
-					if(requestParams['_mlinktotype'] == 'Events') {
-						requestParams['_mlinktotype'] = 'Calendar';
-					}
 					jQuery.each(requestParams, function(key, value){
 						formData += "&"+key+"="+value;
 					});

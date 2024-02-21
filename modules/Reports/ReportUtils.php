@@ -21,17 +21,6 @@ function getFieldByReportLabel($module, $label, $mode = 'label') {
 	$cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
 	$label = decode_html($label);
 	
-	if($module == 'Calendar') {
-		$cachedEventsFields = VTCacheUtils::lookupFieldInfo_Module('Events');
-		if ($cachedEventsFields) {
-			if(empty($cachedModuleFields)) $cachedModuleFields = $cachedEventsFields;
-			else $cachedModuleFields = array_merge($cachedModuleFields, $cachedEventsFields);
-		}
-		if($label == 'Start_Date_and_Time') {
-			$label = 'Start_Date_&_Time';
-		}
-	}
-	
 	if(empty($cachedModuleFields)) {
 		return null;
 	}
@@ -168,24 +157,8 @@ function getReportFieldValue ($report, $picklistArray, $dbField, $valueArray, $f
 		$entityNames = getEntityName('Users', $value);
 		$fieldvalue = $entityNames[$value];
 	} elseif( $fieldType == 'date' && !empty($value)) {
-		if($module == 'Calendar' && ($field->getFieldName() == 'due_date' || $field->getFieldName() == 'date_start')) {
-            if($field->getFieldName() == 'due_date'){
-                $endTime = $valueArray['calendar_end_time'];
-                if(empty($endTime)) {
-                    $recordId = $valueArray['calendar_id'];
-                    $endTime = getSingleFieldValue('vtiger_activity', 'time_end', 'activityid', $recordId);
-                }
-                $date = new DateTimeField($value.' '.$endTime);
-                $fieldvalue = $date->getDisplayDate();
-            }
-            else{
-                $date = new DateTimeField($fieldvalue);
-                $fieldvalue = $date->getDisplayDateTimeValue();
-            }
-		} else {
-            $date = new DateTimeField($fieldvalue);
-            $fieldvalue = $date->getDisplayDate();
-		}
+        $date = new DateTimeField($fieldvalue);
+        $fieldvalue = $date->getDisplayDate();
 	} elseif( $fieldType == "datetime" && !empty($value)) {
 		$date = new DateTimeField($value);
 		$fieldvalue = $date->getDisplayDateTimeValue();

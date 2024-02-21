@@ -46,13 +46,7 @@
 											</ul>
 										{else}
 											{assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
-											{* setting button module attribute to Events or Calendar based on link label *}
 											{assign var=LINK_LABEL value={$RELATED_LINK->get('linklabel')}}
-											{if $RELATED_LINK->get('_linklabel') === '_add_event'}
-												{assign var=RELATED_MODULE_NAME value='Events'}
-											{elseif $RELATED_LINK->get('_linklabel') === '_add_task'}
-												{assign var=RELATED_MODULE_NAME value='Calendar'}
-											{/if}
 											{if $IS_SELECT_BUTTON || $IS_CREATE_PERMITTED}
 												<button type="button" module="{$RELATED_MODULE_NAME}" class="me-2 btn btn-outline-secondary
 													{if $IS_SELECT_BUTTON eq true} selectRelation{else} addButton" name="addButton{/if}"

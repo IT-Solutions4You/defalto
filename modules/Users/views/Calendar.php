@@ -178,11 +178,8 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 		$detailViewModel = Vtiger_DetailView_Model::getInstance('Users', $currentUserModel->id);
 		$userRecordStructure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($detailViewModel->getRecord(), Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_EDIT);
 		$recordStructure = $userRecordStructure->getStructure();
-//		$allUsers = Users_Record_Model::getAll(true);
-		$sharedUsers = Calendar_Module_Model::getCaledarSharedUsers($currentUserModel->id);
-		$sharedType = Calendar_Module_Model::getSharedType($currentUserModel->id);
 		$dayStartPicklistValues = Users_Record_Model::getDayStartsPicklistValues($recordStructure);
-        $hourFormatFeildModel = $recordStructure['LBL_CALENDAR_SETTINGS']['hour_format'];
+        $hourFormatFieldModel = $recordStructure['LBL_CALENDAR_SETTINGS']['hour_format'];
 		$calendarSettings['LBL_CALENDAR_SETTINGS'] = $recordStructure['LBL_CALENDAR_SETTINGS'];
 		$recordModel = $detailViewModel->getRecord();
 		$moduleModel = $recordModel->getModule();
@@ -190,17 +187,14 @@ class Users_Calendar_View extends Vtiger_Detail_View {
 		$blocksList = $moduleModel->getBlocks();
 		$viewer->assign('CURRENTUSER_MODEL',$currentUserModel);
 		$viewer->assign('BLOCK_LIST',$blocksList);
-		$viewer->assign('SHAREDUSERS', $sharedUsers);
 		$viewer->assign("DAY_STARTS", Zend_Json::encode($dayStartPicklistValues));
-//		$viewer->assign('ALL_USERS',$allUsers);
 		$viewer->assign('RECORD_STRUCTURE',$calendarSettings);
 		$viewer->assign('MODULE',$module);
 		$viewer->assign('MODULE_NAME',$module);
 		$viewer->assign('RECORD', $recordModel);
 		$viewer->assign('RECORD_ID', $recordId);
 		
-		$viewer->assign('SHAREDTYPE', $sharedType);
-        $viewer->assign('HOUR_FORMAT_VALUE', $hourFormatFeildModel->get('fieldvalue'));
+        $viewer->assign('HOUR_FORMAT_VALUE', $hourFormatFieldModel->get('fieldvalue'));
 	}
 	
 	

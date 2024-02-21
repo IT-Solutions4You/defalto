@@ -108,9 +108,6 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 		$moduleMeta = $moduleModel->getModuleMeta();
 
 		$supportedFileTypes = Import_Utils_Helper::getSupportedFileExtensions();
-		if ($moduleName == 'Calendar') {
-			$supportedFileTypes[] = 'ics';
-		}
 
 		$viewer->assign('FOR_MODULE', $moduleName);
 		$viewer->assign('MODULE', 'Import');
@@ -200,13 +197,10 @@ class Vtiger_Import_View extends Vtiger_Index_View {
 
 			$mandatoryFields = $moduleMeta->getMandatoryFields($moduleName);
 			$inventoryModules = getInventoryModules();
-			if($moduleName == 'Calendar' && !array_key_exists('activitytype', $mandatoryFields)){
-				$mandatoryFields['activitytype'] = vtranslate('Activity Type',$moduleName);
-			} elseif (in_array($moduleName, $inventoryModules)) {
-				if(array_key_exists('netprice', $mandatoryFields)) {
-					unset($mandatoryFields['netprice']);
-				}
-			}
+
+			if (in_array($moduleName, $inventoryModules) && array_key_exists('netprice', $mandatoryFields)) {
+                unset($mandatoryFields['netprice']);
+            }
 
 			$viewer->assign('DATE_FORMAT', $user->date_format);
 			$viewer->assign('FOR_MODULE', $moduleName);

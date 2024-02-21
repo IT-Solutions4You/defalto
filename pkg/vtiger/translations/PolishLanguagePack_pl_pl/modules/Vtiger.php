@@ -409,8 +409,6 @@ $languageStrings = array(
 
 	//Dashboard widgets
 	'History' => 'Historia',
-	'Upcoming Activities' => 'Nadchodzące wydarzenia',
-	'Overdue Activities' => 'Zaległe wydarzenia',
 	'Funnel' => 'Lejek Szans Sprzedaży',
 	'Potentials by Stage' => 'Szanse Sprzedaży według etapu',
 	'Pipelined Amount' => 'Planowana sprzedaż',

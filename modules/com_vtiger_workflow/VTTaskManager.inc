@@ -277,12 +277,6 @@ class VTTaskType {
 			$includeModules = $modules['include'];
 			$excludeModules = $modules['exclude'];
 			
-			if(in_array($taskName, array('VTCreateTodoTask','VTCreateEventTask'))) {
-				if($referenceModules == false) {
-					$referenceModules = Vtiger_Util_Helper::getCalendarReferenceModulesList();
-				}
-				$includeModules = array_unique(array_merge($includeModules, $referenceModules));
-			}
 			if(!empty ($sourceModule)) {
 				if(getTabid($sourceModule) == null || !vtlib_isModuleActive($sourceModule)) {
 					continue;

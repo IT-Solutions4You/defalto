@@ -57,56 +57,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		self.sendSMS(detailActionUrl,module);
 	},
 
-	 deleteRelatedActivity : function(e) {
-		 var thisInstance = this;
-		  var currentElement = jQuery(e.currentTarget);
-		  var id = currentElement.data('id');
-		var recurringEnabled = currentElement.data('recurringEnabled');
-		var postData = {'related_record_list' : [id]};
-		if(recurringEnabled) {
-			app.helper.showConfirmationForRepeatEvents().then(function(params) {
-				jQuery.extend(postData, params);
-				thisInstance.deleteActivityRelation(postData);
-			},
-			function(error, err) {
-			});
-		} else {
-			var message = app.vtranslate('JS_LBL_ARE_YOU_SURE_YOU_WANT_TO_DELETE');
-			app.helper.showConfirmationBox({'message' : message}).then(function(data) {
-				thisInstance.deleteActivityRelation(postData);
-			},
-			function(error,err) {
-			});	
-		}
-	},
-
-	deleteActivityRelation : function(customParams) {
-		var params = {
-			'module'			: app.getModuleName(),
-			'related_module'	: 'Calendar',
-			'action'			: 'RelationAjax',
-			'mode'				: 'deleteRelation',
-			'src_record'		: jQuery('#recordId').val()
-		};
-		params = jQuery.extend(params, customParams);
-
-		app.request.post({data: params}).then(function(err, data) {
-			if(data) {
-				params = {
-					'record'	: jQuery('#recordId').val(),
-					'view'		: 'Detail',
-					'module'	: app.getModuleName(),
-					'mode'		: 'getActivities'
-				};
-				app.request.get({data: params}).then(function(err, result) {
-					jQuery('#relatedActivities').html(result);
-					Vtiger_Detail_Js.getInstance().registerEventForActivityWidget();
-				});
-			}
-		});
-	},
-
-
 	showUpdates : function(element){
 		jQuery(".historyButtons").find("button").removeAttr("disabled").removeClass("btn-success");
 		var currentElement = jQuery(element);
@@ -321,9 +271,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 								jQuery('.vt-notification').remove();
 								app.helper.hidePageContentOverlay();
 								var relatedModuleName = formData.module;
-								if(relatedModuleName == 'Events') {
-									relatedModuleName = 'Calendar';
-								}
 								let relatedController = thisInstance.getRelatedController(relatedModuleName);
 
 								if(relatedController) {
@@ -767,17 +714,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			var relatedRecordid = row.data('id');
 			var relatedController = self.getRelatedController();
 			if(relatedController){
-			if(relatedModuleName == 'Calendar' && row.data('recurringEnabled')) {
-				app.helper.showConfirmationForRepeatEvents().then(function(customParams) {
-					relatedController.deleteRelation([relatedRecordid], customParams).then(function(response){
-						relatedController.loadRelatedList().then(function() {
-							relatedController.triggerRelationAdditionalActions();
-						});
-					});
-				},
-				function(error, err) {
-				});
-			} else {
 				app.helper.showConfirmationBox({'message' : message}).then(
 					function(e) {
 						if(relatedModuleName == 'Emails') {
@@ -795,7 +731,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					}
 				);
 			}
-		}
 		});
 	},
 
@@ -1686,71 +1621,9 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		});
 	},
 
-	registerEventForActivityWidget : function(){
-		var thisInstance = this;
-		/*
-		 * Register click event for add button in Related Activities widget
-		 */
-		jQuery('.createActivity').on('click', function(e){
-			var currentTarget = jQuery(e.currentTarget);
-			var referenceModuleName;
-			if(currentTarget.hasClass('toDotask')){
-				referenceModuleName = 'Calendar';
-			}else{
-				referenceModuleName = "Events";
-			}
-			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]');
-			var recordId = thisInstance.getRecordId();
-			var module = app.getModuleName();
-			var element = jQuery(e.currentTarget);
-
-			if(quickCreateNode.length <= 0) {
-				app.helper.showErrorMessage(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'));
-			}
-			var fieldName = thisInstance.referenceFieldNames[module];
-			if(typeof fieldName == 'undefined' && module != 'Contacts'){
-				fieldName = 'parent_id';
-			}
-
-			var customParams = {};
-			customParams[fieldName] = recordId;
-			customParams['parentModule'] = module;
-
-			app.event.on("post.QuickCreateForm.show",function(event,form){
-				jQuery('<input type="hidden" name="sourceModule" value="'+module+'" >').appendTo(form);
-				jQuery('<input type="hidden" name="sourceRecord" value="'+recordId+'" >').appendTo(form);
-				jQuery('<input type="hidden" name="relationOperation" value="true" >').appendTo(form);
-				jQuery('<input type="hidden" name="'+fieldName+'" value="'+recordId+'" >').appendTo(form);
-			});
-
-			app.event.on('post.QuickCreateForm.save',function(event,data){
-				var params = {};
-				params['record'] = recordId;
-				params['view'] = 'Detail';
-				params['module'] = module;
-				params['mode'] = 'getActivities';
-
-				app.request.post({"data":params}).then(
-					function(err,data) {
-						var activitiesWidget = jQuery('#relatedActivities');
-						activitiesWidget.html(data);
-						vtUtils.applyFieldElementsView(activitiesWidget);
-						thisInstance.registerEventForActivityWidget();
-					}
-				);
-			});
-
-			var QuickCreateParams = {};
-			QuickCreateParams['noCache'] = false;
-			QuickCreateParams['data'] = customParams;
-			quickCreateNode.trigger('click', QuickCreateParams);
-		});
-	},
-
 	registerSummaryViewContainerEvents: function (summaryViewContainer) {
 		const self = this;
 
-		self.registerEventForActivityWidget();
 		self.loadWidgets();
 		/**
 		 * Function to handle the ajax edit for summary view fields

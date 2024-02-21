@@ -29,7 +29,7 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		$nonEntityModules = array('Users', 'Events', 'Calendar', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
+		$nonEntityModules = array('Users', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
 		if ($record && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($record);
 			if ($recordEntityName !== $moduleName) {
@@ -113,29 +113,11 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$requestFieldList = array_intersect_key($request->getAllPurified(), $fieldList);
 
 		$relContactId = $request->get('contact_id');
-		if ($relContactId && $moduleName == 'Calendar') {
-			$contactRecordModel = Vtiger_Record_Model::getInstanceById($relContactId);
-			$requestFieldList['parent_id'] = $contactRecordModel->get('account_id');
-		}
+
 		foreach($requestFieldList as $fieldName=>$fieldValue){
 			$fieldModel = $fieldList[$fieldName];
 			$specialField = false;
-			// We collate date and time part together in the EditView UI handling 
-			// so a bit of special treatment is required if we come from QuickCreate 
-			if ($moduleName == 'Calendar' && empty($record) && $fieldName == 'time_start' && !empty($fieldValue)) { 
-				$specialField = true; 
-				// Convert the incoming user-picked time to GMT time 
-				// which will get re-translated based on user-time zone on EditForm 
-				$fieldValue = DateTimeField::convertToDBTimeZone($fieldValue)->format("H:i"); 
 
-			}
-
-			if ($moduleName == 'Calendar' && empty($record) && $fieldName == 'date_start' && !empty($fieldValue)) { 
-				$startTime = Vtiger_Time_UIType::getTimeValueWithSeconds($requestFieldList['time_start']);
-				$startDateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($fieldValue." ".$startTime);
-				list($startDate, $startTime) = explode(' ', $startDateTime);
-				$fieldValue = Vtiger_Date_UIType::getDisplayDateValue($startDate);
-			}
 			if($fieldModel->isEditable() || $specialField) {
 				$recordModel->set($fieldName, $fieldModel->getDBInsertValue($fieldValue));
 			}

@@ -377,14 +377,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 					} else {
 						$fieldModel = $moduleModel->getField($fieldName);
 					}
-					//Required if Events module fields are selected for the condition
-					if(!$fieldModel) {
-						$modulename = $moduleModel->get('name');
-						if($modulename == 'Calendar') {
-							$eventModuleModel = Vtiger_Module_model::getInstance('Events');
-							$fieldModel = $eventModuleModel->getField($fieldName);
-						}
-					}
+
 					$fieldType = $fieldModel->getFieldDataType();
 
 					if($fieldType == 'currency') {
@@ -664,14 +657,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 				} else {
 					$fieldModel = $moduleModel->getField($fieldName);
 				}
-				//Required if Events module fields are selected for the condition
-				if (!$fieldModel) {
-					$modulename = $moduleModel->get('name');
-					if ($modulename == 'Calendar') {
-						$eventModuleModel = Vtiger_Module_model::getInstance('Events');
-						$fieldModel = $eventModuleModel->getField($fieldName);
-					}
-				}
+
 				$fieldType = $fieldModel->getFieldDataType();
 
 				if ($fieldType == 'currency') {

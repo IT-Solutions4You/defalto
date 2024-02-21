@@ -177,7 +177,7 @@ function vtws_convertlead($entityvalues, $user) {
 		$transfered = vtws_convertLeadTransferHandler($leadIdComponents, $entityIds, $entityvalues);
 
 		$relatedIdComponents = vtws_getIdComponents($entityIds[$entityvalues['transferRelatedRecordsTo']]);
-		vtws_getRelatedActivities($leadIdComponents[1], $accountId, $contactId, $relatedIdComponents[1]);
+		Appointments_ConvertLead_Helper::convertAppointments((int)$leadIdComponents[1], (int)$accountId, (int)$contactId);
 		vtws_updateConvertLeadStatus($entityIds, $entityvalues['leadId'], $user);
 	} catch (Exception $e) {
 		foreach ($entityIds as $entity => $id) {
@@ -191,7 +191,7 @@ function vtws_convertlead($entityvalues, $user) {
 		$em = new VTEventsManager($adb);
 		$em->initTriggerCache();
 
-		$entityData = VTEntityData::fromEntityId($adb, $leadId[1], 'Leads');
+		$entityData = VTEntityData::fromEntityId($leadId[1], 'Leads');
 		$entityData->entityIds = $entityIds;
 		$entityData->transferRelatedRecordsTo = $entityvalues['transferRelatedRecordsTo'];
 
@@ -302,5 +302,3 @@ function vtws_updateConvertLeadStatus($entityIds, $leadId, $user) {
 	}
 
 }
-
-?>

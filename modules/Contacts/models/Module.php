@@ -126,53 +126,6 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 		return parent::getSearchRecordsQuery($searchValue,$searchFields,$parentId, $parentModule);
 	}
 
-
-	/**
-	 * Function to get relation query for particular module with function name
-	 * @param <record> $recordId
-	 * @param <String> $functionName
-	 * @param Vtiger_Module_Model $relatedModule
-	 * @return <String>
-	 */
-	public function getRelationQuery($recordId, $functionName, $relatedModule, $relationId) {
-		if ($functionName === 'get_activities') {
-			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-
-			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-						vtiger_cntactivityrel.contactid, vtiger_seactivityrel.crmid AS parent_id,
-						vtiger_crmentity.*, vtiger_activity.activitytype, vtiger_activity.subject, vtiger_activity.date_start, vtiger_activity.time_start,
-						vtiger_activity.recurringtype, vtiger_activity.due_date, vtiger_activity.time_end, vtiger_activity.visibility,
-						CASE WHEN (vtiger_activity.activitytype = 'Task') THEN (vtiger_activity.status) ELSE (vtiger_activity.eventstatus) END AS status
-						FROM vtiger_activity
-						INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid
-						INNER JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid
-						LEFT JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
-						LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-							WHERE vtiger_cntactivityrel.contactid = ".$recordId." AND vtiger_crmentity.deleted = 0
-								AND vtiger_activity.activitytype <> 'Emails'";
-
-			$relatedModuleName = $relatedModule->getName();
-			$query .= $this->getSpecificRelationQuery($relatedModuleName);
-			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
-			if ($nonAdminQuery) {
-				$query = appendFromClauseToQuery($query, $nonAdminQuery);
-
-				if(trim($nonAdminQuery)) {
-					$relModuleFocus = CRMEntity::getInstance($relatedModuleName);
-					$condition = $relModuleFocus->buildWhereClauseConditionForCalendar();
-					if($condition) {
-						$query .= ' AND '.$condition;
-					}
-				}
-			}
-		} else {
-			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule, $relationId);
-		}
-
-		return $query;
-	}
-
 	/**
 	 * Function to get list view query for popup window
 	 * @param <String> $sourceModule Parent module

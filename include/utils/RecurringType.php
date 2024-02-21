@@ -1,5 +1,4 @@
 <?php
-
 /* * *******************************************************************************
  * * The contents of this file are subject to the vtiger CRM Public License Version 1.0
  * ("License"); You may not use this file except in compliance with the License
@@ -9,8 +8,8 @@
  * All Rights Reserved.
  *
  * ****************************************************************************** */
+
 require_once('include/utils/utils.php');
-require_once('modules/Calendar/Date.php');
 global $app_strings;
 
 class RecurringType {
@@ -479,7 +478,7 @@ class RecurringType {
 				else
 					$index = $year + 1;
 				if ($index > 2037 || $index < 1970) {
-					print("<font color='red'>" . $app_strings['LBL_CAL_LIMIT_MSG'] . "</font>");
+					print("<font color='red'>" . getTranslatedString('LBL_CAL_LIMIT_MSG') . "</font>");
 					exit;
 				}
 				$date_arr = Array(
@@ -541,7 +540,4 @@ class RecurringType {
 			return $dateObj;
 		}
 	}
-
 }
-
-?>

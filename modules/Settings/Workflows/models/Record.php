@@ -325,7 +325,7 @@ class Settings_Workflows_Record_Model extends Settings_Vtiger_Record_Model {
 		}
 		$createModuleModels = array();
 		// List of modules which will not be supported by 'Create Entity' workflow task
-		$filterModules = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder', 'Emails', 'Calendar', 'Events');
+		$filterModules = array('Invoice', 'Quotes', 'SalesOrder', 'PurchaseOrder', 'Emails');
 
 		foreach ($modulesList as $moduleName => $translatedModuleName) {
 			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);

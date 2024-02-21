@@ -7,44 +7,47 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+
 require_once 'modules/WSAPP/Handlers/vtigerCRMHandler.php';
 require_once 'include/utils/GetUserGroups.php';
 
+class OutlookVtigerCRMHandler extends vtigerCRMHandler
+{
 
-class OutlookVtigerCRMHandler extends vtigerCRMHandler{
-    
-    public function translateReferenceFieldNamesToIds($entityRecords,$user){
-        $entityRecordList = array();
-        foreach($entityRecords as $index=>$record){
+    public function translateReferenceFieldNamesToIds($entityRecords, $user)
+    {
+        $entityRecordList = [];
+        foreach ($entityRecords as $index => $record) {
             $entityRecordList[$record['module']][$index] = $record;
         }
-        foreach($entityRecordList as $module=>$records){
+        foreach ($entityRecordList as $module => $records) {
             $handler = vtws_getModuleHandlerFromName($module, $user);
             $meta = $handler->getMeta();
             $referenceFieldDetails = $meta->getReferenceFieldDetails();
 
-            foreach($referenceFieldDetails as $referenceFieldName=>$referenceModuleDetails){
-                $recordReferenceFieldNames = array();
-                foreach($records as $index=>$recordDetails){
-                    if(!empty($recordDetails[$referenceFieldName])) {
-                    	$recordReferenceFieldNames[] = trim($recordDetails[$referenceFieldName]);
+            foreach ($referenceFieldDetails as $referenceFieldName => $referenceModuleDetails) {
+                $recordReferenceFieldNames = [];
+                foreach ($records as $index => $recordDetails) {
+                    if (!empty($recordDetails[$referenceFieldName])) {
+                        $recordReferenceFieldNames[] = trim($recordDetails[$referenceFieldName]);
                     }
                 }
                 $entityNameIds = wsapp_getRecordEntityNameIds(array_values($recordReferenceFieldNames), $referenceModuleDetails, $user);
-                if(is_array($entityNameIds))
+                if (is_array($entityNameIds)) {
                     $entityNameIds = array_change_key_case($entityNameIds, CASE_LOWER);
-                foreach($records as $index=>$recordInfo){
+                }
+                foreach ($records as $index => $recordInfo) {
                     $refFieldValue = strtolower(trim($recordInfo[$referenceFieldName]));
-                    if(!empty($entityNameIds[$refFieldValue])){
+                    if (!empty($entityNameIds[$refFieldValue])) {
                         $recordInfo[$referenceFieldName] = $entityNameIds[$refFieldValue];
                     } else {
-                        if($referenceFieldName == 'account_id'){
-                            if($recordInfo[$referenceFieldName]!=NULL){
+                        if ($referenceFieldName == 'account_id') {
+                            if ($recordInfo[$referenceFieldName] != null) {
                                 $element['accountname'] = trim($recordInfo[$referenceFieldName]);
                                 $element['assigned_user_id'] = vtws_getWebserviceEntityId('Users', $user->id);
-                                $element['source'] = Vtiger_Cache::get('WSAPP','appName');
+                                $element['source'] = Vtiger_Cache::get('WSAPP', 'appName');
                                 $element['module'] = "Accounts";
-                                $createRecord= array($element);
+                                $createRecord = [$element];
                                 $createRecord = $this->fillNonExistingMandatoryPicklistValues($createRecord);
                                 $createRecord = $this->fillMandatoryFields($createRecord, $user);
                                 /**
@@ -52,18 +55,17 @@ class OutlookVtigerCRMHandler extends vtigerCRMHandler{
                                  * array of records
                                  */
                                 foreach ($createRecord as $key => $record) {
-									try {
-										$result = vtws_create($record['module'], $record, $user);
-										$entityNameIds[$refFieldValue] = $result['id'];
-									} catch (Exception $e) {
-										unset($entityNameIds[$refFieldValue]);
-										continue;
-									}
+                                    try {
+                                        $result = vtws_create($record['module'], $record, $user);
+                                        $entityNameIds[$refFieldValue] = $result['id'];
+                                    } catch (Exception $e) {
+                                        unset($entityNameIds[$refFieldValue]);
+                                        continue;
+                                    }
                                 }
                                 $recordInfo[$referenceFieldName] = $entityNameIds[$refFieldValue];
                             }
-                        }
-                        else{
+                        } else {
                             $recordInfo[$referenceFieldName] = "";
                         }
                     }
@@ -73,191 +75,180 @@ class OutlookVtigerCRMHandler extends vtigerCRMHandler{
             $entityRecordList[$module] = $records;
         }
 
-        $crmRecords = array();
-        foreach($entityRecordList as $module=>$entityRecords){
-            foreach($entityRecords as $index=>$record){
+        $crmRecords = [];
+        foreach ($entityRecordList as $module => $entityRecords) {
+            foreach ($entityRecords as $index => $record) {
                 $crmRecords[$index] = $record;
             }
         }
+
         return $crmRecords;
     }
-   
-    
-    public function translateTheReferenceFieldIdsToName($records, $module, $user) {
+
+    public function translateTheReferenceFieldIdsToName($records, $module, $user)
+    {
         $db = PearDatabase::getInstance();
         global $current_user;
         $current_user = $user;
         $handler = vtws_getModuleHandlerFromName($module, $user);
         $meta = $handler->getMeta();
         $referenceFieldDetails = $meta->getReferenceFieldDetails();
+
         foreach ($referenceFieldDetails as $referenceFieldName => $referenceModuleDetails) {
-            if($module == 'Events' && $referenceFieldName == "contact_id"){
-                // to set all related Contacts of Event records
-                foreach($records as $index => $record){
-                    $id = $record['id'];
-                    $idComp = vtws_getIdComponents($id);
-                   $recordIds[] =  $idComp[1];
-                }
-                $eventRecordModel = new Events_Record_Model();
-                $contactsInfos =  $eventRecordModel->getRelatedContactInfoFromIds($recordIds);
+            $referenceModuleIds = [];
+            $referenceIdsName = [];
 
-                foreach($records as $index => $record){
-                    $id = $record['id'];
-                    $idComp = vtws_getIdComponents($id);
-                    if($contactsInfos[$idComp[1]]){
-                        $records[$index]['attendees'] = $contactsInfos[$idComp[1]];
-                    }
-                }
-            }else{
-                $referenceFieldIds = array();
-                $referenceModuleIds = array();
-                $referenceIdsName = array();
-                foreach ($records as $recordDetails) {
-                    $referenceWsId = $recordDetails[$referenceFieldName];
-                    if (!empty($referenceWsId)) {
-                        $referenceIdComp = vtws_getIdComponents($referenceWsId);
-                        $webserviceObject = VtigerWebserviceObject::fromId($db, $referenceIdComp[0]);
-                        if ($webserviceObject->getEntityName() == 'Currency') {
-                            continue;
-                        }
-                        $referenceModuleIds[$webserviceObject->getEntityName()][] = $referenceIdComp[1];
-                        $referenceFieldIds[] = $referenceIdComp[1];
-                    }
-                }
+            foreach ($records as $recordDetails) {
+                $referenceWsId = $recordDetails[$referenceFieldName];
 
-                foreach ($referenceModuleIds as $referenceModule => $idLists) {
-                    $nameList = getEntityName($referenceModule, $idLists);
-                    foreach ($nameList as $key => $value)
-                        $referenceIdsName[$key] = $value;
-                }
-                $recordCount = php7_count($records);
-                for ($i = 0; $i < $recordCount; $i++) {
-                    $record = $records[$i];
-                    if (!empty($record[$referenceFieldName])) {
-                        $wsId = vtws_getIdComponents($record[$referenceFieldName]);
-                        $record[$referenceFieldName] = decode_html($referenceIdsName[$wsId[1]]);
+                if (!empty($referenceWsId)) {
+                    $referenceIdComp = vtws_getIdComponents($referenceWsId);
+                    $webserviceObject = VtigerWebserviceObject::fromId($db, $referenceIdComp[0]);
+
+                    if ($webserviceObject->getEntityName() == 'Currency') {
+                        continue;
                     }
-                    $records[$i] = $record;
+
+                    $referenceModuleIds[$webserviceObject->getEntityName()][] = $referenceIdComp[1];
                 }
             }
+
+            foreach ($referenceModuleIds as $referenceModule => $idLists) {
+                $nameList = getEntityName($referenceModule, $idLists);
+
+                foreach ($nameList as $key => $value) {
+                    $referenceIdsName[$key] = $value;
+                }
+            }
+
+            $recordCount = php7_count($records);
+
+            for ($i = 0; $i < $recordCount; $i++) {
+                $record = $records[$i];
+
+                if (!empty($record[$referenceFieldName])) {
+                    $wsId = vtws_getIdComponents($record[$referenceFieldName]);
+                    $record[$referenceFieldName] = decode_html($referenceIdsName[$wsId[1]]);
+                }
+
+                $records[$i] = $record;
+            }
         }
+
         return $records;
     }
-     /*
-     * Function to attach outlook attendees to Contacts of Vtiger Event
-     */
-    public function relateEventandContacts($Event){
-        $contactids = array();
-        foreach($Event['attendees'] as $attendee){
+
+    /*
+    * Function to attach outlook attendees to Contacts of Vtiger Event
+    */
+    public function relateEventandContacts($Event)
+    {
+        $contactids = [];
+        foreach ($Event['attendees'] as $attendee) {
             $searchModule = "Contacts";
             $searchModuleLabel = vtranslate($searchModule, $searchModule);
             $emailsModule = new Emails_Module_Model();
-            $result = $emailsModule->searchEmails($attendee,$searchModule);
-            if($result[$searchModuleLabel]){
+            $result = $emailsModule->searchEmails($attendee, $searchModule);
+            if ($result[$searchModuleLabel]) {
                 $keys = array_keys($result[$searchModuleLabel]);
                 $contactids = array_merge($contactids, $keys);
             }
         }
         $contactids = array_values(array_unique($contactids));
-        if($contactids){
+        if ($contactids) {
             $_REQUEST['contactidlist'] = implode(';', $contactids);
-            $Event['contact_id_display'] = implode(',',$contactids);
+            $Event['contact_id_display'] = implode(',', $contactids);
         }
         unset($Event['attendees']);
+
         return $Event;
     }
-    
+
     /*
      * Function overriden to handle duplication
      */
-      public function put($recordDetails, $user) {
+    public function put($recordDetails, $user)
+    {
         global $log;
-		$this->user = $user;
-		$recordDetails = $this->syncToNativeFormat($recordDetails);
-		$createdRecords = $recordDetails['created'];
-		$updatedRecords = $recordDetails['updated'];
-		$deletedRecords = $recordDetails['deleted'];
+        $this->user = $user;
+        $recordDetails = $this->syncToNativeFormat($recordDetails);
+        $createdRecords = $recordDetails['created'];
+        $updatedRecords = $recordDetails['updated'];
+        $deletedRecords = $recordDetails['deleted'];
 
-
-		if (php7_count($createdRecords) > 0) {
-			$createdRecords = $this->translateReferenceFieldNamesToIds($createdRecords, $user);
-			$createdRecords = $this->fillNonExistingMandatoryPicklistValues($createdRecords);
-			$createdRecords = $this->fillMandatoryFields($createdRecords, $user);
-		}
-		foreach ($createdRecords as $index => $record) {
-            if($record['module'] == "Events" && isset($record['attendees'])){
-                $record = $this->relateEventandContacts($record);
+        if (php7_count($createdRecords) > 0) {
+            $createdRecords = $this->translateReferenceFieldNamesToIds($createdRecords, $user);
+            $createdRecords = $this->fillNonExistingMandatoryPicklistValues($createdRecords);
+            $createdRecords = $this->fillMandatoryFields($createdRecords, $user);
+        }
+        foreach ($createdRecords as $index => $record) {
+            try {
+                $createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
+            } catch (Exception $e) {
+                unset($createdRecords[$index]);
+                continue;
             }
-			try {
-				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
-			} catch (Exception $e) {
-				unset($createdRecords[$index]);
-				continue;
-			}
-		}
+        }
 
-		if (php7_count($updatedRecords) > 0) {
-			$updatedRecords = $this->translateReferenceFieldNamesToIds($updatedRecords, $user);
+        if (php7_count($updatedRecords) > 0) {
+            $updatedRecords = $this->translateReferenceFieldNamesToIds($updatedRecords, $user);
             $updatedRecords = $this->removeMandatoryEmptyFields($updatedRecords, $user);
-		}
+        }
 
-		$crmIds = array();
+        $crmIds = [];
 
-		foreach ($updatedRecords as $index => $record) {
-			$webserviceRecordId = $record["id"];
-			$recordIdComp = vtws_getIdComponents($webserviceRecordId);
-			$crmIds[] = $recordIdComp[1];
-		}
-		$assignedRecordIds = array();
-		if ($this->isClientUserSyncType()) {
-			$assignedRecordIds = wsapp_checkIfRecordsAssignToUser($crmIds, $this->user->id);
+        foreach ($updatedRecords as $index => $record) {
+            $webserviceRecordId = $record["id"];
+            $recordIdComp = vtws_getIdComponents($webserviceRecordId);
+            $crmIds[] = $recordIdComp[1];
+        }
+        $assignedRecordIds = [];
+        if ($this->isClientUserSyncType()) {
+            $assignedRecordIds = wsapp_checkIfRecordsAssignToUser($crmIds, $this->user->id);
             // To check if the record assigned to group
             if ($this->isClientUserAndGroupSyncType()) {
                 $getUserGroups = new GetUserGroups();
                 $getUserGroups->getAllUserGroups($this->user->id);
                 $groupIds = $getUserGroups->user_groups;
-                if(!empty($groupIds)){
+                if (!empty($groupIds)) {
                     $groupRecordId = wsapp_checkIfRecordsAssignToUser($crmIds, $groupIds);
                     $assignedRecordIds = array_merge($assignedRecordIds, $groupRecordId);
                 }
             }
             // End
         }
-		foreach ($updatedRecords as $index => $record) {
-            if($record['module'] == "Events" && isset($record['attendees'])){
-                $record = $this->relateEventandContacts($record);
+        foreach ($updatedRecords as $index => $record) {
+            $webserviceRecordId = $record["id"];
+            $recordIdComp = vtws_getIdComponents($webserviceRecordId);
+            try {
+                if (in_array($recordIdComp[1], $assignedRecordIds)) {
+                    $updatedRecords[$index] = vtws_revise($record, $this->user);
+                } elseif (!$this->isClientUserSyncType()) {
+                    $updatedRecords[$index] = vtws_revise($record, $this->user);
+                } else {
+                    $this->assignToChangedRecords[$index] = $record;
+                }
+            } catch (Exception $e) {
+                continue;
             }
-			$webserviceRecordId = $record["id"];
-			$recordIdComp = vtws_getIdComponents($webserviceRecordId);
-			try {
-				if (in_array($recordIdComp[1], $assignedRecordIds)) {
-					$updatedRecords[$index] = vtws_revise($record, $this->user);
-				} else if (!$this->isClientUserSyncType()) {
-					$updatedRecords[$index] = vtws_revise($record, $this->user);
-				} else {
-					$this->assignToChangedRecords[$index] = $record;
-				}
-			} catch (Exception $e) {
-				continue;
-			}
             // Added to handle duplication
-            if($record['duplicate']){
+            if ($record['duplicate']) {
                 $updatedRecords[$index]['duplicate'] = true;
             }
             // End
-		}
-		$hasDeleteAccess = null;
-		$deletedCrmIds = array();
-		foreach ($deletedRecords as $index => $record) {
-			$webserviceRecordId = $record;
-			$recordIdComp = vtws_getIdComponents($webserviceRecordId);
-			$deletedCrmIds[] = $recordIdComp[1];
-		}
-		$assignedDeletedRecordIds = wsapp_checkIfRecordsAssignToUser($deletedCrmIds, $this->user->id);
-        
+        }
+        $hasDeleteAccess = null;
+        $deletedCrmIds = [];
+        foreach ($deletedRecords as $index => $record) {
+            $webserviceRecordId = $record;
+            $recordIdComp = vtws_getIdComponents($webserviceRecordId);
+            $deletedCrmIds[] = $recordIdComp[1];
+        }
+        $assignedDeletedRecordIds = wsapp_checkIfRecordsAssignToUser($deletedCrmIds, $this->user->id);
+
         // To get record id's assigned to group of the current user
         if ($this->isClientUserAndGroupSyncType()) {
-            if(!empty($groupIds)){
+            if (!empty($groupIds)) {
                 foreach ($groupIds as $group) {
                     $groupRecordId = wsapp_checkIfRecordsAssignToUser($deletedCrmIds, $group);
                     $assignedDeletedRecordIds = array_merge($assignedDeletedRecordIds, $groupRecordId);
@@ -265,57 +256,59 @@ class OutlookVtigerCRMHandler extends vtigerCRMHandler{
             }
         }
         // End
-        
-		foreach ($deletedRecords as $index => $record) {
-			$idComp = vtws_getIdComponents($record);
-			if (empty($hasDeleteAccess)) {
-				$handler = vtws_getModuleHandlerFromId($idComp[0], $this->user);
-				$meta = $handler->getMeta();
-				$hasDeleteAccess = $meta->hasDeleteAccess();
-			}
-			if ($hasDeleteAccess) {
-				if (in_array($idComp[1], $assignedDeletedRecordIds)) {
-					try {
-						vtws_delete($record, $this->user);
-					} catch (Exception $e) {
-						continue;
-					}
-				}
-			}
-		}
 
-		$recordDetails['created'] = $createdRecords;
-		$recordDetails['updated'] = $updatedRecords;
-		$recordDetails['deleted'] = $deletedRecords;
-		return $this->nativeToSyncFormat($recordDetails);
-	}
-    
+        foreach ($deletedRecords as $index => $record) {
+            $idComp = vtws_getIdComponents($record);
+            if (empty($hasDeleteAccess)) {
+                $handler = vtws_getModuleHandlerFromId($idComp[0], $this->user);
+                $meta = $handler->getMeta();
+                $hasDeleteAccess = $meta->hasDeleteAccess();
+            }
+            if ($hasDeleteAccess) {
+                if (in_array($idComp[1], $assignedDeletedRecordIds)) {
+                    try {
+                        vtws_delete($record, $this->user);
+                    } catch (Exception $e) {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        $recordDetails['created'] = $createdRecords;
+        $recordDetails['updated'] = $updatedRecords;
+        $recordDetails['deleted'] = $deletedRecords;
+
+        return $this->nativeToSyncFormat($recordDetails);
+    }
+
     /**
      * Function to remove empty mandatory fields from record as vtws_revise will
      * fail if we have empty mandaoty fields in record
-     * @global type $adb
-     * @param type $records
-     * @param type $user
+     *
+     * @param type  $records
+     * @param type  $user
+     *
      * @return $records
+     * @global type $adb
      */
-    function removeMandatoryEmptyFields($records,$user){
+    function removeMandatoryEmptyFields($records, $user)
+    {
         foreach ($records as $index => $record) {
-            $moduleHandler = vtws_getModuleHandlerFromName($record['module'],$user);
+            $moduleHandler = vtws_getModuleHandlerFromName($record['module'], $user);
             $meta = $moduleHandler->getMeta();
             $mandatoryFields = $meta->getMandatoryFields();
             $updateFields = array_keys($record);
             $updateMandatoryFields = array_intersect($updateFields, $mandatoryFields);
-            if(!empty($updateMandatoryFields)){
-                foreach($updateMandatoryFields as $ind=>$field){
-                    if( !isset($record[$field]) || $record[$field] === "" || $record[$field] === null ){
+            if (!empty($updateMandatoryFields)) {
+                foreach ($updateMandatoryFields as $ind => $field) {
+                    if (!isset($record[$field]) || $record[$field] === "" || $record[$field] === null) {
                         unset($records[$index][$field]);
                     }
                 }
             }
         }
+
         return $records;
     }
-    
 }
-
-?>

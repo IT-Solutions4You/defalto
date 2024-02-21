@@ -451,8 +451,6 @@ $languageStrings = array(
 
 	//Dashboard widgets
 	'History' => 'الارشيف',
-	'Upcoming Activities' => 'الانشطة القادمة',
-	'Overdue Activities' => 'الانشطة المتاخرة',
 	'Funnel' => 'مركز',
 	'Potentials by Stage' => 'الفرص من خلال المرحلة',
 	'Pipelined Amount' => 'مخطط المبيعات',

@@ -79,7 +79,7 @@ class Settings_CustomerPortal_Module_Model extends Settings_Vtiger_Module_Model 
 	public function getContactRelatedModulesList() {
 		$contacModuleModel = Vtiger_Module_Model::getInstance('Contacts');
 		$relationModules = Vtiger_Relation_Model::getAllRelations($contacModuleModel);
-		$restrictedModules = array('ModComments', 'Calendar', 'Potentials', 'Emails', 'PurchaseOrder', 'SalesOrder', 'Campaigns', 'Vendors');
+		$restrictedModules = array('ModComments', 'Potentials', 'Emails', 'PurchaseOrder', 'SalesOrder', 'Campaigns', 'Vendors');
 		$contactRelatedModules = array();
 		foreach ($relationModules as $relationModuleModel) {
 			$relatedModuleName = $relationModuleModel->get('relatedModuleName');

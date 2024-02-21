@@ -95,9 +95,6 @@ require_once 'include/Webservices/DescribeObject.php';
 				$entityDefaultBaseTables = $moduleMeta->getEntityDefaultTableList();
 				//since there will be only one base table for all entities
 				$baseCRMTable = $entityDefaultBaseTables[0];
-				if($elementType=="Calendar" || $elementType=="Events" ){
-					$baseCRMTable = getSyncQueryBaseTable($elementType);
-				}
 		}
 		else
 		 $baseCRMTable = " vtiger_crmentity ";
@@ -106,8 +103,6 @@ require_once 'include/Webservices/DescribeObject.php';
 		$q = "SELECT modifiedtime FROM $baseCRMTable WHERE  modifiedtime>? and setype IN(".generateQuestionMarks($accessableModules).") ";
 		$params = array($datetime);
 		foreach($accessableModules as $entityModule){
-			if($entityModule == "Events")
-				$entityModule = "Calendar";
 			$params[] = $entityModule;
 		}
 		if(!$applicationSync){
@@ -168,11 +163,6 @@ require_once 'include/Webservices/DescribeObject.php';
 				$params = array_merge($params,$ownerIds);
 			}
 			$fromClause.= ' ) vtiger_ws_sync ON (vtiger_crmentity.crmid = vtiger_ws_sync.crmid)';
-			if ($elementType == 'Events') {
-				// If we have more than one contact attached to Vtiger Event then we are getting duplicates
-				$moduleFocus = CRMEntity::getInstance('Activity');
-				$fromClause .= " GROUP BY $moduleFocus->table_name.$moduleFocus->table_index";
-			}
 			$q = $selectClause." ".$fromClause;
 			$result = $adb->pquery($q, $params);
 			$recordDetails = array();
@@ -205,8 +195,6 @@ require_once 'include/Webservices/DescribeObject.php';
 		$params = array($maxModifiedTime);
 
 		foreach($accessableModules as $entityModule){
-			if($entityModule == "Events")
-				$entityModule = "Calendar";
 			$params[] = $entityModule;
 		}
 		if(!$applicationSync){
@@ -275,25 +263,6 @@ require_once 'include/Webservices/DescribeObject.php';
 		return $q;
 	}
 
-	function getSyncQueryBaseTable($elementType){
-		if($elementType!="Calendar" && $elementType!="Events"){
-			return "vtiger_crmentity";
-		}
-		else{
-			$activityCondition = getCalendarTypeCondition($elementType);
-			$query = "vtiger_crmentity INNER JOIN vtiger_activity ON (vtiger_crmentity.crmid = vtiger_activity.activityid and $activityCondition)";
-			return $query;
-		}
-	}
-
-	function getCalendarTypeCondition($elementType){
-		if($elementType == "Events")
-			$activityCondition = "vtiger_activity.activitytype !='Task' and vtiger_activity.activitytype !='Emails'";
-		else
-			$activityCondition = "vtiger_activity.activitytype ='Task'";
-		return $activityCondition;
-	}
-    
     function getSelectClauseFields($module,$moduleMeta,$user){
         $moduleFieldNames = $moduleMeta->getModuleFields();
         $inventoryModules = getInventoryModules();
@@ -312,5 +281,3 @@ require_once 'include/Webservices/DescribeObject.php';
         }
         return array_keys($moduleFieldNames);
     }
-
-?>

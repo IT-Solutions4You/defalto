@@ -49,19 +49,6 @@ class PriceBooks_Relation_Model extends Vtiger_Relation_Model{
 			$query = $selectColumnSql.' FROM '.$newQuery[1];
 		}
 
-		if($relatedModuleName == 'Calendar') {
-			$nonAdminQuery = Users_Privileges_Model::getNonAdminAccessControlQuery($relatedModuleName);
-
-			if (trim($nonAdminQuery)) {
-				$query = appendFromClauseToQuery($query, $nonAdminQuery);
-
-				$moduleFocus = CRMEntity::getInstance('Calendar');
-				$condition = $moduleFocus->buildWhereClauseConditionForCalendar();
-				if($condition) {
-					$query .= ' AND '.$condition;
-				}
-			}
-		}
 		return $query;
 	}
 

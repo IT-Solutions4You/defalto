@@ -451,8 +451,6 @@ $languageStrings = array(
 
 	//Dashboard widgets
 	'History' => 'Historik',
-	'Upcoming Activities' => 'Kommande Aktiviteter',
-	'Overdue Activities' => 'Förfallna Aktiviteter',
 	'Funnel' => 'Tratt',
 	'Potentials by Stage' => 'Affärsmöjligheter efter Nivå',
 	'Pipelined Amount' => 'Försäljning Pipeline',

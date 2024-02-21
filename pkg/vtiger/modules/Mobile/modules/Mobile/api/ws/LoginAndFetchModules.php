@@ -27,9 +27,6 @@ class Mobile_WS_LoginAndFetchModules extends Mobile_WS_Login {
 		// Disallow modules
 		unset($modulewsids['Users']);
 		
-		// Calendar & Events module will be merged
-		unset($modulewsids['Events']);
-
 		$listresult = vtws_listtypes(null,$user);
 		
 		$listing = array();

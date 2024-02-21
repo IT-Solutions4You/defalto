@@ -19,9 +19,7 @@ $languageStrings = array(
 	'HDB'                          => 'Home Page Dashboard'         , 
 	'OLTPO'                        => 'Top Purchase Orders'         , 
 	'LTFAQ'                        => 'My Recent FAQs'              , 
-	'UA'                           => 'Upcoming Activities'         , 
-	'PA'                           => 'Pending Activities'          , 
-        'Home'                         => 'Home'                        ,  
+        'Home'                         => 'Home'                        ,
 
   'LBL_SAVE_ORDER' => 'Save Order',
   'LBL_ADD_NEW_DASHBOARD' => 'Add new dashboard',

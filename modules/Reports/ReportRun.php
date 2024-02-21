@@ -700,26 +700,17 @@ class ReportRun extends CRMEntity {
 		$profileList = getCurrentUserProfileList();
 		$query = "select vtiger_field.fieldname from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid where";
 		$params = array();
-		if ($module == "Calendar") {
-			if (php7_count($profileList) > 0) {
-				$query .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 
-								and vtiger_field.presence IN (0,2) and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
-				array_push($params, $profileList);
-			} else {
-				$query .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 
-								and vtiger_field.presence IN (0,2) group by vtiger_field.fieldid order by block,sequence";
-			}
-		} else {
-			array_push($params, $module);
-			if (php7_count($profileList) > 0) {
-				$query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?)) and vtiger_field.displaytype in (1,2,3,5) and vtiger_profile2field.visible=0
-								and vtiger_field.presence IN (0,2) and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
-				array_push($params, $profileList);
-			} else {
-				$query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?)) and vtiger_field.displaytype in (1,2,3,5) and vtiger_profile2field.visible=0
-								and vtiger_field.presence IN (0,2) group by vtiger_field.fieldid order by block,sequence";
-			}
+        $params[] = $module;
+
+        if (php7_count($profileList) > 0) {
+            $query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?)) and vtiger_field.displaytype in (1,2,3,5) and vtiger_profile2field.visible=0
+                            and vtiger_field.presence IN (0,2) and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
+            $params[] = $profileList;
+        } else {
+            $query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?)) and vtiger_field.displaytype in (1,2,3,5) and vtiger_profile2field.visible=0
+                            and vtiger_field.presence IN (0,2) group by vtiger_field.fieldid order by block,sequence";
 		}
+
 		$result = $adb->pquery($query, $params);
 
 		while ($collistrow = $adb->fetch_array($result)) {
@@ -2168,23 +2159,14 @@ class ReportRun extends CRMEntity {
 			$sharingRuleInfo = $$sharingRuleInfoVariable;
 			$sharedTabId = null;
 
-			if ($module == "Calendar") {
-				$sharedTabId = $tabId;
-				$tableName = 'vt_tmp_u' . $user->id . '_t' . $tabId;
-			} else if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
+			if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
 					php7_count($sharingRuleInfo['GROUP']) > 0)) {
 				$sharedTabId = $tabId;
 			}
 
 			if (!empty($sharedTabId)) {
 				$module = getTabModuleName($sharedTabId);
-				if ($module == "Calendar") {
-					// For calendar we have some special case to check like, calendar shared type
-					$moduleInstance = CRMEntity::getInstance($module);
-					$query = $moduleInstance->getReportsNonAdminAccessControlQuery($tableName, $tabId, $user, $current_user_parent_role_seq, $current_user_groups);
-				} else {
-					$query = $this->getNonAdminAccessQuery($module, $user, $current_user_parent_role_seq, $current_user_groups);
-				}
+                $query = $this->getNonAdminAccessQuery($module, $user, $current_user_parent_role_seq, $current_user_groups);
 
 				$db = PearDatabase::getInstance();
 				$result = $db->pquery($query, array());
@@ -2465,81 +2447,6 @@ class ReportRun extends CRMEntity {
 			$query .= " ".$this->getRelatedModulesQuery($module,$this->secondarymodule).
 					getNonAdminAccessControlQuery($this->primarymodule,$current_user).
 					" where vtiger_crmentity.deleted=0 ";
-		} else if ($module == "Calendar") {
-			$referenceModuleList = Vtiger_Util_Helper::getCalendarReferenceModulesList();
-			$referenceTablesList = array();
-			foreach ($referenceModuleList as $referenceModule) {
-				$entityTableFieldNames = getEntityFieldNames($referenceModule);
-				$entityTableName = $entityTableFieldNames['tablename'];
-				$referenceTablesList[] = $entityTableName . 'RelCalendar';
-			}
-
-			$matrix = $this->queryPlanner->newDependencyMatrix();
-
-			$matrix->setDependency('vtiger_cntactivityrel', array('vtiger_contactdetailsCalendar'));
-			$matrix->setDependency('vtiger_seactivityrel', array('vtiger_crmentityRelCalendar'));
-			$matrix->setDependency('vtiger_crmentityRelCalendar', $referenceTablesList);
-
-			$query = "from vtiger_activity
-				inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_activity.activityid";
-
-			if ($this->queryPlanner->requireTable('vtiger_activitycf')) {
-				$query .= " left join vtiger_activitycf on vtiger_activitycf.activityid = vtiger_crmentity.crmid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_cntactivityrel', $matrix)) {
-				$query .= " left join vtiger_cntactivityrel on vtiger_cntactivityrel.activityid= vtiger_activity.activityid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_contactdetailsCalendar')) {
-				$query .= " left join vtiger_contactdetails as vtiger_contactdetailsCalendar on vtiger_contactdetailsCalendar.contactid= vtiger_cntactivityrel.contactid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_groupsCalendar')) {
-				$query .= " left join vtiger_groups as vtiger_groupsCalendar on vtiger_groupsCalendar.groupid = vtiger_crmentity.smownerid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_usersCalendar')) {
-				$query .= " left join vtiger_users as vtiger_usersCalendar on vtiger_usersCalendar.id = vtiger_crmentity.smownerid";
-			}
-
-			// TODO optimize inclusion of these tables
-			$query .= " left join vtiger_groups on vtiger_groups.groupid = vtiger_crmentity.smownerid";
-			$query .= " left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid";
-
-			if ($this->queryPlanner->requireTable('vtiger_seactivityrel', $matrix)) {
-				$query .= " left join vtiger_seactivityrel on vtiger_seactivityrel.activityid = vtiger_activity.activityid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_activity_reminder')) {
-				$query .= " left join vtiger_activity_reminder on vtiger_activity_reminder.activity_id = vtiger_activity.activityid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_recurringevents')) {
-				$query .= " left join vtiger_recurringevents on vtiger_recurringevents.activityid = vtiger_activity.activityid";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_crmentityRelCalendar', $matrix)) {
-				$query .= " left join vtiger_crmentity as vtiger_crmentityRelCalendar on vtiger_crmentityRelCalendar.crmid = vtiger_seactivityrel.crmid";
-			}
-
-			foreach ($referenceModuleList as $referenceModule) {
-				$entityTableFieldNames = getEntityFieldNames($referenceModule);
-				$entityTableName = $entityTableFieldNames['tablename'];
-				$entityIdFieldName = $entityTableFieldNames['entityidfield'];
-				$referenceTable = $entityTableName . 'RelCalendar';
-				if ($this->queryPlanner->requireTable($referenceTable)) {
-					$query .= " LEFT JOIN $entityTableName AS $referenceTable ON $referenceTable.$entityIdFieldName = vtiger_crmentityRelCalendar.crmid";
-				}
-			}
-
-			if ($this->queryPlanner->requireTable('vtiger_lastModifiedByCalendar')) {
-				$query .= " left join vtiger_users as vtiger_lastModifiedByCalendar on vtiger_lastModifiedByCalendar.id = vtiger_crmentity.modifiedby";
-			}
-			if ($this->queryPlanner->requireTable('vtiger_createdbyCalendar')) {
-				$query .= " left join vtiger_users as vtiger_createdbyCalendar on vtiger_createdbyCalendar.id = vtiger_crmentity.smcreatorid";
-			}
-
-			$focus = CRMEntity::getInstance($module);
-			$relquery = $focus->getReportsUiType10Query($module, $this->queryPlanner);
-			$query .= $relquery . ' ';
-
-			$query .= " ".$this->getRelatedModulesQuery($module,$this->secondarymodule).
-					getNonAdminAccessControlQuery($this->primarymodule,$current_user).
-					" WHERE vtiger_crmentity.deleted=0 and (vtiger_activity.activitytype != 'Emails')";
 		} else if ($module == "Quotes") {
 			$matrix = $this->queryPlanner->newDependencyMatrix();
 
@@ -2904,25 +2811,6 @@ class ReportRun extends CRMEntity {
 			}
 		}
 		$log->info("ReportRun :: Successfully returned getReportsQuery" . $module);
-
-
-		$secondarymodule = explode(":", $this->secondarymodule);
-		if(in_array('Calendar', $secondarymodule) || $module == 'Calendar') {
-			$currentUserModel = Users_Record_Model::getCurrentUserModel();
-			$tabId = getTabid('Calendar');
-			$task_tableName = 'vt_tmp_u'.$currentUserModel->id.'_t'.$tabId.'_task';
-			$event_tableName = 'vt_tmp_u'.$currentUserModel->id.'_t'.$tabId.'_events';
-			if(!$currentUserModel->isAdminUser()
-				&& stripos($query, $event_tableName) && stripos($query, $task_tableName)) {
-				$moduleFocus = CRMEntity::getInstance('Calendar');
-				$scope = '';
-				if(in_array('Calendar', $secondarymodule)) $scope = 'Calendar';
-				$condition = $moduleFocus->buildWhereClauseConditionForCalendar($scope);
-				if($condition) {
-					$query .= ' AND '.$condition;
-				}
-			}
-		}
 
 		return $query;
 	}
@@ -3992,12 +3880,6 @@ class ReportRun extends CRMEntity {
 					}
 				}
 
-				//Calculation fields of "Events" module should show in Calendar related report
-				$secondaryModules = explode(':', $secmod);
-				if ($field_permitted === false && ($premod === 'Calendar' || in_array('Calendar', $secondaryModules)) && CheckColumnPermission($field_tablename, $field_columnname, "Events") != "false") {
-					$field_permitted = true;
-				}
-
 				if ($field_permitted == true) {
 					$field = $this->getColumnsTotalSQL($fieldlist, $premod);
 
@@ -4543,11 +4425,7 @@ class ReportRun extends CRMEntity {
 
 		$fieldInstance = WebserviceField::fromArray($adb, $fieldInfo);
 		$referenceModuleList = $fieldInstance->getReferenceList(false);
-		if(in_array('Calendar', $referenceModuleList) && in_array('Events', $referenceModuleList)) {
-			$eventKey = array_keys($referenceModuleList, 'Events');
-			unset($referenceModuleList[$eventKey[0]]);
-		}
-		
+
 		$reportSecondaryModules = explode(':', $this->secondarymodule);
 
 		if ($moduleName != $this->primarymodule && in_array($this->primarymodule, $referenceModuleList)) {
@@ -4578,11 +4456,7 @@ class ReportRun extends CRMEntity {
 
 				$referenceTableName = '';
 				$dependentTableName = '';
-				if ($moduleName == 'Calendar' && $referenceModule == 'Contacts' && $fieldName == "contact_id") {
-					$referenceTableName = 'vtiger_contactdetailsCalendar';
-				} elseif ($moduleName == 'Calendar' && $fieldName == "parent_id") {
-					$referenceTableName = $entityTableName . 'RelCalendar';
-				} elseif ($moduleName == 'HelpDesk' && $referenceModule == 'Accounts' && $fieldName == "parent_id") {
+				if ($moduleName == 'HelpDesk' && $referenceModule == 'Accounts' && $fieldName == "parent_id") {
 					$referenceTableName = 'vtiger_accountRelHelpDesk';
 				} elseif ($moduleName == 'HelpDesk' && $referenceModule == 'Contacts' && $fieldName == "contact_id") {
 					$referenceTableName = 'vtiger_contactdetailsRelHelpDesk';

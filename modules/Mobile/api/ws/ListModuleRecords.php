@@ -13,10 +13,6 @@ include_once dirname(__FILE__) . '/models/Paging.php';
 
 class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 
-	function isCalendarModule($module) {
-		return ($module == 'Events' || $module == 'Calendar');
-	}
-	
 	function getSearchFilterModel($module, $search) {
 		return Mobile_WS_SearchFilterModel::modelWithCriterias($module, Zend_JSON::decode($search));
 	}
@@ -118,43 +114,17 @@ class Mobile_WS_ListModuleRecords extends Mobile_WS_Controller {
 	}
 
 	function processSearchRecordLabelForCalendar(Mobile_API_Request $request, $pagingModel = false) {
-		$current_user = $this->getActiveUser();
-		
-		// Fetch both Calendar (Todo) and Event information
-		$moreMetaFields = array('date_start', 'time_start', 'activitytype', 'location');
-		$eventsRecords = $this->fetchRecordLabelsForModule('Events', $current_user, $moreMetaFields, false, $pagingModel);
-		$calendarRecords=$this->fetchRecordLabelsForModule('Calendar', $current_user, $moreMetaFields, false, $pagingModel);
-
-		// Merge the Calendar & Events information
-		$records = array_merge($eventsRecords, $calendarRecords);
-		
 		$modifiedRecords = array();
-		foreach($records as $record) {
-			$modifiedRecord = array();
-			$modifiedRecord['id'] = $record['id'];                      unset($record['id']);
-			$modifiedRecord['eventstartdate'] = $record['date_start'];  unset($record['date_start']);
-			$modifiedRecord['eventstarttime'] = $record['time_start'];  unset($record['time_start']);
-			$modifiedRecord['eventtype'] = $record['activitytype'];     unset($record['activitytype']);
-			$modifiedRecord['eventlocation'] = $record['location'];     unset($record['location']);
-			
-			$modifiedRecord['label'] = implode(' ',array_values($record));
-			
-			$modifiedRecords[] = $modifiedRecord;
-		}
-		
+
 		$response = new Mobile_API_Response();
-		$response->setResult(array('records' =>$modifiedRecords, 'module'=>'Calendar'));
+		$response->setResult(array('records' =>$modifiedRecords, 'module'=>'Appointments'));
 		
 		return $response;
 	}
 	
 	function fetchRecordLabelsForModule($module, $user, $morefields=array(), $filterOrAlertInstance=false, $pagingModel = false) {
-		if($this->isCalendarModule($module)) {
-			$fieldnames = Mobile_WS_Utils::getEntityFieldnames('Calendar');
-		} else {
-			$fieldnames = Mobile_WS_Utils::getEntityFieldnames($module);
-		}
-		
+        $fieldnames = Mobile_WS_Utils::getEntityFieldnames($module);
+
 		if(!empty($morefields)) {
 			foreach($morefields as $fieldname) $fieldnames[] = $fieldname;
 		}

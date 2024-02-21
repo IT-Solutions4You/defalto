@@ -42,7 +42,6 @@
     <script type="text/javascript" src="{vresource_url('layouts/d1/lib/bootbox/bootbox.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/Base.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/Vtiger.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Calendar/resources/TaskManagement.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Import/resources/Import.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Vtiger/resources/Base.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/d1/modules/Google/resources/Settings.js')}"></script>

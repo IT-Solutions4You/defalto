@@ -154,27 +154,16 @@
                                             </h5>
                                             <div class='font-x-small updateInfoContainer text-truncate'>
                                                 <span>
-                                                    {if $RELATION->getLinkedRecord()->getModuleName() eq 'Calendar'}
-                                                        {if isPermitted('Calendar', 'DetailView', $RELATION->getLinkedRecord()->getId()) eq 'yes'}
-                                                            {assign var=PERMITTED value=1}
-                                                        {else}
-                                                            {assign var=PERMITTED value=0}
-                                                        {/if}
+                                                    {if $RELATED_MODULE eq 'ModComments'}
+                                                        {$RELATION->getLinkedRecord()->getName()}
                                                     {else}
-                                                        {assign var=PERMITTED value=1}
-                                                    {/if}
-                                                    {if $PERMITTED}
-                                                        {if $RELATED_MODULE eq 'ModComments'}
-                                                            {$RELATION->getLinkedRecord()->getName()}
-                                                        {else}
-                                                            {assign var=DETAILVIEW_URL value=$RELATION->getRecordDetailViewUrl()}
-                                                            {if $DETAILVIEW_URL}
-                                                                <a {if stripos($DETAILVIEW_URL, 'javascript:') === 0}onclick{else}href{/if}='{$DETAILVIEW_URL}'>
-                                                            {/if}
-                                                            <span>{$RELATION->getLinkedRecord()->getName()}</span>
-                                                            {if $DETAILVIEW_URL}
-                                                                </a>
-                                                            {/if}
+                                                        {assign var=DETAILVIEW_URL value=$RELATION->getRecordDetailViewUrl()}
+                                                        {if $DETAILVIEW_URL}
+                                                            <a {if stripos($DETAILVIEW_URL, 'javascript:') === 0}onclick{else}href{/if}='{$DETAILVIEW_URL}'>
+                                                        {/if}
+                                                        <span>{$RELATION->getLinkedRecord()->getName()}</span>
+                                                        {if $DETAILVIEW_URL}
+                                                            </a>
                                                         {/if}
                                                     {/if}
                                                 </span>

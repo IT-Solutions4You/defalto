@@ -180,16 +180,6 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		$moduleObjectId = $moduleMeta->getEntityId();
 
 		$moduleFields = $moduleMeta->getModuleFields();
-		if ($moduleName === 'Calendar') {
-			$eventModuleHandler = vtws_getModuleHandlerFromName('Events', $this->user);
-			$eventModuleFields = $eventModuleHandler->getMeta()->getModuleFields();
-			foreach ($eventModuleFields as $fieldName => $fieldModel) {
-				if (stripos($fieldName, 'cf_') !== false) {
-					$moduleFields[$fieldName] = $fieldModel;
-				}
-			}
-		}
-
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$moduleImportableFields = $moduleModel->getAdditionalImportFields();
 		$moduleFields = array_merge($moduleFields, $moduleImportableFields);
@@ -313,12 +303,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 								$entityId = vtws_getId($moduleObjectId, $duplicateRecordId);
 								if ($userPriviligesModel->hasModuleActionPermission($tabId, 'Delete')) {
 									$baseRecordModel->transferRelationInfoOfRecords(array($duplicateRecordId));
-									if ($moduleName == 'Calendar') {
-										$recordModel = Vtiger_Record_Model::getInstanceById($duplicateRecordId);
-										$recordModel->delete();
-									} else {
-										vtws_delete($entityId, $this->user);
-									}
+                                    vtws_delete($entityId, $this->user);
 								}
 							}
 
@@ -349,9 +334,7 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 								$mandatoryValueChecks = false;
 								if ($userPriviligesModel->hasModuleActionPermission($tabId, 'DetailView')) {
 									$existingFieldValues = $baseRecordModel->getData();
-									if ($moduleName != 'Calendar') {
-										$existingFieldValues = vtws_retrieve($baseEntityId, $this->user);
-									}
+                                    $existingFieldValues = vtws_retrieve($baseEntityId, $this->user);
 									$defaultFieldValues = $this->getDefaultFieldValues($moduleMeta);
 
 									foreach ($existingFieldValues as $fieldName => $fieldValue) {
@@ -478,19 +461,6 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		$moduleImportableFields = array();
 		$moduleFields = $moduleMeta->getModuleFields();
 		$moduleName = $moduleMeta->getEntityName();
-
-		if ($moduleName === 'Calendar') {
-			$eventModuleHandler = vtws_getModuleHandlerFromName('Events', $this->user);
-			$eventModuleFields = $eventModuleHandler->getMeta()->getModuleFields();
-			if(!array_key_exists('visibility', $fieldData)){
-				$fieldData['visibility'] = $current_user->calendarsharedtype;
-			}
-			foreach ($eventModuleFields as $fieldName => $fieldModel) {
-				if (stripos($fieldName, 'cf_') !== false) {
-					$moduleFields[$fieldName] = $fieldModel;
-				}
-			}
-		}
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		// for Inventory Module Import, LineItem will come as a module
@@ -636,20 +606,18 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 				}
 
 				if (!in_array($picklistValueInLowerCase, $allPicklistValuesInLowerCase) && !empty($picklistValueInLowerCase)) {
-					if ($moduleName != 'Calendar') {
-						// Required to update runtime cache.
-						$wsFieldDetails = $fieldInstance->getPicklistDetails();
+                    // Required to update runtime cache.
+                    $wsFieldDetails = $fieldInstance->getPicklistDetails();
 
-						$moduleObject = Vtiger_Module::getInstance($moduleName);
-						$fieldObject = Vtiger_Field::getInstance($fieldName, $moduleObject);
-						$fieldObject->setPicklistValues(array($fieldValue));
+                    $moduleObject = Vtiger_Module::getInstance($moduleName);
+                    $fieldObject = Vtiger_Field::getInstance($fieldName, $moduleObject);
+                    $fieldObject->setPicklistValues(array($fieldValue));
 
-						// Update cache state with new value added.
-						$wsFieldDetails[] = array('label' => $fieldValue, 'value' => $fieldValue);
-						Vtiger_Cache::getInstance()->setPicklistDetails($moduleObject->getId(), $fieldName, $wsFieldDetails);
+                    // Update cache state with new value added.
+                    $wsFieldDetails[] = array('label' => $fieldValue, 'value' => $fieldValue);
+                    Vtiger_Cache::getInstance()->setPicklistDetails($moduleObject->getId(), $fieldName, $wsFieldDetails);
 
-						unset($this->allPicklistValues[$fieldName]);
-					}
+                    unset($this->allPicklistValues[$fieldName]);
 				} else {
 					$fieldData[$fieldName] = $picklistDetails[$picklistValueInLowerCase];
 				}
@@ -995,137 +963,6 @@ class Import_Data_Action extends Vtiger_Action_Controller {
 		$entityInfo = null;
 		$user = $this->user;
 		$moduleName = $this->module;
-
-		if ($moduleName === 'Calendar') {
-			if ($recordData['activitytype']) {
-				$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-				$moduleFields = $moduleModel->getFields();
-
-				foreach ($recordData as $fieldName => $fieldValue) {
-					if ($fieldValue) {
-						$fieldModel = $moduleFields[$fieldName];
-						$fieldDataType = ($fieldModel) ? $fieldModel->getFieldDataType() : '';
-						if (in_array($fieldDataType, array('reference', 'owner'))) {
-							$valueComponents = vtws_getIdComponents($fieldValue);
-							$recordData[$fieldName] = $valueComponents[1];
-						} else if($fieldDataType == 'time') {
-							$recordData[$fieldName] = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-						} else if($fieldDataType == 'boolean') {
-							if($fieldValue == 1 || strtolower($fieldValue) == 'on' || strtolower($fieldValue) == 'yes') {
-								$recordData[$fieldName] = true;
-							} else {
-								$recordData[$fieldName] = false;
-							}
-						} else if (!in_array($fieldName, array('date_start', 'due_date'))) {
-							if ($fieldModel) {
-								$recordData[$fieldName] = $fieldModel->getDisplayValue($fieldValue);
-							}
-						}
-					}
-				}
-
-				foreach ($recordData as $fieldName => $fieldValue) {
-					if (in_array($fieldName, array('date_start', 'due_date'))) {
-						$timeField = 'time_start';
-						if ($fieldName === 'due_date') {
-							$timeField = 'time_end';
-						}
-
-						$dateParts = explode(' ', $fieldValue);
-						$dateValue = $dateParts[0];
-						if ($dateValue == null || $dateValue == '0000-00-00') {
-							return $entityInfo;
-						}
-						$dateTime = Vtiger_Datetime_UIType::getDBDateTimeValue($dateParts[0].' '.$recordData[$timeField]);
-
-						list($fieldValue, $timeValue) = explode(' ', $dateTime);
-						$recordData[$fieldName] = $fieldValue;
-						if ($recordData[$timeField]) {
-							$recordData[$timeField] = $timeValue;
-						}
-					}
-				}
-
-				unset($_REQUEST['contactidlist']);
-				if ($recordData['contact_id']) {
-					$contactIdsList = explode(', ', $recordData['contact_id']);
-					if (php7_count($contactIdsList) > 1) {
-						$_REQUEST['contactidlist'] = implode(';', $contactIdsList);
-					}
-				}
-
-				if ($recordData['time_end']) {
-					$moduleName = 'Events';
-					$recordData['eventstatus'] = $recordData['taskstatus'];
-					unset($recordData['taskstatus']);
-				} else {
-					$recordData['activitytype'] = 'Task';
-				}
-
-				$eventModuleModel = Vtiger_Module_Model::getInstance('Events');
-				$eventFields = $eventModuleModel->getFields();
-
-				foreach ($recordData as $fieldName => $fieldValue) {
-					$fieldModel = $moduleFields[$fieldName];
-					if ($recordData['activitytype'] != 'Task') {
-						$fieldModel = $eventFields[$fieldName];
-					}
-
-					$fieldDataType = ($fieldModel) ? $fieldModel->getFieldDataType() : '';
-					if ($fieldDataType == 'picklist') {
-						$fieldValue = trim($recordData[$fieldName]);
-						$picklistValues = $fieldModel->getPicklistValues();
-
-						$fieldValueInLowerCase = strtolower($fieldValue);
-						$picklistValuesInLowerCase = array_map('strtolower', $picklistValues);
-						if (php7_count($picklistValuesInLowerCase)&& php7_count($picklistValues)) {
-							$picklistDetails = array_combine($picklistValuesInLowerCase, $picklistValues);
-						}
-
-						if (!in_array($fieldValueInLowerCase, $picklistValuesInLowerCase)
-								&& $fieldName !== 'visibility'
-								&& !($fieldName == 'activitytype' && $fieldValue == 'Task')) {
-							$fieldModel->setPicklistValues(array($fieldValue));
-						}
-					}
-				}
-
-				if(!empty($recordData['createdtime'])) {
-					$recordData['createdtime'] = Vtiger_Datetime_UIType::getDBDateTimeValue($recordData['createdtime']);
-				}
-				if ($operation != 'create') {
-					$valueComponents = vtws_getIdComponents($recordData['id']);
-					$recordData['id'] = $valueComponents[1];
-					$recordData['mode'] = 'edit';
-				}
-
-				try {
-					if ($recordData['id']) {
-						$recordModel = Vtiger_Record_Model::getInstanceById($recordData['id'], $moduleName);
-					} else {
-						$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-					}
-					$recordModel->setData($recordData);
-					$recordModel->save();
-
-					$webServiceObj = VtigerWebserviceObject::fromName($db, $moduleName);
-					$entityInfo['id'] = vtws_getId($webServiceObj->getEntityId(), $recordModel->getId());
-					if ($entityInfo['id']) {
-						switch($operation) {
-							case 'create' : $entityInfo['status'] = self::$IMPORT_RECORD_CREATED;	break;
-							case 'update' : $entityInfo['status'] = self::$IMPORT_RECORD_UPDATED;	break;
-							case 'revise' : $entityInfo['status'] = self::$IMPORT_RECORD_MERGED;	break;
-						}
-					}
-				} catch (Exception $e) {
-					if ($operation != 'create') {
-						$entityInfo['status'] = self::$IMPORT_RECORD_SKIPPED;
-					}
-				}
-				unset($_REQUEST['contactidlist']);
-			}
-			return $entityInfo;
-		}
 
 		try {
 			if ($recordData) {

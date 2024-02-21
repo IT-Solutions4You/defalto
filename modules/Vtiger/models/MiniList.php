@@ -128,9 +128,6 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
 			array_push($paramArray, $this->getStartIndex());
 			array_push($paramArray, $this->getRecordLimit());
 			$query = str_replace(" FROM ", ",vtiger_crmentity.crmid as id FROM ", $query);
-            if($this->getTargetModule() == 'Calendar') {
-                $query = str_replace(" WHERE ", " WHERE vtiger_crmentity.setype = 'Calendar' AND ", $query);
-            }
 
 			$result = $db->pquery($query, $paramArray);
 
@@ -161,10 +158,7 @@ class Vtiger_MiniList_Model extends Vtiger_Widget_Model {
         $query .= ' LIMIT ?, ?';
 		array_push($paramArray, $startIndex);
 		array_push($paramArray, $this->getRecordLimit());
-        if($this->getTargetModule() == 'Calendar') {
-            $query = str_replace(" WHERE ", " WHERE vtiger_crmentity.setype = 'Calendar' AND ", $query);
-        }
-        
+
         $result = $db->pquery($query, $paramArray);
         if($db->num_rows($result) > 0) {
             return true;

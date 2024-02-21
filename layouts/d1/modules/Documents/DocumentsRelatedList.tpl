@@ -28,11 +28,6 @@
                             {if $RELATED_LINK->get('linkmodule') eq 'Documents'}
                                 {assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
                                 {assign var=LINK_LABEL value={$RELATED_LINK->get('linklabel')}}
-                                {if $RELATED_LINK->get('_linklabel') === '_add_event'}
-                                    {assign var=RELATED_MODULE_NAME value='Events'}
-                                {elseif $RELATED_LINK->get('_linklabel') === '_add_task'}
-                                    {assign var=RELATED_MODULE_NAME value='Calendar'}
-                                {/if}
                                 <button type="button" module="{$RELATED_MODULE_NAME}" class="btn btn-outline-secondary me-2 addButton {if $IS_SELECT_BUTTON eq true}selectRelation{/if}"
                                     {if $IS_SELECT_BUTTON eq true} data-moduleName={$RELATED_LINK->get('_module')->get('name')} {/if}
                                     {if ($RELATED_LINK->isPageLoadLink())}
@@ -148,15 +143,7 @@
                         </thead>
                         {foreach item=RELATED_RECORD from=$RELATED_RECORDS}
                             <tr class="listViewEntries border-top" data-id='{$RELATED_RECORD->getId()}'
-                                {if $RELATED_MODULE_NAME eq 'Calendar'}
-                                    data-recurring-enabled='{$RELATED_RECORD->isRecurringEnabled()}'
-                                    {assign var=DETAILVIEWPERMITTED value=isPermitted($RELATED_MODULE->get('name'), 'DetailView', $RELATED_RECORD->getId())}
-                                    {if $DETAILVIEWPERMITTED eq 'yes'}
-                                        data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
-                                    {/if}
-                                {else}
-                                    data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
-                                {/if}>
+                                data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
                                 <td>
                                     <span class="actionImages btn-group">
                                         <a class="btn btn-sm text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}">

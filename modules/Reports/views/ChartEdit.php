@@ -190,11 +190,7 @@ Class Reports_ChartEdit_View extends Vtiger_Edit_View {
 		}
 		$viewer->assign('DATE_FILTERS', $dateFilters);
 
-		if(($primaryModule == 'Calendar') || (in_array('Calendar', $secondaryModules))){
-			$advanceFilterOpsByFieldType = Calendar_Field_Model::getAdvancedFilterOpsByFieldType();
-		} else{
-			$advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
-		}
+        $advanceFilterOpsByFieldType = Vtiger_Field_Model::getAdvancedFilterOpsByFieldType();
 		$viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());
 		$viewer->assign('ADVANCED_FILTER_OPTIONS_BY_TYPE', $advanceFilterOpsByFieldType);
 		$viewer->assign('MODULE', $moduleName);

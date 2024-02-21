@@ -40,9 +40,7 @@
 							<option value="">{'LBL_SELECT_OPTION'|@vtranslate:$FOR_MODULE}</option>
 							{foreach key=_FIELD_NAME item=_FIELD_INFO from=$AVAILABLE_FIELDS}
 								{assign var="_TRANSLATED_FIELD_LABEL" value=$_FIELD_INFO->getFieldLabelKey()|@vtranslate:$FOR_MODULE}
-								{assign var="EVENTS_TRANSLATED_FIELD_LABEL" value=$_FIELD_INFO->getFieldLabelKey()|@vtranslate:Events}
-								<option value="{$_FIELD_NAME}" {if strtolower(decode_html($_HEADER_NAME)) eq strtolower($_TRANSLATED_FIELD_LABEL)} selected {/if} 
-										{if $_FIELD_NAME eq 'due_date' && strtolower(decode_html($_HEADER_NAME)) eq strtolower($EVENTS_TRANSLATED_FIELD_LABEL)} selected {/if} 
+								<option value="{$_FIELD_NAME}" {if strtolower(decode_html($_HEADER_NAME)) eq strtolower($_TRANSLATED_FIELD_LABEL)} selected {/if}
 										data-label="{$_TRANSLATED_FIELD_LABEL}">{$_TRANSLATED_FIELD_LABEL}{if $_FIELD_INFO->isMandatory() eq 'true' || $_FIELD_NAME eq 'activitytype'}&nbsp; (*){/if}</option>
 							{/foreach}
 						</select>

@@ -52,38 +52,36 @@
                                                      data-non-supported-modules='[]' 
                                                  data-supported-modules='[]' />
                                         </a>
-                                        {if $SELECTED_MODULE_NAME neq 'Calendar' && $SELECTED_MODULE_NAME neq 'Events'}
-                                            <a href="javascript:void(0);" class="col-sm-3">
-                                                <label class="radio-group cursorPointer">
-                                                    <input name="1-M" type="radio">
-                                                    <h5>{vtranslate('1-N',$QUALIFIED_MODULE)}</h5>
-                                                </label>
-                                               <img src="{vimage_path('1-N.png')}" width="110" height="80" data-value="1:N" 
-                                                    data-supported-field-to-enable='["fieldInRelated","tabInPrimary"]'
-                                                    data-non-supported-modules='["Calendar","Documents"]'
-                                                    data-supported-modules='[]' />
-                                           </a>
-                                            <a href="javascript:void(0);" class="col-sm-3">
-                                                <label class="radio-group cursorPointer">
-                                                    <input type="radio" name="M-1">
-                                                    <h5>{vtranslate('N-1',$QUALIFIED_MODULE)}</h5>
-                                                </label>
-                                               <img src="{vimage_path('N-1.png')}" width="110" height="80" data-value="N:1" 
-                                                    data-supported-field-to-enable='["fieldInPrimary","tabInRelated"]' 
-                                                    data-non-supported-modules='["Calendar","Documents"]' 
-                                                    data-supported-modules='[]' />
-                                           </a>
-                                            <a href="javascript:void(0);" class="col-sm-3">
-                                                <label class="radio-group cursorPointer">
-                                                    <input type="radio" name="M-M">
-                                                    <h5>{vtranslate('N-N',$QUALIFIED_MODULE)}</h5>
-                                                </label>
-                                                    <img src="{vimage_path('N-N.png')}" width="110" height="80" data-value="N:N" 
-                                                     data-supported-field-to-enable='["tabInPrimary", "tabInRelated"]'
-                                                     data-non-supported-modules='{Vtiger_Functions::jsonEncode($N2N_UNSUPPORTED_MODULES)}'
-                                                     data-supported-modules= '[]'/>
-                                            </a>
-                                        {/if}
+                                        <a href="javascript:void(0);" class="col-sm-3">
+                                            <label class="radio-group cursorPointer">
+                                                <input name="1-M" type="radio">
+                                                <h5>{vtranslate('1-N',$QUALIFIED_MODULE)}</h5>
+                                            </label>
+                                           <img src="{vimage_path('1-N.png')}" width="110" height="80" data-value="1:N"
+                                                data-supported-field-to-enable='["fieldInRelated","tabInPrimary"]'
+                                                data-non-supported-modules='["Documents"]'
+                                                data-supported-modules='[]' />
+                                       </a>
+                                        <a href="javascript:void(0);" class="col-sm-3">
+                                            <label class="radio-group cursorPointer">
+                                                <input type="radio" name="M-1">
+                                                <h5>{vtranslate('N-1',$QUALIFIED_MODULE)}</h5>
+                                            </label>
+                                           <img src="{vimage_path('N-1.png')}" width="110" height="80" data-value="N:1"
+                                                data-supported-field-to-enable='["fieldInPrimary","tabInRelated"]'
+                                                data-non-supported-modules='["Documents"]'
+                                                data-supported-modules='[]' />
+                                       </a>
+                                        <a href="javascript:void(0);" class="col-sm-3">
+                                            <label class="radio-group cursorPointer">
+                                                <input type="radio" name="M-M">
+                                                <h5>{vtranslate('N-N',$QUALIFIED_MODULE)}</h5>
+                                            </label>
+                                                <img src="{vimage_path('N-N.png')}" width="110" height="80" data-value="N:N"
+                                                 data-supported-field-to-enable='["tabInPrimary", "tabInRelated"]'
+                                                 data-non-supported-modules='{Vtiger_Functions::jsonEncode($N2N_UNSUPPORTED_MODULES)}'
+                                                 data-supported-modules= '[]'/>
+                                        </a>
                                     </div>
                                     <div class="row" style="padding-top:10px;">
                                         <div class="col-sm-3 text-truncate" title="{vtranslate($SELECTED_MODULE_NAME,$SELECTED_MODULE_NAME)}">

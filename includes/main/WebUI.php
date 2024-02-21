@@ -154,11 +154,6 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 					$moduleModel = Vtiger_Module_Model::getInstance($defaultModule);
 					if(!empty($defaultModule) && $defaultModule != 'Home' && $moduleModel && $moduleModel->isActive()) {
 						$module = $defaultModule; $qualifiedModuleName = $defaultModule; $view = 'List';
-						if($module == 'Calendar') { 
-							// To load MyCalendar instead of list view for calendar
-							//TODO: see if it has to enhanced and get the default view from module model
-							$view = 'Calendar';
-						}
 					} else {
 						$module = 'Home'; $qualifiedModuleName = 'Home'; $view = 'DashBoard';
 					}

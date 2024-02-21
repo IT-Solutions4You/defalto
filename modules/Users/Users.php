@@ -78,7 +78,7 @@ class Users extends CRMEntity {
 
 	var $object_name = "User";
 	var $user_preferences;
-	var $homeorder_array = array('HDB','ALVT','PLVT','QLTQ','CVLVT','HLT','GRT','OLTSO','ILTI','MNL','OLTPO','LTFAQ', 'UA', 'PA');
+	var $homeorder_array = array('HDB','ALVT','PLVT','QLTQ','CVLVT','HLT','GRT','OLTSO','ILTI','MNL','OLTPO','LTFAQ');
 
 	var $encodeFields = Array("first_name", "last_name", "description");
 
@@ -126,7 +126,7 @@ class Users extends CRMEntity {
 	var $DEFAULT_PASSWORD_CRYPT_TYPE; //'BLOWFISH', /* before PHP5.3*/ MD5;
 
 	//Default Widgests
-	var $default_widgets = array('PLVT', 'CVLVT', 'UA');
+	var $default_widgets = array('PLVT', 'CVLVT');
 
 	/** constructor function for the main user class
 	 instantiates the Logger class and PearDatabase Class
@@ -1147,7 +1147,7 @@ class Users extends CRMEntity {
 	function getHomeStuffOrder($id) {
 		global $adb;
 		if(!is_array($this->homeorder_array)) {
-			$this->homeorder_array = array('UA', 'PA', 'ALVT','HDB','PLVT','QLTQ','CVLVT','HLT',
+			$this->homeorder_array = array('ALVT','HDB','PLVT','QLTQ','CVLVT','HLT',
 					'GRT','OLTSO','ILTI','MNL','OLTPO','LTFAQ');
 		}
 		$return_array = Array();
@@ -1223,11 +1223,6 @@ class Users extends CRMEntity {
 		$sql="insert into vtiger_homestuff values(?,?,?,?,?,?)";
 		$res=$adb->pquery($sql, array($s6,6,'Default',$uid,$visibility,'Top Trouble Tickets'));
 
-		$s7=$adb->getUniqueID("vtiger_homestuff");
-		$visibility=$this->getDefaultHomeModuleVisibility('UA',$inVal);
-		$sql="insert into vtiger_homestuff values(?,?,?,?,?,?)";
-		$res=$adb->pquery($sql, array($s7,7,'Default',$uid,$visibility,'Upcoming Activities'));
-
 		$s8=$adb->getUniqueID("vtiger_homestuff");
 		$visibility=$this->getDefaultHomeModuleVisibility('GRT',$inVal);
 		$sql="insert into vtiger_homestuff values(?,?,?,?,?,?)";
@@ -1252,12 +1247,6 @@ class Users extends CRMEntity {
 		$visibility=$this->getDefaultHomeModuleVisibility('OLTPO',$inVal);
 		$sql="insert into vtiger_homestuff values(?,?,?,?,?,?)";
 		$res=$adb->pquery($sql, array($s12,12,'Default',$uid,$visibility,'Top Purchase Orders'));
-
-		$s13=$adb->getUniqueID("vtiger_homestuff");
-		$visibility=$this->getDefaultHomeModuleVisibility('PA',$inVal);
-		$sql="insert into vtiger_homestuff values(?,?,?,?,?,?)";
-		$res=$adb->pquery($sql, array($s13,13,'Default',$uid,$visibility,'Pending Activities'));
-		;
 
 		$s14=$adb->getUniqueID("vtiger_homestuff");
 		$visibility=$this->getDefaultHomeModuleVisibility('LTFAQ',$inVal);
@@ -1288,9 +1277,6 @@ class Users extends CRMEntity {
 		$sql="insert into vtiger_homedefault values(".$s6.",'HLT',5,'HelpDesk')";
 		$adb->pquery($sql, array());
 
-		$sql="insert into vtiger_homedefault values(".$s7.",'UA',5,'Calendar')";
-		$adb->pquery($sql,array());
-
 		$sql="insert into vtiger_homedefault values(".$s8.",'GRT',5,'NULL')";
 		$adb->pquery($sql, array());
 
@@ -1305,9 +1291,6 @@ class Users extends CRMEntity {
 
 		$sql="insert into vtiger_homedefault values(".$s12.",'OLTPO',5,'PurchaseOrder')";
 		$adb->pquery($sql, array());
-
-		$sql="insert into vtiger_homedefault values(".$s13.",'PA',5,'Calendar')";
-		$adb->pquery($sql,array());
 
 		$sql="insert into vtiger_homedefault values(".$s14.",'LTFAQ',5,'Faq')";
 		$adb->pquery($sql, array());

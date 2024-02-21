@@ -46,7 +46,6 @@ $adv_filter_options = array("e"=>"equals",
 $old_related_modules = Array('Accounts'=>Array('Potentials','Contacts','Products','Quotes','Invoice'),
 			 'Contacts'=>Array('Accounts','Potentials','Quotes','PurchaseOrder'),
 			 'Potentials'=>Array('Accounts','Contacts','Quotes'),
-			 'Calendar'=>Array('Leads','Accounts','Contacts','Potentials'),
 			 'Products'=>Array('Accounts','Contacts'),
 			 'HelpDesk'=>Array('Products'),
 			 'Quotes'=>Array('Accounts','Contacts','Potentials'),
@@ -201,9 +200,6 @@ class Reports extends CRMEntity{
 		if (!isset($module)) return;
 		require_once('include/utils/utils.php');
 		$tabid = getTabid($module);
-		if ($module == 'Calendar') {
-			$tabid = array(9, 16);
-		}
 		$sql = "SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid IN (". generateQuestionMarks($tabid) .")";
 		$res = $adb->pquery($sql, array($tabid));
 		$noOfRows = $adb->num_rows($res);
@@ -221,7 +217,7 @@ class Reports extends CRMEntity{
 	function initListOfModules() {
 		global $adb, $current_user, $old_related_modules;
 
-		$restricted_modules = array('Events','Webmails');
+		$restricted_modules = array('Webmails');
 		$restricted_blocks = array('LBL_COMMENTS','LBL_COMMENT_INFORMATION');
 
 		$this->module_id = array();
@@ -245,13 +241,8 @@ class Reports extends CRMEntity{
 					if(in_array($resultrow['name'], $restricted_modules)) { // skip restricted modules
 						continue;
 					}
-					if($resultrow['name']!='Calendar'){
-						$this->module_id[$resultrow['tabid']] = $resultrow['name'];
-					} else {
-						$this->module_id[9] = $resultrow['name'];
-						$this->module_id[16] = $resultrow['name'];
 
-					}
+					$this->module_id[$resultrow['tabid']] = $resultrow['name'];
 					$this->module_list[$resultrow['name']] = array();
 				}
 
@@ -274,10 +265,7 @@ class Reports extends CRMEntity{
 						}
 
 						if(!empty($blocklabel)){
-							if($module == 'Calendar' && $blocklabel == 'LBL_CUSTOM_INFORMATION')
-								$this->module_list[$module][$blockid] = getTranslatedString($blocklabel,$module);
-							else
-								$this->module_list[$module][$blockid] = getTranslatedString($blocklabel,$module);
+							$this->module_list[$module][$blockid] = getTranslatedString($blocklabel,$module);
 							$prev_block_label = $blocklabel;
 						} else {
 							$this->module_list[$module][$blockid] = getTranslatedString($prev_block_label,$module);
@@ -653,12 +641,6 @@ class Reports extends CRMEntity{
 				if($this->module_list[$secmodule[$i]]){
 					$this->sec_module_columnslist[$secmodule[$i]] = $this->getModuleFieldList(
 							$secmodule[$i]);
-					if($this->module_list[$secmodule[$i]] == 'Calendar') {
-						if($this->module_list['Events']){
-							$this->sec_module_columnslist['Events'] = $this->getModuleFieldList(
-									'Events');
-						}
-					}
 				}
 			}
 			if($module == 'Emails') {
@@ -719,9 +701,6 @@ class Reports extends CRMEntity{
 		$skipTalbes = array('vtiger_emaildetails','vtiger_attachments');
 
 		$tabid = getTabid($module);
-		if ($module == 'Calendar') {
-			$tabid = array('9','16');
-		}
 		$params = array($tabid, $block);
 
 		require('user_privileges/user_privileges_'.$current_user->id.'.php');
@@ -729,11 +708,6 @@ class Reports extends CRMEntity{
 		if($is_admin == true || $profileGlobalPermission[1] == 0 || $profileGlobalPermission[2] ==0)
 		{
 			$sql = "select * from vtiger_field where vtiger_field.tabid in (". generateQuestionMarks($tabid) .") and vtiger_field.block in (". generateQuestionMarks($block) .") and vtiger_field.displaytype in (1,2,3,5) and vtiger_field.presence in (0,2) AND tablename NOT IN (".generateQuestionMarks($skipTalbes).") ";
-
-			//fix for Ticket #4016
-			if($module == "Calendar")
-				$sql.=" group by vtiger_field.fieldlabel order by sequence";
-			else
 			$sql.=" order by sequence";
 		}
 		else
@@ -747,11 +721,7 @@ class Reports extends CRMEntity{
 			}
 			$sql .= ' and tablename NOT IN ('.generateQuestionMarks($skipTalbes).') ';
 
-			//fix for Ticket #4016
-			if($module == "Calendar")
-				$sql.=" group by vtiger_field.fieldlabel order by sequence";
-			else
-				$sql.=" group by vtiger_field.fieldid order by sequence";
+			$sql.=" group by vtiger_field.fieldid order by sequence";
 		}
 		array_push($params, $skipTalbes);
 
@@ -1283,10 +1253,6 @@ function getEscapedColumns($selectedfields)
 			{
 				$querycolumn = "case vtiger_crmentityRelProducts.setype when 'Accounts' then vtiger_accountRelProducts.accountname when 'Leads' then vtiger_leaddetailsRelProducts.lastname when 'Potentials' then vtiger_potentialRelProducts.potentialname End"." '".$selectedfields[2]."', vtiger_crmentityRelProducts.setype 'Entity_type'";
 			}
-			if($this->primarymodule == "Calendar" || $this->secondarymodule == "Calendar")
-			{
-				$querycolumn = "case vtiger_crmentityRelCalendar.setype when 'Accounts' then vtiger_accountRelCalendar.accountname when 'Leads' then vtiger_leaddetailsRelCalendar.lastname when 'Potentials' then vtiger_potentialRelCalendar.potentialname when 'Quotes' then vtiger_quotesRelCalendar.subject when 'PurchaseOrder' then vtiger_purchaseorderRelCalendar.subject when 'Invoice' then vtiger_invoiceRelCalendar.subject End"." '".$selectedfields[2]."', vtiger_crmentityRelCalendar.setype 'Entity_type'";
-			}
 		}
 		return $querycolumn;
 	}
@@ -1299,25 +1265,14 @@ function getEscapedColumns($selectedfields)
 		$profileList = getCurrentUserProfileList();
 		$query = "select vtiger_field.fieldname from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid where";
 		$params = array();
-		if($module == "Calendar")
-		{
-			$query .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_field.presence in (0,2)";
-			if (php7_count($profileList) > 0) {
-				$query .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")";
-				array_push($params, $profileList);
-			}
-			$query .= " group by vtiger_field.fieldid order by block,sequence";
+		array_push($params, $this->primodule, $this->secmodule);
+		$query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_field.presence in (0,2)";
+		if (php7_count($profileList) > 0) {
+			$query .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")";
+			$params[] = $profileList;
 		}
-		else
-		{
-			array_push($params, $this->primodule, $this->secmodule);
-			$query .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_field.presence in (0,2)";
-			if (php7_count($profileList) > 0) {
-				$query .= " and vtiger_profile2field.profileid in (". generateQuestionMarks($profileList) .")";
-				array_push($params, $profileList);
-			}
-			$query .= " group by vtiger_field.fieldid order by block,sequence";
-		}
+
+		$query .= " group by vtiger_field.fieldid order by block,sequence";
 		$result = $adb->pquery($query, $params);
 
 
@@ -1654,9 +1609,6 @@ function getEscapedColumns($selectedfields)
 				break;
 			case 6://Accounts
 				$ssql.= " and vtiger_field.fieldname not in ('account_id')";
-				break;
-			case 9://Calandar
-				$ssql.= " and vtiger_field.fieldname not in ('parent_id','contact_id')";
 				break;
 			case 13://Trouble tickets(HelpDesk)
 				$ssql.= " and vtiger_field.fieldname not in ('parent_id','product_id')";

@@ -74,29 +74,15 @@ function getKeyMetrics($maxval,$calCnt)
 	{
 		global $current_user;
 		foreach ($metriclists as $key => $metriclist) {
-			if($metriclist['module'] == "Calendar") {
-				$listquery = getListQuery($metriclist['module']);
-				$oCustomView = new CustomView($metriclist['module']);
-				$metricsql = $oCustomView->getModifiedCvListQuery($metriclist['id'],$listquery,$metriclist['module']);
-				$metricsql = Vtiger_Functions::mkCountQuery($metricsql);
-				$metricresult = $adb->pquery($metricsql, array());
-				if($metricresult)
-				{
-					$rowcount = $adb->fetch_array($metricresult);
-					$metriclists[$key]['count'] = $rowcount['count'];
-				}
-				
-			} else {
-				$queryGenerator = new QueryGenerator($metriclist['module'], $current_user);
-				$queryGenerator->initForCustomViewById($metriclist['id']);
-				$metricsql = $queryGenerator->getQuery();
-				$metricsql = Vtiger_Functions::mkCountQuery($metricsql);
-				$metricresult = $adb->pquery($metricsql, array());
-				if($metricresult)
-				{
-					$rowcount = $adb->fetch_array($metricresult);
-					$metriclists[$key]['count'] = $rowcount['count'];
-				}
+			$queryGenerator = new QueryGenerator($metriclist['module'], $current_user);
+			$queryGenerator->initForCustomViewById($metriclist['id']);
+			$metricsql = $queryGenerator->getQuery();
+			$metricsql = Vtiger_Functions::mkCountQuery($metricsql);
+			$metricresult = $adb->pquery($metricsql, array());
+			if($metricresult)
+			{
+				$rowcount = $adb->fetch_array($metricresult);
+				$metriclists[$key]['count'] = $rowcount['count'];
 			}
 		}
 		$log->info("Metrics :: Successfully build the Metrics");
@@ -174,5 +160,3 @@ function getMetricList()
 
 	return $metriclists;
 }
-
-?>

@@ -133,13 +133,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                     } elseif ('ny' === $comparator) {
                         $advfiltersql = sprintf("(%s.%s IS NOT NULL OR %s.%s != '')", $columns[0], $columns[1], $columns[0], $columns[1]);
                     } else {
-                        if ($this->customviewmodule == "Calendar" && ($columns[1] == "status" || $columns[1] == "eventstatus")) {
-                            if (getFieldVisibilityPermission("Calendar", $current_user->id, 'taskstatus') == '0') {
-                                $advfiltersql = "case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end" . $this->getAdvComparator($comparator, trim($value), $datatype);
-                            } else {
-                                $advfiltersql = "vtiger_activity.eventstatus" . $this->getAdvComparator($comparator, trim($value), $datatype);
-                            }
-                        } elseif ($this->customviewmodule == "Documents" && $columns[1] == 'folderid') {
+                        if ($this->customviewmodule == "Documents" && $columns[1] == 'folderid') {
                             $advfiltersql = "vtiger_attachmentsfolder.foldername" . $this->getAdvComparator($comparator, trim($value), $datatype);
                         } elseif ($this->customviewmodule == "Assets") {
                             if ($columns[1] == 'account') {
@@ -977,21 +971,12 @@ class EMAILMakerRelBlockRun extends CRMEntity
         $params = array();
         $where = '';
 
-        if ($module == "Calendar") {
-            if (count($profileList) > 0) {
-                $where .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
-                array_push($params, $profileList);
-            } else {
-                $where .= " vtiger_field.tabid in (9,16) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 group by vtiger_field.fieldid order by block,sequence";
-            }
+        array_push($params, $this->primarymodule, $this->secondarymodule);
+        if (count($profileList) > 0) {
+            $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
+            array_push($params, $profileList);
         } else {
-            array_push($params, $this->primarymodule, $this->secondarymodule);
-            if (count($profileList) > 0) {
-                $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 and vtiger_profile2field.profileid in (" . generateQuestionMarks($profileList) . ") group by vtiger_field.fieldid order by block,sequence";
-                array_push($params, $profileList);
-            } else {
-                $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 group by vtiger_field.fieldid order by block,sequence";
-            }
+            $where .= " vtiger_field.tabid in (select tabid from vtiger_tab where vtiger_tab.name in (?,?)) and vtiger_field.displaytype in (1,2,3) and vtiger_profile2field.visible=0 and vtiger_def_org_field.visible=0 group by vtiger_field.fieldid order by block,sequence";
         }
 
         $query = 'select vtiger_field.fieldname from vtiger_field inner join vtiger_profile2field on vtiger_profile2field.fieldid=vtiger_field.fieldid inner join vtiger_def_org_field on vtiger_def_org_field.fieldid=vtiger_field.fieldid where' . $where;
@@ -1076,26 +1061,6 @@ class EMAILMakerRelBlockRun extends CRMEntity
                     $referenceTableName = 'vtiger_contactdetailsRelHelpDesk';
                 } elseif ($moduleName == 'HelpDesk' && $referenceModule == 'Products') {
                     $referenceTableName = 'vtiger_productsRel';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Accounts') {
-                    $referenceTableName = 'vtiger_accountRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Contacts') {
-                    $referenceTableName = 'vtiger_contactdetailsCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Leads') {
-                    $referenceTableName = 'vtiger_leaddetailsRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Potentials') {
-                    $referenceTableName = 'vtiger_potentialRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Invoice') {
-                    $referenceTableName = 'vtiger_invoiceRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Quotes') {
-                    $referenceTableName = 'vtiger_quotesRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'PurchaseOrder') {
-                    $referenceTableName = 'vtiger_purchaseorderRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'SalesOrder') {
-                    $referenceTableName = 'vtiger_salesorderRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'HelpDesk') {
-                    $referenceTableName = 'vtiger_troubleticketsRelCalendar';
-                } elseif ($moduleName == 'Calendar' && $referenceModule == 'Campaigns') {
-                    $referenceTableName = 'vtiger_campaignRelCalendar';
                 } elseif ($moduleName == 'Contacts' && $referenceModule == 'Accounts') {
                     $referenceTableName = 'vtiger_accountContacts';
                 } elseif ($moduleName == 'Contacts' && $referenceModule == 'Contacts') {
@@ -1635,32 +1600,6 @@ class EMAILMakerRelBlockRun extends CRMEntity
                     $this->getRelatedModulesQuery($module, $this->secondarymodule) .
                     getNonAdminAccessControlQuery($this->primarymodule, $current_user) .
                     ' WHERE vtiger_crmentity.deleted=0 ';
-            case 'Calendar':
-                return 'FROM vtiger_activity 
-                    INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_activity.activityid
-                    LEFT JOIN vtiger_activitycf ON vtiger_activitycf.activityid = vtiger_crmentity.crmid
-                    LEFT JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid= vtiger_activity.activityid 
-                    LEFT JOIN vtiger_contactdetails as vtiger_contactdetailsCalendar ON vtiger_contactdetailsCalendar.contactid= vtiger_cntactivityrel.contactid
-                    LEFT JOIN vtiger_groups as vtiger_groupsCalendar ON vtiger_groupsCalendar.groupid = vtiger_crmentity.smownerid
-                    LEFT JOIN vtiger_users as vtiger_usersCalendar ON vtiger_usersCalendar.id = vtiger_crmentity.smownerid
-                    LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-                    LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-                    LEFT JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
-                    LEFT JOIN vtiger_activity_reminder ON vtiger_activity_reminder.activity_id = vtiger_activity.activityid
-                    LEFT JOIN vtiger_recurringevents ON vtiger_recurringevents.activityid = vtiger_activity.activityid
-                    LEFT JOIN vtiger_crmentity as vtiger_crmentityRelCalendar ON vtiger_crmentityRelCalendar.crmid = vtiger_seactivityrel.crmid
-                    LEFT JOIN vtiger_account as vtiger_accountRelCalendar ON vtiger_accountRelCalendar.accountid=vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_leaddetails as vtiger_leaddetailsRelCalendar ON vtiger_leaddetailsRelCalendar.leadid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_potential as vtiger_potentialRelCalendar ON vtiger_potentialRelCalendar.potentialid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_quotes as vtiger_quotesRelCalendar ON vtiger_quotesRelCalendar.quoteid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_purchaseorder as vtiger_purchaseorderRelCalendar ON vtiger_purchaseorderRelCalendar.purchaseorderid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_invoice as vtiger_invoiceRelCalendar ON vtiger_invoiceRelCalendar.invoiceid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_salesorder as vtiger_salesorderRelCalendar ON vtiger_salesorderRelCalendar.salesorderid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_troubletickets as vtiger_troubleticketsRelCalendar ON vtiger_troubleticketsRelCalendar.ticketid = vtiger_crmentityRelCalendar.crmid
-                    LEFT JOIN vtiger_campaign as vtiger_campaignRelCalendar ON vtiger_campaignRelCalendar.campaignid = vtiger_crmentityRelCalendar.crmid ' .
-                        $this->getRelatedModulesQuery($module, $this->secondarymodule) .
-                        getNonAdminAccessControlQuery($this->primarymodule, $current_user) .
-                    ' WHERE vtiger_crmentity.deleted=0 and (vtiger_activity.activitytype != "Emails") ';
             case 'Quotes':
                 return 'FROM vtiger_quotes 
                     INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_quotes.quoteid 
@@ -2013,19 +1952,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
             $entityNames = getEntityName('Users', $value);
             $fieldValue = $entityNames[$value];
         } elseif ('date' === $fieldType && !empty($value)) {
-            if ('Calendar' === $module && 'due_date' === $fieldName) {
-                $endTime = $valueArray['calendar_end_time'];
-
-                if (empty($endTime)) {
-                    $recordId = $valueArray['calendar_id'];
-                    $endTime = getSingleFieldValue('vtiger_activity', 'time_end', 'activityid', $recordId);
-                }
-
-                $date = new DateTimeField($value . ' ' . $endTime);
-                $fieldValue = $date->getDisplayDate();
-            } else {
-                $fieldValue = DateTimeField::convertToUserFormat($value);
-            }
+            $fieldValue = DateTimeField::convertToUserFormat($value);
         } elseif ('datetime' === $fieldType && !empty($value)) {
             $date = new DateTimeField($value);
             $fieldValue = $date->getDisplayDateTimeValue();

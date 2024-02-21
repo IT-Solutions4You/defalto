@@ -31,8 +31,6 @@ $reportmodules = Array(Array('primarymodule'=>'Contacts','secondarymodule'=>'Acc
 		       Array('primarymodule'=>'Leads','secondarymodule'=>''),
 		       Array('primarymodule'=>'Potentials','secondarymodule'=>''),
 		       Array('primarymodule'=>'Potentials','secondarymodule'=>''),
-		       Array('primarymodule'=>'Calendar','secondarymodule'=>''),
-		       Array('primarymodule'=>'Calendar','secondarymodule'=>''),
 		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>'Products'),
 		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>''),
   		       Array('primarymodule'=>'HelpDesk','secondarymodule'=>''),
@@ -92,18 +90,6 @@ $selectcolumns = Array(Array('vtiger_contactdetails:firstname:Contacts_First_Nam
                              'vtiger_potential:potentialtype:Potentials_Type:opportunity_type:V',
                              'vtiger_potential:leadsource:Potentials_Lead_Source:leadsource:V',
 			     'vtiger_potential:sales_stage:Potentials_Sales_Stage:sales_stage:V'),
-
-		       Array('vtiger_activity:subject:Calendar_Subject:subject:V',
-			     'vtiger_contactdetailsCalendar:lastname:Calendar_Contact_Name:contact_id:I',
-                             'vtiger_activity:status:Calendar_Status:taskstatus:V',
-                             'vtiger_activity:priority:Calendar_Priority:taskpriority:V',
-                             'vtiger_usersCalendar:user_name:Calendar_Assigned_To:assigned_user_id:V'),
-
-		       Array('vtiger_activity:subject:Calendar_Subject:subject:V',
-                             'vtiger_contactdetailsCalendar:lastname:Calendar_Contact_Name:contact_id:I',
-                             'vtiger_activity:status:Calendar_Status:taskstatus:V',
-                             'vtiger_activity:priority:Calendar_Priority:taskpriority:V',
-                             'vtiger_usersCalendar:user_name:Calendar_Assigned_To:assigned_user_id:V'),
 
         	       Array('vtiger_troubletickets:title:HelpDesk_Title:ticket_title:V',
                              'vtiger_troubletickets:status:HelpDesk_Status:ticketstatus:V',

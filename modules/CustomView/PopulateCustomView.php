@@ -84,10 +84,6 @@ $customviews = Array(Array('viewname'=>'All',
 
 		    Array('viewname'=>'All',
                           'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
-                          'cvmodule'=>'Calendar','stdfilterid'=>'','advfilterid'=>''),
-
-		    Array('viewname'=>'All',
-                          'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
                           'cvmodule'=>'Emails','stdfilterid'=>'','advfilterid'=>''),
 
 		    Array('viewname'=>'All',
@@ -288,14 +284,6 @@ $cvcolumns = Array(Array('vtiger_leaddetails:lead_no:lead_no:Leads_Lead_No:V',
 						'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
                          'vtiger_quotes:validtill:validtill:Quotes_Valid_Till:D',
                          'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V'),
-
-		   Array('vtiger_activity:status:taskstatus:Calendar_Status:V',
-                         'vtiger_activity:activitytype:activitytype:Calendar_Type:V',
-                         'vtiger_activity:subject:subject:Calendar_Subject:V',
-                         'vtiger_seactivityrel:crmid:parent_id:Calendar_Related_to:V',
-                         'vtiger_activity:date_start:date_start:Calendar_Start_Date:D',
-                         'vtiger_activity:due_date:due_date:Calendar_End_Date:D',
-                         'vtiger_crmentity:smownerid:assigned_user_id:Calendar_Assigned_To:V'),
 
 		   Array('vtiger_activity:subject:subject:Emails_Subject:V',
        			 'vtiger_emaildetails:to_email:saved_toid:Emails_To:V',
@@ -644,4 +632,3 @@ function insertCvAdvFilter($CVid,$filters)
 		$adb->pquery('INSERT INTO vtiger_cvadvfilter_grouping VALUES(?,?,?,?)', array(1, $CVid, '', $conditionExpression));
 	}
 }
-?>

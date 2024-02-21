@@ -43,10 +43,7 @@ class Mobile_WS_RelatedRecordsWithGrouping extends Mobile_WS_QueryWithGrouping {
 			$query = $relationResult['query'];
 		
 			$querySEtype = "vtiger_crmentity.setype as setype";
-			if ($relatedmodule == 'Calendar') {
-				$querySEtype = "vtiger_activity.activitytype as setype";
-			}
-			
+
 			$query = sprintf("SELECT vtiger_crmentity.crmid, $querySEtype %s", substr($query, stripos($query, 'FROM')));
 			$queryResult = $adb->pquery($query, array());
 			
@@ -54,13 +51,6 @@ class Mobile_WS_RelatedRecordsWithGrouping extends Mobile_WS_QueryWithGrouping {
 			$relatedRecords = array();
 			while($row = $adb->fetch_array($queryResult)) {
 				$targetSEtype = $row['setype'];
-				if ($relatedmodule == 'Calendar') {
-					if ($row['setype'] != 'Task' && $row['setype'] != 'Emails') {
-						$targetSEtype = 'Events';
-					} else {
-						$targetSEtype = $relatedmodule;
-					}
-				}
 				$relatedRecords[] = sprintf("%sx%s", Mobile_WS_Utils::getEntityModuleWSId($targetSEtype), $row['crmid']);
 			}
 			

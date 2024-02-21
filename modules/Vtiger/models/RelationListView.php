@@ -87,43 +87,6 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		return $createViewUrl;
 	}
 
-	public function getCreateEventRecordUrl(){
-		$relationModel = $this->getRelationModel();
-		$relatedModel = $relationModel->getRelationModuleModel();
-		$parentRecordModule = $this->getParentRecordModel();
-		$parentModule = $parentRecordModule->getModule();
-
-		$createViewUrl = $relatedModel->getCreateEventRecordUrl().'&returnmode=showRelatedList&returntab_label='.$relationModel->get('label').
-							'&returnrecord='.$parentRecordModule->getId().'&returnmodule='.$parentModule->get('name').
-							'&returnview=Detail&returnrelatedModuleName=Calendar'.
-							'&returnrelationId='.$relationModel->getId();
-		//To keep the reference fieldname and record value in the url if it is direct relation
-		if($relationModel->isDirectRelation()) {
-			$relationField = $relationModel->getRelationField();
-			$createViewUrl .='&'.$relationField->getName().'='.$parentRecordModule->getId();
-		}
-		return $createViewUrl;
-	}
-
-	public function getCreateTaskRecordUrl(){
-		$relationModel = $this->getRelationModel();
-		$relatedModel = $relationModel->getRelationModuleModel();
-		$parentRecordModule = $this->getParentRecordModel();
-		$parentModule = $parentRecordModule->getModule();
-
-		$createViewUrl = $relatedModel->getCreateTaskRecordUrl().'&returnmode=showRelatedList&returntab_label='.$relationModel->get('label').
-							'&returnrecord='.$parentRecordModule->getId().'&returnmodule='.$parentModule->get('name').
-							'&returnview=Detail&returnrelatedModuleName=Calendar'.
-							'&returnrelationId='.$relationModel->getId();
-
-		//To keep the reference fieldname and record value in the url if it is direct relation
-		if($relationModel->isDirectRelation()) {
-			$relationField = $relationModel->getRelationField();
-			$createViewUrl .='&'.$relationField->getName().'='.$parentRecordModule->getId();
-		}
-		return $createViewUrl;
-	}
-
 	public function getLinks(){
 		$relationModel = $this->getRelationModel();
 		$actions = $relationModel->getActions();
@@ -176,24 +139,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		}
 		$relatedModel = $relationModel->getRelationModuleModel();
 
-		if($relatedModel->get('label') == 'Calendar'){
-			if($relatedModel->isPermitted('CreateView')) {
-				$addLinkList[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => vtranslate('LBL_ADD_EVENT'),
-					'linkurl' => $this->getCreateEventRecordUrl(),
-					'linkicon' => '',
-						'_linklabel' => '_add_event'// used in relatedlist.tpl to identify module to open quickcreate popup
-				);
-				$addLinkList[] = array(
-					'linktype' => 'LISTVIEWBASIC',
-					'linklabel' => vtranslate('LBL_ADD_TASK'),
-					'linkurl' => $this->getCreateTaskRecordUrl(),
-					'linkicon' => '',
-					'_linklabel' => '_add_task'
-				);
-			}
-		} else if ($relatedModel->get('label') == 'Documents') {
+		if ($relatedModel->get('label') == 'Documents') {
 			$parentRecordModule = $this->getParentRecordModel();
 			$parentModule = $parentRecordModule->getModule();
 			$relationParameters = '&sourceModule='.$parentModule->get('name').'&sourceRecord='.$parentRecordModule->getId().'&relationOperation=true';
@@ -258,11 +204,6 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			$relatedColumnFields = $relationModule->getRelatedListFields();
 		}
 
-		if($relationModuleName == 'Calendar') {
-			//Adding visibility in the related list, showing records based on the visibility
-			$relatedColumnFields['visibility'] = 'visibility';
-		}
-
 		if($relationModuleName == 'PriceBooks') {
 			//Adding fields in the related list
 			$relatedColumnFields['unit_price'] = 'unit_price';
@@ -289,12 +230,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				}
 			}
 			$whereQuerySplit = explode('WHERE', $queryGenerator->getWhereClause());
-			if($parentModuleName == 'Accounts' && $relationModuleName == 'Calendar' && (stripos($query, "GROUP BY") !== false)) {
-                            $splitQuery = explode('GROUP BY', $query);
-                            $query = $splitQuery[0]." AND ".$whereQuerySplit[1].' GROUP BY '.$splitQuery[1];
-                        } else {
-                            $query.=" AND " . $whereQuerySplit[1];
-                        }
+            $query.=" AND " . $whereQuerySplit[1];
 		}
 
 		$startIndex = $pagingModel->getStartIndex();
@@ -326,7 +262,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				if ($orderByField) {
 					$qualifiedOrderBy = $relationModule->getOrderBySql($qualifiedOrderBy);
 				}
-				if($qualifiedOrderBy == 'vtiger_activity.date_start' && ($relationModuleName == 'Calendar' || $relationModuleName == 'Emails')) {
+				if($qualifiedOrderBy == 'vtiger_activity.date_start' && $relationModuleName === 'Emails') {
 					$qualifiedOrderBy = "str_to_date(concat(vtiger_activity.date_start,vtiger_activity.time_start),'%Y-%m-%d %H:%i:%s')";
 				}
 				$query = "$query ORDER BY $qualifiedOrderBy $sortOrder";
@@ -368,35 +304,11 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			//To show the value of "Assigned to"
 			$ownerId = $row['smownerid'];
 			$newRow['assigned_user_id'] = $row['smownerid'];
-			if($relationModuleName == 'Calendar') {
-				$visibleFields = array('activitytype','date_start','time_start','due_date','time_end','assigned_user_id','visibility','smownerid','parent_id');
-				$visibility = true;
-				if(in_array($ownerId, $groupsIds)) {
-					$visibility = false;
-				} else if($ownerId == $currentUser->getId()){
-					$visibility = false;
-				}
-				if(!$currentUser->isAdminUser() && $newRow['activitytype'] != 'Task' && $newRow['visibility'] == 'Private' && $ownerId && $visibility) {
-					foreach($newRow as $data => $value) {
-						if(in_array($data, $visibleFields) != -1) {
-							unset($newRow[$data]);
-						}
-					}
-					$newRow['subject'] = vtranslate('Busy','Events').'*';
-				}
-				if($newRow['activitytype'] == 'Task') {
-					unset($newRow['visibility']);
-				}
-
-			}
 
 			$record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
 			$record->setData($newRow)->setModuleFromInstance($relationModule)->setRawData($row);
 			$record->setId($row['crmid']);
 			$relatedRecordList[$row['crmid']] = $record;
-			if($relationModuleName == 'Calendar' && !$currentUser->isAdminUser() && $newRow['activitytype'] == 'Task' && isToDoPermittedBySharing($row['crmid']) == 'no') { 
-				$recordsToUnset[] = $row['crmid'];
-			}
 		}
 		$pagingModel->calculatePageRange($relatedRecordList);
 
@@ -534,11 +446,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		if ($position) {
 			$split = preg_split('/ FROM /i', $relationQuery);
 			$splitCount = php7_count($split);
-			if($relatedModuleName == 'Calendar') {
-				$relationQuery = 'SELECT DISTINCT vtiger_crmentity.crmid, vtiger_activity.activitytype ';
-			} else {
-				$relationQuery = 'SELECT COUNT(DISTINCT vtiger_crmentity.crmid) AS count';
-			}
+            $relationQuery = 'SELECT COUNT(DISTINCT vtiger_crmentity.crmid) AS count';
 			for ($i=1; $i<$splitCount; $i++) {
 				$relationQuery = $relationQuery. ' FROM ' .$split[$i];
 			}
@@ -549,21 +457,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		}
 		$result = $db->pquery($relationQuery, array());
 		if ($result) {
-			if($relatedModuleName == 'Calendar') {
-				$count = 0;
-				for($i=0;$i<$db->num_rows($result);$i++) {
-					$id = $db->query_result($result, $i, 'crmid');
-					$activityType = $db->query_result($result, $i, 'activitytype');
-					if(!$currentUser->isAdminUser() && $activityType == 'Task' && isToDoPermittedBySharing($id) == 'no') {
-						continue;
-					} else {
-						$count++;
-					}
-				}
-				return $count;
-			} else {
-				return $db->query_result($result, 0, 'count');
-			}
+            return $db->query_result($result, 0, 'count');
 		} else {
 			return 0;
 		}
