@@ -154,7 +154,8 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             $query['updatedMin'] = $this->googleFormat(Google_Utils_Helper::getSyncTime('Calendar', $user));
             //shows deleted by default
         }
-        $query['updatedMin'] =  date('Y-m-d\TH:i:s\Z', strtotime("-7 days"));
+
+        $query['updatedMin'] =  date('Y-m-d\TH:i:s\Z', strtotime('-7 days'));
 
         $query['orderBy'] = 'startTime';
         $query['timeMin'] = date('c',strtotime("-30 days"));
