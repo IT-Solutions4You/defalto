@@ -9,8 +9,6 @@
  * *********************************************************************************** */
 
 vimport('~~/modules/WSAPP/synclib/connectors/TargetConnector.php');
-vimport('~~/libraries/google-api-php-client/src/Google/Client.php');
-vimport('~~/libraries/google-api-php-client/src/Google/Service/Calendar.php');
 
 Class Google_Calendar_Connector extends WSAPP_TargetConnector {
     
@@ -27,19 +25,24 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
     protected $eventCalendarFieldMappingTableName = 'vtiger_google_event_calendar_mapping';
     protected $calendars;
 
-    public function __construct($oauth2Connection) {
+    public function __construct($oauth2Connection)
+    {
         $this->apiConnection = $oauth2Connection;
-        $this->client = new Google_Client();
+        $this->client = new Google\Client();
+
         $this->client->setClientId($oauth2Connection->getClientId());
         $this->client->setClientSecret($oauth2Connection->getClientSecret());
-        $this->client->setRedirectUri($oauth2Connection->getRedirectUri());
         $this->client->setScopes($oauth2Connection->getScope());
+        $this->client->setRedirectUri($oauth2Connection->getRedirectUri());
         $this->client->setAccessType($oauth2Connection->getAccessType());
         $this->client->setApprovalPrompt($oauth2Connection->getApprovalPrompt());
+
         try {
             $this->client->setAccesstoken($oauth2Connection->getAccessToken());
-        } catch(Exception $e) {} //suppressing invalid access-token exception
-        $this->service = new Google_Service_Calendar($this->client);
+        } catch (Exception $e) {
+        } //suppressing invalid access-token exception
+
+        $this->service = new Google\Service\Calendar($this->client);
     }
 
     public function getName() {
@@ -140,7 +143,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
         if($this->apiConnection->isTokenExpired()) {
             $this->apiConnection->refreshToken();
             $this->client->setAccessToken($this->apiConnection->getAccessToken());
-            $this->service = new Google_Service_Calendar($this->client);
+            $this->service = new Google\Service\Calendar($this->client);
         }
         $query = array(
             'maxResults' => $this->maxResults,
@@ -271,7 +274,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if($this->apiConnection->isTokenExpired()) {
                 $this->apiConnection->refreshToken();
                 $this->client->setAccessToken($this->apiConnection->getAccessToken());
-                $this->service = new Google_Service_Calendar($this->client);
+                $this->service = new Google\Service\Calendar($this->client);
             }
             try {
                 if ($record->getMode() == WSAPP_SyncRecordModel::WSAPP_UPDATE_MODE) {
@@ -310,7 +313,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
     public function transformToTargetRecord($vtEvents, $user = false) {
         $records = array();
         foreach ($vtEvents as $vtEvent) {
-            $newEvent = new Google_Service_Calendar_Event();
+            $newEvent = new Google\Service\Calendar\Event();
 
             if ($vtEvent->getMode() == WSAPP_SyncRecordModel::WSAPP_DELETE_MODE) {
                 $newEvent->setId($vtEvent->get('_id'));
@@ -320,7 +323,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                     try {
                         $this->client->setAccessToken($this->apiConnection->getAccessToken());
                     } catch(Exception $e) {}//suppressing invalid access-token exception if access revoked
-                    $this->service = new Google_Service_Calendar($this->client);
+                    $this->service = new Google\Service\Calendar($this->client);
                 }
                 try {
                     $calendarId = 'primary';
@@ -346,11 +349,11 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if (empty($endTime)) {
                 $endTime = "00:00";
             }
-            $start = new Google_Service_Calendar_EventDateTime();
+            $start = new Google\Service\Calendar\EventDateTime();
             $start->setDateTime($this->googleFormat($startDate . ' ' . $startTime));
             $newEvent->setStart($start);
             
-            $end = new Google_Service_Calendar_EventDateTime();
+            $end = new Google\Service\Calendar\EventDateTime();
             $end->setDateTime($this->googleFormat($endDate. ' ' .$endTime)); 
             $newEvent->setEnd($end);
             
@@ -363,7 +366,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if(isset($attendees)) {
                 foreach($attendees as $attendee) {
                     if(!empty($attendee['email'])) {
-                        $eventAttendee = new Google_Service_Calendar_EventAttendee();
+                        $eventAttendee = new Google\Service\Calendar\EventAttendee();
                         $eventAttendee->setEmail($attendee['email']);
                         $googleAttendees[] = $eventAttendee;
                     }
@@ -426,5 +429,3 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
     }
 
 }
-?>
-
