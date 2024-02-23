@@ -2588,10 +2588,6 @@ input[type=checkbox]:checked {
     margin: 10px 0;
 }
 
-.companydetailsedit .company-logo-content img {
-    width: 100%;
-}
-
 .companyLogo img {
     max-width: 95%;
 }
