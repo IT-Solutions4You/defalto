@@ -86,34 +86,6 @@ class PDFMaker_Module_Model extends Vtiger_Module_Model
         return array();
     }
 
-    /**
-     * Function to get Settings links
-     * @return array
-     */
-    public function getSettingLinks()
-    {
-        $settingsLinks = array();
-        $currentUserModel = Users_Record_Model::getCurrentUserModel();
-
-        if ($currentUserModel->isAdminUser()) {
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => vtranslate('LBL_UPGRADE', $this->getName()),
-                'linkurl' => 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport&mode=importUserModuleStep1',
-                'linkicon' => ''
-            );
-
-            $settingsLinks[] = array(
-                'linktype' => 'LISTVIEWSETTING',
-                'linklabel' => vtranslate('LBL_UNINSTALL', $this->getName()),
-                'linkurl' => 'index.php?module=' . $this->getName() . '&view=Uninstall',
-                'linkicon' => ''
-            );
-        }
-
-        return $settingsLinks;
-    }
-
     public function getNameFields()
     {
         $nameFieldObject = Vtiger_Cache::get('EntityField', $this->getName());
