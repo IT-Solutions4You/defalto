@@ -33,7 +33,6 @@ if(defined('VTIGER_UPGRADE')) {
 	updateVtlibModule('SMSNotifier', "packages/vtiger/optional/SMSNotifier.zip");
 	updateVtlibModule("Webforms","packages/vtiger/optional/Webforms.zip");
 	installVtlibModule('Google', 'packages/vtiger/optional/Google.zip');
-	installVtlibModule('EmailTemplates', 'packages/vtiger/optional/EmailTemplates.zip');
 
 	// updated language packs.
 
@@ -1404,8 +1403,6 @@ Migration_Index_View::ExecuteQuery($sql, array('isLinkPermitted', 'Documents', '
 $sql = 'UPDATE vtiger_links SET handler = ?, handler_class = ?, handler_path = ? WHERE linklabel = ?';
 Migration_Index_View::ExecuteQuery($sql, array('isLinkPermitted', 'ProjectTask', 'modules/ProjectTask/ProjectTask.php', 'Add Project Task'));
 
-Migration_Index_View::ExecuteQuery('DELETE FROM vtiger_settings_field WHERE name=?', array('EMAILTEMPLATES'));
-
 $tabIdList = array();
 $tabIdList[] = getTabid('Invoice');
 $tabIdList[] = getTabid('PurchaseOrder');
@@ -1786,10 +1783,6 @@ $checkResult = $adb->pquery($checkQuery,array('Maldivian Ruffiya'));
 if($adb->num_rows($checkResult) <= 0) {
 	Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_currencies VALUES ('.$adb->getUniqueID("vtiger_currencies").',"Maldivian Ruffiya","MVR","MVR")',array());
 }
-
-
-$result = $adb->pquery('SELECT count(*) AS count FROM vtiger_emailtemplates', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_emailtemplates_seq SET id = ?', array(1 + ((int)$adb->query_result($result, 0, 'count'))));
 
 $usersInstance = Vtiger_Module::getInstance('Users');
 $blockInstance = Vtiger_Block::getInstance('LBL_MORE_INFORMATION', $usersInstance);

@@ -236,15 +236,6 @@ function validateImageFile($file_details) {
 }
 
 /**
- * 	This function is used to get the Email Template Details like subject and content for particular template.
- * 	@param integer $templateid  - Template Id for an Email Template
- * 	return array $returndata - Returns Subject, Body of Template of the the particular email template.
- */
-function getTemplateDetails($templateid) {
-	return Vtiger_Deprecated::getTemplateDetails($templateid);
-}
-
-/**
  * 	This function is used to merge the Template Details with the email description
  *  @param string $description  -body of the mail(ie template)
  * 	@param integer $tid  - Id of the entity

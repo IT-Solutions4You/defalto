@@ -56,7 +56,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             return 'module=EMAILMaker&view=Popup&src_record=' . $sourceRecord . '&src_module=' . $sourceModule;
         }
 
-        return 'module=EmailTemplates&view=Popup&src_record=' . $sourceRecord . '&src_module=' . $sourceModule;
+        return '';
     }
 
     /**

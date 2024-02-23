@@ -96,8 +96,11 @@ class Vtiger_Mailer extends PHPMailer {
 	 */
 	function initFromTemplate($emailtemplate) {
 		global $adb;
-		$result = $adb->pquery("SELECT * from vtiger_emailtemplates WHERE templatename=? AND foldername=?",
-			Array($emailtemplate, 'Public'));
+		$result = $adb->pquery(
+			'SELECT * from vtiger_emakertemplates WHERE templatename = ?',
+			[$emailtemplate]
+		);
+
 		if($adb->num_rows($result)) {
 			$this->IsHTML(true);
 			$usesubject = $adb->query_result($result, 0, 'subject');

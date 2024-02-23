@@ -492,4 +492,27 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
         return $adb->query_result($result, 0, 'templateid');
     }
+
+    /**
+     * Fetch all templates for given module.
+     *
+     * @param string $moduleName
+     *
+     * @return array
+     */
+    public static function getAllForModule(string $moduleName): array
+    {
+        $db = PearDatabase::getInstance();
+        $return = [];
+
+        $sql = 'SELECT * FROM vtiger_emakertemplates WHERE deleted = 0 AND module = ?';
+        $res = $db->pquery($sql, [$moduleName]);
+
+        while ($row = $db->num_rows($res)) {
+            $recordModel = new self();
+            $return[$row['templateid']] = $recordModel->setData($row)->setModule('EMAILMaker');
+        }
+
+        return $return;
+    }
 }

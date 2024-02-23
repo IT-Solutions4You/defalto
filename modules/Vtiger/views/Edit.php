@@ -29,7 +29,7 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
 
-		$nonEntityModules = array('Users', 'Portal', 'Reports', 'Rss', 'EmailTemplates');
+		$nonEntityModules = array('Users', 'Portal', 'Reports', 'Rss');
 		if ($record && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($record);
 			if ($recordEntityName !== $moduleName) {

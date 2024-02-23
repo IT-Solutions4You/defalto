@@ -1740,35 +1740,6 @@
 		<query>ALTER TABLE vtiger_defaultcv ADD CONSTRAINT fk_1_vtiger_defaultcv FOREIGN KEY (tabid) REFERENCES vtiger_tab(tabid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_emailtemplates">
-		<field name="foldername" type="C" size="100" />
-		<field name="templatename" type="C" size="100" />
-		<field name="templatepath" type="C" size="100" />
-		<field name="subject" type="C" size="100" />
-		<field name="description" type="X" />
-		<field name="body" type="X" />
-		<field name="deleted" type="I" size="1">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="templateid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="systemtemplate" type="I" size="1">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="module" type="C" size="100" />
-
-		<index name="emailtemplates_foldernamd_templatename_subject_idx">
-			<col>foldername</col>
-			<col>templatename</col>
-			<col>subject</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_faq">
 		<field name="id" type="I" size="11">
 			<key />

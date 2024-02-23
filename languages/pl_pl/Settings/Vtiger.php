@@ -81,9 +81,6 @@ $languageStrings = array(
 	'INVENTORYNOTIFICATION' => 'Powiadomienia magazynowe',
 	'LBL_INV_NOTIF_DESCRIPTION' => 'Zmień powiadomienia magazynowe',
 	
-	'EMAILTEMPLATES' => 'Szablony mail',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Zarządzaj szablonami mail',
-	
 	'LBL_COMPANY_DETAILS' => 'Szczegóły firmy',
 	'LBL_COMPANY_DESCRIPTION' => 'Dane adresowe firmy',
 	

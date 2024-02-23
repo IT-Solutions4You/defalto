@@ -25,19 +25,6 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 		$salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
 		$projectModuleModel = Vtiger_Module_Model::getInstance('Project');
 
-		$emailModuleModel = Vtiger_Module_Model::getInstance('Emails');
-
-		if($currentUserModel->hasModulePermission($emailModuleModel->getId())) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_SEND_EMAIL',
-				'linkurl' => 'javascript:Vtiger_Detail_Js.triggerSendEmail("index.php?module='.$this->getModule()->getName().
-								'&view=MassActionAjax&mode=showComposeEmailForm&step=step1","Emails");',
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-
 		if($currentUserModel->hasModuleActionPermission($invoiceModuleModel->getId(), 'CreateView')) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEW',

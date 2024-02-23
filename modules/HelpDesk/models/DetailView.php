@@ -22,18 +22,6 @@ class HelpDesk_DetailView_Model extends Vtiger_DetailView_Model {
 		$linkModelList = parent::getDetailViewLinks($linkParams);
 		$recordModel = $this->getRecord();
 
-		$emailModuleModel = Vtiger_Module_Model::getInstance('Emails');
-		if($currentUserModel->hasModulePermission($emailModuleModel->getId())) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_SEND_EMAIL',
-				'linkurl' => 'javascript:Vtiger_Detail_Js.triggerSendEmail("index.php?module='.$this->getModule()->getName().
-								'&view=MassActionAjax&mode=showComposeEmailForm&step=step1","Emails");',
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
-
 		$quotesModuleModel = Vtiger_Module_Model::getInstance('Faq');
 		if($currentUserModel->hasModuleActionPermission($quotesModuleModel->getId(), 'CreateView')) {
 			$basicActionLink = array(

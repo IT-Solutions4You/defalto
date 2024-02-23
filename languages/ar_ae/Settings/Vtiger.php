@@ -72,9 +72,6 @@ $languageStrings = array(
 	'LBL_MENU_DESC' => 'Customize Menu Sequence',
 	'LBL_MENU_EDITOR_MESSAGE' => 'فإن العدد الفعلي للعناصر القائمة المعروضة تعتمد على حجم الشاشة، وربما تكون أقل من العناصر المحددة.',
 
-	'EMAILTEMPLATES' => 'E-mail Templates',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Manage templates for E-Mail module',
-
 	'LBL_COMPANY_DETAILS' => 'Company Details',
 	'LBL_COMPANY_DESCRIPTION' => 'Specify business address of company',
 

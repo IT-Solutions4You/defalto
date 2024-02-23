@@ -283,16 +283,6 @@ class Vtiger_Deprecated {
 		}
 	}
 
-	static function getTemplateDetails($templateid) {
-		global $adb;
-		$returndata = Array();
-		$result = $adb->pquery("select body, subject from vtiger_emailtemplates where templateid=?", array($templateid));
-		$returndata[] = $templateid;
-		$returndata[] = $adb->query_result($result, 0, 'body');
-		$returndata[] = $adb->query_result($result, 0, 'subject');
-		return $returndata;
-	}
-
 	static function getAnnouncements() {
 		global $adb;
 		$announcement = "";

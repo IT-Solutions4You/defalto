@@ -71,9 +71,6 @@ $languageStrings = array(
 	'LBL_MENU_DESC' => 'Customize Menu Sequence',
 	'LBL_MENU_EDITOR_MESSAGE' => 'The actual number of menu items displayed will depend on the screen size and might be less than selected items.',
 
-	'EMAILTEMPLATES' => 'E-mail Templates',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Manage templates for E-Mail module',
-
 	'LBL_COMPANY_DETAILS' => 'Company Details',
 	'LBL_COMPANY_DESCRIPTION' => 'Specify business address of company',
 

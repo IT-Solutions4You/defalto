@@ -25,7 +25,6 @@ if(defined('VTIGER_UPGRADE')) {
 	updateVtlibModule('WSAPP', 'packages/vtiger/mandatory/WSAPP.zip');
         updateVtlibModule('Arabic_ar_ae', 'packages/vtiger/optional/Arabic_ar_ae.zip');
         updateVtlibModule('Assets', 'packages/vtiger/optional/Assets.zip');
-        updateVtlibModule('EmailTemplates', 'packages/vtiger/optional/EmailTemplates.zip');
         updateVtlibModule('Google', 'packages/vtiger/optional/Google.zip');
         updateVtlibModule('ModComments', 'packages/vtiger/optional/ModComments.zip');
         updateVtlibModule('Projects', 'packages/vtiger/optional/Projects.zip');
@@ -893,9 +892,6 @@ echo "<br>";
 //91 ends
 
 //92 starts
-$result = $adb->pquery('SELECT max(templateid) AS maxtemplateid FROM vtiger_emailtemplates', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_emailtemplates_seq SET id = ?', array(1 + ((int)$adb->query_result($result, 0, 'maxtemplateid'))));
-
  $result = $adb->pquery("SELECT 1 FROM vtiger_eventhandlers WHERE event_name=? AND handler_class=?",
                                     array('vtiger.entity.aftersave','Vtiger_RecordLabelUpdater_Handler'));
 if($adb->num_rows($result) <= 0) {

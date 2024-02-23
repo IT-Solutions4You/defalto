@@ -128,7 +128,7 @@
                                         <button type="button" class="btn btn-small btn-default" id="browseCrm" data-url="{$DOCUMENTS_URL}" title="{vtranslate('LBL_BROWSE_CRM',$MODULE)}">{vtranslate('LBL_BROWSE_CRM',$MODULE)}</button>
                                     </div>
                                     <div class="col-lg-4 insertTemplate">
-                                        <button id="selectEmailTemplate" class="btn btn-success" data-url="module=EmailTemplates&view=Popup">{vtranslate('LBL_SELECT_EMAIL_TEMPLATE',$MODULE)}</button>
+                                        <button id="selectEmailTemplate" class="btn btn-success" data-url="module=EMAILMaker&view=Popup">{vtranslate('LBL_SELECT_EMAIL_TEMPLATE',$MODULE)}</button>
                                     </div>
                                 </div>
                                 <div id="attachments">

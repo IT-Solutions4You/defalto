@@ -219,7 +219,8 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 
 		if($taskType == 'VTEmailTask') {
 			$worflowModuleName = $workflowModel->get('module_name');
-			$emailTemplates = EmailTemplates_Record_Model::getAllForEmailTask($worflowModuleName);
+            $emailTemplates = EMAILMaker_Record_Model::getAllForModule($worflowModuleName);
+
 			if(!empty($emailTemplates)) {
 				$viewer->assign('EMAIL_TEMPLATES',$emailTemplates);
 			}

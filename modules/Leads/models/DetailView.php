@@ -20,24 +20,12 @@ class Leads_DetailView_Model extends Accounts_DetailView_Model {
 
 		$moduleModel = $this->getModule();
 		$recordModel = $this->getRecord();
-		$emailModuleModel = Vtiger_Module_Model::getInstance('Emails');
 
 		$baseDetailViewModel = new Vtiger_DetailView_Model();
 		$baseDetailViewModel->setModule($moduleModel);
 		$baseDetailViewModel->setRecord($recordModel);
 
 		$linkModelList = $baseDetailViewModel::getDetailViewLinks($linkParams);
-
-		if($currentUserModel->hasModulePermission($emailModuleModel->getId())) {
-			$basicActionLink = array(
-				'linktype' => 'DETAILVIEWBASIC',
-				'linklabel' => 'LBL_SEND_EMAIL',
-				'linkurl' => 'javascript:Vtiger_Detail_Js.triggerSendEmail("index.php?module='.$this->getModule()->getName().
-								'&view=MassActionAjax&mode=showComposeEmailForm&step=step1","Emails");',
-				'linkicon' => ''
-			);
-			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-		}
 
 		//TODO: update the database so that these separate handlings are not required
 		$index=0;
