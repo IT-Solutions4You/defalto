@@ -1856,7 +1856,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
 
         vtUtils.showSelect2ElementView(container.find('[name="layoutEditorModules"]'));
 
-        container.on('change', '[name="layoutEditorModules"]', function (e) {
+        container.off().on('change', '[name="layoutEditorModules"]', function (e) {
             let currentTarget = jQuery(e.currentTarget),
                 selectedModule = currentTarget.val();
 
@@ -1865,7 +1865,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
             }
 
             thisInstance.getModuleLayoutEditor(selectedModule).then(function (data) {
-                contentsDiv.replaceWith(data);
+                contentsDiv.html(data);
                 thisInstance.fieldListTabClicked = false;
                 thisInstance.registerEvents();
             });

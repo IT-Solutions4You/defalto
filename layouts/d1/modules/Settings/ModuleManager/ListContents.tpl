@@ -10,8 +10,10 @@
 		<div class="px-4 pb-4">
 			<div id="listview-actions" class="listview-actions-container bg-body rounded">
 				<div class="container-fluid p-3">
-					<div class="row">
-						<h4 class="col-lg">{vtranslate('LBL_MODULE_MANAGER', $QUALIFIED_MODULE)}</h4>
+					<div class="row align-items-center">
+						<div class="col-lg">
+							<h4 class="m-0">{vtranslate('LBL_MODULE_MANAGER', $QUALIFIED_MODULE)}</h4>
+						</div>
 						<div class="col-auto ms-auto">
 							<div class="btn-group">
 								<button class="btn btn-outline-secondary me-2" type="button" onclick='window.location.href="{$IMPORT_USER_MODULE_FROM_FILE_URL}"'>

@@ -15,8 +15,10 @@
             {assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
             <input type=hidden name="timeFormatOptions" data-value='{$DAY_STARTS}'/>
             <div class="container-fluid border-bottom p-3">
-                <div class="row">
-                    <h4 class="col-lg">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</h4>
+                <div class="row align-items-center">
+                    <div class="col-lg">
+                        <h4 class="m-0">{vtranslate({$BLOCK_LABEL_KEY},{$MODULE_NAME})}</h4>
+                    </div>
                     <div class="col-lg-auto">
                         <div class="detailViewButtoncontainer">
                             <div class="btn-group">
@@ -34,7 +36,7 @@
                             {if !$FIELD_MODEL->isViewableInDetailView()}
                                 {continue}
                             {/if}
-                            <div class="py-2 col-lg-6">
+                            <div class="py-2 col-lg-6 border-bottom">
                                 <div class="row">
                                     {if $FIELD_MODEL->get('uitype') eq "83"}
                                         {foreach item=tax key=count from=$TAXCLASS_DETAILS}

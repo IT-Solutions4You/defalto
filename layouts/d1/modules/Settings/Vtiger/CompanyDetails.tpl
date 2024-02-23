@@ -10,7 +10,7 @@
     <div class="px-4 pb-4">
         <div class="bg-body rounded">
             <input type="hidden" id="supportedImageFormats" value='{ZEND_JSON::encode(Settings_Vtiger_CompanyDetails_Model::$logoSupportedFormats)}'/>
-            <div class="container-fluid p-3">
+            <div class="container-fluid p-3 border-bottom">
                 <div class="row align-items-center">
                     <div class="col">
                         <h4 class="m-0">{vtranslate('LBL_COMPANY_DETAILS', $QUALIFIED_MODULE)}</h4>
@@ -22,16 +22,16 @@
                     </div>
                 </div>
             </div>
-            <div id="CompanyDetailsContainer" class="p-3 detailViewContainer {if !empty($ERROR_MESSAGE)}hide{/if}">
-                <div class="block mb-4">
-                    <div class="border-bottom">
-                        <h5>{vtranslate('LBL_COMPANY_LOGO',$QUALIFIED_MODULE)}</h5>
+            <div id="CompanyDetailsContainer" class="detailViewContainer {if !empty($ERROR_MESSAGE)}hide{/if}">
+                <div class="block">
+                    <div class="border-bottom p-3">
+                        <span class="fs-4 fw-bold">{vtranslate('LBL_COMPANY_LOGO',$QUALIFIED_MODULE)}</span>
                     </div>
-                    <div class="blockData">
+                    <div class="blockData p-3">
                         <div class="container-fluid">
-                            <div class="row py-3">
-                                <div class="col-lg-4 fieldLabel"></div>
-                                <div class="col-lg fieldValue">
+                            <div class="row py-3 border-bottom">
+                                <div class="col-lg-3 fieldLabel"></div>
+                                <div class="col-lg-6 fieldValue">
                                     <div class="companyLogo">
                                         {if $MODULE_MODEL->getLogoPath()}
                                             <img src="{$MODULE_MODEL->getLogoPath()}" width="240"/>
@@ -44,19 +44,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="block mb-4">
-                    <div class="border-bottom">
-                        <h5>{vtranslate('LBL_COMPANY_INFORMATION',$QUALIFIED_MODULE)}</h5>
+                <div class="block">
+                    <div class="border-bottom p-3">
+                        <span class="fs-4 fw-bold">{vtranslate('LBL_COMPANY_INFORMATION',$QUALIFIED_MODULE)}</span>
                     </div>
-                    <div class="blockData">
+                    <div class="blockData p-3">
                         <div class="container-fluid">
                             {foreach from=$MODULE_MODEL->getFields() item=FIELD_TYPE key=FIELD}
                                 {if $FIELD neq 'logoname' && $FIELD neq 'logo' }
                                     <div class="row py-3 border-bottom">
-                                        <div class="col-lg-4 fieldLabel">
+                                        <div class="col-lg-3 fieldLabel">
                                             <label>{vtranslate($FIELD,$QUALIFIED_MODULE)}</label>
                                         </div>
-                                        <div class="col-lg fieldValue">
+                                        <div class="col-lg-6 fieldValue">
                                             {if $FIELD eq 'address'} {decode_html($MODULE_MODEL->get($FIELD))|nl2br} {else} {decode_html($MODULE_MODEL->get($FIELD))} {/if}
                                         </div>
                                     </div>
@@ -71,14 +71,14 @@
                     <input type="hidden" name="module" value="Vtiger"/>
                     <input type="hidden" name="parent" value="Settings"/>
                     <input type="hidden" name="action" value="CompanyDetailsSave"/>
-                    <div class="container-fluid p-3">
-                        <div class="border-bottom">
-                            <h5>{vtranslate('LBL_COMPANY_LOGO',$QUALIFIED_MODULE)}</h5>
+                    <div class="border-bottom">
+                        <div class="border-bottom p-3">
+                            <span class="fs-4 fw-bold">{vtranslate('LBL_COMPANY_LOGO',$QUALIFIED_MODULE)}</span>
                         </div>
-                        <div class="py-2">
+                        <div class="p-3">
                             <div class="row form-group companydetailsedit py-2">
-                                <div class="col-lg-4 fieldLabel"></div>
-                                <div class="col-lg fieldValue">
+                                <div class="col-lg-3 fieldLabel"></div>
+                                <div class="col-lg-6 fieldValue">
                                     <div class="company-logo-content rounded border mb-3">
                                         <img src="{$MODULE_MODEL->getLogoPath()}" width="240"/>
                                         <hr>
@@ -90,17 +90,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="border-bottom">
-                            <h5>{vtranslate('LBL_COMPANY_INFORMATION',$QUALIFIED_MODULE)}</h5>
+                        <div class="border-bottom p-3">
+                            <span class="fs-4 fw-bold">{vtranslate('LBL_COMPANY_INFORMATION',$QUALIFIED_MODULE)}</span>
                         </div>
-                        <div class="py-2">
+                        <div class="p-3">
                             {foreach from=$MODULE_MODEL->getFields() item=FIELD_TYPE key=FIELD}
                                 {if $FIELD neq 'logoname' && $FIELD neq 'logo' }
                                     <div class="row form-group companydetailsedit py-2">
-                                        <label class="col-lg-4 fieldLabel control-label ">
+                                        <label class="col-lg-3 fieldLabel control-label ">
                                             {vtranslate($FIELD,$QUALIFIED_MODULE)}{if $FIELD eq 'organizationname'}&nbsp;<span class="redColor">*</span>{/if}
                                         </label>
-                                        <div class="col-lg fieldValue">
+                                        <div class="col-lg-6 fieldValue">
                                             {if $FIELD eq 'address'}
                                                 <textarea class="form-control resize-vertical" rows="2" name="{$FIELD}">{$MODULE_MODEL->get($FIELD)}</textarea>
                                             {elseif $FIELD eq 'website'}

@@ -9,7 +9,7 @@
 	{foreach key=index item=jsModel from=$SCRIPTS}
 		<script type="{$jsModel->getType()}" src="{$jsModel->getSrc()}"></script>
 	{/foreach}
-	<div class="form-group row py-2">
+	<div class="form-group row py-2 px-3">
 		<div class="col-lg-3 col-md-3 col-sm-3 control-label fieldLabel">
 			<strong>{vtranslate('LBL_COPY_PRIVILEGES_FROM',"Settings:Roles")}</strong>
 		</div>
@@ -66,12 +66,12 @@
 	{/if}
 {/if}
 <div class="row">
-	<div class="col-lg-12">
-		<h5>{vtranslate('LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE',$QUALIFIED_MODULE)}</h5><br>
+	<div class="col-lg-12 p-3 border-bottom">
+		<span class="fs-4 fw-bold">{vtranslate('LBL_EDIT_PRIVILEGES_OF_THIS_PROFILE',$QUALIFIED_MODULE)}</span><br>
 	</div>
 </div>
 <div class="row">
-	<div class="col-lg-12">
+	<div class="col-lg-12 p-3">
 		<table class="table table-bordered profilesEditView">
 			<thead>
 				<tr class="blockHeader">

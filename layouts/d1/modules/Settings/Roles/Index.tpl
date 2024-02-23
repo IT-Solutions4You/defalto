@@ -7,23 +7,28 @@
 {* modules/Settings/Roles/views/Index.php *}
 {strip}
     <div class="listViewPageDiv px-4 pb-4" id="listViewContent">
-        <div class="p-3 bg-body rounded">
-            <br>
-            <div class="clearfix treeView">
-                <ul>
-                    <li data-role="{$ROOT_ROLE->getParentRoleString()}" data-roleid="{$ROOT_ROLE->getId()}">
-                        <div class="toolbar-handle">
-                            <a href="javascript:;" class="btn bg-primary text-white droppable">{$ROOT_ROLE->getName()}</a>
-                            <div class="toolbar btn btn-outline-secondary ms-2" title="{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}">
-                                <a href="{$ROOT_ROLE->getCreateChildUrl()}" data-url="{$ROOT_ROLE->getCreateChildUrl()}" data-action="modal">
-                                    <i class="fa fa-plus"></i>
-                                </a>
+        <div class="bg-body rounded">
+            <div class="p-3 border-bottom">
+                <h4 class="m-0">{vtranslate('Roles', $QUALIFIED_MODULE)}</h4>
+            </div>
+            <div class="p-3 clearfix">
+                <br>
+                <div class="treeView">
+                    <ul>
+                        <li data-role="{$ROOT_ROLE->getParentRoleString()}" data-roleid="{$ROOT_ROLE->getId()}">
+                            <div class="toolbar-handle">
+                                <a href="javascript:;" class="btn bg-primary text-white droppable">{$ROOT_ROLE->getName()}</a>
+                                <div class="toolbar btn btn-outline-secondary ms-2" title="{vtranslate('LBL_ADD_RECORD', $QUALIFIED_MODULE)}">
+                                    <a href="{$ROOT_ROLE->getCreateChildUrl()}" data-url="{$ROOT_ROLE->getCreateChildUrl()}" data-action="modal">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        {assign var="ROLE" value=$ROOT_ROLE}
-                        {include file=vtemplate_path("RoleTree.tpl", "Settings:Roles")}
-                    </li>
-                </ul>
+                            {assign var="ROLE" value=$ROOT_ROLE}
+                            {include file=vtemplate_path("RoleTree.tpl", "Settings:Roles")}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

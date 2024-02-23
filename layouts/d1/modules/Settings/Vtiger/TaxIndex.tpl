@@ -9,7 +9,7 @@
     <div class="px-4 pb-4">
         <div class="rounded bg-body" id="TaxCalculationsContainer">
             <div class="editViewHeader p-3 border-bottom">
-                <h4>{vtranslate('LBL_TAX_CALCULATIONS', $QUALIFIED_MODULE)}</h4>
+                <h4 class="m-0">{vtranslate('LBL_TAX_CALCULATIONS', $QUALIFIED_MODULE)}</h4>
             </div>
             <div class="contents tabbable pt-3">
                 <ul class="nav nav-tabs massEditTabs border-bottom">

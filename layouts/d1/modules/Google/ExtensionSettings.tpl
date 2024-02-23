@@ -11,8 +11,12 @@
 <input type="hidden" name="settingsPage" value="{$RETURN_URL}">
 <div class="px-4 pb-4 extensionContents">
     <div class="rounded bg-body">
-        <h3 class="module-title p-3 border-bottom"> {vtranslate('LBL_SELECT_MODULES_TO_SYNC', $MODULE)} </h3>
-
+        <div class="p-3 border-bottom">
+            <h4 class="m-0">{vtranslate('Google', $QUALIFIED_MODULE)}</h4>
+        </div>
+        <div class="p-3 border-bottom">
+            <span class="fs-4 fw-bold">{vtranslate('LBL_SELECT_MODULES_TO_SYNC', $MODULE)}</span>
+        </div>
         <form name="settingsForm" action="index.php" method="POST">
             <input type="hidden" name="module" value="{$MODULE}"/>
             <input type="hidden" name="action" value="SaveSyncSettings"/>
@@ -103,8 +107,8 @@
             <div class="container-fluid">
                 {if !$IS_SYNC_READY}
                     <div class="row my-3">
-                        <div class="col-sm-12 col-xs-12">
-                            <h3 class="module-title pull-left"> {vtranslate('LBL_GOOGLE_CONNECT_MSG', $MODULE)} </h3>
+                        <div class="col-lg p-3 border-bottom">
+                            <span class="fs-4 fw-bold"> {vtranslate('LBL_GOOGLE_CONNECT_MSG', $MODULE)} </span>
                         </div>
                     </div>
                     <div class="row">

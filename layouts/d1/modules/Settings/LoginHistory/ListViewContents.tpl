@@ -18,8 +18,11 @@
     <input type="hidden" value="{$LISTVIEW_ENTRIES_COUNT}" id="noOfEntries">
     <div class="px-4 pb-4">
         <div id="listview-actions" class="listview-actions-container bg-body rounded">
-            <div class="row p-3">
-                <div class="col-lg-6 usersListDiv">
+            <div class="row pt-3 px-3 align-items-center">
+                <div class="col-lg pb-3">
+                    <h4 class="m-0">{vtranslate('LBL_LOGIN_HISTORY_DETAILS', $QUALIFIED_MODULE)}</h4>
+                </div>
+                <div class="col-lg pb-3 usersListDiv">
                     <select class="select2 col-md-4" id="usersFilter">
                         <option value="">{vtranslate('LBL_ALL', $QUALIFIED_MODULE)}</option>
                         {foreach item=USERNAME key=USER from=$USERSLIST}
@@ -27,8 +30,7 @@
                         {/foreach}
                     </select>
                 </div>
-                <div class="col-lg"></div>
-                <div class="col-lg-auto">
+                <div class="col-lg pb-3 text-end">
                     {assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
                     {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
                 </div>
@@ -36,7 +38,7 @@
             <div class="list-content row">
                 <div class="col-sm-12 col-xs-12 ">
                     <div id="table-content" class="table-container" style="padding-top:0px !important;">
-                        <table id="listview-table" class="table listview-table">
+                        <table id="settings-listview-table" class="table listview-table table-borderless">
                             {assign var="NAME_FIELDS" value=$MODULE_MODEL->getNameFields()}
                             {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
                             <thead>
@@ -52,7 +54,7 @@
                             </thead>
                             <tbody class="overflow-y">
                             {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES}
-                                <tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}"
+                                <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}"
                                     {if method_exists($LISTVIEW_ENTRY,'getDetailViewUrl')}data-recordurl="{$LISTVIEW_ENTRY->getDetailViewUrl()}"{/if}
                                         {if method_exists($LISTVIEW_ENTRY,'getRowInfo')}data-info="{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::Encode($LISTVIEW_ENTRY->getRowInfo()))}"{/if}>
                                     {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}

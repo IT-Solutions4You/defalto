@@ -14,6 +14,13 @@
             <input type="hidden" name="action" value="SaveAjax" />
             <input type="hidden" name="parent" value="Settings" />
             <input type="hidden" class="dependentModules" value='{ZEND_JSON::encode($DEPENDENT_MODULES)}' />
+            <div class="container-fluid pb-3">
+                <div class="row">
+                    <div class="col">
+                        <h4 class="m-0">{vtranslate('LBL_SHARING_ACCESS', $QUALIFIED_MODULE)}</h4>
+                    </div>
+                </div>
+            </div>
             <div class="contents">
                 <table class="table table-borderless table-condensed sharingAccessDetails">
                     <colgroup>
@@ -39,7 +46,7 @@
                     </thead>
                     <tbody>
                         {foreach from=$ALL_MODULES key=TABID item=MODULE_MODEL}
-                            <tr data-module-name="{$MODULE_MODEL->get('name')}" class="border-top border-bottom">
+                            <tr data-module-name="{$MODULE_MODEL->get('name')}" class="border-bottom">
                                 <td>
                                     {$MODULE_MODEL->get('label')|vtranslate:$MODULE_MODEL->getName()}
                                 </td>
@@ -67,10 +74,10 @@
                     </tbody>
                 </table>
             </div>
-            <div class='modal-overlay-footer clearfix saveSharingAccess hide'>
-                <div class="row clearfix">
-                    <div class=' textAlignCenter col-lg-12 col-md-12 col-sm-12 '>
-                        <button class="btn btn-success saveButton" name="saveButton" type="submit">{vtranslate('LBL_APPLY_NEW_SHARING_RULES', $QUALIFIED_MODULE)}</button>&nbsp;&nbsp;
+            <div class="modal-overlay-footer container-fluid saveSharingAccess hide">
+                <div class="row">
+                    <div class="col text-center">
+                        <button class="btn btn-primary active saveButton" name="saveButton" type="submit">{vtranslate('LBL_APPLY_NEW_SHARING_RULES', $QUALIFIED_MODULE)}</button>&nbsp;&nbsp;
                     </div>
                 </div>
             </div>

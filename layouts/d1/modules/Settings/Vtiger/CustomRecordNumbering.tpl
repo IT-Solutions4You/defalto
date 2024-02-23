@@ -5,19 +5,25 @@
 * All Rights Reserved.
 *}
 {strip}
-	<div class="px-4 pb-4">
+	<div class="px-4 pb-4" id="customRecordNumbering">
 		<div class="detailViewContainer bg-body rounded">
 			<form id="EditView" method="POST">
 				<div class="blockData">
-					<div class="d-flex p-3 border-bottom">
-						<h4 class="m-0">{vtranslate('LBL_CUSTOMIZE_RECORD_NUMBERING', $QUALIFIED_MODULE)}</h4>
-						<button type="button" class="btn btn-outline-secondary addButton ms-auto" name="updateRecordWithSequenceNumber">{vtranslate('LBL_UPDATE_MISSING_RECORD_SEQUENCE', $QUALIFIED_MODULE)}</button>
+					<div class="container-fluid px-3 pt-3 border-bottom">
+						<div class="row align-items-center">
+							<div class="col-lg pb-3">
+								<h4 class="m-0">{vtranslate('LBL_CUSTOMIZE_RECORD_NUMBERING', $QUALIFIED_MODULE)}</h4>
+							</div>
+							<div class="col-lg-auto pb-3">
+								<button type="button" class="btn btn-outline-secondary addButton ms-auto" name="updateRecordWithSequenceNumber">{vtranslate('LBL_UPDATE_MISSING_RECORD_SEQUENCE', $QUALIFIED_MODULE)}</button>
+							</div>
+						</div>
 					</div>
-					<div class="container-fluid" id="customRecordNumbering">
+					<div class="container-fluid p-3">
 						{assign var=DEFAULT_MODULE_DATA value=$DEFAULT_MODULE_MODEL->getModuleCustomNumberingData()}
 						{assign var=DEFAULT_MODULE_NAME value=$DEFAULT_MODULE_MODEL->getName()}
 						{assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
-						<div class="row form-group py-3">
+						<div class="row form-group py-2">
 							<div class="col-lg-4 control-label fieldLabel">
 								<label>{vtranslate('LBL_SELECT_MODULE', $QUALIFIED_MODULE)}</label>
 							</div>
@@ -32,7 +38,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="row form-group py-3">
+						<div class="row form-group py-2">
 							<div class="col-lg-4 control-label fieldLabel">
 								<label>{vtranslate('LBL_USE_PREFIX', $QUALIFIED_MODULE)}</label>
 							</div>
@@ -40,7 +46,7 @@
 								<input type="text" id="prefix" class="inputElement form-control" value="{$DEFAULT_MODULE_DATA['prefix']}" data-old-prefix="{$DEFAULT_MODULE_DATA['prefix']}" name="prefix"/>
 							</div>
 						</div>
-						<div class="row form-group py-3">
+						<div class="row form-group py-2">
 							<div class="col-lg-4 control-label fieldLabel">
 								<label>
 									<b>{vtranslate('LBL_START_SEQUENCE', $QUALIFIED_MODULE)}</b>&nbsp;<span class="redColor">*</span>
@@ -52,7 +58,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="modal-footer py-3">
+				<div class="modal-footer py-3 border-top">
 					<div class="container-fluid">
 						<div class="row">
 							<div class="col text-end">
