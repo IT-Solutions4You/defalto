@@ -20,8 +20,8 @@
 	<div class="px-4 pb-4 listViewContents">
 		<div id="listview-actions" class="listview-actions-container bg-body rounded py-3">
 			{if $MODULE neq 'Currency' and $MODULE neq 'PickListDependency' and $MODULE neq 'CronTasks'}
-				<div class="container-fluid">
-					<div class="row p-3">
+				<div class="container-fluid pb-3 px-3">
+					<div class="row">
 						<div class="col-md">
 							{if $MODULE eq 'Tags'}
 								<h4>{vtranslate('LBL_MY_TAGS', $QUALIFIED_MODULE)}</h4>
