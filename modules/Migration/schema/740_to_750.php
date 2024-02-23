@@ -12,5 +12,5 @@ if (defined('VTIGER_UPGRADE')) {
 	global $current_user, $adb;
     $db = PearDatabase::getInstance();
 
-	$db->pquery("ALTER TABLE vtiger_inventorychargesrel ADD KEY record_idx (recordid)", array());	
+	$db->pquery("ALTER TABLE vtiger_inventorychargesrel ADD KEY IF NOT EXISTS record_idx (recordid)", array());
 }
