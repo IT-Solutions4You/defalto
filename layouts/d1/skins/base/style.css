@@ -3793,55 +3793,24 @@ form[name="notification_settings"] .select2-choice {
 /*******************************************
 ********** Groups view styles ********
 ********************************************/
-#s2id_memberList li > div,
-#s2id_memberEditList li > div,
-#s2id_memberViewList li > div,
-.groupMembersColors li > div {
-    margin-left: 10px;
+.Users {
+    background-color: rgba(var(--bs-danger-rgb), 0.25) !important;
+    border-color: rgba(var(--bs-danger-rgb), 0.25) !important;
 }
 
-.groupMembersColors li {
-    text-shadow: 1px 0px 2px #FFFFFF;
+.Groups {
+    background-color: rgba(var(--bs-primary-rgb), 0.25) !important;
+    border-color: rgba(var(--bs-primary-rgb), 0.25) !important;
 }
 
-#s2id_memberList .Users,
-#s2id_memberEditList .Users,
-#s2id_memberViewList .Users,
-.groupMembersColors .Users {
-    background-color: #F99984 !important;
-    background-image: none;
+.Roles {
+    background-color: rgba(var(--bs-warning-rgb), 0.25) !important;
+    border-color: rgba(var(--bs-warning-rgb), 0.25) !important;
 }
 
-#s2id_memberList .Groups,
-#s2id_memberEditList .Groups,
-#s2id_memberViewList .Groups,
-.groupMembersColors .Groups {
-    background-color: #ACD5FF !important;
-    background-image: none;
-}
-
-#s2id_memberList .Roles,
-#s2id_memberEditList .Roles,
-#s2id_memberViewList .Roles,
-.groupMembersColors .Roles {
-    background-color: #FFEC98 !important;
-    background-image: none;
-}
-
-#s2id_memberList .RoleAndSubordinates,
-#s2id_memberEditList .RoleAndSubordinates,
-#s2id_memberViewList .RoleAndSubordinates,
-.groupMembersColors .RoleAndSubordinates {
-    background-color: #C4DEA2 !important;
-    background-image: none;
-}
-
-#s2id_memberList .MultiCompany4you,
-#s2id_memberEditList .MultiCompany4you,
-#s2id_memberViewList .MultiCompany4you,
-.groupMembersColors .MultiCompany4you {
-    background-color: #aa78ce !important;
-    background-image: none;
+.RoleAndSubordinates {
+    background-color: rgba(var(--bs-success-rgb), 0.25) !important;
+    border-color: rgba(var(--bs-success-rgb), 0.25) !important;
 }
 
 .liStyleNone {

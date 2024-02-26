@@ -44,40 +44,42 @@ Settings_Vtiger_List_Js("Settings_Workflows_List_Js", {
         app.request.pjax({data:urlParams}).then(function(err, res){
             self.placeListContents(res);
             app.helper.hideProgress();
-            jQuery("input[name='workflowstatus']").bootstrapSwitch();
+            //jQuery("input[name='workflowstatus']").bootstrapSwitch();
             aDeferred.resolve(res);
 		});
         return aDeferred.promise();
     },
-    
-    registerRowClickEvent : function(){
-        var thisInstance = this;
-		var listViewContentDiv = this.getListViewContainer();
-        
-        listViewContentDiv.on('click','.listViewEntries',function(e){
-            var elem = jQuery(e.currentTarget);
-            var targetElem = jQuery(e.target);
-            if(targetElem.closest('.bootstrap-switch').length != 0){
-                return false;
-            }
-			if(targetElem.closest('.deleteRecordButton').length != 0){
-				return;
-			}
-            var recordUrl = elem.data('recordurl');
-            if(typeof recordUrl == 'undefined') {
+
+    registerRowClickEvent: function () {
+        let thisInstance = this,
+            listViewContentDiv = this.getListViewContainer();
+
+        listViewContentDiv.on('click', '.listViewEntries', function (e) {
+            let elem = jQuery(e.currentTarget),
+                targetElem = jQuery(e.target);
+
+            if (targetElem.closest('.workflow-actions').length) {
                 return;
             }
-            
-			var postData = thisInstance.getDefaultParams();
-			for(var key in postData) {
-				if(postData[key]) {
-					postData['return'+key] = postData[key];
-					delete postData[key];
-				} else {
-					delete postData[key];
-				}
-			}
-            window.location.href = recordUrl +'&'+ $.param(postData);
+
+            let recordUrl = elem.data('recordurl');
+
+            if (typeof recordUrl == 'undefined') {
+                return;
+            }
+
+            let postData = thisInstance.getDefaultParams();
+
+            for (let key in postData) {
+                if (postData[key]) {
+                    postData['return' + key] = postData[key];
+                    delete postData[key];
+                } else {
+                    delete postData[key];
+                }
+            }
+
+            window.location.href = recordUrl + '&' + $.param(postData);
         });
     },
    
@@ -119,30 +121,24 @@ Settings_Vtiger_List_Js("Settings_Workflows_List_Js", {
             }
         });
     },
-   
+
     registerEventForChangeWorkflowState: function (listViewContainer) {
-        jQuery(listViewContainer).on('switchChange.bootstrapSwitch', "input[name='workflowstatus']", function (e) {
-            var currentElement = jQuery(e.currentTarget);
-            if(currentElement.val() == 'on'){
-                currentElement.attr('value','off');
-            } else {
-                currentElement.attr('value','on');
-            }
-            var params = {
-                module : app.getModuleName(),
-                parent : app.getParentModuleName(),
-                'action' : 'SaveAjax',
-                'record' : currentElement.data('id'),
-                'status' : currentElement.val()
-            }
-         
-            app.request.post({
-                data:params
-            }).then(function(error,data){
-                if(data){
+        jQuery(listViewContainer).on('click', 'input[name="workflowstatus"]', function (e) {
+            let currentElement = jQuery(e.currentTarget),
+                currentValue = currentElement.is(':checked') ? 'on' : 'off',
+                params = {
+                    module: app.getModuleName(),
+                    parent: app.getParentModuleName(),
+                    'action': 'SaveAjax',
+                    'record': currentElement.data('id'),
+                    'status': currentValue
+                }
+
+            app.request.post({data: params}).then(function (error, data) {
+                if (data) {
                     app.helper.showSuccessNotification({
-                        message : app.vtranslate('JS_WORKFLOWS_STATUS_CHANGED')
-                        });
+                        message: app.vtranslate('JS_WORKFLOWS_STATUS_CHANGED')
+                    });
                 }
             });
         });
@@ -195,7 +191,7 @@ Settings_Vtiger_List_Js("Settings_Workflows_List_Js", {
         var listViewContainer = this.getListViewContainer();
         this.registerShowDeleteActionOnHover();
         if (listViewContainer.length > 0) {
-            jQuery("input[name='workflowstatus']").bootstrapSwitch();
+            //jQuery("input[name='workflowstatus']").bootstrapSwitch();
             this.registerEventForChangeWorkflowState(listViewContainer);
             this.registerSearch();
             this.registerSelect2ForModuleFilter();
