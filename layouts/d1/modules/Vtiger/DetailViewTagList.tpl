@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 *}
-<div class="containerDetailViewTagList d-inline">
+<div class="containerDetailViewTagList d-inline align-top">
     <div class="tagContainer d-inline">
         <span class="tag-contents {if empty($TAGS_LIST)}hide{/if}">
             <span class="detailTagList" data-num-of-tags-to-show="{Vtiger_Tag_Model::NUM_OF_TAGS_DETAIL}">
