@@ -3813,6 +3813,11 @@ form[name="notification_settings"] .select2-choice {
     border-color: rgba(var(--bs-success-rgb), 0.25) !important;
 }
 
+.MultiCompany4you {
+    background-color: rgba(var(--bs-info-rgb), 0.25) !important;
+    border-color: rgba(var(--bs-info-rgb), 0.25) !important;
+}
+
 .liStyleNone {
     list-style: none outside none;
     padding-left: 0;
