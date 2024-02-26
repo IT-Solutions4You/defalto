@@ -247,7 +247,21 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public static function getUserStyles(): string
     {
-        $hour = date('H:00:00');
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+        $currentTime = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s'))->format('H:i:s');
+        $hour = explode(':', $currentTime);
+        $minute = $hour[1];
+        $slotTimes = '15 minutes' === $currentUser->get('slot_duration') ? [15, 30, 45] : [30];
+        $hour[1] = '00';
+        $hour[2] = '00';
+
+        foreach ($slotTimes as $slotTime) {
+            if ($minute >= $slotTime) {
+                $hour[1] = $slotTime;
+            }
+        }
+
+        $hour = implode(':', $hour);
 
         return sprintf(
             '.fc .fc-timegrid-slot[data-time="%s"] { border-top: 2px solid #5e81f4 !important; }' . "\n\r" .
@@ -533,7 +547,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public function getRecord(): array
     {
-        list($startField, $endField) = $this->get('fields');
+        [$startField, $endField] = $this->get('fields');
 
         $recordModel = $this->getRecordModel();
         $startDateValue = $recordModel->get($startField);
@@ -559,7 +573,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         if (!empty($endField)) {
             $endDate = $this->getDate($recordModel->get($endField));
 
-            list($endDateDate, $endDateTime) = explode(' ', $endDate);
+            [$endDateDate, $endDateTime] = explode(' ', $endDate);
 
             if (empty($endDateTime)) {
                 $record['end'] = date('Y-m-d', strtotime($endDateDate) + 86400);
@@ -780,7 +794,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         $betweenValue = $this->get('start_date') . ',' . $this->get('end_date');
         $fields = $this->get('fields');
 
-        list($startField, $endField) = $fields;
+        [$startField, $endField] = $fields;
 
         /** @var EnhancedQueryGenerator $queryGenerator */
         $queryGenerator = $this->listViewModel->get('query_generator');
@@ -861,7 +875,7 @@ class Appointments_Events_Model extends Vtiger_Base_Model
             $searchUsers = [];
 
             foreach ($selectedUsers as $selectedUser) {
-                list($type, $name) = explode('::::', $selectedUser);
+                [$type, $name] = explode('::::', $selectedUser);
 
                 if ('UsersByGroups' === $type) {
                     $searchUsers = array_merge($searchUsers, $this->getGroupUserNames($name));
