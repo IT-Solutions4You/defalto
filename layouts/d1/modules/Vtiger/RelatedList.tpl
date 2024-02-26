@@ -41,11 +41,7 @@
 							<tr class="listViewHeaders bg-body-secondary">
 								<th></th>
 								{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
-									{* hide time_start,time_end columns in the list as they are merged with with Start Date and End Date fields *}
-									{if $HEADER_FIELD->get('column') eq 'time_start' or $HEADER_FIELD->get('column') eq 'time_end'}
-										<th class="nowrap">
-									{else}
-										<th class="nowrap">
+									<th class="nowrap">
 										{if $HEADER_FIELD->get('column') eq "access_count" or $HEADER_FIELD->get('column') eq "idlists"}
 											<a href="javascript:void(0);" class="noSorting text-secondary">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE_NAME)}</a>
 										{else}
@@ -64,7 +60,6 @@
 												<a href="#" class="removeSorting text-secondary"><i class="fa fa-remove"></i></a>
 											{/if}
 										{/if}
-									{/if}
 									</th>
 								{/foreach}
 							</tr>
@@ -91,8 +86,7 @@
 							</tr>
 						</thead>
 						{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-							<tr class="listViewEntries border-bottom" data-id='{$RELATED_RECORD->getId()}'
-								data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
+							<tr class="listViewEntries border-bottom" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 								<td class="related-list-actions text-secondary">
 									<span class="actionImages btn-group">
 										{if $IS_EDITABLE && $RELATED_RECORD->isEditable()}
