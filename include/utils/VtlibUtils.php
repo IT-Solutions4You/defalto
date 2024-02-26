@@ -667,7 +667,7 @@ $__htmlpurifier_instance = false;
 /**
  * Purify (Cleanup) malicious snippets of code from the input
  *
- * @param String $value
+ * @param string|array $value
  * @param Boolean $ignore Skip cleaning of the input
  * @return String
  */
@@ -724,7 +724,7 @@ function vtlib_purify($input, $ignore = false) {
             if (is_array($input)) {
                 $value = array();
                 foreach ($input as $k => $v) {
-                    $value[$k] = str_replace('&amp;', '&', vtlib_purify($v, $ignore));
+                    $value[$k] = vtlib_purify($v, $ignore);
                 }
             } else { // Simple type
                 $value = $__htmlpurifier_instance->purify($input);
