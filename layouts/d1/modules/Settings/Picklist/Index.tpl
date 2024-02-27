@@ -8,12 +8,15 @@
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="listViewPageDiv detailViewContainer px-4 pb-4" id="listViewContent">
     <div class="bg-body rounded">
-        <div class="detailViewInfo container-fluid py-3">
-            <div class="row form-group">
-                <div class="col-sm-3 control-label fieldLabel text-end">
+        <div class="p-3 border-bottom">
+            <h4 class="m-0">{vtranslate('LBL_PICKLIST_EDITOR',$QUALIFIED_MODULE)}</h4>
+        </div>
+        <div class="detailViewInfo container-fluid pt-3 px-3">
+            <div class="row form-group align-items-center">
+                <div class="col-sm-3 control-label fieldLabel pb-3">
                     <label class="fieldLabel ">{vtranslate('LBL_SELECT_MODULE',$QUALIFIED_MODULE)}</label>
                 </div>
-                <div class="fieldValue col-sm-3">
+                <div class="fieldValue col-sm-6 pb-3">
                     <select class="select2 inputElement" id="pickListModules" name="pickListModules">
                         <option value="">{vtranslate('LBL_SELECT_OPTION',$QUALIFIED_MODULE)}</option>
                         {foreach item=PICKLIST_MODULE from=$PICKLIST_MODULES}
@@ -26,12 +29,10 @@
         <div id="modulePickListContainer">
             {include file="ModulePickListDetail.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
         </div>
-        <br>
         <div id="modulePickListValuesContainer">
             {if empty($NO_PICKLIST_FIELDS)}
                 {include file="PickListValueDetail.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
             {/if}
         </div>
-
     </div>
 </div>

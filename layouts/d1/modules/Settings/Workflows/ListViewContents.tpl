@@ -124,7 +124,7 @@
                                             {/if}
                                         </td>
                                     {elseif $LISTVIEW_HEADERNAME eq 'module_name' && empty($SOURCE_MODULE)}
-                                        <td class="listViewEntryValue {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
+                                        <td class="listViewEntryValue text-secondary {$WIDTHTYPE}" width="{$WIDTH}%" nowrap>
                                             {assign var="MODULE_ICON_NAME" value="{strtolower($LISTVIEW_ENTRY->get('raw_module_name'))}"}
                                             {Vtiger_Module_Model::getModuleIconPath($LISTVIEW_ENTRY->get('raw_module_name'))}
                                         </td>

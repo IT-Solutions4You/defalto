@@ -766,49 +766,60 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 	savePreTaxTotalValue : function() {
 		jQuery('#pre_tax_total').val(this.getPreTaxTotal());
 	},
-    
-    updateRowNumberForRow : function(lineItemRow, expectedSequenceNumber, currentSequenceNumber){
-		if(typeof currentSequenceNumber == 'undefined') {
+
+	updateRowNumberForRow: function (lineItemRow, expectedSequenceNumber, currentSequenceNumber) {
+		if (typeof currentSequenceNumber == 'undefined') {
 			//by default there will zero current sequence number
 			currentSequenceNumber = 0;
 		}
 
-		var idFields = new Array('productName','subproduct_ids','hdnProductId','purchaseCost','margin',
-									'comment','qty','listPrice','discount_div','discount_type','discount_percentage',
-									'discount_amount','lineItemType','searchIcon','netPrice','subprod_names',
-									'productTotal','discountTotal','totalAfterDiscount','taxTotal');
+		let idFields = [
+				'productName', 'subproduct_ids', 'hdnProductId', 'purchaseCost', 'margin', 'comment', 'qty',
+				'listPrice', 'discount_div', 'discount_type', 'discount_percentage',
+				'discount_amount', 'lineItemType', 'searchIcon', 'netPrice', 'subprod_names',
+				'productTotal', 'discountTotal', 'totalAfterDiscount', 'taxTotal'
+			],
+			classFields = [
+				'taxPercentage'
+			];
 
-		var classFields = new Array('taxPercentage');
 		//To handle variable tax ids
-		for(var classIndex in classFields) {
-			var className = classFields[classIndex];
-			jQuery('.'+className,lineItemRow).each(function(index, domElement){
-				var idString = domElement.id
+		for (let classIndex in classFields) {
+			let className = classFields[classIndex];
+
+			jQuery('.' + className, lineItemRow).each(function (index, domElement) {
+				let idString = domElement.id
 				//remove last character which will be the row number
-				idFields.push(idString.slice(0,(idString.length-1)));
+				idFields.push(idString.slice(0, (idString.length - currentSequenceNumber.length)));
 			});
 		}
 
-		var expectedRowId = 'row'+expectedSequenceNumber;
-		for(var idIndex in idFields ) {
-			var elementId = idFields[idIndex];
-			var actualElementId = elementId + currentSequenceNumber;
-			var expectedElementId = elementId + expectedSequenceNumber;
-			lineItemRow.find('#'+actualElementId).attr('id',expectedElementId)
-					   .filter('[name="'+actualElementId+'"]').attr('name',expectedElementId);
+		let expectedRowId = 'row' + expectedSequenceNumber;
+
+		for (let idIndex in idFields) {
+			let elementId = idFields[idIndex],
+				actualElementId = elementId + currentSequenceNumber,
+				expectedElementId = elementId + expectedSequenceNumber;
+
+			lineItemRow.find('#' + actualElementId).attr('id', expectedElementId)
+				.filter('[name="' + actualElementId + '"]').attr('name', expectedElementId);
 		}
 
-		var nameFields = new Array('discount', 'purchaseCost', 'margin');
-		for (var nameIndex in nameFields) {
-			var elementName = nameFields[nameIndex];
-			var actualElementName = elementName+currentSequenceNumber;
-			var expectedElementName = elementName+expectedSequenceNumber;
-			lineItemRow.find('[name="'+actualElementName+'"]').attr('name', expectedElementName);
+		let nameFields = [
+			'discount', 'purchaseCost', 'margin'
+		];
+
+		for (let nameIndex in nameFields) {
+			let elementName = nameFields[nameIndex],
+				actualElementName = elementName + currentSequenceNumber,
+				expectedElementName = elementName + expectedSequenceNumber;
+
+			lineItemRow.find('[name="' + actualElementName + '"]').attr('name', expectedElementName);
 		}
 
 		lineItemRow.attr('id', expectedRowId).attr('data-row-num', expectedSequenceNumber);
-        lineItemRow.find('input.rowNumber').val(expectedSequenceNumber);
-        
+		lineItemRow.find('input.rowNumber').val(expectedSequenceNumber);
+
 		return lineItemRow;
 	},
     

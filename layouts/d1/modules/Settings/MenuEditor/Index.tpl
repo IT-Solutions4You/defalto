@@ -10,12 +10,15 @@
 {assign var=APP_IMAGE_MAP value=Vtiger_MenuStructure_Model::getAppIcons()}
 <div class="listViewPageDiv detailViewContainer px-4 pb-4" id="listViewContent">
     <div class="rounded bg-body">
+        <div class="p-3 border-bottom">
+            <h4 class="m-0">{vtranslate('LBL_MENU_EDITOR', $QUALIFIED_MODULE_NAME)}</h4>
+        </div>
         <div class="p-3">
             <div class="alert alert-info">
-                <h4 class="vt-callout-header">
-                    <i class="fa fa-info-circle"></i>
+                <h5>
+                    <i class="fa fa-info-circle me-2"></i>
                     <span>{vtranslate('LBL_INFO', $QUALIFIED_MODULE_NAME)}</span>
-                </h4>
+                </h5>
                 <p>{vtranslate('LBL_MENU_EDITOR_INFO', $QUALIFIED_MODULE_NAME)}</p>
             </div>
         </div>
@@ -33,18 +36,18 @@
                         <div class="sortable appContainer" data-appname="{$APP_NAME}">
                             {foreach key=moduleName item=moduleModel from=$APP_MAPPED_MODULES[$APP_NAME]}
                                 <div class="modules noConnect" data-module="{$moduleName}">
-                                    <div class="menuEditorItem menuEditorModuleItem p-3 mb-2 d-flex">
+                                    <div class="menuEditorItem menuEditorModuleItem btn btn-outline-secondary mb-3 w-100 d-flex align-items-center text-secondary">
                                         {assign var='translatedModuleLabel' value=vtranslate($moduleModel->get('label'),$moduleName )}
                                         <img class="alignMiddle cursorDrag" src="{vimage_path('drag.png')}"/>
                                         <span class="ms-3">{$moduleModel->getModuleIcon()}</span>
-                                        <span class="ms-3" title="{$translatedModuleLabel}">{$translatedModuleLabel}</span>
+                                        <span class="ms-3 text-truncate" title="{$translatedModuleLabel}">{$translatedModuleLabel}</span>
                                         <span data-appname="{$APP_NAME}" class="menuEditorRemoveItem ms-auto">
                                             <i class="fa fa-times"></i>
                                         </span>
                                     </div>
                                 </div>
                             {/foreach}
-                            <div class="menuEditorItem menuEditorModuleItem menuEditorAddItem p-3" data-appname="{$APP_NAME}">
+                            <div class="menuEditorItem menuEditorModuleItem menuEditorAddItem btn btn-outline-secondary w-100 mb-3" data-appname="{$APP_NAME}">
                                 <div class="text-truncate">
                                     <i class="fa fa-plus"></i>
                                     <span class="ms-2">{vtranslate('LBL_SELECT_HIDDEN_MODULE', $QUALIFIED_MODULE_NAME)}</span>

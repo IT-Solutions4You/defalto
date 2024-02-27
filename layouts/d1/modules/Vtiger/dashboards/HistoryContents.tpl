@@ -23,7 +23,7 @@
 					{/if}
 				{/if}
 				{if $PROCEED}
-					<div class="row entry">
+					<div class="row entry align-items-center py-2">
 						<div class="col-lg-auto">
 							{assign var=VT_ICON value=$MOD_NAME}
 							<span>{$HISTORY->getParent()->getModule()->getModuleIcon($VT_ICON)}</span>
@@ -72,44 +72,51 @@
 							{elseif ($HISTORY->isRelationLink() || $HISTORY->isRelationUnLink())}
 								{assign var=RELATION value=$HISTORY->getRelationInstance()}
 								{assign var=LINKED_RECORD_DETAIL_URL value=$RELATION->getLinkedRecord()->getDetailViewUrl()}
-								{assign var=PARENT_DETAIL_URL value=$RELATION->getParent()->getParent()->getDetailViewUrl()}
+								{assign var=PARENT_DETAIL_URL value=$HISTORY->getParent()->getDetailViewUrl()}
 								<div>
 									<b>{$USER->getName()}</b>
-									{if $HISTORY->isRelationLink()}
-										{vtranslate('LBL_ADDED', $MODULE_NAME)}
-									{else}
-										{vtranslate('LBL_REMOVED', $MODULE_NAME)}
-									{/if}
-									{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}
-								{elseif $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
-									<i>"{$RELATION->getLinkedRecord()->getName()}"</i>
-								{else}
-									<a class="cursorPointer" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}'
-									{else} onclick='window.location.href="{$LINKED_RECORD_DETAIL_URL}"' {/if}>{$RELATION->getLinkedRecord()->getName()}</a>
-							{/if}{vtranslate('LBL_FOR')} <a class="cursorPointer" {if stripos($PARENT_DETAIL_URL, 'javascript:')===0}
-							   onclick='{$PARENT_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$PARENT_DETAIL_URL}"' {/if}>
-									{$RELATION->getParent()->getParent()->getName()}</a>
-							</div>
-						{elseif $HISTORY->isRestore()}
-							<div>
-								<b>{$USER->getName()}</b> {vtranslate('LBL_RESTORED')} <a class="cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0}
-																						  onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
-									{$PARENT->getName()}</a>
-							</div>
-						{elseif $HISTORY->isDelete()}
-							<div>
-								<b>{$USER->getName()}</b> {vtranslate('LBL_DELETED')}
-								<strong> {$PARENT->getName()}</strong>
-							</div>
-						{/if}
-						{if $TIME}
-							<p class="text-end muted">
-								<small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString("$TIME")}">{Vtiger_Util_Helper::formatDateDiffInStrings("$TIME")}</small>
-							</p>
-						{/if}
-					</div>
-				</div>
-			{/if}
+                                    <span>
+                                        {if $HISTORY->isRelationLink()}
+                                            {vtranslate('LBL_ADDED', $MODULE_NAME)}
+                                        {else}
+                                            {vtranslate('LBL_REMOVED', $MODULE_NAME)}
+                                        {/if}
+                                    </span>
+                                    <span>{vtranslate($RELATION->getLinkedRecord()->getModuleName(), $RELATION->getLinkedRecord()->getModuleName())}</span>
+                                    {if $RELATION->getLinkedRecord()->getModuleName() == 'ModComments'}
+                                        <i>"{$RELATION->getLinkedRecord()->getName()}"</i>
+                                    {else}
+                                        <a class="cursorPointer" {if stripos($LINKED_RECORD_DETAIL_URL, 'javascript:')===0} onclick='{$LINKED_RECORD_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$LINKED_RECORD_DETAIL_URL}"' {/if}>
+                                            <span>{$RELATION->getLinkedRecord()->getName()}</span>
+                                        </a>
+                                    {/if}
+                                    <span class="mx-2">{vtranslate('LBL_FOR')}</span>
+                                    <a class="cursorPointer" {if stripos($PARENT_DETAIL_URL, 'javascript:')===0} onclick='{$PARENT_DETAIL_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$PARENT_DETAIL_URL}"' {/if}>
+                                        <span>{$HISTORY->getParent()->getName()}</span>
+                                    </a>
+                                </div>
+                            {elseif $HISTORY->isRestore()}
+                                <div>
+                                    <b>{$USER->getName()}</b>
+                                    <span class="ms-2">{vtranslate('LBL_RESTORED')}</span>
+                                    <a class="ms-2 cursorPointer" {if stripos($DETAILVIEW_URL, 'javascript:')===0} onclick='{$DETAILVIEW_URL|substr:strlen("javascript:")}' {else} onclick='window.location.href="{$DETAILVIEW_URL}"' {/if}>
+                                        <span>{$PARENT->getName()}</span>
+                                    </a>
+                                </div>
+                            {elseif $HISTORY->isDelete()}
+                                <div>
+                                    <b>{$USER->getName()}</b> {vtranslate('LBL_DELETED')}
+                                    <strong> {$PARENT->getName()}</strong>
+                                </div>
+                            {/if}
+                            {if $TIME}
+                                <p class="muted m-0">
+                                    <small title="{Vtiger_Util_Helper::formatDateTimeIntoDayString($TIME)}">{Vtiger_Util_Helper::formatDateDiffInStrings($TIME)}</small>
+                                </p>
+                            {/if}
+                        </div>
+				    </div>
+                {/if}
 			{elseif $MODELNAME == 'ModComments_Record_Model'}
 				<div class="row">
 					<div class="col-lg-auto">
@@ -130,7 +137,6 @@
 				</div>
 			{/if}
 		{/foreach}
-
 		{if $NEXTPAGE}
 			<div class="row">
 				<div class="col-lg-12">
@@ -138,7 +144,6 @@
 				</div>
 			</div>
 		{/if}
-
 	{else}
 		<span class="noDataMsg">
 			{if $HISTORY_TYPE eq 'updates'}

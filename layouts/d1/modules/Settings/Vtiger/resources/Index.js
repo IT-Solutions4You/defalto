@@ -4,7 +4,7 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-
+/** @var Settings_Vtiger_Index_Js */
 Vtiger_Index_Js("Settings_Vtiger_Index_Js",{
 
 	showMessage : function(customParams){

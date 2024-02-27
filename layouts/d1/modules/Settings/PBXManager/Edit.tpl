@@ -7,10 +7,10 @@
 {strip}
     <div class="px-4 pb-4">
         <div class="rounded bg-body">
-            <div class="widget_header border-bottom p-3">
-                <h4>{vtranslate('LBL_PBXMANAGER', $QUALIFIED_MODULE)}</h4>
+            <div class="p-3 border-bottom">
+                <h4 class="m-0">{vtranslate('LBL_PBXMANAGER', $QUALIFIED_MODULE)}</h4>
             </div>
-            <div class="container-fluid">
+            <div>
                 {assign var=MODULE_MODEL value=Settings_PBXManager_Module_Model::getCleanInstance()}
                 <form id="MyModal" class="form-horizontal" data-detail-url="{$MODULE_MODEL->getDetailViewUrl()}">
                     <input type="hidden" name="module" value="PBXManager"/>
@@ -21,7 +21,7 @@
                         <div class="container-fluid p-3">
                             {assign var=FIELDS value=PBXManager_PBXManager_Connector::getSettingsParameters()}
                             {foreach item=FIELD_TYPE key=FIELD_NAME from=$FIELDS}
-                                <div class="row my-3">
+                                <div class="row py-2">
                                     <div class="col-lg-3 fieldLabel control-label">
                                         <label>
                                             <span>{vtranslate($FIELD_NAME, $QUALIFIED_MODULE)}</span>
@@ -33,7 +33,7 @@
                                     </div>
                                 </div>
                             {/foreach}
-                            <div class="row my-3">
+                            <div class="row py-2">
                                 <div class="col-lg-3"></div>
                                 <div class="col-lg-4">
                                     <div class="alert alert-info">
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-overlay-footer modal-footer py-3">
+                    <div class="modal-overlay-footer modal-footer py-3 border-top">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col text-end">

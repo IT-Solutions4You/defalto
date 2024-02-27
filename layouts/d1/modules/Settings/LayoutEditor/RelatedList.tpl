@@ -18,7 +18,7 @@
 					</div>
 				</div>
 			{else}
-				<div class="relatedListContainer container-fluid">
+				<div class="relatedListContainer">
 					<div class="row">
 						<div class="col-sm-5" id="ONE_ONE_AND_MANY_ONE_RELATIONSHIP">
 							<div class="mb-3">{vtranslate('ONE_ONE_AND_MANY_ONE_RELATIONSHIP',$QUALIFIED_MODULE)}</div>

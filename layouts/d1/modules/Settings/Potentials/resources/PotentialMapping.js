@@ -253,29 +253,16 @@ jQuery.Class("Settings_PotentialMapping_Js",{
 });
 
 Vtiger.Class("Settings_Potentials_MappingDetail_Js", {}, {
-	
-	init : function() {
-        this.addComponents();
-//        if(jQuery('.sticky-wrap').length == 0){
-//            stickyheader.controller();
-//            var container = jQuery('#detailView');
-//            container.find('.sticky-thead').addClass('listview-table');
-//        }
-        if(window.hasOwnProperty('Vtiger_List_Js')) {
-            var listInstance = new Vtiger_List_Js();
-            setTimeout(function(){
-                listInstance.registerFloatingThead();
-            }, 10);
+	init: function () {
+		this.addComponents();
 
-            app.event.on('Vtiger.Post.MenuToggle', function() {
-                listInstance.reflowList();
-            });
-            listInstance.registerDynamicDropdownPosition();
-        }
-    },
-	
-	addComponents : function() {
-		this.addModuleSpecificComponent('Index','Vtiger',app.getParentModuleName());
+		if (window.hasOwnProperty('Vtiger_List_Js')) {
+			let listInstance = new Vtiger_List_Js();
+
+			listInstance.registerDynamicDropdownPosition();
+		}
+	},
+	addComponents: function () {
+		this.addModuleSpecificComponent('Index', 'Vtiger', app.getParentModuleName());
 	}
-	
 });

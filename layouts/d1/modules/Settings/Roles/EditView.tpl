@@ -7,19 +7,16 @@
 {* modules/Settings/Roles/views/EditAjax.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 <div class="editViewPageDiv viewContent px-4 pb-4">
-    <div class="bg-body p-3 h-list rounded">
-        <div class="editViewHeader">
-            {if $RECORD_MODEL->getId()}
-                <h4>
+    <div class="bg-body h-list rounded">
+        <div class="editViewHeader p-3 border-bottom">
+            <h4 class="m-0">
+                {if $RECORD_MODEL->getId()}
                     {vtranslate('LBL_EDIT_ROLE', $QUALIFIED_MODULE)}
-                </h4>
-            {else}
-                <h4>
+                {else}
                     {vtranslate('LBL_CREATE_ROLE', $QUALIFIED_MODULE)}
-                </h4>
-            {/if}
+                {/if}
+            </h4>
         </div>
-        <hr>
         <form class="form-horizontal" id="EditView" name="EditRole" method="post" action="index.php" enctype="multipart/form-data">
             <div class="editViewBody">
                 <div class="editViewContents">
@@ -34,8 +31,8 @@
                     {if $HAS_PARENT}
                         <input type="hidden" name="parent_roleid" value="{$RECORD_MODEL->getParent()->getId()}">
                     {/if}
-                    <div name="editContent" class="container-fluid">
-                        <div class="form-group row py-2">
+                    <div name="editContent" class="container-fluid pt-3">
+                        <div class="form-group row py-2 px-3">
                             <label class="control-label fieldLabel col-lg-3 col-md-3 col-sm-3" for="profilename">
                                 <strong>{vtranslate('LBL_NAME', $QUALIFIED_MODULE)}</strong>
                                 <span class="text-danger ms-2">*</span>
@@ -44,7 +41,7 @@
                                 <input type="text" class="inputElement form-control" name="rolename" id="profilename" value="{$RECORD_MODEL->getName()}" data-rule-required='true'/>
                             </div>
                         </div>
-                        <div class="form-group row py-2">
+                        <div class="form-group row py-2 px-3">
                             <label class="control-label fieldLabel col-lg-3 col-md-3 col-sm-3">
                                 <strong>{vtranslate('LBL_REPORTS_TO', $QUALIFIED_MODULE)}</strong>
                             </label>
@@ -55,7 +52,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row py-2">
+                        <div class="form-group row py-2 px-3">
                             <label class="control-label fieldLabel col-lg-3 col-md-3 col-sm-3">
                                 <strong>{vtranslate('LBL_CAN_ASSIGN_RECORDS_TO', $QUALIFIED_MODULE)}</strong>
                             </label>
@@ -80,7 +77,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row py-2">
+                        <div class="form-group row py-2 px-3">
                             <label class="control-label fieldLabel col-lg-3 col-md-3 col-sm-3">
                                 <strong>{vtranslate('LBL_PRIVILEGES',$QUALIFIED_MODULE)}</strong>
                             </label>
@@ -103,7 +100,7 @@
                             <div class="profileData col-sm-12">
                             </div>
                         </div>
-                        <div class="form-group row py-2" data-content="existing">
+                        <div class="form-group row py-2 px-3" data-content="existing">
                             <div class="fieldLabel control-label col-lg-3 col-md-3 col-sm-3"></div>
                             <div class="fieldValue controls col-lg-6 col-md-6 col-sm-6">
                                 {assign var="ROLE_PROFILES" value=$RECORD_MODEL->getProfiles()}
@@ -118,8 +115,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <div class="container-fluid">
+                <div class="modal-footer border-top">
+                    <div class="container-fluid p-3">
                         <div class="row">
                             <div class="col-6 text-end">
                                 <a class="cancelLink btn btn-primary" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>

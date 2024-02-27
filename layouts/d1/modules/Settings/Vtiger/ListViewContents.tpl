@@ -19,25 +19,29 @@
 
 	<div class="px-4 pb-4 listViewContents">
 		<div id="listview-actions" class="listview-actions-container bg-body rounded py-3">
-			{if $MODULE neq 'Currency' and $MODULE neq 'PickListDependency' and $MODULE neq 'CronTasks'}
-				<div class="container-fluid">
-					<div class="row p-3">
+			{if $MODULE neq 'PickListDependency'}
+				<div class="container-fluid pb-3 px-3">
+					<div class="row align-items-center">
 						<div class="col-md">
 							{if $MODULE eq 'Tags'}
-								<h4>{vtranslate('LBL_MY_TAGS', $QUALIFIED_MODULE)}</h4>
+								<h4 class="m-0">{vtranslate('LBL_MY_TAGS', $QUALIFIED_MODULE)}</h4>
+							{elseif $MODULE}
+								<h4 class="m-0">{vtranslate($MODULE, $QUALIFIED_MODULE)}</h4>
 							{/if}
 						</div>
-						<div class="col-md-auto">
-							{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
-							{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
-						</div>
+						{if $MODULE neq 'Currency' and $MODULE neq 'CronTasks'}
+							<div class="col-md-auto">
+								{assign var=RECORD_COUNT value=$LISTVIEW_ENTRIES_COUNT}
+								{include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
+							</div>
+						{/if}
 					</div>
 				</div>
 			{/if}
 			<div class="list-content">
 				<div>
 					<div id="table-content" class="table-container">
-						<table id="listview-table" class="table table-borderless listview-table">
+						<table id="settings-listview-table" class="table table-borderless listview-table">
 							{assign var="NAME_FIELDS" value=$MODULE_MODEL->getNameFields()}
 							{assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
 							<thead>

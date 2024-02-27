@@ -6,7 +6,7 @@
 *}
 {strip}
 	<div class="px-4 pb-4" id="importModules">
-		<div class="bg-body rounded p-3">
+		<div class="bg-body rounded">
 			<div>
 				<div id="vtlib_modulemanager_import_div">
 					{if $MODULEIMPORT_FAILED neq ''}
@@ -28,46 +28,40 @@
 						</div>
 						<input type="hidden" name="view" value="List">
 					{else}
-						<div class="col-lg-12">
-							<div>
-								<h3>{vtranslate('LBL_VERIFY_IMPORT_DETAILS',$QUALIFIED_MODULE)}</h3>
-							</div><hr>
+						<div class="p-3 border-bottom">
+							<h4 class="m-0">{vtranslate('LBL_VERIFY_IMPORT_DETAILS',$QUALIFIED_MODULE)}</h4>
 						</div>
-						<div class="container-fluid"><br>
-							<div class="col-lg-12">
-								<h4>
-									{vtranslate($MODULEIMPORT_NAME, $QUALIFIED_MODULE)}
-									{if $MODULEIMPORT_EXISTS eq 'true'} <font color=red><b>{vtranslate('LBL_EXISTS', $QUALIFIED_MODULE)}</b></font> {/if}
-								</h4>
-							</div>
-							<div class="col-lg-12">
+						<div class="container-fluid p-3">
+							<h4>
+								{vtranslate($MODULEIMPORT_NAME, $QUALIFIED_MODULE)}
+								{if $MODULEIMPORT_EXISTS eq 'true'} <span class="text-danger"><b>{vtranslate('LBL_EXISTS', $QUALIFIED_MODULE)}</b></span> {/if}
+							</h4>
+							<div>
 								<p>
 									<small>{vtranslate('LBL_REQ_VTIGER_VERSION', $QUALIFIED_MODULE)} : {$MODULEIMPORT_DEP_VTVERSION}</small>
 								</p>
 							</div>
-							<div class="col-lg-12">
+							<div>
 								{if $MODULEIMPORT_EXISTS eq 'true' || $MODULEIMPORT_DIR_EXISTS eq 'true'}
 									{if $MODULEIMPORT_EXISTS eq 'true'}
 										<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
 										<input type="hidden" name="module_import_type" value="{$MODULEIMPORT_TYPE}">
 										<input type="hidden" name="module_import_name" value="{$MODULEIMPORT_NAME}">
 									{else}
-										<br><br><span class="alert-info" style="padding: 4px 10px;">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</span>
+										<span class="alert alert-info">{vtranslate('LBL_DELETE_EXIST_DIRECTORY', $QUALIFIED_MODULE)}</span>
 									{/if}
 								{else}
 									{assign var="need_license_agreement" value="false"}
 									{if $MODULEIMPORT_LICENSE}
 										{assign var="need_license_agreement" value="true"}
-										<div class="col-lg-12">
-											<p>{vtranslate('LBL_LICENSE', $QUALIFIED_MODULE)}</p>
-										</div>
-										<div class="col-lg-12">
-											<textarea readonly="" rows="15" style="width: 100%;font-family: monospace;">{$MODULEIMPORT_LICENSE}</textarea>
+										<p>{vtranslate('LBL_LICENSE', $QUALIFIED_MODULE)}</p>
+										<div class="py-2">
+											<textarea readonly="" rows="15" class="form-control">{$MODULEIMPORT_LICENSE}</textarea>
 										</div>
 									{/if}
 									{if $need_license_agreement eq 'true'}
-										<div class="col-lg-12">
-											<input type="checkbox" class="acceptLicense"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
+										<div class="py-2">
+											<input type="checkbox" class="acceptLicense form-check-input"> {vtranslate('LBL_LICENSE_ACCEPT_AGREEMENT', $QUALIFIED_MODULE)}
 										</div>
 									{/if}
 									<input type="hidden" name="module_import_file" value="{$MODULEIMPORT_FILE}">
@@ -76,12 +70,11 @@
 								{/if}
 							</div>
 						</div>
-						<br><br>
 					{/if}
 				</div>
 			</div>
-			<div class="modal-overlay-footer modal-footer">
-				<div class="container-fluid">
+			<div class="modal-overlay-footer modal-footer border-top">
+				<div class="container-fluid p-3">
 					<div class="row">
 						<div class="col-6 text-end">
 							<a class="cancelLink btn btn-primary" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>
