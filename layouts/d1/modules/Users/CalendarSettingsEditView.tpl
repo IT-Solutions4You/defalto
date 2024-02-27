@@ -33,8 +33,8 @@
                     {include file="partials/CalendarSettingsEditView.tpl"|@vtemplate_path:$MODULE}
                 </div>
             </div>
-            <div class="modal-overlay-footer modal-footer py-3">
-                <div class="container-fluid">
+            <div class="modal-overlay-footer modal-footer border-top">
+                <div class="container-fluid p-3">
                     <div class="row">
                         <div class="col text-end">
                             <a class="btn btn-primary cancelLink"  href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>

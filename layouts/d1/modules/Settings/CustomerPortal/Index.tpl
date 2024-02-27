@@ -7,14 +7,17 @@
 {strip}
 	<div class="listViewPageDiv px-4 pb-4" id="listViewContent">
 		<div class="bg-body rounded">
+			<div class="p-3 border-bottom">
+				<h4 class="m-0">{vtranslate('CustomerPortal', $QUALIFIED_MODULE)}</h4>
+			</div>
 			<form id="customerPortalForm" name="customerPortalForm" action="index.php" method="POST" class="form-horizontal">
 				<input type="hidden" name="portalModulesInfo" value="" />
-				<div class="container-fluid py-3">
-					<div class="form-group row">
-						<label for="defaultAssignee" class="col-sm-4 control-label fieldLabel">
+				<div class="container-fluid pt-3 px-3">
+					<div class="form-group row align-items-center">
+						<label for="defaultAssignee" class="col-lg-3 control-label fieldLabel pb-3">
 							<span>{vtranslate('LBL_DEFAULT_ASSIGNEE', $QUALIFIED_MODULE)}</span>
 						</label>
-						<div class="fieldValue col-sm-4">
+						<div class="fieldValue col-lg-6 pb-3">
 							<div class="input-group">
 								<select name="defaultAssignee" class="select2 inputElement form-select">
 									<optgroup label="{vtranslate('LBL_USERS', $QUALIFIED_MODULE)}" >
@@ -37,12 +40,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="container-fluid py-3">
-					<div class="form-group row">
-						<label for="portal-url" class="col-sm-4 control-label fieldLabel">
+				<div class="container-fluid px-3">
+					<div class="form-group row align-items-center">
+						<label for="portal-url" class="col-lg-3 control-label fieldLabel pb-3">
 							<span>{vtranslate('LBL_PORTAL_URL', $QUALIFIED_MODULE)}</span>
 						</label>
-						<div class="col-sm-4">
+						<div class="col-lg-6 fieldValue pb-3">
 							<div class="input-group">
 								<input value="{$PORTAL_URL}" class="form-control" disabled="disabled">
 								<a target="_blank" href="{$PORTAL_URL}" class="input-group-addon input-select-addon input-group-text">
@@ -57,7 +60,7 @@
 				</div>
 				<div class="container-fluid mt-4">
 					<div class="row">
-						<div class="col-sm-3">
+						<div class="col-lg-3">
 							<h4 class="pb-3 border-bottom">{vtranslate('LBL_LAYOUT_HEADER',$QUALIFIED_MODULE)}</h4>
 							<ul class="nav nav-tab nav-stacked flex-column" id="portalModulesTable">
 								<li class="nav-item portalModuleRow active unsortable cp-modules-home" data-id="" data-sequence="1" data-module="Dashboard">
@@ -82,7 +85,7 @@
 								{/foreach}
 							</ul>
 						</div>
-						<div class="col-sm-9 portal-dashboard">
+						<div class="col-lg portal-dashboard">
 							<div id="dashboardContent" class="show container-fluid">
 								<h4 class="pb-3 border-bottom">{vtranslate('LBL_HOME_LAYOUT',$QUALIFIED_MODULE)}</h4>
 								<input type="hidden" name="defaultWidgets" value='{Vtiger_Functions::jsonEncode($WIDGETS,true)}'/>

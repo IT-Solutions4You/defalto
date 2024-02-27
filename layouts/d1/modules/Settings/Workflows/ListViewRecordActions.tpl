@@ -6,10 +6,12 @@
 *}
 {strip}
 <!--LIST VIEW RECORD ACTIONS-->
-<div style="width:80px ;">
-    <a class="deleteRecordButton" style=" opacity: 0; padding: 0 5px;">
+<div class="d-flex align-items-center workflow-actions">
+    <a class="btn text-secondary deleteRecordButton" style="opacity: 0;">
         <i title="{vtranslate('LBL_DELETE', $MODULE)}" class="fa fa-trash alignMiddle"></i>
     </a>
-    <input style="opacity: 0;" {if $LISTVIEW_ENTRY->get('status')} checked value="on" {else} value="off"{/if} data-on-color="success"  data-id="{$LISTVIEW_ENTRY->getId()}" type="checkbox" name="workflowstatus" id="workflowstatus">
+    <div class="form-check form-switch">
+        <input {if $LISTVIEW_ENTRY->get('status')}checked="checked" data-value="on"{else}value="off"{/if} data-id="{$LISTVIEW_ENTRY->getId()}" value="1" class="form-check-input" type="checkbox" name="workflowstatus" id="workflowstatus">
+    </div>
 </div>
 {/strip}

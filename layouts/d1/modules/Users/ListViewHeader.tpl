@@ -10,9 +10,11 @@
         <input type="hidden" name="pwd_regex" value= {ZEND_json::encode($PWD_REGEX)}/>
         <div id="listview-actions" class="listview-actions-container container-fluid p-0 bg-body rounded">
             <div class="row p-3">
-                <div class="col-lg"></div>
                 <div class="col-lg">
-                    <div class="btn-group userFilter text-center">
+                    <h4 class="m-0">{vtranslate('LBL_USERS', $MODULE)}</h4>
+                </div>
+                <div class="col-lg text-center">
+                    <div class="btn-group userFilter">
                         <button class="btn btn-default btn-primary" id="activeUsers" data-searchvalue="Active">
                             {vtranslate('LBL_ACTIVE_USERS', $MODULE)}
                         </button>

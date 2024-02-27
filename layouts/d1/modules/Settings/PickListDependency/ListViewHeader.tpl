@@ -11,11 +11,12 @@
     <div>
         <div id="listview-actions" class="listview-actions-container">
             <div class="px-4 pb-3">
-                <div class="container-fluid bg-body p-3 rounded">
+                <div class="container-fluid bg-body pt-3 px-3 rounded">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 pb-3">
+                            <h4 class="m-0">{vtranslate('PickListDependency', $QUALIFIED_MODULE)}</h4>
                         </div>
-                        <div class="col-md-6 text-end">
+                        <div class="col-md-6 text-end pb-3">
                             <div class="listViewActions">
                                 <select class="select2 pickListSupportedModules" name="pickListSupportedModules" data-close-on-select="true">
                                     <option value="">{vtranslate('LBL_ALL', $QUALIFIED_MODULE)}</option>

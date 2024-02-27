@@ -142,8 +142,7 @@
                             </tr>
                         </thead>
                         {foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-                            <tr class="listViewEntries border-top" data-id='{$RELATED_RECORD->getId()}'
-                                data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'
+                            <tr class="listViewEntries border-top" data-id="{$RELATED_RECORD->getId()}" data-recordUrl="{$RELATED_RECORD->getDetailViewUrl()}">
                                 <td>
                                     <span class="actionImages btn-group">
                                         <a class="btn btn-sm text-secondary" name="relationEdit" data-url="{$RELATED_RECORD->getEditViewUrl()}">

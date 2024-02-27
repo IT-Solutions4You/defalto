@@ -6,8 +6,8 @@
 *}
 {strip}
 	<div class="detailViewContainer px-4 pb-4" id="importModules">
-		<div class="rounded bg-body p-3">
-			<div class="widget_header row col-lg-12 col-md-12 col-sm-12">
+		<div class="rounded bg-body">
+			<div class="p-3 border-bottom">
 				<h4>{vtranslate('LBL_IMPORT_MODULE_FROM_ZIP', $QUALIFIED_MODULE)}</h4>
 			</div>
 			<form class="form-horizontal" id="importUserModule" name="importUserModule" action='index.php' method="POST" enctype="multipart/form-data">
@@ -16,12 +16,12 @@
 				<input type="hidden" name="parent" value="Settings" />
 				<input type="hidden" name="view" value="ModuleImport" />
 				<input type="hidden" name="mode" value="importUserModuleStep2" />
-				<div class="contents">
+				<div class="contents p-3">
 					<div class="alert alert-danger my-3">
 						{vtranslate('LBL_DISCLAIMER_FOR_IMPORT_FROM_ZIP', $QUALIFIED_MODULE)}
 					</div>
 					<div class="my-3">
-						<input type="checkbox" name="acceptDisclaimer" /> &nbsp;&nbsp;<b>{vtranslate('LBL_ACCEPT_WITH_THE_DISCLAIMER', $QUALIFIED_MODULE)}</b>
+						<input type="checkbox" class="form-check-input" name="acceptDisclaimer" /> &nbsp;&nbsp;<b>{vtranslate('LBL_ACCEPT_WITH_THE_DISCLAIMER', $QUALIFIED_MODULE)}</b>
 					</div>
 					<div class="my-3">
 						<span name="proceedInstallation" class="fileUploadBtn btn btn-primary">
@@ -32,8 +32,8 @@
 						<span id="moduleFileDetails" style="margin-left: 15px;"></span>
 					</div>
 				</div>
-				<div class="modal-overlay-footer modal-footer">
-					<div class="container-fluid">
+				<div class="modal-overlay-footer modal-footer border-top">
+					<div class="container-fluid p-3">
 						<div class="row">
 							<div class="col-6 text-end">
 								<a class="btn btn-primary cancelLink" href="javascript:history.back()" type="reset">{vtranslate('LBL_CANCEL', $MODULE)}</a>

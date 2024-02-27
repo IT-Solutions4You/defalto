@@ -7,10 +7,10 @@
 {* modules/Settings/Picklist/views/IndexAjax.php *}
 {* START YOUR IMPLEMENTATION FROM BELOW. Use {debug} for information *}
 {strip}
-	<div class="container-fluid">
+	<div>
         <div class="form-group row my-3">
-            <div class="control-label col-lg-2">&nbsp;</div>
-            <div class="controls col-lg-8">
+            <div class="control-label col-lg-3">&nbsp;</div>
+            <div class="controls col-lg-6">
                 <select class="select2 form-control" id="role2picklist" multiple name="role2picklist[]">
                     {foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$ALL_PICKLIST_VALUES}
                         <option value="{$PICKLIST_VALUE}" data-id="{$PICKLIST_KEY}" {if in_array($PICKLIST_VALUE,$ROLE_PICKLIST_VALUES)} selected {/if}>
@@ -21,9 +21,9 @@
             </div>
         </div>
         <div class="form-group row my-3">
-            <div class="control-label col-lg-2">&nbsp;</div>
-            <div class="controls col-lg-8">
-                <button id="saveOrder" class="btn btn-success pull-right">
+            <div class="control-label col-lg-3">&nbsp;</div>
+            <div class="controls col-lg-6 text-end">
+                <button id="saveOrder" class="btn btn-primary active">
                     {vtranslate('LBL_SAVE',$QUALIFIED_MODULE)}
                 </button>
             </div>

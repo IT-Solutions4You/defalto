@@ -7,6 +7,9 @@
 {strip}
     <div class="editViewPageDiv px-4 pb-4" id="editViewContent">
         <div class="bg-body rounded">
+            <div class="p-3 border-bottom">
+                <h4 class="m-0">{vtranslate('LBL_CONFIG_EDITOR', $QUALIFIED_MODULE)}</h4>
+            </div>
             <div class="contents">
                 <form id="ConfigEditorForm" class="form-horizontal" data-detail-url="{$MODEL->getDetailViewUrl()}" method="POST">
                     {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
@@ -15,21 +18,14 @@
                     'history_max_viewed'    => 'data-rule-range=[1,5] data-rule-positive="true" data-rule-wholeNumber="true"',
                     'listview_max_textlength'    => 'data-rule-range=[1,100] data-rule-positive="true" data-rule-wholeNumber="true"',
                     'list_max_entries_per_page'    => 'data-rule-range=[1,100] data-rule-positive="true" data-rule-wholeNumber="true"']}
-                    <div class="container-fluid py-3 border-bottom">
-                        <div class="row">
-                            <div class="col">
-                                <h4>{vtranslate('LBL_CONFIG_EDITOR', $QUALIFIED_MODULE)}</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-fluid detailViewInfo py-3">
+                    <div class="container-fluid detailViewInfo p-3">
                         {assign var=FIELD_DATA value=$MODEL->getViewableData()}
                         {foreach key=FIELD_NAME item=FIELD_DETAILS from=$MODEL->getEditableFields()}
-                            <div class="row my-3 form-group">
-                                <div class="col-lg-4 control-label fieldLabel">
+                            <div class="row py-2 form-group">
+                                <div class="col-lg-3 control-label fieldLabel text-secondary">
                                     <label>{if $FIELD_NAME == 'upload_maxsize'}{if $FIELD_DATA[$FIELD_NAME] gt 5}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,$FIELD_DATA[$FIELD_NAME])}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE,5)}{/if}{else}{vtranslate($FIELD_DETAILS['label'], $QUALIFIED_MODULE)}{/if}</label>
                                 </div>
-                                <div class="{$WIDTHTYPE} col-lg-4">
+                                <div class="col-lg-6">
                                     <div class="input-group">
                                         {if $FIELD_DETAILS['fieldType'] == 'picklist'}
                                             <select class="form-select select2-container inputElement select2" name="{$FIELD_NAME}">
@@ -72,7 +68,7 @@
                             </div>
                         {/foreach}
                     </div>
-                    <div class="modal-overlay-footer modal-footer">
+                    <div class="modal-overlay-footer modal-footer border-top">
                         <div class="container-fluid py-3">
                             <div class="row">
                                 <div class="col text-end">
