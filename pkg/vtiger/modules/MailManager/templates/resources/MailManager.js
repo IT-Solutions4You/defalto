@@ -1476,20 +1476,6 @@ if (typeof(MailManager) == 'undefined') {
 				jQuery("#"+id).val('');
 		},
 
-		selectTemplate: function() {
-			url = 'module=EmailTemplate&parent=Settings&view=List';
-			var popupInstance = Vtiger_Popup_Js.getInstance();
-			popupInstance.show(url,function(data){
-				var responseData = JSON.parse(data);
-				for(var key in responseData){
-					responseData = responseData[key];
-					break;
-				}
-				jQuery('#_mail_replyfrm_subject_').val(responseData['name']);
-				CKEDITOR.instances['_mail_replyfrm_body_'].setData(responseData['info']);
-			});
-		},
-
 		removeHidElement: function(jsonresponse){
 			// PHPSESSID is General value
 			// Session Name should be picked from php.ini

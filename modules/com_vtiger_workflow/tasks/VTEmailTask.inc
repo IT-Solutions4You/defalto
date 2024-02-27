@@ -321,7 +321,7 @@ class VTEmailTask extends VTTask
             $outgoingFromEamil = $adb->query_result($result, 0, 'from_email_field');
             if (empty($outgoingFromEamil)) {
                 if ($fromName) {
-                    $userEmail = getUserEmailId('user_name', $fromName);
+                    $userEmail = getUserEmailByName($fromName);
                     $defaultFromEmail = $userEmail;
                 }
                 if (!$defaultFromEmail) {

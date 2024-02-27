@@ -253,7 +253,7 @@ class EMAILMaker_Record_Model extends Vtiger_Record_Model
 
         $member_array = $members;
 
-        if ($sharingType == 'share' && EMAILMaker_Utils_Helper::count($member_array) > 0) {
+        if ($sharingType == 'share' && php7_count($member_array) > 0) {
             $groupMemberArray = self::constructSharingMemberArray($member_array);
             $sharingQuery = '';
             $sharingParams = array();

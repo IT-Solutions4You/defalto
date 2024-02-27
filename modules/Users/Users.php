@@ -111,9 +111,6 @@ class Users extends CRMEntity {
 			'Phone'=>'phone_work'
 	);
 
-	//Default Fields for Email Templates -- Pavani
-	var $emailTemplate_defaultFields = array('first_name','last_name','userlabel','title','department','phone_home','phone_mobile','signature','email1','email2','address_street','address_city','address_state','address_country','address_postalcode');
-
 	var $popup_fields = array('last_name');
 
 	// This is the list of fields that are in the lists.

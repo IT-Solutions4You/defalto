@@ -37,12 +37,12 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 	$adb->println("To id => '".$to_email."'\nSubject ==>'".$subject."'\nContents ==> '".$contents."'");
 
 	//Get the email id of assigned_to user -- pass the value and name, name must be "user_name" or "id"(field names of vtiger_users vtiger_table)
-	//$to_email = getUserEmailId('id',$assigned_user_id);
+	//$to_email = getUserEmail($assigned_user_id);
 
 	//if module is HelpDesk then from_email will come based on support email id
 	if($from_email == '') {
 			//if from email is not defined, then use the useremailid as the from address
-			$from_email = getUserEmailId('user_name',$from_name);
+			$from_email = getUserEmailByName($from_name);
 	}
 
 	//if the newly defined from email field is set, then use this email address as the from address
@@ -107,38 +107,6 @@ function send_mail($module,$to_email,$from_name,$from_email,$subject,$contents,$
 	}
 
 	return $mail_error;
-}
-
-/**	Function to get the user Email id based on column name and column value
-  *	$name -- column name of the vtiger_users vtiger_table
-  *	$val  -- column value
-  */
-function getUserEmailId($name,$val)
-{
-	global $adb;
-	$adb->println("Inside the function getUserEmailId. --- ".$name." = '".$val."'");
-	if($val != '')
-	{
-		//done to resolve the PHP5 specific behaviour
-		$sql = "SELECT email1, email2, secondaryemail  from vtiger_users WHERE status='Active' AND ". $adb->sql_escape_string($name)." = ?";
-		$res = $adb->pquery($sql, array($val));
-		$email = $adb->query_result($res,0,'email1');
-		if($email == '')
-		{
-			$email = $adb->query_result($res,0,'email2');
-			if($email == '')
-			{
-				$email = $adb->query_result($res,0,'secondaryemail ');
-			}
-		}
-		$adb->println("Email id is selected  => '".$email."'");
-		return $email;
-	}
-	else
-	{
-		$adb->println("User id is empty. so return value is ''");
-		return '';
-	}
 }
 
 /**	Funtion to add the user's signature with the content passed
@@ -439,43 +407,6 @@ function MailSend($mail)
 	}
 }
 
-/**	Function to get the Parent email id from HelpDesk to send the details about the ticket via email
-  *	$returnmodule -- Parent module value. Contact or Account for send email about the ticket details
-  *	$parentid -- id of the parent ie., contact or vtiger_account
-  */
-function getParentMailId($parentmodule,$parentid)
-{
-	global $adb;
-	$adb->println("Inside the function getParentMailId. \n parent module and id => ".$parentmodule."&".$parentid);
-
-		if($parentmodule == 'Contacts')
-		{
-				$tablename = 'vtiger_contactdetails';
-				$idname = 'contactid';
-		$first_email = 'email';
-		$second_email = 'secondaryemail';
-		}
-		if($parentmodule == 'Accounts')
-		{
-				$tablename = 'vtiger_account';
-				$idname = 'accountid';
-		$first_email = 'email1';
-		$second_email = 'email2';
-		}
-	if($parentid != '')
-	{
-		//$query = 'select * from '.$tablename.' where '.$idname.' = '.$parentid;
-		$query = 'select * from '.$tablename.' where '. $idname.' = ?';
-		$res = $adb->pquery($query, array($parentid));
-		$mailid = $adb->query_result($res,0,$first_email);
-		$mailid2 = $adb->query_result($res,0,$second_email);
-	}
-		if($mailid == '' && $mailid2 != '')
-			$mailid = $mailid2;
-
-	return $mailid;
-}
-
 /**	Function to parse and get the mail error
   *	$mail -- reference of the mail object
   *	$mail_status -- status of the mail which is sent or not
@@ -548,103 +479,7 @@ function getMailErrorString($mail_status_str)
 	return $mail_error_str;
 }
 
-/**	Function to parse the error string
-  *	$mail_error_str -- base64 encoded string which contains the mail sending errors as concatenated with &&&
-  *	return - Error message to display
-  */
-function parseEmailErrorString($mail_error_str)
-{
-	//TODO -- we can modify this function for better email error handling in future
-	global $adb, $mod_strings;
-	$adb->println("Inside the parseEmailErrorString function.\n encoded mail error string ==> ".$mail_error_str);
-
-	$mail_error = base64_decode($mail_error_str);
-	$adb->println("Original error string => ".$mail_error);
-	$mail_status = explode("&&&",trim($mail_error,"&&&"));
-	foreach($mail_status as $key => $val)
-	{
-		$status_str = explode("=",$val);
-		$adb->println('Mail id => "'.$status_str[0].'".........status => "'.$status_str[1].'"');
-		if($status_str[1] != 1 && $status_str[1] != '')
-		{
-			$adb->println("Error in mail sending");
-			if($status_str[1] == 'connect_host')
-			{
-				$adb->println("if part - Mail sever is not configured");
-				$errorstr .= '<br><b><font color=red>'.$mod_strings['MESSAGE_CHECK_MAIL_SERVER_NAME'].'</font></b>';
-				break;
-			}
-			elseif($status_str[1] == '0')
-			{
-				$adb->println("first elseif part - status will be 0 which is the case of assigned to vtiger_users's email is empty.");
-				$errorstr .= '<br><b><font color=red> '.$mod_strings['MESSAGE_MAIL_COULD_NOT_BE_SEND'].' '.$mod_strings['MESSAGE_PLEASE_CHECK_FROM_THE_MAILID'].'</font></b>';
-				//Added to display the message about the CC && BCC mail sending status
-				if($status_str[0] == 'cc_success')
-				{
-										$cc_msg = 'But the mail has been sent to CC & BCC addresses.';
-					$errorstr .= '<br><b><font color=purple>'.$cc_msg.'</font></b>';
-				}
-			}
-			elseif(strstr($status_str[1],'from_failed'))
-			{
-				$adb->println("second elseif part - from email id is failed.");
-				$from = explode('from_failed',$status_str[1]);
-				$errorstr .= "<br><b><font color=red>".$mod_strings['MESSAGE_PLEASE_CHECK_THE_FROM_MAILID']." '".$from[1]."'</font></b>";
-			}
-			else
-			{
-				$adb->println("else part - mail send process failed due to the following reason.");
-				$errorstr .= "<br><b><font color=red> ".$mod_strings['MESSAGE_MAIL_COULD_NOT_BE_SEND_TO_THIS_EMAILID']." '".$status_str[0]."'. ".$mod_strings['PLEASE_CHECK_THIS_EMAILID']."</font></b>";
-			}
-		}
-	}
-	$adb->println("Return Error string => ".$errorstr);
-	return $errorstr;
-}
-
 function isUserInitiated() {
 	return (($_REQUEST['module'] == 'Emails' || $_REQUEST['module'] == 'Webmails') &&
 			($_REQUEST['action'] == 'mailsend' || $_REQUEST['action'] == 'webmailsend' || $_REQUEST['action'] == 'Save'));
 }
-
-/**
- * Function to get the group users Email ids
- */
-function getDefaultAssigneeEmailIds($groupId) {
-	global $adb;
-	$emails = Array();
-	if($groupId != '') {
-		require_once 'include/utils/GetGroupUsers.php';
-		$userGroups = new GetGroupUsers();
-		$userGroups->getAllUsersInGroup($groupId);
-
-		//Clearing static cache for sub groups
-		GetGroupUsers::$groupIdsList = array();
-		if(php7_count($userGroups->group_users) == 0) return array();
-
-		$result = $adb->pquery('SELECT email1,email2,secondaryemail FROM vtiger_users WHERE vtiger_users.id IN
-											('.  generateQuestionMarks($userGroups->group_users).') AND vtiger_users.status= ?',
-								array($userGroups->group_users, 'Active'));
-		$rows = $adb->num_rows($result);
-		for($i = 0;$i < $rows; $i++) {
-			$email = $adb->query_result($result,$i,'email1');
-			if($email == '') {
-				$email = $adb->query_result($result,$i,'email2');
-				if($email == '') {
-					$email = $adb->query_result($result,$i,'secondaryemail');
-				} else {
-					$email = '';
-				}
-			}
-			array_push($emails,$email);
-		}
-		$adb->println("Email ids are selected  => '".$emails."'");
-		return $emails;
-	} else {
-		$adb->println("User id is empty. so return value is ''");
-		return array();
-	}
-}
-
-
-?>

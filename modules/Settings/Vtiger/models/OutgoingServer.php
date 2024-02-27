@@ -66,7 +66,7 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
         $from_email =  $request->get('from_email_field');
-        $to_email = getUserEmailId('id',$currentUser->getId());
+        $to_email = getUserEmail($currentUser->getId());
         
         $subject = $this->getSubject();
         $description = $this->getBody();

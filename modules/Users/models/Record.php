@@ -707,8 +707,8 @@ class Users_Record_Model extends Vtiger_Record_Model {
 	
 	/**
 	 * Function to get instance of user model by name
-	 * @param <String> $userName
-	 * @return <Users_Record_Model>
+	 * @param string $userName
+	 * @return Users_Record_Model|false
 	 */
 	public static function getInstanceByName($userName) {
 		$db = PearDatabase::getInstance();
@@ -931,4 +931,23 @@ class Users_Record_Model extends Vtiger_Record_Model {
 		return $userModuleModel->checkDuplicateUser($userName);
 	}
 
+    /**
+     * @return string
+     */
+    public function getEmailAddress(): string
+    {
+        $moduleModel = Vtiger_Module_Model::getInstance('Users');
+        $emailFields = $moduleModel->getFieldsByType('email');
+
+        foreach ($emailFields as $emailField) {
+            $fieldName = $emailField->getName();
+            $fieldValue = $this->get($fieldName);
+
+            if (!empty($fieldValue)){
+                return $fieldValue;
+            }
+        }
+
+        return '';
+    }
 }

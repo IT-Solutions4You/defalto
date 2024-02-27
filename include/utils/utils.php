@@ -466,27 +466,83 @@ function getColumnFields($module)
 	return $column_fld;
 }
 
-/** Function to get a users's mail id
-  * @param $userid -- userid :: Type integer
-    * @returns $email -- email :: Type string
-      *
-       */
+/**
+ * Get first email address for given user id.
+ *
+ * @param int $userId
+ *
+ * @return string
+ */
 
-function getUserEmail($userid)
+function getUserEmail($userId): string
 {
-	global $log;
-	$log->debug("Entering getUserEmail(".$userid.") method ...");
-	$log->info("in getUserEmail ".$userid);
+    global $log;
+    $log->debug("Entering getUserEmail(" . $userId . ") method ...");
 
-        global $adb;
-        if($userid != '')
-        {
-                $sql = "select email1 from vtiger_users where id=?";
-                $result = $adb->pquery($sql, array($userid));
-                $email = $adb->query_result($result,0,"email1");
+    $usersRecordModel = Users_Record_Model::getInstanceById($userId);
+    $log->debug("Exiting getUserEmail method ...");
+
+    if ($usersRecordModel) {
+        return $usersRecordModel->getEmailAddress();
+    }
+
+    return '';
+}
+
+/**
+ * Get first email address for given username.
+ *
+ * @param string $userName
+ *
+ * @return string
+ */
+function getUserEmailByName(string $userName): string
+{
+    $usersRecordModel = Users_Record_Model::getInstanceByName($userName);
+
+    if ($usersRecordModel) {
+        return $usersRecordModel->getEmailAddress();
+    }
+
+    return '';
+}
+
+/**
+ * Function to get the group users Emails
+ *
+ * @param $groupId
+ *
+ * @return array
+ * @throws Exception
+ */
+function getDefaultAssigneeEmailIds($groupId): array
+{
+    if (empty($groupId)) {
+        return [];
+    }
+
+    require_once 'include/utils/GetGroupUsers.php';
+    $userGroups = new GetGroupUsers();
+    $userGroups->getAllUsersInGroup($groupId);
+
+    //Clearing static cache for subgroups
+    GetGroupUsers::$groupIdsList = [];
+
+    if (php7_count($userGroups->group_users) == 0) {
+        return [];
+    }
+
+    $emails = [];
+
+    foreach ($userGroups->group_users as $userId) {
+        $email = getUserEmail($userId);
+
+        if ($email) {
+            $emails[] = $email;
         }
-	$log->debug("Exiting getUserEmail method ...");
-        return $email;
+    }
+
+    return $emails;
 }
 
 /** Function to get a userid for outlook

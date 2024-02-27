@@ -36,7 +36,7 @@ function HelpDesk_nofifyOnPortalTicketCreation($entityData) {
 	$ownerIdInfo = getRecordOwnerId($entityId);
 	if(!empty($ownerIdInfo['Users'])) {
 		$ownerId = $ownerIdInfo['Users'];
-		$to_email = getUserEmailId('id',$ownerId);
+		$to_email = getUserEmail($ownerId);
 	}
 	if(!empty($ownerIdInfo['Groups'])) {
 		$ownerId = $ownerIdInfo['Groups'];
@@ -75,7 +75,7 @@ function HelpDesk_notifyOnPortalTicketComment($entityData) {
 	if(!empty($ownerIdInfo['Users'])) {
 		$ownerId = $ownerIdInfo['Users'];
 		$ownerName = getOwnerName($ownerId);
-		$to_email = getUserEmailId('id',$ownerId);
+		$to_email = getUserEmail($ownerId);
 	}
 	if(!empty($ownerIdInfo['Groups'])) {
 		$ownerId = $ownerIdInfo['Groups'];
@@ -204,7 +204,7 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 		$ownerType = vtws_getOwnerType($ownerId);
 
 		if($ownerType == 'Users') {
-			$to_email = getUserEmailId('id',$ownerId);
+			$to_email = getUserEmail($ownerId);
 		}
 		if($ownerType == 'Groups') {
 			$to_email = implode(',', getDefaultAssigneeEmailIds($ownerId));

@@ -84,7 +84,7 @@ function CustomerCommentFromPortal($entityData) {
 		if(!empty($ownerIdInfo['Users'])) {
 			$ownerId = $ownerIdInfo['Users'];
 			$ownerName = getOwnerName($ownerId);
-			$toEmail = getUserEmailId('id',$ownerId);
+			$toEmail = getUserEmail($ownerId);
 		}
 		if(!empty($ownerIdInfo['Groups'])) {
 			$ownerId = $ownerIdInfo['Groups'];
