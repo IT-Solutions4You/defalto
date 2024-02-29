@@ -17,7 +17,7 @@
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/select2/select2/dist/css/select2.min.css')}'>
 			<link type='text/css' rel='stylesheet' href='{vresource_url('vendor/apalfrey/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css')}'>
 
-			<link type='text/css' rel='stylesheet' href='libraries/bootstrap/js/eternicode-bootstrap-datepicker/css/datepicker3.css'/>
+			{*<link type='text/css' rel='stylesheet' href='libraries/bootstrap/js/eternicode-bootstrap-datepicker/css/datepicker3.css'/>*}
 			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/jquery/jquery-ui-1.12.0.custom/jquery-ui.css'/>
 			<link type='text/css' rel='stylesheet' href='layouts/d1/lib/vt-icons/style.css'/>
 

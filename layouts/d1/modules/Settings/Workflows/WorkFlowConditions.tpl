@@ -8,10 +8,10 @@
     <input type="hidden" name="conditions" id="advanced_filter" value='' />
     <input type="hidden" id="olderConditions" value='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($WORKFLOW_MODEL->get('conditions')))}' />
     <input type="hidden" name="filtersavedinnew" value="{$WORKFLOW_MODEL->get('filtersavedinnew')}" />
-    <div class="editViewHeader border-bottom">
+    <div class="editViewHeader">
         <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_WORKFLOW_CONDITION', $QUALIFIED_MODULE)}</h4>
     </div>
-    <div class="editViewBody">
+    <div class="editViewBody border-bottom">
        <div class="editViewContents">
           <div class="form-group">
              <div class="py-3 px-4">
@@ -41,11 +41,11 @@
              </div>
           </div>
        </div>
-    </div>        
-    <div class="editViewHeader border-bottom">
+    </div>
+    <div class="editViewHeader">
       <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_WORKFLOW_ACTIONS', $QUALIFIED_MODULE)}</h4>
     </div>
-    <div class="editViewBody pb-3" id="workflow_action">
+    <div class="editViewBody pb-3 border-bottom" id="workflow_action">
         <div class="p-3">
             <div class="btn-group dropdown">
                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" type="button" aria-expanded="true">

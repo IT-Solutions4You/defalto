@@ -79,54 +79,43 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     /**
      * @param int $templateId
-     * @param string $l_language
-     * @param string $l_module
-     * @param string $l_crmid
-     * @param string $l_recipientid
-     * @param string $l_recipientmodule
+     * @param string $language
+     * @param string|null $moduleName
+     * @param int|null $recordId
+     * @param int|null $recipientRecordId
+     * @param string|null $recipientModuleName
      * @return EMAILMaker_EMAILContent_Model
-     * @throws Exception
      */
-    public static function getInstanceById($templateId, $l_language, $l_module = "", $l_crmid = "", $l_recipientid = "", $l_recipientmodule = "")
+    public static function getInstanceById(int $templateId, string $language, string $moduleName = null, int $recordId = null, int $recipientRecordId = null, string $recipientModuleName = null): self
     {
-        self::$templateid = $templateId;
-        self::$language = $l_language;
-        self::$module = $l_module;
+        $self = self::getInstance($moduleName, $recordId, $language, $recipientRecordId, $recipientModuleName);
 
-        if (!empty($l_module)) {
-            $l_focus = CRMEntity::getInstance($l_module);
-
-            if (!empty($l_crmid)) {
-                $l_focus->retrieve_entity_info($l_crmid, $l_module);
-                $l_focus->id = $l_crmid;
-            }
-
-            self::$focus = $l_focus;
+        if (!empty($recordId)) {
+            self::$focus->retrieve_entity_info($recordId, $moduleName);
+            self::$focus->id = $recordId;
         }
 
-        self::$recipientid = $l_recipientid;
-        self::$recipientmodule = $l_recipientmodule;
-
-        $self = new self();
-        $self->getTemplateData();
-        $self->getDecimalData();
+        if (!empty($templateId)) {
+            self::$templateid = $templateId;
+            $self->getTemplateData();
+        }
 
         return $self;
     }
 
     private function getTemplateData()
     {
-        $result = self::$db->pquery("SELECT *  FROM vtiger_emakertemplates WHERE templateid=?", array(self::$templateid));
+        $result = self::$db->pquery('SELECT *  FROM vtiger_emakertemplates WHERE templateid=?', [self::$templateid]);
         $data = self::$db->fetch_array($result);
-        $this->setSubject($data["subject"]);
+        $body = $data['body'];
 
-        $email_body = $data["body"];
-        if (vtlib_isModuleActive("ITS4YouStyles")) {
-            $ITS4YouStylesModuleModel = new ITS4YouStyles_Module_Model();
-            $email_body = $ITS4YouStylesModuleModel->addStyles($email_body, self::$templateid, "EMAILMaker");
+        if (vtlib_isModuleActive('ITS4YouStyles')) {
+            $body = (new ITS4YouStyles_Module_Model())->addStyles($body, self::$templateid, "EMAILMaker");
         }
-        $this->setBody($email_body);
-        self::$templatename = $data["templatename"];
+
+        $this->setBody($body);
+        $this->setSubject($data['subject']);
+        self::$templatename = $data['templatename'];
     }
 
     private function getDecimalData()
@@ -139,25 +128,29 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         self::$decimals = $data["decimals"];
     }
 
-    public static function getInstance($l_module, $l_crmid, $l_language, $l_recipientid = "", $l_recipientmodule = "")
+    /**
+     * @param string $moduleName
+     * @param int $recordId
+     * @param string $language
+     * @param int|null $recipientRecordId
+     * @param string|null $recipientModuleName
+     * @return self
+     */
+    public static function getInstance(string $moduleName, int $recordId, string $language, int $recipientRecordId = null, string $recipientModuleName = null): self
     {
-        self::$templateid = "";
-        self::$module = $l_module;
+        self::$language = $language;
+        self::$module = $moduleName;
 
-        if ($l_module != "") {
-            if ($l_crmid != "" && $l_crmid != "0") {
-                $l_focus = CRMEntity::getInstance($l_module);
-                $l_focus->retrieve_entity_info($l_crmid, $l_module);
-                $l_focus->id = $l_crmid;
-            }
-            self::$focus = $l_focus;
+        if (!empty($moduleName)) {
+            self::$focus = CRMEntity::getInstance($moduleName);
         }
-        self::$language = $l_language;
-        self::$recipientid = $l_recipientid;
-        self::$recipientmodule = $l_recipientmodule;
+
+        self::$recipientid = $recipientRecordId;
+        self::$recipientmodule = $recipientModuleName;
 
         $self = new self();
         $self->getDecimalData();
+
         return $self;
     }
 
@@ -343,12 +336,12 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $this->replaceContent();
             }
             $this->replaceCustomFunctions("_after");
-            list($EMAIL_content["pre_subject"], $EMAIL_content["pre_body"]) = explode(self::$section_sep, self::$content);
+            [$EMAIL_content["pre_subject"], $EMAIL_content["pre_body"]] = explode(self::$section_sep, self::$content);
         }
         if ($convert_recipient || $fixImg) {
             $this->fixImg();
         }
-        list($EMAIL_content["subject"], $EMAIL_content["body"]) = explode(self::$section_sep, self::$content);
+        [$EMAIL_content["subject"], $EMAIL_content["body"]] = explode(self::$section_sep, self::$content);
 
         $this->setSubject($EMAIL_content["subject"]);
         $this->setBody($EMAIL_content["body"]);
@@ -862,7 +855,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     {
         if (!empty($focus->id)) {
             $total_vatsum = $totalwithoutwat = $totalAfterDiscount_subtotal = $total_subtotal = $totalsum_subtotal = 0;
-            list($images, $bacImgs) = $this->getInventoryImages($focus->id);
+            [$images, $bacImgs] = $this->getInventoryImages($focus->id);
 
             $recordModel = Inventory_Record_Model::getInstanceById($focus->id);
             $relatedProducts = $recordModel->getProducts();
@@ -1035,8 +1028,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                             $total_vatsum += $vatsum;
                             $Vat_Block[$tax_name . "-" . $tax_value]["vat"] += $vatsum;
                             $Vat_Block[$tax_name . "-" . $tax_value]["value"] = $tax_value;
-                            array_push($Tax_Values, $tax_value);
-                            array_push($Total_Tax_Values, $tax_value);
+                            $Tax_Values[] = $tax_value;
                         }
                     }
 
@@ -1278,7 +1270,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                     while ($oParent->tag != "table") {
                         $oParent = $oParent->parent;
                     }
-                    list($tag) = explode(">", $oParent->outertext, 2);
+                    [$tag] = explode(">", $oParent->outertext, 2);
                     $header = $oParent->first_child();
                     if ($header->tag != "tr") {
                         $header = $header->children(0);
@@ -1309,7 +1301,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                         }
                         $style_subtotal_tag = $style_subtotal_endtag = "";
                         if (isset($td->innertext)) {
-                            list($style_subtotal_tag, $style_subtotal_endtag) = explode("#PRODUCTBLOC_" . $block_type . "START#", $td->innertext);
+                            [$style_subtotal_tag, $style_subtotal_endtag] = explode("#PRODUCTBLOC_" . $block_type . "START#", $td->innertext);
                         }
                         if (isset($style_subtotal)) {
                             $StyleSubtotal = explode(";", $style_subtotal);
@@ -1547,7 +1539,7 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $app_lang = $app_lang_array["languageStrings"];
         $mod_lang = $mod_lang_array["languageStrings"];
 
-        list($custom_lang, $languages) = $this->EMAILMaker->GetCustomLabels();
+        [$custom_lang, $languages] = $this->EMAILMaker->GetCustomLabels();
         $currLangId = "";
         foreach ($languages as $langId => $langVal) {
             if ($langVal["prefix"] == self::$language) {
@@ -1728,6 +1720,18 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     public function getBody()
     {
         return self::$body;
+    }
+
+    public function getBodyWithStyles()
+    {
+        $templateBody = $this->getBody();
+        $templateId = self::$templateid;
+
+        if (!empty($templateId) && vtlib_isModuleActive('ITS4YouStyles') && class_exists('ITS4YouStyles_Module_Model')) {
+            $templateBody = (new ITS4YouStyles_Module_Model())->addStyles($templateBody, $templateId, 'EMAILMaker');
+        }
+
+        return $templateBody;
     }
 
     public function getPreview()

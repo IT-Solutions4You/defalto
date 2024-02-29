@@ -14,6 +14,8 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 	const RECORD_STRUCTURE_MODE_FILTER = 'Filter';
 	const RECORD_STRUCTURE_MODE_EDITTASK = 'EditTask';
 
+    public array $emailFields;
+
 	function setWorkFlowModel($workFlowModel) {
 		$this->workFlowModel = $workFlowModel;
 	}
@@ -124,11 +126,98 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 	 * Function returns all the email fields for the workflow record structure
 	 * @return type
 	 */
-	public function getAllEmailFields() {
-		return $this->getFieldsByType('email');
-	}
+    public function getAllEmailFields()
+    {
+        if (empty($this->emailFields)) {
+            $this->emailFields = $this->getFieldsByType('email');
+        }
 
-	/**
+        return $this->emailFields;
+    }
+
+    public function getFromEmailFields(): array
+    {
+        $emailFields = $this->getAllEmailFields();
+        $nameFields = $this->getNameFields();
+        $emailOptions = [
+            '$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>' => vtranslate('LBL_HELPDESK_SUPPORT_EMAILID', 'Settings:Vtiger'),
+        ];
+
+        foreach ($emailFields as $metaKey => $emailField) {
+            [$relationFieldName, $rest] = explode(' ', $metaKey);
+            $value = '<$' . $metaKey . '>';
+
+            if ($nameFields) {
+                $nameFieldValues = '';
+
+                foreach (array_keys($nameFields) as $fieldName) {
+                    if (strstr($fieldName, $relationFieldName) || (php7_count(explode(' ', $metaKey)) === 1 && php7_count(explode(' ', $fieldName)) === 1)) {
+                        $fieldName = '$' . $fieldName;
+                        $nameFieldValues .= ' ' . $fieldName;
+                    }
+                }
+
+                $value = trim($nameFieldValues) . $value;
+            }
+
+            $emailOptions[$value] = $emailField->get('workflow_columnlabel');
+        }
+
+        return $emailOptions;
+    }
+
+    public function getEmailFields(): array
+    {
+        $emailFields = $this->getAllEmailFields();
+        $emailOptions = [];
+
+        foreach ($emailFields as $metaKey => $emailField) {
+            $emailOptions['$' . $metaKey] .= $emailField->get('workflow_columnlabel');
+        }
+
+        $usersModuleModel = Vtiger_Module_Model::getInstance('Users');
+        $moduleModel = $this->getModule();
+
+        if ($moduleModel->getField('assigned_user_id')) {
+            $emailOptions['$(general : (__VtigerMeta__) reports_to_id)'] .= sprintf(
+                '%s : (%s) %s',
+                vtranslate($moduleModel->getField('assigned_user_id')->get('label'), 'Users'),
+                vtranslate('Users', 'Users'),
+                vtranslate($usersModuleModel->getField('reports_to_id')->get('label'), 'Users')
+            );
+        }
+
+        return $emailOptions;
+    }
+
+    public function getAllFields()
+    {
+        $fieldOptions = [];
+        $structure = $this->getStructure();
+
+        foreach ($structure as $fields) {
+            foreach ($fields as $field) {
+                if ($field->get('workflow_pt_lineitem_field')) {
+                    $fieldOptions[$field->get('workflow_columnname')] = $field->get('workflow_columnlabel');
+                } else {
+                    $fieldOptions['$' . $field->get('workflow_columnname')] = $field->get('workflow_columnlabel');
+                }
+            }
+        }
+
+        return $fieldOptions;
+    }
+
+    public function getHtmlOptions($options)
+    {
+        $values = array_map(function ($value, $label) {
+            return sprintf('<option value="%s">%s</option>', $value, $label);
+        }, array_keys($options), array_values($options));
+
+        return implode('', $values);
+    }
+
+    /**
 	 * Function returns all the date time fields for the workflow record structure
 	 * @return type
 	 */
@@ -163,6 +252,12 @@ class Settings_Workflows_RecordStructure_Model extends Vtiger_RecordStructure_Mo
 		return $fieldsBasedOnType;
 	}
 
+    /**
+     * @param object $workFlowModel
+     * @param string $mode
+     * @return self
+     * @throws AppException
+     */
 	public static function getInstanceForWorkFlowModule($workFlowModel, $mode) {
 		$className = Vtiger_Loader::getComponentClassName('Model', $mode.'RecordStructure', 'Settings:Workflows');
 		$instance = new $className();

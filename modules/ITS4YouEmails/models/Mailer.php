@@ -14,6 +14,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class ITS4YouEmails_Mailer_Model extends PHPMailer
 {
+    public $CharSet = PHPMailer::CHARSET_UTF8;
     public $debug = false;
     public $embedImages;
     public $Host;

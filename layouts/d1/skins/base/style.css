@@ -2639,19 +2639,6 @@ input[type=checkbox]:checked {
     outline: none;
 }
 
-.ui-widget-content {
-    border-radius: 6px;
-    box-shadow: 0 0 3px -1px inset;
-    margin-top: 2px;
-    margin-left: 5px;
-    height: auto;
-    opacity: 1;
-    border-color: #dddddd;
-    box-shadow: none;
-    cursor: not-allowed;
-    height: 14px;
-}
-
 .ui-slider-disabled {
     opacity: 0.5;
     border-color: #dddddd;
@@ -6739,4 +6726,37 @@ a.btnReport:hover {
 }
 .bg-inherit {
     background: inherit !important;
+}
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-search {
+    display: inline-block;
+    width: auto;
+}
+
+.ui-datepicker {
+    z-index: 1051 !important;
+    padding: 0.5rem;
+    width: auto !important;
+}
+.ui-datepicker {
+    .ui-state-default {
+        border: 0;
+        text-align: center;
+        border-radius: 3px;
+        height: 2rem;
+        line-height: 1.8rem;
+    }
+    .ui-datepicker-header {
+        background: none;
+        border: 0;
+        border-bottom: 1px solid #dddddd;
+        border-radius: 0;
+    }
+}
+
+.ui-datepicker th {
+    padding: 1.5rem 1rem;
+}
+
+#annualDatePicker .ui-datepicker-year {
+    display: none;
 }

@@ -5,11 +5,19 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div class="fc-overlay-modal modal-content">
+    <div class="fc-overlay-modal">
         <form id="saveTask" method="post" action="index.php" class="modal-content">
-            {assign var=HEADER_TITLE value={vtranslate('LBL_ADD_TASKS_FOR_WORKFLOW', $QUALIFIED_MODULE)}|cat:" -> "|cat:{vtranslate($TASK_TYPE_MODEL->get('label'),$QUALIFIED_MODULE)}}
-            {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=$HEADER_TITLE}
-            <div class="modal-body editTaskBody">
+            {assign var=HEADER_TITLE value=vtranslate('LBL_ADD_TASKS_FOR_WORKFLOW', $QUALIFIED_MODULE)}
+            <div class="modal-header align-items-center">
+                <div class="col-2">
+                    <h5 class="modal-title m-0 text-truncate w-100">{$HEADER_TITLE}</h5>
+                </div>
+                <div class="col-6">
+                    <input name="summary" class="inputElement form-control" data-rule-required="true" type="text" value="{if !$TASK_MODEL->isEmpty('summary')}{$TASK_MODEL->get('summary')}{else}{vtranslate($TASK_TYPE_MODEL->get('label'),$QUALIFIED_MODULE)}{/if}"/>
+                </div>
+                <button type="button" class="col-auto ms-auto btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body editTaskBody overflow-auto">
                 <input type="hidden" name="module" value="{$MODULE}"/>
                 <input type="hidden" name="parent" value="Settings"/>
                 <input type="hidden" name="action" value="TaskAjax"/>
@@ -21,20 +29,10 @@
                 {if $TASK_MODEL->get('active') eq 'false'}<input type="hidden" name="active" value="false"/>{/if}
                 <div id="scrollContainer">
                     <div class="tabbable">
-                        <div class="row my-3">
-                            <div class="col-sm-2 col-xs-2">
-                                <span>{vtranslate('LBL_TASK_TITLE',$QUALIFIED_MODULE)}</span>
-                                <span class="text-danger ms-2">*</span>
-                            </div>
-                            <div class="col-sm-6 col-xs-6">
-                                <input name="summary" class="inputElement form-control" data-rule-required="true" type="text" value="{$TASK_MODEL->get('summary')}"/>
-                            </div>
-                        </div>
                         {if $TASK_TYPE_MODEL->get('tasktypename') eq "VTEmailTask" && $TASK_OBJECT->trigger != null}
                             {if ($TASK_OBJECT->trigger!=null)}
                                 {assign var=trigger value=$TASK_OBJECT->trigger}
                                 {assign var=days value=$trigger['days']}
-
                                 {if ($days < 0)}
                                     {assign var=days value=$days*-1}
                                     {assign var=direction value='before'}

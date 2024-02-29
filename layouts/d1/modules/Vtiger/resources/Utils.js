@@ -13,6 +13,14 @@ var vtUtils = {
 	 * Function which will show the select2 element for select boxes . This will use select2 library
 	 */
     showSelect2ElementView: function (selectElement, params) {
+        if (selectElement.length > 1) {
+            selectElement.each(function () {
+                vtUtils.showSelect2ElementView($(this), params);
+            });
+
+            return selectElement;
+        }
+
         if (typeof params == 'undefined') {
             params = {};
         }
@@ -133,7 +141,11 @@ var vtUtils = {
             }
         });
     },
+    getFirstDayId: function() {
+        const defaultFirstDay = jQuery('#start_day').val();
 
+        return this.weekDaysArray[defaultFirstDay];
+    },
     /**
      * Function register datepicker for dateField elements
      */
@@ -185,18 +197,19 @@ var vtUtils = {
                         userDateFormat = elementDateFormat;
                     }
 
-                    let thelang = jQuery('body').data('language').substring(0, 2),
+                    let language = jQuery('body').data('language').substring(0, 2),
                         defaultPickerParams = {
                             autoclose: true,
                             todayBtn: "linked",
-                            format: userDateFormat,
+                            dateFormat: userDateFormat.replace('yyyy', 'yy'),
                             todayHighlight: true,
                             clearBtn: true,
-                            language: thelang,
+                            language: language,
                             firstDay: defaultFirstDayId,
                             weekStart: defaultFirstDayId,
+                            width: 'auto',
                         };
-                    jQuery.extend(defaultPickerParams, params);
+                    defaultPickerParams = jQuery.extend({}, defaultPickerParams, params);
 
                     element.datepicker(defaultPickerParams);
 

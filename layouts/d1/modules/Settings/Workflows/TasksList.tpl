@@ -19,8 +19,8 @@
 				{foreach from=$TASK_LIST item=TASK}
 					<tr class="listViewEntries border-bottom">
 						<td>
-                            <div class="actions">
-								<span class="actionImages btn-group">
+                            <div class="actions d-flex align-items-center">
+								<span class="actionImages btn-group me-3">
 									<a class="btn text-secondary" data-url="{$TASK->getEditViewUrl()}">
 										<i class="fa fa-pencil alignMiddle" title="{vtranslate('LBL_EDIT',$QUALIFIED_MODULE)}"></i>
                                     </a>
@@ -28,8 +28,8 @@
 										<i class="fa fa-trash alignMiddle" title="{vtranslate('LBL_DELETE',$QUALIFIED_MODULE)}"></i>
 									</a>
 								</span>
-								<label class="btn">
-									<input type="checkbox" data-on-color="success" class="taskStatus" data-statusurl="{$TASK->getChangeStatusUrl()}" {if $TASK->isActive()} checked="" value="on" {else} value="off" {/if} />
+								<label class="form-check form-switch">
+									<input type="checkbox" data-on-color="success" class="taskStatus form-check-input" data-statusurl="{$TASK->getChangeStatusUrl()}" {if $TASK->isActive()}checked="checked" value="on"{else}value="off"{/if} />
 								</label>
                             </div>
                         </td>
@@ -43,8 +43,8 @@
 				{/foreach}
                 <tr class="listViewEntries border-bottom hide taskTemplate">
                     <td>
-                        <div class="actions">
-                            <span class="actionImages btn-group">
+                        <div class="actions d-flex align-items-center">
+                            <span class="actionImages btn-group me-3">
                                 <a class="editTask btn text-secondary">
                                     <i class="fa fa-pencil alignMiddle" ></i>
                                 </a>
@@ -52,7 +52,9 @@
                                     <i class="fa fa-trash alignMiddle"></i>
                                 </a>
                             </span>
-							<input style="opacity: 0;" type="checkbox" data-on-color="success" class="tmpTaskStatus" checked="" value="on"/>
+							<label class="form-check form-switch">
+								<input type="checkbox" data-on-color="success" class="tmpTaskStatus form-check-input" checked="" value="on"/>
+							</label>
                         </div>
                     </td>
                     <td class="listViewEntryValue taskType">

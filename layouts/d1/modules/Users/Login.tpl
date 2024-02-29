@@ -5,9 +5,9 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div class="container-fluid loginPageContainer h-100">
+    <div class="container-fluid loginPageContainer">
         <div class="row loginPageBackground">
-            <div class="col-lg-7 bg-body rounded-end">
+            <div class="col-lg-7 bg-body">
                 <div class="container-fluid">
                     <div class="row d-flex align-items-center justify-content-center">
                         <div class="col-lg-4">
@@ -67,13 +67,13 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5">
+            <div class="col-lg">
 
             </div>
         </div>
         <style>
             .loginPageContainer .row {
-                min-height: 100vh !important;
+                min-height: calc(100vh - var(--footer-height)) !important;
             }
             .loginPageBackground {
                 background: url(layouts/d1/resources/Images/login-background.jpg) center center / cover;
