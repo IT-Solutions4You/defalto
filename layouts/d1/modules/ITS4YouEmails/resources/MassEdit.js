@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-/** @let ITS4YouEmails_MassEdit_Js */
+/** @var ITS4YouEmails_MassEdit_Js */
 jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     init: function () {
         this.preloadAllData = [];
@@ -634,6 +634,9 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
             }
         });
     },
+    removeAttachmentFileSizeByElement : function(element) {
+        this.attachmentsFileSize -= element.get(0).files[0].size;
+    },
     registerLoadCKEditor(container) {
         let descriptionElement = $('#description'),
             isCkeditorApplied = descriptionElement.data('isCkeditorApplied');
@@ -645,6 +648,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
     registerEventDocumentsListClick: function () {
         const self = this;
 
+        app.event.off('post.DocumentsList.click');
         app.event.on('post.DocumentsList.click', function (event, data) {
             let responseData = JSON.parse(data);
 
@@ -955,28 +959,40 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
         });
     },
     registerEventForRemoveCustomAttachments: function () {
-        let thisInstance = this;
-        let composeEmailForm = this.getMassEmailForm();
-        jQuery('[name="removeAttachment"]').on('click', function (e) {
-            let attachmentsContainer = composeEmailForm.find('[ name="attachments"]');
-            let attachmentsInfo = JSON.parse(attachmentsContainer.val());
-            let element = jQuery(e.currentTarget);
-            let imageContainer = element.closest('div.MultiFile-label');
-            let imageContainerData = imageContainer.data();
-            let fileType = imageContainerData['fileType'];
-            let fileSize = imageContainerData['fileSize'];
-            let fileId = imageContainerData['fileId'];
-            if (fileType == "document") {
-                thisInstance.removeDocumentsFileSize(fileSize);
-            } else if (fileType == "file") {
-                thisInstance.removeAttachmentFileSizeBySize(fileSize);
+        let self = this,
+            composeEmailForm = self.getMassEmailForm();
+
+        composeEmailForm.on('click', '.removeAttachment', function () {
+            let attachmentsContainer = composeEmailForm.find('[name="attachments"]'),
+                attachmentsInfo = JSON.parse(attachmentsContainer.val()),
+                documentsContainer = composeEmailForm.find('[name="documentids"]'),
+                documentsInfo = JSON.parse(documentsContainer.val()),
+                element = jQuery(this),
+                imageContainer = element.closest('.MultiFile-label'),
+                imageContainerData = imageContainer.data(),
+                fileType = imageContainerData['fileType'],
+                fileSize = imageContainerData['fileSize'],
+                fileId = parseInt(imageContainerData['fileId']),
+                fileDocumentId = parseInt(imageContainerData['documentId']);
+
+            if ('document' === fileType) {
+                self.removeDocumentsFileSize(fileSize);
+            } else if ('file' === fileType) {
+                self.removeAttachmentFileSizeBySize(fileSize);
             }
-            jQuery.each(attachmentsInfo, function (index, attachmentObject) {
-                if ((typeof attachmentObject != "undefined") && (attachmentObject.fileid == fileId)) {
-                    attachmentsInfo.splice(index, 1);
-                }
+
+            attachmentsInfo = attachmentsInfo.filter(function (attachmentInfo) {
+                return parseInt(attachmentInfo['fileid']) !== fileId
             });
             attachmentsContainer.val(JSON.stringify(attachmentsInfo));
+
+            if (fileDocumentId) {
+                documentsInfo = documentsInfo.filter(function (documentInfo) {
+                    return parseInt(documentInfo) !== fileDocumentId
+                });
+                documentsContainer.val(JSON.stringify(documentsInfo));
+            }
+
             imageContainer.remove();
         });
     },
@@ -1074,7 +1090,7 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
         }
     },
     getDocumentAttachmentElement: function (selectedFileName, id, selectedFileSize) {
-        return '<div class="MultiFile-label"><a href="#" class="removeAttachment cursorPointer" data-id=' + id + ' data-file-size=' + selectedFileSize + '>x </a><span>' + selectedFileName + '</span></div>';
+        return '<div class="MultiFile-label" data-id=' + id + ' data-file-size=' + selectedFileSize + '><a href="#" class="removeAttachment cursorPointer me-2" ><i class="fa-solid fa-xmark"></i></a><span>' + selectedFileName + '</span></div>';
     },
     setDocumentsFileSize: function (documentSize) {
         this.documentsFileSize += parseFloat(documentSize);

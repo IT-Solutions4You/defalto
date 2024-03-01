@@ -142,7 +142,7 @@ class VTEmailTask extends VTTask
 
                 if (count($attachments) > 0) {
                     foreach ($attachments as $attachment_id) {
-                        $emailRecord->saveAttachmentRelation($attachment_id);
+                        $emailRecord->saveDocumentRelation($attachment_id);
                     }
                 }
 

@@ -156,7 +156,7 @@
                                         {/if}
                                     </ul>
                                 </div>
-                                <div>
+                                <div class="ms-2">
                                     <div id="attachments">
                                         {foreach item=ATTACHMENT from=$ATTACHMENTS}
                                             {if ('docid'|array_key_exists:$ATTACHMENT)}
@@ -167,7 +167,9 @@
                                             {/if}
                                             <div class="MultiFile-label customAttachment" data-file-id="{$ATTACHMENT['fileid']}" data-file-type="{$FILE_TYPE}" data-file-size="{$ATTACHMENT['size']}" {if $FILE_TYPE eq "document"} data-document-id="{$DOCUMENT_ID}"{/if}>
                                                 {if $ATTACHMENT['nondeletable'] neq true}
-                                                    <a name="removeAttachment" class="cursorPointer">x </a>
+                                                    <a href="#" class="removeAttachment cursorPointer me-2">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </a>
                                                 {/if}
                                                 <span>{$ATTACHMENT['attachment']}</span>
                                             </div>
@@ -180,7 +182,7 @@
                                             <div class="row">
                                                 <a href="#" class="generatePreviewPDF cursorPointer" data-templateid="{$PDF_TEMPLATE_ID}">
                                                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
-                                                    <span style="margin-left: 1rem">{$PDF_TEMPLATE_NAME}</span>
+                                                    <span class="ms-2">{$PDF_TEMPLATE_NAME}</span>
                                                 </a>
                                             </div>
                                         {/foreach}
@@ -218,7 +220,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col text-end cancelLinkContainer">
-                                <a href="#" class="btn btn-primary cancelLink" type="reset" data-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                                <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
                             </div>
                             <div class="col">
                                 <button id="sendEmail" name="sendemail" class="btn btn-primary active" title="{vtranslate("LBL_SEND_EMAIL",$MODULE)}" type="submit">

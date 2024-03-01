@@ -40,6 +40,9 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
     private static $inventory_id_array = array();
     private static $org_colsOLD = array();
     private static $relBlockModules = array();
+    private static $load_related_documents = false;
+    private static $folders_related_documents = [];
+
     public $EMAILMaker = false;
 
     public function __construct()
@@ -116,6 +119,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
         $this->setBody($body);
         $this->setSubject($data['subject']);
         self::$templatename = $data['templatename'];
+        self::$load_related_documents = !empty($data['load_related_documents']);
+        self::$folders_related_documents = array_filter(explode(',', $data['folders_related_documents']));
     }
 
     private function getDecimalData()
@@ -1741,7 +1746,34 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
 
     public function getAttachments()
     {
-        return $this->getAttachmentsForId(self::$templateid);
+        $templateAttachments = $this->getAttachmentsForId(self::$templateid);
+        $recordsAttachments = $this->getAttachmentsForRecord();
+
+        return array_merge($templateAttachments, $recordsAttachments);
+    }
+
+    public function getAttachmentsForRecord()
+    {
+        if (empty(self::$recordId) || !self::$load_related_documents || !class_exists('ITS4YouEmails_Attachment_Model')) {
+            return [];
+        }
+
+        $folderIds = self::$folders_related_documents;
+        $attachments = [];
+        $documents = ITS4YouEmails_Attachment_Model::getParentRecords(self::$recordId);
+
+        /** @var Documents_Record_Model $documentRecord */
+        foreach ($documents as $document) {
+            if (!empty($folderIds)) {
+                if (in_array($document['folderid'], $folderIds)) {
+                    $attachments[] = $document['crmid'];
+                }
+            } else {
+                $attachments[] = $document['crmid'];
+            }
+        }
+
+        return $attachments;
     }
 
     public function getEmailImages($convert_recipient = true)

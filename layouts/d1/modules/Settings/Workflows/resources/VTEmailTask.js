@@ -59,15 +59,19 @@ Vtiger.Class('VTEmailTask', {
     },
     updateTemplateFields: function () {
         let templateContainer = $('.templateContainer'),
-            customTemplateContainer = $('.customTemplateContainer');
+            customTemplateContainer = $('.customTemplateContainer'),
+            hideElement = customTemplateContainer,
+            showElement = templateContainer;
 
         if ('custom_template' === $('#task_template').val()) {
-            templateContainer.addClass('hide');
-            customTemplateContainer.removeClass('hide');
-        } else {
-            customTemplateContainer.addClass('hide');
-            templateContainer.removeClass('hide');
+            hideElement = templateContainer;
+            showElement = customTemplateContainer;
         }
+
+        hideElement.addClass('hide');
+        hideElement.find('[data-rule-required]').data('rule-required', false)
+        showElement.removeClass('hide');
+        showElement.find('[data-rule-required]').data('rule-required', true)
     }
 });
 

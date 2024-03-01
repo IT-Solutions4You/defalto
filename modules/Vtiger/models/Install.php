@@ -497,6 +497,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      */
     public static function logError($message): void
     {
+        if (true !== vglobal('debug')) {
+            return;
+        }
+
         echo '<pre style="font-size: 20px; color: red;">' . print_r($message, true) . '</pre>';
     }
 
@@ -506,6 +510,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      */
     public static function logSuccess($message): void
     {
+        if (true !== vglobal('debug')) {
+            return;
+        }
+
         echo '<pre style="font-size: 20px; color: darkolivegreen;">' . print_r($message, true) . '</pre>';
     }
 
@@ -518,7 +526,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
 
         foreach ($this->registerCron as $cronInfo) {
-            list($name, $handler, $frequency, $module, $sequence, $description) = array_pad($cronInfo, 6, null);
+            [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cronInfo, 6, null);
 
             Vtiger_Cron::deregister($name);
 
@@ -531,7 +539,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateCustomLinks($register = true)
     {
         foreach ($this->registerCustomLinks as $customLink) {
-            list($moduleName, $type, $label, $url, $icon, $sequence, $handler) = array_pad($customLink, 7, null);
+            [$moduleName, $type, $label, $url, $icon, $sequence, $handler] = array_pad($customLink, 7, null);
             $module = Vtiger_Module::getInstance($moduleName);
             $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
 
@@ -550,7 +558,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $eventsManager = new VTEventsManager($this->db);
 
         foreach ($this->registerEventHandler as $data) {
-            list($events, $fileName, $className, $condition, $dependOn, $modules) = $data;
+            [$events, $fileName, $className, $condition, $dependOn, $modules] = $data;
 
             $eventsManager->unregisterHandler($className);
 
@@ -609,7 +617,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateSettingsLinks($register = true)
     {
         foreach ($this->registerSettingsLinks as $settingsLink) {
-            list($name, $link, $block) = $settingsLink;
+            [$name, $link, $block] = $settingsLink;
 
             $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', array($name));
 
@@ -632,7 +640,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateWorkflows($register = true)
     {
         foreach ($this->registerWorkflows as $registerWorkflow) {
-            list($moduleName, $workflowName, $workflowLabel, $modules) = $registerWorkflow;
+            [$moduleName, $workflowName, $workflowLabel, $modules] = $registerWorkflow;
 
             $layout = Vtiger_Viewer::getLayoutName();
 
