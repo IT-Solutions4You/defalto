@@ -16,10 +16,10 @@
                 <input type="hidden" name="returnsourcemodule" value="{$RETURN_SOURCE_MODULE}"/>
                 <input type="hidden" name="returnpage" value="{$RETURN_PAGE}"/>
                 <input type="hidden" name="returnsearch_value" value="{$RETURN_SEARCH_VALUE}"/>
-                <div class="editViewHeader border-bottom">
+                <div class="editViewHeader">
                     <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_BASIC_INFORMATION', $QUALIFIED_MODULE)}</h4>
                 </div>
-                <div class="editViewBody container-fluid py-3 px-4">
+                <div class="editViewBody container-fluid py-3 px-4 border-bottom">
                     <div class="editViewContents">
                         <div class="form-group row mb-3">
                             <label for="name" class="col-sm-3 control-label">
@@ -85,10 +85,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="editViewHeader border-bottom">
+                <div class="editViewHeader">
                     <h4 class="fieldBlockHeader fw-bold py-3 px-4 m-0">{vtranslate('LBL_WORKFLOW_TRIGGER', $QUALIFIED_MODULE)}</h4>
                 </div>
-                <div class="editViewBody">
+                <div class="editViewBody border-bottom">
                     <div class="editViewContents">
                         {include file='WorkFlowTrigger.tpl'|@vtemplate_path:$QUALIFIED_MODULE}
                     </div>

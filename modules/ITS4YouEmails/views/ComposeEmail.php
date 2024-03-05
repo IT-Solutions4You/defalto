@@ -647,7 +647,7 @@ class ITS4YouEmails_ComposeEmail_View extends Vtiger_ComposeEmail_View
                         $fileDetails['fileid'] = $fileDetails['attachmentsid'];
                         $fileDetails['docid'] = $fileDetails['crmid'];
                         $fileDetails['attachment'] = $fileDetails['name'];
-                        $fileDetails['nondeletable'] = true;
+                        $fileDetails['nondeletable'] = false;
                         $fileDetails['size'] = filesize($fileDetails['path'] . $fileDetails['attachmentsid'] . "_" . $fileDetails['name']);
                         $attachments[] = $fileDetails;
                     }

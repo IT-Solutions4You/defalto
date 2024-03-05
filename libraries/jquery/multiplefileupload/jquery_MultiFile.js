@@ -512,7 +512,7 @@ if (window.jQuery)(function ($) {
 						// Create label elements
 						var
 							r = $('<div class="MultiFile-label"></div>'),
-							b = $('<a class="MultiFile-remove" href="#' + MultiFile.wrapID + '">' + MultiFile.STRING.remove + '</a>')
+							b = $('<a class="MultiFile-remove me-2" href="#' + MultiFile.wrapID + '">' + MultiFile.STRING.remove + '</a>')
 								
 								// ********
 								// TODO:
@@ -584,7 +584,7 @@ if (window.jQuery)(function ($) {
 
 						// Insert label
 						MultiFile.list.append(
-							r.append(b, ' ', names)
+							r.append(b, names)
 						);
 
 					//}); // each file?
@@ -862,7 +862,7 @@ if (window.jQuery)(function ($) {
 
 		// STRING: collection lets you show messages in different languages
 		STRING: {
-			remove: 'x',
+			remove: '<i class="fa-solid fa-xmark"></i>',
 			denied: 'You cannot select a $ext file.\nTry again...',
 			file: '$file',
 			selected: 'File selected: $file',

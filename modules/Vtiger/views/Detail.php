@@ -525,16 +525,14 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
-		$viewer->assign('ROLLUP_STATUS', isset($rollupsettings['rollup_status']) ? 
-			$rollupsettings['rollup_status'] : false);
-		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ?
-			$rollupsettings['rollupid'] : 0);
+		$viewer->assign('ROLLUP_STATUS', isset($rollupsettings['rollup_status']) ? $rollupsettings['rollup_status'] : false);
+		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ? $rollupsettings['rollupid'] : 0);
 		$viewer->assign('PARENT_RECORD', $parentId);
         $viewer->assign('STARTINDEX', 0);
 
         if (!empty($parentRecordModel)) {
             $relationModel = Vtiger_Relation_Model::getInstance($parentRecordModel->getModule(), $modCommentsModel);
-            $viewer->assign('RELATION_LIST_URL', $relationModel->getListUrl($parentRecordModel));
+            $viewer->assign('RELATION_LIST_URL', $relationModel ? $relationModel->getListUrl($parentRecordModel) : '');
         }
 
         return $viewer->view('RecentComments.tpl', $moduleName, 'true');

@@ -33,11 +33,11 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
         $sharingType = $request->get('sharing');
         $email_category = $request->get('email_category');
         $is_active = $request->get('is_active');
-
         $is_default_dv = '' != $request->get('is_default_dv') ? '1' : '0';
         $is_default_lv = '' != $request->get('is_default_lv') ? '1' : "0";
         $is_listview = '' != $request->get('is_listview') ? '1' : '0';
-
+        $load_related_documents = !$request->isEmpty('load_related_documents') ? '1' : '0';
+        $folders_related_documents = implode(',', (array)$request->get('folders_related_documents'));
         $templateParams = array(
             'templatename' => $templateName,
             'module' => $moduleName,
@@ -49,6 +49,8 @@ class EMAILMaker_SaveEMAILTemplate_Action extends Vtiger_Action_Controller
             'category' => $email_category,
             'is_listview' => $is_listview,
             'is_theme' => $is_theme,
+            'load_related_documents' => $load_related_documents,
+            'folders_related_documents' => $folders_related_documents,
         );
 
         $dec_point = $request->get('dec_point');

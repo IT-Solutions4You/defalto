@@ -194,17 +194,15 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 	getUi: function () {
 		let referenceModules = this.getReferenceModules(),
 			value = this.getValue(),
-			html = '<div class="ReferenceField ';
+			html = '<div class="ReferenceField w-100 ';
 
 		if (value) {
-			html += ' selected';
-		} else {
-			html += '"';
+			html += 'selected';
 		}
 
 		html += '">';
 		html += '<input name="popupReferenceModule" type="hidden" value="' + referenceModules[0] + '"/>';
-		html += '<div class="input-group ">'
+		html += '<div class="input-group">'
 		html += '<input class="autoComplete form-control inputElement sourceField" type="search" data-fieldtype="reference" name="' + this.getName() + '"';
 
 		let reset = false;
@@ -222,7 +220,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 			html += '<a href="#" class="input-group-text clearReferenceSelection hide"> X </a>';
 		}
 		//popup search element
-		html += '<span class="input-group-addon input-group-text rounded-0 relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
+		html += '<span class="input-group-addon input-group-text relatedPopup cursorPointer" title="' + referenceModules[0] + '">';
 		html += '<i class="fa fa-search"></i>';
 		html += '</span>';
 
@@ -258,7 +256,7 @@ Vtiger_Field_Js('Vtiger_Picklist_Field_Js',{},{
 	 */
 	getUi: function () {
 		//added class inlinewidth
-		let html = '<select class="PicklistField select2 inputElement inlinewidth" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
+		let html = '<select class="PicklistField select2 inputElement inlinewidth" data-width="100%" name="' + this.getName() + '" id="field_' + this.getModuleName() + '_' + this.getName() + '">',
 			pickListValues = this.getPickListValues(),
 			allPickListValues = this.getAllPickListValues(),
 			selectedOption = app.htmlDecode(this.getValue()),
@@ -532,10 +530,12 @@ Vtiger_Field_Js('Vtiger_Date_Field_Js',{},{
 	 */
 	getUi: function () {
 		//wrappig with another div for consistency
-		let html = '<div class="DateField"><div class="input-group date">' +
+		let html = '<div class="DateField w-100">' +
+				'<div class="input-group date">' +
 				'<input class="inputElement dateField form-control" type="text" data-rule-date="true" data-format="' + this.getDateFormat() + '" name="' + this.getName() + '" value="' + this.getValue() + '" />' +
-				'<span class="input-group-addon input-group-text rounded-0"><i class="fa fa-calendar"></i></span>' +
-				'</div></div>',
+				'<span class="input-group-addon input-group-text"><i class="fa fa-calendar"></i></span>' +
+				'</div>' +
+				'</div>',
 			element = jQuery(html);
 
 		return this.addValidationToElement(element);
@@ -554,10 +554,12 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 
 	getUi: function () {
 		//wrappig with another div for consistency
-		let html = '<div class="CurrencyField"><div class="input-group">' +
+		let html = '<div class="CurrencyField w-100">' +
+				'<div class="input-group">' +
 				'<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
 				'<input class="inputElement form-control" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
-				'</div></div>',
+				'</div>' +
+				'</div>',
 			element = jQuery(html);
 
 		return this.addValidationToElement(element);
@@ -581,7 +583,7 @@ Vtiger_Field_Js('Vtiger_Owner_Field_Js',{},{
 	},
 
 	getUi : function() {
-		var html = '<select class="OwnerField select2 inputElement" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
+		var html = '<select class="OwnerField select2 inputElement" data-width="100%" name="'+ this.getName() +'" id="field_'+this.getModuleName()+'_'+this.getName()+'">';
 		var pickListValues = this.getPickListValues();
 		var selectedOption = this.getValue();
 		for(var optGroup in pickListValues){
@@ -657,9 +659,9 @@ Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 	 * @return - input percentage field
 	 */
 	getUi : function() {
-		let html = '<div class="PercentageField"><div class="input-group percentage-input-group flex-nowrap">'+
+		let html = '<div class="PercentageField w-100"><div class="input-group percentage-input-group flex-nowrap">'+
 						'<input type="text" class="form-control inputElement percentage-input-element" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
-						'<span class="input-group-addon input-group-text rounded-0">%</span>'+
+						'<span class="input-group-addon input-group-text">%</span>'+
 					'</div></div>',
 			element = jQuery(html);
 

@@ -67,9 +67,9 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public static function getSignature($userId)
     {
         $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT signature FROM vtiger_users WHERE id=?', array($userId));
+        $result = $adb->pquery('SELECT signature FROM vtiger_users WHERE id=?', [$userId]);
 
-        return nl2br($adb->query_result($result, 0, 'signature'));
+        return nl2br(decode_html($adb->query_result($result, 0, 'signature')));
     }
 
     /**
@@ -181,7 +181,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $toEmailIds = $this->getJsonArray('to_email_ids');
 
             foreach ($toEmailIds as $toEmailId) {
-                list($recipientId, $recipientEmail, $recipientModule) = explode('|', $toEmailId);
+                [$recipientId, $recipientEmail, $recipientModule] = explode('|', $toEmailId);
 
                 $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $record, $this->get('email_template_language'), $recipientId, $recipientModule);
                 $EMAILContentModel->setSubject($subject);
@@ -275,7 +275,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $toEmailIds = $this->getJsonArray('to_email_ids');
 
         foreach ($toEmailIds as $toEmailId) {
-            list($record, $email, $module) = explode('|', $toEmailId);
+            [$record, $email, $module] = explode('|', $toEmailId);
 
             if (!empty($module) && !empty($record) && isRecordExists($record)) {
                 $content = getMergedDescription($content, $record, $module);
@@ -455,7 +455,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     public function getEmailName($emailId)
     {
-        list($record, $email, $module) = explode('|', $emailId);
+        [$record, $email, $module] = explode('|', $emailId);
 
         $module = trim(decode_html($module));
 
@@ -746,7 +746,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $toEmailIds = $this->getJsonArray('to_email_ids');
         $toEmailId = reset($toEmailIds);
 
-        list($record, $address, $module) = explode('|', $toEmailId);
+        [$record, $address, $module] = explode('|', $toEmailId);
 
         if (empty($record) || empty($module) || 'Users' === $module) {
             return;
@@ -782,7 +782,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $num = 0;
 
         foreach ($matches as $match) {
-            list($image, $url) = $match;
+            [$image, $url] = $match;
 
             if ($this->isImageUsed($url) || $this->isImageEmbed($url)) {
                 continue;
@@ -858,7 +858,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $emailIds = explode(',', $this->get('to_email_ids'));
 
             foreach ($emailIds as $emailId) {
-                list($emailRecord, $emailAddress, $emailModule) = explode('|', trim($emailId));
+                [$emailRecord, $emailAddress, $emailModule] = explode('|', trim($emailId));
 
                 if (!empty($emailRecord) && !empty($emailModule)) {
                     $field = $this->getRelatedToFields()[$emailModule];
@@ -1023,7 +1023,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $emails = array();
 
         foreach ($emailIds as $emailId) {
-            list($record, $address, $module) = explode('|', $emailId);
+            [$record, $address, $module] = explode('|', $emailId);
 
             $emails[] = $address;
         }

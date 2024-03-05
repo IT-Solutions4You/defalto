@@ -4,8 +4,8 @@
 * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
 * All Rights Reserved.
 */
-Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
-}, {
+/** @var Settings_Workflows_Edit_Js */
+Settings_Vtiger_Edit_Js('Settings_Workflows_Edit_Js', {}, {
     workFlowsContainer: false,
     advanceFilterInstance: false,
     ckEditorInstance: false,
@@ -318,8 +318,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
             thisInstance.registerEditTaskEvent();
             thisInstance.registerTaskStatusChangeEvent();
             thisInstance.registerTaskDeleteEvent();
-            jQuery(".taskStatus").bootstrapSwitch();
-            
+
 			app.helper.registerLeavePageWithoutSubmit(jQuery('#workflow_edit'));
          });
       });
@@ -486,7 +485,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                         if(params.active == 'false') {
                             taskTemplate.find('.tmpTaskStatus').val('off').prop('checked', false);
                         }
-                        taskTemplate.find('.tmpTaskStatus').addClass('taskStatus').bootstrapSwitch();
+                        taskTemplate.find('.tmpTaskStatus').addClass('taskStatus');
                         tableDiv.find('.emptyRecordsDiv').addClass('hide');
                         if(table.find('.tmpTaskId-'+params.tmpTaskId).length != 0) {
                             table.find('.tmpTaskId-'+params.tmpTaskId).replaceWith(taskTemplate);
@@ -713,7 +712,6 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
       app.request.get({data:params}).then(function (error, data) {
          jQuery('#taskListContainer').html(data);
          app.helper.hideProgress();
-         jQuery(".taskStatus").bootstrapSwitch();
       });
    },
    
@@ -803,7 +801,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
    registerVTEmailTaskEvents: function () {
       var textAreaElement = jQuery('#content');
       var ckEditorInstance = this.getckEditorInstance();
-      ckEditorInstance.loadCkEditor(textAreaElement);
+      ckEditorInstance.loadCkEditor(textAreaElement, {height: '30vh'});
       this.registerFillMailContentEvent();
       this.registerTooltipEventForSignatureField();
       this.registerFillTaskFromEmailFieldEvent();
@@ -1102,49 +1100,49 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
          jQuery('#repeatMonthDay').select2("disable");
       }
    },
-   checkHiddenStatusofCcandBcc: function () {
-      var ccLink = jQuery('#ccLink');
-      var bccLink = jQuery('#bccLink');
-      if (ccLink.is(':hidden') && bccLink.is(':hidden')) {
-         ccLink.closest('div.row').addClass('hide');
-      }
-   },
    /*
     * Function to register the events for bcc and cc links
     */
-   registerCcAndBccEvents: function () {
-      var thisInstance = this;
-      jQuery('#ccLink').on('click', function (e) {
-         var ccContainer = jQuery('#ccContainer');
-         ccContainer.removeClass('hide');
-         var taskFieldElement = ccContainer.find('select.task-fields');
-         vtUtils.showSelect2ElementView(taskFieldElement);
-         jQuery(e.currentTarget).hide();
-         thisInstance.checkHiddenStatusofCcandBcc();
-      });
-      jQuery('#bccLink').on('click', function (e) {
-         var bccContainer = jQuery('#bccContainer');
-         bccContainer.removeClass('hide');
-         var taskFieldElement = bccContainer.find('select.task-fields');
-         vtUtils.showSelect2ElementView(taskFieldElement);
-         jQuery(e.currentTarget).hide();
-         thisInstance.checkHiddenStatusofCcandBcc();
-      });
-   },
-   
+    registerCcAndBccEvents: function () {
+        jQuery('[data-show-container]').on('click', function (e) {
+            let link = $(this),
+                container = jQuery(link.data('showContainer')),
+                select = container.find('select');
+
+            container.removeClass('hide');
+            link.addClass('hide');
+            vtUtils.showSelect2ElementView(select);
+
+        });
+    },
+
+    updateDatepickerSelected: function(datepicker) {
+        let values = $('#annualDates').val(),
+            style = '';
+
+        jQuery.each(values, function(index, value) {
+            let dateInfo = value.split('-');
+
+            style += ' .bg-' + dateInfo[0] + '-' + parseInt(dateInfo[1]) + '-' + parseInt(dateInfo[2]) + ' a { border: 1px solid #5E81F4 !important; } '
+        });
+
+        $('#annualDatePickerStyle').html(style);
+    },
 	/**
 	 * Function to register event for scheduled workflows UI
 	 */
-	registerEventForScheduledWorkflow : function() {
-		var thisInstance = this;
-		jQuery('input[name="workflow_trigger"]').on('click', function(e) {
-			var element = jQuery(e.currentTarget);
-			var scheduleBoxContainer = jQuery('#scheduleBox');
-            var recurrenceBoxContainer = jQuery('.workflowRecurrenceBlock');
-            if(element.is(':checked') && element.val() == '6') {
+    registerEventForScheduledWorkflow: function () {
+        let thisInstance = this;
+
+        jQuery('input[name="workflow_trigger"]').on('click', function (e) {
+            let element = jQuery(e.currentTarget),
+                scheduleBoxContainer = jQuery('#scheduleBox'),
+                recurrenceBoxContainer = jQuery('.workflowRecurrenceBlock');
+
+            if (element.is(':checked') && element.val() == '6') {
                 scheduleBoxContainer.removeClass('hide');
                 recurrenceBoxContainer.addClass('hide');
-            } else if(element.is(':checked') && element.val() == '3') {
+            } else if (element.is(':checked') && element.val() == '3') {
                 recurrenceBoxContainer.removeClass('hide');
                 recurrenceBoxContainer.find('input[type="radio"]').click();
                 scheduleBoxContainer.addClass('hide');
@@ -1152,94 +1150,79 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
                 scheduleBoxContainer.addClass('hide');
                 recurrenceBoxContainer.addClass('hide');
             }
-		});
-		vtUtils.registerEventForTimeFields('#schtime', true);
-		vtUtils.registerEventForDateFields(jQuery('#scheduleByDate'));
-        jQuery(".weekDaySelect").bind("mousedown", function(e) {
+        });
+
+        vtUtils.registerEventForTimeFields('#schtime', true);
+        vtUtils.registerEventForDateFields(jQuery('#scheduleByDate'));
+
+        let weekDaySelect = jQuery(".weekDaySelect");
+
+        weekDaySelect.bind('mousedown', function (e) {
             e.metaKey = true;
         }).selectable();
-        jQuery( ".weekDaySelect" ).on( "selectableselected selectableunselected", function( event, ui ) {
-            var inputElement = jQuery('#schdayofweek');
-            var weekDaySelect = jQuery('.weekDaySelect');
-            var selectedArray = new Array();
-            weekDaySelect.find('.ui-selected').each(function(){
-                var value = jQuery(this).data('value');
+
+        weekDaySelect.on('selectableselected selectableunselected', function (event, ui) {
+            let inputElement = jQuery('#schdayofweek'),
+                weekDaySelect = jQuery('.weekDaySelect'),
+                selectedArray = new Array();
+
+            weekDaySelect.find('.ui-selected').each(function () {
+                let value = jQuery(this).data('value');
                 selectedArray.push(value);
             });
-            var selected = selectedArray.join(',');
+
+            let selected = selectedArray.join(',');
             inputElement.val(selected);
         });
-		var currentYear = new Date().getFullYear();
-		jQuery('#annualDatePicker').datepick({autoSize: true, multiSelect:100,monthsToShow: [1,2],
-				minDate: '01/01/'+currentYear, maxDate: '12/31/'+currentYear,
-				yearRange: currentYear+':'+currentYear,
-				onShow : function() {
-					//Hack to remove the year
-					thisInstance.removeYearInAnnualWorkflow();
-				},
-				onSelect : function(dates) {
-					var datesInfo = [];
-					var values = [];
-					var html='';
-					// reset the annual dates
-					var annualDatesEle = jQuery('#annualDates');
-					thisInstance.updateAnnualDates(annualDatesEle);
-					for(index in dates) {
-						var date = dates[index];
-						datesInfo.push({
-								id:thisInstance.DateToYMD(date),
-								text:thisInstance.DateToYMD(date)
-							});
-						values.push(thisInstance.DateToYMD(date));
-						html += '<option selected value='+thisInstance.DateToYMD(date)+'>'+thisInstance.DateToYMD(date)+'</option>';
-					}
-					annualDatesEle.append(html);
-					annualDatesEle.trigger("change");
-				}
-			});
-			var annualDatesEle = jQuery('#annualDates');
-			thisInstance.updateAnnualDates(annualDatesEle);
-			annualDatesEle.trigger("change");
-	},
 
-	removeYearInAnnualWorkflow : function() {
-		setTimeout(function() {
-			var year = jQuery('.datepick-month.first').find('.datepick-month-year').get(1);
-			jQuery(year).hide();
-			var monthHeaders = $('.datepick-month-header');
-			jQuery.each(monthHeaders, function( key, ele ) {
-				var header = jQuery(ele);
-				var str = header.html().replace(/[\d]+/, '');
-				header.html(str);
-			});
-		},100);
-	},
+        let currentYear = (new Date()).getFullYear(),
+            datePicker = jQuery('#annualDatePicker');
 
-	updateAnnualDates : function(annualDatesEle) {
-		annualDatesEle.html('');
-		var annualDatesJSON = jQuery('#hiddenAnnualDates').val();
-		if(annualDatesJSON) {
-			var hiddenDates = '';
-			var annualDates = JSON.parse(annualDatesJSON);
-			for(j in annualDates) {
-				hiddenDates += '<option selected value='+annualDates[j]+'>'+annualDates[j]+'</option>';
-			}
-			annualDatesEle.html(hiddenDates);
-		}
-	},
+        datePicker.datepicker({
+            firstDay: vtUtils.getFirstDayId(),
+            minDate: '01/01/' + currentYear,
+            maxDate: '12/31/' + currentYear,
+            yearRange: currentYear + ':' + currentYear,
+            numberOfMonths: 2,
+            showButtonPanel: false,
+            onSelect: function (value, element) {
+                let date = new Date(value),
+                    annualDatesElement = jQuery('#annualDates'),
+                    newValue = thisInstance.DateToYMD(date),
+                    newOption = new Option(newValue, newValue, false, true),
+                    option = annualDatesElement.find('[value="' + newValue + '"]');
 
-	DateToYMD : function (date) {
-        var year, month, day;
+                if (option.length) {
+                    option.remove();
+                } else {
+                    annualDatesElement.append(newOption)
+                }
+
+                annualDatesElement.trigger('change');
+            },
+            beforeShowDay: function (date) {
+                let backgroundClass = 'bg-' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+                return [true, backgroundClass];
+            }
+        });
+
+        jQuery('#annualDates').on('change', function () {
+            thisInstance.updateDatepickerSelected(datePicker);
+        })
+
+        thisInstance.updateDatepickerSelected(datePicker);
+    },
+
+    DateToYMD: function (date) {
+        let year, month, day;
         year = String(date.getFullYear());
         month = String(date.getMonth() + 1);
-        if (month.length == 1) {
-            month = "0" + month;
-        }
+        month = 1 === month.length ? '0' + month : month;
         day = String(date.getDate());
-        if (day.length == 1) {
-            day = "0" + day;
-        }
-        return year + "-" + month + "-" + day;
+        day = 1 === day.length ? '0' + day : day;
+
+        return year + '-' + month + '-' + day;
     },
 
 	registerEventForChangeInScheduledType : function() {
@@ -1311,7 +1294,7 @@ Settings_Vtiger_Edit_Js("Settings_Workflows_Edit_Js", {
     registerEventForChangeWorkflowState: function () {
         var editViewContainer = this.getEditViewContainer();
         var thisInstance = this;
-        jQuery(editViewContainer).on('switchChange.bootstrapSwitch', ".taskStatus", function (e) {
+        jQuery(editViewContainer).on('click', ".taskStatus", function (e) {
            var currentElement = jQuery(e.currentTarget);
            var status = 'true';
            if(currentElement.val() == 'on'){
