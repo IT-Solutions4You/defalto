@@ -4791,17 +4791,6 @@ div.tooltip-inner {
     min-width: 150px;
 }
 
-.summaryViewEntries .inputElement.form-control,
-.detailview-table .inputElement.form-control {
-    max-width: 300px;
-}
-
-.detailview-table .input-group-addon + .inputElement.form-control,
-.detailview-table .inputElement.form-control.input-medium {
-    min-width: 80%;
-    max-width: 300px;
-}
-
 .summaryViewEntries .referencefield-wrapper .inputElement,
 .detailview-table .referencefield-wrapper .inputElement,
 .recentActivitiesContainer .updateInfoContainer {

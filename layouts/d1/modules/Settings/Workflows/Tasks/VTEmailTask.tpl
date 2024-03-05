@@ -20,7 +20,7 @@
 							<div class="col-lg-2">{vtranslate('SMTP', $QUALIFIED_MODULE)}</div>
 							<div class="col-lg-6">
 								<select name="smtp" id="smtp" class="select2 inputElement form-select">
-									<option>{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
+									<option value="">{vtranslate('LBL_NONE', $QUALIFIED_MODULE)}</option>
 									{foreach from=$TASK_OBJECT->getSMTPServers() key=SMTP_SERVER_ID item=SMTP_SERVER}
 										<option value="{$SMTP_SERVER_ID}" {if $SMTP_SERVER_ID eq $TASK_OBJECT->smtp}selected="selected"{/if}>{$SMTP_SERVER->get('server')} &lt;{$SMTP_SERVER->get('server_username')}&gt;</option>
 									{/foreach}
@@ -32,7 +32,6 @@
 						<div class="col-lg-2">{vtranslate('LBL_FROM', $QUALIFIED_MODULE)}</div>
 						<div class="col-lg-6">
 							<select id="fromEmail" name="fromEmail" class="inputElement select2 form-select" multiple="multiple" data-tags="1" data-maximum-selection-length="1" data-placeholder="{vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}">
-								<option></option>
 								{foreach from=$TASK_OBJECT->getFromEmailFields($FROM_EMAIL_FIELDS) key=FROM_EMAIL_FIELD_KEY item=FROM_EMAIL_FIELD}
 									<option value="{$FROM_EMAIL_FIELD_KEY}" {if $TASK_OBJECT->isSelectedFromEmailField($FROM_EMAIL_FIELD_KEY)}selected="selected"{/if}>{$FROM_EMAIL_FIELD}</option>
 								{/foreach}
@@ -121,6 +120,7 @@
 								<div class="col-lg-6">
 									{assign var=MODULE_FIELDS value=$TASK_OBJECT->getDynamicTemplateFields($SOURCE_MODULE)}
 									<select id="template_field" name="template_field" class="inputElement select2 form-select">
+										<option value="">{vtranslate('LBL_NONE',$QUALIFIED_MODULE)}</option>
 										{html_options options=$MODULE_FIELDS selected=$TASK_OBJECT->template_field}
 									</select>
 								</div>
@@ -133,8 +133,8 @@
 								{vtranslate('LBL_VARIABLES',$QUALIFIED_MODULE)}
 							</div>
 							<div class="col-lg-6">
-								<select id="task_variables" class="select2 form-select" data-width="100%" data-placeholder={vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}>
-									<option></option>
+								<select id="task_variables" class="select2 form-select" data-width="100%" data-placeholder="{vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}">
+									<option value="">{vtranslate('LBL_SELECT_OPTIONS',$QUALIFIED_MODULE)}</option>
 									<optgroup label="{vtranslate('LBL_GENERAL_FIELDS',$QUALIFIED_MODULE)}">
 										{foreach from=$META_VARIABLES item=META_VARIABLE_KEY key=META_VARIABLE_VALUE}
 											<option value="{if strpos(strtolower($META_VARIABLE_VALUE), 'url') === false}${/if}{$META_VARIABLE_KEY}">{vtranslate($META_VARIABLE_VALUE,$QUALIFIED_MODULE)}</option>
