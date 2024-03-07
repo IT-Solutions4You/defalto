@@ -532,8 +532,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
         $options = array(
             '' => vtranslate('LBL_NONE')
         );
-        $result1 = $adb->pquery('SELECT * FROM vtiger_systems WHERE from_email_field != ? AND server_type = ?', array('', 'email'));
-        $from_email_field = $adb->query_result($result1, 0, 'from_email_field');
+        $from_email_field = Settings_Vtiger_Systems_Model::getFromEmailField();
 
         if (!empty($from_email_field)) {
             $result2 = $adb->pquery('SELECT * FROM vtiger_organizationdetails WHERE organizationname != ""', array());

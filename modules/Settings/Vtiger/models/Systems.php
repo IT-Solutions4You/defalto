@@ -35,7 +35,7 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
         } else {
             $server_password = Vtiger_Functions::toProtectedText($server_password);
         }
-        
+
         array_push($params, $this->get('server'),$this->get('server_port'),$this->get('server_username'),$server_password,$this->get('server_type'),
                    $this->isSmtpAuthEnabled(),$this->get('server_path'),$this->get('from_email_field'));
 
@@ -69,6 +69,26 @@ class Settings_Vtiger_Systems_Model extends Vtiger_Base_Model{
             $instance->setData($rowData);
         }
         return $instance;
+    }
+
+    public static function getFromEmailField(): string
+    {
+        $fromEmail = VTCacheUtils::getOutgoingMailFromEmailAddress();
+
+        if ($fromEmail === null) {
+            $db = PearDatabase::getInstance();
+            $query = 'SELECT from_email_field FROM ' . self::tableName . ' WHERE server_type = ?';
+            $result = $db->pquery($query, ['email']);
+
+            if ($db->num_rows($result) > 0) {
+                $row = $db->fetchByAssoc($result);
+                $fromEmail = $row['from_email_field'];
+            } else {
+                $fromEmail = '';
+            }
+        }
+
+        return $fromEmail;
     }
 
 }

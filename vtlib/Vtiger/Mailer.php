@@ -21,9 +21,10 @@ include_once('vtlib/Vtiger/Event.php');
  */
 class Vtiger_Mailer extends PHPMailer {
 
-	var $_serverConfigured = false;
+	private bool $_serverConfigured = false;
+    private string $Signature;
 
-	/**
+    /**
 	 * Constructor
 	 */
 	function __construct($exceptions=null) {
@@ -117,7 +118,8 @@ class Vtiger_Mailer extends PHPMailer {
 	*/
 	function addSignature($userId) {
 		global $adb;
-		$sign = nl2br($adb->query_result($adb->pquery("select signature from vtiger_users where id=?", array($userId)),0,"signature"));
+        $result = $adb->pquery("select signature from vtiger_users where id=?", [$userId]);
+        $sign = nl2br($adb->query_result($result, 0, "signature"));
 		$this->Signature = $sign;
 	}
 
@@ -306,5 +308,3 @@ abstract class Vtiger_Mailer_Listener {
 	function mailsent($queueid) { }
 	function mailerror($queueid) { }
 }
-
-?>

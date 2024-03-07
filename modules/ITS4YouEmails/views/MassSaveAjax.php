@@ -126,7 +126,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
                 $this->smtp = $emailValue;
             } elseif ('a' === $type) {
                 $this->from_name = $emailValue;
-                $this->from_email = ITS4YouEmails_Record_Model::getVtigerFromEmailField();
+                $this->from_email = Settings_Vtiger_Systems_Model::getFromEmailField();
             } else {
                 $userData = ITS4YouEmails_Record_Model::getUserDataByType($emailValue, $type);
 

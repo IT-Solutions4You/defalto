@@ -21,18 +21,6 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $emailNames = [];
 
     /**
-     * @return string
-     * @throws Exception
-     */
-    public static function getVtigerFromEmailField()
-    {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT from_email_field FROM vtiger_systems WHERE from_email_field != ? AND server_type = ?', array('', 'email'));
-
-        return $adb->query_result($result, 0, 'from_email_field');
-    }
-
-    /**
      * @param int $userId
      * @param string $type
      * @return array

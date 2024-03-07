@@ -217,16 +217,9 @@ class MailManager_Draft_Model {
 
 
 	public function getFromEmailAddress() {
-		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$fromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
-		$fromEmail = false;
-		if (Vtiger_Version::check('5.2.0', '>=')) {
-			$smtpFromResult = $db->pquery('SELECT from_email_field FROM vtiger_systems WHERE server_type=?', array('email'));
-			if ($db->num_rows($smtpFromResult)) {
-				$fromEmail = decode_html($db->query_result($smtpFromResult, 0, 'from_email_field'));
-			}
-		}
 		if (empty($fromEmail)) $fromEmail = $currentUserModel->get('email1');
 		return $fromEmail;
 	}
