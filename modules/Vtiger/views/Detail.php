@@ -680,7 +680,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
     {
         $activitiesModuleName = 'Appointments';
         $activitiesModule = Vtiger_Module_Model::getInstance($activitiesModuleName);
-        $parentField = $activitiesModule->getField('parent_id');
+        $parentFieldName = 'parent_id';
+        $parentField = $activitiesModule->getField($parentFieldName);
         $parentModules = array_merge($parentField->getReferenceList(), ['Accounts', 'Contacts']);
         $currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
@@ -705,7 +706,16 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $relationListView->set('whereCondition', [
                 'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
             ]);
+
+            if(!$relationListView->getRelationModel()) {
+                return '';
+            }
+
             $relatedActivities = $relationListView->getEntries($pagingModel) ?? [];
+            $parentFieldNames = [
+                'Accounts' => 'account_id',
+                'Contacts' => 'contact_id',
+            ];
 
             $viewer = $this->getViewer($request);
             $viewer->assign('RECORD', $recordModel);
@@ -715,6 +725,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $viewer->assign('ACTIVITIES', $relatedActivities);
             $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
             $viewer->assign('RELATION_LIST_URL', $relationListView->getRelationModel()->getListUrl($recordModel));
+            $viewer->assign('PARENT_FIELD_NAME', $parentFieldNames[$moduleName] ?? $parentFieldName);
 
             return $viewer->view('RelatedEvents.tpl', $moduleName, true);
         }
