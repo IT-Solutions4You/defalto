@@ -146,6 +146,285 @@ var vtUtils = {
 
         return this.weekDaysArray[defaultFirstDay];
     },
+    getMonthNames: function() {
+        return [
+            app.vtranslate('JS_JANUARY'),
+            app.vtranslate('JS_FEBRUARY'),
+            app.vtranslate('JS_MARCH'),
+            app.vtranslate('JS_APRIL'),
+            app.vtranslate('JS_MAY'),
+            app.vtranslate('JS_JUNE'),
+            app.vtranslate('JS_JULY'),
+            app.vtranslate('JS_AUGUST'),
+            app.vtranslate('JS_SEPTEMBER'),
+            app.vtranslate('JS_OCTOBER'),
+            app.vtranslate('JS_NOVEMBER'),
+            app.vtranslate('JS_DECEMBER')
+        ];
+    },
+    getMonthNamesShort: function() {
+        return [
+            app.vtranslate('JS_JAN'),
+            app.vtranslate('JS_FEB'),
+            app.vtranslate('JS_MAR'),
+            app.vtranslate('JS_APR'),
+            app.vtranslate('JS_MAY'),
+            app.vtranslate('JS_JUN'),
+            app.vtranslate('JS_JUL'),
+            app.vtranslate('JS_AUG'),
+            app.vtranslate('JS_SEP'),
+            app.vtranslate('JS_OCT'),
+            app.vtranslate('JS_NOV'),
+            app.vtranslate('JS_DEC')
+        ];
+    },
+    getDayNames: function() {
+        return [
+            app.vtranslate('JS_SUNDAY'),
+            app.vtranslate('JS_MONDAY'),
+            app.vtranslate('JS_TUESDAY'),
+            app.vtranslate('JS_WEDNESDAY'),
+            app.vtranslate('JS_THURSDAY'),
+            app.vtranslate('JS_FRIDAY'),
+            app.vtranslate('JS_SATURDAY')
+        ];
+    },
+    getDayNamesShort: function() {
+        return [
+            app.vtranslate('JS_SUN'),
+            app.vtranslate('JS_MON'),
+            app.vtranslate('JS_TUE'),
+            app.vtranslate('JS_WED'),
+            app.vtranslate('JS_THU'),
+            app.vtranslate('JS_FRI'),
+            app.vtranslate('JS_SAT')
+        ];
+    },
+    getCurrentDay: function () {
+        const date = new Date(),
+            currentDay = String(date.getDate()).padStart(2, '0'),
+            currentMonth = String(date.getMonth() + 1).padStart(2, "0"),
+            currentYear = date.getFullYear();
+
+        return currentYear + '/' + currentMonth + '/' + currentDay;
+    },
+    getDatePickerShortcutData: function (shortcut) {
+        const self = this;
+
+        function nextMonth(month) {
+            return moment(month).startOf('month').add(1, 'month').toDate();
+        }
+
+        function prevMonth(month) {
+            return moment(month).startOf('month').subtract(1, 'month').toDate();
+        }
+
+        let shortcutData = shortcut.split(','),
+            shortcutType = shortcutData[0],
+            dayTime = 86400000,
+            currentDate = new Date(self.getCurrentDay()),
+            currentTime = currentDate.getTime(),
+            start = false,
+            end = false;
+
+        if ('day' === shortcutType) {
+            let days = shortcutData[1];
+
+            start = new Date(currentTime + dayTime);
+            end = new Date(currentTime + (dayTime * days));
+        } else if ('week' === shortcutType) {
+            let firstDay = vtUtils.getFirstDayId();
+
+            start = new Date(currentTime + dayTime);
+
+            while (start.getDay() !== firstDay) {
+                start = new Date(start.getTime() + dayTime);
+            }
+
+            end = new Date(start.getTime() + dayTime);
+
+            while (end.getDay() !== firstDay) {
+                end = new Date(end.getTime() + dayTime);
+            }
+
+            end = new Date(end.getTime() - dayTime);
+        } else if ('month' === shortcutType) {
+            start = nextMonth(currentDate);
+            start.setDate(1);
+            end = nextMonth(start);
+            end.setDate(1);
+            end = new Date(end.getTime() - dayTime);
+        } else if ('year' === shortcutType) {
+            start = new Date();
+            start.setFullYear(currentDate.getFullYear() + 1);
+            start.setMonth(0);
+            start.setDate(1);
+            end = currentDate;
+            end.setFullYear(currentDate.getFullYear() + 1);
+            end.setMonth(11);
+            end.setDate(31);
+        }
+
+        if (start && end) {
+            return {start: start, end: end};
+        }
+
+        return false;
+    },
+    getDatepickerRangeDefaultParams: function (element) {
+        function updateButtons(input) {
+            let container = input.datepicker('widget'),
+                customButtons = '<div class="ui-datepicker-shortcut text-secondary clearfix"><b>' + app.vtranslate('JS_SHORTCUTS') + '</b><span class="mx-2 next-days">' + app.vtranslate('JS_FOLLOWING') +
+                    '<b class="ms-2 text-primary" data-shortcut="day,3">3 ' + app.vtranslate('JS_DAYS') + '</b>' +
+                    '<b class="ms-2 text-primary" data-shortcut="day,5">5 ' + app.vtranslate('JS_DAYS') + '</b>' +
+                    '<b class="ms-2 text-primary" data-shortcut="day,7">7 ' + app.vtranslate('JS_DAYS') + '</b>' +
+                    '</span><span class="ms-2 next-buttons" >' + app.vtranslate('JS_NEXT') +
+                    '<b class="ms-2 text-primary" data-shortcut="week,next">' + app.vtranslate('JS_WEEK') + '</b>' +
+                    '<b class="ms-2 text-primary" data-shortcut="month,next">' + app.vtranslate('JS_MONTH') + '</b>' +
+                    '<b class="ms-2 text-primary" data-shortcut="year,next">' + app.vtranslate('JS_YEAR') + '</b>' +
+                    '</span></div>';
+
+            setTimeout(function () {
+                if (container.find('.ui-datepicker-shortcut').length) {
+                    return;
+                }
+
+                container.find('.ui-datepicker-close').remove();
+                container.find('.ui-datepicker-buttonpane').append(customButtons);
+                container.off('click', '[data-shortcut]').on('click', '[data-shortcut]', function () {
+                    let shortcut = $(this).data('shortcut'),
+                        shortcutData = self.getDatePickerShortcutData(shortcut);
+
+                    if (shortcutData) {
+                        let inputElement = $(input),
+                            startDate = app.getDateInVtigerFormat(format, shortcutData['start']),
+                            endDate = app.getDateInVtigerFormat(format, shortcutData['end']);
+
+                        if (startDate && endDate) {
+                            inputElement.val(startDate + ',' + endDate)
+                            inputElement.attr('data-times', (shortcutData['start'].getTime() - 1) + ',' + shortcutData['end'].getTime());
+                            inputElement.datepicker('refresh');
+
+                            updateButtons(input);
+                        }
+                    }
+                });
+            }, 1)
+        }
+
+        const self = this,
+            language = app.getUserLanguage().substring(0, 2),
+            format = self.getDatepickerFormat(element);
+
+        return {
+            numberOfMonths: 2,
+            showButtonPanel: true,
+            dateFormat: format.replace('yyyy', 'yy'),
+            todayHighlight: true,
+            language: language,
+            firstDay: self.getFirstDayId(),
+            weekStart: self.getFirstDayId(),
+            monthNames: self.getMonthNames(),
+            monthNamesShort: self.getMonthNamesShort(),
+            dayNames: self.getDayNames(),
+            dayNamesShort: self.getDayNamesShort(),
+            width: 'auto',
+            currentText: app.vtranslate('JS_TODAY'),
+            beforeShow: function() {
+                updateButtons(element);
+            },
+            onChangeMonthYear: function() {
+                updateButtons(element);
+            },
+            beforeShowDay: function (date) {
+                let inputElement = $(this),
+                    inputValue = inputElement.attr('data-times'),
+                    backgroundClass = 'day-inactive';
+
+                if (inputValue) {
+                    let times = inputValue.split(','),
+                        startTime = parseInt(times[0]),
+                        endTime = parseInt(times[1]),
+                        time = date.getTime();
+
+                    if (startTime <= time && time <= endTime) {
+                        backgroundClass = 'day-active';
+                    }
+                }
+
+                return [true, backgroundClass];
+            },
+            onClose: function (dateText, event) {
+                event.inline = false;
+            },
+            onSelect: function (dateText, event) {
+                updateButtons(element);
+
+                let elementTimes = '',
+                    elementValue = '',
+                    dateTime = new Date(event['selectedYear'] + '/' + (parseInt(event['selectedMonth']) + 1) + '/' + event['selectedDay']).getTime();
+
+                event.inline = true;
+
+                if (!event.selectType) {
+                    event.selectType = 'first';
+                }
+
+                if ('first' === event.selectType) {
+                    event.selectType = 'second';
+                    event.firstValue = dateText;
+                    event.firstTime = dateTime;
+                } else {
+                    event.selectType = 'first';
+                    event.secondValue = dateText;
+                    event.secondTime = dateTime;
+
+                    if (event.firstTime < event.secondTime) {
+                        elementValue = event.firstValue + ',' + event.secondValue;
+                        elementTimes = event.firstTime + ',' + event.secondTime;
+                    } else {
+                        elementValue = event.secondValue + ',' + event.firstValue;
+                        elementTimes = event.secondTime + ',' + event.firstTime;
+                    }
+                }
+
+                let inputElement = $(event.input);
+                inputElement.val(elementValue);
+                inputElement.attr('data-times', elementTimes);
+            }
+        };
+    },
+    getDatepickerFormat: function (element) {
+        let userDateFormat = app.getDateFormat(),
+            elementDateFormat = element.data('dateFormat');
+
+        if (typeof elementDateFormat !== 'undefined') {
+            userDateFormat = elementDateFormat;
+        }
+
+        return userDateFormat
+    },
+    getDatepickerDefaultParams: function(element) {
+        const self = this,
+            language = app.getUserLanguage().substring(0, 2),
+            format = self.getDatepickerFormat(element);
+
+        return {
+            autoclose: true,
+            todayBtn: "linked",
+            dateFormat: format.replace('yyyy', 'yy'),
+            todayHighlight: true,
+            clearBtn: true,
+            language: language,
+            firstDay: self.getFirstDayId(),
+            weekStart: self.getFirstDayId(),
+            width: 'auto',
+            monthNames: self.getMonthNames(),
+            monthNamesShort: self.getMonthNamesShort(),
+            dayNames: self.getDayNames(),
+            dayNamesShort: self.getDayNamesShort(),
+        };
+    },
     /**
      * Function register datepicker for dateField elements
      */
@@ -162,54 +441,25 @@ var vtUtils = {
             params = {};
         }
 
-        let parentDateElement = element.parent(),
-            defaultFirstDay = jQuery('#start_day').val(),
-            defaultFirstDayId = this.weekDaysArray[defaultFirstDay];
+        let parentDateElement = element.parent();
 
         jQuery('.input-group-addon', parentDateElement).on('click', function (e) {
             let elem = jQuery(e.currentTarget);
             elem.parent().find('.dateField').focus();
         });
 
-        let userDateFormat = app.getDateFormat(),
-            calendarType = element.data('calendarType');
+        let defaultPickerParams;
 
         if (element.length > 0) {
             jQuery(element).each(function (index, Elem) {
                 element = jQuery(Elem);
 
-                if ('range' === calendarType) {
-                    //Default first day of the week
-                    element.dateRangePicker({
-                        startOfWeek: defaultFirstDay.toLowerCase(),
-                        format: userDateFormat.toUpperCase(),
-                        separator: ',',
-                        showShortcuts: true,
-                        autoClose: false,
-                        duration: 500
-                    }).on('datepicker-opened', function (e) {
-                        vtUtils.addMask(jQuery('.date-picker-wrapper:visible'));
-                    }).on('datepicker-closed', vtUtils.removeMask);
+                if ('range' === element.data('calendarType')) {
+                    defaultPickerParams = jQuery.extend({}, vtUtils.getDatepickerRangeDefaultParams(element), params);
+
+                    element.datepicker(defaultPickerParams);
                 } else {
-                    let elementDateFormat = element.data('dateFormat');
-
-                    if (typeof elementDateFormat !== 'undefined') {
-                        userDateFormat = elementDateFormat;
-                    }
-
-                    let language = jQuery('body').data('language').substring(0, 2),
-                        defaultPickerParams = {
-                            autoclose: true,
-                            todayBtn: "linked",
-                            dateFormat: userDateFormat.replace('yyyy', 'yy'),
-                            todayHighlight: true,
-                            clearBtn: true,
-                            language: language,
-                            firstDay: defaultFirstDayId,
-                            weekStart: defaultFirstDayId,
-                            width: 'auto',
-                        };
-                    defaultPickerParams = jQuery.extend({}, defaultPickerParams, params);
+                    defaultPickerParams = jQuery.extend({}, vtUtils.getDatepickerDefaultParams(element), params);
 
                     element.datepicker(defaultPickerParams);
 

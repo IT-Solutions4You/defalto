@@ -6724,30 +6724,78 @@ a.btnReport:hover {
 }
 
 .ui-datepicker {
+    border-radius: var(--bs-border-radius);
+    border: var(--bs-border-width) solid var(--bs-border-color) !important;
     z-index: 1051 !important;
     padding: 0.5rem;
     width: auto !important;
-}
-.ui-datepicker {
+
+    .ui-state-highlight, .ui-state-highlight.ui-state-active {
+        background-color: var(--dt-light-blue-color);
+        color: var(--dt-dark-blue-color);
+    }
+    .ui-state-active {
+        background-color: var(--dt-blue-color);
+        color: #fff;
+    }
     .ui-state-default {
         border: 0;
         text-align: center;
-        border-radius: 3px;
+        border-radius: var(--bs-border-radius);
         height: 2rem;
         line-height: 1.8rem;
     }
     .ui-datepicker-header {
         background: none;
         border: 0;
-        border-bottom: 1px solid #dddddd;
         border-radius: 0;
+    }
+    .ui-datepicker-shortcut {
+        margin-left: auto;
+        padding: .2em .6em .3em .6em;
+        cursor: default;
+        width: auto;
+        overflow: visible;
+    }
+    .ui-datepicker-shortcut [data-shortcut] {
+        cursor: pointer;
+    }
+    .ui-datepicker-close {
+        display: none;
+    }
+
+    .ui-widget-content {
+        border-top: var(--bs-border-width) solid var(--bs-border-color);
+        margin: 0 -0.5rem;
+    }
+
+    .ui-datepicker-buttonpane {
+        padding: .6em .6em 0 .6em;
+        display: flex;
+        align-content: space-between;
+    }
+
+    .ui-datepicker-buttonpane button {
+        text-transform: capitalize;
+        border-radius: var(--bs-border-radius);
+        float: none;
+        margin: 0;
     }
 }
 
+.ui-datepicker-multi .ui-datepicker-group table {
+    margin: 0.4em;
+}
+
 .ui-datepicker th {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
 }
 
 #annualDatePicker .ui-datepicker-year {
     display: none;
+}
+
+.day-active .ui-state-default {
+    background-color: var(--dt-blue-color);
+    color: var(--dt-light-blue-color);
 }
