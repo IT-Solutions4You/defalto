@@ -26,8 +26,6 @@
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/jquery/jquery.qtip.custom/jquery.qtip.js')}"></script>
     <script type="text/javascript" src="{vresource_url('libraries/jquery/jquery-visibility.min.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/momentjs/moment.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/jquery/daterangepicker/moment.min.js')}"></script>
-    <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/jquery/daterangepicker/jquery.daterangepicker.js')}"></script>
     <script type="text/javascript" src="{vresource_url('layouts/$LAYOUT$/lib/jquery/jquery.timeago.js')}"></script>
     <script type="text/javascript" src="{vresource_url('vendor/ckeditor/ckeditor/ckeditor.js')}"></script>
     <script type="text/javascript" src="{vresource_url('vendor/ckeditor/ckeditor/adapters/jquery.js')}"></script>

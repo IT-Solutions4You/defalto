@@ -21,7 +21,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 		// After adding widget, we should remove that widget from Add Widget drop down menu from active tab
 		var activeTabId = Vtiger_DashBoard_Js.currentInstance.getActiveTabId();
 		jQuery('a[data-name="'+name+'"]',"#tab_"+activeTabId).parent().hide();
-		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
+		var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +'" data-name="'+name+'" data-mode="open"></li>');
 		widgetContainer.data('url', url);
 		var width = element.data('width');
 		var height = element.data('height');
@@ -134,7 +134,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			url += '&filterid='+filterid+'&data=' + JSON.stringify(data);
 			var linkId = element.data('linkid');
 			var name = element.data('name');
-			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
+			var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +"-" + filterid +'" data-name="'+name+'" data-mode="open"></li>');
 			widgetContainer.data('url', url);
 			var width = element.data('width');
 			var height = element.data('height');
@@ -181,7 +181,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 								url += '&widgetid='+widgetId;
 
 								var name = element.data('name');
-								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
+								var widgetContainer = jQuery('<li class="new dashboardWidget loadcompleted border rounded bg-body d-flex flex-column" id="'+ linkId +"-" + widgetId +'" data-name="'+name+'" data-mode="open"></li>');
 								widgetContainer.data('url', url);
 								var width = element.data('width');
 								var height = element.data('height');

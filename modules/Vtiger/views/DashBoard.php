@@ -135,8 +135,6 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/Detail.js',
 			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/ChartDetail.js',
 			"modules.Vtiger.resources.CkEditor",
-			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/bootstrap-daterangepicker/moment.js",
-			"~layouts/".Vtiger_Viewer::getDefaultLayoutName()."/lib/bootstrap-daterangepicker/daterangepicker.js",
 		);
 
 		$jsScriptInstances = $this->checkAndConvertJsScripts($jsFileNames);
@@ -154,7 +152,6 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 
 		$headerCss = array(
 			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/jquery/gridster/jquery.gridster.min.css',
-			'~layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/lib/bootstrap-daterangepicker/daterangepicker.css',
 			'~libraries/jquery/jqplot/jquery.jqplot.min.css'
 		);
 		$cssScripts = $this->checkAndConvertCssStyles($headerCss);

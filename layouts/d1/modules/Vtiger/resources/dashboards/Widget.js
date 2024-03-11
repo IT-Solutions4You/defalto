@@ -238,29 +238,39 @@ Vtiger.Class('Vtiger_Widget_Js',{
 		);
 	},
 
-	registerFilter : function() {
-		var thisInstance = this;
-		var container = this.getContainer();
-		var dateRangeElement = container.find('.input-daterange');
-		if(dateRangeElement.length <= 0) {
+	registerFilter: function () {
+		let thisInstance = this,
+			container = this.getContainer(),
+			dateRangeElement = container.find('.input-daterange');
+
+		if (dateRangeElement.length <= 0) {
 			return;
 		}
-		
-		dateRangeElement.addClass('dateField');
-		
-		var pickerParams = {
-            format : thisInstance.getUserDateFormat(),
-        };
-		vtUtils.registerEventForDateFields(dateRangeElement, pickerParams);
-		
-        dateRangeElement.on("changeDate", function(e){
-           var start = dateRangeElement.find('input[name="start"]').val();
-           var end = dateRangeElement.find('input[name="end"]').val();
-           if(start != '' && end != '' && start !== end){
-               container.find('a[name="drefresh"]').trigger('click');
-           }
-        });
-		dateRangeElement.attr('data-date-format',thisInstance.getUserDateFormat());
+
+		dateRangeElement.each(function () {
+			let dateRangeElement = $(this),
+				startDate = dateRangeElement.find('input[name="start"]'),
+				endDate = dateRangeElement.find('input[name="end"]'),
+				pickerParams = {
+					format: thisInstance.getUserDateFormat(),
+				};
+
+			startDate.addClass('dateField');
+			endDate.addClass('dateField');
+
+			vtUtils.registerEventForDateFields(startDate, pickerParams);
+			vtUtils.registerEventForDateFields(endDate, pickerParams);
+
+			dateRangeElement.on('changeDate', function (e) {
+				let start = dateRangeElement.find('input[name="start"]').val(),
+					end = dateRangeElement.find('input[name="end"]').val();
+
+				if (start && end && start !== end) {
+					container.find('a[name="drefresh"]').trigger('click');
+				}
+			});
+			dateRangeElement.attr('data-date-format', thisInstance.getUserDateFormat());
+		})
 	},
 
 	registerFilterChangeEvent : function() {

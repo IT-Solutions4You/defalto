@@ -23,7 +23,6 @@
         <link type='text/css' rel='stylesheet' href='{vresource_url('layouts/$LAYOUT$/lib/animate/animate.min.css')}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url('layouts/$LAYOUT$/lib/jquery/malihu-custom-scrollbar/jquery.mCustomScrollbar.css')}'>
         <link type='text/css' rel='stylesheet' href='{vresource_url('layouts/$LAYOUT$/lib/jquery/jquery.qtip.custom/jquery.qtip.css')}'>
-        <link type='text/css' rel='stylesheet' href='{vresource_url('layouts/$LAYOUT$/lib/jquery/daterangepicker/daterangepicker.css')}'>
 		{assign var=THEME_PATH value=Vtiger_Theme::getv7AppStylePath('base')}
 		<link type="text/css" rel="{if strpos($THEME_PATH,'.less') ne false}stylesheet/less{else}stylesheet{/if}" href="{vresource_url($THEME_PATH)}" media="screen"/>
         {foreach key=index item=cssModel from=$STYLES}
