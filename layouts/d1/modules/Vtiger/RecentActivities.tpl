@@ -31,8 +31,10 @@
                                         {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                         {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
-                                            <div class="col-auto update_icon bg-info">
-                                                <i class="rounded-circle update_image vicon-vtigeruser" {$IMAGE_SIZE}></i>
+                                            <div class="col-auto update_icon">
+                                                <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
+                                                    <i class="update_image vicon-vtigeruser"></i>
+                                                </div>
                                             </div>
                                         {else}
                                             {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
@@ -60,8 +62,10 @@
                                         {assign var=USER_MODEL value=$RECENT_ACTIVITY->getModifiedBy()}
                                         {assign var=IMAGE_DETAILS value=$USER_MODEL->getImageDetails()}
                                         {if $IMAGE_DETAILS neq '' && $IMAGE_DETAILS[0] neq '' && $IMAGE_DETAILS[0].url eq ''}
-                                            <div class="col-auto update_icon bg-info">
-                                                <i class="rounded-circle update_image vicon-vtigeruser" {$IMAGE_SIZE}></i>
+                                            <div class="col-auto update_icon">
+                                                <div class="rounded-circle bg-info d-flex align-items-center justify-content-center" {$IMAGE_SIZE}>
+                                                    <i class="update_image vicon-vtigeruser"></i>
+                                                </div>
                                             </div>
                                         {else}
                                             {foreach item=IMAGE_INFO from=$IMAGE_DETAILS}
