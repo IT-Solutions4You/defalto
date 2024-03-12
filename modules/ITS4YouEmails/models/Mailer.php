@@ -9,7 +9,6 @@
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class ITS4YouEmails_Mailer_Model extends PHPMailer

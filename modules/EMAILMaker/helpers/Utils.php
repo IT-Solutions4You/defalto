@@ -205,10 +205,46 @@ class EMAILMaker_Utils_Helper
         }
 
         if ($useSignature == 'Yes') {
-            $contents = self::addSignature($body, $fromName, $fromEmail);
+            $body = self::addSignature($body, $fromName, $fromEmail);
         }
 
+        $emailRecord = ITS4YouEmails_Record_Model::getCleanInstance('ITS4YouEmails');
+
+        $mail = ITS4YouEmails_Mailer_Model::getCleanInstance();
+        $mail->Subject = $subject;
+        $mail->Body = decode_html($body);
+        $mail->AltBody = $emailRecord->getProcessedAltBody($body);
+        $mail->retrieveSMTPVtiger();
+        $mail->From = $fromEmail;
+        $mail->FromName = self::chooseFromName($fromName);
+
     }
+    protected static function chooseFromName(string $fromName = ''): string
+    {
+        global $HELPDESK_SUPPORT_NAME;
+
+        $userFullName = trim(VTCacheUtils::getUserFullName($fromName));
+
+        if ($fromName == $HELPDESK_SUPPORT_NAME) {
+            $userFullName = $HELPDESK_SUPPORT_NAME;
+        }
+
+        if (!empty($userFullName)) {
+            return $userFullName;
+        }
+
+        $db = PearDatabase::getInstance();
+        $rs = $db->pquery('select first_name,last_name,userlabel from vtiger_users where user_name=?', [$fromName]);
+
+        if ($db->num_rows($rs)) {
+            $fullName = $db->query_result($rs, 0, 'userlabel');
+            VTCacheUtils::setUserFullName($fromName, $fullName);
+            return $fullName;
+        }
+
+        return '';
+    }
+
 
     /**
      * Function to add the user's signature with the content passed

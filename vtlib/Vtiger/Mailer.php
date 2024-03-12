@@ -7,8 +7,9 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-require_once('modules/Emails/class.smtp.php');
-require_once('modules/Emails/class.phpmailer.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 include_once('include/utils/CommonUtils.php');
 include_once('config.inc.php');
 include_once('include/database/PearDatabase.php');
