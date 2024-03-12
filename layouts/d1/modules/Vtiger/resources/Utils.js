@@ -274,22 +274,23 @@ var vtUtils = {
     getDatepickerRangeDefaultParams: function (element) {
         function updateButtons(input) {
             let container = input.datepicker('widget'),
-                customButtons = '<div class="ui-datepicker-shortcut text-secondary clearfix"><b>' + app.vtranslate('JS_SHORTCUTS') + '</b><span class="mx-2 next-days">' + app.vtranslate('JS_FOLLOWING') +
+                customButtons = '<div class="ui-datepicker-shortcut text-secondary"><b class="me-2">' + app.vtranslate('JS_SHORTCUTS') + '</b>' +
+                    '<div class="me-2 next-days d-inline-block">' + app.vtranslate('JS_FOLLOWING') +
                     '<b class="ms-2 text-primary" data-shortcut="day,3">3 ' + app.vtranslate('JS_DAYS') + '</b>' +
                     '<b class="ms-2 text-primary" data-shortcut="day,5">5 ' + app.vtranslate('JS_DAYS') + '</b>' +
                     '<b class="ms-2 text-primary" data-shortcut="day,7">7 ' + app.vtranslate('JS_DAYS') + '</b>' +
-                    '</span><span class="ms-2 next-buttons" >' + app.vtranslate('JS_NEXT') +
+                    '</div>' +
+                    '<div class="me-2 next-buttons d-inline-block" >' + app.vtranslate('JS_NEXT') +
                     '<b class="ms-2 text-primary" data-shortcut="week,next">' + app.vtranslate('JS_WEEK') + '</b>' +
                     '<b class="ms-2 text-primary" data-shortcut="month,next">' + app.vtranslate('JS_MONTH') + '</b>' +
                     '<b class="ms-2 text-primary" data-shortcut="year,next">' + app.vtranslate('JS_YEAR') + '</b>' +
-                    '</span></div>';
+                    '</div></div>';
 
             setTimeout(function () {
                 if (container.find('.ui-datepicker-shortcut').length) {
                     return;
                 }
 
-                container.find('.ui-datepicker-close').remove();
                 container.find('.ui-datepicker-buttonpane').append(customButtons);
                 container.off('click', '[data-shortcut]').on('click', '[data-shortcut]', function () {
                     let shortcut = $(this).data('shortcut'),
@@ -303,9 +304,7 @@ var vtUtils = {
                         if (startDate && endDate) {
                             inputElement.val(startDate + ',' + endDate)
                             inputElement.attr('data-times', (shortcutData['start'].getTime() - 1) + ',' + shortcutData['end'].getTime());
-                            inputElement.datepicker('refresh');
-
-                            updateButtons(input);
+                            inputElement.datepicker('hide');
                         }
                     }
                 });
@@ -375,6 +374,7 @@ var vtUtils = {
                     event.firstValue = dateText;
                     event.firstTime = dateTime;
                 } else {
+                    event.inline = true;
                     event.selectType = 'first';
                     event.secondValue = dateText;
                     event.secondTime = dateTime;

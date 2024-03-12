@@ -6751,7 +6751,6 @@ a.btnReport:hover {
         border-radius: 0;
     }
     .ui-datepicker-shortcut {
-        margin-left: auto;
         padding: .2em .6em .3em .6em;
         cursor: default;
         width: auto;
@@ -6759,9 +6758,6 @@ a.btnReport:hover {
     }
     .ui-datepicker-shortcut [data-shortcut] {
         cursor: pointer;
-    }
-    .ui-datepicker-close {
-        display: none;
     }
 
     .ui-widget-content {
@@ -6772,7 +6768,15 @@ a.btnReport:hover {
     .ui-datepicker-buttonpane {
         padding: .6em .6em 0 .6em;
         display: flex;
-        align-content: space-between;
+        justify-content: space-between;
+    }
+
+    .ui-datepicker-buttonpane button.ui-datepicker-current {
+        float: none;
+    }
+
+    .ui-datepicker-close {
+        display: none;
     }
 
     .ui-datepicker-buttonpane button {
