@@ -237,7 +237,7 @@ class Vtiger_SharingRecord_Model extends Vtiger_Base_Model
             $isShared = 1;
         }
 
-        //$db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
+        $db->pquery('UPDATE vtiger_crmentity SET isshared=? WHERE crmid=?', [$isShared, $this->get('record')]);
     }
 
     /**

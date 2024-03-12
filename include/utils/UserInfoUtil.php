@@ -2225,25 +2225,31 @@ function RecalculateSharingRules()
   * @returns Array:: Type array
   *
   */
-function getSharingModuleList($eliminateModules=false)
+function getSharingModuleList($eliminateModules = false)
 {
-	global $log;
+    global $log;
 
-	$sharingModuleArray = Array();
+    $adb = PearDatabase::getInstance();
+    $sharingModuleArray = [];
 
-	global $adb;
-	if(empty($eliminateModules)) $eliminateModules = Array();
+    if (empty($eliminateModules)) {
+        $eliminateModules = [];
+    }
 
-	// Module that needs to be eliminated explicitly
-	$query = "SELECT name FROM vtiger_tab WHERE presence=0 AND ownedby = 0 AND isentitytype = 1";
-	$query .= " AND name NOT IN(" . generateQuestionMarks($eliminateModules) . ")";
+    // Module that needs to be eliminated explicitly
+    $query = "SELECT name FROM vtiger_tab WHERE presence=0 AND ownedby = 0 AND isentitytype = 1";
 
-	$result = $adb->pquery($query, $eliminateModules);
-	while($resrow = $adb->fetch_array($result)) {
-		$sharingModuleArray[] = $resrow['name'];
-	}
+    if (!empty($eliminateModules)) {
+        $query .= " AND name NOT IN(" . generateQuestionMarks($eliminateModules) . ")";
+    }
 
-	return $sharingModuleArray;
+    $result = $adb->pquery($query, $eliminateModules);
+
+    while ($row = $adb->fetch_array($result)) {
+        $sharingModuleArray[] = $row['name'];
+    }
+
+    return $sharingModuleArray;
 }
 
 /** Function to check if the field is Active

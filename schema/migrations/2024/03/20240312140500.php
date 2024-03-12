@@ -39,6 +39,15 @@ if (!class_exists('Migration_20240312140500')) {
                     $blockModel->addField($fieldModel);
                 }
             }
+
+            $columnTable = 'vtiger_crmentity';
+            $columnName = 'isshared';
+
+            if(!columnExists($columnName, $columnTable)) {
+                $query = sprintf('ALTER TABLE %s ADD %s INT(1) NULL', $columnTable, $columnName);
+
+                PearDatabase::getInstance()->query($query);
+            }
         }
     }
 } else {
