@@ -2843,13 +2843,14 @@ class CRMEntity {
 			$this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
 			// for secondary module we should join the records even if record is not there(primary module without related record)
 				if($scope == ''){
-					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = vtiger_crmentity$scope.smownerid ";
 				}else{
-					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
+					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL ";
 				}
 			}
+
+        $query .= " OR (its4you_sharing.crmid = vtiger_crmentity$scope.crmid AND vtiger_crmentity$scope.isshared = 1 AND its4you_sharing.crmid > 0) ";
+
 		return $query;
 	}
 
