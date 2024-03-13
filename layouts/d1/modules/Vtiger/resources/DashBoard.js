@@ -328,7 +328,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 					 */ 
 					var widgetChartContainer = widget.find(".widgetChartContainer");
 					if(widgetChartContainer.length > 0){
-						widgetChartContainer.css("height",widget.height() - 60);
+						widgetChartContainer.css("height",widget.height() - 110);
 					}
 					widgetChartContainer.html('');
 					Vtiger_Widget_Js.getInstance(widget, widgetName);
@@ -445,9 +445,11 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 				widgetContainer.prepend(data);
 				vtUtils.applyFieldElementsView(widgetContainer);
 
-				var widgetChartContainer = widgetContainer.find(".widgetChartContainer");
+				let widgetChartContainer = widgetContainer.find(".widgetChartContainer");
+
 				if (widgetChartContainer.length > 0) {
-					widgetChartContainer.css("height", widgetContainer.height() - 60);
+					;
+					widgetChartContainer.css("height", widgetContainer.height() - 110);
 				}
 
 				thisInstance.getWidgetInstance(widgetContainer);
