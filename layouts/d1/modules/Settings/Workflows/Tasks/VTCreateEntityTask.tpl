@@ -5,9 +5,10 @@
 * All Rights Reserved.
 *}
 {strip}
-    <div class="row my-3">
+    <div class="row py-2">
         <div class="col-lg-2">
-            {vtranslate('LBL_MODULES_TO_CREATE_RECORD',$QUALIFIED_MODULE)} <span class="redColor">*</span>
+            <span>{vtranslate('LBL_MODULES_TO_CREATE_RECORD',$QUALIFIED_MODULE)}</span>
+            <span class="text-danger ms-2">*</span>
         </div>
         <div class="col-lg-6">
             {assign var=RELATED_MODULES_INFO value=$WORKFLOW_MODEL->getDependentModules()}
