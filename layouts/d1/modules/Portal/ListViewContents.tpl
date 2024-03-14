@@ -20,12 +20,12 @@
 <input type="hidden" value="{$SORT_ORDER}" name="sortOrder">
 <div id="listview-actions" class="listViewActionsJs listview-actions-container px-3">
     <div class="row">
-        <div class="col-lg-auto listViewActionsContainer">
+        <div class="col-lg-auto listViewActionsContainer pb-3">
             <button type="button" class="btn btn-outline-secondary" id="{$MODULE}_listview_massAction" onclick="Portal_List_Js.massDeleteRecords()" disabled="disabled">
                 <i class="fa fa-trash"></i>
             </button>
         </div>
-        <div class="col-lg">
+        <div class="col-lg pb-3">
             <div class="messageContainer hide">
                 <div id="selectAllMsgDiv">
                     <div class="text-center">
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-auto">
+        <div class="col-lg-auto pb-3">
             {include file="Pagination.tpl"|vtemplate_path:$MODULE SHOWPAGEJUMP=true}
         </div>
     </div>
