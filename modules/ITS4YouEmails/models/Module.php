@@ -7,6 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use PHPMailer\PHPMailer\PHPMailer;
+
 class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 {
     public static $mobileIcon = 'mail';
@@ -21,8 +24,7 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
     {
         global $ITS4YouEmails_Mailer, $Emails_Mailer;
 
-        if (is_file('modules/Emails/class.phpmailer.php')) {
-            require_once 'modules/Emails/class.phpmailer.php';
+        if (self::isPHPMailerInstalled()) {
 
             $mailer = new PHPMailer();
             $mailer->isSMTP();

@@ -21,10 +21,10 @@ jQuery.Class('ITS4YouEmails_HS_Js', {
         let moduleLinks = $('.module-breadcrumb').find('a'),
             firstLi = $('.nav.nav-tabs li:nth-child(1)'),
             secondLi = $('.nav.nav-tabs li:nth-child(2)'),
-            url = 'index.php?module=Emails&view=Detail&record=' + app.getRecordId(),
+            url = 'index.php?module=ITS4YouEmails&view=Detail&record=' + app.getRecordId(),
             urlActivity = url + '&mode=showRecentActivities';
 
-        moduleLinks.attr('href', 'index.php?module=ITS4YouEmails&view=List&targetModule=Emails');
+        moduleLinks.attr('href', 'index.php?module=ITS4YouEmails&view=List&targetModule=ITS4YouEmails');
 
         firstLi.attr('data-url', url)
         firstLi.find('a').attr('href', url);
@@ -38,7 +38,7 @@ jQuery.Class('ITS4YouEmails_HS_Js', {
         $('#Emails_detailView_fieldValue_description').html(html);
     },
     isEmailsDetail: function() {
-        return 'Emails' === app.getModuleName() && 'Detail' === app.getViewName();
+        return 'ITS4YouEmails' === app.getModuleName() && 'Detail' === app.getViewName();
     },
     registerEvents: function () {
         if(this.isEmailsDetail()) {

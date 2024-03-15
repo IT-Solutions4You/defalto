@@ -29,7 +29,7 @@
         <div class="popupEntriesDiv relatedContents rounded">
             <input type="hidden" value="{$ORDER_BY}" id="orderBy">
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
-            {if $SOURCE_MODULE eq "Emails"}
+            {if $SOURCE_MODULE eq "ITS4YouEmails"}
                 {if $MODULE neq 'Documents'}
                     <input type="hidden" value="Vtiger_EmailsRelatedModule_Popup_Js" id="popUpClassName"/>
                 {/if}

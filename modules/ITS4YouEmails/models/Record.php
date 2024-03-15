@@ -172,7 +172,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $toEmailIds = $this->getJsonArray('to_email_ids');
 
             foreach ($toEmailIds as $toEmailId) {
-                list($recipientId, $recipientEmail, $recipientModule) = explode('|', $toEmailId);
+                [$recipientId, $recipientEmail, $recipientModule] = explode('|', $toEmailId);
 
                 $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $record, $this->get('email_template_language'), $recipientId, $recipientModule);
                 $EMAILContentModel->setSubject($subject);
@@ -266,7 +266,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $toEmailIds = $this->getJsonArray('to_email_ids');
 
         foreach ($toEmailIds as $toEmailId) {
-            list($record, $email, $module) = explode('|', $toEmailId);
+            [$record, $email, $module] = explode('|', $toEmailId);
 
             if (!empty($module) && !empty($record) && isRecordExists($record)) {
                 $content = getMergedDescription($content, $record, $module);
@@ -446,7 +446,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 
     public function getEmailName($emailId)
     {
-        list($record, $email, $module) = explode('|', $emailId);
+        [$record, $email, $module] = explode('|', $emailId);
 
         $module = trim(decode_html($module));
 
@@ -737,7 +737,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $toEmailIds = $this->getJsonArray('to_email_ids');
         $toEmailId = reset($toEmailIds);
 
-        list($record, $address, $module) = explode('|', $toEmailId);
+        [$record, $address, $module] = explode('|', $toEmailId);
 
         if (empty($record) || empty($module) || 'Users' === $module) {
             return;
@@ -773,7 +773,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $num = 0;
 
         foreach ($matches as $match) {
-            list($image, $url) = $match;
+            [$image, $url] = $match;
 
             if ($this->isImageUsed($url) || $this->isImageEmbed($url)) {
                 continue;
@@ -849,7 +849,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             $emailIds = explode(',', $this->get('to_email_ids'));
 
             foreach ($emailIds as $emailId) {
-                list($emailRecord, $emailAddress, $emailModule) = explode('|', trim($emailId));
+                [$emailRecord, $emailAddress, $emailModule] = explode('|', trim($emailId));
 
                 if (!empty($emailRecord) && !empty($emailModule)) {
                     $field = $this->getRelatedToFields()[$emailModule];
@@ -1014,7 +1014,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
         $emails = array();
 
         foreach ($emailIds as $emailId) {
-            list($record, $address, $module) = explode('|', $emailId);
+            [$record, $address, $module] = explode('|', $emailId);
 
             $emails[] = $address;
         }
@@ -1127,5 +1127,56 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function getAccessCountValue()
     {
         return $this->get('access_count');
+    }
+
+    /**
+     * Function to track clicks
+     *
+     * @param int $parentId
+     */
+    public function trackClicks($parentId): void
+    {
+        $db = PearDatabase::getInstance();
+        $recordId = $this->getId();
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        $db->pquery('INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)', [$parentId, $recordId, date('Y-m-d'), $currentDateTime]);
+
+        $result = $db->pquery('SELECT access_count, click_count FROM vtiger_email_track WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+        $accessCount = $db->query_result($result, 0, 'access_count');
+
+        if ($db->num_rows($result)) {
+            $updatedAccessCount = $accessCount;
+
+            //If click is unique (i.e. first click on mail), then also increase open count to 1
+            if ($accessCount == 0) {
+                $updatedAccessCount = $accessCount + 1;
+            }
+
+            $db->pquery('UPDATE vtiger_email_track SET click_count = click_count+1,access_count=? WHERE crmid = ? AND mailid = ?', [$updatedAccessCount, $parentId, $recordId]);
+        } else {
+            $db->pquery('INSERT INTO vtiger_email_track(crmid, mailid, access_count,click_count) values(?, ?, ?,?)', [$parentId, $recordId, 1, 1]);
+        }
+    }
+
+    /**
+     * Function to update Email track(opens) details.
+     *
+     * @param int $parentId
+     */
+    public function updateTrackDetails($parentId): void
+    {
+        $db = PearDatabase::getInstance();
+        $recordId = $this->getId();
+
+        $db->pquery('INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)', [$parentId, $recordId, date('Y-m-d'), date('Y-m-d H:i:s')]);
+
+        $result = $db->pquery('SELECT 1 FROM vtiger_email_track WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+
+        if ($db->num_rows($result)) {
+            $db->pquery('UPDATE vtiger_email_track SET access_count = access_count+1 WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+        } else {
+            $db->pquery('INSERT INTO vtiger_email_track(crmid, mailid, access_count) values(?, ?, ?)', [$parentId, $recordId, 1]);
+        }
     }
 }

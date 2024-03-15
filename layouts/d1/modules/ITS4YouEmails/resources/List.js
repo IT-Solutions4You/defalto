@@ -22,11 +22,11 @@ Vtiger_List_Js('ITS4YouEmails_List_Js', {}, {
         });
     },
     updateEmailsRecords: function () {
-        if ('Emails' === $('[name="targetModule"]').val()) {
+        if ('ITS4YouEmails' === $('[name="targetModule"]').val()) {
             $('.listViewEntries').each(function() {
                 let row = $(this),
                     id = row.data('id'),
-                    url = 'index.php?module=Emails&view=Detail&record=' + id;
+                    url = 'index.php?module=ITS4YouEmails&view=Detail&record=' + id;
 
                 row.attr('data-recordurl', url);
                 row.find('a').attr('href', url);

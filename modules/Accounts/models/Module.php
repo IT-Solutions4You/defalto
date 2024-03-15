@@ -44,7 +44,7 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
 		if (($sourceModule == 'Accounts' && $field == 'account_id' && $record)
-				|| in_array($sourceModule, array('Campaigns', 'Products', 'Services', 'Emails'))) {
+				|| in_array($sourceModule, array('Campaigns', 'Products', 'Services'))) {
 
 		    	$db = PearDatabase::getInstance();
 		    	$params = array($record);
@@ -55,9 +55,6 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 			} elseif ($sourceModule === 'Services') {
 				$condition = " vtiger_account.accountid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
                 		$params = array($record, $record);
-            		} elseif ($sourceModule === 'Emails') {
-				$condition = ' vtiger_account.emailoptout = 0';
-                		$params = array();
 			} else {
 				$condition = " vtiger_account.accountid != ?";
 			}

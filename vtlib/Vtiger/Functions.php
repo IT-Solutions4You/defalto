@@ -1671,8 +1671,8 @@ class Vtiger_Functions {
 
     static function generateTrackingURL($params = []){
         $options = array(
-            'handler_path' => 'modules/Emails/handlers/Tracker.php',
-            'handler_class' => 'Emails_Tracker_Handler',
+            'handler_path' => 'modules/ITS4YouEmails/handlers/Tracker.php',
+            'handler_class' => 'ITS4YouEmails_Tracker_Handler',
             'handler_function' => 'process',
             'handler_data' => $params
         );

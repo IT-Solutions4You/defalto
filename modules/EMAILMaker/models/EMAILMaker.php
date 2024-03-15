@@ -2551,7 +2551,7 @@ class EMAILMaker_EMAILMaker_Model extends Vtiger_Module_Model
     {
         $siteURL = vglobal('site_URL');
         $applicationKey = vglobal('application_unique_key');
-        $trackURL = "$siteURL/modules/Emails/actions/TrackAccess.php?record=$emailId&parentId=$crmId&applicationKey=$applicationKey";
+        $trackURL = "$siteURL/modules/ITS4YouEmails/actions/TrackAccess.php?record=$emailId&parentId=$crmId&applicationKey=$applicationKey";
         $imageDetails = "<img src='$trackURL' alt='' width='1' height='1'>";
 
         return $imageDetails;

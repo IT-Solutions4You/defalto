@@ -40,7 +40,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	showEmailPreview : function(recordId, parentId) {
 		var popupInstance = Vtiger_Popup_Js.getInstance();
 		var params = {};
-		params['module'] = "Emails";
+		params['module'] = "ITS4YouEmails";
 		params['view'] = "ComposeEmail";
 		params['mode'] = "emailPreview";
 		params['record'] = recordId;
@@ -78,7 +78,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 */
 
 	showComposeEmailPopup : function(params, cb){
-		var currentModule = "Emails";
+		var currentModule = "ITS4YouEmails";
 		app.helper.showProgress();
 		app.helper.checkServerConfig(currentModule).then(function(data){
 			if(data == true){

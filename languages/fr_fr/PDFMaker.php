@@ -176,8 +176,6 @@ $languageStrings = Array(
     "LBL_CUSTOM_DESC" => "Dans le cas où vous ayez fait des modifications dans ces différents fichiers :<b>
                     <br/>- /index.php
                     <br/>- /Smarty_setup.php
-                    <br/>- /modules/Emails/EditView.php
-                    <br/>- /modules/Emails/Save.php
                     <br/>- /Smarty/templates/DetailView.tpl
                     <br/>- /Smarty/templates/ComposeEmail.tpl
                     <br/>- /Smarty/templates/Inventory/InventoryActions.tpl

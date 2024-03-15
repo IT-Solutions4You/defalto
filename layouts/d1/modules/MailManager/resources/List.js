@@ -855,7 +855,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				app.request.post({'data' : params}).then(function(err, data) {
 					var draftId = data.emailid;
 					var newParams = {
-						'module' : 'Emails',
+						'module' : 'ITS4YouEmails',
 						'view' : 'ComposeEmail',
 						'mode' : 'emailEdit',
 						'record' : draftId
@@ -1098,7 +1098,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			var element = jQuery(e.currentTarget);
 			var msgNo = element.find('.msgNo').val();
 			var params = {
-				'module' : 'Emails',
+				'module' : 'ITS4YouEmails',
 				'view' : 'ComposeEmail',
 				'mode' : 'emailEdit',
 				'record' : msgNo
@@ -1210,7 +1210,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			var relatedRecord = self.getRecordForRelation();
 			if(relatedRecord !== false) {
 				if(actionType == "associate") {
-					if(module == 'Emails') {
+					if(module == 'ITS4YouEmails') {
 						self.associateEmail(relatedRecord);
 					} else if(module == "ModComments") {
 						self.associateComment(relatedRecord);
@@ -1234,7 +1234,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'_operation' : 'relation',
 			'_operationarg' : 'link',
 			'_mlinkto' : relatedRecord,
-			'_mlinktotype' : 'Emails',
+			'_mlinktotype' : 'ITS4YouEmails',
 			'_folder' : container.find('#mmFolder').val(),
 			'_msgno' : container.find('#mmMsgNo').val()
 		}

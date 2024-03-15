@@ -350,7 +350,7 @@ class WebserviceField{
 			}elseif ($fieldName == 'defaultlandingpage') {
                 $picklistDetails = array(); 
                 $presence = array(0);
-                $restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
+                $restrictedModules = array('Integration', 'Dashboard','ModComments');
                 $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
 
                 $result = $this->pearDB->pquery($query, array($presence, '1', $restrictedModules));

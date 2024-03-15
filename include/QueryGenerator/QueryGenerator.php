@@ -1031,8 +1031,7 @@ class QueryGenerator {
 			}
 
 			// for not equal(!=) and for equal(=) with empty value we need to check for null
-			if(($operator == 'n' && !isset($value) && ($field->getFieldName() != 'activitytype' && $value != 'Emails')) ||
-					($operator == 'e' && !isset($value))) {
+			if(($operator == 'n' && !isset($value)) || ($operator == 'e' && !isset($value))) {
 				$sql[] = "IS NULL";
 			}
 

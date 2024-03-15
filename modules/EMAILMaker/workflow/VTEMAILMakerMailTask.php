@@ -11,9 +11,7 @@ require_once('modules/com_vtiger_workflow/VTTaskManager.inc');
 require_once('modules/com_vtiger_workflow/VTEntityCache.inc');
 require_once('modules/com_vtiger_workflow/VTWorkflowUtils.php');
 require_once('modules/com_vtiger_workflow/VTEmailRecipientsTemplate.inc');
-require_once('modules/Emails/mail.php');
 require_once('modules/EMAILMaker/EMAILMaker.php');
-require_once('modules/Emails/models/Mailer.php');
 
 class VTEMAILMakerMailTask extends VTTask
 {

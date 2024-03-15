@@ -274,7 +274,7 @@ jQuery.Class("Vtiger_RelatedList_Js",{
         var relationId = selectedTabElement.data('relationId');
 		params['related_module'] = this.relatedModulename;
         params['relationId'] = relationId;
-        if(this.relatedModulename == 'Emails' && this.parentId != false) {
+        if(this.relatedModulename == 'ITS4YouEmails' && this.parentId != false) {
             params['src_record'] = this.parentId;
         } else {
             params['src_record'] = this.parentRecordId;

@@ -1,7 +1,4 @@
 <?php
-
-use PHPMailer\PHPMailer\Exception;
-
 /**
  * This file is part of the IT-Solutions4You CRM Software.
  *
@@ -10,6 +7,9 @@ use PHPMailer\PHPMailer\Exception;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+use PHPMailer\PHPMailer\Exception;
+
 class EMAILMaker_Utils_Helper
 {
     /**
@@ -47,7 +47,7 @@ class EMAILMaker_Utils_Helper
 
         $systemFromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
-        if (isUserInitiated()) {
+        if ($_REQUEST['module'] == 'Emails' && ($_REQUEST['action'] == 'mailsend' || $_REQUEST['action'] == 'Save')) {
             $replyToEmail = $fromEmail;
         } else {
             $replyToEmail = $systemFromEmail;
@@ -197,5 +197,4 @@ class EMAILMaker_Utils_Helper
             $mail->addAddress($emailAddress);
         }
     }
-
 }

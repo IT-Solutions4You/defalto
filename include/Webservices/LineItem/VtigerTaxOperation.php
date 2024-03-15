@@ -19,7 +19,6 @@ require_once 'include/Webservices/LineItem/VtigerLineItemMeta.php';
 require_once 'include/Webservices/Retrieve.php';
 require_once 'include/Webservices/Update.php';
 require_once 'include/Webservices/Utils.php';
-require_once 'modules/Emails/mail.php';
 
 
 /**

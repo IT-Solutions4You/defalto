@@ -8,8 +8,6 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-require_once 'modules/Emails/mail.php';
-
 class HelpDeskHandler extends VTEventHandler {
 
 	function handleEvent($eventName, $entityData) {
@@ -197,7 +195,6 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 	$email_body = HelpDesk::getTicketEmailContents($entityData, true);
 	if(PerformancePrefs::getBoolean('NOTIFY_OWNER_EMAILS', true) === true){
 		//send mail to the assigned to user and the parent to whom this ticket is assigned
-		require_once('modules/Emails/mail.php');
 		$wsAssignedUserId = $entityData->get('assigned_user_id');
 		$userIdParts = explode('x', $wsAssignedUserId);
 		$ownerId = $userIdParts[1];
@@ -226,10 +223,6 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 
 		} else {
 			$mail_status_str = "'".$to_email."'=0&&&";
-		}
-
-		if ($mail_status != '') {
-			$mail_error_status = getMailErrorString($mail_status_str);
 		}
 	}
 }

@@ -95,7 +95,7 @@ class Vtiger_LanguageImport extends Vtiger_LanguageExport {
 							}
 					}
 					// Case handling for phpmailer
-				   	else if(stripos($targetdir, 'modules/Emails/language') === 0
+				   	else if(stripos($targetdir, 'modules/ITS4YouEmails/language') === 0
 						&& stripos($targetfile, "phpmailer.lang-$prefix.php")===0) {
 
 							if(file_exists("$targetdir/phpmailer.lang-en_us.php")) {

@@ -2452,9 +2452,6 @@ class CRMEntity {
 		$query = '';
 		if ($pritablename == 'vtiger_crmentityrel') {
 			$tableName = $table_name;
-			if($secmodule == "Emails") {
-				$tableName .='Emails';
-			}
 			$condition = "($tableName.$column_name={$tmpname}.{$secfieldname} " .
 					"OR $tableName.$column_name={$tmpname}.{$prifieldname})";
 			$query = " left join vtiger_crmentityrel as $tmpname ON (($condvalue={$tmpname}.{$secfieldname} " .
@@ -2463,13 +2460,7 @@ class CRMEntity {
 			$instance = self::getInstance($module);
 			$sectableindex = $instance->tab_name_index[$sectablename];
 			$condition = "$table_name.$column_name=$tmpname.$secfieldname";
-			if($secmodule == "Emails"){
-				$condition = $table_name.'Emails'.".$column_name=$tmpname.$secfieldname";
-			}
 			if($pritablename == 'vtiger_seactivityrel') {
-				if($module == "Emails" || $secmodule == "Emails"){
-					$tmpModule = "Emails";
-				}
 				$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname
 					AND $tmpname.activityid IN (SELECT crmid FROM vtiger_crmentity WHERE setype='$tmpModule' AND deleted = 0))";
 			} else if($pritablename == 'vtiger_senotesrel') {
@@ -2505,10 +2496,9 @@ class CRMEntity {
 			$condition .= " OR $table_name.contactid = vtiger_contpotentialrel.contactid";
 			$query .= " left join vtiger_contpotentialrel on vtiger_potential.potentialid = vtiger_contpotentialrel.potentialid";
 		}
-		if ($secmodule == "Emails") {
-			$table_name .="Emails";
-		}
+
 		$query .= " left join $secQueryTempTableQuery as $table_name on {$condition}";
+
 		return $query;
 	}
 
@@ -3113,34 +3103,6 @@ class CRMEntity {
 				$whereClause .
 				" ORDER BY $tableColumnsString," . $this->table_name . "." . $this->table_index . " ASC";
 		return $query;
-	}
-
-	/**
-	 * Function to get relation query for get_activities
-	 */
-	function get_activities($id, $cur_tab_id, $rel_tab_id, $actions=false) {
-		global $currentModule;
-		$this_module = $currentModule;
-
-		$related_module = vtlib_getModuleNameById($rel_tab_id);
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-
-		$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-					vtiger_crmentity.*, vtiger_activity.activitytype, vtiger_activity.subject, vtiger_activity.date_start, vtiger_activity.time_start,
-					vtiger_activity.recurringtype, vtiger_activity.due_date, vtiger_activity.time_end, vtiger_activity.visibility, vtiger_seactivityrel.crmid AS parent_id,
-					CASE WHEN (vtiger_activity.activitytype = 'Task') THEN (vtiger_activity.status) ELSE (vtiger_activity.eventstatus) END AS status
-					FROM vtiger_activity
-					INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid
-					LEFT JOIN vtiger_seactivityrel ON vtiger_seactivityrel.activityid = vtiger_activity.activityid
-					LEFT JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid
-					LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
-					LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
-						WHERE vtiger_crmentity.deleted = 0 AND vtiger_activity.activitytype <> 'Emails'
-							AND vtiger_seactivityrel.crmid = ".$id;
-
-		$return_value = GetRelatedList($this_module, $related_module, '', $query, '', '');
-		if($return_value == null) $return_value = Array();
-		return $return_value;
 	}
 
 	function get_comments($relatedRecordId = false) {

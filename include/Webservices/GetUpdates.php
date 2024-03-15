@@ -152,10 +152,8 @@ require_once 'include/Webservices/DescribeObject.php';
 					$selectClause .=", ".$table_fieldName;
 				}
 			}
-			if($elementType=="Emails")
-				$fromClause = vtws_getEmailFromClause();
-			else
-				$fromClause = $queryGenerator->getFromClause();
+
+            $fromClause = $queryGenerator->getFromClause();
 
 			$fromClause .= " INNER JOIN (select modifiedtime, crmid,deleted,setype FROM $baseCRMTable WHERE setype=? and modifiedtime >? and modifiedtime<=?";
 			if(!$applicationSync){
@@ -247,20 +245,6 @@ require_once 'include/Webservices/DescribeObject.php';
 			}
 		}
 		return $deletedRecord;
-	}
-
-	function vtws_getEmailFromClause(){
-		$q = "FROM vtiger_activity
-				INNER JOIN vtiger_crmentity ON vtiger_activity.activityid = vtiger_crmentity.crmid
-				LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
-				LEFT JOIN vtiger_groups ON vtiger_crmentity.smownerid = vtiger_groups.groupid
-				LEFT JOIN vtiger_seattachmentsrel ON vtiger_activity.activityid = vtiger_seattachmentsrel.crmid
-				LEFT JOIN vtiger_attachments ON vtiger_seattachmentsrel.attachmentsid = vtiger_attachments.attachmentsid
-				LEFT JOIN vtiger_email_track ON vtiger_activity.activityid = vtiger_email_track.mailid
-				INNER JOIN vtiger_emaildetails ON vtiger_activity.activityid = vtiger_emaildetails.emailid
-				LEFT JOIN vtiger_users vtiger_users2 ON vtiger_emaildetails.idlists = vtiger_users2.id
-				LEFT JOIN vtiger_groups vtiger_groups2 ON vtiger_emaildetails.idlists = vtiger_groups2.groupid";
-		return $q;
 	}
 
     function getSelectClauseFields($module,$moduleMeta,$user){

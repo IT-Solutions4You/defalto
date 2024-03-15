@@ -716,7 +716,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			if(relatedController){
 				app.helper.showConfirmationBox({'message' : message}).then(
 					function(e) {
-						if(relatedModuleName == 'Emails') {
+						if(relatedModuleName == 'ITS4YouEmails') {
 							var parentId = row.find('.parentId').data('parent-id');
 							if(typeof parentId != 'undefined')
 							relatedController.parentId = parentId;
@@ -739,7 +739,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 		var parentId = this.getRecordId();
 
 		var params = {};
-		params['module'] = "Emails";
+		params['module'] = "ITS4YouEmails";
 		params['view'] = "ComposeEmail";
 		params['parentId'] = parentId;
 		params['relatedLoad'] = true;
@@ -784,7 +784,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 		detailContentsHolder.on('click','[name="emailsEditView"]',function(e){
 			e.stopPropagation();
-			var module = "Emails";
+			var module = "ITS4YouEmails";
 			app.helper.checkServerConfig(module).then(function(data){
 				if(data == true){
 					var element = jQuery(e.currentTarget);

@@ -62,7 +62,6 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
     }
     
     public function save($request){
-        vimport('~~/modules/Emails/mail.php');
         $currentUser = Users_Record_Model::getCurrentUserModel();
 
         $from_email =  $request->get('from_email_field');
