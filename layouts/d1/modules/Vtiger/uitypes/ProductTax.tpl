@@ -17,7 +17,7 @@
         {assign var=TAX_TAX_NAME value=$tax.taxname}
         <div class="py-2 col-lg-6">
             <div class="row">
-                <div class="col-sm-4 fieldLabel">
+                <div class="col-sm-12 fieldLabel text-secondary pb-2">
                     <div class="d-flex">
                         <div class="taxLabel alignBottom">
                             <label>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-8 fieldValue">
+                <div class="col-sm-12 fieldValue">
                     <div class="Vtiger_ProductTax_UIType">
                         {if $tax.type eq 'Fixed'}
                             <input type="text" id="{$TAX_TAX_NAME}" class="form-control inputElement {if $show_value eq "hidden"}hide{else}show{/if}" name="{$TAX_TAX_NAME}" value="{$tax.percentage}" data-rule-required="true" data-rule-inventory_percentage="true"/>

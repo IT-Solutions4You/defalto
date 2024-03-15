@@ -34,8 +34,14 @@
                                             {assign var="referenceList" value=$FIELD_MODEL->getReferenceList()}
                                             {assign var="referenceListCount" value=php7_count($referenceList)}
                                             <div class="row">
-                                                <div class="fieldLabel col-sm-4">
+                                                <div class="fieldLabel col-lg-12 pb-2 text-secondary">
                                                     {if $isReferenceField eq "reference"}
+                                                        <div class="pb-2">
+                                                            <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE)}</span>
+                                                            {if $FIELD_MODEL->isMandatory() eq true}
+                                                                <span class="text-danger ms-2">*</span>
+                                                            {/if}
+                                                        </div>
                                                         {if $referenceListCount > 1}
                                                             {assign var="DISPLAYID" value=$FIELD_MODEL->get('fieldvalue')}
                                                             {assign var="REFERENCED_MODULE_STRUCT" value=$FIELD_MODEL->getUITypeModel()->getReferenceModule($DISPLAYID)}
@@ -47,17 +53,15 @@
                                                                     <option value="{$value}" {if $value eq $REFERENCED_MODULE_NAME} selected {/if} >{vtranslate($value, $value)}</option>
                                                                 {/foreach}
                                                             </select>
-                                                        {else}
-                                                            <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE)}</span>
                                                         {/if}
                                                     {else}
                                                         <span>{vtranslate($FIELD_MODEL->get('label'), $MODULE)}</span>
-                                                    {/if}
-                                                    {if $FIELD_MODEL->isMandatory() eq true}
-                                                        <span class="text-danger ms-2">*</span>
+                                                        {if $FIELD_MODEL->isMandatory() eq true}
+                                                            <span class="text-danger ms-2">*</span>
+                                                        {/if}
                                                     {/if}
                                                 </div>
-                                                <div class="fieldValue {if $FIELD_MODEL->isTableFullWidth()}col-sm-10{else}col-sm-8{/if}">
+                                                <div class="fieldValue col-lg-12">
                                                     {include file=vtemplate_path($FIELD_MODEL->getUITypeModel()->getTemplateName(),$MODULE)}
                                                 </div>
                                             </div>
