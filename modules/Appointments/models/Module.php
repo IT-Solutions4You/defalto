@@ -77,7 +77,7 @@ class Appointments_Module_Model extends Vtiger_Module_Model
      */
     public function getIconUrl(): string
     {
-        return $this->getDefaultUrl();
+        return $this->getDefaultUrl() . '&initialView=Today';
     }
 
     /**

@@ -10,6 +10,7 @@
  */
 class Appointments_Events_Model extends Vtiger_Base_Model
 {
+    public static string $initialView = '';
     /**
      * @var array
      */
@@ -427,6 +428,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public static function getInitialView(string $value): string
     {
+        if (!empty(self::$initialView)) {
+            $value = self::$initialView;
+        }
+
         $views = [
             'Today' => 'timeGridDay',
             'This Week' => 'timeGridWeek',
