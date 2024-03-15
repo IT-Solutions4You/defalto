@@ -228,15 +228,18 @@ class Appointments_Module_Model extends Vtiger_Module_Model
     {
         $db = PearDatabase::getInstance();
         $currentUser = Users_Record_Model::getCurrentUserModel();
-
         $listModel = $this->getTodayRecordsListModel();
-        $pagingModel = new Vtiger_Paging_Model();
-        $pagingModel->set('limit', 1);
-        $queryGenerator = $listModel->get('query_generator');
-        $controller = new ListViewController($db, $currentUser, $queryGenerator);
+
+        $currentDate = Appointments_Dates_Helper::getCurrentDatetimeForUser();
+        $listModel->get('query_generator')->addCondition('datetime_start', $currentDate, 'g', 'AND');
+
+        $controller = new ListViewController($db, $currentUser, $listModel->get('query_generator'));
 
         $listModel->set('module', $this);
         $listModel->set('listview_controller', $controller);
+
+        $pagingModel = new Vtiger_Paging_Model();
+        $pagingModel->set('limit', 1);
 
         $records = $listModel->getListViewEntries($pagingModel);
 
