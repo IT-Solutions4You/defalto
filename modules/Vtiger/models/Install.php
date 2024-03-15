@@ -367,7 +367,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
             foreach ($blocks as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
-
+                $fieldSequence = 0;
                 $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 
                 if (!$blockInstance) {
@@ -385,6 +385,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
                     self::logSuccess('Field create: ' . $fieldName);
 
+                    $fieldSequence++;
                     $relatedModules = [];
                     $picklistValues = [];
 
@@ -397,6 +398,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                     $fieldInstance->name = $fieldName;
                     $fieldInstance->column = $fieldName;
                     $fieldInstance->table = $baseTable;
+                    $fieldInstance->sequence = $fieldSequence;
 
                     foreach ($fieldParams as $fieldParamName => $fieldParam) {
                         if ('picklist_values' === $fieldParamName) {
@@ -414,6 +416,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                         'block' => $fieldInstance->getBlockId(),
                         'presence' => $fieldInstance->presence,
                         'displaytype' => $fieldInstance->displaytype,
+                        'sequence' => $fieldInstance->sequence,
                     ];
                     $sql = sprintf('UPDATE vtiger_field SET %s=? WHERE fieldid=?', implode('=?,', array_keys($params)));
                     $this->db->pquery($sql, [$params, $fieldInstance->id]);
