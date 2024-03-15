@@ -479,7 +479,7 @@ function getUserEmail($userId): string
     global $log;
     $log->debug("Entering getUserEmail(" . $userId . ") method ...");
 
-    $usersRecordModel = Users_Record_Model::getInstanceById($userId);
+    $usersRecordModel = Users_Record_Model::getInstanceById($userId, 'Users');
     $log->debug("Exiting getUserEmail method ...");
 
     if ($usersRecordModel) {

@@ -436,7 +436,7 @@ class Vtiger_Deprecated {
                             $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
                         }
                         Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-                        die('Sorry! Attempt to access restricted file.');
+                        die('Sorry! Attempt to access restricted file 3: ' . $relativeFilePath);
                 }
 	}
 
@@ -472,7 +472,7 @@ class Vtiger_Deprecated {
                         $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
                     }
                     Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-		    die('Sorry! Attempt to access restricted file.');
+		    die('Sorry! Attempt to access restricted file 4: ' . $relativeFilePath);
 		}
 
 	}
@@ -487,7 +487,7 @@ class Vtiger_Deprecated {
                         $backtrace .=  $b['file'] . '::' . $b['function'] . '::' . $b['line'] . '<br>'.PHP_EOL;
                     }
                     Vtiger_Utils::writeLogFile('fileMissing.log', $backtrace);
-                    die('Sorry! Attempt to access restricted file.');
+                    die('Sorry! Attempt to access restricted file 5: ' . $filepath);
 		}
 	}
 

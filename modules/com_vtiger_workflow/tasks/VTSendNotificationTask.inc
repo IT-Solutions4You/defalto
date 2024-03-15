@@ -61,7 +61,7 @@ class VTSendNotificationTask extends VTEmailTask {
 			$logo = 1;
 		}
 
-		$status = send_mail($module, $toEmail, $fromName, $fromEmail, $subject, $content, $cc, $bcc, '', '', $logo);
+		$status = EMAILMaker_Utils_Helper::sendMail($toEmail, $fromName, $fromEmail, $subject, $content);
 
 		if(!empty($emailId)) {
 			$emailFocus->setEmailAccessCountValue($emailId);

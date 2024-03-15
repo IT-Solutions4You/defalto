@@ -61,7 +61,7 @@ class CustomerPortal_ForgotPassword extends CustomerPortal_API_Abstract {
 				$subject = 'Customer Portal Login Details';
 				$subject = decode_html(getMergedDescription($subject, $contactId, $moduleName));
 
-				$mailStatus = send_mail($moduleName, $user_name, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents, '', '', '', '', '', true);
+                $mailStatus = EMAILMaker_Utils_Helper::sendMail($user_name, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents, true);
 				$ret_msg = vtranslate('LBL_MAIL_COULDNOT_SENT', 'HelpDesk');
 				if ($mailStatus) {
 					$ret_msg = vtranslate('LBL_MAIL_SENT', 'HelpDesk');

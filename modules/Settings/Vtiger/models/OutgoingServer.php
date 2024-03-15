@@ -74,7 +74,7 @@ class Settings_Vtiger_OutgoingServer_Model extends Settings_Vtiger_Systems_Model
         $olderAction = $_REQUEST['action'];
 		$_REQUEST['action'] = 'Save';
         if($to_email != ''){
-            $mail_status = send_mail('Users',$to_email,$currentUser->get('user_name'),$from_email,$subject,$description,'','','','','',true);
+            $mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $currentUser->get('user_name'), $from_email, $subject, $description, true);
         }
 		$_REQUEST['action'] = $olderAction;
         if($mail_status != 1 && !$this->isDefaultSettingLoaded()) {

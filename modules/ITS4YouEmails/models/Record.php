@@ -7,6 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+include_once 'libraries/ToAscii/ToAscii.php';
+
 class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 {
     public static $FLAG_SENT = 'SENT';

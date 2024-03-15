@@ -104,8 +104,6 @@ function CustomerCommentFromPortal($entityData) {
 
 		$result = $adb->pquery("SELECT email FROM vtiger_contactdetails WHERE contactid=?", array($customerId[0]));
 		$fromEmail = $adb->query_result($result,0,'email');
-
-		send_mail('HelpDesk', $toEmail,'', $fromEmail, $subject, $contents);
 	}
 }
 
@@ -181,8 +179,6 @@ function TicketOwnerComments($entityData) {
 			} else {
 				$emailBody = HelpDesk::getTicketEmailContents($entityData);
 			}
-
-			send_mail('HelpDesk', $parentEmail, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $emailBody);
 		}
 	}
 }
