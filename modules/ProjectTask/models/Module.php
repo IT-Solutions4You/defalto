@@ -42,24 +42,21 @@ class ProjectTask_Module_Model extends Vtiger_Module_Model {
 		return $links;
 	}
 
-	public function getProjectsListUrl() {
-		$taskModel = Vtiger_Module_Model::getInstance('Project');
-		return $taskModel->getListViewUrl();
-	}
-	
-    public function getMilestonesListUrl() {
-    $milestoneModel = Vtiger_Module_Model::getInstance('ProjectMilestone');
-    return $milestoneModel->getListViewUrl();
-}
-	/**
-	 * Function to check whether the module is summary view supported
-	 * @return <Boolean> - true/false
-	 */
-	public function isSummaryViewSupported() {
-		return false;
-	}
-	
-	/**
+    public function getProjectsListUrl()
+    {
+        $taskModel = Vtiger_Module_Model::getInstance('Project');
+
+        return $taskModel->getListViewUrl();
+    }
+
+    public function getMilestonesListUrl()
+    {
+        $milestoneModel = Vtiger_Module_Model::getInstance('ProjectMilestone');
+
+        return $milestoneModel->getListViewUrl();
+    }
+
+    /**
 	 * Function to get list of field for related list
 	 * @return <Array> empty array
 	 */

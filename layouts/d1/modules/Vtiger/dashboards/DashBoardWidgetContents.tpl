@@ -11,10 +11,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-10">
-                    <div class="widgetChartContainer" name='chartcontent' style="height:220px;min-width:300px; margin: 0 auto"></div>
-                    <br>
+                    <div class="widgetChartContainer" name="chartcontent" style="height:220px;min-width:300px; margin: 0 auto" ></div>
                 </div>
-                <div class="col-lg-2"></div>
             </div>
         </div>
     {else}

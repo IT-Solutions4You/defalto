@@ -172,6 +172,7 @@
                     <textarea id="hide_days" class="hide">{json_encode($HIDE_DAYS)}</textarea>
                     <input type="hidden" id="day_of_week" value="{Appointments_Events_Model::getDayOfWeekId($CURRENT_USER->get('dayoftheweek'))}">
                     <input type="hidden" id="calendar_view" value="{Appointments_Events_Model::getInitialView($CURRENT_USER->get('activity_view'))}">
+                    <input type="hidden" id="scroll_hour" value="{Appointments_Events_Model::getScrollHour()}">
                     <input type="hidden" id="start_hour" value="{$CURRENT_USER->get('start_hour')}">
                     <input type="hidden" id="timezone" value="{$CURRENT_USER->get('timezone')}">
                     <input type="hidden" id="hour_format" value="{$CURRENT_USER->get('hour_format')}">

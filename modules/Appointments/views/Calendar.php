@@ -16,6 +16,10 @@ class Appointments_Calendar_View extends Vtiger_Index_View
      */
     public function Calendar(Vtiger_Request $request)
     {
+        if(!$request->isEmpty('initialView')) {
+            Appointments_Events_Model::$initialView = $request->get('initialView');
+        }
+
         $module = $request->getModule();
         /** @var Appointments_Module_Model $moduleModel */
         $moduleModel = Vtiger_Module_Model::getInstance($module);

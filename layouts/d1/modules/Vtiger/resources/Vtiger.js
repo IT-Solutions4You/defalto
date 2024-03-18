@@ -768,14 +768,14 @@ Vtiger.Class('Vtiger_Index_Js', {
 	 * Funtion to register popup search event for reference field
 	 * @param <jQuery> container
 	 */
-	referenceModulePopupRegisterEvent : function(container) {
+	referenceModulePopupRegisterEvent: function (container) {
 		let self = this;
 
 		container.off('click', '.relatedPopup');
-		container.on('click','.relatedPopup',function(e) {
+		container.on('click', '.relatedPopup', function (e) {
 			self.openPopUp(e);
 		});
-		container.on('change','.referenceModulesList',function(e){
+		container.on('change', '.referenceModulesList', function (e) {
 			let element = jQuery(e.currentTarget),
 				closestTD = self.getParentElement(element).next(),
 				popupReferenceModule = element.val(),
@@ -785,7 +785,7 @@ Vtiger.Class('Vtiger_Index_Js', {
 			referenceModuleElement.val(popupReferenceModule);
 
 			//If Reference module is changed then we should clear the previous value
-			if(prevSelectedReferenceModule !== popupReferenceModule) {
+			if (prevSelectedReferenceModule !== popupReferenceModule) {
 				closestTD.find('.clearReferenceSelection').trigger('click');
 			}
 		});
@@ -957,67 +957,78 @@ Vtiger.Class('Vtiger_Index_Js', {
 	/*
 	 * Function to get reference select popup parameters
 	 */
-	getPopUpParams : function(container) {
-		var params = {};
-		var sourceModule = app.getModuleName();
-		var editTaskContainer = jQuery('[name="editTask"]');
-		if(editTaskContainer.length > 0){
+	getPopUpParams: function (container) {
+		let params = {},
+			sourceModule = app.getModuleName(),
+			editTaskContainer = jQuery('[name="editTask"]');
+
+		if (editTaskContainer.length > 0) {
 			sourceModule = editTaskContainer.find('#sourceModule').val();
 		}
-		var quickCreateConatiner = jQuery('[name="QuickCreate"]');
-		if(quickCreateConatiner.length!=0){
-			sourceModule = quickCreateConatiner.find('input[name="module"]').val();
+
+		let quickCreateContainer = jQuery('[name="QuickCreate"]');
+
+		if (quickCreateContainer.length) {
+			sourceModule = quickCreateContainer.find('input[name="module"]').val();
 		}
-		var searchResultContainer = jQuery('#searchResults-container');
-		if(searchResultContainer.length) {
+
+		let searchResultContainer = jQuery('#searchResults-container');
+
+		if (searchResultContainer.length) {
 			sourceModule = jQuery('select#searchModuleList').val();
 		}
-		var popupReferenceModuleElement = jQuery('input[name="popupReferenceModule"]',container).length ?
-			jQuery('input[name="popupReferenceModule"]',container) : jQuery('input.popupReferenceModule',container);
-		var popupReferenceModule = popupReferenceModuleElement.val();
-		var sourceFieldElement = jQuery('input[class="sourceField"]',container);
-		if(!sourceFieldElement.length) {
-			sourceFieldElement = jQuery('input.sourceField',container);
+
+		let popupReferenceModuleElement = jQuery('input[name="popupReferenceModule"]', container).length ? jQuery('input[name="popupReferenceModule"]', container) : jQuery('input.popupReferenceModule', container),
+			popupReferenceModule = popupReferenceModuleElement.val(),
+			sourceFieldElement = jQuery('input[class="sourceField"]', container);
+
+		if (!sourceFieldElement.length) {
+			sourceFieldElement = jQuery('input.sourceField', container);
 		}
-		var sourceField = sourceFieldElement.attr('name');
-		var sourceRecordElement = jQuery('input[name="record"]');
-		var sourceRecordId = '';
-		var recordId = app.getRecordId();
-		if(sourceRecordElement.length > 0) {
+
+		let sourceField = sourceFieldElement.attr('name'),
+			sourceRecordElement = jQuery('input[name="record"]'),
+			sourceRecordId = '',
+			recordId = app.getRecordId();
+
+		if (sourceRecordElement.length > 0) {
 			sourceRecordId = sourceRecordElement.val();
-		} else if(recordId) {
+		} else if (recordId) {
 			sourceRecordId = recordId;
-		} else if(app.view() == 'List') {
-			var editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
-			if(editRecordId) {
+		} else if (app.view() === 'List') {
+			let editRecordId = jQuery('#listview-table').find('tr.listViewEntries.edited').data('id');
+
+			if (editRecordId) {
 				sourceRecordId = editRecordId;
 			}
 		}
 
-		if(searchResultContainer.length) {
+		if (searchResultContainer.length) {
 			sourceRecordId = searchResultContainer.find('tr.listViewEntries.edited').data('id')
 		}
 
-		var isMultiple = false;
-		if(sourceFieldElement.data('multiple') == true) {
+		let isMultiple = false;
+
+		if (sourceFieldElement.data('multiple')) {
 			isMultiple = true;
 		}
 
 		// TODO : Need to recheck. We don't have reference field module name if that module is disabled
-		if(typeof popupReferenceModule == "undefined"){
+		if (typeof popupReferenceModule == "undefined") {
 			popupReferenceModule = "undefined";
 		}
 
-		var params = {
-			'module' : popupReferenceModule,
-			'src_module' : sourceModule,
-			'src_field' : sourceField,
-			'src_record' : sourceRecordId
+		params = {
+			'module': popupReferenceModule,
+			'src_module': sourceModule,
+			'src_field': sourceField,
+			'src_record': sourceRecordId
 		}
 
-		if(isMultiple) {
-			params.multi_select = true ;
+		if (isMultiple) {
+			params.multi_select = true;
 		}
+
 		return params;
 	},
 
@@ -1156,14 +1167,21 @@ Vtiger.Class('Vtiger_Index_Js', {
 	/*
 	 * Function to get Field parent element
 	 */
-	getParentElement : function(element) {
-		var parent = element.closest('td');
-		// added to support from all views which may not be table format
-		if(parent.length === 0) {
-			parent = element.closest('.td').length ?
-				element.closest('.td') : element.closest('.fieldValue');
+	getParentElement: function (element) {
+		let parent = element.closest('td'),
+			parentTd = element.closest('.td'),
+			parentValue = element.closest('.fieldValue'),
+			parentLabel = element.closest('.fieldLabel');
+
+		if (parent.length) {
+			return parent;
 		}
-		return parent;
+
+		if (parentTd.length) {
+			return parentTd;
+		}
+
+		return parentValue.length ? parentValue : parentLabel;
 	},
 
 	getUserNameForId : function(id) {

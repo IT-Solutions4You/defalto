@@ -20,6 +20,21 @@ class RemoveSharing extends VTTask
         return ['memberViewList', 'memberEditList'];
     }
 
+    public function getSharingRecord(): Vtiger_SharingRecord_Model
+    {
+        return new Vtiger_SharingRecord_Model();
+    }
+
+    public function isSelectedList($id): bool
+    {
+        return in_array($id, (array)$this->memberViewList);
+    }
+
+    public function isSelectedEdit($id): bool
+    {
+        return in_array($id, (array)$this->memberEditList);
+    }
+
     public function doTask($entity)
     {
         $entityId = $entity->getId();
@@ -49,7 +64,7 @@ class RemoveSharing extends VTTask
             }
         }
 
-        $recordModel = new Vtiger_SharingRecord_Model();
+        $recordModel = $this->getSharingRecord();
 
         if ($recordModel) {
             $recordModel->set('record', $recordId);

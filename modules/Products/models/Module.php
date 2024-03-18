@@ -76,14 +76,6 @@ class Products_Module_Model extends Vtiger_Module_Model {
 	}
 	
 	/**
-	 * Function to check whether the module is summary view supported
-	 * @return <Boolean> - true/false
-	 */
-	public function isSummaryViewSupported() {
-		return false;
-	}
-	
-	/**
 	 * Function searches the records in the module, if parentId & parentModule
 	 * is given then searches only those records related to them.
 	 * @param <String> $searchValue - Search value

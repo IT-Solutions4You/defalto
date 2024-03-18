@@ -1368,19 +1368,19 @@ Vtiger.Class("Vtiger_List_Js", {
 		});
 	},
 
-    registerAutoIncludeFieldsInMassEdit: function () {
+	registerAutoIncludeFieldsInMassEdit: function () {
+		let form = $('#massEdit'),
+			formInputFields = form.find(':input').not('[id^=include_in_mass_edit_]'),
+			autoIncludeFieldsInMassEditCallback = function () {
+				let fieldName = $(this).attr('name');
+				fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
 
-    	var autoIncludeFieldsInMassEditCallback = function() {
-			var fieldName = $(this).attr('name');
-			fieldName = fieldName.replace(/\[\]$/, ''); //remove trailing [] for cases like multiselect
+				form.find("input[id=include_in_mass_edit_" + fieldName + "]").prop("checked", true);
+			};
 
-			$(this).closest('tr').find("input[id=include_in_mass_edit_" + fieldName + "]").prop( "checked", true );
-		};
-
-		var formInputFields = jQuery('#massEdit :input').not('[id^=include_in_mass_edit_]');
 		formInputFields.on(Vtiger_Edit_Js.referenceSelectionEvent, autoIncludeFieldsInMassEditCallback);
 		formInputFields.change(autoIncludeFieldsInMassEditCallback);
-    },
+	},
 
 	saveMassEdit: function (event) {
 		event.preventDefault();
@@ -1913,8 +1913,6 @@ Vtiger.Class("Vtiger_List_Js", {
 		let thisInstance = this;
 
 		$('#page').on('click', '.deleteRecordButton', function (e) {
-			console.log('registerDeleteRecordClickEvent', 'click');
-
 			let elem = jQuery(e.currentTarget),
 				parent = elem,
 				params = {},

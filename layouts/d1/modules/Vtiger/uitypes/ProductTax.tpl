@@ -15,9 +15,10 @@
         {/if}
         {assign var=TAX_CHECK_NAME value=$tax.check_name}
         {assign var=TAX_TAX_NAME value=$tax.taxname}
+        {assign var=IS_DETAIL_VIEW value=in_array($REQUEST_INSTANCE->get('view'), ['Edit'])}
         <div class="py-2 col-lg-6">
             <div class="row">
-                <div class="col-sm-4 fieldLabel">
+                <div class="fieldLabel text-secondary pb-2 {if $IS_DETAIL_VIEW}col-sm-4{else}col-sm-12{/if}">
                     <div class="d-flex">
                         <div class="taxLabel alignBottom">
                             <label>
@@ -28,7 +29,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-8 fieldValue">
+                <div class="fieldValue {if $IS_DETAIL_VIEW}col-sm-8{else}col-sm-12{/if}">
                     <div class="Vtiger_ProductTax_UIType">
                         {if $tax.type eq 'Fixed'}
                             <input type="text" id="{$TAX_TAX_NAME}" class="form-control inputElement {if $show_value eq "hidden"}hide{else}show{/if}" name="{$TAX_TAX_NAME}" value="{$tax.percentage}" data-rule-required="true" data-rule-inventory_percentage="true"/>

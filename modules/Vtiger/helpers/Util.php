@@ -1285,12 +1285,12 @@ class Vtiger_Util_Helper {
     {
         $todayLabel = vtranslate('LBL_TODAY');
         $todayDate = date('Y-m-d');
-        $startDatetime = DateTimeField::convertToUserTimeZone($startDatetime);
+        $startDatetime = new DateTime($startDatetime);
         $startDatetime = $startDatetime->format('Y-m-d H:i');
         [$startDate, $startTime] = explode(' ', $startDatetime);
         $startDateIsToday = $startDate === $todayDate;
 
-        $endDatetime = DateTimeField::convertToUserTimeZone($endDatetime);
+        $endDatetime = new DateTime($endDatetime);
 
         if ($isAllDay) {
             $endDatetime->modify('-1 days');

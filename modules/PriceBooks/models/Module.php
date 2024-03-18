@@ -87,14 +87,6 @@ class PriceBooks_Module_Model extends Vtiger_Module_Model {
 	}
 	
 	/**
-	 * Function to check whether the module is summary view supported
-	 * @return <Boolean> - true/false
-	 */
-	public function isSummaryViewSupported() {
-		return false;
-	}
-	
-	/**
 	 * Funtion that returns fields that will be showed in the record selection popup
 	 * @return <Array of fields>
 	 */

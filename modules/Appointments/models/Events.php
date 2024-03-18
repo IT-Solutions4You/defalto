@@ -10,6 +10,7 @@
  */
 class Appointments_Events_Model extends Vtiger_Base_Model
 {
+    public static string $initialView = '';
     /**
      * @var array
      */
@@ -262,12 +263,17 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         }
 
         $hour = implode(':', $hour);
+        $start_hour = $currentUser->get('start_hour');
 
         return sprintf(
-            '.fc .fc-timegrid-slot[data-time="%s"] { border-top: 2px solid #5e81f4 !important; }' . "\n\r" .
-            '.fc .fc-scrollgrid-shrink[data-time*="%s"] { color: #5e81f4; font-weight: 900; }' . "\n\r",
+            '.fc .fc-timegrid-slot[data-time*="%s"] { border-top: 2px solid #5e81f4 !important; } ' .
+            '.fc .fc-scrollgrid-shrink[data-time*="%s"] { color: #5e81f4; font-weight: 900; } ' .
+            '.fc .fc-timegrid-slot[data-time*="%s"] { border-top: 2px solid #000 !important; } ' .
+            '.fc .fc-scrollgrid-shrink[data-time*="%s"] { font-weight: 900; } ',
             $hour,
-            $hour
+            $hour,
+            $start_hour,
+            $start_hour
         );
     }
 
@@ -422,6 +428,10 @@ class Appointments_Events_Model extends Vtiger_Base_Model
      */
     public static function getInitialView(string $value): string
     {
+        if (!empty(self::$initialView)) {
+            $value = self::$initialView;
+        }
+
         $views = [
             'Today' => 'timeGridDay',
             'This Week' => 'timeGridWeek',
@@ -987,5 +997,14 @@ class Appointments_Events_Model extends Vtiger_Base_Model
         );
 
         $this->set('id', $this->adb->query_result($result, 0, 'id'));
+    }
+
+    public static function getScrollHour()
+    {
+        $date = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i:s', strtotime('-2 hours')));
+
+        $hour = str_pad((int)$date->format('H'), 2, '0', STR_PAD_LEFT);
+
+        return $hour . ':00:00';
     }
 }

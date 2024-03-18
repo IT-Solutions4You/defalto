@@ -2121,6 +2121,10 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 		return element;
 	},
 	getPopover: function (popoverTrigger, params = {}) {
+		if (!popoverTrigger.length) {
+			return;
+		}
+
 		let self = this,
 			popOverTemplate = self.getLineItemPopOverTemplate(),
 			popoverParams = jQuery.extend({
@@ -2131,8 +2135,9 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 				'trigger': 'manual',
 				'container': popoverTrigger.parent(),
 				'template': popOverTemplate[0].outerHTML,
-			}, params),
-			popover = new bootstrap.Popover(popoverTrigger, popoverParams);
+			}, params);
+
+		let popover = new bootstrap.Popover(popoverTrigger, popoverParams);
 
 		popover.show();
 

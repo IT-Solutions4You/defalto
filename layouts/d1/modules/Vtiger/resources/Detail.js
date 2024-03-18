@@ -1642,12 +1642,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				recordElement = form.find('[name=record]'),
 				moduleElement = form.find('[name=module]'),
 				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
-				widgetHeaderContainer = summaryWidgetContainer.find('.widget_header'),
-				referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val(),
+				referenceModuleName = summaryWidgetContainer.find('[name="relatedModule"]').val(),
+				referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
 				recordId = recordElement.length ? recordElement.val() : self.getRecordId(),
 				module = moduleElement.length ? moduleElement.val() : self.getModuleName(),
 				quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
-				fieldName = self.referenceFieldNames[module],
+				fieldName = referenceFieldName ?? self.referenceFieldNames[module],
 				customParams = {};
 
 			customParams[fieldName] = recordId;

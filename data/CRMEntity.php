@@ -2806,52 +2806,52 @@ class CRMEntity {
 		return false;
 	}
 
-	/**
-	 *
-	 * @param String $module - module name for which query needs to be generated.
-	 * @param Users $user - user for which query needs to be generated.
-	 * @return String Access control Query for the user.
-	 */
-	function getNonAdminAccessControlQuery($module, $user, $scope = '') {
+    /**
+     *
+     * @param String $module - module name for which query needs to be generated.
+     * @param Users $user - user for which query needs to be generated.
+     * @return String Access control Query for the user.
+     * @throws Exception
+     */
+    public function getNonAdminAccessControlQuery($module, $user, $scope = '')
+    {
         $is_admin = null;
         $profileGlobalPermission = [];
         $defaultOrgSharingPermission = [];
         $current_user_groups = null;
         $current_user_parent_role_seq = null;
-		require('user_privileges/user_privileges_' . $user->id . '.php');
-		require('user_privileges/sharing_privileges_' . $user->id . '.php');
-		$query = ' ';
-		$tabId = getTabid($module);
+        require('user_privileges/user_privileges_' . $user->id . '.php');
+        require('user_privileges/sharing_privileges_' . $user->id . '.php');
+        $query = ' ';
+        $tabId = getTabid($module);
 
-		if ($is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2]
-				== 1 && $defaultOrgSharingPermission[$tabId] == 3) {
-
+        if ($is_admin == false && $profileGlobalPermission[1] == 1 && $profileGlobalPermission[2] == 1 && $defaultOrgSharingPermission[$tabId] == 3) {
             $query .= $this->getSharingAccessControlQuery($user, $scope, $current_user_groups);
-			$tableName = 'vt_tmp_u' . $user->id;
-			$sharingRuleInfoVariable = $module . '_share_read_permission';
-			$sharingRuleInfo = $$sharingRuleInfoVariable;
-			$sharedTabId = null;
+            $tableName = 'vt_tmp_u' . $user->id;
+            $sharingRuleInfoVariable = $module . '_share_read_permission';
+            $sharingRuleInfo = $$sharingRuleInfoVariable;
+            $sharedTabId = null;
 
-            if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 ||
-					php7_count($sharingRuleInfo['GROUP']) > 0)) {
-				$tableName = $tableName . '_t' . $tabId;
-				$sharedTabId = $tabId;
-			} elseif (!empty($scope)) {
-				$tableName .= '_t' . $tabId;
-			}
+            if (!empty($sharingRuleInfo) && (php7_count($sharingRuleInfo['ROLE']) > 0 || php7_count($sharingRuleInfo['GROUP']) > 0)) {
+                $tableName = $tableName . '_t' . $tabId;
+                $sharedTabId = $tabId;
+            } elseif (!empty($scope)) {
+                $tableName .= '_t' . $tabId;
+            }
 
-			$this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
-			// for secondary module we should join the records even if record is not there(primary module without related record)
-				if($scope == ''){
-					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
-				}else{
-					$query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = " .
-							"vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL OR its4you_sharing.crmid = vtiger_crmentity$scope.crmid";
-				}
-			}
-		return $query;
-	}
+            $this->setupTemporaryTable($tableName, $sharedTabId, $user, $current_user_parent_role_seq, $current_user_groups);
+            // for secondary module we should join the records even if record is not there(primary module without related record)
+            if ($scope == '') {
+                $query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = vtiger_crmentity$scope.smownerid ";
+            } else {
+                $query .= " INNER JOIN $tableName $tableName$scope ON $tableName$scope.id = vtiger_crmentity$scope.smownerid OR vtiger_crmentity$scope.smownerid IS NULL ";
+            }
+
+            $query .= " OR (its4you_sharing.crmid = vtiger_crmentity$scope.crmid AND vtiger_crmentity$scope.isshared = 1 AND its4you_sharing.crmid > 0) ";
+        }
+
+        return $query;
+    }
 
     /**
      * @param        $user

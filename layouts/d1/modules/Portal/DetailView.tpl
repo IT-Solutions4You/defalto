@@ -10,13 +10,11 @@
 {strip}
 	<div class="listViewPageDiv">
 		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-7">
-				</div>
-				<div class="col-lg-2 text-end">
+			<div class="row align-items-center">
+				<div class="col-lg-8 pb-3 text-end">
 					<label>{vtranslate('LBL_BOOKMARKS_LIST', $MODULE)}</label>
 				</div>
-				<div class="col-lg-3 mb-3">
+				<div class="col-lg-4 pb-3">
 					<select class="inputElement select2" id="bookmarksDropdown" name="bookmarksList">
 						{foreach item=RECORD from=$RECORDS_LIST}
 							<option value="{$RECORD['id']}" {if $RECORD['id'] eq $RECORD_ID}selected{/if}>{$RECORD['portalname']}</option>
@@ -26,21 +24,19 @@
 			</div>
 
 			<div class="row">
-				<span class="listViewLoadingImageBlock hide modal noprint" id="loadingListViewModal">
+				<div class="listViewLoadingImageBlock hide modal noprint" id="loadingListViewModal">
 					<img class="listViewLoadingImage" src="{vimage_path('loading.gif')}" alt="no-image" title="{vtranslate('LBL_LOADING', $MODULE)}"/>
 					<p class="listViewLoadingMsg">{vtranslate('LBL_LOADING_LISTVIEW_CONTENTS', $MODULE)}........</p>
-				</span>
-				<br>
+				</div>
 				{if substr($URL, 0, 8) neq 'https://'}
 					<div id="portalDetailViewHttpError" class="">
-						<div class="col-lg-12">{vtranslate('HTTP_ERROR', $MODULE)}</div>
+						<div class="col-lg-12 pb-3">{vtranslate('HTTP_ERROR', $MODULE)}</div>
 					</div>
 				{/if}
-				<br>
 			</div>
 			<div class="row">
 				<div class="col-lg-12">
-					<iframe src="{if substr($URL, 0, 4) neq 'http'}//{/if}{$URL}" frameborder="1" height="600" scrolling="auto" width="100%" style="border: solid 2px; border-color: #dddddd;"></iframe>
+					<iframe src="{if substr($URL, 0, 4) neq 'http'}//{/if}{$URL}" class="border rounded w-100" style="height: 70vh" sandbox=""></iframe>
 				</div>
 			</div>
 		</div>

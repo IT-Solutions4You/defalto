@@ -433,20 +433,21 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 			form.find('#requstedUnitPrice').attr('name', baseCurrencyName).val(unitPriceValue);
 		}
 	},
-	registerTaxEvents : function(container) {
-		container.on('change','.taxes', function(e){
-			var element = jQuery(e.currentTarget);
-			var taxIdSelector = element.data('taxName');
-			if(element.is(":checked")) {
-				jQuery('#'+taxIdSelector).removeClass('hide').addClass('show');
-			}else{
-				jQuery('#'+taxIdSelector).removeClass('show').addClass('hide');
+	registerTaxEvents: function (container) {
+		container.on('change', '.taxes', function (e) {
+			let element = jQuery(e.currentTarget),
+				taxIdSelector = element.data('taxName');
+
+			if (element.is(":checked")) {
+				container.find('#' + taxIdSelector).removeClass('hide').addClass('show');
+			} else {
+				container.find('#' + taxIdSelector).removeClass('show').addClass('hide');
 			}
 		});
 	},
-        registerImageChangeEvent : function() {
-            
-        },
+	registerImageChangeEvent: function () {
+
+	},
 	registerBasicEvents : function(container) {
             this._super(container);
             this.registerTaxEvents(container);
