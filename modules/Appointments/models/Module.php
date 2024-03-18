@@ -237,6 +237,8 @@ class Appointments_Module_Model extends Vtiger_Module_Model
 
         $listModel->set('module', $this);
         $listModel->set('listview_controller', $controller);
+        $listModel->set('orderby', 'datetime_start');
+        $listModel->set('sortorder', 'ASC');
 
         $pagingModel = new Vtiger_Paging_Model();
         $pagingModel->set('limit', 1);
