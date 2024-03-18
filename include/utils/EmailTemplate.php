@@ -128,11 +128,7 @@ class EmailTemplate {
 				$sql = 'SELECT '.$tableList[0].'.'.$moduleTableIndexList[$tableList[0]].' AS vt_recordid, ' . implode(', ', $columnListTable) . ' FROM ' . $tableList[0];
 				foreach ($tableList as $index => $tableName) {
 					if ($tableName != $tableList[0]) {
-						if($tableName == 'vtiger_seactivityrel' || $tableName == 'vtiger_cntactivityrel') {
-							$sql .= ' LEFT JOIN ';
-						} else {
-							$sql .= ' INNER JOIN ';
-						}
+                        $sql .= ' INNER JOIN ';
 						$sql .= $tableName . ' ON ' . $tableList[0] . '.' .
 								$moduleTableIndexList[$tableList[0]] . '=' . $tableName . '.' .
 								$moduleTableIndexList[$tableName];

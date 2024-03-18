@@ -1003,20 +1003,14 @@ class Vtiger_Functions {
 			//Campaign Related Fields
 			"vtiger_campaign:product_id" => "V",
 			//Related List Entries(For Report Module)
-			"vtiger_activityproductrel:activityid" => "V",
-			"vtiger_activityproductrel:productid" => "V",
 			"vtiger_campaigncontrel:campaignid" => "V",
 			"vtiger_campaigncontrel:contactid" => "V",
 			"vtiger_campaignleadrel:campaignid" => "V",
 			"vtiger_campaignleadrel:leadid" => "V",
-			"vtiger_cntactivityrel:contactid" => "V",
-			"vtiger_cntactivityrel:activityid" => "V",
 			"vtiger_contpotentialrel:contactid" => "V",
 			"vtiger_contpotentialrel:potentialid" => "V",
 			"vtiger_pricebookproductrel:pricebookid" => "V",
 			"vtiger_pricebookproductrel:productid" => "V",
-			"vtiger_seactivityrel:crmid" => "V",
-			"vtiger_seactivityrel:activityid" => "V",
 			"vtiger_senotesrel:crmid" => "V",
 			"vtiger_senotesrel:notesid" => "V",
 			"vtiger_seproductsrel:crmid" => "V",
@@ -1045,14 +1039,6 @@ class Vtiger_Functions {
 			$fldVal [] = $row[$tablename];
 		}
 		return $fldVal;
-	}
-
-	static function getActivityType($id) {
-		global $adb;
-		$query = "select activitytype from vtiger_activity where activityid=?";
-		$res = $adb->pquery($query, array($id));
-		$activity_type = $adb->query_result($res, 0, "activitytype");
-		return $activity_type;
 	}
 
 	static function getInvoiceStatus($id) {
@@ -1388,17 +1374,6 @@ class Vtiger_Functions {
 		}
 
 		return $mandatoryReferenceFields;
-	}
-
-	static function setEventsContactIdToRequest($recordId) {
-		$db = PearDatabase::getInstance();
-		$contactIds = array();
-		$result = $db->pquery("SELECT contactid FROM vtiger_cntactivityrel WHERE activityid = ?", array($recordId));
-		$count = $db->num_rows($result);
-		for ($i = 0; $i < $count; $i++) {
-			$contactIds[] = $db->query_result($result, $i, 'contactid');
-		}
-		$_REQUEST['contactidlist'] = implode(';', $contactIds);
 	}
 
 	 static function getNonQuickCreateSupportedModules() {

@@ -34,16 +34,6 @@ class PDFMaker_PDFMaker_Model extends Vtiger_Module_Model
         $_SESSION['KCFINDER']['uploadDir'] = __DIR__ . '/../../../test/upload';
     }
 
-    public function GetPageFormats()
-    {
-        return $this->pageFormats;
-    }
-
-    public function GetBasicModules()
-    {
-        return $this->basicModules;
-    }
-
     //ListView data
     public function GetListviewData()
     {

@@ -180,14 +180,6 @@ function expandRecord($table,$log)
 	elseif( $table == "vtiger_invoice")
 	$subfields = array("invoiceid", "subject", "salesorderid","customerno","contactid", "notes", "invoicedate", "duedate", "invoiceterms", "type", "adjustment","salescommission","exciseduty", "subtotal","total", "taxtype","discount_percent", "discount_amount", "s_h_amount","shipping", "accountid", "terms_conditions","purchaseorder","invoicestatus","invoice_no");
 
-	//vtiger_seactivityrel
-	elseif( $table == "vtiger_seactivityrel")
-	$subfields = array("crmid", "activityid");
-
-	//vtiger_cntactivityrel
-	elseif( $table == "vtiger_cntactivityrel")
-	$subfields = array("contactid", "activityid");
-
 	//vtiger_purchaseorder
 	elseif( $table == "vtiger_purchaseorder")
 	$subfields = array("purchaseorderid", "subject", "quoteid", "vendorid", "requisition_no", "tracking_no", "contactid", "duedate", "carrier", "type", "adjustment", "salescommission", "exciseduty", "total", "subtotal", "taxtype", "discount_percent","discount_amount", "s_h_amount", "terms_conditions", "postatus");

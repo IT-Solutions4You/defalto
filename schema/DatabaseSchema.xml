@@ -874,74 +874,6 @@
 		<query>ALTER TABLE vtiger_potentialscf ADD CONSTRAINT fk_1_vtiger_potentialscf FOREIGN KEY (potentialid) REFERENCES vtiger_potential(potentialid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_activity">
-		<field name="activityid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="subject" type="C" size="100">
-			<notnull />
-		</field>
-		<field name="semodule" type="C" size="20" />
-		<field name="activitytype" type="C" size="200">
-			<notnull />
-		</field>
-
-		<field name="date_start" type="D">
-			<notnull />
-		</field>
-		<field name="due_date" type="D" />
-		<field name="time_start" type="C" size="50" />
-		<field name="time_end" type="C" size="50" />
-		<field name="sendnotification" type="C" size="3">
-			<notnull />
-			<default value="0"/>
-		</field>
-		<field name="duration_hours" type="C" size="200" />
-		<field name="duration_minutes" type="C" size="200" />
-		<field name="status" type="C" size="200" />
-		<field name="eventstatus" type="C" size="200" />
-		<field name="priority" type="C" size="200" />
-		<field name="location" type="C" size="150" />
-		<field name="notime" type="C" size="3">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="visibility" type="C" size="50">
-			<notnull />
-			<default value="all" />
-		</field>
-		<field name="recurringtype" type="C" size="200" />
-
-		<index name="activity_activityid_subject_idx">
-			<col>activityid</col>
-			<col>subject</col>
-		</index>
-		<index name="activity_activitytype_date_start_idx">
-			<col>activitytype</col>
-			<col>date_start</col>
-		</index>
-		<index name="activity_date_start_due_date_idx">
-			<col>date_start</col>
-			<col>due_date</col>
-		</index>
-		<index name="activity_date_start_time_start_idx">
-			<col>date_start</col>
-			<col>time_start</col>
-		</index>
-		<index name="activity_eventstatus_idx">
-			<col>eventstatus</col>
-		</index>
-		<index name="activity_status_idx">
-			<col>status</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_activity ADD CONSTRAINT fk_1_vtiger_activity FOREIGN KEY (activityid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_attachments">
 		<field name="attachmentsid" type="I" size="19">
 			<key />
@@ -1407,31 +1339,6 @@
 		<query>ALTER TABLE vtiger_contpotentialrel ADD CONSTRAINT fk_2_vtiger_contpotentialrel FOREIGN KEY (potentialid) REFERENCES vtiger_potential(potentialid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_cntactivityrel">
-		<field name="contactid" type="I" size="19">
-			<key />
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="activityid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="cntactivityrel_contactid_idx">
-			<col>contactid</col>
-		</index>
-		<index name="cntactivityrel_activityid_idx">
-			<col>activityid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_cntactivityrel ADD CONSTRAINT fk_1_vtiger_cntactivityrel FOREIGN KEY (activityid) REFERENCES vtiger_activity(activityid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_cntactivityrel ADD CONSTRAINT fk_2_vtiger_cntactivityrel FOREIGN KEY (contactid) REFERENCES vtiger_contactdetails(contactid) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_troubletickets">
 		<field name="ticketid" type="I" size="19">
 			<key />
@@ -1495,30 +1402,6 @@
 		<query>ALTER TABLE vtiger_ticketcomments ADD CONSTRAINT fk_1_vtiger_ticketcomments FOREIGN KEY (ticketid) REFERENCES vtiger_troubletickets(ticketid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_salesmanactivityrel">
-		<field name="smid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="activityid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="salesmanactivityrel_activityid_idx">
-			<col>activityid</col>
-		</index>
-		<index name="salesmanactivityrel_smid_idx">
-			<col>smid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_salesmanactivityrel ADD CONSTRAINT fk_1_vtiger_salesmanactivityrel FOREIGN KEY (activityid) REFERENCES vtiger_activity(activityid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_salesmanactivityrel ADD CONSTRAINT fk_2_vtiger_salesmanactivityrel FOREIGN KEY (smid) REFERENCES vtiger_users(id) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_vendorcontactrel">
 		<field name="vendorid" type="I" size="19">
 			<key />
@@ -1565,28 +1448,6 @@
 	<sql>
 		<query>ALTER TABLE vtiger_salesmanticketrel ADD CONSTRAINT fk_1_vtiger_salesmanticketrel FOREIGN KEY (id) REFERENCES vtiger_troubletickets(ticketid) ON DELETE CASCADE</query>
 		<query>ALTER TABLE vtiger_salesmanticketrel ADD CONSTRAINT fk_2_vtiger_salesmanticketrel FOREIGN KEY (smid) REFERENCES vtiger_users(id) ON DELETE CASCADE</query>
-	</sql>
-
-	<table name="vtiger_seactivityrel">
-		<field name="crmid" type="I" size="19">
-			<key />
-		</field>
-		<field name="activityid" type="I" size="19">
-			<key />
-		</field>
-
-		<index name="seactivityrel_activityid_idx">
-			<col>activityid</col>
-		</index>
-		<index name="seactivityrel_crmid_idx">
-			<col>crmid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_seactivityrel ADD CONSTRAINT fk_1_vtiger_seactivityrel FOREIGN KEY (activityid) REFERENCES vtiger_activity(activityid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_seactivityrel ADD CONSTRAINT fk_2_vtiger_seactivityrel FOREIGN KEY (crmid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
 	</sql>
 
 	<table name="vtiger_seproductsrel">
@@ -2770,30 +2631,6 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
-	<table name="vtiger_activityproductrel">
-		<field name="activityid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-		<field name="productid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
-		<index name="activityproductrel_activityid_idx">
-			<col>activityid</col>
-		</index>
-		<index name="activityproductrel_productid_idx">
-			<col>productid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_activityproductrel ADD CONSTRAINT fk_1_vtiger_activityproductrel FOREIGN KEY (activityid) REFERENCES vtiger_activity(activityid) ON DELETE CASCADE</query>
-		<query>ALTER TABLE vtiger_activityproductrel ADD CONSTRAINT fk_2_vtiger_activityproductrel FOREIGN KEY (productid) REFERENCES vtiger_products(productid) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_relatedlists">
 		<field name="relation_id" type="I" size="19">
 			<key />
@@ -3265,25 +3102,6 @@
 	<sql>
 		<query>ALTER TABLE vtiger_invoicecf ADD CONSTRAINT fk_1_vtiger_invoicecf FOREIGN KEY (invoiceid) REFERENCES vtiger_invoice(invoiceid) ON DELETE CASCADE</query>
 	</sql>
-
-
-	<table name="vtiger_activity_reminder">
-		<field name="activity_id" type="I" size="11">
-			<key />
-			<notnull />
-		</field>
-		<field name="reminder_time" type="I" size="11">
-			<notnull />
-		</field>
-		<field name="reminder_sent" type="I" size="2">
-			<notnull />
-		</field>
-		<field name="recurringid" type="I" size="19">
-			<key />
-			<notnull />
-		</field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
 
 	<table name="vtiger_customview">
 		<field name="cvid" type="I" size="19">
@@ -3909,26 +3727,6 @@
 		</index>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
-
-	<table name="vtiger_recurringevents">
-		<field name="recurringid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="activityid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="recurringdate" type="D" />
-		<field name="recurringtype" type="C" size="30" />
-		<field name="recurringfreq" type="I" size="19" />
-		<field name="recurringinfo" type="C" size="50" />
-
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_recurringevents ADD CONSTRAINT fk_1_vtiger_recurringevents FOREIGN KEY (activityid) REFERENCES vtiger_activity(activityid) ON DELETE CASCADE</query>
-	</sql>
 
 	<table name="vtiger_inventorynotification">
 		<field name="notificationid" type="I" size="19">
@@ -5173,29 +4971,6 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
-	<table name="vtiger_activity_reminder_popup">
-		<field name="reminderid" type="I" size="19" >
-			<key/>
-			<autoincrement />
-		</field>
-		<field name="semodule" type="C" size="100" >
-			<notnull />
-		</field>
-		<field name="recordid" type="I" size="19" >
-			<notnull />
-		</field>
-		<field name="date_start" type="D" >
-			<notnull />
-		</field>
-		<field name="time_start" type="C" size="100" >
-			<notnull />
-		</field>
-		<field name="status" type="I" size="2" >
-			<notnull />
-		</field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_reminder_interval">
 		<field name="reminder_intervalid" type="I" size="19" >
 			<key/>
@@ -6178,15 +5953,6 @@
 		<field name="quantity" type="I" size="19">
 			<default value="1" />
 		</field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<table name="vtiger_activitycf">
-		<field name="activityid" type="I" size="19">
-			<key />
-			<default value="0" />
-		</field>
-
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 

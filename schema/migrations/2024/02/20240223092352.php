@@ -106,6 +106,23 @@ if (!class_exists('Migration_20240223092352')) {
             require_once('vtlib/Vtiger/Deprecated.php');
             Vtiger_Deprecated::createModuleMetaFile();
             Vtiger_Deprecated::createModuleGroupMetaFile();
+
+            $tableNames = [
+                'vtiger_cntactivityrel',
+                'vtiger_salesmanactivityrel',
+                'vtiger_seactivityrel',
+                'vtiger_activityproductrel',
+                'vtiger_recurringevents',
+                'vtiger_activity_recurring_info',
+                'vtiger_activity_reminder',
+                'vtiger_activity_reminder_popup',
+                'vtiger_activitycf',
+                'vtiger_activity',
+            ];
+
+            foreach ($tableNames as $tableName) {
+                $this->db->pquery('DROP TABLE IF EXISTS ' . $tableName);
+            }
         }
     }
 } else {

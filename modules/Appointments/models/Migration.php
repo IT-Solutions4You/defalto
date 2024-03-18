@@ -337,6 +337,12 @@ class Appointments_Migration_Model extends Vtiger_Base_Model
      */
     public function retrieveMain()
     {
+        $checkActivityTableRes = $this->db->pquery('SHOW TABLES LIKE "vtiger_activity"');
+
+        if (!$this->db->num_rows($checkActivityTableRes)) {
+            return;
+        }
+
         $mainResult = $this->db->pquery('SELECT * FROM vtiger_activity WHERE activityid=?', [$this->calendarId]);
         $mainData = $this->db->fetchByAssoc($mainResult);
         $this->mainParams = [

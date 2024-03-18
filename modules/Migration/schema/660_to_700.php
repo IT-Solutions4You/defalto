@@ -29,10 +29,6 @@ if(defined('VTIGER_UPGRADE')) {
 		}
 	}
 
-	if (!Vtiger_Utils::CheckTable('vtiger_activity_recurring_info')) {
-		$db->pquery('CREATE TABLE IF NOT EXISTS vtiger_activity_recurring_info(activityid INT(19) NOT NULL, recurrenceid INT(19) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=UTF8;', array());
-	}
-
 	$columns = $db->getColumnNames('vtiger_crmentity');
 	if (!in_array('smgroupid', $columns)) {
 		$db->pquery('ALTER TABLE vtiger_crmentity ADD COLUMN smgroupid INT(19)', array());
@@ -1977,7 +1973,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	$skippedTablesForAll = array('vtiger_crmentity_user_field');
-	$skippedTables = array('Calendar' => array('vtiger_seactivityrel', 'vtiger_cntactivityrel', 'vtiger_salesmanactivityrel'));
 	$allEntityModules = Vtiger_Module_Model::getEntityModules();
 	$dbName = $db->dbName;
 	foreach ($allEntityModules as $tabId => $moduleModel) {
@@ -2002,9 +1997,6 @@ if(defined('VTIGER_UPGRADE')) {
 			unset($relatedTables['vtiger_crmentity']);
 
 			if (is_array($relatedTables)) {
-				if (isset($skippedTables[$moduleName]) && $skippedTables[$moduleName]) {
-					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTables[$moduleName]));
-				}
 				if ($skippedTablesForAll) {
 					$relatedTables = array_diff_key($relatedTables, array_flip($skippedTablesForAll));
 				}

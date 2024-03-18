@@ -26,36 +26,6 @@ $mailpwd = Vtiger_Functions::fromProtectedText($mailrow[2]);
 $smtp_auth = $mailrow[3];
 // End Email Setup
 
-
-//query the vtiger_notificationscheduler vtiger_table and get data for those notifications which are active
-$sql = "select active from vtiger_notificationscheduler where schedulednotificationid=1";
-$result = $adb->pquery($sql, array());
-
-$activevalue = $adb->fetch_array($result);
-
-if($activevalue[0] == 1)
-{
-	//Delayed Tasks Notification
-
-	//get all those activities where the status is not completed even after the passing of 24 hours
-	$today = date("Ymd"); 
-	$result = $adb->pquery("select vtiger_activity.status,vtiger_activity.activityid,subject,(vtiger_activity.date_start +1),vtiger_crmentity.smownerid from vtiger_activity inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_activity.activityid where vtiger_crmentity.deleted=0 and vtiger_activity.status <> 'Completed' and activitytype='Task' and ? > (vtiger_activity.date_start+1)", array($today));
-
-	while ($myrow = $adb->fetch_array($result))
-	{
-		$status=$myrow[0];
-		$subject = (strlen($myrow[2]) > 30)?substr($myrow[2],0,27).'...':$myrow[2];
-		$user_id = $myrow[4];
-		if($user_id != '')
-		{
-			$user_res = $adb->pquery('select user_name from vtiger_users where id=?',array($user_id));
-			$assigned_user = $adb->query_result($user_res,0,'user_name');
-		}
-		$mail_body = getTranslatedString('Dear_Admin_tasks_not_been_completed')." ".getTranslatedString('LBL_SUBJECT').": ".$subject."<br> ".getTranslatedString('LBL_ASSIGNED_TO').": ".$assigned_user."<br><br>".getTranslatedString('Task_sign');
-	 	sendmail($emailaddress,$emailaddress,getTranslatedString('Task_Not_completed').': '.$subject,$mail_body,$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
-	}
-}
-
 //Big Deal Alert
 $sql = "select active from vtiger_notificationscheduler where schedulednotificationid=2";
 $result = $adb->pquery($sql, array());
@@ -134,5 +104,3 @@ if($activevalue[0] == 1)
 		sendmail($emailaddress,$emailaddress,getTranslatedString('Support_Ending_Subject'),getTranslatedString('Support_Ending_Content').$productname.getTranslatedString('kindly_renew'),$mailserver,$mailuname,$mailpwd,"",$smtp_auth);
 	}
 }
-
-?>

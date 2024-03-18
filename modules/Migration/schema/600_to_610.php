@@ -672,22 +672,11 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE f
 
 //79 ends
 
-//80 starts
-//Added recurring enddate column for events,to vtiger_recurringevents table
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_recurringevents ADD COLUMN recurringenddate date', array());
-echo "added field recurring enddate to vtiger_recurringevents to save untill date of repeat events";
-
-//80 ends
-
-//81 starts
-//81 ends
-
 //82 starts
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_mailscanner CHANGE timezone time_zone VARCHAR(10)", array());
 echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
-
 
 //84 starts
 $query = "ALTER table vtiger_relcriteria modify comparator varchar(20)";

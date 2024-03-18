@@ -173,7 +173,7 @@ class MailManager_Draft_Model {
 		$email->column_fields['assigned_user_id'] = $currentUserModel->getId();
 		$email->column_fields['date_start'] = date('Y-m-d');
 		$email->column_fields['time_start'] = date('H:i');
-		$email->column_fields['related_to'] = $parentIds;
+		$email->column_fields['related_to'] = $this->retrieveFirstParent($parentIds);
 		$email->column_fields['subject'] =  (!empty($subject)) ? $subject : "No Subject";
 		$email->column_fields['body'] = $request->get('body');
 		$email->column_fields['from_email'] = $fromEmail;
@@ -189,31 +189,31 @@ class MailManager_Draft_Model {
 			$email->mode = 'edit';
 			$email->save('ITS4YouEmails');
 		}
-		//save parent and email relation, to show up in Emails section of the parent
-		$this->saveEmailParentRel($email->id, $parentIds);
 
 		return $email->id;
 	}
 
-	public function saveEmailParentRel($emailId, $parentIds) {
-		$db = PearDatabase::getInstance();
+    /**
+     * Retrieves the first parent id from a string (2@71|...)
+     *
+     * @param string $parentIds
+     *
+     * @return int|string
+     */
+    public function retrieveFirstParent(string $parentIds): int|string
+    {
+        $myIds = explode("|", $parentIds);
 
-		$myids = explode("|", $parentIds);  //2@71|
-		if(!empty($emailId)) {
-			$db->pquery("delete from vtiger_seactivityrel where activityid=?",array($emailId)); //remove all previous relation
-		}
-		for ($i=0; $i<(php7_count($myids)); $i++) {
-			$realid = explode("@",$myids[$i]);
-			if(!empty($realid[0]) && !empty($emailId)) {
-				// this is needed as we might save the mail in draft mode earlier
-				$result = $db->pquery("SELECT * FROM vtiger_seactivityrel WHERE crmid=? AND activityid=?",array($realid[0], $emailId));
-				if(!$db->num_rows($result)) {
-					$db->pquery('INSERT INTO vtiger_seactivityrel(crmid, activityid) VALUES(?,?)',array($realid[0], $emailId));
-				}
-			}
-		}
-	}
+        if (php7_count($myIds)) {
+            $realId = explode('@', $myIds[0]);
 
+            if (!empty($realId[0]) && !empty($emailId)) {
+                return $realId[0];
+            }
+        }
+
+        return '';
+    }
 
 	public function getFromEmailAddress() {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
@@ -321,4 +321,3 @@ class MailManager_Draft_Model {
 		return $filesize;
 	}
 }
-?>

@@ -1278,11 +1278,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                                         $startDateTime = "DATE_FORMAT('$startDateTime', '%m%d')";
                                         $endDateTime = "DATE_FORMAT('$endDateTime', '%m%d')";
                                     } else {
-                                        if ($selectedFields[0] == 'vtiger_activity' && ($selectedFields[1] == 'date_start')) {
-                                            $tableColumnSql = 'CAST((CONCAT(date_start, " ", time_start)) AS DATETIME)';
-                                        } else {
-                                            $tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
-                                        }
+                                        $tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
                                         $startDateTime = "'$startDateTime'";
                                         $endDateTime = "'$endDateTime'";
                                     }
@@ -1346,12 +1342,8 @@ class EMAILMakerRelBlockRun extends CRMEntity
                                     $module_from_tablename = str_replace("vtiger_users", "", $selectedfields[0]);
                                     $advcolsql[] = " (trim($concatSql)" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype) . " or vtiger_groups" . $module_from_tablename . ".groupname " . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype) . ")";
                                     $this->queryPlanner->addTable("vtiger_groups" . $module_from_tablename);
-                                } elseif ($selectedfields[1] == 'status') {
-                                    if ($selectedfields[2] == 'Calendar_Status') {
-                                        $advcolsql[] = "(case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
-                                    } elseif ($selectedfields[2] == 'HelpDesk_Status') {
-                                        $advcolsql[] = "vtiger_troubletickets.status" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
-                                    }
+                                } elseif ($selectedfields[1] === 'status' && $selectedfields[2] === 'HelpDesk_Status') {
+                                    $advcolsql[] = "vtiger_troubletickets.status" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
                                 } elseif ($selectedfields[1] == 'description') {
                                     if ($selectedfields[0] == 'vtiger_crmentity' . $this->primarymodule) {
                                         $advcolsql[] = "vtiger_crmentity.description" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
@@ -1407,8 +1399,6 @@ class EMAILMakerRelBlockRun extends CRMEntity
                             $this->queryPlanner->addTable($tableName);
                             $fieldvalue = getSqlForNameInDisplayFormat(array('last_name' => "$tableName.last_name", 'first_name' => "$tableName.first_name"), 'Users') .
                                 $this->getAdvComparator($comparator, trim($value), $datatype);
-                        } elseif ($selectedfields[0] == "vtiger_activity" && $selectedfields[1] == 'status') {
-                            $fieldvalue = "(case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, trim($value), $datatype);
                         } elseif ($comparator == 'y' || ($comparator == 'e' && (trim($value) == "NULL" || trim($value) == ''))) {
                             if ($selectedfields[0] == 'vtiger_inventoryproductrel') {
                                 $selectedfields[0] = 'vtiger_inventoryproductrel' . $moduleName;

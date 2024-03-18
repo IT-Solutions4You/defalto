@@ -351,7 +351,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
 
             $fields = explode(':', $standardFilter['columnname']);
 
-            if ($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' || ($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')) {
+            if ($fields[1] === 'createdtime' || $fields[1] === 'modifiedtime') {
                 $tranformedStandardFilter['columnname'] = "$fields[0]:$fields[1]:$fields[3]:$fields[2]:DT";
                 $date[] = $standardFilter['startdate'] . ' 00:00:00';
                 $date[] = $standardFilter['enddate'] . ' 00:00:00';

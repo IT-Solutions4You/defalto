@@ -400,14 +400,6 @@ function isFileAccessible($filepath) {
 	return Vtiger_Deprecated::isFileAccessible($filepath);
 }
 
-/** Function to get the ActivityType for the given entity id
- *  @param entityid : Type Integer
- *  return the activity type for the given id
- */
-function getActivityType($id) {
-	return Vtiger_Functions::getActivityType($id);
-}
-
 /** Function to get owner name either user or group */
 function getOwnerName($id) {
 	return Vtiger_Functions::getOwnerRecordLabel($id);
@@ -492,5 +484,3 @@ function updateRecordLabel($module,$recordId){
 function get_group_options() {
     return Vtiger_Functions::get_group_options();
 }
-
-?>

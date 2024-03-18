@@ -818,7 +818,6 @@ class CRMEntity {
 				'vtiger_campaignrelstatus',
 				'vtiger_attachments',
 				//'vtiger_inventoryproductrel',
-				//'vtiger_cntactivityrel',
 				'vtiger_email_track'
 			);
 		}
@@ -2460,10 +2459,7 @@ class CRMEntity {
 			$instance = self::getInstance($module);
 			$sectableindex = $instance->tab_name_index[$sectablename];
 			$condition = "$table_name.$column_name=$tmpname.$secfieldname";
-			if($pritablename == 'vtiger_seactivityrel') {
-				$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname
-					AND $tmpname.activityid IN (SELECT crmid FROM vtiger_crmentity WHERE setype='$tmpModule' AND deleted = 0))";
-			} else if($pritablename == 'vtiger_senotesrel') {
+			if($pritablename == 'vtiger_senotesrel') {
 					$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname
 					AND $tmpname.notesid IN (SELECT crmid FROM vtiger_crmentity WHERE setype='Documents' AND deleted = 0))";
 			} else if($pritablename == 'vtiger_inventoryproductrel' && ($module =="Products" || $module =="Services") && ($secmodule == "Invoice" || $secmodule == "SalesOrder" || $secmodule == "PurchaseOrder" || $secmodule == "Quotes")) {
@@ -2472,13 +2468,6 @@ class CRMEntity {
 				 */
 				$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname AND $tmpname.id in 
 						(select crmid from vtiger_crmentity where setype='$secmodule' and deleted=0))";
-			} else if($pritablename == 'vtiger_cntactivityrel') {
-				if($queryPlanner->requireTable('vtiger_cntactivityrel') && $secmodule == 'Contacts') {
-					$tmpname = 'vtiger_cntactivityrel';
-					$condition = "$table_name.$column_name=$tmpname.$secfieldname";
-				} else {
-					$query = " left join $pritablename as $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname)";
-				}
 			} else {
 				$query = " LEFT JOIN $pritablename AS $tmpname ON ($sectablename.$sectableindex=$tmpname.$prifieldname)";
 			}

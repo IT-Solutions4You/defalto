@@ -42,7 +42,6 @@ class Install_InitSchema_Model {
 		// ensure required sequences are created (adodb creates them as needed, but if
 		// creation occurs within a transaction we get problems
 		$adb->getUniqueID("vtiger_crmentity");
-		$adb->getUniqueID("vtiger_seactivityrel");
 		$adb->getUniqueID("vtiger_freetags");
 
 		$currencyName = $_SESSION['config_file_info']['currency_name'];

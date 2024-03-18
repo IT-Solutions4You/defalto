@@ -303,13 +303,13 @@ class Vendors extends CRMEntity {
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Products"=>"vtiger_products","PurchaseOrder"=>"vtiger_purchaseorder","Contacts"=>"vtiger_vendorcontactrel");
+        $rel_table_arr = ["Products" => "vtiger_products", "PurchaseOrder" => "vtiger_purchaseorder", "Contacts" => "vtiger_vendorcontactrel"];
 
-		$tbl_field_arr = Array("vtiger_products"=>"productid","vtiger_vendorcontactrel"=>"contactid","vtiger_purchaseorder"=>"purchaseorderid","vtiger_seactivityrel"=>"activityid");
+        $tbl_field_arr = ["vtiger_products" => "productid", "vtiger_vendorcontactrel" => "contactid", "vtiger_purchaseorder" => "purchaseorderid"];
 
-		$entity_tbl_field_arr = Array("vtiger_products"=>"vendor_id","vtiger_vendorcontactrel"=>"vendorid","vtiger_purchaseorder"=>"vendorid","vtiger_seactivityrel"=>"crmid");
+        $entity_tbl_field_arr = ["vtiger_products" => "vendor_id", "vtiger_vendorcontactrel" => "vendorid", "vtiger_purchaseorder" => "vendorid"];
 
-		foreach($transferEntityIds as $transferId) {
+        foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
 				$id_field = $tbl_field_arr[$rel_table];
 				$entity_id_field = $entity_tbl_field_arr[$rel_table];

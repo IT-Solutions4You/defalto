@@ -201,7 +201,7 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 						$email->column_fields['assigned_user_id'] = $currentUserModel->getId();
 						$email->column_fields['date_start'] = date('Y-m-d');
 						$email->column_fields['time_start'] = date('H:i');
-						$email->column_fields['related_to'] = $parentIds;
+						$email->column_fields['related_to'] = explode('@', $parentIds)[0];
 						$email->column_fields['subject'] = $mailer->Subject;
 						$email->column_fields['body'] = $mailer->Body;
 						$email->column_fields['from_email'] = $mailer->From;
@@ -216,18 +216,6 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 							$email->id = $emailId;
 							$email->mode = 'edit';
 							$email->save('ITS4YouEmails');
-						}
-
-						$realid = explode("@", $parentIds);
-						$mycrmid = $realid[0];
-						$params = array($mycrmid, $email->id);
-
-						if ($realid[1] == -1) {
-							$db->pquery('DELETE FROM vtiger_salesmanactivityrel WHERE smid=? AND activityid=?',$params);
-							$db->pquery('INSERT INTO vtiger_salesmanactivityrel VALUES (?,?)', $params);
-						} else {
-							$db->pquery('DELETE FROM vtiger_seactivityrel WHERE crmid=? AND activityid=?', $params);
-							$db->pquery('INSERT INTO vtiger_seactivityrel VALUES (?,?)', $params);
 						}
 					}
 				}
