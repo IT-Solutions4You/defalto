@@ -43,6 +43,9 @@ if (!class_exists('Migration_20240220141404')) {
             // Delete the related lists
             $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE label IN (?, ?)', ['Activities', 'Activity History']);
 
+            // Remove from webservices
+            $this->db->pquery('DELETE FROM vtiger_ws_entity WHERE name IN (?, ?)', ['Calendar', 'Events']);
+
             // Regenerate tabdata.php and parent_tabdata.php
             require_once('vtlib/Vtiger/Deprecated.php');
             Vtiger_Deprecated::createModuleMetaFile();
