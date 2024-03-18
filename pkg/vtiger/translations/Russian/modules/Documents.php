@@ -60,7 +60,6 @@ $languageStrings = array(
     'LBL_DOCUMENT_SOURCE' => 'Источник документа',
     'LBL_FILE_URL' => 'Адрес файла',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Файл как вложение электронной почты',
   'LBL_UPLOAD_TO' => 'Загрузить',
   'LBL_NEW_DOCUMENT' => 'Новый Документ',
   'LBL_VTIGER' => 'Вольная русская',

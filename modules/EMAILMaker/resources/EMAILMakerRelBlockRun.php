@@ -870,14 +870,6 @@ class EMAILMakerRelBlockRun extends CRMEntity
                         }
 
                         $this->queryPlanner->addTable("vtiger_crmentity$module");
-                    } elseif ('vtiger_activity' == $tableName && 'status' == $columnName) {
-                        $columnsList[$fieldColumn] = " case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end as Calendar_Status";
-                    } elseif ('vtiger_activity' === $tableName && 'date_start' === $columnName) {
-                        if ('Emails' === $module) {
-                            $columnsList[$fieldColumn] = "cast(concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start) as DATE) as Emails_Date_Sent";
-                        } else {
-                            $columnsList[$fieldColumn] = "cast(concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start) AS DATETIME) AS Calendar_date_start";
-                        }
                     } elseif (stristr($tableName, 'vtiger_users') && 'user_name' === $columnName) {
                         $temp_module_from_tablename = str_replace('vtiger_users', '', $tableName);
 
@@ -2024,7 +2016,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
             $fieldValue = $date->getDisplayDateTimeValue();
         }
 
-        if ($fieldInfo['uitype'] == '19' && ($module == 'Documents' || $module == 'Emails')) {
+        if ($fieldInfo['uitype'] == '19' && $module === 'Documents') {
             return $fieldValue;
         }
 

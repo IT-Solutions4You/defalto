@@ -1,137 +1,179 @@
-{*<!--/************************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************/-->*}
-
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {strip}
-<div class="editViewContainer">
-	<form action="javascript:void(0);" method="POST" id="EditView">
-		<div class="widget_header row-fluid">
-			<h3>{vtranslate('JSLBL_Settings',$MODULE)}</h3>
-		</div>
-		<hr>
-		<table class="table table-bordered blockContainer showInlineTable">
-			<thead>
-				<tr>
-					<th class="blockHeader" colspan="4">
-						<strong>{vtranslate('LBL_CREATE_MAILBOX', $MODULE)}</strong>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="fieldLabel">
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_SELECT_ACCOUNT_TYPE',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" style="width: 70%;">
-						<select id="_mbox_helper" class="chzn-select small" onchange="MailManager.handle_settings_confighelper(this);">
-							<option value=''>{vtranslate('JSLBL_Choose_Server_Type',$MODULE)}</option>
-							<option value='gmail' {if $SERVERNAME eq 'gmail'} selected {/if}>{vtranslate('JSLBL_Gmail',$MODULE)}</option>
-							<option value='yahoo' {if $SERVERNAME eq 'yahoo'} selected {/if}>{vtranslate('JSLBL_Yahoo',$MODULE)}</option>
-							<option value='fastmail' {if $SERVERNAME eq 'fastmail'} selected {/if}>{vtranslate('JSLBL_Fastmail',$MODULE)}</option>
-							<option value='other' {if $SERVERNAME eq 'other'} selected {/if}>{vtranslate('JSLBL_Other',$MODULE)}</option>
-						</select>
-					</td>
-				</tr>
+    <div class="modal-dialog modal-lg mapcontainer">
+        <form id="EditView" method="POST">
+            <div class="modal-content">
+                {if $MAILBOX->exists()}
+                    {assign var=MODAL_TITLE value=vtranslate('LBL_EDIT_MAILBOX', $MODULE)}
+                {else}
+                    {assign var=MODAL_TITLE value=vtranslate('LBL_CREATE_MAILBOX', $MODULE)}
+                {/if}
+                {include file="ModalHeader.tpl"|vtemplate_path:$SOURCE_MODULE TITLE=$MODAL_TITLE}
+                <div class="modal-body" id="mmSettingEditModal">
+                    <div class="container-fluid">
+                        <div class="row py-2">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_SELECT_ACCOUNT',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <select id="serverType" class="select2 col-lg-9">
+                                    <option></option>
+                                    <option value='gmail' {if $SERVERNAME eq 'gmail'} selected {/if}>{vtranslate('JSLBL_Gmail',$MODULE)}</option>
+                                    <option value='yahoo' {if $SERVERNAME eq 'yahoo'} selected {/if}>{vtranslate('JSLBL_Yahoo',$MODULE)}</option>
+                                    <option value='fastmail' {if $SERVERNAME eq 'fastmail'} selected {/if}>{vtranslate('JSLBL_Fastmail',$MODULE)}</option>
+                                    <option value='other' {if $SERVERNAME eq 'other'} selected {/if}>{vtranslate('JSLBL_Other',$MODULE)}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row py-2 settings_details {if $SERVERNAME eq ''}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_Mail_Server',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_server" id="_mbox_server" class="inputElement form-control" value="{$MAILBOX->server()}" type="text" placeholder="mail.company.com or 192.168.X.X">
+                            </div>
+                        </div>
+                        <div class="row py-2 settings_details {if $SERVERNAME eq ''}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_Username',$MODULE)}</span>
+                                    <span class="text-danger ms-2"></span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_user" class="inputElement form-control" id="_mbox_user" value="{$MAILBOX->username()}" type="text" placeholder="{vtranslate('LBL_Your_Mailbox_Account',$MODULE)}">
+                            </div>
+                        </div>
+                        <div class="row py-2 settings_details {if $SERVERNAME eq ''}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">
+                                    <span>{vtranslate('LBL_Password',$MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <input name="_mbox_pwd" class="inputElement form-control" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
+                            </div>
+                        </div>
+                        <div class="row py-2 additional_settings {if $SERVERNAME neq 'other'}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_Protocol',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <div class="input-group">
+                                    <label class="form-check me-4 w-25">
+                                        <input type="radio" name="_mbox_protocol" class="mbox_protocol form-check-input" value="IMAP2" {if strcasecmp($MAILBOX->protocol(), 'imap2')===0}checked=true{/if}>
+                                        <span class="form-check-label">{vtranslate('LBL_Imap2',$MODULE)}</span>
+                                    </label>
+                                    <label class="form-check me-4">
+                                        <input type="radio" name="_mbox_protocol" class="mbox_protocol form-check-input" value="IMAP4" {if strcasecmp($MAILBOX->protocol(), 'imap4')===0}checked=true{/if} >
+                                        <span class="form-check-label">{vtranslate('LBL_Imap4',$MODULE)}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-2 additional_settings {if $SERVERNAME neq 'other'}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_SSL_Options',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <div class="input-group">
+                                    <label class="form-check me-4 w-25">
+                                        <input type="radio" name="_mbox_ssltype" class="mbox_ssltype form-check-input" value="notls" {if strcasecmp($MAILBOX->ssltype(), 'notls')===0}checked=true{/if}>
+                                        <span class="form-check-label">{vtranslate('LBL_No_TLS',$MODULE)}</span>
+                                    </label>
+                                    <label class="form-check me-4 w-25">
+                                        <input type="radio" name="_mbox_ssltype" class="mbox_ssltype form-check-input" value="tls" {if strcasecmp($MAILBOX->ssltype(), 'tls')===0}checked=true{/if} >
+                                        <span class="form-check-label">{vtranslate('LBL_TLS',$MODULE)}</span>
+                                    </label>
+                                    <label class="form-check me-4 w-25">
+                                        <input type="radio" name="_mbox_ssltype" class="mbox_ssltype form-check-input" value="ssl" {if strcasecmp($MAILBOX->ssltype(), 'ssl')===0}checked=true{/if} >
+                                        <span class="form-check-label">{vtranslate('LBL_SSL',$MODULE)}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row py-2 additional_settings {if $SERVERNAME neq 'other'}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_Certificate_Validations',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <div class="input-group">
+                                    <label class="form-check me-4 w-25">
+                                        <input type="radio" name="_mbox_certvalidate" class="mbox_certvalidate form-check-input" value="validate-cert" {if strcasecmp($MAILBOX->certvalidate(), 'validate-cert')===0}checked=true{/if} >
+                                        <span class="form-check-label">{vtranslate('LBL_Validate_Cert',$MODULE)}</span>
+                                    </label>
+                                    <label class="form-check me-4">
+                                        <input type="radio" name="_mbox_certvalidate" class="mbox_certvalidate form-check-input" value="novalidate-cert" {if strcasecmp($MAILBOX->certvalidate(), 'novalidate-cert')===0}checked=true{/if} >
+                                        <span class="form-check-label">{vtranslate('LBL_Do_Not_Validate_Cert',$MODULE)}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
-				<tr class="settings_details" {if $SERVERNAME eq ''} style="display:none;"{/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px"><font color="red">*</font> {vtranslate('LBL_Mail_Server',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap style="width: 70%;">
-						<input name="_mbox_server" value="{$MAILBOX->server()}" data-validation-engine="validate[required]]" type="text" class="detailedViewTextBox" onblur="this.className='detailedViewTextBox'" onfocus="this.className='detailedViewTextBoxOn'" placeholder="mail.company.com or 192.168.X.X">
-					</td>
-				</tr>
-				<tr class="settings_details" {if $SERVERNAME eq ''} style="display:none;"{/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px"><font color="red">*</font> {vtranslate('LBL_Username',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap>
-						<input name="_mbox_user" id="_mbox_user" onkeypress="MailManager.showSelectFolderDesc();" value="{$MAILBOX->username()}" type="text" class="detailedViewTextBox" onblur="this.className='detailedViewTextBox'" onfocus="this.className='detailedViewTextBoxOn'" placeholder="{vtranslate('LBL_Your_Mailbox_Account',$MODULE)}">
-					</td>
-				</tr>
-				<tr class="settings_details" {if $SERVERNAME eq ''} style="display:none;"{/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px"><font color="red">*</font> {vtranslate('LBL_Password',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap>
-						<input name="_mbox_pwd" id="_mbox_pwd" value="{$MAILBOX->password()}" type="password" class="detailedViewTextBox" onblur="this.className='detailedViewTextBox'" onfocus="this.className='detailedViewTextBoxOn'" placeholder="{vtranslate('LBL_Account_Password',$MODULE)}">
-					</td>
-				</tr>
-				<tr class="additional_settings" {if $SERVERNAME neq 'other'} style="display:none;" {/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_Protocol',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap style="width: 70%;">
-						<input type="radio" name="_mbox_protocol" value="IMAP2" {if strcasecmp($MAILBOX->protocol(), 'imap2')===0}checked=true{/if}> {vtranslate('LBL_Imap2',$MODULE)}
-						<input type="radio" name="_mbox_protocol" value="IMAP4" {if strcasecmp($MAILBOX->protocol(), 'imap4')===0}checked=true{/if}> {vtranslate('LBL_Imap4',$MODULE)}
-					</td>
-				</tr>
-				<tr class="additional_settings" {if $SERVERNAME neq 'other'} style="display:none;" {/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_SSL_Options',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap>
-						<input type="radio" name="_mbox_ssltype" value="notls" {if strcasecmp($MAILBOX->ssltype(), 'notls')===0}checked=true{/if}> {vtranslate('LBL_No_TLS',$MODULE)}
-						<input type="radio" name="_mbox_ssltype" value="tls" {if strcasecmp($MAILBOX->ssltype(), 'tls')===0}checked=true{/if}> {vtranslate('LBL_TLS',$MODULE)}
-						<input type="radio" name="_mbox_ssltype" value="ssl" {if strcasecmp($MAILBOX->ssltype(), 'ssl')===0}checked=true{/if}> {vtranslate('LBL_SSL',$MODULE)}
-					</td>
-				</tr>
-				<tr class="additional_settings" {if $SERVERNAME neq 'other'} style="display:none;" {/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_Certificate_Validations',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap>
-						<input type="radio" name="_mbox_certvalidate" value="validate-cert" {if strcasecmp($MAILBOX->certvalidate(), 'validate-cert')===0}checked=true{/if} > {vtranslate('LBL_Validate_Cert',$MODULE)}
-						<input type="radio" name="_mbox_certvalidate" value="novalidate-cert" {if strcasecmp($MAILBOX->certvalidate(), 'novalidate-cert')===0}checked=true{/if}> {vtranslate('LBL_Do_Not_Validate_Cert',$MODULE)}
-					</td>
-				</tr>
+                        <div class="row py-2 refresh_settings {if $MAILBOX && $MAILBOX->exists()}{else}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_REFRESH_TIME',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg">
+                                <select name="_mbox_refresh_timeout" class="select2 col-lg-9">
+                                    <option value="" {if $MAILBOX->refreshTimeOut() eq ''}selected{/if}>{vtranslate('LBL_NONE',$MODULE)}</option>
+                                    <option value="300000" {if strcasecmp($MAILBOX->refreshTimeOut(), '300000')==0}selected{/if}>{vtranslate('LBL_5_MIN',$MODULE)}</option>
+                                    <option value="600000" {if strcasecmp($MAILBOX->refreshTimeOut(), '600000')==0}selected{/if}>{vtranslate('LBL_10_MIN',$MODULE)}</option>
+                                </select>
+                            </div>
+                        </div>
 
-				<tr class="refresh_settings" {if $MAILBOX && $MAILBOX->exists()}{else} style="display:none;" {/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_REFRESH_TIME',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType" nowrap  style="width: 70%;">
-						<select name="_mbox_refresh_timeout">
-							<option value="" {if $MAILBOX->refreshTimeOut() eq ''}selected{/if}>{vtranslate('LBL_NONE',$MODULE)}</option>
-							<option value="300000" {if strcasecmp($MAILBOX->refreshTimeOut(), '300000')==0}selected{/if}>{vtranslate('LBL_5_MIN',$MODULE)}</option>
-							<option value="600000" {if strcasecmp($MAILBOX->refreshTimeOut(), '600000')==0}selected{/if}>{vtranslate('LBL_10_MIN',$MODULE)}</option>
-						</select>
-					</td>
-				</tr>
-
-				<tr class="settings_details" {if $SERVERNAME eq ''} style="display:none;"{/if}>
-					<td class="fieldLabel" nowrap>
-						<label class="muted pull-right marginRight10px">{vtranslate('LBL_CHOOSE_EXISTING_FOLDER',$MODULE)}</label>
-					</td>
-					<td class="fieldValue narrowWidthType selectFolderValue {if $MAILBOX->folder() eq ''}hide{/if}" nowrap style="width: 70%;">
-						<select name="_mbox_sent_folder">
-							{foreach item=FOLDER from=$FOLDERS}
-								<option value="{$FOLDER->name()}" {if $FOLDER->name() eq $MAILBOX->folder()} selected {/if}>{$FOLDER->name()}</option>
-							{/foreach}
-						</select>
-						<span class="mm_blur"> {vtranslate('LBL_CHOOSE_FOLDER',$MODULE)}</span>
-                    </td>
-					<td class="fieldValue narrowWidthType selectFolderDesc alert alert-info {if $MAILBOX->folder() neq ''}hide{/if}" nowrap style="width: 70%;">
-						{vtranslate('LBL_CHOOSE_FOLDER_DESC',$MODULE)}
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<br>
-
-		<div class="row-fluid refresh_settings" {if $MAILBOX && $MAILBOX->exists()}{else}style="display:none;" {/if}>
-			<div class="pull-right">
-				<button class="btn btn-success" onclick="MailManager.save_settings(this.form);"><strong>{vtranslate('LBL_SAVE_BUTTON_LABEL',$MODULE)}</strong></button>
-				{if $MAILBOX && $MAILBOX->exists()}
-					<a href="javascript:;" class="cancelLink" onclick="MailManager.close_settings();">{vtranslate('LBL_CANCEL_BUTTON_LABEL',$MODULE)}</button>
-					{/if}
-			</div>
-		</div>
-	</form>
-</div>
+                        <div class="row py-2 settings_details {if $SERVERNAME eq ''}hide{/if}">
+                            <div class="fieldLabel col-lg-4">
+                                <label class="detailViewButtoncontainer">{vtranslate('LBL_SAVE_SENT_MAILS_IN',$MODULE)}</label>
+                            </div>
+                            <div class="fieldValue col-lg selectFolderValue {if !$MAILBOX->exists()}hide{/if}">
+                                <div class="input-group">
+                                    <select name="_mbox_sent_folder" class="select2 form-select">
+                                        {foreach item=FOLDER from=$FOLDERS}
+                                            <option value="{$FOLDER->name()}" {if $FOLDER->name() eq $MAILBOX->folder()} selected {/if}>{$FOLDER->name()}</option>
+                                        {/foreach}
+                                    </select>
+                                    <span class="input-group-text" title="{vtranslate('LBL_CHOOSE_FOLDER',$MODULE)}">
+                                        <i class="fa fa-info-circle" id="mmSettingInfo"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="fieldValue col-lg selectFolderDesc {if $MAILBOX->exists()}hide{/if}">
+                                <div class="alert alert-info">{vtranslate('LBL_CHOOSE_FOLDER_DESC',$MODULE)}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col text-end">
+                                <a href="#" class="btn btn-primary cancelLink" type="reset" data-bs-dismiss="modal">{vtranslate('LBL_CANCEL', $MODULE)}</a>
+                            </div>
+                            {if $MAILBOX->exists()}
+                                <div class="col-auto">
+                                    <button class="btn btn-danger" id="deleteMailboxBtn">
+                                        <strong>{vtranslate('LBL_DELETE_Mailbox',$MODULE)}</strong>
+                                    </button>
+                                </div>
+                            {/if}
+                            <div class="col-auto">
+                                <button class="btn btn-primary active" id="saveMailboxBtn" type="submit" name="saveButton">{vtranslate('LBL_SAVE',$MODULE)}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 {/strip}

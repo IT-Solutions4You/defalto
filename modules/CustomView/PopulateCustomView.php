@@ -84,10 +84,6 @@ $customviews = Array(Array('viewname'=>'All',
 
 		    Array('viewname'=>'All',
                           'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
-                          'cvmodule'=>'Emails','stdfilterid'=>'','advfilterid'=>''),
-
-		    Array('viewname'=>'All',
-                          'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
                           'cvmodule'=>'Invoice','stdfilterid'=>'','advfilterid'=>''),
 
 		    Array('viewname'=>'All',
@@ -284,10 +280,6 @@ $cvcolumns = Array(Array('vtiger_leaddetails:lead_no:lead_no:Leads_Lead_No:V',
 						'vtiger_quotes:accountid:account_id:Quotes_Account_Name:I',
                          'vtiger_quotes:validtill:validtill:Quotes_Valid_Till:D',
                          'vtiger_crmentity:smownerid:assigned_user_id:Quotes_Assigned_To:V'),
-
-		   Array('vtiger_activity:subject:subject:Emails_Subject:V',
-       			 'vtiger_emaildetails:to_email:saved_toid:Emails_To:V',
-                 	 'vtiger_activity:date_start:date_start:Emails_Date_Sent:D'),
 
 		   Array('vtiger_invoice:invoice_no:invoice_no:Invoice_Invoice_No:V',
                          'vtiger_invoice:subject:subject:Invoice_Subject:V',

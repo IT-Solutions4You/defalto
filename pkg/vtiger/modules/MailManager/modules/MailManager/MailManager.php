@@ -17,7 +17,7 @@ class MailManager {
 	}
 
 	static function lookupMailInVtiger($searchTerm, $user) {
-		$handler = vtws_getModuleHandlerFromName('Emails', $user);
+		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $user);
 		$meta = $handler->getMeta();
 		$moduleFields = $meta->getModuleFields();
 		$parentIdFieldInstance = $moduleFields['parent_id'];

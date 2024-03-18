@@ -41,9 +41,7 @@ class ModTracker_Relation_Model extends Vtiger_Record_Model {
 			$recordInstance = new $modelClassName();
 			$recordInstance->setData($row)->setModuleFromInstance($moduleModel);
 			$recordInstance->set('id', $row['crmid']);
-			if($targetModule == 'Emails') {
-				$recordInstance->set('parent_id', $this->parent->get('crmid'));
-			}
+
 			return $recordInstance;
 		}
 		return false;
@@ -52,9 +50,7 @@ class ModTracker_Relation_Model extends Vtiger_Record_Model {
 	public function getRecordDetailViewUrl() {
 		try {
 			$recordModel = Vtiger_Record_Model::getInstanceById($this->get('targetid'), $this->get('targetmodule'));
-			if ($this->get('targetmodule') == 'Emails') {
-				return $recordModel->getDetailViewUrl($this->parent->get('crmid'));
-			}
+
 			return $recordModel->getDetailViewUrl();
 		} catch (Exception $e) {
 			return false;

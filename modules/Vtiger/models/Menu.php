@@ -21,7 +21,7 @@ class Vtiger_Menu_Model extends Vtiger_Module_Model {
 	public static function getAll($presence = array(), $restrictedModulesList = array(),$sequenced = false) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$restrictedModulesList = array('Emails', 'ProjectMilestone', 'ProjectTask', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+		$restrictedModulesList = array('ProjectMilestone', 'ProjectTask', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
 
 		$allModules = parent::getAll(array('0','2'));
 		$menuModels = array();
@@ -55,7 +55,7 @@ class Vtiger_Menu_Model extends Vtiger_Module_Model {
 	 */
 	public static function getAllForQuickCreate() {
 		$userPrivModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$restrictedModulesList = array('Emails', 'ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+		$restrictedModulesList = array('ModComments', 'Integration', 'PBXManager', 'Dashboard', 'Home');
 		$allModules = parent::getAll(array('0', '2'));
 		$menuModels = array();
 

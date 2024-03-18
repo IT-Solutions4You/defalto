@@ -137,8 +137,7 @@ class Mobile_ICAL {
 		$query = "SELECT " . implode(',', $fieldnames) . " FROM vtiger_activity
 			INNER JOIN vtiger_crmentity ON
 			(vtiger_activity.activityid=vtiger_crmentity.crmid 	AND vtiger_crmentity.deleted = 0 AND vtiger_crmentity.smownerid = ?)
-			LEFT JOIN vtiger_activity_reminder ON vtiger_activity_reminder.activity_id=vtiger_activity.activityid
-			WHERE vtiger_activity.activitytype != 'Emails'";
+			LEFT JOIN vtiger_activity_reminder ON vtiger_activity_reminder.activity_id=vtiger_activity.activityid";
 
 		$result = $this->db->pquery($query, array($this->userfocus->id));
 

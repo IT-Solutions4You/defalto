@@ -368,7 +368,7 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return string
 	 */
 	public function linkToAvailableActions() {
-		$moduleListForLinkTo = array('HelpDesk','ModComments','Emails','Potentials');
+		$moduleListForLinkTo = array('HelpDesk','ModComments','ITS4YouEmails','Potentials');
 
 		foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {

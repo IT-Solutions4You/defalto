@@ -204,87 +204,6 @@ $invoiceModuleInstance = Vtiger_Module::getInstance('Invoice');
 $fieldInstance = Vtiger_Field::getInstance('invoicestatus', $invoiceModuleInstance);
 $fieldInstance->setPicklistValues( Array ('Cancel'));
 
-// Email Reporting - added default email reports.
-
-$sql = "INSERT INTO vtiger_reportfolder (FOLDERNAME,DESCRIPTION,STATE) VALUES(?,?,?)";
-$params = array('Email Reports', 'Email Reports', 'SAVED');
-Migration_Index_View::ExecuteQuery($sql, $params);
-
-$reportmodules = Array(
-	Array('primarymodule' => 'Contacts', 'secondarymodule' => 'Emails'),
-	Array('primarymodule' => 'Accounts', 'secondarymodule' => 'Emails'),
-	Array('primarymodule' => 'Leads', 'secondarymodule' => 'Emails'),
-	Array('primarymodule' => 'Vendors', 'secondarymodule' => 'Emails')
-);
-
-$reports = Array(
-	Array('reportname' => 'Contacts Email Report',
-		'reportfolder' => 'Email Reports',
-		'description' => 'Emails sent to Contacts',
-		'reporttype' => 'tabular',
-		'sortid' => '', 'stdfilterid' => '', 'advfilterid' => '0'),
-	Array('reportname' => 'Accounts Email Report',
-		'reportfolder' => 'Email Reports',
-		'description' => 'Emails sent to Organizations',
-		'reporttype' => 'tabular',
-		'sortid' => '', 'stdfilterid' => '', 'advfilterid' => '0'),
-	Array('reportname' => 'Leads Email Report',
-		'reportfolder' => 'Email Reports',
-		'description' => 'Emails sent to Leads',
-		'reporttype' => 'tabular',
-		'sortid' => '', 'stdfilterid' => '', 'advfilterid' => '0'),
-	Array('reportname' => 'Vendors Email Report',
-		'reportfolder' => 'Email Reports',
-		'description' => 'Emails sent to Vendors',
-		'reporttype' => 'tabular',
-		'sortid' => '', 'stdfilterid' => '', 'advfilterid' => '0')
-);
-
-$selectcolumns = Array(
-	Array('vtiger_contactdetails:lastname:Contacts_Last_Name:lastname:V',
-		'vtiger_contactdetails:email:Contacts_Email:email:E',
-		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
-	Array('vtiger_account:accountname:Accounts_Account_Name:accountname:V',
-		'vtiger_account:phone:Accounts_Phone:phone:V',
-		'vtiger_account:email1:Accounts_Email:email1:E',
-		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
-	Array('vtiger_leaddetails:lastname:Leads_Last_Name:lastname:V',
-		'vtiger_leaddetails:company:Leads_Company:company:V',
-		'vtiger_leaddetails:email:Leads_Email:email:E',
-		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
-	Array('vtiger_vendor:vendorname:Vendors_Vendor_Name:vendorname:V',
-		'vtiger_vendor:glacct:Vendors_GL_Account:glacct:V',
-		'vtiger_vendor:email:Vendors_Email:email:E',
-		'vtiger_activity:subject:Emails_Subject:subject:V',
-		'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'),
-);
-
-$advfilters = Array(
-	Array(
-		Array(
-			'columnname' => 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V',
-			'comparator' => 'n',
-			'value' => ''
-		)
-	)
-);
-
-foreach ($reports as $key => $report) {
-	$queryid = Migration_Index_View::insertSelectQuery();
-	$sql = 'SELECT MAX(folderid) AS count FROM vtiger_reportfolder';
-	$result = $adb->query($sql);
-	$folderid = $adb->query_result($result, 0, 'count');
-	Migration_Index_View::insertReports($queryid, $folderid, $report['reportname'], $report['description'], $report['reporttype']);
-	Migration_Index_View::insertSelectColumns($queryid, $selectcolumns[$key]);
-	Migration_Index_View::insertReportModules($queryid, $reportmodules[$key]['primarymodule'], $reportmodules[$key]['secondarymodule']);
-	if(isset($advfilters[$report['advfilterid']])) {
-		Migration_Index_View::insertAdvFilter($queryid, $advfilters[$report['advfilterid']]);
-	}
-}
-
 // TODO : need to review this after adding report sharing feature
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_report SET sharingtype='Public'", array());
 //End.
@@ -657,7 +576,7 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_users SET truncate_trailing_ze
 Migration_Index_View::ExecuteQuery("DELETE FROM vtiger_cvcolumnlist WHERE cvid IN
 			(SELECT cvid FROM vtiger_customview INNER JOIN vtiger_tab ON vtiger_tab.name=vtiger_customview.entitytype
 				WHERE vtiger_tab.customized=0 AND viewname='All' AND entitytype NOT IN
-				('Emails','ModComments','ProjectMilestone','Project','SMSNotifier','PBXManager','Webmails'))
+				('ModComments','ProjectMilestone','Project','SMSNotifier','PBXManager'))
 			AND columnindex = 0", array());
 
 // Added indexes for Modtracker Module to improve performance
@@ -2323,17 +2242,6 @@ for ($i = 0; $i < $numOfRows; $i++) {
 }
 $em = new VTEventsManager($adb);
 $em->registerHandler('vtiger.entity.aftersave', 'modules/ModComments/ModCommentsHandler.php', 'ModCommentsHandler');
-$result = $adb->pquery('SELECT blockid FROM vtiger_blocks where tabid = ? AND (blocklabel is NULL OR blocklabel = "")', array(getTabid('Emails')));
-$numOfRows = $adb->num_rows($result);
-
-$query = 'UPDATE vtiger_blocks SET blocklabel = CASE blockid ';
-for ($i = 0; $i < $numOfRows; $i++) {
-	$blockId = $adb->query_result($result, $i, 'blockid');
-	$blockLabel = 'Emails_Block' . ($i + 1);
-	$query .= "WHEN $blockId THEN '$blockLabel' ";
-}
-$query .= 'ELSE blocklabel END';
-Migration_Index_View::ExecuteQuery($query, array());
 
 $result = $adb->pquery('SELECT 1 FROM vtiger_currencies WHERE currency_name = ?', array('Ugandan Shilling'));
 if(!$adb->num_rows($result)) {

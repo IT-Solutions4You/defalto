@@ -1933,7 +1933,7 @@ class Users_CRMSetup {
 	 * @return <Array> List of packages
 	 */
 	public static function getPackagesList() {
-		$restrictedModulesList = array('Emails', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+		$restrictedModulesList = array('ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home');
 
 		$packagesList = array(
 			'Tools' => array(

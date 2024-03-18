@@ -376,34 +376,6 @@ class HelpDesk extends CRMEntity {
                 return $query;
         }
 
-
-	/**	Function used to get the Activity History
-	 *	@param	int	$id - ticket id to which we want to display the activity history
-	 *	@return  array	- return an array which will be returned from the function getHistory
-	 */
-	function get_history($id)
-	{
-		global $log;
-		$log->debug("Entering get_history(".$id.") method ...");
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
-							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.status, vtiger_activity.eventstatus, vtiger_activity.date_start, vtiger_activity.due_date,vtiger_activity.time_start,vtiger_activity.time_end,vtiger_activity.activitytype, vtiger_troubletickets.ticketid, vtiger_troubletickets.title, vtiger_crmentity.modifiedtime,vtiger_crmentity.createdtime, vtiger_crmentity.description,
-case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name
-				from vtiger_activity
-				inner join vtiger_seactivityrel on vtiger_seactivityrel.activityid= vtiger_activity.activityid
-				inner join vtiger_troubletickets on vtiger_troubletickets.ticketid = vtiger_seactivityrel.crmid
-				inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_activity.activityid
-                                left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
-				left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
-				where (vtiger_activity.activitytype != 'Emails')
-				and (vtiger_activity.status = 'Completed' or vtiger_activity.status = 'Deferred' or (vtiger_activity.eventstatus = 'Held' and vtiger_activity.eventstatus != ''))
-				and vtiger_seactivityrel.crmid=".$id."
-                                and vtiger_crmentity.deleted = 0";
-		//Don't add order by, because, for security, one more condition will be added with this query in include/RelatedListView.php
-		$log->debug("Entering get_history method ...");
-		return getHistory('HelpDesk',$query,$id);
-	}
-
 	/** Function to get the update ticket history for the specified ticketid
 	  * @param $id -- $ticketid:: Type Integer
 	 */
@@ -588,7 +560,6 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_troubletickets"=>"ticketid"),
 			"Products" => array("vtiger_troubletickets"=>array("ticketid","product_id")),
 			"Services" => array("vtiger_crmentityrel"=>array("crmid","relcrmid"),"vtiger_troubletickets"=>"ticketid"),
-            "Emails" => array("vtiger_seactivityrel"=>array("crmid","activityid"),"vtiger_troubletickets"=>"ticketid"),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -717,35 +688,5 @@ case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_gro
 
 	function clearSingletonSaveFields() {
 		$this->column_fields['comments'] = '';
-	}
-    
-    function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
-		global $currentModule;
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-		require_once("modules/$related_module/$related_module.php");
-		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-
-        $returnset = '&return_module='.$currentModule.'&return_action=CallRelatedList&return_id='.$id;
-
-		$button = '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-                vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
-                vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start, vtiger_activity.time_start,
-                vtiger_seactivityrel.crmid as parent_id FROM vtiger_activity, vtiger_seactivityrel, vtiger_troubletickets, vtiger_users,
-                vtiger_crmentity LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid WHERE 
-                vtiger_seactivityrel.activityid = vtiger_activity.activityid AND 
-                vtiger_troubletickets.ticketid = vtiger_seactivityrel.crmid AND vtiger_users.id = vtiger_crmentity.smownerid
-                AND vtiger_crmentity.crmid = vtiger_activity.activityid  AND vtiger_troubletickets.ticketid = $id AND
-                vtiger_activity.activitytype = 'Emails' AND vtiger_crmentity.deleted = 0";
-
-		$return_value = GetRelatedList($currentModule, $related_module, $other, $query, $button, $returnset);
-
-		if($return_value == null) $return_value = Array();
-		$return_value['CUSTOM_BUTTON'] = $button;
-
-		return $return_value;
 	}
 }

@@ -598,7 +598,7 @@ class ITS4YouEmails_MassSaveAjax_View extends Vtiger_Footer_View
             'modules.Vtiger.resources.validator.BaseValidator',
             'modules.Vtiger.resources.validator.FieldValidator',
             "modules.EMAILMaker.resources.SendEmail",
-            "modules.Emails.resources.EmailPreview",
+            "modules.ITS4YouEmails.resources.EmailPreview",
             'modules.Vtiger.resources.Popup',
             'modules.Vtiger.resources.Vtiger',
             'libraries.jquery.jquery_windowmsg',

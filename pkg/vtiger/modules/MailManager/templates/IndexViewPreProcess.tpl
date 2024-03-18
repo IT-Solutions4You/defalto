@@ -1,16 +1,27 @@
-{*<!--/************************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************/-->*}
- {strip}
-{include file="Header.tpl"|vtemplate_path:$MODULE}
-{include file="BasicHeader.tpl"|vtemplate_path:$MODULE}
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 
-<div class="bodyContents" style='min-width:1200px'>
-	<div class="mainContainer row-fluid" id="_mailmanagermaindiv_" >
+{include file=vtemplate_path('partials/Topbar.tpl', $MODULE)}
 
-{/strip}
+<div class="container-fluid app-nav">
+    <div class="row">
+        {include file="partials/SidebarHeader.tpl"|vtemplate_path:$MODULE}
+        {include file="ModuleHeader.tpl"|vtemplate_path:$MODULE}
+    </div>
+</div>
+</nav>
+    <div id='overlayPageContent' class='fade modal overlayPageContent content-area' tabindex='-1' role='dialog' aria-hidden='true'>
+        <div class="data">
+        </div>
+        <div class="modal-dialog">
+        </div>
+    </div>
+<div class="main-container container-fluid main-container-{$MODULE}">
+    <div class="row h-main">
+        {include file='ModuleSidebar.tpl'|vtemplate_path:$MODULE}
+        <div class="col-lg px-0 bg-body mb-lg-4 mx-lg-4 rounded overflow-hidden mmModuleContainer">
+            <div id="listViewContent" class="listViewPageDiv content-area h-100">

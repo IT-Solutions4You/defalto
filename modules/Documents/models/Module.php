@@ -31,7 +31,7 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 	 * @return string
 	 */
 	public function getInternalDocumentsURL() {
-		return 'view=Popup&module=Documents&src_module=Emails&src_field=composeEmail';
+		return 'view=Popup&module=Documents&src_module=ITS4YouEmails&src_field=composeEmail';
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Documents_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> Listview Query
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
-		if($sourceModule === 'Emails' && $field === 'composeEmail') {
+		if($sourceModule === 'ITS4YouEmails' && $field === 'composeEmail') {
 			$condition = ' (( vtiger_notes.filelocationtype LIKE "%I%")) AND vtiger_notes.filename != "" AND vtiger_notes.filestatus = 1';
 		} else {
             		$db = PearDatabase::getInstance();

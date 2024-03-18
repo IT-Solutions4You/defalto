@@ -127,10 +127,12 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 
 		} else if ('create_wizard' == $this->getOperationArg($request)) {
 			$moduleName = $request->get('_mlinktotype');
-			if(!vtlib_isModuleActive($moduleName)) {
+
+            if(!vtlib_isModuleActive($moduleName)) {
 				$response->setResult(array('error'=>vtranslate('LBL_OPERATION_NOT_PERMITTED', $moduleName)));
 				return $response;
 			}
+
 			$parent =  $request->get('_mlinkto');
 			$foldername = $request->get('_folder');
 
@@ -351,9 +353,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return Array
 	 */
 	public function getCurrentUserMailManagerAllowedModules() {
-        $moduleListForCreateRecordFromMail = ['Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Potentials'];
+		$moduleListForCreateRecordFromMail = array('Contacts', 'Accounts', 'Leads', 'HelpDesk', 'Potentials');
 
-        foreach($moduleListForCreateRecordFromMail as $module) {
+		foreach($moduleListForCreateRecordFromMail as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
 			}
@@ -366,9 +368,9 @@ class MailManager_Relation_View extends MailManager_Abstract_View {
 	 * @return string
 	 */
 	public function linkToAvailableActions() {
-        $moduleListForLinkTo = ['HelpDesk', 'ModComments', 'Emails', 'Potentials'];
+		$moduleListForLinkTo = array('HelpDesk','ModComments','ITS4YouEmails','Potentials');
 
-        foreach($moduleListForLinkTo as $module) {
+		foreach($moduleListForLinkTo as $module) {
 			if(MailManager::checkModuleWriteAccessForCurrentUser($module)) {
 				$mailManagerAllowedModules[] = $module;
 			}

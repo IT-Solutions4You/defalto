@@ -47,7 +47,7 @@ class EMAILMaker_Utils_Helper
 
         $systemFromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
-        if ($_REQUEST['module'] == 'Emails' && ($_REQUEST['action'] == 'mailsend' || $_REQUEST['action'] == 'Save')) {
+        if ($_REQUEST['module'] == 'ITS4YouEmails' && ($_REQUEST['action'] == 'mailsend' || $_REQUEST['action'] == 'Save')) {
             $replyToEmail = $fromEmail;
         } else {
             $replyToEmail = $systemFromEmail;

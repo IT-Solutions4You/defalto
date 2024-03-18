@@ -8,7 +8,6 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
-require_once('modules/Emails/Emails.php');
 require_once('modules/HelpDesk/HelpDesk.php');
 require_once('modules/ModComments/ModComments.php');
 require_once('modules/Users/Users.php');
@@ -433,13 +432,12 @@ class Vtiger_MailScannerAction {
 			$assignedToId = Users::getActiveAdminId();
 		}
 
-		$focus = new Emails();
+		$focus = new ITS4YouEmails();
 		$focus->column_fields['parent_type'] = $module;
-		$focus->column_fields['activitytype'] = 'Emails';
-		$focus->column_fields['parent_id'] = "$linkfocus->id@-1|";
+		$focus->column_fields['related_to'] = "$linkfocus->id@-1|";
 		$focus->column_fields['subject'] = $mailrecord->_subject;
 
-		$focus->column_fields['description'] = $mailrecord->getBodyHTML();
+		$focus->column_fields['body'] = $mailrecord->getBodyHTML();
 		$focus->column_fields['assigned_user_id'] = $assignedToId;
 		$focus->column_fields["date_start"] = date('Y-m-d', $mailrecord->_date);
 		$focus->column_fields["time_start"] = date('H:i:s', $mailrecord->_date);
@@ -452,17 +450,17 @@ class Vtiger_MailScannerAction {
 		$flag=''; // 'SENT'/'SAVED'
 		//emails field were restructured and to,bcc and cc field are JSON arrays
 		$focus->column_fields['from_email'] = $from;
-		$focus->column_fields['saved_toid'] = $to;
-		$focus->column_fields['ccmail'] = $cc;
-		$focus->column_fields['bccmail'] = $bcc;
+		$focus->column_fields['to_email'] = $to;
+		$focus->column_fields['cc_email'] = $cc;
+		$focus->column_fields['bcc_email'] = $bcc;
 		$focus->column_fields['source'] = $this->recordSource;
-		$focus->save('Emails');
+		$focus->save('ITS4YouEmails');
 
 		$emailid = $focus->id;
 		$this->log("Created [$focus->id]: $mailrecord->_subject linked it to " . $linkfocus->id);
 
 		// TODO: Handle attachments of the mail (inline/file)
-		$this->__SaveAttachements($mailrecord, 'Emails', $focus);
+		$this->__SaveAttachements($mailrecord, 'ITS4YouEmails', $focus);
 
 		return $emailid;
 	}

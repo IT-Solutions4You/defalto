@@ -26,7 +26,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-		$request->set('custom_module', 'Emails');
+		$request->set('custom_module', 'ITS4YouEmails');
 		return $permissions;
 	}
 
@@ -38,7 +38,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 	}
 
 	public function composeMailData($request){
-		$moduleName = 'Emails';
+		$moduleName = 'ITS4YouEmails';
 		$fieldModule = $request->get('fieldModule');
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$userRecordModel = Users_Record_Model::getCurrentUserModel();
@@ -341,7 +341,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 			"libraries.jquery.ckeditor.adapters.jquery",
 			'modules.Vtiger.resources.validator.BaseValidator',
 			'modules.Vtiger.resources.validator.FieldValidator',
-			"modules.Emails.resources.EmailPreview",
+			"modules.ITS4YouEmails.resources.EmailPreview",
 			"modules.Vtiger.resources.CkEditor",
 			'modules.Vtiger.resources.Popup',
 			'libraries.jquery.jquery_windowmsg',

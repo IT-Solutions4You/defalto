@@ -19,7 +19,7 @@ class EMAILMaker_ComposeEmail_View extends Vtiger_ComposeEmail_View
 
     public function checkPermission(Vtiger_Request $request)
     {
-        //$moduleName = "Emails";
+        //$moduleName = "ITS4YouEmails";
 
         //if (!Users_Privileges_Model::isPermitted($moduleName, 'EditView')) {
         //        throw new AppException('LBL_PERMISSION_DENIED');
@@ -389,9 +389,9 @@ class EMAILMaker_ComposeEmail_View extends Vtiger_ComposeEmail_View
     public function emailPreview($request)
     {
         $recordId = $request->get('record');
-        $moduleName = "Emails";
+        $moduleName = "ITS4YouEmails";
 
-        $this->record = Vtiger_DetailView_Model::getInstance("Emails", $recordId);
+        $this->record = Vtiger_DetailView_Model::getInstance("ITS4YouEmails", $recordId);
         $recordModel = $this->record->getRecord();
 
         $viewer = $this->getViewer($request);

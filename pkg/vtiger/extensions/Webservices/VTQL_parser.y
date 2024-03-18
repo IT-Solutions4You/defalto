@@ -362,13 +362,8 @@ function buildSelectStmt($sqlDump){
 			$nextToken = " WHERE ";
 		}
 	}
-	if(strcasecmp('calendar',$this->out['moduleName'])===0){
-		$this->query = $this->query." $nextToken activitytype='Task' AND ";
-	}elseif(strcasecmp('events',$this->out['moduleName'])===0){
-		$this->query = $this->query."$nextToken activitytype!='Emails' AND activitytype!='Task' AND ";
-	}else if(strcasecmp('emails',$this->out['moduleName'])===0){
-		$this->query = $this->query."$nextToken activitytype='Emails' AND ";
-	}elseif(!empty($deletedQuery)){
+
+    if (!empty($deletedQuery)) {
 		$this->query = $this->query.$nextToken;
 	}
 	

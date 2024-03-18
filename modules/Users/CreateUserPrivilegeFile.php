@@ -173,16 +173,6 @@ if($handle)
 			$newbuf .= "\$Leads_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($lead_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($lead_share_read_per['GROUP']).");\n\n";	
 			$newbuf .= "\$Leads_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($lead_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($lead_share_write_per['GROUP']).");\n\n";	
 
-			//Constructing the Lead Email Related Module Sharing Array
-			$lead_related_email=getRelatedModuleSharingArray("Leads","Emails",$lead_sharingrule_members,$lead_share_read_per,$lead_share_write_per,$def_org_share);
-
-			$lead_email_share_read_per=$lead_related_email['read'];
-			$lead_email_share_write_per=$lead_related_email['write'];
-
-			$newbuf .= "\$Leads_Emails_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($lead_email_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($lead_email_share_read_per['GROUP']).");\n\n";	
-			$newbuf .= "\$Leads_Emails_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($lead_email_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($lead_email_share_write_per['GROUP']).");\n\n";
-
-
 
 			//Constructing Account Sharing Rules
 			$account_share_per_array=getUserModuleSharingObjects("Accounts",$userid,$def_org_share,$current_user_roles,$parent_roles,$current_user_groups);
@@ -223,15 +213,6 @@ if($handle)
 
 			$newbuf .= "\$Accounts_HelpDesk_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($acc_tkt_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($acc_tkt_share_read_per['GROUP']).");\n\n";	
 			$newbuf .= "\$Accounts_HelpDesk_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($acc_tkt_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($acc_tkt_share_write_per['GROUP']).");\n\n";
-
-			//Constructing the Account Email Related Module Sharing Array
-			$acct_related_email=getRelatedModuleSharingArray("Accounts","Emails",$account_sharingrule_members,$account_share_read_per,$account_share_write_per,$def_org_share);
-
-			$acc_email_share_read_per=$acct_related_email['read'];
-			$acc_email_share_write_per=$acct_related_email['write'];
-
-			$newbuf .= "\$Accounts_Emails_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($acc_email_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($acc_email_share_read_per['GROUP']).");\n\n";	
-			$newbuf .= "\$Accounts_Emails_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($acc_email_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($acc_email_share_write_per['GROUP']).");\n\n";
 
 			//Constructing the Account Quote Related Module Sharing Array
 			$acct_related_qt=getRelatedModuleSharingArray("Accounts","Quotes",$account_sharingrule_members,$account_share_read_per,$account_share_write_per,$def_org_share);
@@ -300,13 +281,6 @@ if($handle)
 			$newbuf .= "\$HelpDesk_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($hd_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalArray($hd_share_read_per['GROUP']).");\n\n";	
 			$newbuf .= "\$HelpDesk_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($hd_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalArray($hd_share_write_per['GROUP']).");\n\n";
 	
-			//Constructing Emails Sharing Rules
-			$email_share_per_array=getUserModuleSharingObjects("Emails",$userid,$def_org_share,$current_user_roles,$parent_roles,$current_user_groups);
-			$email_share_read_per=$email_share_per_array['read'];
-			$email_share_write_per=$email_share_per_array['write'];
-			$newbuf .= "\$Emails_share_read_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($email_share_read_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($email_share_read_per['GROUP']).");\n\n";	
-			$newbuf .= "\$Emails_share_write_permission=array('ROLE'=>".constructTwoDimensionalCharIntSingleValueArray($email_share_write_per['ROLE']).",'GROUP'=>".constructTwoDimensionalValueArray($email_share_write_per['GROUP']).");\n\n";
-
 			//Constructing Campaigns Sharing Rules
 			$campaign_share_per_array=getUserModuleSharingObjects("Campaigns",$userid,$def_org_share,$current_user_roles,$parent_roles,$current_user_groups);
 			$campaign_share_read_per=$campaign_share_per_array['read'];
@@ -372,7 +346,7 @@ if($handle)
 			// TODO: We are ignoring rules that has already been calculated above, it is good to add GENERIC logic here.
 			$custom_modules = getSharingModuleList(
 				Array('Leads', 'Accounts', 'Contacts', 'Potentials', 'HelpDesk', 
-				'Emails', 'Campaigns','Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'));
+				'Campaigns','Quotes', 'PurchaseOrder', 'SalesOrder', 'Invoice'));
 
 			for($idx = 0; $idx < php7_count($custom_modules); ++$idx) {
 				$module_name = $custom_modules[$idx];
@@ -1604,10 +1578,8 @@ function populateSharingtmptables($userid)
 	}
 
 	// Look up for modules for which sharing access is enabled.
-	$sharingArray = Array('Emails');
-	$otherModules = getSharingModuleList();
-	$sharingArray = array_merge($sharingArray, $otherModules);
-	
+    $sharingArray = getSharingModuleList();
+
 	foreach($sharingArray as $module)
 	{
 		$module_sharing_read_permvar    = $module.'_share_read_permission';

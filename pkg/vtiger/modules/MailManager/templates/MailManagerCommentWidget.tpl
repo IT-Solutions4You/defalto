@@ -1,25 +1,27 @@
-{*<!--/************************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************/-->*}
-
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {strip}
-<div class="modelContainer" id="commentWidget">
-	<div class="modal-header contentsBackground">
-        <button data-dismiss="modal" class="close" title="{vtranslate('LBL_CLOSE')}">&times;</button>
-		<h3>{vtranslate('LBL_MAILMANAGER_ADD_ModComments', 'MailManager')}</h3>
-	</div>
-	<div class="modal-body tabbable">
-		<textarea class="input-block-level span6" name="commentcontent" data-validation-engine="validate[required]" id="commentcontent" placeholder="{vtranslate('LBL_WRITE_YOUR_COMMENT_HERE', 'MailManager')}"></textarea>
-	</div>
-	<input type=hidden name="_mlinkto" value="{$PARENT}">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <input type=hidden name="_mlinkto" value="{$PARENT}">
 	<input type=hidden name="_mlinktotype" value="{$LINKMODULE}">
 	<input type=hidden name="_msgno" value="{$MSGNO}">
 	<input type=hidden name="_folder" value="{$FOLDER}">
+        {include file="ModalHeader.tpl"|vtemplate_path:$MODULE TITLE=vtranslate('LBL_MAILMANAGER_ADD_ModComments', $MODULE)}
+        <div class="modal-body" id='commentContainer'>
+            <div class="container-fluid">
+                <div class="row" id="mass_action_add_comment">
+                    <div class="col-lg-12">
+                        <textarea class="form-control" name="commentcontent" id="commentcontent" rows="{$COMMENT_TEXTAREA_DEFAULT_ROWS}" placeholder="{vtranslate('LBL_WRITE_YOUR_COMMENT_HERE', $MODULE)}..." data-rule-required="true"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
 	{include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
+    </div>
 </div>
 {/strip}

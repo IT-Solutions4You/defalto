@@ -38,7 +38,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (4,'Contacts',0,6,'Contacts',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (2,'Potentials',0,7,'Potentials',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (8,'Documents',0,9,'Documents',0,0,1,'Tools')");
-		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (10,'Emails',0,10,'Emails',0,1,1,'Tools')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (13,'HelpDesk',0,11,'HelpDesk',0,0,1,'Support')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (14,'Products',0,8,'Products',0,0,1,'Inventory')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (1,'Dashboard',0,12,'Dashboards',0,1,0,'Analytics')");
@@ -53,7 +52,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (25,'Reports',0,-1,'Reports',0,1,0,'Analytics')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (26,'Campaigns',0,-1,'Campaigns',0,0,1,'Marketing')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (27,'Portal',0,-1,'Portal',0,1,0,'Tools')");
-		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (28,'Webmails',0,-1,'Webmails',0,1,1,null)");
 		$this->db->query("insert into vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) values (29,'Users',0,-1,'Users',0,1,0,null)");
 
 		// Populate the vtiger_blocks vtiger_table
@@ -968,18 +966,6 @@ class DefaultDataPopulator extends CRMEntity {
 			$this->db->pquery("UPDATE vtiger_field SET masseditable=0 WHERE tabid=? AND fieldname IN (" . generateQuestionMarks($value) . ")", array($tabid, $value));
 		}
 
-		//Emails field added here
-		$email_Tabid = getTabid('Emails');
-		$blockquery = "select blockid from vtiger_blocks where blocklabel = ?";
-		$blockres = $this->db->pquery($blockquery, array('LBL_EMAIL_INFORMATION'));
-		$blockid = $this->db->query_result($blockres, 0, 'blockid');
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'from_email','vtiger_emaildetails',1,12,'from_email','From',1,2,'',100,1,$blockid,3,'V~M',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'to_email','vtiger_emaildetails',1,8,'saved_toid','To',1,2,'',100,2,$blockid,1,'V~M',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'cc_email','vtiger_emaildetails',1,8,'ccmail','CC',1,2,'',1000,3,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'bcc_email','vtiger_emaildetails',1,8,'bccmail','BCC' ,1,2,'',1000,4,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'idlists','vtiger_emaildetails',1,357,'parent_id','Parent ID' ,1,2,'',1000,5,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'email_flag','vtiger_emaildetails',1,16,'email_flag','Email Flag' ,1,2,'',1000,6,$blockid,3,'V~O',3,NULL,'BAS',0)");
-		//Emails fields ends
 		//The Entity Name for the modules are maintained in this table
 		$this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");
 		$this->db->query("insert into vtiger_entityname values(6,'Accounts','vtiger_account','accountname','accountid','account_id')");
@@ -987,7 +973,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_entityname values(2,'Potentials','vtiger_potential','potentialname','potentialid','potential_id')");
 		$this->db->query("insert into vtiger_entityname values(8,'Documents','vtiger_notes','title','notesid','notesid')");
 		$this->db->query("insert into vtiger_entityname values(13,'HelpDesk','vtiger_troubletickets','title','ticketid','ticketid')");
-		$this->db->query("insert into vtiger_entityname values(10,'Emails','vtiger_activity','subject','activityid','activityid')");
 		$this->db->query("insert into vtiger_entityname values(14,'Products','vtiger_products','productname','productid','product_id')");
 		$this->db->query("insert into vtiger_entityname values(29,'Users','vtiger_users','first_name,last_name','id','id')");
 		$this->db->query("insert into vtiger_entityname values(23,'Invoice','vtiger_invoice','subject','invoiceid','invoiceid')");
@@ -1072,20 +1057,17 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Quotes") . ",'get_quotes',3,'Quotes',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("SalesOrder") . ",'get_salesorder',4,'Sales Order',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Invoice") . ",'get_invoices',5,'Invoice',0,'add',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Emails") . ",'get_emails',7,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Documents") . ",'get_attachments',9,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("HelpDesk") . ",'get_tickets',10,'HelpDesk',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Products") . ",'get_products',11,'Products',0,'select',null,'','')");
 
 		//Inserting Lead Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Emails") . ",'get_emails',2,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Documents") . ",'get_attachments',4,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Products") . ",'get_products',5,'Products',0,'select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Campaigns") . ",'get_campaigns',6,'Campaigns',0,'select',null,'','')");
 
 		//Inserting for contact related lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Potentials") . ",'get_opportunities',1,'Potentials',0,'add',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Emails") . ",'get_emails',3,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("HelpDesk") . ",'get_tickets',4,'HelpDesk',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Quotes") . ",'get_quotes',5,'Quotes',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("PurchaseOrder") . ",'get_purchase_orders',6,'Purchase Order',0,'add',null,'','')");
@@ -1118,11 +1100,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Products") . "," . getTabid("Products") . ",'get_products',13,'Product Bundles',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Products") . "," . getTabid("Products") . ",'get_parent_products',14,'Parent Product',0,'',null,'','')");
 
-		//Inserting Emails Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'select,bulkmail',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . ",0,'get_users',2,'Users',0,'',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . "," . getTabid("Documents") . ",'get_attachments',3,'Documents',0,'add,select',null,'','')");
-
 		//Inserting HelpDesk Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . ",0,'get_ticket_history',3,'Ticket History',0,'',null,'','')");
@@ -1134,7 +1111,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",14,'get_products',1,'Products',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",21,'get_purchase_orders',2,'Purchase Order',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",4,'get_contacts',3,'Contacts',0,'select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . "," . getTabid("Emails") . ",'get_emails',4,'Emails',0,'add',null,'','')");
 
 		// Inserting Quotes Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Quotes") . "," . getTabid("SalesOrder") . ",'get_salesorder',1,'Sales Order',0,'',null,'','')");

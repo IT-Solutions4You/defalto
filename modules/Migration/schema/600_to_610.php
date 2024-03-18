@@ -852,28 +852,6 @@ $updateQuery .= " END WHERE tabid = $usersTabId AND block IN (". generateQuestio
 Migration_Index_View::ExecuteQuery($updateQuery, $blockIds);
 
 echo "<br>User Fields Sequence Updated";
-
-// updating Emails module in sharing access rules
-$EmailsTabId = getTabId('Emails');
-$query = "SELECT tabid FROM vtiger_def_org_share";
-$result = $adb->pquery($query, array());
-$resultCount = $adb->num_rows($result);
-$exist = false;
-for($i=0; $i<$resultCount;$i++){
-        $tabid = $adb->query_result($result,  $i,  'tabid');
-        if($tabid == $EmailsTabId){
-                $exist = true;
-                echo 'Emails Sharing Access entry already exist';
-                break;
-        }
-}
-
-if(!$exist){
-        $ruleid = $adb->getUniqueID('vtiger_def_org_share');
-        $shareaccessquery = "INSERT INTO vtiger_def_org_share VALUES(?,?,?,?)";
-        $result = Migration_Index_View::ExecuteQuery($shareaccessquery, array($ruleid, $EmailsTabId, 2, 0));
-        echo 'Emails Sharing Access entry is added';
-}
 //90 ends
 
 //91 starts

@@ -479,7 +479,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $emailsResult = array();
         $db = PearDatabase::getInstance();
 
-        $EmailsModuleModel = Vtiger_Module_Model::getInstance('Emails');
+        $EmailsModuleModel = Vtiger_Module_Model::getInstance('ITS4YouEmails');
         $emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
         foreach ($emailSupportedModulesList as $module) {
             if ($module != 'Users' && $module != 'ModComments') {
@@ -632,7 +632,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $recipients = array();
         for ($i = 0; $i < $numOfRows; $i++) {
             $newRow = $db->query_result_rowdata($result, $i);
-            $model = Vtiger_Record_Model::getCleanInstance('Emails');
+            $model = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
             $ownerId = $newRow['smownerid'];
             $currentUser = Users_Record_Model::getCurrentUserModel();
             $model->setData($newRow);

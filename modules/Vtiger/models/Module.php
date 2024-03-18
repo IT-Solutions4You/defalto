@@ -776,7 +776,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		if(!$moduleModels){
 			$presence = array(0, 2);
 			$moduleModels = self::getAll($presence);
-			$restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard');
+			$restrictedModules = array('Integration', 'Dashboard');
 			foreach($moduleModels as $key => $moduleModel){
 				if(in_array($moduleModel->getName(),$restrictedModules) || $moduleModel->get('isentitytype') != 1){
 					unset($moduleModels[$key]);
@@ -799,7 +799,10 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$searchableModules = array();
 		foreach ($entityModules as $tabid => $moduleModel) {
 				$moduleName = $moduleModel->getName();
-				if ($moduleName == 'Users' || $moduleName == 'Emails') continue;
+
+            if ($moduleName == 'Users') {
+                continue;
+            }
 				if($userPrivModel->hasModuleActionPermission($moduleModel->getId(), 'DetailView')) {
 						$searchableModules[$moduleName] = $moduleModel;
 				}

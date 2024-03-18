@@ -679,11 +679,6 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 							/** while inserting in db for due_date it was taking date and time values also as it is 
 							 * date time field. We only need to take date from that value
 							 */
-							if($col[0] == 'vtiger_activity' && $col[1] == 'due_date'){
-								$originalValue = $temp_val[$x];
-								$dateTime = explode(' ',$originalValue);
-								$temp_val[$x] = $dateTime[0];
-							}
 							$date = new DateTimeField(trim($temp_val[$x]));
 							$val[$x] = $date->getDisplayDate();
 						} elseif ($col[4] == 'DT') {
@@ -1251,7 +1246,7 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 
 			$fields = explode(':',$standardFilter['columnname']);
 
-			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' ||($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')){
+			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime'){
 				$tranformedStandardFilter['columnname'] = $standardFilter['columnname'].':DT';
 				$date[] = $standardFilter['startdate'].' 00:00:00';
 				$date[] = $standardFilter['enddate'].' 00:00:00';

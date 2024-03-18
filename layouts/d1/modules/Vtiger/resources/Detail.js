@@ -304,7 +304,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 	},
 
 	addComponents : function() {
-		var emailPreviewClassName = 'Vtiger_EmailPreview_Js';
+		var emailPreviewClassName = 'ITS4YouEmails_EmailPreview_Js';
 	this.addIndexComponent();
 		this.addComponent(emailPreviewClassName);
 		this.addComponent('Vtiger_Tag_Js');

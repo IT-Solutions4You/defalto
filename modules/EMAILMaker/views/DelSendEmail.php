@@ -43,7 +43,7 @@ class EMAILMaker_SendEmail_View extends Vtiger_Footer_View
 
     public function composeMailData(Vtiger_Request $request)
     {
-        $moduleName = 'Emails';
+        $moduleName = 'ITS4YouEmails';
         $EMAILMaker = new EMAILMaker_EMAILMaker_Model();
         $viewer = $this->getViewer($request);
         $single_record = true;

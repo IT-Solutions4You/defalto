@@ -60,20 +60,6 @@ class Documents_DetailView_Model extends Vtiger_DetailView_Model {
             $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
         }
 
-		if ($recordModel->get('filestatus') && $recordModel->get('filename') && $recordModel->get('filelocationtype') === 'I') {
-			$emailModuleModel = Vtiger_Module_Model::getInstance('Emails');
-
-			if($currentUserModel->hasModulePermission($emailModuleModel->getId())) {
-				$basicActionLink = array(
-						'linktype' => 'DETAILVIEW',
-						'linklabel' => 'LBL_EMAIL_FILE_AS_ATTACHMENT',
-						'linkurl' => "javascript:Documents_Detail_Js.triggerSendEmail('". json_encode(array($recordModel->getId())) ."')",
-						'linkicon' => ''
-				);
-				$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
-			}
-		}
-
 		return $linkModelList;
 	}
 

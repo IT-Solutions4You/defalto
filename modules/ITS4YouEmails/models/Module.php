@@ -94,4 +94,32 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
     {
         return sprintf('<i style="font-size: %s" class="fa-solid fa-envelope" title=""></i>', $height);
     }
+
+    /**
+     * Function to get emails related modules
+     * @return <Array> - list of modules
+     */
+    public function getEmailRelatedModules()
+    {
+        $userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+
+        $relatedModules = vtws_listtypes(['email'], Users_Record_Model::getCurrentUserModel());
+        $relatedModules = $relatedModules['types'];
+
+        foreach ($relatedModules as $moduleName) {
+            if ($moduleName === 'Users') {
+                continue;
+            }
+
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
+            if (($userPrivilegesModel->isAdminUser() || $userPrivilegesModel->hasGlobalReadPermission() || $userPrivilegesModel->hasModulePermission($moduleModel->getId())) && !$moduleModel->restrictToListInComposeEmailPopup()) {
+                $emailRelatedModules[] = $moduleName;
+            }
+        }
+
+        $emailRelatedModules[] = 'Users';
+
+        return $emailRelatedModules;
+    }
 }

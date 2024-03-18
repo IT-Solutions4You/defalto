@@ -76,7 +76,6 @@ $languageStrings = array(
     'LBL_DOCUMENT_SOURCE' => 'المصدر الوثيقة',
     'LBL_FILE_URL' => 'رابط الملف',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'البريد الإلكتروني الملف كمرفق',
   'LBL_UPLOAD_TO' => 'تحميل',
   'LBL_NEW_DOCUMENT' => 'وثيقة جديدة',
   'LBL_VTIGER' => 'Vtiger',

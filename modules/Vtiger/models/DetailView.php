@@ -106,14 +106,6 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($duplicateLinkModel);
 		}
 
-		if($this->getModule()->isModuleRelated('Emails') && Vtiger_RecipientPreference_Model::getInstance($this->getModuleName())) {
-			$emailRecpLink = array('linktype' => 'DETAILVIEW',
-								'linklabel' => vtranslate('LBL_EMAIL_RECIPIENT_PREFS',  $this->getModuleName()),
-								'linkurl' => 'javascript:Vtiger_Index_Js.showRecipientPreferences("'.$this->getModuleName().'");',
-								'linkicon' => '');
-			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($emailRecpLink);
-		}
-
 		$linkModelListDetails = Vtiger_Link_Model::getAllByType($moduleModel->getId(),$linkTypes,$linkParams);
 		foreach($linkTypes as $linkType) {
 			if(!empty($linkModelListDetails[$linkType])) {

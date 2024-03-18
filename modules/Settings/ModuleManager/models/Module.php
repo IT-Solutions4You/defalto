@@ -121,6 +121,6 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 	 * @return <Array> List module names
 	 */
 	public static function getActionsRestrictedModulesList() {
-		return array('Home', 'Emails', 'Webmails');
+		return array('Home');
 	}
 }

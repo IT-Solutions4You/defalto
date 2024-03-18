@@ -5,7 +5,7 @@
 * All Rights Reserved.
 */
 
-jQuery.Class("Vtiger_EmailPreview_Js",{},{
+jQuery.Class('ITS4YouEmails_EmailPreview_Js',{},{
 	
 	/**
 	 * Function to get email actions params
@@ -16,7 +16,7 @@ jQuery.Class("Vtiger_EmailPreview_Js",{},{
 		parentRecord.push(parentRecordId);
 		var recordId = jQuery('[name="recordId"]').val();
 		var params = {};
-		params['module'] = "Emails";
+		params['module'] = 'ITS4YouEmails';
 		params['view'] = "ComposeEmail";
 		if(mode != "emailForward"){
 			params['selected_ids'] = parentRecord;
@@ -36,7 +36,7 @@ jQuery.Class("Vtiger_EmailPreview_Js",{},{
 		var thisInstance = this;
 		app.helper.showVerticalScroll(jQuery('#toAddressesDropdown'));
         jQuery('[name="previewReplyAll"], [name="previewReply"], [name="previewForward"], [name="previewEdit"]').on('click',function(e){
-            var module = "Emails";
+            let module = 'ITS4YouEmails';
 			app.helper.checkServerConfig(module).then(function(data){
 				if(data === true){
 					var mode = jQuery(e.currentTarget).data('mode');
@@ -50,7 +50,7 @@ jQuery.Class("Vtiger_EmailPreview_Js",{},{
 							app.helper.hideProgress();
 							if(err === null){
 								app.helper.showModal(data);
-								var emailEditInstance = new Emails_MassEdit_Js();
+								var emailEditInstance = new ITS4YouEmails_MassEdit_Js();
 								emailEditInstance.registerEvents();
 							}
 						});
@@ -61,10 +61,9 @@ jQuery.Class("Vtiger_EmailPreview_Js",{},{
 				} else {
 					app.helper.showErrorMessage(app.vtranslate('JS_EMAIL_SERVER_CONFIGURATION'));
 				}
-			})
+			});
         });
         jQuery('[name="previewPrint"]').on('click',function(e){
-            var module = "Emails";
             app.helper.hideModal();
             var mode = jQuery(e.currentTarget).data('mode');
             var params = thisInstance.getEmailActionsParams(mode);
@@ -80,4 +79,4 @@ jQuery.Class("Vtiger_EmailPreview_Js",{},{
             thisInstance.registerEventsForActionButtons();
         });
 	}
-})
+});

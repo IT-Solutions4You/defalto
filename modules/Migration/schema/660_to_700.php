@@ -323,7 +323,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 
 	//Update relation field for existing relation ships
-	$ignoreRelationFieldMapping = array('Emails');
 	$query = 'SELECT * FROM vtiger_relatedlists ORDER BY tabid ';
 	$result = $db->pquery($query, array());
 	$num_rows = $db->num_rows($result);
@@ -342,10 +341,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$primaryModuleName = $primaryModuleInstance->getName();
 		$relatedModuleName = $relatedModuleInstance->getName();
 
-		//$relatedModulesIgnored = $ignoreRelationFieldMapping[$primaryModuleName];
-		if (in_array($relatedModuleName, $ignoreRelationFieldMapping)) {
-			continue;
-		}
 		$relatedModuleReferenceFields = $relatedModuleInstance->getFieldsByType('reference');
 		foreach ($relatedModuleReferenceFields as $fieldModel) {
 			if ($fieldModel->isCustomField()) {
@@ -632,13 +627,6 @@ if(defined('VTIGER_UPGRADE')) {
 			}
 		}
 	}
-
-	$projectModule = Vtiger_Module_Model::getInstance('Project');
-	$emailModule = Vtiger_Module_Model::getInstance('Emails');
-	$projectModule->setRelatedList($emailModule, 'Emails', 'ADD', 'get_emails');
-
-	$projectTaskModule = Vtiger_Module_Model::getInstance('ProjectTask');
-	$projectTaskModule->setRelatedList($emailModule, 'Emails', 'ADD', 'get_emails');
 
 	$sql = "CREATE TABLE IF NOT EXISTS vtiger_emails_recipientprefs(`id` INT(11) NOT NULL AUTO_INCREMENT,`tabid` INT(11) NOT NULL,
 				`prefs` VARCHAR(255) NULL DEFAULT NULL, `userid` INT(11), PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
@@ -927,24 +915,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 	//End
 
-	$module = Vtiger_Module_Model::getInstance('Emails');
-	$blocks = $module->getBlocks();
-	$block = current($blocks);
-
-	$field = new vtiger_field();
-	$field->label = 'Click Count';
-	$field->name = 'click_count';
-	$field->table = 'vtiger_email_track';
-	$field->column = 'click_count';
-	$field->columntype = 'INT';
-	$field->uitype = 25;
-	$field->typeofdata = 'I~O';
-	$field->displaytype = 3;
-	$field->masseditable = 0;
-	$field->quickcreate = 0;
-	$field->defaultvalue = 0;
-	$block->addfield($field);
-
 	$criteria = ' MODIFY COLUMN click_count INT NOT NULL default 0';
 	Vtiger_Utils::AlterTable('vtiger_email_track', $criteria);
 
@@ -953,7 +923,6 @@ if(defined('VTIGER_UPGRADE')) {
 
 	Vtiger_Cache::flushModuleCache('Contacts');
 	Vtiger_Cache::flushModuleCache('Leads');
-	Vtiger_Cache::flushModuleCache('Emails');
 
 	//Add create and edit to field to vtiger_customerportal_tabs to track Create and Edit permission of a module.
 	$columns = $db->getColumnNames('vtiger_customerportal_tabs');
@@ -971,13 +940,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery($updateCreateEditStatusQuery, array(0, 1, getTabid('Accounts')));
 	$db->pquery($updateCreateEditStatusQuery, array(1, 0, getTabid('Documents')));
 	$db->pquery($updateCreateEditStatusQuery, array(0, 1, getTabid('Assets')));
-
-	$accessCountFieldModel = Vtiger_Field_Model::getInstance('access_count', Vtiger_Module_Model::getInstance('Emails'));
-	if ($accessCountFieldModel) {
-		$accessCountFieldModel->set('typeofdata', 'I~O');
-		$accessCountFieldModel->__update();
-		Vtiger_Cache::flushModuleCache('Emails');
-	}
 
 	//Multiple attachment support for comments
 	$db->pquery('ALTER TABLE vtiger_seattachmentsrel DROP PRIMARY KEY', array());
@@ -2065,9 +2027,6 @@ if(defined('VTIGER_UPGRADE')) {
 				}
 			}
             $deleteQueryParams = array($moduleName);
-            if($baseTableName == 'vtiger_activity'){
-                array_push($deleteQueryParams, "Emails");
-            }
 			$db->pquery("DELETE FROM $baseTableName WHERE $baseTableIndex NOT IN (SELECT crmid FROM vtiger_crmentity WHERE setype in (". generateQuestionMarks($deleteQueryParams)."))", $deleteQueryParams);
 		}
 	}

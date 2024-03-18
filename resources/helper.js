@@ -15,7 +15,7 @@ jQuery.Class("Vtiger_Helper_Js",{
 	 */
 	getEmailMassEditInstance : function(){
 
-		var className = 'Emails_MassEdit_Js';
+		var className = 'ITS4YouEmails_MassEdit_Js';
 		var emailMassEditInstance = new window[className]();
 		return emailMassEditInstance
 	},
@@ -127,7 +127,7 @@ jQuery.Class("Vtiger_Helper_Js",{
 		var selectedIds =  new Array();
 		selectedIds.push(selectedId);
 		var params = {
-			'module' : 'Emails',
+			'module' : 'ITS4YouEmails',
             'fieldModule' : fieldmodule,
 			'selectedFields[]' : selectedFields,
 			'selected_ids[]' : selectedIds,
@@ -141,7 +141,7 @@ jQuery.Class("Vtiger_Helper_Js",{
 	 * Function to get the compose email popup
 	 */
 	getInternalMailer  : function(selectedId,fieldname,fieldmodule){
-		var module = 'Emails';
+		var module = 'EMAILMaker';
 		var cacheResponse = Vtiger_Helper_Js.checkServerConfigResponseCache;
 		var  checkServerConfigPostOperations = function (data) {
 			if(data == true){

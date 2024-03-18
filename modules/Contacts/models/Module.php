@@ -135,7 +135,7 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> Listview Query
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
-		if (in_array($sourceModule, array('Campaigns', 'Potentials', 'Vendors', 'Products', 'Services', 'Emails'))
+		if (in_array($sourceModule, array('Campaigns', 'Potentials', 'Vendors', 'Products', 'Services', 'ITS4YouEmails'))
 				|| ($sourceModule === 'Contacts' && $field === 'contact_id' && $record)) {
 			switch ($sourceModule) {
 				case 'Campaigns'	: $tableName = 'vtiger_campaigncontrel';	$fieldName = 'contactid';	$relatedFieldName ='campaignid';	break;
@@ -149,7 +149,7 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 			if ($sourceModule === 'Services') {
 				$condition = " vtiger_contactdetails.contactid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
                 		$params = array($record , $record);
-			} elseif ($sourceModule === 'Emails') {
+			} elseif ($sourceModule === 'ITS4YouEmails') {
 				$condition = ' vtiger_contactdetails.emailoptout = 0';
 			} elseif ($sourceModule === 'Contacts' && $field === 'contact_id') {
 				$condition = " vtiger_contactdetails.contactid != ?";

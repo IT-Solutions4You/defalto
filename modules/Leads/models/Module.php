@@ -291,7 +291,7 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> Listview Query
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
-		if (in_array($sourceModule, array('Campaigns', 'Products', 'Services', 'Emails'))) {
+		if (in_array($sourceModule, array('Campaigns', 'Products', 'Services', 'ITS4YouEmails'))) {
 			switch ($sourceModule) {
 				case 'Campaigns'	: $tableName = 'vtiger_campaignleadrel';	$fieldName = 'leadid';	$relatedFieldName ='campaignid';	break;
 				case 'Products'		: $tableName = 'vtiger_seproductsrel';		$fieldName = 'crmid';		$relatedFieldName ='productid';		break;
@@ -302,7 +302,7 @@ class Leads_Module_Model extends Vtiger_Module_Model {
 			if ($sourceModule === 'Services') {
 				$condition = " vtiger_leaddetails.leadid NOT IN (SELECT relcrmid FROM vtiger_crmentityrel WHERE crmid = ? UNION SELECT crmid FROM vtiger_crmentityrel WHERE relcrmid = ?) ";
                 		$params = array($record, $record);
-			} elseif ($sourceModule === 'Emails') {
+			} elseif ($sourceModule === 'ITS4YouEmails') {
 				$condition = ' vtiger_leaddetails.emailoptout = 0';
                 		$params = array();
 			} else {

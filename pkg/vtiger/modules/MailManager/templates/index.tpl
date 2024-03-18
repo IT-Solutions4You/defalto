@@ -1,55 +1,37 @@
-{*<!--/************************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.1
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- ************************************************************************************/-->*}
-
+{**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*}
 {strip}
-<div class="span2 row-fluid">
-	<div id="_quicklinks_mainuidiv_" class="quickWidgetContainer accordion">
-		{include file="modules/MailManager/MainuiQuickLinks.tpl"}
-
-		<div class="clearfix">&nbsp;
-			<input type="hidden" id="isMailBoxExists" value="{if $MAILBOX->exists()}1{else}0{/if}"/>
-		</div>
-		<div class="quickWidget">
-		<div class="accordion-heading accordion-toggle quickWidgetHeader" onclick="MailManager.getFoldersList();">
-			<span class="pull-left">
-				<img class="imageElement" data-rightimage="{vimage_path('rightArrowWhite.png')}" data-downimage="{vimage_path('downArrowWhite.png')}" src="{vimage_path('rightArrowWhite.png')}" />
-			</span>&nbsp;
-			<h5 class="title widgetTextOverflowEllipsis pull-right">{vtranslate('LBL_Folders',$MODULE)}</h5>
-		</div>
-
-		<div class="widgetContainer accordion-body collapse in" id="folders">
-			<input type=hidden name="mm_selected_folder" id="mm_selected_folder">
-			<input type="hidden" name="_folder" id="mailbox_folder">
-		</div>
-	</div>
-		<div id="_mainfolderdiv_" class="quickWidgetContainer accordion"></div>
-	</div>
-</div>
-
-<div class="contentsDiv span10 marginLeftZero">
-	<div id='_progress_' style='float: right; display: none; position: absolute; right: 35px; font-weight: bold;'>
-		<span id='_progressmsg_'>...</span><img src="{'vtbusy.gif'|@vimage_path}" border='0' align='absmiddle'>
-	</div>
-	<span id="_messagediv_">{if $ERROR}<p>{$ERROR}</p>{/if}</span>
-	<div id="_contentdiv_"></div>
-    <div id="_contentdiv2_" class="container-fluid"></div>
-	<div id="_settingsdiv_"></div>
-	<div id="_relationpopupdiv_" style="display:none;position:absolute;width:800px;z-index:80000;"></div>
-	<div id="_replydiv_" style="display:none;"></div>
-	<div id="replycontentdiv" style="display:none;"></div>
-</div>
-<div id = '__vtiger__'></div>
-
-<script type='text/javascript'>
-	{literal}
-		jQuery(function(){MailManager.mainui()});
-	{/literal}
-</script>
-<input type="hidden" name="module" value="MailManager">
+    {assign var=IS_MAILBOX_EXISTS value=$MAILBOX->exists()}
+    <input type="hidden" id="isMailBoxExists" value="{if $IS_MAILBOX_EXISTS}1{else}0{/if}">
+    {if !$IS_MAILBOX_EXISTS}
+        <div class="mmDescription container p-4 text-center">
+            <h4 class="mb-4">{vtranslate($MODULE, $MODULE)}</h4>
+            <p class="mb-4 text-start">{vtranslate('LBL_MODULE_DESCRIPTION', $MODULE)}</p>
+            <div>
+                <button class="btn btn-success mailbox_setting">
+                    <strong>{vtranslate('LBL_CONFIGURE_MAILBOX', $MODULE)}</strong>
+                </button>
+            </div>
+        </div>
+    {else}
+        <div id="mailmanagerContainer" class="py-3 bg-body rounded h-100">
+            <input type="hidden" id="refresh_timeout" value="{$MAILBOX->refreshTimeOut()}"/>
+            <div class="container-fluid h-100">
+                <div class="row h-100">
+                    <div class="col-lg-6 border-end d-flex flex-column" id="mails_container"></div>
+                    <div class="col-lg-6" id="mailPreviewContainer">
+                        <div class="mmListMainContainer">
+                            <div class="text-center">
+                                <strong>{vtranslate('LBL_NO_MAIL_SELECTED_DESC', $MODULE)}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
 {/strip}

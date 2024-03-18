@@ -77,7 +77,6 @@ $languageStrings = array(
     'LBL_FILE_URL' => 'URL pliku',
 
   'Documents' => 'Dokumenty',
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Plik jako załącznik do wiadomości e-mail',
   'LBL_UPLOAD_TO' => 'Pobierz',
   'LBL_NEW_DOCUMENT' => 'Nowy Dokument',
   'LBL_VTIGER' => 'Free rosyjska',
