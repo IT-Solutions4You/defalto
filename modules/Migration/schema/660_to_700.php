@@ -440,7 +440,7 @@ if(defined('VTIGER_UPGRADE')) {
 	$EmailsModuleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 	$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
 
-	$recordModel = new ITS4YouEmails_EmailLookup_Model();
+	$recordModel = ITS4YouEmails_EmailLookup_Model::getInstance();
 	foreach ($emailSupportedModulesList as $module) {
 		if ($module != 'Users') {
 			$moduleInstance = CRMEntity::getInstance($module);

@@ -8,6 +8,7 @@
  * All Rights Reserved.
  * ***********************************************************************************/
 
+require_once('data/CRMEntity.php');
 require_once('modules/HelpDesk/HelpDesk.php');
 require_once('modules/ModComments/ModComments.php');
 require_once('modules/Users/Users.php');
@@ -432,7 +433,7 @@ class Vtiger_MailScannerAction {
 			$assignedToId = Users::getActiveAdminId();
 		}
 
-		$focus = new ITS4YouEmails();
+		$focus = CRMEntity::getInstance('ITS4YouEmails');
 		$focus->column_fields['parent_type'] = $module;
 		$focus->column_fields['related_to'] = "$linkfocus->id@-1|";
 		$focus->column_fields['subject'] = $mailrecord->_subject;
@@ -598,4 +599,3 @@ class Vtiger_MailScannerAction {
 	}
 
 }
-?>
