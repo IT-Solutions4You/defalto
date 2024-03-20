@@ -10,15 +10,15 @@
 
 /**
  * Function to get or set a global variable
- * @param type $key
- * @param type $value
- * @return value of the given key
+ * @param string $key
+ * @param mixed $value
+ * @return mixed value of the given key
  */
-function vglobal($key, $value=null) {
-	$returnVal = false;
-	if($value !== null) {
-		$GLOBALS[$key] = $value;
-	}
-	$returnVal = isset($GLOBALS[$key]) ? $GLOBALS[$key] : false;
-	return $returnVal;
+function vglobal($key, $value = null)
+{
+    if ($value !== null) {
+        $GLOBALS[$key] = $value;
+    }
+
+    return isset($GLOBALS[$key]) ? $GLOBALS[$key] : false;
 }

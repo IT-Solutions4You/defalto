@@ -367,7 +367,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
             foreach ($blocks as $block => $fields) {
                 self::logSuccess('Block create: ' . $block);
-
+                $fieldSequence = 0;
                 $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
 
                 if (!$blockInstance) {
@@ -385,6 +385,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
                     self::logSuccess('Field create: ' . $fieldName);
 
+                    $fieldSequence++;
                     $relatedModules = [];
                     $picklistValues = [];
 
@@ -397,6 +398,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                     $fieldInstance->name = $fieldName;
                     $fieldInstance->column = $fieldName;
                     $fieldInstance->table = $baseTable;
+                    $fieldInstance->sequence = $fieldSequence;
 
                     foreach ($fieldParams as $fieldParamName => $fieldParam) {
                         if ('picklist_values' === $fieldParamName) {
@@ -414,6 +416,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                         'block' => $fieldInstance->getBlockId(),
                         'presence' => $fieldInstance->presence,
                         'displaytype' => $fieldInstance->displaytype,
+                        'sequence' => $fieldInstance->sequence,
                     ];
                     $sql = sprintf('UPDATE vtiger_field SET %s=? WHERE fieldid=?', implode('=?,', array_keys($params)));
                     $this->db->pquery($sql, [$params, $fieldInstance->id]);
@@ -497,6 +500,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      */
     public static function logError($message): void
     {
+        if (true !== vglobal('debug')) {
+            return;
+        }
+
         echo '<pre style="font-size: 20px; color: red;">' . print_r($message, true) . '</pre>';
     }
 
@@ -506,6 +513,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      */
     public static function logSuccess($message): void
     {
+        if (true !== vglobal('debug')) {
+            return;
+        }
+
         echo '<pre style="font-size: 20px; color: darkolivegreen;">' . print_r($message, true) . '</pre>';
     }
 
@@ -518,7 +529,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
 
         foreach ($this->registerCron as $cronInfo) {
-            list($name, $handler, $frequency, $module, $sequence, $description) = array_pad($cronInfo, 6, null);
+            [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cronInfo, 6, null);
 
             Vtiger_Cron::deregister($name);
 
@@ -531,7 +542,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateCustomLinks($register = true)
     {
         foreach ($this->registerCustomLinks as $customLink) {
-            list($moduleName, $type, $label, $url, $icon, $sequence, $handler) = array_pad($customLink, 7, null);
+            [$moduleName, $type, $label, $url, $icon, $sequence, $handler] = array_pad($customLink, 7, null);
             $module = Vtiger_Module::getInstance($moduleName);
             $url = str_replace('$LAYOUT$', Vtiger_Viewer::getDefaultLayoutName(), $url);
 
@@ -550,7 +561,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $eventsManager = new VTEventsManager($this->db);
 
         foreach ($this->registerEventHandler as $data) {
-            list($events, $fileName, $className, $condition, $dependOn, $modules) = $data;
+            [$events, $fileName, $className, $condition, $dependOn, $modules] = $data;
 
             $eventsManager->unregisterHandler($className);
 
@@ -609,7 +620,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateSettingsLinks($register = true)
     {
         foreach ($this->registerSettingsLinks as $settingsLink) {
-            list($name, $link, $block) = $settingsLink;
+            [$name, $link, $block] = $settingsLink;
 
             $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', array($name));
 
@@ -632,7 +643,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     public function updateWorkflows($register = true)
     {
         foreach ($this->registerWorkflows as $registerWorkflow) {
-            list($moduleName, $workflowName, $workflowLabel, $modules) = $registerWorkflow;
+            [$moduleName, $workflowName, $workflowLabel, $modules] = $registerWorkflow;
 
             $layout = Vtiger_Viewer::getLayoutName();
 

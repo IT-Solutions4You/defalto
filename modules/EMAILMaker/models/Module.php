@@ -348,7 +348,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
 
     public function getPopupUrl()
     {
-        return 'module=PDFMaker&view=Popup';
+        return '';
     }
 
     /*

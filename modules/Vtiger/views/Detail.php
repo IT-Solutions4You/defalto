@@ -525,16 +525,14 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('MAX_UPLOAD_LIMIT_MB', Vtiger_Util_Helper::getMaxUploadSize());
 		$viewer->assign('MAX_UPLOAD_LIMIT_BYTES', Vtiger_Util_Helper::getMaxUploadSizeInBytes());
 		$viewer->assign('COMMENTS_MODULE_MODEL', $modCommentsModel);
-		$viewer->assign('ROLLUP_STATUS', isset($rollupsettings['rollup_status']) ? 
-			$rollupsettings['rollup_status'] : false);
-		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ?
-			$rollupsettings['rollupid'] : 0);
+		$viewer->assign('ROLLUP_STATUS', isset($rollupsettings['rollup_status']) ? $rollupsettings['rollup_status'] : false);
+		$viewer->assign('ROLLUPID', isset($rollupsettings['rollupid']) ? $rollupsettings['rollupid'] : 0);
 		$viewer->assign('PARENT_RECORD', $parentId);
         $viewer->assign('STARTINDEX', 0);
 
         if (!empty($parentRecordModel)) {
             $relationModel = Vtiger_Relation_Model::getInstance($parentRecordModel->getModule(), $modCommentsModel);
-            $viewer->assign('RELATION_LIST_URL', $relationModel->getListUrl($parentRecordModel));
+            $viewer->assign('RELATION_LIST_URL', $relationModel ? $relationModel->getListUrl($parentRecordModel) : '');
         }
 
         return $viewer->view('RecentComments.tpl', $moduleName, 'true');
@@ -682,7 +680,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
     {
         $activitiesModuleName = 'Appointments';
         $activitiesModule = Vtiger_Module_Model::getInstance($activitiesModuleName);
-        $parentField = $activitiesModule->getField('parent_id');
+        $parentFieldName = 'parent_id';
+        $parentField = $activitiesModule->getField($parentFieldName);
         $parentModules = array_merge($parentField->getReferenceList(), ['Accounts', 'Contacts']);
         $currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
@@ -707,7 +706,16 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $relationListView->set('whereCondition', [
                 'calendar_status' => ['its4you_calendar.status', 'n', ['Completed', 'Cancelled'], 'picklist'],
             ]);
+
+            if(!$relationListView->getRelationModel()) {
+                return '';
+            }
+
             $relatedActivities = $relationListView->getEntries($pagingModel) ?? [];
+            $parentFieldNames = [
+                'Accounts' => 'account_id',
+                'Contacts' => 'contact_id',
+            ];
 
             $viewer = $this->getViewer($request);
             $viewer->assign('RECORD', $recordModel);
@@ -717,6 +725,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             $viewer->assign('ACTIVITIES', $relatedActivities);
             $viewer->assign('ACTIVITIES_MODULE_NAME', $activitiesModuleName);
             $viewer->assign('RELATION_LIST_URL', $relationListView->getRelationModel()->getListUrl($recordModel));
+            $viewer->assign('PARENT_FIELD_NAME', $parentFieldNames[$moduleName] ?? $parentFieldName);
 
             return $viewer->view('RelatedEvents.tpl', $moduleName, true);
         }

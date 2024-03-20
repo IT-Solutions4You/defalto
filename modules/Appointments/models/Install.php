@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-class Appointments_Install_Model extends Vtiger_Base_Model
+class Appointments_Install_Model extends Vtiger_Install_Model
 {
     /**
      * @var array
@@ -24,7 +24,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
     /**
      * @throws AppException
      */
-    protected function addCustomLinks()
+    public function addCustomLinks(): void
     {
         $this->installTables();
         $this->installFields();
@@ -41,30 +41,11 @@ class Appointments_Install_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param $column
-     * @param $type
-     * @return $this
+     * @param string $firstColumn
+     * @param string $firstType
      * @throws AppException
      */
-    protected function createColumn($column, $type): self
-    {
-        if ($this->isEmpty('table')) {
-            throw new AppException('Table is empty for create column');
-        }
-
-        $sql = sprintf('ALTER TABLE %s ADD %s %s NULL', $this->get('table'), $column, $type);
-
-        if (!columnExists($column, $this->get('table'))) {
-            $this->db->query($sql);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @throws AppException
-     */
-    protected function createTable(): self
+    protected function createTable($firstColumn = '', $firstType = 'int(11)'): self
     {
         if ($this->isEmpty('table')) {
             throw new AppException('Table is empty for create table');
@@ -88,7 +69,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
     /**
      * @return void
      */
-    protected function deleteCustomLinks()
+    public function deleteCustomLinks(): void
     {
         $this->updateCron(false);
         $this->updateWorkflow(false);
@@ -98,72 +79,9 @@ class Appointments_Install_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @return void
-     */
-    public function deleteModule()
-    {
-        $moduleName = $this->moduleName;
-        $moduleInstance = Vtiger_Module::getInstance($moduleName);
-        $moduleFocus = CRMEntity::getInstance($moduleName);
-
-        if ($moduleInstance) {
-            if (!empty($moduleInstance->basetable)) {
-                self::logError('Drop tables');
-
-                $cfTable = $moduleFocus->customFieldTable[0];
-                $dropTables = [
-                    $moduleInstance->basetable,
-                    $moduleInstance->basetable . '_seq',
-                    $cfTable,
-                    $cfTable . '_seq',
-                ];
-
-                self::logSuccess($dropTables);
-
-                foreach ($dropTables as $dropTable) {
-                    $this->db->pquery('DROP TABLE IF EXISTS ' . $dropTable);
-                }
-            }
-
-            self::logError('Delete records, fields, blocks, related lists');
-
-            $this->db->pquery('DELETE FROM vtiger_crmentity WHERE setype=?', [$moduleName]);
-            $this->db->pquery('DELETE FROM vtiger_field WHERE tabid=?', [getTabid($moduleName)]);
-            $this->db->pquery('DELETE FROM vtiger_blocks WHERE tabid=?', [getTabid($moduleName)]);
-            $this->db->pquery('DELETE FROM vtiger_relatedlists WHERE tabid=? OR related_tabid=?', [getTabid($moduleName), getTabid($moduleName)]);
-
-            self::logError('Delete picklist values');
-
-            foreach (self::getBlocks() as $blockName => $blockInfo) {
-                foreach ($blockInfo as $fieldName => $fieldInfo) {
-                    if (!empty($fieldInfo['picklist_values'])) {
-                        self::logError('Delete picklist values: ' . $fieldName);
-
-                        $this->db->query('DROP TABLE IF EXISTS vtiger_' . $fieldName);
-                        $this->db->pquery('DELETE FROM vtiger_picklist WHERE name=?', [$fieldName]);
-                    }
-                }
-            }
-
-            self::logError('Delete filter');
-
-            $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
-
-            if ($filter) {
-                $filter->delete();
-            }
-
-            self::logError('Delete module');
-            $moduleInstance->delete();
-
-            die('Delete module');
-        }
-    }
-
-    /**
      * @return array
      */
-    public static function getBlocks(): array
+    public function getBlocks(): array
     {
         return [
             'LBL_BASIC_INFORMATION' => [
@@ -177,14 +95,12 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                     'entity_identifier' => 1,
                     'masseditable' => 1,
                 ],
-                'location' => [
-                    'column' => 'location',
-                    'label' => 'Location',
-                    'uitype' => 1,
-                    'typeofdata' => 'V~O',
-                    'columntype' => 'VARCHAR(150)',
-                    'masseditable' => 1,
-                    'summaryfield' => 1,
+                'is_all_day' => [
+                    'column' => 'is_all_day',
+                    'label' => 'Is All Day',
+                    'uitype' => 56,
+                    'typeofdata' => 'C~O',
+                    'columntype' => 'VARCHAR(3)',
                     'quickcreate' => 0,
                 ],
                 'datetime_start' => [
@@ -205,14 +121,6 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                     'filter' => 1,
                     'headerfield' => 1,
                 ],
-                'is_all_day' => [
-                    'column' => 'is_all_day',
-                    'label' => 'Is All Day',
-                    'uitype' => 56,
-                    'typeofdata' => 'C~O',
-                    'columntype' => 'VARCHAR(3)',
-                    'quickcreate' => 0,
-                ],
                 'calendar_status' => [
                     'column' => 'status',
                     'label' => 'Status',
@@ -227,6 +135,16 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                     'filter' => 1,
                     'masseditable' => 1,
                     'summaryfield' => 1,
+                ],
+                'location' => [
+                    'column' => 'location',
+                    'label' => 'Location',
+                    'uitype' => 1,
+                    'typeofdata' => 'V~O',
+                    'columntype' => 'VARCHAR(150)',
+                    'masseditable' => 1,
+                    'summaryfield' => 1,
+                    'quickcreate' => 0,
                 ],
                 'calendar_priority' => [
                     'column' => 'priority',
@@ -437,19 +355,17 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         return $instance;
     }
 
-    /**
-     * @param string $table
-     * @param string $tableId
-     * @return self
-     */
-    public function getTable(string $table, string $tableId): self
+    public function getTables(): array
     {
-        $clone = new self();
-        $clone->db = PearDatabase::getInstance();
-        $clone->set('table', $table);
-        $clone->set('table_id', $tableId);
-
-        return $clone;
+        return [
+            'its4you_remindme',
+            'its4you_remindme_popup',
+            'its4you_invited_users',
+            'its4you_recurring',
+            'its4you_recurring_rel',
+            'its4you_calendar_user_types',
+            'its4you_calendar_default_types',
+        ];
     }
 
     /**
@@ -550,8 +466,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
             ]);
 
             $this->db->pquery(
-                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
-                ['Monday |##| Tuesday |##| Wednesday |##| Thursday |##| Friday', '']
+                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName), ['Monday |##| Tuesday |##| Wednesday |##| Thursday |##| Friday', '']
             );
         }
 
@@ -571,8 +486,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
                 '15 minutes',
             ]);
             $this->db->pquery(
-                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName),
-                ['30 minutes', '']
+                sprintf('UPDATE vtiger_users SET %s=? WHERE %s IS NULL OR %s LIKE ?', $fieldName, $fieldName, $fieldName), ['30 minutes', '']
             );
         }
     }
@@ -581,246 +495,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
      * @return void
      * @throws AppException
      */
-    public function installModule()
-    {
-        $this->installTables();
-
-        self::logSuccess('Install tables');
-
-        $moduleName = $this->moduleName;
-        /** @var Appointments $moduleFocus */
-        $moduleFocus = CRMEntity::getInstance($moduleName);
-
-        $entity = in_array(get_parent_class($moduleFocus), ['CRMEntity', 'Vtiger_CRMEntity']);
-        $baseTableId = $moduleFocus->table_index;
-        $baseTable = $moduleFocus->table_name;
-        $label = $moduleFocus->moduleLabel;
-        $name = $moduleFocus->moduleName;
-        $parent = $moduleFocus->parentName;
-        $cfTable = $moduleFocus->customFieldTable[0];
-        $version = 0.1;
-        $blocks = self::getBlocks();
-
-        if (!empty($entity) && empty($baseTableId)) {
-            self::logError('Empty base table ID');
-            die('Empty base table ID');
-        }
-
-        if (!empty($entity) && empty($baseTable)) {
-            self::logError('Empty base table ID');
-            die('Empty base table');
-        }
-
-        if (empty($label)) {
-            self::logError('Dynamic created label');
-
-            $label = str_replace('ITS', '', $name);
-            $label = str_replace('4You', '', $label);
-        }
-
-        if (empty($cfTable)) {
-            self::logError('Dynamic custom field table');
-
-            $cfTable = $baseTable . 'cf';
-        }
-
-        if (empty($groupRelTable)) {
-            self::logError('Dynamic group relation table');
-
-            $groupRelTable = $baseTable . 'grouprel';
-        }
-
-        $crmVersion = Vtiger_Version::current();
-        $moduleInstance = Vtiger_Module::getInstance($name);
-
-        if (!$moduleInstance) {
-            $moduleInstance = new Vtiger_Module();
-
-            self::logSuccess('Module creating');
-        } else {
-            self::logSuccess('Module Updating');
-        }
-
-        $moduleInstance->name = $name;
-        $moduleInstance->parent = $parent;
-        $moduleInstance->label = $label;
-        $moduleInstance->version = $version;
-        $moduleInstance->minversion = $crmVersion;
-        $moduleInstance->maxversion = $crmVersion;
-        $moduleInstance->isentitytype = $entity;
-        $moduleInstance->basetable = $baseTable;
-        $moduleInstance->basetableid = $baseTableId;
-        $moduleInstance->customtable = $cfTable;
-        $moduleInstance->grouptable = $groupRelTable;
-        $moduleInstance->save();
-
-        self::logSuccess('Module created');
-
-        $moduleInstance->setDefaultSharing();
-
-        self::logSuccess('Sharing Access Setup');
-
-        $moduleInstance->initWebservice();
-
-        self::logSuccess('Webservice Setup');
-
-        if ($entity) {
-            $moduleInstance->initTables($moduleInstance->basetable, $moduleInstance->basetableid);
-
-            Vtiger_Filter::deleteForModule($moduleInstance);
-
-            $filterSequence = 0;
-            $filter = Vtiger_Filter::getInstance('All', $moduleInstance);
-
-            if (!$filter) {
-                $filter = new Vtiger_Filter();
-            }
-
-            $filter->name = 'All';
-            $filter->isdefault = true;
-            $filter->save($moduleInstance);
-
-            if (isset($blocks['LBL_ITEM_DETAILS'])) {
-                $taxResult = $this->db->pquery('SELECT * FROM vtiger_inventorytaxinfo');
-
-                while ($row = $this->db->fetchByAssoc($taxResult)) {
-                    $blocks['LBL_ITEM_DETAILS'][$row['taxname']] = [
-                        'table' => 'vtiger_inventoryproductrel',
-                        'label' => $row['taxlabel'],
-                        'uitype' => 83,
-                        'typeofdata' => 'V~O',
-                        'displaytype' => 5,
-                        'masseditable' => 0,
-                    ];
-                }
-            }
-
-            foreach ($blocks as $block => $fields) {
-                self::logSuccess('Block create: ' . $block);
-
-                $blockInstance = Vtiger_Block::getInstance($block, $moduleInstance);
-
-                if (!$blockInstance) {
-                    $blockInstance = new Vtiger_Block();
-                }
-
-                    $blockInstance->label = $block;
-
-                    $moduleInstance->addBlock($blockInstance);
-
-                foreach ($fields as $fieldName => $fieldParams) {
-                    if (empty($fieldName)) {
-                        continue;
-                    }
-
-                    self::logSuccess('Field create: ' . $fieldName);
-
-                    $relatedModules = [];
-                    $picklistValues = [];
-
-                    $fieldInstance = Vtiger_Field_Model::getInstance($fieldName, $moduleInstance);
-
-                    if (!$fieldInstance) {
-                        $fieldInstance = new Vtiger_Field();
-                    }
-
-                    $fieldInstance->name = $fieldName;
-                    $fieldInstance->column = $fieldName;
-                    $fieldInstance->table = $baseTable;
-
-                    foreach ($fieldParams as $fieldParamName => $fieldParam) {
-                        if ('picklist_values' === $fieldParamName) {
-                            $picklistValues = $fieldParam;
-                        } elseif ('related_modules' === $fieldParamName) {
-                            $relatedModules = $fieldParam;
-                        } else {
-                            $fieldInstance->$fieldParamName = $fieldParam;
-                        }
-                    }
-
-                    $blockInstance->addField($fieldInstance);
-
-                    $params = [
-                        'block' => $fieldInstance->getBlockId(),
-                        'presence' => $fieldInstance->presence,
-                        'displaytype' => $fieldInstance->displaytype,
-                    ];
-                    $sql = sprintf('UPDATE vtiger_field SET %s=? WHERE fieldid=?', implode('=?,', array_keys($params)));
-                    $this->db->pquery($sql, [$params, $fieldInstance->id]);
-
-                    if (!empty($picklistValues)) {
-                        self::logSuccess('Picklist values create: ' . $fieldName);
-                        self::logSuccess($picklistValues);
-
-                        $picklistTable = 'vtiger_' . $fieldName;
-                        $currentPicklistValues = [];
-
-                        if (Vtiger_Utils::checkTable($picklistTable)) {
-                            $currentPicklistValues = $fieldInstance->getPicklistValues();
-                        }
-
-                        foreach ($picklistValues as $picklistKey => $picklistValue) {
-                            $picklistName = is_array($picklistValue) ? $picklistValue[0] : $picklistValue;
-
-                            if (!isset($currentPicklistValues[$picklistName])) {
-                                $fieldInstance->setPicklistValues([$picklistKey => $picklistValue]);
-                            }
-                        }
-                    }
-
-                    if (!empty($relatedModules)) {
-                        self::logSuccess('Related modules create: ' . $fieldName . ' - ' . implode(',', $relatedModules));
-
-                        foreach ($relatedModules as $relatedModule => $relatedLabel) {
-                            if (!is_numeric($relatedModule)) {
-                                $relModule = Vtiger_Module::getInstance($relatedModule);
-                                $relModule->unsetRelatedList($moduleInstance, $relatedLabel, 'get_dependents_list');
-                            }
-
-                            $fieldInstance->setRelatedModules([$relatedModule => $relatedLabel]);
-                        }
-                    }
-
-                    if (isset($fieldParams['filter'])) {
-                        self::logSuccess('Filter create: ' . $fieldName);
-
-                        $filterSequence++;
-                        $filter->addField($fieldInstance, $filterSequence);
-                    }
-
-                    if (isset($fieldParams['entity_identifier'])) {
-                        self::logSuccess('Entity Identifier: ' . $fieldName);
-
-                        $moduleInstance->setEntityIdentifier($fieldInstance);
-                    }
-                }
-            }
-
-            self::logSuccess('Link start creating');
-
-            if (!empty($name) && !empty($parent)) {
-                Settings_MenuEditor_Module_Model::updateModuleApp($name, $parent);
-                Settings_MenuEditor_Module_Model::addModuleToApp($name, $parent);
-
-                self::logSuccess('Link created');
-            } else {
-                self::logError('Link not created');
-            }
-        }
-
-        $moduleManagerModel = new Settings_ModuleManager_Module_Model();
-        $moduleManagerModel->disableModule($moduleName);
-        $moduleManagerModel->enableModule($moduleName);
-
-        self::logSuccess('Module result: ' . $moduleName);
-        self::logSuccess($moduleInstance);
-    }
-
-    /**
-     * @return void
-     * @throws AppException
-     */
-    protected function installTables()
+    public function installTables(): void
     {
         $this->getTable('its4you_remindme', 'remindme_id')
             ->createTable()
@@ -868,89 +543,6 @@ class Appointments_Install_Model extends Vtiger_Base_Model
             ->createColumn('fields', 'varchar(200)')
             ->createColumn('default_color', 'varchar(8)')
             ->createColumn('is_default', 'int(1)');
-
-
-        /** Database references to crmentity
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring`
-         * ADD CONSTRAINT `its4you_recurring_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_invited_users`
-         * ADD CONSTRAINT `its4you_invited_users_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_invited_users`
-         * ADD CONSTRAINT `its4you_invited_users_user_id`
-         * FOREIGN KEY (`user_id`)
-         * REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_remindme`
-         * ADD CONSTRAINT `its4you_remindme_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_remindme_popup`
-         * ADD CONSTRAINT `its4you_remindme_popup_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring_rel`
-         * ADD CONSTRAINT `its4you_recurring_rel_record_id`
-         * FOREIGN KEY (`record_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         * $this->db->query(
-         * 'ALTER TABLE `its4you_recurring_rel`
-         * ADD CONSTRAINT `its4you_recurring_rel_recurrence_id`
-         * FOREIGN KEY (`recurrence_id`)
-         * REFERENCES `vtiger_crmentity` (`crmid`) ON DELETE CASCADE ON UPDATE NO ACTION'
-         * );
-         */
-    }
-
-    /**
-     * @param mixed $message
-     * @return void
-     */
-    public static function logError($message): void
-    {
-        echo '<pre style="font-size: 20px; color: red;">' . print_r($message, true) . '</pre>';
-    }
-
-    /**
-     * @param mixed $message
-     * @return void
-     */
-    public static function logSuccess($message): void
-    {
-        echo '<pre style="font-size: 20px; color: darkolivegreen;">' . print_r($message, true) . '</pre>';
-    }
-
-    /**
-     * @param bool $register
-     * @return void
-     */
-    protected function updateCron(bool $register = true)
-    {
-        $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
-
-        foreach ($this->registerCron as $cronInfo) {
-            [$name, $handler, $frequency, $module, $sequence, $description] = $cronInfo;
-
-            Vtiger_Cron::deregister($name);
-
-            if ($register) {
-                Vtiger_Cron::register($name, $handler, $frequency, $module, 1, $sequence, $description);
-            }
-        }
     }
 
     /**
@@ -1091,8 +683,7 @@ class Appointments_Install_Model extends Vtiger_Base_Model
         }
 
         $this->db->pquery(
-            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?',
-            [$name]
+            'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', [$name]
         );
 
         if ($copied && $register) {

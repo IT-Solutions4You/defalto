@@ -143,15 +143,21 @@
 
                             {* show month view by anually *}
                             <div class='form-group py-3 {if $WORKFLOW_MODEL_OBJ->schtypeid neq 7}hide{/if}' id="scheduleAnually">
-                                <label class='control-label'> {vtranslate('LBL_SELECT_MONTH_AND_DAY', $QUALIFIED_MODULE)} <span class="redColor">*</span> </label>
-                                <div class='controls'>
-                                    <div id='annualDatePicker'></div>
+                                <label class='control-label'>
+                                    <span>{vtranslate('LBL_SELECT_MONTH_AND_DAY', $QUALIFIED_MODULE)}</span>
+                                    <span class="text-danger ms-2">*</span>
+                                </label>
+                                <div class="controls">
+                                    <div class="clearfix">
+                                        <style id="annualDatePickerStyle"></style>
+                                        <div id="annualDatePicker"></div>
+                                    </div>
                                 </div>
-                                <div class='controls'>
+                                <div class="controls">
                                     <label>{vtranslate('LBL_SELECTED_DATES', $QUALIFIED_MODULE)}</label>
                                     <div>
-                                        <input type=hidden id=hiddenAnnualDates value='{$WORKFLOW_MODEL_OBJ->schannualdates}'/>
-                                        <select multiple class="select2" id='annualDates' name='schannualdates[]' data-rule-required="true" style="min-width: 100px;">
+                                        {assign var=ANNUAL_DATES value=Zend_Json::decode($WORKFLOW_MODEL_OBJ->schannualdates)}
+                                        <select multiple="multiple" class="select2" id="annualDates" name="schannualdates[]" data-rule-required="true" data-maximum-selection-length="7">
                                             {foreach item=DATES from=$ANNUAL_DATES}
                                                 <option value="{$DATES}" selected>{$DATES}</option>
                                             {/foreach}

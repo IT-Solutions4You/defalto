@@ -65,6 +65,9 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
 
         $viewer->assign('RECIPIENTMODULENAMES', $EMAILMaker->getRecipientModulenames());
 
+        $foldersRelatedDocuments = [];
+        $loadRelatedDocuments = 0;
+
         if ($request->has('record') && !$request->isEmpty('record')) {
             $templateId = $request->get('record');
             $emailTemplateResult = $EMAILMaker->GetEditViewData($templateId);
@@ -76,6 +79,8 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
             $order = $emailTemplateResult['order'];
             $owner = $emailTemplateResult['owner'];
             $sharingType = $emailTemplateResult['sharingtype'];
+            $loadRelatedDocuments = (int)$emailTemplateResult['load_related_documents'];
+            $foldersRelatedDocuments = explode(',', $emailTemplateResult['folders_related_documents']);
             $sharingMemberArray = $EMAILMaker->GetSharingMemberArray($templateId, true);
 
             if (vtlib_isModuleActive('ITS4YouStyles')) {
@@ -362,6 +367,9 @@ class EMAILMaker_Edit_View extends Vtiger_Index_View
         }
 
         $viewer->assign('GENERAL_FIELDS', EMAILMaker_Fields_Model::getGeneralFieldsOptions());
+        $viewer->assign('DOCUMENTS_FOLDERS', Documents_Module_Model::getAllFolders());
+        $viewer->assign('RELATED_DOCUMENTS_FOLDERS', $foldersRelatedDocuments);
+        $viewer->assign('LOAD_RELATED_DOCUMENTS', $loadRelatedDocuments);
 
         $viewer->view('Edit.tpl', 'EMAILMaker');
     }

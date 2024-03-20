@@ -215,7 +215,7 @@ class EMAILMaker_Fields_Model extends Vtiger_Base_Model
             $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks INNER JOIN vtiger_tab ON vtiger_tab.tabid = vtiger_blocks.tabid WHERE vtiger_tab.name = ? AND (blocklabel = ? OR blocklabel = ? ) ORDER BY sequence ASC';
             $params = ['Users', 'LBL_USERLOGIN_ROLE', 'LBL_ADDRESS_INFORMATION'];
         } else {
-            $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid=' . $module_id . ' ORDER BY sequence ASC';
+            $sql1 = 'SELECT blockid, blocklabel FROM vtiger_blocks WHERE tabid = ? ORDER BY sequence ASC';
             $params = [$module_id];
         }
 

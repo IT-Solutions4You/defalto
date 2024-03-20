@@ -116,6 +116,29 @@
                         <input type="hidden" name="tmpl_order" value="{$ORDER}"/>
                     </div>
                 </div>
+                {* load related documents settings *}
+                <div class="form-group row py-2">
+                    <label class="control-label fieldLabel col-sm-3 text-muted" for="load_related_documents">
+                        {vtranslate('LBL_LOAD_RELATED_DOCUMENTS',$MODULE)}:
+                    </label>
+                    <div class="controls col-sm-9">
+                        <input type="hidden" name="load_related_documents" value="0"/>
+                        <input type="checkbox" id="load_related_documents" name="load_related_documents" {if $LOAD_RELATED_DOCUMENTS}checked="checked"{/if}/>
+                    </div>
+                </div>
+                {* load related documents by folder settings *}
+                <div class="form-group row py-2">
+                    <label class="control-label fieldLabel col-sm-3 text-muted" for="folders_related_documents">
+                        {vtranslate('LBL_RELATED_DOCUMENTS_BY_FOLDER',$MODULE)}:
+                    </label>
+                    <div class="controls col-sm-9">
+                        <select name="folders_related_documents[]" id="folders_related_documents" class="select2 form-control inputElement" multiple="multiple">
+                            {foreach from=$DOCUMENTS_FOLDERS item=DOCUMENT_FOLDER}
+                                <option value="{$DOCUMENT_FOLDER->getId()}" {if in_array($DOCUMENT_FOLDER->getId(), $RELATED_DOCUMENTS_FOLDERS)}selected="selected"{/if}>{$DOCUMENT_FOLDER->getName()}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
             {/if}
         </div>
     </div>

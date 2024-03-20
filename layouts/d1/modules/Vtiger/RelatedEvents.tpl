@@ -8,7 +8,8 @@
  *}
 {* Calendar Widget: Copy to vtiger Detail view*}
 {strip}
-    <div class="widget_contents">
+    <div class="activityEntriesContainer">
+        <input type="hidden" name="relatedField" value="{$PARENT_FIELD_NAME}">
         {if php7_count($ACTIVITIES) neq '0'}
             {foreach item=ACTIVITY_RECORD from=$ACTIVITIES}
                 {assign var=START_DATE value=$ACTIVITY_RECORD->get('datetime_start')}

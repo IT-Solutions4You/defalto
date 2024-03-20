@@ -74,7 +74,6 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
 
         $this->retrieveCustomLinks();
         $this->updateCustomLinks();
-        $this->updateWorkflows();
 
         Settings_MenuEditor_Module_Model::addModuleToApp($this->moduleName, $this->parentName);
     }
@@ -86,6 +85,7 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
     {
         $this->retrieveCustomLinks();
         $this->updateCustomLinks(false);
+        $this->updateWorkflows(false);
     }
 
     public function insertProductBlocks()
@@ -203,6 +203,8 @@ class EMAILMaker_Install_Model extends Vtiger_Install_Model
             ->createColumn('category', 'varchar(255) DEFAULT NULL')
             ->createColumn('is_listview', 'tinyint(1) NOT NULL DEFAULT \'0\'')
             ->createColumn('is_theme', 'int(1) DEFAULT \'0\'')
+            ->createColumn('load_related_documents', 'TINYINT(1) NOT NULL DEFAULT \'0\'')
+            ->createColumn('folders_related_documents', 'VARCHAR(255) NULL')
             ->createKey('KEY IF NOT EXISTS `emakertemplates_foldernamd_templatename_subject_idx` (`foldername`,`templatename`,`subject`)')
             ->createKey('KEY IF NOT EXISTS `deleted` (`deleted`)')
             ->createKey('KEY IF NOT EXISTS `is_listview` (`is_listview`)')

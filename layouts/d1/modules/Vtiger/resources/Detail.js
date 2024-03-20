@@ -1111,10 +1111,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
 				fieldModel = fieldObject.getUiTypeModel(),
-				ele = jQuery('<div class="input-group editElement w-100"></div>'),
-				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave"><i class="fa fa-check"></i></span>';
+				ele = jQuery('<div class="d-flex editElement w-100"></div>'),
+				actionButtons = '<span class="pointerCursorOnHover btn btn-success input-group-addon input-group-addon-save inlineAjaxSave ms-2"><i class="fa fa-check"></i></span>';
 
-			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel"><i class="fa-solid fa-xmark"></i></span>';
+			actionButtons += '<span class="pointerCursorOnHover btn btn-danger input-group-addon input-group-addon-cancel inlineAjaxCancel ms-2"><i class="fa-solid fa-xmark"></i></span>';
 			// we should have atleast one submit button for the form to submit which is required for validation
 			ele.append(fieldModel.getUi()).append(actionButtons);
 			ele.find('.inputElement');
@@ -1642,12 +1642,12 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				recordElement = form.find('[name=record]'),
 				moduleElement = form.find('[name=module]'),
 				summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer'),
-				widgetHeaderContainer = summaryWidgetContainer.find('.widget_header'),
-				referenceModuleName = widgetHeaderContainer.find('[name="relatedModule"]').val(),
+				referenceModuleName = summaryWidgetContainer.find('[name="relatedModule"]').val(),
+				referenceFieldName = summaryWidgetContainer.find('[name="relatedField"]').val(),
 				recordId = recordElement.length ? recordElement.val() : self.getRecordId(),
 				module = moduleElement.length ? moduleElement.val() : self.getModuleName(),
 				quickCreateNode = jQuery('#quickCreateModules').find('[data-name="' + referenceModuleName + '"]'),
-				fieldName = self.referenceFieldNames[module],
+				fieldName = referenceFieldName ?? self.referenceFieldNames[module],
 				customParams = {};
 
 			customParams[fieldName] = recordId;

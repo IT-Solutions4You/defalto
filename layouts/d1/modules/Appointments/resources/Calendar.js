@@ -884,7 +884,7 @@ Vtiger_Index_Js('Appointments_Calendar_Js', {
                         }
                     },
                 },
-                scrollTime: $('#start_hour').val() + ':00',
+                scrollTime: $('#scroll_hour').val(),
                 expandRows: false,
                 dayMaxEventRows: true,
                 weekNumbers: true,

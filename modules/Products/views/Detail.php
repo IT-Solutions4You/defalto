@@ -56,10 +56,6 @@ class Products_Detail_View extends Vtiger_Detail_View {
 
 		return parent::showModuleDetailView($request);
 	}
-
-	public function showModuleBasicView(Vtiger_Request $request) {
-		return $this->showModuleDetailView($request);
-	}
 	
 	public function getOverlayHeaderScripts(Vtiger_Request $request){
 		$moduleName = $request->getModule();

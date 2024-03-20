@@ -162,74 +162,26 @@ class Settings_Workflows_EditV7Task_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('MODULE', $moduleName);
 		$viewer->assign('QUALIFIED_MODULE', $qualifiedModuleName);
 
-		$emailFields = $recordStructureInstance->getAllEmailFields();
-		foreach($emailFields as $metaKey => $emailField) {
-			$emailFieldoptions .= '<option value=",$'.$metaKey.'">'.$emailField->get('workflow_columnlabel').'</option>';
-		}
-		$usersModuleModel = Vtiger_Module_Model::getInstance('Users');
-
-		if($moduleModel->getField('assigned_user_id')) {
-			$emailFieldoptions .= '<option value=",$(general : (__VtigerMeta__) reports_to_id)"> '.
-									vtranslate($moduleModel->getField('assigned_user_id')->get('label'),'Users').' : (' . vtranslate('Users','Users') . ') '. vtranslate($usersModuleModel->getField('reports_to_id')->get('label'),'Users') .'</option>';
-		}
-
-		$nameFields = $recordStructureInstance->getNameFields();
-		$fromEmailFieldOptions = '<option value="">'. vtranslate('ENTER_FROM_EMAIL_ADDRESS', $qualifiedModuleName) .'</option>';
-		$fromEmailFieldOptions .= '<option value="$(general : (__VtigerMeta__) supportName)<$(general : (__VtigerMeta__) supportEmailId)>"
-									>'.vtranslate('LBL_HELPDESK_SUPPORT_EMAILID', $qualifiedModuleName).
-									'</option>';
-
-		foreach($emailFields as $metaKey => $emailField) {
-			list($relationFieldName, $rest) = explode(' ', $metaKey);
-			$value = '<$'.$metaKey.'>';
-
-			if ($nameFields) {
-				$nameFieldValues = '';
-					foreach (array_keys($nameFields) as $fieldName) {
-					if (strstr($fieldName, $relationFieldName) || (php7_count(explode(' ', $metaKey)) === 1 && php7_count(explode(' ', $fieldName)) === 1)) {
-						$fieldName = '$'.$fieldName;
-						$nameFieldValues .= ' '.$fieldName;
-					}
-				}
-				$value = trim($nameFieldValues).$value;
-			}
-			if ($emailField->get('uitype') != '13') {
-				$fromEmailFieldOptions .= '<option value="'.$value.'">'.$emailField->get('workflow_columnlabel').'</option>';
-			}
-		}
-
-		$structure = $recordStructureInstance->getStructure();
-		foreach ($structure as $fields) {
-			foreach ($fields as $field) {
-				if ($field->get('workflow_pt_lineitem_field')) {
-					$allFieldoptions .= '<option value="' . $field->get('workflow_columnname') . '">' .
-							$field->get('workflow_columnlabel') . '</option>';
-				} else {
-					$allFieldoptions .= '<option value="$' . $field->get('workflow_columnname') . '">' .
-							$field->get('workflow_columnlabel') . '</option>';
-				}
-			}
-		}
-
 		$userList = $currentUser->getAccessibleUsers();
 		$groupList = $currentUser->getAccessibleGroups();
 		$assignedToValues = array();
 		$assignedToValues[vtranslate('LBL_USERS', 'Vtiger')] = $userList;
 		$assignedToValues[vtranslate('LBL_GROUPS', 'Vtiger')] = $groupList;
 
-		if($taskType == 'VTEmailTask') {
-			$worflowModuleName = $workflowModel->get('module_name');
-            $emailTemplates = EMAILMaker_Record_Model::getAllForModule($worflowModuleName);
-
-			if(!empty($emailTemplates)) {
-				$viewer->assign('EMAIL_TEMPLATES',$emailTemplates);
-			}
-		}
-
 		$viewer->assign('ASSIGNED_TO', $assignedToValues);
-		$viewer->assign('EMAIL_FIELD_OPTION', $emailFieldoptions);
-		$viewer->assign('FROM_EMAIL_FIELD_OPTION', $fromEmailFieldOptions);
-		$viewer->assign('ALL_FIELD_OPTIONS',$allFieldoptions);
+
+        $fromEmailFields = $recordStructureInstance->getFromEmailFields();
+        $emailFields = $recordStructureInstance->getEmailFields();
+        $allFields = $recordStructureInstance->getAllFields();
+
+        $viewer->assign('EMAIL_FIELDS', $emailFields);
+        $viewer->assign('EMAIL_FIELD_OPTION', $recordStructureInstance->getHtmlOptions($emailFields));
+
+        $viewer->assign('FROM_EMAIL_FIELDS', $fromEmailFields);
+        $viewer->assign('FROM_EMAIL_FIELD_OPTION', $recordStructureInstance->getHtmlOptions($fromEmailFields));
+
+        $viewer->assign('ALL_FIELDS', $allFields);
+        $viewer->assign('ALL_FIELD_OPTIONS', $recordStructureInstance->getHtmlOptions($allFields));
 
         $memberGroups = Settings_Groups_Member_Model::getAll(false);
 
