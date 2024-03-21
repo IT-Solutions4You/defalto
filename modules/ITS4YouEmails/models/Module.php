@@ -122,4 +122,39 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
 
         return $emailRelatedModules;
     }
+
+    function getEmailOptOutRecordIds()
+    {
+        $db = PearDatabase::getInstance();
+        $emailOptOutIds = [];
+
+        $contactResult = $db->pquery(
+            'SELECT crmid FROM vtiger_crmentity INNER JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_contactdetails.emailoptout = ?',
+            ['0', '1']
+        );
+
+        while ($contactRow = $db->fetchByAssoc($contactResult)) {
+            $emailOptOutIds[] = $contactRow['crmid'];
+        }
+
+        $accountResult = $db->pquery(
+            'SELECT crmid FROM vtiger_crmentity INNER JOIN vtiger_account ON vtiger_account.accountid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_account.emailoptout = ?',
+            ['0', '1']
+        );
+
+        while ($accountRow = $db->fetchByAssoc($accountResult)) {
+            $emailOptOutIds[] = $accountRow['crmid'];
+        }
+
+        $leadResult = $db->pquery(
+            'SELECT crmid FROM vtiger_crmentity INNER JOIN vtiger_leaddetails ON vtiger_leaddetails.leadid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = ? AND vtiger_leaddetails.emailoptout = ?',
+            ['0', '1']
+        );
+
+        while ($leadRow = $db->fetchByAssoc($leadResult)) {
+            $emailOptOutIds[] = $leadRow['crmid'];
+        }
+
+        return $emailOptOutIds;
+    }
 }

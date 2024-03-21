@@ -30,8 +30,8 @@ jQuery.Class("Vtiger_Helper_Js",{
 			'selected_ids[]' : selectedIds,
 			'view' : 'ComposeEmail'
 		}
-		var emailsMassEditInstance = Vtiger_Helper_Js.getEmailMassEditInstance();
-		emailsMassEditInstance.showComposeEmailForm(params);
+
+        EMAILMaker_Actions_Js.showComposeEmailForm(params);
 	},
 	
 	
