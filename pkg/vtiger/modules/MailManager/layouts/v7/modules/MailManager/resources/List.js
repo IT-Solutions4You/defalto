@@ -1,11 +1,9 @@
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
- *************************************************************************************/
+/**
+* The Initial Developer of the Original Code is vtiger.
+* Portions created by vtiger are Copyright (c) vtiger.
+* Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
+* All Rights Reserved.
+*/
 
 Vtiger_List_Js("MailManager_List_Js", {}, {
 
@@ -278,8 +276,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			params['type'] = type;
 		}
 		app.request.post({"data" : params}).then(function(error, responseData) {
-			container.find('#mails_container').removeClass('col-lg-12');
-			container.find('#mails_container').addClass('col-lg-5');
 			container.find('#mailPreviewContainer').removeClass('hide');
 			container.find('#mails_container').html(responseData);
 			app.helper.hideProgress();
@@ -612,9 +608,9 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 	},
 
 	registerScrollForMailList : function() {
-		var self = this;
+		let self = this;
 		self.getContainer().find('#emailListDiv').mCustomScrollbar({
-			setHeight: 600,
+			setHeight: '70vh',
 			autoExpandScrollbar: true,
 			scrollInertia: 200,
 			autoHideScrollbar: true,
@@ -859,7 +855,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 				app.request.post({'data' : params}).then(function(err, data) {
 					var draftId = data.emailid;
 					var newParams = {
-						'module' : 'Emails',
+						'module' : 'ITS4YouEmails',
 						'view' : 'ComposeEmail',
 						'mode' : 'emailEdit',
 						'record' : draftId
@@ -870,7 +866,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 							var dataObj = jQuery(data);
 							var descriptionContent = dataObj.find('#iframeDescription').val();
 							app.helper.showModal(data, {cb : function() {
-								var editInstance = new Emails_MassEdit_Js();
+								var editInstance = new ITS4YouEmails_MassEdit_Js();
 								editInstance.registerEvents();
 								jQuery('#emailPreviewIframe').contents().find('html').html(descriptionContent);
 								jQuery("#emailPreviewIframe").height(jQuery('#emailPreviewIframe').contents().find('html').height());
@@ -1001,33 +997,33 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 		}
 	},
 
-	showRelatedActions : function() {
-		var self = this;
-		var container = self.getContainer();
-		var from = container.find('#mmFrom').val();
-		var to = container.find('#mmTo').val();
-		var folder = container.find('#mmFolder').val();
-		var msgNo = container.find('#mmMsgNo').val();
-		var msgUid = container.find('#mmMsgUid').val();
+	showRelatedActions: function () {
+		let self = this,
+			container = self.getContainer(),
+			from = container.find('#mmFrom').val(),
+			to = container.find('#mmTo').val(),
+			folder = container.find('#mmFolder').val(),
+			msgNo = container.find('#mmMsgNo').val(),
+			msgUid = container.find('#mmMsgUid').val(),
+			params = {
+				'module': 'MailManager',
+				'view': 'Index',
+				'_operation': 'relation',
+				'_operationarg': 'find',
+				'_mfrom': from,
+				'_mto': to,
+				'_folder': folder,
+				'_msgno': msgNo,
+				'_msguid': msgUid
+			};
 
-		var params = {
-			'module' : 'MailManager',
-			'view' : 'Index',
-			'_operation' : 'relation',
-			'_operationarg' : 'find',
-			'_mfrom' : from,
-			'_mto' : to,
-			'_folder' : folder,
-			'_msgno' : msgNo,
-			'_msguid' : msgUid
-		};
-
-		app.request.post({data : params}).then(function(err, data) {
+		app.request.post({data: params}).then(function (err, data) {
 			container.find('#relationBlock').html(data.ui);
 			self.handleRelationActions();
-			app.helper.showVerticalScroll(container.find('#relationBlock .recordScroll'), {autoHideScrollbar: true});
-			var iframeHeight = jQuery('#mails_container').height() - (200 + jQuery('#mailManagerActions').height());
-			var contentHeight = jQuery('#bodyFrame').contents().find('html').height();
+
+			let iframeHeight = jQuery('#mails_container').height() - (200 + jQuery('#mailManagerActions').height()),
+				contentHeight = jQuery('#bodyFrame').contents().find('html').height();
+
 			if (contentHeight > iframeHeight) {
 				jQuery('#bodyFrame').css({'height': iframeHeight});
 			} else {
@@ -1058,8 +1054,6 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			params['type'] = type;
 		}
 		app.request.post({"data" : params}).then(function(error, responseData) {
-			container.find('#mails_container').removeClass('col-lg-5');
-			container.find('#mails_container').addClass('col-lg-12');
 			container.find('#mails_container').html(responseData);
 			container.find('#mailPreviewContainer').addClass('hide');
 			app.helper.hideProgress();
@@ -1104,7 +1098,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			var element = jQuery(e.currentTarget);
 			var msgNo = element.find('.msgNo').val();
 			var params = {
-				'module' : 'Emails',
+				'module' : 'ITS4YouEmails',
 				'view' : 'ComposeEmail',
 				'mode' : 'emailEdit',
 				'record' : msgNo
@@ -1116,7 +1110,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 					var dataObj = jQuery(data);
 					var descriptionContent = dataObj.find('#iframeDescription').val();
 					app.helper.showModal(data, {cb:function() {
-						var editInstance = new Emails_MassEdit_Js();
+						var editInstance = new ITS4YouEmails_MassEdit_Js();
 						editInstance.registerEvents();
 						jQuery('#emailPreviewIframe').contents().find('html').html(descriptionContent);
 						jQuery("#emailPreviewIframe").height(jQuery('.email-body-preview').height());
@@ -1216,7 +1210,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			var relatedRecord = self.getRecordForRelation();
 			if(relatedRecord !== false) {
 				if(actionType == "associate") {
-					if(module == 'Emails') {
+					if(module == 'ITS4YouEmails') {
 						self.associateEmail(relatedRecord);
 					} else if(module == "ModComments") {
 						self.associateComment(relatedRecord);
@@ -1240,7 +1234,7 @@ Vtiger_List_Js("MailManager_List_Js", {}, {
 			'_operation' : 'relation',
 			'_operationarg' : 'link',
 			'_mlinkto' : relatedRecord,
-			'_mlinktotype' : 'Emails',
+			'_mlinktotype' : 'ITS4YouEmails',
 			'_folder' : container.find('#mmFolder').val(),
 			'_msgno' : container.find('#mmMsgNo').val()
 		}

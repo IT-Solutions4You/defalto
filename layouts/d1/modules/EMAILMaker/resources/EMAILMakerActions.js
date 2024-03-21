@@ -304,7 +304,7 @@ jQuery.Class("EMAILMaker_Actions_Js", {
             tokenSeparators: [","],
 
             ajax: {
-                'url': 'index.php?module=Emails&action=BasicAjax',
+                'url': 'index.php?module=EMAILMaker&action=IndexAjax',
                 'dataType': 'json',
                 'data': function (term, page) {
                     var data = {};

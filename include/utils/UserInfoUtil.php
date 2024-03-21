@@ -932,13 +932,6 @@ $log->debug("Entering getProfileTabsPermission(".$profileid.") method ...");
 	$per_id = $adb->query_result($result,$i,"permissions");
 	$copy[$tab_id] = $per_id;
   }
-  // TODO This is temporarily required, till we provide a hook/entry point for Emails module.
-  // Once that is done, Webmails need to be removed permanently.
-  $emailsTabId = getTabid('Emails');
-  $webmailsTabid = getTabid('Webmails');
-  if(array_key_exists($emailsTabId, $copy)) {
-	  $copy[$webmailsTabid] = $copy[$emailsTabId];
-  }
 
 $log->debug("Exiting getProfileTabsPermission method ...");
    return $copy;
@@ -1866,11 +1859,6 @@ function getListViewSecurityParameter($module)
 					$sec_query .= " vtiger_groups.groupid in (". implode(",", $current_user_groups) .") or ";
 				}
 		$sec_query .= " vtiger_groups.groupid in(select vtiger_tmp_read_group_sharing_per.sharedgroupid from vtiger_tmp_read_group_sharing_per where userid=".$current_user->id." and tabid=".$tabid."))) ";
-
-	}
-	elseif($module == 'Emails')
-	{
-		$sec_query .= " and vtiger_crmentity.smownerid=".$current_user->id." ";
 
 	}
 	elseif($module == 'Quotes')

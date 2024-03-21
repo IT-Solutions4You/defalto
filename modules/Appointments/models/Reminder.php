@@ -46,29 +46,6 @@ class Appointments_Reminder_Model extends Vtiger_Base_Model
     }
 
     /**
-     * @param int|string $recordId
-     * @return string
-     */
-    public static function getContactsNames($recordId): string
-    {
-        $adb = PearDatabase::getInstance();
-        $query = 'SELECT * FROM vtiger_cntactivityrel WHERE activityid=?';
-        $result = $adb->pquery($query, [$recordId]);
-        $contactNames = [];
-
-        if ($adb->num_rows($result)) {
-            while ($row = $adb->fetchByAssoc($result)) {
-                $contactId = $row['contactid'];
-                $contactName = Vtiger_Util_Helper::getRecordName($contactId);
-
-                $contactNames[] = $contactName;
-            }
-        }
-
-        return implode(', ', $contactNames);
-    }
-
-    /**
      * @param Vtiger_Record_Model $record
      * @return array
      */

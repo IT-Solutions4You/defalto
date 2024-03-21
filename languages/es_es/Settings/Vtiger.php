@@ -73,8 +73,6 @@ $languageStrings = array(
 	'LBL_MENU_DESC'                => 'Personalizar secuencia de menú',
 	'LBL_MENU_EDITOR_MESSAGE'		=>'El número real de elementos de menú que aparecen dependerá del tamaño de la pantalla y podría ser inferior a los elementos seleccionados.',
 
-	'EMAILTEMPLATES'               => 'Plantillas de Email',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Administrar Plantillas de Email',
 	'LBL_COMPANY_DETAILS'          => 'Información de la Empresa',
 	'LBL_COMPANY_DESCRIPTION'      => 'Gestionar información de la empresa',
 	'LBL_MAIL_MERGE'               => 'Combinación de Correo',

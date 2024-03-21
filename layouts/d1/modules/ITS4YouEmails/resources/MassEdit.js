@@ -686,11 +686,6 @@ jQuery.Class('ITS4YouEmails_MassEdit_Js', {
                     subject = jQuery('<div/>').html(DataInfo['subject']).text(),
                     body = DataInfo['body'];
 
-                if ('EmailTemplates' === data['module']) {
-                    subject = data['name'];
-                    body = data['info'];
-                }
-
                 ckEditorInstance.loadContentsInCkeditor(body);
                 $('#subject').val(subject);
                 selectedTemplateBody = responseData[id].info;

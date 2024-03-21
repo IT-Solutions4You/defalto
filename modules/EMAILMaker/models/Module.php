@@ -479,7 +479,7 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
         $emailsResult = array();
         $db = PearDatabase::getInstance();
 
-        $EmailsModuleModel = Vtiger_Module_Model::getInstance('Emails');
+        $EmailsModuleModel = Vtiger_Module_Model::getInstance('ITS4YouEmails');
         $emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
         foreach ($emailSupportedModulesList as $module) {
             if ($module != 'Users' && $module != 'ModComments') {
@@ -578,86 +578,6 @@ class EMAILMaker_Module_Model extends EMAILMaker_EMAILMaker_Model
             }
         }
         return $emailsResult;
-    }
-
-    public function getMERecipientsListCount($recordId = false)
-    {
-        $params = array();
-        $db = PearDatabase::getInstance();
-        $query = $this->getMERecipientsListSql();
-
-        if ($recordId) {
-            $query .= " WHERE vtiger_emakertemplates_me.meid=?";
-            $params = array($recordId);
-        }
-        $result = $db->pquery($query, $params);
-        return $db->num_rows($result);
-    }
-
-    public function getMERecipientsListSql()
-    {
-        $query = "SELECT vtiger_crmentity.crmid, vtiger_emakertemplates_emails.*, vtiger_activity.*, vtiger_emaildetails.email_flag, vtiger_activity.time_start FROM vtiger_emakertemplates_emails
-                            INNER JOIN vtiger_emakertemplates_me
-                                ON vtiger_emakertemplates_me.esentid = vtiger_emakertemplates_emails.esentid
-                            LEFT JOIN vtiger_activity
-                                ON vtiger_activity.activityid = vtiger_emakertemplates_emails.parent_id
-                            LEFT JOIN vtiger_crmentity
-                                ON vtiger_crmentity.crmid = vtiger_activity.activityid
-                            LEFT JOIN vtiger_emaildetails
-                                ON vtiger_emaildetails.emailid = vtiger_activity.activityid";
-        return $query;
-    }
-
-    public function getMERecipientsList($mode, $pagingModel, $user, $recordId = false)
-    {
-        $currentUser = Users_Record_Model::getCurrentUserModel();
-        $db = PearDatabase::getInstance();
-
-        if (!$user) {
-            $user = $currentUser->getId();
-        }
-
-        $nowInUserFormat = Vtiger_Datetime_UIType::getDisplayDateValue(date('Y-m-d H:i:s'));
-        $nowInDBFormat = Vtiger_Datetime_UIType::getDBDateTimeValue($nowInUserFormat);
-        list($currentDate, $currentTime) = explode(' ', $nowInDBFormat);
-
-        $query = $this->getMERecipientsListSql();
-        $query .= " WHERE vtiger_emakertemplates_me.meid=? LIMIT " . $pagingModel->getStartIndex() . ", " . ($pagingModel->getPageLimit() + 1);
-
-        $params = array($recordId);
-        $result = $db->pquery($query, $params);
-        $numOfRows = $db->num_rows($result);
-
-        $groupsIds = Vtiger_Util_Helper::getGroupsIdsForUsers($currentUser->getId());
-        $recipients = array();
-        for ($i = 0; $i < $numOfRows; $i++) {
-            $newRow = $db->query_result_rowdata($result, $i);
-            $model = Vtiger_Record_Model::getCleanInstance('Emails');
-            $ownerId = $newRow['smownerid'];
-            $currentUser = Users_Record_Model::getCurrentUserModel();
-            $model->setData($newRow);
-            $model->setId($newRow['crmid']);
-            $pid = $newRow['pid'];
-
-            $pmodule = getSalesEntityType($pid);
-            $pmoduleModel = Vtiger_Module_Model::getInstance($pmodule);
-            $model->set("pmodule", $pmodule);
-            $model->set("pmodulemodel", $pmoduleModel);
-
-            $model->set("status", $newRow['email_flag']);
-
-            $recipients[] = $model;
-        }
-
-        $pagingModel->calculatePageRange($recipients);
-        if ($numOfRows > $pagingModel->getPageLimit()) {
-            array_pop($recipients);
-            $pagingModel->set('nextPageExists', true);
-        } else {
-            $pagingModel->set('nextPageExists', false);
-        }
-
-        return $recipients;
     }
 
     public function GetListviewResult($orderby = "templateid", $dir = "ASC", $request, $all_data = true)

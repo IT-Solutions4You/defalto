@@ -15,7 +15,6 @@ class EMAILMaker
     public $id;
     public $name;
     private $basicModules;
-    private $pageFormats;
     private $profilesActions;
     private $profilesPermissions;
     public $moduleName = 'EMAILMaker';
@@ -47,20 +46,5 @@ class EMAILMaker
     public function vtlib_handler($moduleName, $eventType)
     {
         EMAILMaker_Install_Model::getInstance($eventType, $moduleName)->install();
-    }
-
-    public function GetPageFormats()
-    {
-        return $this->pageFormats;
-    }
-
-    public function GetBasicModules()
-    {
-        return $this->basicModules;
-    }
-
-    public function GetProfilesActions()
-    {
-        return $this->profilesActions;
     }
 }

@@ -132,10 +132,6 @@ function expandRecord($table,$log)
 	$subfields = array ( "productid", "productname", "productcode", "productcategory", "manufacturer", "qty_per_unit", "unit_price", "weight", "pack_size", "sales_start_date", "sales_end_date", "start_date", "expiry_date", "cost_factor", "commissionrate", "commissionmethod", "discontinued", "usageunit", "currency", "reorderlevel", "website", "taxclass", "mfr_part_no", "vendor_part_no", "serialno", "qtyinstock", "productsheet", "qtyindemand", "glacct", "vendor_id", "imagename");
 	//$subfields = array ( "productid", "productname", "productcode", "productcategory", "manufacturer", "qty_per_unit", "unit_price", "weight", "pack_size", "sales_start_date", "sales_end_date", "start_date", "expiry_date", "cost_factor", "commissionrate", "commissionmethod", "discontinued", "usageunit", "handler", "contactid", "currency", "reorderlevel", "website", "taxclass", "mfr_part_no", "vendor_part_no", "serialno", "qtyinstock", "productsheet", "qtyindemand", "glacct", "vendor_id", "imagename" );
 
-    //vtiger_activity table
-    elseif( $table == "vtiger_activity")
-	$subfields = array ( "activityid", "subject", "semodule", "activitytype", "date_start", "due_date", "time_start", "time_end", "sendnotification", "duration_hours", "duration_minutes", "status", "eventstatus", "priority", "location", "notime", "visibility", "recurringtype"  );
-
     //vtiger_notes table
     elseif( $table == "vtiger_notes")
 	$subfields = array ( "notesid", "contact_id", "title", "filename", "notecontent");
@@ -183,14 +179,6 @@ function expandRecord($table,$log)
 	//vtiger_invoice
 	elseif( $table == "vtiger_invoice")
 	$subfields = array("invoiceid", "subject", "salesorderid","customerno","contactid", "notes", "invoicedate", "duedate", "invoiceterms", "type", "adjustment","salescommission","exciseduty", "subtotal","total", "taxtype","discount_percent", "discount_amount", "s_h_amount","shipping", "accountid", "terms_conditions","purchaseorder","invoicestatus","invoice_no");
-
-	//vtiger_seactivityrel
-	elseif( $table == "vtiger_seactivityrel")
-	$subfields = array("crmid", "activityid");
-
-	//vtiger_cntactivityrel
-	elseif( $table == "vtiger_cntactivityrel")
-	$subfields = array("contactid", "activityid");
 
 	//vtiger_purchaseorder
 	elseif( $table == "vtiger_purchaseorder")

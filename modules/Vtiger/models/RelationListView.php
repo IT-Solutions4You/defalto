@@ -262,9 +262,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 				if ($orderByField) {
 					$qualifiedOrderBy = $relationModule->getOrderBySql($qualifiedOrderBy);
 				}
-				if($qualifiedOrderBy == 'vtiger_activity.date_start' && $relationModuleName === 'Emails') {
-					$qualifiedOrderBy = "str_to_date(concat(vtiger_activity.date_start,vtiger_activity.time_start),'%Y-%m-%d %H:%i:%s')";
-				}
+
 				$query = "$query ORDER BY $qualifiedOrderBy $sortOrder";
 			}
         } elseif (empty($orderBy) && empty($sortOrder) && $relationModuleName !== "Users") {

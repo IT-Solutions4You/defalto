@@ -134,7 +134,7 @@
 												<a	{if array_key_exists('docid',$ATTACHMENT_DETAILS)} 
 														href="index.php?module=Documents&action=DownloadFile&record={$ATTACHMENT_DETAILS['docid']}&fileid={$ATTACHMENT_DETAILS['fileid']}&name={$ATTACHMENT_DETAILS['attachment']}" 
 													{else} 
-														href="index.php?module=Emails&action=DownloadFile&attachment_id={$ATTACHMENT_DETAILS['fileid']}&name={$ATTACHMENT_DETAILS['attachment']}" 
+														href="index.php?module=ITS4YouEmails&action=DownloadFile&attachment_id={$ATTACHMENT_DETAILS['fileid']}&name={$ATTACHMENT_DETAILS['attachment']}"
 													{/if}>{$ATTACHMENT_DETAILS['attachment']}</a>&nbsp;&nbsp; 
 											{/foreach}
 										{/if}

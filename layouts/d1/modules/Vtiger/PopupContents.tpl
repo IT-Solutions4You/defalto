@@ -29,13 +29,13 @@
         <div class="popupEntriesDiv relatedContents rounded">
             <input type="hidden" value="{$ORDER_BY}" id="orderBy">
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
-            {if $SOURCE_MODULE eq "Emails"}
+            {if $SOURCE_MODULE eq "ITS4YouEmails"}
                 {if $MODULE neq 'Documents'}
                     <input type="hidden" value="Vtiger_EmailsRelatedModule_Popup_Js" id="popUpClassName"/>
                 {/if}
             {/if}
             {assign var=WIDTHTYPE value=$CURRENT_USER_MODEL->get('rowheight')}
-            <div class="popupEntriesTableContainer {if $MODULE eq 'EmailTemplates'}emailTemplatesPopupTableContainer{/if}">
+            <div class="popupEntriesTableContainer">
                 <table class="listview-table table table-borderless listViewEntriesTable">
                     <thead>
                         <tr class="listViewHeaders bg-body-secondary">
@@ -43,9 +43,8 @@
                                 <th class="{$WIDTHTYPE}">
                                     <input type="checkbox" class="selectAllInCurrentPage form-check-input" />
                                 </th>
-                            {elseif $MODULE neq 'EmailTemplates'}
-                                <th class="{$WIDTHTYPE}">&nbsp;</th>
                             {/if}
+                            <th class="{$WIDTHTYPE}">&nbsp;</th>
                             {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 <th class="{$WIDTHTYPE}">
                                     <a href="javascript:void(0);" class="listViewContentHeaderValues listViewHeaderValues text-secondary text-nowrap {if $LISTVIEW_HEADER->get('name') eq 'listprice'}noSorting{/if}" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('name')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('name')}">
@@ -81,15 +80,14 @@
                 {/if}
                 {foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
                     {assign var="RECORD_DATA" value=$LISTVIEW_ENTRY->getRawData()}
-                    <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}" {if $MODULE eq 'EmailTemplates'} data-name="{$RECORD_DATA['subject']}" data-info="{$LISTVIEW_ENTRY->get('body')}" {else} data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}' {/if}
+                    <tr class="listViewEntries border-bottom" data-id="{$LISTVIEW_ENTRY->getId()}" data-name="{$LISTVIEW_ENTRY->getName()}" data-info='{Vtiger_Util_Helper::toSafeHTML(ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData()))}'
                     {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                     {if $MULTI_SELECT}
                         <td class="{$WIDTHTYPE}">
                             <input class="entryCheckBox form-check-input" type="checkbox" />
                         </td>
-                    {elseif $MODULE neq 'EmailTemplates'}
-                        <td></td>
                     {/if}
+                        <td></td>
                     {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                     {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                     {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}

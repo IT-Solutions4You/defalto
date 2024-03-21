@@ -517,19 +517,34 @@ class Potentials extends CRMEntity {
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Activities"=>"vtiger_seactivityrel","Contacts"=>"vtiger_contpotentialrel","Products"=>"vtiger_seproductsrel",
-						"Attachments"=>"vtiger_seattachmentsrel","Quotes"=>"vtiger_quotes","SalesOrder"=>"vtiger_salesorder",
-						"Documents"=>"vtiger_senotesrel");
+        $rel_table_arr = [
+            'Contacts'    => 'vtiger_contpotentialrel',
+            'Products'    => 'vtiger_seproductsrel',
+            'Attachments' => 'vtiger_seattachmentsrel',
+            'Quotes'      => 'vtiger_quotes',
+            'SalesOrder'  => 'vtiger_salesorder',
+            'Documents'   => 'vtiger_senotesrel'
+        ];
 
-		$tbl_field_arr = Array("vtiger_seactivityrel"=>"activityid","vtiger_contpotentialrel"=>"contactid","vtiger_seproductsrel"=>"productid",
-						"vtiger_seattachmentsrel"=>"attachmentsid","vtiger_quotes"=>"quoteid","vtiger_salesorder"=>"salesorderid",
-						"vtiger_senotesrel"=>"notesid");
+        $tbl_field_arr = [
+            'vtiger_contpotentialrel' => 'contactid',
+            'vtiger_seproductsrel'    => 'productid',
+            'vtiger_seattachmentsrel' => 'attachmentsid',
+            'vtiger_quotes'           => 'quoteid',
+            'vtiger_salesorder'       => 'salesorderid',
+            'vtiger_senotesrel'       => 'notesid'
+        ];
 
-		$entity_tbl_field_arr = Array("vtiger_seactivityrel"=>"crmid","vtiger_contpotentialrel"=>"potentialid","vtiger_seproductsrel"=>"crmid",
-						"vtiger_seattachmentsrel"=>"crmid","vtiger_quotes"=>"potentialid","vtiger_salesorder"=>"potentialid",
-						"vtiger_senotesrel"=>"crmid");
+        $entity_tbl_field_arr = [
+            'vtiger_contpotentialrel' => 'potentialid',
+            'vtiger_seproductsrel'    => 'crmid',
+            'vtiger_seattachmentsrel' => 'crmid',
+            'vtiger_quotes'           => 'potentialid',
+            'vtiger_salesorder'       => 'potentialid',
+            'vtiger_senotesrel'       => 'crmid'
+        ];
 
-		foreach($transferEntityIds as $transferId) {
+        foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
 				$id_field = $tbl_field_arr[$rel_table];
 				$entity_id_field = $entity_tbl_field_arr[$rel_table];
@@ -616,29 +631,8 @@ class Potentials extends CRMEntity {
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_potential"=>"potentialid"),
 			"Accounts" => array("vtiger_potential"=>array("potentialid","related_to")),
 			"Contacts" => array("vtiger_potential"=>array("potentialid","contact_id")),
-            "Emails" => array("vtiger_seactivityrel"=>array("crmid","activityid"),"vtiger_potential"=>"potentialid"),
 		);
 		return $rel_tables[$secmodule];
-	}
-
-	// Function to unlink all the dependent entities of the given Entity by Id
-	function unlinkDependencies($module, $id) {
-		global $log;
-		/*//Backup Activity-Potentials Relation
-		$act_q = "select activityid from vtiger_seactivityrel where crmid = ?";
-		$act_res = $this->db->pquery($act_q, array($id));
-		if ($this->db->num_rows($act_res) > 0) {
-			for($k=0;$k < $this->db->num_rows($act_res);$k++)
-			{
-				$act_id = $this->db->query_result($act_res,$k,"activityid");
-				$params = array($id, RB_RECORD_DELETED, 'vtiger_seactivityrel', 'crmid', 'activityid', $act_id);
-				$this->db->pquery("insert into vtiger_relatedlists_rb values (?,?,?,?,?,?)", $params);
-			}
-		}
-		$sql = 'delete from vtiger_seactivityrel where crmid = ?';
-		$this->db->pquery($sql, array($id));*/
-
-		parent::unlinkDependencies($module, $id);
 	}
 
 	// Function to unlink an entity with given Id from another entity
@@ -697,36 +691,6 @@ class Potentials extends CRMEntity {
             }
         }
     }
-
-    function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
-		global $currentModule;
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-		require_once("modules/$related_module/$related_module.php");
-		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-
-        $returnset = '&return_module='.$currentModule.'&return_action=CallRelatedList&return_id='.$id;
-
-		$button = '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-                vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
-                vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start, vtiger_activity.time_start,
-                vtiger_seactivityrel.crmid as parent_id FROM vtiger_activity, vtiger_seactivityrel, vtiger_potential, vtiger_users,
-                vtiger_crmentity LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid WHERE 
-                vtiger_seactivityrel.activityid = vtiger_activity.activityid AND 
-                vtiger_potential.potentialid = vtiger_seactivityrel.crmid AND vtiger_users.id = vtiger_crmentity.smownerid
-                AND vtiger_crmentity.crmid = vtiger_activity.activityid  AND vtiger_potential.potentialid = $id AND
-                vtiger_activity.activitytype = 'Emails' AND vtiger_crmentity.deleted = 0";
-
-		$return_value = GetRelatedList($currentModule, $related_module, $other, $query, $button, $returnset);
-
-		if($return_value == null) $return_value = Array();
-		$return_value['CUSTOM_BUTTON'] = $button;
-
-		return $return_value;
-	}
 
 	/**
 	 * Invoked when special actions are to be performed on the module.

@@ -117,7 +117,7 @@ function sendPrdStckMail($product_id,$upd_qty,$prod_name,$qtyinstk,$qty,$module)
 		}
 		$body = str_replace('{CURRENTUSER}',$current_user->user_name,$body);
 
-		$mail_status = send_mail($module,$to_address,$current_user->user_name,$current_user->email1,decode_html($subject),nl2br(to_html($body)));
+        EMAILMaker_Utils_Helper::sendMail($to_address, $current_user->user_name, $current_user->email1, decode_html($subject), nl2br(to_html($body)));
 	}
 	$log->debug("Exiting sendPrdStckMail method ...");
 }

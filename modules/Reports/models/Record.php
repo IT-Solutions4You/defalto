@@ -1042,7 +1042,7 @@ class Reports_Record_Model extends Vtiger_Record_Model {
 
 			$fields = explode(':',$standardFilter['columnname']);
             $standardReports = array('Last Month Activities', 'This Month Activities');
-			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime' ||($fields[0] == 'vtiger_activity' && $fields[1] == 'date_start')){
+			if($fields[1] == 'createdtime' || $fields[1] == 'modifiedtime'){
                 if(in_array($this->get('reportname'), $standardReports)){
                     $tranformedStandardFilter['columnname'] = "$fields[0]Calendar:$fields[1]:$fields[3]:$fields[2]:DT";
                     $tranformedStandardFilter['comparator'] = $standardFilter['type'];

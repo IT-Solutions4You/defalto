@@ -16,7 +16,7 @@ class ModTrackerUtils
 		$query = $adb->pquery("SELECT vtiger_modtracker_tabs.visible,vtiger_tab.name,vtiger_tab.tabid
 								FROM vtiger_tab
 								LEFT JOIN vtiger_modtracker_tabs ON vtiger_modtracker_tabs.tabid = vtiger_tab.tabid
-								WHERE vtiger_tab.isentitytype = 1 AND vtiger_tab.name NOT IN('Emails', 'Webmails')",array());
+								WHERE vtiger_tab.isentitytype = 1",array());
 		$rows = $adb->num_rows($query);
 
         for($i = 0;$i < $rows; $i++){
@@ -28,4 +28,3 @@ class ModTrackerUtils
 		return $infomodules;
 	}
 }
-?>

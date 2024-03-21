@@ -68,9 +68,6 @@ $languageStrings = array(
 	'LBL_MENU_DESC' => 'Anpassa Menysekvens',
 	'LBL_MENU_EDITOR_MESSAGE'=>'Det faktiska antalet menyalternativ som visas beror på skärmens storlek och kan vara mindre än markerade objekt.',
 
-	'EMAILTEMPLATES' => 'E-postmallar',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Hantera mallar för E-Postmodul',
-
 	'LBL_COMPANY_DETAILS' => 'Företagsuppgifter',
 	'LBL_COMPANY_DESCRIPTION' => 'Ange kontorsadress för företag',
 

@@ -236,15 +236,6 @@ function validateImageFile($file_details) {
 }
 
 /**
- * 	This function is used to get the Email Template Details like subject and content for particular template.
- * 	@param integer $templateid  - Template Id for an Email Template
- * 	return array $returndata - Returns Subject, Body of Template of the the particular email template.
- */
-function getTemplateDetails($templateid) {
-	return Vtiger_Deprecated::getTemplateDetails($templateid);
-}
-
-/**
  * 	This function is used to merge the Template Details with the email description
  *  @param string $description  -body of the mail(ie template)
  * 	@param integer $tid  - Id of the entity
@@ -409,14 +400,6 @@ function isFileAccessible($filepath) {
 	return Vtiger_Deprecated::isFileAccessible($filepath);
 }
 
-/** Function to get the ActivityType for the given entity id
- *  @param entityid : Type Integer
- *  return the activity type for the given id
- */
-function getActivityType($id) {
-	return Vtiger_Functions::getActivityType($id);
-}
-
 /** Function to get owner name either user or group */
 function getOwnerName($id) {
 	return Vtiger_Functions::getOwnerRecordLabel($id);
@@ -501,5 +484,3 @@ function updateRecordLabel($module,$recordId){
 function get_group_options() {
     return Vtiger_Functions::get_group_options();
 }
-
-?>

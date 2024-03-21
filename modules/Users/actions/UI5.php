@@ -45,8 +45,6 @@ class Users_UI5_Action extends Vtiger_Action_Controller {
 			} else if ($params['view'] == 'Edit') {
 				if ($module == 'Reports') {
 					$action = 'ListView';
-				} else if ($module == 'EmailTemplates') {
-					$action = 'index';
 				} else {
 					$action = 'EditView';
 				}

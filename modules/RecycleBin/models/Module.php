@@ -107,7 +107,7 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getAllModuleList(){
 		$moduleModels = parent::getEntityModules();
-		$restrictedModules = array('Emails', 'ProjectMilestone', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home');
+		$restrictedModules = array('ProjectMilestone', 'ModComments', 'Rss', 'Portal', 'Integration', 'PBXManager', 'Dashboard', 'Home');
 		foreach($moduleModels as $key => $moduleModel){
 			if(in_array($moduleModel->getName(),$restrictedModules) || $moduleModel->get('isentitytype') != 1){
 				unset($moduleModels[$key]);
@@ -152,7 +152,6 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
         
         // Delete related mod comments
 		$this->deleteRelatedComments($recordIds);
-        $this->deleteRelatedEmails($recordIds);
 
 		// TODO - Remove records from module tables and other related stores.
 		$query = 'DELETE FROM vtiger_modtracker_basic WHERE crmid in(' . generateQuestionMarks($recordIds) . ')';
@@ -254,27 +253,6 @@ class RecycleBin_Module_Model extends Vtiger_Module_Model {
 		$query = 'DELETE vtiger_crmentity.* FROM vtiger_crmentity '
 				. 'INNER JOIN vtiger_modcomments ON vtiger_modcomments.modcommentsid = vtiger_crmentity.crmid '
 				. 'WHERE vtiger_modcomments.related_to in(' . generateQuestionMarks($recordIds) . ')';
-
-		$db->pquery($query, array($recordIds));
-	}
-    
-    /**
-	 * Function to remove emails related to given records
-	 * @param type $recordIds
-	 */
-	public function deleteRelatedEmails($recordIds) {
-		$db = PearDatabase::getInstance();
-		/**
-		 *  we have to delete emails if email is related to any $recordIds and same email is 
-		 *  not related to another record
-		 */
-		$query = "DELETE vtiger_crmentity.* FROM vtiger_crmentity INNER JOIN "
-				. "(SELECT vtiger_crmentity.crmid AS actid,vtiger_seactivityrel.crmid AS relid "
-				. "FROM vtiger_crmentity INNER JOIN vtiger_seactivityrel ON "
-				. "vtiger_seactivityrel.activityid=vtiger_crmentity.crmid "
-				. "GROUP BY vtiger_seactivityrel.activityid HAVING count(vtiger_seactivityrel.activityid) = 1)"
-				. " AS relationdata ON relationdata.actid=vtiger_crmentity.crmid "
-				. "WHERE relationdata.relid IN (" . generateQuestionMarks($recordIds) . ")";
 
 		$db->pquery($query, array($recordIds));
 	}

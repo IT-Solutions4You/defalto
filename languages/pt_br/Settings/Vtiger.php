@@ -71,9 +71,6 @@ $languageStrings = array(
 	'LBL_MENU_DESC' => 'Customizar Sequência de Menus',
 	'LBL_MENU_EDITOR_MESSAGE' => 'O número atual de itens do menu exibido, dependerá do tamanho da tela e pode ser menor que os itens selecionados.',
 
-	'EMAILTEMPLATES' => 'Modelos de E-mail',
-	'LBL_EMAIL_TEMPLATE_DESCRIPTION' => 'Gerenciar modelos para módulo de E-mail',
-
 	'LBL_COMPANY_DETAILS' => 'Detalhes da Empresa',
 	'LBL_COMPANY_DESCRIPTION' => 'Informe o endereço comercial da empresa',
 

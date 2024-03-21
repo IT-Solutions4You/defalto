@@ -75,9 +75,6 @@ class Accounts extends CRMEntity {
 	// Refers to vtiger_field.fieldname values.
 	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'accountname');
 
-	//Default Fields for Email Templates -- Pavani
-	var $emailTemplate_defaultFields = array('accountname','account_type','industry','annualrevenue','phone','email1','rating','website','fax');
-
 	//Added these variables which are used as default order by and sortorder in ListView
 	var $default_order_by = 'accountname';
 	var $default_sort_order = 'ASC';
@@ -387,69 +384,6 @@ class Accounts extends CRMEntity {
 		$log->debug("Exiting get_opportunities method ...");
 		return $return_value;
 	}
-
-	/** Returns a list of the associated emails
-	 * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc..
-	 * All Rights Reserved..
-	 * Contributor(s): ______________________________________..
-	*/
-	function get_emails($id, $cur_tab_id, $rel_tab_id, $actions=false) {
-		global $log, $singlepane_view,$currentModule,$current_user, $adb;
-		$log->debug("Entering get_emails(".$id.") method ...");
-		$this_module = $currentModule;
-
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
-		require_once("modules/$related_module/$related_module.php");
-		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
-		$singular_modname = vtlib_toSingular($related_module);
-
-		$parenttab = getParentTab();
-
-		if($singlepane_view == 'true')
-			$returnset = '&return_module='.$this_module.'&return_action=DetailView&return_id='.$id;
-		else
-			$returnset = '&return_module='.$this_module.'&return_action=CallRelatedList&return_id='.$id;
-
-		$button = '';
-
-		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-
-		if($actions) {
-			$actions = sanitizeRelatedListsActions($actions);
-
-			if(in_array('ADD', $actions) && isPermitted($related_module,1, '') == 'yes') {
-				$button .= "<input title='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singular_modname)."' accessyKey='F' class='crmbutton small create' onclick='fnvshobj(this,\"sendmail_cont\");sendmail(\"$this_module\",$id);' type='button' name='button' value='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singular_modname)."'></td>";
-			}
-		}
-
-		$entityIds = array_merge(array($id), $this->getRelatedContactsIds(), $this->getRelatedPotentialIds($id), $this->getRelatedTicketIds($id));
-		$entityIds = implode(',', $entityIds);
-
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-
-		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
-			vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
-			vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start,vtiger_activity.time_start, vtiger_seactivityrel.crmid as parent_id
-			FROM vtiger_activity, vtiger_seactivityrel, vtiger_account, vtiger_users, vtiger_crmentity
-			LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
-			WHERE vtiger_seactivityrel.activityid = vtiger_activity.activityid
-				AND vtiger_seactivityrel.crmid IN (".$entityIds.")
-				AND vtiger_users.id=vtiger_crmentity.smownerid
-				AND vtiger_crmentity.crmid = vtiger_activity.activityid
-				AND vtiger_activity.activitytype='Emails'
-				AND vtiger_account.accountid = ".$id."
-				AND vtiger_crmentity.deleted = 0";
-
-		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
-
-		if($return_value == null) $return_value = Array();
-		$return_value['CUSTOM_BUTTON'] = $button;
-
-		$log->debug("Exiting get_emails method ...");
-		return $return_value;
-	}
-
 
 	/**
 	* Function to get Account related Quotes
@@ -888,25 +822,55 @@ class Accounts extends CRMEntity {
 		global $adb,$log;
 		$log->debug("Entering function transferRelatedRecords ($module, $transferEntityIds, $entityId)");
 
-		$rel_table_arr = Array("Contacts"=>"vtiger_contactdetails","Potentials"=>"vtiger_potential","Quotes"=>"vtiger_quotes",
-					"SalesOrder"=>"vtiger_salesorder","Invoice"=>"vtiger_invoice","Activities"=>"vtiger_seactivityrel",
-					"Documents"=>"vtiger_senotesrel","Attachments"=>"vtiger_seattachmentsrel","HelpDesk"=>"vtiger_troubletickets",
-					"Products"=>"vtiger_seproductsrel","ServiceContracts"=>"vtiger_servicecontracts","Campaigns"=>"vtiger_campaignaccountrel",
-					"Assets"=>"vtiger_assets","Project"=>"vtiger_project", "Emails"=>"vtiger_seactivityrel");
+        $rel_table_arr = [
+            'Contacts'         => 'vtiger_contactdetails',
+            'Potentials'       => 'vtiger_potential',
+            'Quotes'           => 'vtiger_quotes',
+            'SalesOrder'       => 'vtiger_salesorder',
+            'Invoice'          => 'vtiger_invoice',
+            'Documents'        => 'vtiger_senotesrel',
+            'Attachments'      => 'vtiger_seattachmentsrel',
+            'HelpDesk'         => 'vtiger_troubletickets',
+            'Products'         => 'vtiger_seproductsrel',
+            'ServiceContracts' => 'vtiger_servicecontracts',
+            'Campaigns'        => 'vtiger_campaignaccountrel',
+            'Assets'           => 'vtiger_assets',
+            'Project'          => 'vtiger_project'
+        ];
 
-		$tbl_field_arr = Array("vtiger_contactdetails"=>"contactid","vtiger_potential"=>"potentialid","vtiger_quotes"=>"quoteid",
-					"vtiger_salesorder"=>"salesorderid","vtiger_invoice"=>"invoiceid","vtiger_seactivityrel"=>"activityid",
-					"vtiger_senotesrel"=>"notesid","vtiger_seattachmentsrel"=>"attachmentsid","vtiger_troubletickets"=>"ticketid",
-					"vtiger_seproductsrel"=>"productid","vtiger_servicecontracts"=>"servicecontractsid","vtiger_campaignaccountrel"=>"campaignid",
-					"vtiger_assets"=>"assetsid","vtiger_project"=>"projectid","vtiger_seactivityrel"=>"activityid");
+        $tbl_field_arr = [
+            'vtiger_contactdetails'     => 'contactid',
+            'vtiger_potential'          => 'potentialid',
+            'vtiger_quotes'             => 'quoteid',
+            'vtiger_salesorder'         => 'salesorderid',
+            'vtiger_invoice'            => 'invoiceid',
+            'vtiger_senotesrel'         => 'notesid',
+            'vtiger_seattachmentsrel'   => 'attachmentsid',
+            'vtiger_troubletickets'     => 'ticketid',
+            'vtiger_seproductsrel'      => 'productid',
+            'vtiger_servicecontracts'   => 'servicecontractsid',
+            'vtiger_campaignaccountrel' => 'campaignid',
+            'vtiger_assets'             => 'assetsid',
+            'vtiger_project'            => 'projectid'
+        ];
 
-		$entity_tbl_field_arr = Array("vtiger_contactdetails"=>"accountid","vtiger_potential"=>"related_to","vtiger_quotes"=>"accountid",
-					"vtiger_salesorder"=>"accountid","vtiger_invoice"=>"accountid","vtiger_seactivityrel"=>"crmid",
-					"vtiger_senotesrel"=>"crmid","vtiger_seattachmentsrel"=>"crmid","vtiger_troubletickets"=>"parent_id",
-					"vtiger_seproductsrel"=>"crmid","vtiger_servicecontracts"=>"sc_related_to","vtiger_campaignaccountrel"=>"accountid",
-					"vtiger_assets"=>"account","vtiger_project"=>"linktoaccountscontacts","vtiger_seactivityrel"=>"crmid");
+        $entity_tbl_field_arr = [
+            'vtiger_contactdetails'     => 'accountid',
+            'vtiger_potential'          => 'related_to',
+            'vtiger_quotes'             => 'accountid',
+            'vtiger_salesorder'         => 'accountid',
+            'vtiger_invoice'            => 'accountid',
+            'vtiger_senotesrel'         => 'crmid',
+            'vtiger_seattachmentsrel'   => 'crmid',
+            'vtiger_troubletickets'     => 'parent_id',
+            'vtiger_seproductsrel'      => 'crmid',
+            'vtiger_servicecontracts'   => 'sc_related_to',
+            'vtiger_campaignaccountrel' => 'accountid',
+            'vtiger_assets'             => 'account',
+            'vtiger_project'            => 'linktoaccountscontacts'
+        ];
 
-		foreach($transferEntityIds as $transferId) {
+        foreach ($transferEntityIds as $transferId) {
 			foreach($rel_table_arr as $rel_module=>$rel_table) {
 				$id_field = $tbl_field_arr[$rel_table];
 				$entity_id_field = $entity_tbl_field_arr[$rel_table];
@@ -944,7 +908,6 @@ class Accounts extends CRMEntity {
 			"Products" => array("vtiger_seproductsrel"=>array("crmid","productid"),"vtiger_account"=>"accountid"),
 			"Documents" => array("vtiger_senotesrel"=>array("crmid","notesid"),"vtiger_account"=>"accountid"),
 			"Campaigns" => array("vtiger_campaignaccountrel"=>array("accountid","campaignid"),"vtiger_account"=>"accountid"),
-			"Emails" => array("vtiger_seactivityrel"=>array("crmid","activityid"),"vtiger_account"=>"accountid"),
 		);
 		return $rel_tables[$secmodule];
 	}
@@ -1317,9 +1280,6 @@ class Accounts extends CRMEntity {
 		if(isPermitted('Accounts','EditView','') == 'yes') {
 			$list_buttons['mass_edit'] = $app_strings["LBL_MASS_EDIT"];
 			$list_buttons['c_owner'] = $app_strings["LBL_CHANGE_OWNER"];
-		}
-		if(isPermitted('Emails','EditView','') == 'yes') {
-			$list_buttons['s_mail'] = $app_strings["LBL_SEND_MAIL_BUTTON"];
 		}
 		// mailer export
 		if(isPermitted('Accounts','Export','') == 'yes') {

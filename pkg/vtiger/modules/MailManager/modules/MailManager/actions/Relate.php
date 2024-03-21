@@ -29,14 +29,14 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 	public function __CreateNewEmail($mailrecord, $module, $linkfocus) {
 		$site_URL = vglobal('site_URL');
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$handler = vtws_getModuleHandlerFromName('Emails', $currentUserModel);
+		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
 		$meta = $handler->getMeta();
 		if ($meta->hasWriteAccess() != true) {
 			return false;
 		}
 		$mailBoxModel = MailManager_Mailbox_Model::activeInstance();
 		$username = $mailBoxModel->username();
-		$recordModel = Vtiger_Record_Model::getCleanInstance('Emails');
+		$recordModel = Vtiger_Record_Model::getCleanInstance('ITS4YouEmails');
 		$recordModel->set('subject', $mailrecord->_subject);
 
 		if(!empty($module)) $recordModel->set('parent_type', $module);
@@ -55,7 +55,7 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 				$inline_cid[$attch_name] = $cid;
 			}
 		}
-		$recordModel->set('description', $body);
+		$recordModel->set('body', $body);
 		$recordModel->set('assigned_user_id', $currentUserModel->get('id'));
 		$recordModel->set('date_start', date('Y-m-d', $mailrecord->_date));
         $recordModel->set('time_start', date('H:i',$mailrecord->_date));
@@ -68,14 +68,14 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		
 		//emails field were restructured and to,bcc and cc field are JSON arrays
 		$recordModel->set('from_email', $from);
-		$recordModel->set('saved_toid', $to);
-		$recordModel->set('ccmail', $cc);
-		$recordModel->set('bccmail', $bcc);
+		$recordModel->set('to_email', $to);
+		$recordModel->set('cc_email', $cc);
+		$recordModel->set('bcc_email', $bcc);
 		$recordModel->set('mailboxemail', $username);
 		$recordModel->save();
 
 		// TODO: Handle attachments of the mail (inline/file)
-		$this->__SaveAttachements($mailrecord, 'Emails', $recordModel);
+		$this->__SaveAttachements($mailrecord, 'ITS4YouEmails', $recordModel);
 
 		return $recordModel->getId();
 	}
@@ -157,7 +157,7 @@ class MailManager_Relate_Action extends Vtiger_MailScannerAction {
 		if (!empty($emailid)) {
 			MailManager::updateMailAssociation($mailrecord->uniqueid(), $emailid, $linkfocus->id);
 			// To add entry in ModTracker for email relation
-			relateEntities($linkfocus, $modulename, $linkto, 'Emails', $emailid);
+			relateEntities($linkfocus, $modulename, $linkto, 'ITS4YouEmails', $emailid);
 		}
 
 		$name = getEntityName($modulename, $linkto);

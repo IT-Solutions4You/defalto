@@ -197,38 +197,25 @@ class MailManager_Mail_View extends MailManager_Abstract_View {
 					$status = $mailer->Send(true);
 
 					if ($status === true) {
-						$email = CRMEntity::getInstance('Emails');
+						$email = CRMEntity::getInstance('ITS4YouEmails');
 						$email->column_fields['assigned_user_id'] = $currentUserModel->getId();
 						$email->column_fields['date_start'] = date('Y-m-d');
 						$email->column_fields['time_start'] = date('H:i');
-						$email->column_fields['parent_id'] = $parentIds;
+						$email->column_fields['related_to'] = explode('@', $parentIds)[0];
 						$email->column_fields['subject'] = $mailer->Subject;
-						$email->column_fields['description'] = $mailer->Body;
-						$email->column_fields['activitytype'] = 'Emails';
+						$email->column_fields['body'] = $mailer->Body;
 						$email->column_fields['from_email'] = $mailer->From;
-						$email->column_fields['saved_toid'] = $to;
-						$email->column_fields['ccmail'] = $cc_string;
-						$email->column_fields['bccmail'] = $bcc_string;
+						$email->column_fields['to_email'] = $to;
+						$email->column_fields['cc_email'] = $cc_string;
+						$email->column_fields['bcc_email'] = $bcc_string;
 						$email->column_fields['email_flag'] = 'SENT';
 
 						if(empty($emailId)) {
-							$email->save('Emails');
+							$email->save('ITS4YouEmails');
 						} else {
 							$email->id = $emailId;
 							$email->mode = 'edit';
-							$email->save('Emails');
-						}
-
-						$realid = explode("@", $parentIds);
-						$mycrmid = $realid[0];
-						$params = array($mycrmid, $email->id);
-
-						if ($realid[1] == -1) {
-							$db->pquery('DELETE FROM vtiger_salesmanactivityrel WHERE smid=? AND activityid=?',$params);
-							$db->pquery('INSERT INTO vtiger_salesmanactivityrel VALUES (?,?)', $params);
-						} else {
-							$db->pquery('DELETE FROM vtiger_seactivityrel WHERE crmid=? AND activityid=?', $params);
-							$db->pquery('INSERT INTO vtiger_seactivityrel VALUES (?,?)', $params);
+							$email->save('ITS4YouEmails');
 						}
 					}
 				}

@@ -12,30 +12,6 @@ if (defined('VTIGER_UPGRADE')) {
 	global $current_user, $adb;
 	$db = PearDatabase::getInstance();
 
-    //Profile privileges supported for Emails Module
-	$actions = array('Save', 'EditView', 'Delete', 'DetailView');
-    $emailsTabId = getTabid('Emails');
-
-    $actionIds = array();
-    foreach($actions as $actionName) {
-        array_push($actionIds, getActionid($actionName));
-    }
-
-    $profileIdsResult = $db->pquery("SELECT DISTINCT profileid FROM vtiger_profile", array());
-    $profileIdCount = $db->num_rows($profileIdsResult);
-    for($i = 0; $i < $profileIdCount; $i++) {
-        $profileId = $db->query_result($profileIdsResult, $i, 'profileid');
-        foreach($actionIds as $actionId) {
-            $db->pquery("INSERT INTO vtiger_profile2standardpermissions VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE permissions = ?",
-                    array($profileId, $emailsTabId, $actionId, 0, 0));
-        }
-        echo "Emails permission for profile id :: $profileId inserted into vtiger_profile2standardpermissions table.<br>";
-    }
-    echo 'All profiles permissions updated to Email Module';
-    
-    $db->pquery("UPDATE vtiger_tab SET ownedby = ? WHERE tabid = ?", array(0, $emailsTabId));
-    echo "ownedby value updated to 0 for Emails in vtiger_tab table.<br>";
-    
     vimport('~modules/Users/CreateUserPrivilegeFile.php');
     $usersResult = $db->pquery("SELECT id FROM vtiger_users", array());
     $usersCount = $db->num_rows($usersResult);
@@ -46,11 +22,6 @@ if (defined('VTIGER_UPGRADE')) {
         echo "User privilege and sharing privilege files recreated for user id :: $userId.<br>";
     }
     
-    //Default Email reports access count column update from varchar to integer
-    $db->pquery('UPDATE vtiger_selectcolumn set columnname = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
-    $db->pquery('UPDATE vtiger_relcriteria set columnname = ?, comparator = ? where columnname=?', array('vtiger_email_track:access_count:Emails_Access_Count:access_count:I', 'ny', 'vtiger_email_track:access_count:Emails_Access_Count:access_count:V'));
-    echo 'Email access count field data type updated to Int';
-    
     //#1184 => Register field delete event handler
     $em = new VTEventsManager($db);
     $em->registerHandler('vtiger.field.afterdelete', 'modules/Vtiger/handlers/FieldEventHandler.php', 'FieldEventHandler');
@@ -60,16 +31,6 @@ if (defined('VTIGER_UPGRADE')) {
     
     //#1248 => updated vtiger_systems.server_password to TEXT
     $db->pquery('ALTER TABLE vtiger_systems MODIFY server_password text', array());
-    
-    $defaultEventTemplates = array('ToDo Reminder', 'Activity Reminder', 'Invite Users');
-    $updateEventParams = array('Events', 'ToDo Reminder', 'Activity Reminder', 'Invite Users');
-    $db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN ('. generateQuestionMarks($defaultEventTemplates).')', $updateEventParams);
-    
-    $defaultContactTemplates = array('Support end notification before a month', 'Support end notification before a week', 'Send Portal login details to customer', 'Thanks Note', 'Customer Login Details', 'Target Crossed!', 'Follow Up', 'Address Change', 'Accept Order', 'Goods received acknowledgement', 'Acceptance Proposal', 'Pending Invoices', 'Announcement for Release');
-    $updateContactParams = array('Contacts','Support end notification before a month', 'Support end notification before a week', 'Send Portal login details to customer', 'Thanks Note', 'Customer Login Details', 'Target Crossed!', 'Follow Up', 'Address Change', 'Accept Order', 'Goods received acknowledgement', 'Acceptance Proposal', 'Pending Invoices', 'Announcement for Release');
-    $db->pquery('UPDATE vtiger_emailtemplates SET module=? WHERE templatename IN ('. generateQuestionMarks($defaultContactTemplates).')', $updateContactParams);
-    
-    echo 'Email templates default moduleName updated';
     
     //Migrate default module data from config editor to database
     $moduleModel = Settings_Vtiger_ConfigModule_Model::getInstance();
@@ -124,86 +85,6 @@ if (defined('VTIGER_UPGRADE')) {
     $em->registerHandler('vtiger.entity.afterrelate', 'modules/Vtiger/handlers/RelateEntitesHandler.php', 'RelateEntitesHandler');
 	echo '<br>Succecssfully added before relate handler<br>';
     
-    //Updating customer-portal email template
-    $result = $db->pquery("SELECT templateid FROM vtiger_emailtemplates WHERE subject = ?", array('Customer Portal Login Details'));
-    if ($db->num_rows($result)) {
-        $templateId = $db->query_result($result, 0, 'templateid');
-    }
-    if(!empty($templateId)){
-        $portalLoginTemplateRecord = EmailTemplates_Record_Model::getInstanceById($templateId);
-        $portalLoginTemplateContent = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-        <html>
-        <head>
-          <title></title>
-        </head>
-        <body class="scayt-enabled">
-          <!-- <center> -->
-            <table border="0" cellpadding="0" cellspacing="0" class="borderGrey" width="600px" style="margin-left:0px;">
-              <tbody>
-                <tr>
-                  <td colspan="6"><!-- Begin Pre header --><!-- // End Pre header \ --></td>
-                </tr>
-                <tr style="height:50px;">
-                  <td colspan="6" style="
-                  font-family: Helvetica,Verdana,sans-serif">
-                  <div style="margin-bottom:10px;color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);"><br />
-                    Dear $contacts-firstname$ $contacts-lastname$,</div>
-
-                    <div style="margin-top:20px;margin-bottom:20px; color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">As our customer, you can be assured of getting excellent support from our team. I would like to take this opportunity to introduce the portal we have setup for valuable customers like you. You can submit questions/issues via the portal, see past issues and responses. In addition, Portal provides you access to our knowledge base and documents we shared with you in the past.
-                    </div>
-
-                    <div style="margin-top:10px;color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">$URL$ to login to the portal, with the credentials below.</div>
-
-                    <div style="margin-top:20px;color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">Your Username: $login_name$</div>
-
-                    <div style="margin-bottom:20px;color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">Your Password: $password$</div>
-                    <div class="gmail_extra" style="margin-top:10px;color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);">Thank you,<br />
-                      $contacts-smownerid$</div>
-
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="6" style="font-family: Helvetica,Verdana,sans-serif;font-size: 11px;color: #666666;">
-                      <table border="0" cellpadding="4" cellspacing="0" width="100%">
-                        <tbody>
-                          <!--copy right data-->
-                          <tr>
-                            <td valign="top" style="
-                            padding-left: 0px;
-                            padding-right: 0px;
-                            width:350px">
-                                <div style="margin-top:20px;"><em>Powered By <a href="www.vtiger.com">Vtiger</a><div>
-                            </td>
-                          </tr>
-                          <!--subscribers links-->
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            <!-- </center> -->
-          </body>
-          </html>';
-        $portalLoginTemplateRecord->set('body', $portalLoginTemplateContent);
-        $portalLoginTemplateRecord->save();
-        $portalLoginTemplateId = $portalLoginTemplateRecord->getId();
-        echo "Customer portal login template created.<br>";
-        
-        //#1278 - registered new webservice api
-		$operationName = 'files_retrieve';
-		$handler_path = 'include/Webservices/FileRetrieve.php';
-		$handler_method = 'vtws_file_retrieve';
-		$operation_type = 'GET';
-
-		$result = $db->pquery("SELECT 1 FROM vtiger_ws_operation WHERE name = ?", array($operationName));
-		if(!$db->num_rows($result)) {
-		    $operationId = vtws_addWebserviceOperation($operationName, $handler_path, $handler_method, $operation_type);
-		    vtws_addWebserviceOperationParam($operationId, 'id', 'string', 1);
-		}
-		//4537596 - END
-    }
-    
     //image uitype added for webservice fieldtype
     $sql = 'INSERT INTO vtiger_ws_fieldtype(uitype,fieldtype) VALUES (?,?)';
     $params = array('69', 'image');
@@ -236,16 +117,6 @@ if (defined('VTIGER_UPGRADE')) {
     
     $block = Vtiger_Block::getInstance('Recurring Invoice Information', $moduleInstance);
     $block->addField($field);
-    
-    //Adding related list between Emails and Potentials
-    $emailRelatedModules = array('Potentials', 'HelpDesk');
-    foreach ($emailRelatedModules as $key => $moduleName) {
-        $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-        if($moduleModel){
-            $moduleModel->setRelatedList(Vtiger_Module_Model::getInstance('Emails'), 'Emails', 'ADD', 'get_emails');
-            print("Email related list added to $moduleName");
-        }   
-    }
     
     //Remove unwanted Files
     global $root_directory;

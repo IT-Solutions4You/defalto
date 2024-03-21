@@ -24,29 +24,9 @@ class Reports_RecordStructure_Model extends Vtiger_RecordStructure_Model {
 			return $this->structuredValues[$moduleName];
 		}
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
-		if ($moduleName === 'Emails') {
-			$restrictedTablesList = array('vtiger_emaildetails', 'vtiger_attachments');
-			$moduleRecordStructure = array();
-			$blockModelList = $moduleModel->getBlocks();
-			foreach ($blockModelList as $blockLabel => $blockModel) {
-				$fieldModelList = $blockModel->getFields();
-				if (!empty($fieldModelList)) {
-					$moduleRecordStructure[$blockLabel] = array();
-					foreach ($fieldModelList as $fieldName => $fieldModel) {
-						if($fieldModel->get('table')=='vtiger_activity' && $this->getRecord()->getPrimaryModule()!='Emails'){
-							$fieldModel->set('table','vtiger_activityEmails');
-						}
-						if (!in_array($fieldModel->get('table'), $restrictedTablesList) && $fieldModel->isViewable()) {
-							$moduleRecordStructure[$blockLabel][$fieldName] = $fieldModel;
-						}
-					}
-				}
-			}
-		} else {
-			$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
-			$moduleRecordStructure = $recordStructureInstance->getStructure();
-		}
-		//To remove starred and tag fields 
+        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
+        $moduleRecordStructure = $recordStructureInstance->getStructure();
+		//To remove starred and tag fields
 		foreach($moduleRecordStructure as $blockLabel => $blockFields) {
 			foreach($blockFields as $fieldName => $fieldModel) {
 				if($fieldModel->getDisplayType() == '6') {

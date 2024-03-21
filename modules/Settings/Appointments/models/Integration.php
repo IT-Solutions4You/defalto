@@ -18,7 +18,6 @@ class Settings_Appointments_Integration_Model extends Vtiger_Base_Model
         'PBXManager',
         'SMSNotifier',
         'ModComments',
-        'Emails',
     ];
 
     public static array $disabledFieldModules = [

@@ -50,7 +50,7 @@ class MailManager_Draft_Model {
 
 	public function getDrafts($page, $limit, $folder, $where = null) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$handler = vtws_getModuleHandlerFromName('Emails', $currentUserModel);
+		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
 		$meta = $handler->getMeta();
 		if(!$meta->hasReadAccess()) {
 			return false;
@@ -61,11 +61,11 @@ class MailManager_Draft_Model {
 		} else {
 			$limitClause = "LIMIT 0, ".$limit;
 		}
-		$query = "SELECT * FROM Emails where email_flag='SAVED' $where ORDER BY modifiedtime DESC $limitClause;";
+		$query = "SELECT * FROM ITS4YouEmails where email_flag='SAVED' $where ORDER BY modifiedtime DESC $limitClause;";
 		$draftMails = vtws_query($query, $currentUserModel);
 		for($i=0; $i<php7_count($draftMails); $i++) {
 			foreach($draftMails[$i] as $fieldname=>$fieldvalue) {
-				if($fieldname == "saved_toid" || $fieldname == "ccmail" || $fieldname == "bccmail") {
+				if($fieldname == "to_email" || $fieldname == "cc_email" || $fieldname == "bcc_email") {
 					if(!empty($fieldvalue)) {
 						$value = implode(',',Zend_Json::decode($fieldvalue));
 						if(strlen($value) > 45) {
@@ -99,7 +99,7 @@ class MailManager_Draft_Model {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 		if(empty(self::$totalDraftCount)) {
-			$DraftRes = $query = "SELECT * FROM Emails where email_flag='SAVED';";
+			$DraftRes = $query = "SELECT * FROM ITS4YouEmails where email_flag='SAVED';";
 			$draftMails = vtws_query($query, $currentUserModel);
 			self::$totalDraftCount = php7_count($draftMails);
 			return self::$totalDraftCount;
@@ -112,13 +112,13 @@ class MailManager_Draft_Model {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-		$handler = vtws_getModuleHandlerFromName('Emails', $currentUserModel);
+		$handler = vtws_getModuleHandlerFromName('ITS4YouEmails', $currentUserModel);
 		$meta = $handler->getMeta();
 		if(!$meta->hasReadAccess()) {
 			return false;
 		}
-		$id = vtws_getWebserviceEntityId('Emails', $request->get('id'));
-		$draftMail = vtws_query("SELECT * FROM Emails where id = $id;", $currentUserModel);
+		$id = vtws_getWebserviceEntityId('ITS4YouEmails', $request->get('id'));
+		$draftMail = vtws_query("SELECT * FROM ITS4YouEmails where id = $id;", $currentUserModel);
 		$emailId = vtws_getIdComponents($id);
 		$draftMail['attachments'] = $this->getAttachmentDetails($emailId[1]);
 		$draftMail[0]['id'] = $request->get('id');
@@ -154,11 +154,11 @@ class MailManager_Draft_Model {
 		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-		if(!MailManager::checkModuleWriteAccessForCurrentUser('Emails')) {
+		if(!MailManager::checkModuleWriteAccessForCurrentUser('ITS4YouEmails')) {
 			return false;
 		}
 
-		$email = CRMEntity::getInstance('Emails');
+		$email = CRMEntity::getInstance('ITS4YouEmails');
 
 		$to_string = rtrim($request->get('to'), ',');
 		$cc_string = rtrim($request->get('cc'), ',');
@@ -169,64 +169,56 @@ class MailManager_Draft_Model {
 		$emailId = $request->get('emailid');
 		$subject = $request->get('subject');
 
-		$email = CRMEntity::getInstance('Emails');
+		$email = CRMEntity::getInstance('ITS4YouEmails');
 		$email->column_fields['assigned_user_id'] = $currentUserModel->getId();
 		$email->column_fields['date_start'] = date('Y-m-d');
 		$email->column_fields['time_start'] = date('H:i');
-		$email->column_fields['parent_id'] = $parentIds;
+		$email->column_fields['related_to'] = $this->retrieveFirstParent($parentIds);
 		$email->column_fields['subject'] =  (!empty($subject)) ? $subject : "No Subject";
-		$email->column_fields['description'] = $request->get('body');
-		$email->column_fields['activitytype'] = 'Emails';
+		$email->column_fields['body'] = $request->get('body');
 		$email->column_fields['from_email'] = $fromEmail;
-		$email->column_fields['saved_toid'] = $to_string;
-		$email->column_fields['ccmail'] = $cc_string;
-		$email->column_fields['bccmail'] = $bcc_string;
+		$email->column_fields['to_email'] = $to_string;
+		$email->column_fields['cc_email'] = $cc_string;
+		$email->column_fields['bcc_email'] = $bcc_string;
 		$email->column_fields['email_flag'] = 'SAVED';
 
 		if(empty($emailId)) {
-			$email->save('Emails');
+			$email->save('ITS4YouEmails');
 		} else {
 			$email->id = $emailId;
 			$email->mode = 'edit';
-			$email->save('Emails');
+			$email->save('ITS4YouEmails');
 		}
-		//save parent and email relation, to show up in Emails section of the parent
-		$this->saveEmailParentRel($email->id, $parentIds);
 
 		return $email->id;
 	}
 
-	public function saveEmailParentRel($emailId, $parentIds) {
-		$db = PearDatabase::getInstance();
+    /**
+     * Retrieves the first parent id from a string (2@71|...)
+     *
+     * @param string $parentIds
+     *
+     * @return int|string
+     */
+    public function retrieveFirstParent(string $parentIds): int|string
+    {
+        $myIds = explode("|", $parentIds);
 
-		$myids = explode("|", $parentIds);  //2@71|
-		if(!empty($emailId)) {
-			$db->pquery("delete from vtiger_seactivityrel where activityid=?",array($emailId)); //remove all previous relation
-		}
-		for ($i=0; $i<(php7_count($myids)); $i++) {
-			$realid = explode("@",$myids[$i]);
-			if(!empty($realid[0]) && !empty($emailId)) {
-				// this is needed as we might save the mail in draft mode earlier
-				$result = $db->pquery("SELECT * FROM vtiger_seactivityrel WHERE crmid=? AND activityid=?",array($realid[0], $emailId));
-				if(!$db->num_rows($result)) {
-					$db->pquery('INSERT INTO vtiger_seactivityrel(crmid, activityid) VALUES(?,?)',array($realid[0], $emailId));
-				}
-			}
-		}
-	}
+        if (php7_count($myIds)) {
+            $realId = explode('@', $myIds[0]);
 
+            if (!empty($realId[0]) && !empty($emailId)) {
+                return $realId[0];
+            }
+        }
+
+        return '';
+    }
 
 	public function getFromEmailAddress() {
-		$db = PearDatabase::getInstance();
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
+		$fromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
-		$fromEmail = false;
-		if (Vtiger_Version::check('5.2.0', '>=')) {
-			$smtpFromResult = $db->pquery('SELECT from_email_field FROM vtiger_systems WHERE server_type=?', array('email'));
-			if ($db->num_rows($smtpFromResult)) {
-				$fromEmail = decode_html($db->query_result($smtpFromResult, 0, 'from_email_field'));
-			}
-		}
 		if (empty($fromEmail)) $fromEmail = $currentUserModel->get('email1');
 		return $fromEmail;
 	}
@@ -301,10 +293,10 @@ class MailManager_Draft_Model {
 
 	public function deleteMail($ids) {
 		$currentUserModel = Users_Record_Model::getCurrentUserModel();
-		$focus = CRMEntity::getInstance('Emails');
+		$focus = CRMEntity::getInstance('ITS4YouEmails');
 		$idList = explode(',', $ids);
 		foreach($idList as $id) {
-			$focus->trash('Emails', $id);
+			$focus->trash('ITS4YouEmails', $id);
 		}
 	}
 
@@ -329,4 +321,3 @@ class MailManager_Draft_Model {
 		return $filesize;
 	}
 }
-?>

@@ -776,7 +776,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		if(!$moduleModels){
 			$presence = array(0, 2);
 			$moduleModels = self::getAll($presence);
-			$restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard');
+			$restrictedModules = array('Integration', 'Dashboard');
 			foreach($moduleModels as $key => $moduleModel){
 				if(in_array($moduleModel->getName(),$restrictedModules) || $moduleModel->get('isentitytype') != 1){
 					unset($moduleModels[$key]);
@@ -799,7 +799,10 @@ class Vtiger_Module_Model extends Vtiger_Module {
 		$searchableModules = array();
 		foreach ($entityModules as $tabid => $moduleModel) {
 				$moduleName = $moduleModel->getName();
-				if ($moduleName == 'Users' || $moduleName == 'Emails') continue;
+
+            if ($moduleName == 'Users') {
+                continue;
+            }
 				if($userPrivModel->hasModuleActionPermission($moduleModel->getId(), 'DetailView')) {
 						$searchableModules[$moduleName] = $moduleModel;
 				}
@@ -1555,7 +1558,6 @@ class Vtiger_Module_Model extends Vtiger_Module {
                     //END
                     
                     if($tablename == 'vtiger_crmentityrel'){    
-                        $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
                         $sql .= " INNER JOIN $tablename ON ($tablename.relcrmid = vtiger_crmentity.crmid OR $tablename.crmid = vtiger_crmentity.crmid)
                                   WHERE ($tablename.crmid IN (".  generateQuestionMarks($recordIds).") AND ($tablename.relmodule = '".$module."')) 
                                     OR ($tablename.relcrmid IN (".  generateQuestionMarks($recordIds).") AND ($tablename.module = '".$module."'))";
@@ -1565,13 +1567,9 @@ class Vtiger_Module_Model extends Vtiger_Module {
                     } else if($module == "Contacts" && $this->getName() == "Potentials"){
                         $tablename = 'vtiger_contpotentialrel';
                         $tabIndex = 'contactid';
-                        $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
                         $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid 
                         WHERE $tablename.potentialid IN (".  generateQuestionMarks($recordIds).")";
                     } else {
-                        if(in_array($tablename,array('vtiger_senotesrel'))){
-                             $sql .= ' LEFT JOIN vtiger_activity ON vtiger_activity.activityid = vtiger_crmentity.crmid ';
-                        }
                         $sql .= " INNER JOIN $tablename ON $tablename.$tabIndex = vtiger_crmentity.crmid
                             WHERE $tablename.$relIndex IN (".  generateQuestionMarks($recordIds).")";
                     }

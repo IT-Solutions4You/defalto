@@ -39,7 +39,6 @@ $languageStrings = array(
 	//DetailView Actions
 	'LBL_DOWNLOAD_FILE' => 'Ladda ner Fil',
 	'LBL_CHECK_FILE_INTEGRITY' => 'Kontrollera filens integritet',
-	'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'E-postfil som bilaga',
 
 	//EditView
 	'LBL_INTERNAL' => 'Intern',

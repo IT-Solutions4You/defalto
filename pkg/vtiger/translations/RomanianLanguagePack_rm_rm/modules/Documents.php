@@ -60,7 +60,6 @@ $languageStrings = array(
     'LBL_DOCUMENT_SOURCE' => 'Document Source',
     'LBL_FILE_URL' => 'Url fișier',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Fișierul ca atașare de e-mail',
   'LBL_UPLOAD_TO' => 'Descărca',
   'LBL_NEW_DOCUMENT' => 'Un Nou Document',
   'LBL_VTIGER' => 'Voluntare rusă',

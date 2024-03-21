@@ -81,7 +81,7 @@ class Users_Field_Model extends Vtiger_Field_Model {
 				$db = PearDatabase::getInstance();
                     $currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
                     $presence = array(0);
-                    $restrictedModules = array('Webmails', 'Emails', 'Integration', 'Dashboard','ModComments');
+                    $restrictedModules = array('Integration', 'Dashboard','ModComments');
                     $query = 'SELECT name, tablabel, tabid FROM vtiger_tab WHERE presence IN (' . generateQuestionMarks($presence) . ') AND isentitytype = ? AND name NOT IN (' . generateQuestionMarks($restrictedModules) . ')';
 
                     $result = $db->pquery($query, array($presence, '1', $restrictedModules));

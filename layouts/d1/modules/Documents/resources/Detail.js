@@ -65,7 +65,7 @@ Vtiger_Detail_Js("Documents_Detail_Js", {
 			"view" : "ComposeEmail",
 			"documentIds" : recordIds
 		};
-		var emailEditInstance = new Emails_MassEdit_Js();
+		var emailEditInstance = new ITS4YouEmails_MassEdit_Js();
 		emailEditInstance.showComposeEmailForm(params);
 	}
 },{

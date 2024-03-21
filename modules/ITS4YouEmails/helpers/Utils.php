@@ -133,7 +133,7 @@ class ITS4YouEmails_Utils_Helper
      */
     public static function getOrganizationFromEmails(&$fromEmails, $savedDefaultFrom = '')
     {
-        $fromEmailField = ITS4YouEmails_Record_Model::getVtigerFromEmailField();
+        $fromEmailField = Settings_Vtiger_Systems_Model::getFromEmailField();
         $selectedDefaultFrom = '';
 
         if (!empty($fromEmailField)) {

@@ -9,7 +9,6 @@
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class ITS4YouEmails_Mailer_Model extends PHPMailer
@@ -329,17 +328,12 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
 
     public static function getReplyToEmail()
     {
-        $db = PearDatabase::getInstance();
         $defaultReplyTo = vglobal('default_reply_to');
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
         $replyTo = $currentUserModel->get('email1');
 
         if ($defaultReplyTo == 'outgoing_server_from_email') {
-            $result = $db->pquery('SELECT from_email_field FROM vtiger_systems WHERE server_type=?', array('email'));
-
-            if ($db->num_rows($result)) {
-                $fromEmail = decode_html($db->query_result($result, 0, 'from_email_field'));
-            }
+            $fromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
             if (!empty($fromEmail)) {
                 $replyTo = $fromEmail;
@@ -357,18 +351,9 @@ class ITS4YouEmails_Mailer_Model extends PHPMailer
 
     public static function getFromEmailAddress()
     {
-        $db = PearDatabase::getInstance();
         $currentUserModel = Users_Record_Model::getCurrentUserModel();
 
-        $fromEmail = false;
-        $result = $db->pquery(
-            'SELECT from_email_field FROM vtiger_systems WHERE server_type=?',
-            array('email')
-        );
-
-        if ($db->num_rows($result)) {
-            $fromEmail = decode_html($db->query_result($result, 0, 'from_email_field'));
-        }
+        $fromEmail = Settings_Vtiger_Systems_Model::getFromEmailField();
 
         if (empty($fromEmail)) {
             $fromEmail = $currentUserModel->get('email1');

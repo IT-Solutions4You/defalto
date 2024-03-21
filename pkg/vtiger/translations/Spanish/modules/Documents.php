@@ -76,7 +76,6 @@ $languageStrings = array(
     'LBL_REVOKE_ACCESS_TO_DROPBOX' => 'Revocar el acceso a Dropbox',
     'LBL_FILE_URL' => 'Url del archivo',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Archivo de correo electrónico como datos adjuntos',
   'LBL_UPLOAD_TO' => 'Subir A',
   'LBL_NEW_DOCUMENT' => 'Nuevo Documento',
   'LBL_VTIGER' => 'Vtiger',

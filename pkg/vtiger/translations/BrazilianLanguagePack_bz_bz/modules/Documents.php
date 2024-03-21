@@ -39,7 +39,6 @@ $languageStrings = array(
 	//DetailView Actions
 	'LBL_DOWNLOAD_FILE' => 'Arquivo Download',
 	'LBL_CHECK_FILE_INTEGRITY' => 'Verificar integridade do arquivo',
-	'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Arquivo Email como anexo',
 
 	//EditView
 	'LBL_INTERNAL' => 'Interno',

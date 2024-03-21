@@ -139,9 +139,6 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 			$searchModuleModel = $listViewModel->getModule();
 		}
 
-		if($moduleName == 'Documents' && $sourceModule == 'Emails') {
-			$listViewModel->extendPopupFields(array('filename'=>'filename'));
-		}
 		if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder', $sortOrder);

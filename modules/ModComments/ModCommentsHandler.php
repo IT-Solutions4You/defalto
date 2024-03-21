@@ -9,7 +9,6 @@
  ************************************************************************************/
 
 require_once 'modules/com_vtiger_workflow/VTEventHandler.inc';
-require_once 'modules/Emails/mail.php';
 require_once 'modules/HelpDesk/HelpDesk.php';
 
 class ModCommentsHandler extends VTEventHandler {
@@ -84,7 +83,7 @@ function CustomerCommentFromPortal($entityData) {
 		if(!empty($ownerIdInfo['Users'])) {
 			$ownerId = $ownerIdInfo['Users'];
 			$ownerName = getOwnerName($ownerId);
-			$toEmail = getUserEmailId('id',$ownerId);
+			$toEmail = getUserEmail($ownerId);
 		}
 		if(!empty($ownerIdInfo['Groups'])) {
 			$ownerId = $ownerIdInfo['Groups'];
@@ -104,8 +103,6 @@ function CustomerCommentFromPortal($entityData) {
 
 		$result = $adb->pquery("SELECT email FROM vtiger_contactdetails WHERE contactid=?", array($customerId[0]));
 		$fromEmail = $adb->query_result($result,0,'email');
-
-		send_mail('HelpDesk', $toEmail,'', $fromEmail, $subject, $contents);
 	}
 }
 
@@ -181,8 +178,6 @@ function TicketOwnerComments($entityData) {
 			} else {
 				$emailBody = HelpDesk::getTicketEmailContents($entityData);
 			}
-
-			send_mail('HelpDesk', $parentEmail, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $emailBody);
 		}
 	}
 }

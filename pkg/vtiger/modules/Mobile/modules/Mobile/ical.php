@@ -129,20 +129,15 @@ class Mobile_ICAL {
 
 		// TODO Configure timezone information.
 
-		$fieldnames = array(
-			'activityid', 'subject', 'description', 'activitytype', 'location', 'reminder_time',
-			'date_start', 'time_start', 'due_date', 'time_end', 'modifiedtime'
-		);
+        $fieldNames = ['modifiedtime', 'description'];
 
-		$query = "SELECT " . implode(',', $fieldnames) . " FROM vtiger_activity
+        $query = 'SELECT its4you_calendar.*, ' . implode(',', $fieldNames) . ' FROM its4you_calendar
 			INNER JOIN vtiger_crmentity ON
-			(vtiger_activity.activityid=vtiger_crmentity.crmid 	AND vtiger_crmentity.deleted = 0 AND vtiger_crmentity.smownerid = ?)
-			LEFT JOIN vtiger_activity_reminder ON vtiger_activity_reminder.activity_id=vtiger_activity.activityid
-			WHERE vtiger_activity.activitytype != 'Emails'";
+			(its4you_calendar.its4you_calendar_id=vtiger_crmentity.crmid AND vtiger_crmentity.deleted = 0 AND vtiger_crmentity.smownerid = ?)';
 
-		$result = $this->db->pquery($query, array($this->userfocus->id));
+        $result = $this->db->pquery($query, [$this->userfocus->id]);
 
-		while($resultrow = $this->db->fetch_array($result)) {
+        while ($resultrow = $this->db->fetch_array($result)) {
 
 			$properties = array();
 			$properties['uid']         = $resultrow['activityid'];
@@ -154,7 +149,7 @@ class Mobile_ICAL {
 			$properties['dtstamp']     = $this->formatDateTimestamp($resultrow['modifiedtime']);
 			$properties['location']    = $this->formatValue($resultrow['location']);
 
-			if($resultrow['activitytype'] == 'Task') {
+            if ((int)$resultrow['is_all_day'] === 1) {
 				// Tranform the parameter
 				$properties['due'] = $properties['dtend'];
 				unset($properties['dtend']);

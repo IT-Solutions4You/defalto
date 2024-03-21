@@ -170,11 +170,7 @@ class ReportRunQueryPlanner {
 		$adb->dieOnError = false; // If query planner is re-used there could be attempt for temp table...
 		foreach ($this->tempTables as $uniqueName => $tempTableInfo) {
 			$reportConditions = $this->getReportConditions($tempTableInfo['module']);
-			if ($tempTableInfo['module'] == 'Emails') {
-				$query1 = sprintf('CREATE TEMPORARY TABLE %s AS %s', $uniqueName, $tempTableInfo['query']);
-			} else {
-				$query1 = sprintf('CREATE TEMPORARY TABLE %s AS %s %s', $uniqueName, $tempTableInfo['query'], $reportConditions);
-			}
+            $query1 = sprintf('CREATE TEMPORARY TABLE %s AS %s %s', $uniqueName, $tempTableInfo['query'], $reportConditions);
 			$adb->pquery($query1, array());
 
 			$keyColumns = $tempTableInfo['keycolumns'];
@@ -470,9 +466,6 @@ class ReportRun extends CRMEntity {
                     if(php7_count($commonFields) > 0){
 						$baseTable = $moduleModel->get('basetable');
 						$this->queryPlanner->addTable($baseTable);
-						if ($secondaryModule == "Emails") {
-							$baseTable .= "Emails";
-						}
 						$baseTableId = $moduleModel->get('basetableid');
 						$columnslist[$baseTable . ":" . $baseTableId . ":" . $secondaryModule . ":" . $baseTableId . ":I"] = $baseTable . "." . $baseTableId . " AS " . $secondaryModule . "_LBL_ACTION";
 					}
@@ -492,10 +485,6 @@ class ReportRun extends CRMEntity {
 
 		[$module, $field] = explode('_', $selectedfields[2]);
 		$concatSql = getSqlForNameInDisplayFormat(array('first_name' => $selectedfields[0] . ".first_name", 'last_name' => $selectedfields[0] . ".last_name"), 'Users');
-		$emailTableName = "vtiger_activity";
-		if ($module != $this->primarymodule) {
-			$emailTableName .="Emails";
-		}
 
 		if ($selectedfields[0] == 'vtiger_inventoryproductrel') {
 
@@ -541,79 +530,41 @@ class ReportRun extends CRMEntity {
 				$this->queryPlanner->addTable($selectedfields[0]);
 			}
 		} elseif ($selectedfields[4] == 'D' || $selectedfields[4] == 'DT') {
-			if ($selectedfields[5] == 'Y') {
-				if ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-					if ($module == 'Emails') {
-						$columnSQL = "YEAR(cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE)) AS Emails_Date_Sent_Year";
-					} else {
-						$columnSQL = "YEAR(concat(vtiger_activity.date_start,' ',vtiger_activity.time_start)) AS Calendar_Start_Date_and_Time_Year";
-					}
-				} else if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
-					$columnSQL = "YEAR(vtiger_crmentity." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Year'";
-				} else {
-					$columnSQL = 'YEAR(' . $selectedfields[0] . "." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Year'";
-				}
+            if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
+                $columnSQL = "YEAR(vtiger_crmentity." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Year'";
+            } else {
+                $columnSQL = 'YEAR(' . $selectedfields[0] . "." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Year'";
+            }
+            if ($selectedfields[5] == 'Y') {
 				$this->queryPlanner->addTable($selectedfields[0]);
 			} elseif ($selectedfields[5] == 'M') {
-				if ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-					if ($module == 'Emails') {
-						$columnSQL = "MONTHNAME(cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE)) AS Emails_Date_Sent_Month";
-					} else {
-						$columnSQL = "MONTHNAME(concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start)) AS Calendar_Start_Date_and_Time_Month";
-					}
-				} else if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
+				if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
 					$columnSQL = "MONTHNAME(vtiger_crmentity." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Month'";
 				} else {
 					$columnSQL = 'MONTHNAME(' . $selectedfields[0] . "." . $selectedfields[1] . ") AS '" . decode_html($header_label) . "_Month'";
 				}
 				$this->queryPlanner->addTable($selectedfields[0]);
 			} elseif ($selectedfields[5] == 'W') {
-				if ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-					if ($module == 'Emails') {
-						$columnSQL = "CONCAT('Week ',WEEK(cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE), 1)) AS Emails_Date_Sent_Week";
-					} else {
-						$columnSQL = "CONCAT('Week ',WEEK(concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start), 1)) AS Calendar_Start_Date_and_Time_Week";
-					}
-				} else if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
+				if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
 					$columnSQL = "CONCAT('Week ',WEEK(vtiger_crmentity." . $selectedfields[1] . ", 1)) AS '" . decode_html($header_label) . "_Week'";
 				} else {
 					$columnSQL = "CONCAT('Week ',WEEK(" . $selectedfields[0] . "." . $selectedfields[1] . ", 1)) AS '" . decode_html($header_label) . "_Week'";
 				}
 				$this->queryPlanner->addTable($selectedfields[0]);
 			} elseif ($selectedfields[5] == 'MY') { // used in charts to get the year also, which will be used for click throughs
-				if ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-					if ($module == 'Emails') {
-						$columnSQL = "date_format(cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE), '%M %Y') AS Emails_Date_Sent_Month";
-					} else {
-						$columnSQL = "date_format(concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start), '%M %Y') AS Calendar_Start_Date_and_Time_Month";
-					}
-				} else if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
+				if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
 					$columnSQL = "date_format(vtiger_crmentity." . $selectedfields[1] . ", '%M %Y') AS '" . decode_html($header_label) . "_Month'";
 				} else {
 					$columnSQL = 'date_format(' . $selectedfields[0] . "." . $selectedfields[1] . ", '%M %Y') AS '" . decode_html($header_label) . "_Month'";
 				}
 				$this->queryPlanner->addTable($selectedfields[0]);
 			} else {
-				if ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-					if ($module == 'Emails') {
-						$columnSQL = "cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE) AS Emails_Date_Sent";
-					} else {
-						$columnSQL = "concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start) AS Calendar_Start_Date_and_Time";
-					}
-				} else if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
+				if ($selectedfields[0] == "vtiger_crmentity" . $this->primarymodule) {
 					$columnSQL = "vtiger_crmentity." . $selectedfields[1] . " AS '" . decode_html($header_label) . "'";
 				} else {
 					$columnSQL = $selectedfields[0] . "." . $selectedfields[1] . " AS '" . decode_html($header_label) . "'";
 				}
 				$this->queryPlanner->addTable($selectedfields[0]);
-			}
-		} elseif ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'status') {
-			$columnSQL = " case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end AS Calendar_Status";
-		} elseif ($selectedfields[0] == 'vtiger_activity' && $selectedfields[1] == 'date_start') {
-			if ($module == 'Emails') {
-				$columnSQL = "cast(concat($emailTableName.date_start,'  ',$emailTableName.time_start) as DATE) AS Emails_Date_Sent";
-			} else {
-				$columnSQL = "concat(vtiger_activity.date_start,'  ',vtiger_activity.time_start) AS Calendar_Start_Date_and_Time";
 			}
 		} elseif (stristr($selectedfields[0], "vtiger_users") && ($selectedfields[1] == 'user_name')) {
 			$temp_module_from_tablename = str_replace("vtiger_users", "", $selectedfields[0]);
@@ -675,9 +626,6 @@ class ReportRun extends CRMEntity {
 			}
 		} else {
 			$tableName = $selectedfields[0];
-			if ($module != $this->primarymodule && $module == "Emails" && $tableName == "vtiger_activity") {
-				$tableName = $emailTableName;
-			}
 			$columnSQL = $tableName . "." . $selectedfields[1] . " AS '" . decode_html($header_label) . "'";
 			$this->queryPlanner->addTable($selectedfields[0]);
 		}
@@ -1027,10 +975,6 @@ class ReportRun extends CRMEntity {
 					$selectedFields = explode(':', $fieldcolname);
 					$moduleFieldLabel = $selectedFields[2];
 					[$moduleName, $fieldLabel] = explode('_', $moduleFieldLabel, 2);
-					$emailTableName = '';
-					if ($moduleName == "Emails" && $moduleName != $this->primarymodule && $selectedFields[0] == "vtiger_activity") {
-						$emailTableName = "vtiger_activityEmails";
-					}
 
 					if ($fieldcolname != "" && $comparator != "") {
 						if (in_array($comparator, $dateSpecificConditions)) {
@@ -1074,15 +1018,7 @@ class ReportRun extends CRMEntity {
 										$startDateTime = "DATE_FORMAT('$startDateTime', '%m%d')";
 										$endDateTime = "DATE_FORMAT('$endDateTime', '%m%d')";
 									} else {
-										if ($selectedFields[0] == 'vtiger_activity' && ($selectedFields[1] == 'date_start')) {
-											$tableColumnSql = '(CONCAT(date_start, " ", time_start))';
-										} else {
-											if (empty($emailTableName)) {
-												$tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
-											} else {
-												$tableColumnSql = $emailTableName . '.' . $selectedFields[1];
-											}
-										}
+                                        $tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
 										$startDateTime = "'$startDateTime'";
 										$endDateTime = "'$endDateTime'";
 									}
@@ -1105,15 +1041,7 @@ class ReportRun extends CRMEntity {
 								$selectedFields[0] = 'vtiger_crmentity';
 							}
 
-							if ($selectedFields[0] == 'vtiger_activity' && ($selectedFields[1] == 'date_start')) {
-								$tableColumnSql = '(CONCAT(date_start, " ", time_start))';
-							} else {
-								if (empty($emailTableName)) {
-									$tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
-								} else {
-									$tableColumnSql = $emailTableName . '.' . $selectedFields[1];
-								}
-							}
+                            $tableColumnSql = $selectedFields[0] . '.' . $selectedFields[1];
 
 							if ($value != null && $value != '') {
 								if ($comparator == 'e' || $comparator == 'n') {
@@ -1260,9 +1188,7 @@ class ReportRun extends CRMEntity {
 									$advcolsql[] = " (trim($concatSql)" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype) . " or vtiger_groups" . $module_from_tablename . ".groupname " . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype) . ")";
 									$this->queryPlanner->addTable("vtiger_groups" . $module_from_tablename);
 								} elseif ($selectedfields[1] == 'status') {//when you use comma seperated values.
-									if ($selectedfields[2] == 'Calendar_Status') {
-										$advcolsql[] = "(case when (vtiger_activity.status not like '') then vtiger_activity.status else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
-									} else if ($selectedfields[2] == 'HelpDesk_Status') {
+									if ($selectedfields[2] == 'HelpDesk_Status') {
 										$advcolsql[] = "vtiger_troubletickets.status" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
 									} else if ($selectedfields[2] == 'Faq_Status') {
 										$advcolsql[] = "vtiger_faq.status" . $this->getAdvComparator($comparator, trim($valuearray[$n]), $datatype);
@@ -1357,16 +1283,6 @@ class ReportRun extends CRMEntity {
 							$this->queryPlanner->addTable($tableName);
 							$fieldvalue = 'trim(' . getSqlForNameInDisplayFormat(array('last_name' => "$tableName.last_name", 'first_name' => "$tableName.first_name"), 'Users') . ')' .
 									$this->getAdvComparator($comparator, trim($value), $datatype);
-						} elseif ($selectedfields[0] == "vtiger_activity" && ($selectedfields[1] == 'status' || $selectedfields[1] == 'eventstatus')) {
-							// for "Is Empty" condition we need to check with "value NOT NULL" OR "value = ''" conditions
-							if ($comparator == 'y') {
-								$fieldvalue = "(case when (vtiger_activity.status not like '') then vtiger_activity.status
-                                                else vtiger_activity.eventstatus end) IS NULL OR (case when (vtiger_activity.status not like '')
-                                                then vtiger_activity.status else vtiger_activity.eventstatus end) = ''";
-							} else {
-								$fieldvalue = "(case when (vtiger_activity.status not like '') then vtiger_activity.status
-                                                else vtiger_activity.eventstatus end)" . $this->getAdvComparator($comparator, trim($value), $datatype);
-							}
 						} else if ($comparator == 'ny') {
                             if ($fieldInfo['uitype'] == '10' || isReferenceUIType($fieldInfo['uitype'])) {
                                 $fieldvalue = "(" . $selectedfields[0] . "." . $selectedfields[1] . " IS NOT NULL AND " . $selectedfields[0] . "." . $selectedfields[1] . " != '' AND " . $selectedfields[0] . "." . $selectedfields[1] . "  != '0')";
@@ -1421,9 +1337,6 @@ class ReportRun extends CRMEntity {
 							$fieldvalue = "$tableColumnSql $condtionQuery";
 						} else {
 							$selectFieldTableName = $selectedfields[0];
-							if (!empty($emailTableName)) {
-								$selectFieldTableName = $emailTableName;
-							}
 							$fieldvalue = $selectFieldTableName . "." . $selectedfields[1] . $this->getAdvComparator($comparator, trim($value), $datatype);
 						}
 						$advfiltergroupsql .= $fieldvalue;
@@ -1533,12 +1446,7 @@ class ReportRun extends CRMEntity {
 						$startDateTime = "DATE_FORMAT('$startDateTime', '%m%d')";
 						$endDateTime = "DATE_FORMAT('$endDateTime', '%m%d')";
 					} else {
-						if ($selectedfields[0] == 'vtiger_activity' && ($selectedfields[1] == 'date_start')) {
-							$tableColumnSql = '';
-							$tableColumnSql = "(CONCAT(date_start,' ',time_start))";
-						} else {
-							$tableColumnSql = $selectedfields[0] . "." . $selectedfields[1];
-						}
+                        $tableColumnSql = $selectedfields[0] . "." . $selectedfields[1];
 						$startDateTime = "'$startDateTime'";
 						$endDateTime = "'$endDateTime'";
 					}
@@ -2769,38 +2677,6 @@ class ReportRun extends CRMEntity {
 			$query .= " ".$this->getRelatedModulesQuery($module,$this->secondarymodule).
 					getNonAdminAccessControlQuery($this->primarymodule,$current_user).
 					" where vtiger_crmentity.deleted=0";
-		} else if ($module == "Emails") {
-			$query = "from vtiger_activity
-			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid AND vtiger_activity.activitytype = 'Emails'";
-
-			if ($this->queryPlanner->requireTable("vtiger_email_track")) {
-				$query .= " LEFT JOIN vtiger_email_track ON vtiger_email_track.mailid = vtiger_activity.activityid";
-			}
-			if ($this->queryPlanner->requireTable("vtiger_groupsEmails")) {
-				$query .= " LEFT JOIN vtiger_groups AS vtiger_groupsEmails ON vtiger_groupsEmails.groupid = vtiger_crmentity.smownerid";
-			}
-			if ($this->queryPlanner->requireTable("vtiger_usersEmails")) {
-				$query .= " LEFT JOIN vtiger_users AS vtiger_usersEmails ON vtiger_usersEmails.id = vtiger_crmentity.smownerid";
-			}
-
-			// TODO optimize inclusion of these tables
-			$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-			$query .= " LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
-
-			if ($this->queryPlanner->requireTable("vtiger_lastModifiedBy$module")) {
-				$query .= " LEFT JOIN vtiger_users AS vtiger_lastModifiedBy" . $module . " ON vtiger_lastModifiedBy" . $module . ".id = vtiger_crmentity.modifiedby";
-			}
-			if ($this->queryPlanner->requireTable("vtiger_createdby$module")) {
-				$query .= " left join vtiger_users as vtiger_createdby$module on vtiger_createdby$module.id = vtiger_crmentity.smcreatorid";
-			}
-
-			$focus = CRMEntity::getInstance($module);
-			$relquery = $focus->getReportsUiType10Query($module, $this->queryPlanner);
-			$query .= $relquery . ' ';
-			
-			$query .= " ".$this->getRelatedModulesQuery($module,$this->secondarymodule).
-					getNonAdminAccessControlQuery($this->primarymodule,$current_user).
-					" WHERE vtiger_crmentity.deleted = 0";
 		} else {
 			if ($module != '') {
 				$focus = CRMEntity::getInstance($module);

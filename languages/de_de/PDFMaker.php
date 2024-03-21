@@ -180,8 +180,6 @@ $languageStrings = Array(
     "LBL_CUSTOM_DESC" => "In case of some changes have been made in following files of standard vtiger installation:<b>
                     <br/>- /index.php
                     <br/>- /Smarty_setup.php
-                    <br/>- /modules/Emails/EditView.php
-                    <br/>- /modules/Emails/Save.php
                     <br/>- /Smarty/templates/DetailView.tpl
                     <br/>- /Smarty/templates/ComposeEmail.tpl
                     <br/>- /Smarty/templates/Inventory/InventoryActions.tpl

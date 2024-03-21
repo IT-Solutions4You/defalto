@@ -467,47 +467,6 @@ class ProjectTask extends CRMEntity {
 		return $query;
 	}
 
-	function get_emails($recordId, $currentTabId, $relTabId, $actions=false) {
-		global $currentModule,$single_pane_view;
-		$relModuleName = vtlib_getModuleNameById($relTabId);
-		$singularRelModuleName = vtlib_tosingular($relModuleName);
-		require_once "modules/$relModuleName/$relModuleName.php";
-		$relModuleFocus = new $relModuleName();
-		vtlib_setup_modulevars($relModuleName, $relModuleFocus);
-
-
-		$returnSet = '&return_module='.$currentModule.'&return_action=CallRelatedList&return_id='.$recordId;
-
-		$button .= '<input type="hidden" name="email_directing_module"><input type="hidden" name="record">';
-		if($actions) {
-			if(is_string($actions)) $actions = explode(',', strtoupper($actions));
-			if(in_array('ADD', $actions) && isPermitted($relModuleName,1, '') == 'yes') {
-				$button .= "<input title='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."' accessyKey='F' class='crmbutton small create' onclick='fnvshobj(this,\"sendmail_cont\");sendmail(\"$currentModule\",$recordId);' type='button' name='button' value='". getTranslatedString('LBL_ADD_NEW')." ". getTranslatedString($singularRelModuleName)."'></td>";
-			}
-		}
-
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = "SELECT case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
-				vtiger_activity.activityid, vtiger_activity.subject, vtiger_activity.activitytype, vtiger_crmentity.modifiedtime,
-				vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_activity.date_start,vtiger_activity.time_start, vtiger_seactivityrel.crmid as parent_id
-				FROM vtiger_activity, vtiger_seactivityrel, vtiger_projecttask,vtiger_users, vtiger_crmentity
-				LEFT JOIN vtiger_groups ON vtiger_groups.groupid=vtiger_crmentity.smownerid
-				WHERE vtiger_seactivityrel.activityid = vtiger_activity.activityid
-				AND vtiger_seactivityrel.crmid = $recordId
-				AND vtiger_users.id=vtiger_crmentity.smownerid
-				AND vtiger_crmentity.crmid = vtiger_activity.activityid
-				AND vtiger_activity.activitytype='Emails'
-				AND vtiger_projecttask.projecttaskid = $recordId
-				AND vtiger_crmentity.deleted = 0";
-
-		$returnValue = GetRelatedList($currentModule, $relModuleName, $relModuleFocus, $query, $button, $returnSet);
-
-		if(!$returnValue) $returnValue = array();
-
-		$returnValue['CUSTOM_BUTTON'] = $button;
-		return $returnValue;
-	}
-
 	/**
 	 * Move the related records of the specified list of id's to the given record.
 	 * @param String This module name
@@ -543,7 +502,4 @@ class ProjectTask extends CRMEntity {
 		}
 		parent::transferRelatedRecords($module, $transferEntityIds, $entityId);
 	}
-
 }
-
-?>

@@ -38,7 +38,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (4,'Contacts',0,6,'Contacts',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (2,'Potentials',0,7,'Potentials',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (8,'Documents',0,9,'Documents',0,0,1,'Tools')");
-		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (10,'Emails',0,10,'Emails',0,1,1,'Tools')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (13,'HelpDesk',0,11,'HelpDesk',0,0,1,'Support')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (14,'Products',0,8,'Products',0,0,1,'Inventory')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (1,'Dashboard',0,12,'Dashboards',0,1,0,'Analytics')");
@@ -53,7 +52,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (25,'Reports',0,-1,'Reports',0,1,0,'Analytics')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (26,'Campaigns',0,-1,'Campaigns',0,0,1,'Marketing')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (27,'Portal',0,-1,'Portal',0,1,0,'Tools')");
-		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (28,'Webmails',0,-1,'Webmails',0,1,1,null)");
 		$this->db->query("insert into vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) values (29,'Users',0,-1,'Users',0,1,0,null)");
 
 		// Populate the vtiger_blocks vtiger_table
@@ -498,88 +496,7 @@ class DefaultDataPopulator extends CRMEntity {
 
 		//Block17 -- End
 		//Documents Details -- END
-		//Email Details -- START
-		//Block21 -- Start
 
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'date_start','vtiger_activity',1,'6','date_start','Date & Time Sent',1,0,'',100,1,21,1,'DT~M~time_start~Time Start',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'semodule','vtiger_activity',1,'2','parent_type','Sales Enity Module',1,0,'',100,2,21,3,'',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'activitytype','vtiger_activity',1,'2','activitytype','Activtiy Type',1,0,'',100,3,21,3,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'smownerid','vtiger_crmentity',1,'53','assigned_user_id','Assigned To',1,0,'',100,5,21,1,'V~M',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'subject','vtiger_activity',1,'2','subject','Subject',1,0,'',100,1,23,1,'V~M',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'name','vtiger_attachments',1,'61','filename','Attachment',1,0,'',100,2,23,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'description','vtiger_crmentity',1,'19','description','Description',1,0,'',100,1,24,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'time_start','vtiger_activity',1,'2','time_start','Time Start',1,0,'',100,9,23,1,'T~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'createdtime','vtiger_crmentity',1,'70','createdtime','Created Time',1,0,'',100,10,22,1,'DT~O',3,null,'BAS',0)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'modifiedtime','vtiger_crmentity',1,'70','modifiedtime','Modified Time',1,0,'',100,11,21,2,'DT~O',3,null,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field VALUES (10," . $this->db->getUniqueID("vtiger_field") . ", 'access_count', 'vtiger_email_track', '1', '25', 'access_count', 'Access Count', '1', '0', '0', '100', '6', '21', '3', 'V~O', '1', NULL, 'BAS', 0)");
-		$this->db->query("insert into vtiger_field values (10," . $this->db->getUniqueID("vtiger_field") . ",'modifiedby','vtiger_crmentity',1,'52','modifiedby','Last Modified By',1,0,'',100,12,21,3,'V~O',3,null,'BAS',0)");
-
-		//Block21 -- End
-		//Email Details -- END
-		//Task Details --START
-		//Block19 -- Start
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'subject','vtiger_activity',1,'2','subject','Subject',1,0,'',100,1,19,1,'V~M',0,1,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'smownerid','vtiger_crmentity',1,'53','assigned_user_id','Assigned To',1,0,'',100,2,19,1,'V~M',0,4,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'date_start','vtiger_activity',1,'6','date_start','Start Date & Time',1,0,'',100,3,19,1,'DT~M~time_start',0,2,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'time_start','vtiger_activity',1,'2','time_start','Time Start',1,0,'',100,4,19,3,'T~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'time_end','vtiger_activity',1,'2','time_end','End Time',1,0,'',100,4,19,3,'T~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'due_date','vtiger_activity',1,'23','due_date','Due Date',1,0,'',100,5,19,1,'D~M~OTH~GE~date_start~Start Date & Time',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'crmid','vtiger_seactivityrel',1,'66','parent_id','Related To',1,0,'',100,7,19,1,'I~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'contactid','vtiger_cntactivityrel',1,'57','contact_id','Contact Name',1,0,'',100,8,19,1,'I~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'status','vtiger_activity',1,'15','taskstatus','Status',1,0,'',100,8,19,1,'V~M',0,3,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'eventstatus','vtiger_activity',1,'15','eventstatus','Status',1,0,'',100,9,19,3,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'priority','vtiger_activity',1,'15','taskpriority','Priority',1,0,'',100,10,19,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'sendnotification','vtiger_activity',1,'56','sendnotification','Send Notification',1,0,'',100,11,19,1,'C~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'createdtime','vtiger_crmentity',1,'70','createdtime','Created Time',1,0,'',100,14,19,2,'DT~O',3,null,'BAS',0)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'modifiedtime','vtiger_crmentity',1,'70','modifiedtime','Modified Time',1,0,'',100,15,19,2,'DT~O',3,null,'BAS',0)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'activitytype','vtiger_activity',1,'15','activitytype','Activity Type',1,0,'',100,16,19,3,'V~O',1,null,'BAS',1)");
-		$this->db->query("Insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'visibility','vtiger_activity',1,'16','visibility','Visibility',1,0,'',100,17,19,3,'V~O',1,null,'BAS',1)");
-
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'description','vtiger_crmentity',1,'19','description','Description',1,0,'',100,1,20,1,'V~O',1,null,'BAS',1)");
-
-
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'duration_hours','vtiger_activity',1,'63','duration_hours','Duration',1,0,'',100,17,19,3,'T~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'duration_minutes','vtiger_activity',1,'16','duration_minutes','Duration Minutes',1,0,'',100,18,19,3,'T~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'location','vtiger_activity',1,'1','location','Location',1,0,'',100,19,19,3,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'reminder_time','vtiger_activity_reminder',1,'30','reminder_time','Send Reminder',1,0,'',100,1,19,3,'I~O',1,null,'BAS',1)");
-
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'recurringtype','vtiger_activity',1,'16','recurringtype','Recurrence',1,0,'',100,6,19,3,'O~O',1,null,'BAS',1)");
-
-		$this->db->query("Insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'notime','vtiger_activity',1,56,'notime','No Time',1,0,'',100,20,19,3,'C~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (9," . $this->db->getUniqueID("vtiger_field") . ",'modifiedby','vtiger_crmentity',1,'52','modifiedby','Last Modified By',1,0,'',100,22,19,3,'V~O',3,null,'BAS',0)");
-		//Block19 -- End
-		//Task Details -- END
-		//Event Details --START
-		//Block41-43-- Start
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'subject','vtiger_activity',1,'2','subject','Subject',1,0,'',100,1,41,1,'V~M',0,1,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'smownerid','vtiger_crmentity',1,'53','assigned_user_id','Assigned To',1,0,'',100,2,41,1,'V~M',0,6,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'date_start','vtiger_activity',1,'6','date_start','Start Date & Time',1,0,'',100,3,41,1,'DT~M~time_start',0,2,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'time_start','vtiger_activity',1,'2','time_start','Time Start',1,0,'',100,4,41,3,'T~M',1,null,'BAS',1)");
-
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'due_date','vtiger_activity',1,'23','due_date','End Date',1,0,'',100,5,41,1,'D~M~OTH~GE~date_start~Start Date & Time',0,5,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'time_end','vtiger_activity',1,'2','time_end','End Time',1,0,'',100,5,41,3,'T~M',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'recurringtype','vtiger_activity',1,'16','recurringtype','Recurrence',1,0,'',100,6,41,1,'O~O',1,null,'BAS',1)");
-
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'duration_hours','vtiger_activity',1,'63','duration_hours','Duration',1,0,'',100,7,41,1,'I~M',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'duration_minutes','vtiger_activity',1,'16','duration_minutes','Duration Minutes',1,0,'',100,8,41,3,'O~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'crmid','vtiger_seactivityrel',1,'66','parent_id','Related To',1,0,'',100,9,41,1,'I~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'eventstatus','vtiger_activity',1,'15','eventstatus','Status',1,0,'',100,10,41,1,'V~M',0,3,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'sendnotification','vtiger_activity',1,'56','sendnotification','Send Notification',1,0,'',100,11,41,1,'C~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'activitytype','vtiger_activity',1,'15','activitytype','Activity Type',1,0,'',100,12,41,1,'V~M',0,4,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'location','vtiger_activity',1,'1','location','Location',1,0,'',100,13,41,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'createdtime','vtiger_crmentity',1,'70','createdtime','Created Time',1,0,'',100,14,41,2,'DT~O',3,null,'BAS',0)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'modifiedtime','vtiger_crmentity',1,'70','modifiedtime','Modified Time',1,0,'',100,15,41,2,'DT~O',3,null,'BAS',0)");
-		$this->db->query("Insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'priority','vtiger_activity',1,15,'taskpriority','Priority',1,0,'',100,16,41,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("Insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'notime','vtiger_activity',1,56,'notime','No Time',1,0,'',100,17,41,1,'C~O',1,null,'BAS',1)");
-		$this->db->query("Insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'visibility','vtiger_activity',1,'16','visibility','Visibility',1,0,'',100,18,41,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'modifiedby','vtiger_crmentity',1,'52','modifiedby','Last Modified By',1,0,'',100,22,41,3,'V~O',3,null,'BAS',0)");
-
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'description','vtiger_crmentity',1,'19','description','Description',1,0,'',100,1,41,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'reminder_time','vtiger_activity_reminder',1,'30','reminder_time','Send Reminder',1,0,'',100,1,40,1,'I~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (16," . $this->db->getUniqueID("vtiger_field") . ",'contactid','vtiger_cntactivityrel',1,'57','contact_id','Contact Name',1,0,'',100,1,19,1,'I~O',1,null,'BAS',1)");
-
-		//Block41-43 -- End
-		//Event Details -- END
 		//Faq Details -- START
 		//Block37-40 -- Start
 
@@ -968,18 +885,6 @@ class DefaultDataPopulator extends CRMEntity {
 			$this->db->pquery("UPDATE vtiger_field SET masseditable=0 WHERE tabid=? AND fieldname IN (" . generateQuestionMarks($value) . ")", array($tabid, $value));
 		}
 
-		//Emails field added here
-		$email_Tabid = getTabid('Emails');
-		$blockquery = "select blockid from vtiger_blocks where blocklabel = ?";
-		$blockres = $this->db->pquery($blockquery, array('LBL_EMAIL_INFORMATION'));
-		$blockid = $this->db->query_result($blockres, 0, 'blockid');
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'from_email','vtiger_emaildetails',1,12,'from_email','From',1,2,'',100,1,$blockid,3,'V~M',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'to_email','vtiger_emaildetails',1,8,'saved_toid','To',1,2,'',100,2,$blockid,1,'V~M',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'cc_email','vtiger_emaildetails',1,8,'ccmail','CC',1,2,'',1000,3,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'bcc_email','vtiger_emaildetails',1,8,'bccmail','BCC' ,1,2,'',1000,4,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'idlists','vtiger_emaildetails',1,357,'parent_id','Parent ID' ,1,2,'',1000,5,$blockid,1,'V~O',3,NULL,'BAS',0)");
-		$this->db->query("INSERT INTO vtiger_field values($email_Tabid," . $this->db->getUniqueID("vtiger_field") . ",'email_flag','vtiger_emaildetails',1,16,'email_flag','Email Flag' ,1,2,'',1000,6,$blockid,3,'V~O',3,NULL,'BAS',0)");
-		//Emails fields ends
 		//The Entity Name for the modules are maintained in this table
 		$this->db->query("insert into vtiger_entityname values(7,'Leads','vtiger_leaddetails','firstname,lastname','leadid','leadid')");
 		$this->db->query("insert into vtiger_entityname values(6,'Accounts','vtiger_account','accountname','accountid','account_id')");
@@ -987,7 +892,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_entityname values(2,'Potentials','vtiger_potential','potentialname','potentialid','potential_id')");
 		$this->db->query("insert into vtiger_entityname values(8,'Documents','vtiger_notes','title','notesid','notesid')");
 		$this->db->query("insert into vtiger_entityname values(13,'HelpDesk','vtiger_troubletickets','title','ticketid','ticketid')");
-		$this->db->query("insert into vtiger_entityname values(10,'Emails','vtiger_activity','subject','activityid','activityid')");
 		$this->db->query("insert into vtiger_entityname values(14,'Products','vtiger_products','productname','productid','product_id')");
 		$this->db->query("insert into vtiger_entityname values(29,'Users','vtiger_users','first_name,last_name','id','id')");
 		$this->db->query("insert into vtiger_entityname values(23,'Invoice','vtiger_invoice','subject','invoiceid','invoiceid')");
@@ -1072,20 +976,17 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Quotes") . ",'get_quotes',3,'Quotes',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("SalesOrder") . ",'get_salesorder',4,'Sales Order',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Invoice") . ",'get_invoices',5,'Invoice',0,'add',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Emails") . ",'get_emails',7,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Documents") . ",'get_attachments',9,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("HelpDesk") . ",'get_tickets',10,'HelpDesk',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Accounts") . "," . getTabid("Products") . ",'get_products',11,'Products',0,'select',null,'','')");
 
 		//Inserting Lead Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Emails") . ",'get_emails',2,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Documents") . ",'get_attachments',4,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Products") . ",'get_products',5,'Products',0,'select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Leads") . "," . getTabid("Campaigns") . ",'get_campaigns',6,'Campaigns',0,'select',null,'','')");
 
 		//Inserting for contact related lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Potentials") . ",'get_opportunities',1,'Potentials',0,'add',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Emails") . ",'get_emails',3,'Emails',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("HelpDesk") . ",'get_tickets',4,'HelpDesk',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("Quotes") . ",'get_quotes',5,'Quotes',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Contacts") . "," . getTabid("PurchaseOrder") . ",'get_purchase_orders',6,'Purchase Order',0,'add',null,'','')");
@@ -1118,11 +1019,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Products") . "," . getTabid("Products") . ",'get_products',13,'Product Bundles',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Products") . "," . getTabid("Products") . ",'get_parent_products',14,'Parent Product',0,'',null,'','')");
 
-		//Inserting Emails Related Lists
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'select,bulkmail',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . ",0,'get_users',2,'Users',0,'',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Emails") . "," . getTabid("Documents") . ",'get_attachments',3,'Documents',0,'add,select',null,'','')");
-
 		//Inserting HelpDesk Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . ",0,'get_ticket_history',3,'Ticket History',0,'',null,'','')");
@@ -1134,7 +1030,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",14,'get_products',1,'Products',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",21,'get_purchase_orders',2,'Purchase Order',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . ",4,'get_contacts',3,'Contacts',0,'select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Vendors") . "," . getTabid("Emails") . ",'get_emails',4,'Emails',0,'add',null,'','')");
 
 		// Inserting Quotes Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Quotes") . "," . getTabid("SalesOrder") . ",'get_salesorder',1,'Sales Order',0,'',null,'','')");
@@ -1226,557 +1121,6 @@ Thanks,
  - All prices are not inclusive of VAT which shall be payable in addition by the Customer at the applicable rate.';
 
 		$this->db->query("insert into vtiger_inventory_tandc(id,type,tandc) values (" . $this->db->getUniqueID("vtiger_inventory_tandc") . ", 'Inventory', '" . $inv_tandc_text . "')");
-
-//insert into email template vtiger_table
-
-		$body = 'Hello!   <br />
-	<br />
-	On behalf of the vtiger team,  I am pleased to announce the release of vtiger crm4.2 . This is a feature packed release including the mass email template handling, custom view feature, vtiger_reports feature and a host of other utilities. vtiger runs on all platforms.    <br />
-        <br />
-	Notable Features of vtiger are :   <br />
-	<br />
-	-Email Client Integration    <br />
-	-Trouble Ticket Integration   <br />
-	-Invoice Management Integration   <br />
-	-Reports Integration   <br />
-	-Portal Integration   <br />
-	-Enhanced Word Plugin Support   <br />
-	-Custom View Integration   <br />
-	<br />
-	Known Issues:   <br />
-	-ABCD   <br />
-	-EFGH   <br />
-	-IJKL   <br />
-	-MNOP   <br />
-	-QRST';
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Announcement for Release','','Announcement for Release','Announcement of a release','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-
-		$body = 'name <br />
-street, <br />
-city, <br />
-state, <br />
- zip) <br />
-  <br />
- Dear <br />
- <br />
- Please check the following invoices that are yet to be paid by you: <br />
- <br />
- No. Date      Amount <br />
- 1   1/1/01    $4000 <br />
- 2   2/2//01   $5000 <br />
- 3   3/3/01    $10000 <br />
- 4   7/4/01    $23560 <br />
- <br />
- Kindly let us know if there are any issues that you feel are pending to be discussed. <br />
- We will be more than happy to give you a call. <br />
- We would like to continue our business with you.';
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Pending Invoices','','Invoices Pending','Payment Due','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-
-
-
-		$body = ' Dear <br />
- <br />
-Your proposal on the project XYZW has been reviewed by us <br />
-and is acceptable in its entirety. <br />
- <br />
-We are eagerly looking forward to this project <br />
-and are pleased about having the opportunity to work <br />
-together. We look forward to a long standing relationship <br />
-with your esteemed firm. <br />
-<br />
-I would like to take this opportunity to invite you <br />
-to a game of golf on Wednesday morning 9am at the <br />
-Cuff Links Ground. We will be waiting for you in the <br />
-Executive Lounge. <br />
-<br />
-Looking forward to seeing you there.';
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Acceptance Proposal','','Acceptance Proposal','Acceptance of Proposal','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-		$body = ' The undersigned hereby acknowledges receipt and delivery of the goods. <br />
-The undersigned will release the payment subject to the goods being discovered not satisfactory. <br />
-<br />
-Signed under seal this <date>';
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Goods received acknowledgement','','Goods received acknowledgement','Acknowledged Receipt of Goods','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-		$body = ' Dear <br />
-         We are in receipt of your order as contained in the <br />
-   purchase order form.We consider this to be final and binding on both sides. <br />
-If there be any exceptions noted, we shall consider them <br />
-only if the objection is received within ten days of receipt of <br />
-this notice. <br />
- <br />
-Thank you for your patronage.';
-
-
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Accept Order','','Accept Order','Acknowledgement/Acceptance of Order','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-
-
-		$body = 'Dear <br />
- <br />
-We are relocating our office to <br />
-11111,XYZDEF Cross, <br />
-UVWWX Circle <br />
-The telephone number for this new location is (101) 1212-1328. <br />
-<br />
-Our Manufacturing Division will continue operations <br />
-at 3250 Lovedale Square Avenue, in Frankfurt. <br />
-<br />
-We hope to keep in touch with you all. <br />
-Please update your addressbooks.';
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Address Change','','Change of Address','Address Change','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-
-		$body = 'Dear <br />
-<br />
-Thank you for extending us the opportunity to meet with <br />
-you and members of your staff. <br />
-<br />
-I know that John Doe serviced your account <br />
-for many years and made many friends at your firm. He has personally <br />
-discussed with me the deep relationship that he had with your firm. <br />
-While his presence will be missed, I can promise that we will <br />
-continue to provide the fine service that was accorded by <br />
-John to your firm. <br />
-<br />
-I was genuinely touched to receive such fine hospitality. <br />
-<br />
-Thank you once again.';
-
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Follow Up','','Follow Up','Follow Up of meeting','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-
-		$body = 'Congratulations! <br />
-<br />
-The numbers are in and I am proud to inform you that our <br />
-total sales for the previous quarter <br />
-amounts to $100,000,00.00!. This is the first time <br />
-we have exceeded the target by almost 30%. <br />
-We have also beat the previous quarter record by a <br />
-whopping 75%! <br />
-<br />
-Let us meet at Smoking Joe for a drink in the evening! <br />
-
-C you all there guys!';
-
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Target Crossed!','','Target Crossed!','Fantastic Sales Spree!','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-		$body = 'Dear <br />
-<br />
-Thank you for your confidence in our ability to serve you. <br />
-We are glad to be given the chance to serve you.I look <br />
-forward to establishing a long term partnership with you. <br />
-Consider me as a friend. <br />
-Should any need arise,please do give us a call.';
-
-
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Thanks Note','','Thanks Note','Note of thanks','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-//Added for HTML Eemail templates..
-//for Customer Portal Login details
-		$body = '<table width="700" cellspacing="0" cellpadding="0" border="0" align="center" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; text-decoration: none; background-color: rgb(122, 122, 254);">
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td width="50"> </td>
-            <td>
-            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(255, 255, 255); font-weight: normal; line-height: 25px;">
-                                <tr>
-                                    <td align="center" rowspan="4">$logo$</td>
-                                    <td align="center"> </td>
-                                </tr>
-                                <tr>
-                                    <td align="left" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 24px; color: rgb(255, 255, 255); font-weight: bolder; line-height: 35px;">vtiger CRM<br /> </td>
-                                </tr>
-                                <tr>
-                                    <td align="right" style="padding-right: 100px;">The honest Open Source CRM </td>
-                                </tr>
-                                <tr>
-                                    <td> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
-                                <tr>
-                                    <td valign="top">
-                                    <table width="100%" cellspacing="0" cellpadding="5" border="0">
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);"> </td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(22, 72, 134); font-weight: bolder; line-height: 15px;">Dear $contact_name$, </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; text-align: justify; line-height: 20px;"> Thank you very much for subscribing to the vtiger CRM - annual support service.<br />Here is your self service portal login details:</td>
-                                            </tr>
-                                            <tr>
-                                                <td align="center">
-                                                <table width="75%" cellspacing="0" cellpadding="10" border="0" style="border: 2px solid rgb(180, 180, 179); background-color: rgb(226, 226, 225); font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal;">
-                                                        <tr>
-                                                            <td><br />User ID     : <font color="#990000"><strong> $login_name$</strong></font> </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Password: <font color="#990000"><strong> $password$</strong></font> </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="center"> <strong>  $URL$<br /> </strong> </td>
-                                                        </tr>
-                                                </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; text-align: justify; line-height: 20px;"><strong>NOTE:</strong> We suggest you to change your password after logging in first time. <br /><br /> <strong><u>Help Documentation</u></strong><br />  <br /> After logging in to vtiger Self-service Portal first time, you can access the vtiger CRM documents from the <strong>Documents</strong> tab. Following documents are available for your reference:<br />
-                                                <ul>
-                                                    <li>Installation Manual (Windows &amp; Linux OS)<br /> </li>
-                                                    <li>User &amp; Administrator Manual<br /> </li>
-                                                    <li>vtiger Customer Portal - User Manual<br /> </li>
-                                                    <li>vtiger Outlook Plugin - User Manual<br /> </li>
-                                                    <li>vtiger Office Plug-in - User Manual<br /> </li>
-                                                    <li>vtiger Thunderbird Extension - User Manual<br /> </li>
-                                                    <li>vtiger Web Forms - User Manual<br /> </li>
-                                                    <li>vtiger Firefox Tool bar - User Manual<br /> </li>
-                                                </ul>
-                                                <br />  <br /> <strong><u>Knowledge Base</u></strong><br /> <br /> Periodically we update frequently asked question based on our customer experiences. You can access the latest articles from the <strong>FAQ</strong> tab.<br /> <br /> <strong><u>vtiger CRM - Details</u></strong><br /> <br /> Kindly let us know your current vtiger CRM version and system specification so that we can provide you necessary guidelines to enhance your vtiger CRM system performance. Based on your system specification we alert you about the latest security &amp; upgrade patches.<br />  <br />			 Thank you once again and wish you a wonderful experience with vtiger CRM.<br /> </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><strong style="padding: 2px; font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: bold;"><br /><br />Best Regards</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; line-height: 20px;">$support_team$ </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><a style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);" href="http://www.vtiger.com">www.vtiger.com</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                    </table>
-                                    </td>
-                                    <td width="1%" valign="top"> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="5" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(255, 255, 255); font-weight: normal; line-height: 15px; background-color: rgb(51, 51, 51);">
-                                <tr>
-                                    <td align="center">Shree Narayana Complex, No 11 Sarathy Nagar, Vijaya Nagar , Velachery, Chennai - 600 042 India </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Telephone No: +91 - 44 - 4202 - 1990     Toll Free No: +1 877 788 4437</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Email Id: <a style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(255, 255, 255);" href="mailto:support@vtiger.com">support@vtiger.com</a></td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-            </table>
-            </td>
-            <td width="50"> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-</table>';
-
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Customer Login Details','','Customer Portal Login Details','Send Portal login details to customer','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-//for Support end notification before a week
-		$body = '<table width="700" cellspacing="0" cellpadding="0" border="0" align="center" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; text-decoration: none; background-color: rgb(122, 122, 254);">
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td width="50"> </td>
-            <td>
-            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(255, 255, 255); font-weight: normal; line-height: 25px;">
-                                <tr>
-                                    <td align="center" rowspan="4">$logo$</td>
-                                    <td align="center"> </td>
-                                </tr>
-                                <tr>
-                                    <td align="left" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 24px; color: rgb(255, 255, 255); font-weight: bolder; line-height: 35px;">vtiger CRM </td>
-                                </tr>
-                                <tr>
-                                    <td align="right" style="padding-right: 100px;">The honest Open Source CRM </td>
-                                </tr>
-                                <tr>
-                                    <td> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
-                                <tr>
-                                    <td valign="top">
-                                    <table width="100%" cellspacing="0" cellpadding="5" border="0">
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);"> </td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(22, 72, 134); font-weight: bolder; line-height: 15px;">Dear $contacts-lastname$, </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; text-align: justify; line-height: 20px;">This is just a notification mail regarding your support end.<br /><span style="font-weight: bold;">Priority:</span> Urgent<br />Your Support is going to expire on next week<br />Please contact support@vtiger.com.<br /><br /><br /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="center"><br /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><strong style="padding: 2px; font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: bold;"><br /><br />Sincerly</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; line-height: 20px;">Support Team </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><a style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);" href="http://www.vtiger.com">www.vtiger.com</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                    </table>
-                                    </td>
-                                    <td width="1%" valign="top"> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="5" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(255, 255, 255); font-weight: normal; line-height: 15px; background-color: rgb(51, 51, 51);">
-                                <tr>
-                                    <td align="center">Shree Narayana Complex, No 11 Sarathy Nagar, Vijaya Nagar , Velachery, Chennai - 600 042 India </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Telephone No: +91 - 44 - 4202 - 1990     Toll Free No: +1 877 788 4437</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Email Id: <a style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(255, 255, 255);" href="mailto:info@vtiger.com">info@vtiger.com</a></td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-            </table>
-            </td>
-            <td width="50"> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-</table>';
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Support end notification before a week','','VtigerCRM Support Notification','Send Notification mail to customer before a week of support end date','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
-
-
-//for Support end notification before a month
-		$body = '<table width="700" cellspacing="0" cellpadding="0" border="0" align="center" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; text-decoration: none; background-color: rgb(122, 122, 254);">
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td width="50"> </td>
-            <td>
-            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(255, 255, 255); font-weight: normal; line-height: 25px;">
-                                <tr>
-                                    <td align="center" rowspan="4">$logo$</td>
-                                    <td align="center"> </td>
-                                </tr>
-                                <tr>
-                                    <td align="left" style="background-color: rgb(27, 77, 140); font-family: Arial,Helvetica,sans-serif; font-size: 24px; color: rgb(255, 255, 255); font-weight: bolder; line-height: 35px;">vtiger CRM </td>
-                                </tr>
-                                <tr>
-                                    <td align="right" style="padding-right: 100px;">The honest Open Source CRM </td>
-                                </tr>
-                                <tr>
-                                    <td> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: normal; color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
-                                <tr>
-                                    <td valign="top">
-                                    <table width="100%" cellspacing="0" cellpadding="5" border="0">
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);"> </td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 14px; color: rgb(22, 72, 134); font-weight: bolder; line-height: 15px;">Dear $contacts-lastname$, </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; text-align: justify; line-height: 20px;">This is just a notification mail regarding your support end.<br /><span style="font-weight: bold;">Priority:</span> Normal<br />Your Support is going to expire on next month.<br />Please contact support@vtiger.com<br /><br /><br /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="center"><br /></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><strong style="padding: 2px; font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: bold;"><br /><br />Sincerly</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(0, 0, 0); font-weight: normal; line-height: 20px;">Support Team </td>
-                                            </tr>
-                                            <tr>
-                                                <td align="right"><a href="http://www.vtiger.com" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(66, 66, 253);">www.vtiger.com</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td> </td>
-                                            </tr>
-                                    </table>
-                                    </td>
-                                    <td width="1%" valign="top"> </td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <table width="100%" cellspacing="0" cellpadding="5" border="0" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; color: rgb(255, 255, 255); font-weight: normal; line-height: 15px; background-color: rgb(51, 51, 51);">
-                                <tr>
-                                    <td align="center">Shree Narayana Complex, No 11 Sarathy Nagar, Vijaya Nagar , Velachery, Chennai - 600 042 India </td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Telephone No: +91 - 44 - 4202 - 1990     Toll Free No: +1 877 788 4437</td>
-                                </tr>
-                                <tr>
-                                    <td align="center">Email Id: <a href="mailto:info@vtiger.com" style="font-family: Arial,Helvetica,sans-serif; font-size: 12px; font-weight: bolder; text-decoration: none; color: rgb(255, 255, 255);">info@vtiger.com</a></td>
-                                </tr>
-                        </table>
-                        </td>
-                    </tr>
-            </table>
-            </td>
-            <td width="50"> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-</table>';
-		$this->db->query("insert into vtiger_emailtemplates(foldername,templatename,templatepath,subject,description,body,deleted,templateid,systemtemplate,module) values ('Public','Support end notification before a month','','VtigerCRM Support Notification','Send Notification mail to customer before a month of support end date','" . $body . "',0," . $this->db->getUniqueID('vtiger_emailtemplates') . ",'0','')");
 
 
 		//Insert into vtiger_organizationdetails vtiger_table

@@ -7,8 +7,9 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  ************************************************************************************/
-require_once('modules/Emails/class.smtp.php');
-require_once('modules/Emails/class.phpmailer.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 include_once('include/utils/CommonUtils.php');
 include_once('config.inc.php');
 include_once('include/database/PearDatabase.php');
@@ -21,9 +22,10 @@ include_once('vtlib/Vtiger/Event.php');
  */
 class Vtiger_Mailer extends PHPMailer {
 
-	var $_serverConfigured = false;
+	private bool $_serverConfigured = false;
+    private string $Signature;
 
-	/**
+    /**
 	 * Constructor
 	 */
 	function __construct($exceptions=null) {
@@ -96,8 +98,11 @@ class Vtiger_Mailer extends PHPMailer {
 	 */
 	function initFromTemplate($emailtemplate) {
 		global $adb;
-		$result = $adb->pquery("SELECT * from vtiger_emailtemplates WHERE templatename=? AND foldername=?",
-			Array($emailtemplate, 'Public'));
+		$result = $adb->pquery(
+			'SELECT * from vtiger_emakertemplates WHERE templatename = ?',
+			[$emailtemplate]
+		);
+
 		if($adb->num_rows($result)) {
 			$this->IsHTML(true);
 			$usesubject = $adb->query_result($result, 0, 'subject');
@@ -114,7 +119,8 @@ class Vtiger_Mailer extends PHPMailer {
 	*/
 	function addSignature($userId) {
 		global $adb;
-		$sign = nl2br($adb->query_result($adb->pquery("select signature from vtiger_users where id=?", array($userId)),0,"signature"));
+        $result = $adb->pquery("select signature from vtiger_users where id=?", [$userId]);
+        $sign = nl2br($adb->query_result($result, 0, "signature"));
 		$this->Signature = $sign;
 	}
 
@@ -303,5 +309,3 @@ abstract class Vtiger_Mailer_Listener {
 	function mailsent($queueid) { }
 	function mailerror($queueid) { }
 }
-
-?>

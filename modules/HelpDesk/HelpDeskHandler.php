@@ -8,8 +8,6 @@
  * All Rights Reserved.
  *************************************************************************************/
 
-require_once 'modules/Emails/mail.php';
-
 class HelpDeskHandler extends VTEventHandler {
 
 	function handleEvent($eventName, $entityData) {
@@ -36,7 +34,7 @@ function HelpDesk_nofifyOnPortalTicketCreation($entityData) {
 	$ownerIdInfo = getRecordOwnerId($entityId);
 	if(!empty($ownerIdInfo['Users'])) {
 		$ownerId = $ownerIdInfo['Users'];
-		$to_email = getUserEmailId('id',$ownerId);
+		$to_email = getUserEmail($ownerId);
 	}
 	if(!empty($ownerIdInfo['Groups'])) {
 		$ownerId = $ownerIdInfo['Groups'];
@@ -57,10 +55,10 @@ function HelpDesk_nofifyOnPortalTicketCreation($entityData) {
 	$from_email = $contact_email;
 
 	//send mail to assigned to user
-	$mail_status = send_mail('HelpDesk',$to_email,$name,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$contents);
+	EMAILMaker_Utils_Helper::sendMail($to_email, $name, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents);
 
 	//send mail to the customer(contact who creates the ticket from portal)
-	$mail_status = send_mail('Contacts',$contact_email,$HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$contents);
+	EMAILMaker_Utils_Helper::sendMail($contact_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents);
 }
 
 function HelpDesk_notifyOnPortalTicketComment($entityData) {
@@ -75,7 +73,7 @@ function HelpDesk_notifyOnPortalTicketComment($entityData) {
 	if(!empty($ownerIdInfo['Users'])) {
 		$ownerId = $ownerIdInfo['Users'];
 		$ownerName = getOwnerName($ownerId);
-		$to_email = getUserEmailId('id',$ownerId);
+		$to_email = getUserEmail($ownerId);
 	}
 	if(!empty($ownerIdInfo['Groups'])) {
 		$ownerId = $ownerIdInfo['Groups'];
@@ -108,7 +106,7 @@ function HelpDesk_notifyOnPortalTicketComment($entityData) {
 	$customername = decode_html($customername);//Fix to display the original UTF-8 characters in sendername instead of ascii characters
 	$from_email = $adb->query_result($result,0,'email');
 
-	send_mail('HelpDesk',$to_email,'',$from_email,$subject,$contents);
+	EMAILMaker_Utils_Helper::sendMail($to_email, '', $from_email, $subject, $contents);
 }
 
 function HelpDesk_notifyParentOnTicketChange($entityData) {
@@ -162,7 +160,7 @@ function HelpDesk_notifyParentOnTicketChange($entityData) {
 		}
 
 		if($isNew) {
-			send_mail('HelpDesk',$parent_email,$HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$email_body);
+			EMAILMaker_Utils_Helper::sendMail($parent_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
 		} else {
 			$entityDelta = new VTEntityDelta();
 			$statusHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'ticketstatus');
@@ -170,7 +168,7 @@ function HelpDesk_notifyParentOnTicketChange($entityData) {
 			$descriptionHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'description');
 
 			if(($statusHasChanged && $entityData->get('ticketstatus') == "Closed") || $solutionHasChanged || $descriptionHasChanged) {
-				send_mail('HelpDesk',$parent_email,$HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$email_body);
+				EMAILMaker_Utils_Helper::sendMail($parent_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
 			}
 		}
 	}
@@ -197,21 +195,20 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 	$email_body = HelpDesk::getTicketEmailContents($entityData, true);
 	if(PerformancePrefs::getBoolean('NOTIFY_OWNER_EMAILS', true) === true){
 		//send mail to the assigned to user and the parent to whom this ticket is assigned
-		require_once('modules/Emails/mail.php');
 		$wsAssignedUserId = $entityData->get('assigned_user_id');
 		$userIdParts = explode('x', $wsAssignedUserId);
 		$ownerId = $userIdParts[1];
 		$ownerType = vtws_getOwnerType($ownerId);
 
 		if($ownerType == 'Users') {
-			$to_email = getUserEmailId('id',$ownerId);
+			$to_email = getUserEmail($ownerId);
 		}
 		if($ownerType == 'Groups') {
 			$to_email = implode(',', getDefaultAssigneeEmailIds($ownerId));
 		}
 		if($to_email != '') {
 			if($isNew) {
-				$mail_status = send_mail('HelpDesk',$to_email,$HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$email_body);
+				$mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
 			} else {
 				$entityDelta = new VTEntityDelta();
 				$statusHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'ticketstatus');
@@ -219,7 +216,7 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 				$ownerHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'assigned_user_id');
 				$descriptionHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'description');
 				if(($statusHasChanged && $entityData->get('ticketstatus') == "Closed") || $solutionHasChanged || $ownerHasChanged || $descriptionHasChanged) {
-					$mail_status = send_mail('HelpDesk',$to_email,$HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID,$subject,$email_body);
+					$mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
 				}
 			}
 			$mail_status_str = $to_email."=".$mail_status."&&&";
@@ -227,11 +224,5 @@ function HelpDesk_notifyOwnerOnTicketChange($entityData) {
 		} else {
 			$mail_status_str = "'".$to_email."'=0&&&";
 		}
-
-		if ($mail_status != '') {
-			$mail_error_status = getMailErrorString($mail_status_str);
-		}
 	}
 }
-
-?>

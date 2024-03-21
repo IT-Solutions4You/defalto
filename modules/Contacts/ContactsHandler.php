@@ -67,7 +67,6 @@ function Contacts_sendCustomerPortalLoginDetails($entityData){
 		//trigger send email
 		if ($sendEmail && $entityData->get('emailoptout') == 0) {
 			global $current_user,$HELPDESK_SUPPORT_EMAIL_ID, $HELPDESK_SUPPORT_NAME;
-			require_once("modules/Emails/mail.php");
 			$emailData = Contacts::getPortalEmailContents($entityData,$password,'LoginDetails');
 			$subject = $emailData['subject'];
 			if(empty($subject)) {

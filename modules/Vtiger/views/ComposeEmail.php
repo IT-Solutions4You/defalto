@@ -26,7 +26,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		
 		$permissions[] = array('module_parameter' => 'module', 'action' => 'DetailView', 'record_parameter' => 'record');
 		$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-		$request->set('custom_module', 'Emails');
+		$request->set('custom_module', 'ITS4YouEmails');
 		return $permissions;
 	}
 
@@ -38,7 +38,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 	}
 
 	public function composeMailData($request){
-		$moduleName = 'Emails';
+		$moduleName = 'ITS4YouEmails';
 		$fieldModule = $request->get('fieldModule');
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$userRecordModel = Users_Record_Model::getCurrentUserModel();
@@ -208,7 +208,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$documentsModel = Vtiger_Module_Model::getInstance('Documents');
 		$documentsURL = $documentsModel->getInternalDocumentsURL();
 
-		$emailTemplateModuleModel = Vtiger_Module_Model::getInstance('EmailTemplates');
+		$emailTemplateModuleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 		$emailTemplateListURL = $emailTemplateModuleModel->getPopupUrl();
 
 		$viewer->assign('DOCUMENTS_URL', $documentsURL);
@@ -221,10 +221,8 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$viewer->assign('BCC', $request->get('bcc'));
 		$viewer->assign('BCCMAIL_INFO', $bccMailInfo);
 
-		//EmailTemplate module percission check
 		$userPrevilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$viewer->assign('MODULE_IS_ACTIVE', $userPrevilegesModel->hasModulePermission(Vtiger_Module_Model::getInstance('EmailTemplates')->getId()));
-		//
+		$viewer->assign('MODULE_IS_ACTIVE', $userPrevilegesModel->hasModulePermission(Vtiger_Module_Model::getInstance('EMAILMaker')->getId()));
 
 		if($relatedLoad){
 			$viewer->assign('RELATED_LOAD', true);
@@ -262,7 +260,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		}
 		$this->composeMailData($request);
 		$viewer = $this->getViewer($request);
-		echo $viewer->view('ComposeEmailForm.tpl', $moduleName, true);
+		echo $viewer->view('ComposeEmailForm.tpl', 'EMAILMaker', true);
 	}
 
 	function postProcess(Vtiger_Request $request) {
@@ -343,7 +341,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 			"libraries.jquery.ckeditor.adapters.jquery",
 			'modules.Vtiger.resources.validator.BaseValidator',
 			'modules.Vtiger.resources.validator.FieldValidator',
-			"modules.Emails.resources.EmailPreview",
+			"modules.ITS4YouEmails.resources.EmailPreview",
 			"modules.Vtiger.resources.CkEditor",
 			'modules.Vtiger.resources.Popup',
 			'libraries.jquery.jquery_windowmsg',
@@ -505,7 +503,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$viewer->assign('RECORDID', $request->get('record'));
 		$viewer->assign('RELATED_LOAD', true);
 		$viewer->assign('EMAIL_MODE', 'edit');
-		echo $viewer->view('ComposeEmailForm.tpl', $moduleName, true);
+		echo $viewer->view('ComposeEmailForm.tpl', 'EMAILMaker', true);
 	}
 
 	function emailForward($request){
@@ -522,7 +520,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$viewer->assign('TOMAIL_INFO', array());
 		$viewer->assign('RELATED_LOAD', true);
 		$viewer->assign('EMAIL_MODE', 'forward');
-		echo $viewer->view('ComposeEmailForm.tpl', $moduleName, true);
+		echo $viewer->view('ComposeEmailForm.tpl', 'EMAILMaker', true);
 	}
 
 	function emailReply($request){
@@ -580,7 +578,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$subject = $recordModel->get('subject');
 		$subject = (strpos($subject, 'Re:') === 0) ? $subject : 'Re:'.$subject;
 		$viewer->assign('SUBJECT', $subject);
-		echo $viewer->view('ComposeEmailForm.tpl', $moduleName, true);
+		echo $viewer->view('ComposeEmailForm.tpl', 'EMAILMaker', true);
 	}
 
 	function emailReplyAll($request){
@@ -657,7 +655,7 @@ class Vtiger_ComposeEmail_View extends Vtiger_Footer_View {
 		$subject = $recordModel->get('subject');
 		$subject = (strpos($subject, 'Re:') === 0) ? $subject : 'Re:'.$subject;
 		$viewer->assign('SUBJECT', $subject);
-		echo $viewer->view('ComposeEmailForm.tpl', $moduleName, true);
+		echo $viewer->view('ComposeEmailForm.tpl', 'EMAILMaker', true);
 	}
 
 	public function previewPrint($request) {

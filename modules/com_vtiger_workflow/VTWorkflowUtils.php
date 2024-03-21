@@ -113,14 +113,14 @@ class VTWorkflowUtils {
 
 	public static function checkModuleWorkflow($modulename) {
 		$result = true;
-		if (in_array($modulename, array('Emails', 'Faq', 'PBXManager', 'Users')) || !getTabid($modulename)) {
+		if (in_array($modulename, array('Faq', 'PBXManager', 'Users')) || !getTabid($modulename)) {
 			$result = false;
 		}
 		return $result;
 	}
 
 	function vtGetModules($adb) {
-		$modules_not_supported = array('Emails', 'PBXManager');
+		$modules_not_supported = array('PBXManager');
 		$sql = "select distinct vtiger_field.tabid, name
 			from vtiger_field
 			inner join vtiger_tab

@@ -13,10 +13,8 @@ require_once('modules/com_vtiger_workflow/tasks/VTEmailTask.inc');
 class VTSendNotificationTask extends VTEmailTask {
 
 	public function doTask($entity) {
-		global $adb, $current_user;
+		global $current_user;
 		$util = new VTWorkflowUtils();
-		$admin = $util->adminUser();
-		$module = $entity->getModuleName();
 
 		$taskContents = Zend_Json::decode($this->getContents($entity));
 		$fromEmail	= $taskContents['fromEmail'];
@@ -30,42 +28,32 @@ class VTSendNotificationTask extends VTEmailTask {
 		//Storing the details of emails
 		$entityIdDetails = vtws_getIdComponents($entity->getId());
 		$entityId = $entityIdDetails[1];
-		$moduleName = 'Emails';
+		$moduleName = 'ITS4YouEmails';
 		$userId = $current_user->id;
-		$emailFocus = CRMEntity::getInstance($moduleName);
-		$dateTime = new DateTimeField(null);
 
+		$emailFocus = CRMEntity::getInstance($moduleName);
 		$emailFocus->column_fields['assigned_user_id'] = $userId;
 		$emailFocus->column_fields['subject'] = $subject;
-		$emailFocus->column_fields['description'] = $content;
+		$emailFocus->column_fields['body'] = $content;
 		$emailFocus->column_fields['from_email'] = $fromEmail;
-		$emailFocus->column_fields['saved_toid'] = $toEmail;
-		$emailFocus->column_fields['ccmail'] = $cc;
-		$emailFocus->column_fields['bccmail'] = $bcc;
-		$emailFocus->column_fields['parent_id'] = $entityId."@$userId|";
+		$emailFocus->column_fields['to_email'] = $toEmail;
+		$emailFocus->column_fields['cc_email'] = $cc;
+		$emailFocus->column_fields['bcc_email'] = $bcc;
+		$emailFocus->column_fields['related_to'] = $entityId;
+		$emailFocus->column_fields['user_id'] = $userId;
 		$emailFocus->column_fields['email_flag'] = 'SENT';
-		$emailFocus->column_fields['activitytype'] = $moduleName;
-		$emailFocus->column_fields['date_start'] = date($dateTime->getDisplayDate($current_user));
-		$emailFocus->column_fields['time_start'] = date($dateTime->getDisplayTime($current_user));
-		$emailFocus->column_fields['mode'] = '';
-		$emailFocus->column_fields['id'] = '';
 		$emailFocus->save($moduleName);
 
-		//Including email tracking details
-		global $site_URL, $application_unique_key;
 		$emailId = $emailFocus->id;
 		$trackURL = Vtiger_Functions::generateTrackingURL(['record'=>$entityId,'mailid'=>$emailId, 'method'=>'open']);
 		$content = "<img src='$trackURL' alt='' width='1' height='1'>$content";
 
-		if (stripos($content, '<img src="cid:logo" />')) {
-			$logo = 1;
-		}
-
-		$status = send_mail($module, $toEmail, $fromName, $fromEmail, $subject, $content, $cc, $bcc, '', '', $logo);
+		$status = EMAILMaker_Utils_Helper::sendMail($toEmail, $fromName, $fromEmail, $subject, $content);
 
 		if(!empty($emailId)) {
 			$emailFocus->setEmailAccessCountValue($emailId);
 		}
+
 		if(!$status) {
 			//If mail is not sent then removing the details about email
 			$emailFocus->trash($moduleName, $emailId);
@@ -124,5 +112,3 @@ class VTSendNotificationTask extends VTEmailTask {
 		return $this->contents;
 	}
 }
-
-?>

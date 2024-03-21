@@ -22,8 +22,9 @@
 //file modified by richie
 
 
-require_once("modules/Emails/class.smtp.php");
-require_once("modules/Emails/class.phpmailer.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 require_once 'include/utils/CommonUtils.php';
 
 function sendmail($to,$from,$subject,$contents,$mail_server,$mail_server_username,$mail_server_password,$filename,$smtp_auth='')

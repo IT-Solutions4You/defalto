@@ -60,7 +60,6 @@ $languageStrings = array(
     'LBL_DOCUMENT_SOURCE' => 'Belge Kaynağı',
     'LBL_FILE_URL' => 'Dosya Url',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'E-posta eki olarak dosya ',
   'LBL_UPLOAD_TO' => 'Yüklemek İçin',
   'LBL_NEW_DOCUMENT' => 'Yeni Belge',
   'LBL_VTIGER' => 'Vtiger',

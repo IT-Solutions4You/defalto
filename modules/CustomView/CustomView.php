@@ -974,10 +974,6 @@ class CustomView extends CRMEntity {
 								/** while inserting in db for due_date it was taking date and time values also as it is
 								 * date time field. We only need to take date from that value
 								 */
-								if($col[0] == "vtiger_activity" && $col[1] == "due_date" ){
-									$values = explode(' ', $temp_val[$x]);
-									$temp_val[$x] = $values[0];
-								}
 								$date = new DateTimeField(trim($temp_val[$x]));
 								$val[$x] = $date->getDisplayDate();
 							} elseif ($col[4] == 'DT') {
@@ -1225,7 +1221,6 @@ class CustomView extends CRMEntity {
 					elseif ($comparator == 'y') {
 						$advfiltersql = sprintf("(%s.%s IS NULL OR %s.%s = '')", $columns[0], $columns[1], $columns[0], $columns[1]);
 					} else {
-						//Added for getting vtiger_activity Status -Jaguar
 						if ($this->customviewmodule == "Documents" && $columns[1] == 'folderid') {
 							$advfiltersql = "vtiger_attachmentsfolder.foldername" . $this->getAdvComparator($comparator, trim($value), $datatype);
 						} elseif ($this->customviewmodule == "Assets") {
@@ -1382,17 +1377,10 @@ class CustomView extends CRMEntity {
 			if ($modulename == 'Accounts') {
 				//By Pavani : Related to problem in calender, Ticket: 4284 and 4675
 				if (($comparator == 'e' || $comparator == 's' || $comparator == 'c') && trim($adv_chk_value) == '') {
-					if ($tablename == 'vtiger_seactivityrel' && $fieldname == 'crmid') {
-						$value .= 'vtiger_account2.accountname IS NULL or ';
-					} else {
-						$value .= 'vtiger_account.accountname IS NULL or ';
-					}
+                    $value .= 'vtiger_account.accountname IS NULL or ';
 				}
-				if ($tablename == 'vtiger_seactivityrel' && $fieldname == 'crmid') {
-					$value .= 'vtiger_account2.accountname';
-				} else {
-					$value .= 'vtiger_account.accountname';
-				}
+
+                $value .= 'vtiger_account.accountname';
 			}
 			if ($modulename == 'Leads') {
 				$concatSql = getSqlForNameInDisplayFormat(array('lastname' => 'vtiger_leaddetails.lastname', 'firstname' => 'vtiger_leaddetails.firstname'), 'Leads');

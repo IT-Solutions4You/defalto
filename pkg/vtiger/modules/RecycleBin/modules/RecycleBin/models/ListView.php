@@ -150,8 +150,8 @@ class RecycleBin_ListView_Model extends Vtiger_ListView_Model {
 		}
 
 		$listResult = $db->pquery($listQuery, array());
-		$listViewCount = $db->query_result($listResult, 0, 'count');
-		return $listViewCount;
+
+        return $db->query_result($listResult, 0, 'count');
 	}
 
 }

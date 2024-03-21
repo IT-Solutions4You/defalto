@@ -72,7 +72,7 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
             if ($googleRecord->getMode() != WSAPP_SyncRecordModel::WSAPP_DELETE_MODE) {
                 if(!$user)
                     $user = Users_Record_Model::getCurrentUserModel();
-                $entity = Vtiger_Functions::getMandatoryReferenceFields('Events');
+                $entity = Vtiger_Functions::getMandatoryReferenceFields('Appointments');
                 $entity['assigned_user_id'] = vtws_getWebserviceEntityId('Users', $user->id);
                 $entity['subject'] = $googleRecord->getSubject();
                 $entity['date_start'] = $googleRecord->getStartDate($user);
@@ -80,8 +80,8 @@ Class Google_Calendar_Connector extends WSAPP_TargetConnector {
                 $entity['time_start'] = $googleRecord->getStartTimeUTC($user);
                 $entity['due_date'] = $googleRecord->getEndDate($user);
                 $entity['time_end'] = $googleRecord->getEndTimeUTC($user);
-                $entity['eventstatus'] = "Planned";
-                $entity['activitytype'] = "Meeting";
+                $entity['calendar_status'] = "Planned";
+                $entity['calendar_type'] = "Meeting";
                 $entity['description'] = $googleRecord->getDescription();
                 $entity['duration_hours'] = '00:00';
                 $entity['visibility'] = $googleRecord->getVisibility($user);

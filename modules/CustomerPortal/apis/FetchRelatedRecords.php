@@ -72,7 +72,7 @@ class CustomerPortal_FetchRelatedRecords extends CustomerPortal_API_Abstract {
 				$result = vtws_query(sprintf("SELECT * FROM ModComments WHERE related_to = '%s' AND is_private='%s' ORDER BY %s DESC LIMIT %s,%s;", $recordId, 0, 'modifiedtime', ($page * $pageLimit), $pageLimit), $current_user);
 
 				$fileIds = array();
-				$$relatedEmailIds = array();
+				$relatedEmailIds = array();
 				if (is_array($result)) {
 					foreach ($result as $index => $value) {
 						$fileId = $value['filename'];

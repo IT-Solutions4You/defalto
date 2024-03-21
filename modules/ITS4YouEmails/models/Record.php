@@ -7,6 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+include_once 'libraries/ToAscii/ToAscii.php';
+
 class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
 {
     public static $FLAG_SENT = 'SENT';
@@ -19,18 +22,6 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public $mailer;
     public $logo = false;
     public $emailNames = [];
-
-    /**
-     * @return string
-     * @throws Exception
-     */
-    public static function getVtigerFromEmailField()
-    {
-        $adb = PearDatabase::getInstance();
-        $result = $adb->pquery('SELECT from_email_field FROM vtiger_systems WHERE from_email_field != ? AND server_type = ?', array('', 'email'));
-
-        return $adb->query_result($result, 0, 'from_email_field');
-    }
 
     /**
      * @param int $userId
@@ -56,7 +47,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             return 'module=EMAILMaker&view=Popup&src_record=' . $sourceRecord . '&src_module=' . $sourceModule;
         }
 
-        return 'module=EmailTemplates&view=Popup&src_record=' . $sourceRecord . '&src_module=' . $sourceModule;
+        return '';
     }
 
     /**
@@ -1136,5 +1127,56 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
     public function getAccessCountValue()
     {
         return $this->get('access_count');
+    }
+
+    /**
+     * Function to track clicks
+     *
+     * @param int $parentId
+     */
+    public function trackClicks($parentId): void
+    {
+        $db = PearDatabase::getInstance();
+        $recordId = $this->getId();
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        $db->pquery('INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)', [$parentId, $recordId, date('Y-m-d'), $currentDateTime]);
+
+        $result = $db->pquery('SELECT access_count, click_count FROM vtiger_email_track WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+        $accessCount = $db->query_result($result, 0, 'access_count');
+
+        if ($db->num_rows($result)) {
+            $updatedAccessCount = $accessCount;
+
+            //If click is unique (i.e. first click on mail), then also increase open count to 1
+            if ($accessCount == 0) {
+                $updatedAccessCount = $accessCount + 1;
+            }
+
+            $db->pquery('UPDATE vtiger_email_track SET click_count = click_count+1,access_count=? WHERE crmid = ? AND mailid = ?', [$updatedAccessCount, $parentId, $recordId]);
+        } else {
+            $db->pquery('INSERT INTO vtiger_email_track(crmid, mailid, access_count,click_count) values(?, ?, ?,?)', [$parentId, $recordId, 1, 1]);
+        }
+    }
+
+    /**
+     * Function to update Email track(opens) details.
+     *
+     * @param int $parentId
+     */
+    public function updateTrackDetails($parentId): void
+    {
+        $db = PearDatabase::getInstance();
+        $recordId = $this->getId();
+
+        $db->pquery('INSERT INTO vtiger_email_access(crmid, mailid, accessdate, accesstime) VALUES(?, ?, ?, ?)', [$parentId, $recordId, date('Y-m-d'), date('Y-m-d H:i:s')]);
+
+        $result = $db->pquery('SELECT 1 FROM vtiger_email_track WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+
+        if ($db->num_rows($result)) {
+            $db->pquery('UPDATE vtiger_email_track SET access_count = access_count+1 WHERE crmid = ? AND mailid = ?', [$parentId, $recordId]);
+        } else {
+            $db->pquery('INSERT INTO vtiger_email_track(crmid, mailid, access_count) values(?, ?, ?)', [$parentId, $recordId, 1]);
+        }
     }
 }

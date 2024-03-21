@@ -60,7 +60,6 @@ $languageStrings = array(
     'LBL_DOCUMENT_SOURCE' => 'Document Source',
     'LBL_FILE_URL' => 'File Url',
 
-  'LBL_EMAIL_FILE_AS_ATTACHMENT' => 'Email file as attachment',
   'LBL_UPLOAD_TO' => 'Upload To',
   'LBL_NEW_DOCUMENT' => 'New Document',
   'LBL_VTIGER' => 'Vtiger',

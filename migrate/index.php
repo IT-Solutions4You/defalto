@@ -27,7 +27,7 @@ if (!$errorMessage) {
 
 		$extensionStoreInstance = Settings_ExtensionStore_Extension_Model::getInstance();
 		$vtigerStandardModules = array('Accounts', 'Assets', 'Campaigns', 'Contacts', 'CustomerPortal',
-			'Dashboard', 'Emails', 'EmailTemplates', 'ExtensionStore',
+			'Dashboard', 'ExtensionStore',
 			'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 
 			'MailManager', 'Mobile', 'ModComments', 'ModTracker',
 			'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 

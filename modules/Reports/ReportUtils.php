@@ -214,7 +214,7 @@ function getReportFieldValue ($report, $picklistArray, $dbField, $valueArray, $f
 	}
 
 	// Added to render html tag for description fields
-	if($fieldInfo['uitype'] == '19' && ($module == 'Documents' || $module == 'Emails')) {
+	if($fieldInfo['uitype'] == '19' && $module == 'Documents') {
 		return $fieldvalue;
 	}
         if($operation == 'ExcelExport') {

@@ -25,7 +25,6 @@ if(defined('VTIGER_UPGRADE')) {
 	updateVtlibModule('WSAPP', 'packages/vtiger/mandatory/WSAPP.zip');
         updateVtlibModule('Arabic_ar_ae', 'packages/vtiger/optional/Arabic_ar_ae.zip');
         updateVtlibModule('Assets', 'packages/vtiger/optional/Assets.zip');
-        updateVtlibModule('EmailTemplates', 'packages/vtiger/optional/EmailTemplates.zip');
         updateVtlibModule('Google', 'packages/vtiger/optional/Google.zip');
         updateVtlibModule('ModComments', 'packages/vtiger/optional/ModComments.zip');
         updateVtlibModule('Projects', 'packages/vtiger/optional/Projects.zip');
@@ -80,9 +79,6 @@ $unWanted=array(
  "modules/Home/Homestuff.js",
  "modules/HelpDesk/HelpDesk.js",
  "modules/Faq/Faq.js",
- "modules/Emails/Emails.js",
- "modules/Emails/GmailBookmarklet.js",
- "modules/Emails/GmailBookmarkletTrigger.js",
  "modules/CustomerPortal/CustomerPortal.js",
  "modules/CronTasks/CronTasks.js",
  "modules/Contacts/Contacts.js",
@@ -676,22 +672,11 @@ Migration_Index_View::ExecuteQuery('UPDATE vtiger_field set typeofdata=? WHERE f
 
 //79 ends
 
-//80 starts
-//Added recurring enddate column for events,to vtiger_recurringevents table
-Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_recurringevents ADD COLUMN recurringenddate date', array());
-echo "added field recurring enddate to vtiger_recurringevents to save untill date of repeat events";
-
-//80 ends
-
-//81 starts
-//81 ends
-
 //82 starts
 Migration_Index_View::ExecuteQuery("ALTER TABLE vtiger_mailscanner CHANGE timezone time_zone VARCHAR(10)", array());
 echo "<br>Changed timezone column name for mail scanner";
 
 //82 ends
-
 
 //84 starts
 $query = "ALTER table vtiger_relcriteria modify comparator varchar(20)";
@@ -856,28 +841,6 @@ $updateQuery .= " END WHERE tabid = $usersTabId AND block IN (". generateQuestio
 Migration_Index_View::ExecuteQuery($updateQuery, $blockIds);
 
 echo "<br>User Fields Sequence Updated";
-
-// updating Emails module in sharing access rules
-$EmailsTabId = getTabId('Emails');
-$query = "SELECT tabid FROM vtiger_def_org_share";
-$result = $adb->pquery($query, array());
-$resultCount = $adb->num_rows($result);
-$exist = false;
-for($i=0; $i<$resultCount;$i++){
-        $tabid = $adb->query_result($result,  $i,  'tabid');
-        if($tabid == $EmailsTabId){
-                $exist = true;
-                echo 'Emails Sharing Access entry already exist';
-                break;
-        }
-}
-
-if(!$exist){
-        $ruleid = $adb->getUniqueID('vtiger_def_org_share');
-        $shareaccessquery = "INSERT INTO vtiger_def_org_share VALUES(?,?,?,?)";
-        $result = Migration_Index_View::ExecuteQuery($shareaccessquery, array($ruleid, $EmailsTabId, 2, 0));
-        echo 'Emails Sharing Access entry is added';
-}
 //90 ends
 
 //91 starts
@@ -893,9 +856,6 @@ echo "<br>";
 //91 ends
 
 //92 starts
-$result = $adb->pquery('SELECT max(templateid) AS maxtemplateid FROM vtiger_emailtemplates', array());
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_emailtemplates_seq SET id = ?', array(1 + ((int)$adb->query_result($result, 0, 'maxtemplateid'))));
-
  $result = $adb->pquery("SELECT 1 FROM vtiger_eventhandlers WHERE event_name=? AND handler_class=?",
                                     array('vtiger.entity.aftersave','Vtiger_RecordLabelUpdater_Handler'));
 if($adb->num_rows($result) <= 0) {

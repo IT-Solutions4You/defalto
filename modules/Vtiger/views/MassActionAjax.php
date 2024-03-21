@@ -34,7 +34,7 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 					break;
 				case 'showComposeEmailForm':
 					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'DetailView');
-					$request->set('custom_module', 'Emails');
+					$request->set('custom_module', 'ITS4YouEmails');
 					break;
 				case 'showSendSMSForm':
 					$permissions[] = array('module_parameter' => 'custom_module', 'action' => 'CreateView');
@@ -178,7 +178,7 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 	 * @param Vtiger_Request $request
 	 */
 	function showComposeEmailForm(Vtiger_Request $request) {
-		$moduleName = 'Emails';
+		$moduleName = 'ITS4YouEmails';
 		$sourceModule = $request->getModule();
 		$cvId = $request->get('viewname');
 		$selectedIds = $request->get('selected_ids');
@@ -507,8 +507,8 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		}
 		
 		$viewer = $this->getViewer($request);
-		$skipModules = array('Emails');
-		$viewer->assign('MODULE',$module);
+        $skipModules = [];
+        $viewer->assign('MODULE',$module);
 		$viewer->assign('RELATED_MODULES', $relatedModules);
 		$viewer->assign('SKIP_MODULES', $skipModules);
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());

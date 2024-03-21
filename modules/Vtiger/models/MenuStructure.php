@@ -185,7 +185,6 @@ class Vtiger_MenuStructure_Model extends Vtiger_Base_Model {
 									'ProjectTask'	=> array('PROJECT'),
 									'ProjectMilestone'	=> array('PROJECT'),
 									'ServiceContracts'	=> array('SUPPORT'),
-									'EmailTemplates'=> array('TOOLS'),
 									'Rss'			=> array('TOOLS'),
 									'Portal'		=> array('TOOLS'),
 									'RecycleBin'	=> array('TOOLS'),
