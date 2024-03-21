@@ -123,7 +123,12 @@ class ITS4YouEmails_Module_Model extends Vtiger_Module_Model
         return $emailRelatedModules;
     }
 
-    function getEmailOptOutRecordIds()
+    /**
+     * Retrieves list of entries from Contacts, Accounts and Leads with the option "Email opt out" checked
+     *
+     * @return array
+     */
+    public function getEmailOptOutRecordIds(): array
     {
         $db = PearDatabase::getInstance();
         $emailOptOutIds = [];
