@@ -159,6 +159,51 @@ class CurrencyField {
     }
 
 	/**
+	 * @param $value
+	 * @param $user
+	 * @param bool $skipConversion
+	 * @return float
+	 */
+	public static function convertToUserFormatForEdit($value, $user = null, $skipConversion = false)
+	{
+		$negative = false;
+
+		if (stripos($value, '-') === 0) {
+			$negative = true;
+			$value = substr($value, 1);
+		}
+
+		$self = new self($value);
+		$value = $self->getEditDisplayValue($user, $skipConversion);
+
+		return ($negative) ? '-' . $value : $value;
+	}
+
+	/**
+	 * @param $user
+	 * @param bool $skipConversion
+	 * @return float
+	 */
+	public function getEditDisplayValue($user = null, $skipConversion = false)
+	{
+		$current_user = Users_Record_Model::getCurrentUserModel();
+
+		if (empty($user)) {
+			$user = $current_user;
+		}
+
+		$this->initialize($user);
+
+		$value = $this->value;
+
+		if (!$skipConversion) {
+			$value = self::convertFromDollar($value, $this->conversionRate);
+		}
+
+		return $value;
+	}
+
+	/**
      * Function that converts the Number into Users Currency along with currency symbol
      * @param Users $user
 	 * @param Boolean $skipConversion
@@ -341,32 +386,25 @@ class CurrencyField {
 	 * @param Boolean $skipConversion
      * @return Number
      */
-    public function getDBInsertedValue($user=null, $skipConversion=false) {
-        global $current_user;
-        if(empty($user)) {
-            $user = $current_user;
-        }
+	public function getDBInsertedValue($user = null, $skipConversion = false)
+	{
+		$current_user = Users_Record_Model::getCurrentUserModel();
 
-        $this->initialize($user);
-
-		$value = $this->value;
-
-        $currencySeparator = $this->currencySeparator;
-        $decimalSeparator  = $this->decimalSeparator;
-		if(empty($currencySeparator)) $currencySeparator = ' ';
-		if(empty($decimalSeparator)) $decimalSeparator = ' ';
-        $value = str_replace("$currencySeparator", "", $value);
-        $value = str_replace("$decimalSeparator", ".", $value);
-
-		if($skipConversion == false) {
-			$value = self::convertToDollar($value,$this->conversionRate);
+		if (empty($user)) {
+			$user = $current_user;
 		}
-		//$value = round($value, $this->maxNumberOfDecimals);
 
-        return (float)$value;
-    }
+		$this->initialize($user);
+		$value = (float)$this->value;
 
-    /**
+		if (!$skipConversion) {
+			$value = self::convertToDollar($value, $this->conversionRate);
+		}
+
+		return (float)$value;
+	}
+
+	/**
      * Returns the Currency value without formatting for DB Operations
      * @param Number $value
      * @param Users $user
