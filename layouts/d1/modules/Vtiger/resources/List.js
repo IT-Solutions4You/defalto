@@ -2674,6 +2674,8 @@ Vtiger.Class("Vtiger_List_Js", {
 		//END
 		self.registerCustomViewsSelect();
 		self.registerCustomViewsEvents();
+
+		vtUtils.registerReplaceCommaWithDot($(document));
 	},
 	updateCustomViewsButtons: function (container) {
 		let self = this,

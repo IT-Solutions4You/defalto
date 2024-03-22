@@ -10,7 +10,7 @@
     {if $MODULE eq 'HelpDesk' && ($FIELD_MODEL->get('name') eq 'days' || $FIELD_MODEL->get('name') eq 'hours')}
         {assign var="FIELD_VALUE" value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}
     {elseif $FIELD_MODEL->getFieldDataType() eq 'double'}
-        {assign var="FIELD_VALUE" value=$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}
+        {assign var="FIELD_VALUE" value=$FIELD_MODEL->get('fieldvalue')}
     {else}
         {assign var="FIELD_VALUE" value=$FIELD_MODEL->get('fieldvalue')}
     {/if}
@@ -18,7 +18,7 @@
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="Vtiger_Number_UIType">
-        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement" name="{$FIELD_NAME}"
+        <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement numberField replaceCommaWithDot" name="{$FIELD_NAME}"
                value="{$FIELD_VALUE}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                 {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if}
                 {if php7_count($FIELD_INFO['validator'])}

@@ -9,6 +9,12 @@ var vtUtils = {
 
         weekDaysArray : {Sunday : 0,Monday : 1, Tuesday : 2, Wednesday : 3,Thursday : 4, Friday : 5, Saturday : 6},
 
+
+    registerReplaceCommaWithDot: function (container) {
+        container.off('keyup', '.replaceCommaWithDot').on('keyup', '.replaceCommaWithDot', function (e) {
+            $(this).val($(this).val().toString().replace(',', '.'))
+        });
+    },
     /**
 	 * Function which will show the select2 element for select boxes . This will use select2 library
 	 */

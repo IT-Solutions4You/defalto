@@ -329,6 +329,7 @@ Vtiger_Index_Js("Vtiger_Edit_Js",{
         this.registerReferenceCreate(form);
         this.referenceModulePopupRegisterEvent(form);
         this.registerPostReferenceEvent(this.getEditViewContainer());
+        vtUtils.registerReplaceCommaWithDot(form);
     },
     proceedRegisterEvents : function(){
 		if(jQuery('.recordEditView').length > 0){
