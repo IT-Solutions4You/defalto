@@ -150,7 +150,7 @@
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                             {assign var=LISTVIEW_ENTRY_RAWVALUE value=$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADER->get('column'))}
-                            {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency' || $LISTVIEW_HEADER->getFieldDataType() eq 'text'}
+                            {if $LISTVIEW_HEADER->getFieldDataType() eq 'text'}
                                 {assign var=LISTVIEW_ENTRY_RAWVALUE value=$LISTVIEW_ENTRY->getTitle($LISTVIEW_HEADER)}
                             {/if}
                             {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}

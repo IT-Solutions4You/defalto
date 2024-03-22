@@ -358,33 +358,32 @@ class ListViewController {
 						}
 					}
 				} elseif($fieldDataType == 'currency') {
-					if($value != '') {
-						if($field->getUIType() == 72) {
-							if($fieldName == 'unit_price') {
-								$currencyId = getProductBaseCurrency($recordId,$module);
-								$cursym_convrate = getCurrencySymbolandCRate($currencyId);
-								$currencySymbol = $cursym_convrate['symbol'];
-							} else {
-								$currencyInfo = getInventoryCurrencyInfo($module, $recordId);
-								$currencySymbol = $currencyInfo['currency_symbol'];
-							}
-							$value = CurrencyField::convertToUserFormat($value, null, true);
-							$row['currencySymbol'] = $currencySymbol;
-						} else {
-                            if (!empty($value)) {
-                                $value = CurrencyField::convertToUserFormat($value, null, true);
-                                $currencyId = getCurrencyIdForInventoryRecord((int)$recordId, (string)$module);
-
-                                if (!$currencyId) {
-                                    $currencyId = $this->user->currency_id;
-                                }
-
-                                $userCurrencyInfo = getCurrencySymbolandCRate($currencyId);
-                                $row['userCurrencySymbol'] = $userCurrencyInfo['symbol'];
+                    if (!empty($value)) {
+                        if ($field->getUIType() == 72) {
+                            if ($fieldName == 'unit_price') {
+                                $currencyId = getProductBaseCurrency($recordId, $module);
+                                $cursym_convrate = getCurrencySymbolandCRate($currencyId);
+                                $currencySymbol = $cursym_convrate['symbol'];
+                            } else {
+                                $currencyInfo = getInventoryCurrencyInfo($module, $recordId);
+                                $currencySymbol = $currencyInfo['currency_symbol'];
                             }
-						}
-					}
-				} elseif ($fieldDataType == 'double') {
+
+                            $value = CurrencyField::convertToUserFormat($value, null, true);
+                            $row['currencySymbol'] = $currencySymbol;
+                        } else {
+                            $value = CurrencyField::convertToDbFormat($value, null, true);
+                            $currencyId = getCurrencyIdForInventoryRecord((int)$recordId, (string)$module);
+
+                            if (!$currencyId) {
+                                $currencyId = $this->user->currency_id;
+                            }
+
+                            $userCurrencyInfo = getCurrencySymbolandCRate($currencyId);
+                            $row['userCurrencySymbol'] = $userCurrencyInfo['symbol'];
+                        }
+                    }
+                } elseif ($fieldDataType == 'double') {
 					$value = decimalFormat($value);
 				} elseif($fieldDataType == 'url') {
 					$matchPattern = "^[\w]+:\/\/^";

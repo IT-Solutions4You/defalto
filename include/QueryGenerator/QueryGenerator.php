@@ -1271,16 +1271,7 @@ class QueryGenerator {
 						}
 					}
 				}
-				if($type == 'currency') {
-					// Some of the currency fields like Unit Price, Total, Sub-total etc of Inventory modules, do not need currency conversion
-					if($field->getUIType() == '72') {
-						$value = CurrencyField::convertToDBFormat($value, null, true);
-					} else {
-						$currencyField = new CurrencyField($value);
-						$value = $currencyField->getDBInsertedValue();
-					}
-				}
-			}
+            }
 			if(!empty($input['operator'])) {
 				$operator = $input['operator'];
 			} elseif(trim(strtolower($value)) == 'null'){
