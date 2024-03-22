@@ -73,85 +73,86 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 	 * @param Vtiger_Request $request
 	 * @return Vtiger_Record_Model or Module specific Record Model instance
 	 */
-	public function getRecordModelFromRequest(Vtiger_Request $request) {
-		$moduleName = $request->getModule();
-		$recordId = $request->get('record');
+    public function getRecordModelFromRequest(Vtiger_Request $request)
+    {
+        $moduleName = $request->getModule();
+        $recordId = $request->get('record');
 
-		if(!empty($recordId)) {
-			$recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
-			$recordModel->set('id', $recordId);
-			$recordModel->set('mode', 'edit');
+        if (!empty($recordId)) {
+            $recordModel = Vtiger_Record_Model::getInstanceById($recordId, $moduleName);
+            $recordModel->set('id', $recordId);
+            $recordModel->set('mode', 'edit');
+            $fieldModelList = $recordModel->getModule()->getFields();
 
-			$fieldModelList = $recordModel->getModule()->getFields();
-			foreach ($fieldModelList as $fieldName => $fieldModel) {
-				//For not converting createdtime and modified time to user format
-				$uiType = $fieldModel->get('uitype');
-				if ($uiType == 70) {
-					$fieldValue = $recordModel->get($fieldName);
-                } else if ($uiType == 71 || $uiType == 72) {
-                    $fieldValue = $fieldModel->getUITypeModel()->getDisplayValue($recordModel->get($fieldName), true);
-				} else {
-					$fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
-				}
+            foreach ($fieldModelList as $fieldName => $fieldModel) {
+                //For not converting createdtime and modified time to user format
+                $fieldValue = $fieldModel->getUITypeModel()->getUserRequestValue($recordModel->get($fieldName));
+                // To support Inline Edit in Vtiger7
+                if ($request->has($fieldName)) {
+                    $fieldValue = $request->get($fieldName, null);
+                } elseif ($fieldName === $request->get('field')) {
+                    $fieldValue = $request->get('value');
+                }
 
-				// To support Inline Edit in Vtiger7
-				if($request->has($fieldName)){
-					$fieldValue = $request->get($fieldName,null);
-				}else if($fieldName === $request->get('field')){
-					$fieldValue = $request->get('value');
-				}
-				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time' && $fieldValue !== null) {
-					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-				}
+                $fieldDataType = $fieldModel->getFieldDataType();
+
+                if ($fieldDataType == 'time' && $fieldValue !== null) {
+                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+                }
+
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
-				if ($fieldValue !== null) {
-					if (!is_array($fieldValue)) {
-						$fieldValue = trim($fieldValue);
-					}
+
+                if ($fieldValue !== null) {
+                    if (!is_array($fieldValue)) {
+                        $fieldValue = trim($fieldValue);
+                    }
 
                     $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
-					$recordModel->set($fieldName, $fieldValue);
-				}
-				$recordModel->set($fieldName, $fieldValue);
-				if($fieldName === 'contact_id' && isRecordExists($fieldValue)) {
-					$contactRecord = Vtiger_Record_Model::getInstanceById($fieldValue, 'Contacts');
-					$recordModel->set("relatedContact",$contactRecord);
-				}
-			}
-		} else {
-			$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+                    $recordModel->set($fieldName, $fieldValue);
+                }
 
-			$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-			$recordModel->set('mode', '');
+                $recordModel->set($fieldName, $fieldValue);
 
-			$fieldModelList = $moduleModel->getFields();
-			foreach ($fieldModelList as $fieldName => $fieldModel) {
-				if ($request->has($fieldName)) {
-					$fieldValue = $request->get($fieldName, null);
-				} else {
-					$fieldValue = $fieldModel->getDefaultFieldValue();
-				}
+                if ($fieldName === 'contact_id' && isRecordExists($fieldValue)) {
+                    $contactRecord = Vtiger_Record_Model::getInstanceById($fieldValue, 'Contacts');
+                    $recordModel->set("relatedContact", $contactRecord);
+                }
+            }
+        } else {
+            $moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+            $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+            $recordModel->set('mode', '');
+            $fieldModelList = $moduleModel->getFields();
 
-				$fieldDataType = $fieldModel->getFieldDataType();
-				if ($fieldDataType == 'time' && $fieldValue !== null) {
-					$fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
-				}
+            foreach ($fieldModelList as $fieldName => $fieldModel) {
+                if ($request->has($fieldName)) {
+                    $fieldValue = $request->get($fieldName, null);
+                } else {
+                    $fieldValue = $fieldModel->getDefaultFieldValue();
+                }
+
+                $fieldDataType = $fieldModel->getFieldDataType();
+
+                if ($fieldDataType == 'time' && $fieldValue !== null) {
+                    $fieldValue = Vtiger_Time_UIType::getTimeValueWithSeconds($fieldValue);
+                }
+
                 $fieldValue = $this->purifyCkeditorField($fieldName, $fieldValue);
-				if ($fieldValue !== null) {
-					if (!is_array($fieldValue)) {
-						$fieldValue = trim($fieldValue);
-					}
+
+                if ($fieldValue !== null) {
+                    if (!is_array($fieldValue)) {
+                        $fieldValue = trim($fieldValue);
+                    }
 
                     $fieldValue = Vtiger_Util_Helper::validateFieldValue($fieldValue, $fieldModel);
-					$recordModel->set($fieldName, $fieldValue);
-				}
-			} 
-		}
+                    $recordModel->set($fieldName, $fieldValue);
+                }
+            }
+        }
 
-		return $recordModel;
-	}
-    
+        return $recordModel;
+    }
+
     public function purifyCkeditorField($fieldName, $fieldValue) {
         $ckeditorFields = array('commentcontent', 'notecontent', 'signature');
         if((in_array($fieldName, $ckeditorFields)) && $fieldValue !== null){
