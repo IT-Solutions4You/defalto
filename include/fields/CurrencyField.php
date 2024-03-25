@@ -164,7 +164,7 @@ class CurrencyField {
 	 * @param bool $skipConversion
 	 * @return float
 	 */
-	public static function convertToUserFormatForEdit($value, $user = null, $skipConversion = false)
+	public static function convertToUserFormatForEdit($value, $user = null, $skipConversion = false, $skipFormatting=false)
 	{
 		$negative = false;
 
@@ -174,7 +174,7 @@ class CurrencyField {
 		}
 
 		$self = new self($value);
-		$value = $self->getEditDisplayValue($user, $skipConversion);
+		$value = $self->getEditDisplayValue($user, $skipConversion, $skipFormatting);
 
 		return ($negative) ? '-' . $value : $value;
 	}
@@ -184,7 +184,7 @@ class CurrencyField {
 	 * @param bool $skipConversion
 	 * @return float
 	 */
-	public function getEditDisplayValue($user = null, $skipConversion = false)
+	public function getEditDisplayValue($user = null, $skipConversion = false, $skipFormatting=false)
 	{
 		$current_user = Users_Record_Model::getCurrentUserModel();
 
@@ -195,6 +195,10 @@ class CurrencyField {
 		$this->initialize($user);
 
 		$value = $this->value;
+
+		if(!$skipFormatting) {
+			$value = number_format($value, $user->no_of_currency_decimals, '.', '');
+		}
 
 		if (!$skipConversion) {
 			$value = self::convertFromDollar($value, $this->conversionRate);
@@ -219,19 +223,24 @@ class CurrencyField {
 	 * @param Number $currencyValue
 	 * @param String $currencySymbol
 	 * @param String $currencySymbolPlacement
-     * @return Currency value appended with the currency symbol
+     * @return string Currency value appended with the currency symbol
      */
 	public static function appendCurrencySymbol($currencyValue, $currencySymbol, $currencySymbolPlacement='') {
 		global $current_user;
+
+		if (empty($currencyValue)) {
+			return '';
+		}
+
 		if(empty($currencySymbolPlacement)) {
 			$currencySymbolPlacement = $current_user->currency_symbol_placement;
 		}
 
 		switch($currencySymbolPlacement) {
-			case '1.0$' :	$returnValue = $currencyValue . $currencySymbol;
+			case '1.0$' :	$returnValue = $currencyValue . ' ' . $currencySymbol;
 							break;
 			case '$1.0'	:
-			default		:	$returnValue = $currencySymbol . $currencyValue;
+			default		:	$returnValue = $currencySymbol . ' ' . $currencyValue;
 		}
 		return $returnValue;
 	}

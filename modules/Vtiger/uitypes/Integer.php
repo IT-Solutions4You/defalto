@@ -18,4 +18,26 @@ class Vtiger_Integer_UIType extends Vtiger_Base_UIType {
 		return 'uitypes/Number.tpl';
 	}
 
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        $value = $value ? CurrencyField::convertToUserFormat($value, null, true) : 0;
+        $currentUser = Users_Record_Model::getCurrentUserModel();
+
+        return rtrim(rtrim($value, '0'), $currentUser->get('currency_decimal_separator'));
+    }
+
+    /**
+     * @param float $value
+     * @return float|int|string
+     */
+    public function getEditViewDisplayValue($value)
+    {
+        if (empty($value)) {
+            return 0;
+        }
+
+        $value = CurrencyField::convertToUserFormatForEdit($value, null, true, false);
+
+        return decimalFormat($value);
+    }
 }

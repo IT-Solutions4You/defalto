@@ -1796,11 +1796,7 @@ function updateAdvancedCriteria($reportid, $advft_criteria, $advft_criteria_grou
 		}
 		if($fieldType == 'currency') {
 			// Some of the currency fields like Unit Price, Total, Sub-total etc of Inventory modules, do not need currency conversion
-			//if($field->getUIType() == '72') {
-				$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value, null, true);
-			/*} else {
-				$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value);
-			}*/
+			$adv_filter_value = CurrencyField::convertToDBFormat($adv_filter_value, null, true);
 		}
 
 		$temp_val = explode(",",$adv_filter_value);

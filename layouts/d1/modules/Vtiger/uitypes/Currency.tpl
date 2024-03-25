@@ -26,7 +26,7 @@
             <div class="input-group inputElement" style="float:none;">
                 <span class="input-group-text" id="baseCurrencySymbol">{$BASE_CURRENCY_SYMBOL}</span>
                 <input id="{$MODULE}-editview-fieldname-{$FIELD_NAME}" type="text" class="form-control inputElement unitPrice currencyField replaceCommaWithDot" name="{$FIELD_NAME}"
-                       value="{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
+                       value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                        data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' data-number-of-decimal-places='{$USER_MODEL->get('no_of_currency_decimals')}'
                         {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if} data-rule-currency='true'
                         {if php7_count($FIELD_INFO['validator'])}

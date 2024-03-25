@@ -13,36 +13,34 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
     {
     }
 
-    public static function getRelatedModulesList($rel_module)
+    public static function getRelatedModulesList($relatedModule)
     {
-        $rel_module_id = getTabid($rel_module);
+        $relatedModuleId = Vtiger_Functions::getModuleId($relatedModule);
         $adb = PearDatabase::getInstance();
-        $restricted_modules = [];
-        $Related_Modules = array();
+        $relatedModules = [];
+        $result = $adb->pquery(
+            'SELECT vtiger_tab.name FROM vtiger_tab 
+            INNER JOIN vtiger_relatedlists on vtiger_tab.tabid=vtiger_relatedlists.related_tabid 
+            WHERE vtiger_tab.isentitytype = 1 AND vtiger_tab.presence = 0 AND vtiger_relatedlists.tabid = ? AND vtiger_relatedlists.related_tabid != ?',
+            [$relatedModuleId, $relatedModuleId]
+        );
 
-        $rsql = "SELECT vtiger_tab.name FROM vtiger_tab 
-				INNER JOIN vtiger_relatedlists on vtiger_tab.tabid=vtiger_relatedlists.related_tabid 
-				WHERE vtiger_tab.isentitytype=1 
-				AND vtiger_tab.name NOT IN(" . generateQuestionMarks($restricted_modules) . ") 
-				AND vtiger_tab.presence=0 AND vtiger_relatedlists.label!='Activity History'
-                                AND vtiger_relatedlists.tabid = ? AND vtiger_tab.tabid != ?";
-        $relatedmodules = $adb->pquery($rsql, array($restricted_modules, $rel_module_id, $rel_module_id));
-
-        if ($adb->num_rows($relatedmodules)) {
-            while ($resultrow = $adb->fetch_array($relatedmodules)) {
-                $Related_Modules[] = $resultrow['name'];
-            }
-        }
-        if (!in_array("ModComments", $Related_Modules) && vtlib_isModuleActive("ModComments")) {
-            $sql_mc = "SELECT linkid FROM vtiger_links WHERE tabid = ? AND linktype = ? AND linklabel = ? AND linkurl  = ?";
-            $result_mc = $adb->pquery($sql_mc, array($rel_module_id, "DETAILVIEWWIDGET", "DetailViewBlockCommentWidget", "block://ModComments:modules/ModComments/ModComments.php"));
-            $num_rows_mc = $adb->num_rows($result_mc);
-            if ($num_rows_mc > 0) {
-                $Related_Modules[] = "ModComments";
-            }
+        while ($row = $adb->fetchByAssoc($result)) {
+            $relatedModules[] = $row['name'];
         }
 
-        return $Related_Modules;
+        if (!in_array('ModComments', $relatedModules) && vtlib_isModuleActive('ModComments')) {
+            $result = $adb->pquery(
+                'SELECT linkid FROM vtiger_links WHERE tabid = ? AND linktype = ? AND linklabel = ? AND linkurl  = ?',
+                [$relatedModuleId, 'DETAILVIEWWIDGET', 'DetailViewBlockCommentWidget', 'block://ModComments:modules/ModComments/ModComments.php']
+            );
+
+            if ($adb->num_rows($result)) {
+                $relatedModules[] = 'ModComments';
+            }
+        }
+
+        return $relatedModules;
     }
 
     public function setId($value)
@@ -445,7 +443,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
                 if ($col[4] == 'D' || ($col[4] == 'T' && $col[1] != 'time_start' && $col[1] != 'time_end') || ($col[4] == 'DT')) {
                     $val = array();
                     for ($x = 0; $x < count($temp_val); $x++) {
-                        list($temp_date, $temp_time) = explode(" ", $temp_val[$x]);
+                        [$temp_date, $temp_time] = explode(" ", $temp_val[$x]);
                         $temp_date = getValidDisplayDate(trim($temp_date));
                         if (trim($temp_time) != '') {
                             $temp_date .= ' ' . $temp_time;

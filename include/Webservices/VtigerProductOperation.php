@@ -164,7 +164,7 @@ class VtigerProductOperation extends VtigerModuleOperation {
 		$priceDetails = getPriceDetailsForProduct($productId, '', '', $entityName);
 		foreach ($priceDetails as $priceDetail) {
 			$currencyId = $priceDetail['curid'];
-			$newElement["currency$currencyId"] = CurrencyField::convertToDBFormat($priceDetail['curvalue']);
+			$newElement["currency$currencyId"] = CurrencyField::convertToDBFormat($priceDetail['curvalue'], null, true);
 			if ($priceDetail['is_basecurrency']) {
 				$newElement['currency_id'] = vtws_getId(self::$currencyWsId, $currencyId);
 			}

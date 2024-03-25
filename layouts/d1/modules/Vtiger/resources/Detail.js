@@ -1082,7 +1082,7 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			fieldName = multiPicklistFieldName[0];
 		}
 
-		let customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'currencyList', 'text', 'documentsFolder'];
+		let customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'currencyList', 'text', 'documentsFolder', 'currency'];
 
 		if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 			value = rawValue;
@@ -1099,12 +1099,14 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				fieldInfo = uimeta.field.get(fieldName);
 			}
 
-			if (fieldType == "boolean") {
-				if (rawValue == 0) {
+			if ('boolean' === fieldType) {
+				if (0 == rawValue) {
 					fieldInfo['value'] = "No";
 				} else {
 					fieldInfo['value'] = "Yes";
 				}
+			} else if('currency' === fieldType) {
+				fieldInfo['value'] = parseFloat(value);
 			} else {
 				fieldInfo['value'] = value;
 			}
@@ -2987,6 +2989,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				relativeTo: '#detailView'
 			});
 		}
+
+		vtUtils.registerReplaceCommaWithDot($(document));
 	},
 
 	/**

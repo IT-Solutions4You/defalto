@@ -18,13 +18,20 @@ class Vtiger_Percentage_UIType extends Vtiger_Base_UIType {
 		return 'uitypes/Percentage.tpl';
 	}
 
-	public function getDisplayValue($value, $record = false, $recordInstance = false) {
-		$fldvalue = str_replace(",", ".", $value);
-		$value = (is_numeric($fldvalue)) ? $fldvalue : null;
-		return CurrencyField::convertToUserFormat($value, null, true);
-	}
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        $value = $value ? CurrencyField::convertToUserFormat($value, null, true) : 0;
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-	public function getEditViewDisplayValue($value) {
-		return $this->getDisplayValue($value);
-	}
+        return rtrim(rtrim($value, '0'), $currentUser->get('currency_decimal_separator'));
+    }
+
+    public function getEditViewDisplayValue($value)
+    {
+        if (empty($value)) {
+            return 0;
+        }
+
+        return CurrencyField::convertToUserFormatForEdit($value, null, true, false);
+    }
 }

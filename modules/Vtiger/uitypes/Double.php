@@ -23,17 +23,24 @@ class Vtiger_Double_UIType extends Vtiger_Base_UIType {
 	 * @param <Object> $value
 	 * @return <Object>
 	 */
-	public function getDisplayValue($value, $record=false, $recordInstance=false) {
-		return decimalFormat($value);
-	}
+    public function getDisplayValue($value, $record = false, $recordInstance = false)
+    {
+        $value = $value ? CurrencyField::convertToUserFormat($value, null, true) : 0;
+        $currentUser = Users_Record_Model::getCurrentUserModel();
 
-	/**
-	 * Function to get the Value of the field in the format, the user provides it on Save
-	 * @param <Object> $value
-	 * @return <Object>
-	 */
-	public function getUserRequestValue($value) {
-		return $this->getDisplayValue($value);
-	}
+        return rtrim(rtrim($value, '0'), $currentUser->get('currency_decimal_separator'));
+    }
 
+    /**
+     * @param float $value
+     * @return float|int|string
+     */
+    public function getEditViewDisplayValue($value)
+    {
+        if (empty($value)) {
+            return 0;
+        }
+
+        return CurrencyField::convertToUserFormatForEdit($value, null, true, false);
+    }
 }

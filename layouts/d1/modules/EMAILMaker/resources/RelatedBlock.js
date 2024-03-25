@@ -268,6 +268,7 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             this.initialize();
             this.registerEvents2();
             this.registerSubmitEvent();
+            vtUtils.registerReplaceCommaWithDot($(document));
         },
         createRelatedBlockTable: function () {
 
