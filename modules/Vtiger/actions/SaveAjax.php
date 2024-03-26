@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 
@@ -19,35 +17,39 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 
 			$fieldModelList = $recordModel->getModule()->getFields();
 			$result = array();
-			$picklistColorMap = array();
-			foreach ($fieldModelList as $fieldName => $fieldModel) {
-				if($fieldModel->isViewable()){
-					$recordFieldValue = $recordModel->get($fieldName);
-					if(is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
-						foreach ($recordFieldValue as $picklistValue) {
-							$picklistColorMap[$picklistValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $picklistValue);
-						}
-						$recordFieldValue = implode(' |##| ', $recordFieldValue);     
-					}
-					if($fieldModel->getFieldDataType() == 'picklist') {
-						$picklistColorMap[$recordFieldValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $recordFieldValue);
-					}
-					$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
-					if ($fieldModel->getFieldDataType() !== 'currency' && $fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date' && $fieldModel->getFieldDataType() !== 'double') { 
-						$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId()); 
-					}
-					if ($fieldModel->getFieldDataType() == 'currency') {
-						$displayValue = Vtiger_Currency_UIType::transformDisplayValue($fieldValue, null, true);
-					}
-					if(!empty($picklistColorMap)) {
-						$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue, 'colormap' => $picklistColorMap);
-					} else {
-						$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);
-					}
-				}
-			}
 
-			//Handling salutation type
+            foreach ($fieldModelList as $fieldName => $fieldModel) {
+                $picklistColorMap = [];
+
+                if ($fieldModel->isViewable()) {
+                    $recordFieldValue = $recordModel->get($fieldName);
+
+                    if (is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+                        foreach ($recordFieldValue as $picklistValue) {
+                            $picklistColorMap[$picklistValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $picklistValue);
+                        }
+                        $recordFieldValue = implode(' |##| ', $recordFieldValue);
+                    }
+
+                    if ($fieldModel->getFieldDataType() == 'picklist') {
+                        $picklistColorMap[$recordFieldValue] = Settings_Picklist_Module_Model::getPicklistColorByValue($fieldName, $recordFieldValue);
+                    }
+
+                    $fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
+
+                    if ($fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date') {
+                        $displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId());
+                    }
+
+                    if (!empty($picklistColorMap)) {
+                        $result[$fieldName] = ['value' => $fieldValue, 'display_value' => $displayValue, 'colormap' => $picklistColorMap];
+                    } else {
+                        $result[$fieldName] = ['value' => $fieldValue, 'display_value' => $displayValue];
+                    }
+                }
+            }
+
+            //Handling salutation type
 			if ($request->get('field') === 'firstname' && in_array($request->getModule(), array('Contacts', 'Leads'))) {
 				$salutationType = $recordModel->getDisplayValue('salutationtype');
 				$firstNameDetails = $result['firstname'];

@@ -41,11 +41,11 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
      */
     public function getDisplayValue($value, $record = false, $recordInstance = false)
     {
-        if ($value) {
-            return CurrencyField::convertToUserFormat($value, null, true);
+        if (empty($value)) {
+            return '0';
         }
 
-        return null;
+        return CurrencyField::convertToUserFormat($value, null, true);
     }
 
     /**
@@ -56,11 +56,11 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
      */
     public function getEditViewDisplayValue($value)
     {
-        if ($value) {
-            return CurrencyField::convertToUserFormatForEdit($value, null, true);
+        if (empty($value)) {
+            return '';
         }
 
-        return null;
+        return CurrencyField::convertToUserFormatForEdit($value, null, true);
     }
 
     /**

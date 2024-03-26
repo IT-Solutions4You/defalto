@@ -557,17 +557,20 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 	getCurrencySymbol : function() {
 		return this.get('currency_symbol');
 	},
-	getUi: function () {
-		let value = this.getValue();
+	getValue: function() {
+		let value = this._super();
 
 		if(isNaN(value)) {
 			value = '';
 		}
 
+		return value;
+	},
+	getUi: function () {
 		let html = '<div class="CurrencyField w-100">' +
 				'<div class="input-group">' +
 				'<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
-				'<input class="inputElement form-control currencyField replaceCommaWithDot" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + value + '" />' +
+				'<input class="inputElement form-control currencyField replaceCommaWithDot" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
 				'</div>' +
 				'</div>',
 			element = jQuery(html);
@@ -664,6 +667,15 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 /** @var Vtiger_Percentage_Field_Js */
 Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	/**
 	 * Function to get the ui
 	 * @return - input percentage field
@@ -751,6 +763,15 @@ Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
 
 /** @var Vtiger_Integer_Field_Js */
 Vtiger_Field_Js('Vtiger_Integer_Field_Js', {}, {
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	getUi: function () {
 		let html = '<input class="IntegerField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
@@ -761,6 +782,15 @@ Vtiger_Field_Js('Vtiger_Integer_Field_Js', {}, {
 
 /** @var Vtiger_Double_Field_Js */
 Vtiger_Field_Js('Vtiger_Double_Field_Js', {}, {
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	getUi: function () {
 		let html = '<input class="DoubleField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));

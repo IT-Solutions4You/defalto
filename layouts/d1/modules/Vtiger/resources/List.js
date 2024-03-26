@@ -719,27 +719,29 @@ Vtiger.Class("Vtiger_List_Js", {
 	 * @returns {undefined}
 	 */
 	registerInlineEdit: function (currentTrElement) {
-		var self = this;
-		currentTrElement.addClass('edited');
-		var tdElements = jQuery('.listViewEntryValue', currentTrElement);
+		let self = this,
+			tdElements = jQuery('.listViewEntryValue', currentTrElement);
+
 		currentTrElement.addClass('edited');
 		jQuery('.action', currentTrElement).addClass('hide');
 		jQuery('.inline-save', currentTrElement).removeClass('hide');
 
-		for (var i = 0; i < tdElements.length; i++) {
-			var fieldData = [];
-			var tdElement = jQuery(tdElements[i]);
-			var editElement = jQuery('.edit', tdElement);
-			var valueElement = jQuery('.fieldValue', tdElement);
-			var moduleName = this.getModuleName();
-			var fieldName = tdElement.data("name");
+		for (let i = 0; i < tdElements.length; i++) {
+			let fieldData = [],
+				tdElement = jQuery(tdElements[i]),
+				editElement = jQuery('.edit', tdElement),
+				valueElement = jQuery('.fieldValue', tdElement),
+				moduleName = this.getModuleName(),
+				fieldName = tdElement.data("name");
 
 			//ignore other related modules fields
 			if (fieldName.match(/\((\w+)\s\;\s\((\w+)\)\s(\w+)\)/g) && fieldName.match(/\((\w+)\s\;\s\((\w+)\)\s(\w+)\)/g).length) {
 				continue;
 			}
-			var fieldType = tdElement.data("field-type");
-			var fieldBasicInfo = new Array();
+
+			let fieldType = tdElement.data("field-type"),
+				fieldBasicInfo = new Array();
+
 			if (typeof uimeta !== "undefined") {
 				fieldBasicInfo = uimeta.field.get(fieldName);
 			}
@@ -749,11 +751,22 @@ Vtiger.Class("Vtiger_List_Js", {
 				fieldBasicInfo = adv_search_uimeta.field.get(fieldName);
 			}
 
-			var value = jQuery.trim(valueElement.text());
-			//adding string,text,url,currency in customhandling list as string will be textlengthchecked
-			var customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'currency', 'text', 'email', 'boolean'];
+			let value = jQuery.trim(valueElement.text()),
+				//adding string,text,url,currency in customhandling list as string will be textlengthchecked
+				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean'];
+
 			if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 				value = tdElement.data('rawvalue');
+			}
+
+			let numberHandlingFields = ['currency', 'double', 'percentage', 'integer'];
+
+			if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
+				value = parseFloat(tdElement.data('rawvalue')).toFixed(app.getNumberOfDecimals());
+
+				if ('integer' === fieldType) {
+					value = parseInt(value);
+				}
 			}
 
 			fieldData["value"] = value;
@@ -769,8 +782,8 @@ Vtiger.Class("Vtiger_List_Js", {
 				continue;
 			}
 
-			var fieldObject = new Vtiger_Field_Js.getInstance(fieldData, moduleName);
-			var fieldModel = fieldObject.getUiTypeModel();
+			let fieldObject = new Vtiger_Field_Js.getInstance(fieldData, moduleName),
+				fieldModel = fieldObject.getUiTypeModel();
 
 			if (jQuery('input', editElement).length === 0) {
 				editElement.append(fieldModel.getUi());
@@ -785,6 +798,7 @@ Vtiger.Class("Vtiger_List_Js", {
 
 			valueElement.addClass('hide');
 			editElement.removeClass('hide');
+
 			if (fieldType === 'picklist') {
 				self.registerEventForPicklistDependencySetup(currentTrElement);
 			}

@@ -186,16 +186,20 @@
                         {assign var=CALENDAR_TODAY_COUNT value=$CALENDAR_MODULE_MODEL->getTodayRecordsCount()}
                         {assign var=CALENDAR_TODAY_RECORD value=$CALENDAR_MODULE_MODEL->getFirstTodayRecord()}
                         <li class="me-2">
-                            <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
-                                <i class="fa fa-calendar"></i>
-                                <b class="ms-2">{date('d')}</b>
-                                <small class="ms-1">{vtranslate(date('M'), 'Appointments')}</small>
-                                {if !empty($CALENDAR_TODAY_COUNT)}
-                                    <span class="position-absolute top-0 start-100 translate-middle pe-4">
+                            <div class="input-group align-items-center">
+                                <a href="{$CALENDAR_MODULE_MODEL->getDefaultUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
+                                    <i class="fa fa-calendar"></i>
+                                </a>
+                                <a href="{$CALENDAR_MODULE_MODEL->getIconUrl()}" class="btn btn-outline-secondary text-secondary border-secondary position-relative" title="{vtranslate('Appointments','Appointments')}" aria-hidden="true">
+                                    <b>{date('d')}</b>
+                                    <small class="ms-1">{vtranslate(date('M'), 'Appointments')}</small>
+                                    {if !empty($CALENDAR_TODAY_COUNT)}
+                                        <span class="position-absolute top-0 start-100 translate-middle pe-4">
                                         <span class="badge rounded-pill bg-primary">{$CALENDAR_TODAY_COUNT}</span>
                                     </span>
-                                {/if}
-                            </a>
+                                    {/if}
+                                </a>
+                            </div>
                         </li>
                         {if $CALENDAR_TODAY_RECORD}
                             <li>

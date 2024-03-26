@@ -776,4 +776,20 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 
         return (int)$row['currency_id'];
     }
+
+    public function getCurrencyId()
+    {
+        $currencyId = $this->fetchCurrencyId();
+
+        if (empty($currencyId)) {
+            $currencyId = CurrencyField::getDBCurrencyId();
+        }
+
+        if (empty($currencyId)) {
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+            $currencyId = $currentUser->get('currency_id');
+        }
+
+        return $currencyId;
+    }
 }
