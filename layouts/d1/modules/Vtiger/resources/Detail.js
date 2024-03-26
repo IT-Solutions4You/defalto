@@ -624,14 +624,6 @@ Vtiger.Class("Vtiger_Detail_Js",{
 					self.registerEventForPicklistDependencySetup(self.getForm());
 				}
 
-				// Registering engagement events if clicked tab is History
-				if(tabElement.data('labelKey') == self.detailViewHistoryTabLabel){
-					var engagementsContainer = jQuery(".engagementsContainer");
-					if(engagementsContainer.length > 0){
-						app.event.trigger("post.engagements.load");
-					}
-				}
-
 				relatedModuleInstance.initializePaginationEvents();
 				//prevent detail view ajax form submissions
 				jQuery('form#detailView').on('submit', function(e) {

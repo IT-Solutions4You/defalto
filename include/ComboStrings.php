@@ -164,10 +164,6 @@ $combo_strings = Array(
                                 ,'Closed'=>'Closed'
 				),
 
-'activitytype_dom' => Array('Call'=>'Call'
-		            , 'Meeting'=>'Meeting'
-	        	   ),
-
 'faqcategories_dom' => Array('General'=>'General'
 				),
 
@@ -358,7 +354,3 @@ require_once('modules/Users/UserTimeZonesArray.php');
 $usertimezonesClass = new UserTimeZones();
 $arrayOfSupportedTimeZones = $usertimezonesClass->userTimeZones();
 $combo_strings['time_zone_dom'] = array_combine($arrayOfSupportedTimeZones,$arrayOfSupportedTimeZones);
-
-?>
-
-

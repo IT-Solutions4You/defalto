@@ -84,7 +84,7 @@
                     {if $APP_NAME eq 'ANALYTICS'} {continue}{/if}
                     {if !empty($APP_GROUPED_MENU[$APP_NAME])}
                         {assign var=IS_SELECTED_CATEGORY value=$SELECTED_MENU_CATEGORY eq $APP_NAME}
-                        <div class="col-sm py-3 app-modules-dropdown-container">
+                        <div class="col-sm py-3">
                             {foreach item=APP_MENU_MODEL from=$APP_GROUPED_MENU[$APP_NAME]}
                                 {assign var=FIRST_MENU_MODEL value=$APP_MENU_MODEL}
                                 {if $APP_MENU_MODEL}
