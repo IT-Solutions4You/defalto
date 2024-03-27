@@ -1926,30 +1926,6 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
-	<table name="vtiger_eventstatus">
-		<field name="eventstatusid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="eventstatus" type="C" size="200">
-			<notnull />
-		</field>
-		<field name="presence" type="I" size="1">
-			<notnull />
-			<default value="1" />
-		</field>
-		<field name="picklist_valueid" type="I" size="19">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="sortorderid" type="I" size="11"></field>
-		<index name="eventstatus_status_idx">
-			<col>status</col>
-			<unique />
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_duration_minutes">
 		<field name="minutesid" type="I" size="19">
 			<key />
@@ -2066,66 +2042,6 @@
 			<default value="0" />
 		</field>
 		<field name="sortorderid" type="I" size="11"></field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<table name="vtiger_taskpriority">
-		<field name="taskpriorityid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="taskpriority" type="C" size="200" />
-		<field name="presence" type="I" size="1">
-			<notnull />
-			<default value="1" />
-		</field>
-		<field name="picklist_valueid" type="I" size="19">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="sortorderid" type="I" size="11"></field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<table name="vtiger_taskstatus">
-		<field name="taskstatusid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="taskstatus" type="C" size="200" />
-		<field name="presence" type="I" size="1">
-			<notnull />
-			<default value="1" />
-		</field>
-		<field name="picklist_valueid" type="I" size="19">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="sortorderid" type="I" size="11"></field>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<table name="vtiger_activitytype">
-		<field name="activitytypeid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="activitytype" type="C" size="200">
-			<notnull />
-		</field>
-		<field name="presence" type="I" size="1">
-			<notnull />
-			<default value="1" />
-		</field>
-		<field name="picklist_valueid" type="I" size="19">
-			<notnull />
-			<default value="0" />
-		</field>
-		<field name="sortorderid" type="I" size="11"></field>
-		<index name="activitytype_activitytype_idx">
-			<col>activitytype</col>
-			<unique />
-		</index>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 

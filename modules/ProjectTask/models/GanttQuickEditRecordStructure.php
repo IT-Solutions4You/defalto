@@ -30,33 +30,22 @@ class ProjectTask_GanttQuickEditRecordStructure_Model extends Vtiger_QuickCreate
 
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
 			$recordModelFieldValue = $recordModel->get($fieldName);
+
 			if (!empty($recordModelFieldValue)) {
 				$fieldModel->set('fieldvalue', $recordModelFieldValue);
-			} else if ($fieldName == 'eventstatus') {
-				$currentUserModel = Users_Record_Model::getCurrentUserModel();
-				$defaulteventstatus = $currentUserModel->get('defaulteventstatus');
-				$fieldValue = $defaulteventstatus;
-				if (!$defaulteventstatus || $defaulteventstatus == 'Select an Option') {
-					$fieldValue = $fieldModel->getDefaultFieldValue();
-				}
-				$fieldModel->set('fieldvalue', $fieldValue);
-			} else if ($fieldName == 'activitytype') {
-				$currentUserModel = Users_Record_Model::getCurrentUserModel();
-				$defaultactivitytype = $currentUserModel->get('defaultactivitytype');
-				$fieldValue = $defaultactivitytype;
-				if (!$defaultactivitytype || $defaultactivitytype == 'Select an Option') {
-					$fieldValue = $fieldModel->getDefaultFieldValue();
-				}
-				$fieldModel->set('fieldvalue', $fieldValue);
 			} else {
 				$defaultValue = $fieldModel->getDefaultFieldValue();
+
 				if ($defaultValue) {
 					$fieldModel->set('fieldvalue', $defaultValue);
 				}
 			}
+
 			$values[$fieldName] = $fieldModel;
 		}
+
 		$this->structuredValues = $values;
+
 		return $values;
 	}
 

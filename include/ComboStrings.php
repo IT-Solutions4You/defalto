@@ -113,21 +113,6 @@ $combo_strings = Array(
                 , 'Dr.'=>'Dr.'
                 , 'Prof.'=>'Prof.'
                 ),
-'eventstatus_dom' => Array('Planned'=>'Planned'
-                , 'Held'=>'Held'
-                , 'Not Held'=>'Not Held'
-                ),
-'taskstatus_dom' => Array('Not Started'=>'Not Started'
-		, 'In Progress'=>'In Progress'
-		, 'Completed'=>'Completed'
-		, 'Pending Input'=>'Pending Input'
-                , 'Deferred'=>'Deferred'
-		, 'Planned'=>'Planned'
-                ),
-'taskpriority_dom' => Array('High'=>'High'
-                ,'Medium'=>'Medium'
-                ,'Low'=>'Low'
-                ),
 'duration_minutes_dom' => Array('00'=>'00'
                 , '15'=>'15'
                 , '30'=>'30'
@@ -163,10 +148,6 @@ $combo_strings = Array(
                                 ,'Wait For Response'=>'Wait For Response'
                                 ,'Closed'=>'Closed'
 				),
-
-'activitytype_dom' => Array('Call'=>'Call'
-		            , 'Meeting'=>'Meeting'
-	        	   ),
 
 'faqcategories_dom' => Array('General'=>'General'
 				),
@@ -358,7 +339,3 @@ require_once('modules/Users/UserTimeZonesArray.php');
 $usertimezonesClass = new UserTimeZones();
 $arrayOfSupportedTimeZones = $usertimezonesClass->userTimeZones();
 $combo_strings['time_zone_dom'] = array_combine($arrayOfSupportedTimeZones,$arrayOfSupportedTimeZones);
-
-?>
-
-
