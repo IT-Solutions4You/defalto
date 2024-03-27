@@ -3967,23 +3967,14 @@ class ReportRun extends CRMEntity {
 				$fieldvalues[] = $fldvalue;
 			}
 			$field_count = php7_count($fieldvalues);
-			if ($uitype == 15 && $field_count > 0 && ($fieldname == 'taskstatus' || $fieldname == 'eventstatus')) {
-				$temp_count = php7_count($temp_status[$keyvalue]);
-				if ($temp_count > 0) {
-					for ($t = 0; $t < $field_count; $t++) {
-						$temp_status[$keyvalue][($temp_count + $t)] = $fieldvalues[$t];
-					}
-					$fieldvalues = $temp_status[$keyvalue];
-				} else
-					$temp_status[$keyvalue] = $fieldvalues;
-			}
 
-			if ($uitype == 33)
-				$fieldlists[1][$keyvalue] = $fieldvalues;
-			else if ($uitype == 55 && $fieldname == 'salutationtype')
-				$fieldlists[$keyvalue] = $fieldvalues;
-			else if ($uitype == 15)
-				$fieldlists[$keyvalue] = $fieldvalues;
+            if ($uitype == 33) {
+                $fieldlists[1][$keyvalue] = $fieldvalues;
+            } elseif ($uitype == 55 && $fieldname === 'salutationtype') {
+                $fieldlists[$keyvalue] = $fieldvalues;
+            } elseif ($uitype == 15) {
+                $fieldlists[$keyvalue] = $fieldvalues;
+            }
 		}
 		return $fieldlists;
 	}

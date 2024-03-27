@@ -113,21 +113,6 @@ $combo_strings = Array(
                 , 'Dr.'=>'Dr.'
                 , 'Prof.'=>'Prof.'
                 ),
-'eventstatus_dom' => Array('Planned'=>'Planned'
-                , 'Held'=>'Held'
-                , 'Not Held'=>'Not Held'
-                ),
-'taskstatus_dom' => Array('Not Started'=>'Not Started'
-		, 'In Progress'=>'In Progress'
-		, 'Completed'=>'Completed'
-		, 'Pending Input'=>'Pending Input'
-                , 'Deferred'=>'Deferred'
-		, 'Planned'=>'Planned'
-                ),
-'taskpriority_dom' => Array('High'=>'High'
-                ,'Medium'=>'Medium'
-                ,'Low'=>'Low'
-                ),
 'duration_minutes_dom' => Array('00'=>'00'
                 , '15'=>'15'
                 , '30'=>'30'

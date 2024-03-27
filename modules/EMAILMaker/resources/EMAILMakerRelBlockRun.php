@@ -1834,7 +1834,6 @@ class EMAILMakerRelBlockRun extends CRMEntity
             $roleids = $roleid;
         }
 
-        $temp_status = array();
         for ($i = 0; $i < $adb->num_rows($result); $i++) {
             $fieldname = $adb->query_result($result, $i, "fieldname");
             $fieldlabel = $adb->query_result($result, $i, "fieldlabel");
@@ -1859,29 +1858,13 @@ class EMAILMakerRelBlockRun extends CRMEntity
                 }
                 $fieldvalues[] = $fldvalue;
             }
-            $field_count = count($fieldvalues);
-            if ($uitype == 15 && $field_count > 0 && ($fieldname == 'taskstatus' || $fieldname == 'eventstatus')) {
-                $temp_count = count($temp_status[$keyvalue]);
-                if ($temp_count > 0) {
-                    for ($t = 0; $t < $field_count; $t++) {
-                        $temp_status[$keyvalue][($temp_count + $t)] = $fieldvalues[$t];
-                    }
-                    $fieldvalues = $temp_status[$keyvalue];
-                } else {
-                    $temp_status[$keyvalue] = $fieldvalues;
-                }
-            }
 
             if ($uitype == 33) {
                 $fieldlists[1][$keyvalue] = $fieldvalues;
-            } else {
-                if ($uitype == 55 && $fieldname == 'salutationtype') {
-                    $fieldlists[$keyvalue] = $fieldvalues;
-                } else {
-                    if ($uitype == 15) {
-                        $fieldlists[$keyvalue] = $fieldvalues;
-                    }
-                }
+            } elseif ($uitype == 55 && $fieldname === 'salutationtype') {
+                $fieldlists[$keyvalue] = $fieldvalues;
+            } elseif ($uitype == 15) {
+                $fieldlists[$keyvalue] = $fieldvalues;
             }
         }
         return $fieldlists;
