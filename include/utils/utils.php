@@ -963,84 +963,65 @@ function formatForSqlLike($str, $flag=0,$is_field=false) {
 	return $adb->sql_escape_string($str);
 }
 
-/**	Function used to get all the picklists and their values for a module
-	@param string $module - Module name to which the list of picklists and their values needed
-	@return array $fieldlists - Array of picklists and their values
-**/
+/**    Function used to get all the picklists and their values for a module
+ * @param string $module - Module name to which the list of picklists and their values needed
+ * @return array $fieldlists - Array of picklists and their values
+ **/
 function getAccessPickListValues($module)
 {
-	global $adb, $log;
-	global $current_user;
-	$log->debug("Entering into function getAccessPickListValues($module)");
+    global $adb, $log;
+    global $current_user;
+    $log->debug('Entering into function getAccessPickListValues(' . $module . ')');
 
-	$id = getTabid($module);
-	$query = "select fieldname,columnname,fieldid,fieldlabel,tabid,uitype from vtiger_field where tabid = ? and uitype in ('15','33','55') and vtiger_field.presence in (0,2)";
-	$result = $adb->pquery($query, array($id));
+    $id = getTabid($module);
+    $query = 'SELECT fieldname,columnname,fieldid,fieldlabel,tabid,uitype FROM vtiger_field WHERE tabid = ? AND uitype IN (?, ?, ?) AND vtiger_field.presence IN (0,2)';
+    $result = $adb->pquery($query, [$id, 15, 33, 55]);
 
-	$roleid = $current_user->roleid;
-	$subrole = getRoleSubordinates($roleid);
+    $roleid = $current_user->roleid;
+    $subrole = getRoleSubordinates($roleid);
 
-	if(!empty($subrole) && (php7_count($subrole)> 0))
-{
-		$roleids = $subrole;
-		array_push($roleids, $roleid);
-	}
-	else
-	{
-		$roleids = $roleid;
-	}
+    if (!empty($subrole) && php7_count($subrole)) {
+        $roleids = $subrole;
+        $roleids[] = $roleid;
+    } else {
+        $roleids = $roleid;
+    }
 
-	$temp_status = Array();
-	for($i=0;$i < $adb->num_rows($result);$i++)
-{
-		$fieldname = Vtiger_Util_Helper::validateStringForSql($adb->query_result($result,$i,"fieldname"));
-		$fieldlabel = $adb->query_result($result,$i,"fieldlabel");
-		$columnname = $adb->query_result($result,$i,"columnname");
-		$tabid = $adb->query_result($result,$i,"tabid");
-		$uitype = $adb->query_result($result,$i,"uitype");
+    for ($i = 0; $i < $adb->num_rows($result); $i++) {
+        $fieldname = Vtiger_Util_Helper::validateStringForSql($adb->query_result($result, $i, "fieldname"));
+        $columnname = $adb->query_result($result, $i, "columnname");
+        $uitype = $adb->query_result($result, $i, "uitype");
 
-		$keyvalue = $columnname;
-		$fieldvalues = Array();
-		if (!empty($roleids) && (php7_count($roleids) > 1))
-	{
-			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"". implode('","', $roleids) ."\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-	}
-	else
-	{
-			$mulsel="select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='".$roleid."' and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-	}
-		if($fieldname != 'firstname')
-			$mulselresult = $adb->pquery($mulsel, array());
-		for($j=0;$j < $adb->num_rows($mulselresult);$j++)
-		{
-			$fieldvalues[] = $adb->query_result($mulselresult,$j,$fieldname);
+        $keyvalue = $columnname;
+        $fieldvalues = [];
+
+        if (!empty($roleids) && (php7_count($roleids) > 1)) {
+            $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"" . implode('","',
+                    $roleids) . "\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
+        } else {
+            $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='" . $roleid . "' and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
+        }
+
+        if ($fieldname != 'firstname') {
+            $mulselresult = $adb->pquery($mulsel, []);
+        }
+
+        for ($j = 0; $j < $adb->num_rows($mulselresult); $j++) {
+            $fieldvalues[] = $adb->query_result($mulselresult, $j, $fieldname);
+        }
+
+        if ($uitype == 33) {
+            $fieldlists[1][$keyvalue] = $fieldvalues;
+        } elseif ($uitype == 55 && $fieldname === 'salutationtype') {
+            $fieldlists[$keyvalue] = $fieldvalues;
+        } elseif ($uitype == 15) {
+            $fieldlists[$keyvalue] = $fieldvalues;
+        }
+    }
+    $log->debug('Exit from function getAccessPickListValues(' . $module . ')');
+
+    return $fieldlists;
 }
-		$field_count = php7_count($fieldvalues);
-		if($uitype == 15 && $field_count > 0 && ($fieldname == 'taskstatus' || $fieldname == 'eventstatus'))
-		{
-			$temp_count =php7_count($temp_status[$keyvalue]);
-			if($temp_count > 0)
-{
-				for($t=0;$t < $field_count;$t++)
-	{
-					$temp_status[$keyvalue][($temp_count+$t)] = $fieldvalues[$t];
-				}
-				$fieldvalues = $temp_status[$keyvalue];
-	}
-			else
-				$temp_status[$keyvalue] = $fieldvalues;
-	}
-		if($uitype == 33)
-			$fieldlists[1][$keyvalue] = $fieldvalues;
-		else if($uitype == 55 && $fieldname == 'salutationtype')
-			$fieldlists[$keyvalue] = $fieldvalues;
-		else if($uitype == 15)
-			$fieldlists[$keyvalue] = $fieldvalues;
-	}
-	$log->debug("Exit from function getAccessPickListValues($module)");
-
-	return $fieldlists;
-	}
 
 function get_config_status() {
 	global $default_charset;

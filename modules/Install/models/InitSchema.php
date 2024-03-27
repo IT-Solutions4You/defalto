@@ -1175,51 +1175,6 @@ class Install_InitSchema_Model {
 		$task->methodName = "NotifyParentOnTicketChange";
 		$taskManager->saveTask($task);
 
-		// Events workflow when Send Notification is checked
-		$eventsWorkflow = $workflowManager->newWorkFlow("Events");
-		$eventsWorkflow->test = '[{"fieldname":"sendnotification","operation":"is","value":"true:boolean"}]';
-		$eventsWorkflow->description = "Workflow for Events when Send Notification is True";
-		$eventsWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
-		$eventsWorkflow->defaultworkflow = 1;
-		$workflowManager->save($eventsWorkflow);
-
-		$task = $taskManager->createTask('VTEmailTask', $eventsWorkflow->id);
-		$task->active = true;
-		$task->summary = 'Send Notification Email to Record Owner';
-		$task->recepient = "\$(assigned_user_id : (Users) email1)";
-		$task->subject = "Event :  \$subject";
-		$task->content = '$(assigned_user_id : (Users) first_name) $(assigned_user_id : (Users) last_name) ,<br/>'
-						.'<b>Activity Notification Details:</b><br/>'
-						.'Subject             : $subject<br/>'
-						.'Start date and time : $date_start  $time_start ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-						.'End date and time   : $due_date  $time_end ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-						.'Status              : $eventstatus <br/>'
-						.'Priority            : $taskpriority <br/>'
-						.'Related To          : $(parent_id : (Leads) lastname) $(parent_id : (Leads) firstname) $(parent_id : (Accounts) accountname) '
-												.'$(parent_id : (Potentials) potentialname) $(parent_id : (HelpDesk) ticket_title) <br/>'
-						.'Contacts List       : $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname) <br/>'
-						.'Location            : $location <br/>'
-						.'Description         : $description';
-		$taskManager->saveTask($task);
-
-		$task = $taskManager->createTask('VTEmailTask', $calendarWorkflow->id);
-		$task->active = true;
-		$task->summary = 'Send Notification Email to Record Owner';
-		$task->recepient = "\$(assigned_user_id : (Users) email1)";
-		$task->subject = "Task :  \$subject";
-		$task->content = '$(assigned_user_id : (Users) first_name) $(assigned_user_id : (Users) last_name) ,<br/>'
-						.'<b>Task Notification Details:</b><br/>'
-						.'Subject : $subject<br/>'
-						.'Start date and time : $date_start  $time_start ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-						.'End date and time   : $due_date ( $(general : (__VtigerMeta__) dbtimezone) ) <br/>'
-						.'Status              : $taskstatus <br/>'
-						.'Priority            : $taskpriority <br/>'
-						.'Related To          : $(parent_id : (Leads) lastname) $(parent_id : (Leads) firstname) $(parent_id : (Accounts) accountname) '
-						.'$(parent_id         : (Potentials) potentialname) $(parent_id : (HelpDesk) ticket_title) <br/>'
-						.'Contacts List       : $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname) <br/>'
-						.'Location            : $location <br/>'
-						.'Description         : $description';
-		$taskManager->saveTask($task);
 	}
 
 	/**

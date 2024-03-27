@@ -90,16 +90,6 @@ body{
 /******** Navigation styles *******/
 /**********************************/
 
-.company-logo{
-    height: 46px;
-    width: 138px;
-    margin: 2px 0;
-    display: inline-block;
-}
-.company-logo img{
-    height: 100%;
-    width: auto;
-}
 .navbar .glyphicon{
     font-size: 18px;
 }
@@ -119,11 +109,6 @@ body{
 .global-nav .search-links-container{
     padding-right:15px;
 	padding-left: 0px;
-}
-.link-text-xs-only{
-    padding: 0px 15px;
-    display: inline-block;
-    vertical-align: top;  
 }
 
 .search-link{
@@ -372,7 +357,7 @@ body{
     border-radius: 20px;
     margin-top: -2px;
 }
-#sidebar-wrapper, #content-wrapper{
+#content-wrapper{
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -569,32 +554,6 @@ body{
     outline: none;
 }
 
-.integrations-container > div,
-.common-links-container > div{
-    padding: 8px 5px;
-}
-.integrations-container > div:hover,
-.common-links-container > div:hover{
-    background: #2c3b49;
-}
-.integrations-container > div a,
-.common-links-container > div a{
-    color: #fff;
-
-}
-/*Search Container styles */
-.search-container{
-    min-height: 300px;
-    position: absolute;
-    z-index: 1030;
-    width: 100%;
-    top: 0;
-    background: #fbfbfb;
-    margin-left: -15px;
-    margin-top: 51px;
-    display: none;
-    opacity: 0.96;
-}
 .footer {
     position: absolute;
     bottom: 0;
@@ -607,14 +566,6 @@ body{
 }
 
 /*** Utilities ***/
-.showElement{
-    display: block !important;
-    height: 100%;
-    -webkit-transition: all 3s ease;
-    -moz-transition: all 3s ease;
-    -o-transition: all 3s ease;
-    transition: all 3s ease;
-}
 .full-width{
     padding-left: 15px !important;
     width:100% !important;
@@ -647,11 +598,6 @@ body{
     background-color: #f9f9f9;
     border: 1px solid #ccc;
 }
-.help-link{
-    font-size: 22px;
-    margin: 10px;
-}
-
 .btn{
     text-shadow:0px 1px 0px #fff;
 }
@@ -659,11 +605,6 @@ body{
 /***********************************
 **********List View Styles**********
 ***********************************/
-
-.module-buttons-container{
-    float: right;
-    margin-right: 10px;
-}
 
 .current-filter-name{
     margin-top: 10px;
@@ -694,33 +635,6 @@ body{
     position: relative;
     background: #fff;
     padding-top:10px;
-}
-/*
-.listview-pagination{ 
-    position: fixed;
-    right: 12px;
-    top: 103px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-}*/
-
-.listview-pagination i{
-    font-size: 20px;
-}
-
-.listview-pagination .disabled{
-    color: rgba(0, 0, 0, 0.2);
-}
-
-.listview-pagination .disabled:hover{
-    cursor : default;
-}
-
-.listview-pagination p{
-    display: inline-block;
-    float: left;
-    margin: 5px;
 }
 
 .input-prepend .add-on,

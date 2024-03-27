@@ -20,56 +20,38 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 		$meta = $handler->getMeta();
 		$referenceFieldDetails = $meta->getReferenceFieldDetails();
 		foreach ($referenceFieldDetails as $referenceFieldName => $referenceModuleDetails) {
-			if($module == 'Events' && $referenceFieldName == "contact_id"){
-				// to set all related Contacts of Event records
-				foreach($records as $index => $record){
-					$id = $record['id'];
-					$idComp = vtws_getIdComponents($id);
-				   $recordIds[] =  $idComp[1];
-				}
-				$eventRecordModel = new Events_Record_Model();
-				$contactsInfos =  $eventRecordModel->getRelatedContactInfoFromIds($recordIds);
+            $referenceFieldIds = array();
+            $referenceModuleIds = array();
+            $referenceIdsName = array();
+            foreach ($records as $recordDetails) {
+                $referenceWsId = $recordDetails[$referenceFieldName];
+                if (!empty($referenceWsId)) {
+                    $referenceIdComp = vtws_getIdComponents($referenceWsId);
+                    $webserviceObject = VtigerWebserviceObject::fromId($db, $referenceIdComp[0]);
+                    if ($webserviceObject->getEntityName() == 'Currency') {
+                        continue;
+                    }
+                    $referenceModuleIds[$webserviceObject->getEntityName()][] = $referenceIdComp[1];
+                    $referenceFieldIds[] = $referenceIdComp[1];
+                }
+            }
 
-				foreach($records as $index => $record){
-					$id = $record['id'];
-					$idComp = vtws_getIdComponents($id);
-					if($contactsInfos[$idComp[1]]){
-						$records[$index]['attendees'] = $contactsInfos[$idComp[1]];
-					}
-				}
-			}else{
-				$referenceFieldIds = array();
-				$referenceModuleIds = array();
-				$referenceIdsName = array();
-				foreach ($records as $recordDetails) {
-					$referenceWsId = $recordDetails[$referenceFieldName];
-					if (!empty($referenceWsId)) {
-						$referenceIdComp = vtws_getIdComponents($referenceWsId);
-						$webserviceObject = VtigerWebserviceObject::fromId($db, $referenceIdComp[0]);
-						if ($webserviceObject->getEntityName() == 'Currency') {
-							continue;
-						}
-						$referenceModuleIds[$webserviceObject->getEntityName()][] = $referenceIdComp[1];
-						$referenceFieldIds[] = $referenceIdComp[1];
-					}
-				}
+            foreach ($referenceModuleIds as $referenceModule => $idLists) {
+                $nameList = getEntityName($referenceModule, $idLists);
+                foreach ($nameList as $key => $value)
+                    $referenceIdsName[$key] = $value;
+            }
+            $recordCount = php7_count($records);
+            for ($i = 0; $i < $recordCount; $i++) {
+                $record = $records[$i];
+                if (!empty($record[$referenceFieldName])) {
+                    $wsId = vtws_getIdComponents($record[$referenceFieldName]);
+                    $record[$referenceFieldName] = decode_html($referenceIdsName[$wsId[1]]);
+                }
+                $records[$i] = $record;
+            }
+        }
 
-				foreach ($referenceModuleIds as $referenceModule => $idLists) {
-					$nameList = getEntityName($referenceModule, $idLists);
-					foreach ($nameList as $key => $value)
-						$referenceIdsName[$key] = $value;
-				}
-				$recordCount = php7_count($records);
-				for ($i = 0; $i < $recordCount; $i++) {
-					$record = $records[$i];
-					if (!empty($record[$referenceFieldName])) {
-						$wsId = vtws_getIdComponents($record[$referenceFieldName]);
-						$record[$referenceFieldName] = decode_html($referenceIdsName[$wsId[1]]);
-					}
-					$records[$i] = $record;
-				}
-			}
-		}
 		return $records;
 	}
 
@@ -91,9 +73,6 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 		}
 		foreach ($createdRecords as $index => $record) {
 			unset($_REQUEST['contactidlist']);
-			if($record['module'] == 'Events' && isset($record['contactidlist'])) {
-				$_REQUEST['contactidlist'] = $record['contactidlist'];
-			}
 
 			try { 
 				$createdRecords[$index] = vtws_create($record['module'], $record, $this->user);
@@ -148,15 +127,7 @@ class Google_Vtiger_Handler extends vtigerCRMHandler {
 		foreach ($updatedRecords as $index => $record) {
 			$webserviceRecordId = $record["id"];
 			//While Updating Vtiger Record, should not update these values for event
-			if($record['module'] == 'Events') {
-				unset($record['eventstatus']);
-				unset($record['activitytype']);
-				unset($record['duration_hours']);
-			}
 			unset($_REQUEST['contactidlist']);
-			if($record['module'] == 'Events') {
-				$_REQUEST['contactidlist'] = $record['contactidlist'];
-			}
 			$recordIdComp = vtws_getIdComponents($webserviceRecordId);
 			try {
 				if (in_array($recordIdComp[1], $assignedRecordIds)) {

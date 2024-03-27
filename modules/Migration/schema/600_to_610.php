@@ -630,8 +630,6 @@ echo "<br>Added CFA Franc BCEAO and CFA Franc BEAC currencies";
 $sql = "ALTER TABLE vtiger_loginhistory MODIFY user_name VARCHAR( 255 )";
 Migration_Index_View::ExecuteQuery($sql,array());
 
-$sql = "UPDATE vtiger_activitytype SET presence = '0' WHERE activitytype ='Mobile Call'";
-Migration_Index_View::ExecuteQuery($sql,array());
 //77 ends(Some function addGroupTaxTemplatesForQuotesAndPurchaseOrder)
 
 //78 starts

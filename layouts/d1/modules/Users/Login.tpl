@@ -111,16 +111,6 @@
                 padding: 0px 0px 10px;
             }
 
-            .inActiveImgDiv {
-                padding: 5px;
-                text-align: center;
-                margin: 30px 0px;
-            }
-
-            .app-footer p {
-                margin-top: 0px;
-            }
-
             .bar {
                 position: relative;
                 display: block;
