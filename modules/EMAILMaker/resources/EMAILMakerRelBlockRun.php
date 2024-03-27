@@ -1947,7 +1947,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
             }
         } elseif ('picklist' === $fieldType && !empty($value)) {
             if (is_array($picklistArray)) {
-                if (is_array($picklistArray[$dbField->name]) && 'activitytype' !== $fieldName && !in_array($value, $picklistArray[$dbField->name])) {
+                if (is_array($picklistArray[$dbField->name]) && !in_array($value, $picklistArray[$dbField->name])) {
                     $fieldValue = $this->getTranslatedString('LBL_NOT_ACCESSIBLE', $module);
                 } else {
                     $fieldValue = $this->getTranslatedString($value, $module);

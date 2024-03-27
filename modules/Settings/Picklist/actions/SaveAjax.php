@@ -25,49 +25,6 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
         $this->invokeExposedMethod($mode, $request);
     }
     
-    /*
-     * @function updates user tables with new picklist value for default event and status fields
-     */
-	public function updateDefaultPicklistValues($pickListFieldName,$oldValue,$newValue) {
-
-		// No change in value - likely a color change.
-		if ($oldValue == $newValue) {
-			return;
-		}
-
-		$db = PearDatabase::getInstance();
-            if($pickListFieldName == 'activitytype')
-                $defaultFieldName = 'defaultactivitytype';
-            else
-                $defaultFieldName = 'defaulteventstatus';
-            $queryToGetId = "SELECT id FROM vtiger_users WHERE ".$defaultFieldName." IN (";
-            $params = array();
-             if(is_array($oldValue)) {
-                 for($i=0;$i<php7_count($oldValue);$i++) {
-                     $queryToGetId .= "?";
-                     array_push($params, $oldValue[$i]);
-                     if($i<(php7_count($oldValue)-1)) {
-                         $queryToGetId .= ",";
-                     }
-                 }
-                 $queryToGetId .= ")";
-             }
-             else {
-                 $queryToGetId .= "?)";
-                 array_push($params, $oldValue);
-             }
-            $result = $db->pquery($queryToGetId, $params);
-            $rowCount =  $db->num_rows($result);
-            for($i=0; $i<$rowCount; $i++) {
-                $recordId = $db->query_result_rowdata($result, $i);
-                $recordId = $recordId['id'];
-                $record = Vtiger_Record_Model::getInstanceById($recordId, 'Users');
-                $record->set('mode','edit');
-                $record->set($defaultFieldName,$newValue);
-                $record->save();
-            }
-    }
-    
     public function add(Vtiger_Request $request) {
         $newValues = $request->getRaw('newValue');
         $pickListName = $request->get('picklistName');
