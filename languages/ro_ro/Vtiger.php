@@ -642,14 +642,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Ultimele 5 comentarii',
 	'All Comments' => 'Toate Comentarii',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Notă importantă la aspectul vechi',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Suntem fericiți să împărtășească care arata vechi vor fi disponibile până în februarie, 2014. Am adăugat următoarele caracteristici la noul aspect recent <br><br> 1. Pivot Rapoarte <br> 2. Grafice personalizate <br> 3. Căutare rapidă în listele <br><br>NamepediA Dacă aveți sugestii cu privire la look nou, vă rugăm să împărtășească cu noi de mai jos.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Împărtăși sugestii aici ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Trimite feedback',
-	'LBL_DONT_SHOW_AGAIN' => 'Nu arată acest lucru din nou',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Continuați să arate vechi',
-
         'LBL_TRANSFER_OWNERSHIP' => 'Proprietatea de transfer',
 
     //Products Popup View

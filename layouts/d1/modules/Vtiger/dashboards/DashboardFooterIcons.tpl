@@ -18,11 +18,6 @@
 	<i class="fa fa-arrows-alt" hspace="2" border="0" align="absmiddle" title="{vtranslate('LBL_FULLSCREEN')}" alt="{vtranslate('LBL_FULLSCREEN')}"></i>
 </a>
 {/if}
-{if !empty($CHART_TYPE) && $REPORT_MODEL->isEditable() eq true}
-<a class="me-2 text-secondary" href="{$REPORT_MODEL->getEditViewUrl()}" name="customizeChartReportWidget">
-	<i class="fa fa-edit" hspace="2" border="0" align="absmiddle" title="{vtranslate('LBL_CUSTOMIZE',$MODULE)}" alt="{vtranslate('LBL_CUSTOMIZE',$MODULE)}"></i>
-</a>
-{/if}
 <a class="me-2 text-secondary" href="javascript:void(0);" name="drefresh" data-url="{$WIDGET->getUrl()}&linkid={$WIDGET->get('linkid')}&content=data">
 	<i class="fa fa-refresh" hspace="2" border="0" align="absmiddle" title="{vtranslate('LBL_REFRESH')}" alt="{vtranslate('LBL_REFRESH')}"></i>
 </a>

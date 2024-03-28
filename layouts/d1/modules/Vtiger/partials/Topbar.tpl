@@ -213,16 +213,6 @@
                             </li>
                         {/if}
                     {/if}
-                    {assign var=REPORTS_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
-                    {if $REPORTS_MODULE_MODEL and $USER_PRIVILEGES_MODEL->hasModulePermission($REPORTS_MODULE_MODEL->getId())}
-                        <li class="me-2">
-                            <div>
-                                <a href="index.php?module=Reports&view=List" class="btn btn-light" title="{vtranslate('Reports','Reports')}" aria-hidden="true">
-                                    <i class="fa fa-bar-chart"></i>
-                                </a>
-                            </div>
-                        </li>
-                    {/if}
                     <li class="mx-2 me-lg-3">
                         <div class="dropdown">
                             <a href="#" class="userName" data-bs-toggle="dropdown">

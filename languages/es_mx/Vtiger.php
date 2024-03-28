@@ -645,14 +645,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Últimos 5 comentarios',
 	'All Comments' => 'Todos los comentarios',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Nota importante sobre el aspecto de la versión anterior',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Nos da gusto informarle que el aspecto de la antigua versión estará disponible hasta febrero de 2014. Hemos añadido las siguientes características para el nuevo aspecto<br><br>1. Informes de pivote<br>2. Gráficas a la medida <br>3. Búsqueda rápida en las listas de <br><br> Si tiene sugerencias sobre el nuevo aspecto, por favor, compártalas con nosotros a continuación.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Comparta sus sugerencias aquí ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Enviar comentarios',
-	'LBL_DONT_SHOW_AGAIN' => 'No volver a mostrar',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Continuar al aspecto anterior',
-
         'LBL_TRANSFER_OWNERSHIP' => 'Transferencia de la propiedad',
 
     //Products Popup View

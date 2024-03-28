@@ -168,53 +168,6 @@ class Migration_Index_View extends Vtiger_View_Controller {
 		return $status;
 	}
 
-	public static function insertSelectQuery() {
-		global $adb;
-		$genQueryId = $adb->getUniqueID("vtiger_selectquery");
-		if ($genQueryId != "") {
-			$iquerysql = "insert into vtiger_selectquery (QUERYID,STARTINDEX,NUMOFOBJECTS) values (?,?,?)";
-			self::ExecuteQuery($iquerysql, array($genQueryId, 0, 0));
-		}
-		return $genQueryId;
-	}
-
-	public static function insertSelectColumns($queryid, $columnname) {
-		if ($queryid != "") {
-			for ($i = 0; $i < php7_count($columnname); $i++) {
-				$icolumnsql = "insert into vtiger_selectcolumn (QUERYID,COLUMNINDEX,COLUMNNAME) values (?,?,?)";
-				self::ExecuteQuery($icolumnsql, array($queryid, $i, $columnname[$i]));
-			}
-		}
-	}
-
-	public static function insertReports($queryid, $folderid, $reportname, $description, $reporttype) {
-		if ($queryid != "") {
-			$ireportsql = "insert into vtiger_report (REPORTID,FOLDERID,REPORTNAME,DESCRIPTION,REPORTTYPE,QUERYID,STATE) values (?,?,?,?,?,?,?)";
-			$ireportparams = array($queryid, $folderid, $reportname, $description, $reporttype, $queryid, 'SAVED');
-			self::ExecuteQuery($ireportsql, $ireportparams);
-		}
-	}
-
-	public static function insertReportModules($queryid, $primarymodule, $secondarymodule) {
-		if ($queryid != "") {
-			$ireportmodulesql = "insert into vtiger_reportmodules (REPORTMODULESID,PRIMARYMODULE,SECONDARYMODULES) values (?,?,?)";
-			self::ExecuteQuery($ireportmodulesql, array($queryid, $primarymodule, $secondarymodule));
-		}
-	}
-
-	public static function insertAdvFilter($queryid, $filters) {
-		if ($queryid != "") {
-			$columnIndexArray = array();
-			foreach ($filters as $i => $filter) {
-				$irelcriteriasql = "insert into vtiger_relcriteria(QUERYID,COLUMNINDEX,COLUMNNAME,COMPARATOR,VALUE) values (?,?,?,?,?)";
-				self::ExecuteQuery($irelcriteriasql, array($queryid, $i, $filter['columnname'], $filter['comparator'], $filter['value']));
-				$columnIndexArray[] = $i;
-			}
-			$conditionExpression = implode(' and ', $columnIndexArray);
-			self::ExecuteQuery('INSERT INTO vtiger_relcriteria_grouping VALUES(?,?,?,?)', array(1, $queryid, '', $conditionExpression));
-		}
-	}
-	
 		/**
 	 * Function to transform workflow filter of old look in to new look
 	 * @param <type> $conditions

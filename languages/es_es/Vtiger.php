@@ -659,14 +659,6 @@ $languageStrings = array(
     'Print' => 'Imprimir / Exportar a PDF',
     'Print Templates' => 'Plantillas de impresión',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Nota importante al aspecto antiguo',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Estamos felices de compartir esa vieja mirada estará disponible hasta febrero de 2014. Hemos añadido las siguientes características para el nuevo look recientemente Matemáticas <br><br>1. Informes de pivote página<br> 2. Gráficos de encargo Página<br> 3. Búsqueda rápida en las listas de <br><br> Si tiene sugerencias sobre nuevo aspecto, por favor, comparta con nosotros a continuación.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Comparte tus sugerencias aquí ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Enviar comentarios',
-	'LBL_DONT_SHOW_AGAIN' => 'No se repite el mensaje',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Continuar Old Look',
-
         'LBL_TRANSFER_OWNERSHIP' => 'Transferencia de la propiedad',
 
     //Products Popup View

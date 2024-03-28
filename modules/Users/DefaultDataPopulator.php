@@ -49,7 +49,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (22,'SalesOrder',0,-1,'SalesOrder',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (23,'Invoice',0,-1,'Invoice',0,0,1,'Sales')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (24,'Rss',0,-1,'Rss',0,1,0,'Tools')");
-		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (25,'Reports',0,-1,'Reports',0,1,0,'Analytics')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (26,'Campaigns',0,-1,'Campaigns',0,0,1,'Marketing')");
 		$this->db->query("INSERT INTO vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) VALUES (27,'Portal',0,-1,'Portal',0,1,0,'Tools')");
 		$this->db->query("insert into vtiger_tab(tabid,name,presence,tabsequence,tablabel,customized,ownedby,isentitytype,parent) values (29,'Users',0,-1,'Users',0,1,0,null)");
@@ -1271,11 +1270,6 @@ Thanks,
 					)
 			);
 		}
-
-		// Adding Sharing Types for Reports
-		$this->db->query("insert into vtiger_reportfilters values(1,'Private')");
-		$this->db->query("insert into vtiger_reportfilters values(2,'Public')");
-		$this->db->query("insert into vtiger_reportfilters values(3,'Shared')");
 
 		require('modules/Utilities/Currencies.php');
 		foreach ($currencies as $key => $value) {

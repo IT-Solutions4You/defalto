@@ -20,8 +20,7 @@ class Settings_Groups_Member_Model extends Vtiger_Base_Model {
     
     const GROUP_MODE = 'GROUPS';
     const CUSTOM_VIEW_MODE = 'CV';
-	const REPORTS_VIEW_MODE = 'RP';
-    
+
     public static $groupTables = array(self::MEMBER_TYPE_USERS => array('table'=>'vtiger_users2group','index'=>'groupid','refIndex'=>'userid'),
                                 self::MEMBER_TYPE_GROUPS => array('table'=>'vtiger_group2grouprel','index'=>'groupid','refIndex'=>'containsgroupid'),
                                 self::MEMBER_TYPE_ROLES => array('table'=>'vtiger_group2role' ,'index'=>'groupid','refIndex'=>'roleid'), 
@@ -31,10 +30,6 @@ class Settings_Groups_Member_Model extends Vtiger_Base_Model {
                                 self::MEMBER_TYPE_GROUPS => array('table'=>'vtiger_cv2group','index'=>'cvid','refIndex'=>'groupid'),
                                 self::MEMBER_TYPE_ROLES => array('table'=>'vtiger_cv2role' ,'index'=>'cvid','refIndex'=>'roleid'), 
                                 self::MEMBER_TYPE_ROLE_AND_SUBORDINATES => array('table'=>'vtiger_cv2rs' ,'index'=>'cvid','refIndex'=>'rsid'));
-	 public static $reportTables = array(self::MEMBER_TYPE_USERS => array('table'=>'vtiger_report_shareusers','index'=>'reportid','refIndex'=>'userid'),
-                                self::MEMBER_TYPE_GROUPS => array('table'=>'vtiger_report_sharegroups','index'=>'reportid','refIndex'=>'groupid'),
-                                self::MEMBER_TYPE_ROLES => array('table'=>'vtiger_report_sharerole' ,'index'=>'reportid','refIndex'=>'roleid'), 
-                                self::MEMBER_TYPE_ROLE_AND_SUBORDINATES => array('table'=>'vtiger_report_sharers' ,'index'=>'reportid','refIndex'=>'rsid'));
 
 	/**
 	 * Function to get the Qualified Id of the Group Member
@@ -95,8 +90,6 @@ class Settings_Groups_Member_Model extends Vtiger_Base_Model {
             $tables = self::$groupTables;
         }else if($mode == 'CV') {
 			$tables = self::$cvTables;
-        } else if($mode == 'RP'){
-			$tables = self::$reportTables;
 		}
 		if($type == self::MEMBER_TYPE_USERS) {
             $tableName = $tables[self::MEMBER_TYPE_USERS]['table'];

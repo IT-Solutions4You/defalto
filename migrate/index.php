@@ -31,9 +31,9 @@ if (!$errorMessage) {
 			'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 
 			'MailManager', 'Mobile', 'ModComments', 'ModTracker',
 			'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 
-			'ProjectTask', 'PurchaseOrder', 'Quotes', 'RecycleBin', 'Reports', 'Rss', 'SalesOrder', 
+			'ProjectTask', 'PurchaseOrder', 'Quotes', 'RecycleBin', 'Rss', 'SalesOrder',
 			'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',
-			'Webforms', 'Webmails', 'WSAPP');
+			'Webforms', 'WSAPP');
 
 		$skipCheckForModules = array_merge($skipCheckForModules, $vtigerStandardModules);
 

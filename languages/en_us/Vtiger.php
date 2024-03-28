@@ -864,13 +864,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Last 5 Comments',
 	'All Comments' => 'All Comments',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Important Note on Old look',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'We are happy to share that old look will be available until February, 2014 . We added the following features to the new look recently<br><br>1. Pivot Reports<br>2. Custom Charts<br>3. Quick Search in Lists<br><br>If you have suggestions on new look, please share with us below.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Share your suggestions here..',
-	'LBL_SUBMIT_FEEDBACK' => 'Submit feedback',
-	'LBL_DONT_SHOW_AGAIN' => 'Do not show this again',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Continue to Old Look',
 	'LBL_LEFT_PANEL_SHOW_HIDE' => 'Left Panel Show/Hide',
 
 	//Products Popup View

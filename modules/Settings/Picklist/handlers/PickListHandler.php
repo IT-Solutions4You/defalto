@@ -75,24 +75,7 @@ class PickListHandler extends VTEventHandler {
 			$query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
 			$db->pquery($query, array($value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']));
 		}
-		
-		//update reportsFilter values
-		$query= 'SELECT queryid,value,columnindex,groupid FROM vtiger_relcriteria where columnname=?';
-		$result = $db->pquery($query, array($reportFilterColumnName));
-		$num_rows = $db->num_rows($result);
-		for ($i = 0; $i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$value = $row['value'];
-			$explodedValueArray = explode(',', $value);
-			$arrayKey = array_search($oldValue, $explodedValueArray);
-			if($arrayKey !== false){
-				$explodedValueArray[$arrayKey] = $newValue;
-			}
-			$value = implode(',', $explodedValueArray);
-			$query = 'UPDATE vtiger_relcriteria SET value=? where columnname=? and queryid=? and columnindex=? and groupid=?';
-			$db->pquery($query, array($value, $reportFilterColumnName, $row['queryid'], $row['columnindex'], $row['groupid']));
-		}
-		
+
 		//update Workflows values
 		$query= 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';
 		$result = $db->pquery($query, array($moduleName,"%$oldValue%"));
@@ -209,27 +192,7 @@ class PickListHandler extends VTEventHandler {
 			$query = 'UPDATE vtiger_cvadvfilter SET value=? where columnname=? and cvid=? and columnindex=? and groupid=?';
 			$db->pquery($query, array($value, $advFiltercolumnName, $row['cvid'], $row['columnindex'], $row['groupid']));
 		}
-		
-		//update reportsFilter values
-		$query= 'SELECT queryid,value,columnindex,groupid FROM vtiger_relcriteria where columnname=?';
-		$result = $db->pquery($query, array($reportFilterColumnName));
-		$num_rows = $db->num_rows($result);
-		for ($i = 0; $i < $num_rows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$value = $row['value'];
-			$explodedValueArray = explode(',', $value);
-			foreach($valueToDelete as $value) {
-				$arrayKey = array_search($value, $explodedValueArray);
-				if($arrayKey !== false){
-					$explodedValueArray[$arrayKey] = $replaceValue;
-				}
-			}
-			$value = implode(',', $explodedValueArray);
-			$query = 'UPDATE vtiger_relcriteria SET value=? where columnname=? and queryid=? and columnindex=? and groupid=?';
-			$db->pquery($query, array($value, $reportFilterColumnName, $row['queryid'], $row['columnindex'], $row['groupid']));
-		}
-		
-		
+
 		foreach ($valueToDelete as $value) {
 			//update Workflows values
 			$query = 'SELECT workflow_id,test FROM com_vtiger_workflows where module_name=? AND test != "" AND test IS NOT NULL AND test !="null" AND test LIKE ?';

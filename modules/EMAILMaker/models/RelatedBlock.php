@@ -9,6 +9,9 @@
  */
 class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
 {
+
+    protected $relblockid;
+
     public function __construct()
     {
     }
@@ -17,16 +20,14 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
     {
         $rel_module_id = getTabid($rel_module);
         $adb = PearDatabase::getInstance();
-        $restricted_modules = [];
         $Related_Modules = array();
 
         $rsql = "SELECT vtiger_tab.name FROM vtiger_tab 
 				INNER JOIN vtiger_relatedlists on vtiger_tab.tabid=vtiger_relatedlists.related_tabid 
 				WHERE vtiger_tab.isentitytype=1 
-				AND vtiger_tab.name NOT IN(" . generateQuestionMarks($restricted_modules) . ") 
-				AND vtiger_tab.presence=0 AND vtiger_relatedlists.label!='Activity History'
+				AND vtiger_tab.presence=0
                                 AND vtiger_relatedlists.tabid = ? AND vtiger_tab.tabid != ?";
-        $relatedmodules = $adb->pquery($rsql, array($restricted_modules, $rel_module_id, $rel_module_id));
+        $relatedmodules = $adb->pquery($rsql, array($rel_module_id, $rel_module_id));
 
         if ($adb->num_rows($relatedmodules)) {
             while ($resultrow = $adb->fetch_array($relatedmodules)) {
@@ -138,7 +139,6 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             $fieldtype = explode("~", $fieldtype);
             $fieldtypeofdata = $fieldtype[0];
 
-            //Here we Changing the displaytype of the field. So that its criteria will be displayed correctly in Reports Advance Filter.
             $fieldtypeofdata = ChangeTypeOfData_Filter($fieldtablename, $fieldcolname, $fieldtypeofdata);
 
             if ($uitype == 68 || $uitype == 59) {
@@ -202,7 +202,6 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             $fieldlabel1 = str_replace(" ", "_", $fieldlabel);
             $optionvalue = $fieldtablename . ":" . $fieldcolname . ":" . $module . "_" . $fieldlabel1 . ":" . $fieldname . ":" . $fieldtypeofdata;
             //$this->adv_rel_fields[$fieldtypeofdata][] = '$'.$module.'#'.$fieldname.'$'."::".vtranslate($module,$module)." ".$fieldlabel;
-            //added to escape attachments fields in Reports as we have multiple attachments
             if ($module != 'HelpDesk' || $fieldname != 'filename') {
                 $module_columnlist[$optionvalue] = vtranslate($fieldlabel, $module);
             }
@@ -275,12 +274,11 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         $this->secmodule = $modules;
     }
 
-    public function getPrimaryModuleFields()
+    public function getPrimaryModuleFields(): array
     {
         $primaryModule = $this->getPrimaryModule();
-        $pri_module_columnslist = $this->getPriModuleColumnsList($primaryModule);
-        //need to add this vtiger_crmentity:crmid:".$module."_ID:crmid:I
-        return $pri_module_columnslist;
+
+        return $this->getModuleColumnsList($primaryModule);
     }
 
     public function getPrimaryModule()
@@ -288,11 +286,11 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         return $this->primodule;
     }
 
-    public function getSecondaryModuleFields()
+    public function getSecondaryModuleFields(): array
     {
         $secondaryModule = $this->getSecondaryModule();
-        $sec_module_columnslist = $this->getSecModuleColumnsList($secondaryModule);
-        return $sec_module_columnslist;
+
+        return $this->getSecModuleColumnsList($secondaryModule);
     }
 
     public function getSecondaryModule()
@@ -445,7 +443,7 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
                 if ($col[4] == 'D' || ($col[4] == 'T' && $col[1] != 'time_start' && $col[1] != 'time_end') || ($col[4] == 'DT')) {
                     $val = array();
                     for ($x = 0; $x < count($temp_val); $x++) {
-                        list($temp_date, $temp_time) = explode(" ", $temp_val[$x]);
+                        [$temp_date, $temp_time] = explode(" ", $temp_val[$x]);
                         $temp_date = getValidDisplayDate(trim($temp_date));
                         if (trim($temp_time) != '') {
                             $temp_date .= ' ' . $temp_time;
@@ -592,5 +590,58 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         $result = $adb->pquery($sql, array($record));
 
         return $adb->query_result($result, 0, $name);
+    }
+
+    /**
+     * Function to get the vtiger_fields for the given module
+     *
+     * @param string $module
+     * @return array
+     */
+    function getModuleColumnsList($module): array
+    {
+        global $current_user;
+
+        $returnModuleList = [];
+
+        $moduleList = $this->getModuleList($module);
+        $columnsListByBlock = $this->getColumnsListbyBlock($module, array_keys($moduleList), true, $current_user);
+        $allColumnsListByBlocks =& $columnsListByBlock;
+
+        foreach ($moduleList as $key => $value) {
+            $temp = $allColumnsListByBlocks[$key];
+
+            if (!empty($returnModuleList[$module][$value])) {
+                if (!empty($temp)) {
+                    $returnModuleList[$module][$value] = array_merge($returnModuleList[$module][$value], $temp);
+                }
+            } else {
+                $returnModuleList[$module][$value] = $temp;
+            }
+        }
+
+        return $returnModuleList;
+    }
+
+    /**
+     * Function to set the Secondary module fields for the given module.
+     *
+     * @param string $module
+     * @return array
+     */
+    function getSecModuleColumnsList($module): array
+    {
+        if ($module == '') {
+            return [];
+        }
+
+        $columnsList = [];
+        $secondaryModules = explode(':', $module);
+
+        foreach ($secondaryModules as $secondaryModule) {
+            $columnsList[$secondaryModule] = $this->getModuleColumnsList($secondaryModule);
+        }
+
+        return $columnsList;
     }
 }

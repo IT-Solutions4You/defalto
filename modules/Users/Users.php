@@ -1944,7 +1944,6 @@ class Users_CRMSetup {
 					'Contacts' => 'Contacts',
 					'Accounts' => 'Organizations',
 					'MailManager' => 'Mail Manager',
-					'Reports' => 'Reports',
 					'Access Control' => 'Access Control',
 					'Workflows' => 'Workflows',
 					'Mail Converter' => 'Mail Converter',

@@ -35,7 +35,6 @@ class FieldEventHandler extends VTEventHandler {
 		$deleteColumnName	= "$tableName:$columnName:" . $fieldName . ':' . $fieldModuleName . '_' . str_replace(' ', '_', $fieldLabel) . ':' . $fieldType[0];
 		$columnCvStdFilter	= "$tableName:$columnName:" . $fieldName . ':' . $fieldModuleName . '_' . str_replace(' ', '_', $fieldLabel);
 		$selectColumnName	= "$tableName:$columnName:" . $fieldModuleName . '_' . str_replace(' ', '_', $fieldLabel) . ':' . $fieldName . ':' . $fieldType[0];
-		$reportSummaryColumn= "$tableName:$columnName:" . str_replace(' ', '_', $fieldLabel);
 
 		$query = 'ALTER TABLE ' . $db->sql_escape_string($tableName) . ' DROP COLUMN ' . $db->sql_escape_string($columnName);
 		$db->pquery($query, array());
@@ -44,11 +43,6 @@ class FieldEventHandler extends VTEventHandler {
 		$db->pquery('DELETE FROM vtiger_cvcolumnlist WHERE columnname = ?', array($deleteColumnName));
 		$db->pquery('DELETE FROM vtiger_cvstdfilter WHERE columnname = ?', array($columnCvStdFilter));
 		$db->pquery('DELETE FROM vtiger_cvadvfilter WHERE columnname = ?', array($deleteColumnName));
-		$db->pquery('DELETE FROM vtiger_selectcolumn WHERE columnname = ?', array($selectColumnName));
-		$db->pquery('DELETE FROM vtiger_relcriteria WHERE columnname = ?', array($selectColumnName));
-		$db->pquery('DELETE FROM vtiger_reportsortcol WHERE columnname = ?', array($selectColumnName));
-		$db->pquery('DELETE FROM vtiger_reportsummary WHERE columnname LIKE ?', array('%' . $reportSummaryColumn . '%'));
-		$db->pquery('DELETE FROM vtiger_reportdatefilter WHERE datecolumnname = ?', array($columnCvStdFilter));
 
 		if ($fieldModuleName == 'Leads') {
 			$db->pquery('DELETE FROM vtiger_convertleadmapping WHERE leadfid=?', array($fieldId));

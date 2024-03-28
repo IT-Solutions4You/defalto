@@ -241,7 +241,6 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
                 let currentElement = jQuery(element);
                 let field = currentElement.find('select.selectedSortFields').val();
                 let order = currentElement.find('.sortOrder').filter(':checked').val();
-                //TODO: need to handle sort type for Reports
                 let type = currentElement.find('.sortType').val();
                 selectedSortOrderFields.push([field, order, type]);
             });

@@ -30,11 +30,11 @@
                     <div>
                         <span class="me-3">
                             <input type="radio" name="{$ROW}" class="sortOrder" value="Ascending" {if $SELECTED_SORT_FIELD_VALUE eq Ascending} checked="" {/if} />
-                            <span class="ms-2">{vtranslate('LBL_ASCENDING','Reports')}</span>
+                            <span class="ms-2">{vtranslate('LBL_ASCENDING')}</span>
                         </span>
                         <span class="me-3">
                             <input type="radio" name="{$ROW}" class="sortOrder" value="Descending" {if $SELECTED_SORT_FIELD_VALUE eq Descending} checked="" {/if}/>
-                            <span class="ms-2">{vtranslate('LBL_DESCENDING','Reports')}</span>
+                            <span class="ms-2">{vtranslate('LBL_DESCENDING')}</span>
                         </span>
                     </div>
                 </div>

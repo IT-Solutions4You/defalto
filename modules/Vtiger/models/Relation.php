@@ -102,10 +102,6 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 		$actionString = $this->get('actions');
 
 		$label = $this->get('label');
-		// No actions for Activity history
-		if($label == 'Activity History') {
-			return array();
-		}
 
 		return explode(',', $actionString);
 	}

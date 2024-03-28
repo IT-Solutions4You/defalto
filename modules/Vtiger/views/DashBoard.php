@@ -132,8 +132,6 @@ class Vtiger_Dashboard_View extends Vtiger_Index_View {
 			'modules.'.$moduleName.'.resources.DashBoard',
 			'modules.Vtiger.resources.dashboards.Widget',
 			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Vtiger/resources/Detail.js',
-			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/Detail.js',
-			'~/layouts/'.Vtiger_Viewer::getDefaultLayoutName().'/modules/Reports/resources/ChartDetail.js',
 			"modules.Vtiger.resources.CkEditor",
 		);
 

@@ -648,14 +648,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Ostatnie 5 komentarzy',
 	'All Comments' => 'Wszystkie komentarze',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Ważna uwaga na stary wygląd',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Jesteśmy szczęśliwi mogąc dzielić się, że stary wygląd będzie dostępny dopiero w lutym 2014 roku. Dodaliśmy następujące funkcje do nowego wyglądu niedawno <br><br> 1. Raporty Pivot Łódź <br>2. Wykresy niestandardowe Tanie <br>3. Szybkie wyszukiwanie na listach <br><br> Jeśli masz pomysły na nowy wygląd, proszę podzielić się z nami poniżej.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Podziel się propozycje tutaj ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Prześlij opinię',
-	'LBL_DONT_SHOW_AGAIN' => 'Nie pokazuj tego ponownie',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Dalej stary wygląd',
-
 	//PrintTemplate Links
     'Print' => 'Drukuj / Eksportuj do PDF',
     'Print Templates' => 'Szablony Wydrukować',

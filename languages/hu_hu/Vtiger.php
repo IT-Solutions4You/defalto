@@ -638,14 +638,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Az utolsó 5 Comments',
 	'All Comments' => 'Összes megjegyzés',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Fontos megjegyzés a régi megjelenés',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Örülünk, hogy osztja ezt a régi meg lesz elérhető, amíg február, 2014. Adtunk a következő funkciókat az új megjelenés a közelmúltban <br><br> 1. Pivot Jelentések <br> 2.. Egyéni Charts <br> 3. Gyors keresés listák <br><br> Ha van javaslata az új megjelenés, kérjük ossza meg velünk az alábbi.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Oszd meg a javaslatok itt ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Visszajelzés küldése',
-	'LBL_DONT_SHOW_AGAIN' => 'Ne mutassa meg még egyszer',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Tovább a régi Look',
-
         'LBL_TRANSFER_OWNERSHIP' => 'átruházza a tulajdonjogot',
 
     //Products Popup View
