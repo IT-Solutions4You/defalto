@@ -16,8 +16,6 @@ if (!class_exists('Migration_20240223092352')) {
          */
         public function migrate(string $strFileName): void
         {
-            $this->db->setDebug(true);
-
             $checkActivityTableRes = $this->db->pquery('SHOW TABLES LIKE "vtiger_activity"');
 
             if (!$this->db->num_rows($checkActivityTableRes)) {

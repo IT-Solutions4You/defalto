@@ -12,13 +12,10 @@ class Project_ExportChart_View extends Vtiger_Index_View {
 
 	function checkPermission(Vtiger_Request $request) {
 		$moduleName = $request->getModule();
-		$moduleModel = Reports_Module_Model::getInstance($moduleName);
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		$currentUserPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
 
-		$record = $request->get('record');
-		$reportModel = Reports_Record_Model::getCleanInstance($record);
-
-		$currentUserPriviligesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		if (!$currentUserPriviligesModel->hasModulePermission($moduleModel->getId())) {
+		if (!$currentUserPrivilegesModel->hasModulePermission($moduleModel->getId())) {
 			throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
 		}
 	}

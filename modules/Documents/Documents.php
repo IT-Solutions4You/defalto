@@ -330,41 +330,6 @@ class Documents extends CRMEntity {
 	/*function save_related_module($module, $crmid, $with_module, $with_crmid){
 	}*/
 
-
-	/*
-	 * Function to get the primary query part of a report
-	 * @param - $module Primary module name
-	 * returns the query string formed on fetching the related data for report for primary module
-	 */
-	function generateReportsQuery($module,$queryplanner){
-		$moduletable = $this->table_name;
-		$moduleindex = $this->tab_name_index[$moduletable];
-		$query = "from $moduletable
-			inner join vtiger_crmentity on vtiger_crmentity.crmid=$moduletable.$moduleindex";
-		if ($queryplanner->requireTable("vtiger_attachmentsfolder")){
-			$query .= " inner join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid=$moduletable.folderid";
-		}
-		if ($queryplanner->requireTable("vtiger_groups".$module)){
-			$query .= " left join vtiger_groups as vtiger_groups".$module." on vtiger_groups".$module.".groupid = vtiger_crmentity.smownerid";
-		}
-		if($queryplanner->requireTable('vtiger_createdby'.$module)){
-			$query .= " LEFT JOIN vtiger_users AS vtiger_createdby$module ON vtiger_createdby$module.id = vtiger_crmentity.smcreatorid";
-		}
-		if ($queryplanner->requireTable("vtiger_users".$module)){
-			$query .= " left join vtiger_users as vtiger_users".$module." on vtiger_users".$module.".id = vtiger_crmentity.smownerid";
-		}
-		$query .= " left join vtiger_groups on vtiger_groups.groupid = vtiger_crmentity.smownerid";
-		$query .= " left join vtiger_notescf on vtiger_notes.notesid = vtiger_notescf.notesid";
-		$query .= " left join vtiger_users on vtiger_users.id = vtiger_crmentity.smownerid";
-		if ($queryplanner->requireTable("vtiger_lastModifiedBy".$module)){
-			$query .= " left join vtiger_users as vtiger_lastModifiedBy".$module." on vtiger_lastModifiedBy".$module.".id = vtiger_crmentity.modifiedby ";
-		}
-		$relQuery = $this->getReportsUiType10Query($module,$queryplanner);
-		$query .= ' '.$relQuery;
-		return $query;
-
-	}
-
 	/*
 	 * Function to get the secondary query part of a report
 	 * @param - $module primary module name

@@ -34,10 +34,6 @@
 					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
 						<div class="menu-item" style="background: #C5EFF7;" data-url="{$HOME_MODULE_MODEL->getDefaultUrl()}">Home</div>
 					</div>
-					{assign var=REPORT_MODULE_MODEL value=Vtiger_Module_Model::getInstance('Reports')}
-					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
-						<div class="menu-item" style="background: #FDE3A7;"data-url="{$REPORT_MODULE_MODEL->getDefaultUrl()}">Reports</div>
-					</div>
 					{if $USER_MODEL->isAdminUser()}
 						<div class="col-lg-2 col-md-4 col-sm-4 col-xs-12">
 							<div class="menu-item" style="background: #ECF0F1;" data-url="index.php?module=Vtiger&parent=Settings&view=Index">{vtranslate('LBL_CRM_SETTINGS',$MODULE)}</div>

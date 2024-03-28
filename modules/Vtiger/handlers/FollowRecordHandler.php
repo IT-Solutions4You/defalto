@@ -26,7 +26,7 @@ class FollowRecordHandler extends VTEventHandler {
 
 			$restrictedModules = array('CustomerPortal', 'Dashboard', 'ExtensionStore', 'Google', 'Home',
 										'Import', 'MailManager', 'Mobile', 'ModComments', 'ModTracker', 'PBXManager', 'Portal',
-										'RecycleBin', 'Reports', 'Rss', 'SMSNotifier', 'Users', 'Webforms', 'Webmails', 'WSAPP');
+										'RecycleBin', 'Rss', 'SMSNotifier', 'Users', 'Webforms', 'WSAPP');
 
 			if (!in_array($moduleName, $restrictedModules)) {
 				$tableName = Vtiger_Functions::getUserSpecificTableName($moduleName);

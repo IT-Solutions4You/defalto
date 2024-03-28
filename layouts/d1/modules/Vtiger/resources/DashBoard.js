@@ -229,9 +229,6 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 			var id = widgetContainer.attr('id');
 			if(!(id in this.instancesCache)) {
 					var widgetName = widgetContainer.data('name');
-					if(widgetName === "ChartReportWidget"){
-						widgetName+= "_"+id;
-					}
 					this.instancesCache[id] = Vtiger_Widget_Js.getInstance(widgetContainer, widgetName);
 			}
 	else{
@@ -495,7 +492,7 @@ Vtiger.Class("Vtiger_DashBoard_Js",{
 					function(err,response) {
 						if (err == null) {
 
-							var nonReversableWidgets = ['MiniList','Notebook','ChartReportWidget']
+							var nonReversableWidgets = ['MiniList','Notebook']
 
 							parent.fadeOut('slow', function() {
 								Vtiger_DashBoard_Js.gridster.remove_widget(parent);
