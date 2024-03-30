@@ -33,9 +33,7 @@ class Users_UI5_Action extends Vtiger_Action_Controller {
 
 		if (isset($params['view'])) {
 			if ($params['view'] == 'Detail') {
-				if ($module == 'Reports') {
-					$action = 'SaveAndRun';
-				} else if ($module == 'Portal') {
+				if ($module == 'Portal') {
 					$action = 'ListView';
 				} else {
 					$action = 'DetailView';
@@ -43,11 +41,7 @@ class Users_UI5_Action extends Vtiger_Action_Controller {
 			} else if ($params['view'] == 'List') {
 				$action = 'ListView';
 			} else if ($params['view'] == 'Edit') {
-				if ($module == 'Reports') {
-					$action = 'ListView';
-				} else {
-					$action = 'EditView';
-				}
+                $action = 'EditView';
 			} else if ($params['view'] == 'Import') {
 				$action = 'Import';
 			} else if ($params['view'] == 'PreferenceDetail' || $params['view'] == 'PreferenceEdit') {

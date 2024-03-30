@@ -14,17 +14,18 @@ class EMAILMaker_GetRelatedBlockFilters_View extends Vtiger_BasicAjax_View
         $primaryModule = $request->get('primodule');
         $secondaryModules = $request->get('secmodule');
         $record = $request->get('record');
-        $reportModel = Reports_Record_Model::getCleanInstance($record);
-        $reportModel->setPrimaryModule($primaryModule);
+        $relatedBlockModel = new EMAILMaker_RelatedBlock_Model();
+        $relatedBlockModel->setPrimaryModule($primaryModule);
+
         if (!empty($secondaryModules)) {
-            $reportModel->setSecondaryModule($secondaryModules);
+            $relatedBlockModel->setSecondaryModule($secondaryModules);
         }
+
         $viewer = $this->getViewer($request);
-        $viewer->assign('SELECTED_ADVANCED_FILTER_FIELDS', $reportModel->transformToNewAdvancedFilter());
+        $viewer->assign('SELECTED_ADVANCED_FILTER_FIELDS', $relatedBlockModel->transformToNewAdvancedFilter());
         $viewer->assign('PRIMARY_MODULE', $primaryModule);
-        $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($reportModel);
-        $primaryModuleRecordStructure = $recordStructureInstance->getPrimaryModuleRecordStructure();
-        $secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure();
+        $primaryModuleRecordStructure = $relatedBlockModel->getPrimaryModuleRecordStructure();
+        $secondaryModuleRecordStructures = $relatedBlockModel->getSecondaryModuleRecordStructure();
         $viewer->assign('PRIMARY_MODULE_RECORD_STRUCTURE', $primaryModuleRecordStructure);
         $viewer->assign('SECONDARY_MODULE_RECORD_STRUCTURES', $secondaryModuleRecordStructures);
         $viewer->assign('ADVANCED_FILTER_OPTIONS', Vtiger_Field_Model::getAdvancedFilterOptions());
@@ -33,7 +34,7 @@ class EMAILMaker_GetRelatedBlockFilters_View extends Vtiger_BasicAjax_View
         foreach ($dateFilters as $comparatorKey => $comparatorInfo) {
             $comparatorInfo['startdate'] = DateTimeField::convertToUserFormat($comparatorInfo['startdate']);
             $comparatorInfo['enddate'] = DateTimeField::convertToUserFormat($comparatorInfo['enddate']);
-            $comparatorInfo['label'] = vtranslate($comparatorInfo['label'], $module);
+            $comparatorInfo['label'] = vtranslate($comparatorInfo['label']);
             $dateFilters[$comparatorKey] = $comparatorInfo;
         }
         $viewer->assign('DATE_FILTERS', $dateFilters);

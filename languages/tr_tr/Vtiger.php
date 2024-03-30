@@ -641,14 +641,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Son 5 Yorum',
 	'All Comments' => 'Tüm Yorumları',
 	
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Eski görünüm Önemli Not',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Biz o eski görünüm Şubat, 2014 yılına kadar geçerli olacak paylaşmak için mutluyuz. Biz <br> 1 son zamanlarda yeni bir görünüm için aşağıdaki özellikler eklendi<br><br>1. Pivot Raporlar <br>2. Özel Grafikler <br>3. Listelerinde Hızlı Arama <br><br>yeni bir görünüm önerileriniz varsa, aşağıda lütfen bizimle paylaşın.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Burada önerilerinizi paylaşın ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Geribildirim Gönder',
-	'LBL_DONT_SHOW_AGAIN' => 'Tekrar gösterme',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Eski Bak devam',
-    
         'LBL_TRANSFER_OWNERSHIP' => 'transferi Mülkiyet',
     
     //Products Popup View

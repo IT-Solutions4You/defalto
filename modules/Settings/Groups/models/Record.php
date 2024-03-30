@@ -276,7 +276,6 @@ class Settings_Groups_Record_Model extends Settings_Vtiger_Record_Model {
 		$db->pquery('DELETE FROM vtiger_group2role WHERE groupid=?', array($groupId));
 		$db->pquery('DELETE FROM vtiger_group2rs WHERE groupid=?', array($groupId));
 		$db->pquery('DELETE FROM vtiger_users2group WHERE groupid=?', array($groupId));
-		$db->pquery("DELETE FROM vtiger_reportsharing WHERE shareid=? AND setype='groups'", array($groupId));
 
 		$db->pquery('DELETE FROM vtiger_groups WHERE groupid=?', array($groupId));
 	}

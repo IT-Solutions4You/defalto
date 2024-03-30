@@ -817,9 +817,6 @@ function vtws_transferOwnership($ownerId, $newOwnerId, $delete=true) {
 		//Mark user as deleted =1 
 		$db->pquery('UPDATE vtiger_users SET deleted=? WHERE id=?', array(1, $ownerId));
 
-		//Change the owner for report
-		$db->pquery('UPDATE vtiger_report SET owner=? WHERE owner=?', array($newOwnerId, $ownerId));
-
 		//Recalculate user privelege file
 		RecalculateSharingRules();
 	}

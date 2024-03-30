@@ -766,14 +766,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'آخر 5 تعليقات',
 	'All Comments' => 'جميع التعليقات',
 	
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'ملاحظة هامة على نظرة قديم',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'ونحن سعداء لتبادل والتي تبدو قديمة تكون متاحة حتى فبراير عام 2014. أضفنا الميزات التالية إلى المظهر الجديد مؤخرا <BR> <BR> 1. تقارير محور <BR> 2. المخططات المخصصة <BR> 3. بحث سريع في قوائم <BR> <BR> إذا كان لديك اقتراحات حول نظرة جديدة، يرجى حصة معنا أدناه.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'مشاركة اقتراحاتكم هنا ..',
-	'LBL_SUBMIT_FEEDBACK' => 'إرسال الملاحظات',
-	'LBL_DONT_SHOW_AGAIN' => 'لا تظهر هذا مرة أخرى',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'تواصل تبدو قديمة',
-	
 	//For Print Templates
 	'Print Templates' => 'قوالب الطباعة',
 	'Print' => 'الطباعة / التصدير إلى PDF',

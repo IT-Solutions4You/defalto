@@ -358,31 +358,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_links ADD COLUMN parent_link INT(19)', array());
 	}
 
-	$moduleName = 'Reports';
-	$reportModel = Vtiger_Module_Model::getInstance($moduleName);
-	$reportTabId = $reportModel->getId();
-	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_ADD_RECORD', '', '', '0');
-
-	$reportAddRecordLink = $db->pquery('SELECT linkid FROM vtiger_links WHERE tabid=? AND linklabel=?', array($reportTabId, 'LBL_ADD_RECORD'));
-	$parentLinkId = $db->query_result($reportAddRecordLink, 0, 'linkid');
-
-	$reportModelHandler = array('path' => 'modules/Reports/models/Module.php', 'class' => 'Reports_Module_Model', 'method' => 'checkLinkAccess');
-	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_DETAIL_REPORT', 'javascript:Reports_List_Js.addReport("'.$reportModel->getCreateRecordUrl().'")', '', '0', $reportModelHandler, $parentLinkId);
-	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_CHARTS', 'javascript:Reports_List_Js.addReport("index.php?module=Reports&view=ChartEdit")', '', '0', $reportModelHandler, $parentLinkId);
-	Vtiger_Link::addLink($reportTabId, 'LISTVIEWBASIC', 'LBL_ADD_FOLDER', 'javascript:Reports_List_Js.triggerAddFolder("'.$reportModel->getAddFolderUrl().'")', '', '0', $reportModelHandler);
-
-	$allFolders = Reports_Folder_Model::getAll();
-	foreach ($allFolders as $folderId => $folderModel) {
-		$folderModel->set('foldername', decode_html(vtranslate($folderModel->getName(), $moduleName)));
-		$folderModel->set('folderdesc', decode_html(vtranslate($folderModel->get('folderdesc'), $moduleName)));
-		$folderModel->save();
-	}
-
-	$columns = $db->getColumnNames('vtiger_schedulereports');
-	if (!in_array('fileformat', $columns)) {
-		$db->pquery('ALTER TABLE vtiger_schedulereports ADD COLUMN fileformat VARCHAR(10) DEFAULT "CSV"', array());
-	}
-
 	$modCommentsInstance = Vtiger_Module_Model::getInstance('ModComments');
 	$modCommentsTabId = $modCommentsInstance->getId();
 
@@ -872,7 +847,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$db->pquery('ALTER TABLE vtiger_emailslookup MODIFY setype VARCHAR(100)', array());
 	$db->pquery('ALTER TABLE vtiger_entityname MODIFY modulename VARCHAR(100)', array());
 	$db->pquery('ALTER TABLE vtiger_modentity_num MODIFY semodule VARCHAR(100)', array());
-	$db->pquery('ALTER TABLE vtiger_reportmodules MODIFY primarymodule VARCHAR(100)', array());
 
 	$result = $db->pquery('SHOW INDEX FROM vtiger_crmentityrel WHERE key_name=?', array('crmid_idx'));
 	if (!$db->num_rows($result)) {
@@ -1290,42 +1264,6 @@ if(defined('VTIGER_UPGRADE')) {
 
 	//table name exceeds more than 50 characters.
 	$db->pquery('ALTER TABLE vtiger_field MODIFY COLUMN tablename VARCHAR(100)', array());
-
-	if (!Vtiger_Utils::CheckTable('vtiger_report_shareusers')) {
-		Vtiger_Utils::CreateTable('vtiger_report_shareusers',
-				'(`reportid` int(25) NOT NULL,
-				`userid` int(25) NOT NULL,
-				KEY `vtiger_report_shareusers_ibfk_1` (`reportid`),
-				CONSTRAINT `vtiger_reports_reportid_ibfk_1` FOREIGN KEY (`reportid`) REFERENCES `vtiger_report` (`reportid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_users_userid_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `vtiger_users` (`id`) ON DELETE CASCADE)', true);
-	}
-
-	if (!Vtiger_Utils::CheckTable('vtiger_report_sharegroups')) {
-		Vtiger_Utils::CreateTable('vtiger_report_sharegroups', 
-				'(`reportid` int(25) NOT NULL,
-				`groupid` int(25) NOT NULL,
-				KEY `vtiger_report_sharegroups_ibfk_1` (`reportid`),
-				CONSTRAINT `vtiger_report_reportid_ibfk_2` FOREIGN KEY (`reportid`) REFERENCES `vtiger_report` (`reportid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_groups_groupid_ibfk_1` FOREIGN KEY (`groupid`) REFERENCES `vtiger_groups` (`groupid`) ON DELETE CASCADE)', true);
-	}
-
-	if (!Vtiger_Utils::CheckTable('vtiger_report_sharerole')) {
-		Vtiger_Utils::CreateTable('vtiger_report_sharerole',
-				'(`reportid` int(25) NOT NULL,
-				`roleid` varchar(255) NOT NULL,
-				KEY `vtiger_report_sharerole_ibfk_1` (`reportid`),
-				CONSTRAINT `vtiger_report_reportid_ibfk_3` FOREIGN KEY (`reportid`) REFERENCES `vtiger_report` (`reportid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_role_roleid_ibfk_1` FOREIGN KEY (`roleid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)', true);
-	}
-
-	if (!Vtiger_Utils::CheckTable('vtiger_report_sharers')) {
-		Vtiger_Utils::CreateTable('vtiger_report_sharers',
-				'(`reportid` int(25) NOT NULL,
-				`rsid` varchar(255) NOT NULL,
-				KEY `vtiger_report_sharers_ibfk_1` (`reportid`),
-				CONSTRAINT `vtiger_report_reportid_ibfk_4` FOREIGN KEY (`reportid`) REFERENCES `vtiger_report` (`reportid`) ON DELETE CASCADE,
-				CONSTRAINT `vtiger_rolesd_rsid_ibfk_1` FOREIGN KEY (`rsid`) REFERENCES `vtiger_role` (`roleid`) ON DELETE CASCADE)', true);
-	}
 
 	//Migrating existing relations to N:N or 1:N based on relation fieldid
 	$query = "UPDATE vtiger_relatedlists SET relationtype='N:N' WHERE relationfieldid IS NULL";

@@ -863,13 +863,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Últimos 5 Comentários',
 	'All Comments' => 'Todos os Comentários',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Nota importante sobre a versão antiga',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Nós estamos felizes em informar que a versão antiga estará disponível até Fevereiro de 2014. Adicionamos as seguintes funcionalidades na nova versão<br><br>1. Relatórios Pivot<br>2. Gráficos Customizados<br>3. Pesquisa Rápida em Listas<br><br>Se você tem sugestões de novo visual, por favor, compartilhe conosco abaixo.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Compartilha suas sugestões aqui..',
-	'LBL_SUBMIT_FEEDBACK' => 'Enviar feedback',
-	'LBL_DONT_SHOW_AGAIN' => 'Não exibir isto novamente',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Continuar com o visual Antigo',
 	'LBL_LEFT_PANEL_SHOW_HIDE' => 'Painel Esquerdo Exibir/Ocultar',
 
 	//Products Popup View

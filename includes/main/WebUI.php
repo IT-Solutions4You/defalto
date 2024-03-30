@@ -136,12 +136,6 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		$action = $request->get('action');
 		$response = false;
 
-		//Not able to open other pages when heavy duty view is open.
-		//heavy duty report views are open and to navigate to other module list view / detail view the page loading almost freezes page.
-		if ($module == 'Reports' && !$view) {
-			Vtiger_Session::readonly();
-		}
-
 		try {
 			if($this->isInstalled() === false && $module != 'Install') {
 				header('Location:index.php?module=Install&view=Index');
