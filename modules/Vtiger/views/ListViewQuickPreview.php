@@ -28,7 +28,7 @@ class Vtiger_ListViewQuickPreview_View extends Vtiger_Index_View {
 
 		parent::checkPermission($request);
 
-		$nonEntityModules = array('Users', 'Portal', 'Reports', 'Rss');
+		$nonEntityModules = array('Users', 'Portal', 'Rss');
 		if ($recordId && !in_array($moduleName, $nonEntityModules)) {
 			$recordEntityName = getSalesEntityType($recordId);
 			if ($recordEntityName !== $moduleName) {

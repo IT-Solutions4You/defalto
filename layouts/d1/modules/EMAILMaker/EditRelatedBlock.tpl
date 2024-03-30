@@ -81,11 +81,11 @@
                                         <!-- STEP 2 -->
                                         <div id="step2" class="hide">
                                             <div class="widget_header p-3 border-bottom">
-                                                <h4>{vtranslate('LBL_SELECT_COLUMNS','Reports')}<span class="text-danger ms-2">*</span></h4>
+                                                <h4>{vtranslate('LBL_SELECT_COLUMNS','PDFMaker')}<span class="text-danger ms-2">*</span></h4>
                                             </div>
                                             <div class="widget_contents p-3">
                                                 <div class="relatedBlockColumnsParent">
-                                                    <select data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS','Reports')}" id="relatedblockColumnsList" name="relatedblockColumnsList[]" data-rule-required="true" class="relatedblockColumns select2" multiple style="width: 100%;">
+                                                    <select data-placeholder="{vtranslate('LBL_ADD_MORE_COLUMNS')}" id="relatedblockColumnsList" name="relatedblockColumnsList[]" data-rule-required="true" class="relatedblockColumns select2" multiple style="width: 100%;">
                                                         {$SECCOLUMNS}
                                                     </select>
                                                     <input name="selected_fields" id="seleted_fields" value="{if $SELECTEDCOLUMNS neq ""}{$SELECTEDCOLUMNS}{else}[]{/if}" type="hidden">
@@ -111,7 +111,7 @@
                                                     <div class="container-fluid">
                                                         <div class="row">
                                                             <label class="col-lg-6">{vtranslate('LBL_SORT_BY','EMAILMaker')}</label>
-                                                            <label class="col-lg-6">{vtranslate('LBL_SORT_ORDER','Reports')}</label>
+                                                            <label class="col-lg-6">{vtranslate('LBL_SORT_ORDER','EMAILMaker')}</label>
                                                         </div>
                                                         {assign var=ROW_VAL value=1}
                                                         {foreach key=SELECTED_SORT_FIELD_KEY item=SELECTED_SORT_FIELD_VALUE from=$SELECTED_SORT_FIELDS}

@@ -37,7 +37,6 @@ class Vtiger_ShowWidget_View extends Vtiger_IndexAjax_View {
 					$widget->set('userid', $currentUser->getId());
 					$widget->set('filterid', $request->get('filterid', NULL));
                     
-                    // In Vtiger7, we need to pin this report widget to first tab of that user
                     $dasbBoardModel = Vtiger_DashBoard_Model::getInstance($moduleName);
                     $defaultTab = $dasbBoardModel->getUserDefaultTab($currentUser->getId());
                     $widget->set('tabid', $request->get('tab', $defaultTab['id']));

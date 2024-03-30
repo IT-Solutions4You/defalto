@@ -641,14 +641,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Laatste 5 Comments',
 	'All Comments' => 'Alle reacties',
 	
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Belangrijke opmerking over oude look',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'We zijn blij om te delen dat oude look zal beschikbaar zijn tot februari 2014. We de volgende functies toegevoegd aan de nieuwe look onlangs <br><br> 1. Pivot Rapporten <br> 2. Custom Grafieken <br> 3. Snel zoeken in lijsten <br><br> Heeft u suggesties voor nieuwe look, neem dan met ons te delen hieronder.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Deel uw suggesties hier ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Geef feedback',
-	'LBL_DONT_SHOW_AGAIN' => 'Niet meer tonen',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Doorgaan naar Old Look',
-    
         'LBL_TRANSFER_OWNERSHIP' => 'Eigendom overdragen',
     
     //Products Popup View

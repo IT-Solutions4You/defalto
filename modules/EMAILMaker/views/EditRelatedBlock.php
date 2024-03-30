@@ -77,7 +77,7 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
         $viewer->assign('DATEFORMAT', $current_user->get('date_format'));
         $viewer->assign('JS_DATEFORMAT', Vtiger_Functions::currentUserJSDateFormat(''));
 
-        $RelatedBlock = new EMAILMaker_RelatedBlock_Model();
+        $relatedBlock = new EMAILMaker_RelatedBlock_Model();
 
         if ($record) {
             $blockData = EMAILMaker_RelatedBlock_Model::getBlockData($record);
@@ -102,23 +102,19 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
 
             $step = 3;
             $mode = 'edit';
-            $RelatedBlock->setId($record);
-            $reportModel = Reports_Record_Model::getCleanInstance('');
-            $reportModel->setPrimaryModule($rel_module);
-            $RelatedBlock->setPrimaryModule($rel_module);
+            $relatedBlock->setId($record);
+            $relatedBlock->setPrimaryModule($rel_module);
 
             if (!empty($sec_module)) {
-                $RelatedBlock->setSecondaryModule($sec_module);
-                $reportModel->setSecondaryModule($sec_module);
+                $relatedBlock->setSecondaryModule($sec_module);
             }
 
-            $viewer->assign('SELECTED_ADVANCED_FILTER_FIELDS', $RelatedBlock->transformToNewAdvancedFilter());
+            $viewer->assign('SELECTED_ADVANCED_FILTER_FIELDS', $relatedBlock->transformToNewAdvancedFilter());
             $viewer->assign('PRIMARY_MODULE', $rel_module);
 
             /** @var EMAILMaker_RelatedBlock_Model $recordStructureInstance */
-            $recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($reportModel);
-            $primaryModuleRecordStructure = $recordStructureInstance->getPrimaryModuleRecordStructure();
-            $secondaryModuleRecordStructures = $recordStructureInstance->getSecondaryModuleRecordStructure();
+            $primaryModuleRecordStructure = $relatedBlock->getPrimaryModuleRecordStructure();
+            $secondaryModuleRecordStructures = $relatedBlock->getSecondaryModuleRecordStructure();
 
             $viewer->assign('PRIMARY_MODULE_RECORD_STRUCTURE', $primaryModuleRecordStructure);
             $viewer->assign('SECONDARY_MODULE_RECORD_STRUCTURES', $secondaryModuleRecordStructures);
@@ -135,9 +131,9 @@ class EMAILMaker_EditRelatedBlock_View extends Vtiger_Footer_View
             }
 
             $viewer->assign('DATE_FILTERS', $dateFilters);
-            $viewer->assign('PRIMARY_MODULE_FIELDS', $reportModel->getPrimaryModuleFields());
-            $viewer->assign('SECONDARY_MODULE_FIELDS', $reportModel->getSecondaryModuleFields());
-            $viewer->assign('SELECTED_SORT_FIELDS', $RelatedBlock->getSelectedSortFields());
+            $viewer->assign('PRIMARY_MODULE_FIELDS', $relatedBlock->getPrimaryModuleFields());
+            $viewer->assign('SECONDARY_MODULE_FIELDS', $relatedBlock->getSecondaryModuleFields());
+            $viewer->assign('SELECTED_SORT_FIELDS', $relatedBlock->getSelectedSortFields());
         } else {
             $rel_module = $_REQUEST['emailmodule'];
             $block = $record = $blockName = '';

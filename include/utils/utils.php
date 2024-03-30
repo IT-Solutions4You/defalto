@@ -2361,3 +2361,82 @@ function sanitizeRelatedListsActions($input): array
 
 	return [];
 }
+
+/**
+ * Function to get the field information from module name and field label
+ *
+ * @param $module
+ * @param $label
+ *
+ * @return mixed|null
+ */
+function getFieldByReportLabel($module, $label)
+{
+    $cacheLabel = VTCacheUtils::getReportFieldByLabel($module, $label);
+
+    if ($cacheLabel) {
+        return $cacheLabel;
+    }
+
+    // this is required so the internal cache is populated or reused.
+    getColumnFields($module);
+    //lookup all the accessible fields
+    $cachedModuleFields = VTCacheUtils::lookupFieldInfo_Module($module);
+    $label = decode_html($label);
+
+    if (empty($cachedModuleFields)) {
+        return null;
+    }
+
+    foreach ($cachedModuleFields as $fieldInfo) {
+        $fieldLabel = str_replace(' ', '_', $fieldInfo['fieldlabel']);
+
+        $fieldLabel = decode_html($fieldLabel);
+
+        if ($label == $fieldLabel) {
+            VTCacheUtils::setReportFieldByLabel($module, $label, $fieldInfo);
+
+            return $fieldInfo;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * @param $uitype
+ *
+ * @return bool
+ */
+function isReferenceUIType($uitype): bool
+{
+    static $options = [
+        '101',
+        '116',
+        '117',
+        '26',
+        '357',
+        '50',
+        '51',
+        '52',
+        '53',
+        '57',
+        '58',
+        '59',
+        '66',
+        '68',
+        '73',
+        '75',
+        '76',
+        '77',
+        '78',
+        '80',
+        '81'
+    ];
+
+    if (in_array($uitype, $options)) {
+        return true;
+    }
+
+    return false;
+}
