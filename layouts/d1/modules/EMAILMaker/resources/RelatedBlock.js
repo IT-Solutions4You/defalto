@@ -258,6 +258,7 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             this.selectedFields = false;
             this.makeColumnListSortable();
             this.registerSubmitEvent();
+            vtUtils.registerReplaceCommaWithDot(this.getForm());
         },
         registerEvents2: function () {
             this.advanceFilterInstance = Vtiger_AdvanceFilter_Js.getInstance(jQuery('.filterContainer'));
@@ -267,7 +268,7 @@ if (typeof (EMAILMaker_RelatedBlockJs) == 'undefined') {
             this.initialize();
             this.registerEvents2();
             this.registerSubmitEvent();
-            vtUtils.registerReplaceCommaWithDot($(document));
+            vtUtils.registerReplaceCommaWithDot(this.getForm());
         },
         createRelatedBlockTable: function () {
 

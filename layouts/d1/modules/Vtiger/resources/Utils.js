@@ -12,7 +12,11 @@ var vtUtils = {
 
     registerReplaceCommaWithDot: function (container) {
         container.off('keyup', '.replaceCommaWithDot').on('keyup', '.replaceCommaWithDot', function (e) {
-            $(this).val($(this).val().toString().replace(',', '.'))
+            if($(this).is('textarea')) {
+                $(this).text($(this).text().toString().replace(',', '.'))
+            } else {
+                $(this).val($(this).val().toString().replace(',', '.'))
+            }
         });
     },
     /**
