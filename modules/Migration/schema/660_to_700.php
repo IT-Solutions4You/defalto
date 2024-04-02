@@ -1058,7 +1058,6 @@ if(defined('VTIGER_UPGRADE')) {
 	}
 	//User specific field - star feature 
 
-	$ignoreModules[] = 'Webmails';
 	foreach ($modules as $module) {
 		if (in_array($module, $ignoreModules)) {
 			continue;
