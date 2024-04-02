@@ -42,7 +42,6 @@ global $adb;
 //Unlinking unwanted resources when migrating to 6.1.0
 $unWanted=array(
  "modules/Import/resources/Import.js",
- "modules/Webmails/Webmails.js",
  "modules/Webforms/Webforms.js",
  "modules/Vendors/Vendors.js",
  "modules/Users/Users.js",

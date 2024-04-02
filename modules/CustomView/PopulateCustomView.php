@@ -118,10 +118,6 @@ $customviews = Array(Array('viewname'=>'All',
                           'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
                           'cvmodule'=>'Campaigns','stdfilterid'=>'','advfilterid'=>''),
 
-		    Array('viewname'=>'All',
-                          'setdefault'=>'1','setmetrics'=>'0','status'=>'0','userid'=>'1',
-			  'cvmodule'=>'Webmails','stdfilterid'=>'','advfilterid'=>''),
-
 		    Array('viewname'=>'Drafted FAQ',
                           'setdefault'=>'0','setmetrics'=>'0','status'=>'3','userid'=>'1',
                           'cvmodule'=>'Faq','stdfilterid'=>'','advfilterid'=>'8'),

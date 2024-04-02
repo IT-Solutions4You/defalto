@@ -66,7 +66,7 @@ class Settings_Workflows_Module_Model extends Settings_Vtiger_Module_Model {
 		$moduleModels = Vtiger_Module_Model::getAll(array(0,2));
 		$supportedModuleModels = array();
 		foreach($moduleModels as $tabId => $moduleModel) {
-			if($moduleModel->isWorkflowSupported() && $moduleModel->getName() != 'Webmails') {
+			if($moduleModel->isWorkflowSupported()) {
 				$supportedModuleModels[$tabId] = $moduleModel;
 			}
 		}
