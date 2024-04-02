@@ -121,8 +121,6 @@ if (defined('VTIGER_UPGRADE')) {
     //Remove unwanted Files
     global $root_directory;
     $filesPath = array(
-            "layouts/v7/modules/Mobile/simple/resources/libs/md-icons/README.md",
-            "layouts/v7/modules/Mobile/simple/resources/libs/md-icons/preview.html",
             "/layouts/v7/lib/jquery/Lightweight-jQuery-In-page-Filtering-Plugin-instaFilta/demo.html",
             "/layouts/v7/lib/vt-icons/demo.html",
             "/layouts/v7/lib/jquery/daterangepicker/index.html",

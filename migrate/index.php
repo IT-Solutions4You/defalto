@@ -29,7 +29,7 @@ if (!$errorMessage) {
 		$vtigerStandardModules = array('Accounts', 'Assets', 'Campaigns', 'Contacts', 'CustomerPortal',
 			'Dashboard', 'ExtensionStore',
 			'Faq', 'Google', 'HelpDesk', 'Home', 'Import', 'Invoice', 'Leads', 
-			'MailManager', 'Mobile', 'ModComments', 'ModTracker',
+			'MailManager', 'ModComments', 'ModTracker',
 			'PBXManager', 'Portal', 'Potentials', 'PriceBooks', 'Products', 'Project', 'ProjectMilestone', 
 			'ProjectTask', 'PurchaseOrder', 'Quotes', 'RecycleBin', 'Rss', 'SalesOrder',
 			'ServiceContracts', 'Services', 'SMSNotifier', 'Users', 'Vendors',

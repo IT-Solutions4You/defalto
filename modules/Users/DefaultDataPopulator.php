@@ -1492,7 +1492,7 @@ Thanks,
 			'class' => 'VtigerModuleOperation');
 
 		foreach ($names as $tab) {
-			if (in_array($tab, array('Rss', 'Webmails', 'Recyclebin'))) {
+			if (in_array($tab, array('Rss', 'Recyclebin'))) {
 				continue;
 			}
 			$entityId = $this->db->getUniqueID("vtiger_ws_entity");
