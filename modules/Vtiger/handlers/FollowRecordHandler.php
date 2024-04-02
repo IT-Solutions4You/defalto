@@ -25,7 +25,7 @@ class FollowRecordHandler extends VTEventHandler {
 			$moduleName = $entityData->getModuleName();
 
 			$restrictedModules = array('CustomerPortal', 'Dashboard', 'ExtensionStore', 'Google', 'Home',
-										'Import', 'MailManager', 'Mobile', 'ModComments', 'ModTracker', 'PBXManager', 'Portal',
+										'Import', 'MailManager', 'ModComments', 'ModTracker', 'PBXManager', 'Portal',
 										'RecycleBin', 'Rss', 'SMSNotifier', 'Users', 'Webforms', 'WSAPP');
 
 			if (!in_array($moduleName, $restrictedModules)) {
