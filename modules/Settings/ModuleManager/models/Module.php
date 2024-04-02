@@ -12,28 +12,14 @@ class Settings_ModuleManager_Module_Model extends Vtiger_Module_Model {
 
 	public static function getNonVisibleModulesList() {
 		return array('ModTracker', 'Users', 'Integration', 'WSAPP', 'ModComments', 'Dashboard', 'ConfigEditor', 'CronTasks',
-						'Import', 'Tooltip', 'CustomerPortal', 'Home', 'VtigerBackup', 'FieldFormulas', 'ExtensionStore');
+						'Import', 'Tooltip', 'CustomerPortal', 'Home', 'VtigerBackup', 'FieldFormulas');
 	}
 
 	/**
 	 * Function to get the url of new module import
 	 */
 	public static function getNewModuleImportUrl() {
-		$importURL = '';
-		$extensionStore = Vtiger_Module_Model::getInstance('ExtensionStore');
-		if($extensionStore && $extensionStore->isActive()) {
-			$importURL = Settings_ExtensionStore_Module_Model::getInstance()->getDefaultUrl();
-		} else {
-			$importURL = 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport';
-		}
-		return $importURL;
-	}
-
-	/**
-	 * Function to get the url of Extension store
-	 */
-	public static function getExtensionStoreUrl() {
-		return 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionImport&mode=index';
+        return 'index.php?module=ModuleManager&parent=Settings&view=ModuleImport';
 	}
 
 	/**

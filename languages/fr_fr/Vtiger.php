@@ -980,7 +980,6 @@ $languageStrings = array(
     'LBL_CONFIG_COLUMNS' => 'Configurer Les Colonnes',
     'LBL_SELECTED_FIELDS' => 'Les Champs Sélectionnés',
     'LBL_SEARCH_FIELDS' => 'Les Champs De Recherche',
-    'ExtensionStore' => 'Les Extensions De Magasin',
     'LBL_EXTENSIONS' => 'Extensions',
     'LBL_CREATE_LIST' => 'Créer une Nouvelle Liste',
     'sent' => 'Envoyé',
