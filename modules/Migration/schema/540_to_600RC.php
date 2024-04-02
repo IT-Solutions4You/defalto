@@ -20,7 +20,6 @@ if(defined('VTIGER_UPGRADE')) {
 	//Collating all module package updates here
 	updateVtlibModule('Import', 'packages/vtiger/mandatory/Import.zip');
 	updateVtlibModule('MailManager', 'packages/vtiger/mandatory/MailManager.zip');
-	updateVtlibModule('Mobile', 'packages/vtiger/mandatory/Mobile.zip');
 	updateVtlibModule('ModTracker', 'packages/vtiger/mandatory/ModTracker.zip');
 	updateVtlibModule('Services', "packages/vtiger/mandatory/Services.zip");
 	updateVtlibModule('ServiceContracts', "packages/vtiger/mandatory/ServiceContracts.zip");
