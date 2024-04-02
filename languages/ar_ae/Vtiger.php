@@ -1119,7 +1119,6 @@ Vtiger الاتصالات جوجل اتصالات(مجموعة مختارة مح
   'LBL_CONFIG_COLUMNS' => 'تكوين الأعمدة',
   'LBL_SELECTED_FIELDS' => 'الحقول المحددة',
   'LBL_SEARCH_FIELDS' => 'حقول البحث',
-  'ExtensionStore' => 'ملحقات مخزن',
   'LBL_EXTENSIONS' => 'ملحقات',
   'LBL_CREATE_LIST' => 'إنشاء قائمة جديدة',
   'sent' => 'وإرسالها',

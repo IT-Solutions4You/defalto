@@ -984,7 +984,6 @@ $languageStrings = array(
   'LBL_CONFIG_COLUMNS' => 'Настроить Столбцы',
   'LBL_SELECTED_FIELDS' => 'Выбранные Поля',
   'LBL_SEARCH_FIELDS' => 'Поиск Полей',
-  'ExtensionStore' => 'Расширения Магазина',
   'LBL_EXTENSIONS' => 'Расширения',
   'LBL_CREATE_LIST' => 'Создать новый список',
   'sent' => 'Отправила',

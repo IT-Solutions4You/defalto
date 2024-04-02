@@ -20,11 +20,6 @@
 									{vtranslate('LBL_IMPORT_MODULE_FROM_ZIP', $QUALIFIED_MODULE)}
 								</button>
 							</div>
-							<div class="btn-group">
-								<button class="btn btn-outline-secondary" type="button" onclick='window.location.href = "{$IMPORT_MODULE_URL}"'>
-									{vtranslate('LBL_EXTENSION_STORE', 'Settings:ExtensionStore')}
-								</button>
-							</div>
 						</div>
 					</div>
 				</div>

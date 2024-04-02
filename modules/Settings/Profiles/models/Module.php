@@ -54,6 +54,6 @@ class Settings_Profiles_Module_Model extends Settings_Vtiger_Module_Model {
 	 */
 	public static function getNonVisibleModulesList() {
         return array('ModTracker', 'Users', 'Integration', 'WSAPP', 'ConfigEditor',
-					'FieldFormulas', 'VtigerBackup', 'CronTasks', 'Import', 'Tooltip', 'CustomerPortal', 'Home', 'ExtensionStore');
+					'FieldFormulas', 'VtigerBackup', 'CronTasks', 'Import', 'Tooltip', 'CustomerPortal', 'Home');
     }
 }
