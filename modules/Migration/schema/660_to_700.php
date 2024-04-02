@@ -1281,8 +1281,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery($query, array());
 	}
 
-	$result = $db->pquery('UPDATE vtiger_tab SET parent=NULL WHERE name=?', array('ExtensionStore'));
-
 	//Start: Tax Enhancements - Compound Taxes, Regional Taxes, Deducted Taxes, Other Charges
 	//Creating regions table
 	if (!Vtiger_Utils::checkTable('vtiger_taxregions')) {
@@ -1833,10 +1831,9 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('INSERT INTO vtiger_settings_blocks(blockid, label, sequence) VALUES(?, ?, ?)', array($extensionsBlockId, 'LBL_EXTENSIONS', 9));
 	}
 
-	$extensionFields = array(	'LBL_EXTENSION_STORE'	=> 'index.php?module=ExtensionStore&parent=Settings&view=ExtensionStore',
-								'LBL_GOOGLE'			=> 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings');
+    $extensionFields = ['LBL_GOOGLE' => 'index.php?module=Contacts&parent=Settings&view=Extension&extensionModule=Google&extensionView=Index&mode=settings'];
 
-	$extSequence = 1;
+    $extSequence = 1;
 	foreach ($extensionFields as $fieldName => $linkTo) {
 		$extFieldResult = $db->pquery('SELECT 1 FROM vtiger_settings_field WHERE name=?', array($fieldName));
 		if (!$db->num_rows($extFieldResult)) {

@@ -1115,7 +1115,6 @@ $languageStrings = array(
 	'LBL_SEARCH_FIELDS' => 'Search Fields',
 
 	// Extensions
-	'ExtensionStore' =>'Extension Store',
 	'LBL_EXTENSIONS' => 'Extensions',
 	'LBL_SYNC_LOG' => 'Sync Log',
 	'LBL_SYNC_SETTINGS' => 'Sync Settings',
