@@ -81,7 +81,6 @@ $languageStrings = array(
 	'LBL_PASSWORD' => 'Password',
 	'LBL_CONFIRM_PASSWORD' => 'Confirm password',
 	'LBL_REGISTER' => 'Register',
-	'LBL_EXTENSION_STORE_LOGIN' => 'Extensionstore Login',
 	'LBL_REMEMBER_ME' => 'Remember me',
 	'LBL_TRY_IT' => 'Try it',
 	'LBL_TRIAL_INSTALLED' => 'Trial Installed',

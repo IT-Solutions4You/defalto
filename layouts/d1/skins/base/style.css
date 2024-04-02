@@ -1693,10 +1693,6 @@ input[type=checkbox]:checked {
 /**********************************
 **********Extension Store Styles**********
 **********************************/
-.extensionstore .app-trigger {
-    width: 98%;
-}
-
 .extensionWidgetContainer {
     background-color: #FFFFFF;
     border: 1px solid #DDDDDD;

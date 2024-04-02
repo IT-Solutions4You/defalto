@@ -975,7 +975,6 @@ $languageStrings = array(
   'LBL_CONFIG_COLUMNS' => 'Configure Columns',
   'LBL_SELECTED_FIELDS' => 'Selected Fields',
   'LBL_SEARCH_FIELDS' => 'Search Fields',
-  'ExtensionStore' => 'Extensions Store',
   'LBL_EXTENSIONS' => 'Extensions',
   'LBL_CREATE_LIST' => 'Create a New List',
   'sent' => 'Sent',

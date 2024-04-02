@@ -69,7 +69,7 @@ class Settings_Vtiger_Index_View extends Vtiger_Basic_View {
 		$activeBLock = Settings_Vtiger_Module_Model::getActiveBlockName($request);
 		$viewer->assign('ACTIVE_BLOCK', $activeBLock);
 
-		$restrictedModules = array('Vtiger', 'ExtensionStore', 'CustomerPortal', 'Roles', 'ExchangeConnector', 'LoginHistory', 'SharingAccess');
+		$restrictedModules = array('Vtiger', 'CustomerPortal', 'Roles', 'ExchangeConnector', 'LoginHistory', 'SharingAccess');
 
 		if(!in_array($moduleName, $restrictedModules)) {
 			if($moduleName === 'Users') {
