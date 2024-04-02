@@ -1059,6 +1059,9 @@ if(defined('VTIGER_UPGRADE')) {
 	//User specific field - star feature 
 
 	foreach ($modules as $module) {
+		if (in_array($module, $ignoreModules)) {
+			continue;
+		}
 		$moduleInstance = Vtiger_Module::getInstance($module);
 		if ($moduleInstance) {
 			$fieldInstance = Vtiger_Field::getInstance('tags', $moduleInstance);
