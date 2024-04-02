@@ -787,14 +787,6 @@ $languageStrings = array(
 	'Last 5 Comments' => 'Senaste 5 Kommentarer',
 	'All Comments' => 'Alla kommentarer',
 
-	//Feedback on removing old version
-	'LBL_OLD_VERSION_REMOVED_SOON' => 'Viktigt om Old look',
-	'LBL_FEEDBACK_ON_REMOVING_OLD_VERSION' => 'Vi är glada att dela det gamla utseendet kommer att finnas tillgänglig fram till februari 2014. Vi har lagt till följande funktioner till det nya utseendet nyligen <br><br> 1. Pivot Rapporter <br> 2. Anpassade Topplista <br> 3. Snabbsök in listor <br><br> Om du har förslag på nytt utseende, vänligen dela med oss ​​nedan.',
-	'LBL_FEEDBACK_PLACEHOLDER' => 'Dela dina förslag här ..',
-	'LBL_SUBMIT_FEEDBACK' => 'Skicka feedback',
-	'LBL_DONT_SHOW_AGAIN' => 'Visa inte detta igen',
-	'LBL_CONTINUE_TO_OLD_LOOK' => 'Fortsätt att gamla utseende',
-
 	//PrintTemplate Links
     'Print' => 'Skriv ut / exportera till PDF',
     'Print Templates' => 'Utskriftsmallar',

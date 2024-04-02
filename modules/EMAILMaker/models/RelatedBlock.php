@@ -9,6 +9,9 @@
  */
 class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
 {
+
+    protected $relblockid;
+
     public function __construct()
     {
     }
@@ -136,7 +139,6 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             $fieldtype = explode("~", $fieldtype);
             $fieldtypeofdata = $fieldtype[0];
 
-            //Here we Changing the displaytype of the field. So that its criteria will be displayed correctly in Reports Advance Filter.
             $fieldtypeofdata = ChangeTypeOfData_Filter($fieldtablename, $fieldcolname, $fieldtypeofdata);
 
             if ($uitype == 68 || $uitype == 59) {
@@ -200,7 +202,6 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
             $fieldlabel1 = str_replace(" ", "_", $fieldlabel);
             $optionvalue = $fieldtablename . ":" . $fieldcolname . ":" . $module . "_" . $fieldlabel1 . ":" . $fieldname . ":" . $fieldtypeofdata;
             //$this->adv_rel_fields[$fieldtypeofdata][] = '$'.$module.'#'.$fieldname.'$'."::".vtranslate($module,$module)." ".$fieldlabel;
-            //added to escape attachments fields in Reports as we have multiple attachments
             if ($module != 'HelpDesk' || $fieldname != 'filename') {
                 $module_columnlist[$optionvalue] = vtranslate($fieldlabel, $module);
             }
@@ -273,12 +274,11 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         $this->secmodule = $modules;
     }
 
-    public function getPrimaryModuleFields()
+    public function getPrimaryModuleFields(): array
     {
         $primaryModule = $this->getPrimaryModule();
-        $pri_module_columnslist = $this->getPriModuleColumnsList($primaryModule);
-        //need to add this vtiger_crmentity:crmid:".$module."_ID:crmid:I
-        return $pri_module_columnslist;
+
+        return $this->getModuleColumnsList($primaryModule);
     }
 
     public function getPrimaryModule()
@@ -286,11 +286,11 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         return $this->primodule;
     }
 
-    public function getSecondaryModuleFields()
+    public function getSecondaryModuleFields(): array
     {
         $secondaryModule = $this->getSecondaryModule();
-        $sec_module_columnslist = $this->getSecModuleColumnsList($secondaryModule);
-        return $sec_module_columnslist;
+
+        return $this->getSecModuleColumnsList($secondaryModule);
     }
 
     public function getSecondaryModule()
@@ -590,5 +590,58 @@ class EMAILMaker_RelatedBlock_Model extends Vtiger_Module_Model
         $result = $adb->pquery($sql, array($record));
 
         return $adb->query_result($result, 0, $name);
+    }
+
+    /**
+     * Function to get the vtiger_fields for the given module
+     *
+     * @param string $module
+     * @return array
+     */
+    function getModuleColumnsList($module): array
+    {
+        global $current_user;
+
+        $returnModuleList = [];
+
+        $moduleList = $this->getModuleList($module);
+        $columnsListByBlock = $this->getColumnsListbyBlock($module, array_keys($moduleList), true, $current_user);
+        $allColumnsListByBlocks =& $columnsListByBlock;
+
+        foreach ($moduleList as $key => $value) {
+            $temp = $allColumnsListByBlocks[$key];
+
+            if (!empty($returnModuleList[$module][$value])) {
+                if (!empty($temp)) {
+                    $returnModuleList[$module][$value] = array_merge($returnModuleList[$module][$value], $temp);
+                }
+            } else {
+                $returnModuleList[$module][$value] = $temp;
+            }
+        }
+
+        return $returnModuleList;
+    }
+
+    /**
+     * Function to set the Secondary module fields for the given module.
+     *
+     * @param string $module
+     * @return array
+     */
+    function getSecModuleColumnsList($module): array
+    {
+        if ($module == '') {
+            return [];
+        }
+
+        $columnsList = [];
+        $secondaryModules = explode(':', $module);
+
+        foreach ($secondaryModules as $secondaryModule) {
+            $columnsList[$secondaryModule] = $this->getModuleColumnsList($secondaryModule);
+        }
+
+        return $columnsList;
     }
 }

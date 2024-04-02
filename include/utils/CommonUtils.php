@@ -319,7 +319,7 @@ function SaveTagCloudView($id = "") {
 	return Vtiger_Deprecated::SaveTagCloudView($id);
 }
 
-/**     function used to change the Type of Data for advanced filters in custom view and Reports
+/**     function used to change the Type of Data for advanced filters in custom view
  * *     @param string $table_name - tablename value from field table
  * *     @param string $column_nametable_name - columnname value from field table
  * *     @param string $type_of_data - current type of data of the field. It is to return the same TypeofData

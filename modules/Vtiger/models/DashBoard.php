@@ -136,27 +136,7 @@ class Vtiger_DashBoard_Model extends Vtiger_Base_Model {
 			}
 		}
 
-		//For chart reports as widgets
-		$sql = "SELECT reportid FROM vtiger_module_dashboard_widgets WHERE userid = ? AND linkid= ? AND reportid IS NOT NULL";
-		$params = array($currentUser->getId(),0);
 
-		// Added for Vtiger7
-		if($this->get("tabid")){
-			$sql .= " AND dashboardtabid = ?";
-			array_push($params, $this->get("tabid"));
-		}
-
-		$result = $db->pquery($sql, $params);
-		for($i=0, $len=$db->num_rows($result); $i<$len; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$chartReportModel = Reports_Record_Model::getInstanceById($row['reportid']);
-			if($moduleDashboard == 'Home' || $moduleDashboard == $chartReportModel->getPrimaryModule()){
-				$tabId = getTabid($chartReportModel->getPrimaryModule());
-				if($tabId && $currentUserPrivilegeModel->hasModulePermission($tabId)) {
-					$widgets[] = Vtiger_Widget_Model::getInstanceWithReportId($row['reportid'], $currentUser->getId());
-				}
-			}
-		}
 		return $widgets;
 	}
 

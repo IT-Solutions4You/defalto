@@ -335,35 +335,6 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	//END::Supporting to store dashboard size
 
-	//START::Profile save failures because of Reports module entry is not available in the vtiger_profile2standardpermissions
-	$query = 'SELECT DISTINCT profileid FROM vtiger_profile';
-	$result = $adb->pquery($query, array());
-
-	$tabIdsList = array(getTabid('Reports'));
-	$actionIdPerms = array(	0 => 1,//Save
-							1 => 1,//EditView
-							2 => 1,//Delete
-							3 => 0,//Index
-							4 => 0,//DetailView
-							7 => 1);//CreateView
-
-	for ($i=0; $i<$adb->num_rows($result); $i++) {
-		$profileId = $adb->query_result($result, $i, 'profileid');
-
-		foreach ($tabIdsList as $tabId) {
-			foreach ($actionIdPerms as $actionId => $permission) {
-				$isExist = $adb->pquery('SELECT 1 FROM vtiger_profile2standardpermissions WHERE profileid=? AND tabid=? AND operation=?', array($profileId, $tabId, $actionId));
-				if ($adb->num_rows($isExist)) {
-					$query = 'UPDATE vtiger_profile2standardpermissions SET permissions=? WHERE profileid=? AND tabid=? AND operation=?';
-				} else {
-					$query = 'INSERT INTO vtiger_profile2standardpermissions(permissions, profileid, tabid, operation) VALUES (?, ?, ?, ?)';
-				}
-				$db->pquery($query, array($actionIdPerms[$actionId], $profileId, $tabId, $actionId));
-			}
-		}
-	}
-	//END::Profile save failures because of Reports module entry is not available in the vtiger_profile2standardpermissions
-
 	//START::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
 	$cvTables = array('vtiger_cvcolumnlist', 'vtiger_cvadvfilter');
 	foreach ($cvTables as $tableName) {
@@ -394,37 +365,6 @@ if (defined('VTIGER_UPGRADE')) {
 		}
 		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
 	}
-
-	$reportTables = array('vtiger_selectcolumn', 'vtiger_relcriteria');
-	foreach ($reportTables as $tableName) {
-		$updatedColumnsList = array();
-		$result = $db->pquery("SELECT columnname FROM $tableName WHERE columnname LIKE ? OR columnname LIKE ?", array('vtiger_crmentity%:createdtime:%T', 'vtiger_crmentity%:modifiedtime:%T'));
-		while ($rowData = $db->fetch_array($result)) {
-			$columnName = $rowData['columnname'];
-			if (!array_key_exists($columnName, $updatedColumnsList)) {
-				if (preg_match('/vtiger_crmentity(\w*):createdtime:(\w*\:)*T/', $columnName) || preg_match('/vtiger_crmentity(\w*):modifiedtime:(\w*\:)*T/', $columnName)) {
-					$columnParts = explode(':', $columnName);
-					$lastKey = php7_count($columnParts)-1;
-
-					if ($columnParts[$lastKey] == 'T') {
-						$columnParts[$lastKey] = 'DT';
-						$updatedColumnsList[$columnName] = implode(':', $columnParts);
-					}
-				}
-			}
-		}
-
-		if ($updatedColumnsList) {
-			$reportQuery = "UPDATE $tableName SET columnname = CASE columnname";
-			foreach ($updatedColumnsList as $oldColumnName => $newColumnName) {
-				$reportQuery .= " WHEN '$oldColumnName' THEN '$newColumnName'";
-			}
-			$reportQuery .= ' ELSE columnname END';
-			$db->pquery($reportQuery, array());
-		}
-		echo "<br>Succecssfully migrated columns in <b>$tableName</b> table<br>";
-	}
-	//END::Updating custom view and report columns, filters for createdtime and modifiedtime fields as typeofdata (T~...) is being transformed to (DT~...)
 
 	echo '<br>Succecssfully vtiger version updated to <b>7.1.0</b><br>';
 }

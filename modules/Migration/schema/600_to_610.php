@@ -57,7 +57,6 @@ $unWanted=array(
  "modules/ServiceContracts/ServiceContracts.js",
  "modules/SalesOrder/SalesOrder.js",
  "modules/Rss/Rss.js",
- "modules/Reports/Reports.js",
  "modules/RecycleBin/RecycleBin.js",
  "modules/Quotes/Quotes.js",
  "modules/PurchaseOrder/PurchaseOrder.js",
@@ -677,8 +676,6 @@ echo "<br>Changed timezone column name for mail scanner";
 //82 ends
 
 //84 starts
-$query = "ALTER table vtiger_relcriteria modify comparator varchar(20)";
-Migration_Index_View::ExecuteQuery($query, array());
 
 //To copy imagename saved in vtiger_attachments for products and contacts into respectively base table
 //to support filters on imagename field
@@ -722,25 +719,6 @@ $productsTabId = getTabId('Products');
 
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_relatedlists SET actions=? WHERE label=? and tabid=? ",array('ADD,SELECT', 'PriceBooks', $productsTabId));
 echo '<br>Updated PriceBooks related list actions for products and services';
-
-$adb->pquery("CREATE TABLE IF NOT EXISTS vtiger_schedulereports(
-            reportid INT(10),
-            scheduleid INT(3),
-            recipients TEXT,
-            schdate VARCHAR(20),
-            schtime TIME,
-            schdayoftheweek VARCHAR(100),
-            schdayofthemonth VARCHAR(100),
-            schannualdates VARCHAR(500),
-            specificemails VARCHAR(500),
-            next_trigger_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-            ENGINE=InnoDB DEFAULT CHARSET=utf8;", array());
-
-Vtiger_Cron::register('ScheduleReports', 'cron/modules/Reports/ScheduleReports.service', 900);
-
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_cron_task set description = ?  where name = "ScheduleReports" ', array("Recommended frequency for ScheduleReports is 15 mins"));
-Migration_Index_View::ExecuteQuery('UPDATE vtiger_cron_task set module = ? where name = "ScheduleReports" ', array("Reports"));
-echo '<br>Enabled Scheduled reports feature';
 
 /**
 * To add defaulteventstatus and defaultactivitytype fields to Users Module
@@ -1007,10 +985,6 @@ $maxActionIdResult = $adb->pquery('SELECT MAX(actionid) AS maxid FROM vtiger_act
 $maxActionId = $adb->query_result($maxActionIdResult, 0, 'maxid');
 Migration_Index_View::ExecuteQuery('INSERT INTO vtiger_actionmapping(actionid, actionname, securitycheck) VALUES(?,?,?)', array($maxActionId+1 ,'Print', '0'));
 echo "<br> added print to vtiger_actionnmapping";
-$module = Vtiger_Module_Model::getInstance('Reports');
-$module->enableTools(Array('Print', 'Export'));
-echo "<br> enabled Print and export";
-
 //94 ends
 
 //95 starts
@@ -1414,14 +1388,6 @@ if ($adb->num_rows($idResult) > 0) {
         echo '<br>Account Owner was not existed in this database';
     }
     
-//Reports Chart Supported
-Migration_Index_View::ExecuteQuery("CREATE TABLE IF NOT EXISTS vtiger_reporttype(
-                        reportid INT(10),
-                        data text,
-						PRIMARY KEY (`reportid`),
-						CONSTRAINT `fk_1_vtiger_reporttype` FOREIGN KEY (`reportid`) REFERENCES `vtiger_report` (`reportid`) ON DELETE CASCADE)
-                        ENGINE=InnoDB DEFAULT CHARSET=utf8;", array()); 
-
 //Configuration Editor fix
 $sql = "UPDATE vtiger_settings_field SET name = ? WHERE name = ?";
 Migration_Index_View::ExecuteQuery($sql,array('LBL_CONFIG_EDITOR', 'Configuration Editor'));
