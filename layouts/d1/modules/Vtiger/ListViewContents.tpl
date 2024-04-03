@@ -164,10 +164,9 @@
                                             {/if}
                                         {elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
                                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-                                        {elseif $LISTVIEW_HEADER->get('uitype') eq '72'}
-                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_HEADER->getDisplayValue($LISTVIEW_ENTRY_RAWVALUE), $LISTVIEW_ENTRY->get('currencySymbol'))}
-                                        {elseif $LISTVIEW_HEADER->get('uitype') eq '71'}
-                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_HEADER->getDisplayValue($LISTVIEW_ENTRY_RAWVALUE), $LISTVIEW_ENTRY->get('userCurrencySymbol'))}
+                                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                             {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE}</span>

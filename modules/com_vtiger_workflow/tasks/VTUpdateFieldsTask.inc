@@ -360,13 +360,10 @@ class VTUpdateFieldsTask extends VTTask {
 
 			// handle the case for currency field
 			if($fieldObj->getFieldDataType()=="currency" && !empty($fieldValue)) {
-				if($fieldObj->getUIType() == '71') {
-					$fieldValue = CurrencyField::convertToUserFormat($fieldValue,$current_user,false);
-				} else if($fieldObj->getUIType() == '72') {
-					$fieldValue = CurrencyField::convertToUserFormat($fieldValue,$current_user,true);
-				}
+                $fieldValue = CurrencyField::convertToUserFormat($fieldValue,$current_user,true);
 			}
 		}
+
 		return $fieldValue;
 	}
 

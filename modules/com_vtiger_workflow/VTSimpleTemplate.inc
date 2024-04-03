@@ -274,14 +274,8 @@ class VTSimpleTemplate{
 			case 'datetime'		:	$fieldValue = Vtiger_Util_Helper::convertDateTimeIntoUsersDisplayFormat($fieldValue, $ownerObject);
 									break;
 
-			case 'currency'		:	if ($fieldInstance->getUIType() === '72') {
-										$currencyId = vtws_getIdComponents($this->parent->get('currency_id'));
-										$currencyId = $currencyId[1];
-										$fieldValue = CurrencyField::convertToUserFormat($fieldValue, $ownerObject, true);
-									} else if($fieldInstance->getUIType() == '71') {
-										$currencyId = $current_user->currency_id;
-										$fieldValue = CurrencyField::convertToUserFormat($fieldValue, $ownerObject);
-									}
+			case 'currency'		:   [,$currencyId] = vtws_getIdComponents($this->parent->get('currency_id'));
+									$fieldValue = CurrencyField::convertToUserFormat($fieldValue, $ownerObject, true);
 									$currencyInfo = getCurrencySymbolandCRate($currencyId);
 									$currencySymbol = $currencyInfo['symbol'];
 
