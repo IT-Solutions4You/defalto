@@ -48,7 +48,7 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 
 					//Potential Amount Field value converting into DB format
 					if ($fieldModel->getFieldDataType() === 'currency') {
-                        $fieldValue = CurrencyField::convertToDBFormat($fieldValue, null, true);
+                        $fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
 					} elseif ($fieldModel->getFieldDataType() === 'date') {
 						$fieldValue = DateTimeField::convertToDBFormat($fieldValue);
 					} elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {

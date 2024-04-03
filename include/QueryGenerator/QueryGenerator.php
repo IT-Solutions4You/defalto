@@ -968,7 +968,7 @@ class QueryGenerator {
 					}
 				}
 			} else if ($field->getFieldDataType() === 'currency') {
-                $value = CurrencyField::convertToDBFormat($value, null, true);
+                $value = Vtiger_Currency_UIType::convertToDBFormat($value, null, true);
 			}
 
 			if($field->getFieldName() == 'birthday' && !$this->isRelativeSearchOperators(

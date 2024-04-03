@@ -105,7 +105,7 @@ class EMAILMaker_SaveRelatedBlock_Action extends Vtiger_Action_Controller
                     }
 
                     if ($fieldType == 'currency') {
-                        $advFilterValue = CurrencyField::convertToDBFormat($advFilterValue, null, true);
+                        $advFilterValue = Vtiger_Currency_UIType::convertToDBFormat($advFilterValue, null, true);
                     }
 
                     $tempVal = explode(",", $advFilterValue);
