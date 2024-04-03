@@ -91,15 +91,12 @@
 										{if $HEADER_FIELD->get('name') == 'listprice'}
 											{assign var="LISTPRICE" value=$RELATED_RECORD->get($HEADER_FIELD->get('name'))}
 											{CurrencyField::appendCurrencySymbol($LISTPRICE, $PARENT_RECORD_CURRENCY_SYMBOL)}
-										{else if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
+										{elseif $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
 											<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 										{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
-											{assign var=CURRENCY_SYMBOL value=Vtiger_RelationListView_Model::getCurrencySymbol($RELATED_RECORD->get('id'), $HEADER_FIELD)}
-											{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME))}
-											{if $HEADER_FIELD->get('uitype') eq '72'}
-												{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
-											{/if}
-											{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_SYMBOL)}
+											{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
+											{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
+											{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
 										{else}
 											{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
 										{/if}
