@@ -59,8 +59,7 @@
 										{if $HEADER_FIELD->get('column') eq 'time_start' or $HEADER_FIELD->get('column') eq 'time_end' or $HEADER_FIELD->getFieldDataType() eq 'reference'}
 										{else}
 											{assign var=FIELD_UI_TYPE_MODEL value=$HEADER_FIELD->getUITypeModel()}
-											{include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$RELATED_MODULE_NAME)
-											FIELD_MODEL= $HEADER_FIELD SEARCH_INFO=$SEARCH_DETAILS[$HEADER_FIELD->getName()] USER_MODEL=$USER_MODEL}
+											{include file=vtemplate_path($FIELD_UI_TYPE_MODEL->getListSearchTemplateName(),$RELATED_MODULE_NAME) FIELD_MODEL= $HEADER_FIELD SEARCH_INFO=$SEARCH_DETAILS[$HEADER_FIELD->getName()] USER_MODEL=$USER_MODEL}
 											<input type="hidden" class="operatorValue" value="{$SEARCH_DETAILS[$HEADER_FIELD->getName()]['comparator']}">
 										{/if}
 									</th>
@@ -72,37 +71,27 @@
 								<tr class="listViewEntries border-1 border-top" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 									<td style="width:100px">
 										<span class="actionImages btn-group">
-											{if (!empty($RELATED_HEADERS['listprice']) || !empty($RELATED_HEADERS['unit_price']))}
-												{if !empty($RELATED_HEADERS['listprice'])}
-													{assign var="LISTPRICE" value=$RELATED_RECORD->get('listprice')}
-												{/if}
-											{/if}
-											<a href="javascript:void(0);" data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice btn" data-related-recordid='{$RELATED_RECORD->getId()}' data-list-price={$LISTPRICE}>
+											{assign var=LISTPRICE value=Vtiger_Currency_UIType::transformEditViewDisplayValue($RELATED_RECORD->get('listprice'), null, true)}
+											<a href="javascript:void(0);" data-url="index.php?module=PriceBooks&view=ListPriceUpdate&record={$PARENT_RECORD->getId()}&relid={$RELATED_RECORD->getId()}&currentPrice={$LISTPRICE}" class="editListPrice btn text-secondary" data-related-recordid="{$RELATED_RECORD->getId()}" data-list-price="{$LISTPRICE}">
 												<i title="{vtranslate('LBL_EDIT', $MODULE)}" class="fa fa-pencil"></i>
 											</a>
-											<a class="relationDelete btn">
+											<a class="relationDelete btn text-secondary">
 												<i title="{vtranslate('LBL_UNLINK', $MODULE)}" class="vicon-linkopen"></i>
 											</a>
 										</span>
 									</td>
 									{foreach item=HEADER_FIELD from=$RELATED_HEADERS}
 										{assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
-									<td nowrap class="{$WIDTHTYPE}">
-										{if $HEADER_FIELD->get('name') == 'listprice'}
-											{assign var="LISTPRICE" value=$RELATED_RECORD->get($HEADER_FIELD->get('name'))}
-											{CurrencyField::appendCurrencySymbol($LISTPRICE, $PARENT_RECORD_CURRENCY_SYMBOL)}
-										{elseif $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-											<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
-										{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
-											{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
-											{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
-											{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
-										{else}
-											{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
-										{/if}
-										{if $HEADER_FIELD@last}
-											</td>
-										{/if}
+										<td nowrap class="fieldName_{$RELATED_HEADERNAME} {$WIDTHTYPE} ">
+											{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
+												<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+											{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
+												{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
+												{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
+												{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
+											{else}
+												{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
+											{/if}
 										</td>
 									{/foreach}
 								</tr>

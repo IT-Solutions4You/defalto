@@ -83,4 +83,15 @@ class Vtiger_Currency_UIType extends Vtiger_Base_UIType
     {
         return CurrencyField::convertToUserFormat($value, $user, $skipConversion);
     }
+
+    /**
+     * @param string|float $value
+     * @param object|null $user
+     * @param bool $skipConversion
+     * @return float|string
+     */
+    public static function transformEditViewDisplayValue($value, $user = null, $skipConversion = false)
+    {
+        return CurrencyField::convertToUserFormatForEdit($value, $user, $skipConversion);
+    }
 }

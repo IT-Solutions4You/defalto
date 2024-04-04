@@ -10,20 +10,25 @@
 
 class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
 
-	public function getHeaders() {
-		$headerFields = parent::getHeaders();
+    public function getHeaders()
+    {
+        $headerFields = parent::getHeaders();
 
-		//Added to support List Price
-		$field = new Vtiger_Field_Model();
-		$field->set('name', 'listprice');
-		$field->set('column', 'listprice');
-		$field->set('label', 'List Price');
-		$headerFields['listprice'] = $field;
+        if (in_array($this->getRelationModel()->getRelationModuleModel()->getName(), ['Products', 'Services'])) {
+            //Added to support List Price
+            $field = new Vtiger_Field_Model();
+            $field->set('name', 'listprice');
+            $field->set('column', 'listprice');
+            $field->set('label', 'List Price');
+            $field->set('uitype', '71');
 
-		return $headerFields;
-	}
+            $headerFields['listprice'] = $field;
+        }
 
-	public function getEntries($pagingModel) {
+        return $headerFields;
+    }
+
+    public function getEntries($pagingModel) {
 		$db = PearDatabase::getInstance();
 		$parentModule = $this->getParentRecordModel()->getModule();
 		$relationModule = $this->getRelationModel()->getRelationModuleModel();
@@ -107,23 +112,24 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
 		$result = $db->pquery($limitQuery, array());
 		$relatedRecordList = array();
 
-		for($i=0; $i< $db->num_rows($result); $i++ ) {
-			$row = $db->fetch_row($result,$i);
-			$newRow = array();
-			foreach($row as $col=>$val){
-				if(array_key_exists($col,$relatedColumnFieldMapping))
-					$newRow[$relatedColumnFieldMapping[$col]] = $val;
-			}
-			
-			$recordId = $row['crmid'];
-			$newRow['id'] = $recordId;
-			//Added to support List Price
-			$newRow['listprice'] = CurrencyField::convertToUserFormat($row['listprice'], null, true);
+        for ($i = 0; $i < $db->num_rows($result); $i++) {
+            $row = $db->fetch_row($result, $i);
+            $newRow = [];
 
-			$record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
-			$relatedRecordList[$recordId] = $record->setData($newRow)->setModuleFromInstance($relationModule);
-		}
-		$pagingModel->calculatePageRange($relatedRecordList);
+            foreach ($row as $col => $val) {
+                if (array_key_exists($col, $relatedColumnFieldMapping)) {
+                    $newRow[$relatedColumnFieldMapping[$col]] = $val;
+                }
+            }
+            
+            $recordId = $row['crmid'];
+            $newRow['id'] = $recordId;
+            $newRow['listprice'] = $row['listprice'];
+            $record = Vtiger_Record_Model::getCleanInstance($relationModule->get('name'));
+            $relatedRecordList[$recordId] = $record->setData($newRow)->setModuleFromInstance($relationModule);
+        }
+
+        $pagingModel->calculatePageRange($relatedRecordList);
 
 		$nextLimitQuery = $query. ' LIMIT '.($startIndex+$pageLimit).' , 1';
 		$nextPageLimitResult = $db->pquery($nextLimitQuery, array());
