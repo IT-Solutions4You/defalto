@@ -78,9 +78,6 @@ $languageStrings = array(
 	'NOTIFICATIONSCHEDULERS' => 'Harmonogram powiadomień',
 	'LBL_NOTIF_SCHED_DESCRIPTION' => 'Zarządzaj powiadomieniami',
 	
-	'INVENTORYNOTIFICATION' => 'Powiadomienia magazynowe',
-	'LBL_INV_NOTIF_DESCRIPTION' => 'Zmień powiadomienia magazynowe',
-	
 	'LBL_COMPANY_DETAILS' => 'Szczegóły firmy',
 	'LBL_COMPANY_DESCRIPTION' => 'Dane adresowe firmy',
 	

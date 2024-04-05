@@ -1071,47 +1071,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$folderid = $this->db->getUniqueID("vtiger_attachmentsfolder");
 		$this->db->query("insert into vtiger_attachmentsfolder values(" . $folderid . ",'Default','This is a Default Folder',1,1)");
 
-		//Inserting Inventory Notifications
-		$invoice_body = 'Dear {HANDLER},
-
-The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}. Kindly procure required number of units as the stock level is below reorder level {REORDERLEVELVALUE}.
-
-Please treat this information as Urgent as the invoice is already sent  to the customer.
-
-Severity: Critical
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'InvoiceNotification','{PRODUCTNAME} Stock Level is Low','" . $invoice_body . " ','InvoiceNotificationDescription')");
-
-		$quote_body = 'Dear {HANDLER},
-
-Quote is generated for {QUOTEQUANTITY} units of {PRODUCTNAME}. The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}.
-
-Severity: Minor
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'QuoteNotification','Quote given for {PRODUCTNAME}','" . $quote_body . " ','QuoteNotificationDescription')");
-
-		$so_body = 'Dear {HANDLER},
-
-SalesOrder is generated for {SOQUANTITY} units of {PRODUCTNAME}. The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}.
-
-Please treat this information  with priority as the sales order is already generated.
-
-Severity: Major
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'SalesOrderNotification','Sales Order generated for {PRODUCTNAME}','" . $so_body . " ','SalesOrderNotificationDescription')");
-
 //insert into inventory terms and conditions table
 
 		$inv_tandc_text = '
@@ -1661,7 +1620,6 @@ Thanks,
 			"picklistdependency.gif",
 			"menueditor.png",
 			"notification.gif",
-			"inventory.gif",
 			"company.gif",
 			"ogmailserver.gif",
 			"currency.gif",
@@ -1698,7 +1656,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_SETUP',
 			'LBL_MENU_EDITOR',
 			'NOTIFICATIONSCHEDULERS',
-			'INVENTORYNOTIFICATION',
 			'LBL_COMPANY_DETAILS',
 			'LBL_MAIL_SERVER_SETTINGS',
 			'LBL_CURRENCY_SETTINGS',
@@ -1727,7 +1684,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_SETUP' => 'LBL_STUDIO',
 			'LBL_MENU_EDITOR' => 'LBL_STUDIO',
 			'NOTIFICATIONSCHEDULERS' => 'LBL_COMMUNICATION_TEMPLATES',
-			'INVENTORYNOTIFICATION' => 'LBL_COMMUNICATION_TEMPLATES',
 			'LBL_COMPANY_DETAILS' => 'LBL_COMMUNICATION_TEMPLATES',
 			'LBL_MAIL_SERVER_SETTINGS' => 'LBL_OTHER_SETTINGS',
 			'LBL_CURRENCY_SETTINGS' => 'LBL_OTHER_SETTINGS',
@@ -1757,7 +1713,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_DESCRIPTION',
 			'LBL_MENU_DESC',
 			'LBL_NOTIF_SCHED_DESCRIPTION',
-			'LBL_INV_NOTIF_DESCRIPTION',
 			'LBL_COMPANY_DESCRIPTION',
 			'LBL_MAIL_SERVER_DESCRIPTION',
 			'LBL_CURRENCY_DESCRIPTION',
@@ -1785,7 +1740,6 @@ Thanks,
 			'index.php?parent=Settings&module=PickListDependency&view=List',
 			'index.php?module=MenuEditor&parent=Settings&view=Index',
 			'index.php?module=Settings&view=listnotificationschedulers&parenttab=Settings',
-			'index.php?module=Settings&view=listinventorynotifications&parenttab=Settings',
 			'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
 			'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
 			'index.php?parent=Settings&module=Currency&view=List',

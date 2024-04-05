@@ -120,10 +120,6 @@ class VtigerLineItemOperation extends VtigerActorOperation {
 		$parentTypeMeta = $parentTypeHandler->getMeta();
 		$parentType = $parentTypeMeta->getEntityName();
 		$parent = $this->getParentById($element['parent_id']);
-		if($parentType != 'PurchaseOrder') {
-			//update the stock with existing details
-			updateStk($productId,$element['quantity'],'',array(),$parentType);
-		}
 
 		$this->initTax($element, $parent);
 		$this->updateTaxes($createdElement);

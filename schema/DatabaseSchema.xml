@@ -3402,20 +3402,6 @@
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
 
-	<table name="vtiger_inventorynotification">
-		<field name="notificationid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="notificationname" type="C" size="200" />
-		<field name="notificationsubject" type="C" size="200" />
-		<field name="notificationbody" type="X" />
-		<field name="label" type="C" size="50" />
-		<field name="status" type="C" size="30" />
-
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
 	<table name="vtiger_inventory_tandc">
 		<field name="id" type="I" size="19">
 			<key />
