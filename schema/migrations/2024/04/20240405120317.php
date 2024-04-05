@@ -45,7 +45,7 @@ if (!class_exists('Migration_20240405120317')) {
                 $fieldModel->delete();
             }
 
-            $this->db->pquery('ALTER TABLE vtiger_troubletickets DROP COLUMN update_log');
+            $this->db->pquery('ALTER TABLE vtiger_troubletickets DROP COLUMN IF EXISTS update_log');
 
             $this->db->pquery('DELETE FROM `vtiger_relatedlists` WHERE related_tabid > 0 AND related_tabid NOT IN (SELECT tabid FROM vtiger_tab)');
         }
