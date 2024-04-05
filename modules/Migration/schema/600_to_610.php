@@ -262,11 +262,7 @@ for($i=0; $i<$numOfRows; $i++) {
 
                     $tm->saveTask($emailTask);
                     break;
-                case 'NotifyOnPortalTicketComment'	:
-                            $tm->deleteTask($properties['id']);
-                            Migration_Index_View::ExecuteQuery('DELETE FROM com_vtiger_workflows WHERE workflow_id = ?', array($workflowModel->id));
-                            break;
-                
+
                 case 'NotifyParentOnTicketChange'	:
                             $newWorkflowModel = $wfs->newWorkflow($workflowModel->moduleName);
                             $workflowProperties = get_object_vars($workflowModel);

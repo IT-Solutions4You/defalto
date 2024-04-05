@@ -953,9 +953,6 @@ class Install_InitSchema_Model {
 		// Register Entity Method for Email notification on ticket creation from Customer portal
 		$emm->addEntityMethod("HelpDesk","NotifyOnPortalTicketCreation","modules/HelpDesk/HelpDeskHandler.php","HelpDesk_nofifyOnPortalTicketCreation");
 
-		// Register Entity Method for Email notification on ticket comment from Customer portal
-		$emm->addEntityMethod("HelpDesk","NotifyOnPortalTicketComment","modules/HelpDesk/HelpDeskHandler.php","HelpDesk_notifyOnPortalTicketComment");
-
 		// Register Entity Method for Email notification to Record Owner on ticket change, which is not from Customer portal
 		$emm->addEntityMethod("HelpDesk","NotifyOwnerOnTicketChange","modules/HelpDesk/HelpDeskHandler.php","HelpDesk_notifyOwnerOnTicketChange");
 
@@ -1144,12 +1141,6 @@ class Install_InitSchema_Model {
 		$helpDeskWorkflow->executionCondition = VTWorkflowManager::$ON_MODIFY;
 		$helpDeskWorkflow->defaultworkflow = 1;
 		$workflowManager->save($helpDeskWorkflow);
-
-		$task = $taskManager->createTask('VTEntityMethodTask', $helpDeskWorkflow->id);
-		$task->active = true;
-		$task->summary = 'Notify Record Owner when Comment is added to a Ticket from Customer Portal';
-		$task->methodName = "NotifyOnPortalTicketComment";
-		$taskManager->saveTask($task);
 
 		// Trouble Tickets workflow on ticket change, which is not from Customer Portal - Both Record Owner and Related Customer
 		$helpDeskWorkflow = $workflowManager->newWorkFlow("HelpDesk");

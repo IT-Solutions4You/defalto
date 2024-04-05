@@ -15,6 +15,9 @@ vimport('~~modules/com_vtiger_workflow/tasks/VTEntityMethodTask.inc');
 vimport('~~modules/com_vtiger_workflow/VTEntityMethodManager.inc');
 vimport('~~include/Webservices/Utils.php');
 vimport('~~modules/Users/Users.php');
+require_once 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
+require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
+require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
 if(defined('VTIGER_UPGRADE')) {
 	//Collating all module package updates here
@@ -560,36 +563,6 @@ Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_basic ADD INDE
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_basic ADD INDEX idx (id)', array());
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_modtracker_detail ADD INDEX idx (id)', array());
 
-// Ends
-
-require_once 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
-$emm = new VTEntityMethodManager($adb);
-$emm->addEntityMethod("ModComments","CustomerCommentFromPortal","modules/ModComments/ModCommentsHandler.php","CustomerCommentFromPortal");
-$emm->addEntityMethod("ModComments","TicketOwnerComments","modules/ModComments/ModCommentsHandler.php","TicketOwnerComments");
-
-require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
-require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
-$workflowManager = new VTWorkflowManager($adb);
-$taskManager = new VTTaskManager($adb);
-
-$commentsWorkflow = $workflowManager->newWorkFlow("ModComments");
-$commentsWorkflow->test = '[{"fieldname":"related_to : (HelpDesk) ticket_title","operation":"is not empty","value":""}]';
-$commentsWorkflow->description = "Workflow for comments on Tickets";
-$commentsWorkflow->executionCondition = VTWorkflowManager::$ON_FIRST_SAVE;
-$commentsWorkflow->defaultworkflow = 1;
-$workflowManager->save($commentsWorkflow);
-
-$task = $taskManager->createTask('VTEntityMethodTask', $commentsWorkflow->id);
-$task->active = true;
-$task->summary = 'Customer commented from Portal';
-$task->methodName = "CustomerCommentFromPortal";
-$taskManager->saveTask($task);
-
-$task1 = $taskManager->createTask('VTEntityMethodTask', $commentsWorkflow->id);
-$task1->active = true;
-$task1->summary = 'Notify Customer when commenting on a Ticket';
-$task1->methodName = "TicketOwnerComments";
-$taskManager->saveTask($task1);
 // Ends
 
 Migration_Index_View::ExecuteQuery('ALTER TABLE vtiger_links MODIFY column linktype VARCHAR(50)', array());
@@ -1651,126 +1624,111 @@ if(!$fromPortal){
 
 //Start: Customer - Feature #10254 Configuring all Email notifications including Ticket notifications
 $moduleName = 'HelpDesk';
-//Start: Moving Entity methods of Comments to Workflows
-$result = $adb->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
-				(SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?) AND defaultworkflow = ?)
-				AND task LIKE ?', array('ModComments', 1, '%VTEntityMethodTask%'));
-$numOfRows = $adb->num_rows($result);
+$workflowManager = new VTWorkflowManager($adb);
+$taskManager = new VTTaskManager($adb);
 
-for ($i = 0; $i < $numOfRows; $i++) {
-	$wfs = new VTWorkflowManager($adb);
-	$workflowModel = $wfs->retrieve($adb->query_result($result, $i, 'workflow_id'));
-	$workflowModel->filtersavedinnew = 6;
-	$workflowModel->executionCondition = 3;
-	$workflowModel->moduleName = $moduleName;
+// Comment Added From Portal
+$workflowConditions = [
+    [
+        'fieldname'     => '_VT_add_comment',
+        'operation'     => 'is added',
+        'value'         => '',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],[
+        'fieldname'     => 'from_portal',
+        'operation'     => 'is',
+        'value'         => '1',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ]
+];
 
-	$newWorkflowModel = $wfs->newWorkflow($moduleName);
-	$workflowProperties = get_object_vars($workflowModel);
-	foreach ($workflowProperties as $workflowPropertyName => $workflowPropertyValue) {
-		$newWorkflowModel->$workflowPropertyName = $workflowPropertyValue;
-	}
+$commentsWorkflow = $workflowManager->newWorkFlow($moduleName);
+$commentsWorkflow->test = Zend_Json::encode($workflowConditions);
+$commentsWorkflow->description = 'Comment Added From Portal : Send Email to Record Owner';
+$commentsWorkflow->executionCondition = VTWorkflowManager::$ON_FIRST_SAVE;
+$commentsWorkflow->defaultworkflow = 1;
+$workflowManager->save($commentsWorkflow);
 
-	$newConditions = array(
-		array('fieldname' => '_VT_add_comment',
-			'operation' => 'is added',
-			'value' => '',
-			'valuetype' => 'rawtext',
-			'joincondition' => '',
-			'groupjoin' => 'and',
-			'groupid' => '0')
-	);
-
-	$tm = new VTTaskManager($adb);
-	$tasks = $tm->getTasksForWorkflow($workflowModel->id);
-	foreach ($tasks as $task) {
-		$properties = get_object_vars($task);
-
-		$emailTask = new VTEmailTask();
-		$emailTask->executeImmediately = 0;
-		$emailTask->summary = $properties['summary'];
-		$emailTask->active = $properties['active'];
-
-		switch ($properties['methodName']) {
-			case 'CustomerCommentFromPortal' :
-				$tm->deleteTask($task->id);
-
-				$newWorkflowConditions = $newConditions;
-				$newWorkflowConditions[] = array(
-					'fieldname' => 'from_portal',
-					'operation' => 'is',
-					'value' => '1',
-					'valuetype' => 'rawtext',
-					'joincondition' => '',
-					'groupjoin' => 'and',
-					'groupid' => '0'
-				);
-
-				unset($newWorkflowModel->id);
-				$newWorkflowModel->test = Zend_Json::encode($newWorkflowConditions);
-				$newWorkflowModel->description = 'Comment Added From Portal : Send Email to Record Owner';
-				$wfs->save($newWorkflowModel);
-
-				$emailTask->id = '';
-				$emailTask->workflowId = $newWorkflowModel->id;
-				$emailTask->summary = 'Comment Added From Portal : Send Email to Record Owner';
-				$emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(contact_id : (Contacts) email)&gt;';
-				$emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
-				$emailTask->subject = 'Respond to Ticket ID## $(general : (__VtigerMeta__) recordId) ## in Customer Portal - URGENT';
-				$emailTask->content = 'Dear $(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name),<br><br>
+$emailTask = new VTEmailTask();
+$emailTask->id = '';
+$emailTask->executeImmediately = 0;
+$emailTask->active = true;
+$emailTask->workflowId = $commentsWorkflow->id;
+$emailTask->summary = 'Comment Added From Portal : Send Email to Record Owner';
+$emailTask->fromEmail = '$(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname)&lt;$(contact_id : (Contacts) email)&gt;';
+$emailTask->recepient = ',$(assigned_user_id : (Users) email1)';
+$emailTask->subject = 'Respond to Ticket ID## $(general : (__VtigerMeta__) recordId) ## in Customer Portal - URGENT';
+$emailTask->content = 'Dear $(assigned_user_id : (Users) last_name) $(assigned_user_id : (Users) first_name),<br><br>
 								Customer has provided the following additional information to your reply:<br><br>
 								<b>$lastComment</b><br><br>
 								Kindly respond to above ticket at the earliest.<br><br>
 								Regards<br>Support Administrator';
-				$tm->saveTask($emailTask);
-				break;
+$taskManager->saveTask($emailTask);
 
+$crmCommentConditions = [
+    [
+        'fieldname'     => '_VT_add_comment',
+        'operation'     => 'is added',
+        'value'         => '',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],
+    [
+        'fieldname'     => 'from_portal',
+        'operation'     => 'is',
+        'value'         => '0',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],
+    [
+        'fieldname'     => '(contact_id : (Contacts) emailoptout)',
+        'operation'     => 'is',
+        'value'         => '0',
+        'valuetype'     => 'rawtext',
+        'joincondition' => 'and',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],
+];
 
-			case 'TicketOwnerComments' :
-				$tm->deleteTask($task->id);
+// Comment Added From CRM - not a portal user
+$workflowConditions = [
+    ...$crmCommentConditions,
+    [
+        'fieldname'     => '(contact_id : (Contacts) portal)',
+        'operation'     => 'is',
+        'value'         => '0',
+        'valuetype'     => 'rawtext',
+        'joincondition' => 'and',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ]
+];
 
-				$newConditions[] = array(
-					'fieldname' => 'from_portal',
-					'operation' => 'is',
-					'value' => '0',
-					'valuetype' => 'rawtext',
-					'joincondition' => '',
-					'groupjoin' => 'and',
-					'groupid' => '0'
-				);
+$commentsWorkflow = $workflowManager->newWorkFlow($moduleName);
+$commentsWorkflow->test = Zend_Json::encode($workflowConditions);
+$commentsWorkflow->description = 'Comment Added From CRM : Send Email to Contact, where Contact is not a Portal User';
+$commentsWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
+$commentsWorkflow->defaultworkflow = 1;
+$workflowManager->save($commentsWorkflow);
 
-				$newWorkflowConditions = $newConditions;
-				$newWorkflowConditions[] = array(
-					'fieldname' => '(contact_id : (Contacts) emailoptout)',
-					'operation' => 'is',
-					'value' => '0',
-					'valuetype' => 'rawtext',
-					'joincondition' => 'and',
-					'groupjoin' => 'and',
-					'groupid' => '0'
-				);
-
-				$portalCondition = array(
-					array('fieldname' => '(contact_id : (Contacts) portal)',
-						'operation' => 'is',
-						'value' => '0',
-						'valuetype' => 'rawtext',
-						'joincondition' => 'and',
-						'groupjoin' => 'and',
-						'groupid' => '0')
-				);
-
-				unset($newWorkflowModel->id);
-				$newWorkflowModel->test = Zend_Json::encode(array_merge($portalCondition, $newWorkflowConditions));
-				$newWorkflowModel->description = 'Comment Added From CRM : Send Email to Contact, where Contact is not a Portal User';
-				$wfs->save($newWorkflowModel);
-
-				$emailTask->id = '';
-				$emailTask->workflowId = $newWorkflowModel->id;
-				$emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is not a Portal User';
-				$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
-				$emailTask->recepient = ',$(contact_id : (Contacts) email)';
-				$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
-				$emailTask->content = 'Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
+$emailTask->id = '';
+$emailTask->workflowId = $commentsWorkflow->id;
+$emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is not a Portal User';
+$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->recepient = ',$(contact_id : (Contacts) email)';
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+$emailTask->content = 'Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
 							The Ticket is replied the details are :<br><br>
 							Ticket No : $ticket_no<br>
 							Status : $ticketstatus<br>
@@ -1782,27 +1740,36 @@ for ($i = 0; $i < $numOfRows; $i++) {
 							The comments are : <br>
 							$allComments<br><br>
 							Regards<br>Support Administrator';
-				$tm->saveTask($emailTask);
+$taskManager->saveTask($emailTask);
 
-				$portalCondition = array(
-					array('fieldname' => '(contact_id : (Contacts) portal)',
-						'operation' => 'is',
-						'value' => '1',
-						'valuetype' => 'rawtext',
-						'joincondition' => 'and',
-						'groupjoin' => 'and',
-						'groupid' => '0')
-				);
+// Comment Added From CRM - portal user
+$workflowConditions = [
+    ...$crmCommentConditions,
+    [
+        'fieldname' => '(contact_id : (Contacts) portal)',
+        'operation' => 'is',
+        'value' => '1',
+        'valuetype' => 'rawtext',
+        'joincondition' => 'and',
+        'groupjoin' => 'and',
+        'groupid' => '0'
+    ]
+];
 
-				unset($newWorkflowModel->id);
-				$newWorkflowModel->test = Zend_Json::encode(array_merge($portalCondition, $newWorkflowConditions));
-				$newWorkflowModel->description = 'Comment Added From CRM : Send Email to Contact, where Contact is Portal User';
-				$wfs->save($newWorkflowModel);
+$commentsWorkflow = $workflowManager->newWorkFlow($moduleName);
+$commentsWorkflow->test = Zend_Json::encode($workflowConditions);
+$commentsWorkflow->description = 'Comment Added From CRM : Send Email to Contact, where Contact is Portal User';
+$commentsWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
+$commentsWorkflow->defaultworkflow = 1;
+$workflowManager->save($commentsWorkflow);
 
-				$emailTask->id = '';
-				$emailTask->workflowId = $newWorkflowModel->id;
-				$emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is Portal User';
-				$emailTask->content = 'Ticket No : $ticket_no<br>
+$emailTask->id = '';
+$emailTask->workflowId = $commentsWorkflow->id;
+$emailTask->summary = 'Comment Added From CRM : Send Email to Contact, where Contact is Portal User';
+$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->recepient = ',$(contact_id : (Contacts) email)';
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+$emailTask->content = 'Ticket No : $ticket_no<br>
 										Ticket Id : $(general : (__VtigerMeta__) recordId)<br>
 										Subject : $ticket_title<br><br>
 										Dear $(contact_id : (Contacts) lastname) $(contact_id : (Contacts) firstname),<br><br>
@@ -1810,27 +1777,53 @@ for ($i = 0; $i < $numOfRows; $i++) {
 										You can use the following link to view the replies made:<br>
 										<a href="$(general : (__VtigerMeta__) portaldetailviewurl)">Ticket Details</a><br><br>
 										Thanks<br>$(general : (__VtigerMeta__) supportName)';
-				$tm->saveTask($emailTask);
+$taskManager->saveTask($emailTask);
 
-				$newConditions[] = array(
-					'fieldname' => '(parent_id : (Accounts) emailoptout)',
-					'operation' => 'is',
-					'value' => '0',
-					'valuetype' => 'rawtext',
-					'joincondition' => 'and',
-					'groupjoin' => 'and',
-					'groupid' => '0'
-				);
+// Comment Added From CRM - Organization
+$workflowConditions = [
+    [
+        'fieldname'     => '_VT_add_comment',
+        'operation'     => 'is added',
+        'value'         => '',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],
+    [
+        'fieldname'     => 'from_portal',
+        'operation'     => 'is',
+        'value'         => '0',
+        'valuetype'     => 'rawtext',
+        'joincondition' => '',
+        'groupjoin'     => 'and',
+        'groupid'       => '0'
+    ],
+    [
+        'fieldname' => '(parent_id : (Accounts) emailoptout)',
+        'operation' => 'is',
+        'value' => '0',
+        'valuetype' => 'rawtext',
+        'joincondition' => 'and',
+        'groupjoin' => 'and',
+        'groupid' => '0'
+    ]
+];
 
-				$workflowModel->test = Zend_Json::encode($newConditions);
-				$workflowModel->description = 'Comment Added From CRM : Send Email to Organization';
-				$wfs->save($workflowModel);
+$commentsWorkflow = $workflowManager->newWorkFlow($moduleName);
+$commentsWorkflow->test = Zend_Json::encode($workflowConditions);
+$commentsWorkflow->description = 'Comment Added From CRM : Send Email to Organization';
+$commentsWorkflow->executionCondition = VTWorkflowManager::$ON_EVERY_SAVE;
+$commentsWorkflow->defaultworkflow = 1;
+$workflowManager->save($commentsWorkflow);
 
-				$emailTask->id = '';
-				$emailTask->workflowId = $workflowModel->id;
-				$emailTask->summary = 'Comment Added From CRM : Send Email to Organization';
-				$emailTask->recepient = ',$(parent_id : (Accounts) email1),';
-				$emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
+$emailTask->id = '';
+$emailTask->workflowId = $commentsWorkflow->id;
+$emailTask->summary = 'Comment Added From CRM : Send Email to Organization';
+$emailTask->fromEmail = '$(general : (__VtigerMeta__) supportName)&lt;$(general : (__VtigerMeta__) supportEmailId)&gt;';
+$emailTask->recepient = ',$(parent_id : (Accounts) email1),';
+$emailTask->subject = '$ticket_no [ Ticket Id : $(general : (__VtigerMeta__) recordId) ] $ticket_title';
+$emailTask->content = 'Ticket ID : $(general : (__VtigerMeta__) recordId)<br>Ticket Title : $ticket_title<br><br>
 								Dear $(parent_id : (Accounts) accountname),<br><br>
 								The Ticket is replied the details are :<br><br>
 								Ticket No : $ticket_no<br>
@@ -1843,13 +1836,9 @@ for ($i = 0; $i < $numOfRows; $i++) {
 								The comments are : <br>
 								$allComments<br><br>
 								Regards<br>Support Administrator';
-				$tm->saveTask($emailTask);
-
-				break;
-		}
-	}
-}
+$taskManager->saveTask($emailTask);
 //End: Moved Entity methods of Comments to Workflows
+
 //Start: Moving Entity methods of Tickets to Workflows
 $result = $adb->pquery('SELECT DISTINCT workflow_id FROM com_vtiger_workflowtasks WHERE workflow_id IN
 				(SELECT workflow_id FROM com_vtiger_workflows WHERE module_name IN (?) AND defaultworkflow = ?)
@@ -1906,12 +1895,6 @@ for ($i = 0; $i < $numOfRows; $i++) {
 				$emailTask->recepient = ',$(contact_id : (Contacts) email)';
 
 				$tm->saveTask($emailTask);
-				break;
-
-
-			case 'NotifyOnPortalTicketComment' :
-				$tm->deleteTask($properties['id']);
-				Migration_Index_View::ExecuteQuery('DELETE FROM com_vtiger_workflows WHERE workflow_id = ?', array($workflowModel->id));
 				break;
 
 

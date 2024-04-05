@@ -61,54 +61,6 @@ function HelpDesk_nofifyOnPortalTicketCreation($entityData) {
 	EMAILMaker_Utils_Helper::sendMail($contact_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $contents);
 }
 
-function HelpDesk_notifyOnPortalTicketComment($entityData) {
-	$adb = PearDatabase::getInstance();
-	$moduleName = $entityData->getModuleName();
-	$wsId = $entityData->getId();
-	$parts = explode('x', $wsId);
-	$entityId = $parts[1];
-
-	$ownerIdInfo = getRecordOwnerId($entityId);
-
-	if(!empty($ownerIdInfo['Users'])) {
-		$ownerId = $ownerIdInfo['Users'];
-		$ownerName = getOwnerName($ownerId);
-		$to_email = getUserEmail($ownerId);
-	}
-	if(!empty($ownerIdInfo['Groups'])) {
-		$ownerId = $ownerIdInfo['Groups'];
-		$groupInfo = getGroupName($ownerId);
-		$ownerName = $groupInfo[0];
-		$to_email = implode(',', getDefaultAssigneeEmailIds($ownerId));
-	}
-	$wsParentId = $entityData->get('contact_id');
-	$parentIdParts = explode('x', $wsParentId);
-	$parentId = $parentIdParts[1];
-
-	$entityDelta = new VTEntityDelta();
-	$oldComments = $entityDelta->getOldValue($entityData->getModuleName(), $entityId, 'comments');
-	$newComments = $entityDelta->getCurrentValue($entityData->getModuleName(), $entityId, 'comments');
-	$commentDiff = str_replace($oldComments, '', $newComments);
-	$latestComment = strip_tags($commentDiff);
-
-	//send mail to the assigned to user when customer add comment
-	$subject = getTranslatedString('LBL_RESPONSE_TO_TICKET_NUMBER', $moduleName). ' : ' .$entityData->get('ticket_no'). ' ' .getTranslatedString('LBL_CUSTOMER_PORTAL', $moduleName);
-	$contents = getTranslatedString('Dear', $moduleName)." ".$ownerName.","."<br><br>"
-						.getTranslatedString('LBL_CUSTOMER_COMMENTS', $moduleName)."<br><br>
-						<b>".$latestComment."</b><br><br>"
-						.getTranslatedString('LBL_RESPOND', $moduleName)."<br><br>"
-						.getTranslatedString('LBL_REGARDS', $moduleName)."<br>"
-						.getTranslatedString('LBL_SUPPORT_ADMIN', $moduleName);
-
-	//get the contact email id who creates the ticket from portal and use this email as from email id in email
-	$result = $adb->pquery("SELECT lastname, firstname, email FROM vtiger_contactdetails WHERE contactid=?", array($parentId));
-	$customername = $adb->query_result($result,0,'firstname').' '.$adb->query_result($result,0,'lastname');
-	$customername = decode_html($customername);//Fix to display the original UTF-8 characters in sendername instead of ascii characters
-	$from_email = $adb->query_result($result,0,'email');
-
-	EMAILMaker_Utils_Helper::sendMail($to_email, '', $from_email, $subject, $contents);
-}
-
 function HelpDesk_notifyParentOnTicketChange($entityData) {
 	global $HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID;
 	$adb = PearDatabase::getInstance();
@@ -170,59 +122,6 @@ function HelpDesk_notifyParentOnTicketChange($entityData) {
 			if(($statusHasChanged && $entityData->get('ticketstatus') == "Closed") || $solutionHasChanged || $descriptionHasChanged) {
 				EMAILMaker_Utils_Helper::sendMail($parent_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
 			}
-		}
-	}
-}
-
-function HelpDesk_notifyOwnerOnTicketChange($entityData) {
-	global $HELPDESK_SUPPORT_NAME,$HELPDESK_SUPPORT_EMAIL_ID;
-
-	$moduleName = $entityData->getModuleName();
-	$wsId = $entityData->getId();
-	$parts = explode('x', $wsId);
-	$entityId = $parts[1];
-
-	$isNew = $entityData->isNew();
-
-	if(!$isNew) {
-		$reply = 'Re : ';
-	} else {
-		$reply = '';
-	}
-
-	$subject = getTranslatedString('LBL_TICKET_NUMBER', $moduleName). ' : ' .$entityData->get('ticket_no'). ' ' .$reply.$entityData->get('ticket_title');
-
-	$email_body = HelpDesk::getTicketEmailContents($entityData, true);
-	if(PerformancePrefs::getBoolean('NOTIFY_OWNER_EMAILS', true) === true){
-		//send mail to the assigned to user and the parent to whom this ticket is assigned
-		$wsAssignedUserId = $entityData->get('assigned_user_id');
-		$userIdParts = explode('x', $wsAssignedUserId);
-		$ownerId = $userIdParts[1];
-		$ownerType = vtws_getOwnerType($ownerId);
-
-		if($ownerType == 'Users') {
-			$to_email = getUserEmail($ownerId);
-		}
-		if($ownerType == 'Groups') {
-			$to_email = implode(',', getDefaultAssigneeEmailIds($ownerId));
-		}
-		if($to_email != '') {
-			if($isNew) {
-				$mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
-			} else {
-				$entityDelta = new VTEntityDelta();
-				$statusHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'ticketstatus');
-				$solutionHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'solution');
-				$ownerHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'assigned_user_id');
-				$descriptionHasChanged = $entityDelta->hasChanged($entityData->getModuleName(), $entityId, 'description');
-				if(($statusHasChanged && $entityData->get('ticketstatus') == "Closed") || $solutionHasChanged || $ownerHasChanged || $descriptionHasChanged) {
-					$mail_status = EMAILMaker_Utils_Helper::sendMail($to_email, $HELPDESK_SUPPORT_NAME, $HELPDESK_SUPPORT_EMAIL_ID, $subject, $email_body);
-				}
-			}
-			$mail_status_str = $to_email."=".$mail_status."&&&";
-
-		} else {
-			$mail_status_str = "'".$to_email."'=0&&&";
 		}
 	}
 }
