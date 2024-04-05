@@ -180,66 +180,6 @@ class SalesOrder extends CRMEntity {
 
 	}
 
-	/**	Function used to get the Status history of the Sales Order
-	 *	@param $id - salesorder id
-	 *	@return $return_data - array with header and the entries in format Array('header'=>$header,'entries'=>$entries_list) where as $header and $entries_list are arrays which contains header values and all column values of all entries
-	 */
-	function get_sostatushistory($id)
-	{
-		global $log;
-		$log->debug("Entering get_sostatushistory(".$id.") method ...");
-
-		global $adb;
-		global $mod_strings;
-		global $app_strings;
-
-		$query = 'select vtiger_sostatushistory.*, vtiger_salesorder.salesorder_no from vtiger_sostatushistory inner join vtiger_salesorder on vtiger_salesorder.salesorderid = vtiger_sostatushistory.salesorderid inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_salesorder.salesorderid where vtiger_crmentity.deleted = 0 and vtiger_salesorder.salesorderid = ?';
-		$result=$adb->pquery($query, array($id));
-		$noofrows = $adb->num_rows($result);
-
-		$header[] = $app_strings['Order No'];
-		$header[] = $app_strings['LBL_ACCOUNT_NAME'];
-		$header[] = $app_strings['LBL_AMOUNT'];
-		$header[] = $app_strings['LBL_SO_STATUS'];
-		$header[] = $app_strings['LBL_LAST_MODIFIED'];
-
-		//Getting the field permission for the current user. 1 - Not Accessible, 0 - Accessible
-		//Account Name , Total are mandatory fields. So no need to do security check to these fields.
-		global $current_user;
-
-		//If field is accessible then getFieldVisibilityPermission function will return 0 else return 1
-		$sostatus_access = (getFieldVisibilityPermission('SalesOrder', $current_user->id, 'sostatus') != '0')? 1 : 0;
-		$picklistarray = getAccessPickListValues('SalesOrder');
-
-		$sostatus_array = ($sostatus_access != 1)? $picklistarray['sostatus']: array();
-		//- ==> picklist field is not permitted in profile
-		//Not Accessible - picklist is permitted in profile but picklist value is not permitted
-		$error_msg = ($sostatus_access != 1)? 'Not Accessible': '-';
-
-		while($row = $adb->fetch_array($result))
-		{
-			$entries = Array();
-
-			// Module Sequence Numbering
-			//$entries[] = $row['salesorderid'];
-			$entries[] = $row['salesorder_no'];
-			// END
-			$entries[] = $row['accountname'];
-			$entries[] = $row['total'];
-			$entries[] = (in_array($row['sostatus'], $sostatus_array))? $row['sostatus']: $error_msg;
-			$date = new DateTimeField($row['lastmodified']);
-			$entries[] = $date->getDisplayDateTimeValue();
-
-			$entries_list[] = $entries;
-		}
-
-		$return_data = Array('header'=>$header,'entries'=>$entries_list);
-
-	 	$log->debug("Exiting get_sostatushistory method ...");
-
-		return $return_data;
-	}
-
 	/*
 	 * Function to get the secondary query part of a report
 	 * @param - $module primary module name

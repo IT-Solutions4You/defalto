@@ -87,7 +87,7 @@ class HelpDesk extends CRMEntity {
 
 	// Used when enabling/disabling the mandatory fields for the module.
 	// Refers to vtiger_field.fieldname values.
-	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title', 'update_log','ticketpriorities','ticketstatus');
+	var $mandatory_fields = Array('assigned_user_id', 'createdtime', 'modifiedtime', 'ticket_title','ticketpriorities','ticketstatus');
 
      //Added these variables which are used as default order by and sortorder in ListView
     var $default_order_by = 'crmid';
@@ -197,34 +197,6 @@ class HelpDesk extends CRMEntity {
 		}
 
 		$log->debug("Exiting from insertIntoAttachment($id,$module) method.");
-	}
-
-	/**     Function to get the Ticket History information as in array format
-	 *	@param int $ticketid - ticket id
-	 *	@return array - return an array with title and the ticket history informations in the following format
-							array(
-								header=>array('0'=>'title'),
-								entries=>array('0'=>'info1','1'=>'info2',etc.,)
-							     )
-	 */
-	function get_ticket_history($ticketid)
-	{
-		global $log, $adb;
-		$log->debug("Entering into get_ticket_history($ticketid) method ...");
-
-		$query="select title,update_log from vtiger_troubletickets where ticketid=?";
-		$result=$adb->pquery($query, array($ticketid));
-		$update_log = $adb->query_result($result,0,"update_log");
-
-		$splitval = explode('--//--',trim($update_log,'--//--'));
-
-		$header[] = $adb->query_result($result,0,"title");
-
-		$return_value = Array('header'=>$header,'entries'=>$splitval);
-
-		$log->debug("Exiting from get_ticket_history($ticketid) method ...");
-
-		return $return_value;
 	}
 
 	/**	Function to process the list query and return the result with number of rows
@@ -375,85 +347,6 @@ class HelpDesk extends CRMEntity {
                 $log->debug("Exiting create_export_query method ...");
                 return $query;
         }
-
-	/** Function to get the update ticket history for the specified ticketid
-	  * @param $id -- $ticketid:: Type Integer
-	 */
-	function constructUpdateLog($focus, $mode, $assigned_group_name, $assigntype)
-	{
-		global $adb;
-		global $current_user;
-
-		if($mode != 'edit')//this will be updated when we create new ticket
-		{
-			$updatelog = "Ticket created. Assigned to ";
-
-			if(!empty($assigned_group_name) && $assigntype == 'T')
-			{
-				$updatelog .= " group ".(is_array($assigned_group_name)? $assigned_group_name[0] : $assigned_group_name);
-			}
-			elseif($focus->column_fields['assigned_user_id'] != '')
-			{
-				$updatelog .= " user ".getUserFullName($focus->column_fields['assigned_user_id']);
-			}
-			else
-			{
-				$updatelog .= " user ".getUserFullName($current_user->id);
-			}
-
-			$fldvalue = date("l dS F Y h:i:s A").' by '.$current_user->user_name;
-			$updatelog .= " -- ".$fldvalue."--//--";
-		}
-		else
-		{
-			$ticketid = $focus->id;
-
-			//First retrieve the existing information
-			$tktresult = $adb->pquery("select * from vtiger_troubletickets where ticketid=?", array($ticketid));
-			$crmresult = $adb->pquery("select * from vtiger_crmentity where crmid=?", array($ticketid));
-
-			$updatelog = decode_html($adb->query_result($tktresult,0,"update_log"));
-
-			$old_owner_id = $adb->query_result($crmresult,0,"smownerid");
-			$old_status = $adb->query_result($tktresult,0,"status");
-			$old_priority = $adb->query_result($tktresult,0,"priority");
-			$old_severity = $adb->query_result($tktresult,0,"severity");
-			$old_category = $adb->query_result($tktresult,0,"category");
-
-			//Assigned to change log
-			if($focus->column_fields['assigned_user_id'] != $old_owner_id)
-			{
-				$owner_name = getOwnerName($focus->column_fields['assigned_user_id']);
-				if($assigntype == 'T')
-					$updatelog .= ' Transferred to group '.$owner_name.'\.';
-				else
-					$updatelog .= ' Transferred to user '.decode_html($owner_name).'\.'; // Need to decode UTF characters which are migrated from versions < 5.0.4.
-			}
-			//Status change log
-			if($old_status != $focus->column_fields['ticketstatus'] && $focus->column_fields['ticketstatus'] != '')
-			{
-				$updatelog .= ' Status Changed to '.$focus->column_fields['ticketstatus'].'\.';
-			}
-			//Priority change log
-			if($old_priority != $focus->column_fields['ticketpriorities'] && $focus->column_fields['ticketpriorities'] != '')
-			{
-				$updatelog .= ' Priority Changed to '.$focus->column_fields['ticketpriorities'].'\.';
-			}
-			//Severity change log
-			if($old_severity != $focus->column_fields['ticketseverities'] && $focus->column_fields['ticketseverities'] != '')
-			{
-				$updatelog .= ' Severity Changed to '.$focus->column_fields['ticketseverities'].'\.';
-			}
-			//Category change log
-			if($old_category != $focus->column_fields['ticketcategories'] && $focus->column_fields['ticketcategories'] != '')
-			{
-				$updatelog .= ' Category Changed to '.$focus->column_fields['ticketcategories'].'\.';
-			}
-
-			$updatelog .= ' -- '.date("l dS F Y h:i:s A").' by '.$current_user->user_name.'--//--';
-		}
-		return $updatelog;
-	}
 
 	/**
 	 * Move the related records of the specified list of id's to the given record.

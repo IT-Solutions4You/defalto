@@ -390,10 +390,6 @@ Migration_Index_View::ExecuteQuery("UPDATE vtiger_sales_stage SET sales_stage=? 
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_potential SET sales_stage=? WHERE sales_stage=?", array('Proposal or Price Quote', 'Proposal/Price Quote'));
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_potential SET sales_stage=? WHERE sales_stage=?", array('Negotiation or Review', 'Negotiation/Review'));
 
-//Updating Sales Stage History in opportunities related list for migration instances
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_potstagehistory SET stage=? WHERE stage=?", array('Proposal or Price Quote', 'Proposal/Price Quote'));
-Migration_Index_View::ExecuteQuery("UPDATE vtiger_potstagehistory SET stage=? WHERE stage=?", array('Negotiation or Review', 'Negotiation/Review'));
-
 //Updating the sales stage picklist values of opportunities in picklist dependency setup for migration instances
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_picklist_dependency SET sourcevalue=? WHERE sourcevalue=?", array('Proposal or Price Quote', 'Proposal/Price Quote'));
 Migration_Index_View::ExecuteQuery("UPDATE vtiger_picklist_dependency SET sourcevalue=? WHERE sourcevalue=?", array('Negotiation or Review', 'Negotiation/Review'));

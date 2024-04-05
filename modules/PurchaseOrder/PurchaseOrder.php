@@ -287,65 +287,6 @@ class PurchaseOrder extends CRMEntity {
 		return $subProductQtys;
 	}
 
-	/**	Function used to get the Status history of the Purchase Order
-	 *	@param $id - purchaseorder id
-	 *	@return $return_data - array with header and the entries in format Array('header'=>$header,'entries'=>$entries_list) where as $header and $entries_list are arrays which contains header values and all column values of all entries
-	 */
-	function get_postatushistory($id)
-	{
-		global $log;
-		$log->debug("Entering get_postatushistory(".$id.") method ...");
-
-		global $adb;
-		global $mod_strings;
-		global $app_strings;
-
-		$query = 'select vtiger_postatushistory.*, vtiger_purchaseorder.purchaseorder_no from vtiger_postatushistory inner join vtiger_purchaseorder on vtiger_purchaseorder.purchaseorderid = vtiger_postatushistory.purchaseorderid inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid where vtiger_crmentity.deleted = 0 and vtiger_purchaseorder.purchaseorderid = ?';
-		$result=$adb->pquery($query, array($id));
-		$noofrows = $adb->num_rows($result);
-
-		$header[] = $app_strings['Order No'];
-		$header[] = $app_strings['Vendor Name'];
-		$header[] = $app_strings['LBL_AMOUNT'];
-		$header[] = $app_strings['LBL_PO_STATUS'];
-		$header[] = $app_strings['LBL_LAST_MODIFIED'];
-
-		//Getting the field permission for the current user. 1 - Not Accessible, 0 - Accessible
-		//Vendor, Total are mandatory fields. So no need to do security check to these fields.
-		global $current_user;
-
-		//If field is accessible then getFieldVisibilityPermission function will return 0 else return 1
-		$postatus_access = (getFieldVisibilityPermission('PurchaseOrder', $current_user->id, 'postatus') != '0')? 1 : 0;
-		$picklistarray = getAccessPickListValues('PurchaseOrder');
-
-		$postatus_array = ($postatus_access != 1)? $picklistarray['postatus']: array();
-		//- ==> picklist field is not permitted in profile
-		//Not Accessible - picklist is permitted in profile but picklist value is not permitted
-		$error_msg = ($postatus_access != 1)? 'Not Accessible': '-';
-
-		while($row = $adb->fetch_array($result))
-		{
-			$entries = Array();
-
-			//Module Sequence Numbering
-			//$entries[] = $row['purchaseorderid'];
-			$entries[] = $row['purchaseorder_no'];
-			// END
-			$entries[] = $row['vendorname'];
-			$entries[] = $row['total'];
-			$entries[] = (in_array($row['postatus'], $postatus_array))? $row['postatus']: $error_msg;
-			$date = new DateTimeField($row['lastmodified']);
-			$entries[] = $date->getDisplayDateTimeValue();
-
-			$entries_list[] = $entries;
-		}
-
-		$return_data = Array('header'=>$header,'entries'=>$entries_list);
-
-	 	$log->debug("Exiting get_postatushistory method ...");
-
-		return $return_data;
-	}
 	/*
 	 * Function to get the secondary query part of a report
 	 * @param - $module primary module name

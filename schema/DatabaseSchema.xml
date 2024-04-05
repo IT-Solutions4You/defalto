@@ -836,31 +836,6 @@
 		<query>ALTER TABLE vtiger_potential ADD CONSTRAINT fk_1_vtiger_potential FOREIGN KEY (potentialid) REFERENCES vtiger_crmentity(crmid) ON DELETE CASCADE</query>
 	</sql>
 
-	<table name="vtiger_potstagehistory">
-		<field name="historyid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="potentialid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="amount" type="N" />
-		<field name="stage" type="C" size="100" />
-		<field name="probability" type="N" size="7.3" />
-		<field name="expectedrevenue" type="N" />
-		<field name="closedate" type="D" />
-		<field name="lastmodified" type="T" />
-
-		<index name="potstagehistory_potentialid_idx">
-			<col>potentialid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_potstagehistory ADD CONSTRAINT fk_1_vtiger_potstagehistory FOREIGN KEY (potentialid) REFERENCES vtiger_potential(potentialid) ON DELETE CASCADE</query>
-	</sql>
-
 	<table name="vtiger_potentialscf">
 		<field name="potentialid" type="I" size="19">
 			<key />
@@ -1358,7 +1333,6 @@
 			<notnull />
 		</field>
 		<field name="solution" type="X" />
-		<field name="update_log" type="X" />
 		<field name="version_id" type="I" size="11" />
 		<field name="hours" type="C" size="200" />
 		<field name="days" type="C" size="200" />
@@ -4393,98 +4367,6 @@
 		</index>
 		<opt platform="mysql">Engine=InnoDB</opt>
 	</table>
-
-	<table name="vtiger_postatushistory">
-		<field name="historyid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="purchaseorderid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="vendorname" type="C" size="100" />
-		<field name="total" type="N" />
-		<field name="postatus" type="C" size="200" />
-		<field name="lastmodified" type="T" />
-
-		<index name="postatushistory_purchaseorderid_idx">
-			<col>purchaseorderid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_postatushistory ADD CONSTRAINT fk_1_vtiger_postatushistory FOREIGN KEY (purchaseorderid) REFERENCES vtiger_purchaseorder(purchaseorderid) ON DELETE CASCADE</query>
-	</sql>
-
-	<table name="vtiger_sostatushistory">
-		<field name="historyid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="salesorderid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="accountname" type="C" size="100" />
-		<field name="total" type="N" />
-		<field name="sostatus" type="C" size="200" />
-		<field name="lastmodified" type="T" />
-
-		<index name="sostatushistory_salesorderid_idx">
-			<col>salesorderid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_sostatushistory ADD CONSTRAINT fk_1_vtiger_sostatushistory FOREIGN KEY (salesorderid) REFERENCES vtiger_salesorder(salesorderid) ON DELETE CASCADE</query>
-	</sql>
-
-	<table name="vtiger_quotestagehistory">
-		<field name="historyid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="quoteid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="accountname" type="C" size="100" />
-		<field name="total" type="N" />
-		<field name="quotestage" type="C" size="200" />
-		<field name="lastmodified" type="T" />
-
-		<index name="quotestagehistory_quoteid_idx">
-			<col>quoteid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_quotestagehistory ADD CONSTRAINT fk_1_vtiger_quotestagehistory FOREIGN KEY (quoteid) REFERENCES vtiger_quotes(quoteid) ON DELETE CASCADE</query>
-	</sql>
-
-	<table name="vtiger_invoicestatushistory">
-		<field name="historyid" type="I" size="19">
-			<key />
-			<autoincrement />
-		</field>
-		<field name="invoiceid" type="I" size="19">
-			<notnull />
-		</field>
-		<field name="accountname" type="C" size="100" />
-		<field name="total" type="N" />
-		<field name="invoicestatus" type="C" size="200" />
-		<field name="lastmodified" type="T" />
-
-		<index name="invoicestatushistory_invoiceid_idx">
-			<col>invoiceid</col>
-		</index>
-		<opt platform="mysql">Engine=InnoDB</opt>
-	</table>
-
-	<sql>
-		<query>ALTER TABLE vtiger_invoicestatushistory ADD CONSTRAINT fk_1_vtiger_invoicestatushistory FOREIGN KEY (invoiceid) REFERENCES vtiger_invoice(invoiceid) ON DELETE CASCADE</query>
-	</sql>
 
 	<table name="vtiger_audit_trial">
 		<field name="auditid" type="I" size="19">

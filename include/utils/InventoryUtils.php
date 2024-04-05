@@ -89,34 +89,6 @@ function getProductTaxPercentage($type,$productid,$default='')
 	return array('percentage' => $taxpercentage, 'regions' => Zend_Json::decode(html_entity_decode($adb->query_result($res, $i, 'regions'))));
 }
 
-/**	Function used to add the history entry in the relevant tables for PO, SO, Quotes and Invoice modules
- *	@param string 	$module		- current module name
- *	@param int 	$id		- entity id
- *	@param string 	$relatedname	- parent name of the entity ie, required field venor name for PO and account name for SO, Quotes and Invoice
- *	@param float 	$total		- grand total value of the product details included tax
- *	@param string 	$history_fldval	- history field value ie., quotestage for Quotes and status for PO, SO and Invoice
- */
-function addInventoryHistory($module, $id, $relatedname, $total, $history_fldval)
-{
-	global $log, $adb;
-	$log->debug("Entering into function addInventoryHistory($module, $id, $relatedname, $total, $history_fieldvalue)");
-
-	$history_table_array = Array(
-					"PurchaseOrder"=>"vtiger_postatushistory",
-					"SalesOrder"=>"vtiger_sostatushistory",
-					"Quotes"=>"vtiger_quotestagehistory",
-					"Invoice"=>"vtiger_invoicestatushistory"
-				    );
-
-	$histid = $adb->getUniqueID($history_table_array[$module]);
- 	$modifiedtime = $adb->formatDate(date('Y-m-d H:i:s'), true);
- 	$query = "insert into $history_table_array[$module] values(?,?,?,?,?,?)";
-	$qparams = array($histid,$id,$relatedname,$total,$history_fldval,$modifiedtime);
-	$adb->pquery($query, $qparams);
-
-	$log->debug("Exit from function addInventoryHistory");
-}
-
 /**	Function used to get the list of Tax types as a array
  *	@param string $available - available or empty where as default is all, if available then the taxes which are available now will be returned otherwise all taxes will be returned
  *      @param string $sh - sh or empty, if sh passed then the shipping and handling related taxes will be returned

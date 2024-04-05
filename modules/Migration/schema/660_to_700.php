@@ -857,13 +857,6 @@ if(defined('VTIGER_UPGRADE')) {
 		$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX relcrmid_idx(relcrmid)', array());
 	}
 
-	//Start : Inactivate update_log field from ticket module
-	$fieldModel = Vtiger_Field_Model::getInstance('update_log', Vtiger_Module_Model::getInstance('HelpDesk'));
-	if ($fieldModel) {
-		$fieldModel->set('presence', 1);
-		$fieldModel->__update();
-	}
-
 	//Start : Project added as related tab for Potentials module.
 	$projectModuleModel = Vtiger_Module_Model::getInstance('Project');
 	$fieldModel = Vtiger_Field::getInstance('potentialid', $projectModuleModel);
