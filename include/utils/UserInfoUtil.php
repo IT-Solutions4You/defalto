@@ -16,21 +16,6 @@ require_once("include/events/include.inc");
 require_once 'includes/runtime/Cache.php';
 global $log;
 
-/** To retreive the mail server info resultset for the specified user
-  * @param $user -- The user object:: Type Object
-  * @returns  the mail server info resultset
- */
-function getMailServerInfo($user)
-{
-	global $log;
-	$log->debug("Entering getMailServerInfo(".$user->user_name.") method ...");
-	global $adb;
-		$sql = "select * from vtiger_mail_accounts where status=1 and user_id=?";
-		$result = $adb->pquery($sql, array($user->id));
-	$log->debug("Exiting getMailServerInfo method ...");
-	return $result;
-}
-
 /** To get the Role of the specified user
   * @param $userid -- The user Id:: Type integer
   * @returns  vtiger_roleid :: Type String
@@ -108,38 +93,7 @@ function getTabsUtilityActionPermission($profileid)
 	return $check;
 
 }
-/**This Function returns the Default Organisation Sharing Action Array for all modules whose sharing actions are editable
-  * The result array will be in the following format:
-  * Arr=(tabid1=>Sharing Action Id,
-  *      tabid2=>SharingAction Id,
-  *            |
-  *            |
-  *            |
-  *      tabid3=>SharingAcion Id)
-  */
 
-function getDefaultSharingEditAction()
-{
-	global $log;
-	$log->debug("Entering getDefaultSharingEditAction() method ...");
-	global $adb;
-	//retreiving the standard permissions
-	$sql= "select * from vtiger_def_org_share where editstatus=0";
-	$result = $adb->pquery($sql, array());
-	$permissionRow=$adb->fetch_array($result);
-	do
-	{
-		for($j=0;$j<php7_count($permissionRow);$j++)
-		{
-			$copy[$permissionRow[1]]=$permissionRow[2];
-		}
-
-	}while($permissionRow=$adb->fetch_array($result));
-
-	$log->debug("Exiting getDefaultSharingEditAction method ...");
-	return $copy;
-
-}
 /**This Function returns the Default Organisation Sharing Action Array for modules with edit status in (0,1)
   * The result array will be in the following format:
   * Arr=(tabid1=>Sharing Action Id,
@@ -1165,48 +1119,6 @@ function getRoleAndSubordinateUsers($roleId)
 
 }
 
-/** Function to get the vtiger_role and subordinate Information for the specified vtiger_roleId
-  * @param $roleid -- RoleId :: Type varchar
-  * @returns $roleSubInfo-- Role and Subordinates Information array in the following format:
-  *       $roleSubInfo=Array($roleId1=>Array($rolename,$parentrole,$roledepth,$immediateParent), $roleId2=>Array($rolename,$parentrole,$roledepth,$immediateParent),.....);
- */
-function getRoleAndSubordinatesInformation($roleId)
-{
-	global $log;
-	$log->debug("Entering getRoleAndSubordinatesInformation(".$roleId.") method ...");
-	global $adb;
-	static $roleInfoCache = array();
-	if(!empty($roleInfoCache[$roleId])) {
-		return $roleInfoCache[$roleId];
-	}
-	$roleDetails=getRoleInformation($roleId);
-	$roleInfo=$roleDetails[$roleId];
-	$roleParentSeq=$roleInfo[1];
-
-	$query="select * from vtiger_role where parentrole like ? order by parentrole asc";
-	$result=$adb->pquery($query, array($roleParentSeq."%"));
-	$num_rows=$adb->num_rows($result);
-	$roleInfo=Array();
-	for($i=0;$i<$num_rows;$i++)
-	{
-		$roleid=$adb->query_result($result,$i,'roleid');
-				$rolename=$adb->query_result($result,$i,'rolename');
-				$roledepth=$adb->query_result($result,$i,'depth');
-				$parentrole=$adb->query_result($result,$i,'parentrole');
-		$roleDet=Array();
-		$roleDet[]=$rolename;
-		$roleDet[]=$parentrole;
-		$roleDet[]=$roledepth;
-		$roleInfo[$roleid]=$roleDet;
-
-	}
-	$roleInfoCache[$roleId] = $roleInfo;
-	$log->debug("Exiting getRoleAndSubordinatesInformation method ...");
-	return $roleInfo;
-
-}
-
-
 /** Function to get the vtiger_role and subordinate vtiger_role ids
   * @param $roleid -- RoleId :: Type varchar
   * @returns $roleSubRoleIds-- Role and Subordinates RoleIds in an Array in the following format:
@@ -1313,58 +1225,6 @@ function deleteGroupRelatedSharingRules($grpId)
 
 		}
 	$log->debug("Exiting deleteGroupRelatedSharingRules method ...");
-}
-
-
-/** Function to get userid and username of all vtiger_users
-  * @returns $userArray -- User Array in the following format:
-  * $userArray=Array($userid1=>$username, $userid2=>$username,............,$useridn=>$username);
- */
-function getAllUserName()
-{
-	global $log;
-	$log->debug("Entering getAllUserName() method ...");
-	global $adb;
-	$query="select id, userlabel from vtiger_users where deleted=0";
-	$result = $adb->pquery($query, array());
-	$num_rows=$adb->num_rows($result);
-	$user_details=Array();
-	for($i=0;$i<$num_rows;$i++)
-	{
-		$userid=$adb->query_result($result,$i,'id');
-		$username=$adb->query_result($result,$i,'userlabel');
-		$user_details[$userid]=$username;
-
-	}
-	$log->debug("Exiting getAllUserName method ...");
-	return $user_details;
-
-}
-
-
-/** Function to get groupid and groupname of all vtiger_groups
-  * @returns $grpArray -- Group Array in the following format:
-  * $grpArray=Array($grpid1=>$grpname, $grpid2=>$grpname,............,$grpidn=>$grpname);
- */
-function getAllGroupName()
-{
-	global $log;
-	$log->debug("Entering getAllGroupName() method ...");
-	global $adb;
-	$query="select * from vtiger_groups";
-	$result = $adb->pquery($query, array());
-	$num_rows=$adb->num_rows($result);
-	$group_details=Array();
-	for($i=0;$i<$num_rows;$i++)
-	{
-		$grpid=$adb->query_result($result,$i,'groupid');
-		$grpname=$adb->query_result($result,$i,'groupname');
-		$group_details[$grpid]=$grpname;
-
-	}
-	$log->debug("Exiting getAllGroupName method ...");
-	return $group_details;
-
 }
 
 /** This function is to delete the organisation level sharing rule
@@ -2267,5 +2127,3 @@ function appendFromClauseToQuery($query,$fromClause) {
 	$query = $newQuery.$fromClause.$condition;
 	return $query;
 }
-
-?>

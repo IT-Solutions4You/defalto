@@ -73,8 +73,8 @@ function getConvertSoToInvoice($focus,$so_focus,$soid)
     $focus->column_fields['pre_tax_total'] = $so_focus->column_fields['pre_tax_total'];
 
 	$log->debug("Exiting getConvertSoToInvoice method ...");
-	return $focus;
 
+    return $focus;
 }
 
 /** This function returns the detailed list of vtiger_products associated to a given entity or a record.
@@ -259,7 +259,7 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 		$subProductQtyList = array();
 		for($j=0; $j<$subProductsCount; $j++){
 			$sprod_id = $adb->query_result($subProductsResult, $j, 'prod_id');
-			$sprod_name = getProductName($sprod_id);
+			$sprod_name = Vtiger_Functions::getCRMRecordLabel($sprod_id);
 			if(isset($sprod_name)) {
 				$subQty = $adb->query_result($subProductsResult, $j, 'quantity');
 				$subProductQtyList[$sprod_id] = array('name' => $sprod_name, 'qty' => $subQty);
@@ -569,58 +569,4 @@ function getAssociatedProducts($module, $focus, $seid = '', $refModuleName = fal
 	$log->debug("Exiting getAssociatedProducts method ...");
 
 	return $product_Detail;
-
 }
-
-/** This function returns the data type of the vtiger_fields, with vtiger_field label, which is used for javascript validation.
-* Param $validationData - array of vtiger_fieldnames with datatype
-* Return type array
-*/
-
-function split_validationdataArray($validationData)
-{
-	global $log;
-	$log->debug("Entering split_validationdataArray(".$validationData.") method ...");
-	$fieldName = '';
-	$fieldLabel = '';
-	$fldDataType = '';
-	$rows = php7_count($validationData);
-	foreach($validationData as $fldName => $fldLabel_array)
-	{
-		if($fieldName == '')
-		{
-			$fieldName="'".$fldName."'";
-		}
-		else
-		{
-			$fieldName .= ",'".$fldName ."'";
-		}
-		foreach($fldLabel_array as $fldLabel => $datatype)
-		{
-			if($fieldLabel == '')
-			{
-				$fieldLabel = "'".addslashes($fldLabel)."'";
-			}
-			else
-			{
-				$fieldLabel .= ",'".addslashes($fldLabel)."'";
-			}
-			if($fldDataType == '')
-			{
-				$fldDataType = "'".$datatype ."'";
-			}
-			else
-			{
-				$fldDataType .= ",'".$datatype ."'";
-			}
-		}
-	}
-	$data['fieldname'] = $fieldName;
-	$data['fieldlabel'] = $fieldLabel;
-	$data['datatype'] = $fldDataType;
-	$log->debug("Exiting split_validationdataArray method ...");
-	return $data;
-}
-
-
-?>

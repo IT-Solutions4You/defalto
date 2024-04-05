@@ -92,7 +92,7 @@ class SMSNotifier extends SMSNotifierBase {
 
 		$relatedModules = array();
 
-		// Calculate the related module access (similar to getRelatedList API in DetailViewUtils.php)
+		// Calculate the related module access
 		if($result && $adb->num_rows($result)) {
 			require('user_privileges/user_privileges_'.$current_user->id.'.php');
 			while($resultrow = $adb->fetch_array($result)) {

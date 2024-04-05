@@ -8,23 +8,6 @@
  * All Rights Reserved.
  **************************************************************************************/
 
-/**This function is used to get the reorder level of a product
-*Param $product_id - product id
-*Returns type numeric
-*/
-
-function getPrdReOrderLevel($product_id)
-{
-	global $log;
-	$log->debug("Entering getPrdReOrderLevel(".$product_id.") method ...");
-	global $adb;
-	$query1 = "SELECT reorderlevel FROM vtiger_products WHERE productid = ?";
-	$result=$adb->pquery($query1, array($product_id));
-	$reorderlevel= $adb->query_result($result,0,"reorderlevel");
-	$log->debug("Exiting getPrdReOrderLevel method ...");
-	return $reorderlevel;
-}
-
 /**	function to get the taxid
  *	@param string $type - tax type (VAT or Sales or Service)
  *	return int   $taxid - taxid corresponding to the Tax type from vtiger_inventorytaxinfo vtiger_table
@@ -1085,17 +1068,6 @@ function getPricesForProducts($currencyid, $product_ids, $module='Products', $sk
 		}
 	}
 	return $price_list;
-}
-
-/**	Function used to get the currency used for the given Price book
- *	@param int $pricebook_id - pricebook id for which we want to get the id of the currency used
- *  @return int $currencyid - id of the currency used for the given pricebook
- */
-function getPriceBookCurrency($pricebook_id) {
-	global $adb;
-	$result = $adb->pquery("select currency_id from vtiger_pricebook where pricebookid=?", array($pricebook_id));
-	$currency_id = $adb->query_result($result,0,'currency_id');
-	return $currency_id;
 }
 
 // deduct products from stock - if status will be changed from cancel to other status.

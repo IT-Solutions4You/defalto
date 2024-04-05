@@ -15,19 +15,6 @@
 
 class Vtiger_Deprecated {
 
-	static function getFullNameFromQResult($result, $row_count, $module) {
-		global $adb;
-		$rowdata = $adb->query_result_rowdata($result, $row_count);
-		$entity_field_info = getEntityFieldNames($module);
-		$fieldsName = $entity_field_info['fieldname'];
-		$name = '';
-		if ($rowdata != '' && php7_count($rowdata) > 0) {
-			$name = self::getCurrentUserEntityFieldNameDisplay($module, $fieldsName, $rowdata );
-		}
-		$name = textlength_check($name);
-		return $name;
-	}
-
 	static function getFullNameFromArray($module, $fieldValues) {
 		$entityInfo = getEntityFieldNames($module);
 		$fieldsName = $entityInfo['fieldname'];
@@ -80,68 +67,6 @@ class Vtiger_Deprecated {
 		} else {
 			return self::getParentTabFromModule($_REQUEST['module']);
 		}*/
-	}
-
-	static function getParentTabFromModule($module) {
-		return '';
-
-		/*
-		global $adb;
-		if (file_exists('tabdata.php') && (filesize('tabdata.php') != 0) && file_exists('parent_tabdata.php') && (filesize('parent_tabdata.php') != 0)) {
-			include('tabdata.php');
-			include('parent_tabdata.php');
-			$tabid = $tab_info_array[$module];
-			foreach ($parent_child_tab_rel_array as $parid => $childArr) {
-				if (in_array($tabid, $childArr)) {
-					$parent_tabname = $parent_tab_info_array[$parid];
-					break;
-				}
-			}
-			return $parent_tabname;
-		} else {
-			$sql = "select vtiger_parenttab.* from vtiger_parenttab inner join vtiger_parenttabrel on vtiger_parenttabrel.parenttabid=vtiger_parenttab.parenttabid inner join vtiger_tab on vtiger_tab.tabid=vtiger_parenttabrel.tabid where vtiger_tab.name=?";
-			$result = $adb->pquery($sql, array($module));
-			$tab = $adb->query_result($result, 0, "parenttab_label");
-			return $tab;
-		}*/
-	}
-
-	/*static function checkParentTabExists($parenttab) {
-		global $adb;
-
-		if (file_exists('parent_tabdata.php') && (filesize('parent_tabdata.php') != 0)) {
-			include('parent_tabdata.php');
-			if (in_array($parenttab, $parent_tab_info_array))
-				return true;
-			else
-				return false;
-		} else {
-
-			$result = "select 1 from vtiger_parenttab where parenttab_label = ?";
-			$noofrows = $adb->num_rows($result);
-			if ($noofrows > 0)
-				return true;
-			else
-				return false;
-		}
-	}*/
-
-	static function copyValuesFromRequest($focus) {
-		if (isset($_REQUEST['record'])) {
-			$focus->id = $_REQUEST['record'];
-		}
-		if (isset($_REQUEST['mode'])) {
-			$focus->mode = $_REQUEST['mode'];
-		}
-		foreach ($focus->column_fields as $fieldname => $val) {
-			if (isset($_REQUEST[$fieldname])) {
-				if (is_array($_REQUEST[$fieldname]))
-					$value = $_REQUEST[$fieldname];
-				else
-					$value = trim($_REQUEST[$fieldname]);
-				$focus->column_fields[$fieldname] = $value;
-			}
-		}
 	}
 
 	static function createModuleMetaFile() {
@@ -316,18 +241,6 @@ class Vtiger_Deprecated {
 			return $app_currency_strings[$str];
 		}
 		return $str;
-	}
-
-	static function getIdOfCustomViewByNameAll($module) {
-		global $adb;
-
-		static $cvidCache = array();
-		if (!isset($cvidCache[$module])) {
-			$qry_res = $adb->pquery("select cvid from vtiger_customview where viewname='All' and entitytype=?", array($module));
-			$cvid = $adb->query_result($qry_res, 0, "cvid");
-			$cvidCache[$module] = $cvid;
-		}
-		return isset($cvidCache[$module])? $cvidCache[$module] : '0';
 	}
 
 	static function SaveTagCloudView($id = "") {

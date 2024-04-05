@@ -594,13 +594,6 @@ function decode_html($str) {
 		return html_entity_decode($str, ENT_QUOTES, $default_charset);
 }
 
-function popup_decode_html($str) {
-	global $default_charset;
-	$slashes_str = popup_from_html($str);
-	$slashes_str = htmlspecialchars($slashes_str, ENT_QUOTES, $default_charset);
-	return decode_html(br2nl($slashes_str));
-}
-
 //function added to check the text length in the listview.
 function textlength_check($field_val) {
 	global $listview_max_textlength, $default_charset;
@@ -689,54 +682,3 @@ function listQueryNonAdminChange($query, $module, $scope = '') {
 	$instance = CRMEntity::getInstance($module);
 	return $instance->listQueryNonAdminChange($query, $scope);
 }
-
-function html_strlen($str) {
-	$chars = preg_split('/(&[^;\s]+;)|/', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-	return php7_count($chars);
-}
-
-function html_substr($str, $start, $length = NULL) {
-	if ($length === 0)
-		return "";
-	//check if we can simply use the built-in functions
-	if (strpos($str, '&') === false) { //No entities. Use built-in functions
-		if ($length === NULL)
-			return substr($str, $start);
-		else
-			return substr($str, $start, $length);
-	}
-
-	// create our array of characters and html entities
-	$chars = preg_split('/(&[^;\s]+;)|/', $str, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_OFFSET_CAPTURE);
-	$html_length = php7_count($chars);
-	// check if we can predict the return value and save some processing time
-	if (($html_length === 0) or ($start >= $html_length) or (isset($length) and ($length <= -$html_length)))
-		return "";
-
-	//calculate start position
-	if ($start >= 0) {
-		$real_start = $chars[$start][1];
-	} else { //start'th character from the end of string
-		$start = max($start, -$html_length);
-		$real_start = $chars[$html_length + $start][1];
-	}
-	if (!isset($length)) // no $length argument passed, return all remaining characters
-		return substr($str, $real_start);
-	else if ($length > 0) { // copy $length chars
-		if ($start + $length >= $html_length) { // return all remaining characters
-			return substr($str, $real_start);
-		} else { //return $length characters
-			return substr($str, $real_start, $chars[max($start, 0) + $length][1] - $real_start);
-		}
-	} else { //negative $length. Omit $length characters from end
-		return substr($str, $real_start, $chars[$html_length + $length][1] - $real_start);
-	}
-}
-
-function counterValue() {
-	static $counter = 0;
-	$counter = $counter + 1;
-	return $counter;
-}
-
-?>

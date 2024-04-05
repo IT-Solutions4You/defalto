@@ -75,12 +75,6 @@ class RecurringType {
 		
 		$this->recurringdates = $this->_getRecurringDates();
 	}
-	function RecurringType($repeat_arr) {
-		// PHP4-style constructor.
-		// This will NOT be invoked, unless a sub-class that extends `foo` calls it.
-		// In that case, call the new-style constructor to keep compatibility.
-		self::__construct($repeat_arr);
-	}
 
 	public static function fromUserRequest($requestArray) {
 		// All the information from the user is received in User Time zone
@@ -282,47 +276,6 @@ class RecurringType {
 			}
 		}
 		return $recurringInfo;
-	}
-
-	function getDisplayRecurringInfo() {
-		global $currentModule;
-
-		$displayRecurringData = array();
-
-		$recurringInfo = $this->getUserRecurringInfo();
-
-		$displayRecurringData['recurringcheck'] = getTranslatedString('LBL_YES', $currentModule);
-		$displayRecurringData['repeat_frequency'] = $this->getRecurringFrequency();
-		$displayRecurringData['recurringtype'] = $this->getRecurringType();
-
-		if ($this->getRecurringType() == 'Weekly') {
-			$noOfDays = php7_count($recurringInfo['dayofweek_to_repeat']);
-			$translatedRepeatDays = array();
-			for ($i = 0; $i < $noOfDays; ++$i) {
-				$translatedRepeatDays[] = getTranslatedString('LBL_DAY' . $recurringInfo['dayofweek_to_repeat'][$i], $currentModule);
-			}
-			$displayRecurringData['repeat_str'] = getTranslatedString('On', $currentModule).' '.implode(',', $translatedRepeatDays);
-		} elseif ($this->getRecurringType() == 'Monthly') {
-
-			$translatedRepeatDays = array();
-			$displayRecurringData['repeatMonth'] = $recurringInfo['repeatmonth_type'];
-			if ($recurringInfo['repeatmonth_type'] == 'date') {
-				$displayRecurringData['repeatMonth_date'] = $recurringInfo['repeatmonth_date'];
-				$displayRecurringData['repeat_str'] = getTranslatedString('on', $currentModule)
-						. ' ' . $recurringInfo['repeatmonth_date']
-						. ' ' . getTranslatedString('day of the month', $currentModule);
-			} else {
-				$displayRecurringData['repeatMonth_daytype'] = $recurringInfo['repeatmonth_daytype'];
-				$displayRecurringData['repeatMonth_day'] = $recurringInfo['dayofweek_to_repeat'][0];
-				$translatedRepeatDay = getTranslatedString('LBL_DAY' . $recurringInfo['dayofweek_to_repeat'][0], $currentModule);
-
-				$displayRecurringData['repeat_str'] = getTranslatedString('On', $currentModule)
-						. ' ' . getTranslatedString($recurringInfo['repeatmonth_daytype'], $currentModule)
-						. ' ' . $translatedRepeatDay;
-			}
-		}
-
-		return $displayRecurringData;
 	}
 
 	/**

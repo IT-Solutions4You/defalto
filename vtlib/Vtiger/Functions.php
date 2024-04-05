@@ -105,12 +105,6 @@ class Vtiger_Functions {
 		return $date->getDisplayDate();
 	}
 
-	static function currentUserDisplayDateNew() {
-		global $log, $current_user;
-		$date = new DateTimeField(null);
-		return $date->getDisplayDate($current_user);
-	}
-
 	// i18n
 	static function getTranslatedString($str, $module='', $language='') {
 		return Vtiger_Language_Handler::getTranslatedString($str, $module, $language);
@@ -543,15 +537,6 @@ class Vtiger_Functions {
 		return $string;
 	}
 
-	static function fromHTML_FCK($string) {
-		if (is_string($string)) {
-			if (preg_match('/(script).*(\/script)/i', $string)) {
-				$string = str_replace('script', '', $string);
-			}
-		}
-		return $string;
-	}
-
 	static function fromHTML_Popup($string, $encode = true) {
 		$popup_toHtml = array(
 			'"' => '&quot;',
@@ -809,14 +794,6 @@ class Vtiger_Functions {
 			}
 		}
 		return $description;
-	}
-
-	static function getSingleFieldValue($tablename, $fieldname, $idname, $id) {
-		global $adb;
-        $fieldname = Vtiger_Util_Helper::validateStringForSql($fieldname);
-        $idname = Vtiger_Util_Helper::validateStringForSql($idname);
-		$fieldval = $adb->query_result($adb->pquery("select $fieldname from $tablename where $idname = ?", array($id)), 0, $fieldname);
-		return $fieldval;
 	}
 
 	static function getRecurringObjValue() {
@@ -1209,23 +1186,6 @@ class Vtiger_Functions {
 	}
 
 	/**
-	 * Function to get track email image contents
-	 * @param $recordId Email record Id
-	 * @param $parentId Parent record Id of Email record
-	 * @return string returns track image contents
-	 */
-	static function getTrackImageContent($recordId, $parentId) {
-            $params = array();
-            $params['record'] = $recordId;
-            $params['parentId'] = $parentId;
-            $params['method'] = 'open';
-
-            $trackURL = Vtiger_Functions::generateTrackingURL($params);
-            $imageDetails = "<img src='$trackURL' alt='' width='1' height='1'>";
-            return $imageDetails;
-	}
-
-	/**
 	 * Function to get the list of urls from html content
 	 * @param <string> $content
 	 * @return <array> $urls
@@ -1287,20 +1247,6 @@ class Vtiger_Functions {
             } else {
                     return false;
             }
-	}
-
-	/**
-	 * Function to get name and email value from a string of format <b>Your Name<youremail@company.com></b>
-	 * @param String $string Name and email value in required format.
-	 * @return Array Returns array of name and email in format <b><br>Array(<br>&#09;name => Your Name,<br>&#09;email => youemail@company.com<br>)</b>
-	 * @return Boolean Returns FALSE if given string doesn't match required format.
-	 */
-	static function extractNameEmail($string) {
-		$pattern = '/([(\w+) ]+)(<)([\\w-+]+(?:\\.[\\w-+]+)*@(?:[\\w-]+\\.)+[a-zA-Z]{2,7})(>)/is';
-		if (preg_match($pattern, $string, $matches)) {
-			return array('name' => $matches[1], 'email' => $matches[3]);
-		}
-		return false;
 	}
 
 	/**
@@ -1421,31 +1367,6 @@ class Vtiger_Functions {
 			return false;
 		}
 	}
-	/**
-	 * Function to decode JWT web token
-	 * @param <string> $id_token
-	 * @return <array>
-	 */
-	static function jwtDecode($id_token) {
-		$token_parts = explode(".", $id_token);
-
-		// First, in case it is url-encoded, fix the characters to be
-		// valid base64
-		$encoded_token = str_replace('-', '+', $token_parts[1]);
-		$encoded_token = str_replace('_', '/', $encoded_token);
-
-		// Next, add padding if it is needed.
-		switch (strlen($encoded_token) % 4) {
-			case 0:	break;// No pad characters needed.
-			case 2:	$encoded_token = $encoded_token . "==";	break;
-			case 3:	$encoded_token = $encoded_token . "=";	break;
-			default:return null;// Invalid base64 string!
-		}
-
-		$json_string = base64_decode($encoded_token);
-		$jwt = json_decode($json_string, true);
-		return $jwt;
-	}
 
 	/**
 	 * Function to mask input text.
@@ -1475,19 +1396,6 @@ class Vtiger_Functions {
 			return $encryption->decrypt(substr($text, 4));
 		}
 		return $text;
-	}
-
-	/*
-	 * Function to convert file size in bytes to user displayable format
-	 */
-	static function convertFileSizeToUserFormat($sizeInBytes) {
-		$fileSizeUnits = array('KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-		$i = -1;
-		do {
-			$sizeInBytes = $sizeInBytes / 1024;
-			$i++;
-		} while ($sizeInBytes > 1024);
-		return round($sizeInBytes, 2) . $fileSizeUnits[$i];
 	}
 
 	/**

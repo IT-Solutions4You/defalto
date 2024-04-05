@@ -25,7 +25,6 @@ require_once('include/utils/ListViewUtils.php');
 require_once('include/utils/EditViewUtils.php');
 require_once('include/utils/CommonUtils.php');
 require_once('include/utils/InventoryUtils.php');
-require_once('include/utils/SearchUtils.php');
 require_once('include/FormValidationUtil.php');
 require_once('include/events/SqlResultIterator.inc');
 require_once('include/fields/DateTimeField.php');
@@ -59,59 +58,6 @@ define("CV_STATUS_PUBLIC", 3);
 define("RB_RECORD_DELETED", 'delete');
 define("RB_RECORD_INSERTED", 'insert');
 define("RB_RECORD_UPDATED", 'update');
-
-/** Function to return a full name
-  * @param $row -- row:: Type integer
-  * @param $first_column -- first column:: Type string
-  * @param $last_column -- last column:: Type string
-  * @returns $fullname -- fullname:: Type string
-  *
-*/
-function return_name(&$row, $first_column, $last_column)
-{
-	global $log;
-	$log->debug("Entering return_name(".$row.",".$first_column.",".$last_column.") method ...");
-	$first_name = "";
-	$last_name = "";
-	$full_name = "";
-
-	if(isset($row[$first_column]))
-	{
-		$first_name = stripslashes($row[$first_column]);
-	}
-
-	if(isset($row[$last_column]))
-	{
-		$last_name = stripslashes($row[$last_column]);
-	}
-
-	$full_name = $first_name;
-
-	// If we have a first name and we have a last name
-	if($full_name != "" && $last_name != "")
-	{
-		// append a space, then the last name
-		$full_name .= " ".$last_name;
-	}
-	// If we have no first name, but we have a last name
-	else if($last_name != "")
-	{
-		// append the last name without the space.
-		$full_name .= $last_name;
-	}
-
-	$log->debug("Exiting return_name method ...");
-	return $full_name;
-}
-
-/** Function returns the user key in user array
-  * @param $add_blank -- boolean:: Type boolean
-  * @param $status -- user status:: Type string
-  * @param $assigned_user -- user id:: Type string
-  * @param $private -- sharing type:: Type string
-  * @returns $user_array -- user array:: Type array
-  *
-*/
 
 //used in module file
 function get_user_array($add_blank=true, $status="Active", $assigned_user="",$private="",$module=false)
@@ -266,13 +212,6 @@ function return_app_list_strings_language($language) {
 	return Vtiger_Deprecated::return_app_list_strings_language($language);
 }
 
-/**
- * Retrieve the app_currency_strings for the required language.
- */
-function return_app_currency_strings_language($language) {
-	return Vtiger_Deprecated::return_app_list_strings_language($language);
-}
-
 /** This function retrieves an application language file and returns the array of strings included.
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
  * All Rights Reserved.
@@ -296,35 +235,6 @@ function return_module_language($language, $module) {
 
 function return_specified_module_language($language, $module) {
 	return Vtiger_Deprecated::return_app_list_strings_language($language, $module);
-}
-
-/**
- * Return an array of directory names.
- * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc.
- * All Rights Reserved.
- * Contributor(s): ______________________________________..
- */
-function get_themes() {
-	return Vtiger_Theme::getAllSkins();
-   }
-
-
-/** Function to set default varibles on to the global variable
-  * @param $defaults -- default values:: Type array
-       */
-function set_default_config(&$defaults)
-{
-	global $log;
-	$log->debug("Entering set_default_config(".$defaults.") method ...");
-
-	foreach ($defaults as $name=>$value)
-	{
-		if ( ! isset($GLOBALS[$name]) )
-		{
-			$GLOBALS[$name] = $value;
-		}
-	}
-	$log->debug("Exiting set_default_config method ...");
 }
 
 /**
@@ -762,23 +672,6 @@ function addToProductDemand($productId,$qty)
 
 		}
 
-/**	This Function subtract the specified product quantity to the Product Quantity in Stock in the Warehouse
-  *	@param int $productId - ProductId
-  *	@param int $qty - Quantity to be subtracted
-  */
-function deductFromProductStock($productId,$qty)
-{
-	global $log;
-	$log->debug("Entering deductFromProductStock(".$productId.",".$qty.") method ...");
-	global $adb;
-	$qtyInStck=getProductQtyInStock($productId);
-	$updQty=$qtyInStck - $qty;
-	$sql = "UPDATE vtiger_products set qtyinstock=? where productid=?";
-	$adb->pquery($sql, array($updQty, $productId));
-	$log->debug("Exiting deductFromProductStock method ...");
-
-}
-
 /**	This Function subtract the specified product quantity to the Product Quantity in Demand in the Warehouse
   *	@param int $productId - ProductId
   *	@param int $qty - Quantity to be subtract
@@ -963,66 +856,6 @@ function formatForSqlLike($str, $flag=0,$is_field=false) {
 	return $adb->sql_escape_string($str);
 }
 
-/**    Function used to get all the picklists and their values for a module
- * @param string $module - Module name to which the list of picklists and their values needed
- * @return array $fieldlists - Array of picklists and their values
- **/
-function getAccessPickListValues($module)
-{
-    global $adb, $log;
-    global $current_user;
-    $log->debug('Entering into function getAccessPickListValues(' . $module . ')');
-
-    $id = getTabid($module);
-    $query = 'SELECT fieldname,columnname,fieldid,fieldlabel,tabid,uitype FROM vtiger_field WHERE tabid = ? AND uitype IN (?, ?, ?) AND vtiger_field.presence IN (0,2)';
-    $result = $adb->pquery($query, [$id, 15, 33, 55]);
-
-    $roleid = $current_user->roleid;
-    $subrole = getRoleSubordinates($roleid);
-
-    if (!empty($subrole) && php7_count($subrole)) {
-        $roleids = $subrole;
-        $roleids[] = $roleid;
-    } else {
-        $roleids = $roleid;
-    }
-
-    for ($i = 0; $i < $adb->num_rows($result); $i++) {
-        $fieldname = Vtiger_Util_Helper::validateStringForSql($adb->query_result($result, $i, "fieldname"));
-        $columnname = $adb->query_result($result, $i, "columnname");
-        $uitype = $adb->query_result($result, $i, "uitype");
-
-        $keyvalue = $columnname;
-        $fieldvalues = [];
-
-        if (!empty($roleids) && (php7_count($roleids) > 1)) {
-            $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid in (\"" . implode('","',
-                    $roleids) . "\") and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-        } else {
-            $mulsel = "select distinct $fieldname from vtiger_$fieldname inner join vtiger_role2picklist on vtiger_role2picklist.picklistvalueid = vtiger_$fieldname.picklist_valueid where roleid ='" . $roleid . "' and picklistid in (select picklistid from vtiger_$fieldname) order by sortid asc";
-        }
-
-        if ($fieldname != 'firstname') {
-            $mulselresult = $adb->pquery($mulsel, []);
-        }
-
-        for ($j = 0; $j < $adb->num_rows($mulselresult); $j++) {
-            $fieldvalues[] = $adb->query_result($mulselresult, $j, $fieldname);
-        }
-
-        if ($uitype == 33) {
-            $fieldlists[1][$keyvalue] = $fieldvalues;
-        } elseif ($uitype == 55 && $fieldname === 'salutationtype') {
-            $fieldlists[$keyvalue] = $fieldvalues;
-        } elseif ($uitype == 15) {
-            $fieldlists[$keyvalue] = $fieldvalues;
-        }
-    }
-    $log->debug('Exit from function getAccessPickListValues(' . $module . ')');
-
-    return $fieldlists;
-}
-
 function get_config_status() {
 	global $default_charset;
 	if(strtolower($default_charset) == 'utf-8')
@@ -1031,29 +864,6 @@ function get_config_status() {
 		$config_status=0;
 	return $config_status;
         }
-
-function getMigrationCharsetFlag() {
-	global $adb;
-
-	if(!$adb->isPostgres())
-		$db_status=$adb->check_db_utf8_support();
-	$config_status=get_config_status();
-
-	if ($db_status == $config_status) {
-		if ($db_status == 1) { // Both are UTF-8
-			$db_migration_status = MIG_CHARSET_PHP_UTF8_DB_UTF8;
-		} else { // Both are Non UTF-8
-			$db_migration_status = MIG_CHARSET_PHP_NONUTF8_DB_NONUTF8;
-}
-		} else {
-			if ($db_status == 1) { // Database charset is UTF-8 and CRM charset is Non UTF-8
-				$db_migration_status = MIG_CHARSET_PHP_NONUTF8_DB_UTF8;
-		} else { // Database charset is Non UTF-8 and CRM charset is UTF-8
-			$db_migration_status = MIG_CHARSET_PHP_UTF8_DB_NONUTF8;
-	}
-	}
-	return $db_migration_status;
-}
 
 /** Function to get on clause criteria for duplicate check queries */
 function get_on_clause($field_list,$uitype_arr,$module)
@@ -1186,129 +996,6 @@ function transferServicesCurrency($old_cur, $new_cur) {
     $log->debug("Exiting function updateServicesCurrency...");
 }
 
-/**
- * this function searches for a given number in vtiger and returns the callerInfo in an array format
- * currently the search is made across only leads, accounts and contacts modules
- *
- * @param $number - the number whose information you want
- * @return array in format array(name=>callername, module=>module, id=>id);
-  */
-function getCallerInfo($number){
-	global $adb, $log;
-	if(empty($number)){
-		return false;
-}
-	$caller = "Unknown Number (Unknown)"; //declare caller as unknown in beginning
-
-	$params = array();
-	$name = array('Contacts', 'Accounts', 'Leads');
-	foreach ($name as $module) {
-		$focus = CRMEntity::getInstance($module);
-		$query = $focus->buildSearchQueryForFieldTypes(11, $number);
-		if(empty($query)) return;
-
-		$result = $adb->pquery($query, array());
-		if($adb->num_rows($result) > 0 ){
-			$callerName = $adb->query_result($result, 0, "name");
-			$callerID = $adb->query_result($result,0,'id');
-			$data = array("name"=>$callerName, "module"=>$module, "id"=>$callerID);
-			return $data;
-		}
-	}
-	return false;
-}
-
-/**
- * this function returns the value of use_asterisk from the database for the current user
- * @param string $id - the id of the current user
- */
-function get_use_asterisk($id){
-	global $adb;
-	if(!vtlib_isModuleActive('PBXManager') || isPermitted('PBXManager', 'index') == 'no'){
-		return false;
-	}
-	$sql = "select * from vtiger_asteriskextensions where userid = ?";
-	$result = $adb->pquery($sql, array($id));
-	if($adb->num_rows($result)>0){
-		$use_asterisk = $adb->query_result($result, 0, "use_asterisk");
-		$asterisk_extension = $adb->query_result($result, 0, "asterisk_extension");
-		if($use_asterisk == 0 || empty($asterisk_extension)){
-			return 'false';
-		}else{
-			return 'true';
-	}
-	}else{
-		return 'false';
-	}
-}
-
-/**
- * this function adds a record to the callhistory module
- *
- * @param string $userExtension - the extension of the current user
- * @param string $callfrom - the caller number
- * @param string $callto - the called number
- * @param string $status - the status of the call (outgoing/incoming/missed)
- * @param object $adb - the peardatabase object
-  */
-function addToCallHistory($userExtension, $callfrom, $callto, $status, $adb, $useCallerInfo){
-	$sql = "select * from vtiger_asteriskextensions where asterisk_extension=?";
-	$result = $adb->pquery($sql,array($userExtension));
-	$userID = $adb->query_result($result, 0, "userid");
-	if(empty($userID)) {
-		// we have observed call to extension not configured in Vtiger will returns NULL
-		return;
-	}
-	if(empty($callfrom)){
-		$callfrom = "Unknown";
-	}
-	if(empty($callto)){
-		$callto = "Unknown";
-}
-
-	if($status == 'outgoing'){
-		//call is from user to record
-		$sql = "select * from vtiger_asteriskextensions where asterisk_extension=?";
-		$result = $adb->pquery($sql, array($callfrom));
-		if($adb->num_rows($result)>0){
-			$userid = $adb->query_result($result, 0, "userid");
-			$callerName = getUserFullName($userid);
-		}
-
-		$receiver = $useCallerInfo;
-		if(empty($receiver)){
-			$receiver = "Unknown";
-		}else{
-			$receiver = "<a href='index.php?module=".$receiver['module']."&action=DetailView&record=".$receiver['id']."'>".$receiver['name']."</a>";
-		}
-	}else{
-		//call is from record to user
-		$sql = "select * from vtiger_asteriskextensions where asterisk_extension=?";
-		$result = $adb->pquery($sql,array($callto));
-		if($adb->num_rows($result)>0){
-			$userid = $adb->query_result($result, 0, "userid");
-			$receiver = getUserFullName($userid);
-		}
-		$callerName = $useCallerInfo;
-		if(empty($callerName)){
-			$callerName = "Unknown $callfrom";
-		}else{
-			$callerName = "<a href='index.php?module=".$callerName['module']."&action=DetailView&record=".$callerName['id']."'>".decode_html($callerName['name'])."</a>";
-}
-}
-
-	$crmID = $adb->getUniqueID('vtiger_crmentity');
-	$timeOfCall = date('Y-m-d H:i:s');
-
-	$query = "INSERT INTO vtiger_crmentity (crmid,smcreatorid,smownerid,modifiedby,setype,description,createdtime,
-			modifiedtime,viewedtime,status,version,presence,deleted,label) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	$adb->pquery($query, array($crmID, $userID, $userID, 0, "PBXManager", "", $timeOfCall, $timeOfCall, NULL, NULL, 0, 1, 0, $callerName));
-
-	$sql = "insert into vtiger_pbxmanager (pbxmanagerid,callfrom,callto,timeofcall,status)values (?,?,?,?,?)";
-	$params = array($crmID, $callerName, $receiver, $timeOfCall, $status);
-	$adb->pquery($sql, $params);
-	return $crmID;
-}
 //functions for asterisk integration end
 
 /* Function to get the related tables data
@@ -1508,23 +1195,6 @@ function columnExists($columnName, $tableName){
 	}
 }
 
-/* To get modules list for which work flow and field formulas is permitted*/
-function com_vtGetModules($adb) {
-	$sql="select distinct vtiger_field.tabid, name
-		from vtiger_field
-		inner join vtiger_tab
-			on vtiger_field.tabid=vtiger_tab.tabid
-		where vtiger_field.tabid not in(9,10,16,15,29) and vtiger_tab.presence = 0 and vtiger_tab.isentitytype=1";
-	$it = new SqlResultIterator($adb, $adb->pquery($sql, array()));
-	$modules = array();
-	foreach($it as $row) {
-		if(isPermitted($row->name,'index') == "yes") {
-			$modules[$row->name] = getTranslatedString($row->name);
-		}
-	}
-	return $modules;
-        }
-
 /**
  * Function to check if a given record exists (not deleted)
  * @param integer $recordId - record id
@@ -1606,19 +1276,6 @@ function getValidDBInsertDateTimeValue($value) {
 	}
 }
 
-/** Function to set the PHP memory limit to the specified value, if the memory limit set in the php.ini is less than the specified value
- * @param $newvalue -- Required Memory Limit
- */
-function _phpset_memorylimit_MB($newvalue) {
-    $current = @ini_get('memory_limit');
-    if(preg_match("/(.*)M/", $current, $matches)) {
-        // Check if current value is less then new value
-        if($matches[1] < $newvalue) {
-            @ini_set('memory_limit', "{$newvalue}M");
-	}
-	}
-	}
-
 /** Function to sanitize the upload file name when the file name is detected to have bad extensions
  * @param String -- $fileName - File name to be sanitized
  * @return String - Sanitized file name
@@ -1652,22 +1309,6 @@ function sanitizeUploadFileName($fileName, $badFileExtensions)
     }
 
     return ltrim(basename(' ' . $newFileName));
-}
-
-/** Function to get the tab meta information for a given id
-  * @param $tabId -- tab id :: Type integer
-  * @returns $tabInfo -- array of preference name to preference value :: Type array
-  */
-function getTabInfo($tabId) {
-	global $adb;
-
-	$tabInfoResult = $adb->pquery('SELECT prefname, prefvalue FROM vtiger_tab_info WHERE tabid=?', array($tabId));
-	$tabInfo = array();
-	for($i=0; $i<$adb->num_rows($tabInfoResult); ++$i) {
-		$prefName = $adb->query_result($tabInfoResult, $i, 'prefname');
-		$prefValue = $adb->query_result($tabInfoResult, $i, 'prefvalue');
-		$tabInfo[$prefName] = $prefValue;
-}
 }
 
 /** Function to return block name
@@ -1706,14 +1347,6 @@ function validateServerName($string){
 		}
     return true;
 	}
-
-function validateEmailId($string){
-    preg_match('/^[a-zA-Z0-9]+([\_\-\.]*[a-zA-Z0-9]+[\_\-]?)*@[a-zA-Z0-9]+([\_\-]?[a-zA-Z0-9]+)*\.+([\-\_]?[a-zA-Z0-9])+(\.?[a-zA-Z0-9]+)*$/', $string, $matches);
-    if(php7_count($matches) == 0) {
-        return false;
-    }
-		return true;
-}
 
 /**
 * Function to get the approximate difference between two date time values as string
@@ -1779,30 +1412,6 @@ function getInventoryModules() {
 	return $inventoryModules;
 }
 
-/* Function to only initialize the update of Vtlib Compliant modules
- * @param - $module - Name of the module
- * @param - $packagepath - Complete path to the zip file of the Module
- */
-function initUpdateVtlibModule($module, $packagepath) {
-	global $log;
-	require_once('vtlib/Vtiger/Package.php');
-	require_once('vtlib/Vtiger/Module.php');
-	$Vtiger_Utils_Log = true;
-	$package = new Vtiger_Package();
-
-	if($module == null) {
-		$log->fatal("Module name is invalid");
-	} else {
-		$moduleInstance = Vtiger_Module::getInstance($module);
-		if($moduleInstance) {
-			$log->debug("$module - Module instance found - Init Update starts here");
-			$package->initUpdate($moduleInstance, $packagepath, true);
-		} else {
-			$log->fatal("$module doesn't exists!");
-		}
-	}
-}
-
 function isLeadConverted($leadId) {
 	$adb = PearDatabase::getInstance();
 
@@ -1815,126 +1424,6 @@ function isLeadConverted($leadId) {
 		return true;
 	}
 	return false;
-}
-
-function getSelectedRecords($input,$module,$idstring,$excludedRecords) {
-	global $current_user, $adb;
-
-	if($idstring == 'relatedListSelectAll') {
-
-		$recordid = vtlib_purify($input['recordid']);
-		if($module == 'Accounts') {
-			$result = getCampaignAccountIds($recordid);
-		}
-		if($module == 'Contacts') {
-			$result = getCampaignContactIds($recordid);
-		}
-		if($module == 'Leads') {
-			$result = getCampaignLeadIds($recordid);
-		}
-		$storearray = array();
-		for ($i = 0; $i < $adb->num_rows($result); $i++) {
-			$storearray[] = $adb->query_result($result, $i, 'id');
-		}
-
-		$excludedRecords=explode(';',$excludedRecords);
-		$storearray=array_diff($storearray,$excludedRecords);
-
-	} else if($module == 'Documents') {
-
-		if($input['selectallmode']=='true') {
-			$result = getSelectAllQuery($input,$module);
-			$storearray = array();
-			$focus = CRMEntity::getInstance($module);
-
-			for ($i = 0; $i < $adb->num_rows($result); $i++) {
-				$storearray[] = $adb->query_result($result, $i, $focus->table_index);
-			}
-
-			$excludedRecords = explode(';',$excludedRecords);
-			$storearray = array_diff($storearray,$excludedRecords);
-			if($idstring != 'all') {
-				$storearray = array_merge($storearray,explode(';',$idstring));
-			}
-			$storearray = array_unique($storearray);
-
-		} else {
-			$storearray = explode(";",$idstring);
-		}
-
-	} elseif($idstring == 'all') {
-
-		$result = getSelectAllQuery($input,$module);
-		$storearray = array();
-		$focus = CRMEntity::getInstance($module);
-
-		for ($i = 0; $i < $adb->num_rows($result); $i++) {
-			$storearray[] = $adb->query_result($result, $i, $focus->table_index);
-		}
-
-		$excludedRecords = explode(';',$excludedRecords);
-		$storearray = array_diff($storearray,$excludedRecords);
-
-	} else {
-		$storearray = explode(";",$idstring);
-	}
-
-	return $storearray;
-}
-
-function getSelectAllQuery($input,$module) {
-	global $adb,$current_user;
-
-	$viewid = vtlib_purify($input['viewname']);
-
-    $queryGenerator = new QueryGenerator($module, $current_user);
-    $queryGenerator->initForCustomViewById($viewid);
-
-    if($input['query'] == 'true') {
-        $queryGenerator->addUserSearchConditions($input);
-    }
-
-    $queryGenerator->setFields(array('id'));
-    $query = $queryGenerator->getQuery();
-
-    if($module == 'Documents') {
-        $folderid = vtlib_purify($input['folderidstring']);
-        $folderid = str_replace(';', ',', $folderid);
-        $query .= " AND vtiger_notes.folderid in (".$folderid.")";
-    }
-
-	$result = $adb->pquery($query, array());
-	return $result;
-}
-
-function getCampaignAccountIds($id) {
-	global $adb;
-	$sql="SELECT vtiger_account.accountid as id FROM vtiger_account
-		INNER JOIN vtiger_campaignaccountrel ON vtiger_campaignaccountrel.accountid = vtiger_account.accountid
-		LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_account.accountid
-		WHERE vtiger_campaignaccountrel.campaignid = ? AND vtiger_crmentity.deleted=0";
-	$result = $adb->pquery($sql, array($id));
-	return $result;
-}
-
-function getCampaignContactIds($id) {
-	global $adb;
-	$sql="SELECT vtiger_contactdetails.contactid as id FROM vtiger_contactdetails
-		INNER JOIN vtiger_campaigncontrel ON vtiger_campaigncontrel.contactid = vtiger_contactdetails.contactid
-		LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
-		WHERE vtiger_campaigncontrel.campaignid = ? AND vtiger_crmentity.deleted=0";
-	$result = $adb->pquery($sql, array($id));
-	return $result;
-}
-
-function getCampaignLeadIds($id) {
-	global $adb;
-	$sql="SELECT vtiger_leaddetails.leadid as id FROM vtiger_leaddetails
-		INNER JOIN vtiger_campaignleadrel ON vtiger_campaignleadrel.leadid = vtiger_leaddetails.leadid
-		LEFT JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_leaddetails.leadid
-		WHERE vtiger_campaignleadrel.campaignid = ? AND vtiger_crmentity.deleted=0";
-	$result = $adb->pquery($sql, array($id));
-	return $result;
 }
 
 /** Function to get the difference between 2 datetime strings or millisecond values */
@@ -1958,39 +1447,6 @@ function dateDiff($d1, $d2){
 		"seconds_total" => $diffSecs,
 		"seconds" => (int) date("s", $diff)
 	);
-}
-
-function getExportRecordIds($moduleName, $viewid, $input) {
-	global $adb, $current_user, $list_max_entries_per_page;
-
-	$idstring = vtlib_purify($input['idstring']);
-	$export_data = vtlib_purify($input['export_data']);
-
-	if (in_array($moduleName, getInventoryModules()) && $export_data == 'currentpage') {
-		$queryGenerator = new QueryGenerator($moduleName, $current_user);
-		$queryGenerator->initForCustomViewById($viewid);
-
-		if($input['query'] == 'true') {
-			$queryGenerator->addUserSearchConditions($input);
-		}
-
-		$queryGenerator->setFields(array('id'));
-		$query = $queryGenerator->getQuery();
-		$current_page = ListViewSession::getCurrentPage($moduleName,$viewid);
-		$limit_start_rec = ($current_page - 1) * $list_max_entries_per_page;
-		if ($limit_start_rec < 0) $limit_start_rec = 0;
-		$query .= ' LIMIT '.$limit_start_rec.','.$list_max_entries_per_page;
-
-		$result = $adb->pquery($query, array());
-		$idstring = array();
-		$focus = CRMEntity::getInstance($moduleName);
-		for ($i = 0; $i < $adb->num_rows($result); $i++) {
-			$idstring[] = $adb->query_result($result, $i, $focus->table_index);
-		}
-		$idstring = implode(';',$idstring);
-		$export_data = 'selecteddata';
-	}
-	return $idstring. '#@@#' .$export_data;
 }
 
 /**
@@ -2040,7 +1496,6 @@ function lower_array(&$string){
 	$string = strtolower(trim($string));
 }
 
-if (!function_exists('get_magic_quotes_runtime')) { function get_magic_quotes_runtime() { return false; } }
 if (!function_exists('set_magic_quotes_runtime')) { function set_magic_quotes_runtime($flag) {} }
 
 /** 
@@ -2050,66 +1505,6 @@ if (!function_exists('set_magic_quotes_runtime')) { function set_magic_quotes_ru
  */
 function escapeSlashes($value) {
     return str_replace('\\', '\\\\', $value);
-}
-
-/** Function to get a user id or group id for a given entity
- *  @param $record -- entity id :: Type integer
- *  @returns reports to id <int>
- */
-function getRecordOwnerReportsToId($record) {
-    global $adb;
-    $reportsToId = false;
-    $ownerArr = getRecordOwnerId($record);
-    if ($ownerArr['Users']) {
-        $query = "SELECT reports_to_id FROM vtiger_users WHERE id = ?";
-        $result = $adb->pquery($query, array($ownerArr['Users']));
-        if ($adb->num_rows($result) > 0) {
-            $reportsToId = $adb->query_result($result, 0, 'reports_to_id');
-        }
-    }
-    return $reportsToId;
-}
-
-/**
- * Function to get last week range of give date
- * @param type $date
- * @return array($timestamps)
- */
-function getLastWeekRange($date) {
-	$given_time = strtotime($date);
-	$day = gmdate('D', $given_time);
-
-	if ($day == 'Sun') {
-		$thissunday = strtotime("this sunday", $given_time);
-	} else {
-		$thissunday = strtotime("-1 week sunday", $given_time);
-	}
-
-	$lastSunday = $thissunday - (7 * 24 * 60 * 60); // 7 days; 24 hours; 60 mins; 60secs
-	$lastSaturday = $lastSunday + (6 * 24 * 60 * 60);
-
-	$lastWeekRange = array("start" => $lastSunday, "end" => $lastSaturday);
-	return $lastWeekRange;
-}
-
-/**
- * Function to get current week range of given date
- * @param type $date
- * @return array($timestamps)
- */
-function getCurrentWeekRange($date) {
-	$given_time = strtotime($date);
-	$day = gmdate('D', $given_time);
-
-	if ($day == 'Sun') {
-		$thissunday = $given_time;
-	} else {
-		$thissunday = strtotime("-1 week sunday", $given_time);
-	}
-	$thisSaturday = $thissunday + (6 * 24 * 60 * 60);
-
-	$currentWeekRange = array("start" => $thissunday, "end" => $thisSaturday);
-	return $currentWeekRange;
 }
 
 /**
