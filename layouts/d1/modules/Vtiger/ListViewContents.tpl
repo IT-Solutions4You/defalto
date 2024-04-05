@@ -166,7 +166,9 @@
                                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
                                             {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
-                                            {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
+                                            <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}">
+                                                {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
+                                            </span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                             {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE}</span>
@@ -187,7 +189,7 @@
                                                 </span>
                                             {/foreach}
                                         {else}
-                                            {$LISTVIEW_HEADER->getDisplayValue($LISTVIEW_ENTRY_VALUE)}
+                                            {$LISTVIEW_ENTRY_VALUE}
                                         {/if}
                                     </span>
                                 </span>

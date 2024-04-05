@@ -110,7 +110,7 @@ class VtigerProductOperation extends VtigerModuleOperation {
 			unset($_REQUEST["cur_$curId"."_check"]);
 			if (isset($element[$currencyName]) && is_numeric($element[$currencyName])) {
 				$_REQUEST["cur_$curId"."_check"] = 1;
-				$_REQUEST["curname$curId"] = CurrencyField::convertToUserFormat($element[$currencyName], null, true);
+				$_REQUEST["curname$curId"] = $element[$currencyName];
 			}
 		}
 		unset($_REQUEST['base_currency']);
@@ -127,7 +127,7 @@ class VtigerProductOperation extends VtigerModuleOperation {
 			if ($curId && is_numeric($curId) && in_array($curId, $activeCurrencies)) {
 				$_REQUEST['base_currency'] = "curname$curId";
 				$_REQUEST["cur_$curId"."_check"] = 1;
-				$_REQUEST["curname$curId"] = CurrencyField::convertToUserFormat($element['unit_price'], null, true);
+				$_REQUEST["curname$curId"] = $element['unit_price'];
 			} else {
 				throw new WebServiceException(WebServiceErrorCode::$INACTIVECURRENCY, "Provided Curreny is Inactive");
 			}
@@ -136,7 +136,7 @@ class VtigerProductOperation extends VtigerModuleOperation {
 			$curid = $curidArray['id'];
 			$_REQUEST['base_currency'] = "curname$curid";
 			$_REQUEST["cur_$curid"."_check"] = 1;
-			$_REQUEST["curname$curid"] = CurrencyField::convertToUserFormat($element['unit_price'], null, true);
+			$_REQUEST["curname$curid"] = $element['unit_price'];
 		}
 		$_REQUEST['unit_price'] = $element['unit_price'];
 		return $element;

@@ -202,6 +202,8 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 			value = this.getValue(),
 			html = '<div class="ReferenceField w-100 ';
 
+		console.log(['value', value]);
+
 		if (value) {
 			html += 'selected';
 		}
@@ -214,7 +216,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 		let reset = false;
 
 		if (value) {
-			html += ' value="' + value + '" disabled="disabled"';
+			html += ' value="' + value + '" readonly="readonly"';
 			reset = true;
 		}
 

@@ -1111,6 +1111,10 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				fieldInfo['value'] = value;
 			}
 
+			if('currency' === fieldType) {
+				fieldInfo['currency_symbol'] = detailViewValue.find('[data-currency-symbol]').attr('data-currency-symbol');
+			}
+
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
 				fieldModel = fieldObject.getUiTypeModel(),
 				ele = jQuery('<div class="d-flex editElement w-100"></div>'),

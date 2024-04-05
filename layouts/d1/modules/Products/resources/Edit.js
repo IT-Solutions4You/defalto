@@ -163,48 +163,53 @@ Vtiger_Edit_Js("Products_Edit_Js", {
 		});
 	},
 	saveCurrencies: function() {
-		var thisInstance = this;
-		var errorMessage;
-		var form = jQuery('#currencyContainer');
-		var editViewForm = thisInstance.getForm();
-		var modalContainer = jQuery('.myModal');
+		let thisInstance = this,
+			errorMessage,
+			form = jQuery('#currencyContainer'),
+			editViewForm = thisInstance.getForm(),
+			modalContainer = jQuery('.myModal'),
+			enabledBaseCurrency = modalContainer.find('.enableCurrency').filter(':checked');
 
-		var enabledBaseCurrency = modalContainer.find('.enableCurrency').filter(':checked');
 		if(enabledBaseCurrency.length < 1){
 			errorMessage = app.vtranslate('JS_PLEASE_SELECT_BASE_CURRENCY_FOR_PRODUCT');
 			app.helper.showErrorNotification({message: errorMessage});
 			form.removeData('submit');
 			return;
 		}
+
 		enabledBaseCurrency.attr('checked',"checked");
 		modalContainer.find('.enableCurrency').filter(":not(:checked)").removeAttr('checked');
-		var selectedBaseCurrency = modalContainer.find('.baseCurrency').filter(':checked');
+		let selectedBaseCurrency = modalContainer.find('.baseCurrency').filter(':checked');
+
 		if(selectedBaseCurrency.length < 1){
 			errorMessage = app.vtranslate('JS_PLEASE_ENABLE_BASE_CURRENCY_FOR_PRODUCT');
 			app.helper.showErrorNotification({message: errorMessage});
 			form.removeData('submit');
 			return;
 		}
+
 		selectedBaseCurrency.attr('checked',"checked");
 		modalContainer.find('.baseCurrency').filter(":not(:checked)").removeAttr('checked');
 
-		var parentElem = selectedBaseCurrency.closest('tr');
-		var currencySymbol = jQuery('.currencySymbol', parentElem).text();
-		var convertedPrice = jQuery('.convertedPrice', parentElem).val();
+		let parentElem = selectedBaseCurrency.closest('tr'),
+			currencySymbol = jQuery('.currencySymbol', parentElem).text(),
+			convertedPrice = jQuery('.convertedPrice', parentElem).val();
 
 		thisInstance.baseCurrencyName = parentElem.data('currencyId');
 		thisInstance.baseCurrency = convertedPrice;
 
 		thisInstance.getUnitPrice().val(thisInstance.baseCurrency);
 		jQuery('input[name="base_currency"]', editViewForm).val(thisInstance.baseCurrencyName);
-		jQuery('#baseCurrencySymbol', editViewForm).text(currencySymbol);
+		jQuery('.currencyUITypeSymbol', editViewForm).text(currencySymbol);
 
-		var savedValuesOfMultiCurrency = modalContainer.find('.currencyContent').html();
-		var moreCurrenciesContainer = jQuery('#moreCurrenciesContainer');
+		let savedValuesOfMultiCurrency = modalContainer.find('.currencyContent').html(),
+			moreCurrenciesContainer = jQuery('#moreCurrenciesContainer');
+
 		moreCurrenciesContainer.find('.currencyContent').html(savedValuesOfMultiCurrency);
 		modalContainer.find('input[name^=curname]').each(function(index, element) {
-			var dataValue = jQuery(element).val();
-			var dataId = jQuery(element).attr('id');
+			let dataValue = jQuery(element).val(),
+				dataId = jQuery(element).attr('id');
+
 			moreCurrenciesContainer.find('.currencyContent').find('#' + dataId).val(dataValue);
 		});
 		app.helper.hideModal();
