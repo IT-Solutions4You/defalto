@@ -1,12 +1,11 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
+
 	require_once 'include/events/VTBatchEventTrigger.inc';
 	require_once("include/events/SqlResultIterator.inc");
 	class VTEventTrigger{
@@ -90,7 +89,6 @@
 			$it = new SqlResultIterator($adb, $result);
 			foreach($it as $row) {
 				$evtinfosbyname[$row->event_name][] = array(
-					'condition'     => $row->cond,
 					'handler_class' => $row->handler_class,
 					'handler_path'  => $row->handler_path,
 					'dependent_on'	=> $row->dependent_on,
@@ -120,33 +118,32 @@
 				while(php7_count($eventInfos) > php7_count($completedEvents)) {
 					$handlerCounter = 0; // Tracks the number of handlers triggered for the current iteration.
 					foreach($eventInfos as $eventInfo){
-						$condition = new VTEventCondition($eventInfo['condition']);
-						if($condition->test($data)){
-							$handler_class = $eventInfo['handler_class'];
-							if(in_array($handler_class, $completedEvents)) {
-								continue;
-							}
+                        $handler_class = $eventInfo['handler_class'];
 
-							$dependentEventsNotCompleted = false;
-							$dependentOn = $eventInfo['dependent_on'];
-							$dependentEvents = Zend_Json::decode($dependentOn);
-							foreach($dependentEvents as $eventHandlerClass) {
-								if(!in_array($eventHandlerClass, $completedEvents)) {
-									$dependentEventsNotCompleted = true;
-								}
-							}
-							if($dependentEventsNotCompleted) continue;
+                        if (in_array($handler_class, $completedEvents)) {
+                            continue;
+                        }
 
-							require_once($eventInfo['handler_path']);
-							$handler = new $handler_class();
+                        $dependentEventsNotCompleted = false;
+                        $dependentOn = $eventInfo['dependent_on'];
+                        $dependentEvents = Zend_Json::decode($dependentOn);
 
-							$handler->handleEvent($this->name, $data);
-							$completedEvents[] = $handler_class;
-							$handlerCounter++;
-						} else {
-							// Mark the event-handler as finished - without actually invoking.
-							$completedEvents[] = $eventInfo['handler_class'];
-						}
+                        foreach ($dependentEvents as $eventHandlerClass) {
+                            if (!in_array($eventHandlerClass, $completedEvents)) {
+                                $dependentEventsNotCompleted = true;
+                            }
+                        }
+
+                        if ($dependentEventsNotCompleted) {
+                            continue;
+                        }
+
+                        require_once($eventInfo['handler_path']);
+                        $handler = new $handler_class();
+
+                        $handler->handleEvent($this->name, $data);
+                        $completedEvents[] = $handler_class;
+                        $handlerCounter++;
 					}
 					if($handlerCounter == 0 && php7_count($eventInfos) > php7_count($completedEvents)) {
 						$uncompletedEvents = array();
@@ -168,4 +165,3 @@
 			return new self($adb, $triggerName);
 		}
 	}
-?>

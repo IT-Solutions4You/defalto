@@ -4902,9 +4902,6 @@
 			<key />
 			<notnull />
 		</field>
-		<field name="cond" type="X">
-			<notnull />
-		</field>
 		<field name="is_active" type="I" size="1">
 			<notnull />
 		</field>

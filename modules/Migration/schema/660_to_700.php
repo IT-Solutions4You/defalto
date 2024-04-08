@@ -401,16 +401,16 @@ if(defined('VTIGER_UPGRADE')) {
 	$createEvent = 'vtiger.entity.aftersave';
 	$handler_path = 'modules/Vtiger/handlers/EmailLookupHandler.php';
 	$className = 'EmailLookupHandler';
-	$EventManager->registerHandler($createEvent, $handler_path, $className, '', '["VTEntityDelta"]');
+	$EventManager->registerHandler($createEvent, $handler_path, $className, '["VTEntityDelta"]');
 
 	$deleteEvent = 'vtiger.entity.afterdelete';
-	$EventManager->registerHandler($deleteEvent, $handler_path, $className, '');
+	$EventManager->registerHandler($deleteEvent, $handler_path, $className);
 
 	$restoreEvent = 'vtiger.entity.afterrestore';
-	$EventManager->registerHandler($restoreEvent, $handler_path, $className, '');
+	$EventManager->registerHandler($restoreEvent, $handler_path, $className);
 
 	$createBatchEvent = 'vtiger.batchevent.save';
-	$EventManager->registerHandler($createBatchEvent, $handler_path, 'EmailLookupBatchHandler', '');
+	$EventManager->registerHandler($createBatchEvent, $handler_path, 'EmailLookupBatchHandler');
 
 	$EmailsModuleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 	$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();

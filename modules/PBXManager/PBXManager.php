@@ -163,7 +163,7 @@ class PBXManager extends CRMEntity {
         $handler_path = 'modules/PBXManager/PBXManagerHandler.php';
         $className = 'PBXManagerHandler';
         $batchEventClassName = 'PBXManagerBatchHandler';
-        $EventManager->registerHandler($createEvent, $handler_path, $className,'','["VTEntityDelta"]');
+        $EventManager->registerHandler($createEvent, $handler_path, $className,'["VTEntityDelta"]');
         $EventManager->registerHandler($deleteEVent, $handler_path, $className);
         $EventManager->registerHandler($restoreEvent, $handler_path, $className);
         $EventManager->registerHandler($batchSaveEvent, $handler_path, $batchEventClassName);
