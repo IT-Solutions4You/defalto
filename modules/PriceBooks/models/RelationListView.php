@@ -14,16 +14,17 @@ class PriceBooks_RelationListView_Model extends Vtiger_RelationListView_Model {
     {
         $headerFields = parent::getHeaders();
 
-        if (in_array($this->getRelationModel()->getRelationModuleModel()->getName(), ['Products', 'Services'])) {
-            //Added to support List Price
-            $field = new Vtiger_Field_Model();
-            $field->set('name', 'listprice');
-            $field->set('column', 'listprice');
-            $field->set('label', 'List Price');
-            $field->set('uitype', '71');
-
-            $headerFields['listprice'] = $field;
+        if (!in_array($this->getRelationModel()->getRelationModuleModel()->getName(), ['Products', 'Services'])) {
+            return $headerFields;
         }
+
+        //Added to support List Price
+        $field = new Vtiger_Field_Model();
+        $field->set('name', 'listprice');
+        $field->set('column', 'listprice');
+        $field->set('label', 'List Price');
+        $field->set('uitype', '71');
+        $headerFields['listprice'] = $field;
 
         return $headerFields;
     }

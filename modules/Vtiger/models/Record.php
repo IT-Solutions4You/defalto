@@ -797,7 +797,10 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
         return (int)$row['currency_id'];
     }
 
-    public function getCurrencyId()
+    /**
+     * @return int
+     */
+    public function getCurrencyId(): int
     {
         $currencyId = $this->fetchCurrencyId();
 
@@ -810,6 +813,6 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
             $currencyId = $currentUser->get('currency_id');
         }
 
-        return $currencyId;
+        return (int)$currencyId;
     }
 }
