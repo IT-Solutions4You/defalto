@@ -132,8 +132,8 @@
 							</label>
 							<div class="controls col-lg-6">
 								<input type="hidden" name="presence" value="1"/>
-								<label class="checkbox">
-									<input type="checkbox" class="cursorPointer bootstrap-switch" id="fieldPresence" name="presence" {if $FIELD_MODEL->isViewable()}checked="checked"{/if} {if $FIELD_MODEL->isActiveOptionDisabled()}readonly="readonly"{/if} {if $FIELD_MODEL->isMandatory()}readonly="readonly"{/if} data-on-text="Yes" data-off-text="No" value="{$FIELD_MODEL->get('presence')}"/>
+								<label class="checkbox form-switch">
+									<input type="checkbox" class="cursorPointer form-check-input" id="fieldPresence" name="presence" {if $FIELD_MODEL->isViewable()}checked="checked"{/if} {if $FIELD_MODEL->isActiveOptionDisabled()}readonly="readonly"{/if} {if $FIELD_MODEL->isMandatory()}readonly="readonly"{/if} data-on-text="Yes" data-off-text="No" value="{$FIELD_MODEL->get('presence')}"/>
 								</label>
 							</div>
 						</div>

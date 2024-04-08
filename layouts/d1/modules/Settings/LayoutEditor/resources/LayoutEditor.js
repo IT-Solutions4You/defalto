@@ -798,6 +798,7 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
 
                     data.find('.blockList').find('option[value="' + blockId + '"]').attr('selected', 'selected');
                     thisInstance.showFieldEditModel(data, blockId);
+                    vtUtils.registerReplaceCommaWithDot(data)
                 }
             };
             isPopupShowing = true;
@@ -1903,13 +1904,10 @@ Vtiger.Class('Settings_LayoutEditor_Js', {}, {
                         cb: function (data) {
                             thisInstance.showFieldEditModel(data, blockId, container);
                             data.find('[name="fieldType"]').trigger('change');
-
-                            jQuery('#fieldPresence').bootstrapSwitch();
-                            jQuery('#fieldPresence').bootstrapSwitch('handleWidth', '27px');
-                            jQuery('#fieldPresence').bootstrapSwitch('labelWidth', '25px');
-                            jQuery('#fieldPresence').on('switchChange.bootstrapSwitch', function (e) {
+                            data.on('change', '#fieldPresence', function (e) {
                                 jQuery('.fieldProperty').toggleClass('hide');
                             });
+                            vtUtils.registerReplaceCommaWithDot(data);
                         }
                     };
 

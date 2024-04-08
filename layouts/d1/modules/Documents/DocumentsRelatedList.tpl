@@ -192,16 +192,9 @@
                                                     {/if}
                                                     {CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
                                                 {elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
-                                                    {assign var=CURRENCY_SYMBOL value=Vtiger_RelationListView_Model::getCurrencySymbol($RELATED_RECORD->get('id'), $HEADER_FIELD)}
-                                                    {assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME))}
-                                                    {if $HEADER_FIELD->get('uitype') eq '72'}
-                                                        {assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
-                                                    {/if}
-                                                    {if Users_Record_Model::getCurrentUserModel()->get('currency_symbol_placement') eq '$1.0'}
-                                                        {$CURRENCY_SYMBOL}{$CURRENCY_VALUE}
-                                                    {else}
-                                                        {$CURRENCY_VALUE}{$CURRENCY_SYMBOL}
-                                                    {/if}
+                                                    {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
+                                                    {assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
+                                                    {CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
                                                     {if $RELATED_HEADERNAME eq 'listprice'}
                                                         {assign var="LISTPRICE" value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
                                                     {/if}

@@ -50,9 +50,6 @@ class Vtiger_ProcessDuplicates_Action extends Vtiger_Action_Controller {
 			foreach($fields as $field) {
 				$fieldValue = $request->get($field->getName());
 				if($field->isEditable()) {
-					if($field->uitype == 71) {
-						$fieldValue = CurrencyField::convertToUserFormat($fieldValue);
-					}
 					$primaryRecordModel->set($field->getName(), $fieldValue);
 				}
 			}

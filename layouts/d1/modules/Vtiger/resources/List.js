@@ -719,27 +719,29 @@ Vtiger.Class("Vtiger_List_Js", {
 	 * @returns {undefined}
 	 */
 	registerInlineEdit: function (currentTrElement) {
-		var self = this;
-		currentTrElement.addClass('edited');
-		var tdElements = jQuery('.listViewEntryValue', currentTrElement);
+		let self = this,
+			tdElements = jQuery('.listViewEntryValue', currentTrElement);
+
 		currentTrElement.addClass('edited');
 		jQuery('.action', currentTrElement).addClass('hide');
 		jQuery('.inline-save', currentTrElement).removeClass('hide');
 
-		for (var i = 0; i < tdElements.length; i++) {
-			var fieldData = [];
-			var tdElement = jQuery(tdElements[i]);
-			var editElement = jQuery('.edit', tdElement);
-			var valueElement = jQuery('.fieldValue', tdElement);
-			var moduleName = this.getModuleName();
-			var fieldName = tdElement.data("name");
+		for (let i = 0; i < tdElements.length; i++) {
+			let fieldData = [],
+				tdElement = jQuery(tdElements[i]),
+				editElement = jQuery('.edit', tdElement),
+				valueElement = jQuery('.fieldValue', tdElement),
+				moduleName = this.getModuleName(),
+				fieldName = tdElement.data("name");
 
 			//ignore other related modules fields
 			if (fieldName.match(/\((\w+)\s\;\s\((\w+)\)\s(\w+)\)/g) && fieldName.match(/\((\w+)\s\;\s\((\w+)\)\s(\w+)\)/g).length) {
 				continue;
 			}
-			var fieldType = tdElement.data("field-type");
-			var fieldBasicInfo = new Array();
+
+			let fieldType = tdElement.data("field-type"),
+				fieldBasicInfo = new Array();
+
 			if (typeof uimeta !== "undefined") {
 				fieldBasicInfo = uimeta.field.get(fieldName);
 			}
@@ -749,15 +751,31 @@ Vtiger.Class("Vtiger_List_Js", {
 				fieldBasicInfo = adv_search_uimeta.field.get(fieldName);
 			}
 
-			var value = jQuery.trim(valueElement.text());
-			//adding string,text,url,currency in customhandling list as string will be textlengthchecked
-			var customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'currency', 'text', 'email', 'boolean'];
+			let value = jQuery.trim(valueElement.text()),
+				//adding string,text,url,currency in customhandling list as string will be textlengthchecked
+				customHandlingFields = ['owner', 'ownergroup', 'picklist', 'multipicklist', 'reference', 'string', 'url', 'text', 'email', 'boolean'];
+
 			if (jQuery.inArray(fieldType, customHandlingFields) !== -1) {
 				value = tdElement.data('rawvalue');
 			}
 
-			fieldData["value"] = value;
+			let numberHandlingFields = ['currency', 'double', 'percentage', 'integer'];
+
+			if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
+				value = parseFloat(tdElement.data('rawvalue')).toFixed(app.getNumberOfDecimals());
+
+				if ('integer' === fieldType) {
+					value = parseInt(value);
+				}
+			}
+
+			fieldData['value'] = value;
+
 			jQuery.extend(fieldData, fieldBasicInfo);
+
+			if ('currency' === fieldType) {
+				fieldData['currency_symbol'] = tdElement.find('[data-currency-symbol]').attr('data-currency-symbol');
+			}
 
 			// For non editable fields
 			if (editElement.length <= 0) {
@@ -769,8 +787,8 @@ Vtiger.Class("Vtiger_List_Js", {
 				continue;
 			}
 
-			var fieldObject = new Vtiger_Field_Js.getInstance(fieldData, moduleName);
-			var fieldModel = fieldObject.getUiTypeModel();
+			let fieldObject = new Vtiger_Field_Js.getInstance(fieldData, moduleName),
+				fieldModel = fieldObject.getUiTypeModel();
 
 			if (jQuery('input', editElement).length === 0) {
 				editElement.append(fieldModel.getUi());
@@ -785,6 +803,7 @@ Vtiger.Class("Vtiger_List_Js", {
 
 			valueElement.addClass('hide');
 			editElement.removeClass('hide');
+
 			if (fieldType === 'picklist') {
 				self.registerEventForPicklistDependencySetup(currentTrElement);
 			}
@@ -1106,8 +1125,8 @@ Vtiger.Class("Vtiger_List_Js", {
 	 * Function to register the list view row double click event
 	 */
 	registerRowDoubleClickEvent: function () {
-		var thisInstance = this;
-		var listViewContentDiv = this.getListViewContainer();
+		let thisInstance = this,
+			listViewContentDiv = this.getListViewContainer();
 
 		// Double click event - ajax edit
 		listViewContentDiv.on('dblclick', '.listViewEntries', function (e) {
@@ -1116,28 +1135,30 @@ Vtiger.Class("Vtiger_List_Js", {
 				return;
 			}
 
-			if (listViewContentDiv.find('#isExcelEditSupported').val() == 'no') {
+			if (listViewContentDiv.find('#isExcelEditSupported').val() === 'no') {
 				return;
 			}
 
-			var currentTrElement = jQuery(e.currentTarget);
-			// added to unset the time out set for <a> tags
-			var rows = currentTrElement.find('a');
+			let currentTrElement = jQuery(e.currentTarget),
+				rows = currentTrElement.find('a'); // added to unset the time out set for <a> tags
+
 			rows.each(function (i, elem) {
 				if (jQuery(elem).data('timer')) {
 					clearTimeout(jQuery(elem).data('timer'));
 					jQuery(elem).data('timer', null);
 				}
-				;
 			});
-			var editedLength = jQuery('.listViewEntries.edited').length;
+
+			let editedLength = jQuery('.listViewEntries.edited').length;
+
 			if (editedLength === 0) {
-				var currentTrElement = jQuery(e.currentTarget);
-				var target = jQuery(e.target, jQuery(e.currentTarget));
-				if (target.closest('td').is('td:first-child'))
-					return;
-				if (target.closest('tr').hasClass('edited'))
-					return;
+				currentTrElement = jQuery(e.currentTarget);
+				let target = jQuery(e.target, jQuery(e.currentTarget));
+
+				if (target.closest('td').is('td:first-child')) return;
+
+				if (target.closest('tr').hasClass('edited')) return;
+
 				thisInstance.registerInlineEdit(currentTrElement);
 			}
 		});
@@ -2674,6 +2695,8 @@ Vtiger.Class("Vtiger_List_Js", {
 		//END
 		self.registerCustomViewsSelect();
 		self.registerCustomViewsEvents();
+
+		vtUtils.registerReplaceCommaWithDot($(document));
 	},
 	updateCustomViewsButtons: function (container) {
 		let self = this,

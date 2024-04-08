@@ -374,6 +374,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 	function getQuery() {
 		$queryGenerator = $this->get('query_generator');
 		$listQuery = $queryGenerator->getQuery();
+
 		return $listQuery;
 	}
 	/**

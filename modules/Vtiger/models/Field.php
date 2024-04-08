@@ -1541,4 +1541,16 @@ class Vtiger_Field_Model extends Vtiger_Field {
 
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function getListSearchInputClass(): string
+    {
+        if (in_array($this->getFieldDataType(), ['currency', 'double', 'percentage', 'integer'])) {
+            return ' replaceCommaWithDot ';
+        }
+
+        return '';
+    }
 }

@@ -252,29 +252,15 @@ jQuery.validator.addMethod("greaterThanDependentRepeatTillDate", function(value,
     }, jQuery.validator.format(app.vtranslate('JS_REPEAT_DATE_SHOULD_BE_GREATER_THAN_START_DATE'))
 );
 
-jQuery.validator.addMethod("currency", function(value, element, params) {
-	element = jQuery(element);
-	var groupSeparator = app.getGroupingSeparator();
-	var decimalSeparator = app.getDecimalSeparator();
+jQuery.validator.addMethod("currency", function (value, element, params) {
+		let strippedValue = value.replace(' ', '');
 
-	var strippedValue = value.replace(decimalSeparator, '');
-	var spacePattern = /\s/;
-	if(spacePattern.test(decimalSeparator) || spacePattern.test(groupSeparator)) {
-		strippedValue = strippedValue.replace(/ /g, '');
-	}
+		if (isNaN(strippedValue)) {
+			return false;
+		}
 
-	if(groupSeparator === "$"){
-		groupSeparator = "\\$"
-	}
-	var regex = new RegExp(groupSeparator,'g');
-	strippedValue = strippedValue.replace(regex, '');
-	if(isNaN(strippedValue)){
-		return false;
-	}
-	if(strippedValue < 0){
-		return false;
-	}
-	return true;
+		return strippedValue >= 0;
+
 	}, jQuery.validator.format(app.vtranslate('JS_PLEASE_ENTER_VALID_VALUE'))
 );
 
@@ -283,16 +269,17 @@ jQuery.validator.addMethod("currencyList", function(value, element, params) {
 	}, jQuery.validator.format("Please enter the valid value")
 );
 
-jQuery.validator.addMethod("integer", function(value, element, params) {
-		var integerRegex= /(^[-+]?\d+)$/ ;
-		var decimalIntegerRegex = /(^[-+]?\d*).\d+$/ ;
+jQuery.validator.addMethod("integer", function (value, element, params) {
+		let integerRegex = /(^[-+]?\d+)$/,
+			decimalIntegerRegex = /(^[-+]?\d*)$/;
+
 		if (value.length && (!value.match(integerRegex))) {
-			if(!value.match(decimalIntegerRegex)){
+			if (!value.match(decimalIntegerRegex)) {
 				return false;
 			} else {
 				return true;
 			}
-		} else{
+		} else {
 			return true;
 		}
 	}, jQuery.validator.format(app.vtranslate("JS_PLEASE_ENTER_INTEGER_VALUE"))

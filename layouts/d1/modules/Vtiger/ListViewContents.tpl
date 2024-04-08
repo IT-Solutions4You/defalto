@@ -150,7 +150,7 @@
                         {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                             {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
                             {assign var=LISTVIEW_ENTRY_RAWVALUE value=$LISTVIEW_ENTRY->getRaw($LISTVIEW_HEADER->get('column'))}
-                            {if $LISTVIEW_HEADER->getFieldDataType() eq 'currency' || $LISTVIEW_HEADER->getFieldDataType() eq 'text'}
+                            {if $LISTVIEW_HEADER->getFieldDataType() eq 'text'}
                                 {assign var=LISTVIEW_ENTRY_RAWVALUE value=$LISTVIEW_ENTRY->getTitle($LISTVIEW_HEADER)}
                             {/if}
                             {assign var=LISTVIEW_ENTRY_VALUE value=$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
@@ -164,19 +164,11 @@
                                             {/if}
                                         {elseif $MODULE_MODEL->getName() eq 'Documents' && $LISTVIEW_HEADERNAME eq 'document_source'}
                                             {$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
-                                        {else}
-                                            {if $LISTVIEW_HEADER->get('uitype') eq '72'}
-                                            {assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
-                                            {if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
-                                                {$LISTVIEW_ENTRY_VALUE}{$LISTVIEW_ENTRY->get('currencySymbol')}
-                                            {else}
-                                                {$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY_VALUE}
-                                            {/if}
-                                        {elseif $LISTVIEW_HEADER->get('uitype') eq '71'}
-                                            {assign var=CURRENCY_SYMBOL value=$LISTVIEW_ENTRY->get('userCurrencySymbol')}
-                                            {if $LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME) neq NULL}
-                                                {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_SYMBOL)}
-                                            {/if}
+                                        {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'currency'}
+                                            {assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($LISTVIEW_ENTRY->getCurrencyId())}
+                                            <span class="currencyValue" data-currency-symbol="{$CURRENCY_INFO['symbol']}">
+                                                {CurrencyField::appendCurrencySymbol($LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME), $CURRENCY_INFO['symbol'])}
+                                            </span>
                                         {elseif $LISTVIEW_HEADER->getFieldDataType() eq 'picklist'}
                                             {assign var=PICKLIST_FIELD_ID value={$LISTVIEW_HEADER->getId()}}
                                             <span {if !empty($LISTVIEW_ENTRY_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$PICKLIST_FIELD_ID}-{Vtiger_Util_Helper::convertSpaceToHyphen($LISTVIEW_ENTRY_RAWVALUE)}" {/if}> {$LISTVIEW_ENTRY_VALUE}</span>
@@ -198,7 +190,6 @@
                                             {/foreach}
                                         {else}
                                             {$LISTVIEW_ENTRY_VALUE}
-                                        {/if}
                                         {/if}
                                     </span>
                                 </span>

@@ -968,12 +968,7 @@ class QueryGenerator {
 					}
 				}
 			} else if ($field->getFieldDataType() === 'currency') {
-				$uiType = $field->getUIType();
-				//if ($uiType == 72) {
-					$value = CurrencyField::convertToDBFormat($value, null, true);
-				/*} elseif ($uiType == 71) {
-					$value = CurrencyField::convertToDBFormat($value);
-				}*/
+                $value = Vtiger_Currency_UIType::convertToDBFormat($value, null, true);
 			}
 
 			if($field->getFieldName() == 'birthday' && !$this->isRelativeSearchOperators(
@@ -1271,16 +1266,7 @@ class QueryGenerator {
 						}
 					}
 				}
-				if($type == 'currency') {
-					// Some of the currency fields like Unit Price, Total, Sub-total etc of Inventory modules, do not need currency conversion
-					if($field->getUIType() == '72') {
-						$value = CurrencyField::convertToDBFormat($value, null, true);
-					} else {
-						$currencyField = new CurrencyField($value);
-						$value = $currencyField->getDBInsertedValue();
-					}
-				}
-			}
+            }
 			if(!empty($input['operator'])) {
 				$operator = $input['operator'];
 			} elseif(trim(strtolower($value)) == 'null'){

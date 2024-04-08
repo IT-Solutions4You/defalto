@@ -380,14 +380,9 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 
 					$fieldType = $fieldModel->getFieldDataType();
 
-					if($fieldType == 'currency') {
-						//if($fieldModel->get('uitype') == '72') {
-							// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue, null, true);
-						/*} else {
-							$advFitlerValue = CurrencyField::convertToDBFormat($advFitlerValue);
-						}*/
-					}
+                    if ($fieldType == 'currency') {
+                        $advFitlerValue = $fieldModel->getEditViewDisplayValue($advFitlerValue);
+                    }
 
 					$temp_val = explode(",",$advFitlerValue);
 					$specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
@@ -660,16 +655,11 @@ class CustomView_Record_Model extends Vtiger_Base_Model {
 
 				$fieldType = $fieldModel->getFieldDataType();
 
-				if ($fieldType == 'currency') {
-					if ($fieldModel->get('uitype') == '72') {
-						// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-						$advfilterval = CurrencyField::convertToUserFormat($advfilterval, null, true);
-					} else {
-						$advfilterval = CurrencyField::convertToUserFormat($advfilterval);
-					}
-				}
+                if ($fieldType == 'currency') {
+                    $advfilterval = $fieldModel->getEditViewDisplayValue($advfilterval);
+                }
 
-				$specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
+                $specialDateConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
 				if (($col[4] == 'D' || ($col[4] == 'T' && $col[1] != 'time_start' && $col[1] != 'time_end') || ($col[4] == 'DT')) && !in_array($criteria['comparator'],$specialDateConditions)) {
 					$val = Array();
 					for ($x = 0; $x < php7_count($temp_val); $x++) {

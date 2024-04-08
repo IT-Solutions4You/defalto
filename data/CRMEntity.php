@@ -557,10 +557,10 @@ class CRMEntity {
 					//strip out the spaces and commas in numbers if given ie., in amounts there may be ,
 					$fldvalue = str_replace(",", "", $this->column_fields[$fieldname]); //trim($this->column_fields[$fieldname],",");
 					if (in_array($datatype, array('N', 'NN'))) {
-						$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], $current_user, true);
+						$fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], $current_user, true);
 					}
 				} elseif ($uitype == 1 && in_array($datatype, array('N', 'NN')) && in_array($fieldname, array('qty_per_unit','qtyinstock','salescommission','exciseduty'))) {
-					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], $current_user, true);
+					$fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], $current_user, true);
 				} elseif ($uitype == 26) {
 					if (empty($this->column_fields[$fieldname])) {
 						$fldvalue = 1; //the documents will stored in default folder
@@ -601,9 +601,9 @@ class CRMEntity {
 					// END
 				} elseif ($uitype == 72 && !$ajaxSave) {
 					// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname], null, true);
+					$fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], null, true);
 				} elseif ($uitype == 71 && !$ajaxSave) {
-					$fldvalue = CurrencyField::convertToDBFormat($this->column_fields[$fieldname]);
+					$fldvalue = Vtiger_Currency_UIType::convertToDBFormat($this->column_fields[$fieldname], null, true);
 				} elseif ($uitype == 69) {
 					$fldvalue = $this->column_fields[$fieldname];
 					if(php7_count($_FILES)) {

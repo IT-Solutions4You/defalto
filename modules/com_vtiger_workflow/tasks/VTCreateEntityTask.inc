@@ -96,9 +96,11 @@ class VTCreateEntityTask extends VTTask {
 					$fieldInstance = $moduleModel->getField($field);
 					if($fieldInstance) {
 						$dataType = $fieldInstance->getFieldDataType();
+
 						if(in_array($dataType, array('currency', 'double'))) {
 							$fieldValue = CurrencyField::convertToUserFormat($fieldValue, null, true);
 						}
+
 						if ($fieldInstance->getFieldDataType() == 'reference' && $moduleFieldInstance->getFieldDataType() != 'reference') {
 							if (!empty($fieldValue)) {
 								if (!empty($fieldInstance)) {

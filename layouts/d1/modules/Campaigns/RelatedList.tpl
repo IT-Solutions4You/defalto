@@ -181,16 +181,9 @@
 												{if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
 													<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 												{elseif $HEADER_FIELD->get('uitype') eq '71' or $HEADER_FIELD->get('uitype') eq '72'}
-													{assign var=CURRENCY_SYMBOL value=Vtiger_RelationListView_Model::getCurrencySymbol($RELATED_RECORD->get('id'), $HEADER_FIELD)}
-													{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME))}
-													{if $HEADER_FIELD->get('uitype') eq '72'}
-														{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
-													{/if}
-													{if Users_Record_Model::getCurrentUserModel()->get('currency_symbol_placement') eq '$1.0'}
-														{$CURRENCY_SYMBOL}{$CURRENCY_VALUE}
-													{else}
-														{$CURRENCY_VALUE}{$CURRENCY_SYMBOL}
-													{/if}
+													{assign var=CURRENCY_INFO value=Vtiger_Functions::getCurrencySymbolandRate($RELATED_RECORD->getCurrencyId())}
+													{assign var=CURRENCY_VALUE value=CurrencyField::convertToUserFormat($RELATED_RECORD->get($RELATED_HEADERNAME), null, true)}
+													{CurrencyField::appendCurrencySymbol($CURRENCY_VALUE, $CURRENCY_INFO['symbol'])}
 												{elseif $HEADER_FIELD->getFieldDataType() eq 'picklist'}
 													<span {if !empty($RELATED_LIST_VALUE)} class="py-1 px-2 rounded picklist-color picklist-{$HEADER_FIELD->getId()}-{Vtiger_Util_Helper::convertSpaceToHyphen($RELATED_LIST_VALUE)}" {/if}> {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)} </span>
 												{else}

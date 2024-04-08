@@ -64,8 +64,9 @@ class Users_Save_Action extends Vtiger_Save_Action {
 				continue;
 			}
 			$fieldValue = $request->get($fieldName, null);
-			if ($fieldName === 'is_admin' && (!$currentUserModel->isAdminUser() || !$fieldValue)) {
-				$fieldValue = 'off';
+
+            if ($fieldName === 'is_admin') {
+                $fieldValue = (!$currentUserModel->isAdminUser() || !$fieldValue) ? 'off' : 'on';
 			}
 			//to not update is_owner from ui
 			if ($fieldName == 'is_owner') {

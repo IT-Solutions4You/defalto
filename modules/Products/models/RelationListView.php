@@ -36,6 +36,7 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 			$unitPriceField->set('name', 'unit_price');
 			$unitPriceField->set('column', 'unit_price');
 			$unitPriceField->set('label', 'Unit Price');
+            $unitPriceField->set('uitype', '71');
 			
 			$headerFields['unit_price'] = $unitPriceField;
 			
@@ -44,7 +45,8 @@ class Products_RelationListView_Model extends Vtiger_RelationListView_Model {
 			$field->set('name', 'listprice');
 			$field->set('column', 'listprice');
 			$field->set('label', 'List Price');
-			
+			$field->set('uitype', '71');
+
 			$headerFields['listprice'] = $field;
 		}
 		

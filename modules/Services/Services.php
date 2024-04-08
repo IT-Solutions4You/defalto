@@ -223,8 +223,8 @@ class Services extends CRMEntity {
 			$cur_checkname = 'cur_' . $curid . '_check';
 			$cur_valuename = 'curname' . $curid;
 			$base_currency_check = 'base_currency' . $curid;
-			$requestPrice = CurrencyField::convertToDBFormat($_REQUEST['unit_price'], null, true);
-			$actualPrice = CurrencyField::convertToDBFormat($_REQUEST[$cur_valuename], null, true);
+			$requestPrice = Vtiger_Currency_UIType::convertToDBFormat($_REQUEST['unit_price'], null, true);
+			$actualPrice = Vtiger_Currency_UIType::convertToDBFormat($_REQUEST[$cur_valuename], null, true);
 			$isQuickCreate = false;
 			if($_REQUEST['action']=='SaveAjax' && isset($_REQUEST['base_currency']) && $_REQUEST['base_currency'] == $cur_valuename){
 				$actualPrice = $requestPrice;

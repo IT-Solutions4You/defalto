@@ -174,7 +174,7 @@ class ITS4YouEmails_Record_Model extends Vtiger_Record_Model
             foreach ($toEmailIds as $toEmailId) {
                 [$recipientId, $recipientEmail, $recipientModule] = explode('|', $toEmailId);
 
-                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, $record, $this->get('email_template_language'), $recipientId, $recipientModule);
+                $EMAILContentModel = EMAILMaker_EMAILContent_Model::getInstance($module, (int)$record, $this->get('email_template_language'), (int)$recipientId, $recipientModule);
                 $EMAILContentModel->setSubject($subject);
                 $EMAILContentModel->setBody($body);
 
