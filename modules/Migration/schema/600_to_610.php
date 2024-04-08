@@ -1,12 +1,11 @@
 <?php
-/*+********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- * ******************************************************************************* */
+ */
+
 if (!defined('VTIGER_UPGRADE'))
     die('Invalid entry point');
 chdir(dirname(__FILE__) . '/../../../');
@@ -262,11 +261,7 @@ for($i=0; $i<$numOfRows; $i++) {
 
                     $tm->saveTask($emailTask);
                     break;
-                case 'NotifyOnPortalTicketComment'	:
-                            $tm->deleteTask($properties['id']);
-                            Migration_Index_View::ExecuteQuery('DELETE FROM com_vtiger_workflows WHERE workflow_id = ?', array($workflowModel->id));
-                            break;
-                
+
                 case 'NotifyParentOnTicketChange'	:
                             $newWorkflowModel = $wfs->newWorkflow($workflowModel->moduleName);
                             $workflowProperties = get_object_vars($workflowModel);
@@ -1295,7 +1290,7 @@ if(!defined('INSTALLATION_MODE')) {
             $handler_path = 'modules/PBXManager/PBXManagerHandler.php';
             $className = 'PBXManagerHandler';
             $batchEventClassName = 'PBXManagerBatchHandler';
-            $EventManager->registerHandler($createEvent, $handler_path, $className, '', '["VTEntityDelta"]');
+            $EventManager->registerHandler($createEvent, $handler_path, $className, '["VTEntityDelta"]');
             $EventManager->registerHandler($deleteEVent, $handler_path, $className);
             $EventManager->registerHandler($restoreEvent, $handler_path, $className);
             $EventManager->registerHandler($batchSaveEvent, $handler_path, $batchEventClassName);

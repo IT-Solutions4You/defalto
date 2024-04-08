@@ -178,66 +178,6 @@ class Quotes extends CRMEntity {
 		return GetRelatedList('Quotes','SalesOrder',$focus,$query,$button,$returnset);
 	}
 
-	/**	Function used to get the Quote Stage history of the Quotes
-	 *	@param $id - quote id
-	 *	@return $return_data - array with header and the entries in format Array('header'=>$header,'entries'=>$entries_list) where as $header and $entries_list are arrays which contains header values and all column values of all entries
-	 */
-	function get_quotestagehistory($id)
-	{
-		global $log;
-		$log->debug("Entering get_quotestagehistory(".$id.") method ...");
-
-		global $adb;
-		global $mod_strings;
-		global $app_strings;
-
-		$query = 'select vtiger_quotestagehistory.*, vtiger_quotes.quote_no from vtiger_quotestagehistory inner join vtiger_quotes on vtiger_quotes.quoteid = vtiger_quotestagehistory.quoteid inner join vtiger_crmentity on vtiger_crmentity.crmid = vtiger_quotes.quoteid where vtiger_crmentity.deleted = 0 and vtiger_quotes.quoteid = ?';
-		$result=$adb->pquery($query, array($id));
-		$noofrows = $adb->num_rows($result);
-
-		$header[] = $app_strings['Quote No'];
-		$header[] = $app_strings['LBL_ACCOUNT_NAME'];
-		$header[] = $app_strings['LBL_AMOUNT'];
-		$header[] = $app_strings['Quote Stage'];
-		$header[] = $app_strings['LBL_LAST_MODIFIED'];
-
-		//Getting the field permission for the current user. 1 - Not Accessible, 0 - Accessible
-		//Account Name , Total are mandatory fields. So no need to do security check to these fields.
-		global $current_user;
-
-		//If field is accessible then getFieldVisibilityPermission function will return 0 else return 1
-		$quotestage_access = (getFieldVisibilityPermission('Quotes', $current_user->id, 'quotestage') != '0')? 1 : 0;
-		$picklistarray = getAccessPickListValues('Quotes');
-
-		$quotestage_array = ($quotestage_access != 1)? $picklistarray['quotestage']: array();
-		//- ==> picklist field is not permitted in profile
-		//Not Accessible - picklist is permitted in profile but picklist value is not permitted
-		$error_msg = ($quotestage_access != 1)? 'Not Accessible': '-';
-
-		while($row = $adb->fetch_array($result))
-		{
-			$entries = Array();
-
-			// Module Sequence Numbering
-			//$entries[] = $row['quoteid'];
-			$entries[] = $row['quote_no'];
-			// END
-			$entries[] = $row['accountname'];
-			$entries[] = $row['total'];
-			$entries[] = (in_array($row['quotestage'], $quotestage_array))? $row['quotestage']: $error_msg;
-			$date = new DateTimeField($row['lastmodified']);
-			$entries[] = $date->getDisplayDateTimeValue();
-
-			$entries_list[] = $entries;
-		}
-
-		$return_data = Array('header'=>$header,'entries'=>$entries_list);
-
-	 	$log->debug("Exiting get_quotestagehistory method ...");
-
-		return $return_data;
-	}
-
 	// Function to get column name - Overriding function of base class
 	function get_column_value($columname, $fldvalue, $fieldname, $uitype, $datatype='') {
 		if ($columname == 'potentialid' || $columname == 'contactid') {

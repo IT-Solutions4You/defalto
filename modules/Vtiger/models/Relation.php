@@ -206,7 +206,6 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 			return $moduleRelations;
 		}
 
-		$skipReltionsList = array('get_history');
 		$query = 'SELECT vtiger_relatedlists.*,vtiger_tab.name as modulename FROM vtiger_relatedlists 
 					INNER JOIN vtiger_tab on vtiger_relatedlists.related_tabid = vtiger_tab.tabid
 					WHERE vtiger_relatedlists.tabid = ? AND related_tabid != 0';
@@ -217,9 +216,9 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
 		if($onlyActive){
 			$query .= ' AND vtiger_tab.presence <> 1 ';
 		}
-		$query .= ' AND vtiger_relatedlists.name NOT IN ('.generateQuestionMarks($skipReltionsList).') ORDER BY sequence'; // TODO: Need to handle entries that has related_tabid 0
+		$query .= ' ORDER BY sequence'; // TODO: Need to handle entries that has related_tabid 0
 
-		$result = $db->pquery($query, array($parentModuleModel->getId(), $skipReltionsList));
+		$result = $db->pquery($query, array($parentModuleModel->getId(), []));
 
 		$relationModels = array();
 		$relationModelClassName = Vtiger_Loader::getComponentClassName('Model', 'Relation', $parentModuleModel->get('name'));

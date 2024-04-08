@@ -1938,9 +1938,7 @@ class CRMEntity {
 	 * From a given Contact/Account if we need to fetch all such dependent trouble tickets, get_dependents_list function can be used.
 	 */
 	function get_dependents_list($id, $cur_tab_id, $rel_tab_id, $relationId) {
-		global $currentModule, $app_strings, $singlepane_view, $current_user;
-
-		$parenttab = getParentTab();
+		global $currentModule, $singlepane_view;
 
 		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		$other = CRMEntity::getInstance($related_module);

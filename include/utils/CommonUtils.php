@@ -40,10 +40,6 @@ function from_html($string, $encode = true) {
 	return Vtiger_Functions::fromHTML($string, $encode);
 }
 
-function fck_from_html($string) {
-	return Vtiger_Functions::fromHTML_FCK($string);
-}
-
 function popup_from_html($string, $encode = true) {
 	return Vtiger_Functions::fromHTML_Popup($string, $encode);
 }
@@ -72,48 +68,8 @@ function getSalesEntityType($crmid) {
 	return Vtiger_Functions::getCRMRecordType($crmid);
 }
 
-function getAccountName($account_id) {
-	return Vtiger_Functions::getCRMRecordLabel($account_id);
-}
-
-function getProductName($product_id) {
-	return Vtiger_Functions::getCRMRecordLabel($product_id);
-}
-
-function getPotentialName($potential_id) {
-	return Vtiger_Functions::getCRMRecordLabel($potential_id);
-}
-
-function getContactName($contact_id) {
-	return Vtiger_Functions::getCRMRecordLabel($contact_id);
-}
-
-function getFullNameFromQResult($result, $row_count, $module) {
-	return Vtiger_Deprecated::getFullNameFromQResult($result, $row_count, $module);
-}
-
 function getFullNameFromArray($module, $fieldValues) {
 	return Vtiger_Deprecated::getFullNameFromArray($module, $fieldValues);
-}
-
-function getCampaignName($campaign_id) {
-	return Vtiger_Functions::getCRMRecordLabel($campaign_id);
-}
-
-function getVendorName($vendor_id) {
-	return Vtiger_Functions::getCRMRecordLabel($vendor_id);
-}
-
-function getQuoteName($quote_id) {
-	return Vtiger_Functions::getCRMRecordLabel($quote_id);
-}
-
-function getPriceBookName($pricebookid) {
-	return Vtiger_Functions::getCRMRecordLabel($pricebookid);
-}
-
-function getSoName($so_id) {
-	return Vtiger_Functions::getCRMRecordLabel($so_id);
 }
 
 function getGroupName($groupid) {
@@ -128,16 +84,8 @@ function getUserFullName($userid) {
 	return Vtiger_Functions::getUserRecordLabel($userid);
 }
 
-function getParentName($parent_id) {
-	return Vtiger_Functions::getCRMRecordLabel($parent_id);
-	}
-
 function getValidDisplayDate($cur_date_val) {
 	return Vtiger_Functions::currentUserDisplayDate($cur_date_val);
-}
-
-function getNewDisplayDate() {
-	return Vtiger_Functions::currentUserDisplayDateNew();
 }
 
 /** This function returns the conversion rate and vtiger_currency symbol
@@ -173,28 +121,11 @@ function getBlockId($tabid, $label) {
 
 /**
  * This function is used to get the Parent Tab name for a given module.
- * Takes the input parameter as $module - module name
- * This returns value string type
- */
-function getParentTabFromModule($module) {
-	return Vtiger_Deprecated::getParentTabFromModule($module);
-}
-
-/**
- * This function is used to get the Parent Tab name for a given module.
  * Takes no parameter but gets the vtiger_parenttab value from form request
  * This returns value string type
  */
 function getParentTab() {
 	return Vtiger_Deprecated::getParentTab();
-}
-
-/**
- * This function is used to set the Object values from the REQUEST values.
- * @param  object reference $focus - reference of the object
- */
-function setObjectValuesFromRequest($focus) {
-	return Vtiger_Deprecated::copyValuesFromRequest($focus);
 }
 
 function create_tab_data_file() {
@@ -246,31 +177,12 @@ function getMergedDescription($description, $id, $parent_type, $removeTags = fal
 	return Vtiger_Functions::getMergedDescription($description, $id, $parent_type, $removeTags);
 }
 
-/** 	Function used to retrieve a single field value from database
- * 	@param string $tablename - tablename from which we will retrieve the field value
- * 	@param string $fieldname - fieldname to which we want to get the value from database
- * 	@param string $idname	 - idname which is the name of the entity id in the table like, inoviceid, quoteid, etc.,
- * 	@param int    $id	 - entity id
- * 	return string $fieldval  - field value of the needed fieldname from database will be returned
- */
-function getSingleFieldValue($tablename, $fieldname, $idname, $id) {
-	return Vtiger_Functions::getSingleFieldValue($tablename, $fieldname, $idname, $id);
-}
-
 /** 	Function used to retrieve the announcements from database
  * 	The function accepts no argument and returns the announcements
  * 	return string $announcement  - List of announments for the CRM users
  */
 function get_announcements() {
 	return Vtiger_Deprecated::getAnnouncements();
-}
-
-/**
- *  Function to get recurring info depending on the recurring type
- *  return  $recurObj       - Object of class RecurringType
- */
-function getrecurringObjValue() {
-	return Vtiger_Functions::getRecurringObjValue();
 }
 
 function getTranslatedString($str, $module = 'Vtiger', $language = '') {
@@ -292,14 +204,6 @@ function getTicketComments($ticketid) {
 
 function makeRandomPassword() {
 	return Vtiger_Functions::generateRandomPassword();
-}
-
-/**
- * This function is used to get cvid of default "all" view for any module.
- * @return a cvid of a module
- */
-function getCvIdOfAll($module) {
-	return Vtiger_Deprecated::getIdOfCustomViewByNameAll($module);
 }
 
 /** gives the option  to display  the tagclouds or not for the current user
@@ -475,10 +379,6 @@ function getInvoiceStatus($invoiceId) {
 
 function decimalFormat($value){
 	return Vtiger_Functions::formatDecimal($value);
-}
-
-function updateRecordLabel($module,$recordId){
-	return Vtiger_Functions::updateCRMRecordLabel($module, $recordId);
 }
 
 function get_group_options() {

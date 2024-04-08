@@ -193,11 +193,22 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
 	 * @return <Array> - List of Settings_Vtiger_MenuItem_Model instances
 	 */
 	public static function getAll($menuModel=false, $onlyActive=true) {
-		$skipMenuItemList = array('LBL_AUDIT_TRAIL', 'LBL_SYSTEM_INFO', 'LBL_PROXY_SETTINGS', 'LBL_DEFAULT_MODULE_VIEW',
-								'LBL_FIELDFORMULAS', 'LBL_FIELDS_ACCESS', 'LBL_MAIL_MERGE', 'NOTIFICATIONSCHEDULERS',
-								'INVENTORYNOTIFICATION', 'ModTracker', 'LBL_WORKFLOW_LIST','LBL_TOOLTIP_MANAGEMENT','Webforms Configuration Editor');
+        $skipMenuItemList = [
+            'LBL_AUDIT_TRAIL',
+            'LBL_SYSTEM_INFO',
+            'LBL_PROXY_SETTINGS',
+            'LBL_DEFAULT_MODULE_VIEW',
+            'LBL_FIELDFORMULAS',
+            'LBL_FIELDS_ACCESS',
+            'LBL_MAIL_MERGE',
+            'NOTIFICATIONSCHEDULERS',
+            'ModTracker',
+            'LBL_WORKFLOW_LIST',
+            'LBL_TOOLTIP_MANAGEMENT',
+            'Webforms Configuration Editor'
+        ];
 
-		$db = PearDatabase::getInstance();
+        $db = PearDatabase::getInstance();
 		$sql = 'SELECT * FROM '.self::$itemsTable;
 		$params = array();
 
@@ -239,10 +250,21 @@ class Settings_Vtiger_MenuItem_Model extends Vtiger_Base_Model {
      * @return <Array> - List of Settings_Vtiger_MenuItem_Model instances
      */
     public static function getPinnedItems($fieldList = array()) {
-		$skipMenuItemList = array('LBL_AUDIT_TRAIL', 'LBL_SYSTEM_INFO', 'LBL_PROXY_SETTINGS', 'LBL_DEFAULT_MODULE_VIEW',
-								'LBL_FIELDFORMULAS', 'LBL_FIELDS_ACCESS', 'LBL_MAIL_MERGE', 'NOTIFICATIONSCHEDULERS',
-								'INVENTORYNOTIFICATION', 'ModTracker', 'LBL_WORKFLOW_LIST','LBL_TOOLTIP_MANAGEMENT','Webforms Configuration Editor');
-		
+        $skipMenuItemList = [
+            'LBL_AUDIT_TRAIL',
+            'LBL_SYSTEM_INFO',
+            'LBL_PROXY_SETTINGS',
+            'LBL_DEFAULT_MODULE_VIEW',
+            'LBL_FIELDFORMULAS',
+            'LBL_FIELDS_ACCESS',
+            'LBL_MAIL_MERGE',
+            'NOTIFICATIONSCHEDULERS',
+            'ModTracker',
+            'LBL_WORKFLOW_LIST',
+            'LBL_TOOLTIP_MANAGEMENT',
+            'Webforms Configuration Editor'
+        ];
+
         $db = PearDatabase::getInstance();
         
         $query = 'SELECT * FROM '.self::$itemsTable.' WHERE pinned=1 AND active = 0';

@@ -517,7 +517,7 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
         }
 
         $current_user = Users_Record_Model::getCurrentUserModel();
-        $related_fieldnames = array(
+        $related_fieldnames = [
             'related_to',
             'relatedto',
             'parent_id',
@@ -532,8 +532,14 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
             'invoiceid',
             'linktoaccountscontacts',
             'projectid',
-            'sc_related_to'
-        );
+            'sc_related_to',
+            'account_id',
+            'potential_id',
+            'contact_id',
+            'quote_id',
+            'salesorder_id',
+            'campaignid',
+        ];
 
         if (isset($UITypes['related']) && count($UITypes['related']) > 0) {
             foreach ($UITypes['related'] as $related_field) {
@@ -543,19 +549,7 @@ class PDFMaker_PDFContentUtils_Model extends Vtiger_Base_Model
             }
         }
 
-        if ($fieldname == 'account_id') {
-            $value = getAccountName($value);
-        } elseif ($fieldname == 'potential_id') {
-            $value = getPotentialName($value);
-        } elseif ($fieldname == 'contact_id') {
-            $value = getContactName($value);
-        } elseif ($fieldname == 'quote_id') {
-            $value = getQuoteName($value);
-        } elseif ($fieldname == 'salesorder_id') {
-            $value = getSoName($value);
-        } elseif ($fieldname == 'campaignid') {
-            $value = getCampaignName($value);
-        } elseif ($fieldname == 'terms_conditions') {
+        if ($fieldname == 'terms_conditions') {
             $value = $this->getTermsAndConditionsCustom($value);
         } elseif ($fieldname == 'folderid') {
             $value = $this->getFolderName($value);

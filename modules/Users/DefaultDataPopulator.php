@@ -408,7 +408,6 @@ class DefaultDataPopulator extends CRMEntity {
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'severity','vtiger_troubletickets',1,'15','ticketseverities','Severity',1,2,'',100,8,25,1,'V~O',1,null,'BAS',1)");
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'status','vtiger_troubletickets',1,'15','ticketstatus','Status',1,2,'',100,7,25,1,'V~M',1,2,'BAS',1)");
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'category','vtiger_troubletickets',1,'15','ticketcategories','Category',1,2,'',100,10,25,1,'V~O',1,null,'BAS',1)");
-		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'update_log','vtiger_troubletickets',1,'19','update_log','Update History',1,0,'',100,11,25,3,'V~O',1,null,'BAS',0)");
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'hours','vtiger_troubletickets',1,'1','hours','Hours',1,2,'',100,9,25,1,'I~O',1,null,'BAS',1)");
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'days','vtiger_troubletickets',1,'1','days','Days',1,2,'',100,10,25,1,'I~O',1,null,'BAS',1)");
 		$this->db->query("insert into vtiger_field values (13," . $this->db->getUniqueID("vtiger_field") . ",'createdtime','vtiger_crmentity',1,'70','createdtime','Created Time',1,0,'',100,9,25,2,'DT~O',3,null,'BAS',0)");
@@ -998,7 +997,6 @@ class DefaultDataPopulator extends CRMEntity {
 		//Inserting Potential Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Contacts") . ",'get_contacts',2,'Contacts',0,'select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Products") . ",'get_products',3,'Products',0,'select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . ",0,'get_stage_history',4,'Sales Stage History',0,'',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Documents") . ",'get_attachments',5,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("Quotes") . ",'get_Quotes',6,'Quotes',0,'add',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Potentials") . "," . getTabid("SalesOrder") . ",'get_salesorder',7,'Sales Order',0,'add',null,'','')");
@@ -1020,7 +1018,6 @@ class DefaultDataPopulator extends CRMEntity {
 
 		//Inserting HelpDesk Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("HelpDesk") . ",0,'get_ticket_history',3,'Ticket History',0,'',null,'','')");
 
 		//Inserting PriceBook Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PriceBooks") . ",14,'get_pricebook_products',2,'Products',0,'select',null,'','')");
@@ -1033,20 +1030,16 @@ class DefaultDataPopulator extends CRMEntity {
 		// Inserting Quotes Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Quotes") . "," . getTabid("SalesOrder") . ",'get_salesorder',1,'Sales Order',0,'',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Quotes") . "," . getTabid("Documents") . ",'get_attachments',3,'Documents',0,'add,select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Quotes") . ",0,'get_quotestagehistory',5,'Quote Stage History',0,'',null,'','')");
 
 		// Inserting Purchase order Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PurchaseOrder") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("PurchaseOrder") . ",0,'get_postatushistory',4,'PurchaseOrder Status History',0,'',null,'','')");
 
 		// Inserting Sales order Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . "," . getTabid("Invoice") . ",'get_invoices',3,'Invoice',0,'',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("SalesOrder") . ",0,'get_sostatushistory',5,'SalesOrder Status History',0,'',null,'','')");
 
 		// Inserting Invoice Related Lists
 		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Invoice") . "," . getTabid("Documents") . ",'get_attachments',2,'Documents',0,'add,select',null,'','')");
-		$this->db->query("insert into vtiger_relatedlists values(" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Invoice") . ",0,'get_invoicestatushistory',4,'Invoice Status History',0,'',null,'','')");
 
 		// Inserting Campaigns Related Lists
 		$this->db->query("insert into vtiger_relatedlists values (" . $this->db->getUniqueID('vtiger_relatedlists') . "," . getTabid("Campaigns") . "," . getTabid("Contacts") . ",'get_contacts',1,'Contacts',0,'add,select',null,'','')");
@@ -1070,47 +1063,6 @@ class DefaultDataPopulator extends CRMEntity {
 		//inserting actions for get_attachments
 		$folderid = $this->db->getUniqueID("vtiger_attachmentsfolder");
 		$this->db->query("insert into vtiger_attachmentsfolder values(" . $folderid . ",'Default','This is a Default Folder',1,1)");
-
-		//Inserting Inventory Notifications
-		$invoice_body = 'Dear {HANDLER},
-
-The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}. Kindly procure required number of units as the stock level is below reorder level {REORDERLEVELVALUE}.
-
-Please treat this information as Urgent as the invoice is already sent  to the customer.
-
-Severity: Critical
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'InvoiceNotification','{PRODUCTNAME} Stock Level is Low','" . $invoice_body . " ','InvoiceNotificationDescription')");
-
-		$quote_body = 'Dear {HANDLER},
-
-Quote is generated for {QUOTEQUANTITY} units of {PRODUCTNAME}. The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}.
-
-Severity: Minor
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'QuoteNotification','Quote given for {PRODUCTNAME}','" . $quote_body . " ','QuoteNotificationDescription')");
-
-		$so_body = 'Dear {HANDLER},
-
-SalesOrder is generated for {SOQUANTITY} units of {PRODUCTNAME}. The current stock of {PRODUCTNAME} in our warehouse is {CURRENTSTOCK}.
-
-Please treat this information  with priority as the sales order is already generated.
-
-Severity: Major
-
-Thanks,
-{CURRENTUSER}';
-
-
-		$this->db->query("insert into vtiger_inventorynotification(notificationid,notificationname,notificationsubject,notificationbody,label) values (" . $this->db->getUniqueID("vtiger_inventorynotification") . ",'SalesOrderNotification','Sales Order generated for {PRODUCTNAME}','" . $so_body . " ','SalesOrderNotificationDescription')");
 
 //insert into inventory terms and conditions table
 
@@ -1661,7 +1613,6 @@ Thanks,
 			"picklistdependency.gif",
 			"menueditor.png",
 			"notification.gif",
-			"inventory.gif",
 			"company.gif",
 			"ogmailserver.gif",
 			"currency.gif",
@@ -1698,7 +1649,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_SETUP',
 			'LBL_MENU_EDITOR',
 			'NOTIFICATIONSCHEDULERS',
-			'INVENTORYNOTIFICATION',
 			'LBL_COMPANY_DETAILS',
 			'LBL_MAIL_SERVER_SETTINGS',
 			'LBL_CURRENCY_SETTINGS',
@@ -1727,7 +1677,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_SETUP' => 'LBL_STUDIO',
 			'LBL_MENU_EDITOR' => 'LBL_STUDIO',
 			'NOTIFICATIONSCHEDULERS' => 'LBL_COMMUNICATION_TEMPLATES',
-			'INVENTORYNOTIFICATION' => 'LBL_COMMUNICATION_TEMPLATES',
 			'LBL_COMPANY_DETAILS' => 'LBL_COMMUNICATION_TEMPLATES',
 			'LBL_MAIL_SERVER_SETTINGS' => 'LBL_OTHER_SETTINGS',
 			'LBL_CURRENCY_SETTINGS' => 'LBL_OTHER_SETTINGS',
@@ -1757,7 +1706,6 @@ Thanks,
 			'LBL_PICKLIST_DEPENDENCY_DESCRIPTION',
 			'LBL_MENU_DESC',
 			'LBL_NOTIF_SCHED_DESCRIPTION',
-			'LBL_INV_NOTIF_DESCRIPTION',
 			'LBL_COMPANY_DESCRIPTION',
 			'LBL_MAIL_SERVER_DESCRIPTION',
 			'LBL_CURRENCY_DESCRIPTION',
@@ -1785,7 +1733,6 @@ Thanks,
 			'index.php?parent=Settings&module=PickListDependency&view=List',
 			'index.php?module=MenuEditor&parent=Settings&view=Index',
 			'index.php?module=Settings&view=listnotificationschedulers&parenttab=Settings',
-			'index.php?module=Settings&view=listinventorynotifications&parenttab=Settings',
 			'index.php?parent=Settings&module=Vtiger&view=CompanyDetails',
 			'index.php?parent=Settings&module=Vtiger&view=OutgoingServerDetail',
 			'index.php?parent=Settings&module=Currency&view=List',

@@ -561,16 +561,15 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         $eventsManager = new VTEventsManager($this->db);
 
         foreach ($this->registerEventHandler as $data) {
-            [$events, $fileName, $className, $condition, $dependOn, $modules] = $data;
+            [$events, $fileName, $className, $dependOn, $modules] = $data;
 
             $eventsManager->unregisterHandler($className);
 
             if ($register) {
-                $condition = !empty($condition) ? $condition : '';
                 $dependOn = !empty($dependOn) ? $dependOn : '[]';
 
                 foreach ((array)$events as $event) {
-                    $eventsManager->registerHandler($event, $fileName, $className, $condition, $dependOn);
+                    $eventsManager->registerHandler($event, $fileName, $className, $dependOn);
 
                     foreach ((array)$modules as $module) {
                         $eventsManager->setModuleForHandler($module, $className);

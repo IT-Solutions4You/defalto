@@ -8,137 +8,6 @@
  * All Rights Reserved.
  **************************************************************************************/
 
-/**
- * This function updates the stock information once the product is ordered.
- * Param $productid - product id
- * Param $qty - product quantity in no's
- * Param $mode - mode type
- * Param $ext_prod_arr - existing vtiger_products
- * Param $module - module name
- * return type void
- */
-
-function updateStk($product_id,$qty,$mode,$ext_prod_arr,$module)
-{
-	global $log;
-	$log->debug("Entering updateStk(".$product_id.",".$qty.",".$mode.",".$ext_prod_arr.",".$module.") method ...");
-	global $adb;
-	global $current_user;
-
-	$log->debug("Inside updateStk function, module=".$module);
-	$log->debug("Product Id = $product_id & Qty = $qty");
-
-	$prod_name = getProductName($product_id);
-	$qtyinstk= getProductQtyInStock($product_id);
-	$log->debug("Prd Qty in Stock ".$qtyinstk);
-
-	$upd_qty = $qtyinstk-$qty;
-	sendPrdStckMail($product_id,$upd_qty,$prod_name,$qtyinstk,$qty,$module);
-
-	$log->debug("Exiting updateStk method ...");
-}
-
-/**
- * This function sends a mail to the handler whenever the product reaches the reorder level.
- * Param $product_id - product id
- * Param $upd_qty - updated product quantity in no's
- * Param $prod_name - product name
- * Param $qtyinstk - quantity in stock
- * Param $qty - quantity
- * Param $module - module name
- * return type void
- */
-
-function sendPrdStckMail($product_id,$upd_qty,$prod_name,$qtyinstk,$qty,$module)
-{
-	global $log;
-	$log->debug("Entering sendPrdStckMail(".$product_id.",".$upd_qty.",".$prod_name.",".$qtyinstk.",".$qty.",".$module.") method ...");
-	global $current_user;
-	global $adb;
-	$reorderlevel = getPrdReOrderLevel($product_id);
-	$log->debug("Inside sendPrdStckMail function, module=".$module);
-	$log->debug("Prd reorder level ".$reorderlevel);
-	if($upd_qty < $reorderlevel)
-	{	
-		//send mail to the handler
-		$handlerType = '';
-		$handler = getRecordOwnerId($product_id);
-		foreach($handler as $type=>$id){
-			$handlerType = $type;
-			$handler=$id;
-		}
-
-		$handler_name = getOwnerName($handler);
-		if($handlerType == 'Users') {
-			$to_address = getUserEmail($handler);
-		} else {
-			$to_address = implode(',', getDefaultAssigneeEmailIds($handler));
-		}
-		if (!$to_address) {
-			return;
-		}
-		//Get the email details from database;
-		if($module == 'SalesOrder')
-		{
-			$notification_table = 'SalesOrderNotification';
-			$quan_name = '{SOQUANTITY}';
-		}
-		if($module == 'Quotes')
-		{
-			$notification_table = 'QuoteNotification';
-			$quan_name = '{QUOTEQUANTITY}';
-		}
-		if($module == 'Invoice')
-		{
-			$notification_table = 'InvoiceNotification';
-		}
-		$query = "select * from vtiger_inventorynotification where notificationname=?";
-		$result = $adb->pquery($query, array($notification_table));
-
-		$subject = $adb->query_result($result,0,'notificationsubject');
-		$body = $adb->query_result($result,0,'notificationbody');
-		$status = $adb->query_result($result,0,'status');
-
-		if($status == 0 || $status == '')
-				return false;
-
-		$subject = str_replace('{PRODUCTNAME}',$prod_name,$subject);
-		$body = str_replace('{HANDLER}',$handler_name,$body);
-		$body = str_replace('{PRODUCTNAME}',$prod_name,$body);
-		if($module == 'Invoice')
-		{
-			$body = str_replace('{CURRENTSTOCK}',$upd_qty,$body);
-			$body = str_replace('{REORDERLEVELVALUE}',$reorderlevel,$body);
-		}
-		else
-		{
-			$body = str_replace('{CURRENTSTOCK}',$qtyinstk,$body);
-			$body = str_replace($quan_name,$qty,$body);
-		}
-		$body = str_replace('{CURRENTUSER}',$current_user->user_name,$body);
-
-        EMAILMaker_Utils_Helper::sendMail($to_address, $current_user->user_name, $current_user->email1, decode_html($subject), nl2br(to_html($body)));
-	}
-	$log->debug("Exiting sendPrdStckMail method ...");
-}
-
-/**This function is used to get the reorder level of a product
-*Param $product_id - product id
-*Returns type numeric
-*/
-
-function getPrdReOrderLevel($product_id)
-{
-	global $log;
-	$log->debug("Entering getPrdReOrderLevel(".$product_id.") method ...");
-	global $adb;
-	$query1 = "SELECT reorderlevel FROM vtiger_products WHERE productid = ?";
-	$result=$adb->pquery($query1, array($product_id));
-	$reorderlevel= $adb->query_result($result,0,"reorderlevel");
-	$log->debug("Exiting getPrdReOrderLevel method ...");
-	return $reorderlevel;
-}
-
 /**	function to get the taxid
  *	@param string $type - tax type (VAT or Sales or Service)
  *	return int   $taxid - taxid corresponding to the Tax type from vtiger_inventorytaxinfo vtiger_table
@@ -207,34 +76,6 @@ function getProductTaxPercentage($type, $productid, $default = '')
         'percentage' => $taxpercentage,
         'regions' => Zend_Json::decode(html_entity_decode($adb->query_result($res, 0, 'regions'))),
     ];
-}
-
-/**    Function used to add the history entry in the relevant tables for PO, SO, Quotes and Invoice modules
- *	@param string 	$module		- current module name
- *	@param int 	$id		- entity id
- *	@param string 	$relatedname	- parent name of the entity ie, required field venor name for PO and account name for SO, Quotes and Invoice
- *	@param float 	$total		- grand total value of the product details included tax
- *	@param string 	$history_fldval	- history field value ie., quotestage for Quotes and status for PO, SO and Invoice
- */
-function addInventoryHistory($module, $id, $relatedname, $total, $history_fldval)
-{
-	global $log, $adb;
-	$log->debug("Entering into function addInventoryHistory($module, $id, $relatedname, $total, $history_fieldvalue)");
-
-	$history_table_array = Array(
-					"PurchaseOrder"=>"vtiger_postatushistory",
-					"SalesOrder"=>"vtiger_sostatushistory",
-					"Quotes"=>"vtiger_quotestagehistory",
-					"Invoice"=>"vtiger_invoicestatushistory"
-				    );
-
-	$histid = $adb->getUniqueID($history_table_array[$module]);
- 	$modifiedtime = $adb->formatDate(date('Y-m-d H:i:s'), true);
- 	$query = "insert into $history_table_array[$module] values(?,?,?,?,?,?)";
-	$qparams = array($histid,$id,$relatedname,$total,$history_fldval,$modifiedtime);
-	$adb->pquery($query, $qparams);
-
-	$log->debug("Exit from function addInventoryHistory");
 }
 
 /**	Function used to get the list of Tax types as a array
@@ -704,12 +545,6 @@ function saveInventoryProductDetails(&$focus, $module, $update_prod_stock='false
 			}
 		}
 		$prod_seq++;
-
-		if($module != 'PurchaseOrder')
-		{
-			//update the stock with existing details
-			updateStk($prod_id,$qty,$focus->mode,$ext_prod_arr,$module);
-		}
 
 		//we should update discount and tax details
 		$updatequery = "update vtiger_inventoryproductrel set ";
@@ -1237,17 +1072,6 @@ function getPricesForProducts($currencyid, $product_ids, $module='Products', $sk
 		}
 	}
 	return $price_list;
-}
-
-/**	Function used to get the currency used for the given Price book
- *	@param int $pricebook_id - pricebook id for which we want to get the id of the currency used
- *  @return int $currencyid - id of the currency used for the given pricebook
- */
-function getPriceBookCurrency($pricebook_id) {
-	global $adb;
-	$result = $adb->pquery("select currency_id from vtiger_pricebook where pricebookid=?", array($pricebook_id));
-	$currency_id = $adb->query_result($result,0,'currency_id');
-	return $currency_id;
 }
 
 // deduct products from stock - if status will be changed from cancel to other status.

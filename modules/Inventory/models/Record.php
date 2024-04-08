@@ -679,7 +679,7 @@ class Inventory_Record_Model extends Vtiger_Record_Model {
 			foreach ($subProducts as $subProductInfo) {
 				 list($subProductId, $subProductQty) = explode(':', $subProductInfo);
 				 if ($subProductId) {
-					 $subProductName = getProductName($subProductId);
+					 $subProductName = Vtiger_Functions::getCRMRecordLabel($subProductId);
 					 $subQtysList[$subProductId] = array('name' => $subProductName, 'qty' => $subProductQty);
 				 }
 			}

@@ -401,16 +401,16 @@ if(defined('VTIGER_UPGRADE')) {
 	$createEvent = 'vtiger.entity.aftersave';
 	$handler_path = 'modules/Vtiger/handlers/EmailLookupHandler.php';
 	$className = 'EmailLookupHandler';
-	$EventManager->registerHandler($createEvent, $handler_path, $className, '', '["VTEntityDelta"]');
+	$EventManager->registerHandler($createEvent, $handler_path, $className, '["VTEntityDelta"]');
 
 	$deleteEvent = 'vtiger.entity.afterdelete';
-	$EventManager->registerHandler($deleteEvent, $handler_path, $className, '');
+	$EventManager->registerHandler($deleteEvent, $handler_path, $className);
 
 	$restoreEvent = 'vtiger.entity.afterrestore';
-	$EventManager->registerHandler($restoreEvent, $handler_path, $className, '');
+	$EventManager->registerHandler($restoreEvent, $handler_path, $className);
 
 	$createBatchEvent = 'vtiger.batchevent.save';
-	$EventManager->registerHandler($createBatchEvent, $handler_path, 'EmailLookupBatchHandler', '');
+	$EventManager->registerHandler($createBatchEvent, $handler_path, 'EmailLookupBatchHandler');
 
 	$EmailsModuleModel = Vtiger_Module_Model::getInstance('EMAILMaker');
 	$emailSupportedModulesList = $EmailsModuleModel->getEmailRelatedModules();
@@ -855,13 +855,6 @@ if(defined('VTIGER_UPGRADE')) {
 	$result = $db->pquery('SHOW INDEX FROM vtiger_crmentityrel WHERE key_name=?', array('relcrmid_idx'));
 	if (!$db->num_rows($result)) {
 		$db->pquery('ALTER TABLE vtiger_crmentityrel ADD INDEX relcrmid_idx(relcrmid)', array());
-	}
-
-	//Start : Inactivate update_log field from ticket module
-	$fieldModel = Vtiger_Field_Model::getInstance('update_log', Vtiger_Module_Model::getInstance('HelpDesk'));
-	if ($fieldModel) {
-		$fieldModel->set('presence', 1);
-		$fieldModel->__update();
 	}
 
 	//Start : Project added as related tab for Potentials module.

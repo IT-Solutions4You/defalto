@@ -137,7 +137,7 @@ class WSAPP {
 		$em = new VTEventsManager($db);
 		$dependentEventHandlers = array('VTEntityDelta');
 		$dependentEventHandlersJson = Zend_Json::encode($dependentEventHandlers);
-		$em->registerHandler('vtiger.entity.aftersave', 'modules/WSAPP/WorkFlowHandlers/WSAPPAssignToTracker.php', 'WSAPPAssignToTracker','',$dependentEventHandlersJson);
+		$em->registerHandler('vtiger.entity.aftersave', 'modules/WSAPP/WorkFlowHandlers/WSAPPAssignToTracker.php', 'WSAPPAssignToTracker',$dependentEventHandlersJson);
 	}
 
 	function registerSynclibEventHandler(){

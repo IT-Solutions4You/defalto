@@ -1,12 +1,11 @@
 <?php
-/*+**********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- ************************************************************************************/
+ */
+
 include_once('vtlib/Vtiger/Utils.php');
 include_once('modules/Users/Users.php');
 @include_once('include/events/include.inc');
@@ -54,14 +53,14 @@ class Vtiger_Event {
 	 * @param String Name of the Event like vtiger.entity.aftersave, vtiger.entity.beforesave
 	 * @param String Name of the Handler class (should extend VTEventHandler)
 	 * @param String File path which has Handler class definition
-	 * @param String Condition for the event to trigger (default blank)
+	 * @param String $dependent
 	 */
-	static function register($moduleInstance, $eventname, $classname, $filename, $condition='', $dependent='[]') {
+	static function register($moduleInstance, $eventname, $classname, $filename, $dependent='[]') {
 		// Security check on fileaccess, don't die if it fails
 		if(Vtiger_Utils::checkFileAccess($filename, false)) {
 			global $adb;
 			$eventsManager = new VTEventsManager($adb);
-			$eventsManager->registerHandler($eventname, $filename, $classname, $condition, $dependent);
+			$eventsManager->registerHandler($eventname, $filename, $classname, $dependent);
 			$eventsManager->setModuleForHandler($moduleInstance->name, $classname);
 
 			self::log("Registering Event $eventname with [$filename] $classname ... DONE");
@@ -116,7 +115,6 @@ class Vtiger_Event {
 					$event->eventname = $record['event_name'];
 					$event->classname = $record['handler_class']; 
 					$event->filename  = $record['handler_path'];
-					$event->condition = $record['condition'];
                     $event->dependent = decode_html($record['dependent_on']);
 					$events[] = $event;
 				}
@@ -125,4 +123,3 @@ class Vtiger_Event {
 		return $events;
 	}		
 }
-?>

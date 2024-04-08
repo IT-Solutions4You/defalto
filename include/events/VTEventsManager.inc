@@ -1,12 +1,10 @@
 <?php
-/*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *************************************************************************************/
+ */
 
 	/**
 	 * Create and trigger events in vtiger
@@ -22,17 +20,17 @@
 		 * @param $forEvent The name of the event to handle
 		 * @param $path The path to the php file containing the handler
 		 * @param $className The name of the VTEventHandler class.
-		 * @param $condition A condition which must evaluate true for the event to be accepted.
+		 * @param string $depedentOn
 		 */
-		function registerHandler($forEvent, $path, $className, $condition='', $depedentOn='[]'){
+		function registerHandler($forEvent, $path, $className, $depedentOn='[]'){
 			$adb = $this->adb;
 			$result = $adb->pquery("SELECT * FROM vtiger_eventhandlers WHERE event_name=? AND handler_path=? AND handler_class=?",
 				array($forEvent, $path, $className));
 			if($adb->num_rows($result)===0){
 				$handlerId = $adb->getUniqueId('vtiger_eventhandlers');
 				$adb->pquery("insert into vtiger_eventhandlers
-					(eventhandler_id, event_name, handler_path, handler_class, cond, is_active, dependent_on)
-					values (?,?,?,?,?, true, ?)", array($handlerId, $forEvent, $path, $className, $condition, $depedentOn));
+					(eventhandler_id, event_name, handler_path, handler_class, is_active, dependent_on)
+					values (?,?,?,?, true, ?)", array($handlerId, $forEvent, $path, $className, $depedentOn));
 
 				$this->clearTriggerCache($forEvent);
 			}
@@ -135,56 +133,4 @@
 					values (?,?,?)", array($handlerModuleId, $moduleName, $handlerClass));
 			}
 		}
-
-		/**
-		 * List handler classes for a module
-		 *
-		 * @param moduleName - The name of the module
-		 */
-		function listHandlersForModule($moduleName){
-		  $adb = $this->adb;
-		  $result = $adb->pquery('SELECT handler_class FROM vtiger_eventhandler_module WHERE module_name=?', array($moduleName));
-		  $it = new SqlResultIterator($adb, $result);
-		  $arr = array();
-		  foreach($it as $row){
-			$arr[] = $row->handler_class;
-		  }
-		  return $arr;
-		}
-
-		/**
-		 * List active events.
-		 *
-		 * @return A list of registered events.
-		 */
-		function listActiveEventHandlers(){
-			$adb = $this->adb;
-			$result = $adb->pquery("select * from vtiger_eventhandlers where is_active=true",
-					array());
-			return $this->listEventHandlers($result);
-		}
-
-		function listAllEventHandlers(){
-			$adb = $this->adb;
-			$result = $adb->pquery("select * from vtiger_eventhandlers", array());
-			return $this->listEventHandlers($result);
-
-		}
-
-		private function listEventHandlers($result){
-			$adb = $this->adb;
-			$it = new SQLResultIterator($adb, $result);
-			$out = array();
-			foreach($it as $row){
-				$el = array();
-				$el['eventName'] = $row->event_name;
-				$el['handlerPath'] = $row->handler_path;
-				$el['handlerClass'] = $row->handler_class;
-				$el['condition'] = $row->cond;
-				$el['isActive'] = $row->is_active;
-				$out[] = $el;
-			}
-			return $out;
-		}
 	}
-?>
