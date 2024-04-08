@@ -1080,6 +1080,16 @@ Vtiger.Class("Vtiger_Detail_Js",{
 			value = rawValue;
 		}
 
+		let numberHandlingFields = ['currency', 'double', 'percentage', 'integer'];
+
+		if (jQuery.inArray(fieldType, numberHandlingFields) !== -1) {
+			value = parseFloat(rawValue).toFixed(app.getNumberOfDecimals());
+
+			if ('integer' === fieldType) {
+				value = parseInt(value);
+			}
+		}
+
 		if (jQuery('.editElement', editElement).length === 0) {
 			let fieldInfo;
 
@@ -1091,14 +1101,18 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				fieldInfo = uimeta.field.get(fieldName);
 			}
 
-			if (fieldType == "boolean") {
-				if (rawValue == 0) {
+			if ('boolean' === fieldType) {
+				if (0 == rawValue) {
 					fieldInfo['value'] = "No";
 				} else {
 					fieldInfo['value'] = "Yes";
 				}
 			} else {
 				fieldInfo['value'] = value;
+			}
+
+			if('currency' === fieldType) {
+				fieldInfo['currency_symbol'] = detailViewValue.find('[data-currency-symbol]').attr('data-currency-symbol');
 			}
 
 			let fieldObject = Vtiger_Field_Js.getInstance(fieldInfo),
@@ -2979,6 +2993,8 @@ Vtiger.Class("Vtiger_Detail_Js",{
 				relativeTo: '#detailView'
 			});
 		}
+
+		vtUtils.registerReplaceCommaWithDot($(document));
 	},
 
 	/**

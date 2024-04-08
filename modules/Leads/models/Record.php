@@ -128,6 +128,7 @@ class Leads_Record_Model extends Vtiger_Record_Model {
 
                     $leadMappedField = $this->getConvertLeadMappedField($fieldName, $moduleName);
                     $fieldValue = $this->get($leadMappedField);
+                    
                     if ($fieldName === 'account_id') {
                         $fieldValue = $this->get('company');
                     }

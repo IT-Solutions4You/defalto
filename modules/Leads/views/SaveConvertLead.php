@@ -48,12 +48,7 @@ class Leads_SaveConvertLead_View extends Vtiger_View_Controller {
 
 					//Potential Amount Field value converting into DB format
 					if ($fieldModel->getFieldDataType() === 'currency') {
-					if($fieldModel->get('uitype') == 72){
-						// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-						$fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
-					} else {
-						$fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue);
-					}
+                        $fieldValue = Vtiger_Currency_UIType::convertToDBFormat($fieldValue, null, true);
 					} elseif ($fieldModel->getFieldDataType() === 'date') {
 						$fieldValue = DateTimeField::convertToDBFormat($fieldValue);
 					} elseif ($fieldModel->getFieldDataType() === 'reference' && $fieldValue) {

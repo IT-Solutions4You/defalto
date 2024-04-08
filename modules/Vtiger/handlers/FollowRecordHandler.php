@@ -119,11 +119,7 @@ class FollowRecordHandler extends VTEventHandler {
 												$fieldDisplayValue = $fieldModel->getEditViewDisplayValue($fieldCurrentValue);
 											}
 											break;
-					case 'currency'		:	$skipConversion = false;
-											if ($fieldModel->get('uitype') == 72) {
-												$skipConversion = true;
-											}
-											$fieldDisplayValue = CurrencyField::convertToUserFormat($fieldCurrentValue, $userEntity, $skipConversion);
+					case 'currency'		:   $fieldDisplayValue = CurrencyField::convertToUserFormat($fieldCurrentValue, $userEntity, true);
 											break;
 
 					default				:	$fieldDisplayValue = $fieldModel->getEditViewDisplayValue($fieldCurrentValue);break;

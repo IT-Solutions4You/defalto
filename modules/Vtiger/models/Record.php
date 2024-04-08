@@ -227,7 +227,27 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 		return false;
 	}
 
-	/**
+    /**
+     * Function to retieve display value for a field
+     * @param string $fieldName - field name for which values need to get
+     * @return mixed
+     */
+    public function getEditViewDisplayValue($fieldName, $recordId = false)
+    {
+        if (empty($recordId)) {
+            $recordId = $this->getId();
+        }
+
+        $fieldModel = $this->getModule()->getField($fieldName);
+
+        if ($fieldModel) {
+            return $fieldModel->getEditViewDisplayValue($this->get($fieldName), $recordId, $this);
+        }
+
+        return false;
+    }
+
+    /**
 	 * Function returns the Vtiger_Field_Model
 	 * @param <String> $fieldName - field name
 	 * @return <Vtiger_Field_Model>
@@ -775,5 +795,24 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
         $row = $db->fetchByAssoc($result);
 
         return (int)$row['currency_id'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrencyId(): int
+    {
+        $currencyId = $this->fetchCurrencyId();
+
+        if (empty($currencyId)) {
+            $currencyId = CurrencyField::getDBCurrencyId();
+        }
+
+        if (empty($currencyId)) {
+            $currentUser = Users_Record_Model::getCurrentUserModel();
+            $currencyId = $currentUser->get('currency_id');
+        }
+
+        return (int)$currencyId;
     }
 }

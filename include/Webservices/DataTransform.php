@@ -244,31 +244,23 @@
 			return $row;
 		}
 
-		static function sanitizeCurrencyFieldsForInsert($row,$meta){
-			global $current_user;
-			$moduleFields = $meta->getModuleFields();
-			foreach($moduleFields as $fieldName=>$fieldObj){
-				if (!empty($row[$fieldName])) {
-					if($fieldObj->getFieldDataType()=="currency") {
-						/*if($fieldObj->getUIType() == '71') {
-							$row[$fieldName."_raw"] = $row[$fieldName];
-							$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user);
-						} else if($fieldObj->getUIType() == '72') {*/
-							$currencyConversionRate = $row['conversion_rate'];
-							if (!empty($currencyConversionRate)) {
-								$rawBaseCurrencyValue = CurrencyField::convertToDollar($row[$fieldName], $currencyConversionRate);
-								$row[$fieldName."_raw"] = $rawBaseCurrencyValue;
-								$row[$fieldName."_raw_converted"] = CurrencyField::convertToUserFormat($rawBaseCurrencyValue, $current_user);
-							}
-							$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
-						//}
-					} else if($fieldObj->getUIType() == 7 && in_array($fieldObj->getFieldType(), array('N', 'NN'))) {
-						$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
-					} else if($fieldObj->getUIType() == 1 && in_array($fieldObj->getFieldType(), array('N', 'NN')) && in_array($fieldObj->getFieldName(), array('qty_per_unit', 'qtyinstock'))) {
-						$row[$fieldName] = CurrencyField::convertToUserFormat($row[$fieldName],$current_user,true);
-					}
-				}
-			}
-			return $row;
-		}
-	}
+        static function sanitizeCurrencyFieldsForInsert($row, $meta)
+        {
+            global $current_user;
+            $moduleFields = $meta->getModuleFields();
+
+            foreach ($moduleFields as $fieldName => $fieldObj) {
+                if (!empty($row[$fieldName])) {
+                    if ($fieldObj->getFieldDataType() == 'currency') {
+                        $row[$fieldName] = CurrencyField::convertToUserFormatForEdit($row[$fieldName], $current_user, true);
+                    } elseif ($fieldObj->getUIType() == 7 && in_array($fieldObj->getFieldType(), ['N', 'NN'])) {
+                        $row[$fieldName] = CurrencyField::convertToUserFormatForEdit($row[$fieldName], $current_user, true);
+                    } elseif ($fieldObj->getUIType() == 1 && in_array($fieldObj->getFieldType(), ['N', 'NN']) && in_array($fieldObj->getFieldName(), ['qty_per_unit', 'qtyinstock'])) {
+                        $row[$fieldName] = CurrencyField::convertToUserFormatForEdit($row[$fieldName], $current_user, true);
+                    }
+                }
+            }
+
+            return $row;
+        }
+    }

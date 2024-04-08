@@ -126,7 +126,7 @@
 	{/if}
 
 	<td>
-		<input id="{$qty}" name="{$qty}" type="text" class="qty smallInputBox inputElement form-control"
+		<input id="{$qty}" name="{$qty}" type="text" class="qty smallInputBox inputElement form-control replaceCommaWithDot"
 			   data-rule-required=true data-rule-positive=true data-rule-greater_than_zero=true value="{if !empty($data.$qty)}{$data.$qty}{else}1{/if}"
 			   {if $QUANTITY_EDITABLE eq false} disabled=disabled {/if} />
 
@@ -136,7 +136,7 @@
 			<input name="{$purchaseCost}" type="hidden" value="{if $data.$purchaseCost}{$data.$purchaseCost}{else}0{/if}" />
 		{/if}
 		{if $MARGIN_EDITABLE eq false}
-			<input type="hidden" name="{$margin}" value="{if $data.$margin}{$data.$margin}{else}0{/if}"></span>
+			<input type="hidden" name="{$margin}" value="{if $data.$margin}{$data.$margin}{else}0{/if}">
 			<span class="margin pull-right" style="display:none">{if $data.$margin}{$data.$margin}{else}0{/if}</span>
 		{/if}
 		{if $MODULE neq 'PurchaseOrder' &&  $MODULE neq 'Quotes'}
@@ -159,7 +159,7 @@
 	{if $LIST_PRICE_EDITABLE}
 		<td>
 			<div class="input-group">
-				<input id="{$listPrice}" name="{$listPrice}" value="{if !empty($data.$listPrice)}{$data.$listPrice}{else}0{/if}" type="text" data-rule-required=true data-rule-positive=true class="listPrice smallInputBox inputElement form-control" data-is-price-changed="{if $RECORD_ID && $row_no neq 0}true{else}false{/if}" list-info='{if isset($data.$listPrice)}{Zend_Json::encode($listPriceValues)}{/if}' data-base-currency-id="{getProductBaseCurrency($productId, {$entityType})}" />
+				<input id="{$listPrice}" name="{$listPrice}" value="{if !empty($data.$listPrice)}{$data.$listPrice}{else}0{/if}" type="text" data-rule-required=true data-rule-positive=true class="listPrice smallInputBox inputElement form-control replaceCommaWithDot" data-is-price-changed="{if $RECORD_ID && $row_no neq 0}true{else}false{/if}" list-info='{if isset($data.$listPrice)}{Zend_Json::encode($listPriceValues)}{/if}' data-base-currency-id="{getProductBaseCurrency($productId, {$entityType})}" />
 				{assign var=PRICEBOOK_MODULE_MODEL value=Vtiger_Module_Model::getInstance('PriceBooks')}
 				{if $PRICEBOOK_MODULE_MODEL->isPermitted('DetailView') && $MODULE != 'PurchaseOrder'}
 					<span class="input-group-text priceBookPopup cursorPointer" data-popup="Popup"  title="{vtranslate('PriceBooks', $MODULE)}" data-module-name="PriceBooks">{Vtiger_Module_Model::getModuleIconPath('PriceBooks')}</span>
@@ -213,7 +213,7 @@
                                         </label>
                                     </td>
                                     <td>
-                                        <input type="text" data-rule-positive=true data-rule-inventory_percentage=true id="discount_percentage{$row_no}" name="discount_percentage{$row_no}" value="{$data.$discount_percent}" class="discount_percentage form-control discountVal {if empty($data.$checked_discount_percent)}hide{/if}"/>
+                                        <input type="text" data-rule-positive=true data-rule-inventory_percentage=true id="discount_percentage{$row_no}" name="discount_percentage{$row_no}" value="{$data.$discount_percent}" class="discount_percentage form-control discountVal replaceCommaWithDot {if empty($data.$checked_discount_percent)}hide{/if}"/>
                                     </td>
                                 </tr>
                             {/if}
@@ -226,7 +226,7 @@
                                         </label>
                                     </td>
                                     <td>
-                                        <input type="text" data-rule-positive=true id="discount_amount{$row_no}" name="discount_amount{$row_no}" value="{$data.$discount_amount}" class="form-control discount_amount discountVal {if empty($data.$checked_discount_amount)}hide{/if}"/>
+                                        <input type="text" data-rule-positive=true id="discount_amount{$row_no}" name="discount_amount{$row_no}" value="{$data.$discount_amount}" class="form-control discount_amount discountVal replaceCommaWithDot {if empty($data.$checked_discount_amount)}hide{/if}"/>
                                     </td>
                                 </tr>
                             {/if}
@@ -261,7 +261,10 @@
                                         <td>&nbsp;&nbsp;{$tax_data.taxlabel}</td>
                                         <td class="text-end">
                                             <div class="input-group">
-                                                <input type="text" data-rule-positive=true data-rule-inventory_percentage=true name="{$taxname}" id="{$taxname}" value="{$tax_data.percentage}" data-compound-on="{if $tax_data.method eq 'Compound'}{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($tax_data.compoundon))}{/if}" data-regions-list="{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($tax_data.regionsList))}" class="form-control taxPercentage"/>
+                                                <input type="text" data-rule-positive=true data-rule-inventory_percentage=true
+                                                       name="{$taxname}" id="{$taxname}" value="{$tax_data.percentage}"
+                                                       data-compound-on="{if $tax_data.method eq 'Compound'}{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($tax_data.compoundon))}{/if}"
+                                                       data-regions-list="{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($tax_data.regionsList))}" class="form-control taxPercentage replaceCommaWithDot"/>
                                                 <div class="input-group-text">%</div>
                                             </div>
                                         </td>

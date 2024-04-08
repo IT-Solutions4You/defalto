@@ -4506,3 +4506,15 @@ body .fc {
     background-color: var(--dt-blue-color);
     color: var(--dt-light-blue-color);
 }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

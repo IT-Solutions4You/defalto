@@ -331,11 +331,11 @@ class Settings_Webforms_Record_Model extends Settings_Vtiger_Record_Model {
 			}
 
 			if ($dataType === 'currency' && $fieldDefaultValue != null) {
-				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue, null, true);
+				$fieldDefaultValue = Vtiger_Currency_UIType::convertToDBFormat($fieldDefaultValue, null, true);
 			}
 
 			if ($dataType === 'double') {
-				$fieldDefaultValue = CurrencyField::convertToDBFormat($fieldDefaultValue, NULL, true);
+				$fieldDefaultValue = Vtiger_Currency_UIType::convertToDBFormat($fieldDefaultValue, NULL, true);
 			}
 			array_push($params, $fieldName, $neutralizedField, $fieldDefaultValue, $fieldDetails['required'], $fieldDetails['sequence'], $fieldDetails['hidden']);
 			$db->pquery($fieldInsertQuery, $params);

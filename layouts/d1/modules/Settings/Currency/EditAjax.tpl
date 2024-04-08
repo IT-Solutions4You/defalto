@@ -64,16 +64,24 @@
                             <div class="controls fieldValue col-sm-6">
                                 <label class="checkbox form-check">
                                     <input type="hidden" name="currency_status" value="Inactive"/>
-                                    <input type="checkbox" name="currency_status" value="Active" class="form-check-input currencyStatus alignBottom" {if !$CURRENCY_MODEL_EXISTS}checked{else}{$RECORD_MODEL->get('currency_status')}{if $RECORD_MODEL->get('currency_status') == 'Active'}checked{/if}{/if} />
+                                    <input type="checkbox" name="currency_status" value="Active" class="form-check-input currencyStatus alignBottom"
+                                    {if !$CURRENCY_MODEL_EXISTS}
+                                        checked="checked"
+                                    {else}
+                                        {$RECORD_MODEL->get('currency_status')} {if $RECORD_MODEL->get('currency_status') == 'Active'} checked="checked" {/if}
+                                    {/if} />
                                     <span class="ms-2">{vtranslate('LBL_CURRENCY_STATUS_DESC', $QUALIFIED_MODULE)}</span>
                                 </label>
                             </div>
                         </div>
-                        <div class="control-group transferCurrency hide">
-                            <label class="muted control-label">{vtranslate('LBL_TRANSFER_CURRENCY', $QUALIFIED_MODULE)}&nbsp;{vtranslate('LBL_TO', $QUALIFIED_MODULE)}</label>
-                            <span class="redColor">*</span>
-                            <div class="controls row-fluid">
-                                <select class="select2 span6" name="transform_to_id">
+                        <div class="form-group row my-3 transferCurrency hide">
+                            <label class="control-label fieldLabel col-sm-5">
+                                <span class="me-1">{vtranslate('LBL_TRANSFER_CURRENCY', $QUALIFIED_MODULE)}</span>
+                                <span class="me-2">{vtranslate('LBL_TO', $QUALIFIED_MODULE)}</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="controls fieldValue col-sm-6">
+                                <select class="select2" name="transform_to_id">
                                     {foreach key=CURRENCY_ID item=CURRENCY_MODEL from=$OTHER_EXISTING_CURRENCIES}
                                         <option value="{$CURRENCY_ID}">{vtranslate($CURRENCY_MODEL->get('currency_name'), $QUALIFIED_MODULE)}</option>
                                     {/foreach}

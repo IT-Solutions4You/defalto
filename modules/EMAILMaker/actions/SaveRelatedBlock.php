@@ -105,12 +105,9 @@ class EMAILMaker_SaveRelatedBlock_Action extends Vtiger_Action_Controller
                     }
 
                     if ($fieldType == 'currency') {
-                        if ($field->getUIType() == '71') {
-                            $advFilterValue = Vtiger_Currency_UIType::convertToDBFormat($advFilterValue, null, true);
-                        } else {
-                            $advFilterValue = Vtiger_Currency_UIType::convertToDBFormat($advFilterValue);
-                        }
+                        $advFilterValue = Vtiger_Currency_UIType::convertToDBFormat($advFilterValue, null, true);
                     }
+
                     $tempVal = explode(",", $advFilterValue);
                     if (($columnInfo[4] == 'D' || ($columnInfo[4] == 'T' && $columnInfo[1] != 'time_start' && $columnInfo[1] != 'time_end') ||
                             ($columnInfo[4] == 'DT')) && ($columnInfo[4] != '' && $advFilterValue != '')) {

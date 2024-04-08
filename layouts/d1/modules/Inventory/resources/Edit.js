@@ -919,18 +919,21 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
     },  
     
     getNewLineItem : function(params) {
-        var currentTarget = params.currentTarget;
-        var itemType = currentTarget.data('moduleName');
-        var newRow = this.dummyLineItemRow.clone(true).removeClass('hide').addClass(this.lineItemDetectingClass).removeClass('lineItemCloneCopy');
-        var individualTax = this.isIndividualTaxMode();
+        let currentTarget = params.currentTarget,
+			itemType = currentTarget.data('moduleName'),
+			newRow = this.dummyLineItemRow.clone(true).removeClass('hide').addClass(this.lineItemDetectingClass).removeClass('lineItemCloneCopy'),
+			individualTax = this.isIndividualTaxMode();
+
 		if(individualTax){
-			newRow.find('.individualTaxContainer').removeClass('hide');
+			newRow.find('.individualTaxContainer').removeClass('opacity-0');
 		}
+
         newRow.find('.lineItemPopup').filter(':not([data-module-name="'+ itemType +'"])').remove();
         newRow.find('.lineItemType').val(itemType);
-        var newRowNum = this.getLineItemNextRowNumber();
+        let newRowNum = this.getLineItemNextRowNumber();
         this.updateRowNumberForRow(newRow, newRowNum);
-        this.initializeLineItemRowCustomFields(newRow, newRowNum);        
+        this.initializeLineItemRowCustomFields(newRow, newRowNum);
+
         return newRow
     },
     
@@ -1514,7 +1517,7 @@ Vtiger_Edit_Js("Inventory_Edit_Js", {
 					'<td>  ' + taxInfo.taxlabel + '</td>' +
 					'<td class="text-end">' +
 					'<div class="input-group">' +
-					'<input type="text" name="' + taxName + '_percentage' + rowNumber + '" data-rule-positive=true data-rule-inventory_percentage=true  id="' + taxName + '_percentage' + rowNumber + '" value="' + taxInfo.taxpercentage + '" class="taxPercentage form-control" data-compound-on=' + taxInfo.compoundOn + ' data-regions-list="' + taxInfo.regionsList + '">' +
+					'<input type="text" name="' + taxName + '_percentage' + rowNumber + '" data-rule-positive=true data-rule-inventory_percentage=true  id="' + taxName + '_percentage' + rowNumber + '" value="' + taxInfo.taxpercentage + '" class="taxPercentage form-control replaceCommaWithDot" data-compound-on=' + taxInfo.compoundOn + ' data-regions-list="' + taxInfo.regionsList + '">' +
 					'<span class="input-group-text">%</span>' +
 					'</div>' +
 					'</td>' +

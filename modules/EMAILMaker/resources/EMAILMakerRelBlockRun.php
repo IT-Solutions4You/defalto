@@ -855,6 +855,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                 $this->labelMapping[$fieldName] = str_replace(" ", "_", $fieldLabel);
                 $header_label = $fieldLabel;
                 $fieldInfo = getFieldByReportLabel($module, $field);
+                $uiType = (int)$fieldInfo['uitype'];
 
                 if (empty($queryColumns)) {
                     if ('C' === $single) {
@@ -892,10 +893,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                         $this->queryPlanner->addTable($targetTableName);
                     } elseif ('vtiger_crmentity' . $this->primarymodule === $tableName) {
                         $columnsList[$fieldColumn] = "vtiger_crmentity." . $columnName . " AS '" . $header_label . "'";
-                    } elseif ('vtiger_products' === $tableName && 'unit_price' === $columnName) {
-                        $columnsList[$fieldColumn] = "concat(" . $tableName . ".currency_id,'::',innerProduct.actual_unit_price) as '" . $header_label . "'";
-                        $this->queryPlanner->addTable("innerProduct");
-                    } elseif (in_array($fieldName, $this->append_currency_symbol_to_value)) {
+                    } elseif (in_array($uiType, [71, 72])) {
                         if ('discount_amount' === $columnName) {
                             $columnsList[$fieldColumn] = "CONCAT(" . $tableName . ".currency_id,'::', IF(" . $tableName . ".discount_amount != ''," . $tableName . ".discount_amount, (" . $tableName . ".discount_percent/100) * " . $tableName . ".subtotal)) AS " . $header_label;
                         } else {
@@ -1553,14 +1551,7 @@ class EMAILMakerRelBlockRun extends CRMEntity
                     INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid=vtiger_products.productid 
                     LEFT JOIN vtiger_productcf ON vtiger_products.productid = vtiger_productcf.productid 
                     LEFT JOIN vtiger_users as vtiger_usersProducts ON vtiger_usersProducts.id = vtiger_products.handler 
-                    LEFT JOIN vtiger_vendor as vtiger_vendorRelProducts ON vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id 
-                    LEFT JOIN (
-                            SELECT vtiger_products.productid, (CASE WHEN (vtiger_products.currency_id = 1 ) THEN vtiger_products.unit_price ELSE (vtiger_products.unit_price / vtiger_currency_info.conversion_rate) END ) AS actual_unit_price
-                            FROM vtiger_products
-                            LEFT JOIN vtiger_currency_info ON vtiger_products.currency_id = vtiger_currency_info.id
-                            LEFT JOIN vtiger_productcurrencyrel ON vtiger_products.productid = vtiger_productcurrencyrel.productid
-                            AND vtiger_productcurrencyrel.currencyid = ' . $current_user->currency_id . '
-                    ) AS innerProduct ON innerProduct.productid = vtiger_products.productid ' .
+                    LEFT JOIN vtiger_vendor as vtiger_vendorRelProducts ON vtiger_vendorRelProducts.vendorid = vtiger_products.vendor_id ' .
                     $this->getRelatedModulesQuery($module, $this->secondarymodule) .
                     getNonAdminAccessControlQuery($this->primarymodule, $current_user) .
                     ' WHERE vtiger_crmentity.deleted=0 ';
@@ -1888,24 +1879,19 @@ class EMAILMakerRelBlockRun extends CRMEntity
             $fieldName = $field->getFieldName();
         }
 
-        if ('currency' === $fieldType && '' != $value) {
-            if (72 === intval($field->getUIType())) {
-                $curid_value = explode("::", $value);
-                $currency_id = $curid_value[0];
-                $currency_value = $curid_value[1];
-                $cur_sym_rate = getCurrencySymbolandCRate($currency_id);
+        if ('currency' === $fieldType) {
+            if(!empty($value)) {
+                [$currencyId, $currencyValue] = explode('::', $value);
 
-                if ('Products_Unit_Price' === $dbField->name) { // need to do this only for Products Unit Price
-                    if ($currency_id != 1) {
-                        $currency_value = floatval($cur_sym_rate['rate']) * floatval($currency_value);
-                    }
+                if(empty($currencyValue)) {
+                    $currencyId = $valueArray['currency_id'] ?? 1;
+                    $currencyValue = $value;
                 }
 
-                $formattedCurrencyValue = CurrencyField::convertToUserFormat($currency_value, null, true);
-                $fieldValue = CurrencyField::appendCurrencySymbol($formattedCurrencyValue, $cur_sym_rate['symbol']);
-            } else {
-                $currencyField = new CurrencyField($value);
-                $fieldValue = $currencyField->getDisplayValue();
+                $currencyInfo = getCurrencySymbolandCRate($currencyId);
+                $currencySymbol = $currencyInfo['symbol'];
+                $fieldValue = CurrencyField::convertToUserFormat($currencyValue, null, true);
+                $fieldValue = CurrencyField::appendCurrencySymbol($fieldValue, $currencySymbol);
             }
         } elseif (in_array($dbField->name, ['PurchaseOrder_Currency', 'SalesOrder_Currency', 'Invoice_Currency', 'Quotes_Currency', 'PriceBooks_Currency'])) {
             if ('' != $value) {

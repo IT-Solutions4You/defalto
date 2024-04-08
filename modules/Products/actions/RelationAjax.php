@@ -92,7 +92,7 @@ class Products_RelationAjax_Action extends Vtiger_RelationAjax_Action {
 		$relatedModuleModel = Vtiger_Module_Model::getInstance($relatedModule);
 		$relationModel = Vtiger_Relation_Model::getInstance($sourceModuleModel, $relatedModuleModel);
 		foreach($relInfos as $relInfo) {
-			$price = CurrencyField::convertToDBFormat($relInfo['price'], null, true);
+			$price = Vtiger_Currency_UIType::convertToDBFormat($relInfo['price'], null, true);
 			$relationModel->addListPrice($sourceRecordId, $relInfo['id'], $price);
 		}
 	}

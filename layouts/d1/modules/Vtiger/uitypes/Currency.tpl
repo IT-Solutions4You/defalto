@@ -11,10 +11,17 @@
         {assign var="FIELD_NAME" value=$FIELD_MODEL->getFieldName()}
     {/if}
     <div class="Vtiger_Currency_UIType">
+        {if $RECORD}
+            {assign var=CURRENCY_ID value=$RECORD->getCurrencyId()}
+        {else}
+            {assign var=CURRENCY_ID value=Users_Record_Model::getCurrentUserModel()->get('currency_id')}
+        {/if}
+        {assign var=CURRENCY_INFO value=getCurrencySymbolandCRate($CURRENCY_ID)}
+        {assign var=CURRENCY_SYMBOL value=$CURRENCY_INFO['symbol']}
         {if $FIELD_MODEL->get('uitype') eq '71'}
             <div class="input-group inputElement">
-                <span class="input-group-text">{$USER_MODEL->get('currency_symbol')}</span>
-                <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement currencyField" name="{$FIELD_NAME}"
+                <span class="input-group-text currencyUITypeSymbol">{$CURRENCY_SYMBOL}</span>
+                <input id="{$MODULE}_editView_fieldName_{$FIELD_NAME}" type="text" class="form-control inputElement currencyField replaceCommaWithDot" name="{$FIELD_NAME}"
                        value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                         {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if} data-rule-currency='true'
                         {if php7_count($FIELD_INFO['validator'])}
@@ -23,10 +30,10 @@
                 />
             </div>
         {elseif ($FIELD_MODEL->get('uitype') eq '72') && ($FIELD_NAME eq 'unit_price')}
-            <div class="input-group inputElement" style="float:none;">
-                <span class="input-group-text" id="baseCurrencySymbol">{$BASE_CURRENCY_SYMBOL}</span>
-                <input id="{$MODULE}-editview-fieldname-{$FIELD_NAME}" type="text" class="form-control inputElement unitPrice currencyField" name="{$FIELD_NAME}"
-                       value="{$FIELD_MODEL->getDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
+            <div class="input-group inputElement">
+                <span class="input-group-text currencyUITypeSymbol" id="baseCurrencySymbol">{$CURRENCY_SYMBOL}</span>
+                <input id="{$MODULE}-editview-fieldname-{$FIELD_NAME}" type="text" class="form-control inputElement unitPrice currencyField replaceCommaWithDot" name="{$FIELD_NAME}"
+                       value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator='{Zend_Json::encode($SPECIAL_VALIDATOR)}'{/if}
                        data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}' data-number-of-decimal-places='{$USER_MODEL->get('no_of_currency_decimals')}'
                         {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if} data-rule-currency='true'
                         {if php7_count($FIELD_INFO['validator'])}
@@ -45,8 +52,8 @@
             {/if}
         {else}
             <div class="input-group">
-                <span class="input-group-text" id="basic-addon1">{$USER_MODEL->get('currency_symbol')}</span>
-                <input type="text" class="form-control input-lg currencyField" name="{$FIELD_NAME}"
+                <span class="input-group-text currencyUITypeSymbol" id="basic-addon1">{$CURRENCY_SYMBOL}</span>
+                <input type="text" class="form-control input-lg currencyField replaceCommaWithDot" name="{$FIELD_NAME}"
                        value="{$FIELD_MODEL->getEditViewDisplayValue($FIELD_MODEL->get('fieldvalue'))}" {if !empty($SPECIAL_VALIDATOR)}data-validator={Zend_Json::encode($SPECIAL_VALIDATOR)}{/if}
                        {if $FIELD_INFO["mandatory"] eq true} data-rule-required="true" {/if} data-rule-currency='true'
                         {if php7_count($FIELD_INFO['validator'])}

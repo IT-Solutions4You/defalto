@@ -160,21 +160,27 @@ jQuery.Class("Vtiger_Field_Js",{
 	/**
 	 * Function to add the validation for the element
 	 */
-	addValidationToElement : function(element) {
-		var element = jQuery(element);
-		var addValidationToElement = element;
-		var elementInStructure = element.find('[name="'+this.getName()+'"]');
-		if(elementInStructure.length > 0){
+	addValidationToElement: function (element) {
+		element = jQuery(element);
+
+		let addValidationToElement = element,
+			elementInStructure = element.find('[name="' + this.getName() + '"]'),
+			type = this.getType();
+
+		if (elementInStructure.length > 0) {
 			addValidationToElement = elementInStructure;
 		}
-		if(this.isMandatory()) {
+
+		if (this.isMandatory()) {
 			addValidationToElement.attr('data-rule-required', 'true');
-			var type = this.getType();
-			if (type == 'reference') {
+
+			if ('reference' === type) {
 				addValidationToElement.attr('data-rule-reference_required', 'true');
 			}
 		}
-		addValidationToElement.attr('data-fieldinfo',JSON.stringify(this.getData())).attr('data-specific-rules',JSON.stringify(this.getData().specialValidator));
+
+		addValidationToElement.attr('data-fieldinfo', JSON.stringify(this.getData())).attr('data-specific-rules', JSON.stringify(this.getData().specialValidator));
+
 		return element;
 	},
 
@@ -196,6 +202,8 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 			value = this.getValue(),
 			html = '<div class="ReferenceField w-100 ';
 
+		console.log(['value', value]);
+
 		if (value) {
 			html += 'selected';
 		}
@@ -208,7 +216,7 @@ Vtiger_Field_Js('Vtiger_Reference_Field_Js',{},{
 		let reset = false;
 
 		if (value) {
-			html += ' value="' + value + '" disabled="disabled"';
+			html += ' value="' + value + '" readonly="readonly"';
 			reset = true;
 		}
 
@@ -551,13 +559,20 @@ Vtiger_Field_Js('Vtiger_Currency_Field_Js',{},{
 	getCurrencySymbol : function() {
 		return this.get('currency_symbol');
 	},
+	getValue: function() {
+		let value = this._super();
 
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	getUi: function () {
-		//wrappig with another div for consistency
 		let html = '<div class="CurrencyField w-100">' +
 				'<div class="input-group">' +
 				'<span class="input-group-addon input-group-text" id="basic-addon1">' + this.getCurrencySymbol() + '</span>' +
-				'<input class="inputElement form-control" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
+				'<input class="inputElement form-control currencyField replaceCommaWithDot" type="text" name="' + this.getName() + '" data-rule-currency="true" value="' + this.getValue() + '" />' +
 				'</div>' +
 				'</div>',
 			element = jQuery(html);
@@ -654,13 +669,22 @@ Vtiger_Field_Js('Vtiger_Text_Field_Js',{},{
 /** @var Vtiger_Percentage_Field_Js */
 Vtiger_Field_Js('Vtiger_Percentage_Field_Js',{},{
 
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	/**
 	 * Function to get the ui
 	 * @return - input percentage field
 	 */
 	getUi : function() {
 		let html = '<div class="PercentageField w-100"><div class="input-group percentage-input-group flex-nowrap">'+
-						'<input type="text" class="form-control inputElement percentage-input-element" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
+						'<input type="text" class="form-control inputElement percentage-input-element replaceCommaWithDot" name="'+this.getName() +'" value="'+ this.getValue() + '" step="any" data-rule-'+this.getType()+'=true/>'+
 						'<span class="input-group-addon input-group-text">%</span>'+
 					'</div></div>',
 			element = jQuery(html);
@@ -741,10 +765,38 @@ Vtiger_Field_Js('Vtiger_Image_Field_Js',{},{
 
 /** @var Vtiger_Integer_Field_Js */
 Vtiger_Field_Js('Vtiger_Integer_Field_Js', {}, {
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
 	getUi: function () {
-		let html = '<input class="IntegerField form-control inputElement" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
+		let html = '<input class="IntegerField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
 		html = jQuery(html).val(app.htmlDecode(this.getValue()));
 
 		return this.addValidationToElement(html);
 	}
+});
+
+/** @var Vtiger_Double_Field_Js */
+Vtiger_Field_Js('Vtiger_Double_Field_Js', {}, {
+	getValue: function() {
+		let value = this._super();
+
+		if(isNaN(value)) {
+			value = '';
+		}
+
+		return value;
+	},
+	getUi: function () {
+		let html = '<input class="DoubleField form-control inputElement replaceCommaWithDot" type="text" name="' + this.getName() + '" data-label="' + this.get('label') + '" data-rule-' + this.getType() + '=true />';
+		html = jQuery(html).val(app.htmlDecode(this.getValue()));
+
+		return this.addValidationToElement(html);
+	},
 });

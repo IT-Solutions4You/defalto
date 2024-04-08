@@ -551,21 +551,8 @@ class EMAILMaker_EMAILContent_Model extends EMAILMaker_EMAILContentUtils_Model
                 $fieldDisplayValue = $field->getEditViewDisplayValue($fieldValue);
                 break;
             case 'double':
-            case 'percentage':
-                $fieldDisplayValue = $this->formatNumberToEMAIL($fieldValue);
-                break;
             case 'currency':
-                if (is_numeric($fieldValue)) {
-                    if (!$inventoryCurrency) {
-                        $user_currency_data = getCurrencySymbolandCRate($current_user->currency_id);
-                        $crate = $user_currency_data['rate'];
-                    } else {
-                        $crate = $inventoryCurrency['conversion_rate'];
-                    }
-
-                    $fieldValue = $fieldValue * $crate;
-                }
-
+            case 'percentage':
                 $fieldDisplayValue = $this->formatNumberToEMAIL($fieldValue);
                 break;
             case 'text':

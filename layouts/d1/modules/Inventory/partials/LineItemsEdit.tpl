@@ -300,7 +300,9 @@
 													</label>
 												</td>
 												<td class="text-end">
-													<input type="text" data-rule-positive=true data-rule-inventory_percentage=true id="discount_percentage_final" name="discount_percentage_final" value="{$FINAL.discount_percentage_final}" class="form-control discount_percentage_final discountVal {if $DISCOUNT_TYPE_FINAL neq 'percentage'}hide{/if}"/>
+													<input type="text" data-rule-positive=true data-rule-inventory_percentage=true id="discount_percentage_final"
+														   name="discount_percentage_final" value="{$FINAL.discount_percentage_final}"
+														   class="form-control discount_percentage_final discountVal replaceCommaWithDot {if $DISCOUNT_TYPE_FINAL neq 'percentage'}hide{/if}"/>
 												</td>
 											</tr>
 										{/if}
@@ -313,7 +315,8 @@
 													</label>
 												</td>
 												<td>
-													<input type="text" data-rule-positive=true id="discount_amount_final" name="discount_amount_final" value="{$FINAL.discount_amount_final}" class="form-control discount_amount_final discountVal {if $DISCOUNT_TYPE_FINAL neq 'amount'}hide{/if}"/>
+													<input type="text" data-rule-positive=true id="discount_amount_final" name="discount_amount_final" value="{$FINAL.discount_amount_final}"
+														   class="form-control discount_amount_final discountVal replaceCommaWithDot {if $DISCOUNT_TYPE_FINAL neq 'amount'}hide{/if}"/>
 												</td>
 											</tr>
 										{/if}
@@ -354,7 +357,7 @@
 													{/if}
 												</td>
 												<td class="lineOnTop text-end">
-													<input type="text" class="form-control chargeValue" size="5" {if $CHARGE_MODEL->get('format') eq 'Percent'}readonly{/if} data-rule-positive=true name="charges[{$CHARGE_ID}][value]" value="{if $CHARGE_VALUE}{$CHARGE_VALUE}{else if $RECORD_ID}0{else}{$CHARGE_MODEL->getValue() * $USER_MODEL->get('conv_rate')}{/if}" />
+													<input type="text" class="form-control chargeValue replaceCommaWithDot" size="5" {if $CHARGE_MODEL->get('format') eq 'Percent'}readonly{/if} data-rule-positive=true name="charges[{$CHARGE_ID}][value]" value="{if $CHARGE_VALUE}{$CHARGE_VALUE}{else if $RECORD_ID}0{else}{$CHARGE_MODEL->getValue() * $USER_MODEL->get('conv_rate')}{/if}" />
 												</td>
 											</tr>
 										{/foreach}
@@ -397,7 +400,7 @@
 											<td class="lineOnTop">
 												<div class="input-group">
 													<input type="text" size="5" data-compound-on="{if $tax_detail['method'] eq 'Compound'}{Vtiger_Util_Helper::toSafeHTML(Zend_Json::encode($tax_detail['compoundon']))}{/if}"
-														   name="{$tax_detail.taxname}_group_percentage" id="group_tax_percentage{$smarty.foreach.group_tax_loop.iteration}" value="{$tax_detail.percentage}" class="form-control groupTaxPercentage"
+														   name="{$tax_detail.taxname}_group_percentage" id="group_tax_percentage{$smarty.foreach.group_tax_loop.iteration}" value="{$tax_detail.percentage}" class="form-control groupTaxPercentage replaceCommaWithDot"
 														   data-rule-positive=true data-rule-inventory_percentage=true />
 													<div class="input-group-text">%</div>
 												</div>
@@ -454,7 +457,7 @@
 														<td class="lineOnTop w-25">
 															<div class="input-group">
 																<input type="text" data-charge-id="{$CHARGE_ID}" data-compound-on="{if $CHARGE_TAX_MODEL->getTaxMethod() eq 'Compound'}{$CHARGE_TAX_MODEL->get('compoundon')}{/if}"
-																	   class="form-control chargeTaxPercentage" name="charges[{$CHARGE_ID}][taxes][{$CHARGE_TAX_ID}]" value="{$SH_TAX_VALUE}"
+																	   class="form-control chargeTaxPercentage replaceCommaWithDot" name="charges[{$CHARGE_ID}][taxes][{$CHARGE_TAX_ID}]" value="{$SH_TAX_VALUE}"
 																	   data-rule-positive=true data-rule-inventory_percentage=true />
 																<div class="input-group-text">%</div>
 															</div>
@@ -490,7 +493,7 @@
 												<tr>
 													<td class="lineOnTop p-3 text-nowrap">{$DEDUCTED_TAX_INFO['taxlabel']}</td>
 													<td class="lineOnTop input-group">
-														<input type="text" class="form-control deductTaxPercentage" name="{$DEDUCTED_TAX_INFO['taxname']}_group_percentage" value="{if $DEDUCTED_TAX_INFO['selected'] || !$RECORD_ID}{$DEDUCTED_TAX_INFO['percentage']}{else}0{/if}" data-rule-positive=true data-rule-inventory_percentage=true/>
+														<input type="text" class="form-control deductTaxPercentage replaceCommaWithDot" name="{$DEDUCTED_TAX_INFO['taxname']}_group_percentage" value="{if $DEDUCTED_TAX_INFO['selected'] || !$RECORD_ID}{$DEDUCTED_TAX_INFO['percentage']}{else}0{/if}" data-rule-positive=true data-rule-inventory_percentage=true/>
 														<span class="input-group-text">%</span>
 													</td>
 													<td class="lineOnTop text-end">
@@ -525,7 +528,7 @@
 					</td>
 					<td>
 						<span class="text-end">
-							<input id="adjustment" name="adjustment" type="text" data-rule-positive="true" class="lineItemInputBox form-control" value="{if $FINAL.adjustment lt 0}{abs($FINAL.adjustment)}{elseif $FINAL.adjustment}{$FINAL.adjustment}{else}0{/if}">
+							<input id="adjustment" name="adjustment" type="text" data-rule-positive="true" class="lineItemInputBox form-control replaceCommaWithDot" value="{if $FINAL.adjustment lt 0}{abs($FINAL.adjustment)}{elseif $FINAL.adjustment}{$FINAL.adjustment}{else}0{/if}">
 						</span>
 					</td>
 				</tr>
@@ -550,10 +553,15 @@
 						</td>
 						<td>
 							{if $MODULE eq 'Invoice'}
-								<span class="text-end"><input id="received" name="received" type="text" class="lineItemInputBox form-control" value="{if $RECORD->getDisplayValue('received') && !($IS_DUPLICATE)}{$RECORD->getDisplayValue('received')}{else}0{/if}"></span>
-								{else}
-								<span class="text-end"><input id="paid" name="paid" type="text" class="lineItemInputBox form-control" value="{if $RECORD->getDisplayValue('paid') && !($IS_DUPLICATE)}{$RECORD->getDisplayValue('paid')}{else}0{/if}"></span>
-								{/if}
+								<span class="text-end">
+									<input id="received" name="received" type="text" class="lineItemInputBox form-control replaceCommaWithDot" value="{if !$RECORD->isEmpty('received') && !($IS_DUPLICATE)}{$RECORD->getEditViewDisplayValue('received')}{else}0{/if}">
+
+								</span>
+							{else}
+								<span class="text-end">
+									<input id="paid" name="paid" type="text" class="lineItemInputBox form-control replaceCommaWithDot" value="{if !$RECORD->isEmpty('paid') && !($IS_DUPLICATE)}{$RECORD->getEditViewDisplayValue('paid')}{else}0{/if}">
+								</span>
+							{/if}
 						</td>
 					</tr>
 					<tr class="border-bottom align-top">
@@ -564,7 +572,7 @@
 						</td>
 						<td>
 							<span class="text-end">
-								<input id="balance" name="balance" type="text" class="lineItemInputBox form-control" value="{if $RECORD->getDisplayValue('balance') && !($IS_DUPLICATE)}{$RECORD->getDisplayValue('balance')}{else}0{/if}" readonly>
+								<input id="balance" name="balance" type="text" class="lineItemInputBox form-control" value="{if !$RECORD->isEmpty('balance') && !($IS_DUPLICATE)}{$RECORD->getEditViewDisplayValue('balance')}{else}0{/if}" readonly>
 							</span>
 						</td>
 					</tr>

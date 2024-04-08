@@ -956,12 +956,7 @@ class CustomView extends CRMEntity {
 					}
 
 					if ($fieldType == 'currency') {
-						if ($fieldModel->get('uitype') == '72') {
-							// Some of the currency fields like Unit Price, Totoal , Sub-total - doesn't need currency conversion during save
-							$advfilterval = CurrencyField::convertToUserFormat($advfilterval, null, true);
-						} else {
-							$advfilterval = CurrencyField::convertToUserFormat($advfilterval);
-						}
+                        $advfilterval = $fieldModel->getDBInsertValue($advfilterval);
 					}
 
 					$specialDateTimeConditions = Vtiger_Functions::getSpecialDateTimeCondtions();
