@@ -37,7 +37,7 @@
                     <tr class="listViewHeaders bg-body-secondary">
                         {if $MULTI_SELECT}
                             <th class="{$WIDTHTYPE}">
-                                <input type="checkbox"  class="selectAllInCurrentPage" />
+                                <input type="checkbox"  class="selectAllInCurrentPage form-check-input" />
                             </th>
                         {else}
                             <th class="{$WIDTHTYPE}">&nbsp;</th>

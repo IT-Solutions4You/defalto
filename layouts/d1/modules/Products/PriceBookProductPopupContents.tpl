@@ -40,7 +40,7 @@
                         <thead>
                             <tr class="listViewHeaders bg-body-secondary">
                                 <th class="{$WIDTHTYPE}">
-                                    <input type="checkbox"  class="selectAllInCurrentPage" />
+                                    <input type="checkbox"  class="selectAllInCurrentPage form-check-input" />
                                 </th>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                     <th class="{$WIDTHTYPE}">
@@ -80,7 +80,7 @@
                             <tr class="listViewEntries border-top" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}'
                                 {if $GETURL neq ''} data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if} id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
                                 <td class="{$WIDTHTYPE}">
-                                    <input class="entryCheckBox" type="checkbox" {if $EDITED_VALUE}checked{/if}/>
+                                    <input class="entryCheckBox form-check-input" type="checkbox" {if $EDITED_VALUE}checked{/if}/>
                                 </td>
                                 {foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
                                 {assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
@@ -100,7 +100,7 @@
                                 </td>
                                 {/foreach}
                                 <td class="listViewEntryValue {$WIDTHTYPE}">
-                                    <input type="text" value="{if $EDITED_VALUE}{$EDITED_VALUE["price"]}{else}{$LISTVIEW_ENTRY->get('unit_price')}{/if}" name="unit_price" class="{if !$EDITED_VALUE} hide {/if} inputElement zeroPaddingAndMargin" data-rule-required="true" data-rule-currency="true"
+                                    <input type="text" value="{if $EDITED_VALUE}{$EDITED_VALUE["price"]}{else}{$LISTVIEW_ENTRY->get('unit_price')}{/if}" name="unit_price" class="inputElement zeroPaddingAndMargin form-control replaceCommaWithDot {if !$EDITED_VALUE}hide{/if}" data-rule-required="true" data-rule-currency="true"
                                                data-decimal-separator='{$USER_MODEL->get('currency_decimal_separator')}' data-group-separator='{$USER_MODEL->get('currency_grouping_separator')}'/>
                                 </td>
                             </tr>
