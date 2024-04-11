@@ -1,12 +1,10 @@
 <?php
-/*+********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is: vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *********************************************************************************/
+ */
 
 if (defined('VTIGER_UPGRADE')) {
 	global $current_user, $adb;
@@ -153,11 +151,7 @@ if (defined('VTIGER_UPGRADE')) {
 	}
 	$db->pquery('UPDATE vtiger_tab SET source=NULL', array());
 
-	$packageModules = array('Project', 'ProjectTask', 'ProjectMilestone'); /* Projects zip is bundle */
-	$packageZips = glob("packages/vtiger/*/*.zip");
-	foreach ($packageZips as $zipfile) {
-		$packageModules[] = str_replace('.zip', '', array_pop(explode("/", $zipfile)));
-	}
+	$packageModules = array_merge(['Project', 'ProjectTask', 'ProjectMilestone'], Install_Utils_Model::$registerModules); /* Projects zip is bundle */
 
 	$db->pquery('UPDATE vtiger_tab SET source="custom" WHERE version IS NOT NULL AND name NOT IN ('.generateQuestionMarks($packageModules).')', $packageModules);
 	echo '<br>Succecssfully added source column vtiger tab table<br>';

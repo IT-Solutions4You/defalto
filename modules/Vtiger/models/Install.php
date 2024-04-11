@@ -15,13 +15,11 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      * [name, handler, frequency, module, sequence, description]
      */
     public array $registerCron = [];
-
     /**
      * [module, type, label, url, icon, sequence, handlerInfo]
      * @return array
      */
     public array $registerCustomLinks = [];
-
     /**
      * @var array
      * [events, file, class, condition, dependOn, modules]
@@ -43,16 +41,53 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
      * [Module, Workflow Name, Workflow Label, Modules JSON]
      */
     public array $registerWorkflows = [];
+    /**
+     * @var PearDatabase
+     */
     protected PearDatabase $db;
+    /**
+     * @var string
+     */
     protected string $eventType = '';
+    /**
+     * @var string
+     */
     protected string $moduleName = '';
+    /**
+     * @var string
+     */
     protected string $moduleNumbering = '';
+    /**
+     * @var string
+     */
     protected string $parentName = '';
 
     /**
      * @return void
      */
     abstract public function addCustomLinks(): void;
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function addModuleToCustomerPortal()
+    {
+        $projectTabId = getTabid($this->moduleName);
+
+        // Add module to Customer portal
+        if (getTabid('CustomerPortal') && $projectTabId) {
+            $checkAlreadyExists = $this->db->pquery('SELECT 1 FROM vtiger_customerportal_tabs WHERE tabid=?', [$projectTabId]);
+
+            if ($checkAlreadyExists && $this->db->num_rows($checkAlreadyExists) < 1) {
+                $sequenceQuery = $this->db->pquery('SELECT max(sequence) as maxsequence FROM vtiger_customerportal_tabs', []);
+                $sequence = (int)$this->db->query_result($sequenceQuery, 0, 'maxsequence') + 1;
+
+                $this->db->pquery('INSERT INTO vtiger_customerportal_tabs(tabid,visible,sequence) VALUES (?, ?, ?)', [$projectTabId, 1, $sequence]);
+                $this->db->pquery('INSERT INTO vtiger_customerportal_prefs(tabid,prefkey,prefvalue) VALUES (?, ?, ?)', [$projectTabId, 'showrelatedinfo', 1]);
+            }
+        }
+    }
 
     /**
      * @param $column
@@ -77,6 +112,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         return $this;
     }
 
+    /**
+     * @param $criteria
+     * @return $this
+     */
     public function createKey($criteria)
     {
         $this->db->pquery(
@@ -93,7 +132,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     /**
      * @throws AppException
      */
-    protected function createTable($firstColumn = '', $firstType = 'int(11)'): self
+    protected function createTable($firstColumn = '', $firstType = 'int(19)'): self
     {
         if ($this->isEmpty('table')) {
             throw new AppException('Table is empty for create table');
@@ -220,6 +259,9 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         return $clone;
     }
 
+    /**
+     * @return array
+     */
     abstract public function getTables(): array;
 
     /**
@@ -447,6 +489,7 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                         foreach ($relatedModules as $relatedModule => $relatedLabel) {
                             if (!is_numeric($relatedModule)) {
                                 $relModule = Vtiger_Module::getInstance($relatedModule);
+
                                 $relModule->unsetRelatedList($moduleInstance, $relatedLabel, 'get_dependents_list');
                             }
 
@@ -521,13 +564,33 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @return mixed
+     * @throws AppException
+     */
+    public function migrate()
+    {
+        throw new AppException('Migration undefined');
+    }
+
+    /**
+     * @param $register
+     * @return void
+     */
+    public function updateComments($register = true)
+    {
+        if ($register) {
+            ModComments::addWidgetTo([$this->moduleName]);
+        } else {
+            ModComments::removeWidgetFrom([$this->moduleName]);
+        }
+    }
+
+    /**
      * @param bool $register
      * @return void
      */
     public function updateCron($register = true)
     {
-        $this->db->pquery('ALTER TABLE vtiger_cron_task MODIFY COLUMN id INT auto_increment ');
-
         foreach ($this->registerCron as $cronInfo) {
             [$name, $handler, $frequency, $module, $sequence, $description] = array_pad($cronInfo, 6, null);
 
@@ -539,6 +602,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @param $register
+     * @return void
+     */
     public function updateCustomLinks($register = true)
     {
         foreach ($this->registerCustomLinks as $customLink) {
@@ -556,6 +623,10 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @param $register
+     * @return void
+     */
     public function updateEventHandler($register = true)
     {
         $eventsManager = new VTEventsManager($this->db);
@@ -580,6 +651,19 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
     }
 
     /**
+     * @param $register
+     * @return void
+     */
+    public function updateHistory($register = true)
+    {
+        if ($register) {
+            ModTracker::enableTrackingForModule(getTabid($this->moduleName));
+        } else {
+            ModTracker::disableTrackingForModule(getTabid($this->moduleName));
+        }
+    }
+
+    /**
      * @return void
      */
     protected function updateIcons()
@@ -593,6 +677,26 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         }
     }
 
+
+
+    /**
+     * @return void
+     */
+    public function updateNumbering()
+    {
+        if (empty($this->moduleNumbering)) {
+            return;
+        }
+
+        $focus = CRMEntity::getInstance($this->moduleName);
+        $focus->setModuleSeqNumber('configure', $this->moduleName, $this->moduleNumbering, '0001');
+        $focus->updateMissingSeqNumber($this->moduleName);
+    }
+
+    /**
+     * @param $register
+     * @return void
+     */
     public function updateRelatedList($register = true)
     {
         foreach ($this->registerRelatedLists as $relatedList) {
@@ -616,29 +720,47 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
         }
     }
 
+    /**
+     * @param $register
+     * @return void
+     * @throws Exception
+     */
     public function updateSettingsLinks($register = true)
     {
         foreach ($this->registerSettingsLinks as $settingsLink) {
             [$name, $link, $block] = $settingsLink;
 
-            $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', array($name));
+            $this->db->pquery('DELETE FROM vtiger_settings_field WHERE name=?', [$name]);
 
             if ($register) {
                 $fieldId = $this->db->getUniqueID('vtiger_settings_field');
                 $blockId = getSettingsBlockId($block) ?: getSettingsBlockId('LBL_EXTENSIONS');
 
                 $sequenceResult = $this->db->pquery(
-                    'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?', array($blockId)
+                    'SELECT max(sequence) AS max_seq FROM vtiger_settings_field WHERE blockid=?', [$blockId]
                 );
                 $sequence = intval($this->db->query_result($sequenceResult, 0, 'max_seq')) + 1;
 
                 $this->db->pquery(
-                    'INSERT INTO vtiger_settings_field(fieldid, blockid, name, linkto, sequence) VALUES (?,?,?,?,?)', array($fieldId, $blockId, $name, $link, $sequence)
+                    'INSERT INTO vtiger_settings_field(fieldid, blockid, name, linkto, sequence) VALUES (?,?,?,?,?)', [$fieldId, $blockId, $name, $link, $sequence]
                 );
             }
         }
     }
 
+    /**
+     * @return void
+     */
+    public function updateToStandardModule()
+    {
+        // Mark the module as Standard module
+        $this->db->pquery('UPDATE vtiger_tab SET customized=0 WHERE name=?', [$this->moduleName]);
+    }
+
+    /**
+     * @param $register
+     * @return void
+     */
     public function updateWorkflows($register = true)
     {
         foreach ($this->registerWorkflows as $registerWorkflow) {
@@ -648,11 +770,11 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
             if (!$register) {
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', array($workflowName)
+                    'DELETE FROM com_vtiger_workflow_tasktypes WHERE tasktypename=?', [$workflowName]
                 );
 
                 $this->db->pquery(
-                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?', array('%:"' . $workflowName . '":%')
+                    'DELETE FROM com_vtiger_workflowtasks WHERE task LIKE ?', ['%:"' . $workflowName . '":%']
                 );
 
                 unlink(sprintf('modules/com_vtiger_workflow/tasks/%s.inc', $workflowName));
@@ -676,12 +798,12 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
 
             if ($phpFileExist && $tplFileExist) {
                 $result = $this->db->pquery(
-                    'SELECT * FROM com_vtiger_workflow_tasktypes WHERE tasktypename = ?', array($workflowName)
+                    'SELECT * FROM com_vtiger_workflow_tasktypes WHERE tasktypename = ?', [$workflowName]
                 );
 
                 if (!$this->db->num_rows($result)) {
                     $workflowId = $this->db->getUniqueID('com_vtiger_workflow_tasktypes');
-                    $values = array(
+                    $values = [
                         'id' => $workflowId,
                         'tasktypename' => $workflowName,
                         'label' => $workflowLabel,
@@ -690,22 +812,11 @@ abstract class Vtiger_Install_Model extends Vtiger_Base_Model
                         'templatepath' => $taskForm,
                         'modules' => $modules,
                         'sourcemodule' => $moduleName,
-                    );
+                    ];
                     $sql = sprintf('INSERT INTO %s (%s) VALUES (%s)', 'com_vtiger_workflow_tasktypes', implode(',', array_keys($values)), generateQuestionMarks($values));
                     $this->db->pquery($sql, $values);
                 }
             }
         }
-    }
-
-    public function updateNumbering()
-    {
-        if (empty($this->moduleNumbering)) {
-            return;
-        }
-
-        $focus = CRMEntity::getInstance($this->moduleName);
-        $focus->setModuleSeqNumber('configure', $this->moduleName, $this->moduleNumbering, '0001');
-        $focus->updateMissingSeqNumber($this->moduleName);
     }
 }

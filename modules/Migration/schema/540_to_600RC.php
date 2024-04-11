@@ -1,12 +1,11 @@
 <?php
-/*+********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
+/**
  * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
+ * Portions created by vtiger are Copyright (c) vtiger.
+ * Portions created by IT-Solutions4You (ITS4You) are Copyright (c) IT-Solutions4You s.r.o
  * All Rights Reserved.
- *********************************************************************************/
+ */
+
 if (!defined('VTIGER_UPGRADE')) die('Invalid entry point');
 
 vimport('~~include/utils/utils.php');
@@ -20,38 +19,7 @@ require_once 'modules/com_vtiger_workflow/VTWorkflowManager.inc';
 require_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 
 if(defined('VTIGER_UPGRADE')) {
-	//Collating all module package updates here
-	updateVtlibModule('Import', 'packages/vtiger/mandatory/Import.zip');
-	updateVtlibModule('MailManager', 'packages/vtiger/mandatory/MailManager.zip');
-	updateVtlibModule('ModTracker', 'packages/vtiger/mandatory/ModTracker.zip');
-	updateVtlibModule('Services', "packages/vtiger/mandatory/Services.zip");
-	updateVtlibModule('ServiceContracts', "packages/vtiger/mandatory/ServiceContracts.zip");
-	updateVtlibModule('WSAPP', 'packages/vtiger/mandatory/WSAPP.zip');
-	updateVtlibModule('Assets', 'packages/vtiger/optional/Assets.zip');
-	updateVtlibModule('CustomerPortal', 'packages/vtiger/optional/CustomerPortal.zip');
-	updateVtlibModule('ModComments', "packages/vtiger/optional/ModComments.zip");
-	updateVtlibModule('Projects', "packages/vtiger/optional/Projects.zip");
-	updateVtlibModule('RecycleBin', 'packages/vtiger/optional/RecycleBin.zip');
-	updateVtlibModule('SMSNotifier', "packages/vtiger/optional/SMSNotifier.zip");
-	updateVtlibModule("Webforms","packages/vtiger/optional/Webforms.zip");
-	installVtlibModule('Google', 'packages/vtiger/optional/Google.zip');
-
-	// updated language packs.
-
-	updateVtlibModule('PT Brasil', 'packages/vtiger/optional/BrazilianLanguagePack_bz_bz.zip');
-	updateVtlibModule('British English', 'packages/vtiger/optional/BritishLanguagePack_br_br.zip');
-	updateVtlibModule('Dutch', 'packages/vtiger/optional/Dutch.zip');
-	updateVtlibModule('Deutsch', 'packages/vtiger/optional/Deutsch.zip');
-	updateVtlibModule('French', 'packages/vtiger/optional/French.zip');
-	updateVtlibModule('Hungarian', 'packages/vtiger/optional/Hungarian.zip');
-	updateVtlibModule('Mexican Spanish', 'packages/vtiger/optional/MexicanSpanishLanguagePack_es_mx.zip');
-	updateVtlibModule('Spanish', 'packages/vtiger/optional/Spanish.zip');
-	installVtlibModule('Italian', 'packages/vtiger/optional/ItalianLanguagePack_it_it.zip');
-	installVtlibModule('RomanianLanguagePack_rm_rm', 'packages/vtiger/optional/RomanianLanguagePack_rm_rm.zip');
-	installVtlibModule('Turkce', 'packages/vtiger/optional/TurkishLanguagePack_tr_tr.zip');
-	installVtlibModule('Russian', 'packages/vtiger/optional/Russian.zip');
-	installVtlibModule('Polish', 'packages/vtiger/optional/PolishLanguagePack_pl_pl.zip');
-	installVtlibModule('Russian', 'packages/vtiger/optional/Russian.zip');
+    Install_Utils_Model::installModules();
 }
 
 if(!defined('INSTALLATION_MODE')) {

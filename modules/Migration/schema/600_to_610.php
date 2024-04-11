@@ -13,23 +13,7 @@ include_once 'modules/com_vtiger_workflow/VTTaskManager.inc';
 include_once 'include/utils/utils.php';
 
 if(defined('VTIGER_UPGRADE')) {
-        //Collating all module package updates here
-	updateVtlibModule('Import', 'packages/vtiger/mandatory/Import.zip');
-        updateVtlibModule('PBXManager', 'packages/vtiger/mandatory/PBXManager.zip');
-	updateVtlibModule('MailManager', 'packages/vtiger/mandatory/MailManager.zip');
-        updateVtlibModule('ModTracker', 'packages/vtiger/mandatory/ModTracker.zip');
-        updateVtlibModule('ServiceContracts', 'packages/vtiger/mandatory/ServiceContracts.zip');
-        updateVtlibModule('Services', 'packages/vtiger/mandatory/Services.zip');
-	updateVtlibModule('WSAPP', 'packages/vtiger/mandatory/WSAPP.zip');
-        updateVtlibModule('Arabic_ar_ae', 'packages/vtiger/optional/Arabic_ar_ae.zip');
-        updateVtlibModule('Assets', 'packages/vtiger/optional/Assets.zip');
-        updateVtlibModule('Google', 'packages/vtiger/optional/Google.zip');
-        updateVtlibModule('ModComments', 'packages/vtiger/optional/ModComments.zip');
-        updateVtlibModule('Projects', 'packages/vtiger/optional/Projects.zip');
-	updateVtlibModule('RecycleBin', 'packages/vtiger/optional/RecycleBin.zip');
-	updateVtlibModule('SMSNotifier', "packages/vtiger/optional/SMSNotifier.zip");
-        updateVtlibModule("Sweden_sv_se","packages/vtiger/optional/Sweden_sv_se.zip");
-	updateVtlibModule("Webforms","packages/vtiger/optional/Webforms.zip");
+    Install_Utils_Model::installModules();
 }
 if(defined('INSTALLATION_MODE')) {
 		// Set of task to be taken care while specifically in installation mode.
@@ -1110,7 +1094,7 @@ if(!defined('INSTALLATION_MODE')) {
     $moduleInstance = Vtiger_Module_Model::getInstance('PBXManager');
     if(!$moduleInstance){ 
        echo '<br>Installing PBX Manager starts<br>'; 
-       installVtlibModule('PBXManager', 'packages/vtiger/mandatory/PBXManager.zip'); 
+        Vtiger_Install_Model::getInstance('module.postupdate', 'PBXManager')->installModule();
     }else{ 
         $result = $adb->pquery('SELECT server, port FROM vtiger_asterisk', array());
         $server = $adb->query_result($result, 0, 'server');
