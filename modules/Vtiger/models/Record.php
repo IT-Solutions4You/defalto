@@ -802,10 +802,14 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
      */
     public function getCurrencyId(): int
     {
-        $currencyId = $this->fetchCurrencyId();
+        $recordId = $this->getId();
 
-        if (empty($currencyId)) {
-            $currencyId = CurrencyField::getDBCurrencyId();
+        if (!empty($recordId)) {
+            $currencyId = $this->fetchCurrencyId();
+
+            if (empty($currencyId)) {
+                $currencyId = CurrencyField::getDBCurrencyId();
+            }
         }
 
         if (empty($currencyId)) {
